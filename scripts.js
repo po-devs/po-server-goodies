@@ -4203,6 +4203,7 @@ afterChangeTeam : function(src)
     this.evioliteCheck(src);
     this.inconsistentCheck(src);
     this.monotypecheck(src);
+    this.monoGenCheck(src);
     this.weatherlesstiercheck(src);
     this.shanaiAbilityCheck(src)
     this.monoColourCheck(src)
@@ -7362,6 +7363,7 @@ beforeChangeTier : function(src, oldtier, newtier) {
     this.evioliteCheck(src, newtier);
     this.inconsistentCheck(src, newtier);
     this.monotypecheck(src, newtier);
+    this.monoGenCheck(src, newtier);
     this.weatherlesstiercheck(src, newtier);
     this.shanaiAbilityCheck(src, newtier);
     this.monoColourCheck(src, newtier);
@@ -7755,6 +7757,28 @@ monotypecheck : function(src, tier) {
             return
         }
     */
+}
+,
+
+monoGenCheck : function(src, tier) {
+    if (!tier) tier = sys.tier(src);
+    if (tier != "Monogen") return;
+
+    var GEN_MAX = [0, 151, 252, 386, 483, 646];
+    var gen = 0;
+    for (var i = 0; i < 6; ++i) {
+        var pokenum = sys.teamPoke(src, i);
+        if (pokenum == 0) continue;
+        var species = pokenum % 65536; // remove alt formes
+        if (gen == 0) {
+            while (pokenum < GEN_MAX[++gen]); // Search for correct gen for first poke
+        } else if (!(GEN_MAX[gen-1] < pokenum && pokemon <= GEN_MAX[gen])) {
+            normalbot.sendMessage(src, sys.pokemon(pokenum) + " is not from gen " + gen);
+            sys.changeTier(src, "Challenge Cup")
+            sys.stopEvent()
+            return;
+        }
+    }
 }
 ,
 
