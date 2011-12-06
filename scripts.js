@@ -7768,11 +7768,11 @@ monoGenCheck : function(src, tier) {
     var gen = 0;
     for (var i = 0; i < 6; ++i) {
         var pokenum = sys.teamPoke(src, i);
-        if (pokenum == 0) continue;
         var species = pokenum % 65536; // remove alt formes
+        if (species == 0) continue;
         if (gen == 0) {
-            while (pokenum < GEN_MAX[++gen]); // Search for correct gen for first poke
-        } else if (!(GEN_MAX[gen-1] < pokenum && pokemon <= GEN_MAX[gen])) {
+            while (species > GEN_MAX[gen]) ++gen; // Search for correct gen for first poke
+        } else if (!(GEN_MAX[gen-1] < species && species <= GEN_MAX[gen])) {
             normalbot.sendMessage(src, sys.pokemon(pokenum) + " is not from gen " + gen);
             sys.changeTier(src, "Challenge Cup")
             sys.stopEvent()
