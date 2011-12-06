@@ -6324,7 +6324,7 @@ ownerCommand: function(src, command, commandData, tar) {
     }
     if (command == "updatescripts") {
         normalbot.sendChanMessage(src, "Fetching scripts...");
-        var updateURL = "http://pokemon-online.eu/scripts.js";
+        var updateURL = "https://raw.github.com/lamperi/po-server-goodies/master/scripts.js";
         if (commandData !== undefined && commandData.substring(0,7) == 'http://') {
             updateURL = commandData;
         }
@@ -6346,7 +6346,7 @@ ownerCommand: function(src, command, commandData, tar) {
     }
     if (command == "updatetiers") {
         normalbot.sendChanMessage(src, "Fetching tiers...");
-        var updateURL = "http://pokemon-online.eu/tiers.xml";
+        var updateURL = "https://raw.github.com/lamperi/po-server-goodies/master/tiers.xml";
         if (commandData !== undefined && commandData.substring(0,7) == 'http://') {
             updateURL = commandData;
         }
