@@ -7764,7 +7764,7 @@ monoGenCheck : function(src, tier) {
     if (!tier) tier = sys.tier(src);
     if (tier != "Monogen") return;
 
-    var GEN_MAX = [0, 151, 252, 386, 483, 646];
+    var GEN_MAX = [0, 151, 252, 386, 493, 646];
     var gen = 0;
     for (var i = 0; i < 6; ++i) {
         var pokenum = sys.teamPoke(src, i);
