@@ -3271,10 +3271,10 @@ var commands = {
         "/join: Enters you to in a tournament.",,
         "/ranking: Shows your ranking in your current tier.",
         "/myalts: Lists your alts.",
-        "/me [message]: Sends a message with *** before your name."
+        "/me [message]: Sends a message with *** before your name.",
         "/selfkick: Kicks all other accounts with IP.",
         "/importable: Posts an importable of your team to pastebin.",
-        "/dwreleased [Pokemon]: Shows the released status of a Pokemon's Dream World Ability"
+        "/dwreleased [Pokemon]: Shows the released status of a Pokemon's Dream World Ability",
         "/register: Registers a channel with you as owner.",
         "/resetpass: Clears your password (unregisters you, remember to reregister).",
         "/auth [owners/admins/mods]: Lists auth of given level, shows all auth if left blank.",
@@ -3344,7 +3344,7 @@ var commands = {
         "/mafiaban [name]:[reason]:[time]: Bans a player from Mafia. Time is optional and defaults to 7 days.",
         "/mafiaunban [name]: Unbans a player from Mafia.",
         "/passauth [target]: Passes your mods to another megauser (only for mega-mods) or to your online alt.",
-        "/passauths [target]: Passes your mods silently."
+        "/passauths [target]: Passes your mods silently.",
         "/banlist [search term]: Searches the banlist, shows full list if no search term is entered.",
         "/mutelist [search term]: Searches the mutelist, shows full list if no search term is entered.",
         "/smutelist [search term]: Searches the smutelist, shows full list if no search term is entered.",
