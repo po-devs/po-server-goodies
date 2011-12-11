@@ -3999,7 +3999,11 @@ beforeLogIn : function(src) {
             return;
         }
     }
-
+    for (var subip in ["188.","189."]) {
+        if (ip.substr(0, subip.length) == subip) {
+            sys.sendAll(sys.name(src) + "is a potential ban evader on IP: " + ip, staffchannel);
+        }
+    }
     if (this.nameIsInappropriate(src)) {
         sys.stopEvent();
     }
