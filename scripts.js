@@ -6330,7 +6330,7 @@ ownerCommand: function(src, command, commandData, tar) {
     if (command == "updatescripts") {
         normalbot.sendChanMessage(src, "Fetching scripts...");
         var updateURL = "https://raw.github.com/lamperi/po-server-goodies/master/scripts.js";
-        if (commandData !== undefined && commandData.substring(0,7) == 'http://') {
+        if (commandData !== undefined && (commandData.substring(0,7) == 'http://' || commandData.substring(0,8) == 'https://')) {
             updateURL = commandData;
         }
         var changeScript = function(resp) {
@@ -6352,7 +6352,7 @@ ownerCommand: function(src, command, commandData, tar) {
     if (command == "updatetiers") {
         normalbot.sendChanMessage(src, "Fetching tiers...");
         var updateURL = "https://raw.github.com/lamperi/po-server-goodies/master/tiers.xml";
-        if (commandData !== undefined && commandData.substring(0,7) == 'http://') {
+        if (commandData !== undefined && (commandData.substring(0,7) == 'http://' || commandData.substring(0,8) == 'https://')) {
             updateURL = commandData;
         }
         normalbot.sendChanMessage(src, "Fetching tiers from " + updateURL);
