@@ -3716,7 +3716,8 @@ issueBan : function(type, src, tar, commandData, maxTime) {
 
         if (tar == undefined) {
             ip = sys.dbIp(commandData);
-            if(sys.maxAuth(ip)>=sys.auth(src) && y > 0) {
+            var maxAuth = sys.maxAuth(ip);
+            if(maxAuth>=sys.auth(src) && maxAuth > 0) {
                banbot.sendChanMessage(src, "Can't do that to higher auth!");
                return;
             }
