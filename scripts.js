@@ -7605,22 +7605,7 @@ weatherlesstiercheck : function(src, tier) {
         ability = sys.ability(sys.teamPokeAbility(src, i))
         if(ability.toLowerCase() == "drizzle" || ability.toLowerCase() == "drought" || ability.toLowerCase() == "snow warning" || ability.toLowerCase() == "sand stream") {
             normalbot.sendMessage(src, "Your team has a pokemon with the ability: " + ability + ", please remove before entering " +tier+" tier.");
-            if(sys.hasLegalTeamForTier(src, "DW OU")) {
-                if(sys.hasLegalTeamForTier(src,"Wifi OU")) {
-                    sys.changeTier(src, "Wifi OU");
-                    sys.stopEvent()
-                    return;
-                }
-                sys.changeTier(src, "DW OU");
-                sys.stopEvent()
-                return;
-            }
-            if(sys.hasLegalTeamForTier(src,"Wifi Ubers")) {
-                sys.changeTier(src, "Wifi Ubers");
-                sys.stopEvent()
-                return;
-            }
-            sys.changeTier(src, "DW Ubers");
+            sys.changeTier(src, "Challenge Cup");
             sys.stopEvent()
             return;
         }
