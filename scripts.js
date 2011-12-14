@@ -7581,7 +7581,7 @@ dreamWorldAbilitiesCheck : function(src, tier) {
 
 inconsistentCheck : function(src, tier) {
     if (!tier) tier = sys.tier(src);
-    if (["DW OU", "DW UU", "DW LU", "Wifi OU", "Wifi UU", "Wifi LU", "Wifi LC", "DW LC", "Wifi Ubers", "DW Ubers", "Clear Skies", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "Wifi NU"].indexOf(tier) == -1) {
+    if (["DW OU", "DW UU", "DW LU", "Wifi OU", "Wifi UU", "Wifi LU", "Wifi LC", "DW LC", "Wifi Ubers", "DW Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "Wifi NU"].indexOf(tier) == -1) {
         return; // only care about these tiers
     }
     var moody = sys.abilityNum("Moody");
@@ -7598,7 +7598,7 @@ inconsistentCheck : function(src, tier) {
 ,
 weatherlesstiercheck : function(src, tier) {
     if (!tier) tier = sys.tier(src);
-    if (tier != "Clear Skies") return;
+    if (tier != "Clear Skies" && tier != "Clear Skies DW") return;
     for (var i = 0; i < 6; i++){
         ability = sys.ability(sys.teamPokeAbility(src, i))
         if(ability.toLowerCase() == "drizzle" || ability.toLowerCase() == "drought" || ability.toLowerCase() == "snow warning" || ability.toLowerCase() == "sand stream") {
