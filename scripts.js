@@ -7518,12 +7518,13 @@ evioliteCheck : function(src, tier) {
     if (["Wifi NU"].indexOf(tier) == -1) {
         return; // only care about these tiers
     }
+    var evioliteLimit = 6;
     var eviolites = 0;
     for (var i = 0; i < 6; i++) {
         var x = sys.teamPoke(src, i);
         var item = sys.teamPokeItem(src, i);
         item = item !== undefined ? sys.item(item) : "(no item)";
-        if (item == "Eviolite" && ++eviolites > 1) {
+        if (item == "Eviolite" && ++eviolites > evioliteLimit) {
             checkbot.sendMessage(src, "Only 1 pokemon is allowed with eviolite in " + tier + " tier. Please remove extra evioites in teambuilder."); 
             sys.changeTier(src, "Challenge Cup");
             sys.stopEvent();
