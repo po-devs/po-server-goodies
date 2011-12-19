@@ -7801,7 +7801,7 @@ monoColourCheck : function(src, tier) {
     }
     for (var i = 1; i < 6; ++i) {
         var poke = sys.pokemon(sys.teamPoke(src, i));
-        if (colours[thecolour].indexOf(poke) == -1) {
+        if (colours[thecolour].indexOf(poke) == -1 && poke != "Missingno") {
             normalbot.sendMessage(src, "" + poke + " has not the colour: " + thecolour);
             sys.changeTier(src, "Challenge Cup")
             sys.stopEvent()
