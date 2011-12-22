@@ -3197,7 +3197,7 @@ if (typeof SESSION.global() != 'undefined') {
             SESSION.channels(id).__proto__ = POChannel.prototype;
     });
 
-    
+
     sys.playerIds().forEach(function(id) {
         if (sys.loggedIn(id)) {
             if (!SESSION.users(id))
@@ -3206,7 +3206,7 @@ if (typeof SESSION.global() != 'undefined') {
                 SESSION.users(id).__proto__ = POUser.prototype;
         }
     });
-    
+
 }
 
 function nonFlashing(name) {
@@ -3729,8 +3729,8 @@ issueBan : function(type, src, tar, commandData, maxTime) {
                 var authname = sys.name(src).toLowerCase();
                 authStats[authname] =  authStats[authname] || {};
                 authStats[authname]["latest" + type] = [commandData, parseInt(sys.time())];
-                if (mafia.isInGame(mafia.correctCase(commandData))) { 
-                    mafia.slayUser(src, commandData); 
+                if (mafia.isInGame(mafia.correctCase(commandData))) {
+                    mafia.slayUser(src, commandData);
                 }
                 return;
             }
@@ -3747,8 +3747,8 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             return;
         }
         // Only slay if the user is actually in the game.
-        if (mafia.isInGame(mafia.correctCase(sys.name(tar)))) { 
-            mafia.slayUser(src, sys.name(tar)); 
+        if (mafia.isInGame(mafia.correctCase(sys.name(tar)))) {
+            mafia.slayUser(src, sys.name(tar));
         }
         SESSION.users(tar).activate(type, sys.name(src), expires, reason, true);
         if (reason.length > 0)
@@ -4741,6 +4741,8 @@ userCommand: function(src, command, commandData, tar) {
     }
 
     if (command == "importable") {
+        normalbot.sendChanMessage(src, "Sorry, currently disabled for today due to our api key hitting max pastes for a day.");
+        return;
         //var path = "user_importables/{id}.txt".replace("{id}", src);
         //var url = "http://188.165.249.120/i/{id}.txt".replace("{id}", src);
         //bot.sendChanMessage(src, "Your team is available at " + url);
@@ -7525,7 +7527,7 @@ evioliteCheck : function(src, tier) {
         var item = sys.teamPokeItem(src, i);
         item = item !== undefined ? sys.item(item) : "(no item)";
         if (item == "Eviolite" && ++eviolites > evioliteLimit) {
-            checkbot.sendMessage(src, "Only 1 pokemon is allowed with eviolite in " + tier + " tier. Please remove extra evioites in teambuilder."); 
+            checkbot.sendMessage(src, "Only 1 pokemon is allowed with eviolite in " + tier + " tier. Please remove extra evioites in teambuilder.");
             sys.changeTier(src, "Challenge Cup");
             sys.stopEvent();
         }
