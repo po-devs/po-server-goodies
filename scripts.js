@@ -4211,6 +4211,7 @@ afterChangeTeam : function(src)
     this.monoColourCheck(src)
     this.swiftSwimCheck(src)
     this.droughtCheck(src)
+    this.snowWarningCheck(src)
     this.advance200Check(src);
 
 } /* end of afterChangeTeam */
@@ -7373,6 +7374,7 @@ beforeChangeTier : function(src, oldtier, newtier) {
     this.shanaiAbilityCheck(src, newtier);
     this.monoColourCheck(src, newtier);
     this.swiftSwimCheck(src, newtier);
+    this.snowWarningCheck(src, newtier);
     this.droughtCheck(src, newtier);
     this.advance200Check(src, newtier);
 }
@@ -7844,6 +7846,21 @@ droughtCheck : function(src, tier){
     }
 }
 ,
+
+snowWarningCheck : function(src, tier) {
+    if (!tier) tier = sys.tier(src);
+    if (tier != "Wifi UU") return;
+    for(var i = 0; i <6; ++i){
+        if(sys.ability(sys.teamPokeAbility(src, i)) == "Snow Warning"){
+            normalbot.sendMessage(src, "Snow Warning is not allowed in Wifi UU")
+            sys.changeTier(src, "Challenge Cup")
+            sys.stopEvent()
+            return;
+        }
+    }
+}
+,
+
 shanaiAbilityCheck : function(src, tier) {
     if (!tier) tier = sys.tier(src);
     if (["Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST"].indexOf(tier) == -1) {
