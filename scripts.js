@@ -149,7 +149,7 @@ function Tournament(channel, globalObject)
                 wall("TYPE: Single Elimination");
                 wall("TIER: " + self.tier);
                 wall("");
-                wall("*** Go in the #"+sys.channel(self.channel) + " channel and type /join or !join to enter the tournament! ***");
+                wall("*** Go in the #"+sys.channel(self.channel) + " channel and type !join to enter the tournament! ***");
                 wall(border);
 
                 self.running = true;
@@ -5099,7 +5099,7 @@ megauserCommand: function(src, command, commandData, tar) {
             sys.sendAll("TYPE: Single Elimination", y);
             sys.sendAll("TIER: " + tourtier, y);
             sys.sendAll("", y);
-            sys.sendAll("*** Go in the #Tournaments channel and type /join or !join to enter the tournament! ***", y);
+            sys.sendAll("*** Go in the #Tournaments channel and type !join to enter the tournament! ***", y);
             sys.sendAll(border, y);
             sys.sendAll("", y);
         }
