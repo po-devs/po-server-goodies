@@ -7849,10 +7849,10 @@ droughtCheck : function(src, tier){
 
 snowWarningCheck : function(src, tier) {
     if (!tier) tier = sys.tier(src);
-    if (tier != "Wifi UU") return;
+    if (tier != "Wifi UU", "Wifi LU", "Wifi NU") return;
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, i)) == "Snow Warning"){
-            normalbot.sendMessage(src, "Snow Warning is not allowed in Wifi UU")
+            normalbot.sendMessage(src, "Snow Warning is not allowed in " + tier + ".")
             sys.changeTier(src, "Challenge Cup")
             sys.stopEvent()
             return;
