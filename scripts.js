@@ -303,7 +303,7 @@ var noPlayer = '*';
 var mafia = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2011-12-25.0";
+    this.version = "2011-12-29.0";
 
     var CurrentGame;
     var PreviousGames;
@@ -2003,7 +2003,7 @@ mafiabot.sendAll("Importing old themes", mafiachan)
                 var player = mafia.players[name];
                 var target = mafia.players[commandData];
 
-                if (player.role.actions.night[command].target != "Self" && commandData == name) {
+                if (["Self", "Any"].indexOf(player.role.actions.night[command].target) == -1 && commandData == name) {
                     sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target yourself!", mafiachan);
                     return;
                 }
