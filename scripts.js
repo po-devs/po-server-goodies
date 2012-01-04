@@ -3361,7 +3361,6 @@ var commands = {
         "/smute xxx: Secretly mutes a user. Can't smute auth.",
         "/sunmute xxx: Removes secret mute from a user.",
         "/megauser[off] xxx: Adds or removes megauser powers from someone.",
-        "/contributor[off] xxx:what: Adds or removes contributor status (for indigo access) from someone, with reason.",
         "/memorydump: Shows the state of the memory.",
         "/nameban regexp: Adds a regexp ban on usernames.",
         "/nameunban full_regexp: Removes a regexp ban on usernames.",
@@ -3374,6 +3373,7 @@ var commands = {
         "/stopBattles: Stops all new battles to allow for server restart with less problems for users.",
         "/imp [name]: Lets you speak as someone",
         "/impOff: Stops your impersonating.",
+        "/contributor[off] xxx:what: Adds or removes contributor status (for indigo access) from someone, with reason.",
         "/clearpass [name]: Clears a user's password.",
         "/periodicsay minutes:channel1,channel2,...:[message]: Sends a message to specified channels periodically.",
         "/sendAll [message]: Sends a message to everyone.",
@@ -5773,15 +5773,6 @@ adminCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-    if (command == "contributor") {
-        var s = commandData.split(":");
-        contributors.add(s[0], s[1]);
-        return;
-    }
-    if (command == "contributoroff") {
-        contributors.remove(commandData);
-        return;
-    }
     if (command == "indigoinvite") {
 
         if (channel != staffchannel && channel != sys.id("shanaindigo")) {
@@ -6041,6 +6032,15 @@ ownerCommand: function(src, command, commandData, tar) {
             CAPSLOCKDAYALLOW = false;
         else
             CAPSLOCKDAYALLOW = true;
+        return;
+    }
+    if (command == "contributor") {
+        var s = commandData.split(":");
+        contributors.add(s[0], s[1]);
+        return;
+    }
+    if (command == "contributoroff") {
+        contributors.remove(commandData);
         return;
     }
     if (command == "showteam") {
@@ -7039,20 +7039,16 @@ roundPairing : function() {
     battlesLost = [];
 
     if (tourmembers.length == 1) {
-        var chans = [0, tourchannel];
 
-        for (x in chans) {
-            var tchan = chans[x];
-            sys.sendAll("", tchan);
-            sys.sendAll(border, tchan);
-            sys.sendAll("", tchan);
-            sys.sendAll("THE WINNER OF THE " + tourtier.toUpperCase() + " TOURNAMENT IS : " + tourplayers[tourmembers[0]], tchan);
-            sys.sendAll("", tchan);
-            sys.sendAll("*** Congratulations, " + tourplayers[tourmembers[0]] + ", on your success! ***", tchan);
-            sys.sendAll("", tchan);
-            sys.sendAll(border, tchan);
-            sys.sendAll("", tchan);
-        }
+        sys.sendAll("", tourchannel);
+        sys.sendAll(border, tourchannel);
+        sys.sendAll("", tourchannel);
+        sys.sendAll("THE WINNER OF THE " + tourtier.toUpperCase() + " TOURNAMENT IS : " + tourplayers[tourmembers[0]], tourchannel);
+        sys.sendAll("", tourchannel);
+        sys.sendAll("*** Congratulations, " + tourplayers[tourmembers[0]] + ", on your success! ***", tourchannel);
+        sys.sendAll("", tourchannel);
+        sys.sendAll(border, tourchannel);
+        sys.sendAll("", tourchannel);
         tourmode = 0;
 
         // tier, time, number of participants, winner

@@ -88,3 +88,4 @@ if __name__ == "__main__":
     print("Writing PO tiers")
     write_po_tiers(po_tiers)
     print("Done")
+    print("You can now remove the temporary directory 'smogon' if you want.")
