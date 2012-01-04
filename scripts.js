@@ -7499,7 +7499,7 @@ eventMovesCheck : function(src)
 ,
 littleCupCheck : function(src, tier) {
     if (!tier) tier = sys.tier(src);
-    if (["Wifi LC", "Wifi LC Ubers"].indexOf(tier) == -1) {
+    if (["Wifi LC", "Wifi LC Ubers", "Wifi UU LC"].indexOf(tier) == -1) {
         return; // only care about these tiers
     }
     for (var i = 0; i < 6; i++) {
