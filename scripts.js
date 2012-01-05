@@ -304,7 +304,7 @@ var noPlayer = '*';
 var mafia = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2011-12-29.0";
+    this.version = "2012-01-05.0";
 
     var CurrentGame;
     var PreviousGames;
@@ -582,10 +582,11 @@ var mafia = new function() {
             this.themeInfo = parsed.meta;
         }
         for (var i = 0; i < this.themeInfo.length; ++i) {
-            if (!this.themeInfo[i][3]) continue;
             try {
+                if (this.themeInfo[i][2].indexOf("/") != -1) continue;
                 var theme = this.loadTheme(JSON.parse(sys.getFileContent(this.themeInfo[i][2])));
                 this.themes[theme.name.toLowerCase()] = theme;
+                if (!this.themeInfo[i][3]) theme.enabled = false;
             } catch(err) {
                 mafiabot.sendAll("Error loading cached theme \"" + this.themeInfo[i][0] + "\": " + err, mafiachan);
             }
@@ -630,7 +631,6 @@ var mafia = new function() {
             delete this.themes[name];
             for (var i = 0; i < this.themeInfo.length; ++i) {
                 if (cmp(name, this.themeInfo[i][0])) {
-                    //this.themeInfo[i][3] = false;
                     this.themeInfo.splice(i,1);
                     break;
                 }
@@ -644,6 +644,13 @@ var mafia = new function() {
         name = name.toLowerCase()
         if (name in this.themes) {
             this.themes[name].enabled = true;
+            for (var i = 0; i < this.themeInfo.length; ++i) {
+                if (cmp(name, this.themeInfo[i][0])) {
+                    this.themeInfo[i][3] = true;
+                    break;
+                }
+            }
+            sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({'meta': this.themeInfo}));
             mafiabot.sendChanMessage(src, "theme " + name + " enabled.");
         }
     }
@@ -652,6 +659,13 @@ var mafia = new function() {
         name = name.toLowerCase()
         if (name in this.themes) {
             this.themes[name].enabled = false;
+            for (var i = 0; i < this.themeInfo.length; ++i) {
+                if (cmp(name, this.themeInfo[i][0])) {
+                    this.themeInfo[i][3] = ffffalse;
+                    break;
+                }
+            }
+            sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({'meta': this.themeInfo}));
             mafiabot.sendChanMessage(src, "theme " + name + " disabled.");
         }
     }
