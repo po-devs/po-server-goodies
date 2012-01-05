@@ -37,7 +37,8 @@ var Config = {
         bot: "Murkrow",
         norepeat: 6,
         stats_file: "mafia_stats.json",
-        max_name_length: 14
+        max_name_length: 14,
+        notPlayingMsg: "±Game: The game is in progress. Please type /join to join the next mafia game."
     },
     League: [
         ["M Dragon", "Elite Four"],
@@ -4276,7 +4277,7 @@ userCommand: function(src, command, commandData, tar) {
             return;
         }
         if (channel != 0 && channel == mafiachan && mafia.ticks > 0 && mafia.state!="blank" && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0) {
-            sys.sendMessage(src, "±Game: You're not playing, so shush! Go in another channel to talk!", mafiachan);
+            sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
             return;
         }
 
@@ -6853,7 +6854,7 @@ beforeChatMessage: function(src, message, chan) {
     // Mafia Silence when dead
     if (channel != 0 && channel == mafiachan && mafia.ticks > 0 && mafia.state!="blank" && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0) {
         sys.stopEvent();
-        sys.sendMessage(src, "±Game: You're not playing, so shush! Go in another channel to talk!", mafiachan);
+        sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
         return;
     }
 
