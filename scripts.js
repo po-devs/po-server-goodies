@@ -5405,8 +5405,8 @@ modCommand: function(src, command, commandData, tar) {
             tmp.push([key, rangebans.get(key)]);
         }
         tmp.sort(function(a,b) { return a[0] < b[0] ? -1 : 1; });
-        for (var row in tmp) {
-            table += TABLE_LINE.format(row[0], row[1]);
+        for (var row = 0; row < tmp.length; ++row) {
+            table += TABLE_LINE.format(tmp[row][0], tmp[row][1]);
         }
         table += TABLE_END;
         sys.sendHtmlMessage(src, table, channel);
