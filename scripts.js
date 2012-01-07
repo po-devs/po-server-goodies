@@ -6108,6 +6108,23 @@ ownerCommand: function(src, command, commandData, tar) {
         /* add rangeban */
         rangebans.add(subip, rangebans.escapeValue(comment));
         normalbot.sendChanMessage(src, "Rangeban added successfully for IP subrange: " + subip);
+        /* kick them */
+        var players = sys.playerIds();
+        var players_length = players.length;
+        var names = [];
+        for (var i = 0; i < players_length; ++i) {
+            var current_player = players[i];
+            var ip = sys.ip(current_player);
+            if (sys.auth(current_player) > 0) continue;
+            if (ip.substr(0, subip.length) == subip && allowedNames.indexOf(name) == -1) {
+                names.append(sys.name(current_player));
+                sys.kick(current_player);
+                return;
+            }
+        }
+        if (names.length > 0) {
+            sys.sendAll(names.join(", ") + " got range banned by " + sys.name(src));
+        }
         return;
     }
     if (command == "rangeunban") {
