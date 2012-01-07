@@ -5400,8 +5400,13 @@ modCommand: function(src, command, commandData, tar) {
         }
         try {
         var table = TABLE_HEADER;
-        for (var subip in rangebans.hash) {
-            table += TABLE_LINE.format(subip, rangebans.get(subip));
+        var tmp = [];
+        for (var key in rangebans.hash) {
+            tmp.append([key, rangebans.get(key)]);
+        }
+        tmp.sort(function(a,b) { return a[0] < b[0] ? -1 : 1; });
+        for (var row in tmp) {
+            table += TABLE_LINE.format(row[0], row[1]);
         }
         table += TABLE_END;
         sys.sendHtmlMessage(src, table, channel);
