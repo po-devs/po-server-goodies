@@ -583,7 +583,6 @@ var mafia = new function() {
         }
         for (var i = 0; i < this.themeInfo.length; ++i) {
             try {
-                if (this.themeInfo[i][2].indexOf("/") != -1) continue;
                 var theme = this.loadTheme(JSON.parse(sys.getFileContent(this.themeInfo[i][2])));
                 this.themes[theme.name.toLowerCase()] = theme;
                 if (!this.themeInfo[i][3]) theme.enabled = false;
