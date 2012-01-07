@@ -5402,7 +5402,7 @@ modCommand: function(src, command, commandData, tar) {
         var table = TABLE_HEADER;
         var tmp = [];
         for (var key in rangebans.hash) {
-            tmp.append([key, rangebans.get(key)]);
+            tmp.push([key, rangebans.get(key)]);
         }
         tmp.sort(function(a,b) { return a[0] < b[0] ? -1 : 1; });
         for (var row in tmp) {
