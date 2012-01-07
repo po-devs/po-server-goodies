@@ -4013,7 +4013,7 @@ beforeLogIn : function(src) {
             return;
         }
     }
-    var arr =  ["188.28.", "188.29."];
+    var arr =  ["77.182."];
     for (var i = 0; i < arr.length; i++) {
         if (ip.substr(0, arr[i].length) == arr[i]) {
             sys.sendAll("Potential ban evader: " + sys.name(src) + " on IP: " + ip, staffchannel);
