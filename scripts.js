@@ -304,7 +304,7 @@ var noPlayer = '*';
 var mafia = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-01-07.1";
+    this.version = "2012-01-07.2";
 
     var CurrentGame;
     var PreviousGames;
@@ -2099,8 +2099,8 @@ mafiabot.sendAll("Importing old themes", mafiachan)
         } else if (mafia.state == "standby") {
             var name = sys.name(src);
             if (this.isInGame(name) && this.hasCommand(name, command, "standby")) {
-                var commandObject = player.role.actions.standby[command];
                 var player = mafia.players[name];
+                var commandObject = player.role.actions.standby[command];
                 if (commandObject.hasOwnProperty("command"))
                     command = commandObject.command
                 if (command == "kill") {
