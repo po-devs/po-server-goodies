@@ -304,7 +304,7 @@ var noPlayer = '*';
 var mafia = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-01-07.0";
+    this.version = "2012-01-07.1";
 
     var CurrentGame;
     var PreviousGames;
@@ -2099,11 +2099,12 @@ mafiabot.sendAll("Importing old themes", mafiachan)
         } else if (mafia.state == "standby") {
             var name = sys.name(src);
             if (this.isInGame(name) && this.hasCommand(name, command, "standby")) {
+                var commandObject = player.role.actions.standby[command];
                 var player = mafia.players[name];
-                if (player.role.actions.standby[command].hasOwnProperty("command"))
-                    command = player.role.actions.standby[command].command
+                if (commandObject.hasOwnProperty("command"))
+                    command = commandObject.command
                 if (command == "kill") {
-                    if (player.dayKill >= (player.role.actions.standby[command].limit || 1)) {
+                    if (player.dayKill >= (commandObject.limit || 1)) {
                         sys.sendMessage(src, "±Game: You already killed!", mafiachan);
                         return;
                     }
@@ -2125,7 +2126,7 @@ mafiabot.sendAll("Importing old themes", mafiachan)
                     }
                     sys.sendAll("*** ************************************************************************************", mafiachan);
                     if (!revenge) {
-                        sys.sendAll("±Game: " + player.role.actions.standby[command].killmsg.replace(/~Self~/g, name).replace(/~Target~/g, commandData), mafiachan);
+                        sys.sendAll("±Game: " + commandObject.killmsg.replace(/~Self~/g, name).replace(/~Target~/g, commandData), mafiachan);
                         player.dayKill = player.dayKill+1 || 1;
                         this.kill(mafia.players[commandData]);
                     } else {
