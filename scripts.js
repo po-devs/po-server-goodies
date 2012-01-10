@@ -4123,6 +4123,24 @@ afterLogIn : function(src) {
     }
     suspectVoting.afterLogIn(src);
 
+    /* android default team check */
+    if (sys.teamPoke(src, 0) == sys.pokeNum("Cleffa")) {
+        var android = true
+        for (var i = 1; i < 6; ++i) {
+            if (sys.teamPoke(src, i) != 0) { 
+                android = false;
+                break; 
+            }
+        }
+        if (android) {
+            sys.sendMessage(src, "*********");
+            sys.sendMessage(src, "Hello " + sys.name(src) + "! You seem to be using Pokemon Online for Android. With it you are able to battle with random pokemon. If you want to battle with your own made team, please surf to http://pokemon-online.eu/download with your computer and download a desktop application to your desktop. With it you can export full teams to your Android device!");
+            sys.sendMessage(src, "*********");
+        
+            sys.changeTier(src, "Challenge Cup");
+        }
+    }
+
 
     if (SESSION.users(src).megauser)
         sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Connected as MU" + "\n");
