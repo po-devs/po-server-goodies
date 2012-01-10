@@ -2741,6 +2741,7 @@ function Lazy(func)
     }
 }
 
+var POKEMON_CLEFFA = sys.pokeNum("Cleffa");
 function POUser(id)
 {
     /* user's id */
@@ -2773,6 +2774,16 @@ function POUser(id)
     // warn find battle custom message
     this.reloadwfb();
 
+    /* android default team check */
+    var android = true
+    for (var i = 0; i < 6; ++i) {
+        if (sys.teamPoke(src, i) != POKEMON_CLEFFA) { 
+            android = false;
+            break; 
+        }
+    }
+    this.android = android;
+ 
     var name = sys.name(id);
     /* check if user is megauser */
     if (megausers.indexOf("*" + name + "*") != -1)
@@ -4123,21 +4134,14 @@ afterLogIn : function(src) {
     }
     suspectVoting.afterLogIn(src);
 
-    /* android default team check */
-    if (sys.teamPoke(src, 0) == sys.pokeNum("Cleffa")) {
-        var android = true
-        for (var i = 1; i < 6; ++i) {
-            if (sys.teamPoke(src, i) != sys.pokeNum("Cleffa")) { 
-                android = false;
-                break; 
-            }
-        }
-        if (android) {
-            sys.sendMessage(src, "*********", 0);
-            sys.sendMessage(src, "Message: Hello " + sys.name(src) + "! You seem to be using Pokemon Online for Android. With it you are able to battle with random pokemon. If you want to battle with your own made team, please surf to http://pokemon-online.eu/download with your computer and download the desktop application to your desktop. With it you can export full teams to your Android device! If you using the version with ads from Android Market, download adfree version from http://code.google.com/p/pokemon-online-android/downloads/list", 0);
-            sys.sendMessage(src, "*********", 0);
-        
-            sys.changeTier(src, "Challenge Cup");
+   if (SESSION.users(src).android) {
+        sys.sendMessage(src, "*********", 0);
+        sys.sendMessage(src, "Message: Hello " + sys.name(src) + "! You seem to be using Pokemon Online for Android. With it you are able to battle with random pokemon. If you want to battle with your own made team, please surf to http://pokemon-online.eu/download with your computer and download the desktop application to your desktop. With it you can export full teams to your Android device! If you using the version with ads from Android Market, download adfree version from http://code.google.com/p/pokemon-online-android/downloads/list", 0);
+        sys.sendMessage(src, "*********", 0);
+       
+        sys.changeTier(src, "Challenge Cup");
+        if (sys.existChannel("PO Android") {
+            sys.putInChannel(src, sys.channelId("PO Android"));
         }
     }
 
