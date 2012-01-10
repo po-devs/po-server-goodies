@@ -2741,7 +2741,7 @@ function Lazy(func)
     }
 }
 
-var POKEMON_CLEFFA = sys.pokeNum("Cleffa");
+var POKEMON_CLEFFA = typeof sys != 'undefined' ? sys.pokeNum("Cleffa") : 173;
 function POUser(id)
 {
     /* user's id */
@@ -4140,7 +4140,7 @@ afterLogIn : function(src) {
         sys.sendMessage(src, "*********", 0);
        
         sys.changeTier(src, "Challenge Cup");
-        if (sys.existChannel("PO Android") {
+        if (sys.existChannel("PO Android")) {
             sys.putInChannel(src, sys.channelId("PO Android"));
         }
     }
