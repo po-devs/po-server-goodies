@@ -4141,7 +4141,11 @@ afterLogIn : function(src) {
        
         sys.changeTier(src, "Challenge Cup");
         if (sys.existChannel("PO Android")) {
-            sys.putInChannel(src, sys.channelId("PO Android"));
+            var androidChan = sys.channelId("PO Android");
+            sys.putInChannel(src, androidChan);
+            sys.sendMessage(src, "*********", androidChan);
+            sys.sendMessage(src, "Message: Hello " + sys.name(src) + "! You seem to be using Pokemon Online for Android. With it you are able to battle with random pokemon. If you want to battle with your own made team, please surf to http://pokemon-online.eu/download with your computer and download the desktop application to your desktop. With it you can export full teams to your Android device! If you using the version with ads from Android Market, download adfree version from http://code.google.com/p/pokemon-online-android/downloads/list", androidChan);
+            sys.sendMessage(src, "*********", androidChan);
         }
     }
 
