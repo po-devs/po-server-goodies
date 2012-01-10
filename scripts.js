@@ -4127,7 +4127,7 @@ afterLogIn : function(src) {
     if (sys.teamPoke(src, 0) == sys.pokeNum("Cleffa")) {
         var android = true
         for (var i = 1; i < 6; ++i) {
-            if (sys.teamPoke(src, i) != 0) { 
+            if (sys.teamPoke(src, i) != sys.pokeNum("Cleffa")) { 
                 android = false;
                 break; 
             }
