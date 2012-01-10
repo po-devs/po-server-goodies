@@ -2777,7 +2777,7 @@ function POUser(id)
     /* android default team check */
     var android = true
     for (var i = 0; i < 6; ++i) {
-        if (sys.teamPoke(src, i) != POKEMON_CLEFFA) { 
+        if (sys.teamPoke(this.id, i) != POKEMON_CLEFFA) { 
             android = false;
             break; 
         }
