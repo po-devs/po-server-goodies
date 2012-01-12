@@ -48,7 +48,6 @@ var Config = {
         ["mibuchiha", "5th Generation WiFi Ubers"],
         ["IFM", "5th Generation WiFi OverUsed"],
         ["1996ITO", "5th Generation Dream World OverUsed"],
-        ["Jcpdragonx", "5th Generation WiFi UnderUsed"],
         ["Stofil", "5th Generation LittleUsed Gym"],
         ["Psykout22", "5th Generation WiFi Little Cup"],
         ["Marmoteo", "5th Generation OU Triples"],
@@ -59,7 +58,6 @@ var Config = {
         ["HSOWA", "4th Generation NeverUsed"],
         ["CALLOUS", "3rd Generation OverUsed"],
         ["Jorgen", "2nd Generation OverUsed"],
-        ["Captain Falcon", "VGC 2011"],
         ["Platinum", "Mixed Generation Challenge Cup"]
     ],
     DreamWorldTiers: ["DW OU", "DW Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "DW 1v1", "Challenge Cup" , "CC 1v1", "DW Uber Triples", "DW OU Triples", "DW Uber Doubles", "DW OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
