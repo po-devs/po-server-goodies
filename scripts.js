@@ -54,7 +54,6 @@ var Config = {
         ["ZIAH", "5th Generation Monotype"],
         ["Manaphy", "4th Generation Ubers"],
         ["Fakes", "4th Generation OverUsed"],
-        ["Vaporeon", "4th Generation UnderUsed"],
         ["HSOWA", "4th Generation NeverUsed"],
         ["CALLOUS", "3rd Generation OverUsed"],
         ["Jorgen", "2nd Generation OverUsed"],
