@@ -6628,25 +6628,6 @@ beforeChatMessage: function(src, message, chan) {
         return;
     }
 
-    /* Stops shanai's tourney messages from flooding the main chat */
-    /* Disabled by Lam - nixeagle made the announcement box a lot shorter */
-    /* Reenabled by coyo - mafia games only appear not often, so do regular tournaments, so should shanai */
-    /* Disabled By Lam 2011-10-10
-    if (message.length > 150 && sys.name(src) == "Shanai" && chan == 0) {
-       if (typeof shanaimessage == 'undefined') {
-          shanaimessage = parseInt(sys.time());
-       } else {
-          var shanaitime = parseInt(sys.time());
-          if ((shanaitime - shanaimessage) < 500) {
-            sys.stopEvent();
-            return;
-          } else {
-            shanaimessage = shanaitime;
-          }
-       }
-    }
-    */
-
     if (message == ".") {
         sendChanMessage(src, sys.name(src)+": .", true);
         sys.stopEvent();
@@ -6689,6 +6670,7 @@ beforeChatMessage: function(src, message, chan) {
             return;
         }
     }
+
     if (SESSION.users(src).expired("mute")) {
         SESSION.users(src).un("mute");
         normalbot.sendChanMessage(src, "your mute has expired.");
@@ -7018,6 +7000,14 @@ afterChatMessage : function(src, message, chan)
     var poChannel = SESSION.channels(chan);
     channel = chan;
     lineCount+=1;
+
+    if (channel == sys.channelId("PO Android")) {
+        if (/fuck|\bass|\bcum|\bdick|\bsexy?\b|pussy|bitch|porn|\bfck|nigga|\bcock/i.test(message) && user.android) {
+            normalbot.sendAll(sys.name(src) + " got kicked for foul language.", channel);
+            sys.kick(src);
+            return;
+        }
+    }
 
     // hardcoded
     var ignoreChans = [staffchannel, sys.channelId("shanai"), sys.channelId("trivreview")];
