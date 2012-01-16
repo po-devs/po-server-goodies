@@ -301,7 +301,7 @@ var noPlayer = '*';
 var mafia = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-01-16.0";
+    this.version = "2012-01-16.1";
 
     var CurrentGame;
     var PreviousGames;
@@ -1411,6 +1411,7 @@ var mafia = new function() {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
                             } else if (target.poisoned == undefined) {
                                 target.poisoned = 1;
+                                target.poisonCount = player.role.actions.night.poison.count || 2;
                             }
                         }
                     }
@@ -1460,9 +1461,11 @@ var mafia = new function() {
             }
             for (var p in mafia.players) {
                 var player = mafia.players[p];
-                if (player.poisoned == 1) {
-                    player.poisoned = 2;
-                } else if (player.poisoned == 2) {
+                var poisonCount = player.poisonCount;
+                if (player.poisoned < poisonCount) {
+                    mafia.sendPlayer(player.name, "±Game: You have " + (player.poisonCount - player.poisoned) + " days to live.");
+                    player.poisoned++;
+                } else if (player.poisoned >= poisonCount) {
                     mafia.sendPlayer(player.name, "±Game: You died because of Poison!");
                     mafia.kill(player);
                     nightkill = true; // kinda night kill
