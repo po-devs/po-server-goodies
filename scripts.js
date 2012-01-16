@@ -301,7 +301,7 @@ var noPlayer = '*';
 var mafia = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-01-16.1";
+    this.version = "2012-01-16.2";
 
     var CurrentGame;
     var PreviousGames;
@@ -657,7 +657,7 @@ var mafia = new function() {
             this.themes[name].enabled = false;
             for (var i = 0; i < this.themeInfo.length; ++i) {
                 if (cmp(name, this.themeInfo[i][0])) {
-                    this.themeInfo[i][3] = ffffalse;
+                    this.themeInfo[i][3] = false;
                     break;
                 }
             }
