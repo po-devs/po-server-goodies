@@ -301,7 +301,7 @@ var noPlayer = '*';
 var mafia = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-01-07.2";
+    this.version = "2012-01-16.0";
 
     var CurrentGame;
     var PreviousGames;
@@ -469,13 +469,13 @@ var mafia = new function() {
           "translation": "Miller",
           "side": "village",
           "help": "You dont have any special commands during the night! Vote to remove people in the day!",
-          "actions": { "inspect": {"revealAs": "mafia1"}, "lynch": {"revealAs": "mafia1"}, "startup": {"revealAs": "villager"}, "onlist": "mafia2" }
+          "actions": { "inspect": {"revealAs": "mafia1"}, "lynch": {"revealAs": "mafia1"}, "startup": {"revealAs": "villager"}, "onlist": "mafia1" }
       }, {
           "role": "miller2",
           "translation": "Miller",
           "side": "village",
           "help": "You dont have any special commands during the night! Vote to remove people in the day!",
-          "actions": { "inspect": {"revealAs": "mafia2"}, "lynch": {"revealAs": "mafia2"}, "startup": {"revealAs": "villager"}, "onlist": "mafia1" }
+          "actions": { "inspect": {"revealAs": "mafia2"}, "lynch": {"revealAs": "mafia2"}, "startup": {"revealAs": "villager"}, "onlist": "mafia2" }
       }],
       roles1: ["bodyguard", "mafia", "inspector", "werewolf", "hooker", "villager", "truemiller",
                "villager", "mafia", "villager", "mayor"],
