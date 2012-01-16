@@ -7003,7 +7003,7 @@ afterChatMessage : function(src, message, chan)
 
     if (channel == sys.channelId("PO Android")) {
         if (/fuck|\bass|\bcum|\bdick|\bsexy?\b|pussy|bitch|porn|\bfck|nigga|\bcock/i.test(message) && user.android) {
-            normalbot.sendAll(sys.name(src) + " got kicked for foul language.", channel);
+            kickbot.sendAll(sys.name(src) + " got kicked for foul language.", channel);
             sys.kick(src);
             return;
         }
