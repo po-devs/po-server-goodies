@@ -2774,13 +2774,13 @@ function POUser(id)
     /* android default team check */
     var android = true
     for (var i = 0; i < 6; ++i) {
-        if (sys.teamPoke(this.id, i) != POKEMON_CLEFFA) { 
+        if (sys.teamPoke(this.id, i) != POKEMON_CLEFFA) {
             android = false;
-            break; 
+            break;
         }
     }
     this.android = android;
- 
+
     var name = sys.name(id);
     /* check if user is megauser */
     if (megausers.indexOf("*" + name + "*") != -1)
@@ -3233,7 +3233,9 @@ if (typeof SESSION.global() != 'undefined') {
 }
 
 function nonFlashing(name) {
-    return name[0] + '\u200b' + name.substr(1)
+    return name;
+    // PO version 1.0.53 has a bug with zwsp due to (we think) qt.
+    /* return name[0] + '\u200b' + name.substr(1) */
 }
 
 /* Bots */
@@ -4135,7 +4137,7 @@ afterLogIn : function(src) {
         sys.sendMessage(src, "*********", 0);
         sys.sendMessage(src, "Message: Hello " + sys.name(src) + "! You seem to be using Pokemon Online for Android. With it you are able to battle with random pokemon. If you want to battle with your own made team, please surf to http://pokemon-online.eu/download with your computer and download the desktop application to your desktop. With it you can export full teams to your Android device! If you using the version with ads from Android Market, download adfree version from http://code.google.com/p/pokemon-online-android/downloads/list", 0);
         sys.sendMessage(src, "*********", 0);
-       
+
         sys.changeTier(src, "Challenge Cup");
         if (sys.existChannel("PO Android")) {
             var androidChan = sys.channelId("PO Android");
