@@ -4145,6 +4145,7 @@ afterLogIn : function(src) {
         if (sys.existChannel("PO Android")) {
             var androidChan = sys.channelId("PO Android");
             sys.putInChannel(src, androidChan);
+            sys.kick(src, 0);
             sys.sendMessage(src, "*********", androidChan);
             sys.sendMessage(src, "Message: Hello " + sys.name(src) + "! You seem to be using Pokemon Online for Android. With it you are able to battle with random pokemon. If you want to battle with your own made team, please surf to http://pokemon-online.eu/download with your computer and download the desktop application to your desktop. With it you can export full teams to your Android device! If you using the version with ads from Android Market, download adfree version from http://code.google.com/p/pokemon-online-android/downloads/list", androidChan);
             sys.sendMessage(src, "*********", androidChan);
@@ -7002,7 +7003,7 @@ afterChatMessage : function(src, message, chan)
     lineCount+=1;
 
     if (channel == sys.channelId("PO Android")) {
-        if (/fuck|\bass|\bcum|\bdick|\bsexy?\b|pussy|bitch|porn|\bfck|nigga|\bcock/i.test(message) && user.android) {
+        if (/f[uo]ck|\bass|\bcum|\bdick|\bsex|pussy|bitch|porn|\bfck|nigga|\bcock|\bgay|\bhoe\b|slut|whore/i.test(message) && user.android) {
             kickbot.sendAll(sys.name(src) + " got kicked for foul language.", channel);
             sys.kick(src);
             return;
