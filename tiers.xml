@@ -14,8 +14,8 @@
   <tier pokemons="" restrictedPokemons="" tableName="tier_challengecup" banMode="ban" maxLevel="100" mode="0" displayOrder="10" gen="0" moves="" items="" banParent="" name="Challenge Cup" numberOfPokemons="6" numberOfRestricted="1" clauses="Challenge Cup"/>
  </category>
  <category displayOrder="1" name="Stadium">
-  <tier pokemons="" restrictedPokemons="" tableName="tier_ubersrby" banMode="ban" maxLevel="100" mode="0" displayOrder="0" gen="1" moves="Fissure, Guillotine, Horn Drill" items="" banParent="" name="Stadium Ubers" numberOfPokemons="6" numberOfRestricted="1" clauses="Wifi Clause,Sleep Clause,Species Clause"/>
-  <tier pokemons="Mew, Mewtwo" restrictedPokemons="" tableName="tier_ourby" banMode="ban" maxLevel="100" mode="0" displayOrder="1" gen="1" moves="Fissure, Guillotine, Horn Drill" items="" banParent="Stadium Ubers" name="Stadium OU" numberOfPokemons="6" numberOfRestricted="1" clauses="Wifi Clause,Sleep Clause,Species Clause"/>
+  <tier pokemons="" restrictedPokemons="" tableName="tier_ubersrby" banMode="ban" maxLevel="100" mode="0" displayOrder="0" gen="1" moves="Fissure, Guillotine, Horn Drill" items="" banParent="" name="Stadium Ubers" numberOfPokemons="6" numberOfRestricted="1" clauses="Wifi Clause,Sleep Clause,Freeze Clause,Species Clause"/>
+  <tier pokemons="Mew, Mewtwo" restrictedPokemons="" tableName="tier_ourby" banMode="ban" maxLevel="100" mode="0" displayOrder="1" gen="1" moves="Fissure, Guillotine, Horn Drill" items="" banParent="Stadium Ubers" name="Stadium OU" numberOfPokemons="6" numberOfRestricted="1" clauses="Wifi Clause,Sleep Clause,Freeze Clause,Species Clause"/>
  </category>
  <category displayOrder="2" name="GSC">
   <tier pokemons="" restrictedPokemons="" tableName="tier_ubersgsc" banMode="ban" maxLevel="100" mode="0" displayOrder="0" gen="2" moves="Fissure, Guillotine, Horn Drill, Sheer Cold" items="" banParent="" name="GSC Ubers" numberOfPokemons="6" numberOfRestricted="1" clauses="Sleep Clause,Species Clause"/>
