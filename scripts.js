@@ -301,7 +301,7 @@ var noPlayer = '*';
 var mafia = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-01-16.2";
+    this.version = "2012-01-21.0";
 
     var CurrentGame;
     var PreviousGames;
@@ -1962,6 +1962,10 @@ mafiabot.sendAll("Importing old themes", mafiachan)
                 }
                 if (this.ips.indexOf(sys.ip(src))!=-1) {
                     sys.sendMessage(src, "±Game: This IP is already in list. You cannot register two times!", mafiachan);
+                    return;
+                }
+                if ((sys.ratedBattles(src) < 3 && sys.ranking(src) < 1000) || sys.ratedBattles(src) < 10) {
+                    sys.sendMessage(src, "±Game: You need to ladder before playing mafia!", mafiachan);
                     return;
                 }
                 if (this.signups.length >= this.theme["roles"+this.theme.roleLists].length) {
