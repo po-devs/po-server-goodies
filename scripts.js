@@ -3554,6 +3554,10 @@ init : function() {
         }
     }
 
+    if (SESSION.global().battleinfo === undefined) {
+        SESSION.global().battleinfo = {};
+    }
+
     isSuperAdmin = function(id) {
         if (typeof Config.superAdmins != "object" || Config.superAdmins.length === undefined) return false;
         if (sys.auth(id) != 2) return false;
@@ -7327,6 +7331,7 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
                 battlesStarted[Math.floor(tourbattlers.indexOf(sys.name(src).toLowerCase())/2)] = true;
         }
     }
+    SESSION.global().battleinfo[bid] = {players: [src, dest], clauses: clauses, rated: rated, mode: mode};
     // Ranked stats
     /*
     // Writes ranked stats to ranked_stats.csv
@@ -7348,6 +7353,11 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
 ,
 
 beforeBattleEnded : function(src, dest, desc, bid) {
+    if (SESSION.global().battleinfo[bid] && SESSION.global().battleinfo[bid].rated && desc == "forfeit" 
+       && sys.ratedBattled(dest) <= 1 && sys.isInChannel(dest, mafiachan)) {
+        normalbot.sendAll(sys.name(dest) + " just forfeited their first battle and is on mafia channel. Troll?", staffchannel)
+    }
+    delete SESSION.global().battleinfo[bid];
 }
 
 ,
