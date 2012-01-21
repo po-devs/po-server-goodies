@@ -1964,7 +1964,7 @@ mafiabot.sendAll("Importing old themes", mafiachan)
                     sys.sendMessage(src, "±Game: This IP is already in list. You cannot register two times!", mafiachan);
                     return;
                 }
-                if ((sys.ratedBattles(src) < 1 && sys.ranking(src) < 1000) || sys.ratedBattles(src) < 5 || SESSION.users(src).smute.active) {
+                if ((!(sys.ratedBattles(src) >= 1 && sys.ranking(src) > 1000) && !(sys.ratedBattles(src) > 5)) || SESSION.users(src).smute.active) {
                     sys.sendMessage(src, "±Game: You need to ladder before playing mafia!", mafiachan);
                     return;
                 }
