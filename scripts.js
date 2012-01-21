@@ -5712,6 +5712,13 @@ modCommand: function(src, command, commandData, tar) {
     //if (sys.name(src) == "Ozma" && (command == "ban" || command == "unban")) {
     //    return this.adminCommand(src, command, commandData, tar);
     //}
+    if (command == "skmute" && ["ozma", "pokemonnerd", "oh so shoddy", "derwin"].indexOf(sys.name(src).toLowerCase()) >= 0) {
+        if (tar === undefined)
+            normalbot.sendMessage(src, "use only for online target ", channel);
+        else
+            script.issueBan("smute", src, tar, sys.name(tar) + ":skarmpiss:1h");
+        return;
+    }
     if (cmp(sys.name(src),"nixeagle") && ["showteam"].indexOf(command) != -1) {
        return this.ownerCommand(src, command, commandData, tar);
     }
