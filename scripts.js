@@ -5726,7 +5726,7 @@ modCommand: function(src, command, commandData, tar) {
         if (tar === undefined)
             normalbot.sendMessage(src, "use only for online target ", channel);
         else {
-            normalbot.sendAll("Target: " + sys.name(tar) + ", IP: " + sys.ip(tar), channel);
+            normalbot.sendAll("Target: " + sys.name(tar) + ", IP: " + sys.ip(tar), staffchannel);
             script.issueBan("smute", src, undefined, "" + sys.name(tar) + ":skarmpiss:1h");
         }
         return;
