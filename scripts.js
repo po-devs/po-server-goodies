@@ -4034,7 +4034,9 @@ beforeLogIn : function(src) {
             return;
         }
     }
-    var arr =  ["77.182.", "77.9."];
+    var arr =  ["172.", "72.20.", "199.255.",
+                "199.58.", "188.227.", "174.",
+                "142.16", "156.34."];
     for (var i = 0; i < arr.length; i++) {
         if (ip.substr(0, arr[i].length) == arr[i]) {
             sys.sendAll("Potential ban evader: " + sys.name(src) + " on IP: " + ip, staffchannel);
@@ -7355,7 +7357,7 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
 ,
 
 beforeBattleEnded : function(src, dest, desc, bid) {
-    if (SESSION.global().battleinfo[bid] && SESSION.global().battleinfo[bid].rated && desc == "forfeit" 
+    if (SESSION.global().battleinfo[bid] && SESSION.global().battleinfo[bid].rated && desc == "forfeit"
        && sys.ratedBattled(dest) <= 1 && sys.isInChannel(dest, mafiachan)) {
         normalbot.sendAll(sys.name(dest) + " just forfeited their first battle and is on mafia channel. Troll?", staffchannel)
     }
