@@ -4040,7 +4040,7 @@ beforeLogIn : function(src) {
                 "199.58.", "188.227.", "174.129.",
                 "174.36.", "174.37.", " 94.46.",
                 "142.16", "156.34.", "67.228.",
-                "183.173.180."];
+                "183.173.180.", "66.199."];
     for (var i = 0; i < arr.length; i++) {
         if (ip.substr(0, arr[i].length) == arr[i]) {
             sys.sendAll("Potential ban evader: " + sys.name(src) + " on IP: " + ip, staffchannel);
