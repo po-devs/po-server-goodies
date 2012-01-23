@@ -1364,7 +1364,12 @@ beforeLogIn : function(src) {
             return;
         }
     }
-    var arr =  ["77.182.", "77.9."];
+    var arr =  ["172.", "72.20.", "199.255.",
+                "199.58.", "188.227.", "174.129.",
+                "174.36.", "174.37.", " 94.46.",
+                "142.16", "156.34.", "67.228.",
+                "183.173.180.", "66.199.",
+                "216.169.110.", "31.3."];
     for (var i = 0; i < arr.length; i++) {
         if (ip.substr(0, arr[i].length) == arr[i]) {
             sys.sendAll("Potential ban evader: " + sys.name(src) + " on IP: " + ip, staffchannel);
@@ -1665,11 +1670,18 @@ userCommand: function(src, command, commandData, tar) {
         }
 
         if (sys.auth(src) == 0 && SESSION.users(src).smute.active) {
-            sendChanMessage(src, "*** " + sys.name(src) + " " + commandData);
+            sys.playersIds().forEach(function(id) {
+                if (SESSION.users(id) && SESSION.users(id).smute.active) {
+                    sendChanMessage(id,  "*** " + sys.name(src) + " " + commandData, true);
+                }
+            });
             sys.stopEvent();
             this.afterChatMessage(src, '/'+command+ ' '+commandData);
             return;
         }
+
+
+
         commandData=this.html_escape(commandData)
         if (command == "me") {
             sys.sendHtmlAll("<font color='#0483c5'><timestamp/> *** <b>" + this.html_escape(sys.name(src)) + "</b> " + commandData + "</font>", channel);
@@ -3047,12 +3059,12 @@ modCommand: function(src, command, commandData, tar) {
     //if (sys.name(src) == "Ozma" && (command == "ban" || command == "unban")) {
     //    return this.adminCommand(src, command, commandData, tar);
     //}
-    if (command == "skmute" && (sys.auth(src) > 1 || ["ozma", "pokemonnerd", "oh so shoddy", "derwin"].indexOf(sys.name(src).toLowerCase()) >= 0)) {
+    if (command == "skmute" && (sys.auth(src) >= 1 || [/* insert mod list here when this goes to admin+ */].indexOf(sys.name(src).toLowerCase()) >= 0)) {
         if (tar === undefined)
             normalbot.sendMessage(src, "use only for online target ", channel);
         else {
-            normalbot.sendAll("Target: " + sys.name(src) + ", IP: " + sys.ip(src), channel);
-            script.issueBan("smute", src, tar, sys.name(tar) + ":skarmpiss:1h");
+            normalbot.sendAll("Target: " + sys.name(tar) + ", IP: " + sys.ip(tar), staffchannel);
+            script.issueBan("smute", src, undefined, "" + sys.name(tar) + ":skarmpiss:2h");
         }
         return;
     }
@@ -4296,7 +4308,11 @@ beforeChatMessage: function(src, message, chan) {
         if (SESSION.users(src).expired("smute")) {
             SESSION.users(src).un("smute");
         } else {
-            sendChanMessage(src, sys.name(src)+": "+message, true);
+            sys.playersIds().forEach(function(id) {
+                if (SESSION.users(id) && SESSION.users(id).smute.active) {
+                    sendChanMessage(id,  sys.name(src)+": "+message, true);
+                }
+            });
             sys.stopEvent();
             this.afterChatMessage(src, '/'+command+ ' '+commandData, channel);
         }
@@ -4682,7 +4698,7 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
 ,
 
 beforeBattleEnded : function(src, dest, desc, bid) {
-    if (SESSION.global().battleinfo[bid] && SESSION.global().battleinfo[bid].rated && desc == "forfeit" 
+    if (SESSION.global().battleinfo[bid] && SESSION.global().battleinfo[bid].rated && desc == "forfeit"
        && sys.ratedBattled(dest) <= 1 && sys.isInChannel(dest, mafiachan)) {
         normalbot.sendAll(sys.name(dest) + " just forfeited their first battle and is on mafia channel. Troll?", staffchannel)
     }
