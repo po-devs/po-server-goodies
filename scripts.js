@@ -5597,8 +5597,13 @@ modCommand: function(src, command, commandData, tar) {
     }
     if (command == "aliases") {
         var max_message_length = 30000;
-        var smessage = "The aliases for the IP " + commandData + " are: "
-        var aliases = sys.aliases(commandData);
+        var uid = sys.id(commandData);
+        var ip = commandData;
+        if (uid != undefined) {
+            ip = sys.ip(uid);
+        }
+        var smessage = "The aliases for the IP " + name + " are: "
+        var aliases = sys.aliases(ip);
         var prefix = "";
         for(var i = 0; i < aliases.length; ++i) {
             var id = sys.id(aliases[i]);
