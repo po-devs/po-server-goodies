@@ -5601,6 +5601,8 @@ modCommand: function(src, command, commandData, tar) {
         var ip = commandData;
         if (uid != undefined) {
             ip = sys.ip(uid);
+        } else if (sys.dbIp(commandData) !== undefined) {
+            ip = sys.dbIp(commandData);
         }
         var smessage = "The aliases for the IP " + ip + " are: "
         var aliases = sys.aliases(ip);
