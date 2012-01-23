@@ -4345,11 +4345,18 @@ userCommand: function(src, command, commandData, tar) {
         }
 
         if (sys.auth(src) == 0 && SESSION.users(src).smute.active) {
-            sendChanMessage(src, "*** " + sys.name(src) + " " + commandData);
+            sys.playersIds().forEach(function(id) {
+                if (SESSION.users(id) && SESSION.users(id).smute.active) {
+                    sendChanMessage(id,  "*** " + sys.name(src) + " " + commandData, true);
+                }
+            });
             sys.stopEvent();
             this.afterChatMessage(src, '/'+command+ ' '+commandData);
             return;
         }
+
+
+
         commandData=this.html_escape(commandData)
         if (command == "me") {
             sys.sendHtmlAll("<font color='#0483c5'><timestamp/> *** <b>" + this.html_escape(sys.name(src)) + "</b> " + commandData + "</font>", channel);
@@ -6976,7 +6983,11 @@ beforeChatMessage: function(src, message, chan) {
         if (SESSION.users(src).expired("smute")) {
             SESSION.users(src).un("smute");
         } else {
-            sendChanMessage(src, sys.name(src)+": "+message, true);
+            sys.playersIds().forEach(function(id) {
+                if (SESSION.users(id) && SESSION.users(id).smute.active) {
+                    sendChanMessage(id,  sys.name(src)+": "+message, true);
+                }
+            });
             sys.stopEvent();
             this.afterChatMessage(src, '/'+command+ ' '+commandData, channel);
         }
