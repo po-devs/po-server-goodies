@@ -5602,7 +5602,7 @@ modCommand: function(src, command, commandData, tar) {
         if (uid != undefined) {
             ip = sys.ip(uid);
         }
-        var smessage = "The aliases for the IP " + name + " are: "
+        var smessage = "The aliases for the IP " + ip + " are: "
         var aliases = sys.aliases(ip);
         var prefix = "";
         for(var i = 0; i < aliases.length; ++i) {
