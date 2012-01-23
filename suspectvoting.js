@@ -1,4 +1,4 @@
-exports.suspectVoting = new function() {
+module.exports = new function() {
     var canVote = function(src) {
         if (!sys.dbRegistered(sys.name(src))) {
             return false;

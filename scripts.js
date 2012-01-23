@@ -55,7 +55,14 @@ if (typeof require === "undefined")
         module.module = module;
         module.exports = {};
         with (module) {
-            eval(sys.getFileContent(module_name));
+            var content = sys.getFileContent(module_name)
+            if (content) {
+                try {
+                     eval(sys.getFileContent(module_name));
+                } catch(e) {
+                     sys.sendAll("Error loading module " + module_name + ": " + e);
+                }
+            }
         }
         return module.exports;
     }
@@ -79,16 +86,7 @@ cleanFile("contributors.txt");
 cleanFile("pastebin_user_key");
 
 
-var Tournament = require('tournamnets.js').Tournament;
-
-var mafia = sys.require("mafia.js");
-
 var crc32 = require('crc32.js').crc32;
-
-var suspectVoting = require('suspectvoting.js').suspectVoting;
-
-var amoebaGame = require('amoebagame.js').amoebaGame;
-
 var MemoryHash = require('memoryhash.js').MemoryHash;
 
 /* stolen from here: http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format */
@@ -104,24 +102,7 @@ String.prototype.format = function() {
 var utilities = require('utilities.js');
 var isNonNegative = utilities.is_non_negative;
 var Lazy = utilities.Lazy;
-
-function isNonNegative(n) {
-    return typeof n == 'number' && !isNaN(n) && n >= 0;
-}
-
-
-function Lazy(func)
-{
-    var done = false;
-    return function() {
-        if (done)
-            return this._value
-        else {
-            done = true;
-            return this._value = func.apply(arguments.callee, arguments);
-        }
-    }
-}
+var nonFlashing = utilities.non_flashing;
 
 var POKEMON_CLEFFA = typeof sys != 'undefined' ? sys.pokeNum("Cleffa") : 173;
 function POUser(id)
@@ -560,6 +541,15 @@ POChannelManager.prototype.restoreSettings = function(cid)
 
 function POGlobal(id)
 {
+    var plugin_files = ["mafia.js", "amoebagame.js", "tournaments.js", "suspectvoting.js"];
+    var plugins = [];
+    /* */
+    for (var i = 0; i < plugin_files.length; ++i) {
+        var plugin = require(plugin_files[i]);
+        plugin.source = plugin_files[i];
+        plugins.push(plugin);
+    }
+
     this.mafia = undefined;
     this.coins = 0;
     this.channelManager = new POChannelManager('channelData.json');
@@ -577,35 +567,36 @@ function POGlobal(id)
     });
 }
 
+function call_plugins(event) {
+    /* if a plugin wishes to stop event, it should return true */
+    var ret = false;
+    for (var i = 0; i < plugins.length; ++i) {
+        if (plugins[i].hasOwnProperty(event)) {
+            try {
+                if (plugins[i][event].apply(arguments.slice(1)))
+                    ret = true;
+            } catch (e) {
+                sys.sendAll('Plugins-error on {0}: {1}'.format(plugins[i].source, e));
+            }
+        }
+    }
+}
+
 SESSION.identifyScriptAs("PO Scripts v0.004");
 SESSION.registerGlobalFactory(POGlobal);
 SESSION.registerUserFactory(POUser);
 SESSION.registerChannelFactory(POChannel);
 
 if (typeof SESSION.global() != 'undefined') {
-    // keep the state of mafia if it hasn't been updated
-    if (SESSION.global().mafia === undefined || SESSION.global().mafia.version !== undefined && SESSION.global().mafia.version < mafia.version) {
-        SESSION.global().mafia = mafia;
-        if (typeof mafiachan != 'undefined') {
-            mafiabot.sendAll("Mafia game was updated!", mafiachan);
-            mafia.themeManager.loadThemes();
-        }
-    } else {
-        mafia = SESSION.global().mafia;
-    }
     SESSION.global().channelManager = new POChannelManager('channelData.json');
 
     // uncomment to update either Channel or User
-
-
     sys.channelIds().forEach(function(id) {
         if (!SESSION.channels(id))
             sys.sendAll("ScriptUpdate: SESSION storage broken for channel: " + sys.channel(id), staffchannel);
         else
             SESSION.channels(id).__proto__ = POChannel.prototype;
     });
-
-
     sys.playerIds().forEach(function(id) {
         if (sys.loggedIn(id)) {
             if (!SESSION.users(id))
@@ -617,48 +608,7 @@ if (typeof SESSION.global() != 'undefined') {
 
 }
 
-function nonFlashing(name) {
-    return name;
-    // PO version 1.0.53 has a bug with zwsp due to (we think) qt.
-    /* return name[0] + '\u200b' + name.substr(1) */
-}
-
-/* Bots */
-function Bot(name) {
-    this.name = name;
-}
-Bot.prototype.formatMsg = function(message)
-{
-    return "±" + this.name + ": " + message;
-}
-/* Shortcuts to sys functions */
-Bot.prototype.sendAll = function(message, channel)
-{
-    if (channel === undefined)
-        sys.sendAll(this.formatMsg(message));
-    else
-        sys.sendAll(this.formatMsg(message), channel);
-}
-Bot.prototype.sendMessage = function(tar, message, channel)
-{
-    if (channel === undefined)
-        sys.sendMessage(tar, this.formatMsg(message));
-    else
-        sys.sendMessage(tar, this.formatMsg(message), channel);
-}
-/* Shortcuts to shortcut functions */
-Bot.prototype.sendMainTour = function(message)
-{
-    sendMainTour(this.formatMsg(message));
-}
-Bot.prototype.sendChanMessage = function(tar, message)
-{
-    sendChanMessage(tar, this.formatMsg(message));
-}
-Bot.prototype.sendChanAll = function(message)
-{
-    sendChanAll(this.formatMsg(message));
-}
+var Bot = require('bot.js').Bot;
 
 normalbot = bot = new Bot(Config.bot);
 mafiabot = new Bot(Config.Mafia.bot);
@@ -800,6 +750,11 @@ var commands = {
     ]
 };
 
+/* Start script-object
+ * 
+ * All the events are defined here
+ */
+
 ({
 /* Executed every second */
 stepEvent: function() {
@@ -861,9 +816,6 @@ init : function() {
         else
             dwpokemons[sys.pokeNum(dwlist[dwpok])] = true;
     }
-    // Set these manually as older version have problems with spaces in pokemon names
-    dwpokemons[122] = true; // Mr Mime
-    dwpokemons[439] = true; // Mime Jr
 
     var lclist = ["Bulbasaur", "Charmander", "Squirtle", "Croagunk", "Turtwig", "Chimchar", "Piplup", "Treecko","Torchic","Mudkip"]
     lcpokemons = [];
@@ -887,7 +839,7 @@ init : function() {
     contributors = new MemoryHash("contributors.txt");
     mafiaAdmins = new MemoryHash("mafiaadmins.txt");
 
-            rules = [ "",
+    rules = [ "",
     "*** Rules ***",
     "",
     "Rule #1 - Do Not Abuse CAPS:",
@@ -1520,13 +1472,10 @@ afterLogIn : function(src) {
         sys.sendMessage(src, border);
         sys.sendMessage(src, "");
     }
-    suspectVoting.afterLogIn(src);
+
+    call_plugins("afterLogIn", src);
 
    if (SESSION.users(src).android) {
-        sys.sendMessage(src, "*********", 0);
-        sys.sendMessage(src, "Message: Hello " + sys.name(src) + "! You seem to be using Pokemon Online for Android. With it you are able to battle with random pokemon. If you want to battle with your own made team, please surf to http://pokemon-online.eu/download with your computer and download the desktop application to your desktop. With it you can export full teams to your Android device! If you using the version with ads from Android Market, download adfree version from http://code.google.com/p/pokemon-online-android/downloads/list", 0);
-        sys.sendMessage(src, "*********", 0);
-
         sys.changeTier(src, "Challenge Cup");
         if (sys.existChannel("PO Android")) {
             var androidChan = sys.channelId("PO Android");
@@ -4913,17 +4862,6 @@ beforeBattleMatchup : function(src,dest,clauses,rated)
         sys.stopEvent();
         return;
     }
-/*
-    if (rated) {
-        if(sys.tier(src).indexOf("1v1") == -1) {
-            sys.sendMessage(src, "Lamperi: Please battle only 1v1 battles on ladder until a bug is fixed");
-            sys.sendMessage(dest, "Lamperi: Please battle only 1v1 battles on ladder until a bug is fixed");
-            //bot.sendAll("" + sys.name(src) + " and " + sys.name(dest) + " tried to ladder. Denied.", staffchannel);
-            sys.stopEvent();
-            return;
-        }
-    }
-*/
     if (tourmode == 2 && (this.isInTourney(sys.name(src)) || this.isInTourney(sys.name(dest)) )) {
         sys.stopEvent();
         return;

@@ -227,3 +227,5 @@ function Tournament(channel, globalObject)
 		f("");
 	}
 }
+
+module.exports = Tournament;
