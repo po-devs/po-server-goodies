@@ -1799,7 +1799,7 @@ var mafia = new function() {
     this.isMafiaSuperAdmin = function(src) {
         if (sys.auth(src) >= 2)
             return true;
-        if (['viderizer', 'ozma'].indexOf(sys.name(src).toLowerCase()) >= 0) {
+        if (['viderizer', 'ozma', 'ChaosPenguin'].indexOf(sys.name(src).toLowerCase()) >= 0) {
             return true;
         }
         return false;
