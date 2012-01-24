@@ -1,3 +1,12 @@
+/*
+ * tournaments.js
+ *
+ * Contains code for pokemon online server scripted tournaments.
+ */
+if (typeof Config == "undefined")
+    Config = {}
+if (!Config.tourneybot) Config.tourneybot = '±TourneyBot';
+
 function Tournament(channel, globalObject)
 {
 	var self = this;
@@ -40,6 +49,7 @@ function Tournament(channel, globalObject)
 		}
 	}
 
+        // Command start
 	function start(source, data) {
 		if (self.running) {
 			sendPM(source, "A tournament is already running!");
@@ -54,21 +64,21 @@ function Tournament(channel, globalObject)
 		self.count = parseInt(commandpart[1]);
 
 		if (isNaN(self.count) || count <= 2){
-			sendPM(src, "You must specify a tournament size of 3 or more.");
+			sendPM(source, "You must specify a tournament size of 3 or more.");
 			return;
 		}
 
 		var tiers = sys.getTierList();
 		var found = false;
-		for (var x in tiers) {
-			if (cmp(tiers[x], commandpart[0])) {
-				self.tier = tiers[x];
+		for (var i = 0; < tiers.length; ++i) {
+			if (tiers[i].toLowerCase() == commandpart[0].toLowerCase())) {
+				self.tier = tiers[i];
 				found = true;
 				break;
 			}
 		}
 		if (!found) {
-			sendPM(src, "Sorry, the server does not recognise the " + commandpart[0] + " tier.");
+			sendPM(source, "Sorry, the server does not recognise the " + commandpart[0] + " tier.");
 			return;
 		}
 
@@ -78,12 +88,12 @@ function Tournament(channel, globalObject)
 		wall("TYPE: Single Elimination");
 		wall("TIER: " + self.tier);
 		wall("");
-		wall("*** Go in the #"+sys.channel(self.channel) + " channel and type /join or !join to enter the tournament! ***");
+		wall("*** Go in the #" + sys.channel(self.channel) + " channel and type /join or !join to enter the tournament! ***");
 		wall(border);
 
 		self.running = true;
 		self.phase = "entry";
-		self.starter = sys.name(src);
+		self.starter = sys.name(source);
 		self.round = 0;
 
 		entrants = {};
@@ -104,6 +114,12 @@ function Tournament(channel, globalObject)
 		members.push(name.toLowerCase());
 	}
 
+	function removeEntrant(name) {
+		delete entrants[name.toLowerCase()];
+		members.splice(members.indexOf(name.toLowerCase()), 1);
+	}
+
+        // Command join
 	function join(source) {
 		if (self.phase != "entry") {
 			sendPM(source, "The tournament is not in signup phase at the moment");
@@ -125,6 +141,165 @@ function Tournament(channel, globalObject)
 		}
 	}
 
+	// Command unjoin
+	function unjoin(source) {
+		if (!self.running) {
+			sendPM(source, "Wait till the tournament has started.");
+			return;
+		}
+
+		var name = sys.name(source);
+
+		if (isInTour(name)) {
+			if (self.phase == "entry") {
+				removeEntrant(name);
+				broadcast("~~Server~~: " + name + " left the tournament!");
+			} else if (self.phase == "playing" || self.phase == "finals") {
+				setBattleStarted(name);
+				broadcast("~~Server~~: " + name + " left the tournament!");
+				// end battle?
+				endBattle(tourOpponent(name), name);
+			}
+		}
+	}
+
+	// Command dq (disqualify)
+	function dq(source, name) {
+		if (!self.running) {
+			sendPM(source, "Wait till the tournament has started.");
+		}
+
+		var authority = sys.name(source);
+
+		if (isInTour(name)) {
+			if (self.phase == "entry") {
+				removeEntrant(name);
+				broadcast("~~Server~~: " + name + " was removed from the tournament by " + authority + "!");
+			} else if (self.phase == "playing" || self.phase == "finals") {
+				setBattleStarted(name);
+				broadcast("~~Server~~: " + name + " was removed from the tournament by " + authority + "!");
+				// end battle?
+				endBattle(tourOpponent(name), name);
+			}
+		}
+	}
+
+	// Command push
+	function push(source, name) {
+		if (!self.running) {
+			sendPM(source, "Wait till the tournament has started.");
+			return;
+		}
+
+		var authority = sys.name(source);
+
+		if (isInTour(name)) {
+			sendPM(source, name + " is already in the tournament.");
+		}
+
+		addEntrant(name);
+		if (self.phase == "playing") {
+			broadcast(name + "was added to the tournament by " + sys.name(source) + ".",);
+		} else if (self.phase == "entry") {
+			broadcast(name + "was added to the tournament by " + sys.name(source) + ". " + remainingEntrants() + " more spot(s) left!",);
+
+			if (remainingEntrants() == 0) {
+				startTournament();
+			}
+		}
+	}
+
+	function cancelBattle(source, name) {
+		if (self.phase != "playing" || self.phase != "finals") {
+			sendPM(source, "Wait until a tournament starts!");
+			return;
+		}
+
+		if (isBattling(name)) {
+			sendPM(source, name + " can forfeit their battle and rematch now.")
+			setBattleStarted(name, false);
+		}
+	}
+
+	// Command sub
+	function sub(source, data) {
+		if (self.phase != "playing" || self.phase != "finals") {
+			sendPM(source, "Wait until a tournament starts!");
+			return;
+		}
+
+		var players = data.split(":");
+		if (!isInTour(players[0]) && !isIntour(players[1])) {
+			sendPM(source, "Neither are in the tournament.");
+		}
+
+		broadcast(player[0] + " and " + player[1] + " were exchanged places in the ongoing tournament by "  + sys.name(source));
+
+		var p1 = players[0].toLowerCase();
+		var p2 = players[1].toLowerCase();
+
+		for (var i = 0; i < members.length; ++i) {
+			if (members[i].toLowerCase() == p1) {
+				setBattleStarted(members[i], false);
+				members[i] = player[0];
+			} else if (members[i].toLowerCase() == p2) {
+				setBattleStarted(members[i], false);
+				members[i] = player[1];
+			}
+		}
+
+		if (!isInTour(players[0])) {
+			entrants[p1] = players[0];
+			delete entrants[p2];
+		} else if (!isInTour(players[1])) {
+			entrants[p2] = players[1];
+			delete entrants[p1];
+		}
+	}
+
+	// Command changeCount
+	function changeCount(source, data) {
+		if (self.phase != "entry") {
+			sendPM(source, "Can only change count during signups.");
+			return;
+		}
+
+		var count = parseInt(commandpart[1]);
+
+		if (isNaN(self.count) || count <= 2){
+			sendPM(source, "You must specify a tournament size of 3 or more.");
+			return;
+		}
+
+		if (count > memberCount()) {
+			sendPM(source, "There are more than that people registered");
+			return;
+		}
+
+		self.count = count;
+
+		broadcast("");
+		broadcast(border);
+		broadcast("~~Server~~: " + sys.name(source) + " changed the number of entrants to " + count + "!");
+
+		if (remainingEntrants() == 0) {
+			startTournament();
+		}
+	}
+
+	function endTour(source, data) {
+		if (self.running) {
+			broadcast("");
+			broadcast(border);
+			broadcast("~~Server~~: The tournament was cancelled by " + sys.name(source) + "!");
+			broadcast(border);
+			broadcast("");
+			
+		} else {
+			sendPM(source, "Sorry, you are unable to end a tournament because one is not currently running.");
+		}
+	}
+
 	function startTournament() {
 		self.phase = "playing";
 
@@ -141,6 +316,17 @@ function Tournament(channel, globalObject)
 
 	function casedName(name) {
 		return entrants[name];
+	}
+
+        function padd(name) {
+		var ret = name;
+		while (ret.length < 20) ret = ' ' + ret;
+		return ret;
+	}
+
+	function setBattleStarted(name, started) {
+		if (started === undefined) started = true;
+		battlesStarted[Math.floor(battlers.indexOf(name.toLowerCase())/2)] = started;
 	}
 
 	function roundPairing() {
@@ -210,9 +396,9 @@ function Tournament(channel, globalObject)
 			members.splice(x1,1);
 
 			if (!finals)
-				broadcast(i + "." + this.padd(name1) + " VS " + name2);
+				broadcast(i + "." + padd(name1) + " VS " + name2);
 			else {
-				wall ("  " + this.padd(name1) + " VS " + name2);
+				wall ("  " + padd(name1) + " VS " + name2);
 			}
 		}
 
@@ -226,6 +412,82 @@ function Tournament(channel, globalObject)
 		f(border);
 		f("");
 	}
+
+	// event battleEnd
+	function battleEnd(source, dest, desc) {
+		var winner = sys.name(source), loser = sys.name(dest);
+		if (!areOpponents(winner, loser) || !isBattling(winner)) {
+			return;
+		}
+		// TODO
+	}
+
+	this.commands = {
+		join: join,
+		unjoin: unjoin
+	}
+	this.authCommands = {
+		tour: start,
+		dq: dq,
+		push: push,
+		cancelbattle: cancelBattle,
+		sub: sub,
+		changecount: changeCount,
+		endtour: endTour
+	}
+
+	this.events = {
+		afterBattleEnded: battleEnd;
+	}
 }
 
-module.exports = Tournament;
+module.tournaments = {}
+
+module.exports = {
+	init: function() {
+		var tourchannel, channelname = "Tournaments";
+		if (sys.channelExist(channelname) {
+			tourchannel = sys.channelId(channelname);
+		} else {
+			tourchannel = sys.createChannel(channelname);
+		}
+		var tournament = Tournament(tourchannel, script);
+		tournament.main = true;
+		module.tournaments[tourchannel] = tournament;
+	},
+
+	handleCommand: function(source, message, channel) {
+		if (module.tournaments[channel] !== undefined) {
+        		var command;
+        		var commandData = "";
+        		var pos = message.indexOf(' ');
+			if (pos != -1) {
+				command = message.substring(0, pos).toLowerCase();
+				commandData = message.substr(pos+1);
+			} else {
+				command = message.substr(0).toLowerCase();
+			}
+
+			if (command in module.tournaments[channel].commands) {
+				module.tournaments[channel].commands[command](source, commandData);
+			} else if (command in module.tournaments[channel].authCommands) {
+				if (sys.auth(source) == 0 && !SESSION.users(source).megauser) {
+					sys.sendMessage(source, "Sorry, you do not have access to this command.");
+					return;
+				}
+				module.tournaments[channel].authCommands[command](source, commandData);
+			}
+			return true;
+		}
+		return false;
+	},
+
+	afterBattleEnded : function(source, dest, desc) {
+		if (desc == "tie")
+			return;
+		for (channel in module.tournaments) {
+			module.tournaments[channel].events.afterBattleEnded(source, dest, desc);
+		}
+	}
+
+}
