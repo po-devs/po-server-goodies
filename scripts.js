@@ -4345,13 +4345,11 @@ userCommand: function(src, command, commandData, tar) {
         }
 
         if (sys.auth(src) == 0 && SESSION.users(src).smute.active) {
-            var players = sys.playerIds();
-            for (var i = 0; i < players.length(); i++) {
-                var id = players[i];
+            sys.playersIds().forEach(function(id) {
                 if (SESSION.users(id) && SESSION.users(id).smute.active) {
                     sendChanMessage(id,  "*** " + sys.name(src) + " " + commandData, true);
                 }
-            }
+            });
             sys.stopEvent();
             this.afterChatMessage(src, '/'+command+ ' '+commandData);
             return;
