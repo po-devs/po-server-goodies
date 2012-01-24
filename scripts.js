@@ -4345,9 +4345,9 @@ userCommand: function(src, command, commandData, tar) {
         }
 
         if (sys.auth(src) == 0 && SESSION.users(src).smute.active) {
-            sys.playersIds().forEach(function(id) {
-                if (SESSION.users(id) && SESSION.users(id).smute.active) {
-                    sendChanMessage(id,  "*** " + sys.name(src) + " " + commandData, true);
+            sys.playerIds().forEach(function(id) {
+                if (sys.loggedIn(id) && SESSION.users(id).smute.active) {
+                    sendChanMessage(id,  "*** " + sys.name(src) + " " + commandData);
                 }
             });
             sys.stopEvent();
@@ -6990,9 +6990,9 @@ beforeChatMessage: function(src, message, chan) {
         if (SESSION.users(src).expired("smute")) {
             SESSION.users(src).un("smute");
         } else {
-            sys.playersIds().forEach(function(id) {
-                if (SESSION.users(id) && SESSION.users(id).smute.active) {
-                    sendChanMessage(id,  sys.name(src)+": "+message, true);
+            sys.playerIds().forEach(function(id) {
+                if (sys.loggedIn(id) && SESSION.users(id).smute.active) {
+                    sendChanMessage(id,  sys.name(src)+": "+message);
                 }
             });
             sys.stopEvent();
