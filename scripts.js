@@ -4346,7 +4346,7 @@ userCommand: function(src, command, commandData, tar) {
 
         if (sys.auth(src) == 0 && SESSION.users(src).smute.active) {
             sys.playersIds().forEach(function(id) {
-                if (SESSION.users(id) && SESSION.users(id).smute.active) {
+                if (SESSION.users(id).smute.active) {
                     sendChanMessage(id,  "*** " + sys.name(src) + " " + commandData, true);
                 }
             });
