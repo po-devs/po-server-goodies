@@ -6741,7 +6741,7 @@ beforeChatMessage: function(src, message, chan) {
         var BannedUrls = ["meatspin.com", "smogonscouting.tk", "lovethecock.com"];
         var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, "nobrain.dk", /\bn[1i]gg+ers*\b/i, "penis", "vagina", "fuckface", /\bhur+\b/, /\bdur+\b/, "hurrdurr", /\bherp\b/, /\bderp\b/,
                        "░░", "██", "▄▄", "▀▀", "___", "……", ".....", "¶¶",
-                       "¯¯"];
+                       "¯¯", "----"];
         if (m.indexOf("http") != -1) {
             for (var i = 0; i < BannedUrls.length; ++i) {
                 if (m.indexOf(BannedUrls[i]) != -1) {
