@@ -1998,6 +1998,7 @@ mafiabot.sendAll("Importing old themes", mafiachan)
                 // Count the number of games a mafia player has played.
                 if (playerMafiaJoins[name] === undefined) {
                     playerMafiaJoins[name] = 1;
+                    sys.sendAll("±Mafia: New player " + name + " joined mafia.", sachannel);
                 } else {
                     playerMafiaJoins[name]++;
                 }
