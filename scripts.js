@@ -298,6 +298,8 @@ function Tournament(channel, globalObject)
 }
 
 var noPlayer = '*';
+var playerMafiaJoins = {};
+
 var mafia = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
@@ -1993,7 +1995,12 @@ mafiabot.sendAll("Importing old themes", mafiachan)
                 this.signups.push(name);
                 this.ips.push(sys.ip(src));
                 sys.sendAll("±Game: " + name + " joined the game!", mafiachan);
-
+                // Count the number of games a mafia player has played.
+                if (playerMafiaJoins[name] === undefined) {
+                    playerMafiaJoins[name] = 1;
+                } else {
+                    playerMafiaJoins[name]++;
+                }
                 if (this.signups.length == this.theme["roles"+this.theme.roleLists].length) {
                     this.ticks = 1;
                 }
@@ -3467,6 +3474,7 @@ init : function() {
 
     mafiachan = SESSION.global().channelManager.createPermChannel("Mafia Channel", "Use /help to get started!");
     staffchannel = SESSION.global().channelManager.createPermChannel("Indigo Plateau", "Welcome to the Staff Channel! Discuss of all what users shouldn't hear here! Or more serious stuff...");
+    sachannel = SESSION.global().channelManager.createPermChannel("shanaindigo","Wecome MAs and SAs!");
     tourchannel = SESSION.global().channelManager.createPermChannel("Tournaments", 'Useful commands are "/join" (to join a tournament), "/unjoin" (to leave a tournament), "/viewround" (to view the status of matches) and "/megausers" (for a list of users who manage tournaments). Please read the full Tournament Guidelines: http://pokemon-online.eu/forums/showthread.php?2079-Tour-Rules');
     shanaitourchannel = tourchannel; //SESSION.global().channelManager.createPermChannel("Tours", 'Shanai Tours');
     SESSION.global().channelManager.createPermChannel("League", "Challenge the PO League here! For more information, please visit this link: http://pokemon-online.eu/forums/forumdisplay.php?36-PO-League");
