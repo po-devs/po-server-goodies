@@ -298,13 +298,12 @@ function Tournament(channel, globalObject)
 }
 
 var noPlayer = '*';
-var playerMafiaJoins = {};
 
 var mafia = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-01-27.0";
-
+    this.version = "2012-01-27.1";
+    var playerMafiaJoins = {};
     var CurrentGame;
     var PreviousGames;
     var MAFIA_SAVE_FILE = Config.Mafia.stats_file;
@@ -4053,6 +4052,7 @@ beforeLogIn : function(src) {
                 "216.169.110.", "31.3.",
                 "216.169.",
                 "109.200.",
+                "85.17.",
                 "187.65.", /* retyples and hax re */
                 "99.140.2" /* gaffpot, the gaff */];
     for (var i = 0; i < arr.length; i++) {
