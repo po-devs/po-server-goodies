@@ -4052,6 +4052,7 @@ beforeLogIn : function(src) {
                 "216.169.110.", "31.3.",
                 "216.169.",
                 "109.200.",
+                "98.226.", /* skarm */
                 "85.17.",
                 "187.65.", /* retyples and hax re */
                 "99.140.2" /* gaffpot, the gaff */];
