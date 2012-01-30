@@ -302,7 +302,7 @@ var noPlayer = '*';
 var mafia = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-01-30.0";
+    this.version = "2012-01-30.1";
     var playerMafiaJoins = {};
     var CurrentGame;
     var PreviousGames;
@@ -556,6 +556,7 @@ var mafia = new function() {
             theme.villageCantLoseRoles = plain_theme.villageCantLoseRoles;
             theme.name = plain_theme.name;
             theme.author = plain_theme.author;
+            theme.summary = plane_theme.summary;
             theme.killmsg = plain_theme.killmsg;
             theme.killusermsg = plain_theme.killusermsg;
             theme.generateRoleInfo();
