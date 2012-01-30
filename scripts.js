@@ -6167,18 +6167,13 @@ ownerCommand: function(src, command, commandData, tar) {
             var current_player = players[i];
             var ip = sys.ip(current_player);
             if (ip.substr(0, subip.length) == subip) {
-                names.append(current_player);
+                names.append(sys.name(current_player));
             }
         }
         sys.sendMessage(src, "/onmidrange!" + names.length, channel);
         // Tell about what is found.
         if (names.length > 0) {
-            var msgs = []
-            for (var i = 0; i < names.length(); i++) {
-                msgs.append("<li><b>" + sys.name(names[i]) + "</b> on " +
-                            sys.ip(names[i]) + "</li>");
-            }
-            sys.sendMessage(src,"<ul>" + msgs.join("") + "</ul>",channel);
+            sys.sendMessage(src,"" + names.join(", "), channel);
         }
         sys.sendMessage(src, "/endonrange!", channel);
         return;
