@@ -6167,7 +6167,7 @@ ownerCommand: function(src, command, commandData, tar) {
             var current_player = players[i];
             var ip = sys.ip(current_player);
             if (ip.substr(0, subip.length) == subip) {
-                names.append(sys.name(current_player));
+                names.push(sys.name(current_player));
             }
         }
         sys.sendMessage(src, "/onmidrange!" + names.length, channel);
