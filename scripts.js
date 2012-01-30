@@ -6179,6 +6179,8 @@ ownerCommand: function(src, command, commandData, tar) {
                 msgs.push(sys.name(names[i]) + " (" + sys.ip(names[i]) + ")");
             }
             sys.sendMessage(src,"Players: on range " + subip + " are: " + msgs.join(", "), channel);
+        } else {
+            sys.sendMessage(src,"Players: Nothing interesting here!",channel);
         }
         return;
     }
