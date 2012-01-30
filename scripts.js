@@ -5961,6 +5961,7 @@ adminCommand: function(src, command, commandData, tar) {
             }
         }
 
+        normalbot.sendAll("Target: " + commandData + ", IP: " + ip, staffchannel);
         sys.sendHtmlAll('<b><font color=red>' + commandData + ' was banned by ' + nonFlashing(sys.name(src)) + '!</font></b>');
         sys.ban(commandData);
         this.kickAll(ip);
