@@ -6173,7 +6173,7 @@ ownerCommand: function(src, command, commandData, tar) {
             for (var i = 0; i < names.length; i++) {
                 msgs.push(sys.name(names[i]) + " (" + sys.ip(names[i]) + ")");
             }
-            sys.sendMessage(src,"Players: on range " + subip + "are: " + msgs.join(", "), channel);
+            sys.sendMessage(src,"Players: on range " + subip + " are: " + msgs.join(", "), channel);
         }
         return;
     }
