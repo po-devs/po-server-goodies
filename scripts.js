@@ -4057,7 +4057,8 @@ beforeLogIn : function(src) {
                 "187.65.", /* retyples and hax re */
                 "99.140.2" /* gaffpot, the gaff */];
     for (var i = 0; i < arr.length; i++) {
-        if (ip.substr(0, arr[i].length) == arr[i]) {
+        if (ip.substr(0, arr[i].length) == arr[i] &&
+            sys.dbRegistered(sys.name(src))) {
             sys.sendAll("Potential ban evader: " + sys.name(src) + " on IP: " + ip, staffchannel);
         }
     }
