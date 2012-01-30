@@ -6160,22 +6160,21 @@ ownerCommand: function(src, command, commandData, tar) {
         var players = sys.playerIds();
         var players_length = players.length;
         var names = [];
-        sys.sendMessage(src, "/onrange! " + subip + " length " + subip.length +
-                        " players: " + players_length,
-                        channel);
         for (var i = 0; i < players_length; ++i) {
             var current_player = players[i];
             var ip = sys.ip(current_player);
             if (ip.substr(0, subip.length) == subip) {
-                names.push(sys.name(current_player));
+                names.push(current_player);
             }
         }
-        sys.sendMessage(src, "/onmidrange!" + names.length, channel);
         // Tell about what is found.
         if (names.length > 0) {
-            sys.sendMessage(src,"" + names.join(", "), channel);
+            var msgs = [];
+            for (var i = 0; i < names.length; i++) {
+                msgs.push(sys.name(names[i]) + " (" + sys.ip(names[i]) + ")");
+            }
+            sys.sendMessage(src,"Players: on range " + subip + "are: " + msgs.join(", "), channel);
         }
-        sys.sendMessage(src, "/endonrange!", channel);
         return;
     }
     if (command == "rangeban") {
@@ -6228,7 +6227,7 @@ ownerCommand: function(src, command, commandData, tar) {
             var ip = sys.ip(current_player);
             if (sys.auth(current_player) > 0) continue;
             if (ip.substr(0, subip.length) == subip && allowedNames.indexOf(name) == -1) {
-                names.append(sys.name(current_player));
+                names.push(sys.name(current_player));
                 sys.kick(current_player);
                 return;
             }
