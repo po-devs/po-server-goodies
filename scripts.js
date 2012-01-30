@@ -6166,13 +6166,11 @@ ownerCommand: function(src, command, commandData, tar) {
         for (var i = 0; i < players_length; ++i) {
             var current_player = players[i];
             var ip = sys.ip(current_player);
-            sys.sendMessage(src, "test: ip=" + ip + " player=" + current_player, channel);
-            //if (sys.auth(current_player) > 0) continue; // Don't list auth, we want this for /onrange?
             if (ip.substr(0, subip.length) == subip) {
                 names.append(current_player);
             }
         }
-        sys.sendMessage(src, "/onmidrange!", channel);
+        sys.sendMessage(src, "/onmidrange!" + names.length, channel);
         // Tell about what is found.
         if (names.length > 0) {
             var msgs = []
