@@ -6157,7 +6157,7 @@ ownerCommand: function(src, command, commandData, tar) {
     }
     if (command == "onrange") {
         var subip = commandData;
-
+        sys.sendMessage(src, "/onrange!", channel);
         var players = sys.playerIds();
         var players_length = players.length;
         var names = [];
@@ -6178,8 +6178,9 @@ ownerCommand: function(src, command, commandData, tar) {
                 msgs.append("<li><b>" + sys.name(names[i]) + "</b> on " +
                             sys.ip(names[i]) + "</li>");
             }
-            sys.sendMessage(src,"<ul>" + names.join("") + "</ul>",channel);
+            sys.sendMessage(src,"<ul>" + msgs.join("") + "</ul>",channel);
         }
+        sys.sendMessage(src, "/endonrange!", channel);
         return;
     }
     if (command == "rangeban") {
