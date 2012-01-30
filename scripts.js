@@ -302,7 +302,7 @@ var noPlayer = '*';
 var mafia = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-01-27.1";
+    this.version = "2012-01-30.0";
     var playerMafiaJoins = {};
     var CurrentGame;
     var PreviousGames;
@@ -928,6 +928,11 @@ var mafia = new function() {
         sys.sendAll("*** ************************************************************************************", mafiachan);
         sys.sendAll("", mafiachan);
 
+        if(mafia.theme.summary === undefined) {
+            sys.sendAll("±Game: Consider adding a summary field to this theme that describes the setting of the game and points out the odd quirks of the theme!",mafiachan);
+        } else {
+            sys.sendAll("±Game: " + mafia.theme.name,mafiachan);
+        }
         //if (sys.playersOfChannel(mafiachan).length < 25) {
             var time = parseInt(sys.time());
             if (time > mafia.lastAdvertise + 60*15) {
