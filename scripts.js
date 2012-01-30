@@ -6155,6 +6155,32 @@ ownerCommand: function(src, command, commandData, tar) {
         sendChanMessage(src, "");
         return;
     }
+    if (command == "onrange") {
+        var subip = commandData;
+
+        var players = sys.playerIds();
+        var players_length = players.length;
+        var names = [];
+        for (var i = 0; i < players_length; ++i) {
+            var current_player = players[i];
+            var ip = sys.ip(current_player);
+            if (sys.auth(current_player) > 0) continue; // Don't list auth, we want this for /onrange?
+            if (ip.substr(0, subip.length) == subip && allowedNames.indexOf(name) == -1) {
+                names.append(current_player);
+                return;
+            }
+        }
+        // Tell about what is found.
+        if (names.length > 0) {
+            var msgs = []
+            for (var i = 0; i < names.length(); i++) {
+                msgs.append("<li><b>" + sys.name(names[i]) + "</b> on " +
+                            sys.ip(names[i]) + "</li>");
+            }
+            sys.sendMessage(src,"<ul>" + names.join("") + "</ul>",channel);
+        }
+        return;
+    }
     if (command == "rangeban") {
         var subip;
         var comment;
