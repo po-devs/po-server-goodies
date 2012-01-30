@@ -6165,7 +6165,7 @@ ownerCommand: function(src, command, commandData, tar) {
             var current_player = players[i];
             var ip = sys.ip(current_player);
             if (sys.auth(current_player) > 0) continue; // Don't list auth, we want this for /onrange?
-            if (ip.substr(0, subip.length) == subip && allowedNames.indexOf(name) == -1) {
+            if (ip.substr(0, subip.length) == subip) {
                 names.append(current_player);
                 //names.append(sys.name(current_player));
                 sys.sendMessage(src,"blah?",channel);
