@@ -6157,10 +6157,10 @@ ownerCommand: function(src, command, commandData, tar) {
     }
     if (command == "onrange") {
         var subip = commandData;
-        sys.sendMessage(src, "/onrange!", channel);
         var players = sys.playerIds();
         var players_length = players.length;
         var names = [];
+        sys.sendMessage(src, "/onrange!", channel);
         for (var i = 0; i < players_length; ++i) {
             var current_player = players[i];
             var ip = sys.ip(current_player);
@@ -6171,6 +6171,7 @@ ownerCommand: function(src, command, commandData, tar) {
                 return;
             }
         }
+        sys.sendMessage(src, "/onmidrange!", channel);
         // Tell about what is found.
         if (names.length > 0) {
             var msgs = []
