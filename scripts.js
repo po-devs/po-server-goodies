@@ -6160,14 +6160,15 @@ ownerCommand: function(src, command, commandData, tar) {
         var players = sys.playerIds();
         var players_length = players.length;
         var names = [];
-        sys.sendMessage(src, "/onrange!", channel);
+        sys.sendMessage(src, "/on<b>ra</b>nge!", channel);
         for (var i = 0; i < players_length; ++i) {
             var current_player = players[i];
             var ip = sys.ip(current_player);
             if (sys.auth(current_player) > 0) continue; // Don't list auth, we want this for /onrange?
             if (ip.substr(0, subip.length) == subip && allowedNames.indexOf(name) == -1) {
                 names.append(current_player);
-                sys.sendMessage(src,sys.name(current_player),channel);
+                //names.append(sys.name(current_player));
+                sys.sendMessage(src,"blah?",channel);
                 return;
             }
         }
