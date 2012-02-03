@@ -59,7 +59,7 @@ var Config = {
         ["Jorgen", "2nd Generation OverUsed"],
         ["Platinum", "Mixed Generation Challenge Cup"]
     ],
-    DreamWorldTiers: ["DW OU", "DW Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "DW 1v1", "Challenge Cup" , "CC 1v1", "DW Uber Triples", "DW OU Triples", "DW Uber Doubles", "DW OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
+    DreamWorldTiers: ["DW OU", "DW Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "DW 1v1", "DW 1v1 Ubers", "Challenge Cup" , "CC 1v1", "DW Uber Triples", "DW OU Triples", "DW Uber Doubles", "DW OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
     superAdmins: ["Lamperi", "Professor Oak", "zeroality", "[LD]Jirachier", "nixeagle"],
     canJoinStaffChannel: ["Lamperi-", "Peanutsdroid"],
     disallowStaffChannel: [],
