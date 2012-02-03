@@ -7136,7 +7136,7 @@ afterChatMessage : function(src, message, chan)
     }
 
 
-    var linecount = sys.auth(src) == 0 ? 7 : 21;
+    var linecount = sys.auth(src) == 0 ? 9 : 21;
     if (!poChannel.ignoreflood && sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1) {
         user.floodcount += 1;
         var time = parseInt(sys.time());
