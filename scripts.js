@@ -3781,7 +3781,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
                 var authname = sys.name(src).toLowerCase();
                 authStats[authname] =  authStats[authname] || {};
                 authStats[authname]["latest" + type] = [commandData, parseInt(sys.time())];
-                if (mafia.isInGame(mafia.correctCase(commandData))) {
+                if (mafia.isInGame(mafia.correctCase(commandData)) && verb != "smute") {
                     mafia.slayUser(src, commandData);
                 }
                 return;
