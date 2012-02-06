@@ -6995,6 +6995,8 @@ beforeChatMessage: function(src, message, chan) {
         if(sys.existChannel(ignorechan) && channel == sys.channelId(ignorechan)) {
             watch_msg = false;
             watch_chan = ignorechan;
+            sys.sendAll("oh hi!", sys.channelId("Elm's Lab"));
+            break;
         }
     }
     if (watch_msg && sys.existChannel("Elm's Lab")) {
