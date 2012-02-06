@@ -59,7 +59,7 @@ var Config = {
         ["Jorgen", "2nd Generation OverUsed"],
         ["Platinum", "Mixed Generation Challenge Cup"]
     ],
-    DreamWorldTiers: ["DW OU", "DW Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "DW 1v1", "Challenge Cup" , "CC 1v1", "DW Uber Triples", "DW OU Triples", "DW Uber Doubles", "DW OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
+    DreamWorldTiers: ["DW OU", "DW Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "DW 1v1", "DW 1v1 Ubers", "Challenge Cup" , "CC 1v1", "DW Uber Triples", "DW OU Triples", "DW Uber Doubles", "DW OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
     superAdmins: ["Lamperi", "Professor Oak", "zeroality", "[LD]Jirachier", "nixeagle"],
     canJoinStaffChannel: ["Lamperi-", "Peanutsdroid"],
     disallowStaffChannel: [],
@@ -302,7 +302,7 @@ var noPlayer = '*';
 var mafia = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-01-30.3";
+    this.version = "2012-02-04.0";
     var playerMafiaJoins = {};
     var CurrentGame;
     var PreviousGames;
@@ -1971,7 +1971,7 @@ mafiabot.sendAll("Importing old themes", mafiachan)
                     sys.sendMessage(src, "±Game: This IP is already in list. You cannot register two times!", mafiachan);
                     return;
                 }
-                if (sys.ratedBattles(src) == 0 ||
+                if ((sys.auth(src) == 0) && sys.ratedBattles(src) == 0 ||
                     (sys.ranking(src) <= 1000 && sys.ratedBattles(src) < 5) ||
                     SESSION.users(src).smute.active) {
                     sys.sendMessage(src, "±Game: You need to ladder before playing mafia!", mafiachan);
@@ -3781,7 +3781,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
                 var authname = sys.name(src).toLowerCase();
                 authStats[authname] =  authStats[authname] || {};
                 authStats[authname]["latest" + type] = [commandData, parseInt(sys.time())];
-                if (mafia.isInGame(mafia.correctCase(commandData))) {
+                if (mafia.isInGame(mafia.correctCase(commandData)) && verb != "smute") {
                     mafia.slayUser(src, commandData);
                 }
                 return;
