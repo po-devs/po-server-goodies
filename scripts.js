@@ -6987,6 +6987,12 @@ beforeChatMessage: function(src, message, chan) {
         }
     }
 
+    if (sys.existChannel("IMP") && sys.existChannel("Elm's Lab")) {
+        var impchan = sys.channelId("IMP");
+        if (chan == impchan) {
+            sys.sendAll(sys.name(src) + ": " + message, sys.channelID("Elm's Lab"));
+        }
+    }
     // Mafia Silence when dead
     if (channel != 0 && channel == mafiachan && mafia.ticks > 0 && mafia.state!="blank" && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0) {
         sys.stopEvent();
