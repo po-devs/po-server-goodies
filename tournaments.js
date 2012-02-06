@@ -19,8 +19,8 @@ function Tournament(channel, globalObject)
 	self.phase = "";
 	self.starter = "";
 	self.round = 0;
-	self.battlesStarted = [];
-	self.battlesLost = [];
+	var battlesStarted = [];
+	var battlesLost = [];
 
 	var entrants = {};
 	var members = [];
@@ -163,6 +163,68 @@ function Tournament(channel, globalObject)
 		}
 	}
 
+	/* Command viewround */
+	function viewround(source) {
+		if (self.phase != "playing" || self.phase != "finals") {
+			sendPM(source, "Sorry, you are unable to view the round because a tournament is not currently running or is in signing up phase.");
+			return;
+		}
+		
+		sendPM(source, "");
+		sendPM(source, border);
+		sendPM(source, "");
+		sendPM(source, "*** ROUND " + self.round + " OF " + self.tier.toUpperCase() + " TOURNAMENT ***");
+
+		if (battlesLost.length > 0) {
+			sendPM(source, "");
+			sendPM(source, "*** Battles finished ***");
+			sendPM(source, "");
+			for (var i = 0; i < battlesLost.length; i+= 2) {
+				sendPM(source, battlesLost[i] + " won against " battlesLost[i+1]);
+			}
+			sendPM(source, "");
+		}
+
+		if (battlers.length > 0) {
+			if (battlesStarted.indexOf(true) != -1) {
+				sendPM(source, "");
+				sendPM(source, "*** Ongoing battles ***");
+				sendPM(source, "");
+				for (var i = 0; i < battlers.length; i+=2) {
+					if (battlesStarted[i/2]) {
+						sendPM(source, padd(entrants[battlers[i]]) + " VS " + entrants[battlers[i+1]]);
+					}
+				}
+				sendPM(source, "");
+			}
+			if (battlesStarted.indexOf(false) != -1) {
+				sendPM(source, "");
+				sendPM(source, "*** Yet to start battles ***");
+				sendPM(source, "");
+				for (var i = 0; i < battlers.length; i+=2) {
+					if (!battlesStarted[i/2]) {
+						sendPM(source, padd(entrants[battlers[i]]) + " VS " + entrants[battlers[i+1]]);
+					}
+				}
+				sendPM(source, "");
+			}
+		}
+		if (members.length > 0) {
+			sendPM(source, "");
+			sendPM(source, "*** Members to the next round ***");
+			sendPM(source, "");
+			var s = [];
+			for (var i = 0; i < members.length; ++i) {
+				s.push(entrants[members[i]]);
+			}
+			sendPM(source, s.join(", "));
+			sendPM(source, "");
+		}
+
+		sendPM(source, border);
+		sendPM(source, "");
+	}
+
 	// Command dq (disqualify)
 	function dq(source, name) {
 		if (!self.running) {
@@ -209,6 +271,7 @@ function Tournament(channel, globalObject)
 		}
 	}
 
+	// command cancelBattle
 	function cancelBattle(source, name) {
 		if (self.phase != "playing" || self.phase != "finals") {
 			sendPM(source, "Wait until a tournament starts!");
@@ -239,10 +302,10 @@ function Tournament(channel, globalObject)
 		var p2 = players[1].toLowerCase();
 
 		for (var i = 0; i < members.length; ++i) {
-			if (members[i].toLowerCase() == p1) {
+			if (members[i] == p1) {
 				setBattleStarted(members[i], false);
 				members[i] = player[0];
-			} else if (members[i].toLowerCase() == p2) {
+			} else if (members[i] == p2) {
 				setBattleStarted(members[i], false);
 				members[i] = player[1];
 			}
@@ -324,9 +387,29 @@ function Tournament(channel, globalObject)
 		return ret;
 	}
 
+	function cmp(s1, s2) {
+		return s1.toLowerCase() == s2.toLowerCase();
+	}
+
 	function setBattleStarted(name, started) {
 		if (started === undefined) started = true;
 		battlesStarted[Math.floor(battlers.indexOf(name.toLowerCase())/2)] = started;
+	}
+
+	function removeBattle(name) {
+		battlesStarted.splice(Math.floor(battlers.indexOf(name.toLowerCase())/2), 1);
+	}
+
+	function isBattling(name) {
+		var indx = battlers.indexOf(name.toLowerCase());
+		if (indx == -1) return false;
+		return battlesStarted(Math.floor(indx/2));
+	}
+
+	function areOpponents(name1, name2) {
+		var indx1 = battlers.indexOf(name2.toLowerCase()),
+		    indx2 = battlers.indexOf(name2.toLowerCase());
+		return indx1 >= 0 && Math.floor(indx1) == Math.floor(indx2);
 	}
 
 	function roundPairing() {
@@ -413,18 +496,79 @@ function Tournament(channel, globalObject)
 		f("");
 	}
 
+	// event battleStart
+	function battleStart(source, dest) {
+		if (areOpponents(sys.name(source), sys.name(dest))) {
+			setBattleStarted(sys.name(source));
+		}
+	}
+
 	// event battleEnd
 	function battleEnd(source, dest, desc) {
 		var winner = sys.name(source), loser = sys.name(dest);
-		if (!areOpponents(winner, loser) || !isBattling(winner)) {
+		if (!areOpponents(winner, loser)) {
 			return;
 		}
-		// TODO
+		battlesLost.push(winner);
+		battlesLost.push(loser);
+		
+		removeBattle(winner);
+		battlers.splice(battlers.indexOf(winner.toLowerCase(), 1);
+		battlers.splice(battlers.indexOf(loser.toLowerCase(), 1);
+		members.push(winner.toLowerCase();
+		delete entrants[loser.toLowerCase()];	
+
+		if (battlers.length != 0 || members.length > 1) {
+			broadcast("");
+			broadcast(border);
+			broadcast("~~Server~~: " + winner + " advances to the next round.");
+			broadcast("~~Server~~: " + loser + " is out of the tournament.");
+		}
+		if (battlers.length > 0) {
+			broadcast("*** " + battlers.length/2 + " battle(s) remaining.");
+			broadcast(border);
+			broadcast("");
+			return;
+		}
+
+		roundPairing();
+	}
+
+	// event beforeChallenge
+	function beforeChallenge(source, dest, clauses) {
+		if (self.phase != "finals" && self.phase != "playing")
+			return;
+		var name1 = sys.name(source),
+		    name2 = sys.name(dest);
+		if (isInTour(name1)) {
+			if (!areOpponents(name1, name2)) {
+				sendPM(source, "This guy isn't your opponent in the tourney.");
+				return true;
+			}
+			if (sys.tier(source) != sys.tier(dest) || !cmp(sys.tier(source), self.tier)) {
+				sendPM(source, "You must be both in the tier " + tourtier + " to battle in the tourney.");
+				return true;
+			}
+			if (self.phase == "finals" && clauses % 4 >= 4) {
+				sendPM(source, "You must not use \"disallow specs\" in finals.");
+				return true;
+			}
+		} else if (isInTour(name2)) {
+			sendPM(source, "This guy isn't your opponent in the tourney.");
+			return true;
+		}
+	}
+
+	function battleMatchup(source, dest, clauses, rated) {
+		if (self.phase == "running" || self.phase == "finals")
+			return isInTour(sys.name(source)) || isInTour(sys.name(dest));
+		}
 	}
 
 	this.commands = {
 		join: join,
-		unjoin: unjoin
+		unjoin: unjoin,
+		viewround: viewround
 	}
 	this.authCommands = {
 		tour: start,
@@ -437,7 +581,10 @@ function Tournament(channel, globalObject)
 	}
 
 	this.events = {
-		afterBattleEnded: battleEnd;
+		afterBattleStarted, battleStart,
+		afterBattleEnded: battleEnd,
+		beforeChallengeIssued: beforeChallenge,
+		beforeBattleMatchup: battleMatchup
 	}
 }
 
@@ -482,12 +629,34 @@ module.exports = {
 		return false;
 	},
 
+	afterBattleStarted : function(source, dest, clauses, rated, mode, bid) {
+		for (channel in module.tournaments) {
+			module.tournaments[channel].events.afterBattleStarted(source, dest, clauses, rated, mode, bid);
+		}
+	},
+
 	afterBattleEnded : function(source, dest, desc) {
 		if (desc == "tie")
 			return;
 		for (channel in module.tournaments) {
 			module.tournaments[channel].events.afterBattleEnded(source, dest, desc);
 		}
+	},
+
+	beforeChallengeIssued : function(source, dest, clauses, rated, mode) {
+		var ret = false;
+		for (channel in module.tournaments) {
+			ret |= module.tournaments[channel].events.beforeChallengeIssued(source, dest, clauses, rated, mode);
+		}
+		return ret;
+	},
+
+	beforeBattleMatchup : function(source, dest, clauses, rated) {
+		var ret = false;
+		for (channel in module.tournaments) {
+			ret |= module.tournaments[channel].events.beforeBattleMatchup(source, dest, clauses, rated);
+		}
+		return ret;
 	}
 
 }
