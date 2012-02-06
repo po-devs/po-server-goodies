@@ -70,8 +70,8 @@ function Tournament(channel, globalObject)
 
 		var tiers = sys.getTierList();
 		var found = false;
-		for (var i = 0; < tiers.length; ++i) {
-			if (tiers[i].toLowerCase() == commandpart[0].toLowerCase())) {
+		for (var i = 0; i < tiers.length; ++i) {
+			if (cmp(tiers[i], commandpart[0])) {
 				self.tier = tiers[i];
 				found = true;
 				break;
@@ -180,7 +180,7 @@ function Tournament(channel, globalObject)
 			sendPM(source, "*** Battles finished ***");
 			sendPM(source, "");
 			for (var i = 0; i < battlesLost.length; i+= 2) {
-				sendPM(source, battlesLost[i] + " won against " battlesLost[i+1]);
+				sendPM(source, battlesLost[i] + " won against " + battlesLost[i+1]);
 			}
 			sendPM(source, "");
 		}
@@ -261,9 +261,9 @@ function Tournament(channel, globalObject)
 
 		addEntrant(name);
 		if (self.phase == "playing") {
-			broadcast(name + "was added to the tournament by " + sys.name(source) + ".",);
+			broadcast(name + "was added to the tournament by " + sys.name(source) + ".");
 		} else if (self.phase == "entry") {
-			broadcast(name + "was added to the tournament by " + sys.name(source) + ". " + remainingEntrants() + " more spot(s) left!",);
+			broadcast(name + "was added to the tournament by " + sys.name(source) + ". " + remainingEntrants() + " more spot(s) left!");
 
 			if (remainingEntrants() == 0) {
 				startTournament();
@@ -513,9 +513,9 @@ function Tournament(channel, globalObject)
 		battlesLost.push(loser);
 		
 		removeBattle(winner);
-		battlers.splice(battlers.indexOf(winner.toLowerCase(), 1);
-		battlers.splice(battlers.indexOf(loser.toLowerCase(), 1);
-		members.push(winner.toLowerCase();
+		battlers.splice(battlers.indexOf(winner.toLowerCase(), 1));
+		battlers.splice(battlers.indexOf(loser.toLowerCase(), 1));
+		members.push(winner.toLowerCase());
 		delete entrants[loser.toLowerCase()];	
 
 		if (battlers.length != 0 || members.length > 1) {
@@ -559,10 +559,11 @@ function Tournament(channel, globalObject)
 		}
 	}
 
+	// event battleMatchup
 	function battleMatchup(source, dest, clauses, rated) {
-		if (self.phase == "running" || self.phase == "finals")
-			return isInTour(sys.name(source)) || isInTour(sys.name(dest));
-		}
+		// return true if one of the players is in tournament
+		return (self.phase == "running" || self.phase == "finals")
+			&& (isInTour(sys.name(source)) || isInTour(sys.name(dest)));
 	}
 
 	this.commands = {
@@ -581,7 +582,7 @@ function Tournament(channel, globalObject)
 	}
 
 	this.events = {
-		afterBattleStarted, battleStart,
+		afterBattleStarted: battleStart,
 		afterBattleEnded: battleEnd,
 		beforeChallengeIssued: beforeChallenge,
 		beforeBattleMatchup: battleMatchup
@@ -593,7 +594,7 @@ module.tournaments = {}
 module.exports = {
 	init: function() {
 		var tourchannel, channelname = "Tournaments";
-		if (sys.channelExist(channelname) {
+		if (sys.channelExist(channelname)) {
 			tourchannel = sys.channelId(channelname);
 		} else {
 			tourchannel = sys.createChannel(channelname);
