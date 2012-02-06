@@ -6989,8 +6989,8 @@ beforeChatMessage: function(src, message, chan) {
 
     if (sys.existChannel("IMP") && sys.existChannel("Elm's Lab")) {
         var impchan = sys.channelId("IMP");
-        if (chan == impchan) {
-            sys.sendAll("(#IMP) " + sys.name(src) + ": " + message, sys.channelID("Elm's Lab"));
+        if (channel == impchan) {
+            sys.sendAll("(#IMP) " + sys.name(src) + ": " + message, sys.channelId("Elm's Lab"));
         }
     }
     // Mafia Silence when dead
