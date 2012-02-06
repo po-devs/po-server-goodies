@@ -6989,7 +6989,7 @@ beforeChatMessage: function(src, message, chan) {
     {
         var ignorechans = ["Tohjo Falls", "Indigo Plateau", "Mafia Channel", "Tournaments", "League", "PO Wiki", "Trivia", "TrivReview", "Academy", "Oak's Lab", "winning", "Elm's Lab", "boring talk", "shanaindigo", "PO Stream", "Project NU", "Evolution Game", "Side Metagames"];
         var watch_msg = true;
-        var watch_chan = undefined;
+        var watch_chan = "undefined";
         for(var i = 0; i < ignorechans.length(); i++) {
             var ignorechan = ignorechans[i];
             if(sys.existChannel(ignorechan) && channel == sys.channelId(ignorechan)) {
