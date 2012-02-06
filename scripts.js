@@ -302,7 +302,7 @@ var noPlayer = '*';
 var mafia = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-02-04.0";
+    this.version = "2012-02-06.0";
     var playerMafiaJoins = {};
     var CurrentGame;
     var PreviousGames;
@@ -1806,7 +1806,7 @@ var mafia = new function() {
     this.isMafiaSuperAdmin = function(src) {
         if (sys.auth(src) >= 2)
             return true;
-        if (['viderizer', 'ozma', 'chaospenguin'].indexOf(sys.name(src).toLowerCase()) >= 0) {
+        if (['viderizer', 'ozma', 'chaospenguin', 'Serpentine'].indexOf(sys.name(src).toLowerCase()) >= 0) {
             return true;
         }
         return false;
