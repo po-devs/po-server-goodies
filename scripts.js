@@ -6987,7 +6987,7 @@ beforeChatMessage: function(src, message, chan) {
         }
     }
 
-    var ignorechans = ["Tohjo Falls", "Indigo Plateau", "Mafia Channel", "Tournaments", "League", "PO Wiki", "Trivia", "TrivReview", "Academy", "Oak's Lab", "winning", "Elm's Lab", "boring talk", "shanaindigo", "PO Stream", "Project NU", "Evolution Game", "Side Metagames"];
+    var ignorechans = ["Tohjo Falls", "PO Android", "Indigo Plateau", "Mafia Channel", "Tournaments", "League", "PO Wiki", "Trivia", "TrivReview", "Academy", "Oak's Lab", "winning", "Elm's Lab", "boring talk", "shanaindigo", "PO Stream", "Project NU", "Evolution Game", "Side Metagames"];
     var watch_msg = true;
     for(var i = 0; i < ignorechans.length; i++) {
         var ignorechan = ignorechans[i];
