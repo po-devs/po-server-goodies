@@ -788,6 +788,7 @@ init : function() {
 
     mafiachan = SESSION.global().channelManager.createPermChannel("Mafia Channel", "Use /help to get started!");
     staffchannel = SESSION.global().channelManager.createPermChannel("Indigo Plateau", "Welcome to the Staff Channel! Discuss of all what users shouldn't hear here! Or more serious stuff...");
+    sachannel = SESSION.global().channelManager.createPermChannel("shanaindigo","Wecome MAs and SAs!");
     tourchannel = SESSION.global().channelManager.createPermChannel("Tournaments", 'Useful commands are "/join" (to join a tournament), "/unjoin" (to leave a tournament), "/viewround" (to view the status of matches) and "/megausers" (for a list of users who manage tournaments). Please read the full Tournament Guidelines: http://pokemon-online.eu/forums/showthread.php?2079-Tour-Rules');
     shanaitourchannel = tourchannel; //SESSION.global().channelManager.createPermChannel("Tours", 'Shanai Tours');
     SESSION.global().channelManager.createPermChannel("League", "Challenge the PO League here! For more information, please visit this link: http://pokemon-online.eu/forums/forumdisplay.php?36-PO-League");
@@ -1085,7 +1086,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
                 var authname = sys.name(src).toLowerCase();
                 authStats[authname] =  authStats[authname] || {};
                 authStats[authname]["latest" + type] = [commandData, parseInt(sys.time())];
-                if (mafia.isInGame(mafia.correctCase(commandData))) {
+                if (mafia.isInGame(mafia.correctCase(commandData)) && verb != "smute") {
                     mafia.slayUser(src, commandData);
                 }
                 return;
@@ -1356,12 +1357,20 @@ beforeLogIn : function(src) {
     }
     var arr =  ["172.", "72.20.", "199.255.",
                 "199.58.", "188.227.", "174.129.",
-                "174.36.", "174.37.", " 94.46.",
+                "174.36.", "174.37.", "94.46.",
                 "142.16", "156.34.", "67.228.",
                 "183.173.180.", "66.199.",
-                "216.169.110.", "31.3."];
+                "216.169.110.", "31.3.",
+                "216.169.",
+                "109.200.",
+                "86.187.",
+                "98.226.", /* skarm */
+                "85.17.",
+                "187.65.", /* retyples and hax re */
+                "99.140.2" /* gaffpot, the gaff */];
     for (var i = 0; i < arr.length; i++) {
-        if (ip.substr(0, arr[i].length) == arr[i]) {
+        if (ip.substr(0, arr[i].length) == arr[i] &&
+            !sys.dbRegistered(sys.name(src))) {
             sys.sendAll("Potential ban evader: " + sys.name(src) + " on IP: " + ip, staffchannel);
         }
     }
@@ -1657,9 +1666,9 @@ userCommand: function(src, command, commandData, tar) {
         }
 
         if (sys.auth(src) == 0 && SESSION.users(src).smute.active) {
-            sys.playersIds().forEach(function(id) {
-                if (SESSION.users(id) && SESSION.users(id).smute.active) {
-                    sendChanMessage(id,  "*** " + sys.name(src) + " " + commandData, true);
+            sys.playerIds().forEach(function(id) {
+                if (sys.loggedIn(id) && SESSION.users(id).smute.active) {
+                    sendChanMessage(id,  "*** " + sys.name(src) + " " + commandData);
                 }
             });
             sys.stopEvent();
@@ -2620,8 +2629,15 @@ modCommand: function(src, command, commandData, tar) {
     }
     if (command == "aliases") {
         var max_message_length = 30000;
-        var smessage = "The aliases for the IP " + commandData + " are: "
-        var aliases = sys.aliases(commandData);
+        var uid = sys.id(commandData);
+        var ip = commandData;
+        if (uid != undefined) {
+            ip = sys.ip(uid);
+        } else if (sys.dbIp(commandData) !== undefined) {
+            ip = sys.dbIp(commandData);
+        }
+        var smessage = "The aliases for the IP " + ip + " are: "
+        var aliases = sys.aliases(ip);
         var prefix = "";
         for(var i = 0; i < aliases.length; ++i) {
             var id = sys.id(aliases[i]);
@@ -2962,6 +2978,7 @@ adminCommand: function(src, command, commandData, tar) {
             }
         }
 
+        normalbot.sendAll("Target: " + commandData + ", IP: " + ip, staffchannel);
         sys.sendHtmlAll('<b><font color=red>' + commandData + ' was banned by ' + nonFlashing(sys.name(src)) + '!</font></b>');
         sys.ban(commandData);
         this.kickAll(ip);
@@ -3155,6 +3172,30 @@ ownerCommand: function(src, command, commandData, tar) {
         sendChanMessage(src, "");
         return;
     }
+    if (command == "onrange") {
+        var subip = commandData;
+        var players = sys.playerIds();
+        var players_length = players.length;
+        var names = [];
+        for (var i = 0; i < players_length; ++i) {
+            var current_player = players[i];
+            var ip = sys.ip(current_player);
+            if (ip.substr(0, subip.length) == subip) {
+                names.push(current_player);
+            }
+        }
+        // Tell about what is found.
+        if (names.length > 0) {
+            var msgs = [];
+            for (var i = 0; i < names.length; i++) {
+                msgs.push(sys.name(names[i]) + " (" + sys.ip(names[i]) + ")");
+            }
+            sys.sendMessage(src,"Players: on range " + subip + " are: " + msgs.join(", "), channel);
+        } else {
+            sys.sendMessage(src,"Players: Nothing interesting here!",channel);
+        }
+        return;
+    }
     if (command == "rangeban") {
         var subip;
         var comment;
@@ -3205,7 +3246,7 @@ ownerCommand: function(src, command, commandData, tar) {
             var ip = sys.ip(current_player);
             if (sys.auth(current_player) > 0) continue;
             if (ip.substr(0, subip.length) == subip && allowedNames.indexOf(name) == -1) {
-                names.append(sys.name(current_player));
+                names.push(sys.name(current_player));
                 sys.kick(current_player);
                 return;
             }
@@ -3754,7 +3795,9 @@ beforeChatMessage: function(src, message, chan) {
     usingBannedWords = new Lazy(function() {
         var m = message.toLowerCase();
         var BannedUrls = ["meatspin.com", "smogonscouting.tk", "lovethecock.com"];
-        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, "nobrain.dk", /\bn[1i]gg+ers*\b/i, "penis", "vagina", "fuckface", /\bhur+\b/, /\bdur+\b/, "hurrdurr", /\bherp\b/, /\bderp\b/];
+        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, "nobrain.dk", /\bn[1i]gg+ers*\b/i, "penis", "vagina", "fuckface", /\bhur+\b/, /\bdur+\b/, "hurrdurr", /\bherp\b/, /\bderp\b/,
+                       "░░", "██", "▄▄", "▀▀", "___", "……", ".....", "¶¶",
+                       "¯¯", "----"];
         if (m.indexOf("http") != -1) {
             for (var i = 0; i < BannedUrls.length; ++i) {
                 if (m.indexOf(BannedUrls[i]) != -1) {
@@ -3867,12 +3910,6 @@ beforeChatMessage: function(src, message, chan) {
 
         if (this.userCommand(src, command, commandData, tar) != "no command") {
             return;
-        }
-
-        if (SESSION.users(src).megauser == true || sys.auth(src) > 0 || SESSION.channels(tourchannel).isChannelOperator(src)) {
-            if (this.megauserCommand(src, command, commandData, tar) != "no command") {
-                return;
-            }
         }
 
         if (sys.auth(src) > 0) {
@@ -4006,9 +4043,9 @@ beforeChatMessage: function(src, message, chan) {
         if (SESSION.users(src).expired("smute")) {
             SESSION.users(src).un("smute");
         } else {
-            sys.playersIds().forEach(function(id) {
-                if (SESSION.users(id) && SESSION.users(id).smute.active) {
-                    sendChanMessage(id,  sys.name(src)+": "+message, true);
+            sys.playerIds().forEach(function(id) {
+                if (sys.loggedIn(id) && SESSION.users(id).smute.active) {
+                    sendChanMessage(id,  sys.name(src)+": "+message);
                 }
             });
             sys.stopEvent();
@@ -4103,7 +4140,7 @@ afterChatMessage : function(src, message, chan)
     }
 
 
-    var linecount = sys.auth(src) == 0 ? 7 : 21;
+    var linecount = sys.auth(src) == 0 ? 9 : 21;
     if (!poChannel.ignoreflood && sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1) {
         user.floodcount += 1;
         var time = parseInt(sys.time());
