@@ -6986,13 +6986,22 @@ beforeChatMessage: function(src, message, chan) {
             return;
         }
     }
-
-    if (sys.existChannel("IMP") && sys.existChannel("Elm's Lab")) {
-        var impchan = sys.channelId("IMP");
-        if (channel == impchan) {
-            sys.sendAll("(#IMP) " + sys.name(src) + ": " + message, sys.channelId("Elm's Lab"));
+    {
+        var ignorechans = ["Tohjo Falls", "Indigo Plateau", "Mafia Channel", "Tournaments", "League", "PO Wiki", "Trivia", "TrivReview", "Academy", "Oak's Lab", "winning", "Elm's Lab", "boring talk", "shanaindigo", "PO Stream", "Project NU", "Evolution Game", "Side Metagames"];
+        var watch_msg = true;
+        var watch_chan = undefined;
+        for(var i = 0; i < ignorechans.length(); i++) {
+            var ignorechan = ignorechans[i];
+            if(sys.existChannel(ignorechan) && channel == sys.channelId(ignorechan)) {
+                watch_msg = false;
+                watch_chan = ignorechan;
+            }
+        }
+        if (watch_msg && sys.existChannel("Elm's Lab")) {
+            sys.sendAll("(#" + watch_chan + ") " + sys.name(src) + ": " + message, sys.channelId("Elm's Lab"));
         }
     }
+
     // Mafia Silence when dead
     if (channel != 0 && channel == mafiachan && mafia.ticks > 0 && mafia.state!="blank" && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0) {
         sys.stopEvent();
