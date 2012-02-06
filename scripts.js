@@ -3550,7 +3550,7 @@ init : function() {
     "- Insulting Auth will result in immediate punishment. ",
     "Rule #11 - No minimodding:",
     "- Server has moderators for a reason. If someone breaks the rules, alert the auth, do not try to moderate yourself.",
-    "Rule #12 - Do not share other people's personal information without their permission.",
+    "Rule #12 - Do not share other people's personal information without their permission:",
     "- Violation of personal privacy is not nice at all, and you wouldn't want it happening to you. If found out, you will be permanently banned."
     ];
 
