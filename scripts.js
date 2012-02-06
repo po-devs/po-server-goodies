@@ -302,7 +302,7 @@ var noPlayer = '*';
 var mafia = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-02-06.0";
+    this.version = "2012-02-06.1";
     var playerMafiaJoins = {};
     var CurrentGame;
     var PreviousGames;
