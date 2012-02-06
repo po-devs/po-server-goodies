@@ -6992,10 +6992,10 @@ beforeChatMessage: function(src, message, chan) {
     var watch_chan = "undefined";
     for(var i = 0; i < ignorechans.length; i++) {
         var ignorechan = ignorechans[i];
+        watch_chan = ignorechan;
         if(sys.existChannel(ignorechan) && channel == sys.channelId(ignorechan)) {
             watch_msg = false;
             watch_chan = ignorechan;
-            sys.sendAll("oh hi!", sys.channelId("Elm's Lab"));
             break;
         }
     }
