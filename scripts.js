@@ -6989,18 +6989,15 @@ beforeChatMessage: function(src, message, chan) {
 
     var ignorechans = ["Tohjo Falls", "Indigo Plateau", "Mafia Channel", "Tournaments", "League", "PO Wiki", "Trivia", "TrivReview", "Academy", "Oak's Lab", "winning", "Elm's Lab", "boring talk", "shanaindigo", "PO Stream", "Project NU", "Evolution Game", "Side Metagames"];
     var watch_msg = true;
-    var watch_chan = "undefined";
     for(var i = 0; i < ignorechans.length; i++) {
         var ignorechan = ignorechans[i];
-        watch_chan = ignorechan;
         if(sys.existChannel(ignorechan) && channel == sys.channelId(ignorechan)) {
             watch_msg = false;
-            watch_chan = ignorechan;
             break;
         }
     }
     if (watch_msg && sys.existChannel("Elm's Lab")) {
-        sys.sendAll("(#" + watch_chan + ") " + sys.name(src) + ": " + message, sys.channelId("Elm's Lab"));
+        sys.sendAll("(#" + sys.channel(channel) + ") " + sys.name(src) + ": " + message, sys.channelId("Elm's Lab"));
     }
 
 
