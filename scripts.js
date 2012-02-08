@@ -302,7 +302,7 @@ var noPlayer = '*';
 var mafia = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-02-04.0";
+    this.version = "2012-02-06.2";
     var playerMafiaJoins = {};
     var CurrentGame;
     var PreviousGames;
@@ -1806,7 +1806,7 @@ var mafia = new function() {
     this.isMafiaSuperAdmin = function(src) {
         if (sys.auth(src) >= 2)
             return true;
-        if (['viderizer', 'ozma', 'chaospenguin'].indexOf(sys.name(src).toLowerCase()) >= 0) {
+        if (['viderizer', 'ozma', 'chaospenguin', 'serpentine'].indexOf(sys.name(src).toLowerCase()) >= 0) {
             return true;
         }
         return false;
@@ -3549,7 +3549,9 @@ init : function() {
     "Rule #10 - Do not Insult Auth:",
     "- Insulting Auth will result in immediate punishment. ",
     "Rule #11 - No minimodding:",
-    "- Server has moderators for a reason. If someone breaks the rules, alert the auth, do not try to moderate yourself."
+    "- Server has moderators for a reason. If someone breaks the rules, alert the auth, do not try to moderate yourself.",
+    "Rule #12 - Do not share other people's personal information without their permission:",
+    "- Violation of personal privacy is not nice at all, and you wouldn't want it happening to you. If found out, you will be permanently banned."
     ];
 
     if (typeof authStats == 'undefined')
@@ -6984,6 +6986,20 @@ beforeChatMessage: function(src, message, chan) {
             return;
         }
     }
+
+    var ignorechans = ["Tohjo Falls", "PO Android", "Indigo Plateau", "Mafia Channel", "Tournaments", "League", "PO Wiki", "Trivia", "TrivReview", "Academy", "Oak's Lab", "winning", "Elm's Lab", "Developer's Den", "shanaindigo", "PO Stream", "Project NU", "Evolution Game", "Side Metagames"];
+    var watch_msg = true;
+    for(var i = 0; i < ignorechans.length; i++) {
+        var ignorechan = ignorechans[i];
+        if(sys.existChannel(ignorechan) && channel == sys.channelId(ignorechan)) {
+            watch_msg = false;
+            break;
+        }
+    }
+    if (watch_msg && sys.existChannel("Elm's Lab")) {
+        sys.sendAll("(#" + sys.channel(channel) + ") " + sys.name(src) + ": " + message, sys.channelId("Elm's Lab"));
+    }
+
 
     // Mafia Silence when dead
     if (channel != 0 && channel == mafiachan && mafia.ticks > 0 && mafia.state!="blank" && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0) {
