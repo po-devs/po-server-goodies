@@ -4,6 +4,8 @@
  * Contains code for server side mafia game.
  */
 
+var is_command = require("utilities.js").is_command;
+
 module.exports = mafia = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
@@ -32,16 +34,16 @@ module.exports = mafia = new function() {
         }
     }
 
-/* stolen from here: http://snippets.dzone.com/posts/show/849 */
-function shuffle(o) {
-    for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
-    return o;
-}
+    /* stolen from here: http://snippets.dzone.com/posts/show/849 */
+    function shuffle(o) {
+        for(var j, x, i = o.length; i; j = parseInt(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+        return o;
+    }
 
-/* stolen from here: http://stackoverflow.com/questions/1026069/capitalize-first-letter-of-string-in-javascript */
-function cap(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
+    /* stolen from here: http://stackoverflow.com/questions/1026069/capitalize-first-letter-of-string-in-javascript */
+    function cap(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
 
 
 
@@ -1897,5 +1899,37 @@ function cap(string) {
         }
 
         throw ("no valid command");
+    }
+
+    this.beforeChatMessage = function(src, message, channel) {
+        if (channel != 0 && channel == mafiachan && mafia.ticks > 0 && mafia.state!="blank" && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0 && (!is_command(message) || message.substr(1,3) != "me ")) {
+            sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
+            return true;
+        }
+    }
+
+    this.onMafiaBan = function(src) {
+        var name = mafia.correctCase(sys.name(src));
+        if (mafia.isInGame(name)) {
+            mafia.removePlayer(name);
+            mafia.testWin();
+        }
+    }
+    this.stepEvent = function() {
+        try {
+            mafia.tickDown();
+        } catch(err) {
+            mafiabot.sendAll("error occurred: " + err, mafiachan);
+        }
+    }
+
+    this.onKick = function(src) {
+        mafia.slayUser(Config.capsbot, sys.name(src));
+    }
+    this.onMute = function(src) {
+        mafia.slayUser(Config.kickbot, sys.name(src));
+    }
+    this.init = function() {
+
     }
 }();

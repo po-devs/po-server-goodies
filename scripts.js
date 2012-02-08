@@ -198,11 +198,7 @@ POUser.prototype.activate = function(thingy, by, expires, reason, persistent) {
     }
     if (thingy == "mban") {
         sys.kick(this.id, mafiachan);
-        var name = mafia.correctCase(sys.name(this.id));
-        if (mafia.isInGame(name)) {
-            mafia.removePlayer(name);
-            mafia.testWin();
-        }
+        callplugins("onMafiaBan", this.id);
     }
 }
 
@@ -549,8 +545,10 @@ function POGlobal(id)
         plugin.source = plugin_files[i];
         plugins.push(plugin);
     }
+    this.plugins = plugins;
 
-    this.mafia = undefined;
+    this.callplugins("init");
+
     this.coins = 0;
     this.channelManager = new POChannelManager('channelData.json');
     var manager = this.channelManager;
@@ -567,13 +565,14 @@ function POGlobal(id)
     });
 }
 
-function callplugins(event) {
+POGlobal.prototype.callplugins = function callplugins(event) {
     /* if a plugin wishes to stop event, it should return true */
+    var plugins = this.plugins;
     var ret = false;
     for (var i = 0; i < plugins.length; ++i) {
         if (plugins[i].hasOwnProperty(event)) {
             try {
-                if (plugins[i][event].apply(arguments.slice(1)))
+                if (plugins[i][event].apply(Array.prototype.slice.call(arguments, 1)))
                     ret = true;
             } catch (e) {
                 sys.sendAll('Plugins-error on {0}: {1}'.format(plugins[i].source, e));
@@ -588,8 +587,7 @@ SESSION.registerUserFactory(POUser);
 SESSION.registerChannelFactory(POChannel);
 
 if (typeof SESSION.global() != 'undefined') {
-    SESSION.global().channelManager = new POChannelManager('channelData.json');
-
+    SESSINON.global().channelManager = new POChannelManager('channelData.json');
     // uncomment to update either Channel or User
     sys.channelIds().forEach(function(id) {
         if (!SESSION.channels(id))
@@ -611,7 +609,6 @@ if (typeof SESSION.global() != 'undefined') {
 var Bot = require('bot.js').Bot;
 
 normalbot = bot = new Bot(Config.bot);
-mafiabot = new Bot(Config.Mafia.bot);
 channelbot = new Bot(Config.channelbot);
 kickbot = new Bot(Config.kickbot);
 capsbot = new Bot(Config.capsbot);
@@ -748,11 +745,7 @@ var commands = {
 ({
 /* Executed every second */
 stepEvent: function() {
-    try {
-        mafia.tickDown();
-    } catch(err) {
-        mafiabot.sendAll("error occurred: " + err, mafiachan);
-    }
+    if (typeof callplugins == "function") callplugins("stepEvent");
 }
 ,
 
@@ -785,6 +778,8 @@ serverStartUp : function() {
 init : function() {
     lastMemUpdate = 0;
     this.startStepEvent();
+
+    callplugins = SESSION.global().callplugins;
 
     mafiachan = SESSION.global().channelManager.createPermChannel("Mafia Channel", "Use /help to get started!");
     staffchannel = SESSION.global().channelManager.createPermChannel("Indigo Plateau", "Welcome to the Staff Channel! Discuss of all what users shouldn't hear here! Or more serious stuff...");
@@ -952,8 +947,6 @@ init : function() {
             pokeNatures[poke][sys.moveNum(movenat[0])] = sys.natureNum(movenat[1]);
         }
     }
-
-    amoebaGame.init();
 
     try {
         pastebin_api_key = sys.getFileContent("pastebin_api_key").replace("\n", "");
@@ -1218,8 +1211,8 @@ kickAll : function(ip) {
 beforeChannelJoin : function(src, channel) {
     var poUser = SESSION.users(src);
     var poChannel = SESSION.channels(channel);
-    if (amoebaGame.beforeChannelJoin(src, channel))
-        return;
+
+    callplugins("beforeChannelJoin", src, channel);
 
     if (poChannel.isChannelOperator(src)){
         return;
@@ -1317,7 +1310,6 @@ beforePlayerBan : function(src, dest) {
 
 afterNewMessage : function (message) {
     if (message == "Script Check: OK") {
-        amoebaGame.init();
         sys.sendAll("±ScriptCheck: Scripts were updated!");
         if (typeof(scriptChecks)=='undefined')
             scriptChecks = 0;
@@ -1653,10 +1645,6 @@ userCommand: function(src, command, commandData, tar) {
 
         if (channel == sys.channelId("Trivia") && SESSION.channels(channel).triviaon) {
             sys.sendMessage(src, "±Trivia: Answer using \a, /me not allowed now.", channel);
-            return;
-        }
-        if (channel != 0 && channel == mafiachan && mafia.ticks > 0 && mafia.state!="blank" && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0) {
-            sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
             return;
         }
 
@@ -3211,7 +3199,7 @@ ownerCommand: function(src, command, commandData, tar) {
         var i = 0;
         var nums = 0;
         var dots = 0;
-        var correct = true;
+        var correct = subip.length > 0;
         while (i < subip.length) {
             var c = subip[i];
             if (c == '.' && nums > 0 && dots < 3) {
@@ -3724,6 +3712,11 @@ beforeChatMessage: function(src, message, chan) {
         return;
     }
 
+    if (callplugins("beforeChatMessage", src, message, channel)) {
+        sys.stopEvent();
+        return;
+    }
+
     if (message == ".") {
         sendChanMessage(src, sys.name(src)+": .", true);
         sys.stopEvent();
@@ -3854,8 +3847,6 @@ beforeChatMessage: function(src, message, chan) {
         return;
     }
 
-    if (amoebaGame.beforeChatMessage(src, message, chan)) return;
-
     if ((message[0] == '/' || message[0] == '!') && message.length > 1) {
         if (parseInt(sys.time()) - lastMemUpdate > 500) {
             sys.clearChat();
@@ -3864,30 +3855,9 @@ beforeChatMessage: function(src, message, chan) {
 
         sys.stopEvent();
 
-        if (channel == mafiachan && !SESSION.users(src).mute.active) {
-            try {
-                mafia.handleCommand(src, message.substr(1));
-                return;
-            } catch (err) {
-                if (err != "no valid command") {
-                    mafiabot.sendAll("error occurred: " + err, mafiachan);
-                    mafia.endGame(0);
-                    mafia.themeManager.disable(0, mafia.theme.name)
-                    return;
-                }
-            }
+        if (callplugins("handleCommand", src, message.substr(1), channel)) {
+            return;
         }
-
-        if (!SESSION.users(src).mute.active) {
-            try {
-               suspectVoting.handleCommand(src, message.substr(1));
-               return;
-            } catch (err) {
-                if (err != "no valid command")
-                    return;
-            }
-        }
-
 
         var command;
         var commandData = undefined;
@@ -3987,13 +3957,6 @@ beforeChatMessage: function(src, message, chan) {
             sys.stopEvent();
             return;
         }
-    }
-
-    // Mafia Silence when dead
-    if (channel != 0 && channel == mafiachan && mafia.ticks > 0 && mafia.state!="blank" && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0) {
-        sys.stopEvent();
-        sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
-        return;
     }
 
     // Impersonation
@@ -4121,7 +4084,7 @@ afterChatMessage : function(src, message, chan)
             }
             var endtime = user.mute.active ? user.mute.expires + time : parseInt(sys.time()) + time;
             user.activate("mute", Config.capsbot, endtime, "Overusing CAPS", true);
-            mafia.slayUser(Config.capsbot, sys.name(src));
+            callplugins("onMute", src);
             return;
         }
     } else if (user.caps > 0) {
@@ -4159,7 +4122,7 @@ afterChatMessage : function(src, message, chan)
                  var endtime = user.mute.active ? user.mute.expires + 3600 : parseInt(sys.time()) + 3600;
                  user.activate("mute", Config.kickbot, endtime, "Flooding", true);
             }
-            mafia.slayUser(Config.kickbot, sys.name(src));
+            callplugins("onKick", src);
             sys.kick(src);
             return;
         }

@@ -88,7 +88,7 @@ exports = {
                 return this._value = func.apply(arguments.callee, arguments);
             }
         }       
-    } 
+    },
 
     non_flashing: function nonFlashing(name) {
         return name;
