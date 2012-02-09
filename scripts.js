@@ -5491,9 +5491,9 @@ modCommand: function(src, command, commandData, tar) {
     if (command == "tempbans") {
         var t = parseInt(sys.time());
         var table = '';
-        table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="5"><center><strong>Temp banned</strong></center></td></tr><tr><th>IP</th><th>Name</th><th>By</th><th>Length</th><th>Expires in</th><th>reason</th></tr>';
+        table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="6"><center><strong>Temp banned</strong></center></td></tr><tr><th>IP</th><th>Name</th><th>By</th><th>Length</th><th>Expires in</th><th>Reason</th></tr>';
         for (var ip in tempBans) {
-            var ban_length = tempBans[ip].length === undefined ? "undefined" : tempBans[ip].length;
+            var ban_length = tempBans[ip].length === undefined ? "undefined" : getTimeString(tempBans[ip].length * 60);
             var auth = tempBans[ip].auth === undefined ? "undefined" : tempBans[ip].auth;
             var time = tempBans[ip].time === undefined ? "undefined" : tempBans[ip].time;
             var expire_time = tempBans[ip].time === undefined ? "undefined" : getTimeString(tempBans[ip].time - t);
@@ -5697,7 +5697,7 @@ modCommand: function(src, command, commandData, tar) {
                         'length': minutes,
                         'reason': reason,
                         'target': target_name};
-        normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " for " + minutes + " minutes!");
+        normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " on " + ip + " for " + minutes + " minutes! [Reason: " + reason + "]");
         sys.kick(tar);
         this.kickAll(ip);
 
