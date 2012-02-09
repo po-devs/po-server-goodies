@@ -4046,7 +4046,7 @@ beforeLogIn : function(src) {
     var name = sys.name(src).toLowerCase();
 
     for (var subip in rangebans.hash) {
-        if (ip.substr(0, subip.length) == subip && allowedNames.indexOf(name) == -1) {
+        if (subip.length > 0 && ip.substr(0, subip.length) == subip && allowedNames.indexOf(name) == -1) {
             normalbot.sendMessage('You are banned!');
             sys.stopEvent();
             return;
@@ -6224,7 +6224,7 @@ ownerCommand: function(src, command, commandData, tar) {
         var i = 0;
         var nums = 0;
         var dots = 0;
-        var correct = true;
+        var correct = (subip.length > 0); // zero length ip is baaad
         while (i < subip.length) {
             var c = subip[i];
             if (c == '.' && nums > 0 && dots < 3) {
