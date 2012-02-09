@@ -5491,9 +5491,22 @@ modCommand: function(src, command, commandData, tar) {
     if (command == "tempbans") {
         var t = parseInt(sys.time());
         var table = '';
-        table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="3"><center><strong>Temp banned</strong></center></td></tr><tr><th>IP address</th><th>Expires in</th><th>By Whom</th></tr>';
+        table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="5"><center><strong>Temp banned</strong></center></td></tr><tr><th>IP</th><th>Name</th><th>By</th><th>Length</th><th>Expires in</th><th>reason</th></tr>';
         for (var ip in tempBans) {
-            table += '<tr><td>'+ip+'</td><td>'+getTimeString(tempBans[ip].time - t)+'</td><td>' + tempBans[ip].auth +'</td><td>' + tempBans[ip].time + '</td></tr>';
+            var ban_length = tempBans[ip].length === undefined ? "undefined" : tempBans[ip].length;
+            var auth = tempBans[ip].auth === undefined ? "undefined" : tempBans[ip].auth;
+            var time = tempBans[ip].time === undefined ? "undefined" : tempBans[ip].time;
+            var expire_time = tempBans[ip].time === undefined ? "undefined" : getTimeString(tempBans[ip].time - t);
+            var reason = tempBans[ip].reason === undefined ? "undefined" : tempBans[ip].reason;
+            var target = tempBans[ip].target === undefined ? "undefined" : tempBans[ip].target;
+            table += '<tr><td>' + ip +
+                '</td><td>'     + target +
+                '</td><td>'     + auth +
+                '</td><td>'     + ban_length +
+                '</td><td>'     + expire_time +
+                '</td><td>'     + reason +
+                '</td><td>'     + time +
+                '</td></tr>';
         }
         table += '</table>'
         sys.sendHtmlMessage(src, table, channel);
@@ -5646,12 +5659,15 @@ modCommand: function(src, command, commandData, tar) {
     }
     if (command == "tempban") {
         var tmp = commandData.split(":");
-        if (tmp.length != 2) {
-            normalbot.sendChanMessage(src, "Usage /tempban name:minutes.");
+        if (tmp.length != 3) {
+            normalbot.sendChanMessage(src, "Usage /tempban name:reason:minutes.");
             return;
         }
-        tar = sys.id(tmp[0]);
-        var minutes = parseInt(tmp[1]);
+        var target_name = tmp[0];
+        var reason = tmp[1];
+        var minutes = tmp[2];
+        tar = sys.id(target_name);
+        minutes = parseInt(minutes);
         if (typeof minutes != "number" || isNaN(minutes) || minutes < 1 || (sys.auth(src) < 2 && minutes > 1440) ) {
             normalbot.sendChanMessage(src, "Minutes must be in the interval [1,1440].");
             return;
@@ -5660,8 +5676,8 @@ modCommand: function(src, command, commandData, tar) {
         var ip;
         var name;
         if (tar === undefined) {
-            ip = sys.dbIp(tmp[0]);
-            name = tmp[0];
+            ip = sys.dbIp(target_name);
+            name = target_name;
             if (ip === undefined) {
                 normalbot.sendChanMessage(src, "No such name online / offline.");
                 return;
@@ -5675,12 +5691,17 @@ modCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "Can't do that to higher auth!");
             return;
         }
-        tempBans[ip] = {'auth': sys.name(src), 'time': parseInt(sys.time()) + 60*minutes};
+        var authname = sys.name(src).toLowerCase();
+        tempBans[ip] = {'auth': authname,
+                        'time': parseInt(sys.time()) + 60*minutes,
+                        'length': minutes,
+                        'reason': reason,
+                        'target': target_name};
         normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " for " + minutes + " minutes!");
         sys.kick(tar);
         this.kickAll(ip);
 
-        var authname = sys.name(src).toLowerCase();
+
         authStats[authname] =  authStats[authname] || {}
         authStats[authname].latestTempBan = [name, parseInt(sys.time())];
         return;
