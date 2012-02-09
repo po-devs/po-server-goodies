@@ -5593,6 +5593,14 @@ modCommand: function(src, command, commandData, tar) {
             ip = sys.dbIp(name);
             online = false;
         }
+        var isBanned = false;
+        var banlist=sys.banList()
+        for(a in banlist) {
+            if(ip == sys.dbIp(banlist[a])) {
+                isBanned = true;
+                break;
+            }
+        }
 
         if (isbot) {
             var userJson = {'type': 'UserInfo', 'id': tar ? tar : -1, 'username': name, 'auth': authLevel, 'megauser': megauser, 'contributor': contribution, 'ip': ip, 'online': online, 'registered': registered, 'lastlogin': lastLogin };
@@ -5617,6 +5625,7 @@ modCommand: function(src, command, commandData, tar) {
                "Online: " + (online ? "yes" : "no"),
                "Registered name: " + (registered ? "yes" : "no"),
                "Last Login: " + (online && logintime ? new Date(logintime*1000).toUTCString() : lastLogin),
+                isBanned ? "Banned: yes" : "Banned: no",
             ];
             if (online) data.push("Channels: " + channels.join(", "));
             if (authLevel > 0) {
