@@ -1908,7 +1908,7 @@ module.exports = mafia = new function() {
         }
     }
 
-    this.onMafiaBan = function(src) {
+    this.onMute = this.onMban = function(src) {
         var name = mafia.correctCase(sys.name(src));
         if (mafia.isInGame(name)) {
             mafia.removePlayer(name);
@@ -1930,6 +1930,6 @@ module.exports = mafia = new function() {
         mafia.slayUser(Config.kickbot, sys.name(src));
     }
     this.init = function() {
-
+        mafia.themeManager.loadThemes();
     }
 }();

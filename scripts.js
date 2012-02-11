@@ -196,10 +196,8 @@ POUser.prototype.activate = function(thingy, by, expires, reason, persistent) {
             sys.putInChannel(this.id, trollchannel);
         }
     }
-    if (thingy == "mban") {
-        sys.kick(this.id, mafiachan);
-        callplugins("onMafiaBan", this.id);
-    }
+
+    callplugins("on"+ utilities.capitalize(type), this.id);
 }
 
 POUser.prototype.un = function(thingy) {
@@ -216,6 +214,7 @@ POUser.prototype.un = function(thingy) {
             }
         }
     }
+    callplugins("onUn"+ utilities.capitalize(type), this.id);
 }
 
 POUser.prototype.reloadwfb = function() {
@@ -547,8 +546,6 @@ function POGlobal(id)
     }
     this.plugins = plugins;
 
-    this.callplugins("init");
-
     this.coins = 0;
     this.channelManager = new POChannelManager('channelData.json');
     var manager = this.channelManager;
@@ -579,6 +576,25 @@ POGlobal.prototype.callplugins = function callplugins(event) {
             }
         }
     }
+    return ret;
+}
+
+POGlobal.prototype.getplugins = function getplugins(data) {
+    var plugins = this.plugins;
+    var ret = {};
+    for (var i = 0; i < plugins.length; ++i) {
+        if (plugins[i].hasOwnProperty(data)) {
+            ret[plugins[i].source] = plugins[i][data];
+        }
+    }
+    return ret;
+}
+
+function callplugins() {
+    return SESSION.global().callplugins.apply(SESSION.global(), arguments);
+}
+function getplugins() {
+    return SESSION.global().getplugins.apply(SESSION.global(), arguments);
 }
 
 SESSION.identifyScriptAs("PO Scripts v0.004");
@@ -779,11 +795,11 @@ init : function() {
     lastMemUpdate = 0;
     this.startStepEvent();
 
-    callplugins = SESSION.global().callplugins;
+    callplugins("init");
 
     mafiachan = SESSION.global().channelManager.createPermChannel("Mafia Channel", "Use /help to get started!");
     staffchannel = SESSION.global().channelManager.createPermChannel("Indigo Plateau", "Welcome to the Staff Channel! Discuss of all what users shouldn't hear here! Or more serious stuff...");
-    sachannel = SESSION.global().channelManager.createPermChannel("shanaindigo","Wecome MAs and SAs!");
+    sachannel = SESSION.global().channelManager.createPermChannel("shanaindigo","Welcome MAs and SAs!");
     tourchannel = SESSION.global().channelManager.createPermChannel("Tournaments", 'Useful commands are "/join" (to join a tournament), "/unjoin" (to leave a tournament), "/viewround" (to view the status of matches) and "/megausers" (for a list of users who manage tournaments). Please read the full Tournament Guidelines: http://pokemon-online.eu/forums/showthread.php?2079-Tour-Rules');
     shanaitourchannel = tourchannel; //SESSION.global().channelManager.createPermChannel("Tours", 'Shanai Tours');
     SESSION.global().channelManager.createPermChannel("League", "Challenge the PO League here! For more information, please visit this link: http://pokemon-online.eu/forums/forumdisplay.php?36-PO-League");
@@ -1000,7 +1016,6 @@ init : function() {
         sys.sendAll(message, tourchannel);
     }
 
-    mafia.themeManager.loadThemes();
     VarsCreated = true;
 } /* end of init */
 
@@ -1079,9 +1094,6 @@ issueBan : function(type, src, tar, commandData, maxTime) {
                 var authname = sys.name(src).toLowerCase();
                 authStats[authname] =  authStats[authname] || {};
                 authStats[authname]["latest" + type] = [commandData, parseInt(sys.time())];
-                if (mafia.isInGame(mafia.correctCase(commandData)) && verb != "smute") {
-                    mafia.slayUser(src, commandData);
-                }
                 return;
             }
 
@@ -1095,10 +1107,6 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         if (sys.auth(tar) >= sys.auth(src) && sys.auth(tar) > 0) {
             banbot.sendChanMessage(src, "You dont have sufficient auth to " + nomi + " " + commandData + ".");
             return;
-        }
-        // Only slay if the user is actually in the game.
-        if (mafia.isInGame(mafia.correctCase(sys.name(tar)))) {
-            mafia.slayUser(src, sys.name(tar));
         }
         SESSION.users(tar).activate(type, sys.name(src), expires, reason, true);
         if (reason.length > 0)
@@ -1610,7 +1618,10 @@ userCommand: function(src, command, commandData, tar) {
             if (sys.auth(src) > 2 || isSuperAdmin(src)) {
                 sendChanMessage(src, "/commands owner: To know of owner commands");
             }
-            sendChanMessage(src, "/commands suspectVoting: To know the commands of suspect voting");
+            var pluginhelps = getplugins("help-string");
+            for (var module in pluginhelps) {
+                sendChanMessage(src, "/commands " + pluginhelps[module]);
+            }
             sendChanMessage(src, "");
             sendChanMessage(src, "Commands starting with \"\\\" will be forwarded to Shanai if she's online.");
             sendChanMessage(src, "");
@@ -1628,9 +1639,7 @@ userCommand: function(src, command, commandData, tar) {
                 sendChanMessage(src, commands[commandData][x]);
             }
         }
-        if (commandData == "suspectvoting") {
-            suspectVoting.handleCommand(src, "votinghelp");
-        }
+	callplugins("onHelp", src, commandData, channel);
 
         return;
     }
@@ -3199,7 +3208,7 @@ ownerCommand: function(src, command, commandData, tar) {
         var i = 0;
         var nums = 0;
         var dots = 0;
-        var correct = subip.length > 0;
+        var correct = true;
         while (i < subip.length) {
             var c = subip[i];
             if (c == '.' && nums > 0 && dots < 3) {
@@ -3873,7 +3882,7 @@ beforeChatMessage: function(src, message, chan) {
 
         // Forward some commands to shanai in case she is online and the command character is "/"
         var forwardShanaiCommands = ["join", "subme", "unjoin", "viewround", "queue", "dq", "myflashes", "flashme", "unflashme", "tour", "iom", "ipm", "viewtiers", "tourrankings", "sub", "endtour", "queuerm", "start", "pushtour", "push", "salist", "activesa", "activesas", "tourranking", "tourdetails", "start", "lastwinners"];
-		if (sys.id("shanai") !== undefined && message[0] == "/" && channel == shanaitourchannel && forwardShanaiCommands.indexOf(command) > -1) {
+	if (sys.id("shanai") !== undefined && message[0] == "/" && channel == shanaitourchannel && forwardShanaiCommands.indexOf(command) > -1) {
             shanaiForward("\\" + message.substr(1));
             return;
         }

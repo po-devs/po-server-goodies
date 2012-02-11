@@ -594,12 +594,12 @@ module.tournaments = {}
 module.exports = {
 	init: function() {
 		var tourchannel, channelname = "Tournaments";
-		if (sys.channelExist(channelname)) {
+		if (sys.existChannel(channelname)) {
 			tourchannel = sys.channelId(channelname);
 		} else {
 			tourchannel = sys.createChannel(channelname);
 		}
-		var tournament = Tournament(tourchannel, script);
+		var tournament = new Tournament(tourchannel, script);
 		tournament.main = true;
 		module.tournaments[tourchannel] = tournament;
 	},

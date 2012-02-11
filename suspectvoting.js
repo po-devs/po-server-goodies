@@ -1,4 +1,9 @@
 module.exports = new function() {
+    var replyChannel = 0;
+    var sendChanMessage = function(src, message) {
+        sys.sendMessage(src, message, replyChannel);
+    }
+
     var canVote = function(src) {
         if (!sys.dbRegistered(sys.name(src))) {
             return false;
@@ -282,7 +287,14 @@ module.exports = new function() {
         }
     }
 
-    this.handleCommand = function(src, message) {
+    this.onHelp = function(src, topic, channel) {
+        if (topic == "suspectvoting") {
+            suspectVoting.handleCommand(src, "votinghelp", channel);
+        }
+    }
+
+    this.handleCommand = function(src, message, channel) {
+        replyChannel = channel;
         var command;
         var commandData = '';
         var pos = message.indexOf(' ');
@@ -303,5 +315,7 @@ module.exports = new function() {
         }
         throw "no valid command";
     };
+
+    this["help-string"] = "suspectVoting: To know the commands of suspect voting";
 
 }();
