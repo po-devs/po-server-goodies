@@ -618,14 +618,15 @@ module.exports = {
 
 			if (command in module.tournaments[channel].commands) {
 				module.tournaments[channel].commands[command](source, commandData);
+			        return true;
 			} else if (command in module.tournaments[channel].authCommands) {
 				if (sys.auth(source) == 0 && !SESSION.users(source).megauser) {
-					sys.sendMessage(source, "Sorry, you do not have access to this command.");
-					return;
+					sys.sendMessage(source, "Sorry, you do not have access to this Tournament command.");
+					return true;
 				}
 				module.tournaments[channel].authCommands[command](source, commandData);
+			        return true;
 			}
-			return true;
 		}
 		return false;
 	},

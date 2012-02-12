@@ -290,6 +290,7 @@ module.exports = new function() {
     this.onHelp = function(src, topic, channel) {
         if (topic == "suspectvoting") {
             suspectVoting.handleCommand(src, "votinghelp", channel);
+            return true;
         }
     }
 
@@ -307,13 +308,12 @@ module.exports = new function() {
         }
         if (command in userCommands) {
             userCommands[command](src, commandData);
-            return;
+            return true;
         }
         if (command in ownerCommands && (sys.auth(src) >= 3 || isSuperAdmin(src))) {
             ownerCommands[command](src, commandData);
-            return;
+            return true;
         }
-        throw "no valid command";
     };
 
     this["help-string"] = "suspectVoting: To know the commands of suspect voting";

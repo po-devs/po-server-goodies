@@ -566,10 +566,13 @@ POGlobal.prototype.callplugins = function callplugins(event) {
     /* if a plugin wishes to stop event, it should return true */
     var plugins = this.plugins;
     var ret = false;
+    sys.sendAll("callplugins " + event);
+    var args = Array.prototype.slice.call(arguments, 1);
+    for (var x in args) sys.sendAll(args[x]);
     for (var i = 0; i < plugins.length; ++i) {
         if (plugins[i].hasOwnProperty(event)) {
             try {
-                if (plugins[i][event].apply(Array.prototype.slice.call(arguments, 1)))
+                if (plugins[i][event].apply(plugins[i], args))
                     ret = true;
             } catch (e) {
                 sys.sendAll('Plugins-error on {0}: {1}'.format(plugins[i].source, e));

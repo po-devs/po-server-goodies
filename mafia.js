@@ -1625,7 +1625,19 @@ module.exports = mafia = new function() {
             importold: [this.importOld, ""]
         }
     };
-    this.handleCommand = function(src, message) {
+    this.handleCommand = function(src, message, channel) {
+        // only on mafia channel
+        if (channel != mafiachan)
+            return;
+        try {
+            this.handleCommandOld(src, message, channel);
+            return true;
+        } catch(e) {
+            return e != "no valid command";
+        }
+    }
+    this.handleCommandOld = function(src, message, channel) {
+
         var command;
         var commandData = '*';
         var pos = message.indexOf(' ');
@@ -1638,7 +1650,7 @@ module.exports = mafia = new function() {
         }
         if (command in this.commands["user"]) {
             this.commands["user"][command][0](src, commandData);
-            return;
+            return true;
         }
         if (this.state == "entry") {
             if (command == "join") {
