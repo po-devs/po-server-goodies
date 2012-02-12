@@ -4042,7 +4042,7 @@ beforeLogIn : function(src) {
     if (sys.auth(src) > 0) {
         return;
     }
-    var allowedNames = ["sasukeanditachi", "sasukatandkitachi", "ata", "downpour", "broon89", "ifmltrailers", "probrem?"];
+    var allowedNames = ["sasukeanditachi", "sasukatandkitachi", "ata", "downpour", "broon89", "ifmltrailers", "probrem?", "salamander94"];
     var name = sys.name(src).toLowerCase();
 
     for (var subip in rangebans.hash) {
