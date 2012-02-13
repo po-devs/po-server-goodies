@@ -51,6 +51,11 @@ var Config = {
 
 if (typeof require === "undefined")
     require = function require(module_name) {
+        if (!require.cache)
+            require.cache = {};
+        if (require.cache[module_name])
+            return require.cache[module_name];
+
         var module = {};
         module.module = module;
         module.exports = {};
@@ -64,7 +69,33 @@ if (typeof require === "undefined")
                 }
             }
         }
+        require.cache[module_name] = module.exports;
         return module.exports;
+    }
+if (typeof updateModule === "undefined")
+    updateModule = function updateModule(module_name, callback) {
+       var base_url = "https://raw.github.com/lamperi/po-server-goodies/separated/";
+       var url;
+       if (/^https?:\/\//.test(module_name)
+          url = module_name;
+       else
+          url = base_url + module_name;
+       var fname = module_name.split(/\//).pop();
+       if (!callback) {
+           var resp = sys.synchronousWebCall(base_url + module_name);
+           if (resp == "") return;
+           sys.writeToFile(fname, resp);
+           delete require.cache[fname];
+           return require(fname);
+       } else {
+           sys.webCall(base_url + module_name, function updateModule_callback(resp) {
+               if (resp == "") return;
+               sys.writeToFile(fname, resp);
+               delete require.cache[fname];
+               var module = require(fname);
+               callback(module);
+           });
+       }
     }
 
 /* To avoid a load of warning for new users of the script,
@@ -538,7 +569,9 @@ function POGlobal(id)
 {
     var plugin_files = ["mafia.js", "amoebagame.js", "tournaments.js", "suspectvoting.js"];
     var plugins = [];
-    /* */
+    /* we need to make sure the scripts exist */
+    
+
     for (var i = 0; i < plugin_files.length; ++i) {
         var plugin = require(plugin_files[i]);
         plugin.source = plugin_files[i];
@@ -566,7 +599,6 @@ POGlobal.prototype.callplugins = function callplugins(event) {
     /* if a plugin wishes to stop event, it should return true */
     var plugins = this.plugins;
     var ret = false;
-    sys.sendAll("callplugins " + event);
     var args = Array.prototype.slice.call(arguments, 1);
     for (var x in args) sys.sendAll(args[x]);
     for (var i = 0; i < plugins.length; ++i) {
