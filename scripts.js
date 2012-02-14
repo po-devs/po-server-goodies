@@ -654,6 +654,17 @@ SESSION.registerChannelFactory(POChannel);
 
 if (typeof SESSION.global() != 'undefined') {
     SESSION.global().channelManager = new POChannelManager('channelData.json');
+
+    SESSION.global().__proto__ = POGlobal.prototype;
+    var plugin_files = Config.Plugins;
+    var plugins = [];
+    for (var i = 0; i < plugin_files.length; ++i) {
+        var plugin = require(plugin_files[i]);
+        plugin.source = plugin_files[i];
+        plugins.push(plugin);
+    }
+    SESSION.global().plugins = plugins;
+
     // uncomment to update either Channel or User
     sys.channelIds().forEach(function(id) {
         if (!SESSION.channels(id))
