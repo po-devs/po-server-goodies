@@ -52,8 +52,6 @@ var Config = {
 
 if (typeof require === "undefined")
     require = function require(module_name) {
-        if (!require.cache)
-            require.cache = {};
         if (require.cache[module_name])
             return require.cache[module_name];
 
@@ -73,6 +71,9 @@ if (typeof require === "undefined")
         require.cache[module_name] = module.exports;
         return module.exports;
     }
+    if (!require.cache)
+        require.cache = {};
+    
 if (typeof updateModule === "undefined")
     updateModule = function updateModule(module_name, callback) {
        var base_url = "https://raw.github.com/lamperi/po-server-goodies/separated/";
@@ -104,7 +105,7 @@ if (typeof updateModule === "undefined")
     var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js'].concat(Config.Plugins);
     var missing = 0;
     for (var i = 0; i < deps.length; ++i) {
-        if (sys.getFileContent(deps[i]) == "") {
+        if (!sys.getFileContent(deps[i])) {
             if (missing++ == 0) sys.sendAll('Server is updating its script modules, it might take a while...')
             updateModule(deps[i]);
         }
