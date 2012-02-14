@@ -659,6 +659,21 @@ module.exports = {
 			ret |= module.tournaments[channel].events.beforeBattleMatchup(source, dest, clauses, rated);
 		}
 		return ret;
-	}
+	},
 
+        "help-string": "tournaments: To know the tournament commands",
+
+        onHelp: function(src, topic, channel) {
+            if (topic == "tournaments") {
+                var help = [
+                  "/join: Enters you to in a tournament.",,
+                  "/unjoin: Withdraws you from a tournament.",
+                  "/viewround: Shows the current pairings for the round.",
+                ];
+                for (var i = 0; i < help.length; ++i) {
+                    sys.sendMessage(src, help[i], channel);
+                }
+                return true;
+            }
+        }
 }

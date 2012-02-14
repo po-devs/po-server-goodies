@@ -84,13 +84,14 @@ if (typeof updateModule === "undefined")
           url = base_url + module_name;
        var fname = module_name.split(/\//).pop();
        if (!callback) {
-           var resp = sys.synchronousWebCall(base_url + module_name);
+           var resp = sys.synchronousWebCall(url);
            if (resp == "") return;
            sys.writeToFile(fname, resp);
            delete require.cache[fname];
-           return require(fname);
+           var module = require(fname);
+           return module;
        } else {
-           sys.webCall(base_url + module_name, function updateModule_callback(resp) {
+           sys.webCall(url, function updateModule_callback(resp) {
                if (resp == "") return;
                sys.writeToFile(fname, resp);
                delete require.cache[fname];
@@ -702,7 +703,6 @@ var commands = {
     user:
     [
         "/rules: Shows the rules",
-        "/join: Enters you to in a tournament.",,
         "/ranking: Shows your ranking in your current tier.",
         "/myalts: Lists your alts.",
         "/me [message]: Sends a message with *** before your name.",
@@ -718,10 +718,8 @@ var commands = {
         "/league: Lists gym leaders and elite four of the PO league.",
         "/uptime: Shows time since the server was last offline.",
         "/players: Shows the number of players online.",
-        "/unjoin: Withdraws you from a tournament.",
-        "/viewround: Shows the current pairings for the round.",
-        "/viewtiers: Shows the recently played tournaments, which can't be started currently.",
         "/sameTier [on/off]: Turn on/off auto-rejection of challenges from players in a different tier from you.",
+        "/viewtiers: Shows the recently played tournaments, which can't be started currently.",
         "/tourrankings: Shows recent tournament winners.",
         "/tourranking [tier]: Shows recent tourney winners in a specific tier.",
         "/tourdetails [name]: Shows a user's tourney stats.",
@@ -3627,11 +3625,43 @@ ownerCommand: function(src, command, commandData, tar) {
         sys.webCall(updateURL, "sys.writeToFile('tiers.xml', resp); sys.reloadTiers();");
         return;
     }
-    if (command == "setmafiachannel") {
-        if (sys.existChannel(commandData))
-            mafiachan = sys.channelId(commandData);
+    if (command == "addplugin") {
+        var POglobal = SESSION.global();
+        updateModule(commandData, function(module) {
+            POglobal.plugins.push(module);
+            module.source = commandData;
+            module.init();
+        });
         return;
     }
+    if (command == "removeplugin") {
+        var POglobal = SESSION.global();
+        for (var i = 0; i < POglobal.plugins.length; ++i) {
+            if (commandData == POglobal.plugins[i].source) {
+                normalbot.sendChanMessage(src, "Module " + POglobal.plugins[i].source + " removed!!");
+                plugins.splice(i,1);
+                break;
+            }
+        }
+        normalbot.sendChanMessage(src, "Module not found, can not remove.");
+        return;
+    }
+    if (command == "updateplugin") {
+        var POglobal = SESSION.global();
+        for (var i = 0; i < POglobal.plugins.length; ++i) {
+            if (commandData == POglobal.plugins[i].source) {
+                updateModule(POglobal.plugins[i].source, function(module) {
+                    plugins[i] = module;
+                    plugins[i].init();
+                });
+                normalbot.sendChanMessage(src, "Module " + POglobal.plugins[i].source + " updated!");
+                return;
+            }
+        }
+        normalbot.sendChanMessage(src, "Module not found, can not update.");
+        return;
+    }
+
     return "no command";
 }
 ,
