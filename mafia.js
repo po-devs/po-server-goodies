@@ -266,6 +266,7 @@ module.exports = mafia = new function() {
             theme.villageCantLoseRoles = plain_theme.villageCantLoseRoles;
             theme.name = plain_theme.name;
             theme.author = plain_theme.author;
+            theme.summary = plain_theme.summary;
             theme.killmsg = plain_theme.killmsg;
             theme.killusermsg = plain_theme.killusermsg;
             theme.generateRoleInfo();
@@ -637,6 +638,12 @@ module.exports = mafia = new function() {
         sys.sendAll("±Game: Type /Join to enter the game!", mafiachan);
         sys.sendAll("*** ************************************************************************************", mafiachan);
         sys.sendAll("", mafiachan);
+
+        if (mafia.theme.summary === undefined) {
+            sys.sendAll("±Game: Consider adding a summary field to this theme that describes the setting of the game and points out the odd quirks of the theme!",mafiachan);
+        } else {
+            sys.sendAll("±Game: " + mafia.theme.summary,mafiachan);
+        }
 
         //if (sys.playersOfChannel(mafiachan).length < 25) {
             var time = parseInt(sys.time());
@@ -1662,7 +1669,9 @@ module.exports = mafia = new function() {
                     sys.sendMessage(src, "±Game: This IP is already in list. You cannot register two times!", mafiachan);
                     return;
                 }
-                if ((sys.ratedBattles(src) < 1 && sys.ranking(src) < 1000) || sys.ratedBattles(src) < 5) {
+                if ((sys.auth(src) == 0) && sys.ratedBattles(src) == 0 ||
+                    (sys.ranking(src) <= 1000 && sys.ratedBattles(src) < 5) ||
+                    SESSION.users(src).smute.active) {
                     sys.sendMessage(src, "±Game: You need to ladder before playing mafia!", mafiachan);
                     return;
                 }
@@ -1689,7 +1698,13 @@ module.exports = mafia = new function() {
                 this.signups.push(name);
                 this.ips.push(sys.ip(src));
                 sys.sendAll("±Game: " + name + " joined the game!", mafiachan);
-
+                // Count the number of games a mafia player has played.
+                if (playerMafiaJoins[name] === undefined) {
+                    playerMafiaJoins[name] = 1;
+                    sys.sendAll("±Mafia: New player " + name + " joined mafia.", sachannel);
+                } else {
+                    playerMafiaJoins[name]++;
+                }
                 if (this.signups.length == this.theme["roles"+this.theme.roleLists].length) {
                     this.ticks = 1;
                 }
@@ -1938,9 +1953,7 @@ module.exports = mafia = new function() {
     this.onKick = function(src) {
         mafia.slayUser(Config.capsbot, sys.name(src));
     }
-    this.onMute = function(src) {
-        mafia.slayUser(Config.kickbot, sys.name(src));
-    }
+
     this.init = function() {
         mafia.themeManager.loadThemes();
     }
