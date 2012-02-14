@@ -613,7 +613,6 @@ POGlobal.prototype.callplugins = function callplugins(event) {
     var plugins = this.plugins;
     var ret = false;
     var args = Array.prototype.slice.call(arguments, 1);
-    for (var x in args) sys.sendAll(args[x]);
     for (var i = 0; i < plugins.length; ++i) {
         if (plugins[i].hasOwnProperty(event)) {
             try {
