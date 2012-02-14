@@ -15,6 +15,7 @@ var Config = {
     battlebot: "Blastoise",
     commandbot: "CommandBot",
     querybot: "QueryBot",
+    Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "suspectvoting.js"], 
     Mafia: {
         bot: "Murkrow",
         norepeat: 6,
@@ -76,7 +77,7 @@ if (typeof updateModule === "undefined")
     updateModule = function updateModule(module_name, callback) {
        var base_url = "https://raw.github.com/lamperi/po-server-goodies/separated/";
        var url;
-       if (/^https?:\/\//.test(module_name)
+       if (/^https?:\/\//.test(module_name))
           url = module_name;
        else
           url = base_url + module_name;
@@ -97,6 +98,20 @@ if (typeof updateModule === "undefined")
            });
        }
     }
+
+{
+    /* we need to make sure the scripts exist */
+    var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js'].concat(Config.Plugins);
+    var missing = 0;
+    for (var i = 0; i < deps.length; ++i) {
+        if (sys.getFileContent(deps[i]) == "") {
+            if (missing++ == 0) sys.sendAll('Server is updating its script modules, it might take a while...')
+            updateModule(deps[i]);
+        }
+    }
+    if (missing) sys.sendAll('Done. Updated ' + missing + ' modules.')
+}
+
 
 /* To avoid a load of warning for new users of the script,
         create all the files that will be read further on*/
@@ -567,11 +582,8 @@ POChannelManager.prototype.restoreSettings = function(cid)
 
 function POGlobal(id)
 {
-    var plugin_files = ["mafia.js", "amoebagame.js", "tournaments.js", "suspectvoting.js"];
+    var plugin_files = Config.Plugins;
     var plugins = [];
-    /* we need to make sure the scripts exist */
-    
-
     for (var i = 0; i < plugin_files.length; ++i) {
         var plugin = require(plugin_files[i]);
         plugin.source = plugin_files[i];
