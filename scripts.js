@@ -650,7 +650,7 @@ SESSION.registerUserFactory(POUser);
 SESSION.registerChannelFactory(POChannel);
 
 if (typeof SESSION.global() != 'undefined') {
-    SESSINON.global().channelManager = new POChannelManager('channelData.json');
+    SESSION.global().channelManager = new POChannelManager('channelData.json');
     // uncomment to update either Channel or User
     sys.channelIds().forEach(function(id) {
         if (!SESSION.channels(id))
