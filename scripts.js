@@ -913,7 +913,9 @@ init : function() {
     "Rule #10 - Do not Insult Auth:",
     "- Insulting Auth will result in immediate punishment. ",
     "Rule #11 - No minimodding:",
-    "- Server has moderators for a reason. If someone breaks the rules, alert the auth, do not try to moderate yourself."
+    "- Server has moderators for a reason. If someone breaks the rules, alert the auth, do not try to moderate yourself.",
+    "Rule #12 - Do not share other people's personal information without their permission:",
+    "- Violation of personal privacy is not nice at all, and you wouldn't want it happening to you. If found out, you will be permanently banned."
     ];
 
     if (typeof authStats == 'undefined')
@@ -1393,11 +1395,11 @@ beforeLogIn : function(src) {
     if (sys.auth(src) > 0) {
         return;
     }
-    var allowedNames = ["sasukeanditachi", "sasukatandkitachi", "ata", "downpour", "broon89", "ifmltrailers", "probrem?"];
+    var allowedNames = ["sasukeanditachi", "sasukatandkitachi", "ata", "downpour", "broon89", "ifmltrailers", "probrem?", "salamander94"];
     var name = sys.name(src).toLowerCase();
 
     for (var subip in rangebans.hash) {
-        if (ip.substr(0, subip.length) == subip && allowedNames.indexOf(name) == -1) {
+        if (subip.length > 0 && ip.substr(0, subip.length) == subip && allowedNames.indexOf(name) == -1) {
             normalbot.sendMessage('You are banned!');
             sys.stopEvent();
             return;
@@ -2544,9 +2546,22 @@ modCommand: function(src, command, commandData, tar) {
     if (command == "tempbans") {
         var t = parseInt(sys.time());
         var table = '';
-        table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="3"><center><strong>Temp banned</strong></center></td></tr><tr><th>IP address</th><th>Expires in</th><th>By Whom</th></tr>';
+        table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="6"><center><strong>Temp banned</strong></center></td></tr><tr><th>IP</th><th>Name</th><th>By</th><th>Length</th><th>Expires in</th><th>Reason</th></tr>';
         for (var ip in tempBans) {
-            table += '<tr><td>'+ip+'</td><td>'+getTimeString(tempBans[ip].time - t)+'</td><td>' + tempBans[ip].auth +'</td><td>' + tempBans[ip].time + '</td></tr>';
+            var ban_length = tempBans[ip].length === undefined ? "undefined" : getTimeString(tempBans[ip].length * 60);
+            var auth = tempBans[ip].auth === undefined ? "undefined" : tempBans[ip].auth;
+            var time = tempBans[ip].time === undefined ? "undefined" : tempBans[ip].time;
+            var expire_time = tempBans[ip].time === undefined ? "undefined" : getTimeString(tempBans[ip].time - t);
+            var reason = tempBans[ip].reason === undefined ? "undefined" : tempBans[ip].reason;
+            var target = tempBans[ip].target === undefined ? "undefined" : tempBans[ip].target;
+            table += '<tr><td>' + ip +
+                '</td><td>'     + target +
+                '</td><td>'     + auth +
+                '</td><td>'     + ban_length +
+                '</td><td>'     + expire_time +
+                '</td><td>'     + reason +
+                '</td><td>'     + time +
+                '</td></tr>';
         }
         table += '</table>'
         sys.sendHtmlMessage(src, table, channel);
@@ -2633,6 +2648,14 @@ modCommand: function(src, command, commandData, tar) {
             ip = sys.dbIp(name);
             online = false;
         }
+        var isBanned = false;
+        var banlist=sys.banList()
+        for(a in banlist) {
+            if(ip == sys.dbIp(banlist[a])) {
+                isBanned = true;
+                break;
+            }
+        }
 
         if (isbot) {
             var userJson = {'type': 'UserInfo', 'id': tar ? tar : -1, 'username': name, 'auth': authLevel, 'megauser': megauser, 'contributor': contribution, 'ip': ip, 'online': online, 'registered': registered, 'lastlogin': lastLogin };
@@ -2657,6 +2680,7 @@ modCommand: function(src, command, commandData, tar) {
                "Online: " + (online ? "yes" : "no"),
                "Registered name: " + (registered ? "yes" : "no"),
                "Last Login: " + (online && logintime ? new Date(logintime*1000).toUTCString() : lastLogin),
+                isBanned ? "Banned: yes" : "Banned: no",
             ];
             if (online) data.push("Channels: " + channels.join(", "));
             if (authLevel > 0) {
@@ -2699,12 +2723,15 @@ modCommand: function(src, command, commandData, tar) {
     }
     if (command == "tempban") {
         var tmp = commandData.split(":");
-        if (tmp.length != 2) {
-            normalbot.sendChanMessage(src, "Usage /tempban name:minutes.");
+        if (tmp.length != 3) {
+            normalbot.sendChanMessage(src, "Usage /tempban name:reason:minutes.");
             return;
         }
-        tar = sys.id(tmp[0]);
-        var minutes = parseInt(tmp[1]);
+        var target_name = tmp[0];
+        var reason = tmp[1];
+        var minutes = tmp[2];
+        tar = sys.id(target_name);
+        minutes = parseInt(minutes);
         if (typeof minutes != "number" || isNaN(minutes) || minutes < 1 || (sys.auth(src) < 2 && minutes > 1440) ) {
             normalbot.sendChanMessage(src, "Minutes must be in the interval [1,1440].");
             return;
@@ -2713,8 +2740,8 @@ modCommand: function(src, command, commandData, tar) {
         var ip;
         var name;
         if (tar === undefined) {
-            ip = sys.dbIp(tmp[0]);
-            name = tmp[0];
+            ip = sys.dbIp(target_name);
+            name = target_name;
             if (ip === undefined) {
                 normalbot.sendChanMessage(src, "No such name online / offline.");
                 return;
@@ -2728,12 +2755,17 @@ modCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "Can't do that to higher auth!");
             return;
         }
-        tempBans[ip] = {'auth': sys.name(src), 'time': parseInt(sys.time()) + 60*minutes};
-        normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " for " + minutes + " minutes!");
+        var authname = sys.name(src).toLowerCase();
+        tempBans[ip] = {'auth': authname,
+                        'time': parseInt(sys.time()) + 60*minutes,
+                        'length': minutes,
+                        'reason': reason,
+                        'target': target_name};
+        normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " on " + ip + " for " + minutes + " minutes! [Reason: " + reason + "]");
         sys.kick(tar);
         this.kickAll(ip);
 
-        var authname = sys.name(src).toLowerCase();
+
         authStats[authname] =  authStats[authname] || {}
         authStats[authname].latestTempBan = [name, parseInt(sys.time())];
         return;
@@ -3256,7 +3288,7 @@ ownerCommand: function(src, command, commandData, tar) {
         var i = 0;
         var nums = 0;
         var dots = 0;
-        var correct = true;
+        var correct = (subip.length > 0); // zero length ip is baaad
         while (i < subip.length) {
             var c = subip[i];
             if (c == '.' && nums > 0 && dots < 3) {
@@ -4014,6 +4046,19 @@ beforeChatMessage: function(src, message, chan) {
             sys.stopEvent();
             return;
         }
+    }
+
+    var ignorechans = ["Tohjo Falls", "PO Android", "Indigo Plateau", "Mafia Channel", "Tournaments", "League", "PO Wiki", "Trivia", "TrivReview", "Academy", "Oak's Lab", "winning", "Elm's Lab", "Developer's Den", "shanaindigo", "PO Stream", "Project NU", "Evolution Game", "Side Metagames"];
+    var watch_msg = true;
+    for(var i = 0; i < ignorechans.length; i++) {
+        var ignorechan = ignorechans[i];
+        if(sys.existChannel(ignorechan) && channel == sys.channelId(ignorechan)) {
+            watch_msg = false;
+            break;
+        }
+    }
+    if (watch_msg && sys.existChannel("Elm's Lab")) {
+        sys.sendAll("(#" + sys.channel(channel) + ") " + sys.name(src) + ": " + message, sys.channelId("Elm's Lab"));
     }
 
     // Impersonation
