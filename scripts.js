@@ -2765,6 +2765,7 @@ function POUser(id)
 {
     /* user's id */
     this.id = id;
+    this.name = sys.name(id);
     /* whether user is megauser or not */
     this.megauser = false;
     /* whether user is muted or not */
@@ -2785,6 +2786,8 @@ function POUser(id)
     this.coins = 0;
     /* whether user has enabled battling only in same tier */
     this.sametier = undefined;
+    /* name history */
+    this.namehistory = [];
     /* last line */
     this.lastline = {message: null, time: 0};
     /* login time */
@@ -4229,20 +4232,32 @@ afterChangeTeam : function(src)
         sys.kick(src);
         return;
     }
+    var POuser = SESSION.users(src);
+    var new_name = sys.name(src);
+    if (POuser.name != new_name) {
+        var now = parseInt(sys.time());
+        POuser.namehistory.push([new_name, now]);
+        POuser.name = new_name;
+        var spamcheck = POuser.namehistory[POuser.namehistory.length-3];
+        if (spamcheck && spamcheck[1]+10 > now) {
+            sys.kick(src);
+            return;
+        }
+    }
 
     if (megausers.indexOf("*" + sys.name(src) + "*") != -1) {
-        if(!SESSION.users(src).megauser) {
+        if(!POuser.megauser) {
             sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Changed name to MU" + "\n");
         }
-        SESSION.users(src).megauser = true;
+        POuser.megauser = true;
     } else {
-        if(SESSION.users(src).megauser) {
+        if(POuser.megauser) {
             sys.appendToFile("staffstats.txt", "~" + src + "~" + sys.time() + "~" + "Changed name from MU" + "\n");
         }
-        SESSION.users(src).megauser = false;
+        POuser.megauser = false;
     }
-    SESSION.users(src).contributions = contributors.hash.hasOwnProperty(sys.name(src)) ? contributors.get(sys.name(src)) : undefined;
-    SESSION.users(src).mafiaAdmin = mafiaAdmins.hash.hasOwnProperty(sys.name(src));
+    POuser.contributions = contributors.hash.hasOwnProperty(sys.name(src)) ? contributors.get(sys.name(src)) : undefined;
+    POuser.mafiaAdmin = mafiaAdmins.hash.hasOwnProperty(sys.name(src));
     if (authChangingTeam === false) {
         if (sys.auth(src) > 0 && sys.auth(src) <= 3)
             sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Changed name to Auth" + "\n");
@@ -4251,7 +4266,7 @@ afterChangeTeam : function(src)
             sys.appendToFile("staffstats.txt", "~" + src + "~" + sys.time() + "~" + "Changed name from Auth" + "\n");
     }
 
-    SESSION.users(src).sametier = getKey("forceSameTier", src) == "1";
+    POuser.sametier = getKey("forceSameTier", src) == "1";
 
     if (sys.gen(src) >= 4) {
     for (var i = 0; i < 6; i++) {
@@ -5627,7 +5642,10 @@ modCommand: function(src, command, commandData, tar) {
                "Last Login: " + (online && logintime ? new Date(logintime*1000).toUTCString() : lastLogin),
                 isBanned ? "Banned: yes" : "Banned: no",
             ];
-            if (online) data.push("Channels: " + channels.join(", "));
+            if (online) {
+                data.push("Channels: " + channels.join(", "));
+                data.push("Names during current session: " + (online && SESSION.users(tar).namehistory ? SESSION.users(tar).namehistory.join(", ") : name));
+            }
             if (authLevel > 0) {
                var stats = authStats[name.toLowerCase()] || {};
                for (var key in stats) {
