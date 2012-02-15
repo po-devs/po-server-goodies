@@ -1693,7 +1693,9 @@ userCommand: function(src, command, commandData, tar) {
             }
             var pluginhelps = getplugins("help-string");
             for (var module in pluginhelps) {
-                sendChanMessage(src, "/commands " + pluginhelps[module]);
+                var help = typeof pluginhelps[module] == "string" ? [pluginhelps[module]] : pluginhelps[module];
+                for (var i = 0; i < help.length; ++i)
+                    sendChanMessage(src, "/commands " + help[i]);
             }
             sendChanMessage(src, "");
             sendChanMessage(src, "Commands starting with \"\\\" will be forwarded to Shanai if she's online.");
