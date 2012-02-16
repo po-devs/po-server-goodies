@@ -439,15 +439,15 @@ function Tournament(channel, globalObject)
 		battlesLost = [];
 
 		if (memberCount() == 1) {
-			wall("");
-			wall(border);
-			wall("");
-			wall("THE WINNER OF THE " + self.tier.toUpperCase() + " TOURNAMENT IS : " + firstPlayer());
-			wall("");
-			wall("*** Congratulations, " + firstPlayer() + ", on your success! ***");
-			wall("");
-			wall(border);
-			wall("");
+			broadcast("");
+			broadcast(border);
+			broadcast("");
+			broadcast("THE WINNER OF THE " + self.tier.toUpperCase() + " TOURNAMENT IS : " + firstPlayer());
+			broadcast("");
+			broadcast("*** Congratulations, " + firstPlayer() + ", on your success! ***");
+			broadcast("");
+			broadcast(border);
+			broadcast("");
 
 			self.running = false;
 
