@@ -568,8 +568,7 @@ function Tournament(channel, globalObject)
 	// event battleMatchup
 	function battleMatchup(source, dest, clauses, rated) {
 		// return true if one of the players is in tournament
-		return (playingPhase()
-			&& (isInTour(sys.name(source)) || isInTour(sys.name(dest)));
+		return playingPhase() && (isInTour(sys.name(source)) || isInTour(sys.name(dest)));
 	}
 
 	this.commands = {
