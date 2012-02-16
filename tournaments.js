@@ -302,7 +302,7 @@ function Tournament(channel, globalObject)
 			sendPM(source, "Neither are in the tournament.");
 		}
 
-		broadcast(player[0] + " and " + player[1] + " were exchanged places in the ongoing tournament by "  + sys.name(source));
+		broadcast(players[0] + " and " + players[1] + " were exchanged places in the ongoing tournament by "  + sys.name(source));
 
 		var p1 = players[0].toLowerCase();
 		var p2 = players[1].toLowerCase();
@@ -310,10 +310,10 @@ function Tournament(channel, globalObject)
 		for (var i = 0; i < members.length; ++i) {
 			if (members[i] == p1) {
 				setBattleStarted(members[i], false);
-				members[i] = player[0];
+				members[i] = players[0];
 			} else if (members[i] == p2) {
 				setBattleStarted(members[i], false);
-				members[i] = player[1];
+				members[i] = players[1];
 			}
 		}
 
