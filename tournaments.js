@@ -641,7 +641,8 @@ module.exports = {
 				module.tournaments[channel].commands[command](source, commandData);
 			        return true;
 			} else if (command in module.tournaments[channel].authCommands) {
-				if (sys.auth(source) == 0 && !SESSION.users(source).megauser) {
+				var isChanOP = SESSION.channels(channel).isChannelOperator && SESSION.channels(channel).isChannelOperator(source);
+				if (sys.auth(source) == 0 && !SESSION.users(source).megauser && !isChanOp) {
 					sys.sendMessage(source, "Sorry, you do not have access to this Tournament command.");
 					return true;
 				}
