@@ -4484,11 +4484,13 @@ beforeChallengeIssued : function (src, dest, clauses, rated, mode) {
         return;
     }
 
-    if (((sys.tier(src) == "Challenge Cup" && sys.tier(dest) == "Challenge Cup") || (sys.tier(src) == "1v1 Challenge Cup" && sys.tier(dest) == "1v1 Challenge Cup")) && (clauses % 32 < 16)) {
+    var isChallengeCup = (sys.tier(src) == "Challenge Cup" && sys.tier(dest) == "Challenge Cup") || (sys.tier(src) == "1v1 Challenge Cup" && sys.tier(dest) == "1v1 Challenge Cup");
+    var hasChallengeCupClause = (clauses % 32) >= 16;
+    if (isChallengeCup && !hasChallengeCupClause) {
         checkbot.sendMessage(src, "Challenge Cup must be enabled in the challenge window for a CC battle");
         sys.stopEvent();
         return;
-    } else if ( (clauses % 32) >= 16) {
+    } else if (!isChallengeCup && hasChallengeCupClause) {
         checkbot.sendMessage(src, "Challenge Cup must not be enabled in normal tiers.");
         sys.stopEvent();
         return;
