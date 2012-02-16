@@ -350,6 +350,8 @@ function Tournament(channel, globalObject)
 		broadcast("");
 		broadcast(border);
 		broadcast("~~Server~~: " + sys.name(source) + " changed the number of entrants to " + count + "!");
+		broadcast(border);
+		broadcast("");
 
 		if (remainingEntrants() == 0) {
 			startTournament();
