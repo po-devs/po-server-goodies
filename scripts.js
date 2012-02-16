@@ -4484,7 +4484,7 @@ beforeChallengeIssued : function (src, dest, clauses, rated, mode) {
         return;
     }
 
-    if ((sys.tier(src) == "Challenge Cup" && sys.tier(dest) == "Challenge Cup" || sys.tier(src) == "1v1 Challenge Cup" && sys.tier(dest) == "1v1 Challenge Cup") && (clauses % 32 < 16)) {
+    if (((sys.tier(src) == "Challenge Cup" && sys.tier(dest) == "Challenge Cup") || (sys.tier(src) == "1v1 Challenge Cup" && sys.tier(dest) == "1v1 Challenge Cup")) && (clauses % 32 < 16)) {
         checkbot.sendMessage(src, "Challenge Cup must be enabled in the challenge window for a CC battle");
         sys.stopEvent();
         return;
