@@ -358,6 +358,7 @@ function Tournament(channel, globalObject)
 
 	function endTour(source, data) {
 		if (self.running) {
+			self.running = false;
 			broadcast("");
 			broadcast(border);
 			broadcast("~~Server~~: The tournament was cancelled by " + sys.name(source) + "!");
