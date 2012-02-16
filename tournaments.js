@@ -421,7 +421,7 @@ function Tournament(channel, globalObject)
 	}
 
 	function tourOpponent(name) {
-		var index = battlers.indexOf(name.toLowerCase()));
+		var index = battlers.indexOf(name.toLowerCase());
 		if (index == -1)
 			return null;
 		else if ((index % 2) == 0)
@@ -532,7 +532,7 @@ function Tournament(channel, globalObject)
 	}
 
 	// common function for /dq, /unjoin and natural battle end
-	function endBattle(winner, loser) (
+	function endBattle(winner, loser) {
 		battlesLost.push(winner);
 		battlesLost.push(loser);
 		
