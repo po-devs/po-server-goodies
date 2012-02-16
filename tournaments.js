@@ -267,9 +267,9 @@ function Tournament(channel, globalObject)
 
 		addEntrant(name);
 		if (self.phase == "playing") {
-			broadcast(name + "was added to the tournament by " + sys.name(source) + ".");
+			broadcast(name + " was added to the tournament by " + sys.name(source) + ".");
 		} else if (self.phase == "entry") {
-			broadcast(name + "was added to the tournament by " + sys.name(source) + ". " + remainingEntrants() + " more spot(s) left!");
+			broadcast(name + " was added to the tournament by " + sys.name(source) + ". " + remainingEntrants() + " more spot(s) left!");
 
 			if (remainingEntrants() == 0) {
 				startTournament();
