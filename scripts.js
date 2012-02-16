@@ -251,7 +251,7 @@ POUser.prototype.activate = function(thingy, by, expires, reason, persistent) {
         }
     }
 
-    callplugins("on"+ utilities.capitalize(type), this.id);
+    callplugins("on"+ utilities.capitalize(thingy), this.id);
 }
 
 POUser.prototype.un = function(thingy) {
@@ -268,7 +268,7 @@ POUser.prototype.un = function(thingy) {
             }
         }
     }
-    callplugins("onUn"+ utilities.capitalize(type), this.id);
+    callplugins("onUn"+ utilities.capitalize(thingy), this.id);
 }
 
 POUser.prototype.reloadwfb = function() {
