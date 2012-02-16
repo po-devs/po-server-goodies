@@ -136,7 +136,7 @@ function Tournament(channel, globalObject)
 		}
 
 		addEntrant(name);
-		broadcast("~~Server~~: " + name + " joined the tournament! " + remainingEntrants()  + "more spot(s) left!");
+		broadcast("~~Server~~: " + name + " joined the tournament! " + remainingEntrants()  + " more spot(s) left!");
 
 		if (remainingEntrants() == 0) {
 			startTournament();

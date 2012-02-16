@@ -59,6 +59,7 @@ if (typeof require === "undefined")
         var module = {};
         module.module = module;
         module.exports = {};
+        module.source = module_name;
         with (module) {
             var content = sys.getFileContent(module_name)
             if (content) {
@@ -109,7 +110,8 @@ if (typeof updateModule === "undefined")
     for (var i = 0; i < deps.length; ++i) {
         if (!sys.getFileContent(deps[i])) {
             if (missing++ == 0) sys.sendAll('Server is updating its script modules, it might take a while...')
-            updateModule(deps[i]);
+            var module = updateModule(deps[i]);
+            module.source = deps[i];
         }
     }
     if (missing) sys.sendAll('Done. Updated ' + missing + ' modules.')
@@ -3655,7 +3657,8 @@ ownerCommand: function(src, command, commandData, tar) {
             if (commandData == POglobal.plugins[i].source) {
                 updateModule(POglobal.plugins[i].source, function(module) {
                     plugins[i] = module;
-                    plugins[i].init();
+                    module.source = POglobal.plugins[i].source;
+                    module.init();
                 });
                 normalbot.sendChanMessage(src, "Module " + POglobal.plugins[i].source + " updated!");
                 return;
