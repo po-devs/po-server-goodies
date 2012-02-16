@@ -139,6 +139,12 @@ function Tournament(channel, globalObject)
 			return;
 		}
 
+		var srctier = sys.tier(source);
+		if (!cmp(srctier, self.tier)){
+			sendPM(source, "You are currently not battling in the " + self.tier + " tier. Change your tier to " + self.tier + " to be able to join.");
+			return;
+		}
+
 		addEntrant(name);
 		broadcast("~~Server~~: " + name + " joined the tournament! " + remainingEntrants()  + " more spot(s) left!");
 
@@ -589,6 +595,15 @@ function Tournament(channel, globalObject)
 	function battleMatchup(source, dest, clauses, rated) {
 		// return true if one of the players is in tournament
 		return playingPhase() && (isInTour(sys.name(source)) || isInTour(sys.name(dest)));
+	}
+
+	function afterLogIn(source) {
+		if (self.main && self.phase == "entry") {
+			sys.sendMessage(src,"*** A " + self.tier + " tournament is in its signup phase, " + remainingEntrants() + " spot(s) are left!");
+			sys.sendMessage(src, "");
+			sys.sendMessage(src, border);
+			sys.sendMessage(src, "");
+		}
 	}
 
 	this.commands = {

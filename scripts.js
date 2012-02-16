@@ -993,7 +993,6 @@ init : function() {
     maxPlayersOnline = 0;
 
     lineCount = 0;
-    tourmode = 0;
 
     tourwinners = [];
     tourstats = {};
@@ -1525,21 +1524,6 @@ afterLogIn : function(src) {
         countbot.sendMessage(src, "Server uptime is "+days+"d "+hours+"h "+minutes+"m "+seconds+"s");
     }
     sys.sendMessage(src, "");
-    if (tourmode == 1){
-        sys.sendMessage(src,"*** A " + tourtier + " tournament is in its signup phase, " + this.tourSpots() + " space(s) are left!");
-        sys.sendMessage(src, "");
-        sys.sendMessage(src, border);
-        sys.sendMessage(src, "");
-
-    } else if (tourmode == 2){
-        sys.sendMessage(src, "");
-        sys.sendMessage(src, border);
-        sys.sendMessage(src, "");
-        sys.sendMessage(src, "~~Server~~: A tournament (" + tourtier + ") is currently running.");
-        sys.sendMessage(src, "");
-        sys.sendMessage(src, border);
-        sys.sendMessage(src, "");
-    }
 
     callplugins("afterLogIn", src);
 
@@ -1951,23 +1935,6 @@ userCommand: function(src, command, commandData, tar) {
             sendChanMessage(src, "±TriviaBot: You must use \\unjoin to unjoin a Trivia game!");
             return;
         }
-        if (tourmode == 0) {
-            tourneybot.sendChanMessage(src, "Wait till the tournament has started.");
-            return;
-        }
-        var name2 = sys.name(src).toLowerCase();
-
-        if (tourmembers.indexOf(name2) != -1) {
-            tourmembers.splice(tourmembers.indexOf(name2),1);
-            delete tourplayers[name2];
-            tourneybot.sendAll("" + sys.name(src) + " left the tournament!", tourchannel);
-            return;
-        }
-        if (tourbattlers.indexOf(name2) != -1) {
-            battlesStarted[Math.floor(tourbattlers.indexOf(name2)/2)] = true;
-            tourneybot.sendAll("" + sys.name(src) + " left the tournament!", tourchannel);
-            this.tourBattleEnd(this.tourOpponent(name2), name2);
-        }
         return;
     }
     if (command == "selfkick" || command == "sk") {
@@ -1989,36 +1956,6 @@ userCommand: function(src, command, commandData, tar) {
             sendChanMessage(src, "±TriviaBot: You must use \\join to join a Trivia game!");
             return;
         }
-
-        if (!sys.isInChannel(src, tourchannel)) {
-            tourneybot.sendChanMessage(src, "You must be in the #Tournamentss channel to join a tournament!");
-            return;
-        }
-        if (tourmode != 1){
-            sendChanMessage(src, "Sorry, you are unable to join because a tournament is not currently running or has passed the signups phase.");
-            return;
-        }
-        var name = sys.name(src).toLowerCase();
-        if (tourmembers.indexOf(name.toLowerCase()) != -1){
-            sendChanMessage(src, "Sorry, you are already in the tournament. You are not able to join more than once.");
-            return;
-        }
-        var srctier = sys.tier(src);
-        if (!cmp(srctier, tourtier)){
-            sendChanMessage(src, "You are currently not battling in the " + tourtier + " tier. Change your tier to " + tourtier + " to be able to join.");
-            return;
-        }
-        if (this.tourSpots() > 0){
-            tourmembers.push(name);
-            tourplayers[name] = sys.name(src);
-            sys.sendAll("~~Server~~: " + sys.name(src) + " joined the tournament! " + this.tourSpots() + " more spot(s) left!", tourchannel);
-            if (this.tourSpots() == 0){
-                tourmode = 2;
-                roundnumber = 0;
-                this.roundPairing();
-            }
-        }
-        return;
     }
     if (command == "viewtiers") {
         var cycleLength = 12;
@@ -4019,6 +3956,11 @@ beforeChatMessage: function(src, message, chan) {
         }
         var tar = sys.id(commandData);
 
+        // Module commands at the last point.
+        if (callplugins("handleCommand", src, message.substr(1), channel)) {
+            return;
+        }
+
         // Forward some commands to shanai in case she is online and the command character is "/"
         var forwardShanaiCommands = ["join", "subme", "unjoin", "viewround", "queue", "dq", "myflashes", "flashme", "unflashme", "tour", "iom", "ipm", "viewtiers", "tourrankings", "sub", "endtour", "queuerm", "start", "pushtour", "push", "salist", "activesa", "activesas", "tourranking", "tourdetails", "start", "lastwinners"];
 	if (sys.id("shanai") !== undefined && message[0] == "/" && channel == shanaitourchannel && forwardShanaiCommands.indexOf(command) > -1) {
@@ -4091,10 +4033,6 @@ beforeChatMessage: function(src, message, chan) {
             }
         }
 
-        // Module commands at the last point.
-        if (callplugins("handleCommand", src, message.substr(1), channel)) {
-            return;
-        }
 
         var command;
         commandbot.sendChanMessage(src, "The command " + command + " doesn't exist");
