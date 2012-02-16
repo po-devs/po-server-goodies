@@ -61,12 +61,14 @@ function Tournament(channel, globalObject)
 		else
 			var commandpart = data.split(':');
 
-		self.count = parseInt(commandpart[1]);
+		var count = parseInt(commandpart[1]);
 
-		if (isNaN(self.count) || self.count <= 2){
+		if (isNaN(count) || count <= 2){
 			sendPM(source, "You must specify a tournament size of 3 or more.");
 			return;
 		}
+		self.count = count;
+
 
 		var tiers = sys.getTierList();
 		var found = false;
@@ -105,7 +107,7 @@ function Tournament(channel, globalObject)
 	}
 
 	function remainingEntrants() {
-		return self.count - members.count;
+		return self.count - members.length;
 	}
 
 	/* Precondition: isInTour(name) is false */
@@ -329,12 +331,12 @@ function Tournament(channel, globalObject)
 
 		var count = parseInt(data);
 
-		if (isNaN(self.count) || count <= 2){
+		if (isNaN(count) || count <= 2){
 			sendPM(source, "You must specify a tournament size of 3 or more.");
 			return;
 		}
 
-		if (count > memberCount()) {
+		if (count < memberCount()) {
 			sendPM(source, "There are more than that people registered");
 			return;
 		}
