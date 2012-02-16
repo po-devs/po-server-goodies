@@ -63,7 +63,7 @@ function Tournament(channel, globalObject)
 
 		self.count = parseInt(commandpart[1]);
 
-		if (isNaN(self.count) || count <= 2){
+		if (isNaN(self.count) || self.count <= 2){
 			sendPM(source, "You must specify a tournament size of 3 or more.");
 			return;
 		}
