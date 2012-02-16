@@ -4430,8 +4430,6 @@ beforeChallengeIssued : function (src, dest, clauses, rated, mode) {
         sys.stopEvent();
         return;
     } else if (!isChallengeCup && hasChallengeCupClause) {
-        checkbot.sendMessage(src, "Challenge Cup must not be enabled in normal tiers.");
-        sys.stopEvent();
         return;
     }
 
