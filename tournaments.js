@@ -403,7 +403,9 @@ function Tournament(channel, globalObject)
 	}
 
 	function removeBattle(name) {
-		battlesStarted.splice(Math.floor(battlers.indexOf(name.toLowerCase())/2), 1);
+		var index = Math.floor(battlers.indexOf(name.toLowerCase())/2);
+		battlesStarted.splice(index, 1);
+		battlers.splice(2*index, 2);
 	}
 
 	function isBattling(name) {
@@ -413,10 +415,21 @@ function Tournament(channel, globalObject)
 	}
 
 	function areOpponents(name1, name2) {
-		var indx1 = battlers.indexOf(name2.toLowerCase()),
+		var indx1 = battlers.indexOf(name1.toLowerCase()),
 		    indx2 = battlers.indexOf(name2.toLowerCase());
-		return indx1 >= 0 && Math.floor(indx1) == Math.floor(indx2);
+		return indx1 >= 0 && Math.floor(indx1/2) == Math.floor(indx2/2);
 	}
+
+	function tourOpponent(name) {
+		var index = battlers.indexOf(name.toLowerCase()));
+		if (index == -1)
+			return null;
+		else if ((index % 2) == 0)
+			return battlers[index + 1];
+		else 
+			return battlers[index - 1];
+	}
+
 
 	function roundPairing() {
 		self.round += 1;
@@ -524,8 +537,6 @@ function Tournament(channel, globalObject)
 		battlesLost.push(loser);
 		
 		removeBattle(winner);
-                var m = Math.min(battlers.indexOf(winner.toLowerCase()), battlers.indexOf(loser.toLowerCase()));
-		battlers.splice(m, 2);
 		members.push(winner.toLowerCase());
 		delete entrants[loser.toLowerCase()];	
 
