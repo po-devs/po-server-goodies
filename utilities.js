@@ -91,7 +91,7 @@ exports = {
     },
 
     capitalize: function capitalize(string) {
-        return string.at(0).toUpperCase() + string.slice(1);
+        return string[0].toUpperCase() + string.slice(1);
     },
 
     non_flashing: function nonFlashing(name) {
