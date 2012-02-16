@@ -548,7 +548,7 @@ function Tournament(channel, globalObject)
 				return true;
 			}
 			if (sys.tier(source) != sys.tier(dest) || !cmp(sys.tier(source), self.tier)) {
-				sendPM(source, "You must be both in the tier " + tourtier + " to battle in the tourney.");
+				sendPM(source, "You must be both in the tier " + self.tier + " to battle in the tourney.");
 				return true;
 			}
 			if (self.phase == "finals" && clauses % 4 >= 4) {
