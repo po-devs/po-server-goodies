@@ -4008,11 +4008,6 @@ beforeChatMessage: function(src, message, chan) {
 
         sys.stopEvent();
 
-        if (callplugins("handleCommand", src, message.substr(1), channel)) {
-            return;
-        }
-
-        var command;
         var commandData = undefined;
         var pos = message.indexOf(' ');
 
@@ -4095,6 +4090,13 @@ beforeChatMessage: function(src, message, chan) {
                 }
             }
         }
+
+        // Module commands at the last point.
+        if (callplugins("handleCommand", src, message.substr(1), channel)) {
+            return;
+        }
+
+        var command;
         commandbot.sendChanMessage(src, "The command " + command + " doesn't exist");
         return;
     } /* end of commands */
