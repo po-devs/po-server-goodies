@@ -110,6 +110,10 @@ function Tournament(channel, globalObject)
 		return self.count - members.length;
 	}
 
+	function playingPhase() {
+		return self.phase == "playing" || self.phase == "finals";
+	}
+
 	/* Precondition: isInTour(name) is false */
 	function addEntrant(name) {
 		entrants[name.toLowerCase()] = name;
@@ -156,7 +160,7 @@ function Tournament(channel, globalObject)
 			if (self.phase == "entry") {
 				removeEntrant(name);
 				broadcast("~~Server~~: " + name + " left the tournament!");
-			} else if (self.phase == "playing" || self.phase == "finals") {
+			} else if (playingPhase()) {
 				setBattleStarted(name);
 				broadcast("~~Server~~: " + name + " left the tournament!");
 				// end battle?
@@ -167,7 +171,7 @@ function Tournament(channel, globalObject)
 
 	/* Command viewround */
 	function viewround(source) {
-		if (self.phase != "playing" || self.phase != "finals") {
+		if (!playingPhase()) {
 			sendPM(source, "Sorry, you are unable to view the round because a tournament is not currently running or is in signing up phase.");
 			return;
 		}
@@ -239,7 +243,7 @@ function Tournament(channel, globalObject)
 			if (self.phase == "entry") {
 				removeEntrant(name);
 				broadcast("~~Server~~: " + name + " was removed from the tournament by " + authority + "!");
-			} else if (self.phase == "playing" || self.phase == "finals") {
+			} else if (playingPhase()) {
 				setBattleStarted(name);
 				broadcast("~~Server~~: " + name + " was removed from the tournament by " + authority + "!");
 				// end battle?
@@ -275,7 +279,7 @@ function Tournament(channel, globalObject)
 
 	// command cancelBattle
 	function cancelBattle(source, name) {
-		if (self.phase != "playing" || self.phase != "finals") {
+		if (!playingPhase()) {
 			sendPM(source, "Wait until a tournament starts!");
 			return;
 		}
@@ -288,7 +292,7 @@ function Tournament(channel, globalObject)
 
 	// Command sub
 	function sub(source, data) {
-		if (self.phase != "playing" || self.phase != "finals") {
+		if (!playingPhase()) {
 			sendPM(source, "Wait until a tournament starts!");
 			return;
 		}
@@ -515,8 +519,8 @@ function Tournament(channel, globalObject)
 		battlesLost.push(loser);
 		
 		removeBattle(winner);
-		battlers.splice(battlers.indexOf(winner.toLowerCase(), 1));
-		battlers.splice(battlers.indexOf(loser.toLowerCase(), 1));
+                var m = Math.min(battlers.indexOf(winner.toLowerCase()), battlers.indexOf(loser.toLowerCase()));
+		battlers.splice(m, 2);
 		members.push(winner.toLowerCase());
 		delete entrants[loser.toLowerCase()];	
 
@@ -538,7 +542,7 @@ function Tournament(channel, globalObject)
 
 	// event beforeChallenge
 	function beforeChallenge(source, dest, clauses) {
-		if (self.phase != "finals" && self.phase != "playing")
+		if (!playingPhase())
 			return;
 		var name1 = sys.name(source),
 		    name2 = sys.name(dest);
@@ -564,7 +568,7 @@ function Tournament(channel, globalObject)
 	// event battleMatchup
 	function battleMatchup(source, dest, clauses, rated) {
 		// return true if one of the players is in tournament
-		return (self.phase == "running" || self.phase == "finals")
+		return (playingPhase()
 			&& (isInTour(sys.name(source)) || isInTour(sys.name(dest)));
 	}
 
