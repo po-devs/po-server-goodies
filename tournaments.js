@@ -636,16 +636,17 @@ module.tournaments = {}
 
 module.exports = {
 	init: function() {
-		// Do not reinitialize
-		if (module.tournaments[tourchannel])
-			return;
-
 		var tourchannel, channelname = "Tournaments";
 		if (sys.existChannel(channelname)) {
 			tourchannel = sys.channelId(channelname);
 		} else {
 			tourchannel = sys.createChannel(channelname);
 		}
+
+		// Do not reinitialize
+		if (module.tournaments[tourchannel])
+			return;
+
 		var tournament = new Tournament(tourchannel, script);
 		tournament.main = true;
 		tournament.announceInit();
