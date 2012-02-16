@@ -690,6 +690,7 @@ if (typeof SESSION.global() != 'undefined') {
 var Bot = require('bot.js').Bot;
 
 normalbot = bot = new Bot(Config.bot);
+mafiabot = new Bot(Config.Mafia.bot);
 channelbot = new Bot(Config.channelbot);
 kickbot = new Bot(Config.kickbot);
 capsbot = new Bot(Config.capsbot);

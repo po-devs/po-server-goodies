@@ -304,7 +304,7 @@ function Tournament(channel, globalObject)
 		}
 
 		var players = data.split(":");
-		if (!isInTour(players[0]) && !isIntour(players[1])) {
+		if (!isInTour(players[0]) && !isInTour(players[1])) {
 			sendPM(source, "Neither are in the tournament.");
 		}
 
@@ -605,6 +605,9 @@ function Tournament(channel, globalObject)
 			sys.sendMessage(src, "");
 		}
 	}
+	this.announceInit = function announceInit() {
+		broadcast("Tournaments are now running on  #" + self.channel + "!");
+	}
 
 	this.commands = {
 		join: join,
@@ -645,6 +648,8 @@ module.exports = {
 		}
 		var tournament = new Tournament(tourchannel, script);
 		tournament.main = true;
+		tournament.announceInit();
+
 		module.tournaments[tourchannel] = tournament;
 	},
 
@@ -678,6 +683,7 @@ module.exports = {
 			}
 		} else if (command == "enabletours" && sys.auth(source) >= 2) {
 			module.tournaments[channel] = new Tournament(channel);
+			module[tournaments][channel].announceInit();
 			return true;
 		}
 		return false;
