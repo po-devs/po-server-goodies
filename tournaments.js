@@ -633,6 +633,10 @@ module.tournaments = {}
 
 module.exports = {
 	init: function() {
+		// Do not reinitialize
+		if (module.tournaments[tourchannel])
+			return;
+
 		var tourchannel, channelname = "Tournaments";
 		if (sys.existChannel(channelname)) {
 			tourchannel = sys.channelId(channelname);
@@ -645,17 +649,17 @@ module.exports = {
 	},
 
 	handleCommand: function(source, message, channel) {
-		if (module.tournaments[channel] !== undefined) {
-        		var command;
-        		var commandData = "";
-        		var pos = message.indexOf(' ');
-			if (pos != -1) {
-				command = message.substring(0, pos).toLowerCase();
-				commandData = message.substr(pos+1);
-			} else {
-				command = message.substr(0).toLowerCase();
-			}
+       		var command;
+       		var commandData = "";
+       		var pos = message.indexOf(' ');
+		if (pos != -1) {
+			command = message.substring(0, pos).toLowerCase();
+			commandData = message.substr(pos+1);
+		} else {
+			command = message.substr(0).toLowerCase();
+		}
 
+		if (module.tournaments[channel] !== undefined) {
 			if (command in module.tournaments[channel].commands) {
 				module.tournaments[channel].commands[command](source, commandData);
 			        return true;
@@ -668,6 +672,13 @@ module.exports = {
 				module.tournaments[channel].authCommands[command](source, commandData);
 			        return true;
 			}
+			if (command == "disabletours" && sys.auth(source) >= 2 && channel != tourchannel) {
+				delete module.tournaments[channel];
+				return true;
+			}
+		} else if (command == "enabletours" && sys.auth(source) >= 2) {
+			module.tournaments[channel] = new Tournament(channel);
+			return true;
 		}
 		return false;
 	},
