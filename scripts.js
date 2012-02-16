@@ -623,8 +623,10 @@ POGlobal.prototype.callplugins = function callplugins(event) {
     for (var i = 0; i < plugins.length; ++i) {
         if (plugins[i].hasOwnProperty(event)) {
             try {
-                if (plugins[i][event].apply(plugins[i], args))
+                if (plugins[i][event].apply(plugins[i], args)) {
                     ret = true;
+                    break;
+                }
             } catch (e) {
                 sys.sendAll('Plugins-error on {0}: {1}'.format(plugins[i].source, e));
             }
