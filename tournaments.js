@@ -515,6 +515,11 @@ function Tournament(channel, globalObject)
 		if (!areOpponents(winner, loser)) {
 			return;
 		}
+                endBattle(winner, loser);
+	}
+
+	// common function for /dq, /unjoin and natural battle end
+	function endBattle(winner, loser) (
 		battlesLost.push(winner);
 		battlesLost.push(loser);
 		
