@@ -683,7 +683,7 @@ module.exports = {
 			}
 		} else if (command == "enabletours" && sys.auth(source) >= 2) {
 			module.tournaments[channel] = new Tournament(channel);
-			module[tournaments][channel].announceInit();
+			module.tournaments[channel].announceInit();
 			return true;
 		}
 		return false;
