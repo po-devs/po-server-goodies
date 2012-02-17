@@ -3595,12 +3595,14 @@ ownerCommand: function(src, command, commandData, tar) {
         var POglobal = SESSION.global();
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if (commandData == POglobal.plugins[i].source) {
-                updateModule(POglobal.plugins[i].source, function(module) {
-                    plugins[i] = module;
-                    module.source = POglobal.plugins[i].source;
+		var source = POglobal.plugins[i].source;
+                updateModule(source, function(module) {
+                    POglobal.plugins[i] = module;
+                    module.source = source;
                     module.init();
+                    normalbot.sendChanMessage(src, "Module " + source + " updated!");
                 });
-                normalbot.sendChanMessage(src, "Module " + POglobal.plugins[i].source + " updated!");
+                normalbot.sendChanMessage(src, "Downloading module " + source + "!");
                 return;
             }
         }
