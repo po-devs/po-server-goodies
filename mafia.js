@@ -1937,23 +1937,25 @@ module.exports = mafia = new function() {
         }
     }
 
-    this.onMute = this.onMban = function(src) {
-        var name = mafia.correctCase(sys.name(src));
-        if (mafia.isInGame(name)) {
-            mafia.removePlayer(name);
-            mafia.testWin();
-        }
+    // we can always slay them :3
+    this.onMute = function(src) {
+        mafia.slayUser(Config.capsbot, sys.name(src));
     }
+
+    this.onMban = function(src) {
+        mafia.slayUser(Config.Mafia.bot, sys.name(src));
+    }
+
+    this.onKick = function(src) {
+        mafia.slayUser(Config.floodbot, sys.name(src));
+    }
+
     this.stepEvent = function() {
         try {
             mafia.tickDown();
         } catch(err) {
             mafiabot.sendAll("error occurred: " + err, mafiachan);
         }
-    }
-
-    this.onKick = function(src) {
-        mafia.slayUser(Config.capsbot, sys.name(src));
     }
 
     this.init = function() {
