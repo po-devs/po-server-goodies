@@ -12,7 +12,7 @@ if (!SESSION.global().hasOwnProperty("tournamentData"))
 	SESSION.global().tournamentData = {};
 var tournamentData = SESSION.global().tournamentData;
 
-function Tournament(channel, globalObject)
+function Tournament(channel)
 {
 
 	/* reuse variables from SESSION memory if possible */
@@ -493,7 +493,8 @@ function Tournament(channel, globalObject)
 				var winner = firstPlayer();
 				var num = self.count;
 				var noPoints = cmp(winner,self.starter) && sys.auth(sys.id(winner)) == 0;
-				globalObject.updateTourStats(tier, time, winner, num, noPoints);
+				if (typeof script == "object" && script.updateTourStats)
+					script.updateTourStats(tier, time, winner, num, noPoints);
 			}
 
 			return;
@@ -672,7 +673,7 @@ module.exports = {
 		if (module.tournaments[tourchannel])
 			return;
 
-		var tournament = new Tournament(tourchannel, script);
+		var tournament = new Tournament(tourchannel);
 		tournament.main = true;
 		tournament.announceInit();
 
