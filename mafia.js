@@ -6,10 +6,14 @@
 
 var is_command = require("utilities.js").is_command;
 
-module.exports = mafia = new function() {
+var mafia = module.exports = new function() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
     this.version = "2012-01-21.1";
+
+    if (!SESSION.global().mafiaData) {
+        SESSION.global().mafiaData = {};
+    }
 
     var noPlayer = '*';
     var CurrentGame;
@@ -44,7 +48,6 @@ module.exports = mafia = new function() {
     function cap(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
-
 
 
     var defaultTheme = {
@@ -517,7 +520,9 @@ module.exports = mafia = new function() {
         }
         return [];
     }
-       this.isInGame = function(player) {
+    // End of Theme
+
+    this.isInGame = function(player) {
         if (mafia.state == "entry") {
             return this.signups.indexOf(player) != -1;
         }
@@ -1944,6 +1949,7 @@ module.exports = mafia = new function() {
 
     this.onMban = function(src) {
         mafia.slayUser(Config.Mafia.bot, sys.name(src));
+        sys.kick(src, mafiachan);
     }
 
     this.onKick = function(src) {
