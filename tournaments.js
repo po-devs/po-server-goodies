@@ -28,18 +28,22 @@ function Tournament(channel, globalObject)
 
 	var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
 
-	function sendPM(id,message) {
-		sys.sendMessage(id, Config.tourneybot + ": " + message, self.channel);
+	function sendPM(id, message, bot) {
+		var bot = arguments.length == 1 ? false : bot;
+
+		if (bot) {
+			message = Config.tourneybot + ": " + message;
+		}
+		sys.sendMessage(id, message, self.channel);
 	}
 
 	function broadcast(message, bot) {
 		var bot = arguments.length == 1 ? false : bot;
 
 		if (bot) {
-			sys.sendAll(Config.tourneybot + ": " + message, self.channel);
-		} else {
-			sys.sendAll(message, self.channel);
+			message = Config.tourneybot + ": " + message;
 		}
+		sys.sendAll(message, self.channel);
 	}
 
 	function wall(message) {
@@ -182,59 +186,59 @@ function Tournament(channel, globalObject)
 			return;
 		}
 		
-		sendPM(source, "");
-		sendPM(source, border);
-		sendPM(source, "");
-		sendPM(source, "*** ROUND " + self.round + " OF " + self.tier.toUpperCase() + " TOURNAMENT ***");
+		sendPM(source, "", false);
+		sendPM(source, border, false);
+		sendPM(source, "", false);
+		sendPM(source, "*** ROUND " + self.round + " OF " + self.tier.toUpperCase() + " TOURNAMENT ***", false);
 
 		if (battlesLost.length > 0) {
-			sendPM(source, "");
-			sendPM(source, "*** Battles finished ***");
-			sendPM(source, "");
+			sendPM(source, "", false);
+			sendPM(source, "*** Battles finished ***", false);
+			sendPM(source, "", false);
 			for (var i = 0; i < battlesLost.length; i+= 2) {
-				sendPM(source, battlesLost[i] + " won against " + battlesLost[i+1]);
+				sendPM(source, battlesLost[i] + " won against " + battlesLost[i+1], false);
 			}
-			sendPM(source, "");
+			sendPM(source, "", false);
 		}
 
 		if (battlers.length > 0) {
 			if (battlesStarted.indexOf(true) != -1) {
-				sendPM(source, "");
-				sendPM(source, "*** Ongoing battles ***");
-				sendPM(source, "");
+				sendPM(source, "", false);
+				sendPM(source, "*** Ongoing battles ***", false);
+				sendPM(source, "", false);
 				for (var i = 0; i < battlers.length; i+=2) {
 					if (battlesStarted[i/2]) {
-						sendPM(source, padd(entrants[battlers[i]]) + " VS " + entrants[battlers[i+1]]);
+						sendPM(source, padd(entrants[battlers[i]]) + " VS " + entrants[battlers[i+1]], false);
 					}
 				}
-				sendPM(source, "");
+				sendPM(source, "", false);
 			}
 			if (battlesStarted.indexOf(false) != -1) {
-				sendPM(source, "");
-				sendPM(source, "*** Yet to start battles ***");
-				sendPM(source, "");
+				sendPM(source, "", false);
+				sendPM(source, "*** Yet to start battles ***", false);
+				sendPM(source, "", false);
 				for (var i = 0; i < battlers.length; i+=2) {
 					if (!battlesStarted[i/2]) {
-						sendPM(source, padd(entrants[battlers[i]]) + " VS " + entrants[battlers[i+1]]);
+						sendPM(source, padd(entrants[battlers[i]]) + " VS " + entrants[battlers[i+1]], false);
 					}
 				}
-				sendPM(source, "");
+				sendPM(source, "", false);
 			}
 		}
 		if (members.length > 0) {
-			sendPM(source, "");
-			sendPM(source, "*** Members to the next round ***");
-			sendPM(source, "");
+			sendPM(source, "", false);
+			sendPM(source, "*** Members to the next round ***", false);
+			sendPM(source, "", false);
 			var s = [];
 			for (var i = 0; i < members.length; ++i) {
 				s.push(entrants[members[i]]);
 			}
-			sendPM(source, s.join(", "));
-			sendPM(source, "");
+			sendPM(source, s.join(", "), false);
+			sendPM(source, "", false);
 		}
 
-		sendPM(source, border);
-		sendPM(source, "");
+		sendPM(source, border, false);
+		sendPM(source, "", false);
 	}
 
 	// Command dq (disqualify)
