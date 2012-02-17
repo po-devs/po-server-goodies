@@ -76,7 +76,7 @@ if (typeof require === "undefined")
     if (!require.cache)
         require.cache = {};
     
-if (typeof updateModule === "undefined")
+//if (typeof updateModule === "undefined")
     updateModule = function updateModule(module_name, callback) {
        var base_url = Config.base_url;
        var url;
