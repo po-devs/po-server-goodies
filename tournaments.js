@@ -7,24 +7,45 @@ if (typeof Config == "undefined")
     Config = {}
 if (!Config.tourneybot) Config.tourneybot = '±TourneyBot';
 
+/* use SESSION to manage reloads */
+if (!SESSION.global().hasOwnProperty("tournamentData"))
+	SESSION.global().tournamentData = {};
+var tournamentData = SESSION.global().tournamentData;
+
 function Tournament(channel, globalObject)
 {
-	var self = this;
 
-	self.channel = channel;
-	self.running = false;
-	self.main = false;
-	self.count = 0;
-	self.tier = "";
-	self.phase = "";
-	self.starter = "";
-	self.round = 0;
-	var battlesStarted = [];
-	var battlesLost = [];
+	/* reuse variables from SESSION memory if possible */
+	if (!tournamentData.hasOwnProperty(channel)) {
 
-	var entrants = {};
-	var members = [];
-	var battlers = [];
+		this.channel = channel;
+		this.running = false;
+		this.main = false;
+		this.count = 0;
+		this.tier = "";
+		this.phase = "";
+		this.starter = "";
+		this.round = 0;
+
+		tournamentData[channel] = {
+			self: this,
+			battlesStarted: [],
+			battlesLost: [],
+			entrants: {},
+			members: [],
+			battlers: []
+		};
+	}
+
+	var data = tournamentData[channel];
+
+	var self = data.self;
+	var battlesStarted = data.battlesStarted;
+	var battlesLost = data.battlesLost;
+
+	var entrants = data.entrants;
+	var members = data.members;
+	var battlers = data.battlers;
 
 	var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
 
@@ -610,7 +631,7 @@ function Tournament(channel, globalObject)
 		}
 	}
 	this.announceInit = function announceInit() {
-		broadcast("Tournaments are now running on  #" + self.channel + "!");
+		broadcast("Tournaments are now running on  #" + sys.channel(self.channel) + "!");
 	}
 
 	this.commands = {
@@ -647,7 +668,7 @@ module.exports = {
 			tourchannel = sys.createChannel(channelname);
 		}
 
-		// Do not reinitialize
+		// Do not reinitialize - in case init is called many times
 		if (module.tournaments[tourchannel])
 			return;
 
