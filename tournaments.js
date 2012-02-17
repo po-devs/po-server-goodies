@@ -331,6 +331,7 @@ function Tournament(channel)
 		var players = data.split(":");
 		if (!isInTour(players[0]) && !isInTour(players[1])) {
 			sendPM(source, "Neither are in the tournament.");
+			return;
 		}
 
 		broadcast(players[0] + " and " + players[1] + " were exchanged places in the ongoing tournament by "  + sys.name(source));
