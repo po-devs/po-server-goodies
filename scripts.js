@@ -4308,20 +4308,24 @@ updateTourStats : function(tier, time, winner, num, purgeTime, noPoints) {
         tier = tourwinners[0][0];
         points = numToPoints(tourwinners[0][2]);
         player = tourwinners[0][3];
-        tourstats[player].points -= points;
-        tourstats[player].details.pop();
-        if (tourstats[player].points == 0) {
-            delete tourstats[player];
+
+	//tourstats[player] can be undefined, as 0 points tourwinners still are registered and script used to not record any tour stats for them
+        if (tourstats[player] != undefined) {
+		tourstats[player].points -= points;
+	        tourstats[player].details.pop();
+        	if (tourstats[player].points == 0) {
+	            delete tourstats[player];
+	        }
+	        tourrankingsbytier[tier][player] -= points;
+	        if (tourrankingsbytier[tier][player] == 0) {
+        	    delete tourrankingsbytier[tier][player];
+	            if (isEmptyObject(tourrankingsbytier[tier])) {
+	                delete tourrankingsbytier[tier];
+                   }
+                }
+	    }
+            tourwinners.pop();
         }
-        tourrankingsbytier[tier][player] -= points;
-        if (tourrankingsbytier[tier][player] == 0) {
-            delete tourrankingsbytier[tier][player];
-            if (isEmptyObject(tourrankingsbytier[tier])) {
-                delete tourrankingsbytier[tier];
-            }
-        }
-        tourwinners.pop();
-    }
 }
 
 ,
