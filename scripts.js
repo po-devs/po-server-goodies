@@ -4280,7 +4280,7 @@ updateTourStats : function(tier, time, winner, num, purgeTime, noPoints) {
     time = parseInt(time); // in case time is date or string
     winner = winner.toLowerCase();
     tourwinners.push([tier, time, num, winner]);
-    if (points > 0) {
+    //if (points > 0) {
 
         if (tourstats[winner] === undefined) {
             tourstats[winner] = {'points': 0, 'details': []};
@@ -4301,27 +4301,31 @@ updateTourStats : function(tier, time, winner, num, purgeTime, noPoints) {
         jsonObject.tourstats = tourstats
         jsonObject.tourrankingsbytier = tourrankingsbytier
         sys.writeToFile('tourstats.json', JSON.stringify(jsonObject));
-    }
+    //}
 
     var player;
     while (tourwinners.length > 0 && (parseInt(tourwinners[0][1]) + purgeTime) < time) {
         tier = tourwinners[0][0];
         points = numToPoints(tourwinners[0][2]);
         player = tourwinners[0][3];
-        tourstats[player].points -= points;
-        tourstats[player].details.pop();
-        if (tourstats[player].points == 0) {
-            delete tourstats[player];
+
+	//tourstats[player] can be undefined, as 0 points tourwinners still are registered and script used to not record any tour stats for them
+        if (tourstats[player] != undefined) {
+		tourstats[player].points -= points;
+	        tourstats[player].details.pop();
+        	if (tourstats[player].points == 0) {
+	            delete tourstats[player];
+	        }
+	        tourrankingsbytier[tier][player] -= points;
+	        if (tourrankingsbytier[tier][player] == 0) {
+        	    delete tourrankingsbytier[tier][player];
+	            if (isEmptyObject(tourrankingsbytier[tier])) {
+	                delete tourrankingsbytier[tier];
+                   }
+                }
+	    }
+            tourwinners.pop();
         }
-        tourrankingsbytier[tier][player] -= points;
-        if (tourrankingsbytier[tier][player] == 0) {
-            delete tourrankingsbytier[tier][player];
-            if (isEmptyObject(tourrankingsbytier[tier])) {
-                delete tourrankingsbytier[tier];
-            }
-        }
-        tourwinners.pop();
-    }
 }
 
 ,
