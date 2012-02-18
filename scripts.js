@@ -4280,7 +4280,7 @@ updateTourStats : function(tier, time, winner, num, purgeTime, noPoints) {
     time = parseInt(time); // in case time is date or string
     winner = winner.toLowerCase();
     tourwinners.push([tier, time, num, winner]);
-    if (points > 0) {
+    //if (points > 0) {
 
         if (tourstats[winner] === undefined) {
             tourstats[winner] = {'points': 0, 'details': []};
@@ -4301,7 +4301,7 @@ updateTourStats : function(tier, time, winner, num, purgeTime, noPoints) {
         jsonObject.tourstats = tourstats
         jsonObject.tourrankingsbytier = tourrankingsbytier
         sys.writeToFile('tourstats.json', JSON.stringify(jsonObject));
-    }
+    //}
 
     var player;
     while (tourwinners.length > 0 && (parseInt(tourwinners[0][1]) + purgeTime) < time) {
