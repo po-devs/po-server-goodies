@@ -289,7 +289,7 @@ module.exports = new function() {
 
     this.onHelp = function(src, topic, channel) {
         if (topic == "suspectvoting") {
-            suspectVoting.handleCommand(src, "votinghelp", channel);
+            this.handleCommand(src, "votinghelp", channel);
             return true;
         }
     }
