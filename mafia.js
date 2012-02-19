@@ -11,10 +11,6 @@ var mafia = module.exports = new function() {
     // Otherwise mafia game won't get reloaded
     this.version = "2012-01-21.1";
 
-    if (!SESSION.global().mafiaData) {
-        SESSION.global().mafiaData = {};
-    }
-
     var noPlayer = '*';
     var CurrentGame;
     var PreviousGames;
