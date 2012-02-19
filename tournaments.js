@@ -7,10 +7,7 @@ if (typeof Config == "undefined")
     Config = {}
 if (!Config.tourneybot) Config.tourneybot = '±TourneyBot';
 
-/* use SESSION to manage reloads */
-if (!SESSION.global().hasOwnProperty("tournamentData"))
-	SESSION.global().tournamentData = {};
-var tournamentData = SESSION.global().tournamentData;
+var tournamentData;
 
 function Tournament(channel)
 {
@@ -663,6 +660,11 @@ module.tournaments = {}
 
 module.exports = {
 	init: function() {
+		/* use SESSION.global() to save data across script reloads*/
+		if (!SESSION.global().hasOwnProperty("tournamentData"))
+			SESSION.global().tournamentData = {};
+		tournamentData = SESSION.global().tournamentData;
+
 		var tourchannel, channelname = "Tournaments";
 		if (sys.existChannel(channelname)) {
 			tourchannel = sys.channelId(channelname);
