@@ -183,6 +183,8 @@ function POUser(id)
     this.sametier = undefined;
     /* name history */
     this.namehistory = [];
+    /* channels watched */
+    this.watched = [];
     /* last line */
     this.lastline = {message: null, time: 0};
     /* login time */
@@ -297,6 +299,20 @@ function POChannel(id)
     this.watchers = [];
     this.ignorecaps = false;
     this.ignoreflood = false;
+}
+
+POChannel.prototype.beforeMessage = function(src, msg) {
+   this.watchers = this.watchers || [];
+   for (var i = 0; i < this.watchers.length; i++) {
+        sys.sendMessage(this.watchers[i], "[#" + sys.channel(this.id) + "] " + sys.name(src) + " -- " + msg, staffchannel);
+   }
+}
+
+POChannel.prototype.removeWatcher = function (id) {
+    if (this.watchers != undefined && this.watchers.indexOf(id) != -1) {
+        var index = this.watchers.indexOf(id);
+        this.watchers = this.watchers.slice(0, index) + this.watchers.slice(index+1); 
+    }
 }
 
 POChannel.prototype.toString = function() {
@@ -654,7 +670,7 @@ function getplugins() {
     return SESSION.global().getplugins.apply(SESSION.global(), arguments);
 }
 
-SESSION.identifyScriptAs("PO Scripts v0.005");
+SESSION.identifyScriptAs("PO Scripts v0.004");
 SESSION.registerGlobalFactory(POGlobal);
 SESSION.registerUserFactory(POUser);
 SESSION.registerChannelFactory(POChannel);
@@ -1566,6 +1582,15 @@ beforeLogOut : function(src) {
         sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Disconnected as MU" + "\n");
     if (sys.auth(src) > 0 && sys.auth(src) <= 3)
         sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Disconnected as Auth" + "\n");
+    var w = SESSION.users(src).watched;
+    if (w != undefined) {
+       for (i in w) {
+           var c = SESSION.channels(w[i]);
+           if (c != undefined) {
+               c.removeWatcher(src);
+           }
+       }
+    }
 }
 
 ,
@@ -2934,6 +2959,8 @@ adminCommand: function(src, command, commandData, tar) {
         if (cid != undefined) {
             SESSION.channels(cid).watchers.push(src);
             channelbot.sendChanMessage(src, "You're now watching " + sys.channel(cid) + "!");
+            this.watched = this.watched || [];
+            this.watched.push(cid);
             return;
         }
     }
@@ -4229,8 +4256,9 @@ afterChatMessage : function(src, message, chan)
             }
             user.timecount += dec*7;
         }
-        var message = "" + sys.name(src) + " was kicked " + (sys.auth(src) == 0 ? "and muted " : "") + "for flood.";
+
         if (user.floodcount > linecount) {
+            var message = "" + sys.name(src) + " was kicked " + (sys.auth(src) == 0 ? "and muted " : "") + "for flood.";
             if (user.smuted) {
                 sys.sendMessage(src, message);
                 kickbot.sendAll("" + sys.name(src) + " was kicked for flood while smuted.", staffchannel);
