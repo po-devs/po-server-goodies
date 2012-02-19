@@ -294,6 +294,7 @@ function POChannel(id)
     this.meoff = undefined;
     this.muted = {ips: {}};
     this.banned = {ips: {}};
+    this.watchers = [];
     this.ignorecaps = false;
     this.ignoreflood = false;
 }
@@ -653,7 +654,7 @@ function getplugins() {
     return SESSION.global().getplugins.apply(SESSION.global(), arguments);
 }
 
-SESSION.identifyScriptAs("PO Scripts v0.004");
+SESSION.identifyScriptAs("PO Scripts v0.005");
 SESSION.registerGlobalFactory(POGlobal);
 SESSION.registerUserFactory(POUser);
 SESSION.registerChannelFactory(POChannel);
@@ -793,7 +794,8 @@ var commands = {
         "/nameban regexp: Adds a regexp ban on usernames.",
         "/nameunban full_regexp: Removes a regexp ban on usernames.",
         "/destroychan [channel]: Destroy a channel (official channels are protected).",
-        "/channelusers [channel]: Lists users on a channel."
+        "/channelusers [channel]: Lists users on a channel.",
+        "/watch [channel]: See the chat of a channel"
     ],
     owner:
     [
@@ -2927,6 +2929,14 @@ adminCommand: function(src, command, commandData, tar) {
         }
         return;
     }
+    if (command == "watch") {
+        var cid = sys.channelId(commandData);
+        if (cid != undefined) {
+            SESSION.channels(cid).watchers.push(src);
+            channelbot.sendChanMessage(src, "You're now watching " + sys.channel(cid) + "!");
+            return;
+        }
+    }
      if (command == "megauseroff") {
         if (tar != undefined) {
             SESSION.users(tar).megauser = false;
@@ -4238,7 +4248,7 @@ afterChatMessage : function(src, message, chan)
             return;
         }
     }
-
+    SESSION.channels(channel).beforeMessage(src, message);
 } /* end of afterChatMessage */
 
 ,
