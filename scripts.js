@@ -1766,7 +1766,7 @@ userCommand: function(src, command, commandData, tar) {
         }
 
 
-
+        SESSION.channels(channel).beforeMessage(src, "/me " + commandData);
         commandData=this.html_escape(commandData)
         if (command == "me") {
             sys.sendHtmlAll("<font color='#0483c5'><timestamp/> *** <b>" + this.html_escape(sys.name(src)) + "</b> " + commandData + "</font>", channel);
