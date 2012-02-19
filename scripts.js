@@ -928,7 +928,7 @@ init : function() {
     "Rule #9 - Do not ask for Auth:",
     "- Authority is given upon merit. By asking you have pretty much eliminated your chances at becoming an Auth in the future.",
     "Rule #10 - Do not Insult Auth:",
-    "- Insulting Auth will result in immediate punishment, even if it's not in one of the official channels.",
+    "- Insulting an authority figure can result in immediate punishment, even if it's not in one of the official channels.",
     "Rule #11 - No minimodding:",
     "- Server has moderators for a reason. If someone breaks the rules, alert the auth, do not try to moderate yourself.",
     "Rule #12 - Do not share other people's personal information without their permission:",
