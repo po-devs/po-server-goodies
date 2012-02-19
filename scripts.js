@@ -811,7 +811,7 @@ var commands = {
         "/nameunban full_regexp: Removes a regexp ban on usernames.",
         "/destroychan [channel]: Destroy a channel (official channels are protected).",
         "/channelusers [channel]: Lists users on a channel.",
-        "/watch [channel]: See the chat of a channel"
+        "/[un]watch [channel]: See the chat of a channel"
     ],
     owner:
     [
@@ -2961,6 +2961,14 @@ adminCommand: function(src, command, commandData, tar) {
             channelbot.sendChanMessage(src, "You're now watching " + sys.channel(cid) + "!");
             this.watched = this.watched || [];
             this.watched.push(cid);
+            return;
+        }
+    }
+    if (command == "unwatch") {
+        var cid = sys.channelId(commandData);
+        if (cid != undefined) {
+            SESSION.channels(cid).removeWatcher(src);
+            channelbot.sendChanMessage(src, "You've stopped watching " + sys.channel(cid) + "!");
             return;
         }
     }
