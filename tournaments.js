@@ -697,6 +697,7 @@ function Tournament(channel)
 				return true;
 			}
 			var tierClauses = sys.getClauses(self.tier);
+			/*
 			if (clauses != tierClauses) {
 				var errors = clauseError(clauses, tierClauses);
 				var ignoreExtra = [FREEZE_CLAUSE, DISALLOW_SPECS];
@@ -709,6 +710,7 @@ function Tournament(channel)
 					sendPM(source, "You must add following clauses to your challenge: " + missing.join(", "));
 				return true;
 			}
+			*/
 			if (self.phase == "finals" && hasClause(clauses, DISALLOW_SPECS)) {
 				sendPM(source, "You must not use \"disallow specs\" in finals.");
 				return true;
