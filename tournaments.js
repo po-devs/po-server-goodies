@@ -9,16 +9,30 @@ if (!Config.tourneybot) Config.tourneybot = '±TourneyBot';
 
 var tournamentData, permaTours;
 
+var SLEEP_CLAUSE="Sleep Clause",
+    FREEZE_CLAUSE="Freeze Clause",
+    DISALLOW_SPECS="Disallow Spectators",
+    ITEM_CLAUSE="Item Clause",
+    CHALLENGE_CUP="Challenge Cup",
+    NO_TIMEOUT="No Timeout",
+    SPECIES_CLAUSE="Species Clause",
+    WIFI_CLAUSE="Wifi Clause",
+    SELF_KO_CLAUSE="Self KO Clause";
+
 var clauseMap = {
-	1: "Sleep Clause",
-	2: "Freeze Clause",
-	4: "Disallow Spectator",
-	8: "Item Clause",
-	16: "Challenge Cup",
-	32: "No Timeout",
-	64: "Species Clause",
-	128: "Wifi Clause",
-	256: "Self KO Clause"	
+	1: SLEEP_CLAUSE,
+	2: FREEZE_CLAUSE,
+	4: DISALLOW_SPECS,
+	8: ITEM_CLAUSE,
+	16: CHALLENGE_CUP,
+	32: NO_TIMEOUT,
+	64: SPECIES_CLAUSE,
+	128: WIFI_CLAUSE,
+	256: SELF_KO_CLAUSE	
+}
+
+function hasClause(clauses, clause) {
+	return (clauses % clause) > 0;
 }
 
 function clauseList(clauses) {
@@ -682,7 +696,20 @@ function Tournament(channel)
 				sendPM(source, "You must be both in the tier " + self.tier + " to battle in the tourney.");
 				return true;
 			}
-			if (self.phase == "finals" && clauses % 4 >= 4) {
+			var tierClauses = sys.getClauses(self.tier);
+			if (clauses != tierClauses) {
+				var errors = clauseError(clauses, tierClauses);
+				var ignoreExtra = [FREEZE_CLAUSE, DISALLOW_SPECS];
+				var allowMissing = [FREEZE_CLAUSE, NO_TIMEOUT];
+				var extra = errors.extra.filter(function (e) { return ignoreExtra.indexOf(e) == -1; });
+				var missing = errors.missing.filter(function (e) { return allowMissing.indexOf(e) == -1; });
+				if (extra.length > 0)
+					sendPM(source, "You must remove following clauses from your challenge: " + extra.join(", "));
+				if (missing.length > 0)
+					sendPM(source, "You must add following clauses to your challenge: " + missing.join(", "));
+				return true;
+			}
+			if (self.phase == "finals" && hasClause(clauses, DISALLOW_SPECS)) {
 				sendPM(source, "You must not use \"disallow specs\" in finals.");
 				return true;
 			}
@@ -695,6 +722,7 @@ function Tournament(channel)
 	// event battleMatchup
 	function battleMatchup(source, dest, clauses, rated) {
 		// return true if one of the players is in tournament
+		// will stop the FindBattle match
 		return playingPhase() && (isInTour(sys.name(source)) || isInTour(sys.name(dest)));
 	}
 
