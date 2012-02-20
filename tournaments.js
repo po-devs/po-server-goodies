@@ -291,6 +291,7 @@ function Tournament(channel)
 
 		if (isInTour(name)) {
 			sendPM(source, name + " is already in the tournament.");
+			return;
 		}
 
 		addEntrant(name);
