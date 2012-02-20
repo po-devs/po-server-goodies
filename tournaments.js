@@ -313,7 +313,12 @@ function Tournament(channel)
 		}
 
 		if (isBattling(name)) {
-			sendPM(source, name + " can forfeit their battle and rematch now.")
+			sendPM(source, name + " can forfeit their battle and rematch now.");
+			sendPM(sys.id(name), "You can forfeit your battle and rematch now.");
+			sendPM(sys.id(tourOpponent(name)), "You can forfeit your battle and rematch now.");
+			setBattleStarted(name, false);
+		} else {
+			sendPM(source, name + " is not battling.")
 			setBattleStarted(name, false);
 		}
 	}
@@ -470,7 +475,7 @@ function Tournament(channel)
 	function isBattling(name) {
 		var indx = battlers.indexOf(name.toLowerCase());
 		if (indx == -1) return false;
-		return battlesStarted(Math.floor(indx/2));
+		return battlesStarted[Math.floor(indx/2)];
 	}
 
 	function areOpponents(name1, name2) {
