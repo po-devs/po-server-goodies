@@ -560,7 +560,7 @@ function Tournament(channel)
 			broadcast("");
 			broadcast(border);
 			broadcast("");
-			broadcast("THE WINNER OF THE " + self.tier.toUpperCase() + " TOURNAMENT IS : " + firstPlayer());
+			broadcast("THE WINNER OF THE " + self.tier.toUpperCase() + " TOURNAMENT IS : " + casedName(firstPlayer()));
 			broadcast("");
 			broadcast("*** Congratulations, " + casedNamed(firstPlayer()) + ", on your success! ***");
 			broadcast("");
