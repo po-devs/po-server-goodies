@@ -346,21 +346,22 @@ function Tournament(channel)
 		// change in members
 		for (var i = 0; i < members.length; ++i) {
 			if (members[i] == p1) {
-				setBattleStarted(members[i], false);
-				members[i] = players[0];
+				setBattleStarted(p1, false);
+				members[i] = p2;
 			} else if (members[i] == p2) {
-				setBattleStarted(members[i], false);
-				members[i] = players[1];
+				setBattleStarted(p2, false);
+				members[i] = p2;
 			}
 		}
 		// change in battlers
 		for (var i = 0; i < battlers.length; ++i) {
 			if (battlers[i] == p1) {
-				battlers[i] = players[0];
+				battlers[i] = p2;
 			} else if (battlers[i] == p2) {
-				battlers[i] = players[1];
+				battlers[i] = p1;
 			}
 		}
+
 		// change in entrants
 		if (!isInTour(players[0])) {
 			entrants[p1] = players[0];
