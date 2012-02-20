@@ -336,6 +336,13 @@ function Tournament(channel)
 		var p1 = players[0].toLowerCase();
 		var p2 = players[1].toLowerCase();
 
+		broadcast("Contents of variables before subbing:");
+		broadcast("members: [" + members.map(function (i) { return i.toString(); }).join(", ") + "]");
+		broadcast("battlers: [" + battlers.map(function (i) { return i.toString(); }).join(", ") + "]");
+		broadcast("battlesStarted: [" + battlesStarted.map(function (i) { return i.toString(); }).join(", ") + "]");
+		var e = []; for (var x in entrants) { e.push("" +x + ": " + entrants[x]);}
+		broadcast("entrants: {" + e.join(", ") + "}");
+
 		// change in members
 		for (var i = 0; i < members.length; ++i) {
 			if (members[i] == p1) {
@@ -362,6 +369,15 @@ function Tournament(channel)
 			entrants[p2] = players[1];
 			delete entrants[p1];
 		}
+
+		broadcast("Contents of variables before subbing:");
+		broadcast("members: [" + members.map(function (i) { return i.toString(); }).join(", ") + "]");
+		broadcast("battlers: [" + battlers.map(function (i) { return i.toString(); }).join(", ") + "]");
+		broadcast("battlesStarted: [" + battlesStarted.map(function (i) { return i.toString(); }).join(", ") + "]");
+		var e = []; for (var x in entrants) { e.push("" +x + ": " + entrants[x]);}
+		broadcast("entrants: {" + e.join(", ") + "}");
+
+
 	}
 
 	// Command changeCount
