@@ -536,6 +536,7 @@ function Tournament(channel)
 			else {
 				wall ("  " + padd(name1) + " VS " + name2);
 			}
+			battlesStarted.push(false);
 		}
 
 		if (members.length > 0) {
