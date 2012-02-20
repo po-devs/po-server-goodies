@@ -700,7 +700,7 @@ function Tournament(channel)
 			if (clauses != tierClauses) {
 				var errors = clauseError(clauses, tierClauses);
 				var ignoreExtra = [FREEZE_CLAUSE, DISALLOW_SPECS];
-				var allowMissing = [FREEZE_CLAUSE, NO_TIMEOUT];
+				var allowMissing = [NO_TIMEOUT, DISALLOW_SPECS];
 				var extra = errors.extra.filter(function (e) { return ignoreExtra.indexOf(e) == -1; });
 				var missing = errors.missing.filter(function (e) { return allowMissing.indexOf(e) == -1; });
 				if (extra.length > 0)
