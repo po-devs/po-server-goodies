@@ -696,7 +696,7 @@ module.exports = {
 		module.tournaments[tourchannel] = tournament;
 
 		for (var i = 0; i < permaTours; ++i) {
-			if (sys.channelName(permaTours[i]) !== undefined) {
+			if (sys.channel(permaTours[i]) !== undefined) {
 				tournament = new Tournament(permaTours[i]);
 				tournament.announceInit();
 				module.tournaments[permaTours[i]] = tournament;
