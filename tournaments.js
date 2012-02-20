@@ -23,24 +23,20 @@ function Tournament(channel)
 		this.phase = "";
 		this.starter = "";
 		this.round = 0;
+		this.battlesStarted = [];
+		this.battlesLost = [];
+		this.entrants = {};
+		this.members = [];
+		this.battlers = [];
 
 		tournamentData[channel] = {
 			self: this,
-			battlesStarted: [],
-			battlesLost: [],
-			entrants: {},
-			members: [],
-			battlers: []
 		};
 	}
 
+	// Save everything that should be retained after script update
+	// to self
 	var self = tournamentData[channel].self;
-	var battlesStarted = tournamentData[channel].battlesStarted;
-	var battlesLost = tournamentData[channel].battlesLost;
-
-	var entrants = tournamentData[channel].entrants;
-	var members = tournamentData[channel].members;
-	var battlers = tournamentData[channel].battlers;
 
 	var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
 
@@ -118,16 +114,16 @@ function Tournament(channel)
 		self.starter = sys.name(source);
 		self.round = 0;
 
-		entrants = {};
-		members = [];
+		self.entrants = {};
+		self.members = [];
 	}
 
 	function isInTour(name) {
-		return name.toLowerCase() in entrants;
+		return name.toLowerCase() in self.entrants;
 	}
 
 	function remainingEntrants() {
-		return self.count - members.length;
+		return self.count - self.members.length;
 	}
 
 	function playingPhase() {
@@ -136,13 +132,13 @@ function Tournament(channel)
 
 	/* Precondition: isInTour(name) is false */
 	function addEntrant(name) {
-		entrants[name.toLowerCase()] = name;
-		members.push(name.toLowerCase());
+		self.entrants[name.toLowerCase()] = name;
+		self.members.push(name.toLowerCase());
 	}
 
 	function removeEntrant(name) {
-		delete entrants[name.toLowerCase()];
-		members.splice(members.indexOf(name.toLowerCase()), 1);
+		delete self.entrants[name.toLowerCase()];
+		self.members.splice(self.members.indexOf(name.toLowerCase()), 1);
 	}
 
         // Command join
@@ -207,47 +203,47 @@ function Tournament(channel)
 		sendPM(source, "", false);
 		sendPM(source, "*** ROUND " + self.round + " OF " + self.tier.toUpperCase() + " TOURNAMENT ***", false);
 
-		if (battlesLost.length > 0) {
+		if (self.battlesLost.length > 0) {
 			sendPM(source, "", false);
 			sendPM(source, "*** Battles finished ***", false);
 			sendPM(source, "", false);
-			for (var i = 0; i < battlesLost.length; i+= 2) {
-				sendPM(source, battlesLost[i] + " won against " + battlesLost[i+1], false);
+			for (var i = 0; i < self.battlesLost.length; i+= 2) {
+				sendPM(source, self.battlesLost[i] + " won against " + self.battlesLost[i+1], false);
 			}
 			sendPM(source, "", false);
 		}
 
-		if (battlers.length > 0) {
-			if (battlesStarted.indexOf(true) != -1) {
+		if (self.battlers.length > 0) {
+			if (self.battlesStarted.indexOf(true) != -1) {
 				sendPM(source, "", false);
 				sendPM(source, "*** Ongoing battles ***", false);
 				sendPM(source, "", false);
-				for (var i = 0; i < battlers.length; i+=2) {
-					if (battlesStarted[i/2]) {
-						sendPM(source, padd(entrants[battlers[i]]) + " VS " + entrants[battlers[i+1]], false);
+				for (var i = 0; i < self.battlers.length; i+=2) {
+					if (self.battlesStarted[i/2]) {
+						sendPM(source, padd(self.entrants[self.battlers[i]]) + " VS " + self.entrants[self.battlers[i+1]], false);
 					}
 				}
 				sendPM(source, "", false);
 			}
-			if (battlesStarted.indexOf(false) != -1) {
+			if (self.battlesStarted.indexOf(false) != -1) {
 				sendPM(source, "", false);
 				sendPM(source, "*** Yet to start battles ***", false);
 				sendPM(source, "", false);
-				for (var i = 0; i < battlers.length; i+=2) {
-					if (!battlesStarted[i/2]) {
-						sendPM(source, padd(entrants[battlers[i]]) + " VS " + entrants[battlers[i+1]], false);
+				for (var i = 0; i < self.battlers.length; i+=2) {
+					if (!self.battlesStarted[i/2]) {
+						sendPM(source, padd(self.entrants[self.battlers[i]]) + " VS " + self.entrants[self.battlers[i+1]], false);
 					}
 				}
 				sendPM(source, "", false);
 			}
 		}
-		if (members.length > 0) {
+		if (self.members.length > 0) {
 			sendPM(source, "", false);
 			sendPM(source, "*** Members to the next round ***", false);
 			sendPM(source, "", false);
 			var s = [];
-			for (var i = 0; i < members.length; ++i) {
-				s.push(entrants[members[i]]);
+			for (var i = 0; i < self.members.length; ++i) {
+				s.push(self.entrants[self.members[i]]);
 			}
 			sendPM(source, s.join(", "), false);
 			sendPM(source, "", false);
@@ -266,7 +262,7 @@ function Tournament(channel)
 		var authority = sys.name(source);
 
 		if (isInTour(name)) {
-			if (self.phase == "entry" || members.indexOf(name.toLowerCase()) >= 0) {
+			if (self.phase == "entry" || self.members.indexOf(name.toLowerCase()) >= 0) {
 				removeEntrant(name);
 				broadcast("~~Server~~: " + name + " was removed from the tournament by " + authority + "!");
 			} else if (playingPhase()) {
@@ -341,11 +337,11 @@ function Tournament(channel)
 		var p2 = players[1].toLowerCase();
 
 		/*broadcast("Contents of variables before subbing:");
-		broadcast("members: [" + members.map(function (i) { return i.toString(); }).join(", ") + "]");
-		broadcast("battlers: [" + battlers.map(function (i) { return i.toString(); }).join(", ") + "]");
-		broadcast("battlesStarted: [" + battlesStarted.map(function (i) { return i.toString(); }).join(", ") + "]");
-		var e = []; for (var x in entrants) { e.push("" +x + ": " + entrants[x]);}
-		broadcast("entrants: {" + e.join(", ") + "}");*/
+		broadcast("self.members: [" + self.members.map(function (i) { return i.toString(); }).join(", ") + "]");
+		broadcast("self.battlers: [" + self.battlers.map(function (i) { return i.toString(); }).join(", ") + "]");
+		broadcast("self.battlesStarted: [" + self.battlesStarted.map(function (i) { return i.toString(); }).join(", ") + "]");
+		var e = []; for (var x in self.entrants) { e.push("" +x + ": " + self.entrants[x]);}
+		broadcast("self.entrants: {" + e.join(", ") + "}");*/
 
 		if (isBattling(p1))
 			setBattleStarted(p1, false);
@@ -362,26 +358,26 @@ function Tournament(channel)
 				}
 			}
 		}
-		subInArray(members);
-		subInArray(battlers);
-		subInArray(battlesLost);
+		subInArray(self.members);
+		subInArray(self.battlers);
+		subInArray(self.battlesLost);
 
-		// change in entrants
+		// change in self.entrants
 		if (!isInTour(players[0])) {
-			entrants[p1] = players[0];
-			delete entrants[p2];
+			self.entrants[p1] = players[0];
+			delete self.entrants[p2];
 		} else if (!isInTour(players[1])) {
-			entrants[p2] = players[1];
-			delete entrants[p1];
+			self.entrants[p2] = players[1];
+			delete self.entrants[p1];
 		}
 
 
 		/*broadcast("Contents of variables before subbing:");
-		broadcast("members: [" + members.map(function (i) { return i.toString(); }).join(", ") + "]");
-		broadcast("battlers: [" + battlers.map(function (i) { return i.toString(); }).join(", ") + "]");
-		broadcast("battlesStarted: [" + battlesStarted.map(function (i) { return i.toString(); }).join(", ") + "]");
-		var e = []; for (var x in entrants) { e.push("" +x + ": " + entrants[x]);}
-		broadcast("entrants: {" + e.join(", ") + "}");*/
+		broadcast("self.members: [" + self.members.map(function (i) { return i.toString(); }).join(", ") + "]");
+		broadcast("self.battlers: [" + self.battlers.map(function (i) { return i.toString(); }).join(", ") + "]");
+		broadcast("self.battlesStarted: [" + self.battlesStarted.map(function (i) { return i.toString(); }).join(", ") + "]");
+		var e = []; for (var x in self.entrants) { e.push("" +x + ": " + self.entrants[x]);}
+		broadcast("self.entrants: {" + e.join(", ") + "}");*/
 
 
 	}
@@ -409,7 +405,7 @@ function Tournament(channel)
 
 		broadcast("");
 		broadcast(border);
-		broadcast("~~Server~~: " + sys.name(source) + " changed the number of entrants to " + count + "!");
+		broadcast("~~Server~~: " + sys.name(source) + " changed the number of self.entrants to " + count + "!");
 		broadcast(border);
 		broadcast("");
 
@@ -440,15 +436,15 @@ function Tournament(channel)
 	}
 
 	function firstPlayer() {
-		return members[0];
+		return self.members[0];
 	}
 
 	function memberCount() {
-		return members.length;
+		return self.members.length;
 	}
 
 	function casedName(name) {
-		return entrants[name];
+		return self.entrants[name];
 	}
 
         function padd(name) {
@@ -463,44 +459,44 @@ function Tournament(channel)
 
 	function setBattleStarted(name, started) {
 		if (started === undefined) started = true;
-		battlesStarted[Math.floor(battlers.indexOf(name.toLowerCase())/2)] = started;
+		self.battlesStarted[Math.floor(self.battlers.indexOf(name.toLowerCase())/2)] = started;
 	}
 
 	function removeBattle(name) {
-		var index = Math.floor(battlers.indexOf(name.toLowerCase())/2);
-		battlesStarted.splice(index, 1);
-		battlers.splice(2*index, 2);
+		var index = Math.floor(self.battlers.indexOf(name.toLowerCase())/2);
+		self.battlesStarted.splice(index, 1);
+		self.battlers.splice(2*index, 2);
 	}
 
 	function isBattling(name) {
-		var indx = battlers.indexOf(name.toLowerCase());
+		var indx = self.battlers.indexOf(name.toLowerCase());
 		if (indx == -1) return false;
-		return battlesStarted[Math.floor(indx/2)];
+		return self.battlesStarted[Math.floor(indx/2)];
 	}
 
 	function areOpponents(name1, name2) {
-		var indx1 = battlers.indexOf(name1.toLowerCase()),
-		    indx2 = battlers.indexOf(name2.toLowerCase());
+		var indx1 = self.battlers.indexOf(name1.toLowerCase()),
+		    indx2 = self.battlers.indexOf(name2.toLowerCase());
 		return indx1 >= 0 && Math.floor(indx1/2) == Math.floor(indx2/2);
 	}
 
 	function tourOpponent(name) {
-		var index = battlers.indexOf(name.toLowerCase());
+		var index = self.battlers.indexOf(name.toLowerCase());
 		if (index == -1)
 			return null;
 		else if ((index % 2) == 0)
-			return battlers[index + 1];
+			return self.battlers[index + 1];
 		else 
-			return battlers[index - 1];
+			return self.battlers[index - 1];
 	}
 
 
 	function roundPairing() {
 		self.round += 1;
 
-		battlesStarted = [];
-		battlers = [];
-		battlesLost = [];
+		self.battlesStarted = [];
+		self.battlers = [];
+		self.battlesLost = [];
 
 		if (memberCount() == 1) {
 			broadcast("");
@@ -549,30 +545,30 @@ function Tournament(channel)
 		}
 
 		var i = 0;
-		while (members.length >= 2) {
+		while (self.members.length >= 2) {
 			i += 1;
-			var x1 = sys.rand(0, members.length);
-			battlers.push(members[x1]);
-			var name1 = casedName(members[x1]);
-			members.splice(x1,1);
+			var x1 = sys.rand(0, self.members.length);
+			self.battlers.push(self.members[x1]);
+			var name1 = casedName(self.members[x1]);
+			self.members.splice(x1,1);
 
 
-			x1 = sys.rand(0, members.length);
-			battlers.push(members[x1]);
-			var name2 = casedName(members[x1]);
-			members.splice(x1,1);
+			x1 = sys.rand(0, self.members.length);
+			self.battlers.push(self.members[x1]);
+			var name2 = casedName(self.members[x1]);
+			self.members.splice(x1,1);
 
 			if (!finals)
 				broadcast(i + "." + padd(name1) + " VS " + name2);
 			else {
 				wall ("  " + padd(name1) + " VS " + name2);
 			}
-			battlesStarted.push(false);
+			self.battlesStarted.push(false);
 		}
 
-		if (members.length > 0) {
+		if (self.members.length > 0) {
 			broadcast("");
-			broadcast("*** " + casedName(members[0]) + " is randomly selected to go to next round!");
+			broadcast("*** " + casedName(self.members[0]) + " is randomly selected to go to next round!");
 		}
 
 		var f = finals ? wall : broadcast;
@@ -604,21 +600,21 @@ function Tournament(channel)
 
 	// common function for /dq, /unjoin and natural battle end
 	function endBattle(winner, loser) {
-		battlesLost.push(winner);
-		battlesLost.push(loser);
+		self.battlesLost.push(winner);
+		self.battlesLost.push(loser);
 		
 		removeBattle(winner);
-		members.push(winner.toLowerCase());
-		delete entrants[loser.toLowerCase()];	
+		self.members.push(winner.toLowerCase());
+		delete self.entrants[loser.toLowerCase()];	
 
-		if (battlers.length != 0 || members.length > 1) {
+		if (self.battlers.length != 0 || self.members.length > 1) {
 			broadcast("");
 			broadcast(border);
 			broadcast("~~Server~~: " + winner + " advances to the next round.");
 			broadcast("~~Server~~: " + loser + " is out of the tournament.");
 		}
-		if (battlers.length > 0) {
-			broadcast("*** " + battlers.length/2 + " battle(s) remaining.");
+		if (self.battlers.length > 0) {
+			broadcast("*** " + self.battlers.length/2 + " battle(s) remaining.");
 			broadcast(border);
 			broadcast("");
 			return;
@@ -825,7 +821,7 @@ module.exports = {
                   "/endtour: Ends the current tournament.",
                   "/dq name: Disqualifies someone in the tournament.",
                   "/push name: Adds a user to the tournament.",
-                  "/changecount [entrants]: Changes the number of entrants during the signup phase.",
+                  "/changecount [self.entrants]: Changes the number of self.entrants during the signup phase.",
                   "/sub name1:name2: Replaces name1 with name2 in the tournament.",
                   "/cancelBattle name1: Allows the user or their opponent to forfeit without leaving the tournament their current battle so they can battle again with correct clauses."
                 ];
