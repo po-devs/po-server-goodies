@@ -9,6 +9,49 @@ if (!Config.tourneybot) Config.tourneybot = '±TourneyBot';
 
 var tournamentData, permaTours;
 
+var clauseMap = {
+	1: "Sleep Clause",
+	2: "Freeze Clause",
+	4: "Disallow Spectator",
+	8: "Item Clause",
+	16: "Challenge Cup",
+	32: "No Timeout",
+	64: "Species Clause",
+	128: "Wifi Clause",
+	256: "Self KO Clause"	
+}
+
+function clauseList(clauses) {
+	var names = [];
+	for (var bit in clauseMap) {
+		if ((bit & clauses) > 0) {
+			names.push(clauseMap[bit]);
+		}
+	} 
+	return names;
+}
+
+function clauseError(battleClauses, tierClauses) {
+	var missing = [],
+	    extra = [];	
+	for (var bit in clauseMap) {
+		if ((bit & tierClauses) > 0 && (bit & battleClauses) == 0) {
+			missing.push(clauseMap[bit]);
+		} else if ((bit & tierClauses) == 0 && (bit & battleClauses) > 0) {
+			extra.push(clauseMap[bit]);
+		}
+	} 
+	return {'missing': missing, 'extra': extra};
+}
+
+function tierClauses(tier) {
+	var clauses = sys.getClauses(tier);
+	if (clauses !== undefined)
+		return clauseList(clauses);
+	else
+		return null;
+}
+
 function Tournament(channel)
 {
 
@@ -105,6 +148,7 @@ function Tournament(channel)
 		wall("PLAYERS: " + self.count);
 		wall("TYPE: Single Elimination");
 		wall("TIER: " + self.tier);
+		broadcast("CLAUSES: " + tierClauses(self.tier).join(", "));
 		wall("");
 		wall("*** Go in the #" + sys.channel(self.channel) + " channel and type /join or !join to enter the tournament! ***");
 		wall(border);
