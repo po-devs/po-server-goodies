@@ -736,7 +736,7 @@ function Tournament(channel)
 		}
 	}
 	this.announceInit = function announceInit() {
-		broadcast("Tournaments are now running on  #" + sys.channel(self.channel) + "!");
+		broadcast("Tournaments are now running on #" + sys.channel(self.channel) + "!");
 	}
 
 	this.commands = {
