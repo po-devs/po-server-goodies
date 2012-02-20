@@ -722,7 +722,7 @@ module.exports = {
 		tournament.announceInit();
 		module.tournaments[tourchannel] = tournament;
 
-		for (var i = 0; i < permaTours; ++i) {
+		for (var i = 0; i < permaTours.length; ++i) {
 			if (sys.channel(permaTours[i]) !== undefined) {
 				tournament = new Tournament(permaTours[i]);
 				tournament.announceInit();
