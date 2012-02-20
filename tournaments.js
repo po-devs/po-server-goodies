@@ -341,31 +341,31 @@ function Tournament(channel)
 		var p1 = players[0].toLowerCase();
 		var p2 = players[1].toLowerCase();
 
-		broadcast("Contents of variables before subbing:");
+		/*broadcast("Contents of variables before subbing:");
 		broadcast("members: [" + members.map(function (i) { return i.toString(); }).join(", ") + "]");
 		broadcast("battlers: [" + battlers.map(function (i) { return i.toString(); }).join(", ") + "]");
 		broadcast("battlesStarted: [" + battlesStarted.map(function (i) { return i.toString(); }).join(", ") + "]");
 		var e = []; for (var x in entrants) { e.push("" +x + ": " + entrants[x]);}
-		broadcast("entrants: {" + e.join(", ") + "}");
+		broadcast("entrants: {" + e.join(", ") + "}");*/
 
-		// change in members
-		for (var i = 0; i < members.length; ++i) {
-			if (members[i] == p1) {
-				setBattleStarted(p1, false);
-				members[i] = p2;
-			} else if (members[i] == p2) {
-				setBattleStarted(p2, false);
-				members[i] = p2;
+		if (isBattling(p1))
+			setBattleStarted(p1, false);
+		if (isBattling(p2))
+			setBattleStarted(p2, false);
+
+		// Sub in arrays
+		function subInArray(arr) {
+			for (var i = 0; i < arr.length; ++i) {
+				if (arr[i] == p1) {
+					arr[i] = p2;
+				} else if (arr[i] == p2) {
+					arr[i] = p1;
+				}
 			}
 		}
-		// change in battlers
-		for (var i = 0; i < battlers.length; ++i) {
-			if (battlers[i] == p1) {
-				battlers[i] = p2;
-			} else if (battlers[i] == p2) {
-				battlers[i] = p1;
-			}
-		}
+		subInArray(members);
+		subInArray(battlers);
+		subInArray(battlesLost);
 
 		// change in entrants
 		if (!isInTour(players[0])) {
@@ -376,12 +376,13 @@ function Tournament(channel)
 			delete entrants[p1];
 		}
 
-		broadcast("Contents of variables before subbing:");
+
+		/*broadcast("Contents of variables before subbing:");
 		broadcast("members: [" + members.map(function (i) { return i.toString(); }).join(", ") + "]");
 		broadcast("battlers: [" + battlers.map(function (i) { return i.toString(); }).join(", ") + "]");
 		broadcast("battlesStarted: [" + battlesStarted.map(function (i) { return i.toString(); }).join(", ") + "]");
 		var e = []; for (var x in entrants) { e.push("" +x + ": " + entrants[x]);}
-		broadcast("entrants: {" + e.join(", ") + "}");
+		broadcast("entrants: {" + e.join(", ") + "}");*/
 
 
 	}
@@ -594,6 +595,11 @@ function Tournament(channel)
 		if (!areOpponents(winner, loser)) {
 			return;
 		}
+		if (!isBattling(winner)) {
+			// Cancel battle sets winner to be not battling
+			// We don't want to proceed into endBattle then
+			return
+		}
                 endBattle(winner, loser);
 	}
 
@@ -726,6 +732,11 @@ module.exports = {
 		}
 		// TODO: afterChannelDestroyed delete from SESSION
 	},
+
+	// debug for evaling private variables
+	tournament : function(channel_name) {
+		return module.tournaments[sys.channelId(channel_name)];
+	},	
 
 	handleCommand: function(source, message, channel) {
        		var command;
