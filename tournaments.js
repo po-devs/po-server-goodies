@@ -7,7 +7,7 @@ if (typeof Config == "undefined")
     Config = {}
 if (!Config.tourneybot) Config.tourneybot = '±TourneyBot';
 
-var tournamentData;
+var tournamentData, permaTours;
 
 function Tournament(channel)
 {
@@ -336,6 +336,7 @@ function Tournament(channel)
 		var p1 = players[0].toLowerCase();
 		var p2 = players[1].toLowerCase();
 
+		// change in members
 		for (var i = 0; i < members.length; ++i) {
 			if (members[i] == p1) {
 				setBattleStarted(members[i], false);
@@ -345,7 +346,15 @@ function Tournament(channel)
 				members[i] = players[1];
 			}
 		}
-
+		// change in battlers
+		for (var i = 0; i < battlers.length; ++i) {
+			if (battlers[i] == p1) {
+				battlers[i] = players[0];
+			} else if (battlers[i] == p2) {
+				battlers[i] = players[1];
+			}
+		}
+		// change in entrants
 		if (!isInTour(players[0])) {
 			entrants[p1] = players[0];
 			delete entrants[p2];
@@ -666,6 +675,10 @@ module.exports = {
 			SESSION.global().tournamentData = {};
 		tournamentData = SESSION.global().tournamentData;
 
+		if (!SESSION.global().hasOwnProperty("permaTours"))
+			SESSION.global().permaTours = [];
+		permaTours = SESSION.global().permaTours;
+
 		var tourchannel, channelname = "Tournaments";
 		if (sys.existChannel(channelname)) {
 			tourchannel = sys.channelId(channelname);
@@ -680,8 +693,16 @@ module.exports = {
 		var tournament = new Tournament(tourchannel);
 		tournament.main = true;
 		tournament.announceInit();
-
 		module.tournaments[tourchannel] = tournament;
+
+		for (var i = 0; i < permaTours; ++i) {
+			if (sys.channelName(permaTours[i]) !== undefined) {
+				tournament = new Tournament(permaTours[i]);
+				tournament.announceInit();
+				module.tournaments[permaTours[i]] = tournament;
+			}
+		}
+		// TODO: afterChannelDestroyed delete from SESSION
 	},
 
 	handleCommand: function(source, message, channel) {
@@ -710,11 +731,16 @@ module.exports = {
 			}
 			if (command == "disabletours" && sys.auth(source) >= 2 && channel != tourchannel) {
 				delete module.tournaments[channel];
+				var ind = SESSION.global().permaTours.indexOf(channel);
+				if (ind >= 0) {
+					SESSION.global().permaTours.splice(ind, 1);
+				}
 				return true;
 			}
 		} else if (command == "enabletours" && sys.auth(source) >= 2) {
 			module.tournaments[channel] = new Tournament(channel);
 			module.tournaments[channel].announceInit();
+			SESSION.global().permaTours.push(channel);
 			return true;
 		}
 		return false;
