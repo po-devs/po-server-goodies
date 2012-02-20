@@ -34,15 +34,13 @@ function Tournament(channel)
 		};
 	}
 
-	var data = tournamentData[channel];
+	var self = tournamentData[channel].self;
+	var battlesStarted = tournamentData[channel].battlesStarted;
+	var battlesLost = tournamentData[channel].battlesLost;
 
-	var self = data.self;
-	var battlesStarted = data.battlesStarted;
-	var battlesLost = data.battlesLost;
-
-	var entrants = data.entrants;
-	var members = data.members;
-	var battlers = data.battlers;
+	var entrants = tournamentData[channel].entrants;
+	var members = tournamentData[channel].members;
+	var battlers = tournamentData[channel].battlers;
 
 	var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
 
@@ -268,15 +266,15 @@ function Tournament(channel)
 		var authority = sys.name(source);
 
 		if (isInTour(name)) {
-			if (self.phase == "entry") {
+			if (self.phase == "entry" || members.indexOf(name.toLowerCase()) >= 0) {
 				removeEntrant(name);
 				broadcast("~~Server~~: " + name + " was removed from the tournament by " + authority + "!");
 			} else if (playingPhase()) {
-				setBattleStarted(name);
 				broadcast("~~Server~~: " + name + " was removed from the tournament by " + authority + "!");
-				// end battle?
 				endBattle(tourOpponent(name), name);
 			}
+		} else {
+			sendPM(source, name + " is not in the tournament.");
 		}
 	}
 
