@@ -189,6 +189,14 @@ function POUser(id)
     this.lastline = {message: null, time: 0};
     /* login time */
     this.logintime = parseInt(sys.time());
+    /* host name */
+    this.hostname = "pending";
+    var user = this; // closure
+    sys.hostName(sys.ip(id), function(result) {
+        try {
+            user.hostname = result;
+        } catch (e) {}
+    });
 
     // warn find battle custom message
     this.reloadwfb();
@@ -2656,7 +2664,7 @@ modCommand: function(src, command, commandData, tar) {
             var userJson = {'type': 'UserInfo', 'id': tar ? tar : -1, 'username': name, 'auth': authLevel, 'megauser': megauser, 'contributor': contribution, 'ip': ip, 'online': online, 'registered': registered, 'lastlogin': lastLogin };
             sendChanMessage(src, ":"+JSON.stringify(userJson));
         } else if (command == "userinfo") {
-            querybot.sendChanMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ megauser: " + megauser + " ~ contributor: " + contribution + " ~ ip: " + ip + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin);
+            querybot.sendChanMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ megauser: " + megauser + " ~ contributor: " + contribution + " ~ ip: " + ip + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"));
         } else if (command == "whois") {
             var authName = function() {
                 switch (authLevel) {
@@ -2678,6 +2686,7 @@ modCommand: function(src, command, commandData, tar) {
                 isBanned ? "Banned: yes" : "Banned: no",
             ];
             if (online) {
+                data.push("Hostname: " + SESSION.users(tar).hostname);
                 data.push("Channels: " + channels.join(", "));
                 data.push("Names during current session: " + (online && SESSION.users(tar).namehistory ? SESSION.users(tar).namehistory.join(", ") : name));
             }
