@@ -474,8 +474,7 @@ function Tournament(channel)
 
 	function endTour(source, data) {
 		if (self.running) {
-			self.running = false;
-			self.phase = "";
+			resetTourVars()
 			broadcast("");
 			broadcast(border);
 			broadcast("~~Server~~: The tournament was cancelled by " + sys.name(source) + "!");
@@ -567,9 +566,6 @@ function Tournament(channel)
 			broadcast(border);
 			broadcast("");
 
-			self.running = false;
-			self.phase = "";
-
 			// tier, time, number of participants, winner
 			if (self.main) {
 				var tier = self.tier;
@@ -580,7 +576,7 @@ function Tournament(channel)
 				if (typeof script == "object" && script.updateTourStats)
 					script.updateTourStats(tier, time, winner, num, noPoints);
 			}
-
+			resetTourVars()
 			return;
 		}
 
@@ -736,6 +732,23 @@ function Tournament(channel)
 			sys.sendMessage(src, "");
 		}
 	}
+
+        // resetting tournament variables when a tournament is finished
+
+	function resetTourVars() {
+		self.running = false;
+		self.count = 0;
+		self.tier = "";
+		self.phase = "";
+		self.starter = "";
+		self.round = 0;
+		self.battlesStarted = [];
+		self.battlesLost = [];
+		self.entrants = {};
+		self.members = [];
+		self.battlers = [];
+	}
+
 	this.announceInit = function announceInit() {
 		broadcast("Tournaments are now running on #" + sys.channel(self.channel) + "!");
 	}
@@ -907,5 +920,5 @@ module.exports = {
                 return true;
             }
             return false;
-        }
+        }
 }
