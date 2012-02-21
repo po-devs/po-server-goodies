@@ -463,7 +463,7 @@ function Tournament(channel)
 
 		broadcast("");
 		broadcast(border);
-		broadcast("~~Server~~: " + sys.name(source) + " changed the number of self.entrants to " + count + "!");
+		broadcast("~~Server~~: " + sys.name(source) + " changed the number of entrants to " + count + "!");
 		broadcast(border);
 		broadcast("");
 
@@ -562,12 +562,13 @@ function Tournament(channel)
 			broadcast("");
 			broadcast("THE WINNER OF THE " + self.tier.toUpperCase() + " TOURNAMENT IS : " + casedName(firstPlayer()));
 			broadcast("");
-			broadcast("*** Congratulations, " + casedNamed(firstPlayer()) + ", on your success! ***");
+			broadcast("*** Congratulations, " + casedName(firstPlayer()) + ", on your success! ***");
 			broadcast("");
 			broadcast(border);
 			broadcast("");
 
 			self.running = false;
+			self.phase = "";
 
 			// tier, time, number of participants, winner
 			if (self.main) {
