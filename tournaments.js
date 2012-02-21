@@ -463,7 +463,7 @@ function Tournament(channel)
 
 		broadcast("");
 		broadcast(border);
-		broadcast("~~Server~~: " + sys.name(source) + " changed the number of self.entrants to " + count + "!");
+		broadcast("~~Server~~: " + sys.name(source) + " changed the number of entrants to " + count + "!");
 		broadcast(border);
 		broadcast("");
 
