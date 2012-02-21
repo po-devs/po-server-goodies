@@ -3885,6 +3885,12 @@ beforeChatMessage: function(src, message, chan) {
         return;
     }
 
+    if (message[0] == "#" && undefined !== sys.channelId(message.slice(1))) {
+        sys.putInChannel(src, sys.channelId(message.slice(1)));
+        sys.stopEvent();
+        return;
+    } 
+
     var name = sys.name(src).toLowerCase();
     // spamming bots, linking virus sites
     // using lazy points system for minimizing false positives
