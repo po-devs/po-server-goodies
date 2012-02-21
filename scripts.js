@@ -2688,7 +2688,7 @@ modCommand: function(src, command, commandData, tar) {
             if (online) {
                 data.push("Hostname: " + SESSION.users(tar).hostname);
                 data.push("Channels: " + channels.join(", "));
-                data.push("Names during current session: " + (online && SESSION.users(tar).namehistory ? SESSION.users(tar).namehistory.join(", ") : name));
+                data.push("Names during current session: " + (online && SESSION.users(tar).namehistory ? SESSION.users(tar).namehistory.map(function(e){return e[0]}).join(", ") : name));
             }
             if (authLevel > 0) {
                var stats = authStats[name.toLowerCase()] || {};
