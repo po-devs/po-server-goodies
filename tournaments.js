@@ -474,7 +474,7 @@ function Tournament(channel)
 
 	function endTour(source, data) {
 		if (self.running) {
-                        resetTourVars()
+			resetTourVars()
 			broadcast("");
 			broadcast(border);
 			broadcast("~~Server~~: The tournament was cancelled by " + sys.name(source) + "!");
@@ -561,7 +561,7 @@ function Tournament(channel)
 			broadcast("");
 			broadcast("THE WINNER OF THE " + self.tier.toUpperCase() + " TOURNAMENT IS : " + casedName(firstPlayer()));
 			broadcast("");
-                        broadcast("*** Congratulations, " + casedName(firstPlayer()) + ", on your success! ***");
+			broadcast("*** Congratulations, " + casedName(firstPlayer()) + ", on your success! ***");
 			broadcast("");
 			broadcast(border);
 			broadcast("");
@@ -576,7 +576,7 @@ function Tournament(channel)
 				if (typeof script == "object" && script.updateTourStats)
 					script.updateTourStats(tier, time, winner, num, noPoints);
 			}
-                        resetTourVars()
+			resetTourVars()
 			return;
 		}
 
@@ -654,7 +654,7 @@ function Tournament(channel)
 	}
 
 	// common function for /dq, /unjoin and natural battle end
-        function endBattle(winner, loser) {
+	function endBattle(winner, loser) {
 		self.battlesLost.push(winner);
 		self.battlesLost.push(loser);
 		
@@ -735,19 +735,19 @@ function Tournament(channel)
 
         // resetting tournament variables when a tournament is finished
 
-        function resetTourVars() {
-            self.running = false;
-            self.count = 0;
-            self.tier = "";
-            self.phase = "";
-            self.starter = "";
-            self.round = 0;
-            self.battlesStarted = [];
-            self.battlesLost = [];
-            self.entrants = {};
-            self.members = [];
-            self.battlers = [];
-        }
+	function resetTourVars() {
+		self.running = false;
+		self.count = 0;
+		self.tier = "";
+		self.phase = "";
+		self.starter = "";
+		self.round = 0;
+		self.battlesStarted = [];
+		self.battlesLost = [];
+		self.entrants = {};
+		self.members = [];
+		self.battlers = [];
+	}
 
 	this.announceInit = function announceInit() {
 		broadcast("Tournaments are now running on #" + sys.channel(self.channel) + "!");
