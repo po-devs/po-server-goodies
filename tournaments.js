@@ -474,8 +474,7 @@ function Tournament(channel)
 
 	function endTour(source, data) {
 		if (self.running) {
-			self.running = false;
-			self.phase = "";
+                        resetTourVars()
 			broadcast("");
 			broadcast(border);
 			broadcast("~~Server~~: The tournament was cancelled by " + sys.name(source) + "!");
@@ -562,12 +561,10 @@ function Tournament(channel)
 			broadcast("");
 			broadcast("THE WINNER OF THE " + self.tier.toUpperCase() + " TOURNAMENT IS : " + casedName(firstPlayer()));
 			broadcast("");
-			broadcast("*** Congratulations, " + casedNamed(firstPlayer()) + ", on your success! ***");
+                        broadcast("*** Congratulations, " + casedName(firstPlayer()) + ", on your success! ***");
 			broadcast("");
 			broadcast(border);
 			broadcast("");
-
-			self.running = false;
 
 			// tier, time, number of participants, winner
 			if (self.main) {
@@ -579,7 +576,7 @@ function Tournament(channel)
 				if (typeof script == "object" && script.updateTourStats)
 					script.updateTourStats(tier, time, winner, num, noPoints);
 			}
-
+                        resetTourVars()
 			return;
 		}
 
@@ -657,7 +654,7 @@ function Tournament(channel)
 	}
 
 	// common function for /dq, /unjoin and natural battle end
-	function endBattle(winner, loser) {
+        function endBattle(winner, loser) {
 		self.battlesLost.push(winner);
 		self.battlesLost.push(loser);
 		
@@ -735,6 +732,23 @@ function Tournament(channel)
 			sys.sendMessage(src, "");
 		}
 	}
+
+        // resetting tournament variables when a tournament is finished
+
+        function resetTourVars() {
+            self.running = false;
+            self.count = 0;
+            self.tier = "";
+            self.phase = "";
+            self.starter = "";
+            self.round = 0;
+            self.battlesStarted = [];
+            self.battlesLost = [];
+            self.entrants = {};
+            self.members = [];
+            self.battlers = [];
+        }
+
 	this.announceInit = function announceInit() {
 		broadcast("Tournaments are now running on #" + sys.channel(self.channel) + "!");
 	}
@@ -906,5 +920,5 @@ module.exports = {
                 return true;
             }
             return false;
-        }
+        }
 }
