@@ -4247,7 +4247,8 @@ afterChatMessage : function(src, message, chan)
     // hardcoded
     var ignoreChans = [staffchannel, sys.channelId("shanai"), sys.channelId("trivreview")];
     var ignoreUsers = ["nixeagle"];
-    if (!poChannel.ignorecaps && this.isMCaps(message) && sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1) {
+    var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1) && !poChannel.isChannelOperator(src);
+    if (!poChannel.ignorecaps && this.isMCaps(message) && userMayGetPunished) {
         user.caps += 3;
         if (user.caps >= 9 && !user.mute.active) {
 
@@ -4280,7 +4281,7 @@ afterChatMessage : function(src, message, chan)
 
 
     var linecount = sys.auth(src) == 0 ? 9 : 21;
-    if (!poChannel.ignoreflood && sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1) {
+    if (!poChannel.ignoreflood && userMayGetPunished) {
         user.floodcount += 1;
         var time = parseInt(sys.time());
         if (time > user.timecount + 7) {
