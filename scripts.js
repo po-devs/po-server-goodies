@@ -4247,7 +4247,7 @@ afterChatMessage : function(src, message, chan)
     // hardcoded
     var ignoreChans = [staffchannel, sys.channelId("shanai"), sys.channelId("trivreview")];
     var ignoreUsers = ["nixeagle"];
-    var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1) && !poChannel.isChannelOperator(src);
+    var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1 && !poChannel.isChannelOperator(src);
     if (!poChannel.ignorecaps && this.isMCaps(message) && userMayGetPunished) {
         user.caps += 3;
         if (user.caps >= 9 && !user.mute.active) {
