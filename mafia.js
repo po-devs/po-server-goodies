@@ -1039,8 +1039,9 @@ var mafia = module.exports = new function() {
                 var o = mafia.theme.nightPriority[i];
                 var names = mafia.getPlayersForRole(o.role);
                 var command = o.action;
-                if ("command" in mafia.theme.roles[o.role].actions.night[o.action]) {
-                    command = mafia.theme.roles[o.role].actions.night[o.action].command; // translate to real command
+                var Action = mafia.theme.roles[o.role].actions.night[o.action];
+                if ("command" in Action) {
+                    command = Action.command; // translate to real command
                 }
                 for (var j = 0; j < names.length; ++j) {
                     if (!mafia.isInGame(names[j])) continue;
@@ -1130,7 +1131,7 @@ var mafia = module.exports = new function() {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
                             } else if (target.poisoned == undefined) {
                                 target.poisoned = 1;
-                                target.poisonCount = player.role.actions.night.poison.count || 2;
+                                target.poisonCount = Action.count || 2;
                             }
                         }
                     }
