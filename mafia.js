@@ -1782,11 +1782,18 @@ var mafia = module.exports = new function() {
                         var haxPlayer = haxPlayers[j];
                         var r = Math.random();
                         var roleName = this.theme.trside(player.role.side);
+                        var team = this.getPlayersForRole(player.role.side);
                         if (r < mafia.theme.roles[role].actions.hax[command].revealTeam) {
-                            this.sendPlayer(haxPlayer, "±Game: The " + roleName + " are going to kill " + commandData + "!");
+                            if (team.length > 1)
+                                this.sendPlayer(haxPlayer, "±Game: The " + roleName + " are going to " + command + " " + commandData + "!");
+                            else
+                                this.sendPlayer(haxPlayer, "±Game: The " + roleName + " is going to " + command + " " + commandData + "!");
                         }
                         if (r < mafia.theme.roles[role].actions.hax[command].revealPlayer) {
-                            this.sendPlayer(haxPlayer, "±Game: " + name + " is one of The " + roleName + "!");
+                            if (team.length > 1)
+                                this.sendPlayer(haxPlayer, "±Game: " + name + " is one of The " + roleName + "!");
+                            else
+                                this.sendPlayer(haxPlayer, "±Game: " + name + " is The " + roleName + "!");
                         }
                     }
                 }
