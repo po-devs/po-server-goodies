@@ -987,7 +987,7 @@ init : function() {
     if (SESSION.global().BannedUrls === undefined) {
         SESSION.global().BannedUrls = [];
         sys.webCall(Config.base_url + "bansites.txt", function(resp) {
-            SESSION.global().BannedUrls = resp.split(/\n/);
+            SESSION.global().BannedUrls = resp.toLowerCase().split(/\n/);
         });
     }
 
@@ -3615,9 +3615,10 @@ ownerCommand: function(src, command, commandData, tar) {
     if (command == "updatebansites") {
         normalbot.sendChanMessage(src, "Fetching ban sites...");
         sys.webCall(Config.base_url + "bansites.txt", function(resp) {
-            SESSION.global().BannedUrls = resp.split(/\n/);
+            SESSION.global().BannedUrls = resp.toLowerCase().split(/\n/);
             normalbot.sendAll('Updated banned sites!', staffchannel);
         });
+        return;
     }
     if (command == "updatescripts") {
         normalbot.sendChanMessage(src, "Fetching scripts...");
@@ -3970,7 +3971,7 @@ beforeChatMessage: function(src, message, chan) {
     usingBannedWords = new Lazy(function() {
         var m = message.toLowerCase();
         var BannedUrls = SESSION.global() ? SESSION.global().BannedUrls : [];
-        if (m.indexOf("http") != -1) {
+        if (m.indexOf("http://") != -1 || m.indexOf("www.") {
             for (var i = 0; i < BannedUrls.length; ++i) {
                 if (m.indexOf(BannedUrls[i]) != -1) {
                     return true;
