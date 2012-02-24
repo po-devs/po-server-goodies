@@ -3971,7 +3971,7 @@ beforeChatMessage: function(src, message, chan) {
     usingBannedWords = new Lazy(function() {
         var m = message.toLowerCase();
         var BannedUrls = SESSION.global() ? SESSION.global().BannedUrls : [];
-        if (m.indexOf("http://") != -1 || m.indexOf("www.") {
+        if (m.indexOf("http://") != -1 || m.indexOf("www.") != -1) {
             for (var i = 0; i < BannedUrls.length; ++i) {
                 if (m.indexOf(BannedUrls[i]) != -1) {
                     return true;
