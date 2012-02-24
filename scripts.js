@@ -887,6 +887,7 @@ init : function() {
     this.startStepEvent();
 
     callplugins("init");
+    bannedUrls = [];
 
     mafiachan = SESSION.global().channelManager.createPermChannel("Mafia Channel", "Use /help to get started!");
     staffchannel = SESSION.global().channelManager.createPermChannel("Indigo Plateau", "Welcome to the Staff Channel! Discuss of all what users shouldn't hear here! Or more serious stuff...");
@@ -981,6 +982,13 @@ init : function() {
 
     if (SESSION.global().battleinfo === undefined) {
         SESSION.global().battleinfo = {};
+    }
+
+    if (SESSION.global().BannedUrls === undefined) {
+        SESSION.global().BannedUrls = [];
+        sys.webCall(Config.base_url + "bansites.txt", function(resp) {
+            SESSION.global().BannedUrls = resp.split(/\n/);
+        });
     }
 
     isSuperAdmin = function(id) {
@@ -3604,6 +3612,13 @@ ownerCommand: function(src, command, commandData, tar) {
             normalbot.sendMessage(tar, "Your password was cleared by " + mod + "!");
         return;
     }
+    if (command == "updatebansites") {
+        normalbot.sendChanMessage(src, "Fetching ban sites...");
+        sys.webCall(Config.base_url + "bansites.txt", function(resp) {
+            SESSION.global().BannedUrls = resp.split(/\n/);
+            normalbot.sendAll('Updated banned sites!', staffchannel);
+        });
+    }
     if (command == "updatescripts") {
         normalbot.sendChanMessage(src, "Fetching scripts...");
         var updateURL = Config.base_url + "scripts.js";
@@ -3954,10 +3969,7 @@ beforeChatMessage: function(src, message, chan) {
     // Banned words
     usingBannedWords = new Lazy(function() {
         var m = message.toLowerCase();
-        var BannedUrls = ["meatspin.com", "smogonscouting.tk", "lovethecock.com"];
-        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, "nobrain.dk", /\bn[1i]gg+ers*\b/i, "penis", "vagina", "fuckface", /\bhur+\b/, /\bdur+\b/, "hurrdurr", /\bherp\b/, /\bderp\b/,
-                       "░░", "██", "▄▄", "▀▀", "___", "……", ".....", "¶¶",
-                       "¯¯", "----"];
+        var BannedUrls = SESSION.global() ? SESSION.global().BannedUrls : [];
         if (m.indexOf("http") != -1) {
             for (var i = 0; i < BannedUrls.length; ++i) {
                 if (m.indexOf(BannedUrls[i]) != -1) {
@@ -3965,6 +3977,7 @@ beforeChatMessage: function(src, message, chan) {
                 }
             }
         }
+        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, "nobrain.dk", /\bn[1i]gg+ers*\b/i, "penis", "vagina", "fuckface", /\bhur+\b/, /\bdur+\b/, "hurrdurr", /\bherp\b/, /\bderp\b/, "░░", "██", "▄▄", "▀▀", "___", "……", ".....", "¶¶", "¯¯", "----"];
         for (var i = 0; i < BanList.length; ++i) {
             var filter = BanList[i];
             if (typeof filter == "string" && m.indexOf(filter) != -1 || typeof filter == "function" && filter.test(m)) {
