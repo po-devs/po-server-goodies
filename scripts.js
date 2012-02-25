@@ -4445,7 +4445,7 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
 beforeBattleEnded : function(src, dest, desc, bid) {
     if (SESSION.global().battleinfo[bid] && SESSION.global().battleinfo[bid].rated && desc == "forfeit"
        && sys.ratedBattles(dest) <= 1 && sys.isInChannel(dest, mafiachan)) {
-        normalbot.sendAll(sys.name(dest) + " just forfeited their first battle and is on mafia channel. Troll?", staffchannel)
+        //normalbot.sendAll(sys.name(dest) + " just forfeited their first battle and is on mafia channel. Troll?", staffchannel)
     }
     delete SESSION.global().battleinfo[bid];
 }
