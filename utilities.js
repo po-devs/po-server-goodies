@@ -2,8 +2,27 @@
 exports = {
     python_split: function python_split(string, delim, limit)
     {
-        if (delim.__proto__ === RegExp && limit !== undefined)
-            throw("python_split: RegExp not supported when limit is set.")
+        if ((delim.__proto__ === RegExp || delim.__proto__ == "/(?:)/") && limit !== undefined) {
+            // lastIndex doesn't update without global match
+            var flags = "g" + (delim.ignoreCase ? "i" : "") + (delim.multiline ? "m" : "");
+            var re = new RegExp(delim.source, flags);
+            var arr = [];
+            var lastIndex = 0;
+            while (--limit >= 0) {
+                var match = re.exec(string);
+                if (match != null) {
+                    arr.push(string.substring(lastIndex, match.index)); 
+                    lastIndex = re.lastIndex;
+                } else {
+                    arr.push(string.substring(lastIndex)); 
+                    break;
+                }
+            }
+            if (limit < 0) {
+                arr.push(string.substring(lastIndex)); 
+            }
+            return arr;
+        }
         var arr = string.split(delim);
         if (delim.length > limit) {
             var b = arr.slice(delim);
