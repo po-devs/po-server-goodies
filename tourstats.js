@@ -234,7 +234,7 @@ var utilities = require("utilities.js");
 function handleCommand(src, message, channel) {
     var cmd = utilities.as_command(message); 
     if (cmd.command in commandHandlers) {
-        if (commandHandlers.authRequired > sys.auth(src)) {
+        if (commandHandlers[cmd.command].authRequired > sys.auth(src)) {
             sys.sendMessage(src, "You do not have sufficient authority to run this command", channel);
         } else {
             commandHandlers[cmd.command](cmd.parameter)
