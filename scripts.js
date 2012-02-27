@@ -3509,9 +3509,9 @@ ownerCommand: function(src, command, commandData, tar) {
             POglobal.plugins.push(module);
             module.source = commandData;
             module.init();
-            normalbot.sendChanMessage(src, "Module " + source + " updated!");
+            normalbot.sendChanMessage(src, "Module " + commandData + " updated!");
         });
-        normalbot.sendChanMessage(src, "Downloading module " + source + "!");
+        normalbot.sendChanMessage(src, "Downloading module " + commandData + "!");
         return;
     }
     if (command == "removeplugin") {
