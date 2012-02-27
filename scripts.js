@@ -1527,7 +1527,7 @@ afterLogIn : function(src) {
     if (sys.getColor(src) == "#ff007f") {
         normalbot.sendAll("Smute based on color: " + sys.name(src) + ", IP: " + sys.ip(src), staffchannel);
         var endtime = parseInt(sys.time()) + 86400;
-        SESSION.users(src).activate("smute", "Script", endtime, "Flooding", true);
+        SESSION.users(src).activate("smute", "Script", endtime, "User is probably Doj; color based auto smute", true);
     }
 
     if (maxPlayersOnline > sys.getVal("MaxPlayersOnline")) {
