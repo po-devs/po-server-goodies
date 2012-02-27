@@ -232,11 +232,8 @@ commandHandlers.resettourstats.authRequired = 3;
 
 var utilities = require("utilities.js");
 function handleCommand(src, message, channel) {
-    sys.sendMessage(src, "Running command line " + message + " with auth level " + sys.auth(src), channel);
     var cmd = utilities.as_command(message); 
-    sys.sendMessage(src, "Running command " + cmd.command + " with auth level " + sys.auth(src), channel);
     if (cmd.command in commandHandlers) {
-        sys.sendMessage(src, "Running command " + cmd.command + " with auth level " + sys.auth(src), channel);
         if (commandHandlers[cmd.command].authRequired > sys.auth(src)) {
             sys.sendMessage(src, "You do not have sufficient authority to run this command", channel);
         } else {
