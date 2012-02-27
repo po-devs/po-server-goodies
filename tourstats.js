@@ -237,7 +237,7 @@ function handleCommand(src, message, channel) {
         if (commandHandlers[cmd.command].authRequired > sys.auth(src)) {
             sys.sendMessage(src, "You do not have sufficient authority to run this command", channel);
         } else {
-            commandHandlers[cmd.command](src, cmd.command, cmd.parameter, channel)
+            commandHandlers[cmd.command](src, cmd.command, cmd.parameterString, channel)
         }
         return true;
     }
