@@ -103,6 +103,10 @@ function init() {
     }
 }
 
+function green(s) {
+    return " <span style='color:#3daa68'><b>"+s+"</b></span> ";
+}
+
 var commandHandlers = {
     viewtiers: function viewtiers(src, command, commandData, channel) {
         var cycleLength = 12;
@@ -178,9 +182,6 @@ var commandHandlers = {
         if (commandData === undefined) {
             rankingbot.sendChanMessage(src, "You must specify user!");
             return;
-        }
-        function green(s) {
-            return " <span style='color:#3daa68'><b>"+s+"</b></span> ";
         }
         var name = commandData.toLowerCase();
         if (name in tourstats) {
