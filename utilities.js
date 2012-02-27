@@ -40,12 +40,12 @@ exports = {
     {
         var Command = {command: "", parameterString: ""};
         var pos = string.indexOf(' ');
-
+        var startIndex = this.is_command(string) ? 0 : 1;
         if (pos != -1) {
-            Command.command = string.substring(1, pos).toLowerCase();
+            Command.command = string.substring(startIndex, pos).toLowerCase();
             Command.parameterString = string.substr(pos+1);
         } else {
-            Command.command = string.substr(1).toLowerCase();
+            Command.command = string.substr(startIndex).toLowerCase();
         }
         if (delim !== undefined) {
             Command.parameters = this.python_split(Command.parameterString, delim, limit);

@@ -573,9 +573,7 @@ function Tournament(channel)
 				var winner = firstPlayer();
 				var num = self.count;
 				var noPoints = cmp(winner,self.starter) && sys.auth(sys.id(winner)) == 0;
-				if (typeof script == "object" && script.updateTourStats) {
-					script.updateTourStats(tier, time, winner, num, noPoints);
-                                }
+				require("tourstats.js").updateTourStats(tier, time, winner, num, noPoints);
 			}
 			resetTourVars()
 			return;
