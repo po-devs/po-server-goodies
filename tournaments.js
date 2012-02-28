@@ -30,9 +30,16 @@ var clauseMap = {
 	128: WIFI_CLAUSE,
 	256: SELF_KO_CLAUSE	
 }
+// build reverse mapping
+clauseToId={}
+for (var x in clauseMap)
+    clauseToId[clauseMap[x]] = x;
 
 function hasClause(clauses, clause) {
-	return (clauses % clause) > 0;
+	if (clauseToId[clause] != undefined) {
+            clause = clauseToId[clause];
+        }
+	return (clauses & clause) > 0;
 }
 
 function clauseList(clauses) {
