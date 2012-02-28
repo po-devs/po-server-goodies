@@ -245,7 +245,7 @@ function Tournament(channel)
 				placeholder = self.entrants[p];	
 			}
 		}
-		var players = [sys.name(source), self.entrants[p]];
+		var players = [sys.name(source), placeholder];
 		if (placeholder) {
 			broadcast(players[0] + " joined the tournament! (bye " + players[1] + "!)");
 			switchPlayers(players);
