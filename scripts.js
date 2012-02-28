@@ -2512,6 +2512,23 @@ modCommand: function(src, command, commandData, tar) {
         normalbot.sendAll("" + commandData + " was unmuted by " + nonFlashing(sys.name(src)) + "!");
         return;
     }
+    if (command == "battlehistory") {
+        if (tar === undefined) {
+            querybot.sendChanMessage(src, "Usage: /battleHistory username. Only works on online users.");
+            return;
+        }
+        var hist = SESSION.users(tar).battlehistory;
+        if (!hist) {
+            querybot.sendChanMessage(src, "Your target has not battled after logging in.");
+            return;
+        }
+        var res = []
+        for (var i = 0; i < hist.length; ++i) {
+             res.push("Battle against <b>" + hist[i][0] + "</b>, result <b>" + hist[i][1] + "</b>" + (hist[i][2] == "forfeit" ? " <i>due to forfeit</i>." : "."));
+        }
+        sys.sendHtmlMessage(src, res.join("<br>"), channel);
+        return;
+    }
     if (command == "userinfo" || command == "whois" || command == "whoistxt") {
         if (commandData == undefined) {
             querybot.sendChanMessage(src, "Please provide a username.");
@@ -4225,6 +4242,11 @@ beforeBattleEnded : function(src, dest, desc, bid) {
         //normalbot.sendAll(sys.name(dest) + " just forfeited their first battle and is on mafia channel. Troll?", staffchannel)
     }
     delete SESSION.global().battleinfo[bid];
+
+    if (!SESSION.users(src).battlehistory) SESSION.users(src).battlehistory=[];
+    if (!SESSION.users(dest).battlehistory) SESSION.users(dest).battlehistory=[];
+    SESSION.users(src).battlehistory.push([sys.name(dest), "win", desc]);
+    SESSION.users(dest).battlehistory.push([sys.name(src), "lose", desc]);
 }
 
 ,
