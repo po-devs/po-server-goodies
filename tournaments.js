@@ -234,6 +234,11 @@ function Tournament(channel)
 			return;
 		}
 
+		if (isInTour(sys.name(source))) {
+			sendPM(source, "You already joined the tournament!");
+			return;
+		}
+
 		var placeholder;
 		for (var p in self.entrants) {
 			if (/~/.test(p)) {
