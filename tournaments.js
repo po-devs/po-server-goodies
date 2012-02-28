@@ -202,7 +202,8 @@ function Tournament(channel)
         // Command join
 	function join(source) {
 		if (self.phase != "entry") {
-			sendPM(source, "The tournament is not in signup phase at the moment");
+			subme(source);
+			//sendPM(source, "The tournament is not in signup phase at the moment");
 			return;
 		}
 
@@ -224,6 +225,27 @@ function Tournament(channel)
 
 		if (remainingEntrants() == 0) {
 			startTournament();
+		}
+	}
+	// Command subme
+	function subme(source) {
+		if (!playingPhase()) {
+			sendPM(source, "Wait until a tournament starts!");
+			return;
+		}
+
+		var placeholder;
+		for (var p in self.entrants) {
+			if (/~/.test(p)) {
+				placeholder = self.entrants[p];	
+			}
+		}
+		var players = [sys.name(source), self.entrants[p]];
+		if (placeholder) {
+			broadcast(players[0] + " joined the tournament! (bye " + players[1] + "!)");
+			switchPlayers(players);
+		} else {
+			sendPM(source, "No more placeholders!");
 		}
 	}
 
@@ -390,16 +412,12 @@ function Tournament(channel)
 		}
 
 		broadcast(players[0] + " and " + players[1] + " were exchanged places in the ongoing tournament by "  + sys.name(source));
+		switchPlayers(players);
+	}
 
+	function switchPlayers(players) {
 		var p1 = players[0].toLowerCase();
 		var p2 = players[1].toLowerCase();
-
-		/*broadcast("Contents of variables before subbing:");
-		broadcast("self.members: [" + self.members.map(function (i) { return i.toString(); }).join(", ") + "]");
-		broadcast("self.battlers: [" + self.battlers.map(function (i) { return i.toString(); }).join(", ") + "]");
-		broadcast("self.battlesStarted: [" + self.battlesStarted.map(function (i) { return i.toString(); }).join(", ") + "]");
-		var e = []; for (var x in self.entrants) { e.push("" +x + ": " + self.entrants[x]);}
-		broadcast("self.entrants: {" + e.join(", ") + "}");*/
 
 		if (isBattling(p1))
 			setBattleStarted(p1, false);
@@ -428,15 +446,6 @@ function Tournament(channel)
 			self.entrants[p2] = players[1];
 			delete self.entrants[p1];
 		}
-
-
-		/*broadcast("Contents of variables before subbing:");
-		broadcast("self.members: [" + self.members.map(function (i) { return i.toString(); }).join(", ") + "]");
-		broadcast("self.battlers: [" + self.battlers.map(function (i) { return i.toString(); }).join(", ") + "]");
-		broadcast("self.battlesStarted: [" + self.battlesStarted.map(function (i) { return i.toString(); }).join(", ") + "]");
-		var e = []; for (var x in self.entrants) { e.push("" +x + ": " + self.entrants[x]);}
-		broadcast("self.entrants: {" + e.join(", ") + "}");*/
-
 
 	}
 
@@ -755,7 +764,8 @@ function Tournament(channel)
 	this.commands = {
 		join: join,
 		unjoin: unjoin,
-		viewround: viewround
+		viewround: viewround,
+		subme: subme
 	}
 	this.authCommands = {
 		tour: start,
