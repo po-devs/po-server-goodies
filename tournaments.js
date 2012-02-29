@@ -174,11 +174,12 @@ function Tournament(channel)
 	}
 
 	function initTournament(starter, tier, count) {
+		self.starter = starter;
 		self.tier = tier;
 		self.count = count;
 
 		wall(border);
-		wall("*** A Tournament was started by " + starter + "! ***");
+		wall("*** A Tournament was started by " + self.starter + "! ***");
 		wall("PLAYERS: " + self.count);
 		wall("TYPE: Single Elimination");
 		wall("TIER: " + self.tier);
@@ -189,7 +190,6 @@ function Tournament(channel)
 
 		self.running = true;
 		self.phase = "entry";
-		self.starter = sys.name(source);
 		self.round = 0;
 
 		self.entrants = {};
