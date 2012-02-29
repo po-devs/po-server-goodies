@@ -268,5 +268,5 @@ exports.handleCommand = handleCommand;
 exports["help-string"] = "tourstats: See commands for tournament statistics!";
 exports.onHelp = showCommands;
 exports.getStats = function() { return tourstats; }
-exports.getWinners = function() { return tourswinners; }
+exports.getWinners = function() { return tourwinners; }
 exports.getRankingsByTier = function() { return tourrankingsbytier; }
