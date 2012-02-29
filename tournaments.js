@@ -92,6 +92,7 @@ function Tournament(channel)
 		this.entrants = {};
 		this.members = [];
 		this.battlers = [];
+		this.queue = [];
 
 		tournamentData[channel] = {
 			self: this,
@@ -129,13 +130,7 @@ function Tournament(channel)
 		}
 	}
 
-        // Command start
-	function start(source, data) {
-		if (self.running) {
-			sendPM(source, "A tournament is already running!");
-			return;
-		}
-
+	function parseTierAndCount(source, data) {
 		if (data.indexOf(':') == -1)
 			var commandpart = data.split(' ');
 		else
@@ -147,14 +142,13 @@ function Tournament(channel)
 			sendPM(source, "You must specify a tournament size of 3 or more.");
 			return;
 		}
-		self.count = count;
-
 
 		var tiers = sys.getTierList();
+		var tier;
 		var found = false;
 		for (var i = 0; i < tiers.length; ++i) {
 			if (cmp(tiers[i], commandpart[0])) {
-				self.tier = tiers[i];
+				tier = tiers[i];
 				found = true;
 				break;
 			}
@@ -163,9 +157,28 @@ function Tournament(channel)
 			sendPM(source, "Sorry, the server does not recognise the " + commandpart[0] + " tier.");
 			return;
 		}
+		return {starter: sys.name(source), tier: tier, count: count};
+	}
+
+        // Command start
+	function start(source, data) {
+		if (self.running) {
+			sendPM(source, "A tournament is already running!");
+			return;
+		}
+		var res = parseTierAndCount(source, data);
+
+		if (!res) return;
+
+		initTournament(res.starter, res.tier, res.count);
+	}
+
+	function initTournament(starter, tier, count) {
+		self.tier = tier;
+		self.count = count;
 
 		wall(border);
-		wall("*** A Tournament was started by " + sys.name(source) + "! ***");
+		wall("*** A Tournament was started by " + starter + "! ***");
 		wall("PLAYERS: " + self.count);
 		wall("TYPE: Single Elimination");
 		wall("TIER: " + self.tier);
@@ -181,6 +194,27 @@ function Tournament(channel)
 
 		self.entrants = {};
 		self.members = [];
+	}
+
+	// command queue
+	function queue(source, data) {
+		self.queue = self.queue || []; // TODO: remove, allows on fly implementing
+
+		var res = parseTierAndCount(source, data);
+
+		if (!res) return;
+
+		var QUEUE_MAX_SIZE = 3;
+		if (self.queue.length > QUEUE_MAX_SIZE) {
+			sendPM(source, "Sorry, we already have " + QUEUE_MAX_SIZE + " tournaments in the queue."); 
+			return;
+		}
+
+		self.queue.push(res);
+
+		broadcast(res.starter + " added a new tier to the queue!");
+
+		scheduleTournamentFromQueue();
 	}
 
 	function isInTour(name) {
@@ -502,6 +536,7 @@ function Tournament(channel)
 			broadcast(border);
 			broadcast("");
 			
+			scheduleTournamentFromQueue();
 		} else {
 			sendPM(source, "Sorry, you are unable to end a tournament because one is not currently running.");
 		}
@@ -597,6 +632,8 @@ function Tournament(channel)
 				require("tourstats.js").updateTourStats(tier, time, winner, num, noPoints);
 			}
 			resetTourVars()
+
+			scheduleTournamentFromQueue();
 			return;
 		}
 
@@ -753,6 +790,21 @@ function Tournament(channel)
 		}
 	}
 
+	function scheduleTournamentFromQueue() {
+		if (self.queue.length == 0) {
+			return;
+		}
+
+		sys.delayedCall(function() {
+			if (!self.running) {
+				var tour = queue.shift();
+				if (tour) {
+					initTournament(tour.starter, tour.tier, tour.count);
+				}
+			}
+		}, 300);
+	}
+
         // resetting tournament variables when a tournament is finished
 
 	function resetTourVars() {
@@ -781,6 +833,7 @@ function Tournament(channel)
 	}
 	this.authCommands = {
 		tour: start,
+		queue: queue,
 		dq: dq,
 		push: push,
 		cancelbattle: cancelBattle,
