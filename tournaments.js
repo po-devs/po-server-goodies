@@ -796,12 +796,14 @@ function Tournament(channel)
 		}
 
 		sys.delayedCall(function() {
+			try {
 			if (!self.running) {
 				var tour = queue.shift();
 				if (tour) {
 					initTournament(tour.starter, tour.tier, tour.count);
 				}
 			}
+			catch (e) { sys.sendAll("schedule error: " + e, self.channel); }
 		}, 10);
 	}
 
