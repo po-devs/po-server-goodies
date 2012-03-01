@@ -802,7 +802,7 @@ function Tournament(channel)
 					initTournament(tour.starter, tour.tier, tour.count);
 				}
 			}
-		}, 300);
+		}, 10);
 	}
 
         // resetting tournament variables when a tournament is finished
