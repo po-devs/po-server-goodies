@@ -262,6 +262,8 @@ function showCommands(src, topic, channel) {
     }
 }
 
+init() // always call this to initialize variables
+
 exports.init = init;
 exports.updateTourStats = updateTourStats;
 exports.handleCommand = handleCommand;
