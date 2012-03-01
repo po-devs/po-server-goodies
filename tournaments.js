@@ -965,13 +965,13 @@ module.exports = {
 		return ret;
 	},
 
-        "help-string": ["tournaments: To know the tournament commands"],
+        "help-string": ["tournaments: To know the tournament commands", "megauser: To know the tournament admin commands."],
 
         onHelp: function(src, topic, channel) {
             var help = [];
             if (topic == "tournaments") {
                 help = [
-                  "/join: Enters you to in a tournament.",,
+                  "/join: Enters you to in a tournament.",
                   "/unjoin: Withdraws you from a tournament.",
                   "/viewround: Shows the current pairings for the round.",
                 ];
@@ -979,10 +979,11 @@ module.exports = {
             else if (topic == "megauser") {
                 help = [
                   "/tour [tier]:[number]: Starts a tournament in set tier for the selected number of players.",
+		  "/queue [tier]:[number]: Schedules a tournament to automatically start after the current one.",
                   "/endtour: Ends the current tournament.",
                   "/dq name: Disqualifies someone in the tournament.",
                   "/push name: Adds a user to the tournament.",
-                  "/changecount [self.entrants]: Changes the number of self.entrants during the signup phase.",
+                  "/changecount [entrants]: Changes the number of self.entrants during the signup phase.",
                   "/sub name1:name2: Replaces name1 with name2 in the tournament.",
                   "/cancelBattle name1: Allows the user or their opponent to forfeit without leaving the tournament their current battle so they can battle again with correct clauses."
                 ];
