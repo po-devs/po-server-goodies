@@ -803,7 +803,7 @@ function Tournament(channel)
 					initTournament(tour.starter, tour.tier, tour.count);
 				}
 			}
-			catch (e) { sys.sendAll("schedule error: " + e, self.channel); }
+			} catch (e) { sys.sendAll("schedule error: " + e, self.channel); }
 		}, 10);
 	}
 
