@@ -72,17 +72,17 @@ def update_tiers(tiers):
         for tier in USAGE_TREE:
             # Find bans by parent tier top usage
             top_usage = set()
+            print("Calculating banlists for {tier}...".format(tier=tier), end = " ")
             if ban_parent:
                 print("Downloading ranked stats for {tier}...".format(tier=ban_parent), end=" ")
                 stats = get_ranked_stats(ban_parent)
                 tier_usage[ban_parent] = dict((s[0], float(s[1])) for s in stats)
 
-                print("Calculating banlists for {tier}...".format(tier=tier), end = " ")
-                top_usage = [entry[0] for entry in stats if float(entry[1]) >= 4.0]
-                tier_pokemon[ban_parent] = top_usage
+                tier_pokemon[ban_parent] = [entry[0] for entry in stats if float(entry[1]) >= 4.0]
 
             # Bans 
-            pokemon_bans = set(top_usage) | set(BANLIST.get(tier,[])) | set(ADDITIONAL_BANS.get(tier,[]))
+            parent_pokemon = tier_pokemon[ban_parent] if ban_parent else set()
+            pokemon_bans = set(parent_pokemon) | set(BANLIST.get(tier,[])) | set(ADDITIONAL_BANS.get(tier,[]))
 
             element = tiers.find(".//tier[@name='{tier}']".format(tier=tier))
  
@@ -95,7 +95,7 @@ def update_tiers(tiers):
             pokemon_bans |= drops            
  
             current_bans = deserialize_bans(element.attrib["pokemons"])
-            all_bans = all_bans | pokemon_bans | drops
+            all_bans = all_bans | pokemon_bans
             missing_bans = pokemon_bans - current_bans
             extra_bans = current_bans - pokemon_bans
             weird_bans = current_bans - all_bans
