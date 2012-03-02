@@ -12,7 +12,7 @@ MONTHLY_STATS="http://stats.pokemon-online.eu/Past Stats/{month}-{year}/{tier}/r
 
 TIER_TREES = [
     ["Wifi OU", "Wifi UU", "Wifi LU", "Wifi NU"],
-#    ["DW OU", "DW UU"]
+    ["DW OU", "DW UU"]
 ]
 
 BANLIST = {
@@ -20,7 +20,8 @@ BANLIST = {
     "Wifi UU": ["Kingdra", "Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Venomoth", "Wobbuffet"], # BL
     "Wifi LU": ["Cresselia", "Gorebyss", "Huntail", "Victini", "Rhyperior", "Omastar", "Medicham", "Durant", "Virizion", "Moltres", "Sharpedo"], # BL2
     "Wifi NU": ["Feraligatr", "Sawsbuck", "Gligar", "Braviary", "Charizard", "Hitmonlee", "Scolipede", "Tangela", "Jynx"], # BL3
-    "DW UU": [],
+    "DW OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Blaziken", "Garchomp", "Thundurus", "Chandelure"], # DW Ubers
+    "DW UU": ["Azelf", "Chansey", "Deoxys", "Deoxys-D", "Froslass", "Haxorus", "Hydreigon", "Kyurem", "Lampent", "Latias", "Lucario", "Mew", "Roserade", "Scrafty", "Smeargle", "Staraptor", "Terrakion", "Venomoth", "Vulpix"], # DW BL
 }
 ADDITIONAL_BANS = {
     "Wifi UU": ["Vulpix"], # Due to Drought being banned
