@@ -2,6 +2,7 @@
 import lxml.etree, lxml.html
 import urllib.parse, urllib.request
 import os
+from copy import copy
 from datetime import date
 from dateutil.relativedelta import relativedelta
 
@@ -28,6 +29,7 @@ ADDITIONAL_BANS = {
     "Wifi LU": ["Abomasnow", "Snover"], # Due to Snow Warning being banned
 }
 
+# TODO: enforce these
 ITEM_BANS = {
     "Wifi NU": "Damp Rock"
 }
@@ -41,12 +43,6 @@ def get_po_tiers():
 def write_po_tiers(po_tiers):
     with open("tiers.xml", "wb") as f:
         f.write(lxml.etree.tostring(po_tiers).replace(b'\n', b'\r\n'))
-
-def merge_values(s1, s2):
-    set1 = set(s.strip() for s in s1.split(","))
-    set2 = set(s.strip() for s in s2.split(","))
-    ret = ', '.join(sorted(list((set1 | set2))))
-    return ret
 
 def deserialize_bans(str):
     return set(s.strip() for s in str.split(","))
@@ -104,17 +100,28 @@ def update_tiers(tiers):
  
             if drops:
                 print("Likely dropped from {grand_parent} to {parent}: {pokes}. Added to {tier} ban list.".format(pokes=drops, grand_parent=grand_ban_parent, parent=ban_parent, tier=tier))
-            if weird_bans:
-                print("Unknown bans present: {bans}".format(bans=weird_bans))
-            if missing_bans or removable_bans:
+            if missing_bans or removable_bans or weird_bans:
+                bans = copy(current_bans)
                 print("Proposed changes:")
                 if missing_bans:
                     print("Add bans for {missing} as they should be banned by usage or banlist.".format(missing=missing_bans))
+                    ans = input("Proceed with changes? [Y/n] ")
+                    if ans == "" or ans.upper().startswith("Y"):
+                        bans |= missing_bans
+
                 if removable_bans:
                     print("Remove bans for {extra} as they are banned in parent tiers.".format(extra=removable_bans))
-                ans = input("Proceed with changes? [Y/n] ")
-                if ans == "" or ans.upper().startswith("Y"):
-                    bans = (current_bans | missing_bans) - removable_bans
+                    ans = input("Proceed with changes? [Y/n] ")
+                    if ans == "" or ans.upper().startswith("Y"):
+                        bans -= removable_bans
+
+                if weird_bans:
+                    print("Unknown bans present {bans} and are to be removed.".format(bans=weird_bans))
+                    ans = input("Proceed with changes? [Y/n] ")
+                    if ans == "" or ans.upper().startswith("Y"):
+                        bans -= weird_bans
+
+                if bans != current_bans:
                     element.attrib["pokemons"] = serialize_bans(bans)
                     print("Tier {tier} updated!".format(tier=tier))
                 else:
@@ -123,7 +130,6 @@ def update_tiers(tiers):
                 print("Tier {tier} seems fine.".format(tier=tier))
             grand_ban_parent = ban_parent
 
-    print("")
     return tiers
     
 if __name__ == "__main__":
