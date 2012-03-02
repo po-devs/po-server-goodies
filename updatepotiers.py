@@ -69,24 +69,41 @@ def get_ranked_stats(tier):
 def update_tiers(tiers):
     for USAGE_TREE in TIER_TREES:
         all_bans = set(BANLIST.get(USAGE_TREE[0],[]))
+        tier_usage = {}
+        tier_pokemon = {}
+        grand_ban_parent = None
         for ban_parent,tier in zip(USAGE_TREE[:-1], USAGE_TREE[1:]):
             print("Downloading ranked stats for {tier}...".format(tier=ban_parent), end=" ")
             stats = get_ranked_stats(ban_parent)
+            tier_usage[ban_parent] = dict((s[0], float(s[1])) for s in stats)
+
             print("Calculating banlists for {tier}...".format(tier=tier), end = " ")
             top_usage = [entry[0] for entry in stats if float(entry[1]) >= 4.0]
+            tier_pokemon[ban_parent] = top_usage
+
             pokemon_bans = set(top_usage) | set(BANLIST.get(tier,[])) | set(ADDITIONAL_BANS.get(tier,[]))
 
             element = tiers.find(".//tier[@name='{tier}']".format(tier=tier))
-            
+ 
+            # Calculate drops using very heuristic approach.
+            drops = set()
+            if grand_ban_parent:
+                for pokemon in tier_usage[grand_ban_parent]:
+                    if pokemon not in (all_bans | pokemon_bans) and 0.1 < tier_usage[grand_ban_parent][pokemon] < 4.0 and tier_usage[ban_parent].get(pokemon, 0) * 20 < tier_usage[grand_ban_parent][pokemon]:
+                        drops.add(pokemon)
+            pokemon_bans |= drops            
+ 
             pokemons = element.attrib["pokemons"]
             current_bans = deserialize_bans(pokemons)
-            all_bans = all_bans | pokemon_bans
+            all_bans = all_bans | pokemon_bans | drops
             missing_bans = pokemon_bans - current_bans
             extra_bans = current_bans - pokemon_bans
             weird_bans = current_bans - all_bans
             removable_bans = extra_bans - weird_bans
             print("Calculated.")
-
+ 
+            if drops:
+                print("Likely dropped from {grand_parent} to {parent}: {pokes}. Added to {tier} ban list.".format(pokes=drops, grand_parent=grand_ban_parent, parent=ban_parent, tier=tier))
             if weird_bans:
                 print("Unknown bans present: {bans}".format(bans=weird_bans))
             if missing_bans or removable_bans:
@@ -104,6 +121,7 @@ def update_tiers(tiers):
                     print("Tier {tier} not updated.".format(tier=tier))
             else:
                 print("Tier {tier} seems fine.".format(tier=tier))
+            grand_ban_parent = ban_parent
 
     print("")
     return tiers
