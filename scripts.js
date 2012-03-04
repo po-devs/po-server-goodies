@@ -755,7 +755,7 @@ var commands = {
     channel:
     [
         "/topic [topic]: Sets the topic of a channel. Only works if you're the first to log on a channel or have auth there. Displays current topic instead if no new one is given.",
-        "/ck [name]: Kick someone from current channel.",
+        "/lt [name]: Kick someone from current channel.",
         "/inviteonly [on|off]: Makes a channel invite-only or public.",
         "/invite [name]: Invites a user to current channel.",
         "/op [name]: Gives a user operator status.",
@@ -3580,12 +3580,12 @@ channelCommand: function(src, command, commandData, tar) {
     var poChannel = SESSION.channels(channel);
     if (poChannel.operators === undefined)
         poChannel.operators = [];
-    if (command == "ck" || command == "channelkick") {
+    if (command == "lt" || command == "lovetap") {
         if (tar == undefined) {
-            normalbot.sendChanMessage(src, "Choose a valid target for your wrath!");
+            normalbot.sendChanMessage(src, "Choose a valid target for your love!");
             return;
         }
-        normalbot.sendChanAll("" + sys.name(src) + " kicked " + commandData + " from this channel.");
+        sys.sendHtmlAll("<font color='#0483c5'><timestamp/> *** <b>" + this.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
         sys.kick(tar, channel);
         return;
     }
