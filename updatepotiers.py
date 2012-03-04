@@ -22,7 +22,7 @@ BANLIST = {
     "Wifi LU": ["Cresselia", "Gorebyss", "Huntail", "Victini", "Rhyperior", "Omastar", "Medicham", "Durant", "Virizion", "Moltres", "Sharpedo"], # BL2
     "Wifi NU": ["Feraligatr", "Sawsbuck", "Gligar", "Braviary", "Charizard", "Hitmonlee", "Scolipede", "Tangela", "Jynx", "Misdreavus"], # BL3
     "DW OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Blaziken", "Garchomp", "Thundurus", "Chandelure"], # DW Ubers
-    "DW UU": ["Azelf", "Chansey", "Deoxys", "Deoxys-D", "Froslass", "Haxorus", "Hydreigon", "Kyurem", "Lampent", "Latias", "Lucario", "Mew", "Roserade", "Scrafty", "Smeargle", "Staraptor", "Terrakion", "Venomoth", "Vulpix"], # DW BL
+    "DW UU": ["Azelf", "Chansey", "Deoxys", "Deoxys-S", "Froslass", "Haxorus", "Hydreigon", "Kyurem", "Landorus", "Latias", "Lucario", "Mew", "Roserade", "Scrafty", "Smeargle", "Staraptor", "Terrakion", "Venomoth", "Vulpix"], # DW BL
 }
 ADDITIONAL_BANS = {
     "Wifi UU": ["Vulpix", # Due to Drought being banned
@@ -82,7 +82,9 @@ def update_tiers(tiers):
 
             # Bans 
             parent_pokemon = tier_pokemon[ban_parent] if ban_parent else set()
-            pokemon_bans = set(parent_pokemon) | set(BANLIST.get(tier,[])) | set(ADDITIONAL_BANS.get(tier,[]))
+            usage_bans = set(parent_pokemon) 
+            banlist_bans = set(BANLIST.get(tier,[])) | set(ADDITIONAL_BANS.get(tier,[]))
+            pokemon_bans = usage_bans | banlist_bans
 
             element = tiers.find(".//tier[@name='{tier}']".format(tier=tier))
  
@@ -98,20 +100,22 @@ def update_tiers(tiers):
             all_bans = all_bans | pokemon_bans
             missing_bans = pokemon_bans - current_bans
             extra_bans = current_bans - pokemon_bans
-            weird_bans = current_bans - all_bans
-            removable_bans = extra_bans - weird_bans
+            likely_drops = current_bans - all_bans
+            removable_bans = extra_bans - likely_drops
             print("Calculated.")
  
             if drops:
                 print("Likely dropped from {grand_parent} to {parent}: {pokes}. Added to {tier} ban list.".format(pokes=drops, grand_parent=grand_ban_parent, parent=ban_parent, tier=tier))
-            if missing_bans or removable_bans or weird_bans:
+            if missing_bans or removable_bans or likely_drops:
                 bans = copy(current_bans)
                 print("Proposed changes:")
-                if missing_bans:
-                    print("Add bans for {missing} as they should be banned by usage or banlist.".format(missing=missing_bans))
-                    ans = input("Proceed with changes? [Y/n] ")
-                    if ans == "" or ans.upper().startswith("Y"):
-                        bans |= missing_bans
+                for reason, missing_subset in (("usage", usage_bans), ("banlist", banlist_bans), ("dropping from grandparent", drops)):
+                    ban_subset = missing_subset - current_bans
+                    if ban_subset:
+                        print("Add bans for {pokemon} as they should be banned by {reason}.".format(pokemon=ban_subset, reason=reason))
+                        ans = input("Proceed with changes? [Y/n] ")
+                        if ans == "" or ans.upper().startswith("Y"):
+                            bans |= ban_subset
 
                 if removable_bans:
                     print("Remove bans for {extra} as they are banned in parent tiers.".format(extra=removable_bans))
@@ -119,11 +123,11 @@ def update_tiers(tiers):
                     if ans == "" or ans.upper().startswith("Y"):
                         bans -= removable_bans
 
-                if weird_bans:
-                    print("Unknown bans present {bans} and are to be removed.".format(bans=weird_bans))
+                if likely_drops:
+                    print("These pokemon have fell in usage or have been removed from banlist {bans} and their bans are to be removed.".format(bans=likely_drops))
                     ans = input("Proceed with changes? [Y/n] ")
                     if ans == "" or ans.upper().startswith("Y"):
-                        bans -= weird_bans
+                        bans -= likely_drops 
 
                 if bans != current_bans:
                     element.attrib["pokemons"] = serialize_bans(bans)
