@@ -6,6 +6,7 @@
 var tourwinners, tourstats, tourrankingsbytier;
 
 function updateTourStats(tier, time, winner, num, purgeTime, noPoints) {
+    loadStats();
     var numToPoints = function() {
         if (noPoints) return 0;
         // First index: points for 1-7 players,
@@ -92,6 +93,10 @@ function init() {
     tourwinners = [];
     tourstats = {};
     tourrankingsbytier = {};
+    loadStats();
+}
+
+function loadStats() {
     try {
         var jsonObject = JSON.parse(sys.getFileContent('tourstats.json'));
         tourwinners = jsonObject.tourwinners;
