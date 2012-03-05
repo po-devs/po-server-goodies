@@ -2603,7 +2603,9 @@ modCommand: function(src, command, commandData, tar) {
                 isBanned ? "Banned: yes" : "Banned: no",
             ];
             if (online) {
-                data.push("Hostname: " + SESSION.users(tar).hostname);
+                if (SESSION.users(tar).hostname != ip)
+                    data[0] += " (" + SESSION.users(tar).hostname + ")";
+                data.push("Idle for: " + getTimeString(parseInt(sys.time()) - SESSION.users(tar).lastline.time));
                 data.push("Channels: " + channels.join(", "));
                 data.push("Names during current session: " + (online && SESSION.users(tar).namehistory ? SESSION.users(tar).namehistory.map(function(e){return e[0]}).join(", ") : name));
             }
@@ -3881,7 +3883,7 @@ beforeChatMessage: function(src, message, chan) {
         }
         user.lastline.time = time;
         user.lastline.message = message;
-        return ret;he
+        return ret;
     });
     capsName = new Lazy(function() {
         var name = sys.name(src);
