@@ -787,7 +787,7 @@ var commands = {
         "/perm [on/off]: Make the current permanent channel or not (permanent channels remain listed when they have no users).",
         "/userinfo [name]: Displays information about a user (pretty display).",
         "/whois [name]: Displays information about a user (one line, slightly more info).",
-        "/aliases [IP]: Shows the aliases of an IP.",
+        "/aliases [IP/name]: Shows the aliases of an IP or name.",
         "/tempban [name]:[minutes]: Bans someone for an hour or less.",
         "/tempunban [name]: Unbans a temporary banned user (standard unban doesn't work).",
         "/mafiaban [name]:[reason]:[time]: Bans a player from Mafia. Time is optional and defaults to 7 days.",
