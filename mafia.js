@@ -1130,6 +1130,7 @@ var mafia = module.exports = new function() {
                             if (target.safeguarded) {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
                             } else if (target.poisoned == undefined) {
+                                mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was poisoned!");
                                 target.poisoned = 1;
                                 target.poisonCount = Action.count || 2;
                             }
@@ -1182,13 +1183,15 @@ var mafia = module.exports = new function() {
             for (var p in mafia.players) {
                 var player = mafia.players[p];
                 var poisonCount = player.poisonCount;
-                if (player.poisoned < poisonCount) {
-                    mafia.sendPlayer(player.name, "±Game: You have " + (player.poisonCount - player.poisoned) + " days to live.");
-                    player.poisoned++;
-                } else if (player.poisoned >= poisonCount) {
-                    mafia.sendPlayer(player.name, "±Game: You died because of Poison!");
-                    mafia.kill(player);
-                    nightkill = true; // kinda night kill
+                if (poisonCount !== undefined) {
+                    if (player.poisoned < poisonCount) {
+                        mafia.sendPlayer(player.name, "±Game: You have " + (player.poisonCount - player.poisoned) + " days to live.");
+                        player.poisoned++;
+                    } else if (player.poisoned >= poisonCount) {
+                        mafia.sendPlayer(player.name, "±Game: You died because of Poison!");
+                        mafia.kill(player);
+                        nightkill = true; // kinda night kill
+                    }
                 }
             }
 
