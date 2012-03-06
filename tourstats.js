@@ -74,7 +74,7 @@ function updateTourStats(tier, time, winner, num, purgeTime, noPoints) {
         //tourstats[player] can be undefined, as 0 points tourwinners still are registered and script used to not record any tour stats f or them
         if (tourstats[player] != undefined) {
             tourstats[player].points -= points;
-            tourstats[player].details.pop();
+            tourstats[player].details.shift();
             if (tourstats[player].points == 0) {
                 delete tourstats[player];
             }
@@ -86,7 +86,7 @@ function updateTourStats(tier, time, winner, num, purgeTime, noPoints) {
                 }
             }
         }
-        tourwinners.pop();
+        tourwinners.shift();
     }
 }
 
