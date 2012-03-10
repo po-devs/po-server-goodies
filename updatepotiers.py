@@ -2,6 +2,7 @@
 import lxml.etree, lxml.html
 import urllib.parse, urllib.request
 import os
+import sys
 from copy import copy
 from datetime import date
 from dateutil.relativedelta import relativedelta
@@ -61,6 +62,8 @@ def get_ranked_stats(tier):
     PARAMS["stats1"] = previous_month_url.replace(" ", "%20")
     PARAMS["stats2"] = last_month_url.replace(" ", "%20")
     url = "{page}?{query}".format(page=WEIGHTED_USAGE_STATS_URL, query=urllib.parse.urlencode(PARAMS))
+    if "--show-url" in sys.argv:
+        print("Ranked stats for {tier} are at {url}".format(tier=tier, url=url))
     page = lxml.html.parse(url)
     return [line.rsplit(None, 2) for line in page.find("//pre").text.splitlines()[2:-1]]
 
