@@ -97,3 +97,4 @@
   <tier pokemons="Carvanha, Drilbur, Gligar, Meditite, Misdreavus, Murkrow, Scraggy, Scyther, Sneasel, Tangela, Vulpix, Yanma" restrictedPokemons="" tableName="tier_lcwifi" banMode="ban" maxLevel="5" mode="0" displayOrder="14" gen="5" moves="Fissure, Guillotine, Horn Drill, Sheer Cold" items="Berry Juice, DeepSeaTooth" banParent="Wifi LC Ubers" name="Wifi LC" numberOfPokemons="6" numberOfRestricted="1" clauses="Sleep Clause,Species Clause,Wifi Battle"/>
  </category>
 </category>
+
