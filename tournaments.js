@@ -834,6 +834,7 @@ function Tournament(channel)
 		self.entrants = {};
 		self.members = [];
 		self.battlers = [];
+		self.ips = [];
 	}
 
 	this.announceInit = function announceInit() {
