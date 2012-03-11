@@ -1099,7 +1099,12 @@ var mafia = module.exports = new function() {
                         for (var t in targets) {
                             var target = targets[t];
                             if (mafia.isInGame(target)) {
+if (!("protect" in target.role.actions && target.role.actions.protect.mode == "ignore")){ //Make two options, a silent and nonsilent ignore
                                 mafia.players[target].guarded = true;
+ }
+else{
+mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was not effected by the protect!");
+                            }
                             }
                         }
                     }
@@ -1142,7 +1147,11 @@ var mafia = module.exports = new function() {
                         for (var t in targets) {
                             var target = targets[t];
                             if (mafia.isInGame(target)) {
+if (!("safeguard" in target.role.actions && target.role.actions.safeguard.mode == "ignore")){
                                 mafia.players[target].safeguarded = true;
+ }
+else{
+mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was not effected by the safeguard!");
                             }
                         }
                     }
