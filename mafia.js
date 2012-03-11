@@ -1153,7 +1153,7 @@ var mafia = module.exports = new function() {
                             target = mafia.players[target];
                             var revenge = false;
                             var revengetext = "±Game: You were killed during the night!";
-                            if ("kill" in target.role.actions && target.role.actions.kill.mode == "killattacker") {
+                            if ("kill" in target.role.actions && (target.role.actions.kill.mode == "killattacker" && !target.guarded || target.role.actions.kill.mode == "killattackerevenifprotected")) {
                                 revenge = true;
                                 if (target.role.actions.kill.msg)
                                     revengetext = target.role.actions.kill.msg;
