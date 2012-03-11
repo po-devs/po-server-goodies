@@ -1134,6 +1134,9 @@ var mafia = module.exports = new function() {
                                 target.poisoned = 1;
                                 target.poisonCount = Action.count || 2;
                             }
+                            else if ("poison" in target.role.actions && target.role.actions.kill.mode == "ignore") {
+                                  mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was immune to the poison!");
+                         }
                         }
                     }
                     else if (command == "safeguard") {
