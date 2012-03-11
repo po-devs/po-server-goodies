@@ -1129,14 +1129,13 @@ var mafia = module.exports = new function() {
                             target = mafia.players[target];
                             if (target.safeguarded) {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
+                            } else if ("poison" in target.role.actions && target.role.actions.poison.mode == "ignore") {
+                                  mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was immune to the poison!");
                             } else if (target.poisoned == undefined) {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was poisoned!");
                                 target.poisoned = 1;
                                 target.poisonCount = Action.count || 2;
                             }
-                            else if ("poison" in target.role.actions && target.role.actions.kill.mode == "ignore") {
-                                  mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was immune to the poison!");
-                         }
                         }
                     }
                     else if (command == "safeguard") {
