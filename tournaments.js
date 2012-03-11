@@ -93,6 +93,7 @@ function Tournament(channel)
 		this.members = [];
 		this.battlers = [];
 		this.queue = [];
+		this.ips = [];
 
 		tournamentData[channel] = {
 			self: this,
@@ -102,6 +103,7 @@ function Tournament(channel)
 	// Save everything that should be retained after script update
 	// to self
 	var self = tournamentData[channel].self;
+	if (self.ips === undefined) self.ips = [];
 
 	var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
 
@@ -198,7 +200,6 @@ function Tournament(channel)
 
 	// command queue
 	function queue(source, data) {
-		self.queue = self.queue || []; // TODO: remove, allows on fly implementing
 
 		var res = parseTierAndCount(source, data);
 
@@ -254,6 +255,10 @@ function Tournament(channel)
 			sendPM(source, "You already joined the tournament!");
 			return;
 		}
+		if (self.ips.indexOf(sys.ip(source)) != -1) {
+			sendPM(source, "You already joined the tournament!");
+			return;
+		}
 
 		var srctier = sys.tier(source);
 		if (!cmp(srctier, self.tier)){
@@ -261,6 +266,7 @@ function Tournament(channel)
 			return;
 		}
 
+		self.ips.push(sys.ip(source));
 		addEntrant(name);
 		broadcast("~~Server~~: " + name + " joined the tournament! " + remainingEntrants()  + " more spot(s) left!");
 
@@ -280,6 +286,11 @@ function Tournament(channel)
 			return;
 		}
 
+		if (self.ips.indexOf(sys.ip(source)) != -1) {
+			sendPM(source, "You already joined the tournament!");
+			return;
+		}
+
 		var placeholder;
 		for (var p in self.entrants) {
 			if (/~/.test(p)) {
@@ -288,6 +299,7 @@ function Tournament(channel)
 		}
 		var players = [sys.name(source), placeholder];
 		if (placeholder) {
+			self.ips.push(sys.ip(source));
 			broadcast("~~Server~~: " + players[0] + " joined the tournament! (bye " + players[1] + "!)");
 			switchPlayers(players);
 		} else {
@@ -308,6 +320,9 @@ function Tournament(channel)
 			if (self.phase == "entry") {
 				removeEntrant(name);
 				broadcast("~~Server~~: " + name + " left the tournament!");
+				var ind = self.ips.indexOf(sys.ip(source));
+				if (ind != -1)
+					self.ips.slice(ind, 1);
 			} else if (playingPhase()) {
 				setBattleStarted(name);
 				broadcast("~~Server~~: " + name + " left the tournament!");
