@@ -1975,5 +1975,6 @@ var mafia = module.exports = new function() {
 
     this.init = function() {
         mafia.themeManager.loadThemes();
+        mafiabot.sendAll("Mafia was reloaded, please start a new game!", mafiachan);
     }
 }();
