@@ -1637,8 +1637,8 @@ var mafia = module.exports = new function() {
             rules: [this.showRules, "To see the Rules for the Game/Server."],
             themes: [this.showThemes, "To view installed themes."],
             themeinfo: [this.showThemeInfo, "To view installed themes (more details)."],
-            playedgames: [this.showPlayedGames, "To view recently played games"]
-            update: [this.updateTheme, "To update a Mafia Theme!"],
+            playedgames: [this.showPlayedGames, "To view recently played games"],
+            update: [this.updateTheme, "To update a Mafia Theme!"]
         },
         auth: {
             push: [this.pushUser, "To push users to a Mafia game."],
