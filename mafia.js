@@ -1636,13 +1636,13 @@ var mafia = module.exports = new function() {
             themes: [this.showThemes, "To view installed themes."],
             themeinfo: [this.showThemeInfo, "To view installed themes (more details)."],
             playedgames: [this.showPlayedGames, "To view recently played games"]
+            update: [this.updateTheme, "To update a Mafia Theme!"],
         },
         auth: {
             push: [this.pushUser, "To push users to a Mafia game."],
             //slay: [this.slayUser, "To slay users in a Mafia game."],
             end: [this.endGame, "To cancel a Mafia game!"],
             add: [this.addTheme, "To add a Mafia Theme!"],
-            update: [this.updateTheme, "To update a Mafia Theme!"],
             remove: [this.removeTheme, "To remove a Mafia Theme!"],
             disable: [this.disableTheme, "To disable a Mafia Theme!"],
             enable: [this.enableTheme, "To enable a disabled Mafia Theme!"],
