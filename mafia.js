@@ -1081,7 +1081,7 @@ var mafia = module.exports = new function() {
                             mafia.removeTargets(target);
                             continue;
                         }
-                            mafia.sendPlayer(target.name, "±Game: The " + player.role.translation +" came to you last night! You were too busy being distracted!");
+                        mafia.sendPlayer(target.name, "±Game: The " + player.role.translation +" came to you last night! You were too busy being distracted!");
                         mafia.removeTargets(target);
                         /* warn role / teammates */
                         if ("night" in target.role.actions) {
@@ -1099,8 +1099,9 @@ var mafia = module.exports = new function() {
                         for (var t in targets) {
                             var target = targets[t];
                             if (mafia.isInGame(target)) {
+                                target = mafia.players[target];
                                 if (!("protect" in target.role.actions && target.role.actions.protect.mode == "ignore")) {
-                                    mafia.players[target].guarded = true;
+                                    target.guarded = true;
                                 } else if (target.role.actions.protect.silent != true){
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was not affected by the protect!");
                                 }
@@ -1146,8 +1147,9 @@ var mafia = module.exports = new function() {
                         for (var t in targets) {
                             var target = targets[t];
                             if (mafia.isInGame(target)) {
+                                target = mafia.players[target];
                                 if (!("safeguard" in target.role.actions && target.role.actions.safeguard.mode == "ignore")) {
-                                    mafia.players[target].safeguarded = true;
+                                    target.safeguarded = true;
                                 } else if (target.role.actions.safeguard.silent != true) {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was not affected by the safeguard!");
                                 }
