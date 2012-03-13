@@ -3497,11 +3497,11 @@ ownerCommand: function(src, command, commandData, tar) {
         normalbot.sendChanMessage(src, "Fetching ban sites...");
         sys.webCall(Config.base_url + "bansites.txt", function(resp) {
             if (resp != "") {
-                SESSION.global().BannedUrls = resp.toLowerCase().split(/\n/);
                 sys.writeToFile('bansites.txt', resp);
+                SESSION.global().BannedUrls = resp.toLowerCase().split(/\n/);
                 normalbot.sendAll('Updated banned sites!', staffchannel);
             } else {
-                normalbot.sendAll('Updated banned sites!', staffchannel);
+                normalbot.sendAll('Failed to update!', staffchannel);
             }
         });
         return;
