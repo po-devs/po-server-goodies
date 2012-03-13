@@ -1575,9 +1575,11 @@ var mafia = module.exports = new function() {
         mafia.themeManager.loadWebTheme(url, true, false);
     }
     this.updateTheme = function(src, url) {
-var Author = mafia.thememanager.themesinfo[themename][0].author;
-        if (!mafia.isMafiaAdmin(src) && !sys.name(src)=Author) {
-            mafiabot.sendChanMessage(src, "admin+ or author");
+        var theme = mafia.themeManager.themes[url.toLowerCase()];
+        var authorMatch = theme !== undefined && theme.author \
+                       && theme.author.toLowerCase == sys.name(src).toLowerCase();
+        if (!mafia.isMafiaAdmin(src) && !authorMatch) {
+            mafiabot.sendChanMessage(src, "You need to be admin or the author of this theme.");
             return;
         }
         var dlurl;
