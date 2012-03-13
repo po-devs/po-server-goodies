@@ -1775,7 +1775,7 @@ userCommand: function(src, command, commandData, tar) {
         commandData=this.html_escape(commandData)
         if (command == "me") {
             sys.sendHtmlAll("<font color='#0483c5'><timestamp/> *** <b>" + this.html_escape(sys.name(src)) + "</b> " + commandData + "</font>", channel);
-        } else if (command == "rainbow" && sys.auth(src) >= 3) {
+        } else if (command == "rainbow" && SESSION.global().allowRainbow) {
             var auth = 1 <= sys.auth(src) && sys.auth(src) <= 3;
             var colours = ["red", "blue", "yellow", "cyan", "black", "orange", "green"];
             var randColour = function() { return colours[sys.rand(0,colours.length-1)]; }
