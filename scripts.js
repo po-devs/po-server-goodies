@@ -17,7 +17,7 @@ var Config = {
     commandbot: "CommandBot",
     querybot: "QueryBot",
     // suspectvoting.js available, but not in use
-    Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js"], 
+    Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js"],
     Mafia: {
         bot: "Murkrow",
         norepeat: 6,
@@ -76,7 +76,7 @@ if (typeof require === "undefined")
     }
     if (!require.cache)
         require.cache = {};
-    
+
 //if (typeof updateModule === "undefined")
     updateModule = function updateModule(module_name, callback) {
        var base_url = Config.base_url;
@@ -88,7 +88,7 @@ if (typeof require === "undefined")
        var fname = module_name.split(/\//).pop();
        if (!callback) {
            var resp = sys.synchronousWebCall(url);
-           if (resp == "") return;
+           if (resp == "") return {};
            sys.writeToFile(fname, resp);
            delete require.cache[fname];
            var module = require(fname);
@@ -320,7 +320,7 @@ POChannel.prototype.beforeMessage = function(src, msg) {
 POChannel.prototype.removeWatcher = function (id) {
     if (this.watchers != undefined && this.watchers.indexOf(id) != -1) {
         var index = this.watchers.indexOf(id);
-        this.watchers = this.watchers.slice(0, index) + this.watchers.slice(index+1); 
+        this.watchers = this.watchers.slice(0, index) + this.watchers.slice(index+1);
     }
 }
 
@@ -838,7 +838,7 @@ var commands = {
 };
 
 /* Start script-object
- * 
+ *
  * All the events are defined here
  */
 
@@ -3171,13 +3171,13 @@ ownerCommand: function(src, command, commandData, tar) {
     if (command == "testwebannouncement") {
         var updateURL = Config.base_url + "announcement.html";
         sys.webCall(updateURL, function(resp) {
-            sys.setAnnouncement(resp, src); 
+            sys.setAnnouncement(resp, src);
         });
     }
     if (command == "setwebannouncement") {
         var updateURL = Config.base_url + "announcement.html";
         sys.webCall(updateURL, function(resp) {
-            sys.changeAnnouncement(resp); 
+            sys.changeAnnouncement(resp);
         });
     }
     if (command == "capslockday") {
@@ -3496,8 +3496,13 @@ ownerCommand: function(src, command, commandData, tar) {
     if (command == "updatebansites") {
         normalbot.sendChanMessage(src, "Fetching ban sites...");
         sys.webCall(Config.base_url + "bansites.txt", function(resp) {
-            SESSION.global().BannedUrls = resp.toLowerCase().split(/\n/);
-            normalbot.sendAll('Updated banned sites!', staffchannel);
+            if (resp != "") {
+                SESSION.global().BannedUrls = resp.toLowerCase().split(/\n/);
+                sys.writeToFile('bansites.txt', resp);
+                normalbot.sendAll('Updated banned sites!', staffchannel);
+            } else {
+                normalbot.sendAll('Updated banned sites!', staffchannel);
+            }
         });
         return;
     }
@@ -3788,7 +3793,7 @@ beforeChatMessage: function(src, message, chan) {
         sys.putInChannel(src, sys.channelId(message.slice(1)));
         sys.stopEvent();
         return;
-    } 
+    }
 
     var name = sys.name(src).toLowerCase();
     // spamming bots, linking virus sites
@@ -3856,7 +3861,7 @@ beforeChatMessage: function(src, message, chan) {
         var BannedUrls = SESSION.global() ? SESSION.global().BannedUrls : [];
         if (m.indexOf("http://") != -1 || m.indexOf("www.") != -1) {
             for (var i = 0; i < BannedUrls.length; ++i) {
-                if (m.indexOf(BannedUrls[i]) != -1) {
+                if (BannedUrls[i].length > 0 && m.indexOf(BannedUrls[i]) != -1) {
                     return true;
                 }
             }
