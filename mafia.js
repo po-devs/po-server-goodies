@@ -1578,7 +1578,7 @@ var mafia = module.exports = new function() {
     }
     this.updateTheme = function(src, url) {
         var theme = mafia.themeManager.themes[url.toLowerCase()];
-        var authorMatch = theme !== undefined && typeof theme.author == "string" && theme.author.toLowerCase == sys.name(src).toLowerCase();
+        var authorMatch = theme !== undefined && typeof theme.author == "string" && theme.author.toLowerCase() == sys.name(src).toLowerCase();
         if (!mafia.isMafiaAdmin(src) && !authorMatch) {
             mafiabot.sendChanMessage(src, "You need to be admin or the author of this theme.");
             return;
