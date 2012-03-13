@@ -322,7 +322,7 @@ function Tournament(channel)
 				broadcast("~~Server~~: " + name + " left the tournament!");
 				var ind = self.ips.indexOf(sys.ip(source));
 				if (ind != -1)
-					self.ips.slice(ind, 1);
+					self.ips.splice(ind, 1);
 			} else if (playingPhase()) {
 				setBattleStarted(name);
 				broadcast("~~Server~~: " + name + " left the tournament!");
