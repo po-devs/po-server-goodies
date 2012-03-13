@@ -1575,8 +1575,9 @@ var mafia = module.exports = new function() {
         mafia.themeManager.loadWebTheme(url, true, false);
     }
     this.updateTheme = function(src, url) {
-        if (!mafia.isMafiaAdmin(src)) {
-            mafiabot.sendChanMessage(src, "admin+ command.");
+var Author = mafia.thememanager.themesinfo[themename][0].author;
+        if (!mafia.isMafiaAdmin(src) && !sys.name(src)=Author) {
+            mafiabot.sendChanMessage(src, "admin+ or author");
             return;
         }
         var dlurl;
