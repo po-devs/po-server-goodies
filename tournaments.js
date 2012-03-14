@@ -127,7 +127,13 @@ function Tournament(channel)
 
 	function wall(message) {
 		sys.sendAll(message, self.channel);
-		if (self.main) {
+		if (self.main && self.channel != 0) {
+			sys.sendAll(message, 0);
+		}
+	}
+
+	function advertise(message) {
+		if (self.main && self.channel != 0) {
 			sys.sendAll(message, 0);
 		}
 	}
@@ -187,7 +193,8 @@ function Tournament(channel)
 		wall("TIER: " + self.tier);
 		broadcast("CLAUSES: " + tierClauses(self.tier).join(", "));
 		wall("");
-		wall("*** Go in the #" + sys.channel(self.channel) + " channel and type /join or !join to enter the tournament! ***");
+		advertise("*** Go in the #" + sys.channel(self.channel) + " channel and type /join or !join to enter the tournament! ***");
+		wall("***Type /join or !join to enter the tournament! ***")
 		wall(border);
 
 		self.running = true;
@@ -668,6 +675,7 @@ function Tournament(channel)
 			wall("");
 			wall(border);
 			wall("*** FINALS OF " + self.tier.toUpperCase() + " TOURNAMENT ***");
+			advertise("*** Go to #" + self.channel + " channel to spectate them! ***");
 			wall("");
 		}
 
