@@ -194,7 +194,7 @@ function Tournament(channel)
 		broadcast("CLAUSES: " + tierClauses(self.tier).join(", "));
 		wall("");
 		advertise("*** Go in the #" + sys.channel(self.channel) + " channel and type /join or !join to enter the tournament! ***");
-		wall("***Type /join or !join to enter the tournament! ***")
+		broadcast("***Type /join or !join to enter the tournament! ***")
 		wall(border);
 
 		self.running = true;
@@ -675,7 +675,7 @@ function Tournament(channel)
 			wall("");
 			wall(border);
 			wall("*** FINALS OF " + self.tier.toUpperCase() + " TOURNAMENT ***");
-			advertise("*** Go to #" + self.channel + " channel to spectate them! ***");
+			advertise("*** Go to #" + sys.channel(self.channel) + " channel to spectate them! ***");
 			wall("");
 		}
 
