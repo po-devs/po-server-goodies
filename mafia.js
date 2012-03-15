@@ -1642,7 +1642,7 @@ var mafia = module.exports = new function() {
         },
         auth: {
             push: [this.pushUser, "To push users to a Mafia game."],
-            //slay: [this.slayUser, "To slay users in a Mafia game."],
+            slay: [this.slayUser, "To slay users in a Mafia game."],
             end: [this.endGame, "To cancel a Mafia game!"],
             add: [this.addTheme, "To add a Mafia Theme!"],
             remove: [this.removeTheme, "To remove a Mafia Theme!"],
