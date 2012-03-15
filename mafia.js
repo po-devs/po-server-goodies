@@ -883,6 +883,7 @@ var mafia = module.exports = new function() {
             sys.sendAll("±Game: Everybody died! This is why we can't have nice things :(", mafiachan);
             sys.sendAll("*** ************************************************************************************", mafiachan);
             mafia.clearVariables();
+            runUpdate();
             return true;
 
         }
@@ -919,6 +920,7 @@ var mafia = module.exports = new function() {
                 }
                 sys.sendAll("*** ************************************************************************************", mafiachan);
                 mafia.clearVariables();
+                runUpdate();
                 return true;
             }
         }
@@ -1620,7 +1622,32 @@ var mafia = module.exports = new function() {
         }
         mafia.themeManager.enable(src, name);
     };
+    this.updateAfter = function(src) {
+        mafiabot.sendChanMessage(src, "mafia will update after the game");
+        this.needsUpdating = true;
+        if (this.state == "blank") {
+            runUpdate();
+        }
+        return;
+    }
 
+    function runUpdate() {
+        if (this.needsUpdating !== true) return;
+        var POglobal = SESSION.global();
+        for (var i = 0; i < POglobal.plugins.length; ++i) {
+            if ("mafia.js" == POglobal.plugins[i].source) {
+                var source = POglobal.plugins[i].source;
+                updateModule(source, function(module) {
+                    POglobal.plugins[i] = module;
+                    module.source = source;
+                    module.init();
+                    sys.sendAll("Update complete!", mafiachan);
+                });
+                sys.sendAll("Updating mafia game...", mafiachan);
+                return;
+            }
+        }
+    }
 
     this.importOld = function(src, name) {
         mafiabot.sendAll("Importing old themes", mafiachan);
@@ -1648,6 +1675,7 @@ var mafia = module.exports = new function() {
             remove: [this.removeTheme, "To remove a Mafia Theme!"],
             disable: [this.disableTheme, "To disable a Mafia Theme!"],
             enable: [this.enableTheme, "To enable a disabled Mafia Theme!"],
+            updateafter: [this.updateAfter, "To update mafia after current game!"],
             importold: [this.importOld, ""]
         }
     };
