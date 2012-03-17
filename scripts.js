@@ -1406,18 +1406,38 @@ afterNewMessage : function (message) {
 
 ,
 
-beforeLogIn : function(src) {
+isRangeBanned : function(ip) {
+    for (var subip in rangebans.hash) {
+        if (subip.length > 0 && ip.substr(0, subip.length) == subip && allowedNames.indexOf(name) == -1) {
+             return true;
+        }
+    }
+    return false;
+}
 
-    var ip = sys.ip(src);
+,
+
+isTempBanned : function(ip) {
     if (ip in tempBans) {
         var time = parseInt(sys.time());
         if (time > parseInt(tempBans[ip].time)) {
             delete tempBans[ip];
         } else if (sys.auth(src) < 2) {
-            normalbot.sendMessage(src, 'You are banned!');
-            sys.stopEvent();
-            return;
+            return true;
         }
+    }
+    return false;
+}
+
+,
+
+beforeLogIn : function(src) {
+
+    var ip = sys.ip(src);
+    if (isTempBanned(ip)) {
+        normalbot.sendMessage(src, 'You are banned!');
+        sys.stopEvent();
+        return;
     }
     // auth can evade rangebans and namebans
     if (sys.auth(src) > 0) {
@@ -1425,13 +1445,10 @@ beforeLogIn : function(src) {
     }
     var allowedNames = ["sasukeanditachi", "sasukatandkitachi", "ata", "downpour", "broon89", "ifmltrailers", "probrem?", "salamander94"];
     var name = sys.name(src).toLowerCase();
-
-    for (var subip in rangebans.hash) {
-        if (subip.length > 0 && ip.substr(0, subip.length) == subip && allowedNames.indexOf(name) == -1) {
+    if (isRangeBanned(ip)) {
             normalbot.sendMessage('You are banned!');
             sys.stopEvent();
             return;
-        }
     }
     var arr =  ["172.", "72.20.", "199.255.",
                 "199.58.", "188.227.", "174.129.",
@@ -1464,6 +1481,9 @@ nameIsInappropriate: function(src)
     var name = (typeof src == "number")
         ? sys.name(src)
         : src;
+    function reply(m) {
+       if (typeof src == "number") normalbot.sendMessage(src, m);
+    }
 
     var lname = name.toLowerCase();
 
@@ -1471,26 +1491,26 @@ nameIsInappropriate: function(src)
     for (var i = 0; i < nameBans.length; ++i) {
         var regexp = nameBans[i];
         if (regexp.test(lname)) {
-            normalbot.sendMessage(src, 'This kind of name is banned from the server. (Matching regexp: ' + regexp + ')');
+            reply('This kind of name is banned from the server. (Matching regexp: ' + regexp + ')');
             return true;
         }
     }
 
     var cyrillic = /\u0430|\u0410|\u0412|\u0435|\u0415|\u041c|\u041d|\u043e|\u041e|\u0440|\u0420|\u0441|\u0421|\u0422|\u0443|\u0445|\u0425|\u0456|\u0406/;
     if (cyrillic.test(name)) {
-        normalbot.sendMessage('You are using cyrillic letters similar to latin letters in your name.');
+        reply('You are using cyrillic letters similar to latin letters in your name.');
         return true;
     }
     var creek = /[\u0370-\u03ff]/;
     if (creek.test(name)) {
-        normalbot.sendMessage('You are using creek letters similar to latin letters in your name.');
+        reply('You are using creek letters similar to latin letters in your name.');
         return true;
     }
 
     // \u0020 = space
     var space = /[\u0009-\u000D]|\u0085|\u00A0|\u1680|\u180E|[]\u2000-\u200A|\u2028|\u2029|\u2029|\u202F|\u205F|\u3000/;
     if (space.test(name)) {
-        normalbot.sendMessage('You are using whitespace letters in your name.');
+        reply('You are using whitespace letters in your name.');
         return true;
     }
 
@@ -1498,19 +1518,19 @@ nameIsInappropriate: function(src)
     var dash = /\u058A|\u05BE|\u1400|\u1806|\u2010-\u2015|\u2053|\u207B|\u208B|\u2212|\u2E17|\u2E1A|\u301C|\u3030|\u30A0|[\uFE31-\uFE32]|\uFE58|\uFE63|\uFF0D/;
 
     if (dash.test(name)) {
-        normalbot.sendMessage('You are using dash letters in your name.');
+        reply('You are using dash letters in your name.');
         return true;
     }
 
     // special marks
     if (/[\ufff0-\uffff]/.test(name)) {
-        normalbot.sendMessage('You are using SPECIAL characters in your name.');
+        reply('You are using SPECIAL characters in your name.');
         return true;
     }
 
     // COMBINING OVERLINE
     if (/\u0305/.test(name)) {
-        normalbot.sendMessage('You are using COMBINING OVERLINE character in your name.');
+        reply('You are using COMBINING OVERLINE character in your name.');
         return true;
     }
     return false;
@@ -2576,6 +2596,14 @@ modCommand: function(src, command, commandData, tar) {
                 break;
             }
         }
+        var nameBanned = this.nameIsInappropriate(name);
+        var rangeBanned = this.isRangeBanned(ip);
+        var tempBanned = this.isTempBanned(ip);
+        var bans = [];
+        if (isBanned) bans.push("normal ban");
+        if (nameBanned) bans.push("nameban");
+        if (rangeBanned) bans.push("rangeban");
+        if (tempBanned) bans.push("tempban");
 
         if (isbot) {
             var userJson = {'type': 'UserInfo', 'id': tar ? tar : -1, 'username': name, 'auth': authLevel, 'megauser': megauser, 'contributor': contribution, 'ip': ip, 'online': online, 'registered': registered, 'lastlogin': lastLogin };
@@ -2600,7 +2628,7 @@ modCommand: function(src, command, commandData, tar) {
                "Online: " + (online ? "yes" : "no"),
                "Registered name: " + (registered ? "yes" : "no"),
                "Last Login: " + (online && logintime ? new Date(logintime*1000).toUTCString() : lastLogin),
-                isBanned ? "Banned: yes" : "Banned: no",
+                bans.length > 0 ? "Bans: " + bans.join(", ") : "Bans: none",
             ];
             if (online) {
                 if (SESSION.users(tar).hostname != ip)
