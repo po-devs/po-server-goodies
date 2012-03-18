@@ -1422,7 +1422,7 @@ isTempBanned : function(ip) {
         var time = parseInt(sys.time());
         if (time > parseInt(tempBans[ip].time)) {
             delete tempBans[ip];
-        } else {{
+        } else {
             return true;
         }
     }
