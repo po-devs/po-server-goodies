@@ -1408,7 +1408,7 @@ afterNewMessage : function (message) {
 
 isRangeBanned : function(ip) {
     for (var subip in rangebans.hash) {
-        if (subip.length > 0 && ip.substr(0, subip.length) == subip && allowedNames.indexOf(name) == -1) {
+        if (subip.length > 0 && ip.substr(0, subip.length) == subip) {
              return true;
         }
     }
@@ -1445,7 +1445,7 @@ beforeLogIn : function(src) {
     }
     var allowedNames = ["sasukeanditachi", "sasukatandkitachi", "ata", "downpour", "broon89", "ifmltrailers", "probrem?", "salamander94"];
     var name = sys.name(src).toLowerCase();
-    if (isRangeBanned(ip)) {
+    if (isRangeBanned(ip) && allowedNames.indexOf(name) == -1) {
             normalbot.sendMessage('You are banned!');
             sys.stopEvent();
             return;
