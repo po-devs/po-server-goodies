@@ -1422,7 +1422,7 @@ isTempBanned : function(ip) {
         var time = parseInt(sys.time());
         if (time > parseInt(tempBans[ip].time)) {
             delete tempBans[ip];
-        } else if (sys.auth(src) < 2) {
+        } else {{
             return true;
         }
     }
@@ -1434,7 +1434,7 @@ isTempBanned : function(ip) {
 beforeLogIn : function(src) {
 
     var ip = sys.ip(src);
-    if (isTempBanned(ip)) {
+    if (isTempBanned(ip) && sys.auth(src) < 2) {
         normalbot.sendMessage(src, 'You are banned!');
         sys.stopEvent();
         return;
