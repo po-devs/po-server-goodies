@@ -3799,7 +3799,7 @@ channelCommand: function(src, command, commandData, tar) {
 beforeChatMessage: function(src, message, chan) {
     channel = chan;
     if ((chan == 0 && message.length > 250 && sys.auth(src) < 1)
-       || (message.length > 650 && sys.auth(src) < 2)) {
+       || (message.length > 5000 && sys.auth(src) < 2)) {
         normalbot.sendChanMessage(src, "Hi! Your message is too long, please make it shorter :3")
         sys.stopEvent();
         return;
