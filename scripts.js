@@ -1104,7 +1104,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         var banbot = type == "mban" ? mafiabot : normalbot;
         var verb = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted"}[type];
         var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute"}[type];
-        var sendAll = (type == "smute") ? function(line) { banbot.sendAll(line, staffchannel); } : function(line) { banbot.sendAll(line); };
+        var sendAll = (type == "smute") ? function(line) { banbot.sendAll(line, staffchannel); } : function(line,chan) { if(chan==undefined) {banbot.sendAll(line);} else banbot.sendAll(line,chan);};
 
         var expires = 0;
         var defaultTime = {"mute": "24h", "mban": "7d", "smute": "0"}[type];
@@ -1154,6 +1154,8 @@ issueBan : function(type, src, tar, commandData, maxTime) {
                return;
             }
         }
+		
+		var mban = (type=="mban") ? true:false;
 
         if (tar == undefined) {
             ip = sys.dbIp(commandData);
@@ -1167,6 +1169,12 @@ issueBan : function(type, src, tar, commandData, maxTime) {
                     banbot.sendChanMessage(src, "He/she's already " + verb + ".");
                     return;
                 }
+				if (mban)
+				{
+				sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]",staffchannel);
+				sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]",mafiachan);
+				}
+				else
                 sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
                 memoryhash.add(ip, sys.time() + ":" + sys.name(src) + ":" + expires + ":" + commandData + ":" + reason);
                 var authname = sys.name(src).toLowerCase();
@@ -1188,10 +1196,25 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         }
         SESSION.users(tar).activate(type, sys.name(src), expires, reason, true);
         if (reason.length > 0)
-            sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
-        else
-            sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Channel: "+sys.channel(channel) + "]");
-
+		{
+		if (mban)
+		{
+		sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]",staffchannel);
+		sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]",mafiachan);
+		}
+		else
+        sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
+		}
+		else
+		{
+		if (mban)
+		{
+		sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]",staffchannel);
+		sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]",mafiachan);
+		}
+		else
+        sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Channel: "+sys.channel(channel) + "]");
+		}
         var authname = sys.name(src).toLowerCase();
         authStats[authname] =  authStats[authname] || {}
         authStats[authname]["latest" + type] = [commandData, parseInt(sys.time())];
@@ -3894,7 +3917,7 @@ beforeChatMessage: function(src, message, chan) {
                 }
             }
         }
-        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, "nobrain.dk", /\bn[1i]gg+ers*\b/i, "penis", "vagina", "fuckface", /\bhur+\b/, /\bdur+\b/, "hurrdurr", /\bherp\b/, /\bderp\b/, "░░", "██", "▄▄", "▀▀", "___", "……", ".....", "¶¶", "¯¯", "----"];
+        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, "nobrain.dk", /\bn[1i]gg+ers*\b/i, "penis", "vagina", "fuckface", /\bhur+\b/, /\bdur+\b/, "hurrdurr", /\bherp\b/, /\bderp\b/, "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----"];
         for (var i = 0; i < BanList.length; ++i) {
             var filter = BanList[i];
             if (typeof filter == "string" && m.indexOf(filter) != -1 || typeof filter == "function" && filter.test(m)) {
