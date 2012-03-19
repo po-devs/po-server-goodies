@@ -2813,7 +2813,7 @@ modCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-    if (cmp(sys.name(src),"nixeagle") && ["showteam"].indexOf(command) != -1) {
+    if (cmp(sys.name(src),"ethan") && ["setannouncement", "testannouncement", "getannouncement"].indexOf(command) != -1) {
        return this.ownerCommand(src, command, commandData, tar);
     }
     return "no command";
