@@ -46,7 +46,7 @@ var Config = {
     ],
     DreamWorldTiers: ["DW OU", "DW Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "DW 1v1 Ubers", "DW 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "DW OU Triples", "DW Uber Doubles", "DW OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
     superAdmins: ["Lamperi", "Professor Oak", "zeroality", "[LD]Jirachier", "nixeagle"],
-    canJoinStaffChannel: ["Lamperi-", "Peanutsdroid"],
+    canJoinStaffChannel: ["Lamperi-", "Peanutsdroid", "QuX"],
     disallowStaffChannel: [],
 }
 
@@ -1434,7 +1434,7 @@ isTempBanned : function(ip) {
 beforeLogIn : function(src) {
 
     var ip = sys.ip(src);
-    if (isTempBanned(ip) && sys.auth(src) < 2) {
+    if (this.isTempBanned(ip) && sys.auth(src) < 2) {
         normalbot.sendMessage(src, 'You are banned!');
         sys.stopEvent();
         return;
