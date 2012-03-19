@@ -16,6 +16,9 @@ var mafia = module.exports = new function() {
     var PreviousGames;
     var MAFIA_SAVE_FILE = Config.Mafia.stats_file;
 
+    var DEFAULT_BORDER = "***************************************************************************************";
+    var border;
+
     var savePlayedGames = function() {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
     }
@@ -268,6 +271,7 @@ var mafia = module.exports = new function() {
             theme.summary = plain_theme.summary;
             theme.killmsg = plain_theme.killmsg;
             theme.killusermsg = plain_theme.killusermsg;
+            theme.border = plain_theme.border;
             theme.generateRoleInfo();
             theme.enabled = true;
             return theme;
@@ -623,6 +627,7 @@ var mafia = module.exports = new function() {
             return;
         }
 
+        border = this.theme.border ? this.theme.border : DEFAULT_BORDER;
         CurrentGame = {who: sys.name(src), what: themeName, when: parseInt(sys.time()), playerCount: 0};
 
         // For random theme
@@ -630,14 +635,14 @@ var mafia = module.exports = new function() {
 
 
         sys.sendAll("", mafiachan);
-        sys.sendAll("*** ************************************************************************************", mafiachan);
+        sys.sendAll(border, mafiachan);
         if (this.theme.name == "default") {
             sys.sendAll("±Game: " + sys.name(src) + " started a game!", mafiachan);
         } else {
             sys.sendAll("±Game: " + sys.name(src) + " started a game with theme "+this.theme.name+"!", mafiachan);
         }
         sys.sendAll("±Game: Type /Join to enter the game!", mafiachan);
-        sys.sendAll("*** ************************************************************************************", mafiachan);
+        sys.sendAll(border, mafiachan);
         sys.sendAll("", mafiachan);
 
         if (this.theme.summary === undefined) {
@@ -651,10 +656,10 @@ var mafia = module.exports = new function() {
             if (time > this.lastAdvertise + 60*15) {
                 this.lastAdvertise = time;
                 sys.sendAll("", 0);
-                sys.sendAll("*** ************************************************************************************", 0);
+                sys.sendAll(border, 0);
                 sys.sendAll("±Game: " + sys.name(src) + " started a mafia game!", 0);
                 sys.sendAll("±Game: Go in the #" + sys.channel(mafiachan) + " and type /Join to enter the game!", 0);
-                sys.sendAll("*** ************************************************************************************", 0);
+                sys.sendAll(border, 0);
                 sys.sendAll("", 0);
             }
         //}
@@ -669,10 +674,10 @@ var mafia = module.exports = new function() {
             sys.sendMessage(src, "±Game: No game is going on.",mafiachan);
             return;
         }
-        sys.sendAll("*** ************************************************************************************", mafiachan);
+        sys.sendAll(border, mafiachan);
 
         sys.sendAll("±Game: " + (src ? sys.name(src) : Config.Mafia.bot) + " has stopped the game!", mafiachan);
-        sys.sendAll("*** ************************************************************************************", mafiachan);
+        sys.sendAll(border, mafiachan);
         sys.sendAll("", mafiachan);
 
         mafia.clearVariables();
@@ -881,7 +886,7 @@ var mafia = module.exports = new function() {
 
         if (Object.keys(mafia.players).length == 0) {
             sys.sendAll("±Game: Everybody died! This is why we can't have nice things :(", mafiachan);
-            sys.sendAll("*** ************************************************************************************", mafiachan);
+            sys.sendAll(border, mafiachan);
             mafia.clearVariables();
             runUpdate();
             return true;
@@ -918,7 +923,7 @@ var mafia = module.exports = new function() {
                 if (goodPeople.length > 0) {
                     sys.sendAll("±Game: The " + mafia.theme.trside('village') + " (" + goodPeople.join(', ') + ") lose!", mafiachan);
                 }
-                sys.sendAll("*** ************************************************************************************", mafiachan);
+                sys.sendAll(border, mafiachan);
                 mafia.clearVariables();
                 runUpdate();
                 return true;
@@ -928,7 +933,7 @@ var mafia = module.exports = new function() {
     };
     this.handlers = {
         entry: function () {
-            sys.sendAll("*** ************************************************************************************", mafiachan);
+            sys.sendAll(border, mafiachan);
             sys.sendAll("Times Up! :", mafiachan);
 
             // Save stats if the game was played
@@ -939,7 +944,7 @@ var mafia = module.exports = new function() {
             if (mafia.signups.length < 5) {
                 sys.sendAll("Well, Not Enough Players! :", mafiachan);
                 sys.sendAll("You need at least 5 players to join (Current; " + mafia.signups.length + ").", mafiachan);
-                sys.sendAll("*** ************************************************************************************", mafiachan);
+                sys.sendAll(border, mafiachan);
                 mafia.clearVariables();
                 return;
             }
@@ -1015,7 +1020,7 @@ var mafia = module.exports = new function() {
             }
             sys.sendAll("Time: Night", mafiachan);
             sys.sendAll("Make your moves, you only have 30 seconds! :", mafiachan);
-            sys.sendAll("*** ************************************************************************************", mafiachan);
+            sys.sendAll(border, mafiachan);
 
             mafia.ticks = 30;
             mafia.state = "night";
@@ -1023,7 +1028,7 @@ var mafia = module.exports = new function() {
         }
     ,
         night : function() {
-            sys.sendAll("*** ************************************************************************************", mafiachan);
+            sys.sendAll(border, mafiachan);
             sys.sendAll("Times Up! :", mafiachan);
 
             var nightkill = false;
@@ -1224,7 +1229,7 @@ var mafia = module.exports = new function() {
                 mafia.ticks = 15;
             }
 
-            sys.sendAll("*** ************************************************************************************", mafiachan);
+            sys.sendAll(border, mafiachan);
 
             sys.sendAll("Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
             sys.sendAll("Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
@@ -1244,7 +1249,7 @@ var mafia = module.exports = new function() {
                     }
                 }
             }
-            sys.sendAll("*** ************************************************************************************", mafiachan);
+            sys.sendAll(border, mafiachan);
 
             mafia.state = "standby";
         }
@@ -1252,7 +1257,7 @@ var mafia = module.exports = new function() {
         standby : function() {
             mafia.ticks = 30;
 
-            sys.sendAll("*** ************************************************************************************", mafiachan);
+            sys.sendAll(border, mafiachan);
 
             sys.sendAll("Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
             sys.sendAll("Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
@@ -1264,7 +1269,7 @@ var mafia = module.exports = new function() {
             }
             sys.sendAll("Time: Day", mafiachan);
             sys.sendAll("It's time to vote someone off, type /Vote [name],  you only have " + mafia.ticks + " seconds! :", mafiachan);
-            sys.sendAll("*** ************************************************************************************", mafiachan);
+            sys.sendAll(border, mafiachan);
 
             mafia.state = "day";
             mafia.votes = {};
@@ -1272,7 +1277,7 @@ var mafia = module.exports = new function() {
         }
     ,
         day : function() {
-            sys.sendAll("*** ************************************************************************************", mafiachan);
+            sys.sendAll(border, mafiachan);
             sys.sendAll("Times Up! :", mafiachan);
 
             var voted = {};
@@ -1305,7 +1310,7 @@ var mafia = module.exports = new function() {
 
             if (tie) {
                 sys.sendAll("No one was voted off! :", mafiachan);
-                sys.sendAll("*** ************************************************************************************", mafiachan);
+                sys.sendAll(border, mafiachan);
             } else {
                 var roleName = typeof mafia.players[downed].role.actions.lynch == "object" && typeof mafia.players[downed].role.actions.lynch.revealAs == "string" ? mafia.theme.trrole(mafia.players[downed].role.actions.lynch.revealAs) : mafia.players[downed].role.translation
                 sys.sendAll("±Game: " + downed + " (" + roleName + ") was removed from the game!", mafiachan);
@@ -1325,7 +1330,7 @@ var mafia = module.exports = new function() {
             }
             sys.sendAll("Time: Night", mafiachan);
             sys.sendAll("Make your moves, you only have 30 seconds! :", mafiachan);
-            sys.sendAll("*** ************************************************************************************", mafiachan);
+            sys.sendAll(border, mafiachan);
 
             mafia.ticks = 30;
             mafia.state = "night";
@@ -1904,7 +1909,7 @@ var mafia = module.exports = new function() {
                             return;
                         }
                     }
-                    sys.sendAll("*** ************************************************************************************", mafiachan);
+                    sys.sendAll(border, mafiachan);
                     if (!revenge) {
                         sys.sendAll("±Game: " + commandObject.killmsg.replace(/~Self~/g, name).replace(/~Target~/g, commandData), mafiachan);
                         player.dayKill = player.dayKill+1 || 1;
@@ -1922,7 +1927,7 @@ var mafia = module.exports = new function() {
                     if (this.testWin()) {
                         return;
                     }
-                    sys.sendAll("*** ************************************************************************************", mafiachan);
+                    sys.sendAll(border, mafiachan);
                 }
                 return;
             }
