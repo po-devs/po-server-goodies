@@ -1105,6 +1105,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         var verb = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted"}[type];
         var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute"}[type];
         var sendAll = (type == "smute") ? function(line) { banbot.sendAll(line, staffchannel); } : function(line) { banbot.sendAll(line); };
+	sendAll = (type=="mban") ? function(line) { banbot.sendAll(line,mafiachannel); banbot.sendAll(line,staffchannel); }:sendAll;
 
         var expires = 0;
         var defaultTime = {"mute": "24h", "mban": "7d", "smute": "0"}[type];
