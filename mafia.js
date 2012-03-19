@@ -1716,12 +1716,21 @@ var mafia = module.exports = new function() {
                     sys.sendMessage(src, "±Game: This IP is already in list. You cannot register two times!", mafiachan);
                     return;
                 }
+                if (SESSION.users(src).mute.active) {
+                    sys.sendMessage(src, "±Game: You are muted!", mafiachan);
+                    return;
+                }
+                if (SESSION.users(src).android) {
+                    sys.sendMessage(src, "±Game: Android users can not play mafia!", mafiachan);
+                    return;
+                }
+                /* Requirement of laddering before joining..
                 if ((sys.auth(src) == 0) && sys.ratedBattles(src) == 0 ||
                     (sys.ranking(src) <= 1000 && sys.ratedBattles(src) < 5) ||
                     SESSION.users(src).smute.active) {
                     sys.sendMessage(src, "±Game: You need to ladder before playing mafia!", mafiachan);
                     return;
-                }
+                } */
                 if (this.signups.length >= this.theme["roles"+this.theme.roleLists].length) {
                     sys.sendMessage(src, "±Game: There can't be more than " + this.theme["roles"+this.theme.roleLists].length + " players!", mafiachan);
                     return;
