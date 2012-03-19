@@ -2,14 +2,16 @@
  * mafia.js
  *
  * Contains code for server side mafia game.
+ * Original code by unknown.
  */
 
 var is_command = require("utilities.js").is_command;
 
-var mafia = module.exports = new function() {
+module.exports = new function Mafia() {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
     this.version = "2012-01-21.1";
+    var mafia = this;
 
     var noPlayer = '*';
     var CurrentGame;
@@ -1689,7 +1691,7 @@ var mafia = module.exports = new function() {
         if (channel != mafiachan)
             return;
         try {
-            this.handleCommandOld(src, message, channel);
+            mafia.handleCommandOld(src, message, channel);
             return true;
         } catch(e) {
             return e != "no valid command";
