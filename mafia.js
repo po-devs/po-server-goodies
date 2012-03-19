@@ -1710,7 +1710,7 @@ module.exports = new function Mafia() {
             command = message.substr(0).toLowerCase();
         }
         if (command in this.commands["user"]) {
-            this.commands["user"][command][0](src, commandData);
+            this.commands["user"][command][0].call(this, src, commandData);
             return true;
         }
         if (this.state == "entry") {
@@ -1954,7 +1954,7 @@ module.exports = new function Mafia() {
             throw ("no valid command");
 
         if (command in this.commands["auth"]) {
-            this.commands["auth"][command][0](src, commandData);
+            this.commands["auth"][command][0].call(this, src, commandData);
             return;
         }
         var tar = sys.id(commandData);
