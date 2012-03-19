@@ -519,7 +519,7 @@ var mafia = module.exports = new function() {
     // End of Theme
 
     this.isInGame = function(player) {
-        if (mafia.state == "entry") {
+        if (this.state == "entry") {
             return this.signups.indexOf(player) != -1;
         }
         return player in this.players;
@@ -564,7 +564,7 @@ var mafia = module.exports = new function() {
     this.clearVariables();
     /* callback for /start */
     this.startGame = function(src, commandData) {
-        if (mafia.state != "blank") {
+        if (this.state != "blank") {
             sys.sendMessage(src, "±Game: A game is going on. Wait until it's finished to start another one", mafiachan);
             sys.sendMessage(src, "±Game: You can join the game by typing /join !", mafiachan);
             return;
@@ -577,7 +577,7 @@ var mafia = module.exports = new function() {
         }
         */
 
-        var previous = mafia.theme ? mafia.theme.name : undefined;
+        var previous = this.theme ? this.theme.name : undefined;
         var themeName = commandData == noPlayer ? "default" : commandData.toLowerCase();
         // games need to go default, theme, default, theme...
         /*
@@ -595,7 +595,7 @@ var mafia = module.exports = new function() {
         // Prevent a single player from dominating the theme selections.
         // We exclude mafia admins from this.
         var PlayerCheck = PreviousGames.slice(-5).reverse();
-        if (!mafia.isMafiaAdmin(src)) {
+        if (!this.isMafiaAdmin(src)) {
             for (var i = 0; i < PlayerCheck.length; i++) {
                 var who = PlayerCheck[i].who;
                 if (who == sys.name(src)) {
@@ -612,12 +612,12 @@ var mafia = module.exports = new function() {
             }
         }
 
-        if (themeName in mafia.themeManager.themes) {
-            if (!mafia.themeManager.themes[themeName].enabled) {
+        if (themeName in this.themeManager.themes) {
+            if (!this.themeManager.themes[themeName].enabled) {
                 sys.sendMessage(src, "±Game: This theme is disabled!", mafiachan);
                 return;
             }
-            mafia.theme = mafia.themeManager.themes[themeName];
+            this.theme = this.themeManager.themes[themeName];
         } else {
             sys.sendMessage(src, "±Game: No such theme!", mafiachan);
             return;
@@ -631,25 +631,25 @@ var mafia = module.exports = new function() {
 
         sys.sendAll("", mafiachan);
         sys.sendAll("*** ************************************************************************************", mafiachan);
-        if (mafia.theme.name == "default") {
+        if (this.theme.name == "default") {
             sys.sendAll("±Game: " + sys.name(src) + " started a game!", mafiachan);
         } else {
-            sys.sendAll("±Game: " + sys.name(src) + " started a game with theme "+mafia.theme.name+"!", mafiachan);
+            sys.sendAll("±Game: " + sys.name(src) + " started a game with theme "+this.theme.name+"!", mafiachan);
         }
         sys.sendAll("±Game: Type /Join to enter the game!", mafiachan);
         sys.sendAll("*** ************************************************************************************", mafiachan);
         sys.sendAll("", mafiachan);
 
-        if (mafia.theme.summary === undefined) {
+        if (this.theme.summary === undefined) {
             sys.sendAll("±Game: Consider adding a summary field to this theme that describes the setting of the game and points out the odd quirks of the theme!",mafiachan);
         } else {
-            sys.sendAll("±Game: " + mafia.theme.summary,mafiachan);
+            sys.sendAll("±Game: " + this.theme.summary,mafiachan);
         }
 
         //if (sys.playersOfChannel(mafiachan).length < 25) {
             var time = parseInt(sys.time());
-            if (time > mafia.lastAdvertise + 60*15) {
-                mafia.lastAdvertise = time;
+            if (time > this.lastAdvertise + 60*15) {
+                this.lastAdvertise = time;
                 sys.sendAll("", 0);
                 sys.sendAll("*** ************************************************************************************", 0);
                 sys.sendAll("±Game: " + sys.name(src) + " started a mafia game!", 0);
@@ -658,7 +658,7 @@ var mafia = module.exports = new function() {
                 sys.sendAll("", 0);
             }
         //}
-        mafia.clearVariables();
+        this.clearVariables();
         mafia.state = "entry";
 
         mafia.ticks = 60;
@@ -2002,28 +2002,29 @@ var mafia = module.exports = new function() {
 
     // we can always slay them :3
     this.onMute = function(src) {
-        mafia.slayUser(Config.capsbot, sys.name(src));
+        if (this.phase != "day")
+            this.slayUser(Config.capsbot, sys.name(src));
     }
 
     this.onMban = function(src) {
-        mafia.slayUser(Config.Mafia.bot, sys.name(src));
+        this.slayUser(Config.Mafia.bot, sys.name(src));
         sys.kick(src, mafiachan);
     }
 
     this.onKick = function(src) {
-        mafia.slayUser(Config.floodbot, sys.name(src));
+        this.slayUser(Config.floodbot, sys.name(src));
     }
 
     this.stepEvent = function() {
         try {
-            mafia.tickDown();
+            this.tickDown();
         } catch(err) {
             mafiabot.sendAll("error occurred: " + err, mafiachan);
         }
     }
 
     this.init = function() {
-        mafia.themeManager.loadThemes();
+        this.themeManager.loadThemes();
         mafiabot.sendAll("Mafia was reloaded, please start a new game!", mafiachan);
     }
 }();
