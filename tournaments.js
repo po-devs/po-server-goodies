@@ -206,6 +206,15 @@ function Tournament(channel)
 		self.members = [];
 	}
 
+	// command viewqueue
+	function viewQueue(source) {
+		if (self.queue.length > 0) {
+			sendPM(source, "Following tournaments are in the queue: " + self.queue.join(", ")); 
+		} else {
+			sendPM(source, "The tournament queue is empty."); 
+		}
+	}
+
 	// command queue
 	function queue(source, data) {
 
@@ -871,6 +880,7 @@ function Tournament(channel)
 		join: join,
 		unjoin: unjoin,
 		viewround: viewround,
+		viewqueue: viewQueue,
 		subme: subme
 	}
 	this.authCommands = {
