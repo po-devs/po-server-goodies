@@ -209,7 +209,10 @@ function Tournament(channel)
 	// command viewqueue
 	function viewQueue(source) {
 		if (self.queue.length > 0) {
-			sendPM(source, "Following tournaments are in the queue: " + self.queue.join(", ")); 
+			sendPM(source, "Following tournaments are in the queue: " + 
+                               map(self.queue, function(e) {
+                                   return e.starter + " added tier '" + e.tier + "' with initial count " + e.count; 
+                               }).join(", ")); 
 		} else {
 			sendPM(source, "The tournament queue is empty."); 
 		}
