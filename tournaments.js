@@ -2,6 +2,7 @@
  * tournaments.js
  *
  * Contains code for pokemon online server scripted tournaments.
+ * Original code by unknown.
  */
 if (typeof Config == "undefined")
     Config = {}
@@ -248,6 +249,16 @@ function Tournament(channel)
 		self.members.splice(self.members.indexOf(name.toLowerCase()), 1);
 	}
 
+	function findPlaceholder() {
+		var placeholder = null;
+                for (var p in self.entrants) {
+                        if (/~/.test(p)) {
+                                placeholder = self.entrants[p];
+                        }
+                }
+		return placeholder;
+	}
+
         // Command join
 	function join(source) {
 		if (self.phase != "entry") {
@@ -298,12 +309,7 @@ function Tournament(channel)
 			return;
 		}
 
-		var placeholder;
-		for (var p in self.entrants) {
-			if (/~/.test(p)) {
-				placeholder = self.entrants[p];	
-			}
-		}
+		var placeholder = findPlaceholder();
 		var players = [sys.name(source), placeholder];
 		if (placeholder) {
 			self.ips.push(sys.ip(source));
@@ -710,6 +716,18 @@ function Tournament(channel)
 
 		f(border);
 		f("");
+
+		var current_round = self.round;
+		sys.delayedCall(function RemoveSubs() {
+			if (self.running && self.round == current_round) {
+				var placeholder;
+				while (null !== (placeholder = findPlaceholder())) {
+					setBattleStarted(placeholder);
+					endBattle(tourOpponent(placeholder), placeholder)
+					broadcast("~~Server~~: " + placeholder + " was removed from the tournament!");
+				}
+			}
+                }, 300);
 	}
 
 	// event battleStart
