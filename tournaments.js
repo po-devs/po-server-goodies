@@ -210,7 +210,7 @@ function Tournament(channel)
 	function viewQueue(source) {
 		if (self.queue.length > 0) {
 			sendPM(source, "Following tournaments are in the queue: " + 
-                               map(self.queue, function(e) {
+                               self.queue.map(function(e) {
                                    return e.starter + " added tier '" + e.tier + "' with initial count " + e.count; 
                                }).join(", ")); 
 		} else {
