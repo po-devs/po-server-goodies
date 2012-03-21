@@ -1112,7 +1112,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
                 banbot.sendAll(line, staffchannel);
                 banbot.sendAll(line, mafiachan);
             },
-            "mute": function(lines) {
+            "mute": function(line) {
                 banbot.sendAll(line);
             }
         }[type];
