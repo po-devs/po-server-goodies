@@ -1104,8 +1104,18 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         var banbot = type == "mban" ? mafiabot : normalbot;
         var verb = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted"}[type];
         var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute"}[type];
-        var sendAll = (type == "smute") ? function(line) { banbot.sendAll(line, staffchannel); } : function(line) { banbot.sendAll(line); };
-	sendAll = (type=="mban") ? function(line) { banbot.sendAll(line,mafiachan); banbot.sendAll(line,staffchannel); }:sendAll;
+        var sendAll =  {
+            "smute": function(line) {
+                banbot.sendAll(line, staffchannel);
+            },
+            "mban": function(line) {
+                banbot.sendAll(line, staffchannel);
+                banbot.sendAll(line, mafiachan);
+            },
+            "mute": function(lines) {
+                banbot.sendAll(line);
+            }
+        };
 
         var expires = 0;
         var defaultTime = {"mute": "24h", "mban": "7d", "smute": "0"}[type];
