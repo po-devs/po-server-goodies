@@ -1115,7 +1115,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             "mute": function(lines) {
                 banbot.sendAll(line);
             }
-        };
+        }[type];
 
         var expires = 0;
         var defaultTime = {"mute": "24h", "mban": "7d", "smute": "0"}[type];
