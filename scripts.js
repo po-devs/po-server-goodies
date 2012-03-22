@@ -1777,7 +1777,7 @@ userCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "/me was turned off.");
             return;
         }
-        if (commandData === undefined)
+        if (commandData === undefined || command == "rainbow")
             return;
 
         if (channel == sys.channelId("Trivia") && SESSION.channels(channel).triviaon) {
