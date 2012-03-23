@@ -190,6 +190,8 @@ function POUser(id)
     this.lastline = {message: null, time: 0};
     /* login time */
     this.logintime = parseInt(sys.time());
+    /* tier alerts */	
+    this.tiers = ""
     /* host name */
     this.hostname = "pending";
     var user = this; // closure
@@ -751,6 +753,9 @@ var commands = {
         "/uptime: Shows time since the server was last offline.",
         "/players: Shows the number of players online.",
         "/sameTier [on/off]: Turn on/off auto-rejection of challenges from players in a different tier from you.",
+        "/touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)",
+	"/addtouralert [tier] : Adds a tour alert for the specified tier",
+	"/removetouralert [tier] : Removes a tour alert for the specified tier",
     ],
     channel:
     [
@@ -887,7 +892,7 @@ init : function() {
     sachannel = SESSION.global().channelManager.createPermChannel("shanaindigo","Welcome MAs and SAs!");
     tourchannel = SESSION.global().channelManager.createPermChannel("Tournaments", 'Useful commands are "/join" (to join a tournament), "/unjoin" (to leave a tournament), "/viewround" (to view the status of matches) and "/megausers" (for a list of users who manage tournaments). Please read the full Tournament Guidelines: http://pokemon-online.eu/forums/showthread.php?2079-Tour-Rules');
     shanaitourchannel = tourchannel; //SESSION.global().channelManager.createPermChannel("Tours", 'Shanai Tours');
-    SESSION.global().channelManager.createPermChannel("League", "Challenge the PO League here! For more information, please visit this link: http://pokemon-online.eu/forums/forumdisplay.php?36-PO-League");
+    //SESSION.global().channelManager.createPermChannel("League", "Challenge the PO League here! For more information, please visit this link: http://pokemon-online.eu/forums/forumdisplay.php?36-PO-League");
     trollchannel = SESSION.global().channelManager.createPermChannel("Mute City", 'This is a place to talk if you have been muted! Please behave, next stop will be bans.');
 
     var dwlist = ["Rattata", "Raticate", "Nidoran-F", "Nidorina", "Nidoqueen", "Nidoran-M", "Nidorino", "Nidoking", "Oddish", "Gloom", "Vileplume", "Bellossom", "Bellsprout", "Weepinbell", "Victreebel", "Ponyta", "Rapidash", "Farfetch'd", "Doduo", "Dodrio", "Exeggcute", "Exeggutor", "Lickitung", "Lickilicky", "Tangela", "Tangrowth", "Kangaskhan", "Sentret", "Furret", "Cleffa", "Clefairy", "Clefable", "Igglybuff", "Jigglypuff", "Wigglytuff", "Mareep", "Flaaffy", "Ampharos", "Hoppip", "Skiploom", "Jumpluff", "Sunkern", "Sunflora", "Stantler", "Poochyena", "Mightyena", "Lotad", "Ludicolo", "Lombre", "Taillow", "Swellow", "Surskit", "Masquerain", "Bidoof", "Bibarel", "Shinx", "Luxio", "Luxray", "Psyduck", "Golduck", "Growlithe", "Arcanine", "Scyther", "Scizor", "Tauros", "Azurill", "Marill", "Azumarill", "Bonsly", "Sudowoodo", "Girafarig", "Miltank", "Zigzagoon", "Linoone", "Electrike", "Manectric", "Castform", "Pachirisu", "Buneary", "Lopunny", "Glameow", "Purugly", "Natu", "Xatu", "Skitty", "Delcatty", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Espeon", "Umbreon", "Leafeon", "Glaceon", "Bulbasaur", "Charmander", "Squirtle", "Ivysaur", "Venusaur", "Charmeleon", "Charizard", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Infernape", "Monferno", "Piplup", "Prinplup", "Empoleon", "Treecko", "Sceptile", "Grovyle", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Caterpie", "Metapod", "Butterfree", "Pidgey", "Pidgeotto", "Pidgeot", "Spearow", "Fearow", "Zubat", "Golbat", "Crobat", "Aerodactyl", "Hoothoot", "Noctowl", "Ledyba", "Ledian", "Yanma", "Yanmega", "Murkrow", "Honchkrow", "Delibird", "Wingull", "Pelipper", "Swablu", "Altaria", "Starly", "Staravia", "Staraptor", "Gligar", "Gliscor", "Drifloon", "Drifblim", "Skarmory", "Tropius", "Chatot", "Slowpoke", "Slowbro", "Slowking", "Krabby", "Kingler", "Horsea", "Seadra", "Kingdra", "Goldeen", "Seaking", "Magikarp", "Gyarados", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Wooper", "Quagsire", "Qwilfish", "Corsola", "Remoraid", "Octillery", "Mantine", "Mantyke", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Barboach", "Whiscash", "Clamperl", "Gorebyss", "Huntail", "Relicanth", "Luvdisc", "Buizel", "Floatzel", "Finneon", "Lumineon", "Tentacool", "Tentacruel", "Corphish", "Crawdaunt", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas", "Milotic", "Shellos", "Gastrodon", "Lapras", "Dratini", "Dragonair", "Dragonite", "Elekid", "Electabuzz", "Electivire", "Poliwag", "Poliwrath", "Politoed", "Poliwhirl", "Vulpix", "Ninetales", "Musharna", "Munna", "Darmanitan", "Darumaka", "Mamoswine", "Togekiss", "Burmy", "Wormadam", "Mothim", "Pichu", "Pikachu", "Raichu","Abra","Kadabra","Alakazam","Spiritomb","Mr. Mime","Mime Jr.","Meditite","Medicham","Meowth","Persian","Shuppet","Banette","Spinarak","Ariados","Drowzee","Hypno","Wobbuffet","Wynaut","Snubbull","Granbull","Houndour","Houndoom","Smoochum","Jynx","Ralts","Gardevoir","Gallade","Sableye","Mawile","Volbeat","Illumise","Spoink","Grumpig","Stunky","Skuntank","Bronzong","Bronzor","Mankey","Primeape","Machop","Machoke","Machamp","Magnemite","Magneton","Magnezone","Koffing","Weezing","Rhyhorn","Rhydon","Rhyperior","Teddiursa","Ursaring","Slugma","Magcargo","Phanpy","Donphan","Magby","Magmar","Magmortar","Larvitar","Pupitar","Tyranitar","Makuhita","Hariyama","Numel","Camerupt","Torkoal","Spinda","Trapinch","Vibrava","Flygon","Cacnea","Cacturne","Absol","Beldum","Metang","Metagross","Hippopotas","Hippowdon","Skorupi","Drapion","Tyrogue","Hitmonlee","Hitmonchan","Hitmontop","Bagon","Shelgon","Salamence","Seel","Dewgong","Shellder","Cloyster","Chinchou","Lanturn","Smeargle","Porygon","Porygon2","Porygon-Z"];
@@ -999,7 +1004,7 @@ init : function() {
         return;
 
     key = function(a,b) {
-        return a + "*" + sys.name(b);
+        return a + "*" + sys.ip(b);
     }
 
     saveKey = function(thing, id, val) {
@@ -1611,7 +1616,9 @@ afterLogIn : function(src) {
         sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Connected as MU" + "\n");
     if (sys.auth(src) > 0 && sys.auth(src) <= 3)
         sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Connected as Auth" + "\n");
-
+    if(getKey('touralertson', src) == "true"){
+	SESSION.users(src).tiers= getKey("touralerts", src)
+    }	
     authChangingTeam = (sys.auth(src) > 0 && sys.auth(src) <= 3);
     this.afterChangeTeam(src);
 
@@ -1856,7 +1863,7 @@ userCommand: function(src, command, commandData, tar) {
         sendChanMessage(src, "");
         return;
     }
-    if (command == "league") {
+    /*if (command == "league") {
         if (!Config.League) return;
 
         sendChanMessage(src, "");
@@ -1870,7 +1877,7 @@ userCommand: function(src, command, commandData, tar) {
         }
         sendChanMessage(src, "");
         return;
-    }
+    }*/
     if (command == "rules") {
         for (rule in rules) {
             sendChanMessage(src, rules[rule]);
@@ -2113,7 +2120,88 @@ userCommand: function(src, command, commandData, tar) {
         channelbot.sendChanMessage(src, "Operators: " + SESSION.channels(channel).operators.join(", "));
         return;
     }
-
+    	// Tour alerts
+	if(command == "touralerts") {
+		if(commandData == "on"){
+			SESSION.users(src).tiers = getKey("touralerts", src)
+			normalbot.sendChanMessage(src, "You have turned tour alerts on!")
+			saveKey("touralertson", src, "true")
+			return;
+		}
+		if(commandData == "off") {
+			delete SESSION.users(src).tiers
+			normalbot.sendChanMessage(src, "You have turned tour alerts off!")
+			saveKey("touralertson", src, "false")
+			return;
+		}
+		if(typeof(SESSION.users(src).tiers) == "undefined" || SESSION.users(src).tiers.length == 0){
+			normalbot.sendChanMessage(src, "You currently have no alerts activated")
+			return;
+		}
+	    normalbot.sendChanMessage(src, "You currently get alerted for the tiers:");
+        var spl = SESSION.users(src).tiers.split('*');
+        for (var x = 0; x < spl.length; ++x) {
+            if (spl[x].length > 0) {
+                normalbot.sendChanMessage(src, spl[x]);
+            }
+        }
+        sendChanMessage(src, "");
+        return;
+    }
+	
+		
+	if(command == "addtouralert") {
+		var tiers = sys.getTierList();
+		var tier;
+		var found = false;
+		for (var i = 0; i < tiers.length; ++i) {
+			if (cmp(tiers[i], commandData)) {
+				tier = tiers[i];
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			normalbot.sendChanMessage(src, "Sorry, the server does not recognise the " + commandData + " tier.");
+			return;
+		}
+		if(typeof(SESSION.users(src).tiers) == "undefined"){
+			SESSION.users(src).tiers = "*" + tier + "*"
+			saveKey("touralerts", src, SESSION.users(src).tiers)
+			normalbot.sendChanMessage(src, "Added a tour alert for the tier: " + tier + "!")
+			return;
+		}
+		SESSION.users(src).tiers+= "*" + tier + "*"
+		saveKey("touralerts", src, SESSION.users(src).tiers)
+		normalbot.sendChanMessage(src, "Added a tour alert for the tier: " + tier + "!")
+	return;
+	}
+	if(command == "removetouralert") {
+		SESSION.users(src).tiers = getKey("touralerts", src)
+		if(typeof(SESSION.users(src).tiers) == "undefined" || SESSION.users(src).tiers.length == 0){
+		normalbot.sendChanMessage(src, "You currently have no alerts")
+		return;
+		}
+		var tiers = sys.getTierList();
+		var tier;
+		var found = false;
+		for (var i = 0; i < tiers.length; ++i) {
+			if (cmp(tiers[i], commandData)) {
+				tier = tiers[i]
+				found = true;
+				break;
+			}
+		}
+		if (!found) {
+			normalbot.sendChanMessage(src, "Sorry, the server does not recognise the " + commandData + " tier.");
+			return;
+		}
+		
+		SESSION.users(src).tiers = SESSION.users(src).tiers.split("*" + tier + "*").join("")
+		saveKey("touralerts", src, SESSION.users(src).tiers)
+		normalbot.sendChanMessage(src, "Removed a tour alert for the tier: " + tier + "!")
+	return;
+	}
     // The Stupid Coin Game
     if (command == "coin" || command == "flip") {
         coinbot.sendChanMessage(src, "You flipped a coin. It's " + (Math.random() < 0.5 ? "Tails" : "Heads") + "!");
@@ -2923,7 +3011,7 @@ adminCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "megauser") {
-        if (tar != "undefined") {
+        if (tar != undefined) {
             SESSION.users(tar).megauser = true;
             normalbot.sendAll("" + sys.name(tar) + " was megausered by " + nonFlashing(sys.name(src)) + ".");
             megausers += "*" + sys.name(tar) + "*";
