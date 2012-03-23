@@ -7,7 +7,7 @@
 
 var is_command = require("utilities.js").is_command;
 
-function Mafia() {
+function Mafia(mafiachan) {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
     this.version = "2012-01-21.1";
@@ -1736,7 +1736,7 @@ function Mafia() {
                     sys.sendMessage(src, "±Game: You are muted!", mafiachan);
                     return;
                 }
-                if (SESSION.users(src).android) {
+                if (SESSION.users(src).android === true) {
                     sys.sendMessage(src, "±Game: Android users can not play mafia!", mafiachan);
                     return;
                 }
@@ -1940,6 +1940,11 @@ function Mafia() {
                         return;
                     }
                     sys.sendAll(border, mafiachan);
+                } else if (command == "reveal") {
+                    var revealMessage = commandObject.revealmsg ? commandObject.revealmsg : "~Self~ is revealed to be a ~Role~!";
+                    sys.sendAll(border, mafiachan);
+                    sys.sendAll("±Game: " + commandObject.killmsg.replace(/~Self~/g, name).replace(/~Role~/g, player.role.translation), mafiachan);
+                    sys.sendAll(border, mafiachan);
                 }
                 return;
             }
@@ -2046,5 +2051,12 @@ function Mafia() {
         mafiabot.sendAll("Mafia was reloaded, please start a new game!", mafiachan);
     };
 }
+/* Functions defined by mafia which should be called from main script:
+ * - init
+ * - stepEvent
+ * - onKick, onMute, onMban
+ * - beforeChatMessage
+ * - handleCommand
+ */
 
-module.exports = new Mafia();
+module.exports = new Mafia(mafiachan);
