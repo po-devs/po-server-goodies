@@ -1107,6 +1107,16 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         var sendAll =  {
             "smute": function(line) {
                 banbot.sendAll(line, staffchannel);
+				var authlist = sys.dbAuths()
+				 for(x in authlist) {
+					if(sys.id(authlist[x]) != undefined){
+					var chanlist = sys.channelsOfPlayer(sys.id(authlist[x]))
+						for(y in chanlist) {
+							if(chanlist[y] != staffchannel) {
+								banbot.sendMessage(sys.id(authlist[x]), line, chanlist[y])
+						}	}
+					}
+				}
             },
             "mban": function(line) {
                 banbot.sendAll(line, staffchannel);
