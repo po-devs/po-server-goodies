@@ -873,6 +873,7 @@ function Tournament(channel)
 		self.members = [];
 		self.battlers = [];
 		self.ips = [];
+		self.queue = self.queue || [];
 	}
 
 	this.announceInit = function announceInit() {
