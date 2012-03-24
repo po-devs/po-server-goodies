@@ -3958,6 +3958,11 @@ beforeChatMessage: function(src, message, chan) {
             points += message.indexOf("bit.ly") > -1 ? 1 : 0;
             points += message.indexOf(".tk") > -1 ? 2 : 0;
             points += message.indexOf("free") > -1 ? 1 : 0;
+            points += message.indexOf("dildo") > -1 ? 1 : 0;
+            points += message.indexOf("pussy") > -1 ? 1 : 0;
+            points += message.indexOf("buttsex") > -1 ? 1 : 0;
+            points += message.indexOf("SURPREME") > -1 ? 1 : 0;
+            points += (SESSION.users(src).logintime + 60 < parseInt(sys.time())) ? 5 : 0;
         }
         if (points >= 4) {
             normalbot.sendAll('Spammer: "' + sys.name(src) + '", ip: ' + sys.ip(src) + ', message: "' + message + '". Banned.', staffchannel);
