@@ -3942,27 +3942,28 @@ beforeChatMessage: function(src, message, chan) {
         var points = 0;
 
         if (!sys.dbRegistered(name)) {
+            var basepoint = (SESSION.users(src).logintime + 60 < parseInt(sys.time())) ? 2 : 1;
             points += sys.name(src) == name.toUpperCase() ? 1 : 0;
             points += sys.ip(src).split(".")[0] in {'24': true, '64': true, '99': true} ? 1 : 0;
-            points += name.indexOf("fuck") > -1 ? 2 : 0;
-            points += name.indexOf("fag") > -1 ? 1 : 0;
-            points += name.indexOf("tom") > -1 ? 1 : 0;
-            points += name.indexOf("blow") > -1 ? 2 : 0;
-            points += name.indexOf("slut") > -1 ? 2 : 0;
-            points += name.indexOf("bot") > -1 ? 1 : 0;
-            points += name.indexOf("smogon") > -1 ? 2 : 0;
-            points += name.indexOf("troll") > -1 ? 1 : 0;
-            points += name.indexOf("69") > -1 ? 1 : 0;
-            points += name.indexOf("update") > -1 ? 1 : 0;
+            points += name.indexOf("fuck") > -1 ? 2*basepoint : 0;
+            points += name.indexOf("fag") > -1 ? basepoint : 0;
+            points += name.indexOf("tom") > -1 ? basepoint : 0;
+            points += name.indexOf("blow") > -1 ? 2*basepoint : 0;
+            points += name.indexOf("slut") > -1 ? 2*basepoint : 0;
+            points += name.indexOf("bot") > -1 ? basepoint : 0;
+            points += name.indexOf("smogon") > -1 ? 2*basepoint : 0;
+            points += name.indexOf("troll") > -1 ? basepoint : 0;
+            points += name.indexOf("69") > -1 ? basepoint : 0;
+            points += name.indexOf("con flict") > -1 ? basepoint : 0;
+            points += name.indexOf("update") > -1 ? basepoint : 0;
             points += message.indexOf("http://pokemon-online.eu") > -1 ? -5 : 0;
-            points += message.indexOf("bit.ly") > -1 ? 1 : 0;
-            points += message.indexOf(".tk") > -1 ? 2 : 0;
-            points += message.indexOf("free") > -1 ? 1 : 0;
-            points += message.indexOf("dildo") > -1 ? 1 : 0;
-            points += message.indexOf("pussy") > -1 ? 1 : 0;
-            points += message.indexOf("buttsex") > -1 ? 1 : 0;
-            points += message.indexOf("SURPREME") > -1 ? 1 : 0;
-            points += (SESSION.users(src).logintime + 60 < parseInt(sys.time())) ? 5 : 0;
+            points += message.indexOf("bit.ly") > -1 ? basepoint : 0;
+            points += message.indexOf(".tk") > -1 ? 2*basepoint : 0;
+            points += message.indexOf("free") > -1 ? basepoint : 0;
+            points += message.indexOf("dildo") > -1 ? basepoint : 0;
+            points += message.indexOf("pussy") > -1 ? basepoint : 0;
+            points += message.indexOf("buttsex") > -1 ? basepoint : 0;
+            points += message.indexOf("SURPREME") > -1 ? basepoint : 0;
         }
         if (points >= 4) {
             normalbot.sendAll('Spammer: "' + sys.name(src) + '", ip: ' + sys.ip(src) + ', message: "' + message + '". Banned.', staffchannel);
