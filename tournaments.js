@@ -349,7 +349,7 @@ function Tournament(channel)
 		var name = sys.name(source);
 
 		if (isInTour(name)) {
-			if (self.phase == "entry") {
+			if (self.phase == "entry"|| self.members.indexOf(name.toLowerCase()) >= 0) {
 				removeEntrant(name);
 				broadcast("~~Server~~: " + name + " left the tournament!");
 				var ind = self.ips.indexOf(sys.ip(source));
