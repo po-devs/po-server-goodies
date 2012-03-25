@@ -204,7 +204,7 @@ function Tournament(channel)
 				if(sys.id(playername) != undefined){
 					if(typeof(SESSION.users(playerson[x]).tiers) != "undefined" && SESSION.users(playerson[x]).tiers.length != 0){
 						if(SESSION.users(playerson[x]).tiers.indexOf("*" + self.tier + "*") != -1) {
-							sys.sendHtmlMessage(playerson[x], "A "+ self.tier+" is starting tournament, " + sys.name(playerson[x]) +"<ping/>!")
+							sys.sendHtmlMessage(playerson[x], "A "+ self.tier+" tournament is starting, " + sys.name(playerson[x]) +"<ping/>!")
 						}
 					}
 				}
