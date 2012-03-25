@@ -1897,20 +1897,32 @@ function Mafia(mafiachan) {
             name = sys.name(src);
             if (this.isInGame(name) && this.hasCommand(name, command, "standby")) {
                 player = mafia.players[name];
+                commandData = this.correctCase(commandData);
+                target = commandData != noPlayer ? mafia.players[commandData] : null;
                 var commandObject = player.role.actions.standby[command];
                 if (commandObject.hasOwnProperty("command"))
                     command = commandObject.command;
+
+                if (target !== null) {
+                    if ([undefined, "Self", "Any"].indexOf(commandObject.target) == -1 && commandData == name) {
+                        sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target yourself!", mafiachan);
+                        return;
+                    } else if (commandObject.target == 'AnyButTeam' && player.role.side == target.role.side
+                        || player.role.actions.night[command].target == 'AnyButRole' && player.role.role == target.role.role) {
+                        sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target your partners!", mafiachan);
+                        return;
+                    }
+                }
+
                 if (command == "kill") {
                     if (player.dayKill >= (commandObject.limit || 1)) {
                         sys.sendMessage(src, "±Game: You already killed!", mafiachan);
                         return;
                     }
-                    commandData = this.correctCase(commandData);
-                    if (!this.isInGame(commandData)) {
+                    if (target === null) {
                         sys.sendMessage(src, "±Game: That person is not playing!", mafiachan);
                         return;
                     }
-                    target = mafia.players[commandData];
                     var revenge = false;
                     if (target.role.actions.hasOwnProperty("daykill")) {
                         if (target.role.actions.daykill == "evade") {
@@ -1943,7 +1955,7 @@ function Mafia(mafiachan) {
                 } else if (command == "reveal") {
                     var revealMessage = commandObject.revealmsg ? commandObject.revealmsg : "~Self~ is revealed to be a ~Role~!";
                     sys.sendAll(border, mafiachan);
-                    sys.sendAll("±Game: " + commandObject.killmsg.replace(/~Self~/g, name).replace(/~Role~/g, player.role.translation), mafiachan);
+                    sys.sendAll("±Game: " + revealMessage.replace(/~Self~/g, name).replace(/~Role~/g, player.role.translation), mafiachan);
                     sys.sendAll(border, mafiachan);
                 }
                 return;
