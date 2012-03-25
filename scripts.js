@@ -1930,7 +1930,7 @@ userCommand: function(src, command, commandData, tar) {
                     }
                 }
             }
-            sendChanMessage(src, "");
+            sendChanMessage(src, "",channel);
         }
         if(commandData == "admins" || commandData == "administrators") {
             sendChanMessage(src, "*** Administrators ***")
@@ -1944,7 +1944,7 @@ userCommand: function(src, command, commandData, tar) {
                     }
                 }
             }
-            sys.sendMessage(src, "");
+            sys.sendMessage(src, "",channel);
         }
         if(commandData == "mods" || commandData == "moderators") {
             sendChanMessage(src, "*** Moderators ***")
@@ -1959,7 +1959,7 @@ userCommand: function(src, command, commandData, tar) {
                     }
                 }
             }
-            sys.sendMessage(src, "");
+            sys.sendMessage(src, "",channel);
         }
 
         if(commandData != "moderators" && commandData != "mods" && commandData != "administrators" && commandData != "admins" && commandData != "owners") {
