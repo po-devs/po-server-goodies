@@ -1915,6 +1915,8 @@ function Mafia(mafiachan) {
                         sys.sendAll("±Debug: Trying to hit partner, denied.", mafiachan);
                         sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target your partners!", mafiachan);
                         return;
+                    } else {
+                        sys.sendAll("±Debug: No special action taken.", mafiachan);
                     }
                 }
 
