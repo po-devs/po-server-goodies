@@ -1113,6 +1113,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             "smute": function(line) {
                 banbot.sendAll(line, staffchannel);
 				var authlist = sys.dbAuths()
+				line = line.replace(" by " +sys.name(src), "")
 				 for(x in authlist) {
 					if(sys.id(authlist[x]) != undefined){
 					var chanlist = sys.channelsOfPlayer(sys.id(authlist[x]))
