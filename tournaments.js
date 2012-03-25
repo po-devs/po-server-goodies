@@ -197,13 +197,15 @@ function Tournament(channel)
 		advertise("*** Go in the #" + sys.channel(self.channel) + " channel and type /join or !join to enter the tournament! ***");
 		broadcast("***Type /join or !join to enter the tournament! ***")
 		wall(border);
-		var playerson = sys.playerIds()
-		for (x in playerson) {
-			var playername = sys.name(playerson[x])
-			if(sys.id(playername) != undefined){
-				if(typeof(SESSION.users(playerson[x]).tiers) != "undefined" && SESSION.users(playerson[x]).tiers.length != 0){
-					if(SESSION.users(playerson[x]).tiers.indexOf("*" + self.tier + "*") != -1) {
-						sys.sendHtmlMessage(playerson[x], "A "+ self.tier+" is starting, " + sys.name(playerson[x]) +"<ping/>!")
+		if(channel == tourchannel){
+			var playerson = sys.playerIds()
+			for (x in playerson) {
+				var playername = sys.name(playerson[x])
+				if(sys.id(playername) != undefined){
+					if(typeof(SESSION.users(playerson[x]).tiers) != "undefined" && SESSION.users(playerson[x]).tiers.length != 0){
+						if(SESSION.users(playerson[x]).tiers.indexOf("*" + self.tier + "*") != -1) {
+							sys.sendHtmlMessage(playerson[x], "A "+ self.tier+" is starting tournament, " + sys.name(playerson[x]) +"<ping/>!")
+						}
 					}
 				}
 			}
