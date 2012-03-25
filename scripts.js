@@ -1126,6 +1126,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             "mban": function(line) {
                 banbot.sendAll(line, staffchannel);
                 banbot.sendAll(line, mafiachan);
+                banbot.sendAll(line, sys.channelId("shanaindigo"));
             },
             "mute": function(line) {
                 banbot.sendAll(line);
