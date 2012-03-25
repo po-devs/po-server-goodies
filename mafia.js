@@ -663,8 +663,11 @@ function Mafia(mafiachan) {
                 this.lastAdvertise = time;
                 sys.sendAll("", 0);
                 sys.sendAll(border, 0);
-                sys.sendAll("±Game: " + sys.name(src) + " started a mafia game!", 0);
-                sys.sendAll("±Game: Go in the #" + sys.channel(mafiachan) + " and type /Join to enter the game!", 0);
+                if (this.theme.name == "default") {
+                    sys.sendAll("±Game: A new mafia game was started at " + sys.channel(mafiachan) + "!", 0);
+                } else {
+                    sys.sendAll("±Game: A new " + this.theme.name + "-themed mafia game was started at " + sys.channel(mafiachan) + "!", 0);
+                }
                 sys.sendAll(border, 0);
                 sys.sendAll("", 0);
             }
