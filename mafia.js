@@ -1906,7 +1906,7 @@ function Mafia(mafiachan) {
                 sys.sendAll("±Debug: Preparing for standby action", mafiachan);
                 if (target !== null) {
                     sys.sendAll("±Debug: There is a target", mafiachan);
-                    if ([undefined, "Self", "Any"].indexOf(commandObject.target) == -1 && player == target) {
+                    if ((commandObject.target === undefined || ["Self", "Any"].indexOf(commandObject.target) == -1) && player == target) {
                         sys.sendAll("±Debug: Trying to hit self, denied.", mafiachan);
                         sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target yourself!", mafiachan);
                         return;
