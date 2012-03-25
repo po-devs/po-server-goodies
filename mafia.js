@@ -1903,26 +1903,18 @@ function Mafia(mafiachan) {
                 if (commandObject.hasOwnProperty("command"))
                     command = commandObject.command;
 
-                sys.sendAll("±Debug: Preparing for standby action", mafiachan);
                 if (target !== null) {
-                    sys.sendAll("±Debug: There is a target", mafiachan);
                     if ((commandObject.target === undefined || ["Self", "Any"].indexOf(commandObject.target) == -1) && player == target) {
-                        sys.sendAll("±Debug: Trying to hit self, denied.", mafiachan);
                         sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target yourself!", mafiachan);
                         return;
                     } else if (commandObject.target == 'AnyButTeam' && player.role.side == target.role.side
-                        || player.role.actions.night[command].target == 'AnyButRole' && player.role.role == target.role.role) {
-                        sys.sendAll("±Debug: Trying to hit partner, denied.", mafiachan);
+                        || commandObject.target == 'AnyButRole' && player.role.role == target.role.role) {
                         sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target your partners!", mafiachan);
                         return;
-                    } else {
-                        sys.sendAll("±Debug: No special action taken.", mafiachan);
                     }
                 }
 
-                sys.sendAll("±Debug: Wondering what is the action?", mafiachan);
                 if (command == "kill") {
-                    sys.sendAll("±Debug: Seems to be kill.", mafiachan);
                     if (player.dayKill >= (commandObject.limit || 1)) {
                         sys.sendMessage(src, "±Game: You already killed!", mafiachan);
                         return;
@@ -1932,7 +1924,6 @@ function Mafia(mafiachan) {
                         sys.sendMessage(src, "±Game: That person is not playing!", mafiachan);
                         return;
                     }
-                    sys.sendAll("±Debug: We have a target.", mafiachan);
                     var revenge = false;
                     if (target.role.actions.hasOwnProperty("daykill")) {
                         if (target.role.actions.daykill == "evade") {
@@ -1943,7 +1934,6 @@ function Mafia(mafiachan) {
                             return;
                         }
                     }
-                    sys.sendAll("±Debug: Checked already if target evaded or revenged.", mafiachan);
                     sys.sendAll(border, mafiachan);
                     if (!revenge) {
                         sys.sendAll("±Game: " + commandObject.killmsg.replace(/~Self~/g, name).replace(/~Target~/g, commandData), mafiachan);
