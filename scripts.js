@@ -3965,7 +3965,7 @@ beforeChatMessage: function(src, message, chan) {
             points += message.indexOf("buttsex") > -1 ? basepoint : 0;
             points += message.indexOf("SURPREME") > -1 ? basepoint : 0;
         }
-        if (points >= 4) {
+        if (points >= 5) {
             normalbot.sendAll('Spammer: "' + sys.name(src) + '", ip: ' + sys.ip(src) + ', message: "' + message + '". Banned.', staffchannel);
             sys.ban(sys.name(src))
             this.kickAll(sys.ip(src));
