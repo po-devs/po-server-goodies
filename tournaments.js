@@ -199,9 +199,12 @@ function Tournament(channel)
 		wall(border);
 		var playerson = sys.playerIds()
 		for (x in playerson) {
-			if(typeof(SESSION.users(playerson[x]).tiers) != "undefined" && SESSION.users(playerson[x]).tiers.length != 0){
-				if(SESSION.users(playerson[x]).tiers.indexOf("*" + self.tier + "*") != -1) {
-					sys.sendHtmlMessage(playerson[x], "A "+ self.tier+" is starting, " + sys.name(playerson[x]) +"<ping/>!")
+			var playername = sys.name(playerson[x])
+			if(sys.id(playername) != undefined){
+				if(typeof(SESSION.users(playerson[x]).tiers) != "undefined" && SESSION.users(playerson[x]).tiers.length != 0){
+					if(SESSION.users(playerson[x]).tiers.indexOf("*" + self.tier + "*") != -1) {
+						sys.sendHtmlMessage(playerson[x], "A "+ self.tier+" is starting, " + sys.name(playerson[x]) +"<ping/>!")
+					}
 				}
 			}
 		}
@@ -349,7 +352,7 @@ function Tournament(channel)
 		var name = sys.name(source);
 
 		if (isInTour(name)) {
-			if (self.phase == "entry") {
+			if (self.phase == "entry"|| self.members.indexOf(name.toLowerCase()) >= 0) {
 				removeEntrant(name);
 				broadcast("~~Server~~: " + name + " left the tournament!");
 				var ind = self.ips.indexOf(sys.ip(source));
