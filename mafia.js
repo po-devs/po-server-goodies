@@ -1922,7 +1922,6 @@ function Mafia(mafiachan) {
                         sys.sendMessage(src, "±Game: You already killed!", mafiachan);
                         return;
                     }
-                    sys.sendAll("±Debug: We have still kills.", mafiachan);
                     if (target === null) {
                         sys.sendMessage(src, "±Game: That person is not playing!", mafiachan);
                         return;
