@@ -13,6 +13,7 @@ Bot.prototype.sendAll = function(message, channel)
     else
         sys.sendAll(this.formatMsg(message), channel);
 }
+
 Bot.prototype.sendMessage = function(tar, message, channel)
 {
     if (channel === undefined)
@@ -20,6 +21,7 @@ Bot.prototype.sendMessage = function(tar, message, channel)
     else
         sys.sendMessage(tar, this.formatMsg(message), channel);
 }
+
 Bot.prototype.sendMainTour = function(message)
 {
     this.sendAll(message, 0);
