@@ -106,7 +106,7 @@ if (typeof require === "undefined")
 
 {
     /* we need to make sure the scripts exist */
-    var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js'].concat(Config.Plugins);
+    var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js'].concat(Config.Plugins);
     var missing = 0;
     for (var i = 0; i < deps.length; ++i) {
         if (!sys.getFileContent(deps[i])) {
@@ -140,6 +140,7 @@ cleanFile("pastebin_user_key");
 
 var crc32 = require('crc32.js').crc32;
 var MemoryHash = require('memoryhash.js').MemoryHash;
+var tier_checker = require('tierchecks.js');
 
 /* stolen from here: http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format */
 String.prototype.format = function() {
@@ -1727,6 +1728,7 @@ afterChangeTeam : function(src)
 
     }
     } catch (e) { sys.sendMessage(e, staffchannel); }
+    if (sys.name(src) != "Lamperi-") {
     this.eventMovesCheck(src);
     this.dreamWorldAbilitiesCheck(src);
     this.littleCupCheck(src);
@@ -1741,6 +1743,12 @@ afterChangeTeam : function(src)
     this.droughtCheck(src)
     this.snowWarningCheck(src)
     this.advance200Check(src);
+    } else {
+    if (!tier_checker.check_if_valid_for(src, sys.tier(src))) {
+       tier_checker.find_good_tier(src);
+       normalbot.sendMessage(src, "You were placed into '" + sys.tier(src) + "' tier.");
+    }
+    }
 
 } /* end of afterChangeTeam */
 
@@ -4439,6 +4447,7 @@ isMCaps : function(message) {
 
 ,
 beforeChangeTier : function(src, oldtier, newtier) {
+    if (sys.name(src) != "Lamperi-") {
     if(newtier == "Challenge Cup") return;
 
     this.eventMovesCheck(src);
@@ -4455,6 +4464,13 @@ beforeChangeTier : function(src, oldtier, newtier) {
     this.snowWarningCheck(src, newtier);
     this.droughtCheck(src, newtier);
     this.advance200Check(src, newtier);
+    } else {
+    if (!tier_checker.check_if_valid_for(src, newtier)) {
+       sys.stopEvent();
+       normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
+       tier_checker.find_good_tier(src);
+    }
+    }
 }
 ,
 beforeChallengeIssued : function (src, dest, clauses, rated, mode) {
