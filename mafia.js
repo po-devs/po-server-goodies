@@ -966,9 +966,9 @@ function Mafia(mafiachan) {
             var srcArray = mafia.theme["roles"+i].slice(0, mafia.signups.length);
             srcArray.pop();
             srcArray.push("daypix66");
-            mafia.theme["roles"+i].sideTranslations.daypix66 = "Daypix";
-            if (mafia.theme["roles"+i].standbyRoles[mafia.theme["roles"+i].standbyRoles.length-1] != "daypix66") {
-                mafia.theme["roles"+i].standbyRoles.push("daypix66");
+            mafia.theme.sideTranslations.daypix66 = "Daypix";
+            if (mafia.theme.standbyRoles[mafia.theme.standbyRoles.length-1] != "daypix66") {
+                mafia.theme.standbyRoles.push("daypix66");
             }
             mafia.theme.roles.daypix66 = {translation: "Daypix", role: "daypix66", side: "daypix66", actions: { standby: { kill: { target: "AnyButSelf", msg: "You can kill now using /kill [name] :", killmsg: "~Self~ killed ~Target~!", limit: 2} } }, help: "You are one of the Daypix. Type /Kill [name] during the day to kill up to two times! Your name and target are revealed when you kill!" };
             srcArray = shuffle(srcArray);
