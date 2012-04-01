@@ -18,7 +18,7 @@ TIER_TREES = [
 ]
 
 BANLIST = {
-    "Wifi OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Excadrill", "Blaziken", "Garchomp"], # Ubers
+    "Wifi OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Excadrill", "Blaziken", "Garchomp", "Thundurus"], # Ubers
     "Wifi UU": ["Kingdra", "Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Venomoth", "Wobbuffet", "Deoxys-D"], # BL
     "Wifi LU": ["Cresselia", "Gorebyss", "Huntail", "Victini", "Rhyperior", "Omastar", "Medicham", "Durant", "Virizion", "Moltres", "Sharpedo"], # BL2
     "Wifi NU": ["Feraligatr", "Sawsbuck", "Gligar", "Braviary", "Charizard", "Hitmonlee", "Scolipede", "Tangela", "Jynx", "Misdreavus", "Cacturne"], # BL3
@@ -27,8 +27,7 @@ BANLIST = {
 }
 ADDITIONAL_BANS = {
     "Wifi UU": ["Vulpix", # Due to Drought being banned
-                "Abomasnow", "Snover", # Due to Snow Warning being banned
-                "Thundurus"], # Due to being uber for some time
+                "Abomasnow", "Snover"], # Due to Snow Warning being banned
     "DW UU":   ["Thundurus"], # Due to being uber for some time
 }
 
@@ -55,8 +54,9 @@ def serialize_bans(set):
 
 def get_ranked_stats(tier):
     today = date.today()
-    last_month = today + relativedelta(months = -1)
-    previous_month =  today + relativedelta(months = -2)
+    even_month = -1 if today.month % 2 == 0 else 0
+    last_month = today + relativedelta(months = -1 + even_month)
+    previous_month =  today + relativedelta(months = -2 + even_month)
     last_month_url = MONTHLY_STATS.format(month=last_month.strftime("%B").lower(), year=last_month.year, tier=tier)
     previous_month_url = MONTHLY_STATS.format(month=previous_month.strftime("%B").lower(), year=previous_month.year, tier=tier)
     PARAMS["stats1"] = previous_month_url.replace(" ", "%20")
