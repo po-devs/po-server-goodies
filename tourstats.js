@@ -6,7 +6,7 @@
 var tourwinners, tourstats, tourrankingsbytier;
 
 function updateTourStats(tier, time, winner, num, noPoints, purgeTime) {
-    loadStats();
+    //loadStats();
     var numToPoints = function() {
         if (noPoints) return 0;
         // First index: points for 1-7 players,
