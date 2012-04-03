@@ -1019,7 +1019,9 @@ module.exports = {
 				module.tournaments[channel].authCommands[command](source, commandData);
 			        return true;
 			}
-			if (command == "disabletours" && sys.auth(source) >= 2 && channel != tourchannel) {
+			if (channel == tourchannel)
+				return false;
+			if (command == "disabletours" && (sys.auth(source) >= 2 && SESSION.channels(channel).isChannelMaster(source))) {
 				delete module.tournaments[channel];
 				var ind = SESSION.global().permaTours.indexOf(channel);
 				if (ind >= 0) {
@@ -1027,7 +1029,7 @@ module.exports = {
 				}
 				return true;
 			}
-		} else if (command == "enabletours" && sys.auth(source) >= 2) {
+		} else if (command == "enabletours" && (sys.auth(source) >= 2 || SESSION.channels(channel).isChannelMaster(source))) {
 			module.tournaments[channel] = new Tournament(channel);
 			module.tournaments[channel].announceInit();
 			SESSION.global().permaTours.push(channel);
