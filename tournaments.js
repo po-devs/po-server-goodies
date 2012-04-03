@@ -139,6 +139,16 @@ function Tournament(channel)
 		}
 	}
 
+	function findTier(tier_name) {
+		var tiers = sys.getTierList();
+		for (var i = 0; i < tiers.length; ++i) {
+			if (cmp(tiers[i], tier_name)) {
+				return tiers[i];
+			}
+		}
+		return null;
+	}
+
 	function parseTierAndCount(source, data) {
 		if (data.indexOf(':') == -1)
 			var commandpart = data.split(' ');
@@ -152,17 +162,8 @@ function Tournament(channel)
 			return;
 		}
 
-		var tiers = sys.getTierList();
-		var tier;
-		var found = false;
-		for (var i = 0; i < tiers.length; ++i) {
-			if (cmp(tiers[i], commandpart[0])) {
-				tier = tiers[i];
-				found = true;
-				break;
-			}
-		}
-		if (!found) {
+		var tier = findTier(commandpart[0]);
+		if (tier === null) {
 			sendPM(source, "Sorry, the server does not recognise the " + commandpart[0] + " tier.");
 			return;
 		}
@@ -250,12 +251,34 @@ function Tournament(channel)
 			sendPM(source, "Sorry, we already have " + QUEUE_MAX_SIZE + " tournaments in the queue."); 
 			return;
 		}
+		for (var i = 0, l = self.queue.length; i < l; ++i) {
+			if (self.queue[i].tier == res.tier) {
+				sendPM(source, "We already have that tier in the queue."); 
+				return;
+			}
+		}
 
 		self.queue.push(res);
 
 		broadcast(res.starter + " added a new tier to the queue!");
 
 		scheduleTournamentFromQueue();
+	}
+
+	function rmQueue(source, data) {
+		var tier = findTier(data);
+		if (tier === null) {
+			sendPM(source, "Sorry, " + data + " is not a tier."); 
+			return;
+		}
+
+		for (var i = 0, l = self.queue.length; i < l; ++i) {
+			if (self.queue[i].tier == tier) {
+				self.queue.splice(i,0);
+				sendPM(source, "One tier removed from the queue."); 
+				return;
+			}
+		}
 	}
 
 	function isInTour(name) {
@@ -910,6 +933,7 @@ function Tournament(channel)
 	this.authCommands = {
 		tour: start,
 		queue: queue,
+		rmqueue: rmQueue,
 		dq: dq,
 		push: push,
 		cancelbattle: cancelBattle,
