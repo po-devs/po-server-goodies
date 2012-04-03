@@ -274,11 +274,12 @@ function Tournament(channel)
 
 		for (var i = 0, l = self.queue.length; i < l; ++i) {
 			if (self.queue[i].tier == tier) {
-				self.queue.splice(i,0);
+				self.queue.splice(i,1);
 				sendPM(source, "One tier removed from the queue."); 
 				return;
 			}
 		}
+		sendPM(source, "That tier is not in the queue."); 
 	}
 
 	function isInTour(name) {
