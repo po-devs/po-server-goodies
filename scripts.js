@@ -3585,7 +3585,7 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
 
-    if (command == "eval" && (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "emperor elements" || sys.name(src).toLowerCase() == "crystal moogle")) {
+    if (command == "eval" && (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi")) {
         sys.eval(commandData);
         return;
     }
