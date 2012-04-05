@@ -202,9 +202,8 @@ function Tournament(channel)
 			var playerson = sys.playerIds()
 			for (x in playerson) {
 				var playername = sys.name(playerson[x])
-				if(sys.id(playername) != undefined){
-					if(typeof(SESSION.users(playerson[x]).tiers) != "undefined" && SESSION.users(playerson[x]).tiers.length != 0){
-						if(SESSION.users(playerson[x]).tiers.indexOf("*" + self.tier + "*") != -1) {
+				if(sys.id(playername) != undefined && typeof(SESSION.users(playerson[x]).tiers) != "undefined" && SESSION.users(playerson[x]).tiers.length != 0){
+						if(sys.id(playername) != undefined && SESSION.users(playerson[x]).tiers.indexOf("*" + self.tier + "*") != -1) {
 							if(sys.isInChannel(playerson[x], tourchannel)){
 							sys.sendHtmlMessage(playerson[x], "A "+ self.tier+" tournament is starting, " + sys.name(playerson[x]) +"<ping/>!",tourchannel)
 							continue;
@@ -215,8 +214,8 @@ function Tournament(channel)
 							}
 							sys.sendHtmlMessage(playerson[x], "A "+ self.tier+" tournament is starting, " + sys.name(playerson[x]) +"<ping/>!")
 						}
-					}
 				}
+				
 			}
 		}
 		self.running = true;
