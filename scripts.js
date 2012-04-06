@@ -3320,12 +3320,14 @@ ownerCommand: function(src, command, commandData, tar) {
         sys.webCall(updateURL, function(resp) {
             sys.setAnnouncement(resp, src);
         });
+        return;
     }
     if (command == "setwebannouncement") {
         var updateURL = Config.base_url + "announcement.html";
         sys.webCall(updateURL, function(resp) {
             sys.changeAnnouncement(resp);
         });
+        return;
     }
     if (command == "capslockday") {
         if (commandData == "off")
