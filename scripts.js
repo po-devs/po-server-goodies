@@ -376,9 +376,7 @@ POChannel.prototype.issueAuth = function(src, name, authlist)
         lname = name.toLowerCase();
         if (this[authlist].indexOf(lname) == -1) {
             this[authlist].push(lname);
-            channelbot.sendChanMessage(src, "" + name + " is now a channel " + role + ".");
-            channelbot.sendChanMessage(tar, "You are now a channel " + role + ".");
-            channelbot.sendChanAll(name + " is now a channel " + role + ".");
+            channelbot.sendChanAll(sys.name(src) + " made " + name + " a channel " + role + ".");
         } else {
             channelbot.sendChanMessage(src, "" + name + " is already a channel " + role + ".");
         }
@@ -386,8 +384,7 @@ POChannel.prototype.issueAuth = function(src, name, authlist)
         name = lname = name.toLowerCase();
         if (this[authlist].indexOf(lname) == -1) {
             this[authlist].push(lname);
-            channelbot.sendChanMessage(src, "" + name + " is now a channel " + role + ".");
-            channelbot.sendChanAll(name + " is now a channel " + role + ".");
+            channelbot.sendChanAll(sys.name(src) + " made " + name + " a channel " + role + ".");
         } else {
             channelbot.sendChanMessage(src, "" + name + " is already a channel " + role + ".");
         }
@@ -405,8 +402,7 @@ POChannel.prototype.takeAuth = function(src, name, authlist)
     }
     if (index != -1) {
         this[authlist].splice(index,1);
-        channelbot.sendChanMessage(src, "" + name + " is no more a channel " + role +".");
-        channelbot.sendChanAll(name + " is no more a channel " + role + ".");
+        channelbot.sendChanMessage(src, "" + sys.name(src) + " took away channel " + role + " from " + name + ".");
     } else {
         channelbot.sendChanMessage(src, "" + name + ": no such "+ role +".");
     }
