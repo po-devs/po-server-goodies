@@ -1571,19 +1571,25 @@ function Mafia(mafiachan) {
         sys.sendAll("±Game: " + name + " joined the game! (pushed by " + sys.name(src) + ")", mafiachan);
     };
     this.slayUser = function(src, name) {
-        /*if (sys.auth(src) < 2) {
-            mafiabot.sendChanMessage(src, "admin+ command.");
-            return;
-        }*/
-        name = mafia.correctCase(name);
-        if (mafia.isInGame(name)) {
-            var slayer = typeof src == "string" ? src : sys.name(src);
-            var player = mafia.players[name];
-            sys.sendAll("±Kill: " + player.name + " (" + player.role.translation + ") was slayed by " + slayer + "!", mafiachan);
-            mafia.removePlayer(player);
+        var slayer = typeof src == "string" ? src : sys.name(src);
+        if (this.state == "entry") {
+            for (var i = 0; i < this.signups.length; ++i) {
+                if (name.toLowerCase() == this.signups[i].toLowerCase()) {
+                    mafiabot.sendAll(" " + this.signups[i] + " was taken out from the game by " + slayer + "!", mafiachan);
+                    this.signups.splice(i, 1);
+                    return;
+                }
+            }
         } else {
-            mafiabot.sendChanMessage(src, "No such target.");
+            name = this.correctCase(name);
+            if (this.isInGame(name)) {
+                var player = this.players[name];
+                sys.sendAll("±Kill: " + player.name + " (" + player.role.translation + ") was slayed by " + slayer + "!", mafiachan);
+                this.removePlayer(player);
+                return;
+            }
         }
+        mafiabot.sendChanMessage(src, "No such target.");
     };
     this.addTheme = function(src, url) {
         if (!mafia.isMafiaAdmin(src)) {
@@ -1688,6 +1694,7 @@ function Mafia(mafiachan) {
         auth: {
             push: [this.pushUser, "To push users to a Mafia game."],
             slay: [this.slayUser, "To slay users in a Mafia game."],
+            shove: [this.slayUser, "To remove users before a game starts."],
             end: [this.endGame, "To cancel a Mafia game!"],
             add: [this.addTheme, "To add a Mafia Theme!"],
             remove: [this.removeTheme, "To remove a Mafia Theme!"],
@@ -2074,4 +2081,4 @@ function Mafia(mafiachan) {
  * - handleCommand
  */
 
-module.exports = new Mafia(mafiachan);
+module.exports = new Mafia(sys.channelId("Mafia Channel"));
