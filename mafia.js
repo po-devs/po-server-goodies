@@ -1160,7 +1160,10 @@ function Mafia(mafiachan) {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
                             } else if ("poison" in target.role.actions && target.role.actions.poison.mode == "ignore") {
                                   mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was immune to the poison!");
-                            } else if (target.poisoned === undefined) {
+                            } else if ("poison" in target.role.actions && typeof target.role.actions.poison.mode == "object" && target.role.actions.poison.mode.evadeChance < sys.rand(1,100)/100) {
+                                mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the poison! Somehow.");
+                            }
+else if (target.poisoned === undefined) {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was poisoned!");
                                 target.poisoned = 1;
                                 target.poisonCount = Action.count || 2;
