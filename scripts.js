@@ -176,7 +176,10 @@ function POUser(id)
     /* whether user is impersonating someone */
     this.impersonation = undefined;
     /* last time user said something */
+    // TODO replace with the other one
     this.timecount = parseInt(sys.time());
+    /* last time user said something */
+    this.talk = (new Date()).getTime();
     /* counter on how many lines user has said recently */
     this.floodcount = 0;
     /* counts coins */
@@ -3938,6 +3941,21 @@ beforeChatMessage: function(src, message, chan) {
         sys.putInChannel(src, sys.channelId(message.slice(1)));
         sys.stopEvent();
         return;
+    }
+
+    // Throttling
+    var poUser = SESSION.users(src);
+    if (channel == 0 && sys.auth(src) == 0) {
+        // Assume CPM of 200
+        var MillisPerChar = 300; // ms
+        var now = (new Date()).getTime();
+        if (poUser.talk === undefined || poUser.talk + message.length * MillisPerChar < now) {
+            poUser.talk = now;
+        } else {
+            bot.sendMessage(src, "Wait a moment before talking again.", channel);
+            sys.stopEvent();
+            return;
+        }
     }
 
     var name = sys.name(src).toLowerCase();
