@@ -1017,7 +1017,14 @@ function Mafia(mafiachan) {
                 }
 
                 if (typeof role.actions.startup == "object" && role.actions.startup.revealRole) {
-                    mafia.sendPlayer(player.name, "±Game: The " + mafia.theme.roles[role.actions.startup.revealRole].translation + " is " + mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) + "!");
+                    if (typeof role.actions.startup.revealRole == "string") {
+                        mafia.sendPlayer(player.name, "±Game: The " + mafia.theme.roles[role.actions.startup.revealRole].translation + " is " + mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) + "!");
+                    } else if (typeof role.actions.startup.revealRole == "object" && typeof role.actions.startup.revealRole.indexOf == "function") {
+                        for (var s = 0, l = role.actions.startup.revealRole.length; s < l; ++s) {
+                            var revealrole = role.actions.startup.revealRole[s];
+                            mafia.sendPlayer(player.name, "±Game: The " + mafia.theme.roles[revealrole].translation + " is " + mafia.getPlayersForRoleS(revealrole) + "!");
+                        }
+                    }
                 }
             }
             sys.sendAll("Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
@@ -1086,7 +1093,7 @@ function Mafia(mafiachan) {
                             continue;
                         } else if (typeof distractMode.mode == "object" && (typeof distractMode.mode.ignore == "string" && distractMode.mode.ignore == player.role.role || typeof distractMode.mode.ignore == "object" && typeof distractMode.mode.ignore.indexOf == "function" && distractMode.mode.ignore.indexOf(player.role.role) > -1)) {
                             if (distractMode.msg)
-                                mafia.sendPlayer(target.name, "±Game: " + distractMode.msg);
+                                mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
                             continue;
                         } else if (typeof distractMode.mode == "object" && typeof distractMode.mode.killif == "object" && typeof distractMode.mode.killif.indexOf == "function" && distractMode.mode.killif.indexOf(player.role.role) > -1) {
                             if (distractMode.hookermsg)
@@ -1189,7 +1196,7 @@ function Mafia(mafiachan) {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was protected!");
                             } else if ("kill" in target.role.actions && target.role.actions.kill.mode == "ignore") {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
-                            } else if ("kill" in target.role.actions && typeof target.role.actions.kill.mode == "object" && typeof target.role.actions.kill.mode.evadeChance < sys.rand(1,100)/100) {
+                            } else if ("kill" in target.role.actions && typeof target.role.actions.kill.mode == "object" && target.role.actions.kill.mode.evadeChance < sys.rand(1,100)/100) {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
                             } else {
                                 if (mafia.theme.killusermsg) {
@@ -1940,7 +1947,6 @@ function Mafia(mafiachan) {
                             return;
                         } else if (target.role.actions.daykill == "revenge") {
                             revenge = true;
-                            return;
                         }
                     }
                     sys.sendAll(border, mafiachan);
