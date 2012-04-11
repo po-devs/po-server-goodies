@@ -3946,8 +3946,8 @@ beforeChatMessage: function(src, message, chan) {
     // Throttling
     var poUser = SESSION.users(src);
     if (channel == 0 && sys.auth(src) == 0) {
-        // Assume CPM of 200
-        var MillisPerChar = 300; // ms
+        // Assume CPM of 300
+        var MillisPerChar = 150; // ms
         var now = (new Date()).getTime();
         if (poUser.talk === undefined || poUser.talk + message.length * MillisPerChar < now) {
             poUser.talk = now;
