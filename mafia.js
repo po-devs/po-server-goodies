@@ -436,8 +436,11 @@ function Mafia(mafiachan) {
             else
                 return 1;
         });
+        sys.sendMessage(sys.id("Lamperi"), role_order);
         for (var r = 0; r < role_order.length; ++r) {
           try {
+            sys.sendMessage(sys.id("Lamperi"), role_order[r]);
+            sys.sendMessage(sys.id("Lamperi"), this.roles[role_order[r]]);
             role = this.roles[role_order[r]];
             roles.push("±Role: " + role.translation);
 
