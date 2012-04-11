@@ -424,9 +424,20 @@ function Mafia(mafiachan) {
         var sep = "*** *********************************************************************** ***";
         var roles = [sep];
         var role;
-        for (var r in this.roles) {
+        var role_order = this.roles.slice(0);
+        role_order.sort(function(a,b) {
+            var tra = this.roles[a].translation;
+            var trb = this.roles[b].translation;
+            if (tra == trb)
+                return 0;
+            else if (tra < trb)
+                return -1;
+            else
+                return 1;
+        });
+        for (var r = 0; r < role_order.length; ++r) {
           try {
-            role = this.roles[r];
+            role = role_order[r];
             roles.push("±Role: " + role.translation);
 
             // check which abilities the role has
