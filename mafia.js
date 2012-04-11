@@ -425,9 +425,10 @@ function Mafia(mafiachan) {
         var roles = [sep];
         var role;
         var role_order = Object.keys(this.roles);
+        var this_roles = this.roles;
         role_order.sort(function(a,b) {
-            var tra = this.roles[a].translation;
-            var trb = this.roles[b].translation;
+            var tra = this_roles[a].translation;
+            var trb = this_roles[b].translation;
             if (tra == trb)
                 return 0;
             else if (tra < trb)
