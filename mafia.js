@@ -438,7 +438,7 @@ function Mafia(mafiachan) {
         });
         for (var r = 0; r < role_order.length; ++r) {
           try {
-            role = role_order[r];
+            role = this.roles[role_order[r]];
             roles.push("±Role: " + role.translation);
 
             // check which abilities the role has
