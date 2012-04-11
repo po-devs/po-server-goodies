@@ -1166,6 +1166,7 @@ function Mafia(mafiachan) {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was poisoned!");
                                 target.poisoned = 1;
                                 target.poisonCount = Action.count || 2;
+                                target.poisonDeadMessage = Action.poisonDeadMessage;
                             }
                         }
                     }
@@ -1226,7 +1227,7 @@ function Mafia(mafiachan) {
                         mafia.sendPlayer(player.name, "±Game: You have " + (player.poisonCount - player.poisoned) + " days to live.");
                         player.poisoned++;
                     } else if (player.poisoned >= poisonCount) {
-                        mafia.sendPlayer(player.name, "±Game: You died because of Poison!");
+                        mafia.sendPlayer(player.name, "±Game: " + (player.poisonDeadMessage ? player.poisonDeadMessage : "You died because of Poison!"));
                         mafia.kill(player);
                         nightkill = true; // kinda night kill
                     }
