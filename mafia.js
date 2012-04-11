@@ -585,18 +585,17 @@ function Mafia(mafiachan) {
     this.clearVariables();
     /* callback for /start */
     this.startGame = function(src, commandData) {
+        var now = (new Date()).getTime();
+        if (SESSION.users(src).mafia_start !== undefined && SESSION.users(src).mafia_start + 5000 < now) {
+            sys.sendMessage(src, "±Game: Wait a moment before trying to start again!", mafiachan);
+            return;
+        }
+        SESSION.users(src).mafia_start = now;
         if (this.state != "blank") {
             sys.sendMessage(src, "±Game: A game is going on. Wait until it's finished to start another one", mafiachan);
             sys.sendMessage(src, "±Game: You can join the game by typing /join !", mafiachan);
             return;
         }
-        /* // No banned combos currently since we don't have the author of every theme
-        var bannedCombos = {'deria': ['ff', 'castle']};
-        if (bannedCombos.hasOwnProperty(sys.name(src).toLowerCase()) && bannedCombos[sys.name(src).toLowerCase()].indexOf(commandData.toLowerCase()) != -1) {
-            sys.sendMessage(src, "±Game: Sorry, you aren't allowed to choose this theme!", mafiachan);
-            return;
-        }
-        */
 
         var previous = this.theme ? this.theme.name : undefined;
         var themeName = commandData == noPlayer ? "default" : commandData.toLowerCase();
