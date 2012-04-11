@@ -424,7 +424,7 @@ function Mafia(mafiachan) {
         var sep = "*** *********************************************************************** ***";
         var roles = [sep];
         var role;
-        var role_order = this.roles.slice(0);
+        var role_order = Object.keys(this.roles);
         role_order.sort(function(a,b) {
             var tra = this.roles[a].translation;
             var trb = this.roles[b].translation;
