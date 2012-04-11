@@ -586,7 +586,7 @@ function Mafia(mafiachan) {
     /* callback for /start */
     this.startGame = function(src, commandData) {
         var now = (new Date()).getTime();
-        if (SESSION.users(src).mafia_start !== undefined && SESSION.users(src).mafia_start + 5000 < now) {
+        if (SESSION.users(src).mafia_start !== undefined && SESSION.users(src).mafia_start + 5000 > now) {
             sys.sendMessage(src, "±Game: Wait a moment before trying to start again!", mafiachan);
             return;
         }
