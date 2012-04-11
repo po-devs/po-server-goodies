@@ -1089,7 +1089,7 @@ function Mafia(mafiachan) {
                             mafia.removeTargets(target);
                             continue;
                         } else if (distractMode.mode == "ignore") {
-                            mafia.sendPlayer(target.name, "±Game: " + distractMode.msg);
+                            mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
                             continue;
                         } else if (typeof distractMode.mode == "object" && (typeof distractMode.mode.ignore == "string" && distractMode.mode.ignore == player.role.role || typeof distractMode.mode.ignore == "object" && typeof distractMode.mode.ignore.indexOf == "function" && distractMode.mode.ignore.indexOf(player.role.role) > -1)) {
                             if (distractMode.msg)
@@ -1196,7 +1196,7 @@ function Mafia(mafiachan) {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was protected!");
                             } else if ("kill" in target.role.actions && target.role.actions.kill.mode == "ignore") {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
-                            } else if ("kill" in target.role.actions && typeof target.role.actions.kill.mode == "object" && target.role.actions.kill.mode.evadeChance < sys.rand(1,100)/100) {
+                            } else if ("kill" in target.role.actions && typeof target.role.actions.kill.mode == "object" && target.role.actions.kill.mode.evadeChance > sys.rand(1,100)/100) {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
                             } else {
                                 if (mafia.theme.killusermsg) {
