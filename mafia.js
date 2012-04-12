@@ -1100,7 +1100,8 @@ function Mafia(mafiachan) {
                             mafia.removeTargets(target);
                             continue;
                         } else if (distractMode.mode == "ignore") {
-                            mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
+                            if (distractMode.msg)
+                                mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
                             continue;
                         } else if (typeof distractMode.mode == "object" && (typeof distractMode.mode.ignore == "string" && distractMode.mode.ignore == player.role.role || typeof distractMode.mode.ignore == "object" && typeof distractMode.mode.ignore.indexOf == "function" && distractMode.mode.ignore.indexOf(player.role.role) > -1)) {
                             if (distractMode.msg)
