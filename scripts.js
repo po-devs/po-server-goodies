@@ -405,7 +405,7 @@ POChannel.prototype.takeAuth = function(src, name, authlist)
     }
     if (index != -1) {
         this[authlist].splice(index,1);
-        channelbot.sendChanMessage(src, "" + sys.name(src) + " took away channel " + role + " from " + name + ".");
+        channelbot.sendChanAll(sys.name(src) + " took away channel " + role + " from " + name + ".");
     } else {
         channelbot.sendChanMessage(src, "" + name + ": no such "+ role +".");
     }
