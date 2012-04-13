@@ -2059,7 +2059,7 @@ function Mafia(mafiachan) {
 
     this.beforeChatMessage = function(src, message, channel) {
         if (channel !== 0 && channel == mafiachan && mafia.ticks > 0 && mafia.state!="blank" && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0) {
-            if (!(is_command(message) && message.substr(1,2) != "me")) {
+            if (!(is_command(message) && message.substr(1,2).toLowerCase() != "me")) {
                 sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
                 return true;
             }
