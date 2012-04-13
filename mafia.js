@@ -248,6 +248,7 @@ function Mafia(mafiachan) {
         var theme = new Theme();
         try {
             theme.sideTranslations = {};
+            theme.sideWinMsg = {};
             theme.roles = {};
             theme.nightPriority = [];
             theme.standbyRoles = [];
@@ -391,6 +392,9 @@ function Mafia(mafiachan) {
 
     Theme.prototype.addSide = function(obj) {
         this.sideTranslations[obj.side] = obj.translation;
+        if ("winmsg" in obj){
+            this.sideWinMsg[obj.side] = obj.winmsg;
+        }
     };
     Theme.prototype.addRole = function(obj) {
         this.roles[obj.role] = obj;
@@ -940,6 +944,9 @@ function Mafia(mafiachan) {
             }
 
             if (players.length >= goodPeople.length) {
+                if(winSide in mafia.theme.sideWinMsg){
+                    sys.sendAll("±Game: " + mafia.theme.sideWinMsg[winSide], mafiachan);
+                }
                 sys.sendAll("±Game: The " + mafia.theme.trside(winSide) + " (" + players.join(', ') + ") wins!", mafiachan);
                 if (goodPeople.length > 0) {
                     sys.sendAll("±Game: The " + mafia.theme.trside('village') + " (" + goodPeople.join(', ') + ") lose!", mafiachan);
