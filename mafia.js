@@ -701,6 +701,7 @@ function Mafia(mafiachan) {
         sys.sendAll("", mafiachan);
 
         mafia.clearVariables();
+        runUpdate();
     };
     /* called every second */
     this.tickDown = function() {
@@ -1665,16 +1666,16 @@ function Mafia(mafiachan) {
         mafia.themeManager.enable(src, name);
     };
     this.updateAfter = function(src) {
-        mafiabot.sendChanMessage(src, "mafia will update after the game");
-        this.needsUpdating = true;
-        if (this.state == "blank") {
+        mafiabot.sendChanMessage(src, "Mafia will update after the game");
+        mafia.needsUpdating = true;
+        if (mafia.state == "blank") {
             runUpdate();
         }
         return;
     };
 
     function runUpdate() {
-        if (this.needsUpdating !== true) return;
+        if (mafia.needsUpdating !== true) return;
         var POglobal = SESSION.global();
         var index, source;
         for (var i = 0; i < POglobal.plugins.length; ++i) {
@@ -1688,9 +1689,10 @@ function Mafia(mafiachan) {
                 POglobal.plugins[i] = module;
                 module.source = source;
                 module.init();
-                sys.sendAll("Update complete!", mafiachan);
+                sys.sendAll("Update complete!", mafiachan);                
             });
             sys.sendAll("Updating mafia game...", mafiachan);
+            mafia.needsUpdating = false
         }
         return;
     }
