@@ -248,6 +248,7 @@ function Mafia(mafiachan) {
         var theme = new Theme();
         try {
             theme.sideTranslations = {};
+            theme.sideWinMsg = {};
             theme.roles = {};
             theme.nightPriority = [];
             theme.standbyRoles = [];
@@ -391,6 +392,9 @@ function Mafia(mafiachan) {
 
     Theme.prototype.addSide = function(obj) {
         this.sideTranslations[obj.side] = obj.translation;
+        if ("winmsg" in obj){
+            this.sideWinMsg[obj.side] = obj.winmsg;
+        }
     };
     Theme.prototype.addRole = function(obj) {
         this.roles[obj.role] = obj;
@@ -461,8 +465,35 @@ function Mafia(mafiachan) {
             if ("vote" in role.actions) {
                 abilities += "Vote counts as " + role.actions.vote + ". ";
             }
-            if ("kill" in role.actions && role.actions.kill.mode == "ignore") {
-                abilities += "Can't be nightkilled. ";
+            if ("kill" in role.actions) {
+                if (role.actions.kill.mode == "ignore") {
+                    abilities += "Can't be nightkilled. ";
+                }
+                else if (role.actions.kill.mode == "killattackerevenifprotected") {
+                    abilities += "Revenges nightkills (even when protected). ";
+                }
+                else if (role.actions.kill.mode == "killattacker") {
+                    abilities += "Revenges nightkills. "
+                }
+                else if (typeof role.actions.kill.mode == "object" && role.actions.kill.mode.evadeChance > 0) {
+                    abilities += "Has a "+parseInt(role.actions.kill.mode.evadeChance*100)+"% chance of evading nightkills. ";
+                }
+            }
+            if ("daykill" in role.actions) {
+                if (role.actions.daykill == "evade") {
+                    abilities += "Can't be daykilled. ";
+                }
+                else if (role.actions.daykill == "revenge") {
+                    abilities += "Revenges daykills. ";
+                }
+            }
+            if ("poison" in role.actions) {
+                if (role.actions.poison.mode == "ignore") {
+                    abilities += "Can't be poisoned. ";
+                }
+                else if (typeof role.actions.poison.mode == "object" && role.actions.poison.mode.evadeChance > 0) {
+                    abilities += "Has a "+parseInt(role.actions.poison.mode.evadeChance*100)+"% chance of evading poison. ";
+                }
             }
             if ("hax" in role.actions && Object.keys) {
                 var haxy = Object.keys(role.actions.hax);
@@ -701,6 +732,7 @@ function Mafia(mafiachan) {
         sys.sendAll("", mafiachan);
 
         mafia.clearVariables();
+        runUpdate();
     };
     /* called every second */
     this.tickDown = function() {
@@ -939,6 +971,9 @@ function Mafia(mafiachan) {
             }
 
             if (players.length >= goodPeople.length) {
+                if(winSide in mafia.theme.sideWinMsg){
+                    sys.sendAll("±Game: " + mafia.theme.sideWinMsg[winSide], mafiachan);
+                }
                 sys.sendAll("±Game: The " + mafia.theme.trside(winSide) + " (" + players.join(', ') + ") wins!", mafiachan);
                 if (goodPeople.length > 0) {
                     sys.sendAll("±Game: The " + mafia.theme.trside('village') + " (" + goodPeople.join(', ') + ") lose!", mafiachan);
@@ -1100,7 +1135,8 @@ function Mafia(mafiachan) {
                             mafia.removeTargets(target);
                             continue;
                         } else if (distractMode.mode == "ignore") {
-                            mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
+                            if (distractMode.msg)
+                                mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
                             continue;
                         } else if (typeof distractMode.mode == "object" && (typeof distractMode.mode.ignore == "string" && distractMode.mode.ignore == player.role.role || typeof distractMode.mode.ignore == "object" && typeof distractMode.mode.ignore.indexOf == "function" && distractMode.mode.ignore.indexOf(player.role.role) > -1)) {
                             if (distractMode.msg)
@@ -1664,16 +1700,16 @@ function Mafia(mafiachan) {
         mafia.themeManager.enable(src, name);
     };
     this.updateAfter = function(src) {
-        mafiabot.sendChanMessage(src, "mafia will update after the game");
-        this.needsUpdating = true;
-        if (this.state == "blank") {
+        mafiabot.sendChanMessage(src, "Mafia will update after the game");
+        mafia.needsUpdating = true;
+        if (mafia.state == "blank") {
             runUpdate();
         }
         return;
     };
 
     function runUpdate() {
-        if (this.needsUpdating !== true) return;
+        if (mafia.needsUpdating !== true) return;
         var POglobal = SESSION.global();
         var index, source;
         for (var i = 0; i < POglobal.plugins.length; ++i) {
@@ -1687,9 +1723,10 @@ function Mafia(mafiachan) {
                 POglobal.plugins[i] = module;
                 module.source = source;
                 module.init();
-                sys.sendAll("Update complete!", mafiachan);
+                sys.sendAll("Update complete!", mafiachan);                
             });
             sys.sendAll("Updating mafia game...", mafiachan);
+            mafia.needsUpdating = false
         }
         return;
     }
@@ -2058,7 +2095,7 @@ function Mafia(mafiachan) {
 
     this.beforeChatMessage = function(src, message, channel) {
         if (channel !== 0 && channel == mafiachan && mafia.ticks > 0 && mafia.state!="blank" && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0) {
-            if (!(is_command(message) && message.substr(1,2) != "me")) {
+            if (!(is_command(message) && message.substr(1,2).toLowerCase() != "me")) {
                 sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
                 return true;
             }

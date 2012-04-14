@@ -405,7 +405,7 @@ POChannel.prototype.takeAuth = function(src, name, authlist)
     }
     if (index != -1) {
         this[authlist].splice(index,1);
-        channelbot.sendChanMessage(src, "" + sys.name(src) + " took away channel " + role + " from " + name + ".");
+        channelbot.sendChanAll(sys.name(src) + " took away channel " + role + " from " + name + ".");
     } else {
         channelbot.sendChanMessage(src, "" + name + ": no such "+ role +".");
     }
@@ -4200,7 +4200,7 @@ beforeChatMessage: function(src, message, chan) {
         }
     }
 
-    var ignorechans = ["Tohjo Falls", "PO Android", "Indigo Plateau", "Mafia Channel", "Tournaments", "League", "PO Wiki", "Trivia", "TrivReview", "Academy", "Oak's Lab", "winning", "Elm's Lab", "Developer's Den", "shanaindigo", "PO Stream", "Project NU", "Evolution Game", "Side Metagames"];
+    /*var ignorechans = ["Tohjo Falls", "PO Android", "Indigo Plateau", "Mafia Channel", "Tournaments", "League", "PO Wiki", "Trivia", "TrivReview", "Academy", "Oak's Lab", "winning", "Elm's Lab", "Developer's Den", "shanaindigo", "PO Stream", "Project NU", "Evolution Game", "Side Metagames"];
     var watch_msg = true;
     for(var i = 0; i < ignorechans.length; i++) {
         var ignorechan = ignorechans[i];
@@ -4211,7 +4211,7 @@ beforeChatMessage: function(src, message, chan) {
     }
     if (watch_msg && sys.existChannel("Elm's Lab")) {
         sys.sendAll("(#" + sys.channel(channel) + ") " + sys.name(src) + ": " + message, sys.channelId("Elm's Lab"));
-    }
+    }*/
 
     // Impersonation
     if (typeof SESSION.users(src).impersonation != 'undefined') {
