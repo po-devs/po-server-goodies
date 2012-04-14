@@ -513,8 +513,8 @@ function Mafia(mafiachan) {
             } else if (typeof role.side == "object") {
                 var plop = Object.keys(role.side.random);
                 var tran = [];
-                for(var p in plop) {
-                   tran.push(this.trside(p));
+                for(var p = 0; p < plop.length; ++p) {
+                   tran.push(this.trside(plop[p]));
                 }
                 abilities += "Sided with " + (tran.length > 1 ? tran.splice(0,tran.length-1).join(", ")+" or ":"") + tran + ". ";
             }
@@ -1053,7 +1053,7 @@ function Mafia(mafiachan) {
                 if (role.actions.startup == "team-reveal") {
                     mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
                 }
-                if (role.actions.startup == "team-revealif") {
+                if (typeof role.actions.startup == "object" && role.actions.startup["team-revealif"] && typeof role.actions.startup["team-revealif"].indexOf == "function") {
                     if (role.actions.startup["team-revealif"].indexOf(role.side) != -1) {
                         mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
                     }
