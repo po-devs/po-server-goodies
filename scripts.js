@@ -2931,7 +2931,7 @@ modCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-    if (cmp(sys.name(src),"ethan") && ["setannouncement", "testannouncement", "getannouncement"].indexOf(command) != -1) {
+    if (cmp(sys.name(src),"ethan") && ["setwebannouncement", "testwebannouncement", "setannouncement", "testannouncement", "getannouncement"].indexOf(command) != -1) {
        return this.ownerCommand(src, command, commandData, tar);
     }
     return "no command";
@@ -3311,7 +3311,8 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "setannouncement") {
-        sys.changeAnnouncement(commandData);
+        normalbot.sendChanMessage(src, "Use /setwebannouncement and edit announcement.html in the repo.");
+        //sys.changeAnnouncement(commandData);
         return;
     }
     if (command == "testwebannouncement") {
