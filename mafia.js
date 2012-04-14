@@ -465,8 +465,35 @@ function Mafia(mafiachan) {
             if ("vote" in role.actions) {
                 abilities += "Vote counts as " + role.actions.vote + ". ";
             }
-            if ("kill" in role.actions && role.actions.kill.mode == "ignore") {
-                abilities += "Can't be nightkilled. ";
+            if ("kill" in role.actions) {
+                if (role.actions.kill.mode == "ignore") {
+                    abilities += "Can't be nightkilled. ";
+                }
+                else if (role.actions.kill.mode == "killattackerevenifprotected") {
+                    abilities += "Revenges nightkills (even when protected). ";
+                }
+                else if (role.actions.kill.mode == "killattacker") {
+                    abilities += "Revenges nightkills. "
+                }
+                else if (typeof role.actions.kill.mode == "object" && role.actions.kill.mode.evadeChance > 0) {
+                    abilities += "Has a "+parseInt(role.actions.kill.mode.evadeChance*100)+"% chance of evading nightkills. ";
+                }
+            }
+            if ("daykill" in role.actions) {
+                if (role.actions.daykill == "evade") {
+                    abilities += "Can't be daykilled. ";
+                }
+                else if (role.actions.daykill == "revenge") {
+                    abilities += "Revenges daykills. ";
+                }
+            }
+            if ("poison" in role.actions) {
+                if (role.actions.poison.mode == "ignore") {
+                    abilities += "Can't be poisoned. ";
+                }
+                else if (typeof role.actions.poison.mode == "object" && role.actions.poison.mode.evadeChance > 0) {
+                    abilities += "Has a "+parseInt(role.actions.poison.mode.evadeChance*100)+"% chance of evading poison. ";
+                }
             }
             if ("hax" in role.actions && Object.keys) {
                 var haxy = Object.keys(role.actions.hax);
