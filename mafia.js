@@ -712,6 +712,18 @@ function Mafia(mafiachan) {
                 }
                 sys.sendAll(border, 0);
                 sys.sendAll("", 0);
+                if(sys.existChannel("Project Mafia")){
+    				var PM= sys.channelId("Project Mafia")
+					sys.sendAll("", PM);
+					sys.sendAll(border, PM);
+					if (this.theme.name == "default") {
+						sys.sendAll("±Game: A new mafia game was started at #" + sys.channel(mafiachan) + "!", PM);
+                }	else {
+						sys.sendAll("±Game: A new " + this.theme.name + "-themed mafia game was started at #" + sys.channel(mafiachan) + "!", PM);
+                }
+					sys.sendAll(border, PM);
+					sys.sendAll("", PM);
+				}
             }
         //}
         this.clearVariables();
