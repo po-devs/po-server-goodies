@@ -97,7 +97,7 @@ exports = {
         tier_name = tier_name.toLowerCase();
         var tiers = sys.getTierList();
         for (var i = 0; i < tiers.length; ++i) {
-            if (cmp(tiers[i].toLowerCase() == tier_name)) {
+            if (tiers[i].toLowerCase() == tier_name) {
                 return tiers[i];
             }
         }
