@@ -620,7 +620,7 @@ function Mafia(mafiachan) {
             this.state = "voting";
             this.ticks = 30;
             this.votes = {};
-            sys.sendAll("±Game: " + sys.name(src) + " started a voting for new theme. You have 30 seconds to vote for a new theme!", mafiachan);
+            sys.sendAll("±Game: " + sys.name(src) + " started a voting for next game's theme!. You have 30 seconds to vote with /start!", mafiachan);
         }
         if (this.state != "voting") {
             sys.sendMessage(src, "±Game: This command makes no sense during a game, right?!", mafiachan);
@@ -1798,7 +1798,7 @@ function Mafia(mafiachan) {
     this.commands = {
         user: {
             commands : [this.showCommands, "To see the various commands."],
-            start: [this.userVote: "Start voting / or vote!"],
+            start: [this.userVote, "Start voting for a new game theme / or vote!"],
             help: [this.showHelp, "For info on how to win in a game."],
             roles: [this.showRoles, "For info on all the Roles in the game."],
             rules: [this.showRules, "To see the Rules for the Game/Server."],
