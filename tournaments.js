@@ -666,6 +666,17 @@ function Tournament(channel)
 		return self.battlesStarted[Math.floor(indx/2)];
 	}
 
+	function getUnstarted() {
+		var ret = [];
+		for (var i = 0; i < battlers.length; i+=2) {
+			if (!isBattling(i)) {
+				ret.push(battlers[i]);
+				ret.push(battlers[i+1]);
+			}
+		}
+		return ret;
+	}
+
 	function areOpponents(name1, name2) {
 		var indx1 = self.battlers.indexOf(name1.toLowerCase()),
 			indx2 = self.battlers.indexOf(name2.toLowerCase());
@@ -769,13 +780,30 @@ function Tournament(channel)
 		f("");
 
 		var current_round = self.round;
-		sys.delayedCall(function RemoveSubs() {
+		sys.delayedCall(function RemoveInactiveAndSubs() {
 			if (self.running && self.round == current_round) {
 				var placeholder;
 				while (null !== (placeholder = findPlaceholder())) {
 					setBattleStarted(placeholder);
 					endBattle(tourOpponent(placeholder), placeholder);
 					broadcast("~~Server~~: " + placeholder + " was removed from the tournament!");
+				}
+				var unstarted = getUnstarted();
+				for (var i = 0; i < unstarted; i+=2) {
+					var online = [sys.id(unstarted[i]) !== undefined, sys.id(unstarted[i+1]) !== undefined]; 
+					if (online[0] && online[1]) {
+						broadcast("~~Server~~: There is a problem with the " + self.tier + " match between " + unstarted[i] + " and " + unstarted[i+1] +". Please resolve it.");
+						pingAuth();
+					} else if (!online[0] && !online[1]) {
+						broadcast("~~Server~~: Both " + unstarted[i] + " and " + unstarted[i+1] +" are offline. Please resolve.");
+						pingAuth();
+					} else {
+						var loser = !online[0] ? unstarted[i] : unstarted[i+1];
+						var winner = online[0] ? unstarted[i] : unstarted[i+1];
+						setBattleStarted(loser);
+						endBattle(winner, loser);
+						broadcast("~~Server~~: " + loser + " was removed from the tournament for being offline!");
+					}
 				}
 			}
 		}, 300);
