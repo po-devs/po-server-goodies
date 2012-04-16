@@ -2176,9 +2176,8 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if(command == "removetouralert") {
-        SESSION.users(src).tiers = getKey("touralerts", src).split("*");
         if(typeof SESSION.users(src).tiers == "undefined" || SESSION.users(src).tiers.length == 0){
-            normalbot.sendChanMessage(src, "You currently have no alerts");
+            normalbot.sendChanMessage(src, "You currently have no alerts.");
             return;
         }
         var tier = utilities.find_tier(commandData);
@@ -2188,7 +2187,7 @@ userCommand: function(src, command, commandData, tar) {
         }
         var idx = -1;
         while ((idx = SESSION.users(src).tiers.indexOf(tier)) != -1) {
-            SESSION.users(src).splice(idx, 1);
+            SESSION.users(src).tiers.splice(idx, 1);
         }
         saveKey("touralerts", src, SESSION.users(src).tiers.join("*"))
         normalbot.sendChanMessage(src, "Removed a tour alert for the tier: " + tier + "!")
