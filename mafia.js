@@ -1461,7 +1461,7 @@ function Mafia(mafiachan) {
     this.callHandler = function(state) {
         try {
             if (state in this.handlers)
-                this.handlers[state]call(this);
+                this.handlers[state].call(this);
         } catch(e) {
             sys.sendAll("Error occurred in mafia while handling the end of '" + state + "' phase: " + e, mafiachan);
         }
