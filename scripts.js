@@ -2132,7 +2132,7 @@ userCommand: function(src, command, commandData, tar) {
     // Tour alerts
     if(command == "touralerts") {
         if(commandData == "on"){
-            SESSION.users(src).tiers = getKey("touralerts", src);
+            SESSION.users(src).tiers = getKey("touralerts", src).split("*");
             normalbot.sendChanMessage(src, "You have turned tour alerts on!")
             saveKey("touralertson", src, "true")
             return;
