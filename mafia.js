@@ -1438,6 +1438,7 @@ function Mafia(mafiachan) {
             mafia.resetTargets();
         },
         voting: function() {
+            this.state = "blank";
             var res = {};
             for (var ip in this.votes) {
                 var theme = this.votes[ip].toLowerCase();
@@ -1451,14 +1452,19 @@ function Mafia(mafiachan) {
                  }
             }
             if (winner.theme !== null) {
-                this.state = "blank";
                 startGame(null, theme);
+            } else {
+                sys.sendAll("Really? No votes, so no game.", mafiachan);
             }
         }
     };
     this.callHandler = function(state) {
-        if (state in this.handlers)
-            this.handlers[state]();
+        try {
+            if (state in this.handlers)
+                this.handlers[state]();
+        } catch(e) {
+            sys.sendAll("Error occurred in mafia while handling the end of '" + state + "' phase: " + e, mafiachan);
+        }
     };
     this.showCommands = function(src) {
         sys.sendMessage(src, "", mafiachan);
