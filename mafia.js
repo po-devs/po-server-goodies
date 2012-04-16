@@ -1017,9 +1017,10 @@ function Mafia(mafiachan) {
 
             if (players.length >= goodPeople.length) {
                 if(winSide in mafia.theme.sideWinMsg){
-                    sys.sendAll("±Game: " + mafia.theme.sideWinMsg[winSide], mafiachan);
-                }
-                sys.sendAll("±Game: The " + mafia.theme.trside(winSide) + " (" + players.join(', ') + ") wins!", mafiachan);
+                    sys.sendAll(mafia.theme.sideWinMsg[winSide].replace(/~Players~/g, (players.length > 1 ? players.splice(0,players.length-1).join(", ")+" and ":"") + players + ". "), mafiachan);
+                } else {
+                    sys.sendAll("±Game: The " + mafia.theme.trside(winSide) + " (" + players.join(', ') + ") wins!", mafiachan);
+            	}
                 if (goodPeople.length > 0) {
                     sys.sendAll("±Game: The " + mafia.theme.trside('village') + " (" + goodPeople.join(', ') + ") lose!", mafiachan);
                 }
