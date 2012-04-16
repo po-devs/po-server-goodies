@@ -488,6 +488,10 @@ function Tournament(channel)
 
 		var authority = sys.name(source);
 
+		var i = 1;
+		while (isInTour("~Sub" + i)) { ++i; }
+		name = "~Sub" + i;
+
 		if (isInTour(name)) {
 			sendPM(source, name + " is already in the tournament.");
 			return;
