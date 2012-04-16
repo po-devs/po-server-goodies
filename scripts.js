@@ -194,11 +194,11 @@ function POUser(id)
     this.lastline = {message: null, time: 0};
     /* login time */
     this.logintime = parseInt(sys.time());
-    /* tier alerts */	
+    /* tier alerts */   
     this.tiers = [];
-    if (getKey('touralertson', id) == "true"){
-	this.tiers = getKey("touralerts", id).split("*");
-    }	
+    if (getKey('touralertson', id) == "true") {
+        this.tiers = getKey("touralerts", id).split("*");
+    }   
     /* host name */
     this.hostname = "pending";
     var user = this; // closure
@@ -757,8 +757,8 @@ var commands = {
         "/players: Shows the number of players online.",
         "/sameTier [on/off]: Turn on/off auto-rejection of challenges from players in a different tier from you.",
         "/touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)",
-	"/addtouralert [tier] : Adds a tour alert for the specified tier",
-	"/removetouralert [tier] : Removes a tour alert for the specified tier",
+        "/addtouralert [tier] : Adds a tour alert for the specified tier",
+        "/removetouralert [tier] : Removes a tour alert for the specified tier",
     ],
     channel:
     [
@@ -1115,17 +1115,17 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         var sendAll =  {
             "smute": function(line) {
                 banbot.sendAll(line, staffchannel);
-				var authlist = sys.dbAuths()
-				line = line.replace(" by " +sys.name(src), "")
-				 for(x in authlist) {
-					if(sys.id(authlist[x]) != undefined){
-					var chanlist = sys.channelsOfPlayer(sys.id(authlist[x]))
-						for(y in chanlist) {
-							if(chanlist[y] != staffchannel) {
-								banbot.sendMessage(sys.id(authlist[x]), line, chanlist[y])
-						}	}
-					}
-				}
+                var authlist = sys.dbAuths()
+                line = line.replace(" by " +sys.name(src), "")
+                 for(x in authlist) {
+                    if(sys.id(authlist[x]) != undefined){
+                    var chanlist = sys.channelsOfPlayer(sys.id(authlist[x]))
+                        for(y in chanlist) {
+                            if(chanlist[y] != staffchannel) {
+                                banbot.sendMessage(sys.id(authlist[x]), line, chanlist[y])
+                        }   }
+                    }
+                }
             },
             "mban": function(line) {
                 banbot.sendAll(line, staffchannel);
@@ -1793,7 +1793,7 @@ userCommand: function(src, command, commandData, tar) {
                 sendChanMessage(src, commands[commandData][x]);
             }
         }
-	callplugins("onHelp", src, commandData, channel);
+        callplugins("onHelp", src, commandData, channel);
 
         return;
     }
@@ -2157,62 +2157,52 @@ userCommand: function(src, command, commandData, tar) {
         sendChanMessage(src, "");
         return;
     }
-	
-		
-	if(command == "addtouralert") {
-		var tiers = sys.getTierList();
-		var tier;
-		var found = false;
-		for (var i = 0; i < tiers.length; ++i) {
-			if (cmp(tiers[i], commandData)) {
-				tier = tiers[i];
-				found = true;
-				break;
-			}
-		}
-		if (!found) {
-			normalbot.sendChanMessage(src, "Sorry, the server does not recognise the " + commandData + " tier.");
-			return;
-		}
-		if (typeof SESSION.users(src).tiers == "undefined") {
-			SESSION.users(src).tiers = [];
-		}
-		if (typeof SESSION.users(src).tiers == "string") {
-			SESSION.users(src).tiers = SESSION.users(src).tiers.split("*");
-		}
-		SESSION.users(src).tiers.push(tier);
-		saveKey("touralerts", src, SESSION.users(src).tiers.join("*"))
-		normalbot.sendChanMessage(src, "Added a tour alert for the tier: " + tier + "!");
+    
+    if(command == "addtouralert") {
+        var tier = utilities.find_tier(commandData);
+        if (tier === null) {
+            normalbot.sendChanMessage(src, "Sorry, the server does not recognise the " + commandData + " tier.");
+            return;
+        }
+        if (typeof SESSION.users(src).tiers == "undefined") {
+            SESSION.users(src).tiers = [];
+        }
+        if (typeof SESSION.users(src).tiers == "string") {
+            SESSION.users(src).tiers = SESSION.users(src).tiers.split("*");
+        }
+        SESSION.users(src).tiers.push(tier);
+        saveKey("touralerts", src, SESSION.users(src).tiers.join("*"))
+        normalbot.sendChanMessage(src, "Added a tour alert for the tier: " + tier + "!");
         return;
-	}
-	if(command == "removetouralert") {
-		SESSION.users(src).tiers = getKey("touralerts", src).split("*");
-		if(typeof SESSION.users(src).tiers == "undefined" || SESSION.users(src).tiers.length == 0){
-    	    normalbot.sendChanMessage(src, "You currently have no alerts");
-	        return;
-		}
-		var tiers = sys.getTierList();
-		var tier;
-		var found = false;
-		for (var i = 0; i < tiers.length; ++i) {
-			if (cmp(tiers[i], commandData)) {
-				tier = tiers[i]
-				found = true;
-				break;
-			}
-		}
-		if (!found) {
-			normalbot.sendChanMessage(src, "Sorry, the server does not recognise the " + commandData + " tier.");
-			return;
-		}
+    }
+    if(command == "removetouralert") {
+        SESSION.users(src).tiers = getKey("touralerts", src).split("*");
+        if(typeof SESSION.users(src).tiers == "undefined" || SESSION.users(src).tiers.length == 0){
+            normalbot.sendChanMessage(src, "You currently have no alerts");
+            return;
+        }
+        var tiers = sys.getTierList();
+        var tier;
+        var found = false;
+        for (var i = 0; i < tiers.length; ++i) {
+            if (cmp(tiers[i], commandData)) {
+                tier = tiers[i]
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            normalbot.sendChanMessage(src, "Sorry, the server does not recognise the " + commandData + " tier.");
+            return;
+        }
         var idx = -1;
-		while ((idx = SESSION.users(src).tiers.indexOf(tier)) != -1) {
+        while ((idx = SESSION.users(src).tiers.indexOf(tier)) != -1) {
             SESSION.users(src).splice(idx, 1);
         }
-		saveKey("touralerts", src, SESSION.users(src).tiers.join("*"))
-		normalbot.sendChanMessage(src, "Removed a tour alert for the tier: " + tier + "!")
-   	    return;
-	}
+        saveKey("touralerts", src, SESSION.users(src).tiers.join("*"))
+        normalbot.sendChanMessage(src, "Removed a tour alert for the tier: " + tier + "!")
+        return;
+    }
     // The Stupid Coin Game
     if (command == "coin" || command == "flip") {
         coinbot.sendChanMessage(src, "You flipped a coin. It's " + (Math.random() < 0.5 ? "Tails" : "Heads") + "!");
@@ -3716,7 +3706,7 @@ ownerCommand: function(src, command, commandData, tar) {
         var POglobal = SESSION.global();
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if (commandData == POglobal.plugins[i].source) {
-		var source = POglobal.plugins[i].source;
+                var source = POglobal.plugins[i].source;
                 updateModule(source, function(module) {
                     POglobal.plugins[i] = module;
                     module.source = source;
@@ -4114,7 +4104,7 @@ beforeChatMessage: function(src, message, chan) {
 
         // Forward some commands to shanai in case she is online and the command character is "/"
         var forwardShanaiCommands = ["join", "subme", "unjoin", "viewround", "queue", "dq", "myflashes", "flashme", "unflashme", "tour", "iom", "ipm", "viewtiers", "tourrankings", "sub", "endtour", "queuerm", "start", "pushtour", "push", "salist", "activesa", "activesas", "tourranking", "tourdetails", "start", "lastwinners"];
-	if (sys.id("shanai") !== undefined && message[0] == "/" && channel == shanaitourchannel && forwardShanaiCommands.indexOf(command) > -1) {
+        if (sys.id("shanai") !== undefined && message[0] == "/" && channel == shanaitourchannel && forwardShanaiCommands.indexOf(command) > -1) {
             shanaiForward("\\" + message.substr(1));
             return;
         }
