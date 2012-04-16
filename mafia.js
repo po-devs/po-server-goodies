@@ -1459,7 +1459,7 @@ function Mafia(mafiachan) {
             }
             if (winner.theme !== null) {
                 sys.sendAll("Theme " + winner.theme + " won with " + winner.votes + ".", mafiachan);
-                this.startGame(null, theme);
+                this.startGame(null, winner.theme);
             } else {
                 sys.sendAll("Really? No votes, so no game.", mafiachan);
             }
