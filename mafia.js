@@ -1452,7 +1452,7 @@ function Mafia(mafiachan) {
                  }
             }
             if (winner.theme !== null) {
-                startGame(null, theme);
+                this.startGame(null, theme);
             } else {
                 sys.sendAll("Really? No votes, so no game.", mafiachan);
             }
