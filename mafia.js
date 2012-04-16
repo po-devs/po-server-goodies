@@ -626,7 +626,17 @@ function Mafia(mafiachan) {
             sys.sendMessage(src, "±Game: This command makes no sense during a game, right?!", mafiachan);
             return;
         }
+
+        // Usual checks for input
         var themeName = commandData.toLowerCase();
+        var Check = PreviousGames.slice(-Config.Mafia.norepeat).reverse();
+        for (i = 0; i < Check.length; ++i) {
+            if (Check[i].what == themeName && themeName != "default") {
+                sys.sendMessage(src, "±Game: This was just played " + i + " games ago, no repeating!", mafiachan);
+                return;
+            }
+        }
+
         if (themeName in this.themeManager.themes) {
             if (!this.themeManager.themes[themeName].enabled) {
                 sys.sendMessage(src, "±Game: This theme is disabled!", mafiachan);
@@ -678,14 +688,7 @@ function Mafia(mafiachan) {
                     }
                 }
             }
-            var Check = PreviousGames.slice(-Config.Mafia.norepeat).reverse();
-            for (i = 0; i < Check.length; ++i) {
-                if (Check[i].what == themeName && themeName != "default") {
-                    sys.sendMessage(src, "±Game: This was just played " + i + " games ago, no repeating!", mafiachan);
-                    return;
-                }
-            }
-    
+       
             if (themeName in this.themeManager.themes) {
                 if (!this.themeManager.themes[themeName].enabled) {
                     sys.sendMessage(src, "±Game: This theme is disabled!", mafiachan);
