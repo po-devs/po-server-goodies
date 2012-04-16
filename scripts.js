@@ -2181,17 +2181,8 @@ userCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "You currently have no alerts");
             return;
         }
-        var tiers = sys.getTierList();
-        var tier;
-        var found = false;
-        for (var i = 0; i < tiers.length; ++i) {
-            if (cmp(tiers[i], commandData)) {
-                tier = tiers[i]
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
+        var tier = utilities.find_tier(commandData);
+        if (tier === null) {
             normalbot.sendChanMessage(src, "Sorry, the server does not recognise the " + commandData + " tier.");
             return;
         }
