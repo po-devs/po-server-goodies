@@ -195,7 +195,10 @@ function POUser(id)
     /* login time */
     this.logintime = parseInt(sys.time());
     /* tier alerts */	
-    this.tiers = ""
+    this.tiers = [];
+    if (getKey('touralertson', id) == "true"){
+	this.tiers = getKey("touralerts", id).split("*");
+    }	
     /* host name */
     this.hostname = "pending";
     var user = this; // closure
@@ -1618,9 +1621,6 @@ afterLogIn : function(src) {
         sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Connected as MU" + "\n");
     if (sys.auth(src) > 0 && sys.auth(src) <= 3)
         sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Connected as Auth" + "\n");
-    if(getKey('touralertson', src) == "true"){
-	SESSION.users(src).tiers= getKey("touralerts", src)
-    }	
     authChangingTeam = (sys.auth(src) > 0 && sys.auth(src) <= 3);
     this.afterChangeTeam(src);
 
@@ -2129,26 +2129,26 @@ userCommand: function(src, command, commandData, tar) {
         channelbot.sendChanMessage(src, "Operators: " + SESSION.channels(channel).operators.join(", "));
         return;
     }
-    	// Tour alerts
-	if(command == "touralerts") {
-		if(commandData == "on"){
-			SESSION.users(src).tiers = getKey("touralerts", src)
-			normalbot.sendChanMessage(src, "You have turned tour alerts on!")
-			saveKey("touralertson", src, "true")
-			return;
-		}
-		if(commandData == "off") {
-			delete SESSION.users(src).tiers
-			normalbot.sendChanMessage(src, "You have turned tour alerts off!")
-			saveKey("touralertson", src, "false")
-			return;
-		}
-		if(typeof(SESSION.users(src).tiers) == "undefined" || SESSION.users(src).tiers.length == 0){
-			normalbot.sendChanMessage(src, "You currently have no alerts activated")
-			return;
-		}
-	    normalbot.sendChanMessage(src, "You currently get alerted for the tiers:");
-        var spl = SESSION.users(src).tiers.split('*');
+    // Tour alerts
+    if(command == "touralerts") {
+        if(commandData == "on"){
+            SESSION.users(src).tiers = getKey("touralerts", src);
+            normalbot.sendChanMessage(src, "You have turned tour alerts on!")
+            saveKey("touralertson", src, "true")
+            return;
+        }
+        if(commandData == "off") {
+            delete SESSION.users(src).tiers;
+            normalbot.sendChanMessage(src, "You have turned tour alerts off!")
+            saveKey("touralertson", src, "false")
+            return;
+        }
+        if(typeof(SESSION.users(src).tiers) == "undefined" || SESSION.users(src).tiers.length == 0){
+            normalbot.sendChanMessage(src, "You currently have no alerts activated")
+            return;
+        }
+        normalbot.sendChanMessage(src, "You currently get alerted for the tiers:");
+        var spl = SESSION.users(src).tiers;
         for (var x = 0; x < spl.length; ++x) {
             if (spl[x].length > 0) {
                 normalbot.sendChanMessage(src, spl[x]);
@@ -2174,22 +2174,22 @@ userCommand: function(src, command, commandData, tar) {
 			normalbot.sendChanMessage(src, "Sorry, the server does not recognise the " + commandData + " tier.");
 			return;
 		}
-		if(typeof(SESSION.users(src).tiers) == "undefined"){
-			SESSION.users(src).tiers = "*" + tier + "*"
-			saveKey("touralerts", src, SESSION.users(src).tiers)
-			normalbot.sendChanMessage(src, "Added a tour alert for the tier: " + tier + "!")
-			return;
+		if (typeof SESSION.users(src).tiers == "undefined") {
+			SESSION.users(src).tiers = [];
 		}
-		SESSION.users(src).tiers+= "*" + tier + "*"
-		saveKey("touralerts", src, SESSION.users(src).tiers)
-		normalbot.sendChanMessage(src, "Added a tour alert for the tier: " + tier + "!")
-	return;
+		if (typeof SESSION.users(src).tiers == "string") {
+			SESSION.users(src).tiers = SESSION.users(src).tiers.split("*");
+		}
+		SESSION.users(src).tiers.push(tier);
+		saveKey("touralerts", src, SESSION.users(src).tiers.join("*"))
+		normalbot.sendChanMessage(src, "Added a tour alert for the tier: " + tier + "!");
+        return;
 	}
 	if(command == "removetouralert") {
-		SESSION.users(src).tiers = getKey("touralerts", src)
-		if(typeof(SESSION.users(src).tiers) == "undefined" || SESSION.users(src).tiers.length == 0){
-		normalbot.sendChanMessage(src, "You currently have no alerts")
-		return;
+		SESSION.users(src).tiers = getKey("touralerts", src).split("*");
+		if(typeof SESSION.users(src).tiers == "undefined" || SESSION.users(src).tiers.length == 0){
+    	    normalbot.sendChanMessage(src, "You currently have no alerts");
+	        return;
 		}
 		var tiers = sys.getTierList();
 		var tier;
@@ -2205,11 +2205,13 @@ userCommand: function(src, command, commandData, tar) {
 			normalbot.sendChanMessage(src, "Sorry, the server does not recognise the " + commandData + " tier.");
 			return;
 		}
-		
-		SESSION.users(src).tiers = SESSION.users(src).tiers.split("*" + tier + "*").join("")
-		saveKey("touralerts", src, SESSION.users(src).tiers)
+        var idx = -1;
+		while ((idx = SESSION.users(src).tiers.indexOf(tier)) != -1) {
+            SESSION.users(src).splice(idx, 1);
+        }
+		saveKey("touralerts", src, SESSION.users(src).tiers.join("*"))
 		normalbot.sendChanMessage(src, "Removed a tour alert for the tier: " + tier + "!")
-	return;
+   	    return;
 	}
     // The Stupid Coin Game
     if (command == "coin" || command == "flip") {
