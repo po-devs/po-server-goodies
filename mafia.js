@@ -1859,8 +1859,10 @@ function Mafia(mafiachan) {
             mafia.handleCommandOld(src, message, channel);
             return true;
         } catch(e) {
-            sys.sendAll("Error on mafia command: " + e, mafiachan);
-            return e != "no valid command";
+            if (e != "no valid command") {
+                sys.sendAll("Error on mafia command: " + e, mafiachan);
+                return true;
+            }
         }
     };
     this.handleCommandOld = function(src, message, channel) {
@@ -1929,12 +1931,14 @@ function Mafia(mafiachan) {
                 this.ips.push(sys.ip(src));
                 sys.sendAll("±Game: " + name + " joined the game!", mafiachan);
                 // Count the number of games a mafia player has played.
+                /*
                 if (playerMafiaJoins[name] === undefined) {
                     playerMafiaJoins[name] = 1;
                     sys.sendAll("±Mafia: New player " + name + " joined mafia.", sachannel);
                 } else {
                     playerMafiaJoins[name]++;
                 }
+                */
                 if (this.signups.length == this.theme["roles"+this.theme.roleLists].length) {
                     this.ticks = 1;
                 }
