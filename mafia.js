@@ -627,7 +627,7 @@ function Mafia(mafiachan) {
                 this.possibleThemes[themeName] = 0;
                 --total;
             }
-            if (PreviousGames.length === 0 || PreviouGames.slice(-1)[0].what != "default") {
+            if (PreviousGames.length === 0 || PreviousGames.slice(-1)[0].what != "default") {
                 this.possibleThemes["default"] = 0;
                 --total;
             }
