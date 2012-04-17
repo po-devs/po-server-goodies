@@ -623,7 +623,7 @@ function Mafia(mafiachan) {
             this.votes = {};
             this.possibleThemes = {};
             var total = 5;
-            if (themeName in this.themeManager.themes && !this.themeManager.themes[themeName].disabled) {
+            if (themeName in this.themeManager.themes && !this.themeManager.themes[themeName].enabled) {
                 this.possibleThemes[themeName] = 0;
                 --total;
             }
@@ -644,7 +644,7 @@ function Mafia(mafiachan) {
                     }
                 }
                 // exclude disabled themes 
-                if (!this.themeManager.themes[name].disabled && !(name in this.possibleThemes)) {
+                if (!this.themeManager.themes[name].enabled && !(name in this.possibleThemes)) {
                     this.possibleThemes[name] = 0;
                     --total;
                 }
