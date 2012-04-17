@@ -656,7 +656,7 @@ function Mafia(mafiachan) {
             sys.sendMessage(src, "±Game: This command makes no sense during a game, right?!", mafiachan);
             return;
         }
-        if (!this.possibleVotes.hasOwnProperty(themeName)) {
+        if (!this.possibleThemes.hasOwnProperty(themeName)) {
             sys.sendMessage(src, "±Game: You can not vote this theme!", mafiachan);
             return;
         }
