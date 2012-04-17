@@ -1482,8 +1482,8 @@ function Mafia(mafiachan) {
             if (winner.theme !== null) {
                 sys.sendAll("Theme " + winner.theme + " won with " + winner.votes + ".", mafiachan);
                 this.startGame(null, winner.theme);
-                this.signups = players[theme];
-                this.ips = ips[theme];
+                this.signups = players[winner.theme];
+                this.ips = ips[winner.theme];
                 sys.sendAll("±Game: " + this.signups.join(", ") + " joined the game!", mafiachan);
             } else {
                 sys.sendAll("Really? No votes, so no game.", mafiachan);
