@@ -1859,7 +1859,7 @@ function Mafia(mafiachan) {
             mafia.handleCommandOld(src, message, channel);
             return true;
         } catch(e) {
-            sys.sendAll("Error on mafia command: ", mafiachan);
+            sys.sendAll("Error on mafia command: " + e, mafiachan);
             return e != "no valid command";
         }
     };
