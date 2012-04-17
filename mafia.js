@@ -473,10 +473,10 @@ function Mafia(mafiachan) {
                     abilities += "Revenges nightkills (even when protected). ";
                 }
                 else if (role.actions.kill.mode == "killattacker") {
-                    abilities += "Revenges nightkills. "
+                    abilities += "Revenges nightkills. ";
                 }
                 else if (typeof role.actions.kill.mode == "object" && role.actions.kill.mode.evadeChance > 0) {
-                    abilities += "Has a "+parseInt(role.actions.kill.mode.evadeChance*100)+"% chance of evading nightkills. ";
+                    abilities += "Has a " + Math.floor(role.actions.kill.mode.evadeChance*100) + "% chance of evading nightkills. ";
                 }
             }
             if ("daykill" in role.actions) {
@@ -492,7 +492,7 @@ function Mafia(mafiachan) {
                     abilities += "Can't be poisoned. ";
                 }
                 else if (typeof role.actions.poison.mode == "object" && role.actions.poison.mode.evadeChance > 0) {
-                    abilities += "Has a "+parseInt(role.actions.poison.mode.evadeChance*100)+"% chance of evading poison. ";
+                    abilities += "Has a " + Math.floor(role.actions.poison.mode.evadeChance*100) + "% chance of evading poison. ";
                 }
             }
             if ("hax" in role.actions && Object.keys) {
@@ -616,34 +616,48 @@ function Mafia(mafiachan) {
     this.clearVariables();
     /* callback for /start */
     this.userVote = function(src, commandData) {
+        var themeName = commandData.toLowerCase();
         if (this.state == "blank") {
             this.state = "voting";
             this.ticks = 30;
             this.votes = {};
+            this.possibleThemes = {};
+            var total = 5;
+            if (themeName in this.themeManager.themes && !this.themeManager.themes[themeName].disabled) {
+                this.possibleThemes[themeName] = 0;
+                --total;
+            }
+            if (PreviousGames.length === 0 || PreviouGames.slice(-1)[0].what != "default") {
+                this.possibleThemes["default"] = 0;
+                --total;
+            }
+            var allThemes = Object.keys(this.themeManager.themes);
+            var Check = PreviousGames.slice(-Config.Mafia.norepeat).reverse();
+            while (allThemes.length > 0 && total > 0) {
+                var indx = Math.floor(allThemes.length * Math.random());
+                var name = allThemes[indx];
+                allThemes.splice(indx, 1);
+                // exclude themes played recently
+                for (i = 0; i < Check.length; ++i) {
+                    if (Check[i].what == name && name != "default") {
+                        continue;
+                    }
+                }
+                // exclude disabled themes 
+                if (!this.themeManager.themes[name].disabled && !(name in this.possibleThemes)) {
+                    this.possibleThemes[name] = 0;
+                    --total;
+                }
+            }
             sys.sendAll("±Game: " + sys.name(src) + " started a voting for next game's theme!. You have 30 seconds to vote with /start!", mafiachan);
+            sys.sendAll("±Game: Choose from these themes: " + Object.keys(this.possibleThemes).join(", ") +" !", mafiachan);
         }
         if (this.state != "voting") {
             sys.sendMessage(src, "±Game: This command makes no sense during a game, right?!", mafiachan);
             return;
         }
-
-        // Usual checks for input
-        var themeName = commandData.toLowerCase();
-        var Check = PreviousGames.slice(-Config.Mafia.norepeat).reverse();
-        for (i = 0; i < Check.length; ++i) {
-            if (Check[i].what == themeName && themeName != "default") {
-                sys.sendMessage(src, "±Game: This was just played " + i + " games ago, no repeating!", mafiachan);
-                return;
-            }
-        }
-
-        if (themeName in this.themeManager.themes) {
-            if (!this.themeManager.themes[themeName].enabled) {
-                sys.sendMessage(src, "±Game: This theme is disabled!", mafiachan);
-                return;
-            }
-        } else {
-            sys.sendMessage(src, "±Game: No such theme!", mafiachan);
+        if (!this.possibleVotes.hasOwnProperty(themeName)) {
+            sys.sendMessage(src, "±Game: You can not vote this theme!", mafiachan);
             return;
         }
         var ip = sys.ip(src); 
@@ -732,7 +746,7 @@ function Mafia(mafiachan) {
             sys.sendAll("±Game: " + this.theme.summary,mafiachan);
         }
 
-        //if (sys.playersOfChannel(mafiachan).length < 25) {
+        if (sys.playersOfChannel(mafiachan).length < 150) {
             var time = parseInt(sys.time(), 10);
             if (time > this.lastAdvertise + 60*15) {
                 this.lastAdvertise = time;
@@ -746,19 +760,19 @@ function Mafia(mafiachan) {
                 sys.sendAll(border, 0);
                 sys.sendAll("", 0);
                 if(sys.existChannel("Project Mafia")){
-    				var PM= sys.channelId("Project Mafia")
-					sys.sendAll("", PM);
-					sys.sendAll(border, PM);
-					if (this.theme.name == "default") {
-						sys.sendAll("±Game: A new mafia game was started at #" + sys.channel(mafiachan) + "!", PM);
-                }	else {
-						sys.sendAll("±Game: A new " + this.theme.name + "-themed mafia game was started at #" + sys.channel(mafiachan) + "!", PM);
+                    var PM = sys.channelId("Project Mafia");
+                    sys.sendAll("", PM);
+                    sys.sendAll(border, PM);
+                    if (this.theme.name == "default") {
+                        sys.sendAll("±Game: A new mafia game was started at #" + sys.channel(mafiachan) + "!", PM);
+                    } else {
+                        sys.sendAll("±Game: A new " + this.theme.name + "-themed mafia game was started at #" + sys.channel(mafiachan) + "!", PM);
+                    }
+                    sys.sendAll(border, PM);
+                    sys.sendAll("", PM);
                 }
-					sys.sendAll(border, PM);
-					sys.sendAll("", PM);
-				}
             }
-        //}
+        }
         this.clearVariables();
         mafia.state = "entry";
 
@@ -1448,13 +1462,13 @@ function Mafia(mafiachan) {
         },
         voting: function() {
             this.state = "blank";
-            var res = {};
+            var res = {}, theme;
             for (var ip in this.votes) {
-                var theme = this.votes[ip];
+                theme = this.votes[ip];
                 res[theme] = ++res[theme] || 1;
             }
             var winner = {votes: -1, theme: null};
-            for (var theme in res) {
+            for (theme in res) {
                  if (res[theme] > winner.votes) {
                      winner.votes = res[theme];
                      winner.theme = theme;
@@ -1800,7 +1814,7 @@ function Mafia(mafiachan) {
                 sys.sendAll("Update complete!", mafiachan);                
             });
             sys.sendAll("Updating mafia game...", mafiachan);
-            mafia.needsUpdating = false
+            mafia.needsUpdating = false;
         }
         return;
     }
