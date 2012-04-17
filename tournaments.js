@@ -470,6 +470,9 @@ function Tournament(channel)
 			if (self.phase == "entry" || self.members.indexOf(name.toLowerCase()) >= 0) {
 				removeEntrant(name);
 				broadcast("~~Server~~: " + name + " was removed from the tournament by " + authority + "!");
+				var ind = self.ips.indexOf(sys.ip(sys.id(name)));
+				if (ind != -1)
+					self.ips.splice(ind, 1);
 			} else if (playingPhase()) {
 				broadcast("~~Server~~: " + name + " was removed from the tournament by " + authority + "!");
 				endBattle(tourOpponent(name), name);
