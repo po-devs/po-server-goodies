@@ -1467,9 +1467,9 @@ function Mafia(mafiachan) {
             for (var ip in this.votes) {
                 theme = this.votes[ip].theme;
                 res[theme] = ++res[theme] || 1;
-                players[theme] = players.theme || [];
+                players[theme] = players[theme] || [];
                 players[theme].push(this.votes[ip].who);
-                ips[theme] = ips.theme || [];
+                ips[theme] = ips[theme] || [];
                 ips[theme].push(ip);
             }
             var winner = {votes: -1, theme: null};
