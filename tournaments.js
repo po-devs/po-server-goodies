@@ -338,7 +338,7 @@ function Tournament(channel)
 		addEntrant(name);
 		broadcast("~~Server~~: " + name + " joined the tournament! " + remainingEntrants()  + " more spot(s) left!");
 
-		if (remainingEntrants() > 0 && remainingEntrants() <= self.count/8) {
+		while (remainingEntrants() > 0 && remainingEntrants() <= self.count/8) {
 			// Give time 20 seconds plus 5 seconds per slot for "fast signups"
 			if ((Date.now() - self.startTime)/1000 < 20 + self.count*5) {
 				self.count = Math.pow(2, Math.floor(Math.log(self.count)/Math.log(2))+1);
