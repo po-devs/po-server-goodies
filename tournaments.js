@@ -188,7 +188,6 @@ function Tournament(channel)
 		wall(border);
 		wall("*** A Tournament was started by " + self.starter + "! ***");
 		wall("PLAYERS: " + self.count);
-		wall("TYPE: Single Elimination");
 		wall("TIER: " + self.tier);
 		broadcast("CLAUSES: " + tierClauses(self.tier).join(", "));
 		wall("");
@@ -219,6 +218,7 @@ function Tournament(channel)
 
 		self.entrants = {};
 		self.members = [];
+		self.starttime = Date.now();
 	}
 
 	// command viewqueue
@@ -337,6 +337,20 @@ function Tournament(channel)
 		self.ips.push(sys.ip(source));
 		addEntrant(name);
 		broadcast("~~Server~~: " + name + " joined the tournament! " + remainingEntrants()  + " more spot(s) left!");
+
+		while (remainingEntrants() <= self.count/8) {
+			// Give time 20 seconds plus 5 seconds per slot for "fast signups"
+			if ((Date.now() - self.startTime)/1000 < 20 + self.count*5) {
+				self.count = Math.floor(Math.log(self.count)/Math.log(2))+1;
+				broadcast("~~Server~~: This tournament is now open for " + self.count + " players!"); 
+			} else {
+				while (remainingEntrants() > 0) {
+					name = freeSub();
+					addEntrant(name);
+					broadcast("~~Server~~: Substitutes were added and the tournament was started!"); 
+				}
+			}
+		}
 
 		if (remainingEntrants() === 0) {
 			startTournament();
@@ -482,6 +496,12 @@ function Tournament(channel)
 		}
 	}
 
+	function freeSub() {
+		var i = 1;
+		while (isInTour("~Sub" + i)) { ++i; }
+		return "~Sub" + i;
+	}
+
 	// Command push
 	function push(source, name) {
 		if (!self.running) {
@@ -491,9 +511,7 @@ function Tournament(channel)
 
 		var authority = sys.name(source);
 
-		var i = 1;
-		while (isInTour("~Sub" + i)) { ++i; }
-		name = "~Sub" + i;
+		name = freeSub();
 
 		if (isInTour(name)) {
 			sendPM(source, name + " is already in the tournament.");
