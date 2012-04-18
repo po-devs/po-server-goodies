@@ -649,7 +649,7 @@ function Mafia(mafiachan) {
                     --total;
                 }
             }
-            sys.sendAll("±Game: " + sys.name(src) + " started a voting for next game's theme!. You have 30 seconds to vote with /start!", mafiachan);
+            sys.sendAll("±Game: " + sys.name(src) + " started a voting for next game's theme!. You have 30 seconds to vote with /votetheme!", mafiachan);
             sys.sendAll("±Game: Choose from these themes: " + Object.keys(this.possibleThemes).join(", ") +" !", mafiachan);
         }
         if (this.state != "voting") {
@@ -1837,6 +1837,8 @@ function Mafia(mafiachan) {
         user: {
             commands : [this.showCommands, "To see the various commands."],
             start: [this.userVote, "Start voting for a new game theme / or vote!"],
+            votetheme: [this.userVote, "Start voting for a new game theme / or vote!"],
+            starttheme: [this.startGame, "Starts a Game of Mafia with specified theme."],
             help: [this.showHelp, "For info on how to win in a game."],
             roles: [this.showRoles, "For info on all the Roles in the game."],
             rules: [this.showRules, "To see the Rules for the Game/Server."],
@@ -1846,7 +1848,6 @@ function Mafia(mafiachan) {
             update: [this.updateTheme, "To update a Mafia Theme!"]
         },
         auth: {
-            realstart: [this.startGame, "Starts a Game of Mafia."],
             push: [this.pushUser, "To push users to a Mafia game."],
             slay: [this.slayUser, "To slay users in a Mafia game."],
             shove: [this.slayUser, "To remove users before a game starts."],
