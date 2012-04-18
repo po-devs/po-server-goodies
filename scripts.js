@@ -207,6 +207,7 @@ function POUser(id)
             user.hostname = result;
         } catch (e) {}
     });
+    this.battles = {};
 
     // warn find battle custom message
     this.reloadwfb();
@@ -715,6 +716,7 @@ if (typeof SESSION.global() != 'undefined') {
                 sys.sendAll("ScriptUpdate: SESSION storage broken for user: " + sys.name(id), staffchannel);
             else
                 SESSION.users(id).__proto__ = POUser.prototype;
+                SESSION.users(id).battles = SESSION.users(id).battles || {};
         }
     });
 
@@ -4374,7 +4376,10 @@ afterChatMessage : function(src, message, chan)
 afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
     callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid);
 
-    SESSION.global().battleinfo[bid] = {players: [src, dest], clauses: clauses, rated: rated, mode: mode};
+    var battle_data = {players: [src, dest], clauses: clauses, rated: rated, mode: mode};
+    SESSION.global().battleinfo[bid] = battle_data;
+    SESSION.users(src).battles[bid] = battle_data;
+    SESSION.users(dest).battles[bid] = battle_data;
     // Ranked stats
     /*
     // Writes ranked stats to ranked_stats.csv
@@ -4401,6 +4406,8 @@ beforeBattleEnded : function(src, dest, desc, bid) {
         //normalbot.sendAll(sys.name(dest) + " just forfeited their first battle and is on mafia channel. Troll?", staffchannel)
     }
     delete SESSION.global().battleinfo[bid];
+    delete SESSION.users(src).battles[bid];
+    delete SESSION.users(dest).battles[bid];
 
     if (!SESSION.users(src).battlehistory) SESSION.users(src).battlehistory=[];
     if (!SESSION.users(dest).battlehistory) SESSION.users(dest).battlehistory=[];

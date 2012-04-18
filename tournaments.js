@@ -373,6 +373,17 @@ function Tournament(channel)
 			return;
 		}
 
+		var srctier = sys.tier(source);
+		if (!cmp(srctier, self.tier)){
+			sendPM(source, "You are currently not battling in the " + self.tier + " tier. Change your tier to " + self.tier + " to be able to join.");
+			return;
+		}
+
+		if (typeof SESSION.users(source).battles === "object" && Object.keys(SESSION.users(source).battles).length > 0) {
+			sendPM(source, "You can not sub in if you are battling!");
+			return;
+		}
+
 		var placeholder = findPlaceholder();
 		var players = [sys.name(source), placeholder];
 		if (placeholder) {
