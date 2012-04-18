@@ -1069,7 +1069,7 @@ module.exports = {
 			}
 			if (channel == tourchannel)
 				return false;
-			if (command == "disabletours" && (sys.auth(source) >= 2 && SESSION.channels(channel).isChannelMaster(source))) {
+			if (command == "disabletours" && (sys.auth(source) >= 2 || SESSION.channels(channel).isChannelMaster(source))) {
 				delete module.tournaments[channel];
 				var ind = SESSION.global().permaTours.indexOf(channel);
 				if (ind >= 0) {
