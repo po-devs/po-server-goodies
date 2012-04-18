@@ -667,6 +667,9 @@ function Mafia(mafiachan) {
             sys.sendMessage(src, "±Game: This command makes no sense during a game, right?!", mafiachan);
             return;
         }
+        if (this.canJoin(src) !== true) {
+            return;
+        }
         if (!this.possibleThemes.hasOwnProperty(themeName)) {
             sys.sendMessage(src, "±Game: You can not vote this theme!", mafiachan);
             return;
@@ -1883,6 +1886,48 @@ function Mafia(mafiachan) {
             }
         }
     };
+    this.canJoin = function(src) {
+        if (this.isInGame(sys.name(src))) {
+            sys.sendMessage(src, "±Game: You already joined!", mafiachan);
+            return;
+        }
+        if (this.ips.indexOf(sys.ip(src))!=-1) {
+            sys.sendMessage(src, "±Game: This IP is already in list. You cannot register two times!", mafiachan);
+            return;
+        }
+        if (SESSION.users(src).mute.active) {
+            sys.sendMessage(src, "±Game: You are muted!", mafiachan);
+            return;
+        }
+        if (SESSION.users(src).android === true) {
+            sys.sendMessage(src, "±Game: Android users can not play mafia!", mafiachan);
+            return;
+        }
+        var name = sys.name(src);
+        for (var x in name) {
+            var code = name.charCodeAt(x);
+            if (name[x] != ' ' && name[x] != '.' && (code < 'a'.charCodeAt(0) || code > 'z'.charCodeAt(0))
+                && (code < 'A'.charCodeAt(0) || code > 'Z'.charCodeAt(0)) && name[x] != '-' && name[x] != '_' && name[x] !='<' && name[x] != '>' && (code < '0'.charCodeAt(0) || code > '9'.charCodeAt(0)))
+            {
+                sys.sendMessage(src, "±Name: You're not allowed to have the following character in your name: " + name[x] + ".", mafiachan);
+                sys.sendMessage(src, "±Rule: You must change it if you want to join!", mafiachan);
+                return;
+            }
+        }
+        if (name.length > Config.Mafia.max_name_length) {
+            sys.sendMessage(src, "±Name: You're not allowed to have more than 12 letters in your name!", mafiachan);
+            sys.sendMessage(src, "±Rule: You must change it if you want to join!", mafiachan);
+            return;
+        }
+        /* Requirement of laddering before joining..
+        if ((sys.auth(src) == 0) && sys.ratedBattles(src) == 0 ||
+            (sys.ranking(src) <= 1000 && sys.ratedBattles(src) < 5) ||
+            SESSION.users(src).smute.active) {
+            sys.sendMessage(src, "±Game: You need to ladder before playing mafia!", mafiachan);
+            return;
+        } */
+        return true;
+    };
     this.handleCommandOld = function(src, message, channel) {
 
         var command;
@@ -1902,61 +1947,18 @@ function Mafia(mafiachan) {
         var name, x, player, target;
         if (this.state == "entry") {
             if (command == "join") {
-                if (this.isInGame(sys.name(src))) {
-                    sys.sendMessage(src, "±Game: You already joined!", mafiachan);
+                if (this.canJoin(src) !== true) {
                     return;
                 }
-                if (this.ips.indexOf(sys.ip(src))!=-1) {
-                    sys.sendMessage(src, "±Game: This IP is already in list. You cannot register two times!", mafiachan);
-                    return;
-                }
-                if (SESSION.users(src).mute.active) {
-                    sys.sendMessage(src, "±Game: You are muted!", mafiachan);
-                    return;
-                }
-                if (SESSION.users(src).android === true) {
-                    sys.sendMessage(src, "±Game: Android users can not play mafia!", mafiachan);
-                    return;
-                }
-                /* Requirement of laddering before joining..
-                if ((sys.auth(src) == 0) && sys.ratedBattles(src) == 0 ||
-                    (sys.ranking(src) <= 1000 && sys.ratedBattles(src) < 5) ||
-                    SESSION.users(src).smute.active) {
-                    sys.sendMessage(src, "±Game: You need to ladder before playing mafia!", mafiachan);
-                    return;
-                } */
                 if (this.signups.length >= this.theme["roles"+this.theme.roleLists].length) {
                     sys.sendMessage(src, "±Game: There can't be more than " + this.theme["roles"+this.theme.roleLists].length + " players!", mafiachan);
                     return;
                 }
                 name = sys.name(src);
-                for (x in name) {
-                    var code = name.charCodeAt(x);
-                    if (name[x] != ' ' && name[x] != '.' && (code < 'a'.charCodeAt(0) || code > 'z'.charCodeAt(0))
-                        && (code < 'A'.charCodeAt(0) || code > 'Z'.charCodeAt(0)) && name[x] != '-' && name[x] != '_' && name[x] !='<' && name[x] != '>' && (code < '0'.charCodeAt(0) || code > '9'.charCodeAt(0)))
-                    {
-                        sys.sendMessage(src, "±Name: You're not allowed to have the following character in your name: " + name[x] + ".", mafiachan);
-                        sys.sendMessage(src, "±Rule: You must change it if you want to join!", mafiachan);
-                        return;
-                    }
-                }
-                if (name.length > Config.Mafia.max_name_length) {
-                    sys.sendMessage(src, "±Name: You're not allowed to have more than 12 letters in your name!", mafiachan);
-                    sys.sendMessage(src, "±Rule: You must change it if you want to join!", mafiachan);
-                    return;
-                }
+
                 this.signups.push(name);
                 this.ips.push(sys.ip(src));
                 sys.sendAll("±Game: " + name + " joined the game!", mafiachan);
-                // Count the number of games a mafia player has played.
-                /*
-                if (playerMafiaJoins[name] === undefined) {
-                    playerMafiaJoins[name] = 1;
-                    sys.sendAll("±Mafia: New player " + name + " joined mafia.", sachannel);
-                } else {
-                    playerMafiaJoins[name]++;
-                }
-                */
                 if (this.signups.length == this.theme["roles"+this.theme.roleLists].length) {
                     this.ticks = 1;
                 }
@@ -1976,7 +1978,6 @@ function Mafia(mafiachan) {
             }
         } else if (this.state == "night") {
             name = sys.name(src);
-            //sys.sendAll(name + " used /" + command + " on " + commandData, mafiachan);
             if (this.isInGame(name) && this.hasCommand(name, command, "night")) {
                 commandData = this.correctCase(commandData);
                 if (!this.isInGame(commandData)) {
