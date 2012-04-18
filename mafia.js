@@ -649,6 +649,7 @@ function Mafia(mafiachan) {
                     --total;
                 }
             }
+            border = DEFAULT_BORDER;
             sys.sendAll("", mafiachan);
             sys.sendAll(border, mafiachan);
             sys.sendAll("±Game: " + sys.name(src) + " started a voting for next game's theme!. You have " + this.ticks + " seconds to vote with /votetheme!", mafiachan);
