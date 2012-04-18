@@ -589,6 +589,12 @@ function Mafia(mafiachan) {
             if (x.toLowerCase() == lstring)
                 return this.players[x].name;
         }
+        // try to trim around if there's extra whitespace
+        lstring = lstring.replace(/^\s+|\s+$/g, '');
+        for (var y in this.players) {
+            if (y.toLowerCase() == lstring)
+                return this.players[y].name;
+        }
         return noPlayer;
     };
     this.clearVariables = function() {
