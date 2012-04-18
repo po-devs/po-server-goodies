@@ -619,7 +619,7 @@ function Mafia(mafiachan) {
         var themeName = commandData.toLowerCase();
         if (this.state == "blank") {
             this.state = "voting";
-            this.ticks = 30;
+            this.ticks = 20;
             this.votes = {};
             this.possibleThemes = {};
             var total = 5;
@@ -649,7 +649,7 @@ function Mafia(mafiachan) {
                     --total;
                 }
             }
-            sys.sendAll("±Game: " + sys.name(src) + " started a voting for next game's theme!. You have 30 seconds to vote with /votetheme!", mafiachan);
+            sys.sendAll("±Game: " + sys.name(src) + " started a voting for next game's theme!. You have " + this.ticks + " seconds to vote with /votetheme!", mafiachan);
             sys.sendAll("±Game: Choose from these themes: " + Object.keys(this.possibleThemes).join(", ") +" !", mafiachan);
         }
         if (this.state != "voting") {
@@ -1484,6 +1484,7 @@ function Mafia(mafiachan) {
                 this.startGame(null, winner.theme);
                 this.signups = players[winner.theme];
                 this.ips = ips[winner.theme];
+                mafia.ticks = 40;
                 sys.sendAll("±Game: " + this.signups.join(", ") + " joined the game!", mafiachan);
             } else {
                 sys.sendAll("Really? No votes, so no game.", mafiachan);
