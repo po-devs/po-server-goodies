@@ -341,7 +341,7 @@ function Tournament(channel)
 		while (remainingEntrants() <= self.count/8) {
 			// Give time 20 seconds plus 5 seconds per slot for "fast signups"
 			if ((Date.now() - self.startTime)/1000 < 20 + self.count*5) {
-				self.count = Math.floor(Math.log(self.count)/Math.log(2))+1;
+				self.count = Math.pow(2, Math.floor(Math.log(self.count)/Math.log(2))+1);
 				broadcast("~~Server~~: This tournament is now open for " + self.count + " players!"); 
 			} else {
 				while (remainingEntrants() > 0) {
