@@ -340,15 +340,15 @@ function Tournament(channel)
 
 		while (remainingEntrants() > 0 && remainingEntrants() <= self.count/8) {
 			// Give time 20 seconds plus 5 seconds per slot for "fast signups"
-			if ((Date.now() - self.startTime)/1000 < 20 + self.count*5) {
+			if ((Date.now() - self.startTime)/1000 < 40 + self.count*5) {
 				self.count = Math.pow(2, Math.floor(Math.log(self.count)/Math.log(2))+1);
 				broadcast("~~Server~~: This tournament is now open for " + self.count + " players!"); 
 			} else {
 				while (remainingEntrants() > 0) {
 					name = freeSub();
 					addEntrant(name);
-					broadcast("~~Server~~: Substitutes were added and the tournament was started!"); 
 				}
+				broadcast("~~Server~~: Substitutes were added and the tournament was started!"); 
 			}
 		}
 
@@ -496,10 +496,13 @@ function Tournament(channel)
 		}
 	}
 
-	function freeSub() {
+	function freeSub(basename) {
+		var name = basename === undefined ? "~Sub" : basename[0] == "~" ? basename : "~" + basename;
+		if (!isInTour(name))
+			return name;
 		var i = 1;
-		while (isInTour("~Sub" + i)) { ++i; }
-		return "~Sub" + i;
+		while (isInTour(name + i)) { ++i; }
+		return name + i;
 	}
 
 	// Command push
@@ -511,12 +514,7 @@ function Tournament(channel)
 
 		var authority = sys.name(source);
 
-		name = freeSub();
-
-		if (isInTour(name)) {
-			sendPM(source, name + " is already in the tournament.");
-			return;
-		}
+		name = freeSub(name);
 
 		addEntrant(name);
 		if (self.phase == "playing") {
