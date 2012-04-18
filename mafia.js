@@ -649,8 +649,12 @@ function Mafia(mafiachan) {
                     --total;
                 }
             }
+            sys.sendAll("", mafiachan);
+            sys.sendAll(border, mafiachan);
             sys.sendAll("±Game: " + sys.name(src) + " started a voting for next game's theme!. You have " + this.ticks + " seconds to vote with /votetheme!", mafiachan);
             sys.sendAll("±Game: Choose from these themes: " + Object.keys(this.possibleThemes).join(", ") +" !", mafiachan);
+            sys.sendAll(border, mafiachan);
+            sys.sendAll("", mafiachan);
         }
         if (this.state != "voting") {
             sys.sendMessage(src, "±Game: This command makes no sense during a game, right?!", mafiachan);
@@ -723,22 +727,18 @@ function Mafia(mafiachan) {
         // For random theme
         //mafia.theme = mafia.themeManager.themes[Object.keys(mafia.themeManager.themes)[parseInt(Object.keys(mafia.themeManager.themes).length * Math.random())]];
 
-        sys.sendAll("", mafiachan);
-        sys.sendAll(border, mafiachan);
-        if (this.theme.name == "default") {
-            if (src !== null)
+        if (src !== null) {
+            sys.sendAll("", mafiachan);
+            sys.sendAll(border, mafiachan);
+            if (this.theme.name == "default") {
                 sys.sendAll("±Game: " + sys.name(src) + " started a game!", mafiachan);
-            else
-                sys.sendAll("±Game: A new game was started!", mafiachan);
-        } else {
-            if (src !== null)
-               sys.sendAll("±Game: " + sys.name(src) + " started a game with theme "+this.theme.name+"!", mafiachan);
-            else
-               sys.sendAll("±Game: A new game with theme "+this.theme.name+" was started!", mafiachan);
+            } else {
+                sys.sendAll("±Game: " + sys.name(src) + " started a game with theme "+this.theme.name+"!", mafiachan);
+            }
+            sys.sendAll("±Game: Type /Join to enter the game!", mafiachan);
+            sys.sendAll(border, mafiachan);
+            sys.sendAll("", mafiachan);
         }
-        sys.sendAll("±Game: Type /Join to enter the game!", mafiachan);
-        sys.sendAll(border, mafiachan);
-        sys.sendAll("", mafiachan);
 
         if (this.theme.summary === undefined) {
             sys.sendAll("±Game: Consider adding a summary field to this theme that describes the setting of the game and points out the odd quirks of the theme!",mafiachan);
