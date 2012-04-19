@@ -4067,10 +4067,12 @@ beforeChatMessage: function(src, message, chan) {
     } */
 
     // Forward some commands to Shanai
+    /*
     if (['|', '\\'].indexOf(message[0]) > -1 && !usingBannedWords() && name != 'coyotte508') {
         shanaiForward(message);
         return;
     }
+    */
 
     if ((message[0] == '/' || message[0] == '!') && message.length > 1) {
         if (parseInt(sys.time()) - lastMemUpdate > 500) {
@@ -4097,11 +4099,13 @@ beforeChatMessage: function(src, message, chan) {
         }
 
         // Forward some commands to shanai in case she is online and the command character is "/"
+        /*
         var forwardShanaiCommands = ["join", "subme", "unjoin", "viewround", "queue", "dq", "myflashes", "flashme", "unflashme", "tour", "iom", "ipm", "viewtiers", "tourrankings", "sub", "endtour", "queuerm", "start", "pushtour", "push", "salist", "activesa", "activesas", "tourranking", "tourdetails", "start", "lastwinners"];
         if (sys.id("shanai") !== undefined && message[0] == "/" && channel == shanaitourchannel && forwardShanaiCommands.indexOf(command) > -1) {
             shanaiForward("\\" + message.substr(1));
             return;
         }
+        */
 
         if (this.userCommand(src, command, commandData, tar) != "no command") {
             return;
