@@ -1778,9 +1778,10 @@ userCommand: function(src, command, commandData, tar) {
                 for (var i = 0; i < help.length; ++i)
                     sendChanMessage(src, "/commands " + help[i]);
             }
+            /* Commenting out since no Shanai
             sendChanMessage(src, "");
             sendChanMessage(src, "Commands starting with \"\\\" will be forwarded to Shanai if she's online.");
-            sendChanMessage(src, "");
+            sendChanMessage(src, ""); */
             return;
         }
 
@@ -4020,7 +4021,7 @@ beforeChatMessage: function(src, message, chan) {
                 }
             }
         }
-        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, "nobrain.dk", /\bn[1i]gg+ers*\b/i, "penis", "vagina", "fuckface", /\bhur+\b/, /\bdur+\b/, "hurrdurr", /\bherp\b/, /\bderp\b/, "░░", "██", "▄▄", "▀▀", "___", "……", ".....", "¶¶", "¯¯", "----"];
+        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, "nobrain.dk", /\bn[1i]gg+ers*\b/i, "penis", "vagina", "fuckface", /\bhur+\b/, /\bdur+\b/, "hurrdurr", /\bherp\b/, /\bderp\b/, "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----"];
         for (var i = 0; i < BanList.length; ++i) {
             var filter = BanList[i];
             if (typeof filter == "string" && m.indexOf(filter) != -1 || typeof filter == "function" && filter.test(m)) {
@@ -4053,7 +4054,8 @@ beforeChatMessage: function(src, message, chan) {
         }
         return (caps > 7 && 2*name.length < 3*caps);
     });
-
+    
+    /* Commented out, since no Shanai
     shanaiForward = function(msg) {
         var shanai = sys.id("Shanai");
         if (shanai !== undefined) {
@@ -4062,7 +4064,7 @@ beforeChatMessage: function(src, message, chan) {
             sys.sendMessage(src, "+ShanaiGhost: Shanai is offline, your command will not work. Ping nixeagle if he's online.", chan);
         }
         sys.stopEvent();
-    }
+    } */
 
     // Forward some commands to Shanai
     if (['|', '\\'].indexOf(message[0]) > -1 && !usingBannedWords() && name != 'coyotte508') {
