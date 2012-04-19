@@ -1089,8 +1089,17 @@ function Mafia(mafiachan) {
                     if ("random" in mafia.theme.roles[srcArray[i]].side) {
                         var cum = 0;
                         var val = sys.rand(1,100)/100;
-                        for(var side in mafia.theme.roles[srcArray[i]].side.random) {
-                            cum += mafia.theme.roles[srcArray[i]].side.random[side];
+                        var psum = 0.0;
+                        var side;
+                        for(side in mafia.theme.roles[srcArray[i]].side.random) {
+                            psum += mafia.theme.roles[srcArray[i]].side.random[side];
+                        }
+                        if (psum === 0.0) {
+                            mafiabot.sendAll("Broken theme...", mafiachan);
+                            return;
+                        }
+                        for (side in mafia.theme.roles[srcArray[i]].side.random) {
+                            cum += mafia.theme.roles[srcArray[i]].side.random[side]/psum;
                             if (cum >= val) {
                                 mafia.players[mafia.signups[i]].role.side = side;
                                 break;
