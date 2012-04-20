@@ -639,6 +639,7 @@ function Mafia(mafiachan) {
             }
             var allThemes = Object.keys(this.themeManager.themes);
             var Check = PreviousGames.slice(-Config.Mafia.norepeat).reverse();
+            outer:
             while (allThemes.length > 0 && total > 0) {
                 var indx = Math.floor(allThemes.length * Math.random());
                 var name = allThemes[indx];
@@ -646,7 +647,7 @@ function Mafia(mafiachan) {
                 // exclude themes played recently
                 for (i = 0; i < Check.length; ++i) {
                     if (Check[i].what == name && name != "default") {
-                        continue;
+                        continue outer;
                     }
                 }
                 // exclude disabled themes 
