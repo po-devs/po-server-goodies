@@ -787,7 +787,7 @@ var commands = {
     mod:
     [
         "/k [name]: Kicks someone.",
-        "/mute [name]:[reason]:[time]: Mutes someone. Time is optional and defaults to 12 hours.",
+        "/mute [name]:[reason]:[time]: Mutes someone. Time is optional and defaults to 1 day.",
         "/unmute [name]: Unmutes someone.",
         "/wfb [target]: Warns a user about asking for battles.",
         "/wfbset [message]: Sets your personal warning message, {{user}} will be replaced by the target.",
@@ -798,7 +798,7 @@ var commands = {
         "/userinfo [name]: Displays information about a user (pretty display).",
         "/whois [name]: Displays information about a user (one line, slightly more info).",
         "/aliases [IP/name]: Shows the aliases of an IP or name.",
-        "/tempban [name]:[minutes]: Bans someone for an hour or less.",
+        "/tempban [name]:[reason]:[minutes]: Bans someone for 24 hours or less.",
         "/tempunban [name]: Unbans a temporary banned user (standard unban doesn't work).",
         "/mafiaban [name]:[reason]:[time]: Bans a player from Mafia. Time is optional and defaults to 7 days.",
         "/mafiaunban [name]: Unbans a player from Mafia.",
@@ -840,7 +840,7 @@ var commands = {
         "/changeAuth [auth] [name]: Changes the auth of a user.",
         "/showteam xxx: Displays the team of a user (to help people who have problems with event moves or invalid teams).",
         "/rangeban [ip] [comment]: Makes a range ban.",
-        "/rangeunban: [ip]: Removes a rangban.",
+        "/rangeunban: [ip]: Removes a rangeban.",
         "/purgemutes [time]: Purges old mutes. Time is given in seconds. Defaults is 4 weeks.",
         "/purgembans [time]: Purges old mafiabans. Time is given in seconds. Default is 1 week.",
         "/updateScripts: Updates scripts from the web."
