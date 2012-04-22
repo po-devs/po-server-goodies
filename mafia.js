@@ -554,6 +554,75 @@ function Mafia(mafiachan) {
         }
         this.roleInfo = roles;
     };
+    Theme.prototype.generateSideInfo = function() {
+	var sep = "*** *********************************************************************** ***";
+	var sides = [sep];	
+	var side;
+	var side_order = Object.keys(this.sides);
+	var this_sides = this.sides;		
+	// sort sides by name
+	side_order.sort(function(a,b) {
+		var tra = this_sides[a].translation;
+		var trb = this_sides[b].translation;
+		if (tra == trb)
+			return 0;
+		else if (tra < trb)
+			return -1;
+		else
+			return 1;
+	});	
+	// sort roles by name
+	var role;
+	var role_order = Object.keys(this.roles);
+	var this_roles = this.roles;
+	role_order.sort(function(a,b) {
+		var tra = this_roles[a].translation;
+		var trb = this_roles[b].translation;
+		if (tra == trb)
+			return 0;
+		else if (tra < trb)
+			return -1;
+		else
+			return 1;
+	});
+	// check each role for its side
+	var side_list = {};
+	var randomSide_list = [];
+	for (var r = 0; r < role_order.length; ++r) {
+	  try {
+		role = this.roles[role_order[r]];
+		if (typeof roles.side == "string") {		
+			if (side_list[role.side] == undefined) 
+				side_list[role.side] = [];
+			side_list[role.side].push(role.translation);
+		} else if (typeof role.side == "object" && role.side.random) {
+			var plop = Object.keys(role.side.random);
+			var tran = [];
+			for(var p = 0; p < plop.length; ++p) {
+			   tran.push(this.trside(plop[p]));
+			}
+			randomSide_list.push("±Role: " + role.translation + " can be sided with " + (tran.length > 1 ? tran.splice(0,tran.length-1).join(", ")+" or ":"") + tran + ". ");
+		}
+	  } catch (err) {
+		mafiabot.sendAll("Error adding role " + role.translation + "(" + role.role + ") to /sides", mafiachan);
+		throw err;
+	  }
+	}
+	// writes the list of roles for each side
+	for (var s = 0; s < side_order.length; ++s) {
+		try {
+			side = this.sides[side_order[s]];			
+			sides.push("±Side: The " + side.translation + " consists of " + side_list[side].join(", ") + ".");
+		} catch (err) {
+			mafiabot.sendAll("Error adding side " + side.translation + "(" + side.side + ") to /sides", mafiachan);
+			throw err;
+		}
+	}
+	if (randomSide_list.length > 0) 
+		sides.concat(randomSide_list);	
+	sides.push(sep);
+	this.sideInfo = sides;	
+    };
 
     /* Theme Loading and Storing */
     Theme.prototype.trside = function(side) {
@@ -1652,6 +1721,21 @@ function Mafia(mafiachan) {
         }
         dump(src, roles);
     };
+    this.showSides = function(src, commandData) {
+	var themeName = "default";
+	if (mafia.state != "blank") {
+		themeName = mafia.theme.name.toLowerCase();
+	}
+	if (commandData != noPlayer) {
+		themeName = commandData.toLowerCase();
+		if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
+			sys.sendMessage(src, "±Game: No such theme!", mafiachan);
+			return;
+		}
+	}
+	var sides = mafia.themeManager.themes[themeName].sideInfo;        
+	dump(src, sides);
+    };
     this.showRules = function(src) {
         var rules = [
             "",
@@ -1694,6 +1778,40 @@ function Mafia(mafiachan) {
         }
         mess.push("</table>");
         sys.sendHtmlMessage(src, mess.join(""), mafiachan);
+    };
+    this.showThemeDetails = function(src, commandData) {
+	var themeName = "default";
+	if (mafia.state != "blank") {
+		themeName = mafia.theme.name.toLowerCase();
+	}
+	if (commandData != noPlayer) {
+		themeName = commandData.toLowerCase();
+		if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
+			sys.sendMessage(src, "±Game: No such theme!", mafiachan);
+			return;
+		}
+	}	
+	var theme = mafia.themeManager.themes[themeName];	
+	var link;
+	for (var i = 0; i < mafia.themeManager.themeInfo.length; ++i){
+		if (mafia.themeManager.themeInfo[i][0] == themeName){
+			link = mafia.themeManager.themeInfo[i][1];
+			break;
+		}
+	}	
+	var mess = [];
+	mess.push("");
+	mess.push("<b>Theme: </b>" + theme.name);
+	mess.push("<b>Author: </b>" + (theme.author ? theme.author : "Unknown"));
+	mess.push("<b>Enabled: </b>" + (theme.enabled ? "Yes" : "No"));	
+	mess.push("<b>Number of Players: </b> Up to " + (theme["roles" + theme.roleLists].length) + " players");
+	mess.push("<b>Summary: </b>" + (theme.summary ? theme.summary : "No summary avaiable."));
+	mess.push("(For more information about this theme, type <b>/roles " + theme.name + "</b>)");
+	mess.push("<b>Code: </b>" + info[1]);	
+	mess.push("");
+	for (var x in mess){
+		sys.sendHtmlMessage(src, mess[x], mafiachan);
+	}
     };
 
     this.showPlayedGames = function(src) {
@@ -1863,9 +1981,11 @@ function Mafia(mafiachan) {
             starttheme: [this.startGame, "Starts a Game of Mafia with specified theme."],
             help: [this.showHelp, "For info on how to win in a game."],
             roles: [this.showRoles, "For info on all the Roles in the game."],
+            sides: [this.showSides, "For info on all teams in the game."],
             rules: [this.showRules, "To see the Rules for the Game/Server."],
             themes: [this.showThemes, "To view installed themes."],
             themeinfo: [this.showThemeInfo, "To view installed themes (more details)."],
+            details: [this.showThemeDetails, "To info about a specific theme."],
             playedgames: [this.showPlayedGames, "To view recently played games"],
             update: [this.updateTheme, "To update a Mafia Theme!"]
         },
