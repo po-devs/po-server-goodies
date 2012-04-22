@@ -1278,6 +1278,18 @@ function Mafia(mafiachan) {
                             }
                         }
                     }
+                    else if (command == "inspect2") { 
+                        if (targets.length === 0) continue;
+                        target = targets[0];
+                        if (!mafia.isInGame(target)) continue;
+                        target = mafia.players[target];
+                        var inspectMode = target.role.actions.inspect;
+                        if (target.safeguarded) {
+                           mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
+                        } else {
+                          mafia.sendPlayer(player.name, "±Info: " + target.name + " is sided with the " + mafia.theme.trside(target.role.side) + "!!");
+                             }  
+                    }
                     else if (command == "poison") {
                         for (t in targets) {
                             target = targets[t];
