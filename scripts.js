@@ -67,7 +67,7 @@ if (typeof require === "undefined")
                 try {
                      eval(sys.getFileContent(module_name));
                 } catch(e) {
-                     sys.sendAll("Error loading module " + module_name + ": " + e, staffchan);
+                     sys.sendAll("Error loading module " + module_name + ": " + e, staffchannel);
                 }
             }
         }
@@ -660,7 +660,7 @@ POGlobal.prototype.callplugins = function callplugins(event) {
                     break;
                 }
             } catch (e) {
-                sys.sendAll('Plugins-error on {0}: {1}'.format(plugins[i].source, e), staffchan);
+                sys.sendAll('Plugins-error on {0}: {1}'.format(plugins[i].source, e), staffchannel);
             }
         }
     }
