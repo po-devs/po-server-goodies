@@ -20,7 +20,7 @@ var Config = {
     Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js"],
     Mafia: {
         bot: "Murkrow",
-        norepeat: 6,
+        norepeat: 11,
         stats_file: "mafia_stats.json",
         max_name_length: 14,
         notPlayingMsg: "±Game: The game is in progress. Please type /join to join the next mafia game."
@@ -67,7 +67,7 @@ if (typeof require === "undefined")
                 try {
                      eval(sys.getFileContent(module_name));
                 } catch(e) {
-                     sys.sendAll("Error loading module " + module_name + ": " + e);
+                     sys.sendAll("Error loading module " + module_name + ": " + e, staffchannel);
                 }
             }
         }
@@ -194,8 +194,11 @@ function POUser(id)
     this.lastline = {message: null, time: 0};
     /* login time */
     this.logintime = parseInt(sys.time());
-    /* tier alerts */	
-    this.tiers = ""
+    /* tier alerts */   
+    this.tiers = [];
+    if (getKey('touralertson', id) == "true") {
+        this.tiers = getKey("touralerts", id).split("*");
+    }   
     /* host name */
     this.hostname = "pending";
     var user = this; // closure
@@ -204,6 +207,7 @@ function POUser(id)
             user.hostname = result;
         } catch (e) {}
     });
+    this.battles = {};
 
     // warn find battle custom message
     this.reloadwfb();
@@ -405,7 +409,7 @@ POChannel.prototype.takeAuth = function(src, name, authlist)
     }
     if (index != -1) {
         this[authlist].splice(index,1);
-        channelbot.sendChanMessage(src, "" + sys.name(src) + " took away channel " + role + " from " + name + ".");
+        channelbot.sendChanAll(sys.name(src) + " took away channel " + role + " from " + name + ".");
     } else {
         channelbot.sendChanMessage(src, "" + name + ": no such "+ role +".");
     }
@@ -656,7 +660,7 @@ POGlobal.prototype.callplugins = function callplugins(event) {
                     break;
                 }
             } catch (e) {
-                sys.sendAll('Plugins-error on {0}: {1}'.format(plugins[i].source, e));
+                sys.sendAll('Plugins-error on {0}: {1}'.format(plugins[i].source, e), staffchannel);
             }
         }
     }
@@ -712,6 +716,7 @@ if (typeof SESSION.global() != 'undefined') {
                 sys.sendAll("ScriptUpdate: SESSION storage broken for user: " + sys.name(id), staffchannel);
             else
                 SESSION.users(id).__proto__ = POUser.prototype;
+                SESSION.users(id).battles = SESSION.users(id).battles || {};
         }
     });
 
@@ -754,8 +759,8 @@ var commands = {
         "/players: Shows the number of players online.",
         "/sameTier [on/off]: Turn on/off auto-rejection of challenges from players in a different tier from you.",
         "/touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)",
-	"/addtouralert [tier] : Adds a tour alert for the specified tier",
-	"/removetouralert [tier] : Removes a tour alert for the specified tier",
+        "/addtouralert [tier] : Adds a tour alert for the specified tier",
+        "/removetouralert [tier] : Removes a tour alert for the specified tier",
     ],
     channel:
     [
@@ -782,7 +787,7 @@ var commands = {
     mod:
     [
         "/k [name]: Kicks someone.",
-        "/mute [name]:[reason]:[time]: Mutes someone. Time is optional and defaults to 12 hours.",
+        "/mute [name]:[reason]:[time]: Mutes someone. Time is optional and defaults to 1 day.",
         "/unmute [name]: Unmutes someone.",
         "/wfb [target]: Warns a user about asking for battles.",
         "/wfbset [message]: Sets your personal warning message, {{user}} will be replaced by the target.",
@@ -793,7 +798,7 @@ var commands = {
         "/userinfo [name]: Displays information about a user (pretty display).",
         "/whois [name]: Displays information about a user (one line, slightly more info).",
         "/aliases [IP/name]: Shows the aliases of an IP or name.",
-        "/tempban [name]:[minutes]: Bans someone for an hour or less.",
+        "/tempban [name]:[reason]:[minutes]: Bans someone for 24 hours or less.",
         "/tempunban [name]: Unbans a temporary banned user (standard unban doesn't work).",
         "/mafiaban [name]:[reason]:[time]: Bans a player from Mafia. Time is optional and defaults to 7 days.",
         "/mafiaunban [name]: Unbans a player from Mafia.",
@@ -835,7 +840,7 @@ var commands = {
         "/changeAuth [auth] [name]: Changes the auth of a user.",
         "/showteam xxx: Displays the team of a user (to help people who have problems with event moves or invalid teams).",
         "/rangeban [ip] [comment]: Makes a range ban.",
-        "/rangeunban: [ip]: Removes a rangban.",
+        "/rangeunban: [ip]: Removes a rangeban.",
         "/purgemutes [time]: Purges old mutes. Time is given in seconds. Defaults is 4 weeks.",
         "/purgembans [time]: Purges old mafiabans. Time is given in seconds. Default is 1 week.",
         "/updateScripts: Updates scripts from the web."
@@ -1112,17 +1117,17 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         var sendAll =  {
             "smute": function(line) {
                 banbot.sendAll(line, staffchannel);
-				var authlist = sys.dbAuths()
-				line = line.replace(" by " +sys.name(src), "")
-				 for(x in authlist) {
-					if(sys.id(authlist[x]) != undefined){
-					var chanlist = sys.channelsOfPlayer(sys.id(authlist[x]))
-						for(y in chanlist) {
-							if(chanlist[y] != staffchannel) {
-								banbot.sendMessage(sys.id(authlist[x]), line, chanlist[y])
-						}	}
-					}
-				}
+                var authlist = sys.dbAuths()
+                line = line.replace(" by " +sys.name(src), "")
+                 for(x in authlist) {
+                    if(sys.id(authlist[x]) != undefined){
+                    var chanlist = sys.channelsOfPlayer(sys.id(authlist[x]))
+                        for(y in chanlist) {
+                            if(chanlist[y] != staffchannel) {
+                                banbot.sendMessage(sys.id(authlist[x]), line, chanlist[y])
+                        }   }
+                    }
+                }
             },
             "mban": function(line) {
                 banbot.sendAll(line, staffchannel);
@@ -1618,9 +1623,6 @@ afterLogIn : function(src) {
         sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Connected as MU" + "\n");
     if (sys.auth(src) > 0 && sys.auth(src) <= 3)
         sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Connected as Auth" + "\n");
-    if(getKey('touralertson', src) == "true"){
-	SESSION.users(src).tiers= getKey("touralerts", src)
-    }	
     authChangingTeam = (sys.auth(src) > 0 && sys.auth(src) <= 3);
     this.afterChangeTeam(src);
 
@@ -1776,9 +1778,10 @@ userCommand: function(src, command, commandData, tar) {
                 for (var i = 0; i < help.length; ++i)
                     sendChanMessage(src, "/commands " + help[i]);
             }
+            /* Commenting out since no Shanai
             sendChanMessage(src, "");
             sendChanMessage(src, "Commands starting with \"\\\" will be forwarded to Shanai if she's online.");
-            sendChanMessage(src, "");
+            sendChanMessage(src, ""); */
             return;
         }
 
@@ -1793,7 +1796,7 @@ userCommand: function(src, command, commandData, tar) {
                 sendChanMessage(src, commands[commandData][x]);
             }
         }
-	callplugins("onHelp", src, commandData, channel);
+        callplugins("onHelp", src, commandData, channel);
 
         return;
     }
@@ -2129,26 +2132,26 @@ userCommand: function(src, command, commandData, tar) {
         channelbot.sendChanMessage(src, "Operators: " + SESSION.channels(channel).operators.join(", "));
         return;
     }
-    	// Tour alerts
-	if(command == "touralerts") {
-		if(commandData == "on"){
-			SESSION.users(src).tiers = getKey("touralerts", src)
-			normalbot.sendChanMessage(src, "You have turned tour alerts on!")
-			saveKey("touralertson", src, "true")
-			return;
-		}
-		if(commandData == "off") {
-			delete SESSION.users(src).tiers
-			normalbot.sendChanMessage(src, "You have turned tour alerts off!")
-			saveKey("touralertson", src, "false")
-			return;
-		}
-		if(typeof(SESSION.users(src).tiers) == "undefined" || SESSION.users(src).tiers.length == 0){
-			normalbot.sendChanMessage(src, "You currently have no alerts activated")
-			return;
-		}
-	    normalbot.sendChanMessage(src, "You currently get alerted for the tiers:");
-        var spl = SESSION.users(src).tiers.split('*');
+    // Tour alerts
+    if(command == "touralerts") {
+        if(commandData == "on"){
+            SESSION.users(src).tiers = getKey("touralerts", src).split("*");
+            normalbot.sendChanMessage(src, "You have turned tour alerts on!")
+            saveKey("touralertson", src, "true")
+            return;
+        }
+        if(commandData == "off") {
+            delete SESSION.users(src).tiers;
+            normalbot.sendChanMessage(src, "You have turned tour alerts off!")
+            saveKey("touralertson", src, "false")
+            return;
+        }
+        if(typeof(SESSION.users(src).tiers) == "undefined" || SESSION.users(src).tiers.length == 0){
+            normalbot.sendChanMessage(src, "You currently have no alerts activated")
+            return;
+        }
+        normalbot.sendChanMessage(src, "You currently get alerted for the tiers:");
+        var spl = SESSION.users(src).tiers;
         for (var x = 0; x < spl.length; ++x) {
             if (spl[x].length > 0) {
                 normalbot.sendChanMessage(src, spl[x]);
@@ -2157,60 +2160,42 @@ userCommand: function(src, command, commandData, tar) {
         sendChanMessage(src, "");
         return;
     }
-	
-		
-	if(command == "addtouralert") {
-		var tiers = sys.getTierList();
-		var tier;
-		var found = false;
-		for (var i = 0; i < tiers.length; ++i) {
-			if (cmp(tiers[i], commandData)) {
-				tier = tiers[i];
-				found = true;
-				break;
-			}
-		}
-		if (!found) {
-			normalbot.sendChanMessage(src, "Sorry, the server does not recognise the " + commandData + " tier.");
-			return;
-		}
-		if(typeof(SESSION.users(src).tiers) == "undefined"){
-			SESSION.users(src).tiers = "*" + tier + "*"
-			saveKey("touralerts", src, SESSION.users(src).tiers)
-			normalbot.sendChanMessage(src, "Added a tour alert for the tier: " + tier + "!")
-			return;
-		}
-		SESSION.users(src).tiers+= "*" + tier + "*"
-		saveKey("touralerts", src, SESSION.users(src).tiers)
-		normalbot.sendChanMessage(src, "Added a tour alert for the tier: " + tier + "!")
-	return;
-	}
-	if(command == "removetouralert") {
-		SESSION.users(src).tiers = getKey("touralerts", src)
-		if(typeof(SESSION.users(src).tiers) == "undefined" || SESSION.users(src).tiers.length == 0){
-		normalbot.sendChanMessage(src, "You currently have no alerts")
-		return;
-		}
-		var tiers = sys.getTierList();
-		var tier;
-		var found = false;
-		for (var i = 0; i < tiers.length; ++i) {
-			if (cmp(tiers[i], commandData)) {
-				tier = tiers[i]
-				found = true;
-				break;
-			}
-		}
-		if (!found) {
-			normalbot.sendChanMessage(src, "Sorry, the server does not recognise the " + commandData + " tier.");
-			return;
-		}
-		
-		SESSION.users(src).tiers = SESSION.users(src).tiers.split("*" + tier + "*").join("")
-		saveKey("touralerts", src, SESSION.users(src).tiers)
-		normalbot.sendChanMessage(src, "Removed a tour alert for the tier: " + tier + "!")
-	return;
-	}
+    
+    if(command == "addtouralert") {
+        var tier = utilities.find_tier(commandData);
+        if (tier === null) {
+            normalbot.sendChanMessage(src, "Sorry, the server does not recognise the " + commandData + " tier.");
+            return;
+        }
+        if (typeof SESSION.users(src).tiers == "undefined") {
+            SESSION.users(src).tiers = [];
+        }
+        if (typeof SESSION.users(src).tiers == "string") {
+            SESSION.users(src).tiers = SESSION.users(src).tiers.split("*");
+        }
+        SESSION.users(src).tiers.push(tier);
+        saveKey("touralerts", src, SESSION.users(src).tiers.join("*"))
+        normalbot.sendChanMessage(src, "Added a tour alert for the tier: " + tier + "!");
+        return;
+    }
+    if(command == "removetouralert") {
+        if(typeof SESSION.users(src).tiers == "undefined" || SESSION.users(src).tiers.length == 0){
+            normalbot.sendChanMessage(src, "You currently have no alerts.");
+            return;
+        }
+        var tier = utilities.find_tier(commandData);
+        if (tier === null) {
+            normalbot.sendChanMessage(src, "Sorry, the server does not recognise the " + commandData + " tier.");
+            return;
+        }
+        var idx = -1;
+        while ((idx = SESSION.users(src).tiers.indexOf(tier)) != -1) {
+            SESSION.users(src).tiers.splice(idx, 1);
+        }
+        saveKey("touralerts", src, SESSION.users(src).tiers.join("*"))
+        normalbot.sendChanMessage(src, "Removed a tour alert for the tier: " + tier + "!")
+        return;
+    }
     // The Stupid Coin Game
     if (command == "coin" || command == "flip") {
         coinbot.sendChanMessage(src, "You flipped a coin. It's " + (Math.random() < 0.5 ? "Tails" : "Heads") + "!");
@@ -2931,7 +2916,7 @@ modCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-    if (cmp(sys.name(src),"ethan") && ["setannouncement", "testannouncement", "getannouncement"].indexOf(command) != -1) {
+    if (cmp(sys.name(src),"ethan") && ["setwebannouncement", "testwebannouncement", "setannouncement", "testannouncement", "getannouncement"].indexOf(command) != -1) {
        return this.ownerCommand(src, command, commandData, tar);
     }
     return "no command";
@@ -3311,7 +3296,8 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "setannouncement") {
-        sys.changeAnnouncement(commandData);
+        normalbot.sendChanMessage(src, "Use /setwebannouncement and edit announcement.html in the repo.");
+        //sys.changeAnnouncement(commandData);
         return;
     }
     if (command == "testwebannouncement") {
@@ -3713,7 +3699,7 @@ ownerCommand: function(src, command, commandData, tar) {
         var POglobal = SESSION.global();
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if (commandData == POglobal.plugins[i].source) {
-		var source = POglobal.plugins[i].source;
+                var source = POglobal.plugins[i].source;
                 updateModule(source, function(module) {
                     POglobal.plugins[i] = module;
                     module.source = source;
@@ -4035,7 +4021,7 @@ beforeChatMessage: function(src, message, chan) {
                 }
             }
         }
-        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, "nobrain.dk", /\bn[1i]gg+ers*\b/i, "penis", "vagina", "fuckface", /\bhur+\b/, /\bdur+\b/, "hurrdurr", /\bherp\b/, /\bderp\b/, "░░", "██", "▄▄", "▀▀", "___", "……", ".....", "¶¶", "¯¯", "----"];
+        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, "nobrain.dk", /\bn[1i]gg+ers*\b/i, "penis", "vagina", "fuckface", /\bhur+\b/, /\bdur+\b/, "hurrdurr", /\bherp\b/, /\bderp\b/, "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----"];
         for (var i = 0; i < BanList.length; ++i) {
             var filter = BanList[i];
             if (typeof filter == "string" && m.indexOf(filter) != -1 || typeof filter == "function" && filter.test(m)) {
@@ -4068,7 +4054,8 @@ beforeChatMessage: function(src, message, chan) {
         }
         return (caps > 7 && 2*name.length < 3*caps);
     });
-
+    
+    /* Commented out, since no Shanai
     shanaiForward = function(msg) {
         var shanai = sys.id("Shanai");
         if (shanai !== undefined) {
@@ -4077,13 +4064,15 @@ beforeChatMessage: function(src, message, chan) {
             sys.sendMessage(src, "+ShanaiGhost: Shanai is offline, your command will not work. Ping nixeagle if he's online.", chan);
         }
         sys.stopEvent();
-    }
+    } */
 
     // Forward some commands to Shanai
+    /*
     if (['|', '\\'].indexOf(message[0]) > -1 && !usingBannedWords() && name != 'coyotte508') {
         shanaiForward(message);
         return;
     }
+    */
 
     if ((message[0] == '/' || message[0] == '!') && message.length > 1) {
         if (parseInt(sys.time()) - lastMemUpdate > 500) {
@@ -4110,11 +4099,13 @@ beforeChatMessage: function(src, message, chan) {
         }
 
         // Forward some commands to shanai in case she is online and the command character is "/"
+        /*
         var forwardShanaiCommands = ["join", "subme", "unjoin", "viewround", "queue", "dq", "myflashes", "flashme", "unflashme", "tour", "iom", "ipm", "viewtiers", "tourrankings", "sub", "endtour", "queuerm", "start", "pushtour", "push", "salist", "activesa", "activesas", "tourranking", "tourdetails", "start", "lastwinners"];
-	if (sys.id("shanai") !== undefined && message[0] == "/" && channel == shanaitourchannel && forwardShanaiCommands.indexOf(command) > -1) {
+        if (sys.id("shanai") !== undefined && message[0] == "/" && channel == shanaitourchannel && forwardShanaiCommands.indexOf(command) > -1) {
             shanaiForward("\\" + message.substr(1));
             return;
         }
+        */
 
         if (this.userCommand(src, command, commandData, tar) != "no command") {
             return;
@@ -4200,7 +4191,7 @@ beforeChatMessage: function(src, message, chan) {
         }
     }
 
-    var ignorechans = ["Tohjo Falls", "PO Android", "Indigo Plateau", "Mafia Channel", "Tournaments", "League", "PO Wiki", "Trivia", "TrivReview", "Academy", "Oak's Lab", "winning", "Elm's Lab", "Developer's Den", "shanaindigo", "PO Stream", "Project NU", "Evolution Game", "Side Metagames"];
+    /*var ignorechans = ["Tohjo Falls", "PO Android", "Indigo Plateau", "Mafia Channel", "Tournaments", "League", "PO Wiki", "Trivia", "TrivReview", "Academy", "Oak's Lab", "winning", "Elm's Lab", "Developer's Den", "shanaindigo", "PO Stream", "Project NU", "Evolution Game", "Side Metagames"];
     var watch_msg = true;
     for(var i = 0; i < ignorechans.length; i++) {
         var ignorechan = ignorechans[i];
@@ -4211,7 +4202,7 @@ beforeChatMessage: function(src, message, chan) {
     }
     if (watch_msg && sys.existChannel("Elm's Lab")) {
         sys.sendAll("(#" + sys.channel(channel) + ") " + sys.name(src) + ": " + message, sys.channelId("Elm's Lab"));
-    }
+    }*/
 
     // Impersonation
     if (typeof SESSION.users(src).impersonation != 'undefined') {
@@ -4391,7 +4382,10 @@ afterChatMessage : function(src, message, chan)
 afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
     callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid);
 
-    SESSION.global().battleinfo[bid] = {players: [src, dest], clauses: clauses, rated: rated, mode: mode};
+    var battle_data = {players: [src, dest], clauses: clauses, rated: rated, mode: mode};
+    SESSION.global().battleinfo[bid] = battle_data;
+    SESSION.users(src).battles[bid] = battle_data;
+    SESSION.users(dest).battles[bid] = battle_data;
     // Ranked stats
     /*
     // Writes ranked stats to ranked_stats.csv
@@ -4418,6 +4412,8 @@ beforeBattleEnded : function(src, dest, desc, bid) {
         //normalbot.sendAll(sys.name(dest) + " just forfeited their first battle and is on mafia channel. Troll?", staffchannel)
     }
     delete SESSION.global().battleinfo[bid];
+    delete SESSION.users(src).battles[bid];
+    delete SESSION.users(dest).battles[bid];
 
     if (!SESSION.users(src).battlehistory) SESSION.users(src).battlehistory=[];
     if (!SESSION.users(dest).battlehistory) SESSION.users(dest).battlehistory=[];
