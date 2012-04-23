@@ -1807,7 +1807,7 @@ function Mafia(mafiachan) {
         mess.push("<b>Number of Players: </b> Up to " + (theme["roles" + theme.roleLists].length) + " players");
         mess.push("<b>Summary: </b>" + (theme.summary ? theme.summary : "No summary avaiable."));
         mess.push("(For more information about this theme, type <b>/roles " + theme.name + "</b>)");
-        mess.push("<b>Code: </b>" + info[1]);   
+        //mess.push("<b>Code: </b>" + info[1]);   
         mess.push("");
         for (var x in mess){
             sys.sendHtmlMessage(src, mess[x], mafiachan);
