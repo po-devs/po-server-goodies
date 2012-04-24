@@ -1840,7 +1840,7 @@ function Mafia(mafiachan) {
     this.isMafiaSuperAdmin = function(src) {
         if (sys.auth(src) >= 2)
             return true;
-        if (['viderizer', 'ozma', 'chaospenguin', 'serpentine'].indexOf(sys.name(src).toLowerCase()) >= 0) {
+        if (['viderizer', 'ozma', 'serpentine'].indexOf(sys.name(src).toLowerCase()) >= 0) {
             return true;
         }
         return false;
