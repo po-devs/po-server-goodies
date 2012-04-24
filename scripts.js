@@ -3674,11 +3674,16 @@ ownerCommand: function(src, command, commandData, tar) {
     }
     if (command == "addplugin") {
         var POglobal = SESSION.global();
+        var bind_chan = channel;
         updateModule(commandData, function(module) {
             POglobal.plugins.push(module);
             module.source = commandData;
-            module.init();
-            normalbot.sendChanMessage(src, "Module " + commandData + " updated!");
+            try {
+                module.init();
+                sys.sendMessage(src, "±Plugins: Module " + commandData + " updated!", bind_chan);
+            } catch(e) {
+                sys.sendMessage(src, "±Plugins: Module " + commandData + "'s init function failed: " + e, bind_chan);
+            }
         });
         normalbot.sendChanMessage(src, "Downloading module " + commandData + "!");
         return;
