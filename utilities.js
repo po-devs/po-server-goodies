@@ -12,15 +12,15 @@ exports = {
             while (--limit >= 0) {
                 var match = re.exec(string);
                 if (match !== null) {
-                    arr.push(string.substring(lastIndex, match.index)); 
+                    arr.push(string.substring(lastIndex, match.index));
                     lastIndex = re.lastIndex;
                 } else {
-                    arr.push(string.substring(lastIndex)); 
+                    arr.push(string.substring(lastIndex));
                     break;
                 }
             }
             if (limit < 0) {
-                arr.push(string.substring(lastIndex)); 
+                arr.push(string.substring(lastIndex));
             }
             return arr;
         }
@@ -109,7 +109,7 @@ exports = {
     },
 
     Lazy: function Lazy(func)
-    {       
+    {
         var done = false;
         return function() {
             if (done)
@@ -129,5 +129,15 @@ exports = {
         return name;
         // PO version 1.0.53 has a bug with zwsp due to (we think) qt.
         /* return name[0] + '\u200b' + name.substr(1) */
+    },
+
+    get_or_create_channel: function getOrCreateChannel(name) {
+        var cid;
+        if (sys.existChannel(name)) {
+            cid = sys.channelId(name);
+        } else {
+            cid = sys.createChannel(name);
+        }
+        return cid;
     }
 };
