@@ -277,7 +277,7 @@ function Mafia(mafiachan) {
             theme.killusermsg = plain_theme.killusermsg;
             theme.border = plain_theme.border;
             theme.generateRoleInfo();
-            //theme.generateSideInfo();
+            theme.generateSideInfo();
             theme.enabled = true;
             return theme;
         } catch (err) {
@@ -556,73 +556,72 @@ function Mafia(mafiachan) {
         this.roleInfo = roles;
     };
     Theme.prototype.generateSideInfo = function() {
-    var sep = "*** *********************************************************************** ***";
-    var sides = [sep];  
-    var side;
-    var side_order = Object.keys(this.sides);
-    var this_sides = this.sides;        
-    // sort sides by name
-    side_order.sort(function(a,b) {
-        var tra = this_sides[a].translation;
-        var trb = this_sides[b].translation;
-        if (tra == trb)
-            return 0;
-        else if (tra < trb)
-            return -1;
-        else
-            return 1;
-    }); 
-    // sort roles by name
-    var role;
-    var role_order = Object.keys(this.roles);
-    var this_roles = this.roles;
-    role_order.sort(function(a,b) {
-        var tra = this_roles[a].translation;
-        var trb = this_roles[b].translation;
-        if (tra == trb)
-            return 0;
-        else if (tra < trb)
-            return -1;
-        else
-            return 1;
-    });
-    // check each role for its side
-    var side_list = {};
-    var randomSide_list = [];
-    for (var r = 0; r < role_order.length; ++r) {
-        try {
-            role = this.roles[role_order[r]];
-            if (typeof roles.side == "string") {        
-                if (side_list[role.side] === undefined) 
-                    side_list[role.side] = [];
-                side_list[role.side].push(role.translation);
-            } else if (typeof role.side == "object" && role.side.random) {
-                var plop = Object.keys(role.side.random);
-                var tran = [];
-                for (var p = 0; p < plop.length; ++p) {
-                   tran.push(this.trside(plop[p]));
+        var sep = "*** *********************************************************************** ***";
+        var sides = [sep];
+        var side;
+        var side_order = Object.keys(this.sideTranslations);
+        // sort sides by name
+        side_order.sort(function(a,b) {
+            var tra = sideTranslations[a];
+            var trb = sideTranslations[b];
+            if (tra == trb)
+                return 0;
+            else if (tra < trb)
+                return -1;
+            else
+                return 1;
+        });
+        // sort roles by name
+        var role;
+        var role_order = Object.keys(this.roles);
+        var this_roles = this.roles;
+        role_order.sort(function(a,b) {
+            var tra = this_roles[a].translation;
+            var trb = this_roles[b].translation;
+            if (tra == trb)
+                return 0;
+            else if (tra < trb)
+                return -1;
+            else
+                return 1;
+        });
+        // check each role for its side
+        var side_list = {};
+        var randomSide_list = [];
+        for (var r = 0; r < role_order.length; ++r) {
+            try {
+                role = this.roles[role_order[r]];
+                if (typeof roles.side == "string") {
+                    if (side_list[role.side] == undefined)
+                        side_list[role.side] = [];
+                    side_list[role.side].push(role.translation);
+                } else if (typeof role.side == "object" && role.side.random) {
+                    var plop = Object.keys(role.side.random);
+                    var tran = [];
+                    for(var p = 0; p < plop.length; ++p) {
+                        tran.push(this.trside(plop[p]));
+                    }
+                    randomSide_list.push("±Role: " + role.translation + " can be sided with " + (tran.length > 1 ? tran.splice(0,tran.length-1).join(", ")+" or ":"") + tran + ". ");
                 }
-                randomSide_list.push("±Role: " + role.translation + " can be sided with " + (tran.length > 1 ? tran.splice(0,tran.length-1).join(", ")+" or ":"") + tran + ". ");
+            } catch (err) {
+                mafiabot.sendAll("Error adding role " + role.translation + "(" + role.role + ") to /sides", mafiachan);
+                throw err;
             }
-        } catch (err) {
-            mafiabot.sendAll("Error adding role " + role.translation + "(" + role.role + ") to /sides", mafiachan);
-            throw err;
         }
-    }
-    // writes the list of roles for each side
-    for (var s = 0; s < side_order.length; ++s) {
-        try {
-            side = this.sides[side_order[s]];           
-            sides.push("±Side: The " + side.translation + " consists of " + side_list[side].join(", ") + ".");
-        } catch (err) {
-            mafiabot.sendAll("Error adding side " + side.translation + "(" + side.side + ") to /sides", mafiachan);
-            throw err;
+        // writes the list of roles for each side
+        for (var s = 0; s < side_order.length; ++s) {
+            try {
+                side = side_order[s];
+                sides.push("±Side: The " + this.trside(side) + " consists of " + side_list[side].join(", ") + ".");
+            } catch (err) {
+                mafiabot.sendAll("Error adding side " + this.trside(side) + "(" + side + ") to /sides", mafiachan);
+                throw err;
+            }
         }
-    }
-    if (randomSide_list.length > 0) 
-        sides.concat(randomSide_list);  
-    sides.push(sep);
-    this.sideInfo = sides;  
+        if (randomSide_list.length > 0)
+            sides.concat(randomSide_list);
+        sides.push(sep);
+        this.sideInfo = sides;
     };
 
     /* Theme Loading and Storing */
@@ -1795,7 +1794,7 @@ function Mafia(mafiachan) {
         var theme = mafia.themeManager.themes[themeName];   
         var link = "No link found";
         for (var i = 0; i < mafia.themeManager.themeInfo.length; ++i){
-            if (mafia.themeManager.themeInfo[i][0] == themeName){
+            if (mafia.themeManager.themeInfo[i][0].toLowerCase() == themeName){
                 link = mafia.themeManager.themeInfo[i][1];
                 break;
             }
@@ -1808,7 +1807,11 @@ function Mafia(mafiachan) {
         mess.push("<b>Number of Players: </b> Up to " + (theme["roles" + theme.roleLists].length) + " players");
         mess.push("<b>Summary: </b>" + (theme.summary ? theme.summary : "No summary avaiable."));
         mess.push("(For more information about this theme, type <b>/roles " + theme.name + "</b>)");
-        mess.push("<b>Code: </b>" + link);   
+        if (link == "No link found"){
+            mess.push('<b>Code: </b>' + link);
+        } else {
+            mess.push('<b>Code: </b><a href="' + link + '">' + link + '</a>');
+        }
         mess.push("");
         for (var x in mess){
             sys.sendHtmlMessage(src, mess[x], mafiachan);
