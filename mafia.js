@@ -277,6 +277,7 @@ function Mafia(mafiachan) {
             theme.killusermsg = plain_theme.killusermsg;
             theme.border = plain_theme.border;
             theme.generateRoleInfo();
+            //theme.generateSideInfo();
             theme.enabled = true;
             return theme;
         } catch (err) {
@@ -1111,7 +1112,7 @@ function Mafia(mafiachan) {
 
             if (players.length >= goodPeople.length) {
                 if(winSide in mafia.theme.sideWinMsg){
-                    sys.sendAll(mafia.theme.sideWinMsg[winSide].replace(/~Players~/g, (players.length > 1 ? players.splice(0,players.length-1).join(", ")+" and ":"") + players + ". "), mafiachan);
+                    sys.sendAll(mafia.theme.sideWinMsg[winSide].replace(/~Players~/g, (players.length > 1 ? players.splice(0,players.length-1).join(", ")+" and ":"") + players), mafiachan);
                 } else {
                     sys.sendAll("±Game: The " + mafia.theme.trside(winSide) + " (" + players.join(', ') + ") wins!", mafiachan);
                 }
@@ -1792,7 +1793,7 @@ function Mafia(mafiachan) {
             }
         }   
         var theme = mafia.themeManager.themes[themeName];   
-        var link;
+        var link = "No link found";
         for (var i = 0; i < mafia.themeManager.themeInfo.length; ++i){
             if (mafia.themeManager.themeInfo[i][0] == themeName){
                 link = mafia.themeManager.themeInfo[i][1];
@@ -1807,7 +1808,7 @@ function Mafia(mafiachan) {
         mess.push("<b>Number of Players: </b> Up to " + (theme["roles" + theme.roleLists].length) + " players");
         mess.push("<b>Summary: </b>" + (theme.summary ? theme.summary : "No summary avaiable."));
         mess.push("(For more information about this theme, type <b>/roles " + theme.name + "</b>)");
-        mess.push("<b>Code: </b>" + info[1]);   
+        mess.push("<b>Code: </b>" + link);   
         mess.push("");
         for (var x in mess){
             sys.sendHtmlMessage(src, mess[x], mafiachan);
@@ -1985,7 +1986,7 @@ function Mafia(mafiachan) {
             rules: [this.showRules, "To see the Rules for the Game/Server."],
             themes: [this.showThemes, "To view installed themes."],
             themeinfo: [this.showThemeInfo, "To view installed themes (more details)."],
-            details: [this.showThemeDetails, "To info about a specific theme."],
+            details: [this.showThemeDetails, "To view info about a specific theme."],
             playedgames: [this.showPlayedGames, "To view recently played games"],
             update: [this.updateTheme, "To update a Mafia Theme!"]
         },
