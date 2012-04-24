@@ -141,7 +141,7 @@ exports = {
         return cid;
     },
     html_escape : function(text) {
-        var m = text.toString();
+        var m = String(text);
         if (m.length > 0) {
             var amp = "&am" + "p;";
             var lt = "&l" + "t;";
