@@ -139,5 +139,16 @@ exports = {
             cid = sys.createChannel(name);
         }
         return cid;
+    },
+    html_escape : function(text) {
+        var m = text.toString();
+        if (m.length > 0) {
+            var amp = "&am" + "p;";
+            var lt = "&l" + "t;";
+            var gt = "&g" + "t;";
+            return m.replace(/&/g, amp).replace(/</g, lt).replace(/>/g, gt);
+        }else{
+            return "";
+        }
     }
 };

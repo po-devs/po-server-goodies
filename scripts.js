@@ -1832,9 +1832,9 @@ userCommand: function(src, command, commandData, tar) {
 
 
         SESSION.channels(channel).beforeMessage(src, "/me " + commandData);
-        commandData=this.html_escape(commandData)
+        commandData=utilities.html_escape(commandData)
         if (command == "me") {
-            sys.sendHtmlAll("<font color='#0483c5'><timestamp/> *** <b>" + this.html_escape(sys.name(src)) + "</b> " + commandData + "</font>", channel);
+            sys.sendHtmlAll("<font color='#0483c5'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + commandData + "</font>", channel);
         } else if (command == "rainbow" && SESSION.global().allowRainbow) {
             var auth = 1 <= sys.auth(src) && sys.auth(src) <= 3;
             var colours = ["red", "blue", "yellow", "cyan", "black", "orange", "green"];
@@ -1843,7 +1843,7 @@ userCommand: function(src, command, commandData, tar) {
             if (auth) toSend.push("<span style='color:" + randColour() + "'>+</span><i>");
             var name = sys.name(src);
             for (var i = 0; i < name.length; ++i)
-                toSend.push("<span style='color:" + randColour() + "'>" + this.html_escape(name[i]) + "</span>");
+                toSend.push("<span style='color:" + randColour() + "'>" + utilities.html_escape(name[i]) + "</span>");
             toSend.push("<span style='color:" + randColour() + "'>:</b></span> ");
             if (auth) toSend.push("</i>");
             toSend.push(commandData);
@@ -2510,7 +2510,7 @@ modCommand: function(src, command, commandData, tar) {
             }
             if(typeof commandData != 'undefined' && (!banned_name || banned_name.toLowerCase().indexOf(commandData.toLowerCase()) == -1))
                 continue;
-            tmp.push([ip, banned_name, by, (banTime == 0 ? "unknown" : getTimeString(t-banTime)), (expires == 0 ? "never" : getTimeString(expires-t)), this.html_escape(reason)]);
+            tmp.push([ip, banned_name, by, (banTime == 0 ? "unknown" : getTimeString(t-banTime)), (expires == 0 ? "never" : getTimeString(expires-t)), utilities.html_escape(reason)]);
         }
         for (var k = 0; k < toDelete.length; ++k)
            delete mh.hash[toDelete[k]];
@@ -2520,7 +2520,7 @@ modCommand: function(src, command, commandData, tar) {
         tmp.sort(function(a,b) { a[3] - b[3]});
 
         // generate HTML
-        var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + this.html_escape(name) + '</strong></center></td></tr><tr><th>IP</th><th>Name</th><th>By</th><th>Issued ago</th><th>Expires in</th><th>Reason</th>';
+        var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + utilities.html_escape(name) + '</strong></center></td></tr><tr><th>IP</th><th>Name</th><th>By</th><th>Issued ago</th><th>Expires in</th><th>Reason</th>';
         var table_footer = '</table>';
         var table = table_header;
         var line;
@@ -3731,7 +3731,7 @@ channelCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "Choose a valid target for your love!");
             return;
         }
-        sys.sendHtmlAll("<font color='#0483c5'><timestamp/> *** <b>" + this.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
+        sys.sendHtmlAll("<font color='#0483c5'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
         sys.kick(tar, channel);
         return;
     }
