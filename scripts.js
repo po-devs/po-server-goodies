@@ -2340,6 +2340,15 @@ modCommand: function(src, command, commandData, tar) {
         }
         return;
     }
+    if (command == "tier")
+    {
+        if (tar == undefined){
+            querybot.sendMessage(src,"No such user online.");
+            return;
+        }
+        querybot.sendChanMessage(src,sys.name(tar)+" is in tier: "+sys.tier(tar));
+        return;
+    }
     if (command == "perm") {
         if (channel == staffchannel || channel == 0) {
             channelbot.sendChanMessage(src, "you can't do that here.");
