@@ -948,10 +948,10 @@ function Tournament(channel)
 
 	function afterLogIn(source) {
 		if (self.main && self.phase == "entry") {
-			sys.sendMessage(source,"*** A " + self.tier + " tournament is in its signup phase, " + remainingEntrants() + " spot(s) are left!");
-			sys.sendMessage(source, "");
-			sys.sendMessage(source, border);
-			sys.sendMessage(source, "");
+			sendPM(source,"*** A " + self.tier + " tournament is in its signup phase, " + remainingEntrants() + " spot(s) are left!");
+			sendPM(source, "");
+			sendPM(source, border);
+			sendPM(source, "");
 		}
 	}
 
@@ -1015,7 +1015,8 @@ function Tournament(channel)
 		afterBattleStarted: battleStart,
 		afterBattleEnded: battleEnd,
 		beforeChallengeIssued: beforeChallenge,
-		beforeBattleMatchup: battleMatchup
+		beforeBattleMatchup: battleMatchup,
+		afterLogIn: afterLogIn
 	};
 }
 
@@ -1106,6 +1107,12 @@ module.exports = {
 			return true;
 		}
 		return false;
+	},
+
+	afterLogIn : function(source) {
+		for (var channel in module.tournaments) {
+			module.tournaments[channel].events.afterLogIn(source);
+		}
 	},
 
 	afterBattleStarted : function(source, dest, clauses, rated, mode, bid) {
