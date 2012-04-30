@@ -1628,7 +1628,7 @@ afterLogIn : function(src) {
 
     if (SESSION.users(src).mute.active)
         sys.putInChannel(src, trollchannel);
-    if (sys.auth(src) <= 3 && this.canJoinStaffChannel(src))
+    if (sys.auth(src) <= 3 && this.canJoinStaffChannel(src)&& sys.name(src).toLowerCase() != "mystra")
         sys.putInChannel(src, staffchannel);
 } /* end of afterLogin */
 
