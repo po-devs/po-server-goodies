@@ -2340,6 +2340,15 @@ modCommand: function(src, command, commandData, tar) {
         }
         return;
     }
+    if (command == "tier")
+    {
+        if (tar == undefined){
+            querybot.sendChanMessage(src,"No such user online.");
+            return;
+        }
+        querybot.sendChanMessage(src,sys.name(tar)+" is in tier: "+sys.tier(tar));
+        return;
+    }
     if (command == "perm") {
         if (channel == staffchannel || channel == 0) {
             channelbot.sendChanMessage(src, "you can't do that here.");
@@ -3572,7 +3581,7 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
 
-    if (command == "eval" && (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi")) {
+    if (command == "eval" && (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "crystal moogle")) {
         sys.eval(commandData);
         return;
     }
