@@ -2343,7 +2343,7 @@ modCommand: function(src, command, commandData, tar) {
     if (command == "tier")
     {
         if (tar == undefined){
-            querybot.sendMessage(src,"No such user online.");
+            querybot.sendChanMessage(src,"No such user online.");
             return;
         }
         querybot.sendChanMessage(src,sys.name(tar)+" is in tier: "+sys.tier(tar));
