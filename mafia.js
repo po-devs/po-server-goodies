@@ -1339,6 +1339,7 @@ function Mafia(mafiachan) {
                         if (!mafia.isInGame(target)) continue;
                         target = mafia.players[target];
                         var inspectMode = target.role.actions.inspect;
+                        var Sight = Action.Sight
                         if (target.safeguarded) {
                             mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
                         } else if (inspectMode === undefined) {
@@ -1347,7 +1348,7 @@ function Mafia(mafiachan) {
                             if (inspectMode.revealAs !== undefined) {
                                 mafia.sendPlayer(player.name, "±Info: " + target.name + " is the " + mafia.theme.trrole(inspectMode.revealAs) + "!!");
                             }
-                            if (inspectMode.revealSide !== undefined) {
+                            if (inspectMode.revealSide !== undefined || Sight === "Team") {
                                 mafia.sendPlayer(player.name, "±Info: " + target.name + " is sided with the " + mafia.theme.trside(target.role.side) + "!!");
                             }
                         }
