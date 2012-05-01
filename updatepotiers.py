@@ -28,7 +28,7 @@ BANLIST = {
 ADDITIONAL_BANS = {
     "Wifi UU": ["Vulpix", # Due to Drought being banned
                 "Abomasnow", "Snover"], # Due to Snow Warning being banned
-    "Wifi LU": [],
+    "Wifi LU": ["Venomoth"], # Due to being BL for some time
     "DW UU":   ["Thundurus"], # Due to being uber for some time
 }
 
