@@ -1831,6 +1831,50 @@ function Mafia(mafiachan) {
         mess.push("</table>");
         sys.sendHtmlMessage(src, mess.join(""), mafiachan);
     };
+    
+    this.showOwnRole = function(src) {
+        var name = sys.name(src);
+        if (mafia.state != "blank" && mafia.state != "entry") {
+            if (mafia.inInGame(name)) {
+                var player = mafia.players[name];
+                var role = player.role;
+                
+                if (typeof role.actions.startup == "object" && typeof role.actions.startup.revealAs == "string") {
+                    mafia.sendPlayer(player.name, "±Game: You are a " + mafia.theme.trrole(role.actions.startup.revealAs) + "!");
+                } else {
+                    mafia.sendPlayer(player.name, "±Game: You are a " + role.translation + "!");
+                }
+                mafia.sendPlayer(player.name, "±Game: " + role.help);
+                
+                if (role.actions.startup == "team-reveal") {
+                    mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
+                }
+                if (typeof role.actions.startup == "object" && role.actions.startup["team-revealif"] && typeof role.actions.startup["team-revealif"].indexOf == "function") {
+                    if (role.actions.startup["team-revealif"].indexOf(role.side) != -1) {
+                        mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
+                    }
+                }
+                if (role.actions.startup == "role-reveal") {
+                    mafia.sendPlayer(player.name, "±Game: People with your role are " + mafia.getPlayersForRoleS(role.role) + ".");
+                }
+                
+                if (typeof role.actions.startup == "object" && role.actions.startup.revealRole) {
+                    if (typeof role.actions.startup.revealRole == "string") {
+                        mafia.sendPlayer(player.name, "±Game: The " + mafia.theme.roles[role.actions.startup.revealRole].translation + " is " + mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) + "!");
+                    } else if (typeof role.actions.startup.revealRole == "object" && typeof role.actions.startup.revealRole.indexOf == "function") {
+                        for (var s = 0, l = role.actions.startup.revealRole.length; s < l; ++s) {
+                            var revealrole = role.actions.startup.revealRole[s];
+                            mafia.sendPlayer(player.name, "±Game: The " + mafia.theme.roles[revealrole].translation + " is " + mafia.getPlayersForRoleS(revealrole) + "!");
+                        }
+                    }
+                }
+            } else {
+                sys.sendMessage(src, "±Game: You are not in the game!", mafiachan);
+            }
+        } else {
+            sys.sendMessage(src, "±Game: No game running!", mafiachan);
+        }
+    }
 
     // Auth commands
     this.isMafiaAdmin = function(src) {
@@ -1987,6 +2031,7 @@ function Mafia(mafiachan) {
             help: [this.showHelp, "For info on how to win in a game."],
             roles: [this.showRoles, "For info on all the Roles in the game."],
             sides: [this.showSides, "For info on all teams in the game."],
+            myrole: [this.showOwnRole, "To view again your role, help text and teammates."],
             rules: [this.showRules, "To see the Rules for the Game/Server."],
             themes: [this.showThemes, "To view installed themes."],
             themeinfo: [this.showThemeInfo, "To view installed themes (more details)."],
