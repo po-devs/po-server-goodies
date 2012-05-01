@@ -66,8 +66,6 @@ function updateTourStats(tier, time, winner, num, noPoints, purgeTime) {
 
     var player;
     while (tourwinners.length > 0 && (parseInt(tourwinners[0][1]) + purgeTime) < time) {
-        sys.sendMessage(sys.id("Lamperi"), "Hey lamperi we are purging tour winners: " + tourwinners[0], 0)
-        sys.sendMessage(sys.id("Lamperi"), "" + parseInt(tourwinners[0][1]) + " + " + purgeTime + " < " + time, 0)
         tier = tourwinners[0][0];
         points = numToPoints(tourwinners[0][2]);
         player = tourwinners[0][3];
@@ -229,8 +227,12 @@ var commandHandlers = {
     resettourstats: function resettourstats(src, command, commandData, channel) {
         tourwinners = [];
         tourstats = {};
-        tourrankings = {};
         tourrankingsbytier = {};
+        var jsonObject = {};
+        jsonObject.tourwinners = tourwinners
+        jsonObject.tourstats = tourstats
+        jsonObject.tourrankingsbytier = tourrankingsbytier
+        sys.writeToFile('tourstats.json', JSON.stringify(jsonObject));
         sys.sendAll('Tournament winners were cleared!');
     }
 }
