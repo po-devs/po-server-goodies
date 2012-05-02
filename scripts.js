@@ -1179,14 +1179,14 @@ issueBan : function(type, src, tar, commandData, maxTime) {
            return;
         }
 
-        var bannedReasons = ["idiot", "shut up", "fuck"];
+        /*var bannedReasons = ["idiot", "shut up", "fuck"];
         var lreason = reason.toLowerCase();
         for (var i = 0; i < bannedReasons.length; ++i) {
             if (lreason.indexOf(bannedReasons[i]) > -1) {
                banbot.sendChanMessage(src, "Including '" + bannedReasons[i] + "' in the reason is not a good practice!");
                return;
             }
-        }
+        }*/
 
         if (tar == undefined) {
             ip = sys.dbIp(commandData);
