@@ -1275,22 +1275,28 @@ function Mafia(mafiachan) {
                     var targets = mafia.getTargetsFor(player, o.action);
                     var target, t; // current target
 
-                    if (command == "distract") {
-                        if (targets.length === 0) continue;
+if (command == "distract") {
+    					if (targets.length === 0) continue;
                         target = targets[0];
                         if (!mafia.isInGame(target)) continue;
                         target = mafia.players[target];
                         var distractMode = target.role.actions.distract;
+						var ChangeTarget = player.role.actions.ChangeTarget; // Tidus!
                         if (distractMode === undefined) {}
                         else if (target.safeguarded) {
                             mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
-                        } else if (distractMode.mode == "ChangeTarget") {
+                        } else if (distractMode.mode == "ChangeTarget") { // ok, the part where I changed.
+						if (ChangeTarget.mode == undefined) { // riight.
                             mafia.sendPlayer(player.name, "±Game: " + distractMode.hookermsg);
                             mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
                             mafia.kill(player);
                             nightkill = true;
                             mafia.removeTargets(target);
-                            continue;
+                            continue;}
+                            else if (ChangeTarget.mode == "ignore") {
+                                continue;
+                            }
+                            }
                         } else if (distractMode.mode == "ignore") {
                             if (distractMode.msg)
                                 mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
@@ -1309,15 +1315,33 @@ function Mafia(mafiachan) {
                             mafia.removeTargets(target);
                             continue;
                         }
-                        mafia.sendPlayer(target.name, "±Game: The " + player.role.translation +" came to you last night! You were too busy being distracted!");
-                        mafia.removeTargets(target);
+                        // enables custom distracter message
+						var distractCustomMsg = player.role.actions.night.distract.distractmsg;
+                        // "distractmsg" item under "night" { "distract" } 
+                        
+						if (typeof distractCustomMsg == "string") { // if specified...
+						mafia.sendPlayer(target.name, "±Game: " + distractCustomMsg.replace(/~Distracter~/g, player.role.translation)); 
+						}     // then someone PLd by Tidus can receive the message "You got hit by a blitzball" or something instead of "The Tidus came to you last night"																									    	
+						else {	// else it will go normally																										
+						mafia.sendPlayer(target.name, "±Game: The " + player.role.translation +" came to you last night! You were too busy being distracted!");
+                        } mafia.removeTargets(target);
                         /* warn role / teammates */
+                        
+						// Zzyzx: custom teammate distraction message? :3
+						var teamMsg = player.role.actions.night.distract.teammsg;
+                        // above defined "distract": { "teammsg": <string> }, right?
                         if ("night" in target.role.actions) {
                             for (var action in target.role.actions.night) {
                                 var team = getTeam(target.role, target.role.actions.night[action].common);
                                 for (var x in team) {
                                     if (team[x] != target.name) {
+                                        // now we check if teammsg was defined for the role
+										if (teamMsg == undefined) { // it goes normally if false
                                         mafia.sendPlayer(team[x], "±Game: Your teammate was too busy with the " + player.role.translation + " during the night, you decided not to " + action + " anyone during the night!");
+										} //but if it was set..
+                                        else if (typeof teamMsg == "string") {
+										mafia.sendPlayer(team[x], "±Game: " + teamMsg.replace(/~Distracter~/g, player.role.translation));
+										} // the teammates can get a special message!
                                     }
                                 }
                             }
