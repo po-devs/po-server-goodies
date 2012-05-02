@@ -591,8 +591,8 @@ function Mafia(mafiachan) {
         for (var r = 0; r < role_order.length; ++r) {
             try {
                 role = this.roles[role_order[r]];
-                if (typeof roles.side == "string") {
-                    if (side_list[role.side] == undefined)
+                if (typeof role.side == "string") {
+                    if (side_list[role.side] === undefined)
                         side_list[role.side] = [];
                     side_list[role.side].push(role.translation);
                 } else if (typeof role.side == "object" && role.side.random) {
@@ -1217,12 +1217,12 @@ function Mafia(mafiachan) {
 
                 if (typeof role.actions.startup == "object" && role.actions.startup.revealRole) {
                     if (typeof role.actions.startup.revealRole == "string") {
-                        if (mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) != "")
+                        if (mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) !== "")
                             mafia.sendPlayer(player.name, "±Game: The " + mafia.theme.roles[role.actions.startup.revealRole].translation + " is " + mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) + "!");
                     } else if (typeof role.actions.startup.revealRole == "object" && typeof role.actions.startup.revealRole.indexOf == "function") {
                         for (var s = 0, l = role.actions.startup.revealRole.length; s < l; ++s) {
                             var revealrole = role.actions.startup.revealRole[s];
-                            if (mafia.getPlayersForRoleS(revealrole) != "")
+                            if (mafia.getPlayersForRoleS(revealrole) !== "")
                                 mafia.sendPlayer(player.name, "±Game: The " + mafia.theme.roles[revealrole].translation + " is " + mafia.getPlayersForRoleS(revealrole) + "!");
                         }
                     }
@@ -1869,12 +1869,12 @@ function Mafia(mafiachan) {
                 
                 if (typeof role.actions.startup == "object" && role.actions.startup.revealRole) {
                     if (typeof role.actions.startup.revealRole == "string") {
-                        if (mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) != "")
+                        if (mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) !== "")
                             mafia.sendPlayer(player.name, "±Game: The " + mafia.theme.roles[role.actions.startup.revealRole].translation + " is " + mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) + "!");
                     } else if (typeof role.actions.startup.revealRole == "object" && typeof role.actions.startup.revealRole.indexOf == "function") {
                         for (var s = 0, l = role.actions.startup.revealRole.length; s < l; ++s) {
                             var revealrole = role.actions.startup.revealRole[s];
-                            if (mafia.getPlayersForRoleS(revealrole) != "")
+                            if (mafia.getPlayersForRoleS(revealrole) !== "")
                                 mafia.sendPlayer(player.name, "±Game: The " + mafia.theme.roles[revealrole].translation + " is " + mafia.getPlayersForRoleS(revealrole) + "!");
                         }
                     }
@@ -1885,7 +1885,7 @@ function Mafia(mafiachan) {
         } else {
             sys.sendMessage(src, "±Game: No game running!", mafiachan);
         }
-    }
+    };
 
     // Auth commands
     this.isMafiaAdmin = function(src) {
