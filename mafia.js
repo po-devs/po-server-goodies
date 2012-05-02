@@ -1844,7 +1844,7 @@ function Mafia(mafiachan) {
     this.showOwnRole = function(src) {
         var name = sys.name(src);
         if (mafia.state != "blank" && mafia.state != "entry") {
-            if (mafia.inInGame(name)) {
+            if (mafia.isInGame(name)) {
                 var player = mafia.players[name];
                 var role = player.role;
                 
