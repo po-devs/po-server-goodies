@@ -280,8 +280,8 @@ function Mafia(mafiachan) {
             theme.killusermsg = plain_theme.killusermsg;
             theme.border = plain_theme.border;
             theme.generateRoleInfo();
-            theme.generateSideInfo();
-            //theme.enabled = true;
+            //theme.generateSideInfo();
+            theme.enabled = true;
             return theme;
         } catch (err) {
             mafiabot.sendAll("Couldn't use theme " + plain_theme.name + ": "+err+".", mafiachan);
