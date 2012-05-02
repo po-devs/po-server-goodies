@@ -562,8 +562,8 @@ function Mafia(mafiachan) {
         var side_order = Object.keys(this.sideTranslations);
         // sort sides by name
         side_order.sort(function(a,b) {
-            var tra = sideTranslations[a];
-            var trb = sideTranslations[b];
+            var tra = this.sideTranslations[a];
+            var trb = this.sideTranslations[b];
             if (tra == trb)
                 return 0;
             else if (tra < trb)
