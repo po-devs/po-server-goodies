@@ -280,7 +280,7 @@ function Mafia(mafiachan) {
             theme.killusermsg = plain_theme.killusermsg;
             theme.border = plain_theme.border;
             theme.generateRoleInfo();
-            //theme.generateSideInfo();
+            theme.generateSideInfo();
             theme.enabled = true;
             return theme;
         } catch (err) {
@@ -560,10 +560,11 @@ function Mafia(mafiachan) {
         var sides = [sep];
         var side;
         var side_order = Object.keys(this.sideTranslations);
+        var this_sideTranslations = this.sideTranslations;
         // sort sides by name
         side_order.sort(function(a,b) {
-            var tra = this.sideTranslations[a];
-            var trb = this.sideTranslations[b];
+            var tra = this_sideTranslations[a];
+            var trb = this_sideTranslations[b];
             if (tra == trb)
                 return 0;
             else if (tra < trb)
@@ -590,8 +591,8 @@ function Mafia(mafiachan) {
         var randomSide_list = [];
         for (var r = 0; r < role_order.length; ++r) {
             try {
-                role = this.roles[role_order[r]];
-                if (typeof roles.side == "string") {
+                role = this_roles[role_order[r]];
+                if (typeof role.side == "string") {
                     if (side_list[role.side] == undefined)
                         side_list[role.side] = [];
                     side_list[role.side].push(role.translation);
@@ -612,17 +613,19 @@ function Mafia(mafiachan) {
         for (var s = 0; s < side_order.length; ++s) {
             try {
                 side = side_order[s];
-                sides.push("±Side: The " + this.trside(side) + " consists of " + side_list[side].join(", ") + ".");
+                if (side_list[side] !== undefined)
+                    sides.push("±Side: The " + this.trside(side) + " consists of " + side_list[side].join(", ") + ".");
             } catch (err) {
                 mafiabot.sendAll("Error adding side " + this.trside(side) + "(" + side + ") to /sides", mafiachan);
                 throw err;
             }
         }
-        if (randomSide_list.length > 0)
-            sides.concat(randomSide_list);
+        if (randomSide_list.length > 0) {
+            sides = sides.concat(randomSide_list);
+        }
         sides.push(sep);
         this.sideInfo = sides;
-    };
+        };
 
     /* Theme Loading and Storing */
     Theme.prototype.trside = function(side) {
