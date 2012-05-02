@@ -280,7 +280,7 @@ function Mafia(mafiachan) {
             theme.killusermsg = plain_theme.killusermsg;
             theme.border = plain_theme.border;
             theme.generateRoleInfo();
-            theme.generateSideInfo();
+            //theme.generateSideInfo();
             theme.enabled = true;
             return theme;
         } catch (err) {
