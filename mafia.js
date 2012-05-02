@@ -281,7 +281,7 @@ function Mafia(mafiachan) {
             theme.border = plain_theme.border;
             theme.generateRoleInfo();
             theme.generateSideInfo();
-            theme.enabled = true;
+            //theme.enabled = true;
             return theme;
         } catch (err) {
             mafiabot.sendAll("Couldn't use theme " + plain_theme.name + ": "+err+".", mafiachan);
