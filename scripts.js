@@ -373,7 +373,7 @@ POChannel.prototype.isChannelOperator = function(id)
 {
     var channl = this.id;
     return this.isChannelMaster(id) || this.operators.indexOf(sys.name(id).toLowerCase()) != -1 || (sys.auth(id) > 0 && (channl == 0 || channl == sys.channel("Tournaments")));
-    }
+}
 POChannel.prototype.issueAuth = function(src, name, authlist)
 {
     var lname;
