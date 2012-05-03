@@ -47,7 +47,7 @@ var Config = {
     DreamWorldTiers: ["DW OU", "DW Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "DW 1v1 Ubers", "DW 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "DW OU Triples", "DW Uber Doubles", "DW OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
     superAdmins: ["Lamperi", "Professor Oak", "zeroality", "[LD]Jirachier", "nixeagle"],
     canJoinStaffChannel: ["Lamperi-", "Peanutsdroid", "QuX"],
-    disallowStaffChannel: ["Mystra", "Flames of Corruption"],
+    disallowStaffChannel: [],
 }
 
 // Don't touch anything here if you don't know what you do.
@@ -1179,14 +1179,14 @@ issueBan : function(type, src, tar, commandData, maxTime) {
            return;
         }
 
-        var bannedReasons = ["idiot", "shut up", "fuck"];
+        /*var bannedReasons = ["idiot", "shut up", "fuck"];
         var lreason = reason.toLowerCase();
         for (var i = 0; i < bannedReasons.length; ++i) {
             if (lreason.indexOf(bannedReasons[i]) > -1) {
                banbot.sendChanMessage(src, "Including '" + bannedReasons[i] + "' in the reason is not a good practice!");
                return;
             }
-        }
+        }*/
 
         if (tar == undefined) {
             ip = sys.dbIp(commandData);
@@ -1628,7 +1628,7 @@ afterLogIn : function(src) {
 
     if (SESSION.users(src).mute.active)
         sys.putInChannel(src, trollchannel);
-    if (sys.auth(src) <= 3 && this.canJoinStaffChannel(src))
+    if (sys.auth(src) <= 3 && this.canJoinStaffChannel(src) && sys.name(src).toLowerCase() != "flames of corruption")
         sys.putInChannel(src, staffchannel);
 } /* end of afterLogin */
 
@@ -3055,7 +3055,7 @@ adminCommand: function(src, command, commandData, tar) {
     }
     if (command == "indigoinvite") {
 
-        if (channel != staffchannel && channel != sys.id("shanaindigo")) {
+        if (channel != staffchannel && channel != sys.channelId("shanaindigo")) {
             normalbot.sendChanMessage(src, "Can't use on this channel.");
             return;
         }
