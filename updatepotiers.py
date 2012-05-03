@@ -14,7 +14,8 @@ MONTHLY_STATS="http://stats.pokemon-online.eu/Past Stats/{month}-{year}/{tier}/r
 
 TIER_TREES = [
     ["Wifi OU", "Wifi UU", "Wifi LU", "Wifi NU"],
-    ["DW OU", "DW UU"]
+    ["DW OU", "DW UU"],
+    ["Wifi LC", "Wifi LC UU"]
 ]
 
 BANLIST = {
@@ -24,6 +25,8 @@ BANLIST = {
     "Wifi NU": ["Feraligatr", "Sawsbuck", "Gligar", "Braviary", "Charizard", "Hitmonlee", "Scolipede", "Tangela", "Jynx", "Misdreavus", "Cacturne", "Druddigon"], # BL3
     "DW OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Blaziken", "Garchomp", "Chandelure", "Excadrill"], # DW Ubers
     "DW UU": ["Azelf", "Chansey", "Deoxys", "Deoxys-S", "Froslass", "Haxorus", "Hippowdon", "Hydreigon", "Kyurem", "Landorus", "Latias", "Lucario", "Roserade", "Scrafty", "Smeargle", "Staraptor", "Terrakion", "Venomoth", "Vulpix", "Wobbuffet"], # DW BL
+    "Wifi LC": ["Scyther", "Sneasel", "Yanma", "Tangela", "Vulpix", "Murkrow", "Scraggy", "Misdreavus", "Meditite", "Carvanha", "Gligar", "Drilbur"], # LC Ubers (in addition to all other pokemon...)
+    "Wifi LC UU": ["Poliway", "Axew"], # Wifi LC BL
 }
 ADDITIONAL_BANS = {
     "Wifi UU": ["Vulpix", # Due to Drought being banned
@@ -34,7 +37,8 @@ ADDITIONAL_BANS = {
 
 # TODO: enforce these
 ITEM_BANS = {
-    "Wifi NU": "Damp Rock"
+    "Wifi NU": ["Damp Rock"],
+    "Wifi LC": ["Berry Juice", "DeepSeaTooth"],
 }
 
 def get_po_tiers():
