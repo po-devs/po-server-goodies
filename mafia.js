@@ -1644,11 +1644,12 @@ function Mafia(mafiachan) {
     };
     this.showRoles = function(src, commandData) {
         var themeName = "default";
+        var data = commandData.split(":");
         if (mafia.state != "blank") {
             themeName = mafia.theme.name.toLowerCase();
         }
-        if (commandData != noPlayer) {
-            themeName = commandData.toLowerCase();
+        if (data[0] != noPlayer && data[0] != "") {
+            themeName = data[0].toLowerCase();
             if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
                 sys.sendMessage(src, "±Game: No such theme!", mafiachan);
                 return;
@@ -1730,6 +1731,25 @@ function Mafia(mafiachan) {
         ];
         } else {
             roles = mafia.themeManager.themes[themeName].roleInfo;
+        }
+        if (data[1]) {
+            var sep = "*** *********************************************************************** ***";
+            var filterRoles = [sep];
+            var roleTranslation = data[1].toLowerCase();
+            for (var i = 0; i < roles.length; ++i) {
+                if (roles[i].search(/±role:/i) > -1 && roles[i].toLowerCase().search(roleTranslation) > -1) {
+                    filterRoles.push(roles[i]);
+                    filterRoles.push(roles[i + 1]);
+                    filterRoles.push(roles[i + 2]);
+                    filterRoles.push(sep);
+                }
+            }
+            if (filterRoles.length == 1) {
+                filterRoles.push("±Game: No such role in this theme!");
+                filterRoles.push(sep);
+            }
+            filterRoles.push("");
+            roles = filterRoles;
         }
         dump(src, roles);
     };
