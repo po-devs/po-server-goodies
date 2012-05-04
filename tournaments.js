@@ -95,6 +95,7 @@ function Tournament(channel)
 		this.battlers = [];
 		this.queue = [];
 		this.ips = [];
+		this.mode = "";
 
 		tournamentData[channel] = {
 			self: this
@@ -164,7 +165,30 @@ function Tournament(channel)
 			sendPM(source, "Sorry, the server does not recognise the " + commandpart[0] + " tier.");
 			return;
 		}
-		return {starter: sys.name(source), tier: tier, count: count};
+		
+		var mode = "Singles";
+		
+		if (commandpart[2] === undefined) {
+			mode = modeOfTier(tier)
+		}
+		else {
+			if ((modeOfTier(tier) == "Doubles" || modeOfTier(tier) == "Triples") && !cmp(commandpart[2], modeOfTier(tier))) {
+				sendPM(source, "The "+tier+" tier can only be played in " + modeOfTier(tier) + " mode!");
+				return;
+			}
+			else if (cmp(commandpart[2], "singles")) {
+				mode = "Singles";
+			}
+			else if (cmp(commandpart[2], "doubles")) {
+				mode = "Doubles";
+			}
+			else if (cmp(commandpart[2], "triples")) {
+				mode = "Triples";
+			}
+			else mode = modeOfTier(tier);
+		}
+		
+		return {starter: sys.name(source), tier: tier, count: count, mode: mode};
 	}
 
 	// Command start
@@ -177,18 +201,20 @@ function Tournament(channel)
 
 		if (!res) return;
 
-		initTournament(res.starter, res.tier, res.count);
+		initTournament(res.starter, res.tier, res.count, res.mode);
 	}
 
-	function initTournament(starter, tier, count) {
+	function initTournament(starter, tier, count, mode) {
 		self.starter = starter;
 		self.tier = tier;
 		self.count = count;
+		self.mode = mode;
 
 		wall(border);
 		wall("*** A Tournament was started by " + self.starter + "! ***");
 		wall("PLAYERS: " + self.count);
 		wall("TIER: " + self.tier);
+		wall("MODE: " + self.mode);
 		broadcast("CLAUSES: " + tierClauses(self.tier).join(", "));
 		wall("");
 		advertise("*** Go in the #" + sys.channel(self.channel) + " channel and type /join or !join to enter the tournament! ***");
@@ -639,6 +665,18 @@ function Tournament(channel)
 			startTournament();
 		}
 	}
+	
+	// Returns whether the default tier of a mode is singles, doubles or triples
+	
+	function modeOfTier(tier) {
+		if (tier.indexOf("Doubles") != -1 || ["JAA", "VGC 2009", "VGC 2010", "VGC 2011", "VGC 2012"].indexOf(tier) != -1) {
+			return "Doubles";
+		}
+		else if (tier.indexOf("Triples") != -1) {
+			return "Triples";
+		}
+		return "Singles";
+	}
 
 	function endTour(source, data) {
 		if (self.running) {
@@ -901,7 +939,7 @@ function Tournament(channel)
 	}
 
 	// event beforeChallenge
-	function beforeChallenge(source, dest, clauses) {
+	function beforeChallenge(source, dest, clauses, rated, mode) {
 		if (!playingPhase())
 			return;
 		var name1 = sys.name(source),
@@ -928,6 +966,10 @@ function Tournament(channel)
 					sendPM(source, "You must add following clauses to your challenge: " + missing.join(", "));
 				if (extra.length > 0 || missing.length > 0)
 					return true;
+			}
+			if ((self.mode == "Singles" && mode != 0) || (self.mode == "Doubles" && mode != 1) || (self.mode == "Triples" && mode != 2)) {
+				sendPM(source, "Your match must be played in "+self.mode+" format. Change it in the challenge window.");
+				return true;
 			}
 			if (self.phase == "finals" && hasClause(clauses, DISALLOW_SPECS)) {
 				sendPM(source, "You must not use \"disallow specs\" in finals.");
@@ -964,7 +1006,7 @@ function Tournament(channel)
 			if (!self.running) {
 				var tour = self.queue.shift();
 				if (tour) {
-					initTournament(tour.starter, tour.tier, tour.count);
+					initTournament(tour.starter, tour.tier, tour.count, tour.mode);
 				}
 			}
 		}, 120);
@@ -986,6 +1028,7 @@ function Tournament(channel)
 		self.battlers = [];
 		self.ips = [];
 		self.queue = self.queue || [];
+		self.mode = "";
 	}
 
 	this.announceInit = function announceInit() {
@@ -1157,8 +1200,8 @@ module.exports = {
 			];
 		} else if (topic == "megauser") {
 			help = [
-				"/tour [tier]:[number]: Starts a tournament in set tier for the selected number of players.",
-				"/queue [tier]:[number]: Schedules a tournament to automatically start after the current one.",
+				"/tour [tier]:[number]:[type]: Starts a tournament in set tier for the selected number of players. Type is optional and can be set to Singles, Doubles or Triples.",
+				"/queue [tier]:[number]:[type]: Schedules a tournament to automatically start after the current one.",
 				"/endtour: Ends the current tournament.",
 				"/dq name: Disqualifies someone in the tournament.",
 				"/push name: Adds a user to the tournament.",
