@@ -591,7 +591,7 @@ function Mafia(mafiachan) {
         var randomSide_list = [];
         for (var r = 0; r < role_order.length; ++r) {
             try {
-                role = this_roles[role_order[r]];
+                role = this.roles[role_order[r]];
                 if (typeof role.side == "string") {
                     if (side_list[role.side] === undefined)
                         side_list[role.side] = [];
@@ -1283,16 +1283,21 @@ function Mafia(mafiachan) {
                         if (!mafia.isInGame(target)) continue;
                         target = mafia.players[target];
                         var distractMode = target.role.actions.distract;
+                        var ChangeTarget = player.role.actions.ChangeTarget;
                         if (distractMode === undefined) {}
                         else if (target.safeguarded) {
                             mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
                         } else if (distractMode.mode == "ChangeTarget") {
-                            mafia.sendPlayer(player.name, "±Game: " + distractMode.hookermsg);
-                            mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
-                            mafia.kill(player);
-                            nightkill = true;
-                            mafia.removeTargets(target);
-                            continue;
+                            if (ChangeTarget.mode === undefined) {
+                                mafia.sendPlayer(player.name, "±Game: " + distractMode.hookermsg);
+                                mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
+                                mafia.kill(player);
+                                nightkill = true;
+                                mafia.removeTargets(target);
+                                continue;
+                            } else if (ChangeTarget.mode == "ignore") {
+                                continue;
+                            }
                         } else if (distractMode.mode == "ignore") {
                             if (distractMode.msg)
                                 mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
@@ -1311,15 +1316,31 @@ function Mafia(mafiachan) {
                             mafia.removeTargets(target);
                             continue;
                         }
-                        mafia.sendPlayer(target.name, "±Game: The " + player.role.translation +" came to you last night! You were too busy being distracted!");
-                        mafia.removeTargets(target);
+                        // enables custom distracter message
+                        var distractCustomMsg = player.role.actions.night.distract.distractmsg;
+                        // "distractmsg" item under "night" { "distract" }
+                        if (typeof distractCustomMsg == "string") {
+                             mafia.sendPlayer(target.name, "±Game: " + distractCustomMsg.replace(/~Distracter~/g, player.role.translation));
+                        }
+                        else {
+                             mafia.sendPlayer(target.name, "±Game: The " + player.role.translation +" came to you last night! You were too busy being distracted!");
+                        } mafia.removeTargets(target);
+                        
                         /* warn role / teammates */
+                        var teamMsg = player.role.actions.night.distract.teammsg;
+                        // above defined "distract": { "teammsg": <string> }
                         if ("night" in target.role.actions) {
                             for (var action in target.role.actions.night) {
                                 var team = getTeam(target.role, target.role.actions.night[action].common);
                                 for (var x in team) {
                                     if (team[x] != target.name) {
-                                        mafia.sendPlayer(team[x], "±Game: Your teammate was too busy with the " + player.role.translation + " during the night, you decided not to " + action + " anyone during the night!");
+                                        // now we check if teammsg was defined for the role
+                                        if (teamMsg === undefined) {
+                                            mafia.sendPlayer(team[x], "±Game: Your teammate was too busy with the " + player.role.translation + " during the night, you decided not to " + action + " anyone during the night!");
+                                        }
+                                        else if (typeof teamMsg == "string") {
+                                            mafia.sendPlayer(team[x], "±Game: " + teamMsg.replace(/~Distracter~/g, player.role.translation));
+                                        }
                                     }
                                 }
                             }
