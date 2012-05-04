@@ -169,7 +169,7 @@ function Tournament(channel)
 		var mode = "Singles";
 		
 		if (commandpart[2] === undefined) {
-			mode = modeOfTier(tier)
+			mode = modeOfTier(tier);
 		}
 		else {
 			if ((modeOfTier(tier) == "Doubles" || modeOfTier(tier) == "Triples") && !cmp(commandpart[2], modeOfTier(tier))) {
@@ -967,7 +967,7 @@ function Tournament(channel)
 				if (extra.length > 0 || missing.length > 0)
 					return true;
 			}
-			if ((self.mode == "Singles" && mode != 0) || (self.mode == "Doubles" && mode != 1) || (self.mode == "Triples" && mode != 2)) {
+			if ((self.mode == "Singles" && mode !== 0) || (self.mode == "Doubles" && mode != 1) || (self.mode == "Triples" && mode != 2)) {
 				sendPM(source, "Your match must be played in "+self.mode+" format. Change it in the challenge window.");
 				return true;
 			}
