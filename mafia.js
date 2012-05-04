@@ -711,9 +711,11 @@ function Mafia(mafiachan) {
                         .map(function(g) { return g.what; });
             
             if (themeName in this.themeManager.themes && this.themeManager.themes[themeName].enabled) {
-                if (Check.indexOf(name) == -1 && name != "default") {
-                    this.possibleThemes[themeName] = 0;
-                    --total;
+                if (Check.indexOf(themeName) == -1 && themeName != "default") {
+                    if (!(themeName in this.possibleThemes)) {
+                        this.possibleThemes[themeName] = 0;
+                        --total;
+                    }
                 }
             }
 
