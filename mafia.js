@@ -2303,7 +2303,11 @@ function Mafia(mafiachan) {
                             sys.sendMessage(src, "±Game: That person is gone, you can't kill them!", mafiachan);
                             return;
                         } else if (target.role.actions.daykill == "revenge") {
-                            revenge = true;
+                            revenge = true; 
+                        } else if (typeof target.role.actions.daykill.mode == "object" && target.role.actions.daykill.mode.evadeChance > sys.rand(0,100)/100) {
+                            sys.sendMessage(src, "±Game: Your kill was evaded!", mafiachan);
+                            sys.sendMessage(target.name, "±Game: You evaded a kill!", mafiachan);
+                            return;
                         }
                     }
                     sys.sendAll(border, mafiachan);
