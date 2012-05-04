@@ -2297,6 +2297,11 @@ function Mafia(mafiachan) {
                         sys.sendMessage(src, "±Game: That person is not playing!", mafiachan);
                         return;
                     }
+                    if (typeof target.role.actions.kill.standbymode == "object" && target.role.actions.kill.standbymode.evadeChance > sys.rand(0,100)/100) {
+                        sys.sendMessage(src, "±Game: Your kill was evaded!", mafiachan);
+                        sys.sendMessage(target.name, "±Game: You evaded a kill!", mafiachan);
+                        return;
+                    }
                     var revenge = false;
                     if (target.role.actions.hasOwnProperty("daykill")) {
                         if (target.role.actions.daykill == "evade") {
