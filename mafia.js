@@ -1780,19 +1780,19 @@ function Mafia(mafiachan) {
         dump(src, roles);
     };
     this.showSides = function(src, commandData) {
-    var themeName = "default";
-    if (mafia.state != "blank") {
-        themeName = mafia.theme.name.toLowerCase();
-    }
-    if (commandData != noPlayer) {
-        themeName = commandData.toLowerCase();
-        if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
-            sys.sendMessage(src, "±Game: No such theme!", mafiachan);
-            return;
+        var themeName = "default";
+        if (mafia.state != "blank") {
+            themeName = mafia.theme.name.toLowerCase();
         }
-    }
-    var sides = mafia.themeManager.themes[themeName].sideInfo;
-    dump(src, sides);
+        if (commandData != noPlayer) {
+            themeName = commandData.toLowerCase();
+            if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
+                sys.sendMessage(src, "±Game: No such theme!", mafiachan);
+                return;
+            }
+        }
+        var sides = mafia.themeManager.themes[themeName].sideInfo;
+        dump(src, sides);
     };
     this.showRules = function(src) {
         var rules = [
