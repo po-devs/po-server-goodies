@@ -466,6 +466,9 @@ function Mafia(mafiachan) {
             if ("vote" in role.actions) {
                 abilities += "Vote counts as " + role.actions.vote + ". ";
             }
+            if ("voteshield" in role.actions) {
+                abilities += "Receives " + role.actions.voteshield + " extra votes if voted for at all. ";
+            }
             if ("kill" in role.actions) {
                 if (role.actions.kill.mode == "ignore") {
                     abilities += "Can't be nightkilled. ";
