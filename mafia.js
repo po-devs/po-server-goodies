@@ -1648,7 +1648,7 @@ function Mafia(mafiachan) {
         if (mafia.state != "blank") {
             themeName = mafia.theme.name.toLowerCase();
         }
-        if (data[0] != noPlayer && data[0] != "") {
+        if (data[0] != noPlayer && data[0] !== "") {
             themeName = data[0].toLowerCase();
             if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
                 sys.sendMessage(src, "±Game: No such theme!", mafiachan);
