@@ -1320,7 +1320,7 @@ function Mafia(mafiachan) {
                             continue;
                         }
                         // enables custom distracter message
-                        var distractCustomMsg = player.role.actions.night.distract.distractmsg;
+                        var distractCustomMsg = Action.distractmsg;
                         // "distractmsg" item under "night" { "distract" }
                         if (typeof distractCustomMsg == "string") {
                              mafia.sendPlayer(target.name, "±Game: " + distractCustomMsg.replace(/~Distracter~/g, player.role.translation));
@@ -1330,7 +1330,7 @@ function Mafia(mafiachan) {
                         } mafia.removeTargets(target);
                         
                         /* warn role / teammates */
-                        var teamMsg = player.role.actions.night.distract.teammsg;
+                        var teamMsg = Action.teammsg;
                         // above defined "distract": { "teammsg": <string> }
                         if ("night" in target.role.actions) {
                             for (var action in target.role.actions.night) {
