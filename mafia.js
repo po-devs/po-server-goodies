@@ -1342,7 +1342,7 @@ function Mafia(mafiachan) {
                                             mafia.sendPlayer(team[x], "±Game: Your teammate was too busy with the " + player.role.translation + " during the night, you decided not to " + action + " anyone during the night!");
                                         }
                                         else if (typeof teamMsg == "string") {
-                                            mafia.sendPlayer(team[x], "±Game: " + teamMsg.replace(/~Distracter~/g, player.role.translation));
+                                            mafia.sendPlayer(team[x], "±Game: " + teamMsg.replace(/~Distracter~/g, player.role.translation).replace(/~Action~/g, action));
                                         }
                                     }
                                 }
