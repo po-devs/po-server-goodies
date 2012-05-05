@@ -1291,7 +1291,7 @@ function Mafia(mafiachan) {
                         else if (target.safeguarded) {
                             mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
                         } else if (distractMode.mode == "ChangeTarget") {
-                            if (ChangeTarget.mode === undefined) {
+                            if (ChangeTarget === undefined) {
                                 mafia.sendPlayer(player.name, "±Game: " + distractMode.hookermsg);
                                 mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
                                 mafia.kill(player);
