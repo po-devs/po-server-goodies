@@ -2359,6 +2359,13 @@ function Mafia(mafiachan) {
                     sys.sendAll(border, mafiachan);
                     if (!revenge) {
                         sys.sendAll("±Game: " + commandObject.killmsg.replace(/~Self~/g, name).replace(/~Target~/g, commandData), mafiachan);
+                        if ("revealChance" in commandObject && commandObject.revealChance > sys.rand(0,100)/100) {
+                            if (commandObject.revealmsg !== undefined && typeof commandObject.revealmsg == "string") {
+                                sys.sendAll("±Game: " + commandObject.revealmsg.replace(/~Self~/g, name).replace(/~Role~/g, mafia.players[name].role.translation), mafiachan);
+                            } else {
+                                sys.sendAll("±Game: While attacking, " + name + " (" + mafia.players[name].role.translation + ") made a mistake and was revealed!", mafiachan);
+                            }
+                        }
                         player.dayKill = player.dayKill+1 || 1;
                         this.kill(mafia.players[commandData]);
                     } else {
