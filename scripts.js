@@ -313,8 +313,8 @@ function POChannel(id)
     this.topicSetter = "";
     this.muteall = undefined;
     this.meoff = undefined;
-    this.muted = {ips: {}};
-    this.banned = {ips: {}};
+    this.muted = {ips: {}, names: {}};
+    this.banned = {ips: {}, names: {}};
     this.watchers = [];
     this.ignorecaps = false;
     this.ignoreflood = false;
@@ -474,6 +474,7 @@ POChannel.prototype.disallow = function(data, what)
     var ip = id ? sys.ip(id) : sys.dbIp(data);
     if (ip) {
         this[what].ips[ip] = data;
+        this[what].names[data] = data;
         return true;
     }
     return false;
@@ -485,6 +486,7 @@ POChannel.prototype.allow = function(data, what)
     var ip = id ? sys.ip(id) : sys.dbIp(data);
     if (this[what].ips.hasOwnProperty(ip)) {
         delete this[what].ips[ip];
+        delete this[what].names[data];
         return true;
     }
     if (this[what].ips.hasOwnProperty(data)) {
@@ -3854,20 +3856,20 @@ channelCommand: function(src, command, commandData, tar) {
     }
 
     if (command == "cmutes") {
-        var data = ["Following mutes in effect: "];
-        for (var ip in poChannel.muted.ips) {
-            data.push(ip + ", ");
+        var msg = ["Following mutes in effect: "];
+        for (var data in poChannel.muted.names) {
+            msg.push(data + ", ");
         }
-        channelbot.sendChanMessage(src, data.join(""));
+        channelbot.sendChanMessage(src, msg.join(""));
         return;
     }
 
     if (command == "cbans") {
-        var data = ["Following bans in effect: "];
-        for (var ip in poChannel.banned.ips) {
-            data.push(ip + ", ");
+        var msg = ["Following bans in effect: "];
+        for (var data in poChannel.banned.names) {
+            msg.push(data + ", ");
         }
-        channelbot.sendChanMessage(src, data.join(""));
+        channelbot.sendChanMessage(src, msg.join(""));
         return;
     }
 
