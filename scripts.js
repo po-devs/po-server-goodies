@@ -67,7 +67,7 @@ if (typeof require === "undefined")
                 try {
                      eval(sys.getFileContent(module_name));
                 } catch(e) {
-                     sys.sendAll("Error loading module " + module_name + ": " + e, typeof staffchannel !== undefined ? staffchannel : undefined);
+                     sys.sendAll("Error loading module " + module_name + ": " + e, typeof staffchannel !== "undefined" ? staffchannel : undefined);
                 }
             }
         }
