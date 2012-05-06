@@ -1207,8 +1207,8 @@ module.exports = {
 				"/push name: Adds a user to the tournament.",
 				"/changecount [entrants]: Changes the number of self.entrants during the signup phase.",
 				"/sub name1:name2: Replaces name1 with name2 in the tournament.",
-                                "/cancelBattle name1: Allows the user or their opponent to forfeit without leaving the tournament their current battle so they can battle again with correct clauses.",
-                                "/rmqueue [tier]: Removes a specified tier from the tournament queue."
+				"/cancelBattle name1: Allows the user or their opponent to forfeit without leaving the tournament their current battle so they can battle again with correct clauses.",
+				"/rmqueue [tier]: Removes a specified tier from the tournament queue."
 			];
 		}
 		if (help.length > 0) {
@@ -1220,3 +1220,4 @@ module.exports = {
 	return false;
 	}
 };
+
