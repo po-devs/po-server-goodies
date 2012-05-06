@@ -420,9 +420,9 @@ function Mafia(mafiachan) {
             this.nightPriority.sort(function(a,b) { return a.priority - b.priority; });
         }
         if ("standby" in obj.actions) {
-            for (i in obj.actions.standby) {
-                this.standbyRoles.push(obj.role);
-            }
+            //for (i in obj.actions.standby) {
+            this.standbyRoles.push(obj.role);
+            //}
         }
     };
     Theme.prototype.generateRoleInfo = function() {
@@ -695,6 +695,7 @@ function Mafia(mafiachan) {
         for (var p in this.players) {
             this.players[p].targets = {};
             this.players[p].dayKill = undefined;
+            this.players[p].revealUse = undefined;
             this.players[p].guarded = undefined;
             this.players[p].safeguarded = undefined;
         }
@@ -2438,10 +2439,15 @@ function Mafia(mafiachan) {
                     }
                     sys.sendAll(border, mafiachan);
                 } else if (command == "reveal") {
+                    if (player.revealUse >= (commandObject.limit || 1)) {
+                        sys.sendMessage(src, "±Game: You already used this command!", mafiachan);
+                        return;
+                    }
                     var revealMessage = commandObject.revealmsg ? commandObject.revealmsg : "~Self~ is revealed to be a ~Role~!";
                     sys.sendAll(border, mafiachan);
                     sys.sendAll("±Game: " + revealMessage.replace(/~Self~/g, name).replace(/~Role~/g, player.role.translation), mafiachan);
                     sys.sendAll(border, mafiachan);
+                    player.revealUse = player.revealUse+1||1;
                 }
                 return;
             }
