@@ -3940,7 +3940,7 @@ beforeChatMessage: function(src, message, chan) {
         return;
     }
 
-    if (message[0] == "#" && undefined !== sys.channelId(message.slice(1))) {
+    if (message[0] == "#" && undefined !== sys.channelId(message.slice(1)) && !sys.isInChannel(src, sys.channelId(message.slice(1)))) {
         sys.putInChannel(src, sys.channelId(message.slice(1)));
         sys.stopEvent();
         return;
