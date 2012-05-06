@@ -1292,7 +1292,7 @@ function Mafia(mafiachan) {
                         if (!mafia.isInGame(target)) continue;
                         target = mafia.players[target];
                         var distractMode = target.role.actions.distract;
-                        var ChangeTarget = Action.ChangeTarget.Mode;
+                        var ChangeTarget = Action.ChangeTarget;
                         if (distractMode === undefined) {}
                         else if (target.safeguarded) {
                             mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
