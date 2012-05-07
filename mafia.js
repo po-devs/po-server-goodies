@@ -420,9 +420,9 @@ function Mafia(mafiachan) {
             this.nightPriority.sort(function(a,b) { return a.priority - b.priority; });
         }
         if ("standby" in obj.actions) {
-            for (i in obj.actions.standby) {
-                this.standbyRoles.push(obj.role);
-            }
+            //for (i in obj.actions.standby) {
+            this.standbyRoles.push(obj.role);
+            //}
         }
     };
     Theme.prototype.generateRoleInfo = function() {
@@ -712,6 +712,7 @@ function Mafia(mafiachan) {
         for (var p in this.players) {
             this.players[p].targets = {};
             this.players[p].dayKill = undefined;
+            this.players[p].revealUse = undefined;
             this.players[p].guarded = undefined;
             this.players[p].safeguarded = undefined;
         }
@@ -1295,7 +1296,6 @@ function Mafia(mafiachan) {
                 }
                 return team;
             };
-
             var player, names, j;
             for (var i in mafia.theme.nightPriority) {
                 var o = mafia.theme.nightPriority[i];
@@ -1304,6 +1304,13 @@ function Mafia(mafiachan) {
                 var Action = mafia.theme.roles[o.role].actions.night[o.action];
                 if ("command" in Action) {
                     command = Action.command; // translate to real command
+                }
+                if ("recharge" in Action) { // a command that can only be used once every X nights
+                    var activeTurn = true; // confirms the command can be used
+                    var activeCount = 1; // sets how many nights for cooldown
+                    if ("rechargecount" in Action && "rechargecount" > 1) {
+                        activeCount = Action.rechargecount; // custom cooldown count in "night": { action: {"rechargecount"}}
+                    }
                 }
                 for (j = 0; j < names.length; ++j) {
                     if (!mafia.isInGame(names[j])) continue;
@@ -1317,7 +1324,7 @@ function Mafia(mafiachan) {
                         if (!mafia.isInGame(target)) continue;
                         target = mafia.players[target];
                         var distractMode = target.role.actions.distract;
-                        var ChangeTarget = Action.ChangeTarget;
+                        var ChangeTarget = player.role.actions.ChangeTarget; // moving ChangeTarget from night to actions
                         if (distractMode === undefined) {}
                         else if (target.safeguarded) {
                             mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
@@ -2355,8 +2362,12 @@ function Mafia(mafiachan) {
                                 this.sendPlayer(haxPlayer, "±Game: " + name + " is The " + roleName + "!");
                         }
                     }
-                }
-
+                } 
+                /* 
+                 * OK, I know it was around here but I couldn't find where to add the activeTurn checker
+                 * nor the activeCount = activeCount - 1 or something like that
+                 * you can just leave this idea for later :/ 
+                 */
                 return;
             }
         } else if (this.state == "day") {
@@ -2453,10 +2464,15 @@ function Mafia(mafiachan) {
                     }
                     sys.sendAll(border, mafiachan);
                 } else if (command == "reveal") {
+                    if (player.revealUse >= (commandObject.limit || 1)) {
+                        sys.sendMessage(src, "±Game: You already used this command!", mafiachan);
+                        return;
+                    }
                     var revealMessage = commandObject.revealmsg ? commandObject.revealmsg : "~Self~ is revealed to be a ~Role~!";
                     sys.sendAll(border, mafiachan);
                     sys.sendAll("±Game: " + revealMessage.replace(/~Self~/g, name).replace(/~Role~/g, player.role.translation), mafiachan);
                     sys.sendAll(border, mafiachan);
+                    player.revealUse = player.revealUse+1||1;
                 }
                 return;
             }

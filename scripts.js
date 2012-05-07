@@ -1381,7 +1381,7 @@ beforeChannelJoin : function(src, channel) {
         } else {
 
             var mbaninfo = poUser.mban;
-            sendChanMessage(src, "+Guard: You are banned from Mafia" + (mbaninfo.by ? " by " + mbaninfo.by : '')+". " + (mbaninfo.expires > 0 ? "Ban expires in " + getTimeString(mbaninfo.expires - parseInt(sys.time())) + ". " : '') + (mbaninfo.reason ? "[Reason: " + mbaninfo.reason + "]" : ''));
+            sys.sendMessage(src, "+Guard: You are banned from Mafia" + (mbaninfo.by ? " by " + mbaninfo.by : '')+". " + (mbaninfo.expires > 0 ? "Ban expires in " + getTimeString(mbaninfo.expires - parseInt(sys.time())) + ". " : '') + (mbaninfo.reason ? "[Reason: " + mbaninfo.reason + "]" : ''));
             sys.stopEvent();
             return;
         }
@@ -3862,6 +3862,7 @@ channelCommand: function(src, command, commandData, tar) {
         return;
     }
 
+
     if (command == "cbans") {
         var data = ["Following bans in effect: "];
         for (var ip in poChannel.banned.ips) {
@@ -3938,7 +3939,7 @@ beforeChatMessage: function(src, message, chan) {
         return;
     }
 
-    if (message[0] == "#" && undefined !== sys.channelId(message.slice(1))) {
+    if (message[0] == "#" && undefined !== sys.channelId(message.slice(1)) && !sys.isInChannel(src, sys.channelId(message.slice(1)))) {
         sys.putInChannel(src, sys.channelId(message.slice(1)));
         sys.stopEvent();
         return;
@@ -4535,7 +4536,7 @@ beforeChallengeIssued : function (src, dest, clauses, rated, mode) {
         return;
     }
 
-    if (callplugins("beforeChallengeIssued", src, dest, clauses, rated)) {
+    if (callplugins("beforeChallengeIssued", src, dest, clauses, rated, mode)) {
         sys.stopEvent();
     }
 
