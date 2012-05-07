@@ -537,12 +537,12 @@ function Mafia(mafiachan) {
                 }
                 abilities += "Sided with " + readable(tran, "or") + ". ";
             }
-            if (role.side.hasOwnProperty("winningSides")) {
-                if (role.side.winningSides == "*") {
+            if (role.hasOwnProperty("winningSides")) {
+                if (role.winningSides == "*") {
                     abilities += "Wins the game in any case. ";
-                } else if (Array.isArray(role.side.winningSides)) {
+                } else if (Array.isArray(role.winningSides)) {
                     var trside = this.trside;
-                    abilities += "Wins the game with " + readable(role.side.winningSides.map(trside), "or");
+                    abilities += "Wins the game with " + readable(role.winningSides.map(trside), "or");
                 }
             }
             roles.push("±Ability: " + abilities);
@@ -1183,9 +1183,9 @@ function Mafia(mafiachan) {
                 // Roles which win with multiple sides
                 if (mafia.players[x].role.hasOwnProperty("winningSides")) {
                     var ws = mafia.players[x].role.winningSides;
-                    if (ws == "*" || Array.isArray(ws) && ws.indexOf(winSide) >= 0) {
+                    if (ws == "*" || (Array.isArray(ws) && ws.indexOf(winSide) >= 0)) {
                         players.push(x);
-                        continue outer;
+                        continue; // inner
                     }
                 }
                 if (mafia.players[x].role.side == winSide) {
