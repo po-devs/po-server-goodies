@@ -26,7 +26,7 @@ BANLIST = {
     "DW OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Blaziken", "Garchomp", "Chandelure", "Excadrill"], # DW Ubers
     "DW UU": ["Azelf", "Chansey", "Deoxys", "Deoxys-S", "Froslass", "Haxorus", "Hippowdon", "Hydreigon", "Kyurem", "Landorus", "Latias", "Lucario", "Roserade", "Scrafty", "Smeargle", "Staraptor", "Terrakion", "Venomoth", "Vulpix", "Wobbuffet"], # DW BL
     "Wifi LC": ["Scyther", "Sneasel", "Yanma", "Tangela", "Vulpix", "Murkrow", "Scraggy", "Misdreavus", "Meditite", "Carvanha", "Gligar", "Drilbur"], # LC Ubers (in addition to all other pokemon...)
-    "Wifi LC UU": ["Poliway", "Axew"], # Wifi LC BL
+    "Wifi LC UU": ["Poliwag", "Axew"], # Wifi LC BL
 }
 ADDITIONAL_BANS = {
     "Wifi UU": ["Vulpix", # Due to Drought being banned
