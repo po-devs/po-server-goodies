@@ -4536,7 +4536,7 @@ beforeChallengeIssued : function (src, dest, clauses, rated, mode) {
         return;
     }
 
-    if (callplugins("beforeChallengeIssued", src, dest, clauses, rated)) {
+    if (callplugins("beforeChallengeIssued", src, dest, clauses, rated, mode)) {
         sys.stopEvent();
     }
 
