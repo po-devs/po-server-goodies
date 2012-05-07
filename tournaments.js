@@ -967,10 +967,10 @@ function Tournament(channel)
 				if (extra.length > 0 || missing.length > 0)
 					return true;
 			}
-			/*if ((self.mode == "Singles" && mode !== 0) || (self.mode == "Doubles" && mode != 1) || (self.mode == "Triples" && mode != 2)) {
+			if ((self.mode == "Singles" && mode !== 0) || (self.mode == "Doubles" && mode != 1) || (self.mode == "Triples" && mode != 2)) {
 				sendPM(source, "Your match must be played in "+self.mode+" format. Change it in the challenge window.");
 				return true;
-			}*/
+			}
 			if (self.phase == "finals" && hasClause(clauses, DISALLOW_SPECS)) {
 				sendPM(source, "You must not use \"disallow specs\" in finals.");
 				return true;
