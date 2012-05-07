@@ -420,9 +420,7 @@ function Mafia(mafiachan) {
             this.nightPriority.sort(function(a,b) { return a.priority - b.priority; });
         }
         if ("standby" in obj.actions) {
-            //for (i in obj.actions.standby) {
             this.standbyRoles.push(obj.role);
-            //}
         }
     };
     Theme.prototype.generateRoleInfo = function() {
