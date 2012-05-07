@@ -6,6 +6,7 @@ import sys
 from copy import copy
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from tierutils import get_po_tiers, write_po_tiers, deserialize_bans, serialize_bans
 
 
 WEIGHTED_USAGE_STATS_URL="http://valssi.fixme.fi/~lamperi/cgi-bin/weighted_ranked_stats.py"
@@ -40,22 +41,6 @@ ITEM_BANS = {
     "Wifi NU": ["Damp Rock"],
     "Wifi LC": ["Berry Juice", "DeepSeaTooth"],
 }
-
-def get_po_tiers():
-    tree = lxml.etree.ElementTree()
-    if os.path.exists("tiers.xml"):
-        tree.parse("tiers.xml")
-    return tree
-
-def write_po_tiers(po_tiers):
-    with open("tiers.xml", "wb") as f:
-        f.write(lxml.etree.tostring(po_tiers).replace(b'\n', b'\r\n'))
-
-def deserialize_bans(str):
-    return set(s.strip() for s in str.split(","))
-
-def serialize_bans(set):
-    return ", ".join(sorted(list(set)))    
 
 def get_ranked_stats(tier):
     today = date.today()
