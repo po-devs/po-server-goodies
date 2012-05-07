@@ -441,6 +441,15 @@ function Mafia(mafiachan) {
             else
                 return 1;
         });
+        function readable(arr, last_delim) {
+            if (arr.length > 1) {
+                return arr.slice(0, arr.length-1).join(", ") + " " + last_delim + " " + arr.slice(-1)[0];
+            } else if (arr.length == 1) {
+                return arr[0];
+            } else {
+                return "";
+            }
+        }
         for (var r = 0; r < role_order.length; ++r) {
           try {
             role = this.roles[role_order[r]];
@@ -507,7 +516,7 @@ function Mafia(mafiachan) {
             }
             if ("hax" in role.actions && Object.keys) {
                 var haxy = Object.keys(role.actions.hax);
-                abilities += "Gets hax on " + (haxy.length > 1 ? haxy.splice(0,haxy.length-1).join(", ")+" and ":"") + haxy + ". ";
+                abilities += "Gets hax on " + readable(haxy, "and") + ". ";
             }
             if ("inspect" in role.actions) {
                 abilities += "Reveals as " + this.roles[role.actions.inspect.revealAs].translation + " when inspected. ";
@@ -526,7 +535,15 @@ function Mafia(mafiachan) {
                 for(var p = 0; p < plop.length; ++p) {
                    tran.push(this.trside(plop[p]));
                 }
-                abilities += "Sided with " + (tran.length > 1 ? tran.splice(0,tran.length-1).join(", ")+" or ":"") + tran + ". ";
+                abilities += "Sided with " + readable(tran, "or") + ". ";
+            }
+            if (role.side.hasOwnProperty("winningSides")) {
+                if (role.side.winningSides == "*") {
+                    abilities += "Wins the game in any case. ";
+                } else if (Array.isArray(role.side.winningSides)) {
+                    var trside = this.trside;
+                    abilities += "Wins the game with " + readable(role.side.winningSides.map(trside), "or");
+                }
             }
             roles.push("±Ability: " + abilities);
 
@@ -1113,6 +1130,14 @@ function Mafia(mafiachan) {
             var players = [];
             var goodPeople = [];
             for (var x in mafia.players) {
+                // Roles which win with multiple sides
+                if (mafia.players[x].role.hasOwnProperty("winningSides")) {
+                    var ws = mafia.players[x].role.winningSides;
+                    if (ws == "*" || Array.isArray(ws) && ws.indexOf(winSide) >= 0) {
+                        players.push(x);
+                        continue outer;
+                    }
+                }
                 if (mafia.players[x].role.side == winSide) {
                     players.push(x);
                 } else if (winSide == 'village') {
