@@ -450,7 +450,9 @@ function Mafia(mafiachan) {
             else
                 return 1;
         });
-        function mafia_trside(s) { return mafia.trside(s); }
+        
+        var that = this;
+        function trside(s) { return that.trside(s); }
         for (var r = 0; r < role_order.length; ++r) {
           try {
             role = this.roles[role_order[r]];
@@ -543,7 +545,7 @@ function Mafia(mafiachan) {
                     abilities += "Wins the game in any case. ";
                 } else if (Array.isArray(role.winningSides)) {
                     // Argh give me Function.bind already ;~;
-                    abilities += "Wins the game with " + readable(role.winningSides.map(mafia_trside), "or");
+                    abilities += "Wins the game with " + readable(role.winningSides.map(trside), "or");
                 }
             }
             roles.push("±Ability: " + abilities);
