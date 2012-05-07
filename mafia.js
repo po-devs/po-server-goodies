@@ -1324,21 +1324,16 @@ function Mafia(mafiachan) {
                         if (!mafia.isInGame(target)) continue;
                         target = mafia.players[target];
                         var distractMode = target.role.actions.distract;
-                        var ChangeTarget = player.role.actions.ChangeTarget; // moving ChangeTarget from night to actions
                         if (distractMode === undefined) {}
                         else if (target.safeguarded) {
                             mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
                         } else if (distractMode.mode == "ChangeTarget") {
-                            if (ChangeTarget === undefined) {
-                                mafia.sendPlayer(player.name, "±Game: " + distractMode.hookermsg);
-                                mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
-                                mafia.kill(player);
-                                nightkill = true;
-                                mafia.removeTargets(target);
-                                continue;
-                            } else if (ChangeTarget.mode == "ignore") {
-                                continue;
-                            }
+                            mafia.sendPlayer(player.name, "±Game: " + distractMode.hookermsg);
+                            mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
+                            mafia.kill(player);
+                            nightkill = true;
+                            mafia.removeTargets(target);
+                            continue;
                         } else if (distractMode.mode == "ignore") {
                             if (distractMode.msg)
                                 mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
@@ -1899,7 +1894,8 @@ function Mafia(mafiachan) {
         }
         mafiabot.sendChanMessage(src, "Installed themes are: " + l.join(", "));
     };
-    this.showThemeInfo = function(src) {
+    this.showThemeInfo = function(src, data) {
+        data = data.toLowerCase();
         mafia.themeManager.themeInfo.sort(function(a,b) {return a[0].localeCompare(b[0]);});
         var mess = [];
         mess.push("<table><tr><th>Theme</th><th>URL</th><th>Author</th><th>Enabled</th></tr>");
@@ -1907,7 +1903,9 @@ function Mafia(mafiachan) {
             var info = mafia.themeManager.themeInfo[i];
             var theme = mafia.themeManager.themes[info[0].toLowerCase()];
             if (!theme) continue;
-            mess.push('<tr><td>' + theme.name + '</td><td><a href="' + info[1] + '">' + info[1] + '</a></td><td>' + (theme.author ? theme.author : "unknown") + '</td><td>' + (theme.enabled ? "yes" : "no")+ '</td></tr>');
+            if (data == noPlayer || data.indexOf(theme.name.toLowerCase()) != -1) {
+                mess.push('<tr><td>' + theme.name + '</td><td><a href="' + info[1] + '">' + info[1] + '</a></td><td>' + (theme.author ? theme.author : "unknown") + '</td><td>' + (theme.enabled ? "yes" : "no")+ '</td></tr>');
+            }
         }
         mess.push("</table>");
         sys.sendHtmlMessage(src, mess.join(""), mafiachan);
@@ -2362,11 +2360,11 @@ function Mafia(mafiachan) {
                                 this.sendPlayer(haxPlayer, "±Game: " + name + " is The " + roleName + "!");
                         }
                     }
-                } 
-                /* 
+                }
+                /*
                  * OK, I know it was around here but I couldn't find where to add the activeTurn checker
                  * nor the activeCount = activeCount - 1 or something like that
-                 * you can just leave this idea for later :/ 
+                 * you can just leave this idea for later :/
                  */
                 return;
             }
