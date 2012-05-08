@@ -283,6 +283,8 @@ function Mafia(mafiachan) {
               ++i;
             }
             theme.roleLists = i-1;
+            if (theme.roleLists === 0)
+                throw "This theme has no roles1, it can not be played.";
             theme.villageCantLoseRoles = plain_theme.villageCantLoseRoles;
             theme.name = plain_theme.name;
             theme.author = plain_theme.author;
