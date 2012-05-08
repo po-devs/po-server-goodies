@@ -438,6 +438,7 @@ function Mafia(mafiachan) {
         var sep = "*** *********************************************************************** ***";
         var roles = [sep];
         var role;
+        var role_i = null;
         var role_order = Object.keys(this.roles);
         var this_roles = this.roles;
         role_order.sort(function(a,b) {
@@ -554,7 +555,7 @@ function Mafia(mafiachan) {
             var parts = [];
             var end = 0;
             for(var i = 1; i <= this.roleLists; ++i) {
-                var role_i = "roles"+i;
+                role_i = "roles"+i;
                 var start = this[role_i].indexOf(role.role);
                 var last = end;
                 end = this[role_i].length;
@@ -578,7 +579,10 @@ function Mafia(mafiachan) {
 
             roles.push(sep);
           } catch (err) {
-            mafiabot.sendAll("Error adding role " + role.translation + "(" + role.role + ") to /roles", mafiachan);
+            if (role_i === null)
+                mafiabot.sendAll("Error adding role " + role.translation + "(" + role.role + ") to /roles", mafiachan);
+            else
+                mafiabot.sendAll("Error making rolelist with role id: " + role_i , mafiachan);
             throw err;
           }
         }
