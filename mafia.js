@@ -1200,7 +1200,7 @@ function Mafia(mafiachan) {
                     goodPeople.push(x);
                 } else {
                     // some other baddie team alive
-                    return false;
+                    continue outer;
                 }
             }
 
