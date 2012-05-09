@@ -716,19 +716,17 @@ function Mafia(mafiachan) {
         var o, a;
         for (o in this.teamRecharges) {
             for (a in this.teamRecharges[o]) {
-                if (o[a] > 0) --o[a];
+                if (this.teamRecharges[o][a] > 0) --this.teamRecharges[o][a];
             }
         }
         for (o in this.roleRecharges) {
             for (a in this.roleRecharges[o]) {
-                if (o[a] > 0) --o[a];
+                if (this.roleRecharges[o][a] > 0) --this.roleRecharges[o][a];
             }
         }
         for (var p in this.players) {
             for (o in this.players[p].recharges) {
-                for (a in this.players[p].recharges[o]) {
-                    if (o[a] > 0) --o[a];
-                }
+                if (this.players[p].recharges[o] > 0) --this.players[p].recharges[o];       
             }
         }
     };
@@ -1073,7 +1071,7 @@ function Mafia(mafiachan) {
             if (!(player.role.side in this.teamRecharges)) {
                 this.teamRecharges[player.role.side] = {};
             }
-            this.teamTargets[player.role.side][action] = count;
+            this.teamRecharges[player.role.side][action] = count;
         } else if (commonTarget == 'Role') {
             if (!(player.role.role in this.roleRecharges)) {
                 this.roleRecharges[player.role.role] = {};
@@ -1358,8 +1356,8 @@ function Mafia(mafiachan) {
                     command = Action.command; // translate to real command
                 }
                 var rechargeCount = 0;
-                if ("rechargecount" in Action) { // a command that can only be used once every X nights
-                     rechargeCount = Action.rechargecount;
+                if ("recharge" in Action) { // a command that can only be used once every X nights
+                     rechargeCount = Action.recharge;
                 }
                 for (j = 0; j < names.length; ++j) {
                     if (!mafia.isInGame(names[j])) continue;
