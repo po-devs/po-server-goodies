@@ -561,7 +561,7 @@ addAdminCommand("apropos", function(src, commandData, channel) {
 
 
 addAdminCommand("checkqs", function(src, commandData, channel) {
-    if (trivreview.questionsAmount() === 0)
+    if (trivreview.questionAmount() === 0)
     {
         Trivia.sendPM(src,"There are no questions to be reviewed.", channel);
         return;
