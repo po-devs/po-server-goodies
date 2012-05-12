@@ -329,7 +329,7 @@ function Mafia(mafiachan) {
         sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({'meta': this.themeInfo}));
     };
 
-    ThemeManager.prototype.loadWebTheme = function(url, announce, update) {
+    ThemeManager.prototype.loadWebTheme = function(url, announce, update, updatename) {
         if (typeof sys != 'object') return;
         var manager = this;
         sys.webCall(url, function(resp) {
@@ -339,6 +339,10 @@ function Mafia(mafiachan) {
                 var lower = theme.name.toLowerCase();
                 if (manager.themes.hasOwnProperty(lower) && !update) {
                     mafiabot.sendAll("Won't update " + theme.name + " with /add, use /update to force an update", mafiachan);
+                    return;
+                }
+                if (manager.themes.hasOwnProperty(lower) && update && updatename && updatename != lower) {
+                    mafiabot.sendAll("Won't update '" + updatename + "' to '" + theme.name + "', use the old name.", mafiachan);
                     return;
                 }
                 manager.themes[lower] = theme;
@@ -2134,9 +2138,17 @@ function Mafia(mafiachan) {
         }
         mafia.themeManager.loadWebTheme(url, true, false);
     };
-    this.updateTheme = function(src, url) {
-        var theme = mafia.themeManager.themes[url.toLowerCase()];
-        var authorMatch = theme !== undefined && typeof theme.author == "string" && theme.author.toLowerCase() == sys.name(src).toLowerCase();
+    this.updateTheme = function(src, data) {
+        var url = data, name = data;
+        if (data.indexOf("::") >= 0) {
+            var parts = url.split("::");
+            name = parts[0];
+            url = parts[1];
+        }
+        var theme = mafia.themeManager.themes[name.toLowerCase()];
+        //  theme.author can be either string or Array of strings
+        var authorMatch = theme !== undefined && (typeof theme.author == "string" && theme.author.toLowerCase() == sys.name(src).toLowerCase() || Array.isArray(theme.author) && theme.author.map(function(s) { return s.toLowerCase(); }).indexOf(sys.name(src).toLowerCase()) >= 0);
+
         if (!mafia.isMafiaAdmin(src) && !authorMatch) {
             mafiabot.sendChanMessage(src, "You need to be admin or the author of this theme.");
             return;
@@ -2144,7 +2156,7 @@ function Mafia(mafiachan) {
         var dlurl;
         if (url.substr(0,7) != "http://") {
             for (var i = 0; i < mafia.themeManager.themeInfo.length; ++i) {
-                if (mafia.themeManager.themeInfo[i][0].toLowerCase() == url.toLowerCase()) {
+                if (mafia.themeManager.themeInfo[i][0].toLowerCase() == name.toLowerCase()) {
                     dlurl = mafia.themeManager.themeInfo[i][1];
                     break;
                 }
@@ -2154,7 +2166,7 @@ function Mafia(mafiachan) {
         }
         mafiabot.sendChanMessage(src, "Download url: " + dlurl);
         if (dlurl) {
-            mafia.themeManager.loadWebTheme(dlurl, true, true);
+            mafia.themeManager.loadWebTheme(dlurl, true, true, authorMatch ? theme.name.toLowerCase() : null);
         }
     };
     this.removeTheme = function(src, name) {
