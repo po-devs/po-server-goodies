@@ -889,7 +889,7 @@ function Tournament(channel)
 					}
 				}
 			}
-		}, 300);
+		}, 240);
 	}
 
 	// event battleStart
