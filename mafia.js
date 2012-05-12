@@ -53,8 +53,11 @@ function Mafia(mafiachan) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
-    /* format arrays so that it looks fine to humans */
+    /* format arrays so that it looks fine to humans
+     * also accepts a string, in which case just returns it */
     function readable(arr, last_delim) {
+        if (!Array.isArray(arr))
+            return arr;
         if (arr.length > 1) {
             return arr.slice(0, arr.length-1).join(", ") + " " + last_delim + " " + arr.slice(-1)[0];
         } else if (arr.length == 1) {
@@ -1970,7 +1973,7 @@ function Mafia(mafiachan) {
             var theme = mafia.themeManager.themes[info[0].toLowerCase()];
             if (!theme) continue;
             if (data == noPlayer || data.indexOf(theme.name.toLowerCase()) != -1) {
-                mess.push('<tr><td>' + theme.name + '</td><td><a href="' + info[1] + '">' + info[1] + '</a></td><td>' + (theme.author ? theme.author : "unknown") + '</td><td>' + (theme.enabled ? "yes" : "no")+ '</td></tr>');
+                mess.push('<tr><td>' + theme.name + '</td><td><a href="' + info[1] + '">' + info[1] + '</a></td><td>' + (theme.author ? readable(theme.author) : "unknown") + '</td><td>' + (theme.enabled ? "yes" : "no")+ '</td></tr>');
             }
         }
         mess.push("</table>");
@@ -1999,7 +2002,7 @@ function Mafia(mafiachan) {
         var mess = [];
         mess.push("");
         mess.push("<b>Theme: </b>" + theme.name);
-        mess.push("<b>Author: </b>" + (theme.author ? theme.author : "Unknown"));
+        mess.push("<b>Author: </b>" + (theme.author ? readable(theme.author) : "Unknown"));
         mess.push("<b>Enabled: </b>" + (theme.enabled ? "Yes" : "No"));
         mess.push("<b>Number of Players: </b> Up to " + (theme["roles" + theme.roleLists].length) + " players");
         mess.push("<b>Summary: </b>" + (theme.summary ? theme.summary : "No summary avaiable."));
@@ -2427,6 +2430,7 @@ function Mafia(mafiachan) {
                         var r = Math.random();
                         var roleName = this.theme.trside(player.role.side);
                         team = this.getPlayersForRole(player.role.side);
+                        var playerRole = this.theme.trrole(player.role.role);
                         if (r < mafia.theme.roles[role].actions.hax[command].revealTeam) {
                             if (team.length > 1)
                                 this.sendPlayer(haxPlayer, "±Game: The " + roleName + " are going to " + command + " " + commandData + "!");
@@ -2439,13 +2443,12 @@ function Mafia(mafiachan) {
                             else
                                 this.sendPlayer(haxPlayer, "±Game: " + name + " is The " + roleName + "!");
                         }
+                        if (r < mafia.theme.roles[role].actions.hax[command].revealRole) {
+                            this.sendPlayer(haxPlayer, "±Game: " + name + " is " + playerRole + "!");
+                        }
+
                     }
                 }
-                /*
-                 * OK, I know it was around here but I couldn't find where to add the activeTurn checker
-                 * nor the activeCount = activeCount - 1 or something like that
-                 * you can just leave this idea for later :/
-                 */
                 return;
             }
         } else if (this.state == "day") {
