@@ -1324,7 +1324,7 @@ function Mafia(mafiachan) {
                     if (typeof role.actions.startup.revealRole == "string") {
                         if (mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) !== "")
                             mafia.sendPlayer(player.name, "±Game: The " + mafia.theme.roles[role.actions.startup.revealRole].translation + " is " + mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) + "!");
-                    } else if (Array.isArray(role.actions.startup.revealRole == "object")) {
+                    } else if (Array.isArray(role.actions.startup.revealRole)) {
                         for (var s = 0, l = role.actions.startup.revealRole.length; s < l; ++s) {
                             var revealrole = role.actions.startup.revealRole[s];
                             if (mafia.getPlayersForRoleS(revealrole) !== "")
