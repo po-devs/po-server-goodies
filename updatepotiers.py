@@ -25,7 +25,7 @@ BANLIST = {
     "Wifi LU": ["Cresselia", "Gorebyss", "Huntail", "Victini", "Rhyperior", "Medicham", "Durant", "Virizion", "Sharpedo"], # BL2
     "Wifi NU": ["Feraligatr", "Sawsbuck", "Gligar", "Charizard", "Hitmonlee", "Scolipede", "Tangela", "Jynx", "Druddigon"], # BL3
     "DW OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Blaziken", "Garchomp", "Chandelure", "Excadrill"], # DW Ubers
-    "DW UU": ["Azelf", "Chansey", "Deoxys", "Deoxys-S", "Froslass", "Haxorus", "Hippowdon", "Hydreigon", "Kyurem", "Landorus", "Latias", "Lucario", "Roserade", "Scrafty", "Smeargle", "Staraptor", "Terrakion", "Venomoth", "Vulpix", "Wobbuffet"], # DW BL
+    "DW UU": ["Azelf", "Chansey", "Deoxys", "Deoxys-S", "Froslass", "Haxorus", "Hydreigon", "Kyurem", "Landorus", "Latias", "Lucario", "Roserade", "Scrafty", "Smeargle", "Staraptor", "Terrakion", "Venomoth", "Vulpix", "Wobbuffet", "Abomasnow", "Snover"], # DW BL
     "Wifi LC": ["Scyther", "Sneasel", "Yanma", "Tangela", "Vulpix", "Murkrow", "Scraggy", "Misdreavus", "Meditite", "Carvanha", "Gligar", "Drilbur"], # LC Ubers (in addition to all other pokemon...)
     "Wifi LC UU": ["Poliwag", "Axew"], # Wifi LC BL
 }
