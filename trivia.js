@@ -580,7 +580,7 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 });
 
 // TODO: are these well named? also do versions for already accepted questions
-addAdminCommand("checka", function(src, commandData, channel) {
+addAdminCommand("changea", function(src, commandData, channel) {
     if (commandData === undefined)
         return;
     commandData = commandData.split("*");
@@ -588,7 +588,7 @@ addAdminCommand("checka", function(src, commandData, channel) {
     triviabot.sendMessage(src,"The answer for ID #"+commandData[0]+" was changed to "+commandData[1], channel);
 });
 
-addAdminCommand("checkq", function(src, commandData, channel) {
+addAdminCommand("changeq", function(src, commandData, channel) {
     if (commandData === undefined)
         return;
     commandData = commandData.split("*");
@@ -596,7 +596,7 @@ addAdminCommand("checkq", function(src, commandData, channel) {
     triviabot.sendMessage(src,"The question for ID #"+commandData[0]+" was changed to "+commandData[1], channel);
 });
 
-addAdminCommand("checkc", function(src, commandData, channel) {
+addAdminCommand("changec", function(src, commandData, channel) {
     if (commandData === undefined)
         return;
     commandData = commandData.split("*");
