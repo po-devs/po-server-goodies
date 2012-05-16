@@ -63,7 +63,6 @@ TriviaGame.prototype.startTrivia = function(src,rand)
         this.sendPM(src,"There are no questions.");
         return;
     }
-    this.started = true;
     if (rand > 102 || rand < 2)
     {
         this.sendPM(src,"Please do not start a game with more than 102 points, or lower than 2 points.");
@@ -71,6 +70,7 @@ TriviaGame.prototype.startTrivia = function(src,rand)
     }
     rand = (rand === undefined) ? sys.rand(2,81) : +rand;
     this.maxPoints = rand;
+    this.started = true;
     // TODO: enable when working
     // this.sendAll("A #Trivia game was started! First to "+rand+" points wins!",0);
     this.sendAll(sys.name(src)+" started a trivia game! First to "+rand+" points wins!");
