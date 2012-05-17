@@ -31,6 +31,8 @@ var clauseMap = {
 	128: WIFI_CLAUSE,
 	256: SELF_KO_CLAUSE
 };
+var utilities = require('utilities.js');
+var nonFlashing = utilities.non_flashing;
 
 // build reverse mapping
 var clauseToId={};
@@ -211,7 +213,7 @@ function Tournament(channel)
 		self.mode = mode;
 
 		wall(border);
-		wall("*** A Tournament was started by " + self.starter + "! ***");
+		wall("*** A Tournament was started by " + nonFlashing(self.starter) + "! ***");
 		wall("PLAYERS: " + self.count);
 		wall("TIER: " + self.tier);
 		wall("MODE: " + self.mode);
