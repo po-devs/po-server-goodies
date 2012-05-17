@@ -32,6 +32,11 @@ TierChecker.prototype.find_good_tier = function(src) {
     }
 };
 
+// TODO
+// lcpokemons
+// breedingpokemon
+// dwpokemons
+
 var tier_checker = new TierChecker();
 var INCLUDING = false;
 var EXCLUDING = true;
@@ -64,7 +69,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi LC", "Wifi LC Ubers", "Wifi UU LC"]
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi NU"], function evioliteCheck(src) {
+tier_checker.add_new_check(INCLUDING, ["Wifi NU"], function evioliteCheck(src, tier) {
     var evioliteLimit = 6;
     var eviolites = 0;
     for (var i = 0; i < 6; i++) {
@@ -92,7 +97,7 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["DW OU", "DW UU", "DW LU", "Wifi OU", "Wifi UU", "Wifi LU", "Wifi LC", "DW LC", "Wifi Ubers", "DW Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "Wifi NU"], function inconsistentCheck(src) {
+tier_checker.add_new_check(INCLUDING, ["DW OU", "DW UU", "DW LU", "Wifi OU", "Wifi UU", "Wifi LU", "Wifi LC", "DW LC", "Wifi Ubers", "DW Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "Wifi NU"], function inconsistentCheck(src, tier) {
     var moody = sys.abilityNum("Moody");
     for (var i = 0; i < 6; i++) {
         var x = sys.teamPoke(src, i);
@@ -275,7 +280,7 @@ tier_checker.add_new_check(INCLUDING, ["Smogon UU"], function droughtCheck(src) 
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU"], function snowWarningCheck(src) {
+tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU"], function snowWarningCheck(src, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, i)) == "Snow Warning"){
             normalbot.sendMessage(src, "Snow Warning is not allowed in " + tier + ".");
@@ -319,6 +324,7 @@ tier_checker.add_new_check(INCLUDING, ["Shanai Cup", "Shanai Cup 1.5", "Shanai C
 });
 
 
+var advance200Banlist;
 tier_checker.add_new_check(INCLUDING, ["Adv 200"], function advance200Check(src) {
     var poke;
     if (typeof advance200Banlist === 'undefined') {
