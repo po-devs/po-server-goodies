@@ -53,6 +53,20 @@ function Mafia(mafiachan) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
+    /* format arrays so that it looks fine to humans
+     * also accepts a string, in which case just returns it */
+    function readable(arr, last_delim) {
+        if (!Array.isArray(arr))
+            return arr;
+        if (arr.length > 1) {
+            return arr.slice(0, arr.length-1).join(", ") + " " + last_delim + " " + arr.slice(-1)[0];
+        } else if (arr.length == 1) {
+            return arr[0];
+        } else {
+            return "";
+        }
+    }
+
 
     var defaultTheme = {
       name: "default",
@@ -272,6 +286,8 @@ function Mafia(mafiachan) {
               ++i;
             }
             theme.roleLists = i-1;
+            if (theme.roleLists === 0)
+                throw "This theme has no roles1, it can not be played.";
             theme.villageCantLoseRoles = plain_theme.villageCantLoseRoles;
             theme.name = plain_theme.name;
             theme.author = plain_theme.author;
@@ -316,7 +332,7 @@ function Mafia(mafiachan) {
         sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({'meta': this.themeInfo}));
     };
 
-    ThemeManager.prototype.loadWebTheme = function(url, announce, update) {
+    ThemeManager.prototype.loadWebTheme = function(url, announce, update, updatename) {
         if (typeof sys != 'object') return;
         var manager = this;
         sys.webCall(url, function(resp) {
@@ -326,6 +342,10 @@ function Mafia(mafiachan) {
                 var lower = theme.name.toLowerCase();
                 if (manager.themes.hasOwnProperty(lower) && !update) {
                     mafiabot.sendAll("Won't update " + theme.name + " with /add, use /update to force an update", mafiachan);
+                    return;
+                }
+                if (manager.themes.hasOwnProperty(lower) && update && updatename && updatename != lower) {
+                    mafiabot.sendAll("Won't update '" + updatename + "' to '" + theme.name + "', use the old name.", mafiachan);
                     return;
                 }
                 manager.themes[lower] = theme;
@@ -399,6 +419,9 @@ function Mafia(mafiachan) {
     };
     Theme.prototype.addRole = function(obj) {
         this.roles[obj.role] = obj;
+        if (!obj.actions) {
+            obj.actions = {};
+        }
 
         var i, action;
         if ("hax" in obj.actions) {
@@ -420,15 +443,14 @@ function Mafia(mafiachan) {
             this.nightPriority.sort(function(a,b) { return a.priority - b.priority; });
         }
         if ("standby" in obj.actions) {
-            //for (i in obj.actions.standby) {
             this.standbyRoles.push(obj.role);
-            //}
         }
     };
     Theme.prototype.generateRoleInfo = function() {
         var sep = "*** *********************************************************************** ***";
         var roles = [sep];
         var role;
+        var role_i = null;
         var role_order = Object.keys(this.roles);
         var this_roles = this.roles;
         role_order.sort(function(a,b) {
@@ -441,15 +463,9 @@ function Mafia(mafiachan) {
             else
                 return 1;
         });
-        function readable(arr, last_delim) {
-            if (arr.length > 1) {
-                return arr.slice(0, arr.length-1).join(", ") + " " + last_delim + " " + arr.slice(-1)[0];
-            } else if (arr.length == 1) {
-                return arr[0];
-            } else {
-                return "";
-            }
-        }
+        
+        var that = this;
+        function trside(s) { return that.trside(s); }
         for (var r = 0; r < role_order.length; ++r) {
           try {
             role = this.roles[role_order[r]];
@@ -537,12 +553,12 @@ function Mafia(mafiachan) {
                 }
                 abilities += "Sided with " + readable(tran, "or") + ". ";
             }
-            if (role.side.hasOwnProperty("winningSides")) {
-                if (role.side.winningSides == "*") {
+            if (role.hasOwnProperty("winningSides")) {
+                if (role.winningSides == "*") {
                     abilities += "Wins the game in any case. ";
-                } else if (Array.isArray(role.side.winningSides)) {
-                    var trside = this.trside;
-                    abilities += "Wins the game with " + readable(role.side.winningSides.map(trside), "or");
+                } else if (Array.isArray(role.winningSides)) {
+                    // Argh give me Function.bind already ;~;
+                    abilities += "Wins the game with " + readable(role.winningSides.map(trside), "or");
                 }
             }
             roles.push("±Ability: " + abilities);
@@ -551,7 +567,7 @@ function Mafia(mafiachan) {
             var parts = [];
             var end = 0;
             for(var i = 1; i <= this.roleLists; ++i) {
-                var role_i = "roles"+i;
+                role_i = "roles"+i;
                 var start = this[role_i].indexOf(role.role);
                 var last = end;
                 end = this[role_i].length;
@@ -575,7 +591,10 @@ function Mafia(mafiachan) {
 
             roles.push(sep);
           } catch (err) {
-            mafiabot.sendAll("Error adding role " + role.translation + "(" + role.role + ") to /roles", mafiachan);
+            if (role_i === null)
+                mafiabot.sendAll("Error adding role " + role.translation + "(" + role.role + ") to /roles", mafiachan);
+            else
+                mafiabot.sendAll("Error making rolelist with role id: " + role_i , mafiachan);
             throw err;
           }
         }
@@ -628,7 +647,7 @@ function Mafia(mafiachan) {
                     for(var p = 0; p < plop.length; ++p) {
                         tran.push(this.trside(plop[p]));
                     }
-                    randomSide_list.push("±Role: " + role.translation + " can be sided with " + (tran.length > 1 ? tran.splice(0,tran.length-1).join(", ")+" or ":"") + tran + ". ");
+                    randomSide_list.push("±Role: " + role.translation + " can be sided with " + readable(tran, "or") + ". ");
                 }
             } catch (err) {
                 mafiabot.sendAll("Error adding role " + role.translation + "(" + role.role + ") to /sides", mafiachan);
@@ -704,8 +723,29 @@ function Mafia(mafiachan) {
         this.voteCount = 0;
         this.ips = [];
         this.resetTargets();
+        // Recharges shouldn't be cleared between nights
+        this.teamRecharges = {};
+        this.roleRecharges = {};
     };
     this.lastAdvertise = 0;
+    this.reduceRecharges = function() {
+        var o, a;
+        for (o in this.teamRecharges) {
+            for (a in this.teamRecharges[o]) {
+                if (this.teamRecharges[o][a] > 0) --this.teamRecharges[o][a];
+            }
+        }
+        for (o in this.roleRecharges) {
+            for (a in this.roleRecharges[o]) {
+                if (this.roleRecharges[o][a] > 0) --this.roleRecharges[o][a];
+            }
+        }
+        for (var p in this.players) {
+            for (o in this.players[p].recharges) {
+                if (this.players[p].recharges[o] > 0) --this.players[p].recharges[o];
+            }
+        }
+    };
     this.resetTargets = function() {
         this.teamTargets = {};
         this.roleTargets = {};
@@ -838,9 +878,6 @@ function Mafia(mafiachan) {
 
         border = this.theme.border ? this.theme.border : DEFAULT_BORDER;
         CurrentGame = {who: src !== null ? sys.name(src) : "voted", what: themeName, when: parseInt(sys.time(), 10), playerCount: 0};
-
-        // For random theme
-        //mafia.theme = mafia.themeManager.themes[Object.keys(mafia.themeManager.themes)[parseInt(Object.keys(mafia.themeManager.themes).length * Math.random())]];
 
         if (src !== null) {
             sys.sendAll("", mafiachan);
@@ -1042,8 +1079,37 @@ function Mafia(mafiachan) {
             this.roleTargets[player.role.role][action] = [];
         }
     };
-    this.removeTarget2 = function(player, target) {
-        // TODO: implement
+    this.setRechargeFor = function(player, phase, action, count) {
+        var commonTarget = player.role.actions[phase][action].common;
+        if (commonTarget == 'Self') {
+            player.recharges[action] = count;
+        } else if (commonTarget == 'Team') {
+            if (!(player.role.side in this.teamRecharges)) {
+                this.teamRecharges[player.role.side] = {};
+            }
+            this.teamRecharges[player.role.side][action] = count;
+        } else if (commonTarget == 'Role') {
+            if (!(player.role.role in this.roleRecharges)) {
+                this.roleRecharges[player.role.role] = {};
+            }
+            this.roleRecharges[player.role.role][action] = count;
+        }
+    };
+    this.getRecharge = function(player, phase, action) {
+        var commonTarget = player.role.actions[phase][action].common;
+        if (commonTarget == 'Self') {
+            return player.recharges[action];
+        } else if (commonTarget == 'Team') {
+            if (!(player.role.side in this.teamRecharges)) {
+                this.teamRecharges[player.role.side] = {};
+            }
+            return this.teamRecharges[player.role.side][action];
+        } else if (commonTarget == 'Role') {
+            if (!(player.role.role in this.roleRecharges)) {
+                this.roleRecharges[player.role.role] = {};
+            }
+            return this.roleRecharges[player.role.role][action];
+        }
     };
     this.getTargetsFor = function(player, action) {
         var commonTarget = player.role.actions.night[action].common;
@@ -1134,9 +1200,9 @@ function Mafia(mafiachan) {
                 // Roles which win with multiple sides
                 if (mafia.players[x].role.hasOwnProperty("winningSides")) {
                     var ws = mafia.players[x].role.winningSides;
-                    if (ws == "*" || Array.isArray(ws) && ws.indexOf(winSide) >= 0) {
+                    if (ws == "*" || (Array.isArray(ws) && ws.indexOf(winSide) >= 0)) {
                         players.push(x);
-                        continue outer;
+                        continue; // inner
                     }
                 }
                 if (mafia.players[x].role.side == winSide) {
@@ -1154,12 +1220,12 @@ function Mafia(mafiachan) {
 
             if (players.length >= goodPeople.length) {
                 if(winSide in mafia.theme.sideWinMsg){
-                    sys.sendAll(mafia.theme.sideWinMsg[winSide].replace(/~Players~/g, (players.length > 1 ? players.splice(0,players.length-1).join(", ")+" and ":"") + players), mafiachan);
+                    sys.sendAll(mafia.theme.sideWinMsg[winSide].replace(/~Players~/g, readable(players, "and")) , mafiachan);
                 } else {
-                    sys.sendAll("±Game: The " + mafia.theme.trside(winSide) + " (" + players.join(', ') + ") wins!", mafiachan);
+                    sys.sendAll("±Game: The " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ") wins!", mafiachan);
                 }
                 if (goodPeople.length > 0) {
-                    sys.sendAll("±Game: The " + mafia.theme.trside('village') + " (" + goodPeople.join(', ') + ") lose!", mafiachan);
+                    sys.sendAll("±Game: The " + mafia.theme.trside('village') + " (" + readable(goodPeople, "and") + ") lose!", mafiachan);
                 }
                 sys.sendAll(border, mafiachan);
                 mafia.clearVariables();
@@ -1197,7 +1263,7 @@ function Mafia(mafiachan) {
             srcArray = shuffle(srcArray);
 
             for (i = 0; i < srcArray.length; ++i) {
-                mafia.players[mafia.signups[i]] = {'name': mafia.signups[i], 'role': mafia.theme.roles[srcArray[i]], 'targets': {}};
+                mafia.players[mafia.signups[i]] = {'name': mafia.signups[i], 'role': mafia.theme.roles[srcArray[i]], 'targets': {}, 'recharges': {}};
                 if (typeof mafia.theme.roles[srcArray[i]].side == "object") {
                     if ("random" in mafia.theme.roles[srcArray[i]].side) {
                         var cum = 0;
@@ -1245,7 +1311,7 @@ function Mafia(mafiachan) {
                 if (role.actions.startup == "team-reveal") {
                     mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
                 }
-                if (typeof role.actions.startup == "object" && role.actions.startup["team-revealif"] && typeof role.actions.startup["team-revealif"].indexOf == "function") {
+                if (typeof role.actions.startup == "object" && Array.isArray(role.actions.startup["team-revealif"])) {
                     if (role.actions.startup["team-revealif"].indexOf(role.side) != -1) {
                         mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
                     }
@@ -1258,7 +1324,7 @@ function Mafia(mafiachan) {
                     if (typeof role.actions.startup.revealRole == "string") {
                         if (mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) !== "")
                             mafia.sendPlayer(player.name, "±Game: The " + mafia.theme.roles[role.actions.startup.revealRole].translation + " is " + mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) + "!");
-                    } else if (typeof role.actions.startup.revealRole == "object" && typeof role.actions.startup.revealRole.indexOf == "function") {
+                    } else if (Array.isArray(role.actions.startup.revealRole)) {
                         for (var s = 0, l = role.actions.startup.revealRole.length; s < l; ++s) {
                             var revealrole = role.actions.startup.revealRole[s];
                             if (mafia.getPlayersForRoleS(revealrole) !== "")
@@ -1305,12 +1371,9 @@ function Mafia(mafiachan) {
                 if ("command" in Action) {
                     command = Action.command; // translate to real command
                 }
+                var rechargeCount = 0;
                 if ("recharge" in Action) { // a command that can only be used once every X nights
-                    var activeTurn = true; // confirms the command can be used
-                    var activeCount = 1; // sets how many nights for cooldown
-                    if ("rechargecount" in Action && "rechargecount" > 1) {
-                        activeCount = Action.rechargecount; // custom cooldown count in "night": { action: {"rechargecount"}}
-                    }
+                     rechargeCount = Action.recharge;
                 }
                 for (j = 0; j < names.length; ++j) {
                     if (!mafia.isInGame(names[j])) continue;
@@ -1318,69 +1381,70 @@ function Mafia(mafiachan) {
                     var targets = mafia.getTargetsFor(player, o.action);
                     var target, t; // current target
 
+                    // Limit the use of this command for the following nights
+                    if (rechargeCount > 0 && targets.length > 0) {
+                        // set the recharge period
+                        mafia.setRechargeFor(player, "night", o.action, rechargeCount);
+                    }
                     if (command == "distract") {
-                        if (targets.length === 0) continue;
-                        target = targets[0];
-                        if (!mafia.isInGame(target)) continue;
-                        target = mafia.players[target];
-                        var distractMode = target.role.actions.distract;
-                        var ChangeTarget = player.role.actions.ChangeTarget; // moving ChangeTarget from night to actions
-                        if (distractMode === undefined) {}
-                        else if (target.safeguarded) {
-                            mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
-                        } else if (distractMode.mode == "ChangeTarget") {
-                            if (ChangeTarget === undefined) {
+                        for (t in targets) {
+                            target = targets[t];
+                            if (!mafia.isInGame(target)) continue;
+                            target = mafia.players[target];
+                            var distractMode = target.role.actions.distract;
+                            if (distractMode === undefined) {}
+                            else if (target.safeguarded) {
+                                mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
+                            } else if (distractMode.mode == "ChangeTarget") {
                                 mafia.sendPlayer(player.name, "±Game: " + distractMode.hookermsg);
                                 mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
                                 mafia.kill(player);
                                 nightkill = true;
                                 mafia.removeTargets(target);
                                 continue;
-                            } else if (ChangeTarget.mode == "ignore") {
+                            } else if (distractMode.mode == "ignore") {
+                                if (distractMode.msg)
+                                    mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
+                                continue;
+                            } else if (typeof distractMode.mode == "object" && (distractMode.mode.ignore == player.role.role || Array.isArray(distractMode.mode.ignore) && distractMode.mode.ignore.indexOf(player.role.role) > -1)) {
+                                if (distractMode.msg)
+                                    mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
+                                continue;
+                            } else if (typeof distractMode.mode == "object" && Array.isArray(distractMode.mode.killif) == "object" && distractMode.mode.killif.indexOf(player.role.role) > -1) {
+                                if (distractMode.hookermsg)
+                                    mafia.sendPlayer(player.name, "±Game: " + distractMode.hookermsg);
+                                if (distractMode.msg)
+                                    mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
+                                mafia.kill(player);
+                                nightkill = true;
+                                mafia.removeTargets(target);
                                 continue;
                             }
-                        } else if (distractMode.mode == "ignore") {
-                            if (distractMode.msg)
-                                mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
-                            continue;
-                        } else if (typeof distractMode.mode == "object" && (typeof distractMode.mode.ignore == "string" && distractMode.mode.ignore == player.role.role || typeof distractMode.mode.ignore == "object" && typeof distractMode.mode.ignore.indexOf == "function" && distractMode.mode.ignore.indexOf(player.role.role) > -1)) {
-                            if (distractMode.msg)
-                                mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
-                            continue;
-                        } else if (typeof distractMode.mode == "object" && typeof distractMode.mode.killif == "object" && typeof distractMode.mode.killif.indexOf == "function" && distractMode.mode.killif.indexOf(player.role.role) > -1) {
-                            if (distractMode.hookermsg)
-                                mafia.sendPlayer(player.name, "±Game: " + distractMode.hookermsg);
-                            if (distractMode.msg)
-                                mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
-                            mafia.kill(player);
-                            nightkill = true;
-                            mafia.removeTargets(target);
-                            continue;
-                        }
-                        // enables custom distracter message
-                        var distractCustomMsg = Action.distractmsg;
-                        // "distractmsg" item under "night" { "distract" }
-                        if (typeof distractCustomMsg == "string") {
-                             mafia.sendPlayer(target.name, "±Game: " + distractCustomMsg.replace(/~Distracter~/g, player.role.translation));
-                        }
-                        else {
-                             mafia.sendPlayer(target.name, "±Game: The " + player.role.translation +" came to you last night! You were too busy being distracted!");
-                        } mafia.removeTargets(target);
-                        
-                        /* warn role / teammates */
-                        var teamMsg = Action.teammsg;
-                        // above defined "distract": { "teammsg": <string> }
-                        if ("night" in target.role.actions) {
-                            for (var action in target.role.actions.night) {
-                                var team = getTeam(target.role, target.role.actions.night[action].common);
-                                for (var x in team) {
-                                    if (team[x] != target.name) {
-                                        // now we check if teammsg was defined for the role
-                                        if (teamMsg === undefined) {
-                                            mafia.sendPlayer(team[x], "±Game: Your teammate was too busy with the " + player.role.translation + " during the night, you decided not to " + action + " anyone during the night!");
-                                        }
-                                        else if (typeof teamMsg == "string") {
-                                            mafia.sendPlayer(team[x], "±Game: " + teamMsg.replace(/~Distracter~/g, player.role.translation).replace(/~Action~/g, action));
+                            // enables custom distracter message
+                            var distractCustomMsg = Action.distractmsg;
+                            // "distractmsg" item under "night" { "distract" }
+                            if (typeof distractCustomMsg == "string") {
+                                 mafia.sendPlayer(target.name, "±Game: " + distractCustomMsg.replace(/~Distracter~/g, player.role.translation));
+                            }
+                            else {
+                                 mafia.sendPlayer(target.name, "±Game: The " + player.role.translation +" came to you last night! You were too busy being distracted!");
+                            } mafia.removeTargets(target);
+                            
+                            /* warn role / teammates */
+                            var teamMsg = Action.teammsg;
+                            // above defined "distract": { "teammsg": <string> }
+                            if ("night" in target.role.actions) {
+                                for (var action in target.role.actions.night) {
+                                    var team = getTeam(target.role, target.role.actions.night[action].common);
+                                    for (var x in team) {
+                                        if (team[x] != target.name) {
+                                            // now we check if teammsg was defined for the role
+                                            if (teamMsg === undefined) {
+                                                mafia.sendPlayer(team[x], "±Game: Your teammate was too busy with the " + player.role.translation + " during the night, you decided not to " + action + " anyone during the night!");
+                                            }
+                                            else if (typeof teamMsg == "string") {
+                                                mafia.sendPlayer(team[x], "±Game: " + teamMsg.replace(/~Distracter~/g, player.role.translation).replace(/~Action~/g, action));
+                                            }
                                         }
                                     }
                                 }
@@ -1401,22 +1465,20 @@ function Mafia(mafiachan) {
                         }
                     }
                     else if (command == "inspect") {
-                        if (targets.length === 0) continue;
-                        target = targets[0];
-                        if (!mafia.isInGame(target)) continue;
-                        target = mafia.players[target];
-                        var inspectMode = target.role.actions.inspect;
-                        var Sight = Action.Sight;
-                        if (target.safeguarded) {
-                            mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
-                        } else if (inspectMode === undefined) {
-                            mafia.sendPlayer(player.name, "±Info: " + target.name + " is the " + target.role.translation + "!!");
-                        } else {
-                            if (inspectMode.revealAs !== undefined) {
-                                mafia.sendPlayer(player.name, "±Info: " + target.name + " is the " + mafia.theme.trrole(inspectMode.revealAs) + "!!");
-                            }
-                            if (inspectMode.revealSide !== undefined || Sight === "Team") {
+                        for (t in targets) {
+                            target = targets[t];
+                            if (!mafia.isInGame(target)) continue;
+                            target = mafia.players[target];
+                            var inspectMode = target.role.actions.inspect || {};
+                            var Sight = Action.Sight;
+                            if (target.safeguarded) {
+                                mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
+                            } else if (inspectMode.revealSide !== undefined || Sight === "Team") {
                                 mafia.sendPlayer(player.name, "±Info: " + target.name + " is sided with the " + mafia.theme.trside(target.role.side) + "!!");
+                            } else if (inspectMode.revealAs !== undefined) {
+                                mafia.sendPlayer(player.name, "±Info: " + target.name + " is the " + mafia.theme.trrole(inspectMode.revealAs) + "!!");
+                            } else {
+                                mafia.sendPlayer(player.name, "±Info: " + target.name + " is the " + target.role.translation + "!!");
                             }
                         }
                     }
@@ -1516,7 +1578,7 @@ function Mafia(mafiachan) {
                                 }
                                 var visited = Object.keys(visitedPlayers).sort();
                                 if (visited.length > 0) {
-                                    mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") visited " + (visited.length > 1 ? visited.splice(0,visited.length-1).join(", ")+" and ":"") + visited + " this night!");
+                                    mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") visited " + readable(visited, "and") + " this night!");
                                 } else {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") didn't visit anyone this night!");
                                 }
@@ -1525,6 +1587,7 @@ function Mafia(mafiachan) {
                     }
                 }
             }
+            // decrease counters
             for (var p in mafia.players) {
                 player = mafia.players[p];
                 var poisonCount = player.poisonCount;
@@ -1539,6 +1602,7 @@ function Mafia(mafiachan) {
                     }
                 }
             }
+            this.reduceRecharges();
 
             if (!nightkill) {
                 sys.sendAll("No one died! :", mafiachan);
@@ -1899,7 +1963,8 @@ function Mafia(mafiachan) {
         }
         mafiabot.sendChanMessage(src, "Installed themes are: " + l.join(", "));
     };
-    this.showThemeInfo = function(src) {
+    this.showThemeInfo = function(src, data) {
+        data = data.toLowerCase();
         mafia.themeManager.themeInfo.sort(function(a,b) {return a[0].localeCompare(b[0]);});
         var mess = [];
         mess.push("<table><tr><th>Theme</th><th>URL</th><th>Author</th><th>Enabled</th></tr>");
@@ -1907,7 +1972,9 @@ function Mafia(mafiachan) {
             var info = mafia.themeManager.themeInfo[i];
             var theme = mafia.themeManager.themes[info[0].toLowerCase()];
             if (!theme) continue;
-            mess.push('<tr><td>' + theme.name + '</td><td><a href="' + info[1] + '">' + info[1] + '</a></td><td>' + (theme.author ? theme.author : "unknown") + '</td><td>' + (theme.enabled ? "yes" : "no")+ '</td></tr>');
+            if (data == noPlayer || data.indexOf(theme.name.toLowerCase()) != -1) {
+                mess.push('<tr><td>' + theme.name + '</td><td><a href="' + info[1] + '">' + info[1] + '</a></td><td>' + (theme.author ? readable(theme.author) : "unknown") + '</td><td>' + (theme.enabled ? "yes" : "no")+ '</td></tr>');
+            }
         }
         mess.push("</table>");
         sys.sendHtmlMessage(src, mess.join(""), mafiachan);
@@ -1935,7 +2002,7 @@ function Mafia(mafiachan) {
         var mess = [];
         mess.push("");
         mess.push("<b>Theme: </b>" + theme.name);
-        mess.push("<b>Author: </b>" + (theme.author ? theme.author : "Unknown"));
+        mess.push("<b>Author: </b>" + (theme.author ? readable(theme.author) : "Unknown"));
         mess.push("<b>Enabled: </b>" + (theme.enabled ? "Yes" : "No"));
         mess.push("<b>Number of Players: </b> Up to " + (theme["roles" + theme.roleLists].length) + " players");
         mess.push("<b>Summary: </b>" + (theme.summary ? theme.summary : "No summary avaiable."));
@@ -1981,7 +2048,7 @@ function Mafia(mafiachan) {
                 if (role.actions.startup == "team-reveal") {
                     mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
                 }
-                if (typeof role.actions.startup == "object" && role.actions.startup["team-revealif"] && typeof role.actions.startup["team-revealif"].indexOf == "function") {
+                if (typeof role.actions.startup == "object" && Array.isArray(role.actions.startup["team-revealif"])) {
                     if (role.actions.startup["team-revealif"].indexOf(role.side) != -1) {
                         mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
                     }
@@ -1994,7 +2061,7 @@ function Mafia(mafiachan) {
                     if (typeof role.actions.startup.revealRole == "string") {
                         if (mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) !== "")
                             mafia.sendPlayer(player.name, "±Game: The " + mafia.theme.roles[role.actions.startup.revealRole].translation + " is " + mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) + "!");
-                    } else if (typeof role.actions.startup.revealRole == "object" && typeof role.actions.startup.revealRole.indexOf == "function") {
+                    } else if (Array.isArray(role.actions.startup.revealRole)) {
                         for (var s = 0, l = role.actions.startup.revealRole.length; s < l; ++s) {
                             var revealrole = role.actions.startup.revealRole[s];
                             if (mafia.getPlayersForRoleS(revealrole) !== "")
@@ -2074,9 +2141,17 @@ function Mafia(mafiachan) {
         }
         mafia.themeManager.loadWebTheme(url, true, false);
     };
-    this.updateTheme = function(src, url) {
-        var theme = mafia.themeManager.themes[url.toLowerCase()];
-        var authorMatch = theme !== undefined && typeof theme.author == "string" && theme.author.toLowerCase() == sys.name(src).toLowerCase();
+    this.updateTheme = function(src, data) {
+        var url = data, name = data;
+        if (data.indexOf("::") >= 0) {
+            var parts = url.split("::");
+            name = parts[0];
+            url = parts[1];
+        }
+        var theme = mafia.themeManager.themes[name.toLowerCase()];
+        //  theme.author can be either string or Array of strings
+        var authorMatch = theme !== undefined && (typeof theme.author == "string" && theme.author.toLowerCase() == sys.name(src).toLowerCase() || Array.isArray(theme.author) && theme.author.map(function(s) { return s.toLowerCase(); }).indexOf(sys.name(src).toLowerCase()) >= 0);
+
         if (!mafia.isMafiaAdmin(src) && !authorMatch) {
             mafiabot.sendChanMessage(src, "You need to be admin or the author of this theme.");
             return;
@@ -2084,7 +2159,7 @@ function Mafia(mafiachan) {
         var dlurl;
         if (url.substr(0,7) != "http://") {
             for (var i = 0; i < mafia.themeManager.themeInfo.length; ++i) {
-                if (mafia.themeManager.themeInfo[i][0].toLowerCase() == url.toLowerCase()) {
+                if (mafia.themeManager.themeInfo[i][0].toLowerCase() == name.toLowerCase()) {
                     dlurl = mafia.themeManager.themeInfo[i][1];
                     break;
                 }
@@ -2094,7 +2169,7 @@ function Mafia(mafiachan) {
         }
         mafiabot.sendChanMessage(src, "Download url: " + dlurl);
         if (dlurl) {
-            mafia.themeManager.loadWebTheme(dlurl, true, true);
+            mafia.themeManager.loadWebTheme(dlurl, true, true, authorMatch ? theme.name.toLowerCase() : null);
         }
     };
     this.removeTheme = function(src, name) {
@@ -2125,7 +2200,7 @@ function Mafia(mafiachan) {
             runUpdate();
         }
         return;
-    };
+    };
 
     function runUpdate() {
         if (mafia.needsUpdating !== true) return;
@@ -2311,6 +2386,12 @@ function Mafia(mafiachan) {
                     return;
                 }
 
+                var recharge = mafia.getRecharge(player, "night", command);
+                if (recharge !== undefined && recharge > 0) {
+                    sys.sendMessage(src, "±Game: You have to wait another " + recharge + " night(s) to use this again!", mafiachan);
+                    return;
+                }
+
                 sys.sendMessage(src, "±Game: You have chosen to " + command + " " + commandData + "!", mafiachan);
                 this.setTarget(player, target, command);
 
@@ -2349,6 +2430,7 @@ function Mafia(mafiachan) {
                         var r = Math.random();
                         var roleName = this.theme.trside(player.role.side);
                         team = this.getPlayersForRole(player.role.side);
+                        var playerRole = this.theme.trrole(player.role.role);
                         if (r < mafia.theme.roles[role].actions.hax[command].revealTeam) {
                             if (team.length > 1)
                                 this.sendPlayer(haxPlayer, "±Game: The " + roleName + " are going to " + command + " " + commandData + "!");
@@ -2361,13 +2443,12 @@ function Mafia(mafiachan) {
                             else
                                 this.sendPlayer(haxPlayer, "±Game: " + name + " is The " + roleName + "!");
                         }
+                        if (r < mafia.theme.roles[role].actions.hax[command].revealRole) {
+                            this.sendPlayer(haxPlayer, "±Game: " + name + " is " + playerRole + "!");
+                        }
+
                     }
-                } 
-                /* 
-                 * OK, I know it was around here but I couldn't find where to add the activeTurn checker
-                 * nor the activeCount = activeCount - 1 or something like that
-                 * you can just leave this idea for later :/ 
-                 */
+                }
                 return;
             }
         } else if (this.state == "day") {
