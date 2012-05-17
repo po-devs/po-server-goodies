@@ -2,7 +2,7 @@ function TierChecker() {
     this.checkers = [];
 }
 
-TierChecker.prototype.add_new_check = function(exclusive, tier, checker) {
+TierChecker.prototype.add_new_check = function(exclusive, tiers, checker) {
     this.checkers.append({tiers: tiers, checker: checker, exclusive: exclusive});
 };
 
@@ -38,6 +38,7 @@ var EXCLUDING = true;
 var challenge_cups = ["Challenge Cup", "CC 1v1"];
 
 tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(src) {
+    var pokeNatures = null;
     for (var i = 0; i < 6; i++) {
         var poke = sys.teamPoke(src, i);
         if (poke in pokeNatures) {
@@ -77,7 +78,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi NU"], function evioliteCheck(src) {
     }
 });
 
-tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbilityCheck(src) {
+tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbilityCheck(src, tier) {
     for (var i = 0; i < 6; i++) {
         var x = sys.teamPoke(src, i);
         if (x !== 0 && sys.hasDreamWorldAbility(src, i) && (!(x in dwpokemons) || (breedingpokemons.indexOf(x) != -1 && sys.compatibleAsDreamWorldEvent(src, i) !== true))) {
@@ -561,4 +562,4 @@ tier_checker.add_new_check(INCLUDING, ["Adv 200"], function advance200Check(src)
     return !valid;
 });
 
-module = tier_checker;
+module.exports = tier_checker;

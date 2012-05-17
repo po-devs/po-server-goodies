@@ -628,6 +628,8 @@ try {
     if (indx != -1) {
         commandData = command.substr(indx+1);
         command = command.substr(0, indx).toLowerCase();
+    } else {
+        commandData = ""; // sane default to avoid undefined errors
     }
 
     // Trivia user commands
