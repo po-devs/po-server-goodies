@@ -3581,7 +3581,7 @@ ownerCommand: function(src, command, commandData, tar) {
     }
 
     if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "crystal moogle") {
-        if (command == "eval") Ü
+        if (command == "eval") {
             sys.eval(commandData);
             return;
         }
