@@ -3,7 +3,7 @@ function TierChecker() {
 }
 
 TierChecker.prototype.add_new_check = function(exclusive, tiers, checker) {
-    this.checkers.append({tiers: tiers, checker: checker, exclusive: exclusive});
+    this.checkers.push({tiers: tiers, checker: checker, exclusive: exclusive});
 };
 
 TierChecker.prototype.check_if_valid_for = function(src, tier) {
@@ -83,6 +83,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi NU"], function evioliteCheck(src, t
     }
 });
 
+if (typeof Config == "undefined") { Config = { DreamWorldTiers: ["DW OU", "DW UU", "DW Ubers"] }; }
 tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbilityCheck(src, tier) {
     for (var i = 0; i < 6; i++) {
         var x = sys.teamPoke(src, i);
