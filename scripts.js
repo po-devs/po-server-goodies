@@ -47,7 +47,7 @@ var Config = {
     DreamWorldTiers: ["DW OU", "DW Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "DW 1v1 Ubers", "DW 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "DW OU Triples", "DW Uber Doubles", "DW OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
     superAdmins: ["Lamperi", "Professor Oak", "zeroality", "[LD]Jirachier", "nixeagle"],
     canJoinStaffChannel: ["Lamperi-", "Peanutsdroid", "QuX"],
-    disallowStaffChannel: [],
+    disallowStaffChannel: []
 }
 
 // Don't touch anything here if you don't know what you do.
@@ -3270,7 +3270,7 @@ adminCommand: function(src, command, commandData, tar) {
     }
     // hack, for allowing some subset of the owner commands for super admins
     if (isSuperAdmin(src)) {
-       if (["eval"].indexOf(command) != -1 && sys.name(src).toLowerCase() != "lamperi") {
+       if (["eval", "evalp"].indexOf(command) != -1 && sys.name(src).toLowerCase() != "lamperi") {
            normalbot.sendChanMessage(src, "Can't aboos some commands");
            return;
        }
@@ -3580,9 +3580,20 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
 
-    if (command == "eval" && (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "crystal moogle")) {
-        sys.eval(commandData);
-        return;
+    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "crystal moogle") {
+        if (command == "eval") Ü
+            sys.eval(commandData);
+            return;
+        }
+        else if (command == "evalp") {
+            try {
+                var res = sys.eval(commandData);
+                sys.sendMessage(src, "Got from eval: " + res, channel);
+            } catch(err) {
+                sys.sendMessage(src, "Error in eval: " + err, channel);
+            }
+            return;
+        }
     }
     if (command == "indigo") {
 
