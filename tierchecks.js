@@ -1,3 +1,6 @@
+// Global variables inherited from scripts.js
+/*global breedingpokemons, dwpokemons, checkbot, normalbot, lcpokemons, staffchannel */
+
 function TierChecker() {
     this.checkers = [];
 }
@@ -7,7 +10,8 @@ TierChecker.prototype.add_new_check = function(exclusive, tiers, checker) {
 };
 
 TierChecker.prototype.check_if_valid_for = function(src, tier) {
-    if(tier == "Challenge Cup") return true;
+    if (tier == "Challenge Cup") return true;
+    if (!sys.hasLegalTeamForTier(src, tier)) return false;
 
     for (var i = 0; i < this.checkers; ++i) {
         var valid_tier = (this.checkers[i].exclusive === true
