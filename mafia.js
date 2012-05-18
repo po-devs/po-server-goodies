@@ -1194,37 +1194,61 @@ function Mafia(mafiachan) {
                         continue outer;
                 }
             }
-            var players = [];
-            var goodPeople = [];
-            for (var x in mafia.players) {
-                // Roles which win with multiple sides
-                if (mafia.players[x].role.hasOwnProperty("winningSides")) {
-                    var ws = mafia.players[x].role.winningSides;
-                    if (ws == "*" || (Array.isArray(ws) && ws.indexOf(winSide) >= 0)) {
-                        players.push(x);
-                        continue; // inner
+            //Roles which win when certain roles are dead
+            var winByDeadRoles;
+            if (mafia.players[p].role.hasOwnProperty("winIfDeadRoles")) {
+                var deadRoles = mafia.players[p].role.winIfDeadRoles;
+                winByDeadRoles = true;
+                for(var t = 0; t < deadRoles.length; ++t) {
+                    if (mafia.getPlayersForRoleS(deadRoles[t]) !== "") {
+                        winByDeadRoles = false;
+                        break;
                     }
                 }
-                if (mafia.players[x].role.side == winSide) {
-                    players.push(x);
-                } else if (winSide == 'village') {
-                    // if winSide = villy all people must be good people
-                    continue outer;
-                } else if (mafia.players[x].role.side == 'village') {
-                    goodPeople.push(x);
-                } else {
-                    // some other baddie team alive
-                    return false;
-                }
             }
+            var players = [];
+            var goodPeople = [];
+            if (winByDeadRoles == true) {
+                players = mafia.getPlayersForTeam(mafia.players[p].role.side);
+            } else {
+                for (var x in mafia.players) {
+                    // Roles which win with multiple sides
+                    if (mafia.players[x].role.hasOwnProperty("winningSides")) {
+                        var ws = mafia.players[x].role.winningSides;
+                        if (ws == "*" || (Array.isArray(ws) && ws.indexOf(winSide) >= 0)) {
+                            players.push(x);
+                            continue; // inner
+                        }
+                    }
+                    if (mafia.players[x].role.side == winSide) {
+                        players.push(x);
+                    } else if (winSide == 'village') {
+                        // if winSide = villy all people must be good people
+                        continue outer;
+                    } else if (mafia.players[x].role.side == 'village') {
+                        goodPeople.push(x);
+                    } else {
+                        // some other baddie team alive
+                        return false;
+                    }
+                }
+			}
 
-            if (players.length >= goodPeople.length) {
+            if (winByDeadRoles == true || players.length >= goodPeople.length) {
                 if(winSide in mafia.theme.sideWinMsg){
                     sys.sendAll(mafia.theme.sideWinMsg[winSide].replace(/~Players~/g, readable(players, "and")) , mafiachan);
                 } else {
                     sys.sendAll("±Game: The " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ") wins!", mafiachan);
                 }
-                if (goodPeople.length > 0) {
+                if (winByDeadRoles == true) {
+                    var losingSides = [];
+                    for (var tr in mafia.theme.sideTranslations) {
+                        if (tr !== winSide && mafia.getPlayersForTeamS(tr) !== "") {
+                            losingSides.push(mafia.theme.trside(tr) + " (" + readable(mafia.getPlayersForTeam(tr), "and") + ")");
+                        }
+                    }
+                    sys.sendAll("±Game: The " + readable(losingSides, "and") + " lose!", mafiachan);
+                } else if (goodPeople.length > 0) {
                     sys.sendAll("±Game: The " + mafia.theme.trside('village') + " (" + readable(goodPeople, "and") + ") lose!", mafiachan);
                 }
                 sys.sendAll(border, mafiachan);
