@@ -507,14 +507,20 @@ addUserCommand("tadmins", function(src, commandData, channel) {
 
 addAdminCommand("tadmin", function(src, commandData, channel) {
     if (tadmin.isTAdmin(commandData))
-        return;
+    {
+    	Trivia.sendPM(src,"That person is already a trivia admin.",channel);
+		return;
+	}
     tadmin.addTAdmin(commandData);
     Trivia.sendPM(src,"That person is now a trivia admin!",channel);
 });
 
 addAdminCommand("tadminoff", function(src, commandData, channel) {
     if (!tadmin.isTAdmin(commandData))
-        return;
+	{
+		Trivia.sendPM(src,"That person isn't a trivia admin.",channel);
+		return;
+	}
     tadmin.removeTAdmin(commandData);
     Trivia.sendPM(src,"That person is no longer a trivia admin!",channel);
 });
@@ -528,9 +534,8 @@ addAdminCommand("stop", function(src, commandData, channel) {
 });
 
 addAdminCommand("say", function(src, commandData, channel) {
-    if (commandData === undefined) {
-        return;
-    }
+    if (commandData === undefined)
+    return;
     Trivia.sendAll("("+sys.name(src)+"): "+commandData,channel);
 });
 
@@ -540,49 +545,62 @@ addAdminCommand("addallpokemon", function(src, commandData, channel) {
 
 addAdminCommand("apropos", function(src, commandData, channel) {
     if (commandData === undefined)
-        return;
+    return;
     Trivia.sendPM(src,"Matching questions with '"+commandData+"' are: ",channel);
     var all = triviaq.all(), b, q;
     for (b in all)
     {
         q = all[b];
         if (q.question.toLowerCase().indexOf(commandData.toLowerCase())>-1)
-            this.sendPM(src,"Question: '"+q.question+"' (id='" + b + "')", channel);
+        this.sendPM(src,"Question: '"+q.question+"' (id='" + b + "')", channel);
     }
     all = trivreview.all();
     for (b in all)
     {
         q = all[b];
         if (q.question.toLowerCase().indexOf(commandData.toLowerCase())>-1)
-            this.sendPM(src,"Question under review: '"+q.question+"' (id='" + b + "')", channel);
+        this.sendPM(src,"Question under review: '"+q.question+"' (id='" + b + "')", channel);
     }
 
 });
 
 
-addAdminCommand("checkqs", function(src, commandData, channel) {
+addAdminCommand("checkq", function(src, commandData, channel) {
     if (trivreview.questionAmount() === 0)
     {
         Trivia.sendPM(src,"There are no questions to be reviewed.", channel);
         return;
     }
     var q = trivreview.all();
-    Trivia.sendPM(src,"Question IDs: " + Object.keys(q).join(", "), channel);
-    Trivia.sendPM(src,"Type /checkq [id] to view and review a question!", channel);
+    /*Trivia.sendPM(src,"Question IDs: " + Object.keys(q).join(", "), channel);
+    Trivia.sendPM(src,"Type /checkq [id] to view and review a question!", channel);*/
+	// Let's review the first question */
+	var questionId = Object.keys(q)[0];
+	var questionInfo = trivreview.get(questionId);
+	if (questionId === undefined || questionInfo === undefined)
+	{
+		Trivia.sendPM(src,"Oops! Either there is no question to be reviewed, or there is an error.",channel);
+		return;
+	}
+	Trivia.sendPM(src,"This question needs to be reviewed:",channel);
+	Trivia.sendPM(src,"ID: "+questionId,channel);
+	Trivia.sendPM(src,"Category: "+questionInfo.category,channel);
+	Trivia.sendPM(src,"Question: "+questionInfo.question,channel);
+	Trivia.sendPM(src,"Answer: "+questionInfo.answer,channel);
 });
 
-addAdminCommand("checkq", function(src, commandData, channel) {
+/*addAdminCommand("checkq", function(src, commandData, channel) {
     var q = trivreview.get(commandData);
     Trivia.sendPM(src,"ID #"+commandData+":", channel);
     Trivia.sendPM(src,"Category: "+q.category, channel);
     Trivia.sendPM(src,"Question: "+q.question, channel);
     Trivia.sendPM(src,"Answer: "+q.answer, channel);
-});
+});*/
 
 // TODO: are these well named? also do versions for already accepted questions
 addAdminCommand("changea", function(src, commandData, channel) {
     if (commandData === undefined)
-        return;
+    return;
     commandData = commandData.split("*");
     trivreview.changeAnswer(commandData[0],commandData[1]);
     triviabot.sendMessage(src,"The answer for ID #"+commandData[0]+" was changed to "+commandData[1], channel);
@@ -590,7 +608,7 @@ addAdminCommand("changea", function(src, commandData, channel) {
 
 addAdminCommand("changeq", function(src, commandData, channel) {
     if (commandData === undefined)
-        return;
+    return;
     commandData = commandData.split("*");
     trivreview.changeQuestion(commandData[0],commandData[1]);
     triviabot.sendMessage(src,"The question for ID #"+commandData[0]+" was changed to "+commandData[1], channel);
@@ -598,7 +616,7 @@ addAdminCommand("changeq", function(src, commandData, channel) {
 
 addAdminCommand("changec", function(src, commandData, channel) {
     if (commandData === undefined)
-        return;
+    return;
     commandData = commandData.split("*");
     trivreview.changeAnswer(commandData[0],commandData[1]);
     triviabot.sendMessage(src,"The category for ID #"+commandData[0]+" was changed to "+commandData[1], channel);
