@@ -508,7 +508,7 @@ addUserCommand("tadmins", function(src, commandData, channel) {
 addAdminCommand("tadmin", function(src, commandData, channel) {
     if (tadmin.isTAdmin(commandData))
     {
-    	Trivia.sendPM(src,"That person is already a trivia admin.",channel);
+		Trivia.sendPM(src,"That person is already a trivia admin.",channel);
 		return;
 	}
     tadmin.addTAdmin(commandData);
@@ -622,15 +622,17 @@ addAdminCommand("changec", function(src, commandData, channel) {
     triviabot.sendMessage(src,"The category for ID #"+commandData[0]+" was changed to "+commandData[1], channel);
 });
 
+// TODO: Maybe announce globally to trivreview when somebody accepts a question?
+
 addAdminCommand("accept", function(src, commandData, channel) {
     var q = trivreview.get(commandData);
     triviaq.add(q.category,q.question,q.answer);
-    trivreview.remove(src, commandData);
+    trivreview.remove(commandData);
     triviabot.sendMessage(src,"You accepted question ID #"+commandData+"!", channel);
 });
 
 addAdminCommand("decline", function(src, commandData, channel) {
-    trivreview.remove(src,commandData);
+    trivreview.remove(commandData);
     triviabot.sendMessage(src,"You declined question ID #"+commandData+"!", channel);
 });
 
