@@ -567,10 +567,10 @@ tier_checker.add_new_check(EXCLUDING, [], function eventShinies(player) {
     beasts[sys.pokeNum('Suicune')] = ['Extremespeed', 'Aqua Ring',   'Sheer Cold',   'Air Slash']  .map(sys.moveNum);
     beasts[sys.pokeNum('Entei')]   = ['Extremespeed', 'Howl',        'Crush Claw',   'Flare Blitz'].map(sys.moveNum);
  
-    for (beast in beasts)
+    for (var beast in beasts)
         for (var slot=0; slot<6; slot++)
             if (sys.teamPoke(player, slot) == beast)
-                for (var i=0; i<4; i++) 
+                for (var i=0; i<4; i++)
                     if (-1 != beasts[beast].indexOf(sys.teamPokeMove(player, slot, i)))
                         sys.changePokeShine(player, slot, true);
     return true;
