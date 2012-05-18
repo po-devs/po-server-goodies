@@ -1208,7 +1208,7 @@ function Mafia(mafiachan) {
             }
             var players = [];
             var goodPeople = [];
-            if (winByDeadRoles == true) {
+            if (winByDeadRoles) {
                 players = mafia.getPlayersForTeam(mafia.players[p].role.side);
             } else {
                 for (var x in mafia.players) {
@@ -1234,13 +1234,13 @@ function Mafia(mafiachan) {
                 }
 			}
 
-            if (winByDeadRoles == true || players.length >= goodPeople.length) {
+            if (winByDeadRoles || players.length >= goodPeople.length) {
                 if(winSide in mafia.theme.sideWinMsg){
                     sys.sendAll(mafia.theme.sideWinMsg[winSide].replace(/~Players~/g, readable(players, "and")) , mafiachan);
                 } else {
                     sys.sendAll("±Game: The " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ") wins!", mafiachan);
                 }
-                if (winByDeadRoles == true) {
+                if (winByDeadRoles) {
                     var losingSides = [];
                     for (var tr in mafia.theme.sideTranslations) {
                         if (tr !== winSide && mafia.getPlayersForTeamS(tr) !== "") {
