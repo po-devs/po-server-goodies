@@ -2513,6 +2513,7 @@ function Mafia(mafiachan) {
                         } else if (typeof target.role.actions.daykill.mode == "object" && target.role.actions.daykill.mode.evadeChance > sys.rand(0,100)/100) {
                             sys.sendMessage(src, "±Game: Your kill was evaded!", mafiachan);
                             sys.sendMessage(target.name, "±Game: You evaded a kill!", mafiachan);
+                            player.dayKill = player.dayKill+1 || 1;
                             return;
                         }
                     }
