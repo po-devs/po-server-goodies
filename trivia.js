@@ -145,7 +145,7 @@ try {
         }
     }
 
-    sys.sendAll("");
+    this.sendAll("");
     var incorrectAnswers  = wrongAnswers.length > 0 ? " Incorrect answers: "+ wrongAnswers.join(", ") : "";
     sys.sendHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±TriviaBot:</b></font></font> Time's up!" + incorrectAnswers, this.id);
     this.sendAll("Answered correctly: " + answeredCorrectly.join(", "));
