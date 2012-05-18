@@ -145,7 +145,7 @@ try {
         }
     }
 
-    this.sendAll("");
+    sys.sendAll("",this.id);
     var incorrectAnswers  = wrongAnswers.length > 0 ? " Incorrect answers: "+ wrongAnswers.join(", ") : "";
     sys.sendHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±TriviaBot:</b></font></font> Time's up!" + incorrectAnswers, this.id);
     this.sendAll("Answered correctly: " + answeredCorrectly.join(", "));
@@ -158,7 +158,7 @@ try {
     {
         var nohtmlname = utilities.html_escape(this.triviaPlayers[id].name);
         leaderboard.push(nohtmlname + " (" + this.triviaPlayers[id].points + ")");
-        if (this.triviaPlayers[id].points > this.maxPoints)
+        if (this.triviaPlayers[id].points >= this.maxPoints)
         {
             winners.push(nohtmlname + " (" + this.triviaPlayers[id].points + ")");
         }
@@ -466,7 +466,8 @@ addUserCommand("submitq", function(src, commandData, channel) {
      }
     var id = trivreview.add(category,question,answer);
     Trivia.sendPM(src,"Your question was submitted.", channel);
-    Trivia.sendAll(sys.name(src)+" submitted a question with id " + id +" !",revchan);
+	// Enable if needed, but this might spam trivreview...
+    // Trivia.sendAll(sys.name(src)+" submitted a question with id " + id +" !",revchan);
 });
 
 addUserCommand("join", function(src, commandData, channel) {
@@ -579,7 +580,7 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 	var questionInfo = trivreview.get(questionId);
 	if (questionId === undefined || questionInfo === undefined)
 	{
-		Trivia.sendPM(src,"Oops! Either there is no question to be reviewed, or there is an error.",channel);
+		Trivia.sendPM(src,"Oops! There was an error.",channel);
 		return;
 	}
 	Trivia.sendPM(src,"This question needs to be reviewed:",channel);
