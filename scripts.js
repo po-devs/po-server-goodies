@@ -1699,23 +1699,10 @@ afterChangeTeam : function(src)
 
     POuser.sametier = getKey("forceSameTier", src) == "1";
 
-    if (sys.gen(src) >= 4) {
-    for (var i = 0; i < 6; i++) {
-        var poke = sys.teamPoke(src, i);
-        if (poke in pokeNatures) {
-            for (x in pokeNatures[poke]) {
-                if (sys.hasTeamPokeMove(src, i, x) && sys.teamPokeNature(src, i) != pokeNatures[poke][x])
-                {
-                    checkbot.sendMessage(src, "" + sys.pokemon(poke) + " with " + sys.move(x) + " must be a " + sys.nature(pokeNatures[poke][x]) + " nature. Change it in the teambuilder.");
-                    sys.changePokeNum(src, i, 0);
-                }
-            }
-        }
-    }
-   }
-   try {
-   if (sys.gen(src) == 2) {
-   pokes:
+    try {
+    // TODO: move this into tierchecks.js
+    if (sys.gen(src) == 2) {
+    pokes:
         for (var i = 0; i <= 6; i++)
             for (var j = 0; j < bannedGSCSleep.length; ++j)
                 if (sys.hasTeamPokeMove(src, i, bannedGSCSleep[j]))
@@ -1728,7 +1715,13 @@ afterChangeTeam : function(src)
 
     }
     } catch (e) { sys.sendMessage(e, staffchannel); }
-    if (sys.name(src) != "Lamperi-") {
+    try {
+    if (!tier_checker.check_if_valid_for(src, sys.tier(src))) {
+       tier_checker.find_good_tier(src);
+       normalbot.sendMessage(src, "You were placed into '" + sys.tier(src) + "' tier.");
+    }
+    } catch(e) {
+    sys.sendMessage(sys.id("Lamperi"), "Error with tier_checker (afterChangeTeam): " + e, staffchannel);
     this.eventMovesCheck(src);
     this.dreamWorldAbilitiesCheck(src);
     this.littleCupCheck(src);
@@ -1743,11 +1736,6 @@ afterChangeTeam : function(src)
     this.droughtCheck(src)
     this.snowWarningCheck(src)
     this.advance200Check(src);
-    } else {
-    if (!tier_checker.check_if_valid_for(src, sys.tier(src))) {
-       tier_checker.find_good_tier(src);
-       normalbot.sendMessage(src, "You were placed into '" + sys.tier(src) + "' tier.");
-    }
     }
 
 } /* end of afterChangeTeam */
@@ -4484,7 +4472,14 @@ isMCaps : function(message) {
 
 ,
 beforeChangeTier : function(src, oldtier, newtier) {
-    if (sys.name(src) != "Lamperi-") {
+    try {
+    if (!tier_checker.check_if_valid_for(src, newtier)) {
+       sys.stopEvent();
+       normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
+       tier_checker.find_good_tier(src);
+    }
+    } catch(e) {
+    sys.sendMessage(sys.id("Lamperi"), "Error with tier_checker: " + e, staffchannel);
     if(newtier == "Challenge Cup") return;
 
     this.eventMovesCheck(src);
@@ -4501,12 +4496,6 @@ beforeChangeTier : function(src, oldtier, newtier) {
     this.snowWarningCheck(src, newtier);
     this.droughtCheck(src, newtier);
     this.advance200Check(src, newtier);
-    } else {
-    if (!tier_checker.check_if_valid_for(src, newtier)) {
-       sys.stopEvent();
-       normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
-       tier_checker.find_good_tier(src);
-    }
     }
 }
 ,
