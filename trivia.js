@@ -574,7 +574,7 @@ addAdminCommand("checkq", function(src, commandData, channel) {
     var q = trivreview.all();
     /*Trivia.sendPM(src,"Question IDs: " + Object.keys(q).join(", "), channel);
     Trivia.sendPM(src,"Type /checkq [id] to view and review a question!", channel);*/
-	// Let's review the first question */
+	// Let's review the first question
 	var questionId = Object.keys(q)[0];
 	var questionInfo = trivreview.get(questionId);
 	if (questionId === undefined || questionInfo === undefined)
