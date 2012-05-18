@@ -1,5 +1,5 @@
 // Global variables inherited from scripts.js
-/*global breedingpokemons, dwpokemons, checkbot, normalbot, lcpokemons, staffchannel */
+/*global breedingpokemons, dwpokemons, checkbot, normalbot, lcpokemons, staffchannel, pokeNatures */
 
 function TierChecker() {
     this.checkers = [];
@@ -36,18 +36,12 @@ TierChecker.prototype.find_good_tier = function(src) {
     }
 };
 
-// TODO
-// lcpokemons
-// breedingpokemon
-// dwpokemons
-
 var tier_checker = new TierChecker();
 var INCLUDING = false;
 var EXCLUDING = true;
 var challenge_cups = ["Challenge Cup", "CC 1v1"];
 
 tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(src) {
-    var pokeNatures = null;
     for (var i = 0; i < 6; i++) {
         var poke = sys.teamPoke(src, i);
         if (poke in pokeNatures) {
