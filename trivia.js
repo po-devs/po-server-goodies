@@ -176,7 +176,7 @@ try {
     if (winners.length > 0) {
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
         this.htmlAll("<h2>Congratulations to "+w+"</h2>"+winners.join(", ")+"");
-		Trivia.sendAll("Check the /topic for how to submit a question!",revchan);
+		Trivia.sendAll("Check the /topic for how to submit a question!",this.id);
         this.resetTrivia();
         return;
     }
@@ -410,7 +410,7 @@ function TriviaAdmin(file)
 TriviaAdmin.prototype.addTAdmin = function(name)
 {
     if (this.isTAdmin(name))
-        return;
+    return;
     this.admins.push(name.toLowerCase());
     this.save();
 };
@@ -465,7 +465,7 @@ addUserCommand("submitq", function(src, commandData, channel) {
     commandData = commandData.split("*");
     if (commandData.length!=3)
     {
-        Trivia.sendPM(src,"Oops! Usage of this command is: /submitq category*questions*answer", channel);
+        Trivia.sendPM(src,"Oops! Usage of this command is: /submitq category*question*answer(s)", channel);
         Trivia.sendPM(src,"Separate multiple answers with ','.", channel);
         return;
     }
@@ -680,7 +680,7 @@ try {
     }
 
     // Trivia admin commands
-    if (sys.auth(src) > 0 || tadmin.isTAdmin(src)) {
+    if (sys.auth(src) > 0 || tadmin.isTAdmin(sys.name(src).toLowerCase())) {
         if (adminCommands.hasOwnProperty(command)) {
             adminCommands[command].call(null, src, commandData, channel);
             return true;
