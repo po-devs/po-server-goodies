@@ -553,6 +553,14 @@ addAdminCommand("addallpokemon", function(src, commandData, channel) {
 	Trivia.addAllPokemon();
 });
 
+addAdminCommand("erasequestions", function(src, commandData, channel) {
+	if (sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "ethan")
+	{
+		sys.writeToFile("triviaq.json","");
+		this.state.questions = {};
+	}
+});
+
 addAdminCommand("apropos", function(src, commandData, channel) {
     if (commandData === undefined)
     return;
