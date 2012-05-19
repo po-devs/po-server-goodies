@@ -4,7 +4,7 @@ var Bot = require("bot.js").Bot;
 
 var utilities = require("utilities.js");
 
-var triviabot = new Bot("Triviabot"),
+var triviabot = new Bot("TriviaBot"),
     triviachan,
     revchan;
 
@@ -63,12 +63,12 @@ TriviaGame.prototype.startTrivia = function(src,rand)
         this.sendPM(src,"There are no questions.");
         return;
     }
+	rand = (rand === undefined) ? sys.rand(2,81) : +rand;
     if (rand > 102 || rand < 2)
     {
         this.sendPM(src,"Please do not start a game with more than 102 points, or lower than 2 points.");
         return;
     }
-    rand = (rand === undefined) ? sys.rand(2,81) : +rand;
     this.maxPoints = rand;
     this.started = true;
     // TODO: enable when working
@@ -426,6 +426,11 @@ TriviaAdmin.prototype.tAdminList = function(src,id)
     sys.sendMessage(src,"Current trivia admins are: "+ this.admins.join(","),id);
 };
 
+TriviaAdmin.prototype.save = function()
+{
+	sys.writeToFile(this.file,JSON.stringify(this.admins));
+}
+
 // Commands
 var userCommands = {};
 var adminCommands = {};
@@ -583,11 +588,13 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 		Trivia.sendPM(src,"Oops! There was an error.",channel);
 		return;
 	}
+	sys.sendMessage(src,"",channel);
 	Trivia.sendPM(src,"This question needs to be reviewed:",channel);
 	Trivia.sendPM(src,"ID: "+questionId,channel);
 	Trivia.sendPM(src,"Category: "+questionInfo.category,channel);
 	Trivia.sendPM(src,"Question: "+questionInfo.question,channel);
 	Trivia.sendPM(src,"Answer: "+questionInfo.answer,channel);
+	sys.sendMessage(src,"",channel);
 });
 
 /*addAdminCommand("checkq", function(src, commandData, channel) {
@@ -604,7 +611,7 @@ addAdminCommand("changea", function(src, commandData, channel) {
     return;
     commandData = commandData.split("*");
     trivreview.changeAnswer(commandData[0],commandData[1]);
-    triviabot.sendMessage(src,"The answer for ID #"+commandData[0]+" was changed to "+commandData[1], channel);
+    triviabot.sendMessage(src,"The answer for ID #"+commandData[0]+" was changed to "+commandData[1]+".", channel);
 });
 
 addAdminCommand("changeq", function(src, commandData, channel) {
@@ -627,14 +634,18 @@ addAdminCommand("changec", function(src, commandData, channel) {
 
 addAdminCommand("accept", function(src, commandData, channel) {
     var q = trivreview.get(commandData);
+	if (q !== undefined) {
+	triviabot.sendAll(sys.name(src)+" accepted question: id, "+commandData+" category: "+q.category+", question: "+q.question+", answer: "+q.answer);
     triviaq.add(q.category,q.question,q.answer);
     trivreview.remove(commandData);
-    triviabot.sendMessage(src,"You accepted question ID #"+commandData+"!", channel);
+	}
+    // triviabot.sendMessage(src,"You accepted question ID #"+commandData+"!", channel);
 });
 
 addAdminCommand("decline", function(src, commandData, channel) {
-    trivreview.remove(commandData);
-    triviabot.sendMessage(src,"You declined question ID #"+commandData+"!", channel);
+    if (trivreview.get(commandData) !== undefined)
+	trivreview.remove(commandData);
+    triviabot.sendMessage(src,"You declined the question.", channel);
 });
 
 // Normal command handling.
@@ -710,7 +721,7 @@ exports.beforeChatMessage = function trivia_beforeChatMessage(src, message, chan
 try {
     // allow commands, except me
     if (utilities.is_command(message) && message.substr(1,2).toLowerCase() != "me")
-        return;
+    return;
 
     /* Trivia checks */
     var joined = Trivia.playerPlaying(src);
@@ -729,7 +740,7 @@ try {
             Trivia.sendPM(src,"Sorry! Your answer is too long.");
             return true;
         }
-
+		
         // Remove commas so the listing looks better
         // This is fine as no answers should include comma.
         Trivia.addAnswer(src, message.replace(/,/gi,""));
