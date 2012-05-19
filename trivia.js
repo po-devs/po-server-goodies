@@ -114,8 +114,9 @@ try {
     // use concat to convert into array
     var answer,
         id;
-		
-		if (answers.indexOf("||") > -1)
+		// split by ||
+		var answer = triviaq.get(this.roundQuestion).answer);
+		if (answer.indexOf("||") > -1)
 		answers = answers.split("||");
 		else
         answers = [].concat(triviaq.get(this.roundQuestion).answer);
