@@ -115,19 +115,18 @@ try {
     var answer,
         id;
 		
-		var answer = triviaq.get(this.roundQuestion).answer.toLowerCase();
-        answers = [].concat(answer);
-		
 		if (answers.indexOf("||") > -1)
 		answers = answers.split("||");
+		else
+        answers = [].concat(triviaq.get(this.roundQuestion).answer);
     
     this.answeringQuestion = false;
     /* We're going to judge points based on response time */
     var wrongAnswers = [],
         answeredCorrectly = [];
-    var ignoreCaseAnswers = function() {
-        return answers;
-	}
+    var ignoreCaseAnswers = answers.map(function(s) {
+        return String(s).toLowerCase();
+		});
     for (id in this.submittedAnswers)
     {
         // if they are still online and using their name..
@@ -135,7 +134,7 @@ try {
         // is it required for them to be online?
         if (sys.id(name) !== undefined) {
             answer = this.submittedAnswers[id].answer.toLowerCase();
-            if (ignoreCaseAnswers().indexOf(answer) != -1)
+            if (ignoreCaseAnswers.indexOf(answer) != -1)
             {
                 var responseTime = this.submittedAnswers[id].time;
                 var realTime = sys.time();
@@ -176,7 +175,7 @@ try {
     if (winners.length > 0) {
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
         this.htmlAll("<h2>Congratulations to "+w+"</h2>"+winners.join(", ")+"");
-		Trivia.sendAll("Check the /topic for how to submit a question!",this.id);
+		Trivia.sendAll("Check the /topic for how to submit a question!",revchan);
         this.resetTrivia();
         return;
     }
