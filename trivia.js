@@ -657,7 +657,7 @@ addAdminCommand("accept", function(src, commandData, channel) {
 addAdminCommand("decline", function(src, commandData, channel) {
     if (trivreview.get(commandData) !== undefined)
 	trivreview.remove(commandData);
-    triviabot.sendMessage(src,"You declined the question.", channel);
+    triviabot.sendAll(sys.name(src) + "declined the question.", channel);
 });
 
 // Normal command handling.
