@@ -115,7 +115,7 @@ try {
     var answer,
         id;
 		// split by ||
-		var answer = triviaq.get(this.roundQuestion).answer);
+		var answer = triviaq.get(this.roundQuestion).answer;
 		if (answer.indexOf("||") > -1)
 		answers = answers.split("||");
 		else
