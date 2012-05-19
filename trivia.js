@@ -115,8 +115,8 @@ try {
     var answer,
         id;
 		
-        // answers = [].concat(triviaq.get(this.roundQuestion).answer);
-		answers = triviaq.get(this.roundQuestion).answer.toLowerCase();
+		var answer = triviaq.get(this.roundQuestion).answer.toLowerCase();
+        answers = [].concat(answer);
 		
 		if (answers.indexOf("||") > -1)
 		answers = answers.split("||");
@@ -135,7 +135,7 @@ try {
         // is it required for them to be online?
         if (sys.id(name) !== undefined) {
             answer = this.submittedAnswers[id].answer.toLowerCase();
-            if (ignoreCaseAnswers.indexOf(answer) != -1)
+            if (ignoreCaseAnswers().indexOf(answer) != -1)
             {
                 var responseTime = this.submittedAnswers[id].time;
                 var realTime = sys.time();
