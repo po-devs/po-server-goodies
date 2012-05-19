@@ -133,8 +133,9 @@ try {
             if (ignoreCaseAnswers.indexOf(answer) != -1)
             {
                 var responseTime = this.submittedAnswers[id].time;
-                var realTime = time();
+                var realTime = sys.time();
                 var minus = realTime - responseTime;
+				// changed to sys.time() because time() was returning much bigger numbers
                 var pointAdd = minus > 6 ? 5 : (minus < 7 && minus > 3 ? 3 : 2);
 
                 answeredCorrectly.push(name);
@@ -289,7 +290,7 @@ TriviaGame.prototype.removePlayer = function(src)
 
 TriviaGame.prototype.addAnswer = function(src, answer) {
     var key = this.key(src);
-    this.submittedAnswers[key] = {name: sys.name(src), answer: answer, time: time()};
+    this.submittedAnswers[key] = {name: sys.name(src), answer: answer, time: sys.time()};
 };
 
 function QuestionHolder(f)
@@ -635,7 +636,7 @@ addAdminCommand("changec", function(src, commandData, channel) {
 addAdminCommand("accept", function(src, commandData, channel) {
     var q = trivreview.get(commandData);
 	if (q !== undefined) {
-	triviabot.sendAll(sys.name(src)+" accepted question: id, "+commandData+" category: "+q.category+", question: "+q.question+", answer: "+q.answer);
+	triviabot.sendAll(sys.name(src)+" accepted question: id, "+commandData+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
     triviaq.add(q.category,q.question,q.answer);
     trivreview.remove(commandData);
 	}
