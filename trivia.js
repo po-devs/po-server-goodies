@@ -113,13 +113,8 @@ TriviaGame.prototype.finalizeAnswers = function()
 try {
     // use concat to convert into array
     var answer,
-        id;
-		// split by ||
-		var answer = triviaq.get(this.roundQuestion).answer;
-		if (answer.indexOf("||") > -1)
-		answers = answers.split("||");
-		else
-        answers = [].concat(triviaq.get(this.roundQuestion).answer);
+        id,
+		answers = [].concat(triviaq.get(this.roundQuestion).answer);
     
     this.answeringQuestion = false;
     /* We're going to judge points based on response time */
