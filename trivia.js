@@ -557,7 +557,7 @@ addAdminCommand("erasequestions", function(src, commandData, channel) {
 	if (sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "ethan")
 	{
 		sys.writeToFile("triviaq.json","");
-		QuestionHolder.state.questions = {};
+		QuestionHolder.state = {freeId: 0, questions: {}};
 	}
 });
 
