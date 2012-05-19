@@ -176,7 +176,7 @@ try {
     if (winners.length > 0) {
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
         this.htmlAll("<h2>Congratulations to "+w+"</h2>"+winners.join(", ")+"");
-		Trivia.sendAll("Check the /topic for how to submit a question!",revchan);
+		Trivia.sendAll("Check the /topic for how to submit a question!",this.id);
         this.resetTrivia();
         return;
     }
