@@ -127,7 +127,7 @@ try {
         answeredCorrectly = [];
     var ignoreCaseAnswers = function() {
         return answers;
-    });
+	}
     for (id in this.submittedAnswers)
     {
         // if they are still online and using their name..
@@ -410,7 +410,7 @@ function TriviaAdmin(file)
 TriviaAdmin.prototype.addTAdmin = function(name)
 {
     if (this.isTAdmin(name))
-        return;
+    return;
     this.admins.push(name.toLowerCase());
     this.save();
 };
@@ -418,7 +418,7 @@ TriviaAdmin.prototype.addTAdmin = function(name)
 TriviaAdmin.prototype.removeTAdmin = function(name)
 {
     if (!this.isTAdmin(name))
-        return;
+    Wreturn;
     var ind = this.admins.indexOf(name.toLowerCase());
     this.admins.splice(ind, 1);
     this.save();
@@ -623,7 +623,7 @@ addAdminCommand("changea", function(src, commandData, channel) {
 	var questionInfo = trivreview.get(questionId);
 	if (questionId !== undefined) {
     trivreview.changeAnswer(questionId,commandData);
-    triviabot.sendMessage(src,"The current answer was changed to "+commandData+".", channel);
+    triviabot.sendMessage(src,"The current answer was changed to "+commandData+"", channel);
 	}
 });
 
@@ -635,7 +635,7 @@ addAdminCommand("changeq", function(src, commandData, channel) {
 	var questionInfo = trivreview.get(questionId);
 	if (questionId !== undefined) {
     trivreview.changeQuestion(questionId,commandData);
-    triviabot.sendMessage(src,"The current question was changed to "+commandData+".", channel);
+    triviabot.sendMessage(src,"The current question was changed to "+commandData+"", channel);
 	}
 });
 
@@ -647,7 +647,7 @@ addAdminCommand("changec", function(src, commandData, channel) {
 	var questionInfo = trivreview.get(questionId);
 	if (questionId !== undefined) {
     trivreview.changeCategory(questionId,commandData);
-    triviabot.sendMessage(src,"The current category was changed to "+commandData+".", channel);
+    triviabot.sendMessage(src,"The current category was changed to "+commandData+"", channel);
 	}
 });
 
@@ -656,8 +656,9 @@ addAdminCommand("changec", function(src, commandData, channel) {
 addAdminCommand("accept", function(src, commandData, channel) {
 	var q = trivreview.all();
 	var questionId = Object.keys(q)[0];
+	var questionInfo = trivreview.get(questionId);
 	if (questionId !== undefined) {
-	triviabot.sendAll(sys.name(src)+" accepted question: category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
+	triviabot.sendAll(sys.name(src)+" accepted question: category: "+questionInfo.category+", question: "+questionInfo.question+", answer: "+questionInfo.answer,revchan);
     triviaq.add(q.category,q.question,q.answer);
     trivreview.remove(commandData);
 	}
