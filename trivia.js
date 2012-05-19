@@ -410,7 +410,7 @@ function TriviaAdmin(file)
 TriviaAdmin.prototype.addTAdmin = function(name)
 {
     if (this.isTAdmin(name))
-    return;
+        return;
     this.admins.push(name.toLowerCase());
     this.save();
 };
@@ -418,7 +418,7 @@ TriviaAdmin.prototype.addTAdmin = function(name)
 TriviaAdmin.prototype.removeTAdmin = function(name)
 {
     if (!this.isTAdmin(name))
-    Wreturn;
+        return;
     var ind = this.admins.indexOf(name.toLowerCase());
     this.admins.splice(ind, 1);
     this.save();
@@ -599,7 +599,7 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 	}
 	sys.sendMessage(src,"",channel);
 	Trivia.sendPM(src,"This question needs to be reviewed:",channel);
-	// Trivia.sendPM(src,"ID: "+questionId,channel);
+	Trivia.sendPM(src,"ID: "+questionId,channel);
 	Trivia.sendPM(src,"Category: "+questionInfo.category,channel);
 	Trivia.sendPM(src,"Question: "+questionInfo.question,channel);
 	Trivia.sendPM(src,"Answer: "+questionInfo.answer,channel);
@@ -618,47 +618,33 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 addAdminCommand("changea", function(src, commandData, channel) {
     if (commandData === undefined)
     return;
-	var q = trivreview.all();
-	var questionId = Object.keys(q)[0];
-	var questionInfo = trivreview.get(questionId);
-	if (questionId !== undefined) {
-    trivreview.changeAnswer(questionId,commandData);
-    triviabot.sendMessage(src,"The current answer was changed to "+commandData+"", channel);
-	}
+    commandData = commandData.split("*");
+    trivreview.changeAnswer(commandData[0],commandData[1]);
+    triviabot.sendMessage(src,"The answer for ID #"+commandData[0]+" was changed to "+commandData[1]+"", channel);
 });
 
 addAdminCommand("changeq", function(src, commandData, channel) {
     if (commandData === undefined)
     return;
-	var q = trivreview.all();
-    var questionId = Object.keys(q)[0];
-	var questionInfo = trivreview.get(questionId);
-	if (questionId !== undefined) {
-    trivreview.changeQuestion(questionId,commandData);
-    triviabot.sendMessage(src,"The current question was changed to "+commandData+"", channel);
-	}
+    commandData = commandData.split("*");
+    trivreview.changeQuestion(commandData[0],commandData[1]);
+    triviabot.sendMessage(src,"The question for ID #"+commandData[0]+" was changed to "+commandData[1], channel);
 });
 
 addAdminCommand("changec", function(src, commandData, channel) {
     if (commandData === undefined)
     return;
-	var q = trivreview.all();
-    var questionId = Object.keys(q)[0];
-	var questionInfo = trivreview.get(questionId);
-	if (questionId !== undefined) {
-    trivreview.changeCategory(questionId,commandData);
-    triviabot.sendMessage(src,"The current category was changed to "+commandData+"", channel);
-	}
+    commandData = commandData.split("*");
+    trivreview.changeAnswer(commandData[0],commandData[1]);
+    triviabot.sendMessage(src,"The category for ID #"+commandData[0]+" was changed to "+commandData[1], channel);
 });
 
 // TODO: Maybe announce globally to trivreview when somebody accepts a question?
 
 addAdminCommand("accept", function(src, commandData, channel) {
-	var q = trivreview.all();
-	var questionId = Object.keys(q)[0];
-	var questionInfo = trivreview.get(questionId);
-	if (questionId !== undefined) {
-	triviabot.sendAll(sys.name(src)+" accepted question: category: "+questionInfo.category+", question: "+questionInfo.question+", answer: "+questionInfo.answer,revchan);
+    var q = trivreview.get(commandData);
+	if (q !== undefined) {
+	triviabot.sendAll(sys.name(src)+" accepted question: id, "+commandData+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
     triviaq.add(q.category,q.question,q.answer);
     trivreview.remove(commandData);
 	}
@@ -666,12 +652,9 @@ addAdminCommand("accept", function(src, commandData, channel) {
 });
 
 addAdminCommand("decline", function(src, commandData, channel) {
-	var q = trivreview.all();
-	var questionId = Object.keys(q)[0];
-    if (trivreview.get(questionId) !== undefined) {
-	trivreview.remove(questionId);
+    if (trivreview.get(commandData) !== undefined)
+	trivreview.remove(commandData);
     triviabot.sendMessage(src,"You declined the question.", channel);
-	}
 });
 
 // Normal command handling.
