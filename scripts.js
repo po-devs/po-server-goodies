@@ -1420,6 +1420,7 @@ beforeChannelDestroyed : function(channel) {
 ,
 
 beforePlayerBan : function(src, dest) {
+    normalbot.sendAll("Target: " + sys.name(dest) + ", IP: " + sys.ip(dest), staffchannel);
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {}
     authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time())];
