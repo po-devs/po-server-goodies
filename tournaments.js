@@ -172,7 +172,8 @@ function Tournament(channel)
 			mode = modeOfTier(tier);
 		}
 		else {
-			if ((modeOfTier(tier) == "Doubles" || modeOfTier(tier) == "Triples") && !cmp(commandpart[2], modeOfTier(tier))) {
+			var singlesonlytiers = ["DW 1v1", "DW 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "DW OU", "DW Ubers", "Wifi OU", "Wifi Ubers"];
+			if ((modeOfTier(tier) == "Doubles" || modeOfTier(tier) == "Triples" || singlesonlytiers.indexOf(tier) != -1) && !cmp(commandpart[2], modeOfTier(tier))) {
 				sendPM(source, "The "+tier+" tier can only be played in " + modeOfTier(tier) + " mode!");
 				return;
 			}
@@ -252,7 +253,7 @@ function Tournament(channel)
 		if (self.queue.length > 0) {
 			sendPM(source, "Following tournaments are in the queue: " +
 				self.queue.map(function(e) {
-					return e.starter + " added tier '" + e.tier + "' with initial count " + e.count;
+					return e.starter + " added tier '" + e.tier + "' "+(e.mode != modeOfTier(e.tier) ? "("+e.mode+")" : "")+"with initial count " + e.count;
 				}).join(", "));
 		} else {
 			sendPM(source, "The tournament queue is empty.");
@@ -396,6 +397,11 @@ function Tournament(channel)
 
 		if (self.ips.indexOf(sys.ip(source)) != -1) {
 			sendPM(source, "You already joined the tournament!");
+			return;
+		}
+		
+		if (self.round != 1) {
+			sendPM(source, "Subs are only open in round 1!");
 			return;
 		}
 
