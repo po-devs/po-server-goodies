@@ -1196,7 +1196,11 @@ module.exports = {
 			help = [
 				"/join: Enters you to in a tournament.",
 				"/unjoin: Withdraws you from a tournament.",
-				"/viewround: Shows the current pairings for the round."
+				"/viewround: Shows the current pairings for the round.",
+				"/viewqueue: Shows the current queue",
+				"/touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)",
+				"/addtouralert [tier] : Adds a tour alert for the specified tier",
+				"/removetouralert [tier] : Removes a tour alert for the specified tier"
 			];
 		} else if (topic == "megauser") {
 			help = [
