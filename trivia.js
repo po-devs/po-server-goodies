@@ -456,6 +456,32 @@ function addAdminCommand(commands, callback, help)
     return addCommand(adminCommands, commands, callback, help);
 }
 
+addUserCommand("goal", function(src,commandData,channel) {
+	if (Trivia.started === false)
+	{
+		Trivia.sendPM(src,"A trivia game isn't currently running.");
+		return;
+	}
+	
+	Trivia.sendPM(src,"The goal for the current game is: "+Trivia.maxPoints);
+});
+
+addAdminCommand("removeq", function(src,commandData,channel) {
+	var all = triviaq.all();
+	for (var b in all)
+	{
+		var id = b;
+		if (commandData === b)
+		{
+			triviaq.remove(b);
+			Trivia.sendPM(src,"Removed question successfully.");
+			return;
+		}
+	}
+	
+	Trivia.sendPM(src,"Oops! Question doesn't exist");
+});
+
 addUserCommand("submitq", function(src, commandData, channel) {
     commandData = commandData.split("*");
     if (commandData.length!=3)
@@ -647,7 +673,7 @@ addAdminCommand("changec", function(src, commandData, channel) {
 addAdminCommand("accept", function(src, commandData, channel) {
     var q = trivreview.get(commandData);
 	if (q !== undefined) {
-	triviabot.sendAll(sys.name(src)+" accepted question: id, "+commandData+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
+	triviabot.sendAll(sys.name(src)+" accepted question: id, "+triviaq.questionAmount()+1 /* TODO: get id in a better way */+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
     triviaq.add(q.category,q.question,q.answer);
     trivreview.remove(commandData);
 	}
