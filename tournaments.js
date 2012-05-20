@@ -895,7 +895,7 @@ function Tournament(channel)
 					}
 				}
 			}
-		}, 300);
+		}, 240);
 	}
 
 	// event battleStart
@@ -996,10 +996,10 @@ function Tournament(channel)
 
 	function afterLogIn(source) {
 		if (self.main && self.phase == "entry") {
-			sendPM(source,"*** A " + self.tier + " tournament is in its signup phase, " + remainingEntrants() + " spot(s) are left!");
-			sendPM(source, "");
-			sendPM(source, border);
-			sendPM(source, "");
+			sys.sendMessage(source,"*** A " + self.tier + " tournament is in its signup phase, " + remainingEntrants() + " spot(s) are left!",0);
+			sys.sendMessage(source, "",0);
+			sys.sendMessage(source, border,0);
+			sys.sendMessage(source, "",0);
 		}
 	}
 

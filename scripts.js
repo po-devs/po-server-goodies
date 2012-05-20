@@ -17,7 +17,7 @@ var Config = {
     commandbot: "CommandBot",
     querybot: "QueryBot",
     // suspectvoting.js available, but not in use
-    Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js"],
+    Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js", "trivia.js"],
     Mafia: {
         bot: "Murkrow",
         norepeat: 11,
@@ -47,7 +47,7 @@ var Config = {
     DreamWorldTiers: ["DW OU", "DW Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "DW 1v1 Ubers", "DW 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "DW OU Triples", "DW Uber Doubles", "DW OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
     superAdmins: ["Lamperi", "Professor Oak", "zeroality", "[LD]Jirachier", "nixeagle"],
     canJoinStaffChannel: ["Lamperi-", "Peanutsdroid", "QuX"],
-    disallowStaffChannel: [],
+    disallowStaffChannel: []
 }
 
 // Don't touch anything here if you don't know what you do.
@@ -1420,6 +1420,7 @@ beforeChannelDestroyed : function(channel) {
 ,
 
 beforePlayerBan : function(src, dest) {
+    normalbot.sendAll("Target: " + sys.name(dest) + ", IP: " + sys.ip(dest), staffchannel);
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {}
     authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time())];
@@ -1699,23 +1700,10 @@ afterChangeTeam : function(src)
 
     POuser.sametier = getKey("forceSameTier", src) == "1";
 
-    if (sys.gen(src) >= 4) {
-    for (var i = 0; i < 6; i++) {
-        var poke = sys.teamPoke(src, i);
-        if (poke in pokeNatures) {
-            for (x in pokeNatures[poke]) {
-                if (sys.hasTeamPokeMove(src, i, x) && sys.teamPokeNature(src, i) != pokeNatures[poke][x])
-                {
-                    checkbot.sendMessage(src, "" + sys.pokemon(poke) + " with " + sys.move(x) + " must be a " + sys.nature(pokeNatures[poke][x]) + " nature. Change it in the teambuilder.");
-                    sys.changePokeNum(src, i, 0);
-                }
-            }
-        }
-    }
-   }
-   try {
-   if (sys.gen(src) == 2) {
-   pokes:
+    try {
+    // TODO: move this into tierchecks.js
+    if (sys.gen(src) == 2) {
+    pokes:
         for (var i = 0; i <= 6; i++)
             for (var j = 0; j < bannedGSCSleep.length; ++j)
                 if (sys.hasTeamPokeMove(src, i, bannedGSCSleep[j]))
@@ -1728,7 +1716,13 @@ afterChangeTeam : function(src)
 
     }
     } catch (e) { sys.sendMessage(e, staffchannel); }
-    if (sys.name(src) != "Lamperi-") {
+    try {
+    if (!tier_checker.check_if_valid_for(src, sys.tier(src))) {
+       tier_checker.find_good_tier(src);
+       normalbot.sendMessage(src, "You were placed into '" + sys.tier(src) + "' tier.");
+    }
+    } catch(e) {
+    sys.sendMessage(sys.id("Lamperi"), "Error with tier_checker (afterChangeTeam): " + e, staffchannel);
     this.eventMovesCheck(src);
     this.dreamWorldAbilitiesCheck(src);
     this.littleCupCheck(src);
@@ -1743,11 +1737,6 @@ afterChangeTeam : function(src)
     this.droughtCheck(src)
     this.snowWarningCheck(src)
     this.advance200Check(src);
-    } else {
-    if (!tier_checker.check_if_valid_for(src, sys.tier(src))) {
-       tier_checker.find_good_tier(src);
-       normalbot.sendMessage(src, "You were placed into '" + sys.tier(src) + "' tier.");
-    }
     }
 
 } /* end of afterChangeTeam */
@@ -3270,7 +3259,7 @@ adminCommand: function(src, command, commandData, tar) {
     }
     // hack, for allowing some subset of the owner commands for super admins
     if (isSuperAdmin(src)) {
-       if (["eval"].indexOf(command) != -1 && sys.name(src).toLowerCase() != "lamperi") {
+       if (["eval", "evalp"].indexOf(command) != -1 && sys.name(src).toLowerCase() != "lamperi") {
            normalbot.sendChanMessage(src, "Can't aboos some commands");
            return;
        }
@@ -3580,9 +3569,20 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
 
-    if (command == "eval" && (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "crystal moogle")) {
-        sys.eval(commandData);
-        return;
+    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "crystal moogle") {
+        if (command == "eval") {
+            sys.eval(commandData);
+            return;
+        }
+        else if (command == "evalp") {
+            try {
+                var res = sys.eval(commandData);
+                sys.sendMessage(src, "Got from eval: " + res, channel);
+            } catch(err) {
+                sys.sendMessage(src, "Error in eval: " + err, channel);
+            }
+            return;
+        }
     }
     if (command == "indigo") {
 
@@ -4484,7 +4484,14 @@ isMCaps : function(message) {
 
 ,
 beforeChangeTier : function(src, oldtier, newtier) {
-    if (sys.name(src) != "Lamperi-") {
+    try {
+    if (!tier_checker.check_if_valid_for(src, newtier)) {
+       sys.stopEvent();
+       normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
+       tier_checker.find_good_tier(src);
+    }
+    } catch(e) {
+    sys.sendMessage(sys.id("Lamperi"), "Error with tier_checker: " + e, staffchannel);
     if(newtier == "Challenge Cup") return;
 
     this.eventMovesCheck(src);
@@ -4501,12 +4508,6 @@ beforeChangeTier : function(src, oldtier, newtier) {
     this.snowWarningCheck(src, newtier);
     this.droughtCheck(src, newtier);
     this.advance200Check(src, newtier);
-    } else {
-    if (!tier_checker.check_if_valid_for(src, newtier)) {
-       sys.stopEvent();
-       normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
-       tier_checker.find_good_tier(src);
-    }
     }
 }
 ,
