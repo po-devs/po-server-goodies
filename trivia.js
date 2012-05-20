@@ -770,7 +770,7 @@ exports.init = function trivia_init()
     triviachan = utilities.get_or_create_channel("Trivia");
     revchan = utilities.get_or_create_channel("TrivReview");
 
-	if (TriviaGame.started === false)
+	if (typeof Trivia === "undefined" ||Trivia.started === false)
     Trivia = new TriviaGame();
     triviaq = new QuestionHolder("triviaq.json");
     trivreview = new QuestionHolder("trivreview.json");
