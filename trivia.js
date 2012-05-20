@@ -549,7 +549,7 @@ addAdminCommand("say", function(src, commandData, channel) {
 });
 
 addAdminCommand("addallpokemon", function(src, commandData, channel) {
-    if (sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "ethan")
+    if (sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "ethan"|| sys.name(src).toLowerCase() == "crystal moogle")
 	Trivia.addAllPokemon();
 });
 
