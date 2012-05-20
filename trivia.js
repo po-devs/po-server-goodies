@@ -128,7 +128,7 @@ try {
         // if they are still online and using their name..
         var name = this.submittedAnswers[id].name;
         // is it required for them to be online?
-        if (sys.id(name) !== undefined) {
+        if (sys.id(name) !== undefined && this.player(name) !== null) {
             answer = this.submittedAnswers[id].answer.toLowerCase();
             if (ignoreCaseAnswers.indexOf(answer) != -1)
             {
