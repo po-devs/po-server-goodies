@@ -759,9 +759,6 @@ var commands = {
         "/uptime: Shows time since the server was last offline.",
         "/players: Shows the number of players online.",
         "/sameTier [on/off]: Turn on/off auto-rejection of challenges from players in a different tier from you.",
-        "/touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)",
-        "/addtouralert [tier] : Adds a tour alert for the specified tier",
-        "/removetouralert [tier] : Removes a tour alert for the specified tier",
     ],
     channel:
     [
