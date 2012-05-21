@@ -582,4 +582,4 @@ tier_checker.add_new_check(EXCLUDING, [], function eventShinies(player) {
     return true;
 });
 
-module = tier_checker;
+module.exports = tier_checker;
