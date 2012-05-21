@@ -17,10 +17,14 @@ TierChecker.prototype.check_if_valid_for = function(src, tier) {
         var valid_tier = (this.checkers[i].exclusive === true
             ? this.checkers[i].tiers.indexOf(tier) == -1
             : this.checkers[i].tiers.indexOf(tier) != -1);
+        if (valid_tier) sys.sendMessage(sys.id("Lamperi"), "±TestBot: Validating " + sys.name(src) + "'s team with " + this.checkers[i].checker.name +"...", staffchannel);
         if (valid_tier && this.checkers[i].checker(src, tier)) {
+            if (valid_tier) sys.sendMessage(sys.id("Lamperi"), "±TestBot: Failed.", staffchannel);
             return false;
         }
+        if (valid_tier) sys.sendMessage(sys.id("Lamperi"), "±TestBot: Passed.", staffchannel);
     }
+    sys.sendMessage(sys.id("Lamperi"), "±TestBot: All good for " + sys.name(src) + "!", staffchannel);
     return true;
 };
 

@@ -1714,11 +1714,11 @@ afterChangeTeam : function(src)
     }
     } catch (e) { sys.sendMessage(e, staffchannel); }
     try {
-    null = 1;
     if (!tier_checker.check_if_valid_for(src, sys.tier(src))) {
        tier_checker.find_good_tier(src);
        normalbot.sendMessage(src, "You were placed into '" + sys.tier(src) + "' tier.");
     }
+    null = 1;
     } catch(e) {
     sys.sendMessage(sys.id("Lamperi"), "Error with tier_checker (afterChangeTeam): " + e, staffchannel);
     this.eventMovesCheck(src);
@@ -4472,12 +4472,12 @@ isMCaps : function(message) {
 ,
 beforeChangeTier : function(src, oldtier, newtier) {
     try {
-    null = 1;
     if (!tier_checker.check_if_valid_for(src, newtier)) {
        sys.stopEvent();
        normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
        tier_checker.find_good_tier(src);
     }
+    null = 1;
     } catch(e) {
     sys.sendMessage(sys.id("Lamperi"), "Error with tier_checker: " + e, staffchannel);
     if(newtier == "Challenge Cup") return;
