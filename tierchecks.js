@@ -83,6 +83,9 @@ tier_checker.add_new_check(INCLUDING, ["Wifi NU"], function evioliteCheck(src, t
 
 if (typeof Config == "undefined") { Config = { DreamWorldTiers: ["DW OU", "DW UU", "DW Ubers"] }; }
 tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbilityCheck(src, tier) {
+    // Of course, DW ability only affects 5th gen
+    if (sys.gen(src) < 5)
+        return;
     for (var i = 0; i < 6; i++) {
         var x = sys.teamPoke(src, i);
         if (x !== 0 && sys.hasDreamWorldAbility(src, i) && (!(x in dwpokemons) || (breedingpokemons.indexOf(x) != -1 && sys.compatibleAsDreamWorldEvent(src, i) !== true))) {
