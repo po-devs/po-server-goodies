@@ -63,7 +63,7 @@ TriviaGame.prototype.startTrivia = function(src,rand)
         this.sendPM(src,"There are no questions.");
         return;
     }
-    rand = parseInt(rand)
+    rand = parseInt(rand, 10);
 	if (rand > 102 || rand < 2 )
     {
         this.sendPM(src,"Please do not start a game with more than 102 points, or lower than 2 points.");
@@ -111,7 +111,7 @@ TriviaGame.prototype.finalizeAnswers = function()
 {
     if (this.started === false)
         return;
-try {
+try { // Do not indent this, it is only until this starts to work
     // use concat to convert into array
     var answer,
         id,
@@ -134,9 +134,8 @@ try {
             if (ignoreCaseAnswers.indexOf(answer) != -1)
             {
                 var responseTime = this.submittedAnswers[id].time;
-                var realTime = sys.time();
-                var minus = realTime - responseTime;
-				// changed to sys.time() because time() was returning much bigger numbers
+                var realTime = time();
+                var minus = (realTime - responseTime) / 1000; // returns milliseconds so multiply by 1000
                 var pointAdd = minus > 6 ? 5 : (minus < 7 && minus > 3 ? 3 : 2);
 				// TODO: check answer length, and base pointAdd off of that?
 
@@ -189,7 +188,7 @@ try {
         Trivia.startTriviaRound();
     }, rand);
 } catch(e) {
-// TODO REMOVE
+// TODO REMOVE the catch block when this works
     sys.sendAll("script error: " + e, this.id);
 }
 };
@@ -293,7 +292,7 @@ TriviaGame.prototype.removePlayer = function(src)
 
 TriviaGame.prototype.addAnswer = function(src, answer) {
     var key = this.key(src);
-    this.submittedAnswers[key] = {name: sys.name(src), answer: answer, time: sys.time()};
+    this.submittedAnswers[key] = {name: sys.name(src), answer: answer, time: time()};
 };
 
 function QuestionHolder(f)
@@ -433,7 +432,7 @@ TriviaAdmin.prototype.tAdminList = function(src,id)
 TriviaAdmin.prototype.save = function()
 {
 	sys.writeToFile(this.file,JSON.stringify(this.admins));
-}
+};
 
 // Commands
 var userCommands = {};
@@ -590,7 +589,7 @@ addAdminCommand("erasequestions", function(src, commandData, channel) {
 
 addAdminCommand("apropos", function(src, commandData, channel) {
     if (commandData === undefined)
-    return;
+        return;
     Trivia.sendPM(src,"Matching questions with '"+commandData+"' are: ",channel);
     var all = triviaq.all(), b, q;
     for (b in all)
@@ -647,7 +646,7 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 // TODO: are these well named? also do versions for already accepted questions
 addAdminCommand("changea", function(src, commandData, channel) {
     if (commandData === undefined)
-    return;
+        return;
     commandData = commandData.split("*");
     trivreview.changeAnswer(commandData[0],commandData[1]);
     triviabot.sendMessage(src,"The answer for ID #"+commandData[0]+" was changed to "+commandData[1]+"", channel);
@@ -655,7 +654,7 @@ addAdminCommand("changea", function(src, commandData, channel) {
 
 addAdminCommand("changeq", function(src, commandData, channel) {
     if (commandData === undefined)
-    return;
+        return;
     commandData = commandData.split("*");
     trivreview.changeQuestion(commandData[0],commandData[1]);
     triviabot.sendMessage(src,"The question for ID #"+commandData[0]+" was changed to "+commandData[1], channel);
@@ -663,7 +662,7 @@ addAdminCommand("changeq", function(src, commandData, channel) {
 
 addAdminCommand("changec", function(src, commandData, channel) {
     if (commandData === undefined)
-    return;
+        return;
     commandData = commandData.split("*");
     trivreview.changeAnswer(commandData[0],commandData[1]);
     triviabot.sendMessage(src,"The category for ID #"+commandData[0]+" was changed to "+commandData[1], channel);
@@ -674,17 +673,17 @@ addAdminCommand("changec", function(src, commandData, channel) {
 addAdminCommand("accept", function(src, commandData, channel) {
     var q = trivreview.get(commandData);
 	if (q !== undefined) {
-	triviabot.sendAll(sys.name(src)+" accepted question: id, "+triviaq.questionAmount()+1 /* TODO: get id in a better way */+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
-    triviaq.add(q.category,q.question,q.answer);
-    trivreview.remove(commandData);
+        triviabot.sendAll(sys.name(src)+" accepted question: id, "+triviaq.questionAmount()+1 /* TODO: get id in a better way */+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
+        triviaq.add(q.category,q.question,q.answer);
+        trivreview.remove(commandData);
 	}
     // triviabot.sendMessage(src,"You accepted question ID #"+commandData+"!", channel);
 });
 
 addAdminCommand("decline", function(src, commandData, channel) {
     if (trivreview.get(commandData) !== undefined) {
-	trivreview.remove(commandData);
-    triviabot.sendAll(sys.name(src)+" declined the question.", channel);
+        trivreview.remove(commandData);
+        triviabot.sendAll(sys.name(src)+" declined the question.", channel);
 	}
 });
 
@@ -694,7 +693,7 @@ exports.handleCommand = function trivia_handleCommand(src, command, channel)
     // Only care about trivia channels
     if (channel != triviachan && channel != revchan)
         return;
-try {
+try { // Debug only, do not indent
     var commandData;
     var indx = command.indexOf(' ');
     if (indx != -1) {
@@ -758,7 +757,7 @@ exports.beforeChatMessage = function trivia_beforeChatMessage(src, message, chan
     if (channel !== triviachan)
         return;
 
-try {
+try { // debug only, do not indent
     // allow commands, except me
     if (utilities.is_command(message) && message.substr(1,2).toLowerCase() != "me")
     return;
@@ -797,8 +796,8 @@ exports.init = function trivia_init()
     triviachan = utilities.get_or_create_channel("Trivia");
     revchan = utilities.get_or_create_channel("TrivReview");
 
- if (typeof Trivia === "undefined" ||Trivia.started === false)
-    Trivia = new TriviaGame();
+    if (typeof Trivia === "undefined" || Trivia.started === false)
+        Trivia = new TriviaGame();
     triviaq = new QuestionHolder("triviaq.json");
     trivreview = new QuestionHolder("trivreview.json");
     tadmin = new TriviaAdmin("tadmins.txt");
