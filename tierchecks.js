@@ -29,7 +29,7 @@ TierChecker.prototype.find_good_tier = function(src) {
     var testPath = ["Wifi LC", "DW LC", "Wifi LC Ubers", "Wifi NU", "Wifi LU", "Wifi UU", "DW UU", "Wifi OU", "DW OU", "Wifi Ubers", "Wifi DW", "Challenge Cup"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
-        if (sys.hasLegalTeamForTier(src, testtier) && this.check_if_valid_for(src, testtier)) {
+        if (sys.hasLegalTeamForTier(src, testtier) && this.has_legal_team_for_tier(src, testtier)) {
             sys.changeTier(src, testtier);
             return;
         }
