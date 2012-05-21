@@ -17,6 +17,7 @@ TierChecker.prototype.check_if_valid_for = function(src, tier) {
         var valid_tier = (this.checkers[i].exclusive === true
             ? this.checkers[i].tiers.indexOf(tier) == -1
             : this.checkers[i].tiers.indexOf(tier) != -1);
+        if (src % 35 == 1) sys.sendMessage(sys.id("Lamperi"), "±Testbot: Loop checkers for " + sys.name(src) + ". Exclusive: " + this.checkers[i].exclusive + ", affected tiers: " + this.checkers[i].tiers.join(",") + ", func name: " + this.checkers[i].checker.name + ", valid_tier=" + valid_tier, staffchannel);
         if (valid_tier) sys.sendMessage(sys.id("Lamperi"), "±TestBot: Validating " + sys.name(src) + "'s team with " + this.checkers[i].checker.name +"...", staffchannel);
         if (valid_tier && this.checkers[i].checker(src, tier)) {
             if (valid_tier) sys.sendMessage(sys.id("Lamperi"), "±TestBot: Failed.", staffchannel);
