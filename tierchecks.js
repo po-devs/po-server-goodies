@@ -579,7 +579,6 @@ tier_checker.add_new_check(EXCLUDING, [], function eventShinies(player) {
                 for (var i=0; i<4; i++)
                     if (-1 != beasts[beast].indexOf(sys.teamPokeMove(player, slot, i)))
                         sys.changePokeShine(player, slot, true);
-    return true;
 });
 
 module.exports = tier_checker;
