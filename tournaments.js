@@ -328,11 +328,16 @@ function Tournament(channel)
 	function findPlaceholder() {
 		var placeholder = null;
 		for (var p in self.entrants) {
-			if (/~/.test(p)) {
+			if (isPlaceholder(p)) {
 				placeholder = self.entrants[p];
+				break;
 			}
 		}
 		return placeholder;
+	}
+	
+	function isPlaceholder(p) {
+		return (/~/).test(p);
 	}
 
 	// Command join
@@ -831,15 +836,21 @@ function Tournament(channel)
 		}
 
 		var i = 0;
+		var subFilter = function(i) { return isPlaceholder(self.members[i]); };
+		var playerFilter = function(i) { return !isPlaceholder(self.members[i]); };
 		while (self.members.length >= 2) {
 			i += 1;
-			var x1 = sys.rand(0, self.members.length);
+
+			// Select random player if we still have them
+			var playerIndices = self.members.filter(playerFilter);
+			var x1 = playerIndices.length > 0 ? playerIndices[sys.rand(0, playerIndices.length)] : sys.rand(0, self.members.length);
 			self.battlers.push(self.members[x1]);
 			var name1 = casedName(self.members[x1]);
 			self.members.splice(x1,1);
 
-
-			x1 = sys.rand(0, self.members.length);
+			// Select random sub if we still have them
+			var subIndices = self.members.filter(subFilter);
+			x1 = subIndices.length > 0 ? subIndices[sys.rand(0, subIndices.length)] : sys.rand(0, self.members.length);
 			self.battlers.push(self.members[x1]);
 			var name2 = casedName(self.members[x1]);
 			self.members.splice(x1,1);
