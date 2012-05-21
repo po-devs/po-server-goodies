@@ -63,12 +63,13 @@ TriviaGame.prototype.startTrivia = function(src,rand)
         this.sendPM(src,"There are no questions.");
         return;
     }
-    if (rand > 102 || rand < 2 && rand !== undefined)
+    rand = parseInt(rand)
+	if (rand > 102 || rand < 2 )
     {
         this.sendPM(src,"Please do not start a game with more than 102 points, or lower than 2 points.");
         return;
     }
-	rand = (rand === undefined) ? sys.rand(2,81) : +rand;
+    rand = (isNaN(rand)) ? sys.rand(2,102) : +rand;
     this.maxPoints = rand;
     this.started = true;
     // TODO: enable when working
@@ -796,7 +797,7 @@ exports.init = function trivia_init()
     triviachan = utilities.get_or_create_channel("Trivia");
     revchan = utilities.get_or_create_channel("TrivReview");
 
-	if (typeof Trivia === "undefined" ||Trivia.started === false)
+ if (typeof Trivia === "undefined" ||Trivia.started === false)
     Trivia = new TriviaGame();
     triviaq = new QuestionHolder("triviaq.json");
     trivreview = new QuestionHolder("trivreview.json");
