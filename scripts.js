@@ -3572,11 +3572,12 @@ ownerCommand: function(src, command, commandData, tar) {
             return;
         }
         else if (command == "evalp") {
+            var bindChannel = channel;
             try {
                 var res = sys.eval(commandData);
-                sys.sendMessage(src, "Got from eval: " + res, channel);
+                sys.sendMessage(src, "Got from eval: " + res, bindChannel);
             } catch(err) {
-                sys.sendMessage(src, "Error in eval: " + err, channel);
+                sys.sendMessage(src, "Error in eval: " + err, bindChannel);
             }
             return;
         }
