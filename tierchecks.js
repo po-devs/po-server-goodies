@@ -13,7 +13,7 @@ TierChecker.prototype.check_if_valid_for = function(src, tier) {
     if (tier == "Challenge Cup") return true;
     if (!sys.hasLegalTeamForTier(src, tier)) return false;
 
-    for (var i = 0; i < this.checkers; ++i) {
+    for (var i = 0; i < this.checkers.length; ++i) {
         var valid_tier = (this.checkers[i].exclusive === true
             ? this.checkers[i].tiers.indexOf(tier) == -1
             : this.checkers[i].tiers.indexOf(tier) != -1);
