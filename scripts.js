@@ -1714,6 +1714,7 @@ afterChangeTeam : function(src)
     }
     } catch (e) { sys.sendMessage(e, staffchannel); }
     try {
+    null = 1;
     if (!tier_checker.check_if_valid_for(src, sys.tier(src))) {
        tier_checker.find_good_tier(src);
        normalbot.sendMessage(src, "You were placed into '" + sys.tier(src) + "' tier.");
@@ -4471,6 +4472,7 @@ isMCaps : function(message) {
 ,
 beforeChangeTier : function(src, oldtier, newtier) {
     try {
+    null = 1;
     if (!tier_checker.check_if_valid_for(src, newtier)) {
        sys.stopEvent();
        normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
