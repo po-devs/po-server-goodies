@@ -2113,7 +2113,7 @@ function Mafia(mafiachan) {
     this.isMafiaSuperAdmin = function(src) {
         if (sys.auth(src) >= 2)
             return true;
-        if (['viderizer', 'ozma', 'serpentine'].indexOf(sys.name(src).toLowerCase()) >= 0) {
+        if (['serpentine'].indexOf(sys.name(src).toLowerCase()) >= 0) {
             return true;
         }
         return false;
@@ -2649,7 +2649,7 @@ function Mafia(mafiachan) {
     };
 
     this.beforeChatMessage = function(src, message, channel) {
-        if (channel !== 0 && channel == mafiachan && mafia.ticks > 0 && ["blank", "voting", "signups"].indexOf(mafia.state) == -1 && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0) {
+        if (channel !== 0 && channel == mafiachan && mafia.ticks > 0 && ["blank", "voting", "signups"].indexOf(mafia.state) == -1 && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0 && !mafia.isMafiaAdmin(src)) {
             if (!(is_command(message) && message.substr(1,2).toLowerCase() != "me")) {
                 sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
                 return true;
