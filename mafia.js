@@ -2119,7 +2119,7 @@ function Mafia(mafiachan) {
         return false;
     };
     this.pushUser = function(src, name) {
-        if (!isMafiaSuperAdmin) {
+        if (!mafia.isMafiaSuperAdmin(src)) {
             mafiabot.sendChanMessage(src, "Super Admin Command.");
             return;
         }
