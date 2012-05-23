@@ -2119,8 +2119,8 @@ function Mafia(mafiachan) {
         return false;
     };
     this.pushUser = function(src, name) {
-        if (sys.auth(src) < 2) {
-            mafiabot.sendChanMessage(src, "admin+ command.");
+        if (!isMafiaSuperAdmin) {
+            mafiabot.sendChanMessage(src, "Super Admin Command.");
             return;
         }
         if (this.state != "entry") {
