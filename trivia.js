@@ -560,6 +560,10 @@ addAdminCommand("tadminoff", function(src, commandData, channel) {
     Trivia.sendPM(src,"That person is no longer a trivia admin!",channel);
 });
 
+addAdminCommand("triviaban", function(src, commandData, channel) {
+	script.issueBan("tban", src, sys.id(commandData), commandData);	
+});
+
 addAdminCommand("start", function(src, commandData, channel) {
     Trivia.startTrivia(src,commandData);
 });

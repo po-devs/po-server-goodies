@@ -16,6 +16,7 @@ var Config = {
     battlebot: "Blastoise",
     commandbot: "CommandBot",
     querybot: "QueryBot",
+    triviabot: "TriviaBot",
     // suspectvoting.js available, but not in use
     Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js", "trivia.js"],
     Mafia: {
@@ -132,6 +133,7 @@ cleanFile("mafiathemes/metadata.json");
 cleanFile("channelData.json");
 cleanFile("mutes.txt");
 cleanFile("mbans.txt");
+cleanFile("tbans.txt");
 cleanFile("smutes.txt");
 cleanFile("rangebans.txt");
 cleanFile("contributors.txt");
@@ -169,6 +171,8 @@ function POUser(id)
     this.mute = {active: false, by: null, expires: 0, time: null, reason: null};
     /* whether user is mafiabanned or not */
     this.mban = {active: false, by: null, expires: 0, time: null, reason: null};
+    /* whether user is triviabanned or not */
+    this.tban = {active: false, by: null, expires: 0, time: null, reason: null};
     /* whether user is secrectly muted */
     this.smute = {active: false, by: null, expires: 0, time: null, reason: null};
     /* caps counter for user */
@@ -231,7 +235,7 @@ function POUser(id)
 
     /* check if user is banned or mafiabanned */
     var data;
-    var loopArgs = [["mute", mutes], ["mban", mbans], ["smute", smutes]];
+    var loopArgs = [["mute", mutes], ["mban", mbans], ["smute", smutes], ["tban", tbans]];
     for (var i = 0; i < 3; ++i) {
         var action = loopArgs[i][0];
         if (data = loopArgs[i][1].get(sys.ip(id))) {
@@ -263,7 +267,7 @@ POUser.prototype.activate = function(thingy, by, expires, reason, persistent) {
     this[thingy].time = parseInt(sys.time());
     this[thingy].reason = reason;
     if (persistent) {
-        var table = {"mute": mutes, "smute": smutes, "mban": mbans}
+        var table = {"mute": mutes, "smute": smutes, "mban": mbans, "tban": tbans}
         table[thingy].add(sys.ip(this.id), sys.time() + ":" + by + ":" + expires + ":" + sys.name(this.id) + ":" + reason);
     }
     if (thingy == "mute") {
@@ -278,7 +282,7 @@ POUser.prototype.activate = function(thingy, by, expires, reason, persistent) {
 POUser.prototype.un = function(thingy) {
     this[thingy].active = false;
     this[thingy].expires = 0;
-    var table = {"mute": mutes, "smute": smutes, "mban": mbans}
+    var table = {"mute": mutes, "smute": smutes, "mban": mbans, "tban": tbans}
     table[thingy].remove(sys.ip(this.id));
 
     if (thingy == "mute") {
@@ -924,9 +928,10 @@ init : function() {
         breedingpokemons.push(sys.pokeNum(breedingList[inpok]));
     }
 
-    /* restore mutes, smutes, mafiabans, rangebans, megausers */
+    /* restore mutes, smutes, mafiabans, triviabans, rangebans, megausers */
     mutes = new MemoryHash("mutes.txt");
     mbans = new MemoryHash("mbans.txt");
+    tbans = new MemoryHash("tbans.txt");
     smutes = new MemoryHash("smutes.txt");
     rangebans = new MemoryHash("rangebans.txt");
     contributors = new MemoryHash("contributors.txt");
@@ -1106,10 +1111,11 @@ init : function() {
 ,
 
 issueBan : function(type, src, tar, commandData, maxTime) {
-        var memoryhash = {"mute": mutes, "mban": mbans, "smute": smutes}[type];
-        var banbot = type == "mban" ? mafiabot : normalbot;
-        var verb = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted"}[type];
-        var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute"}[type];
+        var memoryhash = {"mute": mutes, "mban": mbans, "smute": smutes, "tban": tbans}[type];
+        var banbot = {"mban": mafiabot, "smute": normalbot, "mute": normalbot, "tban": triviabot}[type];
+        var verb = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted", "tban": "banned from trivia"}[type];
+        var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "tban": "ban from trivia"}[type];
+        var triviachan = sys.channelId("Trivia"), shanaindigo = sys.channelId("shanaindigo");
         var sendAll =  {
             "smute": function(line) {
                 banbot.sendAll(line, staffchannel);
@@ -1128,15 +1134,20 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             "mban": function(line) {
                 banbot.sendAll(line, staffchannel);
                 banbot.sendAll(line, mafiachan);
-                banbot.sendAll(line, sys.channelId("shanaindigo"));
+                banbot.sendAll(line, shanaindigo);
             },
             "mute": function(line) {
                 banbot.sendAll(line);
             }
+            "tban": function(line) {
+                banbot.sendAll(line, staffchannel);
+                banbot.sendAll(line, triviachan);
+                banbot.sendAll(line, shanaindigo);
+            }
         }[type];
 
         var expires = 0;
-        var defaultTime = {"mute": "24h", "mban": "7d", "smute": "0"}[type];
+        var defaultTime = {"mute": "24h", "mban": "7d", "tban": "30m", "smute": "0"}[type];
         var reason = "";
         var timeString = "";
         var tindex = 10;
@@ -1221,6 +1232,10 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         else
             sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Channel: "+sys.channel(channel) + "]");
 
+        // TODO: Move this into trivia.js
+        
+        if (type === "tban") sys.kick(tar, triviachan);
+        
         var authname = sys.name(src).toLowerCase();
         authStats[authname] =  authStats[authname] || {}
         authStats[authname]["latest" + type] = [commandData, parseInt(sys.time())];
@@ -1374,9 +1389,21 @@ beforeChannelJoin : function(src, channel) {
             mafiabot.sendMessage(src, "Your ban from Mafia expired.");
             mafiabot.sendAll("" + sys.name(src) + "'s ban from Mafia expired.", mafiachan);
         } else {
-
             var mbaninfo = poUser.mban;
             sys.sendMessage(src, "+Guard: You are banned from Mafia" + (mbaninfo.by ? " by " + mbaninfo.by : '')+". " + (mbaninfo.expires > 0 ? "Ban expires in " + getTimeString(mbaninfo.expires - parseInt(sys.time())) + ". " : '') + (mbaninfo.reason ? "[Reason: " + mbaninfo.reason + "]" : ''));
+            sys.stopEvent();
+            return;
+        }
+    }
+    if (channel == sys.channelId("Trivia") && poUser.tban.active)
+    {
+        if (poUser.expired("tban")) {
+            poUser.un("tban");
+            triviabot.sendMessage(src,"Your ban from Trivia expired.");
+            triviabot.sendAll("" + sys.name(src) + "'s ban from Trivia expired.", sys.channelId("Trivia"));
+        } else {
+            var tbaninfo = poUser.tban;
+            sys.sendMessage(src,"+Guard: You are banned from Trivia" + (tbaninfo.by ? " by " + tban.info.by : '')+". " + (tbaninfo.expires > 0 ? "Ban expires in "+getTimeString(tbaninfo.expires - parseInt(sys.time())) + ". " : '') + (tbaninfo.reason ? "[Reason: " + tbaninfo.reason + "]" : ''));
             sys.stopEvent();
             return;
         }
@@ -2361,6 +2388,10 @@ modCommand: function(src, command, commandData, tar) {
         script.issueBan("mban", src, sys.id(commandData), commandData);
         return;
     }
+    if (command == "triviaban") {
+        script.issueBan("tban", src, sys.id(commandData), commandData);
+        return;
+    }
     if (command == "mafiaunban") {
         if (tar == undefined) {
             if (mbans.get(commandData)) {
@@ -2387,6 +2418,35 @@ modCommand: function(src, command, commandData, tar) {
         }
         mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!");
         SESSION.users(tar).un("mban");
+        return;
+    }
+    
+    if (command == "triviaunban") {
+        if (tar == undefined) {
+            if (tbans.get(commandData)) {
+                triviabot.sendAll("IP address " + commandData + " was unbanned from Trivia by " + nonFlashing(sys.name(src)) + "!", staffchannel);
+                tbans.remove(commandData);
+                return;
+            }
+            var ip = sys.dbIp(commandData)
+            if(ip != undefined && tbans.get(ip)) {
+                triviabot.sendAll("" + commandData + " was unbanned from Trivia by " + nonFlashing(sys.name(src)) + "!");
+                tbans.remove(ip);
+                return;
+            }
+            triviabot.sendChanMessage(src, "He/she's not banned from Trivia.");
+            return;
+        }
+        if (!SESSION.users(tar).tban.active) {
+            mafiabot.sendChanMessage(src, "He/she's not banned from Trivia.");
+            return;
+        }
+        if(SESSION.users(src).tban.active && tar==src) {
+           mafiabot.sendChanMessage(src, "You may not unban yourself from Trivia");
+           return;
+        }
+        triviabot.sendAll("" + commandData + " was unbanned from Trivia by " + nonFlashing(sys.name(src)) + "!");
+        SESSION.users(tar).un("tban");
         return;
     }
 
@@ -2439,7 +2499,7 @@ modCommand: function(src, command, commandData, tar) {
         return;
 
     }
-    if (command == "mutelist" || command == "smutelist" || command == "mafiabans") {
+    if (command == "mutelist" || command == "smutelist" || command == "mafiabans" || command == "triviabans") {
         var mh;
         var name;
         if (command == "mutelist") {
@@ -2451,6 +2511,9 @@ modCommand: function(src, command, commandData, tar) {
         } else if (command == "mafiabans") {
             mh = mbans;
             name = "Mafiabans";
+        } else if (command == "triviabans") {
+            mh = tbans;
+            name = "Triviabans";
         }
 
         var width=5;
