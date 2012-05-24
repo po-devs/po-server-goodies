@@ -2308,6 +2308,30 @@ modCommand: function(src, command, commandData, tar) {
         }
         return;
     }
+    if (command == "onrange") {
+        var subip = commandData;
+        var players = sys.playerIds();
+        var players_length = players.length;
+        var names = [];
+        for (var i = 0; i < players_length; ++i) {
+            var current_player = players[i];
+            var ip = sys.ip(current_player);
+            if (ip.substr(0, subip.length) == subip) {
+                names.push(current_player);
+            }
+        }
+        // Tell about what is found.
+        if (names.length > 0) {
+            var msgs = [];
+            for (var i = 0; i < names.length; i++) {
+                msgs.push(sys.name(names[i]) + " (" + sys.ip(names[i]) + ")");
+            }
+            sys.sendMessage(src,"Players: on range " + subip + " are: " + msgs.join(", "), channel);
+        } else {
+            sys.sendMessage(src,"Players: Nothing interesting here!",channel);
+        }
+        return;
+    }
     if (command == "tier")
     {
         if (tar == undefined){
@@ -3314,30 +3338,6 @@ ownerCommand: function(src, command, commandData, tar) {
             sys.sendMessage(src, info[x], channel);
         }
         sendChanMessage(src, "");
-        return;
-    }
-    if (command == "onrange") {
-        var subip = commandData;
-        var players = sys.playerIds();
-        var players_length = players.length;
-        var names = [];
-        for (var i = 0; i < players_length; ++i) {
-            var current_player = players[i];
-            var ip = sys.ip(current_player);
-            if (ip.substr(0, subip.length) == subip) {
-                names.push(current_player);
-            }
-        }
-        // Tell about what is found.
-        if (names.length > 0) {
-            var msgs = [];
-            for (var i = 0; i < names.length; i++) {
-                msgs.push(sys.name(names[i]) + " (" + sys.ip(names[i]) + ")");
-            }
-            sys.sendMessage(src,"Players: on range " + subip + " are: " + msgs.join(", "), channel);
-        } else {
-            sys.sendMessage(src,"Players: Nothing interesting here!",channel);
-        }
         return;
     }
     if (command == "rangeban") {
