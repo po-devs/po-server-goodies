@@ -198,7 +198,14 @@ function POUser(id)
     this.tiers = [];
     if (getKey('touralertson', id) == "true") {
         this.tiers = getKey("touralerts", id).split("*");
-    }   
+    }
+    /* mafia alerts */
+    this.mafiathemes = [];
+    if (getKey("mafiaalertson", id) == "true") {
+        this.mafiaalertson = true;
+        this.mafiaalertsany = getKey("mafiaalertsany", id) == "true" ? true : false;
+        this.mafiathemes = getKey("mafiathemes", id).split("*");
+    }
     /* host name */
     this.hostname = "pending";
     var user = this; // closure
