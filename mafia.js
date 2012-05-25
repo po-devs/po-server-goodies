@@ -891,6 +891,25 @@ function Mafia(mafiachan) {
             sys.sendAll(border, mafiachan);
             sys.sendAll("", mafiachan);
         }
+        
+        var playerson = sys.playerIds();
+        for (var x = 0; x < playerson.length; ++x) {
+            var id = playerson[x];
+            var user = SESSION.users(id);
+            if (sys.loggedIn(id) && user && user.mafiaalertson && (user.mafiaalertsany || user.mafiathemes.indexOf(this.theme.name.toLowerCase()) != -1)) {
+                if (sys.isInChannel(id, mafiachan)) {
+                    sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : this.theme.name + "-themed ") + "mafia game is starting, " + sys.name(id) +"<ping/>!", mafiachan);
+                    continue;
+                } else if (sys.isInChannel(id, 0)) {
+                    sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : this.theme.name + "-themed ") + "mafia game is starting, " + sys.name(id) +"<ping/>!", 0);
+                    continue;
+                } else if (sys.existChannel("Project Mafia") && sys.isInChannel(id, sys.channelId("Project Mafia"))) {
+                    sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : this.theme.name + "-themed ") + "mafia game is starting, " + sys.name(id) +"<ping/>!", sys.channelId("Project Mafia"));
+                    continue;
+                }
+                sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : this.theme.name + "-themed ") + "mafia game is starting, " + sys.name(id) +"<ping/>!");
+            }
+        }
 
         if (this.theme.summary === undefined) {
             sys.sendAll("±Game: Consider adding a summary field to this theme that describes the setting of the game and points out the odd quirks of the theme!",mafiachan);
@@ -2100,6 +2119,97 @@ function Mafia(mafiachan) {
             sys.sendMessage(src, "±Game: No game running!", mafiachan);
         }
     };
+    this.flashPlayer = function(src, commandData) {
+        var user = SESSION.users(src);
+        var data = commandData.split(":");
+        var action = data[0].toLowerCase();
+        if (action == "on") {
+            mafiabot.sendChanMessage(src, "Alert for mafia games is now on!");
+            user.mafiaalertson = true;
+            saveKey("mafiaalertson", src, true);
+            return;
+        }
+        else if (action == "off") {
+            mafiabot.sendChanMessage(src, "Alert for mafia games is now off!");
+            user.mafiaalertson = false;
+            saveKey("mafiaalertson", src, false);
+            return;
+        }
+        else if (action == "any") {
+            user.mafiaalertsany = (user.mafiaalertsany == true) ? false : true;
+            mafiabot.sendChanMessage(src, "You'll get alerts for " + (user.mafiaalertsany == true ? "any theme" : "specific themes only") + "!");
+            saveKey("mafiaalertsany", src, user.mafiaalertsany);
+            return;
+        }
+        else if (action == "add") {
+            var themesAdded = [];
+            var themesNotAdded = [];
+            var repeatedThemes = [];
+            for (var t = 1; t < data.length; ++t) {
+                var themeName = data[t].toLowerCase();
+                if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
+                    themesNotAdded.push(themeName);
+                    continue;
+                }
+                if (user.mafiathemes == undefined) {
+                    user.mafiathemes = [];
+                }
+                if (user.mafiathemes.indexOf(themeName) != -1) {
+                    repeatedThemes.push(themeName);
+                    continue;
+                }
+                themesAdded.push(themeName);
+                user.mafiathemes.push(themeName);
+            }
+            if (themesAdded.length > 0) {
+                mafiabot.sendChanMessage(src, "Added alert for the themes: " + readable(themesAdded, "and") + ". ");
+                saveKey("mafiathemes", src, user.mafiathemes.join("*"));
+            }
+            if (repeatedThemes.length > 0 ) {
+                mafiabot.sendChanMessage(src, "You already have alerts for the themes: " + readable(repeatedThemes, "and") + ". ");
+            }
+            if (themesNotAdded.length > 0 ) {
+                mafiabot.sendChanMessage(src, "Couldn't add alert for the themes: " + readable(themesNotAdded, "and") + ". ");
+            }
+            return;
+        }
+        else if (action == "remove") {
+            if (user.mafiathemes == undefined || user.mafiathemes.length == 0) {
+                mafiabot.sendChanMessage(src, "You have no alerts to remove!");
+                return;
+            }
+            var themesRemoved = [];
+            var themesNotRemoved = [];
+            for (var t = 1; t < data.length; ++t) {
+                var themeName = data[t].toLowerCase();
+                if (user.mafiathemes.indexOf(themeName) != -1) {
+                    user.mafiathemes.splice(user.mafiathemes.indexOf(themeName), 1);
+                    themesRemoved.push(themeName);
+                    continue;
+                } else {
+                    themesNotRemoved.push(themeName);
+                continue;
+                }
+            }
+            if (themesRemoved.length > 0) {
+                mafiabot.sendChanMessage(src, "Removed alert for the themes: " + readable(themesRemoved, "and") + ". ");
+                saveKey("mafiathemes", src, user.mafiathemes.join("*"));
+            }
+            if (themesNotRemoved.length > 0) {
+                mafiabot.sendChanMessage(src, "Couldn't remove alert for the themes: " + readable(themesNotRemoved, "and") + ". ");
+            }
+            return;
+        }
+        else {
+            if (user.mafiathemes == undefined || user.mafiathemes.length == 0) {
+                mafiabot.sendChanMessage(src, "You currently have no alerts for mafia themes activated.");
+            } else if (user.mafiaalertsany == true) {
+                mafiabot.sendChanMessage(src, "You currently get alerts any theme. ");
+            } else {
+                mafiabot.sendChanMessage(src, "You currently get alerts for the following themes: " + readable(user.mafiathemes.sort(), "and") + ". ");
+            }
+        }
+    };
 
     // Auth commands
     this.isMafiaAdmin = function(src) {
@@ -2269,6 +2379,7 @@ function Mafia(mafiachan) {
             themes: [this.showThemes, "To view installed themes."],
             themeinfo: [this.showThemeInfo, "To view installed themes (more details)."],
             details: [this.showThemeDetails, "To view info about a specific theme."],
+            flashme: [this.flashPlayer, ":To get a alert when a new mafia game starts. Use /flashme [on/off] or /flashme [add/remove]:[theme]"],
             playedgames: [this.showPlayedGames, "To view recently played games"],
             update: [this.updateTheme, "To update a Mafia Theme!"]
         },
