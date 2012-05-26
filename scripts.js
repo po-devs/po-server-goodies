@@ -803,7 +803,7 @@ var commands = {
         "/userinfo [name]: Displays information about a user (pretty display).",
         "/whois [name]: Displays information about a user (one line, slightly more info).",
         "/aliases [IP/name]: Shows the aliases of an IP or name.",
-        "/tempban [name]:[reason]:[minutes]: Bans someone for 24 hours or less.",
+        "/tempban [name]:[reason]:[time(s/m/h/d)]: Bans someone for 24 hours or less.",
         "/tempunban [name]: Unbans a temporary banned user (standard unban doesn't work).",
         "/mafiaban [name]:[reason]:[time]: Bans a player from Mafia. Time is optional and defaults to 7 days.",
         "/mafiaunban [name]: Unbans a player from Mafia.",
@@ -2596,7 +2596,7 @@ modCommand: function(src, command, commandData, tar) {
         var table = '';
         table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="6"><center><strong>Temp banned</strong></center></td></tr><tr><th>IP</th><th>Name</th><th>By</th><th>Length</th><th>Expires in</th><th>Reason</th></tr>';
         for (var ip in tempBans) {
-            var ban_length = tempBans[ip].length === undefined ? "undefined" : getTimeString(tempBans[ip].length * 60);
+            var ban_length = tempBans[ip].length === undefined ? "undefined" : getTimeString(tempBans[ip].length);
             var auth = tempBans[ip].auth === undefined ? "undefined" : tempBans[ip].auth;
             var time = tempBans[ip].time === undefined ? "undefined" : tempBans[ip].time;
             var expire_time = tempBans[ip].time === undefined ? "undefined" : getTimeString(tempBans[ip].time - t);
@@ -2800,54 +2800,60 @@ modCommand: function(src, command, commandData, tar) {
         querybot.sendChanMessage(src, prefix + smessage);
         return;
     }
-    if (command == "tempban") {
-        var tmp = commandData.split(":");
-        if (tmp.length != 3) {
-            normalbot.sendChanMessage(src, "Usage /tempban name:reason:minutes.");
-            return;
-        }
-        var target_name = tmp[0];
-        var reason = tmp[1];
-        var minutes = tmp[2];
-        tar = sys.id(target_name);
-        minutes = parseInt(minutes);
-        if (typeof minutes != "number" || isNaN(minutes) || minutes < 1 || (sys.auth(src) < 2 && minutes > 1440) ) {
-            normalbot.sendChanMessage(src, "Minutes must be in the interval [1,1440].");
-            return;
-        }
-
-        var ip;
-        var name;
-        if (tar === undefined) {
-            ip = sys.dbIp(target_name);
-            name = target_name;
-            if (ip === undefined) {
-                normalbot.sendChanMessage(src, "No such name online / offline.");
-                return;
-            }
-        } else {
-            ip = sys.ip(tar);
-            name = sys.name(tar);
-        }
-
-        if (sys.maxAuth(ip)>=sys.auth(src)) {
-            normalbot.sendChanMessage(src, "Can't do that to higher auth!");
-            return;
-        }
-        var authname = sys.name(src).toLowerCase();
-        tempBans[ip] = {'auth': authname,
-                        'time': parseInt(sys.time()) + 60*minutes,
-                        'length': minutes,
-                        'reason': reason,
-                        'target': target_name};
-        normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " on " + ip + " for " + minutes + " minutes! [Reason: " + reason + "]");
-        sys.kick(tar);
-        this.kickAll(ip);
-
-
-        authStats[authname] =  authStats[authname] || {}
-        authStats[authname].latestTempBan = [name, parseInt(sys.time())];
-        return;
+   if (command == "tempban") {
+	var tmp = commandData.split(":");
+	if (tmp.length != 3) {
+		normalbot.sendChanMessage(src, "Usage /tempban name:reason:minutes.");
+		return;
+	}
+	
+	var target_name = tmp[0];
+	var reason = tmp[1];
+	if (isNaN(tmp[2][0])) {
+		var minutes = 86400
+	} else {
+		var minutes = getSeconds(tmp[2]);
+	}
+	tar = sys.id(target_name);
+	minutes = parseInt(minutes);
+	timeString = getTimeString(minutes);
+	if (sys.auth(src) < 2 && minutes > 86400) {
+		normalbot.sendChanMessage(src, "Cannot ban for longer than a day!");
+		return;
+	}
+	var ip;
+	var name;
+	if (tar === undefined) {
+		ip = sys.dbIp(target_name);
+		name = target_name;
+		if (ip === undefined) {
+			normalbot.sendChanMessage(src, "No such name online / offline.");
+			return;
+		}
+	} else {
+		ip = sys.ip(tar);
+		name = sys.name(tar);
+	}
+	
+	if (sys.maxAuth(ip) >= sys.auth(src)) {
+		normalbot.sendChanMessage(src, "Can't do that to higher auth!");
+		return;
+	}
+	var authname = sys.name(src).toLowerCase();
+	tempBans[ip] = {
+		'auth' : authname,
+		'time' : parseInt(sys.time()) + minutes,
+		'length' : minutes,
+		'reason' : reason,
+		'target' : target_name
+	};
+	normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " on " + ip + " for " + timeString + "! [Reason: " + reason + "]");
+	sys.kick(tar);
+	this.kickAll(ip);
+	
+	authStats[authname] = authStats[authname] || {}
+	authStats[authname].latestTempBan = [name, parseInt(sys.time())];
+	return;
     }
     if (command == "tempunban") {
         var ip = sys.dbIp(commandData);
