@@ -1811,9 +1811,10 @@ userCommand: function(src, command, commandData, tar) {
         SESSION.channels(channel).beforeMessage(src, "/me " + commandData);
         commandData=utilities.html_escape(commandData)
         if (command == "me") {
-           var colour = sys.getColor(src)
-           if(colour=="#000000"){
-                colour='#0483c5'
+           var colour = sys.getColor(src);
+           if(colour === "#000000"){
+           	var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
+	   	colour = clist[src % clist.length];
            }
            sys.sendHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + commandData + "</font>", channel);
         } else if (command == "rainbow" && SESSION.global().allowRainbow) {
