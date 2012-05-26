@@ -1783,7 +1783,7 @@ userCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "/me was turned off.");
             return;
         }
-        if (commandData === undefined || command == "rainbow")
+        if (commandData === undefined)
             return;
 
         if (channel == sys.channelId("Trivia") && SESSION.channels(channel).triviaon) {
@@ -1817,7 +1817,7 @@ userCommand: function(src, command, commandData, tar) {
 	   	colour = clist[src % clist.length];
            }
            sys.sendHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + commandData + "</font>", channel);
-        } else if (command == "rainbow" && SESSION.global().allowRainbow) {
+        } else if (command == "rainbow" && SESSION.global().allowRainbow && channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel != sys.channelId("Trivia")) {
             var auth = 1 <= sys.auth(src) && sys.auth(src) <= 3;
             var colours = ["red", "blue", "yellow", "cyan", "black", "orange", "green"];
             var randColour = function() { return colours[sys.rand(0,colours.length-1)]; }
@@ -3035,6 +3035,16 @@ adminCommand: function(src, command, commandData, tar) {
             megausers += "*" + sys.name(tar) + "*";
             sys.saveVal("megausers", megausers);
         }
+        return;
+    }
+    if(command == "togglerainbow"){
+        if(commandData === "off"){
+            SESSION.global().allowRainbow = false
+            normalbot.sendChanMessage(src, "You turned rainbow off!")
+            return;
+        }
+        SESSION.global().allowRainbow = true
+        normalbot.sendChanMessage(src, "You turned rainbow on!")
         return;
     }
     if (command == "watch") {
