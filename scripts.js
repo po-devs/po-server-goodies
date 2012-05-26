@@ -3743,7 +3743,21 @@ channelCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "Choose a valid target for your love!");
             return;
         }
-        sys.sendHtmlAll("<font color='#0483c5'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
+        var colour = sys.getColor(src);
+           if(colour === "#000000"){
+           	var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
+	   	colour = clist[src % clist.length];
+           }
+        sys.sendHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
+        sys.kick(tar, channel);
+        return;
+    }
+     if (command == "ck" || command == "chankick") {
+        if (tar == undefined) {
+            normalbot.sendChanMessage(src, "Choose a valid target to kick");
+            return;
+        }
+        normalbot.sendChanAll(sys.name(src) + "kicked "+commandData+" from the channel!");
         sys.kick(tar, channel);
         return;
     }
