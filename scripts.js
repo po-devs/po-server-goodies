@@ -3757,7 +3757,7 @@ channelCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "Choose a valid target to kick");
             return;
         }
-        normalbot.sendChanAll(sys.name(src) + "kicked "+commandData+" from the channel!");
+        normalbot.sendChanAll(sys.name(src) + " kicked "+commandData+" from the channel!");
         sys.kick(tar, channel);
         return;
     }
