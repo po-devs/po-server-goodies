@@ -803,7 +803,7 @@ var commands = {
         "/userinfo [name]: Displays information about a user (pretty display).",
         "/whois [name]: Displays information about a user (one line, slightly more info).",
         "/aliases [IP/name]: Shows the aliases of an IP or name.",
-        "/tempban [name]:[reason]:[time(s/m/h/d)]: Bans someone for 24 hours or less.",
+        "/tempban [name]:[reason]:[time]: Bans someone for 24 hours or less. Time is optional and defaults to 1 day",
         "/tempunban [name]: Unbans a temporary banned user (standard unban doesn't work).",
         "/mafiaban [name]:[reason]:[time]: Bans a player from Mafia. Time is optional and defaults to 7 days.",
         "/mafiaunban [name]: Unbans a player from Mafia.",
@@ -4069,7 +4069,7 @@ beforeChatMessage: function(src, message, chan) {
                 }
             }
         }
-        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, "nobrain.dk", /\bn[1i]gg+ers*\b/i, "penis", "vagina", "fuckface", /\bhur+\b/, /\bdur+\b/, "hurrdurr", /\bherp\b/, /\bderp\b/, "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----"];
+        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, "nobrain.dk", /\bn[1i]gg+ers*\b/i, "penis", "vagina", "fuckface", "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----"];
         for (var i = 0; i < BanList.length; ++i) {
             var filter = BanList[i];
             if (typeof filter == "string" && m.indexOf(filter) != -1 || typeof filter == "function" && filter.test(m)) {
