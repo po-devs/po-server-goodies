@@ -749,7 +749,7 @@ querybot = new Bot(Config.querybot);
 var commands = {
     user:
     [
-        "/rules: Shows the rules",
+        "/rules [x]: Shows the rules (x is optionally parameter to show a specific rule)",
         "/ranking: Shows your ranking in your current tier.",
         "/myalts: Lists your alts.",
         "/me [message]: Sends a message with *** before your name.",
@@ -1868,6 +1868,13 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }*/
     if (command == "rules") {
+    	if(commandData !== undefined && !isNaN(commandData) && commandData >0 && commandData < 13){
+	    var num = parseInt(commandData)
+	    num = (2*num)+1 //gets the right rule from the list since it isn't simply y=x it's y=2x+1
+	    sendChanMessage(src, rules[num])
+	    sendChanMessage(src, rules[num+1])
+	    return;
+	}
         for (rule in rules) {
             sendChanMessage(src, rules[rule]);
         }
