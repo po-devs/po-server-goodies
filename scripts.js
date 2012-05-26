@@ -2878,6 +2878,8 @@ modCommand: function(src, command, commandData, tar) {
         } else if (parseInt(sys.time()) - poTarget.warned < 10) {
             normalbot.sendChanMessage(src, "Please wait 10 seconds between wfbs.");
         } else {
+       	    if (SESSION.users(tar).mute.active)
+       	    return;
             poTarget.activate("mute", sys.name(src), parseInt(sys.time()) + 900, "Asking for battles in the chat; http://findbattlebutton.info", true);
             normalbot.sendAll("" + sys.name(tar) + " was muted by " + nonFlashing(sys.name(src)) + " for 15 minutes! [Reason: Asking for battles in the chat]");
         }
