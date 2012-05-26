@@ -1454,6 +1454,19 @@ isRangeBanned : function(ip) {
 
 ,
 
+isTempBannedName: function(name)
+{
+    name = name.toLowerCase();
+    for (var i in tempBans)
+	{
+		if (tempBans[i].target.toLowerCase() == name && this.isTempBanned(i))
+		return true;
+	}
+	return false;
+}
+
+,
+
 isTempBanned : function(ip) {
     if (ip in tempBans) {
         var time = parseInt(sys.time());
@@ -1471,7 +1484,7 @@ isTempBanned : function(ip) {
 beforeLogIn : function(src) {
 
     var ip = sys.ip(src);
-    if (this.isTempBanned(ip) && sys.auth(src) < 2) {
+    if ((this.isTempBanned(ip) || this.isTempBannedName(sys.name(src))) && sys.auth(src) < 2) {
         normalbot.sendMessage(src, 'You are banned!');
         sys.stopEvent();
         return;
