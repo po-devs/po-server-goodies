@@ -771,7 +771,7 @@ var commands = {
     [
         "/topic [topic]: Sets the topic of a channel. Only works if you're the first to log on a channel or have auth there. Displays current topic instead if no new one is given.",
         "/lt [name]: Kick someone from current channel.",
-        "/inviteonly [on|off]: Makes a channel invite-only or public.",
+        "/inviteonly [on|off] [level]: Makes a channel invite-only or public, with a minimum auth level of 'level' (level is optional).",
         "/invite [name]: Invites a user to current channel.",
         "/op [name]: Gives a user operator status.",
         "/deop [name]: Removes operator status from a user.",
@@ -3818,11 +3818,22 @@ channelCommand: function(src, command, commandData, tar) {
     }
 
     if (command == "inviteonly") {
+        var invitedata = commandData.split(' ')
         var level = sys.auth(src) >= 3 ? 3 : sys.auth(src) + 1;
-        if (commandData == "on") {
+        var newlevel = parseInt(invitedata[1]);
+        if (!isNaN(newlevel)) {
+            if (newlevel >= 1 && newlevel <= level) {
+                level = newlevel;
+            }
+            else {
+                normalbot.sendChanMessage(src, "You cannot set the maximum invite level above" + level + ", or less than 1.");
+                return;
+            }
+        }
+        if (invitedata[0] == "on") {
             poChannel.inviteonly = level;
             normalbot.sendChanAll("This channel was made inviteonly with level " + level + ".");
-        } else if (commandData == "off") {
+        } else if (invitedata[0] == "off") {
             poChannel.inviteonly = 0;
             normalbot.sendChanAll("This channel is not inviteonly anymore.");
         } else {
