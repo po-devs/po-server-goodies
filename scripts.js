@@ -2596,6 +2596,9 @@ modCommand: function(src, command, commandData, tar) {
         var table = '';
         table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="6"><center><strong>Temp banned</strong></center></td></tr><tr><th>IP</th><th>Name</th><th>By</th><th>Length</th><th>Expires in</th><th>Reason</th></tr>';
         for (var ip in tempBans) {
+            if(this.isTempBanned(ip) == false){
+               continue;
+            }
             var ban_length = tempBans[ip].length === undefined ? "undefined" : getTimeString(tempBans[ip].length);
             var auth = tempBans[ip].auth === undefined ? "undefined" : tempBans[ip].auth;
             var time = tempBans[ip].time === undefined ? "undefined" : tempBans[ip].time;
