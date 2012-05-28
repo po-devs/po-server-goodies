@@ -270,6 +270,7 @@ function Mafia(mafiachan) {
             theme.nightPriority = [];
             theme.standbyRoles = [];
             theme.haxRoles = {};
+            theme.randomSideRoles = {};
 
             // Init from the theme
             var i;
@@ -421,6 +422,9 @@ function Mafia(mafiachan) {
         this.roles[obj.role] = obj;
         if (!obj.actions) {
             obj.actions = {};
+        }
+        if (typeof obj.side == "object") {
+            this.randomSideRoles[obj.role] = obj.side;
         }
 
         var i, action;
@@ -1295,6 +1299,11 @@ function Mafia(mafiachan) {
                 mafia.clearVariables();
                 return;
             }
+            
+            /* Resetting the Random Sides Object */
+            for (var x in mafia.theme.randomSideRoles) {
+                mafia.theme.roles[x].side = mafia.theme.randomSideRoles[x];
+            }
 
             /* Creating the roles list */
             var i = 1;
@@ -1789,8 +1798,10 @@ function Mafia(mafiachan) {
                  }
             }
             if (winner.theme !== null) {
+                sys.sendAll("", mafiachan);
                 sys.sendAll("±Game: Theme " + winner.theme + " won with " + winner.votes + " votes!", mafiachan);
                 sys.sendAll("±Game: Type /Join to enter the game!", mafiachan);
+                sys.sendAll("", mafiachan);
                 this.startGame(null, winner.theme);
                 this.signups = players[winner.theme];
                 this.ips = ips[winner.theme];
@@ -2016,7 +2027,7 @@ function Mafia(mafiachan) {
             var theme = mafia.themeManager.themes[info[0].toLowerCase()];
             if (!theme) continue;
             if (data == noPlayer || data.indexOf(theme.name.toLowerCase()) != -1) {
-                mess.push('<tr><td>' + theme.name + '</td><td><a href="' + info[1] + '">' + info[1] + '</a></td><td>' + (theme.author ? readable(theme.author) : "unknown") + '</td><td>' + (theme.enabled ? "yes" : "no")+ '</td></tr>');
+                mess.push('<tr><td>' + theme.name + '</td><td><a href="' + info[1] + '">' + info[1] + '</a></td><td>' + (theme.author ? readable(theme.author, "and") : "unknown") + '</td><td>' + (theme.enabled ? "yes" : "no")+ '</td></tr>');
             }
         }
         mess.push("</table>");
@@ -2045,10 +2056,10 @@ function Mafia(mafiachan) {
         var mess = [];
         mess.push("");
         mess.push("<b>Theme: </b>" + theme.name);
-        mess.push("<b>Author: </b>" + (theme.author ? readable(theme.author) : "Unknown"));
+        mess.push("<b>Author: </b>" + (theme.author ? readable(theme.author, "and") : "Unknown"));
         mess.push("<b>Enabled: </b>" + (theme.enabled ? "Yes" : "No"));
         mess.push("<b>Number of Players: </b> Up to " + (theme["roles" + theme.roleLists].length) + " players");
-        mess.push("<b>Summary: </b>" + (theme.summary ? theme.summary : "No summary avaiable."));
+        mess.push("<b>Summary: </b>" + (theme.summary ? theme.summary : "No summary available."));
         mess.push("(For more information about this theme, type <b>/roles " + theme.name + "</b>)");
         if (link == "No link found"){
             mess.push('<b>Code: </b>' + link);
@@ -2200,11 +2211,28 @@ function Mafia(mafiachan) {
             }
             return;
         }
+        else if (action == "help") {
+            var mess = [
+                "",
+                "<b>How to use the Flash Me:</b>",
+                "Type <b>/flashme</b> to see your current alerts.",
+                "Type <b>/flashme on</b> or <b>/flashme off</b> to turn your alerts on or off.",
+                "Type <b>/flashme any</b> to receive alerts for any new mafia game. Type again to receive alerts for specific themes.",
+                "Type <b>/flashme add:theme1:theme2</b> to add alerts for specific themes.",
+                "Type <b>/flashme remove:theme1:theme2</b> to remove alerts you added.",
+                ""
+            ];
+            for (var x in mess) {
+                sys.sendHtmlMessage(src, mess[x], mafiachan);
+            }
+        }
         else {
-            if (user.mafiathemes == undefined || user.mafiathemes.length == 0) {
-                mafiabot.sendChanMessage(src, "You currently have no alerts for mafia themes activated.");
+            if (!user.mafiaalertson) {
+                mafiabot.sendChanMessage(src, "You currently have /flashme deactivated (you can enable it by typing /flashme on).");
             } else if (user.mafiaalertsany == true) {
                 mafiabot.sendChanMessage(src, "You currently get alerts any theme. ");
+            } else if (user.mafiathemes == undefined || user.mafiathemes.length == 0) {
+                mafiabot.sendChanMessage(src, "You currently have no alerts for mafia themes activated.");
             } else {
                 mafiabot.sendChanMessage(src, "You currently get alerts for the following themes: " + readable(user.mafiathemes.sort(), "and") + ". ");
             }
@@ -2379,7 +2407,7 @@ function Mafia(mafiachan) {
             themes: [this.showThemes, "To view installed themes."],
             themeinfo: [this.showThemeInfo, "To view installed themes (more details)."],
             details: [this.showThemeDetails, "To view info about a specific theme."],
-            flashme: [this.flashPlayer, ":To get a alert when a new mafia game starts. Use /flashme [on/off] or /flashme [add/remove]:[theme]"],
+            flashme: [this.flashPlayer, "To get a alert when a new mafia game starts. Type /flashme help for more info."],
             playedgames: [this.showPlayedGames, "To view recently played games"],
             update: [this.updateTheme, "To update a Mafia Theme!"]
         },
