@@ -596,14 +596,14 @@ addAdminCommand("apropos", function(src, commandData, channel) {
     {
         q = all[b];
         if (q.question.toLowerCase().indexOf(commandData.toLowerCase())>-1)
-        this.sendPM(src,"Question: '"+q.question+"' (id='" + b + "')", channel);
+        Trivia.sendPM(src,"Question: '"+q.question+"' (id='" + b + "')", channel);
     }
     all = trivreview.all();
     for (b in all)
     {
         q = all[b];
         if (q.question.toLowerCase().indexOf(commandData.toLowerCase())>-1)
-        this.sendPM(src,"Question under review: '"+q.question+"' (id='" + b + "')", channel);
+        Trivia.sendPM(src,"Question under review: '"+q.question+"' (id='" + b + "')", channel);
     }
 
 });
