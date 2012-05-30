@@ -1706,7 +1706,9 @@ afterChangeTeam : function(src)
     }
 
     POuser.sametier = getKey("forceSameTier", src) == "1";
-
+    if (getKey("autoIdle", src) == "1") {
+        sys.changeAway(src, true);
+    }
     try {
     // TODO: move this into tierchecks.js
     if (sys.gen(src) == 2) {
@@ -2007,12 +2009,30 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "sametier") {
-        if (commandData == "on")
+        if (commandData == "on") {
             battlebot.sendChanMessage(src, "You enforce same tier in your battles.");
-        else
+            SESSION.users(src).sametier = true;
+        } else if (commandData == "off") {
             battlebot.sendChanMessage(src, "You allow different tiers in your battles.");
-        SESSION.users(src).sametier = commandData == "on";
+            SESSION.users(src).sametier = false;
+        } else {
+            battlebot.sendChanMessage(src, "Currently: " + (SESSION.users(src).sametier ? "enforcing same tier" : "allow different tiers") + ". Use /sametier on/off to change it!");
+        }
         saveKey("forceSameTier", src, SESSION.users(src).sametier * 1);
+        return;
+    }
+    if (command == "idle") {
+        if (commandData == "on") {
+            battlebot.sendChanMessage(src, "You are now idling.");
+            saveKey("autoIdle", src, 1);
+            sys.changeAway(src, true);
+        } else if (commandData == "off") {
+            battlebot.sendChanMessage(src, "You are back and ready for battles!");
+            saveKey("autoIdle", src, 0);
+            sys.changeAway(src, false);
+        } else {
+            battlebot.sendChanMessage(src, "You are currently " + (sys.away(src) ? "idling" : "here and ready to battle") + ". Use /idle on/off to change it.");
+        }
         return;
     }
     if (command == "unjoin") {
