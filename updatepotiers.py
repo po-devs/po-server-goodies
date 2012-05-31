@@ -38,7 +38,7 @@ ADDITIONAL_BANS = {
 
 # TODO: enforce these
 ITEM_BANS = {
-    "Wifi NU": ["Damp Rock"],
+    "Wifi NU": [],
     "Wifi LC": ["Berry Juice", "DeepSeaTooth"],
 }
 
