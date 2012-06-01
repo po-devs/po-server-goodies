@@ -2321,7 +2321,7 @@ userCommand: function(src, command, commandData, tar) {
             return
     	}
         var d = new Date();
-        Date.apply(d, lastlogin.split("-"));
+        Date.apply(d, lastLogin.split("-"));
     	querybot.sendChanMessage(src, commandData + " was last seen: "+ d.toDateString());
     	return;
     }
