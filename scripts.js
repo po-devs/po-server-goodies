@@ -2321,7 +2321,8 @@ userCommand: function(src, command, commandData, tar) {
             return
     	}
         var d = new Date();
-        Date.apply(d, lastLogin.split("-"));
+        // set the correct date
+        loginDate.split("-").map(function(i,j){ d[["setFullYear","setMonth","setDate"][j]](i - (j==1?1:0)); })n
     	querybot.sendChanMessage(src, commandData + " was last seen: "+ d.toDateString());
     	return;
     }
