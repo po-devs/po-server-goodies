@@ -540,7 +540,11 @@ function Mafia(mafiachan) {
             }
             if ("inspect" in role.actions) {
                 if (Array.isArray(role.actions.inspect.revealAs)) {
-                    abilities += "Reveals as " + readable(this.roles[role.actions.inspect.revealAs], "or") + " when inspected. ";
+                    var revealAsTranslation = [];
+                    for (var rr in role.actions.inspect.revealAs) {
+                        revealAsTranslation.push(this.roles[role.actions.inspect.revealAs[rr]].translation);
+                    }
+                    abilities += "Reveals as " + readable(revealAsTranslation, "or") + " when inspected. ";
                 } else if (role.actions.inspect.revealAs == "*") {
                     abilities += "Reveals as a random role when inspected. ";
                 } else {
