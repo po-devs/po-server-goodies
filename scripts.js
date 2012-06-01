@@ -2320,7 +2320,9 @@ userCommand: function(src, command, commandData, tar) {
             querybot.sendChanMessage(src, commandData + " is currently online!")
             return
     	}
-    	querybot.sendChanMessage(src, commandData + " was last seen: "+ lastLogin)
+        var d = new Date();
+        Date.apply(d, lastlogin.split("-"));
+    	querybot.sendChanMessage(src, commandData + " was last seen: "+ d.toDateString());
     	return;
     }
     if (command == "dwreleased") {
