@@ -2322,7 +2322,7 @@ userCommand: function(src, command, commandData, tar) {
     	}
         var d = new Date();
         // set the correct date
-        loginDate.split("-").map(function(i,j){ d[["setFullYear","setMonth","setDate"][j]](i - (j==1?1:0)); })n
+        loginDate.split("-").map(function(i,j){ d[["setFullYear","setMonth","setDate"][j]](i - (j==1?1:0)); });
     	querybot.sendChanMessage(src, commandData + " was last seen: "+ d.toDateString());
     	return;
     }
