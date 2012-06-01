@@ -2320,9 +2320,8 @@ userCommand: function(src, command, commandData, tar) {
             querybot.sendChanMessage(src, commandData + " is currently online!")
             return
     	}
-        var d = new Date();
-        // set the correct date
-        loginDate.split("-").map(function(i,j){ d[["setFullYear","setMonth","setDate"][j]](i - (j==1?1:0)); });
+        var parts = loginDate.split("-");
+        var d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10)-1, parseInt(parts[2], 10));
     	querybot.sendChanMessage(src, commandData + " was last seen: "+ d.toDateString());
     	return;
     }
