@@ -766,6 +766,7 @@ var commands = {
         "/uptime: Shows time since the server was last offline.",
         "/players: Shows the number of players online.",
         "/sameTier [on/off]: Turn on/off auto-rejection of challenges from players in a different tier from you.",
+        "/seen [name]: Allows you to see the last login of a user.",
     ],
     channel:
     [
@@ -2304,6 +2305,23 @@ userCommand: function(src, command, commandData, tar) {
         var alts = sys.aliases(ip);
         bot.sendChanMessage(src, "Your alts are: " + alts);
         return;
+    }
+    if (command == "seen") {
+    	if (commandData == undefined) {
+            querybot.sendChanMessage(src, "Please provide a username.");
+            return;
+        }
+    	var lastLogin = sys.dbLastOn(commandData)
+    	if(lastLogin == undefined){
+            querybot.sendChanMessage(src, "No such user.");
+            return;
+    	}
+    	if(sys.id(commandData)!== undefined){
+            querybot.sendChanMessage(src, commandData + " is currently online!")
+            return
+    	}
+    	querybot.sendChanMessage(src, commandData + " was last seen: "+ lastLogin)
+    	return;
     }
     if (command == "dwreleased") {
         var poke = sys.pokeNum(commandData);
