@@ -539,7 +539,13 @@ function Mafia(mafiachan) {
                 abilities += "Gets hax on " + readable(haxy, "and") + ". ";
             }
             if ("inspect" in role.actions) {
-                abilities += "Reveals as " + this.roles[role.actions.inspect.revealAs].translation + " when inspected. ";
+                if (Array.isArray(role.actions.inspect.revealAs)) {
+                    abilities += "Reveals as " + readable(this.roles[role.actions.inspect.revealAs], "or") + " when inspected. ";
+                } else if (role.actions.inspect.revealAs == "*") {
+                    abilities += "Reveals as a random role when inspected. ";
+                } else {
+                    abilities += "Reveals as " + this.roles[role.actions.inspect.revealAs].translation + " when inspected. ";
+                }
             }
             if ("distract" in role.actions) {
                 if (role.actions.distract.mode == "ChangeTarget")
@@ -1316,6 +1322,15 @@ function Mafia(mafiachan) {
 
             for (i = 0; i < srcArray.length; ++i) {
                 mafia.players[mafia.signups[i]] = {'name': mafia.signups[i], 'role': mafia.theme.roles[srcArray[i]], 'targets': {}, 'recharges': {}};
+                var rechargeplayer = mafia.players[mafia.signups[i]];
+                if ("night" in rechargeplayer.role.actions) {
+                    for (var act in rechargeplayer.role.actions.night) {
+                        if ("initialrecharge" in rechargeplayer.role.actions.night[act]) {
+                        // set the recharge period
+                        mafia.setRechargeFor(rechargeplayer, "night", act, rechargeplayer.role.actions.night[act].initialrecharge);
+                        }
+                    }
+                }
                 if (typeof mafia.theme.roles[srcArray[i]].side == "object") {
                     if ("random" in mafia.theme.roles[srcArray[i]].side) {
                         var cum = 0;
@@ -1677,7 +1692,9 @@ function Mafia(mafiachan) {
                             target = mafia.players[target];
                             if (mafia.isInGame(target) && target.safeguarded){
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
-                            } else if (Action.canConvert.indexOf(target.role.role) != -1) {
+                            } else if ("convert" in target.role.actions && target.role.actions.convert.mode == "ignore") {
+                                mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") couldn't be converted!");
+                            } else if (Action.canConvert.indexOf(target.role.role) != -1 || Action.canConvert == "*") {
                                 var oldRole = target.role;
                                 var newRole = Action.newRole;
                                 target.role = mafia.theme.roles[newRole];
@@ -1711,10 +1728,14 @@ function Mafia(mafiachan) {
                                     }
                                 }
                                 if (Action.silent != true) {
-                                    sys.sendAll("±Game: A " + oldRole.translation + " has been converted into a " + target.role.translation + "!", mafiachan);
+                                    if("convertmsg" in Action) {
+                                        sys.sendAll("±Game: " + Action.convertmsg.replace(/~Old~/g, oldRole.translation).replace(/~New~/g, target.role.translation), mafiachan);
+                                    } else {
+                                        sys.sendAll("±Game: A " + oldRole.translation + " has been converted into a " + target.role.translation + "!", mafiachan);
+                                    }
                                 }
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") has been converted and is now a " + target.role.translation + "!");
-                                mafia.sendPlayer(target.name, "±Game: You have been converted and changed roles");
+                                mafia.sendPlayer(target.name, "±Game: You have been converted and changed roles!");
                                 mafia.showOwnRole(sys.id(target.name));
                             } else {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") couldn't be converted!");
@@ -2783,7 +2804,7 @@ function Mafia(mafiachan) {
                             revenge = true;
                         } else if (typeof target.role.actions.daykill.mode == "object" && target.role.actions.daykill.mode.evadeChance > sys.rand(0,100)/100) {
                             sys.sendMessage(src, "±Game: Your kill was evaded!", mafiachan);
-                            sys.sendMessage(target.name, "±Game: You evaded a kill!", mafiachan);
+                            sys.sendMessage(sys.id(target.name), "±Game: You evaded a kill!", mafiachan);
                             player.dayKill = player.dayKill+1 || 1;
                             return;
                         }
