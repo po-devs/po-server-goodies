@@ -524,6 +524,8 @@ function Mafia(mafiachan) {
                 }
                 else if (role.actions.daykill == "bomb") {
                     abilities += "Revenges daykills. ";
+                } else if (typeof role.actions.daykill == "object" && typeof role.actions.daykill.mode == "object" && role.actions.daykill.mode.evadeChance > 0){
+                    abilities += "Has a " + Math.floor(role.actions.daykill.mode.evadeChance*100) + "% chance of evading daykills. ";
                 }
             }
             if ("poison" in role.actions) {
@@ -869,9 +871,14 @@ function Mafia(mafiachan) {
             if (!this.isMafiaAdmin(src)) {
                 for (i = 0; i < PlayerCheck.length; i++) {
                     var who = PlayerCheck[i].who;
+                    var what = PlayerCheck[i].what;
                     if (who == sys.name(src)) {
-                        sys.sendMessage(src, "±Game: Sorry, you have started a game " + i + " games ago, let someone else have a chance!",mafiachan);
+                        sys.sendMessage(src, "±Game: Sorry, you have started a game " + (i + 1) + " games ago, let someone else have a chance!",mafiachan);
                         return;
+                    }
+                    if (themeName !== "default" && what == themeName) {
+                        sys.sendMessage(src, "±Game: This theme was started " + (i + 1) + " games ago! No repeat!",mafiachan);
+                    return;
                     }
                 }
             }
