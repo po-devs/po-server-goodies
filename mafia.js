@@ -1501,7 +1501,7 @@ function Mafia(mafiachan) {
                                 if (distractMode.msg)
                                     mafia.sendPlayer(target.name, "±Game: " + distractMode.msg.replace(/~Distracter~/g, player.role.translation));
                                 continue;
-                            } else if (typeof distractMode.mode == "object" && Array.isArray(distractMode.mode.killif) == "object" && distractMode.mode.killif.indexOf(player.role.role) > -1) {
+                            } else if (typeof distractMode.mode == "object" && Array.isArray(distractMode.mode.killif) && distractMode.mode.killif.indexOf(player.role.role) > -1) {
                                 if (distractMode.hookermsg)
                                     mafia.sendPlayer(player.name, "±Game: " + distractMode.hookermsg);
                                 if (distractMode.msg)
