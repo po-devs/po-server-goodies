@@ -3732,7 +3732,7 @@ channelCommand: function(src, command, commandData, tar) {
         return;
     }
      if (command == "ck" || command == "chankick") {
-        if (tar == undefined) {
+        if (tar == undefined || !sys.isInChannel(tar, channel)) {
             normalbot.sendChanMessage(src, "Choose a valid target to kick");
             return;
         }
