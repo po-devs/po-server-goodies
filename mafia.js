@@ -2316,6 +2316,10 @@ function Mafia(mafiachan) {
             sys.sendMessage(src, "±Game: Android users can not play mafia!", mafiachan);
             return;
         }
+        if (!sys.dbRegistered(sys.name(src))) {
+            sys.sendMessage(src, "±Game: You need to register to play mafia here! Click on the 'Register' button below and follow the instructions!", mafiachan);
+            return;
+        }
         var name = sys.name(src);
         for (var x in name) {
             var code = name.charCodeAt(x);
