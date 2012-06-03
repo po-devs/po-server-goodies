@@ -127,7 +127,6 @@ var cleanFile = function(filename) {
 };
 cleanFile("mafia_stats.json");
 cleanFile("suspectvoting.json");
-cleanFile("wfbset.json");
 cleanFile("mafiathemes/metadata.json");
 cleanFile("channelData.json");
 cleanFile("mutes.txt");
@@ -216,8 +215,6 @@ function POUser(id)
     });
     this.battles = {};
 
-    // warn find battle custom message
-    this.reloadwfb();
 
     /* android default team check */
     var android = true
@@ -299,13 +296,6 @@ POUser.prototype.un = function(thingy) {
     callplugins("onUn"+ utilities.capitalize(thingy), this.id);
 }
 
-POUser.prototype.reloadwfb = function() {
-    if (SESSION.global() === undefined)
-        return;
-    var n = sys.name(this.id).toLowerCase();
-    this.wfbmsg = SESSION.global().wfbset && SESSION.global().wfbset.hasOwnProperty(n)
-        ?  SESSION.global().wfbset[n] : undefined;
-}
 
 /* POChannel */
 function POChannel(id)
@@ -645,14 +635,6 @@ function POGlobal(id)
     sys.channelIds().forEach(function(id) {
         manager.restoreSettings(id);
     });
-    try {
-        this.wfbset = JSON.parse(sys.getFileContent('wfbset.json'));
-    } catch (e) {
-        this.wfbset = {};
-    }
-    sys.playerIds().forEach(function(id) {
-        SESSION.players(id).reloadwfb();
-    });
 }
 
 POGlobal.prototype.callplugins = function callplugins(event) {
@@ -795,11 +777,8 @@ var commands = {
         "/k [name]: Kicks someone.",
         "/mute [name]:[reason]:[time]: Mutes someone. Time is optional and defaults to 1 day.",
         "/unmute [name]: Unmutes someone.",
-        "/wfb [target]: Warns a user about asking for battles.",
-        "/wfbset [message]: Sets your personal warning message, {{user}} will be replaced by the target.",
         "/silence [minutes]:[channel]: Prevents authless users from talking in a channel for specified time. Affects all official channels if no channel is given.",
         "/silenceoff [channel]: Removes silence from a channel. Affects all official channels if none is specified.",
-        "/meoff [channel], /meon [channel]: Disables/enables the /me command. Affects all channels if no channel is specified.",
         "/perm [on/off]: Make the current permanent channel or not (permanent channels remain listed when they have no users).",
         "/userinfo [name]: Displays information about a user (pretty display).",
         "/whois [name]: Displays information about a user (one line, slightly more info).",
@@ -949,7 +928,7 @@ init : function() {
     "- Please do not post a large amount of short messages when you can easily post one or two long messages.",
     "Rule #3 - Do not Challenge Spam:",
     "- If a person refuses your challenge, this means they do not want to battle you. Find someone else to battle with.",
-    "Rule #4 - Don't ask for battles in the main chat:",
+    "Rule #4 - Prefer Find Battle button when finding a battle:",
     "- There is a 'Find Battle' tab that you can use to find a battle immediately. If after a while you cannot find a match, then you can ask for one in the chat.",
     "Rule #5 - No Trolling/Flaming/Insulting of Any kind:",
     "- Behaving stupidly and excessive vulgarity will not be tolerated, using words including 'fuck' is a bad starting point.",
@@ -1782,8 +1761,7 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if ((command == "me" || command == "rainbow") && !muteall && !SESSION.channels(channel).muteall) {
-        if (sys.auth(src) == 0 && ((typeof meoff != "undefined" && meoff != false && (channel == tourchannel || channel == 0))
-            || SESSION.channels(channel).meoff === true)) {
+        if (SESSION.channels(channel).meoff === true) {
             normalbot.sendChanMessage(src, "/me was turned off.");
             return;
         }
@@ -2414,14 +2392,6 @@ modCommand: function(src, command, commandData, tar) {
         channelbot.sendChanAll("" + sys.name(src) + (SESSION.channels(channel).perm ? " made the channel permanent." : " made the channel a temporary channel again."));
         return;
     }
-    if (command == "meoff") {
-        this.meoff(src, commandData);
-        return;
-    }
-    if (command == "meon") {
-        this.meon(src, commandData);
-        return;
-    }
     if (command == "silence") {
         if (typeof(commandData) == "undefined") {
             return;
@@ -2914,42 +2884,7 @@ modCommand: function(src, command, commandData, tar) {
         delete tempBans[ip];
         return;
     }
-    if (command == "wfbset") {
-        SESSION.users(src).wfbmsg = commandData;
-        SESSION.global().wfbset[sys.name(src).toLowerCase()] = commandData;
-        sys.writeToFile('wfbset.json', JSON.stringify(SESSION.global().wfbset));
-        normalbot.sendChanMessage(src, "Your message is set to '" + commandData + "'.");
-        return;
-    }
-    if (command == "wfb") {
-        if (tar === undefined) {
-            normalbot.sendChanMessage(src, "Please use this command to warn / automute someone. Use /wfb name");
-            return;
-        }
-        if (sys.auth(tar) > 0) {
-            normalbot.sendChanMessage(src, "Please use this command only on users.");
-            return;
-        }
-        var poTarget = SESSION.users(tar);
-        var poAuth = SESSION.users(src);
-        if (!poTarget.warned) {
-            poTarget.warned = parseInt(sys.time());
-            var warning = poAuth.wfbmsg ? poAuth.wfbmsg : "{{user}}: Please do not ask for battles in the chat. Refer to http://findbattlebutton.info to find more about the find battle button!";
-            warning = warning.replace("{{user}}", sys.name(tar));
-            sys.sendAll(sys.name(src) + ": " + warning, 0);
-        } else if (parseInt(sys.time()) - poTarget.warned < 10) {
-            normalbot.sendChanMessage(src, "Please wait 10 seconds between wfbs.");
-        } else {
-       	    if (SESSION.users(tar).mute.active)
-       	    return;
-            poTarget.activate("mute", sys.name(src), parseInt(sys.time()) + 900, "Asking for battles in the chat; http://findbattlebutton.info", true);
-            normalbot.sendAll("" + sys.name(tar) + " was muted by " + nonFlashing(sys.name(src)) + " for 15 minutes! [Reason: Asking for battles in the chat]");
-        }
-        return;
-    }
     if (command == "passauth" || command == "passauths") {
-        //normalbot.sendChanMessage(src, "Ask Oak/Lamp/Zero instead, plox.");
-        //return;
         if (tar === undefined) {
             normalbot.sendChanMessage(src, "The target is offline.");
             return;
@@ -3002,20 +2937,19 @@ silence: function(src, minutes, chanName) {
     if (isNaN(delay) || delay <= 0) {
         channelbot.sendChanMessage(src, "Sorry, I couldn't read your minutes.");
     }
-
     if (!chanName) {
         bot.sendChanMessage(src, "Sorry, global silence is disabled. Use /silence 5 Channel Name");
-        /*
-        normalbot.sendMainTour("" + sys.name(src) + " called for " + minutes + " Minutes of Silence!");
-        muteall = true;
-        sys.callLater('if (!muteall) return; muteall = false; normalbot.sendMainTour("Silence is over.");', delay);
-        */
     } else {
         var cid = sys.channelId(chanName);
         if (cid !== undefined) {
             channelbot.sendAll("" + sys.name(src) + " called for " + minutes + " Minutes Of Silence in "+chanName+"!", cid);
             SESSION.channels(cid).muteall = true;
-            sys.callLater('if (!SESSION.channels('+cid+').muteall) return; SESSION.channels('+cid+').muteall = false; normalbot.sendAll("Silence is over in '+chanName+'.",'+cid+');', delay);
+            sys.delayedCall(function() {
+                if (!SESSION.channels(cid).muteall)
+                    return;
+                SESSION.channels(cid).muteall = false;
+                normalbot.sendAll("Silence is over in "+chanName+".",cid)
+            }, delay);
         } else {
             channelbot.sendChanMessage(src, "Sorry, I couldn't find a channel with that name.");
         }
@@ -3027,49 +2961,34 @@ silenceoff: function(src, chanName) {
     if (chanName !== undefined) {
         var cid = sys.channelId(chanName);
         if (!SESSION.channels(cid).muteall) {
-            channelbot.sendChanMessage(src, "Nah.");
+            channelbot.sendChanMessage(src, "The channel is not muted.");
             return;
         }
         channelbot.sendAll("" + sys.name(src) + " cancelled the Minutes of Silence in "+chanName+"!", cid)
         SESSION.channels(cid).muteall = false;
     } else {
-        if (!muteall) {
-            normalbot.sendChanMessage(src, "Nah.");
-            return;
-        }
-        normalbot.sendMainTour("" + sys.name(src) + " cancelled the Minutes of Silence!");
-        muteall = false;
+        normalbot.sendChanMessage("Use /silenceoff Channel Name");
     }
 }
 ,
 meoff: function(src, commandData) {
-    if (commandData === undefined) {
-        meoff=true;
-        normalbot.sendMainTour("" + sys.name(src) + " turned off /me.");
+    var cid = sys.channelId(commandData);
+    if (cid !== undefined) {
+        SESSION.channels(cid).meoff = true;
+        normalbot.sendAll("" + sys.name(src) + " turned off /me in "+commandData+".", cid);
     } else {
-        var cid = sys.channelId(commandData);
-        if (cid !== undefined) {
-            SESSION.channels(cid).meoff = true;
-            normalbot.sendAll("" + sys.name(src) + " turned off /me in "+commandData+".", cid);
-        } else {
-            normalbot.sendChanMessage(src, "Sorry, that channel is unknown to me.");
-        }
+        normalbot.sendChanMessage(src, "Sorry, that channel is unknown to me.");
     }
     return;
 }
 ,
 meon: function(src, commandData) {
-    if (commandData === undefined) {
-        meoff=false;
-        normalbot.sendMainTour("" + sys.name(src) + " turned on /me.");
+    var cid = sys.channelId(commandData);
+    if (cid !== undefined) {
+        SESSION.channels(cid).meoff = false;
+        normalbot.sendAll("" + sys.name(src) + " turned on /me in "+commandData+".", cid);
     } else {
-        var cid = sys.channelId(commandData);
-        if (cid !== undefined) {
-            SESSION.channels(cid).meoff = false;
-            normalbot.sendAll("" + sys.name(src) + " turned on /me in "+commandData+".", cid);
-        } else {
-            normalbot.sendChanMessage(src, "Sorry, that channel is unknown to me.");
-        }
+        normalbot.sendChanMessage(src, "Sorry, that channel is unknown to me.");
     }
 }
 ,
@@ -3907,6 +3826,9 @@ channelCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "cmeoff") {
+        if (channel == 0 || channel == tourchannel) {
+            normalbot.sendChanMessage(src, "/me can't be turned off here.")
+        }
         this.meoff(src, sys.channel(channel));
         return;
     }
@@ -4315,8 +4237,7 @@ beforeChatMessage: function(src, message, chan) {
     }
 
     // Minutes of Silence
-    if (sys.auth(src) == 0 && ((muteall && channel != staffchannel && channel != mafiachan && channel != sys.channelId("Trivia"))
-        || SESSION.channels(channel).muteall) && !SESSION.channels(channel).isChannelOperator(src)) {
+    if (SESSION.channels(channel).muteall && !SESSION.channels(channel).isChannelOperator(src) && sys.auth(src) == 0) {
         normalbot.sendChanMessage(src, "Respect the minutes of silence!");
         sys.stopEvent();
         return;
