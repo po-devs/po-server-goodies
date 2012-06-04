@@ -26,23 +26,22 @@ var Config = {
         notPlayingMsg: "±Game: The game is in progress. Please type /join to join the next mafia game."
     },
     League: [
-        ["M Dragon", "Elite Four"],
-        ["Jedgi", "Elite Four"],
+        ["Bad Romance", "Elite Four"],
+        ["The Real Elmo", "Elite Four"],
         ["Amarillo Caballero", "Elite Four"],
-        ["Deria", "Elite Four"],
-        ["mibuchiha", "5th Generation WiFi Ubers"],
+        ["M Dragon", "Elite Four"],
+        ["Blimlax", "5th Generation WiFi Ubers"],
         ["IFM", "5th Generation WiFi OverUsed"],
-        ["1996ITO", "5th Generation Dream World OverUsed"],
-        ["Stofil", "5th Generation LittleUsed Gym"],
-        ["Psykout22", "5th Generation WiFi Little Cup"],
+        ["ThatIsWhatSheSaid", "5th Generation WiFi UnderUsed"],
+        ["Luck>Skill", "5th Generation WiFi LittleUsed Gym"],
+        ["Emac", "5th Generation WiFi NeverUsed Gym"],
+        ["Xdevo", "5th Generation WiFi Little Cup"],
         ["Marmoteo", "5th Generation OU Triples"],
-        ["ZIAH", "5th Generation Monotype"],
-        ["Manaphy", "4th Generation Ubers"],
-        ["Fakes", "4th Generation OverUsed"],
-        ["HSOWA", "4th Generation NeverUsed"],
+        ["Marik", "VGC 2012"],
+        ["Tomahawk9", "4th Generation OverUsed"],
         ["CALLOUS", "3rd Generation OverUsed"],
         ["Jorgen", "2nd Generation OverUsed"],
-        ["Platinum", "Mixed Generation Challenge Cup"]
+        ["Blitzamirin", "1st Generation OverUsed"]
     ],
     DreamWorldTiers: ["DW OU", "DW Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "DW 1v1 Ubers", "DW 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "DW OU Triples", "DW Uber Doubles", "DW OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
     superAdmins: ["Lamperi", "Professor Oak", "zeroality", "[LD]Jirachier", "nixeagle"],
@@ -1839,7 +1838,7 @@ userCommand: function(src, command, commandData, tar) {
         sendChanMessage(src, "");
         return;
     }
-    /*if (command == "league") {
+    if (command == "league") {
         if (!Config.League) return;
 
         sendChanMessage(src, "");
@@ -1853,7 +1852,7 @@ userCommand: function(src, command, commandData, tar) {
         }
         sendChanMessage(src, "");
         return;
-    }*/
+    }
     if (command == "rules") {
     	if(commandData !== undefined && !isNaN(commandData) && commandData >0 && commandData < 13){
 	    var num = parseInt(commandData)
