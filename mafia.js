@@ -477,106 +477,126 @@ function Mafia(mafiachan) {
 
             // check which abilities the role has
             var abilities = "", a, ability;
-            if (role.actions.night) {
-                for (a in role.actions.night) {
-                    ability = role.actions.night[a];
-                    abilities += "Can " + a + " " + ("limit" in ability ? ability.limit + " persons" : "one person") +" during the night. ";
-                    if ("avoidHax" in role.actions && role.actions.avoidHax.indexOf(a) != -1) {
-                        abilities += "(Can't be detected by spies.) ";
+            if ("info" in role) {
+    			abilities += role.roleinfo;
+			} else {
+                if (role.actions.night) {
+                    for (a in role.actions.night) {
+                        ability = role.actions.night[a];
+                        abilities += "Can " + a + " " + ("limit" in ability ? ability.limit + " persons" : "one person") +" during the night. ";
+                        if ("avoidHax" in role.actions && role.actions.avoidHax.indexOf(a) != -1) {
+                            abilities += "(Can't be detected by spies.) ";
+                        }
                     }
                 }
-            }
-            if (role.actions.standby) {
-                for (a in role.actions.standby) {
-                    ability = role.actions.standby[a];
-                    abilities += "Can " + a + " " + ("limit" in ability ? ability.limit + " persons" : "one person") +" during the standby. ";
-                }
-            }
-            if ("vote" in role.actions) {
-                abilities += "Vote counts as " + role.actions.vote + ". ";
-            }
-            if ("voteshield" in role.actions) {
-                abilities += "Receives " + role.actions.voteshield + " extra votes if voted for at all. ";
-            }
-            if ("kill" in role.actions) {
-                if (role.actions.kill.mode == "ignore") {
-                    abilities += "Can't be nightkilled. ";
-                }
-                else if (role.actions.kill.mode == "killattackerevenifprotected") {
-                    abilities += "Revenges nightkills (even when protected). ";
-                }
-                else if (role.actions.kill.mode == "killattacker") {
-                    abilities += "Revenges nightkills. ";
-                }
-                else if (role.actions.kill.mode == "poisonattacker" || role.actions.kill.mode == "poisonattackerevenifprotected") {
-                    abilities += "Poison attacker when killed. ";
-                }
-                else if (typeof role.actions.kill.mode == "object" && role.actions.kill.mode.evadeChance > 0) {
-                    abilities += "Has a " + Math.floor(role.actions.kill.mode.evadeChance*100) + "% chance of evading nightkills. ";
-                }
-            }
-            if ("daykill" in role.actions) {
-                if (role.actions.daykill == "evade") {
-                    abilities += "Can't be daykilled. ";
-                }
-                else if (role.actions.daykill == "revenge") {
-                    abilities += "Counter daykills. ";
-                }
-                else if (role.actions.daykill == "bomb") {
-                    abilities += "Revenges daykills. ";
-                } else if (typeof role.actions.daykill == "object" && typeof role.actions.daykill.mode == "object" && role.actions.daykill.mode.evadeChance > 0){
-                    abilities += "Has a " + Math.floor(role.actions.daykill.mode.evadeChance*100) + "% chance of evading daykills. ";
-                }
-            }
-            if ("poison" in role.actions) {
-                if (role.actions.poison.mode == "ignore") {
-                    abilities += "Can't be poisoned. ";
-                }
-                else if (typeof role.actions.poison.mode == "object" && role.actions.poison.mode.evadeChance > 0) {
-                    abilities += "Has a " + Math.floor(role.actions.poison.mode.evadeChance*100) + "% chance of evading poison. ";
-                }
-            }
-            if ("hax" in role.actions && Object.keys) {
-                var haxy = Object.keys(role.actions.hax);
-                abilities += "Gets hax on " + readable(haxy, "and") + ". ";
-            }
-            if ("inspect" in role.actions) {
-                if (Array.isArray(role.actions.inspect.revealAs)) {
-                    var revealAsTranslation = [];
-                    for (var rr in role.actions.inspect.revealAs) {
-                        revealAsTranslation.push(this.roles[role.actions.inspect.revealAs[rr]].translation);
+                if (role.actions.standby) {
+                    for (a in role.actions.standby) {
+                        ability = role.actions.standby[a];
+                        abilities += "Can " + a + " " + ("limit" in ability ? ability.limit + " persons" : "one person") +" during the standby. ";
                     }
-                    abilities += "Reveals as " + readable(revealAsTranslation, "or") + " when inspected. ";
-                } else if (role.actions.inspect.revealAs == "*") {
-                    abilities += "Reveals as a random role when inspected. ";
-                } else {
-                    abilities += "Reveals as " + this.roles[role.actions.inspect.revealAs].translation + " when inspected. ";
                 }
-            }
-            if ("distract" in role.actions) {
-                if (role.actions.distract.mode == "ChangeTarget")
-                    abilities += "Kills any distractors. ";
-                if (role.actions.distract.mode == "ignore")
-                    abilities += "Ignores any distractors. ";
-            }
-            if (typeof role.side == "string") {
-                abilities += "Sided with " + this.trside(role.side) + ". ";
-            } else if (typeof role.side == "object") {
-                var plop = Object.keys(role.side.random);
-                var tran = [];
-                for(var p = 0; p < plop.length; ++p) {
-                   tran.push(this.trside(plop[p]));
+                if ("vote" in role.actions) {
+                    abilities += "Vote counts as " + role.actions.vote + ". ";
                 }
-                abilities += "Sided with " + readable(tran, "or") + ". ";
-            }
-            if (role.hasOwnProperty("winningSides")) {
-                if (role.winningSides == "*") {
-                    abilities += "Wins the game in any case. ";
-                } else if (Array.isArray(role.winningSides)) {
-                    // Argh give me Function.bind already ;~;
-                    abilities += "Wins the game with " + readable(role.winningSides.map(trside), "or");
+                if ("voteshield" in role.actions) {
+                    abilities += "Receives " + role.actions.voteshield + " extra votes if voted for at all. ";
                 }
-            }
+                if ("kill" in role.actions) {
+                    if (role.actions.kill.mode == "ignore") {
+                        abilities += "Can't be nightkilled. ";
+                    }
+                    else if (role.actions.kill.mode == "killattackerevenifprotected") {
+                        abilities += "Revenges nightkills (even when protected). ";
+                    }
+                    else if (role.actions.kill.mode == "killattacker") {
+                        abilities += "Revenges nightkills. ";
+                    }
+                    else if (role.actions.kill.mode == "poisonattacker" || role.actions.kill.mode == "poisonattackerevenifprotected") {
+                        abilities += "Poison attacker when killed. ";
+                    }
+                    else if (typeof role.actions.kill.mode == "object") {
+                        if ("ignore" in role.actions.kill.mode) {
+                            var ignoreRoles = role.actions.kill.mode.ignore.map(function(x) {
+                                return this.roles[x].translation;
+                            }, this);
+                            abilities += "Can't be nightkilled by " + readable(ignoreRoles, "and") + ". ";
+                        }
+                        if ("evadeChance" in role.actions.kill.mode && role.actions.kill.mode.evadeChance > 0) {
+                            abilities += "Has a " + Math.floor(role.actions.kill.mode.evadeChance*100) + "% chance of evading nightkills. ";
+                        }
+                    }
+                }
+                if ("daykill" in role.actions) {
+                    if (role.actions.daykill == "evade") {
+                        abilities += "Can't be daykilled. ";
+                    }
+                    else if (role.actions.daykill == "revenge") {
+                        abilities += "Counter daykills. ";
+                    }
+                    else if (role.actions.daykill == "bomb") {
+                        abilities += "Revenges daykills. ";
+                    } 
+                    else if (typeof role.actions.daykill == "object" && typeof role.actions.daykill.mode == "object" && role.actions.daykill.mode.evadeChance > 0){
+                        abilities += "Has a " + Math.floor(role.actions.daykill.mode.evadeChance*100) + "% chance of evading daykills. ";
+                    }
+                    else if (role.actions.daykill == "revealkiller") {
+                        abilities += "Reveals killer when daykilled. ";
+                    }
+                }
+                if ("poison" in role.actions) {
+                    if (role.actions.poison.mode == "ignore") {
+                        abilities += "Can't be poisoned. ";
+                    }
+                    else if (typeof role.actions.poison.mode == "object" && role.actions.poison.mode.evadeChance > 0) {
+                        abilities += "Has a " + Math.floor(role.actions.poison.mode.evadeChance*100) + "% chance of evading poison. ";
+                    }
+                }
+                if ("hax" in role.actions && Object.keys) {
+                    var haxy = Object.keys(role.actions.hax);
+                    abilities += "Gets hax on " + readable(haxy, "and") + ". ";
+                }
+                if ("inspect" in role.actions) {
+                    if (Array.isArray(role.actions.inspect.revealAs)) {
+                        var revealAs = role.actions.inspect.revealAs.map(function(x){
+                            return this.roles[x].translation;
+                        }, this);
+                        abilities += "Reveals as " + readable(revealAs, "or") + " when inspected. ";
+                    } else if (role.actions.inspect.revealAs == "*") {
+                        abilities += "Reveals as a random role when inspected. ";
+                    } else {
+                        abilities += "Reveals as " + this.roles[role.actions.inspect.revealAs].translation + " when inspected. ";
+                    }
+                }
+                if ("distract" in role.actions) {
+                    if (role.actions.distract.mode == "ChangeTarget")
+                        abilities += "Kills any distractors. ";
+                    if (role.actions.distract.mode == "ignore")
+                        abilities += "Ignores any distractors. ";
+                }
+                if ("initialCondition" in role.actions) {
+                    if ("poison" in role.actions.initialCondition) {
+                        abilities += "Dies at the end of night " + (role.actions.initialCondition.poison.count || 2) + ". ";
+                    }
+                }
+                if (typeof role.side == "string") {
+                    abilities += "Sided with " + this.trside(role.side) + ". ";
+                } else if (typeof role.side == "object") {
+                    var plop = Object.keys(role.side.random);
+                    var tran = [];
+                    for(var p = 0; p < plop.length; ++p) {
+                       tran.push(this.trside(plop[p]));
+                    }
+                    abilities += "Sided with " + readable(tran, "or") + ". ";
+                }
+                if (role.hasOwnProperty("winningSides")) {
+                    if (role.winningSides == "*") {
+                        abilities += "Wins the game in any case. ";
+                    } else if (Array.isArray(role.winningSides)) {
+                        // Argh give me Function.bind already ;~;
+                        abilities += "Wins the game with " + readable(role.winningSides.map(trside), "or");
+                    }
+                }
+			}
             roles.push("±Ability: " + abilities);
 
             // check on which player counts the role appears
@@ -1334,12 +1354,20 @@ function Mafia(mafiachan) {
             for (i = 0; i < srcArray.length; ++i) {
                 mafia.players[mafia.signups[i]] = {'name': mafia.signups[i], 'role': mafia.theme.roles[srcArray[i]], 'targets': {}, 'recharges': {}};
                 var rechargeplayer = mafia.players[mafia.signups[i]];
-                if ("night" in rechargeplayer.role.actions) {
-                    for (var act in rechargeplayer.role.actions.night) {
-                        if ("initialrecharge" in rechargeplayer.role.actions.night[act]) {
-                        // set the recharge period
-                        mafia.setRechargeFor(rechargeplayer, "night", act, rechargeplayer.role.actions.night[act].initialrecharge);
+                var initPlayer = mafia.players[mafia.signups[i]];
+                if ("night" in initPlayer.role.actions) {
+                    for (var act in initPlayer.role.actions.night) {
+                        if ("initialrecharge" in initPlayer.role.actions.night[act]) {
+                            mafia.setRechargeFor(initPlayer, "night", act, initPlayer.role.actions.night[act].initialrecharge);
                         }
+                    }
+                }
+                if ("initialCondition" in initPlayer.role.actions) {
+                    var condition = initPlayer.role.actions.initialCondition;
+                    if ("poison" in condition) {
+                        initPlayer.poisoned = 1;
+                        initPlayer.poisonCount = condition.poison.count || 2;
+                        initPlayer.poisonDeadMessage = condition.poison.poisonDeadMessage;
                     }
                 }
                 if (typeof mafia.theme.roles[srcArray[i]].side == "object") {
@@ -1665,6 +1693,8 @@ function Mafia(mafiachan) {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
                             } else if ("kill" in target.role.actions && typeof target.role.actions.kill.mode == "object" && target.role.actions.kill.mode.evadeChance > sys.rand(0,100)/100) {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
+                            } else if ("kill" in target.role.actions && typeof target.role.actions.kill.mode == "object" && Array.isArray(target.role.actions.kill.mode.ignore) && target.role.actions.kill.mode.ignore.indexOf(player.role.role) != -1) {
+                                mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
                             } else {
                                 if (mafia.theme.killusermsg) {
                                     mafia.sendPlayer(target.name, mafia.theme.killusermsg);
@@ -1705,51 +1735,65 @@ function Mafia(mafiachan) {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was guarded!");
                             } else if ("convert" in target.role.actions && target.role.actions.convert.mode == "ignore") {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") couldn't be converted!");
-                            } else if (Action.canConvert.indexOf(target.role.role) != -1 || Action.canConvert == "*") {
-                                var oldRole = target.role;
-                                var newRole = Action.newRole;
-                                target.role = mafia.theme.roles[newRole];
-                                if (typeof mafia.theme.roles[newRole].side == "object") {
-                                    if ("random" in mafia.theme.roles[newRole].side) {
-                                        var cum = 0;
-                                        var val = sys.rand(1,100)/100;
-                                        var psum = 0.0;
-                                        var side;
-                                        for(side in mafia.theme.roles[newRole].side.random) {
-                                            psum += mafia.theme.roles[newRole].side.random[side];
-                                        }
-                                        if (psum === 0.0) {
-                                            mafiabot.sendAll("Broken theme...", mafiachan);
-                                            return;
-                                        }
-                                        for (side in mafia.theme.roles[newRole].side.random) {
-                                            cum += mafia.theme.roles[newRole].side.random[side]/psum;
-                                            if (cum >= val) {
-                                                mafia.players[target.name].role.side = side;
-                                                break;
-                                            }
-                                        }
-                                        if (typeof mafia.players[target.name].role.side == "object") {
-                                            mafiabot.sendAll("Broken theme...", mafiachan);
-                                            return;
-                                        }
-                                    } else {
-                                        mafiabot.sendAll("Broken theme...", mafiachan);
-                                        return;
-                                    }
-                                }
-                                if (Action.silent != true) {
-                                    if("convertmsg" in Action) {
-                                        sys.sendAll("±Game: " + Action.convertmsg.replace(/~Old~/g, oldRole.translation).replace(/~New~/g, target.role.translation), mafiachan);
-                                    } else {
-                                        sys.sendAll("±Game: A " + oldRole.translation + " has been converted into a " + target.role.translation + "!", mafiachan);
-                                    }
-                                }
-                                mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") has been converted and is now a " + target.role.translation + "!");
-                                mafia.sendPlayer(target.name, "±Game: You have been converted and changed roles!");
-                                mafia.showOwnRole(sys.id(target.name));
-                            } else {
+                            } else if ("canConvert" in Action && Action.canConvert != "*" && Action.canConvert.indexOf(target.role.role) == -1) {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") couldn't be converted!");
+                            } else {
+                                var oldRole = target.role;
+                                var newRole;
+                                if (typeof Action.newRole == "object") {
+                                    for (var nr in Action.newRole) {
+                                        if (Action.newRole[nr].indexOf(oldRole.role) != -1) {
+                                            newRole = nr;
+                                        break;
+                                        }
+                                    }
+                                } else {
+                                    newRole = Action.newRole;
+                                }
+                                if (newRole == undefined) {
+                                    mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") couldn't be converted!");
+                                } else {
+                                    target.role = mafia.theme.roles[newRole];
+                                    if (typeof mafia.theme.roles[newRole].side == "object") {
+                                        if ("random" in mafia.theme.roles[newRole].side) {
+                                            var cum = 0;
+                                            var val = sys.rand(1,100)/100;
+                                            var psum = 0.0;
+                                            var side;
+                                            for(side in mafia.theme.roles[newRole].side.random) {
+                                                psum += mafia.theme.roles[newRole].side.random[side];
+                                            }
+                                            if (psum === 0.0) {
+                                                mafiabot.sendAll("Broken theme...", mafiachan);
+                                                return;
+                                            }
+                                            for (side in mafia.theme.roles[newRole].side.random) {
+                                                cum += mafia.theme.roles[newRole].side.random[side]/psum;
+                                                if (cum >= val) {
+                                                    mafia.players[target.name].role.side = side;
+                                                    break;
+                                                }
+                                            }
+                                            if (typeof mafia.players[target.name].role.side == "object") {
+                                                mafiabot.sendAll("Broken theme...", mafiachan);
+                                                return;
+                                            }
+                                        } else {
+                                            mafiabot.sendAll("Broken theme...", mafiachan);
+                                            return;
+                                        }
+                                    }
+                                    if (Action.silent != true) {
+                                        if("convertmsg" in Action) {
+                                            sys.sendAll("±Game: " + Action.convertmsg.replace(/~Old~/g, oldRole.translation).replace(/~New~/g, target.role.translation), mafiachan);
+                                        } else {
+                                            sys.sendAll("±Game: A " + oldRole.translation + " has been converted into a " + target.role.translation + "!", mafiachan);
+                                        }
+                                    }
+                                    mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") has been converted and is now a " + target.role.translation + "!");
+                                    mafia.sendPlayer(target.name, "±Game: You have been converted and changed roles!");
+                                    mafia.showOwnRole(sys.id(target.name));
+                                }
                             }
                         }
                     }
@@ -2832,6 +2876,13 @@ function Mafia(mafiachan) {
                                 sys.sendAll("±Game: " + commandObject.revealmsg.replace(/~Self~/g, name).replace(/~Role~/g, mafia.players[name].role.translation), mafiachan);
                             } else {
                                 sys.sendAll("±Game: While attacking, " + name + " (" + mafia.players[name].role.translation + ") made a mistake and was revealed!", mafiachan);
+                            }
+                        }
+                        if ("daykill" in target.role.actions && target.role.actions.daykill === "revealkiller") {
+                            if ("daykillrevengemsg" in target.role.actions) {
+                                sys.sendAll("±Game: " + target.role.actions.daykillrevengemsg.replace(/~Self~/g, target.name).replace(/~Target~/g, name).replace(/~Role~/g, mafia.players[name].role.translation), mafiachan);
+                            } else {
+                                sys.sendAll("±Game: Before dying, " + target.name + " revealed that " + name + " is the " + mafia.players[name].role.translation + "!", mafiachan);
                             }
                         }
                         player.dayKill = player.dayKill+1 || 1;
