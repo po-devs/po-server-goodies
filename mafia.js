@@ -477,8 +477,8 @@ function Mafia(mafiachan) {
 
             // check which abilities the role has
             var abilities = "", a, ability;
-            if ("info" in role) {
-    			abilities += role.roleinfo;
+			if ("info" in role) {
+				abilities += role.info;
 			} else {
                 if (role.actions.night) {
                     for (a in role.actions.night) {
