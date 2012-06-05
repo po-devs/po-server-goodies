@@ -924,7 +924,7 @@ init : function() {
     "",
     "Rule #1 - Do Not Abuse CAPS:",
     "- The occasional word in CAPS is acceptable, however repeated use is not.",
-    "Rule #2 - No Flooding the Chat:",
+    "Rule #2 - No Spamming or Flooding",
     "- Please do not post a large amount of short messages when you can easily post one or two long messages.",
     "Rule #3 - Do not Challenge Spam:",
     "- If a person refuses your challenge, this means they do not want to battle you. Find someone else to battle with.",
@@ -940,11 +940,9 @@ init : function() {
     "- This includes links, texts, images, and any other kind of media. This will result in an instant ban.",
     "Rule #9 - Do not ask for Auth:",
     "- Authority is given upon merit. By asking you have pretty much eliminated your chances at becoming an Auth in the future.",
-    "Rule #10 - Do not Insult Auth:",
-    "- Insulting an authority figure can result in immediate punishment, even if it's not in one of the official channels.",
-    "Rule #11 - No minimodding:",
+    "Rule #10 - No minimodding:",
     "- Server has moderators for a reason. If someone breaks the rules, alert the auth, do not try to moderate yourself.",
-    "Rule #12 - Do not share other people's personal information without their permission:",
+    "Rule #11 - Do not share other people's personal information without their permission:",
     "- Violation of personal privacy is not nice at all, and you wouldn't want it happening to you. If found out, you will be permanently banned."
     ];
 
