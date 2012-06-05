@@ -923,7 +923,7 @@ init : function() {
     "",
     "Rule #1 - Do Not Abuse CAPS:",
     "- The occasional word in CAPS is acceptable, however repeated use is not.",
-    "Rule #2 - No Spamming or Flooding",
+    "Rule #2 - No Spamming or Flooding:",
     "- Please do not post a large amount of short messages when you can easily post one or two long messages.",
     "Rule #3 - Do not Challenge Spam:",
     "- If a person refuses your challenge, this means they do not want to battle you. Find someone else to battle with.",
@@ -1852,7 +1852,7 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "rules") {
-    	if(commandData !== undefined && !isNaN(commandData) && commandData >0 && commandData < 13){
+    	if(commandData !== undefined && !isNaN(commandData) && commandData >0 && commandData < 12){
 	    var num = parseInt(commandData)
 	    num = (2*num)+1 //gets the right rule from the list since it isn't simply y=x it's y=2x+1
 	    sendChanMessage(src, rules[num])
