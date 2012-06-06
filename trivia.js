@@ -4,7 +4,7 @@ var Bot = require("bot.js").Bot;
 
 var utilities = require("utilities.js");
 
-var triviabot = new Bot("Triviabot"),
+var triviabot = new Bot("TriviaBot"),
     triviachan,
     revchan;
 
@@ -63,12 +63,13 @@ TriviaGame.prototype.startTrivia = function(src,rand)
         this.sendPM(src,"There are no questions.");
         return;
     }
-    if (rand > 102 || rand < 2)
+    rand = parseInt(rand, 10);
+	if (rand > 102 || rand < 2 )
     {
         this.sendPM(src,"Please do not start a game with more than 102 points, or lower than 2 points.");
         return;
     }
-    rand = (rand === undefined) ? sys.rand(2,81) : +rand;
+    rand = (isNaN(rand)) ? sys.rand(2,102) : +rand;
     this.maxPoints = rand;
     this.started = true;
     // TODO: enable when working
@@ -110,11 +111,11 @@ TriviaGame.prototype.finalizeAnswers = function()
 {
     if (this.started === false)
         return;
-try {
+try { // Do not indent this, it is only until this starts to work
     // use concat to convert into array
     var answer,
         id,
-        answers = [].concat(triviaq.get(this.roundQuestion).answer);
+		answers = [].concat(triviaq.get(this.roundQuestion).answer);
     
     this.answeringQuestion = false;
     /* We're going to judge points based on response time */
@@ -122,20 +123,21 @@ try {
         answeredCorrectly = [];
     var ignoreCaseAnswers = answers.map(function(s) {
         return String(s).toLowerCase();
-    });
+		});
     for (id in this.submittedAnswers)
     {
         // if they are still online and using their name..
         var name = this.submittedAnswers[id].name;
         // is it required for them to be online?
-        if (sys.id(name) !== undefined) {
+        if (sys.id(name) !== undefined && this.player(name) !== null) {
             answer = this.submittedAnswers[id].answer.toLowerCase();
             if (ignoreCaseAnswers.indexOf(answer) != -1)
             {
                 var responseTime = this.submittedAnswers[id].time;
                 var realTime = time();
-                var minus = realTime - responseTime;
+                var minus = (realTime - responseTime) / 1000; // returns milliseconds so multiply by 1000
                 var pointAdd = minus > 6 ? 5 : (minus < 7 && minus > 3 ? 3 : 2);
+				// TODO: check answer length, and base pointAdd off of that?
 
                 answeredCorrectly.push(name);
                 this.player(name).points += pointAdd;
@@ -145,7 +147,7 @@ try {
         }
     }
 
-    this.sendAll("");
+    sys.sendAll("",this.id);
     var incorrectAnswers  = wrongAnswers.length > 0 ? " Incorrect answers: "+ wrongAnswers.join(", ") : "";
     sys.sendHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±TriviaBot:</b></font></font> Time's up!" + incorrectAnswers, this.id);
     this.sendAll("Answered correctly: " + answeredCorrectly.join(", "));
@@ -158,7 +160,7 @@ try {
     {
         var nohtmlname = utilities.html_escape(this.triviaPlayers[id].name);
         leaderboard.push(nohtmlname + " (" + this.triviaPlayers[id].points + ")");
-        if (this.triviaPlayers[id].points > this.maxPoints)
+        if (this.triviaPlayers[id].points >= this.maxPoints)
         {
             winners.push(nohtmlname + " (" + this.triviaPlayers[id].points + ")");
         }
@@ -168,7 +170,8 @@ try {
 
     if (winners.length > 0) {
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
-        this.htmlAll("<h2>Congratulations to "+w+"</h2><h4>"+winners.join(", ")+"</h4>");
+        this.htmlAll("<h2>Congratulations to "+w+"</h2>"+winners.join(", ")+"");
+		Trivia.sendAll("Check the /topic for how to submit a question!",this.id);
         this.resetTrivia();
         return;
     }
@@ -185,7 +188,7 @@ try {
         Trivia.startTriviaRound();
     }, rand);
 } catch(e) {
-// TODO REMOVE
+// TODO REMOVE the catch block when this works
     sys.sendAll("script error: " + e, this.id);
 }
 };
@@ -402,7 +405,7 @@ function TriviaAdmin(file)
 TriviaAdmin.prototype.addTAdmin = function(name)
 {
     if (this.isTAdmin(name))
-        return;
+    return;
     this.admins.push(name.toLowerCase());
     this.save();
 };
@@ -424,6 +427,11 @@ TriviaAdmin.prototype.isTAdmin = function(name)
 TriviaAdmin.prototype.tAdminList = function(src,id)
 {
     sys.sendMessage(src,"Current trivia admins are: "+ this.admins.join(","),id);
+};
+
+TriviaAdmin.prototype.save = function()
+{
+	sys.writeToFile(this.file,JSON.stringify(this.admins));
 };
 
 // Commands
@@ -448,11 +456,37 @@ function addAdminCommand(commands, callback, help)
     return addCommand(adminCommands, commands, callback, help);
 }
 
+addUserCommand("goal", function(src,commandData,channel) {
+	if (Trivia.started === false)
+	{
+		Trivia.sendPM(src,"A trivia game isn't currently running.");
+		return;
+	}
+	
+	Trivia.sendPM(src,"The goal for the current game is: "+Trivia.maxPoints);
+});
+
+addAdminCommand("removeq", function(src,commandData,channel) {
+	var all = triviaq.all();
+	for (var b in all)
+	{
+		var id = b;
+		if (commandData === b)
+		{
+			triviaq.remove(b);
+			Trivia.sendPM(src,"Removed question successfully.");
+			return;
+		}
+	}
+	
+	Trivia.sendPM(src,"Oops! Question doesn't exist");
+});
+
 addUserCommand("submitq", function(src, commandData, channel) {
     commandData = commandData.split("*");
     if (commandData.length!=3)
     {
-        Trivia.sendPM(src,"Oops! Usage of this command is: /submitq category*questions*answer", channel);
+        Trivia.sendPM(src,"Oops! Usage of this command is: /submitq category*question*answer(s)", channel);
         Trivia.sendPM(src,"Separate multiple answers with ','.", channel);
         return;
     }
@@ -466,7 +500,8 @@ addUserCommand("submitq", function(src, commandData, channel) {
      }
     var id = trivreview.add(category,question,answer);
     Trivia.sendPM(src,"Your question was submitted.", channel);
-    Trivia.sendAll(sys.name(src)+" submitted a question with id " + id +" !",revchan);
+	// Enable if needed, but this might spam trivreview...
+    // Trivia.sendAll(sys.name(src)+" submitted a question with id " + id +" !",revchan);
 });
 
 addUserCommand("join", function(src, commandData, channel) {
@@ -507,14 +542,20 @@ addUserCommand("tadmins", function(src, commandData, channel) {
 
 addAdminCommand("tadmin", function(src, commandData, channel) {
     if (tadmin.isTAdmin(commandData))
-        return;
+    {
+		Trivia.sendPM(src,"That person is already a trivia admin.",channel);
+		return;
+	}
     tadmin.addTAdmin(commandData);
     Trivia.sendPM(src,"That person is now a trivia admin!",channel);
 });
 
 addAdminCommand("tadminoff", function(src, commandData, channel) {
     if (!tadmin.isTAdmin(commandData))
-        return;
+	{
+		Trivia.sendPM(src,"That person isn't a trivia admin.",channel);
+		return;
+	}
     tadmin.removeTAdmin(commandData);
     Trivia.sendPM(src,"That person is no longer a trivia admin!",channel);
 });
@@ -528,14 +569,22 @@ addAdminCommand("stop", function(src, commandData, channel) {
 });
 
 addAdminCommand("say", function(src, commandData, channel) {
-    if (commandData === undefined) {
-        return;
-    }
+    if (commandData === undefined)
+    return;
     Trivia.sendAll("("+sys.name(src)+"): "+commandData,channel);
 });
 
 addAdminCommand("addallpokemon", function(src, commandData, channel) {
-    Trivia.addAllPokemon();
+    if (sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "ethan"|| sys.name(src).toLowerCase() == "crystal moogle")
+	Trivia.addAllPokemon();
+});
+
+addAdminCommand("erasequestions", function(src, commandData, channel) {
+	if (sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "ethan")
+	{
+		sys.writeToFile("triviaq.json","");
+		QuestionHolder.state = {freeId: 0, questions: {}};
+	}
 });
 
 addAdminCommand("apropos", function(src, commandData, channel) {
@@ -547,37 +596,52 @@ addAdminCommand("apropos", function(src, commandData, channel) {
     {
         q = all[b];
         if (q.question.toLowerCase().indexOf(commandData.toLowerCase())>-1)
-            this.sendPM(src,"Question: '"+q.question+"' (id='" + b + "')", channel);
+        Trivia.sendPM(src,"Question: '"+q.question+"' (id='" + b + "')", channel);
     }
     all = trivreview.all();
     for (b in all)
     {
         q = all[b];
         if (q.question.toLowerCase().indexOf(commandData.toLowerCase())>-1)
-            this.sendPM(src,"Question under review: '"+q.question+"' (id='" + b + "')", channel);
+        Trivia.sendPM(src,"Question under review: '"+q.question+"' (id='" + b + "')", channel);
     }
 
 });
 
 
-addAdminCommand("checkqs", function(src, commandData, channel) {
+addAdminCommand("checkq", function(src, commandData, channel) {
     if (trivreview.questionAmount() === 0)
     {
         Trivia.sendPM(src,"There are no questions to be reviewed.", channel);
         return;
     }
     var q = trivreview.all();
-    Trivia.sendPM(src,"Question IDs: " + Object.keys(q).join(", "), channel);
-    Trivia.sendPM(src,"Type /checkq [id] to view and review a question!", channel);
+    /*Trivia.sendPM(src,"Question IDs: " + Object.keys(q).join(", "), channel);
+    Trivia.sendPM(src,"Type /checkq [id] to view and review a question!", channel);*/
+	// Let's review the first question
+	var questionId = Object.keys(q)[0];
+	var questionInfo = trivreview.get(questionId);
+	if (questionId === undefined || questionInfo === undefined)
+	{
+		Trivia.sendPM(src,"Oops! There was an error.",channel);
+		return;
+	}
+	sys.sendMessage(src,"",channel);
+	Trivia.sendPM(src,"This question needs to be reviewed:",channel);
+	Trivia.sendPM(src,"ID: "+questionId,channel);
+	Trivia.sendPM(src,"Category: "+questionInfo.category,channel);
+	Trivia.sendPM(src,"Question: "+questionInfo.question,channel);
+	Trivia.sendPM(src,"Answer: "+questionInfo.answer,channel);
+	sys.sendMessage(src,"",channel);
 });
 
-addAdminCommand("checkq", function(src, commandData, channel) {
+/*addAdminCommand("checkq", function(src, commandData, channel) {
     var q = trivreview.get(commandData);
     Trivia.sendPM(src,"ID #"+commandData+":", channel);
     Trivia.sendPM(src,"Category: "+q.category, channel);
     Trivia.sendPM(src,"Question: "+q.question, channel);
     Trivia.sendPM(src,"Answer: "+q.answer, channel);
-});
+});*/
 
 // TODO: are these well named? also do versions for already accepted questions
 addAdminCommand("changea", function(src, commandData, channel) {
@@ -585,7 +649,7 @@ addAdminCommand("changea", function(src, commandData, channel) {
         return;
     commandData = commandData.split("*");
     trivreview.changeAnswer(commandData[0],commandData[1]);
-    triviabot.sendMessage(src,"The answer for ID #"+commandData[0]+" was changed to "+commandData[1], channel);
+    triviabot.sendMessage(src,"The answer for ID #"+commandData[0]+" was changed to "+commandData[1]+"", channel);
 });
 
 addAdminCommand("changeq", function(src, commandData, channel) {
@@ -604,16 +668,23 @@ addAdminCommand("changec", function(src, commandData, channel) {
     triviabot.sendMessage(src,"The category for ID #"+commandData[0]+" was changed to "+commandData[1], channel);
 });
 
+// TODO: Maybe announce globally to trivreview when somebody accepts a question?
+
 addAdminCommand("accept", function(src, commandData, channel) {
     var q = trivreview.get(commandData);
-    triviaq.add(q.category,q.question,q.answer);
-    trivreview.remove(src, commandData);
-    triviabot.sendMessage(src,"You accepted question ID #"+commandData+"!", channel);
+	if (q !== undefined) {
+        triviabot.sendAll(sys.name(src)+" accepted question: id, "+triviaq.questionAmount()+1 /* TODO: get id in a better way */+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
+        triviaq.add(q.category,q.question,q.answer);
+        trivreview.remove(commandData);
+	}
+    // triviabot.sendMessage(src,"You accepted question ID #"+commandData+"!", channel);
 });
 
 addAdminCommand("decline", function(src, commandData, channel) {
-    trivreview.remove(src,commandData);
-    triviabot.sendMessage(src,"You declined question ID #"+commandData+"!", channel);
+    if (trivreview.get(commandData) !== undefined) {
+        trivreview.remove(commandData);
+        triviabot.sendAll(sys.name(src)+" declined the question.", channel);
+	}
 });
 
 // Normal command handling.
@@ -622,7 +693,7 @@ exports.handleCommand = function trivia_handleCommand(src, command, channel)
     // Only care about trivia channels
     if (channel != triviachan && channel != revchan)
         return;
-try {
+try { // Debug only, do not indent
     var commandData;
     var indx = command.indexOf(' ');
     if (indx != -1) {
@@ -639,7 +710,7 @@ try {
     }
 
     // Trivia admin commands
-    if (sys.auth(src) > 0 || tadmin.isTAdmin(src)) {
+    if (sys.auth(src) > 0 || tadmin.isTAdmin(sys.name(src).toLowerCase())) {
         if (adminCommands.hasOwnProperty(command)) {
             adminCommands[command].call(null, src, commandData, channel);
             return true;
@@ -686,10 +757,10 @@ exports.beforeChatMessage = function trivia_beforeChatMessage(src, message, chan
     if (channel !== triviachan)
         return;
 
-try {
+try { // debug only, do not indent
     // allow commands, except me
     if (utilities.is_command(message) && message.substr(1,2).toLowerCase() != "me")
-        return;
+    return;
 
     /* Trivia checks */
     var joined = Trivia.playerPlaying(src);
@@ -708,7 +779,7 @@ try {
             Trivia.sendPM(src,"Sorry! Your answer is too long.");
             return true;
         }
-
+		
         // Remove commas so the listing looks better
         // This is fine as no answers should include comma.
         Trivia.addAnswer(src, message.replace(/,/gi,""));
@@ -725,7 +796,8 @@ exports.init = function trivia_init()
     triviachan = utilities.get_or_create_channel("Trivia");
     revchan = utilities.get_or_create_channel("TrivReview");
 
-    Trivia = new TriviaGame();
+    if (typeof Trivia === "undefined" || Trivia.started === false)
+        Trivia = new TriviaGame();
     triviaq = new QuestionHolder("triviaq.json");
     trivreview = new QuestionHolder("trivreview.json");
     tadmin = new TriviaAdmin("tadmins.txt");

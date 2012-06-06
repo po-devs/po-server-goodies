@@ -26,23 +26,22 @@ var Config = {
         notPlayingMsg: "±Game: The game is in progress. Please type /join to join the next mafia game."
     },
     League: [
-        ["M Dragon", "Elite Four"],
-        ["Jedgi", "Elite Four"],
+        ["Bad Romance", "Elite Four"],
+        ["The Real Elmo", "Elite Four"],
         ["Amarillo Caballero", "Elite Four"],
-        ["Deria", "Elite Four"],
-        ["mibuchiha", "5th Generation WiFi Ubers"],
+        ["M Dragon", "Elite Four"],
+        ["Blimlax", "5th Generation WiFi Ubers"],
         ["IFM", "5th Generation WiFi OverUsed"],
-        ["1996ITO", "5th Generation Dream World OverUsed"],
-        ["Stofil", "5th Generation LittleUsed Gym"],
-        ["Psykout22", "5th Generation WiFi Little Cup"],
+        ["ThatIsWhatSheSaid", "5th Generation WiFi UnderUsed"],
+        ["Luck>Skill", "5th Generation WiFi LittleUsed Gym"],
+        ["Emac", "5th Generation WiFi NeverUsed Gym"],
+        ["Xdevo", "5th Generation WiFi Little Cup"],
         ["Marmoteo", "5th Generation OU Triples"],
-        ["ZIAH", "5th Generation Monotype"],
-        ["Manaphy", "4th Generation Ubers"],
-        ["Fakes", "4th Generation OverUsed"],
-        ["HSOWA", "4th Generation NeverUsed"],
+        ["Marik", "VGC 2012"],
+        ["Tomahawk9", "4th Generation OverUsed"],
         ["CALLOUS", "3rd Generation OverUsed"],
         ["Jorgen", "2nd Generation OverUsed"],
-        ["Platinum", "Mixed Generation Challenge Cup"]
+        ["Blitzamirin", "1st Generation OverUsed"]
     ],
     DreamWorldTiers: ["DW OU", "DW Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "DW 1v1 Ubers", "DW 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "DW OU Triples", "DW Uber Doubles", "DW OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
     superAdmins: ["Lamperi", "Professor Oak", "zeroality", "[LD]Jirachier", "nixeagle"],
@@ -127,7 +126,6 @@ var cleanFile = function(filename) {
 };
 cleanFile("mafia_stats.json");
 cleanFile("suspectvoting.json");
-cleanFile("wfbset.json");
 cleanFile("mafiathemes/metadata.json");
 cleanFile("channelData.json");
 cleanFile("mutes.txt");
@@ -198,7 +196,14 @@ function POUser(id)
     this.tiers = [];
     if (getKey('touralertson', id) == "true") {
         this.tiers = getKey("touralerts", id).split("*");
-    }   
+    }
+    /* mafia alerts */
+    this.mafiathemes = [];
+    if (getKey("mafiaalertson", id) == "true") {
+        this.mafiaalertson = true;
+        this.mafiaalertsany = getKey("mafiaalertsany", id) == "true" ? true : false;
+        this.mafiathemes = getKey("mafiathemes", id).split("*");
+    }
     /* host name */
     this.hostname = "pending";
     var user = this; // closure
@@ -209,8 +214,6 @@ function POUser(id)
     });
     this.battles = {};
 
-    // warn find battle custom message
-    this.reloadwfb();
 
     /* android default team check */
     var android = true
@@ -292,13 +295,6 @@ POUser.prototype.un = function(thingy) {
     callplugins("onUn"+ utilities.capitalize(thingy), this.id);
 }
 
-POUser.prototype.reloadwfb = function() {
-    if (SESSION.global() === undefined)
-        return;
-    var n = sys.name(this.id).toLowerCase();
-    this.wfbmsg = SESSION.global().wfbset && SESSION.global().wfbset.hasOwnProperty(n)
-        ?  SESSION.global().wfbset[n] : undefined;
-}
 
 /* POChannel */
 function POChannel(id)
@@ -638,14 +634,6 @@ function POGlobal(id)
     sys.channelIds().forEach(function(id) {
         manager.restoreSettings(id);
     });
-    try {
-        this.wfbset = JSON.parse(sys.getFileContent('wfbset.json'));
-    } catch (e) {
-        this.wfbset = {};
-    }
-    sys.playerIds().forEach(function(id) {
-        SESSION.players(id).reloadwfb();
-    });
 }
 
 POGlobal.prototype.callplugins = function callplugins(event) {
@@ -742,7 +730,7 @@ querybot = new Bot(Config.querybot);
 var commands = {
     user:
     [
-        "/rules: Shows the rules",
+        "/rules [x]: Shows the rules (x is optionally parameter to show a specific rule)",
         "/ranking: Shows your ranking in your current tier.",
         "/myalts: Lists your alts.",
         "/me [message]: Sends a message with *** before your name.",
@@ -759,15 +747,13 @@ var commands = {
         "/uptime: Shows time since the server was last offline.",
         "/players: Shows the number of players online.",
         "/sameTier [on/off]: Turn on/off auto-rejection of challenges from players in a different tier from you.",
-        "/touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)",
-        "/addtouralert [tier] : Adds a tour alert for the specified tier",
-        "/removetouralert [tier] : Removes a tour alert for the specified tier",
+        "/seen [name]: Allows you to see the last login of a user.",
     ],
     channel:
     [
         "/topic [topic]: Sets the topic of a channel. Only works if you're the first to log on a channel or have auth there. Displays current topic instead if no new one is given.",
         "/lt [name]: Kick someone from current channel.",
-        "/inviteonly [on|off]: Makes a channel invite-only or public.",
+        "/inviteonly [on|off] [level]: Makes a channel invite-only or public, with a minimum auth level of 'level' (level is optional).",
         "/invite [name]: Invites a user to current channel.",
         "/op [name]: Gives a user operator status.",
         "/deop [name]: Removes operator status from a user.",
@@ -790,16 +776,13 @@ var commands = {
         "/k [name]: Kicks someone.",
         "/mute [name]:[reason]:[time]: Mutes someone. Time is optional and defaults to 1 day.",
         "/unmute [name]: Unmutes someone.",
-        "/wfb [target]: Warns a user about asking for battles.",
-        "/wfbset [message]: Sets your personal warning message, {{user}} will be replaced by the target.",
         "/silence [minutes]:[channel]: Prevents authless users from talking in a channel for specified time. Affects all official channels if no channel is given.",
         "/silenceoff [channel]: Removes silence from a channel. Affects all official channels if none is specified.",
-        "/meoff [channel], /meon [channel]: Disables/enables the /me command. Affects all channels if no channel is specified.",
         "/perm [on/off]: Make the current permanent channel or not (permanent channels remain listed when they have no users).",
         "/userinfo [name]: Displays information about a user (pretty display).",
         "/whois [name]: Displays information about a user (one line, slightly more info).",
         "/aliases [IP/name]: Shows the aliases of an IP or name.",
-        "/tempban [name]:[reason]:[minutes]: Bans someone for 24 hours or less.",
+        "/tempban [name]:[reason]:[time]: Bans someone for 24 hours or less. Time is optional and defaults to 1 day",
         "/tempunban [name]: Unbans a temporary banned user (standard unban doesn't work).",
         "/mafiaban [name]:[reason]:[time]: Bans a player from Mafia. Time is optional and defaults to 7 days.",
         "/mafiaunban [name]: Unbans a player from Mafia.",
@@ -940,11 +923,11 @@ init : function() {
     "",
     "Rule #1 - Do Not Abuse CAPS:",
     "- The occasional word in CAPS is acceptable, however repeated use is not.",
-    "Rule #2 - No Flooding the Chat:",
+    "Rule #2 - No Spamming or Flooding:",
     "- Please do not post a large amount of short messages when you can easily post one or two long messages.",
     "Rule #3 - Do not Challenge Spam:",
     "- If a person refuses your challenge, this means they do not want to battle you. Find someone else to battle with.",
-    "Rule #4 - Don't ask for battles in the main chat:",
+    "Rule #4 - Prefer Find Battle button when finding a battle:",
     "- There is a 'Find Battle' tab that you can use to find a battle immediately. If after a while you cannot find a match, then you can ask for one in the chat.",
     "Rule #5 - No Trolling/Flaming/Insulting of Any kind:",
     "- Behaving stupidly and excessive vulgarity will not be tolerated, using words including 'fuck' is a bad starting point.",
@@ -956,11 +939,9 @@ init : function() {
     "- This includes links, texts, images, and any other kind of media. This will result in an instant ban.",
     "Rule #9 - Do not ask for Auth:",
     "- Authority is given upon merit. By asking you have pretty much eliminated your chances at becoming an Auth in the future.",
-    "Rule #10 - Do not Insult Auth:",
-    "- Insulting an authority figure can result in immediate punishment, even if it's not in one of the official channels.",
-    "Rule #11 - No minimodding:",
+    "Rule #10 - No minimodding:",
     "- Server has moderators for a reason. If someone breaks the rules, alert the auth, do not try to moderate yourself.",
-    "Rule #12 - Do not share other people's personal information without their permission:",
+    "Rule #11 - Do not share other people's personal information without their permission:",
     "- Violation of personal privacy is not nice at all, and you wouldn't want it happening to you. If found out, you will be permanently banned."
     ];
 
@@ -1420,6 +1401,7 @@ beforeChannelDestroyed : function(channel) {
 ,
 
 beforePlayerBan : function(src, dest) {
+    normalbot.sendAll("Target: " + sys.name(dest) + ", IP: " + sys.ip(dest), staffchannel);
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {}
     authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time())];
@@ -1449,6 +1431,19 @@ isRangeBanned : function(ip) {
 
 ,
 
+isTempBannedName: function(name)
+{
+    name = name.toLowerCase();
+    for (var i in tempBans)
+	{
+		if (tempBans[i].target.toLowerCase() == name && this.isTempBanned(i))
+		return true;
+	}
+	return false;
+}
+
+,
+
 isTempBanned : function(ip) {
     if (ip in tempBans) {
         var time = parseInt(sys.time());
@@ -1466,7 +1461,7 @@ isTempBanned : function(ip) {
 beforeLogIn : function(src) {
 
     var ip = sys.ip(src);
-    if (this.isTempBanned(ip) && sys.auth(src) < 2) {
+    if ((this.isTempBanned(ip) || this.isTempBannedName(sys.name(src))) && sys.auth(src) < 2) {
         normalbot.sendMessage(src, 'You are banned!');
         sys.stopEvent();
         return;
@@ -1493,6 +1488,7 @@ beforeLogIn : function(src) {
                 "86.187.",
                 "98.226.", /* skarm */
                 "85.17.",
+                "180.191.", /*Tonico*/
                 "187.65.", /* retyples and hax re */
                 "99.140.2" /* gaffpot, the gaff */];
     for (var i = 0; i < arr.length; i++) {
@@ -1575,17 +1571,6 @@ afterLogIn : function(src) {
 
     if (sys.numPlayers() > maxPlayersOnline) {
         maxPlayersOnline = sys.numPlayers();
-    }
-    if (sys.getColor(src) == "#ff007f" && /doj/i.test(sys.name(src))) {
-        normalbot.sendAll("Smute based on color: " + sys.name(src) + ", IP: " + sys.ip(src), staffchannel);
-        var endtime = parseInt(sys.time()) + 86400;
-        SESSION.users(src).activate("smute", "Script", endtime, "User is probably Doj; color based auto smute", true);
-        sys.delayedCall(function () {
-            if (sys.id(src)) {
-                sys.ban(sys.name(src));
-                sys.kick(src);
-            }
-        }, sys.rand(10, 75));
     }
 
     if (maxPlayersOnline > sys.getVal("MaxPlayersOnline")) {
@@ -1698,7 +1683,9 @@ afterChangeTeam : function(src)
     }
 
     POuser.sametier = getKey("forceSameTier", src) == "1";
-
+    if (getKey("autoIdle", src) == "1") {
+        sys.changeAway(src, true);
+    }
     try {
     // TODO: move this into tierchecks.js
     if (sys.gen(src) == 2) {
@@ -1715,27 +1702,10 @@ afterChangeTeam : function(src)
 
     }
     } catch (e) { sys.sendMessage(e, staffchannel); }
-    try {
-    if (!tier_checker.check_if_valid_for(src, sys.tier(src))) {
+
+    if (!tier_checker.has_legal_team_for_tier(src, sys.tier(src))) {
        tier_checker.find_good_tier(src);
        normalbot.sendMessage(src, "You were placed into '" + sys.tier(src) + "' tier.");
-    }
-    } catch(e) {
-    sys.sendMessage(sys.id("Lamperi"), "Error with tier_checker (afterChangeTeam): " + e, staffchannel);
-    this.eventMovesCheck(src);
-    this.dreamWorldAbilitiesCheck(src);
-    this.littleCupCheck(src);
-    this.evioliteCheck(src);
-    this.inconsistentCheck(src);
-    this.monotypecheck(src);
-    this.monoGenCheck(src);
-    this.weatherlesstiercheck(src);
-    this.shanaiAbilityCheck(src)
-    this.monoColourCheck(src)
-    this.swiftSwimCheck(src)
-    this.droughtCheck(src)
-    this.snowWarningCheck(src)
-    this.advance200Check(src);
     }
 
 } /* end of afterChangeTeam */
@@ -1788,12 +1758,11 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if ((command == "me" || command == "rainbow") && !muteall && !SESSION.channels(channel).muteall) {
-        if (sys.auth(src) == 0 && ((typeof meoff != "undefined" && meoff != false && (channel == tourchannel || channel == 0))
-            || SESSION.channels(channel).meoff === true)) {
+        if (SESSION.channels(channel).meoff === true) {
             normalbot.sendChanMessage(src, "/me was turned off.");
             return;
         }
-        if (commandData === undefined || command == "rainbow")
+        if (commandData === undefined)
             return;
 
         if (channel == sys.channelId("Trivia") && SESSION.channels(channel).triviaon) {
@@ -1821,10 +1790,15 @@ userCommand: function(src, command, commandData, tar) {
         SESSION.channels(channel).beforeMessage(src, "/me " + commandData);
         commandData=utilities.html_escape(commandData)
         if (command == "me") {
-            sys.sendHtmlAll("<font color='#0483c5'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + commandData + "</font>", channel);
-        } else if (command == "rainbow" && SESSION.global().allowRainbow) {
+           var colour = sys.getColor(src);
+           if(colour === "#000000"){
+           	var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
+	   	colour = clist[src % clist.length];
+           }
+           sys.sendHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + commandData + "</font>", channel);
+        } else if (command == "rainbow" && SESSION.global().allowRainbow && channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel != sys.channelId("Trivia")) {
             var auth = 1 <= sys.auth(src) && sys.auth(src) <= 3;
-            var colours = ["red", "blue", "yellow", "cyan", "black", "orange", "green"];
+            var colours = ["red", "blue", "yellow", "cyan", "black", "orange", "green", "#FF0000", "#FF5A00", "#A5ff00", "#00ff5A", "#0000ff", "#FF00B4", "#FFff00"];
             var randColour = function() { return colours[sys.rand(0,colours.length-1)]; }
             var toSend = ["<timestamp/><b>"];
             if (auth) toSend.push("<span style='color:" + randColour() + "'>+</span><i>");
@@ -1862,7 +1836,7 @@ userCommand: function(src, command, commandData, tar) {
         sendChanMessage(src, "");
         return;
     }
-    /*if (command == "league") {
+    if (command == "league") {
         if (!Config.League) return;
 
         sendChanMessage(src, "");
@@ -1876,8 +1850,15 @@ userCommand: function(src, command, commandData, tar) {
         }
         sendChanMessage(src, "");
         return;
-    }*/
+    }
     if (command == "rules") {
+    	if(commandData !== undefined && !isNaN(commandData) && commandData >0 && commandData < 12){
+	    var num = parseInt(commandData)
+	    num = (2*num)+1 //gets the right rule from the list since it isn't simply y=x it's y=2x+1
+	    sendChanMessage(src, rules[num])
+	    sendChanMessage(src, rules[num+1])
+	    return;
+	}
         for (rule in rules) {
             sendChanMessage(src, rules[rule]);
         }
@@ -2004,12 +1985,30 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "sametier") {
-        if (commandData == "on")
+        if (commandData == "on") {
             battlebot.sendChanMessage(src, "You enforce same tier in your battles.");
-        else
+            SESSION.users(src).sametier = true;
+        } else if (commandData == "off") {
             battlebot.sendChanMessage(src, "You allow different tiers in your battles.");
-        SESSION.users(src).sametier = commandData == "on";
+            SESSION.users(src).sametier = false;
+        } else {
+            battlebot.sendChanMessage(src, "Currently: " + (SESSION.users(src).sametier ? "enforcing same tier" : "allow different tiers") + ". Use /sametier on/off to change it!");
+        }
         saveKey("forceSameTier", src, SESSION.users(src).sametier * 1);
+        return;
+    }
+    if (command == "idle") {
+        if (commandData == "on") {
+            battlebot.sendChanMessage(src, "You are now idling.");
+            saveKey("autoIdle", src, 1);
+            sys.changeAway(src, true);
+        } else if (commandData == "off") {
+            battlebot.sendChanMessage(src, "You are back and ready for battles!");
+            saveKey("autoIdle", src, 0);
+            sys.changeAway(src, false);
+        } else {
+            battlebot.sendChanMessage(src, "You are currently " + (sys.away(src) ? "idling" : "here and ready to battle") + ". Use /idle on/off to change it.");
+        }
         return;
     }
     if (command == "unjoin") {
@@ -2282,6 +2281,25 @@ userCommand: function(src, command, commandData, tar) {
         bot.sendChanMessage(src, "Your alts are: " + alts);
         return;
     }
+    if (command == "seen") {
+    	if (commandData == undefined) {
+            querybot.sendChanMessage(src, "Please provide a username.");
+            return;
+        }
+    	var lastLogin = sys.dbLastOn(commandData)
+    	if(lastLogin == undefined){
+            querybot.sendChanMessage(src, "No such user.");
+            return;
+    	}
+    	if(sys.id(commandData)!== undefined){
+            querybot.sendChanMessage(src, commandData + " is currently online!")
+            return
+    	}
+        var parts = lastLogin.split("-");
+        var d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10)-1, parseInt(parts[2], 10));
+    	querybot.sendChanMessage(src, commandData + " was last seen: "+ d.toDateString());
+    	return;
+    }
     if (command == "dwreleased") {
         var poke = sys.pokeNum(commandData);
         if (!poke) {
@@ -2327,6 +2345,30 @@ modCommand: function(src, command, commandData, tar) {
         }
         return;
     }
+    if (command == "onrange") {
+        var subip = commandData;
+        var players = sys.playerIds();
+        var players_length = players.length;
+        var names = [];
+        for (var i = 0; i < players_length; ++i) {
+            var current_player = players[i];
+            var ip = sys.ip(current_player);
+            if (ip.substr(0, subip.length) == subip) {
+                names.push(current_player);
+            }
+        }
+        // Tell about what is found.
+        if (names.length > 0) {
+            var msgs = [];
+            for (var i = 0; i < names.length; i++) {
+                msgs.push(sys.name(names[i]) + " (" + sys.ip(names[i]) + ")");
+            }
+            sys.sendMessage(src,"Players: on range " + subip + " are: " + msgs.join(", "), channel);
+        } else {
+            sys.sendMessage(src,"Players: Nothing interesting here!",channel);
+        }
+        return;
+    }
     if (command == "tier")
     {
         if (tar == undefined){
@@ -2345,14 +2387,6 @@ modCommand: function(src, command, commandData, tar) {
         SESSION.channels(channel).perm = (commandData.toLowerCase() == 'on');
         SESSION.global().channelManager.updateChannelPerm(sys.channel(channel), SESSION.channels(channel).perm);
         channelbot.sendChanAll("" + sys.name(src) + (SESSION.channels(channel).perm ? " made the channel permanent." : " made the channel a temporary channel again."));
-        return;
-    }
-    if (command == "meoff") {
-        this.meoff(src, commandData);
-        return;
-    }
-    if (command == "meon") {
-        this.meon(src, commandData);
         return;
     }
     if (command == "silence") {
@@ -2570,7 +2604,10 @@ modCommand: function(src, command, commandData, tar) {
         var table = '';
         table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="6"><center><strong>Temp banned</strong></center></td></tr><tr><th>IP</th><th>Name</th><th>By</th><th>Length</th><th>Expires in</th><th>Reason</th></tr>';
         for (var ip in tempBans) {
-            var ban_length = tempBans[ip].length === undefined ? "undefined" : getTimeString(tempBans[ip].length * 60);
+            if(this.isTempBanned(ip) == false){
+               continue;
+            }
+            var ban_length = tempBans[ip].length === undefined ? "undefined" : getTimeString(tempBans[ip].length);
             var auth = tempBans[ip].auth === undefined ? "undefined" : tempBans[ip].auth;
             var time = tempBans[ip].time === undefined ? "undefined" : tempBans[ip].time;
             var expire_time = tempBans[ip].time === undefined ? "undefined" : getTimeString(tempBans[ip].time - t);
@@ -2774,54 +2811,60 @@ modCommand: function(src, command, commandData, tar) {
         querybot.sendChanMessage(src, prefix + smessage);
         return;
     }
-    if (command == "tempban") {
-        var tmp = commandData.split(":");
-        if (tmp.length != 3) {
-            normalbot.sendChanMessage(src, "Usage /tempban name:reason:minutes.");
-            return;
-        }
-        var target_name = tmp[0];
-        var reason = tmp[1];
-        var minutes = tmp[2];
-        tar = sys.id(target_name);
-        minutes = parseInt(minutes);
-        if (typeof minutes != "number" || isNaN(minutes) || minutes < 1 || (sys.auth(src) < 2 && minutes > 1440) ) {
-            normalbot.sendChanMessage(src, "Minutes must be in the interval [1,1440].");
-            return;
-        }
-
-        var ip;
-        var name;
-        if (tar === undefined) {
-            ip = sys.dbIp(target_name);
-            name = target_name;
-            if (ip === undefined) {
-                normalbot.sendChanMessage(src, "No such name online / offline.");
-                return;
-            }
-        } else {
-            ip = sys.ip(tar);
-            name = sys.name(tar);
-        }
-
-        if (sys.maxAuth(ip)>=sys.auth(src)) {
-            normalbot.sendChanMessage(src, "Can't do that to higher auth!");
-            return;
-        }
-        var authname = sys.name(src).toLowerCase();
-        tempBans[ip] = {'auth': authname,
-                        'time': parseInt(sys.time()) + 60*minutes,
-                        'length': minutes,
-                        'reason': reason,
-                        'target': target_name};
-        normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " on " + ip + " for " + minutes + " minutes! [Reason: " + reason + "]");
-        sys.kick(tar);
-        this.kickAll(ip);
-
-
-        authStats[authname] =  authStats[authname] || {}
-        authStats[authname].latestTempBan = [name, parseInt(sys.time())];
-        return;
+   if (command == "tempban") {
+	var tmp = commandData.split(":");
+	if (tmp.length != 3) {
+		normalbot.sendChanMessage(src, "Usage /tempban name:reason:minutes.");
+		return;
+	}
+	
+	var target_name = tmp[0];
+	var reason = tmp[1];
+	if (isNaN(tmp[2][0])) {
+		var minutes = 86400
+	} else {
+		var minutes = getSeconds(tmp[2]);
+	}
+	tar = sys.id(target_name);
+	minutes = parseInt(minutes);
+	timeString = getTimeString(minutes);
+	if (sys.auth(src) < 2 && minutes > 86400) {
+		normalbot.sendChanMessage(src, "Cannot ban for longer than a day!");
+		return;
+	}
+	var ip;
+	var name;
+	if (tar === undefined) {
+		ip = sys.dbIp(target_name);
+		name = target_name;
+		if (ip === undefined) {
+			normalbot.sendChanMessage(src, "No such name online / offline.");
+			return;
+		}
+	} else {
+		ip = sys.ip(tar);
+		name = sys.name(tar);
+	}
+	
+	if (sys.maxAuth(ip) >= sys.auth(src)) {
+		normalbot.sendChanMessage(src, "Can't do that to higher auth!");
+		return;
+	}
+	var authname = sys.name(src).toLowerCase();
+	tempBans[ip] = {
+		'auth' : authname,
+		'time' : parseInt(sys.time()) + minutes,
+		'length' : minutes,
+		'reason' : reason,
+		'target' : target_name
+	};
+	normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " on " + ip + " for " + timeString + "! [Reason: " + reason + "]");
+	sys.kick(tar);
+	this.kickAll(ip);
+	
+	authStats[authname] = authStats[authname] || {}
+	authStats[authname].latestTempBan = [name, parseInt(sys.time())];
+	return;
     }
     if (command == "tempunban") {
         var ip = sys.dbIp(commandData);
@@ -2838,40 +2881,7 @@ modCommand: function(src, command, commandData, tar) {
         delete tempBans[ip];
         return;
     }
-    if (command == "wfbset") {
-        SESSION.users(src).wfbmsg = commandData;
-        SESSION.global().wfbset[sys.name(src).toLowerCase()] = commandData;
-        sys.writeToFile('wfbset.json', JSON.stringify(SESSION.global().wfbset));
-        normalbot.sendChanMessage(src, "Your message is set to '" + commandData + "'.");
-        return;
-    }
-    if (command == "wfb") {
-        if (tar === undefined) {
-            normalbot.sendChanMessage(src, "Please use this command to warn / automute someone. Use /wfb name");
-            return;
-        }
-        if (sys.auth(tar) > 0) {
-            normalbot.sendChanMessage(src, "Please use this command only on users.");
-            return;
-        }
-        var poTarget = SESSION.users(tar);
-        var poAuth = SESSION.users(src);
-        if (!poTarget.warned) {
-            poTarget.warned = parseInt(sys.time());
-            var warning = poAuth.wfbmsg ? poAuth.wfbmsg : "{{user}}: Please do not ask for battles in the chat. Refer to http://findbattlebutton.info to find more about the find battle button!";
-            warning = warning.replace("{{user}}", sys.name(tar));
-            sys.sendAll(sys.name(src) + ": " + warning, 0);
-        } else if (parseInt(sys.time()) - poTarget.warned < 10) {
-            normalbot.sendChanMessage(src, "Please wait 10 seconds between wfbs.");
-        } else {
-            poTarget.activate("mute", sys.name(src), parseInt(sys.time()) + 900, "Asking for battles in the chat; http://findbattlebutton.info", true);
-            normalbot.sendAll("" + sys.name(tar) + " was muted by " + nonFlashing(sys.name(src)) + " for 15 minutes! [Reason: Asking for battles in the chat]");
-        }
-        return;
-    }
     if (command == "passauth" || command == "passauths") {
-        //normalbot.sendChanMessage(src, "Ask Oak/Lamp/Zero instead, plox.");
-        //return;
         if (tar === undefined) {
             normalbot.sendChanMessage(src, "The target is offline.");
             return;
@@ -2924,20 +2934,19 @@ silence: function(src, minutes, chanName) {
     if (isNaN(delay) || delay <= 0) {
         channelbot.sendChanMessage(src, "Sorry, I couldn't read your minutes.");
     }
-
     if (!chanName) {
         bot.sendChanMessage(src, "Sorry, global silence is disabled. Use /silence 5 Channel Name");
-        /*
-        normalbot.sendMainTour("" + sys.name(src) + " called for " + minutes + " Minutes of Silence!");
-        muteall = true;
-        sys.callLater('if (!muteall) return; muteall = false; normalbot.sendMainTour("Silence is over.");', delay);
-        */
     } else {
         var cid = sys.channelId(chanName);
         if (cid !== undefined) {
             channelbot.sendAll("" + sys.name(src) + " called for " + minutes + " Minutes Of Silence in "+chanName+"!", cid);
             SESSION.channels(cid).muteall = true;
-            sys.callLater('if (!SESSION.channels('+cid+').muteall) return; SESSION.channels('+cid+').muteall = false; normalbot.sendAll("Silence is over in '+chanName+'.",'+cid+');', delay);
+            sys.delayedCall(function() {
+                if (!SESSION.channels(cid).muteall)
+                    return;
+                SESSION.channels(cid).muteall = false;
+                normalbot.sendAll("Silence is over in "+chanName+".",cid)
+            }, delay);
         } else {
             channelbot.sendChanMessage(src, "Sorry, I couldn't find a channel with that name.");
         }
@@ -2949,49 +2958,34 @@ silenceoff: function(src, chanName) {
     if (chanName !== undefined) {
         var cid = sys.channelId(chanName);
         if (!SESSION.channels(cid).muteall) {
-            channelbot.sendChanMessage(src, "Nah.");
+            channelbot.sendChanMessage(src, "The channel is not muted.");
             return;
         }
         channelbot.sendAll("" + sys.name(src) + " cancelled the Minutes of Silence in "+chanName+"!", cid)
         SESSION.channels(cid).muteall = false;
     } else {
-        if (!muteall) {
-            normalbot.sendChanMessage(src, "Nah.");
-            return;
-        }
-        normalbot.sendMainTour("" + sys.name(src) + " cancelled the Minutes of Silence!");
-        muteall = false;
+        normalbot.sendChanMessage("Use /silenceoff Channel Name");
     }
 }
 ,
 meoff: function(src, commandData) {
-    if (commandData === undefined) {
-        meoff=true;
-        normalbot.sendMainTour("" + sys.name(src) + " turned off /me.");
+    var cid = sys.channelId(commandData);
+    if (cid !== undefined) {
+        SESSION.channels(cid).meoff = true;
+        normalbot.sendAll("" + sys.name(src) + " turned off /me in "+commandData+".", cid);
     } else {
-        var cid = sys.channelId(commandData);
-        if (cid !== undefined) {
-            SESSION.channels(cid).meoff = true;
-            normalbot.sendAll("" + sys.name(src) + " turned off /me in "+commandData+".", cid);
-        } else {
-            normalbot.sendChanMessage(src, "Sorry, that channel is unknown to me.");
-        }
+        normalbot.sendChanMessage(src, "Sorry, that channel is unknown to me.");
     }
     return;
 }
 ,
 meon: function(src, commandData) {
-    if (commandData === undefined) {
-        meoff=false;
-        normalbot.sendMainTour("" + sys.name(src) + " turned on /me.");
+    var cid = sys.channelId(commandData);
+    if (cid !== undefined) {
+        SESSION.channels(cid).meoff = false;
+        normalbot.sendAll("" + sys.name(src) + " turned on /me in "+commandData+".", cid);
     } else {
-        var cid = sys.channelId(commandData);
-        if (cid !== undefined) {
-            SESSION.channels(cid).meoff = false;
-            normalbot.sendAll("" + sys.name(src) + " turned on /me in "+commandData+".", cid);
-        } else {
-            normalbot.sendChanMessage(src, "Sorry, that channel is unknown to me.");
-        }
+        normalbot.sendChanMessage(src, "Sorry, that channel is unknown to me.");
     }
 }
 ,
@@ -3007,6 +3001,16 @@ adminCommand: function(src, command, commandData, tar) {
             megausers += "*" + sys.name(tar) + "*";
             sys.saveVal("megausers", megausers);
         }
+        return;
+    }
+    if(command == "togglerainbow"){
+        if(commandData === "off"){
+            SESSION.global().allowRainbow = false
+            normalbot.sendChanMessage(src, "You turned rainbow off!")
+            return;
+        }
+        SESSION.global().allowRainbow = true
+        normalbot.sendChanMessage(src, "You turned rainbow on!")
         return;
     }
     if (command == "watch") {
@@ -3335,30 +3339,6 @@ ownerCommand: function(src, command, commandData, tar) {
         sendChanMessage(src, "");
         return;
     }
-    if (command == "onrange") {
-        var subip = commandData;
-        var players = sys.playerIds();
-        var players_length = players.length;
-        var names = [];
-        for (var i = 0; i < players_length; ++i) {
-            var current_player = players[i];
-            var ip = sys.ip(current_player);
-            if (ip.substr(0, subip.length) == subip) {
-                names.push(current_player);
-            }
-        }
-        // Tell about what is found.
-        if (names.length > 0) {
-            var msgs = [];
-            for (var i = 0; i < names.length; i++) {
-                msgs.push(sys.name(names[i]) + " (" + sys.ip(names[i]) + ")");
-            }
-            sys.sendMessage(src,"Players: on range " + subip + " are: " + msgs.join(", "), channel);
-        } else {
-            sys.sendMessage(src,"Players: Nothing interesting here!",channel);
-        }
-        return;
-    }
     if (command == "rangeban") {
         var subip;
         var comment;
@@ -3574,11 +3554,12 @@ ownerCommand: function(src, command, commandData, tar) {
             return;
         }
         else if (command == "evalp") {
+            var bindChannel = channel;
             try {
                 var res = sys.eval(commandData);
-                sys.sendMessage(src, "Got from eval: " + res, channel);
+                sys.sendMessage(src, "Got from eval: " + res, bindChannel);
             } catch(err) {
-                sys.sendMessage(src, "Error in eval: " + err, channel);
+                sys.sendMessage(src, "Error in eval: " + err, bindChannel);
             }
             return;
         }
@@ -3738,7 +3719,21 @@ channelCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "Choose a valid target for your love!");
             return;
         }
-        sys.sendHtmlAll("<font color='#0483c5'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
+        var colour = sys.getColor(src);
+           if(colour === "#000000"){
+           	var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
+	   	colour = clist[src % clist.length];
+           }
+        sys.sendHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
+        sys.kick(tar, channel);
+        return;
+    }
+     if (command == "ck" || command == "chankick") {
+        if (tar == undefined || !sys.isInChannel(tar, channel)) {
+            normalbot.sendChanMessage(src, "Choose a valid target to kick");
+            return;
+        }
+        normalbot.sendChanAll(sys.name(src) + " kicked "+commandData+" from the channel!");
         sys.kick(tar, channel);
         return;
     }
@@ -3780,11 +3775,22 @@ channelCommand: function(src, command, commandData, tar) {
     }
 
     if (command == "inviteonly") {
+        var invitedata = commandData.split(' ')
         var level = sys.auth(src) >= 3 ? 3 : sys.auth(src) + 1;
-        if (commandData == "on") {
+        var newlevel = parseInt(invitedata[1]);
+        if (!isNaN(newlevel)) {
+            if (newlevel >= 1 && newlevel <= level) {
+                level = newlevel;
+            }
+            else {
+                normalbot.sendChanMessage(src, "You cannot set the maximum invite level above" + level + ", or less than 1.");
+                return;
+            }
+        }
+        if (invitedata[0] == "on") {
             poChannel.inviteonly = level;
             normalbot.sendChanAll("This channel was made inviteonly with level " + level + ".");
-        } else if (commandData == "off") {
+        } else if (invitedata[0] == "off") {
             poChannel.inviteonly = 0;
             normalbot.sendChanAll("This channel is not inviteonly anymore.");
         } else {
@@ -3817,6 +3823,9 @@ channelCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "cmeoff") {
+        if (channel == 0 || channel == tourchannel) {
+            normalbot.sendChanMessage(src, "/me can't be turned off here.")
+        }
         this.meoff(src, sys.channel(channel));
         return;
     }
@@ -4034,7 +4043,7 @@ beforeChatMessage: function(src, message, chan) {
                 }
             }
         }
-        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, "nobrain.dk", /\bn[1i]gg+ers*\b/i, "penis", "vagina", "fuckface", /\bhur+\b/, /\bdur+\b/, "hurrdurr", /\bherp\b/, /\bderp\b/, "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----"];
+        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, "nobrain.dk", /\bn[1i]gg+ers*\b/i, "penis", "vagina", "fuckface", "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----"];
         for (var i = 0; i < BanList.length; ++i) {
             var filter = BanList[i];
             if (typeof filter == "string" && m.indexOf(filter) != -1 || typeof filter == "function" && filter.test(m)) {
@@ -4050,7 +4059,7 @@ beforeChatMessage: function(src, message, chan) {
            user.lastline = {message: null, time: 0};
         }
         var time = parseInt(sys.time());
-        if (sys.auth(src) < 1 && user.lastline.message == message && user.lastline.time + 15 > time) {
+        if (!SESSION.channels(channel).isChannelOperator(src) && SESSION.users(src).contributions === undefined && sys.auth(src) < 1 && user.lastline.message == message && user.lastline.time + 15 > time) {
             normalbot.sendChanMessage(src, "Please do not repeat yourself!");
             ret = true;
         }
@@ -4225,8 +4234,7 @@ beforeChatMessage: function(src, message, chan) {
     }
 
     // Minutes of Silence
-    if (sys.auth(src) == 0 && ((muteall && channel != staffchannel && channel != mafiachan && channel != sys.channelId("Trivia"))
-        || SESSION.channels(channel).muteall) && !SESSION.channels(channel).isChannelOperator(src)) {
+    if (SESSION.channels(channel).muteall && !SESSION.channels(channel).isChannelOperator(src) && sys.auth(src) == 0) {
         normalbot.sendChanMessage(src, "Respect the minutes of silence!");
         sys.stopEvent();
         return;
@@ -4472,30 +4480,10 @@ isMCaps : function(message) {
 
 ,
 beforeChangeTier : function(src, oldtier, newtier) {
-    try {
-    if (!tier_checker.check_if_valid_for(src, newtier)) {
+    if (!tier_checker.has_legal_team_for_tier(src, newtier)) {
        sys.stopEvent();
        normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
        tier_checker.find_good_tier(src);
-    }
-    } catch(e) {
-    sys.sendMessage(sys.id("Lamperi"), "Error with tier_checker: " + e, staffchannel);
-    if(newtier == "Challenge Cup") return;
-
-    this.eventMovesCheck(src);
-    this.dreamWorldAbilitiesCheck(src, newtier);
-    this.littleCupCheck(src, newtier);
-    this.evioliteCheck(src, newtier);
-    this.inconsistentCheck(src, newtier);
-    this.monotypecheck(src, newtier);
-    this.monoGenCheck(src, newtier);
-    this.weatherlesstiercheck(src, newtier);
-    this.shanaiAbilityCheck(src, newtier);
-    this.monoColourCheck(src, newtier);
-    this.swiftSwimCheck(src, newtier);
-    this.snowWarningCheck(src, newtier);
-    this.droughtCheck(src, newtier);
-    this.advance200Check(src, newtier);
     }
 }
 ,
@@ -4554,142 +4542,6 @@ beforeBattleMatchup : function(src,dest,clauses,rated)
 }
 ,
 
-eventMovesCheck : function(src)
-{
-    for (var i = 0; i < 6; i++) {
-        var poke = sys.teamPoke(src, i);
-        if (poke in pokeNatures) {
-            for (x in pokeNatures[poke]) {
-                if (sys.hasTeamPokeMove(src, i, x) && sys.teamPokeNature(src, i) != pokeNatures[poke][x])
-                {
-                    checkbot.sendMessage(src, "" + sys.pokemon(poke) + " with " + sys.move(x) + " must be a " + sys.nature(pokeNatures[poke][x]) + " nature. Change it in the teambuilder.");
-                    sys.stopEvent();
-                    sys.changePokeNum(src, i, 0);
-                }
-
-            }
-        }
-    }
-}
-,
-littleCupCheck : function(src, tier) {
-    if (!tier) tier = sys.tier(src);
-    if (["Wifi LC", "Wifi LC Ubers", "Wifi UU LC"].indexOf(tier) == -1) {
-        return; // only care about these tiers
-    }
-    for (var i = 0; i < 6; i++) {
-        var x = sys.teamPoke(src, i);
-        if (x != 0 && sys.hasDreamWorldAbility(src, i) && lcpokemons.indexOf(x) != -1 ) {
-            checkbot.sendMessage(src, "" + sys.pokemon(x) + " is not allowed with a Dream World ability in this tier. Change it in the teambuilder.");
-
-            if (sys.tier(src) == "Wifi LC" && sys.hasLegalTeamForTier(src, "DW LC") || sys.tier(src) == "Wifi LC Ubers" && sys.hasLegalTeamForTier(src, "DW OU")) {
-                sys.changeTier(src, "DW LC");
-            } else {
-                sys.changePokeNum(src, i, 0);
-            }
-            sys.stopEvent();
-        }
-    }
-}
-,
-evioliteCheck : function(src, tier) {
-    if (!tier) tier = sys.tier(src);
-    if (["Wifi NU"].indexOf(tier) == -1) {
-        return; // only care about these tiers
-    }
-    var evioliteLimit = 6;
-    var eviolites = 0;
-    for (var i = 0; i < 6; i++) {
-        var x = sys.teamPoke(src, i);
-        var item = sys.teamPokeItem(src, i);
-        item = item !== undefined ? sys.item(item) : "(no item)";
-        if (item == "Eviolite" && ++eviolites > evioliteLimit) {
-            checkbot.sendMessage(src, "Only 1 pokemon is allowed with eviolite in " + tier + " tier. Please remove extra evioites in teambuilder.");
-            sys.changeTier(src, "Challenge Cup");
-            sys.stopEvent();
-        }
-    }
-}
-,
-dreamWorldAbilitiesCheck : function(src, tier) {
-    if (sys.gen(src) < 5)
-        return;
-
-    if (!tier) tier = sys.tier(src);
-    if (Config.DreamWorldTiers.indexOf(tier) > -1) {
-        return; // don't care about these tiers
-    }
-
-    for (var i = 0; i < 6; i++) {
-        var x = sys.teamPoke(src, i);
-        if (x != 0 && sys.hasDreamWorldAbility(src, i) && (!(x in dwpokemons) || (breedingpokemons.indexOf(x) != -1 && sys.compatibleAsDreamWorldEvent(src, i) != true))) {
-            if (!(x in dwpokemons))
-                checkbot.sendMessage(src, "" + sys.pokemon(x) + " is not allowed with a Dream World ability in " + tier + " tier. Change it in the teambuilder.");
-            else
-                checkbot.sendMessage(src, "" + sys.pokemon(x) + " has to be Male and have no egg moves with its Dream World ability in  " + tier + " tier. Change it in the teambuilder.");
-            /*
-            if (sys.tier(src) == "Wifi OU" && sys.hasLegalTeamForTier(src, "DW OU")) {
-                sys.changeTier(src, "DW OU");
-            } else if (sys.tier(src) == "Wifi OU" && sys.hasLegalTeamForTier(src, "DW Ubers")) {
-                sys.changeTier(src, "DW Ubers");
-            } else if (sys.tier(src) == "Wifi Ubers") {
-                sys.changeTier(src, "DW Ubers");
-            }
-            else if (sys.tier(src) == "DW 1v1" && sys.hasLegalTeamForTier(src, "DW OU")) {
-                sys.changeTier(src, "DW OU");
-            }
-            else if (sys.tier(src) == "DW 1v1" && sys.hasLegalTeamForTier(src, "DW Ubers")) {
-                sys.changeTier(src, "DW Ubers");
-            }
-            else if (sys.tier(src) == "Wifi UU" && sys.hasLegalTeamForTier(src, "DW UU")) {
-                sys.changeTier(src, "DW UU");
-            } else if (sys.tier(src) == "Wifi LU" && sys.hasLegalTeamForTier(src, "DW LU")) {
-                sys.changeTier(src, "DW LU");
-            }
-            else if (sys.tier(src) == "Wifi LC" && sys.hasLegalTeamForTier(src, "Wifi LC") || sys.tier(src) == "Wifi LC Ubers" && sys.hasLegalTeamForTier(src, "Wifi LC Ubers")) {
-                sys.changeTier(src, "DW LC");
-            }else {
-                sys.changePokeNum(src, i, 0);
-            }
-            */
-            sys.changeTier(src, "Challenge Cup");
-            sys.stopEvent();
-        }
-    }
-}
-,
-
-inconsistentCheck : function(src, tier) {
-    if (!tier) tier = sys.tier(src);
-    if (["DW OU", "DW UU", "DW LU", "Wifi OU", "Wifi UU", "Wifi LU", "Wifi LC", "DW LC", "Wifi Ubers", "DW Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "Wifi NU"].indexOf(tier) == -1) {
-        return; // only care about these tiers
-    }
-    var moody = sys.abilityNum("Moody");
-    for (var i = 0; i < 6; i++) {
-        var x = sys.teamPoke(src, i);
-
-        if (x != 0 && sys.teamPokeAbility(src, i) == moody) {
-            checkbot.sendMessage(src, "" + sys.pokemon(x) + " is not allowed with Moody in " + tier + ". Change it in the teambuilder.");
-            sys.changeTier(src, "Challenge Cup");
-            sys.stopEvent();
-        }
-    }
-}
-,
-weatherlesstiercheck : function(src, tier) {
-    if (!tier) tier = sys.tier(src);
-    if (tier != "Clear Skies" && tier != "Clear Skies DW") return;
-    for (var i = 0; i < 6; i++){
-        ability = sys.ability(sys.teamPokeAbility(src, i))
-        if(ability.toLowerCase() == "drizzle" || ability.toLowerCase() == "drought" || ability.toLowerCase() == "snow warning" || ability.toLowerCase() == "sand stream") {
-            normalbot.sendMessage(src, "Your team has a pokemon with the ability: " + ability + ", please remove before entering " +tier+" tier.");
-            sys.changeTier(src, "Challenge Cup");
-            sys.stopEvent()
-            return;
-        }
-    }
-} /* end of weatherlesstiercheck */
-,
 // Will escape "&", ">", and "<" symbols for HTML output.
 html_escape : function(text)
 {
@@ -4701,528 +4553,6 @@ html_escape : function(text)
         return m.replace(/&/g, amp).replace(/\</g, lt).replace(/\>/g, gt);
     }else{
         return "";
-    }
-}
-,
-monotypecheck : function(src, tier) {
-    if (!tier) tier = sys.tier(src);
-    if (tier != "Monotype") return; // Only interested in monotype
-    var TypeA = sys.pokeType1(sys.teamPoke(src, 0), 5);
-    var TypeB = sys.pokeType2(sys.teamPoke(src, 0), 5);
-    var k;
-    var checkType;
-    for (var i = 1; i < 6 ; i++) {
-        if (sys.teamPoke(src, i) == 0) continue;
-        var temptypeA = sys.pokeType1(sys.teamPoke(src, i), 5);
-        var temptypeB = sys.pokeType2(sys.teamPoke(src, i), 5);
-
-        if(checkType != undefined) {
-            k=3;
-        }
-        if(i==1){
-            k=1;
-        }
-        if(TypeB !=17){
-            if(temptypeA == TypeA && temptypeB == TypeB && k == 1 || temptypeA == TypeB && temptypeB == TypeA && k == 1){
-                k=2;
-            }
-        }
-        if (temptypeA == TypeA && k == 1 || temptypeB == TypeA && k == 1) {
-            checkType=TypeA;
-        }
-        if (temptypeA == TypeB && k == 1 || temptypeB == TypeB && k == 1) {
-           if(TypeB != 17){
-                   checkType=TypeB;
-                   }
-                   if(TypeB == 17)
-                   checkType=TypeA
-        }
-        if(i>1 && k == 2) {
-            k=1;
-            if(temptypeA == TypeA && temptypeB == TypeB && k == 1 || temptypeA == TypeB && temptypeB == TypeA && k == 1){
-                k=2;
-            }
-            if (temptypeA == TypeA && k == 1 || temptypeB == TypeA && k == 1) {
-                checkType=TypeA;
-            }
-            if (temptypeA == TypeB && k == 1 || temptypeB == TypeB && k == 1) {
-                 if(TypeB != 17){
-                   checkType=TypeB;
-                   }
-                   if(TypeB == 17)
-                   checkType=TypeA
-            }
-        }
-        if(k==3){
-
-            if(temptypeA != checkType && temptypeB != checkType) {
-
-                normalbot.sendMessage(src, "Team not Monotype as " + sys.pokemon(sys.teamPoke(src, i)) + " is not " + sys.type(checkType) + "!");
-                /*
-                if(sys.hasLegalTeamForTier(src, "DW OU")) {
-                    if(sys.hasLegalTeamForTier(src,"Wifi OU")) {
-                        sys.changeTier(src, "Wifi OU");
-                        sys.stopEvent()
-                        return;
-                    }
-                    sys.changeTier(src, "DW OU");
-                    sys.stopEvent()
-                    return;
-                }
-                if(sys.hasLegalTeamForTier(src,"Wifi Ubers")) {
-                    sys.changeTier(src, "Wifi Ubers");
-                    sys.stopEvent()
-                    return;
-                }
-                sys.changeTier(src, "DW Ubers");
-                */
-                sys.changeTier(src, "Challenge Cup");
-                sys.stopEvent()
-                return;
-            }
-        }
-
-        if(k==1) {
-                    if(TypeB == 17){
-                        TypeB = TypeA
-                        }
-            if (temptypeA != TypeA && temptypeB != TypeA && temptypeA != TypeB && temptypeB != TypeB) {
-                normalbot.sendMessage(src, "Team not Monotype as " + sys.pokemon(sys.teamPoke(src, i)) + " does not share a type with " + sys.pokemon(sys.teamPoke(src, 0)) + "!")
-
-                if(sys.hasLegalTeamForTier(src, "DW OU")) {
-                    if(sys.hasLegalTeamForTier(src,"Wifi OU")) {
-                        sys.changeTier(src, "Wifi OU");
-                        sys.stopEvent()
-                        return;
-                    }
-                    sys.changeTier(src, "DW OU");
-                    sys.stopEvent()
-                    return;
-                }
-                if(sys.hasLegalTeamForTier(src,"Wifi Ubers")) {
-                    sys.changeTier(src, "Wifi Ubers");
-                    sys.stopEvent()
-                    return;
-                }
-                sys.changeTier(src, "DW Ubers");
-                sys.stopEvent()
-                return;
-            }
-
-        }
-    }
-
-    // Baton Pass Blaziken banned on 2011-09-19
-    /*
-    var blaziken = sys.pokeNum("Blaziken");
-    var bp = sys.moveNum("Baton Pass");
-    for (var i = 0; i < 6; ++i)
-        if (sys.teamPoke(src,i) == blaziken && sys.hasDreamWorldAbility(src,i) && sys.hasTeamPokeMove(src,i,bp)) {
-
-            normalbot.sendMessage(src, "Blaziken with Baton Pass and Speed Boost is banned on Monotype");
-            sys.changeTier(src, "Challenge Cup");
-            sys.stopEvent();
-            return
-        }
-    */
-}
-,
-
-monoGenCheck : function(src, tier) {
-    if (!tier) tier = sys.tier(src);
-    if (tier != "Monogen") return;
-
-    var GEN_MAX = [0, 151, 252, 386, 493, 646];
-    var gen = 0;
-    for (var i = 0; i < 6; ++i) {
-        var pokenum = sys.teamPoke(src, i);
-        var species = pokenum % 65536; // remove alt formes
-        if (species == 0) continue;
-        if (gen == 0) {
-            while (species > GEN_MAX[gen]) ++gen; // Search for correct gen for first poke
-        } else if (!(GEN_MAX[gen-1] < species && species <= GEN_MAX[gen])) {
-            normalbot.sendMessage(src, sys.pokemon(pokenum) + " is not from gen " + gen);
-            sys.changeTier(src, "Challenge Cup")
-            sys.stopEvent()
-            return;
-        }
-    }
-}
-,
-
-monoColourCheck : function(src, tier) {
-    if (!tier) tier = sys.tier(src);
-    if (tier != "Monocolour") return;
-    var colours = {
-        'Red': ['Charmander', 'Charmeleon', 'Charizard', 'Vileplume', 'Paras', 'Parasect', 'Krabby', 'Kingler', 'Voltorb', 'Electrode', 'Goldeen', 'Seaking', 'Jynx', 'Magikarp', 'Magmar', 'Flareon', 'Ledyba', 'Ledian', 'Ariados', 'Yanma', 'Scizor', 'Slugma', 'Magcargo', 'Octillery', 'Delibird', 'Porygon2', 'Magby', 'Ho-Oh', 'Torchic', 'Combusken', 'Blaziken', 'Wurmple', 'Medicham', 'Carvanha', 'Camerupt', 'Solrock', 'Corphish', 'Crawdaunt', 'Latias', 'Groudon', 'Deoxys', 'Deoxys-A', 'Deoxys-D', 'Deoxys-S', 'Kricketot', 'Kricketune', 'Magmortar', 'Porygon-Z', 'Rotom', 'Rotom-H', 'Rotom-F', 'Rotom-W', 'Rotom-C', 'Rotom-S', 'Tepig', 'Pignite', 'Emboar', 'Pansear', 'Simisear', 'Throh', 'Venipede', 'Scolipede', 'Krookodile', 'Darumaka', 'Darmanitan', 'Dwebble', 'Crustle', 'Scrafty', 'Shelmet', 'Accelgor', 'Druddigon', 'Pawniard', 'Bisharp', 'Braviary', 'Heatmor', ],
-        'Blue': ['Squirtle', 'Wartortle', 'Blastoise', 'Nidoran?', 'Nidorina', 'Nidoqueen', 'Oddish', 'Gloom', 'Golduck', 'Poliwag', 'Poliwhirl', 'Poliwrath', 'Tentacool', 'Tentacruel', 'Tangela', 'Horsea', 'Seadra', 'Gyarados', 'Lapras', 'Vaporeon', 'Omanyte', 'Omastar', 'Articuno', 'Dratini', 'Dragonair', 'Totodile', 'Croconaw', 'Feraligatr', 'Chinchou', 'Lanturn', 'Marill', 'Azumarill', 'Jumpluff', 'Wooper', 'Quagsire', 'Wobbuffet', 'Heracross', 'Kingdra', 'Phanpy', 'Suicune', 'Mudkip', 'Marshtomp', 'Swampert', 'Taillow', 'Swellow', 'Surskit', 'Masquerain', 'Loudred', 'Exploud', 'Azurill', 'Meditite', 'Sharpedo', 'Wailmer', 'Wailord', 'Swablu', 'Altaria', 'Whiscash', 'Chimecho', 'Wynaut', 'Spheal', 'Sealeo', 'Walrein', 'Clamperl', 'Huntail', 'Bagon', 'Salamence', 'Beldum', 'Metang', 'Metagross', 'Regice', 'Latios', 'Kyogre', 'Piplup', 'Prinplup', 'Empoleon', 'Shinx', 'Luxio', 'Luxray', 'Cranidos', 'Rampardos', 'Gible', 'Gabite', 'Garchomp', 'Riolu', 'Lucario', 'Croagunk', 'Toxicroak', 'Finneon', 'Lumineon', 'Mantyke', 'Tangrowth', 'Glaceon', 'Azelf', 'Phione', 'Manaphy', 'Oshawott', 'Dewott', 'Samurott', 'Panpour', 'Simipour', 'Roggenrola', 'Boldore', 'Gigalith', 'Woobat', 'Swoobat', 'Tympole', 'Palpitoad', 'Seismitoad', 'Sawk', 'Tirtouga', 'Carracosta', 'Ducklett', 'Karrablast', 'Eelektrik', 'Eelektross', 'Elgyem', 'Cryogonal', 'Deino', 'Zweilous', 'Hydreigon', 'Cobalion', 'Thundurus', ],
-        'Green': ['Bulbasaur', 'Ivysaur', 'Venusaur', 'Caterpie', 'Metapod', 'Bellsprout', 'Weepinbell', 'Victreebel', 'Scyther', 'Chikorita', 'Bayleef', 'Meganium', 'Spinarak', 'Natu', 'Xatu', 'Bellossom', 'Politoed', 'Skiploom', 'Larvitar', 'Tyranitar', 'Celebi', 'Treecko', 'Grovyle', 'Sceptile', 'Dustox', 'Lotad', 'Lombre', 'Ludicolo', 'Breloom', 'Electrike', 'Roselia', 'Gulpin', 'Vibrava', 'Flygon', 'Cacnea', 'Cacturne', 'Cradily', 'Kecleon', 'Tropius', 'Rayquaza', 'Turtwig', 'Grotle', 'Torterra', 'Budew', 'Roserade', 'Bronzor', 'Bronzong', 'Carnivine', 'Yanmega', 'Leafeon', 'Shaymin', 'Shaymin-S', 'Snivy', 'Servine', 'Serperior', 'Pansage', 'Simisage', 'Swadloon', 'Cottonee', 'Whimsicott', 'Petilil', 'Lilligant', 'Basculin', 'Maractus', 'Trubbish', 'Garbodor', 'Solosis', 'Duosion', 'Reuniclus', 'Axew', 'Fraxure', 'Golett', 'Golurk', 'Virizion', 'Tornadus', ],
-        'Yellow': ['Kakuna', 'Beedrill', 'Pikachu', 'Raichu', 'Sandshrew', 'Sandslash', 'Ninetales', 'Meowth', 'Persian', 'Psyduck', 'Ponyta', 'Rapidash', 'Drowzee', 'Hypno', 'Exeggutor', 'Electabuzz', 'Jolteon', 'Zapdos', 'Moltres', 'Cyndaquil', 'Quilava', 'Typhlosion', 'Pichu', 'Ampharos', 'Sunkern', 'Sunflora', 'Girafarig', 'Dunsparce', 'Shuckle', 'Elekid', 'Raikou', 'Beautifly', 'Pelipper', 'Ninjask', 'Makuhita', 'Manectric', 'Plusle', 'Minun', 'Numel', 'Lunatone', 'Jirachi', 'Mothim', 'Combee', 'Vespiquen', 'Chingling', 'Electivire', 'Uxie', 'Cresselia', 'Victini', 'Sewaddle', 'Leavanny', 'Scraggy', 'Cofagrigus', 'Archen', 'Archeops', 'Deerling', 'Joltik', 'Galvantula', 'Haxorus', 'Mienfoo', 'Keldeo', ],
-        'Purple': ['Rattata', 'Ekans', 'Arbok', 'Nidoran?', 'Nidorino', 'Nidoking', 'Zubat', 'Golbat', 'Venonat', 'Venomoth', 'Grimer', 'Muk', 'Shellder', 'Cloyster', 'Gastly', 'Haunter', 'Gengar', 'Koffing', 'Weezing', 'Starmie', 'Ditto', 'Aerodactyl', 'Mewtwo', 'Crobat', 'Aipom', 'Espeon', 'Misdreavus', 'Forretress', 'Gligar', 'Granbull', 'Mantine', 'Tyrogue', 'Cascoon', 'Delcatty', 'Sableye', 'Illumise', 'Swalot', 'Grumpig', 'Lileep', 'Shellos', 'Gastrodon', 'Ambipom', 'Drifloon', 'Drifblim', 'Mismagius', 'Stunky', 'Skuntank', 'Spiritomb', 'Skorupi', 'Drapion', 'Gliscor', 'Palkia', 'Purrloin', 'Liepard', 'Gothita', 'Gothorita', 'Gothitelle', 'Mienshao', 'Genesect', ],
-'Pink': ['Clefairy', 'Clefable', 'Jigglypuff', 'Wigglytuff', 'Slowpoke', 'Slowbro', 'Exeggcute', 'Lickitung', 'Chansey', 'Mr. Mime', 'Porygon', 'Mew', 'Cleffa', 'Igglybuff', 'Flaaffy', 'Hoppip', 'Slowking', 'Snubbull', 'Corsola', 'Smoochum', 'Miltank', 'Blissey', 'Whismur', 'Skitty', 'Milotic', 'Gorebyss', 'Luvdisc', 'Cherubi', 'Cherrim', 'Mime Jr.', 'Happiny', 'Lickilicky', 'Mesprit', 'Munna', 'Musharna', 'Audino', 'Alomomola', ],
-        'Brown': ['Weedle', 'Pidgey', 'Pidgeotto', 'Pidgeot', 'Raticate', 'Spearow', 'Fearow', 'Vulpix', 'Diglett', 'Dugtrio', 'Mankey', 'Primeape', 'Growlithe', 'Arcanine', 'Abra', 'Kadabra', 'Alakazam', 'Geodude', 'Graveler', 'Golem', 'Farfetch\'d', 'Doduo', 'Dodrio', 'Cubone', 'Marowak', 'Hitmonlee', 'Hitmonchan', 'Kangaskhan', 'Staryu', 'Pinsir', 'Tauros', 'Eevee', 'Kabuto', 'Kabutops', 'Dragonite', 'Sentret', 'Furret', 'Hoothoot', 'Noctowl', 'Sudowoodo', 'Teddiursa', 'Ursaring', 'Swinub', 'Piloswine', 'Stantler', 'Hitmontop', 'Entei', 'Zigzagoon', 'Seedot', 'Nuzleaf', 'Shiftry', 'Shroomish', 'Slakoth', 'Slaking', 'Shedinja', 'Hariyama', 'Torkoal', 'Spinda', 'Trapinch', 'Baltoy', 'Feebas', 'Regirock', 'Chimchar', 'Monferno', 'Infernape', 'Starly', 'Staravia', 'Staraptor', 'Bidoof', 'Bibarel', 'Buizel', 'Floatzel', 'Buneary', 'Lopunny', 'Bonsly', 'Hippopotas', 'Hippowdon', 'Mamoswine', 'Heatran', 'Patrat', 'Watchog', 'Lillipup', 'Conkeldurr', 'Sandile', 'Krokorok', 'Sawsbuck', 'Beheeyem', 'Stunfisk', 'Bouffalant', 'Vullaby', 'Mandibuzz', 'Landorus', ],
-         'Black': ['Snorlax', 'Umbreon', 'Murkrow', 'Unown', 'Sneasel', 'Houndour', 'Houndoom', 'Mawile', 'Spoink', 'Seviper', 'Claydol', 'Shuppet', 'Banette', 'Duskull', 'Dusclops', 'Honchkrow', 'Chatot', 'Munchlax', 'Weavile', 'Dusknoir', 'Giratina', 'Darkrai', 'Blitzle', 'Zebstrika', 'Sigilyph', 'Yamask', 'Chandelure', 'Zekrom', ],
-        'Gray': ['Machop', 'Machoke', 'Machamp', 'Magnemite', 'Magneton', 'Onix', 'Rhyhorn', 'Rhydon', 'Pineco', 'Steelix', 'Qwilfish', 'Remoraid', 'Skarmory', 'Donphan', 'Pupitar', 'Poochyena', 'Mightyena', 'Nincada', 'Nosepass', 'Aron', 'Lairon', 'Aggron', 'Volbeat', 'Barboach', 'Anorith', 'Armaldo', 'Snorunt', 'Glalie', 'Relicanth', 'Registeel', 'Shieldon', 'Bastiodon', 'Burmy', 'Wormadam', 'Wormadam-G', 'Wormadam-S', 'Glameow', 'Purugly', 'Magnezone', 'Rhyperior', 'Probopass', 'Arceus', 'Herdier', 'Stoutland', 'Pidove', 'Tranquill', 'Unfezant', 'Drilbur', 'Excadrill', 'Timburr', 'Gurdurr', 'Whirlipede', 'Zorua', 'Zoroark', 'Minccino', 'Cinccino', 'Escavalier', 'Ferroseed', 'Ferrothorn', 'Klink', 'Klang', 'Klinklang', 'Durant', 'Terrakion', 'Kyurem', ],
-        'White': ['Butterfree', 'Seel', 'Dewgong', 'Togepi', 'Togetic', 'Mareep', 'Smeargle', 'Lugia', 'Linoone', 'Silcoon', 'Wingull', 'Ralts', 'Kirlia', 'Gardevoir', 'Vigoroth', 'Zangoose', 'Castform', 'Absol', 'Shelgon', 'Pachirisu', 'Snover', 'Abomasnow', 'Togekiss', 'Gallade', 'Froslass', 'Dialga', 'Regigigas', 'Swanna', 'Vanillite', 'Vanillish', 'Vanilluxe', 'Emolga', 'Foongus', 'Amoonguss', 'Frillish', 'Jellicent', 'Tynamo', 'Litwick', 'Lampent', 'Cubchoo', 'Beartic', 'Rufflet', 'Larvesta', 'Volcarona', 'Reshiram', 'Meloetta', 'Meloetta-S' ],
-    }
-    var poke = sys.pokemon(sys.teamPoke(src, 0));
-    var thecolour = '';
-    for (var colour in colours) {
-        if (colours[colour].indexOf(poke) > -1) {
-            thecolour = colour;
-        }
-    }
-    if (thecolour == '') {
-        normalbot.sendMessage(src, "Bug! " + poke + " has not a colour in checkMonocolour :(");
-        sys.changeTier(src, "Challenge Cup")
-        sys.stopEvent()
-        return;
-    }
-    for (var i = 1; i < 6; ++i) {
-        var poke = sys.pokemon(sys.teamPoke(src, i));
-        if (colours[thecolour].indexOf(poke) == -1 && poke != "Missingno") {
-            normalbot.sendMessage(src, "" + poke + " has not the colour: " + thecolour);
-            sys.changeTier(src, "Challenge Cup")
-            sys.stopEvent()
-            return;
-        }
-    }
-    //normalbot.sendMessage(src, "Your team is a good monocolour team with colour: " + thecolour);
-},
-
-swiftSwimCheck : function(src, tier){
-    if (!tier) tier = sys.tier(src);
-    //if (tier != "Smogon OU") return;
-    if (["Smogon OU", "Wifi OU", "DW OU"].indexOf(tier) == -1) return;
-    for(var i = 0; i <6; ++i){
-        if(sys.ability(sys.teamPokeAbility(src, i)) == "Drizzle"){
-            for(var j = 0; j <6; ++j){
-                if(sys.ability(sys.teamPokeAbility(src, j)) == "Swift Swim"){
-                    normalbot.sendMessage(src, "You cannot have the combination of Swift Swim and Drizzle in OU")
-                    sys.stopEvent()
-                    sys.changeTier(src, "Challenge Cup")
-                    return;
-                }
-            }
-        }
-    }
-}
-,
-droughtCheck : function(src, tier){
-    if (!tier) tier = sys.tier(src);
-    if (tier != "Smogon UU") return;
-    for(var i = 0; i <6; ++i){
-        if(sys.ability(sys.teamPokeAbility(src, i)) == "Drought"){
-            normalbot.sendMessage(src, "Drought is not allowed in Smogon UU")
-            sys.changeTier(src, "Challenge Cup")
-            sys.stopEvent()
-            return;
-        }
-    }
-}
-,
-
-snowWarningCheck : function(src, tier) {
-    if (!tier) tier = sys.tier(src);
-    if (["Wifi UU", "Wifi LU", "Wifi NU"].indexOf(tier) == -1) return;
-    for(var i = 0; i <6; ++i){
-        if(sys.ability(sys.teamPokeAbility(src, i)) == "Snow Warning"){
-            normalbot.sendMessage(src, "Snow Warning is not allowed in " + tier + ".")
-            sys.changeTier(src, "Challenge Cup")
-            sys.stopEvent()
-            return;
-        }
-    }
-}
-,
-
-shanaiAbilityCheck : function(src, tier) {
-    if (!tier) tier = sys.tier(src);
-    if (["Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST"].indexOf(tier) == -1) {
-        return; // only intereted in shanai battling
-    }
-    var bannedAbilities = {
-        'treecko': ['overgrow'],
-        'chimchar': ['blaze'],
-        'totodile': ['torrent'],
-        'spearow': ['sniper'],
-        'skorupi': ['battle armor', 'sniper'],
-        'spoink': ['thick fat'],
-        'golett': ['iron fist'],
-        'magnemite': ['magnet pull', 'analytic'],
-        'electrike': ['static', 'lightningrod'],
-        'nosepass': ['sturdy', 'magnet pull'],
-        'axew': ['rivalry'],
-        'croagunk': ['poison touch', 'dry skin'],
-        'cubchoo': ['rattled'],
-        'joltik': ['swarm'],
-        'shroomish': ['effect spore', 'quick feet'],
-        'pidgeotto': ['big pecks'],
-        'karrablast': ['swarm']
-    };
-    var valid = true;
-    for (var i = 0; i < 6; ++i) {
-        var ability = sys.ability(sys.teamPokeAbility(src, i));
-        var lability = ability.toLowerCase();
-        var poke = sys.pokemon(sys.teamPoke(src, i));
-        var lpoke = poke.toLowerCase();
-        if (lpoke in bannedAbilities && bannedAbilities[lpoke].indexOf(lability) != -1) {
-            checkbot.sendMessage(src, "" + poke + " is not allowed to have ability " + ability + " in this tier. Please change it in Teambuilder (You are now in Challenge Cup).")
-            valid = false;
-        }
-    }
-    if (!valid) {
-        sys.changeTier(src, "Challenge Cup")
-        sys.stopEvent();
-    }
-}
-,
-
-advance200Check: function(src, tier){
-    if (!tier) tier = sys.tier(src);
-    if (tier != "Adv 200") return;
-
-    if (typeof advance200Banlist === 'undefined') {
-        var pokes = {
-        "Sceptile": ["Dynamicpunch", "Snore", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Swift", "Thunderpunch", "Mega Punch", "Swords Dance", "Mega Kick", "Body Slam", "Double-Edge", "Counter", "Seismic Toss", "Mimic", "Substitute"],
-        "Torchic": ["Snore", "Endure", "Mud-slap", "Sleep Talk", "Swift", "Mega Punch", "Swords Dance", "Mega Kick", "Body Slam", "Double-Edge", "Seismic Toss", "Mimic", "Substitute", "Rock Slide"],
-        "Combusken": ["Dynamicpunch", "Snore", "Endure", "Mud-slap", "Sleep Talk", "Swift", "Mega Punch", "Swords Dance", "Mega Kick", "Body Slam", "Double-Edge", "Seismic Toss", "Mimic", "Substitute", "Rock Slide", "Thunderpunch", "Fire Punch", "Fury Cutter"],
-        "Blaziken": ["Dynamicpunch", "Snore", "Endure", "Mud-slap", "Sleep Talk", "Swift", "Mega Punch", "Swords Dance", "Mega Kick", "Body Slam", "Double-Edge", "Seismic Toss", "Mimic", "Substitute", "Rock Slide", "Thunderpunch", "Fire Punch", "Fury Cutter"],
-        "Mudkip": ["Body Slam", "Double-Edge", "Mimic", "Substitute", "Rollout", "Snore", "Icy Wind", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Defense Curl"],
-        "Marshtomp": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Counter", "Seismic Toss", "Mimic", "Rock Slide", "Substitute", "Dynamicpunch", "Rollout", "Snore", "Icy Wind", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Defense Curl"],
-        "Swampert": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Counter", "Seismic Toss", "Mimic", "Rock Slide", "Substitute", "Dynamicpunch", "Rollout", "Snore", "Icy Wind", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Defense Curl"],
-        "Poochyena": ["Psych Up", "Snore", "Endure", "Mud-slap", "Sleep Talk", "Body Slam", "Double-edge", "Counter", "Mimic", "Substitute"],
-        "Mightyena": ["Psych Up", "Snore", "Endure", "Mud-slap", "Sleep Talk", "Body Slam", "Double-edge", "Counter", "Mimic", "Substitute"],
-        "Zigzagoon": ["Body Slam", "Double-edge", "Mimic", "Thunder Wave", "Rollout", "Snore", "Icy Wind", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Swift", "Defense Curl", "Fury Cutter"],
-        "Linoone": ["Body Slam", "Double-edge", "Mimic", "Thunder Wave", "Rollout", "Snore", "Icy Wind", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Swift", "Defense Curl", "Fury Cutter"],
-        "Wurmple":[],
-        "Silcoon":[],
-        "Cascoon":[],
-        "Beautifly": ["Double-edge", "Mimic", "Substitute", "Snore", "Endure", "Swagger", "Sleep Talk", "Swift"],
-        "Dustox": ["Double-edge", "Mimic", "Substitute", "Snore", "Endure", "Swagger", "Sleep Talk", "Swift"],
-        "Lotad": ["Swords Dance", "Body Slam", "Double-Edge", "Mimic", "Substitute", "Snore", "Icy Wind", "Endure", "Swagger", "Sleep Talk"],
-
-        "Lombre": ["Swords Dance", "Body Slam", "Double-Edge", "Mimic", "Substitute", "Dynamicpunch", "Snore", "Icy Wind", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Thunderpunch", "Fire Punch"],
-        "Ludicolo": ["Mega Punch", "Swords Dance", "Mega Kick", "Body Slam", "Double-Edge", "Seismic Toss", "Mimic", "Metronome", "Substitute", "Dynamicpunch", "Snore", "Icy Wind", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Thunderpunch", "Fire Punch"],
-        "Seedot": ["Swords Dance", "Body Slam", "Double-Edge", "Mimic", "Substitute", "Rollout", "Snore", "Endure", "Swagger", "Sleep Talk", "Defense Curl"],
-        "Nuzleaf": ["Swords Dance", "Mega Kick", "Body Slam", "Double-Edge", "Mimic", "Substitute", "Rollout", "Psych Up", "Snore", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Swift", "Defense Curl", "Fury Cutter"],
-        "Shiftry": ["Swords Dance", "Mega Kick", "Body Slam", "Double-Edge", "Mimic", "Substitute", "Rollout", "Psych Up", "Snore", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Swift", "Defense Curl", "Fury Cutter"],
-        "Taillow": ["Double-edge", "Counter", "Mimic", "Substitute", "Snore", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Swift"],
-        "Swellow": ["Double-edge", "Counter", "Mimic", "Substitute", "Snore", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Swift"],
-        "Wingull": ["Double-Edge", "Mimic", "Substitute", "Snore", "Icy Wind", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Swift"],
-        "Pelipper": ["Double-Edge", "Mimic", "Substitute", "Snore", "Icy Wind", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Swift"],
-        "Ralts": ["Body Slam", "Double-edge", "Mimic", "Dream Eater", "Thunder Wave", "Substitute", "Psych Up", "Snore", "Icy Wind", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Defense Curl", "Thunderpunch", "Fire Punch"],
-        "Kirlia": ["Body Slam", "Double-edge", "Mimic", "Dream Eater", "Thunder Wave", "Substitute", "Psych Up", "Snore", "Icy Wind", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Defense Curl", "Thunderpunch", "Fire Punch"],
-        "Gardevoir": ["Body Slam", "Double-edge", "Mimic", "Dream Eater", "Thunder Wave", "Substitute", "Psych Up", "Snore", "Icy Wind", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Defense Curl", "Thunderpunch", "Fire Punch"],
-        "Surskit": ["Double-edge", "Mimic", "Substitute", "Psych Up", "Snore", "Icy Wind", "Endure", "Swagger", "Sleep Talk", "Swift"],
-        "Masquerain": ["Double-edge", "Mimic", "Substitute", "Psych Up", "Snore", "Icy Wind", "Endure", "Swagger", "Sleep Talk", "Swift"],
-        "Shroomish": ["Swords Dance", "Body Slam", "Double-edge", "Mimic", "Substitute", "Snore", "Endure", "Sleep Talk"],
-        "Breloom": ["Mega Punch", "Swords Dance", "Mega Kick", "Body Slam", "Double-edge", "Counter", "Seismic Toss", "Mimic", "Substitute", "Dynamicpunch", "Snore", "Endure", "Mud-slap", "Sleep Talk", "Thunderpunch", "Fury Cutter"],
-        "Slakoth": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Seismic Toss", "Mimic", "Rock Slide", "Substitute", "Dynamicpunch", "Icy Wind", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Thunderpunch", "Fire Punch", "Fury Cutter"],
-        "Vigoroth": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Seismic Toss", "Mimic", "Rock Slide", "Substitute", "Dynamicpunch", "Icy Wind", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Thunderpunch", "Fire Punch", "Fury Cutter"],
-        "Slaking": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Seismic Toss", "Mimic", "Rock Slide", "Substitute", "Dynamicpunch", "Icy Wind", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Thunderpunch", "Fire Punch", "Fury Cutter"],
-        "Abra": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Counter", "Seismic Toss", "Mimic", "Metronome", "Dream Eater", "Thunder Wave", "Substitute", "Dynamicpunch", "Psych Up", "Snore", "Endure", "Swagger", "Sleep Talk", "Barrier"],
-        "Kadabra": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Counter", "Seismic Toss", "Mimic", "Metronome", "Dream Eater", "Thunder Wave", "Substitute", "Dynamicpunch", "Psych Up", "Snore", "Endure", "Swagger", "Sleep Talk", "Barrier"],
-        "Alakazam": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Counter", "Seismic Toss", "Mimic", "Metronome", "Dream Eater", "Thunder Wave", "Substitute", "Dynamicpunch", "Psych Up", "Snore", "Endure", "Swagger", "Sleep Talk", "Barrier"],
-        "Nincada": ["Double-edge", "Mimic", "Substitute", "Snore", "Mud-slap", "Swagger", "Sleep Talk", "Fury Cutter"],
-        "Ninjask": ["Double-edge", "Mimic", "Substitute", "Snore", "Mud-slap", "Swagger", "Sleep Talk", "Fury Cutter"],
-        "Shedinja": ["Double-edge", "Mimic", "Dream Eater", "Substitute", "Snore", "Mud-slap", "Swagger", "Sleep Talk", "Fury Cutter"],
-        "Whismur": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Counter", "Seismic Toss", "Mimic", "Substitute", "Dynamicpunch", "Rollout", "Psych Up", "Icy Wind", "Endure", "Mud-slap", "Ice Punch", "Sleep Talk", "Defense Curl", "Thunderpunch", "Fire Punch"],
-        "Loudred": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Counter", "Seismic Toss", "Mimic", "Rock Slide", "Substitute", "Dynamicpunch", "Rollout", "Psych Up", "Icy Wind", "Endure", "Mud-slap", "Ice Punch", "Sleep Talk", "Defense Curl", "Thunderpunch", "Fire Punch"],
-        "Exploud": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Counter", "Seismic Toss", "Mimic", "Rock Slide", "Substitute", "Dynamicpunch", "Rollout", "Psych Up", "Icy Wind", "Endure", "Mud-slap", "Ice Punch", "Sleep Talk", "Defense Curl", "Thunderpunch", "Fire Punch"],
-        "Makuhita": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Mimic", "Metronome", "Rock Slide", "Substitute", "Snore", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Thunderpunch", "Fire Punch"],
-        "Hariyama": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Mimic", "Metronome", "Rock Slide", "Substitute", "Snore", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Thunderpunch", "Fire Punch"],
-        "Goldeen": ["Double-edge", "Mimic", "Substitute", "Snore", "Icy Wind", "Endure", "Swagger", "Swift", "Psybeam", "Haze"],
-        "Seaking": ["Double-edge", "Mimic", "Substitute", "Snore", "Icy Wind", "Endure", "Swagger", "Swift", "Psybeam", "Haze"],
-        "Magikarp": [],
-        "Gyarados": ["Body Slam", "Double-Edge", "Mimic", "Thunder Wave", "Substitute", "Snore", "Icy Wind", "Endure", "Swagger", "Sleep Talk"],
-        "Azurill": ["Body Slam", "Double-edge", "Mimic", "Substitute", "Rollout", "Snore", "Icy Wind", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Swift", "Defense Curl"],
-        "Marill": ["Mega Punch", "Mega Kick", "Body Slam", "Mimic", "Substitute", "Dynamicpunch", "Rollout", "Snore", "Icy Wind", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Swift", "Defense Curl", "Present", "Belly Drum", "Perish Song"],
-        "Azumarill": ["Mega Punch", "Mega Kick", "Body Slam", "Seismic Toss", "Mimic", "Substitute", "Dynamicpunch", "Rollout", "Snore", "Icy Wind", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Swift", "Defense Curl", "Present", "Belly Drum", "Perish Song"],
-        "Geodude": ["Body Slam", "Counter", "Seismic Toss", "Mimic", "Metronome", "Substitute", "Dynamicpunch", "Snore", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Fire Punch", "Mega Punch"],
-        "Graveler": ["Body Slam", "Counter", "Seismic Toss", "Mimic", "Metronome", "Substitute", "Dynamicpunch", "Snore", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Fire Punch", "Mega Punch"],
-        "Golem": ["Body Slam", "Counter", "Seismic Toss", "Mimic", "Metronome", "Substitute", "Dynamicpunch", "Snore", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Fire Punch", "Fury Cutter", "Mega Punch"],
-        "Nosepass": ["Body Slam", "Double-edge", "Mimic", "Substitute", "Dynamicpunch", "Rollout", "Snore", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Defense Curl", "Thunderpunch", "Fire Punch"],
-        "Skitty": ["Body Slam", "Mimic", "Dream Eater", "Thunder Wave", "Rollout", "Psych Up", "Snore", "Icy Wind", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Swift", "Defense Curl", "Wish"],
-        "Delcatty": ["Body Slam", "Mimic", "Dream Eater", "Thunder Wave", "Rollout", "Psych Up", "Snore", "Icy Wind", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Swift", "Defense Curl", "Wish"],
-        "Zubat": ["Double-edge", "Mimic", "Substitute", "Snore", "Endure", "Swagger", "Sleep Talk", "Swift", "Faint Attack", "Whirlwind", "Curse"],
-        "Golbat": ["Double-edge", "Mimic", "Substitute", "Snore", "Endure", "Swagger", "Sleep Talk", "Swift", "Faint Attack", "Whirlwind", "Curse"],
-        "Crobat": ["Double-edge", "Mimic", "Substitute", "Snore", "Endure", "Swagger", "Sleep Talk", "Swift", "Faint Attack", "Whirlwind", "Curse"],
-        "Tentacool": ["Swords Dance", "Double-edge", "Mimic", "Substitute", "Snore", "Icy Wind", "Endure", "Swagger", "Sleep Talk", "Aurora Beam", "Rapid Spin", "Haze"],
-        "Tentacruel": ["Swords Dance", "Double-edge", "Mimic", "Substitute", "Snore", "Icy Wind", "Endure", "Swagger", "Sleep Talk", "Aurora Beam", "Rapid Spin", "Haze"],
-        "Sableye": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Counter", "Seismic Toss", "Mimic", "Metronome", "Dream Eater", "Substitute", "Dynamicpunch", "Snore", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Thunderpunch", "Fire Punch", "Fury Cutter"],
-        "Mawile": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Counter", "Seismic Toss", "Mimic", "Rock Slide", "Substitute", "Dynamicpunch", "Psych Up", "Snore", "Icy Wind", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Thunderpunch"],
-        "Aron": ["Mimic", "Rock Slide", "Substitute", "Rollout", "Snore", "Endure", "Swagger", "Sleep Talk", "Defense Curl", "Fury Cutter"],
-        "Lairon": ["Mimic", "Rock Slide", "Substitute", "Rollout", "Snore", "Endure", "Swagger", "Sleep Talk", "Defense Curl", "Fury Cutter"],
-        "Aggron": ["Mega Punch", "Mega Kick", "Counter", "Seismic Toss", "Mimic", "Thunder Wave", "Rock Slide", "Substitute", "Dynamicpunch", "Rollout", "Snore", "Icy Wind", "Endure", "Ice Punch", "Swagger", "Sleep Talk", "Defense Curl", "Thunderpunch", "Fire Punch", "Fury Cutter"],
-        "Machop": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Mimic", "Metronome", "Substitute", "Snore", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Thunderpunch", "Fire Punch", "Rolling Kick"],
-        "Machoke": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Mimic", "Metronome", "Substitute", "Snore", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Thunderpunch", "Fire Punch", "Rolling Kick"],
-        "Machamp": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Mimic", "Metronome", "Substitute", "Snore", "Endure", "Mud-slap", "Ice Punch", "Swagger", "Sleep Talk", "Thunderpunch", "Fire Punch", "Rolling Kick"],
-        "Meditite": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Counter", "Seismic Toss", "Mimic", "Metronome", "Dream Eater", "Substitute", "Snore", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Swift"],
-        "Medicham": ["Mega Punch", "Mega Kick", "Body Slam", "Double-edge", "Counter", "Seismic Toss", "Mimic", "Metronome", "Dream Eater", "Rock Slide", "Substitute", "Snore", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Swift"],
-        "Electrike": ["Body Slam", "Double-edge", "Mimic", "Substitute", "Snore", "Endure", "Mud-slap", "Swagger", "Sleep Talk"],
-        "Manectric": ["Body Slam", "Double-edge", "Mimic", "Substitute", "Snore", "Endure", "Mud-slap", "Swagger", "Sleep Talk"],
-        "Plusle": ["Body Slam", "Counter", "Defense Curl", "Double-Edge", "DynamicPunch", "Endure", "Mega Kick", "Mega Punch", "Metronome", "Mimic", "Mud-Slap", "Rollout", "Seismic Toss", "Sleep Talk", "Snore", "Swagger", "Swift", "ThunderPunch", "Wish"],
-        "Minun": ["Body Slam", "Counter", "Defense Curl", "Double-Edge", "DynamicPunch", "Endure", "Mega Kick", "Mega Punch", "Metronome", "Mimic", "Mud-Slap", "Rollout", "Seismic Toss", "Sleep Talk", "Snore", "Swagger", "Swift", "ThunderPunch", "Wish"],
-        "Magnemite": ["Double-Edge", "Endure", "Mimic", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Magneton": ["Double-Edge", "Endure", "Mimic", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Voltorb": ["Endure", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger", "Thunder Wave"],
-        "Electrode": ["Endure", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger", "Thunder Wave"],
-        "Volbeat": ["Body Slam", "Counter", "DynamicPunch", "Endure", "Ice Punch", "Mega Kick", "Mega Punch", "Metronome", "Mimic", "Mud-Slap", "Psych Up", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift", "Thunder Wave", "ThunderPunch"],
-        "Illumise": ["Body Slam", "Counter", "Double-Edge", "DynamicPunch", "Endure", "Ice Punch", "Mega Kick", "Mega Punch", "Metronome", "Mimic", "Mud-Slap", "Psych Up", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift", "Thunder Wave", "ThunderPunch"],
-        "Oddish": ["Double-Edge", "Endure", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swords Dance"],
-        "Gloom": ["Double-Edge", "Endure", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swords Dance"],
-        "Vileplume": ["Body Slam", "Double-Edge", "Endure", "Mimic", "Sleep Talk", "Substitute", "Swagger", "Swords Dance"],
-        "Bellossom": ["Double-Edge", "Endure", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swords Dance"],
-        "Doduo": ["Body Slam", "Double-Edge", "Endure", "Mimic", "Mud-Slap", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift", "Faint Attack", "Flail"],
-        "Dodrio": ["Body Slam", "Double-Edge", "Endure", "Mimic", "Mud-Slap", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift", "Faint Attack", "Flail"],
-        "Roselia": ["Body Slam", "Double-Edge", "Endure", "Fury Cutter", "Mimic", "Mud-Slap", "Psych Up", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift", "Swords Dance"],
-        "Gulpin": ["Body Slam", "Counter", "Defense Curl", "Double-Edge", "Dream Eater", "DynamicPunch", "Endure", "Explosion", "Fire Punch", "Ice Punch", "Mimic", "Mud-Slap", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swagger", "ThunderPunch", "Pain Split"],
-        "Swalot": ["Counter", "Defense Curl", "Double-Edge", "Dream Eater", "DynamicPunch", "Endure", "Explosion", "Fire Punch", "Ice Punch", "Mimic", "Mud-Slap", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swagger", "ThunderPunch", "Pain Split"],
-        "Carvanha": ["Double-Edge", "Endure", "Fury Cutter", "Icy Wind", "Mimic", "Mud-Slap", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Sharpedo": ["Double-Edge", "Endure", "Fury Cutter", "Icy Wind", "Mimic", "Mud-Slap", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Wailmer": ["Body Slam", "Defense Curl", "Double-Edge", "Endure", "Icy Wind", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Wailord": ["Body Slam", "Defense Curl", "Double-Edge", "Endure", "Icy Wind", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Numel": ["Body Slam", "Defense Curl", "Endure", "Mimic", "Mud-Slap", "Rock Slide", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Camerupt": ["Body Slam", "Defense Curl", "Endure", "Explosion", "Mimic", "Mud-Slap", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Slugma": ["Defense Curl", "Double-Edge", "Endure", "Mimic", "Mud-Slap", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swagger", "Heat Wave"],
-        "Magcargo": ["Defense Curl", "Double-Edge", "Endure", "Mimic", "Mud-Slap", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swagger", "Heat Wave"],
-        "Torkoal": ["Double-Edge", "Endure", "Explosion", "Mimic", "Mud-Slap", "Rock Slide", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Grimer": ["Body Slam", "DynamicPunch", "Endure", "Explosion", "Fire Punch", "Ice Punch", "Mimic", "Mud-Slap", "Sleep Talk", "Snore", "Substitute", "Swagger", "ThunderPunch"],
-        "Muk": ["Body Slam", "DynamicPunch", "Endure", "Explosion", "Fire Punch", "Ice Punch", "Mimic", "Mud-Slap", "Sleep Talk", "Snore", "Substitute", "Swagger", "ThunderPunch"],
-        "Koffing": ["Endure", "Mimic", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swagger", "Psybeam", "Pain Split"],
-        "Weezing": ["Endure", "Mimic", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swagger", "Psybeam", "Pain Split"],
-        "Spoink": ["Body Slam", "Double-Edge", "Dream Eater", "Endure", "Icy Wind", "Mimic", "Sleep Talk", "Swagger", "Swift"],
-        "Grumpig": ["Body Slam", "Counter", "Double-Edge", "Dream Eater", "DynamicPunch", "Endure", "Fire Punch", "Ice Punch", "Icy Wind", "Mega Kick", "Mega Punch", "Mimic", "Mud-Slap", "Seismic Toss", "Sleep Talk", "Swagger", "Swift", "Thunderpunch"],
-        "Sandshrew": ["Body Slam", "Counter", "Double-Edge", "DynamicPunch", "Endure", "Fury Cutter", "Mimic", "Mud-Slap", "Rock Slide", "Rollout", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swords Dance"],
-        "Sandslash": ["Body Slam", "Counter", "Double-Edge", "DynamicPunch", "Endure", "Fury Cutter", "Mimic", "Mud-Slap", "Rock Slide", "Rollout", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swords Dance"],
-        "Skarmory": ["Counter", "Double-Edge", "Endure", "Mimic", "Mud-Slap", "Rock Slide", "Sleep Talk", "Snore", "Substitute", "Swagger", "Whirlwind", "Curse"],
-        "Spinda": ["Body Slam", "Counter", "Defense Curl", "Dream Eater", "DynamicPunch", "Endure", "Fire Punch", "Ice Punch", "Icy Wind", "Mega Kick", "Mega Punch", "Metronome", "Mimic", "Mud-Slap", "Rock Slide", "Rollout", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift", "ThunderPunch", "Wish"],
-        "Trapinch": ["Body Slam", "Double-Edge", "Endure", "Mimic", "Mud-Slap", "Rock Slide", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Vibrava": ["Body Slam", "Double-Edge", "Endure", "Mimic", "Mud-Slap", "Rock Slide", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Flygon": ["Body Slam", "Double-Edge", "Earth Power", "Endure", "Fire Punch", "Fury Cutter", "Mimic", "Mud-Slap", "Rock Slide", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Cacnea": ["Body Slam", "Counter", "Double-Edge", "DynamicPunch", "Endure", "Mega Punch", "Mimic", "Mud-Slap", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swords Dance", "ThunderPunch"],
-        "Cacturne": ["Body Slam", "Counter", "Double-Edge", "DynamicPunch", "Endure", "Low Kick", "Magic Coat", "Mega Punch", "Mimic", "Mud-Slap", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swords Dance", "ThunderPunch"],
-        "Swablu": ["Body Slam", "Double-Edge", "Dream Eater", "Endure", "Mimic", "Mud-Slap", "Psych Up", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Altaria": ["Body Slam", "Double-Edge", "Dream Eater", "Endure", "Mimic", "Mud-Slap", "Psych Up", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Zangoose": ["Body Slam", "Counter", "Defense Curl", "Double-Edge", "DynamicPunch", "Endure", "Fire Punch", "Fury Cutter", "Ice Punch", "Icy Wind", "Mega Kick", "Mega Punch", "Mimic", "Mud-Slap", "Rock Slide", "Rollout", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift", "Swords Dance", "Thunder Wave", "ThunderPunch"],
-        "Seviper": ["Body Slam", "Double-Edge", "Endure", "Fury Cutter", "Mimic", "Mud-Slap", "Sleep Talk", "Snore", "Substitute", "Swift"],
-        "Lunatone": ["Body Slam", "Defense Curl", "Double-Edge", "Dream Eater", "Endure", "Mimic", "Psych Up", "Rock Slide", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Solrock": ["Body Slam", "Defense Curl", "Double-Edge", "Dream Eater", "Endure", "Mimic", "Psych Up", "Rollout", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Barboach": ["Double-Edge", "Endure", "icy Wind", "Mimic", "Mud-Slap", "Sleep Talk", "Substitute", "Swagger"],
-        "Whiscash": ["Double-Edge", "Endure", "Icy Wind", "Mimic", "Mud-Slap", "Rock Slide", "Sleep Talk", "Substitute", "Swagger"],
-        "Corphish": ["Body Slam", "Counter", "Double-Edge", "Endure", "Fury Cutter", "Icy Wind", "Mimic", "Mud-Slap", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Crawdaunt": ["Body Slam", "Counter", "Double-Edge", "Endure", "Fury Cutter", "Icy Wind", "Mimic", "Mud-Slap", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Baltoy": ["Double-Edge", "Dream Eater", "Endure", "Explosion", "Mimic", "Psych Up", "Rock Slide", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Claydol": ["Double-Edge", "Dream Eater", "Endure", "Mimic", "Psych Up", "Rock Slide", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Lileep": ["Body Slam", "Double-Edge", "Endure", "Mimic", "Mud-Slap", "Psych Up", "Rock Slide", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Cradily": ["Body Slam", "Double-Edge", "Endure", "Mimic", "Mud-Slap", "Psych Up", "Rock Slide", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Anorith": ["Body Slam", "Double-Edge", "Endure", "Fury Cutter", "Mimic", "Mud-Slap", "Rock Slide", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swords Dance", "Rapid Spin"],
-        "Armaldo": ["Body Slam", "Double-Edge", "Endure", "Fury Cutter", "Mimic", "Mud-Slap", "Rock Slide", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swords Dance", "Rapid Spin"],
-        "Igglybuff": ["Body Slam", "Counter", "Double-Edge", "Dream Eater", "Endure", "Icy Wind", "Mega Kick", "Mega Punch", "Mimic", "Mud-Slap", "Psych Up", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Thunder Wave", "Perish Song", "Present", "Wish"],
-        "Jigglypuff": ["Body Slam", "Counter", "Dream Eater", "DynamicPunch", "Endure", "Fire Punch", "Ice Punch", "Mega Kick", "Mega Punch", "Mud-Slap", "Psych Up", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Thunder Wave", "ThunderPunch", "Perish Song", "Present", "Wish"],
-        "Wigglytuff": ["Body Slam", "Counter", "Dream Eater", "DynamicPunch", "Endure", "Fire Punch", "Ice Punch", "Mega Kick", "Mega Punch", "Mud-Slap", "Psych Up", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Thunder Wave", "ThunderPunch", "Perish Song", "Present", "Wish"],
-        "Feebas": ["Double-Edge", "Endure", "Icy Wind", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Milotic": ["Body Slam", "Double-Edge", "Endure", "Icy Wind", "Mimic", "Mud-Slap", "Psych Up", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Castform": ["Body Slam", "Defense Curl", "Double-Edge", "Endure", "Icy Wind", "Mimic", "Psych Up", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift", "Thunder Wave"],
-        "Staryu": ["Double-Edge", "Endure", "Icy Wind", "Mimic", "Psych Up", "Sleep Talk", "Snore", "Substitute", "Swagger", "Thunder Wave"],
-        "Starmie": ["Double-Edge", "Dream Eater", "Endure", "Icy Wind", "Mimic", "Psych Up", "Sleep Talk", "Snore", "Substitute", "Swagger", "Thunder Wave"],
-        "Kecleon": ["Body Slam", "Counter", "Defense Curl", "Double-Edge", "DynamicPunch", "Endure", "Fire Punch", "Fury Cutter", "Ice Punch", "Icy Wind", "Mega Kick", "Mega Punch", "Metronome", "Mimic", "Mud-Slap", "Psych Up", "Rock Slide", "Rollout", "Seismic Toss", "Sleep Talk", "Snore", "Swagger", "Swift", "Thunder Wave", "ThunderPunch"],
-        "Shuppet": ["Body Slam", "Double-Edge", "Dream Eater", "Endure", "Icy Wind", "Mimic", "Psych Up", "Sleep Talk", "Snore", "Substitute", "Swagger", "Thunder Wave"],
-        "Banette": ["Body Slam", "Double-Edge", "Dream Eater", "Endure", "Icy Wind", "Metronome", "Mimic", "Mud-Slap", "Psych Up", "Sleep Talk", "Snore", "Substitute", "Swagger", "Thunder Wave"],
-        "Duskull": ["Body Slam", "Double-Edge", "Dream Eater", "Endure", "Icy Wind", "Mimic", "Psych Up", "Sleep Talk", "Snore", "Substitute", "Swagger", "Pain Split"],
-        "Dusclops": ["Body Slam", "Counter", "Double-Edge", "Dream Eater", "DynamicPunch", "Endure", "Fire Punch", "Ice Punch", "Icy Wind", "Mega Kick", "Mega Punch", "Metronome", "Mimic", "Mud-Slap", "Psych Up", "Rock Slide", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Thunderpunch", "Pain Split"],
-        "Tropius": ["Double-Edge", "Endure", "Fury Cutter", "Mimic", "Mud-Slap", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swords Dance"],
-        "Chimecho": ["Defense Curl", "Endure", "Icy Wind", "Mimic", "Psych Up", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Absol": ["Body Slam", "Counter", "Dream Eater", "Double-Edge", "Endure", "Fury Cutter", "Icy Wind", "Mimic", "Mud-Slap", "Psych Up", "Rock Slide", "Sleep Talk", "Snore", "Swagger", "Swift", "Thunder Wave"],
-        "Vulpix": ["Body Slam", "Double-Edge", "Endure", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift", "Spite"],
-        "Ninetales": ["Body Slam", "Double-Edge", "Endure", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift", "Spite"],
-        "Pichu": ["Body Slam", "Counter", "Defense Curl", "Double-Edge", "Endure", "Mega Kick", "Mega Punch", "Mimic", "Mud-Slap", "Rollout", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift", "Thunder Wave", "Present", "Wish"],
-        "Pikachu": ["Body Slam", "Counter", "Defense Curl", "Double-Edge", "DynamicPunch", "Endure", "Mega Kick", "Mega Punch", "Mimic", "Mud-Slap", "Rollout", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift", "ThunderPunch", "Present", "Wish"],
-        "Raichu": ["Body Slam", "Counter", "Defense Curl", "Double-Edge", "DynamicPunch", "Endure", "Mega Kick", "Mega Punch", "Mimic", "Mud-Slap", "Rollout", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift", "ThunderPunch", "Present", "Wish"],
-        "Psyduck": ["Body Slam", "Counter", "Double-Edge", "DynamicPunch", "Endure", "Ice Punch", "Icy Wind", "Mega Kick", "Mega Punch", "Mimic", "Mud-Slap", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Golduck": ["Body Slam", "Counter", "Double-Edge", "DynamicPunch", "Endure", "Fury Cutter", "Ice Punch", "Icy Wind", "Mega Kick", "Mega Punch", "Mimic", "Mud-Slap", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Natu": ["Double-Edge", "Dream Eater", "Endure", "Mimic", "Psych Up", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift", "Thunder Wave", "Faint Attack", "Featherdance"],
-        "Xatu": ["Double-Edge", "Dream Eater", "Endure", "Mimic", "Psych Up", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift", "Thunder Wave"],
-        "Girafarig": ["Body Slam", "Double-edge", "Mimic", "Dream Eater", "Thunder Wave", "Substitute", "Psych Up", "Snore", "Endure", "Mud-slap", "Swagger", "Sleep Talk", "Swift", "Beat Up", "Wish"],
-        "Phanpy": ["Body Slam", "Counter", "Double-Edge", "Mimic", "Mud-Slap", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Donphan": ["Body Slam", "Counter", "Defense Curl", "Double-Edge", "Mimic", "Mud-Slap", "Rock Slide", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Pinsir": ["Body Slam", "Double-Edge", "Endure", "Fury Cutter", "Mimic", "Rock Slide", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Flail"],
-        "Heracross": ["Body Slam", "Counter", "Double-Edge", "Fury Cutter", "Mimic", "Rock Slide", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swords Dance", "Bide", "Flail"],
-        "Rhyhorn": ["Body Slam", "Counter", "Double-Edge", "Endure", "Icy Wind", "Mimic", "Mud-Slap", "Rock Slide", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swords Dance"],
-        "Rhydon": ["Body Slam", "Counter", "Double-Edge", "DynamicPunch", "Endure", "fire Punch", "Icy Wind", "Mega Kick", "Mega Punch", "Mimic", "Mud-Slap", "Rock Slide", "Rollout", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swords Dance", "ThunderPunch"],
-        "Snorunt": ["Body Slam", "Double-Edge", "Endure", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Glalie": ["Body Slam", "Double-Edge", "Explosion", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Spheal": ["Double-Edge", "Endure", "Icy Wind", "Mimic", "Mud-Slap", "Rock Slide", "Rollout", "Sleep Talk", "Substitute", "Swagger"],
-        "Sealeo": ["Double-Edge", "Endure", "Icy Wind", "Mimic", "Mud-Slap", "Rock Slide", "Rollout", "Sleep Talk", "Substitute"],
-        "Walrein": ["Double-Edge", "Endure", "Icy Wind", "Mimic", "Mud-Slap", "Rock Slide", "Rollout", "Sleep Talk", "Substitute"],
-        "Clamperl": ["Body Slam", "Double-Edge", "Endure", "Icy Wind", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Huntail": ["Body Slam", "Double-Edge", "Endure", "Icy Wind", "Mimic", "Mud-Slap", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Gorebyss": ["Body Slam", "Double-Edge", "Endure", "Icy Wind", "Mimic", "Mud-Slap", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Relicanth": ["Body Slam", "Endure", "Icy Wind", "Mimic", "Mud-Slap", "Psych Up", "Rock Slide", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Corsola": ["Body Slam", "Defense Curl", "Double-Edge", "Endure", "Explosion", "Mimic", "Mud-Slap", "Rock Slide", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swagger", "Icicle Spear"],
-        "Chinchou": ["Double-Edge", "Endure", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Lanturn": ["Double-Edge", "Endure", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Luvdisc": ["Double-Edge", "Endure", "Icy Wind", "Mimic", "Psych Up", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Horsea": ["Double-Edge", "Endure", "Icy Wind", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Seadra": ["Double-Edge", "Endure", "Icy Wind", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Kingdra": ["Body Slam", "Double-Edge", "Endure", "Icy Wind", "Mimic", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Bagon": ["Body Slam", "Endure", "Fury Cutter", "Mimic", "Mud-Slap", "Rock Slide", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Shelgon": ["Body Slam", "Defense Curl", "Endure", "Fury Cutter", "Mimic", "Mud-Slap", "Rock Slide", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swagger"],
-        "Salamence": ["Body Slam", "Defense Curl", "Endure", "Fury Cutter", "Mimic", "Mud-Slap", "Rock Slide", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swagger", "Swift"],
-        "Beldum": [],
-        "Metang": ["Body Slam", "Defense Curl", "Double-Edge", "DynamicPunch", "Endure", "Explosion", "Fury Cutter", "Ice Punch", "Icy Wind", "Mimic", "Mud-Slap", "Psych Up", "Rock Slide", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swift", "Thunderpunch"],
-        "Metagross": ["Body Slam", "Defense Curl", "Double-Edge", "DynamicPunch", "Endure", "Explosion", "Fury Cutter", "Ice Punch", "Icy Wind", "Mimic", "Mud-Slap", "Psych Up", "Rock Slide", "Rollout", "Sleep Talk", "Snore", "Substitute", "Swift", "Thunderpunch"],
-        "Regirock": ["Body Slam", "Counter", "Defense Curl", "Double-Edge", "DynamicPunch", "Endure", "Explosion", "Fire Punch", "Ice Punch", "Mega Kick", "Mega Punch", "Mimic", "Mud-Slap", "Psych Up", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Thunder Wave", "ThunderPunch"],
-        "Regice": ["Body Slam", "Counter", "Defense Curl", "Double-Edge", "DynamicPunch", "Endure", "Explosion", "Ice Punch", "Mega Kick", "Mega Punch", "Mimic", "Mud-Slap", "Psych Up", "Rock Slide", "Rollout", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Thunder Wave", "ThunderPunch"],
-        "Registeel": ["Body Slam", "Counter", "Defense Curl", "Double-Edge", "DynamicPunch", "Endure", "Explosion", "Ice Punch", "Mega Kick", "Mega Punch", "Mimic", "Mud-Slap", "Psych Up", "Rock Slide", "Rollout", "Seismic Toss", "Sleep Talk", "Snore", "Substitute", "Swagger", "Thunder Wave", "ThunderPunch"]
-        }
-        advance200Banlist = {};
-        for (var poke in pokes) {
-            var pokeNum = sys.pokeNum(poke);
-            if (!pokeNum) {
-                sys.sendAll("Script Error: pokemon " + poke + " is unknown in 200 banlist", staffchannel)
-                continue;
-            }
-            advance200Banlist[pokeNum] = [];
-            for (var k = 0; k < pokes[poke].length; ++k) {
-                var moveNum = sys.moveNum(pokes[poke][k]);
-                if (!moveNum) {
-
-                    sys.sendAll("Script Error: move " + pokes[poke][k] + " for pokemon " + poke + " is unknown in 200 banlist", staffchannel)
-                    continue;
-                }
-                advance200Banlist[pokeNum].push(moveNum);
-            }
-        }
-
-    } // end of building the banlist
-    var valid = true;
-    var debug = function(msg) { if (false && sys.name(src) == "zeroality") { sys.sendAll(msg, staffchannel); }};
-    for (var i = 0; i < 6; ++i) {
-        var poke = sys.teamPoke(src, i);
-        debug("" + i + ". poke #" + poke + ": " + sys.pokemon(poke));
-        if (poke != 0 && !advance200Banlist.hasOwnProperty(poke)) {
-            sys.sendAll("Script Error: pokemon " + sys.pokemon(poke) + " should be banned in advance 200 in tiers.xml", staffchannel);
-            checkbot.sendMessage(src, "Pokemon " + sys.pokemon(poke) + " is not allowed in advance 200!");
-            valid = false;
-            continue;
-        }
-        if (poke == 0) continue;
-        debug("Banned moves for it:" + advance200Banlist[poke].join(", "));
-        for (var j = 0; j < 4; ++j) {
-            var move = sys.teamPokeMove(src, i, j);
-            debug("" + j + ". move #" + move + ": " + sys.move(move));
-            debug("is allowed: " + (advance200Banlist[poke].indexOf(move) >= 0 ? "no" : "yes"));
-            if (advance200Banlist[poke].indexOf(move) >= 0) {
-                checkbot.sendMessage(src, "Pokemon " + sys.pokemon(poke) + " is not allowed to have move " + sys.move(move) + " in advance 200!");
-                valid = false;
-            }
-        }
-    }
-    if (!valid) {
-       sys.changeTier(src, "Challenge Cup");
-       sys.stopEvent();
     }
 }
 

@@ -9,11 +9,11 @@ TierChecker.prototype.add_new_check = function(exclusive, tiers, checker) {
     this.checkers.push({tiers: tiers, checker: checker, exclusive: exclusive});
 };
 
-TierChecker.prototype.check_if_valid_for = function(src, tier) {
+TierChecker.prototype.has_legal_team_for_tier = function(src, tier) {
     if (tier == "Challenge Cup") return true;
     if (!sys.hasLegalTeamForTier(src, tier)) return false;
 
-    for (var i = 0; i < this.checkers; ++i) {
+    for (var i = 0; i < this.checkers.length; ++i) {
         var valid_tier = (this.checkers[i].exclusive === true
             ? this.checkers[i].tiers.indexOf(tier) == -1
             : this.checkers[i].tiers.indexOf(tier) != -1);
@@ -29,7 +29,7 @@ TierChecker.prototype.find_good_tier = function(src) {
     var testPath = ["Wifi LC", "DW LC", "Wifi LC Ubers", "Wifi NU", "Wifi LU", "Wifi UU", "DW UU", "Wifi OU", "DW OU", "Wifi Ubers", "Wifi DW", "Challenge Cup"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
-        if (sys.hasLegalTeamForTier(src, testtier) && this.check_if_valid_for(src, testtier)) {
+        if (sys.hasLegalTeamForTier(src, testtier) && this.has_legal_team_for_tier(src, testtier)) {
             sys.changeTier(src, testtier);
             return;
         }
@@ -83,6 +83,9 @@ tier_checker.add_new_check(INCLUDING, ["Wifi NU"], function evioliteCheck(src, t
 
 if (typeof Config == "undefined") { Config = { DreamWorldTiers: ["DW OU", "DW UU", "DW Ubers"] }; }
 tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbilityCheck(src, tier) {
+    // Of course, DW ability only affects 5th gen
+    if (sys.gen(src) < 5)
+        return;
     for (var i = 0; i < 6; i++) {
         var x = sys.teamPoke(src, i);
         if (x !== 0 && sys.hasDreamWorldAbility(src, i) && (!(x in dwpokemons) || (breedingpokemons.indexOf(x) != -1 && sys.compatibleAsDreamWorldEvent(src, i) !== true))) {
@@ -278,6 +281,15 @@ tier_checker.add_new_check(INCLUDING, ["Smogon UU"], function droughtCheck(src) 
         }
     }
 });
+tier_checker.add_new_check(INCLUDING, ["Wifi UU"], function sandStreamCheck(src) {
+    for(var i = 0; i <6; ++i){
+        if(sys.ability(sys.teamPokeAbility(src, i)) == "Sand Stream"){
+            normalbot.sendMessage(src, "Sand Stream is not allowed in Wifi UU");
+            return true;
+        }
+    }
+});
+
 
 tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU"], function snowWarningCheck(src, tier) {
     for(var i = 0; i <6; ++i){
@@ -579,7 +591,6 @@ tier_checker.add_new_check(EXCLUDING, [], function eventShinies(player) {
                 for (var i=0; i<4; i++)
                     if (-1 != beasts[beast].indexOf(sys.teamPokeMove(player, slot, i)))
                         sys.changePokeShine(player, slot, true);
-    return true;
 });
 
-module = tier_checker;
+module.exports = tier_checker;

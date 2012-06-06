@@ -174,7 +174,8 @@ function Tournament(channel)
 			mode = modeOfTier(tier);
 		}
 		else {
-			if ((modeOfTier(tier) == "Doubles" || modeOfTier(tier) == "Triples") && !cmp(commandpart[2], modeOfTier(tier))) {
+			var singlesonlytiers = ["DW 1v1", "DW 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "DW OU", "DW Ubers", "Wifi OU", "Wifi Ubers"];
+			if ((modeOfTier(tier) == "Doubles" || modeOfTier(tier) == "Triples" || singlesonlytiers.indexOf(tier) != -1) && !cmp(commandpart[2], modeOfTier(tier))) {
 				sendPM(source, "The "+tier+" tier can only be played in " + modeOfTier(tier) + " mode!");
 				return;
 			}
@@ -254,7 +255,7 @@ function Tournament(channel)
 		if (self.queue.length > 0) {
 			sendPM(source, "Following tournaments are in the queue: " +
 				self.queue.map(function(e) {
-					return e.starter + " added tier '" + e.tier + "' with initial count " + e.count;
+					return e.starter + " added tier '" + e.tier + "' "+(e.mode != modeOfTier(e.tier) ? "("+e.mode+")" : "")+"with initial count " + e.count;
 				}).join(", "));
 		} else {
 			sendPM(source, "The tournament queue is empty.");
@@ -330,11 +331,16 @@ function Tournament(channel)
 	function findPlaceholder() {
 		var placeholder = null;
 		for (var p in self.entrants) {
-			if (/~/.test(p)) {
+			if (isPlaceholder(p)) {
 				placeholder = self.entrants[p];
+				break;
 			}
 		}
 		return placeholder;
+	}
+	
+	function isPlaceholder(p) {
+		return (/~/).test(p);
 	}
 
 	// Command join
@@ -398,6 +404,11 @@ function Tournament(channel)
 
 		if (self.ips.indexOf(sys.ip(source)) != -1) {
 			sendPM(source, "You already joined the tournament!");
+			return;
+		}
+		
+		if (self.round != 1) {
+			sendPM(source, "Subs are only open in round 1!");
 			return;
 		}
 
@@ -833,15 +844,22 @@ function Tournament(channel)
 		}
 
 		var i = 0;
+		var indices = function(v,i) { return i; };
+		var subFilter = function(i) { return isPlaceholder(self.members[i]); };
+		var playerFilter = function(i) { return !isPlaceholder(self.members[i]); };
 		while (self.members.length >= 2) {
 			i += 1;
-			var x1 = sys.rand(0, self.members.length);
+
+			// Select random player if we still have them
+			var playerIndices = self.members.map(indices).filter(playerFilter);
+			var x1 = playerIndices.length > 0 ? playerIndices[sys.rand(0, playerIndices.length)] : sys.rand(0, self.members.length);
 			self.battlers.push(self.members[x1]);
 			var name1 = casedName(self.members[x1]);
 			self.members.splice(x1,1);
 
-
-			x1 = sys.rand(0, self.members.length);
+			// Select random sub if we still have them
+			var subIndices = self.members.map(indices).filter(subFilter);
+			x1 = subIndices.length > 0 ? subIndices[sys.rand(0, subIndices.length)] : sys.rand(0, self.members.length);
 			self.battlers.push(self.members[x1]);
 			var name2 = casedName(self.members[x1]);
 			self.members.splice(x1,1);
@@ -1198,7 +1216,11 @@ module.exports = {
 			help = [
 				"/join: Enters you to in a tournament.",
 				"/unjoin: Withdraws you from a tournament.",
-				"/viewround: Shows the current pairings for the round."
+				"/viewround: Shows the current pairings for the round.",
+				"/viewqueue: Shows the current queue",
+				"/touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)",
+				"/addtouralert [tier] : Adds a tour alert for the specified tier",
+				"/removetouralert [tier] : Removes a tour alert for the specified tier"
 			];
 		} else if (topic == "megauser") {
 			help = [
