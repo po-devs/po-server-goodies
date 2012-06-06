@@ -808,6 +808,8 @@ var commands = {
         "/memorydump: Shows the state of the memory.",
         "/nameban regexp: Adds a regexp ban on usernames.",
         "/nameunban full_regexp: Removes a regexp ban on usernames.",
+        "/namewarn regexp: Adds a namewarning",
+        "/nameunwarn full_regexp: Removes a namewarning",
         "/destroychan [channel]: Destroy a channel (official channels are protected).",
         "/channelusers [channel]: Lists users on a channel.",
         "/[un]watch [channel]: See the chat of a channel"
