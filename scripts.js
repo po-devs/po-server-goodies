@@ -3906,7 +3906,8 @@ channelCommand: function(src, command, commandData, tar) {
     }
     if (command == "cmeoff") {
         if (channel == 0 || channel == tourchannel) {
-            normalbot.sendChanMessage(src, "/me can't be turned off here.")
+            normalbot.sendChanMessage(src, "/me can't be turned off here.");
+            return;
         }
         this.meoff(src, sys.channel(channel));
         return;
