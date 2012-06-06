@@ -2543,7 +2543,7 @@ function Mafia(mafiachan) {
             runUpdate();
         }
         return;
-    };
+    };
 
     function runUpdate() {
         if (mafia.needsUpdating !== true) return;
