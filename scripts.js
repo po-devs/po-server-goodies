@@ -795,6 +795,7 @@ var commands = {
         "/rangebans: Lists range bans.",
         "/tempbans: Lists temp bans.",
         "/namebans: Lists name bans.",
+        "/namewarns: Lists name warnings.",
         "/endcalls: Ends the next periodic message.",
     ],
     admin:
@@ -957,6 +958,17 @@ init : function() {
             var serialized = JSON.parse(sys.getFileContent("nameBans.json"));
             for (var i = 0; i < serialized.nameBans.length; ++i) {
                 nameBans.push(new RegExp(serialized.nameBans[i], "i"));
+            }
+        } catch (e) {
+            // ignore
+        }
+    }
+    if (typeof nameWarns == 'undefined') {
+        nameWarns = [];
+        try {
+            var serialized = JSON.parse(sys.getFileContent("nameWarns.json"));
+            for (var i = 0; i < serialized.nameWarns.length; ++i) {
+                nameWarns.push(new RegExp(serialized.nameWarns[i], "i"));
             }
         } catch (e) {
             // ignore
@@ -1477,26 +1489,26 @@ beforeLogIn : function(src) {
             sys.stopEvent();
             return;
     }
-    var arr =  ["172.", "72.20.", "199.255.",
-                "199.58.", "188.227.", "174.129.",
-                "174.36.", "174.37.", "94.46.",
-                "142.16", "156.34.", "67.228.",
-                "183.173.180.", "66.199.",
-                "216.169.110.", "31.3.",
-                "216.169.",
-                "109.200.",
-                "86.187.",
-                "98.226.", /* skarm */
-                "85.17.",
-                "180.191.", /*Tonico*/
-                "187.65.", /* retyples and hax re */
-                "99.140.2" /* gaffpot, the gaff */];
-    for (var i = 0; i < arr.length; i++) {
-        if (ip.substr(0, arr[i].length) == arr[i] &&
-            !sys.dbRegistered(sys.name(src))) {
-            sys.sendAll("Potential ban evader: " + sys.name(src) + " on IP: " + ip, staffchannel);
-        }
-    }
+//    var arr =  ["172.", "72.20.", "199.255.",
+//                "199.58.", "188.227.", "174.129.",
+//                "174.36.", "174.37.", "94.46.",
+//                "142.16", "156.34.", "67.228.",
+//                "183.173.180.", "66.199.",
+//                "216.169.110.", "31.3.",
+//                "216.169.",
+//                "109.200.",
+//                "86.187.",
+//                "98.226.", /* skarm */
+//                "85.17.",
+//                "180.191.", /*Tonico*/
+//                "187.65.", /* retyples and hax re */
+//                "99.140.2" /* gaffpot, the gaff */];
+//    for (var i = 0; i < arr.length; i++) {
+//        if (ip.substr(0, arr[i].length) == arr[i] &&
+//            !sys.dbRegistered(sys.name(src))) {
+//            sys.sendAll("Potential ban evader: " + sys.name(src) + " on IP: " + ip, staffchannel);
+//        }
+//    }
     if (this.nameIsInappropriate(src)) {
         sys.stopEvent();
     }
@@ -1564,7 +1576,18 @@ nameIsInappropriate: function(src)
     return false;
 }
 ,
-
+nameWarnTest : function(src) {
+    if (sys.auth(src) > 0)
+        return;
+    var lname = sys.name(src).toLowerCase();
+    for (var i = 0; i < nameWarns.length; ++i) {
+        var regexp = nameWarns[i];
+        if (regexp.test(lname)) {
+            sys.sendAll('Namewarning: Name `' + sys.name(src) + '´ matches the following regexp: `' + regexp + '´ on the IP `' + sys.ip(src) + "´.", staffchannel);
+        }
+    }
+}
+,
 afterLogIn : function(src) {
     sys.sendMessage(src, "*** Type in /Rules to see the rules. ***");
     commandbot.sendMessage(src, "Use !commands to see the commands!");
@@ -1648,6 +1671,7 @@ afterChangeTeam : function(src)
         sys.kick(src);
         return;
     }
+    this.nameWarnTest(src);
     var POuser = SESSION.users(src);
     var new_name = sys.name(src);
     if (POuser.name != new_name) {
@@ -2640,6 +2664,20 @@ modCommand: function(src, command, commandData, tar) {
         sys.sendHtmlMessage(src, table, channel);
         return;
     }
+    if (command == "namewarns") {
+        var table = '';
+        table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Namewarnings</strong></center></td></tr>';
+        for (var i = 0; i < nameWarns.length; i+=5) {
+            table += '<tr>';
+            for (var j = 0; j < 5 && i+j < nameWarns.length; ++j) {
+                table += '<td>'+nameWarns[i+j].toString()+'</td>';
+            }
+            table += '</tr>';
+        }
+        table += '</table>'
+        sys.sendHtmlMessage(src, table, channel);
+        return;
+    }
     if (command == "unmute") {
         if (tar == undefined) {
             if (mutes.get(commandData)) {
@@ -3218,6 +3256,42 @@ adminCommand: function(src, command, commandData, tar) {
         if (toDelete >= 0) {
             normalbot.sendChanMessage(src, "You unbanned: " + nameBans[toDelete].toString());
             nameBans.splice(toDelete,1);
+        } else {
+            normalbot.sendChanMessage(src, "No match.");
+        }
+        return;
+    }
+    if (command == "namewarn") {
+        if (commandData === undefined) {
+            normalbot.sendChanMessage(src, "Sorry, can't set warning for empty names.");
+            return;
+        }
+        var regex;
+        try {
+            regex = new RegExp(commandData.toLowerCase()); // incase sensitive
+        } catch (e) {
+            normalbot.sendChanMessage(src, "Sorry, your regular expression '" +commandData + "' fails. (" + e + ")");
+        }
+        nameWarns.push(regex);
+        var serialized = {nameWarns: []};
+        for (var i = 0; i < nameWarns.length; ++i) {
+            serialized.nameWarns.push(nameWarns[i].source);
+        }
+        sys.writeToFile("nameWarns.json", JSON.stringify(serialized));
+        normalbot.sendChanMessage(src, "You set a warng for: " + regex.toString());
+        return;
+    }
+    if (command == "nameunwarn") {
+        var toDelete = -1;
+        for (var i = 0; i < nameWarns.length; ++i) {
+            if (nameWarns[i].toString() == commandData) {
+                toDelete = i;
+                break;
+            }
+        }
+        if (toDelete >= 0) {
+            normalbot.sendChanMessage(src, "You unbanned: " + nameWarns[toDelete].toString());
+            nameWarns.splice(toDelete,1);
         } else {
             normalbot.sendChanMessage(src, "No match.");
         }
