@@ -3286,7 +3286,7 @@ adminCommand: function(src, command, commandData, tar) {
             serialized.nameWarns.push(nameWarns[i].source);
         }
         sys.writeToFile("nameWarns.json", JSON.stringify(serialized));
-        normalbot.sendChanMessage(src, "You set a warng for: " + regex.toString());
+        normalbot.sendChanMessage(src, "You set a warning for: " + regex.toString());
         return;
     }
     if (command == "nameunwarn") {
@@ -3298,7 +3298,7 @@ adminCommand: function(src, command, commandData, tar) {
             }
         }
         if (toDelete >= 0) {
-            normalbot.sendChanMessage(src, "You unbanned: " + nameWarns[toDelete].toString());
+            normalbot.sendChanMessage(src, "You removed a warning for: " + nameWarns[toDelete].toString());
             nameWarns.splice(toDelete,1);
         } else {
             normalbot.sendChanMessage(src, "No match.");
