@@ -1694,9 +1694,13 @@ function Mafia(mafiachan) {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
                                     else mafia.sendPlayer(player.name, target.role.actions.kill.msg.replace(/~Self~/g, target.name));
                             } else if ("kill" in target.role.actions && typeof target.role.actions.kill.mode == "object" && target.role.actions.kill.mode.evadeChance > sys.rand(0,100)/100) {
-                                mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
+                                if (!target.role.actions.kill.msg)
+                                    mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
+                                    else mafia.sendPlayer(player.name, target.role.actions.kill.msg.replace(/~Self~/g, target.name));
                             } else if ("kill" in target.role.actions && typeof target.role.actions.kill.mode == "object" && Array.isArray(target.role.actions.kill.mode.ignore) && target.role.actions.kill.mode.ignore.indexOf(player.role.role) != -1) {
-                                mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
+                                if (!target.role.actions.kill.msg)
+                                    mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
+                                    else mafia.sendPlayer(player.name, target.role.actions.kill.msg.replace(/~Self~/g, target.name));
                             } else {
                                 if (!Action.msg) {
                                     if (mafia.theme.killusermsg) {
