@@ -1428,6 +1428,13 @@ beforePlayerBan : function(src, dest) {
 }
 ,
 
+beforePlayerKick:function(src, dest){
+    var authname = sys.name(src).toLowerCase();
+    authStats[authname] =  authStats[authname] || {}
+    authStats[authname].latestKick = [sys.name(dest), parseInt(sys.time())];
+}
+,
+
 afterNewMessage : function (message) {
     if (message == "Script Check: OK") {
         sys.sendAll("±ScriptCheck: Scripts were updated!");
@@ -2486,6 +2493,9 @@ modCommand: function(src, command, commandData, tar) {
         }
         normalbot.sendAll("" + commandData + " was mysteriously kicked by " + nonFlashing(sys.name(src)) + "!");
         sys.kick(tar);
+        var authname = sys.name(src).toLowerCase();
+        authStats[authname] =  authStats[authname] || {}
+        authStats[authname].latestKick = [commandData, parseInt(sys.time())];
         return;
     }
 
@@ -3181,6 +3191,9 @@ adminCommand: function(src, command, commandData, tar) {
         sys.ban(commandData);
         this.kickAll(ip);
         sys.appendToFile('bans.txt', sys.name(src) + ' banned ' + commandData + "\n")
+        var authname = sys.name(src).toLowerCase();
+	authStats[authname] =  authStats[authname] || {}
+	authStats[authname].latestBan = [commandData, parseInt(sys.time())];	
         return;
     }
     if (command == "unban") {
