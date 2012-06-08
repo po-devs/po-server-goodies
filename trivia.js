@@ -334,7 +334,29 @@ QuestionHolder.prototype.remove = function(id)
     delete this.state.questions[id];
     this.save();
 };
-
+QuestionHolder.prototype.checkq = function(id)
+{
+	if (trivreview.questionAmount() === 0)
+    {
+        triviabot.sendAll("There are no more questions to be reviewed.", channel);
+        return;
+    }
+	var q = trivreview.all();
+	var questionId = Object.keys(q)[0];
+	var questionInfo = trivreview.get(questionId);
+	if (questionId === undefined || questionInfo === undefined)
+	{
+		Trivia.sendPM(src,"Oops! There was an error.",channel);
+		return;
+	}
+	sys.sendAll("",channel);
+	triviabot.sendAll("This question needs to be reviewed:",channel);
+	triviabot.sendAll("ID: "+questionId,channel);
+	triviabot.sendAll("Category: "+questionInfo.category,channel);
+	triviabot.sendAll("Question: "+questionInfo.question,channel);
+	triviabot.sendAll("Answer: "+questionInfo.answer,channel);
+	sys.sendAll("",channel);
+};
 QuestionHolder.prototype.get = function(id)
 {
     var q = this.state.questions[id];
@@ -464,23 +486,17 @@ addUserCommand("goal", function(src,commandData,channel) {
 	}
 	
 	Trivia.sendPM(src,"The goal for the current game is: "+Trivia.maxPoints);
-});
+},"Allows you to see the current target for the trivia game");
 
 addAdminCommand("removeq", function(src,commandData,channel) {
-	var all = triviaq.all();
-	for (var b in all)
-	{
-		var id = b;
-		if (commandData === b)
-		{
-			triviaq.remove(b);
-			Trivia.sendPM(src,"Removed question successfully.");
-			return;
-		}
+	var q = triviaq.get(commandData);
+	if(q !== null){
+		triviabot.sendAll(sys.name(src)+" removed question: id, "+commandData +" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
+		triviaq.remove(commandData)
+		return;
 	}
-	
-	Trivia.sendPM(src,"Oops! Question doesn't exist");
-});
+	Trivia.sendPM(src,"Oops! Question doesn't exist",channel);
+},"Allows you to remove a question that has already been submitted, format /removeq [ID]");
 
 addUserCommand("submitq", function(src, commandData, channel) {
     commandData = commandData.split("*");
@@ -502,7 +518,7 @@ addUserCommand("submitq", function(src, commandData, channel) {
     Trivia.sendPM(src,"Your question was submitted.", channel);
 	// Enable if needed, but this might spam trivreview...
     // Trivia.sendAll(sys.name(src)+" submitted a question with id " + id +" !",revchan);
-});
+},"Allows you to submit a question for review, format /submitq Category*Question*Answer1,Answer2,etc");
 
 addUserCommand("join", function(src, commandData, channel) {
     if (Trivia.started === false)
@@ -521,12 +537,12 @@ addUserCommand("join", function(src, commandData, channel) {
     }
     Trivia.addPlayer(src);
     Trivia.sendAll(sys.name(src)+" joined the game!");
-});
+},"Allows you to join a current game of trivia");
 
 addUserCommand("unjoin", function(src, commandData, channel) {
     if (channel == triviachan)
         Trivia.unjoin(src);
-});
+},"Allows you to quit a current game of trivia");
 
 addUserCommand("qamount", function(src, commandData, channel) {
     if (channel == triviachan) {
@@ -534,11 +550,11 @@ addUserCommand("qamount", function(src, commandData, channel) {
         sys.sendHtmlMessage(src,"<timestamp/> The amount of questions is: <b>"+qamount+"</b>",triviachan);
         return;
     }
-});
+},"Shows you the current amount of questions");
 
 addUserCommand("tadmins", function(src, commandData, channel) {
     tadmin.tAdminList(src,channel);
-});
+},"Gives a list of current trivia admins");
 
 addAdminCommand("tadmin", function(src, commandData, channel) {
     if (tadmin.isTAdmin(commandData))
@@ -548,7 +564,7 @@ addAdminCommand("tadmin", function(src, commandData, channel) {
 	}
     tadmin.addTAdmin(commandData);
     Trivia.sendPM(src,"That person is now a trivia admin!",channel);
-});
+},"Allows you to promote a new trivia admin, format /tadmin [name]");
 
 addAdminCommand("tadminoff", function(src, commandData, channel) {
     if (!tadmin.isTAdmin(commandData))
@@ -558,26 +574,26 @@ addAdminCommand("tadminoff", function(src, commandData, channel) {
 	}
     tadmin.removeTAdmin(commandData);
     Trivia.sendPM(src,"That person is no longer a trivia admin!",channel);
-});
+},"Allows you to demote a current trivia admin, format /adminoff [name]");
 
 addAdminCommand("start", function(src, commandData, channel) {
     Trivia.startTrivia(src,commandData);
-});
+},"Allows you to start a trivia game, format /start [number] leave number blank for random");
 
 addAdminCommand("stop", function(src, commandData, channel) {
     Trivia.endTrivia(src);
-});
+},"Allows you to stop a current trivia game");
 
 addAdminCommand("say", function(src, commandData, channel) {
     if (commandData === undefined)
     return;
     Trivia.sendAll("("+sys.name(src)+"): "+commandData,channel);
-});
+},"Allows you to talk during the answer period");
 
 addAdminCommand("addallpokemon", function(src, commandData, channel) {
     if (sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "ethan"|| sys.name(src).toLowerCase() == "crystal moogle")
 	Trivia.addAllPokemon();
-});
+},"Adds all the \"Who's that pokémon?\" questions");
 
 addAdminCommand("erasequestions", function(src, commandData, channel) {
 	if (sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "ethan")
@@ -585,7 +601,7 @@ addAdminCommand("erasequestions", function(src, commandData, channel) {
 		sys.writeToFile("triviaq.json","");
 		QuestionHolder.state = {freeId: 0, questions: {}};
 	}
-});
+},"Erases all current questions");
 
 addAdminCommand("apropos", function(src, commandData, channel) {
     if (commandData === undefined)
@@ -606,7 +622,7 @@ addAdminCommand("apropos", function(src, commandData, channel) {
         Trivia.sendPM(src,"Question under review: '"+q.question+"' (id='" + b + "')", channel);
     }
 
-});
+},"Allows you to search through the questions, format /apropos [query]");
 
 
 addAdminCommand("checkq", function(src, commandData, channel) {
@@ -633,7 +649,7 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 	Trivia.sendPM(src,"Question: "+questionInfo.question,channel);
 	Trivia.sendPM(src,"Answer: "+questionInfo.answer,channel);
 	sys.sendMessage(src,"",channel);
-});
+},"Allows you to check the current question in review");
 
 /*addAdminCommand("checkq", function(src, commandData, channel) {
     var q = trivreview.get(commandData);
@@ -650,7 +666,7 @@ addAdminCommand("changea", function(src, commandData, channel) {
     commandData = commandData.split("*");
     trivreview.changeAnswer(commandData[0],commandData[1]);
     triviabot.sendMessage(src,"The answer for ID #"+commandData[0]+" was changed to "+commandData[1]+"", channel);
-});
+},"Allows you to change an answer to a question in review, format /changea id*newanswer");
 
 addAdminCommand("changeq", function(src, commandData, channel) {
     if (commandData === undefined)
@@ -658,34 +674,54 @@ addAdminCommand("changeq", function(src, commandData, channel) {
     commandData = commandData.split("*");
     trivreview.changeQuestion(commandData[0],commandData[1]);
     triviabot.sendMessage(src,"The question for ID #"+commandData[0]+" was changed to "+commandData[1], channel);
-});
+},"Allows you to change the question to a question in review, format /changeq id*newquestion");
 
 addAdminCommand("changec", function(src, commandData, channel) {
     if (commandData === undefined)
         return;
     commandData = commandData.split("*");
-    trivreview.changeAnswer(commandData[0],commandData[1]);
+    trivreview.changeCategory(commandData[0],commandData[1]);
     triviabot.sendMessage(src,"The category for ID #"+commandData[0]+" was changed to "+commandData[1], channel);
-});
+},"Allows you to change the category to a question in review, format /changec id*newcategory");
 
 // TODO: Maybe announce globally to trivreview when somebody accepts a question?
 
 addAdminCommand("accept", function(src, commandData, channel) {
-    var q = trivreview.get(commandData);
-	if (q !== undefined) {
-        triviabot.sendAll(sys.name(src)+" accepted question: id, "+triviaq.questionAmount()+1 /* TODO: get id in a better way */+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
-        triviaq.add(q.category,q.question,q.answer);
-        trivreview.remove(commandData);
+	var tr = trivreview.all();
+	if (trivreview.questionAmount() !== 0) {
+		var id = Object.keys(tr)[0];
+		var q = trivreview.get(id);
+		triviabot.sendAll(sys.name(src)+" accepted question: id, "+(triviaq.questionAmount()+1)/* TODO: get id in a better way */+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
+		triviaq.add(q.category,q.question,q.answer);
+		trivreview.remove(id);
+		trivreview.checkq(id+1)
+		return;
 	}
+	triviabot.sendMessage(src, "No more questions!",channel);
     // triviabot.sendMessage(src,"You accepted question ID #"+commandData+"!", channel);
-});
+},"Allows you to accept the current question in review");
+
+addAdminCommand("showq", function(src, commandData, channel){
+	var q = triviaq.get(commandData);
+	if(q !== null){
+		triviabot.sendMessage(src, "Question ID: "+ commandData +", Question: "+ q.question + ", Category: "+ q.category + ", Answer(s): " q.answer, channel)
+		return;
+	}
+	triviabot.sendMessage(src, "This question does not exist")	
+},"Allows you to see an already submitted question");
 
 addAdminCommand("decline", function(src, commandData, channel) {
-    if (trivreview.get(commandData) !== undefined) {
-        trivreview.remove(commandData);
-        triviabot.sendAll(sys.name(src)+" declined the question.", channel);
+	var tr = trivreview.all();
+	if (trivreview.questionAmount() !== 0) {
+		var id = Object.keys(tr)[0];
+		var q = trivreview.get(id);
+		triviabot.sendAll(sys.name(src)+" declined question: id, "+id+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
+ 		trivreview.remove(id);
+		trivreview.checkq(id+1)
+		return;
 	}
-});
+	triviabot.sendMessage(src, "No more questions!",channel);
+},"Allows you to decline the current question in review");
 
 // Normal command handling.
 exports.handleCommand = function trivia_handleCommand(src, command, channel)
