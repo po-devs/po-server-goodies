@@ -704,7 +704,7 @@ addAdminCommand("accept", function(src, commandData, channel) {
 addAdminCommand("showq", function(src, commandData, channel){
 	var q = triviaq.get(commandData);
 	if(q !== null){
-		triviabot.sendMessage(src, "Question ID: "+ commandData +", Question: "+ q.question + ", Category: "+ q.category + ", Answer(s): " q.answer, channel)
+		triviabot.sendMessage(src, "Question ID: "+ commandData +", Question: "+ q.question + ", Category: "+ q.category + ", Answer(s): " + q.answer, channel)
 		return;
 	}
 	triviabot.sendMessage(src, "This question does not exist")	
