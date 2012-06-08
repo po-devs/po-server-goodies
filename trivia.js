@@ -691,8 +691,15 @@ addAdminCommand("accept", function(src, commandData, channel) {
 	if (trivreview.questionAmount() !== 0) {
 		var id = Object.keys(tr)[0];
 		var q = trivreview.get(id);
-		triviabot.sendAll(sys.name(src)+" accepted question: id, "+(triviaq.questionAmount()+1)/* TODO: get id in a better way */+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
 		triviaq.add(q.category,q.question,q.answer);
+		var all = triviaq.all();
+		for (var b in all){
+			var qu = triviaq.get(b);
+			if(qu.question===q.question){
+				var qid = b
+			}
+		}
+		triviabot.sendAll(sys.name(src)+" accepted question: id, "+qid+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
 		trivreview.remove(id);
 		trivreview.checkq(id+1)
 		return;
@@ -707,7 +714,7 @@ addAdminCommand("showq", function(src, commandData, channel){
 		triviabot.sendMessage(src, "Question ID: "+ commandData +", Question: "+ q.question + ", Category: "+ q.category + ", Answer(s): " + q.answer, channel)
 		return;
 	}
-	triviabot.sendMessage(src, "This question does not exist")	
+	triviabot.sendMessage(src, "This question does not exist",channel)	
 },"Allows you to see an already submitted question");
 
 addAdminCommand("decline", function(src, commandData, channel) {
