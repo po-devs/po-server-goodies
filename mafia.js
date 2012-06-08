@@ -1704,6 +1704,7 @@ function Mafia(mafiachan) {
                             } else {
                                 if (!Action.msg) {
                                     if (mafia.theme.killusermsg) {
+										mafia.sendPlayer(target.name, mafia.theme.killusermsg);
                                     } else {
                                     	mafia.sendPlayer(target.name, "±Game: You were killed during the night!");
                                     }
