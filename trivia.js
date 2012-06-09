@@ -93,12 +93,12 @@ TriviaGame.prototype.startTriviaRound = function()
         sys.delayedCall(function() { Trivia.startTriviaRound(); }, 1);
         return;
     }
-    this.answeringQuestion = true;
     /* Get the category, question, and answer */
     var q = triviaq.get(questionNumber);
     var category = q.category,
         question = q.question,
         answer = q.answer;
+	this.answeringQuestion = true;
     this.roundQuestion = questionNumber;
     this.htmlAll("<b>Category:</b> "+category.toUpperCase()+"<br>"+question);
     this.alreadyUsed[questionNumber] = true;
@@ -514,8 +514,15 @@ addUserCommand("submitq", function(src, commandData, channel) {
         Trivia.sendPM(src,"Your question should have a question mark.", channel);
         return;
      }
+	 var needsreview = false
+	if (trivreview.questionAmount() === 0){
+		needsreview = true
+	}
     var id = trivreview.add(category,question,answer);
     Trivia.sendPM(src,"Your question was submitted.", channel);
+	if(needsreview == true){
+		trivreview.checkq(id)
+	}
 	// Enable if needed, but this might spam trivreview...
     // Trivia.sendAll(sys.name(src)+" submitted a question with id " + id +" !",revchan);
 },"Allows you to submit a question for review, format /submitq Category*Question*Answer1,Answer2,etc");
@@ -596,7 +603,7 @@ addAdminCommand("addallpokemon", function(src, commandData, channel) {
 },"Adds all the \"Who's that pokémon?\" questions");
 
 addAdminCommand("erasequestions", function(src, commandData, channel) {
-	if (sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "ethan")
+	if (sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "ethan"|| sys.name(src).toLowerCase() == "crystal moogle")
 	{
 		sys.writeToFile("triviaq.json","");
 		QuestionHolder.state = {freeId: 0, questions: {}};
@@ -661,34 +668,53 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 
 // TODO: are these well named? also do versions for already accepted questions
 addAdminCommand("changea", function(src, commandData, channel) {
-    if (commandData === undefined)
-        return;
-    commandData = commandData.split("*");
-    trivreview.changeAnswer(commandData[0],commandData[1]);
-    triviabot.sendMessage(src,"The answer for ID #"+commandData[0]+" was changed to "+commandData[1]+"", channel);
-},"Allows you to change an answer to a question in review, format /changea id*newanswer");
+	var tr = trivreview.all();
+	if (trivreview.questionAmount() !== 0) {
+		var id = Object.keys(tr)[0]
+		var answer = commandData.split(",")
+		trivreview.changeAnswer(id, answer);
+		triviabot.sendMessage(src,"The answer for ID #"+id+" was changed to "+answer+"", channel);
+		trivreview.checkq(id)
+		return;
+	}
+	triviabot.sendMessage(src, "No question")
+},"Allows you to change an answer to a question in review, format /changea newanswer");
 
 addAdminCommand("changeq", function(src, commandData, channel) {
-    if (commandData === undefined)
-        return;
-    commandData = commandData.split("*");
-    trivreview.changeQuestion(commandData[0],commandData[1]);
-    triviabot.sendMessage(src,"The question for ID #"+commandData[0]+" was changed to "+commandData[1], channel);
-},"Allows you to change the question to a question in review, format /changeq id*newquestion");
+   var tr = trivreview.all();
+	if (trivreview.questionAmount() !== 0) {
+		var id = Object.keys(tr)[0]
+		var question = commandData.split(",")
+		trivreview.changeQuestion(id, question);
+		triviabot.sendMessage(src,"The question for ID #"+id+" was changed to "+question+"", channel);
+		trivreview.checkq(id)
+		return;
+	}
+	triviabot.sendMessage(src, "No question")
+},"Allows you to change the question to a question in review, format /changeq newquestion");
 
 addAdminCommand("changec", function(src, commandData, channel) {
-    if (commandData === undefined)
-        return;
-    commandData = commandData.split("*");
-    trivreview.changeCategory(commandData[0],commandData[1]);
-    triviabot.sendMessage(src,"The category for ID #"+commandData[0]+" was changed to "+commandData[1], channel);
-},"Allows you to change the category to a question in review, format /changec id*newcategory");
+    var tr = trivreview.all();
+	if (trivreview.questionAmount() !== 0) {
+		var id = Object.keys(tr)[0]
+		var category = commandData.split(",")
+		trivreview.changeCategory(id, category);
+		triviabot.sendMessage(src,"The category for ID #"+id+" was changed to "+category+"", channel);
+		trivreview.checkq(id)
+		return;
+	}
+	triviabot.sendMessage(src, "No question")
+},"Allows you to change the category to a question in review, format /changec newcategory");
 
 // TODO: Maybe announce globally to trivreview when somebody accepts a question?
 
 addAdminCommand("accept", function(src, commandData, channel) {
 	var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
+		if((sys.time()-trivreview.declineTime)<=2){
+			triviabot.sendMessage(src, "Please wait before accepting a question")
+			return;
+		}
 		var id = Object.keys(tr)[0];
 		var q = trivreview.get(id);
 		triviaq.add(q.category,q.question,q.answer);
@@ -700,6 +726,7 @@ addAdminCommand("accept", function(src, commandData, channel) {
 			}
 		}
 		triviabot.sendAll(sys.name(src)+" accepted question: id, "+qid+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
+		trivreview.declineTime = sys.time()
 		trivreview.remove(id);
 		trivreview.checkq(id+1)
 		return;
@@ -720,9 +747,14 @@ addAdminCommand("showq", function(src, commandData, channel){
 addAdminCommand("decline", function(src, commandData, channel) {
 	var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
+		if((sys.time()-trivreview.declineTime)<=2){
+			triviabot.sendMessage(src, "Please wait before declining a question")
+			return;
+		}
 		var id = Object.keys(tr)[0];
 		var q = trivreview.get(id);
 		triviabot.sendAll(sys.name(src)+" declined question: id, "+id+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
+		trivreview.declineTime = sys.time()
  		trivreview.remove(id);
 		trivreview.checkq(id+1)
 		return;
