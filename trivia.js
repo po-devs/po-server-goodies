@@ -684,7 +684,7 @@ addAdminCommand("changeq", function(src, commandData, channel) {
    var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
 		var id = Object.keys(tr)[0]
-		var question = commandData.split(",")
+		var question = commandData
 		trivreview.changeQuestion(id, question);
 		triviabot.sendMessage(src,"The question for ID #"+id+" was changed to "+question+"", channel);
 		trivreview.checkq(id)
@@ -697,7 +697,7 @@ addAdminCommand("changec", function(src, commandData, channel) {
     var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
 		var id = Object.keys(tr)[0]
-		var category = commandData.split(",")
+		var category = commandData
 		trivreview.changeCategory(id, category);
 		triviabot.sendMessage(src,"The category for ID #"+id+" was changed to "+category+"", channel);
 		trivreview.checkq(id)
