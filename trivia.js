@@ -346,16 +346,16 @@ QuestionHolder.prototype.checkq = function(id)
 	var questionInfo = trivreview.get(questionId);
 	if (questionId === undefined || questionInfo === undefined)
 	{
-		Trivia.sendPM(src,"Oops! There was an error.",channel);
+		triviabot.sendAll("Oops! There was an error.",revchan);
 		return;
 	}
-	sys.sendAll("",channel);
-	triviabot.sendAll("This question needs to be reviewed:",channel);
-	triviabot.sendAll("ID: "+questionId,channel);
-	triviabot.sendAll("Category: "+questionInfo.category,channel);
-	triviabot.sendAll("Question: "+questionInfo.question,channel);
-	triviabot.sendAll("Answer: "+questionInfo.answer,channel);
-	sys.sendAll("",channel);
+	sys.sendAll("",revchan);
+	triviabot.sendAll("This question needs to be reviewed:",revchan);
+	triviabot.sendAll("ID: "+questionId,revchan);
+	triviabot.sendAll("Category: "+questionInfo.category,revchan);
+	triviabot.sendAll("Question: "+questionInfo.question,revchan);
+	triviabot.sendAll("Answer: "+questionInfo.answer,revchan);
+	sys.sendAll("",revchan);
 };
 QuestionHolder.prototype.get = function(id)
 {
