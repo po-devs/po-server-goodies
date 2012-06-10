@@ -235,6 +235,7 @@ function initTours() {
 		sys.sendAll("Win messages added", sys.channelId("Tours"))
 	}
 	catch (e) {
+		tourwinmessages = [];
 		sys.sendAll("No win messages detected, using default win messages", sys.channelId("Tours"))
 	}
 	// config object
