@@ -157,12 +157,12 @@ var isNonNegative = utilities.is_non_negative;
 var Lazy = utilities.Lazy;
 var nonFlashing = utilities.non_flashing;
 
-function sendChanMessage(id, message) {
+sendChanMessage = function(id, message) {
     sys.sendMessage(id, message, channel);
-}
-function sendChanAll(message) {
+};
+sendChanAll = function(message) {
     sys.sendAll(message, channel);
-}
+};
 
 
 var POKEMON_CLEFFA = typeof sys != 'undefined' ? sys.pokeNum("Cleffa") : 173;
