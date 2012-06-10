@@ -4077,7 +4077,7 @@ beforeChatMessage: function(src, message, chan) {
         normalbot.sendChanMessage(src, "your mute has expired.");
         normalbot.sendAll("" + sys.name(src) + "'s mute has expired.", trollchannel);
     }
-    if (sys.auth(src) < 3 && SESSION.users(src).mute.active && message != "!join" && message != "/rules" && message != "/join" && message != "!rules" && channel != trollchannel && ["\\join", "\\subme", "\\unjoin"].indexOf(message) === 0) {
+    if (sys.auth(src) < 3 && SESSION.users(src).mute.active && message != "!join" && message != "/rules" && message != "/join" && message != "!rules" && channel != trollchannel) {
         var muteinfo = SESSION.users(src).mute;
         normalbot.sendChanMessage(src, "You are muted" + (muteinfo.by ? " by " + muteinfo.by : '')+". " + (muteinfo.expires > 0 ? "Mute expires in " + getTimeString(muteinfo.expires - parseInt(sys.time(), 10)) + ". " : '') + (muteinfo.reason ? "[Reason: " + muteinfo.reason + "]" : ''));
         sys.stopEvent();
