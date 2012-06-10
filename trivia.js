@@ -671,13 +671,13 @@ addAdminCommand("apropos", function(src, commandData, channel) {
 
 addAdminCommand("checkq", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
-		sys.sendMessage("", channel);
-		triviabot.sendMessage("This question needs to be reviewed:",channel);
-		triviabot.sendMessage("EDITING MODE: USE THE CHANGE COMMANDS TO EDIT AND THEN /ACCEPT OR /DECLINE TO DELETE",channel);
-		triviabot.sendMessage("Category: "+trivreview.editingCategory,channel);
-		triviabot.sendMessage("Question: "+trivreview.editingQuestion,channel);
-		triviabot.sendMessage("Answer: "+trivreview.editingAnswer,channel);
-		sys.sendMessage("",channel);
+		sys.sendMessage(src, "", channel);
+		triviabot.sendMessage(src, "This question needs to be reviewed:",channel);
+		triviabot.sendMessage(src, "EDITING MODE: USE THE CHANGE COMMANDS TO EDIT AND THEN /ACCEPT OR /DECLINE TO DELETE",channel);
+		triviabot.sendMessage(src, "Category: "+trivreview.editingCategory,channel);
+		triviabot.sendMessage(src, "Question: "+trivreview.editingQuestion,channel);
+		triviabot.sendMessage(src, "Answer: "+trivreview.editingAnswer,channel);
+		sys.sendMessage(src, "",channel);
 		return;
 	}
     if (trivreview.questionAmount() === 0)
