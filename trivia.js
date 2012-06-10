@@ -369,7 +369,7 @@ QuestionHolder.prototype.checkq = function(id)
 	triviabot.sendAll("Category: "+questionInfo.category,revchan);
 	triviabot.sendAll("Question: "+questionInfo.question,revchan);
 	triviabot.sendAll("Answer: "+questionInfo.answer,revchan);
-	if(questionInfo.name !== "undefined"){
+	if(questionInfo.name !== undefined){
 		triviabot.sendAll("Submitted By: "+questionInfo.name,revchan);
 	}
 	sys.sendAll("",revchan);
@@ -680,8 +680,8 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 	Trivia.sendPM(src,"Category: "+questionInfo.category,channel);
 	Trivia.sendPM(src,"Question: "+questionInfo.question,channel);
 	Trivia.sendPM(src,"Answer: "+questionInfo.answer,channel);
-	if(questionInfo.name !=="undefined"){
-		Trivia.sendPM(src,"Submitted by :" +questionInfo.name,channel);
+	if(questionInfo.name !==undefined){
+		Trivia.sendPM(src,"Submitted By:" +questionInfo.name,channel);
 	}
 	sys.sendMessage(src,"",channel);
 },"Allows you to check the current question in review");
