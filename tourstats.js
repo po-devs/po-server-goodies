@@ -15,9 +15,11 @@ function updateTourStats(tier, time, winner, num, noPoints, purgeTime) {
         // Fourth index: points for 32-63 players,
         // Fifth index: points for 64+ players
         var pointsDistributions = {
-            "1v1 Challenge Cup": [0, 0, 0, 0, 1],
+            "CC 1v1": [0, 0, 0, 0, 1],
+            "Wifi CC 1v1": [0, 0, 0, 0, 1],
             "Challenge Cup": [0, 0, 0, 1, 2],
-            "1v1 Gen 5": [0, 0, 0, 0, 1],
+            "DW 1v1": [0, 0, 0, 0, 1],
+            "DW 1v1 Ubers": [0, 0, 0, 0, 1],
             "Metronome": [0, 0, 0, 0, 0],
             "Monotype": [0, 0, 1, 2, 3],
             "default": [0, 1, 2, 4, 6],

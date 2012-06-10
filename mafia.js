@@ -1676,16 +1676,26 @@ function Mafia(mafiachan) {
                             if (target.guarded) {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was protected!");
                             } else if ("kill" in target.role.actions && target.role.actions.kill.mode == "ignore") {
-                                mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
+                                if (!target.role.actions.kill.msg)
+                                    mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
+                                    else mafia.sendPlayer(player.name, target.role.actions.kill.msg.replace(/~Self~/g, target.name));
                             } else if ("kill" in target.role.actions && typeof target.role.actions.kill.mode == "object" && target.role.actions.kill.mode.evadeChance > sys.rand(0,100)/100) {
-                                mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
+                                if (!target.role.actions.kill.msg)
+                                    mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
+                                    else mafia.sendPlayer(player.name, target.role.actions.kill.msg.replace(/~Self~/g, target.name));
                             } else if ("kill" in target.role.actions && typeof target.role.actions.kill.mode == "object" && Array.isArray(target.role.actions.kill.mode.ignore) && target.role.actions.kill.mode.ignore.indexOf(player.role.role) != -1) {
-                                mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
+                                if (!target.role.actions.kill.msg)
+                                    mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded the kill!");
+                                    else mafia.sendPlayer(player.name, target.role.actions.kill.msg.replace(/~Self~/g, target.name));
                             } else {
-                                if (mafia.theme.killusermsg) {
-                                    mafia.sendPlayer(target.name, mafia.theme.killusermsg);
+                                if (!Action.msg) {
+                                    if (mafia.theme.killusermsg) {
+                                        mafia.sendPlayer(target.name, mafia.theme.killusermsg);
+                                    } else {
+                                        mafia.sendPlayer(target.name, "±Game: You were killed during the night!");
+                                    }
                                 } else {
-                                    mafia.sendPlayer(target.name, "±Game: You were killed during the night!");
+                                    mafia.sendPlayer(target.name, Action.msg); // custom kill message for the killer
                                 }
                                 mafia.kill(target);
                                 nightkill = true;
@@ -2508,7 +2518,7 @@ function Mafia(mafiachan) {
             runUpdate();
         }
         return;
-    };
+    };
 
     function runUpdate() {
         if (mafia.needsUpdating !== true) return;

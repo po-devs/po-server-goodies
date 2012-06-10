@@ -51,7 +51,7 @@ var Config = {
 
 // Don't touch anything here if you don't know what you do.
 /*global print*/
-var getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, channel, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, startUpTime, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW;
+var getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, channel, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, startUpTime, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, watchchannel, nameWarns;
 
 if (typeof require === "undefined")
     require = function require(module_name) {
@@ -798,6 +798,7 @@ var commands = {
         "/rangebans: Lists range bans.",
         "/tempbans: Lists temp bans.",
         "/namebans: Lists name bans.",
+        "/namewarns: Lists name warnings.",
         "/endcalls: Ends the next periodic message."
     ],
     admin:
@@ -810,6 +811,8 @@ var commands = {
         "/memorydump: Shows the state of the memory.",
         "/nameban regexp: Adds a regexp ban on usernames.",
         "/nameunban full_regexp: Removes a regexp ban on usernames.",
+        "/namewarn regexp: Adds a namewarning",
+        "/nameunwarn full_regexp: Removes a namewarning",
         "/destroychan [channel]: Destroy a channel (official channels are protected).",
         "/channelusers [channel]: Lists users on a channel.",
         "/[un]watch [channel]: See the chat of a channel"
@@ -881,6 +884,7 @@ init : function() {
     sachannel = SESSION.global().channelManager.createPermChannel("shanaindigo","Welcome MAs and SAs!");
     tourchannel = SESSION.global().channelManager.createPermChannel("Tournaments", 'Useful commands are "/join" (to join a tournament), "/unjoin" (to leave a tournament), "/viewround" (to view the status of matches) and "/megausers" (for a list of users who manage tournaments). Please read the full Tournament Guidelines: http://pokemon-online.eu/forums/showthread.php?2079-Tour-Rules');
     trollchannel = SESSION.global().channelManager.createPermChannel("Mute City", 'This is a place to talk if you have been muted! Please behave, next stop will be bans.');
+    watchchannel = SESSION.global().channelManager.createPermChannel("Watch", "Alerts displayed here");
 
     var dwlist = ["Rattata", "Raticate", "Nidoran-F", "Nidorina", "Nidoqueen", "Nidoran-M", "Nidorino", "Nidoking", "Oddish", "Gloom", "Vileplume", "Bellossom", "Bellsprout", "Weepinbell", "Victreebel", "Ponyta", "Rapidash", "Farfetch'd", "Doduo", "Dodrio", "Exeggcute", "Exeggutor", "Lickitung", "Lickilicky", "Tangela", "Tangrowth", "Kangaskhan", "Sentret", "Furret", "Cleffa", "Clefairy", "Clefable", "Igglybuff", "Jigglypuff", "Wigglytuff", "Mareep", "Flaaffy", "Ampharos", "Hoppip", "Skiploom", "Jumpluff", "Sunkern", "Sunflora", "Stantler", "Poochyena", "Mightyena", "Lotad", "Ludicolo", "Lombre", "Taillow", "Swellow", "Surskit", "Masquerain", "Bidoof", "Bibarel", "Shinx", "Luxio", "Luxray", "Psyduck", "Golduck", "Growlithe", "Arcanine", "Scyther", "Scizor", "Tauros", "Azurill", "Marill", "Azumarill", "Bonsly", "Sudowoodo", "Girafarig", "Miltank", "Zigzagoon", "Linoone", "Electrike", "Manectric", "Castform", "Pachirisu", "Buneary", "Lopunny", "Glameow", "Purugly", "Natu", "Xatu", "Skitty", "Delcatty", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Espeon", "Umbreon", "Leafeon", "Glaceon", "Bulbasaur", "Charmander", "Squirtle", "Ivysaur", "Venusaur", "Charmeleon", "Charizard", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Infernape", "Monferno", "Piplup", "Prinplup", "Empoleon", "Treecko", "Sceptile", "Grovyle", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Caterpie", "Metapod", "Butterfree", "Pidgey", "Pidgeotto", "Pidgeot", "Spearow", "Fearow", "Zubat", "Golbat", "Crobat", "Aerodactyl", "Hoothoot", "Noctowl", "Ledyba", "Ledian", "Yanma", "Yanmega", "Murkrow", "Honchkrow", "Delibird", "Wingull", "Pelipper", "Swablu", "Altaria", "Starly", "Staravia", "Staraptor", "Gligar", "Gliscor", "Drifloon", "Drifblim", "Skarmory", "Tropius", "Chatot", "Slowpoke", "Slowbro", "Slowking", "Krabby", "Kingler", "Horsea", "Seadra", "Kingdra", "Goldeen", "Seaking", "Magikarp", "Gyarados", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Wooper", "Quagsire", "Qwilfish", "Corsola", "Remoraid", "Octillery", "Mantine", "Mantyke", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Barboach", "Whiscash", "Clamperl", "Gorebyss", "Huntail", "Relicanth", "Luvdisc", "Buizel", "Floatzel", "Finneon", "Lumineon", "Tentacool", "Tentacruel", "Corphish", "Crawdaunt", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas", "Milotic", "Shellos", "Gastrodon", "Lapras", "Dratini", "Dragonair", "Dragonite", "Elekid", "Electabuzz", "Electivire", "Poliwag", "Poliwrath", "Politoed", "Poliwhirl", "Vulpix", "Ninetales", "Musharna", "Munna", "Darmanitan", "Darumaka", "Mamoswine", "Togekiss", "Burmy", "Wormadam", "Mothim", "Pichu", "Pikachu", "Raichu","Abra","Kadabra","Alakazam","Spiritomb","Mr. Mime","Mime Jr.","Meditite","Medicham","Meowth","Persian","Shuppet","Banette","Spinarak","Ariados","Drowzee","Hypno","Wobbuffet","Wynaut","Snubbull","Granbull","Houndour","Houndoom","Smoochum","Jynx","Ralts","Gardevoir","Gallade","Sableye","Mawile","Volbeat","Illumise","Spoink","Grumpig","Stunky","Skuntank","Bronzong","Bronzor","Mankey","Primeape","Machop","Machoke","Machamp","Magnemite","Magneton","Magnezone","Koffing","Weezing","Rhyhorn","Rhydon","Rhyperior","Teddiursa","Ursaring","Slugma","Magcargo","Phanpy","Donphan","Magby","Magmar","Magmortar","Larvitar","Pupitar","Tyranitar","Makuhita","Hariyama","Numel","Camerupt","Torkoal","Spinda","Trapinch","Vibrava","Flygon","Cacnea","Cacturne","Absol","Beldum","Metang","Metagross","Hippopotas","Hippowdon","Skorupi","Drapion","Tyrogue","Hitmonlee","Hitmonchan","Hitmontop","Bagon","Shelgon","Salamence","Seel","Dewgong","Shellder","Cloyster","Chinchou","Lanturn","Smeargle","Porygon","Porygon2","Porygon-Z"];
     /* use hash for faster lookup */
@@ -924,7 +928,7 @@ init : function() {
     "",
     "Rule #1 - Do Not Abuse CAPS:",
     "- The occasional word in CAPS is acceptable, however repeated use is not.",
-    "Rule #2 - No Spamming or Flooding",
+    "Rule #2 - No Spamming or Flooding:",
     "- Please do not post a large amount of short messages when you can easily post one or two long messages.",
     "Rule #3 - Do not Challenge Spam:",
     "- If a person refuses your challenge, this means they do not want to battle you. Find someone else to battle with.",
@@ -958,6 +962,17 @@ init : function() {
             var serialized = JSON.parse(sys.getFileContent("nameBans.json"));
             for (var i = 0; i < serialized.nameBans.length; ++i) {
                 nameBans.push(new RegExp(serialized.nameBans[i], "i"));
+            }
+        } catch (e) {
+            // ignore
+        }
+    }
+    if (typeof nameWarns == 'undefined') {
+        nameWarns = [];
+        try {
+            var serialized = JSON.parse(sys.getFileContent("nameWarns.json"));
+            for (var i = 0; i < serialized.nameWarns.length; ++i) {
+                nameWarns.push(new RegExp(serialized.nameWarns[i], "i"));
             }
         } catch (e) {
             // ignore
@@ -1356,6 +1371,11 @@ beforeChannelJoin : function(src, channel) {
             return;
         }
     }
+    if (channel == watchchannel && sys.auth(src) < 1) {
+        sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
+        sys.stopEvent();
+        return;
+    }
 }, /* end of beforeChannelJoin */
 
 beforeChannelCreated : function(chan, name, src) {
@@ -1393,6 +1413,13 @@ beforePlayerBan : function(src, dest) {
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
 },
+
+beforePlayerKick:function(src, dest){
+    var authname = sys.name(src).toLowerCase();
+    authStats[authname] =  authStats[authname] || {};
+    authStats[authname].latestKick = [sys.name(dest), parseInt(sys.time(), 10)];
+},
+
 
 afterNewMessage : function (message) {
     if (message == "Script Check: OK") {
@@ -1459,26 +1486,26 @@ beforeLogIn : function(src) {
             sys.stopEvent();
             return;
     }
-    var arr =  ["172.", "72.20.", "199.255.",
-                "199.58.", "188.227.", "174.129.",
-                "174.36.", "174.37.", "94.46.",
-                "142.16", "156.34.", "67.228.",
-                "183.173.180.", "66.199.",
-                "216.169.110.", "31.3.",
-                "216.169.",
-                "109.200.",
-                "86.187.",
-                "98.226.", /* skarm */
-                "85.17.",
-                "180.191.", /*Tonico*/
-                "187.65.", /* retyples and hax re */
-                "99.140.2" /* gaffpot, the gaff */];
-    for (var i = 0; i < arr.length; i++) {
-        if (ip.substr(0, arr[i].length) == arr[i] &&
-            !sys.dbRegistered(sys.name(src))) {
-            sys.sendAll("Potential ban evader: " + sys.name(src) + " on IP: " + ip, staffchannel);
-        }
-    }
+//    var arr =  ["172.", "72.20.", "199.255.",
+//                "199.58.", "188.227.", "174.129.",
+//                "174.36.", "174.37.", "94.46.",
+//                "142.16", "156.34.", "67.228.",
+//                "183.173.180.", "66.199.",
+//                "216.169.110.", "31.3.",
+//                "216.169.",
+//                "109.200.",
+//                "86.187.",
+//                "98.226.", /* skarm */
+//                "85.17.",
+//                "180.191.", /*Tonico*/
+//                "187.65.", /* retyples and hax re */
+//                "99.140.2" /* gaffpot, the gaff */];
+//    for (var i = 0; i < arr.length; i++) {
+//        if (ip.substr(0, arr[i].length) == arr[i] &&
+//            !sys.dbRegistered(sys.name(src))) {
+//            sys.sendAll("Potential ban evader: " + sys.name(src) + " on IP: " + ip, staffchannel);
+//        }
+//    }
     if (this.nameIsInappropriate(src)) {
         sys.stopEvent();
     }
@@ -1543,6 +1570,18 @@ nameIsInappropriate: function(src)
         return true;
     }
     return false;
+},
+
+nameWarnTest : function(src) {
+    if (sys.auth(src) > 0)
+        return;
+    var lname = sys.name(src).toLowerCase();
+    for (var i = 0; i < nameWarns.length; ++i) {
+        var regexp = nameWarns[i];
+        if (regexp.test(lname)) {
+            sys.sendAll('Namewarning: Name `' + sys.name(src) + '´ matches the following regexp: `' + regexp + '´ on the IP `' + sys.ip(src) + "´.", watchchannel);
+        }
+    }
 },
 
 afterLogIn : function(src) {
@@ -1625,6 +1664,7 @@ afterChangeTeam : function(src)
         sys.kick(src);
         return;
     }
+    this.nameWarnTest(src);
     var POuser = SESSION.users(src);
     var new_name = sys.name(src);
     if (POuser.name != new_name) {
@@ -2426,6 +2466,9 @@ modCommand: function(src, command, commandData, tar) {
         }
         normalbot.sendAll("" + commandData + " was mysteriously kicked by " + nonFlashing(sys.name(src)) + "!");
         sys.kick(tar);
+        var authname = sys.name(src).toLowerCase();
+        authStats[authname] =  authStats[authname] || {};
+        authStats[authname].latestKick = [commandData, parseInt(sys.time(), 10)];
         return;
     }
 
@@ -2605,6 +2648,20 @@ modCommand: function(src, command, commandData, tar) {
             table += '<tr>';
             for (var j = 0; j < 5 && i+j < nameBans.length; ++j) {
                 table += '<td>'+nameBans[i+j].toString()+'</td>';
+            }
+            table += '</tr>';
+        }
+        table += '</table>';
+        sys.sendHtmlMessage(src, table, channel);
+        return;
+    }
+    if (command == "namewarns") {
+        var table = '';
+        table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Namewarnings</strong></center></td></tr>';
+        for (var i = 0; i < nameWarns.length; i+=5) {
+            table += '<tr>';
+            for (var j = 0; j < 5 && i+j < nameWarns.length; ++j) {
+                table += '<td>'+nameWarns[i+j].toString()+'</td>';
             }
             table += '</tr>';
         }
@@ -3096,6 +3153,9 @@ adminCommand: function(src, command, commandData, tar) {
         sys.ban(commandData);
         this.kickAll(ip);
         sys.appendToFile('bans.txt', sys.name(src) + ' banned ' + commandData + "\n");
+        var authname = sys.name(src).toLowerCase();
+        authStats[authname] =  authStats[authname] || {};
+        authStats[authname].latestBan = [commandData, parseInt(sys.time(), 10)];
         return;
     }
     if (command == "unban") {
@@ -3179,6 +3239,42 @@ adminCommand: function(src, command, commandData, tar) {
         if (toDelete >= 0) {
             normalbot.sendChanMessage(src, "You unbanned: " + nameBans[toDelete].toString());
             nameBans.splice(toDelete,1);
+        } else {
+            normalbot.sendChanMessage(src, "No match.");
+        }
+        return;
+    }
+    if (command == "namewarn") {
+        if (commandData === undefined) {
+            normalbot.sendChanMessage(src, "Sorry, can't set warning for empty names.");
+            return;
+        }
+        var regex;
+        try {
+            regex = new RegExp(commandData.toLowerCase()); // incase sensitive
+        } catch (e) {
+            normalbot.sendChanMessage(src, "Sorry, your regular expression '" +commandData + "' fails. (" + e + ")");
+        }
+        nameWarns.push(regex);
+        var serialized = {nameWarns: []};
+        for (var i = 0; i < nameWarns.length; ++i) {
+            serialized.nameWarns.push(nameWarns[i].source);
+        }
+        sys.writeToFile("nameWarns.json", JSON.stringify(serialized));
+        normalbot.sendChanMessage(src, "You set a warning for: " + regex.toString());
+        return;
+    }
+    if (command == "nameunwarn") {
+        var toDelete = -1;
+        for (var i = 0; i < nameWarns.length; ++i) {
+            if (nameWarns[i].toString() == commandData) {
+                toDelete = i;
+                break;
+            }
+        }
+        if (toDelete >= 0) {
+            normalbot.sendChanMessage(src, "You removed a warning for: " + nameWarns[toDelete].toString());
+            nameWarns.splice(toDelete,1);
         } else {
             normalbot.sendChanMessage(src, "No match.");
         }
@@ -3789,6 +3885,7 @@ channelCommand: function(src, command, commandData, tar) {
     if (command == "cmeoff") {
         if (channel === 0 || channel == tourchannel) {
             normalbot.sendChanMessage(src, "/me can't be turned off here.");
+            return;
         }
         this.meoff(src, sys.channel(channel));
         return;
