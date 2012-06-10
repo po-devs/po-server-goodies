@@ -50,8 +50,8 @@ var Config = {
 };
 
 // Don't touch anything here if you don't know what you do.
-/*global print*/
-var getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, channel, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, startUpTime, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, watchchannel, nameWarns, newtourchannel;
+/*global print, script*/
+var getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, channel, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, startUpTime, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, watchchannel, nameWarns, newtourchannel, poScript;
 
 if (typeof require === "undefined")
     require = function require(module_name) {
@@ -842,7 +842,7 @@ var commands = {
  * All the events are defined here
  */
 
-var script = ({
+poScript=({
 /* Executed every second */
 stepEvent: function() {
     if (typeof callplugins == "function") callplugins("stepEvent");
@@ -3692,6 +3692,7 @@ ownerCommand: function(src, command, commandData, tar) {
         if (commandData !== undefined && (commandData.substring(0,7) == 'http://' || commandData.substring(0,8) == 'https://')) {
             updateURL = commandData;
         }
+        var channel_local = channel;
         var changeScript = function(resp) {
             if (resp === "") return;
             try {
@@ -3700,7 +3701,7 @@ ownerCommand: function(src, command, commandData, tar) {
             } catch (err) {
                 sys.changeScript(sys.getFileContent('scripts.js'));
                 normalbot.sendAll('Updating failed, loaded old scripts!', staffchannel);
-                sendChanMessage(src, "ERROR: " + err);
+                sys.sendMessage(src, "ERROR: " + err, channel_local);
                 print(err);
             }
         };
