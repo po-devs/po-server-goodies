@@ -677,7 +677,7 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 		triviabot.sendMessage("Category: "+trivreview.editingCategory,channel);
 		triviabot.sendMessage("Question: "+trivreview.editingQuestion,channel);
 		triviabot.sendMessage("Answer: "+trivreview.editingAnswer,channel);
-		sys.sendAll("",channel);
+		sys.sendMessage("",channel);
 		return;
 	}
     if (trivreview.questionAmount() === 0)
@@ -780,13 +780,13 @@ addAdminCommand("accept", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
 		triviaq.add(trivreview.editingCategory, trivreview.editingQuestion, trivreview.editingAnswer)
 		trivreview.editingMode = false
-		triviabot.sendAll("The question in edit was saved")
+		triviabot.sendAll("The question in edit was saved",channel)
 		return;
 	}
 	var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
 		if((sys.time()-trivreview.declineTime)<=2){
-			triviabot.sendMessage(src, "Please wait before accepting a question")
+			triviabot.sendMessage(src, "Please wait before accepting a question",channel)
 			return;
 		}
 		var id = Object.keys(tr)[0];
@@ -835,13 +835,13 @@ addAdminCommand("editq", function(src, commandData, channel){
 addAdminCommand("decline", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
 		trivreview.editingMode = false
-		triviabot.sendAll("The question in edit was deleted")
+		triviabot.sendAll("The question in edit was deleted",channel)
 		return;
 	}
 	var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
 		if((sys.time()-trivreview.declineTime)<=2){
-			triviabot.sendMessage(src, "Please wait before declining a question")
+			triviabot.sendMessage(src, "Please wait before declining a question",channel)
 			return;
 		}
 		var id = Object.keys(tr)[0];
