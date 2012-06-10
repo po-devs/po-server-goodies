@@ -22,6 +22,7 @@ function TriviaGame()
     this.started = false;
     this.maxPoints = 0;
     this.alreadyUsed = {};
+	//this.alreadyUsedCat = {}; //uncomment when proper defined categories are added
     this.triviaPlayers = {};
     this.submittedAnswers = {};
     this.roundQuestion = 0;
@@ -98,10 +99,20 @@ TriviaGame.prototype.startTriviaRound = function()
     var category = q.category,
         question = q.question,
         answer = q.answer;
+	/*if(this.alreadyUsedCat.hasOwnProperty(category)){
+		sys.delayedCall(function() { Trivia.startTriviaRound(); }, 1);
+        return;
+    }*/
 	this.answeringQuestion = true;
     this.roundQuestion = questionNumber;
     this.htmlAll("<b>Category:</b> "+category.toUpperCase()+"<br>"+question);
     this.alreadyUsed[questionNumber] = true;
+	//this.alreadyUsedCat[category] = true
+	/*sys.delayedCall(function() { 
+		if(Trivia.started !== false){
+			delete(Trivia.alreadyUsedCat[category])
+		}
+	},240)*/ //time is placeholder, maybe make it by round number instead?
     sys.delayedCall(function() {
         Trivia.finalizeAnswers();
     }, 10);
@@ -318,13 +329,16 @@ function QuestionHolder(f)
     }
 }
 
-QuestionHolder.prototype.add = function(category,question,answer)
+QuestionHolder.prototype.add = function(category,question,answer,name)
 {
     var id = this.freeId();
     var q = this.state.questions[id] = {};
     q.category = category;
     q.question = question;
     q.answer = [].concat(answer);
+	if(typeof(name)!==undefined){
+		q.name = name
+	}
     this.save();
     return id;
 };
@@ -355,6 +369,9 @@ QuestionHolder.prototype.checkq = function(id)
 	triviabot.sendAll("Category: "+questionInfo.category,revchan);
 	triviabot.sendAll("Question: "+questionInfo.question,revchan);
 	triviabot.sendAll("Answer: "+questionInfo.answer,revchan);
+	if(questionInfo.name !== "undefined"){
+		triviabot.sendAll("Submitted By: "+questionInfo.name,revchan);
+	}
 	sys.sendAll("",revchan);
 };
 QuestionHolder.prototype.get = function(id)
@@ -508,17 +525,25 @@ addUserCommand("submitq", function(src, commandData, channel) {
     }
     var category = utilities.html_escape(commandData[0]);
     var question = utilities.html_escape(commandData[1]);
-    var answer = commandData[2].split(",");
+	var fixAnswer = commandData[2].replace(/ ,/gi, ",")
+	fixAnswer = fixAnswer.replace(/, /gi, ",")
+	if(fixAnswer[0] === " "){
+		fixAnswer = fixAnswer.substring(1)
+	}
+    var answer = fixAnswer.split(",");
     if (question.indexOf("?")==-1)
     {
         Trivia.sendPM(src,"Your question should have a question mark.", channel);
         return;
      }
-	 var needsreview = false
+	var needsreview = false
 	if (trivreview.questionAmount() === 0){
 		needsreview = true
 	}
-    var id = trivreview.add(category,question,answer);
+
+	var name = sys.name(src)
+    var id = trivreview.add(category,question,answer,name);
+
     Trivia.sendPM(src,"Your question was submitted.", channel);
 	if(needsreview == true){
 		trivreview.checkq(id)
@@ -655,6 +680,9 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 	Trivia.sendPM(src,"Category: "+questionInfo.category,channel);
 	Trivia.sendPM(src,"Question: "+questionInfo.question,channel);
 	Trivia.sendPM(src,"Answer: "+questionInfo.answer,channel);
+	if(questionInfo.name !=="undefined"){
+		Trivia.sendPM(src,"Submitted by :" +questionInfo.name,channel);
+	}
 	sys.sendMessage(src,"",channel);
 },"Allows you to check the current question in review");
 
