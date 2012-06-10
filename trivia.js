@@ -5,10 +5,12 @@ var Bot = require("bot.js").Bot;
 var utilities = require("utilities.js");
 
 var triviabot = new Bot("TriviaBot"),
-    triviachan,
-    revchan;
-
-var Trivia, triviaq, trivreview, tadmin;
+	if(typeof Trivia === "undefined"){
+			Trivia = new TriviaGame();
+			triviaq = new QuestionHolder("triviaq.json");
+			trivreview = new QuestionHolder("trivreview.json");
+			tadmin = new TriviaAdmin("tadmins.txt");
+	}
 
 function time()
 {
@@ -350,6 +352,16 @@ QuestionHolder.prototype.remove = function(id)
 };
 QuestionHolder.prototype.checkq = function(id)
 {
+	if(trivreview.editingMode === true){
+		sys.sendAll("", revchan);
+		triviabot.sendAll("This question needs to be reviewed:",revchan);
+		triviabot.sendAll("EDITING MODE: USE THE CHANGE COMMANDS TO EDIT AND THEN /ACCEPT OR /DECLINE TO DELETE",revchan);
+		triviabot.sendAll("Category: "+trivreview.editingCategory,revchan);
+		triviabot.sendAll("Question: "+trivreview.editingQuestion,revchan);
+		triviabot.sendAll("Answer: "+trivreview.editingAnswer,revchan);
+		sys.sendAll("",revchan);
+	return;
+	}
 	if (trivreview.questionAmount() === 0)
     {
         triviabot.sendAll("There are no more questions to be reviewed.", channel);
@@ -658,6 +670,16 @@ addAdminCommand("apropos", function(src, commandData, channel) {
 
 
 addAdminCommand("checkq", function(src, commandData, channel) {
+	if(trivreview.editingMode === true){
+		sys.sendMessage("", channel);
+		triviabot.sendMessage("This question needs to be reviewed:",channel);
+		triviabot.sendMessage("EDITING MODE: USE THE CHANGE COMMANDS TO EDIT AND THEN /ACCEPT OR /DECLINE TO DELETE",channel);
+		triviabot.sendMessage("Category: "+trivreview.editingCategory,channel);
+		triviabot.sendMessage("Question: "+trivreview.editingQuestion,channel);
+		triviabot.sendMessage("Answer: "+trivreview.editingAnswer,channel);
+		sys.sendAll("",channel);
+		return;
+	}
     if (trivreview.questionAmount() === 0)
     {
         Trivia.sendPM(src,"There are no questions to be reviewed.", channel);
@@ -696,6 +718,12 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 
 // TODO: are these well named? also do versions for already accepted questions
 addAdminCommand("changea", function(src, commandData, channel) {
+	if(trivreview.editingMode === true){
+		trivreview.editingAnswer = commandData.split(",")
+		triviabot.sendMessage(src, "The answer for the current question in edit was changed to "+trivreview.editingAnswer, channel);
+		trivreview.checkq()
+		return;
+	}
 	var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
 		var id = Object.keys(tr)[0]
@@ -709,6 +737,12 @@ addAdminCommand("changea", function(src, commandData, channel) {
 },"Allows you to change an answer to a question in review, format /changea newanswer");
 
 addAdminCommand("changeq", function(src, commandData, channel) {
+	if(trivreview.editingMode === true){
+		trivreview.editingQuestion = commandData
+		triviabot.sendMessage(src, "The question for the current question in edit was changed to "+trivreview.editingQuestion, channel);
+		trivreview.checkq()
+		return;
+	}
    var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
 		var id = Object.keys(tr)[0]
@@ -722,6 +756,12 @@ addAdminCommand("changeq", function(src, commandData, channel) {
 },"Allows you to change the question to a question in review, format /changeq newquestion");
 
 addAdminCommand("changec", function(src, commandData, channel) {
+	if(trivreview.editingMode === true){
+		trivreview.editingCategory = commandData
+		triviabot.sendMessage(src, "The category for the current question in edit was changed to "+trivreview.editingCategory, channel);
+		trivreview.checkq()
+		return;
+	}
     var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
 		var id = Object.keys(tr)[0]
@@ -737,6 +777,12 @@ addAdminCommand("changec", function(src, commandData, channel) {
 // TODO: Maybe announce globally to trivreview when somebody accepts a question?
 
 addAdminCommand("accept", function(src, commandData, channel) {
+	if(trivreview.editingMode === true){
+		triviaq.add(trivreview.editingCategory, trivreview.editingQuestion, trivreview.editingAnswer)
+		trivreview.editingMode = false
+		triviabot.sendAll("The question in edit was saved")
+		return;
+	}
 	var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
 		if((sys.time()-trivreview.declineTime)<=2){
@@ -772,7 +818,26 @@ addAdminCommand("showq", function(src, commandData, channel){
 	triviabot.sendMessage(src, "This question does not exist",channel)	
 },"Allows you to see an already submitted question");
 
+addAdminCommand("editq", function(src, commandData, channel){
+	var q = triviaq.get(commandData);
+	if(q !== null){
+		trivreview.editingMode = true
+		trivreview.editingQuestion = q.question
+		trivreview.editingCategory = q.category
+		trivreview.editingAnswer = q.answer //Moving it to front of queue seemed like a tedious job, so let's cheat it in, instead :3
+		triviaq.remove(commandData)
+		trivreview.checkq() //id isn't needed or shouldn't be needed
+		return;
+	}
+	triviabot.sendMessage(src, "This question does not exist", channel)
+},"Allows you to edit an already submitted question");
+
 addAdminCommand("decline", function(src, commandData, channel) {
+	if(trivreview.editingMode === true){
+		trivreview.editingMode = false
+		triviabot.sendAll("The question in edit was deleted")
+		return;
+	}
 	var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
 		if((sys.time()-trivreview.declineTime)<=2){
@@ -839,12 +904,11 @@ exports.onHelp = function trivia_onHelp(src, commandData, channel)
 
 exports.beforeChannelJoin = function trivia_beforeChannelJoin(src, channel) {
     /* Prevent channel join */
-    if (channel == revchan
-        && sys.auth(src) < 1
-        && !tadmin.isTAdmin(sys.name(src)))
+    if (channel == revchan && sys.auth(src) < 1 && !tadmin.isTAdmin(sys.name(src)))
     {
         sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
-        return true;
+        sys.stopEvent();
+		return;
     }
 };
 
@@ -896,14 +960,14 @@ try { // debug only, do not indent
 
 exports.init = function trivia_init()
 {
-    triviachan = utilities.get_or_create_channel("Trivia");
-    revchan = utilities.get_or_create_channel("TrivReview");
-
-    if (typeof Trivia === "undefined" || Trivia.started === false)
-        Trivia = new TriviaGame();
-    triviaq = new QuestionHolder("triviaq.json");
-    trivreview = new QuestionHolder("trivreview.json");
-    tadmin = new TriviaAdmin("tadmins.txt");
+	triviachan = triviachan
+	revchan = revchan
+	if(typeof Trivia === "undefined"){
+			Trivia = new TriviaGame();
+			triviaq = new QuestionHolder("triviaq.json");
+			trivreview = new QuestionHolder("trivreview.json");
+			tadmin = new TriviaAdmin("tadmins.txt");
+	}
 
     Trivia.sendAll("Trivia is now running!");
 };
