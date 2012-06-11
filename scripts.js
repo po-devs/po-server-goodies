@@ -50,35 +50,34 @@ var Config = {
 };
 
 // Don't touch anything here if you don't know what you do.
-/*global print, script*/
+/*global print, script, sys, SESSION */
 
-if (typeof require === "undefined")
-    require = function require(module_name) {
-        if (require.cache[module_name])
-            return require.cache[module_name];
+var require_cache = typeof require != 'undefined' ? require.cache : {};
+require = function require(module_name) {
+    if (require.cache[module_name])
+        return require.cache[module_name];
 
-        var module = {};
-        module.module = module;
-        module.exports = {};
-        module.source = module_name;
-        with (module) {
-            var content = sys.getFileContent(module_name);
-            if (content) {
-                try {
-                     eval(sys.getFileContent(module_name));
-                } catch(e) {
-                    if (this.staffchannel)
-                        sys.sendAll("Error loading module " + module_name + ": " + e, this.staffchannel);
-                    else
-                        sys.sendAll("Error loading module " + module_name + ": " + e);
-                }
+    var module = {};
+    module.module = module;
+    module.exports = {};
+    module.source = module_name;
+    with (module) {
+        var content = sys.getFileContent(module_name);
+        if (content) {
+            try {
+                 eval(sys.getFileContent(module_name));
+            } catch(e) {
+                if (this.staffchannel)
+                    sys.sendAll("Error loading module " + module_name + ": " + e, this.staffchannel);
+                else
+                    sys.sendAll("Error loading module " + module_name + ": " + e);
             }
         }
-        require.cache[module_name] = module.exports;
-        return module.exports;
-    };
-if (!require.cache)
-    require.cache = {};
+    }
+    require.cache[module_name] = module.exports;
+    return module.exports;
+};
+require.cache = require_cache;
 
 var updateModule = function updateModule(module_name, callback) {
    var base_url = Config.base_url;
@@ -106,7 +105,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, channel, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, startUpTime, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, watchchannel, nameWarns, newtourchannel, poScript, revchan, triviachan;
+var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, startUpTime, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, watchchannel, nameWarns, newtourchannel, poScript, revchan, triviachan;
 
 /* we need to make sure the scripts exist */
 var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js'].concat(Config.Plugins);
