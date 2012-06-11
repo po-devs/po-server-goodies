@@ -596,7 +596,7 @@ function Mafia(mafiachan) {
                         abilities += "Wins the game in any case. ";
                     } else if (Array.isArray(role.winningSides)) {
                         // Argh give me Function.bind already ;~;
-                        abilities += "Wins the game with " + readable(role.winningSides.map(trside), this, "or");
+                        abilities += "Wins the game with " + readable(role.winningSides.map(trside, this), "or");
                     }
                 }
 			}
