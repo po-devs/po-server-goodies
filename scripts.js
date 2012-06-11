@@ -2090,6 +2090,7 @@ userCommand: function(src, command, commandData, tar) {
         var name = sys.name(src) + '\'s '+sys.tier(src)+' team';
         var team = this.importable(src, true).join("\n");
         var post = {};
+        post.api_option            = 'paste';            //  paste, duh
         post.api_dev_key           = pastebin_api_key;   //  Developer's personal key, set in the beginning
         //post.api_user_key          = pastebin_user_key;  //  Pastes are marked to our account
         post.api_paste_private     = 1;                  //  private
