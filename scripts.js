@@ -4524,13 +4524,15 @@ beforeChallengeIssued : function (src, dest, clauses, rated, mode) {
         return;
     }
 
-    var isChallengeCup = (sys.tier(src) == "Challenge Cup" && sys.tier(dest) == "Challenge Cup") || (sys.tier(src) == "1v1 Challenge Cup" && sys.tier(dest) == "1v1 Challenge Cup");
+    var isChallengeCup = (sys.tier(src) == "Challenge Cup" && sys.tier(dest) == "Challenge Cup") || (sys.tier(src) == "CC 1v1" && sys.tier(dest) == "CC 1v1") || (sys.tier(src) == "Wifi CC 1v1" && sys.tier(dest) == "Wifi CC 1v1");
     var hasChallengeCupClause = (clauses % 32) >= 16;
     if (isChallengeCup && !hasChallengeCupClause) {
         checkbot.sendMessage(src, "Challenge Cup must be enabled in the challenge window for a CC battle");
         sys.stopEvent();
         return;
     } else if (!isChallengeCup && hasChallengeCupClause) {
+        checkbot.sendMessage(src, "Challenge Cup must not be enabled in the challenge window for a non CC battle");
+        sys.stopEvent();
         return;
     }
 
