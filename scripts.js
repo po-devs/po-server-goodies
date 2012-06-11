@@ -1869,7 +1869,7 @@ userCommand: function(src, command, commandData, tar) {
         ar = Config.League;
         for (x = 0; x < ar.length; ++x) {
             if (ar[x].length > 0) {
-                sendChanMessage(src, ar[x][0] + " - " + ar[x][1] + " " + (sys.id(ar[x][0]) !== undefined ? "(online):" : "(offline)"));
+                sys.sendHtmlMessage(src, utilities.html_escape(ar[x][0]) + " - " + ar[x][1] + " " + (sys.id(ar[x][0]) !== undefined ? "<span style='color: green'>(online)</span>" : "<span style='color: red'>(offline)</span>"), channel);
             }
         }
         sendChanMessage(src, "");
