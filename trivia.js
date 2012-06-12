@@ -77,7 +77,7 @@ TriviaGame.prototype.startTrivia = function(src,rand)
     this.started = true;
     // TODO: enable when working
     // this.sendAll("A #Trivia game was started! First to "+rand+" points wins!",0);
-    this.sendAll(sys.name(src)+" started a trivia game! First to "+rand+" points wins!");
+    this.sendAll(sys.name(src)+" started a trivia game! First to "+rand+" points wins!",triviachan);
     this.answeringQuestion = false;
     sys.delayedCall(function() { Trivia.startTriviaRound(); },15);
 };
@@ -163,9 +163,9 @@ try { // Do not indent this, it is only until this starts to work
     sys.sendAll("",this.id);
     var incorrectAnswers  = wrongAnswers.length > 0 ? " Incorrect answers: "+ wrongAnswers.join(", ") : "";
     sys.sendHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±TriviaBot:</b></font></font> Time's up!" + incorrectAnswers, this.id);
-    this.sendAll("Answered correctly: " + answeredCorrectly.join(", "));
+    this.sendAll("Answered correctly: " + answeredCorrectly.join(", "),triviachan);
     var x = answers.length != 1 ? "answers were" : "answer was";
-    this.sendAll("The correct "+x+": "+answers.join(", "));
+    this.sendAll("The correct "+x+": "+answers.join(", "),triviachan);
 
     var leaderboard = [];
     var winners = [];
@@ -179,7 +179,7 @@ try { // Do not indent this, it is only until this starts to work
         }
     }
 
-    this.sendAll("Leaderboard: "+leaderboard.join(", "));
+    this.sendAll("Leaderboard: "+leaderboard.join(", "),trivichan);
 
     if (winners.length > 0) {
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
@@ -196,7 +196,7 @@ try { // Do not indent this, it is only until this starts to work
     }
     // initialize next questions
     var rand = sys.rand(17,30);
-    this.sendAll("Please wait " + rand + " seconds until the next question!");
+    this.sendAll("Please wait " + rand + " seconds until the next question!",triviachan);
     sys.delayedCall(function() {
         Trivia.startTriviaRound();
     }, rand);
@@ -251,7 +251,7 @@ TriviaGame.prototype.unjoin = function(src)
     }
     if (this.playerPlaying(src)) {
         this.removePlayer(src);
-        this.sendAll(sys.name(src) + " left the game!");
+        this.sendAll(sys.name(src) + " left the game!",triviahchan);
     } else {
         this.sendPM(src,"You haven't joined the game!");
     }
@@ -265,7 +265,7 @@ TriviaGame.prototype.endTrivia = function(src)
         return;
     }
     this.resetTrivia();
-    this.sendAll(sys.name(src)+" stopped the current trivia game!");
+    this.sendAll(sys.name(src)+" stopped the current trivia game!",triviachan);
     return;
 };
 
@@ -580,7 +580,7 @@ addUserCommand("join", function(src, commandData, channel) {
         return;
     }
     Trivia.addPlayer(src);
-    Trivia.sendAll(sys.name(src)+" joined the game!");
+    Trivia.sendAll(sys.name(src)+" joined the game!",triviachan);
 },"Allows you to join a current game of trivia");
 
 addUserCommand("unjoin", function(src, commandData, channel) {
