@@ -105,7 +105,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, watchchannel, nameWarns, newtourchannel, poScript, revchan, triviachan;
+var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, newtourchannel, poScript, revchan, triviachan, watchchannel;
 
 /* we need to make sure the scripts exist */
 var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js'].concat(Config.Plugins);
@@ -196,8 +196,6 @@ function POUser(id)
     this.sametier = undefined;
     /* name history */
     this.namehistory = [];
-    /* channels watched */
-    this.watched = [];
     /* last line */
     this.lastline = {message: null, time: 0};
     /* login time */
@@ -322,23 +320,11 @@ function POChannel(id)
     this.meoff = undefined;
     this.muted = {ips: {}};
     this.banned = {ips: {}};
-    this.watchers = [];
     this.ignorecaps = false;
     this.ignoreflood = false;
 }
 
 POChannel.prototype.beforeMessage = function(src, msg) {
-   this.watchers = this.watchers || [];
-   for (var i = 0; i < this.watchers.length; i++) {
-        sys.sendMessage(this.watchers[i], "[#" + sys.channel(this.id) + "] " + sys.name(src) + " -- " + msg, staffchannel);
-   }
-};
-
-POChannel.prototype.removeWatcher = function (id) {
-    if (this.watchers !== undefined && this.watchers.indexOf(id) != -1) {
-        var index = this.watchers.indexOf(id);
-        this.watchers = this.watchers.slice(0, index) + this.watchers.slice(index+1);
-    }
 };
 
 POChannel.prototype.toString = function() {
@@ -825,8 +811,7 @@ var commands = {
         "/namewarn regexp: Adds a namewarning",
         "/nameunwarn full_regexp: Removes a namewarning",
         "/destroychan [channel]: Destroy a channel (official channels are protected).",
-        "/channelusers [channel]: Lists users on a channel.",
-        "/[un]watch [channel]: See the chat of a channel"
+        "/channelusers [channel]: Lists users on a channel."
     ],
     owner:
     [
@@ -1646,15 +1631,6 @@ beforeLogOut : function(src) {
         sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Disconnected as MU" + "\n");
     if (sys.auth(src) > 0 && sys.auth(src) <= 3)
         sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Disconnected as Auth" + "\n");
-    var w = SESSION.users(src).watched;
-    if (w !== undefined) {
-       for (var i in w) {
-           var c = SESSION.channels(w[i]);
-           if (c !== undefined) {
-               c.removeWatcher(src);
-           }
-       }
-    }
 },
 
 
@@ -3045,25 +3021,7 @@ adminCommand: function(src, command, commandData, tar) {
         normalbot.sendChanMessage(src, "You turned rainbow on!");
         return;
     }
-    if (command == "watch") {
-        var cid = sys.channelId(commandData);
-        if (cid !== undefined) {
-            SESSION.channels(cid).watchers.push(src);
-            channelbot.sendChanMessage(src, "You're now watching " + sys.channel(cid) + "!");
-            this.watched = this.watched || [];
-            this.watched.push(cid);
-            return;
-        }
-    }
-    if (command == "unwatch") {
-        var cid = sys.channelId(commandData);
-        if (cid !== undefined) {
-            SESSION.channels(cid).removeWatcher(src);
-            channelbot.sendChanMessage(src, "You've stopped watching " + sys.channel(cid) + "!");
-            return;
-        }
-    }
-     if (command == "megauseroff") {
+    if (command == "megauseroff") {
         if (tar !== undefined) {
             SESSION.users(tar).megauser = false;
             normalbot.sendAll("" + sys.name(tar) + " was removed megauser by " + nonFlashing(sys.name(src)) + ".");
