@@ -296,6 +296,7 @@ function initTours() {
 			subtime: parseInt(sys.getVal("tourconfig.txt", "subtime")),
 			activity: parseInt(sys.getVal("tourconfig.txt", "touractivity")),
 			tourbreak: parseInt(sys.getVal("tourconfig.txt", "breaktime")),
+			abstourbreak: parseInt(sys.getVal("tourconfig.txt", "absbreaktime")),
 			reminder: parseInt(sys.getVal("tourconfig.txt", "remindertime")),
 			tourbot: "\u00B1Tours: ",
 			debug: false,
@@ -313,6 +314,7 @@ function initTours() {
 			subtime: 90,
 			activity: 200,
 			tourbreak: 120,
+			abstourbreak: 600,
 			reminder: 30,
 			tourbot: "\u00B1Tours: ",
 			debug: false,
@@ -336,7 +338,7 @@ function initTours() {
 	catch (e) {
 		sys.sendAll("No tour admin data detected, leaving blank", sys.channelId("Tours"))
 	}
-	sys.sendAll("Version 0.91 of tournaments has been loaded successfully!", sys.channelId("Tours"))
+	sys.sendAll("Version 0.93 of tournaments has been loaded successfully!", sys.channelId("Tours"))
 	/* Tournament vars 
 	queue: list of upcoming tours, globaltime: global time keeper, keys: identify each tour, tour: holds all tour data, history: tour history */
 }
@@ -358,7 +360,7 @@ function tourStep() {
 				continue;
 			}
 			var extras = (sys.playersOfChannel(sys.channelId("Tours"))).length - 1
-			tours.globaltime = parseInt(sys.time()) + 600 + 5*extras // 10 mins b/w signups, + 5 secs per user in chan
+			tours.globaltime = parseInt(sys.time()) + Config.Tours.abstourbreak + 5*extras // default 10 mins b/w signups, + 5 secs per user in chan
 			continue;
 		}
 		if (tours.tour[x].state == "subround" && tours.tour[x].time <= parseInt(sys.time())) {
@@ -389,7 +391,7 @@ function tourStep() {
 		}
 		else if (tours.keys.length === 0) {
 			// start a random tour from tourarray
-			var tourarray = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Wifi OU", "DW OU", "DW 1v1"]
+			var tourarray = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Wifi OU", "Wifi UU", "Wifi LU", "Wifi NU", "DW OU", "DW 1v1"]
 			var tourtostart = tourarray[sys.rand(0, tourarray.length)]
 			tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": 5})
 			tours.globaltime = parseInt(sys.time()) + 1200
@@ -669,7 +671,17 @@ function tourCommand(src, command, commandData) {
 					}
 					Config.Tours.tourbreak = value
 					sys.saveVal("tourconfig.txt", "breaktime", value)
-					sendAllTourAuth("Break time now set to "+time_handle(Config.Tours.tourbreak))
+					sendAllTourAuth("Break time (betweeen the finish of one tour and the start of the next) now set to "+time_handle(Config.Tours.tourbreak))
+					return true;
+				}
+				else if (option == 'absbreaktime') {
+					if (value < 300 || value > 1800) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 300 and 1800.",sys.channelId("Tours"))
+						return true;
+					}
+					Config.Tours.abstourbreak = value
+					sys.saveVal("tourconfig.txt", "absbreaktime", value)
+					sendAllTourAuth("Absolute break time (time between starting tours) now set to "+time_handle(Config.Tours.abstourbreak))
 					return true;
 				}
 				else if (option == 'remindertime') {
@@ -961,6 +973,7 @@ function tourCommand(src, command, commandData) {
 				sys.sendMessage(src,"Tour Activity Check: "+time_handle(Config.Tours.activity),sys.channelId("Tours"))
 				sys.sendMessage(src,"Substitute Time: "+time_handle(Config.Tours.subtime),sys.channelId("Tours"))
 				sys.sendMessage(src,"Tour Break Time: "+time_handle(Config.Tours.tourbreak),sys.channelId("Tours"))
+				sys.sendMessage(src,"Absolute Tour Break Time: "+time_handle(Config.Tours.abstourbreak),sys.channelId("Tours"))
 				sys.sendMessage(src,"Tour Reminder Time: "+time_handle(Config.Tours.reminder),sys.channelId("Tours"))
 				sys.sendMessage(src,"Debug: "+Config.Tours.debug,sys.channelId("Tours"))
 				return true;
@@ -1032,7 +1045,7 @@ function tourCommand(src, command, commandData) {
 				if (tours.tour[key].players.length >= 128) {
 					tours.tour[key].time = parseInt(sys.time())
 				}
-				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" is player #"+tours.tour[key].players.length+" to join the "+tours.tour[key].tourtype+" tournament! "+(tours.tour[key].time - parseInt(sys.time()))+" seconds remaining!", sys.channelId("Tours"))
+				sys.sendHtmlAll("<timestamp/> <b>"+html_escape(Config.Tours.tourbot+sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(tours.tour[key].tourtype)+" tournament! "+(tours.tour[key].time - parseInt(sys.time()))+" seconds remaining!", sys.channelId("Tours"))
 				return true;
 			}
 			/* subbing */
@@ -1063,7 +1076,7 @@ function tourCommand(src, command, commandData) {
 			var newname = sys.name(src).toLowerCase()
 			tours.tour[key].players.splice(index,1,newname)
 			tours.tour[key].cpt += 1
-			sys.sendAll(Config.Tours.tourbot+"Late entrant "+sys.name(src)+" will play against "+(index%2 == 0 ? tours.tour[key].players[index+1] : tours.tour[key].players[index-1])+" in the "+tours.tour[key].tourtype+" tournament. "+(tours.tour[key].players.length - tours.tour[key].cpt)+" subs remaining.", sys.channelId("Tours"))
+			sys.sendAll(Config.Tours.tourbot+"Late entrant "+sys.name(src)+" will play against "+(index%2 == 0 ? tours.tour[key].players[index+1] : tours.tour[key].players[index-1])+" in the "+tours.tour[key].tourtype+" tournament. "+(tours.tour[key].players.length - tours.tour[key].cpt)+" sub"+(tours.tour[key].players.length - tours.tour[key].cpt == 1 ? "" : "s") + "remaining.", sys.channelId("Tours"))
 			return true;
 		}
 		if (command == "unjoin") {
@@ -1270,6 +1283,7 @@ function removeinactive(key) {
 		sendDebugMessage("Removing Inactive Players", sys.channelId("Tours"))
 		var activelist = tours.tour[key].active;
 		var playercycle = tours.tour[key].players.length
+		var currentround = tours.tour[key].round
 		for (var z=0;z<playercycle;z+=2) {
 			var player1 = tours.tour[key].players[z]
 			var player2 = tours.tour[key].players[z+1]
@@ -1324,6 +1338,10 @@ function removeinactive(key) {
 			else if ((tours.tour[key].time-parseInt(sys.time()))%60 === 0){
 				sys.sendAll(Config.Tours.tourbot+toCorrectCase(player1)+" and "+toCorrectCase(player2)+" are both active, please battle in the "+tours.tour[key].tourtype+" tournament ASAP!", sys.channelId("Tours"))
 			}
+			// if the round advances due to DQ, don't keep checking :x
+			if (tours.tour[key].round !== currentround) {
+				break;
+			}
 		}
 	}
 	catch (err) {
@@ -1351,10 +1369,10 @@ function sendReminder(key) {
 			}
 			else if (sys.id(player) !== undefined) {
 				if (sys.isInChannel(sys.id(player), sys.channelId("Tours"))) {
-					sys.sendHtmlMessage(sys.id(player), "<ping/><timestamp/> "+Config.Tours.tourbot+toCorrectCase(player)+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(tours.tour[key].tourtype)+"</b> tournament, otherwise you may be disqualified for inactivity!", sys.channelId("Tours"))
+					sys.sendHtmlMessage(sys.id(player), "<ping/><font color=red><timestamp/> "+Config.Tours.tourbot+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(tours.tour[key].tourtype)+"</b> tournament, otherwise you may be disqualified for inactivity!</font>", sys.channelId("Tours"))
 				}
 				else {
-					sys.sendHtmlMessage(sys.id(player), "<ping/><timestamp/> "+Config.Tours.tourbot+toCorrectCase(player)+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(tours.tour[key].tourtype)+"</b> tournament, otherwise you may be disqualified for inactivity!")
+					sys.sendHtmlMessage(sys.id(player), "<ping/><font color=red><timestamp/> "+Config.Tours.tourbot+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(tours.tour[key].tourtype)+"</b> tournament, otherwise you may be disqualified for inactivity!</font>")
 					sys.sendMessage(sys.id(player), Config.Tours.tourbot+"Please rejoin the #Tours channel to ensure you do not miss out on information you need!", sys.channelId("Tours"))
 				}
 			}
@@ -1508,9 +1526,9 @@ function advanceround(key) {
 				newlist.push("~Bye~")
 			}
 		}
-		for (var x in newlist) {
-			if (isSub(newlist[x])) {
-				newlist[x] = "~Bye~"
+		for (var y in newlist) {
+			if (isSub(newlist[y])) {
+				newlist.splice(y,1,"~Bye~");
 			}
 		}
 		tours.tour[key].winners = []
@@ -1773,9 +1791,9 @@ function tourprintbracket(key) {
 				awardTourPoints(winner.toLowerCase(), tours.tour[key].cpt, tours.tour[key].tourtype)
 			}
 			else sys.sendAll(Config.Tours.tourbot+"The tournament ended by default!", channels[x])
-			tours.history.push(tours.tour[key].tourtype+": Won by "+winner+" with "+tours.tour[key].cpt+" players")
+			tours.history.unshift(tours.tour[key].tourtype+": Won by "+winner+" with "+tours.tour[key].cpt+" players")
 			if (tours.history.length > 25) {
-				tours.history.shift()
+				tours.history.pop()
 			}
 			delete tours.tour[key];
 			tours.keys.splice(tours.keys.indexOf(key), 1);
@@ -1828,7 +1846,7 @@ function tourprintbracket(key) {
 				for (var x=0; x<tours.tour[key].players.length; x+=2) {
 					sys.sendAll("("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+") "+toCorrectCase(tours.tour[key].players[x]) +" VS "+ toCorrectCase(tours.tour[key].players[x+1])+" ("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")", sys.channelId("Tours"))
 				}
-				if (tours.tour[key].cpt !== tours.tour[key].players.length) {
+				if (subsExist) {
 					sys.sendAll("*** Type /join to join late, good while subs last! ***", sys.channelId("Tours"))
 				}
 				sys.sendAll(border, sys.channelId("Tours"))
