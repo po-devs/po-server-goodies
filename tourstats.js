@@ -121,7 +121,7 @@ var commandHandlers = {
         for (var i = tourwinners.length-1; i >= tourwinners.length-cycleLength && i >= 0; --i) {
             a.push(tourwinners[i][0]);
         }
-        tourneybot.sendChanMessage(src, "Recently played tiers are: " + a.join(", "));
+        tourneybot.sendMessage(src, "Recently played tiers are: " + a.join(", "),channel);
     },
     lastwinners: function lastwinners(src, command, commandData, channel) {
         // tourwinners.push([tier, time, num, winner]);
@@ -138,7 +138,7 @@ var commandHandlers = {
             list.push([tourstats[p].points, p]);
         }
         list.sort(function(a,b) { return b[0] - a[0] ; });
-        sendChanMessage(src, "*** Global tourney points ***");
+        sys.sendMessage(src, "*** Global tourney points ***",channel);
         if (list.length > 0) {
             for (var i in list) {
                 if (i == 10) break;
@@ -147,12 +147,12 @@ var commandHandlers = {
                 sys.sendHtmlMessage(src, "<timestamp/><b>" + pos + ".</b> " + data[1] + " <b>-</b> " + data[0] + " points", channel);
             }
         } else {
-            sendChanMessage(src, "No tourney wins!");
+            sys.sendMessage(src, "No tourney wins!",channel);
         }
     },
     tourranking: function tourranking(src, command, commandData, channel) {
         if (commandData === undefined) {
-            rankingbot.sendChanMessage(src, "You must specify tier!");
+            rankingbot.sendMessage(src, "You must specify tier!",channel);
             return;
         }
         var rankings;
@@ -165,7 +165,7 @@ var commandHandlers = {
             }
         }
         if (tierName === undefined) {
-            rankingbot.sendChanMessage(src, "No statistics exist for that tier!");
+            rankingbot.sendMessage(src, "No statistics exist for that tier!",channel);
             return;
         }
         var list = [];
@@ -187,7 +187,7 @@ var commandHandlers = {
     },
     tourdetails: function tourdetails(src, command, commandData, channel) {
         if (commandData === undefined) {
-            rankingbot.sendChanMessage(src, "You must specify user!");
+            rankingbot.sendMessage(src, "You must specify user!",channel);
             return;
         }
         var name = commandData.toLowerCase();
@@ -201,7 +201,7 @@ var commandHandlers = {
                 sys.sendHtmlMessage(src, "<timestamp/>" + green("Win on")+ details[i][0] + green("tournament with") + details[i][2] + green("entrants") + (dayDiff > 1 ? '' + dayDiff + green("days ago") : dayDiff == 1 ? green("yesterday") : dayDiff == 0 ? green('today') : green('in the future')), channel);
             }
         } else {
-            rankingbot.sendChanMessage(src, commandData+" has not won any tournaments recently.");
+            rankingbot.sendMessage(src, commandData+" has not won any tournaments recently.",channel);
         }
     },
 
