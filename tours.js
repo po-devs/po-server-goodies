@@ -1467,6 +1467,7 @@ function removesubs(key) {
 function removebyes(key) {
 	try {
 		var playercycle = tours.tour[key].players.length
+		var currentround = tours.tour[key].round
 		for (var z=0;z<playercycle;z+=2) {
 			if (tours.tour[key].players[z] == "~Bye~" && tours.tour[key].players[z+1] == "~Bye~") {
 				dqboth("~Bye~","~Bye~",key)
@@ -1476,6 +1477,10 @@ function removebyes(key) {
 			}
 			else if (tours.tour[key].players[z+1] == "~Bye~") {
 				disqualify("~Bye~",key)
+			}
+			// if the round advances due to DQ, don't keep checking :x
+			if (tours.tour[key].round !== currentround) {
+				break;
 			}
 		}
 	}
