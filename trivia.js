@@ -855,7 +855,7 @@ addAdminCommand("decline", function(src, commandData, channel) {
 	triviabot.sendMessage(src, "No more questions!",channel);
 },"Allows you to decline the current question in review");
 addAdminCommand("resetvars", function(src, commandData, channel) {
-	if(sys.name(src).toLowerCase() !== "lamperi" || sys.name(src).toLowerCase() !== "ethan" || sys.name(src).toLowerCase() !== "crystal moogle"){
+	if(sys.name(src).toLowerCase() !== "lamperi" && sys.name(src).toLowerCase() !== "ethan" && sys.name(src).toLowerCase() !== "crystal moogle"){
 		return;
 	}
 	Trivia = new TriviaGame();
