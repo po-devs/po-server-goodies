@@ -970,7 +970,7 @@ try { // debug only, do not indent
 
 exports.init = function trivia_init()
 {
-	triviachan = sys.channelid('Trivia')
+	triviachan = sys.channelId('Trivia')
 	revchan = sys.channelId('TrivReview')
 	if(typeof Trivia === "undefined"){
 			Trivia = new TriviaGame();
