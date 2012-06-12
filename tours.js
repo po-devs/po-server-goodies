@@ -1076,7 +1076,7 @@ function tourCommand(src, command, commandData) {
 			var newname = sys.name(src).toLowerCase()
 			tours.tour[key].players.splice(index,1,newname)
 			tours.tour[key].cpt += 1
-			sys.sendAll(Config.Tours.tourbot+"Late entrant "+sys.name(src)+" will play against "+(index%2 == 0 ? tours.tour[key].players[index+1] : tours.tour[key].players[index-1])+" in the "+tours.tour[key].tourtype+" tournament. "+(tours.tour[key].players.length - tours.tour[key].cpt)+" sub"+(tours.tour[key].players.length - tours.tour[key].cpt == 1 ? "" : "s") + "remaining.", sys.channelId("Tours"))
+			sys.sendAll(Config.Tours.tourbot+"Late entrant "+sys.name(src)+" will play against "+(index%2 == 0 ? tours.tour[key].players[index+1] : tours.tour[key].players[index-1])+" in the "+tours.tour[key].tourtype+" tournament. "+(tours.tour[key].players.length - tours.tour[key].cpt)+" sub"+(tours.tour[key].players.length - tours.tour[key].cpt == 1 ? "" : "s") + " remaining.", sys.channelId("Tours"))
 			return true;
 		}
 		if (command == "unjoin") {
@@ -1930,7 +1930,7 @@ function isValidTourBattle(src,dest,clauses,mode,key) {
 			return invalidmsg;
 		}
 		/* We allow Disallow Spects to be used for all rounds except finals */
-		else if (tours.tour[key].state == "final" && clauses%8 >= 4 && tierclauses%8 < 4) {
+		else if (tours.tour[key].state == "final" && clauses%8 >= 4) {
 			return "Disallow Spects is prohibited in finals matches."
 		}
 		else if (sys.tier(src) != tours.tour[key].tourtype) {
