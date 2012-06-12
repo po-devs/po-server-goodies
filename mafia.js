@@ -1525,9 +1525,12 @@ function Mafia(mafiachan) {
                 if ("recharge" in Action) { // a command that can only be used once every X nights
                      rechargeCount = Action.recharge;
                 }
-				if ("failChance" in Action && Action.failChance > Math.random()) {
+                //Fail chance for common:Role and Team
+				if (["Role", "Team"].indexOf(Action.common) != -1 && "failChance" in Action && Action.failChance > Math.random()) {
 					for (var f in names) {
-						mafia.sendPlayer(names[f], "±Game: You couldn't " + o.action + " this night!");
+						if (mafia.getTargetsFor(mafia.players[names[f]], o.action).length > 0) {
+							mafia.sendPlayer(names[f], "±Game: You couldn't " + o.action + " this night!");
+						}
 					}
 					continue;
 				}
@@ -1536,7 +1539,14 @@ function Mafia(mafiachan) {
                     player = mafia.players[names[j]];
                     var targets = mafia.getTargetsFor(player, o.action);
                     var target, t; // current target
-
+                    
+                    //Fail chance for common:Self
+					if (Action.common == "Self" && "failChance" in Action && Action.failChance > Math.random()) {
+						if (targets.length > 0) {
+							mafia.sendPlayer(player.name, "±Game: You couldn't " + o.action + " this night!");
+						}
+						continue;
+					}
                     // Limit the use of this command for the following nights
                     if (rechargeCount > 0 && targets.length > 0) {
                         // set the recharge period
