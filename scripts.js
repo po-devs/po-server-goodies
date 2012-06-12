@@ -106,7 +106,6 @@ var updateModule = function updateModule(module_name, callback) {
 };
 
 var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, watchchannel, nameWarns, newtourchannel, poScript, revchan, triviachan;
-var startUpTime = (typeof startUptime == "number") ? startUpTime : parseInt(sys.time(), 10);
 
 /* we need to make sure the scripts exist */
 var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js'].concat(Config.Plugins);
@@ -879,7 +878,7 @@ startStepEvent: function() {
 },
 
 serverStartUp : function() {
-    startUpTime = parseInt(sys.time(), 10);
+    SESSION.global().startUpTime = parseInt(sys.time(), 10);
     scriptChecks = 0;
     this.init();
 },
@@ -1603,8 +1602,8 @@ afterLogIn : function(src) {
     }
 
     countbot.sendMessage(src, "Max number of players online was " + sys.getVal("MaxPlayersOnline") + ".");
-    if (typeof startUpTime == "number") {
-        var diff = parseInt(sys.time(), 10) - startUpTime;
+    if (typeof SESSION.global().startUpTime == "number") {
+        var diff = parseInt(sys.time(), 10) - SESSION.global().startUpTime;
         var days = parseInt(diff / (60*60*24), 10);
         var hours = parseInt((diff % (60*60*24)) / (60*60), 10);
         var minutes = parseInt((diff % (60*60)) / 60, 10);
@@ -2068,11 +2067,11 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "uptime") {
-        if (typeof startUpTime != "number") {
+        if (typeof SESSION.global().startUpTime != "number") {
             countbot.sendChanMessage(src, "Somehow the server uptime is messed up...");
             return;
         }
-        var diff = parseInt(sys.time(), 10) - startUpTime;
+        var diff = parseInt(sys.time(), 10) - SESSION.global().startUpTime;
         var days = parseInt(diff / (60*60*24), 10);
         var hours = parseInt((diff % (60*60*24)) / (60*60), 10);
         var minutes = parseInt((diff % (60*60)) / 60, 10);
