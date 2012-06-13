@@ -1783,7 +1783,7 @@ userCommand: function(src, command, commandData, tar) {
                 }
             });
             sys.stopEvent();
-            this.afterChatMessage(src, '/'+command+ ' '+commandData);
+            this.afterChatMessage(src, '/'+command+ ' '+commandData,channel);
             return;
         }
 
@@ -1810,7 +1810,7 @@ userCommand: function(src, command, commandData, tar) {
             toSend.push(commandData);
             sys.sendHtmlAll(toSend.join(""), channel);
         }
-        this.afterChatMessage(src, '/'+command+' '+commandData);
+        this.afterChatMessage(src, '/'+command+' '+commandData,channel);
         return;
     }
     if (command == "megausers") {
