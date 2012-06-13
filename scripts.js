@@ -2811,6 +2811,13 @@ modCommand: function(src, command, commandData, tar) {
         for(var i = 0; i < aliases.length; ++i) {
             var id = sys.id(aliases[i]);
             var status = (id !== undefined) ? "online" : "Last Login: " + sys.dbLastOn(aliases[i]);
+            if(sys.dbAuth(aliases[i])>sys.auth(src) && aliases[i] !== commandData.toLowerCase()){
+                continue;
+            }
+            if(sys.dbAuth(aliases[i])>sys.auth(src) && aliases[i] === commandData.toLowerCase()){
+                smessage = "The aliases for the IP " + ip + " are: " + aliases[i] + " ("+status+"), ";
+                break;
+            }
             smessage = smessage + aliases[i] + " ("+status+"), ";
             if (smessage.length > max_message_length) {
                 querybot.sendChanMessage(src, prefix + smessage + " ...");
