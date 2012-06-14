@@ -3519,7 +3519,7 @@ ownerCommand: function(src, command, commandData, tar) {
                 var cid = cids[i];
                 if (sys.isInChannel(sayer, cid))
                     if (html)
-                        sys.sendAll(utilities.html_escape(sys.name(sayer)) + ": " + what, cid);
+                        sys.sendHtmlAll(utilities.html_escape(sys.name(sayer)) + ": " + what, cid);
                     else
                         sys.sendAll(sys.name(sayer) + ": " + what, cid);
             }
