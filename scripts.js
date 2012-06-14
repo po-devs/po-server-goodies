@@ -1783,7 +1783,7 @@ userCommand: function(src, command, commandData, tar) {
                 }
             });
             sys.stopEvent();
-            this.afterChatMessage(src, '/'+command+ ' '+commandData);
+            this.afterChatMessage(src, '/'+command+ ' '+commandData,channel);
             return;
         }
 
@@ -1810,7 +1810,7 @@ userCommand: function(src, command, commandData, tar) {
             toSend.push(commandData);
             sys.sendHtmlAll(toSend.join(""), channel);
         }
-        this.afterChatMessage(src, '/'+command+' '+commandData);
+        this.afterChatMessage(src, '/'+command+' '+commandData,channel);
         return;
     }
     if (command == "megausers") {
@@ -2811,6 +2811,13 @@ modCommand: function(src, command, commandData, tar) {
         for(var i = 0; i < aliases.length; ++i) {
             var id = sys.id(aliases[i]);
             var status = (id !== undefined) ? "online" : "Last Login: " + sys.dbLastOn(aliases[i]);
+            if(sys.dbAuth(aliases[i])>sys.auth(src) && aliases[i] !== commandData.toLowerCase() && sys.auth(src) < 3){
+                continue;
+            }
+            if(sys.dbAuth(aliases[i])>sys.auth(src) && aliases[i] === commandData.toLowerCase() && sys.auth(src) < 3){
+                smessage = "The aliases for the IP " + ip + " are: " + aliases[i] + " ("+status+"), ";
+                break;
+            }
             smessage = smessage + aliases[i] + " ("+status+"), ";
             if (smessage.length > max_message_length) {
                 querybot.sendChanMessage(src, prefix + smessage + " ...");
