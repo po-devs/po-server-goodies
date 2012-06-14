@@ -4,16 +4,17 @@ var Bot = require("bot.js").Bot;
 
 var utilities = require("utilities.js");
 
+var triviachan, revchan;
 var triviabot = new Bot("TriviaBot"),
-	if(typeof Trivia === "undefined"){
-			Trivia = new TriviaGame();
-			triviaq = new QuestionHolder("triviaq.json");
-			trivreview = new QuestionHolder("trivreview.json");
-			tadmin = new TriviaAdmin("tadmins.txt");
-	}
+	Trivia = new TriviaGame(),
+	triviaq = new QuestionHolder("triviaq.json"),
+	trivreview = new QuestionHolder("trivreview.json"),
+	tadmin = new TriviaAdmin("tadmins.txt");
 
 function time()
 {
+    // Date.now() returns milliseconds since epoch,
+    // by multiplying by 1000 we get seconds.
     return Date.now() * 1000;
 }
 
@@ -110,7 +111,7 @@ TriviaGame.prototype.startTriviaRound = function()
     this.htmlAll("<b>Category:</b> "+category.toUpperCase()+"<br>"+question);
     this.alreadyUsed[questionNumber] = true;
 	//this.alreadyUsedCat[category] = true
-	/*sys.delayedCall(function() { 
+	/*sys.delayedCall(function() {
 		if(Trivia.started !== false){
 			delete(Trivia.alreadyUsedCat[category])
 		}
@@ -148,7 +149,7 @@ try { // Do not indent this, it is only until this starts to work
             {
                 var responseTime = this.submittedAnswers[id].time;
                 var realTime = time();
-                var minus = (realTime - responseTime) / 1000; // returns milliseconds so multiply by 1000
+                var minus = realTime - responseTime;
                 var pointAdd = minus > 6 ? 5 : (minus < 7 && minus > 3 ? 3 : 2);
 				// TODO: check answer length, and base pointAdd off of that?
 
@@ -339,7 +340,7 @@ QuestionHolder.prototype.add = function(category,question,answer,name)
     q.question = question;
     q.answer = [].concat(answer);
 	if(typeof(name)!==undefined){
-		q.name = name
+		q.name = name;
 	}
     this.save();
     return id;
@@ -360,11 +361,11 @@ QuestionHolder.prototype.checkq = function(id)
 		triviabot.sendAll("Question: "+trivreview.editingQuestion,revchan);
 		triviabot.sendAll("Answer: "+trivreview.editingAnswer,revchan);
 		sys.sendAll("",revchan);
-	return;
+        return;
 	}
 	if (trivreview.questionAmount() === 0)
     {
-        triviabot.sendAll("There are no more questions to be reviewed.", channel);
+        triviabot.sendAll("There are no more questions to be reviewed.", revchan);
         return;
     }
 	var q = trivreview.all();
@@ -521,7 +522,7 @@ addAdminCommand("removeq", function(src,commandData,channel) {
 	var q = triviaq.get(commandData);
 	if(q !== null){
 		triviabot.sendAll(sys.name(src)+" removed question: id, "+commandData +" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
-		triviaq.remove(commandData)
+		triviaq.remove(commandData);
 		return;
 	}
 	Trivia.sendPM(src,"Oops! Question doesn't exist",channel);
@@ -537,28 +538,24 @@ addUserCommand("submitq", function(src, commandData, channel) {
     }
     var category = utilities.html_escape(commandData[0]);
     var question = utilities.html_escape(commandData[1]);
-	var fixAnswer = commandData[2].replace(/ ,/gi, ",")
-	fixAnswer = fixAnswer.replace(/, /gi, ",")
-	if(fixAnswer[0] === " "){
-		fixAnswer = fixAnswer.substring(1)
-	}
+	var fixAnswer = commandData[2].replace(/ *, */gi, ",").replace(/^ +/, "");
     var answer = fixAnswer.split(",");
     if (question.indexOf("?")==-1)
     {
         Trivia.sendPM(src,"Your question should have a question mark.", channel);
         return;
      }
-	var needsreview = false
+	var needsreview = false;
 	if (trivreview.questionAmount() === 0){
-		needsreview = true
+		needsreview = true;
 	}
 
-	var name = sys.name(src)
+	var name = sys.name(src);
     var id = trivreview.add(category,question,answer,name);
 
     Trivia.sendPM(src,"Your question was submitted.", channel);
-	if(needsreview == true){
-		trivreview.checkq(id)
+	if (needsreview){
+		trivreview.checkq(id);
 	}
 	// Enable if needed, but this might spam trivreview...
     // Trivia.sendAll(sys.name(src)+" submitted a question with id " + id +" !",revchan);
@@ -719,90 +716,90 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 // TODO: are these well named? also do versions for already accepted questions
 addAdminCommand("changea", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
-		trivreview.editingAnswer = commandData.split(",")
+		trivreview.editingAnswer = commandData.split(",");
 		triviabot.sendMessage(src, "The answer for the current question in edit was changed to "+trivreview.editingAnswer, channel);
-		trivreview.checkq()
+		trivreview.checkq();
 		return;
 	}
 	var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
-		var id = Object.keys(tr)[0]
-		var answer = commandData.split(",")
+		var id = Object.keys(tr)[0];
+		var answer = commandData.split(",");
 		trivreview.changeAnswer(id, answer);
 		triviabot.sendMessage(src,"The answer for ID #"+id+" was changed to "+answer+"", channel);
-		trivreview.checkq(id)
+		trivreview.checkq(id);
 		return;
 	}
-	triviabot.sendMessage(src, "No question")
+	triviabot.sendMessage(src, "No question");
 },"Allows you to change an answer to a question in review, format /changea newanswer");
 
 addAdminCommand("changeq", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
-		trivreview.editingQuestion = commandData
+		trivreview.editingQuestion = commandData;
 		triviabot.sendMessage(src, "The question for the current question in edit was changed to "+trivreview.editingQuestion, channel);
-		trivreview.checkq()
+		trivreview.checkq();
 		return;
 	}
    var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
-		var id = Object.keys(tr)[0]
-		var question = commandData
+		var id = Object.keys(tr)[0];
+		var question = commandData;
 		trivreview.changeQuestion(id, question);
 		triviabot.sendMessage(src,"The question for ID #"+id+" was changed to "+question+"", channel);
-		trivreview.checkq(id)
+		trivreview.checkq(id);
 		return;
 	}
-	triviabot.sendMessage(src, "No question")
+	triviabot.sendMessage(src, "No question");
 },"Allows you to change the question to a question in review, format /changeq newquestion");
 
 addAdminCommand("changec", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
-		trivreview.editingCategory = commandData
+		trivreview.editingCategory = commandData;
 		triviabot.sendMessage(src, "The category for the current question in edit was changed to "+trivreview.editingCategory, channel);
-		trivreview.checkq()
+		trivreview.checkq();
 		return;
 	}
     var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
-		var id = Object.keys(tr)[0]
-		var category = commandData
+		var id = Object.keys(tr)[0];
+		var category = commandData;
 		trivreview.changeCategory(id, category);
 		triviabot.sendMessage(src,"The category for ID #"+id+" was changed to "+category+"", channel);
-		trivreview.checkq(id)
+		trivreview.checkq(id);
 		return;
 	}
-	triviabot.sendMessage(src, "No question")
+	triviabot.sendMessage(src, "No question");
 },"Allows you to change the category to a question in review, format /changec newcategory");
 
 // TODO: Maybe announce globally to trivreview when somebody accepts a question?
 
 addAdminCommand("accept", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
-		triviaq.add(trivreview.editingCategory, trivreview.editingQuestion, trivreview.editingAnswer)
-		trivreview.editingMode = false
-		triviabot.sendAll("The question in edit was saved",channel)
+		triviaq.add(trivreview.editingCategory, trivreview.editingQuestion, trivreview.editingAnswer);
+		trivreview.editingMode = false;
+		triviabot.sendAll("The question in edit was saved",channel);
 		return;
 	}
 	var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
-		if((sys.time()-trivreview.declineTime)<=2){
-			triviabot.sendMessage(src, "Please wait before accepting a question",channel)
+		if((time()-trivreview.declineTime)<=2){
+			triviabot.sendMessage(src, "Please wait before accepting a question",channel);
 			return;
 		}
 		var id = Object.keys(tr)[0];
 		var q = trivreview.get(id);
 		triviaq.add(q.category,q.question,q.answer);
-		var all = triviaq.all();
+		var all = triviaq.all(), qid;
 		for (var b in all){
 			var qu = triviaq.get(b);
 			if(qu.question===q.question){
-				var qid = b
+				qid = b;
 			}
 		}
 		triviabot.sendAll(sys.name(src)+" accepted question: id, "+qid+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
-		trivreview.declineTime = sys.time()
+		trivreview.declineTime = time();
 		trivreview.remove(id);
-		trivreview.checkq(id+1)
+		trivreview.checkq(id+1);
 		return;
 	}
 	triviabot.sendMessage(src, "No more questions!",channel);
@@ -812,44 +809,44 @@ addAdminCommand("accept", function(src, commandData, channel) {
 addAdminCommand("showq", function(src, commandData, channel){
 	var q = triviaq.get(commandData);
 	if(q !== null){
-		triviabot.sendMessage(src, "Question ID: "+ commandData +", Question: "+ q.question + ", Category: "+ q.category + ", Answer(s): " + q.answer, channel)
+		triviabot.sendMessage(src, "Question ID: "+ commandData +", Question: "+ q.question + ", Category: "+ q.category + ", Answer(s): " + q.answer, channel);
 		return;
 	}
-	triviabot.sendMessage(src, "This question does not exist",channel)	
+	triviabot.sendMessage(src, "This question does not exist",channel);
 },"Allows you to see an already submitted question");
 
 addAdminCommand("editq", function(src, commandData, channel){
 	var q = triviaq.get(commandData);
 	if(q !== null){
-		trivreview.editingMode = true
-		trivreview.editingQuestion = q.question
-		trivreview.editingCategory = q.category
-		trivreview.editingAnswer = q.answer //Moving it to front of queue seemed like a tedious job, so let's cheat it in, instead :3
-		triviaq.remove(commandData)
-		trivreview.checkq() //id isn't needed or shouldn't be needed
+		trivreview.editingMode = true;
+		trivreview.editingQuestion = q.question;
+		trivreview.editingCategory = q.category;
+		trivreview.editingAnswer = q.answer; //Moving it to front of queue seemed like a tedious job, so let's cheat it in, instead :3
+		triviaq.remove(commandData);
+		trivreview.checkq(); //id isn't needed or shouldn't be needed
 		return;
 	}
-	triviabot.sendMessage(src, "This question does not exist", channel)
+	triviabot.sendMessage(src, "This question does not exist", channel);
 },"Allows you to edit an already submitted question");
 
 addAdminCommand("decline", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
-		trivreview.editingMode = false
-		triviabot.sendAll("The question in edit was deleted",channel)
+		trivreview.editingMode = false;
+		triviabot.sendAll("The question in edit was deleted",channel);
 		return;
 	}
 	var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
-		if((sys.time()-trivreview.declineTime)<=2){
-			triviabot.sendMessage(src, "Please wait before declining a question",channel)
+		if((time()-trivreview.declineTime)<=2){
+			triviabot.sendMessage(src, "Please wait before declining a question",channel);
 			return;
 		}
 		var id = Object.keys(tr)[0];
 		var q = trivreview.get(id);
 		triviabot.sendAll(sys.name(src)+" declined question: id, "+id+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
-		trivreview.declineTime = sys.time()
- 		trivreview.remove(id);
-		trivreview.checkq(id+1)
+		trivreview.declineTime = time();
+        trivreview.remove(id);
+		trivreview.checkq(id+1);
 		return;
 	}
 	triviabot.sendMessage(src, "No more questions!",channel);
@@ -862,7 +859,7 @@ addAdminCommand("resetvars", function(src, commandData, channel) {
 	triviaq = new QuestionHolder("triviaq.json");
 	trivreview = new QuestionHolder("trivreview.json");
 	tadmin = new TriviaAdmin("tadmins.txt");
-	triviabot.sendMessage(src, "Trivia was reset")
+	triviabot.sendMessage(src, "Trivia was reset");
 }, "Allows you to reset variables");
 
 // Normal command handling.
@@ -970,8 +967,8 @@ try { // debug only, do not indent
 
 exports.init = function trivia_init()
 {
-	triviachan = sys.channelId('Trivia')
-	revchan = sys.channelId('TrivReview')
+	triviachan = sys.channelId('Trivia');
+	revchan = sys.channelId('TrivReview');
 	if(typeof Trivia === "undefined"){
 			Trivia = new TriviaGame();
 			triviaq = new QuestionHolder("triviaq.json");
