@@ -562,6 +562,10 @@ addUserCommand("submitq", function(src, commandData, channel) {
 },"Allows you to submit a question for review, format /submitq Category*Question*Answer1,Answer2,etc");
 
 addUserCommand("join", function(src, commandData, channel) {
+    if(SESSION.users(src).mute.active || !SESSION.channels(triviachan).canTalk(src)){
+        Trivia.sendPM(src, "You cannot join when muted!")
+        return;
+    }
     if (Trivia.started === false)
     {
         Trivia.sendPM(src,"A game hasn't started!");
@@ -778,6 +782,7 @@ addAdminCommand("accept", function(src, commandData, channel) {
 		triviaq.add(trivreview.editingCategory, trivreview.editingQuestion, trivreview.editingAnswer);
 		trivreview.editingMode = false;
 		triviabot.sendAll("The question in edit was saved",channel);
+		trivreview.checkq(trivreview.currentId)
 		return;
 	}
 	var tr = trivreview.all();
@@ -817,12 +822,18 @@ addAdminCommand("showq", function(src, commandData, channel){
 
 addAdminCommand("editq", function(src, commandData, channel){
 	var q = triviaq.get(commandData);
+	if(trivreview.editingMode === true){
+		triviabot.sendMessage(src, "A question is already in edit, use /checkq to see it!")
+		return;
+	}
 	if(q !== null){
 		trivreview.editingMode = true;
 		trivreview.editingQuestion = q.question;
 		trivreview.editingCategory = q.category;
 		trivreview.editingAnswer = q.answer; //Moving it to front of queue seemed like a tedious job, so let's cheat it in, instead :3
 		triviaq.remove(commandData);
+		var id = Object.keys(tr)[0];
+		trivreview.currentId = id
 		trivreview.checkq(); //id isn't needed or shouldn't be needed
 		return;
 	}
@@ -833,6 +844,7 @@ addAdminCommand("decline", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
 		trivreview.editingMode = false;
 		triviabot.sendAll("The question in edit was deleted",channel);
+		trivreview.checkq(trivreview.currentId)
 		return;
 	}
 	var tr = trivreview.all();
@@ -861,6 +873,23 @@ addAdminCommand("resetvars", function(src, commandData, channel) {
 	tadmin = new TriviaAdmin("tadmins.txt");
 	triviabot.sendMessage(src, "Trivia was reset");
 }, "Allows you to reset variables");
+addAdminCommand("shove", function(src, commandData, channel){
+	var tar = sys.id(commandData)
+	if(tar === undefined){
+		return;
+	}
+	if (Trivia.started === false)
+    {
+        Trivia.sendPM(src,"A game hasn't started!");
+        return;
+    }
+    if (Trivia.playerPlaying(tar)) {
+        Trivia.removePlayer(tar);
+        Trivia.sendAll(sys.name(tar) + " was removed from the game by "+sys.name(src)+"!",triviachan);
+		return;
+	}
+	Trivia.sendPM(src, "That person isn't playing!")
+}, "Allows you to remove a player from the game");
 
 // Normal command handling.
 exports.handleCommand = function trivia_handleCommand(src, command, channel)
@@ -908,7 +937,18 @@ exports.onHelp = function trivia_onHelp(src, commandData, channel)
         });
     }
 };
-
+exports.onMute = function trivia_onMute(src){
+ if (Trivia.started === false)
+    {
+        Trivia.sendPM(src,"A game hasn't started!");
+        return;
+    }
+    if (Trivia.playerPlaying(src)) {
+        Trivia.removePlayer(src);
+        Trivia.sendAll(sys.name(src) + " left the game!",triviachan);
+		return;
+	}
+};
 exports.beforeChannelJoin = function trivia_beforeChannelJoin(src, channel) {
     /* Prevent channel join */
     if (channel == revchan && sys.auth(src) < 1 && !tadmin.isTAdmin(sys.name(src).toLowerCase()))
