@@ -3482,7 +3482,7 @@ ownerCommand: function(src, command, commandData, tar) {
         normalbot.sendChanMessage(src, "Now you are " + SESSION.users(src).impersonation + "!");
         return;
     }
-    if (command == "periodicsay") {
+    if (command == "periodicsay" || command == "periodichtml") {
         var sayer = src;
         var args = commandData.split(":");
         var minutes = parseInt(args[0], 10);
@@ -3498,6 +3498,7 @@ ownerCommand: function(src, command, commandData, tar) {
         if (cids.length === 0) return;
         var what = args.slice(2).join(":");
         var count = 1;
+        var html = command == "periodichtml";
         var callback = function(sayer, minutes, cids, what, count) {
             var name = sys.name(sayer);
             if (name === undefined) return;
@@ -3510,7 +3511,10 @@ ownerCommand: function(src, command, commandData, tar) {
             for (var i = 0; i < cids.length; ++i) {
                 var cid = cids[i];
                 if (sys.isInChannel(sayer, cid))
-                    sys.sendAll(sys.name(sayer) + ": " + what, cid);
+                    if (html)
+                        sys.sendAll(utilities.html_escape(sys.name(sayer)) + ": " + what, cid);
+                    else
+                        sys.sendAll(sys.name(sayer) + ": " + what, cid);
             }
             if (++count > 100) return; // max repeat is 100
             SESSION.users(sayer).callcount++;
@@ -4525,20 +4529,6 @@ beforeBattleMatchup : function(src,dest,clauses,rated)
     }
     if (callplugins("beforeBattleMatchup", src, dest, clauses, rated)) {
         sys.stopEvent();
-    }
-},
-
-// Will escape "&", ">", and "<" symbols for HTML output.
-html_escape : function(text)
-{
-    var m = text.toString();
-    if (m.length > 0) {
-        var amp = "&am" + "p;";
-        var lt = "&l" + "t;";
-        var gt = "&g" + "t;";
-        return m.replace(/&/g, amp).replace(/</g, lt).replace(/>/g, gt);
-    }else{
-        return "";
     }
 }
 
