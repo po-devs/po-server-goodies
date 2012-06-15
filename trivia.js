@@ -832,6 +832,7 @@ addAdminCommand("editq", function(src, commandData, channel){
 		trivreview.editingCategory = q.category;
 		trivreview.editingAnswer = q.answer; //Moving it to front of queue seemed like a tedious job, so let's cheat it in, instead :3
 		triviaq.remove(commandData);
+		var tr = trivreview.all()
 		var id = Object.keys(tr)[0];
 		trivreview.currentId = id
 		trivreview.checkq(); //id isn't needed or shouldn't be needed
