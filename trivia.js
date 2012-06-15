@@ -679,6 +679,7 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 		triviabot.sendMessage(src, "Category: "+trivreview.editingCategory,channel);
 		triviabot.sendMessage(src, "Question: "+trivreview.editingQuestion,channel);
 		triviabot.sendMessage(src, "Answer: "+trivreview.editingAnswer,channel);
+		triviabot.sendMessage(src, "Questions Approved: "+triviaq.questionAmount()+". Questions Left: "+ trivreview.questionAmount()+".", channel)
 		sys.sendMessage(src, "",channel);
 		return;
 	}
