@@ -593,4 +593,14 @@ tier_checker.add_new_check(EXCLUDING, [], function eventShinies(player) {
                         sys.changePokeShine(player, slot, true);
 });
 
+tier_checker.add_new_check(EXCLUDING, challenge_cups, function hasOneUsablePokemon(player) {
+    var valid = false;
+    for (var slot=0; slot<6; slot++)
+        if (sys.teamPoke(player,slot) !== 0)
+            for (var move=0; move<4; move++)
+                if (sys.teamPokeMove(player, slot, move) !== 0)
+                    valid = true;
+    return !valid;
+});
+
 module.exports = tier_checker;
