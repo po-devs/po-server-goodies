@@ -3549,7 +3549,7 @@ ownerCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-    if (command == "changeauth") {
+    if (command == "changeauth"||command == "changeauths") {
         var pos = commandData.indexOf(' ');
         if (pos == -1) {
             return;
@@ -3565,10 +3565,19 @@ ownerCommand: function(src, command, commandData, tar) {
         }
         if (tar !== undefined) {
             sys.changeAuth(tar, newauth);
-            normalbot.sendAll("" + sys.name(src) + " changed auth of " + sys.name(tar) + " to " + newauth);
+            if(command == "changeauth"){
+            	normalbot.sendAll("" + sys.name(src) + " changed auth of " + sys.name(tar) + " to " + newauth);
+            	return;
+            }
+            normalbot.sendAll("" + sys.name(src) + " changed auth of " + sys.name(tar) + " to " + newauth,staffchannel)
+            
         } else {
             sys.changeDbAuth(name, newauth);
-            normalbot.sendAll("" + sys.name(src) + " changed auth of " + name + " to " + newauth);
+            if(command == "changeauth"){
+            	normalbot.sendAll("" + sys.name(src) + " changed auth of " + name + " to " + newauth);
+            	return;
+            }
+            normalbot.sendAll("" + sys.name(src) + " changed auth of " + name + " to " + newauth,staffchannel);
         }
 
         return;
