@@ -1116,7 +1116,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             "mban": function(line) {
                 banbot.sendAll(line, staffchannel);
                 banbot.sendAll(line, mafiachan);
-                banbot.sendAll(line, sys.channelId("shanaindigo"));
+                banbot.sendAll(line, sachannel);
             },
             "mute": function(line) {
                 banbot.sendAll(line);
@@ -1343,7 +1343,7 @@ beforeChannelJoin : function(src, channel) {
         sys.stopEvent();
         return;
     }
-    if ((channel == staffchannel || channel == sys.channelId("shanaindigo")) && !this.canJoinStaffChannel(src)) {
+    if ((channel == staffchannel || channel == sachannel && !this.canJoinStaffChannel(src)) {
         sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
         sys.stopEvent();
         return;
@@ -3043,7 +3043,7 @@ adminCommand: function(src, command, commandData, tar) {
     }
     if (command == "indigoinvite") {
 
-        if (channel != staffchannel && channel != sys.channelId("shanaindigo")) {
+        if (channel != staffchannel && channel != sachannel) {
             normalbot.sendChanMessage(src, "Can't use on this channel.");
             return;
         }
