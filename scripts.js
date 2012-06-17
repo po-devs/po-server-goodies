@@ -1321,6 +1321,11 @@ beforeChannelJoin : function(src, channel) {
         sys.putInChannel(src, tourchannel);
         return;
     }*/
+    if (sys.auth(src) == 0 && channel == sys.channelId("shanaindigo")) {
+        sys.stopEvent();
+        sys.putInChannel(src, sachannel);
+        return;
+    }
 
     var index = poChannel.invitelist.indexOf(src);
     if (index != -1) {
