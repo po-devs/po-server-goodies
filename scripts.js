@@ -1343,7 +1343,7 @@ beforeChannelJoin : function(src, channel) {
         sys.stopEvent();
         return;
     }
-    if ((channel == staffchannel || channel == sachannel && !this.canJoinStaffChannel(src)) {
+    if ((channel == staffchannel || channel == sachannel) && !this.canJoinStaffChannel(src)) {
         sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
         sys.stopEvent();
         return;
