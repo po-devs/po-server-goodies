@@ -2068,6 +2068,9 @@ userCommand: function(src, command, commandData, tar) {
     }
 
     if (command == "importable") {
+    	normalbot.sendChanMessage(src, "This command currently doesn't function")
+    	return;
+    	
         var name = sys.name(src) + '\'s '+sys.tier(src)+' team';
         var team = this.importable(src, true).join("\n");
         var post = {};
