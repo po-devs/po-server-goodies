@@ -1448,6 +1448,12 @@ function Mafia(mafiachan) {
                 if (role.actions.startup == "team-reveal") {
                     mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
                 }
+                if (role.actions.startup == "team-reveal-with-roles") {
+                	var playersRole = mafia.getPlayersForTeam(role.side).map(function(x){
+                		return x + " (" + this.players[x].role.translation + ")";                		
+                	}, mafia);
+                	mafia.sendPlayer(player.name, "±Game: Your team is " + readable(playersRole, "and") + ".");
+                }
                 if (typeof role.actions.startup == "object" && Array.isArray(role.actions.startup["team-revealif"])) {
                     if (role.actions.startup["team-revealif"].indexOf(role.side) != -1) {
                         mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
@@ -2275,6 +2281,12 @@ function Mafia(mafiachan) {
                 if (role.actions.startup == "team-reveal") {
                     mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
                 }
+                if (role.actions.startup == "team-reveal-with-roles") {
+                	var playersRole = mafia.getPlayersForTeam(role.side).map(function(x){
+                		return x + " (" + this.players[x].role.translation + ")";
+                	}, mafia);
+                	mafia.sendPlayer(player.name, "±Game: Your team is " + readable(playersRole, "and") + ".");
+                }
                 if (typeof role.actions.startup == "object" && Array.isArray(role.actions.startup["team-revealif"])) {
                     if (role.actions.startup["team-revealif"].indexOf(role.side) != -1) {
                         mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
@@ -2960,6 +2972,13 @@ function Mafia(mafiachan) {
 					}
 					sys.sendAll(border, mafiachan);
 					sys.sendAll("±Game: " + exposeMessage.replace(/~Self~/g, name).replace(/~Target~/g, target.name).replace(/~Role~/g, revealedRole), mafiachan);
+					if ("revealChance" in commandObject && commandObject.revealChance > sys.rand(0,100)/100) {
+						if (commandObject.revealmsg !== undefined && typeof commandObject.revealmsg == "string") {
+							sys.sendAll("±Game: " + commandObject.revealmsg.replace(/~Self~/g, name).replace(/~Role~/g, mafia.players[name].role.translation), mafiachan);
+						} else {
+							sys.sendAll("±Game: While exposing, " + name + " (" + mafia.players[name].role.translation + ") made a mistake and was revealed!", mafiachan);
+						}
+					}
 					sys.sendAll(border, mafiachan);
 					player.exposeUse = player.exposeUse+1||1;
 				}
