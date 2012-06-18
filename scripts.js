@@ -922,11 +922,17 @@ init : function() {
     contributors = new MemoryHash("contributors.txt");
     mafiaAdmins = new MemoryHash("mafiaadmins.txt");
     proxy_ips = {};
-    var lines = sys.getFileContent("proxy_list.txt").split(/\n/);
-    for (var k = 0; k < lines.length; ++k) {
-        var proxy_ip = lines[k].split(":")[0];
-        if (proxy_ip !== 0) proxy_ips[proxy_ip] = true;
+    function addProxybans(content) {
+        var lines = content.split(/\n/);
+        for (var k = 0; k < lines.length; ++k) {
+            var proxy_ip = lines[k].split(":")[0];
+            if (proxy_ip !== 0) proxy_ips[proxy_ip] = true;
+        }
     }
+    var PROXY_FILE = "proxy_list.txt";
+    var content = sys.getFileContent(PROXY_FILE);
+    if (content) { addProxybans(content); }
+    else sys.webCall(Config.base_url + PROXY_FILE, addProxybans);
 
     rules = [ "",
     "*** Rules ***",
