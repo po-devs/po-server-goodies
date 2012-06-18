@@ -105,7 +105,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, newtourchannel, poScript, revchan, triviachan, watchchannel;
+var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, newtourchannel, poScript, revchan, triviachan, watchchannel;
 
 /* we need to make sure the scripts exist */
 var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js'].concat(Config.Plugins);
@@ -921,6 +921,12 @@ init : function() {
     rangebans = new MemoryHash("rangebans.txt");
     contributors = new MemoryHash("contributors.txt");
     mafiaAdmins = new MemoryHash("mafiaadmins.txt");
+    proxy_ips = {};
+    var lines = sys.getFileContent("proxy_list.txt").split(/\n/);
+    for (var k = 0; k < lines.length; ++k) {
+        var proxy_ip = lines[k].split(":")[0];
+        if (proxy_ip !== 0) proxy_ips[proxy_ip] = true;
+    }
 
     rules = [ "",
     "*** Rules ***",
@@ -1321,7 +1327,7 @@ beforeChannelJoin : function(src, channel) {
         sys.putInChannel(src, tourchannel);
         return;
     }*/
-    if (sys.auth(src) == 0 && channel == sys.channelId("shanaindigo")) {
+    if (sys.auth(src) === 0 && channel == sys.channelId("shanaindigo")) {
         sys.stopEvent();
         sys.putInChannel(src, sachannel);
         return;
@@ -1480,6 +1486,12 @@ beforeLogIn : function(src) {
             normalbot.sendMessage('You are banned!');
             sys.stopEvent();
             return;
+    }
+    if (proxy_ips.hasOwnProperty(ip)) {
+        normalbot.sendMessage('You are banned for using proxy!');
+        sys.stopEvent();
+        return;
+
     }
 //    var arr =  ["172.", "72.20.", "199.255.",
 //                "199.58.", "188.227.", "174.129.",
@@ -2068,27 +2080,7 @@ userCommand: function(src, command, commandData, tar) {
     }
 
     if (command == "importable") {
-    	normalbot.sendChanMessage(src, "This command currently doesn't function")
-    	return;
-    	
-        var name = sys.name(src) + '\'s '+sys.tier(src)+' team';
-        var team = this.importable(src, true).join("\n");
-        var post = {};
-        post.api_option            = 'paste';            //  paste, duh
-        post.api_dev_key           = pastebin_api_key;   //  Developer's personal key, set in the beginning
-        //post.api_user_key          = pastebin_user_key;  //  Pastes are marked to our account
-        post.api_paste_private     = 1;                  //  private
-        post.api_paste_name        = name;               //  name
-        post.api_paste_code        = team;               //  text itself
-        post.api_paste_expire_date = '1M';               //  expires in 1 month
-        sys.webCall('http://pastebin.com/api/api_post.php', function(resp) {
-            if (/^http:\/\//.test(resp))
-                normalbot.sendChanMessage(src, "Your team is available at: " + resp); // success
-            else {
-                normalbot.sendChanMessage(src, "Sorry, unexpected error: "+resp);    // an error occured
-                normalbot.sendAll("" + sys.name(src) + "'s /importable failed: "+resp, staffchannel); // message to indigo
-            }
-        }, post);
+        normalbot.sendChanMessage(src, "This command currently doesn't function");
         return;
     }
     if (command == "cjoin") {
@@ -3574,16 +3566,16 @@ ownerCommand: function(src, command, commandData, tar) {
         if (tar !== undefined) {
             sys.changeAuth(tar, newauth);
             if(command == "changeauth"){
-            	normalbot.sendAll("" + sys.name(src) + " changed auth of " + sys.name(tar) + " to " + newauth);
-            	return;
+                normalbot.sendAll("" + sys.name(src) + " changed auth of " + sys.name(tar) + " to " + newauth);
+                return;
             }
-            normalbot.sendAll("" + sys.name(src) + " changed auth of " + sys.name(tar) + " to " + newauth,staffchannel)
+            normalbot.sendAll("" + sys.name(src) + " changed auth of " + sys.name(tar) + " to " + newauth,staffchannel);
             
         } else {
             sys.changeDbAuth(name, newauth);
             if(command == "changeauth"){
-            	normalbot.sendAll("" + sys.name(src) + " changed auth of " + name + " to " + newauth);
-            	return;
+                normalbot.sendAll("" + sys.name(src) + " changed auth of " + name + " to " + newauth);
+                return;
             }
             normalbot.sendAll("" + sys.name(src) + " changed auth of " + name + " to " + newauth,staffchannel);
         }
