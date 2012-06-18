@@ -38,7 +38,7 @@ function Mafia(mafiachan) {
 
     function dump(src, mess) {
         for (var x in mess) {
-           sys.sendMessage(src, mess[x], mafiachan);
+           sys.sendMessage(src, mess[x], channel);
         }
     }
     function msg(src, mess) {
@@ -1994,18 +1994,18 @@ function Mafia(mafiachan) {
         }
     };
     this.showCommands = function(src) {
-        sys.sendMessage(src, "", mafiachan);
-        sys.sendMessage(src, "Server Commands:", mafiachan);
+        sys.sendMessage(src, "", channel);
+        sys.sendMessage(src, "Server Commands:", channel);
         for (var x in mafia.commands.user) {
-            sys.sendMessage(src, "/" + cap(x) + " - " + mafia.commands.user[x][1], mafiachan);
+            sys.sendMessage(src, "/" + cap(x) + " - " + mafia.commands.user[x][1], channel);
         }
         if (sys.auth(src) > 0) {
-            sys.sendMessage(src, "Authority Commands:", mafiachan);
+            sys.sendMessage(src, "Authority Commands:", channel);
             for (x in mafia.commands.auth) {
-                sys.sendMessage(src, "/" + cap(x) + " - " + mafia.commands.auth[x][1], mafiachan);
+                sys.sendMessage(src, "/" + cap(x) + " - " + mafia.commands.auth[x][1], channel);
             }
         }
-        sys.sendMessage(src, "", mafiachan);
+        sys.sendMessage(src, "", channel);
     };
     this.showHelp = function(src) {
         var help = [
@@ -2043,7 +2043,7 @@ function Mafia(mafiachan) {
         if (data[0] != noPlayer && data[0] !== "") {
             themeName = data[0].toLowerCase();
             if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
-                sys.sendMessage(src, "±Game: No such theme!", mafiachan);
+                sys.sendMessage(src, "±Game: No such theme!", channel);
                 return;
             }
         }
@@ -2204,7 +2204,7 @@ function Mafia(mafiachan) {
             }
         }
         mess.push("</table>");
-        sys.sendHtmlMessage(src, mess.join(""), mafiachan);
+        sys.sendHtmlMessage(src, mess.join(""), channel);
     };
     this.showThemeDetails = function(src, commandData) {
         var themeName = "default";
@@ -2214,7 +2214,7 @@ function Mafia(mafiachan) {
         if (commandData != noPlayer) {
             themeName = commandData.toLowerCase();
             if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
-                sys.sendMessage(src, "±Game: No such theme!", mafiachan);
+                sys.sendMessage(src, "±Game: No such theme!", channel);
                 return;
             }
         }
@@ -2241,7 +2241,7 @@ function Mafia(mafiachan) {
         }
         mess.push("");
         for (var x in mess){
-            sys.sendHtmlMessage(src, mess[x], mafiachan);
+            sys.sendHtmlMessage(src, mess[x], channel);
         }
     };
 
@@ -2255,7 +2255,7 @@ function Mafia(mafiachan) {
             mess.push('<tr><td>' + game.what + '</td><td>' + game.who + '</td><td>' + getTimeString(game.when - t) + '</td><td>' + game.playerCount + '</td></tr>');
         }
         mess.push("</table>");
-        sys.sendHtmlMessage(src, mess.join(""), mafiachan);
+        sys.sendHtmlMessage(src, mess.join(""), channel);
     };
     
     this.showOwnRole = function(src) {
@@ -2421,18 +2421,18 @@ function Mafia(mafiachan) {
         if (commandData != noPlayer) {
             themeName = commandData.toLowerCase();
             if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
-                sys.sendMessage(src, "±Game: No such theme!", mafiachan);
+                sys.sendMessage(src, "±Game: No such theme!", channel);
                 return;
             }
         }
         var theme = mafia.themeManager.themes[themeName];
         sys.sendHtmlMessage(src, "", mafiachan);
-        sys.sendHtmlMessage(src, "Priority List for theme <b>" + theme.name + ":</b>", mafiachan);
+        sys.sendHtmlMessage(src, "Priority List for theme <b>" + theme.name + ":</b>", channel;
         for (var p = 0; p < theme.nightPriority.length; ++p) {
             var prio = theme.nightPriority[p];
-            sys.sendHtmlMessage(src, "[" + prio.priority + "] " + theme.roles[prio.role].translation + " (" + cap(prio.action) + ")", mafiachan);
+            sys.sendHtmlMessage(src, "[" + prio.priority + "] " + theme.roles[prio.role].translation + " (" + cap(prio.action) + ")", channel);
         }
-        sys.sendHtmlMessage(src, "", mafiachan);
+        sys.sendHtmlMessage(src, "", channel);
     };
 
     // Auth commands
@@ -2623,7 +2623,7 @@ function Mafia(mafiachan) {
     };
     this.handleCommand = function(src, message, channel) {
         // only on mafia channel
-        if (channel != mafiachan)
+        if (channel != mafiachan && channel != sys.channelId("Project Mafia"))
             return;
         try {
             mafia.handleCommandOld(src, message, channel);
