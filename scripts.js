@@ -595,8 +595,13 @@ POChannelManager.prototype.loadChan = function(channel)
 {
     var channelDataFile = this.dataFileFor(channel);
     var content = sys.getFileContent(channelDataFile);
-    var data = JSON.parse(content);
-    return data;
+    if (content) {
+        try {
+            var data = JSON.parse(content);
+            return data;
+        } catch(e) {}
+    }
+    return {};
 };
 
 POChannelManager.prototype.createPermChannel = function(name, defaultTopic)
