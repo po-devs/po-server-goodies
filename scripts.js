@@ -354,7 +354,7 @@ POChannel.prototype.setTopic = function(src, topicInfo)
     }
     this.topic = topicInfo;
     this.topicSetter = sys.name(src);
-    SESSION.global().channelManager.updateChannelTopic(sys.channel(this.id), topicInfo, sys.name(src));
+    SESSION.global().channelManager.update(this.id);
     channelbot.sendChanAll("" + sys.name(src) + " changed the topic to: " + topicInfo);
 };
 
@@ -412,23 +412,23 @@ POChannel.prototype.takeAuth = function(src, name, authlist)
 POChannel.prototype.addOperator = function(src, name)
 {
     this.issueAuth(src, name, "operators");
-    SESSION.global().channelManager.updateOperators(sys.channel(this.id), this.operators);
+    SESSION.global().channelManager.update(this.id);
 };
 POChannel.prototype.removeOperator = function(src, name)
 {
     this.takeAuth(src, name, "operators");
-    SESSION.global().channelManager.updateOperators(sys.channel(this.id), this.operators);
+    SESSION.global().channelManager.update(this.id);
 };
 
 POChannel.prototype.addOwner = function(src, name)
 {
     this.issueAuth(src, name, "masters");
-    SESSION.global().channelManager.updateMasters(sys.channel(this.id), this.masters);
+    SESSION.global().channelManager.update(this.id);
 };
 POChannel.prototype.removeOwner = function(src, name)
 {
     this.takeAuth(src, name, "masters");
-    SESSION.global().channelManager.updateMasters(sys.channel(this.id), this.masters);
+    SESSION.global().channelManager.update(this.id);
 };
 
 POChannel.prototype.register = function(name)
@@ -489,22 +489,30 @@ POChannel.prototype.allow = function(data, what)
 
 POChannel.prototype.ban = function(data)
 {
-    return this.disallow(data, "banned");
+    var ret = this.disallow(data, "banned");
+    SESSION.global().channelManager.update(this.id);
+    return ret;
 };
 
 POChannel.prototype.unban = function(data)
 {
-    return this.allow(data, "banned");
+    var ret = this.allow(data, "banned");
+    SESSION.global().channelManager.update(this.id);
+    return ret;
 };
 
 POChannel.prototype.mute = function(data)
 {
-    return this.disallow(data, "muted");
+    var ret = this.disallow(data, "muted");
+    SESSION.global().channelManager.update(this.id);
+    return ret;
 };
 
 POChannel.prototype.unmute = function(data)
 {
-    return this.allow(data, "muted");
+    var ret = this.allow(data, "muted");
+    SESSION.global().channelManager.update(this.id);
+    return ret;
 };
 
 /* Object that manages channels */
@@ -513,12 +521,13 @@ function POChannelManager(fname)
     /* Permanent channels */
     this.channelDataFile = fname;
     try {
-        this.channelData = JSON.parse(sys.getFileContent(this.channelDataFile));
+        this.channelMap = JSON.parse(sys.getFileContent(this.channelDataFile));
     } catch (err) {
         print('Could not read channelData.');
         print('Error: ' + err);
-        this.channelData = {};
+        this.channelMap = {};
     }
+    sys.system("mkdir -p channeldata");
 }
 
 POChannelManager.prototype.toString = function()
@@ -526,61 +535,68 @@ POChannelManager.prototype.toString = function()
     return "[object POChannelManager]";
 };
 
-POChannelManager.prototype.updateChannelTopic = function(channelName, topic, name)
+POChannelManager.prototype.copyAttrs = [
+    "topic",
+    "topicSetter",
+    "perm",
+    "operators",
+    "masters",
+    "invitelevel",
+    "muteall",
+    "meoff",
+    "muted",
+    "banned",
+    "ignorecaps",
+    "ignoreflood"
+];
+
+POChannelManager.prototype.update = function(channel)
 {
-    this.ensureChannel(channelName);
-    this.channelData[channelName].topic = topic;
-    this.channelData[channelName].topicSetter = name;
-    this.save();
+    var chan = SESSION.channels(channel);
+    var chanData = {};
+    this.copyAttrs.forEach(function(attr) {
+        chanData[attr] = chan[attr];
+    });
+    this.saveChan(channel, chanData);
 };
 
-POChannelManager.prototype.updateChannelPerm = function(channelName, perm)
+POChannelManager.prototype.restoreSettings = function(channel)
 {
-    this.ensureChannel(channelName);
-    this.channelData[channelName].perm = perm;
-    this.save();
+    var chan = SESSION.channels(channel);
+    var chanData = this.loadChan(channel);
+    this.copyAttrs.forEach(function(attr) {
+        if (chanData !== null && chanData.hasOwnProperty(attr))
+            chan[attr] = chanData[attr];
+    });
 };
 
-POChannelManager.prototype.updateOperators = function(channelName, operators)
+POChannelManager.prototype.dataFileFor = function(channel)
 {
-    this.ensureChannel(channelName);
-    this.channelData[channelName].operators = operators;
-    this.save();
-};
-
-POChannelManager.prototype.updateMasters = function(channelName, masters)
-{
-    this.ensureChannel(channelName);
-    this.channelData[channelName].masters = masters;
-    this.save();
-};
-
-POChannelManager.prototype.update = function(channelName, chan)
-{
-    this.ensureChannel(channelName);
-    this.channelData[channelName].topic = chan.topic;
-    this.channelData[channelName].topicSetter = chan.topicSetter;
-    this.channelData[channelName].perm = chan.perm;
-    this.channelData[channelName].masters = chan.masters;
-    this.channelData[channelName].operators = chan.operators;
-    this.save();
+    var chanName = sys.channel(channel);
+    if (!this.channelMap.hasOwnProperty(chanName)) {
+       var genName = "channeldata/" + Date.now() + Math.random().toString().substr(2) + ".json";
+       this.channelMap[chanName] = genName;
+    }
+    return this.channelMap[chanName];
 };
 
 POChannelManager.prototype.save = function()
 {
-    sys.writeToFile(this.channelDataFile, JSON.stringify(this.channelData));
+    sys.writeToFile(this.channelDataFile, JSON.stringify(this.channelMap));
 };
 
-POChannelManager.prototype.ensureChannel = function(channelName)
+POChannelManager.prototype.saveChan = function(channel, channelData)
 {
-    if (!(channelName in this.channelData)) {
-        this.channelData[channelName] = {};
-        this.channelData[channelName].topic = '';
-        this.channelData[channelName].topicSetter = '';
-        this.channelData[channelName].perm = false;
-        this.channelData[channelName].masters = [];
-        this.channelData[channelName].operators = [];
-    }
+    var channelDataFile = this.dataFileFor(channel);
+    sys.writeToFile(channelDataFile, JSON.stringify(channelData));
+};
+
+POChannelManager.prototype.loadChan = function(channel)
+{
+    var channelDataFile = this.dataFileFor(channel);
+    var content = sys.getFileContent(channelDataFile);
+    var data = JSON.parse(content);
+    return data;
 };
 
 POChannelManager.prototype.createPermChannel = function(name, defaultTopic)
@@ -597,21 +613,6 @@ POChannelManager.prototype.createPermChannel = function(name, defaultTopic)
     }
     SESSION.channels(cid).perm = true;
     return cid;
-};
-
-POChannelManager.prototype.restoreSettings = function(cid)
-{
-    var chan = SESSION.channels(cid);
-    var name = sys.channel(cid);
-    if (name in this.channelData) {
-        var data = this.channelData[name];
-        ['topic', 'topicSetter', 'operators', 'masters', 'perm'].forEach(
-            function(attr) {
-                if (data[attr] !== undefined)
-                    chan[attr] = data[attr];
-            }
-        );
-    }
 };
 
 function POGlobal(id)
@@ -677,7 +678,7 @@ SESSION.registerUserFactory(POUser);
 SESSION.registerChannelFactory(POChannel);
 
 if (typeof SESSION.global() != 'undefined') {
-    SESSION.global().channelManager = new POChannelManager('channelData.json');
+    SESSION.global().channelManager = new POChannelManager('channelHash.json');
 
     SESSION.global().__proto__ = POGlobal.prototype;
     var plugin_files = Config.Plugins;
@@ -2384,7 +2385,7 @@ modCommand: function(src, command, commandData, tar) {
         }
 
         SESSION.channels(channel).perm = (commandData.toLowerCase() == 'on');
-        SESSION.global().channelManager.updateChannelPerm(sys.channel(channel), SESSION.channels(channel).perm);
+        SESSION.global().channelManager.update(channel);
         channelbot.sendChanAll("" + sys.name(src) + (SESSION.channels(channel).perm ? " made the channel permanent." : " made the channel a temporary channel again."));
         return;
     }
