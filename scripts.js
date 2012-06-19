@@ -4512,17 +4512,19 @@ beforeChallengeIssued : function (src, dest, clauses, rated, mode) {
         return;
     }
 
-    var isChallengeCup = (sys.tier(src) == "Challenge Cup" && sys.tier(dest) == "Challenge Cup") || (sys.tier(src) == "CC 1v1" && sys.tier(dest) == "CC 1v1") || (sys.tier(src) == "Wifi CC 1v1" && sys.tier(dest) == "Wifi CC 1v1");
+    var isChallengeCup = sys.clauses(sys.tier(src))%32 >= 16 || sys.clauses(sys.tier(dest))%32 >= 16;
     var hasChallengeCupClause = (clauses % 32) >= 16;
     if (isChallengeCup && !hasChallengeCupClause) {
         checkbot.sendMessage(src, "Challenge Cup must be enabled in the challenge window for a CC battle");
         sys.stopEvent();
         return;
-    } else if (!isChallengeCup && hasChallengeCupClause) {
+    }
+    /* Oak's request
+    else if (!isChallengeCup && hasChallengeCupClause) {
         checkbot.sendMessage(src, "Challenge Cup must not be enabled in the challenge window for a non CC battle");
         sys.stopEvent();
         return;
-    }
+    }*/
 
     if (sys.tier(src).indexOf("Doubles") != -1 && sys.tier(dest).indexOf("Doubles") != -1 && mode != 1) {
         battlebot.sendMessage(src, "To fight in doubles, enable doubles in the challenge window!");
