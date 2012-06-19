@@ -627,7 +627,7 @@ function POGlobal(id)
     this.plugins = plugins;
 
     this.coins = 0;
-    this.channelManager = new POChannelManager('channelData.json');
+    this.channelManager = new POChannelManager('channelHash.json');
     var manager = this.channelManager;
     sys.channelIds().forEach(function(id) {
         manager.restoreSettings(id);
