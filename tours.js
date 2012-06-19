@@ -269,6 +269,16 @@ function sendAuthPlayers(message,key) {
 	}
 }
 
+// Sends a html  message to all tour auth and players in the current tour
+function sendHtmlAuthPlayers(message,key) {
+	for (var x in sys.playersOfChannel(sys.channelId("Tours"))) {
+		var arr = sys.playersOfChannel(sys.channelId("Tours"))
+		if (isTourAdmin(arr[x]) || tours.tour[key].players.indexOf(sys.name(arr[x]).toLowerCase()) != -1) {
+			sys.sendHtmlMessage(arr[x], message, sys.channelId("Tours"))
+		}
+	}
+}
+
 // Sends a message to all tour auth
 function sendAllTourAuth(message) {
 	for (var x in sys.playersOfChannel(sys.channelId("Tours"))) {
@@ -286,7 +296,7 @@ function initTours() {
 	}
 	catch (e) {
 		// use a sample set of win messages
-		tourwinmessages = ["annihilated", "threw a table at", "blasted", "captured the flag from", "FALCON PAAAAWNCHED", "haxed", "outsmarted", "won against"];
+		tourwinmessages = ["annihilated", "threw a table at", "blasted", "captured the flag from", "FALCON PAAAAWNCHED", "haxed", "outsmarted", "won against", "hung, drew and quartered"];
 		sys.sendAll("No win messages detected, using default win messages", sys.channelId("Tours"))
 	}
 	// config object
@@ -302,8 +312,11 @@ function initTours() {
 			tourbreak: parseInt(sys.getVal("tourconfig.txt", "breaktime")),
 			abstourbreak: parseInt(sys.getVal("tourconfig.txt", "absbreaktime")),
 			reminder: parseInt(sys.getVal("tourconfig.txt", "remindertime")),
+			channel: "Tours",
+			errchannel: "Victory Road",
 			tourbot: "\u00B1Tours: ",
-			version: 0.96,
+			tourbotcolour: "#3DAA68",
+			version: 0.97,
 			debug: false,
 			points: true
 		}
@@ -321,8 +334,11 @@ function initTours() {
 			tourbreak: 120,
 			abstourbreak: 600,
 			reminder: 30,
+			channel: "Tours",
+			errchannel: "Victory Road",
 			tourbot: "\u00B1Tours: ",
-			version: 0.96,
+			tourbotcolour: "#3DAA68",
+			version: 0.97,
 			debug: false,
 			points: true
 		}
@@ -365,8 +381,8 @@ function tourStep() {
 				tourinitiate(x)
 				continue;
 			}
-			var extras = (sys.playersOfChannel(sys.channelId("Tours"))).length - 1
-			tours.globaltime = parseInt(sys.time()) + Config.Tours.abstourbreak + 5*extras // default 10 mins b/w signups, + 5 secs per user in chan
+			var variance = calcVariance()
+			tours.globaltime = parseInt(sys.time()) + parseInt(Config.Tours.abstourbreak/variance) // default 10 mins b/w signups, + 5 secs per user in chan
 			continue;
 		}
 		if (tours.tour[x].state == "subround" && tours.tour[x].time <= parseInt(sys.time())) {
@@ -422,6 +438,11 @@ function tourBattleStart(src, dest, clauses, rated, mode) {
 	}
 	if (key === null) return false;
 	if (rated) return false;
+	/* checking after start a possibility, but currently has a few issues. Not a high priority.
+	if (isValidTourBattle(src,dest,clauses,mode,key) != "Valid") {
+		sys.sendAll(Config.Tours.tourbot+"The match between "+name1+" and "+name2+" was not able to be validated. Please ensure you are using the correct clauses, mode and that you are battling the right player", sys.channelId("Tours"))
+		return false;
+	}*/
 	if (tours.tour[key].players.indexOf(name1) > -1 && tours.tour[key].players.indexOf(name2) > -1) {
 		tours.tour[key].battlers.push(name1, name2)
 		tours.tour[key].active.push(name1, name2) // this avoids dq later since they made an attempt to start
@@ -452,7 +473,11 @@ function tourBattleEnd(winner, loser, result) {
 		if (winindex != -1) tours.tour[key].battlers.splice(winindex,1)
 		var loseindex = tours.tour[key].battlers.indexOf(losename)
 		if (loseindex != -1) tours.tour[key].battlers.splice(loseindex,1)
-		if (result == "tie" || winindex == -1 || loseindex == -1) {
+		if (winindex == -1 || loseindex == -1) {
+			return;
+		}
+		if (result == "tie") {
+			sys.sendAll(Config.Tours.tourbot+"The match between "+winname+" and "+losename+" ended in a tie, please rematch!", sys.channelId("Tours"))
 			return;
 		}
 		battleend(winner, loser, key)
@@ -594,6 +619,7 @@ function tourCommand(src, command, commandData) {
 				if (commandData.length < 2) {
 					sys.sendMessage(src,"*** CONFIG SETTINGS ***",sys.channelId("Tours"))
 					sys.sendMessage(src,"Usage: /configset [var] [value]. Variable list and current values are below:",sys.channelId("Tours"))
+					sys.sendMessage(src,"Example: '/configset maxqueue 3' will set the maximum queue length to 3:",sys.channelId("Tours"))
 					sys.sendMessage(src,"maxqueue: "+Config.Tours.maxqueue,sys.channelId("Tours"))
 					sys.sendMessage(src,"maxrunning: "+Config.Tours.maxrunning,sys.channelId("Tours"))
 					sys.sendMessage(src,"toursignup: "+time_handle(Config.Tours.toursignup),sys.channelId("Tours"))
@@ -603,17 +629,25 @@ function tourCommand(src, command, commandData) {
 					sys.sendMessage(src,"breaktime: "+time_handle(Config.Tours.tourbreak),sys.channelId("Tours"))
 					sys.sendMessage(src,"absbreaktime: "+time_handle(Config.Tours.abstourbreak),sys.channelId("Tours"))
 					sys.sendMessage(src,"remindertime: "+time_handle(Config.Tours.reminder),sys.channelId("Tours"))
+					sys.sendMessage(src,"botname: "+Config.Tours.tourbot,sys.channelId("Tours"))
 					sys.sendMessage(src,"debug: "+Config.Tours.debug+" (to change this, type /configset debug [0/1] ~ true = 1; false = 0)",sys.channelId("Tours"))
 					return true;
 				}
 				var option = data[0].toLowerCase()
-				var value = parseInt(data[1])
-				if (isNaN(value)) {
-					return true;
+				if (["botname", "channel", "errchannel"].indexOf(option) == -1) {
+					var value = parseInt(data[1])
+				}
+				else {
+					var value = data[1]
 				}
 				if (option == 'maxqueue') {
-					if (value < 1 || value > 255) {
-						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 1 and 256.",sys.channelId("Tours"))
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value between 1 and 255 that determines the maximum queue length. Admins and owners can bypass this restriction.",sys.channelId("Tours"));
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.maxqueue,sys.channelId("Tours"));
+						return true;
+					}
+					else if (value < 1 || value > 255) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 1 and 255.",sys.channelId("Tours"))
 						return true;
 					}
 					Config.Tours.maxqueue = value
@@ -622,7 +656,12 @@ function tourCommand(src, command, commandData) {
 					return true;
 				}
 				else if (option == 'maxrunning') {
-					if (value < 1 || value > 255) {
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value between 1 and 255 that determines the maximum rumber of simultaneous tours.",sys.channelId("Tours"));
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.maxrunning,sys.channelId("Tours"));
+						return true;
+					}
+					else if (value < 1 || value > 255) {
 						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 1 and 255.",sys.channelId("Tours"))
 						return true;
 					}
@@ -632,7 +671,12 @@ function tourCommand(src, command, commandData) {
 					return true;
 				}
 				else if (option == 'toursignup') {
-					if (value < 10 || value > 600) {
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 10 and 600 that determines the intial signup length.",sys.channelId("Tours"));
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.toursignup,sys.channelId("Tours"));
+						return true;
+					}
+					else if (value < 10 || value > 600) {
 						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 10 and 600.",sys.channelId("Tours"))
 						return true;
 					}
@@ -642,7 +686,12 @@ function tourCommand(src, command, commandData) {
 					return true;
 				}
 				else if (option == 'tourdq') {
-					if (value < 30 || value > 300) {
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 30 and 300 that determines how long it is before inactive users are disqualified.",sys.channelId("Tours"));
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.tourdq,sys.channelId("Tours"));
+						return true;
+					}
+					else if (value < 30 || value > 300) {
 						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 30 and 300.",sys.channelId("Tours"))
 						return true;
 					}
@@ -652,7 +701,12 @@ function tourCommand(src, command, commandData) {
 					return true;
 				}
 				else if (option == 'touractivity') {
-					if (value < 60 || value > 300) {
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 60 and 300 that determines how long it is from a user's last message before a user is considered inactive.",sys.channelId("Tours"));
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.activity,sys.channelId("Tours"));
+						return true;
+					}
+					else if (value < 60 || value > 300) {
 						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 60 and 300.",sys.channelId("Tours"))
 						return true;
 					}
@@ -662,7 +716,12 @@ function tourCommand(src, command, commandData) {
 					return true;
 				}
 				else if (option == 'subtime') {
-					if (value < 30 || value > 300) {
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 30 and 300 that determines how long it is before subs are disqualified.",sys.channelId("Tours"));
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.subtime,sys.channelId("Tours"));
+						return true;
+					}
+					else if (value < 30 || value > 300) {
 						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 30 and 300.",sys.channelId("Tours"))
 						return true;
 					}
@@ -672,7 +731,12 @@ function tourCommand(src, command, commandData) {
 					return true;
 				}
 				else if (option == 'breaktime') {
-					if (value < 30 || value > 300) {
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 30 and 300 that determines how long it is before another tournament is started if one gets cancelled.",sys.channelId("Tours"));
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.breaktime,sys.channelId("Tours"));
+						return true;
+					}
+					else if (value < 30 || value > 300) {
 						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 30 and 300.",sys.channelId("Tours"))
 						return true;
 					}
@@ -682,7 +746,12 @@ function tourCommand(src, command, commandData) {
 					return true;
 				}
 				else if (option == 'absbreaktime') {
-					if (value < 300 || value > 1800) {
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 300 and 1800 that influences how long it is between tournaments starting. The actual time will depend on other factors.",sys.channelId("Tours"));
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.absbreaktime,sys.channelId("Tours"));
+						return true;
+					}
+					else if (value < 300 || value > 1800) {
 						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 300 and 1800.",sys.channelId("Tours"))
 						return true;
 					}
@@ -692,13 +761,31 @@ function tourCommand(src, command, commandData) {
 					return true;
 				}
 				else if (option == 'remindertime') {
-					if (value < 15 || value > (Config.Tours.tourdq-30)) {
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) that determines how long it is before a battle reminder is sent to players.",sys.channelId("Tours"));
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.reminder,sys.channelId("Tours"));
+						return true;
+					}
+					else if (value < 15 || value > (Config.Tours.tourdq-30)) {
 						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 15 and "+(Config.Tours.tourdq-30)+".",sys.channelId("Tours"))
 						return true;
 					}
 					Config.Tours.reminder = value
 					sys.saveVal("tourconfig.txt", "remindertime", value)
 					sendAllTourAuth("Reminder time now set to "+time_handle(Config.Tours.reminder))
+					return true;
+				}
+				else if (option == 'botname') {
+					if (!isTourOwner(src)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Can't change the botname, ask an owner for this.",sys.channelId("Tours"))
+						return true;
+					}
+					else if (value.length === 0) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Botname can't be empty!",sys.channelId("Tours"))
+						return true;
+					}
+					Config.Tours.tourbot = value+": "
+					sendAllTourAuth("Tourbot name now set to "+Config.Tours.tourbot,sys.channelId("Tours"))
 					return true;
 				}
 				else if (option == 'debug') {
@@ -715,7 +802,7 @@ function tourCommand(src, command, commandData) {
 					return true;
 				}
 				else {
-					sys.sendMessage(src,Config.Tours.tourbot+"Couldn't find data for "+option,sys.channelId("Tours"))
+					sys.sendMessage(src,Config.Tours.tourbot+"The configuration option '"+option+"' does not exist.",sys.channelId("Tours"))
 					return true;
 				}
 			}
@@ -985,7 +1072,7 @@ function tourCommand(src, command, commandData) {
 				return true;
 			}
 			if (command == "config") {
-				sys.sendMessage(src,"*** CONFIG SETTINGS ***",sys.channelId("Tours"))
+				sys.sendMessage(src,"*** CURRENT CONFIGURATION ***",sys.channelId("Tours"))
 				sys.sendMessage(src,"Maximum Queue Length: "+Config.Tours.maxqueue,sys.channelId("Tours"))
 				sys.sendMessage(src,"Maximum Number of Simultaneous Tours: "+Config.Tours.maxrunning,sys.channelId("Tours"))
 				sys.sendMessage(src,"Tour Sign Ups Length: "+time_handle(Config.Tours.toursignup),sys.channelId("Tours"))
@@ -995,12 +1082,19 @@ function tourCommand(src, command, commandData) {
 				sys.sendMessage(src,"Tour Break Time: "+time_handle(Config.Tours.tourbreak),sys.channelId("Tours"))
 				sys.sendMessage(src,"Absolute Tour Break Time: "+time_handle(Config.Tours.abstourbreak),sys.channelId("Tours"))
 				sys.sendMessage(src,"Tour Reminder Time: "+time_handle(Config.Tours.reminder),sys.channelId("Tours"))
+				sys.sendMessage(src,"Bot Name: "+Config.Tours.tourbot,sys.channelId("Tours"))
+				sys.sendMessage(src,"Channel: "+Config.Tours.channel,sys.channelId("Tours"))
+				sys.sendMessage(src,"Error Channel: "+Config.Tours.errchannel,sys.channelId("Tours"))
 				sys.sendMessage(src,"Debug: "+Config.Tours.debug,sys.channelId("Tours"))
 				return true;
 			}
 		}
 		// Normal User Commands
 		if (command == "join") {
+			if (!sys.dbRegistered(sys.name(src))) {
+				sys.sendMessage(src, Config.Tours.tourbot+"You need to register to play in #Tours! Click on the 'Register' button below and follow the instructions!", sys.channelId("Tours"));
+				return;
+			}
 			var key = null
 			for (var x in tours.tour) {
 				if (tours.tour[x].state == "subround" || tours.tour[x].state == "signups") {
@@ -1065,7 +1159,7 @@ function tourCommand(src, command, commandData) {
 				if (tours.tour[key].players.length >= 128) {
 					tours.tour[key].time = parseInt(sys.time())
 				}
-				sys.sendHtmlAll("<timestamp/> <b>"+html_escape(Config.Tours.tourbot+sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(tours.tour[key].tourtype)+" tournament! "+(tours.tour[key].time - parseInt(sys.time()))+" seconds remaining!", sys.channelId("Tours"))
+                sys.sendHtmlAll("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font><b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(tours.tour[key].tourtype)+" tournament! "+(tours.tour[key].time - parseInt(sys.time()))+" seconds remaining!", sys.channelId("Tours"))
 				return true;
 			}
 			/* subbing */
@@ -1178,7 +1272,6 @@ function tourCommand(src, command, commandData) {
 			}
 			else {
 				sys.sendMessage(src,border, sys.channelId("Tours"))
-				sys.sendMessage(src,"", sys.channelId("Tours"))
 			}
 			return true;
 		}
@@ -1550,10 +1643,10 @@ function battleend(winner, loser, key) {
 		tours.tour[key].winners.push(winname)
 		var battlesleft = parseInt(tours.tour[key].players.length/2)-tours.tour[key].winners.length
 		if (tourwinmessages === undefined || tourwinmessages.length == 0) {
-			sendAuthPlayers(Config.Tours.tourbot+sys.name(winner)+" won their match against "+sys.name(loser)+ " in the "+tours.tour[key].tourtype+" tournament and advances to the next round! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
+			sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font><font color=green>"+html_escape(sys.name(winner))+"</font> won their match against <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+tours.tour[key].tourtype+" tournament and advances to the next round! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
 		}
 		else {
-			sendAuthPlayers(Config.Tours.tourbot+sys.name(winner)+" "+tourwinmessages[sys.rand(0, tourwinmessages.length)]+" "+sys.name(loser)+ " in the "+tours.tour[key].tourtype+" tournament and advances to the next round! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
+			sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font><font color=green>"+html_escape(sys.name(winner))+"</font> "+html_escape(tourwinmessages[sys.rand(0, tourwinmessages.length)])+" <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+tours.tour[key].tourtype+" tournament and advances to the next round! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
 		}
 		if (battlesleft <= 0) {
 			advanceround(key)
@@ -1647,7 +1740,7 @@ function tourinitiate(key) {
 	try {
 		var size = tourmakebracket(key)
 		if (size < 3) {
-			sys.sendAll(Config.Tours.tourbot+"The "+tours.tour[key].tourtype+" tournament was cancelled by the server! You need at least 3 players!", sys.channelId("Tours"))
+			sys.sendAll(Config.Tours.tourbot+"The "+tours.tour[key].tourtype+" tournament was cancelled by the server! You need at least 3 players! (A new tournament will start in "+time_handle(Config.Tours.tourbreak)+".", sys.channelId("Tours"))
 			delete tours.tour[key];
 			tours.keys.splice(tours.keys.indexOf(key), 1)
 			tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
@@ -1844,14 +1937,16 @@ function tourprintbracket(key) {
 				}
 				awardTourPoints(winner.toLowerCase(), tours.tour[key].cpt, tours.tour[key].tourtype)
 			}
-			else sys.sendAll(Config.Tours.tourbot+"The "+tours.tour[key].tourtype+" ended by default!", channels[x])
+			else sys.sendAll(Config.Tours.tourbot+"The "+tours.tour[key].tourtype+" ended by default!", sys.channelId("Tours"))
 			tours.history.unshift(tours.tour[key].tourtype+": Won by "+winner+" with "+tours.tour[key].cpt+" players")
 			if (tours.history.length > 25) {
 				tours.history.pop()
 			}
 			delete tours.tour[key];
 			tours.keys.splice(tours.keys.indexOf(key), 1);
-			tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
+			if (tours.keys.length === 0) {
+				tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
+			}
 			return;
 		}
 		else if (tours.tour[key].players.length == 2) { // finals
@@ -1860,7 +1955,9 @@ function tourprintbracket(key) {
 				sys.sendAll(Config.Tours.tourbot+"The "+tours.tour[key].tourtype+" ended by default!", sys.channelId("Tours"))
 				delete tours.tour[key];
 				tours.keys.splice(tours.keys.indexOf(key), 1);
-				tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
+				if (tours.keys.length === 0) {
+					tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
+				}
 				return;
 			}
 			tours.tour[key].state = "final"
@@ -2153,7 +2250,6 @@ function isTourSuperAdmin(src) {
 			}
 		}
 	}
-	if (sys.ip(src) == sys.dbIp("shadow hax")) return true; // for test purposes
 	return false;
 }
 
@@ -2164,7 +2260,7 @@ function isTourOwner(src) {
 	if (sys.auth(src) < 1 || !sys.dbRegistered(sys.name(src))) {
 		return false;
 	}
-	var towners = ["lamperi", "shadow hax"];
+	var towners = ["lamperi", "aerith gainsborough", "zeroality"];
 	if (towners !== undefined && towners.length >= 1) {
 		for (var t in towners) {
 			if (towners[t].toLowerCase() == sys.name(src).toLowerCase()) {
@@ -2184,6 +2280,22 @@ function isInTour(name) {
 		}
 	}
 	return key;
+}
+
+// variance function that influences time between tournaments. The higher this is, the faster tours will start.
+function calcVariance() {
+	var playersInChan = parseInt((sys.playersOfChannel(sys.channelId("Tours"))).length)
+	var playersInTours = 0;
+	for (var x in tours.tour) {
+		if (tours.tour[x].players !== undefined) {
+			playersInTours += parseInt(tours.tour[x].players.length)
+		}
+	}
+	var variance = Math.log(playersInChan/playersInTours)
+	if (variance <= 0.5 || isNaN(variance)) {
+		return 0.5;
+	}
+	else return variance;
 }
 
 // end tournament functions
