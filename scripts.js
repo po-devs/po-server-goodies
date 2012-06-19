@@ -576,6 +576,7 @@ POChannelManager.prototype.dataFileFor = function(channel)
     if (!this.channelMap.hasOwnProperty(chanName)) {
        var genName = "channeldata/" + Date.now() + Math.random().toString().substr(2) + ".json";
        this.channelMap[chanName] = genName;
+       this.save();
     }
     return this.channelMap[chanName];
 };
