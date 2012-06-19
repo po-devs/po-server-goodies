@@ -3930,7 +3930,7 @@ channelCommand: function(src, command, commandData, tar) {
     }
 
     // followign commands only for Channel Masters
-    if (!poChannel.isChannelMaster(src) && sys.auth(src) != 3 && !isSuperAdmin(src))
+    if (!poChannel.isChannelMaster(src) && !isSuperAdmin(src) && sys.auth(src) <= 2)
         return "no command";
 
     if (command == "ctoggleflood") {
