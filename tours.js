@@ -2291,6 +2291,10 @@ function calcVariance() {
 			playersInTours += parseInt(tours.tour[x].players.length)
 		}
 	}
+	// stupid div/0 error :<
+	if (playersInTours === 0) {
+		return 0.5;
+	}
 	var variance = Math.log(playersInChan/playersInTours)
 	if (variance <= 0.5 || isNaN(variance)) {
 		return 0.5;
