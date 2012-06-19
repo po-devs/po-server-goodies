@@ -3931,7 +3931,7 @@ channelCommand: function(src, command, commandData, tar) {
     }
 
     // followign commands only for Channel Masters
-    if (!poChannel.isChannelMaster(src) && sys.auth(src) != 3 && !isSuperAdmin(src))
+    if (!poChannel.isChannelMaster(src) && !isSuperAdmin(src) && sys.auth(src) <= 2)
         return "no command";
 
     if (command == "ctoggleflood") {
@@ -4095,7 +4095,7 @@ beforeChatMessage: function(src, message, chan) {
                 }
             }
         }
-        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, /\u00AD/, "nobrain.dk", /\bn[1i]gg+ers*\b/i,  "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----"];
+        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, /\u00AD/,/\u200b/, "nobrain.dk", /\bn[1i]gg+ers*\b/i,  "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----"];
         for (var i = 0; i < BanList.length; ++i) {
             var filter = BanList[i];
             if (typeof filter == "string" && m.indexOf(filter) != -1 || typeof filter == "function" && filter.test(m)) {
@@ -4513,17 +4513,19 @@ beforeChallengeIssued : function (src, dest, clauses, rated, mode) {
         return;
     }
 
-    var isChallengeCup = (sys.tier(src) == "Challenge Cup" && sys.tier(dest) == "Challenge Cup") || (sys.tier(src) == "CC 1v1" && sys.tier(dest) == "CC 1v1") || (sys.tier(src) == "Wifi CC 1v1" && sys.tier(dest) == "Wifi CC 1v1");
+    var isChallengeCup = sys.clauses(sys.tier(src))%32 >= 16 || sys.clauses(sys.tier(dest))%32 >= 16;
     var hasChallengeCupClause = (clauses % 32) >= 16;
     if (isChallengeCup && !hasChallengeCupClause) {
         checkbot.sendMessage(src, "Challenge Cup must be enabled in the challenge window for a CC battle");
         sys.stopEvent();
         return;
-    } else if (!isChallengeCup && hasChallengeCupClause) {
+    }
+    /* Oak's request
+    else if (!isChallengeCup && hasChallengeCupClause) {
         checkbot.sendMessage(src, "Challenge Cup must not be enabled in the challenge window for a non CC battle");
         sys.stopEvent();
         return;
-    }
+    }*/
 
     if (sys.tier(src).indexOf("Doubles") != -1 && sys.tier(dest).indexOf("Doubles") != -1 && mode != 1) {
         battlebot.sendMessage(src, "To fight in doubles, enable doubles in the challenge window!");

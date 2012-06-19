@@ -3042,7 +3042,7 @@ function Mafia(mafiachan) {
 
     // we can always slay them :3
     this.onMute = function(src) {
-        if (this.phase != "day")
+        if (this.state != "day")
             this.slayUser(Config.capsbot, sys.name(src));
     };
 
