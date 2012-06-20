@@ -191,7 +191,8 @@ function saveTourKeys() {
 
 // This function will get a tier's clauses in readable format
 function getTourClauses(tier) {
-	var tierclauses = sys.getClauses(tier)
+	// force Self-KO clause
+	var tierclauses = sys.getClauses(tier) > 255 ? sys.getClauses(tier) : sys.getClauses(tier)+256
 	var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Wifi Battle", "Self-KO Clause"]
 	var neededclauses = [];
 	for (var c=0;c<9;c++) {
@@ -205,7 +206,8 @@ function getTourClauses(tier) {
 }
 
 function clauseCheck(tier, issuedClauses) {
-	var requiredClauses = sys.getClauses(tier)
+	// force Self-KO clause every time
+	var requiredClauses = sys.getClauses(tier) > 255 ? sys.getClauses(tier) : sys.getClauses(tier)+256
 	var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Wifi Battle", "Self-KO Clause"]
 	var clause1 = false;
 	var clause2 = false;
@@ -457,7 +459,7 @@ function tourBattleStart(src, dest, clauses, rated, mode) {
 	// checking after start
 	var battlecheck = isValidTourBattle(src,dest,clauses,mode,key,false)
 	if (battlecheck != "Valid") {
-		sys.sendAll(Config.Tours.tourbot+"The match between "+name1+" and "+name2+" was not able to be validated. Please ensure you are using the correct clauses, mode and that you are battling the right player. [Reason: "+battlecheck+"]", tourschan)
+		sendAuthPlayers(Config.Tours.tourbot+"The match between "+name1+" and "+name2+" was not able to be validated. Please ensure you are using the correct clauses, mode and that you are battling the right player. [Reason: "+battlecheck+"]", key)
 		tours.tour[key].active.push(name1, name2) // this avoids dq later since they made an attempt to start
 		return false;
 	}
@@ -802,7 +804,7 @@ function tourCommand(src, command, commandData) {
 						sys.sendMessage(src,Config.Tours.tourbot+"Botname can't be empty!",tourschan)
 						return true;
 					}
-					Config.Tours.tourbot = value+" "
+					Config.Tours.tourbot = value+": "
 					sendAllTourAuth("Tourbot name now set to "+Config.Tours.tourbot,tourschan)
 					return true;
 				}
@@ -1224,6 +1226,7 @@ function tourCommand(src, command, commandData) {
 			var index = tours.tour[key].players.indexOf(oldname)
 			var newname = sys.name(src).toLowerCase()
 			tours.tour[key].players.splice(index,1,newname)
+			tours.tour[key].playerlist.splice(index,1,newname)
 			tours.tour[key].cpt += 1
 			sys.sendAll(Config.Tours.tourbot+"Late entrant "+sys.name(src)+" will play against "+(index%2 == 0 ? tours.tour[key].players[index+1] : tours.tour[key].players[index-1])+" in the "+tours.tour[key].tourtype+" tournament. "+(tours.tour[key].players.length - tours.tour[key].cpt)+" sub"+(tours.tour[key].players.length - tours.tour[key].cpt == 1 ? "" : "s") + " remaining.", tourschan)
 			return true;
@@ -1722,6 +1725,7 @@ function advanceround(key) {
 		tours.tour[key].battlers = []
 		tours.tour[key].active = []
 		tours.tour[key].players = newlist
+		tours.tour[key].playerlist = newlist
 		tourprintbracket(key)
 	}
 	catch (err) {
@@ -1786,6 +1790,7 @@ function tourinitiate(key) {
 			tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
 			return;
 		}
+		tours.tour[key].playerlist = tours.tour[key].players
 		toursortbracket(size, key)
 		tourprintbracket(key)
 	}
@@ -1962,7 +1967,6 @@ function toursortbracket(size, key) {
 function tourprintbracket(key) {
 	try {
 		tours.tour[key].round += 1
-		tours.tour[key].playerlist = tours.tour[key].players;
 		if (tours.tour[key].players.length == 1) { // winner
 			var channels = [tourschan]
 			var winner = toCorrectCase(tours.tour[key].players[0])
