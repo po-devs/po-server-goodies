@@ -2089,6 +2089,7 @@ userCommand: function(src, command, commandData, tar) {
     if (command == "resetpass") {
         sys.clearPass(sys.name(src));
         normalbot.sendChanMessage(src, "Your password was cleared!");
+        sys.sendNetworkCommand(src, 14); // make the register button active again
         return;
     }
 
@@ -3664,8 +3665,10 @@ ownerCommand: function(src, command, commandData, tar) {
         }
         sys.clearPass(commandData);
         normalbot.sendChanMessage(src, "" + commandData + "'s password was cleared!");
-        if (tar !== undefined)
+        if (tar !== undefined) {
             normalbot.sendMessage(tar, "Your password was cleared by " + mod + "!");
+            sys.sendNetworkCommand(tar, 14); // make the register button active again
+        }
         return;
     }
     if (command == "updatebansites") {
