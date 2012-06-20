@@ -1285,7 +1285,7 @@ function tourCommand(src, command, commandData) {
 				postedrounds = true;
 				sys.sendMessage(src,border, tourschan)
 				sys.sendMessage(src,"*** Round "+tours.tour[y].round+" of the "+tours.tour[y].tourtype+" Tournament ***", tourschan)
-				for (var x=0; x<tours.tour[y].player.length; x+=2) {
+				for (var x=0; x<tours.tour[y].playerlist.length; x+=2) {
 					if (winners.indexOf(tours.tour[y].playerlist[x]) != -1 && tours.tour[y].playerlist[x] != "~Bye~") {
 						sys.sendHtmlMessage(src,"<timestamp/> <font color=green><b>"+html_escape(toCorrectCase(tours.tour[y].playerlist[x])) +"</b></font> won against "+ html_escape(toCorrectCase(tours.tour[y].playerlist[x+1])), tourschan)
 					}
