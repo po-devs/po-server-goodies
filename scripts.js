@@ -4194,7 +4194,7 @@ beforeChatMessage: function(src, message, chan) {
             }
         }
 
-        if (sys.auth(src) == 3 || SESSION.channels(channel).isChannelOperator(src)) {
+        if (sys.auth(src) > 2 || isSuperAdmin(src) || SESSION.channels(channel).isChannelOperator(src)) {
             if (this.channelCommand(src, command, commandData, tar) != "no command") {
                 return;
             }
@@ -4522,7 +4522,7 @@ beforeChallengeIssued : function (src, dest, clauses, rated, mode) {
         return;
     }
 
-    var isChallengeCup = sys.clauses(sys.tier(src))%32 >= 16 || sys.clauses(sys.tier(dest))%32 >= 16;
+    var isChallengeCup = sys.getClauses(sys.tier(src))%32 >= 16 || sys.getClauses(sys.tier(dest))%32 >= 16;
     var hasChallengeCupClause = (clauses % 32) >= 16;
     if (isChallengeCup && !hasChallengeCupClause) {
         checkbot.sendMessage(src, "Challenge Cup must be enabled in the challenge window for a CC battle");
