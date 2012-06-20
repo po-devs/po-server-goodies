@@ -313,7 +313,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: 0.986,
+			version: 0.988,
 			debug: false,
 			points: true
 		}
@@ -334,7 +334,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: 0.986,
+			version: 0.988,
 			debug: false,
 			points: true
 		}
@@ -458,6 +458,7 @@ function tourBattleStart(src, dest, clauses, rated, mode) {
 	var battlecheck = isValidTourBattle(src,dest,clauses,mode,key,false)
 	if (battlecheck != "Valid") {
 		sys.sendAll(Config.Tours.tourbot+"The match between "+name1+" and "+name2+" was not able to be validated. Please ensure you are using the correct clauses, mode and that you are battling the right player. [Reason: "+battlecheck+"]", tourschan)
+		tours.tour[key].active.push(name1, name2) // this avoids dq later since they made an attempt to start
 		return false;
 	}
 	if (tours.tour[key].players.indexOf(name1) > -1 && tours.tour[key].players.indexOf(name2) > -1) {
