@@ -457,7 +457,7 @@ function tourBattleStart(src, dest, clauses, rated, mode) {
 	// checking after start
 	var battlecheck = isValidTourBattle(src,dest,clauses,mode,key,false)
 	if (battlecheck != "Valid") {
-		sys.sendAll(Config.Tours.tourbot+"The match between "+name1+" and "+name2+" was not able to be validated. Please ensure you are using the correct clauses, mode and that you are battling the right player. [Reason: "+battlecheck+"]", tourschan)
+		sendAuthPlayers(Config.Tours.tourbot+"The match between "+name1+" and "+name2+" was not able to be validated. Please ensure you are using the correct clauses, mode and that you are battling the right player. [Reason: "+battlecheck+"]", key)
 		tours.tour[key].active.push(name1, name2) // this avoids dq later since they made an attempt to start
 		return false;
 	}
@@ -802,7 +802,7 @@ function tourCommand(src, command, commandData) {
 						sys.sendMessage(src,Config.Tours.tourbot+"Botname can't be empty!",tourschan)
 						return true;
 					}
-					Config.Tours.tourbot = value+" "
+					Config.Tours.tourbot = value+": "
 					sendAllTourAuth("Tourbot name now set to "+Config.Tours.tourbot,tourschan)
 					return true;
 				}
