@@ -191,7 +191,8 @@ function saveTourKeys() {
 
 // This function will get a tier's clauses in readable format
 function getTourClauses(tier) {
-	var tierclauses = sys.getClauses(tier)
+	// force Self-KO clause
+	var tierclauses = sys.getClauses(tier) > 255 ? sys.getClauses(tier) : sys.getClauses(tier)+256
 	var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Wifi Battle", "Self-KO Clause"]
 	var neededclauses = [];
 	for (var c=0;c<9;c++) {
@@ -205,7 +206,8 @@ function getTourClauses(tier) {
 }
 
 function clauseCheck(tier, issuedClauses) {
-	var requiredClauses = sys.getClauses(tier)
+	// force Self-KO clause every time
+	var requiredClauses = sys.getClauses(tier) > 255 ? sys.getClauses(tier) : sys.getClauses(tier)+256
 	var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Wifi Battle", "Self-KO Clause"]
 	var clause1 = false;
 	var clause2 = false;
@@ -1224,6 +1226,7 @@ function tourCommand(src, command, commandData) {
 			var index = tours.tour[key].players.indexOf(oldname)
 			var newname = sys.name(src).toLowerCase()
 			tours.tour[key].players.splice(index,1,newname)
+			tours.tour[key].playerlist.splice(index,1,newname)
 			tours.tour[key].cpt += 1
 			sys.sendAll(Config.Tours.tourbot+"Late entrant "+sys.name(src)+" will play against "+(index%2 == 0 ? tours.tour[key].players[index+1] : tours.tour[key].players[index-1])+" in the "+tours.tour[key].tourtype+" tournament. "+(tours.tour[key].players.length - tours.tour[key].cpt)+" sub"+(tours.tour[key].players.length - tours.tour[key].cpt == 1 ? "" : "s") + " remaining.", tourschan)
 			return true;
@@ -1722,6 +1725,7 @@ function advanceround(key) {
 		tours.tour[key].battlers = []
 		tours.tour[key].active = []
 		tours.tour[key].players = newlist
+		tours.tour[key].playerlist = newlist
 		tourprintbracket(key)
 	}
 	catch (err) {
@@ -1786,6 +1790,7 @@ function tourinitiate(key) {
 			tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
 			return;
 		}
+		tours.tour[key].playerlist = tours.tour[key].players
 		toursortbracket(size, key)
 		tourprintbracket(key)
 	}
@@ -1962,7 +1967,6 @@ function toursortbracket(size, key) {
 function tourprintbracket(key) {
 	try {
 		tours.tour[key].round += 1
-		tours.tour[key].playerlist = tours.tour[key].players;
 		if (tours.tour[key].players.length == 1) { // winner
 			var channels = [tourschan]
 			var winner = toCorrectCase(tours.tour[key].players[0])
