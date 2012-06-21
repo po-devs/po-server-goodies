@@ -1404,6 +1404,7 @@ afterChannelJoin : function(player, chan) {
         sys.sendMessage(player, Config.channelbot + ": use /topic <topic> to change the welcome message of this channel", chan);
         return;
     }
+	callplugins("afterChannelJoin", player, chan);
 }, /* end of afterChannelJoin */
 
 

@@ -27,18 +27,20 @@ var touradmincommands = ["*** Parameter Information ***",
 					"start: starts next tournament in the queue immediately",
 					"cancelbattle [name]: cancels that player's current battle",
 					"config: shows config settings",
+					"configset [var]:[value]: changes config settings",
 					"*** FOLLOWING COMMANDS ARE ADMIN+ COMMANDS ***",
 					"touradmin [name]: makes someone a tournament admin",
 					"tourdeadmin [name]: fires someone from being tournament admin",
-					"configset [var]:[value]: changes config settings",
 					"forcestart: ends signups immediately and starts the first round",
 					"push [player]: pushes a player into a tournament in signups (DON'T USE UNLESS ASKED)",
 					"updatewinmessages: updates win messages from the web",
 					"stopautostart: if there are no tournaments running, this will stop new ones from being automatically started by the server until another one is started manually.",
-					"clearrankings: clears the tour rankings (owner only)"]
+					"*** FOLLOWING COMMANDS ARE OWNER+ COMMANDS ***",
+					"clearrankings: clears the tour rankings (owner only)",
+					"evalvars: checks the current variable list for tours"]
 // Debug Messages
 function sendDebugMessage(message, chan) {
-	if (chan === tourschan && Config.Tours.debug && sys.existChannel(tourserrchan)) {
+	if (chan === tourschan && Config.Tours.debug && sys.existChannel(sys.channel(tourserrchan))) {
 		sys.sendAll(Config.Tours.tourbot+message,tourserrchan)
 	}
 }
@@ -315,7 +317,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: 0.988,
+			version: 0.993,
 			debug: false,
 			points: true
 		}
@@ -336,7 +338,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: 0.988,
+			version: 0.993,
 			debug: false,
 			points: true
 		}
@@ -550,6 +552,10 @@ function tourCommand(src, command, commandData) {
 				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" cleared the tour rankings!",tourschan)
 				return true;
 			}
+			if (command == "evalvars") {
+				dumpVars(src)
+				return true;
+			}
 		}
 		if (isTourSuperAdmin(src)) {
 			/* Tournament Admins etc. */
@@ -634,198 +640,6 @@ function tourCommand(src, command, commandData) {
 				sys.sendAll(Config.Tours.tourbot+"The "+tours.tour[x].tourtype+" tour was force started by "+sys.name(src)+".", tourschan)
 				return true;
 			}
-			if (command == "configset") {
-				var data = commandData.split(':',2)
-				if (commandData.length < 2) {
-					sys.sendMessage(src,"*** CONFIG SETTINGS ***",tourschan)
-					sys.sendMessage(src,"Usage: /configset [var]:[value]. Variable list and current values are below:",tourschan)
-					sys.sendMessage(src,"Example: '/configset maxqueue:3' will set the maximum queue length to 3:",tourschan)
-					sys.sendMessage(src,"maxqueue: "+Config.Tours.maxqueue,tourschan)
-					sys.sendMessage(src,"maxrunning: "+Config.Tours.maxrunning,tourschan)
-					sys.sendMessage(src,"toursignup: "+time_handle(Config.Tours.toursignup),tourschan)
-					sys.sendMessage(src,"tourdq: "+time_handle(Config.Tours.tourdq),tourschan)
-					sys.sendMessage(src,"touractivity: "+time_handle(Config.Tours.activity),tourschan)
-					sys.sendMessage(src,"subtime: "+time_handle(Config.Tours.subtime),tourschan)
-					sys.sendMessage(src,"breaktime: "+time_handle(Config.Tours.tourbreak),tourschan)
-					sys.sendMessage(src,"absbreaktime: "+time_handle(Config.Tours.abstourbreak),tourschan)
-					sys.sendMessage(src,"remindertime: "+time_handle(Config.Tours.reminder),tourschan)
-					sys.sendMessage(src,"botname: "+Config.Tours.tourbot,tourschan)
-					sys.sendMessage(src,"debug: "+Config.Tours.debug+" (to change this, type /configset debug [0/1] ~ true = 1; false = 0)",tourschan)
-					return true;
-				}
-				var option = data[0].toLowerCase()
-				if (["botname", "channel", "errchannel"].indexOf(option) == -1) {
-					var value = parseInt(data[1])
-				}
-				else {
-					var value = data[1]
-				}
-				if (option == 'maxqueue') {
-					if (isNaN(value)) {
-						sys.sendMessage(src,Config.Tours.tourbot+"A value between 1 and 255 that determines the maximum queue length. Admins and owners can bypass this restriction.",tourschan);
-						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.maxqueue,tourschan);
-						return true;
-					}
-					else if (value < 1 || value > 255) {
-						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 1 and 255.",tourschan)
-						return true;
-					}
-					Config.Tours.maxqueue = value
-					sys.saveVal("tourconfig.txt", "maxqueue", value)
-					sendAllTourAuth("Maximum queue length now set to "+Config.Tours.maxqueue)
-					return true;
-				}
-				else if (option == 'maxrunning') {
-					if (isNaN(value)) {
-						sys.sendMessage(src,Config.Tours.tourbot+"A value between 1 and 255 that determines the maximum rumber of simultaneous tours.",tourschan);
-						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.maxrunning,tourschan);
-						return true;
-					}
-					else if (value < 1 || value > 255) {
-						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 1 and 255.",tourschan)
-						return true;
-					}
-					Config.Tours.maxrunning = value
-					sys.saveVal("tourconfig.txt", "maxrunning", value)
-					sendAllTourAuth("Maximum number of simultaneous tours now set to "+Config.Tours.maxrunning)
-					return true;
-				}
-				else if (option == 'toursignup') {
-					if (isNaN(value)) {
-						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 10 and 600 that determines the intial signup length.",tourschan);
-						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.toursignup,tourschan);
-						return true;
-					}
-					else if (value < 10 || value > 600) {
-						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 10 and 600.",tourschan)
-						return true;
-					}
-					Config.Tours.toursignup = value
-					sys.saveVal("tourconfig.txt", "toursignup", value)
-					sendAllTourAuth("Sign up now set to "+time_handle(Config.Tours.toursignup))
-					return true;
-				}
-				else if (option == 'tourdq') {
-					if (isNaN(value)) {
-						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 30 and 300 that determines how long it is before inactive users are disqualified.",tourschan);
-						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.tourdq,tourschan);
-						return true;
-					}
-					else if (value < 30 || value > 300) {
-						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 30 and 300.",tourschan)
-						return true;
-					}
-					Config.Tours.tourdq = value
-					sys.saveVal("tourconfig.txt", "tourdq", value)
-					sendAllTourAuth("Disqualification time now set to "+time_handle(Config.Tours.tourdq))
-					return true;
-				}
-				else if (option == 'touractivity') {
-					if (isNaN(value)) {
-						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 60 and 300 that determines how long it is from a user's last message before a user is considered inactive.",tourschan);
-						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.activity,tourschan);
-						return true;
-					}
-					else if (value < 60 || value > 300) {
-						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 60 and 300.",tourschan)
-						return true;
-					}
-					Config.Tours.activity = value
-					sys.saveVal("tourconfig.txt", "touractivity", value)
-					sendAllTourAuth("Activity time now set to "+time_handle(Config.Tours.activity))
-					return true;
-				}
-				else if (option == 'subtime') {
-					if (isNaN(value)) {
-						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 30 and 300 that determines how long it is before subs are disqualified.",tourschan);
-						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.subtime,tourschan);
-						return true;
-					}
-					else if (value < 30 || value > 300) {
-						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 30 and 300.",tourschan)
-						return true;
-					}
-					Config.Tours.subtime = value
-					sys.saveVal("tourconfig.txt", "subtime", value)
-					sendAllTourAuth("Sub time now set to "+time_handle(Config.Tours.subtime))
-					return true;
-				}
-				else if (option == 'breaktime') {
-					if (isNaN(value)) {
-						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 30 and 300 that determines how long it is before another tournament is started if one gets cancelled.",tourschan);
-						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.breaktime,tourschan);
-						return true;
-					}
-					else if (value < 30 || value > 300) {
-						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 30 and 300.",tourschan)
-						return true;
-					}
-					Config.Tours.tourbreak = value
-					sys.saveVal("tourconfig.txt", "breaktime", value)
-					sendAllTourAuth("Break time (betweeen the finish of one tour and the start of the next) now set to "+time_handle(Config.Tours.tourbreak))
-					return true;
-				}
-				else if (option == 'absbreaktime') {
-					if (isNaN(value)) {
-						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 300 and 1800 that influences how long it is between tournaments starting. The actual time will depend on other factors.",tourschan);
-						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.absbreaktime,tourschan);
-						return true;
-					}
-					else if (value < 300 || value > 1800) {
-						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 300 and 1800.",tourschan)
-						return true;
-					}
-					Config.Tours.abstourbreak = value
-					sys.saveVal("tourconfig.txt", "absbreaktime", value)
-					sendAllTourAuth("Absolute break time (time between starting tours) now set to "+time_handle(Config.Tours.abstourbreak))
-					return true;
-				}
-				else if (option == 'remindertime') {
-					if (isNaN(value)) {
-						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) that determines how long it is before a battle reminder is sent to players.",tourschan);
-						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.reminder,tourschan);
-						return true;
-					}
-					else if (value < 15 || value > (Config.Tours.tourdq-30)) {
-						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 15 and "+(Config.Tours.tourdq-30)+".",tourschan)
-						return true;
-					}
-					Config.Tours.reminder = value
-					sys.saveVal("tourconfig.txt", "remindertime", value)
-					sendAllTourAuth("Reminder time now set to "+time_handle(Config.Tours.reminder))
-					return true;
-				}
-				else if (option == 'botname') {
-					if (!isTourOwner(src)) {
-						sys.sendMessage(src,Config.Tours.tourbot+"Can't change the botname, ask an owner for this.",tourschan)
-						return true;
-					}
-					else if (value.length === 0) {
-						sys.sendMessage(src,Config.Tours.tourbot+"Botname can't be empty!",tourschan)
-						return true;
-					}
-					Config.Tours.tourbot = value+": "
-					sendAllTourAuth("Tourbot name now set to "+Config.Tours.tourbot,tourschan)
-					return true;
-				}
-				else if (option == 'debug') {
-					if (!isTourOwner(src)) {
-						sys.sendMessage(src,Config.Tours.tourbot+"Can't turn debug on/off, ask an owner for this.",tourschan)
-						return true;
-					}
-					if (value !== 0 && value != 1) {
-						sys.sendMessage(src,Config.Tours.tourbot+"Value must be 0 (turns debug off) or 1 (turns it on).",tourschan)
-						return true;
-					}
-					Config.Tours.debug = (value == 1 ? true : false)
-					sendAllTourAuth("Debug mode now set to "+Config.Tours.debug,tourschan)
-					return true;
-				}
-				else {
-					sys.sendMessage(src,Config.Tours.tourbot+"The configuration option '"+option+"' does not exist.",tourschan)
-					return true;
-				}
-			}
 			if (command == "push") {
 				var key = null
 				var target = commandData.toLowerCase()
@@ -880,8 +694,12 @@ function tourCommand(src, command, commandData) {
 			}
 			// enabled for now!
 			if (command == "updatewinmessages") {
-				sys.sendMessage(src, Config.Tours.tourbot, "Fetching win messages...", tourschan);
-				sys.webCall("https://raw.github.com/lamperi/po-server-goodies/master/tourwinverbs.txt", function(resp) {
+				var url = "https://raw.github.com/lamperi/po-server-goodies/master/tourwinverbs.txt"
+				if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
+					url = commandData;
+				}
+				sys.sendMessage(src, Config.Tours.tourbot+"Fetching win messages from "+url, tourschan);
+				sys.webCall(url, function(resp) {
 					if (resp !== "") {
 						sys.writeToFile('tourwinverbs.txt', resp);
 						getTourWinMessages()
@@ -1100,6 +918,7 @@ function tourCommand(src, command, commandData) {
 					return true;
 				}
 				tours.tour[key].players.splice(tours.tour[key].players.indexOf(oldname),1,newname)
+				tours.tour[key].playerlist.splice(tours.tour[key].playerlist.indexOf(oldname),1,newname)
 				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" substituted "+toCorrectCase(newname)+" in place of "+toCorrectCase(oldname)+" in the "+tours.tour[key].tourtype+" tournament.", tourschan)
 				return true;
 			}
@@ -1119,6 +938,198 @@ function tourCommand(src, command, commandData) {
 				sys.sendMessage(src,"Error Channel: "+Config.Tours.errchannel,tourschan)
 				sys.sendMessage(src,"Debug: "+Config.Tours.debug,tourschan)
 				return true;
+			}
+			if (command == "configset") {
+				var data = commandData.split(':',2)
+				if (commandData.length < 2) {
+					sys.sendMessage(src,"*** CONFIG SETTINGS ***",tourschan)
+					sys.sendMessage(src,"Usage: /configset [var]:[value]. Variable list and current values are below:",tourschan)
+					sys.sendMessage(src,"Example: '/configset maxqueue:3' will set the maximum queue length to 3:",tourschan)
+					sys.sendMessage(src,"maxqueue: "+Config.Tours.maxqueue,tourschan)
+					sys.sendMessage(src,"maxrunning: "+Config.Tours.maxrunning,tourschan)
+					sys.sendMessage(src,"toursignup: "+time_handle(Config.Tours.toursignup),tourschan)
+					sys.sendMessage(src,"tourdq: "+time_handle(Config.Tours.tourdq),tourschan)
+					sys.sendMessage(src,"touractivity: "+time_handle(Config.Tours.activity),tourschan)
+					sys.sendMessage(src,"subtime: "+time_handle(Config.Tours.subtime),tourschan)
+					sys.sendMessage(src,"breaktime: "+time_handle(Config.Tours.tourbreak),tourschan)
+					sys.sendMessage(src,"absbreaktime: "+time_handle(Config.Tours.abstourbreak),tourschan)
+					sys.sendMessage(src,"remindertime: "+time_handle(Config.Tours.reminder),tourschan)
+					sys.sendMessage(src,"botname: "+Config.Tours.tourbot,tourschan)
+					sys.sendMessage(src,"debug: "+Config.Tours.debug+" (to change this, type /configset debug [0/1] ~ true = 1; false = 0)",tourschan)
+					return true;
+				}
+				var option = data[0].toLowerCase()
+				if (["botname", "bot name", "channel", "errchannel"].indexOf(option) == -1) {
+					var value = parseInt(data[1])
+				}
+				else {
+					var value = data[1]
+				}
+				if (option == 'maxqueue' || option == "maximum queue length") {
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value between 1 and 255 that determines the maximum queue length. Admins and owners can bypass this restriction.",tourschan);
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.maxqueue,tourschan);
+						return true;
+					}
+					else if (value < 1 || value > 255) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 1 and 255.",tourschan)
+						return true;
+					}
+					Config.Tours.maxqueue = value
+					sys.saveVal("tourconfig.txt", "maxqueue", value)
+					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the maximum queue length to "+Config.Tours.maxqueue)
+					return true;
+				}
+				else if (option == 'maxrunning' || option == 'maximum number of simultaneous tours') {
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value between 1 and 255 that determines the maximum rumber of simultaneous tours.",tourschan);
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.maxrunning,tourschan);
+						return true;
+					}
+					else if (value < 1 || value > 255) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 1 and 255.",tourschan)
+						return true;
+					}
+					Config.Tours.maxrunning = value
+					sys.saveVal("tourconfig.txt", "maxrunning", value)
+					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the maximum number of simultaneous tours to "+Config.Tours.maxrunning)
+					return true;
+				}
+				else if (option == 'toursignup' || option == 'tour sign ups length') {
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 10 and 600 that determines the intial signup length.",tourschan);
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.toursignup,tourschan);
+						return true;
+					}
+					else if (value < 10 || value > 600) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 10 and 600.",tourschan)
+						return true;
+					}
+					Config.Tours.toursignup = value
+					sys.saveVal("tourconfig.txt", "toursignup", value)
+					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the sign up time to "+time_handle(Config.Tours.toursignup))
+					return true;
+				}
+				else if (option == 'tourdq' || option == 'tour auto dq length') {
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 30 and 300 that determines how long it is before inactive users are disqualified.",tourschan);
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.tourdq,tourschan);
+						return true;
+					}
+					else if (value < 30 || value > 300) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 30 and 300.",tourschan)
+						return true;
+					}
+					Config.Tours.tourdq = value
+					sys.saveVal("tourconfig.txt", "tourdq", value)
+					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the disqualification time to "+time_handle(Config.Tours.tourdq))
+					return true;
+				}
+				else if (option == 'touractivity' || option == 'tour activity check') {
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 60 and 300 that determines how long it is from a user's last message before a user is considered inactive.",tourschan);
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.activity,tourschan);
+						return true;
+					}
+					else if (value < 60 || value > 300) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 60 and 300.",tourschan)
+						return true;
+					}
+					Config.Tours.activity = value
+					sys.saveVal("tourconfig.txt", "touractivity", value)
+					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the activity time to "+time_handle(Config.Tours.activity))
+					return true;
+				}
+				else if (option == 'subtime' || option == 'substitute time') {
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 30 and 300 that determines how long it is before subs are disqualified.",tourschan);
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.subtime,tourschan);
+						return true;
+					}
+					else if (value < 30 || value > 300) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 30 and 300.",tourschan)
+						return true;
+					}
+					Config.Tours.subtime = value
+					sys.saveVal("tourconfig.txt", "subtime", value)
+					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the sub time to "+time_handle(Config.Tours.subtime))
+					return true;
+				}
+				else if (option == 'breaktime' || option == 'tour break time') {
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 30 and 300 that determines how long it is before another tournament is started if one gets cancelled.",tourschan);
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.breaktime,tourschan);
+						return true;
+					}
+					else if (value < 30 || value > 300) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 30 and 300.",tourschan)
+						return true;
+					}
+					Config.Tours.tourbreak = value
+					sys.saveVal("tourconfig.txt", "breaktime", value)
+					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the break time (betweeen cancelled tournaments) to "+time_handle(Config.Tours.tourbreak))
+					return true;
+				}
+				else if (option == 'absbreaktime' || option == 'absolute tour break time') {
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) between 300 and 1800 that influences how long it is between tournaments starting. The actual time will depend on other factors.",tourschan);
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.absbreaktime,tourschan);
+						return true;
+					}
+					else if (value < 300 || value > 1800) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 300 and 1800.",tourschan)
+						return true;
+					}
+					Config.Tours.abstourbreak = value
+					sys.saveVal("tourconfig.txt", "absbreaktime", value)
+					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the absolute break time (base time between starting tours) to "+time_handle(Config.Tours.abstourbreak))
+					return true;
+				}
+				else if (option == 'remindertime' || option == 'tour reminder time') {
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"A value (in seconds) that determines how long it is before a battle reminder is sent to players from the start of the round",tourschan);
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.reminder,tourschan);
+						return true;
+					}
+					else if (value < 15 || value > (Config.Tours.tourdq-30)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 15 and "+(Config.Tours.tourdq-30)+".",tourschan)
+						return true;
+					}
+					Config.Tours.reminder = value
+					sys.saveVal("tourconfig.txt", "remindertime", value)
+					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the reminder time to "+time_handle(Config.Tours.reminder))
+					return true;
+				}
+				else if (option == 'botname' || option == 'bot name') {
+					if (!isTourOwner(src)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Can't change the botname, ask an owner for this.",tourschan)
+						return true;
+					}
+					else if (value.length === 0) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Botname can't be empty!",tourschan)
+						return true;
+					}
+					Config.Tours.tourbot = value+": "
+					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the tourbot name to "+Config.Tours.tourbot,tourschan)
+					return true;
+				}
+				else if (option == 'debug') {
+					if (!isTourOwner(src)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Can't turn debug on/off, ask an owner for this.",tourschan)
+						return true;
+					}
+					if (value !== 0 && value != 1) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Value must be 0 (turns debug off) or 1 (turns it on).",tourschan)
+						return true;
+					}
+					Config.Tours.debug = (value == 1 ? true : false)
+					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the debug mode to "+Config.Tours.debug,tourschan)
+					return true;
+				}
+				else {
+					sys.sendMessage(src,Config.Tours.tourbot+"The configuration option '"+option+"' does not exist.",tourschan)
+					return true;
+				}
 			}
 		}
 		// Normal User Commands
@@ -1371,6 +1382,7 @@ function tourCommand(src, command, commandData) {
 				sys.sendMessage(src, border,tourschan);
 				for (var u in touradmincommands) {
 					if (touradmincommands[u] == "*** FOLLOWING COMMANDS ARE ADMIN+ COMMANDS ***" && !isTourSuperAdmin(src)) break;
+					if (touradmincommands[u] == "*** FOLLOWING COMMANDS ARE OWNER+ COMMANDS ***" && !isTourOwner(src)) break;
 					sys.sendMessage(src, touradmincommands[u],tourschan);
 				}
 			}
@@ -1725,7 +1737,6 @@ function advanceround(key) {
 		tours.tour[key].battlers = []
 		tours.tour[key].active = []
 		tours.tour[key].players = newlist
-		tours.tour[key].playerlist = newlist
 		tourprintbracket(key)
 	}
 	catch (err) {
@@ -1790,7 +1801,6 @@ function tourinitiate(key) {
 			tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
 			return;
 		}
-		tours.tour[key].playerlist = tours.tour[key].players
 		toursortbracket(size, key)
 		tourprintbracket(key)
 	}
@@ -1967,6 +1977,7 @@ function toursortbracket(size, key) {
 function tourprintbracket(key) {
 	try {
 		tours.tour[key].round += 1
+		tours.tour[key].playerlist = tours.tour[key].players
 		if (tours.tour[key].players.length == 1) { // winner
 			var channels = [tourschan]
 			var winner = toCorrectCase(tours.tour[key].players[0])
@@ -2314,7 +2325,7 @@ function isTourOwner(src) {
 			}
 		}
 	}
-        return false;
+	return false;
 }
 
 function isInTour(name) {
@@ -2351,6 +2362,52 @@ function calcVariance() {
 	else return variance;
 }
 
+function sendWelcomeMessage(src, chan) {
+	sys.sendMessage(src,border,chan)
+	sys.sendMessage(src,"*** Welcome to #Tours! ***",chan)
+	sys.sendMessage(src,"",chan)
+	sys.sendMessage(src,"*** Current Tournaments ***",chan)
+	for (var x in tours.tour) {
+		if (tours.tour[x].state == "signups") {
+			sys.sendMessage(src, tours.tour[x].tourtype+": Currently in signups, "+time_handle(tours.tour[x].time-parseInt(sys.time()))+" remaining. Type /join to join.", chan)
+		}
+		else if (tours.tour[x].state == "subround" && tours.tour[x].players.length - tours.tour[x].cpt !== 0) {
+			sys.sendMessage(src, tours.tour[x].tourtype+": Substitute spots are open, type /join to join late.", chan)
+		}
+		else if (tours.tour[x].state == "final") {
+			sys.sendMessage(src, tours.tour[x].tourtype+": Final Round", chan)
+		}
+		else {
+			sys.sendMessage(src, tours.tour[x].tourtype+": Round "+tours.tour[x].round, chan)
+		}
+	}
+	if (!sys.dbRegistered(sys.name(src))) {
+		sys.sendMessage(src, Config.Tours.tourbot+"You need to register before playing in #Tours! Click on the 'Register' button below and follow the instructions!", chan);
+	}
+	sys.sendMessage(src,"*** Use /help to view the commands! ***",chan)
+	sys.sendMessage(src,border,chan)
+}
+
+function dumpVars(src) {
+	sys.sendMessage(src, border, tourschan)
+	sys.sendMessage(src, "*** Variable Dump ***", tourschan)
+	sys.sendMessage(src, "*** Main ***", tourschan)
+	sys.sendMessage(src, "GlobalTime: "+tours.globaltime, tourschan)
+	sys.sendMessage(src, "CurrentTime: "+sys.time(), tourschan)
+	for (var x in tours.tour) {
+		sys.sendMessage(src, "*** Round "+tours.tour[x].round+"; "+tours.tour[x].tourtype+" Tour (key "+x+")***", tourschan)
+		sys.sendMessage(src, "Time: "+tours.tour[x].time, tourschan)
+		sys.sendMessage(src, "Players: "+tours.tour[x].players, tourschan)
+		sys.sendMessage(src, "Playerlist: "+tours.tour[x].playerlist, tourschan)
+		sys.sendMessage(src, "Battlers: "+tours.tour[x].battlers, tourschan)
+		sys.sendMessage(src, "Winners: "+tours.tour[x].winners, tourschan)
+		sys.sendMessage(src, "Total Players: "+tours.tour[x].cpt, tourschan)
+		sys.sendMessage(src, "Active: "+tours.tour[x].active, tourschan)
+		sys.sendMessage(src, "Seeds: "+tours.tour[x].seeds, tourschan)
+	}
+	sys.sendMessage(src, border, tourschan)
+}
+
 // end tournament functions
 // module functions
 
@@ -2373,6 +2430,11 @@ module.exports = {
 	},
 	init: function() {
 		initTours();
+	},
+	afterChannelJoin : function(player, chan) {
+		if (chan === sys.channelId("Tours")) {
+			sendWelcomeMessage(player, chan)
+		}
 	},
 	afterBattleEnded : function(source, dest, desc) {
 		tourBattleEnd(source, dest, desc)
