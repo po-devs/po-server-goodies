@@ -30,9 +30,11 @@ brainwashed
 bribed
 broke
 brought an end to
+bruised
 brutalized
 bullied
 buried
+burned
 burninated
 burnt
 bushwhacked
@@ -49,6 +51,7 @@ counterteamed
 crashed into
 crashed, boomed and banged
 cremated
+cried to
 crippled
 CROTTED
 crushed the dreams of
@@ -58,6 +61,7 @@ danced a Fiery Dance for
 danced around
 danced on the grave of
 dazzled
+daykilled
 deactivated
 decapitated
 decimated
@@ -89,6 +93,7 @@ disposed of
 distracted
 dodged a Hydro Pump from
 dominated
+donked
 doped
 doused
 dropped a fridge on
@@ -141,6 +146,7 @@ ignored
 immobilized
 immolated
 impressed
+imprisoned
 infected
 infested
 injured
@@ -153,6 +159,7 @@ isolated
 jabbed at
 jeered at
 jolted
+juiced
 jynxed
 kamehameha'd
 keelhauled
@@ -165,12 +172,14 @@ leeched off of
 let the dogs out on
 liquidated
 lobotomized
+made a lovely dinner for
 maimed
 mangled
 manhandled
 manipulated
 marred
 mashburned
+mashed
 massacred
 masticated
 mauled
@@ -223,6 +232,7 @@ rattled
 ravaged
 rebelled against
 recited Vogon poetry to
+rejechted
 released the Kraken on
 repelled
 retaliated against
@@ -240,6 +250,7 @@ scouted
 screamed at
 scuffled with
 seduced
+Serpranded
 set fire to
 Shanghai'd
 shaved
@@ -263,6 +274,7 @@ slayed
 sliced and diced
 slugged
 smacked
+smashpassed
 snarled at
 sneezed at
 sniped
@@ -299,7 +311,7 @@ temporally displaced
 terminated
 terrorized
 threatened
-threw a Poké Ball at
+threw a PokÃ© Ball at
 threw a table at
 threw coin(s) at
 threw tiny little pebbles at
@@ -310,6 +322,7 @@ trampled
 trapped
 traumatized
 tricked
+tricked a Lagging Tail to
 tripped
 trolled
 trounced
@@ -325,18 +338,21 @@ used Final Gambit on
 used legendaries against
 used Splash on
 used the ragnarok connection on
-used ubers against
+used Ubers against
 vanquished
 vaporized
 vaulted
-vented his anger on
+vented their anger on
 vivisected
 walloped
 went nuts on
 went to town on
 whipped
 whittled down
+wiggled their finger at
+wiped out
 won Rock, Paper, Scissors against
+wooed
 wrecked
 wrenched
 wrestled
