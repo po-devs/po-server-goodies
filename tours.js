@@ -317,7 +317,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: 0.993,
+			version: 0.998,
 			debug: false,
 			points: true
 		}
@@ -338,7 +338,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: 0.993,
+			version: 0.998,
 			debug: false,
 			points: true
 		}
@@ -465,7 +465,8 @@ function tourBattleStart(src, dest, clauses, rated, mode) {
 		tours.tour[key].active.push(name1, name2) // this avoids dq later since they made an attempt to start
 		return false;
 	}
-	if (tours.tour[key].players.indexOf(name1) > -1 && tours.tour[key].players.indexOf(name2) > -1) {
+	// only recognise a battle from round 1 onwards
+	if (tours.tour[key].players.indexOf(name1) > -1 && tours.tour[key].players.indexOf(name2) > -1 && tours.tour[key].round >= 1) {
 		tours.tour[key].battlers.push(name1, name2)
 		tours.tour[key].active.push(name1, name2) // this avoids dq later since they made an attempt to start
 		return true;
@@ -2095,6 +2096,9 @@ function isValidTourBattle(src,dest,clauses,mode,key,challenge) { // challenge i
 		}
 		else if (destindex == -1) {
 			return "That player is not in the tournament."
+		}
+		else if (tours.tour[key].round < 1) {
+			return "The tournament hasn't started yet."
 		}
 		else if (srcbtt != -1 && challenge) {
 			return "You have already started your battle."
