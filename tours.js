@@ -319,7 +319,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: 0.999,
+			version: 1,
 			debug: false,
 			points: true
 		}
@@ -340,7 +340,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: 0.999,
+			version: 1,
 			debug: false,
 			points: true
 		}
@@ -901,9 +901,17 @@ function tourCommand(src, command, commandData) {
 			if (command == "dq") {
 				var key = null
 				for (var x in tours.tour) {
-					if (tours.tour[x].players.indexOf(commandData.toLowerCase()) != -1 && (tours.tour[x].losers.indexOf(commandData.toLowerCase()) == -1 && tours.tour[x].parameters.type == "single")) {
-						key = x;
-						break;
+					if (tours.tour[x].players.indexOf(sys.name(src).toLowerCase()) != -1) {
+						if (tours.tour[x].losers.indexOf(sys.name(src).toLowerCase()) == -1) {
+							key = x;
+							break;
+						}
+						if (tours.tour[x].parameters.type == "double") {
+							if (tours.tour[x].winbracket.indexOf(sys.name(src).toLowerCase()) != -1 || tours.tour[x].round == 1) {
+								key = x;
+								break;
+							}
+						}
 					}
 				}
 				if (key === null) {
@@ -1341,11 +1349,11 @@ function tourCommand(src, command, commandData) {
 			for (var e in queue) {
 				var queuedata = queue[e].split(":::",5)
 				if (firsttour && nextstart != "Pending") {
-					sys.sendMessage(src,queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+queuedata[3] : "")+" Mode"+(queuedata[4] == "double" ? "; Double Elimination" : "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
+					sys.sendMessage(src,queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+queuedata[3] : "")+(queuedata[4] == "double" ? "; Double Elimination" : "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
 					firsttour = false
 				}
 				else {
-					sys.sendMessage(src,queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+queuedata[3] : "")+" Mode"+(queuedata[4] == "double" ? "; Double Elimination" : ""), tourschan)
+					sys.sendMessage(src,queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+queuedata[3] : "")+(queuedata[4] == "double" ? "; Double Elimination" : ""), tourschan)
 				}
 			}
 			return true;
@@ -1416,8 +1424,18 @@ function tourCommand(src, command, commandData) {
 					return true;
 				}
 				else {
+					var score = 0;
+					var rankings = sys.getFileContent("tourscores.txt").split("\n")
+					for (var p in rankings) {
+						if (rankings[p] == "") continue;
+						var rankingdata = rankings[p].split(":::",2)
+						if (cmp(rankingdata[0],commandData)) {
+							score = rankingdata[1]
+							break;
+						}
+					}
 					var tourdata = sys.getFileContent("tourdetails.txt")
-					sys.sendMessage(src, "*** TOURNAMENT DETAILS FOR "+commandData+" ***",tourschan)
+					sys.sendMessage(src, "*** TOURNAMENT DETAILS FOR "+commandData+" (Score: "+score+")***",tourschan)
 					var tourinfopieces = tourdata.split("\n")
 					for (var x in tourinfopieces) {
 						var datatoread = tourinfopieces[x].split(":::",4)
@@ -2306,7 +2324,6 @@ function tourprintbracket(key) {
 					if (tours.tour[key].parameters.type == "double" && x == tours.tour[key].players.length/2) {
 						sendAuthPlayers("", key)
 						sendAuthPlayers("*** Losers Bracket ***", key)
-						sendAuthPlayers("", key)
 					}
 					sendAuthPlayers("("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+") "+toCorrectCase(tours.tour[key].players[x]) +" VS "+ toCorrectCase(tours.tour[key].players[x+1])+" ("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")", key)
 				}
