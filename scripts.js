@@ -1872,7 +1872,7 @@ userCommand: function(src, command, commandData, tar) {
     }
     if (command == "rules") {
     	norules = (rules.length-1)/2 //formula for getting the right amount of rules
-        if(commandData !== undefined && !isNaN(commandData) && commandData >0 && commandData < (norules+1)){
+        if(commandData !== undefined && !isNaN(commandData) && commandData >0 && commandData < norules){
             var num = parseInt(commandData, 10);
             num = (2*num)+1; //gets the right rule from the list since it isn't simply y=x it's y=2x+1
             sendChanMessage(src, rules[num]);
