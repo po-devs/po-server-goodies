@@ -2728,7 +2728,7 @@ function Mafia(mafiachan) {
 
                 this.signups.push(name);
                 this.ips.push(sys.ip(src));
-                if (this.numjoins.hasOwnProperty(ip)) {
+                if (this.numjoins.hasOwnProperty(sys.ip(src))) {
                     this.numjoins[sys.ip(src)] += 1
                 }
                 else {
