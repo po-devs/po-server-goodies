@@ -761,6 +761,7 @@ function Mafia(mafiachan) {
         this.votes = {};
         this.voteCount = 0;
         this.ips = [];
+        this.numjoins = {};
         this.resetTargets();
         // Recharges shouldn't be cleared between nights
         this.teamRecharges = {};
@@ -2668,6 +2669,10 @@ function Mafia(mafiachan) {
             sys.sendMessage(src, "±Game: You need to register to play mafia here! Click on the 'Register' button below and follow the instructions!", mafiachan);
             return;
         }
+        if (this.numjoins[sys.ip(src)] >= 2) {
+            sys.sendMessage(src, "±Game: You can't join/unjoin more than 3 times!", mafiachan);
+            return;
+        }
         var name = sys.name(src);
         for (var x in name) {
             var code = name.charCodeAt(x);
@@ -2723,6 +2728,12 @@ function Mafia(mafiachan) {
 
                 this.signups.push(name);
                 this.ips.push(sys.ip(src));
+                if (this.numjoins.hasOwnProperty(ip)) {
+                    this.numjoins[sys.ip(src)] += 1
+                }
+                else {
+                    this.numjoins[sys.ip(src)] = 1
+                }
                 sys.sendAll("±Game: " + name + " joined the game!", mafiachan);
                 if (this.signups.length == this.theme["roles"+this.theme.roleLists].length) {
                     this.ticks = 1;
