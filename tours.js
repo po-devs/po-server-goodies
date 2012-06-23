@@ -901,13 +901,13 @@ function tourCommand(src, command, commandData) {
 			if (command == "dq") {
 				var key = null
 				for (var x in tours.tour) {
-					if (tours.tour[x].players.indexOf(sys.name(src).toLowerCase()) != -1) {
-						if (tours.tour[x].losers.indexOf(sys.name(src).toLowerCase()) == -1) {
+					if (tours.tour[x].players.indexOf(commandData.toLowerCase()) != -1) {
+						if (tours.tour[x].losers.indexOf(commandData.toLowerCase()) == -1) {
 							key = x;
 							break;
 						}
 						if (tours.tour[x].parameters.type == "double") {
-							if (tours.tour[x].winbracket.indexOf(sys.name(src).toLowerCase()) != -1 || tours.tour[x].round == 1) {
+							if (tours.tour[x].winbracket.indexOf(commandData.toLowerCase()) != -1 || tours.tour[x].round == 1) {
 								key = x;
 								break;
 							}
