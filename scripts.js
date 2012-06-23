@@ -942,30 +942,18 @@ init : function() {
     else sys.webCall(Config.base_url + PROXY_FILE, addProxybans);
 
     rules = [ "",
-    "*** Rules ***",
+    "*** Pokémon Online Server Rules ***",
     "",
-    "Rule #1 - Do Not Abuse CAPS:",
-    "- The occasional word in CAPS is acceptable, however repeated use is not.",
-    "Rule #2 - No Spamming or Flooding:",
-    "- Please do not post a large amount of short messages when you can easily post one or two long messages.",
-    "Rule #3 - Do not Challenge Spam:",
-    "- If a person refuses your challenge, this means they do not want to battle you. Find someone else to battle with.",
-    "Rule #4 - Prefer Find Battle button when finding a battle:",
-    "- There is a 'Find Battle' tab that you can use to find a battle immediately. If after a while you cannot find a match, then you can ask for one in the chat.",
-    "Rule #5 - No Trolling/Flaming/Insulting of Any kind:",
-    "- Behaving stupidly and excessive vulgarity will not be tolerated, using words including 'fuck' is a bad starting point.",
-    "Rule #6 - Be Respectable of Each Others Cultures:",
-    "- Not everyone speaks the same language. This server is not an English-Only Server. Do not tell someone to only speak a certain language.",
-    "Rule #7 - No Advertising:",
-    "- There will be absolutely no advertising on the server.",
-    "Rule #8 - No Obscene or Pornographic Content Allowed:",
-    "- This includes links, texts, images, and any other kind of media. This will result in an instant ban.",
-    "Rule #9 - Do not ask for Auth:",
-    "- Authority is given upon merit. By asking you have pretty much eliminated your chances at becoming an Auth in the future.",
-    "Rule #10 - No minimodding:",
-    "- Server has moderators for a reason. If someone breaks the rules, alert the auth, do not try to moderate yourself.",
-    "Rule #11 - Do not share other people's personal information without their permission:",
-    "- Violation of personal privacy is not nice at all, and you wouldn't want it happening to you. If found out, you will be permanently banned."
+    "1. No trolling, flaming, or harassing other players. Do not complain about hax in the chat, beyond a one line comment.",
+    "- Inciting responses with inflammatory comments, using verbal abuse against other players, or spamming them via chat/PM/challenges will not be tolerated. Harassing other players by constantly aggravating them or revealing personal information will be severely punished. A one line comment regarding hax after a loss to vent is fine, but excessive bemoaning is not acceptable.",
+    "2. Pokemon Online is an international server.",
+    "- Respect other peoples' cultures and do not demand they speak English. Everyone is welcome at Pokemon Online, as long as they follow the rules.",
+    "3. No advertising, excessive messages, inappropriate/obscene links, or text art.",
+    "- Do not post links unless they are to notable sites (YouTube, Smogon, Serebii, etc). We are not interested in your start-up community. Do not monopolize the chat with large amounts of messages, or short ones in rapid succession. Posting ASCII art is punishable with a ban, as is posting anything with any type of pornography.",
+    "4. Use Find Battle, or join tournaments instead of asking in the main chat.",
+    "- The official channels on Pokemon Online have too much activity to allow battle requests in the chat. Use Find Battle or go join the tournaments channel and participate. The only exception is if you are unable to find a battle for a low-played tier, then asking once every 5 minutes or so is acceptable.",
+    "5. Do not ask for authority.",
+    "- By asking, you may have eliminated your chances of becoming one in the future. If you are genuinely interested in becoming a staff member then a good way to get noticed is to become an active member of the community. Engaging others in intelligent chats and offering to help with graphics, programming, the wiki, or our YouTube channel (among others) is a good way to get noticed."
     ];
 
     if (typeof authStats == 'undefined')
