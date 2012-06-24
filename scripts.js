@@ -1221,7 +1221,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         authStats[authority]["latest" + type] = [commandData, parseInt(sys.time(), 10)];
 },
 
-importable : function(id, compactible) {
+importable : function(id, team, compactible) {
 /*
 Tyranitar (M) @ Choice Scarf
 Lvl: 100
@@ -1241,24 +1241,24 @@ Jolly Nature (+Spd, -SAtk)
     var hpnum = sys.moveNum("Hidden Power");
     var ret = [];
     for (var i = 0; i < 6; ++i) {
-        var poke = sys.teamPoke(id, i);
+        var poke = sys.teamPoke(id, team, i);
         if (poke === undefined)
             continue;
 
-        var item = sys.teamPokeItem(id, i);
+        var item = sys.teamPokeItem(id, team, i);
         item = item !== undefined ? sys.item(item) : "(no item)";
-        ret.push(sys.pokemon(poke) + genders[sys.teamPokeGender(id, i)] + " @ " + item );
-        ret.push('Trait: ' + sys.ability(sys.teamPokeAbility(id, i)));
-        var level = sys.teamPokeLevel(id, i);
+        ret.push(sys.pokemon(poke) + genders[sys.teamPokeGender(id, team, i)] + " @ " + item );
+        ret.push('Trait: ' + sys.ability(sys.teamPokeAbility(id, team, i)));
+        var level = sys.teamPokeLevel(id, team, i);
         if (!compactible && level != 100) ret.push('Lvl: ' + level);
 
         var ivs = [];
         var evs = [];
         var hpinfo = [sys.gen(id)];
         for (var j = 0; j < 6; ++j) {
-            var iv = sys.teamPokeDV(id, i, j);
+            var iv = sys.teamPokeDV(id, team, i, j);
             if (iv != 31) ivs.push(iv + " " + stat[j]);
-            var ev = sys.teamPokeEV(id, i, j);
+            var ev = sys.teamPokeEV(id, team, i, j);
             if (ev !== 0) evs.push(ev + " " + stat[j]);
             hpinfo.push(iv);
         }
@@ -1267,10 +1267,10 @@ Jolly Nature (+Spd, -SAtk)
         if (evs.length > 0)
             ret.push('EVs: ' + evs.join(" / "));
 
-        ret.push(sys.nature(sys.teamPokeNature(id, i)) + " Nature"); // + (+Spd, -Atk)
+        ret.push(sys.nature(sys.teamPokeNature(id, team, i)) + " Nature"); // + (+Spd, -Atk)
 
         for (j = 0; j < 4; ++j) {
-            var move = sys.teamPokeMove(id, i, j);
+            var move = sys.teamPokeMove(id, team, i, j);
             if (move !== undefined) {
                 ret.push('- ' + sys.move(move) + (move == hpnum ? ' [' + sys.type(sys.hiddenPowerType.apply(sys, hpinfo)) + ']':''));
             }
@@ -3364,7 +3364,7 @@ ownerCommand: function(src, command, commandData, tar) {
     }
     if (command == "showteam") {
         sendChanMessage(src, "");
-        var info = this.importable(tar);
+        var info = this.importable(tar, 0);
         for (var x=0; x < info.length; ++x) {
             sys.sendMessage(src, info[x], channel);
         }
@@ -4222,7 +4222,7 @@ beforeChatMessage: function(src, message, chan) {
             if (command == "teaminfo") {
                 var id = sys.id(commandData);
                 if (id) {
-                    var data = {type: 'TeamInfo', id: id, name: sys.name(id), gen: sys.gen(id), tier: sys.tier(id), importable: this.importable(id).join("\n"), registered: sys.dbRegistered(sys.name(id)), ip: sys.ip(id)};
+                    var data = {type: 'TeamInfo', id: id, name: sys.name(id), gen: sys.gen(id), tier: sys.tier(id), importable: this.importable(id,0).join("\n"), registered: sys.dbRegistered(sys.name(id)), ip: sys.ip(id)};
                     sendChanMessage(src, ":"+JSON.stringify(data));
                 }
             }
