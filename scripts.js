@@ -1254,7 +1254,7 @@ Jolly Nature (+Spd, -SAtk)
 
         var ivs = [];
         var evs = [];
-        var hpinfo = [sys.gen(id)];
+        var hpinfo = [sys.gen(id, team)];
         for (var j = 0; j < 6; ++j) {
             var iv = sys.teamPokeDV(id, team, i, j);
             if (iv != 31) ivs.push(iv + " " + stat[j]);
