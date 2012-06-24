@@ -227,7 +227,7 @@ function POUser(id)
     var android = true;
     var i;
     for (i = 0; i < 6; ++i) {
-        if (sys.teamPoke(this.id, i) != POKEMON_CLEFFA) {
+        if (sys.teamPoke(this.id, 0, i) != POKEMON_CLEFFA) {
             android = false;
             break;
         }
@@ -1702,26 +1702,28 @@ afterChangeTeam : function(src)
     if (getKey("autoIdle", src) == "1") {
         sys.changeAway(src, true);
     }
-    try {
-    // TODO: move this into tierchecks.js
-    if (sys.gen(src) == 2) {
-    pokes:
-        for (var i = 0; i <= 6; i++)
-            for (var j = 0; j < bannedGSCSleep.length; ++j)
-                if (sys.hasTeamPokeMove(src, i, bannedGSCSleep[j]))
-                    for (var k = 0; k < bannedGSCTrap.length; ++k)
-                        if (sys.hasTeamPokeMove(src, i, bannedGSCTrap[k])) {
-                            checkbot.sendMessage(src, "SleepTrapping is banned in GSC. Pokemon " + sys.pokemon(sys.teamPoke(src,i)) + "  removed from your team.");
-                            sys.changePokeNum(src, i, 0);
-                            continue pokes;
-                        }
 
-    }
-    } catch (e) { sys.sendMessage(e, staffchannel); }
+    for (var team = 0; team < sys.teamCount(src); team++) {
+        try {
+            // TODO: move this into tierchecks.js
+            if (sys.gen(src, team) === 2) {
+            pokes:
+                for (var i = 0; i <= 6; i++)
+                    for (var j = 0; j < bannedGSCSleep.length; ++j)
+                        if (sys.hasTeamPokeMove(src, team, i, bannedGSCSleep[j]))
+                            for (var k = 0; k < bannedGSCTrap.length; ++k)
+                                if (sys.hasTeamPokeMove(src, team, i, bannedGSCTrap[k])) {
+                                    checkbot.sendMessage(src, "SleepTrapping is banned in GSC. Pokemon " + sys.pokemon(sys.teamPoke(src,team,i)) + "  removed from your team.");
+                                    sys.changePokeNum(src, team, i, 0);
+                                    continue pokes;
+                                }
+            }
+        } catch (e) { sys.sendMessage(e, staffchannel); }
 
-    if (!tier_checker.has_legal_team_for_tier(src, sys.tier(src))) {
-       tier_checker.find_good_tier(src);
-       normalbot.sendMessage(src, "You were placed into '" + sys.tier(src) + "' tier.");
+        if (!tier_checker.has_legal_team_for_tier(src, team, sys.tier(src, team))) {
+           tier_checker.find_good_tier(src, team);
+           normalbot.sendMessage(src, "You were placed into '" + sys.tier(src, team) + "' tier.");
+        }
     }
 
 }, /* end of afterChangeTeam */
@@ -4490,28 +4492,28 @@ isMCaps : function(message) {
     return false;
 },
 
-beforeChangeTier : function(src, oldtier, newtier) {
-    if (!tier_checker.has_legal_team_for_tier(src, newtier)) {
+beforeChangeTier : function(src, team, oldtier, newtier) {
+    if (!tier_checker.has_legal_team_for_tier(src, team, newtier)) {
        sys.stopEvent();
        normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
-       tier_checker.find_good_tier(src);
+       tier_checker.find_good_tier(src, team);
     }
 },
 
-beforeChallengeIssued : function (src, dest, clauses, rated, mode) {
+beforeChallengeIssued : function (src, dest, clauses, rated, mode, team, destTier) {
     if (battlesStopped) {
         battlebot.sendMessage(src, "Battles are now stopped as the server will restart soon.");
         sys.stopEvent();
         return;
     }
 
-    if (SESSION.users(dest).sametier === true && (sys.tier(dest) != sys.tier(src))) {
+    if (SESSION.users(dest).sametier === true && (destTier != sys.tier(src,team))) {
         battlebot.sendMessage(src, "That guy only wants to fight his/her own tier.");
         sys.stopEvent();
         return;
     }
 
-    var isChallengeCup = sys.getClauses(sys.tier(src))%32 >= 16 || sys.getClauses(sys.tier(dest))%32 >= 16;
+    var isChallengeCup = sys.getClauses(sys.tier(src,team))%32 >= 16 || sys.getClauses(destTier)%32 >= 16;
     var hasChallengeCupClause = (clauses % 32) >= 16;
     if (isChallengeCup && !hasChallengeCupClause) {
         checkbot.sendMessage(src, "Challenge Cup must be enabled in the challenge window for a CC battle");
@@ -4525,19 +4527,19 @@ beforeChallengeIssued : function (src, dest, clauses, rated, mode) {
         return;
     }*/
 
-    if (sys.tier(src).indexOf("Doubles") != -1 && sys.tier(dest).indexOf("Doubles") != -1 && mode != 1) {
+    if (sys.tier(src,team).indexOf("Doubles") != -1 && destTier.indexOf("Doubles") != -1 && mode != 1) {
         battlebot.sendMessage(src, "To fight in doubles, enable doubles in the challenge window!");
         sys.stopEvent();
         return;
     }
 
-    if (sys.tier(src).indexOf("Triples") != -1 && sys.tier(dest).indexOf("Triples") != -1 && mode != 2) {
+    if (sys.tier(src,team).indexOf("Triples") != -1 && destTier.indexOf("Triples") != -1 && mode != 2) {
         battlebot.sendMessage(src, "To fight in triples, enable triples in the challenge window!");
         sys.stopEvent();
         return;
     }
 
-    if (callplugins("beforeChallengeIssued", src, dest, clauses, rated, mode)) {
+    if (callplugins("beforeChallengeIssued", src, dest, clauses, rated, mode, team, destTier)) {
         sys.stopEvent();
     }
 
