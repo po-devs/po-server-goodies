@@ -1872,7 +1872,7 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "rules") {
-    	norules = (rules.length-1)/2 //formula for getting the right amount of rules
+        var norules = (rules.length-1)/2; //formula for getting the right amount of rules
         if(commandData !== undefined && !isNaN(commandData) && commandData >0 && commandData < norules){
             var num = parseInt(commandData, 10);
             num = (2*num)+1; //gets the right rule from the list since it isn't simply y=x it's y=2x+1
@@ -1890,12 +1890,26 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "ranking") {
-        var tier = sys.totalPlayersByTier(commandData) > 0 ? commandData : sys.tier(src);
-        var rank = sys.ranking(sys.name(src), tier);
-        if (rank === undefined) {
-            rankingbot.sendChanMessage(src, "You are not ranked in " + tier + " yet!");
+        var announceTier = function(tier) {
+            var rank = sys.ranking(sys.name(src), tier);
+            if (rank === undefined) {
+                rankingbot.sendChanMessage(src, "You are not ranked in " + tier + " yet!");
+            } else {
+                rankingbot.sendChanMessage(src, "Your rank in " + tier + " is " + rank + "/" + sys.totalPlayersByTier(tier) + " [" + sys.ladderRating(src, tier) + " points / " + sys.ratedBattles(sys.name(src), tier) +" battles]!");
+            }
+        };
+        if (commandData !== undefined) {
+            if (sys.totalPlayersByTier(commandData) === 0)
+                rankingbot.sendChanMessage(src, commandData + " is not even a tier.");
+            else
+                announceTier(commandData);
         } else {
-            rankingbot.sendChanMessage(src, "Your rank in " + tier + " is " + rank + "/" + sys.totalPlayersByTier(tier) + " [" + sys.ladderRating(src, tier) + " points / " + sys.ratedBattles(sys.name(src), tier) +" battles]!");
+            [0,1,2,3,4,5]
+                .map(function(i) { return sys.tier(src, i); })
+                .filter(function(tier) { return tier !== undefined; })
+                .sort()
+                .filter(function(tier, index, array) { return tier !== array[index-1]; })
+                .forEach(announceTier);
         }
         return;
     }
@@ -4418,10 +4432,10 @@ afterChatMessage : function(src, message, chan)
 }, /* end of afterChatMessage */
 
 
-afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
+afterBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2) {
     callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid);
 
-    var battle_data = {players: [src, dest], clauses: clauses, rated: rated, mode: mode};
+    var battle_data = {players: [src, dest], teams: [team1, team2], clauses: clauses, rated: rated, mode: mode};
     SESSION.global().battleinfo[bid] = battle_data;
     SESSION.users(src).battles[bid] = battle_data;
     SESSION.users(dest).battles[bid] = battle_data;
@@ -4445,10 +4459,6 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
 
 
 beforeBattleEnded : function(src, dest, desc, bid) {
-    if (SESSION.global().battleinfo[bid] && SESSION.global().battleinfo[bid].rated && desc == "forfeit"
-       && sys.ratedBattles(dest) <= 1 && sys.isInChannel(dest, mafiachan)) {
-        //normalbot.sendAll(sys.name(dest) + " just forfeited their first battle and is on mafia channel. Troll?", staffchannel)
-    }
     delete SESSION.global().battleinfo[bid];
     delete SESSION.users(src).battles[bid];
     delete SESSION.users(dest).battles[bid];
