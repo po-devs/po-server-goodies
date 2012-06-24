@@ -4,6 +4,7 @@ import subprocess
 import os
 import re
 import lxml.etree as etree
+from tierutils import get_po_tiers, write_po_tiers, merge_bans
 
 TIERS_YML_URL="https://raw.github.com/sarenji/poserver/HEAD/tiers.yml"
 TIERS_COMPILER_URL="https://raw.github.com/sarenji/poserver/HEAD/tiers_compiler.rb"
@@ -36,22 +37,6 @@ def download_smogon_tiers(download=True):
         tree.parse("smogon/tiers.xml")
     return tree
 
-def get_po_tiers():
-    tree = etree.ElementTree()
-    if os.path.exists("tiers.xml"):
-        tree.parse("tiers.xml")
-    return tree
-
-def write_po_tiers(po_tiers):
-    with open("tiers.xml", "wb") as f:
-        f.write(etree.tostring(po_tiers).replace(b'\n', b'\r\n'))
-
-def merge_values(s1, s2):
-    set1 = set(s.strip() for s in s1.split(","))
-    set2 = set(s.strip() for s in s2.split(","))
-    ret = ', '.join(sorted(list((set1 | set2))))
-    return ret
-
 def update_tiers(smogon_tiers, po_tiers):
     for smogon_tier,po_tier in TIERS_TO_UPDATE.items():
         print("{0} -> {1}...".format(smogon_tier, po_tier), end=" ")
@@ -68,7 +53,7 @@ def update_tiers(smogon_tiers, po_tiers):
                if banlist.attrib["banMode"] != smogon_element.attrib["banMode"]:
                    raise InvalidTierException("Ban list mode does not match for '{0}' and '{1}'".format(smogon_tier, banlistname))
                for key in ["pokemons", "restrictedPokemons", "items", "moves"]:
-                   smogon_element.attrib[key] = merge_values(smogon_element.attrib[key], banlist.attrib[key])
+                   smogon_element.attrib[key] = merge_bans(smogon_element.attrib[key], banlist.attrib[key])
 
         po_element = po_tiers.find(".//tier[@name='{0}']".format(po_tier))
 

@@ -6,6 +6,7 @@ import sys
 from copy import copy
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from tierutils import get_po_tiers, write_po_tiers, deserialize_bans, serialize_bans
 
 
 WEIGHTED_USAGE_STATS_URL="http://valssi.fixme.fi/~lamperi/cgi-bin/weighted_ranked_stats.py"
@@ -14,49 +15,38 @@ MONTHLY_STATS="http://stats.pokemon-online.eu/Past Stats/{month}-{year}/{tier}/r
 
 TIER_TREES = [
     ["Wifi OU", "Wifi UU", "Wifi LU", "Wifi NU"],
-    ["DW OU", "DW UU"]
+    ["DW OU", "DW UU"],
+    ["Wifi LC", "Wifi LC UU"]
 ]
 
 BANLIST = {
-    "Wifi OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Excadrill", "Blaziken", "Garchomp"], # Ubers
-    "Wifi UU": ["Kingdra", "Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Venomoth", "Wobbuffet", "Deoxys-D"], # BL
-    "Wifi LU": ["Cresselia", "Gorebyss", "Huntail", "Victini", "Rhyperior", "Omastar", "Medicham", "Durant", "Virizion", "Moltres", "Sharpedo"], # BL2
-    "Wifi NU": ["Feraligatr", "Sawsbuck", "Gligar", "Braviary", "Charizard", "Hitmonlee", "Scolipede", "Tangela", "Jynx", "Misdreavus", "Cacturne"], # BL3
-    "DW OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Blaziken", "Garchomp", "Chandelure", "Excadrill"], # DW Ubers
-    "DW UU": ["Azelf", "Chansey", "Deoxys", "Deoxys-S", "Froslass", "Haxorus", "Hydreigon", "Kyurem", "Landorus", "Latias", "Lucario", "Roserade", "Scrafty", "Smeargle", "Staraptor", "Terrakion", "Venomoth", "Vulpix", "Wobbuffet"], # DW BL
+    "Wifi OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Excadrill", "Blaziken", "Garchomp", "Thundurus"], # Ubers
+    "Wifi UU": ["Kingdra", "Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Wobbuffet", "Deoxys-D"], # BL
+    "Wifi LU": ["Cresselia", "Gorebyss", "Huntail", "Victini", "Rhyperior", "Medicham", "Durant", "Virizion", "Sharpedo"], # BL2
+    "Wifi NU": ["Feraligatr", "Sawsbuck", "Gligar", "Charizard", "Hitmonlee", "Scolipede", "Tangela", "Jynx", "Druddigon"], # BL3
+    "DW OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Blaziken", "Garchomp", "Chandelure", "Excadrill"], # DW Ubers
+    "DW UU": ["Azelf", "Chansey", "Deoxys", "Deoxys-S", "Froslass", "Haxorus", "Hydreigon", "Kyurem", "Landorus", "Latias", "Lucario", "Roserade", "Scrafty", "Smeargle", "Staraptor", "Terrakion", "Venomoth", "Vulpix", "Wobbuffet", "Abomasnow", "Snover"], # DW BL
+    "Wifi LC": ["Scyther", "Sneasel", "Yanma", "Tangela", "Vulpix", "Murkrow", "Scraggy", "Misdreavus", "Meditite", "Carvanha", "Gligar", "Drilbur"], # LC Ubers (in addition to all other pokemon...)
+    "Wifi LC UU": ["Poliwag", "Axew"], # Wifi LC BL
 }
 ADDITIONAL_BANS = {
     "Wifi UU": ["Vulpix", # Due to Drought being banned
-                "Abomasnow", "Snover", # Due to Snow Warning being banned
-                "Thundurus"], # Due to being uber for some time
+                "Abomasnow", "Snover"], # Due to Snow Warning being banned
+    "Wifi LU": ["Venomoth"], # Due to being BL for some time
     "DW UU":   ["Thundurus"], # Due to being uber for some time
 }
 
 # TODO: enforce these
 ITEM_BANS = {
-    "Wifi NU": "Damp Rock"
+    "Wifi NU": [],
+    "Wifi LC": ["Berry Juice", "DeepSeaTooth"],
 }
-
-def get_po_tiers():
-    tree = lxml.etree.ElementTree()
-    if os.path.exists("tiers.xml"):
-        tree.parse("tiers.xml")
-    return tree
-
-def write_po_tiers(po_tiers):
-    with open("tiers.xml", "wb") as f:
-        f.write(lxml.etree.tostring(po_tiers).replace(b'\n', b'\r\n'))
-
-def deserialize_bans(str):
-    return set(s.strip() for s in str.split(","))
-
-def serialize_bans(set):
-    return ", ".join(sorted(list(set)))    
 
 def get_ranked_stats(tier):
     today = date.today()
-    last_month = today + relativedelta(months = -1)
-    previous_month =  today + relativedelta(months = -2)
+    even_month = -1 if today.month % 2 == 0 else 0
+    last_month = today + relativedelta(months = -1 + even_month)
+    previous_month =  today + relativedelta(months = -2 + even_month)
     last_month_url = MONTHLY_STATS.format(month=last_month.strftime("%B").lower(), year=last_month.year, tier=tier)
     previous_month_url = MONTHLY_STATS.format(month=previous_month.strftime("%B").lower(), year=previous_month.year, tier=tier)
     PARAMS["stats1"] = previous_month_url.replace(" ", "%20")

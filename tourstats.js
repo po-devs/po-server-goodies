@@ -6,7 +6,7 @@
 var tourwinners, tourstats, tourrankingsbytier;
 
 function updateTourStats(tier, time, winner, num, noPoints, purgeTime) {
-    loadStats();
+    //loadStats();
     var numToPoints = function() {
         if (noPoints) return 0;
         // First index: points for 1-7 players,
@@ -15,9 +15,11 @@ function updateTourStats(tier, time, winner, num, noPoints, purgeTime) {
         // Fourth index: points for 32-63 players,
         // Fifth index: points for 64+ players
         var pointsDistributions = {
-            "1v1 Challenge Cup": [0, 0, 0, 0, 1],
+            "CC 1v1": [0, 0, 0, 0, 1],
+            "Wifi CC 1v1": [0, 0, 0, 0, 1],
             "Challenge Cup": [0, 0, 0, 1, 2],
-            "1v1 Gen 5": [0, 0, 0, 0, 1],
+            "DW 1v1": [0, 0, 0, 0, 1],
+            "DW 1v1 Ubers": [0, 0, 0, 0, 1],
             "Metronome": [0, 0, 0, 0, 0],
             "Monotype": [0, 0, 1, 2, 3],
             "default": [0, 1, 2, 4, 6],
@@ -66,8 +68,6 @@ function updateTourStats(tier, time, winner, num, noPoints, purgeTime) {
 
     var player;
     while (tourwinners.length > 0 && (parseInt(tourwinners[0][1]) + purgeTime) < time) {
-        sys.sendMessage(sys.id("Lamperi"), "Hey lamperi we are purging tour winners: " + tourwinners[0], 0)
-        sys.sendMessage(sys.id("Lamperi"), "" + parseInt(tourwinners[0][1]) + " + " + purgeTime + " < " + time, 0)
         tier = tourwinners[0][0];
         points = numToPoints(tourwinners[0][2]);
         player = tourwinners[0][3];
@@ -121,7 +121,7 @@ var commandHandlers = {
         for (var i = tourwinners.length-1; i >= tourwinners.length-cycleLength && i >= 0; --i) {
             a.push(tourwinners[i][0]);
         }
-        tourneybot.sendChanMessage(src, "Recently played tiers are: " + a.join(", "));
+        tourneybot.sendMessage(src, "Recently played tiers are: " + a.join(", "),channel);
     },
     lastwinners: function lastwinners(src, command, commandData, channel) {
         // tourwinners.push([tier, time, num, winner]);
@@ -138,7 +138,7 @@ var commandHandlers = {
             list.push([tourstats[p].points, p]);
         }
         list.sort(function(a,b) { return b[0] - a[0] ; });
-        sendChanMessage(src, "*** Global tourney points ***");
+        sys.sendMessage(src, "*** Global tourney points ***",channel);
         if (list.length > 0) {
             for (var i in list) {
                 if (i == 10) break;
@@ -147,12 +147,12 @@ var commandHandlers = {
                 sys.sendHtmlMessage(src, "<timestamp/><b>" + pos + ".</b> " + data[1] + " <b>-</b> " + data[0] + " points", channel);
             }
         } else {
-            sendChanMessage(src, "No tourney wins!");
+            sys.sendMessage(src, "No tourney wins!",channel);
         }
     },
     tourranking: function tourranking(src, command, commandData, channel) {
         if (commandData === undefined) {
-            rankingbot.sendChanMessage(src, "You must specify tier!");
+            rankingbot.sendMessage(src, "You must specify tier!",channel);
             return;
         }
         var rankings;
@@ -165,7 +165,7 @@ var commandHandlers = {
             }
         }
         if (tierName === undefined) {
-            rankingbot.sendChanMessage(src, "No statistics exist for that tier!");
+            rankingbot.sendMessage(src, "No statistics exist for that tier!",channel);
             return;
         }
         var list = [];
@@ -187,7 +187,7 @@ var commandHandlers = {
     },
     tourdetails: function tourdetails(src, command, commandData, channel) {
         if (commandData === undefined) {
-            rankingbot.sendChanMessage(src, "You must specify user!");
+            rankingbot.sendMessage(src, "You must specify user!",channel);
             return;
         }
         var name = commandData.toLowerCase();
@@ -201,7 +201,7 @@ var commandHandlers = {
                 sys.sendHtmlMessage(src, "<timestamp/>" + green("Win on")+ details[i][0] + green("tournament with") + details[i][2] + green("entrants") + (dayDiff > 1 ? '' + dayDiff + green("days ago") : dayDiff == 1 ? green("yesterday") : dayDiff == 0 ? green('today') : green('in the future')), channel);
             }
         } else {
-            rankingbot.sendChanMessage(src, commandData+" has not won any tournaments recently.");
+            rankingbot.sendMessage(src, commandData+" has not won any tournaments recently.",channel);
         }
     },
 
@@ -229,8 +229,12 @@ var commandHandlers = {
     resettourstats: function resettourstats(src, command, commandData, channel) {
         tourwinners = [];
         tourstats = {};
-        tourrankings = {};
         tourrankingsbytier = {};
+        var jsonObject = {};
+        jsonObject.tourwinners = tourwinners
+        jsonObject.tourstats = tourstats
+        jsonObject.tourrankingsbytier = tourrankingsbytier
+        sys.writeToFile('tourstats.json', JSON.stringify(jsonObject));
         sys.sendAll('Tournament winners were cleared!');
     }
 }

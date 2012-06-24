@@ -2,28 +2,29 @@
 exports = {
     python_split: function python_split(string, delim, limit)
     {
+        var arr;
         if ((delim.__proto__ === RegExp || delim.__proto__ == "/(?:)/") && limit !== undefined) {
             // lastIndex doesn't update without global match
             var flags = "g" + (delim.ignoreCase ? "i" : "") + (delim.multiline ? "m" : "");
             var re = new RegExp(delim.source, flags);
-            var arr = [];
+            arr = [];
             var lastIndex = 0;
             while (--limit >= 0) {
                 var match = re.exec(string);
-                if (match != null) {
-                    arr.push(string.substring(lastIndex, match.index)); 
+                if (match !== null) {
+                    arr.push(string.substring(lastIndex, match.index));
                     lastIndex = re.lastIndex;
                 } else {
-                    arr.push(string.substring(lastIndex)); 
+                    arr.push(string.substring(lastIndex));
                     break;
                 }
             }
             if (limit < 0) {
-                arr.push(string.substring(lastIndex)); 
+                arr.push(string.substring(lastIndex));
             }
             return arr;
         }
-        var arr = string.split(delim);
+        arr = string.split(delim);
         if (delim.length > limit) {
             var b = arr.slice(delim);
             arr.push(b.join(delim));
@@ -58,7 +59,7 @@ exports = {
         var poke_slot;
         /* first try if poke_id is slot number between 1-6 */
         if (/^[1-6]$/.test(poke_id)) {
-            poke_slot = parseInt(poke_id) - 1;
+            poke_slot = parseInt(poke_id, 10) - 1;
         } else {
             /* try to see if poke_id is species */
             var pokeNum = sys.pokeNum(poke_id);
@@ -82,14 +83,25 @@ exports = {
     {
         var move_slot;
         if (/^[1-4]$/.test(move_id)) {
-           move_slot = parseInt(move_id) - 1;
+           move_slot = parseInt(move_id, 10) - 1;
         } else {
             var moveNum = sys.moveNum(move_id);
             if (moveNum !== undefined) {
-                move_slot = sys.indexOfTeamPokeMove(src, poke_slot, moveNum)
+                move_slot = sys.indexOfTeamPokeMove(src, poke_slot, moveNum);
             }
         }
         return move_slot;
+    },
+
+    find_tier: function find_tier(tier_name) {
+        tier_name = tier_name.toLowerCase();
+        var tiers = sys.getTierList();
+        for (var i = 0; i < tiers.length; ++i) {
+            if (tiers[i].toLowerCase() == tier_name) {
+                return tiers[i];
+            }
+        }
+        return null;
     },
 
     is_non_negative: function is_non_negative(n) {
@@ -97,16 +109,16 @@ exports = {
     },
 
     Lazy: function Lazy(func)
-    {       
+    {
         var done = false;
         return function() {
             if (done)
-                return this._value
+                return this._value;
             else {
                 done = true;
                 return this._value = func.apply(arguments.callee, arguments);
             }
-        }       
+        };
     },
 
     capitalize: function capitalize(string) {
@@ -117,6 +129,26 @@ exports = {
         return name;
         // PO version 1.0.53 has a bug with zwsp due to (we think) qt.
         /* return name[0] + '\u200b' + name.substr(1) */
-    }
+    },
 
-}
+    get_or_create_channel: function getOrCreateChannel(name) {
+        var cid;
+        if (sys.existChannel(name)) {
+            cid = sys.channelId(name);
+        } else {
+            cid = sys.createChannel(name);
+        }
+        return cid;
+    },
+    html_escape : function(text) {
+        var m = String(text);
+        if (m.length > 0) {
+            var amp = "&am" + "p;";
+            var lt = "&l" + "t;";
+            var gt = "&g" + "t;";
+            return m.replace(/&/g, amp).replace(/</g, lt).replace(/>/g, gt);
+        }else{
+            return "";
+        }
+    }
+};
