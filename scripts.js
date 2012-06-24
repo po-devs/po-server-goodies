@@ -1409,7 +1409,6 @@ afterChannelJoin : function(player, chan) {
     }
     if (SESSION.channels(chan).isChannelOperator(player)) {
         sys.sendMessage(player, Config.channelbot + ": use /topic <topic> to change the welcome message of this channel", chan);
-        return;
     }
 	callplugins("afterChannelJoin", player, chan);
 }, /* end of afterChannelJoin */

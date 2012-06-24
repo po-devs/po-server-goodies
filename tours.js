@@ -319,7 +319,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: 1,
+			version: 1.02,
 			debug: false,
 			points: true
 		}
@@ -340,7 +340,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: 1,
+			version: 1.02,
 			debug: false,
 			points: true
 		}
@@ -436,8 +436,10 @@ function tourStep() {
 		else if (tours.keys.length === 0) {
 			// start a random tour from tourarray
 			var tourarray = ["Challenge Cup", "Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Wifi OU", "Wifi OU", "Wifi OU", "Wifi UU", "Wifi LU", "Wifi NU", "DW OU", "DW 1v1"]
+			var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "DW 1v1"];
 			var tourtostart = tourarray[sys.rand(0, tourarray.length)]
-			tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": 5})
+			var tourtype = doubleelimtiers.indexOf(tourtostart) != -1 ? "double" : "single"
+			tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": 5, "type": tourtype})
 			tours.globaltime = parseInt(sys.time()) + 1200
 		}
 	}
@@ -1341,9 +1343,12 @@ function tourCommand(src, command, commandData) {
 			var nextstart = time_handle(tours.globaltime - parseInt(sys.time()))
 			for (var x in tours.tour) {
 				if (tours.tour[x].state == "signups") {
-					nextstart = "Pending"
+					nextstart = "Pending";
 					break;
 				}
+			}
+			if (Config.Tours.maxrunning <= tours.keys.length) {
+				nextstart = "Pending";
 			}
 			var firsttour = true;
 			for (var e in queue) {
@@ -2353,16 +2358,38 @@ function isValidTourBattle(src,dest,clauses,mode,key,challenge) { // challenge i
 	try {
 		var srcindex = tours.tour[key].players.indexOf(sys.name(src).toLowerCase())
 		var destindex = tours.tour[key].players.indexOf(sys.name(dest).toLowerCase())
+		var srcisintour = false;
+		var destisintour = false;
+		if (srcindex != -1) {
+			if (tours.tour[key].losers.indexOf(sys.name(src).toLowerCase()) == -1) {
+				srcisintour = true;
+			}
+			if (tours.tour[key].parameters.type == "double") {
+				if (tours.tour[key].winbracket.indexOf(sys.name(src).toLowerCase()) != -1 || tours.tour[key].round == 1) {
+					srcisintour = true;
+				}
+			}
+		}
+		if (destindex != -1) {
+			if (tours.tour[key].losers.indexOf(sys.name(dest).toLowerCase()) == -1) {
+				destisintour = true;
+			}
+			if (tours.tour[key].parameters.type == "double") {
+				if (tours.tour[key].winbracket.indexOf(sys.name(dest).toLowerCase()) != -1 || tours.tour[key].round == 1) {
+					destisintour = true;
+				}
+			}
+		}
 		var srcbtt = tours.tour[key].battlers.indexOf(sys.name(src).toLowerCase())
 		var destbtt= tours.tour[key].battlers.indexOf(sys.name(dest).toLowerCase())
 		var srcwin = tours.tour[key].winners.indexOf(sys.name(src).toLowerCase())
 		var destwin = tours.tour[key].winners.indexOf(sys.name(dest).toLowerCase())
 		var checklist = clauseCheck(tours.tour[key].tourtype, clauses)
 		var invalidmsg = ""
-		if (srcindex == -1) {
+		if (!srcisintour) {
 			return "You are not in the tournament."
 		}
-		else if (destindex == -1) {
+		else if (!destisintour) {
 			return "That player is not in the tournament."
 		}
 		else if (tours.tour[key].round < 1) {
@@ -2641,7 +2668,7 @@ function calcVariance() {
 
 function sendWelcomeMessage(src, chan) {
 	sys.sendMessage(src,border,chan)
-	sys.sendMessage(src,"*** Welcome to #Tours! ***",chan)
+	sys.sendMessage(src,"*** Welcome to #Tours Version "+Config.Tours.version+"! ***",chan)
 	sys.sendMessage(src,"",chan)
 	sys.sendMessage(src,"*** Current Tournaments ***",chan)
 	for (var x in tours.tour) {
