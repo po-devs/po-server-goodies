@@ -1890,12 +1890,26 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "ranking") {
-        var tier = sys.totalPlayersByTier(commandData) > 0 ? commandData : sys.tier(src);
-        var rank = sys.ranking(sys.name(src), tier);
-        if (rank === undefined) {
-            rankingbot.sendChanMessage(src, "You are not ranked in " + tier + " yet!");
+        var announceTier = function(tier) {
+            var rank = sys.ranking(sys.name(src), tier);
+            if (rank === undefined) {
+                rankingbot.sendChanMessage(src, "You are not ranked in " + tier + " yet!");
+            } else {
+                rankingbot.sendChanMessage(src, "Your rank in " + tier + " is " + rank + "/" + sys.totalPlayersByTier(tier) + " [" + sys.ladderRating(src, tier) + " points / " + sys.ratedBattles(sys.name(src), tier) +" battles]!");
+            }
+        };
+        if (commandData !== undefined) {
+            if (sys.totalPlayersByTier(commandData) === 0)
+                rankingbot.sendChanMessage(src, commandData + " is not even a tier.");
+            else
+                announceTier(commandData);
         } else {
-            rankingbot.sendChanMessage(src, "Your rank in " + tier + " is " + rank + "/" + sys.totalPlayersByTier(tier) + " [" + sys.ladderRating(src, tier) + " points / " + sys.ratedBattles(sys.name(src), tier) +" battles]!");
+            [0,1,2,3,4,5]
+                .map(function(i) { return sys.tier(src, i); })
+                .filter(function(tier) { return tier !== undefined; })
+                .sort()
+                .filter(function(tier, index, array) { return tier !== array[index-1]; })
+                .forEach(announceTier);
         }
         return;
     }
