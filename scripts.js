@@ -902,10 +902,9 @@ init : function() {
         if (num === undefined)
             sys.sendAll("Script Check: Unknown poke in dwpokemons: '" +dwlist[dwpok]+"'.", announceChan);
         else if (dwpokemons[num] === true)
-            sys.sendAll("Script Check: contains '" +dwlist[dwpok]+"' multiple times.", announceChan);
+            sys.sendAll("Script Check:  dwpokemons contains '" +dwlist[dwpok]+"' multiple times.", announceChan);
         else
-            
-            [sys.pokeNum(dwlist[dwpok])] = true;
+            dwpokemons[sys.pokeNum(dwlist[dwpok])] = true;
     }
 
     var lclist = ["Bulbasaur", "Charmander", "Squirtle", "Croagunk", "Turtwig", "Chimchar", "Piplup", "Treecko","Torchic","Mudkip"];
