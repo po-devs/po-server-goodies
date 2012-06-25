@@ -9,28 +9,28 @@ TierChecker.prototype.add_new_check = function(exclusive, tiers, checker) {
     this.checkers.push({tiers: tiers, checker: checker, exclusive: exclusive});
 };
 
-TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier) {
+TierChecker.prototype.has_legal_team_for_tier = function(src, tier) {
     if (tier == "Challenge Cup") return true;
-    if (!sys.hasLegalTeamForTier(src, team, tier)) return false;
+    if (!sys.hasLegalTeamForTier(src, tier)) return false;
 
     for (var i = 0; i < this.checkers.length; ++i) {
         var valid_tier = (this.checkers[i].exclusive === true
             ? this.checkers[i].tiers.indexOf(tier) == -1
             : this.checkers[i].tiers.indexOf(tier) != -1);
-        if (valid_tier && this.checkers[i].checker(src, team, tier)) {
+        if (valid_tier && this.checkers[i].checker(src, tier)) {
             return false;
         }
     }
     return true;
 };
 
-TierChecker.prototype.find_good_tier = function(src, team) {
+TierChecker.prototype.find_good_tier = function(src) {
     // TODO: write up
     var testPath = ["Wifi LC", "DW LC", "Wifi LC Ubers", "Wifi NU", "Wifi LU", "Wifi UU", "DW UU", "Wifi OU", "DW OU", "Wifi Ubers", "Wifi DW", "Challenge Cup"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
-        if (sys.hasLegalTeamForTier(src, team, testtier) && this.has_legal_team_for_tier(src, team, testtier)) {
-            sys.changeTier(src, team, testtier);
+        if (sys.hasLegalTeamForTier(src, testtier) && this.has_legal_team_for_tier(src, testtier)) {
+            sys.changeTier(src, testtier);
             return;
         }
     }
@@ -41,12 +41,12 @@ var INCLUDING = false;
 var EXCLUDING = true;
 var challenge_cups = ["Challenge Cup", "CC 1v1"];
 
-tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(src, team) {
+tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(src) {
     for (var i = 0; i < 6; i++) {
-        var poke = sys.teamPoke(src, team, i);
+        var poke = sys.teamPoke(src, i);
         if (poke in pokeNatures) {
             for (var x in pokeNatures[poke]) {
-                if (sys.hasTeamPokeMove(src, team, i, x) && sys.teamPokeNature(src, team, i) != pokeNatures[poke][x])
+                if (sys.hasTeamPokeMove(src, i, x) && sys.teamPokeNature(src, i) != pokeNatures[poke][x])
                 {
                     checkbot.sendMessage(src, "" + sys.pokemon(poke) + " with " + sys.move(x) + " must be a " + sys.nature(pokeNatures[poke][x]) + " nature. Change it in the teambuilder.");
                     return true; // If this is true, it is true for each tier...
@@ -56,10 +56,10 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(s
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi LC", "Wifi LC Ubers", "Wifi UU LC"], function littleCupCheck(src, team) {
+tier_checker.add_new_check(INCLUDING, ["Wifi LC", "Wifi LC Ubers", "Wifi UU LC"], function littleCupCheck(src) {
     for (var i = 0; i < 6; i++) {
-        var x = sys.teamPoke(src, team, i);
-        if (x !== 0 && sys.hasDreamWorldAbility(src, team, i) && lcpokemons.indexOf(x) != -1 ) {
+        var x = sys.teamPoke(src, i);
+        if (x !== 0 && sys.hasDreamWorldAbility(src, i) && lcpokemons.indexOf(x) != -1 ) {
             checkbot.sendMessage(src, "" + sys.pokemon(x) + " is not allowed with a Dream World ability in this tier. Change it in the teambuilder.");
 
             return true;
@@ -67,12 +67,12 @@ tier_checker.add_new_check(INCLUDING, ["Wifi LC", "Wifi LC Ubers", "Wifi UU LC"]
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi NU"], function evioliteCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["Wifi NU"], function evioliteCheck(src, tier) {
     var evioliteLimit = 6;
     var eviolites = 0;
     for (var i = 0; i < 6; i++) {
-        var x = sys.teamPoke(src, team, i);
-        var item = sys.teamPokeItem(src, team, i);
+        var x = sys.teamPoke(src, i);
+        var item = sys.teamPokeItem(src, i);
         item = item !== undefined ? sys.item(item) : "(no item)";
         if (item == "Eviolite" && ++eviolites > evioliteLimit) {
             checkbot.sendMessage(src, "Only 1 pokemon is allowed with eviolite in " + tier + " tier. Please remove extra evioites in teambuilder.");
@@ -82,13 +82,13 @@ tier_checker.add_new_check(INCLUDING, ["Wifi NU"], function evioliteCheck(src, t
 });
 
 if (typeof Config == "undefined") { Config = { DreamWorldTiers: ["DW OU", "DW UU", "DW Ubers"] }; }
-tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbilityCheck(src, team, tier) {
+tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbilityCheck(src, tier) {
     // Of course, DW ability only affects 5th gen
-    if (sys.gen(src, team) < 5)
+    if (sys.gen(src) < 5)
         return;
     for (var i = 0; i < 6; i++) {
-        var x = sys.teamPoke(src, team, i);
-        if (x !== 0 && sys.hasDreamWorldAbility(src, team, i) && (!(x in dwpokemons) || (breedingpokemons.indexOf(x) != -1 && sys.compatibleAsDreamWorldEvent(src, team, i) !== true))) {
+        var x = sys.teamPoke(src, i);
+        if (x !== 0 && sys.hasDreamWorldAbility(src, i) && (!(x in dwpokemons) || (breedingpokemons.indexOf(x) != -1 && sys.compatibleAsDreamWorldEvent(src, i) !== true))) {
             if (!(x in dwpokemons)) {
                 checkbot.sendMessage(src, "" + sys.pokemon(x) + " is not allowed with a Dream World ability in " + tier + " tier. Change it in the teambuilder.");
             } else {
@@ -99,21 +99,21 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["DW OU", "DW UU", "DW LU", "Wifi OU", "Wifi UU", "Wifi LU", "Wifi LC", "DW LC", "Wifi Ubers", "DW Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "Wifi NU"], function inconsistentCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["DW OU", "DW UU", "DW LU", "Wifi OU", "Wifi UU", "Wifi LU", "Wifi LC", "DW LC", "Wifi Ubers", "DW Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "Wifi NU"], function inconsistentCheck(src, tier) {
     var moody = sys.abilityNum("Moody");
     for (var i = 0; i < 6; i++) {
-        var x = sys.teamPoke(src, team, i);
+        var x = sys.teamPoke(src, i);
 
-        if (x !== 0 && sys.teamPokeAbility(src, team, i) == moody) {
+        if (x !== 0 && sys.teamPokeAbility(src, i) == moody) {
             checkbot.sendMessage(src, "" + sys.pokemon(x) + " is not allowed with Moody in " + tier + ". Change it in the teambuilder.");
             return true;
         }
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Clear Skies", "Clear Skies DW"], function weatherlesstiercheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["Clear Skies", "Clear Skies DW"], function weatherlesstiercheck(src, tier) {
     for (var i = 0; i < 6; i++){
-        var ability = sys.ability(sys.teamPokeAbility(src, team, i));
+        var ability = sys.ability(sys.teamPokeAbility(src, i));
         if(ability.toLowerCase() == "drizzle" || ability.toLowerCase() == "drought" || ability.toLowerCase() == "snow warning" || ability.toLowerCase() == "sand stream") {
             normalbot.sendMessage(src, "Your team has a pokemon with the ability: " + ability + ", please remove before entering " +tier+" tier.");
             return true;
@@ -121,16 +121,16 @@ tier_checker.add_new_check(INCLUDING, ["Clear Skies", "Clear Skies DW"], functio
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, team) {
+tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src) {
     // TODO: this is too complicated.
-    var TypeA = sys.pokeType1(sys.teamPoke(src, team, 0), 5);
-    var TypeB = sys.pokeType2(sys.teamPoke(src, team, 0), 5);
+    var TypeA = sys.pokeType1(sys.teamPoke(src, 0), 5);
+    var TypeB = sys.pokeType2(sys.teamPoke(src, 0), 5);
     var k;
     var checkType;
     for (var i = 1; i < 6 ; i++) {
-        if (sys.teamPoke(src, team, i) === 0) continue;
-        var temptypeA = sys.pokeType1(sys.teamPoke(src, team, i), 5);
-        var temptypeB = sys.pokeType2(sys.teamPoke(src, team, i), 5);
+        if (sys.teamPoke(src, i) === 0) continue;
+        var temptypeA = sys.pokeType1(sys.teamPoke(src, i), 5);
+        var temptypeB = sys.pokeType2(sys.teamPoke(src, i), 5);
 
         if(checkType !== undefined) {
             k=3;
@@ -173,7 +173,7 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
 
             if(temptypeA != checkType && temptypeB != checkType) {
 
-                normalbot.sendMessage(src, "Team not Monotype as " + sys.pokemon(sys.teamPoke(src, team, i)) + " is not " + sys.type(checkType) + "!");
+                normalbot.sendMessage(src, "Team not Monotype as " + sys.pokemon(sys.teamPoke(src, i)) + " is not " + sys.type(checkType) + "!");
                 /*
                 if(sys.hasLegalTeamForTier(src, "DW OU")) {
                     if(sys.hasLegalTeamForTier(src,"Wifi OU")) {
@@ -201,7 +201,7 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
                         TypeB = TypeA;
                         }
             if (temptypeA != TypeA && temptypeB != TypeA && temptypeA != TypeB && temptypeB != TypeB) {
-                normalbot.sendMessage(src, "Team not Monotype as " + sys.pokemon(sys.teamPoke(src, team, i)) + " does not share a type with " + sys.pokemon(sys.teamPoke(src, 0)) + "!");
+                normalbot.sendMessage(src, "Team not Monotype as " + sys.pokemon(sys.teamPoke(src, i)) + " does not share a type with " + sys.pokemon(sys.teamPoke(src, 0)) + "!");
 
                 return true;
             }
@@ -210,11 +210,11 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Monogen"], function monoGenCheck(src, team) {
+tier_checker.add_new_check(INCLUDING, ["Monogen"], function monoGenCheck(src) {
     var GEN_MAX = [0, 151, 252, 386, 493, 646];
     var gen = 0;
     for (var i = 0; i < 6; ++i) {
-        var pokenum = sys.teamPoke(src, team, i);
+        var pokenum = sys.teamPoke(src, i);
         var species = pokenum % 65536; // remove alt formes
         if (species === 0) continue;
         if (gen === 0) {
@@ -227,7 +227,7 @@ tier_checker.add_new_check(INCLUDING, ["Monogen"], function monoGenCheck(src, te
 });
 
 
-tier_checker.add_new_check(INCLUDING, ["Monocolour"], function monoColourCheck(src, team) {
+tier_checker.add_new_check(INCLUDING, ["Monocolour"], function monoColourCheck(src) {
     var colours = {
         'Red': ['Charmander', 'Charmeleon', 'Charizard', 'Vileplume', 'Paras', 'Parasect', 'Krabby', 'Kingler', 'Voltorb', 'Electrode', 'Goldeen', 'Seaking', 'Jynx', 'Magikarp', 'Magmar', 'Flareon', 'Ledyba', 'Ledian', 'Ariados', 'Yanma', 'Scizor', 'Slugma', 'Magcargo', 'Octillery', 'Delibird', 'Porygon2', 'Magby', 'Ho-Oh', 'Torchic', 'Combusken', 'Blaziken', 'Wurmple', 'Medicham', 'Carvanha', 'Camerupt', 'Solrock', 'Corphish', 'Crawdaunt', 'Latias', 'Groudon', 'Deoxys', 'Deoxys-A', 'Deoxys-D', 'Deoxys-S', 'Kricketot', 'Kricketune', 'Magmortar', 'Porygon-Z', 'Rotom', 'Rotom-H', 'Rotom-F', 'Rotom-W', 'Rotom-C', 'Rotom-S', 'Tepig', 'Pignite', 'Emboar', 'Pansear', 'Simisear', 'Throh', 'Venipede', 'Scolipede', 'Krookodile', 'Darumaka', 'Darmanitan', 'Dwebble', 'Crustle', 'Scrafty', 'Shelmet', 'Accelgor', 'Druddigon', 'Pawniard', 'Bisharp', 'Braviary', 'Heatmor'],
         'Blue': ['Squirtle', 'Wartortle', 'Blastoise', 'Nidoran?', 'Nidorina', 'Nidoqueen', 'Oddish', 'Gloom', 'Golduck', 'Poliwag', 'Poliwhirl', 'Poliwrath', 'Tentacool', 'Tentacruel', 'Tangela', 'Horsea', 'Seadra', 'Gyarados', 'Lapras', 'Vaporeon', 'Omanyte', 'Omastar', 'Articuno', 'Dratini', 'Dragonair', 'Totodile', 'Croconaw', 'Feraligatr', 'Chinchou', 'Lanturn', 'Marill', 'Azumarill', 'Jumpluff', 'Wooper', 'Quagsire', 'Wobbuffet', 'Heracross', 'Kingdra', 'Phanpy', 'Suicune', 'Mudkip', 'Marshtomp', 'Swampert', 'Taillow', 'Swellow', 'Surskit', 'Masquerain', 'Loudred', 'Exploud', 'Azurill', 'Meditite', 'Sharpedo', 'Wailmer', 'Wailord', 'Swablu', 'Altaria', 'Whiscash', 'Chimecho', 'Wynaut', 'Spheal', 'Sealeo', 'Walrein', 'Clamperl', 'Huntail', 'Bagon', 'Salamence', 'Beldum', 'Metang', 'Metagross', 'Regice', 'Latios', 'Kyogre', 'Piplup', 'Prinplup', 'Empoleon', 'Shinx', 'Luxio', 'Luxray', 'Cranidos', 'Rampardos', 'Gible', 'Gabite', 'Garchomp', 'Riolu', 'Lucario', 'Croagunk', 'Toxicroak', 'Finneon', 'Lumineon', 'Mantyke', 'Tangrowth', 'Glaceon', 'Azelf', 'Phione', 'Manaphy', 'Oshawott', 'Dewott', 'Samurott', 'Panpour', 'Simipour', 'Roggenrola', 'Boldore', 'Gigalith', 'Woobat', 'Swoobat', 'Tympole', 'Palpitoad', 'Seismitoad', 'Sawk', 'Tirtouga', 'Carracosta', 'Ducklett', 'Karrablast', 'Eelektrik', 'Eelektross', 'Elgyem', 'Cryogonal', 'Deino', 'Zweilous', 'Hydreigon', 'Cobalion', 'Thundurus'],
@@ -240,7 +240,7 @@ tier_checker.add_new_check(INCLUDING, ["Monocolour"], function monoColourCheck(s
         'Gray': ['Machop', 'Machoke', 'Machamp', 'Magnemite', 'Magneton', 'Onix', 'Rhyhorn', 'Rhydon', 'Pineco', 'Steelix', 'Qwilfish', 'Remoraid', 'Skarmory', 'Donphan', 'Pupitar', 'Poochyena', 'Mightyena', 'Nincada', 'Nosepass', 'Aron', 'Lairon', 'Aggron', 'Volbeat', 'Barboach', 'Anorith', 'Armaldo', 'Snorunt', 'Glalie', 'Relicanth', 'Registeel', 'Shieldon', 'Bastiodon', 'Burmy', 'Wormadam', 'Wormadam-G', 'Wormadam-S', 'Glameow', 'Purugly', 'Magnezone', 'Rhyperior', 'Probopass', 'Arceus', 'Herdier', 'Stoutland', 'Pidove', 'Tranquill', 'Unfezant', 'Drilbur', 'Excadrill', 'Timburr', 'Gurdurr', 'Whirlipede', 'Zorua', 'Zoroark', 'Minccino', 'Cinccino', 'Escavalier', 'Ferroseed', 'Ferrothorn', 'Klink', 'Klang', 'Klinklang', 'Durant', 'Terrakion', 'Kyurem'],
         'White': ['Butterfree', 'Seel', 'Dewgong', 'Togepi', 'Togetic', 'Mareep', 'Smeargle', 'Lugia', 'Linoone', 'Silcoon', 'Wingull', 'Ralts', 'Kirlia', 'Gardevoir', 'Vigoroth', 'Zangoose', 'Castform', 'Absol', 'Shelgon', 'Pachirisu', 'Snover', 'Abomasnow', 'Togekiss', 'Gallade', 'Froslass', 'Dialga', 'Regigigas', 'Swanna', 'Vanillite', 'Vanillish', 'Vanilluxe', 'Emolga', 'Foongus', 'Amoonguss', 'Frillish', 'Jellicent', 'Tynamo', 'Litwick', 'Lampent', 'Cubchoo', 'Beartic', 'Rufflet', 'Larvesta', 'Volcarona', 'Reshiram', 'Meloetta', 'Meloetta-S']
     };
-    var poke = sys.pokemon(sys.teamPoke(src, team, 0));
+    var poke = sys.pokemon(sys.teamPoke(src, 0));
     var thecolour = '';
     for (var colour in colours) {
         if (colours[colour].indexOf(poke) > -1) {
@@ -252,7 +252,7 @@ tier_checker.add_new_check(INCLUDING, ["Monocolour"], function monoColourCheck(s
         return true;
     }
     for (var i = 1; i < 6; ++i) {
-        poke = sys.pokemon(sys.teamPoke(src, team, i));
+        poke = sys.pokemon(sys.teamPoke(src, i));
         if (colours[thecolour].indexOf(poke) == -1 && poke != "Missingno") {
             normalbot.sendMessage(src, "" + poke + " has not the colour: " + thecolour);
             return true;
@@ -260,11 +260,11 @@ tier_checker.add_new_check(INCLUDING, ["Monocolour"], function monoColourCheck(s
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Smogon OU", "Wifi OU", "DW OU"], function swiftSwimCheck(src, team) {
+tier_checker.add_new_check(INCLUDING, ["Smogon OU", "Wifi OU", "DW OU"], function swiftSwimCheck(src) {
     for(var i = 0; i <6; ++i){
-        if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Drizzle"){
+        if(sys.ability(sys.teamPokeAbility(src, i)) == "Drizzle"){
             for(var j = 0; j <6; ++j){
-                if(sys.ability(sys.teamPokeAbility(src, team, j)) == "Swift Swim"){
+                if(sys.ability(sys.teamPokeAbility(src, j)) == "Swift Swim"){
                     normalbot.sendMessage(src, "You cannot have the combination of Swift Swim and Drizzle in OU");
                     return true;
                 }
@@ -273,17 +273,17 @@ tier_checker.add_new_check(INCLUDING, ["Smogon OU", "Wifi OU", "DW OU"], functio
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Smogon UU"], function droughtCheck(src, team) {
+tier_checker.add_new_check(INCLUDING, ["Smogon UU"], function droughtCheck(src) {
     for(var i = 0; i <6; ++i){
-        if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Drought"){
+        if(sys.ability(sys.teamPokeAbility(src, i)) == "Drought"){
             normalbot.sendMessage(src, "Drought is not allowed in Smogon UU");
             return true;
         }
     }
 });
-tier_checker.add_new_check(INCLUDING, ["Wifi UU"], function sandStreamCheck(src, team) {
+tier_checker.add_new_check(INCLUDING, ["Wifi UU"], function sandStreamCheck(src) {
     for(var i = 0; i <6; ++i){
-        if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Sand Stream"){
+        if(sys.ability(sys.teamPokeAbility(src, i)) == "Sand Stream"){
             normalbot.sendMessage(src, "Sand Stream is not allowed in Wifi UU");
             return true;
         }
@@ -291,16 +291,16 @@ tier_checker.add_new_check(INCLUDING, ["Wifi UU"], function sandStreamCheck(src,
 });
 
 
-tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU"], function snowWarningCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU"], function snowWarningCheck(src, tier) {
     for(var i = 0; i <6; ++i){
-        if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Snow Warning"){
+        if(sys.ability(sys.teamPokeAbility(src, i)) == "Snow Warning"){
             normalbot.sendMessage(src, "Snow Warning is not allowed in " + tier + ".");
             return true;
         }
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST"], function shanaiAbilityCheck(src, team) {
+tier_checker.add_new_check(INCLUDING, ["Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST"], function shanaiAbilityCheck(src) {
     var bannedAbilities = {
         'treecko': ['overgrow'],
         'chimchar': ['blaze'],
@@ -322,9 +322,9 @@ tier_checker.add_new_check(INCLUDING, ["Shanai Cup", "Shanai Cup 1.5", "Shanai C
     };
     var valid = true;
     for (var i = 0; i < 6; ++i) {
-        var ability = sys.ability(sys.teamPokeAbility(src, team, i));
+        var ability = sys.ability(sys.teamPokeAbility(src, i));
         var lability = ability.toLowerCase();
-        var poke = sys.pokemon(sys.teamPoke(src, team, i));
+        var poke = sys.pokemon(sys.teamPoke(src, i));
         var lpoke = poke.toLowerCase();
         if (lpoke in bannedAbilities && bannedAbilities[lpoke].indexOf(lability) != -1) {
             checkbot.sendMessage(src, "" + poke + " is not allowed to have ability " + ability + " in this tier. Please change it in Teambuilder (You are now in Challenge Cup).");
@@ -336,7 +336,7 @@ tier_checker.add_new_check(INCLUDING, ["Shanai Cup", "Shanai Cup 1.5", "Shanai C
 
 
 var advance200Banlist;
-tier_checker.add_new_check(INCLUDING, ["Adv 200"], function advance200Check(src, team) {
+tier_checker.add_new_check(INCLUDING, ["Adv 200"], function advance200Check(src) {
     var poke;
     if (typeof advance200Banlist === 'undefined') {
         var pokes = {
@@ -556,7 +556,7 @@ tier_checker.add_new_check(INCLUDING, ["Adv 200"], function advance200Check(src,
     var valid = true;
     var debug = function(msg) { if (false && sys.name(src) == "zeroality") { sys.sendAll(msg, staffchannel); }};
     for (var i = 0; i < 6; ++i) {
-        poke = sys.teamPoke(src, team, i);
+        poke = sys.teamPoke(src, i);
         debug("" + i + ". poke #" + poke + ": " + sys.pokemon(poke));
         if (poke !== 0 && !advance200Banlist.hasOwnProperty(poke)) {
             sys.sendAll("Script Error: pokemon " + sys.pokemon(poke) + " should be banned in advance 200 in tiers.xml", staffchannel);
@@ -567,7 +567,7 @@ tier_checker.add_new_check(INCLUDING, ["Adv 200"], function advance200Check(src,
         if (poke === 0) continue;
         debug("Banned moves for it:" + advance200Banlist[poke].join(", "));
         for (var j = 0; j < 4; ++j) {
-            var move = sys.teamPokeMove(src, team, i, j);
+            var move = sys.teamPokeMove(src, i, j);
             debug("" + j + ". move #" + move + ": " + sys.move(move));
             debug("is allowed: " + (advance200Banlist[poke].indexOf(move) >= 0 ? "no" : "yes"));
             if (advance200Banlist[poke].indexOf(move) >= 0) {
@@ -579,7 +579,7 @@ tier_checker.add_new_check(INCLUDING, ["Adv 200"], function advance200Check(src,
     return !valid;
 });
 
-tier_checker.add_new_check(EXCLUDING, [], function eventShinies(player, team) {
+tier_checker.add_new_check(EXCLUDING, [], function eventShinies(player) {
     var beasts = {};
     beasts[sys.pokeNum('Raikou')]  = ['Extremespeed', 'Aura Sphere', 'Weather Ball', 'Zap Cannon'] .map(sys.moveNum);
     beasts[sys.pokeNum('Suicune')] = ['Extremespeed', 'Aqua Ring',   'Sheer Cold',   'Air Slash']  .map(sys.moveNum);
@@ -587,18 +587,18 @@ tier_checker.add_new_check(EXCLUDING, [], function eventShinies(player, team) {
  
     for (var beast in beasts)
         for (var slot=0; slot<6; slot++)
-            if (sys.teamPoke(player, team, slot) == beast)
+            if (sys.teamPoke(player, slot) == beast)
                 for (var i=0; i<4; i++)
-                    if (-1 != beasts[beast].indexOf(sys.teamPokeMove(player, team, slot, i)))
-                        sys.changePokeShine(player, team, slot, true);
+                    if (-1 != beasts[beast].indexOf(sys.teamPokeMove(player, slot, i)))
+                        sys.changePokeShine(player, slot, true);
 });
 
-tier_checker.add_new_check(EXCLUDING, challenge_cups, function hasOneUsablePokemon(player, team) {
+tier_checker.add_new_check(EXCLUDING, challenge_cups, function hasOneUsablePokemon(player) {
     var valid = false;
     for (var slot=0; slot<6; slot++)
-        if (sys.teamPoke(player,team,slot) !== 0)
+        if (sys.teamPoke(player,slot) !== 0)
             for (var move=0; move<4; move++)
-                if (sys.teamPokeMove(player, team, slot, move) !== 0)
+                if (sys.teamPokeMove(player, slot, move) !== 0)
                     valid = true;
     return !valid;
 });
