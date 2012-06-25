@@ -1017,6 +1017,7 @@ function tourCommand(src, command, commandData) {
 					sys.sendMessage(src,"absbreaktime: "+time_handle(Config.Tours.abstourbreak),tourschan)
 					sys.sendMessage(src,"remindertime: "+time_handle(Config.Tours.reminder),tourschan)
 					sys.sendMessage(src,"botname: "+Config.Tours.tourbot,tourschan)
+					sys.sendMessage(src,"channel: "+Config.Tours.channel,tourschan)
 					sys.sendMessage(src,"debug: "+Config.Tours.debug+" (to change this, type /configset debug [0/1] ~ true = 1; false = 0)",tourschan)
 					return true;
 				}
@@ -1173,6 +1174,21 @@ function tourCommand(src, command, commandData) {
 					}
 					Config.Tours.tourbot = value+": "
 					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the tourbot name to "+Config.Tours.tourbot,tourschan)
+					return true;
+				}
+				else if (option == 'channel') {
+					if (!isTourOwner(src)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Can't change the channel, ask an owner for this.",tourschan)
+						return true;
+					}
+					else if (!sys.existChannel(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"The channel needs to exist!",tourschan)
+						return true;
+					}
+					Config.Tours.channel = value
+					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the tournament channel to "+Config.Tours.channel,tourschan)
+					tourschan = sys.channelId(Config.Tours.channel)
+					sys.sendAll("Version "+Config.Tours.version+" of tournaments has been loaded successfully in this channel!", tourschan)
 					return true;
 				}
 				else if (option == 'debug') {
@@ -2727,7 +2743,7 @@ module.exports = {
 		else {
 			command = message.substr(0).toLowerCase();
 		}
-		if (channel === sys.channelId("Tours")) {
+		if (channel === tourschan) {
 			return tourCommand(source, command, commandData)
 		}
 		return false;
@@ -2736,7 +2752,7 @@ module.exports = {
 		initTours();
 	},
 	afterChannelJoin : function(player, chan) {
-		if (chan === sys.channelId("Tours")) {
+		if (chan === tourschan) {
 			sendWelcomeMessage(player, chan)
 		}
 	},
