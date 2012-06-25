@@ -2018,7 +2018,7 @@ function advanceround(key) {
 // starts a tournament
 function tourstart(tier, starter, key, parameters) {
 	try {
-		var channels = [0, tourschan]
+		var channels = tourschan === 0 ? [0] : [0, tourschan];
 		tours.tour[key] = {}
 		tours.tour[key].state = "signups"
 		tours.tour[key].time = parseInt(sys.time())+Config.Tours.toursignup
@@ -2291,7 +2291,7 @@ function tourprintbracket(key) {
 				return;
 			}
 			tours.tour[key].state = "final"
-			var channels = (tours.tour[key].parameters.type == "double" && tours.tour[key].round%2 == 1) ? [tourschan] : [0, tourschan];
+			var channels = ((tours.tour[key].parameters.type == "double" && tours.tour[key].round%2 == 1) || tourschan === 0) ? [tourschan] : [0, tourschan];
 			for (var c in channels) {
 				sys.sendAll("", channels[c])
 				sys.sendAll(border, channels[c])
