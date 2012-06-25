@@ -24,8 +24,8 @@ BANLIST = {
     "Wifi UU": ["Kingdra", "Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Wobbuffet", "Deoxys-D", "Thundurus-T", "Tornadus-T", "Landorus-T"], # BL
     "Wifi LU": ["Cresselia", "Gorebyss", "Huntail", "Victini", "Rhyperior", "Medicham", "Durant", "Virizion", "Sharpedo"], # BL2
     "Wifi NU": ["Feraligatr", "Sawsbuck", "Gligar", "Charizard", "Hitmonlee", "Scolipede", "Tangela", "Jynx", "Druddigon"], # BL3
-    "DW OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Blaziken", "Garchomp", "Chandelure", "Excadrill"], # DW Ubers
-    "DW UU": ["Azelf", "Chansey", "Deoxys", "Deoxys-S", "Froslass", "Haxorus", "Hydreigon", "Kyurem", "Landorus", "Latias", "Lucario", "Roserade", "Scrafty", "Smeargle", "Staraptor", "Terrakion", "Venomoth", "Vulpix", "Wobbuffet", "Abomasnow", "Snover"], # DW BL
+    "DW OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Blaziken", "Garchomp", "Chandelure", "Excadrill", "Kyurem-B", "Kyurem-W"], # DW Ubers
+    "DW UU": ["Azelf", "Chansey", "Deoxys", "Deoxys-S", "Froslass", "Haxorus", "Hydreigon", "Kyurem", "Landorus", "Latias", "Lucario", "Roserade", "Scrafty", "Smeargle", "Staraptor", "Terrakion", "Venomoth", "Vulpix", "Wobbuffet", "Abomasnow", "Snover", "Thundurus-T", "Tornadus-T", "Landorus-T"], # DW BL
     "Wifi LC": ["Scyther", "Sneasel", "Yanma", "Tangela", "Vulpix", "Murkrow", "Scraggy", "Misdreavus", "Meditite", "Carvanha", "Gligar", "Drilbur"], # LC Ubers (in addition to all other pokemon...)
     "Wifi LC UU": ["Poliwag", "Axew"], # Wifi LC BL
 }
@@ -135,12 +135,48 @@ def update_tiers(tiers):
             ban_parent = tier
 
     return tiers
-    
+
+def ban_kyurem(tiers):
+    elements = tiers.findall(".//tier")
+    new_bans = set(("Kyurem-W", "Kyurem-B"))
+    for element in elements:
+        tier = element.attrib["name"]
+        gen = element.attrib["gen"]
+        if gen != "5": continue
+        current_bans = deserialize_bans(element.attrib["pokemons"])
+        bans = copy(current_bans)
+        p = element
+        while 1: 
+            parent = p.attrib["banParent"] if "banParent" in p.attrib else None
+            if not parent:
+                break
+            print("Adding {parent} to {tier}'s bans".format(parent=parent,tier=tier))
+            p = tiers.find(".//tier[@name='{parent}']".format(parent=parent))
+            bans |= deserialize_bans(p.attrib["pokemons"])
+
+        ban_subset = new_bans - bans
+        if ban_subset:
+            print("Add bans for {pokemon} in {tier}.".format(pokemon=ban_subset, tier=tier))
+            ans = input("Proceed with changes? [Y/n] ")
+            if ans == "" or ans.upper().startswith("Y"):
+                current_bans |= ban_subset
+                element.attrib["pokemons"] = serialize_bans(bans)
+                print("Tier {tier} updated!".format(tier=tier))
+            else:
+                print("Tier {tier} not updated.".format(tier=tier))
+        else:
+            print("Tier {tier} has bans already.".format(tier=tier))
+
+    return tiers
+
 if __name__ == "__main__":
     print("Reading PO tiers")
     po_tiers = get_po_tiers()
-    print("Updating PO tiers...")
-    po_tiers = update_tiers(po_tiers)
+    if "--kyurem-check" in sys.argv:
+        po_tiers = ban_kyurem(po_tiers)
+    else:
+        print("Updating PO tiers...")
+        po_tiers = update_tiers(po_tiers)
     print("Writing PO tiers")
     write_po_tiers(po_tiers)
     print("Done")
