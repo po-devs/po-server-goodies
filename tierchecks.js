@@ -281,7 +281,7 @@ tier_checker.add_new_check(INCLUDING, ["Smogon UU"], function droughtCheck(src) 
         }
     }
 });
-tier_checker.add_new_check(INCLUDING, ["Wifi UU"], function sandStreamCheck(src) {
+tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU"], function sandStreamCheck(src) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, i)) == "Sand Stream"){
             normalbot.sendMessage(src, "Sand Stream is not allowed in Wifi UU");
