@@ -956,6 +956,7 @@ function Tournament(channel)
 
 	// event beforeChallenge
     function beforeChallenge(source, dest, clauses, rated, mode, team, destTier) {
+        broadcast("Challenger team, tier: " + team + " " + destTier + ", self.tier: " + self.tier + ", self.tier(team): " + sys.tier(source, team));
 		if (!playingPhase())
 			return;
 		var name1 = sys.name(source),
