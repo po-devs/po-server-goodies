@@ -1615,7 +1615,7 @@ afterLogIn : function(src) {
     }
     sys.sendMessage(src, "");
 
-    sys.sendHtmlMessage(src, "<b><big>PO with RBY and multiple teams is currently in testing. <a href='http://sourceforge.net/projects/pogeymon-online/files/Pokemon-Online-v2-Setup.exe/download'>Download</a> it and install it in a separate folder if you want to try it!</big></b>");
+    sys.sendHtmlMessage(src, "<b><big>PO with RBY and multiple teams is currently in testing. <a href='http://sourceforge.net/projects/pogeymon-online/files/Pokemon-Online-v2-Setup.exe/download'>Download</a> it and install it in a separate folder if you want to try it!<br>This is the <i>next/i> version of PO and unrelated to 1.0.60.</big></b>");
 
     sys.sendMessage(src, "");
 
