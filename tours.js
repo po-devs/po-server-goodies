@@ -4,7 +4,7 @@ if (typeof tourschan !== "string") {
 
 if (typeof tours !== "object") {
 	sys.sendAll("Creating new tournament object", tourschan)
-	tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": []}
+	tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": []}
 }
 
 var border = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:";
@@ -34,6 +34,7 @@ var touradmincommands = ["*** Parameter Information ***",
 					"tourdeadmin [name]: fires someone from being tournament admin",
 					"forcestart: ends signups immediately and starts the first round",
 					"push [player]: pushes a player into a tournament in signups (DON'T USE UNLESS ASKED)",
+					"tahistory [days]: views the activity of tour admins (days is optional, if excluded it will get the last 7 days if possible)",
 					"updatewinmessages: updates win messages from the web",
 					"stopautostart: if there are no tournaments running, this will stop new ones from being automatically started by the server until another one is started manually.",
 					"*** FOLLOWING COMMANDS ARE OWNER+ COMMANDS ***",
@@ -44,6 +45,13 @@ var touradmincommands = ["*** Parameter Information ***",
 function sendDebugMessage(message, chan) {
 	if (chan === tourschan && Config.Tours.debug && sys.existChannel(sys.channel(tourserrchan))) {
 		sys.sendAll(Config.Tours.tourbot+message,tourserrchan)
+	}
+}
+
+// Tour Admin Activity
+function addTourActivity(src) {
+	if (tours.activetas.indexOf(sys.name(src).toLowerCase()) == -1) {
+		tours.activetas.push(sys.name(src).toLowerCase());
 	}
 }
 
@@ -319,7 +327,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: 1.02,
+			version: 1.05,
 			debug: false,
 			points: true
 		}
@@ -340,7 +348,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: 1.02,
+			version: 1.05,
 			debug: false,
 			points: true
 		}
@@ -358,7 +366,7 @@ function initTours() {
 	}
 	if (typeof tours != "object") {
 		sys.sendAll("Creating new tournament object", tourschan)
-		tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": []}
+		tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": []}
 	}
 	try {
 		getTourWinMessages()
@@ -394,6 +402,15 @@ Used for things such as
 - disqualifying/reminding inactive players
 - removing subs */
 function tourStep() {
+	if (parseInt(sys.time())%3600 === 0) {
+		var now = new Date()
+		var comment = now + " ~ " + tours.activetas.join(", ")
+		tours.activehistory.unshift(comment)
+		if (tours.activehistory.length > 168) {
+			tours.activehistory.pop()
+		}
+		tours.activetas = [];
+	}
 	for (var x in tours.tour) {
 		if (tours.tour[x].time-parseInt(sys.time()) <= 10) {
 			sendDebugMessage("Time Remaining in the "+tours.tour[x].tourtype+" tournament: "+time_handle(tours.tour[x].time-parseInt(sys.time()))+"; State: "+tours.tour[x].state,tourschan)
@@ -562,6 +579,11 @@ function tourCommand(src, command, commandData) {
 				dumpVars(src)
 				return true;
 			}
+			if (command == "inittours") {
+				tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": []}
+				sys.sendMessage(src, Config.Tours.tourbot+"You initialised the tour system!",tourschan);
+				return;
+			}
 			if (command == "fullleaderboard") {
 				try {
 					if (commandData == "") {
@@ -665,7 +687,24 @@ function tourCommand(src, command, commandData) {
 				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" fired "+commandData.toLowerCase()+" from running tournaments!",tourschan)
 				return true;
 			}
-			
+			// active history command
+			if (command == "tahistory") {
+				sys.sendMessage(src, "*** TOUR ADMIN HISTORY ***",tourschan)
+				var length = 168;
+				if (commandData == "") {
+					length = tours.activehistory.length
+				}
+				else if (parseInt(commandData)*24 < tours.activehistory.length) {
+					length = parseInt(commandData)*24
+				}
+				else {
+					length = tours.activehistory.length
+				}
+				for (var x=0;x<length;x++) {
+					sys.sendMessage(src, tours.activehistory[x],tourschan)
+				}
+				return true;
+			}
 			if (command == "stopautostart") {
 				tours.globaltime = 0
 				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" stopped tournaments from auto starting for now, this will be removed when another tour is started.",tourschan)
@@ -839,6 +878,7 @@ function tourCommand(src, command, commandData) {
 				else {
 					tourstart(tourtier, sys.name(src), tours.key, parameters)
 				}
+				addTourActivity(src)
 				return true;
 			}
 			if (command == "remove") {
@@ -930,6 +970,7 @@ function tourCommand(src, command, commandData) {
 					sys.sendAll(Config.Tours.tourbot+sys.name(src)+" disqualified "+toCorrectCase(commandData)+" from the "+tours.tour[key].tourtype+" tournament!", tourschan)
 					disqualify(commandData.toLowerCase(), key, false)
 				}
+				addTourActivity(src)
 				return true;
 			}
 			if (command == "cancelbattle") {
@@ -955,6 +996,7 @@ function tourCommand(src, command, commandData) {
 					tours.tour[key].battlers.splice(index,1)
 					tours.tour[key].battlers.splice(oppindex,1)
 				}
+				addTourActivity(src)
 				return true;
 			}
 			if (command == "sub") {
@@ -982,6 +1024,7 @@ function tourCommand(src, command, commandData) {
 				}
 				tours.tour[key].players.splice(tours.tour[key].players.indexOf(oldname),1,newname)
 				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" substituted "+toCorrectCase(newname)+" in place of "+toCorrectCase(oldname)+" in the "+tours.tour[key].tourtype+" tournament.", tourschan)
+				addTourActivity(src)
 				return true;
 			}
 			if (command == "config") {
@@ -998,6 +1041,7 @@ function tourCommand(src, command, commandData) {
 				sys.sendMessage(src,"Bot Name: "+Config.Tours.tourbot,tourschan)
 				sys.sendMessage(src,"Channel: "+Config.Tours.channel,tourschan)
 				sys.sendMessage(src,"Error Channel: "+Config.Tours.errchannel,tourschan)
+				sys.sendMessage(src,"Scoring system activated: "+Config.Tours.points,tourschan)
 				sys.sendMessage(src,"Debug: "+Config.Tours.debug,tourschan)
 				return true;
 			}
@@ -1018,6 +1062,7 @@ function tourCommand(src, command, commandData) {
 					sys.sendMessage(src,"remindertime: "+time_handle(Config.Tours.reminder),tourschan)
 					sys.sendMessage(src,"botname: "+Config.Tours.tourbot,tourschan)
 					sys.sendMessage(src,"channel: "+Config.Tours.channel,tourschan)
+					sys.sendMessage(src,"scoring: "+Config.Tours.points,tourschan)
 					sys.sendMessage(src,"debug: "+Config.Tours.debug+" (to change this, type /configset debug [0/1] ~ true = 1; false = 0)",tourschan)
 					return true;
 				}
@@ -1189,6 +1234,19 @@ function tourCommand(src, command, commandData) {
 					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the tournament channel to "+Config.Tours.channel,tourschan)
 					tourschan = sys.channelId(Config.Tours.channel)
 					sys.sendAll("Version "+Config.Tours.version+" of tournaments has been loaded successfully in this channel!", tourschan)
+					return true;
+				}
+				else if (option == 'scoring') {
+					if (!isTourOwner(src)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Can't turn scoring on/off, ask an owner for this.",tourschan)
+						return true;
+					}
+					if (value !== 0 && value != 1) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Value must be 0 (turns debug off) or 1 (turns it on).",tourschan)
+						return true;
+					}
+					Config.Tours.points = (value == 1 ? true : false)
+					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the scoring mode to "+Config.Tours.points,tourschan)
 					return true;
 				}
 				else if (option == 'debug') {
@@ -2754,6 +2812,19 @@ module.exports = {
 	afterChannelJoin : function(player, chan) {
 		if (chan === tourschan) {
 			sendWelcomeMessage(player, chan)
+		}
+		// Script hack to reload into correct channel
+		if (tourschan === undefined && sys.existChannel(Config.Tours.channel)) {
+			tourschan = sys.channelId(Config.Tours.channel)
+		}
+		if (tourschan === 0 && sys.existChannel(Config.Tours.channel)) {
+			tourschan = sys.channelId(Config.Tours.channel)
+		}
+		if (tourserrchan === 0 && sys.existChannel(Config.Tours.errchannel)) {
+			tourserrchan = sys.channelId(Config.Tours.errchannel)
+		}
+		if (tourserrchan === undefined && sys.existChannel(Config.Tours.errchannel)) {
+			tourserrchan = sys.channelId(Config.Tours.errchannel)
 		}
 	},
 	afterBattleEnded : function(source, dest, desc) {
