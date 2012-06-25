@@ -1904,7 +1904,7 @@ userCommand: function(src, command, commandData, tar) {
             else
                 announceTier(commandData);
         } else {
-            [0,1,2,3,4,5]
+            [0,1,2,3,4,5].slice(0, sys.teamCount(src))
                 .map(function(i) { return sys.tier(src, i); })
                 .filter(function(tier) { return tier !== undefined; })
                 .sort()
