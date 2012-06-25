@@ -956,7 +956,7 @@ function Tournament(channel)
 
 	// event beforeChallenge
     function beforeChallenge(source, dest, clauses, rated, mode, team, destTier) {
-        broadcast("Challenger team, tier: " + team + " " + destTier + ", self.tier: " + self.tier + ", self.tier(team): " + sys.tier(source, team));
+        //broadcast("Challenger team, tier: " + team + " " + destTier + ", self.tier: " + self.tier + ", self.tier(team): " + sys.tier(source, team));
 		if (!playingPhase())
 			return;
 		var name1 = sys.name(source),
@@ -1189,10 +1189,10 @@ module.exports = {
 		}
 	},
 
-	beforeChallengeIssued : function(source, dest, clauses, rated, mode) {
+    beforeChallengeIssued : function(source, dest, clauses, rated, mode, team, tier) {
 		var ret = false;
 		for (var channel in module.tournaments) {
-			ret |= module.tournaments[channel].events.beforeChallengeIssued(source, dest, clauses, rated, mode);
+            ret |= module.tournaments[channel].events.beforeChallengeIssued(source, dest, clauses, rated, mode, team, tier);
 		}
 		return ret;
 	},
