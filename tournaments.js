@@ -360,8 +360,7 @@ function Tournament(channel)
 			return;
 		}
 
-		var srctier = sys.tier(source);
-		if (!cmp(srctier, self.tier)){
+        if (!sys.hasTier(source, self.tier)){
 			sendPM(source, "You are currently not battling in the " + self.tier + " tier. Change your tier to " + self.tier + " to be able to join.");
 			return;
 		}
@@ -410,8 +409,7 @@ function Tournament(channel)
 			return;
 		}
 
-		var srctier = sys.tier(source);
-		if (!cmp(srctier, self.tier)){
+        if (!sys.hasTier(source, self.tier)) {
 			sendPM(source, "You are currently not battling in the " + self.tier + " tier. Change your tier to " + self.tier + " to be able to join.");
 			return;
 		}
@@ -957,7 +955,7 @@ function Tournament(channel)
 	}
 
 	// event beforeChallenge
-	function beforeChallenge(source, dest, clauses, rated, mode) {
+    function beforeChallenge(source, dest, clauses, rated, mode, team, destTier) {
 		if (!playingPhase())
 			return;
 		var name1 = sys.name(source),
@@ -967,7 +965,7 @@ function Tournament(channel)
 				sendPM(source, "This guy isn't your opponent in the tourney.");
 				return true;
 			}
-			if (sys.tier(source) != sys.tier(dest) || !cmp(sys.tier(source), self.tier)) {
+            if (sys.tier(source, team) != destTier || !cmp(sys.tier(source, team), self.tier)) {
 				sendPM(source, "You must be both in the tier " + self.tier + " to battle in the tourney.");
 				return true;
 			}
