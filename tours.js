@@ -2668,7 +2668,7 @@ function awardTourPoints(player, size, tier, delim) {
 		}
 	}
 	if (!onscoreboard3) {
-		newarray3.push(player+":::"+points3)
+		newarray3.push(player+":::"+points)
 	}
 	sys.writeToFile(monthlyfile, newarray3.join("\n"))
 	// writing tier scores
