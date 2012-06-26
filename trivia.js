@@ -198,7 +198,7 @@ try { // Do not indent this, it is only until this starts to work
         this.resetTrivia();
         toStart = sys.rand(25,40);
         	Trivia.sendAll("A new trivia game will be started in "+toStart+" seconds!", this.id);
-        sys.delayedCall(function() { Trivia.startTrivia(0); }, rand);
+        sys.delayedCall(function() { Trivia.startTrivia(0); }, toStart);
         return;
     }
     if (Object.keys(this.alreadyUsed).length >= triviaq.questionAmount())
