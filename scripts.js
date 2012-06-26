@@ -836,6 +836,7 @@ var commands = {
         "/rangeunban: [ip]: Removes a rangeban.",
         "/purgemutes [time]: Purges old mutes. Time is given in seconds. Defaults is 4 weeks.",
         "/purgembans [time]: Purges old mafiabans. Time is given in seconds. Default is 1 week.",
+        "/updateplugin [plugin]: Updates plugin from the web.",
         "/updateScripts: Updates scripts from the web."
     ]
 };
