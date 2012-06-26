@@ -15,6 +15,7 @@ var tourcommands = ["join: joins a tournament",
 					"history: views recently played tiers",
 					"touradmins: lists all users that can start tournaments",
 					"leaderboard [tier]: shows tournament rankings, tier is optional",
+					"monthlyleaderboard [month] [year]: shows tour rankings for the current month, or the current month and year if specified",
 					"tourinfo [name]: gives information on a person's recent tour wins",
 					"activeta: lists active tournament admins"]
 var touradmincommands = ["*** Parameter Information ***",
@@ -451,10 +452,10 @@ function tourStep() {
 			tours.globaltime = parseInt(sys.time()) + 1200
 		}
 		else if (tours.keys.length === 0) {
-			// start a random tour from tourarray
-			var tourarray = ["Challenge Cup", "Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Wifi OU", "Wifi OU", "Wifi OU", "Wifi UU", "Wifi LU", "Wifi NU", "DW OU", "DW 1v1"]
+			// start a cycle from tourarray
+			var tourarray = ["Challenge Cup", "Wifi NU", "CC 1v1", "Random Battle", "Wifi OU", "DW 1v1", "Wifi UU", "Monotype", "Challenge Cup", "Clear Skies", "Wifi CC 1v1", "Wifi LC", "Wifi OU", "Wifi LU", "Wifi Ubers", "DW OU"]
 			var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "DW 1v1"];
-			var tourtostart = tourarray[sys.rand(0, tourarray.length)]
+			var tourtostart = tourarray[tours.key%tourarray.length]
 			var tourtype = doubleelimtiers.indexOf(tourtostart) != -1 ? "double" : "single"
 			tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": 5, "type": tourtype})
 			tours.globaltime = parseInt(sys.time()) + 1200
@@ -774,8 +775,8 @@ function tourCommand(src, command, commandData) {
 						}
 					}
 				}
-				// 128 players for technical reasons
-				if (tours.tour[key].players.length >= 128) {
+				// 256 players for technical reasons
+				if (tours.tour[key].players.length >= 256) {
 					tours.tour[key].time = parseInt(sys.time())
 				}
 				sys.sendAll(Config.Tours.tourbot+toCorrectCase(target)+" was added to the "+tours.tour[key].tourtype+" tournament by "+sys.name(src)+" (player #"+tours.tour[key].players.length+"), "+(tours.tour[key].time - parseInt(sys.time()))+" seconds remaining!", tourschan)
@@ -1351,8 +1352,8 @@ function tourCommand(src, command, commandData) {
 						}
 					}
 				}
-				// 128 players for technical reasons
-				if (tours.tour[key].players.length >= 128) {
+				// 256 players for technical reasons
+				if (tours.tour[key].players.length >= 256) {
 					tours.tour[key].time = parseInt(sys.time())
 				}
                 sys.sendHtmlAll("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font><b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(tours.tour[key].tourtype)+" tournament! "+(tours.tour[key].time - parseInt(sys.time()))+" seconds remaining!", tourschan)
@@ -1614,6 +1615,40 @@ function tourCommand(src, command, commandData) {
 				else {
 					sys.sendMessage(src, Config.Tours.tourbot+"No data exists yet!",tourschan)
 				}
+			}
+			return true;
+		}
+		if (command == "monthlyleaderboard") {
+			try {
+				var now = new Date()
+				var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "decemeber"]
+				if (commandData == "") {
+					var monthlyfile = "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()".txt"
+				}
+				else {
+					var monthdata = commandData.toLowerCase().split(" ",2)
+					if (monthdata.length == 1) {
+						monthdata.push(now.getUTCFullYear());
+					}
+					var monthlyfile = "tourmonthscore_"+monthdata[0]+"_"+monthdata[1]+".txt"
+				}
+				var rankings = sys.getFileContent(monthlyfile).split("\n")
+				var list = [];
+				for (var p in rankings) {
+					if (rankings[p] == "") continue;
+					var rankingdata = rankings[p].split(":::",2)
+					if (rankingdata[1] < 1) continue;
+					list.push([rankingdata[1], rankingdata[0]]);
+				}
+				list.sort(function(a,b) { return b[0] - a[0] ; });
+				sys.sendMessage(src, "*** MONTHLY TOURNAMENT RANKINGS "+(commandData != "" ? "("+commandData+") " : "")+"***",tourschan)
+				for (var x=0; x<20; x++) {
+					if (x >= list.length) break;
+					sys.sendMessage(src, "#"+(x+1)+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
+				}
+			}
+			catch (err) {
+				sys.sendMessage(src, Config.Tours.tourbot+"No data exists yet for the month "+commandData+"!",tourschan)
 			}
 			return true;
 		}
@@ -2164,13 +2199,12 @@ function tourmakebracket(key) {
 		else if (tours.tour[key].players.length <= 64) {
 			bracketsize = 64
 		}
-		else /*if (tours.tour[key].players.length <= 128)*/ {
+		else if (tours.tour[key].players.length <= 128) {
 			bracketsize = 128
 		}
-		// For technical reasons we can only run 128 players at a time
-		/*else {
+		else {
 			bracketsize = 256
-		}*/
+		}
 		var subnumber = 1
 		for (var p = tours.tour[key].players.length; p<bracketsize; p++) {
 			tours.tour[key].players.push("~Sub "+subnumber+"~")
@@ -2293,10 +2327,9 @@ function toursortbracket(size, key) {
 		else if (size == 128) {
 			push128(0, size);
 		}
-		// technical reasons, 128 player limit
-		/*else if (size == 256) {
+		else if (size == 256) {
 			push256(0, size);
-		}*/
+		}
 		tours.tour[key].players = playerlist
 		delete ladderlist;
 		delete playerlist;
@@ -2529,14 +2562,14 @@ function isValidTourBattle(src,dest,clauses,mode,key,challenge) { // challenge i
 // awards tournament points
 function awardTourPoints(player, size, tier, delim) {
     // each tournament has a 'tier'
-    // points for 4-7,8-15,16-31,32-63,64-127,128 players respectively. Tours with 3 players or less don't score. Double tours score in the higher up bracket
+    // points for 4-7,8-15,16-31,32-63,64-127,128-255,256 players respectively. Tours with 3 players or less don't score. Double tours score in the higher up bracket
     var tierscore = {
-        'a': [1,2,4,8,16,32,64],
-        'b': [1,2,4,7,13,25,49], // default
-        'c': [0,1,2,4,7,13,25],
-        'd': [0,0,1,2,4,7,13],
-        'e': [0,0,0,1,2,4,7],
-        'f': [0,0,0,0,1,2,4],
+        'a': [1,2,4,8,16,32,64], // for individual tiers scroes or high scoring tiers
+        'b': [1,2,3,5,8,12,18], // default
+        'c': [0,1,2,3,5,8,12],
+        'd': [0,0,1,2,3,5,8],
+        'e': [0,0,0,1,2,3,5],
+        'f': [0,0,0,0,1,2,3],
         'z': [0,0,0,0,0,0,0]
     }
 	var now = new Date()
@@ -2550,7 +2583,7 @@ function awardTourPoints(player, size, tier, delim) {
 			break;
 		}
 	}
-	if (delim) {
+	if (delim && scale != 6) {
 		scale += 1
 	}
     var tiers_a = []
@@ -2610,6 +2643,34 @@ function awardTourPoints(player, size, tier, delim) {
 		newarray.push(player+":::"+points)
 	}
 	sys.writeToFile("tourscores.txt", newarray.join("\n"))
+	// writing global monthly scores
+	var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "decemeber"]
+	var monthlyfile = "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()+".txt"
+	try {
+		var data3 = sys.getFileContent(monthlyfile)
+	}
+	catch (e) {
+		var data3 = ""
+	}
+	var array3 = data.split("\n")
+	var newarray3 = []
+	var onscoreboard3 = false
+	for (var j in array3) {
+		if (array3[j] === "") continue;
+		var scores3 = array3[j].split(":::", 2)
+		if (player === scores3[0]) {
+			var newscore3 = parseInt(scores3[1]) + points
+			newarray3.push(scores3[0]+":::"+newscore3)
+			onscoreboard3 = true;
+		}
+		else {
+			newarray3.push(array3[j])
+		}
+	}
+	if (!onscoreboard3) {
+		newarray3.push(player+":::"+points3)
+	}
+	sys.writeToFile(monthlyfile, newarray3.join("\n"))
 	// writing tier scores
 	try {
 		var data2 = sys.getFileContent("tourscores_"+tier.replace(/ /g,"_")+".txt")
