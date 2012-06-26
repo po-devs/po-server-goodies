@@ -2652,7 +2652,7 @@ function awardTourPoints(player, size, tier, delim) {
 	catch (e) {
 		var data3 = ""
 	}
-	var array3 = data.split("\n")
+	var array3 = data3.split("\n")
 	var newarray3 = []
 	var onscoreboard3 = false
 	for (var j in array3) {
