@@ -328,7 +328,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: 1.05,
+			version: 1.1,
 			debug: false,
 			points: true
 		}
@@ -349,7 +349,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: 1.05,
+			version: 1.1,
 			debug: false,
 			points: true
 		}
@@ -1623,7 +1623,7 @@ function tourCommand(src, command, commandData) {
 				var now = new Date()
 				var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "decemeber"]
 				if (commandData == "") {
-					var monthlyfile = "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()".txt"
+					var monthlyfile = "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()+".txt"
 				}
 				else {
 					var monthdata = commandData.toLowerCase().split(" ",2)
