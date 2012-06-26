@@ -836,6 +836,7 @@ var commands = {
         "/rangeunban: [ip]: Removes a rangeban.",
         "/purgemutes [time]: Purges old mutes. Time is given in seconds. Defaults is 4 weeks.",
         "/purgembans [time]: Purges old mafiabans. Time is given in seconds. Default is 1 week.",
+        "/updateplugin [plugin]: Updates plugin from the web.",
         "/updateScripts: Updates scripts from the web."
     ]
 };
@@ -1616,7 +1617,7 @@ afterLogIn : function(src) {
     }
     sys.sendMessage(src, "");
 
-    sys.sendHtmlMessage(src, "<b><big>PO with RBY and multiple teams is currently in testing. <a href='http://sourceforge.net/projects/pogeymon-online/files/Pokemon-Online-v2-Setup.exe/download'>Download</a> it and install it in a separate folder if you want to try it!<br>This is the <i>next</i> version of PO and unrelated to 1.0.60.</big></b>");
+    sys.sendHtmlMessage(src, "<b><big>PO with RBY and multiple teams is currently in testing. <a href='https://github.com/downloads/coyotte508/pokemon-online/Pokemon-Online-v2-Setup.exe'>Download</a> it and install it in a separate folder if you want to try it!<br>This is the <i>next</i> version of PO and unrelated to 1.0.60.</big></b>");
 
     sys.sendMessage(src, "");
 

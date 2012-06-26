@@ -52,15 +52,6 @@ TriviaGame.prototype.sendAll = function(message, channel)
 
 TriviaGame.prototype.startTrivia = function(src,rand)
 {
-    if (src == 0) { // server
-    	var rand = sys.rand(2, 102);
-    	this.sendAll("A trivia game was started! First to "+rand+" points wins!", triviachan);
-    	this.maxPoints = rand;
-   	this.started = true;
-   	this.answeringQuestion = false;
-   	sys.delayedCall(function() { Trivia.startTriviaRound(); },15);
-    	return;
-    }
     if (this.started === true)
     {
         this.sendPM(src,"A trivia game has already started!");
@@ -196,9 +187,6 @@ try { // Do not indent this, it is only until this starts to work
         this.htmlAll("<h2>Congratulations to "+w+"</h2>"+winners.join(", ")+"");
 		Trivia.sendAll("Check the /topic for how to submit a question!",this.id);
         this.resetTrivia();
-        toStart = sys.rand(25,40);
-        	Trivia.sendAll("A new trivia game will be started in "+toStart+" seconds!", this.id);
-        sys.delayedCall(function() { Trivia.startTrivia(0); }, rand);
         return;
     }
     if (Object.keys(this.alreadyUsed).length >= triviaq.questionAmount())
