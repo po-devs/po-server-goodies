@@ -581,7 +581,7 @@ function tourCommand(src, command, commandData) {
 				return true;
 			}
 			if (command == "sendall") {
-				sys.sendAll(sys.name(src) + ": " + commandData);
+				sys.sendAll(sys.name(src) + ": " + commandData, tourschan);
 				return true;
 			}
 			if (command == "inittours") {
