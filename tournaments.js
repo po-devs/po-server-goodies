@@ -1153,6 +1153,7 @@ module.exports = {
 				return false;
 			if (command == "disabletours" && (sys.auth(source) >= 2 || SESSION.channels(channel).isChannelMaster(source))) {
 				delete module.tournaments[channel];
+				tourneybot.sendAll('Tournaments have been disabled',channel)
 				var ind = SESSION.global().permaTours.indexOf(channel);
 				if (ind >= 0) {
 					SESSION.global().permaTours.splice(ind, 1);
