@@ -4362,7 +4362,11 @@ afterChatMessage : function(src, message, chan)
     var ignoreChans = [staffchannel, sys.channelId("shanai"), sys.channelId("trivreview")];
     var ignoreUsers = ["nixeagle"];
     var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1 && !poChannel.isChannelOperator(src);
-    if (!poChannel.ignorecaps && this.isMCaps(message) && userMayGetPunished) {
+    var capsday = false;
+    if (typeof CAPSLOCKDAYALLOW != 'undefined') {
+        capsday = CAPSLOCKDAYALLOW;
+    }
+    if (!poChannel.ignorecaps && this.isMCaps(message) && userMayGetPunished && !capsday) {
         user.caps += 3;
         if (user.caps >= 9 && !user.mute.active) {
 
