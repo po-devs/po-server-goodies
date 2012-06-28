@@ -328,7 +328,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: 1.1,
+			version: "1.11 CAPS",
 			debug: false,
 			points: true
 		}
@@ -349,7 +349,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: 1.1,
+			version: "1.11 CAPS",
 			debug: false,
 			points: true
 		}
@@ -580,10 +580,14 @@ function tourCommand(src, command, commandData) {
 				dumpVars(src)
 				return true;
 			}
+			if (command == "sendall") {
+				sys.sendAll(sys.name(src) + ": " + commandData);
+				return true;
+			}
 			if (command == "inittours") {
 				tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": []}
 				sys.sendMessage(src, Config.Tours.tourbot+"You initialised the tour system!",tourschan);
-				return;
+				return true;
 			}
 			if (command == "fullleaderboard") {
 				try {
@@ -756,22 +760,22 @@ function tourCommand(src, command, commandData) {
 					if (tours.tour[key].cpt > tours.tour[key].maxcpt) {
 						tours.tour[key].maxcpt = tours.tour[key].cpt
 						if (tours.tour[key].maxcpt == 5) {
-							tours.tour[key].time += 30
+							tours.tour[key].time += Math.floor(Config.Tours.toursignup/6)
 						}
 						else if (tours.tour[key].maxcpt == 9) {
-							tours.tour[key].time += 60
+							tours.tour[key].time += Math.floor(Config.Tours.toursignup/4)
 						}
 						else if (tours.tour[key].maxcpt == 17) {
-							tours.tour[key].time += 90
+							tours.tour[key].time += Math.floor(Config.Tours.toursignup/3)
 						}
 						else if (tours.tour[key].maxcpt == 33) {
-							tours.tour[key].time += 120
+							tours.tour[key].time += Math.floor(Config.Tours.toursignup/2)
 						}
 						else if (tours.tour[key].maxcpt == 65) {
-							tours.tour[key].time += 180
+							tours.tour[key].time += Math.floor(Config.Tours.toursignup/1.5)
 						}
 						else if (tours.tour[key].maxcpt == 129) {
-							tours.tour[key].time += 240
+							tours.tour[key].time += Math.floor(Config.Tours.toursignup)
 						}
 					}
 				}
@@ -1333,22 +1337,22 @@ function tourCommand(src, command, commandData) {
 					if (tours.tour[key].cpt > tours.tour[key].maxcpt) {
 						tours.tour[key].maxcpt = tours.tour[key].cpt
 						if (tours.tour[key].maxcpt == 5) {
-							tours.tour[key].time += 30
+							tours.tour[key].time += Math.floor(Config.Tours.toursignup/6)
 						}
 						else if (tours.tour[key].maxcpt == 9) {
-							tours.tour[key].time += 60
+							tours.tour[key].time += Math.floor(Config.Tours.toursignup/4)
 						}
 						else if (tours.tour[key].maxcpt == 17) {
-							tours.tour[key].time += 90
+							tours.tour[key].time += Math.floor(Config.Tours.toursignup/3)
 						}
 						else if (tours.tour[key].maxcpt == 33) {
-							tours.tour[key].time += 120
+							tours.tour[key].time += Math.floor(Config.Tours.toursignup/2)
 						}
 						else if (tours.tour[key].maxcpt == 65) {
-							tours.tour[key].time += 180
+							tours.tour[key].time += Math.floor(Config.Tours.toursignup/1.5)
 						}
 						else if (tours.tour[key].maxcpt == 129) {
-							tours.tour[key].time += 240
+							tours.tour[key].time += Math.floor(Config.Tours.toursignup)
 						}
 					}
 				}

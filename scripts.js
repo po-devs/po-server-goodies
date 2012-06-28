@@ -1809,16 +1809,22 @@ userCommand: function(src, command, commandData, tar) {
             this.afterChatMessage(src, '/'+command+ ' '+commandData,channel);
             return;
         }
-
         SESSION.channels(channel).beforeMessage(src, "/me " + commandData);
         commandData=utilities.html_escape(commandData);
+        var messagetosend = commandData;
+        if (typeof CAPSLOCKDAYALLOW != 'undefined' && CAPSLOCKDAYALLOW === true) {
+            var date = new Date();
+            if ((date.getDate() == 22 && date.getMonth() == 9) || (date.getDate() == 28 && date.getMonth() == 5)) { // October 22nd & June 28th
+                messagetosend = messagetosend.toUpperCase()
+            }
+        }
         if (command == "me") {
             var colour = sys.getColor(src);
             if(colour === "#000000"){
                 var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
                 colour = clist[src % clist.length];
            }
-           sys.sendHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + commandData + "</font>", channel);
+           sys.sendHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + messagetosend + "</font>", channel);
         } else if (command == "rainbow" && SESSION.global().allowRainbow && channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel != sys.channelId("Trivia")) {
             var auth = 1 <= sys.auth(src) && sys.auth(src) <= 3;
             var colours = ["red", "blue", "yellow", "cyan", "black", "orange", "green", "#FF0000", "#FF5A00", "#A5ff00", "#00ff5A", "#0000ff", "#FF00B4", "#FFff00"];
@@ -1830,7 +1836,7 @@ userCommand: function(src, command, commandData, tar) {
                 toSend.push("<span style='color:" + randColour() + "'>" + utilities.html_escape(name[j]) + "</span>");
             toSend.push("<span style='color:" + randColour() + "'>:</b></span> ");
             if (auth) toSend.push("</i>");
-            toSend.push(commandData);
+            toSend.push(messagetosend);
             sys.sendHtmlAll(toSend.join(""), channel);
         }
         this.afterChatMessage(src, '/'+command+' '+commandData,channel);
@@ -4328,6 +4334,7 @@ beforeChatMessage: function(src, message, chan) {
     if ((date.getDate() == 22 && date.getMonth() == 9) || (date.getDate() == 28 && date.getMonth() == 5)) { // October 22nd & June 28th
         sys.sendAll(sys.name(src)+": " + message.toUpperCase(), channel);
         sys.stopEvent();
+        this.afterChatMessage(src, message, channel);
     }
     }
 }, /* end of beforeChatMessage */
