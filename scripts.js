@@ -777,7 +777,9 @@ var commands = {
         "/cban [name]: Bans someone from current channel.",
         "/cunban [name]: Unbans someone from current channel.",
         "/owner [name]: Gives a user owner status.",
-        "/deowner [name]: Removes owner status from a user."
+        "/deowner [name]: Removes owner status from a user.",
+        "/enabletours: Allows tours to be run in the channel.",
+        "/disabletours: Stops tours being run in the channel."
     ],
     mod:
     [
