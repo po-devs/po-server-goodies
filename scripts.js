@@ -4291,7 +4291,11 @@ beforeChatMessage: function(src, message, chan) {
         sys.stopEvent();
         return;
     }
-    if (capsName()) {
+    var capsday = false
+    if (typeof CAPSLOCKDAYALLOW != 'undefined') {
+        capsday = CAPSLOCKDAYALLOW;
+    }
+    if (capsName() && !capsday) {
         normalbot.sendChanMessage(src, "You have too many CAPS letters in your name. Please remove them to speak freely. 7 CAPS letters are allowed. Lowercase name will keep your ladder score.");
         sys.stopEvent();
         return;
