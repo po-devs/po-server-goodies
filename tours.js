@@ -852,7 +852,7 @@ function tourCommand(src, command, commandData) {
 								parameters.mode = "Triples";
 							}
 						}
-						else if (cmp(parameterset, "gen")) {
+						else if (cmp(parameterset, "gen") && allgentiers.indexOf(tourtier) != -1) { // only allgentours can change gen
 							var gen = parseInt(parametervalue)
 							if (gen < 1 || gen > 5) {
 								gen = 5
