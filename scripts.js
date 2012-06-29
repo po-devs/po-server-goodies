@@ -777,7 +777,9 @@ var commands = {
         "/cban [name]: Bans someone from current channel.",
         "/cunban [name]: Unbans someone from current channel.",
         "/owner [name]: Gives a user owner status.",
-        "/deowner [name]: Removes owner status from a user."
+        "/deowner [name]: Removes owner status from a user.",
+        "/enabletours: Allows tours to be run in the channel.",
+        "/disabletours: Stops tours being run in the channel."
     ],
     mod:
     [
@@ -4291,7 +4293,11 @@ beforeChatMessage: function(src, message, chan) {
         sys.stopEvent();
         return;
     }
-    if (capsName()) {
+    var capsday = false
+    if (typeof CAPSLOCKDAYALLOW != 'undefined') {
+        capsday = CAPSLOCKDAYALLOW;
+    }
+    if (capsName() && !capsday) {
         normalbot.sendChanMessage(src, "You have too many CAPS letters in your name. Please remove them to speak freely. 7 CAPS letters are allowed. Lowercase name will keep your ladder score.");
         sys.stopEvent();
         return;
