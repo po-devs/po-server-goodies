@@ -1118,13 +1118,13 @@ function tourCommand(src, command, commandData) {
 				}
 				var ip = sys.dbIp(tar)
 				if (sys.id(tar) !== undefined) {
-					if (isTourAdmin(sys.id(tar)) && sys.maxAuth(ip) >= sys.ip(src)) {
+					if (isTourAdmin(sys.id(tar)) && sys.maxAuth(ip) >= sys.auth(src)) {
 						sys.sendMessage(src,Config.Tours.tourbot+"Can't mute higher auth!",tourschan)
 						return true;
 					}
 				}
 				else {
-					if (sys.maxAuth(ip) >= sys.ip(src)) {
+					if (sys.maxAuth(ip) >= sys.auth(src)) {
 						sys.sendMessage(src,Config.Tours.tourbot+"Can't mute higher auth!",tourschan)
 						return true;
 					}
