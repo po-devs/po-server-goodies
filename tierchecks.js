@@ -9,19 +9,30 @@ TierChecker.prototype.add_new_check = function(exclusive, tiers, checker) {
     this.checkers.push({tiers: tiers, checker: checker, exclusive: exclusive});
 };
 
-TierChecker.prototype.has_legal_team_for_tier = function(src, tier) {
+TierChecker.prototype.has_legal_team_for_tier = function(src, tier, silent) {
     if (tier == "Challenge Cup") return true;
     if (!sys.hasLegalTeamForTier(src, tier)) return false;
 
+    var complaints = [];
     for (var i = 0; i < this.checkers.length; ++i) {
         var valid_tier = (this.checkers[i].exclusive === true
             ? this.checkers[i].tiers.indexOf(tier) == -1
             : this.checkers[i].tiers.indexOf(tier) != -1);
-        if (valid_tier && this.checkers[i].checker(src, tier)) {
-            return false;
+        if (valid_tier) {
+            var new_comp = this.checkers[i].checker(src, tier);
+            if (Array.isArray(new_comp)) {
+                complaints = complaints.concat(new_comp);
+            }
         }
     }
-    return true;
+    if (complaints.length === 0) {
+        return true;
+    } else if (!silent) {
+        for (var j = 0; j < complaints.length; ++j) {
+            checkbot.sendMessage(src, complaints[j]);
+        }
+    }
+    return false;
 };
 
 TierChecker.prototype.find_good_tier = function(src) {
@@ -29,7 +40,7 @@ TierChecker.prototype.find_good_tier = function(src) {
     var testPath = ["Wifi LC", "DW LC", "Wifi LC Ubers", "Wifi NU", "Wifi LU", "Wifi UU", "DW UU", "Wifi OU", "DW OU", "Wifi Ubers", "Wifi DW", "Challenge Cup"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
-        if (sys.hasLegalTeamForTier(src, testtier) && this.has_legal_team_for_tier(src, testtier)) {
+        if (sys.hasLegalTeamForTier(src, testtier) && this.has_legal_team_for_tier(src, testtier, true)) {
             sys.changeTier(src, testtier);
             return;
         }
@@ -42,29 +53,31 @@ var EXCLUDING = true;
 var challenge_cups = ["Challenge Cup", "CC 1v1"];
 
 tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(src) {
+    var ret = [];
     for (var i = 0; i < 6; i++) {
         var poke = sys.teamPoke(src, i);
         if (poke in pokeNatures) {
             for (var x in pokeNatures[poke]) {
                 if (sys.hasTeamPokeMove(src, i, x) && sys.teamPokeNature(src, i) != pokeNatures[poke][x])
                 {
-                    checkbot.sendMessage(src, "" + sys.pokemon(poke) + " with " + sys.move(x) + " must be a " + sys.nature(pokeNatures[poke][x]) + " nature. Change it in the teambuilder.");
-                    return true; // If this is true, it is true for each tier...
+                    ret.push("" + sys.pokemon(poke) + " with " + sys.move(x) + " must be a " + sys.nature(pokeNatures[poke][x]) + " nature. Change it in the teambuilder.");
                 }
             }
         }
     }
+    return ret;
 });
 
 tier_checker.add_new_check(INCLUDING, ["Wifi LC", "Wifi LC Ubers", "Wifi UU LC"], function littleCupCheck(src) {
+    var ret = [];
     for (var i = 0; i < 6; i++) {
         var x = sys.teamPoke(src, i);
         if (x !== 0 && sys.hasDreamWorldAbility(src, i) && lcpokemons.indexOf(x) != -1 ) {
-            checkbot.sendMessage(src, "" + sys.pokemon(x) + " is not allowed with a Dream World ability in this tier. Change it in the teambuilder.");
+            ret.push("" + sys.pokemon(x) + " is not allowed with a Dream World ability in this tier. Change it in the teambuilder.");
 
-            return true;
         }
     }
+    return ret;
 });
 
 tier_checker.add_new_check(INCLUDING, ["Wifi NU"], function evioliteCheck(src, tier) {
@@ -75,8 +88,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi NU"], function evioliteCheck(src, t
         var item = sys.teamPokeItem(src, i);
         item = item !== undefined ? sys.item(item) : "(no item)";
         if (item == "Eviolite" && ++eviolites > evioliteLimit) {
-            checkbot.sendMessage(src, "Only 1 pokemon is allowed with eviolite in " + tier + " tier. Please remove extra evioites in teambuilder.");
-            return true;
+            return ["Only 1 pokemon is allowed with eviolite in " + tier + " tier. Please remove extra evioites in teambuilder."];
         }
     }
 });
@@ -86,39 +98,42 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
     // Of course, DW ability only affects 5th gen
     if (sys.gen(src) < 5)
         return;
+    var ret = [];
     for (var i = 0; i < 6; i++) {
         var x = sys.teamPoke(src, i);
         if (x !== 0 && sys.hasDreamWorldAbility(src, i) && (!(x in dwpokemons) || (breedingpokemons.indexOf(x) != -1 && sys.compatibleAsDreamWorldEvent(src, i) !== true))) {
             if (!(x in dwpokemons)) {
-                checkbot.sendMessage(src, "" + sys.pokemon(x) + " is not allowed with a Dream World ability in " + tier + " tier. Change it in the teambuilder.");
+                ret.push("" + sys.pokemon(x) + " is not allowed with a Dream World ability in " + tier + " tier. Change it in the teambuilder.");
             } else {
-                checkbot.sendMessage(src, "" + sys.pokemon(x) + " has to be Male and have no egg moves with its Dream World ability in  " + tier + " tier. Change it in the teambuilder.");
+                ret.push("" + sys.pokemon(x) + " has to be Male and have no egg moves with its Dream World ability in  " + tier + " tier. Change it in the teambuilder.");
             }
-            return true;
         }
     }
+    return ret;
 });
 
 tier_checker.add_new_check(INCLUDING, ["DW OU", "DW UU", "DW LU", "Wifi OU", "Wifi UU", "Wifi LU", "Wifi LC", "DW LC", "Wifi Ubers", "DW Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "Wifi NU"], function inconsistentCheck(src, tier) {
     var moody = sys.abilityNum("Moody");
+    var ret = [];
     for (var i = 0; i < 6; i++) {
         var x = sys.teamPoke(src, i);
 
         if (x !== 0 && sys.teamPokeAbility(src, i) == moody) {
-            checkbot.sendMessage(src, "" + sys.pokemon(x) + " is not allowed with Moody in " + tier + ". Change it in the teambuilder.");
-            return true;
+            ret = ["" + sys.pokemon(x) + " is not allowed with Moody in " + tier + ". Change it in the teambuilder."];
         }
     }
+    return ret;
 });
 
 tier_checker.add_new_check(INCLUDING, ["Clear Skies", "Clear Skies DW"], function weatherlesstiercheck(src, tier) {
+    var ret = [];
     for (var i = 0; i < 6; i++){
         var ability = sys.ability(sys.teamPokeAbility(src, i));
         if(ability.toLowerCase() == "drizzle" || ability.toLowerCase() == "drought" || ability.toLowerCase() == "snow warning" || ability.toLowerCase() == "sand stream") {
-            normalbot.sendMessage(src, "Your team has a pokemon with the ability: " + ability + ", please remove before entering " +tier+" tier.");
-            return true;
+            ret.push("Your team has a pokemon with the ability: " + ability + ", please remove before entering " +tier+" tier.");
         }
     }
+    return ret;
 });
 
 tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src) {
@@ -173,26 +188,7 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src) 
 
             if(temptypeA != checkType && temptypeB != checkType) {
 
-                normalbot.sendMessage(src, "Team not Monotype as " + sys.pokemon(sys.teamPoke(src, i)) + " is not " + sys.type(checkType) + "!");
-                /*
-                if(sys.hasLegalTeamForTier(src, "DW OU")) {
-                    if(sys.hasLegalTeamForTier(src,"Wifi OU")) {
-                        sys.changeTier(src, "Wifi OU");
-                        sys.stopEvent()
-                        return;
-                    }
-                    sys.changeTier(src, "DW OU");
-                    sys.stopEvent()
-                    return;
-                }
-                if(sys.hasLegalTeamForTier(src,"Wifi Ubers")) {
-                    sys.changeTier(src, "Wifi Ubers");
-                    sys.stopEvent()
-                    return;
-                }
-                sys.changeTier(src, "DW Ubers");
-                */
-                return true;
+                return ["Team not Monotype as " + sys.pokemon(sys.teamPoke(src, i)) + " is not " + sys.type(checkType) + "!"];
             }
         }
 
@@ -201,9 +197,7 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src) 
                         TypeB = TypeA;
                         }
             if (temptypeA != TypeA && temptypeB != TypeA && temptypeA != TypeB && temptypeB != TypeB) {
-                normalbot.sendMessage(src, "Team not Monotype as " + sys.pokemon(sys.teamPoke(src, i)) + " does not share a type with " + sys.pokemon(sys.teamPoke(src, 0)) + "!");
-
-                return true;
+                return ["Team not Monotype as " + sys.pokemon(sys.teamPoke(src, i)) + " does not share a type with " + sys.pokemon(sys.teamPoke(src, 0)) + "!"];
             }
 
         }
@@ -220,8 +214,7 @@ tier_checker.add_new_check(INCLUDING, ["Monogen"], function monoGenCheck(src) {
         if (gen === 0) {
             while (species > GEN_MAX[gen]) ++gen; // Search for correct gen for first poke
         } else if (!(GEN_MAX[gen-1] < species && species <= GEN_MAX[gen])) {
-            normalbot.sendMessage(src, sys.pokemon(pokenum) + " is not from gen " + gen);
-            return true;
+            return [sys.pokemon(pokenum) + " is not from gen " + gen];
         }
     }
 });
@@ -248,14 +241,12 @@ tier_checker.add_new_check(INCLUDING, ["Monocolour"], function monoColourCheck(s
         }
     }
     if (thecolour === '') {
-        normalbot.sendMessage(src, "Bug! " + poke + " has not a colour in checkMonocolour :(");
-        return true;
+        return ["Bug! " + poke + " has not a colour in checkMonocolour :("];
     }
     for (var i = 1; i < 6; ++i) {
         poke = sys.pokemon(sys.teamPoke(src, i));
         if (colours[thecolour].indexOf(poke) == -1 && poke != "Missingno") {
-            normalbot.sendMessage(src, "" + poke + " has not the colour: " + thecolour);
-            return true;
+            return ["" + poke + " has not the colour: " + thecolour];
         }
     }
 });
@@ -265,8 +256,7 @@ tier_checker.add_new_check(INCLUDING, ["Smogon OU", "Wifi OU", "DW OU"], functio
         if(sys.ability(sys.teamPokeAbility(src, i)) == "Drizzle"){
             for(var j = 0; j <6; ++j){
                 if(sys.ability(sys.teamPokeAbility(src, j)) == "Swift Swim"){
-                    normalbot.sendMessage(src, "You cannot have the combination of Swift Swim and Drizzle in OU");
-                    return true;
+                    return ["You cannot have the combination of Swift Swim and Drizzle in OU"];
                 }
             }
         }
@@ -276,16 +266,14 @@ tier_checker.add_new_check(INCLUDING, ["Smogon OU", "Wifi OU", "DW OU"], functio
 tier_checker.add_new_check(INCLUDING, ["Smogon UU"], function droughtCheck(src) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, i)) == "Drought"){
-            normalbot.sendMessage(src, "Drought is not allowed in Smogon UU");
-            return true;
+            return ["Drought is not allowed in Smogon UU"];
         }
     }
 });
-tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU"], function sandStreamCheck(src) {
+tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU"], function sandStreamCheck(src, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, i)) == "Sand Stream"){
-            normalbot.sendMessage(src, "Sand Stream is not allowed in Wifi UU");
-            return true;
+            return ["Sand Stream is not allowed in " + tier + "."];
         }
     }
 });
@@ -294,8 +282,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU"], functio
 tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU"], function snowWarningCheck(src, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, i)) == "Snow Warning"){
-            normalbot.sendMessage(src, "Snow Warning is not allowed in " + tier + ".");
-            return true;
+            return ["Snow Warning is not allowed in " + tier + "."];
         }
     }
 });
@@ -320,18 +307,17 @@ tier_checker.add_new_check(INCLUDING, ["Shanai Cup", "Shanai Cup 1.5", "Shanai C
         'pidgeotto': ['big pecks'],
         'karrablast': ['swarm']
     };
-    var valid = true;
+    var ret = [];
     for (var i = 0; i < 6; ++i) {
         var ability = sys.ability(sys.teamPokeAbility(src, i));
         var lability = ability.toLowerCase();
         var poke = sys.pokemon(sys.teamPoke(src, i));
         var lpoke = poke.toLowerCase();
         if (lpoke in bannedAbilities && bannedAbilities[lpoke].indexOf(lability) != -1) {
-            checkbot.sendMessage(src, "" + poke + " is not allowed to have ability " + ability + " in this tier. Please change it in Teambuilder (You are now in Challenge Cup).");
-            valid = false;
+            ret.push("" + poke + " is not allowed to have ability " + ability + " in this tier. Please change it in Teambuilder (You are now in Challenge Cup).");
         }
     }
-    return !valid;
+    return ret;
 });
 
 
@@ -553,30 +539,23 @@ tier_checker.add_new_check(INCLUDING, ["Adv 200"], function advance200Check(src)
         }
 
     } // end of building the banlist
-    var valid = true;
-    var debug = function(msg) { if (false && sys.name(src) == "zeroality") { sys.sendAll(msg, staffchannel); }};
+    var ret = [];
     for (var i = 0; i < 6; ++i) {
         poke = sys.teamPoke(src, i);
-        debug("" + i + ". poke #" + poke + ": " + sys.pokemon(poke));
         if (poke !== 0 && !advance200Banlist.hasOwnProperty(poke)) {
             sys.sendAll("Script Error: pokemon " + sys.pokemon(poke) + " should be banned in advance 200 in tiers.xml", staffchannel);
-            checkbot.sendMessage(src, "Pokemon " + sys.pokemon(poke) + " is not allowed in advance 200!");
-            valid = false;
+            ret.push("Pokemon " + sys.pokemon(poke) + " is not allowed in advance 200!");
             continue;
         }
         if (poke === 0) continue;
-        debug("Banned moves for it:" + advance200Banlist[poke].join(", "));
         for (var j = 0; j < 4; ++j) {
             var move = sys.teamPokeMove(src, i, j);
-            debug("" + j + ". move #" + move + ": " + sys.move(move));
-            debug("is allowed: " + (advance200Banlist[poke].indexOf(move) >= 0 ? "no" : "yes"));
             if (advance200Banlist[poke].indexOf(move) >= 0) {
-                checkbot.sendMessage(src, "Pokemon " + sys.pokemon(poke) + " is not allowed to have move " + sys.move(move) + " in advance 200!");
-                valid = false;
+                ret.push("Pokemon " + sys.pokemon(poke) + " is not allowed to have move " + sys.move(move) + " in advance 200!");
             }
         }
     }
-    return !valid;
+    return ret;
 });
 
 tier_checker.add_new_check(EXCLUDING, [], function eventShinies(player) {
@@ -594,13 +573,12 @@ tier_checker.add_new_check(EXCLUDING, [], function eventShinies(player) {
 });
 
 tier_checker.add_new_check(EXCLUDING, challenge_cups, function hasOneUsablePokemon(player) {
-    var valid = false;
     for (var slot=0; slot<6; slot++)
         if (sys.teamPoke(player,slot) !== 0)
             for (var move=0; move<4; move++)
                 if (sys.teamPokeMove(player, slot, move) !== 0)
-                    valid = true;
-    return !valid;
+                    return;
+    return ["You do not have any valid pokemon."];
 });
 
 module.exports = tier_checker;
