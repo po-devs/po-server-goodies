@@ -1137,7 +1137,7 @@ function tourCommand(src, command, commandData) {
 				if (reason === undefined) {
 					reason = "";
 				}
-				if (reason === "") && !isTourOwner(src)) {
+				if (reason === "" && !isTourOwner(src)) {
 					sys.sendMessage(src,Config.Tours.tourbot+"You must provide a reason!",tourschan)
 					return true;
 				}
