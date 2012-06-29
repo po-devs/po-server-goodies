@@ -27,6 +27,7 @@ var touradmincommands = ["*** Parameter Information ***",
 					"tour [tier]:[parameters]: starts a tier of that tournament.",
 					"tourmute [player]:[reason]:[time]: tourmutes a problematic player.",
 					"tourunmute [player]: untourmutes a player.",
+					"tourmutes: list tour mutes.",
 					"endtour [tour]: ends the tour of that tier",
 					"sub [newname]:[oldname]: subs newname for oldname",
 					"dq [player]: disqualifies a player",
@@ -1133,7 +1134,10 @@ function tourCommand(src, command, commandData) {
 					sys.sendMessage(src,Config.Tours.tourbot+"They are already tourmuted!",tourschan)
 					return true;
 				}
-				if ((reason === undefined || reason === "") && !isTourOwner(src)) {
+				if (reason === undefined) {
+					reason = "";
+				}
+				if (reason === "") && !isTourOwner(src)) {
 					sys.sendMessage(src,Config.Tours.tourbot+"You must provide a reason!",tourschan)
 					return true;
 				}
@@ -1163,7 +1167,7 @@ function tourCommand(src, command, commandData) {
 				var channels = [sys.channelId("Indigo Plateau"), sys.channelId("Victory Road"), tourschan]
 				tours.tourmutes[ip] = {'expiry': parseInt(sys.time()) + time, 'reason': reason, 'auth': sys.name(src), 'name': tar.toLowerCase()}
 				for (var x in channels) {
-					sys.sendAll(Config.Tours.tourbot+tar+" was tourmuted by "+sys.name(src)+" for "+time_handle(time)+"! [Reason: "+reason+"]", channels[x])
+					sys.sendAll(Config.Tours.tourbot+tar+" was tourmuted by "+sys.name(src)+" for "+time_handle(time)+"! "+(reason !== "" ? "[Reason: "+reason+"]" : ""), channels[x])
 				}
 				return true;
 			}
@@ -2962,7 +2966,7 @@ function isInTour(name) {
 function isTourMuted(src) {
 	var ip = sys.ip(src);
 	if (tours.tourmutes.hasOwnProperty(ip)) {
-		if (tours.tourmutes[ip].expiry >= parseInt(sys.time())) {
+		if (tours.tourmutes[ip].expiry <= parseInt(sys.time())) {
 			delete tours.tourmutes[ip];
 			return false;
 		}
