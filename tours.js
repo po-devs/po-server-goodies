@@ -1112,7 +1112,10 @@ function tourCommand(src, command, commandData) {
 				var data = commandData.split(":", 3);
 				var tar = data[0];
 				var reason = data[1];
-				var time = converttoseconds(data[2]);
+				var time = 900;
+				if (data.length > 2) {
+					var time = converttoseconds(data[2]);
+				}
 				var ip = sys.dbIp(tar)
 				if (sys.id(tar) !== undefined) {
 					if (isTourAdmin(sys.id(tar)) && sys.maxAuth(ip) >= sys.ip(src)) {
@@ -1158,7 +1161,7 @@ function tourCommand(src, command, commandData) {
 				else {
 					maxtime = 3600
 				}
-				if (time === undefined || isNaN(time)) {
+				if (isNaN(time)) {
 					time = 900;
 				}
 				if (time > maxtime) {
