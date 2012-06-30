@@ -18,6 +18,7 @@ var tourcommands = ["join: joins a tournament",
 					"monthlyleaderboard [month] [year]: shows tour rankings for the current month, or the current month and year if specified",
 					"tourinfo [name]: gives information on a person's recent tour wins",
 					"activeta: lists active tournament admins",
+					"rules: lists the tournament rules",
 					"touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)",
 					"addtouralert [tier] : Adds a tour alert for the specified tier (note that this list is shared with #Tournaments)",
 					"removetouralert [tier] : Removes a tour alert for the specified tier"]
@@ -39,7 +40,7 @@ var touradmincommands = ["*** Parameter Information ***",
 					"*** FOLLOWING COMMANDS ARE ADMIN+ COMMANDS ***",
 					"touradmin [name]: makes someone a tournament admin",
 					"tourdeadmin [name]: fires someone from being tournament admin",
-					"forcestart: ends signups immediately and starts the first round",
+					// "forcestart: ends signups immediately and starts the first round",
 					"push [player]: pushes a player into a tournament in signups (DON'T USE UNLESS ASKED)",
 					"tahistory [days]: views the activity of tour admins (days is optional, if excluded it will get the last 7 days if possible)",
 					"updatewinmessages: updates win messages from the web",
@@ -48,6 +49,17 @@ var touradmincommands = ["*** Parameter Information ***",
 					"clearrankings: clears the tour rankings (owner only)",
 					"evalvars: checks the current variable list for tours",
 					"fullleaderboard [tier]: gives the full leaderboard"]
+var tourrules = ["*** TOURNAMENT GUIDELINES ***",
+				"Breaking the following rules may result in a tour mute:",
+				"#1: Team revealing or scouting in non CC tiers will result in disqualfication.",
+				"- Scouting is watching the battle of someone else in the tournament to gain information.",
+				"- Team revealing is revealing any information about other entrants' teams.",
+				"#2: Have a team and be ready when you join, otherwise you can be disqualified",
+				"#3: Tierspamming, repeatedly asking for tournaments in the chat, is not allowed.",
+				"#4: Do not abuse the tournament commands.",
+				"#5: Do not leave or forfeit in a tournament you are in just so you can join another.",
+				"#6: Ask someone on the /activeta list if you need help",
+				"#7: There is a method of crashing all pre-1.0.60 PO clients that is going around. Please ensure you have updated to either the 1.0.60 client or the 2.0 alpha client in order to prevent crashes."]
 // Debug Messages
 function sendDebugMessage(message, chan) {
 	if (chan === tourschan && Config.Tours.debug && sys.existChannel(sys.channel(tourserrchan))) {
@@ -376,7 +388,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.2",
+			version: "1.25",
 			debug: false,
 			points: true
 		}
@@ -397,7 +409,7 @@ function initTours() {
 			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.2",
+			version: "1.25",
 			debug: false,
 			points: true
 		}
@@ -470,6 +482,12 @@ function tourStep() {
 			tours.activehistory.pop()
 		}
 		tours.activetas = [];
+		// clear out tourmutes list
+		for (var m in tours.tourmutes) {
+			if (tours.tourmutes[m].expiry <= parseInt(sys.time())) {
+				delete tours.tourmutes[m];
+			}
+		}
 	}
 	for (var x in tours.tour) {
 		if (tours.tour[x].time-parseInt(sys.time()) <= 10) {
@@ -526,15 +544,37 @@ function tourStep() {
 function tourBattleStart(src, dest, clauses, rated, mode) {
 	var name1 = sys.name(src).toLowerCase()
 	var name2 = sys.name(dest).toLowerCase()
-	var key = null
+	var key = null;
 	for (var x in tours.tour) {
-		if (tours.tour[x].players.indexOf(name1) != -1) {
-			key = x;
-			break;
+		if (tours.tour[x].players.indexOf(sys.name(src).toLowerCase()) != -1) {
+			var srcisintour = false;
+			if (tours.tour[x].losers.indexOf(sys.name(src).toLowerCase()) == -1) {
+				srcisintour = true;
+			}
+			if (tours.tour[x].parameters.type == "double") {
+				if (tours.tour[x].winbracket.indexOf(sys.name(src).toLowerCase()) != -1 || tours.tour[x].round == 1) {
+					srcisintour = true;
+				}
+			}
+			if (srcisintour) {
+				key = x;
+				break;
+			}
 		}
-		if (tours.tour[x].players.indexOf(name2) != -1) {
-			key = x;
-			break;
+		if (tours.tour[x].players.indexOf(sys.name(dest).toLowerCase()) != -1) {
+			var destisintour = false;
+			if (tours.tour[x].losers.indexOf(sys.name(dest).toLowerCase()) == -1) {
+				destisintour = true;
+			}
+			if (tours.tour[x].parameters.type == "double") {
+				if (tours.tour[x].winbracket.indexOf(sys.name(dest).toLowerCase()) != -1 || tours.tour[x].round == 1) {
+					destisintour = true;
+				}
+			}
+			if (destisintour) {
+				key = x;
+				break;
+			}
 		}
 	}
 	if (key === null) return false;
@@ -709,6 +749,40 @@ function tourCommand(src, command, commandData) {
 				}
 				return true;
 			}
+			if (command == "fullmonthlyleaderboard") {
+				try {
+					var now = new Date()
+					var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "decemeber"]
+					if (commandData == "") {
+						var monthlyfile = "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()+".txt"
+					}
+					else {
+						var monthdata = commandData.toLowerCase().split(" ",2)
+						if (monthdata.length == 1) {
+							monthdata.push(now.getUTCFullYear());
+						}
+						var monthlyfile = "tourmonthscore_"+monthdata[0]+"_"+monthdata[1]+".txt"
+					}
+					var rankings = sys.getFileContent(monthlyfile).split("\n")
+					var list = [];
+					for (var p in rankings) {
+						if (rankings[p] == "") continue;
+						var rankingdata = rankings[p].split(":::",2)
+						if (rankingdata[1] < 1) continue;
+						list.push([rankingdata[1], rankingdata[0]]);
+					}
+					list.sort(function(a,b) { return b[0] - a[0] ; });
+					sys.sendMessage(src, "*** FULL MONTHLY TOURNAMENT RANKINGS "+(commandData != "" ? "("+commandData+") " : "")+"***",tourschan)
+					for (var x=0; x<65536; x++) {
+						if (x >= list.length) break;
+						sys.sendMessage(src, "#"+(x+1)+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
+					}
+				}
+				catch (err) {
+					sys.sendMessage(src, Config.Tours.tourbot+"No data exists yet for the month "+commandData+"!",tourschan)
+				}
+				return true;
+			}
 		}
 		if (isTourSuperAdmin(src)) {
 			/* Tournament Admins etc. */
@@ -791,7 +865,7 @@ function tourCommand(src, command, commandData) {
 				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" stopped tournaments from auto starting for now, this will be removed when another tour is started.",tourschan)
 				return true;
 			}
-			if (command == "forcestart") {
+			/*if (command == "forcestart") {
 				var key = null;
 				for (var x in tours.tour) {
 					if (tours.tour[x].state == "signups") {
@@ -809,7 +883,7 @@ function tourCommand(src, command, commandData) {
 				tourinitiate(key);
 				sys.sendAll(Config.Tours.tourbot+"The "+tours.tour[x].tourtype+" tour was force started by "+sys.name(src)+".", tourschan)
 				return true;
-			}
+			}*/
 			if (command == "push") {
 				var key = null
 				var target = commandData.toLowerCase()
@@ -873,7 +947,7 @@ function tourCommand(src, command, commandData) {
 					if (resp !== "") {
 						sys.writeToFile('tourwinverbs.txt', resp);
 						getTourWinMessages()
-						sys.sendMessage(src, Config.Tours.tourbot + 'Updated win messages!', tourschan);
+						sys.sendAll(Config.Tours.tourbot + 'Updated win messages!', tourschan);
 					} else {
 						sys.sendMessage(src, Config.Tours.tourbot + 'Failed to update!', tourschan);
 					}
@@ -1145,7 +1219,7 @@ function tourCommand(src, command, commandData) {
 					return true;
 				}
 				if (/f[uo]ck|\bass|\bcum|\bdick|\bsex|pussy|bitch|porn|\bfck|nigga|\bcock\b|\bgay|\bhoe\b|slut|whore|cunt|clit|pen[i1]s|vag|nigger/i.test(reason)) {
-					sys.sendMessage(src,Config.Tours.tourbot+"'"+reason+" is not a valid reason!",tourschan)
+					sys.sendMessage(src,Config.Tours.tourbot+"'"+reason+"' is not a valid reason!",tourschan)
 					return true;
 				}
 				var maxtime = 0;
@@ -1751,6 +1825,14 @@ function tourCommand(src, command, commandData) {
 			sys.sendMessage(src, border,tourschan);
 			return true;
 		}
+		if (command == "rules" || command == "tourrules") {
+			sys.sendMessage(src, border,tourschan);
+			for (var t in tourrules) {
+				sys.sendMessage(src, tourrules[t],tourschan);
+			}
+			sys.sendMessage(src, border,tourschan);
+			return true;
+		}
 		if (command == "leaderboard") {
 			try {
 				if (commandData == "") {
@@ -2333,7 +2415,7 @@ function tourstart(tier, starter, key, parameters) {
 		for (var x=0; x < playerson.length; ++x) {
 			var id = playerson[x];
 			var poUser = SESSION.users(id);
-			if (sys.loggedIn(id) && poUser && poUser.tiers && poUser.tiers.indexOf(tier) != -1) {
+			if (sys.loggedIn(id) && poUser && poUser.tiers && poUser.tiers.indexOf(tier) != -1 && isInTour(sys.name(id)) === false) {
 				if (sys.isInChannel(id, tourschan)) {
 					sys.sendHtmlMessage(playerson[x], "<font color=red>You are currently alerted when a "+tier+" tournament is started!</font><ping/>",tourschan);
 					continue;
@@ -2956,11 +3038,22 @@ function isTourOwner(src) {
 }
 
 function isInTour(name) {
-	var key = false
+	var key = false;
 	for (var x in tours.tour) {
 		if (tours.tour[x].players.indexOf(name.toLowerCase()) != -1) {
-			key = true;
-			break;
+			var srcisintour = false;
+			if (tours.tour[x].losers.indexOf(name.toLowerCase()) == -1) {
+				srcisintour = true;
+			}
+			if (tours.tour[x].parameters.type == "double") {
+				if (tours.tour[x].winbracket.indexOf(name.toLowerCase()) != -1 || tours.tour[x].round == 1) {
+					srcisintour = true;
+				}
+			}
+			if (srcisintour) {
+				key = x;
+				break;
+			}
 		}
 	}
 	return key;
@@ -3025,7 +3118,7 @@ function sendWelcomeMessage(src, chan) {
 	if (!sys.dbRegistered(sys.name(src))) {
 		sys.sendMessage(src, Config.Tours.tourbot+"You need to register before playing in #Tours! Click on the 'Register' button below and follow the instructions!", chan);
 	}
-	sys.sendMessage(src,"*** Use /help to view the commands! ***",chan)
+	sys.sendMessage(src,"*** Use /help to view the commands; and use /rules to view the tournament rules! ***",chan)
 	sys.sendMessage(src,border,chan)
 }
 
