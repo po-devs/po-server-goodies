@@ -1,5 +1,5 @@
 if (typeof tourschan !== "string") {
-	tourschan = sys.channelId("Tours")
+	tourschan = sys.channelId("Tournaments")
 }
 
 if (typeof tours !== "object") {
@@ -385,7 +385,7 @@ function initTours() {
 			tourbreak: parseInt(sys.getVal("tourconfig.txt", "breaktime")),
 			abstourbreak: parseInt(sys.getVal("tourconfig.txt", "absbreaktime")),
 			reminder: parseInt(sys.getVal("tourconfig.txt", "remindertime")),
-			channel: "Tours",
+			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			version: "1.25",
@@ -406,7 +406,7 @@ function initTours() {
 			tourbreak: 120,
 			abstourbreak: 600,
 			reminder: 30,
-			channel: "Tours",
+			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			version: "1.25",
@@ -415,9 +415,9 @@ function initTours() {
 		}
 	}
 	if (Config.Tours.tourbot === undefined) {
-		Config.Tours.tourbot = "\u00B1Tours: "
+		Config.Tours.tourbot = "\u00B1Genesect: "
 	}
-	tourschan = sys.channelId("Tours");
+	tourschan = sys.channelId("Tournaments");
 	tourserrchan = sys.channelId("Indigo Plateau");
 	if (sys.existChannel(Config.Tours.channel)) {
 		tourschan = sys.channelId(Config.Tours.channel)
@@ -933,7 +933,7 @@ function tourCommand(src, command, commandData) {
 				if (tours.tour[key].players.length >= 256) {
 					tours.tour[key].time = parseInt(sys.time())
 				}
-				sys.sendAll(Config.Tours.tourbot+toCorrectCase(target)+" was added to the "+tours.tour[key].tourtype+" tournament by "+sys.name(src)+" (player #"+tours.tour[key].players.length+"), "+(tours.tour[key].time - parseInt(sys.time()))+" seconds remaining!", tourschan)
+				sys.sendAll(Config.Tours.tourbot+toCorrectCase(target)+" was added to the "+tours.tour[key].tourtype+" tournament by "+sys.name(src)+" (player #"+tours.tour[key].players.length+"), "+(tours.tour[key].time - parseInt(sys.time()))+" second"+(tours.tour[key].time - parseInt(sys.time()) == 1 ? "" : "s")+" remaining!", tourschan)
 				return true;
 			}
 			// enabled for now!
@@ -1607,7 +1607,7 @@ function tourCommand(src, command, commandData) {
 				if (tours.tour[key].players.length >= 256) {
 					tours.tour[key].time = parseInt(sys.time())
 				}
-                sys.sendHtmlAll("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font><b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(tours.tour[key].tourtype)+" tournament! "+(tours.tour[key].time - parseInt(sys.time()))+" seconds remaining!", tourschan)
+                sys.sendHtmlAll("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font><b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(tours.tour[key].tourtype)+" tournament! "+(tours.tour[key].time - parseInt(sys.time()))+" second"+(tours.tour[key].time - parseInt(sys.time()) == 1 ? "" : "s")+" remaining!", tourschan)
 				return true;
 			}
 			/* subbing */
@@ -2014,7 +2014,7 @@ function sendReminder(key) {
 				}
 				else {
 					sys.sendHtmlMessage(sys.id(player), "<ping/><font color=red><timestamp/> "+Config.Tours.tourbot+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(tours.tour[key].tourtype)+"</b> tournament, otherwise you may be disqualified for inactivity! You should talk to your opponent in #Tours to avoid disqualification.</font>")
-					sys.sendMessage(sys.id(player), Config.Tours.tourbot+"Please rejoin the #Tours channel to ensure you do not miss out on information you need!", tourschan)
+					sys.sendMessage(sys.id(player), Config.Tours.tourbot+"Please rejoin the #"+Config.Tours.channel+" channel to ensure you do not miss out on information you need!", tourschan)
 				}
 			}
 		}
@@ -3098,7 +3098,7 @@ function calcVariance() {
 
 function sendWelcomeMessage(src, chan) {
 	sys.sendMessage(src,border,chan)
-	sys.sendMessage(src,"*** Welcome to #Tours Version "+Config.Tours.version+"! ***",chan)
+	sys.sendMessage(src,"*** Welcome to #"+Config.Tours.channel+" Version "+Config.Tours.version+"! ***",chan)
 	sys.sendMessage(src,"",chan)
 	sys.sendMessage(src,"*** Current Tournaments ***",chan)
 	for (var x in tours.tour) {
