@@ -2460,7 +2460,7 @@ function Mafia(mafiachan) {
     this.isMafiaSuperAdmin = function(src) {
         if (sys.auth(src) >= 2)
             return true;
-        if (['serpentine'].indexOf(sys.name(src).toLowerCase()) >= 0) {
+        if (['serpentine', 'steeledges'].indexOf(sys.name(src).toLowerCase()) >= 0) {
             return true;
         }
         return false;
