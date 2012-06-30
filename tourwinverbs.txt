@@ -9,7 +9,6 @@ atomic wedgied
 atomized
 averted
 bamboozled
-banned
 barfed on
 barrel-rolled
 bashed
@@ -21,6 +20,7 @@ blackmailed
 blasted
 blew their nose all over
 blew up
+blitzed
 body-slammed
 bombed
 borked
@@ -100,6 +100,7 @@ dropped a fridge on
 drowned
 duped
 edged
+ejechted
 electrified
 electrocuted
 eliminated
@@ -136,7 +137,6 @@ gear grinded
 genetically altered
 guillotined
 hammered
-harrassed
 haxed
 hexed
 horrified
@@ -186,11 +186,9 @@ mauled
 mocked
 mooned
 mud-wrestled
-muted
 mutilated
 mythbusted
 nagged
-negotiated with
 neutralized
 ninja'd
 nuked
@@ -220,6 +218,7 @@ pounced on
 pressed charges against
 prosecuted
 publicly humiliated
+pulled a Moogle on
 pummeled
 pursued
 pushed over
@@ -227,6 +226,7 @@ put a plastic bag over
 pwned
 raged at
 rammed
+randed
 ransacked
 rattled
 ravaged
@@ -250,7 +250,6 @@ scouted
 screamed at
 scuffled with
 seduced
-Serpranded
 set fire to
 Shanghai'd
 shaved
@@ -294,13 +293,13 @@ squashed
 stalked
 steamrolled
 stifled
-stole Shanai's good luck from
+stole Jirachier's good luck from
 stomped on
 stopped
 struck down
 strung up
 stung
-Subpunched
+subpunched
 sucker punched
 sued
 summoned the mafia upon
@@ -316,7 +315,6 @@ threw a table at
 threw coin(s) at
 threw tiny little pebbles at
 throttled
-timestalled
 torched
 trampled
 trapped
@@ -328,12 +326,11 @@ trolled
 trounced
 uninstalled
 unleashed a pack of wolves on
-unleashed Shanai on
+unleashed Oak on
 used a Care Bear stare on
 used a lightsaber to impale
 used a rubber hammer on
 used Action Replay against
-used Derwin's hax on
 used Final Gambit on
 used legendaries against
 used Splash on
