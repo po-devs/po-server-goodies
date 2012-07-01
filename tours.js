@@ -385,10 +385,10 @@ function initTours() {
 			tourbreak: parseInt(sys.getVal("tourconfig.txt", "breaktime")),
 			abstourbreak: parseInt(sys.getVal("tourconfig.txt", "absbreaktime")),
 			reminder: parseInt(sys.getVal("tourconfig.txt", "remindertime")),
-			channel: "Tournaments",
+			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.267",
+			version: "1.268",
 			debug: false,
 			points: true
 		}
@@ -406,10 +406,10 @@ function initTours() {
 			tourbreak: 120,
 			abstourbreak: 600,
 			reminder: 30,
-			channel: "Tournaments",
+			channel: "Tours",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.267",
+			version: "1.268",
 			debug: false,
 			points: true
 		}
@@ -1705,8 +1705,7 @@ function tourCommand(src, command, commandData) {
 				if (tours.tour[y].round === 0) continue;
 				postedrounds = true;
 				sys.sendHtmlMessage(src, "<font color=#3DAA68><b>"+border+"</b></font>", tourschan)
-				sys.sendHtmlMessage(src,"<div style='margin-left: 50px'><b>Round "+tours.tour[y].round+" of the "+tours.tour[y].tourtype+" Tournament</b></div>",tourschan);
-				var roundtable = "<table style='margin-left: 50px'>"
+				var roundtable = "<div style='margin-left: 50px'><b>Round "+tours.tour[y].round+" of the "+tours.tour[y].tourtype+" Tournament</b><table>"
 				for (var x=0; x<tours.tour[y].players.length; x+=2) {
 					if (winners.indexOf(tours.tour[y].players[x]) != -1 && tours.tour[y].players[x] != "~Bye~") {
 						roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+html_escape(toCorrectCase(tours.tour[y].players[x])) +"</b></font></td><td align='center'> won against </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x+1]))+"</td>"
@@ -1721,7 +1720,7 @@ function tourCommand(src, command, commandData) {
 						roundtable = roundtable + "<tr><td align='right'>"+html_escape(toCorrectCase(tours.tour[y].players[x])) +"</td><td align='center'> VS </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x+1]))+"</td>"
 					}
 				}
-				sys.sendHtmlMessage(src,roundtable+"</table>",tourschan)
+				sys.sendHtmlMessage(src,roundtable+"</table></div>",tourschan)
 			}
 			if (!postedrounds) {
 				sys.sendMessage(src,Config.Tours.tourbot+"No tournament is running at the moment!",tourschan)
@@ -2665,7 +2664,7 @@ function tourprintbracket(key) {
 			for (var c in channels) {
 				sys.sendHtmlAll("", channels[c])
 				sys.sendHtmlAll("<font color=#3DAA68><b>"+border+"</b></font>", channels[c])
-				sys.sendHtmlAll("<b>"+(tours.tour[key].parameters.type == "double" && tours.tour[key].round%2 == 1 ? "Sudden Death" : "Final")+" Match of the "+tours.tour[key].tourtype+" Tournament in #"+sys.channel(tourschan)+"</th></tr></b>", tourschan)
+				sys.sendHtmlAll("<b>"+(tours.tour[key].parameters.type == "double" && tours.tour[key].round%2 == 1 ? "Sudden Death" : "Final")+" Match of the "+tours.tour[key].tourtype+" Tournament in #"+sys.channel(tourschan)+"</th></tr></b>", channels[c])
 				sys.sendHtmlAll(roundposting+"</table>", channels[c])
 				sys.sendHtmlAll("<font color=#3DAA68><b>"+border+"</b></font>", channels[c])
 				sys.sendHtmlAll("", channels[c])
@@ -2694,14 +2693,13 @@ function tourprintbracket(key) {
 			if (tours.tour[key].round == 1) {
 				sys.sendHtmlAll("", tourschan)
 				sys.sendHtmlAll("<font color=#3DAA68><b>"+border+"</b></font>", tourschan)
-				sys.sendHtmlAll("<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+tours.tour[key].tourtype+" Tournament</b></div>",tourschan);
-				var roundposting = "<table style='margin-left: 50px'>";
+				var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+tours.tour[key].tourtype+" Tournament</b><table>";
 				for (var x=0; x<tours.tour[key].players.length; x+=2) {
 					var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+")</td><td align='right'>"+html_escape(toCorrectCase(tours.tour[key].players[x]))+"</td>"
 					var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
 					roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
 				}
-				sys.sendHtmlAll(roundposting+"</table>", tourschan)
+				sys.sendHtmlAll(roundposting+"</table></div>", tourschan)
 				if (subsExist) {
 					sys.sendHtmlAll("<b>*** Type /join to join late, good while subs last! ***</b>", tourschan)
 				}
@@ -2711,8 +2709,7 @@ function tourprintbracket(key) {
 			else if (tours.tour[key].parameters.type == "double") {
 				sendHtmlAuthPlayers("", key)
 				sendHtmlAuthPlayers("<font color=#3DAA68><b>"+border+"</b></font>", key)
-				sys.sendHtmlAll("<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+tours.tour[key].tourtype+" Tournament</b></div>",tourschan);
-				var roundposting = "<table style='margin-left: 50px'><tr><th colspan=5><font color=blue>Winners Bracket</font></th></tr>"
+				var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+tours.tour[key].tourtype+" Tournament</b><table><tr><th colspan=5><font color=blue>Winners Bracket</font></th></tr>"
 				for (var x=0; x<tours.tour[key].players.length; x+=2) {
 					if (tours.tour[key].parameters.type == "double" && x == tours.tour[key].players.length/2) {
 						roundposting = roundposting + "<tr><td></td></tr><tr><th colspan=5><font color=red>Losers Bracket</font></th></tr>"
@@ -2721,21 +2718,20 @@ function tourprintbracket(key) {
 					var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
 					roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
 				}
-				sendHtmlAuthPlayers(roundposting+"</table>", key)
+				sendHtmlAuthPlayers(roundposting+"</table></div>", key)
 				sendHtmlAuthPlayers("<font color=#3DAA68><b>"+border+"</b></font>", key)
 				sendHtmlAuthPlayers("", key)
 			}
 			else {
 				sendHtmlAuthPlayers("", key)
 				sendHtmlAuthPlayers("<font color=#3DAA68><b>"+border+"</b></font>", key)
-				sys.sendHtmlAll("<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+tours.tour[key].tourtype+" Tournament</b></div>",tourschan);
-				var roundposting = "<table style='margin-left: 50px'>";
+				var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+tours.tour[key].tourtype+" Tournament</b><table>";
 				for (var x=0; x<tours.tour[key].players.length; x+=2) {
 					var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+")</td><td align='right'>"+html_escape(toCorrectCase(tours.tour[key].players[x]))+"</td>"
 					var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
 					roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
 				}
-				sendHtmlAuthPlayers(roundposting+"</table>", key)
+				sendHtmlAuthPlayers(roundposting+"</table></div>", key)
 				sendHtmlAuthPlayers("<font color=#3DAA68><b>"+border+"</b></font>", key)
 				sendHtmlAuthPlayers("", key)
 			}
