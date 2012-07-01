@@ -391,7 +391,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.272a",
+			version: "1.272b",
 			debug: false,
 			points: true
 		}
@@ -412,7 +412,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.272a",
+			version: "1.272b",
 			debug: false,
 			points: true
 		}
@@ -1741,7 +1741,7 @@ function tourCommand(src, command, commandData) {
 				return true;
 			}
 			else {
-				var roundstosend = htmlborder+rounddata.join(htmlborder+"<br/>")+htmlborder
+				var roundstosend = htmlborder+rounddata.join(htmlborder)+htmlborder
 				sys.sendHtmlMessage(src, roundstosend, tourschan)
 			}
 			return true;

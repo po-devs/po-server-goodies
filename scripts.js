@@ -1327,12 +1327,12 @@ beforeChannelJoin : function(src, channel) {
     // Can't ban from main
     if (channel === 0) return;
 
-    /* Old Tours redirect, disabled because of testing.
-    if (sys.auth(src) == 0 && channel == sys.channelId("Tours")) {
+    /* Tours redirect */
+    if (sys.auth(src) <= 0 && channel == sys.channelId("Tours")) {
         sys.stopEvent();
         sys.putInChannel(src, tourchannel);
         return;
-    }*/
+    }
     if (sys.auth(src) === 0 && channel == sys.channelId("shanaindigo")) {
         sys.stopEvent();
         sys.putInChannel(src, sachannel);
