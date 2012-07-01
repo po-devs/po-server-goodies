@@ -1702,7 +1702,7 @@ function tourCommand(src, command, commandData) {
 					firsttour = false
 				}
 				else {
-					sys.sendMessage(src,(e+1)+") "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+queuedata[3] : "")+(queuedata[4] == "double" ? "; Double Elimination" : ""), tourschan)
+					sys.sendMessage(src,(parseInt(e)+1)+") "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+queuedata[3] : "")+(queuedata[4] == "double" ? "; Double Elimination" : ""), tourschan)
 				}
 			}
 			return true;
