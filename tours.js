@@ -388,10 +388,10 @@ function initTours() {
 			tourbreak: parseInt(sys.getVal("tourconfig.txt", "breaktime")),
 			abstourbreak: parseInt(sys.getVal("tourconfig.txt", "absbreaktime")),
 			reminder: parseInt(sys.getVal("tourconfig.txt", "remindertime")),
-			channel: "Tours",
+			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.270",
+			version: "1.271",
 			debug: false,
 			points: true
 		}
@@ -409,10 +409,10 @@ function initTours() {
 			tourbreak: 120,
 			abstourbreak: 600,
 			reminder: 30,
-			channel: "Tours",
+			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.270",
+			version: "1.271",
 			debug: false,
 			points: true
 		}
@@ -2706,7 +2706,7 @@ function tourprintbracket(key) {
 					var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
 					roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
 				}
-				sys.sendHtmlAll("<br/>"+htmlborder+roundposting+"</table><br/></div>"+(subsExist ? submessage : "")+htmlborder+"<br/>", tourschan)
+				sys.sendHtmlAll("<br/>"+htmlborder+roundposting+"</table></div>"+(subsExist ? submessage : "")+htmlborder+"<br/>", tourschan)
 			}
 			else if (tours.tour[key].parameters.type == "double") {
 				var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+tours.tour[key].tourtype+" Tournament</b><br/><table><tr><th colspan=5><font color=blue>Winners Bracket</font></th></tr>"
