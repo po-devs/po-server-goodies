@@ -151,6 +151,7 @@ try { // Do not indent this, it is only until this starts to work
                 var realTime = time();
                 var minus = realTime - responseTime;
                 var pointAdd = minus > 6 ? 5 : (minus < 7 && minus > 3 ? 3 : 2);
+                sys.sendMessage(sys.id("Lamperi"), "TriviaPointDebug: took" + minus + " seconds, point add is " + pointAdd + ".", this.id);
 				// TODO: check answer length, and base pointAdd off of that?
 
                 answeredCorrectly.push(name);
@@ -360,7 +361,7 @@ QuestionHolder.prototype.checkq = function(id)
 		triviabot.sendAll("Category: "+trivreview.editingCategory,revchan);
 		triviabot.sendAll("Question: "+trivreview.editingQuestion,revchan);
 		triviabot.sendAll("Answer: "+trivreview.editingAnswer,revchan);
-		triviabot.sendAll("Questions Approved: "+triviaq.questionAmount()+". Questions Left: "+ trivreview.questionAmount()+".", revchan)
+		triviabot.sendAll("Questions Approved: "+triviaq.questionAmount()+". Questions Left: "+ trivreview.questionAmount()+".", revchan);
 		sys.sendAll("",revchan);
         return;
 	}
@@ -383,7 +384,7 @@ QuestionHolder.prototype.checkq = function(id)
 	triviabot.sendAll("Category: "+questionInfo.category,revchan);
 	triviabot.sendAll("Question: "+questionInfo.question,revchan);
 	triviabot.sendAll("Answer: "+questionInfo.answer,revchan);
-	triviabot.sendAll("Questions Approved: "+triviaq.questionAmount()+". Questions Left: "+ trivreview.questionAmount()+".", revchan)
+	triviabot.sendAll("Questions Approved: "+triviaq.questionAmount()+". Questions Left: "+ trivreview.questionAmount()+".", revchan);
 	if(questionInfo.name !== undefined){
 		triviabot.sendAll("Submitted By: "+questionInfo.name,revchan);
 	}
@@ -565,7 +566,7 @@ addUserCommand("submitq", function(src, commandData, channel) {
 
 addUserCommand("join", function(src, commandData, channel) {
     if(SESSION.users(src).mute.active || !SESSION.channels(triviachan).canTalk(src)){
-        Trivia.sendPM(src, "You cannot join when muted!")
+        Trivia.sendPM(src, "You cannot join when muted!");
         return;
     }
     if (Trivia.started === false)
@@ -680,7 +681,7 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 		triviabot.sendMessage(src, "Category: "+trivreview.editingCategory,channel);
 		triviabot.sendMessage(src, "Question: "+trivreview.editingQuestion,channel);
 		triviabot.sendMessage(src, "Answer: "+trivreview.editingAnswer,channel);
-		triviabot.sendMessage(src, "Questions Approved: "+triviaq.questionAmount()+". Questions Left: "+ trivreview.questionAmount()+".", channel)
+		triviabot.sendMessage(src, "Questions Approved: "+triviaq.questionAmount()+". Questions Left: "+ trivreview.questionAmount()+".", channel);
 		sys.sendMessage(src, "",channel);
 		return;
 	}
@@ -706,7 +707,7 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 	Trivia.sendPM(src,"Category: "+questionInfo.category,channel);
 	Trivia.sendPM(src,"Question: "+questionInfo.question,channel);
 	Trivia.sendPM(src,"Answer: "+questionInfo.answer,channel);
-	Trivia.sendPM(src, "Questions Approved: "+triviaq.questionAmount()+". Questions Left: "+ trivreview.questionAmount()+".", channel)
+	Trivia.sendPM(src, "Questions Approved: "+triviaq.questionAmount()+". Questions Left: "+ trivreview.questionAmount()+".", channel);
 	if(questionInfo.name !==undefined){
 		Trivia.sendPM(src,"Submitted By:" +questionInfo.name,channel);
 	}
@@ -786,7 +787,7 @@ addAdminCommand("accept", function(src, commandData, channel) {
 		triviaq.add(trivreview.editingCategory, trivreview.editingQuestion, trivreview.editingAnswer);
 		trivreview.editingMode = false;
 		triviabot.sendAll("The question in edit was saved",channel);
-		trivreview.checkq(trivreview.currentId)
+		trivreview.checkq(trivreview.currentId);
 		return;
 	}
 	var tr = trivreview.all();
@@ -827,7 +828,7 @@ addAdminCommand("showq", function(src, commandData, channel){
 addAdminCommand("editq", function(src, commandData, channel){
 	var q = triviaq.get(commandData);
 	if(trivreview.editingMode === true){
-		triviabot.sendMessage(src, "A question is already in edit, use /checkq to see it!")
+		triviabot.sendMessage(src, "A question is already in edit, use /checkq to see it!");
 		return;
 	}
 	if(q !== null){
@@ -836,9 +837,9 @@ addAdminCommand("editq", function(src, commandData, channel){
 		trivreview.editingCategory = q.category;
 		trivreview.editingAnswer = q.answer; //Moving it to front of queue seemed like a tedious job, so let's cheat it in, instead :3
 		triviaq.remove(commandData);
-		var tr = trivreview.all()
+		var tr = trivreview.all();
 		var id = Object.keys(tr)[0];
-		trivreview.currentId = id
+		trivreview.currentId = id;
 		trivreview.checkq(); //id isn't needed or shouldn't be needed
 		return;
 	}
@@ -849,7 +850,7 @@ addAdminCommand("decline", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
 		trivreview.editingMode = false;
 		triviabot.sendAll("The question in edit was deleted",channel);
-		trivreview.checkq(trivreview.currentId)
+		trivreview.checkq(trivreview.currentId);
 		return;
 	}
 	var tr = trivreview.all();
@@ -879,7 +880,7 @@ addAdminCommand("resetvars", function(src, commandData, channel) {
 	triviabot.sendMessage(src, "Trivia was reset");
 }, "Allows you to reset variables");
 addAdminCommand("shove", function(src, commandData, channel){
-	var tar = sys.id(commandData)
+	var tar = sys.id(commandData);
 	if(tar === undefined){
 		return;
 	}
@@ -893,7 +894,7 @@ addAdminCommand("shove", function(src, commandData, channel){
         Trivia.sendAll(sys.name(tar) + " was removed from the game by "+sys.name(src)+"!",triviachan);
 		return;
 	}
-	Trivia.sendPM(src, "That person isn't playing!")
+	Trivia.sendPM(src, "That person isn't playing!");
 }, "Allows you to remove a player from the game");
 
 // Normal command handling.

@@ -15,7 +15,7 @@ MONTHLY_STATS="http://stats.pokemon-online.eu/Past Stats/{month}-{year}/{tier}/r
 
 TIER_TREES = [
     ["Wifi OU", "Wifi UU", "Wifi LU", "Wifi NU"],
-    ["DW OU", "DW UU"],
+    ["No Preview OU"],
     ["Wifi LC", "Wifi LC UU"]
 ]
 
@@ -24,16 +24,13 @@ BANLIST = {
     "Wifi UU": ["Kingdra", "Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Wobbuffet", "Deoxys-D", "Thundurus-T", "Tornadus-T", "Landorus-T", "Keldeo"], # BL
     "Wifi LU": ["Cresselia", "Gorebyss", "Huntail", "Victini", "Rhyperior", "Medicham", "Durant", "Virizion", "Sharpedo"], # BL2
     "Wifi NU": ["Feraligatr", "Sawsbuck", "Gligar", "Charizard", "Hitmonlee", "Scolipede", "Tangela", "Jynx", "Druddigon"], # BL3
-    "DW OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Blaziken", "Garchomp", "Chandelure", "Excadrill", "Kyurem-B", "Kyurem-W"], # DW Ubers
-    "DW UU": ["Azelf", "Chansey", "Deoxys", "Deoxys-S", "Froslass", "Haxorus", "Hydreigon", "Kyurem", "Landorus", "Latias", "Lucario", "Roserade", "Scrafty", "Smeargle", "Staraptor", "Terrakion", "Venomoth", "Vulpix", "Wobbuffet", "Abomasnow", "Snover", "Thundurus-T", "Tornadus-T", "Landorus-T"], # DW BL
+    "No Preview OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Blaziken", "Garchomp", "Chandelure", "Excadrill", "Kyurem-B", "Kyurem-W"], # DW Ubers
     "Wifi LC": ["Scyther", "Sneasel", "Yanma", "Tangela", "Vulpix", "Murkrow", "Scraggy", "Misdreavus", "Meditite", "Carvanha", "Gligar", "Drilbur"], # LC Ubers (in addition to all other pokemon...)
     "Wifi LC UU": ["Poliwag", "Axew"], # Wifi LC BL
 }
 ADDITIONAL_BANS = {
-    "Wifi UU": ["Vulpix", # Due to Drought being banned
-                "Abomasnow", "Snover"], # Due to Snow Warning being banned
+    "Wifi UU": ["Vulpix"], # Due to Drought being banned                
     "Wifi LU": ["Venomoth"], # Due to being BL for some time
-    "DW UU":   ["Thundurus"], # Due to being uber for some time
 }
 
 # TODO: enforce these
