@@ -1,4 +1,4 @@
-if (typeof tourschan !== "string") {
+ï»¿if (typeof tourschan !== "string") {
 	tourschan = sys.channelId("Tournaments")
 }
 
@@ -7,7 +7,7 @@ if (typeof tours !== "object") {
 	tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}}
 }
 
-var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
+var border = "Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»Â»";
 var tourcommands = ["join: joins a tournament",
 					"unjoin: unjoins a tournament during signups only",
 					"queue: lists upcoming tournaments",
@@ -388,7 +388,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.26",
+			version: "1.263",
 			debug: false,
 			points: true
 		}
@@ -409,7 +409,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.26",
+			version: "1.263",
 			debug: false,
 			points: true
 		}
@@ -1705,21 +1705,22 @@ function tourCommand(src, command, commandData) {
 				if (tours.tour[y].round === 0) continue;
 				postedrounds = true;
 				sys.sendMessage(src,border, tourschan)
-				sys.sendMessage(src,"*** Round "+tours.tour[y].round+" of the "+tours.tour[y].tourtype+" Tournament ***", tourschan)
+				var roundtable = "<table><tr><th colspan=3>Round "+tours.tour[y].round+" of the "+tours.tour[y].tourtype+" Tournament</th></tr><tr><td></td></tr>"
 				for (var x=0; x<tours.tour[y].players.length; x+=2) {
 					if (winners.indexOf(tours.tour[y].players[x]) != -1 && tours.tour[y].players[x] != "~Bye~") {
-						sys.sendHtmlMessage(src,"<timestamp/> <font color=green><b>"+html_escape(toCorrectCase(tours.tour[y].players[x])) +"</b></font> won against "+ html_escape(toCorrectCase(tours.tour[y].players[x+1])), tourschan)
+						roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+html_escape(toCorrectCase(tours.tour[y].players[x])) +"</b></font></td><td> won against </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x+1]))+"</td>"
 					}
 					else if (winners.indexOf(tours.tour[y].players[x+1]) != -1 && tours.tour[y].players[x+1] != "~Bye~") {
-						sys.sendHtmlMessage(src,"<timestamp/> <font color=green><b>"+html_escape(toCorrectCase(tours.tour[y].players[x+1])) +"</b></font> won against "+ html_escape(toCorrectCase(tours.tour[y].players[x])), tourschan)
+						roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+html_escape(toCorrectCase(tours.tour[y].players[x+1])) +"</b></font></td><td> won against </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x]))+"</td>"
 					}
 					else if (battlers.indexOf(tours.tour[y].players[x]) != -1) {
-						sys.sendHtmlMessage(src,"<timestamp/> <font color=green>"+html_escape(toCorrectCase(tours.tour[y].players[x])) +" VS "+ html_escape(toCorrectCase(tours.tour[y].players[x+1]))+"</font>", tourschan)
+						roundtable = roundtable + "<tr><td align='right'>"+html_escape(toCorrectCase(tours.tour[y].players[x])) +"</td><td> is battling against </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x+1]))+"</td>"
 					}
 					else {
-						sys.sendHtmlMessage(src,"<timestamp/> "+html_escape(toCorrectCase(tours.tour[y].players[x])) +" VS "+ html_escape(toCorrectCase(tours.tour[y].players[x+1])), tourschan)
+						roundtable = roundtable + "<tr><td align='right'>"+html_escape(toCorrectCase(tours.tour[y].players[x])) +"</td><td> VS </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x+1]))+"</td>"
 					}
 				}
+				sendHtmlMessage(src,roundtable+"</table>",tourschan)
 			}
 			if (!postedrounds) {
 				sys.sendMessage(src,Config.Tours.tourbot+"No tournament is running at the moment!",tourschan)
@@ -2658,14 +2659,14 @@ function tourprintbracket(key) {
 			tours.tour[key].state = "final"
 			var channels = ((tours.tour[key].parameters.type == "double" && tours.tour[key].round%2 == 1) || tourschan === 0) ? [tourschan] : [0, tourschan];
 			var roundposting = "<table><tr><th colspan=5>"+(tours.tour[key].parameters.type == "double" && tours.tour[key].round%2 == 1 ? "Sudden Death" : "Final")+" Match of the "+tours.tour[key].tourtype+" Tournament in #"+sys.channel(tourschan)+"</th></tr>"
-			roundposting = roundposting + "<tr> </tr>"
-			var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[0])+1)+") </td><td>"+html_escape(toCorrectCase(tours.tour[key].players[0]))+"</td>"
-			var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[1]))+"</td><td> ("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[1])+1)+")</td>"
+			roundposting = roundposting + "<tr><td></td></tr>"
+			var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[0])+1)+")</td><td>"+html_escape(toCorrectCase(tours.tour[key].players[0]))+"</td>"
+			var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[1])+1)+")</td>"
 			roundposting = roundposting+"<tr>"+player1data+"<td> VS </td>"+player2data+"</tr>"
 			for (var c in channels) {
 				sys.sendHtmlAll("", channels[c])
 				sys.sendHtmlAll("<font color=#3DAA68><b>"+border+"</b></font>", channels[c])
-				sys.sendHtmlAll(roundposting+"</table>", tourschan)
+				sys.sendHtmlAll(roundposting+"</table>", channels[c])
 				sys.sendHtmlAll("<font color=#3DAA68><b>"+border+"</b></font>", channels[c])
 				sys.sendHtmlAll("", channels[c])
 			}
@@ -2695,8 +2696,8 @@ function tourprintbracket(key) {
 				sys.sendHtmlAll("<font color=#3DAA68><b>"+border+"</b></font>", tourschan)
 				var roundposting = "<table><tr><th colspan=5>Round "+tours.tour[key].round+" of the "+tours.tour[key].tourtype+" Tournament</th></tr>"
 				for (var x=0; x<tours.tour[key].players.length; x+=2) {
-					var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+") </td><td>"+html_escape(toCorrectCase(tours.tour[key].players[x]))+"</td>"
-					var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td> ("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
+					var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+")</td><td align='right'>"+html_escape(toCorrectCase(tours.tour[key].players[x]))+"</td>"
+					var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
 					roundposting = roundposting+"<tr>"+player1data+"<td> VS </td>"+player2data+"</tr>"
 				}
 				sys.sendHtmlAll(roundposting+"</table>", tourschan)
@@ -2710,16 +2711,16 @@ function tourprintbracket(key) {
 				sendHtmlAuthPlayers("", key)
 				sendHtmlAuthPlayers("<font color=#3DAA68><b>"+border+"</b></font>", key)
 				var roundposting = "<table><tr><th colspan=5>Round "+tours.tour[key].round+" of the "+tours.tour[key].tourtype+" Tournament</th></tr>"
-				roundposting = roundposting + "<tr> </tr><tr><th colspan=5>*** Winners Bracket ***</th></tr>"
+				roundposting = roundposting + "<tr><td></td></tr><tr><th colspan=5>Winners Bracket</th></tr>"
 				for (var x=0; x<tours.tour[key].players.length; x+=2) {
 					if (tours.tour[key].parameters.type == "double" && x == tours.tour[key].players.length/2) {
-						roundposting = roundposting + "<tr> </tr><tr><th colspan=5>*** Losers Bracket ***</th></tr>"
+						roundposting = roundposting + "<tr><td></td></tr><tr><th colspan=5>Losers Bracket</th></tr>"
 					}
-					var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+") </td><td>"+html_escape(toCorrectCase(tours.tour[key].players[x]))+"</td>"
-					var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td> ("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
+					var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+")</td><td align='right'>"+html_escape(toCorrectCase(tours.tour[key].players[x]))+"</td>"
+					var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
 					roundposting = roundposting+"<tr>"+player1data+"<td> VS </td>"+player2data+"</tr>"
 				}
-				sendHtmlAuthPlayers(roundposting+"</table>", tourschan)
+				sendHtmlAuthPlayers(roundposting+"</table>", key)
 				sendHtmlAuthPlayers("<font color=#3DAA68><b>"+border+"</b></font>", key)
 				sendHtmlAuthPlayers("", key)
 			}
@@ -2728,11 +2729,11 @@ function tourprintbracket(key) {
 				sendHtmlAuthPlayers("<font color=#3DAA68><b>"+border+"</b></font>", key)
 				var roundposting = "<table><tr><th colspan=5>Round "+tours.tour[key].round+" of the "+tours.tour[key].tourtype+" Tournament</th></tr>"
 				for (var x=0; x<tours.tour[key].players.length; x+=2) {
-					var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+") </td><td>"+html_escape(toCorrectCase(tours.tour[key].players[x]))+"</td>"
-					var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td> ("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
+					var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+")</td><td align='right'>"+html_escape(toCorrectCase(tours.tour[key].players[x]))+"</td>"
+					var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
 					roundposting = roundposting+"<tr>"+player1data+"<td> VS </td>"+player2data+"</tr>"
 				}
-				sendHtmlAuthPlayers(roundposting+"</table>", tourschan)
+				sendHtmlAuthPlayers(roundposting+"</table>", key)
 				sendHtmlAuthPlayers("<font color=#3DAA68><b>"+border+"</b></font>", key)
 				sendHtmlAuthPlayers("", key)
 			}
@@ -2930,6 +2931,7 @@ function awardTourPoints(player, size, tier, delim) {
 	// writing global monthly scores
 	var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "decemeber"]
 	var monthlyfile = "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()+".txt"
+	sys.appendToFile(monthlyfile, "")
 	try {
 		var data3 = sys.getFileContent(monthlyfile)
 	}
