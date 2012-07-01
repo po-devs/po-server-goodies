@@ -2867,7 +2867,7 @@ function awardTourPoints(player, size, tier, delim) {
     var tiers_b = [] // default
     var tiers_c = ["Monotype"]
     var tiers_d = ["Challenge Cup"]
-    var tiers_e = ["Wifi CC 1v1", "DW 1v1", "DW 1v1 Ubers"]
+    var tiers_e = ["Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers"]
     var tiers_f = ["CC 1v1"]
     var tiers_z = ["Metronome"]
 	if (tiers_a.indexOf(tier) != -1) {
