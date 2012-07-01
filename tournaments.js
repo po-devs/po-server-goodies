@@ -1103,7 +1103,7 @@ module.exports = {
 
 		module.tourchannel = tourchannel;
 
-		// Do not reinitialize - in case init is called many times
+		/* Do not reinitialize - in case init is called many times
 		if (module.tournaments[tourchannel])
 			return;
 
@@ -1119,7 +1119,7 @@ module.exports = {
 				module.tournaments[permaTours[i]] = tournament;
 			}
 		}
-		// TODO: afterChannelDestroyed delete from SESSION
+		TODO: afterChannelDestroyed delete from SESSION*/
 	},
 
 	// debug for evaling private variables
