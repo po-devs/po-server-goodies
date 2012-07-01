@@ -33,7 +33,7 @@ var touradmincommands = ["*** Parameter Information ***",
 					"endtour [tour]: ends the tour of that tier",
 					"sub [newname]:[oldname]: subs newname for oldname",
 					"dq [player]: disqualifies a player",
-					"remove [tour]: removes a tournament from the queue",
+					"remove [tour/number]: removes a tournament from the queue. If a number is put in, it will remove the tour in the queue with the corresponding number. If a tier is put in, it will remove the tournament of that tier (starting from the back)",
 					"start: starts next tournament in the queue immediately",
 					"cancelbattle [name]: cancels that player's current battle",
 					"config: shows config settings",
@@ -391,7 +391,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.271",
+			version: "1.272",
 			debug: false,
 			points: true
 		}
@@ -412,7 +412,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.271",
+			version: "1.272",
 			debug: false,
 			points: true
 		}
@@ -700,22 +700,22 @@ function tourCommand(src, command, commandData) {
 				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" cleared the tour rankings!",tourschan)
 				return true;
 			}
-			if (command == "clearmonthrankings") {
+			/*if (command == "clearmonthrankings") { // not needed
 				var now = new Date()
 				var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "decemeber"]
 				var monthlyfile = "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()+".txt"
 				sys.writeToFile(monthlyfile, "")
 				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" cleared this month's tour rankings!",tourschan)
 				return true;
-			}
+			}*/
 			if (command == "evalvars") {
 				dumpVars(src)
 				return true;
 			}
-			if (command == "sendall") {
+			/*if (command == "sendall") { // unnecessary
 				sys.sendAll(sys.name(src) + ": " + commandData, tourschan);
 				return true;
-			}
+			}*/
 			if (command == "fullleaderboard") {
 				try {
 					if (commandData == "") {
@@ -1049,21 +1049,24 @@ function tourCommand(src, command, commandData) {
 			}
 			if (command == "remove") {
 				var index = -1
-				for (var a=0;a<tours.queue.length;a++) {
+				if (parseInt(commandData) !== "") {
+					index = parseInt(commandData)-1
+				}
+				for (var a = tours.queue.length-1; a>=0; a -= 1) {
 					var tourtoremove = (tours.queue[a].split(":::",1))[0].toLowerCase()
 					if (commandData.toLowerCase() == tourtoremove) {
-						index = a
+						index = a;
 						break;
 					}
 				}
-				if (index == -1) {
+				if (index < 0 || index >= tours.queue.length) {
 					sys.sendMessage(src, Config.Tours.tourbot+"The tier '"+commandData+"' doesn't exist in the queue, so it can't be removed! Make sure the tier is typed out correctly.", tourschan)
 					return true;
 				}
 				else {
 					var removedtour = (tours.queue[index].split(":::",1))[0]
 					tours.queue.splice(index, 1)
-					sys.sendAll(Config.Tours.tourbot+"The "+removedtour+" tour was removed from the queue by "+sys.name(src)+".", tourschan)
+					sys.sendAll(Config.Tours.tourbot+"The "+removedtour+" tour (position "+(index+1)+")was removed from the queue by "+sys.name(src)+".", tourschan)
 					return true;
 				}
 			}
@@ -1678,7 +1681,7 @@ function tourCommand(src, command, commandData) {
 			sys.sendAll(Config.Tours.tourbot+sys.name(src)+" unjoined the "+tours.tour[key].tourtype+" tournament!", tourschan)
 			return true;
 		}
-		if (command == "queue") {
+		if (command == "queue" || command == "viewqueue") {
 			var queue = tours.queue
 			sys.sendMessage(src, "*** Upcoming Tours ***", tourschan)
 			var nextstart = time_handle(tours.globaltime - parseInt(sys.time()))
@@ -1695,11 +1698,11 @@ function tourCommand(src, command, commandData) {
 			for (var e in queue) {
 				var queuedata = queue[e].split(":::",5)
 				if (firsttour && nextstart != "Pending") {
-					sys.sendMessage(src,queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+queuedata[3] : "")+(queuedata[4] == "double" ? "; Double Elimination" : "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
+					sys.sendMessage(src,"1) "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+queuedata[3] : "")+(queuedata[4] == "double" ? "; Double Elimination" : "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
 					firsttour = false
 				}
 				else {
-					sys.sendMessage(src,queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+queuedata[3] : "")+(queuedata[4] == "double" ? "; Double Elimination" : ""), tourschan)
+					sys.sendMessage(src,(e+1)+") "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+queuedata[3] : "")+(queuedata[4] == "double" ? "; Double Elimination" : ""), tourschan)
 				}
 			}
 			return true;
