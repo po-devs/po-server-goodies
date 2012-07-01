@@ -391,7 +391,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.272",
+			version: "1.272a",
 			debug: false,
 			points: true
 		}
@@ -412,7 +412,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.272",
+			version: "1.272a",
 			debug: false,
 			points: true
 		}
@@ -533,8 +533,8 @@ function tourStep() {
 		}
 		else if (tours.keys.length === 0) {
 			// start a cycle from tourarray
-			var tourarray = ["Challenge Cup", "Wifi NU", "CC 1v1", "Random Battle", "Wifi OU", "DW 1v1", "Wifi UU", "Monotype", "Challenge Cup", "Clear Skies", "Wifi CC 1v1", "Wifi LC", "Wifi OU", "Wifi LU", "Wifi Ubers", "DW OU"]
-			var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "DW 1v1"];
+			var tourarray = ["Challenge Cup", "Wifi NU", "CC 1v1", "Random Battle", "Wifi OU", "Gen 5 1v1", "Wifi UU", "Monotype", "Challenge Cup", "Clear Skies", "Wifi CC 1v1", "Wifi LC", "Wifi OU", "Wifi LU", "Wifi Ubers", "DW OU"]
+			var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1"];
 			var tourtostart = tourarray[tours.key%tourarray.length]
 			var tourtype = doubleelimtiers.indexOf(tourtostart) != -1 ? "double" : "single"
 			tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": 5, "type": tourtype})
