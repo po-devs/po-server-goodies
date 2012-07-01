@@ -49,6 +49,7 @@ var touradmincommands = ["*** Parameter Information ***",
 					"*** FOLLOWING COMMANDS ARE OWNER+ COMMANDS ***",
 					"clearrankings: clears the tour rankings (owner only)",
 					"evalvars: checks the current variable list for tours",
+					"fullmonthlyleaderboard [month] [year]: shows full tour rankings for the current month, or the current month and year if specified",
 					"fullleaderboard [tier]: gives the full leaderboard"]
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
 				"Breaking the following rules may result in a tour mute:",
@@ -60,7 +61,8 @@ var tourrules = ["*** TOURNAMENT GUIDELINES ***",
 				"#4: Do not abuse the tournament commands.",
 				"#5: Do not leave or forfeit in a tournament you are in just so you can join another.",
 				"#6: Ask someone on the /activeta list if you need help",
-				"#7: There is a method of crashing all pre-1.0.60 PO clients that is going around. Please ensure you have updated to either the 1.0.60 client or the 2.0 alpha client in order to prevent crashes."]
+				"#7: There is a method of crashing all pre-1.0.60 PO clients that is going around.",
+				"- Please ensure you have updated to either the 1.0.60 client or the 2.0 alpha client in order to prevent crashes."]
 // Debug Messages
 function sendDebugMessage(message, chan) {
 	if (chan === tourschan && Config.Tours.debug && sys.existChannel(sys.channel(tourserrchan))) {
@@ -386,10 +388,10 @@ function initTours() {
 			tourbreak: parseInt(sys.getVal("tourconfig.txt", "breaktime")),
 			abstourbreak: parseInt(sys.getVal("tourconfig.txt", "absbreaktime")),
 			reminder: parseInt(sys.getVal("tourconfig.txt", "remindertime")),
-			channel: "Tours",
+			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.269",
+			version: "1.271",
 			debug: false,
 			points: true
 		}
@@ -407,10 +409,10 @@ function initTours() {
 			tourbreak: 120,
 			abstourbreak: 600,
 			reminder: 30,
-			channel: "Tours",
+			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.269",
+			version: "1.271",
 			debug: false,
 			points: true
 		}
@@ -2670,7 +2672,7 @@ function tourprintbracket(key) {
 			var channels = ((tours.tour[key].parameters.type == "double" && tours.tour[key].round%2 == 1) || tourschan === 0) ? [tourschan] : [0, tourschan];
 			var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[0])+1)+")</td><td align='right'>"+html_escape(toCorrectCase(tours.tour[key].players[0]))+"</td>"
 			var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[1])+1)+")</td>"
-			var roundinfo = "<b>"+(tours.tour[key].parameters.type == "double" && tours.tour[key].round%2 == 1 ? "Sudden Death" : "Final")+" Match of the "+tours.tour[key].tourtype+" Tournament in <a href='po:join/Channel'>#"+html_escape(sys.channel(tourschan))+"</a></th></tr></b><br/>"
+			var roundinfo = "<b>"+(tours.tour[key].parameters.type == "double" && tours.tour[key].round%2 == 1 ? "Sudden Death" : "Final")+" Match of the "+tours.tour[key].tourtype+" Tournament in <a href='po:join/"+html_escape(sys.channel(tourschan))+"'>#"+html_escape(sys.channel(tourschan))+"</a></th></tr></b><br/>"
 			var roundposting = "<div style='margin-left: 50px'>"+roundinfo+"<table><tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
 			for (var c in channels) {
 				sys.sendHtmlAll("<br/>"+htmlborder+roundposting+"</table></div>"+htmlborder+"<br/>", channels[c])
@@ -2697,17 +2699,14 @@ function tourprintbracket(key) {
 				tours.tour[key].time = parseInt(sys.time())+Config.Tours.tourdq
 			}
 			if (tours.tour[key].round == 1) {
-				var submessage = "<br/><b>Type <u>/join</u> to join late, good while subs last!</b>"
+				var submessage = "<div style='margin-left: 50px'><br/>Type <b>/join</b> to join late, good while subs last!</div>"
 				var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+tours.tour[key].tourtype+" Tournament</b><br/><table>";
 				for (var x=0; x<tours.tour[key].players.length; x+=2) {
 					var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+")</td><td align='right'>"+html_escape(toCorrectCase(tours.tour[key].players[x]))+"</td>"
 					var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
 					roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
 				}
-				sys.sendHtmlAll("<br/>"+htmlborder+roundposting+"</table>"+(subsExist ? submessage : "")+"</div>"+htmlborder+"<br/>", tourschan)
-				if (subsExist) {
-					
-				}
+				sys.sendHtmlAll("<br/>"+htmlborder+roundposting+"</table></div>"+(subsExist ? submessage : "")+htmlborder+"<br/>", tourschan)
 			}
 			else if (tours.tour[key].parameters.type == "double") {
 				var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+tours.tour[key].tourtype+" Tournament</b><br/><table><tr><th colspan=5><font color=blue>Winners Bracket</font></th></tr>"

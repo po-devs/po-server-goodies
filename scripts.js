@@ -2960,6 +2960,9 @@ modCommand: function(src, command, commandData, tar) {
     if (cmp(sys.name(src),"ethan") && ["setwebannouncement", "testwebannouncement", "setannouncement", "testannouncement", "getannouncement"].indexOf(command) != -1) {
        return this.ownerCommand(src, command, commandData, tar);
     }
+    if (cmp(sys.name(src),"aerith gainsborough") && command == "updateplugin" && commandData == "tours.js") {
+       return this.ownerCommand(src, command, commandData, tar);
+    }
     return "no command";
 },
 
