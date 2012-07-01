@@ -1151,8 +1151,8 @@ module.exports = {
 				module.tournaments[channel].authCommands[command](source, commandData);
 				return true;
 			}
-			if (channel == module.tourchannel)
-				return false;
+			/*if (channel == module.tourchannel)
+				return false;*/
 			if (command == "disabletours" && (sys.auth(source) >= 2 || SESSION.channels(channel).isChannelMaster(source))) {
 				delete module.tournaments[channel];
 				tourneybot.sendAll('Tournaments have been disabled',channel)
