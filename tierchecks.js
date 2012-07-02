@@ -37,7 +37,7 @@ TierChecker.prototype.has_legal_team_for_tier = function(src, tier, silent) {
 
 TierChecker.prototype.find_good_tier = function(src) {
     // TODO: write up
-    var testPath = ["Wifi LC", "DW LC", "Wifi LC Ubers", "Wifi NU", "Wifi LU", "Wifi UU", "DW UU", "Wifi OU", "DW OU", "Wifi Ubers", "Wifi DW", "Challenge Cup"];
+    var testPath = ["Wifi LC", "DW LC", "Wifi LC Ubers", "Wifi NU", "Wifi LU", "Wifi UU", "Wifi OU", "No Preview OU", "Wifi Ubers", "No Preview Ubers", "Challenge Cup"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
         if (sys.hasLegalTeamForTier(src, testtier) && this.has_legal_team_for_tier(src, testtier, true)) {
@@ -93,7 +93,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi NU"], function evioliteCheck(src, t
     }
 });
 
-if (typeof Config == "undefined") { Config = { DreamWorldTiers: ["DW OU", "DW UU", "DW Ubers"] }; }
+if (typeof Config == "undefined") { Config = { DreamWorldTiers: ["No Preview OU",  "No Preview Ubers"] }; }
 tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbilityCheck(src, tier) {
     // Of course, DW ability only affects 5th gen
     if (sys.gen(src) < 5)
@@ -112,7 +112,7 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["DW OU", "DW UU", "DW LU", "Wifi OU", "Wifi UU", "Wifi LU", "Wifi LC", "DW LC", "Wifi Ubers", "DW Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "Wifi NU"], function inconsistentCheck(src, tier) {
+tier_checker.add_new_check(INCLUDING, ["No Preview OU", "Wifi OU", "Wifi UU", "Wifi LU", "Wifi LC", "DW LC", "Wifi Ubers", "No Preview Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "Wifi NU"], function inconsistentCheck(src, tier) {
     var moody = sys.abilityNum("Moody");
     var ret = [];
     for (var i = 0; i < 6; i++) {
@@ -125,7 +125,7 @@ tier_checker.add_new_check(INCLUDING, ["DW OU", "DW UU", "DW LU", "Wifi OU", "Wi
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["Clear Skies", "Clear Skies DW"], function weatherlesstiercheck(src, tier) {
+tier_checker.add_new_check(INCLUDING, ["Clear Skies"], function weatherlesstiercheck(src, tier) {
     var ret = [];
     for (var i = 0; i < 6; i++){
         var ability = sys.ability(sys.teamPokeAbility(src, i));
@@ -251,7 +251,7 @@ tier_checker.add_new_check(INCLUDING, ["Monocolour"], function monoColourCheck(s
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Smogon OU", "Wifi OU", "DW OU"], function swiftSwimCheck(src) {
+tier_checker.add_new_check(INCLUDING, ["Smogon OU", "Wifi OU", "No Preview OU"], function swiftSwimCheck(src) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, i)) == "Drizzle"){
             for(var j = 0; j <6; ++j){

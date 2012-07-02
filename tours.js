@@ -33,7 +33,7 @@ var touradmincommands = ["*** Parameter Information ***",
 					"endtour [tour]: ends the tour of that tier",
 					"sub [newname]:[oldname]: subs newname for oldname",
 					"dq [player]: disqualifies a player",
-					"remove [tour]: removes a tournament from the queue",
+					"remove [tour/number]: removes a tournament from the queue. If a number is put in, it will remove the tour in the queue with the corresponding number. If a tier is put in, it will remove the tournament of that tier (starting from the back)",
 					"start: starts next tournament in the queue immediately",
 					"cancelbattle [name]: cancels that player's current battle",
 					"config: shows config settings",
@@ -391,7 +391,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.271",
+			version: "1.273a",
 			debug: false,
 			points: true
 		}
@@ -412,7 +412,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.271",
+			version: "1.273a",
 			debug: false,
 			points: true
 		}
@@ -533,8 +533,8 @@ function tourStep() {
 		}
 		else if (tours.keys.length === 0) {
 			// start a cycle from tourarray
-			var tourarray = ["Challenge Cup", "Wifi NU", "CC 1v1", "Random Battle", "Wifi OU", "DW 1v1", "Wifi UU", "Monotype", "Challenge Cup", "Clear Skies", "Wifi CC 1v1", "Wifi LC", "Wifi OU", "Wifi LU", "Wifi Ubers", "DW OU"]
-			var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "DW 1v1"];
+			var tourarray = ["Challenge Cup", "Wifi NU", "CC 1v1", "Random Battle", "Wifi OU", "Gen 5 1v1", "Wifi UU", "Monotype", "Challenge Cup", "Clear Skies", "Wifi CC 1v1", "Wifi LC", "Wifi OU", "Wifi LU", "Wifi Ubers", "DW OU"]
+			var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1"];
 			var tourtostart = tourarray[tours.key%tourarray.length]
 			var tourtype = doubleelimtiers.indexOf(tourtostart) != -1 ? "double" : "single"
 			tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": 5, "type": tourtype})
@@ -700,22 +700,22 @@ function tourCommand(src, command, commandData) {
 				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" cleared the tour rankings!",tourschan)
 				return true;
 			}
-			if (command == "clearmonthrankings") {
+			/*if (command == "clearmonthrankings") { // not needed
 				var now = new Date()
 				var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "decemeber"]
 				var monthlyfile = "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()+".txt"
 				sys.writeToFile(monthlyfile, "")
 				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" cleared this month's tour rankings!",tourschan)
 				return true;
-			}
+			}*/
 			if (command == "evalvars") {
 				dumpVars(src)
 				return true;
 			}
-			if (command == "sendall") {
+			/*if (command == "sendall") { // unnecessary
 				sys.sendAll(sys.name(src) + ": " + commandData, tourschan);
 				return true;
-			}
+			}*/
 			if (command == "fullleaderboard") {
 				try {
 					if (commandData == "") {
@@ -1049,21 +1049,24 @@ function tourCommand(src, command, commandData) {
 			}
 			if (command == "remove") {
 				var index = -1
-				for (var a=0;a<tours.queue.length;a++) {
+				if (parseInt(commandData) !== "") {
+					index = parseInt(commandData)-1
+				}
+				for (var a = tours.queue.length-1; a>=0; a -= 1) {
 					var tourtoremove = (tours.queue[a].split(":::",1))[0].toLowerCase()
 					if (commandData.toLowerCase() == tourtoremove) {
-						index = a
+						index = a;
 						break;
 					}
 				}
-				if (index == -1) {
+				if (index < 0 || index >= tours.queue.length) {
 					sys.sendMessage(src, Config.Tours.tourbot+"The tier '"+commandData+"' doesn't exist in the queue, so it can't be removed! Make sure the tier is typed out correctly.", tourschan)
 					return true;
 				}
 				else {
 					var removedtour = (tours.queue[index].split(":::",1))[0]
 					tours.queue.splice(index, 1)
-					sys.sendAll(Config.Tours.tourbot+"The "+removedtour+" tour was removed from the queue by "+sys.name(src)+".", tourschan)
+					sys.sendAll(Config.Tours.tourbot+"The "+removedtour+" tour (position "+(index+1)+")was removed from the queue by "+sys.name(src)+".", tourschan)
 					return true;
 				}
 			}
@@ -1157,10 +1160,10 @@ function tourCommand(src, command, commandData) {
 					return true;
 				}
 				else {
-					var oppindex = index%2 === 0 ? index+1 : index-1
+					var opponent = index%2 === 0 ? tours.tour[key].battlers[index+1] : tours.tour[key].battlers[index-1]
 					sys.sendAll(Config.Tours.tourbot+sys.name(src)+" voided the results of the battle between "+toCorrectCase(commandData)+" and "+toCorrectCase(tours.tour[key].battlers[oppindex])+" in the "+tours.tour[key].tourtype+" tournament, please rematch.", tourschan)
 					tours.tour[key].battlers.splice(index,1)
-					tours.tour[key].battlers.splice(oppindex,1)
+					tours.tour[key].battlers.splice(tours.tour[key].battlers.indexOf(opponent),1)
 				}
 				addTourActivity(src)
 				return true;
@@ -1678,7 +1681,7 @@ function tourCommand(src, command, commandData) {
 			sys.sendAll(Config.Tours.tourbot+sys.name(src)+" unjoined the "+tours.tour[key].tourtype+" tournament!", tourschan)
 			return true;
 		}
-		if (command == "queue") {
+		if (command == "queue" || command == "viewqueue") {
 			var queue = tours.queue
 			sys.sendMessage(src, "*** Upcoming Tours ***", tourschan)
 			var nextstart = time_handle(tours.globaltime - parseInt(sys.time()))
@@ -1695,11 +1698,11 @@ function tourCommand(src, command, commandData) {
 			for (var e in queue) {
 				var queuedata = queue[e].split(":::",5)
 				if (firsttour && nextstart != "Pending") {
-					sys.sendMessage(src,queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+queuedata[3] : "")+(queuedata[4] == "double" ? "; Double Elimination" : "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
+					sys.sendMessage(src,"1) "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+queuedata[3] : "")+(queuedata[4] == "double" ? "; Double Elimination" : "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
 					firsttour = false
 				}
 				else {
-					sys.sendMessage(src,queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+queuedata[3] : "")+(queuedata[4] == "double" ? "; Double Elimination" : ""), tourschan)
+					sys.sendMessage(src,(parseInt(e)+1)+") "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+queuedata[3] : "")+(queuedata[4] == "double" ? "; Double Elimination" : ""), tourschan)
 				}
 			}
 			return true;
@@ -1738,7 +1741,7 @@ function tourCommand(src, command, commandData) {
 				return true;
 			}
 			else {
-				var roundstosend = htmlborder+rounddata.join(htmlborder+"<br/>")+htmlborder
+				var roundstosend = htmlborder+rounddata.join(htmlborder)+htmlborder
 				sys.sendHtmlMessage(src, roundstosend, tourschan)
 			}
 			return true;
@@ -2867,7 +2870,7 @@ function awardTourPoints(player, size, tier, delim) {
     var tiers_b = [] // default
     var tiers_c = ["Monotype"]
     var tiers_d = ["Challenge Cup"]
-    var tiers_e = ["Wifi CC 1v1", "DW 1v1", "DW 1v1 Ubers"]
+    var tiers_e = ["Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers"]
     var tiers_f = ["CC 1v1"]
     var tiers_z = ["Metronome"]
 	if (tiers_a.indexOf(tier) != -1) {
@@ -2895,6 +2898,7 @@ function awardTourPoints(player, size, tier, delim) {
 		points = tierscore.b[scale]
 	}
 	// writing global scores
+	sys.appendToFile("tourscores.txt", "")
 	try {
 		var data = sys.getFileContent("tourscores.txt")
 	}
@@ -2950,6 +2954,7 @@ function awardTourPoints(player, size, tier, delim) {
 	}
 	sys.writeToFile(monthlyfile, newarray3.join("\n"))
 	// writing tier scores
+	sys.appendToFile("tourscores_"+tier.replace(/ /g,"_")+".txt", "")
 	try {
 		var data2 = sys.getFileContent("tourscores_"+tier.replace(/ /g,"_")+".txt")
 	}
@@ -3192,7 +3197,12 @@ module.exports = {
 		}
 	},
 	afterBattleEnded : function(source, dest, desc) {
-		tourBattleEnd(source, dest, desc)
+		try {
+			tourBattleEnd(source, dest, desc)
+		}
+		catch (err) {
+			sys.sendAll("Error in event 'tourBattleEnd': "+err, tourserrchan)
+		}
 	},
 	stepEvent : function() {
 		tourStep()

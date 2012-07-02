@@ -43,7 +43,7 @@ var Config = {
         ["Jorgen", "2nd Generation OverUsed - View Jorgen's <a href='http://pokemon-online.eu/forums/showthread.php?13349-GSC-OU-Gym-Jorgen'>Gym Thread!</a>"],
         ["Blitzamirin", "1st Generation OverUsed - View Blitzamirin's <a href='http://pokemon-online.eu/forums/showthread.php?13134-Stadium-OU-Gym-Blitzamirin'>Gym Thread!</a>"]
     ],
-    DreamWorldTiers: ["DW OU", "DW Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "DW 1v1 Ubers", "DW 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "DW OU Triples", "DW Uber Doubles", "DW OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
+    DreamWorldTiers: ["No Preview OU", "No Preview Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
     superAdmins: ["Lamperi", "Professor Oak", "zeroality", "[LD]Jirachier", "nixeagle"],
     canJoinStaffChannel: ["Lamperi-", "Peanutsdroid", "QuX"],
     disallowStaffChannel: []
@@ -1327,12 +1327,12 @@ beforeChannelJoin : function(src, channel) {
     // Can't ban from main
     if (channel === 0) return;
 
-    /* Old Tours redirect, disabled because of testing.
-    if (sys.auth(src) == 0 && channel == sys.channelId("Tours")) {
+    /* Tours redirect */
+    if (sys.auth(src) <= 0 && channel == sys.channelId("Tours")) {
         sys.stopEvent();
         sys.putInChannel(src, tourchannel);
         return;
-    }*/
+    }
     if (sys.auth(src) === 0 && channel == sys.channelId("shanaindigo")) {
         sys.stopEvent();
         sys.putInChannel(src, sachannel);
