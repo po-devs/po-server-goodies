@@ -38,8 +38,8 @@ var Config = {
         ["Xdevo", "5th Generation WiFi Little Cup - View Xdevo's <a href='http://pokemon-online.eu/forums/showthread.php?13536-Wifi-LC-Gym-Xdevo'>Gym Thread!</a>"],
         ["Crystal Moogle", "All Gen CC - View Crystal Moogle's <a href='http://pokemon-online.eu/forums/showthread.php?13809-All-Gen-CC-Gym-Crystal-Moogle'>Gym Thread!</a>"],
         ["Marik", "VGC 2012 - View Marik's <a href='http://pokemon-online.eu/forums/showthread.php?13532-VGC-2012-Gym-Marik'>Gym Thread!</a>"],
-        ["Tomahawk9", "4th Generation OverUsed - View Fakes' <a href='http://pokemon-online.eu/forums/showthread.php?14026-DPP-OU-Gym-Fakes'>Gym Thread!</a>"],
-        ["CALLOUS", "3rd Generation OverUsed - View Tanner's <a href='http://pokemon-online.eu/forums/showthread.php?14094-ADV-OU-Gym-Tanner'>Gym Thread!</a>"],
+        ["Fakes", "4th Generation OverUsed - View Fakes' <a href='http://pokemon-online.eu/forums/showthread.php?14026-DPP-OU-Gym-Fakes'>Gym Thread!</a>"],
+        ["Tanner", "3rd Generation OverUsed - View Tanner's <a href='http://pokemon-online.eu/forums/showthread.php?14094-ADV-OU-Gym-Tanner'>Gym Thread!</a>"],
         ["Jorgen", "2nd Generation OverUsed - View Jorgen's <a href='http://pokemon-online.eu/forums/showthread.php?13349-GSC-OU-Gym-Jorgen'>Gym Thread!</a>"],
         ["Blitzamirin", "1st Generation OverUsed - View Blitzamirin's <a href='http://pokemon-online.eu/forums/showthread.php?13134-Stadium-OU-Gym-Blitzamirin'>Gym Thread!</a>"]
     ],
