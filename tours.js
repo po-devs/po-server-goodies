@@ -3200,7 +3200,7 @@ module.exports = {
 		try {
 			tourBattleEnd(source, dest, desc)
 		}
-		catch {
+		catch (err) {
 			sys.sendAll("Error in event 'tourBattleEnd': "+err, tourserrchan)
 		}
 	},
