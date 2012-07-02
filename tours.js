@@ -391,7 +391,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.273",
+			version: "1.273a",
 			debug: false,
 			points: true
 		}
@@ -412,7 +412,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.273",
+			version: "1.273a",
 			debug: false,
 			points: true
 		}
@@ -1160,10 +1160,10 @@ function tourCommand(src, command, commandData) {
 					return true;
 				}
 				else {
-					var oppindex = index%2 === 0 ? index+1 : index-1
+					var opponent = index%2 === 0 ? tours.tour[key].battlers[index+1] : tours.tour[key].battlers[index-1]
 					sys.sendAll(Config.Tours.tourbot+sys.name(src)+" voided the results of the battle between "+toCorrectCase(commandData)+" and "+toCorrectCase(tours.tour[key].battlers[oppindex])+" in the "+tours.tour[key].tourtype+" tournament, please rematch.", tourschan)
 					tours.tour[key].battlers.splice(index,1)
-					tours.tour[key].battlers.splice(oppindex,1)
+					tours.tour[key].battlers.splice(tours.tour[key].battlers.indexOf(opponent),1)
 				}
 				addTourActivity(src)
 				return true;
@@ -3197,7 +3197,12 @@ module.exports = {
 		}
 	},
 	afterBattleEnded : function(source, dest, desc) {
-		tourBattleEnd(source, dest, desc)
+		try {
+			tourBattleEnd(source, dest, desc)
+		}
+		catch {
+			sys.sendAll("Error in event 'tourBattleEnd': "+err, tourserrchan)
+		}
 	},
 	stepEvent : function() {
 		tourStep()
