@@ -391,7 +391,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.272b",
+			version: "1.273",
 			debug: false,
 			points: true
 		}
@@ -412,7 +412,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.272b",
+			version: "1.273",
 			debug: false,
 			points: true
 		}
@@ -2898,6 +2898,7 @@ function awardTourPoints(player, size, tier, delim) {
 		points = tierscore.b[scale]
 	}
 	// writing global scores
+	sys.appendToFile("tourscores.txt", "")
 	try {
 		var data = sys.getFileContent("tourscores.txt")
 	}
@@ -2953,6 +2954,7 @@ function awardTourPoints(player, size, tier, delim) {
 	}
 	sys.writeToFile(monthlyfile, newarray3.join("\n"))
 	// writing tier scores
+	sys.appendToFile("tourscores_"+tier.replace(/ /g,"_")+".txt", "")
 	try {
 		var data2 = sys.getFileContent("tourscores_"+tier.replace(/ /g,"_")+".txt")
 	}
