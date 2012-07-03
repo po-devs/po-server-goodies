@@ -358,8 +358,8 @@ function sendAuthPlayers(message,key) {
 
 // Sends a html  message to all tour auth and players in the current tour
 function sendHtmlAuthPlayers(message,key) {
-	for (var x in sys.playersOfChannel(tourschan)) {
-		var arr = sys.playersOfChannel(tourschan)
+	var arr = sys.playersOfChannel(tourschan)
+	for (var x in arr) {
 		if (isTourAdmin(arr[x]) || tours.tour[key].players.indexOf(sys.name(arr[x]).toLowerCase()) != -1) {
 			// send highlighted name in bracket
 			var htmlname = html_escape(sys.name(arr[x]));
@@ -370,6 +370,24 @@ function sendHtmlAuthPlayers(message,key) {
 			var newmessage = message.replace(regex1,newregex1).replace(regex2,newregex2)
 			sys.sendHtmlMessage(arr[x], newmessage, tourschan)
 		}
+	}
+}
+
+// Send a flashing bracket
+function sendFlashingBracket(message,key) {
+	var arr = sys.playersOfChannel(tourschan)
+	for (var x in arr) {
+		var newmessage = message;
+		if (tours.tour[key].players.indexOf(sys.name(arr[x]).toLowerCase()) != -1) {
+			// send highlighted name in bracket
+			var htmlname = html_escape(sys.name(arr[x]));
+			var regex1 = "<td align='right'>"+htmlname+"</td>";
+			var newregex1 = "<td align='right'><font style='BACKGROUND-COLOR: yellow'>"+htmlname+"</font><ping/></td>";
+			var regex2 = "<td>"+htmlname+"</td>";
+			var newregex2 = "<td><font style='BACKGROUND-COLOR: yellow'>"+htmlname+"</font><ping/></td>";
+			newmessage = message.replace(regex1,newregex1).replace(regex2,newregex2)
+		}
+		sys.sendHtmlMessage(arr[x], newmessage, tourschan)
 	}
 }
 
@@ -400,7 +418,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.275",
+			version: "1.277",
 			debug: false,
 			points: true
 		}
@@ -421,7 +439,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.275",
+			version: "1.277",
 			debug: false,
 			points: true
 		}
@@ -2691,7 +2709,12 @@ function tourprintbracket(key) {
 			var roundinfo = "<b>"+(tours.tour[key].parameters.type == "double" && tours.tour[key].round%2 == 1 ? "Sudden Death" : "Final")+" Match of the "+tours.tour[key].tourtype+" Tournament in <a href='po:join/"+html_escape(sys.channel(tourschan))+"'>#"+html_escape(sys.channel(tourschan))+"</a></th></tr></b><br/>"
 			var roundposting = "<div style='margin-left: 50px'>"+roundinfo+"<table><tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
 			for (var c in channels) {
-				sys.sendHtmlAll("<br/>"+htmlborder+roundposting+"</table></div>"+htmlborder+"<br/>", channels[c])
+				if (channels[c] === tourschan) {
+					sendFlashingBracket("<br/>"+htmlborder+roundposting+"</table></div>"+htmlborder+"<br/>", key)
+				}
+				else {
+					sys.sendHarmlAll("<br/>"+htmlborder+roundposting+"</table></div>"+htmlborder+"<br/>", channels[c])
+				}
 			}
 			/* Here in case of the hilarious ~Bye~ vs ~Bye~ siutation */
 			tours.tour[key].time = parseInt(sys.time())+Config.Tours.tourdq
@@ -2722,7 +2745,7 @@ function tourprintbracket(key) {
 					var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
 					roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
 				}
-				sys.sendHtmlAll("<br/>"+htmlborder+roundposting+"</table></div>"+(subsExist ? submessage : "")+htmlborder+"<br/>", tourschan)
+				sendFlashingBracket("<br/>"+htmlborder+roundposting+"</table></div>"+(subsExist ? submessage : "")+htmlborder+"<br/>",key)
 			}
 			else if (tours.tour[key].parameters.type == "double") {
 				var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+tours.tour[key].tourtype+" Tournament</b><br/><table><tr><th colspan=5><font color=blue>Winners Bracket</font></th></tr>"
