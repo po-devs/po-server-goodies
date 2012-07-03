@@ -364,9 +364,9 @@ function sendHtmlAuthPlayers(message,key) {
 			// send highlighted name in bracket
 			var htmlname = html_escape(sys.name(arr[x]));
 			var regex1 = "<td align='right'>"+htmlname+"</td>";
-			var newregex1 = "<td align='right'><font style='BACKGROUND-COLOR: yellow'>"+htmlname+"</font><ping/></td>";
+			var newregex1 = "<td align='right'><font style='BACKGROUND-COLOR: #FFAAFF'>"+htmlname+"</font><ping/></td>";
 			var regex2 = "<td>"+htmlname+"</td>";
-			var newregex2 = "<td><font style='BACKGROUND-COLOR: yellow'>"+htmlname+"</font><ping/></td>";
+			var newregex2 = "<td><font style='BACKGROUND-COLOR: #FFAAFF'>"+htmlname+"</font><ping/></td>";
 			var newmessage = message.replace(regex1,newregex1).replace(regex2,newregex2)
 			sys.sendHtmlMessage(arr[x], newmessage, tourschan)
 		}
@@ -382,9 +382,9 @@ function sendFlashingBracket(message,key) {
 			// send highlighted name in bracket
 			var htmlname = html_escape(sys.name(arr[x]));
 			var regex1 = "<td align='right'>"+htmlname+"</td>";
-			var newregex1 = "<td align='right'><font style='BACKGROUND-COLOR: yellow'>"+htmlname+"</font><ping/></td>";
+			var newregex1 = "<td align='right'><font style='BACKGROUND-COLOR: #FFAAFF'>"+htmlname+"</font><ping/></td>";
 			var regex2 = "<td>"+htmlname+"</td>";
-			var newregex2 = "<td><font style='BACKGROUND-COLOR: yellow'>"+htmlname+"</font><ping/></td>";
+			var newregex2 = "<td><font style='BACKGROUND-COLOR: #FFAAFF'>"+htmlname+"</font><ping/></td>";
 			newmessage = message.replace(regex1,newregex1).replace(regex2,newregex2)
 		}
 		sys.sendHtmlMessage(arr[x], newmessage, tourschan)
@@ -418,7 +418,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.280_Dead_Moogles",
+			version: "1.280b",
 			debug: false,
 			points: true
 		}
@@ -439,7 +439,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.280_Dead_Moogles",
+			version: "1.280b",
 			debug: false,
 			points: true
 		}
@@ -1640,15 +1640,19 @@ function tourCommand(src, command, commandData) {
 						}
 						else if (tours.tour[key].maxcpt == 17) {
 							tours.tour[key].time += Math.floor(Config.Tours.toursignup/3)
+							sys.sendAll(Config.Tours.tourbot+"Over 16 players have joined the "+tours.tour[key].tourtype+" tournament in #"+sys.channel(tourschan)+"! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0)
 						}
 						else if (tours.tour[key].maxcpt == 33) {
 							tours.tour[key].time += Math.floor(Config.Tours.toursignup/2)
+							sys.sendAll(Config.Tours.tourbot+"Over 32 players have joined the "+tours.tour[key].tourtype+" tournament in #"+sys.channel(tourschan)+"! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0)
 						}
 						else if (tours.tour[key].maxcpt == 65) {
 							tours.tour[key].time += Math.floor(Config.Tours.toursignup/1.5)
+							sys.sendAll(Config.Tours.tourbot+"Over 64 players have joined the "+tours.tour[key].tourtype+" tournament in #"+sys.channel(tourschan)+"! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0)
 						}
 						else if (tours.tour[key].maxcpt == 129) {
 							tours.tour[key].time += Math.floor(Config.Tours.toursignup)
+							sys.sendAll(Config.Tours.tourbot+"Over 128 players have joined the "+tours.tour[key].tourtype+" tournament in #"+sys.channel(tourschan)+"! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0)
 						}
 					}
 				}
