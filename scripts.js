@@ -3691,6 +3691,14 @@ ownerCommand: function(src, command, commandData, tar) {
         });
         return;
     }
+    if (command == "updatetierchecks"){
+        var module = updateModule('tierchecks.js');
+        module.source = 'tierchecks.js';
+        delete require.cache['tierchecks.js'];
+        tier_checker = require('tierchecks.js');
+        normalbot.sendAll('Updated tier checks!', staffchannel);
+        return;
+    }
     if (command == "updatescripts") {
         normalbot.sendChanMessage(src, "Fetching scripts...");
         var updateURL = Config.base_url + "scripts.js";
