@@ -418,7 +418,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.280",
+			version: "1.280_Dead_Moogles",
 			debug: false,
 			points: true
 		}
@@ -439,7 +439,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.280",
+			version: "1.280_Dead_Moogles",
 			debug: false,
 			points: true
 		}
@@ -1568,7 +1568,7 @@ function tourCommand(src, command, commandData) {
 		// Normal User Commands
 		if (command == "join") {
 			if (!sys.dbRegistered(sys.name(src))) {
-				sys.sendMessage(src, Config.Tours.tourbot+"You need to register to play in #Tours! Click on the 'Register' button below and follow the instructions!", tourschan);
+				sys.sendMessage(src, Config.Tours.tourbot+"You need to register to play in #"+sys.channel(tourschan)+"! Click on the 'Register' button below and follow the instructions!", tourschan);
 				return true;
 			}
 			if (isTourMuted(src)) {
@@ -2061,10 +2061,10 @@ function sendReminder(key) {
 			}
 			else if (sys.id(player) !== undefined) {
 				if (sys.isInChannel(sys.id(player), tourschan)) {
-					sys.sendHtmlMessage(sys.id(player), "<ping/><font color=red><timestamp/> "+Config.Tours.tourbot+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(tours.tour[key].tourtype)+"</b> tournament, otherwise you may be disqualified for inactivity! You should talk to your opponent in #Tours to avoid disqualification.</font>", tourschan)
+					sys.sendHtmlMessage(sys.id(player), "<ping/><font color=red><timestamp/> "+Config.Tours.tourbot+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(tours.tour[key].tourtype)+"</b> tournament, otherwise you may be disqualified for inactivity! You should talk to your opponent in #"+sys.channel(tourschan)+" to avoid disqualification.</font>", tourschan)
 				}
 				else {
-					sys.sendHtmlMessage(sys.id(player), "<ping/><font color=red><timestamp/> "+Config.Tours.tourbot+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(tours.tour[key].tourtype)+"</b> tournament, otherwise you may be disqualified for inactivity! You should talk to your opponent in #Tours to avoid disqualification.</font>")
+					sys.sendHtmlMessage(sys.id(player), "<ping/><font color=red><timestamp/> "+Config.Tours.tourbot+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(tours.tour[key].tourtype)+"</b> tournament, otherwise you may be disqualified for inactivity! You should talk to your opponent in #"+sys.channel(tourschan)+" to avoid disqualification.</font>")
 					sys.sendMessage(sys.id(player), Config.Tours.tourbot+"Please rejoin the #"+Config.Tours.channel+" channel to ensure you do not miss out on information you need!", tourschan)
 				}
 			}
@@ -3180,7 +3180,7 @@ function sendWelcomeMessage(src, chan) {
 		}
 	}
 	if (!sys.dbRegistered(sys.name(src))) {
-		sys.sendMessage(src, Config.Tours.tourbot+"You need to register before playing in #Tours! Click on the 'Register' button below and follow the instructions!", chan);
+		sys.sendMessage(src, Config.Tours.tourbot+"You need to register before playing in #"+sys.channel(chan)+"! Click on the 'Register' button below and follow the instructions!", chan);
 	}
 	sys.sendMessage(src,"*** Use /help to view the commands; and use /rules to view the tournament rules! ***",chan)
 	sys.sendMessage(src,border,chan)
