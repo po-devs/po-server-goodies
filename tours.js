@@ -366,7 +366,7 @@ function sendHtmlAuthPlayers(message,key) {
 			var regex1 = "<td align='right'>"+htmlname+"</td>";
 			var newregex1 = "<td align='right'><font style='BACKGROUND-COLOR: yellow'>"+htmlname+"</font><ping/></td>";
 			var regex2 = "<td>"+htmlname+"</td>";
-			var nexregex2 = "<td><font style='BACKGROUND-COLOR: yellow'>"+htmlname+"</font><ping/></td>";
+			var newregex2 = "<td><font style='BACKGROUND-COLOR: yellow'>"+htmlname+"</font><ping/></td>";
 			var newmessage = message.replace(regex1,newregex1).replace(regex2,newregex2)
 			sys.sendHtmlMessage(arr[x], newmessage, tourschan)
 		}
