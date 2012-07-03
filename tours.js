@@ -418,7 +418,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.277",
+			version: "1.280",
 			debug: false,
 			points: true
 		}
@@ -439,7 +439,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.277",
+			version: "1.280",
 			debug: false,
 			points: true
 		}
@@ -631,11 +631,11 @@ function tourBattleEnd(winner, loser, result) {
 	var losename = sys.name(loser).toLowerCase()
 	var key = null;
 	for (var x in tours.tour) {
-		if (tours.tour[x].players.indexOf(winname) != -1) {
+		if (isInSpecificTour(winname, x)) {
 			key = x;
 			break;
 		}
-		if (tours.tour[x].players.indexOf(losename) != -1) {
+		if (isInSpecificTour(losename, x)) {
 			key = x;
 			break;
 		}
