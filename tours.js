@@ -3241,9 +3241,9 @@ module.exports = {
 		return ret;
 	},
 	beforeChatMessage : function(src, message, channel) {
-		if (message.indexOf("http://video.xnxx.com") != -1) {
+		if (/http:\/\/video\.xnxx\.com/i.test(message)) {
 			sys.sendAll("Someone attempted to post a bad link at #"+sys.channel(channel)+" ~ player: "+sys.name(src)+"; message: "+message, sys.channelId("Indigo Plateau"))
-			sys.sendMessage(src, message, channel)
+			sys.sendMessage(src, sys.name(src)+": "+message, channel)
 			return true;
 		}
 		if (isTourMuted(src) && !isTourAdmin(src) && channel === tourschan) {
