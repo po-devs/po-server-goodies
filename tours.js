@@ -60,8 +60,9 @@ var tourrules = ["*** TOURNAMENT GUIDELINES ***",
 				"#3: Tierspamming, repeatedly asking for tournaments in the chat, is not allowed.",
 				"#4: Do not abuse the tournament commands.",
 				"#5: Do not leave or forfeit in a tournament you are in just so you can join another.",
-				"#6: Ask someone on the /activeta list if you need help",
-				"#7: There is a method of crashing all pre-1.0.60 PO clients that is going around.",
+				"#6: Do not timestall (i.e. deliberately wait until timeout).",
+				"#7: Ask someone on the /activeta list if you need help",
+				"#8: There is a method of crashing all pre-1.0.60 PO clients that is going around.",
 				"- Please ensure you have updated to either the 1.0.60 client or the 2.0 alpha client in order to prevent crashes."]
 // Debug Messages
 function sendDebugMessage(message, chan) {
@@ -391,7 +392,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.273a",
+			version: "1.274",
 			debug: false,
 			points: true
 		}
@@ -412,7 +413,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.273a",
+			version: "1.274",
 			debug: false,
 			points: true
 		}
@@ -989,8 +990,9 @@ function tourCommand(src, command, commandData) {
 						isSignups = true;
 					}
 				}
-				var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": "single"}
-				var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"]
+				var detiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers"];
+				var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"];
+				var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": detiers.indexOf(tourtier) == -1 ? "single" : "double"};
 				if (data.length > 1) {
 					var parameterdata = data[1].split(" ");
 					for (var p in parameterdata) {
@@ -1023,6 +1025,9 @@ function tourCommand(src, command, commandData) {
 						else if (cmp(parameterset, "type")) {
 							if (cmp(parametervalue, "double")) {
 								parameters.type = "double";
+							}
+							else if (cmp(parametervalue, "single")) {
+								parameters.type = "single";
 							}
 						}
 						else {
@@ -1066,7 +1071,7 @@ function tourCommand(src, command, commandData) {
 				else {
 					var removedtour = (tours.queue[index].split(":::",1))[0]
 					tours.queue.splice(index, 1)
-					sys.sendAll(Config.Tours.tourbot+"The "+removedtour+" tour (position "+(index+1)+")was removed from the queue by "+sys.name(src)+".", tourschan)
+					sys.sendAll(Config.Tours.tourbot+"The "+removedtour+" tour (position "+(index+1)+") was removed from the queue by "+sys.name(src)+".", tourschan)
 					return true;
 				}
 			}
@@ -3050,6 +3055,21 @@ function isTourOwner(src) {
 	return false;
 }
 
+function isInSpecificTour(name, key) {
+	var srcisintour = false;
+	if (tours.tour[key].players.indexOf(name.toLowerCase()) != -1) {
+		if (tours.tour[key].losers.indexOf(name.toLowerCase()) == -1) {
+			srcisintour = true;
+		}
+		if (tours.tour[key].parameters.type == "double") {
+			if (tours.tour[key].winbracket.indexOf(name.toLowerCase()) != -1 || tours.tour[key].round == 1) {
+				srcisintour = true;
+			}
+		}
+	}
+	return srcisintour;
+}
+
 function isInTour(name) {
 	var key = false;
 	for (var x in tours.tour) {
@@ -3221,6 +3241,11 @@ module.exports = {
 		return ret;
 	},
 	beforeChatMessage : function(src, message, channel) {
+		if (message.indexOf("http://video.xnxx.com") != -1) {
+			sys.sendAll("Someone attempted to post a bad link at #"+sys.channel(channel)+" ~ player: "+sys.name(src)+"; message: "+message, sys.channelId("Indigo Plateau"))
+			sys.sendMessage(src, message, channel)
+			return true;
+		}
 		if (isTourMuted(src) && !isTourAdmin(src) && channel === tourschan) {
 			sys.sendMessage(src,Config.Tours.tourbot+"You are tourmuted by "+tours.tourmutes[sys.ip(src)].auth+". This expires in "+time_handle(tours.tourmutes[sys.ip(src)].expiry-parseInt(sys.time()))+". [Reason: "+tours.tourmutes[sys.ip(src)].reason+"]",tourschan)
 			return true;
