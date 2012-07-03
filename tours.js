@@ -2713,7 +2713,7 @@ function tourprintbracket(key) {
 					sendFlashingBracket("<br/>"+htmlborder+roundposting+"</table></div>"+htmlborder+"<br/>", key)
 				}
 				else {
-					sys.sendHarmlAll("<br/>"+htmlborder+roundposting+"</table></div>"+htmlborder+"<br/>", channels[c])
+					sys.sendHtmlAll("<br/>"+htmlborder+roundposting+"</table></div>"+htmlborder+"<br/>", channels[c])
 				}
 			}
 			/* Here in case of the hilarious ~Bye~ vs ~Bye~ siutation */
