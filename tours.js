@@ -56,6 +56,7 @@ var tourrules = ["*** TOURNAMENT GUIDELINES ***",
 				"#1: Team revealing or scouting in non CC tiers will result in disqualfication.",
 				"- Scouting is watching the battle of someone else in the tournament to gain information.",
 				"- Team revealing is revealing any information about other entrants' teams.",
+				"- Players are always permitted to watch the final match of any tournament.",
 				"#2: Have a team and be ready when you join, otherwise you can be disqualified",
 				"#3: Tierspamming, repeatedly asking for tournaments in the chat, is not allowed.",
 				"#4: Do not abuse the tournament commands.",
@@ -360,7 +361,14 @@ function sendHtmlAuthPlayers(message,key) {
 	for (var x in sys.playersOfChannel(tourschan)) {
 		var arr = sys.playersOfChannel(tourschan)
 		if (isTourAdmin(arr[x]) || tours.tour[key].players.indexOf(sys.name(arr[x]).toLowerCase()) != -1) {
-			sys.sendHtmlMessage(arr[x], message, tourschan)
+			// send highlighted name in bracket
+			var htmlname = html_escape(sys.name(arr[x]));
+			var regex1 = "<td align='right'>"+htmlname+"</td>";
+			var newregex1 = "<td align='right'><font style='BACKGROUND-COLOR: yellow'>"+htmlname+"</font><ping/></td>";
+			var regex2 = "<td>"+htmlname+"</td>";
+			var nexregex2 = "<td><font style='BACKGROUND-COLOR: yellow'>"+htmlname+"</font><ping/></td>";
+			var newmessage = message.replace(regex1,newregex1).replace(regex2,newregex2)
+			sys.sendHtmlMessage(arr[x], newmessage, tourschan)
 		}
 	}
 }
@@ -392,7 +400,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.274",
+			version: "1.275",
 			debug: false,
 			points: true
 		}
@@ -413,7 +421,7 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.274",
+			version: "1.275",
 			debug: false,
 			points: true
 		}
@@ -3241,11 +3249,6 @@ module.exports = {
 		return ret;
 	},
 	beforeChatMessage : function(src, message, channel) {
-		if (/http:\/\/video\.xnxx\.com/i.test(message)) {
-			sys.sendAll("Someone attempted to post a bad link at #"+sys.channel(channel)+" ~ player: "+sys.name(src)+"; message: "+message, sys.channelId("Indigo Plateau"))
-			sys.sendMessage(src, sys.name(src)+": "+message, channel)
-			return true;
-		}
 		if (isTourMuted(src) && !isTourAdmin(src) && channel === tourschan) {
 			sys.sendMessage(src,Config.Tours.tourbot+"You are tourmuted by "+tours.tourmutes[sys.ip(src)].auth+". This expires in "+time_handle(tours.tourmutes[sys.ip(src)].expiry-parseInt(sys.time()))+". [Reason: "+tours.tourmutes[sys.ip(src)].reason+"]",tourschan)
 			return true;
