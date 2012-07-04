@@ -403,12 +403,6 @@ function sendAllTourAuth(message) {
 
 function initTours() {
 	// config object
-	var lastversion = "";
-	var majorversion = 0.00;
-	if (typeof Config.Tours.version !== undefined) {
-		var majorversion = parseFloat(Config.Tours.version)
-		var lastversion = Config.Tours.version
-	}
 	try {
 		Config.Tours = {
 			maxqueue: parseInt(sys.getVal("tourconfig.txt", "maxqueue")),
@@ -425,7 +419,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: parseInt(sys.getVal("tourconfig.txt", "minpercent")),
-			version: "1.281b1",
+			version: "1.281b2",
 			debug: false,
 			points: true
 		}
@@ -447,7 +441,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.281b1",
+			version: "1.281b2",
 			debug: false,
 			points: true
 		}
@@ -502,15 +496,7 @@ function initTours() {
 	catch (e) {
 		sys.sendAll("No tour admin data detected, leaving blank", tourschan)
 	}
-	if (parseFloat(Config.Tours.version) > majorversion) {
-		sys.sendAll("Tournaments system has been upgraded successfully to Version "+Config.Tours.version+" in this channel!", tourschan)
-	}
-	else if (parseFloat(Config.Tours.version) < majorversion) {
-		sys.sendAll("Tournaments system has been reverted to Version "+Config.Tours.version+" in this channel.", tourschan)
-	}
-	else {
-		sys.sendAll("Version "+Config.Tours.version+" of the tournaments system was loaded in this channel.", tourschan)
-	}
+	sys.sendAll("Version "+Config.Tours.version+" of the tournaments system was loaded successfully in this channel!", tourschan)
 }
 
 /* Tournament Step Event
