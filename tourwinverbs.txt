@@ -42,7 +42,6 @@ C4'd
 captured the flag from
 chainsawed
 charmed
-cheated
 chewed up and spit out
 choked
 clubbed
@@ -104,7 +103,6 @@ ejechted
 electrified
 electrocuted
 eliminated
-Elmo'd
 embarassed
 emptied a septic tank on
 endured
@@ -194,7 +192,6 @@ ninja'd
 nuked
 nullified
 obliterated
-Oh So'd
 OHKO'd
 opened a can o' whoop ass on
 outbid
@@ -246,7 +243,6 @@ scammed
 scared
 schooled
 scorched
-scouted
 screamed at
 scuffled with
 seduced
@@ -284,6 +280,7 @@ snuck past
 snuffed
 snuggled
 socked
+sold
 spammed SubSeed on
 speared
 splattered
