@@ -425,7 +425,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: parseInt(sys.getVal("tourconfig.txt", "minpercent")),
-			version: "1.281b",
+			version: "1.281b1",
 			debug: false,
 			points: true
 		}
@@ -447,7 +447,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.281b",
+			version: "1.281b1",
 			debug: false,
 			points: true
 		}
@@ -3260,6 +3260,7 @@ function dumpVars(src) {
 	sys.sendMessage(src, "*** Main ***", tourschan)
 	sys.sendMessage(src, "GlobalTime: "+tours.globaltime, tourschan)
 	sys.sendMessage(src, "CurrentTime: "+sys.time(), tourschan)
+	sys.sendMessage(src, "% players in Tours: "+Math.floor(calcPercentage())+"%", tourschan)
 	for (var x in tours.tour) {
 		sys.sendMessage(src, "*** Round "+tours.tour[x].round+"; "+tours.tour[x].tourtype+" Tour (key "+x+")***", tourschan)
 		sys.sendMessage(src, "Time: "+tours.tour[x].time, tourschan)
