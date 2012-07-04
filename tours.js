@@ -34,7 +34,6 @@ var touradmincommands = ["*** Parameter Information ***",
 					"sub [newname]:[oldname]: subs newname for oldname",
 					"dq [player]: disqualifies a player",
 					"remove [tour/number]: removes a tournament from the queue. If a number is put in, it will remove the tour in the queue with the corresponding number. If a tier is put in, it will remove the tournament of that tier (starting from the back)",
-					"start: starts next tournament in the queue immediately",
 					"cancelbattle [name]: cancels that player's current battle",
 					"config: shows config settings",
 					"configset [var]:[value]: changes config settings",
@@ -42,6 +41,7 @@ var touradmincommands = ["*** Parameter Information ***",
 					"touradmin [name]: makes someone a tournament admin",
 					"tourdeadmin [name]: fires someone from being tournament admin",
 					// "forcestart: ends signups immediately and starts the first round",
+					"start: starts next tournament in the queue immediately (use sparingly)",
 					"push [player]: pushes a player into a tournament in signups (DON'T USE UNLESS ASKED)",
 					"tahistory [days]: views the activity of tour admins (days is optional, if excluded it will get the last 7 days if possible)",
 					"updatewinmessages: updates win messages from the web",
@@ -425,7 +425,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: parseInt(sys.getVal("tourconfig.txt", "minpercent")),
-			version: "1.281a",
+			version: "1.281a1",
 			debug: false,
 			points: true
 		}
@@ -447,7 +447,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.281a",
+			version: "1.281a1",
 			debug: false,
 			points: true
 		}
@@ -1015,6 +1015,27 @@ function tourCommand(src, command, commandData) {
 				});
 				return true;
 			}
+			if (command == "start") {
+				for (var x in tours.tour) {
+					if (tours.tour[x].state == "signups") {
+						sys.sendMessage(src, Config.Tours.tourbot+"A tournament is already in signups!")
+						return true;
+					}
+				}
+				if (tours.queue.length != 0) {
+					var data = tours.queue[0].split(":::",5)
+					var tourtostart = data[0]
+					var parameters = {"mode": data[2], "gen": data[3], "type": data[4]}
+					tours.queue.splice(0,1)
+					tourstart(tourtostart, sys.name(src), tours.key, parameters)
+					sys.sendAll(Config.Tours.tourbot+sys.name(src)+" force started the "+tourtostart+" tournament!",tourschan)
+					return true;
+				}
+				else {
+					sys.sendMessage(src, Config.Tours.tourbot+"There are no tournaments to force start! Use /tour [tier] instead!", tourschan)
+					return true;
+				}
+			}
 		}
 		if (isTourAdmin(src)) {
 			if (command == "tour") {
@@ -1121,27 +1142,6 @@ function tourCommand(src, command, commandData) {
 					var removedtour = (tours.queue[index].split(":::",1))[0]
 					tours.queue.splice(index, 1)
 					sys.sendAll(Config.Tours.tourbot+"The "+removedtour+" tour (position "+(index+1)+") was removed from the queue by "+sys.name(src)+".", tourschan)
-					return true;
-				}
-			}
-			if (command == "start") {
-				for (var x in tours.tour) {
-					if (tours.tour[x].state == "signups") {
-						sys.sendMessage(src, Config.Tours.tourbot+"A tournament is already in signups!")
-						return true;
-					}
-				}
-				if (tours.queue.length != 0) {
-					var data = tours.queue[0].split(":::",5)
-					var tourtostart = data[0]
-					var parameters = {"mode": data[2], "gen": data[3], "type": data[4]}
-					tours.queue.splice(0,1)
-					tourstart(tourtostart, sys.name(src), tours.key, parameters)
-					sys.sendAll(Config.Tours.tourbot+sys.name(src)+" force started the "+tourtostart+" tournament!",tourschan)
-					return true;
-				}
-				else {
-					sys.sendMessage(src, Config.Tours.tourbot+"There are no tournaments to force start! Use /tour [tier] instead!", tourschan)
 					return true;
 				}
 			}
