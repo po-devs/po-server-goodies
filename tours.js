@@ -403,6 +403,12 @@ function sendAllTourAuth(message) {
 
 function initTours() {
 	// config object
+	var lastversion = "";
+	var majorversion = 0.00;
+	if (typeof Config.Tours.version !== undefined) {
+		var majorversion = parseFloat(Config.Tours.version)
+		var lastversion = Config.Tours.version
+	}
 	try {
 		Config.Tours = {
 			maxqueue: parseInt(sys.getVal("tourconfig.txt", "maxqueue")),
@@ -418,7 +424,8 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.280b",
+			minpercent: parseInt(sys.getVal("tourconfig.txt", "minpercent")),
+			version: "1.279b",
 			debug: false,
 			points: true
 		}
@@ -439,7 +446,8 @@ function initTours() {
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
-			version: "1.280b",
+			minpercent: 5,
+			version: "1.279b",
 			debug: false,
 			points: true
 		}
@@ -494,7 +502,15 @@ function initTours() {
 	catch (e) {
 		sys.sendAll("No tour admin data detected, leaving blank", tourschan)
 	}
-	sys.sendAll("Version "+Config.Tours.version+" of tournaments has been loaded successfully in this channel!", tourschan)
+	if (parseFloat(Config.Tours.version) > majorversion) {
+		sys.sendAll("Tournaments system has been upgraded successfully to Version "+Config.Tours.version+" in this channel!", tourschan)
+	}
+	else if (parseFloat(Config.Tours.version) < majorversion) {
+		sys.sendAll("Tournaments system has been reverted to Version "+Config.Tours.version+" in this channel.", tourschan)
+	}
+	else {
+		sys.sendAll("Version "+Config.Tours.version+" of the tournaments system was loaded in this channel.", tourschan)
+	}
 }
 
 /* Tournament Step Event
@@ -504,6 +520,7 @@ Used for things such as
 - disqualifying/reminding inactive players
 - removing subs */
 function tourStep() {
+	var canautostart = true;
 	if (parseInt(sys.time())%3600 === 0) {
 		var now = new Date()
 		var comment = now + " ~ " + tours.activetas.join(", ")
@@ -547,8 +564,14 @@ function tourStep() {
 				continue;
 			}
 		}
+		if (tours.tour[x].state == "signups" || tours.tour[x].state == "subround") {
+			canautostart = false;
+		}
 	}
-	if (tours.globaltime <= parseInt(sys.time()) && tours.globaltime != 0 && Config.Tours.maxrunning > tours.keys.length) {
+	if (calcPercentage() >= Config.Tours.minpercent) {
+		canautostart = false;
+	}
+	if (tours.globaltime !== 0 && tours.globaltime <= parseInt(sys.time()) && (Config.Tours.maxrunning > tours.keys.length || canautostart)) {
 		if (tours.queue.length > 0) {
 			var data = tours.queue[0].split(":::",5)
 			var tourtostart = data[0]
@@ -1335,6 +1358,7 @@ function tourCommand(src, command, commandData) {
 				sys.sendMessage(src,"Tour Break Time: "+time_handle(Config.Tours.tourbreak),tourschan)
 				sys.sendMessage(src,"Absolute Tour Break Time: "+time_handle(Config.Tours.abstourbreak),tourschan)
 				sys.sendMessage(src,"Tour Reminder Time: "+time_handle(Config.Tours.reminder),tourschan)
+				sys.sendMessage(src,"Auto start when percentage of players is less than: "+Config.Tours.minpercent+"%",tourschan)
 				sys.sendMessage(src,"Bot Name: "+Config.Tours.tourbot,tourschan)
 				sys.sendMessage(src,"Channel: "+Config.Tours.channel,tourschan)
 				sys.sendMessage(src,"Error Channel: "+Config.Tours.errchannel,tourschan)
@@ -1357,6 +1381,7 @@ function tourCommand(src, command, commandData) {
 					sys.sendMessage(src,"breaktime: "+time_handle(Config.Tours.tourbreak),tourschan)
 					sys.sendMessage(src,"absbreaktime: "+time_handle(Config.Tours.abstourbreak),tourschan)
 					sys.sendMessage(src,"remindertime: "+time_handle(Config.Tours.reminder),tourschan)
+					sys.sendMessage(src,"minpercent: "+Config.Tours.minpercent,tourschan)
 					sys.sendMessage(src,"botname: "+Config.Tours.tourbot,tourschan)
 					sys.sendMessage(src,"channel: "+Config.Tours.channel,tourschan)
 					sys.sendMessage(src,"scoring: "+Config.Tours.points,tourschan)
@@ -1503,6 +1528,25 @@ function tourCommand(src, command, commandData) {
 					Config.Tours.reminder = value
 					sys.saveVal("tourconfig.txt", "remindertime", value)
 					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the reminder time to "+time_handle(Config.Tours.reminder))
+					return true;
+				}
+				else if (option == 'minpercent') {
+					if (!isTourSuperAdmin(src)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Can't change this config setting, ask an admin for this.",tourschan)
+						return true;
+					}
+					if (isNaN(value)) {
+						sys.sendMessage(src,Config.Tours.tourbot+"When the percentage of players drops below this value, a new tournament will start if possible. Overides maximum number of simultaneous tours.",tourschan);
+						sys.sendMessage(src,Config.Tours.tourbot+"Current Value: "+Config.Tours.minpercent+"%",tourschan);
+						return true;
+					}
+					else if (value < 1 || value > 30) {
+						sys.sendMessage(src,Config.Tours.tourbot+"Value must be between 1 and 30.",tourschan)
+						return true;
+					}
+					Config.Tours.minpercent = value
+					sys.saveVal("tourconfig.txt", "minpercent", value)
+					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the auto start percentage to "+time_handle(Config.Tours.minpercent))
 					return true;
 				}
 				else if (option == 'botname' || option == 'bot name') {
@@ -3162,6 +3206,26 @@ function calcVariance() {
 		return 0.5;
 	}
 	else return variance;
+}
+
+function calcPercentage() { // calc percentage of players in tournaments playing
+	var playersInChan = parseInt((sys.playersOfChannel(tourschan)).length)
+	var playersInTours = 0;
+	var playerList = sys.playersOfChannel(tourschan)
+	for (var x in playerList) {
+		var playerName = sys.name(playerList[x]);
+		if (isInTour(playerName)) {
+			playersInTours += 1;
+		}
+	}
+	if (playersInChan === 0) {
+		return 100;
+	}
+	var variance = playersInTours/playersInChan*100
+	if (isNaN(variance)) {
+		return 100;
+	}
+	return variance;
 }
 
 function sendWelcomeMessage(src, chan) {
