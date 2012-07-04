@@ -425,7 +425,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: parseInt(sys.getVal("tourconfig.txt", "minpercent")),
-			version: "1.279b",
+			version: "1.281a",
 			debug: false,
 			points: true
 		}
@@ -447,7 +447,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.279b",
+			version: "1.281a",
 			debug: false,
 			points: true
 		}
@@ -1546,7 +1546,7 @@ function tourCommand(src, command, commandData) {
 					}
 					Config.Tours.minpercent = value
 					sys.saveVal("tourconfig.txt", "minpercent", value)
-					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the auto start percentage to "+time_handle(Config.Tours.minpercent))
+					sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the auto start percentage to "+Config.Tours.minpercent+"%")
 					return true;
 				}
 				else if (option == 'botname' || option == 'bot name') {
