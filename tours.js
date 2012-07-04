@@ -425,7 +425,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: parseInt(sys.getVal("tourconfig.txt", "minpercent")),
-			version: "1.281a1",
+			version: "1.281b",
 			debug: false,
 			points: true
 		}
@@ -447,7 +447,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.281a1",
+			version: "1.281b",
 			debug: false,
 			points: true
 		}
@@ -1770,7 +1770,7 @@ function tourCommand(src, command, commandData) {
 					break;
 				}
 			}
-			if (Config.Tours.maxrunning <= tours.keys.length) {
+			if (Config.Tours.maxrunning <= tours.keys.length && calcPercentage() >= Config.Tours.minpercent) {
 				nextstart = "Pending";
 			}
 			var firsttour = true;
