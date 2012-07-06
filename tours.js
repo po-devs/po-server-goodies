@@ -141,6 +141,7 @@ function getSubgen(name, getLongName) {
 		"GSC": "2-1",
 		"GSC Stadium": "2-2",
 		"Stadium 2": "2-2",
+		"Stadium2": "2-2",
 		"Ruby/Sapphire": "3-0",
 		"RS": "3-0",
 		"Colosseum": "3-1",
@@ -516,7 +517,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.310a1",
+			version: "1.310a2",
 			debug: false,
 			points: true
 		}
@@ -1854,11 +1855,11 @@ function tourCommand(src, command, commandData) {
 			for (var e in queue) {
 				var queuedata = queue[e].split(":::",5)
 				if (firsttour && nextstart != "Pending") {
-					sys.sendMessage(src,"1) "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+queuedata[3] : "")+(queuedata[4] == "double" ? "; Double Elimination" : "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
+					sys.sendMessage(src,"1) "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+getSubgen(queuedata[3]) : "")+(queuedata[4] == "double" ? "; Double Elimination" : "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
 					firsttour = false
 				}
 				else {
-					sys.sendMessage(src,(parseInt(e)+1)+") "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+queuedata[3] : "")+(queuedata[4] == "double" ? "; Double Elimination" : ""), tourschan)
+					sys.sendMessage(src,(parseInt(e)+1)+") "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+getSubgen(queuedata[3]) : "")+(queuedata[4] == "double" ? "; Double Elimination" : ""), tourschan)
 				}
 			}
 			return true;
