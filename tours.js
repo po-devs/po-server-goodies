@@ -153,14 +153,14 @@ function getSubgen(name, getLongName) {
 	}
 	if (getLongName) {
 		for (var x in subgens) {
-			if (cmp(name),subgens[x]) {
+			if (cmp(name,subgens[x])) {
 				return x;
 			}
 		}
 	}
 	else {
 		for (var y in subgens) {
-			if (cmp(name),y) {
+			if (cmp(name,y)) {
 				return subgens[y];
 			}
 		}
