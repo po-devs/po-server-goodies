@@ -96,10 +96,11 @@ function html_escape(text)
 }
 
 function cmp(x1, x2) {
+    //sys.sendAll("Comparing " + JSON.stringify(x1) + " --- " + JSON.stringify(x2), staffchannel);
 	if (x1 === undefined || x2 === undefined) {
 		return false;
 	}
-	else if (x1.toLowerCase() === x2.toLowerCase()) {
+    else if ((x1+'').toLowerCase() === (x2+'').toLowerCase()) {
 		return true;
 	}
 	else return false;

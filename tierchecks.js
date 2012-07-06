@@ -41,7 +41,7 @@ TierChecker.prototype.find_good_tier = function(src, team) {
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
         if (sys.hasLegalTeamForTier(src, team, testtier) && this.has_legal_team_for_tier(src, team, testtier, true)) {
-            sys.changeTier(src, testtier);
+            sys.changeTier(src, team, testtier);
             return;
         }
     }
