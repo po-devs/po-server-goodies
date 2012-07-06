@@ -1156,7 +1156,7 @@ function tourCommand(src, command, commandData) {
 					}
 				}
 				if (allgentiers.indexOf(tourtier) != -1 && parameters.gen === "default") {
-					parameters.gen = 5;
+					parameters.gen = "5-1";
 				}
 				if (tours.queue.length >= Config.Tours.maxqueue && !isTourSuperAdmin(src)) {
 					sys.sendMessage(src, Config.Tours.tourbot+"There are already "+Config.Tours.maxqueue+" or more tournaments in the queue, so you can't add another one!", tourschan)
