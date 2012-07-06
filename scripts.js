@@ -44,7 +44,7 @@ var Config = {
         ["Blitzamirin", "1st Generation OverUsed - View Blitzamirin's <a href='http://pokemon-online.eu/forums/showthread.php?13134-Stadium-OU-Gym-Blitzamirin'>Gym Thread!</a>"]
     ],
     DreamWorldTiers: ["No Preview OU", "No Preview Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
-    superAdmins: ["Lamperi", "Professor Oak", "zeroality", "[LD]Jirachier", "nixeagle"],
+    superAdmins: ["Professor Oak", "zeroality", "[LD]Jirachier"],
     canJoinStaffChannel: ["Lamperi-", "Peanutsdroid", "QuX"],
     disallowStaffChannel: []
 };
@@ -224,16 +224,16 @@ function POUser(id)
     this.battles = {};
 
 
-    /* android default team check */
-    var android = true;
-    var i;
-    for (i = 0; i < 6; ++i) {
-        if (sys.teamPoke(this.id, i) != POKEMON_CLEFFA) {
-            android = false;
-            break;
-        }
-    }
-    this.android = android;
+//    /* android default team check */
+//    var android = true;
+//    var i;
+//    for (i = 0; i < 6; ++i) {
+//        if (sys.teamPoke(this.id, i) != POKEMON_CLEFFA) {
+//            android = false;
+//            break;
+//        }
+//    }
+//    this.android = android;
 
     var name = sys.name(id);
     /* check if user is megauser */
@@ -1226,7 +1226,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         authStats[authority]["latest" + type] = [commandData, parseInt(sys.time(), 10)];
 },
 
-importable : function(id, compactible) {
+importable : function(id, team, compactible) {
 /*
 Tyranitar (M) @ Choice Scarf
 Lvl: 100
@@ -1246,24 +1246,24 @@ Jolly Nature (+Spd, -SAtk)
     var hpnum = sys.moveNum("Hidden Power");
     var ret = [];
     for (var i = 0; i < 6; ++i) {
-        var poke = sys.teamPoke(id, i);
+      var poke = sys.teamPoke(id, team, i);
         if (poke === undefined)
             continue;
 
-        var item = sys.teamPokeItem(id, i);
+        var item = sys.teamPokeItem(id, team, i);
         item = item !== undefined ? sys.item(item) : "(no item)";
-        ret.push(sys.pokemon(poke) + genders[sys.teamPokeGender(id, i)] + " @ " + item );
-        ret.push('Trait: ' + sys.ability(sys.teamPokeAbility(id, i)));
-        var level = sys.teamPokeLevel(id, i);
+        ret.push(sys.pokemon(poke) + genders[sys.teamPokeGender(id, team, i)] + " @ " + item );
+        ret.push('Trait: ' + sys.ability(sys.teamPokeAbility(id, team, i)));
+        var level = sys.teamPokeLevel(id, team, i);
         if (!compactible && level != 100) ret.push('Lvl: ' + level);
 
         var ivs = [];
         var evs = [];
-        var hpinfo = [sys.gen(id)];
+        var hpinfo = [sys.gen(id, team)];
         for (var j = 0; j < 6; ++j) {
-            var iv = sys.teamPokeDV(id, i, j);
+            var iv = sys.teamPokeDV(id, team, i, j);
             if (iv != 31) ivs.push(iv + " " + stat[j]);
-            var ev = sys.teamPokeEV(id, i, j);
+            var ev = sys.teamPokeEV(id, team, i, j);
             if (ev !== 0) evs.push(ev + " " + stat[j]);
             hpinfo.push(iv);
         }
@@ -1272,10 +1272,10 @@ Jolly Nature (+Spd, -SAtk)
         if (evs.length > 0)
             ret.push('EVs: ' + evs.join(" / "));
 
-        ret.push(sys.nature(sys.teamPokeNature(id, i)) + " Nature"); // + (+Spd, -Atk)
+        ret.push(sys.nature(sys.teamPokeNature(id, team, i)) + " Nature"); // + (+Spd, -Atk)
 
         for (j = 0; j < 4; ++j) {
-            var move = sys.teamPokeMove(id, i, j);
+            var move = sys.teamPokeMove(id, team, i, j);
             if (move !== undefined) {
                 ret.push('- ' + sys.move(move) + (move == hpnum ? ' [' + sys.type(sys.hiddenPowerType.apply(sys, hpinfo)) + ']':''));
             }
@@ -1626,17 +1626,17 @@ afterLogIn : function(src) {
 
     callplugins("afterLogIn", src);
 
-   if (SESSION.users(src).android) {
-        sys.changeTier(src, "Challenge Cup");
-        if (sys.existChannel("PO Android")) {
-            var androidChan = sys.channelId("PO Android");
-            sys.putInChannel(src, androidChan);
-            sys.kick(src, 0);
-            sys.sendMessage(src, "*********", androidChan);
-            sys.sendMessage(src, "Message: Hello " + sys.name(src) + "! You seem to be using Pokemon Online for Android. With it you are able to battle with random pokemon. If you want to battle with your own made team, please surf to http://pokemon-online.eu/download with your computer and download the desktop application to your desktop. With it you can export full teams to your Android device! If you using the version with ads from Android Market, download adfree version from http://code.google.com/p/pokemon-online-android/downloads/list", androidChan);
-            sys.sendMessage(src, "*********", androidChan);
-        }
-    }
+//   if (SESSION.users(src).android) {
+//        sys.changeTier(src, "Challenge Cup");
+//        if (sys.existChannel("PO Android")) {
+//            var androidChan = sys.channelId("PO Android");
+//            sys.putInChannel(src, androidChan);
+//            sys.kick(src, 0);
+//            sys.sendMessage(src, "*********", androidChan);
+//            sys.sendMessage(src, "Message: Hello " + sys.name(src) + "! You seem to be using Pokemon Online for Android. With it you are able to battle with random pokemon. If you want to battle with your own made team, please surf to http://pokemon-online.eu/download with your computer and download the desktop application to your desktop. With it you can export full teams to your Android device! If you using the version with ads from Android Market, download adfree version from http://code.google.com/p/pokemon-online-android/downloads/list", androidChan);
+//            sys.sendMessage(src, "*********", androidChan);
+//        }
+//    }
 
 
     if (SESSION.users(src).megauser)
@@ -1708,29 +1708,32 @@ afterChangeTeam : function(src)
     }
 
     POuser.sametier = getKey("forceSameTier", src) == "1";
+
     if (getKey("autoIdle", src) == "1") {
         sys.changeAway(src, true);
     }
-    try {
-    // TODO: move this into tierchecks.js
-    if (sys.gen(src) == 2) {
-    pokes:
-        for (var i = 0; i <= 6; i++)
-            for (var j = 0; j < bannedGSCSleep.length; ++j)
-                if (sys.hasTeamPokeMove(src, i, bannedGSCSleep[j]))
-                    for (var k = 0; k < bannedGSCTrap.length; ++k)
-                        if (sys.hasTeamPokeMove(src, i, bannedGSCTrap[k])) {
-                            checkbot.sendMessage(src, "SleepTrapping is banned in GSC. Pokemon " + sys.pokemon(sys.teamPoke(src,i)) + "  removed from your team.");
-                            sys.changePokeNum(src, i, 0);
-                            continue pokes;
-                        }
 
-    }
-    } catch (e) { sys.sendMessage(e, staffchannel); }
+    for (var team = 0; team < sys.teamCount(src); team++) {
+        try {
+            // TODO: move this into tierchecks.js
+            if (sys.gen(src, team) === 2) {
+                pokes:
+                for (var i = 0; i <= 6; i++)
+                    for (var j = 0; j < bannedGSCSleep.length; ++j)
+                        if (sys.hasTeamPokeMove(src, team, i, bannedGSCSleep[j]))
+                            for (var k = 0; k < bannedGSCTrap.length; ++k)
+                                if (sys.hasTeamPokeMove(src, team, i, bannedGSCTrap[k])) {
+                                    checkbot.sendMessage(src, "SleepTrapping is banned in GSC. Pokemon " + sys.pokemon(sys.teamPoke(src,team,i)) + "  removed from your team.");
+                                    sys.changePokeNum(src, team, i, 0);
+                                    continue pokes;
+                                }
+            }
+        } catch (e) { sys.sendMessage(e, staffchannel); }
 
-    if (!tier_checker.has_legal_team_for_tier(src, sys.tier(src))) {
-       tier_checker.find_good_tier(src);
-       normalbot.sendMessage(src, "You were placed into '" + sys.tier(src) + "' tier.");
+        if (!tier_checker.has_legal_team_for_tier(src, team, sys.tier(src, team))) {
+            tier_checker.find_good_tier(src, team);
+            normalbot.sendMessage(src, "You were placed into '" + sys.tier(src, team) + "' tier.");
+        }
     }
 
 }, /* end of afterChangeTeam */
@@ -1903,12 +1906,26 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "ranking") {
-        var tier = sys.totalPlayersByTier(commandData) > 0 ? commandData : sys.tier(src);
-        var rank = sys.ranking(sys.name(src), tier);
-        if (rank === undefined) {
-            rankingbot.sendChanMessage(src, "You are not ranked in " + tier + " yet!");
+        var announceTier = function(tier) {
+            var rank = sys.ranking(sys.name(src), tier);
+            if (rank === undefined) {
+                rankingbot.sendChanMessage(src, "You are not ranked in " + tier + " yet!");
+            } else {
+                rankingbot.sendChanMessage(src, "Your rank in " + tier + " is " + rank + "/" + sys.totalPlayersByTier(tier) + " [" + sys.ladderRating(src, tier) + " points / " + sys.ratedBattles(sys.name(src), tier) +" battles]!");
+            }
+        };
+        if (commandData !== undefined) {
+            if (sys.totalPlayersByTier(commandData) === 0)
+                rankingbot.sendChanMessage(src, commandData + " is not even a tier.");
+            else
+                announceTier(commandData);
         } else {
-            rankingbot.sendChanMessage(src, "Your rank in " + tier + " is " + rank + "/" + sys.totalPlayersByTier(tier) + " [" + sys.ladderRating(src, tier) + " points / " + sys.ratedBattles(sys.name(src), tier) +" battles]!");
+            [0,1,2,3,4,5].slice(0, sys.teamCount(src))
+                .map(function(i) { return sys.tier(src, i); })
+                .filter(function(tier) { return tier !== undefined; })
+                .sort()
+                .filter(function(tier, index, array) { return tier !== array[index-1]; })
+                .forEach(announceTier);
         }
         return;
     }
@@ -2386,7 +2403,7 @@ modCommand: function(src, command, commandData, tar) {
             querybot.sendChanMessage(src,"No such user online.");
             return;
         }
-        querybot.sendChanMessage(src,sys.name(tar)+" is in tier: "+sys.tier(tar));
+        querybot.sendChanMessage(src,sys.name(tar)+" is in tier: "+sys.tier(tar,0));
         return;
     }
     if (command == "perm") {
@@ -3380,7 +3397,7 @@ ownerCommand: function(src, command, commandData, tar) {
     }
     if (command == "showteam") {
         sendChanMessage(src, "");
-        var info = this.importable(tar);
+        var info = this.importable(tar, 0);
         for (var x=0; x < info.length; ++x) {
             sys.sendMessage(src, info[x], channel);
         }
@@ -4245,8 +4262,10 @@ beforeChatMessage: function(src, message, chan) {
             }
             if (command == "teaminfo") {
                 var id = sys.id(commandData);
+                var team = 0;
                 if (id) {
-                    var data = {type: 'TeamInfo', id: id, name: sys.name(id), gen: sys.gen(id), tier: sys.tier(id), importable: this.importable(id).join("\n"), registered: sys.dbRegistered(sys.name(id)), ip: sys.ip(id)};
+                    var data = {type: 'TeamInfo', id: id, name: sys.name(id), gen: sys.gen(id,team), tier: sys.tier(id,team), importable: this.importable(id,team).join("\n"),
+                        registered: sys.dbRegistered(sys.name(id)), ip: sys.ip(id)};
                     sendChanMessage(src, ":"+JSON.stringify(data));
                 }
             }
@@ -4367,13 +4386,13 @@ afterChatMessage : function(src, message, chan)
     channel = chan;
     lineCount+=1;
 
-    if (channel == sys.channelId("PO Android")) {
-        if (/f[uo]ck|\bass|\bcum|\bdick|\bsex|pussy|bitch|porn|\bfck|nigga|\bcock|\bgay|\bhoe\b|slut|whore|cunt|clitoris/i.test(message) && user.android) {
-            kickbot.sendAll(sys.name(src) + " got kicked for foul language.", channel);
-            sys.kick(src);
-            return;
-        }
-    }
+//    if (channel == sys.channelId("PO Android")) {
+//        if (/f[uo]ck|\bass|\bcum|\bdick|\bsex|pussy|bitch|porn|\bfck|nigga|\bcock|\bgay|\bhoe\b|slut|whore|cunt|clitoris/i.test(message) && user.android) {
+//            kickbot.sendAll(sys.name(src) + " got kicked for foul language.", channel);
+//            sys.kick(src);
+//            return;
+//        }
+//    }
 
     // hardcoded
     var ignoreChans = [staffchannel, sachannel, sys.channelId("trivreview")];
@@ -4526,28 +4545,28 @@ isMCaps : function(message) {
     return false;
 },
 
-beforeChangeTier : function(src, oldtier, newtier) {
-    if (!tier_checker.has_legal_team_for_tier(src, newtier)) {
+beforeChangeTier : function(src, team, oldtier, newtier) {
+    if (!tier_checker.has_legal_team_for_tier(src, team, newtier)) {
        sys.stopEvent();
        normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
-       tier_checker.find_good_tier(src);
+       tier_checker.find_good_tier(src, team);
     }
 },
 
-beforeChallengeIssued : function (src, dest, clauses, rated, mode) {
+beforeChallengeIssued : function (src, dest, clauses, rated, mode, team, destTier) {
     if (battlesStopped) {
         battlebot.sendMessage(src, "Battles are now stopped as the server will restart soon.");
         sys.stopEvent();
         return;
     }
 
-    if (SESSION.users(dest).sametier === true && (sys.tier(dest) != sys.tier(src))) {
+    if (SESSION.users(dest).sametier === true && (destTier != sys.tier(src,team))) {
         battlebot.sendMessage(src, "That guy only wants to fight his/her own tier.");
         sys.stopEvent();
         return;
     }
 
-    var isChallengeCup = sys.getClauses(sys.tier(src))%32 >= 16 || sys.getClauses(sys.tier(dest))%32 >= 16;
+    var isChallengeCup = sys.getClauses(sys.tier(src,team))%32 >= 16 || sys.getClauses(destTier)%32 >= 16;
     var hasChallengeCupClause = (clauses % 32) >= 16;
     if (isChallengeCup && !hasChallengeCupClause) {
         checkbot.sendMessage(src, "Challenge Cup must be enabled in the challenge window for a CC battle");
@@ -4561,19 +4580,19 @@ beforeChallengeIssued : function (src, dest, clauses, rated, mode) {
         return;
     }*/
 
-    if (sys.tier(src).indexOf("Doubles") != -1 && sys.tier(dest).indexOf("Doubles") != -1 && mode != 1) {
+    if (sys.tier(src,team).indexOf("Doubles") != -1 && destTier.indexOf("Doubles") != -1 && mode != 1) {
         battlebot.sendMessage(src, "To fight in doubles, enable doubles in the challenge window!");
         sys.stopEvent();
         return;
     }
 
-    if (sys.tier(src).indexOf("Triples") != -1 && sys.tier(dest).indexOf("Triples") != -1 && mode != 2) {
+    if (sys.tier(src,team).indexOf("Triples") != -1 && destTier.indexOf("Triples") != -1 && mode != 2) {
         battlebot.sendMessage(src, "To fight in triples, enable triples in the challenge window!");
         sys.stopEvent();
         return;
     }
 
-    if (callplugins("beforeChallengeIssued", src, dest, clauses, rated, mode)) {
+    if (callplugins("beforeChallengeIssued", src, dest, clauses, rated, mode, team, destTier)) {
         sys.stopEvent();
     }
 
