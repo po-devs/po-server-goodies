@@ -792,6 +792,11 @@ function tourCommand(src, command, commandData) {
 				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" cleared the tour rankings!",tourschan)
 				return true;
 			}
+			if (command == "resettours") {
+				tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}};
+				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" reset the tour system!",tourschan)
+				return true;
+			}
 			/*if (command == "clearmonthrankings") { // not needed
 				var now = new Date()
 				var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "decemeber"]
