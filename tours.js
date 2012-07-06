@@ -419,7 +419,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: parseInt(sys.getVal("tourconfig.txt", "minpercent")),
-			version: "1.281b2",
+			version: "1.290a",
 			debug: false,
 			points: true
 		}
@@ -441,7 +441,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.281b2",
+			version: "1.290a",
 			debug: false,
 			points: true
 		}
@@ -622,13 +622,13 @@ function tourBattleStart(src, dest, clauses, rated, mode) {
 	var battlecheck = isValidTourBattle(src,dest,clauses,mode,key,false)
 	if (battlecheck != "Valid") {
 		sendAuthPlayers(Config.Tours.tourbot+"The match between "+name1+" and "+name2+" was not able to be validated. Please ensure you are using the correct clauses, mode and that you are battling the right player. [Reason: "+battlecheck+"]", key)
-		tours.tour[key].active.push(name1, name2) // this avoids dq later since they made an attempt to start
 		return false;
 	}
 	// only recognise a battle from round 1 onwards
 	if (tours.tour[key].players.indexOf(name1) > -1 && tours.tour[key].players.indexOf(name2) > -1 && tours.tour[key].round >= 1) {
 		tours.tour[key].battlers.push(name1, name2)
-		tours.tour[key].active.push(name1, name2) // this avoids dq later since they made an attempt to start
+		tours.tour[key].active[name1] = "Battle"
+		tours.tour[key].active[name2] = "Battle"// this avoids dq later since they made an attempt to start
 		return true;
 	}
 	return false;
@@ -717,6 +717,7 @@ function tourChallengeIssued(src, dest, clauses, rated, mode) {
 			}
 			return true;
 		}
+		markActive(src)
 		return false;
 	}
 	else return false;
@@ -1276,7 +1277,7 @@ function tourCommand(src, command, commandData) {
 					sys.sendMessage(src,Config.Tours.tourbot+"Can't tourmute someone for less than 1 second!",tourschan)
 					return true;
 				}
-				if (/f[uo]ck|\bass|\bcum|\bdick|\bsex|pussy|bitch|porn|\bfck|nigga|\bcock\b|\bgay|\bhoe\b|slut|whore|cunt|clit|pen[i1]s|vag|nigger/i.test(reason)) {
+				if (usingBadWords(reason)) {
 					sys.sendMessage(src,Config.Tours.tourbot+"'"+reason+"' is not a valid reason!",tourschan)
 					return true;
 				}
@@ -2032,18 +2033,22 @@ function removeinactive(key) {
 				continue;
 			}
 			if (sys.id(player1) !== undefined) {
-				if (SESSION.users(sys.id(player1)).lastline.time + Config.Tours.activity > parseInt(sys.time()) || activelist.indexOf(player1) != -1) {
-					sendDebugMessage(player1+" is active; continuing", tourschan)
-					dq1 = false
+				if (activelist.hasOwnProperty(player1)) {
+					if (activelist[player1] == "Battle" || (typeof activelist[player1] == "number" && activelist[player1]+Config.Tours.activity >= parseInt(sys.time()))) {
+						sendDebugMessage(player1+" is active; continuing", tourschan)
+						dq1 = false
+					}
 				}
 				else {
 					sendDebugMessage(player1+" is not active; disqualifying", tourschan)
 				}
 			}
 			if (sys.id(player2) !== undefined) {
-				if (SESSION.users(sys.id(player2)).lastline.time + Config.Tours.activity > parseInt(sys.time()) || activelist.indexOf(player2) != -1) {
-					sendDebugMessage(player2+" is active; continuing", tourschan)
-					dq2 = false;
+				if (activelist.hasOwnProperty(player2)) {
+					if (activelist[player2] == "Battle" || (typeof activelist[player2] == "number" && activelist[player2]+Config.Tours.activity >= parseInt(sys.time()))) {
+						sendDebugMessage(player2+" is active; continuing", tourschan)
+						dq2 = false
+					}
 				}
 				else {
 					sendDebugMessage(player2+" is not active; disqualifying", tourschan)
@@ -2439,7 +2444,7 @@ function advanceround(key) {
 		tours.tour[key].winners = []
 		tours.tour[key].losers = []
 		tours.tour[key].battlers = []
-		tours.tour[key].active = []
+		tours.tour[key].active = {}
 		tours.tour[key].players = newlist
 		if (doubleelim) {
 			tours.tour[key].winbracket = newwinbracket
@@ -2468,7 +2473,7 @@ function tourstart(tier, starter, key, parameters) {
 		tours.tour[key].cpt = 0;
 		tours.tour[key].seeds = [];
 		tours.tour[key].maxcpt = 0;
-		tours.tour[key].active = [];
+		tours.tour[key].active = {};
 		tours.tour[key].parameters = parameters
 		if (tours.tour[key].parameters.type == "double") {
 			tours.tour[key].winbracket = [];
@@ -3171,6 +3176,27 @@ function isTourMuted(src) {
 	}
 }
 
+// to prevent silly mute reasons
+function usingBadWords(message) {
+	if (/f[uo]ck|\bass\b|assh[o0]le|\barse|\bcum\b|\bdick|\bsex\b|pussy|bitch|porn|\bfck|nigga|\bcock\b|\bgay|\bhoe\b|slut|whore|cunt|clit|pen[i1]s|vag|nigger/i.test(message)) {
+		return true;
+	}
+	else return false;
+}
+
+function markActive(src) {
+	var name = sys.name(src).toLowerCase()
+	var key = isInTour(name)
+	if (key !== false) {
+		if (tours.tour[key].active.hasOwnProperty(name)) {
+			if (tours.tour[key].active[name] === "Battle") {
+				return;
+			}
+		}
+		tours.tour[key].active[name] = parseInt(sys.time());
+	}
+}
+
 // variance function that influences time between tournaments. The higher this is, the faster tours will start.
 function calcVariance() {
 	var playersInChan = parseInt((sys.playersOfChannel(tourschan)).length)
@@ -3241,6 +3267,7 @@ function sendWelcomeMessage(src, chan) {
 }
 
 function dumpVars(src) {
+	var activelist = [];
 	sys.sendMessage(src, border, tourschan)
 	sys.sendMessage(src, "*** Variable Dump ***", tourschan)
 	sys.sendMessage(src, "*** Main ***", tourschan)
@@ -3248,6 +3275,7 @@ function dumpVars(src) {
 	sys.sendMessage(src, "CurrentTime: "+sys.time(), tourschan)
 	sys.sendMessage(src, "% players in Tours: "+Math.floor(calcPercentage())+"%", tourschan)
 	for (var x in tours.tour) {
+		activelist = [];
 		sys.sendMessage(src, "*** Round "+tours.tour[x].round+"; "+tours.tour[x].tourtype+" Tour (key "+x+")***", tourschan)
 		sys.sendMessage(src, "Time: "+tours.tour[x].time, tourschan)
 		sys.sendMessage(src, "Players: "+tours.tour[x].players, tourschan)
@@ -3255,7 +3283,17 @@ function dumpVars(src) {
 		sys.sendMessage(src, "Winners: "+tours.tour[x].winners, tourschan)
 		sys.sendMessage(src, "Losers: "+tours.tour[x].losers, tourschan)
 		sys.sendMessage(src, "Total Players: "+tours.tour[x].cpt, tourschan)
-		sys.sendMessage(src, "Active: "+tours.tour[x].active, tourschan)
+		for (var y in tours.tour[x].active) {
+			if (tours.tour[x].active[y] === "Battle") {
+				activelist.push(y + "(Battle)")
+			}
+			else if (typeof tours.tour[x].active[y] == "number") {
+				if (tours.tour[x].active[y]+Config.Tours.activity >= parseInt(sys.time())) {
+					activelist.push(y + "(Post)")
+				}
+			}
+		}
+		sys.sendMessage(src, "Active: "+activelist.join("; "), tourschan)
 		sys.sendMessage(src, "Seeds: "+tours.tour[x].seeds, tourschan)
 	}
 	sys.sendMessage(src, border, tourschan)
@@ -3332,5 +3370,28 @@ module.exports = {
 			return true;
 		}
 		else return false;
-    }
+    },
+	afterChatMessage : function(src, message, channel) {
+		if (channel === tourschan && !usingBadWords(message)) {
+			markActive(src);
+		}
+    },
+	allowToSpectate : function(src, p1, p2) {
+		if (isTourAdmin(src)) {
+			var srctour = isInTour(sys.name(src))
+			var p1tour = isInTour(sys.name(p1))
+			var p2tour = isInTour(sys.name(p2))
+			if (p1tour === false || p2tour === false) {
+				return false;
+			}
+			if (p1tour !== p2tour) {
+				return false;
+			}
+			if (srctour === p1tour) {
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
 }

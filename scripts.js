@@ -4376,7 +4376,7 @@ afterChatMessage : function(src, message, chan)
     }
 
     // hardcoded
-    var ignoreChans = [staffchannel, sys.channelId("shanai"), sys.channelId("trivreview")];
+    var ignoreChans = [staffchannel, sachannel, sys.channelId("trivreview")];
     var ignoreUsers = ["nixeagle"];
     var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1 && !poChannel.isChannelOperator(src);
     var capsday = false;
@@ -4448,6 +4448,7 @@ afterChatMessage : function(src, message, chan)
         }
     }
     SESSION.channels(channel).beforeMessage(src, message);
+    callplugins("afterChatMessage", src, message, channel);
 }, /* end of afterChatMessage */
 
 
@@ -4578,6 +4579,14 @@ beforeChallengeIssued : function (src, dest, clauses, rated, mode) {
 
 },
 
+/* Tournament "Disallow Spects" bypass for tour admins */
+attemptToSpectateBattle : function(src, p1, p2) {
+    if (callplugins("allowToSpectate", src, p1, p2)) {
+        return "allow";
+    }
+    return "denied";
+}
+,
 
 beforeBattleMatchup : function(src,dest,clauses,rated)
 {
