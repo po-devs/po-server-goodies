@@ -1620,10 +1620,6 @@ afterLogIn : function(src) {
     }
     sys.sendMessage(src, "");
 
-    sys.sendHtmlMessage(src, "<b><big>PO with RBY and multiple teams is currently in testing. <a href='https://github.com/downloads/coyotte508/pokemon-online/Pokemon-Online-v2.0.01-Setup.exe'>Download</a> it and install it in a separate folder if you want to try it!<br>This is the <i>next</i> version of PO and unrelated to 1.0.60.</big></b>");
-
-    sys.sendMessage(src, "");
-
     callplugins("afterLogIn", src);
 
 //   if (SESSION.users(src).android) {
