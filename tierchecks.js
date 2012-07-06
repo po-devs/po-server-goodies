@@ -100,7 +100,7 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
         return;
     var ret = [];
     for (var i = 0; i < 6; i++) {
-        var x = sys.teamPoke(src, i);
+        var x = sys.teamPoke(src, team, i);
         if (x !== 0 && sys.hasDreamWorldAbility(src, team, i) && (!(x in dwpokemons) || (breedingpokemons.indexOf(x) != -1 && sys.compatibleAsDreamWorldEvent(src, team, i) !== true))) {
             if (!(x in dwpokemons)) {
                 ret.push("" + sys.pokemon(x) + " is not allowed with a Dream World ability in " + tier + " tier. Change it in the teambuilder.");
