@@ -495,7 +495,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: parseInt(sys.getVal("tourconfig.txt", "minpercent")),
-			version: "1.310a1",
+			version: "1.310b",
 			debug: false,
 			points: true
 		}
@@ -517,7 +517,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.310a2",
+			version: "1.310b",
 			debug: false,
 			points: true
 		}
@@ -647,9 +647,10 @@ function tourStep() {
 			// start a cycle from tourarray
 			var tourarray = ["Challenge Cup", "Wifi NU", "CC 1v1", "Random Battle", "Wifi OU", "Gen 5 1v1", "Wifi UU", "Monotype", "Challenge Cup", "Clear Skies", "Wifi CC 1v1", "Wifi LC", "Wifi OU", "Wifi LU", "Wifi Ubers", "DW OU"]
 			var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1"];
+			var allgentiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"];
 			var tourtostart = tourarray[tours.key%tourarray.length]
 			var tourtype = doubleelimtiers.indexOf(tourtostart) != -1 ? "double" : "single"
-			tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": 5, "type": tourtype})
+			tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? "5-1" : "default"), "type": tourtype})
 			tours.globaltime = parseInt(sys.time()) + 1200
 		}
 	}
