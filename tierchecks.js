@@ -96,7 +96,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi NU"], function evioliteCheck(src, t
 if (typeof Config == "undefined") { Config = { DreamWorldTiers: ["No Preview OU",  "No Preview Ubers"] }; }
 tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbilityCheck(src, team, tier) {
     // Of course, DW ability only affects 5th gen
-    if (sys.gen(src) < 5)
+    if (sys.gen(src, team) < 5)
         return;
     var ret = [];
     for (var i = 0; i < 6; i++) {
