@@ -1,4 +1,9 @@
-﻿if (typeof tourschan !== "string") {
+﻿/*
+Code for tours.js
+Coding done by Shadowfist
+*/
+
+if (typeof tourschan !== "string") {
 	tourschan = sys.channelId("Tournaments")
 }
 
@@ -97,6 +102,13 @@ function cmp(x1, x2) {
 	else return false;
 }
 
+function getFullTourName(key) {
+	if (tours.tour[key].parameters.gen != "default") {
+		return getSubgen(tours.tour[key].parameters.gen,true) + " " + tours.tour[key].tourtype
+	}
+	else return tours.tour[key].tourtype;
+}
+
 function modeOfTier(tier) {
 	if (tier.indexOf("Doubles") != -1 || ["JAA", "VGC 2009", "VGC 2010", "VGC 2011", "VGC 2012"].indexOf(tier) != -1) {
 		return "Doubles";
@@ -105,6 +117,55 @@ function modeOfTier(tier) {
 		return "Triples";
 	}
 	return "Singles";
+}
+
+/* Gets subgen. Name is data being converted, getLongName is a boolean value.
+If getLongName is true it will convert to the readable format, otherwise it will return the short format
+Returns false if not found */
+function getSubgen(name, getLongName) {
+	var subgens = {
+		"RB": "1-0",
+		"RBY": "1-1",
+		"RBY Stadium": "1-2",
+		"Stadium": "1-2",
+		"RBY Tradebacks": "1-3",
+		"GS": "2-0",
+		"GSC": "2-1",
+		"GSC Stadium": "2-2",
+		"Stadium 2": "2-2",
+		"RS": "3-0",
+		"Colosseum": "3-1",
+		"FRLG": "3-2",
+		"RSE": "3-3",
+		"Emerald": "3-3",
+		"XD": "3-4",
+		"DP": "4-0",
+		"DPPt": "4-1",
+		"Platinum": "4-1",
+		"HGSS": "4-2",
+		"BW": "5-0",
+		"BW2": "5-1",
+		"1": "1-3",
+		"2": "2-2",
+		"3": "3-4",
+		"4": "4-2",
+		"5": "5-1",
+	}
+	if (getLongName) {
+		for (var x in subgens) {
+			if (cmp(name),subgens[x]) {
+				return x;
+			}
+		}
+	}
+	else {
+		for (var y in subgens) {
+			if (cmp(name),y) {
+				return subgens[y];
+			}
+		}
+	}
+	return false;
 }
 
 // handles time and outputs in d/h/m/s format
@@ -419,7 +480,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: parseInt(sys.getVal("tourconfig.txt", "minpercent")),
-			version: "1.290a",
+			version: "1.300a",
 			debug: false,
 			points: true
 		}
@@ -441,7 +502,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.290a",
+			version: "1.300a",
 			debug: false,
 			points: true
 		}
@@ -524,7 +585,7 @@ function tourStep() {
 	}
 	for (var x in tours.tour) {
 		if (tours.tour[x].time-parseInt(sys.time()) <= 10) {
-			sendDebugMessage("Time Remaining in the "+tours.tour[x].tourtype+" tournament: "+time_handle(tours.tour[x].time-parseInt(sys.time()))+"; State: "+tours.tour[x].state,tourschan)
+			sendDebugMessage("Time Remaining in the "+getFullTourName(x)+" tournament: "+time_handle(tours.tour[x].time-parseInt(sys.time()))+"; State: "+tours.tour[x].state,tourschan)
 		}
 		if (tours.tour[x].state == "signups") {
 			if (tours.tour[x].time <= parseInt(sys.time())) {
@@ -618,12 +679,6 @@ function tourBattleStart(src, dest, clauses, rated, mode) {
 	}
 	if (key === null) return false;
 	if (rated) return false;
-	// checking after start
-	var battlecheck = isValidTourBattle(src,dest,clauses,mode,key,false)
-	if (battlecheck != "Valid") {
-		sendAuthPlayers(Config.Tours.tourbot+"The match between "+name1+" and "+name2+" was not able to be validated. Please ensure you are using the correct clauses, mode and that you are battling the right player. [Reason: "+battlecheck+"]", key)
-		return false;
-	}
 	// only recognise a battle from round 1 onwards
 	if (tours.tour[key].players.indexOf(name1) > -1 && tours.tour[key].players.indexOf(name2) > -1 && tours.tour[key].round >= 1) {
 		tours.tour[key].battlers.push(name1, name2)
@@ -668,7 +723,7 @@ function tourBattleEnd(winner, loser, result) {
 }
 
 // Challenge Issuing Functions
-function tourChallengeIssued(src, dest, clauses, rated, mode) {
+function tourChallengeIssued(src, dest, clauses, rated, mode, team, destTier) {
 	var key = null
 	var srcindex = null
 	var destindex = null
@@ -709,12 +764,9 @@ function tourChallengeIssued(src, dest, clauses, rated, mode) {
 		destindex = tours.tour[key].players.indexOf(sys.name(dest).toLowerCase())
 	}
 	if ((srcindex != -1 || destindex != -1) && srcindex != null && destindex != null) {
-		var tcomment = isValidTourBattle(src,dest,clauses,mode,key,true)
+		var tcomment = isValidTourBattle(src,dest,clauses,mode,team,destTier,key,true)
 		if (tcomment != "Valid") {
 			sys.sendMessage(src, Config.Tours.tourbot + tcomment);
-			if (tcomment == "Your opponent is in the wrong tier.") {
-				sys.sendMessage(dest, Config.Tours.tourbot + "You are in the wrong tier, you need to be in the "+tours.tour[key].tourtype+" tier for your battle.");
-			}
 			return true;
 		}
 		markActive(src)
@@ -981,7 +1033,7 @@ function tourCommand(src, command, commandData) {
 				if (tours.tour[key].players.length >= 256) {
 					tours.tour[key].time = parseInt(sys.time())
 				}
-				sys.sendAll(Config.Tours.tourbot+toCorrectCase(target)+" was added to the "+tours.tour[key].tourtype+" tournament by "+sys.name(src)+" (player #"+tours.tour[key].players.length+"), "+(tours.tour[key].time - parseInt(sys.time()))+" second"+(tours.tour[key].time - parseInt(sys.time()) == 1 ? "" : "s")+" remaining!", tourschan)
+				sys.sendAll(Config.Tours.tourbot+toCorrectCase(target)+" was added to the "+getFullTourName(key)+" tournament by "+sys.name(src)+" (player #"+tours.tour[key].players.length+"), "+(tours.tour[key].time - parseInt(sys.time()))+" second"+(tours.tour[key].time - parseInt(sys.time()) == 1 ? "" : "s")+" remaining!", tourschan)
 				return true;
 			}
 			// enabled for now!
@@ -1073,11 +1125,14 @@ function tourCommand(src, command, commandData) {
 							}
 						}
 						else if (cmp(parameterset, "gen") && allgentiers.indexOf(tourtier) != -1) { // only allgentours can change gen
-							var gen = parseInt(parametervalue)
-							if (gen < 1 || gen > 5) {
-								gen = 5
+							var newgen = getSubgen(parametervalue, false)
+							if (newgen !== false) {
+								parameters.gen = newgen
 							}
-							parameters.gen = gen
+							else {
+								parameters.gen = "5-1" // BW2
+								sys.sendMessage(src, Config.Tours.tourbot+"Warning! The subgen '"+parametervalue+"' does not exist! Used BW2 instead!", tourschan);
+							}
 						}
 						else if (cmp(parameterset, "type")) {
 							if (cmp(parametervalue, "double")) {
@@ -1145,7 +1200,7 @@ function tourCommand(src, command, commandData) {
 					sys.sendMessage(src,Config.Tours.tourbot+"The "+commandData+" tournament is not in progress!",tourschan)
 					return true;
 				}
-				sys.sendAll(Config.Tours.tourbot+"The "+tours.tour[x].tourtype+" tournament was cancelled by "+sys.name(src)+"!", tourschan)
+				sys.sendAll(Config.Tours.tourbot+"The "+getFullTourName(x)+" tournament was cancelled by "+sys.name(src)+"!", tourschan)
 				delete tours.tour[key];
 				tours.keys.splice(tours.keys.indexOf(key), 1);
 				return true;
@@ -1174,10 +1229,10 @@ function tourCommand(src, command, commandData) {
 					var index = tours.tour[key].players.indexOf(commandData.toLowerCase())
 					tours.tour[key].players.splice(index, 1)
 					tours.tour[key].cpt -= 1
-					sys.sendAll(Config.Tours.tourbot+toCorrectCase(commandData)+" was taken out of the tournament signups by "+sys.name(src)+" from the "+tours.tour[key].tourtype+" tournament!", tourschan);
+					sys.sendAll(Config.Tours.tourbot+toCorrectCase(commandData)+" was taken out of the tournament signups by "+sys.name(src)+" from the "+getFullTourName(key)+" tournament!", tourschan);
 				}
 				else {
-					sys.sendAll(Config.Tours.tourbot+sys.name(src)+" disqualified "+toCorrectCase(commandData)+" from the "+tours.tour[key].tourtype+" tournament!", tourschan)
+					sys.sendAll(Config.Tours.tourbot+sys.name(src)+" disqualified "+toCorrectCase(commandData)+" from the "+getFullTourName(key)+" tournament!", tourschan)
 					disqualify(commandData.toLowerCase(), key, false)
 				}
 				addTourActivity(src)
@@ -1202,7 +1257,7 @@ function tourCommand(src, command, commandData) {
 				}
 				else {
 					var opponent = index%2 === 0 ? tours.tour[key].battlers[index+1] : tours.tour[key].battlers[index-1]
-					sys.sendAll(Config.Tours.tourbot+sys.name(src)+" voided the results of the battle between "+toCorrectCase(commandData)+" and "+toCorrectCase(tours.tour[key].battlers[oppindex])+" in the "+tours.tour[key].tourtype+" tournament, please rematch.", tourschan)
+					sys.sendAll(Config.Tours.tourbot+sys.name(src)+" voided the results of the battle between "+toCorrectCase(commandData)+" and "+toCorrectCase(tours.tour[key].battlers[oppindex])+" in the "+getFullTourName(key)+" tournament, please rematch.", tourschan)
 					tours.tour[key].battlers.splice(index,1)
 					tours.tour[key].battlers.splice(tours.tour[key].battlers.indexOf(opponent),1)
 				}
@@ -1233,7 +1288,7 @@ function tourCommand(src, command, commandData) {
 					return true;
 				}
 				tours.tour[key].players.splice(tours.tour[key].players.indexOf(oldname),1,newname)
-				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" substituted "+toCorrectCase(newname)+" in place of "+toCorrectCase(oldname)+" in the "+tours.tour[key].tourtype+" tournament.", tourschan)
+				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" substituted "+toCorrectCase(newname)+" in place of "+toCorrectCase(oldname)+" in the "+getFullTourName(key)+" tournament.", tourschan)
 				addTourActivity(src)
 				return true;
 			}
@@ -1617,12 +1672,8 @@ function tourCommand(src, command, commandData) {
 				sys.sendMessage(src,Config.Tours.tourbot+"No tournament has signups available at the moment!",tourschan)
 				return true;
 			}
-			if (sys.tier(src) != tours.tour[key].tourtype) {
+			if (!sys.hasTier(src, tours.tour[key].tourtype)) {
 				sys.sendMessage(src,Config.Tours.tourbot+"You need to be in the "+tours.tour[key].tourtype+" tier to join!",tourschan)
-				return true;
-			}
-			if (sys.gen(src) != parseInt(tours.tour[key].parameters.gen) && tours.tour[key].parameters.gen != "default") {
-				sys.sendMessage(src,Config.Tours.tourbot+"You need to be in Gen "+tours.tour[key].parameters.gen+" to join. Change it in the teambuilder, then save it to keep your changes.",tourschan)
 				return true;
 			}
 			/* Is already in another tour */
@@ -1671,19 +1722,19 @@ function tourCommand(src, command, commandData) {
 						}
 						else if (tours.tour[key].maxcpt == 17) {
 							tours.tour[key].time += Math.floor(Config.Tours.toursignup/3)
-							sys.sendAll(Config.Tours.tourbot+"Over 16 players have joined the "+tours.tour[key].tourtype+" tournament in #"+sys.channel(tourschan)+"! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0)
+							sys.sendAll(Config.Tours.tourbot+"Over 16 players have joined the "+getFullTourName(key)+" tournament in #"+sys.channel(tourschan)+"! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0)
 						}
 						else if (tours.tour[key].maxcpt == 33) {
 							tours.tour[key].time += Math.floor(Config.Tours.toursignup/2)
-							sys.sendAll(Config.Tours.tourbot+"Over 32 players have joined the "+tours.tour[key].tourtype+" tournament in #"+sys.channel(tourschan)+"! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0)
+							sys.sendAll(Config.Tours.tourbot+"Over 32 players have joined the "+getFullTourName(key)+" tournament in #"+sys.channel(tourschan)+"! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0)
 						}
 						else if (tours.tour[key].maxcpt == 65) {
 							tours.tour[key].time += Math.floor(Config.Tours.toursignup/1.5)
-							sys.sendAll(Config.Tours.tourbot+"Over 64 players have joined the "+tours.tour[key].tourtype+" tournament in #"+sys.channel(tourschan)+"! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0)
+							sys.sendAll(Config.Tours.tourbot+"Over 64 players have joined the "+getFullTourName(key)+" tournament in #"+sys.channel(tourschan)+"! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0)
 						}
 						else if (tours.tour[key].maxcpt == 129) {
 							tours.tour[key].time += Math.floor(Config.Tours.toursignup)
-							sys.sendAll(Config.Tours.tourbot+"Over 128 players have joined the "+tours.tour[key].tourtype+" tournament in #"+sys.channel(tourschan)+"! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0)
+							sys.sendAll(Config.Tours.tourbot+"Over 128 players have joined the "+getFullTourName(key)+" tournament in #"+sys.channel(tourschan)+"! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0)
 						}
 					}
 				}
@@ -1691,7 +1742,7 @@ function tourCommand(src, command, commandData) {
 				if (tours.tour[key].players.length >= 256) {
 					tours.tour[key].time = parseInt(sys.time())
 				}
-                sys.sendHtmlAll("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font><b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(tours.tour[key].tourtype)+" tournament! "+(tours.tour[key].time - parseInt(sys.time()))+" second"+(tours.tour[key].time - parseInt(sys.time()) == 1 ? "" : "s")+" remaining!", tourschan)
+                sys.sendHtmlAll("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font><b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(getFullTourName(key))+" tournament! "+(tours.tour[key].time - parseInt(sys.time()))+" second"+(tours.tour[key].time - parseInt(sys.time()) == 1 ? "" : "s")+" remaining!", tourschan)
 				return true;
 			}
 			/* subbing */
@@ -1709,20 +1760,20 @@ function tourCommand(src, command, commandData) {
 			
 			for (var s=0;s<tours.tour[key].seeds.length;s++) {
 				if (tours.tour[key].seeds[s] == sys.name(src).toLowerCase()) {
-					sys.sendMessage(src,Config.Tours.tourbot+"You can't sub in to the "+tours.tour[key].tourtype+" tournament!",tourschan)
+					sys.sendMessage(src,Config.Tours.tourbot+"You can't sub in to the "+getFullTourName(key)+" tournament!",tourschan)
 					return true;
 				}
 			}
 			
 			if (oldname === null) {
-				sys.sendMessage(src,Config.Tours.tourbot+"There are no subs remaining in the "+tours.tour[key].tourtype+" tournament!",tourschan)
+				sys.sendMessage(src,Config.Tours.tourbot+"There are no subs remaining in the "+getFullTourName(key)+" tournament!",tourschan)
 				return true;
 			}
 			var index = tours.tour[key].players.indexOf(oldname)
 			var newname = sys.name(src).toLowerCase()
 			tours.tour[key].players.splice(index,1,newname)
 			tours.tour[key].cpt += 1
-			sys.sendAll(Config.Tours.tourbot+"Late entrant "+sys.name(src)+" will play against "+(index%2 == 0 ? toCorrectCase(tours.tour[key].players[index+1]) : toCorrectCase(tours.tour[key].players[index-1]))+" in the "+tours.tour[key].tourtype+" tournament. "+(tours.tour[key].players.length - tours.tour[key].cpt)+" sub"+(tours.tour[key].players.length - tours.tour[key].cpt == 1 ? "" : "s") + " remaining.", tourschan)
+			sys.sendAll(Config.Tours.tourbot+"Late entrant "+sys.name(src)+" will play against "+(index%2 == 0 ? toCorrectCase(tours.tour[key].players[index+1]) : toCorrectCase(tours.tour[key].players[index-1]))+" in the "+getFullTourName(key)+" tournament. "+(tours.tour[key].players.length - tours.tour[key].cpt)+" sub"+(tours.tour[key].players.length - tours.tour[key].cpt == 1 ? "" : "s") + " remaining.", tourschan)
 			return true;
 		}
 		if (command == "unjoin") {
@@ -1739,12 +1790,12 @@ function tourCommand(src, command, commandData) {
 			}
 			var index = tours.tour[key].players.indexOf(sys.name(src).toLowerCase())
 			if (index == -1) {
-				sys.sendMessage(src,Config.Tours.tourbot+"You aren't in the "+tours.tour[key].tourtype+" tournament!",tourschan)
+				sys.sendMessage(src,Config.Tours.tourbot+"You aren't in the "+getFullTourName(key)+" tournament!",tourschan)
 				return true;
 			}
 			tours.tour[key].players.splice(index, 1)
 			tours.tour[key].cpt -= 1
-			sys.sendAll(Config.Tours.tourbot+sys.name(src)+" unjoined the "+tours.tour[key].tourtype+" tournament!", tourschan)
+			sys.sendAll(Config.Tours.tourbot+sys.name(src)+" unjoined the "+getFullTourName(key)+" tournament!", tourschan)
 			return true;
 		}
 		if (command == "queue" || command == "viewqueue") {
@@ -2055,19 +2106,19 @@ function removeinactive(key) {
 				}
 			}
 			if (dq1 && dq2) {
-				sys.sendAll(Config.Tours.tourbot+toCorrectCase(player1)+" and "+toCorrectCase(player2)+" are both disqualified for inactivity in the "+tours.tour[key].tourtype+" tournament!", tourschan)
+				sys.sendAll(Config.Tours.tourbot+toCorrectCase(player1)+" and "+toCorrectCase(player2)+" are both disqualified for inactivity in the "+getFullTourName(key)+" tournament!", tourschan)
 				dqboth(player1, player2, key)
 			}
 			else if (dq2) {
-				sys.sendAll(Config.Tours.tourbot+toCorrectCase(player2)+" was disqualified from the "+tours.tour[key].tourtype+" tournament for inactivity!", tourschan)
+				sys.sendAll(Config.Tours.tourbot+toCorrectCase(player2)+" was disqualified from the "+getFullTourName(key)+" tournament for inactivity!", tourschan)
 				disqualify(player2,key,false)
 			}
 			else if (dq1) {
-				sys.sendAll(Config.Tours.tourbot+toCorrectCase(player1)+" was disqualified from the "+tours.tour[key].tourtype+" tournament for inactivity!", tourschan)
+				sys.sendAll(Config.Tours.tourbot+toCorrectCase(player1)+" was disqualified from the "+getFullTourName(key)+" tournament for inactivity!", tourschan)
 				disqualify(player1,key,false)
 			}
 			else if ((tours.tour[key].time-parseInt(sys.time()))%60 === 0){
-				sys.sendAll(Config.Tours.tourbot+toCorrectCase(player1)+" and "+toCorrectCase(player2)+" are both active, please battle in the "+tours.tour[key].tourtype+" tournament ASAP!", tourschan)
+				sys.sendAll(Config.Tours.tourbot+toCorrectCase(player1)+" and "+toCorrectCase(player2)+" are both active, please battle in the "+getFullTourName(key)+" tournament ASAP!", tourschan)
 			}
 			// if the round advances due to DQ, don't keep checking :x
 			if (tours.tour[key].round !== currentround) {
@@ -2100,10 +2151,10 @@ function sendReminder(key) {
 			}
 			else if (sys.id(player) !== undefined) {
 				if (sys.isInChannel(sys.id(player), tourschan)) {
-					sys.sendHtmlMessage(sys.id(player), "<ping/><font color=red><timestamp/> "+Config.Tours.tourbot+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(tours.tour[key].tourtype)+"</b> tournament, otherwise you may be disqualified for inactivity! You should talk to your opponent in #"+sys.channel(tourschan)+" to avoid disqualification.</font>", tourschan)
+					sys.sendHtmlMessage(sys.id(player), "<ping/><font color=red><timestamp/> "+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(getFullTourName(key))+"</b> tournament, otherwise you may be disqualified for inactivity! You should talk to your opponent in #"+sys.channel(tourschan)+" to avoid disqualification.</font>", tourschan)
 				}
 				else {
-					sys.sendHtmlMessage(sys.id(player), "<ping/><font color=red><timestamp/> "+Config.Tours.tourbot+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(tours.tour[key].tourtype)+"</b> tournament, otherwise you may be disqualified for inactivity! You should talk to your opponent in #"+sys.channel(tourschan)+" to avoid disqualification.</font>")
+					sys.sendHtmlMessage(sys.id(player), "<ping/><font color=red><timestamp/> "+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(getFullTourName(key))+"</b> tournament, otherwise you may be disqualified for inactivity! You should talk to your opponent in #"+sys.channel(tourschan)+" to avoid disqualification.</font>")
 					sys.sendMessage(sys.id(player), Config.Tours.tourbot+"Please rejoin the #"+Config.Tours.channel+" channel to ensure you do not miss out on information you need!", tourschan)
 				}
 			}
@@ -2141,7 +2192,7 @@ function disqualify(player, key, silent) {
 				tours.tour[key].winners.push(opponent)
 				tours.tour[key].losers.push(player)
 				if (!silent) {
-					sys.sendAll(Config.Tours.tourbot+toCorrectCase(opponent)+" advances to the next round of the "+tours.tour[key].tourtype+" by default!", tourschan)
+					sys.sendAll(Config.Tours.tourbot+toCorrectCase(opponent)+" advances to the next round of the "+getFullTourName(key)+" by default!", tourschan)
 				}
 			}
 			else {
@@ -2153,7 +2204,7 @@ function disqualify(player, key, silent) {
 			tours.tour[key].winners.splice(winnerindex,1,opponent)
 			tours.tour[key].losers.splice(tours.tour[key].losers.indexOf(opponent),1,player)
 			if (!silent) {
-				sys.sendAll(Config.Tours.tourbot+toCorrectCase(opponent)+" advances to the next round of the "+tours.tour[key].tourtype+" because "+toCorrectCase(player)+" was disqualified!", tourschan)
+				sys.sendAll(Config.Tours.tourbot+toCorrectCase(opponent)+" advances to the next round of the "+getFullTourName(key)+" because "+toCorrectCase(player)+" was disqualified!", tourschan)
 			}
 		}
 		var battlesleft = parseInt(tours.tour[key].players.length/2)-tours.tour[key].winners.length
@@ -2270,21 +2321,21 @@ function battleend(winner, loser, key) {
 		var battlesleft = parseInt(tours.tour[key].players.length/2)-tours.tour[key].winners.length
 		if (tours.tour[key].parameters.type == "double") {
 			if (tourwinmessages === undefined || tourwinmessages.length == 0) {
-				sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> won their match against <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+tours.tour[key].tourtype+" tournament! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
+				sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> won their match against <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+getFullTourName(key)+" tournament! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
 			}
 			else {
-				sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> "+html_escape(tourwinmessages[sys.rand(0, tourwinmessages.length)])+" <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+tours.tour[key].tourtype+" tournament! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
+				sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> "+html_escape(tourwinmessages[sys.rand(0, tourwinmessages.length)])+" <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+getFullTourName(key)+" tournament! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
 			}
 			if (tours.tour[key].losebracket.indexOf(losename) != -1) {
-				sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font> <b>"+html_escape(sys.name(loser))+"</b> has lost twice and is now out of the "+tours.tour[key].tourtype+" tournament!", key)
+				sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font> <b>"+html_escape(sys.name(loser))+"</b> has lost twice and is now out of the "+getFullTourName(key)+" tournament!", key)
 			}
 		}
 		else {
 			if (tourwinmessages === undefined || tourwinmessages.length == 0) {
-				sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> won their match against <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+tours.tour[key].tourtype+" tournament and advances to the next round! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
+				sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> won their match against <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+getFullTourName(key)+" tournament and advances to the next round! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
 			}
 			else {
-				sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> "+html_escape(tourwinmessages[sys.rand(0, tourwinmessages.length)])+" <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+tours.tour[key].tourtype+" tournament and advances to the next round! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
+				sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> "+html_escape(tourwinmessages[sys.rand(0, tourwinmessages.length)])+" <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+getFullTourName(key)+" tournament and advances to the next round! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
 			}
 		}
 		if (battlesleft <= 0) {
@@ -2420,7 +2471,7 @@ function advanceround(key) {
 				newlist = newwinbracket.concat(newlosebracket)
 			}
 			else {
-				sys.sendAll("Error in advancing round of tour '"+tours.tour[key].tourtype+"' id "+key+": Broken roundcheck in double elim...", tourserrchan)
+				sys.sendAll("Error in advancing round of tour '"+getFullTourName(key)+"' id "+key+": Broken roundcheck in double elim...", tourserrchan)
 			}
 		}
 		else {
@@ -2453,7 +2504,7 @@ function advanceround(key) {
 		tourprintbracket(key)
 	}
 	catch (err) {
-		sys.sendAll("Error in advancing round of tour '"+tours.tour[key].tourtype+"' id "+key+": "+err, tourserrchan)
+		sys.sendAll("Error in advancing round of tour '"+getFullTourName(key)+"' id "+key+": "+err, tourserrchan)
 	}
 }
 
@@ -2484,7 +2535,7 @@ function tourstart(tier, starter, key, parameters) {
 			sys.sendAll(border, channels[x])
 			sys.sendHtmlAll("<timestamp/> A <b><a href='http://wiki.pokemon-online.eu/view/"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> tournament has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x])
 			sys.sendAll("CLAUSES: "+getTourClauses(tier),channels[x])
-			sys.sendAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen "+parameters.gen : "")+(parameters.type == "double" ? "; Double Elimination" : ""), channels[x])
+			sys.sendAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : ""), channels[x])
 			if (channels[x] == tourschan) {
 				sys.sendHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, you have "+time_handle(Config.Tours.toursignup)+" to join!", channels[x])
 			}
@@ -2523,7 +2574,7 @@ function tourinitiate(key) {
 	try {
 		var size = tourmakebracket(key)
 		if (size < 3) {
-			sys.sendAll(Config.Tours.tourbot+"The "+tours.tour[key].tourtype+" tournament was cancelled by the server! You need at least 3 players! (A new tournament will start in "+time_handle(Config.Tours.tourbreak)+").", tourschan)
+			sys.sendAll(Config.Tours.tourbot+"The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least 3 players! (A new tournament will start in "+time_handle(Config.Tours.tourbreak)+").", tourschan)
 			delete tours.tour[key];
 			tours.keys.splice(tours.keys.indexOf(key), 1)
 			tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
@@ -2710,7 +2761,7 @@ function tourprintbracket(key) {
 				for (var x in channels) {
 					sys.sendAll("", channels[x])
 					sys.sendAll(border, channels[x])
-					sys.sendHtmlAll("<timestamp/> The winner of the "+tours.tour[key].tourtype+" tournament is: <b>"+html_escape(winner)+"</b>!", channels[x])
+					sys.sendHtmlAll("<timestamp/> The winner of the "+getFullTourName(key)+" tournament is: <b>"+html_escape(winner)+"</b>!", channels[x])
 					sys.sendAll("", channels[x])
 					sys.sendAll(Config.Tours.tourbot+"Please congratulate "+winner+" on their success!", channels[x])
 					sys.sendAll(border, channels[x])
@@ -2718,8 +2769,8 @@ function tourprintbracket(key) {
 				}
 				awardTourPoints(winner.toLowerCase(), tours.tour[key].cpt, tours.tour[key].tourtype, tours.tour[key].parameters.type == "double" ? true : false)
 			}
-			else sys.sendAll(Config.Tours.tourbot+"The "+tours.tour[key].tourtype+" ended by default!", tourschan)
-			tours.history.unshift(tours.tour[key].tourtype+": Won by "+winner+" with "+tours.tour[key].cpt+" players")
+			else sys.sendAll(Config.Tours.tourbot+"The "+getFullTourName(key)+" ended by default!", tourschan)
+			tours.history.unshift(getFullTourName(key)+": Won by "+winner+" with "+tours.tour[key].cpt+" players")
 			if (tours.history.length > 25) {
 				tours.history.pop()
 			}
@@ -2733,7 +2784,7 @@ function tourprintbracket(key) {
 		else if (tours.tour[key].players.length == 2) { // finals
 			/* Here in case it's ~Bye~ vs ~Bye~ */
 			if (tours.tour[key].players[0] == "~Bye~" && tours.tour[key].players[1] == "~Bye~") {
-				sys.sendAll(Config.Tours.tourbot+"The "+tours.tour[key].tourtype+" ended by default!", tourschan)
+				sys.sendAll(Config.Tours.tourbot+"The "+getFullTourName(key)+" ended by default!", tourschan)
 				delete tours.tour[key];
 				tours.keys.splice(tours.keys.indexOf(key), 1);
 				if (tours.keys.length === 0) {
@@ -2745,7 +2796,7 @@ function tourprintbracket(key) {
 			var channels = ((tours.tour[key].parameters.type == "double" && tours.tour[key].round%2 == 1) || tourschan === 0) ? [tourschan] : [0, tourschan];
 			var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[0])+1)+")</td><td align='right'>"+html_escape(toCorrectCase(tours.tour[key].players[0]))+"</td>"
 			var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[1])+1)+")</td>"
-			var roundinfo = "<b>"+(tours.tour[key].parameters.type == "double" && tours.tour[key].round%2 == 1 ? "Sudden Death" : "Final")+" Match of the "+tours.tour[key].tourtype+" Tournament in <a href='po:join/"+html_escape(sys.channel(tourschan))+"'>#"+html_escape(sys.channel(tourschan))+"</a></th></tr></b><br/>"
+			var roundinfo = "<b>"+(tours.tour[key].parameters.type == "double" && tours.tour[key].round%2 == 1 ? "Sudden Death" : "Final")+" Match of the "+getFullTourName(key)+" Tournament in <a href='po:join/"+html_escape(sys.channel(tourschan))+"'>#"+html_escape(sys.channel(tourschan))+"</a></th></tr></b><br/>"
 			var roundposting = "<div style='margin-left: 50px'>"+roundinfo+"<table><tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
 			for (var c in channels) {
 				if (channels[c] === tourschan) {
@@ -2778,7 +2829,7 @@ function tourprintbracket(key) {
 			}
 			if (tours.tour[key].round == 1) {
 				var submessage = "<div style='margin-left: 50px'><br/>Type <b>/join</b> to join late, good while subs last!</div>"
-				var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+tours.tour[key].tourtype+" Tournament</b><br/><table>";
+				var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+getFullTourName(key)+" Tournament</b><br/><table>";
 				for (var x=0; x<tours.tour[key].players.length; x+=2) {
 					var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+")</td><td align='right'>"+html_escape(toCorrectCase(tours.tour[key].players[x]))+"</td>"
 					var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
@@ -2787,7 +2838,7 @@ function tourprintbracket(key) {
 				sendFlashingBracket("<br/>"+htmlborder+roundposting+"</table></div>"+(subsExist ? submessage : "")+htmlborder+"<br/>",key)
 			}
 			else if (tours.tour[key].parameters.type == "double") {
-				var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+tours.tour[key].tourtype+" Tournament</b><br/><table><tr><th colspan=5><font color=blue>Winners Bracket</font></th></tr>"
+				var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+getFullTourName(key)+" Tournament</b><br/><table><tr><th colspan=5><font color=blue>Winners Bracket</font></th></tr>"
 				for (var x=0; x<tours.tour[key].players.length; x+=2) {
 					if (tours.tour[key].parameters.type == "double" && x == tours.tour[key].players.length/2) {
 						roundposting = roundposting + "<tr><td></td></tr><tr><th colspan=5><font color=red>Losers Bracket</font></th></tr>"
@@ -2799,7 +2850,7 @@ function tourprintbracket(key) {
 				sendHtmlAuthPlayers("<br/>"+htmlborder+roundposting+"</table></div>"+htmlborder+"<br/>", key)
 			}
 			else {
-				var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+tours.tour[key].tourtype+" Tournament</b><br/><table>";
+				var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+getFullTourName(key)+" Tournament</b><br/><table>";
 				for (var x=0; x<tours.tour[key].players.length; x+=2) {
 					var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+")</td><td align='right'>"+html_escape(toCorrectCase(tours.tour[key].players[x]))+"</td>"
 					var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
@@ -2816,7 +2867,7 @@ function tourprintbracket(key) {
 }
 
 // is the tournament battle valid?
-function isValidTourBattle(src,dest,clauses,mode,key,challenge) { // challenge is whether it was issued by challenge
+function isValidTourBattle(src,dest,clauses,mode,team,destTier,key,challenge) { // challenge is whether it was issued by challenge
 	try {
 		var srcindex = tours.tour[key].players.indexOf(sys.name(src).toLowerCase())
 		var destindex = tours.tour[key].players.indexOf(sys.name(dest).toLowerCase())
@@ -2848,6 +2899,11 @@ function isValidTourBattle(src,dest,clauses,mode,key,challenge) { // challenge i
 		var destwin = tours.tour[key].winners.indexOf(sys.name(dest).toLowerCase())
 		var checklist = clauseCheck(tours.tour[key].tourtype, clauses)
 		var invalidmsg = ""
+		var isInCorrectGen = true;
+		var getGenParts = tours.tour[key].parameters.gen.split("-",2)
+		if (parseInt(sys.gen(src,team)) !== parseInt(getGenParts[0]) || parseInt(sys.subgen(src,team)) !== parseInt(getGenParts[1])) {
+			isInCorrectGen = false;
+		}
 		if (!srcisintour) {
 			return "You are not in the tournament."
 		}
@@ -2881,8 +2937,8 @@ function isValidTourBattle(src,dest,clauses,mode,key,challenge) { // challenge i
 		else if (mode !== 0 && tours.tour[key].parameters.mode == "Singles") {
 			return "This match must be played in Singles mode."
 		}
-		else if (sys.gen(src) != parseInt(tours.tour[key].parameters.gen) && tours.tour[key].parameters.gen != "default") {
-			return "This match must be played in Gen "+tours.tour[key].parameters.gen+"."
+		else if (!isInCorrectGen && tours.tour[key].parameters.gen != "default") {
+			return "This match must be played in "+getSubgen(tours.tour[key].parameters.gen, true)+". Change it in the teambuilder."
 		}
 		else if (checklist.missing.length > 0 && checklist.extra.length > 0) {
 			invalidmsg = "You must add the following clauses to your challenge: "+checklist.missing.join(", ")+"; and you must not have the following clauses: "+checklist.extra.join(", ")
@@ -2900,11 +2956,11 @@ function isValidTourBattle(src,dest,clauses,mode,key,challenge) { // challenge i
 			/* We allow Disallow Spects to be used for all rounds except finals */
 			return "Disallow Spects is prohibited in finals matches."
 		}
-		else if (sys.tier(src) != tours.tour[key].tourtype) {
-			return "You are in the wrong tier, you need to be in the "+tours.tour[key].tourtype+" tier."
+		else if (sys.tier(src, team) != tours.tour[key].tourtype) {
+			return "You need to challenge using a "+tours.tour[key].tourtype+" team."
 		}
-		else if (sys.tier(dest) != tours.tour[key].tourtype) {
-			return "Your opponent is in the wrong tier."
+		else if (sys.tier(src, team) != destTier) {
+			return "You need to challenge your opponent in the "+tours.tour[key].tourtype+" tier with a valid team."
 		}
 		else return "Valid";
 	}
@@ -3114,7 +3170,7 @@ function isTourOwner(src) {
 	if (sys.auth(src) < 1 || !sys.dbRegistered(sys.name(src))) {
 		return false;
 	}
-	var towners = ["lamperi", "aerith gainsborough", "zeroality"];
+	var towners = ["lamperi", "aerith", "zeroality"];
 	if (towners !== undefined && towners.length >= 1) {
 		for (var t in towners) {
 			if (towners[t].toLowerCase() == sys.name(src).toLowerCase()) {
@@ -3247,16 +3303,16 @@ function sendWelcomeMessage(src, chan) {
 	sys.sendMessage(src,"*** Current Tournaments ***",chan)
 	for (var x in tours.tour) {
 		if (tours.tour[x].state == "signups") {
-			sys.sendMessage(src, tours.tour[x].tourtype+": Currently in signups, "+time_handle(tours.tour[x].time-parseInt(sys.time()))+" remaining. Type /join to join.", chan)
+			sys.sendMessage(src, getFullTourName(x)+": Currently in signups, "+time_handle(tours.tour[x].time-parseInt(sys.time()))+" remaining. Type /join to join.", chan)
 		}
 		else if (tours.tour[x].state == "subround" && tours.tour[x].players.length - tours.tour[x].cpt !== 0) {
-			sys.sendMessage(src, tours.tour[x].tourtype+": Substitute spots are open, type /join to join late.", chan)
+			sys.sendMessage(src, getFullTourName(x)+": Substitute spots are open, type /join to join late.", chan)
 		}
 		else if (tours.tour[x].state == "final") {
-			sys.sendMessage(src, tours.tour[x].tourtype+": Final Round", chan)
+			sys.sendMessage(src, getFullTourName(x)+": Final Round", chan)
 		}
 		else {
-			sys.sendMessage(src, tours.tour[x].tourtype+": Round "+tours.tour[x].round, chan)
+			sys.sendMessage(src, getFullTourName(x)+": Round "+tours.tour[x].round, chan)
 		}
 	}
 	if (!sys.dbRegistered(sys.name(src))) {
@@ -3276,7 +3332,7 @@ function dumpVars(src) {
 	sys.sendMessage(src, "% players in Tours: "+Math.floor(calcPercentage())+"%", tourschan)
 	for (var x in tours.tour) {
 		activelist = [];
-		sys.sendMessage(src, "*** Round "+tours.tour[x].round+"; "+tours.tour[x].tourtype+" Tour (key "+x+")***", tourschan)
+		sys.sendMessage(src, "*** Round "+tours.tour[x].round+"; "+getFullTourName(x)+" Tour (key "+x+")***", tourschan)
 		sys.sendMessage(src, "Time: "+tours.tour[x].time, tourschan)
 		sys.sendMessage(src, "Players: "+tours.tour[x].players, tourschan)
 		sys.sendMessage(src, "Battlers: "+tours.tour[x].battlers, tourschan)
@@ -3351,9 +3407,9 @@ module.exports = {
 	stepEvent : function() {
 		tourStep()
 	},
-	beforeChallengeIssued : function(source, dest, clauses, rated, mode) {
+	beforeChallengeIssued : function(source, dest, clauses, rated, mode, team, destTier) {
 		var ret = false;
-		ret |= tourChallengeIssued(source, dest, clauses, rated, mode)
+		ret |= tourChallengeIssued(source, dest, clauses, rated, mode, team, destTier)
 		return ret;
 	},
 	afterBattleStarted : function(source, dest, clauses, rated, mode, bid) {
