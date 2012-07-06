@@ -1673,7 +1673,7 @@ function tourCommand(src, command, commandData) {
 				return true;
 			}
 			if (!sys.hasTier(src, tours.tour[key].tourtype)) {
-				sys.sendMessage(src,Config.Tours.tourbot+"You need to be in the "+tours.tour[key].tourtype+" tier to join!",tourschan)
+				sys.sendMessage(src,Config.Tours.tourbot+"You need to have a "+tours.tour[key].tourtype+" team to join!",tourschan)
 				return true;
 			}
 			/* Is already in another tour */
