@@ -127,32 +127,42 @@ If getLongName is true it will convert to the readable format, otherwise it will
 Returns false if not found */
 function getSubgen(name, getLongName) {
 	var subgens = {
+		"Red/Blue": "1-0",
 		"RB": "1-0",
+		"Yellow": "1-1",
 		"RBY": "1-1",
 		"RBY Stadium": "1-2",
 		"Stadium": "1-2",
 		"RBY Tradebacks": "1-3",
+		"Gold/Silver": "2-0",
 		"GS": "2-0",
+		"Crystal": "2-1",
 		"GSC": "2-1",
 		"GSC Stadium": "2-2",
 		"Stadium 2": "2-2",
+		"Ruby/Sapphire": "3-0",
 		"RS": "3-0",
 		"Colosseum": "3-1",
+		"FireRed/LeafGreen": "3-2",
 		"FRLG": "3-2",
 		"RSE": "3-3",
 		"Emerald": "3-3",
 		"XD": "3-4",
+		"Diamond/Pearl": "4-0",
 		"DP": "4-0",
-		"DPPt": "4-1",
 		"Platinum": "4-1",
+		"DPPt": "4-1",
+		"HeartGold/SoulSilver": "4-2",
 		"HGSS": "4-2",
+		"Black/White": "5-0",
 		"BW": "5-0",
+		"Black/White 2": "5-1",
 		"BW2": "5-1",
 		"1": "1-3",
 		"2": "2-2",
 		"3": "3-4",
 		"4": "4-2",
-		"5": "5-1",
+		"5": "5-1"
 	}
 	if (getLongName) {
 		for (var x in subgens) {
@@ -483,7 +493,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: parseInt(sys.getVal("tourconfig.txt", "minpercent")),
-			version: "1.300a",
+			version: "1.310a",
 			debug: false,
 			points: true
 		}
@@ -505,7 +515,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.300a",
+			version: "1.310a",
 			debug: false,
 			points: true
 		}
@@ -1208,7 +1218,7 @@ function tourCommand(src, command, commandData) {
 					sys.sendMessage(src,Config.Tours.tourbot+"The "+commandData+" tournament is not in progress!",tourschan)
 					return true;
 				}
-				sys.sendAll(Config.Tours.tourbot+"The "+getFullTourName(x)+" tournament was cancelled by "+sys.name(src)+"!", tourschan)
+				sys.sendAll(Config.Tours.tourbot+"The "+getFullTourName(key)+" tournament was cancelled by "+sys.name(src)+"!", tourschan)
 				delete tours.tour[key];
 				tours.keys.splice(tours.keys.indexOf(key), 1);
 				return true;
@@ -1682,6 +1692,26 @@ function tourCommand(src, command, commandData) {
 			}
 			if (!sys.hasTier(src, tours.tour[key].tourtype)) {
 				sys.sendMessage(src,Config.Tours.tourbot+"You need to have a "+tours.tour[key].tourtype+" team to join!",tourschan)
+				return true;
+			}
+			var isInCorrectGen = false;
+			for (var x=0; x<sys.teamCount(src); x++) {
+				if (sys.tier(src, x) === tours.tour[key].tourtype) {
+					if (tours.tour[key].parameters.gen != "default") {
+						var getGenParts = tours.tour[key].parameters.gen.split("-",2)
+						if (parseInt(sys.gen(src,team)) === parseInt(getGenParts[0]) || parseInt(sys.subgen(src,team)) === parseInt(getGenParts[1])) {
+							isInCorrectGen = true;
+							break;
+						}
+					}
+					else {
+						isInCorrectGen = true;
+						break;
+					}
+				}
+			}
+			if (!isInCorrectGen) {
+				sys.sendMessage(src,Config.Tours.tourbot+"Your generation must be set to "+getSubgen(tours.tour[key].parameters.gen, true)+". Change it in the teambuilder.",tourschan)
 				return true;
 			}
 			/* Is already in another tour */
@@ -2908,9 +2938,11 @@ function isValidTourBattle(src,dest,clauses,mode,team,destTier,key,challenge) { 
 		var checklist = clauseCheck(tours.tour[key].tourtype, clauses)
 		var invalidmsg = ""
 		var isInCorrectGen = true;
-		var getGenParts = tours.tour[key].parameters.gen.split("-",2)
-		if (parseInt(sys.gen(src,team)) !== parseInt(getGenParts[0]) || parseInt(sys.subgen(src,team)) !== parseInt(getGenParts[1])) {
-			isInCorrectGen = false;
+		if (tours.tour[key].parameters.gen != "default") {
+			var getGenParts = tours.tour[key].parameters.gen.split("-",2)
+			if (parseInt(sys.gen(src,team)) !== parseInt(getGenParts[0]) || parseInt(sys.subgen(src,team)) !== parseInt(getGenParts[1])) {
+				isInCorrectGen = false;
+			}
 		}
 		if (!srcisintour) {
 			return "You are not in the tournament."
