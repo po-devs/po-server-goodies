@@ -495,7 +495,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: parseInt(sys.getVal("tourconfig.txt", "minpercent")),
-			version: "1.310b",
+			version: "1.310",
 			debug: false,
 			points: true
 		}
@@ -517,7 +517,7 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.310b",
+			version: "1.310",
 			debug: false,
 			points: true
 		}
@@ -1702,7 +1702,7 @@ function tourCommand(src, command, commandData) {
 				if (sys.tier(src, x) === tours.tour[key].tourtype) {
 					if (tours.tour[key].parameters.gen != "default") {
 						var getGenParts = tours.tour[key].parameters.gen.split("-",2)
-						if (parseInt(sys.gen(src,x)) === parseInt(getGenParts[0]) || parseInt(sys.subgen(src,x)) === parseInt(getGenParts[1])) {
+						if (parseInt(sys.gen(src,x)) === parseInt(getGenParts[0]) && parseInt(sys.subgen(src,x)) === parseInt(getGenParts[1])) {
 							isInCorrectGen = true;
 							break;
 						}
