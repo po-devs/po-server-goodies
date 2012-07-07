@@ -488,15 +488,15 @@ function getConfigValue(file, key) {
 			toursignup: 200,
 			tourdq: 180,
 			subtime: 90,
-			activity: 200,
-			tourbreak: 120,
-			abstourbreak: 600,
-			reminder: 30,
+			touractivity: 200,
+			breaktime: 120,
+			absbreaktime: 600,
+			remindertime: 30,
 			channel: "Tournaments",
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.311b",
+			version: "1.311",
 			debug: false,
 			points: true
 		}
@@ -532,7 +532,7 @@ function initTours() {
 		errchannel: "Developer's Den",
 		tourbotcolour: "#3DAA68",
 		minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-		version: "1.311b",
+		version: "1.311",
 		debug: false,
 		points: true
 	}
