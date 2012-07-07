@@ -477,32 +477,11 @@ function sendAllTourAuth(message) {
 	}
 }
 
-function initTours() {
-	// config object
+/* Get a config value 
+Returns default if value doesn't exist*/
+function getConfigValue(file, key) {
 	try {
-		Config.Tours = {
-			maxqueue: parseInt(sys.getVal("tourconfig.txt", "maxqueue")),
-			maxarray: 1023,
-			maxrunning: parseInt(sys.getVal("tourconfig.txt", "maxrunning")),
-			toursignup: parseInt(sys.getVal("tourconfig.txt", "toursignup")),
-			tourdq: parseInt(sys.getVal("tourconfig.txt", "tourdq")),
-			subtime: parseInt(sys.getVal("tourconfig.txt", "subtime")),
-			activity: parseInt(sys.getVal("tourconfig.txt", "touractivity")),
-			tourbreak: parseInt(sys.getVal("tourconfig.txt", "breaktime")),
-			abstourbreak: parseInt(sys.getVal("tourconfig.txt", "absbreaktime")),
-			reminder: parseInt(sys.getVal("tourconfig.txt", "remindertime")),
-			channel: "Tournaments",
-			errchannel: "Developer's Den",
-			tourbotcolour: "#3DAA68",
-			minpercent: parseInt(sys.getVal("tourconfig.txt", "minpercent")),
-			version: "1.310",
-			debug: false,
-			points: true
-		}
-	}
-	catch (e) {
-		sys.sendAll("No tour config data detected, getting default values", tourschan)
-		Config.Tours = {
+		var defaultvars = {
 			maxqueue: 4,
 			maxarray: 1023,
 			maxrunning: 3,
@@ -517,10 +496,45 @@ function initTours() {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.310",
+			version: "1.311b",
 			debug: false,
 			points: true
 		}
+		var configkeys = sys.getValKeys(file)
+		if (configkeys.indexOf(key) == -1) {
+			sys.sendAll("No tour config data detected for '"+key+"', getting default value", tourschan)
+			return defaultvars[key];
+		}
+		else {
+			return sys.getVal(file, key);
+		}
+	}
+	catch (err) {
+		sys.sendAll("Error in getting config value '"+key+"': "+err, tourserrchan)
+		return null;
+	}
+}
+
+function initTours() {
+	// config object
+	Config.Tours = {
+		maxqueue: parseInt(getConfigValue("tourconfig.txt", "maxqueue")),
+		maxarray: 1023,
+		maxrunning: parseInt(getConfigValue("tourconfig.txt", "maxrunning")),
+		toursignup: parseInt(getConfigValue("tourconfig.txt", "toursignup")),
+		tourdq: parseInt(getConfigValue("tourconfig.txt", "tourdq")),
+		subtime: parseInt(getConfigValue("tourconfig.txt", "subtime")),
+		activity: parseInt(getConfigValue("tourconfig.txt", "touractivity")),
+		tourbreak: parseInt(getConfigValue("tourconfig.txt", "breaktime")),
+		abstourbreak: parseInt(getConfigValue("tourconfig.txt", "absbreaktime")),
+		reminder: parseInt(getConfigValue("tourconfig.txt", "remindertime")),
+		channel: "Tournaments",
+		errchannel: "Developer's Den",
+		tourbotcolour: "#3DAA68",
+		minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
+		version: "1.311b",
+		debug: false,
+		points: true
 	}
 	if (Config.Tours.tourbot === undefined) {
 		Config.Tours.tourbot = "\u00B1Genesect: "
