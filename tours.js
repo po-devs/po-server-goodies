@@ -496,7 +496,7 @@ function getConfigValue(file, key) {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.312",
+			version: "1.313",
 			debug: false,
 			points: true
 		}
@@ -532,7 +532,7 @@ function initTours() {
 		errchannel: "Developer's Den",
 		tourbotcolour: "#3DAA68",
 		minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-		version: "1.312",
+		version: "1.313",
 		debug: false,
 		points: true
 	}
@@ -659,7 +659,7 @@ function tourStep() {
 		}
 		else if (tours.keys.length === 0) {
 			// start a cycle from tourarray
-			var tourarray = ["Challenge Cup", "Wifi NU", "CC 1v1", "Random Battle", "Wifi OU", "Gen 5 1v1", "Wifi UU", "Monotype", "Challenge Cup", "Clear Skies", "Wifi CC 1v1", "Wifi LC", "Wifi OU", "Wifi LU", "Wifi Ubers", "DW OU"]
+			var tourarray = ["Challenge Cup", "Wifi NU", "CC 1v1", "Random Battle", "Wifi OU", "Gen 5 1v1", "Wifi UU", "Monotype", "Challenge Cup", "Clear Skies", "Wifi CC 1v1", "Wifi LC", "Wifi OU", "Wifi LU", "Wifi Ubers", "No Preview OU"]
 			var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1"];
 			var allgentiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"];
 			var tourtostart = tourarray[tours.key%tourarray.length]
