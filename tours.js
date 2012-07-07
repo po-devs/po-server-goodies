@@ -58,7 +58,7 @@ var touradmincommands = ["*** Parameter Information ***",
 					"fullleaderboard [tier]: gives the full leaderboard"]
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
 				"Breaking the following rules may result in a tour mute:",
-				"#1: Team revealing or scouting in non CC tiers will result in disqualfication.",
+				"#1: Team revealing or scouting in non CC tiers will result in disqualification.",
 				"- Scouting is watching the battle of someone else in the tournament to gain information.",
 				"- Team revealing is revealing any information about other entrants' teams.",
 				"- Players are always permitted to watch the final match of any tournament.",
@@ -496,7 +496,7 @@ function getConfigValue(file, key) {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.311",
+			version: "1.312b",
 			debug: false,
 			points: true
 		}
@@ -532,7 +532,7 @@ function initTours() {
 		errchannel: "Developer's Den",
 		tourbotcolour: "#3DAA68",
 		minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-		version: "1.311",
+		version: "1.312b",
 		debug: false,
 		points: true
 	}
@@ -671,7 +671,7 @@ function tourStep() {
 }
 
 // Battle Start
-function tourBattleStart(src, dest, clauses, rated, mode) {
+function tourBattleStart(src, dest, clauses, rated, mode, bid) {
 	var name1 = sys.name(src).toLowerCase()
 	var name2 = sys.name(dest).toLowerCase()
 	var key = null;
@@ -714,6 +714,10 @@ function tourBattleStart(src, dest, clauses, rated, mode) {
 		tours.tour[key].battlers.push(name1, name2)
 		tours.tour[key].active[name1] = "Battle"
 		tours.tour[key].active[name2] = "Battle"// this avoids dq later since they made an attempt to start
+		if (tours.tour[key].state == "final") {
+			sys.sendHtmlAll("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font> <a href='po:watch/"+bid+"'>The final battle of the "+getFullTourName(key)+" tournament between <b>"+html_escape(sys.name(src))+"</b> and <b>"+html_escape(sys.name(dest))+"</b> just started!</a>",0)
+			sys.sendHtmlAll("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font> <a href='po:watch/"+bid+"'>The final battle of the "+getFullTourName(key)+" tournament between <b>"+html_escape(sys.name(src))+"</b> and <b>"+html_escape(sys.name(dest))+"</b> just started!</a>",tourschan)
+		}
 		return true;
 	}
 	return false;
@@ -1900,7 +1904,7 @@ function tourCommand(src, command, commandData) {
 						roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+html_escape(toCorrectCase(tours.tour[y].players[x+1])) +"</b></font></td><td align='center'> won against </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x]))+"</td>"
 					}
 					else if (battlers.indexOf(tours.tour[y].players[x]) != -1) {
-						roundtable = roundtable + "<tr><td align='right'>"+html_escape(toCorrectCase(tours.tour[y].players[x])) +"</td><td align='center'> is battling </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x+1]))+"</td>"
+						roundtable = roundtable + "<tr><td align='right'>"+html_escape(toCorrectCase(tours.tour[y].players[x])) +"</td><td align='center'> <a href='po:watchPlayer/"+tours.tour[y].players[x]+"'>is battling</a> </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x+1]))+"</td>"
 					}
 					else {
 						roundtable = roundtable + "<tr><td align='right'>"+html_escape(toCorrectCase(tours.tour[y].players[x])) +"</td><td align='center'> VS </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x+1]))+"</td>"
@@ -3470,7 +3474,7 @@ module.exports = {
 		return ret;
 	},
 	afterBattleStarted : function(source, dest, clauses, rated, mode, bid) {
-		return tourBattleStart(source, dest, clauses, rated, mode)
+		return tourBattleStart(source, dest, clauses, rated, mode, bid)
 	},
 	beforeBattleMatchup : function(source, dest, clauses, rated) {
 		var ret = false;
