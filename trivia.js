@@ -59,7 +59,7 @@ TriviaGame.prototype.startTrivia = function(src,rand)
     }
     var x = time() - this.lastStopped;
     if (x < 16){
-        this.sendPM(src,"Sorry, a game was just stopped "+x+" seconds ago.");
+        this.sendPM(src,"Sorry, a game was just stopped "+parseInt(x)+" seconds ago.");
         return;
     }
     if (triviaq.questionAmount() < 1)
