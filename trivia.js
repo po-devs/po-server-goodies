@@ -14,8 +14,8 @@ var triviabot = new Bot("Psyduck"),
 function time()
 {
     // Date.now() returns milliseconds since epoch,
-    // by multiplying by 1000 we get seconds.
-    return Date.now() * 1000;
+    // by dividing by 1000 we get seconds.
+    return Date.now()/1000
 }
 
 function TriviaGame()
