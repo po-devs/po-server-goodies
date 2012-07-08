@@ -1397,7 +1397,7 @@ function tourCommand(src, command, commandData) {
 				var channels = [sys.channelId("Indigo Plateau"), sys.channelId("Victory Road"), tourschan]
 				tours.tourmutes[ip] = {'expiry': parseInt(sys.time()) + time, 'reason': reason, 'auth': sys.name(src), 'name': tar.toLowerCase()}
 				for (var x in channels) {
-					if (sys.existChannel(channels[x]) {
+					if (sys.existChannel(channels[x])) {
 						sys.sendAll(Config.Tours.tourbot+tar+" was tourmuted by "+sys.name(src)+" for "+time_handle(time)+"! "+(reason !== "" ? "[Reason: "+reason+"]" : ""), channels[x])
 					}
 				}
