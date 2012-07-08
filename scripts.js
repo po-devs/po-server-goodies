@@ -3,7 +3,7 @@
 
 // You may change these variables as long as you keep the same type
 var Config = {
-    base_url: "https://raw.github.com/Shadowfist/po-server-goodies/po1060scripts/",
+    base_url: "https://raw.github.com/lamperi/po-server-goodies/po1060scripts/",
     bot: "Dratini",
     kickbot: "Blaziken",
     capsbot: "Exploud",
