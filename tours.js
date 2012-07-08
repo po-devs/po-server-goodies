@@ -496,7 +496,7 @@ function getConfigValue(file, key) {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.313",
+			version: "1.314",
 			debug: false,
 			points: true
 		}
@@ -532,7 +532,7 @@ function initTours() {
 		errchannel: "Developer's Den",
 		tourbotcolour: "#3DAA68",
 		minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-		version: "1.313",
+		version: "1.314",
 		debug: false,
 		points: true
 	}
@@ -1347,7 +1347,7 @@ function tourCommand(src, command, commandData) {
 					}
 				}
 				else {
-					if (sys.maxAuth(ip) >= sys.auth(src)) {
+					if ((tours.touradmins.indexOf(tar.toLowerCase()) > -1 || sys.maxAuth(ip) >= 1) && sys.maxAuth(ip) >= sys.auth(src)) {
 						sys.sendMessage(src,Config.Tours.tourbot+"Can't mute higher auth!",tourschan)
 						return true;
 					}
@@ -1397,7 +1397,9 @@ function tourCommand(src, command, commandData) {
 				var channels = [sys.channelId("Indigo Plateau"), sys.channelId("Victory Road"), tourschan]
 				tours.tourmutes[ip] = {'expiry': parseInt(sys.time()) + time, 'reason': reason, 'auth': sys.name(src), 'name': tar.toLowerCase()}
 				for (var x in channels) {
-					sys.sendAll(Config.Tours.tourbot+tar+" was tourmuted by "+sys.name(src)+" for "+time_handle(time)+"! "+(reason !== "" ? "[Reason: "+reason+"]" : ""), channels[x])
+					if (sys.existChannel(channels[x]) {
+						sys.sendAll(Config.Tours.tourbot+tar+" was tourmuted by "+sys.name(src)+" for "+time_handle(time)+"! "+(reason !== "" ? "[Reason: "+reason+"]" : ""), channels[x])
+					}
 				}
 				return true;
 			}
@@ -2814,7 +2816,7 @@ function tourprintbracket(key) {
 	try {
 		tours.tour[key].round += 1
 		if (tours.tour[key].players.length == 1) { // winner
-			var channels = [tourschan]
+			var channels = [0, tourschan]
 			var winner = toCorrectCase(tours.tour[key].players[0])
 			if (winner !== "~Bye~") {
 				for (var x in channels) {
@@ -2852,7 +2854,7 @@ function tourprintbracket(key) {
 				return;
 			}
 			tours.tour[key].state = "final"
-			var channels = ((tours.tour[key].parameters.type == "double" && tours.tour[key].round%2 == 1) || tourschan === 0) ? [tourschan] : [0, tourschan];
+			var channels = [tourschan]
 			var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[0])+1)+")</td><td align='right'>"+html_escape(toCorrectCase(tours.tour[key].players[0]))+"</td>"
 			var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[1])+1)+")</td>"
 			var roundinfo = "<b>"+(tours.tour[key].parameters.type == "double" && tours.tour[key].round%2 == 1 ? "Sudden Death" : "Final")+" Match of the "+getFullTourName(key)+" Tournament in <a href='po:join/"+html_escape(sys.channel(tourschan))+"'>#"+html_escape(sys.channel(tourschan))+"</a></th></tr></b><br/>"
