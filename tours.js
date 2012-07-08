@@ -419,7 +419,7 @@ channel: "Tournaments",
 errchannel: "Developer's Den",
 tourbotcolour: "#3DAA68",
 minpercent: parseInt(sys.getVal("tourconfig.txt", "minpercent")),
-version: "1.290",
+version: "1.290p",
 debug: false,
 points: true
 }
@@ -441,7 +441,7 @@ channel: "Tournaments",
 errchannel: "Developer's Den",
 tourbotcolour: "#3DAA68",
 minpercent: 5,
-version: "1.290",
+version: "1.290p",
 debug: false,
 points: true
 }
@@ -1253,7 +1253,7 @@ return true;
 }
 }
 else {
-if (sys.maxAuth(ip) >= sys.auth(src)) {
+if ((tours.touradmins.indexOf(tar.toLowerCase()) > -1 || sys.maxAuth(ip) >= 1) && sys.maxAuth(ip) >= sys.auth(src)) {
 sys.sendMessage(src,Config.Tours.tourbot+"Can't mute higher auth!",tourschan)
 return true;
 }
