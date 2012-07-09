@@ -14,8 +14,8 @@ var triviabot = new Bot("Psyduck"),
 function time()
 {
     // Date.now() returns milliseconds since epoch,
-    // by multiplying by 1000 we get seconds.
-    return Date.now() * 1000;
+    // by dividing by 1000 we get seconds.
+    return Date.now()/1000
 }
 
 function TriviaGame()
@@ -59,7 +59,7 @@ TriviaGame.prototype.startTrivia = function(src,rand)
     }
     var x = time() - this.lastStopped;
     if (x < 16){
-        this.sendPM(src,"Sorry, a game was just stopped "+x+" seconds ago.");
+        this.sendPM(src,"Sorry, a game was just stopped "+parseInt(x)+" seconds ago.");
         return;
     }
     if (triviaq.questionAmount() < 1)
@@ -77,7 +77,9 @@ TriviaGame.prototype.startTrivia = function(src,rand)
     this.maxPoints = rand;
     this.started = true;
     // TODO: enable when working
-    // this.sendAll("A #Trivia game was started! First to "+rand+" points wins!",0);
+	sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
+    this.sendAll("A #Trivia game was started! First to "+rand+" points wins!",0);
+	sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
     this.sendAll(sys.name(src)+" started a trivia game! First to "+rand+" points wins!",triviachan);
     this.answeringQuestion = false;
     sys.delayedCall(function() { Trivia.startTriviaRound(); },15);
