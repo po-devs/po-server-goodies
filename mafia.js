@@ -761,6 +761,7 @@ function Mafia(mafiachan) {
         this.votes = {};
         this.voteCount = 0;
         this.ips = [];
+        this.numjoins = {};
         this.resetTargets();
         // Recharges shouldn't be cleared between nights
         this.teamRecharges = {};
@@ -1447,6 +1448,12 @@ function Mafia(mafiachan) {
 
                 if (role.actions.startup == "team-reveal") {
                     mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
+                }
+                if (role.actions.startup == "team-reveal-with-roles") {
+                	var playersRole = mafia.getPlayersForTeam(role.side).map(function(x){
+                		return x + " (" + this.players[x].role.translation + ")";                		
+                	}, mafia);
+                	mafia.sendPlayer(player.name, "±Game: Your team is " + readable(playersRole, "and") + ".");
                 }
                 if (typeof role.actions.startup == "object" && Array.isArray(role.actions.startup["team-revealif"])) {
                     if (role.actions.startup["team-revealif"].indexOf(role.side) != -1) {
@@ -2275,6 +2282,12 @@ function Mafia(mafiachan) {
                 if (role.actions.startup == "team-reveal") {
                     mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
                 }
+                if (role.actions.startup == "team-reveal-with-roles") {
+                	var playersRole = mafia.getPlayersForTeam(role.side).map(function(x){
+                		return x + " (" + this.players[x].role.translation + ")";
+                	}, mafia);
+                	mafia.sendPlayer(player.name, "±Game: Your team is " + readable(playersRole, "and") + ".");
+                }
                 if (typeof role.actions.startup == "object" && Array.isArray(role.actions.startup["team-revealif"])) {
                     if (role.actions.startup["team-revealif"].indexOf(role.side) != -1) {
                         mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
@@ -2447,7 +2460,7 @@ function Mafia(mafiachan) {
     this.isMafiaSuperAdmin = function(src) {
         if (sys.auth(src) >= 2)
             return true;
-        if (['serpentine'].indexOf(sys.name(src).toLowerCase()) >= 0) {
+        if (['serpentine', 'steeledges'].indexOf(sys.name(src).toLowerCase()) >= 0) {
             return true;
         }
         return false;
@@ -2656,6 +2669,10 @@ function Mafia(mafiachan) {
             sys.sendMessage(src, "±Game: You need to register to play mafia here! Click on the 'Register' button below and follow the instructions!", mafiachan);
             return;
         }
+        if (this.numjoins[sys.ip(src)] >= 2) {
+            sys.sendMessage(src, "±Game: You can't join/unjoin more than 3 times!", mafiachan);
+            return;
+        }
         var name = sys.name(src);
         for (var x in name) {
             var code = name.charCodeAt(x);
@@ -2711,6 +2728,12 @@ function Mafia(mafiachan) {
 
                 this.signups.push(name);
                 this.ips.push(sys.ip(src));
+                if (this.numjoins.hasOwnProperty(sys.ip(src))) {
+                    this.numjoins[sys.ip(src)] += 1
+                }
+                else {
+                    this.numjoins[sys.ip(src)] = 1
+                }
                 sys.sendAll("±Game: " + name + " joined the game!", mafiachan);
                 if (this.signups.length == this.theme["roles"+this.theme.roleLists].length) {
                     this.ticks = 1;
@@ -2960,6 +2983,13 @@ function Mafia(mafiachan) {
 					}
 					sys.sendAll(border, mafiachan);
 					sys.sendAll("±Game: " + exposeMessage.replace(/~Self~/g, name).replace(/~Target~/g, target.name).replace(/~Role~/g, revealedRole), mafiachan);
+					if ("revealChance" in commandObject && commandObject.revealChance > sys.rand(0,100)/100) {
+						if (commandObject.revealmsg !== undefined && typeof commandObject.revealmsg == "string") {
+							sys.sendAll("±Game: " + commandObject.revealmsg.replace(/~Self~/g, name).replace(/~Role~/g, mafia.players[name].role.translation), mafiachan);
+						} else {
+							sys.sendAll("±Game: While exposing, " + name + " (" + mafia.players[name].role.translation + ") made a mistake and was revealed!", mafiachan);
+						}
+					}
 					sys.sendAll(border, mafiachan);
 					player.exposeUse = player.exposeUse+1||1;
 				}
@@ -3042,7 +3072,7 @@ function Mafia(mafiachan) {
 
     // we can always slay them :3
     this.onMute = function(src) {
-        if (this.phase != "day")
+        if (this.state != "day")
             this.slayUser(Config.capsbot, sys.name(src));
     };
 

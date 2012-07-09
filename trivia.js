@@ -4,16 +4,17 @@ var Bot = require("bot.js").Bot;
 
 var utilities = require("utilities.js");
 
-var triviabot = new Bot("TriviaBot"),
-	if(typeof Trivia === "undefined"){
-			Trivia = new TriviaGame();
-			triviaq = new QuestionHolder("triviaq.json");
-			trivreview = new QuestionHolder("trivreview.json");
-			tadmin = new TriviaAdmin("tadmins.txt");
-	}
+var triviachan, revchan;
+var triviabot = new Bot("Psyduck"),
+	Trivia = new TriviaGame(),
+	triviaq = new QuestionHolder("triviaq.json"),
+	trivreview = new QuestionHolder("trivreview.json"),
+	tadmin = new TriviaAdmin("tadmins.txt");
 
 function time()
 {
+    // Date.now() returns milliseconds since epoch,
+    // by multiplying by 1000 we get seconds.
     return Date.now() * 1000;
 }
 
@@ -46,7 +47,7 @@ TriviaGame.prototype.sendPM = function(src, message, channel)
 
 TriviaGame.prototype.sendAll = function(message, channel)
 {
-    triviabot.sendAll(message, channel === undefined ? this.id : channel);
+    triviabot.sendAll(message, channel === undefined ? triviachan : channel);
 };
 
 TriviaGame.prototype.startTrivia = function(src,rand)
@@ -77,7 +78,7 @@ TriviaGame.prototype.startTrivia = function(src,rand)
     this.started = true;
     // TODO: enable when working
     // this.sendAll("A #Trivia game was started! First to "+rand+" points wins!",0);
-    this.sendAll(sys.name(src)+" started a trivia game! First to "+rand+" points wins!");
+    this.sendAll(sys.name(src)+" started a trivia game! First to "+rand+" points wins!",triviachan);
     this.answeringQuestion = false;
     sys.delayedCall(function() { Trivia.startTriviaRound(); },15);
 };
@@ -110,7 +111,7 @@ TriviaGame.prototype.startTriviaRound = function()
     this.htmlAll("<b>Category:</b> "+category.toUpperCase()+"<br>"+question);
     this.alreadyUsed[questionNumber] = true;
 	//this.alreadyUsedCat[category] = true
-	/*sys.delayedCall(function() { 
+	/*sys.delayedCall(function() {
 		if(Trivia.started !== false){
 			delete(Trivia.alreadyUsedCat[category])
 		}
@@ -148,8 +149,9 @@ try { // Do not indent this, it is only until this starts to work
             {
                 var responseTime = this.submittedAnswers[id].time;
                 var realTime = time();
-                var minus = (realTime - responseTime) / 1000; // returns milliseconds so multiply by 1000
+                var minus = realTime - responseTime;
                 var pointAdd = minus > 6 ? 5 : (minus < 7 && minus > 3 ? 3 : 2);
+                sys.sendMessage(sys.id("Lamperi"), "TriviaPointDebug: took" + minus + " seconds, point add is " + pointAdd + ".", this.id);
 				// TODO: check answer length, and base pointAdd off of that?
 
                 answeredCorrectly.push(name);
@@ -162,10 +164,10 @@ try { // Do not indent this, it is only until this starts to work
 
     sys.sendAll("",this.id);
     var incorrectAnswers  = wrongAnswers.length > 0 ? " Incorrect answers: "+ wrongAnswers.join(", ") : "";
-    sys.sendHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±TriviaBot:</b></font></font> Time's up!" + incorrectAnswers, this.id);
-    this.sendAll("Answered correctly: " + answeredCorrectly.join(", "));
+    sys.sendHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±Psyduck:</b></font></font> Time's up!" + incorrectAnswers, this.id);
+    this.sendAll("Answered correctly: " + answeredCorrectly.join(", "),triviachan);
     var x = answers.length != 1 ? "answers were" : "answer was";
-    this.sendAll("The correct "+x+": "+answers.join(", "));
+    this.sendAll("The correct "+x+": "+answers.join(", "),triviachan);
 
     var leaderboard = [];
     var winners = [];
@@ -179,7 +181,7 @@ try { // Do not indent this, it is only until this starts to work
         }
     }
 
-    this.sendAll("Leaderboard: "+leaderboard.join(", "));
+    this.sendAll("Leaderboard: "+leaderboard.join(", "),triviachan);
 
     if (winners.length > 0) {
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
@@ -196,7 +198,7 @@ try { // Do not indent this, it is only until this starts to work
     }
     // initialize next questions
     var rand = sys.rand(17,30);
-    this.sendAll("Please wait " + rand + " seconds until the next question!");
+    this.sendAll("Please wait " + rand + " seconds until the next question!",triviachan);
     sys.delayedCall(function() {
         Trivia.startTriviaRound();
     }, rand);
@@ -251,7 +253,7 @@ TriviaGame.prototype.unjoin = function(src)
     }
     if (this.playerPlaying(src)) {
         this.removePlayer(src);
-        this.sendAll(sys.name(src) + " left the game!");
+        this.sendAll(sys.name(src) + " left the game!",triviachan);
     } else {
         this.sendPM(src,"You haven't joined the game!");
     }
@@ -265,7 +267,7 @@ TriviaGame.prototype.endTrivia = function(src)
         return;
     }
     this.resetTrivia();
-    this.sendAll(sys.name(src)+" stopped the current trivia game!");
+    this.sendAll(sys.name(src)+" stopped the current trivia game!",triviachan);
     return;
 };
 
@@ -339,7 +341,7 @@ QuestionHolder.prototype.add = function(category,question,answer,name)
     q.question = question;
     q.answer = [].concat(answer);
 	if(typeof(name)!==undefined){
-		q.name = name
+		q.name = name;
 	}
     this.save();
     return id;
@@ -359,12 +361,13 @@ QuestionHolder.prototype.checkq = function(id)
 		triviabot.sendAll("Category: "+trivreview.editingCategory,revchan);
 		triviabot.sendAll("Question: "+trivreview.editingQuestion,revchan);
 		triviabot.sendAll("Answer: "+trivreview.editingAnswer,revchan);
+		triviabot.sendAll("Questions Approved: "+triviaq.questionAmount()+". Questions Left: "+ trivreview.questionAmount()+".", revchan);
 		sys.sendAll("",revchan);
-	return;
+        return;
 	}
 	if (trivreview.questionAmount() === 0)
     {
-        triviabot.sendAll("There are no more questions to be reviewed.", channel);
+        triviabot.sendAll("There are no more questions to be reviewed.", revchan);
         return;
     }
 	var q = trivreview.all();
@@ -381,6 +384,7 @@ QuestionHolder.prototype.checkq = function(id)
 	triviabot.sendAll("Category: "+questionInfo.category,revchan);
 	triviabot.sendAll("Question: "+questionInfo.question,revchan);
 	triviabot.sendAll("Answer: "+questionInfo.answer,revchan);
+	triviabot.sendAll("Questions Approved: "+triviaq.questionAmount()+". Questions Left: "+ trivreview.questionAmount()+".", revchan);
 	if(questionInfo.name !== undefined){
 		triviabot.sendAll("Submitted By: "+questionInfo.name,revchan);
 	}
@@ -521,7 +525,7 @@ addAdminCommand("removeq", function(src,commandData,channel) {
 	var q = triviaq.get(commandData);
 	if(q !== null){
 		triviabot.sendAll(sys.name(src)+" removed question: id, "+commandData +" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
-		triviaq.remove(commandData)
+		triviaq.remove(commandData);
 		return;
 	}
 	Trivia.sendPM(src,"Oops! Question doesn't exist",channel);
@@ -537,34 +541,34 @@ addUserCommand("submitq", function(src, commandData, channel) {
     }
     var category = utilities.html_escape(commandData[0]);
     var question = utilities.html_escape(commandData[1]);
-	var fixAnswer = commandData[2].replace(/ ,/gi, ",")
-	fixAnswer = fixAnswer.replace(/, /gi, ",")
-	if(fixAnswer[0] === " "){
-		fixAnswer = fixAnswer.substring(1)
-	}
+	var fixAnswer = commandData[2].replace(/ *, */gi, ",").replace(/^ +/, "");
     var answer = fixAnswer.split(",");
     if (question.indexOf("?")==-1)
     {
         Trivia.sendPM(src,"Your question should have a question mark.", channel);
         return;
      }
-	var needsreview = false
+	var needsreview = false;
 	if (trivreview.questionAmount() === 0){
-		needsreview = true
+		needsreview = true;
 	}
 
-	var name = sys.name(src)
+	var name = sys.name(src);
     var id = trivreview.add(category,question,answer,name);
 
     Trivia.sendPM(src,"Your question was submitted.", channel);
-	if(needsreview == true){
-		trivreview.checkq(id)
+	if (needsreview){
+		trivreview.checkq(id);
 	}
 	// Enable if needed, but this might spam trivreview...
     // Trivia.sendAll(sys.name(src)+" submitted a question with id " + id +" !",revchan);
 },"Allows you to submit a question for review, format /submitq Category*Question*Answer1,Answer2,etc");
 
 addUserCommand("join", function(src, commandData, channel) {
+    if(SESSION.users(src).mute.active || !SESSION.channels(triviachan).canTalk(src)){
+        Trivia.sendPM(src, "You cannot join when muted!");
+        return;
+    }
     if (Trivia.started === false)
     {
         Trivia.sendPM(src,"A game hasn't started!");
@@ -580,7 +584,7 @@ addUserCommand("join", function(src, commandData, channel) {
         return;
     }
     Trivia.addPlayer(src);
-    Trivia.sendAll(sys.name(src)+" joined the game!");
+    Trivia.sendAll(sys.name(src)+" joined the game!",triviachan);
 },"Allows you to join a current game of trivia");
 
 addUserCommand("unjoin", function(src, commandData, channel) {
@@ -589,9 +593,9 @@ addUserCommand("unjoin", function(src, commandData, channel) {
 },"Allows you to quit a current game of trivia");
 
 addUserCommand("qamount", function(src, commandData, channel) {
-    if (channel == triviachan) {
+    if (channel == triviachan || channel == revchan) {
         var qamount = triviaq.questionAmount();
-        sys.sendHtmlMessage(src,"<timestamp/> The amount of questions is: <b>"+qamount+"</b>",triviachan);
+        sys.sendHtmlMessage(src,"<timestamp/> The amount of questions is: <b>"+qamount+"</b>",channel);
         return;
     }
 },"Shows you the current amount of questions");
@@ -677,6 +681,7 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 		triviabot.sendMessage(src, "Category: "+trivreview.editingCategory,channel);
 		triviabot.sendMessage(src, "Question: "+trivreview.editingQuestion,channel);
 		triviabot.sendMessage(src, "Answer: "+trivreview.editingAnswer,channel);
+		triviabot.sendMessage(src, "Questions Approved: "+triviaq.questionAmount()+". Questions Left: "+ trivreview.questionAmount()+".", channel);
 		sys.sendMessage(src, "",channel);
 		return;
 	}
@@ -702,6 +707,7 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 	Trivia.sendPM(src,"Category: "+questionInfo.category,channel);
 	Trivia.sendPM(src,"Question: "+questionInfo.question,channel);
 	Trivia.sendPM(src,"Answer: "+questionInfo.answer,channel);
+	Trivia.sendPM(src, "Questions Approved: "+triviaq.questionAmount()+". Questions Left: "+ trivreview.questionAmount()+".", channel);
 	if(questionInfo.name !==undefined){
 		Trivia.sendPM(src,"Submitted By:" +questionInfo.name,channel);
 	}
@@ -719,90 +725,91 @@ addAdminCommand("checkq", function(src, commandData, channel) {
 // TODO: are these well named? also do versions for already accepted questions
 addAdminCommand("changea", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
-		trivreview.editingAnswer = commandData.split(",")
-		triviabot.sendMessage(src, "The answer for the current question in edit was changed to "+trivreview.editingAnswer, channel);
-		trivreview.checkq()
+		trivreview.editingAnswer = commandData.split(",");
+		triviabot.sendAll("The answer for the current question in edit was changed to "+trivreview.editingAnswer+" by " + sys.name(src), channel);
+		trivreview.checkq();
 		return;
 	}
 	var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
-		var id = Object.keys(tr)[0]
-		var answer = commandData.split(",")
+		var id = Object.keys(tr)[0];
+		var answer = commandData.split(",");
 		trivreview.changeAnswer(id, answer);
-		triviabot.sendMessage(src,"The answer for ID #"+id+" was changed to "+answer+"", channel);
-		trivreview.checkq(id)
+		triviabot.sendAll("The answer for ID #"+id+" was changed to "+answer+" by "+sys.name(src), channel);
+		trivreview.checkq(id);
 		return;
 	}
-	triviabot.sendMessage(src, "No question")
+	triviabot.sendMessage(src, "No question");
 },"Allows you to change an answer to a question in review, format /changea newanswer");
 
 addAdminCommand("changeq", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
-		trivreview.editingQuestion = commandData
-		triviabot.sendMessage(src, "The question for the current question in edit was changed to "+trivreview.editingQuestion, channel);
-		trivreview.checkq()
+		trivreview.editingQuestion = commandData;
+		triviabot.sendAll("The question for the current question in edit was changed to "+trivreview.editingQuestion+" by " +sys.name(src), channel);
+		trivreview.checkq();
 		return;
 	}
    var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
-		var id = Object.keys(tr)[0]
-		var question = commandData
+		var id = Object.keys(tr)[0];
+		var question = commandData;
 		trivreview.changeQuestion(id, question);
-		triviabot.sendMessage(src,"The question for ID #"+id+" was changed to "+question+"", channel);
-		trivreview.checkq(id)
+		triviabot.sendAll("The question for ID #"+id+" was changed to "+question+" by "+sys.name(src), channel);
+		trivreview.checkq(id);
 		return;
 	}
-	triviabot.sendMessage(src, "No question")
+	triviabot.sendMessage(src, "No question");
 },"Allows you to change the question to a question in review, format /changeq newquestion");
 
 addAdminCommand("changec", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
-		trivreview.editingCategory = commandData
-		triviabot.sendMessage(src, "The category for the current question in edit was changed to "+trivreview.editingCategory, channel);
-		trivreview.checkq()
+		trivreview.editingCategory = commandData;
+		triviabot.sendAll("The category for the current question in edit was changed to "+trivreview.editingCategory+" by " + sys.name(src), channel);
+		trivreview.checkq();
 		return;
 	}
     var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
-		var id = Object.keys(tr)[0]
-		var category = commandData
+		var id = Object.keys(tr)[0];
+		var category = commandData;
 		trivreview.changeCategory(id, category);
-		triviabot.sendMessage(src,"The category for ID #"+id+" was changed to "+category+"", channel);
-		trivreview.checkq(id)
+		triviabot.sendAll("The category for ID #"+id+" was changed to "+category+" by "+sys.name(src), channel);
+		trivreview.checkq(id);
 		return;
 	}
-	triviabot.sendMessage(src, "No question")
+	triviabot.sendMessage(src, "No question");
 },"Allows you to change the category to a question in review, format /changec newcategory");
 
 // TODO: Maybe announce globally to trivreview when somebody accepts a question?
 
 addAdminCommand("accept", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
-		triviaq.add(trivreview.editingCategory, trivreview.editingQuestion, trivreview.editingAnswer)
-		trivreview.editingMode = false
-		triviabot.sendAll("The question in edit was saved",channel)
+		triviaq.add(trivreview.editingCategory, trivreview.editingQuestion, trivreview.editingAnswer);
+		trivreview.editingMode = false;
+		triviabot.sendAll("The question in edit was saved",channel);
+		trivreview.checkq(trivreview.currentId);
 		return;
 	}
 	var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
-		if((sys.time()-trivreview.declineTime)<=2){
-			triviabot.sendMessage(src, "Please wait before accepting a question",channel)
+		if((time()-trivreview.declineTime)<=2){
+			triviabot.sendMessage(src, "Please wait before accepting a question",channel);
 			return;
 		}
 		var id = Object.keys(tr)[0];
 		var q = trivreview.get(id);
 		triviaq.add(q.category,q.question,q.answer);
-		var all = triviaq.all();
+		var all = triviaq.all(), qid;
 		for (var b in all){
 			var qu = triviaq.get(b);
 			if(qu.question===q.question){
-				var qid = b
+				qid = b;
 			}
 		}
 		triviabot.sendAll(sys.name(src)+" accepted question: id, "+qid+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
-		trivreview.declineTime = sys.time()
+		trivreview.declineTime = time();
 		trivreview.remove(id);
-		trivreview.checkq(id+1)
+		trivreview.checkq(id+1);
 		return;
 	}
 	triviabot.sendMessage(src, "No more questions!",channel);
@@ -812,48 +819,83 @@ addAdminCommand("accept", function(src, commandData, channel) {
 addAdminCommand("showq", function(src, commandData, channel){
 	var q = triviaq.get(commandData);
 	if(q !== null){
-		triviabot.sendMessage(src, "Question ID: "+ commandData +", Question: "+ q.question + ", Category: "+ q.category + ", Answer(s): " + q.answer, channel)
+		triviabot.sendMessage(src, "Question ID: "+ commandData +", Question: "+ q.question + ", Category: "+ q.category + ", Answer(s): " + q.answer, channel);
 		return;
 	}
-	triviabot.sendMessage(src, "This question does not exist",channel)	
+	triviabot.sendMessage(src, "This question does not exist",channel);
 },"Allows you to see an already submitted question");
 
 addAdminCommand("editq", function(src, commandData, channel){
 	var q = triviaq.get(commandData);
-	if(q !== null){
-		trivreview.editingMode = true
-		trivreview.editingQuestion = q.question
-		trivreview.editingCategory = q.category
-		trivreview.editingAnswer = q.answer //Moving it to front of queue seemed like a tedious job, so let's cheat it in, instead :3
-		triviaq.remove(commandData)
-		trivreview.checkq() //id isn't needed or shouldn't be needed
+	if(trivreview.editingMode === true){
+		triviabot.sendMessage(src, "A question is already in edit, use /checkq to see it!");
 		return;
 	}
-	triviabot.sendMessage(src, "This question does not exist", channel)
+	if(q !== null){
+		trivreview.editingMode = true;
+		trivreview.editingQuestion = q.question;
+		trivreview.editingCategory = q.category;
+		trivreview.editingAnswer = q.answer; //Moving it to front of queue seemed like a tedious job, so let's cheat it in, instead :3
+		triviaq.remove(commandData);
+		var tr = trivreview.all();
+		var id = Object.keys(tr)[0];
+		trivreview.currentId = id;
+		trivreview.checkq(); //id isn't needed or shouldn't be needed
+		return;
+	}
+	triviabot.sendMessage(src, "This question does not exist", channel);
 },"Allows you to edit an already submitted question");
 
 addAdminCommand("decline", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
-		trivreview.editingMode = false
-		triviabot.sendAll("The question in edit was deleted",channel)
+		trivreview.editingMode = false;
+		triviabot.sendAll("The question in edit was deleted",channel);
+		trivreview.checkq(trivreview.currentId);
 		return;
 	}
 	var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
-		if((sys.time()-trivreview.declineTime)<=2){
-			triviabot.sendMessage(src, "Please wait before declining a question",channel)
+		if((time()-trivreview.declineTime)<=2){
+			triviabot.sendMessage(src, "Please wait before declining a question",channel);
 			return;
 		}
 		var id = Object.keys(tr)[0];
 		var q = trivreview.get(id);
 		triviabot.sendAll(sys.name(src)+" declined question: id, "+id+" category: "+q.category+", question: "+q.question+", answer: "+q.answer,revchan);
-		trivreview.declineTime = sys.time()
- 		trivreview.remove(id);
-		trivreview.checkq(id+1)
+		trivreview.declineTime = time();
+        trivreview.remove(id);
+		trivreview.checkq(id+1);
 		return;
 	}
 	triviabot.sendMessage(src, "No more questions!",channel);
 },"Allows you to decline the current question in review");
+addAdminCommand("resetvars", function(src, commandData, channel) {
+	if(sys.name(src).toLowerCase() !== "lamperi" && sys.name(src).toLowerCase() !== "ethan" && sys.name(src).toLowerCase() !== "crystal moogle"){
+		return;
+	}
+	Trivia = new TriviaGame();
+	triviaq = new QuestionHolder("triviaq.json");
+	trivreview = new QuestionHolder("trivreview.json");
+	tadmin = new TriviaAdmin("tadmins.txt");
+	triviabot.sendMessage(src, "Trivia was reset");
+}, "Allows you to reset variables");
+addAdminCommand("shove", function(src, commandData, channel){
+	var tar = sys.id(commandData);
+	if(tar === undefined){
+		return;
+	}
+	if (Trivia.started === false)
+    {
+        Trivia.sendPM(src,"A game hasn't started!");
+        return;
+    }
+    if (Trivia.playerPlaying(tar)) {
+        Trivia.removePlayer(tar);
+        Trivia.sendAll(sys.name(tar) + " was removed from the game by "+sys.name(src)+"!",triviachan);
+		return;
+	}
+	Trivia.sendPM(src, "That person isn't playing!");
+}, "Allows you to remove a player from the game");
 
 // Normal command handling.
 exports.handleCommand = function trivia_handleCommand(src, command, channel)
@@ -901,7 +943,18 @@ exports.onHelp = function trivia_onHelp(src, commandData, channel)
         });
     }
 };
-
+exports.onMute = function trivia_onMute(src){
+ if (Trivia.started === false)
+    {
+        Trivia.sendPM(src,"A game hasn't started!");
+        return;
+    }
+    if (Trivia.playerPlaying(src)) {
+        Trivia.removePlayer(src);
+        Trivia.sendAll(sys.name(src) + " left the game!",triviachan);
+		return;
+	}
+};
 exports.beforeChannelJoin = function trivia_beforeChannelJoin(src, channel) {
     /* Prevent channel join */
     if (channel == revchan && sys.auth(src) < 1 && !tadmin.isTAdmin(sys.name(src).toLowerCase()))
@@ -960,8 +1013,8 @@ try { // debug only, do not indent
 
 exports.init = function trivia_init()
 {
-	triviachan = triviachan
-	revchan = revchan
+	triviachan = sys.channelId('Trivia');
+	revchan = sys.channelId('TrivReview');
 	if(typeof Trivia === "undefined"){
 			Trivia = new TriviaGame();
 			triviaq = new QuestionHolder("triviaq.json");

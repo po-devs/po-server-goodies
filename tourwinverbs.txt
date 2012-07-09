@@ -9,7 +9,6 @@ atomic wedgied
 atomized
 averted
 bamboozled
-banned
 barfed on
 barrel-rolled
 bashed
@@ -21,6 +20,7 @@ blackmailed
 blasted
 blew their nose all over
 blew up
+blitzed
 body-slammed
 bombed
 borked
@@ -30,9 +30,11 @@ brainwashed
 bribed
 broke
 brought an end to
+bruised
 brutalized
 bullied
 buried
+burned
 burninated
 burnt
 bushwhacked
@@ -40,7 +42,6 @@ C4'd
 captured the flag from
 chainsawed
 charmed
-cheated
 chewed up and spit out
 choked
 clubbed
@@ -49,6 +50,7 @@ counterteamed
 crashed into
 crashed, boomed and banged
 cremated
+cried to
 crippled
 CROTTED
 crushed the dreams of
@@ -58,6 +60,7 @@ danced a Fiery Dance for
 danced around
 danced on the grave of
 dazzled
+daykilled
 deactivated
 decapitated
 decimated
@@ -89,16 +92,17 @@ disposed of
 distracted
 dodged a Hydro Pump from
 dominated
+donked
 doped
 doused
 dropped a fridge on
 drowned
 duped
 edged
+ejechted
 electrified
 electrocuted
 eliminated
-Elmo'd
 embarassed
 emptied a septic tank on
 endured
@@ -131,7 +135,6 @@ gear grinded
 genetically altered
 guillotined
 hammered
-harrassed
 haxed
 hexed
 horrified
@@ -141,6 +144,7 @@ ignored
 immobilized
 immolated
 impressed
+imprisoned
 infected
 infested
 injured
@@ -153,6 +157,7 @@ isolated
 jabbed at
 jeered at
 jolted
+juiced
 jynxed
 kamehameha'd
 keelhauled
@@ -165,29 +170,28 @@ leeched off of
 let the dogs out on
 liquidated
 lobotomized
+made a lovely dinner for
 maimed
 mangled
 manhandled
 manipulated
 marred
 mashburned
+mashed
 massacred
 masticated
 mauled
 mocked
 mooned
 mud-wrestled
-muted
 mutilated
 mythbusted
 nagged
-negotiated with
 neutralized
 ninja'd
 nuked
 nullified
 obliterated
-Oh So'd
 OHKO'd
 opened a can o' whoop ass on
 outbid
@@ -211,6 +215,7 @@ pounced on
 pressed charges against
 prosecuted
 publicly humiliated
+pulled a Moogle on
 pummeled
 pursued
 pushed over
@@ -218,11 +223,13 @@ put a plastic bag over
 pwned
 raged at
 rammed
+randed
 ransacked
 rattled
 ravaged
 rebelled against
 recited Vogon poetry to
+rejechted
 released the Kraken on
 repelled
 retaliated against
@@ -236,7 +243,6 @@ scammed
 scared
 schooled
 scorched
-scouted
 screamed at
 scuffled with
 seduced
@@ -263,6 +269,7 @@ slayed
 sliced and diced
 slugged
 smacked
+smashpassed
 snarled at
 sneezed at
 sniped
@@ -273,6 +280,7 @@ snuck past
 snuffed
 snuggled
 socked
+sold
 spammed SubSeed on
 speared
 splattered
@@ -282,13 +290,13 @@ squashed
 stalked
 steamrolled
 stifled
-stole Shanai's good luck from
+stole Jirachier's good luck from
 stomped on
 stopped
 struck down
 strung up
 stung
-Subpunched
+subpunched
 sucker punched
 sued
 summoned the mafia upon
@@ -299,44 +307,46 @@ temporally displaced
 terminated
 terrorized
 threatened
-threw a Poké Ball at
+threw a PokÃ© Ball at
 threw a table at
 threw coin(s) at
 threw tiny little pebbles at
 throttled
-timestalled
 torched
 trampled
 trapped
 traumatized
 tricked
+tricked a Lagging Tail to
 tripped
 trolled
 trounced
 uninstalled
 unleashed a pack of wolves on
-unleashed Shanai on
+unleashed Oak on
 used a Care Bear stare on
 used a lightsaber to impale
 used a rubber hammer on
 used Action Replay against
-used Derwin's hax on
 used Final Gambit on
 used legendaries against
 used Splash on
 used the ragnarok connection on
-used ubers against
+used Ubers against
 vanquished
 vaporized
 vaulted
-vented his anger on
+vented their anger on
 vivisected
 walloped
 went nuts on
 went to town on
 whipped
 whittled down
+wiggled their finger at
+wiped out
 won Rock, Paper, Scissors against
+wooed
 wrecked
 wrenched
 wrestled
