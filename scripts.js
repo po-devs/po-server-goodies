@@ -1621,7 +1621,7 @@ afterLogIn : function(src) {
     }
     sys.sendMessage(src, "");
 
-    sys.sendHtmlMessage(src, "<b><big>PO with RBY and multiple teams is currently in testing. <a href='https://github.com/downloads/coyotte508/pokemon-online/Pokemon-Online-v2-Setup.exe'>Download</a> it and install it in a separate folder if you want to try it!<br>This is the <i>next</i> version of PO and unrelated to 1.0.60.</big></b>");
+    sys.sendHtmlMessage(src, "<b><big>PO 2 has been released! <a href='https://github.com/downloads/coyotte508/pokemon-online/Pokemon-Online-v2.0.02a-Setup.exe'>Download (windows)</a> (<a href='https://github.com/coyotte508/pokemon-online/downloads'>others</a>) it and install it in a separate folder if you want to keep using 1.0.60<br>This is the <i>next</i> version of PO and incompactible with 1.0.x series.</big></b>");
 
     sys.sendMessage(src, "");
 
@@ -4586,8 +4586,7 @@ attemptToSpectateBattle : function(src, p1, p2) {
         return "allow";
     }
     return "denied";
-}
-,
+},
 
 beforeBattleMatchup : function(src,dest,clauses,rated)
 {
