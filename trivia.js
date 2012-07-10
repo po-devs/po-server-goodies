@@ -946,9 +946,7 @@ exports.onHelp = function trivia_onHelp(src, commandData, channel)
     }
 };
 exports.onMute = function trivia_onMute(src){
- if (Trivia.started === false)
-    {
-        Trivia.sendPM(src,"A game hasn't started!");
+ if (Trivia.started === false) {
         return;
     }
     if (Trivia.playerPlaying(src)) {
