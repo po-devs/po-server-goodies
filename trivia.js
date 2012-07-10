@@ -54,23 +54,23 @@ TriviaGame.prototype.startTrivia = function(src,rand)
 {
     if (this.started === true)
     {
-        this.sendPM(src,"A trivia game has already started!");
+        this.sendPM(src,"A trivia game has already started!", triviachan);
         return;
     }
     var x = time() - this.lastStopped;
     if (x < 16){
-        this.sendPM(src,"Sorry, a game was just stopped "+parseInt(x)+" seconds ago.");
+        this.sendPM(src,"Sorry, a game was just stopped "+parseInt(x)+" seconds ago.", triviachan);
         return;
     }
     if (triviaq.questionAmount() < 1)
     {
-        this.sendPM(src,"There are no questions.");
+        this.sendPM(src,"There are no questions.", triviachan);
         return;
     }
     rand = parseInt(rand, 10);
 	if (rand > 102 || rand < 2 )
     {
-        this.sendPM(src,"Please do not start a game with more than 102 points, or lower than 2 points.");
+        this.sendPM(src,"Please do not start a game with more than 102 points, or lower than 2 points.", triviachan);
         return;
     }
     rand = (isNaN(rand)) ? sys.rand(2,102) : +rand;
@@ -250,14 +250,14 @@ TriviaGame.prototype.unjoin = function(src)
 {
     if (this.started === false)
     {
-        this.sendPM(src,"A game hasn't started!");
+        this.sendPM(src,"A game hasn't started!",triviachan);
         return;
     }
     if (this.playerPlaying(src)) {
         this.removePlayer(src);
         this.sendAll(sys.name(src) + " left the game!",triviachan);
     } else {
-        this.sendPM(src,"You haven't joined the game!");
+        this.sendPM(src,"You haven't joined the game!",triviachan);
     }
 };
 
@@ -265,7 +265,7 @@ TriviaGame.prototype.endTrivia = function(src)
 {
     if (this.started === false)
     {
-        this.sendPM(src,"A game hasn't started.");
+        this.sendPM(src,"A game hasn't started.",triviachan);
         return;
     }
     this.resetTrivia();
