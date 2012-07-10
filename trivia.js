@@ -516,11 +516,11 @@ function addAdminCommand(commands, callback, help)
 addUserCommand("goal", function(src,commandData,channel) {
 	if (Trivia.started === false)
 	{
-		Trivia.sendPM(src,"A trivia game isn't currently running.");
+		Trivia.sendPM(src,"A trivia game isn't currently running.",channel);
 		return;
 	}
 	
-	Trivia.sendPM(src,"The goal for the current game is: "+Trivia.maxPoints);
+	Trivia.sendPM(src,"The goal for the current game is: "+Trivia.maxPoints, channel);
 },"Allows you to see the current target for the trivia game");
 
 addAdminCommand("removeq", function(src,commandData,channel) {
@@ -568,21 +568,21 @@ addUserCommand("submitq", function(src, commandData, channel) {
 
 addUserCommand("join", function(src, commandData, channel) {
     if(SESSION.users(src).mute.active || !SESSION.channels(triviachan).canTalk(src)){
-        Trivia.sendPM(src, "You cannot join when muted!");
+        Trivia.sendPM(src, "You cannot join when muted!",channel);
         return;
     }
     if (Trivia.started === false)
     {
-        Trivia.sendPM(src,"A game hasn't started!");
+        Trivia.sendPM(src,"A game hasn't started!",channel);
         return;
     }
     if (!sys.dbRegistered(sys.name(src)))
     {
-        Trivia.sendPM(src,"Please register before playing Trivia.");
+        Trivia.sendPM(src,"Please register before playing Trivia.",channel);
         return;
     }
     if (Trivia.playerPlaying(src)) {
-        Trivia.sendPM(src,"You've already joined the game!");
+        Trivia.sendPM(src,"You've already joined the game!",channel);
         return;
     }
     Trivia.addPlayer(src);
