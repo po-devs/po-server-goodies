@@ -1005,7 +1005,7 @@ try { // debug only, do not indent
         // Remove commas so the listing looks better
         // This is fine as no answers should include comma.
         Trivia.addAnswer(src, message.replace(/,/gi,""));
-        Trivia.sendPM(src,"Your answer was submitted.");
+        Trivia.sendPM(src, "Your answer was submitted.", triviachan);
         return true;
     }
 } catch(e) {
