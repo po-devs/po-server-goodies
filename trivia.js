@@ -37,7 +37,7 @@ function TriviaGame()
 
 TriviaGame.prototype.htmlAll = function(html)
 {
-    sys.sendHtmlAll(this.tBorder() + "<center>" + html + "</center>" + this.tBorder(), this.id);
+    sys.sendHtmlAll(this.tBorder() + "<center>" + html + "</center>" + this.tBorder(), triviachan);
 };
 
 TriviaGame.prototype.sendPM = function(src, message, channel)
@@ -153,7 +153,7 @@ try { // Do not indent this, it is only until this starts to work
                 var realTime = time();
                 var minus = realTime - responseTime;
                 var pointAdd = minus > 6 ? 5 : (minus < 7 && minus > 3 ? 3 : 2);
-                sys.sendMessage(sys.id("Lamperi"), "TriviaPointDebug: took" + minus + " seconds, point add is " + pointAdd + ".", this.id);
+                sys.sendMessage(sys.id("Lamperi"), "TriviaPointDebug: took" + minus + " seconds, point add is " + pointAdd + ".", triviachan);
 				// TODO: check answer length, and base pointAdd off of that?
 
                 answeredCorrectly.push(name);
@@ -164,9 +164,9 @@ try { // Do not indent this, it is only until this starts to work
         }
     }
 
-    sys.sendAll("",this.id);
+    sys.sendAll("", triviachan);
     var incorrectAnswers  = wrongAnswers.length > 0 ? " Incorrect answers: "+ wrongAnswers.join(", ") : "";
-    sys.sendHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±Psyduck:</b></font></font> Time's up!" + incorrectAnswers, this.id);
+    sys.sendHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±Psyduck:</b></font></font> Time's up!" + incorrectAnswers, triviachan);
     this.sendAll("Answered correctly: " + answeredCorrectly.join(", "),triviachan);
     var x = answers.length != 1 ? "answers were" : "answer was";
     this.sendAll("The correct "+x+": "+answers.join(", "),triviachan);
@@ -188,7 +188,7 @@ try { // Do not indent this, it is only until this starts to work
     if (winners.length > 0) {
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
         this.htmlAll("<h2>Congratulations to "+w+"</h2>"+winners.join(", ")+"");
-		Trivia.sendAll("Check the /topic for how to submit a question!",this.id);
+		Trivia.sendAll("Check the /topic for how to submit a question!", triviachan);
         this.resetTrivia();
         return;
     }
@@ -206,7 +206,7 @@ try { // Do not indent this, it is only until this starts to work
     }, rand);
 } catch(e) {
 // TODO REMOVE the catch block when this works
-    sys.sendAll("script error: " + e, this.id);
+    sys.sendAll("script error: " + e, triviachan);
 }
 };
 
