@@ -3319,7 +3319,7 @@ function saveTourMutes() {
 
 function loadTourMutes() {
 	var mutefile = sys.getFileContent("tourmutes.txt")
-	var mutedata - mutefile.split("\n")
+	var mutedata = mutefile.split("\n")
 	for (var x in mutedata) {
 		var data = mutedata[x].split(":::", 5)
 		if (data.length < 5) {
