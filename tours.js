@@ -496,7 +496,7 @@ function getConfigValue(file, key) {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.315",
+			version: "1.316",
 			debug: false,
 			points: true
 		}
@@ -532,7 +532,7 @@ function initTours() {
 		errchannel: "Developer's Den",
 		tourbotcolour: "#3DAA68",
 		minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-		version: "1.315",
+		version: "1.316",
 		debug: false,
 		points: true
 	}
@@ -586,6 +586,12 @@ function initTours() {
 	catch (e) {
 		sys.sendAll("No tour admin data detected, leaving blank", tourschan)
 	}
+	try {
+		loadTourMutes()
+	}
+	catch (e) {
+		sys.sendAll("No tourmute data detected, leaving blank", tourschan)
+	}
 	sys.sendAll("Version "+Config.Tours.version+" of the tournaments system was loaded successfully in this channel!", tourschan)
 }
 
@@ -609,6 +615,7 @@ function tourStep() {
 		for (var m in tours.tourmutes) {
 			if (tours.tourmutes[m].expiry <= parseInt(sys.time())) {
 				delete tours.tourmutes[m];
+				saveTourMutes();
 			}
 		}
 	}
@@ -1401,6 +1408,7 @@ function tourCommand(src, command, commandData) {
 						sys.sendAll(Config.Tours.tourbot+tar+" was tourmuted by "+sys.name(src)+" for "+time_handle(time)+"! "+(reason !== "" ? "[Reason: "+reason+"]" : ""), channels[x])
 					}
 				}
+				saveTourMutes()
 				return true;
 			}
 			if (command == "tourunmute") {
@@ -1419,6 +1427,7 @@ function tourCommand(src, command, commandData) {
 				}
 				delete tours.tourmutes[ip];
 				sys.sendAll(Config.Tours.tourbot+commandData+" was untourmuted by "+sys.name(src)+"!", tourschan)
+				saveTourMutes()
 				return true;
 			}
 			if (command == "tourmutes") {
@@ -3286,12 +3295,45 @@ function isTourMuted(src) {
 	if (tours.tourmutes.hasOwnProperty(ip)) {
 		if (tours.tourmutes[ip].expiry <= parseInt(sys.time())) {
 			delete tours.tourmutes[ip];
+			saveTourMutes();
 			return false;
 		}
 		return true;
 	}
 	else {
 		return false;
+	}
+}
+
+// writes tourmutes to tourmutes.txt
+function saveTourMutes() {
+	sys.writeToFile("tourmutes.txt", "")
+	for (var x in tours.tourmutes) {
+		if (tours.tourmutes[x].expiry <= parseInt(sys.time())) {
+			delete tours.tourmutes[x];
+			continue;
+		}
+		sys.appendToFile("tourmutes.txt", x+":::"+tours.tourmutes[x].expiry+":::"+tours.tourmutes[x].reason+":::"+tours.tourmutes[x].auth+":::"+tours.tourmutes[x].name+"\n")
+	}
+}
+
+function loadTourMutes() {
+	var mutefile = sys.getFileContent("tourmutes.txt")
+	var mutedata - mutefile.split("\n")
+	for (var x in mutedata) {
+		var data = mutedata[x].split(":::", 5)
+		if (data.length < 5) {
+			continue;
+		}
+		var expiry = parseInt(data[1]);
+		if (expiry <= parseInt(sys.time())) {
+			continue;
+		}
+		var ip = data[0];
+		var reason = data[2];
+		var auth = data[3];
+		var player = data[4];
+		tours.tourmutes[ip] = {'expiry': expiry, 'reason': reason, 'auth': auth, 'name': player}
 	}
 }
 
