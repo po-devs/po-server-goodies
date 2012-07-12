@@ -42,6 +42,7 @@ var touradmincommands = ["*** Parameter Information ***",
 					"cancelbattle [name]: cancels that player's current battle",
 					"config: shows config settings",
 					"configset [var]:[value]: changes config settings",
+					"passta [name]: passes your tour admin to a new name",
 					"*** FOLLOWING COMMANDS ARE ADMIN+ COMMANDS ***",
 					"touradmin [name]: makes someone a tournament admin",
 					"tourdeadmin [name]: fires someone from being tournament admin",
@@ -496,7 +497,7 @@ function getConfigValue(file, key) {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.320",
+			version: "1.321b",
 			debug: false,
 			points: true
 		}
@@ -532,7 +533,7 @@ function initTours() {
 		errchannel: "Developer's Den",
 		tourbotcolour: "#3DAA68",
 		minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-		version: "1.320",
+		version: "1.321b",
 		debug: false,
 		points: true
 	}
@@ -972,7 +973,7 @@ function tourCommand(src, command, commandData) {
 				var index = -1
 				if (tadmins !== undefined) {
 					for (var t=0;t<tadmins.length;t++) {
-						if (tadmins[t].toLowerCase() == commandData.toLowerCase()) {
+						if (cmp(tadmins[t],commandData.toLowerCase())) {
 							index = t;
 							break;
 						}
@@ -1259,6 +1260,56 @@ function tourCommand(src, command, commandData) {
 				sys.sendAll(Config.Tours.tourbot+"The "+getFullTourName(key)+" tournament was cancelled by "+sys.name(src)+"!", tourschan)
 				delete tours.tour[key];
 				tours.keys.splice(tours.keys.indexOf(key), 1);
+				return true;
+			}
+			if (command == "passta") {
+				var newname = commandData
+				var tadmins = tours.touradmins
+				if (sys.dbIp(newname) === undefined) {
+					sys.sendMessage(src,Config.Tours.tourbot+"This user doesn't exist!",tourschan)
+					return true;
+				}
+				if (!sys.dbRegistered(newname)) {
+					sys.sendMessage(src,Config.Tours.tourbot+"That account isn't registered so you can't give it authority!",tourschan)
+					return true;
+				}
+				if (sys.dbAuth(newname) >= 1) {
+					sys.sendMessage(src,Config.Tours.tourbot+"That account can already start tours!",tourschan)
+					return true;
+				}
+				if (tadmins !== undefined) {
+					for (var t in tadmins) {
+						if (cmp(tadmins[t].toLowerCase(), newname)) {
+							sys.sendMessage(src,Config.Tours.tourbot+"The target is already a tour admin!",tourschan)
+							return true;
+						}
+					}
+				}
+				if (sys.id(newname) === undefined) {
+					sys.sendMessage(src,Config.Tours.tourbot+"The target is offline!",tourschan)
+					return true;
+				}
+				if (sys.ip(sys.id(newname)) !== sys.ip(src)) {
+					sys.sendMessage(src,Config.Tours.tourbot+"Both accounts must be on the same IP to switch!",tourschan)
+					return true;
+				}
+				var index = -1;
+				for (var t=0;t<tadmins.length;t++) {
+					if (cmp(tadmins[t],sys.name(src))) {
+						index = t;
+						break;
+					}
+				}
+				if (index == -1) {
+					sys.sendMessage(src,Config.Tours.tourbot+"Failed to pass tour auth! Please post about this issue on forums!",tourschan)
+					return true;
+				}
+				tadmins.splice(t, 1, toCorrectCase(newname))
+				tours.touradmins = tadmins
+				saveTourKeys()
+				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" passed their tour auth to "+toCorrectCase(newname)+"!",tourschan)
+				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" passed their tour auth to "+toCorrectCase(newname)+"!",sys.channelId("Victory Road"))
+				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" passed their tour auth to "+toCorrectCase(newname)+"!",sys.channelId("Indigo Plateau"))
 				return true;
 			}
 			if (command == "dq") {
