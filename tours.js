@@ -2163,27 +2163,23 @@ function removeinactive(key) {
 				sendDebugMessage("We don't need to check", tourschan)
 				continue;
 			}
-			if (sys.id(player1) !== undefined) {
-				if (activelist.hasOwnProperty(player1)) {
-					if (activelist[player1] == "Battle" || (typeof activelist[player1] == "number" && activelist[player1]+Config.Tours.activity >= parseInt(sys.time()))) {
-						sendDebugMessage(player1+" is active; continuing", tourschan)
-						dq1 = false
-					}
-				}
-				else {
-					sendDebugMessage(player1+" is not active; disqualifying", tourschan)
+			if (activelist.hasOwnProperty(player1)) {
+				if (activelist[player1] == "Battle" || (typeof activelist[player1] == "number" && activelist[player1]+Config.Tours.activity >= parseInt(sys.time()))) {
+					sendDebugMessage(player1+" is active; continuing", tourschan)
+					dq1 = false
 				}
 			}
-			if (sys.id(player2) !== undefined) {
-				if (activelist.hasOwnProperty(player2)) {
-					if (activelist[player2] == "Battle" || (typeof activelist[player2] == "number" && activelist[player2]+Config.Tours.activity >= parseInt(sys.time()))) {
-						sendDebugMessage(player2+" is active; continuing", tourschan)
-						dq2 = false
-					}
+			else {
+				sendDebugMessage(player1+" is not active; disqualifying", tourschan)
+			}
+			if (activelist.hasOwnProperty(player2)) {
+				if (activelist[player2] == "Battle" || (typeof activelist[player2] == "number" && activelist[player2]+Config.Tours.activity >= parseInt(sys.time()))) {
+					sendDebugMessage(player2+" is active; continuing", tourschan)
+					dq2 = false
 				}
-				else {
-					sendDebugMessage(player2+" is not active; disqualifying", tourschan)
-				}
+			}
+			else {
+				sendDebugMessage(player2+" is not active; disqualifying", tourschan)
 			}
 			if (dq1 && dq2) {
 				sys.sendAll(Config.Tours.tourbot+toCorrectCase(player1)+" and "+toCorrectCase(player2)+" are both disqualified for inactivity in the "+getFullTourName(key)+" tournament!", tourschan)
