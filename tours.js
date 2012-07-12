@@ -3384,7 +3384,7 @@ function getListOfTours(num) {
 			return list;
 		}
 	}
-	for (var h=0;h<tours.history.length,h++) {
+	for (var h=0;h<tours.history.length;h++) {
 		var historydata = tours.history[h]
 		var pos = historydata.indexOf(":")
 		var thetour = historydata.substr(0,pos)
