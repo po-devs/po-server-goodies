@@ -496,7 +496,7 @@ function getConfigValue(file, key) {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.316",
+			version: "1.320b",
 			debug: false,
 			points: true
 		}
@@ -532,7 +532,7 @@ function initTours() {
 		errchannel: "Developer's Den",
 		tourbotcolour: "#3DAA68",
 		minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-		version: "1.316",
+		version: "1.320b",
 		debug: false,
 		points: true
 	}
@@ -1137,6 +1137,16 @@ function tourCommand(src, command, commandData) {
 				}
 				if (!found) {
 					sys.sendMessage(src, Config.Tours.tourbot+"The tier '"+commandData+"' doesn't exist! Make sure the tier is typed out correctly and that it exists.", tourschan)
+					return true;
+				}
+				if (tourtier.indexOf("Smogon") != -1 && !isTourSuperAdmin(src)) {
+					sys.sendMessage(src, Config.Tours.tourbot+"You are not permitted to run Smogon tier tournaments!", tourschan)
+					return true;
+				}
+				var lasttours = getListOfTours(7);
+				var lastindex = lasttours.indexOf(tourtier);
+				if (lastindex != -1 && !isTourSuperAdmin(src)) {
+					sys.sendMessage(src, Config.Tours.tourbot+"A "+tourtier+" tournament was run "+(lastindex+1)+" tour"+(lastindex === 0 ? "" : "s")+" ago, no repeating!", tourschan)
 					return true;
 				}
 				var isSignups = false;
@@ -3356,6 +3366,34 @@ function markActive(src) {
 		}
 		tours.tour[key].active[name] = parseInt(sys.time());
 	}
+}
+
+function getListOfTours(num) {
+	var list = [];
+	for (var x=tours.queue.length-1;x>=0;x--) {
+		var tourdata = tours.queue[x].split(":::",5)
+		list.push(tourdata[0])
+		if (list.length >= num) {
+			return list;
+		}
+	}
+	for (var t in tours.tour) {
+		var tier = tours.tour[t].tourtype
+		list.push(tier)
+		if (list.length >= num) {
+			return list;
+		}
+	}
+	for (var h=0;h<tours.history.length,h++) {
+		var historydata = tours.history[h]
+		var pos = historydata.indexOf(":")
+		var thetour = historydata.substr(0,pos)
+		list.push(thetour)
+		if (list.length >= num) {
+			return list;
+		}
+	}
+	return list;
 }
 
 // variance function that influences time between tournaments. The higher this is, the faster tours will start.
