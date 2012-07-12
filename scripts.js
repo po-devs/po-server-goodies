@@ -4392,7 +4392,7 @@ afterChatMessage : function(src, message, chan)
 //    }
 
     // hardcoded
-    var ignoreChans = [staffchannel, sachannel, sys.channelId("trivreview")];
+    var ignoreChans = [staffchannel, sachannel, sys.channelId("trivreview"), sys.channelId("Watch")];
     var ignoreUsers = ["nixeagle"];
     var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1 && !poChannel.isChannelOperator(src);
     var capsday = false;
