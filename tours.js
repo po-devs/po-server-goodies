@@ -496,7 +496,7 @@ function getConfigValue(file, key) {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.320b",
+			version: "1.320",
 			debug: false,
 			points: true
 		}
@@ -532,7 +532,7 @@ function initTours() {
 		errchannel: "Developer's Den",
 		tourbotcolour: "#3DAA68",
 		minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-		version: "1.320b",
+		version: "1.320",
 		debug: false,
 		points: true
 	}
@@ -1146,7 +1146,7 @@ function tourCommand(src, command, commandData) {
 				var lasttours = getListOfTours(7);
 				var lastindex = lasttours.indexOf(tourtier);
 				if (lastindex != -1 && !isTourSuperAdmin(src)) {
-					sys.sendMessage(src, Config.Tours.tourbot+"A "+tourtier+" tournament was run "+(lastindex+1)+" tour"+(lastindex === 0 ? "" : "s")+" ago, no repeating!", tourschan)
+					sys.sendMessage(src, Config.Tours.tourbot+"A "+tourtier+" tournament is in the queue, is running or was recently run, no repeating!", tourschan)
 					return true;
 				}
 				var isSignups = false;
