@@ -500,7 +500,7 @@ function getConfigValue(file, key) {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.323",
+			version: "1.324",
 			debug: false,
 			points: true
 		}
@@ -536,7 +536,7 @@ function initTours() {
 		errchannel: "Developer's Den",
 		tourbotcolour: "#3DAA68",
 		minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-		version: "1.323",
+		version: "1.324",
 		debug: false,
 		points: true
 	}
@@ -761,6 +761,8 @@ function tourBattleEnd(winner, loser, result) {
 		}
 		if (result == "tie") {
 			sys.sendAll(Config.Tours.tourbot+"The match between "+winname+" and "+losename+" ended in a tie, please rematch!", tourschan)
+			markActive(winner)
+			markActive(loser)
 			return;
 		}
 		battleend(winner, loser, key)
