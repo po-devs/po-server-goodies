@@ -500,7 +500,7 @@ function getConfigValue(file, key) {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.321",
+			version: "1.322",
 			debug: false,
 			points: true
 		}
@@ -536,7 +536,7 @@ function initTours() {
 		errchannel: "Developer's Den",
 		tourbotcolour: "#3DAA68",
 		minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-		version: "1.321",
+		version: "1.322",
 		debug: false,
 		points: true
 	}
@@ -2134,9 +2134,15 @@ function tourCommand(src, command, commandData) {
 				}
 				list.sort(function(a,b) { return b[0] - a[0] ; });
 				sys.sendMessage(src, "*** TOURNAMENT RANKINGS "+(commandData != "" ? "("+commandData+") " : "")+"***",tourschan)
-				for (var x=0; x<20; x++) {
-					if (x >= list.length) break;
-					sys.sendMessage(src, "#"+(x+1)+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
+				var ownnameprinted = false;
+				for (var x=0; x<65536; x++) {
+					if (x >= list.length || (ownnameprinted && x>=20)) break;
+					if (x < 20 || cmp((list[x])[1], sys.name(src))) {
+						sys.sendMessage(src, "#"+(x+1)+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
+						if (cmp((list[x])[1], sys.name(src))) {
+							ownnameprinted = true;
+						}
+					}
 				}
 			}
 			catch (err) {
@@ -2173,9 +2179,15 @@ function tourCommand(src, command, commandData) {
 				}
 				list.sort(function(a,b) { return b[0] - a[0] ; });
 				sys.sendMessage(src, "*** MONTHLY TOURNAMENT RANKINGS "+(commandData != "" ? "("+commandData+") " : "")+"***",tourschan)
-				for (var x=0; x<20; x++) {
-					if (x >= list.length) break;
-					sys.sendMessage(src, "#"+(x+1)+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
+				var ownnameprinted = false;
+				for (var x=0; x<65536; x++) {
+					if (x >= list.length || (ownnameprinted && x>=20)) break;
+					if (x < 20 || cmp((list[x])[1], sys.name(src))) {
+						sys.sendMessage(src, "#"+(x+1)+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
+						if (cmp((list[x])[1], sys.name(src))) {
+							ownnameprinted = true;
+						}
+					}
 				}
 			}
 			catch (err) {
