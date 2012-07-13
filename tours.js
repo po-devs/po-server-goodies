@@ -68,9 +68,12 @@ var tourrules = ["*** TOURNAMENT GUIDELINES ***",
 				"#4: Do not abuse the tournament commands.",
 				"#5: Do not leave or forfeit in a tournament you are in just so you can join another.",
 				"#6: Do not timestall (i.e. deliberately wait until timeout).",
-				"#7: Ask someone on the /activeta list if you need help",
-				"#8: There is a method of crashing all pre-1.0.60 PO clients that is going around.",
-				"- Please ensure you have updated to either the 1.0.60 client or the 2.0 alpha client in order to prevent crashes."]
+				"#7: Ask someone on the /activeta list if you need help or have problems.",
+				"#8: Avoid excessive minimodding.",
+				"- Reminding a player of the rules is fine, but doing it excessively is annoying and unwanted.",
+				"#9: Do not attempt to circumvent the rules",
+				"- Attempting to circumvent the rules through trickery, proxy or other such methods will be punished."]
+
 // Debug Messages
 function sendDebugMessage(message, chan) {
 	if (chan === tourschan && Config.Tours.debug && sys.existChannel(sys.channel(tourserrchan))) {
@@ -836,14 +839,42 @@ function tourCommand(src, command, commandData) {
 				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" reset the tour system!",tourschan)
 				return true;
 			}
-			/*if (command == "clearmonthrankings") { // not needed
+			if (command == "addscores") { // debug
+				if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
+					url = commandData;
+				}
+				else return;
+				sys.sendMessage(src, Config.Tours.tourbot+"Fetching old scores from "+url, tourschan);
+				sys.webCall(url, function(resp) {
+					if (resp !== "") {
+						var scoredata = resp.split("\n");
+						for (var x in scoredata) {
+							var thedata = scoredata[x].split(" ~ ", 2)
+							if (thedata.length != 2) {
+								continue;
+							}
+							var pos1 = thedata[0].indexOf(":")
+							var name = thedata[0].substring(pos1+2)
+							var pos2 = thedata[1].indexOf(" ")
+							var score = parseInt(thedata[1].substr(0,pos2))
+							addTourPoints(name, score)
+						}
+						sys.sendAll(Config.Tours.tourbot + 'Updated scores!', tourschan);
+					} else {
+						sys.sendMessage(src, Config.Tours.tourbot + 'Failed to update scores!', tourschan);
+					}
+				});
+				return true;
+			}
+			if (command == "emr") { // debug
 				var now = new Date()
 				var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "decemeber"]
 				var monthlyfile = "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()+".txt"
-				sys.writeToFile(monthlyfile, "")
-				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" cleared this month's tour rankings!",tourschan)
+				var currentscore = sys.getFileContent("tourscores.txt")
+				sys.writeToFile(monthlyfile, currentscore)
+				sys.sendMessage(src, Config.Tours.tourbot+" Rank transef succeeded!",tourschan)
 				return true;
-			}*/
+			}
 			if (command == "evalvars") {
 				dumpVars(src)
 				return true;
@@ -3543,6 +3574,28 @@ function dumpVars(src) {
 		sys.sendMessage(src, "Seeds: "+tours.tour[x].seeds, tourschan)
 	}
 	sys.sendMessage(src, border, tourschan)
+}
+
+function addTourPoints(player, points) {
+	var data = sys.getFileContent("tourscores.txt");
+	var array = data.split("\n");
+	var newarray = []
+	var onscoreboard = false
+	for (var n in array) {
+		if (array[n] === "") continue;
+		var scores = array[n].split(":::", 2)
+		if (player === scores[0]) {
+			var newscore = parseInt(scores[1]) + points
+			newarray.push(scores[0]+":::"+newscore)
+			onscoreboard = true;
+		}
+		else {
+			newarray.push(array[n])
+		}
+	}
+	if (!onscoreboard) {
+		newarray.push(player+":::"+points)
+	}
 }
 
 // end tournament functions
