@@ -3596,6 +3596,7 @@ function addTourPoints(player, points) {
 	if (!onscoreboard) {
 		newarray.push(player+":::"+points)
 	}
+	sys.writeToFile("tourscores.txt", newarray.join("\n"))
 }
 
 // end tournament functions
