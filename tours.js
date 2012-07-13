@@ -500,7 +500,7 @@ function getConfigValue(file, key) {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.321b",
+			version: "1.321",
 			debug: false,
 			points: true
 		}
@@ -536,7 +536,7 @@ function initTours() {
 		errchannel: "Developer's Den",
 		tourbotcolour: "#3DAA68",
 		minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-		version: "1.321b",
+		version: "1.321",
 		debug: false,
 		points: true
 	}
@@ -839,40 +839,13 @@ function tourCommand(src, command, commandData) {
 				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" reset the tour system!",tourschan)
 				return true;
 			}
-			if (command == "addscores") { // debug
-				if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
-					url = commandData;
-				}
-				else return;
-				sys.sendMessage(src, Config.Tours.tourbot+"Fetching old scores from "+url, tourschan);
-				sys.webCall(url, function(resp) {
-					if (resp !== "") {
-						var scoredata = resp.split("\n");
-						for (var x in scoredata) {
-							var thedata = scoredata[x].split(" ~ ", 2)
-							if (thedata.length != 2) {
-								continue;
-							}
-							var pos1 = thedata[0].indexOf(":")
-							var name = thedata[0].substring(pos1+2)
-							var pos2 = thedata[1].indexOf(" ")
-							var score = parseInt(thedata[1].substr(0,pos2))
-							addTourPoints(name, score)
-						}
-						sys.sendAll(Config.Tours.tourbot + 'Updated scores!', tourschan);
-					} else {
-						sys.sendMessage(src, Config.Tours.tourbot + 'Failed to update scores!', tourschan);
-					}
-				});
-				return true;
-			}
 			if (command == "emr") { // debug
 				var now = new Date()
 				var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "decemeber"]
 				var monthlyfile = "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()+".txt"
 				var currentscore = sys.getFileContent("tourscores.txt")
 				sys.writeToFile(monthlyfile, currentscore)
-				sys.sendMessage(src, Config.Tours.tourbot+" Rank transef succeeded!",tourschan)
+				sys.sendMessage(src, Config.Tours.tourbot+" Rank transfer succeeded!",tourschan)
 				return true;
 			}
 			if (command == "evalvars") {
@@ -3574,29 +3547,6 @@ function dumpVars(src) {
 		sys.sendMessage(src, "Seeds: "+tours.tour[x].seeds, tourschan)
 	}
 	sys.sendMessage(src, border, tourschan)
-}
-
-function addTourPoints(player, points) {
-	var data = sys.getFileContent("tourscores.txt");
-	var array = data.split("\n");
-	var newarray = []
-	var onscoreboard = false
-	for (var n in array) {
-		if (array[n] === "") continue;
-		var scores = array[n].split(":::", 2)
-		if (player === scores[0]) {
-			var newscore = parseInt(scores[1]) + points
-			newarray.push(scores[0]+":::"+newscore)
-			onscoreboard = true;
-		}
-		else {
-			newarray.push(array[n])
-		}
-	}
-	if (!onscoreboard) {
-		newarray.push(player+":::"+points)
-	}
-	sys.writeToFile("tourscores.txt", newarray.join("\n"))
 }
 
 // end tournament functions
