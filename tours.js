@@ -500,7 +500,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.325a",
+            version: "1.330b",
             debug: false,
             points: true
         }
@@ -536,7 +536,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.325a",
+        version: "1.330b",
         debug: false,
         points: true
     }
@@ -1419,7 +1419,7 @@ function tourCommand(src, command, commandData) {
                 }
                 else {
                     var opponent = index%2 === 0 ? tours.tour[key].battlers[index+1] : tours.tour[key].battlers[index-1]
-                    sys.sendAll(Config.Tours.tourbot+sys.name(src)+" voided the results of the battle between "+toCorrectCase(commandData)+" and "+toCorrectCase(tours.tour[key].battlers[opponent])+" in the "+getFullTourName(key)+" tournament, please rematch.", tourschan)
+                    sys.sendAll(Config.Tours.tourbot+sys.name(src)+" voided the results of the battle between "+toCorrectCase(commandData)+" and "+toCorrectCase(opponent)+" in the "+getFullTourName(key)+" tournament, please rematch.", tourschan)
                     tours.tour[key].battlers.splice(index,1)
                     tours.tour[key].battlers.splice(tours.tour[key].battlers.indexOf(opponent),1)
                 }
