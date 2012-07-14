@@ -9,7 +9,7 @@ if (typeof tourschan !== "string") {
 
 if (typeof tours !== "object") {
 	sys.sendAll("Creating new tournament object", tourschan)
-	tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}}
+	tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": {}}
 }
 
 var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
@@ -500,7 +500,7 @@ function getConfigValue(file, key) {
 			errchannel: "Developer's Den",
 			tourbotcolour: "#3DAA68",
 			minpercent: 5,
-			version: "1.324",
+			version: "1.325a",
 			debug: false,
 			points: true
 		}
@@ -536,7 +536,7 @@ function initTours() {
 		errchannel: "Developer's Den",
 		tourbotcolour: "#3DAA68",
 		minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-		version: "1.324",
+		version: "1.325a",
 		debug: false,
 		points: true
 	}
@@ -553,7 +553,7 @@ function initTours() {
 	}
 	if (typeof tours != "object") {
 		sys.sendAll("Creating new tournament object", tourschan)
-		tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}}
+		tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": {}}
 	}
 	else {
 		if (!tours.hasOwnProperty('queue')) tours.queue = [];
@@ -567,6 +567,7 @@ function initTours() {
 		if (!tours.hasOwnProperty('activetas')) tours.activetas = [];
 		if (!tours.hasOwnProperty('activehistory')) tours.activehistory = [];
 		if (!tours.hasOwnProperty('tourmutes')) tours.tourmutes = {};
+		if (!tours.hasOwnProperty('tourbans')) tours.tourbans = {};
 	}
 	try {
 		getTourWinMessages()
@@ -841,13 +842,39 @@ function tourCommand(src, command, commandData) {
 				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" reset the tour system!",tourschan)
 				return true;
 			}
-			if (command == "emr") { // debug
-				var now = new Date()
-				var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "decemeber"]
-				var monthlyfile = "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()+".txt"
-				var currentscore = sys.getFileContent("tourscores.txt")
-				sys.writeToFile(monthlyfile, currentscore)
-				sys.sendMessage(src, Config.Tours.tourbot+" Rank transfer succeeded!",tourschan)
+			if (command == "tourban") {
+				var tar = commandData.toLowerCase();
+				if (sys.dbIp(tar) === undefined) {
+					sys.sendMessage(src, Config.Tours.tourbot+"No such user",tourschan)
+					return true;
+				}
+				if (sys.maxAuth(sys.dbIp(tar)) >= sys.auth(src)) {
+					sys.sendMessage(src, Config.Tours.tourbot+"Can't ban higher auth",tourschan)
+					return true;
+				}
+				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" unleashed their wrath on "+toCorrectCase(tar)+"!",tourschan)
+				if (sys.id(tar) !== undefined) 
+					if (sys.isInChannel(sys.id(tar), tourschan)) {
+						sys.kick(sys.id(tar), tourschan)
+					}
+				}
+				sys.sendAll(Config.Tours.tourbot+"And +"toCorrectCase(tar)+" was gone!",tourschan)
+				tours.tourbans.push(tar)
+				return true;
+			}
+			if (command == "tourunban") {
+				var tar = commandData.toLowerCase();
+				if (sys.dbIp(tar) === undefined) {
+					sys.sendMessage(src, Config.Tours.tourbot+"No such user",tourschan)
+					return true;
+				}
+				var index = tours.tourbans.indexOf(tar)
+				if (index == -1) {
+					sys.sendMessage(src, Config.Tours.tourbot+"They aren't tourbanned!",tourschan)
+					return true;
+				}
+				tours.tourbans.splice(index,1)
+				sys.sendMessage(src, Config.Tours.tourbot+"You unbanned "+toCorrectCase(tar)+" from tournaments!",tourschan)
 				return true;
 			}
 			if (command == "evalvars") {
@@ -3641,6 +3668,14 @@ module.exports = {
 	},
 	stepEvent : function() {
 		tourStep()
+	},
+	beforeChannelJoin : function (src, channel) {
+		if (channel == tourschan) {
+			if (tours.tourbans.indexOf(sys.name(src).toLowerCase()) != -1) {
+				sys.sendMessage(src,Config.Tours.tourbot+"You are tourbanned! You can't join unless the tour owners decide to unban you!")
+				sys.stopEvent();
+			}
+		}
 	},
 	beforeChallengeIssued : function(source, dest, clauses, rated, mode, team, destTier) {
 		var ret = false;
