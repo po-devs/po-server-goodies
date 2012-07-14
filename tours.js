@@ -858,7 +858,7 @@ function tourCommand(src, command, commandData) {
 						sys.kick(sys.id(tar), tourschan)
 					}
 				}
-				sys.sendAll(Config.Tours.tourbot+"And +"toCorrectCase(tar)+" was gone!",tourschan)
+				sys.sendAll(Config.Tours.tourbot+"And "+toCorrectCase(tar)+" was gone!",tourschan)
 				tours.tourbans.push(tar)
 				return true;
 			}
