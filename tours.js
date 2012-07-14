@@ -853,7 +853,7 @@ function tourCommand(src, command, commandData) {
 					return true;
 				}
 				sys.sendAll(Config.Tours.tourbot+sys.name(src)+" unleashed their wrath on "+toCorrectCase(tar)+"!",tourschan)
-				if (sys.id(tar) !== undefined) 
+                if (sys.id(tar) !== undefined) {
 					if (sys.isInChannel(sys.id(tar), tourschan)) {
 						sys.kick(sys.id(tar), tourschan)
 					}
