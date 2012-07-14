@@ -842,6 +842,10 @@ function tourCommand(src, command, commandData) {
                 sys.sendAll(Config.Tours.tourbot+sys.name(src)+" reset the tour system!",tourschan)
                 return true;
             }
+            if (command == "tourbans") {
+                sys.sendMessage(src, "Active tourbans: "+tours.tourbans.join(", "),tourschan)
+                return true;
+            }
             if (command == "tourban") {
                 var tar = commandData.toLowerCase();
                 if (sys.dbIp(tar) === undefined) {
@@ -1415,7 +1419,7 @@ function tourCommand(src, command, commandData) {
                 }
                 else {
                     var opponent = index%2 === 0 ? tours.tour[key].battlers[index+1] : tours.tour[key].battlers[index-1]
-                    sys.sendAll(Config.Tours.tourbot+sys.name(src)+" voided the results of the battle between "+toCorrectCase(commandData)+" and "+toCorrectCase(tours.tour[key].battlers[oppindex])+" in the "+getFullTourName(key)+" tournament, please rematch.", tourschan)
+                    sys.sendAll(Config.Tours.tourbot+sys.name(src)+" voided the results of the battle between "+toCorrectCase(commandData)+" and "+toCorrectCase(tours.tour[key].battlers[opponent])+" in the "+getFullTourName(key)+" tournament, please rematch.", tourschan)
                     tours.tour[key].battlers.splice(index,1)
                     tours.tour[key].battlers.splice(tours.tour[key].battlers.indexOf(opponent),1)
                 }
@@ -1426,23 +1430,17 @@ function tourCommand(src, command, commandData) {
                 var data = commandData.split(":",2)
                 var newname = data[0].toLowerCase()
                 var oldname = data[1].toLowerCase()
-                var key = null
-                for (var x in tours.tour) {
-                    if (tours.tour[x].players.indexOf(oldname) != -1 && tours.tour[x].state != "signups") {
-                        key = x;
-                        break;
-                    }
-                }
+                var key = isInTour(oldname)
                 if (sys.id(newname) === undefined) {
                     sys.sendMessage(src,Config.Tours.tourbot+"It's not a good idea to sub a player in who isn't on the server at the moment!",tourschan)
                     return true;
                 }
                 if (key === null) {
-                    sys.sendMessage(src,Config.Tours.tourbot+"No substitutes can be made!",tourschan)
+                    sys.sendMessage(src,Config.Tours.tourbot+"Your target doesn't exist in a tournament!",tourschan)
                     return true;
                 }
-                if (tours.tour[key].players.indexOf(oldname) == -1) {
-                    sys.sendMessage(src,Config.Tours.tourbot+"Your target doesn't exist in the tournament!",tourschan)
+                if (isInTour(newname)) {
+                    sys.sendMessage(src,Config.Tours.tourbot+"Your target is already in a tournament!",tourschan)
                     return true;
                 }
                 tours.tour[key].players.splice(tours.tour[key].players.indexOf(oldname),1,newname)
@@ -1835,7 +1833,7 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (!sys.hasTier(src, tours.tour[key].tourtype)) {
-                sys.sendMessage(src,Config.Tours.tourbot+"You need to have a "+tours.tour[key].tourtype+" team to join!",tourschan)
+                sys.sendMessage(src,Config.Tours.tourbot+"You need to have a team in the "+tours.tour[key].tourtype+" tier to join!",tourschan)
                 return true;
             }
             var isInCorrectGen = false;
@@ -3163,7 +3161,7 @@ function isValidTourBattle(src,dest,clauses,mode,team,destTier,key,challenge) { 
             return "Disallow Spects is prohibited in finals matches."
         }
         else if (sys.tier(src, team) != tours.tour[key].tourtype) {
-            return "You need to challenge using a "+tours.tour[key].tourtype+" team."
+            return "You need to challenge in the "+tours.tour[key].tourtype+" tier."
         }
         else if (sys.tier(src, team) != destTier) {
             return "You need to challenge your opponent in the "+tours.tour[key].tourtype+" tier with a valid team."
@@ -3676,7 +3674,7 @@ module.exports = {
     },
     beforeChannelJoin : function (src, channel) {
         if (channel == tourschan) {
-            if (tours.tourbans.indexOf(sys.name(src).toLowerCase()) != -1) {
+            if (tours.tourbans.indexOf(sys.name(src).toLowerCase()) != -1 && !isTourSuperAdmin(src)) {
                 sys.sendMessage(src,Config.Tours.tourbot+"You are tourbanned! You can't join unless the tour owners decide to unban you!")
                 sys.stopEvent();
             }
