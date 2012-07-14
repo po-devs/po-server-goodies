@@ -9,7 +9,7 @@ if (typeof tourschan !== "string") {
 
 if (typeof tours !== "object") {
 	sys.sendAll("Creating new tournament object", tourschan)
-	tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": {}}
+	tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": []}
 }
 
 var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
@@ -553,7 +553,7 @@ function initTours() {
 	}
 	if (typeof tours != "object") {
 		sys.sendAll("Creating new tournament object", tourschan)
-		tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": {}}
+		tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": []}
 	}
 	else {
 		if (!tours.hasOwnProperty('queue')) tours.queue = [];
@@ -567,7 +567,7 @@ function initTours() {
 		if (!tours.hasOwnProperty('activetas')) tours.activetas = [];
 		if (!tours.hasOwnProperty('activehistory')) tours.activehistory = [];
 		if (!tours.hasOwnProperty('tourmutes')) tours.tourmutes = {};
-		if (!tours.hasOwnProperty('tourbans')) tours.tourbans = {};
+		/*if (!tours.hasOwnProperty('tourbans'))*/ tours.tourbans = [];
 	}
 	try {
 		getTourWinMessages()
