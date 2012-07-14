@@ -567,7 +567,7 @@ function initTours() {
 		if (!tours.hasOwnProperty('activetas')) tours.activetas = [];
 		if (!tours.hasOwnProperty('activehistory')) tours.activehistory = [];
 		if (!tours.hasOwnProperty('tourmutes')) tours.tourmutes = {};
-		/*if (!tours.hasOwnProperty('tourbans'))*/ tours.tourbans = [];
+		if (!tours.hasOwnProperty('tourbans')) tours.tourbans = [];
 	}
 	try {
 		getTourWinMessages()
@@ -848,7 +848,7 @@ function tourCommand(src, command, commandData) {
 					sys.sendMessage(src, Config.Tours.tourbot+"No such user",tourschan)
 					return true;
 				}
-				if (sys.maxAuth(sys.dbIp(tar)) >= sys.auth(src)) {
+				if (sys.maxAuth(sys.dbIp(tar)) >= sys.auth(src) && !isTourOwner(src)) {
 					sys.sendMessage(src, Config.Tours.tourbot+"Can't ban higher auth",tourschan)
 					return true;
 				}
