@@ -3614,7 +3614,7 @@ function sendWelcomeMessage(src, chan) {
     }
     var nextmessage = "???"
     if (tours.queue.length >= 1) {
-        var tourdata = tours.queue[0].split(":::",5)
+        var queuedata = tours.queue[0].split(":::",5)
         if (nextstart != "Pending") {
             nextmessage = queuedata[0]+"; Starts in "+nextstart;
         }
