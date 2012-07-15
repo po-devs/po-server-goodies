@@ -1274,7 +1274,7 @@ function tourCommand(src, command, commandData) {
                 else {
                     tourstart(tourtier, sys.name(src), tours.key, parameters)
                     if (command == "tourstart") {
-                        sys.sendAll(Config.Tours.tourbot+sys.name(src)+" force started this tournament!")
+                        sys.sendAll(Config.Tours.tourbot+sys.name(src)+" force started this tournament!", tourschan)
                     }
                 }
                 addTourActivity(src)
@@ -3613,7 +3613,7 @@ function sendWelcomeMessage(src, chan) {
         nextstart = "Pending";
     }
     var nextmessage = "???"
-    if (queue.length >= 1) {
+    if (tours.queue.length >= 1) {
         var tourdata = tours.queue[0].split(":::",5)
         if (nextstart != "Pending") {
             nextmessage = queuedata[0]+"; Starts in "+nextstart;
