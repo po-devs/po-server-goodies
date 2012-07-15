@@ -30,7 +30,7 @@ var tourcommands = ["join: joins a tournament",
                     "removetouralert [tier] : Removes a tour alert for the specified tier"]
 var touradmincommands = ["*** Parameter Information ***",
                     "Parameters can be used by putting 'gen=x'; 'mode=singles/doubles/triples'; 'type=single/double'.",
-                    "For example '/tour CC 1v1:gen=3 mode=doubles type=double' starts a gen 3 CC 1v1 double elimination tournament.",
+                    "For example '/tour CC 1v1:gen=RBY mode=doubles type=double' starts a RBY CC 1v1 double elimination tournament.",
                     "tour [tier]:[parameters]: starts a tier of that tournament.",
                     "tourmute [player]:[reason]:[time]: tourmutes a problematic player.",
                     "tourunmute [player]: untourmutes a player.",
@@ -44,6 +44,7 @@ var touradmincommands = ["*** Parameter Information ***",
                     "configset [var]:[value]: changes config settings",
                     "passta [name]: passes your tour admin to a new name",
                     "*** FOLLOWING COMMANDS ARE ADMIN+ COMMANDS ***",
+                    "tourstart [tier]:[parameters]: starts a tier of that tournament immediately, provided one is not in signups.",
                     "touradmin [name]: makes someone a tournament admin",
                     "tourdeadmin [name]: fires someone from being tournament admin",
                     // "forcestart: ends signups immediately and starts the first round",
@@ -51,11 +52,15 @@ var touradmincommands = ["*** Parameter Information ***",
                     "push [player]: pushes a player into a tournament in signups (DON'T USE UNLESS ASKED)",
                     "tahistory [days]: views the activity of tour admins (days is optional, if excluded it will get the last 7 days if possible)",
                     "updatewinmessages: updates win messages from the web",
+                    "tourbans: list tour bans",
+                    "tourban [name]: bans a problematic player from tournaments",
+                    "tourunban [name]: unbans a player from tournaments",
                     "stopautostart: if there are no tournaments running, this will stop new ones from being automatically started by the server until another one is started manually.",
                     "*** FOLLOWING COMMANDS ARE OWNER+ COMMANDS ***",
                     "clearrankings: clears the tour rankings (owner only)",
                     "evalvars: checks the current variable list for tours",
                     "fullmonthlyleaderboard [month] [year]: shows full tour rankings for the current month, or the current month and year if specified",
+                    "resettours: resets the entire tournament system in the event of a critical failure",
                     "fullleaderboard [tier]: gives the full leaderboard"]
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "Breaking the following rules may result in a tour mute:",
@@ -500,7 +505,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.330",
+            version: "1.340",
             debug: false,
             points: true
         }
@@ -536,7 +541,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.330",
+        version: "1.340",
         debug: false,
         points: true
     }
@@ -842,58 +847,10 @@ function tourCommand(src, command, commandData) {
                 sys.sendAll(Config.Tours.tourbot+sys.name(src)+" reset the tour system!",tourschan)
                 return true;
             }
-            if (command == "tourbans") {
-                sys.sendMessage(src, "Active tourbans: "+tours.tourbans.join(", "),tourschan)
-                return true;
-            }
-            if (command == "tourban") {
-                var tar = commandData.toLowerCase();
-                if (sys.dbIp(tar) === undefined) {
-                    sys.sendMessage(src, Config.Tours.tourbot+"No such user",tourschan)
-                    return true;
-                }
-                if (sys.maxAuth(sys.dbIp(tar)) >= sys.auth(src)) {
-                    sys.sendMessage(src, Config.Tours.tourbot+"Can't ban higher auth",tourschan)
-                    return true;
-                }
-                var index = tours.tourbans.indexOf(tar)
-                if (index != -1) {
-                    sys.sendMessage(src, Config.Tours.tourbot+"They are already tourbanned!",tourschan)
-                    return true;
-                }
-                sys.sendAll(Config.Tours.tourbot+sys.name(src)+" unleashed their wrath on "+toCorrectCase(tar)+"!",tourschan)
-                if (sys.id(tar) !== undefined) {
-                    if (sys.isInChannel(sys.id(tar), tourschan)) {
-                        sys.kick(sys.id(tar), tourschan)
-                    }
-                }
-                sys.sendAll(Config.Tours.tourbot+"And "+toCorrectCase(tar)+" was gone!",tourschan)
-                tours.tourbans.push(tar)
-                return true;
-            }
-            if (command == "tourunban") {
-                var tar = commandData.toLowerCase();
-                if (sys.dbIp(tar) === undefined) {
-                    sys.sendMessage(src, Config.Tours.tourbot+"No such user",tourschan)
-                    return true;
-                }
-                var index = tours.tourbans.indexOf(tar)
-                if (index == -1) {
-                    sys.sendMessage(src, Config.Tours.tourbot+"They aren't tourbanned!",tourschan)
-                    return true;
-                }
-                tours.tourbans.splice(index,1)
-                sys.sendMessage(src, Config.Tours.tourbot+"You unbanned "+toCorrectCase(tar)+" from tournaments!",tourschan)
-                return true;
-            }
             if (command == "evalvars") {
                 dumpVars(src)
                 return true;
             }
-            /*if (command == "sendall") { // unnecessary
-                sys.sendAll(sys.name(src) + ": " + commandData, tourschan);
-                return true;
-            }*/
             if (command == "fullleaderboard") {
                 try {
                     if (commandData == "") {
@@ -1177,9 +1134,53 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
             }
+            if (command == "tourbans") {
+                sys.sendMessage(src, "Active tourbans: "+tours.tourbans.join(", "),tourschan)
+                return true;
+            }
+            if (command == "tourban") {
+                var tar = commandData.toLowerCase();
+                if (sys.dbIp(tar) === undefined) {
+                    sys.sendMessage(src, Config.Tours.tourbot+"No such user",tourschan)
+                    return true;
+                }
+                if (sys.maxAuth(sys.dbIp(tar)) >= sys.auth(src)) {
+                    sys.sendMessage(src, Config.Tours.tourbot+"Can't ban higher auth",tourschan)
+                    return true;
+                }
+                var index = tours.tourbans.indexOf(tar)
+                if (index != -1) {
+                    sys.sendMessage(src, Config.Tours.tourbot+"They are already tourbanned!",tourschan)
+                    return true;
+                }
+                sys.sendAll(Config.Tours.tourbot+sys.name(src)+" unleashed their wrath on "+toCorrectCase(tar)+"!",tourschan)
+                if (sys.id(tar) !== undefined) {
+                    if (sys.isInChannel(sys.id(tar), tourschan)) {
+                        sys.kick(sys.id(tar), tourschan)
+                    }
+                }
+                sys.sendAll(Config.Tours.tourbot+"And "+toCorrectCase(tar)+" was gone!",tourschan)
+                tours.tourbans.push(tar)
+                return true;
+            }
+            if (command == "tourunban") {
+                var tar = commandData.toLowerCase();
+                if (sys.dbIp(tar) === undefined) {
+                    sys.sendMessage(src, Config.Tours.tourbot+"No such user",tourschan)
+                    return true;
+                }
+                var index = tours.tourbans.indexOf(tar)
+                if (index == -1) {
+                    sys.sendMessage(src, Config.Tours.tourbot+"They aren't tourbanned!",tourschan)
+                    return true;
+                }
+                tours.tourbans.splice(index,1)
+                sys.sendMessage(src, Config.Tours.tourbot+"You unbanned "+toCorrectCase(tar)+" from tournaments!",tourschan)
+                return true;
+            }
         }
         if (isTourAdmin(src)) {
-            if (command == "tour") {
+            if (command == "tour" || (command == "tourstart" && isTourSuperAdmin(src))) {
                 var data = commandData.split(":",2)
                 var thetier = data[0].toLowerCase()
                 var tiers = sys.getTierList()
@@ -1262,16 +1263,19 @@ function tourCommand(src, command, commandData) {
                 if (allgentiers.indexOf(tourtier) != -1 && parameters.gen === "default") {
                     parameters.gen = "5-1";
                 }
-                if (tours.queue.length >= Config.Tours.maxqueue && !isTourSuperAdmin(src)) {
+                if (tours.queue.length >= Config.Tours.maxqueue && !isTourSuperAdmin(src) && command == "tour") {
                     sys.sendMessage(src, Config.Tours.tourbot+"There are already "+Config.Tours.maxqueue+" or more tournaments in the queue, so you can't add another one!", tourschan)
                     return true;
                 }
-                else if (tours.keys.length > 0 || tours.queue.length > 0 || isSignups) {
+                else if (isSignups || ((tours.keys.length > 0 || tours.queue.length > 0) && command == "tour")) {
                     tours.queue.push(tourtier+":::"+sys.name(src)+":::"+parameters.mode+":::"+parameters.gen+":::"+parameters.type)
                     sys.sendAll(Config.Tours.tourbot+sys.name(src)+" added a "+tourtier+" tournament into the queue! Type /queue to see what is coming up next.",tourschan)
                 }
                 else {
                     tourstart(tourtier, sys.name(src), tours.key, parameters)
+                    if (command == "tourstart") {
+                        sys.sendAll(Config.Tours.tourbot+sys.name(src)+" force started this tournament!")
+                    }
                 }
                 addTourActivity(src)
                 return true;
@@ -3438,6 +3442,10 @@ function isTourMuted(src) {
 }
 
 function isTourBanned(src) {
+    // can't ban auth 2+
+    if (isTourSuperAdmin(src)){
+        return false;
+    }
     var ip = sys.ip(src);
     if (tours.tourbans.indexOf(sys.name(src).toLowerCase()) != -1) {
         return true;
@@ -3593,6 +3601,28 @@ function sendWelcomeMessage(src, chan) {
             sys.sendMessage(src, getFullTourName(x)+": Round "+tours.tour[x].round, chan)
         }
     }
+    sys.sendMessage(src,"",chan)
+    var nextstart = time_handle(tours.globaltime - parseInt(sys.time()))
+    for (var x in tours.tour) {
+        if (tours.tour[x].state == "signups") {
+            nextstart = "Pending";
+            break;
+        }
+    }
+    if (Config.Tours.maxrunning <= tours.keys.length && calcPercentage() >= Config.Tours.minpercent) {
+        nextstart = "Pending";
+    }
+    var nextmessage = "???"
+    if (queue.length >= 1) {
+        var tourdata = queue[0].split(":::",5)
+        if (nextstart != "Pending") {
+            nextmessage = queuedata[0]+"; Starts in "+nextstart;
+        }
+        else {
+            nextmessage = queuedata[0]+"; Start time TBA";
+        }
+    }
+    sys.sendMessage(src,"Next Tournament: "+nextmessage,chan)
     if (!sys.dbRegistered(sys.name(src))) {
         sys.sendMessage(src, Config.Tours.tourbot+"You need to register before playing in #"+sys.channel(chan)+"! Click on the 'Register' button below and follow the instructions!", chan);
     }
@@ -3648,7 +3678,7 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel === tourschan) {
+        if (channel === tourschan && !isTourBanned(src)) {
             return tourCommand(source, command, commandData)
         }
         return false;
@@ -3687,7 +3717,7 @@ module.exports = {
     },
     beforeChannelJoin : function (src, channel) {
         if (channel == tourschan) {
-            if (isTourBanned(src) && !isTourSuperAdmin(src)) {
+            if (isTourBanned(src)) {
                 sys.sendMessage(src,Config.Tours.tourbot+"You are tourbanned! You can't join unless the tour owners decide to unban you!")
                 sys.stopEvent();
             }
