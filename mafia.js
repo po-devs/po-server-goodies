@@ -2685,7 +2685,7 @@ function Mafia(mafiachan) {
             }
         }
         if (name.length > Config.Mafia.max_name_length) {
-            sys.sendMessage(src, "±Name: You're not allowed to have more than 12 letters in your name!", mafiachan);
+            sys.sendMessage(src, "±Name: You're not allowed to have more than "+Config.Mafia.max_name_length+" letters in your name!", mafiachan);
             sys.sendMessage(src, "±Rule: You must change it if you want to join!", mafiachan);
             return;
         }

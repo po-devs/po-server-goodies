@@ -500,7 +500,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.330b",
+            version: "1.330",
             debug: false,
             points: true
         }
@@ -536,7 +536,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.330b",
+        version: "1.330",
         debug: false,
         points: true
     }
@@ -3437,6 +3437,19 @@ function isTourMuted(src) {
     }
 }
 
+function isTourBanned(src) {
+    var ip = sys.ip(src);
+    if (tours.tourbans.indexOf(sys.name(src).toLowerCase()) != -1) {
+        return true;
+    }
+    for (var x in tours.tourbans) {
+        if (sys.dbIp(tours.tourbans[x]) == ip) {
+            return true;
+        }
+    }
+    return false;
+}
+
 // writes tourmutes to tourmutes.txt
 function saveTourMutes() {
     sys.writeToFile("tourmutes.txt", "")
@@ -3674,7 +3687,7 @@ module.exports = {
     },
     beforeChannelJoin : function (src, channel) {
         if (channel == tourschan) {
-            if (tours.tourbans.indexOf(sys.name(src).toLowerCase()) != -1 && !isTourSuperAdmin(src)) {
+            if (isTourBanned(src) && !isTourSuperAdmin(src)) {
                 sys.sendMessage(src,Config.Tours.tourbot+"You are tourbanned! You can't join unless the tour owners decide to unban you!")
                 sys.stopEvent();
             }
