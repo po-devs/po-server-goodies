@@ -3614,7 +3614,7 @@ function sendWelcomeMessage(src, chan) {
     }
     var nextmessage = "???"
     if (queue.length >= 1) {
-        var tourdata = queue[0].split(":::",5)
+        var tourdata = tours.queue[0].split(":::",5)
         if (nextstart != "Pending") {
             nextmessage = queuedata[0]+"; Starts in "+nextstart;
         }
@@ -3678,7 +3678,7 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel === tourschan && !isTourBanned(src)) {
+        if (channel === tourschan && !isTourBanned(source)) {
             return tourCommand(source, command, commandData)
         }
         return false;
