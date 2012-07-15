@@ -4559,7 +4559,7 @@ beforeChallengeIssued : function (src, dest, clauses, rated, mode, team, destTie
         return;
     }
 
-    var isChallengeCup = sys.getClauses(sys.tier(src,team))%32 >= 16 || sys.getClauses(destTier)%32 >= 16;
+    var isChallengeCup = /*sys.getClauses(sys.tier(src,team))%32 >= 16 ||*/ sys.getClauses(destTier)%32 >= 16;
     var hasChallengeCupClause = (clauses % 32) >= 16;
     if (isChallengeCup && !hasChallengeCupClause) {
         checkbot.sendMessage(src, "Challenge Cup must be enabled in the challenge window for a CC battle");
