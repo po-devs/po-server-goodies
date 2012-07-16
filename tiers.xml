@@ -12,10 +12,37 @@
   <tier pokemons="Arceus, Celebi, Chatot, Darkrai, Deoxys, Deoxys-A, Deoxys-D, Deoxys-S, Dialga, Giratina, Giratina-O, Groudon, Ho-Oh, Jirachi, Kyogre, Lugia, Manaphy, Meloetta, Mew, Mewtwo, Palkia, Phione, Rayquaza, Shaymin, Shaymin-S" restrictedPokemons="" tableName="tier_gbutriples" banMode="ban" maxLevel="50" mode="2" displayOrder="4" gen="5" moves="" items="Custap Berry, Ganlon Berry, Lansat Berry, Liechi Berry, Micle Berry, Petaya Berry, Rowap Berry, Salac Berry, Soul Dew" banParent="" name="GBU Triples" numberOfPokemons="6" numberOfRestricted="1" subgen="1" clauses="Item Clause,Self-KO Clause,Species Clause,Wifi Battle"/>
  </category>
  <category displayOrder="-2" name="All Gens">
-  <tier pokemons="" restrictedPokemons="" tableName="tier_metronome" banMode="restrict" maxLevel="100" mode="0" displayOrder="0" gen="0" moves="Metronome" items="Leppa Berry" banParent="" name="Metronome" numberOfPokemons="6" numberOfRestricted="1" subgen="0" clauses="Species Clause"/>
-  <tier pokemons="" restrictedPokemons="" tableName="tier_cc1v1" banMode="ban" maxLevel="100" mode="0" displayOrder="0" gen="0" moves="" items="" banParent="" name="CC 1v1" numberOfPokemons="1" numberOfRestricted="1" subgen="0" clauses="Challenge Cup,Self-KO Clause"/>
-  <tier pokemons="" restrictedPokemons="" tableName="tier_wificc1v1" banMode="ban" maxLevel="100" mode="0" displayOrder="0" gen="0" moves="" items="" banParent="" name="Wifi CC 1v1" numberOfPokemons="1" numberOfRestricted="1" subgen="0" clauses="Challenge Cup,Self-KO Clause,Wifi Battle"/>
-  <tier pokemons="" restrictedPokemons="" tableName="tier_challengecup" banMode="ban" maxLevel="100" mode="0" displayOrder="10" gen="0" moves="" items="" banParent="" name="Challenge Cup" numberOfPokemons="6" numberOfRestricted="1" subgen="0" clauses="Challenge Cup"/>
+  <category displayOrder="1" name="Gen 1">
+   <tier pokemons="" restrictedPokemons="" tableName="tier_redblue" banMode="ban" maxLevel="100" mode="0" displayOrder="1" gen="1" moves="" items="" banParent="" name="Red/Blue" numberOfPokemons="6" numberOfRestricted="1" subgen="0"/>
+   <tier pokemons="" restrictedPokemons="" tableName="tier_yellow" banMode="ban" maxLevel="100" mode="0" displayOrder="2" gen="1" moves="" items="" banParent="" name="Yellow" numberOfPokemons="6" numberOfRestricted="1" subgen="1"/>
+   <tier pokemons="" restrictedPokemons="" tableName="tier_stadium" banMode="ban" maxLevel="100" mode="0" displayOrder="3" gen="1" moves="" items="" banParent="" name="Stadium" numberOfPokemons="6" numberOfRestricted="1" subgen="2"/>
+   <tier pokemons="" restrictedPokemons="" tableName="tier_stadiumwtradebacks" banMode="ban" maxLevel="100" mode="0" displayOrder="4" gen="1" moves="" items="" banParent="" name="Stadium w/ Tradebacks" numberOfPokemons="6" numberOfRestricted="1" subgen="3"/>
+  </category>
+  <category displayOrder="2" name="Gen 2">
+   <tier pokemons="" restrictedPokemons="" tableName="tier_goldsilver" banMode="ban" maxLevel="100" mode="0" displayOrder="0" gen="2" moves="" items="" banParent="" name="Gold/Silver" numberOfPokemons="6" numberOfRestricted="1" subgen="0"/>
+   <tier pokemons="" restrictedPokemons="" tableName="tier_crystal" banMode="ban" maxLevel="100" mode="0" displayOrder="1" gen="2" moves="" items="" banParent="" name="Crystal" numberOfPokemons="6" numberOfRestricted="1" subgen="1"/>
+   <tier pokemons="" restrictedPokemons="" tableName="tier_stadium2" banMode="ban" maxLevel="100" mode="0" displayOrder="2" gen="2" moves="" items="" banParent="" name="Stadium 2" numberOfPokemons="6" numberOfRestricted="1" subgen="2"/>
+  </category>
+  <category displayOrder="3" name="Gen 3">
+   <tier pokemons="" restrictedPokemons="" tableName="tier_rubysapphire" banMode="ban" maxLevel="100" mode="0" displayOrder="0" gen="3" moves="" items="" banParent="" name="Ruby/Sapphire" numberOfPokemons="6" numberOfRestricted="1" subgen="0"/>
+   <tier pokemons="" restrictedPokemons="" tableName="tier_colosseum" banMode="ban" maxLevel="100" mode="0" displayOrder="1" gen="3" moves="" items="" banParent="" name="Colosseum" numberOfPokemons="6" numberOfRestricted="1" subgen="1"/>
+   <tier pokemons="" restrictedPokemons="" tableName="tier_fireredleafgreen" banMode="ban" maxLevel="100" mode="0" displayOrder="2" gen="3" moves="" items="" banParent="" name="Fire Red/Leaf Green" numberOfPokemons="6" numberOfRestricted="1" subgen="2"/>
+   <tier pokemons="" restrictedPokemons="" tableName="tier_emerald" banMode="ban" maxLevel="100" mode="0" displayOrder="3" gen="3" moves="" items="" banParent="" name="Emerald" numberOfPokemons="6" numberOfRestricted="1" subgen="3"/>
+   <tier pokemons="" restrictedPokemons="" tableName="tier_xd" banMode="ban" maxLevel="100" mode="0" displayOrder="4" gen="3" moves="" items="" banParent="" name="XD" numberOfPokemons="6" numberOfRestricted="1" subgen="4"/>
+  </category>
+  <category displayOrder="4" name="Gen 4">
+   <tier pokemons="" restrictedPokemons="" tableName="tier_diamondpearl" banMode="ban" maxLevel="100" mode="0" displayOrder="0" gen="4" moves="" items="" banParent="" name="Diamond/Pearl" numberOfPokemons="6" numberOfRestricted="1" subgen="0"/>
+   <tier pokemons="" restrictedPokemons="" tableName="tier_platinum" banMode="ban" maxLevel="100" mode="0" displayOrder="1" gen="4" moves="" items="" banParent="" name="Platinum" numberOfPokemons="6" numberOfRestricted="1" subgen="1"/>
+   <tier pokemons="" restrictedPokemons="" tableName="tier_heartgoldsoulsilver" banMode="ban" maxLevel="100" mode="0" displayOrder="2" gen="4" moves="" items="" banParent="" name="Heart Gold/Soul Silver" numberOfPokemons="6" numberOfRestricted="1" subgen="2"/>
+  </category>
+  <category displayOrder="5" name="Gen 5">
+   <tier pokemons="" restrictedPokemons="" tableName="tier_blackwhite" banMode="ban" maxLevel="100" mode="0" displayOrder="0" gen="5" moves="" items="" banParent="" name="Black/White" numberOfPokemons="6" numberOfRestricted="1" subgen="0"/>
+   <tier pokemons="" restrictedPokemons="" tableName="tier_blackwhite2" banMode="ban" maxLevel="100" mode="0" displayOrder="0" gen="5" moves="" items="" banParent="" name="Black/White 2" numberOfPokemons="6" numberOfRestricted="1" subgen="1"/>
+  </category>
+  <tier pokemons="" restrictedPokemons="" tableName="tier_metronome" banMode="restrict" maxLevel="100" mode="0" displayOrder="10" gen="0" moves="Metronome" items="Leppa Berry" banParent="" name="Metronome" numberOfPokemons="6" numberOfRestricted="1" subgen="0" clauses="Species Clause"/>
+  <tier pokemons="" restrictedPokemons="" tableName="tier_cc1v1" banMode="ban" maxLevel="100" mode="0" displayOrder="12" gen="0" moves="" items="" banParent="" name="CC 1v1" numberOfPokemons="1" numberOfRestricted="1" subgen="0" clauses="Challenge Cup,Self-KO Clause"/>
+  <tier pokemons="" restrictedPokemons="" tableName="tier_wificc1v1" banMode="ban" maxLevel="100" mode="0" displayOrder="13" gen="0" moves="" items="" banParent="" name="Wifi CC 1v1" numberOfPokemons="1" numberOfRestricted="1" subgen="0" clauses="Challenge Cup,Self-KO Clause,Wifi Battle"/>
+  <tier pokemons="" restrictedPokemons="" tableName="tier_challengecup" banMode="ban" maxLevel="100" mode="0" displayOrder="20" gen="0" moves="" items="" banParent="" name="Challenge Cup" numberOfPokemons="6" numberOfRestricted="1" subgen="0" clauses="Challenge Cup"/>
  </category>
  <category displayOrder="1" name="RBY">
   <tier pokemons="" restrictedPokemons="" tableName="tier_rbyubers" banMode="ban" maxLevel="100" mode="0" displayOrder="0" gen="1" moves="Double Team, Fissure, Guillotine, Horn Drill, Minimize" items="" banParent="" name="RBY Ubers" numberOfPokemons="6" numberOfRestricted="1" subgen="3" clauses="Freeze Clause,Sleep Clause,Species Clause"/>
