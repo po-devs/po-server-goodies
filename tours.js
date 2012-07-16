@@ -3399,7 +3399,7 @@ function isInTour(name) {
     var key = false;
     var testname = name.indexOf("~") === 0 ? name : name.toLowerCase();
     for (var x in tours.tour) {
-        if (tours.tour[x].players.indexOf(testname != -1) {
+        if (tours.tour[x].players.indexOf(testname != -1)) {
             var srcisintour = false;
             if (tours.tour[x].losers.indexOf(testname == -1)) {
                 srcisintour = true;
