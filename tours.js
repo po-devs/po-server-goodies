@@ -1374,7 +1374,7 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "dq") {
-                var key = isInTour(name)
+                var key = isInTour(commandData)
                 if (key === false) {
                     sys.sendMessage(src,Config.Tours.tourbot+"That player isn't in a tournament!",tourschan)
                     return true;
