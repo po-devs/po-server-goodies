@@ -505,7 +505,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.341",
+            version: "1.342",
             debug: false,
             points: true
         }
@@ -541,7 +541,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.341",
+        version: "1.342",
         debug: false,
         points: true
     }
@@ -1159,7 +1159,15 @@ function tourCommand(src, command, commandData) {
                 }
                 var key = isInTour(tar);
                 if (key !== false) {
-                    disqualify(tar.toLowerCase(), key, false)
+                    if (tours.tour[key].state == "signups") {
+                        var index = tours.tour[key].players.indexOf(tar.toLowerCase())
+                        tours.tour[key].players.splice(index, 1)
+                        tours.tour[key].cpt -= 1
+                        sys.sendAll(Config.Tours.tourbot+toCorrectCase(tar)+" was taken out of the tournament signups by "+sys.name(src)+" from the "+getFullTourName(key)+" tournament!", tourschan);
+                    }
+                    else {
+                        disqualify(tar.toLowerCase(), key, false)
+                    }
                 }
                 sys.sendAll(Config.Tours.tourbot+"And "+toCorrectCase(tar)+" was gone!",tourschan)
                 tours.tourbans.push(tar)
@@ -1501,7 +1509,15 @@ function tourCommand(src, command, commandData) {
                 tours.tourmutes[ip] = {'expiry': parseInt(sys.time()) + time, 'reason': reason, 'auth': sys.name(src), 'name': tar.toLowerCase()}
                 var key = isInTour(tar);
                 if (key !== false) {
-                    disqualify(tar.toLowerCase(), key, false)
+                    if (tours.tour[key].state == "signups") {
+                        var index = tours.tour[key].players.indexOf(tar.toLowerCase())
+                        tours.tour[key].players.splice(index, 1)
+                        tours.tour[key].cpt -= 1
+                        sys.sendAll(Config.Tours.tourbot+toCorrectCase(tar)+" was taken out of the tournament signups by "+sys.name(src)+" from the "+getFullTourName(key)+" tournament!", tourschan);
+                    }
+                    else {
+                        disqualify(tar.toLowerCase(), key, false)
+                    }
                 }
                 for (var x in channels) {
                     if (sys.existChannel(sys.channel(channels[x]))) {
