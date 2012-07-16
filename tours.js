@@ -1395,7 +1395,8 @@ function tourCommand(src, command, commandData) {
                 }
                 else {
                     sys.sendAll(Config.Tours.tourbot+sys.name(src)+" disqualified "+toCorrectCase(commandData)+" from the "+getFullTourName(key)+" tournament!", tourschan)
-                    disqualify(commandData.toLowerCase(), key, false)
+                    var tar = commandData.indexOf("~") === 0 ? commandData : commandData.toLowerCase();
+                    disqualify(tar, key, false)
                 }
                 addTourActivity(src)
                 return true;
