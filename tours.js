@@ -486,7 +486,7 @@ function sendAllTourAuth(message) {
     }
 }
 
-/* Get a config value 
+/* Get a config value
 Returns default if value doesn't exist*/
 function getConfigValue(file, key) {
     try {
@@ -970,7 +970,7 @@ function tourCommand(src, command, commandData) {
                         }
                     }
                 }
-                tadmins.push(commandData) 
+                tadmins.push(commandData)
                 tours.touradmins = tadmins
                 saveTourKeys()
                 sys.sendAll(Config.Tours.tourbot+sys.name(src)+" promoted "+commandData.toLowerCase()+" to a tournament admin!",tourschan)
@@ -995,7 +995,7 @@ function tourCommand(src, command, commandData) {
                     sys.sendMessage(src,Config.Tours.tourbot+"They are not a tour admin!",tourschan)
                     return true;
                 }
-                tadmins.splice(index,1) 
+                tadmins.splice(index,1)
                 tours.touradmins = tadmins
                 saveTourKeys()
                 sys.sendAll(Config.Tours.tourbot+sys.name(src)+" fired "+commandData.toLowerCase()+" from running tournaments!",tourschan)
@@ -1142,7 +1142,7 @@ function tourCommand(src, command, commandData) {
                     sys.sendMessage(src, Config.Tours.tourbot+"No such user",tourschan)
                     return true;
                 }
-                if (sys.dbAuth(tar) >= sys.auth(src) || isTourSuperAdmin(sys.id(tar))) {
+                if (sys.maxAuth(sys.dbIp(tar)) >= sys.auth(src) || isTourSuperAdmin(sys.id(tar))) {
                     sys.sendMessage(src, Config.Tours.tourbot+"Can't ban higher auth",tourschan)
                     return true;
                 }
@@ -1395,8 +1395,7 @@ function tourCommand(src, command, commandData) {
                 }
                 else {
                     sys.sendAll(Config.Tours.tourbot+sys.name(src)+" disqualified "+toCorrectCase(commandData)+" from the "+getFullTourName(key)+" tournament!", tourschan)
-                    var tar = commandData.indexOf("~") === 0 ? commandData : commandData.toLowerCase();
-                    disqualify(tar, key, false)
+                    disqualify(commandData.toLowerCase(), key, false)
                 }
                 addTourActivity(src)
                 return true;
@@ -1529,7 +1528,7 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "tourunmute") {
-                var ip = sys.dbIp(commandData) 
+                var ip = sys.dbIp(commandData)
                 if (ip === undefined) {
                     sys.sendMessage(src,Config.Tours.tourbot+"This person doesn't exist!",tourschan)
                     return true;
@@ -1931,14 +1930,14 @@ function tourCommand(src, command, commandData) {
                 }
                 if (oldname !== null) break;
             }
-            
+
             for (var s=0;s<tours.tour[key].seeds.length;s++) {
                 if (tours.tour[key].seeds[s] == sys.name(src).toLowerCase()) {
                     sys.sendMessage(src,Config.Tours.tourbot+"You can't sub in to the "+getFullTourName(key)+" tournament!",tourschan)
                     return true;
                 }
             }
-            
+
             if (oldname === null) {
                 sys.sendMessage(src,Config.Tours.tourbot+"There are no subs remaining in the "+getFullTourName(key)+" tournament!",tourschan)
                 return true;
@@ -2504,7 +2503,7 @@ function removebyes(key) {
         sys.sendAll("Error in process 'removebyes': "+err, tourserrchan)
     }
 }
-    
+
 function battleend(winner, loser, key) {
     try {
         var winname = sys.name(winner).toLowerCase()
@@ -2871,7 +2870,7 @@ function toursortbracket(size, key) {
     try {
         ladderlist = []
         // This algorithm will sort players by ranking. 1st is tier points, 2nd is overall tour points, 3rd is ladder rankings.
-        ladderlist.push(tours.tour[key].players[0]) 
+        ladderlist.push(tours.tour[key].players[0])
         for (var t=1; t<size; t++) {
             var added = false;
             var ishigher = false;
@@ -3397,15 +3396,14 @@ function isInSpecificTour(name, key) {
 
 function isInTour(name) {
     var key = false;
-    var testname = name.indexOf("~") === 0 ? name : name.toLowerCase();
     for (var x in tours.tour) {
-        if (tours.tour[x].players.indexOf(testname != -1)) {
+        if (tours.tour[x].players.indexOf(name.toLowerCase()) != -1) {
             var srcisintour = false;
-            if (tours.tour[x].losers.indexOf(testname == -1)) {
+            if (tours.tour[x].losers.indexOf(name.toLowerCase()) == -1) {
                 srcisintour = true;
             }
             if (tours.tour[x].parameters.type == "double") {
-                if (tours.tour[x].winbracket.indexOf(testname != -1 || tours.tour[x].round == 1)) {
+                if (tours.tour[x].winbracket.indexOf(name.toLowerCase()) != -1 || tours.tour[x].round == 1) {
                     srcisintour = true;
                 }
             }
@@ -3666,7 +3664,7 @@ module.exports = {
         if (pos != -1) {
             command = message.substring(0, pos).toLowerCase();
             commandData = message.substr(pos+1);
-        } 
+        }
         else {
             command = message.substr(0).toLowerCase();
         }
