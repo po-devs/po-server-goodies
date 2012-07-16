@@ -4609,6 +4609,20 @@ beforeBattleMatchup : function(src,dest,clauses,rated)
     if (callplugins("beforeBattleMatchup", src, dest, clauses, rated)) {
         sys.stopEvent();
     }
+    // warn players if their account is unregistered and ladder rating is >1200 or in top 5%
+    var players = [src,dest];
+    for (var p in players) {
+        var id = players[p];
+        if (sys.dbRegistered(sys.name(id))) {
+            continue;
+        }
+        for (var x=0;x<sys.teamcount(id);x++) {
+            var tier = sys.tier(id);
+            if (sys.ladderRating(id,tier) >= 1200 || sys.ranking(id,tier)/sys.totalPlayersByTier(tier) <= 0.05) {
+                sys.sendHtmlMessage(id,"<font color=red size="+(sys.ladderRating(id,tier) >= 1300 ? "7" : "5")+"><b>You currently have a high rating in "+tier+", but your account is not registered! Please register to protect your account from being stolen (click the register button below and follow the instructions)!</b></font><ping/>");
+            }
+        }
+    }
 }
 
 });
