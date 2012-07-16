@@ -1142,7 +1142,7 @@ function tourCommand(src, command, commandData) {
                     sys.sendMessage(src, Config.Tours.tourbot+"No such user",tourschan)
                     return true;
                 }
-                if (sys.maxAuth(sys.dbIp(tar)) >= sys.auth(src) || isTourSuperAdmin(sys.id(tar))) {
+                if (sys.dbAuth(tar) >= sys.auth(src) || isTourSuperAdmin(sys.id(tar))) {
                     sys.sendMessage(src, Config.Tours.tourbot+"Can't ban higher auth",tourschan)
                     return true;
                 }
@@ -3397,14 +3397,15 @@ function isInSpecificTour(name, key) {
 
 function isInTour(name) {
     var key = false;
+    var testname = name.indexOf("~") === 0 ? name : name.toLowerCase();
     for (var x in tours.tour) {
-        if (tours.tour[x].players.indexOf(name.toLowerCase()) != -1) {
+        if (tours.tour[x].players.indexOf(testname != -1) {
             var srcisintour = false;
-            if (tours.tour[x].losers.indexOf(name.toLowerCase()) == -1) {
+            if (tours.tour[x].losers.indexOf(testname == -1)) {
                 srcisintour = true;
             }
             if (tours.tour[x].parameters.type == "double") {
-                if (tours.tour[x].winbracket.indexOf(name.toLowerCase()) != -1 || tours.tour[x].round == 1) {
+                if (tours.tour[x].winbracket.indexOf(testname != -1 || tours.tour[x].round == 1)) {
                     srcisintour = true;
                 }
             }
