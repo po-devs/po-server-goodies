@@ -505,7 +505,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.340",
+            version: "1.341",
             debug: false,
             points: true
         }
@@ -541,7 +541,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.340",
+        version: "1.341",
         debug: false,
         points: true
     }
@@ -1057,11 +1057,9 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 /* Is already in another tour */
-                for (var x in tours.tour) {
-                    if (tours.tour[x].players.indexOf(target) != -1) {
-                        sys.sendMessage(src,Config.Tours.tourbot+"You can't push them in another tour!",tourschan)
-                        return true;
-                    }
+                if (isInTour(target) !== false) {
+                    sys.sendMessage(src,Config.Tours.tourbot+"You can't push them in another tour!",tourschan)
+                    return true;
                 }
                 tours.tour[key].players.push(target)
                 tours.tour[key].cpt += 1
@@ -1144,7 +1142,7 @@ function tourCommand(src, command, commandData) {
                     sys.sendMessage(src, Config.Tours.tourbot+"No such user",tourschan)
                     return true;
                 }
-                if (sys.maxAuth(sys.dbIp(tar)) >= sys.auth(src)) {
+                if (sys.maxAuth(sys.dbIp(tar)) >= sys.auth(src) || isTourSuperAdmin(sys.id(tar))) {
                     sys.sendMessage(src, Config.Tours.tourbot+"Can't ban higher auth",tourschan)
                     return true;
                 }
@@ -1158,6 +1156,10 @@ function tourCommand(src, command, commandData) {
                     if (sys.isInChannel(sys.id(tar), tourschan)) {
                         sys.kick(sys.id(tar), tourschan)
                     }
+                }
+                var key = isInTour(tar);
+                if (key !== false) {
+                    disqualify(tar.toLowerCase(), key, false)
                 }
                 sys.sendAll(Config.Tours.tourbot+"And "+toCorrectCase(tar)+" was gone!",tourschan)
                 tours.tourbans.push(tar)
@@ -1372,22 +1374,8 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "dq") {
-                var key = null
-                for (var x in tours.tour) {
-                    if (tours.tour[x].players.indexOf(commandData.toLowerCase()) != -1) {
-                        if (tours.tour[x].losers.indexOf(commandData.toLowerCase()) == -1) {
-                            key = x;
-                            break;
-                        }
-                        if (tours.tour[x].parameters.type == "double") {
-                            if (tours.tour[x].winbracket.indexOf(commandData.toLowerCase()) != -1 || tours.tour[x].round == 1) {
-                                key = x;
-                                break;
-                            }
-                        }
-                    }
-                }
-                if (key === null) {
+                var key = isInTour(name)
+                if (key === false) {
                     sys.sendMessage(src,Config.Tours.tourbot+"That player isn't in a tournament!",tourschan)
                     return true;
                 }
@@ -1405,14 +1393,8 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "cancelbattle") {
-                var key = null
-                for (var x in tours.tour) {
-                    if (tours.tour[x].players.indexOf(commandData.toLowerCase()) != -1) {
-                        key = x;
-                        break;
-                    }
-                }
-                if (key === null) {
+                var key = isInTour(name)
+                if (key === false) {
                     sys.sendMessage(src,Config.Tours.tourbot+"That player isn't in a tournament!",tourschan)
                     return true;
                 }
@@ -1443,7 +1425,7 @@ function tourCommand(src, command, commandData) {
                     sys.sendMessage(src,Config.Tours.tourbot+"Your target doesn't exist in a tournament!",tourschan)
                     return true;
                 }
-                if (isInTour(newname)) {
+                if (isInTour(newname) !== false) {
                     sys.sendMessage(src,Config.Tours.tourbot+"Your target is already in a tournament!",tourschan)
                     return true;
                 }
@@ -1517,6 +1499,10 @@ function tourCommand(src, command, commandData) {
                 }
                 var channels = [sys.channelId("Indigo Plateau"), sys.channelId("Victory Road"), tourschan]
                 tours.tourmutes[ip] = {'expiry': parseInt(sys.time()) + time, 'reason': reason, 'auth': sys.name(src), 'name': tar.toLowerCase()}
+                var key = isInTour(tar);
+                if (key !== false) {
+                    disqualify(tar.toLowerCase(), key, false)
+                }
                 for (var x in channels) {
                     if (sys.existChannel(sys.channel(channels[x]))) {
                         sys.sendAll(Config.Tours.tourbot+tar+" was tourmuted by "+sys.name(src)+" for "+time_handle(time)+"! "+(reason !== "" ? "[Reason: "+reason+"]" : ""), channels[x])
@@ -1821,7 +1807,7 @@ function tourCommand(src, command, commandData) {
                 sys.sendMessage(src, Config.Tours.tourbot+"You need to register to play in #"+sys.channel(tourschan)+"! Click on the 'Register' button below and follow the instructions!", tourschan);
                 return true;
             }
-            if (isTourMuted(src)) {
+            if (isTourMuted(src) || isTourBanned(src)) {
                 sys.sendMessage(src, Config.Tours.tourbot+"You are tourmuted so you are prohibited from playing!", tourschan);
                 return true;
             }
@@ -1861,28 +1847,15 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             /* Is already in another tour */
-            var isStillInTour = false;
-            for (var x in tours.tour) {
-                isStillInTour = false;
-                if (tours.tour[x].players.indexOf(sys.name(src).toLowerCase()) != -1) {
-                    if (tours.tour[x].losers.indexOf(sys.name(src).toLowerCase()) == -1) {
-                        isStillInTour = true;
-                    }
-                    if (tours.tour[x].parameters.type == "double") {
-                        if (tours.tour[x].winbracket.indexOf(sys.name(src).toLowerCase()) != -1 || tours.tour[x].round == 1) {
-                            isStillInTour = true;
-                        }
-                    }
+            var isStillInTour = isInTour(sys.name(src))
+            if (isStillInTour !== false) {
+                if (tours.tour[isStillInTour].state == "subround" || tours.tour[isStillInTour].state == "signups") {
+                    sys.sendMessage(src,Config.Tours.tourbot+"You can't join twice!",tourschan)
                 }
-                if (isStillInTour) {
-                    if (tours.tour[x].state == "subround" || tours.tour[x].state == "signups") {
-                        sys.sendMessage(src,Config.Tours.tourbot+"You can't join twice!",tourschan)
-                    }
-                    else {
-                        sys.sendMessage(src,Config.Tours.tourbot+"You can't join two tournaments at once with the same name!",tourschan)
-                    }
-                    return true;
+                else {
+                    sys.sendMessage(src,Config.Tours.tourbot+"You can't join two tournaments at once with the same name!",tourschan)
                 }
+                return true;
             }
             /* Multiple account check */
             for (var a=0; a<tours.tour[key].players.length; a++) {
@@ -1956,6 +1929,7 @@ function tourCommand(src, command, commandData) {
             var index = tours.tour[key].players.indexOf(oldname)
             var newname = sys.name(src).toLowerCase()
             tours.tour[key].players.splice(index,1,newname)
+            tours.tour[key].seeds.splice(tours.tour[key].cpt,1,newname)
             tours.tour[key].cpt += 1
             sys.sendAll(Config.Tours.tourbot+"Late entrant "+sys.name(src)+" will play against "+(index%2 == 0 ? toCorrectCase(tours.tour[key].players[index+1]) : toCorrectCase(tours.tour[key].players[index-1]))+" in the "+getFullTourName(key)+" tournament. "+(tours.tour[key].players.length - tours.tour[key].cpt)+" sub"+(tours.tour[key].players.length - tours.tour[key].cpt == 1 ? "" : "s") + " remaining.", tourschan)
             return true;
