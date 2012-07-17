@@ -2752,21 +2752,7 @@ function tourstart(tier, starter, key, parameters) {
         for (var x in channels) {
             sys.sendAll("", channels[x])
             sys.sendAll(border, channels[x])
-            if (Config.Tours.trollmode || (now.getUTCDate() == 1 && now.getUTCMonth == 3)) {
-                sys.webCall("https://raw.github.com/gist/3126982/540df252e00c22d62ed29860014d1f9909fa313b/gistfile1.txt", function(resp) {
-                    if (resp !== "") {
-                        var messages = resp.split("\n");
-                        var theurl = messages[sys.rand(0,messages.length)];
-                        sys.sendHtmlAll("<timestamp/> A <b><a href='"+theurl+"'>"+tier+"</a></b> tournament has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x])
-                    }
-                    else {
-                        sys.sendHtmlAll("<timestamp/> A <b><a href='http://wiki.pokemon-online.eu/view/"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> tournament has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x])
-                    }
-                });
-            }
-            else {
-                sys.sendHtmlAll("<timestamp/> A <b><a href='http://wiki.pokemon-online.eu/view/"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> tournament has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x])
-            }
+            sys.sendHtmlAll("<timestamp/> A <b><a href='http://wiki.pokemon-online.eu/view/"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> tournament has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x])
             sys.sendAll("CLAUSES: "+getTourClauses(tier),channels[x])
             sys.sendAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : ""), channels[x])
             if (channels[x] == tourschan) {
