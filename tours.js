@@ -505,9 +505,10 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.342",
+            version: "Trollface",
             debug: false,
-            points: true
+            points: true,
+            trollmode: true
         }
         var configkeys = sys.getValKeys(file)
         if (configkeys.indexOf(key) == -1) {
@@ -541,9 +542,10 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.342",
+        version: "Trollface",
         debug: false,
-        points: true
+        points: true,
+        trollmode: true
     }
     if (Config.Tours.tourbot === undefined) {
         Config.Tours.tourbot = "\u00B1Genesect: "
@@ -734,6 +736,16 @@ function tourBattleStart(src, dest, clauses, rated, mode, bid) {
         if (tours.tour[key].state == "final") {
             sys.sendHtmlAll("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font> <a href='po:watch/"+bid+"'>The final battle of the "+getFullTourName(key)+" tournament between <b>"+html_escape(sys.name(src))+"</b> and <b>"+html_escape(sys.name(dest))+"</b> just started!</a>",0)
             sys.sendHtmlAll("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font> <a href='po:watch/"+bid+"'>The final battle of the "+getFullTourName(key)+" tournament between <b>"+html_escape(sys.name(src))+"</b> and <b>"+html_escape(sys.name(dest))+"</b> just started!</a>",tourschan)
+        }
+        var now = new Date();
+        if (Config.Tours.trollmode/* && now.getUTCDate() == 1 && now.getUTCMonth == 3 (April 1st)*/) {
+            sys.webCall("https://raw.github.com/gist/3126982/540df252e00c22d62ed29860014d1f9909fa313b/gistfile1.txt", function(resp) {
+                if (resp !== "") {
+                    var messages = resp.split("\n");
+                    var url = messages[sys.rand(0,messages.length)];
+                    sys.sendHtmlAll("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font> <a href='"+url+"'>A battle in the "+getFullTourName(key)+" tournament between <b>"+html_escape(sys.name(src))+"</b> and <b>"+html_escape(sys.name(dest))+"</b> just started!</a>",tourschan)
+                }
+            });
         }
         return true;
     }
@@ -2726,10 +2738,20 @@ function tourstart(tier, starter, key, parameters) {
             tours.tour[key].winbracket = [];
             tours.tour[key].losebracket = [];
         }
+        var wikiurl = "http://wiki.pokemon-online.eu/view/"+tier.replace(/ /g,"_")
+        var now = new Date();
+        if (Config.Tours.trollmode/* && now.getUTCDate() == 1 && now.getUTCMonth == 3 (April 1st)*/) {
+            sys.webCall("https://raw.github.com/gist/3126982/540df252e00c22d62ed29860014d1f9909fa313b/gistfile1.txt", function(resp) {
+                if (resp !== "") {
+                    var messages = resp.split("\n");
+                    var wikiurl = messages[sys.rand(0,messages.length)];
+                }
+            });
+        }
         for (var x in channels) {
             sys.sendAll("", channels[x])
             sys.sendAll(border, channels[x])
-            sys.sendHtmlAll("<timestamp/> A <b><a href='http://wiki.pokemon-online.eu/view/"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> tournament has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x])
+            sys.sendHtmlAll("<timestamp/> A <b><a href='"+wikiurl+"'>"+tier+"</a></b> tournament has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x])
             sys.sendAll("CLAUSES: "+getTourClauses(tier),channels[x])
             sys.sendAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : ""), channels[x])
             if (channels[x] == tourschan) {
@@ -3723,7 +3745,7 @@ module.exports = {
     },
     beforeBattleMatchup : function(source, dest, clauses, rated) {
         var ret = false;
-        ret |= (isInTour(sys.name(source)) || isInTour(sys.name(dest)));
+        ret |= (isInTour(sys.name(source)) !== false || isInTour(sys.name(dest)) !== false);
         return ret;
     },
     beforeChatMessage : function(src, message, channel) {
