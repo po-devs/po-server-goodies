@@ -1596,7 +1596,7 @@ function tourCommand(src, command, commandData) {
             if (command == "configset") {
                 var data = commandData.split(':',2)
                 if (commandData.length < 2) {
-                    sys.sendMessage(src,"*** CONFIG SETTINGS ***",tourschan,);
+                    sys.sendMessage(src,"*** CONFIG SETTINGS ***",tourschan);
                     sys.sendMessage(src,"Usage: /configset [var]:[value]. Variable list and current values are below:",tourschan);
                     sys.sendMessage(src,"Example: '/configset maxqueue:3' will set the maximum queue length to 3:",tourschan);
                     sys.sendMessage(src,"maxqueue: "+Config.Tours.maxqueue,tourschan);
