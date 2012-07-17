@@ -81,19 +81,39 @@ var tourrules = ["*** TOURNAMENT GUIDELINES ***",
 
 function sendBotMessage(user, message, chan, html) {
     if (html) {
-        sys.sendHtmlMessage(user, "<font color="+Config.Tours.tourbotcolour+"><timestamp/><b>"+Config.Tours.tourbot+"</b></font>"+message,chan)
+        if (chan === "all") {
+            sys.sendHtmlMessage(user, "<font color="+Config.Tours.tourbotcolour+"><timestamp/><b>"+Config.Tours.tourbot+"</b></font>"+message)
+        }
+        else {
+            sys.sendHtmlMessage(user, "<font color="+Config.Tours.tourbotcolour+"><timestamp/><b>"+Config.Tours.tourbot+"</b></font>"+message,chan)
+        }
     }
     else {
-        sys.sendHtmlMessage(user, "<font color="+Config.Tours.tourbotcolour+"><timestamp/><b>"+Config.Tours.tourbot+"</b></font>"+html_escape(message),chan)
+        if (chan === "all") {
+            sys.sendHtmlMessage(user, "<font color="+Config.Tours.tourbotcolour+"><timestamp/><b>"+Config.Tours.tourbot+"</b></font>"+html_escape(message))
+        }
+        else {
+            sys.sendHtmlMessage(user, "<font color="+Config.Tours.tourbotcolour+"><timestamp/><b>"+Config.Tours.tourbot+"</b></font>"+html_escape(message),chan)
+        }
     }
 }
 
 function sendBotAll(message, chan, html) {
     if (html) {
-        sys.sendHtmlAll("<font color="+Config.Tours.tourbotcolour+"><timestamp/><b>"+Config.Tours.tourbot+"</b></font>"+message,chan)
+        if (chan === "all") {
+            sys.sendHtmlAll("<font color="+Config.Tours.tourbotcolour+"><timestamp/><b>"+Config.Tours.tourbot+"</b></font>"+message)
+        }
+        else {
+            sys.sendHtmlAll("<font color="+Config.Tours.tourbotcolour+"><timestamp/><b>"+Config.Tours.tourbot+"</b></font>"+message,chan)
+        }
     }
     else {
-        sys.sendHtmlAll("<font color="+Config.Tours.tourbotcolour+"><timestamp/><b>"+Config.Tours.tourbot+"</b></font>"+html_escape(message),chan)
+        if (chan === "all") {
+            sys.sendHtmlAll("<font color="+Config.Tours.tourbotcolour+"><timestamp/><b>"+Config.Tours.tourbot+"</b></font>"+html_escape(message))
+        }
+        else {
+            sys.sendHtmlAll("<font color="+Config.Tours.tourbotcolour+"><timestamp/><b>"+Config.Tours.tourbot+"</b></font>"+html_escape(message),chan)
+        }
     }
 }
 
@@ -523,7 +543,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.350",
+            version: "1.351",
             debug: false,
             points: true
         }
@@ -559,7 +579,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.350",
+        version: "1.351",
         debug: false,
         points: true
     }
@@ -837,7 +857,7 @@ function tourChallengeIssued(src, dest, clauses, rated, mode, team, destTier) {
     if ((srcindex != -1 || destindex != -1) && srcindex != null && destindex != null) {
         var tcomment = isValidTourBattle(src,dest,clauses,mode,team,destTier,key,true)
         if (tcomment != "Valid") {
-            sendBotMessage(src, tcomment, undefined, false);
+            sendBotMessage(src, tcomment, "all", false);
             return true;
         }
         markActive(src)
@@ -972,7 +992,7 @@ function tourCommand(src, command, commandData) {
                 if (!sys.dbRegistered(commandData)) {
                     sendBotMessage(src,"They aren't registered so you can't give them authority!",tourschan,false)
                     if (sys.id(commandData) !== undefined) {
-                        sendBotMessage(sys.id(commandData), "Please register ASAP, before getting tour authority.",undefined,false)
+                        sendBotMessage(sys.id(commandData), "Please register ASAP, before getting tour authority.","all",false)
                     }
                     return true;
                 }
@@ -1594,8 +1614,8 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "configset") {
-                var data = commandData.split(':',2)
-                if (commandData.length < 2) {
+                var pos = commandData.indexOf(":")
+                if (pos == -1) {
                     sys.sendMessage(src,"*** CONFIG SETTINGS ***",tourschan);
                     sys.sendMessage(src,"Usage: /configset [var]:[value]. Variable list and current values are below:",tourschan);
                     sys.sendMessage(src,"Example: '/configset maxqueue:3' will set the maximum queue length to 3:",tourschan);
@@ -1616,12 +1636,12 @@ function tourCommand(src, command, commandData) {
                     sys.sendMessage(src,"debug: "+Config.Tours.debug+" (to change this, type /configset debug [0/1] ~ true = 1; false = 0)",tourschan);
                     return true;
                 }
-                var option = data[0].toLowerCase()
+                var option = commandData.substr(0,pos).toLowerCase()
                 if (["botname", "bot name", "channel", "errchannel", "color", "colour"].indexOf(option) == -1) {
-                    var value = parseInt(data[1])
+                    var value = parseInt(commandData.substr(pos+1))
                 }
                 else {
-                    var value = data[1]
+                    var value = commandData.substr(pos+1)
                 }
                 if (option == 'maxqueue' || option == "maximum queue length") {
                     if (isNaN(value)) {
@@ -2390,8 +2410,8 @@ function sendReminder(key) {
                     sendBotMessage(sys.id(player), "<ping/><font color=red><timestamp/> "+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(getFullTourName(key))+"</b> tournament, otherwise you may be disqualified for inactivity! You should talk to your opponent in #"+sys.channel(tourschan)+" to avoid disqualification.</font>", tourschan, true)
                 }
                 else {
-                    sendBotMessage(sys.id(player), "<ping/><font color=red><timestamp/> "+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(getFullTourName(key))+"</b> tournament, otherwise you may be disqualified for inactivity! You should talk to your opponent in #"+sys.channel(tourschan)+" to avoid disqualification.</font>", undefined, true)
-                    sendBotMessage(sys.id(player), "Please rejoin the #"+Config.Tours.channel+" channel to ensure you do not miss out on information you need!", undefined, false)
+                    sendBotMessage(sys.id(player), "<ping/><font color=red><timestamp/> "+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(getFullTourName(key))+"</b> tournament, otherwise you may be disqualified for inactivity! You should talk to your opponent in #"+sys.channel(tourschan)+" to avoid disqualification.</font>", "all", true)
+                    sendBotMessage(sys.id(player), "Please rejoin the #"+Config.Tours.channel+" channel to ensure you do not miss out on information you need!", "all", false)
                 }
             }
         }
@@ -3748,7 +3768,7 @@ module.exports = {
     beforeChannelJoin : function (src, channel) {
         if (channel == tourschan) {
             if (isTourBanned(src)) {
-                sendBotMessage(src,"You are tourbanned! You can't join unless the tour owners decide to unban you!", undefined, false)
+                sendBotMessage(src,"You are tourbanned! You can't join unless the tour owners decide to unban you!", "all", false)
                 sys.stopEvent();
             }
         }
