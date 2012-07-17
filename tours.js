@@ -543,7 +543,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.352 Trollface",
+            version: "1.353",
             debug: false,
             points: true
         }
@@ -579,7 +579,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.352 Trollface",
+        version: "1.353",
         debug: false,
         points: true
     }
@@ -1919,17 +1919,17 @@ function tourCommand(src, command, commandData) {
                 }
             }
             if (!isInCorrectGen) {
-                sendBotMessage(src, "Your generation must be set to "+getSubgen(tours.tour[key].parameters.gen, true)+". Change it in the teambuilder.",false)
+                sendBotMessage(src, "Your generation must be set to "+getSubgen(tours.tour[key].parameters.gen, true)+". Change it in the teambuilder.",tourschan,false)
                 return true;
             }
             /* Is already in another tour */
             var isStillInTour = isInTour(sys.name(src))
             if (isStillInTour !== false) {
                 if (tours.tour[isStillInTour].state == "subround" || tours.tour[isStillInTour].state == "signups") {
-                    sendBotMessage(src, "You can't join twice!",false)
+                    sendBotMessage(src, "You can't join twice!",tourschan,false)
                 }
                 else {
-                    sendBotMessage(src, "You can't join two tournaments at once with the same name!",false)
+                    sendBotMessage(src, "You can't join two tournaments at once with the same name!",tourschan,false)
                 }
                 return true;
             }
