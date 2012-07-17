@@ -505,10 +505,10 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "Trollface",
+            version: "1.342 DEAD MOOGLES",
             debug: false,
             points: true,
-            trollmode: true
+            trollmode: false
         }
         var configkeys = sys.getValKeys(file)
         if (configkeys.indexOf(key) == -1) {
@@ -542,10 +542,10 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "Trollface",
+        version: "1.342 DEAD MOOGLES",
         debug: false,
         points: true,
-        trollmode: true
+        trollmode: false
     }
     if (Config.Tours.tourbot === undefined) {
         Config.Tours.tourbot = "\u00B1Genesect: "
@@ -861,6 +861,16 @@ function tourCommand(src, command, commandData) {
             }
             if (command == "evalvars") {
                 dumpVars(src)
+                return true;
+            }
+            if (command == "trollmode") {
+                if (commandData == "off") {
+                    Config.Tours.trollmode = false;
+                }
+                else {
+                    Config.Tours.trollmode = true;
+                }
+                sys.sendMessage(src,"Trollmode was turned "+(Config.Tours.trollmode ? "on" : "off"), tourschan)
                 return true;
             }
             if (command == "fullleaderboard") {
@@ -2744,7 +2754,7 @@ function tourstart(tier, starter, key, parameters) {
             sys.webCall("https://raw.github.com/gist/3126982/540df252e00c22d62ed29860014d1f9909fa313b/gistfile1.txt", function(resp) {
                 if (resp !== "") {
                     var messages = resp.split("\n");
-                    var wikiurl = messages[sys.rand(0,messages.length)];
+                    wikiurl = messages[sys.rand(0,messages.length)];
                 }
             });
         }
