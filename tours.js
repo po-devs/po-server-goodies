@@ -505,10 +505,9 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.342 DEAD MOOGLES",
+            version: "1.342",
             debug: false,
-            points: true,
-            trollmode: false
+            points: true
         }
         var configkeys = sys.getValKeys(file)
         if (configkeys.indexOf(key) == -1) {
@@ -542,10 +541,9 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.342 DEAD MOOGLES",
+        version: "1.342",
         debug: false,
-        points: true,
-        trollmode: false
+        points: true
     }
     if (Config.Tours.tourbot === undefined) {
         Config.Tours.tourbot = "\u00B1Genesect: "
@@ -733,19 +731,9 @@ function tourBattleStart(src, dest, clauses, rated, mode, bid) {
         tours.tour[key].battlers.push(name1, name2)
         tours.tour[key].active[name1] = "Battle"
         tours.tour[key].active[name2] = "Battle"// this avoids dq later since they made an attempt to start
-        var now = new Date();
         if (tours.tour[key].state == "final") {
             sys.sendHtmlAll("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font> <a href='po:watch/"+bid+"'>The final battle of the "+getFullTourName(key)+" tournament between <b>"+html_escape(sys.name(src))+"</b> and <b>"+html_escape(sys.name(dest))+"</b> just started!</a>",0)
             sys.sendHtmlAll("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font> <a href='po:watch/"+bid+"'>The final battle of the "+getFullTourName(key)+" tournament between <b>"+html_escape(sys.name(src))+"</b> and <b>"+html_escape(sys.name(dest))+"</b> just started!</a>",tourschan)
-        }
-        else if (Config.Tours.trollmode || (now.getUTCDate() == 1 && now.getUTCMonth == 3)) {
-            sys.webCall("https://raw.github.com/gist/3126982/540df252e00c22d62ed29860014d1f9909fa313b/gistfile1.txt", function(resp) {
-                if (resp !== "") {
-                    var messages = resp.split("\n");
-                    var url = messages[sys.rand(0,messages.length)];
-                    sys.sendHtmlAll("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+html_escape(Config.Tours.tourbot)+"</b></font> <a href='"+url+"'>A battle in the "+getFullTourName(key)+" tournament between <b>"+html_escape(sys.name(src))+"</b> and <b>"+html_escape(sys.name(dest))+"</b> just started!</a>",tourschan)
-                }
-            });
         }
         return true;
     }
@@ -861,16 +849,6 @@ function tourCommand(src, command, commandData) {
             }
             if (command == "evalvars") {
                 dumpVars(src)
-                return true;
-            }
-            if (command == "trollmode") {
-                if (commandData == "off") {
-                    Config.Tours.trollmode = false;
-                }
-                else {
-                    Config.Tours.trollmode = true;
-                }
-                sys.sendMessage(src,"Trollmode was turned "+(Config.Tours.trollmode ? "on" : "off"), tourschan)
                 return true;
             }
             if (command == "fullleaderboard") {
@@ -2748,7 +2726,6 @@ function tourstart(tier, starter, key, parameters) {
             tours.tour[key].winbracket = [];
             tours.tour[key].losebracket = [];
         }
-        var now = new Date();
         for (var x in channels) {
             sys.sendAll("", channels[x])
             sys.sendAll(border, channels[x])
