@@ -1018,8 +1018,7 @@ exports.init = function trivia_init()
 {
 	triviachan = sys.channelId('Trivia');
 	revchan = sys.channelId('TrivReview');
-	if(typeof Trivia === "undefined" || typeof Trivia != "object"){
-			if (Trivia.started == false)
+	if(typeof Trivia === "undefined" || typeof Trivia != "object") {
 			Trivia = new TriviaGame();
 			triviaq = new QuestionHolder("triviaq.json");
 			trivreview = new QuestionHolder("trivreview.json");
