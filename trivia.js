@@ -6,10 +6,12 @@ var utilities = require("utilities.js");
 
 var triviachan, revchan;
 var triviabot = new Bot("Psyduck"),
-	Trivia = new TriviaGame(),
 	triviaq = new QuestionHolder("triviaq.json"),
 	trivreview = new QuestionHolder("trivreview.json"),
 	tadmin = new TriviaAdmin("tadmins.txt");
+	if (Trivia.started == false || typeof Trivia != "object") {
+		Trivia = new TriviaGame();
+	}
 
 function time()
 {
@@ -152,7 +154,8 @@ try { // Do not indent this, it is only until this starts to work
                 var responseTime = this.submittedAnswers[id].time;
                 var realTime = time();
                 var minus = realTime - responseTime;
-                var pointAdd = minus > 6 ? 5 : (minus < 7 && minus > 3 ? 3 : 2);
+                //var pointAdd = minus > 6 ? 5 : (minus < 7 && minus > 3 ? 3 : 2);
+                var pointAdd = minus < 7 ? 5 : (minus < 9 ? 3 : 1);
                 sys.sendMessage(sys.id("Lamperi"), "TriviaPointDebug: took" + minus + " seconds, point add is " + pointAdd + ".", triviachan);
 				// TODO: check answer length, and base pointAdd off of that?
 
@@ -1015,7 +1018,8 @@ exports.init = function trivia_init()
 {
 	triviachan = sys.channelId('Trivia');
 	revchan = sys.channelId('TrivReview');
-	if(typeof Trivia === "undefined"){
+	if(typeof Trivia === "undefined" || typeof Trivia != "object"){
+			if (Trivia.started == false)
 			Trivia = new TriviaGame();
 			triviaq = new QuestionHolder("triviaq.json");
 			trivreview = new QuestionHolder("trivreview.json");
