@@ -543,7 +543,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.353",
+            version: "1.354",
             debug: false,
             points: true
         }
@@ -579,7 +579,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.353",
+        version: "1.354",
         debug: false,
         points: true
     }
@@ -1270,7 +1270,7 @@ function tourCommand(src, command, commandData) {
                         var parameterset = parameterinfo[0]
                         var parametervalue = parameterinfo[1]
                         if (cmp(parameterset, "mode")) {
-                            var singlesonlytiers = ["DW 1v1", "DW 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "DW OU", "DW Ubers", "Wifi OU", "Wifi Ubers"];
+                            var singlesonlytiers = ["DW 1v1", "DW 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "No Preview OU", "No Preview Ubers", "Wifi OU", "Wifi Ubers"];
                             if ((modeOfTier(tourtier) == "Doubles" || modeOfTier(tourtier) == "Triples" || singlesonlytiers.indexOf(tourtier) != -1) && !cmp(parametervalue, modeOfTier(tourtier))) {
                                 sendBotMessage(src, "The "+tourtier+" tier can only be played in " + modeOfTier(tourtier) + " mode!", tourschan, false);
                                 return true;
@@ -1955,19 +1955,19 @@ function tourCommand(src, command, commandData) {
                         }
                         else if (tours.tour[key].maxcpt == 17) {
                             tours.tour[key].time += Math.floor(Config.Tours.toursignup/3)
-                            sendBotAll("Over 16 players have joined the "+getFullTourName(key)+" tournament in #"+sys.channel(tourschan)+"! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0,false)
+                            sendBotAll("Over 16 players have joined the "+html_escape(getFullTourName(key))+" tournament in <a href='po:join/"+html_escape(sys.channel(tourschan))+"'>#"+html_escape(sys.channel(tourschan))+"</a>! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0,true)
                         }
                         else if (tours.tour[key].maxcpt == 33) {
                             tours.tour[key].time += Math.floor(Config.Tours.toursignup/2)
-                            sendBotAll("Over 32 players have joined the "+getFullTourName(key)+" tournament in #"+sys.channel(tourschan)+"! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0,false)
+                            sendBotAll("Over 32 players have joined the "+html_escape(getFullTourName(key))+" tournament in <a href='po:join/"+html_escape(sys.channel(tourschan))+"'>#"+html_escape(sys.channel(tourschan))+"</a>! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0,true)
                         }
                         else if (tours.tour[key].maxcpt == 65) {
                             tours.tour[key].time += Math.floor(Config.Tours.toursignup/1.5)
-                            sendBotAll("Over 64 players have joined the "+getFullTourName(key)+" tournament in #"+sys.channel(tourschan)+"! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0,false)
+                            sendBotAll("Over 64 players have joined the "+html_escape(getFullTourName(key))+" tournament in <a href='po:join/"+html_escape(sys.channel(tourschan))+"'>#"+html_escape(sys.channel(tourschan))+"</a>! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0,true)
                         }
                         else if (tours.tour[key].maxcpt == 129) {
                             tours.tour[key].time += Math.floor(Config.Tours.toursignup)
-                            sendBotAll("Over 128 players have joined the "+getFullTourName(key)+" tournament in #"+sys.channel(tourschan)+"! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0,false)
+                            sendBotAll("Over 128 players have joined the "+html_escape(getFullTourName(key))+" tournament in <a href='po:join/"+html_escape(sys.channel(tourschan))+"'>#"+html_escape(sys.channel(tourschan))+"</a>! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0,true)
                         }
                     }
                 }
@@ -2830,7 +2830,7 @@ function tourinitiate(key) {
     try {
         var size = tourmakebracket(key)
         if (size < 3) {
-            sendBotAll(Config.Tours.tourbot+"The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least 3 players! (A new tournament will start in "+time_handle(Config.Tours.tourbreak)+").", tourschan, false)
+            sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least 3 players! (A new tournament will start in "+time_handle(Config.Tours.tourbreak)+").", tourschan, false)
             delete tours.tour[key];
             tours.keys.splice(tours.keys.indexOf(key), 1)
             tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
