@@ -154,7 +154,7 @@ try { // Do not indent this, it is only until this starts to work
                 var minus = realTime - responseTime;
                 //var pointAdd = minus > 6 ? 5 : (minus < 7 && minus > 3 ? 3 : 2);
                 var pointAdd = minus < 7 ? 5 : (minus < 9 ? 3 : 1);
-                sys.sendMessage(sys.id("Lamperi"), "TriviaPointDebug: took" + minus + " seconds, point add is " + pointAdd + ".", triviachan);
+                //sys.sendMessage(sys.id("Lamperi"), "TriviaPointDebug: took" + minus + " seconds, point add is " + pointAdd + ".", triviachan);
 				// TODO: check answer length, and base pointAdd off of that?
 
                 answeredCorrectly.push(name);
