@@ -6,10 +6,12 @@ var utilities = require("utilities.js");
 
 var triviachan, revchan;
 var triviabot = new Bot("Psyduck"),
-	Trivia = new TriviaGame(),
 	triviaq = new QuestionHolder("triviaq.json"),
 	trivreview = new QuestionHolder("trivreview.json"),
 	tadmin = new TriviaAdmin("tadmins.txt");
+	if (Trivia.started == false || typeof Trivia != "object") {
+		Trivia = new TriviaGame();
+	}
 
 function time()
 {
@@ -1016,7 +1018,8 @@ exports.init = function trivia_init()
 {
 	triviachan = sys.channelId('Trivia');
 	revchan = sys.channelId('TrivReview');
-	if(typeof Trivia === "undefined"){
+	if(typeof Trivia === "undefined" || typeof Trivia != "object"){
+			if (Trivia.started == false)
 			Trivia = new TriviaGame();
 			triviaq = new QuestionHolder("triviaq.json");
 			trivreview = new QuestionHolder("trivreview.json");
