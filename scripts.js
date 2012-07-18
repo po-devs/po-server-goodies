@@ -2360,12 +2360,12 @@ modCommand: function(src, command, commandData, tar) {
         var cids = sys.channelIds();
         var l = [];
         for (var i = 0; i < cids.length; ++i) {
-            l.push([cids[i], sys.playersOfChannel(cids[i])]);
+            l.push([cids[i], sys.playersOfChannel(cids[i]).length]);
         }
         l.sort(function(a,b) { return b[1]-a[1]; });
-        var topchans = l.slice(-10);
+        var topchans = l.slice(0,10);
         channelbot.sendChanMessage(src, "Most used channels:");
-        for (var i = 0; i < topchans.lenth; ++i) {
+        for (var i = 0; i < topchans.length; ++i) {
             sendChanMessage(src, "" + sys.channel(topchans[i][0]) + " with " + topchans[i][1] + " players.");
         }
         return;
