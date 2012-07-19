@@ -580,7 +580,7 @@ addAdminCommand("removeq", function(src,commandData,channel) {
 addUserCommand("submitq", function(src, commandData, channel) {
     var user_ip = sys.ip(src), user_ban = submitBans[user_ip];
     if (user_ban !== undefined) {
-    	if (user_ban.expire !== undefined && user_ban.expire > sys.time()) {
+    	if (user_ban.expire !== undefined && user_ban.expire < sys.time()) {
  		delete submitBans[user_ip];
  		sys.writeToFile("submitBans.json", JSON.stringify(submitBans));
  		Trivia.sendPM(src, "Your submit ban has expired.", channel);
@@ -982,10 +982,11 @@ addAdminCommand("submitban", function(src, commandData, channel) {
 	}
 	var ableToBan = sys.dbAuth(name) < 1 && !tadmin.isTAdmin(name.toLowerCase());
 	var ip = (sys.id(name) !== undefined) ? sys.ip(sys.id(name)) : sys.dbIp(name);
-	expired = (submitBans[ip].expire == undefined) ? false : submitBans[ip].expire < sys.time();
-	if (submitBans[ip] !== undefined && !expired) {
-		triviabot.sendMessage(src, commandData+" is already banned from submitting.", channel);
-		return;
+	if (submitBans[ip] !== undefined) {
+		if (submitBans[ip].expire > sys.time()) {
+			triviabot.sendMessage(src, commandData+" is already banned from submitting.", channel);
+			return;
+		}
 	}
 	if (ableToBan) {
 		submitBans[ip] = {
@@ -1008,8 +1009,7 @@ addAdminCommand("submitunban", function(src, commandData, channel) {
 		return;
 	}
 	var ip = (sys.id(commandData) !== undefined) ? sys.ip(sys.id(commandData)) : sys.dbIp(commandData);
-	expired = (submitBans[ip].expire == undefined) ? false : submitBans[ip].expire < sys.time();
-	if (submitBans[ip] === undefined || expired){
+	if (submitBans[ip] === undefined) {
 		triviabot.sendMessage(src, commandData+" isn't banned from submitting.",channel);
 		return;
 	}
@@ -1161,5 +1161,5 @@ exports.init = function trivia_init()
 			tadmin = new TriviaAdmin("tadmins.txt");
 	}
 
-    Trivia.sendAll("Trivia is now running!");
+    //Trivia.sendAll("Trivia is now running!");
 };
