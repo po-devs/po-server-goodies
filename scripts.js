@@ -2977,6 +2977,9 @@ modCommand: function(src, command, commandData, tar) {
     if (cmp(sys.name(src),"aerith") && command == "updateplugin" && commandData == "tours.js") {
        return this.ownerCommand(src, command, commandData, tar);
     }
+    if (cmp(sys.name(src),"ethan") && command == "updateplugin" && commandData == "trivia.js") {
+       return this.ownerCommand(src, command, commandData, tar);
+    }
     return "no command";
 },
 
