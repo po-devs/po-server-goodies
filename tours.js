@@ -80,6 +80,9 @@ var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "- Attempting to circumvent the rules through trickery, proxy or other such methods will be punished."]
 
 function sendBotMessage(user, message, chan, html) {
+    if (user === undefined) {
+        return;
+    }
     if (html) {
         if (chan === "all") {
             sys.sendHtmlMessage(user, "<font color="+Config.Tours.tourbotcolour+"><timestamp/><b>"+Config.Tours.tourbot+"</b></font>"+message)
@@ -543,7 +546,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.354",
+            version: "1.355",
             debug: false,
             points: true
         }
@@ -579,7 +582,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.354",
+        version: "1.355",
         debug: false,
         points: true
     }
@@ -2007,7 +2010,9 @@ function tourCommand(src, command, commandData) {
             tours.tour[key].players.splice(index,1,newname)
             tours.tour[key].seeds.splice(tours.tour[key].cpt,1,newname)
             tours.tour[key].cpt += 1
-            sendBotAll("Late entrant "+sys.name(src)+" will play against "+(index%2 == 0 ? toCorrectCase(tours.tour[key].players[index+1]) : toCorrectCase(tours.tour[key].players[index-1]))+" in the "+getFullTourName(key)+" tournament. "+(tours.tour[key].players.length - tours.tour[key].cpt)+" sub"+(tours.tour[key].players.length - tours.tour[key].cpt == 1 ? "" : "s") + " remaining.", tourschan, false)
+            var oppname = index%2 == 0 ? toCorrectCase(tours.tour[key].players[index+1]) : toCorrectCase(tours.tour[key].players[index-1])
+            sendBotAll("Late entrant "+sys.name(src)+" will play against "+oppname+" in the "+getFullTourName(key)+" tournament. "+(tours.tour[key].players.length - tours.tour[key].cpt)+" sub"+(tours.tour[key].players.length - tours.tour[key].cpt == 1 ? "" : "s") + " remaining.", tourschan, false)
+            sendBotMessage(sys.id(oppname),"Late entrant "+html_escape(sys.name(src))+" will play against you in the "+html_escape(getFullTourName(key))+" tournament.<ping/>", tourschan, true)
             return true;
         }
         if (command == "unjoin") {
@@ -2796,7 +2801,7 @@ function tourstart(tier, starter, key, parameters) {
                 sys.sendHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, you have "+time_handle(Config.Tours.toursignup)+" to join!", channels[x])
             }
             else {
-                sys.sendAll("Go to the #"+sys.channel(tourschan)+" channel and type /join to enter the tournament, you have "+time_handle(Config.Tours.toursignup)+" to join!", channels[x])
+                sys.sendAll("*** Go to the #"+sys.channel(tourschan)+" channel and type /join to enter the tournament, you have "+time_handle(Config.Tours.toursignup)+" to join! ***", channels[x])
             }
             sys.sendAll(border, channels[x])
             sys.sendAll("", channels[x])
