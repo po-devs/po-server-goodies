@@ -70,6 +70,7 @@ function TriviaGame()
     this.roundQuestion = 0;
     this.answeringQuestion = false;
     this.triviaPoints = "";
+    this.startoff = false;
     if (this.lastStopped === undefined)
         this.lastStopped = time();
 }
@@ -95,6 +96,10 @@ TriviaGame.prototype.startTrivia = function(src,rand)
     {
         this.sendPM(src,"A trivia game has already started!", triviachan);
         return;
+    }
+    if (this.startoff == true) {
+    	this.sendPM(src, "/start is off. Most likely because Trivia is being updated.", channel);
+    	return;
     }
     var x = time() - this.lastStopped;
     if (x < 16){
@@ -931,6 +936,16 @@ addAdminCommand("resetvars", function(src, commandData, channel) {
 	tadmin = new TriviaAdmin("tadmins.txt");
 	triviabot.sendMessage(src, "Trivia was reset");
 }, "Allows you to reset variables");
+
+addAdminCommand("startoff", function(src, commandData, channel) {
+	if(sys.name(src).toLowerCase() !== "lamperi" && sys.name(src).toLowerCase() !== "ethan" && sys.name(src).toLowerCase() !== "crystal moogle"){
+		return;
+	}
+	Trivia.startoff = !Trivia.startoff;
+	x = (Trivia.startoff == true) ? "off" : "on";
+	trivia.sendMessage(src, "Start is now "+x, channel);
+}, "Disallow use of start");
+
 addAdminCommand("shove", function(src, commandData, channel){
 	var tar = sys.id(commandData);
 	if(tar === undefined){
