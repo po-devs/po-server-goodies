@@ -943,7 +943,7 @@ addAdminCommand("startoff", function(src, commandData, channel) {
 	}
 	Trivia.startoff = !Trivia.startoff;
 	x = (Trivia.startoff == true) ? "off" : "on";
-	trivia.sendMessage(src, "Start is now "+x, channel);
+	triviabot.sendMessage(src, "Start is now "+x, channel);
 }, "Disallow use of start");
 
 addAdminCommand("shove", function(src, commandData, channel){
