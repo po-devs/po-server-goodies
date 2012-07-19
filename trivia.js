@@ -922,7 +922,7 @@ addAdminCommand("submitban", function(src, commandData, channel) {
 			'by' : sys.name(src),
 			'name' : commandData
 		};
-		triviabot.sendAll(sys.name(src)+" banned "+commandData+" from submitting questions.", trivreview);
+		triviabot.sendAll(sys.name(src)+" banned "+commandData+" from submitting questions.", revchan);
 		return;
 	} else {
 		triviabot.sendMessage(src, "Sorry, you are unable to ban "+commandData+" from submitting.", channel);
@@ -941,7 +941,7 @@ addAdminCommand("submitunban", function(src, commandData, channel) {
 		return;
 	}
 	delete submitBans[ip];
-	triviabot.sendAll(sys.name(src)+" unbanned "+commandData+" from submitting questions.", trivreview);
+	triviabot.sendAll(sys.name(src)+" unbanned "+commandData+" from submitting questions.", revchan);
 	return;
 }, "Unban a user from submitting.");
 
