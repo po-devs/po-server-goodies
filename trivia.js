@@ -10,6 +10,8 @@ var triviabot = new Bot("Psyduck"),
 	triviaq = new QuestionHolder("triviaq.json"),
 	trivreview = new QuestionHolder("trivreview.json"),
 	tadmin = new TriviaAdmin("tadmins.txt");
+	
+submitBans = {}; // TODO: Make sure submit bans aren't removed every reload? Basics for now.
 
 function time()
 {
@@ -47,7 +49,7 @@ TriviaGame.prototype.sendPM = function(src, message, channel)
 
 TriviaGame.prototype.sendAll = function(message, channel)
 {
-    triviabot.sendAll(message, channel === undefined ? triviachan : channel);
+   triviabot.sendAll(message, channel === undefined ? triviachan : channel);
 };
 
 TriviaGame.prototype.startTrivia = function(src,rand)
@@ -534,6 +536,11 @@ addAdminCommand("removeq", function(src,commandData,channel) {
 },"Allows you to remove a question that has already been submitted, format /removeq [ID]");
 
 addUserCommand("submitq", function(src, commandData, channel) {
+    var user_ip = sys.ip(src);
+    if (submitBans[user_ip] !== undefined) {
+    	Trivia.sendPM(src, "Sorry, you are banned from submitting.", channel);
+    	return;
+    }
     commandData = commandData.split("*");
     if (commandData.length!=3)
     {
@@ -898,6 +905,61 @@ addAdminCommand("shove", function(src, commandData, channel){
 	}
 	Trivia.sendPM(src, "That person isn't playing!");
 }, "Allows you to remove a player from the game");
+
+addAdminCommand("submitban", function(src, commandData, channel) {
+	if (sys.dbIp(commandData) == undefined) {
+		triviabot.sendMessage(src, "He/She doesn't exist!");
+		return;
+	}
+	var ableToBan = sys.dbAuth(commandData) < 1 && !tadmin.isTAdmin(commandData.toLowerCase());
+	var ip = (sys.id(commandData) !== undefined) ? sys.ip(sys.id(commandData)) : sys.dbIp(commandData);
+	if (submitBans[ip] !== undefined) {
+		triviabot.sendMessage(src, commandData+" is already banned from submitting.", channel);
+		return;
+	}
+	if (ableToBan) {
+		submitBans[ip] = {
+			'by' : sys.name(src),
+			'name' : commandData
+		};
+		triviabot.sendAll(sys.name(src)+" banned "+commandData+" from submitting questions.", trivreview);
+		return;
+	} else {
+		triviabot.sendMessage(src, "Sorry, you are unable to ban "+commandData+" from submitting.", channel);
+		return;
+	}
+}, "Ban a user from submitting.");
+
+addAdminCommand("submitunban", function(src, commandData, channel) {
+	if (sys.dbIp(commandData) == undefined) {
+		triviabot.sendMessage(src, "He/She doesn't exist!");
+		return;
+	}
+	var ip = (sys.id(commandData) !== undefined) ? sys.ip(sys.id(commandData)) : sys.dbIp(commandData);
+	if (submitBans[ip] === undefined){
+		triviabot.sendMessage(src, commandData+" isn't banned from submitting.",channel);
+		return;
+	}
+	delete submitBans[ip];
+	triviabot.sendAll(sys.name(src)+" unbanned "+commandData+" from submitting questions.", trivreview);
+	return;
+}, "Unban a user from submitting.");
+
+addAdminCommand("submitbans", function(src, commandData, channel) {
+	if (Object.keys(submitBans) <= 0) {
+		triviabot.sendMessage(src, "There are no submit bans.", channel);
+		return;
+	}
+	// TODO: Make this look nicer later.
+	triviabot.sendMessage(src, "Current submit bans:", channel);
+	for (b in submitBans) {
+		ip = b;
+		who = submitBans.name;
+		by = submitBans.by;
+		triviabot.sendMessage(src, ip+" ("+who+"). Banned by "+by+".", channel);
+	}
+	return;
+}, "View submit bans.");
 
 // Normal command handling.
 exports.handleCommand = function trivia_handleCommand(src, command, channel)
