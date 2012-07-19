@@ -992,9 +992,9 @@ addAdminCommand("submitban", function(src, commandData, channel) {
 		submitBans[ip] = {
 			'by' : sys.name(src),
 			'name' : name,
-			'expire' : parseInt(time)*60
+			'expire' : parseInt(time)
 		};
-		triviabot.sendAll(sys.name(src)+" banned "+name+" from submitting questions for " + getTimeString(time*60) + ".", revchan);
+		triviabot.sendAll(sys.name(src)+" banned "+name+" from submitting questions for " + getTimeString(time) + ".", revchan);
 		sys.writeToFile("submitBans.json", JSON.stringify(submitBans));
 		return;
 	} else {
