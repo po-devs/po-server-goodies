@@ -11,7 +11,44 @@ var triviabot = new Bot("Psyduck"),
 	trivreview = new QuestionHolder("trivreview.json"),
 	tadmin = new TriviaAdmin("tadmins.txt");
 	
-submitBans = {}; // TODO: Make sure submit bans aren't removed every reload? Basics for now.
+// TODO: Load these from utilities.js
+
+function getSeconds(s) {
+        var parts = s.split(" ");
+        var secs = 0;
+        for (var i = 0; i < parts.length; ++i) {
+            var c = (parts[i][parts[i].length-1]).toLowerCase();
+            var mul = 60;
+            if (c == "s") { mul = 1; }
+            else if (c == "m") { mul = 60; }
+            else if (c == "h") { mul = 60*60; }
+            else if (c == "d") { mul = 24*60*60; }
+            else if (c == "w") { mul = 7*24*60*60; }
+            secs += mul * parseInt(parts[i], 10);
+        }
+        return secs;
+}
+
+function getTimeString(sec) {
+        var s = [];
+        var n;
+        var d = [[7*24*60*60, "week"], [24*60*60, "day"], [60*60, "hour"], [60, "minute"], [1, "second"]];
+        for (var j = 0; j < 5; ++j) {
+            n = parseInt(sec / d[j][0], 10);
+            if (n > 0) {
+                s.push((n + " " + d[j][1] + (n > 1 ? "s" : "")));
+                sec -= n * d[j][0];
+                if (s.length >= 2) break;
+            }
+        }
+        return s.join(", ");
+}
+
+try {
+	submitBans = JSON.parse(sys.getFileContent("submitBans.json"));
+} catch (e) {
+	submitBans = {};
+}
 
 function time()
 {
@@ -536,9 +573,15 @@ addAdminCommand("removeq", function(src,commandData,channel) {
 },"Allows you to remove a question that has already been submitted, format /removeq [ID]");
 
 addUserCommand("submitq", function(src, commandData, channel) {
-    var user_ip = sys.ip(src);
-    if (submitBans[user_ip] !== undefined) {
-    	Trivia.sendPM(src, "Sorry, you are banned from submitting.", channel);
+    var user_ip = sys.ip(src), user_ban = submitBans[user_ip];
+    if (user_ban !== undefined) {
+    	if (user_ban.expire !== undefined && user_ban.expire > sys.time()) {
+ 		delete submitBans[user_ip];
+ 		sys.writeToFile("submitBans.json", JSON.stringify(submitBans));
+ 		Trivia.sendPM(src, "Your submit ban has expired.", channel);
+ 		return;
+    	}
+    	Trivia.sendPM(src, "Sorry, you are banned from submitting. Time remaining: " + getTimeString(user_ban.expire - sys.time()) + ".", channel);
     	return;
     }
     commandData = commandData.split("*");
@@ -907,25 +950,39 @@ addAdminCommand("shove", function(src, commandData, channel){
 }, "Allows you to remove a player from the game");
 
 addAdminCommand("submitban", function(src, commandData, channel) {
-	if (sys.dbIp(commandData) == undefined) {
+	commandData = commandData.split(":");
+	if (commandData.length != 2) {
+		Trivia.sendPM(src, "Oops! Usage of this command is: /submitban name:time");
+		return;
+	}
+	var name = commandData[0];
+	if (isNaN(commandData[1][0])) {
+		var time = 1440; // converted to minutes later
+	} else {
+		var time = getSeconds(commandData[1]);
+	}
+	if (sys.dbIp(name) == undefined) {
 		triviabot.sendMessage(src, "He/She doesn't exist!");
 		return;
 	}
-	var ableToBan = sys.dbAuth(commandData) < 1 && !tadmin.isTAdmin(commandData.toLowerCase());
-	var ip = (sys.id(commandData) !== undefined) ? sys.ip(sys.id(commandData)) : sys.dbIp(commandData);
-	if (submitBans[ip] !== undefined) {
+	var ableToBan = sys.dbAuth(name) < 1 && !tadmin.isTAdmin(name.toLowerCase());
+	var ip = (sys.id(name) !== undefined) ? sys.ip(sys.id(name)) : sys.dbIp(name);
+	expired = submitBans[ip].expire < sys.time();
+	if (submitBans[ip] !== undefined && !expired) {
 		triviabot.sendMessage(src, commandData+" is already banned from submitting.", channel);
 		return;
 	}
 	if (ableToBan) {
 		submitBans[ip] = {
 			'by' : sys.name(src),
-			'name' : commandData
+			'name' : name,
+			'expire' : parseInt(time)*60
 		};
-		triviabot.sendAll(sys.name(src)+" banned "+commandData+" from submitting questions.", revchan);
+		triviabot.sendAll(sys.name(src)+" banned "+name+" from submitting questions for " + getTimeString(time*60) + " .", revchan);
+		sys.writeToFile("submitBans.json", JSON.stringify(submitBans));
 		return;
 	} else {
-		triviabot.sendMessage(src, "Sorry, you are unable to ban "+commandData+" from submitting.", channel);
+		triviabot.sendMessage(src, "Sorry, you are unable to ban "+name+" from submitting.", channel);
 		return;
 	}
 }, "Ban a user from submitting.");
@@ -936,11 +993,13 @@ addAdminCommand("submitunban", function(src, commandData, channel) {
 		return;
 	}
 	var ip = (sys.id(commandData) !== undefined) ? sys.ip(sys.id(commandData)) : sys.dbIp(commandData);
-	if (submitBans[ip] === undefined){
+	expired = submitBans[ip].expire < sys.time();
+	if (submitBans[ip] === undefined || expired){
 		triviabot.sendMessage(src, commandData+" isn't banned from submitting.",channel);
 		return;
 	}
 	delete submitBans[ip];
+	sys.writeToFile("submitBans.json", JSON.stringify(submitBans));
 	triviabot.sendAll(sys.name(src)+" unbanned "+commandData+" from submitting questions.", revchan);
 	return;
 }, "Unban a user from submitting.");
@@ -953,10 +1012,13 @@ addAdminCommand("submitbans", function(src, commandData, channel) {
 	// TODO: Make this look nicer later.
 	triviabot.sendMessage(src, "Current submit bans:", channel);
 	for (b in submitBans) {
-		ip = b;
-		who = submitBans[b].name;
-		by = submitBans[b].by;
-		triviabot.sendMessage(src, ip+" ("+who+"). Banned by "+by+".", channel);
+		if (submitBans[b].expire > sys.time()) {
+			ip = b;
+			who = submitBans[b].name;
+			by = submitBans[b].by;
+			time = getTimeString(submitBans[b].expire - sys.time());
+			triviabot.sendMessage(src, ip+" ("+who+"). Banned by "+by+". For: " + time+".", channel);
+		}
 	}
 	return;
 }, "View submit bans.");
@@ -1050,7 +1112,7 @@ try { // debug only, do not indent
     {
         if (joined === false && Trivia.answeringQuestion === true)
         {
-            Trivia.sendPM(src, "You haven't joined, so you are unable to submit an answer.");
+            Trivia.sendPM(src, "You haven't joined, so you are unable to submit an answer.", channel);
             return true;
         }
     }
@@ -1058,7 +1120,7 @@ try { // debug only, do not indent
     {
         if (message.length > 60)
         {
-            Trivia.sendPM(src,"Sorry! Your answer is too long.");
+            Trivia.sendPM(src,"Sorry! Your answer is too long.", channel);
             return true;
         }
 		
