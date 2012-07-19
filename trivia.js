@@ -954,8 +954,8 @@ addAdminCommand("submitbans", function(src, commandData, channel) {
 	triviabot.sendMessage(src, "Current submit bans:", channel);
 	for (b in submitBans) {
 		ip = b;
-		who = submitBans.name;
-		by = submitBans.by;
+		who = submitBans[b].name;
+		by = submitBans[b].by;
 		triviabot.sendMessage(src, ip+" ("+who+"). Banned by "+by+".", channel);
 	}
 	return;
