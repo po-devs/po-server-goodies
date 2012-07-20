@@ -936,18 +936,21 @@ addAdminCommand("resetvars", function(src, commandData, channel) {
 	if(sys.name(src).toLowerCase() !== "lamperi" && sys.name(src).toLowerCase() !== "ethan" && sys.name(src).toLowerCase() !== "crystal moogle"){
 		return;
 	}
-	try { 
-		Trivia.resetTrivia();
-		Trivia = new TriviaGame();
-		triviaq = new QuestionHolder("triviaq.json");
-		trivreview = new QuestionHolder("trivreview.json");
-		tadmin = new TriviaAdmin("tadmins.txt");
-		submitBans = {};
-	} catch (e) {
-		sys.sendMessage(src, e, channel);
-	}
-	triviabot.sendMessage(src, "Trivia vars were reset");
+	Trivia.resetTrivia();
+	Trivia = new TriviaGame();
+	triviaq = new QuestionHolder("triviaq.json");
+	trivreview = new QuestionHolder("trivreview.json");
+	tadmin = new TriviaAdmin("tadmins.txt");
+	triviabot.sendMessage(src, "Trivia vars were reset", channel);
 }, "Allows you to reset variables");
+
+addAdminCommand("resettriv", function(src, commandData, channel) {
+	if(sys.name(src).toLowerCase() !== "lamperi" && sys.name(src).toLowerCase() !== "ethan" && sys.name(src).toLowerCase() !== "crystal moogle"){
+		return;
+	}
+	Trivia = undefined;
+	triviabot.sendMessage(src, "test", channel);
+}, "Allows you to reset trivia");
 
 addAdminCommand("startoff", function(src, commandData, channel) {
 	if(sys.name(src).toLowerCase() !== "lamperi" && sys.name(src).toLowerCase() !== "ethan" && sys.name(src).toLowerCase() !== "crystal moogle"){
