@@ -133,6 +133,7 @@ TriviaGame.prototype.startTrivia = function(src,rand)
 
 TriviaGame.prototype.startTriviaRound = function()
 {
+	sys.sendMessage(sys.id("Ethan"), "TriviaDebug: "+this.started, triviachan);
     if (this.started === false)
         return;
     /* Reset submittedAnswers */
