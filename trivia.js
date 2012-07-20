@@ -535,7 +535,7 @@ TriviaAdmin.prototype.tAdminList = function(src,id)
     sys.sendMessage(src, "*** TRIVIA ADMINS ***" ,id);
     sys.sendMessage(src, "" ,id);
     for (var a in this.admins) {
-    	sys.sendMessage(src, this.admins[a] + (sys.id(a) == undefined ? "" : ":"),id);
+    	sys.sendMessage(src, this.admins[a] + (sys.id(this.admins[a]) == undefined ? "" : ":"),id);
     }
     sys.sendMessage(src, "" ,id);
 };
