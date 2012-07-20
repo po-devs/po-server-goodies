@@ -580,14 +580,8 @@ addAdminCommand("removeq", function(src,commandData,channel) {
 addUserCommand("submitq", function(src, commandData, channel) {
     var user_ip = sys.ip(src), user_ban = submitBans[user_ip];
     if (user_ban !== undefined) {
-    	if (user_ban.expire !== undefined && user_ban.expire < sys.time()) {
- 		delete submitBans[user_ip];
- 		sys.writeToFile("submitBans.json", JSON.stringify(submitBans));
- 		Trivia.sendPM(src, "Your submit ban has expired.", channel);
- 		return;
-    	}
-    	Trivia.sendPM(src, "Sorry, you are banned from submitting. Time remaining: " + getTimeString(user_ban.expire - sys.time()) + ".", channel);
-    	return;
+	Trivia.sendPM(src, "Sorry, you are banned from submitting.", channel);
+	return;
     }
     commandData = commandData.split("*");
     if (commandData.length!=3)
@@ -980,8 +974,7 @@ addAdminCommand("submitban", function(src, commandData, channel) {
 	if (ableToBan) {
 		submitBans[ip] = {
 			'by' : sys.name(src),
-			'name' : name,
-			'expire' : parseInt(sys.time()) + time
+			'name' : name
 		};
 		triviabot.sendAll(sys.name(src)+" banned "+name+" from submitting questions.", revchan);
 		sys.writeToFile("submitBans.json", JSON.stringify(submitBans));
