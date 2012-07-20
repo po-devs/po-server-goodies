@@ -121,9 +121,11 @@ TriviaGame.prototype.startTrivia = function(src,rand)
     this.maxPoints = rand;
     this.started = true;
     // TODO: enable when working
+    	sys.sendAll("", 0);
 	sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
-    this.sendAll("A #Trivia game was started! First to "+rand+" points wins!",0);
+    	this.sendAll("A #Trivia game was started! First to "+rand+" points wins!",0);
 	sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
+	sys.sendAll("", 0);
     this.sendAll(sys.name(src)+" started a trivia game! First to "+rand+" points wins!",triviachan);
     this.answeringQuestion = false;
     sys.delayedCall(function() { Trivia.startTriviaRound(); },15);
