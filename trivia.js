@@ -45,9 +45,17 @@ function getTimeString(sec) {
 }
 
 try {
-	submitBans = JSON.parse(sys.getFileContent("submitBans.json"));
+	trivData = JSON.parse(sys.getFileContent("trivData.json"));
 } catch (e) {
-	submitBans = {};
+	trivData = {};
+}
+
+if (trivData.submitBans == undefined) trivData.submitBans = {}; // submit bans
+if (trivData.toFlash == undefined) trivData.toFlash = {}; // who to flash when a game starts
+
+function saveData()
+{
+	sys.writeToFile("trivData.json", JSON.stringify(trivData));
 }
 
 function time()
@@ -121,10 +129,18 @@ TriviaGame.prototype.startTrivia = function(src,rand)
     this.maxPoints = rand;
     this.started = true;
     // TODO: enable when working
+    	sys.sendAll("", 0);
 	sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
-    this.sendAll("A #Trivia game was started! First to "+rand+" points wins!",0);
+    	this.sendAll("A #Trivia game was started! First to "+rand+" points wins!",0);
 	sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
+	sys.sendAll("", 0);
     this.sendAll(sys.name(src)+" started a trivia game! First to "+rand+" points wins!",triviachan);
+    var players = sys.playersOfChannel(triviachan);
+    for (p in players) {
+    	player_id = players[p], player_ip = sys.ip(player_id);
+    	if (trivData.toFlash[player_ip] !== undefined)
+    	sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
+    }
     this.answeringQuestion = false;
     sys.delayedCall(function() { Trivia.startTriviaRound(); },15);
 };
@@ -567,6 +583,20 @@ function addAdminCommand(commands, callback, help)
     return addCommand(adminCommands, commands, callback, help);
 }
 
+addUserCommand("flashme", function(src,commandData,channel) {
+	if (trivData.toFlash[sys.ip(src)] == undefined) {
+		trivData.toFlash[sys.ip(src)] = {};
+		saveData();
+		triviabot.sendMessage(src, "You are now going to be flashed when a game starts.");
+		return;
+	} else {
+		delete trivData.toFlash[sys.ip(src)];
+		saveData();
+		triviabot.sendMessage(src, "You are no longer going to be flashed when a game starts.");
+		return;
+	}
+},"Whether or not to flash you when a game starts");
+
 addUserCommand("goal", function(src,commandData,channel) {
 	if (Trivia.started === false)
 	{
@@ -588,7 +618,7 @@ addAdminCommand("removeq", function(src,commandData,channel) {
 },"Allows you to remove a question that has already been submitted, format /removeq [ID]");
 
 addUserCommand("submitq", function(src, commandData, channel) {
-    var user_ip = sys.ip(src), user_ban = submitBans[user_ip];
+    var user_ip = sys.ip(src), user_ban = trivData.submitBans[user_ip];
     if (user_ban !== undefined) {
 	Trivia.sendPM(src, "Sorry, you are banned from submitting.", channel);
 	return;
@@ -704,13 +734,13 @@ addAdminCommand("addallpokemon", function(src, commandData, channel) {
 	Trivia.addAllPokemon();
 },"Adds all the \"Who's that pokémon?\" questions");
 
-addAdminCommand("erasequestions", function(src, commandData, channel) {
+/*addAdminCommand("erasequestions", function(src, commandData, channel) {
 	if (sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "ethan"|| sys.name(src).toLowerCase() == "crystal moogle")
 	{
 		sys.writeToFile("triviaq.json","");
 		QuestionHolder.state = {freeId: 0, questions: {}};
 	}
-},"Erases all current questions");
+},"Erases all current questions");*/
 
 addAdminCommand("apropos", function(src, commandData, channel) {
     if (commandData === undefined)
@@ -934,12 +964,12 @@ addAdminCommand("resetvars", function(src, commandData, channel) {
 	if(sys.name(src).toLowerCase() !== "lamperi" && sys.name(src).toLowerCase() !== "ethan" && sys.name(src).toLowerCase() !== "crystal moogle"){
 		return;
 	}
+	Trivia.resetTrivia();
 	Trivia = new TriviaGame();
 	triviaq = new QuestionHolder("triviaq.json");
 	trivreview = new QuestionHolder("trivreview.json");
 	tadmin = new TriviaAdmin("tadmins.txt");
-	submitBans = {};
-	triviabot.sendMessage(src, "Trivia was reset");
+	triviabot.sendMessage(src, "Trivia vars were reset");
 }, "Allows you to reset variables");
 
 addAdminCommand("startoff", function(src, commandData, channel) {
@@ -977,17 +1007,17 @@ addAdminCommand("submitban", function(src, commandData, channel) {
 	}
 	var ableToBan = sys.dbAuth(name) < 1 && !tadmin.isTAdmin(name.toLowerCase());
 	var ip = (sys.id(name) !== undefined) ? sys.ip(sys.id(name)) : sys.dbIp(name);
-	if (submitBans[ip] !== undefined) {
+	if (trivData.submitBans[ip] !== undefined) {
 		triviabot.sendMessage(src, commandData+" is already banned from submitting.", channel);
 		return;
 	}
 	if (ableToBan) {
-		submitBans[ip] = {
+		trivData.submitBans[ip] = {
 			'by' : sys.name(src),
 			'name' : name
 		};
 		triviabot.sendAll(sys.name(src)+" banned "+name+" from submitting questions.", revchan);
-		sys.writeToFile("submitBans.json", JSON.stringify(submitBans));
+		saveData();
 		return;
 	} else {
 		triviabot.sendMessage(src, "Sorry, you are unable to ban "+name+" from submitting.", channel);
@@ -1001,27 +1031,27 @@ addAdminCommand("submitunban", function(src, commandData, channel) {
 		return;
 	}
 	var ip = (sys.id(commandData) !== undefined) ? sys.ip(sys.id(commandData)) : sys.dbIp(commandData);
-	if (submitBans[ip] === undefined) {
+	if (trivData.submitBans[ip] === undefined) {
 		triviabot.sendMessage(src, commandData+" isn't banned from submitting.",channel);
 		return;
 	}
-	delete submitBans[ip];
-	sys.writeToFile("submitBans.json", JSON.stringify(submitBans));
+	delete trivData.submitBans[ip];
+	saveData();
 	triviabot.sendAll(sys.name(src)+" unbanned "+commandData+" from submitting questions.", revchan);
 	return;
 }, "Unban a user from submitting.");
 
 addAdminCommand("submitbans", function(src, commandData, channel) {
-	if (Object.keys(submitBans) <= 0) {
+	if (Object.keys(trivData.submitBans) <= 0) {
 		triviabot.sendMessage(src, "There are no submit bans.", channel);
 		return;
 	}
 	// TODO: Make this look nicer later.
 	triviabot.sendMessage(src, "Current submit bans:", channel);
-	for (b in submitBans) {
+	for (b in trivData.submitBans) {
 		ip = b;
-		who = submitBans[b].name;
-		by = submitBans[b].by;
+		who = trivData.submitBans[b].name;
+		by = trivData.submitBans[b].by;
 		triviabot.sendMessage(src, ip+" ("+who+"). Banned by "+by+".", channel);
 	}
 	return;
@@ -1143,12 +1173,12 @@ exports.init = function trivia_init()
 {
 	triviachan = sys.channelId('Trivia');
 	revchan = sys.channelId('TrivReview');
-	if(typeof Trivia === "undefined" || typeof Trivia != "object") {
+	if (typeof Trivia === "undefined" || typeof Trivia != "object") {
 			Trivia = new TriviaGame();
 			triviaq = new QuestionHolder("triviaq.json");
 			trivreview = new QuestionHolder("trivreview.json");
 			tadmin = new TriviaAdmin("tadmins.txt");
 	}
 
-    //Trivia.sendAll("Trivia is now running!");
+    Trivia.sendAll("Trivia is now running!");
 };
