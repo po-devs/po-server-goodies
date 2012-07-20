@@ -133,7 +133,6 @@ TriviaGame.prototype.startTrivia = function(src,rand)
 
 TriviaGame.prototype.startTriviaRound = function()
 {
-	return;
     if (this.started === false)
         return;
     /* Reset submittedAnswers */
@@ -938,6 +937,7 @@ addAdminCommand("resetvars", function(src, commandData, channel) {
 		return;
 	}
 	try { 
+		Trivia.resetTrivia();
 		Trivia = new TriviaGame();
 		triviaq = new QuestionHolder("triviaq.json");
 		trivreview = new QuestionHolder("trivreview.json");
