@@ -934,6 +934,7 @@ addAdminCommand("resetvars", function(src, commandData, channel) {
 	triviaq = new QuestionHolder("triviaq.json");
 	trivreview = new QuestionHolder("trivreview.json");
 	tadmin = new TriviaAdmin("tadmins.txt");
+	submitBans = {};
 	triviabot.sendMessage(src, "Trivia was reset");
 }, "Allows you to reset variables");
 
@@ -965,17 +966,7 @@ addAdminCommand("shove", function(src, commandData, channel){
 }, "Allows you to remove a player from the game");
 
 addAdminCommand("submitban", function(src, commandData, channel) {
-	commandData = commandData.split(":");
-	if (commandData.length != 2) {
-		Trivia.sendPM(src, "Oops! Usage of this command is: /submitban name:time");
-		return;
-	}
-	var name = commandData[0];
-	if (isNaN(commandData[1][0])) {
-		var time = 1440; // converted to minutes later
-	} else {
-		var time = getSeconds(commandData[1]);
-	}
+	var name = commandData;
 	if (sys.dbIp(name) == undefined) {
 		triviabot.sendMessage(src, "He/She doesn't exist!");
 		return;
@@ -983,10 +974,8 @@ addAdminCommand("submitban", function(src, commandData, channel) {
 	var ableToBan = sys.dbAuth(name) < 1 && !tadmin.isTAdmin(name.toLowerCase());
 	var ip = (sys.id(name) !== undefined) ? sys.ip(sys.id(name)) : sys.dbIp(name);
 	if (submitBans[ip] !== undefined) {
-		if (submitBans[ip].expire > sys.time()) {
-			triviabot.sendMessage(src, commandData+" is already banned from submitting.", channel);
-			return;
-		}
+		triviabot.sendMessage(src, commandData+" is already banned from submitting.", channel);
+		return;
 	}
 	if (ableToBan) {
 		submitBans[ip] = {
@@ -994,7 +983,7 @@ addAdminCommand("submitban", function(src, commandData, channel) {
 			'name' : name,
 			'expire' : parseInt(sys.time()) + time
 		};
-		triviabot.sendAll(sys.name(src)+" banned "+name+" from submitting questions for " + getTimeString(time) + ".", revchan);
+		triviabot.sendAll(sys.name(src)+" banned "+name+" from submitting questions.", revchan);
 		sys.writeToFile("submitBans.json", JSON.stringify(submitBans));
 		return;
 	} else {
@@ -1027,13 +1016,10 @@ addAdminCommand("submitbans", function(src, commandData, channel) {
 	// TODO: Make this look nicer later.
 	triviabot.sendMessage(src, "Current submit bans:", channel);
 	for (b in submitBans) {
-		if (submitBans[b].expire > sys.time()) {
-			ip = b;
-			who = submitBans[b].name;
-			by = submitBans[b].by;
-			time = getTimeString(submitBans[b].expire - sys.time());
-			triviabot.sendMessage(src, ip+" ("+who+"). Banned by "+by+". For: " + time+".", channel);
-		}
+		ip = b;
+		who = submitBans[b].name;
+		by = submitBans[b].by;
+		triviabot.sendMessage(src, ip+" ("+who+"). Banned by "+by+".", channel);
 	}
 	return;
 }, "View submit bans.");
