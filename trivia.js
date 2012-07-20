@@ -1180,5 +1180,5 @@ exports.init = function trivia_init()
 			tadmin = new TriviaAdmin("tadmins.txt");
 	}
 
-    //Trivia.sendAll("Trivia is now running!");
+    Trivia.sendAll("Trivia is now running!");
 };
