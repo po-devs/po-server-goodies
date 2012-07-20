@@ -216,7 +216,7 @@ try { // Do not indent this, it is only until this starts to work
     this.sendAll("The correct "+x+": "+answers.join(", "),triviachan);
 
     var leaderboard = [];
-	var displayboard = []
+    var displayboard = []
     var winners = [];
     for (id in this.triviaPlayers)
     {
@@ -228,9 +228,9 @@ try { // Do not indent this, it is only until this starts to work
         }
     }
 	leaderboard.sort(function(a,b) { return b[1]-a[1]; });
-	for(x in leaderboard){
-		displayboard.push(leaderboard[x][0] + " (" + leaderboard[x][1] + ")")
-	}
+    for(x in leaderboard){
+        displayboard.push(leaderboard[x][0] + " (" + leaderboard[x][1] + ")")
+    }
     this.sendAll("Leaderboard: "+displayboard.join(", "),triviachan);
 
     if (winners.length > 0) {
