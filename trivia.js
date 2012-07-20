@@ -221,7 +221,7 @@ try { // Do not indent this, it is only until this starts to work
     for (id in this.triviaPlayers)
     {
         var nohtmlname = utilities.html_escape(this.triviaPlayers[id].name);
-        leaderboard.push(nohtmlname,this.triviaPlayers[id].points);
+        leaderboard.push([nohtmlname,this.triviaPlayers[id].points]);
         if (this.triviaPlayers[id].points >= this.maxPoints)
         {
             winners.push(nohtmlname + " (" + this.triviaPlayers[id].points + ")");
