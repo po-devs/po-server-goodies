@@ -134,7 +134,7 @@ TriviaGame.prototype.startTrivia = function(src,rand)
     	this.sendAll("A #Trivia game was started! First to "+rand+" points wins!",0);
 	sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
 	sys.sendAll("", 0);
-    //this.sendAll(sys.name(src)+" started a trivia game! First to "+rand+" points wins!",triviachan);
+    this.sendAll(sys.name(src)+" started a trivia game! First to "+rand+" points wins!",triviachan);
     var players = sys.playersOfChannel(triviachan);
     for (p in players) {
     	player_id = players[p], player_ip = sys.ip(player_id);
