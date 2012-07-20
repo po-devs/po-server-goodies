@@ -587,12 +587,12 @@ addUserCommand("flashme", function(src,commandData,channel) {
 	if (trivData.toFlash[sys.ip(src)] == undefined) {
 		trivData.toFlash[sys.ip(src)] = {};
 		saveData();
-		triviabot.sendMessage(src, "You are now going to be flashed when a game starts.");
+		triviabot.sendMessage(src, "You are now going to be flashed when a game starts.", channel);
 		return;
 	} else {
 		delete trivData.toFlash[sys.ip(src)];
 		saveData();
-		triviabot.sendMessage(src, "You are no longer going to be flashed when a game starts.");
+		triviabot.sendMessage(src, "You are no longer going to be flashed when a game starts.", channel);
 		return;
 	}
 },"Whether or not to flash you when a game starts");
