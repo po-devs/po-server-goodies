@@ -527,7 +527,13 @@ TriviaAdmin.prototype.isTAdmin = function(name)
 
 TriviaAdmin.prototype.tAdminList = function(src,id)
 {
-    sys.sendMessage(src,"Current trivia admins are: "+ this.admins.join(","),id);
+    sys.sendMessage(src, "" ,id);
+    sys.sendMessage(src, "*** TRIVIA ADMINS ***" ,id);
+    sys.sendMessage(src, "" ,id);
+    for (var a in this.admins) {
+    	sys.sendMessage(src, this.admins[a] + (sys.id(a) == undefined ? "" : ":"),id);
+    }
+    sys.sendMessage(src, "" ,id);
 };
 
 TriviaAdmin.prototype.save = function()
