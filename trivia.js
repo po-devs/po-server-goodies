@@ -98,7 +98,7 @@ TriviaGame.prototype.startTrivia = function(src,rand)
         return;
     }
     if (this.startoff == true) {
-    	this.sendPM(src, "/start is off. Most likely because Trivia is being updated.", channel);
+    	this.sendPM(src, "/start is off. Most likely because Trivia is being updated.", triviachan);
     	return;
     }
     var x = time() - this.lastStopped;
