@@ -133,6 +133,7 @@ TriviaGame.prototype.startTrivia = function(src,rand)
 
 TriviaGame.prototype.startTriviaRound = function()
 {
+	return;
     if (this.started === false)
         return;
     /* Reset submittedAnswers */
