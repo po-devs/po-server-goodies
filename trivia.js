@@ -216,18 +216,22 @@ try { // Do not indent this, it is only until this starts to work
     this.sendAll("The correct "+x+": "+answers.join(", "),triviachan);
 
     var leaderboard = [];
+	var displayboard = []
     var winners = [];
     for (id in this.triviaPlayers)
     {
         var nohtmlname = utilities.html_escape(this.triviaPlayers[id].name);
-        leaderboard.push(nohtmlname + " (" + this.triviaPlayers[id].points + ")");
+        leaderboard.push(nohtmlname,this.triviaPlayers[id].points);
         if (this.triviaPlayers[id].points >= this.maxPoints)
         {
             winners.push(nohtmlname + " (" + this.triviaPlayers[id].points + ")");
         }
     }
-
-    this.sendAll("Leaderboard: "+leaderboard.join(", "),triviachan);
+	leaderboard.sort(function(a,b) { return b[1]-a[1]; });
+	for(x in leaderboard){
+		displayboard.push(leaderboard[x][0] + " (" + leaderboard[x][1] + ")")
+	}
+    this.sendAll("Leaderboard: "+displayboard.join(", "),triviachan);
 
     if (winners.length > 0) {
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
