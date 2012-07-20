@@ -937,12 +937,16 @@ addAdminCommand("resetvars", function(src, commandData, channel) {
 	if(sys.name(src).toLowerCase() !== "lamperi" && sys.name(src).toLowerCase() !== "ethan" && sys.name(src).toLowerCase() !== "crystal moogle"){
 		return;
 	}
-	Trivia = new TriviaGame();
-	triviaq = new QuestionHolder("triviaq.json");
-	trivreview = new QuestionHolder("trivreview.json");
-	tadmin = new TriviaAdmin("tadmins.txt");
-	submitBans = {};
-	triviabot.sendMessage(src, "Trivia was reset");
+	try { 
+		Trivia = new TriviaGame();
+		triviaq = new QuestionHolder("triviaq.json");
+		trivreview = new QuestionHolder("trivreview.json");
+		tadmin = new TriviaAdmin("tadmins.txt");
+		submitBans = {};
+	} catch (e) {
+		sys.sendMessage(src, e, channel);
+	}
+	triviabot.sendMessage(src, "Trivia vars were reset");
 }, "Allows you to reset variables");
 
 addAdminCommand("startoff", function(src, commandData, channel) {
