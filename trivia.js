@@ -133,7 +133,6 @@ TriviaGame.prototype.startTrivia = function(src,rand)
 
 TriviaGame.prototype.startTriviaRound = function()
 {
-	sys.sendMessage(sys.id("Ethan"), "TriviaDebug: "+this.started, triviachan);
     if (this.started === false)
         return;
     /* Reset submittedAnswers */
@@ -945,14 +944,6 @@ addAdminCommand("resetvars", function(src, commandData, channel) {
 	triviabot.sendMessage(src, "Trivia vars were reset");
 }, "Allows you to reset variables");
 
-addAdminCommand("vars", function(src, commandData, channel) {
-	if(sys.name(src).toLowerCase() !== "lamperi" && sys.name(src).toLowerCase() !== "ethan" && sys.name(src).toLowerCase() !== "crystal moogle"){
-		return;
-	}
-	var arr = [Trivia.started, Trivia.round, Trivia.maxPoints];
-	sys.sendMessage(src, arr, channel);
-}, "For testing");
-
 addAdminCommand("startoff", function(src, commandData, channel) {
 	if(sys.name(src).toLowerCase() !== "lamperi" && sys.name(src).toLowerCase() !== "ethan" && sys.name(src).toLowerCase() !== "crystal moogle"){
 		return;
@@ -1154,7 +1145,7 @@ exports.init = function trivia_init()
 {
 	triviachan = sys.channelId('Trivia');
 	revchan = sys.channelId('TrivReview');
-	if(typeof Trivia === "undefined" || typeof Trivia != "object") {
+	if (typeof Trivia === "undefined" || typeof Trivia != "object") {
 			Trivia = new TriviaGame();
 			triviaq = new QuestionHolder("triviaq.json");
 			trivreview = new QuestionHolder("trivreview.json");
