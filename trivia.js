@@ -941,16 +941,16 @@ addAdminCommand("resetvars", function(src, commandData, channel) {
 	triviaq = new QuestionHolder("triviaq.json");
 	trivreview = new QuestionHolder("trivreview.json");
 	tadmin = new TriviaAdmin("tadmins.txt");
-	triviabot.sendMessage(src, "Trivia vars were reset", channel);
+	triviabot.sendMessage(src, "Trivia vars were reset");
 }, "Allows you to reset variables");
 
-addAdminCommand("resettriv", function(src, commandData, channel) {
+addAdminCommand("vars", function(src, commandData, channel) {
 	if(sys.name(src).toLowerCase() !== "lamperi" && sys.name(src).toLowerCase() !== "ethan" && sys.name(src).toLowerCase() !== "crystal moogle"){
 		return;
 	}
-	Trivia = undefined;
-	triviabot.sendMessage(src, "test", channel);
-}, "Allows you to reset trivia");
+	var arr = [Trivia.started, Trivia.round, Trivia.maxPoints];
+	sys.sendMessage(src, arr, channel);
+}, "For testing");
 
 addAdminCommand("startoff", function(src, commandData, channel) {
 	if(sys.name(src).toLowerCase() !== "lamperi" && sys.name(src).toLowerCase() !== "ethan" && sys.name(src).toLowerCase() !== "crystal moogle"){
