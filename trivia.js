@@ -706,13 +706,13 @@ addAdminCommand("addallpokemon", function(src, commandData, channel) {
 	Trivia.addAllPokemon();
 },"Adds all the \"Who's that pokémon?\" questions");
 
-addAdminCommand("erasequestions", function(src, commandData, channel) {
+/*addAdminCommand("erasequestions", function(src, commandData, channel) {
 	if (sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "ethan"|| sys.name(src).toLowerCase() == "crystal moogle")
 	{
 		sys.writeToFile("triviaq.json","");
 		QuestionHolder.state = {freeId: 0, questions: {}};
 	}
-},"Erases all current questions");
+},"Erases all current questions");*/
 
 addAdminCommand("apropos", function(src, commandData, channel) {
     if (commandData === undefined)
