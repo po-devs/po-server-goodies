@@ -252,7 +252,7 @@ try { // Do not indent this, it is only until this starts to work
     if (winners.length > 0) {
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
         this.htmlAll("<h2>Congratulations to "+w+"</h2>"+winners.join(", ")+"");
-		Trivia.sendAll("Check the /topic for how to submit a question!", triviachan);
+		//Trivia.sendAll("Check the /topic for how to submit a question!", triviachan);
         this.resetTrivia();
         return;
     }
