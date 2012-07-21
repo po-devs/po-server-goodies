@@ -2418,7 +2418,7 @@ function Mafia(mafiachan) {
             if (!user.mafiaalertson) {
                 msg(src, "You currently have /flashme deactivated (you can enable it by typing /flashme on).");
             } else if (user.mafiaalertsany) {
-                msg(src, "You currently get alerts any theme. ");
+                msg(src, "You currently get alerts for any theme. ");
             } else if (user.mafiathemes === undefined || user.mafiathemes.length === 0) {
                 msg(src, "You currently have no alerts for mafia themes activated.");
             } else {
@@ -2564,6 +2564,22 @@ function Mafia(mafiachan) {
         }
         mafia.themeManager.enable(src, name);
     };
+    this.showAllRoles = function(src) {
+		var name = sys.name(src);
+		if (["blank", "entry", "voting"].indexOf(mafia.state) == -1) {
+			var list = [];
+			for (var p in mafia.players) {
+				list.push(p + " ("+ mafia.players[p].role.translation + ")");
+			}
+			sys.sendMessage(src, "±Game: " + list.join(", "), mafiachan);
+			sys.sendAll("Warning: " + sys.name(src) + " is using /showall to find everyone's role. This is for Administration purposes-only.", mafiachan);
+			if (sys.channelId("Victory Road") != -1) {
+				sys.sendAll("Warning: " + sys.name(src) + " is using /showall to find everyone's role. This is for Administration purposes-only.", sys.channelId("Victory Road"));
+			}
+		} else {
+			sys.sendMessage(src, "±Game: No game running!", mafiachan);
+		}
+	};
     this.updateAfter = function(src) {
         msg(src, "Mafia will update after the game");
         mafia.needsUpdating = true;
@@ -2630,6 +2646,7 @@ function Mafia(mafiachan) {
             remove: [this.removeTheme, "To remove a Mafia Theme!"],
             disable: [this.disableTheme, "To disable a Mafia Theme!"],
             enable: [this.enableTheme, "To enable a disabled Mafia Theme!"],
+            showall: [this.showAllRoles, "To see all the players and roles"],
             updateafter: [this.updateAfter, "To update mafia after current game!"],
             importold: [this.importOld, ""]
         }
@@ -2799,7 +2816,7 @@ function Mafia(mafiachan) {
                     }
                     for (x in team) {
                         if (team[x] != name) {
-                            this.sendPlayer(team[x], "±Game: Your partner(s) have decided to " + command + " '" + commandData + "'!");
+                            this.sendPlayer(team[x], broadcastmsg);
                         }
                     }
                 }
@@ -3062,7 +3079,7 @@ function Mafia(mafiachan) {
     };
 
     this.beforeChatMessage = function(src, message, channel) {
-        if (channel !== 0 && channel == mafiachan && mafia.ticks > 0 && ["blank", "voting", "signups"].indexOf(mafia.state) == -1 && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0 && !mafia.isMafiaAdmin(src)) {
+        if (channel !== 0 && channel == mafiachan && mafia.ticks > 0 && ["blank", "voting", "entry"].indexOf(mafia.state) == -1 && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0 && !mafia.isMafiaAdmin(src)) {
             if (!(is_command(message) && message.substr(1,2).toLowerCase() != "me")) {
                 sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
                 return true;
