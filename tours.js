@@ -546,7 +546,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.356",
+            version: "1.360a",
             debug: false,
             points: true
         }
@@ -582,7 +582,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.356",
+        version: "1.360a",
         debug: false,
         points: true
     }
@@ -767,8 +767,14 @@ function tourBattleStart(src, dest, clauses, rated, mode, bid) {
     }
     if (key === null) return false;
     if (rated) return false;
-    // only recognise a battle from round 1 onwards
-    if (tours.tour[key].players.indexOf(name1) > -1 && tours.tour[key].players.indexOf(name2) > -1 && tours.tour[key].round >= 1) {
+    // only recognise a battle from round 1 onwards, against the correct players
+    var index1 = tours.tour[key].players.indexOf(name1)
+    var index2 = tours.tour[key].players.indexOf(name2)
+    var validBattle = false;
+    if (Math.abs(index1 - index2) === 1 && Math.min(index1,index2)%2 === 0) {
+        validBattle = true;
+    }
+    if (validBattle && tours.tour[key].round >= 1) {
         tours.tour[key].battlers.push(name1, name2)
         tours.tour[key].active[name1] = "Battle"
         tours.tour[key].active[name2] = "Battle"// this avoids dq later since they made an attempt to start
@@ -861,6 +867,10 @@ function tourChallengeIssued(src, dest, clauses, rated, mode, team, destTier) {
         var tcomment = isValidTourBattle(src,dest,clauses,mode,team,destTier,key,true)
         if (tcomment != "Valid") {
             sendBotMessage(src, tcomment, "all", false);
+            if (tcomment == "Your opponent does not seem to have a team for the tournament.") {
+                sendBotMessage(dest, "You need a team in the "+tours.tour[key].tourtype+" tier to participate. Please do this ASAP or you will be disqualified.", "all", false);
+                markActive(src)
+            }
             return true;
         }
         markActive(src)
@@ -3196,13 +3206,13 @@ function isValidTourBattle(src,dest,clauses,mode,team,destTier,key,challenge) { 
             return "That player is not your opponent."
         }
         else if (mode != 1 && tours.tour[key].parameters.mode == "Doubles") {
-            return "This match must be played in Doubles mode."
+            return "This match must be played in Doubles mode. Change it in the bottom right hand corner of the challenge window."
         }
         else if (mode != 2 && tours.tour[key].parameters.mode == "Triples") {
-            return "This match must be played in Triples mode."
+            return "This match must be played in Triples mode. Change it in the bottom right hand corner of the challenge window."
         }
         else if (mode !== 0 && tours.tour[key].parameters.mode == "Singles") {
-            return "This match must be played in Singles mode."
+            return "This match must be played in Singles mode. Change it in the bottom right hand corner of the challenge window."
         }
         else if (!isInCorrectGen && tours.tour[key].parameters.gen != "default") {
             return "This match must be played in "+getSubgen(tours.tour[key].parameters.gen, true)+". Change it in the teambuilder."
@@ -3224,10 +3234,20 @@ function isValidTourBattle(src,dest,clauses,mode,team,destTier,key,challenge) { 
             return "Disallow Spects is prohibited in finals matches."
         }
         else if (sys.tier(src, team) != tours.tour[key].tourtype) {
-            return "You need to challenge in the "+tours.tour[key].tourtype+" tier."
+            if (!sys.hasTier(src, tours.tour[key].tourtype)) {
+                return "You need a team in the "+tours.tour[key].tourtype+" tier, then challenge using that team."
+            }
+            else {
+                return "You need to challenge using one of your teams in the "+tours.tour[key].tourtype+" tier. Change it in the drop-down box at the bottom left of the challenge window."
+            }
         }
-        else if (sys.tier(src, team) != destTier) {
-            return "You need to challenge your opponent in the "+tours.tour[key].tourtype+" tier with a valid team."
+        else if (tours.tour[key].tourtype != destTier) {
+            if (!sys.hasTier(dest, tours.tour[key].tourtype)) {
+                return "Your opponent does not seem to have a team for the tournament."
+            }
+            else {
+                return "You need to select the "+tours.tour[key].tourtype+" tier in the challenge window. Click the button with the correct tier at the top of the challenge window."
+            }
         }
         else return "Valid";
     }
