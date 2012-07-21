@@ -546,7 +546,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.355",
+            version: "1.356",
             debug: false,
             points: true
         }
@@ -582,7 +582,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.355",
+        version: "1.356",
         debug: false,
         points: true
     }
@@ -2013,6 +2013,8 @@ function tourCommand(src, command, commandData) {
             var oppname = index%2 == 0 ? toCorrectCase(tours.tour[key].players[index+1]) : toCorrectCase(tours.tour[key].players[index-1])
             sendBotAll("Late entrant "+sys.name(src)+" will play against "+oppname+" in the "+getFullTourName(key)+" tournament. "+(tours.tour[key].players.length - tours.tour[key].cpt)+" sub"+(tours.tour[key].players.length - tours.tour[key].cpt == 1 ? "" : "s") + " remaining.", tourschan, false)
             sendBotMessage(sys.id(oppname),"Late entrant "+html_escape(sys.name(src))+" will play against you in the "+html_escape(getFullTourName(key))+" tournament.<ping/>", tourschan, true)
+            markActive(src)
+            markActive(sys.id(oppname))
             return true;
         }
         if (command == "unjoin") {
@@ -2380,6 +2382,8 @@ function removeinactive(key) {
             }
             else if ((tours.tour[key].time-parseInt(sys.time()))%60 === 0){
                 sendBotAll(toCorrectCase(player1)+" and "+toCorrectCase(player2)+" are both active, please battle in the "+getFullTourName(key)+" tournament ASAP!", tourschan, false)
+                sendBotMessage(sys.id(player1),"You need to play against "+html_escape(toCorrectCase(player2))+" in the "+html_escape(getFullTourName(key))+" tournament ASAP.<ping/>", tourschan, true)
+                sendBotMessage(sys.id(player2),"You need to play against "+html_escape(toCorrectCase(player1))+" in the "+html_escape(getFullTourName(key))+" tournament ASAP.<ping/>", tourschan, true)
             }
             // if the round advances due to DQ, don't keep checking :x
             if (tours.tour[key].round !== currentround) {
@@ -3554,6 +3558,9 @@ function usingBadWords(message) {
 }
 
 function markActive(src) {
+    if (src === undefined) {
+        return;
+    }
     var name = sys.name(src).toLowerCase()
     var key = isInTour(name)
     if (key !== false) {
