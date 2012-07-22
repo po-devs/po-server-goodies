@@ -977,6 +977,7 @@ function tourCommand(src, command, commandData) {
                         list.push([rankingdata[1], rankingdata[0]]);
                     }
                     list.sort(function(a,b) { return b[0] - a[0] ; });
+                    var rankkey = [0, 0] // rank, points
                     sys.sendMessage(src, "*** FULL MONTHLY TOURNAMENT RANKINGS "+(commandData != "" ? "("+commandData+") " : "")+"***",tourschan)
                     for (var x=0; x<65536; x++) {
                         if (x >= list.length) break;
