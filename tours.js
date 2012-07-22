@@ -59,7 +59,6 @@ var touradmincommands = ["*** Parameter Information ***",
                     "*** FOLLOWING COMMANDS ARE OWNER+ COMMANDS ***",
                     "clearrankings: clears the tour rankings (owner only)",
                     "evalvars: checks the current variable list for tours",
-                    "fullmonthlyleaderboard [month] [year]: shows full tour rankings for the current month, or the current month and year if specified",
                     "resettours: resets the entire tournament system in the event of a critical failure",
                     "fullleaderboard [tier]: gives the full leaderboard",
                     "getrankings [month] [year]: exports monthly rankings (deletes old rankings as well)"]
@@ -545,9 +544,9 @@ function getConfigValue(file, key) {
             remindertime: 30,
             channel: "Tournaments",
             errchannel: "Developer's Den",
-            tourbotcolour: "#3DAA68",
+            tourbotcolour: "#FF17FF",
             minpercent: 5,
-            version: "nofunallowed.jpg",
+            version: "9001", // 1.370
             debug: false,
             points: true
         }
@@ -581,14 +580,14 @@ function initTours() {
         reminder: parseInt(getConfigValue("tourconfig.txt", "remindertime")),
         channel: "Tournaments",
         errchannel: "Developer's Den",
-        tourbotcolour: "#3DAA68",
+        tourbotcolour: "#FF17FF",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "nofunallowed.jpg",
+        version: "9001",
         debug: false,
         points: true
     }
     if (Config.Tours.tourbot === undefined) {
-        Config.Tours.tourbot = "\u00B1Genesect: "
+        Config.Tours.tourbot = "\u00B1Nyan Cat: "
     }
     tourschan = sys.channelId("Tournaments");
     tourserrchan = sys.channelId("Indigo Plateau");
@@ -977,6 +976,7 @@ function tourCommand(src, command, commandData) {
                         list.push([rankingdata[1], rankingdata[0]]);
                     }
                     list.sort(function(a,b) { return b[0] - a[0] ; });
+                    var rankkey = [0, 0] // rank, points
                     sys.sendMessage(src, "*** FULL MONTHLY TOURNAMENT RANKINGS "+(commandData != "" ? "("+commandData+") " : "")+"***",tourschan)
                     for (var x=0; x<65536; x++) {
                         if (x >= list.length) break;
@@ -990,11 +990,11 @@ function tourCommand(src, command, commandData) {
                     }
                     if (monthlyfile != "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()+".txt") {
                         sys.deleteFile(monthlyfile);
-                        sendBotMessage(src, "Cleared old file "+monthyfile);
+                        sendBotMessage(src, "Cleared old file "+monthlyfile, tourschan, false);
                     }
                 }
                 catch (err) {
-                    sendBotMessage(src, "No data exists yet for the month "+commandData+"!",tourschan, false)
+                    sendBotMessage(src, "No data exists for the month "+commandData+"!",tourschan, false)
                 }
                 return true;
             }
@@ -3381,7 +3381,7 @@ function awardTourPoints(player, size, tier, delim) {
     // writing tier scores
     sys.appendToFile("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt", "")
     try {
-        var data2 = sys.getFileContent("tourscores_"+tier.replace(/\//g,"-slash-")+".txt")
+        var data2 = sys.getFileContent("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
     }
     catch (e) {
         var data2 = ""
