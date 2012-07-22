@@ -750,7 +750,6 @@ var commands = {
         "/resetpass: Clears your password (unregisters you, remember to reregister).",
         "/auth [owners/admins/mods]: Lists auth of given level, shows all auth if left blank.",
         "/cauth: Lists all users with channel auth in the current channel.",
-        "/megausers: Lists megausers.",
         "/contributors: Lists contributors.",
         "/league: Lists gym leaders and elite four of the PO league.",
         "/uptime: Shows time since the server was last offline.",
@@ -807,11 +806,14 @@ var commands = {
         "/tempbans: Lists temp bans.",
         "/namebans: Lists name bans.",
         "/namewarns: Lists name warnings.",
-        "/endcalls: Ends the next periodic message."
+	"/topchannels: To view the top channels.",
+	"/onrange [range]: To view who is on a range.",
+	"/tier [name]: To view the tier of a person.",
+	"/battlehistory [name]: To view a person's battle history."
     ],
     admin:
     [
-        "/ban [name]: Bans a user.",
+	"/ban [name]: Bans a user.",
         "/unban [name]: Unbans a user.",
         "/smute xxx: Secretly mutes a user. Can't smute auth.",
         "/sunmute xxx: Removes secret mute from a user.",
@@ -822,7 +824,9 @@ var commands = {
         "/namewarn regexp: Adds a namewarning",
         "/nameunwarn full_regexp: Removes a namewarning",
         "/destroychan [channel]: Destroy a channel (official channels are protected).",
-        "/channelusers [channel]: Lists users on a channel."
+        "/channelusers [channel]: Lists users on a channel.",
+	"/indigoinvite [name]: To invite somebody to staff channels.",
+	"/indigodeinvite: To deinvite unwanted visitors from staff channel."
     ],
     owner:
     [
@@ -833,15 +837,26 @@ var commands = {
         "/contributor[off] xxx:what: Adds or removes contributor status (for indigo access) from someone, with reason.",
         "/clearpass [name]: Clears a user's password.",
         "/periodicsay minutes:channel1,channel2,...:[message]: Sends a message to specified channels periodically.",
+	"/endcalls: Ends the next periodic message.",
         "/sendAll [message]: Sends a message to everyone.",
-        "/changeAuth [auth] [name]: Changes the auth of a user.",
+        "/changeAuth[s] [auth] [name]: Changes the auth of a user.",
         "/showteam xxx: Displays the team of a user (to help people who have problems with event moves or invalid teams).",
         "/rangeban [ip] [comment]: Makes a range ban.",
         "/rangeunban: [ip]: Removes a rangeban.",
         "/purgemutes [time]: Purges old mutes. Time is given in seconds. Defaults is 4 weeks.",
         "/purgembans [time]: Purges old mafiabans. Time is given in seconds. Default is 1 week.",
+        "/addplugin [plugin]: Add a plugin from the web.",
+        "/removeplugin [plugin]: Removes a plugin.",
         "/updateplugin [plugin]: Updates plugin from the web.",
-        "/updateScripts: Updates scripts from the web."
+        "/updateScripts: Updates scripts from the web.",
+	"/getannouncement: To view the announcement.",
+	"/test[web]announcement: To test an announcement (from web).",
+	"/set[web]announcement: To set an announcement (from web).",
+	"/capslockday [on/off]: To turn caps lock day on or off.",
+	"/indigo [on/off]: To create or destroy staff channel.",
+	"/updatebansites: To update ban sites.",
+	"/updatetierchecks: To update tier checks.",
+	"/togglerainbow: [on/off]: To turn rainbow on or off."
     ]
 };
 
@@ -2468,12 +2483,6 @@ modCommand: function(src, command, commandData, tar) {
         SESSION.users(tar).un("mban");
         return;
     }
-
-    if (command == "impoff") {
-        delete SESSION.users(src).impersonation;
-        normalbot.sendChanMessage(src, "Now you are yourself!");
-        return;
-    }
     if (command == "k") {
         if (tar === undefined) {
             return;
@@ -3526,6 +3535,11 @@ ownerCommand: function(src, command, commandData, tar) {
     if (command == "imp") {
         SESSION.users(src).impersonation = commandData;
         normalbot.sendChanMessage(src, "Now you are " + SESSION.users(src).impersonation + "!");
+        return;
+    }
+	if (command == "impoff") {
+		delete SESSION.users(src).impersonation;
+        normalbot.sendChanMessage(src, "Now you are yourself!");
         return;
     }
     if (command == "periodicsay" || command == "periodichtml") {
