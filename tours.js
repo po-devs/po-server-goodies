@@ -3381,7 +3381,7 @@ function awardTourPoints(player, size, tier, delim) {
     // writing tier scores
     sys.appendToFile("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt", "")
     try {
-        var data2 = sys.getFileContent("tourscores_"+tier.replace(/\//g,"-slash-")+".txt")
+        var data2 = sys.getFileContent("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
     }
     catch (e) {
         var data2 = ""
