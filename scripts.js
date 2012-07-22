@@ -707,11 +707,13 @@ if (typeof SESSION.global() != 'undefined') {
     });
     sys.playerIds().forEach(function(id) {
         if (sys.loggedIn(id)) {
-            if (!SESSION.users(id))
+            var user = SESSION.users(id);
+            if (!user) {
                 sys.sendAll("ScriptUpdate: SESSION storage broken for user: " + sys.name(id), staffchannel);
-            else
-                SESSION.users(id).__proto__ = POUser.prototype;
-                SESSION.users(id).battles = SESSION.users(id).battles || {};
+            } else {
+                user.__proto__ = POUser.prototype;
+                user.battles = user.battles || {};
+            }
         }
     });
 
@@ -4635,7 +4637,7 @@ beforeBattleMatchup : function(src,dest,clauses,rated)
             continue;
         }
         for (var x=0;x<sys.teamCount(id);x++) {
-            var tier = sys.tier(id);
+            var tier = sys.tier(id,x);
             if (sys.ladderRating(id,tier) >= 1200 || sys.ranking(id,tier)/sys.totalPlayersByTier(tier) <= 0.05) {
                 sys.sendHtmlMessage(id,"<font color=red size="+(sys.ladderRating(id,tier) >= 1300 ? "7" : "5")+"><b>You currently have a high rating in "+tier+", but your account is not registered! Please register to protect your account from being stolen (click the register button below and follow the instructions)!</b></font><ping/>");
             }

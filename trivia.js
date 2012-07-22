@@ -79,6 +79,7 @@ function TriviaGame()
     this.answeringQuestion = false;
     this.triviaPoints = "";
     this.startoff = false;
+    this.autostart = false;
     if (this.lastStopped === undefined)
         this.lastStopped = time();
 }
@@ -96,6 +97,31 @@ TriviaGame.prototype.sendPM = function(src, message, channel)
 TriviaGame.prototype.sendAll = function(message, channel)
 {
    triviabot.sendAll(message, channel === undefined ? triviachan : channel);
+};
+
+TriviaGame.prototype.startGame = function(points, name)
+{
+	// just some checks
+	try {
+		if (this.started == true) return;
+		if (this.startoff == true) return;
+		if (triviaq.questionAmount() < 1) return;
+		var x = time() - this.lastStopped;
+		if (x < 16) return;
+		if (name == "" && this.autostart == false) return;
+		this.maxPoints = points;
+	    	this.started = true;
+	    	sys.sendAll("", 0);
+		sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
+	    	this.sendAll("A #Trivia game was started! First to "+points+" points wins!",0);
+		sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
+		sys.sendAll("", 0);
+		this.sendAll((name != "" ? sys.name(src)+" started a Trivia game! " : "A trivia game was started! ") + " First to "+points+" points wins!",triviachan);
+		this.answeringQuestion = false;
+	    	sys.delayedCall(function() { Trivia.startTriviaRound(); },15);
+	} catch (e) {
+		triviabot.sendMessage(sys.id("Ethan"), "Error in startGame: "+e, triviachan);
+	}
 };
 
 TriviaGame.prototype.startTrivia = function(src,rand)
@@ -126,23 +152,14 @@ TriviaGame.prototype.startTrivia = function(src,rand)
         return;
     }
     rand = (isNaN(rand)) ? sys.rand(2,102) : +rand;
-    this.maxPoints = rand;
-    this.started = true;
-    // TODO: enable when working
-    	sys.sendAll("", 0);
-	sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
-    	this.sendAll("A #Trivia game was started! First to "+rand+" points wins!",0);
-	sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
-	sys.sendAll("", 0);
-    this.sendAll(sys.name(src)+" started a trivia game! First to "+rand+" points wins!",triviachan);
+    this.startGame(rand, sys.name(src));
     var players = sys.playersOfChannel(triviachan);
+    // flash players
     for (p in players) {
     	player_id = players[p], player_ip = sys.ip(player_id);
     	if (trivData.toFlash[player_ip] !== undefined)
     	sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
     }
-    this.answeringQuestion = false;
-    sys.delayedCall(function() { Trivia.startTriviaRound(); },15);
 };
 
 TriviaGame.prototype.startTriviaRound = function()
@@ -254,6 +271,14 @@ try { // Do not indent this, it is only until this starts to work
         this.htmlAll("<h2>Congratulations to "+w+"</h2>"+winners.join(", ")+"");
 		//Trivia.sendAll("Check the /topic for how to submit a question!", triviachan);
         this.resetTrivia();
+        if (this.autostart == true) {
+        	pointsForGame = sys.rand(7,56), toStart = sys.rand(20,30);
+        	Trivia.sendAll("A new trivia game will be started in "+toStart+" seconds!", triviachan);
+        	sys.delayedCall(function() {
+        		Trivia.startGame(pointsForGame, "");
+        	}, toStart);
+        	return;
+        }
         return;
     }
     if (Object.keys(this.alreadyUsed).length >= triviaq.questionAmount())
@@ -1054,6 +1079,13 @@ addAdminCommand("submitbans", function(src, commandData, channel) {
 		by = trivData.submitBans[b].by;
 		triviabot.sendMessage(src, ip+" ("+who+"). Banned by "+by+".", channel);
 	}
+	return;
+}, "View submit bans.");
+
+addAdminCommand("autostart", function(src, commandData, channel) {
+	if (sys.name(src).toLowerCase() != "ethan") return;
+	Trivia.autostart = !Trivia.autostart;
+	triviabot.sendMessage(src, "Autostart is now " + (Trivia.autostart == true ? "on" : "off") + ".");
 	return;
 }, "View submit bans.");
 
