@@ -1134,6 +1134,11 @@ exports.beforeChatMessage = function trivia_beforeChatMessage(src, message, chan
 {
     if (channel !== triviachan)
         return;
+        
+    if (message.substr(0,5) == "\\join") {
+    	Trivia.sendPM(src, "You must use /join to join a Trivia game!", channel);
+    	return;
+    }
 
 try { // debug only, do not indent
     // allow commands, except me
