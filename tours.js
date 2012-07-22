@@ -990,10 +990,11 @@ function tourCommand(src, command, commandData) {
                     }
                     if (monthlyfile != "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()+".txt") {
                         sys.deleteFile(monthlyfile);
-                        sendBotMessage(src, "Cleared old file "+monthyfile);
+                        sendBotMessage(src, "Cleared old file "+monthlyfile, tourschan, false);
                     }
                 }
                 catch (err) {
+                    sendBotMessage(src, "Error: "+err,tourschan, false)
                     sendBotMessage(src, "No data exists yet for the month "+commandData+"!",tourschan, false)
                 }
                 return true;
