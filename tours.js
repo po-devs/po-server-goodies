@@ -546,7 +546,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.360_DEAD_MOOGLES",
+            version: "1.360",
             debug: false,
             points: true
         }
@@ -582,7 +582,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.360_DEAD_MOOGLES",
+        version: "1.360",
         debug: false,
         points: true
     }
@@ -891,10 +891,6 @@ function tourCommand(src, command, commandData) {
                     sys.writeToFile("tourscores_"+tiers[x].replace(/ /g,"_")+".txt","")
                 }
                 sendBotAll(sys.name(src)+" cleared the tour rankings!",tourschan,false)
-                return true;
-            }
-            if (command == "getcontent") {
-                sendBotMessage(src,sys.getFileContent(commandData),tourschan,false)
                 return true;
             }
             if (command == "resettours") {
