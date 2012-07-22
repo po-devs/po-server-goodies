@@ -707,11 +707,13 @@ if (typeof SESSION.global() != 'undefined') {
     });
     sys.playerIds().forEach(function(id) {
         if (sys.loggedIn(id)) {
-            if (!SESSION.users(id))
+            var user = SESSION.users(id);
+            if (!user) {
                 sys.sendAll("ScriptUpdate: SESSION storage broken for user: " + sys.name(id), staffchannel);
-            else
-                SESSION.users(id).__proto__ = POUser.prototype;
-                SESSION.users(id).battles = SESSION.users(id).battles || {};
+            } else {
+                user.__proto__ = POUser.prototype;
+                user.battles = user.battles || {};
+            }
         }
     });
 
