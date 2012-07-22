@@ -364,7 +364,7 @@ function getExtraPoints(player) {
 // This function will get a user's current tournament points in a tier
 function getExtraTierPoints(player, tier) {
     try {
-        var data = sys.getFileContent("tourscores_"+tier.replace(/ /g,"_")+".txt")
+        var data = sys.getFileContent("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
         var array = data.split("\n")
         var score = 0
         for (var n in array) {
@@ -889,7 +889,7 @@ function tourCommand(src, command, commandData) {
                 sys.writeToFile("tourdetails.txt", "")
                 var tiers = sys.getTierList()
                 for (var x in tiers) {
-                    sys.writeToFile("tourscores_"+tiers[x].replace(/ /g,"_")+".txt","")
+                    sys.writeToFile("tourscores_"+tiers[x].replace(/ /g,"_").replace(/\//g,"-slash-")+".txt","")
                 }
                 sendBotAll(sys.name(src)+" cleared the tour rankings!",tourschan,false)
                 return true;
@@ -921,7 +921,7 @@ function tourCommand(src, command, commandData) {
                         if (!found) {
                             throw ("Not a valid tier")
                         }
-                        var rankings = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_")+".txt").split("\n")
+                        var rankings = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt").split("\n")
                     }
                     var list = [];
                     for (var p in rankings) {
@@ -951,46 +951,6 @@ function tourCommand(src, command, commandData) {
                     else {
                         sendBotMessage(src, "No data exists yet!",tourschan, false)
                     }
-                }
-                return true;
-            }
-            if (command == "fullmonthlyleaderboard") {
-                try {
-                    var now = new Date()
-                    var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "decemeber"]
-                    if (commandData == "") {
-                        var monthlyfile = "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()+".txt"
-                    }
-                    else {
-                        var monthdata = commandData.toLowerCase().split(" ",2)
-                        if (monthdata.length == 1) {
-                            monthdata.push(now.getUTCFullYear());
-                        }
-                        var monthlyfile = "tourmonthscore_"+monthdata[0]+"_"+monthdata[1]+".txt"
-                    }
-                    var rankings = sys.getFileContent(monthlyfile).split("\n")
-                    var list = [];
-                    for (var p in rankings) {
-                        if (rankings[p] == "") continue;
-                        var rankingdata = rankings[p].split(":::",2)
-                        if (rankingdata[1] < 1) continue;
-                        list.push([rankingdata[1], rankingdata[0]]);
-                    }
-                    list.sort(function(a,b) { return b[0] - a[0] ; });
-                    sys.sendMessage(src, "*** FULL MONTHLY TOURNAMENT RANKINGS "+(commandData != "" ? "("+commandData+") " : "")+"***",tourschan)
-                    for (var x=0; x<65536; x++) {
-                        if (x >= list.length) break;
-                        if (rankkey[1] === parseInt((list[x])[0])) {
-                            sys.sendMessage(src, "#"+rankkey[0]+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
-                        }
-                        else {
-                            sys.sendMessage(src, "#"+(x+1)+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
-                            rankkey = [x+1, parseInt((list[x])[0])]
-                        }
-                    }
-                }
-                catch (err) {
-                    sendBotMessage(src, "No data exists yet for the month "+commandData+"!",tourschan, false)
                 }
                 return true;
             }
@@ -2284,7 +2244,7 @@ function tourCommand(src, command, commandData) {
                     if (!found) {
                         throw ("Not a valid tier")
                     }
-                    var rankings = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_")+".txt").split("\n")
+                    var rankings = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt").split("\n")
                 }
                 var list = [];
                 for (var p in rankings) {
@@ -3419,9 +3379,9 @@ function awardTourPoints(player, size, tier, delim) {
     }
     sys.writeToFile(monthlyfile, newarray3.join("\n"))
     // writing tier scores
-    sys.appendToFile("tourscores_"+tier.replace(/ /g,"_")+".txt", "")
+    sys.appendToFile("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt", "")
     try {
-        var data2 = sys.getFileContent("tourscores_"+tier.replace(/ /g,"_")+".txt")
+        var data2 = sys.getFileContent("tourscores_"+tier.replace(/\//g,"-slash-")+".txt")
     }
     catch (e) {
         var data2 = ""
@@ -3444,7 +3404,7 @@ function awardTourPoints(player, size, tier, delim) {
     if (!onscoreboard2) {
         newarray2.push(player+":::"+tierscore.a[scale])
     }
-    sys.writeToFile("tourscores_"+tier.replace(/ /g,"_")+".txt", newarray2.join("\n"))
+    sys.writeToFile("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt", newarray2.join("\n"))
     return;
 }
 
