@@ -801,6 +801,10 @@ function Mafia(mafiachan) {
     this.clearVariables();
     /* callback for /start */
     this.userVote = function(src, commandData) {
+		if (SESSION.channels(mafiachan).muteall && !SESSION.channels(channel).isChannelOperator(src) && sys.auth(src) === 0) {
+			sys.sendMessage(src, "±Game: You can't start a voting when the channel is silenced.", mafiachan);
+			return;
+		}
         var themeName = commandData.toLowerCase();
         if (this.state == "blank") {
             this.state = "voting";
@@ -871,6 +875,10 @@ function Mafia(mafiachan) {
     };
     /* callback for /realstart */
     this.startGame = function(src, commandData) {
+		if (SESSION.channels(mafiachan).muteall && !SESSION.channels(channel).isChannelOperator(src) && sys.auth(src) === 0) {
+			sys.sendMessage(src, "±Game: You can't start a game when the channel is silenced.", mafiachan);
+			return;
+		}
         var now = (new Date()).getTime();
         if (src !== null) {
             if (SESSION.users(src).mafia_start !== undefined && SESSION.users(src).mafia_start + 5000 > now) {
