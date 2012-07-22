@@ -546,7 +546,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.360_DEAD_MOOGLES", // debug tag
+            version: "1.360_DEAD_MOOGLES",
             debug: false,
             points: true
         }
