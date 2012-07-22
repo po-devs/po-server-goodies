@@ -3051,7 +3051,7 @@ function tourprintbracket(key) {
             }
             delete tours.tour[key];
             tours.keys.splice(tours.keys.indexOf(key), 1);
-            if (tours.keys.length === 0) {
+            if (tours.keys.length === 0 && tours.globaltime !== 0) {
                 tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
             }
             return;
@@ -3271,7 +3271,9 @@ function awardTourPoints(player, size, tier, delim) {
         'z': [0,0,0,0,0,0,0]
     }
     var now = new Date()
-    sys.appendToFile("tourdetails.txt", player+":::"+size+":::"+tier+":::"+now+"\n")
+    var capsmonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    var dateString = now.getUTCDate()+" "+capsmonths[now.getUTCMonth()]
+    sys.appendToFile("tourdetails.txt", player+":::"+size+":::"+tier+":::"+datestring+"\n")
     if (size < 4 || !Config.Tours.points) return;
     var scale = 0;
     var points = 0
