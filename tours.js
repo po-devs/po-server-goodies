@@ -61,7 +61,8 @@ var touradmincommands = ["*** Parameter Information ***",
                     "evalvars: checks the current variable list for tours",
                     "fullmonthlyleaderboard [month] [year]: shows full tour rankings for the current month, or the current month and year if specified",
                     "resettours: resets the entire tournament system in the event of a critical failure",
-                    "fullleaderboard [tier]: gives the full leaderboard"]
+                    "fullleaderboard [tier]: gives the full leaderboard",
+                    "getrankings [month] [year]: exports monthly rankings (deletes old rankings as well)"]
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "Breaking the following rules may result in a tour mute:",
                 "#1: Team revealing or scouting in non CC tiers will result in disqualification.",
@@ -546,7 +547,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.360",
+            version: "nofunallowed.jpg",
             debug: false,
             points: true
         }
@@ -582,7 +583,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.360",
+        version: "nofunallowed.jpg",
         debug: false,
         points: true
     }
@@ -986,6 +987,50 @@ function tourCommand(src, command, commandData) {
                             sys.sendMessage(src, "#"+(x+1)+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
                             rankkey = [x+1, parseInt((list[x])[0])]
                         }
+                    }
+                }
+                catch (err) {
+                    sendBotMessage(src, "No data exists yet for the month "+commandData+"!",tourschan, false)
+                }
+                return true;
+            }
+            if (command == "getrankings") {
+                try {
+                    var now = new Date()
+                    var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "decemeber"]
+                    if (commandData == "") {
+                        var monthlyfile = "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()+".txt"
+                    }
+                    else {
+                        var monthdata = commandData.toLowerCase().split(" ",2)
+                        if (monthdata.length == 1) {
+                            monthdata.push(now.getUTCFullYear());
+                        }
+                        var monthlyfile = "tourmonthscore_"+monthdata[0]+"_"+monthdata[1]+".txt"
+                    }
+                    var rankings = sys.getFileContent(monthlyfile).split("\n")
+                    var list = [];
+                    for (var p in rankings) {
+                        if (rankings[p] == "") continue;
+                        var rankingdata = rankings[p].split(":::",2)
+                        if (rankingdata[1] < 1) continue;
+                        list.push([rankingdata[1], rankingdata[0]]);
+                    }
+                    list.sort(function(a,b) { return b[0] - a[0] ; });
+                    sys.sendMessage(src, "*** FULL MONTHLY TOURNAMENT RANKINGS "+(commandData != "" ? "("+commandData+") " : "")+"***",tourschan)
+                    for (var x=0; x<65536; x++) {
+                        if (x >= list.length) break;
+                        if (rankkey[1] === parseInt((list[x])[0])) {
+                            sys.sendMessage(src, "#"+rankkey[0]+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
+                        }
+                        else {
+                            sys.sendMessage(src, "#"+(x+1)+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
+                            rankkey = [x+1, parseInt((list[x])[0])]
+                        }
+                    }
+                    if (monthlyfile != "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()+".txt") {
+                        sys.deleteFile(monthlyfile);
+                        sendBotMessage(src, "Cleared old file "+monthyfile);
                     }
                 }
                 catch (err) {
@@ -2059,7 +2104,7 @@ function tourCommand(src, command, commandData) {
                     break;
                 }
             }
-            if (Config.Tours.maxrunning <= tours.keys.length && calcPercentage() >= Config.Tours.minpercent) {
+            if ((Config.Tours.maxrunning <= tours.keys.length && calcPercentage() >= Config.Tours.minpercent) || tours.globaltime === 0) {
                 nextstart = "Pending";
             }
             var firsttour = true;
@@ -3273,7 +3318,7 @@ function awardTourPoints(player, size, tier, delim) {
     var now = new Date()
     var capsmonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     var dateString = now.getUTCDate()+" "+capsmonths[now.getUTCMonth()]
-    sys.appendToFile("tourdetails.txt", player+":::"+size+":::"+tier+":::"+datestring+"\n")
+    sys.appendToFile("tourdetails.txt", player+":::"+size+":::"+tier+":::"+dateString+"\n")
     if (size < 4 || !Config.Tours.points) return;
     var scale = 0;
     var points = 0
@@ -3693,7 +3738,7 @@ function sendWelcomeMessage(src, chan) {
             break;
         }
     }
-    if (Config.Tours.maxrunning <= tours.keys.length && calcPercentage() >= Config.Tours.minpercent) {
+    if ((Config.Tours.maxrunning <= tours.keys.length && calcPercentage() >= Config.Tours.minpercent) || tours.globaltime === 0) {
         nextstart = "Pending";
     }
     var nextmessage = "???"
