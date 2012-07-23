@@ -2097,13 +2097,6 @@ userCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-
-    if (command == "join"){
-        if (channel == sys.channelId("Trivia")) {
-            sendChanMessage(src, "±TriviaBot: You must use \\join to join a Trivia game!");
-            return;
-        }
-    }
     if (command == "topic") {
         SESSION.channels(channel).setTopic(src, commandData);
         return;
@@ -2919,13 +2912,14 @@ modCommand: function(src, command, commandData, tar) {
 		'reason' : reason,
 		'target' : target_name
 	};
-	normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " on " + ip + " for " + timeString + "! [Reason: " + reason + "]");
-	sys.kick(tar);
-	this.kickAll(ip);
-	
-	authStats[authname] = authStats[authname] || {};
-	authStats[authname].latestTempBan = [name, parseInt(sys.time(), 10)];
-	return;
+        normalbot.sendAll("Target: " + name + ", IP: " + ip, staffchannel);
+        normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " for " + timeString + "! [Reason: " + reason + "]");
+        sys.kick(tar);
+        this.kickAll(ip);
+
+        authStats[authname] = authStats[authname] || {};
+        authStats[authname].latestTempBan = [name, parseInt(sys.time(), 10)];
+        return;
     }
     if (command == "tempunban") {
         var ip = sys.dbIp(commandData);
@@ -2977,6 +2971,9 @@ modCommand: function(src, command, commandData, tar) {
     if (command == "skmute" && (sys.auth(src) >= 1 || [/* insert mod list here when this goes to admin+ */].indexOf(sys.name(src).toLowerCase()) >= 0)) {
         if (tar === undefined)
             normalbot.sendMessage(src, "use only for online target ", channel);
+        else if (sys.auth(tar) >= 1) {
+            normalbot.sendMessage(src, "Can't use skmute on auth", channel);
+        }
         else {
             normalbot.sendAll("Target: " + sys.name(tar) + ", IP: " + sys.ip(tar) + ", Auth: "+ sys.name(src), staffchannel);
             script.issueBan("smute", src, undefined, "" + sys.name(tar) + ":skarmpiss:2h");
