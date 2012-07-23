@@ -884,7 +884,6 @@ init : function() {
     lastMemUpdate = 0;
     this.startStepEvent();
 
-    callplugins("init");
     bannedUrls = [];
 
     mafiachan = SESSION.global().channelManager.createPermChannel("Mafia Channel", "Use /help to get started!");
@@ -1101,6 +1100,8 @@ init : function() {
         sys.sendAll(message, 0);
         sys.sendAll(message, tourchannel);
     };
+
+    callplugins("init");
 
     VarsCreated = true;
 }, /* end of init */
@@ -4597,8 +4598,7 @@ attemptToSpectateBattle : function(src, p1, p2) {
         return "allow";
     }
     return "denied";
-}
-,
+},
 
 beforeBattleMatchup : function(src,dest,clauses,rated)
 {

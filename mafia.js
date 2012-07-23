@@ -8,6 +8,8 @@
 // Global variables inherited from scripts.js
 /*global cmp, mafiabot, getTimeString, mafiaAdmins, updateModule, script, saveKey*/
 
+var MAFIA_CHANNEL = "Mafia Channel";
+
 var is_command = require("utilities.js").is_command;
 
 function Mafia(mafiachan) {
@@ -457,6 +459,7 @@ function Mafia(mafiachan) {
             this.standbyRoles.push(obj.role);
         }
     };
+    function name_trrole(x) { return x + " (" + this.trrole(x) + ")"; }
     Theme.prototype.generateRoleInfo = function() {
         var sep = "*** *********************************************************************** ***";
         var roles = [sep];
@@ -1450,10 +1453,8 @@ function Mafia(mafiachan) {
                     mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
                 }
                 if (role.actions.startup == "team-reveal-with-roles") {
-                	var playersRole = mafia.getPlayersForTeam(role.side).map(function(x){
-                		return x + " (" + this.players[x].role.translation + ")";                		
-                	}, mafia);
-                	mafia.sendPlayer(player.name, "±Game: Your team is " + readable(playersRole, "and") + ".");
+                    var playersRole = mafia.getPlayersForTeam(role.side).map(name_trrole, mafia.theme);
+                    mafia.sendPlayer(player.name, "±Game: Your team is " + readable(playersRole, "and") + ".");
                 }
                 if (typeof role.actions.startup == "object" && Array.isArray(role.actions.startup["team-revealif"])) {
                     if (role.actions.startup["team-revealif"].indexOf(role.side) != -1) {
@@ -2283,10 +2284,8 @@ function Mafia(mafiachan) {
                     mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
                 }
                 if (role.actions.startup == "team-reveal-with-roles") {
-                	var playersRole = mafia.getPlayersForTeam(role.side).map(function(x){
-                		return x + " (" + this.players[x].role.translation + ")";
-                	}, mafia);
-                	mafia.sendPlayer(player.name, "±Game: Your team is " + readable(playersRole, "and") + ".");
+                    var playersRole = mafia.getPlayersForTeam(role.side).map(name_trrole, mafia.theme);
+                    mafia.sendPlayer(player.name, "±Game: Your team is " + readable(playersRole, "and") + ".");
                 }
                 if (typeof role.actions.startup == "object" && Array.isArray(role.actions.startup["team-revealif"])) {
                     if (role.actions.startup["team-revealif"].indexOf(role.side) != -1) {
@@ -2729,10 +2728,10 @@ function Mafia(mafiachan) {
                 this.signups.push(name);
                 this.ips.push(sys.ip(src));
                 if (this.numjoins.hasOwnProperty(sys.ip(src))) {
-                    this.numjoins[sys.ip(src)] += 1
+                    this.numjoins[sys.ip(src)] += 1;
                 }
                 else {
-                    this.numjoins[sys.ip(src)] = 1
+                    this.numjoins[sys.ip(src)] = 1;
                 }
                 sys.sendAll("±Game: " + name + " joined the game!", mafiachan);
                 if (this.signups.length == this.theme["roles"+this.theme.roleLists].length) {
@@ -3095,6 +3094,7 @@ function Mafia(mafiachan) {
 
     this.init = function() {
         this.themeManager.loadThemes();
+        mafiachan = sys.channelId(MAFIA_CHANNEL);
         msgAll("Mafia was reloaded, please start a new game!");
     };
 }
@@ -3106,4 +3106,4 @@ function Mafia(mafiachan) {
  * - handleCommand
  */
 
-module.exports = new Mafia(sys.channelId("Mafia Channel"));
+module.exports = new Mafia(sys.channelId(MAFIA_CHANNEL));
