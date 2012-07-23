@@ -36,7 +36,7 @@ var Config = {
         ["Luck>Skill", "5th Generation WiFi LittleUsed Gym - View Luck>Skill's <a href='http://pokemon-online.eu/forums/showthread.php?13330-Wifi-LU-Gym-Luck-gt-Skill'>Gym Thread!</a>"],
         ["Emac", "5th Generation WiFi NeverUsed Gym - View Emac's <a href='http://pokemon-online.eu/forums/showthread.php?13410-Wifi-NU-Gym-Emac'>Gym Thread!</a>"],
         ["Xdevo", "5th Generation WiFi Little Cup - View Xdevo's <a href='http://pokemon-online.eu/forums/showthread.php?13536-Wifi-LC-Gym-Xdevo'>Gym Thread!</a>"],
-        ["Mary Skarm", "All Gen CC - View Mary Skarm's <a href='http://pokemon-online.eu/forums/showthread.php?14392-All-Gen-CC-Gym-Mary-Skarm-amp-Nainil'>Gym Thread!</a>"],
+        ["Winona", "All Gen CC - View Winona's <a href='http://pokemon-online.eu/forums/showthread.php?14392-All-Gen-CC-Gym-Winona-amp-Nainil'>Gym Thread!</a>"],
         ["Nainil", "All Gen CC - View Nainil's <a href='http://pokemon-online.eu/forums/showthread.php?14392-All-Gen-CC-Gym-Mary-Skarm-amp-Nainil'>Gym Thread!</a>"],
         ["Marik", "VGC 2012 - View Marik's <a href='http://pokemon-online.eu/forums/showthread.php?13532-VGC-2012-Gym-Marik'>Gym Thread!</a>"],
         ["Fakes", "4th Generation OverUsed - View Fakes' <a href='http://pokemon-online.eu/forums/showthread.php?14026-DPP-OU-Gym-Fakes'>Gym Thread!</a>"],
@@ -106,7 +106,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, newtourchannel, poScript, revchan, triviachan, watchchannel;
+var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, newtourchannel, poScript, revchan, triviachan, watchchannel;
 
 /* we need to make sure the scripts exist */
 var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js'].concat(Config.Plugins);
@@ -707,11 +707,13 @@ if (typeof SESSION.global() != 'undefined') {
     });
     sys.playerIds().forEach(function(id) {
         if (sys.loggedIn(id)) {
-            if (!SESSION.users(id))
+            var user = SESSION.users(id);
+            if (!user) {
                 sys.sendAll("ScriptUpdate: SESSION storage broken for user: " + sys.name(id), staffchannel);
-            else
-                SESSION.users(id).__proto__ = POUser.prototype;
-                SESSION.users(id).battles = SESSION.users(id).battles || {};
+            } else {
+                user.__proto__ = POUser.prototype;
+                user.battles = user.battles || {};
+            }
         }
     });
 
@@ -750,7 +752,6 @@ var commands = {
         "/resetpass: Clears your password (unregisters you, remember to reregister).",
         "/auth [owners/admins/mods]: Lists auth of given level, shows all auth if left blank.",
         "/cauth: Lists all users with channel auth in the current channel.",
-        "/megausers: Lists megausers.",
         "/contributors: Lists contributors.",
         "/league: Lists gym leaders and elite four of the PO league.",
         "/uptime: Shows time since the server was last offline.",
@@ -807,7 +808,10 @@ var commands = {
         "/tempbans: Lists temp bans.",
         "/namebans: Lists name bans.",
         "/namewarns: Lists name warnings.",
-        "/endcalls: Ends the next periodic message."
+        "/topchannels: To view the top channels.",
+        "/onrange [range]: To view who is on a range.",
+        "/tier [name]: To view the tier of a person.",
+        "/battlehistory [name]: To view a person's battle history."
     ],
     admin:
     [
@@ -822,7 +826,9 @@ var commands = {
         "/namewarn regexp: Adds a namewarning",
         "/nameunwarn full_regexp: Removes a namewarning",
         "/destroychan [channel]: Destroy a channel (official channels are protected).",
-        "/channelusers [channel]: Lists users on a channel."
+        "/channelusers [channel]: Lists users on a channel.",
+        "/indigoinvite [name]: To invite somebody to staff channels.",
+        "/indigodeinvite: To deinvite unwanted visitors from staff channel."
     ],
     owner:
     [
@@ -833,15 +839,26 @@ var commands = {
         "/contributor[off] xxx:what: Adds or removes contributor status (for indigo access) from someone, with reason.",
         "/clearpass [name]: Clears a user's password.",
         "/periodicsay minutes:channel1,channel2,...:[message]: Sends a message to specified channels periodically.",
+        "/endcalls: Ends the next periodic message.",
         "/sendAll [message]: Sends a message to everyone.",
-        "/changeAuth [auth] [name]: Changes the auth of a user.",
+        "/changeAuth[s] [auth] [name]: Changes the auth of a user.",
         "/showteam xxx: Displays the team of a user (to help people who have problems with event moves or invalid teams).",
         "/rangeban [ip] [comment]: Makes a range ban.",
         "/rangeunban: [ip]: Removes a rangeban.",
         "/purgemutes [time]: Purges old mutes. Time is given in seconds. Defaults is 4 weeks.",
         "/purgembans [time]: Purges old mafiabans. Time is given in seconds. Default is 1 week.",
+        "/addplugin [plugin]: Add a plugin from the web.",
+        "/removeplugin [plugin]: Removes a plugin.",
         "/updateplugin [plugin]: Updates plugin from the web.",
-        "/updateScripts: Updates scripts from the web."
+        "/updateScripts: Updates scripts from the web.",
+        "/getannouncement: To view the announcement.",
+        "/test[web]announcement: To test an announcement (from web).",
+        "/set[web]announcement: To set an announcement (from web).",
+        "/capslockday [on/off]: To turn caps lock day on or off.",
+        "/indigo [on/off]: To create or destroy staff channel.",
+        "/updatebansites: To update ban sites.",
+        "/updatetierchecks: To update tier checks.",
+        "/togglerainbow: [on/off]: To turn rainbow on or off."
     ]
 };
 
@@ -895,6 +912,7 @@ init : function() {
     newtourchannel = SESSION.global().channelManager.createPermChannel("Tours", "A new tournament system is currently being tested by Shadow Hax here. Use /help to see the commands.");
 	triviachan = SESSION.global().channelManager.createPermChannel("Trivia", "Play trivia here!");
 	revchan = SESSION.global().channelManager.createPermChannel("TrivReview", "For Trivia Admins to review questions");
+	mafiarev = SESSION.global().channelManager.createPermChannel("Mafia Review", "For Mafia Admins to review themes");
 	
     var dwlist = ["Rattata", "Raticate", "Nidoran-F", "Nidorina", "Nidoqueen", "Nidoran-M", "Nidorino", "Nidoking", "Oddish", "Gloom", "Vileplume", "Bellossom", "Bellsprout", "Weepinbell", "Victreebel", "Ponyta", "Rapidash", "Farfetch'd", "Doduo", "Dodrio", "Exeggcute", "Exeggutor", "Lickitung", "Lickilicky", "Tangela", "Tangrowth", "Kangaskhan", "Sentret", "Furret", "Cleffa", "Clefairy", "Clefable", "Igglybuff", "Jigglypuff", "Wigglytuff", "Mareep", "Flaaffy", "Ampharos", "Hoppip", "Skiploom", "Jumpluff", "Sunkern", "Sunflora", "Stantler", "Poochyena", "Mightyena", "Lotad", "Ludicolo", "Lombre", "Taillow", "Swellow", "Surskit", "Masquerain", "Bidoof", "Bibarel", "Shinx", "Luxio", "Luxray", "Psyduck", "Golduck", "Growlithe", "Arcanine", "Scyther", "Scizor", "Tauros", "Azurill", "Marill", "Azumarill", "Bonsly", "Sudowoodo", "Girafarig", "Miltank", "Zigzagoon", "Linoone", "Electrike", "Manectric", "Castform", "Pachirisu", "Buneary", "Lopunny", "Glameow", "Purugly", "Natu", "Xatu", "Skitty", "Delcatty", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Espeon", "Umbreon", "Leafeon", "Glaceon", "Bulbasaur", "Charmander", "Squirtle", "Ivysaur", "Venusaur", "Charmeleon", "Charizard", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Infernape", "Monferno", "Piplup", "Prinplup", "Empoleon", "Treecko", "Sceptile", "Grovyle", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Caterpie", "Metapod", "Butterfree", "Pidgey", "Pidgeotto", "Pidgeot", "Spearow", "Fearow", "Zubat", "Golbat", "Crobat", "Aerodactyl", "Hoothoot", "Noctowl", "Ledyba", "Ledian", "Yanma", "Yanmega", "Murkrow", "Honchkrow", "Delibird", "Wingull", "Pelipper", "Swablu", "Altaria", "Starly", "Staravia", "Staraptor", "Gligar", "Gliscor", "Drifloon", "Drifblim", "Skarmory", "Tropius", "Chatot", "Slowpoke", "Slowbro", "Slowking", "Krabby", "Kingler", "Horsea", "Seadra", "Kingdra", "Goldeen", "Seaking", "Magikarp", "Gyarados", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Wooper", "Quagsire", "Qwilfish", "Corsola", "Remoraid", "Octillery", "Mantine", "Mantyke", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Barboach", "Whiscash", "Clamperl", "Gorebyss", "Huntail", "Relicanth", "Luvdisc", "Buizel", "Floatzel", "Finneon", "Lumineon", "Tentacool", "Tentacruel", "Corphish", "Crawdaunt", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas", "Milotic", "Shellos", "Gastrodon", "Lapras", "Dratini", "Dragonair", "Dragonite", "Elekid", "Electabuzz", "Electivire", "Poliwag", "Poliwrath", "Politoed", "Poliwhirl", "Vulpix", "Ninetales", "Musharna", "Munna", "Darmanitan", "Darumaka", "Mamoswine", "Togekiss", "Burmy", "Wormadam", "Mothim", "Pichu", "Pikachu", "Raichu","Abra","Kadabra","Alakazam","Spiritomb","Mr. Mime","Mime Jr.","Meditite","Medicham","Meowth","Persian","Shuppet","Banette","Spinarak","Ariados","Drowzee","Hypno","Wobbuffet","Wynaut","Snubbull","Granbull","Houndour","Houndoom","Smoochum","Jynx","Ralts","Gardevoir","Gallade","Sableye","Mawile","Volbeat","Illumise","Spoink","Grumpig","Stunky","Skuntank","Bronzong","Bronzor","Mankey","Primeape","Machop","Machoke","Machamp","Magnemite","Magneton","Magnezone","Koffing","Weezing","Rhyhorn","Rhydon","Rhyperior","Teddiursa","Ursaring","Slugma","Magcargo","Phanpy","Donphan","Magby","Magmar","Magmortar","Larvitar","Pupitar","Tyranitar","Makuhita","Hariyama","Numel","Camerupt","Torkoal","Spinda","Trapinch","Vibrava","Flygon","Cacnea","Cacturne","Absol","Beldum","Metang","Metagross","Hippopotas","Hippowdon","Skorupi","Drapion","Tyrogue","Hitmonlee","Hitmonchan","Hitmontop","Bagon","Shelgon","Salamence","Seel","Dewgong","Shellder","Cloyster","Chinchou","Lanturn","Smeargle","Porygon","Porygon2","Porygon-Z","Drilbur", "Excadrill", "Basculin", "Basculin-a", "Alomomola", "Stunfisk", "Druddigon", "Foongus", "Amoonguss", "Liepard", "Purrloin", "Minccino", "Cinccino", "Sandshrew", "Sandslash", "Vullaby", "Mandibuzz", "Rufflet", "Braviary", "Frillish", "Jellicent", "Weedle", "Kakuna", "Beedrill", "Shroomish", "Breloom", "Zangoose", "Seviper", "Combee", "Vespiquen", "Patrat", "Watchog", "Blitzle", "Zebstrika", "Woobat", "Swoobat", "Mienfoo", "Mienshao", "Bouffalant", "Staryu", "Starmie", "Togepi", "Shuckle", "Togetic", "Rotom", "Sigilyph", "Riolu", "Lucario", "Lugia", "Ho-Oh", "Dialga", "Palkia", "Giratina", "Grimer", "Muk", "Ditto", "Venonat", "Venomoth", "Herdier", "Lillipup", "Stoutland", "Sewaddle", "Swadloon", "Leavanny", "Cubchoo", "Beartic", "Landorus", "Thundurus", "Tornadus","Dunsparce", "Sneasel", "Weavile", "Nosepass", "Probopass", "Karrablast", "Escavalier", "Shelmet", "Accelgor", "Snorunt", "Glalie", "Froslass", "Heatran", "Pinsir", "Emolga", "Heracross", "Trubbish", "Garbodor", "Snover", "Abomasnow","Diglett", "Dugtrio", "Geodude", "Graveler", "Golem", "Onix", "Steelix", "Voltorb", "Electrode", "Cubone", "Marowak", "Whismur", "Loudred", "Exploud", "Aron", "Lairon", "Aggron", "Spheal", "Sealeo", "Walrein", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Gible", "Gabite", "Garchomp", "Pidove", "Tranquill", "Unfezant", "Tympole", "Palpitoad", "Seismitoad", "Cottonee", "Whimsicott", "Petilil", "Lilligant", "Ducklett", "Swanna", "Deerling", "Sawsbuck", "Elgyem", "Beheeyem", "Pawniard", "Bisharp", "Heatmor", "Durant","Venipede","Whirlipede", "Scolipede", "Tirtouga", "Carracosta", "Joltik", "Galvantula", "Maractus", "Dwebble", "Crustle", "Roggenrola", "Boldore", "Gigalith", "Vanillite", "Vanillish", "Vanilluxe", "Klink", "Klang", "Klinklang", "Swinub", "Piloswine", "Golett", "Golurk"];
     
@@ -1362,7 +1380,7 @@ beforeChannelJoin : function(src, channel) {
         sys.stopEvent();
         return;
     }
-    if ((channel == staffchannel || channel == sachannel) && !this.canJoinStaffChannel(src)) {
+    if ((channel == staffchannel || channel == sachannel || channel == mafiarev) && !this.canJoinStaffChannel(src)) {
         sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
         sys.stopEvent();
         return;
@@ -2080,13 +2098,6 @@ userCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-
-    if (command == "join"){
-        if (channel == sys.channelId("Trivia")) {
-            sendChanMessage(src, "±TriviaBot: You must use \\join to join a Trivia game!");
-            return;
-        }
-    }
     if (command == "topic") {
         SESSION.channels(channel).setTopic(src, commandData);
         return;
@@ -2361,12 +2372,12 @@ modCommand: function(src, command, commandData, tar) {
         var cids = sys.channelIds();
         var l = [];
         for (var i = 0; i < cids.length; ++i) {
-            l.push([cids[i], sys.playersOfChannel(cids[i])]);
+            l.push([cids[i], sys.playersOfChannel(cids[i]).length]);
         }
         l.sort(function(a,b) { return b[1]-a[1]; });
-        var topchans = l.slice(-10);
+        var topchans = l.slice(0,10);
         channelbot.sendChanMessage(src, "Most used channels:");
-        for (var i = 0; i < topchans.lenth; ++i) {
+        for (var i = 0; i < topchans.length; ++i) {
             sendChanMessage(src, "" + sys.channel(topchans[i][0]) + " with " + topchans[i][1] + " players.");
         }
         return;
@@ -2466,12 +2477,6 @@ modCommand: function(src, command, commandData, tar) {
         }
         mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!");
         SESSION.users(tar).un("mban");
-        return;
-    }
-
-    if (command == "impoff") {
-        delete SESSION.users(src).impersonation;
-        normalbot.sendChanMessage(src, "Now you are yourself!");
         return;
     }
     if (command == "k") {
@@ -2908,13 +2913,14 @@ modCommand: function(src, command, commandData, tar) {
 		'reason' : reason,
 		'target' : target_name
 	};
-	normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " on " + ip + " for " + timeString + "! [Reason: " + reason + "]");
-	sys.kick(tar);
-	this.kickAll(ip);
-	
-	authStats[authname] = authStats[authname] || {};
-	authStats[authname].latestTempBan = [name, parseInt(sys.time(), 10)];
-	return;
+        normalbot.sendAll("Target: " + name + ", IP: " + ip, staffchannel);
+        normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " for " + timeString + "! [Reason: " + reason + "]");
+        sys.kick(tar);
+        this.kickAll(ip);
+
+        authStats[authname] = authStats[authname] || {};
+        authStats[authname].latestTempBan = [name, parseInt(sys.time(), 10)];
+        return;
     }
     if (command == "tempunban") {
         var ip = sys.dbIp(commandData);
@@ -2966,6 +2972,9 @@ modCommand: function(src, command, commandData, tar) {
     if (command == "skmute" && (sys.auth(src) >= 1 || [/* insert mod list here when this goes to admin+ */].indexOf(sys.name(src).toLowerCase()) >= 0)) {
         if (tar === undefined)
             normalbot.sendMessage(src, "use only for online target ", channel);
+        else if (sys.auth(tar) >= 1) {
+            normalbot.sendMessage(src, "Can't use skmute on auth", channel);
+        }
         else {
             normalbot.sendAll("Target: " + sys.name(tar) + ", IP: " + sys.ip(tar) + ", Auth: "+ sys.name(src), staffchannel);
             script.issueBan("smute", src, undefined, "" + sys.name(tar) + ":skarmpiss:2h");
@@ -2976,6 +2985,9 @@ modCommand: function(src, command, commandData, tar) {
        return this.ownerCommand(src, command, commandData, tar);
     }
     if (cmp(sys.name(src),"aerith") && command == "updateplugin" && commandData == "tours.js") {
+       return this.ownerCommand(src, command, commandData, tar);
+    }
+    if (cmp(sys.name(src),"ethan") && command == "updateplugin" && commandData == "trivia.js") {
        return this.ownerCommand(src, command, commandData, tar);
     }
     return "no command";
@@ -3523,6 +3535,11 @@ ownerCommand: function(src, command, commandData, tar) {
     if (command == "imp") {
         SESSION.users(src).impersonation = commandData;
         normalbot.sendChanMessage(src, "Now you are " + SESSION.users(src).impersonation + "!");
+        return;
+    }
+    if (command == "impoff") {
+        delete SESSION.users(src).impersonation;
+        normalbot.sendChanMessage(src, "Now you are yourself!");
         return;
     }
     if (command == "periodicsay" || command == "periodichtml") {
@@ -4393,7 +4410,7 @@ afterChatMessage : function(src, message, chan)
 //    }
 
     // hardcoded
-    var ignoreChans = [staffchannel, sachannel, sys.channelId("trivreview"), sys.channelId("Watch")];
+    var ignoreChans = [staffchannel, sachannel, sys.channelId("trivreview"), sys.channelId("Watch"), mafiarev];
     var ignoreUsers = ["nixeagle"];
     var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1 && !poChannel.isChannelOperator(src);
     var capsday = false;
@@ -4616,8 +4633,8 @@ beforeBattleMatchup : function(src,dest,clauses,rated)
         if (sys.dbRegistered(sys.name(id))) {
             continue;
         }
-        for (var x=0;x<sys.teamcount(id);x++) {
-            var tier = sys.tier(id);
+        for (var x=0;x<sys.teamCount(id);x++) {
+            var tier = sys.tier(id,x);
             if (sys.ladderRating(id,tier) >= 1200 || sys.ranking(id,tier)/sys.totalPlayersByTier(tier) <= 0.05) {
                 sys.sendHtmlMessage(id,"<font color=red size="+(sys.ladderRating(id,tier) >= 1300 ? "7" : "5")+"><b>You currently have a high rating in "+tier+", but your account is not registered! Please register to protect your account from being stolen (click the register button below and follow the instructions)!</b></font><ping/>");
             }

@@ -1210,7 +1210,7 @@ module.exports = {
 
 	onHelp: function(src, topic, channel) {
 		var help = [];
-		if (topic == "tournaments") {
+		if (topic == "tournaments" && channel == tourchannel) {
 			help = [
 				"/join: Enters you to in a tournament.",
 				"/unjoin: Withdraws you from a tournament.",
@@ -1220,7 +1220,7 @@ module.exports = {
 				"/addtouralert [tier] : Adds a tour alert for the specified tier",
 				"/removetouralert [tier] : Removes a tour alert for the specified tier"
 			];
-		} else if (topic == "megauser") {
+		} else if (topic == "megauser" && (sys.auth(src) > 0 || SESSION.users(src).megauser)) {
 			help = [
 				"/tour [tier]:[number]:[type]: Starts a tournament in set tier for the selected number of players. Type is optional and can be set to Singles, Doubles or Triples.",
 				"/queue [tier]:[number]:[type]: Schedules a tournament to automatically start after the current one.",
