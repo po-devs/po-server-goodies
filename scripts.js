@@ -3401,11 +3401,22 @@ ownerCommand: function(src, command, commandData, tar) {
     }
     if (command == "contributor") {
         var s = commandData.split(":");
-        contributors.add(s[0], s[1]);
+		var name = s[0], reason = s[1];
+		if (sys.dbIp(name) == undefined) {
+			normalbot.sendChanMessage(src, name + " couldn't be found.");
+			return;
+		}
+        normalbot.sendChanMessage(src, name + " is now a contributor!");
+        contributors.add(name, reason);
         return;
     }
     if (command == "contributoroff") {
+		if (contributors.get(commandData) == undefined) {
+			normalbot.sendChanMessage(src, commandData + " isn't a contributor.", channel);
+			return;
+		}
         contributors.remove(commandData);
+		normalbot.sendChanMessage(src, commandData + " is no longer a contributor!");
         return;
     }
     if (command == "showteam") {
