@@ -279,7 +279,6 @@ init() // always call this to initialize variables
 exports.init = init;
 exports.updateTourStats = updateTourStats;
 exports.handleCommand = handleCommand;
-exports["help-string"] = "tourstats: See commands for tournament statistics!";
 exports.onHelp = showCommands;
 exports.getStats = function() { return tourstats; }
 exports.getWinners = function() { return tourwinners; }
