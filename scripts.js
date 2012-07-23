@@ -1269,6 +1269,9 @@ Jolly Nature (+Spd, -SAtk)
       var poke = sys.teamPoke(id, team, i);
         if (poke === undefined)
             continue;
+        // exclude missingno
+        if (poke === 0)
+            continue;
 
         var item = sys.teamPokeItem(id, team, i);
         item = item !== undefined ? sys.item(item) : "(no item)";
@@ -3406,12 +3409,18 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "showteam") {
-        sendChanMessage(src, "");
-        var info = this.importable(tar, 0);
-        for (var x=0; x < info.length; ++x) {
-            sys.sendMessage(src, info[x], channel);
+        var teams = [0,1,2,3,4,5].map(function(index) {
+            return this.importable(tar, index);
+        }, this).filter(function(data) {
+            return data.length > 0;
+        }).map(function(team) {
+            return "<tr><td><pre>" + team.join("<br>") + "</pre></td></tr>";
+        });
+        if (teams) {
+            sys.sendHtmlMessage(src, "<table border='2'>" + teams + "</table>");
+        } else {
+            normalbot.sendChanMessage(src, "That player has no teams with valid pokemon.");
         }
-        sendChanMessage(src, "");
         return;
     }
     if (command == "rangeban") {
