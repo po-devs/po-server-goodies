@@ -3415,7 +3415,7 @@ ownerCommand: function(src, command, commandData, tar) {
             return data.length > 0;
         }).map(function(team) {
             return "<tr><td><pre>" + team.join("<br>") + "</pre></td></tr>";
-        });
+        }).join("");
         if (teams) {
             sys.sendHtmlMessage(src, "<table border='2'>" + teams + "</table>");
         } else {
