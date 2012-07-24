@@ -408,7 +408,7 @@ function QuestionHolder(f)
     var fileContent = sys.getFileContent(this.file);
     if (fileContent === undefined || fileContent === "") {
         //this.save();
-		sys.writeToFile(this.file,JSON.stringify(this.state));
+	sys.writeToFile(this.file,JSON.stringify(this.state));
     } else {
         try
         {
@@ -1086,6 +1086,14 @@ addAdminCommand("autostart", function(src, commandData, channel) {
 	triviabot.sendMessage(src, "Autostart is now " + (Trivia.autostart == true ? "on" : "off") + ".", channel);
 	return;
 }, "View submit bans.");
+
+addAdminCommand("test", function(src, commandData, channel) {
+	if (sys.name(src).toLowerCase() != 'ethan') return;
+	if (commandData == "t") {
+		sys.sendMessage(src, sys.getFileContent("triviaq.json").substr(0,18), channel);
+		return;
+	}
+}, "Test command");
 
 // Normal command handling.
 exports.handleCommand = function trivia_handleCommand(src, command, channel)
