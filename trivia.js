@@ -116,7 +116,7 @@ TriviaGame.prototype.startGame = function(points, name)
 	    	this.sendAll("A #Trivia game was started! First to "+points+" points wins!",0);
 		sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
 		sys.sendAll("", 0);
-		this.sendAll((name != "" ? sys.name(src)+" started a Trivia game! " : "A trivia game was started! ") + " First to "+points+" points wins!",triviachan);
+		this.sendAll((name != "" ? name+" started a Trivia game! " : "A trivia game was started! ") + " First to "+points+" points wins!",triviachan);
 		this.answeringQuestion = false;
 	    	sys.delayedCall(function() { Trivia.startTriviaRound(); },15);
 	} catch (e) {
@@ -407,7 +407,8 @@ function QuestionHolder(f)
     this.state = {freeId: 0, questions: {}};
     var fileContent = sys.getFileContent(this.file);
     if (fileContent === undefined || fileContent === "") {
-        this.save();
+        //this.save();
+		sys.writeToFile(this.file,JSON.stringify(this.state));
     } else {
         try
         {
@@ -434,14 +435,16 @@ QuestionHolder.prototype.add = function(category,question,answer,name)
 	if(typeof(name)!==undefined){
 		q.name = name;
 	}
-    this.save();
+    //this.save();
+	sys.writeToFile(this.file,JSON.stringify(this.state));
     return id;
 };
 
 QuestionHolder.prototype.remove = function(id)
 {
     delete this.state.questions[id];
-    this.save();
+    //this.save();
+	sys.writeToFile(this.file,JSON.stringify(this.state));
 };
 QuestionHolder.prototype.checkq = function(id)
 {
@@ -487,11 +490,6 @@ QuestionHolder.prototype.get = function(id)
     return q === undefined ? null : q;
 };
 
-QuestionHolder.prototype.save = function()
-{
-    sys.writeToFile(this.file,JSON.stringify(this.state));
-};
-
 QuestionHolder.prototype.questionAmount = function()
 {
     return Object.keys(this.state.questions).length;
@@ -511,19 +509,22 @@ QuestionHolder.prototype.randomId = function()
 QuestionHolder.prototype.changeCategory = function(id,category)
 {
     this.state.questions[id].category = category;
-    this.save();
+    //this.save();
+	sys.writeToFile(this.file,JSON.stringify(this.state));
 };
 
 QuestionHolder.prototype.changeQuestion = function(id,question)
 {
     this.state.questions[id].question = question;
-    this.save();
+    //this.save();
+	sys.writeToFile(this.file,JSON.stringify(this.state));
 };
 
 QuestionHolder.prototype.changeAnswer = function(id,answer)
 {
     this.state.questions[id].answer = answer;
-    this.save();
+    //this.save();
+	sys.writeToFile(this.file,JSON.stringify(this.state));
 };
 
 QuestionHolder.prototype.all = function(src)
@@ -553,7 +554,8 @@ TriviaAdmin.prototype.addTAdmin = function(name)
     if (this.isTAdmin(name))
     return;
     this.admins.push(name.toLowerCase());
-    this.save();
+    //this.save();
+	sys.writeToFile(this.file,JSON.stringify(this.admins));
 };
 
 TriviaAdmin.prototype.removeTAdmin = function(name)
@@ -562,7 +564,8 @@ TriviaAdmin.prototype.removeTAdmin = function(name)
         return;
     var ind = this.admins.indexOf(name.toLowerCase());
     this.admins.splice(ind, 1);
-    this.save();
+    //this.save();
+	sys.writeToFile(this.file,JSON.stringify(this.admins));
 };
 
 TriviaAdmin.prototype.isTAdmin = function(name)
@@ -579,11 +582,6 @@ TriviaAdmin.prototype.tAdminList = function(src,id)
     	sys.sendMessage(src, this.admins[a] + (sys.id(this.admins[a]) == undefined ? "" : ":"),id);
     }
     sys.sendMessage(src, "" ,id);
-};
-
-TriviaAdmin.prototype.save = function()
-{
-	sys.writeToFile(this.file,JSON.stringify(this.admins));
 };
 
 // Commands
