@@ -489,7 +489,7 @@ QuestionHolder.prototype.changeAnswer = function(id,answer)
 };
 
 QuestionHolder.prototype.saveQuestions = function() {
-	sys.writeToFile(file, JSON.stringify(this.state));
+	sys.writeToFile(this.file, JSON.stringify(this.state));
 }
 
 QuestionHolder.prototype.all = function(src)
