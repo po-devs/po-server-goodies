@@ -492,6 +492,12 @@ QuestionHolder.prototype.saveQuestions = function() {
 	sys.writeToFile(this.file, JSON.stringify(this.state));
 }
 
+QuestionHolder.prototype.makeBackup = function(src, commandData, channel) {
+	var fileToMakeBackup = commandData;
+	sys.writeToFile(fileToMakeBackup, JSON.stringify(this.state)); 
+	triviabot.sendMessage(src, "Backup made!", channel);
+}
+
 QuestionHolder.prototype.all = function(src)
 {
     return this.state.questions;
@@ -729,6 +735,13 @@ addAdminCommand("erasequestions", function(src, commandData, channel) {
 	{
 		sys.writeToFile("triviaq.json","");
 		QuestionHolder.state = {freeId: 0, questions: {}};
+	}
+},"Erases all current questions");
+
+addAdminCommand("makebackup", function(src, commandData, channel) {
+	if (sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "ethan"|| sys.name(src).toLowerCase() == "crystal moogle")
+	{
+		triviaq.makeBackup(src, commandData, channel);
 	}
 },"Erases all current questions");
 
@@ -1182,5 +1195,5 @@ exports.init = function trivia_init()
 			tadmin = new TriviaAdmin("tadmins.txt");
 	}
 	
-    Trivia.sendAll("Trivia is now running!");
+    //Trivia.sendAll("Trivia is now running!");
 };
