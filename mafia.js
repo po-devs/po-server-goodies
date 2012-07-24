@@ -3073,6 +3073,9 @@ function Mafia(mafiachan) {
     this.onMute = function(src) {
         if (this.state != "day")
             this.slayUser(Config.capsbot, sys.name(src));
+		else
+			sys.delayedCall(function() { mafia.slayUser(Config.capsbot, sys.name(src)); }, mafia.ticks+1);
+			// slays user after the day phase is over
     };
 
     this.onMban = function(src) {
