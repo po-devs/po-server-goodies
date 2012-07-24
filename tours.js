@@ -378,14 +378,8 @@ function getExtraTierPoints(player, tier) {
 
 // saving tour admins list
 function saveTourKeys() {
-    sys.writeToFile("touradmins.txt", "")
     var tal = tours.touradmins
-    for (var n=0;n<tal.length;n++) {
-        sys.appendToFile("touradmins.txt", tal[n])
-        if (n != tal.length-1) {
-            sys.appendToFile("touradmins.txt", ":::")
-        }
-    }
+    sys.writeToFile("touradmins.txt", tal.join(":::"))
     return;
 }
 
@@ -542,7 +536,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.371",
+            version: "1.380a",
             debug: false,
             points: true
         }
@@ -578,7 +572,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.371",
+        version: "1.380a",
         debug: false,
         points: true
     }
@@ -772,6 +766,9 @@ function tourBattleStart(src, dest, clauses, rated, mode, bid) {
     }
     if (validBattle && tours.tour[key].round >= 1) {
         tours.tour[key].battlers.push(name1, name2)
+        if (clauses%8 >= 4) {
+            tours.tour[key].disallowspecs.push(name1, name2)
+        }
         tours.tour[key].active[name1] = "Battle"
         tours.tour[key].active[name2] = "Battle"// this avoids dq later since they made an attempt to start
         if (tours.tour[key].state == "final") {
@@ -2807,6 +2804,7 @@ function advanceround(key) {
         tours.tour[key].winners = []
         tours.tour[key].losers = []
         tours.tour[key].battlers = []
+        tours.tour[key].disallowspecs = []
         tours.tour[key].active = {}
         tours.tour[key].players = newlist
         if (doubleelim) {
@@ -2830,6 +2828,7 @@ function tourstart(tier, starter, key, parameters) {
         tours.tour[key].tourtype = tier
         tours.tour[key].players = []; // list for the actual tour data
         tours.tour[key].battlers = [];
+        tours.tour[key].disallowspecs = []; // list for users who disallowed spects.
         tours.tour[key].winners = [];
         tours.tour[key].losers = []; // this will make de mode easier
         tours.tour[key].round = 0;
@@ -2852,7 +2851,7 @@ function tourstart(tier, starter, key, parameters) {
                 sys.sendHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, you have "+time_handle(Config.Tours.toursignup)+" to join!", channels[x])
             }
             else {
-                sys.sendAll("*** Go to the #"+sys.channel(tourschan)+" channel and type /join to enter the tournament, you have "+time_handle(Config.Tours.toursignup)+" to join! ***", channels[x])
+                sys.sendAll(Config.Tours.tourbot+"Go to the #"+sys.channel(tourschan)+" channel and type /join to enter the tournament, you have "+time_handle(Config.Tours.toursignup)+" to join!", channels[x])
             }
             sys.sendAll(border, channels[x])
             sys.sendAll("", channels[x])
@@ -3450,11 +3449,11 @@ function toCorrectCase(name) {
 // Tour Auth Functions
 
 function isTourAdmin(src) {
-    if (sys.auth(src) >= 1 || isTourSuperAdmin(src)) {
-        return true;
-    }
     if (sys.auth(src) < 0 || !sys.dbRegistered(sys.name(src))) {
         return false;
+    }
+    if (sys.auth(src) >= 1 || isTourSuperAdmin(src)) {
+        return true;
     }
     var tadmins = tours.touradmins
     if (tadmins !== undefined && tadmins.length >= 1) {
@@ -3468,11 +3467,11 @@ function isTourAdmin(src) {
 }
 
 function isTourSuperAdmin(src) {
-    if (sys.auth(src) >= 2 || isTourOwner(src)) {
-        return true;
-    }
     if (sys.auth(src) < 1 || !sys.dbRegistered(sys.name(src))) {
         return false;
+    }
+    if (sys.auth(src) >= 2 || isTourOwner(src)) {
+        return true;
     }
     var tsadmins = [];
     if (tsadmins !== undefined && tsadmins.length >= 1) {
@@ -3486,11 +3485,11 @@ function isTourSuperAdmin(src) {
 }
 
 function isTourOwner(src) {
-    if (sys.auth(src) >= 3) {
-        return true;
-    }
     if (sys.auth(src) < 1 || !sys.dbRegistered(sys.name(src))) {
         return false;
+    }
+    if (sys.auth(src) >= 3) {
+        return true;
     }
     var towners = ["lamperi", "aerith", "zeroality"];
     if (towners !== undefined && towners.length >= 1) {
@@ -3701,7 +3700,7 @@ function calcPercentage() { // calc percentage of players in tournaments playing
 
 function sendWelcomeMessage(src, chan) {
     sys.sendMessage(src,border,chan)
-    sys.sendMessage(src,"*** Welcome to #"+Config.Tours.channel+" Version "+Config.Tours.version+"! ***",chan)
+    sys.sendMessage(src,"*** Welcome to #"+Config.Tours.channel+"; Version "+Config.Tours.version+"! ***",chan)
     sys.sendMessage(src,"",chan)
     sys.sendMessage(src,"*** Current Tournaments ***",chan)
     for (var x in tours.tour) {
@@ -3866,13 +3865,13 @@ module.exports = {
         }
     },
     allowToSpectate : function(src, p1, p2) {
+        var srctour = isInTour(sys.name(src))
+        var p1tour = isInTour(sys.name(p1))
+        var p2tour = isInTour(sys.name(p2))
+        if (p1tour === false || p2tour === false) {
+            return false;
+        }
         if (isTourAdmin(src)) {
-            var srctour = isInTour(sys.name(src))
-            var p1tour = isInTour(sys.name(p1))
-            var p2tour = isInTour(sys.name(p2))
-            if (p1tour === false || p2tour === false) {
-                return false;
-            }
             if (p1tour !== p2tour) {
                 return false;
             }
@@ -3880,6 +3879,19 @@ module.exports = {
                 return false;
             }
             return true;
+        }
+        /* check for potential scouters */
+        var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1"]
+        var isOkToSpectate = (tours.tour[p1tour].state == "final" || cctiers.indexOf(tours.tour[p1tour].tourtype) != -1)
+        var usingDisallowSpecs = false;
+        for (var x in tours.tour[p1tour].disallowspecs) {
+            if (cmp(tours.tour[p1tour].disallowspecs[x], sys.name(p1))) {
+                usingDisallowSpecs = true;
+                break;
+            }
+        }
+        if (srctour === p1tour && !isOkToSpectate && !usingDisallowSpecs) {
+            sendBotAll(sys.name(src)+" started watching the "+tours.tour[p1tour].tourtype+" tour battle between "+sys.name(p1)+" and "+sys.name(p2)+", so could be potentially scouting.", sys.channelId("Victory Road"), false)
         }
         return false;
     }
