@@ -407,8 +407,8 @@ function QuestionHolder(f)
     this.state = {freeId: 0, questions: {}};
     var fileContent = sys.getFileContent(this.file);
     if (fileContent === undefined || fileContent === "") {
-        //this.save();
-	sys.writeToFile(this.file,JSON.stringify(this.state));
+        this.saveThis();
+		sys.writeToFile(this.file,JSON.stringify(this.state));
     } else {
         try
         {
@@ -435,7 +435,7 @@ QuestionHolder.prototype.add = function(category,question,answer,name)
 	if(typeof(name)!==undefined){
 		q.name = name;
 	}
-    //this.save();
+    this.saveThis();
 	sys.writeToFile(this.file,JSON.stringify(this.state));
     return id;
 };
@@ -443,7 +443,7 @@ QuestionHolder.prototype.add = function(category,question,answer,name)
 QuestionHolder.prototype.remove = function(id)
 {
     delete this.state.questions[id];
-    //this.save();
+    this.saveThis();
 	sys.writeToFile(this.file,JSON.stringify(this.state));
 };
 QuestionHolder.prototype.checkq = function(id)
@@ -509,23 +509,27 @@ QuestionHolder.prototype.randomId = function()
 QuestionHolder.prototype.changeCategory = function(id,category)
 {
     this.state.questions[id].category = category;
-    //this.save();
+    this.saveThis();
 	sys.writeToFile(this.file,JSON.stringify(this.state));
 };
 
 QuestionHolder.prototype.changeQuestion = function(id,question)
 {
     this.state.questions[id].question = question;
-    //this.save();
+    this.saveThis();
 	sys.writeToFile(this.file,JSON.stringify(this.state));
 };
 
 QuestionHolder.prototype.changeAnswer = function(id,answer)
 {
     this.state.questions[id].answer = answer;
-    //this.save();
+    this.saveThis();
 	sys.writeToFile(this.file,JSON.stringify(this.state));
 };
+
+QuestionHolder.prototype.saveThis = function() {
+	sys.writeToFile(this.file,JSON.stringify(this.state));
+}
 
 QuestionHolder.prototype.all = function(src)
 {
@@ -554,7 +558,7 @@ TriviaAdmin.prototype.addTAdmin = function(name)
     if (this.isTAdmin(name))
     return;
     this.admins.push(name.toLowerCase());
-    //this.save();
+    this.saveThis();
 	sys.writeToFile(this.file,JSON.stringify(this.admins));
 };
 
@@ -564,9 +568,12 @@ TriviaAdmin.prototype.removeTAdmin = function(name)
         return;
     var ind = this.admins.indexOf(name.toLowerCase());
     this.admins.splice(ind, 1);
-    //this.save();
-	sys.writeToFile(this.file,JSON.stringify(this.admins));
+    this.saveThis();
 };
+
+TriviaAdmin.prototype.saveThis = function() {
+	sys.writeToFile(this.file,JSON.stringify(this.admins));
+}
 
 TriviaAdmin.prototype.isTAdmin = function(name)
 {
@@ -1083,14 +1090,15 @@ addAdminCommand("submitbans", function(src, commandData, channel) {
 addAdminCommand("autostart", function(src, commandData, channel) {
 	if (sys.name(src).toLowerCase() != "ethan") return;
 	Trivia.autostart = !Trivia.autostart;
-	triviabot.sendMessage(src, "Autostart is now " + (Trivia.autostart == true ? "on" : "off") + ".", channel);
+	triviabot.sendMessage(src, "Autostart is now " + (Trivia.autostart == true ? "on" : "off") + ".");
 	return;
-}, "View submit bans.");
+}, "Autostart games.");
 
 addAdminCommand("test", function(src, commandData, channel) {
 	if (sys.name(src).toLowerCase() != 'ethan') return;
 	if (commandData == "t") {
 		sys.sendMessage(src, sys.getFileContent("triviaq.json").substr(0,43), channel);
+		sys.sendMessage(src, sys.getFileContent("trivreview.json").substr(0,43), channel);
 		return;
 	}
 }, "Test command");
