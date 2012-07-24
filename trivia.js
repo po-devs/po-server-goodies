@@ -1090,7 +1090,7 @@ addAdminCommand("autostart", function(src, commandData, channel) {
 addAdminCommand("test", function(src, commandData, channel) {
 	if (sys.name(src).toLowerCase() != 'ethan') return;
 	if (commandData == "t") {
-		sys.sendMessage(src, sys.getFileContent("triviaq.json").substr(0,18), channel);
+		sys.sendMessage(src, sys.getFileContent("triviaq.json").substr(0,43), channel);
 		return;
 	}
 }, "Test command");
@@ -1216,12 +1216,12 @@ exports.init = function trivia_init()
 {
 	triviachan = sys.channelId('Trivia');
 	revchan = sys.channelId('TrivReview');
-	//if (typeof Trivia === "undefined" || typeof Trivia != "object") {
+	if (typeof Trivia === "undefined" || typeof Trivia != "object") {
 			Trivia = new TriviaGame();
 			triviaq = new QuestionHolder("triviaq.json");
 			trivreview = new QuestionHolder("trivreview.json");
 			tadmin = new TriviaAdmin("tadmins.txt");
-	//}
+	}
 
     //Trivia.sendAll("Trivia is now running!");
 };
