@@ -494,6 +494,7 @@ QuestionHolder.prototype.saveQuestions = function() {
 
 QuestionHolder.prototype.makeBackup = function(src, commandData, channel) {
 	var fileToMakeBackup = commandData;
+	if (fileToMakeBackup.indexOf(".json") == -1) return;
 	sys.writeToFile(fileToMakeBackup, JSON.stringify(this.state)); 
 	triviabot.sendMessage(src, "Backup made!", channel);
 }
@@ -743,7 +744,7 @@ addAdminCommand("makebackup", function(src, commandData, channel) {
 	{
 		triviaq.makeBackup(src, commandData, channel);
 	}
-},"Erases all current questions");
+},"Makes a backup of current questions.");
 
 addAdminCommand("apropos", function(src, commandData, channel) {
     if (commandData === undefined)
