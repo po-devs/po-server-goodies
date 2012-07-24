@@ -1064,7 +1064,7 @@ addAdminCommand("submitbans", function(src, commandData, channel) {
 addAdminCommand("autostart", function(src, commandData, channel) {
 	if (sys.name(src).toLowerCase() != "ethan") return;
 	Trivia.autostart = !Trivia.autostart;
-	triviabot.sendMessage(src, "Autostart is now " + (Trivia.autostart == true ? "on" : "off") + ".");
+	triviabot.sendMessage(src, "Autostart is now " + (Trivia.autostart == true ? "on" : "off") + ".", channel);
 	return;
 }, "Autostart games.");
 
