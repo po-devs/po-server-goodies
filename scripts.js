@@ -901,7 +901,6 @@ init : function() {
     lastMemUpdate = 0;
     this.startStepEvent();
 
-    callplugins("init");
     bannedUrls = [];
 
     mafiachan = SESSION.global().channelManager.createPermChannel("Mafia Channel", "Use /help to get started!");
@@ -1120,6 +1119,8 @@ init : function() {
         sys.sendAll(message, tourchannel);
     };
 
+    callplugins("init");
+
     VarsCreated = true;
 }, /* end of init */
 
@@ -1267,6 +1268,9 @@ Jolly Nature (+Spd, -SAtk)
     for (var i = 0; i < 6; ++i) {
       var poke = sys.teamPoke(id, team, i);
         if (poke === undefined)
+            continue;
+        // exclude missingno
+        if (poke === 0)
             continue;
 
         var item = sys.teamPokeItem(id, team, i);
@@ -2097,13 +2101,6 @@ userCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-
-    if (command == "join"){
-        if (channel == sys.channelId("Trivia")) {
-            sendChanMessage(src, "±TriviaBot: You must use \\join to join a Trivia game!");
-            return;
-        }
-    }
     if (command == "topic") {
         SESSION.channels(channel).setTopic(src, commandData);
         return;
@@ -2919,13 +2916,14 @@ modCommand: function(src, command, commandData, tar) {
 		'reason' : reason,
 		'target' : target_name
 	};
-	normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " on " + ip + " for " + timeString + "! [Reason: " + reason + "]");
-	sys.kick(tar);
-	this.kickAll(ip);
-	
-	authStats[authname] = authStats[authname] || {};
-	authStats[authname].latestTempBan = [name, parseInt(sys.time(), 10)];
-	return;
+        normalbot.sendAll("Target: " + name + ", IP: " + ip, staffchannel);
+        normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " for " + timeString + "! [Reason: " + reason + "]");
+        sys.kick(tar);
+        this.kickAll(ip);
+
+        authStats[authname] = authStats[authname] || {};
+        authStats[authname].latestTempBan = [name, parseInt(sys.time(), 10)];
+        return;
     }
     if (command == "tempunban") {
         var ip = sys.dbIp(commandData);
@@ -2977,6 +2975,9 @@ modCommand: function(src, command, commandData, tar) {
     if (command == "skmute" && (sys.auth(src) >= 1 || [/* insert mod list here when this goes to admin+ */].indexOf(sys.name(src).toLowerCase()) >= 0)) {
         if (tar === undefined)
             normalbot.sendMessage(src, "use only for online target ", channel);
+        else if (sys.auth(tar) >= 1) {
+            normalbot.sendMessage(src, "Can't use skmute on auth", channel);
+        }
         else {
             normalbot.sendAll("Target: " + sys.name(tar) + ", IP: " + sys.ip(tar) + ", Auth: "+ sys.name(src), staffchannel);
             script.issueBan("smute", src, undefined, "" + sys.name(tar) + ":skarmpiss:2h");
@@ -3400,20 +3401,37 @@ ownerCommand: function(src, command, commandData, tar) {
     }
     if (command == "contributor") {
         var s = commandData.split(":");
-        contributors.add(s[0], s[1]);
+		var name = s[0], reason = s[1];
+		if (sys.dbIp(name) == undefined) {
+			normalbot.sendChanMessage(src, name + " couldn't be found.");
+			return;
+		}
+        normalbot.sendChanMessage(src, name + " is now a contributor!");
+        contributors.add(name, reason);
         return;
     }
     if (command == "contributoroff") {
+		if (contributors.get(commandData) == undefined) {
+			normalbot.sendChanMessage(src, commandData + " isn't a contributor.", channel);
+			return;
+		}
         contributors.remove(commandData);
+		normalbot.sendChanMessage(src, commandData + " is no longer a contributor!");
         return;
     }
     if (command == "showteam") {
-        sendChanMessage(src, "");
-        var info = this.importable(tar, 0);
-        for (var x=0; x < info.length; ++x) {
-            sys.sendMessage(src, info[x], channel);
+        var teams = [0,1,2,3,4,5].map(function(index) {
+            return this.importable(tar, index);
+        }, this).filter(function(data) {
+            return data.length > 0;
+        }).map(function(team) {
+            return "<tr><td><pre>" + team.join("<br>") + "</pre></td></tr>";
+        }).join("");
+        if (teams) {
+            sys.sendHtmlMessage(src, "<table border='2'>" + teams + "</table>");
+        } else {
+            normalbot.sendChanMessage(src, "That player has no teams with valid pokemon.");
         }
-        sendChanMessage(src, "");
         return;
     }
     if (command == "rangeban") {
@@ -4617,8 +4635,7 @@ attemptToSpectateBattle : function(src, p1, p2) {
         return "allow";
     }
     return "denied";
-}
-,
+},
 
 beforeBattleMatchup : function(src,dest,clauses,rated)
 {
