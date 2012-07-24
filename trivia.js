@@ -1083,7 +1083,7 @@ addAdminCommand("submitbans", function(src, commandData, channel) {
 addAdminCommand("autostart", function(src, commandData, channel) {
 	if (sys.name(src).toLowerCase() != "ethan") return;
 	Trivia.autostart = !Trivia.autostart;
-	triviabot.sendMessage(src, "Autostart is now " + (Trivia.autostart == true ? "on" : "off") + ".");
+	triviabot.sendMessage(src, "Autostart is now " + (Trivia.autostart == true ? "on" : "off") + ".", channel);
 	return;
 }, "View submit bans.");
 
@@ -1208,12 +1208,12 @@ exports.init = function trivia_init()
 {
 	triviachan = sys.channelId('Trivia');
 	revchan = sys.channelId('TrivReview');
-	if (typeof Trivia === "undefined" || typeof Trivia != "object") {
+	//if (typeof Trivia === "undefined" || typeof Trivia != "object") {
 			Trivia = new TriviaGame();
 			triviaq = new QuestionHolder("triviaq.json");
 			trivreview = new QuestionHolder("trivreview.json");
 			tadmin = new TriviaAdmin("tadmins.txt");
-	}
+	//}
 
-    Trivia.sendAll("Trivia is now running!");
+    //Trivia.sendAll("Trivia is now running!");
 };
