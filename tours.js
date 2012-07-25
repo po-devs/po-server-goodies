@@ -536,7 +536,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.380a",
+            version: "1.380",
             debug: false,
             points: true
         }
@@ -572,7 +572,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.380a",
+        version: "1.380",
         debug: false,
         points: true
     }
@@ -1008,7 +1008,7 @@ function tourCommand(src, command, commandData) {
         }
         if (isTourSuperAdmin(src)) {
             /* Tournament Admins etc. */
-            if (command == "touradmin") {
+            if (command == "touradmin" || command == "touradmins") {
                 var tadmins = tours.touradmins
                 if (sys.dbIp(commandData) === undefined) {
                     sendBotMessage(src,"This user doesn't exist!",tourschan,false)
@@ -1019,10 +1019,6 @@ function tourCommand(src, command, commandData) {
                     if (sys.id(commandData) !== undefined) {
                         sendBotMessage(sys.id(commandData), "Please register ASAP, before getting tour authority.","all",false)
                     }
-                    return true;
-                }
-                if (sys.dbAuth(commandData) >= 1) {
-                    sendBotMessage(src,"They can already start tours!",tourschan,false)
                     return true;
                 }
                 if (tadmins !== undefined) {
@@ -1036,10 +1032,15 @@ function tourCommand(src, command, commandData) {
                 tadmins.push(commandData)
                 tours.touradmins = tadmins
                 saveTourKeys()
-                sendBotAll(sys.name(src)+" promoted "+commandData.toLowerCase()+" to a tournament admin!",tourschan,false)
+                if (command == "touradmin") {
+                    sendBotAll(sys.name(src)+" promoted "+commandData.toLowerCase()+" to a tournament admin!",tourschan,false)
+                }
+                else {
+                    sendBotAll(sys.name(src)+" promoted "+commandData.toLowerCase()+" to a tournament admin!",sys.channelId("Indigo Plateau"),false)
+                }
                 return true;
             }
-            if (command == "tourdeadmin") {
+            if (command == "tourdeadmin" || command == "tourdeadmins") {
                 var tadmins = tours.touradmins
                 if (sys.dbIp(commandData) === undefined) {
                     sendBotMessage(src,"This user doesn't exist!",tourschan,false)
@@ -1061,7 +1062,12 @@ function tourCommand(src, command, commandData) {
                 tadmins.splice(index,1)
                 tours.touradmins = tadmins
                 saveTourKeys()
-                sendBotAll(sys.name(src)+" fired "+commandData.toLowerCase()+" from running tournaments!",tourschan,false)
+                if (command == "tourdeadmin") {
+                    sendBotAll(sys.name(src)+" fired "+commandData.toLowerCase()+" from running tournaments!",tourschan,false)
+                }
+                else {
+                    sendBotAll(sys.name(src)+" fired "+commandData.toLowerCase()+" from running tournaments!",sys.channelId("Indigo Plateau"),false)
+                }
                 return true;
             }
             // active history command
@@ -1405,10 +1411,6 @@ function tourCommand(src, command, commandData) {
                     sendBotMessage(src,"That account isn't registered so you can't give it authority!",tourschan,false)
                     return true;
                 }
-                if (sys.dbAuth(newname) >= 1) {
-                    sendBotMessage(src,"That account can already start tours!",tourschan,false)
-                    return true;
-                }
                 if (tadmins !== undefined) {
                     for (var t in tadmins) {
                         if (cmp(tadmins[t].toLowerCase(), newname)) {
@@ -1433,7 +1435,7 @@ function tourCommand(src, command, commandData) {
                     }
                 }
                 if (index == -1) {
-                    sendBotMessage(src,"Failed to pass tour auth! Please post about this issue on forums!",tourschan,false)
+                    sendBotMessage(src,"You need to be tour auth to pass it!",tourschan,false)
                     return true;
                 }
                 tadmins.splice(t, 1, toCorrectCase(newname))
@@ -2139,12 +2141,6 @@ function tourCommand(src, command, commandData) {
                     sys.sendMessage(src, tal[l],tourschan)
                 }
             }
-            // displays onine auth in "Tours" channel as well
-            for (var m in authlist) {
-                if (sys.id(authlist[m]) !== undefined && tal.indexOf(authlist[m]) == -1 && sys.isInChannel(sys.id(authlist[m]), tourschan)) {
-                    sys.sendMessage(src, toCorrectCase(authlist[m]) + " (Online):",tourschan)
-                }
-            }
             sys.sendMessage(src, "",tourschan)
             return true;
         }
@@ -2198,12 +2194,6 @@ function tourCommand(src, command, commandData) {
             for (var l in tal) {
                 if (sys.id(tal[l]) !== undefined && SESSION.users(sys.id(tal[l])).lastline.time + Config.Tours.activity > parseInt(sys.time())) {
                     sys.sendMessage(src, toCorrectCase(tal[l]), tourschan)
-                }
-            }
-            // displays online active auth in "Tours" channel as well
-            for (var m in authlist) {
-                if (sys.id(authlist[m]) !== undefined && tal.indexOf(authlist[m]) == -1 && sys.isInChannel(sys.id(authlist[m]), tourschan)  && SESSION.users(sys.id(authlist[m])).lastline.time + Config.Tours.activity > parseInt(sys.time())) {
-                    sys.sendMessage(src, toCorrectCase(authlist[m]), tourschan)
                 }
             }
             sys.sendMessage(src, "",tourschan)
