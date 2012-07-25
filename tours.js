@@ -45,8 +45,8 @@ var touradmincommands = ["*** Parameter Information ***",
                     "passta [name]: passes your tour admin to a new name",
                     "*** FOLLOWING COMMANDS ARE ADMIN+ COMMANDS ***",
                     "tourstart [tier]:[parameters]: starts a tier of that tournament immediately, provided one is not in signups.",
-                    "touradmin [name]: makes someone a tournament admin",
-                    "tourdeadmin [name]: fires someone from being tournament admin",
+                    "tadmin[s] [name]: makes someone a tournament admin - s makes it only show in staff chan",
+                    "tdeadmin[s] [name]: fires someone from being tournament admin - s makes it only show in staff chan",
                     // "forcestart: ends signups immediately and starts the first round",
                     "start: starts next tournament in the queue immediately (use sparingly)",
                     "push [player]: pushes a player into a tournament in signups (DON'T USE UNLESS ASKED)",
@@ -1008,7 +1008,7 @@ function tourCommand(src, command, commandData) {
         }
         if (isTourSuperAdmin(src)) {
             /* Tournament Admins etc. */
-            if (command == "touradmin" || command == "touradmins") {
+            if (command == "tadmin" || command == "tadmins") {
                 var tadmins = tours.touradmins
                 if (sys.dbIp(commandData) === undefined) {
                     sendBotMessage(src,"This user doesn't exist!",tourschan,false)
@@ -1032,7 +1032,7 @@ function tourCommand(src, command, commandData) {
                 tadmins.push(commandData)
                 tours.touradmins = tadmins
                 saveTourKeys()
-                if (command == "touradmin") {
+                if (command == "tadmin") {
                     sendBotAll(sys.name(src)+" promoted "+commandData.toLowerCase()+" to a tournament admin!",tourschan,false)
                 }
                 else {
@@ -1040,7 +1040,7 @@ function tourCommand(src, command, commandData) {
                 }
                 return true;
             }
-            if (command == "tourdeadmin" || command == "tourdeadmins") {
+            if (command == "tdeadmin" || command == "tdeadmins") {
                 var tadmins = tours.touradmins
                 if (sys.dbIp(commandData) === undefined) {
                     sendBotMessage(src,"This user doesn't exist!",tourschan,false)
@@ -1062,7 +1062,7 @@ function tourCommand(src, command, commandData) {
                 tadmins.splice(index,1)
                 tours.touradmins = tadmins
                 saveTourKeys()
-                if (command == "tourdeadmin") {
+                if (command == "tdeadmin") {
                     sendBotAll(sys.name(src)+" fired "+commandData.toLowerCase()+" from running tournaments!",tourschan,false)
                 }
                 else {
