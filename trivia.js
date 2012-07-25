@@ -810,14 +810,16 @@ addAdminCommand("apropos", function(src, commandData, channel) {
     for (b in all)
     {
         q = triviaq.get(b)
-        if (q.question.toLowerCase().indexOf(commandData.toLowerCase())>-1||q.answer.toLowerCase().indexOf(commandData.toLowerCase())>-1)
+		var answer = String(q.answer)
+        if (q.question.toLowerCase().indexOf(commandData.toLowerCase())>-1||answer.toLowerCase().indexOf(commandData.toLowerCase())>-1)
         Trivia.sendPM(src,"Question: '"+q.question+ "' Answer: '"+q.answer+"' (id='" + b + "')", channel);
     }
     all = trivreview.all();
     for (b in all)
     {	
         q = trivreview.get(b);
-        if (q.question.toLowerCase().indexOf(commandData.toLowerCase())>-1||q.answer.toLowerCase().indexOf(commandData.toLowerCase())>-1)
+		var answer = String(q.answer)
+        if (q.question.toLowerCase().indexOf(commandData.toLowerCase())>-1||answer.toLowerCase().indexOf(commandData.toLowerCase())>-1)
         Trivia.sendPM(src,"Question under review: '"+q.question+ "' Answer: '"+q.answer+"' (id='" + b + "')", channel);
     }
 
