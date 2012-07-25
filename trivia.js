@@ -809,14 +809,14 @@ addAdminCommand("apropos", function(src, commandData, channel) {
     var all = triviaq.all(), b, q;
     for (b in all)
     {
-        q = all[b];
+        q = triviaq.get(b)
         if (q.question.toLowerCase().indexOf(commandData.toLowerCase())>-1||q.answer.toLowerCase().indexOf(commandData.toLowerCase())>-1)
         Trivia.sendPM(src,"Question: '"+q.question+ "' Answer: '"+q.answer+"' (id='" + b + "')", channel);
     }
     all = trivreview.all();
     for (b in all)
-    {
-        q = all[b];
+    {	
+        q = trivreview.get(b);
         if (q.question.toLowerCase().indexOf(commandData.toLowerCase())>-1||q.answer.toLowerCase().indexOf(commandData.toLowerCase())>-1)
         Trivia.sendPM(src,"Question under review: '"+q.question+ "' Answer: '"+q.answer+"' (id='" + b + "')", channel);
     }
