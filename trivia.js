@@ -5,11 +5,22 @@ var Bot = require("bot.js").Bot;
 var utilities = require("utilities.js");
 
 var triviachan, revchan;
-var triviabot = new Bot("Psyduck"),
-	Trivia = new TriviaGame(),
-	triviaq = new QuestionHolder("triviaq.json"),
-	trivreview = new QuestionHolder("trivreview.json"),
-	tadmin = new TriviaAdmin("tadmins.txt");
+var triviabot = new Bot("Psyduck");
+
+var testfiles = ['triviaq.json', 'trivreview.json'];
+
+for (t in testfiles) {
+	if (sys.getFileContent(testfiles[t]) == "") {
+		sys.writeToFile(testfiles[t], "{}");
+	}
+}
+
+if (typeof(Trivia) != 'object' || Trivia.started == false) {
+	Trivia = new TriviaGame();
+}
+triviaq = new QuestionHolder("triviaq.json"),
+trivreview = new QuestionHolder("trivreview.json"),
+tadmin = new TriviaAdmin("tadmins.txt");
 
 try {
 	trivData = JSON.parse(sys.getFileContent("trivData.json"));
@@ -17,12 +28,19 @@ try {
 	trivData = {};
 }
 
-if (trivData.submitBans == undefined) trivData.submitBans = {}; // submit bans
-if (trivData.toFlash == undefined) trivData.toFlash = {}; // who to flash when a game starts
+if (trivData.submitBans == undefined) trivData.submitBans = {};
+if (trivData.toFlash == undefined) trivData.toFlash = {};
 
 function saveData()
 {
 	sys.writeToFile("trivData.json", JSON.stringify(trivData));
+}
+
+function isTriviaOwner(src) {
+	lname = sys.name(src).toLowerCase(), owners = ['ethan', 'lamperi', 'crystal moogle'];
+	//if (sys.auth(src) >= 3) return true;
+	if (owners.indexOf(lname) > -1) return true;
+	return false;
 }
 
 function time()
@@ -239,7 +257,7 @@ try { // Do not indent this, it is only until this starts to work
 		//Trivia.sendAll("Check the /topic for how to submit a question!", triviachan);
         this.resetTrivia();
         if (this.autostart == true) {
-        	pointsForGame = sys.rand(7,56), toStart = sys.rand(20,30);
+        	pointsForGame = sys.rand(2,102), toStart = sys.rand(30,44);
         	Trivia.sendAll("A new trivia game will be started in "+toStart+" seconds!", triviachan);
         	sys.delayedCall(function() {
         		Trivia.startGame(pointsForGame, "");
@@ -492,13 +510,6 @@ QuestionHolder.prototype.saveQuestions = function() {
 	sys.writeToFile(this.file, JSON.stringify(this.state));
 }
 
-QuestionHolder.prototype.makeBackup = function(src, commandData, channel) {
-	var fileToMakeBackup = commandData;
-	if (fileToMakeBackup.indexOf(".json") == -1) return;
-	sys.writeToFile(fileToMakeBackup, JSON.stringify(this.state)); 
-	triviabot.sendMessage(src, "Backup made!", channel);
-}
-
 QuestionHolder.prototype.all = function(src)
 {
     return this.state.questions;
@@ -561,6 +572,7 @@ TriviaAdmin.prototype.tAdminList = function(src,id)
 // Commands
 var userCommands = {};
 var adminCommands = {};
+var ownerCommands = {};
 var commandHelp = [];
 function addCommand(ds, commands, callback, help)
 {
@@ -578,6 +590,9 @@ function addUserCommand(commands, callback, help)
 function addAdminCommand(commands, callback, help)
 {
     return addCommand(adminCommands, commands, callback, help);
+}
+function addOwnerCommand(commands, callback, help) {
+    return addCommand(ownerCommands, commands, callback, help);
 }
 
 addUserCommand("flashme", function(src,commandData,channel) {
@@ -683,7 +698,7 @@ addUserCommand("unjoin", function(src, commandData, channel) {
 addUserCommand("qamount", function(src, commandData, channel) {
     if (channel == triviachan || channel == revchan) {
         var qamount = triviaq.questionAmount();
-        sys.sendHtmlMessage(src,"<timestamp/> The amount of questions is: <b>"+qamount+"</b>",channel);
+        triviabot.sendMessage(src, "The amount of questions is: "+qamount,channel);
         return;
     }
 },"Shows you the current amount of questions");
@@ -726,25 +741,66 @@ addAdminCommand("say", function(src, commandData, channel) {
     Trivia.sendAll("("+sys.name(src)+"): "+commandData,channel);
 },"Allows you to talk during the answer period");
 
-addAdminCommand("addallpokemon", function(src, commandData, channel) {
+addOwnerCommand("addallpokemon", function(src, commandData, channel) {
     if (sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "ethan"|| sys.name(src).toLowerCase() == "crystal moogle")
 	Trivia.addAllPokemon();
 },"Adds all the \"Who's that pokémon?\" questions");
 
-addAdminCommand("erasequestions", function(src, commandData, channel) {
-	if (sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "ethan"|| sys.name(src).toLowerCase() == "crystal moogle")
-	{
-		sys.writeToFile("triviaq.json","");
-		QuestionHolder.state = {freeId: 0, questions: {}};
+addOwnerCommand("erasequestions", function(src, commandData, channel) {
+	if (commandData == undefined || commandData !== 'confirm') {
+		triviabot.sendMessage(src, 'Please confirm that you want to erase all questions by typing /erasequestions confirm.', channel);
+		return;
+	} else {
+		sys.writeToFile("triviaq.json", "");
+		triviaq.state = {freeId: 0, questions: {}};
+		triviabot.sendMessage(src, "Questions erased!", channel);
 	}
 },"Erases all current questions");
 
-addAdminCommand("makebackup", function(src, commandData, channel) {
-	if (sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "ethan"|| sys.name(src).toLowerCase() == "crystal moogle")
-	{
-		triviaq.makeBackup(src, commandData, channel);
+addOwnerCommand("makebackup", function(src, commandData, channel) {
+	commandData = commandData.split(":");
+	var fileTrivia = commandData[0], fileTrivReview = commandData[1];
+	if (fileTrivia == undefined || fileTrivReview == undefined) {
+		fileTrivia = "backupQuestions.json", fileTrivReview = "backupReview.json";
 	}
+	if (fileTrivia.indexOf(".json") == -1 || fileTrivReview.indexOf(".json") == -1) {
+		triviabot.sendMessage(src, 'Please add .json to make sure you are specifying a valid file.', channel);
+		return;
+	}
+	sys.writeToFile(fileTrivia, JSON.stringify(triviaq.state));
+	sys.writeToFile(fileTrivReview, JSON.stringify(trivreview.state));
+	triviabot.sendMessage(src, "Backup made!", channel);
 },"Makes a backup of current questions.");
+
+addOwnerCommand("revertfrom", function(src, commandData, channel) {
+	commandData = commandData.split(":");
+	var fileTrivia = commandData[0], fileTrivReview = commandData[1];
+	if (fileTrivia == undefined || fileTrivReview == undefined) {
+		fileTrivia = "backupQuestions.json", fileTrivReview = "backupReview.json";
+	}
+	var content1 = sys.getFileContent(fileTrivia), content2 = sys.getFileContent(fileTrivReview);
+	if (content1 == undefined || content1 == '' || content2 == undefined || content2 == '') {
+		triviabot.sendMessage(src, 'The content of either file is undefined or blank.', channel);
+		return;
+	}
+	if (fileTrivia.indexOf(".json") == -1 || fileTrivReview.indexOf(".json") == -1) { 
+		triviabot.sendMessage(src, 'Please add .json to make sure you are specifying a valid file.', channel);
+		return;
+	}
+	try {
+		var parsed = JSON.parse(content1);
+		var parsed2 = JSON.parse(content2);
+	} catch (e) {
+		triviabot.sendMessage(src, "Couldn't revert: "+e, channel);
+		return;
+	}
+	sys.writeToFile("triviaq.json", content1);
+	triviaq.state = parsed;
+	sys.writeToFile("trivreview.json", content2);
+	trivreview.state = parsed2;
+	triviabot.sendMessage(src, "Successfully reverted questions!", channel);
+	return;
+},"Revert questions.");
 
 addAdminCommand("apropos", function(src, commandData, channel) {
     if (commandData === undefined)
@@ -964,25 +1020,17 @@ addAdminCommand("decline", function(src, commandData, channel) {
 	}
 	triviabot.sendMessage(src, "No more questions!",channel);
 },"Allows you to decline the current question in review");
-addAdminCommand("resetvars", function(src, commandData, channel) {
-	if(sys.name(src).toLowerCase() !== "lamperi" && sys.name(src).toLowerCase() !== "ethan" && sys.name(src).toLowerCase() !== "crystal moogle"){
-		return;
-	}
-	Trivia.resetTrivia();
+addOwnerCommand("resetvars", function(src, commandData, channel) {
 	Trivia = new TriviaGame();
 	triviaq = new QuestionHolder("triviaq.json");
 	trivreview = new QuestionHolder("trivreview.json");
 	tadmin = new TriviaAdmin("tadmins.txt");
-	triviabot.sendMessage(src, "Trivia vars were reset");
+	triviabot.sendMessage(src, "Trivia variables were reset.", channel);
 }, "Allows you to reset variables");
 
-addAdminCommand("startoff", function(src, commandData, channel) {
-	if(sys.name(src).toLowerCase() !== "lamperi" && sys.name(src).toLowerCase() !== "ethan" && sys.name(src).toLowerCase() !== "crystal moogle"){
-		return;
-	}
+addOwnerCommand("startoff", function(src, commandData, channel) {
 	Trivia.startoff = !Trivia.startoff;
-	x = (Trivia.startoff == true) ? "off" : "on";
-	triviabot.sendMessage(src, "Start is now "+x, channel);
+	triviabot.sendMessage(src, "Start is now " + (Trivia.startoff == true ? "off" : "on"), channel);
 }, "Disallow use of start");
 
 addAdminCommand("shove", function(src, commandData, channel){
@@ -1062,11 +1110,10 @@ addAdminCommand("submitbans", function(src, commandData, channel) {
 }, "View submit bans.");
 
 addAdminCommand("autostart", function(src, commandData, channel) {
-	if (sys.name(src).toLowerCase() != "ethan") return;
 	Trivia.autostart = !Trivia.autostart;
 	triviabot.sendMessage(src, "Autostart is now " + (Trivia.autostart == true ? "on" : "off") + ".", channel);
 	return;
-}, "Autostart games.");
+}, "Auto start games.");
 
 // Normal command handling.
 exports.handleCommand = function trivia_handleCommand(src, command, channel)
@@ -1096,6 +1143,13 @@ try { // Debug only, do not indent
             adminCommands[command].call(null, src, commandData, channel);
             return true;
         }
+    }
+    // Trivia owner commands
+    if (isTriviaOwner(src)) {
+    	if (ownerCommands.hasOwnProperty(command)) {
+    		ownerCommands[command].call(null, src, commandData, channel);
+    		return true;
+    	}
     }
 } catch(e) {
     sys.sendMessage(src, "Error in your trivia command: " + e, channel);
