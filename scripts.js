@@ -2170,8 +2170,8 @@ userCommand: function(src, command, commandData, tar) {
 
     if (command == "register") {
 		var creator = SESSION.channels(channel).creator;
-		if ((sys.id(creator) == undefined || creator == sys.name(src).toLowerCase()) && 
-			!SESSION.channels(channel).isRegistered() /* This channel is already registered! will display*/) {
+		if ((sys.id(creator) == undefined || creator == sys.name(src).toLowerCase()) || 
+			SESSION.channels(channel).isRegistered() /* This channel is already registered! will display*/) {
 			if (SESSION.channels(channel).register(sys.name(src))) {
 				channelbot.sendChanMessage(src, "You registered this channel successfully. Take a look of /commands channel");
 			} else {
