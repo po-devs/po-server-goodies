@@ -754,15 +754,15 @@ addAdminCommand("apropos", function(src, commandData, channel) {
     for (b in all)
     {
         q = all[b];
-        if (q.question.toLowerCase().indexOf(commandData.toLowerCase())>-1)
-        Trivia.sendPM(src,"Question: '"+q.question+"' (id='" + b + "')", channel);
+        if (q.question.toLowerCase().indexOf(commandData.toLowerCase())>-1||q.answer.toLowerCase().indexOf(commandData.toLowerCase())>-1)
+        Trivia.sendPM(src,"Question: '"+q.question+ "' Answer: '"+q.answer+"' (id='" + b + "')", channel);
     }
     all = trivreview.all();
     for (b in all)
     {
         q = all[b];
-        if (q.question.toLowerCase().indexOf(commandData.toLowerCase())>-1)
-        Trivia.sendPM(src,"Question under review: '"+q.question+"' (id='" + b + "')", channel);
+        if (q.question.toLowerCase().indexOf(commandData.toLowerCase())>-1||q.answer.toLowerCase().indexOf(commandData.toLowerCase())>-1)
+        Trivia.sendPM(src,"Question under review: '"+q.question+ "' Answer: '"+q.answer+"' (id='" + b + "')", channel);
     }
 
 },"Allows you to search through the questions, format /apropos [query]");
