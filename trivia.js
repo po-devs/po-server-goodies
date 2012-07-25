@@ -698,7 +698,7 @@ addUserCommand("unjoin", function(src, commandData, channel) {
 addUserCommand("qamount", function(src, commandData, channel) {
     if (channel == triviachan || channel == revchan) {
         var qamount = triviaq.questionAmount();
-        sys.sendHtmlMessage(src,"<timestamp/> The amount of questions is: <b>"+qamount+"</b>",channel);
+        triviabot.sendMessage(src, "The amount of questions is: "+qamount,channel);
         return;
     }
 },"Shows you the current amount of questions");
