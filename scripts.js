@@ -1517,7 +1517,7 @@ beforeLogIn : function(src) {
             return;
     }
     if (proxy_ips.hasOwnProperty(ip)) {
-        normalbot.sendMessage('You are banned for using proxy!');
+        normalbot.sendMessage(src, 'You are banned for using proxy!');
         sys.stopEvent();
         return;
 
@@ -3401,22 +3401,22 @@ ownerCommand: function(src, command, commandData, tar) {
     }
     if (command == "contributor") {
         var s = commandData.split(":");
-		var name = s[0], reason = s[1];
-		if (sys.dbIp(name) == undefined) {
-			normalbot.sendChanMessage(src, name + " couldn't be found.");
-			return;
-		}
+	var name = s[0], reason = s[1];
+	if (sys.dbIp(name) == undefined) {
+		normalbot.sendChanMessage(src, name + " couldn't be found.");
+		return;
+	}
         normalbot.sendChanMessage(src, name + " is now a contributor!");
         contributors.add(name, reason);
         return;
     }
     if (command == "contributoroff") {
-		if (contributors.get(commandData) == undefined) {
-			normalbot.sendChanMessage(src, commandData + " isn't a contributor.", channel);
-			return;
-		}
+	if (contributors.get(commandData) == undefined) {
+		normalbot.sendChanMessage(src, commandData + " isn't a contributor.", channel);
+		return;
+	}
         contributors.remove(commandData);
-		normalbot.sendChanMessage(src, commandData + " is no longer a contributor!");
+	normalbot.sendChanMessage(src, commandData + " is no longer a contributor!");
         return;
     }
     if (command == "showteam") {
