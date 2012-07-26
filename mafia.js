@@ -459,7 +459,7 @@ function Mafia(mafiachan) {
             this.standbyRoles.push(obj.role);
         }
     };
-    function name_trrole(x) { return x + " (" + this.trrole(x) + ")"; }
+    function name_trrole(x) { return x + " (" + this.trrole(mafia.players[x].role.role) + ")"; }
     Theme.prototype.generateRoleInfo = function() {
         var sep = "*** *********************************************************************** ***";
         var roles = [sep];
