@@ -3428,7 +3428,7 @@ ownerCommand: function(src, command, commandData, tar) {
             return "<tr><td><pre>" + team.join("<br>") + "</pre></td></tr>";
         }).join("");
         if (teams) {
-            sys.sendHtmlMessage(src, "<table border='2'>" + teams + "</table>");
+            sys.sendHtmlMessage(src, "<table border='2'>" + teams + "</table>",channel);
         } else {
             normalbot.sendChanMessage(src, "That player has no teams with valid pokemon.");
         }
