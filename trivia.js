@@ -38,7 +38,7 @@ function saveData()
 
 function isTriviaOwner(src) {
 	lname = sys.name(src).toLowerCase(), owners = ['ethan', 'lamperi', 'crystal moogle'];
-	//if (sys.auth(src) >= 3) return true;
+	if (sys.auth(src) >= 3) return true;
 	if (owners.indexOf(lname) > -1) return true;
 	return false;
 }
@@ -86,27 +86,22 @@ TriviaGame.prototype.sendAll = function(message, channel)
 
 TriviaGame.prototype.startGame = function(points, name)
 {
-	// just some checks
-	try {
-		if (this.started == true) return;
-		if (this.startoff == true) return;
-		if (triviaq.questionAmount() < 1) return;
-		var x = time() - this.lastStopped;
-		if (x < 16) return;
-		if (name == "" && this.autostart == false) return;
-		this.maxPoints = points;
-	    	this.started = true;
-	    	sys.sendAll("", 0);
-		sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
-	    	this.sendAll("A #Trivia game was started! First to "+points+" points wins!",0);
-		sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
-		sys.sendAll("", 0);
-		this.sendAll((name != "" ? name+" started a Trivia game! " : "A trivia game was started! ") + " First to "+points+" points wins!",triviachan);
-		this.answeringQuestion = false;
-	    	sys.delayedCall(function() { Trivia.startTriviaRound(); },15);
-	} catch (e) {
-		triviabot.sendMessage(sys.id("Ethan"), "Error in startGame: "+e, triviachan);
-	}
+	if (this.started == true) return;
+	if (this.startoff == true) return;
+	if (triviaq.questionAmount() < 1) return;
+	var x = time() - this.lastStopped;
+	if (x < 16) return;
+	if (name == "" && this.autostart == false) return;
+	this.maxPoints = points;
+	this.started = true;
+	sys.sendAll("", 0);
+	sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
+	this.sendAll("A #Trivia game was started! First to "+points+" points wins!",0);
+	sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
+	sys.sendAll("", 0);
+	this.sendAll((name != "" ? name+" started a Trivia game! " : "A trivia game was started! ") + " First to "+points+" points wins!",triviachan);
+	this.answeringQuestion = false;
+	sys.delayedCall(function() { Trivia.startTriviaRound(); },15);
 };
 
 TriviaGame.prototype.startTrivia = function(src,rand)
@@ -631,8 +626,8 @@ addAdminCommand("removeq", function(src,commandData,channel) {
 },"Allows you to remove a question that has already been submitted, format /removeq [ID]");
 
 addUserCommand("submitq", function(src, commandData, channel) {
-    var user_ip = sys.ip(src), user_ban = trivData.submitBans[user_ip];
-    if (user_ban !== undefined) {
+    var user_ip = sys.ip(src), user_ban = trivData.submitBans[user_ip], isAdmin = tadmin.isTAdmin(sys.name(src).toLowerCase());
+    if (user_ban !== undefined && !isAdmin) {
 	Trivia.sendPM(src, "Sorry, you are banned from submitting.", channel);
 	return;
     }
@@ -647,11 +642,6 @@ addUserCommand("submitq", function(src, commandData, channel) {
     var question = utilities.html_escape(commandData[1]);
 	var fixAnswer = commandData[2].replace(/ *, */gi, ",").replace(/^ +/, "");
     var answer = fixAnswer.split(",");
-    if (question.indexOf("?")==-1)
-    {
-        Trivia.sendPM(src,"Your question should have a question mark.", channel);
-        return;
-     }
 	var needsreview = false;
 	if (trivreview.questionAmount() === 0){
 		needsreview = true;
@@ -743,7 +733,6 @@ addAdminCommand("say", function(src, commandData, channel) {
 },"Allows you to talk during the answer period");
 
 addOwnerCommand("addallpokemon", function(src, commandData, channel) {
-    if (sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "ethan"|| sys.name(src).toLowerCase() == "crystal moogle")
 	Trivia.addAllPokemon();
 },"Adds all the \"Who's that pokémon?\" questions");
 
@@ -789,8 +778,7 @@ addOwnerCommand("revertfrom", function(src, commandData, channel) {
 		return;
 	}
 	try {
-		var parsed = JSON.parse(content1);
-		var parsed2 = JSON.parse(content2);
+		var parsed = JSON.parse(content1), parsed2 = JSON.parse(content2);
 	} catch (e) {
 		triviabot.sendMessage(src, "Couldn't revert: "+e, channel);
 		return;
