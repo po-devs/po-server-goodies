@@ -825,7 +825,19 @@ addAdminCommand("apropos", function(src, commandData, channel) {
 
 },"Allows you to search through the questions, format /apropos [query]");
 
-
+addAdminCommand("category", function(src, commandData, channel){
+	if (commandData === undefined)
+        return;
+	Trivia.sendPM(src, "Questions in category: "+commandData, channel);
+	var all = triviaq.all(), b, q;
+    for (b in all)
+    {
+        q = triviaq.get(b)
+		var answer = String(q.answer)
+        if (q.category.toLowerCase()==commandData.toLowerCase())
+        Trivia.sendPM(src,"Question: '"+q.question+ "' Answer: '"+q.answer+"' (id='" + b + "')", channel);
+    }
+}, "Allows you to view questions from a category");
 addAdminCommand("checkq", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
 		sys.sendMessage(src, "", channel);
