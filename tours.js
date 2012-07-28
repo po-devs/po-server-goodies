@@ -539,7 +539,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.400b5",
+            version: "1.400b6",
             debug: false,
             points: true
         }
@@ -575,7 +575,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.400b5",
+        version: "1.400b6",
         debug: false,
         points: true
     }
@@ -3295,8 +3295,8 @@ function tourprintbracket(key) {
             }
             else {
                 var rankstring = [];
-                for (var r=0; r<rankingorder.length; p++) {
-                    rankstring.push("#" + (p+1) + ": " + toCorrectCase(rankingorder[r]))
+                for (var r=0; r<rankingorder.length; r++) {
+                    rankstring.push("#" + (r+1) + ": " + toCorrectCase(rankingorder[r]))
                 }
                 tours.history.unshift(getFullTourName(key)+": "+rankstring.join(";")+"; with "+tours.tour[key].cpt+" players")
             }
