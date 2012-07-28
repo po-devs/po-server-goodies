@@ -38,6 +38,7 @@ var touradmincommands = ["*** Parameter Information ***",
                     "tourmute [player]:[reason]:[time]: tourmutes a problematic player.",
                     "tourunmute [player]: untourmutes a player.",
                     "tourmutes: list tour mutes.",
+                    "changecount [number]: changed the number of players for an event tournament",
                     "endtour [tour]: ends the tour of that tier",
                     "sub [newname]:[oldname]: subs newname for oldname",
                     "dq [player]: disqualifies a player",
@@ -1378,6 +1379,36 @@ function tourCommand(src, command, commandData) {
                     }
                 }
                 addTourActivity(src)
+                return true;
+            }
+            if (command == "changecount") {
+                var key = null
+                for (var x in tours.tour) {
+                    if (tours.tour[x].state == "signups") {
+                        key = x;
+                    }
+                }
+                if (key === null) {
+                    sendBotMessage(src,"No tournament is in signups!",tourschan,false)
+                    return true;
+                }
+                if (tours.tour[key].maxplayers === "default") {
+                    sendBotMessage(src,"Cna't change the count of a timed tour!",tourschan,false)
+                    return true;
+                }
+                var players = parseInt(commandData)
+                var allowedcounts = [16,32,64,128,256];
+                if (allowedcounts.indexOf(players) == -1) {
+                    sendBotMessage(src, "Invalid number of players for event mode!", tourschan, false);
+                    return true;
+                }
+                else if (players < tours.tour[key].cpt) {
+                    sendBotMessage(src, "There are more players in the tournament then you specified!", tourschan, false);
+                    return true;
+                }
+                else {
+                    sendBotAll(sys.name(src)+" changed the number of places in the "+tours.tour[key].tourtype+" tournament to "+players+"! There are now "+(tours.tour[key].maxplayers - tours.tour[key].cpt)+" place"+(tours.tour[key].maxplayers - tours.tour[key].cpt == 1 ? "" : "s")+" remaining!", tourschan,false)
+                }
                 return true;
             }
             if (command == "remove") {
