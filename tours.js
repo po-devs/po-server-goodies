@@ -18,7 +18,7 @@ var htmlborder = "<font color=#3DAA68><b>"+border+"</b></font>";
 var redborder = "<font color=#FF0000><b>"+border+"</b></font>";
 var redhtmlborder = "<font color=#FF0000><timestamp/> <b>"+border+"</b></font>";
 var tourcommands = ["join: joins a tournament",
-                    "unjoin: unjoins a tournament during signups only",
+                    "unjoin: unjoins a normal tournament during signups only, leaves an event tour",
                     "queue: lists upcoming tournaments",
                     "viewround: views current round",
                     "history: views recently played tiers",
@@ -539,7 +539,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.400b3",
+            version: "1.400b4",
             debug: false,
             points: true
         }
@@ -575,7 +575,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.400b3",
+        version: "1.400b4",
         debug: false,
         points: true
     }
@@ -1518,7 +1518,7 @@ function tourCommand(src, command, commandData) {
                 }
                 else {
                     sendBotAll(sys.name(src)+" disqualified "+toCorrectCase(commandData)+" from the "+getFullTourName(key)+" tournament!", tourschan, false)
-                    disqualify(commandData.toLowerCase(), key, false)
+                    disqualify(commandData.toLowerCase(), key, false, true)
                 }
                 addTourActivity(src)
                 return true;
@@ -1639,7 +1639,7 @@ function tourCommand(src, command, commandData) {
                         sendBotAll(toCorrectCase(tar)+" was taken out of the tournament signups by "+sys.name(src)+" from the "+getFullTourName(key)+" tournament!", tourschan, false);
                     }
                     else {
-                        disqualify(tar.toLowerCase(), key, false)
+                        disqualify(tar.toLowerCase(), key, false, true)
                     }
                 }
                 for (var x in channels) {
@@ -2110,9 +2110,15 @@ function tourCommand(src, command, commandData) {
         }
         if (command == "unjoin") {
             var key = null
+            var atSignups = false;
             for (var x in tours.tour) {
+                if (isInTour(sys.name(src)) === x && typeof tours.tour[x].maxplayers == "number" && tours.tour[x].state != "signups") {
+                    key = x;
+                    break;
+                }
                 if (tours.tour[x].state == "signups") {
                     key = x;
+                    atSignups = true;
                     break;
                 }
             }
@@ -2120,14 +2126,20 @@ function tourCommand(src, command, commandData) {
                 sendBotMessage(src, "You can't unjoin now!",tourschan,false)
                 return true;
             }
-            var index = tours.tour[key].players.indexOf(sys.name(src).toLowerCase())
-            if (index == -1) {
-                sendBotMessage(src, "You aren't in the "+getFullTourName(key)+" tournament!",tourschan,false)
-                return true;
+            if (atSignups) {
+                var index = tours.tour[key].players.indexOf(sys.name(src).toLowerCase())
+                if (index == -1) {
+                    sendBotMessage(src, "You aren't in the "+getFullTourName(key)+" tournament!",tourschan,false)
+                    return true;
+                }
+                tours.tour[key].players.splice(index, 1)
+                tours.tour[key].cpt -= 1
+                sendBotAll(sys.name(src)+" unjoined the "+getFullTourName(key)+" tournament!", tourschan, false)
             }
-            tours.tour[key].players.splice(index, 1)
-            tours.tour[key].cpt -= 1
-            sendBotAll(sys.name(src)+" unjoined the "+getFullTourName(key)+" tournament!", tourschan, false)
+            else {
+                sendBotAll(sys.name(src)+" resigned from the "+getFullTourName(key)+" tournament!", tourschan, false)
+                disqualify(sys.name(src).toLowerCase(), key, false, true)
+            }
             return true;
         }
         if (command == "queue" || command == "viewqueue") {
@@ -2525,11 +2537,11 @@ function removeinactive(key) {
             }
             else if (dq2) {
                 sendBotAll(toCorrectCase(player2)+" was disqualified from the "+getFullTourName(key)+" tournament for inactivity!", tourschan, false)
-                disqualify(player2,key,false)
+                disqualify(player2,key,false,false)
             }
             else if (dq1) {
                 sendBotAll(toCorrectCase(player1)+" was disqualified from the "+getFullTourName(key)+" tournament for inactivity!", tourschan, false)
-                disqualify(player1,key,false)
+                disqualify(player1,key,false,false)
             }
             else if ((tours.tour[key].time-parseInt(sys.time()))%60 === 0){
                 sendBotAll(toCorrectCase(player1)+" and "+toCorrectCase(player2)+" are both active, please battle in the "+getFullTourName(key)+" tournament ASAP!", tourschan, false)
@@ -2582,7 +2594,7 @@ function sendReminder(key) {
 }
 
 // Disqualifies a single player
-function disqualify(player, key, silent) {
+function disqualify(player, key, silent, hard) {
     try {
         if (tours.tour[key].players.indexOf(player) == -1) {
             return;
@@ -2601,6 +2613,41 @@ function disqualify(player, key, silent) {
         }
         else {
             tours.tour[key].players.splice(index,1,"~DQ~")
+        }
+        // splice from brackets as well in double elim
+        if (hard && tours.tour[key].parameters.type == "double") {
+            var winindex = tours.tour[key].winbracket.indexOf(player)
+            if (winindex != -1) {
+                if (winindex%2 == 1) {
+                    var opponent1 = tours.tour[key].winbracket[winindex-1]
+                }
+                else {
+                    var opponent1 = tours.tour[key].winbracket[winindex+1]
+                }
+                /* If the opponent is disqualified/is a sub we want to replace with ~Bye~ instead of ~DQ~ so brackets don't stuff up */
+                if (opponent1 == "~DQ~") {
+                    tours.tour[key].winbracket.splice(winindex,1,"~Bye~")
+                }
+                else {
+                    tours.tour[key].winbracket.splice(winindex,1,"~DQ~")
+                }
+            }
+            var loseindex = tours.tour[key].losebracket.indexOf(player)
+            if (loseindex != -1) {
+                if (loseindex%2 == 1) {
+                    var opponent2 = tours.tour[key].losebracket[loseindex-1]
+                }
+                else {
+                    var opponent2 = tours.tour[key].losebracket[loseindex+1]
+                }
+                /* If the opponent is disqualified/is a sub we want to replace with ~Bye~ instead of ~DQ~ so brackets don't stuff up */
+                if (opponent2 == "~DQ~") {
+                    tours.tour[key].losebracket.splice(loseindex,1,"~Bye~")
+                }
+                else {
+                    tours.tour[key].losebracket.splice(loseindex,1,"~DQ~")
+                }
+            }
         }
         /* We then check if opponent hasn't advanced, and advance them if they're not disqualified. We also remove player from winners if DQ'ed */
         if (opponent != "~DQ~" && winnerindex == -1 && tours.tour[key].winners.indexOf(opponent) == -1) {
@@ -2662,7 +2709,7 @@ function removesubs(key) {
         for (var x in tours.tour[key].players) {
             if (isSub(tours.tour[key].players[x])) {
                 opponent = null;
-                disqualify(tours.tour[key].players[x],key,true)
+                disqualify(tours.tour[key].players[x],key,true,false)
                 if (x%2 === 0) {
                     opponent = tours.tour[key].players[x+1]
                 }
@@ -2701,11 +2748,11 @@ function removebyes(key) {
             }
             else if (tours.tour[key].players[z] == "~Bye~") {
                 opponent = tours.tour[key].players[z+1]
-                disqualify("~Bye~",key,true)
+                disqualify("~Bye~",key,true,false)
             }
             else if (tours.tour[key].players[z+1] == "~Bye~") {
                 opponent = tours.tour[key].players[z]
-                disqualify("~Bye~",key,true)
+                disqualify("~Bye~",key,true,false)
             }
             if (!isSub(opponent) && opponent != "~DQ~" && opponent != "~Bye~" && opponent !== null) {
                 advanced.push(toCorrectCase(opponent))
@@ -3283,10 +3330,10 @@ function tourprintbracket(key) {
             var roundposting = "<div style='margin-left: 50px'>"+roundinfo+"<table><tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
             for (var c in channels) {
                 if (channels[c] === tourschan) {
-                    sendFlashingBracket("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+redborder+"<br/>", key)
+                    sendFlashingBracket("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+"<br/>", key)
                 }
                 else {
-                    sys.sendHtmlAll("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+redborder+"<br/>", channels[c])
+                    sys.sendHtmlAll("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+"<br/>", channels[c])
                 }
             }
             /* Here in case of the hilarious ~Bye~ vs ~Bye~ siutation */
