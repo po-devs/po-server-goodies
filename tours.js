@@ -539,7 +539,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.400b7",
+            version: "1.400b8",
             debug: false,
             points: true
         }
@@ -575,7 +575,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.400b7",
+        version: "1.400b8",
         debug: false,
         points: true
     }
@@ -2856,6 +2856,9 @@ function advanceround(key) {
                     }
                     else {
                         newlist.push(tours.tour[key].players[1])
+                        if (tours.tour[key].maxplayers !== "default") {
+                            tours.tour[key].rankings.push(tours.tour[key].players[0], tours.tour[key].players[1])
+                        }
                     }
                 }
                 else {
@@ -3290,7 +3293,8 @@ function tourprintbracket(key) {
                 else {
                     var rankingorder = (tours.tour[key].rankings).reverse()
                     for (var p=0; p<rankingorder.length; p++) {
-                        awardTourPoints(rankingorder[p], tours.tour[key].cpt, tours.tour[key].tourtype, tours.tour[key].parameters.type == "double" ? true : false, p+1, true)
+                        if (rankingorder[p] != "~DQ~" && rankingorder[p] != "~Bye~")
+                            awardTourPoints(rankingorder[p], tours.tour[key].cpt, tours.tour[key].tourtype, tours.tour[key].parameters.type == "double" ? true : false, p+1, true)
                     }
                 }
             }
@@ -3303,7 +3307,7 @@ function tourprintbracket(key) {
                 for (var r=0; r<rankingorder.length; r++) {
                     rankstring.push("#" + (r+1) + ": " + toCorrectCase(rankingorder[r]))
                 }
-                tours.history.unshift(getFullTourName(key)+": "+rankstring.join(";")+"; with "+tours.tour[key].cpt+" players")
+                tours.history.unshift(getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players")
             }
 
             if (tours.history.length > 25) {
