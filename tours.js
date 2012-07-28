@@ -882,6 +882,7 @@ function tourCommand(src, command, commandData) {
             if (command == "clearrankings") {
                 sys.writeToFile("tourscores.txt", "")
                 sys.writeToFile("tourdetails.txt", "")
+                sys.writeToFile("eventscores.txt", "")
                 var tiers = sys.getTierList()
                 for (var x in tiers) {
                     sys.writeToFile("tourscores_"+tiers[x].replace(/ /g,"_").replace(/\//g,"-slash-")+".txt","")
@@ -2279,8 +2280,8 @@ function tourCommand(src, command, commandData) {
             if (type == "" || type == "tournament") {
                 for (var t in tourcommands) {
                     sys.sendMessage(src, tourcommands[t],tourschan);
-                    sys.sendMessage(src, border,tourschan);
                 }
+                sys.sendMessage(src, border,tourschan);
             }
             if (isTourAdmin(src) && (type == "mod" || type == "megauser" || type == "")) {
                 for (var m in tourmodcommands) {
@@ -2430,10 +2431,10 @@ function tourCommand(src, command, commandData) {
         }
         if (command == "eventleaderboard") {
             try {
-                var rankings = sys.getFileContent("eventscores.txt").split("\n")
-                if (rankings === undefined) {
+                if (sys.getFileContent("eventscores.txt") === undefined) {
                     throw ("No data")
                 }
+                var rankings = sys.getFileContent("eventscores.txt").split("\n")
                 var list = [];
                 for (var p in rankings) {
                     if (rankings[p] == "") continue;
