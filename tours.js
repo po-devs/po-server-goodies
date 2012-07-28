@@ -539,7 +539,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.400b",
+            version: "1.400b2",
             debug: false,
             points: true
         }
@@ -575,7 +575,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.400b",
+        version: "1.400b2",
         debug: false,
         points: true
     }
@@ -3282,10 +3282,10 @@ function tourprintbracket(key) {
             var roundposting = "<div style='margin-left: 50px'>"+roundinfo+"<table><tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
             for (var c in channels) {
                 if (channels[c] === tourschan) {
-                    sendFlashingBracket("<br/>"+redborder+roundposting+"</table></div>"+redborder+"<br/>", key)
+                    sendFlashingBracket("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+redborder+"<br/>", key)
                 }
                 else {
-                    sys.sendHtmlAll("<br/>"+redborder+roundposting+"</table></div>"+redborder+"<br/>", channels[c])
+                    sys.sendHtmlAll("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+redborder+"<br/>", channels[c])
                 }
             }
             /* Here in case of the hilarious ~Bye~ vs ~Bye~ siutation */
@@ -3317,7 +3317,7 @@ function tourprintbracket(key) {
                     var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
                     roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
                 }
-                sendFlashingBracket("<br/>"+redborder+roundposting+"</table></div>"+(subsExist ? submessage : "")+redborder+"<br/>",key)
+                sendFlashingBracket("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+(subsExist ? submessage : "")+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+"<br/>",key)
             }
             else if (tours.tour[key].parameters.type == "double") {
                 var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+getFullTourName(key)+" Tournament</b><br/><table><tr><th colspan=5><font color=blue>Winners Bracket</font></th></tr>"
@@ -3329,7 +3329,7 @@ function tourprintbracket(key) {
                     var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
                     roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
                 }
-                sendHtmlAuthPlayers("<br/>"+redborder+roundposting+"</table></div>"+redborder+"<br/>", key)
+                sendHtmlAuthPlayers("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+"<br/>", key)
             }
             else {
                 var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+getFullTourName(key)+" Tournament</b><br/><table>";
@@ -3338,7 +3338,7 @@ function tourprintbracket(key) {
                     var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
                     roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
                 }
-                sendHtmlAuthPlayers("<br/>"+redborder+roundposting+"</table></div>"+redborder+"<br/>", key)
+                sendHtmlAuthPlayers("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+"<br/>", key)
             }
             removebyes(key)
         }
