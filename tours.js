@@ -3242,7 +3242,17 @@ function tourprintbracket(key) {
                 }
             }
             else sendBotAll("The "+getFullTourName(key)+" ended by default!", tourschan, false)
-            tours.history.unshift(getFullTourName(key)+": Won by "+winner+" with "+tours.tour[key].cpt+" players")
+            if (tours.tour[key].maxplayers === "default") {
+                tours.history.unshift(getFullTourName(key)+": Won by "+winner+" with "+tours.tour[key].cpt+" players")
+            }
+            else {
+                var rankstring = [];
+                for (var r=0; r<rankingorder.length; p++) {
+                    rankstring.push("#" + (p+1) + ": " + toCorrectCase(rankingorder[r]))
+                }
+                tours.history.unshift(getFullTourName(key)+": "+rankstring.join(";")+"; with "+tours.tour[key].cpt+" players")
+            }
+
             if (tours.history.length > 25) {
                 tours.history.pop()
             }
