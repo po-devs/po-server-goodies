@@ -540,7 +540,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.400a",
+            version: "1.400a2",
             debug: false,
             points: true
         }
@@ -576,7 +576,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.400a",
+        version: "1.400a2",
         debug: false,
         points: true
     }
@@ -1407,6 +1407,7 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 else {
+                    tours.tour[key].maxplayers = players;
                     sendBotAll(sys.name(src)+" changed the number of places in the "+tours.tour[key].tourtype+" tournament to "+players+"! There are now "+(tours.tour[key].maxplayers - tours.tour[key].cpt)+" place"+(tours.tour[key].maxplayers - tours.tour[key].cpt == 1 ? "" : "s")+" remaining!", tourschan,false)
                 }
                 return true;
