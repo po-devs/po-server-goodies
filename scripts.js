@@ -3411,7 +3411,7 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "contributoroff") {
-	if (contributors.get(commandData) == undefined) {
+	if (contributors.get(commandData.toLowerCase()) == undefined) {
 		normalbot.sendChanMessage(src, commandData + " isn't a contributor.", channel);
 		return;
 	}
