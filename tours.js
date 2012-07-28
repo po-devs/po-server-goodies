@@ -539,7 +539,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.400b6",
+            version: "1.400b7",
             debug: false,
             points: true
         }
@@ -575,7 +575,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.400b6",
+        version: "1.400b7",
         debug: false,
         points: true
     }
@@ -2851,7 +2851,12 @@ function advanceround(key) {
                     }
                 }
                 else if (winners.indexOf(tours.tour[key].players[1]) > -1 && bannednames.indexOf(tours.tour[key].players[1]) == -1) {
-                    newlist.push(tours.tour[key].players[0], tours.tour[key].players[1])
+                    if (bannednames.indexOf(tours.tour[key].players[0]) == -1) {
+                        newlist.push(tours.tour[key].players[0], tours.tour[key].players[1])
+                    }
+                    else {
+                        newlist.push(tours.tour[key].players[1])
+                    }
                 }
                 else {
                     newlist.push("~Bye~");
