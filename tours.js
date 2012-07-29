@@ -663,7 +663,7 @@ function getEventTour(datestring) {
                 var tiers = sys.getTierList()
                 var found = false;
                 for (var x in tiers) {
-                    if (tiers[x] == thetier) {
+                    if (cmp(tiers[x], thetier)) {
                         var tourtier = tiers[x];
                         found = true;
                         break;
