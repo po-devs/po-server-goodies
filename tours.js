@@ -540,7 +540,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500a",
+            version: "1.500a2",
             debug: false,
             points: true
         }
@@ -576,7 +576,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500a",
+        version: "1.500a2",
         debug: false,
         points: true
     }
@@ -757,6 +757,7 @@ function tourStep() {
     var datestring = now.getUTCDate()+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
     var hour = now.getUTCHours();
     var minute = now.getUTCMinutes();
+    var second = now.getUTCSeconds();
     var allgentiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"];
     if ([2,5,8,11,14,17,20,23].indexOf(hour) != -1 && minute > 30 && canEventStart) {
         var stoprunning = true;
@@ -771,6 +772,13 @@ function tourStep() {
             }
             else {
                 stoprunning = false;
+            }
+        }
+        else if (minute == 45 && second === 0) {
+            var details = getEventTour(datestring)
+            if (typeof details === "object") {
+                sendBotAll("A "+details[1]+" player <b>"+html_escape(details[0])+"</b> event is starting in 5 minutes.",tourschan,true)
+                sendBotAll("A "+details[1]+" player <b>"+html_escape(details[0])+"</b> event is starting in 5 minutes.",0,true)
             }
         }
         if (stoprunning) return;
