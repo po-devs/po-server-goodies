@@ -541,7 +541,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500b3",
+            version: "1.500b4",
             debug: false,
             points: true
         }
@@ -577,7 +577,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500b3",
+        version: "1.500b4",
         debug: false,
         points: true
     }
@@ -3237,10 +3237,12 @@ function tourinitiate(key) {
     try {
         var size = tourmakebracket(key)
         if (size < 3) {
-            sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least 3 players! (A new tournament will start in "+time_handle(Config.Tours.tourbreak)+").", tourschan, false)
+            sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least 3 players!"+(tours.globaltime !== 0 ? " (A new tournament will start in "+time_handle(Config.Tours.tourbreak)+")." : ""), tourschan, false)
             delete tours.tour[key];
             tours.keys.splice(tours.keys.indexOf(key), 1)
-            tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
+            if (tours.globaltime !== 0) {
+                tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
+            }
             return;
         }
         toursortbracket(size, key)
@@ -3491,7 +3493,7 @@ function tourprintbracket(key) {
                 sendBotAll("The "+getFullTourName(key)+" ended by default!", tourschan, false)
                 delete tours.tour[key];
                 tours.keys.splice(tours.keys.indexOf(key), 1);
-                if (tours.keys.length === 0) {
+                if (tours.keys.length === 0 && tours.globaltime !== 0) {
                     tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
                 }
                 return;
