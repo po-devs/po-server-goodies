@@ -541,7 +541,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500b2",
+            version: "1.500b3",
             debug: false,
             points: true
         }
@@ -577,7 +577,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500b2",
+        version: "1.500b3",
         debug: false,
         points: true
     }
@@ -4127,6 +4127,13 @@ function sendWelcomeMessage(src, chan) {
     sys.sendMessage(src,border,chan)
     sys.sendMessage(src,"*** Welcome to #"+Config.Tours.channel+"; Version "+Config.Tours.version+"! ***",chan)
     sys.sendMessage(src,"",chan)
+    var now = new Date()
+    var datestring = now.getUTCDate()+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
+    var details = getEventTour(datestring)
+    if (typeof details === "object") {
+        sys.sendMessage(src,"Today's Event Tournament: "+details[0]+" for "+details[1]+" players.",chan)
+        sys.sendMessage(src,"",chan)
+    }
     sys.sendMessage(src,"*** Current Tournaments ***",chan)
     for (var x in tours.tour) {
         if (tours.tour[x].state == "signups") {
