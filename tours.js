@@ -64,7 +64,8 @@ var tourownercommands = ["clearrankings: clears the tour rankings (owner only)",
                     "evalvars: checks the current variable list for tours",
                     "resettours: resets the entire tournament system in the event of a critical failure",
                     "fullleaderboard [tier]: gives the full leaderboard",
-                    "getrankings [month] [year]: exports monthly rankings (deletes old rankings as well)"]
+                    "getrankings [month] [year]: exports monthly rankings (deletes old rankings as well)",
+                    "loadevents: load event tours"]
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "Breaking the following rules may result in a tour mute:",
                 "#1: Team revealing or scouting in non CC tiers will result in disqualification.",
@@ -539,7 +540,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.400b8",
+            version: "1.500a",
             debug: false,
             points: true
         }
@@ -575,7 +576,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.400b8",
+        version: "1.500a",
         debug: false,
         points: true
     }
@@ -639,6 +640,55 @@ function initTours() {
     sys.sendAll("Version "+Config.Tours.version+" of the tournaments system was loaded successfully in this channel!", tourschan)
 }
 
+function getEventTour(datestring) {
+    var eventfile = sys.getFileContent("eventtours.txt")
+    if (eventfile === undefined) {
+        return null;
+    }
+    var events = eventfile.split("\n")
+    for (var x in events) {
+        if (events[x].length === 0) {
+            continue;
+        }
+        if (events[x].indexOf("#") === 0) {
+            continue;
+        }
+        var data = events[x].split(":")
+        if (data.length < 3) {
+            continue;
+        }
+        else {
+            if (data[0] == datestring) {
+                var thetier = data[1];
+                var tiers = sys.getTierList()
+                var found = false;
+                for (var x in tiers) {
+                    if (tiers[x].toLowerCase() == thetier) {
+                        var tourtier = tiers[x];
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    continue;
+                }
+                var maxplayers = parseInt(data[2]);
+                var allowedcounts = [16,32,64,128,256];
+                if (allowedcounts.indexOf(maxplayers) == -1) {
+                    continue;
+                }
+                var scoring = true;
+                if (data.length == 4) {
+                    if (data[3] == "no")
+                        scoring = false;
+                }
+                return [tourtier, maxplayers, scoring];
+            }
+        }
+    }
+    return null;
+}
+
 /* Tournament Step Event
 Used for things such as
 - sending reminders
@@ -647,8 +697,9 @@ Used for things such as
 - removing subs */
 function tourStep() {
     var canautostart = true;
+    var canEventStart = true;
+    var now = new Date()
     if (parseInt(sys.time())%3600 === 0) {
-        var now = new Date()
         var comment = now + " ~ " + tours.activetas.join(", ")
         tours.activehistory.unshift(comment)
         if (tours.activehistory.length > 168) {
@@ -697,10 +748,32 @@ function tourStep() {
         }
         if (tours.tour[x].state == "signups" || tours.tour[x].state == "subround") {
             canautostart = false;
+            canEventStart = false;
         }
     }
     if (calcPercentage() >= Config.Tours.minpercent) {
         canautostart = false;
+    }
+    var datestring = now.getUTCDate()+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
+    var hour = now.getUTCHours();
+    var minute = now.getUTCMinutes();
+    var allgentiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"];
+    if ([2,5,8,11,14,17,20,23].indexOf(hour) != -1 && minute > 30 && canEventStart) {
+        var stoprunning = true;
+        if (minute > 50) {
+            var setparameters = getEventTour(datestring)
+            if (typeof setparameters === "object") {
+                var tourtostart = setparameters[0];
+                var starter = "~Pokemon Online~"
+                var parameters = {"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? "5-1" : "default"), "type": "double", "maxplayers": parseInt(setparameters[1])}
+                tourstart(tourtostart,"~Pokemon Online~",tours.key,parameters)
+                tours.globaltime = parseInt(sys.time()) + 1800
+            }
+            else {
+                stoprunning = false;
+            }
+        }
+        if (stoprunning) return;
     }
     if (tours.globaltime !== 0 && tours.globaltime <= parseInt(sys.time()) && (Config.Tours.maxrunning > tours.keys.length || canautostart)) {
         if (tours.queue.length > 0) {
@@ -716,7 +789,6 @@ function tourStep() {
             // start a cycle from tourarray
             var tourarray = ["Challenge Cup", "Wifi NU", "CC 1v1", "Random Battle", "Wifi OU", "Gen 5 1v1", "Wifi UU", "Monotype", "Challenge Cup", "Clear Skies", "Wifi CC 1v1", "Wifi LC", "Wifi OU", "Wifi LU", "Wifi Ubers", "No Preview OU"]
             var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1"];
-            var allgentiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"];
             var tourtostart = tourarray[tours.key%tourarray.length]
             var tourtype = doubleelimtiers.indexOf(tourtostart) != -1 ? "double" : "single"
             tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? "5-1" : "default"), "type": tourtype})
@@ -901,6 +973,22 @@ function tourCommand(src, command, commandData) {
             }
             if (command == "evalvars") {
                 dumpVars(src)
+                return true;
+            }
+            if (command == "loadevents") {
+                var url = "https://raw.github.com/lamperi/po-server-goodies/master/eventtours.txt"
+                if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
+                    url = commandData;
+                }
+                sendBotMessage(src, "Fetching event tours from "+url, tourschan, false);
+                sys.webCall(url, function(resp) {
+                    if (resp !== "") {
+                        sys.writeToFile('eventtours.txt', resp);
+                        sendBotAll('Updated list of event tours!', tourschan, false);
+                    } else {
+                        sendBotMessage(src, 'Failed to update!', tourschan, false);
+                    }
+                });
                 return true;
             }
             if (command == "fullleaderboard") {
