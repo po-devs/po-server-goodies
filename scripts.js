@@ -4186,8 +4186,11 @@ beforeChatMessage: function(src, message, chan) {
         if (!user.lastline) {
            user.lastline = {message: null, time: 0};
         }
+        if(channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel != sys.channelId("Trivia")){
+            return ret
+        }
         var time = parseInt(sys.time(), 10);
-        if (!SESSION.channels(channel).isChannelOperator(src) && SESSION.users(src).contributions === undefined && sys.auth(src) < 1 && user.lastline.message == message && user.lastline.time + 15 > time) {
+        if (if(!SESSION.channels(channel).isChannelOperator(src) && SESSION.users(src).contributions === undefined && sys.auth(src) < 1 && user.lastline.message == message && user.lastline.time + 15 > time) {
             normalbot.sendChanMessage(src, "Please do not repeat yourself!");
             ret = true;
         }
