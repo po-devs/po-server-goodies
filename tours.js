@@ -1475,7 +1475,7 @@ function tourCommand(src, command, commandData) {
                     sendBotMessage(src, "There are already "+Config.Tours.maxqueue+" or more tournaments in the queue, so you can't add another one!", tourschan, false)
                     return true;
                 }
-                else if (isSignups || ((tours.keys.length > 0 || tours.queue.length > 0) && command == "tour")) {
+                else if (isSignups || ((tours.keys.length > 0 || tours.queue.length > 0) && (command == "tour" || command == "shift"))) {
                     if (command == "shift") {
                         tours.queue.push(tourtier+":::"+sys.name(src)+":::"+parameters.mode+":::"+parameters.gen+":::"+parameters.type+":::"+parameters.maxplayers)
                     }
