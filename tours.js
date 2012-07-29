@@ -720,14 +720,14 @@ function tourStep() {
         if (tours.tour[x].state == "signups") {
             if (tours.tour[x].time <= parseInt(sys.time())) {
                 tourinitiate(x)
+                var variance = calcVariance()
+                tours.globaltime = parseInt(sys.time()) + parseInt(Config.Tours.abstourbreak/variance) // default 10 mins b/w signups, + 5 secs per user in chan
                 continue;
             }
             if (tours.tour[x].time-parseInt(sys.time()) == 60 && typeof tours.tour[x].maxplayers == "number") {
                 sendBotAll("Signups for the "+tours.tour[x].tourtype+" tournament close in 1 minute.", tourschan, false)
                 sendBotAll("Signups for the "+tours.tour[x].tourtype+" tournament close in 1 minute.", 0, false)
             }
-            var variance = calcVariance()
-            tours.globaltime = parseInt(sys.time()) + parseInt(Config.Tours.abstourbreak/variance) // default 10 mins b/w signups, + 5 secs per user in chan
             continue;
         }
         if (tours.tour[x].state == "subround" && tours.tour[x].time <= parseInt(sys.time())) {
@@ -757,7 +757,7 @@ function tourStep() {
     var minute = now.getUTCMinutes();
     var second = now.getUTCSeconds();
     var allgentiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"];
-    if ([0,3,6,9,12,15,18,21].indexOf(hour) != -1 && minute > 30 && minute < 50) {
+    if ([0,3,6,9,12,15,18,21].indexOf(hour) != -1) {
         if (minute == 45 && second === 0) {
             var details = getEventTour(datestring)
             if (typeof details === "object") {
@@ -769,7 +769,12 @@ function tourStep() {
                 tours.globaltime = parseInt(sys.time()) + 300
             }
         }
-        return;
+        else if (minute == 30 && second === 0) { // stop tours from auto starting
+            var details = getEventTour(datestring)
+            if (typeof details === "object") {
+                tours.globaltime = 0
+            }
+        }
     }
     if (tours.globaltime !== 0 && tours.globaltime <= parseInt(sys.time()) && (Config.Tours.maxrunning > tours.keys.length || canautostart)) {
         if (tours.queue.length > 0) {
@@ -783,7 +788,7 @@ function tourStep() {
             var parameters = {"mode": data[2], "gen": data[3], "type": data[4], "maxplayers": maxplayers}
             tours.queue.splice(0,1)
             tourstart(tourtostart,starter,tours.key,parameters)
-            tours.globaltime = parseInt(sys.time()) + 1200
+            tours.globaltime = 0
         }
         else if (tours.keys.length === 0) {
             // start a cycle from tourarray
@@ -792,7 +797,7 @@ function tourStep() {
             var tourtostart = tourarray[tours.key%tourarray.length]
             var tourtype = doubleelimtiers.indexOf(tourtostart) != -1 ? "double" : "single"
             tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? "5-1" : "default"), "type": tourtype, "maxplayers": false})
-            tours.globaltime = parseInt(sys.time()) + 1200
+            tours.globaltime = 0
         }
     }
 }
