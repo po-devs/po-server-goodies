@@ -4190,7 +4190,7 @@ beforeChatMessage: function(src, message, chan) {
             return ret
         }
         var time = parseInt(sys.time(), 10);
-        if (if(!SESSION.channels(channel).isChannelOperator(src) && SESSION.users(src).contributions === undefined && sys.auth(src) < 1 && user.lastline.message == message && user.lastline.time + 15 > time) {
+        if (!SESSION.channels(channel).isChannelOperator(src) && SESSION.users(src).contributions === undefined && sys.auth(src) < 1 && user.lastline.message == message && user.lastline.time + 15 > time) {
             normalbot.sendChanMessage(src, "Please do not repeat yourself!");
             ret = true;
         }
