@@ -541,7 +541,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500b1",
+            version: "1.500b2",
             debug: false,
             points: true
         }
@@ -577,7 +577,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500b1",
+        version: "1.500b2",
         debug: false,
         points: true
     }
@@ -722,8 +722,6 @@ function tourStep() {
         if (tours.tour[x].state == "signups") {
             if (tours.tour[x].time <= parseInt(sys.time())) {
                 tourinitiate(x)
-                var variance = calcVariance()
-                tours.globaltime = parseInt(sys.time()) + parseInt(Config.Tours.abstourbreak/variance) // default 10 mins b/w signups, + 5 secs per user in chan
                 continue;
             }
             if (tours.tour[x].time-parseInt(sys.time()) == 60 && typeof tours.tour[x].maxplayers == "number") {
@@ -3247,6 +3245,8 @@ function tourinitiate(key) {
         }
         toursortbracket(size, key)
         tourprintbracket(key)
+        var variance = calcVariance()
+        tours.globaltime = parseInt(sys.time()) + parseInt(Config.Tours.abstourbreak/variance) // default 10 mins b/w signups, + 5 secs per user in chan
     }
     catch (err) {
         sys.sendAll("Error in initiating a tournament, id "+key+": "+err, tourserrchan)
