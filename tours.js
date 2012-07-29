@@ -477,11 +477,11 @@ function sendAuthPlayers(message,key) {
     }
 }
 
-// Sends a html  message to all tour auth and players in the current tour
+// Sends a html  message to all tour auth and players that participated in the current tour
 function sendHtmlAuthPlayers(message,key) {
     var arr = sys.playersOfChannel(tourschan)
     for (var x in arr) {
-        if (isTourAdmin(arr[x]) || tours.tour[key].players.indexOf(sys.name(arr[x]).toLowerCase()) != -1) {
+        if (isTourAdmin(arr[x]) || tours.tour[key].seeds.indexOf(sys.name(arr[x]).toLowerCase()) != -1) {
             // send highlighted name in bracket
             var htmlname = html_escape(sys.name(arr[x]));
             var regex1 = "<td align='right'>"+htmlname+"</td>";
@@ -541,7 +541,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500a7",
+            version: "1.500b",
             debug: false,
             points: true
         }
@@ -577,7 +577,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500a7",
+        version: "1.500b",
         debug: false,
         points: true
     }
