@@ -1014,7 +1014,7 @@ function tourCommand(src, command, commandData) {
             if (command == "fullleaderboard") {
                 try {
                     if (commandData == "") {
-                        var rankings = sys.getFileContent("tourscores.txt").split("\n")
+                        var rankdata = sys.getFileContent("tourscores.txt")
                     }
                     else {
                         var tiers = sys.getTierList()
@@ -1029,11 +1029,12 @@ function tourCommand(src, command, commandData) {
                         if (!found) {
                             throw ("Not a valid tier")
                         }
-                        var rankings = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt").split("\n")
+                        var rankdata = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
                     }
-                    if (rankings === undefined) {
+                    if (rankdata === undefined) {
                         throw ("No data")
                     }
+                    var rankings = rankdata.split("\n")
                     var list = [];
                     for (var p in rankings) {
                         if (rankings[p] == "") continue;
@@ -1082,10 +1083,10 @@ function tourCommand(src, command, commandData) {
                         }
                         var monthlyfile = "tourmonthscore_"+monthdata[0]+"_"+monthdata[1]+".txt"
                     }
-                    var rankings = sys.getFileContent(monthlyfile).split("\n")
-                    if (rankings === undefined) {
+                    if (sys.getFileContent(monthlyfile) === undefined) {
                         throw ("No data")
                     }
+                    var rankings = sys.getFileContent(monthlyfile).split("\n")
                     var list = [];
                     for (var p in rankings) {
                         if (rankings[p] == "") continue;
@@ -2458,7 +2459,7 @@ function tourCommand(src, command, commandData) {
         if (command == "leaderboard") {
             try {
                 if (commandData == "") {
-                    var rankings = sys.getFileContent("tourscores.txt").split("\n")
+                    var rankdata = sys.getFileContent("tourscores.txt")
                 }
                 else {
                     var tiers = sys.getTierList()
@@ -2473,11 +2474,12 @@ function tourCommand(src, command, commandData) {
                     if (!found) {
                         throw ("Not a valid tier")
                     }
-                    var rankings = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt").split("\n")
+                    var rankdata = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
                 }
-                if (rankings === undefined) {
+                if (rankdata === undefined) {
                     throw ("No data")
                 }
+                var rankings = rankdata.split("\n")
                 var list = [];
                 for (var p in rankings) {
                     if (rankings[p] == "") continue;
@@ -2532,10 +2534,10 @@ function tourCommand(src, command, commandData) {
                     }
                     var monthlyfile = "tourmonthscore_"+monthdata[0]+"_"+monthdata[1]+".txt"
                 }
-                var rankings = sys.getFileContent(monthlyfile).split("\n")
-                if (rankings === undefined) {
+                if (sys.getFileContent(monthlyfile) === undefined) {
                     throw ("No data")
                 }
+                var rankings = sys.getFileContent(monthlyfile).split("\n")
                 var list = [];
                 for (var p in rankings) {
                     if (rankings[p] == "") continue;
