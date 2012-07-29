@@ -541,7 +541,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500a6",
+            version: "1.500a7",
             debug: false,
             points: true
         }
@@ -577,7 +577,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500a6",
+        version: "1.500a7",
         debug: false,
         points: true
     }
@@ -969,6 +969,7 @@ function tourCommand(src, command, commandData) {
                 sys.writeToFile("tourscores.txt", "")
                 sys.writeToFile("tourdetails.txt", "")
                 sys.writeToFile("eventscores.txt", "")
+                sys.writeToFile("eventwinners.txt", "")
                 var tiers = sys.getTierList()
                 for (var x in tiers) {
                     sys.writeToFile("tourscores_"+tiers[x].replace(/ /g,"_").replace(/\//g,"-slash-")+".txt","")
@@ -983,6 +984,15 @@ function tourCommand(src, command, commandData) {
             }
             if (command == "evalvars") {
                 dumpVars(src)
+                return true;
+            }
+            if (command == "clearevents") {
+                tours.eventnames = [];
+                sendBotMessage(src, 'Cleared event names!', tourschan, false);
+                return true;
+            }
+            if (command == "eventnames") {
+                sendBotMessage(src, 'Played today: '+tours.eventnames.join(), tourschan, false);
                 return true;
             }
             if (command == "loadevents") {
@@ -2600,6 +2610,28 @@ function tourCommand(src, command, commandData) {
             }
             return true;
         }
+        if (command == "eventwinners") {
+            try {
+                if (sys.getFileContent("eventwinners.txt") === undefined) {
+                    throw ("No data")
+                }
+                var rankings = sys.getFileContent("eventwinners.txt").split("\n")
+                sys.sendMessage(src, "*** EVENT WINNERS ***",tourschan)
+                for (var x in rankings) {
+                    if (rankings[x].length >= 1)
+                        sys.sendMessage(rankings[x])
+                }
+            }
+            catch (err) {
+                if (err == "No data") {
+                    sendBotMessage(src, "No event tournament data exists!",tourschan, false)
+                }
+                else {
+                    throw(err)
+                }
+            }
+            return true;
+        }
     }
     catch (err) {
         sys.sendAll("Error in Tournament Command '"+command+"': "+err, tourserrchan)
@@ -3434,7 +3466,11 @@ function tourprintbracket(key) {
                 for (var r=0; r<rankingorder.length; r++) {
                     rankstring.push("#" + (r+1) + ": " + toCorrectCase(rankingorder[r]))
                 }
+                var now = new Date()
+                var capsmonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                var dateString = now.getUTCDate()+" "+capsmonths[now.getUTCMonth()]
                 tours.history.unshift(getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players")
+                sys.appendToFile("eventwinners.txt", dateString + " ~ " +getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players")
             }
 
             if (tours.history.length > 25) {
