@@ -643,7 +643,7 @@ function initTours() {
 function getEventTour(datestring) {
     var eventfile = sys.getFileContent("eventtours.txt")
     if (eventfile === undefined) {
-        return null;
+        return false;
     }
     var events = eventfile.split("\n")
     for (var x in events) {
@@ -686,7 +686,7 @@ function getEventTour(datestring) {
             }
         }
     }
-    return null;
+    return false;
 }
 
 /* Tournament Step Event
