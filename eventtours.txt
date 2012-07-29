@@ -1,0 +1,37 @@
+# List of event tours that will be run
+# Format: Date (GMT) eg DD-MM-YYYY, tier name, players, whether it score (default yes)
+# July Trials
+29-7-2012:Wifi OU:64:no
+30-7-2012:Challenge Cup:64:no
+# August
+1-8-2012:No Preview OU:16
+2-8-2012:HGSS UU:16
+3-8-2012:Gen 5 1v1:32
+4-8-2012:Challenge Cup:64
+5-8-2012:Wifi NU:32
+6-8-2012:HGSS NU:16
+7-8-2012:Adv NU:16
+8-8-2012:Wifi Triples:16
+9-8-2012:No Preview Ubers:16
+10-8-2012:Random Battle:32
+11-8-2012:Wifi OU:64
+12-8-2012:Wifi UU:32
+13-8-2012:GSC OU:16
+14-8-2012:Adv OU:16
+15-8-2012:RBY UU:16
+16-8-2012:HGSS Ubers:16
+17-8-2012:Clear Skies:32
+18-8-2012:Challenge Cup:64
+19-8-2012:Wifi LU:32
+20-8-2012:HGSS OU:16
+21-8-2012:Wifi LC:16
+22-8-2012:RBY OU:16
+23-8-2012:Adv Ubers:16
+24-8-2012:Monotype:32
+25-8-2012:Wifi OU:64
+26-8-2012:Wifi Ubers:32
+27-8-2012:GSC UU:16
+28-8-2012:Adv UU:16
+29-8-2012:Wifi OU Doubles:16
+30-8-2012:GBU Singles:16
+31-8-2012:VGC 2012:32

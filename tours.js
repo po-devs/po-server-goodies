@@ -9,18 +9,22 @@ if (typeof tourschan !== "string") {
 
 if (typeof tours !== "object") {
     sys.sendAll("Creating new tournament object", tourschan)
-    tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": []}
+    tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": [], "eventnames": []}
 }
 
 var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
-var htmlborder = "<font color=#3DAA68><b>"+border+"</b></font>"
+var htmlborder = "<font color=#3DAA68><b>"+border+"</b></font>";
+// Event tournaments highlighted in red
+var redborder = "<font color=#FF0000><b>"+border+"</b></font>";
+var redhtmlborder = "<font color=#FF0000><timestamp/> <b>"+border+"</b></font>";
 var tourcommands = ["join: joins a tournament",
-                    "unjoin: unjoins a tournament during signups only",
+                    "unjoin: unjoins a normal tournament during signups only, leaves an event tour",
                     "queue: lists upcoming tournaments",
                     "viewround: views current round",
                     "history: views recently played tiers",
                     "touradmins: lists all users that can start tournaments",
                     "leaderboard [tier]: shows tournament rankings, tier is optional",
+                    "eventleaderboard: shows the event leaderboard",
                     "monthlyleaderboard [month] [year]: shows tour rankings for the current month, or the current month and year if specified",
                     "tourinfo [name]: gives information on a person's recent tour wins",
                     "activeta: lists active tournament admins",
@@ -28,13 +32,14 @@ var tourcommands = ["join: joins a tournament",
                     "touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)",
                     "addtouralert [tier] : Adds a tour alert for the specified tier (note that this list is shared with #Tournaments)",
                     "removetouralert [tier] : Removes a tour alert for the specified tier"]
-var touradmincommands = ["*** Parameter Information ***",
+var tourmodcommands = ["*** Parameter Information ***",
                     "Parameters can be used by putting 'gen=x'; 'mode=singles/doubles/triples'; 'type=single/double'.",
                     "For example '/tour CC 1v1:gen=RBY mode=doubles type=double' starts a RBY CC 1v1 double elimination tournament.",
                     "tour [tier]:[parameters]: starts a tier of that tournament.",
                     "tourmute [player]:[reason]:[time]: tourmutes a problematic player.",
                     "tourunmute [player]: untourmutes a player.",
                     "tourmutes: list tour mutes.",
+                    "changecount [number]: changed the number of players for an event tournament",
                     "endtour [tour]: ends the tour of that tier",
                     "sub [newname]:[oldname]: subs newname for oldname",
                     "dq [player]: disqualifies a player",
@@ -42,9 +47,9 @@ var touradmincommands = ["*** Parameter Information ***",
                     "cancelbattle [name]: cancels that player's current battle",
                     "config: shows config settings",
                     "configset [var]:[value]: changes config settings",
-                    "passta [name]: passes your tour admin to a new name",
-                    "*** FOLLOWING COMMANDS ARE ADMIN+ COMMANDS ***",
-                    "tourstart [tier]:[parameters]: starts a tier of that tournament immediately, provided one is not in signups.",
+                    "passta [name]: passes your tour admin to a new name"]
+var touradmincommands = ["tourstart [tier]:[parameters]: starts a tier of that tournament immediately, provided one is not in signups.",
+                    "shift [tier]:[parameters]: places a tournament in the front of the queue",
                     "tadmin[s] [name]: makes someone a tournament admin - s makes it only show in staff chan",
                     "tdeadmin[s] [name]: fires someone from being tournament admin - s makes it only show in staff chan",
                     // "forcestart: ends signups immediately and starts the first round",
@@ -55,13 +60,13 @@ var touradmincommands = ["*** Parameter Information ***",
                     "tourbans: list tour bans",
                     "tourban [name]: bans a problematic player from tournaments",
                     "tourunban [name]: unbans a player from tournaments",
-                    "stopautostart: if there are no tournaments running, this will stop new ones from being automatically started by the server until another one is started manually.",
-                    "*** FOLLOWING COMMANDS ARE OWNER+ COMMANDS ***",
-                    "clearrankings: clears the tour rankings (owner only)",
+                    "stopautostart: if there are no tournaments running, this will stop new ones from being automatically started by the server until another one is started manually."]
+var tourownercommands = ["clearrankings: clears the tour rankings (owner only)",
                     "evalvars: checks the current variable list for tours",
                     "resettours: resets the entire tournament system in the event of a critical failure",
                     "fullleaderboard [tier]: gives the full leaderboard",
-                    "getrankings [month] [year]: exports monthly rankings (deletes old rankings as well)"]
+                    "getrankings [month] [year]: exports monthly rankings (deletes old rankings as well)",
+                    "loadevents: load event tours"]
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "Breaking the following rules may result in a tour mute:",
                 "#1: Team revealing or scouting in non CC tiers will result in disqualification.",
@@ -472,11 +477,11 @@ function sendAuthPlayers(message,key) {
     }
 }
 
-// Sends a html  message to all tour auth and players in the current tour
+// Sends a html  message to all tour auth and players that participated in the current tour
 function sendHtmlAuthPlayers(message,key) {
     var arr = sys.playersOfChannel(tourschan)
     for (var x in arr) {
-        if (isTourAdmin(arr[x]) || tours.tour[key].players.indexOf(sys.name(arr[x]).toLowerCase()) != -1) {
+        if (isTourAdmin(arr[x]) || tours.tour[key].seeds.indexOf(sys.name(arr[x]).toLowerCase()) != -1) {
             // send highlighted name in bracket
             var htmlname = html_escape(sys.name(arr[x]));
             var regex1 = "<td align='right'>"+htmlname+"</td>";
@@ -536,7 +541,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.380",
+            version: "1.500b5",
             debug: false,
             points: true
         }
@@ -572,7 +577,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.380",
+        version: "1.500b5",
         debug: false,
         points: true
     }
@@ -589,7 +594,7 @@ function initTours() {
     }
     if (typeof tours != "object") {
         sys.sendAll("Creating new tournament object", tourschan)
-        tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": []}
+        tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": [], "eventnames": []}
     }
     else {
         if (!tours.hasOwnProperty('queue')) tours.queue = [];
@@ -604,6 +609,7 @@ function initTours() {
         if (!tours.hasOwnProperty('activehistory')) tours.activehistory = [];
         if (!tours.hasOwnProperty('tourmutes')) tours.tourmutes = {};
         if (!tours.hasOwnProperty('tourbans')) tours.tourbans = [];
+        if (!tours.hasOwnProperty('eventnames')) tours.eventnames = [];
     }
     try {
         getTourWinMessages()
@@ -636,6 +642,55 @@ function initTours() {
     sys.sendAll("Version "+Config.Tours.version+" of the tournaments system was loaded successfully in this channel!", tourschan)
 }
 
+function getEventTour(datestring) {
+    var eventfile = sys.getFileContent("eventtours.txt")
+    if (eventfile === undefined) {
+        return false;
+    }
+    var events = eventfile.split("\n")
+    for (var x in events) {
+        if (events[x].length === 0) {
+            continue;
+        }
+        if (events[x].indexOf("#") === 0) {
+            continue;
+        }
+        var data = events[x].split(":")
+        if (data.length < 3) {
+            continue;
+        }
+        else {
+            if (data[0] == datestring) {
+                var thetier = data[1];
+                var tiers = sys.getTierList()
+                var found = false;
+                for (var x in tiers) {
+                    if (cmp(tiers[x], thetier)) {
+                        var tourtier = tiers[x];
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    continue;
+                }
+                var maxplayers = parseInt(data[2]);
+                var allowedcounts = [16,32,64,128,256];
+                if (allowedcounts.indexOf(maxplayers) == -1) {
+                    continue;
+                }
+                var scoring = true;
+                if (data.length == 4) {
+                    if (data[3] == "no")
+                        scoring = false;
+                }
+                return [tourtier, maxplayers, scoring];
+            }
+        }
+    }
+    return false;
+}
+
 /* Tournament Step Event
 Used for things such as
 - sending reminders
@@ -644,8 +699,8 @@ Used for things such as
 - removing subs */
 function tourStep() {
     var canautostart = true;
+    var now = new Date()
     if (parseInt(sys.time())%3600 === 0) {
-        var now = new Date()
         var comment = now + " ~ " + tours.activetas.join(", ")
         tours.activehistory.unshift(comment)
         if (tours.activehistory.length > 168) {
@@ -669,8 +724,10 @@ function tourStep() {
                 tourinitiate(x)
                 continue;
             }
-            var variance = calcVariance()
-            tours.globaltime = parseInt(sys.time()) + parseInt(Config.Tours.abstourbreak/variance) // default 10 mins b/w signups, + 5 secs per user in chan
+            if (tours.tour[x].time-parseInt(sys.time()) == 60 && typeof tours.tour[x].maxplayers == "number") {
+                sendBotAll("Signups for the "+tours.tour[x].tourtype+" tournament close in 1 minute.", tourschan, false)
+                sendBotAll("Signups for the "+tours.tour[x].tourtype+" tournament close in 1 minute.", 0, false)
+            }
             continue;
         }
         if (tours.tour[x].state == "subround" && tours.tour[x].time <= parseInt(sys.time())) {
@@ -695,25 +752,56 @@ function tourStep() {
     if (calcPercentage() >= Config.Tours.minpercent) {
         canautostart = false;
     }
+    var datestring = now.getUTCDate()+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
+    var hour = now.getUTCHours();
+    var minute = now.getUTCMinutes();
+    var second = now.getUTCSeconds();
+    var allgentiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"];
+    if ([2,8,14,20].indexOf(hour) != -1) {
+        if (minute == 45 && second === 0) {
+            var details = getEventTour(datestring)
+            if (typeof details === "object") {
+                var tourtier = details[0];
+                var maxplayers = parseInt(details[1]);
+                sendBotAll("A "+details[1]+" player <b>"+html_escape(details[0])+"</b> event is starting in about 5 minutes.",tourschan,true)
+                sendBotAll("A "+details[1]+" player <b>"+html_escape(details[0])+"</b> event is starting in about 5 minutes.",0,true)
+                tours.queue.unshift(tourtier+":::~Pokemon Online~:::"+modeOfTier(tourtier)+":::"+(allgentiers.indexOf(tourtier) != -1 ? "5-1" : "default")+":::double:::"+details[1])
+                tours.globaltime = parseInt(sys.time()) + 300
+            }
+        }
+        else if (minute == 30 && second === 0) { // stop tours from auto starting
+            var details = getEventTour(datestring)
+            if (typeof details === "object") {
+                tours.globaltime = 0
+                sendBotAll("A "+details[1]+" player <b>"+html_escape(details[0])+"</b> event is starting in about 20 minutes. No more tournaments will start for now.",tourschan,true)
+            }
+            if (hour == 2) { // clear list of event joined names
+                tours.eventnames = [];
+            }
+        }
+    }
     if (tours.globaltime !== 0 && tours.globaltime <= parseInt(sys.time()) && (Config.Tours.maxrunning > tours.keys.length || canautostart)) {
         if (tours.queue.length > 0) {
-            var data = tours.queue[0].split(":::",5)
+            var data = tours.queue[0].split(":::",6)
             var tourtostart = data[0]
             var starter = data[1]
-            var parameters = {"mode": data[2], "gen": data[3], "type": data[4]}
+            var maxplayers = parseInt(data[5])
+            if (isNaN(maxplayers)) {
+                maxplayers = false;
+            }
+            var parameters = {"mode": data[2], "gen": data[3], "type": data[4], "maxplayers": maxplayers}
             tours.queue.splice(0,1)
             tourstart(tourtostart,starter,tours.key,parameters)
-            tours.globaltime = parseInt(sys.time()) + 1200
+            tours.globaltime = 0
         }
         else if (tours.keys.length === 0) {
             // start a cycle from tourarray
             var tourarray = ["Challenge Cup", "Wifi NU", "CC 1v1", "Random Battle", "Wifi OU", "Gen 5 1v1", "Wifi UU", "Monotype", "Challenge Cup", "Clear Skies", "Wifi CC 1v1", "Wifi LC", "Wifi OU", "Wifi LU", "Wifi Ubers", "No Preview OU"]
             var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1"];
-            var allgentiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"];
             var tourtostart = tourarray[tours.key%tourarray.length]
             var tourtype = doubleelimtiers.indexOf(tourtostart) != -1 ? "double" : "single"
-            tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? "5-1" : "default"), "type": tourtype})
-            tours.globaltime = parseInt(sys.time()) + 1200
+            tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? "5-1" : "default"), "type": tourtype, "maxplayers": false})
+            tours.globaltime = 0
         }
     }
 }
@@ -879,6 +967,8 @@ function tourCommand(src, command, commandData) {
             if (command == "clearrankings") {
                 sys.writeToFile("tourscores.txt", "")
                 sys.writeToFile("tourdetails.txt", "")
+                sys.writeToFile("eventscores.txt", "")
+                sys.writeToFile("eventwinners.txt", "")
                 var tiers = sys.getTierList()
                 for (var x in tiers) {
                     sys.writeToFile("tourscores_"+tiers[x].replace(/ /g,"_").replace(/\//g,"-slash-")+".txt","")
@@ -887,7 +977,7 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "resettours") {
-                tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": []};
+                tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": [], "eventnames": []};
                 sendBotAll(sys.name(src)+" reset the tour system!",tourschan,false)
                 return true;
             }
@@ -895,10 +985,35 @@ function tourCommand(src, command, commandData) {
                 dumpVars(src)
                 return true;
             }
+            if (command == "clearevents") {
+                tours.eventnames = [];
+                sendBotMessage(src, 'Cleared event names!', tourschan, false);
+                return true;
+            }
+            if (command == "eventnames") {
+                sendBotMessage(src, 'Played today: '+tours.eventnames.join(), tourschan, false);
+                return true;
+            }
+            if (command == "loadevents") {
+                var url = "https://raw.github.com/lamperi/po-server-goodies/master/eventtours.txt"
+                if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
+                    url = commandData;
+                }
+                sendBotMessage(src, "Fetching event tours from "+url, tourschan, false);
+                sys.webCall(url, function(resp) {
+                    if (resp !== "") {
+                        sys.writeToFile('eventtours.txt', resp);
+                        sendBotAll('Updated list of event tours!', tourschan, false);
+                    } else {
+                        sendBotMessage(src, 'Failed to update!', tourschan, false);
+                    }
+                });
+                return true;
+            }
             if (command == "fullleaderboard") {
                 try {
                     if (commandData == "") {
-                        var rankings = sys.getFileContent("tourscores.txt").split("\n")
+                        var rankdata = sys.getFileContent("tourscores.txt")
                     }
                     else {
                         var tiers = sys.getTierList()
@@ -913,11 +1028,12 @@ function tourCommand(src, command, commandData) {
                         if (!found) {
                             throw ("Not a valid tier")
                         }
-                        var rankings = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt").split("\n")
+                        var rankdata = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
                     }
-                    if (rankings === undefined) {
+                    if (rankdata === undefined) {
                         throw ("No data")
                     }
+                    var rankings = rankdata.split("\n")
                     var list = [];
                     for (var p in rankings) {
                         if (rankings[p] == "") continue;
@@ -966,10 +1082,10 @@ function tourCommand(src, command, commandData) {
                         }
                         var monthlyfile = "tourmonthscore_"+monthdata[0]+"_"+monthdata[1]+".txt"
                     }
-                    var rankings = sys.getFileContent(monthlyfile).split("\n")
-                    if (rankings === undefined) {
+                    if (sys.getFileContent(monthlyfile) === undefined) {
                         throw ("No data")
                     }
+                    var rankings = sys.getFileContent(monthlyfile).split("\n")
                     var list = [];
                     for (var p in rankings) {
                         if (rankings[p] == "") continue;
@@ -1133,7 +1249,7 @@ function tourCommand(src, command, commandData) {
                 tours.tour[key].players.push(target)
                 tours.tour[key].cpt += 1
                 if (tours.tour[key].maxcpt !== undefined) {
-                    if (tours.tour[key].cpt > tours.tour[key].maxcpt) {
+                    if (tours.tour[key].cpt > tours.tour[key].maxcpt && tours.tour[key].maxplayers === "default") {
                         tours.tour[key].maxcpt = tours.tour[key].cpt
                         if (tours.tour[key].maxcpt == 5) {
                             tours.tour[key].time += Math.floor(Config.Tours.toursignup/6)
@@ -1156,10 +1272,19 @@ function tourCommand(src, command, commandData) {
                     }
                 }
                 // 256 players for technical reasons
-                if (tours.tour[key].players.length >= 256) {
-                    tours.tour[key].time = parseInt(sys.time())
+                if (tours.tour[key].maxplayers === "default") {
+                    sendBotAll(toCorrectCase(target)+" was added to the "+getFullTourName(key)+" tournament by "+sys.name(src)+" (player #"+tours.tour[key].players.length+"), "+(tours.tour[key].time - parseInt(sys.time()))+" second"+(tours.tour[key].time - parseInt(sys.time()) == 1 ? "" : "s")+" remaining!", tourschan, false)
+                    if (tours.tour[key].players.length >= 256) {
+                        tours.tour[key].time = parseInt(sys.time())
+                    }
                 }
-                sendBotAll(toCorrectCase(target)+" was added to the "+getFullTourName(key)+" tournament by "+sys.name(src)+" (player #"+tours.tour[key].players.length+"), "+(tours.tour[key].time - parseInt(sys.time()))+" second"+(tours.tour[key].time - parseInt(sys.time()) == 1 ? "" : "s")+" remaining!", tourschan, false)
+                else {
+                    sendBotAll(toCorrectCase(target)+" was added to the "+getFullTourName(key)+" tournament by "+sys.name(src)+" (player #"+tours.tour[key].players.length+"), "+(tours.tour[key].maxplayers - tours.tour[key].cpt)+" place"+(tours.tour[key].maxplayers - tours.tour[key].cpt == 1 ? "" : "s")+" remaining!", tourschan, false)
+                    if (tours.tour[key].players.length >= tours.tour[key].maxplayers) {
+                        tours.tour[key].time = parseInt(sys.time())
+                    }
+                }
+
                 return true;
             }
             // enabled for now!
@@ -1188,9 +1313,13 @@ function tourCommand(src, command, commandData) {
                     }
                 }
                 if (tours.queue.length != 0) {
-                    var data = tours.queue[0].split(":::",5)
+                    var data = tours.queue[0].split(":::",6)
                     var tourtostart = data[0]
-                    var parameters = {"mode": data[2], "gen": data[3], "type": data[4]}
+                    var maxplayers = parseInt(data[5])
+                    if (isNaN(maxplayers)) {
+                        maxplayers = false;
+                    }
+                    var parameters = {"mode": data[2], "gen": data[3], "type": data[4], "maxplayers": maxplayers}
                     tours.queue.splice(0,1)
                     tourstart(tourtostart, sys.name(src), tours.key, parameters)
                     sendBotAll(sys.name(src)+" force started the "+tourtostart+" tournament!",tourschan,false)
@@ -1259,7 +1388,7 @@ function tourCommand(src, command, commandData) {
             }
         }
         if (isTourAdmin(src)) {
-            if (command == "tour" || (command == "tourstart" && isTourSuperAdmin(src))) {
+            if (command == "tour" || ((command == "tourstart" || command == "shift") && isTourSuperAdmin(src))) {
                 var data = commandData.split(":",2)
                 var thetier = data[0].toLowerCase()
                 var tiers = sys.getTierList()
@@ -1293,7 +1422,7 @@ function tourCommand(src, command, commandData) {
                 }
                 var detiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers"];
                 var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"];
-                var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": detiers.indexOf(tourtier) == -1 ? "single" : "double"};
+                var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": detiers.indexOf(tourtier) == -1 ? "single" : "double", "maxplayers": false};
                 if (data.length > 1) {
                     var parameterdata = data[1].split(" ");
                     for (var p in parameterdata) {
@@ -1334,6 +1463,16 @@ function tourCommand(src, command, commandData) {
                                 parameters.type = "single";
                             }
                         }
+                        else if (cmp(parameterset, "event") && isTourOwner(src)) {
+                            var players = parseInt(parametervalue)
+                            var allowedcounts = [16,32,64,128,256];
+                            if (allowedcounts.indexOf(players) == -1) {
+                                sendBotMessage(src, "Invalid number of players for event mode!", tourschan, false);
+                                return true;
+                            }
+                            parameters.maxplayers = players;
+                            parameters.type = "double"; // events are always doubles
+                        }
                         else {
                             sendBotMessage(src, "Warning! The parameter '"+parameterset+"' does not exist!", tourschan, false);
                         }
@@ -1346,9 +1485,14 @@ function tourCommand(src, command, commandData) {
                     sendBotMessage(src, "There are already "+Config.Tours.maxqueue+" or more tournaments in the queue, so you can't add another one!", tourschan, false)
                     return true;
                 }
-                else if (isSignups || ((tours.keys.length > 0 || tours.queue.length > 0) && command == "tour")) {
-                    tours.queue.push(tourtier+":::"+sys.name(src)+":::"+parameters.mode+":::"+parameters.gen+":::"+parameters.type)
-                    sendBotAll(sys.name(src)+" added a "+tourtier+" tournament into the queue! Type /queue to see what is coming up next.",tourschan, false)
+                else if (isSignups || ((tours.keys.length > 0 || tours.queue.length > 0) && (command == "tour" || command == "shift"))) {
+                    if (command == "shift") {
+                        tours.queue.unshift(tourtier+":::"+sys.name(src)+":::"+parameters.mode+":::"+parameters.gen+":::"+parameters.type+":::"+parameters.maxplayers)
+                    }
+                    else {
+                        tours.queue.push(tourtier+":::"+sys.name(src)+":::"+parameters.mode+":::"+parameters.gen+":::"+parameters.type+":::"+parameters.maxplayers)
+                    }
+                    sendBotAll(sys.name(src)+" added a "+tourtier+" tournament into the "+(command == "shift" ? "front of" : "")+" queue! Type /queue to see what is coming up next.",tourschan, false)
                 }
                 else {
                     tourstart(tourtier, sys.name(src), tours.key, parameters)
@@ -1357,6 +1501,37 @@ function tourCommand(src, command, commandData) {
                     }
                 }
                 addTourActivity(src)
+                return true;
+            }
+            if (command == "changecount") {
+                var key = null
+                for (var x in tours.tour) {
+                    if (tours.tour[x].state == "signups") {
+                        key = x;
+                    }
+                }
+                if (key === null) {
+                    sendBotMessage(src,"No tournament is in signups!",tourschan,false)
+                    return true;
+                }
+                if (tours.tour[key].maxplayers === "default") {
+                    sendBotMessage(src,"Cna't change the count of a timed tour!",tourschan,false)
+                    return true;
+                }
+                var players = parseInt(commandData)
+                var allowedcounts = [16,32,64,128,256];
+                if (allowedcounts.indexOf(players) == -1) {
+                    sendBotMessage(src, "Invalid number of players for event mode!", tourschan, false);
+                    return true;
+                }
+                else if (players < tours.tour[key].cpt) {
+                    sendBotMessage(src, "There are more players in the tournament then you specified!", tourschan, false);
+                    return true;
+                }
+                else {
+                    tours.tour[key].maxplayers = players;
+                    sendBotAll(sys.name(src)+" changed the number of places in the "+tours.tour[key].tourtype+" tournament to "+players+"! There are now "+(tours.tour[key].maxplayers - tours.tour[key].cpt)+" place"+(tours.tour[key].maxplayers - tours.tour[key].cpt == 1 ? "" : "s")+" remaining!", tourschan,false)
+                }
                 return true;
             }
             if (command == "remove") {
@@ -1460,7 +1635,7 @@ function tourCommand(src, command, commandData) {
                 }
                 else {
                     sendBotAll(sys.name(src)+" disqualified "+toCorrectCase(commandData)+" from the "+getFullTourName(key)+" tournament!", tourschan, false)
-                    disqualify(commandData.toLowerCase(), key, false)
+                    disqualify(commandData.toLowerCase(), key, false, true)
                 }
                 addTourActivity(src)
                 return true;
@@ -1581,7 +1756,7 @@ function tourCommand(src, command, commandData) {
                         sendBotAll(toCorrectCase(tar)+" was taken out of the tournament signups by "+sys.name(src)+" from the "+getFullTourName(key)+" tournament!", tourschan, false);
                     }
                     else {
-                        disqualify(tar.toLowerCase(), key, false)
+                        disqualify(tar.toLowerCase(), key, false, true)
                     }
                 }
                 for (var x in channels) {
@@ -1968,11 +2143,23 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
             }
+            /* Event check */
+            if (typeof tours.tour[key].maxplayers === "number") {
+                var alreadyplayed = tours.eventnames;
+                for (var n=0; n<alreadyplayed.length; n++) {
+                    var name = alreadyplayed[n]
+                    var usedip = sys.dbIp(name)
+                    if (sys.ip(src) == usedip || cmp(sys.name(src),name)) {
+                        sendBotMessage(src, "You already joined an event tournament today under the name '"+name+"'! Wait until tomorrow to join another one (you can still play normal tournaments)",tourschan,false)
+                        return true;
+                    }
+                }
+            }
             if (tours.tour[key].state == "signups") {
                 tours.tour[key].players.push(sys.name(src).toLowerCase())
                 tours.tour[key].cpt += 1
                 if (tours.tour[key].maxcpt !== undefined) {
-                    if (tours.tour[key].cpt > tours.tour[key].maxcpt) {
+                    if (tours.tour[key].cpt > tours.tour[key].maxcpt && tours.tour[key].maxplayers === "default") {
                         tours.tour[key].maxcpt = tours.tour[key].cpt
                         if (tours.tour[key].maxcpt == 5) {
                             tours.tour[key].time += Math.floor(Config.Tours.toursignup/6)
@@ -1998,11 +2185,20 @@ function tourCommand(src, command, commandData) {
                         }
                     }
                 }
-                // 256 players for technical reasons
-                if (tours.tour[key].players.length >= 256) {
-                    tours.tour[key].time = parseInt(sys.time())
+                if (tours.tour[key].maxplayers === "default") {
+                    sendBotAll("<b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(getFullTourName(key))+" tournament! "+(tours.tour[key].time - parseInt(sys.time()))+" second"+(tours.tour[key].time - parseInt(sys.time()) == 1 ? "" : "s")+" remaining!", tourschan, true)
+                    // 256 players max
+                    if (tours.tour[key].players.length >= 256) {
+                        tours.tour[key].time = parseInt(sys.time())
+                    }
                 }
-                sendBotAll("<b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(getFullTourName(key))+" tournament! "+(tours.tour[key].time - parseInt(sys.time()))+" second"+(tours.tour[key].time - parseInt(sys.time()) == 1 ? "" : "s")+" remaining!", tourschan, true)
+                else {
+                    sendBotAll("<b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(getFullTourName(key))+" tournament! "+(tours.tour[key].maxplayers - tours.tour[key].cpt)+" place"+(tours.tour[key].maxplayers - tours.tour[key].cpt == 1 ? "" : "s")+" remaining!", tourschan, true)
+                    // end signups if maxplayers have been reached
+                    if (tours.tour[key].players.length >= tours.tour[key].maxplayers) {
+                        tours.tour[key].time = parseInt(sys.time())
+                    }
+                }
                 return true;
             }
             /* subbing */
@@ -2034,6 +2230,9 @@ function tourCommand(src, command, commandData) {
             tours.tour[key].players.splice(index,1,newname)
             tours.tour[key].seeds.splice(tours.tour[key].cpt,1,newname)
             tours.tour[key].cpt += 1
+            if (tours.tour[key].maxplayers !== "default") {
+                tours.eventnames.push(newname)
+            }
             var oppname = index%2 == 0 ? toCorrectCase(tours.tour[key].players[index+1]) : toCorrectCase(tours.tour[key].players[index-1])
             sendBotAll("Late entrant "+sys.name(src)+" will play against "+oppname+" in the "+getFullTourName(key)+" tournament. "+(tours.tour[key].players.length - tours.tour[key].cpt)+" sub"+(tours.tour[key].players.length - tours.tour[key].cpt == 1 ? "" : "s") + " remaining.", tourschan, false)
             sendBotMessage(sys.id(oppname),"Late entrant "+html_escape(sys.name(src))+" will play against you in the "+html_escape(getFullTourName(key))+" tournament.<ping/>", tourschan, true)
@@ -2043,9 +2242,15 @@ function tourCommand(src, command, commandData) {
         }
         if (command == "unjoin") {
             var key = null
+            var atSignups = false;
             for (var x in tours.tour) {
+                if (isInTour(sys.name(src)) === x && typeof tours.tour[x].maxplayers == "number" && tours.tour[x].state != "signups") {
+                    key = x;
+                    break;
+                }
                 if (tours.tour[x].state == "signups") {
                     key = x;
+                    atSignups = true;
                     break;
                 }
             }
@@ -2053,14 +2258,20 @@ function tourCommand(src, command, commandData) {
                 sendBotMessage(src, "You can't unjoin now!",tourschan,false)
                 return true;
             }
-            var index = tours.tour[key].players.indexOf(sys.name(src).toLowerCase())
-            if (index == -1) {
-                sendBotMessage(src, "You aren't in the "+getFullTourName(key)+" tournament!",tourschan,false)
-                return true;
+            if (atSignups) {
+                var index = tours.tour[key].players.indexOf(sys.name(src).toLowerCase())
+                if (index == -1) {
+                    sendBotMessage(src, "You aren't in the "+getFullTourName(key)+" tournament!",tourschan,false)
+                    return true;
+                }
+                tours.tour[key].players.splice(index, 1)
+                tours.tour[key].cpt -= 1
+                sendBotAll(sys.name(src)+" unjoined the "+getFullTourName(key)+" tournament!", tourschan, false)
             }
-            tours.tour[key].players.splice(index, 1)
-            tours.tour[key].cpt -= 1
-            sendBotAll(sys.name(src)+" unjoined the "+getFullTourName(key)+" tournament!", tourschan, false)
+            else {
+                sendBotAll(sys.name(src)+" resigned from the "+getFullTourName(key)+" tournament!", tourschan, false)
+                disqualify(sys.name(src).toLowerCase(), key, false, true)
+            }
             return true;
         }
         if (command == "queue" || command == "viewqueue") {
@@ -2078,13 +2289,13 @@ function tourCommand(src, command, commandData) {
             }
             var firsttour = true;
             for (var e in queue) {
-                var queuedata = queue[e].split(":::",5)
+                var queuedata = queue[e].split(":::",6)
                 if (firsttour && nextstart != "Pending") {
-                    sys.sendMessage(src,"1) "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+getSubgen(queuedata[3],true) : "")+(queuedata[4] == "double" ? "; Double Elimination" : "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
+                    sys.sendMessage(src,"1) "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+getSubgen(queuedata[3],true) : "")+(queuedata[4] == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(queuedata[5])) ? "; For "+ queuedata[5] +" players": "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
                     firsttour = false
                 }
                 else {
-                    sys.sendMessage(src,(parseInt(e)+1)+") "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+getSubgen(queuedata[3],true) : "")+(queuedata[4] == "double" ? "; Double Elimination" : ""), tourschan)
+                    sys.sendMessage(src,(parseInt(e)+1)+") "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+getSubgen(queuedata[3],true) : "")+(queuedata[4] == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(queuedata[5])) ? "; For "+ queuedata[5] +" players": ""), tourschan)
                 }
             }
             return true;
@@ -2207,20 +2418,33 @@ function tourCommand(src, command, commandData) {
             return true;
         }
         if (command == "help" || command == "commands") {
+            var type = commandData.toLowerCase()
             sys.sendMessage(src, border,tourschan);
             sys.sendMessage(src, "*** Tournament Commands ***",tourschan);
-            for (var t in tourcommands) {
-                sys.sendMessage(src, tourcommands[t],tourschan);
-            }
-            if (isTourAdmin(src)) {
-                sys.sendMessage(src, border,tourschan);
-                for (var u in touradmincommands) {
-                    if (touradmincommands[u] == "*** FOLLOWING COMMANDS ARE ADMIN+ COMMANDS ***" && !isTourSuperAdmin(src)) break;
-                    if (touradmincommands[u] == "*** FOLLOWING COMMANDS ARE OWNER+ COMMANDS ***" && !isTourOwner(src)) break;
-                    sys.sendMessage(src, touradmincommands[u],tourschan);
+            if (type == "" || type == "tournament") {
+                for (var t in tourcommands) {
+                    sys.sendMessage(src, tourcommands[t],tourschan);
                 }
+                sys.sendMessage(src, border,tourschan);
             }
-            sys.sendMessage(src, border,tourschan);
+            if (isTourAdmin(src) && (type == "mod" || type == "megauser" || type == "")) {
+                for (var m in tourmodcommands) {
+                    sys.sendMessage(src, tourmodcommands[m],tourschan);
+                }
+                sys.sendMessage(src, border,tourschan);
+            }
+            if (isTourSuperAdmin(src) && (type == "admin" || type == "")) {
+                for (var a in touradmincommands) {
+                    sys.sendMessage(src, touradmincommands[a],tourschan);
+                }
+                sys.sendMessage(src, border,tourschan);
+            }
+            if (isTourOwner(src) && (type == "owner" || type == "")) {
+                for (var o in tourownercommands) {
+                    sys.sendMessage(src, tourownercommands[o],tourschan);
+                }
+                sys.sendMessage(src, border,tourschan);
+            }
             return true;
         }
         if (command == "rules" || command == "tourrules") {
@@ -2234,7 +2458,7 @@ function tourCommand(src, command, commandData) {
         if (command == "leaderboard") {
             try {
                 if (commandData == "") {
-                    var rankings = sys.getFileContent("tourscores.txt").split("\n")
+                    var rankdata = sys.getFileContent("tourscores.txt")
                 }
                 else {
                     var tiers = sys.getTierList()
@@ -2249,11 +2473,12 @@ function tourCommand(src, command, commandData) {
                     if (!found) {
                         throw ("Not a valid tier")
                     }
-                    var rankings = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt").split("\n")
+                    var rankdata = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
                 }
-                if (rankings === undefined) {
+                if (rankdata === undefined) {
                     throw ("No data")
                 }
+                var rankings = rankdata.split("\n")
                 var list = [];
                 for (var p in rankings) {
                     if (rankings[p] == "") continue;
@@ -2308,10 +2533,10 @@ function tourCommand(src, command, commandData) {
                     }
                     var monthlyfile = "tourmonthscore_"+monthdata[0]+"_"+monthdata[1]+".txt"
                 }
-                var rankings = sys.getFileContent(monthlyfile).split("\n")
-                if (rankings === undefined) {
+                if (sys.getFileContent(monthlyfile) === undefined) {
                     throw ("No data")
                 }
+                var rankings = sys.getFileContent(monthlyfile).split("\n")
                 var list = [];
                 for (var p in rankings) {
                     if (rankings[p] == "") continue;
@@ -2342,6 +2567,65 @@ function tourCommand(src, command, commandData) {
             catch (err) {
                 if (err == "No data") {
                     sendBotMessage(src, commandData+" is not a valid tier!",tourschan, false)
+                }
+                else {
+                    throw(err)
+                }
+            }
+            return true;
+        }
+        if (command == "eventleaderboard") {
+            try {
+                if (sys.getFileContent("eventscores.txt") === undefined) {
+                    throw ("No data")
+                }
+                var rankings = sys.getFileContent("eventscores.txt").split("\n")
+                var list = [];
+                for (var p in rankings) {
+                    if (rankings[p] == "") continue;
+                    var rankingdata = rankings[p].split(":::",2)
+                    if (rankingdata[1] < 1) continue;
+                    list.push([rankingdata[1], rankingdata[0]]);
+                }
+                list.sort(function(a,b) { return b[0] - a[0] ; });
+                sys.sendMessage(src, "*** EVENT RANKINGS "+(commandData != "" ? "("+commandData+") " : "")+"***",tourschan)
+                var rankkey = [0, 0] // rank, points
+                for (var x=0; x<65536; x++) {
+                    if (x >= list.length) break;
+                    if (rankkey[1] === parseInt((list[x])[0])) {
+                        sys.sendMessage(src, "#"+rankkey[0]+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
+                    }
+                    else {
+                        sys.sendMessage(src, "#"+(x+1)+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
+                        rankkey = [x+1, parseInt((list[x])[0])]
+                    }
+                }
+            }
+            catch (err) {
+                if (err == "No data") {
+                    sendBotMessage(src, "No event tournament data exists!",tourschan, false)
+                }
+                else {
+                    throw(err)
+                }
+            }
+            return true;
+        }
+        if (command == "eventwinners") {
+            try {
+                if (sys.getFileContent("eventwinners.txt") === undefined) {
+                    throw ("No data")
+                }
+                var rankings = sys.getFileContent("eventwinners.txt").split("\n")
+                sys.sendMessage(src, "*** EVENT WINNERS ***",tourschan)
+                for (var x in rankings) {
+                    if (rankings[x].length >= 1)
+                        sys.sendMessage(src, rankings[x],tourschan)
+                }
+            }
+            catch (err) {
+                if (err == "No data") {
+                    sendBotMessage(src, "No event tournament data exists!",tourschan, false)
                 }
                 else {
                     throw(err)
@@ -2408,11 +2692,11 @@ function removeinactive(key) {
             }
             else if (dq2) {
                 sendBotAll(toCorrectCase(player2)+" was disqualified from the "+getFullTourName(key)+" tournament for inactivity!", tourschan, false)
-                disqualify(player2,key,false)
+                disqualify(player2,key,false,false)
             }
             else if (dq1) {
                 sendBotAll(toCorrectCase(player1)+" was disqualified from the "+getFullTourName(key)+" tournament for inactivity!", tourschan, false)
-                disqualify(player1,key,false)
+                disqualify(player1,key,false,false)
             }
             else if ((tours.tour[key].time-parseInt(sys.time()))%60 === 0){
                 sendBotAll(toCorrectCase(player1)+" and "+toCorrectCase(player2)+" are both active, please battle in the "+getFullTourName(key)+" tournament ASAP!", tourschan, false)
@@ -2465,7 +2749,7 @@ function sendReminder(key) {
 }
 
 // Disqualifies a single player
-function disqualify(player, key, silent) {
+function disqualify(player, key, silent, hard) {
     try {
         if (tours.tour[key].players.indexOf(player) == -1) {
             return;
@@ -2484,6 +2768,41 @@ function disqualify(player, key, silent) {
         }
         else {
             tours.tour[key].players.splice(index,1,"~DQ~")
+        }
+        // splice from brackets as well in double elim
+        if (hard && tours.tour[key].parameters.type == "double") {
+            var winindex = tours.tour[key].winbracket.indexOf(player)
+            if (winindex != -1) {
+                if (winindex%2 == 1) {
+                    var opponent1 = tours.tour[key].winbracket[winindex-1]
+                }
+                else {
+                    var opponent1 = tours.tour[key].winbracket[winindex+1]
+                }
+                /* If the opponent is disqualified/is a sub we want to replace with ~Bye~ instead of ~DQ~ so brackets don't stuff up */
+                if (opponent1 == "~DQ~") {
+                    tours.tour[key].winbracket.splice(winindex,1,"~Bye~")
+                }
+                else {
+                    tours.tour[key].winbracket.splice(winindex,1,"~DQ~")
+                }
+            }
+            var loseindex = tours.tour[key].losebracket.indexOf(player)
+            if (loseindex != -1) {
+                if (loseindex%2 == 1) {
+                    var opponent2 = tours.tour[key].losebracket[loseindex-1]
+                }
+                else {
+                    var opponent2 = tours.tour[key].losebracket[loseindex+1]
+                }
+                /* If the opponent is disqualified/is a sub we want to replace with ~Bye~ instead of ~DQ~ so brackets don't stuff up */
+                if (opponent2 == "~DQ~") {
+                    tours.tour[key].losebracket.splice(loseindex,1,"~Bye~")
+                }
+                else {
+                    tours.tour[key].losebracket.splice(loseindex,1,"~DQ~")
+                }
+            }
         }
         /* We then check if opponent hasn't advanced, and advance them if they're not disqualified. We also remove player from winners if DQ'ed */
         if (opponent != "~DQ~" && winnerindex == -1 && tours.tour[key].winners.indexOf(opponent) == -1) {
@@ -2545,7 +2864,7 @@ function removesubs(key) {
         for (var x in tours.tour[key].players) {
             if (isSub(tours.tour[key].players[x])) {
                 opponent = null;
-                disqualify(tours.tour[key].players[x],key,true)
+                disqualify(tours.tour[key].players[x],key,true,false)
                 if (x%2 === 0) {
                     opponent = tours.tour[key].players[x+1]
                 }
@@ -2584,11 +2903,11 @@ function removebyes(key) {
             }
             else if (tours.tour[key].players[z] == "~Bye~") {
                 opponent = tours.tour[key].players[z+1]
-                disqualify("~Bye~",key,true)
+                disqualify("~Bye~",key,true,false)
             }
             else if (tours.tour[key].players[z+1] == "~Bye~") {
                 opponent = tours.tour[key].players[z]
-                disqualify("~Bye~",key,true)
+                disqualify("~Bye~",key,true,false)
             }
             if (!isSub(opponent) && opponent != "~DQ~" && opponent != "~Bye~" && opponent !== null) {
                 advanced.push(toCorrectCase(opponent))
@@ -2682,9 +3001,20 @@ function advanceround(key) {
             else if (tours.tour[key].players.length == 2 && tours.tour[key].round%2 === 0) { // special case for 2 or less players, first battle
                 if (winners.indexOf(tours.tour[key].players[0]) > -1 && bannednames.indexOf(tours.tour[key].players[0]) == -1) {
                     newlist.push(tours.tour[key].players[0])
+                    if (tours.tour[key].maxplayers !== "default") {
+                        tours.tour[key].rankings.push(tours.tour[key].players[1], tours.tour[key].players[0])
+                    }
                 }
                 else if (winners.indexOf(tours.tour[key].players[1]) > -1 && bannednames.indexOf(tours.tour[key].players[1]) == -1) {
-                    newlist.push(tours.tour[key].players[0], tours.tour[key].players[1])
+                    if (bannednames.indexOf(tours.tour[key].players[0]) == -1) {
+                        newlist.push(tours.tour[key].players[0], tours.tour[key].players[1])
+                    }
+                    else {
+                        newlist.push(tours.tour[key].players[1])
+                        if (tours.tour[key].maxplayers !== "default") {
+                            tours.tour[key].rankings.push(tours.tour[key].players[0], tours.tour[key].players[1])
+                        }
+                    }
                 }
                 else {
                     newlist.push("~Bye~");
@@ -2693,9 +3023,15 @@ function advanceround(key) {
             else if (tours.tour[key].players.length == 2 && tours.tour[key].round%2 === 1) { // special case for 2 or less players, second battle
                 if (winners.indexOf(tours.tour[key].players[0]) > -1 && bannednames.indexOf(tours.tour[key].players[0]) == -1) {
                     newlist.push(tours.tour[key].players[0])
+                    if (tours.tour[key].maxplayers !== "default") {
+                        tours.tour[key].rankings.push(tours.tour[key].players[1], tours.tour[key].players[0])
+                    }
                 }
                 else if (winners.indexOf(tours.tour[key].players[1]) > -1 && bannednames.indexOf(tours.tour[key].players[1]) == -1) {
                     newlist.push(tours.tour[key].players[1])
+                    if (tours.tour[key].maxplayers !== "default") {
+                        tours.tour[key].rankings.push(tours.tour[key].players[0], tours.tour[key].players[1])
+                    }
                 }
                 else {
                     newlist.push("~Bye~");
@@ -2757,9 +3093,17 @@ function advanceround(key) {
                 for (var l=0;l<tours.tour[key].losebracket.length;l+=2) {
                     if (winners.indexOf(tours.tour[key].losebracket[l]) > -1 && bannednames.indexOf(tours.tour[key].losebracket[l]) == -1) {
                         winninglosers.push(tours.tour[key].losebracket[l])
+                        // 3rd Place
+                        if (tours.tour[key].maxplayers !== "default" && tours.tour[key].losebracket.length == 2) {
+                            tours.tour[key].rankings.push(tours.tour[key].losebracket[l+1])
+                        }
                     }
                     else if (winners.indexOf(tours.tour[key].losebracket[l+1]) > -1 && bannednames.indexOf(tours.tour[key].losebracket[l+1]) == -1) {
                         winninglosers.push(tours.tour[key].losebracket[l+1])
+                        // 3rd Place
+                        if (tours.tour[key].maxplayers !== "default" && tours.tour[key].losebracket.length == 2) {
+                            tours.tour[key].rankings.push(tours.tour[key].losebracket[l])
+                        }
                     }
                     else {
                         winninglosers.push("~Bye~")
@@ -2814,7 +3158,6 @@ function tourstart(tier, starter, key, parameters) {
         var channels = tourschan === 0 ? [0] : [0, tourschan];
         tours.tour[key] = {}
         tours.tour[key].state = "signups"
-        tours.tour[key].time = parseInt(sys.time())+Config.Tours.toursignup
         tours.tour[key].tourtype = tier
         tours.tour[key].players = []; // list for the actual tour data
         tours.tour[key].battlers = [];
@@ -2826,24 +3169,44 @@ function tourstart(tier, starter, key, parameters) {
         tours.tour[key].seeds = [];
         tours.tour[key].maxcpt = 0;
         tours.tour[key].active = {};
-        tours.tour[key].parameters = parameters
+        tours.tour[key].parameters = parameters;
+        if (typeof parameters.maxplayers === "number" && !isNaN(parameters.maxplayers)) {
+            tours.tour[key].maxplayers = parameters.maxplayers;
+            tours.tour[key].time = parseInt(sys.time())+10*60 // 10 mins
+            tours.tour[key].rankings = [];
+        }
+        else {
+            tours.tour[key].maxplayers = "default";
+            tours.tour[key].time = parseInt(sys.time())+Config.Tours.toursignup
+        }
         if (tours.tour[key].parameters.type == "double") {
             tours.tour[key].winbracket = [];
             tours.tour[key].losebracket = [];
         }
         for (var x in channels) {
             sys.sendAll("", channels[x])
-            sys.sendAll(border, channels[x])
-            sys.sendHtmlAll("<timestamp/> A <b><a href='http://wiki.pokemon-online.eu/view/"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> tournament has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x])
+            if (tours.tour[key].maxplayers === "default") {
+                sys.sendAll(border, channels[x])
+            }
+            else {
+                sys.sendHtmlAll(redhtmlborder, channels[x])
+            }
+            sys.sendHtmlAll("<timestamp/> A <b><a href='http://wiki.pokemon-online.eu/view/"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> "+(tours.tour[key].maxplayers === "default" ? "tournament" : "event")+" has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x])
             sys.sendAll("CLAUSES: "+getTourClauses(tier),channels[x])
             sys.sendAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : ""), channels[x])
             if (channels[x] == tourschan) {
-                sys.sendHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, you have "+time_handle(Config.Tours.toursignup)+" to join!", channels[x])
+                sys.sendHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, "+(tours.tour[key].maxplayers === "default" ? "you have "+time_handle(Config.Tours.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!"), channels[x])
             }
             else {
-                sys.sendAll(Config.Tours.tourbot+"Go to the #"+sys.channel(tourschan)+" channel and type /join to enter the tournament, you have "+time_handle(Config.Tours.toursignup)+" to join!", channels[x])
+                sys.sendAll(Config.Tours.tourbot+"Go to the #"+sys.channel(tourschan)+" channel and type /join to enter the tournament!", channels[x])
+                sys.sendAll("*** "+(tours.tour[key].maxplayers === "default" ? "You have "+time_handle(Config.Tours.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!")+" ***", channels[x])
             }
-            sys.sendAll(border, channels[x])
+            if (tours.tour[key].maxplayers === "default") {
+                sys.sendAll(border, channels[x])
+            }
+            else {
+                sys.sendHtmlAll(redhtmlborder, channels[x])
+            }
             sys.sendAll("", channels[x])
         }
         tours.keys.push(key)
@@ -2875,14 +3238,18 @@ function tourinitiate(key) {
     try {
         var size = tourmakebracket(key)
         if (size < 3) {
-            sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least 3 players! (A new tournament will start in "+time_handle(Config.Tours.tourbreak)+").", tourschan, false)
+            sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least 3 players!"+(tours.globaltime !== 0 ? " (A new tournament will start in "+time_handle(Config.Tours.tourbreak)+")." : ""), tourschan, false)
             delete tours.tour[key];
             tours.keys.splice(tours.keys.indexOf(key), 1)
-            tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
+            if (tours.globaltime !== 0) {
+                tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
+            }
             return;
         }
         toursortbracket(size, key)
         tourprintbracket(key)
+        var variance = calcVariance()
+        tours.globaltime = parseInt(sys.time()) + parseInt(Config.Tours.abstourbreak/variance) // default 10 mins b/w signups, + 5 secs per user in chan
     }
     catch (err) {
         sys.sendAll("Error in initiating a tournament, id "+key+": "+err, tourserrchan)
@@ -2918,6 +3285,11 @@ function tourmakebracket(key) {
             bracketsize = 256
         }
         var subnumber = 1
+        // push the players into people in events
+        if (tours.tour[key].maxplayers !== "default") {
+            var neweventarray = tours.eventnames.concat(tours.tour[key].players);
+            tours.eventnames = neweventarray;
+        }
         for (var p = tours.tour[key].players.length; p<bracketsize; p++) {
             tours.tour[key].players.push("~Sub "+subnumber+"~")
             subnumber += 1
@@ -3061,17 +3433,51 @@ function tourprintbracket(key) {
             if (winner !== "~Bye~") {
                 for (var x in channels) {
                     sys.sendAll("", channels[x])
-                    sys.sendAll(border, channels[x])
+                    if (tours.tour[key].maxplayers === "default") {
+                        sys.sendAll(border, channels[x])
+                    }
+                    else {
+                        sys.sendHtmlAll(redhtmlborder, channels[x])
+                    }
                     sys.sendHtmlAll("<timestamp/> The winner of the "+getFullTourName(key)+" tournament is: <b>"+html_escape(winner)+"</b>!", channels[x])
                     sys.sendAll("", channels[x])
                     sendBotAll("Please congratulate "+winner+" on their success!", channels[x], false)
-                    sys.sendAll(border, channels[x])
+                    if (tours.tour[key].maxplayers === "default") {
+                        sys.sendAll(border, channels[x])
+                    }
+                    else {
+                        sys.sendHtmlAll(redhtmlborder, channels[x])
+                    }
                     sys.sendAll("", channels[x])
                 }
-                awardTourPoints(winner.toLowerCase(), tours.tour[key].cpt, tours.tour[key].tourtype, tours.tour[key].parameters.type == "double" ? true : false)
+                // award to winner
+                if (tours.tour[key].maxplayers === "default") {
+                    awardTourPoints(winner.toLowerCase(), tours.tour[key].cpt, tours.tour[key].tourtype, tours.tour[key].parameters.type == "double" ? true : false, 1, false)
+                }
+                else {
+                    var rankingorder = (tours.tour[key].rankings).reverse()
+                    for (var p=0; p<rankingorder.length; p++) {
+                        if (rankingorder[p] != "~DQ~" && rankingorder[p] != "~Bye~")
+                            awardTourPoints(rankingorder[p], tours.tour[key].cpt, tours.tour[key].tourtype, tours.tour[key].parameters.type == "double" ? true : false, p+1, true)
+                    }
+                }
             }
             else sendBotAll("The "+getFullTourName(key)+" ended by default!", tourschan, false)
-            tours.history.unshift(getFullTourName(key)+": Won by "+winner+" with "+tours.tour[key].cpt+" players")
+            if (tours.tour[key].maxplayers === "default") {
+                tours.history.unshift(getFullTourName(key)+": Won by "+winner+" with "+tours.tour[key].cpt+" players")
+            }
+            else {
+                var rankstring = [];
+                for (var r=0; r<rankingorder.length; r++) {
+                    rankstring.push("#" + (r+1) + ": " + toCorrectCase(rankingorder[r]))
+                }
+                var now = new Date()
+                var capsmonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                var dateString = now.getUTCDate()+" "+capsmonths[now.getUTCMonth()]
+                tours.history.unshift(getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players")
+                sys.appendToFile("eventwinners.txt", dateString + " ~ " +getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players\n")
+            }
+
             if (tours.history.length > 25) {
                 tours.history.pop()
             }
@@ -3088,7 +3494,7 @@ function tourprintbracket(key) {
                 sendBotAll("The "+getFullTourName(key)+" ended by default!", tourschan, false)
                 delete tours.tour[key];
                 tours.keys.splice(tours.keys.indexOf(key), 1);
-                if (tours.keys.length === 0) {
+                if (tours.keys.length === 0 && tours.globaltime !== 0) {
                     tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
                 }
                 return;
@@ -3101,10 +3507,10 @@ function tourprintbracket(key) {
             var roundposting = "<div style='margin-left: 50px'>"+roundinfo+"<table><tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
             for (var c in channels) {
                 if (channels[c] === tourschan) {
-                    sendFlashingBracket("<br/>"+htmlborder+roundposting+"</table></div>"+htmlborder+"<br/>", key)
+                    sendFlashingBracket("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+"<br/>", key)
                 }
                 else {
-                    sys.sendHtmlAll("<br/>"+htmlborder+roundposting+"</table></div>"+htmlborder+"<br/>", channels[c])
+                    sys.sendHtmlAll("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+"<br/>", channels[c])
                 }
             }
             /* Here in case of the hilarious ~Bye~ vs ~Bye~ siutation */
@@ -3136,7 +3542,7 @@ function tourprintbracket(key) {
                     var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
                     roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
                 }
-                sendFlashingBracket("<br/>"+htmlborder+roundposting+"</table></div>"+(subsExist ? submessage : "")+htmlborder+"<br/>",key)
+                sendFlashingBracket("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+(subsExist ? submessage : "")+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+"<br/>",key)
             }
             else if (tours.tour[key].parameters.type == "double") {
                 var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+getFullTourName(key)+" Tournament</b><br/><table><tr><th colspan=5><font color=blue>Winners Bracket</font></th></tr>"
@@ -3148,7 +3554,7 @@ function tourprintbracket(key) {
                     var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
                     roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
                 }
-                sendHtmlAuthPlayers("<br/>"+htmlborder+roundposting+"</table></div>"+htmlborder+"<br/>", key)
+                sendHtmlAuthPlayers("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+"<br/>", key)
             }
             else {
                 var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+getFullTourName(key)+" Tournament</b><br/><table>";
@@ -3157,7 +3563,7 @@ function tourprintbracket(key) {
                     var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
                     roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
                 }
-                sendHtmlAuthPlayers("<br/>"+htmlborder+roundposting+"</table></div>"+htmlborder+"<br/>", key)
+                sendHtmlAuthPlayers("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+"<br/>", key)
             }
             removebyes(key)
         }
@@ -3284,7 +3690,7 @@ function isValidTourBattle(src,dest,clauses,mode,team,destTier,key,challenge) { 
 }
 
 // awards tournament points
-function awardTourPoints(player, size, tier, delim) {
+function awardTourPoints(player, size, tier, delim, place, event) {
     // each tournament has a 'tier'
     // points for 4-7,8-15,16-31,32-63,64-127,128-255,256 players respectively. Tours with 3 players or less don't score. Double tours score in the higher up bracket
     var tierscore = {
@@ -3299,10 +3705,12 @@ function awardTourPoints(player, size, tier, delim) {
     var now = new Date()
     var capsmonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
     var dateString = now.getUTCDate()+" "+capsmonths[now.getUTCMonth()]
-    sys.appendToFile("tourdetails.txt", player+":::"+size+":::"+tier+":::"+dateString+"\n")
+    if (place == 1) {
+        sys.appendToFile("tourdetails.txt", player+":::"+size+":::"+tier+":::"+dateString+"\n")
+    }
     if (size < 4 || !Config.Tours.points) return;
     var scale = 0;
-    var points = 0
+    var points = 0;
     for (var x=3;x<10;x++) {
         if (size < Math.pow(2,x)) {
             scale = x-3;
@@ -3311,6 +3719,12 @@ function awardTourPoints(player, size, tier, delim) {
     }
     if (delim && scale != 6) {
         scale += 1
+    }
+    if (place != 1) {
+        scale -= (place - 1)
+        if (scale < 0) {
+            return;
+        }
     }
     var tiers_a = []
     var tiers_b = [] // default
@@ -3344,7 +3758,6 @@ function awardTourPoints(player, size, tier, delim) {
         points = tierscore.b[scale]
     }
     // writing global scores
-
     var data = sys.getFileContent("tourscores.txt")
     if (data === undefined) {
         sys.appendToFile("tourscores.txt", "")
@@ -3397,7 +3810,6 @@ function awardTourPoints(player, size, tier, delim) {
     }
     sys.writeToFile(monthlyfile, newarray3.join("\n"))
     // writing tier scores
-    sys.appendToFile("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt", "")
     var data2 = sys.getFileContent("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
     if (data2 === undefined) {
         sys.appendToFile("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt", "")
@@ -3422,6 +3834,32 @@ function awardTourPoints(player, size, tier, delim) {
         newarray2.push(player+":::"+tierscore.a[scale])
     }
     sys.writeToFile("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt", newarray2.join("\n"))
+    // write event scores if necessary
+    if (!event) return;
+    var data4 = sys.getFileContent("eventscores.txt")
+    if (data4 === undefined) {
+        sys.appendToFile("eventscores.txt", "")
+        data4 = ""
+    }
+    var array4 = data4.split("\n")
+    var newarray4 = []
+    var onscoreboard4 = false
+    for (var a in array4) {
+        if (array4[a] === "") continue;
+        var scores4 = array4[a].split(":::", 2)
+        if (player === scores4[0]) {
+            var newscore4 = parseInt(scores4[1]) + points
+            newarray4.push(scores4[0]+":::"+newscore4)
+            onscoreboard4 = true;
+        }
+        else {
+            newarray4.push(array4[a])
+        }
+    }
+    if (!onscoreboard4) {
+        newarray4.push(player+":::"+points)
+    }
+    sys.writeToFile("eventscores.txt", newarray4.join("\n"))
     return;
 }
 
@@ -3692,10 +4130,22 @@ function sendWelcomeMessage(src, chan) {
     sys.sendMessage(src,border,chan)
     sys.sendMessage(src,"*** Welcome to #"+Config.Tours.channel+"; Version "+Config.Tours.version+"! ***",chan)
     sys.sendMessage(src,"",chan)
+    var now = new Date()
+    var datestring = now.getUTCDate()+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
+    var details = getEventTour(datestring)
+    if (typeof details === "object") {
+        sys.sendMessage(src,"Today's Event Tournament: "+details[0]+" for "+details[1]+" players.",chan)
+        sys.sendMessage(src,"",chan)
+    }
     sys.sendMessage(src,"*** Current Tournaments ***",chan)
     for (var x in tours.tour) {
         if (tours.tour[x].state == "signups") {
-            sys.sendMessage(src, getFullTourName(x)+": Currently in signups, "+time_handle(tours.tour[x].time-parseInt(sys.time()))+" remaining. Type /join to join.", chan)
+            if (tours.tour[x].maxplayers === "default") {
+                sys.sendMessage(src, getFullTourName(x)+": Currently in signups, "+time_handle(tours.tour[x].time-parseInt(sys.time()))+" remaining. Type /join to join.", chan)
+            }
+            else {
+                sys.sendMessage(src, getFullTourName(x)+": Currently in signups, "+(tours.tour[x].maxplayers - tours.tour[x].cpt)+" place"+(tours.tour[x].maxplayers - tours.tour[x].cpt == 1 ? "" : "s")+" remaining. Type /join to join.", chan)
+            }
         }
         else if (tours.tour[x].state == "subround" && tours.tour[x].players.length - tours.tour[x].cpt !== 0) {
             sys.sendMessage(src, getFullTourName(x)+": Substitute spots are open, type /join to join late.", chan)
