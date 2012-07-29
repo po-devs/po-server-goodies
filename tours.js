@@ -49,6 +49,7 @@ var tourmodcommands = ["*** Parameter Information ***",
                     "configset [var]:[value]: changes config settings",
                     "passta [name]: passes your tour admin to a new name"]
 var touradmincommands = ["tourstart [tier]:[parameters]: starts a tier of that tournament immediately, provided one is not in signups.",
+                    "shift [tier]:[parameters]: places a tournament in the front of the queue",
                     "tadmin[s] [name]: makes someone a tournament admin - s makes it only show in staff chan",
                     "tdeadmin[s] [name]: fires someone from being tournament admin - s makes it only show in staff chan",
                     // "forcestart: ends signups immediately and starts the first round",
@@ -540,7 +541,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500a4",
+            version: "1.500a5",
             debug: false,
             points: true
         }
@@ -576,7 +577,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500a4",
+        version: "1.500a5",
         debug: false,
         points: true
     }
@@ -1377,7 +1378,7 @@ function tourCommand(src, command, commandData) {
             }
         }
         if (isTourAdmin(src)) {
-            if (command == "tour" || (command == "tourstart" && isTourSuperAdmin(src))) {
+            if (command == "tour" || ((command == "tourstart" || command == "shift") && isTourSuperAdmin(src))) {
                 var data = commandData.split(":",2)
                 var thetier = data[0].toLowerCase()
                 var tiers = sys.getTierList()
@@ -1475,8 +1476,13 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 else if (isSignups || ((tours.keys.length > 0 || tours.queue.length > 0) && command == "tour")) {
-                    tours.queue.push(tourtier+":::"+sys.name(src)+":::"+parameters.mode+":::"+parameters.gen+":::"+parameters.type+":::"+parameters.maxplayers)
-                    sendBotAll(sys.name(src)+" added a "+tourtier+" tournament into the queue! Type /queue to see what is coming up next.",tourschan, false)
+                    if (command == "shift") {
+                        tours.queue.push(tourtier+":::"+sys.name(src)+":::"+parameters.mode+":::"+parameters.gen+":::"+parameters.type+":::"+parameters.maxplayers)
+                    }
+                    else {
+                        tours.queue.unshift(tourtier+":::"+sys.name(src)+":::"+parameters.mode+":::"+parameters.gen+":::"+parameters.type+":::"+parameters.maxplayers)
+                    }
+                    sendBotAll(sys.name(src)+" added a "+tourtier+" tournament into the "+(command == "shift" ? "front of" : "")+" queue! Type /queue to see what is coming up next.",tourschan, false)
                 }
                 else {
                     tourstart(tourtier, sys.name(src), tours.key, parameters)
