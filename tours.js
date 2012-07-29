@@ -541,7 +541,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500b4",
+            version: "1.500b5",
             debug: false,
             points: true
         }
@@ -577,7 +577,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500b4",
+        version: "1.500b5",
         debug: false,
         points: true
     }
@@ -763,8 +763,8 @@ function tourStep() {
             if (typeof details === "object") {
                 var tourtier = details[0];
                 var maxplayers = parseInt(details[1]);
-                sendBotAll("A "+details[1]+" player <b>"+html_escape(details[0])+"</b> event is starting in 5 minutes.",tourschan,true)
-                sendBotAll("A "+details[1]+" player <b>"+html_escape(details[0])+"</b> event is starting in 5 minutes.",0,true)
+                sendBotAll("A "+details[1]+" player <b>"+html_escape(details[0])+"</b> event is starting in about 5 minutes.",tourschan,true)
+                sendBotAll("A "+details[1]+" player <b>"+html_escape(details[0])+"</b> event is starting in about 5 minutes.",0,true)
                 tours.queue.unshift(tourtier+":::~Pokemon Online~:::"+modeOfTier(tourtier)+":::"+(allgentiers.indexOf(tourtier) != -1 ? "5-1" : "default")+":::double:::"+details[1])
                 tours.globaltime = parseInt(sys.time()) + 300
             }
@@ -773,6 +773,7 @@ function tourStep() {
             var details = getEventTour(datestring)
             if (typeof details === "object") {
                 tours.globaltime = 0
+                sendBotAll("A "+details[1]+" player <b>"+html_escape(details[0])+"</b> event is starting in about 20 minutes. No more tournaments will start for now.",tourschan,true)
             }
             if (hour == 2) { // clear list of event joined names
                 tours.eventnames = [];
