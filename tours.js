@@ -9,7 +9,7 @@ if (typeof tourschan !== "string") {
 
 if (typeof tours !== "object") {
     sys.sendAll("Creating new tournament object", tourschan)
-    tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": []}
+    tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": [], "eventnames": []}
 }
 
 var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
@@ -540,7 +540,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500a3",
+            version: "1.500a4",
             debug: false,
             points: true
         }
@@ -576,7 +576,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500a3",
+        version: "1.500a4",
         debug: false,
         points: true
     }
@@ -593,7 +593,7 @@ function initTours() {
     }
     if (typeof tours != "object") {
         sys.sendAll("Creating new tournament object", tourschan)
-        tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": []}
+        tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": [], "eventnames": []}
     }
     else {
         if (!tours.hasOwnProperty('queue')) tours.queue = [];
@@ -608,6 +608,7 @@ function initTours() {
         if (!tours.hasOwnProperty('activehistory')) tours.activehistory = [];
         if (!tours.hasOwnProperty('tourmutes')) tours.tourmutes = {};
         if (!tours.hasOwnProperty('tourbans')) tours.tourbans = [];
+        if (!tours.hasOwnProperty('eventnames')) tours.eventnames = [];
     }
     try {
         getTourWinMessages()
@@ -757,7 +758,7 @@ function tourStep() {
     var minute = now.getUTCMinutes();
     var second = now.getUTCSeconds();
     var allgentiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"];
-    if ([0,3,6,9,12,15,18,21].indexOf(hour) != -1) {
+    if ([2,8,14,20].indexOf(hour) != -1) {
         if (minute == 45 && second === 0) {
             var details = getEventTour(datestring)
             if (typeof details === "object") {
@@ -773,6 +774,9 @@ function tourStep() {
             var details = getEventTour(datestring)
             if (typeof details === "object") {
                 tours.globaltime = 0
+            }
+            if (hour == 2) { // clear list of event joined names
+                tours.eventnames = [];
             }
         }
     }
@@ -972,7 +976,7 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "resettours") {
-                tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": []};
+                tours = {"queue": [], "globaltime": 0, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": [], "eventnames": []};
                 sendBotAll(sys.name(src)+" reset the tour system!",tourschan,false)
                 return true;
             }
@@ -1448,7 +1452,7 @@ function tourCommand(src, command, commandData) {
                                 parameters.type = "single";
                             }
                         }
-                        else if (cmp(parameterset, "event") && command == "tourstart") {
+                        else if (cmp(parameterset, "event") && isTourOwner(src)) {
                             var players = parseInt(parametervalue)
                             var allowedcounts = [16,32,64,128,256];
                             if (allowedcounts.indexOf(players) == -1) {
@@ -2121,6 +2125,18 @@ function tourCommand(src, command, commandData) {
                 if (sys.ip(src) == joinedip && ((sys.maxAuth(sys.ip(src)) < 2 && Config.Tours.debug === true) || (sys.auth(src) < 3 && Config.Tours.debug === false))) {
                     sendBotMessage(src, "You already joined the tournament under the name '"+tours.tour[key].players[a]+"'!",tourschan,false)
                     return true;
+                }
+            }
+            /* Event check */
+            if (typeof tours.tour[key].maxplayers === "number") {
+                var alreadyplayed = tours.eventnames;
+                for (var n=0; n<alreadyplayed.length; n++) {
+                    var name = alreadyplayed[n]
+                    var usedip = sys.dbIp(name)
+                    if (sys.ip(src) == usedip || cmp(sys.name(src),name)) {
+                        sendBotMessage(src, "You already joined an event tournament today under the name '"+name+"'! Wait until tomorrow to join another one (you can still play normal tournaments)",tourschan,false)
+                        return true;
+                    }
                 }
             }
             if (tours.tour[key].state == "signups") {
