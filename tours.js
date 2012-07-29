@@ -767,7 +767,7 @@ function tourStep() {
                 var tourtostart = setparameters[0];
                 var starter = "~Pokemon Online~"
                 var parameters = {"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? "5-1" : "default"), "type": "double", "maxplayers": parseInt(setparameters[1])}
-                tourstart(tourtostart,"~Pokemon Online~",tours.key,parameters)
+                // tourstart(tourtostart,"~Pokemon Online~",tours.key,parameters)
                 tours.globaltime = parseInt(sys.time()) + 1800
             }
             else {
