@@ -540,7 +540,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500a2",
+            version: "1.500a3",
             debug: false,
             points: true
         }
@@ -576,7 +576,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500a2",
+        version: "1.500a3",
         debug: false,
         points: true
     }
@@ -697,7 +697,6 @@ Used for things such as
 - removing subs */
 function tourStep() {
     var canautostart = true;
-    var canEventStart = true;
     var now = new Date()
     if (parseInt(sys.time())%3600 === 0) {
         var comment = now + " ~ " + tours.activetas.join(", ")
@@ -748,7 +747,6 @@ function tourStep() {
         }
         if (tours.tour[x].state == "signups" || tours.tour[x].state == "subround") {
             canautostart = false;
-            canEventStart = false;
         }
     }
     if (calcPercentage() >= Config.Tours.minpercent) {
@@ -759,36 +757,30 @@ function tourStep() {
     var minute = now.getUTCMinutes();
     var second = now.getUTCSeconds();
     var allgentiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"];
-    if ([2,5,8,11,14,17,20,23].indexOf(hour) != -1 && minute > 30 && canEventStart) {
-        var stoprunning = true;
-        if (minute > 50) {
-            var setparameters = getEventTour(datestring)
-            if (typeof setparameters === "object") {
-                var tourtostart = setparameters[0];
-                var starter = "~Pokemon Online~"
-                var parameters = {"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? "5-1" : "default"), "type": "double", "maxplayers": parseInt(setparameters[1])}
-                // tourstart(tourtostart,"~Pokemon Online~",tours.key,parameters)
-                tours.globaltime = parseInt(sys.time()) + 1800
-            }
-            else {
-                stoprunning = false;
-            }
-        }
-        else if (minute == 45 && second === 0) {
+    if ([0,3,6,9,12,15,18,21].indexOf(hour) != -1 && minute > 30 && minute < 50) {
+        if (minute == 45 && second === 0) {
             var details = getEventTour(datestring)
             if (typeof details === "object") {
+                var tourtier = details[0];
+                var maxplayers = parseInt(details[1]);
                 sendBotAll("A "+details[1]+" player <b>"+html_escape(details[0])+"</b> event is starting in 5 minutes.",tourschan,true)
                 sendBotAll("A "+details[1]+" player <b>"+html_escape(details[0])+"</b> event is starting in 5 minutes.",0,true)
+                tours.queue.unshift(tourtier+":::~Pokemon Online~:::"+modeOfTier(tourtier)+":::"+(allgentiers.indexOf(tourtier) != -1 ? "5-1" : "default")+":::double:::"+details[1])
+                tours.globaltime = parseInt(sys.time()) + 300
             }
         }
-        if (stoprunning) return;
+        return;
     }
     if (tours.globaltime !== 0 && tours.globaltime <= parseInt(sys.time()) && (Config.Tours.maxrunning > tours.keys.length || canautostart)) {
         if (tours.queue.length > 0) {
-            var data = tours.queue[0].split(":::",5)
+            var data = tours.queue[0].split(":::",6)
             var tourtostart = data[0]
             var starter = data[1]
-            var parameters = {"mode": data[2], "gen": data[3], "type": data[4]}
+            var maxplayers = parseInt(data[5])
+            if (isNaN(maxplayers)) {
+                maxplayers = false;
+            }
+            var parameters = {"mode": data[2], "gen": data[3], "type": data[4], "maxplayers": maxplayers}
             tours.queue.splice(0,1)
             tourstart(tourtostart,starter,tours.key,parameters)
             tours.globaltime = parseInt(sys.time()) + 1200
@@ -799,7 +791,7 @@ function tourStep() {
             var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1"];
             var tourtostart = tourarray[tours.key%tourarray.length]
             var tourtype = doubleelimtiers.indexOf(tourtostart) != -1 ? "double" : "single"
-            tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? "5-1" : "default"), "type": tourtype})
+            tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? "5-1" : "default"), "type": tourtype, "maxplayers": false})
             tours.globaltime = parseInt(sys.time()) + 1200
         }
     }
@@ -1301,9 +1293,13 @@ function tourCommand(src, command, commandData) {
                     }
                 }
                 if (tours.queue.length != 0) {
-                    var data = tours.queue[0].split(":::",5)
+                    var data = tours.queue[0].split(":::",6)
                     var tourtostart = data[0]
-                    var parameters = {"mode": data[2], "gen": data[3], "type": data[4]}
+                    var maxplayers = parseInt(data[5])
+                    if (isNaN(maxplayers)) {
+                        maxplayers = false;
+                    }
+                    var parameters = {"mode": data[2], "gen": data[3], "type": data[4], "maxplayers": maxplayers}
                     tours.queue.splice(0,1)
                     tourstart(tourtostart, sys.name(src), tours.key, parameters)
                     sendBotAll(sys.name(src)+" force started the "+tourtostart+" tournament!",tourschan,false)
@@ -1406,7 +1402,7 @@ function tourCommand(src, command, commandData) {
                 }
                 var detiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers"];
                 var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"];
-                var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": detiers.indexOf(tourtier) == -1 ? "single" : "double"};
+                var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": detiers.indexOf(tourtier) == -1 ? "single" : "double", "maxplayers": false};
                 if (data.length > 1) {
                     var parameterdata = data[1].split(" ");
                     for (var p in parameterdata) {
@@ -1470,7 +1466,7 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 else if (isSignups || ((tours.keys.length > 0 || tours.queue.length > 0) && command == "tour")) {
-                    tours.queue.push(tourtier+":::"+sys.name(src)+":::"+parameters.mode+":::"+parameters.gen+":::"+parameters.type)
+                    tours.queue.push(tourtier+":::"+sys.name(src)+":::"+parameters.mode+":::"+parameters.gen+":::"+parameters.type+":::"+parameters.maxplayers)
                     sendBotAll(sys.name(src)+" added a "+tourtier+" tournament into the queue! Type /queue to see what is coming up next.",tourschan, false)
                 }
                 else {
@@ -2253,13 +2249,13 @@ function tourCommand(src, command, commandData) {
             }
             var firsttour = true;
             for (var e in queue) {
-                var queuedata = queue[e].split(":::",5)
+                var queuedata = queue[e].split(":::",6)
                 if (firsttour && nextstart != "Pending") {
-                    sys.sendMessage(src,"1) "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+getSubgen(queuedata[3],true) : "")+(queuedata[4] == "double" ? "; Double Elimination" : "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
+                    sys.sendMessage(src,"1) "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+getSubgen(queuedata[3],true) : "")+(queuedata[4] == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(queuedata[5])) ? "; For "+ queuedata[5] +" players": "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
                     firsttour = false
                 }
                 else {
-                    sys.sendMessage(src,(parseInt(e)+1)+") "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+getSubgen(queuedata[3],true) : "")+(queuedata[4] == "double" ? "; Double Elimination" : ""), tourschan)
+                    sys.sendMessage(src,(parseInt(e)+1)+") "+queuedata[0]+": Set by "+queuedata[1]+"; Parameters: "+queuedata[2]+" Mode"+(queuedata[3] != "default" ? "; Gen: "+getSubgen(queuedata[3],true) : "")+(queuedata[4] == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(queuedata[5])) ? "; For "+ queuedata[5] +" players": ""), tourschan)
                 }
             }
             return true;
@@ -3111,7 +3107,7 @@ function tourstart(tier, starter, key, parameters) {
         tours.tour[key].maxcpt = 0;
         tours.tour[key].active = {};
         tours.tour[key].parameters = parameters;
-        if (parameters.hasOwnProperty("maxplayers")) {
+        if (typeof parameters.maxplayers === "number" && !isNaN(parameters.maxplayers)) {
             tours.tour[key].maxplayers = parameters.maxplayers;
             tours.tour[key].time = parseInt(sys.time())+10*60 // 10 mins
             tours.tour[key].rankings = [];
