@@ -541,7 +541,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500b8",
+            version: "1.500b9",
             debug: false,
             points: true
         }
@@ -577,7 +577,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500b8",
+        version: "1.500b9",
         debug: false,
         points: true
     }
@@ -620,11 +620,12 @@ function initTours() {
         tourwinmessages = ["annihilated", "threw a table at", "blasted", "captured the flag from", "FALCON PAAAAWNCHED", "haxed", "outsmarted", "won against", "hung, drew and quartered"];
         sys.sendAll("No win messages detected, using default win messages", tourschan)
     }
-    var data = (sys.getFileContent("touradmins.txt")).split(":::")
+    var tadata = sys.getFileContent("touradmins.txt")
     if (data === undefined) {
         sys.sendAll("No tour admin data detected, leaving blank", tourschan)
     }
     else {
+        var data = tadata.split(":::")
         for (var d=0;d<data.length;d++) {
             var info = data[d]
             if (info === undefined || info == "") {
@@ -633,12 +634,7 @@ function initTours() {
         }
         tours.touradmins = data
     }
-    try {
-        loadTourMutes()
-    }
-    catch (e) {
-        sys.sendAll("No tourmute data detected, leaving blank", tourschan)
-    }
+    loadTourMutes()
     sys.sendAll("Version "+Config.Tours.version+" of the tournaments system was loaded successfully in this channel!", tourschan)
 }
 
@@ -4023,6 +4019,9 @@ function saveTourMutes() {
 
 function loadTourMutes() {
     var mutefile = sys.getFileContent("tourmutes.txt")
+    if (mutefile === undefined) {
+        return;
+    }
     var mutedata = mutefile.split("\n")
     for (var x in mutedata) {
         var data = mutedata[x].split(":::", 5)
