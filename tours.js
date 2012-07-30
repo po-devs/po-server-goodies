@@ -541,7 +541,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500",
+            version: "1.500p",
             debug: false,
             points: true
         }
@@ -577,7 +577,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500",
+        version: "1.500p",
         debug: false,
         points: true
     }
@@ -3954,20 +3954,23 @@ function isInSpecificTour(name, key) {
 function isInTour(name) {
     var key = false;
     for (var x in tours.tour) {
+        var srcisintour = false;
         if (tours.tour[x].players.indexOf(name.toLowerCase()) != -1) {
-            var srcisintour = false;
             if (tours.tour[x].losers.indexOf(name.toLowerCase()) == -1) {
                 srcisintour = true;
             }
-            if (tours.tour[x].parameters.type == "double") {
-                if (tours.tour[x].winbracket.indexOf(name.toLowerCase()) != -1 || tours.tour[x].round == 1) {
-                    srcisintour = true;
-                }
+            if (tours.tour[x].parameters.type == "double" && tours.tour[x].round == 1) {
+                srcisintour = true;
             }
-            if (srcisintour) {
-                key = x;
-                break;
+        }
+        if (tours.tour[x].parameters.type == "double") {
+            if (tours.tour[x].winbracket.indexOf(name.toLowerCase()) != -1) {
+                srcisintour = true;
             }
+        }
+        if (srcisintour) {
+            key = x;
+            break;
         }
     }
     return key;
