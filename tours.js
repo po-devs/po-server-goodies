@@ -541,7 +541,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500b9",
+            version: "1.500",
             debug: false,
             points: true
         }
@@ -577,7 +577,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500b9",
+        version: "1.500",
         debug: false,
         points: true
     }
@@ -2313,10 +2313,10 @@ function tourCommand(src, command, commandData) {
                 postedrounds = true;
                 var roundtable = "<div style='margin-left: 50px'><b>Round "+tours.tour[y].round+" of the "+tours.tour[y].tourtype+" Tournament</b><table><br/>"
                 for (var x=0; x<tours.tour[y].players.length; x+=2) {
-                    if (winners.indexOf(tours.tour[y].players[x]) != -1 && tours.tour[y].players[x] != "~Bye~") {
+                    if (winners.indexOf(tours.tour[y].players[x]) != -1 && tours.tour[y].players[x] != "~Bye~" && tours.tour[y].players[x] != "~DQ~") {
                         roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+html_escape(toCorrectCase(tours.tour[y].players[x])) +"</b></font></td><td align='center'> won against </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x+1]))+"</td>"
                     }
-                    else if (winners.indexOf(tours.tour[y].players[x+1]) != -1 && tours.tour[y].players[x+1] != "~Bye~") {
+                    else if (winners.indexOf(tours.tour[y].players[x+1]) != -1 && tours.tour[y].players[x+1] != "~Bye~" && tours.tour[y].players[x] != "~DQ~") {
                         roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+html_escape(toCorrectCase(tours.tour[y].players[x+1])) +"</b></font></td><td align='center'> won against </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x]))+"</td>"
                     }
                     else if (battlers.indexOf(tours.tour[y].players[x]) != -1) {
