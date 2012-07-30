@@ -2975,9 +2975,6 @@ modCommand: function(src, command, commandData, tar) {
     if (command == "skmute" && (sys.auth(src) >= 1 || [/* insert mod list here when this goes to admin+ */].indexOf(sys.name(src).toLowerCase()) >= 0)) {
         if (tar === undefined)
             normalbot.sendMessage(src, "use only for online target ", channel);
-        else if (sys.auth(tar) >= 1) {
-            normalbot.sendMessage(src, "Can't use skmute on auth", channel);
-        }
         else {
             normalbot.sendAll("Target: " + sys.name(tar) + ", IP: " + sys.ip(tar) + ", Auth: "+ sys.name(src), staffchannel);
             script.issueBan("smute", src, undefined, "" + sys.name(tar) + ":skarmpiss:2h");
