@@ -952,7 +952,7 @@ init : function() {
     rangebans = new MemoryHash("rangebans.txt");
     contributors = new MemoryHash("contributors.txt");
     mafiaAdmins = new MemoryHash("mafiaadmins.txt");
-	wfbSet = new MemoryHash("wfbset.json");
+    wfbSet = new MemoryHash("wfbset.json");
     proxy_ips = {};
     function addProxybans(content) {
         var lines = content.split(/\n/);
@@ -2942,44 +2942,44 @@ modCommand: function(src, command, commandData, tar) {
         delete tempBans[ip];
         return;
     }
-	if (command == "wfbset") {
-		lname = sys.name(src).toLowerCase();
-		if (commandData == undefined) {
-			commandData = "{{user}}: Please do not ask for battles in the chat. Refer to http://findbattlebutton.info to find more about the find battle button!";
-		}
-		wfbSet.add(lname, commandData);
-		normalbot.sendChanMessage(src, "Your message is set to '" + commandData + "'.");
+    if (command == "wfbset") {
+	lname = sys.name(src).toLowerCase();
+	if (commandData == undefined) {
+		commandData = "{{user}}: Please do not ask for battles in the chat. Refer to http://findbattlebutton.info to find more about the find battle button!";
+	}
+	wfbSet.add(lname, commandData);
+	normalbot.sendChanMessage(src, "Your message is set to '" + commandData + "'.");
+	return;
+    }
+    if (command == "wfb") {
+	var lname = sys.name(src).toLowerCase();
+	if (tar == undefined) {
+		normalbot.sendChanMessage(src, "Please use this command to warn / automute someone. Use /wfb name");
 		return;
 	}
-	if (command == "wfb") {
-		var lname = sys.name(src).toLowerCase();
-		if (tar == undefined) {
-			normalbot.sendChanMessage(src, "Please use this command to warn / automute someone. Use /wfb name");
-			return;
-		}
-		if (sys.auth(tar) > 0) {
-			normalbot.sendChanMessage(src, "Please use this command only on users.");
-			return;
-		}
-		var poTarget = SESSION.users(tar), poAuth = SESSION.users(src);
-		if (!poTarget.warned) {
-			poTarget.warned = parseInt(sys.time());
-			var warning = (wfbSet.get(lname) !== undefined) ? wfbSet.get(lname) : "{{user}}: Please do not ask for battles in the chat. Refer to http://findbattlebutton.info to find more about the find battle button!";
-			warning = warning.replace("{{user}}", sys.name(tar));
-			sys.sendAll(sys.name(src) + ": " + warning, 0);
-		} else if (parseInt(sys.time()) - poTarget.warned < 10) {
-			 normalbot.sendChanMessage(src, "Please wait 10 seconds between wfbs.");
-			 return;
-		} else {
-			if (poTarget.mute.active) { 
-				normalbot.sendChanMessage(src, "The target you specified is already muted.");
-				return;
-			}
-			poTarget.activate("mute", sys.name(src), parseInt(sys.time()) + 900, "Asking for battles in the chat; http://findbattlebutton.info", true);
-			normalbot.sendAll("" + sys.name(tar) + " was muted by " + nonFlashing(sys.name(src)) + " for 15 minutes! [Reason: Asking for battles in the chat]");
-		}
+	if (sys.auth(tar) > 0) {
+		normalbot.sendChanMessage(src, "Please use this command only on users.");
 		return;
 	}
+	var poTarget = SESSION.users(tar), poAuth = SESSION.users(src);
+	if (!poTarget.warned) {
+		poTarget.warned = parseInt(sys.time());
+		var warning = (wfbSet.get(lname) !== undefined) ? wfbSet.get(lname) : "{{user}}: Please do not ask for battles in the chat. Refer to http://findbattlebutton.info to find more about the find battle button!";
+		warning = warning.replace("{{user}}", sys.name(tar));
+		sys.sendAll(sys.name(src) + ": " + warning, 0);
+	} else if (parseInt(sys.time()) - poTarget.warned < 10) {
+		 normalbot.sendChanMessage(src, "Please wait 10 seconds between wfbs.");
+		 return;
+	} else {
+		if (poTarget.mute.active) { 
+			normalbot.sendChanMessage(src, "The target you specified is already muted.");
+			return;
+		}
+		poTarget.activate("mute", sys.name(src), parseInt(sys.time()) + 900, "Asking for battles in the chat; http://findbattlebutton.info", true);
+		normalbot.sendAll("" + sys.name(tar) + " was muted by " + nonFlashing(sys.name(src)) + " for 15 minutes! [Reason: Asking for battles in the chat]");
+	}
+	return;
+   }
     if (command == "passauth" || command == "passauths") {
         if (tar === undefined) {
             normalbot.sendChanMessage(src, "The target is offline.");
