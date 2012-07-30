@@ -541,7 +541,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500b9",
+            version: "1.500p",
             debug: false,
             points: true
         }
@@ -577,7 +577,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500b9",
+        version: "1.500p",
         debug: false,
         points: true
     }
@@ -621,7 +621,7 @@ function initTours() {
         sys.sendAll("No win messages detected, using default win messages", tourschan)
     }
     var tadata = sys.getFileContent("touradmins.txt")
-    if (data === undefined) {
+    if (tadata === undefined) {
         sys.sendAll("No tour admin data detected, leaving blank", tourschan)
     }
     else {
@@ -2313,10 +2313,10 @@ function tourCommand(src, command, commandData) {
                 postedrounds = true;
                 var roundtable = "<div style='margin-left: 50px'><b>Round "+tours.tour[y].round+" of the "+tours.tour[y].tourtype+" Tournament</b><table><br/>"
                 for (var x=0; x<tours.tour[y].players.length; x+=2) {
-                    if (winners.indexOf(tours.tour[y].players[x]) != -1 && tours.tour[y].players[x] != "~Bye~") {
+                    if (winners.indexOf(tours.tour[y].players[x]) != -1 && tours.tour[y].players[x] != "~Bye~" && tours.tour[y].players[x] != "~DQ~") {
                         roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+html_escape(toCorrectCase(tours.tour[y].players[x])) +"</b></font></td><td align='center'> won against </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x+1]))+"</td>"
                     }
-                    else if (winners.indexOf(tours.tour[y].players[x+1]) != -1 && tours.tour[y].players[x+1] != "~Bye~") {
+                    else if (winners.indexOf(tours.tour[y].players[x+1]) != -1 && tours.tour[y].players[x+1] != "~Bye~" && tours.tour[y].players[x+1] != "~DQ~") {
                         roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+html_escape(toCorrectCase(tours.tour[y].players[x+1])) +"</b></font></td><td align='center'> won against </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x]))+"</td>"
                     }
                     else if (battlers.indexOf(tours.tour[y].players[x]) != -1) {
@@ -3954,20 +3954,23 @@ function isInSpecificTour(name, key) {
 function isInTour(name) {
     var key = false;
     for (var x in tours.tour) {
+        var srcisintour = false;
         if (tours.tour[x].players.indexOf(name.toLowerCase()) != -1) {
-            var srcisintour = false;
             if (tours.tour[x].losers.indexOf(name.toLowerCase()) == -1) {
                 srcisintour = true;
             }
-            if (tours.tour[x].parameters.type == "double") {
-                if (tours.tour[x].winbracket.indexOf(name.toLowerCase()) != -1 || tours.tour[x].round == 1) {
-                    srcisintour = true;
-                }
+            if (tours.tour[x].parameters.type == "double" && tours.tour[x].round == 1) {
+                srcisintour = true;
             }
-            if (srcisintour) {
-                key = x;
-                break;
+        }
+        if (tours.tour[x].parameters.type == "double") {
+            if (tours.tour[x].winbracket.indexOf(name.toLowerCase()) != -1) {
+                srcisintour = true;
             }
+        }
+        if (srcisintour) {
+            key = x;
+            break;
         }
     }
     return key;

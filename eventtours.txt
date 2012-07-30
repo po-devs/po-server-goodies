@@ -4,7 +4,7 @@
 29-7-2012:Wifi OU:64:no
 30-7-2012:Challenge Cup:64:no
 # August
-1-8-2012:No Preview OU:16
+1-8-2012:Clear Skies:16
 2-8-2012:HGSS UU:16
 3-8-2012:Gen 5 1v1:32
 4-8-2012:Challenge Cup:64
@@ -20,7 +20,7 @@
 14-8-2012:Adv OU:16
 15-8-2012:RBY UU:16
 16-8-2012:HGSS Ubers:16
-17-8-2012:Clear Skies:32
+17-8-2012:No Preview OU:32
 18-8-2012:Challenge Cup:64
 19-8-2012:Wifi LU:32
 20-8-2012:HGSS OU:16
