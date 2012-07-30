@@ -3558,7 +3558,7 @@ ownerCommand: function(src, command, commandData, tar) {
         var message =  para[1]
         var channel = para[2]
         sys.sendMessage(tar, message, channel)
-        return'
+        return;
     }
     if (command == "imp") {
         SESSION.users(src).impersonation = commandData;
