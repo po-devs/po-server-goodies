@@ -3549,6 +3549,17 @@ ownerCommand: function(src, command, commandData, tar) {
         sendChanAll(commandData);
         return;
     }
+    if(command == "sendmessage"){
+        var para = commandData.split(':')
+        if(para.length < 3){
+            return;
+        }
+        var tar = sys.id(para[0])
+        var message =  para[1]
+        var channel = para[2]
+        sys.sendMessage(tar, message, channel)
+        return'
+    }
     if (command == "imp") {
         SESSION.users(src).impersonation = commandData;
         normalbot.sendChanMessage(src, "Now you are " + SESSION.users(src).impersonation + "!");
