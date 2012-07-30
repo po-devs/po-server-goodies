@@ -541,7 +541,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500b7",
+            version: "1.500b8",
             debug: false,
             points: true
         }
@@ -577,7 +577,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500b7",
+        version: "1.500b8",
         debug: false,
         points: true
     }
@@ -3251,7 +3251,7 @@ function tourinitiate(key) {
             if (tours.globaltime !== -1) {
                 tours.globaltime = parseInt(sys.time())+Config.Tours.tourbreak; // for next tournament
             }
-            sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least 3 players!"+(tours.globaltime <= 0 ? " (A new tournament will start in "+time_handle(Config.Tours.tourbreak)+")." : ""), tourschan, false)
+            sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least 3 players!"+(tours.globaltime > 0 ? " (A new tournament will start in "+time_handle(Config.Tours.tourbreak)+")." : ""), tourschan, false)
             delete tours.tour[key];
             tours.keys.splice(tours.keys.indexOf(key), 1)
             return;
@@ -4139,14 +4139,13 @@ function calcPercentage() { // calc percentage of players in tournaments playing
 function sendWelcomeMessage(src, chan) {
     sys.sendMessage(src,border,chan)
     sys.sendMessage(src,"*** Welcome to #"+Config.Tours.channel+"; Version "+Config.Tours.version+"! ***",chan)
-    sys.sendMessage(src,"",chan)
     var now = new Date()
     var datestring = now.getUTCDate()+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
     var details = getEventTour(datestring)
     if (typeof details === "object") {
         sys.sendMessage(src,"Today's Event Tournament: "+details[0]+" for "+details[1]+" players.",chan)
-        sys.sendMessage(src,"",chan)
     }
+    sys.sendMessage(src,"",chan)
     sys.sendMessage(src,"*** Current Tournaments ***",chan)
     for (var x in tours.tour) {
         if (tours.tour[x].state == "signups") {
