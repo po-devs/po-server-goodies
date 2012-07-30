@@ -541,7 +541,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500b6",
+            version: "1.500b7",
             debug: false,
             points: true
         }
@@ -577,7 +577,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500b6",
+        version: "1.500b7",
         debug: false,
         points: true
     }
@@ -698,6 +698,7 @@ Used for things such as
 - disqualifying/reminding inactive players
 - removing subs */
 function tourStep() {
+    var canstart = true;
     var canautostart = true;
     var now = new Date()
     if (parseInt(sys.time())%3600 === 0) {
@@ -746,7 +747,7 @@ function tourStep() {
             }
         }
         if (tours.tour[x].state == "signups" || tours.tour[x].state == "subround") {
-            canautostart = false;
+            canstart = false;
         }
     }
     if (calcPercentage() >= Config.Tours.minpercent) {
@@ -780,7 +781,7 @@ function tourStep() {
             }
         }
     }
-    if (tours.globaltime > 0 && tours.globaltime <= parseInt(sys.time()) && (Config.Tours.maxrunning > tours.keys.length || canautostart)) {
+    if (canstart && tours.globaltime > 0 && tours.globaltime <= parseInt(sys.time()) && (Config.Tours.maxrunning > tours.keys.length || canautostart)) {
         if (tours.queue.length > 0) {
             var data = tours.queue[0].split(":::",6)
             var tourtostart = data[0]
@@ -792,7 +793,6 @@ function tourStep() {
             var parameters = {"mode": data[2], "gen": data[3], "type": data[4], "maxplayers": maxplayers}
             tours.queue.splice(0,1)
             tourstart(tourtostart,starter,tours.key,parameters)
-            tours.globaltime = 0
         }
         else if (tours.keys.length === 0) {
             // start a cycle from tourarray
@@ -801,7 +801,6 @@ function tourStep() {
             var tourtostart = tourarray[tours.key%tourarray.length]
             var tourtype = doubleelimtiers.indexOf(tourtostart) != -1 ? "double" : "single"
             tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? "5-1" : "default"), "type": tourtype, "maxplayers": false})
-            tours.globaltime = 0
         }
     }
 }
@@ -1573,6 +1572,10 @@ function tourCommand(src, command, commandData) {
                 sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by "+sys.name(src)+"!", tourschan,false)
                 delete tours.tour[key];
                 tours.keys.splice(tours.keys.indexOf(key), 1);
+                if (tours.globaltime !== -1) {
+                    var variance = calcVariance()
+                    tours.globaltime = parseInt(sys.time()) + parseInt(Config.Tours.abstourbreak/variance) // default 10 mins b/w signups, + 5 secs per user in chan
+                }
                 return true;
             }
             if (command == "passta") {
@@ -3176,6 +3179,7 @@ function tourstart(tier, starter, key, parameters) {
         tours.tour[key].maxcpt = 0;
         tours.tour[key].active = {};
         tours.tour[key].parameters = parameters;
+        tours.globaltime = 0;
         if (typeof parameters.maxplayers === "number" && !isNaN(parameters.maxplayers)) {
             tours.tour[key].maxplayers = parameters.maxplayers;
             tours.tour[key].time = parseInt(sys.time())+10*60 // 10 mins
