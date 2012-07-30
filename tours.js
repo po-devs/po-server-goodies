@@ -621,7 +621,7 @@ function initTours() {
         sys.sendAll("No win messages detected, using default win messages", tourschan)
     }
     var tadata = sys.getFileContent("touradmins.txt")
-    if (data === undefined) {
+    if (tadata === undefined) {
         sys.sendAll("No tour admin data detected, leaving blank", tourschan)
     }
     else {
@@ -2316,7 +2316,7 @@ function tourCommand(src, command, commandData) {
                     if (winners.indexOf(tours.tour[y].players[x]) != -1 && tours.tour[y].players[x] != "~Bye~" && tours.tour[y].players[x] != "~DQ~") {
                         roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+html_escape(toCorrectCase(tours.tour[y].players[x])) +"</b></font></td><td align='center'> won against </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x+1]))+"</td>"
                     }
-                    else if (winners.indexOf(tours.tour[y].players[x+1]) != -1 && tours.tour[y].players[x+1] != "~Bye~" && tours.tour[y].players[x] != "~DQ~") {
+                    else if (winners.indexOf(tours.tour[y].players[x+1]) != -1 && tours.tour[y].players[x+1] != "~Bye~" && tours.tour[y].players[x+1] != "~DQ~") {
                         roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+html_escape(toCorrectCase(tours.tour[y].players[x+1])) +"</b></font></td><td align='center'> won against </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x]))+"</td>"
                     }
                     else if (battlers.indexOf(tours.tour[y].players[x]) != -1) {
