@@ -541,7 +541,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500p",
+            version: "1.500p2",
             debug: false,
             points: true
         }
@@ -577,7 +577,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p",
+        version: "1.500p2",
         debug: false,
         points: true
     }
@@ -635,6 +635,7 @@ function initTours() {
         tours.touradmins = data
     }
     loadTourMutes()
+    loadEventPlayers()
     sys.sendAll("Version "+Config.Tours.version+" of the tournaments system was loaded successfully in this channel!", tourschan)
 }
 
@@ -969,6 +970,12 @@ function tourCommand(src, command, commandData) {
                     sys.writeToFile("tourscores_"+tiers[x].replace(/ /g,"_").replace(/\//g,"-slash-")+".txt","")
                 }
                 sendBotAll(sys.name(src)+" cleared the tour rankings!",tourschan,false)
+                return true;
+            }
+            if (command == "cleareventrankings") {
+                sys.writeToFile("eventscores.txt", "")
+                sys.writeToFile("eventwinners.txt", "")
+                sendBotAll(sys.name(src)+" cleared the event rankings!",tourschan,false)
                 return true;
             }
             if (command == "resettours") {
@@ -1531,14 +1538,16 @@ function tourCommand(src, command, commandData) {
             }
             if (command == "remove") {
                 var index = -1
-                if (parseInt(commandData) !== "") {
+                if (!isNaN(parseInt(commandData))) {
                     index = parseInt(commandData)-1
                 }
-                for (var a = tours.queue.length-1; a>=0; a -= 1) {
-                    var tourtoremove = (tours.queue[a].split(":::",1))[0].toLowerCase()
-                    if (commandData.toLowerCase() == tourtoremove) {
-                        index = a;
-                        break;
+                else {
+                    for (var a = tours.queue.length-1; a>=0; a -= 1) {
+                        var tourtoremove = (tours.queue[a].split(":::",1))[0].toLowerCase()
+                        if (commandData.toLowerCase() == tourtoremove) {
+                            index = a;
+                            break;
+                        }
                     }
                 }
                 if (index < 0 || index >= tours.queue.length) {
@@ -1546,7 +1555,13 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 else {
-                    var removedtour = (tours.queue[index].split(":::",1))[0]
+                    var removedata = tours.queue[index].split(":::",2)
+                    var removedtour = removedata[0]
+                    var allowed = removedata[1] != "~Pokemon Online~"
+                    if (!allowed && !isTourOwner(src)) {
+                        sendBotMessage(src, "You are not permitted to remove event tours from the queue!", tourschan, false)
+                        return true;
+                    }
                     tours.queue.splice(index, 1)
                     sendBotAll("The "+removedtour+" tour (position "+(index+1)+") was removed from the queue by "+sys.name(src)+".", tourschan, false)
                     return true;
@@ -2994,6 +3009,12 @@ function advanceround(key) {
                         newlosebracket.push("~Bye~")
                     }
                 }
+                // for event tours only
+                if (tours.tour[key].maxplayers !== "default") {
+                    var now = new Date();
+                    var datestring = now.getUTCDate() + "-" + now.getUTCMonth();
+                    sys.writeToFile("eventplayers.txt", datestring + ":" + tours.eventnames.join("*"))
+                }
                 newlosebracket.reverse()
             }
             else if (tours.tour[key].players.length == 2 && tours.tour[key].round%2 === 0) { // special case for 2 or less players, first battle
@@ -4046,6 +4067,21 @@ function loadTourMutes() {
         var player = data[4];
         tours.tourmutes[ip] = {'expiry': expiry, 'reason': reason, 'auth': auth, 'name': player}
     }
+}
+
+function loadEventPlayers() {
+    var now = new Date();
+    var datestring = now.getUTCDate() + "-" + now.getUTCMonth();
+    var data = sys.getFileContent("eventplayers.txt")
+    if (data === undefined) {
+        return;
+    }
+    var edata = data.split(":",2)
+    if (datestring != edata[0] || edata.length == 1) {
+        return;
+    }
+    tours.eventnames = edata[1].split("*")
+    return;
 }
 
 // to prevent silly mute reasons
