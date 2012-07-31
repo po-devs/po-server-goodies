@@ -2007,7 +2007,7 @@ function Mafia(mafiachan) {
         for (var x in mafia.commands.user) {
             sys.sendMessage(src, "/" + cap(x) + " - " + mafia.commands.user[x][1], mafiachan);
         }
-        if (sys.auth(src) > 0) {
+        if (sys.auth(src) > 0 || this.isMafiaAdmin(src)) {
             sys.sendMessage(src, "Authority Commands:", mafiachan);
             for (x in mafia.commands.auth) {
                 sys.sendMessage(src, "/" + cap(x) + " - " + mafia.commands.auth[x][1], mafiachan);
@@ -3023,6 +3023,10 @@ function Mafia(mafiachan) {
         var tar = sys.id(commandData);
         if (command == "mafiaban") {
             script.issueBan("mban", src, tar, commandData, sys.auth(src) > 0 ? undefined : 86400);
+            return;
+        }
+        if(command == "mafiaunban"){
+            script.modCommand(src, command, commandData, commandData, tar)
             return;
         }
         if (command == "mafiabans") {
