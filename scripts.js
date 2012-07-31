@@ -2482,7 +2482,9 @@ modCommand: function(src, command, commandData, tar) {
            mafiabot.sendChanMessage(src, "You may not unban yourself from Mafia");
            return;
         }
-        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!");
+        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",staffchannel);
+        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",mafiachan)
+        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",sachannel)
         SESSION.users(tar).un("mban");
         return;
     }
