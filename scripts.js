@@ -2463,7 +2463,9 @@ modCommand: function(src, command, commandData, tar) {
             }
             var ip = sys.dbIp(commandData);
             if(ip !== undefined && mbans.get(ip)) {
-                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!");
+                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",staffchannel);
+                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",mafiachan)
+                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",sachannel)
                 mbans.remove(ip);
                 return;
             }

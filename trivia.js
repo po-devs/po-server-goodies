@@ -1071,7 +1071,12 @@ addAdminCommand("submitban", function(src, commandData, channel) {
 			'by' : sys.name(src),
 			'name' : name
 		};
-		triviabot.sendAll(sys.name(src)+" banned "+name+" from submitting questions.", revchan);
+		var channels = [sys.channelId("Indigo Plateau"), sys.channelId("Victory Road"), revchan]
+		for (var x in channels) {
+			if (sys.existChannel(sys.channel(channels[x]))) {
+				triviabot.sendAll(sys.name(src)+" banned "+name+" from submitting questions.", channels[x]);
+			}
+		}
 		saveData();
 		return;
 	} else {
@@ -1092,7 +1097,12 @@ addAdminCommand("submitunban", function(src, commandData, channel) {
 	}
 	delete trivData.submitBans[ip];
 	saveData();
-	triviabot.sendAll(sys.name(src)+" unbanned "+commandData+" from submitting questions.", revchan);
+	var channels = [sys.channelId("Indigo Plateau"), sys.channelId("Victory Road"), revchan]
+	for (var x in channels) {
+		if (sys.existChannel(sys.channel(channels[x]))) {
+			triviabot.sendAll(sys.name(src)+" unbanned "+commandData+" from submitting questions.", channels[x]);
+		}
+	}
 	return;
 }, "Unban a user from submitting.");
 
