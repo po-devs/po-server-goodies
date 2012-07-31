@@ -3026,7 +3026,7 @@ function Mafia(mafiachan) {
             return;
         }
         if(command == "mafiaunban"){
-            script.modCommand(src, command, commandData, commandData, tar)
+            script.modCommand(src, command, commandData, tar)
             return;
         }
         if (command == "mafiabans") {
