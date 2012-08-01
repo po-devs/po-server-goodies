@@ -963,8 +963,8 @@ function tourCommand(src, command, commandData) {
             if (command == "clearrankings") {
                 sys.writeToFile("tourscores.txt", "")
                 sys.writeToFile("tourdetails.txt", "")
-                sys.writeToFile("eventscores.txt", "")
-                sys.writeToFile("eventwinners.txt", "")
+                // sys.writeToFile("eventscores.txt", "")
+                // sys.writeToFile("eventwinners.txt", "")
                 var tiers = sys.getTierList()
                 for (var x in tiers) {
                     sys.writeToFile("tourscores_"+tiers[x].replace(/ /g,"_").replace(/\//g,"-slash-")+".txt","")
@@ -976,6 +976,11 @@ function tourCommand(src, command, commandData) {
                 sys.writeToFile("eventscores.txt", "")
                 sys.writeToFile("eventwinners.txt", "")
                 sendBotAll(sys.name(src)+" cleared the event rankings!",tourschan,false)
+                return true;
+            }
+            if (command == "updaterankings") {
+                sys.writeToFile("eventscores.txt", "humanvenipede:::5\n[flight]lucario:::3\nyukki:::2")
+                sendBotAll(sys.name(src)+" updated the event rankings!",tourschan,false)
                 return true;
             }
             if (command == "resettours") {
