@@ -1801,7 +1801,12 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 delete tours.tourmutes[ip];
-                sendBotAll(commandData+" was untourmuted by "+sys.name(src)+"!", tourschan, false)
+                var channels = [sys.channelId("Indigo Plateau"), sys.channelId("Victory Road"), tourschan]
+                for (var x in channels) {
+                    if (sys.existChannel(sys.channel(channels[x]))) {
+                        sendBotAll(commandData+" was untourmuted by "+sys.name(src)+"!", channels[x], false)
+                    }
+                }
                 saveTourMutes()
                 return true;
             }

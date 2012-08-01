@@ -226,7 +226,7 @@ try { // Do not indent this, it is only until this starts to work
     sys.sendHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±Psyduck:</b></font></font> Time's up!" + incorrectAnswers, triviachan);
     this.sendAll("Answered correctly: " + answeredCorrectly.join(", "),triviachan);
     var x = answers.length != 1 ? "answers were" : "answer was";
-    this.sendAll("The correct "+x+": "+answers.join(", "),triviachan);
+    sys.sendHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±Psyduck:</b></font></font> The correct "+x+": <b>"+answers.join(", ")+"</b>",triviachan);
 
     var leaderboard = [];
     var displayboard = []
@@ -1071,7 +1071,12 @@ addAdminCommand("submitban", function(src, commandData, channel) {
 			'by' : sys.name(src),
 			'name' : name
 		};
-		triviabot.sendAll(sys.name(src)+" banned "+name+" from submitting questions.", revchan);
+		var channels = [sys.channelId("Indigo Plateau"), sys.channelId("Victory Road"), revchan]
+		for (var x in channels) {
+			if (sys.existChannel(sys.channel(channels[x]))) {
+				triviabot.sendAll(sys.name(src)+" banned "+name+" from submitting questions.", channels[x]);
+			}
+		}
 		saveData();
 		return;
 	} else {
@@ -1092,7 +1097,12 @@ addAdminCommand("submitunban", function(src, commandData, channel) {
 	}
 	delete trivData.submitBans[ip];
 	saveData();
-	triviabot.sendAll(sys.name(src)+" unbanned "+commandData+" from submitting questions.", revchan);
+	var channels = [sys.channelId("Indigo Plateau"), sys.channelId("Victory Road"), revchan]
+	for (var x in channels) {
+		if (sys.existChannel(sys.channel(channels[x]))) {
+			triviabot.sendAll(sys.name(src)+" unbanned "+commandData+" from submitting questions.", channels[x]);
+		}
+	}
 	return;
 }, "Unban a user from submitting.");
 

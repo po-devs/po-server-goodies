@@ -2465,7 +2465,9 @@ modCommand: function(src, command, commandData, tar) {
             }
             var ip = sys.dbIp(commandData);
             if(ip !== undefined && mbans.get(ip)) {
-                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!");
+                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",staffchannel);
+                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",mafiachan)
+                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",sachannel)
                 mbans.remove(ip);
                 return;
             }
@@ -2480,7 +2482,9 @@ modCommand: function(src, command, commandData, tar) {
            mafiabot.sendChanMessage(src, "You may not unban yourself from Mafia");
            return;
         }
-        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!");
+        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",staffchannel);
+        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",mafiachan)
+        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",sachannel)
         SESSION.users(tar).un("mban");
         return;
     }
@@ -3595,9 +3599,9 @@ ownerCommand: function(src, command, commandData, tar) {
             return;
         }
         var tar = sys.id(para[0])
-        var message =  para[1]
-        var channel = sys.channelId(para[2])
-        sys.sendMessage(tar, message, channel)
+        var mess =  para[1]
+        var chan = sys.channelId(para[2])
+        sys.sendMessage(tar, mess, chan)
         return;
     }
     if (command == "imp") {
@@ -4219,7 +4223,7 @@ beforeChatMessage: function(src, message, chan) {
                 }
             }
         }
-        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, /\u00AD/,/\u200b/, "nobrain.dk", /\bn[1i]gg+ers*\b/i,  "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----"];
+        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, /\u00AD/, "nobrain.dk", /\bn[1i]gg+ers*\b/i,  "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----"];
         for (var i = 0; i < BanList.length; ++i) {
             var filter = BanList[i];
             if (typeof filter == "string" && m.indexOf(filter) != -1 || typeof filter == "function" && filter.test(m)) {
