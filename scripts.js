@@ -3599,8 +3599,8 @@ ownerCommand: function(src, command, commandData, tar) {
             return;
         }
         var tar = sys.id(para[0])
-        var message =  para[1]
-        var channel = sys.channelId(para[2])
+        var mess =  para[1]
+        var chan = sys.channelId(para[2])
         sys.sendMessage(tar, message, channel)
         return;
     }
