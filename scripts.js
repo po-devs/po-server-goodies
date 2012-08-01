@@ -3601,7 +3601,7 @@ ownerCommand: function(src, command, commandData, tar) {
         var tar = sys.id(para[0])
         var mess =  para[1]
         var chan = sys.channelId(para[2])
-        sys.sendMessage(tar, message, chan)
+        sys.sendMessage(tar, mess, chan)
         return;
     }
     if (command == "imp") {
