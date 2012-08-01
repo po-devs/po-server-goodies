@@ -541,7 +541,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500p2",
+            version: "1.500p2.1",
             debug: false,
             points: true
         }
@@ -577,7 +577,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p2",
+        version: "1.500p2.1",
         debug: false,
         points: true
     }
@@ -4373,7 +4373,7 @@ module.exports = {
             return true;
         }
         /* check for potential scouters */
-        var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1"]
+        var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"]
         var isOkToSpectate = (tours.tour[p1tour].state == "final" || cctiers.indexOf(tours.tour[p1tour].tourtype) != -1)
         var usingDisallowSpecs = false;
         for (var x in tours.tour[p1tour].disallowspecs) {
