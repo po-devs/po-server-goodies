@@ -978,11 +978,6 @@ function tourCommand(src, command, commandData) {
                 sendBotAll(sys.name(src)+" cleared the event rankings!",tourschan,false)
                 return true;
             }
-            if (command == "updaterankings") {
-                sys.writeToFile("eventscores.txt", "humanvenipede:::5\n[flight]lucario:::3\nyukki:::2")
-                sendBotAll(sys.name(src)+" updated the event rankings!",tourschan,false)
-                return true;
-            }
             if (command == "resettours") {
                 tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": [], "eventnames": []};
                 sendBotAll(sys.name(src)+" reset the tour system!",tourschan,false)
