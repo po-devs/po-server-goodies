@@ -556,11 +556,16 @@ TriviaAdmin.prototype.isTAdmin = function(name)
 
 TriviaAdmin.prototype.tAdminList = function(src,id)
 {
+    var tadmins = []
+    for (var a in this.admins) {
+        tadmins.push(this.admins[a] + (sys.id(this.admins[a]) == undefined ? "" : ":"));
+    }
+	tadmins.sort()
     sys.sendMessage(src, "" ,id);
     sys.sendMessage(src, "*** TRIVIA ADMINS ***" ,id);
     sys.sendMessage(src, "" ,id);
-    for (var a in this.admins) {
-    	sys.sendMessage(src, this.admins[a] + (sys.id(this.admins[a]) == undefined ? "" : ":"),id);
+    for(var b in tadmins){
+        sys.sendMessage(src, tadmins[b], id)
     }
     sys.sendMessage(src, "" ,id);
 };
