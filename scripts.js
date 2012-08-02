@@ -3594,7 +3594,7 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
     if(command == "sendmessage"){
-        var para = commandData.split(':')
+        var para = commandData.split(':::')
         if(para.length < 3){
             return;
         }
