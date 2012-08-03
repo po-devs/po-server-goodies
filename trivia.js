@@ -253,7 +253,7 @@ try { // Do not indent this, it is only until this starts to work
 		//Trivia.sendAll("Check the /topic for how to submit a question!", triviachan);
         this.resetTrivia();
         if (this.autostart == true) {
-        	pointsForGame = sys.rand(2,102), toStart = sys.rand(30,44);
+        	pointsForGame = sys.rand(5,45), toStart = sys.rand(30,44);
         	Trivia.sendAll("A new trivia game will be started in "+toStart+" seconds!", triviachan);
         	sys.delayedCall(function() {
         		Trivia.startGame(pointsForGame, "");
