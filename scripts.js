@@ -313,6 +313,7 @@ function POChannel(id)
     this.id = id;
     this.masters = [];
     this.operators = [];
+	this.creator = "";
     this.perm = false;
     this.inviteonly = 0;
     this.invitelist = [];
@@ -324,7 +325,12 @@ function POChannel(id)
     this.banned = {ips: {}};
     this.ignorecaps = false;
     this.ignoreflood = false;
+	this.registered = false;
 }
+
+POChannel.prototype.isRegistered = function() {
+	return this.masters.length > 0 || this.operators.length > 0 || this.registered;
+};
 
 POChannel.prototype.beforeMessage = function(src, msg) {
 };
@@ -360,15 +366,22 @@ POChannel.prototype.setTopic = function(src, topicInfo)
     channelbot.sendChanAll("" + sys.name(src) + " changed the topic to: " + topicInfo);
 };
 
+POChannel.prototype.isChannelCreator = function (id)
+{
+	return this.creator == sys.name(id).toLowerCase();
+};
+
 POChannel.prototype.isChannelMaster = function(id)
 {
-    return this.masters.indexOf(sys.name(id).toLowerCase()) > -1;
+    return this.isChannelCreator(id) || this.masters.indexOf(sys.name(id).toLowerCase()) > -1;
 };
+
 POChannel.prototype.isChannelOperator = function(id)
 {
     var channl = this.id;
     return this.isChannelMaster(id) || this.operators.indexOf(sys.name(id).toLowerCase()) != -1 || (sys.auth(id) > 0 && (channl === 0 || channl == sys.channelId("Tournaments")));
 };
+
 POChannel.prototype.issueAuth = function(src, name, authlist)
 {
     var lname;
@@ -435,8 +448,11 @@ POChannel.prototype.removeOwner = function(src, name)
 
 POChannel.prototype.register = function(name)
 {
-    if (this.masters.length === 0) {
-        this.masters.push(name.toLowerCase());
+    if (!this.isRegistered()) {
+        if (name.toLowerCase() != this.creator) {
+			this.masters.push(name.toLowerCase());
+		}
+		this.registered = true;
         return true;
     }
     return false;
@@ -446,6 +462,8 @@ POChannel.prototype.allowed = function(id, what)
 {
     if (sys.auth(id) > 0)
         return true;
+	if (this.isChannelCreator(id))
+		return true;
     if (this[what]) {
         var ip = sys.ip(id);
         if (this[what].ips.hasOwnProperty(ip))
@@ -453,6 +471,7 @@ POChannel.prototype.allowed = function(id, what)
     }
     return true;
 };
+
 POChannel.prototype.canJoin = function(id)
 {
     return this.allowed(id, "banned") || this.isChannelOperator(id);
@@ -543,13 +562,15 @@ POChannelManager.prototype.copyAttrs = [
     "perm",
     "operators",
     "masters",
+	"creator",
     "invitelevel",
     "muteall",
     "meoff",
     "muted",
     "banned",
     "ignorecaps",
-    "ignoreflood"
+    "ignoreflood",
+	"registered"
 ];
 
 POChannelManager.prototype.update = function(channel)
@@ -859,7 +880,8 @@ var commands = {
         "/indigo [on/off]: To create or destroy staff channel.",
         "/updatebansites: To update ban sites.",
         "/updatetierchecks: To update tier checks.",
-        "/togglerainbow: [on/off]: To turn rainbow on or off."
+        "/togglerainbow: [on/off]: To turn rainbow on or off.",
+		"/changecreator: To change this channels creator."
     ]
 };
 
@@ -1416,6 +1438,11 @@ beforeChannelCreated : function(chan, name, src) {
 
 afterChannelCreated : function (chan, name, src) {
     SESSION.global().channelManager.restoreSettings(chan);
+	if (sys.loggedIn(src) && SESSION.channels(chan).creator == "") {
+		SESSION.channels(chan).creator = sys.name(src).toLowerCase();
+		SESSION.global().channelManager.update(chan);
+		channelbot.sendMessage(src, "Please /register the channel.", chan);
+	}	
 }, /* end of afterChannelCreated */
 
 
@@ -2144,12 +2171,18 @@ userCommand: function(src, command, commandData, tar) {
     }
 
     if (command == "register") {
-        if (SESSION.channels(channel).register(sys.name(src))) {
-            channelbot.sendChanMessage(src, "You registered this channel successfully. Take a look of /commands channel");
-        } else {
-            channelbot.sendChanMessage(src, "This channel is already registered!");
-        }
-        return;
+		var creator = SESSION.channels(channel).creator;
+		if ((sys.id(creator) == undefined || creator == sys.name(src).toLowerCase()) || 
+			SESSION.channels(channel).isRegistered() /* This channel is already registered! will display*/) {
+			if (SESSION.channels(channel).register(sys.name(src))) {
+				channelbot.sendChanMessage(src, "You registered this channel successfully. Take a look of /commands channel");
+			} else {
+				channelbot.sendChanMessage(src, "This channel is already registered!");
+			}
+		} else {
+			channelbot.sendChanMessage(src, "You are not the creator of this channel.");
+		}
+		return;
     }
     if (command == "cauth") {
         if (typeof SESSION.channels(channel).operators != 'object')
@@ -2157,6 +2190,7 @@ userCommand: function(src, command, commandData, tar) {
         if (typeof SESSION.channels(channel).masters != 'object')
             SESSION.channels(channel).masters = [];
         channelbot.sendChanMessage(src, "The channel auth of " + sys.channel(channel) + " are:");
+        channelbot.sendChanMessage(src, "Creator: " + SESSION.channels(channel).creator);
         channelbot.sendChanMessage(src, "Masters: " + SESSION.channels(channel).masters.join(", "));
         channelbot.sendChanMessage(src, "Operators: " + SESSION.channels(channel).operators.join(", "));
         return;
@@ -3134,7 +3168,6 @@ adminCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "indigoinvite") {
-
         if (channel != staffchannel && channel != sachannel) {
             normalbot.sendChanMessage(src, "Can't use on this channel.");
             return;
@@ -3886,6 +3919,13 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
 
+	if (command == "changecreator") {
+		SESSION.channels(channel).creator = commandData;
+		SESSION.global().channelManager.update(channel);
+		
+		channelbot.sendChanMessage(src, "Creator changed.");
+		return;
+	}	
     return "no command";
 },
 
@@ -4058,7 +4098,7 @@ channelCommand: function(src, command, commandData, tar) {
         return;
     }
 
-    // followign commands only for Channel Masters
+    // following commands only for Channel Masters
     if (!poChannel.isChannelMaster(src) && !isSuperAdmin(src) && sys.auth(src) <= 2)
         return "no command";
 
@@ -4316,7 +4356,7 @@ beforeChatMessage: function(src, message, chan) {
             }
         }
 
-        if (sys.auth(src) > 2 || isSuperAdmin(src) || SESSION.channels(channel).isChannelOperator(src)) {
+        if (sys.auth(src) > 2 || isSuperAdmin(src) || (SESSION.channels(channel).isChannelOperator(src) && SESSION.channels(channel).isRegistered() /* creators */)) {
             if (this.channelCommand(src, command, commandData, tar) != "no command") {
                 return;
             }
