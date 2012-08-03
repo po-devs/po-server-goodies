@@ -50,6 +50,24 @@ function time()
     return Date.now()/1000
 }
 
+/* Functions for non vowel pokemon questions, to make sure we have all possible pokemon */
+
+function removeVowels(str) {
+	return str.replace(/a/gi, '').replace(/e/gi, '').replace(/i/gi, '').replace(/o/gi, '').replace(/u/gi, '');
+}
+
+function checkNonVowels(poke) {
+	var arr = [];
+	for (var b = 1; b < 650; b++) {
+		var pokemon = sys.pokemon(b);
+		var pokemonwithoutvowels = removeVowels(pokemon), pokewithoutvowels = removeVowels(poke);
+		if (pokemonwithoutvowels.toLowerCase() == pokewithoutvowels.toLowerCase()) {
+			arr.push(pokemon);
+		}
+	}
+	return arr;
+}
+
 function TriviaGame()
 {
     this.id = triviachan;
@@ -293,7 +311,7 @@ TriviaGame.prototype.resetTrivia = function()
     this.lastStopped = time();
 };
 
-TriviaGame.prototype.addAllPokemon = function()
+TriviaGame.prototype.addAllPokemon = function(src, chan)
 {
     // TODO restrict pokemon questions so that they can't be added multiple times..
     for (var b = 1;b<650;b++)
@@ -304,7 +322,20 @@ TriviaGame.prototype.addAllPokemon = function()
         var isShiny = (shiny == 1) ? "&shiny=true" : "";
         triviaq.add("POKEMON : WHO'S THAT POKEMON?","<center><img src='pokemon:num="+pokenum+""+isShiny+"'></center>", pokemon);
     }
-    this.sendAll("All pokemon were added to the list of questions!");
+    this.sendPM(src, "All pokemon were added to the list of questions!", chan);
+    return;
+};
+
+TriviaGame.prototype.withoutVowels = function(src, chan)
+{
+    for (var b = 1;b<650;b++)
+    {
+        var pokemon = sys.pokemon(b);
+        var withoutvowels = removeVowels(pokemon);
+        var possibleAnswers = checkNonVowels(pokemon);
+        triviaq.add("POKEMON : WITHOUT VOWELS","<center><b>"+withoutvowels.toLowerCase()+"</b></center>", String(possibleAnswers.join(',')));
+    }
+    this.sendPM(src, "All pokemon questions without vowels were added to the list of questions!", chan);
     return;
 };
 
@@ -738,8 +769,12 @@ addAdminCommand("say", function(src, commandData, channel) {
 },"Allows you to talk during the answer period");
 
 addOwnerCommand("addallpokemon", function(src, commandData, channel) {
-	Trivia.addAllPokemon();
+	Trivia.addAllPokemon(src, channel);
 },"Adds all the \"Who's that pokémon?\" questions");
+
+addOwnerCommand("addallwithoutvowels", function(src, commandData, channel) {
+	Trivia.withoutVowels(src, channel);
+},"Adds all the \"Who's that pokémon?\" questions without vowels");
 
 addOwnerCommand("erasequestions", function(src, commandData, channel) {
 	if (commandData == undefined || commandData !== 'confirm') {
