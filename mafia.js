@@ -22,6 +22,11 @@ function Mafia(mafiachan) {
     var CurrentGame;
     var PreviousGames;
     var MAFIA_SAVE_FILE = Config.Mafia.stats_file;
+	var MAFIA_LOG_FILE = "mafialogs.txt";
+
+	var stalkLogs = [];
+	var currentStalk = [];
+	var phaseStalk = {};
 
     var DEFAULT_BORDER = "***************************************************************************************";
     var border;
@@ -35,6 +40,11 @@ function Mafia(mafiachan) {
         } catch(e) {
             PreviousGames = [];
         }
+		try {
+			stalkLogs = sys.getFileContent(MAFIA_LOG_FILE).split("::@@::");
+		} catch (e) {
+			stalkLogs = [];
+		}
     };
     loadPlayedGames();
 
@@ -755,8 +765,21 @@ function Mafia(mafiachan) {
         }
         return noPlayer;
     };
+	this.saveStalkLog = function() {
+		if (this.state !== "blank" && this.state !== "voting" && currentStalk.length > 0) {
+			var lastLog = currentStalk.join("::**::");
+			stalkLogs.unshift(lastLog);
+			if (stalkLogs.length > 10) {
+				stalkLogs.pop();
+			} 
+			sys.writeToFile(MAFIA_LOG_FILE, stalkLogs.join("::@@::"));
+		}
+		phaseStalk = {};
+		currentStalk = [];
+	};
     this.clearVariables = function() {
         /* hash : playername => playerstruct */
+		this.saveStalkLog();
         this.players = {};
         this.signups = [];
         this.state = "blank";
@@ -1387,6 +1410,8 @@ function Mafia(mafiachan) {
             PreviousGames.push(CurrentGame);
             savePlayedGames();
 
+			currentStalk.push("*** ::: ::: Log for " + mafia.theme.name + "-themed mafia game ::: ::: ***");
+
             if (mafia.signups.length < 5) {
                 sys.sendAll("Well, Not Enough Players! :", mafiachan);
                 sys.sendAll("You need at least 5 players to join (Current; " + mafia.signups.length + ").", mafiachan);
@@ -1435,6 +1460,8 @@ function Mafia(mafiachan) {
                     }
                 }
             }
+
+			currentStalk.push("Players: " + Object.keys(mafia.players).map(name_trrole, mafia.theme).join(", "));
 
             sys.sendAll("The Roles have been Decided! :", mafiachan);
             var p, player;
@@ -1497,6 +1524,8 @@ function Mafia(mafiachan) {
         night : function() {
             sys.sendAll(border, mafiachan);
             sys.sendAll("Times Up! :", mafiachan);
+
+			this.compilePhaseStalk("NIGHT");
 
             var nightkill = false;
             var getTeam = function(role, commonTarget) {
@@ -1878,6 +1907,8 @@ function Mafia(mafiachan) {
         },
         standby : function() {
             mafia.ticks = 30;
+
+			this.compilePhaseStalk("STANDBY");
 
             sys.sendAll(border, mafiachan);
 
@@ -2417,7 +2448,7 @@ function Mafia(mafiachan) {
             if (!user.mafiaalertson) {
                 msg(src, "You currently have /flashme deactivated (you can enable it by typing /flashme on).");
             } else if (user.mafiaalertsany) {
-                msg(src, "You currently get alerts any theme. ");
+                msg(src, "You currently get alerts for any theme. ");
             } else if (user.mafiathemes === undefined || user.mafiathemes.length === 0) {
                 msg(src, "You currently have no alerts for mafia themes activated.");
             } else {
@@ -2504,6 +2535,38 @@ function Mafia(mafiachan) {
         }
         msg(src, "No such target.");
     };
+	this.readStalkLog = function(src, data) {
+		var num, outputChan = mafiachan;
+		if (data.indexOf(":") >= 0) {
+			var splitData = data.split(":");
+			num = Number(splitData[0]);
+			outputChan = sys.channelId(splitData[1]);
+		} else {
+			num = Number(data);
+		}
+		if (!num) {
+			sys.sendMessage(src, "±Info: This is not a valid number!", mafiachan);
+			return;
+		}
+		if (outputChan == undefined) {
+			sys.sendMessage(src, "±Info: This is not a valid channel!", mafiachan);
+			return;
+		}
+		if (num < 1 || num > stalkLogs.length) {
+			sys.sendMessage(src, "±Info: There's no log with this id!", mafiachan);
+			return;
+		} 
+		
+		sys.sendMessage(src, "", outputChan);
+		var stalkLog = stalkLogs[num -1].split("::**::");
+		for (var c=0; c < stalkLog.length; ++c) {
+			sys.sendMessage(src, stalkLog[c], outputChan);
+		}
+		sys.sendMessage(src, "", outputChan);
+		if (outputChan != mafiachan) {
+			sys.sendMessage(src, "±Info: Game log was printed in channel " + sys.channel(outputChan), mafiachan);
+		}
+	};
     this.addTheme = function(src, url) {
         if (!mafia.isMafiaAdmin(src)) {
             msg(src, "admin+ command.");
@@ -2625,6 +2688,7 @@ function Mafia(mafiachan) {
             slay: [this.slayUser, "To slay users in a Mafia game."],
             shove: [this.slayUser, "To remove users before a game starts."],
             end: [this.endGame, "To cancel a Mafia game!"],
+			readlog: [this.readStalkLog, "To read the log of actions from a previous game"],
             add: [this.addTheme, "To add a Mafia Theme!"],
             remove: [this.removeTheme, "To remove a Mafia Theme!"],
             disable: [this.disableTheme, "To disable a Mafia Theme!"],
@@ -2697,6 +2761,17 @@ function Mafia(mafiachan) {
         } */
         return true;
     };
+	this.addPhaseStalkAction = function(user, action, target) {
+		if (!(user in phaseStalk)) phaseStalk[user] = [];
+		phaseStalk[user].push("/" + action + " " + target);
+	};
+	this.compilePhaseStalk = function(phase) {
+		currentStalk.push("*** " + phase + " ***");
+		for (var u in phaseStalk) {
+			currentStalk.push(u + " used: " + phaseStalk[u].join(", "));
+		}
+		phaseStalk = {};
+	};
     this.handleCommandOld = function(src, message, channel) {
 
         var command;
@@ -2762,6 +2837,8 @@ function Mafia(mafiachan) {
                 player = mafia.players[name];
                 target = mafia.players[commandData];
 
+				this.addPhaseStalkAction(name, command, target.name);
+
                 if (["Any", "Self", "OnlySelf"].indexOf(player.role.actions.night[command].target) == -1 && commandData == name) {
                     sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target yourself!", mafiachan);
                     return;
@@ -2798,7 +2875,7 @@ function Mafia(mafiachan) {
                     }
                     for (x in team) {
                         if (team[x] != name) {
-                            this.sendPlayer(team[x], "±Game: Your partner(s) have decided to " + command + " '" + commandData + "'!");
+                            this.sendPlayer(team[x], broadcastmsg);
                         }
                     }
                 }
@@ -2880,6 +2957,7 @@ function Mafia(mafiachan) {
                         sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target your partners!", mafiachan);
                         return;
                     }
+					this.addPhaseStalkAction(name, commandName, target.name);
                 }
 
                 if (command == "kill") {
@@ -3065,7 +3143,7 @@ function Mafia(mafiachan) {
     };
 
     this.beforeChatMessage = function(src, message, channel) {
-        if (channel !== 0 && channel == mafiachan && mafia.ticks > 0 && ["blank", "voting", "signups"].indexOf(mafia.state) == -1 && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0 && !mafia.isMafiaAdmin(src)) {
+        if (channel !== 0 && channel == mafiachan && mafia.ticks > 0 && ["blank", "voting", "entry"].indexOf(mafia.state) == -1 && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0 && !mafia.isMafiaAdmin(src)) {
             if (!(is_command(message) && message.substr(1,2).toLowerCase() != "me")) {
                 sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
                 return true;
