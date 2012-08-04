@@ -548,7 +548,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#CC0044",
             minpercent: 5,
-            version: "1.500p2.6",
+            version: "1.500p2.7",
             tourbot: "Shanai: ",
             debug: false,
             points: true
@@ -585,8 +585,8 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p2.6",
-        tourbot: getConfigValue("tourconfig.txt", "tourbotname"),
+        version: "1.500p2.7",
+        tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
     }
@@ -2059,7 +2059,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     Config.Tours.tourbot = value
-                    sys.saveVal("tourconfig.txt", "tourbotname", value)
+                    sys.saveVal("tourconfig.txt", "tourbot", value)
                     sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the tourbot name to "+Config.Tours.tourbot,tourschan,false);
                     return true;
                 }
@@ -3943,7 +3943,7 @@ function toTourName(name) {
             return htmlname;
         }
         else {
-            return "<span title='This player doesn't have a team for the tournament!'><font color=#FF7700>"+htmlname+"</font></span>";
+            return "<span title='This player does not have a team for the tournament!'><font color=#FF7700>"+htmlname+"</font></span>";
         }
     }
     else {
