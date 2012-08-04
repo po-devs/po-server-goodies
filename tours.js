@@ -546,10 +546,10 @@ function getConfigValue(file, key) {
             remindertime: 30,
             channel: "Tournaments",
             errchannel: "Developer's Den",
-            tourbotcolour: "#3DAA68",
+            tourbotcolour: "#CC0044",
             minpercent: 5,
-            version: "1.500p2.5",
-            tourbot: "\u00B1Genesect: ",
+            version: "1.500p2.6",
+            tourbot: "Shanai: ",
             debug: false,
             points: true
         }
@@ -583,10 +583,10 @@ function initTours() {
         reminder: parseInt(getConfigValue("tourconfig.txt", "remindertime")),
         channel: "Tournaments",
         errchannel: "Developer's Den",
-        tourbotcolour: getConfigValue("tourconfig.txt", "botcolour"),
+        tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p2.5",
-        tourbot: getConfigValue("tourconfig.txt", "botname"),
+        version: "1.500p2.6",
+        tourbot: getConfigValue("tourconfig.txt", "tourbotname"),
         debug: false,
         points: true
     }
@@ -2045,7 +2045,7 @@ function tourCommand(src, command, commandData) {
                         }
                     }
                     Config.Tours.tourbotcolour = "#"+value
-                    sys.saveVal("tourconfig.txt", "botcolour", "#"+value)
+                    sys.saveVal("tourconfig.txt", "tourbotcolour", "#"+value)
                     sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the tourbot colour to "+Config.Tours.tourbotcolour,tourschan,false);
                     return true;
                 }
@@ -2059,7 +2059,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     Config.Tours.tourbot = value
-                    sys.saveVal("tourconfig.txt", "botname", value)
+                    sys.saveVal("tourconfig.txt", "tourbotname", value)
                     sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the tourbot name to "+Config.Tours.tourbot,tourschan,false);
                     return true;
                 }
