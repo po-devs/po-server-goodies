@@ -548,7 +548,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500p2.3",
+            version: "1.500p2.4",
             debug: false,
             points: true
         }
@@ -584,7 +584,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p2.3",
+        version: "1.500p2.4",
         debug: false,
         points: true
     }
@@ -3546,8 +3546,8 @@ function tourprintbracket(key) {
             }
             tours.tour[key].state = "final"
             var channels = [tourschan]
-            var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[0])+1)+")</td><td align='right'>"+html_escape(toCorrectCase(tours.tour[key].players[0]))+"</td>"
-            var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[1])+1)+")</td>"
+            var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[0])+1)+")</td><td align='right'>"+toTourName(tours.tour[key].players[0])+"</td>"
+            var player2data = "<td>"+toTourName(tours.tour[key].players[1])+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[1])+1)+")</td>"
             var roundinfo = "<b>"+(tours.tour[key].parameters.type == "double" && tours.tour[key].round%2 == 1 ? "Sudden Death" : "Final")+" Match of the "+getFullTourName(key)+" Tournament in <a href='po:join/"+html_escape(sys.channel(tourschan))+"'>#"+html_escape(sys.channel(tourschan))+"</a></th></tr></b><br/>"
             var roundposting = "<div style='margin-left: 50px'>"+roundinfo+"<table><tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
             for (var c in channels) {
@@ -3583,8 +3583,8 @@ function tourprintbracket(key) {
                 var submessage = "<div style='margin-left: 50px'><br/>Type <b>/join</b> to join late, good while subs last!</div>"
                 var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+getFullTourName(key)+" Tournament</b><br/><table>";
                 for (var x=0; x<tours.tour[key].players.length; x+=2) {
-                    var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+")</td><td align='right'>"+html_escape(toCorrectCase(tours.tour[key].players[x]))+"</td>"
-                    var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
+                    var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+")</td><td align='right'>"+toTourName(tours.tour[key].players[x])+"</td>"
+                    var player2data = "<td>"+toTourName(tours.tour[key].players[x+1])+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
                     roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
                 }
                 sendFlashingBracket("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+(subsExist ? submessage : "")+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+"<br/>",key)
@@ -3595,8 +3595,8 @@ function tourprintbracket(key) {
                     if (tours.tour[key].parameters.type == "double" && x == tours.tour[key].players.length/2) {
                         roundposting = roundposting + "<tr><td></td></tr><tr><th colspan=5><font color=red>Losers Bracket</font></th></tr>"
                     }
-                    var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+")</td><td align='right'>"+html_escape(toCorrectCase(tours.tour[key].players[x]))+"</td>"
-                    var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
+                    var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+")</td><td align='right'>"+toTourName(tours.tour[key].players[x])+"</td>"
+                    var player2data = "<td>"+toTourName(tours.tour[key].players[x+1])+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
                     roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
                 }
                 sendHtmlAuthPlayers("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+"<br/>", key)
@@ -3604,8 +3604,8 @@ function tourprintbracket(key) {
             else {
                 var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+getFullTourName(key)+" Tournament</b><br/><table>";
                 for (var x=0; x<tours.tour[key].players.length; x+=2) {
-                    var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+")</td><td align='right'>"+html_escape(toCorrectCase(tours.tour[key].players[x]))+"</td>"
-                    var player2data = "<td>"+html_escape(toCorrectCase(tours.tour[key].players[x+1]))+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
+                    var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+")</td><td align='right'>"+toTourName(tours.tour[key].players[x])+"</td>"
+                    var player2data = "<td>"+toTourName(tours.tour[key].players[x+1])+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
                     roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
                 }
                 sendHtmlAuthPlayers("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+"<br/>", key)
@@ -3916,6 +3916,28 @@ function toCorrectCase(name) {
     }
     else {
         return name;
+    }
+}
+
+// Displays name in the html brackets correctly
+function toTourName(name) {
+    if (typeof name === undefined) {
+        return "";
+    }
+    if (name == "~DQ~" || name == "~Bye~") {
+        return "<span title='Disqualified, opponent advances!'><s>"+name+"</s></span>";
+    }
+    else if (isSub(name)) {
+        return "<span title='This player is a sub!'><font color=#777777>"+name+"</font></span>";
+    }
+    else if (isNaN(name) && sys.id(name) !== undefined) {
+        return html_escape(sys.name(sys.id(name)));
+    }
+    else if (sys.id(name) !== undefined) {
+        return html_escape(name);
+    }
+    else {
+        return "<span title='Player is not on the server!'><font color=#FF0000>"+html_escape(name)+"</font></span>"
     }
 }
 
