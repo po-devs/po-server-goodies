@@ -548,7 +548,8 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500p2.4",
+            version: "1.500p2.5",
+            tourbot: "\u00B1Genesect: ",
             debug: false,
             points: true
         }
@@ -582,14 +583,12 @@ function initTours() {
         reminder: parseInt(getConfigValue("tourconfig.txt", "remindertime")),
         channel: "Tournaments",
         errchannel: "Developer's Den",
-        tourbotcolour: "#3DAA68",
+        tourbotcolour: getConfigValue("tourconfig.txt", "botcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p2.4",
+        version: "1.500p2.5",
+        tourbot: getConfigValue("tourconfig.txt", "botname"),
         debug: false,
         points: true
-    }
-    if (Config.Tours.tourbot === undefined) {
-        Config.Tours.tourbot = "\u00B1Genesect: "
     }
     tourschan = sys.channelId("Tournaments");
     tourserrchan = sys.channelId("Indigo Plateau");
@@ -2046,6 +2045,7 @@ function tourCommand(src, command, commandData) {
                         }
                     }
                     Config.Tours.tourbotcolour = "#"+value
+                    sys.saveVal("tourconfig.txt", "botcolour", "#"+value)
                     sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the tourbot colour to "+Config.Tours.tourbotcolour,tourschan,false);
                     return true;
                 }
@@ -2058,7 +2058,8 @@ function tourCommand(src, command, commandData) {
                         sendBotMessage(src,"Botname can't be empty!",tourschan,false);
                         return true;
                     }
-                    Config.Tours.tourbot = value+": "
+                    Config.Tours.tourbot = value
+                    sys.saveVal("tourconfig.txt", "botname", value)
                     sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the tourbot name to "+Config.Tours.tourbot,tourschan,false);
                     return true;
                 }
@@ -2345,16 +2346,16 @@ function tourCommand(src, command, commandData) {
                 var roundtable = "<div style='margin-left: 50px'><b>Round "+tours.tour[y].round+" of the "+tours.tour[y].tourtype+" Tournament</b><table><br/>"
                 for (var x=0; x<tours.tour[y].players.length; x+=2) {
                     if (winners.indexOf(tours.tour[y].players[x]) != -1 && tours.tour[y].players[x] != "~Bye~" && tours.tour[y].players[x] != "~DQ~") {
-                        roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+html_escape(toCorrectCase(tours.tour[y].players[x])) +"</b></font></td><td align='center'> won against </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x+1]))+"</td>"
+                        roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(tours.tour[y].players[x]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td>"
                     }
                     else if (winners.indexOf(tours.tour[y].players[x+1]) != -1 && tours.tour[y].players[x+1] != "~Bye~" && tours.tour[y].players[x+1] != "~DQ~") {
-                        roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+html_escape(toCorrectCase(tours.tour[y].players[x+1])) +"</b></font></td><td align='center'> won against </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x]))+"</td>"
+                        roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(tours.tour[y].players[x+1]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(tours.tour[y].players[x])+"</td>"
                     }
                     else if (battlers.indexOf(tours.tour[y].players[x]) != -1) {
-                        roundtable = roundtable + "<tr><td align='right'>"+html_escape(toCorrectCase(tours.tour[y].players[x])) +"</td><td align='center'> <a href='po:watchPlayer/"+sys.id(tours.tour[y].players[x])+"'>is battling</a> </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x+1]))+"</td>"
+                        roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> <a href='po:watchPlayer/"+sys.id(tours.tour[y].players[x])+"'>is battling</a> </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td>"
                     }
                     else {
-                        roundtable = roundtable + "<tr><td align='right'>"+html_escape(toCorrectCase(tours.tour[y].players[x])) +"</td><td align='center'> VS </td><td>"+ html_escape(toCorrectCase(tours.tour[y].players[x+1]))+"</td>"
+                        roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> VS </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td>"
                     }
                 }
                 rounddata.push(roundtable+"</table></div>")
@@ -2972,7 +2973,7 @@ function battleend(winner, loser, key) {
                 sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+Config.Tours.tourbot+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> won their match against <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+getFullTourName(key)+" tournament! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
             }
             else {
-                sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+Config.Tours.tourbot+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> "+html_escape(tourwinmessages[sys.rand(0, tourwinmessages.length)])+" <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+getFullTourName(key)+" tournament! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
+                sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+Config.Tours.tourbot+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> "+tourwinmessages[sys.rand(0, tourwinmessages.length)]+" <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+getFullTourName(key)+" tournament! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
             }
             if (tours.tour[key].losebracket.indexOf(losename) != -1) {
                 sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+Config.Tours.tourbot+"</b></font> <b>"+html_escape(sys.name(loser))+"</b> has lost twice and is now out of the "+getFullTourName(key)+" tournament!", key)
@@ -2983,7 +2984,7 @@ function battleend(winner, loser, key) {
                 sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+Config.Tours.tourbot+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> won their match against <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+getFullTourName(key)+" tournament and advances to the next round! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
             }
             else {
-                sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+Config.Tours.tourbot+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> "+html_escape(tourwinmessages[sys.rand(0, tourwinmessages.length)])+" <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+getFullTourName(key)+" tournament and advances to the next round! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
+                sendHtmlAuthPlayers("<font color='"+Config.Tours.tourbotcolour+"'><timestamp/> <b>"+Config.Tours.tourbot+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> "+tourwinmessages[sys.rand(0, tourwinmessages.length)]+" <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+getFullTourName(key)+" tournament and advances to the next round! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
             }
         }
         if (battlesleft <= 0) {
@@ -3924,20 +3925,29 @@ function toTourName(name) {
     if (typeof name === undefined) {
         return "";
     }
+    var playerid = sys.id(name);
+    var tourid = isInTour(name);
     if (name == "~DQ~" || name == "~Bye~") {
         return "<span title='Disqualified, opponent advances!'><s>"+name+"</s></span>";
     }
     else if (isSub(name)) {
         return "<span title='This player is a sub!'><font color=#777777>"+name+"</font></span>";
     }
-    else if (isNaN(name) && sys.id(name) !== undefined) {
-        return html_escape(sys.name(sys.id(name)));
+    else if (tourid === false) {
+        return "<span title='This player is out of the tournament!'><s>"+name+"</s></span>";
     }
-    else if (sys.id(name) !== undefined) {
-        return html_escape(name);
+    else if (sys.isInChannel(playerid, tourschan) && tourid !== false) {
+        var hasReqTier = sys.hasTier(playerid, tours.tour[tourid].tourtype)
+        var htmlname = isNaN(name) ? html_escape(toCorrectCase(name)) : html_escape(name)
+        if (hasReqTier) {
+            return htmlname;
+        }
+        else {
+            return "<span title='This player doesn't have a team for the tournament!'><font color=#FF7700>"+htmlname+"</font></span>";
+        }
     }
     else {
-        return "<span title='Player is not on the server!'><font color=#FF0000>"+html_escape(name)+"</font></span>"
+        return "<span title='Player is not in the Tournament channel!'><font color=#FF0000>"+html_escape(toCorrectCase(name))+"</font></span>"
     }
 }
 
