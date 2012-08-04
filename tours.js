@@ -142,6 +142,9 @@ function addTourActivity(src) {
 // Will escape "&", ">", and "<" symbols for HTML output.
 function html_escape(text)
 {
+    if (text === undefined) {
+        return "";
+    }
     var m = text.toString();
     if (m.length > 0) {
         return m.replace(/\&/g, "&amp;").replace(/\</g, "&lt;").replace(/\>/g, "&gt;");
@@ -151,11 +154,15 @@ function html_escape(text)
 }
 
 function cmp(x1, x2) {
-    //sys.sendAll("Comparing " + JSON.stringify(x1) + " --- " + JSON.stringify(x2), staffchannel);
-    if (x1 === undefined || x2 === undefined) {
+    if (typeof x1 !== typeof x2) {
         return false;
     }
-    else if ((x1+'').toLowerCase() === (x2+'').toLowerCase()) {
+    else if (typeof x1 === "string") {
+        if (x1.toLowerCase() === x2.toLowerCase()) {
+            return true;
+        }
+    }
+    else if (x1 === x2) {
         return true;
     }
     else return false;
@@ -541,7 +548,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500p2.2",
+            version: "1.500p2.3",
             debug: false,
             points: true
         }
@@ -577,7 +584,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: "#3DAA68",
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p2.2",
+        version: "1.500p2.3",
         debug: false,
         points: true
     }
@@ -723,8 +730,12 @@ function tourStep() {
                 continue;
             }
             if (tours.tour[x].time-parseInt(sys.time()) == 60 && typeof tours.tour[x].maxplayers == "number") {
-                sendBotAll("Signups for the "+tours.tour[x].tourtype+" tournament close in 1 minute.", tourschan, false)
-                sendBotAll("Signups for the "+tours.tour[x].tourtype+" tournament close in 1 minute.", 0, false)
+                sendBotAll("Signups for the "+tours.tour[x].tourtype+" event tournament close in 1 minute.", tourschan, false)
+                sendBotAll("Signups for the "+tours.tour[x].tourtype+" event tournament close in 1 minute.", 0, false)
+            }
+            else if (tours.tour[x].time-parseInt(sys.time()) == 30) {
+                sendBotAll("Signups for the "+tours.tour[x].tourtype+" tournament close in 30 seconds.", tourschan, false)
+                sendBotAll("Signups for the "+tours.tour[x].tourtype+" tournament close in 30 seconds.", 0, false)
             }
             continue;
         }
