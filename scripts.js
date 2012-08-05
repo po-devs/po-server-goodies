@@ -762,6 +762,7 @@ var commands = {
     ],
     channel:
     [
+	"/register: To register the current channel you're on.",
         "/topic [topic]: Sets the topic of a channel. Only works if you're the first to log on a channel or have auth there. Displays current topic instead if no new one is given.",
         "/lt [name]: Kick someone from current channel.",
         "/inviteonly [on|off] [level]: Makes a channel invite-only or public, with a minimum auth level of 'level' (level is optional).",
@@ -4039,7 +4040,7 @@ channelCommand: function(src, command, commandData, tar) {
         if (poChannel.unmute(commandData)) {
             channelbot.sendChanAll(commandData + " was channel unmuted by " + nonFlashing(sys.name(src)));
         } else {
-            channelbot.sendChanMessage(src, "Couldn't find: "+commandData+".");
+            channelbot.sendChanMessage(src, commandData + " is not channel muted.");
         }
         return;
     }
@@ -4101,7 +4102,7 @@ channelCommand: function(src, command, commandData, tar) {
         if (poChannel.unban(commandData)) {
             channelbot.sendChanMessage(src, "Your target was channel unbanned.");
         } else {
-            channelbot.sendChanMessage(src, "Couldn't find: "+commandData+".");
+            channelbot.sendChanMessage(src, commandData + " is not channel banned.");
         }
         return;
     }
