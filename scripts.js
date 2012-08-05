@@ -4058,8 +4058,14 @@ channelCommand: function(src, command, commandData, tar) {
         return;
     }
 
+    var canUseMasterCommands = function() {
+	if (poChannel.isChannelMaster(src) || sys.auth(src) > 2) return true;
+	if (sys.auth(src) == 2 && command == "owner" || command == "deowner") return true;
+	return false;
+    }
+
     // followign commands only for Channel Masters
-    if (!poChannel.isChannelMaster(src) && !isSuperAdmin(src) && sys.auth(src) <= 2)
+    if (!canUseMasterCommands())
         return "no command";
 
     if (command == "ctoggleflood") {
