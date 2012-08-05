@@ -544,8 +544,8 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#CC0044",
             minpercent: 5,
-            version: "1.500p2.8",
-            tourbot: "Shanai: ",
+            version: "1.500p2.9",
+            tourbot: "\u00B1Genesect: ",
             debug: false,
             points: true
         }
@@ -581,7 +581,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p2.8",
+        version: "1.500p2.9",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -2029,7 +2029,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     Config.Tours.tourbot = value+" "
-                    sys.saveVal("tourconfig.txt", "tourbot", value)
+                    sys.saveVal("tourconfig.txt", "tourbot", value+" ")
                     sendAllTourAuth(Config.Tours.tourbot+sys.name(src)+" set the tourbot name to "+Config.Tours.tourbot,tourschan,false);
                     return true;
                 }
