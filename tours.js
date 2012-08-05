@@ -12,6 +12,7 @@ if (typeof tours !== "object") {
     tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": [], "eventnames": []}
 }
 
+var utilities = require('utilities.js');
 var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
 var htmlborder = "<font color=#3DAA68><b>"+border+"</b></font>";
 // Event tournaments highlighted in red
@@ -140,18 +141,10 @@ function addTourActivity(src) {
 }
 
 // Will escape "&", ">", and "<" symbols for HTML output.
-function html_escape(text)
-{
-    if (text === undefined) {
-        return "";
-    }
-    var m = text.toString();
-    if (m.length > 0) {
-        return m.replace(/\&/g, "&amp;").replace(/\</g, "&lt;").replace(/\>/g, "&gt;");
-    }else{
-        return "";
-    }
-}
+html_escape = utilities.html_escape;
+
+// Channel function
+getChan = utilities.get_or_create_channel;
 
 function cmp(x1, x2) {
     if (typeof x1 !== typeof x2) {
@@ -174,6 +167,9 @@ function getFullTourName(key) {
     }
     else return tours.tour[key].tourtype;
 }
+
+// Finds a tier
+find_tier = utilities.find_tier;
 
 function modeOfTier(tier) {
     if (tier.indexOf("Doubles") != -1 || ["JAA", "VGC 2009", "VGC 2010", "VGC 2011", "VGC 2012"].indexOf(tier) != -1) {
@@ -664,17 +660,8 @@ function getEventTour(datestring) {
         }
         else {
             if (data[0] == datestring) {
-                var thetier = data[1];
-                var tiers = sys.getTierList()
-                var found = false;
-                for (var x in tiers) {
-                    if (cmp(tiers[x], thetier)) {
-                        var tourtier = tiers[x];
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
+                var thetier = find_tier(data[1]);
+                if (thetier === null) {
                     continue;
                 }
                 var maxplayers = parseInt(data[2]);
@@ -687,7 +674,7 @@ function getEventTour(datestring) {
                     if (data[3] == "no")
                         scoring = false;
                 }
-                return [tourtier, maxplayers, scoring];
+                return [thetier, maxplayers, scoring];
             }
         }
     }
@@ -1028,16 +1015,8 @@ function tourCommand(src, command, commandData) {
                         var rankdata = sys.getFileContent("tourscores.txt")
                     }
                     else {
-                        var tiers = sys.getTierList()
-                        var found = false;
-                        for (var x in tiers) {
-                            if (tiers[x].toLowerCase() == commandData.toLowerCase()) {
-                                var tourtier = tiers[x];
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) {
+                        var tourtier = find_tier(commandData)
+                        if (tourtier === null) {
                             throw ("Not a valid tier")
                         }
                         var rankdata = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
@@ -1402,17 +1381,8 @@ function tourCommand(src, command, commandData) {
         if (isTourAdmin(src)) {
             if (command == "tour" || ((command == "tourstart" || command == "shift") && isTourSuperAdmin(src))) {
                 var data = commandData.split(":",2)
-                var thetier = data[0].toLowerCase()
-                var tiers = sys.getTierList()
-                var found = false;
-                for (var x in tiers) {
-                    if (tiers[x].toLowerCase() == thetier) {
-                        var tourtier = tiers[x];
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
+                var tourtier = find_tier(data[0])
+                if (tourtier === null) {
                     sendBotMessage(src, "The tier '"+commandData+"' doesn't exist! Make sure the tier is typed out correctly and that it exists.", tourschan, false)
                     return true;
                 }
@@ -1436,7 +1406,7 @@ function tourCommand(src, command, commandData) {
                 var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"];
                 var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": detiers.indexOf(tourtier) == -1 ? "single" : "double", "maxplayers": false};
                 if (data.length > 1) {
-                    var parameterdata = data[1].split(" ");
+                    var parameterdata = data[1].split("*");
                     for (var p in parameterdata) {
                         var parameterinfo = parameterdata[p].split("=",2);
                         var parameterset = parameterinfo[0]
@@ -2492,16 +2462,8 @@ function tourCommand(src, command, commandData) {
                     var rankdata = sys.getFileContent("tourscores.txt")
                 }
                 else {
-                    var tiers = sys.getTierList()
-                    var found = false;
-                    for (var x in tiers) {
-                        if (tiers[x].toLowerCase() == commandData.toLowerCase()) {
-                            var tourtier = tiers[x];
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
+                    var tourtier = find_tier(commandData)
+                    if (tourtier === null) {
                         throw ("Not a valid tier")
                     }
                     var rankdata = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
