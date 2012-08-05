@@ -362,7 +362,7 @@ POChannel.prototype.setTopic = function(src, topicInfo)
 
 POChannel.prototype.isChannelMaster = function(id)
 {
-    return this.masters.indexOf(sys.name(id).toLowerCase()) > -1;
+    return this.masters.indexOf(sys.name(id).toLowerCase()) > -1 || sys.auth(id) > 1;
 };
 POChannel.prototype.isChannelOperator = function(id)
 {
@@ -4331,7 +4331,7 @@ beforeChatMessage: function(src, message, chan) {
             }
         }
 
-        if (sys.auth(src) > 2 || isSuperAdmin(src) || SESSION.channels(channel).isChannelOperator(src)) {
+        if (sys.auth(src) > 1 || isSuperAdmin(src) || SESSION.channels(channel).isChannelOperator(src)) {
             if (this.channelCommand(src, command, commandData, tar) != "no command") {
                 return;
             }
