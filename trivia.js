@@ -1233,7 +1233,7 @@ exports.onMute = function trivia_onMute(src){
 };
 exports.beforeChannelJoin = function trivia_beforeChannelJoin(src, channel) {
     /* Prevent channel join */
-    if (channel == revchan && sys.auth(src) < 1 && !tadmin.isTAdmin(sys.name(src).toLowerCase()))
+    if (channel == revchan && sys.auth(src) < 1 && !tadmin.isTAdmin(sys.name(src).toLowerCase()) && SESSION.users(src).contributions == undefined)
     {
         sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
         sys.stopEvent();
