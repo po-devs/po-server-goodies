@@ -4281,6 +4281,12 @@ function dumpVars(src) {
 // end tournament functions
 // module functions
 
+exports = {
+    canJoinSAChan : function(src) {
+        return isTourAdmin(src);
+    }
+}
+
 module.exports = {
     handleCommand: function(source, message, channel) {
         var command;
@@ -4354,6 +4360,15 @@ module.exports = {
     beforeChatMessage : function(src, message, channel) {
         if (isTourMuted(src) && !isTourAdmin(src) && channel === tourschan) {
             sendBotMessage(src,"You are tourmuted by "+tours.tourmutes[sys.ip(src)].auth+". This expires in "+time_handle(tours.tourmutes[sys.ip(src)].expiry-parseInt(sys.time()))+". [Reason: "+tours.tourmutes[sys.ip(src)].reason+"]",tourschan,false)
+            return true;
+        }
+        else if (/<3/.test(message) && channel === tourschan) {
+            var newmessage = message.replace(/<3/g, "");
+            if (newmessage.replace(" ", "").length === 0) {
+                return true;
+            }
+            sys.sendAll(sys.name(src)+": "+newmessage, channel);
+            script.afterChatMessage(src, message, channel);
             return true;
         }
         else return false;
