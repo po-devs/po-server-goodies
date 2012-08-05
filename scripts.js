@@ -4058,8 +4058,14 @@ channelCommand: function(src, command, commandData, tar) {
         return;
     }
 
+    var canUseMasterCommands = function() {
+	if (poChannel.isChannelMaster(src) || isSuperAdmin(src) || sys.auth(src) > 2) return true;
+	if (sys.auth(src) == 2 && command == "owner" || command == "deowner") return true;
+	return false;
+    }
+
     // followign commands only for Channel Masters
-    if (!poChannel.isChannelMaster(src) && !isSuperAdmin(src) && sys.auth(src) <= 2)
+    if (!canUseMasterCommands())
         return "no command";
 
     if (command == "ctoggleflood") {
@@ -4223,7 +4229,7 @@ beforeChatMessage: function(src, message, chan) {
                 }
             }
         }
-        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, /\u00AD/, "nobrain.dk", /\bn[1i]gg+ers*\b/i,  "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----"];
+        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, /\u00AD/, "nobrain.dk", /\bn[1i]gg+ers*\b/i,  "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----", "╬═╬";
         for (var i = 0; i < BanList.length; ++i) {
             var filter = BanList[i];
             if (typeof filter == "string" && m.indexOf(filter) != -1 || typeof filter == "function" && filter.test(m)) {
