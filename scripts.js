@@ -466,9 +466,11 @@ POChannel.prototype.canTalk = function(id)
 POChannel.prototype.disallow = function(data, what)
 {
     var id = sys.id(data);
-    var ip = id ? sys.ip(id) : sys.dbIp(data);
+    var ip = id ? sys.ip(id) : sys.dbIp(data), name = id ? sys.name(id) : data;
     if (ip) {
-        this[what].ips[ip] = data;
+        this[what].ips[ip] = {
+		'name' : name
+	};
         return true;
     }
     return false;
@@ -1427,6 +1429,9 @@ afterChannelJoin : function(player, chan) {
     }
     if (SESSION.channels(chan).isChannelOperator(player)) {
         sys.sendMessage(player, Config.channelbot + ": use /topic <topic> to change the welcome message of this channel", chan);
+    }
+    if (SESSION.channels(chan).masters.length <= 0) {
+	sys.sendMessage(player, Config.channelbot + ": This channel is unregistered. If you're looking to own this channel, type /register in order to prevent your channel from being stolen.", chan);
     }
 	callplugins("afterChannelJoin", player, chan);
 }, /* end of afterChannelJoin */
@@ -4040,9 +4045,11 @@ channelCommand: function(src, command, commandData, tar) {
     }
 
     if (command == "cmutes") {
-        var data = ["Following mutes in effect: "];
-        for (var ip in poChannel.muted.ips) {
-            data.push(ip + ", ");
+        var data = ["Following mutes in effect: "], muted = poChannel.muted.ips;
+	var muted = poChannel.muted.ips;
+        for (var ip in muted) {
+	    name = (muted[ip].name !== undefined) ? muted[ip].name : poChannel.allow(ip, "muted");
+            data.push(name + ",");
         }
         channelbot.sendChanMessage(src, data.join(""));
         return;
@@ -4050,9 +4057,10 @@ channelCommand: function(src, command, commandData, tar) {
 
 
     if (command == "cbans") {
-        var data = ["Following bans in effect: "];
-        for (var ip in poChannel.banned.ips) {
-            data.push(ip + ", ");
+        var data = ["Following bans in effect: "], banned = poChannel.banned.ips;
+        for (var ip in banned) {
+	    name = (banned[ip].name !== undefined) ? banned[ip].name : poChannel.allow(ip, "banned");
+            data.push(name + ",");
         }
         channelbot.sendChanMessage(src, data.join(""));
         return;
