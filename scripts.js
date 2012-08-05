@@ -4047,7 +4047,6 @@ channelCommand: function(src, command, commandData, tar) {
 
     if (command == "cmutes") {
         var data = ["Following mutes in effect: "], muted = poChannel.muted.ips;
-	var muted = poChannel.muted.ips;
         for (var ip in muted) {
 	    name = (muted[ip].name !== undefined) ? muted[ip].name : poChannel.allow(ip, "muted");
             data.push(name + ",");
@@ -4331,7 +4330,7 @@ beforeChatMessage: function(src, message, chan) {
             }
         }
 
-        if (sys.auth(src) > 1 || isSuperAdmin(src) || SESSION.channels(channel).isChannelOperator(src)) {
+        if (sys.auth(src) > 1 || SESSION.channels(channel).isChannelOperator(src)) {
             if (this.channelCommand(src, command, commandData, tar) != "no command") {
                 return;
             }

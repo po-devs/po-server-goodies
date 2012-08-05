@@ -582,7 +582,8 @@ TriviaAdmin.prototype.saveAdmins = function() {
 
 TriviaAdmin.prototype.isTAdmin = function(name)
 {
-    return this.admins.indexOf(name) != -1;
+    var contribs = (sys.id(name) !== undefined) ? SESSION.users(sys.id(name)).contributions !== undefined : false;
+    return this.admins.indexOf(name) != -1 || contribs == true;
 };
 
 TriviaAdmin.prototype.tAdminList = function(src,id)
