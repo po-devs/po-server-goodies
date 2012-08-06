@@ -4350,8 +4350,16 @@ module.exports = {
         }
         else if (/<3/.test(message) && channel === tourschan) {
             var newmessage = message.replace(/<3/g, "");
-            if (newmessage.replace(" ", "").length === 0) {
-                return true;
+            for (var x=0; x<4096; x++) {
+                if (/<3/.test(newmessage)) {
+                    newmessage = newmessage.replace(/<3/g, "");
+                    if (newmessage.replace(" ", "").length === 0) {
+                        return true;
+                    }
+                }
+                else {
+                    break;
+                }
             }
             sys.sendAll(sys.name(src)+": "+newmessage, channel);
             script.afterChatMessage(src, message, channel);
