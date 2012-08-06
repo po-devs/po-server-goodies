@@ -313,7 +313,7 @@ POUser.prototype.un = function(thingy) {
 function POChannel(id)
 {
     this.id = id;
-    this.owners = []; // can add admins
+    this.masters = []; // can add admins
     this.admins = []; // can ban, add mods, change invite level
     this.mods = []; // can mute, silence, kick
     this.members = []; // people that can join

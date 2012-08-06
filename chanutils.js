@@ -33,7 +33,7 @@ function isChannelOwner(playerId, chanId) {
     if (sys.auth(playerId) >= 3) {
         return true;
     }
-    if (SESSION.channels(chanId).owners.indexOf(sys.name(playerId).toLowerCase()) > -1) {
+    if (SESSION.channels(chanId).masters.indexOf(sys.name(playerId).toLowerCase()) > -1) {
         return true;
     }
     return false;
@@ -98,6 +98,10 @@ function isChannelBanned(playerId, chanId) {
     var ip = sys.ip(playerId);
     var name = sys.name(playerId);
     for (var x in banlist) {
+        if (!banlist[x].hasOwnProperty("expiry")) {
+            delete SESSION.channels(chanId).banned[x];
+            continue;
+        }
         if (banlist[x].expiry <= parseInt(sys.time())) {
             delete SESSION.channels(chanId).banned[x];
             continue;
@@ -120,6 +124,10 @@ function isChannelMuted(playerId, chanId) {
     var ip = sys.ip(playerId);
     var name = sys.name(playerId);
     for (var x in mutelist) {
+        if (!mutelist[x].hasOwnProperty("expiry")) {
+            delete SESSION.channels(chanId).muted[x];
+            continue;
+        }
         if (mutelist[x].expiry <= parseInt(sys.time())) {
             delete SESSION.channels(chanId).muted[x];
             continue;
@@ -197,19 +205,23 @@ function getReadableList(type, chanId) {
         var t = parseInt(sys.time(), 10);
         var toDelete = [];
         for (var x in mh) {
+            if (!mh[x].hasOwnProperty("expiry")) {
+                continue;
+            }
             var playername = utilities.html_escape(x);
             var expirytime = isNaN(mh[x].expiry) ? "never" : mh[x].expiry-parseInt(sys.time());
             if (expirytime <= 0) {
                 continue;
             }
+            var issuetime = getTimeString(parseInt(sys.time())-mh[x].issuetime);
             var auth = utilities.html_escape(mh[x].auth);
             var reason = utilities.html_escape(mh[x].reason);
-            tmp.push([playername, auth, isNaN(mh[x].expiry) ? expirytime : getTimeString(expirytime), reason])
+            tmp.push([playername, auth, issuetime, isNaN(mh[x].expiry) ? expirytime : getTimeString(expirytime), reason])
         }
         tmp.sort(function(a,b) { return a[2] - b[2];});
 
         // generate HTML
-        var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + utilities.html_escape(name) + '</strong></center></td></tr><tr><th>Name</th><th>By</th><th>Expires in</th><th>Reason</th>';
+        var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + utilities.html_escape(name) + '</strong></center></td></tr><tr><th>Name</th><th>By</th><th>Issued ago</th><th>Expires in</th><th>Reason</th>';
         var table_footer = '</table>';
         var table = table_header;
         var line;
@@ -286,20 +298,20 @@ function changeParameter(src, parameter, value, chanId) {
 function addGroup(src, tar, group, chanId, data) {
     var name = tar.toLowerCase();
     if (group == "owner") {
-        if (SESSION.channels(chanId).owners.indexOf(name) > -1) {
+        if (SESSION.channels(chanId).masters.indexOf(name) > -1) {
             return ["self", tar.toCorrectCase()+" is already a channel owner!"];
         }
-        if (SESSION.channels(chanId).owners.length > 10) {
+        if (SESSION.channels(chanId).masters.length > 10) {
             return ["self", "There is a limit of 10 owners!"];
         }
-        SESSION.channels(chanId).owners.push(name);
+        SESSION.channels(chanId).masters.push(name);
         return ["all", sys.name(src)+" made "+tar.toCorrectCase()+" a channel owner!"];
     }
     if (group == "admin") {
         if (SESSION.channels(chanId).admins.indexOf(name) > -1) {
             return ["self", tar.toCorrectCase()+" is already a channel admin!"];
         }
-        if (SESSION.channels(chanId).owners.length > 50) {
+        if (SESSION.channels(chanId).admins.length > 50) {
             return ["self", "There is a limit of 50 admins!"];
         }
         SESSION.channels(chanId).admins.push(name);
@@ -309,7 +321,7 @@ function addGroup(src, tar, group, chanId, data) {
         if (SESSION.channels(chanId).mods.indexOf(name) > -1) {
             return ["self", tar.toCorrectCase()+" is already a channel mod!"];
         }
-        if (SESSION.channels(chanId).owners.length > 100) {
+        if (SESSION.channels(chanId).mods.length > 100) {
             return ["self", "There is a limit of 100 mods!"];
         }
         SESSION.channels(chanId).mods.push(name);
@@ -319,7 +331,7 @@ function addGroup(src, tar, group, chanId, data) {
         if (SESSION.channels(chanId).members.indexOf(name) > -1) {
             return ["self", tar.toCorrectCase()+" is already a member!"];
         }
-        if (SESSION.channels(chanId).owners.length > 250) {
+        if (SESSION.channels(chanId).members.length > 250) {
             return ["self", "There is a limit of 250 members!"];
         }
         SESSION.channels(chanId).members.push(name);
@@ -332,7 +344,7 @@ function addGroup(src, tar, group, chanId, data) {
         if (!hasPermission(src, tar, chanId)) {
             return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel mute them!"];
         }
-        SESSION.channels(chanId).muted[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "auth": sys.name(src), "reason": data.reason !== "" ? data.reason : "N/A" };
+        SESSION.channels(chanId).muted[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "issuetime": parseInt(sys.time()), "auth": sys.name(src), "reason": data.reason !== "" ? data.reason : "N/A" };
         var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
         return ["all", sys.name(src)+" muted "+tar.toCorrectCase()+timestring+" in this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
     }
@@ -343,7 +355,7 @@ function addGroup(src, tar, group, chanId, data) {
         if (!hasPermission(src, tar, chanId)) {
             return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel ban them!"];
         }
-        SESSION.channels(chanId).banned[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "auth": sys.name(src), "reason": data.reason !== "" ? data.reason : "N/A" };
+        SESSION.channels(chanId).banned[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "issuetime": parseInt(sys.time()), "auth": sys.name(src), "reason": data.reason !== "" ? data.reason : "N/A" };
         var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
         return ["all", sys.name(src)+" banned "+tar.toCorrectCase()+timestring+" from this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
     }
@@ -352,11 +364,11 @@ function addGroup(src, tar, group, chanId, data) {
 function removeGroup(src, tar, group, chanId) {
     var name = tar.toLowerCase();
     if (group == "owner") {
-        if (SESSION.channels(chanId).owners.indexOf(name) == -1) {
+        if (SESSION.channels(chanId).masters.indexOf(name) == -1) {
             return ["self", tar.toCorrectCase()+" is not a channel owner!"];
         }
-        var index = SESSION.channels(chanId).owners.indexOf(name);
-        SESSION.channels(chanId).owners.splice(index,1);
+        var index = SESSION.channels(chanId).masters.indexOf(name);
+        SESSION.channels(chanId).masters.splice(index,1);
         return ["all", sys.name(src)+" removed "+tar.toCorrectCase()+" from the channel owner list!"];
     }
     if (group == "admin") {
@@ -422,7 +434,7 @@ function chanMaxAuth(ip, chan) {
     }
     var aliases = sys.aliases(ip);
     for (var x in aliases) {
-        if (SESSION.channels(chan).owners.indexOf(aliases[x]) > -1) {
+        if (SESSION.channels(chan).masters.indexOf(aliases[x]) > -1) {
             maxauth = 3;
         }
         else if (SESSION.channels(chan).admins.indexOf(aliases[x]) > -1 && maxauth < 2) {
