@@ -4122,9 +4122,10 @@ beforeChatMessage: function(src, message, chan) {
      if(message.substr(0, 1) == '%')
 	 {
 	     if(sys.id('JiraBot') != undefined)
-	     sys.sendMessage(sys.id('JiraBot'), src+": "+message, chan);
+	     sys.sendMessage(sys.id('JiraBot'), sys.name(src)+": "+message, chan);
 		 if(sys.id('PolkaBot') != undefined)
-		 sys.sendMessage(sys.id('PolkaBot'), src+" "+message, chan);
+		 sys.sendMessage(sys.id('PolkaBot'), sys.name(src)+": "+message, chan);
+		 sys.stopEvent();
 		 return;
 	 }
     channel = chan;
