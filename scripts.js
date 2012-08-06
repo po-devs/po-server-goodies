@@ -397,50 +397,20 @@ POChannel.prototype.takeAuth = function(src, name, group)
     }
 };
 
-POChannel.prototype.addMember = function(src, name)
+POChannel.prototype.addRole = function(src, name, role)
 {
-    this.issueAuth(src, name, "member");
+    this.issueAuth(src, name, role);
 };
 
-POChannel.prototype.removeMember = function(src, name)
+POChannel.prototype.removeRole = function(src, name, role)
 {
-    this.takeAuth(src, name, "member");
-};
-
-POChannel.prototype.addOperator = function(src, name)
-{
-    this.issueAuth(src, name, "mod");
-};
-
-POChannel.prototype.removeOperator = function(src, name)
-{
-    this.takeAuth(src, name, "mod");
-};
-
-POChannel.prototype.addAdmin = function(src, name)
-{
-    this.issueAuth(src, name, "admin");
-};
-
-POChannel.prototype.removeAdmin = function(src, name)
-{
-    this.takeAuth(src, name, "admin");
-};
-
-POChannel.prototype.addOwner = function(src, name)
-{
-    this.issueAuth(src, name, "owner");
-};
-
-POChannel.prototype.removeOwner = function(src, name)
-{
-    this.takeAuth(src, name, "owner");
+    this.takeAuth(src, name, role);
 };
 
 POChannel.prototype.register = function(name)
 {
-    if (this.owners.length === 0) {
-        this.owners.push(name.toLowerCase());
+    if (this.masters.length === 0) {
+        this.masters.push(name.toLowerCase());
         SESSION.global().channelManager.update(this.id);
         return true;
     }
@@ -542,7 +512,7 @@ POChannelManager.prototype.copyAttrs = [
     "members",
     "mods",
     "admins",
-    "owners",
+    "masters",
     "invitelevel",
     "muteall",
     "meon",
@@ -768,7 +738,7 @@ var commands = {
         "/deinvite [name]: Removes a user from a private channel.",
         "/csilence [minutes]: Prevents authless users from talking in current channel specified time.",
         "/csilenceoff: Allows users to talk in current channel.",
-        "/cmute [name]: Mutes someone in current channel.",
+        "/cmute [name]:[reason]:[time]: Mutes someone in current channel (reason and time optional).",
         "/cunmute [name]: Unmutes someone in current channel.",
         "/cmutes: Lists users muted in current channel.",
         "*** Only channel admins may use the following commands ***",
@@ -777,7 +747,7 @@ var commands = {
         "/deop [name]: Removes channel operator status from a user.",
         "/ctogglecaps: Turns on/off the server anti-caps bot in current channel.",
         "/ctoggleflood: Turns on/off the server anti-flood bot in current channel. Overactive still in effect.",
-        "/cban [name]: Bans someone from current channel.",
+        "/cban [name]:[reason]:[time]: Bans someone from current channel (reason and time optional).",
         "/cunban [name]: Unbans someone from current channel.",
         "/enabletours: Allows tours to be run in the channel.",
         "/disabletours: Stops tours being run in the channel.",
@@ -1427,7 +1397,7 @@ afterChannelJoin : function(player, chan) {
     if (SESSION.channels(chan).isChannelOperator(player)) {
         sys.sendMessage(player, Config.channelbot + ": use /topic <topic> to change the welcome message of this channel", chan);
     }
-    if (SESSION.channels(chan).owners.length <= 0) {
+    if (SESSION.channels(chan).masters.length <= 0) {
         sys.sendMessage(player, Config.channelbot + ": This channel is unregistered. If you're looking to own this channel, type /register in order to prevent your channel from being stolen.", chan);
     }
     callplugins("afterChannelJoin", player, chan);
@@ -2158,12 +2128,12 @@ userCommand: function(src, command, commandData, tar) {
             SESSION.channels(channel).mods = [];
         if (typeof SESSION.channels(channel).admins != 'object')
             SESSION.channels(channel).admins = [];
-        if (typeof SESSION.channels(channel).owners != 'object')
-            SESSION.channels(channel).owners = [];
+        if (typeof SESSION.channels(channel).masters != 'object')
+            SESSION.channels(channel).masters = [];
         if (typeof SESSION.channels(channel).members != 'object')
             SESSION.channels(channel).members = [];
         channelbot.sendChanMessage(src, "The channel members of " + sys.channel(channel) + " are:");
-        channelbot.sendChanMessage(src, "Owners: " + SESSION.channels(channel).owners.join(", "));
+        channelbot.sendChanMessage(src, "Owners: " + SESSION.channels(channel).masters.join(", "));
         channelbot.sendChanMessage(src, "Admins: " + SESSION.channels(channel).admins.join(", "));
         channelbot.sendChanMessage(src, "Operators: " + SESSION.channels(channel).mods.join(", "));
         if (SESSION.channels(channel).invitelevel >= 1) {
@@ -3934,11 +3904,11 @@ channelCommand: function(src, command, commandData, tar) {
         if (!sys.isInChannel(tar, channel)) {
             normalbot.sendMessage(tar, "" + sys.name(src) + " would like you to join #" + sys.channel(channel) + "!");
         }
-        poChannel.addMember(src, commandData);
+        poChannel.addRole(src, commandData, "member");
         return;
     }
     if (command == "deinvite") {
-        poChannel.removeMember(src, commandData);
+        poChannel.removeRole(src, commandData, "member");
         return;
     }
     if (command == "inviteonly") {
@@ -4034,12 +4004,12 @@ channelCommand: function(src, command, commandData, tar) {
     }
 
     if (command == "op") {
-        poChannel.addOperator(src, commandData);
+        poChannel.addRole(src, commandData, "mod");
         return;
     }
 
     if (command == "deop") {
-        poChannel.removeOperator(src, commandData);
+        poChannel.removeRole(src, commandData, "mod");
         return;
     }
 
@@ -4087,10 +4057,10 @@ channelCommand: function(src, command, commandData, tar) {
     }
     if (command == "deregister") {
         if (commandData === "") {
-            poChannel.removeOwner(src, sys.name(src));
+            poChannel.removeRole(src, sys.name(src), "owner");
         }
         else {
-            poChannel.removeOwner(src, commandData);
+            poChannel.removeRole(src, commandData, "owner");
         }
         return;
     }
@@ -4098,19 +4068,19 @@ channelCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "admin") {
-        poChannel.addAdmin(src, commandData);
+        poChannel.addRole(src, commandData, "admin");
         return;
     }
     if (command == "deadmin") {
-        poChannel.removeAdmin(src, commandData);
+        poChannel.removeRole(src, commandData, "admin");
         return;
     }
     if (command == "owner") {
-        poChannel.addOwner(src, commandData);
+        poChannel.addRole(src, commandData, "owner");
         return;
     }
     if (command == "deowner") {
-        poChannel.removeOwner(src, commandData);
+        poChannel.removeRole(src, commandData, "owner");
         return;
     }
     return "no command";
