@@ -2139,6 +2139,7 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "cjoin") {
+		// join a channel
         var chan;
         if (sys.existChannel(commandData)) {
             chan = sys.channelId(commandData);
