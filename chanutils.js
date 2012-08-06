@@ -297,6 +297,12 @@ function changeParameter(src, parameter, value, chanId) {
 
 function addGroup(src, tar, group, chanId, data) {
     var name = tar.toLowerCase();
+    if (sys.dbIp(tar) === undefined) {
+        return ["self", "The user '"+tar.toCorrectCase()+"' doesn't exist!"];
+    }
+    if (!sys.dbRegistered(tar) && ["owner", "admin", "mod"].indexOf(group) != -1) {
+        return ["self", "The user '"+tar.toCorrectCase()+"' is not registered so you can't give them channel authority!"];
+    }
     if (group == "owner") {
         if (SESSION.channels(chanId).masters.indexOf(name) > -1) {
             return ["self", tar.toCorrectCase()+" is already a channel owner!"];
