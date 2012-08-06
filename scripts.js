@@ -679,7 +679,7 @@ function getplugins() {
     return SESSION.global().getplugins.apply(SESSION.global(), arguments);
 }
 
-SESSION.identifyScriptAs("PO Scripts v0.99");
+SESSION.identifyScriptAs("PO Scripts v0.991");
 SESSION.registerGlobalFactory(POGlobal);
 SESSION.registerUserFactory(POUser);
 SESSION.registerChannelFactory(POChannel);
