@@ -84,7 +84,7 @@ function canJoin(playerId, chanId) {
 
 function canSpeak(playerId, chanId) {
     if (isChannelMuted(playerId, chanId)) {
-        return "false";
+        return false;
     }
     return true;
 }
