@@ -73,13 +73,13 @@ function canJoin(playerId, chanId) {
     if (isChannelBanned(playerId, chanId)) {
         return "banned";
     }
-    if (SESSION.channels(chanId).inviteonly <= sys.auth(playerId)) {
+    if (isChannelMod(playerId, chanId)) {
         return "allowed";
     }
     if (SESSION.channels(chanId).members.indexOf(sys.name(playerId).toLowerCase()) > -1) {
         return "allowed";
     }
-    return "denied";
+    return "nil";
 }
 
 function canSpeak(playerId, chanId) {
@@ -297,6 +297,7 @@ function changeParameter(src, parameter, value, chanId) {
 
 function addGroup(src, tar, group, chanId, data) {
     var name = tar.toLowerCase();
+    var auth = typeof src == "string" ? src : sys.name(src);
     if (sys.dbIp(tar) === undefined) {
         return ["self", "The user '"+tar.toCorrectCase()+"' doesn't exist!"];
     }
@@ -350,9 +351,9 @@ function addGroup(src, tar, group, chanId, data) {
         if (!hasPermission(src, tar, chanId)) {
             return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel mute them!"];
         }
-        SESSION.channels(chanId).muted[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "issuetime": parseInt(sys.time()), "auth": sys.name(src), "reason": data.reason !== "" ? data.reason : "N/A" };
+        SESSION.channels(chanId).muted[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "issuetime": parseInt(sys.time()), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
         var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
-        return ["all", sys.name(src)+" muted "+tar.toCorrectCase()+timestring+" in this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
+        return ["all", auth+" muted "+tar.toCorrectCase()+timestring+" in this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
     }
     if (group == "banned") {
         if (isPunished(name, chanId) === "banned") {
@@ -361,9 +362,9 @@ function addGroup(src, tar, group, chanId, data) {
         if (!hasPermission(src, tar, chanId)) {
             return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel ban them!"];
         }
-        SESSION.channels(chanId).banned[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "issuetime": parseInt(sys.time()), "auth": sys.name(src), "reason": data.reason !== "" ? data.reason : "N/A" };
+        SESSION.channels(chanId).banned[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "issuetime": parseInt(sys.time()), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
         var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
-        return ["all", sys.name(src)+" banned "+tar.toCorrectCase()+timestring+" from this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
+        return ["all", auth+" banned "+tar.toCorrectCase()+timestring+" from this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
     }
 }
 
@@ -420,14 +421,19 @@ function removeGroup(src, tar, group, chanId) {
 // src is a player id, tar is name
 function hasPermission(src, tar, chan) {
     var srcauth = 0;
-    if (isChannelOwner(src, chan)) {
-        srcauth = 3;
-    }
-    else if (isChannelAdmin(src, chan)) {
-        srcauth = 2;
-    }
-    else if (isChannelMod(src, chan)) {
+    if (typeof src == "string") {
         srcauth = 1;
+    }
+    else {
+        if (isChannelOwner(src, chan)) {
+            srcauth = 3;
+        }
+        else if (isChannelAdmin(src, chan)) {
+            srcauth = 2;
+        }
+        else if (isChannelMod(src, chan)) {
+            srcauth = 1;
+        }
     }
     var tarauth = chanMaxAuth(sys.dbIp(tar), chan);
     return srcauth > tarauth;

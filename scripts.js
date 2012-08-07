@@ -431,7 +431,8 @@ POChannel.prototype.ban = function(src, tar, data)
 {
     var ret = chanutils.addGroup(src, tar, "banned", this.id, data);
     if (ret[0] == "self") {
-        channelbot.sendChanMessage(src, ret[1]);
+        if (typeof src == "number")
+            channelbot.sendChanMessage(src, ret[1]);
     }
     else {
         channelbot.sendChanAll(ret[1]);
@@ -465,7 +466,8 @@ POChannel.prototype.mute = function(src, tar, data)
 {
     var ret = chanutils.addGroup(src, tar, "muted", this.id, data);
     if (ret[0] == "self") {
-        channelbot.sendChanMessage(src, ret[1]);
+        if (typeof src == "number")
+            srcchannelbot.sendChanMessage(src, ret[1]);
     }
     else {
         channelbot.sendChanAll(ret[1]);
@@ -2140,7 +2142,7 @@ userCommand: function(src, command, commandData, tar) {
         channelbot.sendChanMessage(src, "Owners: " + SESSION.channels(channel).masters.join(", "));
         channelbot.sendChanMessage(src, "Admins: " + SESSION.channels(channel).admins.join(", "));
         channelbot.sendChanMessage(src, "Operators: " + SESSION.channels(channel).mods.join(", "));
-        if (SESSION.channels(channel).invitelevel >= 1) {
+        if (SESSION.channels(channel).invitelevel >= 1 || SESSION.channels(channel).members.length >= 1) {
             channelbot.sendChanMessage(src, "Members: " + SESSION.channels(channel).members.join(", "));
         }
         return;
@@ -4475,14 +4477,14 @@ afterChatMessage : function(src, message, chan)
     var ignoreUsers = ["nixeagle"];
     var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1 && !poChannel.isChannelOperator(src);
     var officialChan = true;
-    if (channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel != sys.channelId("Trivia") && channel != trollchannel){
+    if (channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel !== sys.channelId("Trivia") && channel !== trollchannel){
         officialChan = false;
     }
     var capsday = false;
     if (typeof CAPSLOCKDAYALLOW != 'undefined') {
         capsday = CAPSLOCKDAYALLOW;
     }
-    if (!poChannel.ignorecaps && this.isMCaps(message) && userMayGetPunished && !capsday && officialChan) {
+    if (!poChannel.ignorecaps && this.isMCaps(message) && userMayGetPunished && !capsday) {
         user.caps += 3;
         if (user.caps >= 9 && !user.mute.active) {
 
@@ -4492,17 +4494,24 @@ afterChatMessage : function(src, message, chan)
             ++user.capsmutes;
 
             var message = "" + sys.name(src) + " was muted for caps for " + (time/60) + " minutes.";
-            if (user.smute.active) {
-                sys.sendMessage(src, message);
-                capsbot.sendAll("" + sys.name(src) + " was muted for caps while smuted.", staffchannel);
-            } else {
-                capsbot.sendChanAll(message);
-                if (channel != staffchannel)
-                    capsbot.sendAll(message + "[Channel: "+sys.channel(channel) + "]", staffchannel);
+            if (officialChan) {
+                if (user.smute.active) {
+                    sys.sendMessage(src, message);
+                    capsbot.sendAll("" + sys.name(src) + " was muted for caps while smuted.", staffchannel);
+                } else {
+                    capsbot.sendChanAll(message);
+                    if (channel != staffchannel)
+                        capsbot.sendAll(message + "[Channel: "+sys.channel(channel) + "]", staffchannel);
+                }
             }
             var endtime = user.mute.active ? user.mute.expires + time : parseInt(sys.time(), 10) + time;
-            user.activate("mute", Config.capsbot, endtime, "Overusing CAPS", true);
-            callplugins("onMute", src);
+            if (officialChan) {
+                user.activate("mute", Config.capsbot, endtime, "Overusing CAPS", true);
+                callplugins("onMute", src);
+            }
+            else {
+                poChannel.mute(Config.capsbot, sys.name(src), {'time': time, 'reason': "Overusing CAPS"});
+            }
             return;
         }
     } else if (user.caps > 0) {
@@ -4529,17 +4538,25 @@ afterChatMessage : function(src, message, chan)
 
         if (user.floodcount > linecount) {
             var message = "" + sys.name(src) + " was kicked " + (sys.auth(src) === 0 && officialChan ? "and muted " : "") + "for flood.";
-            if (user.smuted) {
-                sys.sendMessage(src, message);
-                kickbot.sendAll("" + sys.name(src) + " was kicked for flood while smuted.", staffchannel);
-            } else {
-                kickbot.sendChanAll(message);
-                if (channel != staffchannel)
-                    kickbot.sendAll(message + " [Channel: "+sys.channel(channel)+"]", staffchannel);
+            if (officialChan) {
+                if (user.smuted) {
+                    sys.sendMessage(src, message);
+                    kickbot.sendAll("" + sys.name(src) + " was kicked for flood while smuted.", staffchannel);
+                } else {
+                    kickbot.sendChanAll(message);
+                    if (channel != staffchannel)
+                        kickbot.sendAll(message + " [Channel: "+sys.channel(channel)+"]", staffchannel);
+                }
             }
-            if (sys.auth(src) === 0 && officialChan) {
-                 var endtime = user.mute.active ? user.mute.expires + 3600 : parseInt(sys.time(), 10) + 3600;
-                 user.activate("mute", Config.kickbot, endtime, "Flooding", true);
+            if (sys.auth(src) === 0) {
+                if (officialChan) {
+                    var endtime = user.mute.active ? user.mute.expires + 3600 : parseInt(sys.time(), 10) + 3600;
+                    user.activate("mute", Config.kickbot, endtime, "Flooding", true);
+                }
+                else {
+                    poChannel.mute(Config.kickbot, sys.name(src), {'time': 3600, 'reason': "Flooding"});
+                    sys.kick(src, channel);
+                }
             }
             callplugins("onKick", src);
             sys.kick(src);
