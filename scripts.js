@@ -4552,18 +4552,13 @@ afterChatMessage : function(src, message, chan)
                 if (officialChan) {
                     var endtime = user.mute.active ? user.mute.expires + 3600 : parseInt(sys.time(), 10) + 3600;
                     user.activate("mute", Config.kickbot, endtime, "Flooding", true);
+                    callplugins("onKick", src);
+                    sys.kick(src);
                 }
                 else {
                     poChannel.mute(Config.kickbot, sys.name(src), {'time': 3600, 'reason': "Flooding"});
                     sys.kick(src, channel);
                 }
-            }
-            callplugins("onKick", src);
-            if (officialChan) {
-                sys.kick(src);
-            }
-            else {
-                sys.kick(src, channel);
             }
             return;
         }
