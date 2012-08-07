@@ -4559,7 +4559,12 @@ afterChatMessage : function(src, message, chan)
                 }
             }
             callplugins("onKick", src);
-            sys.kick(src);
+            if (officialChan) {
+                sys.kick(src);
+            }
+            else {
+                sys.kick(src, channel);
+            }
             return;
         }
     }
