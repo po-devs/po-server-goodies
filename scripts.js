@@ -3236,7 +3236,7 @@ adminCommand: function(src, command, commandData, tar) {
             if(sys.dbIp(commandData) == sys.dbIp(banlist[a])) {
                 sys.unban(commandData);
                 normalbot.sendChanMessage(src, "You unbanned " + commandData + "!");
-                sys.appendToFile('bans.txt', sys.name(src) + ' unbanned ' + commandData + "n");
+                sys.appendToFile('bans.txt', sys.name(src) + ' unbanned ' + commandData + "\n");
                 return;
             }
         }
