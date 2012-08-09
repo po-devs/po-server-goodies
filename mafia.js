@@ -2649,7 +2649,7 @@ function Mafia(mafiachan) {
         }
         if (index !== undefined) {
             updateModule(source, function(module) {
-                POglobal.plugins[i] = module;
+                POglobal.plugins[index] = module;
                 module.source = source;
                 module.init();
                 sys.sendAll("Update complete!", mafiachan);
