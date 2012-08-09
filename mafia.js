@@ -2959,7 +2959,7 @@ function Mafia(mafiachan) {
                         sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target your partners!", mafiachan);
                         return;
                     }
-					this.addPhaseStalkAction(name, commandName, target.name);
+					this.addPhaseStalkAction(name, command, target.name);
                 }
 
                 if (command == "kill") {
