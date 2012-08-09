@@ -910,7 +910,8 @@ function Mafia(mafiachan) {
             sys.sendMessage(src, "±Game: You can join the game by typing /join !", mafiachan);
             return;
         }
-
+	sys.sendMessage(src, "±Game: Command is currently disabled for testing. Try using /start instead!", mafiachan);
+	return;
         var previous = this.theme ? this.theme.name : undefined;
         var themeName = commandData == noPlayer ? "default" : commandData.toLowerCase();
 
