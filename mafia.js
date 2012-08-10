@@ -15,7 +15,7 @@ var is_command = require("utilities.js").is_command;
 function Mafia(mafiachan) {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-08-10.3";
+    this.version = "2012-08-10.4";
     var mafia = this;
 
     var noPlayer = '*';
@@ -827,7 +827,8 @@ function Mafia(mafiachan) {
     this.clearVariables();
     /* callback for /start */
     this.userVote = function(src, commandData) {
-        var themeName = commandData.toLowerCase();
+        //var themeName = commandData.toLowerCase();
+        var themename = "";
 	if (this.state == "blank") {
             this.state = "voting";
             this.ticks = 20;
@@ -944,8 +945,8 @@ function Mafia(mafiachan) {
                 sys.sendMessage(src, "±Game: No such theme!", mafiachan);
                 return;
        	    }
-      	    //sys.sendMessage(src, "±Game: Command is currently disabled for testing. Try using /start instead!", mafiachan);
-            //return;
+      	    sys.sendMessage(src, "±Game: Command is currently disabled for testing. Try using /start instead!", mafiachan);
+            return;
         } else {
             this.theme = this.themeManager.themes[themeName];
         }
