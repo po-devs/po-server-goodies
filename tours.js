@@ -4348,15 +4348,6 @@ module.exports = {
             sendBotMessage(src,"You are tourmuted by "+tours.tourmutes[sys.ip(src)].auth+". This expires in "+time_handle(tours.tourmutes[sys.ip(src)].expiry-parseInt(sys.time()))+". [Reason: "+tours.tourmutes[sys.ip(src)].reason+"]",tourschan,false)
             return true;
         }
-        else if (/<3/.test(message) && channel === tourschan) {
-            var newmessage = message.replace(/<3/g, "");
-            if (newmessage.replace(" ", "").length === 0) {
-                return true;
-            }
-            sys.sendAll(sys.name(src)+": "+newmessage, channel);
-            script.afterChatMessage(src, message, channel);
-            return true;
-        }
         else return false;
     },
     afterChatMessage : function(src, message, channel) {

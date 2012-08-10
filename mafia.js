@@ -943,7 +943,9 @@ function Mafia(mafiachan) {
             } else {
                 sys.sendMessage(src, "±Game: No such theme!", mafiachan);
                 return;
-            }
+       	    }
+      	    sys.sendMessage(src, "±Game: Command is currently disabled for testing. Try using /start instead!", mafiachan);
+            return;
         } else {
             this.theme = this.themeManager.themes[themeName];
         }
@@ -2957,7 +2959,7 @@ function Mafia(mafiachan) {
                         sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target your partners!", mafiachan);
                         return;
                     }
-					this.addPhaseStalkAction(name, commandName, target.name);
+					this.addPhaseStalkAction(name, command, target.name);
                 }
 
                 if (command == "kill") {
