@@ -1322,9 +1322,6 @@ beforeChannelJoin : function(src, channel) {
 
     callplugins("beforeChannelJoin", src, channel);
 
-    if (poChannel.isChannelOperator(src)){
-        return;
-    }
     // Can't ban from main
     if (channel === 0) return;
 
