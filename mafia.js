@@ -15,7 +15,7 @@ var is_command = require("utilities.js").is_command;
 function Mafia(mafiachan) {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-08-10.1";
+    this.version = "2012-08-10.2";
     var mafia = this;
 
     var noPlayer = '*';
