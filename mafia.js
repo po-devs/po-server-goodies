@@ -15,7 +15,7 @@ var is_command = require("utilities.js").is_command;
 function Mafia(mafiachan) {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-01-21.1";
+    this.version = "2012-08-10.1";
     var mafia = this;
 
     var noPlayer = '*';
@@ -827,7 +827,8 @@ function Mafia(mafiachan) {
     this.clearVariables();
     /* callback for /start */
     this.userVote = function(src, commandData) {
-        var themeName = commandData.toLowerCase();
+        //var themeName = commandData.toLowerCase();
+	var themeName = ""; // disable player selection of themes as part of testing.
         if (this.state == "blank") {
             this.state = "voting";
             this.ticks = 20;
