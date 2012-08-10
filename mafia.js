@@ -827,8 +827,8 @@ function Mafia(mafiachan) {
     this.clearVariables();
     /* callback for /start */
     this.userVote = function(src, commandData) {
-        //var themeName = commandData.toLowerCase();
-	var themeName = ""; // disable player selection of themes as part of testing.
+        var themeName = commandData.toLowerCase();
+	//var themeName = ""; // disable player selection of themes as part of testing.
         if (this.state == "blank") {
             this.state = "voting";
             this.ticks = 20;
