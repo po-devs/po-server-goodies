@@ -59,7 +59,7 @@ function isChannelMod(playerId, chanId) {
     if ((sys.auth(playerId) >= 1 && chanId === 0) || isChannelAdmin(playerId, chanId)) {
         return true;
     }
-    if (SESSION.channels(chanId).mods.indexOf(sys.name(playerId).toLowerCase()) > -1) {
+    if (SESSION.channels(chanId).operators.indexOf(sys.name(playerId).toLowerCase()) > -1) {
         return true;
     }
     return false;

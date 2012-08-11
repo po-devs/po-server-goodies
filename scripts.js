@@ -314,7 +314,7 @@ function POChannel(id)
     this.id = id;
     this.masters = []; // can add admins
     this.admins = []; // can ban, add mods, change invite level
-    this.mods = []; // can mute, silence, kick
+    this.operators = []; // can mute, silence, kick
     this.members = []; // people that can join
     this.perm = false;
     this.invitelevel = 0;
@@ -512,7 +512,7 @@ POChannelManager.prototype.copyAttrs = [
     "topicSetter",
     "perm",
     "members",
-    "mods",
+    "operators",
     "admins",
     "masters",
     "invitelevel",
@@ -2128,8 +2128,8 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "cauth") {
-        if (typeof SESSION.channels(channel).mods != 'object')
-            SESSION.channels(channel).mods = [];
+        if (typeof SESSION.channels(channel).operators != 'object')
+            SESSION.channels(channel).operators = [];
         if (typeof SESSION.channels(channel).admins != 'object')
             SESSION.channels(channel).admins = [];
         if (typeof SESSION.channels(channel).masters != 'object')
@@ -2139,7 +2139,7 @@ userCommand: function(src, command, commandData, tar) {
         channelbot.sendChanMessage(src, "The channel members of " + sys.channel(channel) + " are:");
         channelbot.sendChanMessage(src, "Owners: " + SESSION.channels(channel).masters.join(", "));
         channelbot.sendChanMessage(src, "Admins: " + SESSION.channels(channel).admins.join(", "));
-        channelbot.sendChanMessage(src, "Operators: " + SESSION.channels(channel).mods.join(", "));
+        channelbot.sendChanMessage(src, "Mods: " + SESSION.channels(channel).operators.join(", "));
         if (SESSION.channels(channel).invitelevel >= 1 || SESSION.channels(channel).members.length >= 1) {
             channelbot.sendChanMessage(src, "Members: " + SESSION.channels(channel).members.join(", "));
         }
@@ -3875,8 +3875,8 @@ ownerCommand: function(src, command, commandData, tar) {
 
 channelCommand: function(src, command, commandData, tar) {
     var poChannel = SESSION.channels(channel);
-    if (poChannel.mods === undefined)
-        poChannel.mods = [];
+    if (poChannel.operators === undefined)
+        poChannel.operators = [];
     if (command == "lt" || command == "lovetap") {
         if (tar === undefined) {
             normalbot.sendChanMessage(src, "Choose a valid target for your love!");
