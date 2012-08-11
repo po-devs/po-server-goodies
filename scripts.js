@@ -467,7 +467,7 @@ POChannel.prototype.mute = function(src, tar, data)
     var ret = chanutils.addGroup(src, tar, "muted", this.id, data);
     if (ret[0] == "self") {
         if (typeof src == "number")
-            srcchannelbot.sendChanMessage(src, ret[1]);
+            channelbot.sendChanMessage(src, ret[1]);
     }
     else {
         channelbot.sendChanAll(ret[1]);
