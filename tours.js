@@ -548,7 +548,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#CC0044",
             minpercent: 5,
-            version: "1.500p3",
+            version: "1.500p4",
             tourbot: "\u00B1Genesect: ",
             debug: false,
             points: true
@@ -588,7 +588,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p3",
+        version: "1.500p4",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -889,8 +889,8 @@ function tourBattleEnd(winner, loser, result) {
         }
         if (result == "tie") {
             sendBotAll("The match between "+winname+" and "+losename+" ended in a tie, please rematch!", tourschan, false)
-            markActive(winner)
-            markActive(loser)
+            markActive(winner, "tie")
+            markActive(loser, "tie")
             return;
         }
         battleend(winner, loser, key)
@@ -944,11 +944,11 @@ function tourChallengeIssued(src, dest, clauses, rated, mode, team, destTier) {
             sendBotMessage(src, tcomment, "all", false);
             if (tcomment == "Your opponent does not seem to have a team for the tournament.") {
                 sendBotMessage(dest, "You need a team in the "+tours.tour[key].tourtype+" tier to participate. Please do this ASAP or you will be disqualified.", "all", false);
-                markActive(src)
+                markActive(src, "post")
             }
             return true;
         }
-        markActive(src)
+        markActive(src, "post")
         return false;
     }
     else return false;
@@ -2238,8 +2238,8 @@ function tourCommand(src, command, commandData) {
             var oppname = index%2 == 0 ? toCorrectCase(tours.tour[key].players[index+1]) : toCorrectCase(tours.tour[key].players[index-1])
             sendBotAll("Late entrant "+sys.name(src)+" will play against "+oppname+" in the "+getFullTourName(key)+" tournament. "+(tours.tour[key].players.length - tours.tour[key].cpt)+" sub"+(tours.tour[key].players.length - tours.tour[key].cpt == 1 ? "" : "s") + " remaining.", tourschan, false)
             sendBotMessage(sys.id(oppname),"Late entrant "+html_escape(sys.name(src))+" will play against you in the "+html_escape(getFullTourName(key))+" tournament.<ping/>", tourschan, true)
-            markActive(src)
-            markActive(sys.id(oppname))
+            markActive(src, "post")
+            markActive(sys.id(oppname), "post")
             return true;
         }
         if (command == "unjoin") {
@@ -2668,6 +2668,10 @@ function removeinactive(key) {
                     dq1 = false
                 }
             }
+            else if (sys.id(player1) !== undefined && sys.id(player2) === undefined) {
+                dq1 = false
+                sendDebugMessage(player1+"'s opponent is offline; continuing", tourschan)
+            }
             else {
                 sendDebugMessage(player1+" is not active; disqualifying", tourschan)
             }
@@ -2676,6 +2680,10 @@ function removeinactive(key) {
                     sendDebugMessage(player2+" is active; continuing", tourschan)
                     dq2 = false
                 }
+            }
+            else if (sys.id(player2) !== undefined && sys.id(player1) === undefined) {
+                dq2 = false
+                sendDebugMessage(player2+"'s opponent is offline; continuing", tourschan)
             }
             else {
                 sendDebugMessage(player2+" is not active; disqualifying", tourschan)
@@ -2698,6 +2706,9 @@ function removeinactive(key) {
                 sendBotMessage(sys.id(player2),"You need to play against "+html_escape(toCorrectCase(player1))+" in the "+html_escape(getFullTourName(key))+" tournament ASAP.<ping/>", tourschan, true)
             }
             // if the round advances due to DQ, don't keep checking :x
+            if (!tours.keys.hasOwnProperty(key)) {
+                break;
+            }
             if (tours.tour[key].round !== currentround) {
                 break;
             }
@@ -2907,6 +2918,9 @@ function removebyes(key) {
                 advanced.push(toCorrectCase(opponent))
             }
             // if the round advances due to DQ, don't keep checking :x
+            if (!tours.keys.hasOwnProperty(key)) {
+                break;
+            }
             if (tours.tour[key].round !== currentround) {
                 break;
             }
@@ -4100,7 +4114,7 @@ function usingBadWords(message) {
     else return false;
 }
 
-function markActive(src) {
+function markActive(src, reason) {
     if (src === undefined) {
         return;
     }
@@ -4108,7 +4122,7 @@ function markActive(src) {
     var key = isInTour(name)
     if (key !== false) {
         if (tours.tour[key].active.hasOwnProperty(name)) {
-            if (tours.tour[key].active[name] === "Battle") {
+            if (tours.tour[key].active[name] === "Battle" && reason == "post") {
                 return;
             }
         }
@@ -4352,7 +4366,7 @@ module.exports = {
     },
     afterChatMessage : function(src, message, channel) {
         if (channel === tourschan && !usingBadWords(message)) {
-            markActive(src);
+            markActive(src, "post");
         }
     },
     allowToSpectate : function(src, p1, p2) {
