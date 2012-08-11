@@ -285,7 +285,7 @@ function changeParameter(src, parameter, value, chanId) {
         else if (level > maxvalue) {
             level = maxvalue;
         }
-        SESSION.channels(chanId).invitelevel = level;
+        SESSION.channels(chanId).inviteonly = level;
         if (level === 0) {
             return sys.name(src)+" made this channel public.";
         }
@@ -297,6 +297,7 @@ function changeParameter(src, parameter, value, chanId) {
 
 function addGroup(src, tar, group, chanId, data) {
     var name = tar.toLowerCase();
+    var poChannel = SESSION.channels(chanId);
     var auth = typeof src == "string" ? src : sys.name(src);
     if (sys.dbIp(tar) === undefined) {
         return ["self", "The user '"+tar.toCorrectCase()+"' doesn't exist!"];
@@ -305,43 +306,43 @@ function addGroup(src, tar, group, chanId, data) {
         return ["self", "The user '"+tar.toCorrectCase()+"' is not registered so you can't give them channel authority!"];
     }
     if (group == "owner") {
-        if (SESSION.channels(chanId).masters.indexOf(name) > -1) {
+        if (poChannel.masters.indexOf(name) > -1) {
             return ["self", tar.toCorrectCase()+" is already a channel owner!"];
         }
-        if (SESSION.channels(chanId).masters.length > 10) {
+        if (poChannel.masters.length > 10) {
             return ["self", "There is a limit of 10 owners!"];
         }
-        SESSION.channels(chanId).masters.push(name);
+        poChannel.masters.push(name);
         return ["all", sys.name(src)+" made "+tar.toCorrectCase()+" a channel owner!"];
     }
     if (group == "admin") {
-        if (SESSION.channels(chanId).admins.indexOf(name) > -1) {
+        if (poChannel.admins.indexOf(name) > -1) {
             return ["self", tar.toCorrectCase()+" is already a channel admin!"];
         }
-        if (SESSION.channels(chanId).admins.length > 50) {
+        if (poChannel.admins.length > 50) {
             return ["self", "There is a limit of 50 admins!"];
         }
-        SESSION.channels(chanId).admins.push(name);
+        poChannel.admins.push(name);
         return ["all", sys.name(src)+" made "+tar.toCorrectCase()+" a channel admin!"];
     }
     if (group == "mod") {
-        if (SESSION.channels(chanId).mods.indexOf(name) > -1) {
+        if (poChannel.operators.indexOf(name) > -1) {
             return ["self", tar.toCorrectCase()+" is already a channel mod!"];
         }
-        if (SESSION.channels(chanId).mods.length > 100) {
+        if (poChannel.operators.length > 100) {
             return ["self", "There is a limit of 100 mods!"];
         }
-        SESSION.channels(chanId).mods.push(name);
+        poChannel.operators.push(name);
         return ["all", sys.name(src)+" made "+tar.toCorrectCase()+" a channel mod!"];
     }
     if (group == "member") {
-        if (SESSION.channels(chanId).members.indexOf(name) > -1) {
+        if (poChannel.members.indexOf(name) > -1) {
             return ["self", tar.toCorrectCase()+" is already a member!"];
         }
-        if (SESSION.channels(chanId).members.length > 250) {
+        if (poChannel.members.length > 250) {
             return ["self", "There is a limit of 250 members!"];
         }
-        SESSION.channels(chanId).members.push(name);
+        poChannel.members.push(name);
         return ["all", sys.name(src)+" made "+tar.toCorrectCase()+" a member!"];
     }
     if (group == "muted") {
@@ -351,7 +352,7 @@ function addGroup(src, tar, group, chanId, data) {
         if (!hasPermission(src, tar, chanId)) {
             return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel mute them!"];
         }
-        SESSION.channels(chanId).muted[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "issuetime": parseInt(sys.time()), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
+        poChannel.muted[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "issuetime": parseInt(sys.time()), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
         var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
         return ["all", auth+" muted "+tar.toCorrectCase()+timestring+" in this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
     }
@@ -362,7 +363,7 @@ function addGroup(src, tar, group, chanId, data) {
         if (!hasPermission(src, tar, chanId)) {
             return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel ban them!"];
         }
-        SESSION.channels(chanId).banned[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "issuetime": parseInt(sys.time()), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
+        poChannel.banned[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "issuetime": parseInt(sys.time()), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
         var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
         return ["all", auth+" banned "+tar.toCorrectCase()+timestring+" from this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
     }
@@ -370,50 +371,51 @@ function addGroup(src, tar, group, chanId, data) {
 
 function removeGroup(src, tar, group, chanId) {
     var name = tar.toLowerCase();
+    var poChannel = SESSION.channels(chanId);
     if (group == "owner") {
-        if (SESSION.channels(chanId).masters.indexOf(name) == -1) {
+        if (poChannel.masters.indexOf(name) == -1) {
             return ["self", tar.toCorrectCase()+" is not a channel owner!"];
         }
-        var index = SESSION.channels(chanId).masters.indexOf(name);
-        SESSION.channels(chanId).masters.splice(index,1);
+        var index = poChannel.masters.indexOf(name);
+        poChannel.masters.splice(index,1);
         return ["all", sys.name(src)+" removed "+tar.toCorrectCase()+" from the channel owner list!"];
     }
     if (group == "admin") {
-        if (SESSION.channels(chanId).admins.indexOf(name) == -1) {
+        if (poChannel.admins.indexOf(name) == -1) {
             return ["self", tar.toCorrectCase()+" is not a channel admin!"];
         }
-        var index = SESSION.channels(chanId).admins.indexOf(name);
-        SESSION.channels(chanId).admins.splice(index,1);
+        var index = poChannel.admins.indexOf(name);
+        poChannel.admins.splice(index,1);
         return ["all", sys.name(src)+" removed "+tar.toCorrectCase()+" from the channel admin list!"];
     }
     if (group == "mod") {
-        if (SESSION.channels(chanId).mods.indexOf(name) == -1) {
+        if (poChannel.operators.indexOf(name) == -1) {
             return ["self", tar.toCorrectCase()+" is not a channel mod!"];
         }
-        var index = SESSION.channels(chanId).mods.indexOf(name);
-        SESSION.channels(chanId).mods.splice(index,1);
+        var index = poChannel.operators.indexOf(name);
+        poChannel.operators.splice(index,1);
         return ["all", sys.name(src)+" removed "+tar.toCorrectCase()+" from the channel mod list!"];
     }
     if (group == "member") {
-        if (SESSION.channels(chanId).members.indexOf(name) == -1) {
+        if (poChannel.members.indexOf(name) == -1) {
             return ["self", tar.toCorrectCase()+" is not a member!"];
         }
-        var index = SESSION.channels(chanId).members.indexOf(name);
-        SESSION.channels(chanId).members.splice(index,1);
+        var index = poChannel.members.indexOf(name);
+        poChannel.members.splice(index,1);
         return ["all", sys.name(src)+" removed "+tar.toCorrectCase()+" from the channel member list!"];
     }
     if (group == "muted") {
-        if (!SESSION.channels(chanId).muted.hasOwnProperty(name)) {
+        if (!poChannel.muted.hasOwnProperty(name)) {
             return ["self", tar.toCorrectCase()+" is not muted in this channel!"];
         }
-        delete SESSION.channels(chanId).muted[name];
+        delete poChannel.muted[name];
         return ["all", sys.name(src)+" unmuted "+tar.toCorrectCase()+" in this channel!"];
     }
     if (group == "banned") {
-        if (!SESSION.channels(chanId).banned.hasOwnProperty(name)) {
+        if (!poChannel.banned.hasOwnProperty(name)) {
             return ["self", tar.toCorrectCase()+" is not banned from this channel!"];
         }
-        delete SESSION.channels(chanId).banned[name];
+        delete poChannel.banned[name];
         return ["all", sys.name(src)+" unbanned "+tar.toCorrectCase()+" from this channel!"];
     }
 }
@@ -452,7 +454,7 @@ function chanMaxAuth(ip, chan) {
         else if (SESSION.channels(chan).admins.indexOf(aliases[x]) > -1 && maxauth < 2) {
             maxauth = 2;
         }
-        else if (SESSION.channels(chan).mods.indexOf(aliases[x]) > -1 && maxauth < 1) {
+        else if (SESSION.channels(chan).operators.indexOf(aliases[x]) > -1 && maxauth < 1) {
             maxauth = 1;
         }
         if (maxauth >= 3) break;

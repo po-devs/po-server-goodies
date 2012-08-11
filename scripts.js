@@ -317,11 +317,11 @@ function POChannel(id)
     this.operators = []; // can mute, silence, kick
     this.members = []; // people that can join
     this.perm = false;
-    this.invitelevel = 0;
+    this.inviteonly = 0;
     this.topic = "";
     this.topicSetter = "";
     this.muteall = undefined;
-    this.meon = true;
+    this.meoff = undefined;
     this.muted = {};
     this.banned = {};
     this.ignorecaps = false;
@@ -651,7 +651,7 @@ function getplugins() {
     return SESSION.global().getplugins.apply(SESSION.global(), arguments);
 }
 
-SESSION.identifyScriptAs("PO Scripts v0.991");
+SESSION.identifyScriptAs("PO Scripts v0.99");
 SESSION.registerGlobalFactory(POGlobal);
 SESSION.registerUserFactory(POUser);
 SESSION.registerChannelFactory(POChannel);
@@ -1344,7 +1344,7 @@ beforeChannelJoin : function(src, channel) {
     if (poChannel.canJoin(src) == "allowed") {
         return;
     }
-    if (poChannel.invitelevel > sys.auth(src)) {
+    if (poChannel.inviteonly > sys.auth(src)) {
         sys.sendMessage(src, "+Guard: Sorry, but this channel is for higher authority!");
         sys.stopEvent();
         return;
@@ -2140,7 +2140,7 @@ userCommand: function(src, command, commandData, tar) {
         channelbot.sendChanMessage(src, "Owners: " + SESSION.channels(channel).masters.join(", "));
         channelbot.sendChanMessage(src, "Admins: " + SESSION.channels(channel).admins.join(", "));
         channelbot.sendChanMessage(src, "Mods: " + SESSION.channels(channel).operators.join(", "));
-        if (SESSION.channels(channel).invitelevel >= 1 || SESSION.channels(channel).members.length >= 1) {
+        if (SESSION.channels(channel).inviteonly >= 1 || SESSION.channels(channel).members.length >= 1) {
             channelbot.sendChanMessage(src, "Members: " + SESSION.channels(channel).members.join(", "));
         }
         return;
