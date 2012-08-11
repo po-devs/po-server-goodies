@@ -548,7 +548,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#CC0044",
             minpercent: 5,
-            version: "1.500p4",
+            version: "1.500p4.1",
             tourbot: "\u00B1Genesect: ",
             debug: false,
             points: true
@@ -588,7 +588,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p4",
+        version: "1.500p4.1",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -2706,7 +2706,7 @@ function removeinactive(key) {
                 sendBotMessage(sys.id(player2),"You need to play against "+html_escape(toCorrectCase(player1))+" in the "+html_escape(getFullTourName(key))+" tournament ASAP.<ping/>", tourschan, true)
             }
             // if the round advances due to DQ, don't keep checking :x
-            if (!tours.keys.hasOwnProperty(key)) {
+            if (tours.keys.indexOf(key) === -1) {
                 break;
             }
             if (tours.tour[key].round !== currentround) {
@@ -2918,7 +2918,7 @@ function removebyes(key) {
                 advanced.push(toCorrectCase(opponent))
             }
             // if the round advances due to DQ, don't keep checking :x
-            if (!tours.keys.hasOwnProperty(key)) {
+            if (tours.keys.indexOf(key) === -1) {
                 break;
             }
             if (tours.tour[key].round !== currentround) {
