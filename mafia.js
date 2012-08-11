@@ -828,7 +828,7 @@ function Mafia(mafiachan) {
     /* callback for /start */
     this.userVote = function(src, commandData) {
         var themeName = commandData.toLowerCase();
-        //var themeName = "";
+        
 	if (this.state == "blank") {
             this.state = "voting";
             this.ticks = 20;
@@ -844,7 +844,8 @@ function Mafia(mafiachan) {
             var Check = PreviousGames.slice(-Config.Mafia.norepeat)
                         .reverse()
                         .map(function(g) { return g.what; });
-            
+            // Disable player selection of themes.
+            /*
             if (themeName in this.themeManager.themes && this.themeManager.themes[themeName].enabled) {
                 if (Check.indexOf(themeName) == -1 && themeName != "default") {
                     if (!(themeName in this.possibleThemes)) {
@@ -853,7 +854,7 @@ function Mafia(mafiachan) {
                     }
                 }
             }
-
+	    */
             while (allThemes.length > 0 && total > 0) {
                 var indx = Math.floor(allThemes.length * Math.random());
                 var name = allThemes[indx];
