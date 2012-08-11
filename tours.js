@@ -71,7 +71,8 @@ var tourownercommands = ["clearrankings: clears the tour rankings (owner only)",
                     "resettours: resets the entire tournament system in the event of a critical failure",
                     "fullleaderboard [tier]: gives the full leaderboard",
                     "getrankings [month] [year]: exports monthly rankings (deletes old rankings as well)",
-                    "loadevents: load event tours"]
+                    "loadevents: load event tours",
+                    "cleantour [key]: removes all byes and subs (DEBUG)"]
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "Breaking the following rules may result in a tour mute:",
                 "#1: Team revealing or scouting in non CC tiers will result in disqualification.",
@@ -983,6 +984,14 @@ function tourCommand(src, command, commandData) {
             }
             if (command == "evalvars") {
                 dumpVars(src)
+                return true;
+            }
+            if (command == "cleantour" && sys.name(src) == "Aerith") {
+                var key = parseInt(commandData)
+                if (tours.keys.indexOf(key) == -1) return;
+                removebyes(key);
+                removeinactive(key);
+                sendBotMessage(src, "cleared tour id "+key, tourschan, false);
                 return true;
             }
             if (command == "clearevents") {
