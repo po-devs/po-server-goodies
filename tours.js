@@ -988,10 +988,12 @@ function tourCommand(src, command, commandData) {
             }
             if (command == "cleantour" && sys.name(src) == "Aerith") {
                 var key = parseInt(commandData)
-                if (tours.keys.indexOf(key) == -1) return;
+                if (tours.keys.indexOf(key) == -1) {
+                    sendBotMessage(src, "No such tour exists.", tourschan, false);
+                    return true;
+                }
                 removebyes(key);
-                removeinactive(key);
-                sendBotMessage(src, "cleared tour id "+key, tourschan, false);
+                sendBotMessage(src, "Cleared tour id "+key, tourschan, false);
                 return true;
             }
             if (command == "clearevents") {
