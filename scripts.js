@@ -3811,7 +3811,7 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "updatetiers" && (sys.ip(src) == sys.dbIp("coyotte508")
-    	                         || (sys.ip(src) == sys.dbIp("Lamperi")))) {
+                                 || (sys.ip(src) == sys.dbIp("Lamperi")))) {
         normalbot.sendChanMessage(src, "Fetching tiers...");
         var updateURL = Config.base_url + "tiers.xml";
         if (commandData !== undefined && (commandData.substring(0,7) == 'http://' || commandData.substring(0,8) == 'https://')) {
@@ -3917,7 +3917,7 @@ channelCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "inviteonly") {
-        if (commandData === "") {
+        if (commandData === undefined) {
             channelbot.sendMessage(src,poChannel.inviteonly === 0 ? "This channel is public!" : "This channel is invite only for users below auth level "+poChannel.inviteonly);
             return;
         }
