@@ -549,7 +549,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#CC0044",
             minpercent: 5,
-            version: "1.500p4.4",
+            version: "1.500p4.4 [TEMP]",
             tourbot: "\u00B1Genesect: ",
             debug: false,
             points: true
@@ -589,7 +589,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p4.4",
+        version: "1.500p4.4 [TEMP]",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -4371,6 +4371,10 @@ module.exports = {
         if (isTourMuted(src) && !isTourAdmin(src) && channel === tourschan) {
             sendBotMessage(src,"You are tourmuted by "+tours.tourmutes[sys.ip(src)].auth+". This expires in "+time_handle(tours.tourmutes[sys.ip(src)].expiry-parseInt(sys.time()))+". [Reason: "+tours.tourmutes[sys.ip(src)].reason+"]",tourschan,false)
             return true;
+        }
+        else if (channel === tourschan && !usingBadWords(message)) {
+            markActive(src, "post");
+            return false;
         }
         else return false;
     },
