@@ -3903,11 +3903,11 @@ channelCommand: function(src, command, commandData, tar) {
     }
     if (command == "invite" || command == "member") {
         if (tar === undefined) {
-            normalbot.sendChanMessage(src, "Choose a valid target for invite!");
+            channelbot.sendChanMessage(src, "Choose a valid target for invite!");
             return;
         }
         if (!sys.isInChannel(tar, channel)) {
-            normalbot.sendMessage(tar, "" + sys.name(src) + " would like you to join #" + sys.channel(channel) + "!");
+            channelbot.sendMessage(tar, "" + sys.name(src) + " would like you to join #" + sys.channel(channel) + "!");
         }
         poChannel.addRole(src, commandData, "member");
         return;
@@ -3917,6 +3917,10 @@ channelCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "inviteonly") {
+        if (commandData === "") {
+            channelbot.sendMessage(src,poChannel.inviteonly === 0 ? "This channel is public!" : "This channel is invite only for users below auth level "+poChannel.inviteonly);
+            return;
+        }
         var value = -1;
         if (commandData == "off") {
             value = 0;
