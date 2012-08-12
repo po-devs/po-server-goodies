@@ -772,34 +772,32 @@ POChannel.prototype.hasPermission = function(src, tar) {
             srcauth = 1;
         }
     }
-    var tarauth = this.chanMaxAuth(sys.dbIp(tar));
+    var tarauth = this.chanAuth(tar);
     return srcauth > tarauth;
 }
 
-POChannel.prototype.chanMaxAuth = function(ip) {
+POChannel.prototype.chanAuth = function(name) {
     var maxauth = 0;
-    if (sys.maxAuth(ip) >= 2 || this.id === 0) {
-        maxauth = sys.maxAuth(ip);
+    if (sys.dbAuth(name) >= 2 || this.id === 0) {
+        maxauth = sys.dbAuth(name);
     }
-    var aliases = sys.aliases(ip);
+    var lname = name.toLowerCase();
     if (typeof this.operators != 'object')
         this.operators = [];
     if (typeof this.admins != 'object')
         this.admins = [];
     if (typeof this.masters != 'object')
         this.masters = [];
-    for (var x in aliases) {
-        if (this.masters.indexOf(aliases[x]) > -1) {
-            maxauth = 3;
-        }
-        else if (this.admins.indexOf(aliases[x]) > -1 && maxauth < 2) {
-            maxauth = 2;
-        }
-        else if (this.operators.indexOf(aliases[x]) > -1 && maxauth < 1) {
-            maxauth = 1;
-        }
-        if (maxauth >= 3) break;
+    if (this.masters.indexOf(lname) > -1) {
+        maxauth = 3;
     }
+    else if (this.admins.indexOf(lname) > -1 && maxauth < 2) {
+        maxauth = 2;
+    }
+    else if (this.operators.indexOf(lname) > -1 && maxauth < 1) {
+        maxauth = 1;
+    }
+    if (maxauth >= 3) break;
     return maxauth;
 }
 
