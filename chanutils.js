@@ -33,6 +33,9 @@ function isChannelOwner(playerId, chanId) {
     if (sys.auth(playerId) >= 3) {
         return true;
     }
+    if (typeof SESSION.channels(chanId).masters != "object") {
+        SESSION.channels(chanId).masters = [];
+    }
     if (SESSION.channels(chanId).masters.indexOf(sys.name(playerId).toLowerCase()) > -1) {
         return true;
     }
@@ -46,6 +49,9 @@ function isChannelAdmin(playerId, chanId) {
     if (sys.auth(playerId) >= 2 || isChannelOwner(playerId, chanId)) {
         return true;
     }
+    if (typeof SESSION.channels(chanId).admins != "object") {
+        SESSION.channels(chanId).admins = [];
+    }
     if (SESSION.channels(chanId).admins.indexOf(sys.name(playerId).toLowerCase()) > -1) {
         return true;
     }
@@ -58,6 +64,9 @@ function isChannelMod(playerId, chanId) {
     }
     if ((sys.auth(playerId) >= 1 && chanId === 0) || isChannelAdmin(playerId, chanId)) {
         return true;
+    }
+    if (typeof SESSION.channels(chanId).operators != "object") {
+        SESSION.channels(chanId).operators = [];
     }
     if (SESSION.channels(chanId).operators.indexOf(sys.name(playerId).toLowerCase()) > -1) {
         return true;
@@ -75,6 +84,9 @@ function canJoin(playerId, chanId) {
     }
     if (isChannelMod(playerId, chanId)) {
         return "allowed";
+    }
+    if (typeof SESSION.channels(chanId).members != "object") {
+        SESSION.channels(chanId).members = [];
     }
     if (SESSION.channels(chanId).members.indexOf(sys.name(playerId).toLowerCase()) > -1) {
         return "allowed";
@@ -305,6 +317,14 @@ function addGroup(src, tar, group, chanId, data) {
     if (!sys.dbRegistered(tar) && ["owner", "admin", "mod"].indexOf(group) != -1) {
         return ["self", "The user '"+tar.toCorrectCase()+"' is not registered so you can't give them channel authority!"];
     }
+    if (typeof SESSION.channels(chanId).operators != 'object')
+        SESSION.channels(chanId).operators = [];
+    if (typeof SESSION.channels(chanId).admins != 'object')
+        SESSION.channels(chanId).admins = [];
+    if (typeof SESSION.channels(chanId).masters != 'object')
+        SESSION.channels(chanId).masters = [];
+    if (typeof SESSION.channels(chanId).members != 'object')
+        SESSION.channels(chanId).members = [];
     if (group == "owner") {
         if (poChannel.masters.indexOf(name) > -1) {
             return ["self", tar.toCorrectCase()+" is already a channel owner!"];
@@ -372,6 +392,14 @@ function addGroup(src, tar, group, chanId, data) {
 function removeGroup(src, tar, group, chanId) {
     var name = tar.toLowerCase();
     var poChannel = SESSION.channels(chanId);
+    if (typeof SESSION.channels(chanId).operators != 'object')
+        SESSION.channels(chanId).operators = [];
+    if (typeof SESSION.channels(chanId).admins != 'object')
+        SESSION.channels(chanId).admins = [];
+    if (typeof SESSION.channels(chanId).masters != 'object')
+        SESSION.channels(chanId).masters = [];
+    if (typeof SESSION.channels(chanId).members != 'object')
+        SESSION.channels(chanId).members = [];
     if (group == "owner") {
         if (poChannel.masters.indexOf(name) == -1) {
             return ["self", tar.toCorrectCase()+" is not a channel owner!"];
@@ -447,6 +475,12 @@ function chanMaxAuth(ip, chan) {
         maxauth = sys.maxAuth(ip);
     }
     var aliases = sys.aliases(ip);
+    if (typeof SESSION.channels(chanId).operators != 'object')
+        SESSION.channels(chanId).operators = [];
+    if (typeof SESSION.channels(chanId).admins != 'object')
+        SESSION.channels(chanId).admins = [];
+    if (typeof SESSION.channels(chanId).masters != 'object')
+        SESSION.channels(chanId).masters = [];
     for (var x in aliases) {
         if (SESSION.channels(chan).masters.indexOf(aliases[x]) > -1) {
             maxauth = 3;
