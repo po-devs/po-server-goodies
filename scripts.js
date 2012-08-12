@@ -4912,7 +4912,7 @@ afterChatMessage : function(src, message, chan)
     // hardcoded
     var ignoreChans = [staffchannel, sachannel, sys.channelId("trivreview"), sys.channelId("Watch"), mafiarev];
     var ignoreUsers = ["nixeagle"];
-    var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1 && !poChannel.isChannelOperator(src);
+    var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1 && poChannel.hasPermission("x",src);
     var officialChan = true;
     if (channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel !== sys.channelId("Trivia") && channel !== trollchannel){
         officialChan = false;
