@@ -4329,7 +4329,7 @@ channelCommand: function(src, command, commandData, tar) {
         sys.kick(tar, channel);
         return;
     }
-    if (command == "invite" || command == "member") {
+    if (command == "invite") {
         if (tar === undefined) {
             channelbot.sendChanMessage(src, "Choose a valid target for invite!");
             return;
@@ -4337,6 +4337,10 @@ channelCommand: function(src, command, commandData, tar) {
         if (!sys.isInChannel(tar, channel)) {
             channelbot.sendMessage(tar, "" + sys.name(src) + " would like you to join #" + sys.channel(channel) + "!");
         }
+        poChannel.issueAuth(src, commandData, "member");
+        return;
+    }
+    if (command == "member") {
         poChannel.issueAuth(src, commandData, "member");
         return;
     }
