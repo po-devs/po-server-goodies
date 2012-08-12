@@ -3918,7 +3918,7 @@ channelCommand: function(src, command, commandData, tar) {
     }
     if (command == "inviteonly") {
         if (commandData === undefined) {
-            channelbot.sendMessage(src,poChannel.inviteonly === 0 ? "This channel is public!" : "This channel is invite only for users below auth level "+poChannel.inviteonly);
+            channelbot.sendChanMessage(src,poChannel.inviteonly === 0 ? "This channel is public!" : "This channel is invite only for users below auth level "+poChannel.inviteonly);
             return;
         }
         var value = -1;
