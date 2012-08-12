@@ -797,7 +797,6 @@ POChannel.prototype.chanAuth = function(name) {
     else if (this.operators.indexOf(lname) > -1 && maxauth < 1) {
         maxauth = 1;
     }
-    if (maxauth >= 3) break;
     return maxauth;
 }
 
