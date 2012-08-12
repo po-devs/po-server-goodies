@@ -2272,19 +2272,6 @@ userCommand: function(src, command, commandData, tar) {
         this.afterChatMessage(src, '/'+command+' '+commandData,channel);
         return;
     }
-    if (command == "megausers") {
-        sendChanMessage(src, "");
-        sendChanMessage(src, "*** MEGA USERS ***");
-        sendChanMessage(src, "");
-        var spl = megausers.split('*');
-        for (x = 0; x < spl.length; ++x) {
-            if (spl[x].length > 0) {
-                sendChanMessage(src, spl[x] + " " + (sys.id(spl[x]) !== undefined ? "(online):" : "(offline)"));
-            }
-        }
-        sendChanMessage(src, "");
-        return;
-    }
     if (command == "contributors") {
         sendChanMessage(src, "");
         sendChanMessage(src, "*** CONTRIBUTORS ***");
@@ -2832,6 +2819,19 @@ modCommand: function(src, command, commandData, tar) {
             return;
         }
         querybot.sendChanMessage(src,sys.name(tar)+" is in tier: "+sys.tier(tar,0));
+        return;
+    }
+    if (command == "megausers") {
+        sendChanMessage(src, "");
+        sendChanMessage(src, "*** MEGA USERS ***");
+        sendChanMessage(src, "");
+        var spl = megausers.split('*');
+        for (x = 0; x < spl.length; ++x) {
+            if (spl[x].length > 0) {
+                sendChanMessage(src, spl[x] + " " + (sys.id(spl[x]) !== undefined ? "(online):" : "(offline)"));
+            }
+        }
+        sendChanMessage(src, "");
         return;
     }
     if (command == "perm") {
@@ -3518,7 +3518,7 @@ adminCommand: function(src, command, commandData, tar) {
     if (command == "megauser") {
         if (tar !== undefined) {
             SESSION.users(tar).megauser = true;
-            normalbot.sendAll("" + sys.name(tar) + " was megausered by " + nonFlashing(sys.name(src)) + ".");
+            normalbot.sendAll("" + sys.name(tar) + " was megausered by " + nonFlashing(sys.name(src)) + ".",staffchannel);
             megausers += "*" + sys.name(tar) + "*";
             sys.saveVal("megausers", megausers);
         }
@@ -3537,11 +3537,11 @@ adminCommand: function(src, command, commandData, tar) {
     if (command == "megauseroff") {
         if (tar !== undefined) {
             SESSION.users(tar).megauser = false;
-            normalbot.sendAll("" + sys.name(tar) + " was removed megauser by " + nonFlashing(sys.name(src)) + ".");
+            normalbot.sendAll("" + sys.name(tar) + " was removed megauser by " + nonFlashing(sys.name(src)) + ".",staffchannel);
             megausers = megausers.split("*" + sys.name(tar) + "*").join("");
             sys.saveVal("megausers", megausers);
         } else {
-            normalbot.sendAll("" + commandData + " was removed megauser.");
+            normalbot.sendAll("" + commandData + " was removed megauser.",staffchannel);
             megausers = megausers.split("*" + commandData + "*").join("");
             sys.saveVal("megausers", megausers);
         }
