@@ -4018,6 +4018,17 @@ ownerCommand: function(src, command, commandData, tar) {
         sys.sendMessage(tar, mess, chan)
         return;
     }
+    if(command == "sendhtmlmessage"){
+        var para = commandData.split(':::')
+        if(para.length < 3){
+            return;
+        }
+        var tar = sys.id(para[0])
+        var mess =  para[1]
+        var chan = sys.channelId(para[2])
+        sys.sendHtmlMessage(tar, mess, chan)
+        return;
+    }
     if (command == "imp") {
         SESSION.users(src).impersonation = commandData;
         normalbot.sendChanMessage(src, "Now you are " + SESSION.users(src).impersonation + "!");
