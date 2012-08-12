@@ -109,7 +109,7 @@ var updateModule = function updateModule(module_name, callback) {
 var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel;
 
 /* we need to make sure the scripts exist */
-var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js', 'chanutils.js'].concat(Config.Plugins);
+var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js'].concat(Config.Plugins);
 var missing = 0;
 for (var i = 0; i < deps.length; ++i) {
     if (!sys.getFileContent(deps[i])) {
@@ -156,7 +156,6 @@ String.prototype.format = function() {
 };
 
 var utilities = require('utilities.js');
-var chanutils = require('chanutils.js');
 var isNonNegative = utilities.is_non_negative;
 var Lazy = utilities.Lazy;
 var nonFlashing = utilities.non_flashing;
@@ -168,6 +167,14 @@ sendChanAll = function(message) {
     sys.sendAll(message, channel);
 };
 
+String.prototype.toCorrectCase = function() {
+    if (isNaN(this) && sys.id(this) !== undefined) {
+        return sys.name(sys.id(this));
+    }
+    else {
+        return this;
+    }
+}
 
 var POKEMON_CLEFFA = typeof sys != 'undefined' ? sys.pokeNum("Cleffa") : 173;
 function POUser(id)
@@ -356,26 +363,208 @@ POChannel.prototype.setTopic = function(src, topicInfo)
         channelbot.sendChanMessage(src, "You don't have the rights to set topic");
         return;
     }
-    chanutils.changeParameter(src, "topic", topicInfo, this.id)
+    this.changeParameter(src, "topic", topicInfo)
     SESSION.global().channelManager.update(this.id);
     channelbot.sendChanAll("" + sys.name(src) + " changed the topic to: " + topicInfo);
 };
 
 POChannel.prototype.isChannelOwner = function(id)
 {
-    return chanutils.isChanOwner(id, this.id);
+    if (!sys.dbRegistered(sys.name(id))) {
+        return false;
+    }
+    if (sys.auth(id) >= 3) {
+        return true;
+    }
+    if (typeof this.masters != "object") {
+        this.masters = [];
+    }
+    if (this.masters.indexOf(sys.name(id).toLowerCase()) > -1) {
+        return true;
+    }
+    return false;
 };
 POChannel.prototype.isChannelAdmin = function(id)
 {
-    return chanutils.isChanAdmin(id, this.id);
+    if (!sys.dbRegistered(sys.name(id))) {
+        return false;
+    }
+    if (sys.auth(id) >= 2 || this.isChannelOwner(id)) {
+        return true;
+    }
+    if (typeof this.admins != "object") {
+        this.admins = [];
+    }
+    if (this.admins.indexOf(sys.name(id).toLowerCase()) > -1) {
+        return true;
+    }
+    return false;
 };
 POChannel.prototype.isChannelOperator = function(id)
 {
-    return chanutils.isChanMod(id, this.id);
+    if (!sys.dbRegistered(sys.name(id))) {
+        return false;
+    }
+    if ((sys.auth(id) >= 1 && this.id === 0) || this.isChannelAdmin(id)) {
+        return true;
+    }
+    if (typeof this.operators != "object") {
+        this.operators = [];
+    }
+    if (this.operators.indexOf(sys.name(id).toLowerCase()) > -1) {
+        return true;
+    }
+    return false;
 };
+
+POChannel.prototype.addRole = function(src, tar, group, data)
+{
+    var name = tar.toLowerCase();
+    var auth = typeof src == "string" ? src : sys.name(src);
+    if (sys.dbIp(tar) === undefined) {
+        return ["self", "The user '"+tar.toCorrectCase()+"' doesn't exist!"];
+    }
+    if (!sys.dbRegistered(tar) && ["owner", "admin", "mod"].indexOf(group) != -1) {
+        return ["self", "The user '"+tar.toCorrectCase()+"' is not registered so you can't give them channel authority!"];
+    }
+    if (typeof this.operators != 'object')
+        this.operators = [];
+    if (typeof this.admins != 'object')
+        this.admins = [];
+    if (typeof this.masters != 'object')
+        this.masters = [];
+    if (typeof this.members != 'object')
+        this.members = [];
+    if (group == "owner") {
+        if (this.masters.indexOf(name) > -1) {
+            return ["self", tar.toCorrectCase()+" is already a channel owner!"];
+        }
+        if (this.masters.length > 10) {
+            return ["self", "There is a limit of 10 owners!"];
+        }
+        this.masters.push(name);
+        return ["all", sys.name(src)+" made "+tar.toCorrectCase()+" a channel owner!"];
+    }
+    if (group == "admin") {
+        if (this.admins.indexOf(name) > -1) {
+            return ["self", tar.toCorrectCase()+" is already a channel admin!"];
+        }
+        if (this.admins.length > 50) {
+            return ["self", "There is a limit of 50 admins!"];
+        }
+        this.admins.push(name);
+        return ["all", sys.name(src)+" made "+tar.toCorrectCase()+" a channel admin!"];
+    }
+    if (group == "mod") {
+        if (this.operators.indexOf(name) > -1) {
+            return ["self", tar.toCorrectCase()+" is already a channel mod!"];
+        }
+        if (this.operators.length > 100) {
+            return ["self", "There is a limit of 100 mods!"];
+        }
+        this.operators.push(name);
+        return ["all", sys.name(src)+" made "+tar.toCorrectCase()+" a channel mod!"];
+    }
+    if (group == "member") {
+        if (this.members.indexOf(name) > -1) {
+            return ["self", tar.toCorrectCase()+" is already a member!"];
+        }
+        if (this.members.length > 250) {
+            return ["self", "There is a limit of 250 members!"];
+        }
+        this.members.push(name);
+        return ["all", sys.name(src)+" made "+tar.toCorrectCase()+" a member!"];
+    }
+    if (group == "muted") {
+        if (this.isPunished(name) !== "none") {
+            return ["self", tar.toCorrectCase()+" is already "+isPunished(name, chanId)+" from this channel!"];
+        }
+        if (!this.hasPermission(src, tar)) {
+            return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel mute them!"];
+        }
+        this.muted[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "issuetime": parseInt(sys.time()), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
+        var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
+        return ["all", auth+" muted "+tar.toCorrectCase()+timestring+" in this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
+    }
+    if (group == "banned") {
+        if (this.isPunished(name) === "banned") {
+            return ["self", tar.toCorrectCase()+" is already banned from this channel!"];
+        }
+        if (!this.hasPermission(src, tar)) {
+            return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel ban them!"];
+        }
+        this.banned[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "issuetime": parseInt(sys.time()), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
+        var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
+        return ["all", auth+" banned "+tar.toCorrectCase()+timestring+" from this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
+    }
+    return ["self", ""];
+};
+
+
+
+POChannel.prototype.removeRole = function(src, tar, group)
+{
+    var name = tar.toLowerCase();
+    if (typeof this.operators != 'object')
+        this.operators = [];
+    if (typeof this.admins != 'object')
+        this.admins = [];
+    if (typeof this.masters != 'object')
+        this.masters = [];
+    if (typeof this.members != 'object')
+        this.members = [];
+    if (group == "owner") {
+        if (this.masters.indexOf(name) == -1) {
+            return ["self", tar.toCorrectCase()+" is not a channel owner!"];
+        }
+        var index = this.masters.indexOf(name);
+        this.masters.splice(index,1);
+        return ["all", sys.name(src)+" removed "+tar.toCorrectCase()+" from the channel owner list!"];
+    }
+    if (group == "admin") {
+        if (this.admins.indexOf(name) == -1) {
+            return ["self", tar.toCorrectCase()+" is not a channel admin!"];
+        }
+        var index = this.admins.indexOf(name);
+        this.admins.splice(index,1);
+        return ["all", sys.name(src)+" removed "+tar.toCorrectCase()+" from the channel admin list!"];
+    }
+    if (group == "mod") {
+        if (this.operators.indexOf(name) == -1) {
+            return ["self", tar.toCorrectCase()+" is not a channel mod!"];
+        }
+        var index = this.operators.indexOf(name);
+        this.operators.splice(index,1);
+        return ["all", sys.name(src)+" removed "+tar.toCorrectCase()+" from the channel mod list!"];
+    }
+    if (group == "member") {
+        if (this.members.indexOf(name) == -1) {
+            return ["self", tar.toCorrectCase()+" is not a member!"];
+        }
+        var index = this.members.indexOf(name);
+        this.members.splice(index,1);
+        return ["all", sys.name(src)+" removed "+tar.toCorrectCase()+" from the channel member list!"];
+    }
+    if (group == "muted") {
+        if (!this.muted.hasOwnProperty(name)) {
+            return ["self", tar.toCorrectCase()+" is not muted in this channel!"];
+        }
+        delete this.muted[name];
+        return ["all", sys.name(src)+" unmuted "+tar.toCorrectCase()+" in this channel!"];
+    }
+    if (group == "banned") {
+        if (!this.banned.hasOwnProperty(name)) {
+            return ["self", tar.toCorrectCase()+" is not banned from this channel!"];
+        }
+        delete this.banned[name];
+        return ["all", sys.name(src)+" unbanned "+tar.toCorrectCase()+" from this channel!"];
+    }
+    return ["self", ""];
+};
+
 POChannel.prototype.issueAuth = function(src, name, group)
 {
-    var ret = chanutils.addGroup(src, name, group, this.id, {})
+    var ret = this.addRole(src, name, group, {})
     if (ret[0] == "self") {
         channelbot.sendChanMessage(src, ret[1]);
     }
@@ -387,7 +576,7 @@ POChannel.prototype.issueAuth = function(src, name, group)
 
 POChannel.prototype.takeAuth = function(src, name, group)
 {
-    var ret = chanutils.removeGroup(src, name, group, this.id)
+    var ret = this.removeRole(src, name, group)
     if (ret[0] == "self") {
         channelbot.sendChanMessage(src, ret[1]);
     }
@@ -395,16 +584,6 @@ POChannel.prototype.takeAuth = function(src, name, group)
         channelbot.sendChanAll(ret[1]);
         SESSION.global().channelManager.update(this.id);;
     }
-};
-
-POChannel.prototype.addRole = function(src, name, role)
-{
-    this.issueAuth(src, name, role);
-};
-
-POChannel.prototype.removeRole = function(src, name, role)
-{
-    this.takeAuth(src, name, role);
 };
 
 POChannel.prototype.register = function(name)
@@ -419,17 +598,29 @@ POChannel.prototype.register = function(name)
 
 POChannel.prototype.canJoin = function(id)
 {
-    return chanutils.canJoin(id, this.id);
+    if (this.isBanned(id)) {
+        return "banned";
+    }
+    if (this.isChannelOperator(id)) {
+        return "allowed";
+    }
+    if (typeof this.members != "object") {
+        this.members = [];
+    }
+    if (this.members.indexOf(sys.name(id).toLowerCase()) > -1) {
+        return "allowed";
+    }
+    return "nil";
 };
 
 POChannel.prototype.canTalk = function(id)
 {
-    return chanutils.canSpeak(id, this.id);
+    return !this.isMuted(id);
 };
 
 POChannel.prototype.ban = function(src, tar, data)
 {
-    var ret = chanutils.addGroup(src, tar, "banned", this.id, data);
+    var ret = this.addRole(src, tar, "banned", data);
     if (ret[0] == "self") {
         if (typeof src == "number")
             channelbot.sendChanMessage(src, ret[1]);
@@ -452,7 +643,7 @@ POChannel.prototype.ban = function(src, tar, data)
 
 POChannel.prototype.unban = function(src, tar)
 {
-    var ret = chanutils.removeGroup(src, tar, "banned", this.id);
+    var ret = this.removeRole(src, tar, "banned");
     if (ret[0] == "self") {
         channelbot.sendChanMessage(src, ret[1]);
     }
@@ -464,7 +655,7 @@ POChannel.prototype.unban = function(src, tar)
 
 POChannel.prototype.mute = function(src, tar, data)
 {
-    var ret = chanutils.addGroup(src, tar, "muted", this.id, data);
+    var ret = this.addRole(src, tar, "muted", data);
     if (ret[0] == "self") {
         if (typeof src == "number")
             channelbot.sendChanMessage(src, ret[1]);
@@ -477,7 +668,7 @@ POChannel.prototype.mute = function(src, tar, data)
 
 POChannel.prototype.unmute = function(src, tar)
 {
-    var ret = chanutils.removeGroup(src, tar, "muted", this.id);
+    var ret = this.removeRole(src, tar, "muted");
     if (ret[0] == "self") {
         channelbot.sendChanMessage(src, ret[1]);
     }
@@ -486,6 +677,246 @@ POChannel.prototype.unmute = function(src, tar)
         SESSION.global().channelManager.update(this.id);
     }
 };
+
+POChannel.prototype.isBanned = function(id)
+{
+    // can't ban owners
+    if (this.isChannelOwner(id)) {
+        return false;
+    }
+    var banlist = this.banned;
+    var ip = sys.ip(id);
+    var name = sys.name(id);
+    for (var x in banlist) {
+        if (!banlist[x].hasOwnProperty("expiry")) {
+            delete this.banned[x];
+            continue;
+        }
+        if (banlist[x].expiry <= parseInt(sys.time())) {
+            delete this.banned[x];
+            continue;
+        }
+        if (cmp(x, name)) {
+            return true;
+        }
+        if (sys.dbIp(x) == ip) {
+            return true;
+        }
+    }
+    return false;
+}
+
+POChannel.prototype.isMuted = function(id)
+{
+    if (this.isChannelOperator(id)) {
+        return false;
+    }
+    var mutelist = this.muted;
+    var ip = sys.ip(id);
+    var name = sys.name(id);
+    for (var x in mutelist) {
+        if (!mutelist[x].hasOwnProperty("expiry")) {
+            delete this.muted[x];
+            continue;
+        }
+        if (mutelist[x].expiry <= parseInt(sys.time())) {
+            delete this.muted[x];
+            continue;
+        }
+        if (cmp(x, name)) {
+            return true;
+        }
+        if (sys.dbIp(x) == ip) {
+            return true;
+        }
+    }
+    return false;
+}
+
+POChannel.prototype.isPunished = function(name)
+{
+    var banlist = this.banned;
+    for (var b in banlist) {
+        if (cmp(b, name)) {
+            return "banned";
+        }
+        if (sys.dbIp(b) == sys.dbIp(name)) {
+            return "banned";
+        }
+    }
+    var mutelist = this.muted;
+    for (var m in mutelist) {
+        if (cmp(m, name)) {
+            return "muted";
+        }
+        if (sys.dbIp(m) == sys.dbIp(name)) {
+            return "muted";
+        }
+    }
+    return "none";
+}
+
+POChannel.prototype.hasPermission = function(src, tar) {
+    var srcauth = 0;
+    if (typeof src == "string") {
+        srcauth = 1;
+    }
+    else {
+        if (this.isChannelOwner(src)) {
+            srcauth = 3;
+        }
+        else if (this.isChannelAdmin(src)) {
+            srcauth = 2;
+        }
+        else if (this.isChannelOperator(src)) {
+            srcauth = 1;
+        }
+    }
+    var tarauth = this.chanMaxAuth(sys.dbIp(tar));
+    return srcauth > tarauth;
+}
+
+POChannel.prototype.chanMaxAuth = function(ip) {
+    var maxauth = 0;
+    if (sys.maxAuth(ip) >= 2 || this.id === 0) {
+        maxauth = sys.maxAuth(ip);
+    }
+    var aliases = sys.aliases(ip);
+    if (typeof this.operators != 'object')
+        this.operators = [];
+    if (typeof this.admins != 'object')
+        this.admins = [];
+    if (typeof this.masters != 'object')
+        this.masters = [];
+    for (var x in aliases) {
+        if (this.masters.indexOf(aliases[x]) > -1) {
+            maxauth = 3;
+        }
+        else if (this.admins.indexOf(aliases[x]) > -1 && maxauth < 2) {
+            maxauth = 2;
+        }
+        else if (this.operators.indexOf(aliases[x]) > -1 && maxauth < 1) {
+            maxauth = 1;
+        }
+        if (maxauth >= 3) break;
+    }
+    return maxauth;
+}
+
+POChannel.prototype.changeParameter = function(src, parameter, value) {
+    if (parameter == "topic") {
+        this.topic = value;
+        this.topicSetter = sys.name(src);
+        return;
+    }
+    if (parameter == "allowcaps") {
+        if (value === true) {
+            this.ignorecaps = true;
+        }
+        else {
+            this.ignorecaps = false;
+        }
+        SESSION.global().channelManager.update(this.id);
+        return;
+    }
+    if (parameter == "allowflood") {
+        if (value === true) {
+            this.ignoreflood = true;
+        }
+        else {
+            this.ignoreflood = false;
+        }
+        SESSION.global().channelManager.update(this.id);
+        return;
+    }
+    if (parameter == "invitelevel") {
+        var level = parseInt(value);
+        var maxvalue = sys.auth(src) >= 3 ? 3 : sys.auth(src) + 1;
+        if (level <= 0 || isNaN(level)) {
+            level = 0;
+        }
+        else if (level > maxvalue) {
+            level = maxvalue;
+        }
+        this.inviteonly = level;
+        SESSION.global().channelManager.update(this.id);
+        if (level === 0) {
+            return sys.name(src)+" made this channel public.";
+        }
+        else {
+            return sys.name(src)+" made this channel invite only for users below auth level "+level+".";
+        }
+    }
+}
+
+POChannel.prototype.getReadableList = function(type)
+{
+    try {
+        var name = "";
+        var mh = {};
+        if (type == "mutelist") {
+            mh = this.muted;
+            name = "Channel Muted";
+        }
+        else if (type == "banlist") {
+            mh = this.banned;
+            name = "Channel Banned";
+        }
+        else {
+            return "";
+        }
+        var width=4;
+        var max_message_length = 30000;
+        var tmp = [];
+        var t = parseInt(sys.time(), 10);
+        var toDelete = [];
+        for (var x in mh) {
+            if (!mh[x].hasOwnProperty("expiry")) {
+                continue;
+            }
+            var playername = utilities.html_escape(x);
+            var expirytime = isNaN(mh[x].expiry) ? "never" : mh[x].expiry-parseInt(sys.time());
+            if (expirytime <= 0) {
+                continue;
+            }
+            var issuetime = getTimeString(parseInt(sys.time())-mh[x].issuetime);
+            var auth = utilities.html_escape(mh[x].auth);
+            var reason = utilities.html_escape(mh[x].reason);
+            tmp.push([playername, auth, issuetime, isNaN(mh[x].expiry) ? expirytime : getTimeString(expirytime), reason])
+        }
+        tmp.sort(function(a,b) { return a[2] - b[2];});
+
+        // generate HTML
+        var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + utilities.html_escape(name) + '</strong></center></td></tr><tr><th>Name</th><th>By</th><th>Issued ago</th><th>Expires in</th><th>Reason</th>';
+        var table_footer = '</table>';
+        var table = table_header;
+        var line;
+        var send_rows = 0;
+        while(tmp.length > 0) {
+            line = '<tr><td>'+tmp[0].join('</td><td>')+'</td></tr>';
+            tmp.splice(0,1);
+            if (table.length + line.length + table_footer.length > max_message_length) {
+                if (send_rows === 0) continue; // Can't send this line!
+                table += table_footer;
+                sys.sendHtmlMessage(src, table, channel);
+                table = table_header;
+                send_rows = 0;
+            }
+            table += line;
+            ++send_rows;
+        }
+        table += table_footer;
+        if (send_rows > 0) {
+            return table;
+        }
+        else {
+            return "";
+        }
+    }
+    catch (e) {
+        return "";
+    }
+}
 
 /* Object that manages channels */
 function POChannelManager(fname)
@@ -3909,11 +4340,11 @@ channelCommand: function(src, command, commandData, tar) {
         if (!sys.isInChannel(tar, channel)) {
             channelbot.sendMessage(tar, "" + sys.name(src) + " would like you to join #" + sys.channel(channel) + "!");
         }
-        poChannel.addRole(src, commandData, "member");
+        poChannel.issueAuth(src, commandData, "member");
         return;
     }
     if (command == "deinvite" || command == "demember") {
-        poChannel.removeRole(src, commandData, "member");
+        poChannel.takeAuth(src, commandData, "member");
         return;
     }
     if (command == "inviteonly") {
@@ -3931,7 +4362,7 @@ channelCommand: function(src, command, commandData, tar) {
         else {
             value = parseInt(commandData);
         }
-        var message = chanutils.changeParameter(src, "invitelevel", value, channel);
+        var message = poChannel.changeParameter(src, "invitelevel", value);
         normalbot.sendChanAll(message);
         return;
     }
@@ -3991,14 +4422,14 @@ channelCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "cmutes") {
-        var cmutelist = chanutils.getReadableList("mutelist", channel);
+        var cmutelist = poChannel.getReadableList("mutelist");
         if (cmutelist !== "") {
             sys.sendHtmlMessage(src, cmutelist, channel);
         }
         return;
     }
     if (command == "cbans") {
-        var cbanlist = chanutils.getReadableList("banlist", channel);
+        var cbanlist = poChannel.getReadableList("banlist");
         if (cbanlist !== "") {
             sys.sendHtmlMessage(src, cbanlist, channel);
         }
@@ -4010,11 +4441,11 @@ channelCommand: function(src, command, commandData, tar) {
     }
 
     if (command == "op") {
-        poChannel.addRole(src, commandData, "mod");
+        poChannel.issueAuth(src, commandData, "mod");
         return;
     }
     if (command == "deop") {
-        poChannel.removeRole(src, commandData, "mod");
+        poChannel.takeAuth(src, commandData, "mod");
         return;
     }
     if (command == "ctoggleflood") {
@@ -4057,11 +4488,11 @@ channelCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "deregister") {
-        if (commandData === "") {
-            poChannel.removeRole(src, sys.name(src), "owner");
+        if (commandData === undefined) {
+            poChannel.takeAuth(src, sys.name(src), "owner");
         }
         else {
-            poChannel.removeRole(src, commandData, "owner");
+            poChannel.takeAuth(src, commandData, "owner");
         }
         return;
     }
@@ -4069,19 +4500,19 @@ channelCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "admin") {
-        poChannel.addRole(src, commandData, "admin");
+        poChannel.issueAuth(src, commandData, "admin");
         return;
     }
     if (command == "deadmin") {
-        poChannel.removeRole(src, commandData, "admin");
+        poChannel.takeAuth(src, commandData, "admin");
         return;
     }
     if (command == "owner") {
-        poChannel.addRole(src, commandData, "owner");
+        poChannel.issueAuth(src, commandData, "owner");
         return;
     }
     if (command == "deowner") {
-        poChannel.removeRole(src, commandData, "owner");
+        poChannel.takeAuth(src, commandData, "owner");
         return;
     }
     return "no command";
