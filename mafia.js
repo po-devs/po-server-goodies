@@ -2213,7 +2213,7 @@ function Mafia(mafiachan) {
             "±Tip: Type /rules on other channel to see full rules.",
             "",
             "     Game Rules: ",
-            "±Rule: Do not quote any of the Bots.",
+            "±Rule: Do not quote any of the Bots, removing the \"bot\" part is still botquoting.",
             "±Rule: Do not quit the game before you are dead.",
             "±Rule: Do not vote yourself / get yourself killed on purpose",
             "±Rule: Do not talk once you're dead or voted off. ",
