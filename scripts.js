@@ -1172,8 +1172,8 @@ var commands = {
         "/cmute [name]:[reason]:[time]: Mutes someone in current channel (reason and time optional).",
         "/cunmute [name]: Unmutes someone in current channel.",
         "/cmutes: Lists users muted in current channel.",
-        "*** Only channel admins may use the following commands ***",
         "/cbans: Lists users banned from current channel.",
+        "*** Only channel admins may use the following commands ***",
         "/op [name]: Gives a user channel operator status.",
         "/deop [name]: Removes channel operator status from a user.",
         "/inviteonly [on/off/level]: Makes a channel invite-only or public.",
@@ -4932,7 +4932,7 @@ afterChatMessage : function(src, message, chan)
     // hardcoded
     var ignoreChans = [staffchannel, sachannel, sys.channelId("trivreview"), sys.channelId("Watch"), mafiarev];
     var ignoreUsers = ["nixeagle"];
-    var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1 && poChannel.hasPermission("x",sys.name(src));
+    var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1 && !poChannel.isChannelOperator(src);
     var officialChan = true;
     if (channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel !== sys.channelId("Trivia") && channel !== trollchannel){
         officialChan = false;
@@ -4948,10 +4948,10 @@ afterChatMessage : function(src, message, chan)
             if (user.capsmutes === undefined)
                 user.capsmutes = 0;
             var time = 900 * Math.pow(2,user.capsmutes);
-            ++user.capsmutes;
 
             var message = "" + sys.name(src) + " was muted for caps for " + (time/60) + " minutes.";
             if (officialChan) {
+                ++user.capsmutes;
                 if (user.smute.active) {
                     sys.sendMessage(src, message);
                     capsbot.sendAll("" + sys.name(src) + " was muted for caps while smuted.", staffchannel);
@@ -4965,11 +4965,11 @@ afterChatMessage : function(src, message, chan)
             if (officialChan) {
                 user.activate("mute", Config.capsbot, endtime, "Overusing CAPS", true);
                 callplugins("onMute", src);
+                return;
             }
             else {
-                poChannel.mute(Config.capsbot, sys.name(src), {'time': time, 'reason': "Overusing CAPS"});
+                poChannel.mute(Config.capsbot, sys.name(src), {'time': 900, 'reason': "Overusing CAPS"});
             }
-            return;
         }
     } else if (user.caps > 0) {
         user.caps -= 1;
@@ -5009,13 +5009,13 @@ afterChatMessage : function(src, message, chan)
                     user.activate("mute", Config.kickbot, endtime, "Flooding", true);
                     callplugins("onKick", src);
                     sys.kick(src);
+                    return;
                 }
                 else {
                     poChannel.mute(Config.kickbot, sys.name(src), {'time': 3600, 'reason': "Flooding"});
                     sys.kick(src, channel);
                 }
             }
-            return;
         }
     }
     SESSION.channels(channel).beforeMessage(src, message);

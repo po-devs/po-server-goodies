@@ -549,7 +549,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#CC0044",
             minpercent: 5,
-            version: "1.500p4.5",
+            version: "1.500p4.5 [SAFE]",
             tourbot: "\u00B1Genesect: ",
             debug: false,
             points: true
@@ -589,7 +589,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p4.5",
+        version: "1.500p4.5 [SAFE]",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -2386,8 +2386,13 @@ function tourCommand(src, command, commandData) {
                             break;
                         }
                     }
+                    sys.sendMessage(src, commandData+" currently has "+score+" tour points.",tourschan)
+                    if (!isTourOwner(src)) {
+                        sendBotMessage(src, "This command is currently restricted!",tourschan,false)
+                        return true;
+                    }
                     var tourdata = sys.getFileContent("tourdetails.txt")
-                    sys.sendMessage(src, "*** TOURNAMENT DETAILS FOR "+commandData+" (Score: "+score+")***",tourschan)
+                    // sys.sendMessage(src, "*** TOURNAMENT DETAILS FOR "+commandData+" (Score: "+score+")***",tourschan)
                     var tourinfopieces = tourdata.split("\n")
                     for (var x in tourinfopieces) {
                         var datatoread = tourinfopieces[x].split(":::",4)
@@ -2494,8 +2499,8 @@ function tourCommand(src, command, commandData) {
                 var ownnameprinted = false;
                 var rankkey = [0, 0] // rank, points
                 for (var x=0; x<65536; x++) {
-                    if (x >= list.length || (ownnameprinted && rankkey[0]>20)) break;
-                    if (rankkey[0] <= 20 || cmp((list[x])[1], sys.name(src))) {
+                    if (x >= list.length || (ownnameprinted && rankkey[0]>10)) break;
+                    if (rankkey[0] <= 10 || cmp((list[x])[1], sys.name(src))) {
                         if (rankkey[1] === parseInt((list[x])[0])) {
                             sys.sendMessage(src, "#"+rankkey[0]+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
                         }
@@ -2552,8 +2557,8 @@ function tourCommand(src, command, commandData) {
                 var ownnameprinted = false;
                 var rankkey = [0, 0] // rank, points
                 for (var x=0; x<65536; x++) {
-                    if (x >= list.length || (ownnameprinted && rankkey[0]>20)) break;
-                    if (rankkey[0] <= 20 || cmp((list[x])[1], sys.name(src))) {
+                    if (x >= list.length || (ownnameprinted && rankkey[0]>10)) break;
+                    if (rankkey[0] <= 10 || cmp((list[x])[1], sys.name(src))) {
                         if (rankkey[1] === parseInt((list[x])[0])) {
                             sys.sendMessage(src, "#"+rankkey[0]+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
                         }
@@ -2592,15 +2597,21 @@ function tourCommand(src, command, commandData) {
                 }
                 list.sort(function(a,b) { return b[0] - a[0] ; });
                 sys.sendMessage(src, "*** EVENT RANKINGS "+(commandData != "" ? "("+commandData+") " : "")+"***",tourschan)
+                var ownnameprinted = false;
                 var rankkey = [0, 0] // rank, points
                 for (var x=0; x<65536; x++) {
-                    if (x >= list.length) break;
-                    if (rankkey[1] === parseInt((list[x])[0])) {
-                        sys.sendMessage(src, "#"+rankkey[0]+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
-                    }
-                    else {
-                        sys.sendMessage(src, "#"+(x+1)+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
-                        rankkey = [x+1, parseInt((list[x])[0])]
+                    if (x >= list.length || (ownnameprinted && rankkey[0]>10)) break;
+                    if (rankkey[0] <= 10 || cmp((list[x])[1], sys.name(src))) {
+                        if (rankkey[1] === parseInt((list[x])[0])) {
+                            sys.sendMessage(src, "#"+rankkey[0]+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
+                        }
+                        else {
+                            sys.sendMessage(src, "#"+(x+1)+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
+                            rankkey = [x+1, parseInt((list[x])[0])]
+                        }
+                        if (cmp((list[x])[1], sys.name(src))) {
+                            ownnameprinted = true;
+                        }
                     }
                 }
             }
