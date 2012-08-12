@@ -1168,7 +1168,7 @@ var commands = {
         "/lt [name]: Kick someone from current channel.",
         "/inviteonly [on/off/level]: Makes a channel invite-only or public.",
         "/member [name]: Makes the user a member.",
-        "/demember [name]: Removes membershiop from a user.",
+        "/demember [name]: Removes membership from a user.",
         "/csilence [minutes]: Prevents authless users from talking in current channel specified time.",
         "/csilenceoff: Allows users to talk in current channel.",
         "/cmute [name]:[reason]:[time]: Mutes someone in current channel (reason and time optional).",
