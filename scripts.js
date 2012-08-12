@@ -1165,7 +1165,6 @@ var commands = {
         "/register: To register the current channel you're on.",
         "/topic [topic]: Sets the topic of a channel. Only works if you're the first to log on a channel or have auth there. Displays current topic instead if no new one is given.",
         "/lt [name]: Kick someone from current channel.",
-        "/inviteonly [on/off/level]: Makes a channel invite-only or public.",
         "/member [name]: Makes the user a member.",
         "/demember [name]: Removes membership from a user.",
         "/csilence [minutes]: Prevents authless users from talking in current channel specified time.",
@@ -1177,6 +1176,7 @@ var commands = {
         "/cbans: Lists users banned from current channel.",
         "/op [name]: Gives a user channel operator status.",
         "/deop [name]: Removes channel operator status from a user.",
+        "/inviteonly [on/off/level]: Makes a channel invite-only or public.",
         "/ctogglecaps: Turns on/off the server anti-caps bot in current channel.",
         "/ctoggleflood: Turns on/off the server anti-flood bot in current channel. Overactive still in effect.",
         "/cban [name]:[reason]:[time]: Bans someone from current channel (reason and time optional).",
@@ -4350,25 +4350,6 @@ channelCommand: function(src, command, commandData, tar) {
         poChannel.takeAuth(src, commandData, "member");
         return;
     }
-    if (command == "inviteonly") {
-        if (commandData === undefined) {
-            channelbot.sendChanMessage(src,poChannel.inviteonly === 0 ? "This channel is public!" : "This channel is invite only for users below auth level "+poChannel.inviteonly);
-            return;
-        }
-        var value = -1;
-        if (commandData == "off") {
-            value = 0;
-        }
-        else if (commandData == "on") {
-            value = 3;
-        }
-        else {
-            value = parseInt(commandData);
-        }
-        var message = poChannel.changeParameter(src, "invitelevel", value);
-        normalbot.sendChanAll(message);
-        return;
-    }
     if (command == "topicadd") {
         if (poChannel.topic.length > 0)
             poChannel.setTopic(src, poChannel.topic + " | " + commandData);
@@ -4455,6 +4436,25 @@ channelCommand: function(src, command, commandData, tar) {
     }
     if (command == "deop") {
         poChannel.takeAuth(src, commandData, "mod");
+        return;
+    }
+    if (command == "inviteonly") {
+        if (commandData === undefined) {
+            channelbot.sendChanMessage(src,poChannel.inviteonly === 0 ? "This channel is public!" : "This channel is invite only for users below auth level "+poChannel.inviteonly);
+            return;
+        }
+        var value = -1;
+        if (commandData == "off") {
+            value = 0;
+        }
+        else if (commandData == "on") {
+            value = 3;
+        }
+        else {
+            value = parseInt(commandData);
+        }
+        var message = poChannel.changeParameter(src, "invitelevel", value);
+        normalbot.sendChanAll(message);
         return;
     }
     if (command == "ctoggleflood") {
