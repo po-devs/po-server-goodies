@@ -3204,7 +3204,7 @@ modCommand: function(src, command, commandData, tar) {
                 case 3: return "owner";
                 case 2: return "admin";
                 case 1: return "moderator";
-                default: return megauser ? "megauser" : contribution != "no" ? "contributor" : "user";
+                default: return contribution != "no" ? "contributor" : "user";
                 }
             }();
 
