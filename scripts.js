@@ -2104,17 +2104,6 @@ afterChangeTeam : function(src)
         }
     }
 
-    if (megausers.indexOf("*" + sys.name(src) + "*") != -1) {
-        if(!POuser.megauser) {
-            sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Changed name to MU" + "\n");
-        }
-        POuser.megauser = true;
-    } else {
-        if(POuser.megauser) {
-            sys.appendToFile("staffstats.txt", "~" + src + "~" + sys.time() + "~" + "Changed name from MU" + "\n");
-        }
-        POuser.megauser = false;
-    }
     POuser.contributions = contributors.hash.hasOwnProperty(sys.name(src)) ? contributors.get(sys.name(src)) : undefined;
     POuser.mafiaAdmin = mafiaAdmins.hash.hasOwnProperty(sys.name(src));
     if (authChangingTeam === false) {
