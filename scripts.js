@@ -680,8 +680,8 @@ POChannel.prototype.unmute = function(src, tar)
 
 POChannel.prototype.isBanned = function(id)
 {
-    // can't ban owners
-    if (this.isChannelOwner(id)) {
+    // can't ban chan admins+
+    if (this.isChannelAdmin(id)) {
         return false;
     }
     var banlist = this.banned;
@@ -4427,12 +4427,18 @@ channelCommand: function(src, command, commandData, tar) {
         if (cmutelist !== "") {
             sys.sendHtmlMessage(src, cmutelist, channel);
         }
+        else {
+            channelbot.sendChanMessage(src, "No one is muted on this channel.")
+        }
         return;
     }
     if (command == "cbans") {
         var cbanlist = poChannel.getReadableList("banlist");
         if (cbanlist !== "") {
             sys.sendHtmlMessage(src, cbanlist, channel);
+        }
+        else {
+            channelbot.sendChanMessage(src, "No one is banned on this channel.")
         }
         return;
     }
