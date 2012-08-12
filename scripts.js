@@ -245,9 +245,6 @@ function POUser(id)
 //    this.android = android;
 
     var name = sys.name(id);
-    /* check if user is megauser */
-    if (megausers.indexOf("*" + name + "*") != -1)
-        this.megauser = true;
     if (contributors.hash.hasOwnProperty(name))
         this.contributions = contributors.get(name);
 
@@ -1458,8 +1455,6 @@ init : function() {
     };
 
     battlesStopped = false;
-
-    megausers = sys.getVal("megausers");
 
     maxPlayersOnline = 0;
 
@@ -2821,19 +2816,6 @@ modCommand: function(src, command, commandData, tar) {
         querybot.sendChanMessage(src,sys.name(tar)+" is in tier: "+sys.tier(tar,0));
         return;
     }
-    if (command == "megausers") {
-        sendChanMessage(src, "");
-        sendChanMessage(src, "*** MEGA USERS ***");
-        sendChanMessage(src, "");
-        var spl = megausers.split('*');
-        for (x = 0; x < spl.length; ++x) {
-            if (spl[x].length > 0) {
-                sendChanMessage(src, spl[x] + " " + (sys.id(spl[x]) !== undefined ? "(online):" : "(offline)"));
-            }
-        }
-        sendChanMessage(src, "");
-        return;
-    }
     if (command == "perm") {
         if (channel == staffchannel || channel === 0) {
             channelbot.sendChanMessage(src, "you can't do that here.");
@@ -3175,7 +3157,6 @@ modCommand: function(src, command, commandData, tar) {
         }
 
         var registered = sys.dbRegistered(name);
-        var megauser = (megausers.toLowerCase().indexOf("*" + name.toLowerCase() + "*") != -1);
         var contribution = contributors.hash.hasOwnProperty(name) ? contributors.get(name) : "no";
         var authLevel;
         var ip;
@@ -3216,7 +3197,7 @@ modCommand: function(src, command, commandData, tar) {
             var userJson = {'type': 'UserInfo', 'id': tar ? tar : -1, 'username': name, 'auth': authLevel, 'megauser': megauser, 'contributor': contribution, 'ip': ip, 'online': online, 'registered': registered, 'lastlogin': lastLogin };
             sendChanMessage(src, ":"+JSON.stringify(userJson));
         } else if (command == "userinfo") {
-            querybot.sendChanMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ megauser: " + megauser + " ~ contributor: " + contribution + " ~ ip: " + ip + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"));
+            querybot.sendChanMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ contributor: " + contribution + " ~ ip: " + ip + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"));
         } else if (command == "whois") {
             var authName = function() {
                 switch (authLevel) {
@@ -3515,15 +3496,6 @@ adminCommand: function(src, command, commandData, tar) {
         sendChanMessage(src, sys.memoryDump());
         return;
     }
-    if (command == "megauser") {
-        if (tar !== undefined) {
-            SESSION.users(tar).megauser = true;
-            normalbot.sendAll("" + sys.name(tar) + " was megausered by " + nonFlashing(sys.name(src)) + ".",staffchannel);
-            megausers += "*" + sys.name(tar) + "*";
-            sys.saveVal("megausers", megausers);
-        }
-        return;
-    }
     if(command == "togglerainbow"){
         if(commandData === "off"){
             SESSION.global().allowRainbow = false;
@@ -3532,19 +3504,6 @@ adminCommand: function(src, command, commandData, tar) {
         }
         SESSION.global().allowRainbow = true;
         normalbot.sendChanMessage(src, "You turned rainbow on!");
-        return;
-    }
-    if (command == "megauseroff") {
-        if (tar !== undefined) {
-            SESSION.users(tar).megauser = false;
-            normalbot.sendAll("" + sys.name(tar) + " was removed megauser by " + nonFlashing(sys.name(src)) + ".",staffchannel);
-            megausers = megausers.split("*" + sys.name(tar) + "*").join("");
-            sys.saveVal("megausers", megausers);
-        } else {
-            normalbot.sendAll("" + commandData + " was removed megauser.",staffchannel);
-            megausers = megausers.split("*" + commandData + "*").join("");
-            sys.saveVal("megausers", megausers);
-        }
         return;
     }
     if (command == "indigoinvite") {
