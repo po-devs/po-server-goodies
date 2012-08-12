@@ -694,6 +694,7 @@ POChannel.prototype.isBanned = function(id)
         }
         if (banlist[x].expiry <= parseInt(sys.time())) {
             delete this.banned[x];
+            channelbot.sendChanAll(x+"'s channel ban expired.");
             continue;
         }
         if (cmp(x, name)) {
@@ -721,6 +722,7 @@ POChannel.prototype.isMuted = function(id)
         }
         if (mutelist[x].expiry <= parseInt(sys.time())) {
             delete this.muted[x];
+            channelbot.sendChanAll(x+"'s channel mute expired.");
             continue;
         }
         if (cmp(x, name)) {
