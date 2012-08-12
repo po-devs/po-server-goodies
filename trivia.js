@@ -978,6 +978,7 @@ addAdminCommand("changec", function(src, commandData, channel) {
 // TODO: Maybe announce globally to trivreview when somebody accepts a question?
 
 addAdminCommand("accept", function(src, commandData, channel) {
+    return;
 	if(trivreview.editingMode === true){
 		triviaq.add(trivreview.editingCategory, trivreview.editingQuestion, trivreview.editingAnswer);
 		trivreview.editingMode = false;
@@ -1021,6 +1022,7 @@ addAdminCommand("showq", function(src, commandData, channel){
 },"Allows you to see an already submitted question");
 
 addAdminCommand("editq", function(src, commandData, channel){
+    return;
 	var q = triviaq.get(commandData);
 	if(trivreview.editingMode === true){
 		triviabot.sendMessage(src, "A question is already in edit, use /checkq to see it!");
@@ -1042,6 +1044,7 @@ addAdminCommand("editq", function(src, commandData, channel){
 },"Allows you to edit an already submitted question");
 
 addAdminCommand("decline", function(src, commandData, channel) {
+    return;
 	if(trivreview.editingMode === true){
 		trivreview.editingMode = false;
 		triviabot.sendAll("The question in edit was deleted",channel);
