@@ -549,7 +549,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#CC0044",
             minpercent: 5,
-            version: "1.500p4.4",
+            version: "1.500p4.5",
             tourbot: "\u00B1Genesect: ",
             debug: false,
             points: true
@@ -589,7 +589,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p4.4",
+        version: "1.500p4.5",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -3007,12 +3007,6 @@ function advanceround(key) {
                         newlosebracket.push("~Bye~")
                     }
                 }
-                // for event tours only
-                if (tours.tour[key].maxplayers !== "default") {
-                    var now = new Date();
-                    var datestring = now.getUTCDate() + "-" + now.getUTCMonth();
-                    sys.writeToFile("eventplayers.txt", datestring + ":" + tours.eventnames.join("*"))
-                }
                 newlosebracket.reverse()
             }
             else if (tours.tour[key].players.length == 2 && tours.tour[key].round%2 === 0) { // special case for 2 or less players, first battle
@@ -3458,6 +3452,7 @@ function tourprintbracket(key) {
         if (tours.tour[key].players.length == 1) { // winner
             var channels = [0, tourschan]
             var winner = toCorrectCase(tours.tour[key].players[0])
+            var now = new Date();
             if (winner !== "~Bye~") {
                 for (var x in channels) {
                     sys.sendAll("", channels[x])
@@ -3490,6 +3485,8 @@ function tourprintbracket(key) {
                     }
                     var neweventarray = tours.eventnames.concat(tours.tour[key].seeds);
                     tours.eventnames = neweventarray;
+                    var datestring = now.getUTCDate() + "-" + now.getUTCMonth();
+                    sys.writeToFile("eventplayers.txt", datestring + ":" + tours.eventnames.join("*"))
                 }
             }
             else sendBotAll("The "+getFullTourName(key)+" ended by default!", tourschan, false)
@@ -3501,7 +3498,6 @@ function tourprintbracket(key) {
                 for (var r=0; r<rankingorder.length; r++) {
                     rankstring.push("#" + (r+1) + ": " + toCorrectCase(rankingorder[r]))
                 }
-                var now = new Date()
                 var capsmonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
                 var dateString = now.getUTCDate()+" "+capsmonths[now.getUTCMonth()]
                 tours.history.unshift(getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players")
