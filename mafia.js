@@ -15,7 +15,7 @@ var is_command = require("utilities.js").is_command;
 function Mafia(mafiachan) {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-08-10.4";
+    this.version = "2012-08-13.1";
     var mafia = this;
 
     var noPlayer = '*';
@@ -2206,22 +2206,24 @@ function Mafia(mafiachan) {
     this.showRules = function(src) {
         var rules = [
             "",
+            ""
             "     Server Rules: ",
             "±Rule: No spamming / flooding ",
             "±Rule: No insulting - especially not auth. ",
             "±Rule: No trolling.",
-            "±Tip: Type /rules on other channel to see full rules.",
+            "±Tip: Type /rules on another channel to see the full rules.",
             "",
             "     Game Rules: ",
             "±Rule: Do not quote any of the Bots, removing the \"bot\" part is still botquoting.",
             "±Rule: Do not quit the game before you are dead.",
+            "±Rule: Ask to be slain by a mafia admin if you must leave, but do not join the next game if you do so.",
             "±Rule: Do not vote yourself / get yourself killed on purpose",
-            "±Rule: Do not talk once you're dead or voted off. ",
-            "±Rule: Do not use a hard to type name.",
+            "±Rule: Do not reveal any information about the game once you're dead or voted off. ",
+            "±Rule: Do not repeatedly target a user, as it ruins the fun for that user",
             "±Rule: Do not group together to ruin the game",
-            "±Rule: DO NOT REVEAL YOUR PARTNER IF YOU ARE MAFIA",
+            "±Rule: Do not reveal roles in order to harm your team's chances of winning.",
             "",
-            "±Game: Disobey them and you will be banned from mafia/muted according to the mod/admin's wishes!",
+            "±Game: Disobey them and you will be banned from mafia/muted according to the MA/auth's wishes!",
             ""
         ];
         dump(src, rules);
