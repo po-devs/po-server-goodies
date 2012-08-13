@@ -347,6 +347,14 @@ function time_handle(time) { //time in seconds
 
 // Tournaments
 
+// 1v1 tiers have shorter notification times.
+function is1v1Tour(key) {
+    if ((tours.tour[key].tourtype).indexOf("1v1") != -1) {
+        return true;
+    }
+    else return false;
+}
+
 // This function will get a user's current tournament points overall
 
 function getTourWinMessages() {
@@ -549,7 +557,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#CC0044",
             minpercent: 5,
-            version: "1.500p4.5 [SAFE]",
+            version: "1.500p4.6 [MUDKIPZ]",
             tourbot: "\u00B1Genesect: ",
             debug: false,
             points: true
@@ -589,7 +597,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p4.5 [SAFE]",
+        version: "1.500p4.6 [MUDKIPZ]",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -737,7 +745,7 @@ function tourStep() {
                 removeinactive(x)
                 continue;
             }
-            if ((tours.tour[x].time-(tours.tour[x].state == "subround" ? tourconfig.subtime : tourconfig.tourdq)+tourconfig.reminder) == parseInt(sys.time())) {
+            if ((tours.tour[x].time-(tours.tour[x].state == "subround" ? tourconfig.subtime : (is1v1Tour(x) ? Math.floor(tourconfig.tourdq*2/3) : tourconfig.tourdq))+tourconfig.reminder) == parseInt(sys.time())) {
                 sendReminder(x)
                 continue;
             }
@@ -3565,11 +3573,11 @@ function tourprintbracket(key) {
             }
             if (tours.tour[key].round == 1 && subsExist) {
                 tours.tour[key].state = "subround"
-                tours.tour[key].time = parseInt(sys.time())+tourconfig.subtime
+                tours.tour[key].time = parseInt(sys.time())+tourconfig.subtime;
             }
             else {
                 tours.tour[key].state = "round"
-                tours.tour[key].time = parseInt(sys.time())+tourconfig.tourdq
+                tours.tour[key].time = parseInt(sys.time())+(is1v1Tour(key) ? Math.floor(tourconfig.tourdq*2/3) : tourconfig.tourdq);
             }
             if (tours.tour[key].round == 1) {
                 var submessage = "<div style='margin-left: 50px'><br/>Type <b>/join</b> to join late, good while subs last!</div>"
