@@ -2206,7 +2206,6 @@ function Mafia(mafiachan) {
     this.showRules = function(src) {
         var rules = [
             "",
-            ""
             "     Server Rules: ",
             "±Rule: No spamming / flooding ",
             "±Rule: No insulting - especially not auth. ",
