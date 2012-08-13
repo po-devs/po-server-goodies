@@ -3508,7 +3508,7 @@ adminCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "They have already access.");
             return;
         }
-        poChannel.issueAuth(src, commandData, "member");
+        SESSION.channels(channel).issueAuth(src, commandData, "member");
         normalbot.sendAll("" + sys.name(src) + " summoned " + sys.name(tar) + " to this channel!", channel);
         sys.putInChannel(tar, channel);
         normalbot.sendChanMessage(tar, "" + sys.name(src) + " made you join this channel!");
@@ -3522,7 +3522,7 @@ adminCommand: function(src, command, commandData, tar) {
             var current_player = players[i];
             if (sys.isInChannel(current_player, staffchannel) && !this.canJoinStaffChannel(current_player)) {
                 sys.kick(current_player, staffchannel);
-                poChannel.takeAuth(src, sys.name(current_player), "member");
+                SESSION.channels(channel).takeAuth(src, sys.name(current_player), "member");
                 count = 1;
             }
         }
