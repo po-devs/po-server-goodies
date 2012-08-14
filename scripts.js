@@ -4631,6 +4631,22 @@ beforeChatMessage: function(src, message, chan) {
         return (caps > 7 && 2*name.length < 3*caps);
     });
 
+    shanaiForward = function(msg) {
+        var shanai = sys.id("Shanai");
+        if (shanai !== undefined) {
+            sys.sendMessage(shanai,"CHANMSG " + chan + " " + src + " :" + msg);
+        } else {
+            sys.sendMessage(src, "+ShanaiGhost: Shanai is offline, your command will not work. Ping nixeagle if he's online.", chan);
+        }
+        sys.stopEvent();
+    } 
+
+    // Forward some commands to Shanai
+    if (['|', '\\'].indexOf(message[0]) > -1 && !usingBannedWords() && name != 'coyotte508') {
+        shanaiForward(message);
+        return;
+    }
+    
     var command;
     if ((message[0] == '/' || message[0] == '!') && message.length > 1) {
         if (parseInt(sys.time(), 10) - lastMemUpdate > 500) {
