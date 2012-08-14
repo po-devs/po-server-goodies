@@ -134,7 +134,7 @@ function sendBotAll(message, chan, html) {
 // Debug Messages
 function sendDebugMessage(message, chan) {
     if (chan === tourschan && typeof tourconfig.debug == "string" && sys.existChannel(sys.channel(tourserrchan))) {
-        if (sys.id(tourconfig.debug) !== undefined && sys.isInChanel(sys.id(tourconfig.debug), tourserrchan))
+        if (sys.id(tourconfig.debug) !== undefined && sys.isInChannel(sys.id(tourconfig.debug), tourserrchan))
             sendBotMessage(sys.id(tourconfig.debug),message,tourserrchan,false)
     }
 }
