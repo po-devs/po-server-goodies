@@ -557,7 +557,7 @@ function getConfigValue(file, key) {
             errchannel: "Developer's Den",
             tourbotcolour: "#CC0044",
             minpercent: 5,
-            version: "1.500p4.6 [MUDKIPZ]",
+            version: "1.500p4.7 [SAFE]",
             tourbot: "\u00B1Genesect: ",
             debug: false,
             points: true
@@ -597,7 +597,7 @@ function initTours() {
         errchannel: "Developer's Den",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p4.6 [MUDKIPZ]",
+        version: "1.500p4.7 [SAFE]",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -1656,7 +1656,7 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "cancelbattle") {
-                var key = isInTour(name)
+                var key = isInTour(commandData)
                 if (key === false) {
                     sendBotMessage(src,"That player isn't in a tournament!",tourschan,false)
                     return true;
