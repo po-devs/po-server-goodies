@@ -133,8 +133,9 @@ function sendBotAll(message, chan, html) {
 
 // Debug Messages
 function sendDebugMessage(message, chan) {
-    if (chan === tourschan && tourconfig.debug && sys.existChannel(sys.channel(tourserrchan))) {
-        sendBotAll(message,tourserrchan,false)
+    if (chan === tourschan && typeof tourconfig.debug == "string" && sys.existChannel(sys.channel(tourserrchan))) {
+        if (sys.id(tourconfig.debug) !== undefined && sys.isInChanel(sys.id(tourconfig.debug), tourserrchan))
+            sendBotMessage(sys.id(tourconfig.debug),message,tourserrchan,false)
     }
 }
 
@@ -557,7 +558,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#CC0044",
             minpercent: 5,
-            version: "1.500p4.7 [SAFE]",
+            version: "1.500p4.7 [DEBUG]",
             tourbot: "\u00B1Genesect: ",
             debug: false,
             points: true
@@ -597,7 +598,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p4.7 [SAFE]",
+        version: "1.500p4.7 [DEBUG]",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -1855,11 +1856,11 @@ function tourCommand(src, command, commandData) {
                     sys.sendMessage(src,"colour: "+tourconfig.tourbotcolour,tourschan);
                     sys.sendMessage(src,"channel: "+tourconfig.channel,tourschan);
                     sys.sendMessage(src,"scoring: "+tourconfig.points,tourschan);
-                    sys.sendMessage(src,"debug: "+tourconfig.debug+" (to change this, type /configset debug [0/1] ~ true = 1; false = 0)",tourschan);
+                    sys.sendMessage(src,"debug: "+tourconfig.debug+" (to change this, type /debug [on/off])",tourschan);
                     return true;
                 }
                 var option = commandData.substr(0,pos).toLowerCase()
-                if (["botname", "bot name", "channel", "errchannel", "color", "colour"].indexOf(option) == -1) {
+                if (["botname", "bot name", "channel", "errchannel", "color", "colour", "debug"].indexOf(option) == -1) {
                     var value = parseInt(commandData.substr(pos+1))
                 }
                 else {
@@ -2087,12 +2088,13 @@ function tourCommand(src, command, commandData) {
                         sendBotMessage(src,"Can't turn debug on/off, ask an owner for this.",tourschan,false);
                         return true;
                     }
-                    if (value !== 0 && value != 1) {
-                        sendBotMessage(src,"Value must be 0 (turns debug off) or 1 (turns it on).",tourschan,false);
+                    if (cmp(value, "on")) {
+                        sendBotMessage(src,"You turned debug mode on!",tourschan,false);
+                        tourconfig.debug = sys.name(src);
                         return true;
                     }
-                    tourconfig.debug = (value == 1 ? true : false)
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the debug mode to "+tourconfig.debug,tourschan,false);
+                    tourconfig.debug = false;
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" turned debug off.",tourschan,false);
                     return true;
                 }
                 else {
@@ -2160,7 +2162,7 @@ function tourCommand(src, command, commandData) {
             /* Multiple account check */
             for (var a=0; a<tours.tour[key].players.length; a++) {
                 var joinedip = sys.dbIp(tours.tour[key].players[a])
-                if (sys.ip(src) == joinedip && ((sys.maxAuth(sys.ip(src)) < 2 && tourconfig.debug === true) || (sys.auth(src) < 3 && tourconfig.debug === false))) {
+                if (sys.ip(src) == joinedip && sys.auth(src) < 3) {
                     sendBotMessage(src, "You already joined the tournament under the name '"+tours.tour[key].players[a]+"'!",tourschan,false)
                     return true;
                 }
