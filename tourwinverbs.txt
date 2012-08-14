@@ -40,6 +40,7 @@ burnt
 bushwhacked
 C4'd
 captured the flag from
+CAPSLOCKED
 chainsawed
 charmed
 chewed up and spit out
@@ -245,7 +246,6 @@ schooled
 scorched
 screamed at
 scuffled with
-seduced
 set fire to
 Shanghai'd
 shaved
@@ -328,7 +328,6 @@ used a Care Bear stare on
 used a lightsaber to impale
 used a rubber hammer on
 used Action Replay against
-used Final Gambit on
 used legendaries against
 used Splash on
 used the ragnarok connection on
@@ -343,7 +342,6 @@ went nuts on
 went to town on
 whipped
 whittled down
-wiggled their finger at
 wiped out
 won Rock, Paper, Scissors against
 wooed

@@ -678,7 +678,6 @@ POChannel.prototype.isBanned = function(id)
         }
         if (banlist[x].expiry <= parseInt(sys.time())) {
             delete this.banned[x];
-            channelbot.sendChanAll(x+"'s channel ban expired.");
             continue;
         }
         if (cmp(x, name)) {
@@ -3488,8 +3487,8 @@ adminCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "They have already access.");
             return;
         }
+        SESSION.channels(channel).issueAuth(src, commandData, "member");
         normalbot.sendAll("" + sys.name(src) + " summoned " + sys.name(tar) + " to this channel!", channel);
-        SESSION.channels(channel).invitelist.push(tar);
         sys.putInChannel(tar, channel);
         normalbot.sendChanMessage(tar, "" + sys.name(src) + " made you join this channel!");
         return;
@@ -3502,6 +3501,7 @@ adminCommand: function(src, command, commandData, tar) {
             var current_player = players[i];
             if (sys.isInChannel(current_player, staffchannel) && !this.canJoinStaffChannel(current_player)) {
                 sys.kick(current_player, staffchannel);
+                SESSION.channels(channel).takeAuth(src, sys.name(current_player), "member");
                 count = 1;
             }
         }
@@ -4929,18 +4929,18 @@ afterChatMessage : function(src, message, chan)
                         kickbot.sendAll(message + " [Channel: "+sys.channel(channel)+"]", staffchannel);
                 }
             }
-            if (sys.auth(src) === 0) {
-                if (officialChan) {
+            if (officialChan) {
+                if (sys.auth(src) === 0) {
                     var endtime = user.mute.active ? user.mute.expires + 3600 : parseInt(sys.time(), 10) + 3600;
                     user.activate("mute", Config.kickbot, endtime, "Flooding", true);
-                    callplugins("onKick", src);
-                    sys.kick(src);
-                    return;
                 }
-                else {
-                    poChannel.mute(Config.kickbot, sys.name(src), {'time': 3600, 'reason': "Flooding"});
-                    sys.kick(src, channel);
-                }
+                callplugins("onKick", src);
+                sys.kick(src);
+                return;
+            }
+            else {
+                poChannel.mute(Config.kickbot, sys.name(src), {'time': 3600, 'reason': "Flooding"});
+                sys.kick(src, channel);
             }
         }
     }

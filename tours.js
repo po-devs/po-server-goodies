@@ -133,8 +133,9 @@ function sendBotAll(message, chan, html) {
 
 // Debug Messages
 function sendDebugMessage(message, chan) {
-    if (chan === tourschan && tourconfig.debug && sys.existChannel(sys.channel(tourserrchan))) {
-        sendBotAll(message,tourserrchan,false)
+    if (chan === tourschan && typeof tourconfig.debug == "string" && sys.existChannel(sys.channel(tourserrchan))) {
+        if (sys.id(tourconfig.debug) !== undefined && sys.isInChannel(sys.id(tourconfig.debug), tourserrchan))
+            sendBotMessage(sys.id(tourconfig.debug),message,tourserrchan,false)
     }
 }
 
@@ -347,6 +348,14 @@ function time_handle(time) { //time in seconds
 
 // Tournaments
 
+// 1v1 tiers have shorter notification times.
+function is1v1Tour(key) {
+    if ((tours.tour[key].tourtype).indexOf("1v1") != -1) {
+        return true;
+    }
+    else return false;
+}
+
 // This function will get a user's current tournament points overall
 
 function getTourWinMessages() {
@@ -546,10 +555,10 @@ function getConfigValue(file, key) {
             absbreaktime: 600,
             remindertime: 30,
             channel: "Tournaments",
-            errchannel: "Developer's Den",
+            errchannel: "Indigo Plateau",
             tourbotcolour: "#CC0044",
             minpercent: 5,
-            version: "1.500p4.5 [SAFE]",
+            version: "1.500p4.7 [DEBUG]",
             tourbot: "\u00B1Genesect: ",
             debug: false,
             points: true
@@ -586,10 +595,10 @@ function initTours() {
         abstourbreak: parseInt(getConfigValue("tourconfig.txt", "absbreaktime")),
         reminder: parseInt(getConfigValue("tourconfig.txt", "remindertime")),
         channel: "Tournaments",
-        errchannel: "Developer's Den",
+        errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p4.5 [SAFE]",
+        version: "1.500p4.7 [DEBUG]",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -737,7 +746,7 @@ function tourStep() {
                 removeinactive(x)
                 continue;
             }
-            if ((tours.tour[x].time-(tours.tour[x].state == "subround" ? tourconfig.subtime : tourconfig.tourdq)+tourconfig.reminder) == parseInt(sys.time())) {
+            if ((tours.tour[x].time-(tours.tour[x].state == "subround" ? tourconfig.subtime : (is1v1Tour(x) ? Math.floor(tourconfig.tourdq*2/3) : tourconfig.tourdq))+tourconfig.reminder) == parseInt(sys.time())) {
                 sendReminder(x)
                 continue;
             }
@@ -1648,7 +1657,7 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "cancelbattle") {
-                var key = isInTour(name)
+                var key = isInTour(commandData)
                 if (key === false) {
                     sendBotMessage(src,"That player isn't in a tournament!",tourschan,false)
                     return true;
@@ -1847,11 +1856,11 @@ function tourCommand(src, command, commandData) {
                     sys.sendMessage(src,"colour: "+tourconfig.tourbotcolour,tourschan);
                     sys.sendMessage(src,"channel: "+tourconfig.channel,tourschan);
                     sys.sendMessage(src,"scoring: "+tourconfig.points,tourschan);
-                    sys.sendMessage(src,"debug: "+tourconfig.debug+" (to change this, type /configset debug [0/1] ~ true = 1; false = 0)",tourschan);
+                    sys.sendMessage(src,"debug: "+tourconfig.debug+" (to change this, type /debug [on/off])",tourschan);
                     return true;
                 }
                 var option = commandData.substr(0,pos).toLowerCase()
-                if (["botname", "bot name", "channel", "errchannel", "color", "colour"].indexOf(option) == -1) {
+                if (["botname", "bot name", "channel", "errchannel", "color", "colour", "debug"].indexOf(option) == -1) {
                     var value = parseInt(commandData.substr(pos+1))
                 }
                 else {
@@ -2079,12 +2088,13 @@ function tourCommand(src, command, commandData) {
                         sendBotMessage(src,"Can't turn debug on/off, ask an owner for this.",tourschan,false);
                         return true;
                     }
-                    if (value !== 0 && value != 1) {
-                        sendBotMessage(src,"Value must be 0 (turns debug off) or 1 (turns it on).",tourschan,false);
+                    if (cmp(value, "on")) {
+                        sendBotMessage(src,"You turned debug mode on!",tourschan,false);
+                        tourconfig.debug = sys.name(src);
                         return true;
                     }
-                    tourconfig.debug = (value == 1 ? true : false)
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the debug mode to "+tourconfig.debug,tourschan,false);
+                    tourconfig.debug = false;
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" turned debug off.",tourschan,false);
                     return true;
                 }
                 else {
@@ -2152,7 +2162,7 @@ function tourCommand(src, command, commandData) {
             /* Multiple account check */
             for (var a=0; a<tours.tour[key].players.length; a++) {
                 var joinedip = sys.dbIp(tours.tour[key].players[a])
-                if (sys.ip(src) == joinedip && ((sys.maxAuth(sys.ip(src)) < 2 && tourconfig.debug === true) || (sys.auth(src) < 3 && tourconfig.debug === false))) {
+                if (sys.ip(src) == joinedip && sys.auth(src) < 3) {
                     sendBotMessage(src, "You already joined the tournament under the name '"+tours.tour[key].players[a]+"'!",tourschan,false)
                     return true;
                 }
@@ -3565,11 +3575,11 @@ function tourprintbracket(key) {
             }
             if (tours.tour[key].round == 1 && subsExist) {
                 tours.tour[key].state = "subround"
-                tours.tour[key].time = parseInt(sys.time())+tourconfig.subtime
+                tours.tour[key].time = parseInt(sys.time())+tourconfig.subtime;
             }
             else {
                 tours.tour[key].state = "round"
-                tours.tour[key].time = parseInt(sys.time())+tourconfig.tourdq
+                tours.tour[key].time = parseInt(sys.time())+(is1v1Tour(key) ? Math.floor(tourconfig.tourdq*2/3) : tourconfig.tourdq);
             }
             if (tours.tour[key].round == 1) {
                 var submessage = "<div style='margin-left: 50px'><br/>Type <b>/join</b> to join late, good while subs last!</div>"
