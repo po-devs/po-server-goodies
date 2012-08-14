@@ -285,11 +285,6 @@ POUser.prototype.activate = function(thingy, by, expires, reason, persistent) {
         var table = {"mute": mutes, "smute": smutes, "mban": mbans};
         table[thingy].add(sys.ip(this.id), sys.time() + ":" + by + ":" + expires + ":" + sys.name(this.id) + ":" + reason);
     }
-    if (thingy == "mute") {
-        if (typeof trollchannel != "undefined" && sys.channel(trollchannel) !== undefined && !sys.isInChannel(this.id, trollchannel)) {
-            sys.putInChannel(this.id, trollchannel);
-        }
-    }
 
     callplugins("on"+ utilities.capitalize(thingy), this.id);
 };
@@ -300,14 +295,6 @@ POUser.prototype.un = function(thingy) {
     var table = {"mute": mutes, "smute": smutes, "mban": mbans};
     table[thingy].remove(sys.ip(this.id));
 
-    if (thingy == "mute") {
-        if (typeof trollchannel != "undefined" && sys.channel(trollchannel) !== undefined && sys.isInChannel(this.id, trollchannel)) {
-            sys.kick(this.id, trollchannel);
-            if (!sys.isInChannel(this.id, 0)) {
-                sys.putInChannel(this.id, 0);
-            }
-        }
-    }
     callplugins("onUn"+ utilities.capitalize(thingy), this.id);
 };
 
@@ -1312,7 +1299,6 @@ init : function() {
     staffchannel = SESSION.global().channelManager.createPermChannel("Indigo Plateau", "Welcome to the Staff Channel! Discuss of all what users shouldn't hear here! Or more serious stuff...");
     sachannel = SESSION.global().channelManager.createPermChannel("Victory Road","Welcome MAs and SAs!");
     tourchannel = SESSION.global().channelManager.createPermChannel("Tournaments", 'Useful commands are "/join" (to join a tournament), "/unjoin" (to leave a tournament), "/viewround" (to view the status of matches) and "/megausers" (for a list of users who manage tournaments). Please read the full Tournament Guidelines: http://pokemon-online.eu/forums/showthread.php?2079-Tour-Rules');
-    trollchannel = SESSION.global().channelManager.createPermChannel("Mute City", 'This is a place to talk if you have been muted! Please behave, next stop will be bans.');
     watchchannel = SESSION.global().channelManager.createPermChannel("Watch", "Alerts displayed here");
     triviachan = SESSION.global().channelManager.createPermChannel("Trivia", "Play trivia here!");
     revchan = SESSION.global().channelManager.createPermChannel("TrivReview", "For Trivia Admins to review questions");
@@ -1774,11 +1760,6 @@ beforeChannelJoin : function(src, channel) {
         sys.stopEvent();
         return;
     }
-    if (channel == trollchannel && (!poUser.mute.active && sys.auth(src) <= 1)) {
-        sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
-        sys.stopEvent();
-        return;
-    }
     if ((channel == staffchannel || channel == sachannel || channel == mafiarev) && !this.canJoinStaffChannel(src)) {
         sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
         sys.stopEvent();
@@ -2064,8 +2045,6 @@ afterLogIn : function(src) {
     authChangingTeam = (sys.auth(src) > 0 && sys.auth(src) <= 3);
     this.afterChangeTeam(src);
 
-    if (SESSION.users(src).mute.active)
-        sys.putInChannel(src, trollchannel);
     if (sys.auth(src) <= 3 && this.canJoinStaffChannel(src) && sys.name(src).toLowerCase() != "flames of corruption")
         sys.putInChannel(src, staffchannel);
 }, /* end of afterLogin */
@@ -4582,9 +4561,8 @@ beforeChatMessage: function(src, message, chan) {
     if (SESSION.users(src).expired("mute")) {
         SESSION.users(src).un("mute");
         normalbot.sendChanMessage(src, "your mute has expired.");
-        normalbot.sendAll("" + sys.name(src) + "'s mute has expired.", trollchannel);
     }
-    if (sys.auth(src) < 3 && SESSION.users(src).mute.active && message != "!join" && message != "/rules" && message != "/join" && message != "!rules" && channel != trollchannel) {
+    if (sys.auth(src) < 3 && SESSION.users(src).mute.active && message != "!join" && message != "/rules" && message != "/join" && message != "!rules") {
         var muteinfo = SESSION.users(src).mute;
         normalbot.sendChanMessage(src, "You are muted" + (muteinfo.by ? " by " + muteinfo.by : '')+". " + (muteinfo.expires > 0 ? "Mute expires in " + getTimeString(muteinfo.expires - parseInt(sys.time(), 10)) + ". " : '') + (muteinfo.reason ? "[Reason: " + muteinfo.reason + "]" : ''));
         sys.stopEvent();
@@ -4882,7 +4860,7 @@ afterChatMessage : function(src, message, chan)
     var ignoreUsers = ["nixeagle"];
     var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1 && !poChannel.isChannelOperator(src);
     var officialChan = true;
-    if (channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel !== sys.channelId("Trivia") && channel !== trollchannel){
+    if (channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel !== sys.channelId("Trivia")){
         officialChan = false;
     }
     var capsday = false;
