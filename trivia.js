@@ -438,7 +438,14 @@ function QuestionHolder(f)
 
 QuestionHolder.prototype.add = function(category,question,answer,name)
 {
-    var id = this.freeId();
+	var id = this.unsafeAdd(category,question,answer,name);
+	this.saveQuestions();
+	return id;
+};
+
+QuestionHolder.prototype.unsafeAdd = function(category,question,answer,name)
+{
+	var id = this.freeId();
     var q = this.state.questions[id] = {};
     q.category = category;
     q.question = question;
@@ -446,7 +453,6 @@ QuestionHolder.prototype.add = function(category,question,answer,name)
 	if(typeof(name)!==undefined){
 		q.name = name;
 	}
-    this.saveQuestions();
     return id;
 };
 
@@ -975,12 +981,17 @@ addAdminCommand("changec", function(src, commandData, channel) {
 	triviabot.sendMessage(src, "No question");
 },"Allows you to change the category to a question in review, format /changec newcategory");
 
+addAdminCommand("savedb", function(src, commandData, channel) {
+	triviabot.sendMessage(src, "Saving trivia database...", channel);
+	triviaq.save();
+	triviabot.sendMessage(src, "Trivia database saved!", channel);
+}, "Forces a save of the trivia database. Do so after accepting questions.");
+
 // TODO: Maybe announce globally to trivreview when somebody accepts a question?
 
 addAdminCommand("accept", function(src, commandData, channel) {
-    return;
 	if(trivreview.editingMode === true){
-		triviaq.add(trivreview.editingCategory, trivreview.editingQuestion, trivreview.editingAnswer);
+		triviaq.unsafeAdd(trivreview.editingCategory, trivreview.editingQuestion, trivreview.editingAnswer);
 		trivreview.editingMode = false;
 		triviabot.sendAll("The question in edit was saved",channel);
 		trivreview.checkq(trivreview.currentId);
@@ -994,7 +1005,7 @@ addAdminCommand("accept", function(src, commandData, channel) {
 		}
 		var id = Object.keys(tr)[0];
 		var q = trivreview.get(id);
-		triviaq.add(q.category,q.question,q.answer);
+		triviaq.unsafeAdd(q.category,q.question,q.answer);
 		var all = triviaq.all(), qid;
 		for (var b in all){
 			var qu = triviaq.get(b);
