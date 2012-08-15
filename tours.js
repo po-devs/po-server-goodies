@@ -558,7 +558,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#CC0044",
             minpercent: 5,
-            version: "1.500p4.7 [DEBUG]",
+            version: "1.500p4.8",
             tourbot: "\u00B1Genesect: ",
             debug: false,
             points: true
@@ -598,7 +598,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p4.7 [DEBUG]",
+        version: "1.500p4.8",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -1303,7 +1303,7 @@ function tourCommand(src, command, commandData) {
             // enabled for now!
             if (command == "updatewinmessages") {
                 var url = "https://raw.github.com/lamperi/po-server-goodies/master/tourwinverbs.txt"
-                if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
+                if ((commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) && sys.auth(src) > 2) {
                     url = commandData;
                 }
                 sendBotMessage(src, "Fetching win messages from "+url, tourschan, false);
@@ -2021,8 +2021,8 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 else if (option == 'color' || option == 'colour') {
-                    if (!isTourSuperAdmin(src)) {
-                        sendBotMessage(src,"Can't change the bot colour, ask an admin for this.",tourschan,false);
+                    if (sys.auth(src) < 3) {
+                        sendBotMessage(src,"Can't change the bot colour, ask an owner for this.",tourschan,false);
                         return true;
                     }
                     else if (value.length !== 6) {
@@ -2042,7 +2042,7 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 else if (option == 'botname' || option == 'bot name') {
-                    if (!isTourOwner(src)) {
+                    if (sys.auth(src) < 3) {
                         sendBotMessage(src,"Can't change the botname, ask an owner for this.",tourschan,false);
                         return true;
                     }
@@ -2056,7 +2056,7 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 else if (option == 'channel') {
-                    if (!isTourOwner(src)) {
+                    if (sys.auth(src) < 3) {
                         sendBotMessage(src,"Can't change the channel, ask an owner for this.",tourschan,false);
                         return true;
                     }
