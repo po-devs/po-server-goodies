@@ -3332,7 +3332,7 @@ modCommand: function(src, command, commandData, tar) {
         poTarget.warned = parseInt(sys.time());
         var warning = (wfbSet.get(lname) !== undefined) ? wfbSet.get(lname) : "{{user}}: Please do not ask for battles in the chat. Refer to http://findbattlebutton.info to find more about the find battle button!";
         warning = warning.replace("{{user}}", sys.name(tar));
-        sys.sendAll(sys.name(src) + ": " + warning, 0);
+        sys.sendSendMessage(tar, sys.name(src) + ": " + warning, 0);
     } else if (parseInt(sys.time()) - poTarget.warned < 10) {
          normalbot.sendChanMessage(src, "Please wait 10 seconds between wfbs.");
          return;
