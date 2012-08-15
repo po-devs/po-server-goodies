@@ -335,7 +335,7 @@ function QuestionHolder(f)
     }
 }
 
-QuestionHolder.prototype.add = function(category,question,answer,name)
+QuestionHolder.prototype.unsafeAdd = function(category,question,answer,name)
 {
     var id = this.freeId();
     var q = this.state.questions[id] = {};
@@ -345,9 +345,18 @@ QuestionHolder.prototype.add = function(category,question,answer,name)
 	if(typeof(name)!==undefined){
 		q.name = name;
 	}
+    return id;
+};
+
+QuestionHolder.prototype.add = function(category,question,answer,name)
+{
+	var id = this.unsafeAdd(category, question, answer, name);
     this.save();
     return id;
 };
+
+
+
 
 QuestionHolder.prototype.remove = function(id)
 {
@@ -674,6 +683,11 @@ addAdminCommand("apropos", function(src, commandData, channel) {
 
 },"Allows you to search through the questions, format /apropos [query]");
 
+addAdminCommand("savedb", function(src, commandData, channel) {
+	triviabot.sendMessage(src, "Saving trivia database...", channel);
+	triviaq.save();
+	triviabot.sendMessage(src, "Trivia database saved!", channel);
+}, "Forces a save of the trivia database. Do so after accepting questions.");
 
 addAdminCommand("checkq", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
@@ -786,7 +800,7 @@ addAdminCommand("changec", function(src, commandData, channel) {
 
 addAdminCommand("accept", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
-		triviaq.add(trivreview.editingCategory, trivreview.editingQuestion, trivreview.editingAnswer);
+		triviaq.unsafeAdd(trivreview.editingCategory, trivreview.editingQuestion, trivreview.editingAnswer);
 		trivreview.editingMode = false;
 		triviabot.sendAll("The question in edit was saved",channel);
 		trivreview.checkq(trivreview.currentId);
@@ -800,7 +814,7 @@ addAdminCommand("accept", function(src, commandData, channel) {
 		}
 		var id = Object.keys(tr)[0];
 		var q = trivreview.get(id);
-		triviaq.add(q.category,q.question,q.answer);
+		triviaq.unsafeAdd(q.category,q.question,q.answer);
 		var all = triviaq.all(), qid;
 		for (var b in all){
 			var qu = triviaq.get(b);
