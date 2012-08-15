@@ -1055,7 +1055,6 @@ addAdminCommand("editq", function(src, commandData, channel){
 },"Allows you to edit an already submitted question");
 
 addAdminCommand("decline", function(src, commandData, channel) {
-    return;
 	if(trivreview.editingMode === true){
 		trivreview.editingMode = false;
 		triviabot.sendAll("The question in edit was deleted",channel);
