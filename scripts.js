@@ -129,7 +129,6 @@ var cleanFile = function(filename) {
 };
 cleanFile("mafia_stats.json");
 cleanFile("suspectvoting.json");
-cleanFile("wfbset.json");
 cleanFile("mafiathemes/metadata.json");
 cleanFile("channelData.json");
 cleanFile("mutes.txt");
@@ -1177,8 +1176,6 @@ var commands = {
         "/k [name]: Kicks someone.",
         "/mute [name]:[reason]:[time]: Mutes someone. Time is optional and defaults to 1 day.",
         "/unmute [name]: Unmutes someone.",
-        "/wfb [target]: Warns a user about asking for battles.",
-        "/wfbset [message]: Sets your personal warning message, {{user}} will be replaced by the target.",
         "/silence [minutes]:[channel]: Prevents authless users from talking in a channel for specified time. Affects all official channels if no channel is given.",
         "/silenceoff [channel]: Removes silence from a channel. Affects all official channels if none is specified.",
         "/perm [on/off]: Make the current permanent channel or not (permanent channels remain listed when they have no users).",
@@ -1340,7 +1337,6 @@ init : function() {
     rangebans = new MemoryHash("rangebans.txt");
     contributors = new MemoryHash("contributors.txt");
     mafiaAdmins = new MemoryHash("mafiaadmins.txt");
-    wfbSet = new MemoryHash("wfbset.json");
     proxy_ips = {};
     function addProxybans(content) {
         var lines = content.split(/\n/);
@@ -3307,15 +3303,6 @@ modCommand: function(src, command, commandData, tar) {
         normalbot.sendAll("" + commandData + " was released from their cell by " + nonFlashing(sys.name(src)) + " just " + ((tempBans[ip].time - now)/60).toFixed(2) + " minutes beforehand!");
         delete tempBans[ip];
         return;
-    }
-    if (command == "wfbset") {
-    lname = sys.name(src).toLowerCase();
-    if (commandData == undefined) {
-        commandData = "{{user}}: Please do not ask for battles in the chat. Refer to http://findbattlebutton.info to find more about the find battle button!";
-    }
-    wfbSet.add(lname, commandData);
-    normalbot.sendChanMessage(src, "Your message is set to '" + commandData + "'.");
-    return;
     }
     if (command == "passauth" || command == "passauths") {
         if (tar === undefined) {
