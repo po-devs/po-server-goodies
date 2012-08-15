@@ -983,7 +983,7 @@ addAdminCommand("changec", function(src, commandData, channel) {
 
 addAdminCommand("savedb", function(src, commandData, channel) {
 	triviabot.sendMessage(src, "Saving trivia database...", channel);
-	triviaq.save();
+	triviaq.saveQuestions();
 	triviabot.sendMessage(src, "Trivia database saved!", channel);
 }, "Forces a save of the trivia database. Do so after accepting questions.");
 
