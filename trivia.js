@@ -982,9 +982,9 @@ addAdminCommand("changec", function(src, commandData, channel) {
 },"Allows you to change the category to a question in review, format /changec newcategory");
 
 addAdminCommand("savedb", function(src, commandData, channel) {
-	triviabot.sendMessage(src, "Saving trivia database...", channel);
+	triviabot.sendAll("Saving trivia database...", channel);
 	triviaq.saveQuestions();
-	triviabot.sendMessage(src, "Trivia database saved!", channel);
+	triviabot.sendAll("Trivia database saved!", channel);
 }, "Forces a save of the trivia database. Do so after accepting questions.");
 
 // TODO: Maybe announce globally to trivreview when somebody accepts a question?
