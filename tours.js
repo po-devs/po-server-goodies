@@ -558,7 +558,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#CC0044",
             minpercent: 5,
-            version: "1.500p4.9",
+            version: "1.500p5",
             tourbot: "\u00B1Genesect: ",
             debug: false,
             points: true
@@ -598,7 +598,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p4.9",
+        version: "1.500p5",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
