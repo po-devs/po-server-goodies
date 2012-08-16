@@ -2454,6 +2454,13 @@ userCommand: function(src, command, commandData, tar) {
         SESSION.channels(channel).setTopic(src, commandData);
         return;
     }
+    if (command == "topicadd") {
+        if (SESSION.channels(channel).topic.length > 0)
+            SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + " | " + commandData);
+        else
+            SESSION.channels(channel).setTopic(src, commandData);
+        return;
+    }
     if (command == "uptime") {
         if (typeof SESSION.global().startUpTime != "number") {
             countbot.sendChanMessage(src, "Somehow the server uptime is messed up...");
@@ -4244,13 +4251,6 @@ channelCommand: function(src, command, commandData, tar) {
     }
     if (command == "deinvite" || command == "demember") {
         poChannel.takeAuth(src, commandData, "member");
-        return;
-    }
-    if (command == "topicadd") {
-        if (poChannel.topic.length > 0)
-            poChannel.setTopic(src, poChannel.topic + " | " + commandData);
-        else
-            poChannel.setTopic(src, commandData);
         return;
     }
     if (command == "cmeon") {
