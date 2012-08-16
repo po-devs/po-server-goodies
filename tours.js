@@ -558,7 +558,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#CC0044",
             minpercent: 5,
-            version: "1.500p4.8",
+            version: "1.500p4.9",
             tourbot: "\u00B1Genesect: ",
             debug: false,
             points: true
@@ -598,7 +598,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p4.8",
+        version: "1.500p4.9",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -2396,13 +2396,8 @@ function tourCommand(src, command, commandData) {
                             break;
                         }
                     }
-                    sys.sendMessage(src, commandData+" currently has "+score+" tour points.",tourschan)
-                    if (!isTourOwner(src)) {
-                        sendBotMessage(src, "This command is currently restricted!",tourschan,false)
-                        return true;
-                    }
                     var tourdata = sys.getFileContent("tourdetails.txt")
-                    // sys.sendMessage(src, "*** TOURNAMENT DETAILS FOR "+commandData+" (Score: "+score+")***",tourschan)
+                    sys.sendMessage(src, "*** TOURNAMENT DETAILS FOR "+commandData+" (Score: "+score+")***",tourschan)
                     var tourinfopieces = tourdata.split("\n")
                     for (var x in tourinfopieces) {
                         var datatoread = tourinfopieces[x].split(":::",4)
