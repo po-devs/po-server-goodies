@@ -21,12 +21,17 @@ function Mafia(mafiachan) {
     var noPlayer = '*';
     var CurrentGame;
     var PreviousGames;
+    
     var MAFIA_SAVE_FILE = Config.Mafia.stats_file;
-	var MAFIA_LOG_FILE = "mafialogs.txt";
 
-	var stalkLogs = [];
-	var currentStalk = [];
-	var phaseStalk = {};
+    var MAFIA_LOG_FILE = "mafialogs.txt";
+    
+    var stalkLogs = [];
+    var currentStalk = [];
+    var phaseStalk = {};
+
+    var MAFIA_VILLIFIED_FILE = "mafiavillified.json";
+    var villifiedPlayers;
 
     var DEFAULT_BORDER = "***************************************************************************************";
     var border;
@@ -34,17 +39,25 @@ function Mafia(mafiachan) {
     var savePlayedGames = function() {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
     };
+    var saveVillifiedPlayers = function () {
+	sys.writeToFile(MAFIA_VILLIFIED_FILE, JSON.stringify(VillifiedPlayers));
+    }
     var loadPlayedGames = function() {
         try {
             PreviousGames = JSON.parse(sys.getFileContent(MAFIA_SAVE_FILE));
         } catch(e) {
             PreviousGames = [];
         }
-		try {
-			stalkLogs = sys.getFileContent(MAFIA_LOG_FILE).split("::@@::");
-		} catch (e) {
-			stalkLogs = [];
-		}
+	try {
+	    stalkLogs = sys.getFileContent(MAFIA_LOG_FILE).split("::@@::");
+	} catch (e) {
+	    stalkLogs = [];
+	}
+	try {
+	    VillifiedPlayers = JSON.parse(sys.getFileContent(MAFIA_VILLIFIED_FILE));
+	} catch (e) {
+	    villifiedPlayers = [];
+	}
     };
     loadPlayedGames();
 
@@ -3104,6 +3117,21 @@ function Mafia(mafiachan) {
             return;
         }
         var tar = sys.id(commandData);
+	if (command == "mafiavillify") { // mark a IP to always be villy.
+	    villifiedPlayers.push(sys.ip(tar));
+	    saveVillifiedPlayers();
+	    return;
+	}
+	if (command == "mafiaunvillify") {
+	    villifiedPlayers.splice(villifiedPlayers.indexOf(sys.ip(tar)),1);
+	    saveVillifiedPlayers();
+	    return;
+	}
+	if (command == "mafiavillified") {
+	    for(int i = 0; i < villifiedPlayers.length(); i++) {
+		msg(src, villifiedPlayers[i]);
+	    }
+	}
         if (command == "mafiaban") {
             script.issueBan("mban", src, tar, commandData, sys.auth(src) > 0 ? undefined : 86400);
             return;
