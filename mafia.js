@@ -33,7 +33,7 @@ var phaseStalk = {};
     var DEFAULT_BORDER = "***************************************************************************************";
     var border;
 
-    var saveVillifiedPlayers = function {
+    var saveVillifiedPlayers = function() {
     sys.writeToFile(MAFIA_VILLIFIED_FILE, JSON.stringify(villifiedPlayers));
     };
     var savePlayedGames = function() {
