@@ -23,14 +23,19 @@ function Mafia(mafiachan) {
     var PreviousGames;
     var MAFIA_SAVE_FILE = Config.Mafia.stats_file;
 var MAFIA_LOG_FILE = "mafialogs.txt";
-
+    var MAFIA_VILLIFIED_FILE = "mafiavillified.json";
 var stalkLogs = [];
 var currentStalk = [];
 var phaseStalk = {};
 
+    var villifiedPlayers = [];
+
     var DEFAULT_BORDER = "***************************************************************************************";
     var border;
 
+    var saveVillifiedPlayers = function {
+    sys.writeToFile(MAFIA_VILLIFIED_FILE, JSON.stringify(villifiedPlayers));
+    };
     var savePlayedGames = function() {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
     };
@@ -44,6 +49,11 @@ try {
 stalkLogs = sys.getFileContent(MAFIA_LOG_FILE).split("::@@::");
 } catch (e) {
 stalkLogs = [];
+}
+try {
+villifiedPlayers = JSON.parse(sys.getFileContent(MAFIA_VILLIFIED_FILE));
+} catch (e) {
+villifiedPlayers = [];
 }
     };
     loadPlayedGames();
