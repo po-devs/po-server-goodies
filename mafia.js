@@ -34,7 +34,7 @@ var phaseStalk = {};
     var border;
 
     var saveVillifiedPlayers = function() {
-    sys.writeToFile(MAFIA_VILLIFIED_FILE, JSON.stringify(villifiedPlayers));
+	sys.writeToFile(MAFIA_VILLIFIED_FILE, JSON.stringify(villifiedPlayers));
     };
     var savePlayedGames = function() {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
@@ -3117,14 +3117,20 @@ player.exposeUse = player.exposeUse+1||1;
 	if (command == "mafiavillify") { // mark a IP to always be villy.
 	    villifiedPlayers.push(sys.ip(tar));
 	    saveVillifiedPlayers();
+	    sys.sendMessage(src, "Game: You villified " + commandData + " (" + sys.ip(tar) + ")!", mafiachan);
 	    return;
 	}
 	if (command == "mafiaunvillify") {
 	    villifiedPlayers.splice(villifiedPlayers.indexOf(sys.ip(tar)),1);
 	    saveVillifiedPlayers();
+	    sys.sendMessage(src, "Game: You unvillified " + commandData + + " (" + sys.ip(tar) + ")!", mafiachan);
 	    return;
 	}
-
+	if (command == "mafiavillified") {
+	    for(i = 0; i < villifiedPlayers.length; i++) {
+		msg(src, villifiedPlayers[i]);
+	    }
+	}
         if (command == "mafiaban") {
             script.issueBan("mban", src, tar, commandData, sys.auth(src) > 0 ? undefined : 86400);
             return;
@@ -3215,4 +3221,4 @@ player.exposeUse = player.exposeUse+1||1;
 */
 
 module.exports = new Mafia(sys.channelId(MAFIA_CHANNEL));
-    
+	
