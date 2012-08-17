@@ -3114,6 +3114,17 @@ player.exposeUse = player.exposeUse+1||1;
             return;
         }
         var tar = sys.id(commandData);
+	if (command == "mafiavillify") { // mark a IP to always be villy.
+	    villifiedPlayers.push(sys.ip(tar));
+	    saveVillifiedPlayers();
+	    return;
+	}
+	if (command == "mafiaunvillify") {
+	    villifiedPlayers.splice(villifiedPlayers.indexOf(sys.ip(tar)),1);
+	    saveVillifiedPlayers();
+	    return;
+	}
+
         if (command == "mafiaban") {
             script.issueBan("mban", src, tar, commandData, sys.auth(src) > 0 ? undefined : 86400);
             return;
@@ -3204,3 +3215,4 @@ player.exposeUse = player.exposeUse+1||1;
 */
 
 module.exports = new Mafia(sys.channelId(MAFIA_CHANNEL));
+    
