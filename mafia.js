@@ -40,8 +40,8 @@ function Mafia(mafiachan) {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
     };
     var saveVillifiedPlayers = function () {
-	sys.writeToFile(MAFIA_VILLIFIED_FILE, JSON.stringify(VillifiedPlayers));
-    }
+	sys.writeToFile(MAFIA_VILLIFIED_FILE, JSON.stringify(villifiedPlayers));
+    };
     var loadPlayedGames = function() {
         try {
             PreviousGames = JSON.parse(sys.getFileContent(MAFIA_SAVE_FILE));
@@ -54,7 +54,7 @@ function Mafia(mafiachan) {
 	    stalkLogs = [];
 	}
 	try {
-	    VillifiedPlayers = JSON.parse(sys.getFileContent(MAFIA_VILLIFIED_FILE));
+	    villifiedPlayers = JSON.parse(sys.getFileContent(MAFIA_VILLIFIED_FILE));
 	} catch (e) {
 	    villifiedPlayers = [];
 	}
