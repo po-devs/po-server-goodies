@@ -10,7 +10,7 @@ var triviabot = new Bot("Psyduck");
 var testfiles = ['triviaq.json', 'trivreview.json', 'tadmins.txt'];
 
 for (t in testfiles) {
-	if (sys.getFileContent(testfiles[t]) == "" || sys.getFileContent(testfiles[t])) {
+	if (sys.getFileContent(testfiles[t]) == "" || sys.getFileContent(testfiles[t]) == undefined) {
 		sys.writeToFile(testfiles[t], "{}");
 	}
 }
