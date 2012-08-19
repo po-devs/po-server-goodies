@@ -558,7 +558,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#CC0044",
             minpercent: 5,
-            version: "1.500p5",
+            version: "1.500p5.1",
             tourbot: "\u00B1Genesect: ",
             debug: false,
             points: true
@@ -598,7 +598,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p5",
+        version: "1.500p5.1",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -2848,7 +2848,7 @@ function disqualify(player, key, silent, hard) {
                 tours.tour[key].losers.push(player)
             }
         }
-        else if (winnerindex != -1 && opponent != "~Bye~" && opponent != "~DQ~") { /* This is just so the winners list stays the same length */
+        else if (winnerindex != -1 && opponent != "~Bye~" && opponent != "~DQ~" && isInTour(opponent) === false) { /* This is just so the winners list stays the same length */
             tours.tour[key].winners.splice(winnerindex,1,opponent)
             tours.tour[key].losers.splice(tours.tour[key].losers.indexOf(opponent),1,player)
             if (!silent) {
