@@ -26,7 +26,7 @@ var Config = {
         notPlayingMsg: "±Game: The game is in progress. Please type /join to join the next mafia game."
     },
     League: [
-        ["Kneesocks.", "Elite Four - View Kneesocks' <a href='http://pokemon-online.eu/forums/showthread.php?13531-Elite-4-Lorelei'>E4 Thread!</a>"],
+        ["Kneesocks", "Elite Four - View Kneesocks' <a href='http://pokemon-online.eu/forums/showthread.php?13531-Elite-4-Lorelei'>E4 Thread!</a>"],
         ["The Real Elmo", "Elite Four - View The Real Elmo's <a href='http://pokemon-online.eu/forums/showthread.php?13539-Elite-4-Aaron'>E4 Thread!</a>"],
         ["Amarillo Caballero", "Elite Four - View Amarillo Caballero's <a href='http://pokemon-online.eu/forums/showthread.php?13603-Elite-4-Yellow'>E4 Thread!</a>"],
         ["M Dragon", "Elite Four - View M Dragon's <a href='http://pokemon-online.eu/forums/showthread.php?13561-Elite-4-M-Dragon'>E4 Thread!</a>"],
@@ -2454,6 +2454,13 @@ userCommand: function(src, command, commandData, tar) {
         SESSION.channels(channel).setTopic(src, commandData);
         return;
     }
+    if (command == "topicadd") {
+        if (SESSION.channels(channel).topic.length > 0)
+            SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + " | " + commandData);
+        else
+            SESSION.channels(channel).setTopic(src, commandData);
+        return;
+    }
     if (command == "uptime") {
         if (typeof SESSION.global().startUpTime != "number") {
             countbot.sendChanMessage(src, "Somehow the server uptime is messed up...");
@@ -4244,13 +4251,6 @@ channelCommand: function(src, command, commandData, tar) {
     }
     if (command == "deinvite" || command == "demember") {
         poChannel.takeAuth(src, commandData, "member");
-        return;
-    }
-    if (command == "topicadd") {
-        if (poChannel.topic.length > 0)
-            poChannel.setTopic(src, poChannel.topic + " | " + commandData);
-        else
-            poChannel.setTopic(src, commandData);
         return;
     }
     if (command == "cmeon") {
