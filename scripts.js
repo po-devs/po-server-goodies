@@ -4323,7 +4323,7 @@ channelCommand: function(src, command, commandData, tar) {
     }
 
     if (!poChannel.isChannelAdmin(src)) {
-        return;
+        return "no command";
     }
 
     if (command == "op") {
@@ -4390,7 +4390,7 @@ channelCommand: function(src, command, commandData, tar) {
     }
     // auth 2 can deregister channel for administration purposes
     if (!poChannel.isChannelOwner(src) && sys.auth(src) < 2) {
-        return;
+        return "no command";
     }
     if (command == "deregister") {
         if (commandData === undefined) {
@@ -4402,7 +4402,7 @@ channelCommand: function(src, command, commandData, tar) {
         return;
     }
     if (!poChannel.isChannelOwner(src)) {
-        return;
+        return "no command";
     }
     if (command == "admin") {
         poChannel.issueAuth(src, commandData, "admin");
