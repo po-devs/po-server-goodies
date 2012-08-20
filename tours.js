@@ -88,7 +88,11 @@ var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "#8: Avoid excessive minimodding.",
                 "- Reminding a player of the rules is fine, but doing it excessively is annoying and unwanted.",
                 "#9: Do not attempt to circumvent the rules",
-                "- Attempting to circumvent the rules through trickery, proxy or other such methods will be punished."]
+                "- Attempting to circumvent the rules through trickery, proxy or other such methods will be punished.",
+                "#10: Event tournaments (marked by red borders)",
+                "- Be aware that these are all double elimination. Breaking or attempting to break the above rules will result in immediate disqualification.",
+                "- You are not permitted to enter the battle of any player in the tournament while you are still in it (CC tiers are excepted)",
+                "- Breaking the above rule results in automatic disqualification, as it is impossible to tell whether a player is cheating or just checking the score."]
 
 function sendBotMessage(user, message, chan, html) {
     if (user === undefined) {
@@ -558,7 +562,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#CC0044",
             minpercent: 5,
-            version: "1.500p5.1",
+            version: "1.500p5.2",
             tourbot: "\u00B1Genesect: ",
             debug: false,
             points: true
@@ -598,7 +602,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p5.1",
+        version: "1.500p5.2",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -4399,10 +4403,9 @@ module.exports = {
             if (p1tour !== p2tour) {
                 return false;
             }
-            if (srctour === p1tour) {
-                return false;
+            if (srctour !== p1tour) {
+                return true;
             }
-            return true;
         }
         /* check for potential scouters */
         var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"]
@@ -4415,7 +4418,13 @@ module.exports = {
             }
         }
         if (srctour === p1tour && !isOkToSpectate && !usingDisallowSpecs) {
-            sendBotAll(sys.name(src)+" started watching the "+tours.tour[p1tour].tourtype+" tour battle between "+sys.name(p1)+" and "+sys.name(p2)+", so could be potentially scouting.", sys.channelId("Victory Road"), false)
+            if (tours.tour[p1tour].maxplayers !== "default") {
+                sendBotAll(sys.name(src)+" was disqualified from the "+tours.tour[p1tour].tourtype+" event tournament for scouting.", tourschan, false)
+                disqualify(sys.name(src).toLowerCase(), srctour, false, true);
+            }
+            else {
+                sendBotAll(sys.name(src)+" started watching the "+tours.tour[p1tour].tourtype+" tour battle between "+sys.name(p1)+" and "+sys.name(p2)+", so could be potentially scouting.", sys.channelId("Victory Road"), false)
+            }
         }
         return false;
     }
