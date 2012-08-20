@@ -1,4 +1,4 @@
-﻿/*
+/*
 Code for tours.js
 Coding done by Shadowfist
 */
@@ -35,7 +35,7 @@ var tourcommands = ["join: joins a tournament",
                     "activeta: lists active tournament admins",
                     "rules: lists the tournament rules",
                     "touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)",
-                    "addtouralert [tier] : Adds a tour alert for the specified tier (note that this list is shared with #Tournaments)",
+                    "addtouralert [tier] : Adds a tour alert for the specified tier",
                     "removetouralert [tier] : Removes a tour alert for the specified tier"]
 var tourmodcommands = ["*** Parameter Information ***",
                     "Parameters can be used by putting 'gen=x'; 'mode=singles/doubles/triples'; 'type=single/double'.",
