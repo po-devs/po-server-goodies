@@ -22,7 +22,7 @@ var Config = {
         bot: "Murkrow",
         norepeat: 11,
         stats_file: "mafia_stats.json",
-        max_name_length: 14,
+        max_name_length: 16,
         notPlayingMsg: "±Game: The game is in progress. Please type /join to join the next mafia game."
     },
     League: [
