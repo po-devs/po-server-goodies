@@ -4143,7 +4143,7 @@ ownerCommand: function(src, command, commandData, tar) {
         sys.webCall(updateURL, changeScript);
         return;
     }
-    if (command == "updatetiers" && (sys.ip(src) == sys.dbIp("coyotte508")
+    if (command == "updatetiers" && (sys.ip(src) == sys.dbIp("zeroality")
                                  || (sys.ip(src) == sys.dbIp("Lamperi")))) {
         normalbot.sendChanMessage(src, "Fetching tiers...");
         var updateURL = Config.base_url + "tiers.xml";
