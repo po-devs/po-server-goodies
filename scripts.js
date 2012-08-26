@@ -4843,7 +4843,8 @@ afterChatMessage : function(src, message, chan)
     }
     if (!poChannel.ignorecaps && this.isMCaps(message) && userMayGetPunished && !capsday) {
         user.caps += 3;
-        if (user.caps >= 9 && !user.mute.active) {
+        maxCaps = channel == sys.channelId("Trivia") ? 12 : 9;
+        if (user.caps >= maxCaps && !user.mute.active) {
 
             if (user.capsmutes === undefined)
                 user.capsmutes = 0;
@@ -4890,6 +4891,8 @@ afterChatMessage : function(src, message, chan)
             }
             user.timecount += dec*7;
         }
+        
+        linecount = sys.channelId("Mafia Channel") == channel ? linecount + 3 : linecount;
 
         if (user.floodcount > linecount) {
             var message = "" + sys.name(src) + " was kicked " + (sys.auth(src) === 0 && officialChan ? "and muted " : "") + "for flood.";
