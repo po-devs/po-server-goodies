@@ -37,7 +37,8 @@ function saveData()
 }
 
 function isTriviaOwner(src) {
-	lname = sys.name(src).toLowerCase(), owners = ['ethan', 'lamperi', 'crystal moogle'];
+	lname = sys.name(src).toLowerCase(), owners = ['ethan'];
+	if (sys.auth(src) < 1) return false;
 	if (sys.auth(src) >= 3) return true;
 	if (owners.indexOf(lname) > -1) return true;
 	return false;
@@ -229,7 +230,7 @@ try { // Do not indent this, it is only until this starts to work
                 var minus = realTime - responseTime;
                 var pointAdd = minus > 6 ? 5 : (minus < 7 && minus > 3 ? 3 : 2);
                 //sys.sendMessage(sys.id("Crystal Moogle"), "TriviaPointDebug: " + name + " took" + minus + " seconds, point add is " + pointAdd + ".", triviachan);
-                // TODO: check answer length, and base pointAdd off of that?
+                // TODO: check answer length, and base time between question off of that?
 
                 answeredCorrectly.push(name);
                 this.player(name).points += pointAdd;
@@ -268,7 +269,7 @@ try { // Do not indent this, it is only until this starts to work
     if (winners.length > 0) {
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
         this.htmlAll("<h2>Congratulations to "+w+"</h2>"+winners.join(", ")+"");
-		sys.sendHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±Psyduck:</b></font></font> While you're waiting for another game, why not submit a question? Help and Guidelines are <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>here</a>!", triviachan);
+		sys.sendHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±Psyduck:</b></font></font> While you're waiting for another game, why not submit a question? <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>Help and Guidelines are here!</a>", triviachan);
         this.resetTrivia();
         if (this.autostart == true) {
         	pointsForGame = sys.rand(5,45), toStart = sys.rand(30,44);
