@@ -264,12 +264,6 @@ function converttoseconds(string) {
             if (isNaN(timestring)) {
                 continue;
             }
-            else if (lastchar == "y") {
-                totaltime += 365*24*60*60*timestring;
-            }
-            else if (lastchar == "w") {
-                totaltime += 7*24*60*60*timestring;
-            }
             else if (lastchar == "d") {
                 totaltime += 24*60*60*timestring;
             }
@@ -348,6 +342,20 @@ function time_handle(time) { //time in seconds
         }
     }
     return output;
+}
+
+function parseTimer(time) {
+    if (isNaN(time) || time < 0) {
+        return "0:00";
+    }
+    var minutes = Math.floor(time/60);
+    var seconds = time%60;
+    if (seconds >= 10) {
+        return minutes+":"+seconds;
+    }
+    else {
+        return minutes+":0"+seconds;
+    }
 }
 
 // Tournaments
@@ -560,10 +568,10 @@ function getConfigValue(file, key) {
             remindertime: 30,
             channel: "Tournaments",
             errchannel: "Indigo Plateau",
-            tourbotcolour: "#CC0044",
+            tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.500p5.2",
-            tourbot: "\u00B1Genesect: ",
+            version: "1.500p5.3",
+            tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
         }
@@ -602,7 +610,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.500p5.2",
+        version: "1.500p5.3",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -861,10 +869,8 @@ function tourBattleStart(src, dest, clauses, rated, mode, bid) {
         validBattle = true;
     }
     if (validBattle && tours.tour[key].round >= 1) {
-        tours.tour[key].battlers.push(name1, name2)
-        if (clauses%8 >= 4) {
-            tours.tour[key].disallowspecs.push(name1, name2)
-        }
+        tours.tour[key].battlers[name1] = {'battleId': bid, 'time': parseInt(sys.time()), 'noSpecs': clauses%8 >= 4};
+        tours.tour[key].battlers[name2] = {'battleId': bid, 'time': parseInt(sys.time()), 'noSpecs': clauses%8 >= 4};
         tours.tour[key].active[name1] = "Battle"
         tours.tour[key].active[name2] = "Battle"// this avoids dq later since they made an attempt to start
         if (tours.tour[key].state == "final") {
@@ -894,11 +900,11 @@ function tourBattleEnd(winner, loser, result) {
     if (key === null) return;
     /* For tournament matches */
     if (tours.tour[key].players.indexOf(winname) > -1 && tours.tour[key].players.indexOf(losename) > -1) {
-        var winindex = tours.tour[key].battlers.indexOf(winname)
-        if (winindex != -1) tours.tour[key].battlers.splice(winindex,1)
-        var loseindex = tours.tour[key].battlers.indexOf(losename)
-        if (loseindex != -1) tours.tour[key].battlers.splice(loseindex,1)
-        if (winindex == -1 || loseindex == -1) {
+        var winindex = tours.tour[key].battlers.hasOwnProperty(winname);
+        if (winindex) delete tours.tour[key].battlers[winname];
+        var loseindex = tours.tour[key].battlers.hasOwnProperty(losename);
+        if (loseindex) delete tours.tour[key].battlers[losename];
+        if (!winindex || !loseindex) {
             return;
         }
         if (result == "tie") {
@@ -1666,16 +1672,28 @@ function tourCommand(src, command, commandData) {
                     sendBotMessage(src,"That player isn't in a tournament!",tourschan,false)
                     return true;
                 }
-                var index = tours.tour[key].battlers.indexOf(commandData.toLowerCase())
-                if (index == -1) {
+                var lname = commandData.toLowerCase();
+                var isBattling = tours.tour[key].battlers.hasOwnProperty(lname)
+                if (!isBattling) {
                     sendBotMessage(src,"That player isn't battling for the tournament!",tourschan,false)
                     return true;
                 }
                 else {
-                    var opponent = index%2 === 0 ? tours.tour[key].battlers[index+1] : tours.tour[key].battlers[index-1]
+                    var index = tours.tour[key].battlers[lname].battleId;
+                    var opponent = null;
+                    for (var o in tours.tour[key].battlers) {
+                        if (tours.tour[key].battlers[o].battleId === index) {
+                            opponent = o;
+                            break;
+                        }
+                    }
+                    if (opponent === null) {
+                        sendBotMessage(src,"That player isn't battling for the tournament!",tourschan,false)
+                        return true;
+                    }
                     sendBotAll(sys.name(src)+" voided the results of the battle between "+toCorrectCase(commandData)+" and "+toCorrectCase(opponent)+" in the "+getFullTourName(key)+" tournament, please rematch.", tourschan, false)
-                    tours.tour[key].battlers.splice(index,1)
-                    tours.tour[key].battlers.splice(tours.tour[key].battlers.indexOf(opponent),1)
+                    delete tours.tour[key].battlers[lname];
+                    delete tours.tour[key].battlers[opponent];
                 }
                 addTourActivity(src)
                 return true;
@@ -2340,16 +2358,17 @@ function tourCommand(src, command, commandData) {
                 var roundtable = "<div style='margin-left: 50px'><b>Round "+tours.tour[y].round+" of the "+tours.tour[y].tourtype+" Tournament</b><table><br/>"
                 for (var x=0; x<tours.tour[y].players.length; x+=2) {
                     if (winners.indexOf(tours.tour[y].players[x]) != -1 && tours.tour[y].players[x] != "~Bye~" && tours.tour[y].players[x] != "~DQ~") {
-                        roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(tours.tour[y].players[x]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td>"
+                        roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(tours.tour[y].players[x]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td></tr>"
                     }
                     else if (winners.indexOf(tours.tour[y].players[x+1]) != -1 && tours.tour[y].players[x+1] != "~Bye~" && tours.tour[y].players[x+1] != "~DQ~") {
-                        roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(tours.tour[y].players[x+1]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(tours.tour[y].players[x])+"</td>"
+                        roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(tours.tour[y].players[x+1]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(tours.tour[y].players[x])+"</td></tr>"
                     }
-                    else if (battlers.indexOf(tours.tour[y].players[x]) != -1) {
-                        roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> <a href='po:watchPlayer/"+sys.id(tours.tour[y].players[x])+"'>is battling</a> </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td>"
+                    else if (battlers.hasOwnProperty(tours.tour[y].players[x])) {
+                        var elapsedtime = parseTimer(parseInt(sys.time())-battlers[tours.tour[y].players[x]].time)
+                        roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> "+(isInSpecificTour(sys.name(src), y) ? "is battling" : "<a href='po:watch/"+battlers[tours.tour[y].players[x]].battleId+"'>is battling</a>")+" </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td><td> "+elapsedtime+"</td></tr>"
                     }
                     else {
-                        roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> VS </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td>"
+                        roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> VS </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td></tr>"
                     }
                 }
                 rounddata.push(roundtable+"</table></div>")
@@ -2683,7 +2702,7 @@ function removeinactive(key) {
                 sendDebugMessage(player2+" won against "+player1+"; continuing", tourschan)
                 continue;
             }
-            if (tours.tour[key].battlers.indexOf(player1) != -1 || tours.tour[key].battlers.indexOf(player2) != -1) {
+            if (tours.tour[key].battlers.hasOwnProperty(player1) || tours.tour[key].battlers.hasOwnProperty(player2)) {
                 sendDebugMessage(player1+" is battling against "+player2+"; continuing", tourschan)
                 continue;
             }
@@ -2760,7 +2779,7 @@ function sendReminder(key) {
             if (tours.tour[key].winners.indexOf(opponent) != -1) {
                 continue;
             }
-            if (tours.tour[key].battlers.indexOf(player) != -1) {
+            if (tours.tour[key].battlers.hasOwnProperty(player)) {
                 continue;
             }
             if ((isSub(player) || isSub(opponent)) && sys.id(player) !== undefined) {
@@ -3166,8 +3185,7 @@ function advanceround(key) {
         }
         tours.tour[key].winners = []
         tours.tour[key].losers = []
-        tours.tour[key].battlers = []
-        tours.tour[key].disallowspecs = []
+        tours.tour[key].battlers = {}
         tours.tour[key].active = {}
         // Clean bracket for double elimination
         if (doubleelim) {
@@ -3203,8 +3221,7 @@ function tourstart(tier, starter, key, parameters) {
         tours.tour[key].state = "signups"
         tours.tour[key].tourtype = tier
         tours.tour[key].players = []; // list for the actual tour data
-        tours.tour[key].battlers = [];
-        tours.tour[key].disallowspecs = []; // list for users who disallowed spects.
+        tours.tour[key].battlers = {};
         tours.tour[key].winners = [];
         tours.tour[key].losers = []; // this will make de mode easier
         tours.tour[key].round = 0;
@@ -3646,8 +3663,8 @@ function isValidTourBattle(src,dest,clauses,mode,team,destTier,key,challenge) { 
                 }
             }
         }
-        var srcbtt = tours.tour[key].battlers.indexOf(sys.name(src).toLowerCase())
-        var destbtt= tours.tour[key].battlers.indexOf(sys.name(dest).toLowerCase())
+        var srcbtt = tours.tour[key].battlers.hasOwnProperty(sys.name(src).toLowerCase())
+        var destbtt= tours.tour[key].battlers.hasOwnProperty(sys.name(dest).toLowerCase())
         var srcwin = tours.tour[key].winners.indexOf(sys.name(src).toLowerCase())
         var destwin = tours.tour[key].winners.indexOf(sys.name(dest).toLowerCase())
         var checklist = clauseCheck(tours.tour[key].tourtype, clauses)
@@ -3668,10 +3685,10 @@ function isValidTourBattle(src,dest,clauses,mode,team,destTier,key,challenge) { 
         else if (tours.tour[key].round < 1) {
             return "The tournament hasn't started yet."
         }
-        else if (srcbtt != -1 && challenge) {
+        else if (srcbtt && challenge) {
             return "You have already started your battle."
         }
-        else if (destbtt != -1 && challenge) {
+        else if (destbtt && challenge) {
             return "That player has started their battle."
         }
         else if (srcwin != -1) {
@@ -4285,6 +4302,7 @@ function sendWelcomeMessage(src, chan) {
 
 function dumpVars(src) {
     var activelist = [];
+    var battlelist = [];
     sys.sendMessage(src, border, tourschan)
     sys.sendMessage(src, "*** Variable Dump ***", tourschan)
     sys.sendMessage(src, "*** Main ***", tourschan)
@@ -4293,10 +4311,21 @@ function dumpVars(src) {
     sys.sendMessage(src, "% players in Tours: "+Math.floor(calcPercentage())+"%", tourschan)
     for (var x in tours.tour) {
         activelist = [];
+        battlelist = [];
         sys.sendMessage(src, "*** Round "+tours.tour[x].round+"; "+getFullTourName(x)+" Tour (key "+x+")***", tourschan)
         sys.sendMessage(src, "Time: "+tours.tour[x].time, tourschan)
         sys.sendMessage(src, "Players: "+tours.tour[x].players, tourschan)
-        sys.sendMessage(src, "Battlers: "+tours.tour[x].battlers, tourschan)
+        for (var b in tours.tour[x].battlers) {
+            var battleString = b;
+            if (tours.tour[x].battlers[b].noSpecs === true) {
+                battleString = battleString + " (No Specs)";
+            }
+            if (tours.tour[x].battlers[b].time == "number") {
+                battleString = battleString + " ["+(parseInt(sys.time())-tours.tour[x].battlers[b].time)+" seconds]";
+            }
+            battlelist.push(battleString);
+        }
+        sys.sendMessage(src, "Battlers: "+battlelist.join("; "), tourschan)
         sys.sendMessage(src, "Winners: "+tours.tour[x].winners, tourschan)
         sys.sendMessage(src, "Losers: "+tours.tour[x].losers, tourschan)
         sys.sendMessage(src, "Total Players: "+tours.tour[x].cpt, tourschan)
@@ -4411,8 +4440,8 @@ module.exports = {
         var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"]
         var isOkToSpectate = (tours.tour[p1tour].state == "final" || cctiers.indexOf(tours.tour[p1tour].tourtype) != -1)
         var usingDisallowSpecs = false;
-        for (var x in tours.tour[p1tour].disallowspecs) {
-            if (cmp(tours.tour[p1tour].disallowspecs[x], sys.name(p1))) {
+        for (var x in tours.tour[p1tour].battlers) {
+            if (tours.tour[p1tour].battlers[sys.name(p1).toLowerCase()].noSpecs === true) {
                 usingDisallowSpecs = true;
                 break;
             }
