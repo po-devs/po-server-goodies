@@ -570,7 +570,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.510a",
+            version: "1.510a1",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -610,7 +610,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.510a",
+        version: "1.510a1",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -4425,7 +4425,7 @@ module.exports = {
         var srctour = isInTour(sys.name(src))
         var p1tour = isInTour(sys.name(p1))
         var p2tour = isInTour(sys.name(p2))
-        if (p1tour === false || p2tour === false) {
+        if (p1tour === false || p2tour === false || src === p1 || src === p2) {
             return false;
         }
         if (isTourAdmin(src)) {
