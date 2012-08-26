@@ -570,7 +570,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.510a1",
+            version: "1.510",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -610,7 +610,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.510a1",
+        version: "1.510",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -2365,7 +2365,7 @@ function tourCommand(src, command, commandData) {
                     }
                     else if (battlers.hasOwnProperty(tours.tour[y].players[x])) {
                         var elapsedtime = parseTimer(parseInt(sys.time())-battlers[tours.tour[y].players[x]].time)
-                        roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> "+(isInSpecificTour(sys.name(src), y) ? "is battling" : "<a href='po:watch/"+battlers[tours.tour[y].players[x]].battleId+"'>is battling</a>")+" </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td><td> ["+elapsedtime+"]</td></tr>"
+                        roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> "+(isInSpecificTour(sys.name(src), y) || (battlers[tours.tour[y].players[x]].noSpecs && !isTourAdmin(src)) ? "is battling" : "<a href='po:watch/"+battlers[tours.tour[y].players[x]].battleId+"'>is battling</a>")+" </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td><td> ["+elapsedtime+"]</td></tr>"
                     }
                     else {
                         roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> VS </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td></tr>"
@@ -4320,7 +4320,7 @@ function dumpVars(src) {
             if (tours.tour[x].battlers[b].noSpecs === true) {
                 battleString = battleString + " (No Specs)";
             }
-            if (tours.tour[x].battlers[b].time == "number") {
+            if (typeof tours.tour[x].battlers[b].time == "number") {
                 battleString = battleString + " ["+(parseInt(sys.time())-tours.tour[x].battlers[b].time)+" seconds]";
             }
             battlelist.push(battleString);
