@@ -206,7 +206,7 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
 });
 
 tier_checker.add_new_check(INCLUDING, ["Monogen"], function monoGenCheck(src, team) {
-    var GEN_MAX = [0, 151, 252, 386, 493, 647];
+    var GEN_MAX = [0, 151, 252, 386, 493, 649];
     var gen = 0;
     for (var i = 0; i < 6; ++i) {
         var pokenum = sys.teamPoke(src, team, i);
