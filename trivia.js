@@ -268,7 +268,7 @@ try { // Do not indent this, it is only until this starts to work
     if (winners.length > 0) {
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
         this.htmlAll("<h2>Congratulations to "+w+"</h2>"+winners.join(", ")+"");
-		//Trivia.sendAll("Check the /topic for how to submit a question!", triviachan);
+		sys.sendHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±Psyduck:</b></font></font> While you're waiting for another game, why not submit a question? Help and Guidelines are <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>here</a>!", triviachan);
         this.resetTrivia();
         if (this.autostart == true) {
         	pointsForGame = sys.rand(5,45), toStart = sys.rand(30,44);

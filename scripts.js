@@ -22,7 +22,7 @@ var Config = {
         bot: "Murkrow",
         norepeat: 11,
         stats_file: "mafia_stats.json",
-        max_name_length: 14,
+        max_name_length: 16,
         notPlayingMsg: "±Game: The game is in progress. Please type /join to join the next mafia game."
     },
     League: [
@@ -4143,7 +4143,7 @@ ownerCommand: function(src, command, commandData, tar) {
         sys.webCall(updateURL, changeScript);
         return;
     }
-    if (command == "updatetiers" && (sys.ip(src) == sys.dbIp("coyotte508")
+    if (command == "updatetiers" && (sys.ip(src) == sys.dbIp("zeroality")
                                  || (sys.ip(src) == sys.dbIp("Lamperi")))) {
         normalbot.sendChanMessage(src, "Fetching tiers...");
         var updateURL = Config.base_url + "tiers.xml";
