@@ -1395,7 +1395,7 @@ this.possibleThemes[themeName] = 0;
     this.testWin = function() {
 
         if (Object.keys(mafia.players).length === 0) {
-            sys.sendAll("±Game: " + (mafia.theme.tiemsg ? mafia.theme.tiemsg : "Everybody died! This is why we can't have nice things :("), mafiachan);
+            sys.sendAll("±Game: " + (mafia.theme.drawmsg ? mafia.theme.drawmsg : "Everybody died! This is why we can't have nice things :("), mafiachan);
             sys.sendAll(border, mafiachan);
             mafia.clearVariables();
             runUpdate();
