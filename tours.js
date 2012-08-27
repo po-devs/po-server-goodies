@@ -2374,7 +2374,7 @@ function tourCommand(src, command, commandData) {
                         }
                     }
                     else {
-                        if (command != "iom") {
+                        if (command != "iom")
                             roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> VS </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td></tr>"
                     }
                 }
