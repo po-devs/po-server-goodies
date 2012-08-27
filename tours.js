@@ -572,7 +572,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.511",
+            version: "1.512",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -612,7 +612,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.511",
+        version: "1.512",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -2359,18 +2359,23 @@ function tourCommand(src, command, commandData) {
                 postedrounds = true;
                 var roundtable = "<div style='margin-left: 50px'><b>Round "+tours.tour[y].round+" of the "+tours.tour[y].tourtype+" Tournament</b><table><br/>"
                 for (var x=0; x<tours.tour[y].players.length; x+=2) {
-                    if (winners.indexOf(tours.tour[y].players[x]) != -1 && tours.tour[y].players[x] != "~Bye~" && tours.tour[y].players[x] != "~DQ~" && command == "viewround") {
-                        roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(tours.tour[y].players[x]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td></tr>"
+                    if (winners.indexOf(tours.tour[y].players[x]) != -1 && tours.tour[y].players[x] != "~Bye~" && tours.tour[y].players[x] != "~DQ~") {
+                        if (command == "viewround")
+                            roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(tours.tour[y].players[x]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td></tr>"
                     }
-                    else if (winners.indexOf(tours.tour[y].players[x+1]) != -1 && tours.tour[y].players[x+1] != "~Bye~" && tours.tour[y].players[x+1] != "~DQ~" && command == "viewround") {
-                        roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(tours.tour[y].players[x+1]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(tours.tour[y].players[x])+"</td></tr>"
+                    else if (winners.indexOf(tours.tour[y].players[x+1]) != -1 && tours.tour[y].players[x+1] != "~Bye~" && tours.tour[y].players[x+1] != "~DQ~") {
+                        if (command == "viewround")
+                            roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(tours.tour[y].players[x+1]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(tours.tour[y].players[x])+"</td></tr>"
                     }
-                    else if (battlers.hasOwnProperty(tours.tour[y].players[x]) && command != "ipm") {
-                        var elapsedtime = parseTimer(parseInt(sys.time())-battlers[tours.tour[y].players[x]].time)
-                        roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> "+(isInSpecificTour(sys.name(src), y) || (battlers[tours.tour[y].players[x]].noSpecs && !isTourAdmin(src)) ? "is battling" : "<a href='po:watch/"+battlers[tours.tour[y].players[x]].battleId+"'>is battling</a>")+" </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td><td> ["+elapsedtime+"]</td></tr>"
+                    else if (battlers.hasOwnProperty(tours.tour[y].players[x])) {
+                        if (command != "ipm") {
+                            var elapsedtime = parseTimer(parseInt(sys.time())-battlers[tours.tour[y].players[x]].time)
+                            roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> "+(isInSpecificTour(sys.name(src), y) || (battlers[tours.tour[y].players[x]].noSpecs && !isTourAdmin(src)) ? "is battling" : "<a href='po:watch/"+battlers[tours.tour[y].players[x]].battleId+"'>is battling</a>")+" </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td><td> ["+elapsedtime+"]</td></tr>"
+                        }
                     }
-                    else if (command != "iom"){
-                        roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> VS </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td></tr>"
+                    else {
+                        if (command != "iom") {
+                            roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> VS </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td></tr>"
                     }
                 }
                 rounddata.push(roundtable+"</table></div>")
