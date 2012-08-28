@@ -146,7 +146,6 @@ function sendBotData(message, user, html) {
         return;
     }
     if (html) {
-        sys.sendMessage(user, "~HTMLMESSAGE~", tourschan);
         sys.sendHtmlMessage(user, message, tourschan);
     }
     else {
