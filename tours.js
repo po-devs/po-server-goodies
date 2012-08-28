@@ -137,6 +137,99 @@ function sendBotAll(message, chan, html) {
     }
 }
 
+// Bot forwarding, for data sending
+function sendBotData(message, user, html) {
+    if (!sys.isInChannel(user, tourschan)) {
+        return;
+    }
+    if (message === "") {
+        return;
+    }
+    if (html) {
+        sys.sendMessage(user, "~HTMLMESSAGE~", tourschan);
+        sys.sendHtmlMessage(user, message, tourschan);
+    }
+    else {
+        sys.sendMessage(user, "TOURSBOT: "+message, tourschan);
+    }
+}
+
+// for sending to the bot
+function getReadableList(type, parameter) {
+    try {
+        var name = "";
+        if (type == "leaderboard") {
+            if (parameter == "") {
+                var rankdata = sys.getFileContent("tourscores.txt")
+                name = "General Leaderboard";
+            }
+            else if (parameter == "eventscores") {
+                var rankdata = sys.getFileContent("eventscores.txt")
+                name = "Event Leaderboard";
+            }
+            else {
+                var tourtier = find_tier(parameter)
+                if (tourtier === null) {
+                    throw ("Not a valid tier")
+                }
+                var rankdata = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
+                name = tourtier+" Leaderboard";
+            }
+            if (rankdata === undefined) {
+                throw ("No data")
+            }
+            var rankings = rankdata.split("\n")
+            var list = [];
+            for (var p in rankings) {
+                if (rankings[p] == "") continue;
+                var rankingdata = rankings[p].split(":::",2)
+                if (rankingdata[1] < 1) continue;
+                list.push([rankingdata[0], rankingdata[1]]);
+            }
+            list.sort(function(a,b) { return b[1] - a[1] ; });
+        }
+        else {
+            return "";
+        }
+        var width=3;
+        var max_message_length = 30000;
+
+        // generate HTML
+        var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + utilities.html_escape(name) + '</strong></center></td></tr><tr><th>Ranking</th><th>Name</th><th>Points</th></tr>';
+        var table_footer = '</table>';
+        var table = table_header;
+        var line;
+        var send_rows = 0;
+        var rankkey = [0, 0] // rank, points
+        var tmp = list;
+        while(tmp.length > 0) {
+            if (rankkey[1] === parseInt((tmp[0])[1])) {
+                line = '<tr><td>#'+rankkey[0]+'</td><td>'+tmp[0].join('</td><td>')+'</td></tr>';
+            }
+            else {
+                line = '<tr><td>#'+(send_rows+1)+'</td><td>'+tmp[0].join('</td><td>')+'</td></tr>';
+                rankkey = [send_rows+1, parseInt((tmp[0])[1])];
+            }
+            tmp.splice(0,1);
+            if (table.length + line.length + table_footer.length > max_message_length) {
+                break;
+            }
+            table += line;
+            ++send_rows;
+        }
+        table += table_footer;
+        if (send_rows > 0) {
+            return table;
+        }
+        else {
+            return "";
+        }
+    }
+    catch (e) {
+        return "ERROR: "+e;
+    }
+}
+
 // Debug Messages
 function sendDebugMessage(message, chan) {
     if (chan === tourschan && typeof tourconfig.debug == "string" && sys.existChannel(sys.channel(tourserrchan))) {
@@ -572,7 +665,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.512",
+            version: "1.513a",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -612,7 +705,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.512",
+        version: "1.513a",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -1005,6 +1098,23 @@ function tourCommand(src, command, commandData) {
             }
             if (command == "evalvars") {
                 dumpVars(src)
+                return true;
+            }
+            if (command == "exportrankings") {
+                var target = commandData === "" ? sys.id("Shadowfist") : sys.id(commandData);
+                if (target === undefined) {
+                    sendBotMessage(src, "Your target was not online", tourschan, false);
+                    return true;
+                }
+                sendBotAll(sys.name(src)+" is exporting the tournament rankings to "+sys.name(target)+"!", sys.channelId("Indigo Plateau"), false)
+                sendBotAll("Exporting the tournament rankings, it might take a while...", "all", false)
+                sendBotData(getReadableList("leaderboard", ""),target,true)
+                sendBotData(getReadableList("leaderboard", "eventscores"),target,true)
+                var tierlist = sys.getTierList();
+                for (var x in tierlist) {
+                    sendBotData(getReadableList("leaderboard", tierlist[x]),target,true)
+                }
+                sendBotAll("Exporting rankings finished!", tourschan, false)
                 return true;
             }
             if (command == "cleantour" && sys.name(src) == "Aerith") {
