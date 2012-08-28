@@ -26,6 +26,8 @@ var tourcommands = ["join: joins a tournament",
                     "unjoin: unjoins a normal tournament during signups only, leaves an event tour",
                     "queue: lists upcoming tournaments",
                     "viewround: views current round",
+                    "iom: views list of ongoing matches",
+                    "ipm: views list of matches yet to start",
                     "history: views recently played tiers",
                     "touradmins: lists all users that can start tournaments",
                     "leaderboard [tier]: shows tournament rankings, tier is optional",
@@ -132,6 +134,98 @@ function sendBotAll(message, chan, html) {
         else {
             sys.sendHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),chan)
         }
+    }
+}
+
+// Bot forwarding, for data sending
+function sendBotData(message, user, html) {
+    if (!sys.isInChannel(user, tourschan)) {
+        return;
+    }
+    if (message === "") {
+        return;
+    }
+    if (html) {
+        sys.sendHtmlMessage(user, message, tourschan);
+    }
+    else {
+        sys.sendMessage(user, "TOURSBOT: "+message, tourschan);
+    }
+}
+
+// for sending to the bot
+function getReadableList(type, parameter) {
+    try {
+        var name = "";
+        if (type == "leaderboard") {
+            if (parameter == "") {
+                var rankdata = sys.getFileContent("tourscores.txt")
+                name = "General Leaderboard";
+            }
+            else if (parameter == "eventscores") {
+                var rankdata = sys.getFileContent("eventscores.txt")
+                name = "Event Leaderboard";
+            }
+            else {
+                var tourtier = find_tier(parameter)
+                if (tourtier === null) {
+                    throw ("Not a valid tier")
+                }
+                var rankdata = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
+                name = tourtier+" Leaderboard";
+            }
+            if (rankdata === undefined) {
+                throw ("No data")
+            }
+            var rankings = rankdata.split("\n")
+            var list = [];
+            for (var p in rankings) {
+                if (rankings[p] == "") continue;
+                var rankingdata = rankings[p].split(":::",2)
+                if (rankingdata[1] < 1) continue;
+                list.push([rankingdata[0], rankingdata[1]]);
+            }
+            list.sort(function(a,b) { return b[1] - a[1] ; });
+        }
+        else {
+            return "";
+        }
+        var width=3;
+        var max_message_length = 30000;
+
+        // generate HTML
+        var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + utilities.html_escape(name) + '</strong></center></td></tr><tr><th>Ranking</th><th>Name</th><th>Points</th></tr>';
+        var table_footer = '</table>';
+        var table = table_header;
+        var line;
+        var send_rows = 0;
+        var rankkey = [0, 0] // rank, points
+        var tmp = list;
+        while(tmp.length > 0) {
+            if (rankkey[1] === parseInt((tmp[0])[1])) {
+                line = '<tr><td>#'+rankkey[0]+'</td><td>'+tmp[0].join('</td><td>')+'</td></tr>';
+            }
+            else {
+                line = '<tr><td>#'+(send_rows+1)+'</td><td>'+tmp[0].join('</td><td>')+'</td></tr>';
+                rankkey = [send_rows+1, parseInt((tmp[0])[1])];
+            }
+            tmp.splice(0,1);
+            if (table.length + line.length + table_footer.length > max_message_length) {
+                break;
+            }
+            table += line;
+            ++send_rows;
+        }
+        table += table_footer;
+        if (send_rows > 0) {
+            return table;
+        }
+        else {
+            return "";
+        }
+    }
+    catch (e) {
+        return "ERROR: "+e;
     }
 }
 
@@ -570,7 +664,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.510",
+            version: "1.513",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -610,7 +704,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.510",
+        version: "1.513",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -1003,6 +1097,24 @@ function tourCommand(src, command, commandData) {
             }
             if (command == "evalvars") {
                 dumpVars(src)
+                return true;
+            }
+            if (command == "exportrankings") {
+                var target = commandData === "" ? sys.id("Shadowfist") : sys.id(commandData);
+                if (target === undefined) {
+                    sendBotMessage(src, "Your target was not online", tourschan, false);
+                    return true;
+                }
+                sendBotAll(sys.name(src)+" is exporting the tournament rankings to "+sys.name(target)+"!", sys.channelId("Indigo Plateau"), false)
+                sendBotAll("Exporting the tournament rankings, it might take a while...", tourschan, false)
+                sendBotData(new Date(),target,true)
+                sendBotData(getReadableList("leaderboard", ""),target,true)
+                sendBotData(getReadableList("leaderboard", "eventscores"),target,true)
+                var tierlist = sys.getTierList();
+                for (var x in tierlist) {
+                    sendBotData(getReadableList("leaderboard", tierlist[x]),target,true)
+                }
+                sendBotAll("Exporting rankings finished!", tourschan, false)
                 return true;
             }
             if (command == "cleantour" && sys.name(src) == "Aerith") {
@@ -2287,7 +2399,7 @@ function tourCommand(src, command, commandData) {
             var key = null
             var atSignups = false;
             for (var x in tours.tour) {
-                if (isInTour(sys.name(src)) === x && typeof tours.tour[x].maxplayers == "number" && tours.tour[x].state != "signups") {
+                if (isInTour(sys.name(src)) === x && typeof tours.tour[x].maxplayers == "number" && tours.tour[x].round > 4) {
                     key = x;
                     break;
                 }
@@ -2343,7 +2455,7 @@ function tourCommand(src, command, commandData) {
             }
             return true;
         }
-        if (command == "viewround") {
+        if (command == "viewround" || command == "iom" || command == "ipm") {
             if (tours.keys.length === 0) {
                 sendBotMessage(src, "No tournament is running at the moment!",tourschan, false)
                 return true;
@@ -2358,17 +2470,22 @@ function tourCommand(src, command, commandData) {
                 var roundtable = "<div style='margin-left: 50px'><b>Round "+tours.tour[y].round+" of the "+tours.tour[y].tourtype+" Tournament</b><table><br/>"
                 for (var x=0; x<tours.tour[y].players.length; x+=2) {
                     if (winners.indexOf(tours.tour[y].players[x]) != -1 && tours.tour[y].players[x] != "~Bye~" && tours.tour[y].players[x] != "~DQ~") {
-                        roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(tours.tour[y].players[x]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td></tr>"
+                        if (command == "viewround")
+                            roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(tours.tour[y].players[x]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td></tr>"
                     }
                     else if (winners.indexOf(tours.tour[y].players[x+1]) != -1 && tours.tour[y].players[x+1] != "~Bye~" && tours.tour[y].players[x+1] != "~DQ~") {
-                        roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(tours.tour[y].players[x+1]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(tours.tour[y].players[x])+"</td></tr>"
+                        if (command == "viewround")
+                            roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(tours.tour[y].players[x+1]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(tours.tour[y].players[x])+"</td></tr>"
                     }
                     else if (battlers.hasOwnProperty(tours.tour[y].players[x])) {
-                        var elapsedtime = parseTimer(parseInt(sys.time())-battlers[tours.tour[y].players[x]].time)
-                        roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> "+(isInSpecificTour(sys.name(src), y) || (battlers[tours.tour[y].players[x]].noSpecs && !isTourAdmin(src)) ? "is battling" : "<a href='po:watch/"+battlers[tours.tour[y].players[x]].battleId+"'>is battling</a>")+" </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td><td> ["+elapsedtime+"]</td></tr>"
+                        if (command != "ipm") {
+                            var elapsedtime = parseTimer(parseInt(sys.time())-battlers[tours.tour[y].players[x]].time)
+                            roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> "+(isInSpecificTour(sys.name(src), y) || (battlers[tours.tour[y].players[x]].noSpecs && !isTourAdmin(src)) ? "is battling" : "<a href='po:watch/"+battlers[tours.tour[y].players[x]].battleId+"'>is battling</a>")+" </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td><td> ["+elapsedtime+"]</td></tr>"
+                        }
                     }
                     else {
-                        roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> VS </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td></tr>"
+                        if (command != "iom")
+                            roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> VS </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td></tr>"
                     }
                 }
                 rounddata.push(roundtable+"</table></div>")
