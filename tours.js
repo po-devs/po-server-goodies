@@ -1106,7 +1106,7 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 sendBotAll(sys.name(src)+" is exporting the tournament rankings to "+sys.name(target)+"!", sys.channelId("Indigo Plateau"), false)
-                sendBotAll("Exporting the tournament rankings, it might take a while...", "all", false)
+                sendBotAll("Exporting the tournament rankings, it might take a while...", tourschan, false)
                 sendBotData(new Date(),target,true)
                 sendBotData(getReadableList("leaderboard", ""),target,true)
                 sendBotData(getReadableList("leaderboard", "eventscores"),target,true)
