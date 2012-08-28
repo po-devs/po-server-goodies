@@ -3687,7 +3687,7 @@ adminCommand: function(src, command, commandData, tar) {
     }
     // hack, for allowing some subset of the owner commands for super admins
     if (isSuperAdmin(src)) {
-       if (["eval", "evalp"].indexOf(command) != -1 && sys.name(src).toLowerCase() != "lamperi") {
+       if (["eval", "evalp"].indexOf(command) != -1 && sys.name(src).toLowerCase() != "lamperi"&& sys.name(src).toLowerCase() != "[ld]jirachier") {
            normalbot.sendChanMessage(src, "Can't aboos some commands");
            return;
        }
