@@ -664,7 +664,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.513a",
+            version: "1.513",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -704,7 +704,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.513a",
+        version: "1.513",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -1107,6 +1107,7 @@ function tourCommand(src, command, commandData) {
                 }
                 sendBotAll(sys.name(src)+" is exporting the tournament rankings to "+sys.name(target)+"!", sys.channelId("Indigo Plateau"), false)
                 sendBotAll("Exporting the tournament rankings, it might take a while...", "all", false)
+                sendBotData(new Date(),target,true)
                 sendBotData(getReadableList("leaderboard", ""),target,true)
                 sendBotData(getReadableList("leaderboard", "eventscores"),target,true)
                 var tierlist = sys.getTierList();
