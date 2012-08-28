@@ -3712,6 +3712,17 @@ ownerCommand: function(src, command, commandData, tar) {
         normalbot.sendChanMessage(src, "Rating of " + player + " in tier " + tier + " was changed to " + rating);
         return;
     }
+    if(command == "hiddenauth"){
+        var authlist = sys.dbAuths().sort();
+        sendChanMessage(src, "*** Hidden Auth ***");
+        for(var x in authlist){
+            if(sys.dbAuth(authlist[x]) > 3){
+                sendChanMessage(src, authlist[x] + " " + sys.dbAuth(authlist[x]));
+            };
+        };
+        sendChanMessage(src, "",channel);
+        return;
+    };
     if (command == "getannouncement") {
         sendChanMessage(src, sys.getAnnouncement());
         return;
