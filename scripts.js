@@ -163,7 +163,7 @@ sendChanMessage = function(id, message) {
     sys.sendMessage(id, message, channel);
 };
 sendChanAll = function(message, chan_id) {
-	if(chan_id === undefined && channel === undefined)
+	if((chan_id === undefined && channel === undefined) || chan_id == -1)
 	{
 	    sys.sendAll(message);
 	}
@@ -183,7 +183,7 @@ sendChanHtmlMessage = function(id, message) {
     sys.sendHtmlMessage(id, message, channel);
 };
 sendChanHtmlAll = function(message, chan_id) {
-    if(chan_id === undefined && channel === undefined)
+    if((chan_id === undefined && channel === undefined) || chan_id == -1)
 	{
 	    sys.sendHtmlAll(message);
 	}
@@ -4120,13 +4120,13 @@ ownerCommand: function(src, command, commandData, tar) {
     if (command == "stopbattles") {
         battlesStopped = !battlesStopped;
         if (battlesStopped)  {
-            sendChanAll("");
-            sendChanAll("*** ********************************************************************** ***");
-            battlebot.sendAll("The battles are now stopped. The server will restart soon.");
-            sendChanAll("*** ********************************************************************** ***");
-            sendChanAll("");
+            sendChanAll("", -1);
+            sendChanAll("*** ********************************************************************** ***", -1);
+            battlebot.sendAll("The battles are now stopped. The server will restart soon.", -1);
+            sendChanAll("*** ********************************************************************** ***", -1);
+            sendChanAll("", -1);
         } else {
-            battlebot.sendAll("False alarm, battles may continue.");
+            battlebot.sendAll("False alarm, battles may continue.", -1);
         }
         return;
     }
