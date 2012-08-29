@@ -889,7 +889,7 @@ POChannel.prototype.getReadableList = function(type)
             if (table.length + line.length + table_footer.length > max_message_length) {
                 if (send_rows === 0) continue; // Can't send this line!
                 table += table_footer;
-                sys.sendHtmlMessage(src, table, channel);
+                sendChanHtmlMessage(src, table, channel);
                 table = table_header;
                 send_rows = 0;
             }
