@@ -1862,7 +1862,7 @@ beforePlayerKick:function(src, dest){
 
 afterNewMessage : function (message) {
     if (message == "Script Check: OK") {
-        sendChanAll("±ScriptCheck: Scripts were updated!", staffchannel);
+        sendChanMessage("±ScriptCheck: Scripts were updated!", staffchannel);
         if (typeof(scriptChecks)=='undefined')
             scriptChecks = 0;
         scriptChecks += 1;
