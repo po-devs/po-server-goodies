@@ -1343,9 +1343,9 @@ init : function() {
     for(dwpok in dwlist) {
         var num = sys.pokeNum(dwlist[dwpok]);
         if (num === undefined)
-            sys.sendAll("Script Check: Unknown poke in dwpokemons: '" +dwlist[dwpok]+"'.", announceChan);
+            sendChanAll("Script Check: Unknown poke in dwpokemons: '" +dwlist[dwpok]+"'.", announceChan);
         else if (dwpokemons[num] === true)
-            sys.sendAll("Script Check:  dwpokemons contains '" +dwlist[dwpok]+"' multiple times.", announceChan);
+            sendChanAll("Script Check:  dwpokemons contains '" +dwlist[dwpok]+"' multiple times.", announceChan);
         else
             dwpokemons[sys.pokeNum(dwlist[dwpok])] = true;
     }
