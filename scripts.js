@@ -4850,7 +4850,7 @@ beforeChatMessage: function(src, message, chan) {
     if (typeof CAPSLOCKDAYALLOW != 'undefined' && CAPSLOCKDAYALLOW === true) {
     var date = new Date();
     if ((date.getDate() == 22 && date.getMonth() == 9) || (date.getDate() == 28 && date.getMonth() == 5)) { // October 22nd & June 28th
-        sys.sendAll(sys.name(src)+": " + message.toUpperCase(), channel);
+        sendChanAll(sys.name(src)+": " + message.toUpperCase(), channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, channel);
     }
