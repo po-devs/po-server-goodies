@@ -3878,11 +3878,11 @@ ownerCommand: function(src, command, commandData, tar) {
             if (ip.substr(0, subip.length) == subip) {
                 names.push(sys.name(current_player));
                 sys.kick(current_player);
-                return;
+                continue;
             }
         }
         if (names.length > 0) {
-            sys.sendAll(names.join(", ") + " got range banned by " + sys.name(src));
+            sendChanAll(names.join(", ") + " got range banned by " + sys.name(src));
         }
         return;
     }
