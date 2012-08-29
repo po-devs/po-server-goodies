@@ -4714,7 +4714,7 @@ beforeChatMessage: function(src, message, chan) {
         // Shanai commands
         if ((sys.auth(src) > 3 && sys.name(src) == "Shanai") || (command == "silencetriviaoff" && sys.auth(src) > 1)) {
             if (command == "sendhtmlall") {
-                sys.sendHtmlAll(commandData,channel);
+                sendChanHtmlAll(commandData,channel);
                 return;
             }
             if (command == "sendhtmlmessage") {
