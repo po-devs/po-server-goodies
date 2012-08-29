@@ -4122,11 +4122,11 @@ ownerCommand: function(src, command, commandData, tar) {
         if (battlesStopped)  {
             sendChanAll("", -1);
             sendChanAll("*** ********************************************************************** ***", -1);
-            battlebot.sendAll("The battles are now stopped. The server will restart soon.", -1);
+            battlebot.sendAll("The battles are now stopped. The server will restart soon.");
             sendChanAll("*** ********************************************************************** ***", -1);
             sendChanAll("", -1);
         } else {
-            battlebot.sendAll("False alarm, battles may continue.", -1);
+            battlebot.sendAll("False alarm, battles may continue.");
         }
         return;
     }
