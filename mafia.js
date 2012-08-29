@@ -2662,7 +2662,7 @@ sys.sendMessage(src, "±Info: Game log was printed in channel " + sys.channel(ou
         }
         if (index !== undefined) {
             updateModule(source, function(module) {
-                POglobal.plugins[i] = module;
+                POglobal.plugins[index] = module;
                 module.source = source;
                 module.init();
                 sys.sendAll("Update complete!", mafiachan);
