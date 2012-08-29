@@ -165,6 +165,12 @@ sendChanMessage = function(id, message) {
 sendChanAll = function(message) {
     sys.sendAll(message, channel);
 };
+sendChanHtmlMessage = function(id, message) {
+    sys.sendHtmlMessage(id, message, channel);
+};
+sendChanHtmlAll = function(message) {
+    sys.sendHtmlAll(message, channel);
+}
 
 String.prototype.toCorrectCase = function() {
     if (isNaN(this) && sys.id(this) !== undefined) {
