@@ -1509,8 +1509,8 @@ init : function() {
         return s.join(", ");
     };
     sendMainTour = function(message) {
-        sys.sendAll(message, 0);
-        sys.sendAll(message, tourchannel);
+        sendChanAll(message, 0);
+        sendChanAll(message, tourchannel);
     };
 
     callplugins("init");
