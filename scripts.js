@@ -159,17 +159,21 @@ var isNonNegative = utilities.is_non_negative;
 var Lazy = utilities.Lazy;
 var nonFlashing = utilities.non_flashing;
 
-sendChanMessage = function(id, message) {
-    sys.sendMessage(id, message, channel);
+sendChanMessage = function(id, message, chan_id) {
+    chan_id = chan_id === undefined ? channel : chan_id;
+    sys.sendMessage(id, message, chan_id);
 };
-sendChanAll = function(message) {
-    sys.sendAll(message, channel);
+sendChanAll = function(message, chan_id) {
+    chan_id = chan_id === undefined ? channel : chan_id;
+    sys.sendAll(message, chan_id);
 };
-sendChanHtmlMessage = function(id, message) {
-    sys.sendHtmlMessage(id, message, channel);
+sendChanHtmlMessage = function(id, message, chan_id) {
+    chan_id = chan_id === undefined ? channel : chan_id;
+    sys.sendHtmlMessage(id, message, chan_id);
 };
-sendChanHtmlAll = function(message) {
-    sys.sendHtmlAll(message, channel);
+sendChanHtmlAll = function(message, chan_id) {
+    chan_id = chan_id === undefined ? channel : chan_id;
+    sys.sendHtmlAll(message, chan_id);
 }
 
 String.prototype.toCorrectCase = function() {
