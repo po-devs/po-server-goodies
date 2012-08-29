@@ -170,13 +170,13 @@ sendChanAll = function(message, chan_id) {
 	}
 	else
 	{
-	    if(chan_id === undefined && channel !=== undefined)
+	    if(chan_id === undefined && channel !== undefined)
 		{
 		    sys.sendAll(message, channel);
 		}
-		else if(chan_id !=== undefined)
+		else if(chan_id !== undefined)
 		{
-		    sys.sendAll(message, chan_id)
+		    sys.sendAll(message, chan_id);
 		}
 	}
 };
@@ -191,13 +191,13 @@ sendChanHtmlAll = function(message, chan_id) {
 	}
 	else
 	{
-	    if(chan_id === undefined && channel !=== undefined)
+	    if(chan_id === undefined && channel !== undefined)
 		{
 		    sys.sendHtmlAll(message, channel);
 		}
-		else if(chan_id !=== undefined)
+		else if(chan_id !== undefined)
 		{
-		    sys.sendHtmlAll(message, chan_id)
+		    sys.sendHtmlAll(message, chan_id);
 		}
 	}
 }
