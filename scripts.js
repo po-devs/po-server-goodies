@@ -2261,7 +2261,7 @@ userCommand: function(src, command, commandData, tar) {
             toSend.push("<span style='color:" + randColour() + "'>:</b></span> ");
             if (auth) toSend.push("</i>");
             toSend.push(messagetosend);
-            sys.sendHtmlAll(toSend.join(""), channel);
+            sendChanHtmlAll(toSend.join(""), channel);
         }
         this.afterChatMessage(src, '/'+command+' '+commandData,channel);
         return;
