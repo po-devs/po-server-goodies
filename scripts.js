@@ -3875,7 +3875,7 @@ ownerCommand: function(src, command, commandData, tar) {
             var current_player = players[i];
             var ip = sys.ip(current_player);
             if (sys.auth(current_player) > 0) continue;
-            if (ip.substr(0, subip.length) == subip) {
+            if (ip.substr(0, subip.length-1) == subip) {
                 names.push(sys.name(current_player));
                 sys.kick(current_player);
                 return;
