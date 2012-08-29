@@ -9,9 +9,9 @@ Bot.prototype.formatMsg = function(message)
 Bot.prototype.sendAll = function(message, channel)
 {
     if (channel === undefined)
-        sys.sendAll(this.formatMsg(message));
+        sendChanAll(this.formatMsg(message));
     else
-        sys.sendAll(this.formatMsg(message), channel);
+        sendChanAll(this.formatMsg(message), channel);
 }
 
 Bot.prototype.sendMessage = function(tar, message, channel)
