@@ -4008,7 +4008,7 @@ ownerCommand: function(src, command, commandData, tar) {
                     if (html)
                         sys.sendHtmlAll(utilities.html_escape(sys.name(sayer)) + ": " + what, cid);
                     else
-                        sys.sendAll(sys.name(sayer) + ": " + what, cid);
+                        sendChanAll(sys.name(sayer) + ": " + what, cid);
             }
             if (++count > 100) return; // max repeat is 100
             SESSION.users(sayer).callcount++;
