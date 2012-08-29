@@ -3108,6 +3108,7 @@ this.addPhaseStalkAction(name, command, target.name);
                 commandData = this.correctCase(commandData);
                 target = commandData != noPlayer ? mafia.players[commandData] : null;
                 var commandObject = player.role.actions.standby[command];
+                var commandName = command;
                 if (commandObject.hasOwnProperty("command"))
                     command = commandObject.command;
 

@@ -162,14 +162,42 @@ var nonFlashing = utilities.non_flashing;
 sendChanMessage = function(id, message) {
     sys.sendMessage(id, message, channel);
 };
-sendChanAll = function(message) {
-    sys.sendAll(message, channel);
+sendChanAll = function(message, chan_id) {
+	if((chan_id === undefined && channel === undefined) || chan_id == -1)
+	{
+	    sys.sendAll(message);
+	}
+	else
+	{
+	    if(chan_id === undefined && channel !== undefined)
+		{
+		    sys.sendAll(message, channel);
+		}
+		else if(chan_id !== undefined)
+		{
+		    sys.sendAll(message, chan_id);
+		}
+	}
 };
 sendChanHtmlMessage = function(id, message) {
     sys.sendHtmlMessage(id, message, channel);
 };
-sendChanHtmlAll = function(message) {
-    sys.sendHtmlAll(message, channel);
+sendChanHtmlAll = function(message, chan_id) {
+    if((chan_id === undefined && channel === undefined) || chan_id == -1)
+	{
+	    sys.sendHtmlAll(message);
+	}
+	else
+	{
+	    if(chan_id === undefined && channel !== undefined)
+		{
+		    sys.sendHtmlAll(message, channel);
+		}
+		else if(chan_id !== undefined)
+		{
+		    sys.sendHtmlAll(message, chan_id);
+		}
+	}
 }
 
 String.prototype.toCorrectCase = function() {
@@ -885,7 +913,7 @@ POChannel.prototype.getReadableList = function(type)
             if (table.length + line.length + table_footer.length > max_message_length) {
                 if (send_rows === 0) continue; // Can't send this line!
                 table += table_footer;
-                sys.sendHtmlMessage(src, table, channel);
+                sendChanHtmlMessage(src, table, channel);
                 table = table_header;
                 send_rows = 0;
             }
@@ -1315,9 +1343,9 @@ init : function() {
     for(dwpok in dwlist) {
         var num = sys.pokeNum(dwlist[dwpok]);
         if (num === undefined)
-            sys.sendAll("Script Check: Unknown poke in dwpokemons: '" +dwlist[dwpok]+"'.", announceChan);
+            sendChanAll("Script Check: Unknown poke in dwpokemons: '" +dwlist[dwpok]+"'.", announceChan);
         else if (dwpokemons[num] === true)
-            sys.sendAll("Script Check:  dwpokemons contains '" +dwlist[dwpok]+"' multiple times.", announceChan);
+            sendChanAll("Script Check:  dwpokemons contains '" +dwlist[dwpok]+"' multiple times.", announceChan);
         else
             dwpokemons[sys.pokeNum(dwlist[dwpok])] = true;
     }
@@ -1505,8 +1533,8 @@ init : function() {
         return s.join(", ");
     };
     sendMainTour = function(message) {
-        sys.sendAll(message, 0);
-        sys.sendAll(message, tourchannel);
+        sendChanAll(message, 0);
+        sendChanAll(message, tourchannel);
     };
 
     callplugins("init");
@@ -1834,7 +1862,7 @@ beforePlayerKick:function(src, dest){
 
 afterNewMessage : function (message) {
     if (message == "Script Check: OK") {
-        sys.sendAll("±ScriptCheck: Scripts were updated!");
+        sendChanAll("±ScriptCheck: Scripts were updated!", sys.channelId("Indigo Plateau"));
         if (typeof(scriptChecks)=='undefined')
             scriptChecks = 0;
         scriptChecks += 1;
@@ -1996,7 +2024,7 @@ nameWarnTest : function(src) {
     for (var i = 0; i < nameWarns.length; ++i) {
         var regexp = nameWarns[i];
         if (regexp.test(lname)) {
-            sys.sendAll('Namewarning: Name `' + sys.name(src) + '´ matches the following regexp: `' + regexp + '´ on the IP `' + sys.ip(src) + "´.", watchchannel);
+            sendChanAll('Namewarning: Name `' + sys.name(src) + '´ matches the following regexp: `' + regexp + '´ on the IP `' + sys.ip(src) + "´.", watchchannel);
         }
     }
 },
@@ -2218,7 +2246,7 @@ userCommand: function(src, command, commandData, tar) {
                 var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
                 colour = clist[src % clist.length];
            }
-           sys.sendHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + messagetosend + "</font>", channel);
+           sendChanHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + messagetosend + "</font>", channel);
         } else if (command == "rainbow" && SESSION.global().allowRainbow && channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel != sys.channelId("Trivia")) {
             var auth = 1 <= sys.auth(src) && sys.auth(src) <= 3;
             var colours = ["red", "blue", "yellow", "cyan", "black", "orange", "green", "#FF0000", "#FF5A00", "#A5ff00", "#00ff5A", "#0000ff", "#FF00B4", "#FFff00"];
@@ -2231,7 +2259,7 @@ userCommand: function(src, command, commandData, tar) {
             toSend.push("<span style='color:" + randColour() + "'>:</b></span> ");
             if (auth) toSend.push("</i>");
             toSend.push(messagetosend);
-            sys.sendHtmlAll(toSend.join(""), channel);
+            sendChanHtmlAll(toSend.join(""), channel);
         }
         this.afterChatMessage(src, '/'+command+' '+commandData,channel);
         return;
@@ -3523,7 +3551,7 @@ adminCommand: function(src, command, commandData, tar) {
         }
 
         normalbot.sendAll("Target: " + commandData + ", IP: " + ip, staffchannel);
-        sys.sendHtmlAll('<b><font color=red>' + commandData + ' was banned by ' + nonFlashing(sys.name(src)) + '!</font></b>');
+        sendChanHtmlAll('<b><font color=red>' + commandData + ' was banned by ' + nonFlashing(sys.name(src)) + '!</font></b>');
         sys.ban(commandData);
         this.kickAll(ip);
         sys.appendToFile('bans.txt', sys.name(src) + ' banned ' + commandData + "\n");
@@ -3850,11 +3878,11 @@ ownerCommand: function(src, command, commandData, tar) {
             if (ip.substr(0, subip.length) == subip) {
                 names.push(sys.name(current_player));
                 sys.kick(current_player);
-                return;
+                continue;
             }
         }
         if (names.length > 0) {
-            sys.sendAll(names.join(", ") + " got range banned by " + sys.name(src));
+            sendChanAll("±Jirachi: "+names.join(", ") + " got range banned by " + sys.name(src));
         }
         return;
     }
@@ -3980,7 +4008,7 @@ ownerCommand: function(src, command, commandData, tar) {
                     if (html)
                         sys.sendHtmlAll(utilities.html_escape(sys.name(sayer)) + ": " + what, cid);
                     else
-                        sys.sendAll(sys.name(sayer) + ": " + what, cid);
+                        sendChanAll(sys.name(sayer) + ": " + what, cid);
             }
             if (++count > 100) return; // max repeat is 100
             SESSION.users(sayer).callcount++;
@@ -4092,11 +4120,11 @@ ownerCommand: function(src, command, commandData, tar) {
     if (command == "stopbattles") {
         battlesStopped = !battlesStopped;
         if (battlesStopped)  {
-            sys.sendAll("");
-            sys.sendAll("*** ********************************************************************** ***");
+            sendChanAll("", -1);
+            sendChanAll("*** ********************************************************************** ***", -1);
             battlebot.sendAll("The battles are now stopped. The server will restart soon.");
-            sys.sendAll("*** ********************************************************************** ***");
-            sys.sendAll("");
+            sendChanAll("*** ********************************************************************** ***", -1);
+            sendChanAll("", -1);
         } else {
             battlebot.sendAll("False alarm, battles may continue.");
         }
@@ -4238,7 +4266,7 @@ channelCommand: function(src, command, commandData, tar) {
             var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
             colour = clist[src % clist.length];
         }
-        sys.sendHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
+        sendChanHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
         sys.kick(tar, channel);
         return;
     }
@@ -4686,7 +4714,7 @@ beforeChatMessage: function(src, message, chan) {
         // Shanai commands
         if ((sys.auth(src) > 3 && sys.name(src) == "Shanai") || (command == "silencetriviaoff" && sys.auth(src) > 1)) {
             if (command == "sendhtmlall") {
-                sys.sendHtmlAll(commandData,channel);
+                sendChanHtmlAll(commandData,channel);
                 return;
             }
             if (command == "sendhtmlmessage") {
@@ -4822,7 +4850,7 @@ beforeChatMessage: function(src, message, chan) {
     if (typeof CAPSLOCKDAYALLOW != 'undefined' && CAPSLOCKDAYALLOW === true) {
     var date = new Date();
     if ((date.getDate() == 22 && date.getMonth() == 9) || (date.getDate() == 28 && date.getMonth() == 5)) { // October 22nd & June 28th
-        sys.sendAll(sys.name(src)+": " + message.toUpperCase(), channel);
+        sendChanAll(sys.name(src)+": " + message.toUpperCase(), channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, channel);
     }
