@@ -3882,7 +3882,7 @@ ownerCommand: function(src, command, commandData, tar) {
             }
         }
         if (names.length > 0) {
-            sendChanAll(names.join(", ") + " got range banned by " + sys.name(src));
+            sys.sendAll(names.join(", ") + " got range banned by " + sys.name(src));
         }
         return;
     }
