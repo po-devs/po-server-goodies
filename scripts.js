@@ -1864,7 +1864,7 @@ beforePlayerKick:function(src, dest){
 
 afterNewMessage : function (message) {
     if (message == "Script Check: OK") {
-        sys.sendAll("±ScriptCheck: Scripts were updated!");
+        sendChanAll("±ScriptCheck: Scripts were updated!");
         if (typeof(scriptChecks)=='undefined')
             scriptChecks = 0;
         scriptChecks += 1;
