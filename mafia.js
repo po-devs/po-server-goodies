@@ -3195,7 +3195,8 @@ player.exposeUse = player.exposeUse+1||1;
     };
 
     this.onKick = function(src) {
-        this.slayUser(Config.floodbot, sys.name(src));
+    	if (this.state != "day")
+        	this.slayUser(Config.kickbot, sys.name(src));
     };
 
     this.stepEvent = function() {
