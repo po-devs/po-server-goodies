@@ -160,20 +160,46 @@ var Lazy = utilities.Lazy;
 var nonFlashing = utilities.non_flashing;
 
 sendChanMessage = function(id, message, chan_id) {
-    chan_id = chan_id === undefined ? channel : chan_id;
+    var chan_id = chan_id === undefined ? channel : chan_id;
     sys.sendMessage(id, message, chan_id);
 };
 sendChanAll = function(message, chan_id) {
-    chan_id = chan_id === undefined ? channel : chan_id;
-    sys.sendAll(message, chan_id);
+	if(chan_id === undefined && channel === undefined)
+	{
+	    sys.sendAll(message);
+	}
+	else
+	{
+	    if(chan_id === undefined && channel !=== undefined)
+		{
+		    sys.sendAll(message, channel);
+		}
+		else if(chan_id !=== undefined)
+		{
+		    sys.sendAll(message, chan_id)
+		}
+	}
 };
 sendChanHtmlMessage = function(id, message, chan_id) {
-    chan_id = chan_id === undefined ? channel : chan_id;
+    var chan_id = chan_id === undefined ? channel : chan_id;
     sys.sendHtmlMessage(id, message, chan_id);
 };
 sendChanHtmlAll = function(message, chan_id) {
-    chan_id = chan_id === undefined ? channel : chan_id;
-    sys.sendHtmlAll(message, chan_id);
+    if(chan_id === undefined && channel === undefined)
+	{
+	    sys.sendHtmlAll(message);
+	}
+	else
+	{
+	    if(chan_id === undefined && channel !=== undefined)
+		{
+		    sys.sendHtmlAll(message, channel);
+		}
+		else if(chan_id !=== undefined)
+		{
+		    sys.sendHtmlAll(message, chan_id)
+		}
+	}
 }
 
 String.prototype.toCorrectCase = function() {
@@ -1838,7 +1864,7 @@ beforePlayerKick:function(src, dest){
 
 afterNewMessage : function (message) {
     if (message == "Script Check: OK") {
-        sendChanAll("±ScriptCheck: Scripts were updated!");
+        sys.sendAll("±ScriptCheck: Scripts were updated!");
         if (typeof(scriptChecks)=='undefined')
             scriptChecks = 0;
         scriptChecks += 1;
