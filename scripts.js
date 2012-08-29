@@ -1,5 +1,5 @@
 // This is the official Pokemon Online Scripts
-// These scripts will only work on 1.0.23 or newer.
+// These scripts will only work on 2.0.00 or newer.
 
 // You may change these variables as long as you keep the same type
 var Config = {
@@ -466,7 +466,7 @@ POChannel.prototype.addRole = function(src, tar, group, data)
     }
     if (group == "muted") {
         if (this.isPunished(name) !== "none") {
-            return ["self", tar.toCorrectCase()+" is already "+isPunished(name, chanId)+" from this channel!"];
+            return ["self", tar.toCorrectCase()+" is already "+this.isPunished(name)+" from this channel!"];
         }
         if (!this.hasPermission(src, tar)) {
             return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel mute them!"];
