@@ -3322,17 +3322,14 @@ this.addPhaseStalkAction(name, command, target.name);
             return;
         }
 		if (command == "showlist") {
-			if(!this.isMafiaAdmin(src) && sys.auth(src)<1)
-			{
-				throw ("no valid command");
-			}
 			this.showlist();
 			return;
 		}
 		if (command == "searchlist") {
 			if(!this.isMafiaAdmin(src) && sys.auth(src)<1)
 			{
-				throw ("no valid command");
+				msg(src, "Sorry, you are not authorized to use this command");
+				return;
 			}
 			this.searchlist();
 			return;
@@ -3344,7 +3341,8 @@ this.addPhaseStalkAction(name, command, target.name);
 		if (command == "trimplayers") {
 			if(!this.isMafiaSuperAdmin(src) && sys.auth(src)<2)
 			{
-				throw ("no valid command");
+				msg(src, "Sorry, you are not authorized to use this command");
+				return;
 			}
 			if(!commandData)
 			{
