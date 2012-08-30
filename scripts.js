@@ -206,6 +206,14 @@ append_logs = function(params) { // Adds chat lines to the logs
 				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleStarted\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"target\":\""+sys.name(params.target_id)+"\"},");
 				}
 			break;
+			
+			case 'afterBattleEnded':
+			    if(sys.name(params.winner_id) !== undefined && sys.name(params.loser_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    var tie = params.tie == 'tie' ? 1 : 0;
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleEnded\", \"timestamp\":\""+params.timestamp+"\", \"winner\":\""+sys.name(params.winner_id)+"\", \"loser_id\":\""+sys.name(params.loser_id)+"\", \"tie\":\""+tie+"\"},");
+				}
+			break;
 		}
 	}
 	return;
@@ -5083,6 +5091,9 @@ beforeBattleEnded : function(src, dest, desc, bid) {
 
 
 afterBattleEnded : function(src, dest, desc) {
+    // PO logs stuff
+    var params = {event:'afterBattleEnded', winner_id:src, loser_id:dest, tie:desc timestamp:get_timestamp()};
+	append_logs(params);
     callplugins("afterBattleEnded", src, dest, desc);
 },
 
