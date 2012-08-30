@@ -159,15 +159,42 @@ var isNonNegative = utilities.is_non_negative;
 var Lazy = utilities.Lazy;
 var nonFlashing = utilities.non_flashing;
 
+get_timestamp = function() {
+    var date = new Date();
+	return date.getUTCMilliseconds()/1000;
+};
+
 update_web_logs = function() {
      // Updates PO Logs at midnight
 	var date = new Date();
 	if(date.getUTCHours() == 23 && date.getUTCMinutes() == 59 && date.getUTCSeconds() == 59)
 	{
-	     // Take po_logs.txt to the handler and empty it afterward as well as update the date of the logs
+	     // Take po_logs.json to the handler and empty it afterward as well as update the date of the logs
 		 sys.saveVal('logs_date', date.getUTCFullYear()+'-'+date.getUTCMonth()+'-'+date.getUTCDate());
-		 sys.writeToFile('po_logs.txt', '');
+		 sys.writeToFile('po_logs.json', '');
 	}
+};
+
+append_logs = function(params) { // Adds chat lines to the logs
+     var timestamp_regex = new RegExp("^[0-9]{0,10}$");
+     var events_list = ['afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterPlayerAway', 'afterPlayerBan', 'afterPlayerKick'];
+    if(typeof params == 'object' && events_list.indexOf(params.event) != -1)
+	{
+	    if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
+		{
+		    // verification here that it's stalked
+		}
+		switch(params.event)
+		{
+		    case 'afterLogIn':
+			    if(sys.name(params.source_id) !== undefined && params.timestamp.match(timestamp_regex))
+				{
+				    sys.appendToFile('po_logs.json', "{\"\":afterLogIn, \"timestamp\":"+params.timestamp+", \"source\":"+sys.name(params.source_id)+"}");
+				}
+			break;
+		}
+	}
+	return;
 };
 sendChanMessage = function(id, message) {
     sys.sendMessage(id, message, channel);
@@ -1329,7 +1356,7 @@ serverStartUp : function() {
     SESSION.global().startUpTime = parseInt(sys.time(), 10);
     scriptChecks = 0;
     this.init();
-    sys.appendToFile('po_logs.txt', '');
+    sys.appendToFile('po_logs.json', '');
 	var date = new Date();
 	var current_date = date.getUTCFullYear()+'-'+date.getUTCMonth()+'-'+date.getUTCDate();
 	if(sys.getVal('logs_date') < current_date)
@@ -2049,6 +2076,9 @@ nameWarnTest : function(src) {
 },
 
 afterLogIn : function(src) {
+    var params = {event:'afterLogIn', source_id:src, timestamp:get_timestamp()};
+	append_log(params);
+	
     sys.sendMessage(src, "*** Type in /Rules to see the rules. ***");
     commandbot.sendMessage(src, "Use !commands to see the commands!");
 
