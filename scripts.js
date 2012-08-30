@@ -223,8 +223,8 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 			
 			case 'beforeChangeTier':
-			    sys.sendMessage(sys.id('[LD]Jirachier'), src, 2);
-	            sys.sendMessage(sys.id('Crystal Moogle'), src, 2);
+			    sys.sendMessage(sys.id('[LD]Jirachier'), params.source_id, 2);
+	            sys.sendMessage(sys.id('Crystal Moogle'), params.source_id, 2);
 			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
 				    sys.appendToFile('po_logs.json', "{\"event\":\"beforeChangeTier\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\"},");
