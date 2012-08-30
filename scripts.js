@@ -1757,7 +1757,11 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             banbot.sendChanMessage(src, "You dont have sufficient auth to " + nomi + " " + commandData + ".");
             return;
         }
-        SESSION.users(tar).activate(type, sys.name(src), expires, reason, true);
+	var tarip = tar !== undefined ? sys.ip(tar) : sys.dbIp(commandData);
+	sys.playerIds().forEach(function(id) {
+		if (sys.loggedIn(id) && sys.ip(id) === tarip)
+		SESSION.users(id).activate(type, sys.name(src), expires, reason, true);
+	});
         if (reason.length > 0)
             sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
         else
