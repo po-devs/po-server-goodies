@@ -124,19 +124,19 @@ function Tournament(channel)
 		if (bot) {
 			message = Config.tourneybot + ": " + message;
 		}
-		sys.sendAll(message, self.channel);
+		sendChanAll(message, self.channel);
 	}
 
 	function wall(message) {
-		sys.sendAll(message, self.channel);
+		sendChanAll(message, self.channel);
 		if (self.main && self.channel !== 0) {
-			sys.sendAll(message, 0);
+			sendChanAll(message, 0);
 		}
 	}
 
 	function advertise(message) {
 		if (self.main && self.channel !== 0) {
-			sys.sendAll(message, 0);
+			sendChanAll(message, 0);
 		}
 	}
 
