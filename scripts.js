@@ -239,14 +239,14 @@ append_logs = function(params) { // Adds chat lines to the logs
 			case 'afterPlayerKick':
 			    if(sys.name(params.kicker_id) !== undefined && sys.name(params.kicked_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerKick\", \"timestamp\":\""+params.timestamp+"\", \"kicker\":\""+sys.name(params.kicker_id)+"\"}, \"kicked\":"+sys.name(params.kicked_id)+"");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerKick\", \"timestamp\":\""+params.timestamp+"\", \"kicker\":\""+sys.name(params.kicker_id)+"\", \"kicked\":"+sys.name(params.kicked_id)+"}");
 				}
 			break;
 			
 			case 'afterPlayerBan':
 			    if(sys.name(params.banner_id) !== undefined && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"banner\":\""+sys.name(params.banner_id)+"\"}, \"banned\":"+sys.name(params.banned_id)+"");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"banner\":\""+sys.name(params.banner_id)+"\", \"banned\":"+sys.name(params.banned_id)+"}");
 				}
 			break;
 		}
@@ -1956,10 +1956,8 @@ beforePlayerBan : function(src, dest) {
 },
 
 afterPlayerBan : function(src, dest) {
-    afterPlayerKick:function(src, dest) {
    var params = {event:'afterPlayerBan', banner_id:src, banned_id:dest, timestamp:get_timestamp()};
 	append_logs(params);
-},
 },
 
 beforePlayerKick:function(src, dest){
