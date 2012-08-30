@@ -192,6 +192,13 @@ append_logs = function(params) { // Adds chat lines to the logs
 				    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogIn\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\"},");
 				}
 			break;
+			
+			case 'afterLogOut':
+			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogOut\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\"},");
+				}
+			break;
 		}
 	}
 	return;
@@ -2134,6 +2141,12 @@ beforeLogOut : function(src) {
         sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Disconnected as MU" + "\n");
     if (sys.auth(src) > 0 && sys.auth(src) <= 3)
         sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Disconnected as Auth" + "\n");
+},
+
+afterLogOut : function(src) {
+    // PO logs stuff
+    var params = {event:'afterLogOut', source_id:src, timestamp:get_timestamp()};
+	append_logs(params);
 },
 
 
