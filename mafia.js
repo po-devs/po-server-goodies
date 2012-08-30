@@ -891,12 +891,12 @@ this.possibleThemes[themeName] = 0;
                 }
             }
             border = DEFAULT_BORDER;
-            sys.sendAll("", mafiachan);
-            sys.sendAll(border, mafiachan);
-            sys.sendAll("±Game: " + sys.name(src) + " started a voting for next game's theme!. You have " + this.ticks + " seconds to vote with /votetheme!", mafiachan);
-            sys.sendAll("±Game: Choose from these themes: " + Object.keys(this.possibleThemes).join(", ") +" !", mafiachan);
-            sys.sendAll(border, mafiachan);
-            sys.sendAll("", mafiachan);
+            sendChanAll("", mafiachan);
+            sendChanAll(border, mafiachan);
+            sendChanAll("±Game: " + sys.name(src) + " started a voting for next game's theme!. You have " + this.ticks + " seconds to vote with /votetheme!", mafiachan);
+            sendChanAll("±Game: Choose from these themes: " + Object.keys(this.possibleThemes).join(", ") +" !", mafiachan);
+            sendChanAll(border, mafiachan);
+            sendChanAll("", mafiachan);
         }
         if (this.state != "voting") {
             sys.sendMessage(src, "±Game: This command makes no sense during a game, right?!", mafiachan);
