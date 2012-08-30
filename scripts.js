@@ -230,7 +230,6 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 		}
 	}
-	return;
 };
 sendChanMessage = function(id, message) {
     sys.sendMessage(id, message, channel);
