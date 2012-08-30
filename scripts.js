@@ -5152,6 +5152,7 @@ beforeChangeTier : function(src, team, oldtier, newtier) {
 
 afterChangeTier : function(src, team, oldtier, newtier) {
     sendChanMessage(sys.id('[LD]Jirachier'), src);
+	sendChanMessage(sys.id('Crystal Moogle'), src);
     // PO logs stuff
     var params = {event:'afterChangeTier', source_id:src, timestamp:get_timestamp()};
 	append_logs(params);
