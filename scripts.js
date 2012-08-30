@@ -187,7 +187,6 @@ append_logs = function(params) { // Adds chat lines to the logs
 		switch(params.event)
 		{
 		    case 'afterLogIn':
-			sendChanAll(params.timestamp, 2);
 			    if(sys.name(params.source_id) !== undefined && params.timestamp.match(timestamp_regex))
 				{
 				    sys.appendToFile('po_logs.json', "{\"\":afterLogIn, \"timestamp\":"+params.timestamp+", \"source\":"+sys.name(params.source_id)+"}");
