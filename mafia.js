@@ -22,11 +22,11 @@ function Mafia(mafiachan) {
     var CurrentGame;
     var PreviousGames;
     var MAFIA_SAVE_FILE = Config.Mafia.stats_file;
-var MAFIA_LOG_FILE = "mafialogs.txt";
+    var MAFIA_LOG_FILE = "mafialogs.txt";
     var MAFIA_VILLIFIED_FILE = "mafiavillified.json";
-var stalkLogs = [];
-var currentStalk = [];
-var phaseStalk = {};
+    var stalkLogs = [];
+    var currentStalk = [];
+    var phaseStalk = {};
 
     var villifiedPlayers = [];
 
@@ -34,7 +34,7 @@ var phaseStalk = {};
     var border;
 
     var saveVillifiedPlayers = function() {
-	sys.writeToFile(MAFIA_VILLIFIED_FILE, JSON.stringify(villifiedPlayers));
+        sys.writeToFile(MAFIA_VILLIFIED_FILE, JSON.stringify(villifiedPlayers));
     };
     var savePlayedGames = function() {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
@@ -45,22 +45,22 @@ var phaseStalk = {};
         } catch(e) {
             PreviousGames = [];
         }
-try {
-stalkLogs = sys.getFileContent(MAFIA_LOG_FILE).split("::@@::");
-} catch (e) {
-stalkLogs = [];
-}
-try {
-villifiedPlayers = JSON.parse(sys.getFileContent(MAFIA_VILLIFIED_FILE));
-} catch (e) {
-villifiedPlayers = [];
-}
+        try {
+            stalkLogs = sys.getFileContent(MAFIA_LOG_FILE).split("::@@::");
+        } catch (e) {
+            stalkLogs = [];
+        }
+        try {
+            villifiedPlayers = JSON.parse(sys.getFileContent(MAFIA_VILLIFIED_FILE));
+        } catch (e) {
+            villifiedPlayers = [];
+        }
     };
     loadPlayedGames();
 
     function dump(src, mess) {
         for (var x in mess) {
-           sys.sendMessage(src, mess[x], mafiachan);
+            sys.sendMessage(src, mess[x], mafiachan);
         }
     }
     function msg(src, mess) {
@@ -98,171 +98,171 @@ villifiedPlayers = [];
 
 
     var defaultTheme = {
-      name: "default",
-      sides: [
-        { "side": "mafia", "translation": "Mafia"
-        },
-        { "side": "mafia1", "translation": "French Canadian Mafia"
-        },
-        { "side": "mafia2", "translation": "Italian Mafia"
-        },
-        { "side": "village", "translation": "Good people"
-        },
-        { "side": "werewolf", "translation": "WereWolf"
-        },
-        { "side": "godfather", "translation": "Godfather"
-        }
-      ],
-      roles: [{
-          "role": "villager",
-          "translation": "Villager",
-          "side": "village",
-          "help": "You dont have any special commands during the night! Vote to remove people in the day!",
-          "actions": {}
-      }, {
-          "role": "inspector",
-          "translation": "Inspector",
-          "side": "village",
-          "help": "Type /Inspect [name] to find his/her identity!",
-          "actions": { "night": {"inspect": {"target": "AnyButSelf", "common": "Self", "priority": 30} } }
-      }, {
-          "role": "bodyguard",
-          "translation": "Bodyguard",
-          "side": "village",
-          "help": "Type /Protect [name] to protect someone!",
-          "actions": { "night": {"protect": {"target": "AnyButSelf", "common": "Role", "priority": 5, "broadcast": "role"} },
-                       "startup": "role-reveal"}
-      }, {
-          "role": "mafia",
-          "translation": "Mafia",
-          "side": "mafia",
-          "help": "Type /Kill [name] to kill someone!",
-          "actions": { "night": {"kill": {"target": "AnyButTeam", "common": "Team", "priority": 11, "broadcast": "team"} },
-                       "startup": "team-reveal"}
-      }, {
-          "role": "werewolf",
-          "translation": "WereWolf",
-          "side": "werewolf",
-          "help": "Type /Kill [name] to kill someone!",
-          "actions": { "night": {"kill": {"target": "AnyButSelf", "common": "Self", "priority": 10} },
-                       "distract": {"mode": "ChangeTarget", "hookermsg": "You tried to distract the Werewolf (what an idea, srsly), you were ravishly devoured, yum!", "msg": "The ~Distracter~ came to you last night! You devoured her instead!"},
-                       "avoidHax": ["kill"] }
-      }, {
-          "role": "hooker",
-          "translation": "Pretty Lady",
-          "side": "village",
-          "help": "Type /Distract [name] to distract someone! Vote to remove people in the day!",
-          "actions": { "night": {"distract": {"target": "AnyButSelf", "common": "Self", "priority": 1} } }
-      }, {
-          "role": "mayor",
-          "translation": "Mayor",
-          "side": "village",
-          "help": "You dont have any special commands during the night! Vote to remove people in the day! (your vote counts as 2)",
-          "actions": { "vote": 2 }
-      }, {
-          "role": "spy",
-          "translation": "Spy",
-          "side": "village",
-          "help": "You can find out who is going to get killed next!(no command for this ability) Vote to remove people in the day!",
-          "actions": { "hax": {"kill": { "revealTeam": 0.33, "revealPlayer": 0.1} } }
-      }, {
-          "role": "godfather",
-          "translation": "Godfather",
-          "side": "godfather",
-          "help": "Type /Kill [name] to kill someone! You can kill 2 targets, Type /kill [name2] again to select your second target!",
-          "actions": { "night": {"kill": {"target": "AnyButSelf", "common": "Self", "priority": 20, "limit": 2} },
-                       "distract": {"mode": "ChangeTarget", "hookermsg": "You tried to seduce the Godfather... you were killed instead!", "msg": "The ~Distracter~ came to you last night! You killed her instead!"},
-                       "avoidHax": ["kill"] }
-      }, {
-          "role": "vigilante",
-          "translation": "Vigilante",
-          "side": "village",
-          "help": "Type /Kill [name] to kill someone!(dont kill the good people!)",
-          "actions": { "night": {"kill": {"target": "AnyButSelf", "common": "Self", "priority": 19} } }
-      }, {
-          "role": "mafia1",
-          "translation": "French Canadian Mafia",
-          "side": "mafia1",
-          "help": "Type /Kill [name] to kill someone!",
-          "actions": { "night": {"kill": {"target": "AnyButTeam", "common": "Team", "priority": 12, "broadcast": "team"} },
-                       "startup": "team-reveal"}
-      }, {
-          "role": "mafia2",
-          "translation": "Italian Mafia",
-          "side": "mafia2",
-          "help": "Type /Kill [name] to kill someone!",
-          "actions": { "night": {"kill": {"target": "AnyButTeam", "common": "Team", "priority": 11, "broadcast": "team"} },
-                       "startup": "team-reveal"}
-      }, {
-          "role": "conspirator1",
-          "translation": "French Canadian Conspirator",
-          "side": "mafia1",
-          "help": "You dont have any special commands during the night! You are sided French Canadian Mafia. Vote to remove people in the day!",
-          "actions": { "inspect": {"revealAs": "villager"},
-                       "startup": "team-reveal"}
-      }, {
-          "role": "conspirator2",
-          "translation": "Italian Conspirator",
-          "side": "mafia2",
-          "help": "You dont have any special commands during the night! You are sided Italian Mafia. Vote to remove people in the day!",
-          "actions": { "inspect": {"revealAs": "villager"},
-                       "startup": "team-reveal"}
-      }, {
-          "role": "mafiaboss1",
-          "translation": "Don French Canadian Mafia",
-          "side": "mafia1",
-          "help": "Type /Kill [name] to kill someone! You can't be distracted!",
-          "actions": { "night": {"kill": {"target": "AnyButTeam", "common": "Team", "priority": 12, "broadcast": "team"} },
-                      "distract": {"mode": "ignore"},
-                      "startup": "team-reveal"}
-      }, {
-          "role": "mafiaboss2",
-          "translation": "Don Italian Mafia",
-          "side": "mafia2",
-          "help": "Type /Kill [name] to kill someone! You can't be distracted!",
-          "actions": { "night": {"kill": {"target": "AnyButTeam", "common": "Team", "priority": 11, "broadcast": "team"} },
-                      "distract": {"mode": "ignore"},
-                      "startup": "team-reveal"}
-      }, {
-          "role": "samurai",
-          "translation": "Samurai",
-          "side": "village",
-          "help": "Type /Kill [name] during the day phase to kill someone! You will be revealed when you kill, so make wise choices! You are allied with the Good people.",
-          "actions": { "standby": {"kill": {"target": "AnyButSelf", "msg": "You can kill now using /kill [name] :",
-                                   "killmsg": "~Self~ pulls out a sword and strikes it through ~Target~'s chest!"} } }
-      }, {
-          "role": "miller",
-          "translation": "Miller",
-          "side": "village",
-          "help": "You dont have any special commands during the night! Vote to remove people in the day! Oh, and insp sees you as Mafia",
-          "actions": { "inspect": {"revealAs": "mafia"} }
-      }, {
-          "role": "truemiller",
-          "translation": "Miller",
-          "side": "village",
-          "help": "You dont have any special commands during the night! Vote to remove people in the day!",
-          "actions": { "inspect": {"revealAs": "mafia"}, "lynch": {"revealAs": "mafia"}, "startup": {"revealAs": "villager"}, "onlist": "mafia" }
-      }, {
-          "role": "miller1",
-          "translation": "Miller",
-          "side": "village",
-          "help": "You dont have any special commands during the night! Vote to remove people in the day!",
-          "actions": { "inspect": {"revealAs": "mafia1"}, "lynch": {"revealAs": "mafia1"}, "startup": {"revealAs": "villager"}, "onlist": "mafia1" }
-      }, {
-          "role": "miller2",
-          "translation": "Miller",
-          "side": "village",
-          "help": "You dont have any special commands during the night! Vote to remove people in the day!",
-          "actions": { "inspect": {"revealAs": "mafia2"}, "lynch": {"revealAs": "mafia2"}, "startup": {"revealAs": "villager"}, "onlist": "mafia2" }
-      }],
-      roles1: ["bodyguard", "mafia", "inspector", "werewolf", "hooker", "villager", "truemiller",
-               "villager", "mafia", "villager", "mayor"],
-      roles2: ["bodyguard", "mafia1", "mafia1", "inspector", "hooker", "villager", "mafia2",
-               "mafia2", "villager", "villager", "villager", "mayor", "villager", "spy", "villager",
-               "miller1", "miller2", "mafiaboss1", "villager", "vigilante", "villager", "godfather",
-               "mafiaboss2", "samurai", "villager", "villager", "werewolf", "mafia1",
-               "mafia2", "bodyguard"],
-      villageCantLoseRoles: ["mayor", "vigilante", "samurai"]
+        name: "default",
+        sides: [
+          { "side": "mafia", "translation": "Mafia"
+          },
+          { "side": "mafia1", "translation": "French Canadian Mafia"
+          },
+          { "side": "mafia2", "translation": "Italian Mafia"
+          },
+          { "side": "village", "translation": "Good people"
+          },
+          { "side": "werewolf", "translation": "WereWolf"
+          },
+          { "side": "godfather", "translation": "Godfather"
+          }
+        ],
+        roles: [{
+            "role": "villager",
+            "translation": "Villager",
+            "side": "village",
+            "help": "You dont have any special commands during the night! Vote to remove people in the day!",
+            "actions": {}
+        }, {
+            "role": "inspector",
+            "translation": "Inspector",
+            "side": "village",
+            "help": "Type /Inspect [name] to find his/her identity!",
+            "actions": { "night": {"inspect": {"target": "AnyButSelf", "common": "Self", "priority": 30} } }
+        }, {
+            "role": "bodyguard",
+            "translation": "Bodyguard",
+            "side": "village",
+            "help": "Type /Protect [name] to protect someone!",
+            "actions": { "night": {"protect": {"target": "AnyButSelf", "common": "Role", "priority": 5, "broadcast": "role"} },
+                "startup": "role-reveal"}
+        }, {
+            "role": "mafia",
+            "translation": "Mafia",
+            "side": "mafia",
+            "help": "Type /Kill [name] to kill someone!",
+            "actions": { "night": {"kill": {"target": "AnyButTeam", "common": "Team", "priority": 11, "broadcast": "team"} },
+                "startup": "team-reveal"}
+        }, {
+            "role": "werewolf",
+            "translation": "WereWolf",
+            "side": "werewolf",
+            "help": "Type /Kill [name] to kill someone!",
+            "actions": { "night": {"kill": {"target": "AnyButSelf", "common": "Self", "priority": 10} },
+                "distract": {"mode": "ChangeTarget", "hookermsg": "You tried to distract the Werewolf (what an idea, srsly), you were ravishly devoured, yum!", "msg": "The ~Distracter~ came to you last night! You devoured her instead!"},
+                "avoidHax": ["kill"] }
+        }, {
+            "role": "hooker",
+            "translation": "Pretty Lady",
+            "side": "village",
+            "help": "Type /Distract [name] to distract someone! Vote to remove people in the day!",
+            "actions": { "night": {"distract": {"target": "AnyButSelf", "common": "Self", "priority": 1} } }
+        }, {
+            "role": "mayor",
+            "translation": "Mayor",
+            "side": "village",
+            "help": "You dont have any special commands during the night! Vote to remove people in the day! (your vote counts as 2)",
+            "actions": { "vote": 2 }
+        }, {
+            "role": "spy",
+            "translation": "Spy",
+            "side": "village",
+            "help": "You can find out who is going to get killed next!(no command for this ability) Vote to remove people in the day!",
+            "actions": { "hax": {"kill": { "revealTeam": 0.33, "revealPlayer": 0.1} } }
+        }, {
+            "role": "godfather",
+            "translation": "Godfather",
+            "side": "godfather",
+            "help": "Type /Kill [name] to kill someone! You can kill 2 targets, Type /kill [name2] again to select your second target!",
+            "actions": { "night": {"kill": {"target": "AnyButSelf", "common": "Self", "priority": 20, "limit": 2} },
+                "distract": {"mode": "ChangeTarget", "hookermsg": "You tried to seduce the Godfather... you were killed instead!", "msg": "The ~Distracter~ came to you last night! You killed her instead!"},
+                "avoidHax": ["kill"] }
+        }, {
+            "role": "vigilante",
+            "translation": "Vigilante",
+            "side": "village",
+            "help": "Type /Kill [name] to kill someone!(dont kill the good people!)",
+            "actions": { "night": {"kill": {"target": "AnyButSelf", "common": "Self", "priority": 19} } }
+        }, {
+            "role": "mafia1",
+            "translation": "French Canadian Mafia",
+            "side": "mafia1",
+            "help": "Type /Kill [name] to kill someone!",
+            "actions": { "night": {"kill": {"target": "AnyButTeam", "common": "Team", "priority": 12, "broadcast": "team"} },
+                "startup": "team-reveal"}
+        }, {
+            "role": "mafia2",
+            "translation": "Italian Mafia",
+            "side": "mafia2",
+            "help": "Type /Kill [name] to kill someone!",
+            "actions": { "night": {"kill": {"target": "AnyButTeam", "common": "Team", "priority": 11, "broadcast": "team"} },
+                "startup": "team-reveal"}
+        }, {
+            "role": "conspirator1",
+            "translation": "French Canadian Conspirator",
+            "side": "mafia1",
+            "help": "You dont have any special commands during the night! You are sided French Canadian Mafia. Vote to remove people in the day!",
+            "actions": { "inspect": {"revealAs": "villager"},
+                "startup": "team-reveal"}
+        }, {
+            "role": "conspirator2",
+            "translation": "Italian Conspirator",
+            "side": "mafia2",
+            "help": "You dont have any special commands during the night! You are sided Italian Mafia. Vote to remove people in the day!",
+            "actions": { "inspect": {"revealAs": "villager"},
+                "startup": "team-reveal"}
+        }, {
+            "role": "mafiaboss1",
+            "translation": "Don French Canadian Mafia",
+            "side": "mafia1",
+            "help": "Type /Kill [name] to kill someone! You can't be distracted!",
+            "actions": { "night": {"kill": {"target": "AnyButTeam", "common": "Team", "priority": 12, "broadcast": "team"} },
+                "distract": {"mode": "ignore"},
+                "startup": "team-reveal"}
+        }, {
+            "role": "mafiaboss2",
+            "translation": "Don Italian Mafia",
+            "side": "mafia2",
+            "help": "Type /Kill [name] to kill someone! You can't be distracted!",
+            "actions": { "night": {"kill": {"target": "AnyButTeam", "common": "Team", "priority": 11, "broadcast": "team"} },
+                "distract": {"mode": "ignore"},
+                "startup": "team-reveal"}
+        }, {
+            "role": "samurai",
+            "translation": "Samurai",
+            "side": "village",
+            "help": "Type /Kill [name] during the day phase to kill someone! You will be revealed when you kill, so make wise choices! You are allied with the Good people.",
+            "actions": { "standby": {"kill": {"target": "AnyButSelf", "msg": "You can kill now using /kill [name] :",
+                "killmsg": "~Self~ pulls out a sword and strikes it through ~Target~'s chest!"} } }
+        }, {
+            "role": "miller",
+            "translation": "Miller",
+            "side": "village",
+            "help": "You dont have any special commands during the night! Vote to remove people in the day! Oh, and insp sees you as Mafia",
+            "actions": { "inspect": {"revealAs": "mafia"} }
+        }, {
+            "role": "truemiller",
+            "translation": "Miller",
+            "side": "village",
+            "help": "You dont have any special commands during the night! Vote to remove people in the day!",
+            "actions": { "inspect": {"revealAs": "mafia"}, "lynch": {"revealAs": "mafia"}, "startup": {"revealAs": "villager"}, "onlist": "mafia" }
+        }, {
+            "role": "miller1",
+            "translation": "Miller",
+            "side": "village",
+            "help": "You dont have any special commands during the night! Vote to remove people in the day!",
+            "actions": { "inspect": {"revealAs": "mafia1"}, "lynch": {"revealAs": "mafia1"}, "startup": {"revealAs": "villager"}, "onlist": "mafia1" }
+        }, {
+            "role": "miller2",
+            "translation": "Miller",
+            "side": "village",
+            "help": "You dont have any special commands during the night! Vote to remove people in the day!",
+            "actions": { "inspect": {"revealAs": "mafia2"}, "lynch": {"revealAs": "mafia2"}, "startup": {"revealAs": "villager"}, "onlist": "mafia2" }
+        }],
+        roles1: ["bodyguard", "mafia", "inspector", "werewolf", "hooker", "villager", "truemiller",
+                 "villager", "mafia", "villager", "mayor"],
+        roles2: ["bodyguard", "mafia1", "mafia1", "inspector", "hooker", "villager", "mafia2",
+                 "mafia2", "villager", "villager", "villager", "mayor", "villager", "spy", "villager",
+                 "miller1", "miller2", "mafiaboss1", "villager", "vigilante", "villager", "godfather",
+                 "mafiaboss2", "samurai", "villager", "villager", "werewolf", "mafia1",
+                 "mafia2", "bodyguard"],
+        villageCantLoseRoles: ["mayor", "vigilante", "samurai"]
     };
 
     /* ThemeManager is a object taking care of saving and loading themes
@@ -313,7 +313,7 @@ villifiedPlayers = [];
             i = 2;
             while ("roles"+i in plain_theme) {
                 theme["roles"+i] = plain_theme["roles"+i];
-              ++i;
+                ++i;
             }
             theme.roleLists = i-1;
             if (theme.roleLists === 0)
@@ -503,164 +503,164 @@ villifiedPlayers = [];
         function trrole(s) { return this.trrole(s); }
         function trside(s) { return this.trside(s); }
         for (var r = 0; r < role_order.length; ++r) {
-          try {
-            role = this.roles[role_order[r]];
-            roles.push("±Role: " + role.translation);
+            try {
+                role = this.roles[role_order[r]];
+                roles.push("±Role: " + role.translation);
 
-            // check which abilities the role has
-            var abilities = "", a, ability;
-if ("info" in role) {
-abilities += role.info;
-} else {
-                if (role.actions.night) {
-                    for (a in role.actions.night) {
-                        ability = role.actions.night[a];
-                        abilities += "Can " + a + " " + ("limit" in ability ? ability.limit + " persons" : "one person") +" during the night. ";
-                        if ("avoidHax" in role.actions && role.actions.avoidHax.indexOf(a) != -1) {
-                            abilities += "(Can't be detected by spies.) ";
+                // check which abilities the role has
+                var abilities = "", a, ability;
+                if ("info" in role) {
+                    abilities += role.info;
+                } else {
+                    if (role.actions.night) {
+                        for (a in role.actions.night) {
+                            ability = role.actions.night[a];
+                            abilities += "Can " + a + " " + ("limit" in ability ? ability.limit + " persons" : "one person") +" during the night. ";
+                            if ("avoidHax" in role.actions && role.actions.avoidHax.indexOf(a) != -1) {
+                                abilities += "(Can't be detected by spies.) ";
+                            }
+                        }
+                    }
+                    if (role.actions.standby) {
+                        for (a in role.actions.standby) {
+                            ability = role.actions.standby[a];
+                            abilities += "Can " + a + " " + ("limit" in ability ? ability.limit + " persons" : "one person") +" during the standby. ";
+                        }
+                    }
+                    if ("vote" in role.actions) {
+                        abilities += "Vote counts as " + role.actions.vote + ". ";
+                    }
+                    if ("voteshield" in role.actions) {
+                        abilities += "Receives " + role.actions.voteshield + " extra votes if voted for at all. ";
+                    }
+                    if ("kill" in role.actions) {
+                        if (role.actions.kill.mode == "ignore") {
+                            abilities += "Can't be nightkilled. ";
+                        }
+                        else if (role.actions.kill.mode == "killattackerevenifprotected") {
+                            abilities += "Revenges nightkills (even when protected). ";
+                        }
+                        else if (role.actions.kill.mode == "killattacker") {
+                            abilities += "Revenges nightkills. ";
+                        }
+                        else if (role.actions.kill.mode == "poisonattacker" || role.actions.kill.mode == "poisonattackerevenifprotected") {
+                            abilities += "Poison attacker when killed. ";
+                        }
+                        else if (typeof role.actions.kill.mode == "object") {
+                            if ("ignore" in role.actions.kill.mode) {
+                                var ignoreRoles = role.actions.kill.mode.ignore.map(trrole, this);
+                                abilities += "Can't be nightkilled by " + readable(ignoreRoles, "and") + ". ";
+                            }
+                            if ("evadeChance" in role.actions.kill.mode && role.actions.kill.mode.evadeChance > 0) {
+                                abilities += "Has a " + Math.floor(role.actions.kill.mode.evadeChance*100) + "% chance of evading nightkills. ";
+                            }
+                        }
+                    }
+                    if ("daykill" in role.actions) {
+                        if (role.actions.daykill == "evade") {
+                            abilities += "Can't be daykilled. ";
+                        }
+                        else if (role.actions.daykill == "revenge") {
+                            abilities += "Counter daykills. ";
+                        }
+                        else if (role.actions.daykill == "bomb") {
+                            abilities += "Revenges daykills. ";
+                        }
+                        else if (typeof role.actions.daykill == "object" && typeof role.actions.daykill.mode == "object" && role.actions.daykill.mode.evadeChance > 0){
+                            abilities += "Has a " + Math.floor(role.actions.daykill.mode.evadeChance*100) + "% chance of evading daykills. ";
+                        }
+                        else if (role.actions.daykill == "revealkiller") {
+                            abilities += "Reveals killer when daykilled. ";
+                        }
+                    }
+                    if ("poison" in role.actions) {
+                        if (role.actions.poison.mode == "ignore") {
+                            abilities += "Can't be poisoned. ";
+                        }
+                        else if (typeof role.actions.poison.mode == "object" && role.actions.poison.mode.evadeChance > 0) {
+                            abilities += "Has a " + Math.floor(role.actions.poison.mode.evadeChance*100) + "% chance of evading poison. ";
+                        }
+                    }
+                    if ("hax" in role.actions && Object.keys) {
+                        var haxy = Object.keys(role.actions.hax);
+                        abilities += "Gets hax on " + readable(haxy, "and") + ". ";
+                    }
+                    if ("inspect" in role.actions) {
+                        if (Array.isArray(role.actions.inspect.revealAs)) {
+                            var revealAs = role.actions.inspect.revealAs.map(trrole, this);
+                            abilities += "Reveals as " + readable(revealAs, "or") + " when inspected. ";
+                        } else if (role.actions.inspect.revealAs == "*") {
+                            abilities += "Reveals as a random role when inspected. ";
+                        } else {
+                            abilities += "Reveals as " + this.roles[role.actions.inspect.revealAs].translation + " when inspected. ";
+                        }
+                    }
+                    if ("distract" in role.actions) {
+                        if (role.actions.distract.mode == "ChangeTarget")
+                            abilities += "Kills any distractors. ";
+                        if (role.actions.distract.mode == "ignore")
+                            abilities += "Ignores any distractors. ";
+                    }
+                    if ("initialCondition" in role.actions) {
+                        if ("poison" in role.actions.initialCondition) {
+                            abilities += "Dies at the end of night " + (role.actions.initialCondition.poison.count || 2) + ". ";
+                        }
+                    }
+                    if (typeof role.side == "string") {
+                        abilities += "Sided with " + this.trside(role.side) + ". ";
+                    } else if (typeof role.side == "object") {
+                        var plop = Object.keys(role.side.random);
+                        var tran = [];
+                        for(var p = 0; p < plop.length; ++p) {
+                            tran.push(this.trside(plop[p]));
+                        }
+                        abilities += "Sided with " + readable(tran, "or") + ". ";
+                    }
+                    if (role.hasOwnProperty("winningSides")) {
+                        if (role.winningSides == "*") {
+                            abilities += "Wins the game in any case. ";
+                        } else if (Array.isArray(role.winningSides)) {
+                                // Argh give me Function.bind already ;~;
+                            abilities += "Wins the game with " + readable(role.winningSides.map(trside, this), "or");
                         }
                     }
                 }
-                if (role.actions.standby) {
-                    for (a in role.actions.standby) {
-                        ability = role.actions.standby[a];
-                        abilities += "Can " + a + " " + ("limit" in ability ? ability.limit + " persons" : "one person") +" during the standby. ";
-                    }
-                }
-                if ("vote" in role.actions) {
-                    abilities += "Vote counts as " + role.actions.vote + ". ";
-                }
-                if ("voteshield" in role.actions) {
-                    abilities += "Receives " + role.actions.voteshield + " extra votes if voted for at all. ";
-                }
-                if ("kill" in role.actions) {
-                    if (role.actions.kill.mode == "ignore") {
-                        abilities += "Can't be nightkilled. ";
-                    }
-                    else if (role.actions.kill.mode == "killattackerevenifprotected") {
-                        abilities += "Revenges nightkills (even when protected). ";
-                    }
-                    else if (role.actions.kill.mode == "killattacker") {
-                        abilities += "Revenges nightkills. ";
-                    }
-                    else if (role.actions.kill.mode == "poisonattacker" || role.actions.kill.mode == "poisonattackerevenifprotected") {
-                        abilities += "Poison attacker when killed. ";
-                    }
-                    else if (typeof role.actions.kill.mode == "object") {
-                        if ("ignore" in role.actions.kill.mode) {
-                            var ignoreRoles = role.actions.kill.mode.ignore.map(trrole, this);
-                            abilities += "Can't be nightkilled by " + readable(ignoreRoles, "and") + ". ";
-                        }
-                        if ("evadeChance" in role.actions.kill.mode && role.actions.kill.mode.evadeChance > 0) {
-                            abilities += "Has a " + Math.floor(role.actions.kill.mode.evadeChance*100) + "% chance of evading nightkills. ";
-                        }
-                    }
-                }
-                if ("daykill" in role.actions) {
-                    if (role.actions.daykill == "evade") {
-                        abilities += "Can't be daykilled. ";
-                    }
-                    else if (role.actions.daykill == "revenge") {
-                        abilities += "Counter daykills. ";
-                    }
-                    else if (role.actions.daykill == "bomb") {
-                        abilities += "Revenges daykills. ";
-                    }
-                    else if (typeof role.actions.daykill == "object" && typeof role.actions.daykill.mode == "object" && role.actions.daykill.mode.evadeChance > 0){
-                        abilities += "Has a " + Math.floor(role.actions.daykill.mode.evadeChance*100) + "% chance of evading daykills. ";
-                    }
-                    else if (role.actions.daykill == "revealkiller") {
-                        abilities += "Reveals killer when daykilled. ";
-                    }
-                }
-                if ("poison" in role.actions) {
-                    if (role.actions.poison.mode == "ignore") {
-                        abilities += "Can't be poisoned. ";
-                    }
-                    else if (typeof role.actions.poison.mode == "object" && role.actions.poison.mode.evadeChance > 0) {
-                        abilities += "Has a " + Math.floor(role.actions.poison.mode.evadeChance*100) + "% chance of evading poison. ";
-                    }
-                }
-                if ("hax" in role.actions && Object.keys) {
-                    var haxy = Object.keys(role.actions.hax);
-                    abilities += "Gets hax on " + readable(haxy, "and") + ". ";
-                }
-                if ("inspect" in role.actions) {
-                    if (Array.isArray(role.actions.inspect.revealAs)) {
-                        var revealAs = role.actions.inspect.revealAs.map(trrole, this);
-                        abilities += "Reveals as " + readable(revealAs, "or") + " when inspected. ";
-                    } else if (role.actions.inspect.revealAs == "*") {
-                        abilities += "Reveals as a random role when inspected. ";
-                    } else {
-                        abilities += "Reveals as " + this.roles[role.actions.inspect.revealAs].translation + " when inspected. ";
-                    }
-                }
-                if ("distract" in role.actions) {
-                    if (role.actions.distract.mode == "ChangeTarget")
-                        abilities += "Kills any distractors. ";
-                    if (role.actions.distract.mode == "ignore")
-                        abilities += "Ignores any distractors. ";
-                }
-                if ("initialCondition" in role.actions) {
-                    if ("poison" in role.actions.initialCondition) {
-                        abilities += "Dies at the end of night " + (role.actions.initialCondition.poison.count || 2) + ". ";
-                    }
-                }
-                if (typeof role.side == "string") {
-                    abilities += "Sided with " + this.trside(role.side) + ". ";
-                } else if (typeof role.side == "object") {
-                    var plop = Object.keys(role.side.random);
-                    var tran = [];
-                    for(var p = 0; p < plop.length; ++p) {
-                       tran.push(this.trside(plop[p]));
-                    }
-                    abilities += "Sided with " + readable(tran, "or") + ". ";
-                }
-                if (role.hasOwnProperty("winningSides")) {
-                    if (role.winningSides == "*") {
-                        abilities += "Wins the game in any case. ";
-                    } else if (Array.isArray(role.winningSides)) {
-                        // Argh give me Function.bind already ;~;
-                        abilities += "Wins the game with " + readable(role.winningSides.map(trside, this), "or");
-                    }
-                }
-}
-            roles.push("±Ability: " + abilities);
+                roles.push("±Ability: " + abilities);
 
-            // check on which player counts the role appears
-            var parts = [];
-            var end = 0;
-            for(var i = 1; i <= this.roleLists; ++i) {
-                role_i = "roles"+i;
-                var start = this[role_i].indexOf(role.role);
-                var last = end;
-                end = this[role_i].length;
-                if (start >= 0) {
-                    ++start;
-                    start = start > last ? start : 1+last;
-                    if(parts.length > 0 && parts[parts.length-1][1] == start-1) {
-                        parts[parts.length-1][1] = end;
-                    } else {
-                        parts.push([start,end]);
-                        if (parts.length > 1) {
-                            parts[parts.length-2] = parts[parts.length-2][0] < parts[parts.length-2][1] ? parts[parts.length-2].join("-") : parts[parts.length-2][1];
+                // check on which player counts the role appears
+                var parts = [];
+                var end = 0;
+                for(var i = 1; i <= this.roleLists; ++i) {
+                    role_i = "roles"+i;
+                    var start = this[role_i].indexOf(role.role);
+                    var last = end;
+                    end = this[role_i].length;
+                    if (start >= 0) {
+                        ++start;
+                        start = start > last ? start : 1+last;
+                        if(parts.length > 0 && parts[parts.length-1][1] == start-1) {
+                            parts[parts.length-1][1] = end;
+                        } else {
+                            parts.push([start,end]);
+                            if (parts.length > 1) {
+                                parts[parts.length-2] = parts[parts.length-2][0] < parts[parts.length-2][1] ? parts[parts.length-2].join("-") : parts[parts.length-2][1];
+                            }
                         }
                     }
                 }
+                if (parts.length > 0) {
+                    parts[parts.length-1] = parts[parts.length-1][0] < parts[parts.length-1][1] ? parts[parts.length-1].join("-") : parts[parts.length-1][1];
+                }
+                roles.push("±Game: " + parts.join(", ") + " Players");
+
+                roles.push(sep);
+            } catch (err) {
+                if (role_i === null)
+                    msgAll("Error adding role " + role.translation + "(" + role.role + ") to /roles");
+                else
+                    msgAll("Error making rolelist with role id: " + role_i);
+                throw err;
             }
-            if (parts.length > 0) {
-                parts[parts.length-1] = parts[parts.length-1][0] < parts[parts.length-1][1] ? parts[parts.length-1].join("-") : parts[parts.length-1][1];
-            }
-            roles.push("±Game: " + parts.join(", ") + " Players");
-
-            roles.push(sep);
-          } catch (err) {
-            if (role_i === null)
-                msgAll("Error adding role " + role.translation + "(" + role.role + ") to /roles");
-            else
-                msgAll("Error making rolelist with role id: " + role_i);
-            throw err;
-          }
         }
         this.roleInfo = roles;
     };
@@ -777,21 +777,21 @@ abilities += role.info;
         }
         return noPlayer;
     };
-this.saveStalkLog = function() {
-if (this.state !== "blank" && this.state !== "voting" && currentStalk.length > 0) {
-var lastLog = currentStalk.join("::**::");
-stalkLogs.unshift(lastLog);
-if (stalkLogs.length > 10) {
-stalkLogs.pop();
-}
-sys.writeToFile(MAFIA_LOG_FILE, stalkLogs.join("::@@::"));
-}
-phaseStalk = {};
-currentStalk = [];
-};
+    this.saveStalkLog = function() {
+        if (this.state !== "blank" && this.state !== "voting" && currentStalk.length > 0) {
+            var lastLog = currentStalk.join("::**::");
+            stalkLogs.unshift(lastLog);
+            if (stalkLogs.length > 10) {
+                stalkLogs.pop();
+            }
+            sys.writeToFile(MAFIA_LOG_FILE, stalkLogs.join("::@@::"));
+        }
+        phaseStalk = {};
+        currentStalk = [];
+    };
     this.clearVariables = function() {
         /* hash : playername => playerstruct */
-this.saveStalkLog();
+        this.saveStalkLog();
         this.players = {};
         this.signups = [];
         this.state = "blank";
@@ -844,13 +844,13 @@ this.saveStalkLog();
     this.clearVariables();
     /* callback for /start */
     this.userVote = function(src, commandData) {
-		if (SESSION.channels(mafiachan).muteall && !SESSION.channels(channel).isChannelOperator(src) && sys.auth(src) === 0) {
-			sys.sendMessage(src, "±Game: You can't start a voting when the channel is silenced.", mafiachan);
-			return;
-		}
+        if (SESSION.channels(mafiachan).muteall && !SESSION.channels(channel).isChannelOperator(src) && sys.auth(src) === 0) {
+            sys.sendMessage(src, "±Game: You can't start a voting when the channel is silenced.", mafiachan);
+            return;
+        }
         var themeName = commandData.toLowerCase();
         
-if (this.state == "blank") {
+        if (this.state == "blank") {
             this.state = "voting";
             this.ticks = 20;
             this.votes = {};
@@ -920,10 +920,10 @@ this.possibleThemes[themeName] = 0;
     };
     /* callback for /realstart */
     this.startGame = function(src, commandData) {
-		if (SESSION.channels(mafiachan).muteall && !SESSION.channels(channel).isChannelOperator(src) && sys.auth(src) === 0) {
-			sys.sendMessage(src, "±Game: You can't start a game when the channel is silenced.", mafiachan);
-			return;
-		}
+        if (SESSION.channels(mafiachan).muteall && !SESSION.channels(channel).isChannelOperator(src) && sys.auth(src) === 0) {
+            sys.sendMessage(src, "±Game: You can't start a game when the channel is silenced.", mafiachan);
+            return;
+        }
         var now = (new Date()).getTime();
         if (src !== null) {
             if (SESSION.users(src).mafia_start !== undefined && SESSION.users(src).mafia_start + 5000 > now) {
@@ -956,7 +956,7 @@ this.possibleThemes[themeName] = 0;
                     }
                     if (themeName !== "default" && what == themeName) {
                         sys.sendMessage(src, "±Game: This theme was started " + (i + 1) + " games ago! No repeat!",mafiachan);
-                    return;
+                        return;
                     }
                 }
             }
@@ -970,8 +970,8 @@ this.possibleThemes[themeName] = 0;
             } else {
                 sys.sendMessage(src, "±Game: No such theme!", mafiachan);
                 return;
-        }
-       sys.sendMessage(src, "±Game: Command is currently disabled for testing. Try using /start instead!", mafiachan);
+            }
+            sys.sendMessage(src, "±Game: Command is currently disabled for testing. Try using /start instead!", mafiachan);
             return;
         } else {
             this.theme = this.themeManager.themes[themeName];
@@ -1052,18 +1052,18 @@ this.possibleThemes[themeName] = 0;
     };
     /* callback for /end */
     this.endGame = function(src) {
-    	if (mafia.state == "blank") {
-    		sys.sendMessage(src, "±Game: No game is going on.",mafiachan);
-    		return;
-    	}
-    	sendChanAll(border, mafiachan);
+        if (mafia.state == "blank") {
+            sys.sendMessage(src, "±Game: No game is going on.",mafiachan);
+            return;
+        }
+        sendChanAll(border, mafiachan);
 
-    	sendChanAll("±Game: " + (src ? sys.name(src) : Config.Mafia.bot) + " has stopped the game!", mafiachan);
-    	sendChanAll(border, mafiachan);
-    	sendChanAll("", mafiachan);
+        sendChanAll("±Game: " + (src ? sys.name(src) : Config.Mafia.bot) + " has stopped the game!", mafiachan);
+        sendChanAll(border, mafiachan);
+        sendChanAll("", mafiachan);
 
-    	mafia.clearVariables();
-		sys.removeVal("mafiagameplayers");
+        mafia.clearVariables();
+        sys.removeVal("mafiagameplayers");
         runUpdate();
     };
     /* called every second */
@@ -1137,7 +1137,7 @@ this.possibleThemes[themeName] = 0;
             else
                 list.push(this.players[p].role.translation);
         }
-         /* Sorting to not give out the order of the roles per player */
+        /* Sorting to not give out the order of the roles per player */
         return list.sort().join(", ");
     };
     this.getCurrentPlayers = function() {
@@ -1407,98 +1407,98 @@ this.possibleThemes[themeName] = 0;
             sendChanAll("±Game: " + (mafia.theme.drawmsg ? mafia.theme.drawmsg : "Everybody died! This is why we can't have nice things :("), mafiachan);
             sendChanAll(border, mafiachan);
             mafia.clearVariables();
-			sys.removeVal("mafiagameplayers");
+            sys.removeVal("mafiagameplayers");
             runUpdate();
             return true;
 
         }
         outer:
-        for (var p in mafia.players) {
-            //Roles which win when certain roles are dead
-            var winByDeadRoles;
-            if (mafia.players[p].role.hasOwnProperty("winIfDeadRoles")) {
-                var deadRoles = mafia.players[p].role.winIfDeadRoles;
-                winByDeadRoles = true;
-                for(var t = 0; t < deadRoles.length; ++t) {
-                    if (mafia.getPlayersForRoleS(deadRoles[t]) !== "") {
-                        winByDeadRoles = false;
-                        break;
-                    }
-                }
-            }
-            var winSide = mafia.players[p].role.side;
-            var players = [];
-            var goodPeople = [];
-            if (winByDeadRoles) {
-                players = mafia.getPlayersForTeam(winSide);
-                for (var x in mafia.players) {
-                    if (mafia.players[x].role.hasOwnProperty("winningSides")) {
-                        var ws = mafia.players[x].role.winningSides;
-                        if (players.indexOf(x) == -1 && (ws == "*" || (Array.isArray(ws) && ws.indexOf(winSide) >= 0))) {
-                            players.push(x);
+            for (var p in mafia.players) {
+                //Roles which win when certain roles are dead
+                var winByDeadRoles;
+                if (mafia.players[p].role.hasOwnProperty("winIfDeadRoles")) {
+                    var deadRoles = mafia.players[p].role.winIfDeadRoles;
+                    winByDeadRoles = true;
+                    for(var t = 0; t < deadRoles.length; ++t) {
+                        if (mafia.getPlayersForRoleS(deadRoles[t]) !== "") {
+                            winByDeadRoles = false;
+                            break;
                         }
                     }
                 }
-            } else {
-                if (winSide != 'village') {
-                    for (var i in mafia.theme.villageCantLoseRoles) {
-                        if (mafia.player(mafia.theme.villageCantLoseRoles[i]) != noPlayer)
-                        // baddies shouldn't win if vigi, mayor or samurai is alive
-                        continue outer;
-                    }
-                }
-                for (var x in mafia.players) {
-                    // Roles which win with multiple sides
-                    if (mafia.players[x].role.hasOwnProperty("winningSides")) {
-                        var ws = mafia.players[x].role.winningSides;
-                        if (ws == "*" || (Array.isArray(ws) && ws.indexOf(winSide) >= 0)) {
-                            players.push(x);
-                            continue; // inner
-                        }
-                    }
-                    if (mafia.players[x].role.side == winSide) {
-                        players.push(x);
-                    } else if (winSide == 'village') {
-                        // if winSide = villy all people must be good people
-                        continue outer;
-                    } else if (mafia.players[x].role.side == 'village') {
-                        goodPeople.push(x);
-                    } else {
-                        // some other baddie team alive
-                        continue outer;
-                    }
-                }
-            }
-            
-            if (winByDeadRoles || players.length >= goodPeople.length) {
-                if(winSide in mafia.theme.sideWinMsg){
-                    sendChanAll(mafia.theme.sideWinMsg[winSide].replace(/~Players~/g, readable(players, "and")) , mafiachan);
-                } else {
-                    sendChanAll("±Game: The " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ") wins!", mafiachan);
-                }
+                var winSide = mafia.players[p].role.side;
+                var players = [];
+                var goodPeople = [];
                 if (winByDeadRoles) {
-                    var losingSides = [];
-                    for (var tr in mafia.theme.sideTranslations) {
-                        if (tr !== winSide && mafia.getPlayersForTeamS(tr) !== "") {
-                            var lp = mafia.getPlayersForTeam(tr).filter(function(x) { if (players.indexOf(x)>=0) return false; else return true;});
-                            if (lp.length > 0) {
-                                losingSides.push(mafia.theme.trside(tr) + " (" + readable(lp, "and") + ")");
+                    players = mafia.getPlayersForTeam(winSide);
+                    for (var x in mafia.players) {
+                        if (mafia.players[x].role.hasOwnProperty("winningSides")) {
+                            var ws = mafia.players[x].role.winningSides;
+                            if (players.indexOf(x) == -1 && (ws == "*" || (Array.isArray(ws) && ws.indexOf(winSide) >= 0))) {
+                                players.push(x);
                             }
                         }
                     }
-                    if (losingSides.length > 0) {
-                        sendChanAll("±Game: The " + readable(losingSides, "and") + " lose!", mafiachan);
+                } else {
+                    if (winSide != 'village') {
+                        for (var i in mafia.theme.villageCantLoseRoles) {
+                            if (mafia.player(mafia.theme.villageCantLoseRoles[i]) != noPlayer)
+                                // baddies shouldn't win if vigi, mayor or samurai is alive
+                                continue outer;
+                        }
                     }
-                } else if (goodPeople.length > 0) {
-                    sendChanAll("±Game: The " + mafia.theme.trside('village') + " (" + readable(goodPeople, "and") + ") lose!", mafiachan);
+                    for (var x in mafia.players) {
+                        // Roles which win with multiple sides
+                        if (mafia.players[x].role.hasOwnProperty("winningSides")) {
+                            var ws = mafia.players[x].role.winningSides;
+                            if (ws == "*" || (Array.isArray(ws) && ws.indexOf(winSide) >= 0)) {
+                                players.push(x);
+                                continue; // inner
+                            }
+                        }
+                        if (mafia.players[x].role.side == winSide) {
+                            players.push(x);
+                        } else if (winSide == 'village') {
+                                // if winSide = villy all people must be good people
+                            continue outer;
+                        } else if (mafia.players[x].role.side == 'village') {
+                            goodPeople.push(x);
+                        } else {
+                            // some other baddie team alive
+                            continue outer;
+                        }
+                    }
                 }
-                sendChanAll(border, mafiachan);
-                mafia.clearVariables();
-                sys.removeVal("mafiagameplayers");
-                runUpdate();
-                return true;
+            
+                if (winByDeadRoles || players.length >= goodPeople.length) {
+                    if(winSide in mafia.theme.sideWinMsg){
+                        sendChanAll(mafia.theme.sideWinMsg[winSide].replace(/~Players~/g, readable(players, "and")) , mafiachan);
+                    } else {
+                        sendChanAll("±Game: The " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ") wins!", mafiachan);
+                    }
+                    if (winByDeadRoles) {
+                        var losingSides = [];
+                        for (var tr in mafia.theme.sideTranslations) {
+                            if (tr !== winSide && mafia.getPlayersForTeamS(tr) !== "") {
+                                var lp = mafia.getPlayersForTeam(tr).filter(function(x) { if (players.indexOf(x)>=0) return false; else return true;});
+                                if (lp.length > 0) {
+                                    losingSides.push(mafia.theme.trside(tr) + " (" + readable(lp, "and") + ")");
+                                }
+                            }
+                        }
+                        if (losingSides.length > 0) {
+                            sendChanAll("±Game: The " + readable(losingSides, "and") + " lose!", mafiachan);
+                        }
+                    } else if (goodPeople.length > 0) {
+                        sendChanAll("±Game: The " + mafia.theme.trside('village') + " (" + readable(goodPeople, "and") + ") lose!", mafiachan);
+                    }
+                    sendChanAll(border, mafiachan);
+                    mafia.clearVariables();
+                    sys.removeVal("mafiagameplayers");
+                    runUpdate();
+                    return true;
+                }
             }
-        }
         return false;
     };
 
@@ -1521,7 +1521,7 @@ this.possibleThemes[themeName] = 0;
                 }
             }
         } else {
-        for (x in hash) {
+            for (x in hash) {
                 cum += hash[x]/psum;
                 if (cum >= val) {
                     return x;
@@ -1540,7 +1540,7 @@ this.possibleThemes[themeName] = 0;
             PreviousGames.push(CurrentGame);
             savePlayedGames();
 
-currentStalk.push("*** ::: ::: Log for " + mafia.theme.name + "-themed mafia game ::: ::: ***");
+            currentStalk.push("*** ::: ::: Log for " + mafia.theme.name + "-themed mafia game ::: ::: ***");
 
             if (mafia.signups.length < 5) {
                 sendChanAll("Well, Not Enough Players! :", mafiachan);
@@ -1558,7 +1558,7 @@ currentStalk.push("*** ::: ::: Log for " + mafia.theme.name + "-themed mafia gam
             /* Creating the roles list */
             var i = 1;
             while (mafia.signups.length > mafia.theme["roles"+i].length) {
-               ++i;
+                ++i;
             }
             var srcArray = mafia.theme["roles"+i].slice(0, mafia.signups.length);
 
@@ -1598,7 +1598,7 @@ currentStalk.push("*** ::: ::: Log for " + mafia.theme.name + "-themed mafia gam
                 }
             }
 
-currentStalk.push("Players: " + Object.keys(mafia.players).map(name_trrole, mafia.theme).join(", "));
+            currentStalk.push("Players: " + Object.keys(mafia.players).map(name_trrole, mafia.theme).join(", "));
 
             sendChanAll("The Roles have been Decided! :", mafiachan);
             var p, player;
@@ -1662,7 +1662,7 @@ currentStalk.push("Players: " + Object.keys(mafia.players).map(name_trrole, mafi
             sendChanAll(border, mafiachan);
             sendChanAll("Times Up! :", mafiachan);
 
-this.compilePhaseStalk("NIGHT");
+            this.compilePhaseStalk("NIGHT");
 
             var nightkill = false;
             var getTeam = function(role, commonTarget) {
@@ -1697,17 +1697,17 @@ this.compilePhaseStalk("NIGHT");
                 }
                 var rechargeCount = 0;
                 if ("recharge" in Action) { // a command that can only be used once every X nights
-                     rechargeCount = Action.recharge;
+                    rechargeCount = Action.recharge;
                 }
                 //Fail chance for common:Role and Team
-if (["Role", "Team"].indexOf(Action.common) != -1 && "failChance" in Action && Action.failChance > Math.random()) {
-for (var f in names) {
-if (mafia.getTargetsFor(mafia.players[names[f]], o.action).length > 0) {
-mafia.sendPlayer(names[f], "±Game: You couldn't " + o.action + " this night!");
-}
-}
-continue;
-}
+                if (["Role", "Team"].indexOf(Action.common) != -1 && "failChance" in Action && Action.failChance > Math.random()) {
+                    for (var f in names) {
+                        if (mafia.getTargetsFor(mafia.players[names[f]], o.action).length > 0) {
+                            mafia.sendPlayer(names[f], "±Game: You couldn't " + o.action + " this night!");
+                        }
+                    }
+                    continue;
+                }
                 for (j = 0; j < names.length; ++j) {
                     if (!mafia.isInGame(names[j])) continue;
                     player = mafia.players[names[j]];
@@ -1715,12 +1715,12 @@ continue;
                     var target, t; // current target
                     
                     //Fail chance for common:Self
-if (Action.common == "Self" && "failChance" in Action && Action.failChance > Math.random()) {
-if (targets.length > 0) {
-mafia.sendPlayer(player.name, "±Game: You couldn't " + o.action + " this night!");
-}
-continue;
-}
+                    if (Action.common == "Self" && "failChance" in Action && Action.failChance > Math.random()) {
+                        if (targets.length > 0) {
+                            mafia.sendPlayer(player.name, "±Game: You couldn't " + o.action + " this night!");
+                        }
+                        continue;
+                    }
                     // Limit the use of this command for the following nights
                     if (rechargeCount > 0 && targets.length > 0) {
                         // set the recharge period
@@ -2054,7 +2054,7 @@ continue;
         standby : function() {
             mafia.ticks = 30;
 
-this.compilePhaseStalk("STANDBY");
+            this.compilePhaseStalk("STANDBY");
 
             sendChanAll(border, mafiachan);
 
@@ -2169,10 +2169,10 @@ this.compilePhaseStalk("STANDBY");
             }
             var winner = {votes: -1, theme: null};
             for (theme in res) {
-                 if (res[theme] > winner.votes) {
-                     winner.votes = res[theme];
-                     winner.theme = theme;
-                 }
+                if (res[theme] > winner.votes) {
+                    winner.votes = res[theme];
+                    winner.theme = theme;
+                }
             }
             if (winner.theme !== null) {
                 sendChanAll("", mafiachan);
@@ -2324,7 +2324,7 @@ this.compilePhaseStalk("STANDBY");
             "±Game: 22-30 Players",
             "*** *********************************************************************** ***",
             ""
-        ];
+            ];
         } else {
             roles = mafia.themeManager.themes[themeName].roleInfo;
         }
@@ -2583,7 +2583,7 @@ this.compilePhaseStalk("STANDBY");
                     continue;
                 } else {
                     themesNotRemoved.push(themeName);
-                continue;
+                    continue;
                 }
             }
             if (themesRemoved.length > 0) {
@@ -2701,38 +2701,38 @@ this.compilePhaseStalk("STANDBY");
         }
         msg(src, "No such target.");
     };
-this.readStalkLog = function(src, data) {
-var num, outputChan = mafiachan;
-if (data.indexOf(":") >= 0) {
-var splitData = data.split(":");
-num = Number(splitData[0]);
-outputChan = sys.channelId(splitData[1]);
-} else {
-num = Number(data);
-}
-if (!num) {
-sys.sendMessage(src, "±Info: This is not a valid number!", mafiachan);
-return;
-}
-if (outputChan == undefined) {
-sys.sendMessage(src, "±Info: This is not a valid channel!", mafiachan);
-return;
-}
-if (num < 1 || num > stalkLogs.length) {
-sys.sendMessage(src, "±Info: There's no log with this id!", mafiachan);
-return;
-}
+    this.readStalkLog = function(src, data) {
+        var num, outputChan = mafiachan;
+        if (data.indexOf(":") >= 0) {
+            var splitData = data.split(":");
+            num = Number(splitData[0]);
+            outputChan = sys.channelId(splitData[1]);
+        } else {
+            num = Number(data);
+        }
+        if (!num) {
+            sys.sendMessage(src, "±Info: This is not a valid number!", mafiachan);
+            return;
+        }
+        if (outputChan == undefined) {
+            sys.sendMessage(src, "±Info: This is not a valid channel!", mafiachan);
+            return;
+        }
+        if (num < 1 || num > stalkLogs.length) {
+            sys.sendMessage(src, "±Info: There's no log with this id!", mafiachan);
+            return;
+        }
 
-sys.sendMessage(src, "", outputChan);
-var stalkLog = stalkLogs[num -1].split("::**::");
-for (var c=0; c < stalkLog.length; ++c) {
-sys.sendMessage(src, stalkLog[c], outputChan);
-}
-sys.sendMessage(src, "", outputChan);
-if (outputChan != mafiachan) {
-sys.sendMessage(src, "±Info: Game log was printed in channel " + sys.channel(outputChan), mafiachan);
-}
-};
+        sys.sendMessage(src, "", outputChan);
+        var stalkLog = stalkLogs[num -1].split("::**::");
+        for (var c=0; c < stalkLog.length; ++c) {
+            sys.sendMessage(src, stalkLog[c], outputChan);
+        }
+        sys.sendMessage(src, "", outputChan);
+        if (outputChan != mafiachan) {
+            sys.sendMessage(src, "±Info: Game log was printed in channel " + sys.channel(outputChan), mafiachan);
+        }
+    };
     this.addTheme = function(src, url) {
         if (!mafia.isMafiaAdmin(src)) {
             msg(src, "admin+ command.");
@@ -2854,14 +2854,18 @@ sys.sendMessage(src, "±Info: Game log was printed in channel " + sys.channel(ou
             slay: [this.slayUser, "To slay users in a Mafia game."],
             shove: [this.slayUser, "To remove users before a game starts."],
             end: [this.endGame, "To cancel a Mafia game!"],
-readlog: [this.readStalkLog, "To read the log of actions from a previous game"],
+            readlog: [this.readStalkLog, "To read the log of actions from a previous game"],
             add: [this.addTheme, "To add a Mafia Theme!"],
             remove: [this.removeTheme, "To remove a Mafia Theme!"],
             disable: [this.disableTheme, "To disable a Mafia Theme!"],
             enable: [this.enableTheme, "To enable a disabled Mafia Theme!"],
             updateafter: [this.updateAfter, "To update mafia after current game!"],
-            importold: [this.importOld, ""]
-        }
+            importold: [this.importOld, ""],
+            showplayers: [this.showplayers, "To show the list of current players in the game."],
+            showlist: [this.showlist, "To view the master player list."],
+            searchlist: [this.searchlist, "To search the master list."],
+            trimplayers: [this.trimplayers, "To trim the master player list."]
+            }
     };
     this.handleCommand = function(src, message, channel) {
         // only on mafia channel
@@ -2927,17 +2931,17 @@ return;
 } */
         return true;
     };
-this.addPhaseStalkAction = function(user, action, target) {
-if (!(user in phaseStalk)) phaseStalk[user] = [];
-phaseStalk[user].push("/" + action + " " + target);
-};
-this.compilePhaseStalk = function(phase) {
-currentStalk.push("*** " + phase + " ***");
-for (var u in phaseStalk) {
-currentStalk.push(u + " used: " + phaseStalk[u].join(", "));
-}
-phaseStalk = {};
-};
+    this.addPhaseStalkAction = function(user, action, target) {
+        if (!(user in phaseStalk)) phaseStalk[user] = [];
+        phaseStalk[user].push("/" + action + " " + target);
+    };
+    this.compilePhaseStalk = function(phase) {
+        currentStalk.push("*** " + phase + " ***");
+        for (var u in phaseStalk) {
+            currentStalk.push(u + " used: " + phaseStalk[u].join(", "));
+        }
+        phaseStalk = {};
+    };
     this.handleCommandOld = function(src, message, channel) {
 
         var command;
@@ -2965,8 +2969,8 @@ phaseStalk = {};
                     return;
                 }
                 name = sys.name(src);
-				// This next statement allows one to view a list of players in the current game and maintain a master list.
-				this.saveMafiaData(src);
+                // This next statement allows one to view a list of players in the current game and maintain a master list.
+                this.saveMafiaData(src);
 
                 this.signups.push(name);
                 this.ips.push(sys.ip(src));
@@ -3005,7 +3009,7 @@ phaseStalk = {};
                 player = mafia.players[name];
                 target = mafia.players[commandData];
 
-this.addPhaseStalkAction(name, command, target.name);
+                this.addPhaseStalkAction(name, command, target.name);
 
                 if (["Any", "Self", "OnlySelf"].indexOf(player.role.actions.night[command].target) == -1 && commandData == name) {
                     sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target yourself!", mafiachan);
@@ -3286,23 +3290,23 @@ this.addPhaseStalkAction(name, command, target.name);
             return;
         }
         var tar = sys.id(commandData);
-	if (command == "mafiavillify") { // mark a IP to always be villy.
-	    villifiedPlayers.push(sys.ip(tar));
-	    saveVillifiedPlayers();
-	    sys.sendMessage(src, "Game: You villified " + commandData + " (" + sys.ip(tar) + ")!", mafiachan);
-	    return;
-	}
-	if (command == "mafiaunvillify") {
-	    villifiedPlayers.splice(villifiedPlayers.indexOf(sys.ip(tar)),1);
-	    saveVillifiedPlayers();
-	    sys.sendMessage(src, "Game: You unvillified " + commandData + + " (" + sys.ip(tar) + ")!", mafiachan);
-	    return;
-	}
-	if (command == "mafiavillified") {
-	    for(i = 0; i < villifiedPlayers.length; i++) {
-		msg(src, villifiedPlayers[i]);
-	    }
-	}
+        if (command == "mafiavillify") { // mark a IP to always be villy.
+            villifiedPlayers.push(sys.ip(tar));
+            saveVillifiedPlayers();
+            sys.sendMessage(src, "Game: You villified " + commandData + " (" + sys.ip(tar) + ")!", mafiachan);
+            return;
+        }
+        if (command == "mafiaunvillify") {
+            villifiedPlayers.splice(villifiedPlayers.indexOf(sys.ip(tar)),1);
+            saveVillifiedPlayers();
+            sys.sendMessage(src, "Game: You unvillified " + commandData + + " (" + sys.ip(tar) + ")!", mafiachan);
+            return;
+        }
+        if (command == "mafiavillified") {
+            for(i = 0; i < villifiedPlayers.length; i++) {
+                msg(src, villifiedPlayers[i]);
+            }
+        }
         if (command == "mafiaban") {
             script.issueBan("mban", src, tar, commandData, sys.auth(src) > 0 ? undefined : 86400);
             return;
@@ -3321,37 +3325,37 @@ this.addPhaseStalkAction(name, command, target.name);
             }
             return;
         }
-		if (command == "showlist") {
-			this.showlist();
-			return;
-		}
-		if (command == "searchlist") {
-			if(!this.isMafiaAdmin(src) && sys.auth(src)<1)
-			{
-				msg(src, "Sorry, you are not authorized to use this command");
-				return;
-			}
-			this.searchlist();
-			return;
-		}
-		if (command == "showplayers") {
-			this.showplayers();
-			return;
-		}
-		if (command == "trimplayers") {
-			if(!this.isMafiaSuperAdmin(src) && sys.auth(src)<2)
-			{
-				msg(src, "Sorry, you are not authorized to use this command");
-				return;
-			}
-			if(!commandData)
-			{
-				sys.sendMessage(src, "You must provide a cutoff time.", mafiachan);
-				return;
-			}
-			this.trimPlayers(src, commandData);
-			return;
-		}
+        if (command == "showlist") {
+            this.showlist(src);
+            return;
+        }
+        if (command == "searchlist") {
+            if(!this.isMafiaAdmin(src))
+            {
+                msg(src, "Sorry, you are not authorized to use this command");
+                return;
+            }
+            this.searchlist(src, commandData);
+            return;
+        }
+        if (command == "showplayers") {
+            this.showplayers(src);
+            return;
+        }
+        if (command == "trimplayers") {
+            if(!this.isMafiaSuperAdmin(src) && sys.auth(src)<2)
+            {
+                msg(src, "Sorry, you are not authorized to use this command");
+                return;
+            }
+            if(!commandData)
+            {
+                sys.sendMessage(src, "You must provide a cutoff time.", mafiachan);
+                return;
+            }
+            this.trimplayers(src, commandData);
+            return;
+        }
 
 
         if (!this.isMafiaSuperAdmin(src))
@@ -3400,8 +3404,8 @@ this.addPhaseStalkAction(name, command, target.name);
     };
 
     this.onKick = function(src) {
-    	if (this.state != "day")
-        	this.slayUser(Config.kickbot, sys.name(src));
+        if (this.state != "day")
+            this.slayUser(Config.kickbot, sys.name(src));
     };
 
     this.stepEvent = function() {
@@ -3418,248 +3422,237 @@ this.addPhaseStalkAction(name, command, target.name);
         msgAll("Mafia was reloaded, please start a new game!");
     };
 
-	saveMafiaData : function (src) {
-		if(!sys.getVal("mafia"+sys.ip(src)) && !sys.getVal("mafia"+sys.name(src)))
-		{
-			/* New player
+    this.saveMafiaData = function (src) {
+        if(!sys.getVal("mafia"+sys.ip(src)) && !sys.getVal("mafia"+sys.name(src)))
+        {
+            /* New player
 			* We save three parameters: player ip, games played, and the last played time */
-			sys.saveVal("mafia"+sys.ip(src), sys.ip(src)+"--"+0+"--"+sys.time());
-			sys.saveVal("mafia"+sys.name(src), sys.ip(src)+"--"+0+"--"+sys.time());
-			var games = 0;
-			// Update the player list
-			if(!sys.getVal("mafialist"))
-			{
-				sys.saveVal("mafialist", sys.ip(src)+":"+sys.name(src)+":"+sys.time()+":"+games);
-			}
-			else
-			{
-				mafialist = sys.getVal("mafialist");
-				sys.saveVal("mafialist", mafialist + "--"+sys.ip(src)+":"+sys.name(src)+":"+sys.time()+":"+games);
-			}
-			// Now add to the game list
-			if(sys.getVal("mafiagameplayers"))
-			{
-				playerlist = sys.getVal("mafiagameplayers");
-				// Use a colon to separate the ip from the game count to allow for more data control.
-				sys.saveVal("mafiagameplayers",playerlist+"--"+sys.ip(src)+":"+sys.name(src)+":"+games);
-			}
-			else
-			{
-				sys.saveVal("mafiagameplayers", sys.ip(src)+":"+sys.name(src)+":"+games);
-			}
-		} // End new player
-		else
-		{
-			playerdata = sys.getVal("mafia"+sys.ip(src)).split("--");
-			var games = playerdata[1] + 1;
-			// Update Player
-			sys.saveVal("mafia"+sys.ip(src), sys.ip(src)+"--"+games+"--"+sys.time());
-			sys.saveVal("mafia"+sys.name(src), sys.ip(src)+"--"+games+"--"+sys.time());
-			if(!sys.getVal("mafialist"))
-			{
-				sys.saveVal("mafialist", sys.ip(src)+":"+sys.name(src)+":"+sys.time()+":"+games);
-			}
-			else
-			{
-				mafialist = sys.getVal("mafialist");
-				sys.saveVal("mafialist", mafialist + "--"+sys.ip(src)+":"+sys.name(src)+":"+sys.time()+":"+games);
-			}
-			if(sys.getVal("mafiagameplayers"))
-			{
-				playerlist = sys.getVal("mafiagameplayers");
-				// Use a colon to separate the ip from the game count to allow for more data control.
-				sys.saveVal("mafiagameplayers",playerlist+"--"+sys.ip(src)+":"+sys.name(src)+":"+games);
-			}
-			else
-			{
-				sys.saveVal("mafiagameplayers", sys.ip(src)+":"+sys.name(src)+":"+games);
-			}
-		} // End updating a player
-	}
-	, // End saveMafiaData()
+            sys.saveVal("mafia"+sys.ip(src), sys.ip(src)+"--"+0+"--"+sys.time());
+            sys.saveVal("mafia"+sys.name(src), sys.ip(src)+"--"+0+"--"+sys.time());
+            var games = 0;
+            // Update the player list
+            if(!sys.getVal("mafialist"))
+            {
+                sys.saveVal("mafialist", sys.ip(src)+":"+sys.name(src)+":"+sys.time()+":"+games);
+            }
+            else
+            {
+                mafialist = sys.getVal("mafialist");
+                sys.saveVal("mafialist", mafialist + "--"+sys.ip(src)+":"+sys.name(src)+":"+sys.time()+":"+games);
+            }
+            // Now add to the game list
+            if(sys.getVal("mafiagameplayers"))
+            {
+                playerlist = sys.getVal("mafiagameplayers");
+                // Use a colon to separate the ip from the game count to allow for more data control.
+                sys.saveVal("mafiagameplayers",playerlist+"--"+sys.ip(src)+":"+sys.name(src)+":"+games);
+            }
+            else
+            {
+                sys.saveVal("mafiagameplayers", sys.ip(src)+":"+sys.name(src)+":"+games);
+            }
+        } // End new player
+        else
+        {
+            playerdata = sys.getVal("mafia"+sys.ip(src)).split("--");
+            var games = playerdata[1] + 1;
+            // Update Player
+            sys.saveVal("mafia"+sys.ip(src), sys.ip(src)+"--"+games+"--"+sys.time());
+            sys.saveVal("mafia"+sys.name(src), sys.ip(src)+"--"+games+"--"+sys.time());
+            if(!sys.getVal("mafialist"))
+            {
+                sys.saveVal("mafialist", sys.ip(src)+":"+sys.name(src)+":"+sys.time()+":"+games);
+            }
+            else
+            {
+                mafialist = sys.getVal("mafialist");
+                sys.saveVal("mafialist", mafialist + "--"+sys.ip(src)+":"+sys.name(src)+":"+sys.time()+":"+games);
+            }
+            if(sys.getVal("mafiagameplayers"))
+            {
+                playerlist = sys.getVal("mafiagameplayers");
+                // Use a colon to separate the ip from the game count to allow for more data control.
+                sys.saveVal("mafiagameplayers",playerlist+"--"+sys.ip(src)+":"+sys.name(src)+":"+games);
+            }
+            else
+            {
+                sys.saveVal("mafiagameplayers", sys.ip(src)+":"+sys.name(src)+":"+games);
+            }
+        } // End updating a player
+    }; // End saveMafiaData()
 
-	showplayers : function(src) {
-		mafiagameplayers = sys.getVal("mafiagameplayers").split("--");
-		for(z in mafiagameplayers)
-		{
-			playerdata = mafiagameplayers[z].split(":");
-			sys.sendMessage(src, "Name: " + playerdata[0] + " IP: " + playerdata[1] + " Games Played: " + playerdata[2]);
-		}
-	}
-	, // End showCurrentPlayers()
+    this.showplayers = function(src) {
+        mafiagameplayers = sys.getVal("mafiagameplayers").split("--");
+        for(z in mafiagameplayers)
+        {
+            playerdata = mafiagameplayers[z].split(":");
+            sys.sendMessage(src, "Name: " + playerdata[0] + " IP: " + playerdata[1] + " Games Played: " + playerdata[2]);
+        }
+    }; // End showCurrentPlayers()
 
-	trimPlayers : function(src, cutoff) {
-		if(!cutoff)
-		{
-			sys.sendMessage(src, "You must specify how long a player hasn't played a game to be deleted.");
-			return;
-		}
-		masterlist = sys.getVal("mafialist").split("--");
-		if(cutoff.indexOf("m"))
-		{
-			multiplier = 60;
-		}
-		if(cutoff.indexOf("h"))
-		{
-			multiplier = 3600;
-		}
-		if(cutoff.indexOf("d"))
-		{
-			multiplier = 86400;
-		}
-		if(cutoff.indexOf("mo"))
-		{
-			multiplier = 86400 * 30;
-		}
-		string = cutoff.replace(/m|mo|h|d/gi, "");
-		currenttime = sys.time();
-		finalcutoff = currenttime - multiplier * string;
-		newlist = "";
-		var n=1;
-		playersremoved=0;
-		for(z in masterlist)
-		{
-			data = masterlist[z].split(":");
-			if(data[2]<finalcutoff)
-			{
-				// Player goes away
-				sys.removeVal("mafia"+data[0]);
-				sys.removeVal("mafia"+data[1]);
-				playersremoved=playersremoved+1;
-			}
-			else
-			{
-				// Player is active
-				if(n!=1)
-				{
-					newlist = newlist + "--"+data[0]+":"+data[1]+":"+data[2]+":"+data[3];
-				}
-				else
-				{
-					newlist = data[0]+":"+data[1]+":"+data[2]+":"+data[3];
-				}
-				n=n+1;
-			}
-		}
-		sys.saveVal("mafialist", newlist);
-		sendChanAll(sys.name(src)+" has trimmed the mafia player database.  Players removed: " + playersremoved + ".", mafiachan);
-	}
-	, // End trimPlayers()
+    this.trimplayers = function(src, cutoff) {
+        if(!cutoff)
+        {
+            sys.sendMessage(src, "You must specify how long a player hasn't played a game to be deleted.");
+            return;
+        }
+        masterlist = sys.getVal("mafialist").split("--");
+        if(cutoff.indexOf("m"))
+        {
+            multiplier = 60;
+        }
+        if(cutoff.indexOf("h"))
+        {
+            multiplier = 3600;
+        }
+        if(cutoff.indexOf("d"))
+        {
+            multiplier = 86400;
+        }
+        if(cutoff.indexOf("mo"))
+        {
+            multiplier = 86400 * 30;
+        }
+        string = cutoff.replace(/m|mo|h|d/gi, "");
+        currenttime = sys.time();
+        finalcutoff = currenttime - multiplier * string;
+        newlist = "";
+        var n=1;
+        playersremoved=0;
+        for(z in masterlist)
+        {
+            data = masterlist[z].split(":");
+            if(data[2]<finalcutoff)
+            {
+                // Player goes away
+                sys.removeVal("mafia"+data[0]);
+                sys.removeVal("mafia"+data[1]);
+                playersremoved=playersremoved+1;
+            }
+            else
+            {
+                // Player is active
+                if(n!=1)
+                {
+                    newlist = newlist + "--"+data[0]+":"+data[1]+":"+data[2]+":"+data[3];
+                }
+                else
+                {
+                    newlist = data[0]+":"+data[1]+":"+data[2]+":"+data[3];
+                }
+                n=n+1;
+            }
+        }
+        sys.saveVal("mafialist", newlist);
+        sendChanAll(sys.name(src)+" has trimmed the mafia player database.  Players removed: " + playersremoved + ".", mafiachan);
+    }; // End trimPlayers()
 
-	showlist : function(src) {
-		masterlist = sys.getVal("mafialist").split("--");
-		for(z in masterlist)
-		{
-			data = masterlist[z].split(":");
-			if(data[3]<=5) // New player
-			{
-				sys.sendMessage(src, "Name: " + data[1] + " IP: " + data[0] + " Games Played: " +  data[3] + " Last Visit: " + this.formatLastVisit(data[2]));
-			}
-		}
-	}
-	, // End viewMasterList()
+    this.showlist = function(src) {
+        masterlist = sys.getVal("mafialist").split("--");
+        for(z in masterlist)
+        {
+            data = masterlist[z].split(":");
+            if(data[3]<=5) // New player
+            {
+                sys.sendMessage(src, "Name: " + data[1] + " IP: " + data[0] + " Games Played: " +  data[3] + " Last Visit: " + this.formatLastVisit(data[2]));
+            }
+        }
+    }; // End showlist()
 
-	searchlist : function(src, conditions) {
-		masterlist = sys.getVal("mafialist").split("--");
-		conditions = conditions.split(" ");
-		/* How many conditions do we have to satisfy? */
-		originallength = conditions.length;
-		totalconditions = conditions.length;
-		resultcount = 0;
-		for(z in masterlist)
-		{
-			/* Split the player information in order to test conditions. */
-			data = masterlist[z].split(":");
-			conditionsmet = 0;
-			length=1;
-			last=0;
-			show = 0;
-			for(x in conditions)
-			{
-				if(conditions[x]!="or") // Allow for an or clause
-				{
-					/* In order to allow for multiple conditions, we must separate each condition first. */
-					search = conditions[x].split("=");
-					name = search[0].toLowerCase();
-					value = search[1];
-					if(name==="games" && value<=data[3])
-					{
-						conditionsmet+=1;
-					}
-					if(name==="name" && value===data[1])
-					{
-						conditionsmet = conditionsmet + 1;
-					}
-					if(name==="ip" && value===data[0])
-					{
-						conditionsmet+=1;
-					}
-					if(name==="lastactive" && data[2]>=sys.time()-value)
-					{
-						conditionsmet+=1;
-					}
-				}
-				if(conditions[x]==="or")
-				{
-					totalconditions = totalconditions-1-length;
-					last=last + length;
-				}
-				if(conditionsmet>=totalconditions)
-				{
-					if(show!=1)
-					{
-						resultcount+=1;
-					}
-					show=1;
-				}
-				if(conditions[x]==="or")
-				{
-					length=1;
-					conditionsmet = 0;
-				}
-				else
-				{
-					length+=1;
-				}
-			} // Close conditions check	
-			if(show==1)
-			{	
-				sys.sendMessage(src, "Name: " + data[1] + " IP: " + data[0] + " Games Played: " +  data[3] + " Last Visit: " + this.formatLastVisit(data[2]));
-			}
-		} // Close list
-		sys.sendMessage(src, "Querybot: Found " + resultcount + " matches for " + conditions + ".");
-	}
-	, // End searchMafiaList()
+    this.searchlist = function(src, conditions) {
+        masterlist = sys.getVal("mafialist").split("--");
+        conditions = conditions.split(" ");
+        /* How many conditions do we have to satisfy? */
+        originallength = conditions.length;
+        totalconditions = conditions.length;
+        resultcount = 0;
+        for(z in masterlist)
+        {
+            /* Split the player information in order to test conditions. */
+            data = masterlist[z].split(":");
+            conditionsmet = 0;
+            length=1;
+            last=0;
+            show = 0;
+            for(x in conditions)
+            {
+                if(conditions[x]!="or") // Allow for an or clause
+                {
+                    /* In order to allow for multiple conditions, we must separate each condition first. */
+                    search = conditions[x].split("=");
+                    name = search[0].toLowerCase();
+                    value = search[1];
+                    if(name==="games" && value<=data[3])
+                    {
+                        conditionsmet+=1;
+                    }
+                    if(name==="name" && value===data[1])
+                    {
+                        conditionsmet = conditionsmet + 1;
+                    }
+                    if(name==="ip" && value===data[0])
+                    {
+                        conditionsmet+=1;
+                    }
+                    if(name==="lastactive" && data[2]>=sys.time()-value)
+                    {
+                        conditionsmet+=1;
+                    }
+                }
+                if(conditions[x]==="or")
+                {
+                    totalconditions = totalconditions-1-length;
+                    last=last + length;
+                }
+                if(conditionsmet>=totalconditions)
+                {
+                    if(show!=1)
+                    {
+                        resultcount+=1;
+                    }
+                    show=1;
+                }
+                if(conditions[x]==="or")
+                {
+                    length=1;
+                    conditionsmet = 0;
+                }
+                else
+                {
+                    length+=1;
+                }
+            } // Close conditions check	
+            if(show==1)
+            {	
+                sys.sendMessage(src, "Name: " + data[1] + " IP: " + data[0] + " Games Played: " +  data[3] + " Last Visit: " + this.formatlastvisit(data[2]));
+            }
+        } // Close list
+        sys.sendMessage(src, "Querybot: Found " + resultcount + " matches for " + conditions + ".");
+    }; // End searchlist()
 
-	formatLastVisit : function(time) {
-		if(!time)
-		{
-			time=sys.time();
-		}
-		currenttime = sys.time();
-		difference = currenttime - time;
-		if(difference<86400)
-		{	
-			hours = Math.floor(difference / 3600);
-			lastvisit = hours + " hours ago.";
-		}
-		else if(difference>86400 && difference<2592000)
-		{
-			days = Math.floor(difference / 86400);
-			lastvisit = days + " days ago.";
-		}
-		else if(difference>2592000 && difference<31104000)
-		{
-			months = Math.floor(difference / 2592000);
-			lastvisit = "More than " + months + " months ago.";
-		}
-		else
-		{
-			lastvisit = "More than a year ago.";
-		}
-		return lastvisit;
-	}
-	, // formatLastVisit()
+    this.formatlastvisit = function (time) {
+        if (!time) {
+            time = sys.time();
+        }
+        currenttime = sys.time();
+        difference = currenttime - time;
+        if (difference < 86400) {
+            hours = Math.floor(difference / 3600);
+            lastvisit = hours + " hours ago.";
+        }
+        else if (difference > 86400 && difference < 2592000) {
+            days = Math.floor(difference / 86400);
+            lastvisit = days + " days ago.";
+        }
+        else if (difference > 2592000 && difference < 31104000) {
+            months = Math.floor(difference / 2592000);
+            lastvisit = "More than " + months + " months ago.";
+        }
+        else {
+            lastvisit = "More than a year ago.";
+        }
+        return lastvisit;
+    }; // formatLastVisit()
 
 }
 /* Functions defined by mafia which should be called from main script:
