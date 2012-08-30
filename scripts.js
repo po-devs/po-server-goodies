@@ -177,7 +177,7 @@ update_web_logs = function() {
 
 append_logs = function(params) { // Adds chat lines to the logs
      var timestamp_regex = new RegExp("^[0-9]{0,10}$");
-     var events_list = ['afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterPlayerAway', 'afterPlayerBan', 'afterPlayerKick'];
+     var events_list = ['afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'afterPlayerBan', 'afterPlayerKick'];
     if(typeof params == 'object' && events_list.indexOf(params.event) != -1)
 	{
 	    if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
@@ -222,12 +222,10 @@ append_logs = function(params) { // Adds chat lines to the logs
 				}
 			break;
 			
-			case 'beforeChangeTier':
-			    sys.sendMessage(sys.id('[LD]Jirachier'), params.source_id, 2);
-	            sys.sendMessage(sys.id('Crystal Moogle'), params.source_id, 2);
+			case 'afterChangeTier':
 			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"beforeChangeTier\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTier\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\"},");
 				}
 			break;
 		}
@@ -5149,13 +5147,12 @@ beforeChangeTier : function(src, team, oldtier, newtier) {
        normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
        tier_checker.find_good_tier(src, team);
     }
-	// PO logs stuff
-    var params = {event:'beforeChangeTier', source_id:src, timestamp:get_timestamp()};
-	append_logs(params);
 },
 
 afterChangeTier : function(src, team, oldtier, newtier) {
-    // THIS EVENT ISNT WORKING IT NEEDS FIXING
+    // PO logs stuff
+    var params = {event:'afterChangeTier', source_id:src, timestamp:get_timestamp()};
+	append_logs(params);
 },
 
 beforeChallengeIssued : function (src, dest, clauses, rated, mode, team, destTier) {
