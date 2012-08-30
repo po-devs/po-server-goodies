@@ -912,9 +912,9 @@ this.possibleThemes[themeName] = 0;
         var ip = sys.ip(src);
         if (this.votes.hasOwnProperty(ip)) {
             if (this.votes[ip] != themeName)
-                sys.sendAll("±Game: " + sys.name(src) + " changed their vote to "+ this.themeManager.themes[themeName].name + "!", mafiachan);
+                sendChanAll("±Game: " + sys.name(src) + " changed their vote to "+ this.themeManager.themes[themeName].name + "!", mafiachan);
         } else {
-            sys.sendAll("±Game: " + sys.name(src) + " voted for "+ this.themeManager.themes[themeName].name + "!", mafiachan);
+            sendChanAll("±Game: " + sys.name(src) + " voted for "+ this.themeManager.themes[themeName].name + "!", mafiachan);
         }
         this.votes[sys.ip(src)] = {theme: themeName, who: sys.name(src)};
     };
