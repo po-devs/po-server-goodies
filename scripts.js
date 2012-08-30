@@ -161,7 +161,7 @@ var nonFlashing = utilities.non_flashing;
 
 get_timestamp = function() {
     var date = new Date();
-	return date.getUTCMilliseconds()/1000;
+	return (date.getTime()+(date.getTimezoneOffset()*60000))/1000;
 };
 
 update_web_logs = function() {
