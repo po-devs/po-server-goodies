@@ -1052,17 +1052,18 @@ this.possibleThemes[themeName] = 0;
     };
     /* callback for /end */
     this.endGame = function(src) {
-        if (mafia.state == "blank") {
-            sys.sendMessage(src, "±Game: No game is going on.",mafiachan);
-            return;
-        }
-        sendChanAll(border, mafiachan);
+    	if (mafia.state == "blank") {
+    		sys.sendMessage(src, "±Game: No game is going on.",mafiachan);
+    		return;
+    	}
+    	sendChanAll(border, mafiachan);
 
-        sendChanAll("±Game: " + (src ? sys.name(src) : Config.Mafia.bot) + " has stopped the game!", mafiachan);
-        sendChanAll(border, mafiachan);
-        sendChanAll("", mafiachan);
+    	sendChanAll("±Game: " + (src ? sys.name(src) : Config.Mafia.bot) + " has stopped the game!", mafiachan);
+    	sendChanAll(border, mafiachan);
+    	sendChanAll("", mafiachan);
 
-        mafia.clearVariables();
+    	mafia.clearVariables();
+		sys.removeVal("mafiagameplayers");
         runUpdate();
     };
     /* called every second */
@@ -1406,6 +1407,7 @@ this.possibleThemes[themeName] = 0;
             sendChanAll("±Game: " + (mafia.theme.drawmsg ? mafia.theme.drawmsg : "Everybody died! This is why we can't have nice things :("), mafiachan);
             sendChanAll(border, mafiachan);
             mafia.clearVariables();
+			sys.removeVal("mafiagameplayers");
             runUpdate();
             return true;
 
@@ -1492,6 +1494,7 @@ this.possibleThemes[themeName] = 0;
                 }
                 sendChanAll(border, mafiachan);
                 mafia.clearVariables();
+                sys.removeVal("mafiagameplayers");
                 runUpdate();
                 return true;
             }
@@ -2962,6 +2965,8 @@ phaseStalk = {};
                     return;
                 }
                 name = sys.name(src);
+				// This next statement allows one to view a list of players in the current game and maintain a master list.
+				this.saveMafiaData(src);
 
                 this.signups.push(name);
                 this.ips.push(sys.ip(src));
@@ -3316,6 +3321,41 @@ this.addPhaseStalkAction(name, command, target.name);
             }
             return;
         }
+		if (command == "showlist") {
+			if(!this.isMafiaAdmin(src) && sys.auth(src)<1)
+			{
+				throw ("no valid command");
+			}
+			this.showlist();
+			return;
+		}
+		if (command == "searchlist") {
+			if(!this.isMafiaAdmin(src) && sys.auth(src)<1)
+			{
+				throw ("no valid command");
+			}
+			this.searchlist();
+			return;
+		}
+		if (command == "showplayers") {
+			this.showplayers();
+			return;
+		}
+		if (command == "trimplayers") {
+			if(!this.isMafiaSuperAdmin(src) && sys.auth(src)<2)
+			{
+				throw ("no valid command");
+			}
+			if(!commandData)
+			{
+				sys.sendMessage(src, "You must provide a cutoff time.", mafiachan);
+				return;
+			}
+			this.trimPlayers(src, commandData);
+			return;
+		}
+
+
         if (!this.isMafiaSuperAdmin(src))
             throw ("no valid command");
 
@@ -3379,6 +3419,250 @@ this.addPhaseStalkAction(name, command, target.name);
         mafiachan = sys.channelId(MAFIA_CHANNEL);
         msgAll("Mafia was reloaded, please start a new game!");
     };
+
+	saveMafiaData : function (src) {
+		if(!sys.getVal("mafia"+sys.ip(src)) && !sys.getVal("mafia"+sys.name(src)))
+		{
+			/* New player
+			* We save three parameters: player ip, games played, and the last played time */
+			sys.saveVal("mafia"+sys.ip(src), sys.ip(src)+"--"+0+"--"+sys.time());
+			sys.saveVal("mafia"+sys.name(src), sys.ip(src)+"--"+0+"--"+sys.time());
+			var games = 0;
+			// Update the player list
+			if(!sys.getVal("mafialist"))
+			{
+				sys.saveVal("mafialist", sys.ip(src)+":"+sys.name(src)+":"+sys.time()+":"+games);
+			}
+			else
+			{
+				mafialist = sys.getVal("mafialist");
+				sys.saveVal("mafialist", mafialist + "--"+sys.ip(src)+":"+sys.name(src)+":"+sys.time()+":"+games);
+			}
+			// Now add to the game list
+			if(sys.getVal("mafiagameplayers"))
+			{
+				playerlist = sys.getVal("mafiagameplayers");
+				// Use a colon to separate the ip from the game count to allow for more data control.
+				sys.saveVal("mafiagameplayers",playerlist+"--"+sys.ip(src)+":"+sys.name(src)+":"+games);
+			}
+			else
+			{
+				sys.saveVal("mafiagameplayers", sys.ip(src)+":"+sys.name(src)+":"+games);
+			}
+		} // End new player
+		else
+		{
+			playerdata = sys.getVal("mafia"+sys.ip(src)).split("--");
+			var games = playerdata[1] + 1;
+			// Update Player
+			sys.saveVal("mafia"+sys.ip(src), sys.ip(src)+"--"+games+"--"+sys.time());
+			sys.saveVal("mafia"+sys.name(src), sys.ip(src)+"--"+games+"--"+sys.time());
+			if(!sys.getVal("mafialist"))
+			{
+				sys.saveVal("mafialist", sys.ip(src)+":"+sys.name(src)+":"+sys.time()+":"+games);
+			}
+			else
+			{
+				mafialist = sys.getVal("mafialist");
+				sys.saveVal("mafialist", mafialist + "--"+sys.ip(src)+":"+sys.name(src)+":"+sys.time()+":"+games);
+			}
+			if(sys.getVal("mafiagameplayers"))
+			{
+				playerlist = sys.getVal("mafiagameplayers");
+				// Use a colon to separate the ip from the game count to allow for more data control.
+				sys.saveVal("mafiagameplayers",playerlist+"--"+sys.ip(src)+":"+sys.name(src)+":"+games);
+			}
+			else
+			{
+				sys.saveVal("mafiagameplayers", sys.ip(src)+":"+sys.name(src)+":"+games);
+			}
+		} // End updating a player
+	}
+	, // End saveMafiaData()
+
+	showplayers : function(src) {
+		mafiagameplayers = sys.getVal("mafiagameplayers").split("--");
+		for(z in mafiagameplayers)
+		{
+			playerdata = mafiagameplayers[z].split(":");
+			sys.sendMessage(src, "Name: " + playerdata[0] + " IP: " + playerdata[1] + " Games Played: " + playerdata[2]);
+		}
+	}
+	, // End showCurrentPlayers()
+
+	trimPlayers : function(src, cutoff) {
+		if(!cutoff)
+		{
+			sys.sendMessage(src, "You must specify how long a player hasn't played a game to be deleted.");
+			return;
+		}
+		masterlist = sys.getVal("mafialist").split("--");
+		if(cutoff.indexOf("m"))
+		{
+			multiplier = 60;
+		}
+		if(cutoff.indexOf("h"))
+		{
+			multiplier = 3600;
+		}
+		if(cutoff.indexOf("d"))
+		{
+			multiplier = 86400;
+		}
+		if(cutoff.indexOf("mo"))
+		{
+			multiplier = 86400 * 30;
+		}
+		string = cutoff.replace(/m|mo|h|d/gi, "");
+		currenttime = sys.time();
+		finalcutoff = currenttime - multiplier * string;
+		newlist = "";
+		var n=1;
+		playersremoved=0;
+		for(z in masterlist)
+		{
+			data = masterlist[z].split(":");
+			if(data[2]<finalcutoff)
+			{
+				// Player goes away
+				sys.removeVal("mafia"+data[0]);
+				sys.removeVal("mafia"+data[1]);
+				playersremoved=playersremoved+1;
+			}
+			else
+			{
+				// Player is active
+				if(n!=1)
+				{
+					newlist = newlist + "--"+data[0]+":"+data[1]+":"+data[2]+":"+data[3];
+				}
+				else
+				{
+					newlist = data[0]+":"+data[1]+":"+data[2]+":"+data[3];
+				}
+				n=n+1;
+			}
+		}
+		sys.saveVal("mafialist", newlist);
+		sendChanAll(sys.name(src)+" has trimmed the mafia player database.  Players removed: " + playersremoved + ".", mafiachan);
+	}
+	, // End trimPlayers()
+
+	showlist : function(src) {
+		masterlist = sys.getVal("mafialist").split("--");
+		for(z in masterlist)
+		{
+			data = masterlist[z].split(":");
+			if(data[3]<=5) // New player
+			{
+				sys.sendMessage(src, "Name: " + data[1] + " IP: " + data[0] + " Games Played: " +  data[3] + " Last Visit: " + this.formatLastVisit(data[2]));
+			}
+		}
+	}
+	, // End viewMasterList()
+
+	searchlist : function(src, conditions) {
+		masterlist = sys.getVal("mafialist").split("--");
+		conditions = conditions.split(" ");
+		/* How many conditions do we have to satisfy? */
+		originallength = conditions.length;
+		totalconditions = conditions.length;
+		resultcount = 0;
+		for(z in masterlist)
+		{
+			/* Split the player information in order to test conditions. */
+			data = masterlist[z].split(":");
+			conditionsmet = 0;
+			length=1;
+			last=0;
+			show = 0;
+			for(x in conditions)
+			{
+				if(conditions[x]!="or") // Allow for an or clause
+				{
+					/* In order to allow for multiple conditions, we must separate each condition first. */
+					search = conditions[x].split("=");
+					name = search[0].toLowerCase();
+					value = search[1];
+					if(name==="games" && value<=data[3])
+					{
+						conditionsmet+=1;
+					}
+					if(name==="name" && value===data[1])
+					{
+						conditionsmet = conditionsmet + 1;
+					}
+					if(name==="ip" && value===data[0])
+					{
+						conditionsmet+=1;
+					}
+					if(name==="lastactive" && data[2]>=sys.time()-value)
+					{
+						conditionsmet+=1;
+					}
+				}
+				if(conditions[x]==="or")
+				{
+					totalconditions = totalconditions-1-length;
+					last=last + length;
+				}
+				if(conditionsmet>=totalconditions)
+				{
+					if(show!=1)
+					{
+						resultcount+=1;
+					}
+					show=1;
+				}
+				if(conditions[x]==="or")
+				{
+					length=1;
+					conditionsmet = 0;
+				}
+				else
+				{
+					length+=1;
+				}
+			} // Close conditions check	
+			if(show==1)
+			{	
+				sys.sendMessage(src, "Name: " + data[1] + " IP: " + data[0] + " Games Played: " +  data[3] + " Last Visit: " + this.formatLastVisit(data[2]));
+			}
+		} // Close list
+		sys.sendMessage(src, "Querybot: Found " + resultcount + " matches for " + conditions + ".");
+	}
+	, // End searchMafiaList()
+
+	formatLastVisit : function(time) {
+		if(!time)
+		{
+			time=sys.time();
+		}
+		currenttime = sys.time();
+		difference = currenttime - time;
+		if(difference<86400)
+		{	
+			hours = Math.floor(difference / 3600);
+			lastvisit = hours + " hours ago.";
+		}
+		else if(difference>86400 && difference<2592000)
+		{
+			days = Math.floor(difference / 86400);
+			lastvisit = days + " days ago.";
+		}
+		else if(difference>2592000 && difference<31104000)
+		{
+			months = Math.floor(difference / 2592000);
+			lastvisit = "More than " + months + " months ago.";
+		}
+		else
+		{
+			lastvisit = "More than a year ago.";
+		}
+		return lastvisit;
+	}
+	, // formatLastVisit()
+
 }
 /* Functions defined by mafia which should be called from main script:
 * - init
@@ -3389,4 +3673,3 @@ this.addPhaseStalkAction(name, command, target.name);
 */
 
 module.exports = new Mafia(sys.channelId(MAFIA_CHANNEL));
-	
