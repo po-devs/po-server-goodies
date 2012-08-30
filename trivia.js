@@ -90,7 +90,7 @@ function TriviaGame()
 
 TriviaGame.prototype.htmlAll = function(html)
 {
-    sys.sendHtmlAll(this.tBorder() + "<center>" + html + "</center>" + this.tBorder(), triviachan);
+    sendChanHtmlAll(this.tBorder() + "<center>" + html + "</center>" + this.tBorder(), triviachan);
 };
 
 TriviaGame.prototype.sendPM = function(src, message, channel)
@@ -113,11 +113,11 @@ TriviaGame.prototype.startGame = function(points, name)
 	if (name == "" && this.autostart == false) return;
 	this.maxPoints = points;
 	this.started = true;
-	sys.sendAll("", 0);
-	sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
+	sendChanAll("", 0);
+	sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
 	this.sendAll("A #Trivia game was started! First to "+points+" points wins!",0);
-	sys.sendAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
-	sys.sendAll("", 0);
+	sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
+	sendChanAll("", 0);
 	this.sendAll((name != "" ? name+" started a Trivia game! " : "A trivia game was started! ") + " First to "+points+" points wins!",triviachan);
 	this.answeringQuestion = false;
 	sys.delayedCall(function() { Trivia.startTriviaRound(); },15);
@@ -240,12 +240,12 @@ try { // Do not indent this, it is only until this starts to work
         }
     }
 
-    sys.sendAll("", triviachan);
+    sendChanAll("", triviachan);
     var incorrectAnswers  = wrongAnswers.length > 0 ? " Incorrect answers: "+ wrongAnswers.join(", ") : "";
-    sys.sendHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±Psyduck:</b></font></font> Time's up!" + incorrectAnswers, triviachan);
+    sendChanHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±Psyduck:</b></font></font> Time's up!" + incorrectAnswers, triviachan);
     this.sendAll("Answered correctly: " + answeredCorrectly.join(", "),triviachan);
     var x = answers.length != 1 ? "answers were" : "answer was";
-    sys.sendHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±Psyduck:</b></font></font> The correct "+x+": <b>"+answers.join(", ")+"</b>",triviachan);
+    sendChanHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±Psyduck:</b></font></font> The correct "+x+": <b>"+answers.join(", ")+"</b>",triviachan);
 
     var leaderboard = [];
     var displayboard = []
@@ -269,7 +269,7 @@ try { // Do not indent this, it is only until this starts to work
     if (winners.length > 0) {
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
         this.htmlAll("<h2>Congratulations to "+w+"</h2>"+winners.join(", ")+"");
-		sys.sendHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±Psyduck:</b></font></font> While you're waiting for another game, why not submit a question? <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>Help and Guidelines are here!</a>", triviachan);
+		sendChanHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±Psyduck:</b></font></font> While you're waiting for another game, why not submit a question? <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>Help and Guidelines are here!</a>", triviachan);
         this.resetTrivia();
         if (this.autostart == true) {
         	pointsForGame = sys.rand(5,45), toStart = sys.rand(30,44);
@@ -295,7 +295,7 @@ try { // Do not indent this, it is only until this starts to work
     }, rand);
 } catch(e) {
 // TODO REMOVE the catch block when this works
-    sys.sendAll("script error: " + e, triviachan);
+    sendChanAll("script error: " + e, triviachan);
 }
 };
 
@@ -465,14 +465,14 @@ QuestionHolder.prototype.remove = function(id)
 QuestionHolder.prototype.checkq = function(id)
 {
 	if(trivreview.editingMode === true){
-		sys.sendAll("", revchan);
+		sendChanAll("", revchan);
 		triviabot.sendAll("This question needs to be reviewed:",revchan);
 		triviabot.sendAll("EDITING MODE: USE THE CHANGE COMMANDS TO EDIT AND THEN /ACCEPT OR /DECLINE TO DELETE",revchan);
 		triviabot.sendAll("Category: "+trivreview.editingCategory,revchan);
 		triviabot.sendAll("Question: "+trivreview.editingQuestion,revchan);
 		triviabot.sendAll("Answer: "+trivreview.editingAnswer,revchan);
 		triviabot.sendAll("Questions Approved: "+triviaq.questionAmount()+". Questions Left: "+ trivreview.questionAmount()+".", revchan);
-		sys.sendAll("",revchan);
+		sendChanAll("",revchan);
         return;
 	}
 	if (trivreview.questionAmount() === 0)
@@ -488,7 +488,7 @@ QuestionHolder.prototype.checkq = function(id)
 		triviabot.sendAll("Oops! There was an error.",revchan);
 		return;
 	}
-	sys.sendAll("",revchan);
+	sendChanAll("",revchan);
 	triviabot.sendAll("This question needs to be reviewed:",revchan);
 	triviabot.sendAll("ID: "+questionId,revchan);
 	triviabot.sendAll("Category: "+questionInfo.category,revchan);
@@ -498,7 +498,7 @@ QuestionHolder.prototype.checkq = function(id)
 	if(questionInfo.name !== undefined){
 		triviabot.sendAll("Submitted By: "+questionInfo.name,revchan);
 	}
-	sys.sendAll("",revchan);
+	sendChanAll("",revchan);
 };
 QuestionHolder.prototype.get = function(id)
 {
