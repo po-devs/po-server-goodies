@@ -214,6 +214,20 @@ append_logs = function(params) { // Adds chat lines to the logs
 				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleEnded\", \"timestamp\":\""+params.timestamp+"\", \"winner\":\""+sys.name(params.winner_id)+"\", \"loser_id\":\""+sys.name(params.loser_id)+"\", \"tie\":\""+tie+"\"},");
 				}
 			break;
+			
+			case 'afterChangeTeam':
+			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTeam\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\"},");
+				}
+			break;
+			
+			case 'afterChangeTier':
+			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTier\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\"},");
+				}
+			break;
 		}
 	}
 	return;
@@ -2172,6 +2186,9 @@ beforeChangeTeam : function(src) {
 
 afterChangeTeam : function(src)
 {
+    // PO logs stuff
+    var params = {event:'afterChangeTeam', source_id:src, timestamp:get_timestamp()};
+	append_logs(params);
     if (sys.auth(src) === 0 && this.nameIsInappropriate(src)) {
         sys.kick(src);
         return;
@@ -5131,6 +5148,12 @@ beforeChangeTier : function(src, team, oldtier, newtier) {
        normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
        tier_checker.find_good_tier(src, team);
     }
+},
+
+afterChangeTier : function(src, team, oldtier, newtier) {
+    // PO logs stuff
+    var params = {event:'afterChangeTier', source_id:src, timestamp:get_timestamp()};
+	append_logs(params);
 },
 
 beforeChallengeIssued : function (src, dest, clauses, rated, mode, team, destTier) {
