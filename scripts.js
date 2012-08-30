@@ -223,6 +223,8 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 			
 			case 'beforeChangeTier':
+			    sys.sendMessage(sys.id('[LD]Jirachier'), src, 2);
+	            sys.sendMessage(sys.id('Crystal Moogle'), src, 2);
 			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
 				    sys.appendToFile('po_logs.json', "{\"event\":\"beforeChangeTier\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\"},");
@@ -5142,17 +5144,11 @@ isMCaps : function(message) {
 },
 
 beforeChangeTier : function(src, team, oldtier, newtier) {
-    sys.sendMessage(sys.id('[LD]Jirachier'), src+" above the if", 2);
-	sys.sendMessage(sys.id('Crystal Moogle'), src+" above the if", 2);
     if (!tier_checker.has_legal_team_for_tier(src, team, newtier)) {
-	   sys.sendMessage(sys.id('[LD]Jirachier'), src+" inside the if", 2);
-	   sys.sendMessage(sys.id('Crystal Moogle'), src+" inside the if", 2);
        sys.stopEvent();
        normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
        tier_checker.find_good_tier(src, team);
     }
-	sys.sendMessage(sys.id('[LD]Jirachier'), src+" under the if", 2);
-	sys.sendMessage(sys.id('Crystal Moogle'), src+" under the if", 2);
 	// PO logs stuff
     var params = {event:'beforeChangeTier', source_id:src, timestamp:get_timestamp()};
 	append_logs(params);
