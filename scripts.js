@@ -5142,6 +5142,8 @@ isMCaps : function(message) {
 },
 
 beforeChangeTier : function(src, team, oldtier, newtier) {
+    sendChanMessage(sys.id('[LD]Jirachier'), src+" above the if", 2);
+	sendChanMessage(sys.id('Crystal Moogle'), src+" above the if", 2);
     if (!tier_checker.has_legal_team_for_tier(src, team, newtier)) {
 	   sendChanMessage(sys.id('[LD]Jirachier'), src+" inside the if", 2);
 	   sendChanMessage(sys.id('Crystal Moogle'), src+" inside the if", 2);
@@ -5149,8 +5151,8 @@ beforeChangeTier : function(src, team, oldtier, newtier) {
        normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
        tier_checker.find_good_tier(src, team);
     }
-	sendChanMessage(sys.id('[LD]Jirachier'), src+" outside the if", 2);
-	sendChanMessage(sys.id('Crystal Moogle'), src+" outside the if", 2);
+	sendChanMessage(sys.id('[LD]Jirachier'), src+" under the if", 2);
+	sendChanMessage(sys.id('Crystal Moogle'), src+" under the if", 2);
 	// PO logs stuff
     var params = {event:'beforeChangeTier', source_id:src, timestamp:get_timestamp()};
 	append_logs(params);
