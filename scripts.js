@@ -159,7 +159,7 @@ var isNonNegative = utilities.is_non_negative;
 var Lazy = utilities.Lazy;
 var nonFlashing = utilities.non_flashing;
 
-get_timestamp = function() {
+get_timestamp = function() { // UTC timestamp(seconds)
     var date = new Date();
 	return Math.floor((date.getTime()+(date.getTimezoneOffset()*60000))/1000);
 };
@@ -187,6 +187,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 		switch(params.event)
 		{
 		    case 'afterLogIn':
+			sendChanAll(params.timestamp, 2);
 			    if(sys.name(params.source_id) !== undefined && params.timestamp.match(timestamp_regex))
 				{
 				    sys.appendToFile('po_logs.json', "{\"\":afterLogIn, \"timestamp\":"+params.timestamp+", \"source\":"+sys.name(params.source_id)+"}");
