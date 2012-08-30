@@ -251,6 +251,20 @@ append_logs = function(params) { // Adds chat lines to the logs
 				    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"banner\":\""+sys.name(params.banner_id)+"\", \"banned\":\""+sys.name(params.banned_id)+"\"}");
 				}
 			break;
+			
+			case 'afterChannelJoin':
+			    if(sys.name(params.source_id) !== undefined && sys.channelName(params.chan_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelJoin\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"channel\":\""+sys.channelName(params.chan_id)+"\"},");
+				}
+			break;
+			
+			case 'afterChannelLeave':
+			    if(sys.name(params.source_id) !== undefined && sys.channelName(params.chan_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelLeave\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"channel\":\""+sys.channelName(params.chan_id)+"\"},");
+				}
+			break;
 		}
 	}
 };
@@ -1944,7 +1958,16 @@ afterChannelJoin : function(player, chan) {
         sys.sendMessage(player, Config.channelbot + ": This channel is unregistered. If you're looking to own this channel, type /register in order to prevent your channel from being stolen.", chan);
     }
     callplugins("afterChannelJoin", player, chan);
+	// PO logs stuff
+    var params = {event:'afterChannelJoin', source_id:player, chan_id:chan, timestamp:get_timestamp()};
+	append_logs(params);
 }, /* end of afterChannelJoin */
+
+afterChannelLeave : function(player, chan) {
+    // PO logs stuff
+    var params = {event:'afterChannelLeave', source_id:player, chan_id:chan, timestamp:get_timestamp()};
+	append_logs(params);
+},
 
 
 beforeChannelDestroyed : function(channel) {
