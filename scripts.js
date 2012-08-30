@@ -177,7 +177,7 @@ update_web_logs = function() {
 
 append_logs = function(params) { // Adds chat lines to the logs
      var timestamp_regex = new RegExp("^[0-9]{0,10}$");
-     var events_list = ['afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'afterPlayerBan', 'afterPlayerKick'];
+     var events_list = ['afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick'];
     if(typeof params == 'object' && events_list.indexOf(params.event) != -1)
 	{
 	    if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
@@ -236,17 +236,17 @@ append_logs = function(params) { // Adds chat lines to the logs
 				}
 			break;
 			
-			case 'afterPlayerKick':
+			case 'beforePlayerKick':
 			    if(sys.name(params.kicker_id) !== undefined && sys.name(params.kicked_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerKick\", \"timestamp\":\""+params.timestamp+"\", \"kicker\":\""+sys.name(params.kicker_id)+"\", \"kicked\":\""+sys.name(params.kicked_id)+"\"}");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerKick\", \"timestamp\":\""+params.timestamp+"\", \"kicker\":\""+sys.name(params.kicker_id)+"\", \"kicked\":\""+sys.name(params.kicked_id)+"\"}");
 				}
 			break;
 			
-			case 'afterPlayerBan':
+			case 'beforePlayerBan':
 			    if(sys.name(params.banner_id) !== undefined && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"banner\":\""+sys.name(params.banner_id)+"\", \"banned\":\""+sys.name(params.banned_id)+"\"}");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"banner\":\""+sys.name(params.banner_id)+"\", \"banned\":\""+sys.name(params.banned_id)+"\"}");
 				}
 			break;
 		}
@@ -1953,23 +1953,26 @@ beforePlayerBan : function(src, dest) {
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
+	
+	// PO logs stuff
+	var params = {event:'beforePlayerBan', banner_id:src, banned_id:dest, timestamp:get_timestamp()};
+	append_logs(params);
 },
 
 afterPlayerBan : function(src, dest) {
-   var params = {event:'afterPlayerBan', banner_id:src, banned_id:dest, timestamp:get_timestamp()};
-	append_logs(params);
+    // NOT WORKING
 },
 
 beforePlayerKick:function(src, dest){
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestKick = [sys.name(dest), parseInt(sys.time(), 10)];
-	var params = {event:'afterPlayerKick', kicker_id:src, kicked_id:dest, timestamp:get_timestamp()};
+	var params = {event:'beforePlayerKick', kicker_id:src, kicked_id:dest, timestamp:get_timestamp()};
 	append_logs(params);
 },
 
 afterPlayerKick:function(src, dest) {
-
+   // doesn't work for some reason
 },
 
 afterNewMessage : function (message) {
