@@ -2076,8 +2076,9 @@ nameWarnTest : function(src) {
 },
 
 afterLogIn : function(src) {
+    // PO logs stuff
     var params = {event:'afterLogIn', source_id:src, timestamp:get_timestamp()};
-	append_log(params);
+	append_logs(params);
 	
     sys.sendMessage(src, "*** Type in /Rules to see the rules. ***");
     commandbot.sendMessage(src, "Use !commands to see the commands!");
