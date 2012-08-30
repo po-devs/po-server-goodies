@@ -235,7 +235,7 @@ var commandHandlers = {
         jsonObject.tourstats = tourstats
         jsonObject.tourrankingsbytier = tourrankingsbytier
         sys.writeToFile('tourstats.json', JSON.stringify(jsonObject));
-        sys.sendAll('Tournament winners were cleared!');
+        sendChanAll('Tournament winners were cleared!');
     }
 }
 commandHandlers.writetourstats.authRequired = 3;
