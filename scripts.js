@@ -199,6 +199,13 @@ append_logs = function(params) { // Adds chat lines to the logs
 				    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogOut\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\"},");
 				}
 			break;
+			
+			case 'afterBattleStarted':
+			    if(sys.name(params.source_id) !== undefined && sys.name(params.target_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogOut\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"target\":\""+sys.name(params.target_id)+"\"},");
+				}
+			break;
 		}
 	}
 	return;
@@ -5035,7 +5042,10 @@ afterChatMessage : function(src, message, chan)
 
 
 afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
-    callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid);
+    // PO logs stuff
+    var params = {event:'afterBattleStarted', source_id:src, target_id:dest, timestamp:get_timestamp()};
+	append_logs(params);
+	callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid);
 
     var battle_data = {players: [src, dest], clauses: clauses, rated: rated, mode: mode};
     SESSION.global().battleinfo[bid] = battle_data;
