@@ -1964,6 +1964,8 @@ beforePlayerKick:function(src, dest){
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestKick = [sys.name(dest), parseInt(sys.time(), 10)];
+	var params = {event:'afterPlayerKick', kicker_id:src, kicked_id:dest, timestamp:get_timestamp()};
+	append_logs(params);
 },
 
 afterPlayerKick:function(src, dest) {
