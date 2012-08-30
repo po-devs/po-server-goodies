@@ -168,17 +168,17 @@ module.exports = new function() {
         },
         'startvoting': function(src, commandData) {
             normalbot.sendChanMessage(src, 'The Poll is running again.');
-            sys.sendAll('');
+            sendChanAll('');
             normalbot.sendAll('The Suspect Voting of ' + cap(poll.subject) +' (' + poll.tier + ') is now running!');
-            sys.sendAll('');
+            sendChanAll('');
             poll.running = true;
             savePoll();
         },
         'stopvoting': function(src, commandData) {
             normalbot.sendChanMessage(src, 'The Votes are frozen now.');
-            sys.sendAll('');
+            sendChanAll('');
             normalbot.sendAll('The Suspect Voting of ' + cap(poll.subject) +' (' + poll.tier + ') has ended!');
-            sys.sendAll('');
+            sendChanAll('');
             poll.running = false;
             savePoll();
         },
