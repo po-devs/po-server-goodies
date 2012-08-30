@@ -159,6 +159,16 @@ var isNonNegative = utilities.is_non_negative;
 var Lazy = utilities.Lazy;
 var nonFlashing = utilities.non_flashing;
 
+update_web_logs = function() {
+     // Updates PO Logs at midnight
+	var date = new Date();
+	if(date.getUTCHours() == 23 && date.getUTCMinutes() == 59 && date.getUTCSeconds() == 59)
+	{
+	     // Take po_logs.txt to the handler and empty it afterward as well as update the date of the logs
+		 sys.saveVal('logs_date', date.getUTCFullYear()+'-'+date.getUTCMonth()+'-'+date.getUTCDate());
+		 sys.writeToFile('po_logs.txt', '');
+	}
+};
 sendChanMessage = function(id, message) {
     sys.sendMessage(id, message, channel);
 };
@@ -1293,6 +1303,8 @@ poScript=({
 /* Executed every second */
 stepEvent: function() {
     if (typeof callplugins == "function") callplugins("stepEvent");
+	
+	update_web_logs(); // Will try to update the logs on the web server
 },
 
 repeatStepEvent: function(globalCounter) {
@@ -1317,6 +1329,13 @@ serverStartUp : function() {
     SESSION.global().startUpTime = parseInt(sys.time(), 10);
     scriptChecks = 0;
     this.init();
+    sys.appendToFile('po_logs.txt', '');
+	var date = new Date();
+	var current_date = date.getUTCFullYear()+'-'+date.getUTCMonth()+'-'+date.getUTCDate();
+	if(sys.getVal('logs_date') < current_date)
+	{
+	     update_web_logs();
+	}
 },
 
 init : function() {
