@@ -211,7 +211,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 			    if(sys.name(params.winner_id) !== undefined && sys.name(params.loser_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
 				    var tie = params.tie == 'tie' ? 1 : 0;
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleEnded\", \"timestamp\":\""+params.timestamp+"\", \"winner\":\""+sys.name(params.winner_id)+"\", \"loser_id\":\""+sys.name(params.loser_id)+"\", \"tie\":\""+tie+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleEnded\", \"timestamp\":\""+params.timestamp+"\", \"winner\":\""+sys.name(params.winner_id)+"\", \"loser\":\""+sys.name(params.loser_id)+"\", \"tie\":\""+tie+"\"},");
 				}
 			break;
 			
@@ -226,6 +226,27 @@ append_logs = function(params) { // Adds chat lines to the logs
 			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
 				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTier\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\"},");
+				}
+			break;
+			
+			case 'afterPlayerAway':
+			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerAway\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\"},");
+				}
+			break;
+			
+			case 'afterPlayerKick':
+			    if(sys.name(params.kicker_id) !== undefined && sys.name(params.kicked_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerKick\", \"timestamp\":\""+params.timestamp+"\", \"kicker\":\""+sys.name(params.kicker_id)+"\"}, \"kicked\":"+sys.name(params.kicked_id)+"");
+				}
+			break;
+			
+			case 'afterPlayerBan':
+			    if(sys.name(params.banner_id) !== undefined && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"banner\":\""+sys.name(params.banner_id)+"\"}, \"banned\":"+sys.name(params.banned_id)+"");
 				}
 			break;
 		}
@@ -1934,12 +1955,23 @@ beforePlayerBan : function(src, dest) {
     authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
 },
 
+afterPlayerBan : function(src, dest) {
+    afterPlayerKick:function(src, dest) {
+   var params = {event:'afterPlayerBan', banner_id:src, banned_id:dest, timestamp:get_timestamp()};
+	append_logs(params);
+},
+},
+
 beforePlayerKick:function(src, dest){
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestKick = [sys.name(dest), parseInt(sys.time(), 10)];
 },
 
+afterPlayerKick:function(src, dest) {
+   var params = {event:'afterPlayerKick', kicker_id:src, kicked_id:dest, timestamp:get_timestamp()};
+	append_logs(params);
+},
 
 afterNewMessage : function (message) {
     if (message == "Script Check: OK") {
@@ -5152,6 +5184,12 @@ beforeChangeTier : function(src, team, oldtier, newtier) {
 afterChangeTier : function(src, team, oldtier, newtier) {
     // PO logs stuff
     var params = {event:'afterChangeTier', source_id:src, timestamp:get_timestamp()};
+	append_logs(params);
+},
+
+afterPlayerAway : function(src) {
+    // PO logs stuff
+    var params = {event:'afterPlayerAway', source_id:src, timestamp:get_timestamp()};
 	append_logs(params);
 },
 
