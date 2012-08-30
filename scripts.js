@@ -222,10 +222,10 @@ append_logs = function(params) { // Adds chat lines to the logs
 				}
 			break;
 			
-			case 'afterChangeTier':
+			case 'beforeChangeTier':
 			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTier\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"beforeChangeTier\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\"},");
 				}
 			break;
 		}
@@ -5148,14 +5148,13 @@ beforeChangeTier : function(src, team, oldtier, newtier) {
        normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
        tier_checker.find_good_tier(src, team);
     }
+	// PO logs stuff
+    var params = {event:'beforeChangeTier', source_id:src, timestamp:get_timestamp()};
+	append_logs(params);
 },
 
 afterChangeTier : function(src, team, oldtier, newtier) {
-    sendChanMessage(sys.id('[LD]Jirachier'), src);
-	sendChanMessage(sys.id('Crystal Moogle'), src);
-    // PO logs stuff
-    var params = {event:'afterChangeTier', source_id:src, timestamp:get_timestamp()};
-	append_logs(params);
+    // THIS EVENT ISNT WORKING IT NEEDS FIXING
 },
 
 beforeChallengeIssued : function (src, dest, clauses, rated, mode, team, destTier) {
