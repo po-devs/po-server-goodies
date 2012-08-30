@@ -5092,7 +5092,7 @@ beforeBattleEnded : function(src, dest, desc, bid) {
 
 afterBattleEnded : function(src, dest, desc) {
     // PO logs stuff
-    var params = {event:'afterBattleEnded', winner_id:src, loser_id:dest, tie:desc timestamp:get_timestamp()};
+    var params = {event:'afterBattleEnded', winner_id:src, loser_id:dest, tie:desc, timestamp:get_timestamp()};
 	append_logs(params);
     callplugins("afterBattleEnded", src, dest, desc);
 },
