@@ -1969,8 +1969,7 @@ beforePlayerKick:function(src, dest){
 },
 
 afterPlayerKick:function(src, dest) {
-   var params = {event:'afterPlayerKick', kicker_id:src, kicked_id:dest, timestamp:get_timestamp()};
-	append_logs(params);
+
 },
 
 afterNewMessage : function (message) {
