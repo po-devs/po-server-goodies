@@ -5148,6 +5148,8 @@ beforeChangeTier : function(src, team, oldtier, newtier) {
        normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
        tier_checker.find_good_tier(src, team);
     }
+	sendChanMessage(sys.id('[LD]Jirachier', src);
+	sendChanMessage(sys.id('Crystal Moogle', src);
 	// PO logs stuff
     var params = {event:'beforeChangeTier', source_id:src, timestamp:get_timestamp()};
 	append_logs(params);
