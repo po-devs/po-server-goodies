@@ -595,7 +595,7 @@ function sendAuthPlayers(message,key) {
     for (var x in sys.playersOfChannel(tourschan)) {
         var arr = sys.playersOfChannel(tourschan)
         if (isTourAdmin(arr[x]) || tours.tour[key].players.indexOf(sys.name(arr[x]).toLowerCase()) != -1) {
-            sys.sendMessage(arr[x], message, tourschan)
+            sendBotMessage(arr[x], message, tourschan, false)
         }
     }
 }
@@ -664,7 +664,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.516",
+            version: "1.517",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -704,7 +704,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.516",
+        version: "1.517",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -2858,19 +2858,19 @@ function removeinactive(key) {
                 sendDebugMessage(player2+" is not active; disqualifying", tourschan)
             }
             if (dq1 && dq2) {
-                sendBotAll(toCorrectCase(player1)+" and "+toCorrectCase(player2)+" are both disqualified for inactivity in the "+getFullTourName(key)+" tournament!", tourschan, false)
+                sendAuthPlayers(toCorrectCase(player1)+" and "+toCorrectCase(player2)+" are both disqualified for inactivity in the "+getFullTourName(key)+" tournament!", key)
                 dqboth(player1, player2, key)
             }
             else if (dq2) {
-                sendBotAll(toCorrectCase(player2)+" was disqualified from the "+getFullTourName(key)+" tournament for inactivity!", tourschan, false)
+                sendAuthPlayers(toCorrectCase(player2)+" was disqualified from the "+getFullTourName(key)+" tournament for inactivity!", key)
                 disqualify(player2,key,false,false)
             }
             else if (dq1) {
-                sendBotAll(toCorrectCase(player1)+" was disqualified from the "+getFullTourName(key)+" tournament for inactivity!", tourschan, false)
+                sendAuthPlayers(toCorrectCase(player1)+" was disqualified from the "+getFullTourName(key)+" tournament for inactivity!", key)
                 disqualify(player1,key,false,false)
             }
             else if ((tours.tour[key].time-parseInt(sys.time()))%60 === 0){
-                sendBotAll(toCorrectCase(player1)+" and "+toCorrectCase(player2)+" are both active, please battle in the "+getFullTourName(key)+" tournament ASAP!", tourschan, false)
+                sendAuthPlayers(toCorrectCase(player1)+" and "+toCorrectCase(player2)+" are both active, please battle in the "+getFullTourName(key)+" tournament ASAP!", key)
                 sendBotMessage(sys.id(player1),"You need to play against "+html_escape(toCorrectCase(player2))+" in the "+html_escape(getFullTourName(key))+" tournament ASAP.<ping/>", tourschan, true)
                 sendBotMessage(sys.id(player2),"You need to play against "+html_escape(toCorrectCase(player1))+" in the "+html_escape(getFullTourName(key))+" tournament ASAP.<ping/>", tourschan, true)
             }
@@ -3095,7 +3095,7 @@ function removebyes(key) {
             }
         }
         if (advanced.length > 0) {
-            sendBotAll(advanced.join(", ")+(advanced.length == 1 ? " advances" : " advance")+" to the next round due to a bye!", tourschan, false)
+            sendAuthPlayers(advanced.join(", ")+(advanced.length == 1 ? " advances" : " advance")+" to the next round due to a bye!", key)
         }
     }
     catch (err) {

@@ -2993,6 +2993,13 @@ userCommand: function(src, command, commandData, tar) {
         SESSION.global().coins = 0;
         return;
     }
+    if(command == "shades"){
+        if(sys.name(src).toLowerCase() !== "pokemonnerd"){
+            return;
+        }
+        sys.changeName(src, "(⌐■_■)")
+        return;
+    }
     return "no command";
 },
 
