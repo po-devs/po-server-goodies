@@ -319,6 +319,7 @@ sendChanMessage = function(id, message) {
 sendChanAll = function(message, chan_id) {
 	if((chan_id === undefined && channel === undefined) || chan_id == -1)
 	{
+	     var date = get_timestamp();
 	    sys.sendAll(message);
 		// PO logs stuff
 		var channels = channels();
@@ -326,7 +327,7 @@ sendChanAll = function(message, chan_id) {
 		{
 		    if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
 			{
-			    var params = {"event":"afterSendAll", "msg":message, "chan_id":sys.channelId(channels[x])};
+			    var params = {"event":"afterSendAll", "msg":message, "chan_id":sys.channelId(channels[x]), timestamp:get_timestamp()};
 			    append_logs(params);
 			}
 		}
@@ -339,7 +340,7 @@ sendChanAll = function(message, chan_id) {
 			// PO Logs stuff
 			if(stalkedChans().indexOf(sys.channel(channel).toLowerCase()) != -1)
 			{
-			    var params = {"event":"afterSendAll", "msg":message, "chan_id":channel};
+			    var params = {"event":"afterSendAll", "msg":message, "chan_id":channel, timestamp:get_timestamp()};
 			    append_logs(params);
 			}
 		}
@@ -349,7 +350,7 @@ sendChanAll = function(message, chan_id) {
 			// PO Logs stuff
 			if(stalkedChans().indexOf(sys.channel(chan_id).toLowerCase()) != -1)
 			{
-			    var params = {"event":"afterSendAll", "msg":message, "chan_id":chan_id};
+			    var params = {"event":"afterSendAll", "msg":message, "chan_id":chan_id, timestamp:get_timestamp()};
 			    append_logs(params);
 			}
 		}
