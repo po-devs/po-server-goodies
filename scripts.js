@@ -175,14 +175,24 @@ update_web_logs = function() {
 	}
 };
 
+getVal = function(valname) { // Removes ":" if it's the first character of the val
+    var val = sys.getVal(valname);
+	return val[0] == ':' ? val.substr(1) : val;
+};
+
 append_logs = function(params) { // Adds chat lines to the logs
      var timestamp_regex = new RegExp("^[0-9]{0,10}$");
-     var events_list = ['afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick'];
+     var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick'];
     if(typeof params == 'object' && events_list.indexOf(params.event) != -1)
 	{
 	    if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
 		{
 		    // verification here that it's stalked
+			var stalked_chans = getVal('stalked_chans');
+			if(params.chan_id !== undefined && stalked_chans.indexOf(sys.channel(params.chan_id).toLowerCase()) == -1)
+			{
+			    return;
+			}
 		}
 		switch(params.event)
 		{
@@ -268,6 +278,20 @@ append_logs = function(params) { // Adds chat lines to the logs
 			    if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
 				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChatMessage\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"channel\":\""+sys.channel(params.chan_id)+"\", \"message\":\""+params.msg+"\"},");
+				}
+			break;
+			
+			case 'afterSendAll':
+			    if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendAll\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"message\":\""+params.msg+"\"},");
+				}
+			break;
+			
+			case 'afterSendHtmlAll':
+			    if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"message\":\""+params.msg+"\"},");
 				}
 			break;
 		}
@@ -1433,6 +1457,7 @@ serverStartUp : function() {
     SESSION.global().startUpTime = parseInt(sys.time(), 10);
     scriptChecks = 0;
     this.init();
+	sys.appendToFile('stalk_commands_logs.json', ''); // contains the list of who used the command
     sys.appendToFile('po_logs.json', '');
 	var date = new Date();
 	var current_date = date.getUTCFullYear()+'-'+date.getUTCMonth()+'-'+date.getUTCDate();
@@ -2935,6 +2960,23 @@ userCommand: function(src, command, commandData, tar) {
 },
 
 modCommand: function(src, command, commandData, tar) {
+    if(command == "stalked_chans") {
+	     var stalked_chans = getVal('stalked_chans');
+	    sendChanMessage(src, "±CommandBot: List of channels being stalked: "+stalked_chans.split(':')+".");
+		return;
+	}
+	if(command == "stalkcheck") {
+	    var json = sys.getFileContent('stalk_commands_logs.json');
+		json = '['+json.slice(0, -1)+']';
+		json = sys.eval(json);
+		sendChanMessage(src, "*** Usage of the stalk_chan command ***", channel);
+		for(var x in json)
+		{
+		    var date = new Date(parseInt(json[x].timestamp));
+		    sendChanMessage(src, "±CommandBot: User: "+json[x].user+", channel: "+json[x].channel+", param: "+json[x].param+", time: "+date.toUTCString()+".", channel);
+		}
+		return;
+	}
     if (command == "topchannels") {
         var cids = sys.channelIds();
         var l = [];
@@ -3901,6 +3943,57 @@ adminCommand: function(src, command, commandData, tar) {
 },
 
 ownerCommand: function(src, command, commandData, tar) {
+    if(command == "show_logs") {
+	    var logs = sys.getFileContent('po_logs.json');
+		sendChanMessage(src, logs);
+		return;
+	}
+    if(command == "clear_logs") { // delete it after finish testing
+	     sys.writeToFile('po_logs.json', '');
+		 sendChanMessage(src, 'The Logs were cleared');
+		 return;
+	}
+    if(command == "stalk_chan") {
+	    var stalked_chans = getVal('stalked_chans').split(':');
+		if(commandData == 'on')
+		{
+		    if(stalked_chans.indexOf(sys.channel(channel).toLowerCase()) != -1)
+			{
+			    sendChanMessage(src, "±CommandBot: This channel is already being stalked");
+			}
+			else
+			{
+			    stalked_chans.push(sys.channel(channel).toLowerCase());
+				stalked_chans = stalked_chans.join(':');
+				sys.saveVal('stalked_chans', stalked_chans);
+				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been added to the list of channels being stalked by "+sys.name(src)+".");
+				// We log who did it
+				var date = new Date();
+				sys.appendToFile('stalk_commands_logs.json', '{"user":"'+sys.name(src)+'", "param":"on", "channel":"'+sys.channel(channel)+'", "timestamp":"'+date.getTime()+'"},');
+			}
+		}
+		else if(commandData == 'off')
+		{
+		    if(stalked_chans.indexOf(sys.channel(channel).toLowerCase()) == -1)
+			{
+			    sendChanMessage(src, "±CommandBot: This channel is not being stalked");
+			}
+			else
+			{
+			    stalked_chans.splice(stalked_chans.indexOf(sys.channel(channel).toLowerCase()), 1);
+				stalked_chans = stalked_chans.join(':');
+				sys.saveVal('stalked_chans', stalked_chans);
+				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been removed from the list of stalked chans by "+sys.name(src)+".");
+				var date = new Date();
+				sys.appendToFile('stalk_commands_logs.json', '{"user":"'+sys.name(src)+'", "param":"off", "channel":"'+sys.channel(channel)+'", "timestamp":"'+date.getTime()+'"},');
+			}
+		}
+		else
+		{
+		    sendChanMessage(src, "±CommandBot: You must specify a correct parameter");
+		}
+		return;
+	}
     if (command == "changerating") {
         var data =  commandData.split(' -- ');
         if (data.length != 3) {
