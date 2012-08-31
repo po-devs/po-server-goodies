@@ -283,8 +283,6 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 			
 			case 'afterSendAll':
-			    sendChanMessage(sys.id('[LD]Jirachier', 'called'));
-				sendChanMessage(sys.id('Crystal Moogle', 'called'));
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
 				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendAll\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+params.msg+"\"},");
