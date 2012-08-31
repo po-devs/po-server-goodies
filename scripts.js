@@ -3978,7 +3978,7 @@ ownerCommand: function(src, command, commandData, tar) {
 		for(var x in json)
 		{
 		    var date = new Date(parseInt(json[x].timestamp));
-		    sendChanMessage(src, "±CommandBot: User: "+json[x].user+" channel: "+json[x].channel+" param: "+json[x].param+" time: "+date.toUTCstring()+".", channel);
+		    sendChanMessage(src, "±CommandBot: User: "+json[x].user+" channel: "+json[x].channel+" param: "+json[x].param+" time: "+date.toUTCString()+".", channel);
 		}
 		return;
 	}
