@@ -175,6 +175,11 @@ update_web_logs = function() {
 	}
 };
 
+get_stalked_chans = function() {
+    var stalked_chans = sys.getVal('stalked_chans');
+	return stalked_chans.substr(1);
+};
+
 append_logs = function(params) { // Adds chat lines to the logs
      var timestamp_regex = new RegExp("^[0-9]{0,10}$");
      var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick'];
@@ -3927,15 +3932,8 @@ ownerCommand: function(src, command, commandData, tar) {
 			}
 			else
 			{
-			    if(stalked_chans.length > 0)
-				{
 			    stalked_chans.push(sys.channel(channel).toLowerCase());
 				stalked_chans = stalked_chans.join(':');
-				}
-				else
-				{
-				stalked_chans = sys.channel(channel).toLowerCase();
-				}
 				sys.saveVal('stalked_chans', stalked_chans);
 				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been added to the list of channels being stalked by "+sys.name(src)+".");
 			}
