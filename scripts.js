@@ -263,6 +263,13 @@ append_logs = function(params) { // Adds chat lines to the logs
 				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelLeave\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"channel\":\""+sys.channel(params.chan_id)+"\"},");
 				}
 			break;
+			
+			case 'afterChatMessage':
+			    if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChatMessage\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"channel\":\""+sys.channel(params.chan_id)+"\", \"message\":\""+params.msg+"\"},");
+				}
+			break;
 		}
 	}
 };
@@ -5123,6 +5130,9 @@ afterChatMessage : function(src, message, chan)
     }
     SESSION.channels(channel).beforeMessage(src, message);
     callplugins("afterChatMessage", src, message, channel);
+	// PO logs stuff
+    var params = {event:'afterChatMessage', source_id:src, msg:message, chan_id:channel, timestamp:get_timestamp()};
+	append_logs(params);
 }, /* end of afterChatMessage */
 
 
