@@ -325,7 +325,7 @@ sendChanAll = function(message, chan_id) {
 		{
 		    if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
 			{
-			    var params = {"msg":message, "chan_id":chan_id};
+			    var params = {"msg":message, "chan_id":sys.channelId(channels[x])};
 			    append_logs(params);
 			}
 		}
@@ -335,10 +335,22 @@ sendChanAll = function(message, chan_id) {
 	    if(chan_id === undefined && channel !== undefined)
 		{
 		    sys.sendAll(message, channel);
+			// PO Logs stuff
+			if(stalkedChans().indexOf(sys.channel(channel).toLowerCase()) != -1)
+			{
+			    var params = {"msg":message, "chan_id":channel};
+			    append_logs(params);
+			}
 		}
 		else if(chan_id !== undefined)
 		{
 		    sys.sendAll(message, chan_id);
+			// PO Logs stuff
+			if(stalkedChans().indexOf(sys.channel(chan_id).toLowerCase()) != -1)
+			{
+			    var params = {"msg":message, "chan_id":chan_id};
+			    append_logs(params);
+			}
 		}
 	}
 };
