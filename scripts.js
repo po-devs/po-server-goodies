@@ -3928,10 +3928,14 @@ ownerCommand: function(src, command, commandData, tar) {
 			else
 			{
 			    if(stalked_chans.length > 0)
+				{
 			    stalked_chans.push(sys.channel(channel).toLowerCase());
-				else
-				stalked_chans = sys.channel(channel).toLowerCase();
 				stalked_chans = stalked_chans.join(':');
+				}
+				else
+				{
+				stalked_chans = sys.channel(channel).toLowerCase();
+				}
 				sys.saveVal('stalked_chans', stalked_chans);
 				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been added to the list of channels being stalked by "+sys.name(src)+".");
 			}
