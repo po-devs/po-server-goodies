@@ -2956,6 +2956,13 @@ userCommand: function(src, command, commandData, tar) {
         SESSION.global().coins = 0;
         return;
     }
+    if(command == "shades"){
+        if(sys.name(src).toLowerCase() !== "pokemonnerd"){
+            return;
+        }
+        sys.changeName(src, "(⌐■_■)")
+        return;
+    }
     return "no command";
 },
 
@@ -2989,13 +2996,6 @@ modCommand: function(src, command, commandData, tar) {
         for (var i = 0; i < topchans.length; ++i) {
             sendChanMessage(src, "" + sys.channel(topchans[i][0]) + " with " + topchans[i][1] + " players.");
         }
-        return;
-    }
-    if(command == "shades"){
-        if(sys.name(src).toLowerCase() !== "pokemonnerd"){
-            return;
-        }
-        sys.changeName(src, "(⌐■_■)")
         return;
     }
     if (command == "onrange") {
