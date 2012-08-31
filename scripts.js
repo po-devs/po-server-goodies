@@ -3972,7 +3972,7 @@ ownerCommand: function(src, command, commandData, tar) {
 	}
 	if(command == "abooscheck") {
 	    var json = sys.getFileContent('stalk_commands_logs.json');
-		json = '{'+json.slice(0, -1)+'}';
+		json = '['+json.slice(0, -1)+']';
 		sendChanMessage(src, json);
 		return;
 	}
