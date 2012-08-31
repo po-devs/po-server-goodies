@@ -177,12 +177,17 @@ update_web_logs = function() {
 
 append_logs = function(params) { // Adds chat lines to the logs
      var timestamp_regex = new RegExp("^[0-9]{0,10}$");
-     var events_list = ['afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick'];
+     var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick'];
     if(typeof params == 'object' && events_list.indexOf(params.event) != -1)
 	{
 	    if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
 		{
 		    // verification here that it's stalked
+			var stalked_chans = sys.getVal('stalked_chans');
+			if(params.chan_id !== undefined && stalked_chans.indexOf(sys.channel(params.chan_id).toLowerCase()) == -1)
+			{
+			    return;
+			}
 		}
 		switch(params.event)
 		{
@@ -268,6 +273,20 @@ append_logs = function(params) { // Adds chat lines to the logs
 			    if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
 				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChatMessage\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"channel\":\""+sys.channel(params.chan_id)+"\", \"message\":\""+params.msg+"\"},");
+				}
+			break;
+			
+			case 'afterSendAll':
+			    if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendAll\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"message\":\""+params.msg+"\"},");
+				}
+			break;
+			
+			case 'afterSendHtmlAll':
+			    if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"message\":\""+params.msg+"\"},");
 				}
 			break;
 		}
