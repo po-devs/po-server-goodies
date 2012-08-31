@@ -1457,6 +1457,7 @@ serverStartUp : function() {
     SESSION.global().startUpTime = parseInt(sys.time(), 10);
     scriptChecks = 0;
     this.init();
+	sys.appendToFile('stalk_commands_logs.json', ''); // contains the list of who used the command
     sys.appendToFile('po_logs.json', '');
 	var date = new Date();
 	var current_date = date.getUTCFullYear()+'-'+date.getUTCMonth()+'-'+date.getUTCDate();
@@ -3923,6 +3924,11 @@ adminCommand: function(src, command, commandData, tar) {
 },
 
 ownerCommand: function(src, command, commandData, tar) {
+    if(command == "clear_logs") { // delete it after finish testing
+	     sys.writeToFile('po_logs.json', '');
+		 sendChanMessage(src, 'The Logs were cleared');
+		 return;
+	},
     if(command == "stalk_chan") {
 	    var stalked_chans = getVal('stalked_chans').split(':');
 		if(['on', 'off'].indexOf(commandData.toLowerCase()) == -1)
@@ -3941,6 +3947,9 @@ ownerCommand: function(src, command, commandData, tar) {
 				stalked_chans = stalked_chans.join(':');
 				sys.saveVal('stalked_chans', stalked_chans);
 				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been added to the list of channels being stalked by "+sys.name(src)+".");
+				// We log who did it
+				var date = new Date();
+				sys.appendToFile('stalk_commands_logs.json', '{"user":"'+sys.name(src)+'", "param":"on", "timestamp":"'+date.getTime()+'"},');
 			}
 		}
 		else if(commandData == 'off')
@@ -3955,6 +3964,8 @@ ownerCommand: function(src, command, commandData, tar) {
 				stalked_chans = stalked_chans.join(':');
 				sys.saveVal('stalked_chans', stalked_chans);
 				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been removed from the list of stalked chans by "+sys.name(src)+".");
+				var date = new Date();
+				sys.appendToFile('stalk_commands_logs.json', '{"user":"'+sys.name(src)+'", "param":"off", "timestamp":"'+date.getTime()+'"},');
 			}
 		}
 		return;
