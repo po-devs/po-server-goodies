@@ -3977,8 +3977,8 @@ ownerCommand: function(src, command, commandData, tar) {
 		sendChanMessage(src, "*** Usage of the stalk_on command ***", channel);
 		for(var x in json)
 		{
-		    var date = new Date(json[x].time);
-		    sendChanMessage(src, "±CommandBot: User:"+json[x].user+" channel: "+json[x].channel+" param: "+json[x].param+" time: "+date.getUTCFullYear()+"-"+date.getUTCMonth()+"-"+date.getUTCDate()+" "+date.getUTCHours()+":"+date.getUTCMinutes()+":"+date.getUTCSeconds()+".", channel);
+		    var date = new Date(json[x].timestamp);
+		    sendChanMessage(src, "±CommandBot: User: "+json[x].user+" channel: "+json[x].channel+" param: "+json[x].param+" time: "+date.getUTCFullYear()+"-"+date.getUTCMonth()+"-"+date.getUTCDate()+" "+date.getUTCHours()+":"+date.getUTCMinutes()+":"+date.getUTCSeconds()+".", channel);
 		}
 		return;
 	}
