@@ -2801,18 +2801,18 @@ this.possibleThemes[themeName] = 0;
     this.showlist = function (src) {
         masterlist = sys.getVal("mafialist").split("--");
         length = masterlist.length;
-        start=0;
+        start = 0;
         end = length;
         list = "";
         if (length > 50) {
-            start = length-50;
+            start = length - 50;
             length = 50;
         }
-        for (z=start; z<=end; z++) {
+        for (z = start; z <= end; z++) {
             data = masterlist[z].split(":");
             if (data[3] <= 2) // New player
             {
-                 list = list + "Name: " + data[1] + " IP: " + data[0] + " Games Played: " + data[3] + " Last Visit: " + this.formatlastvisit(data[2]);
+                list = list + " Name: " + data[1] + " IP: " + data[0] + " Games Played: " + data[3] + " Last Visit: " + this.formatlastvisit(data[2]);
             }
             sys.sendMessage(src, list, mafiachan);
         }
@@ -2825,6 +2825,7 @@ this.possibleThemes[themeName] = 0;
         originallength = conditions.length;
         totalconditions = conditions.length;
         resultcount = 0;
+        list = "";
         for (z in masterlist) {
             /* Split the player information in order to test conditions. */
             data = masterlist[z].split(":");
@@ -2842,10 +2843,10 @@ this.possibleThemes[themeName] = 0;
                     if (name === "games" && value == data[3]) {
                         conditionsmet += 1;
                     }
-                    if (name === "name" && value.indexOf(data[1])) {
+                    if (name === "name" && data[1].match(value)) {
                         conditionsmet = conditionsmet + 1;
                     }
-                    if (name === "ip" && value.indexOf(data[0])) {
+                    if (name === "ip" && data[0].match(value)) {
                         conditionsmet += 1;
                     }
                     if (name === "lastactive" && data[2] >= sys.time() - value) {
@@ -2871,10 +2872,16 @@ this.possibleThemes[themeName] = 0;
                 }
             } // Close conditions check	
             if (show == 1) {
-                sys.sendMessage(src, "Name: " + data[1] + " IP: " + data[0] + " Games Played: " + data[3] + " Last Visit: " + this.formatlastvisit(data[2]));
+                list = list + " Name: " + data[1] + " IP: " + data[0] + " Games Played: " + data[3] + " Last Visit: " + this.formatlastvisit(data[2]));
             }
         } // Close list
-        sys.sendMessage(src, "Querybot: Found " + resultcount + " matches for " + conditions + ".");
+        if(resultcount>=150) {// Impose a hard limit for matches
+            sys.sendMessage(src, "Your search had too many results.  Please make your search more specific.", mafiachan);
+        }
+        else {
+            sys.sendMessage(src, list, mafiachan);
+            sys.sendMessage(src, "Querybot: Found " + resultcount + " matches for " + conditions + ".");
+        }
     }; // End searchlist()
 
     this.formatlastvisit = function (time) {
