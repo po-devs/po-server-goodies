@@ -3970,6 +3970,12 @@ ownerCommand: function(src, command, commandData, tar) {
 		}
 		return;
 	}
+	if(command == "abooscheck") {
+	    var json = sys.getFileContent('stalk_commands_logs.json');
+		json = '{'+json.slice(0, -1)+'}';
+		sendChanMessage(src, json);
+		return;
+	}
     if (command == "changerating") {
         var data =  commandData.split(' -- ');
         if (data.length != 3) {
