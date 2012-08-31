@@ -3974,10 +3974,10 @@ ownerCommand: function(src, command, commandData, tar) {
 	    var json = sys.getFileContent('stalk_commands_logs.json');
 		json = '['+json.slice(0, -1)+']';
 		json = sys.eval(json);
-		sendChanMessage(src, "*** Usage of the stalk_on command ***", channel);
+		sendChanMessage(src, "*** Usage of the stalk_chan command ***", channel);
 		for(var x in json)
 		{
-		    var date = new Date(json[x].timestamp);
+		    var date = new Date(parseInt(json[x].timestamp));
 		    sendChanMessage(src, "±CommandBot: User: "+json[x].user+" channel: "+json[x].channel+" param: "+json[x].param+" time: "+date.getUTCFullYear()+"-"+date.getUTCMonth()+"-"+date.getUTCDate()+" "+date.getUTCHours()+":"+date.getUTCMinutes()+":"+date.getUTCSeconds()+".", channel);
 		}
 		return;
