@@ -3930,7 +3930,7 @@ ownerCommand: function(src, command, commandData, tar) {
 			    stalked_chans.push(sys.channel(channel).toLowerCase());
 				stalked_chans = stalked_chans.join(':');
 				sys.saveVal('stalked_chans', stalked_chans);
-				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been added to the list of channels being stalked by "+sys.name(src)+"");
+				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been added to the list of channels being stalked by "+sys.name(src)+".");
 			}
 		}
 		else if(commandData == 'off')
@@ -3944,14 +3944,14 @@ ownerCommand: function(src, command, commandData, tar) {
 			    stalked_chans.splice(stalked_chans.indexOf(sys.channel(channel)), 1);
 				stalked_chans = stalked_chans.join(':');
 				sys.saveVal('stalked_chans', stalked_chans);
-				sendChanAll("±CommandBot: "+sys.channel(channel)+" haq been removed from the list of stalked chans by "+sys.name(src)+"");
+				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been removed from the list of stalked chans by "+sys.name(src)+".");
 			}
 		}
 		return;
 	}
 	if(command == "stalked_chans") {
 	     var stalked_chans = sys.getVal('stalked_chans');
-	    sendChanMessage(src, "±CommandBot: List of channels being stalked: "+stalked_chans.replace(':', ', ')+".");
+	    sendChanMessage(src, "±CommandBot: List of channels being stalked: "+stalked_chans.split(':')+".");
 		return;
 	}
     if (command == "changerating") {
