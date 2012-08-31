@@ -175,9 +175,9 @@ update_web_logs = function() {
 	}
 };
 
-get_stalked_chans = function() {
-    var stalked_chans = sys.getVal('stalked_chans');
-	return stalked_chans.substr(1);
+getVal = function(valname) {
+    var val = sys.getVal(valname);
+	return val.substr(1);
 };
 
 append_logs = function(params) { // Adds chat lines to the logs
@@ -188,7 +188,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 	    if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
 		{
 		    // verification here that it's stalked
-			var stalked_chans = sys.getVal('stalked_chans');
+			var stalked_chans = getVal('stalked_chans');
 			if(params.chan_id !== undefined && stalked_chans.indexOf(sys.channel(params.chan_id).toLowerCase()) == -1)
 			{
 			    return;
@@ -3919,7 +3919,7 @@ adminCommand: function(src, command, commandData, tar) {
 
 ownerCommand: function(src, command, commandData, tar) {
     if(command == "stalk_chan") {
-	    var stalked_chans = get_stalked_chans().split(':');
+	    var stalked_chans = getVal('stalked_chans').split(':');
 		if(['on', 'off'].indexOf(commandData.toLowerCase()) == -1)
 		{
 		     sendChanMessage(src, "±CommandBot: You must specify a correct parameter");
@@ -3955,7 +3955,7 @@ ownerCommand: function(src, command, commandData, tar) {
 		return;
 	}
 	if(command == "stalked_chans") {
-	     var stalked_chans = get_stalked_chans();
+	     var stalked_chans = getVal('stalked_chans');
 	    sendChanMessage(src, "±CommandBot: List of channels being stalked: "+stalked_chans.split(':')+".");
 		return;
 	}
