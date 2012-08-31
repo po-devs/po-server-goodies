@@ -664,7 +664,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.513",
+            version: "1.514",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -704,7 +704,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.513",
+        version: "1.514",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -1995,7 +1995,7 @@ function tourCommand(src, command, commandData) {
                 }
                 var option = commandData.substr(0,pos).toLowerCase()
                 if (["botname", "bot name", "channel", "errchannel", "color", "colour", "debug"].indexOf(option) == -1) {
-                    var value = parseInt(commandData.substr(pos+1))
+                    var value = parseFloat(commandData.substr(pos+1))
                 }
                 else {
                     var value = commandData.substr(pos+1)
@@ -3415,11 +3415,11 @@ function tourstart(tier, starter, key, parameters) {
 function tourinitiate(key) {
     try {
         var size = tourmakebracket(key)
-        if (size < 3) {
+        if (size < 4) {
             if (tours.globaltime !== -1) {
                 tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
             }
-            sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least 3 players!"+(tours.globaltime > 0 ? " (A new tournament will start in "+time_handle(tourconfig.tourbreak)+")." : ""), tourschan, false)
+            sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least 4 players!"+(tours.globaltime > 0 ? " (A new tournament will start in "+time_handle(tourconfig.tourbreak)+")." : ""), tourschan, false)
             delete tours.tour[key];
             tours.keys.splice(tours.keys.indexOf(key), 1)
             return;
@@ -3428,6 +3428,7 @@ function tourinitiate(key) {
         tourprintbracket(key)
         var variance = calcVariance()
         if (tours.globaltime !== -1) {
+            var timeradd = tours.tour[key].maxplayers != "default" ? parseInt(tourconfig.abstourbreak*3/variance) : parseInt(tourconfig.abstourbreak/variance);
             tours.globaltime = parseInt(sys.time()) + parseInt(tourconfig.abstourbreak/variance) // default 10 mins b/w signups, + 5 secs per user in chan
         }
     }
@@ -4557,7 +4558,7 @@ module.exports = {
         var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"]
         var isOkToSpectate = (tours.tour[p1tour].state == "final" || cctiers.indexOf(tours.tour[p1tour].tourtype) != -1)
         var usingDisallowSpecs = false;
-        for (var x in tours.tour[p1tour].battlers) {
+        if (tours.tour[p1tour].battlers.hasOwnProperty[sys.name(p1).toLowerCase()]) {
             if (tours.tour[p1tour].battlers[sys.name(p1).toLowerCase()].noSpecs === true) {
                 usingDisallowSpecs = true;
                 break;
