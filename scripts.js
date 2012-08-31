@@ -3946,7 +3946,8 @@ ownerCommand: function(src, command, commandData, tar) {
 			}
 			else
 			{
-			    stalked_chans.splice(stalked_chans.indexOf(sys.channel(channel)).toLowerCase(), 1);
+			var ethan = 'faggot';
+			    stalked_chans.splice(stalked_chans.indexOf(sys.channel(channel).toLowerCase()), 1);
 				stalked_chans = stalked_chans.join(':');
 				sys.saveVal('stalked_chans', stalked_chans);
 				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been removed from the list of stalked chans by "+sys.name(src)+".");
@@ -4020,26 +4021,22 @@ ownerCommand: function(src, command, commandData, tar) {
     }
     if (command == "contributor") {
         var s = commandData.split(":");
-	var name = s[0], reason = s[1];
-	if (sys.dbIp(name) == undefined) {
-	    normalbot.sendChanMessage(src, name + " couldn't be found.");
-	    return;
-	}
+    var name = s[0], reason = s[1];
+    if (sys.dbIp(name) == undefined) {
+        normalbot.sendChanMessage(src, name + " couldn't be found.");
+        return;
+    }
         normalbot.sendChanMessage(src, name + " is now a contributor!");
         contributors.add(name, reason);
         return;
     }
     if (command == "contributoroff") {
-	var is_contributor = false;
-	for (x in contributors.hash) {
-	    if (cmp(x, commandData)) is_contributor = true;	
-	}
-	if (!is_contributor) {
-	    normalbot.sendChanMessage(src, commandData + " isn't a contributor!");
-	    return;
-	}
+    if (contributors.get(commandData) == undefined) {
+        normalbot.sendChanMessage(src, commandData + " isn't a contributor.", channel);
+        return;
+    }
         contributors.remove(commandData);
-    	normalbot.sendChanMessage(src, commandData + " is no longer a contributor!");
+    normalbot.sendChanMessage(src, commandData + " is no longer a contributor!");
         return;
     }
     if (command == "showteam") {
