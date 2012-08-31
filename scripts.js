@@ -3928,7 +3928,7 @@ ownerCommand: function(src, command, commandData, tar) {
 	     sys.writeToFile('po_logs.json', '');
 		 sendChanMessage(src, 'The Logs were cleared');
 		 return;
-	},
+	}
     if(command == "stalk_chan") {
 	    var stalked_chans = getVal('stalked_chans').split(':');
 		if(['on', 'off'].indexOf(commandData.toLowerCase()) == -1)
