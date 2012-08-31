@@ -244,8 +244,6 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 			
 			case 'beforePlayerBan':
-			     sys.sendMessage(sys.id('[LD]Jirachier'), 'pony', 2);
-				 sys.sendMessage(sys.id('Crystal Moogle'), 'pony', 2);
 			    if(sys.name(params.banner_id) !== undefined && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
 				    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"banner\":\""+sys.name(params.banner_id)+"\", \"banned\":\""+sys.name(params.banned_id)+"\"}");
@@ -253,6 +251,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 			
 			case 'afterChannelJoin':
+						     sys.sendMessage(sys.id('[LD]Jirachier'), 'pony', 2);
 			    if(sys.name(params.source_id) !== undefined && sys.channelName(params.chan_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
 				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelJoin\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"channel\":\""+sys.channelName(params.chan_id)+"\"},");
