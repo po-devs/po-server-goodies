@@ -3974,7 +3974,11 @@ ownerCommand: function(src, command, commandData, tar) {
 	    var json = sys.getFileContent('stalk_commands_logs.json');
 		json = '['+json.slice(0, -1)+']';
 		json = sys.eval(json);
-		sendChanMessage(src, json);
+		sendChanMessage(src, "*** Usage of the stalk_on command ***", channel);
+		for(var x in json)
+		{
+		    sendChanMessage(src, json[x].user, channel);
+		}
 		return;
 	}
     if (command == "changerating") {
