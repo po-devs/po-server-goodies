@@ -175,7 +175,7 @@ update_web_logs = function() {
 	}
 };
 
-getVal = function(valname) {
+getVal = function(valname) { // Removes ":" if it's the first character of the val
     var val = sys.getVal(valname);
 	return val[0] == ':' ? val.substr(1) : val;
 };
@@ -3978,7 +3978,7 @@ ownerCommand: function(src, command, commandData, tar) {
 		for(var x in json)
 		{
 		    var date = new Date(parseInt(json[x].timestamp));
-		    sendChanMessage(src, "±CommandBot: User: "+json[x].user+" channel: "+json[x].channel+" param: "+json[x].param+" time: "+date.getUTCFullYear()+"-"+(date.getUTCMonth()+1)+"-"+date.getUTCDate()+" "+date.getUTCHours()+":"+checkTime(date.getUTCMinutes())+":"+checkTime(date.getUTCSeconds())+".", channel);
+		    sendChanMessage(src, "±CommandBot: User: "+json[x].user+" channel: "+json[x].channel+" param: "+json[x].param+" time: "date.toUTCstring()".", channel);
 		}
 		return;
 	}
