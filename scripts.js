@@ -282,21 +282,36 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 			
 			case 'afterSendAll':
-			    if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendAll\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"message\":\""+params.msg+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendAll\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+params.msg+"\"},");
 				}
 			break;
 			
 			case 'afterSendHtmlAll':
-			    if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"message\":\""+params.msg+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+params.msg+"\"},");
 				}
 			break;
 		}
 	}
 };
+
+channels = function() {
+    var channelids = sys.channelids();
+    var channels = [];
+	for(var x in channelids)
+	{
+	    channels.push(channelids[x]);
+	}
+	return channels;
+};
+
+stalkedChans = function() {
+    return getVal('stalked_chans').splir(':');
+}
+
 sendChanMessage = function(id, message) {
     sys.sendMessage(id, message, channel);
 };
@@ -304,6 +319,16 @@ sendChanAll = function(message, chan_id) {
 	if((chan_id === undefined && channel === undefined) || chan_id == -1)
 	{
 	    sys.sendAll(message);
+		// PO logs stuff
+		var channels = channels();
+		for(var x in channels)
+		{
+		    if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
+			{
+			    var params = {"msg":message, "chan_id":chan_id};
+			    append_logs(params);
+			}
+		}
 	}
 	else
 	{
