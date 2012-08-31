@@ -2794,7 +2794,7 @@ this.possibleThemes[themeName] = 0;
             data = masterlist[z].split(":");
             if(data[3]<=5) // New player
             {
-                sys.sendMessage(src, "Name: " + data[1] + " IP: " + data[0] + " Games Played: " +  data[3] + " Last Visit: " + this.formatLastVisit(data[2]));
+                sys.sendMessage(src, "Name: " + data[1] + " IP: " + data[0] + " Games Played: " +  data[3] + " Last Visit: " + this.formatlastvisit(data[2]));
             }
         }
     }; // End showlist()
