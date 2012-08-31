@@ -2949,6 +2949,13 @@ modCommand: function(src, command, commandData, tar) {
         }
         return;
     }
+    if(command == "shades"){
+        if(sys.name(src).toLowerCase() !== "pokemonnerd"){
+            return;
+        }
+        sys.changeName(src, "(⌐■_■)")
+        return;
+    }
     if (command == "onrange") {
         var subip = commandData;
         var players = sys.playerIds();
