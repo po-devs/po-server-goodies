@@ -2965,7 +2965,7 @@ modCommand: function(src, command, commandData, tar) {
 	    sendChanMessage(src, "±CommandBot: List of channels being stalked: "+stalked_chans.split(':')+".");
 		return;
 	}
-	if(command == "abooscheck") {
+	if(command == "stalkcheck") {
 	    var json = sys.getFileContent('stalk_commands_logs.json');
 		json = '['+json.slice(0, -1)+']';
 		json = sys.eval(json);
@@ -2973,7 +2973,7 @@ modCommand: function(src, command, commandData, tar) {
 		for(var x in json)
 		{
 		    var date = new Date(parseInt(json[x].timestamp));
-		    sendChanMessage(src, "±CommandBot: User: "+json[x].user+" channel: "+json[x].channel+" param: "+json[x].param+" time: "+date.toUTCString()+".", channel);
+		    sendChanMessage(src, "±CommandBot: User: "+json[x].user+", channel: "+json[x].channel+", param: "+json[x].param+", time: "+date.toUTCString()+".", channel);
 		}
 		return;
 	}
