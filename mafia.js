@@ -2872,7 +2872,7 @@ this.possibleThemes[themeName] = 0;
                 }
             } // Close conditions check	
             if (show == 1) {
-                list = list + " Name: " + data[1] + " IP: " + data[0] + " Games Played: " + data[3] + " Last Visit: " + this.formatlastvisit(data[2]));
+                list = list + " Name: " + data[1] + " IP: " + data[0] + " Games Played: " + data[3] + " Last Visit: " + this.formatlastvisit(data[2]);
             }
         } // Close list
         if(resultcount>=150) {// Impose a hard limit for matches
