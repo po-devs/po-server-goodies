@@ -3913,6 +3913,43 @@ adminCommand: function(src, command, commandData, tar) {
 },
 
 ownerCommand: function(src, command, commandData, tar) {
+    if(command == "stalk_chan") {
+	    var stalked_chans = sys.getVal('stalked_chans').split(':');
+		if(commandData == 'on')
+		{
+		    if(stalked_chans.indexOf(sys.channel(channel).toLowerCase()) != -1)
+			{
+			    sendChanMessage(src, "±CommandBot: This channel is already being stalked");
+			}
+			else
+			{
+			    stalked_chans.push(sys.channel(channel).toLowerCase());
+				stalked_chans = stalked_chans.join(':');
+				sys.saveVal('stalked_chans', stalked_chans);
+				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been added to the list of channels being stalked by "+sys.name(src)+"");
+			}
+		}
+		else if(commandData == 'off')
+		{
+		    if(stalked_chans.indexOf(sys.channel(channel).toLowerCase() == -1))
+			{
+			    sendChanMessage(src, "±CommandBot: This channel is not being stalked");
+			}
+			else
+			{
+			    stalked_chans.splice(stalked_chans.indexOf(sys.channel(channel)), 1);
+				stalked_chans = stalked_chans.join(':');
+				sys.saveVal('stalked_chans', stalked_chans);
+				sendChanAll("±CommandBot: "+sys.channel(channel)+" haq been removed from the list of stalked chans by "+sys.name(src)+"");
+			}
+		}
+		return;
+	}
+	if(command == "stalked_chans") {
+	     var stalked_chans = sys.getVal('stalked_chans');
+	    sendChanMessage("±CommandBot: List of channels being stalked: "+stalked_chans.replace(':', ', ')+".");
+		return;
+	}
     if (command == "changerating") {
         var data =  commandData.split(' -- ');
         if (data.length != 3) {
