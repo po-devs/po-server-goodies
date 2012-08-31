@@ -3943,10 +3943,6 @@ ownerCommand: function(src, command, commandData, tar) {
 	}
     if(command == "stalk_chan") {
 	    var stalked_chans = getVal('stalked_chans').split(':');
-		if(['on', 'off'].indexOf(commandData.toLowerCase()) == -1)
-		{
-		     sendChanMessage(src, "±CommandBot: You must specify a correct parameter");
-		}
 		if(commandData == 'on')
 		{
 		    if(stalked_chans.indexOf(sys.channel(channel).toLowerCase()) != -1)
@@ -3979,6 +3975,10 @@ ownerCommand: function(src, command, commandData, tar) {
 				var date = new Date();
 				sys.appendToFile('stalk_commands_logs.json', '{"user":"'+sys.name(src)+'", "param":"off", "channel":"'+sys.channel(channel)+'", "timestamp":"'+date.getTime()+'"},');
 			}
+		}
+		else
+		{
+		    sendChanMessage(src, "±CommandBot: You must specify a correct parameter");
 		}
 		return;
 	}
