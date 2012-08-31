@@ -1979,7 +1979,7 @@ this.possibleThemes[themeName] = 0;
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") couldn't be converted!");
                             } else {
                                 var oldRole = target.role;
-                                var newRole;
+                                var newRole = undefined;
                                 if (typeof Action.newRole == "object") {
                                     var possibleRoles = shuffle(Object.keys(Action.newRole));
                                     for (var nr in possibleRoles) {
@@ -2003,7 +2003,11 @@ this.possibleThemes[themeName] = 0;
                                         }
                                     }
                                     if (target !== player) {
-                                        mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") has been converted and is now a " + target.role.translation + "!");
+                                        if ("usermsg" in Action) {
+                                            mafia.sendPlayer(player.name, "±Game: " + Action.usermsg.replace(/~Target~/g, target.name).replace(/~Old~/g, oldRole.translation).replace(/~New~/g, target.role.translation), mafiachan);
+                                        } else {
+                                            mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") has been converted and is now a " + target.role.translation + "!");
+                                        }
                                     }
                                     mafia.sendPlayer(target.name, "±Game: You have been converted and changed roles!");
                                     mafia.showOwnRole(sys.id(target.name));
@@ -2075,7 +2079,9 @@ this.possibleThemes[themeName] = 0;
                 names = mafia.getPlayersForRole(mafia.theme.standbyRoles[role]);
                 for (j = 0; j < names.length; ++j) {
                     for (var k in mafia.players[names[j]].role.actions.standby) {
-                        mafia.sendPlayer(names[j], mafia.players[names[j]].role.actions.standby[k].msg);
+                        if (mafia.players[names[j]].role.actions.standby[k].msg) {
+                            mafia.sendPlayer(names[j], mafia.players[names[j]].role.actions.standby[k].msg);
+                        }
                     }
                 }
             }
