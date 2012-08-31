@@ -3947,7 +3947,7 @@ ownerCommand: function(src, command, commandData, tar) {
 	}
 	if(command == "stalked_chans") {
 	     var stalked_chans = sys.getVal('stalked_chans');
-	    sendChanMessage("±CommandBot: List of channels being stalked: "+stalked_chans.replace(':', ', ')+".");
+	    sendChanMessage(src, "±CommandBot: List of channels being stalked: "+stalked_chans.replace(':', ', ')+".");
 		return;
 	}
     if (command == "changerating") {
