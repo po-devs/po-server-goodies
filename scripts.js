@@ -312,7 +312,7 @@ channels = function() {
 };
 
 stalkedChans = function() {
-    return getVal('stalked_chans').splir(':');
+    return getVal('stalked_chans').split(':');
 }
 
 sendChanMessage = function(id, message) {
