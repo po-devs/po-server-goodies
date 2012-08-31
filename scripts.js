@@ -172,6 +172,7 @@ update_web_logs = function() {
 	     // Take po_logs.json to the handler and empty it afterward as well as update the date of the logs
 		 sys.saveVal('logs_date', date.getUTCFullYear()+'-'+date.getUTCMonth()+'-'+date.getUTCDate());
 		 sys.writeToFile('po_logs.json', '');
+		 sendChanHtmlAll("<strong>The logs of today have been uploaded</strong>", sys.channelId('Indigo Plateau'));
 	}
 };
 
