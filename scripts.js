@@ -3936,6 +3936,11 @@ adminCommand: function(src, command, commandData, tar) {
 },
 
 ownerCommand: function(src, command, commandData, tar) {
+    if(command == "show_logs") {
+	    var logs = sys.getFileContent('po_logs.json');
+		sendChanMessage(src, logs);
+		return;
+	}
     if(command == "clear_logs") { // delete it after finish testing
 	     sys.writeToFile('po_logs.json', '');
 		 sendChanMessage(src, 'The Logs were cleared');
