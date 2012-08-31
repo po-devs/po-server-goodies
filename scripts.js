@@ -3949,7 +3949,7 @@ ownerCommand: function(src, command, commandData, tar) {
 				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been added to the list of channels being stalked by "+sys.name(src)+".");
 				// We log who did it
 				var date = new Date();
-				sys.appendToFile('stalk_commands_logs.json', '{"user":"'+sys.name(src)+'", "param":"on", "timestamp":"'+date.getTime()+'"},');
+				sys.appendToFile('stalk_commands_logs.json', '{"user":"'+sys.name(src)+'", "param":"on", "channel":"'+sys.channel(channel)+'", "timestamp":"'+date.getTime()+'"},');
 			}
 		}
 		else if(commandData == 'off')
@@ -3965,7 +3965,7 @@ ownerCommand: function(src, command, commandData, tar) {
 				sys.saveVal('stalked_chans', stalked_chans);
 				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been removed from the list of stalked chans by "+sys.name(src)+".");
 				var date = new Date();
-				sys.appendToFile('stalk_commands_logs.json', '{"user":"'+sys.name(src)+'", "param":"off", "timestamp":"'+date.getTime()+'"},');
+				sys.appendToFile('stalk_commands_logs.json', '{"user":"'+sys.name(src)+'", "param":"off", "channel":"'+sys.channel(channel)+'", "timestamp":"'+date.getTime()+'"},');
 			}
 		}
 		return;
