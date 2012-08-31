@@ -53,6 +53,7 @@ var tourmodcommands = ["*** Parameter Information ***",
                     "remove [tour/number]: removes a tournament from the queue. If a number is put in, it will remove the tour in the queue with the corresponding number. If a tier is put in, it will remove the tournament of that tier (starting from the back)",
                     "cancelbattle [name]: cancels that player's current battle",
                     "config: shows config settings",
+                    "start: starts next tournament in the queue immediately (use sparingly)",
                     "configset [var]:[value]: changes config settings",
                     "passta [name]: passes your tour admin to a new name"]
 var touradmincommands = ["tourstart [tier]:[parameters]: starts a tier of that tournament immediately, provided one is not in signups.",
@@ -60,7 +61,6 @@ var touradmincommands = ["tourstart [tier]:[parameters]: starts a tier of that t
                     "tadmin[s] [name]: makes someone a tournament admin - s makes it only show in staff chan",
                     "tdeadmin[s] [name]: fires someone from being tournament admin - s makes it only show in staff chan",
                     // "forcestart: ends signups immediately and starts the first round",
-                    "start: starts next tournament in the queue immediately (use sparingly)",
                     "push [player]: pushes a player into a tournament in signups (DON'T USE UNLESS ASKED)",
                     "tahistory [days]: views the activity of tour admins (days is optional, if excluded it will get the last 7 days if possible)",
                     "updatewinmessages: updates win messages from the web",
@@ -664,7 +664,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.515",
+            version: "1.516",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -704,7 +704,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseInt(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.515",
+        version: "1.516",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -1440,31 +1440,6 @@ function tourCommand(src, command, commandData) {
                 });
                 return true;
             }
-            if (command == "start") {
-                for (var x in tours.tour) {
-                    if (tours.tour[x].state == "signups") {
-                        sendBotMessage(src, "A tournament is already in signups!", tourschan, false)
-                        return true;
-                    }
-                }
-                if (tours.queue.length != 0) {
-                    var data = tours.queue[0].split(":::",6)
-                    var tourtostart = data[0]
-                    var maxplayers = parseInt(data[5])
-                    if (isNaN(maxplayers)) {
-                        maxplayers = false;
-                    }
-                    var parameters = {"mode": data[2], "gen": data[3], "type": data[4], "maxplayers": maxplayers}
-                    tours.queue.splice(0,1)
-                    tourstart(tourtostart, sys.name(src), tours.key, parameters)
-                    sendBotAll(sys.name(src)+" force started the "+tourtostart+" tournament!",tourschan,false)
-                    return true;
-                }
-                else {
-                    sendBotMessage(src, "There are no tournaments to force start! Use /tour [tier] instead!", tourschan, false)
-                    return true;
-                }
-            }
             if (command == "tourbans") {
                 sys.sendMessage(src, "Active tourbans: "+tours.tourbans.join(", "),tourschan)
                 return true;
@@ -1628,6 +1603,35 @@ function tourCommand(src, command, commandData) {
                 }
                 addTourActivity(src)
                 return true;
+            }
+            if (command == "start") {
+                for (var x in tours.tour) {
+                    if (tours.tour[x].state == "signups") {
+                        sendBotMessage(src, "A tournament is already in signups!", tourschan, false)
+                        return true;
+                    }
+                }
+                if (calcPercentage() > tourconfig.minpercent/2 && !isTourSuperAdmin(src)) {
+                    sendBotMessage(src, "Too many players are in tours now!", tourschan, false)
+                    return true;
+                }
+                if (tours.queue.length != 0) {
+                    var data = tours.queue[0].split(":::",6)
+                    var tourtostart = data[0]
+                    var maxplayers = parseInt(data[5])
+                    if (isNaN(maxplayers)) {
+                        maxplayers = false;
+                    }
+                    var parameters = {"mode": data[2], "gen": data[3], "type": data[4], "maxplayers": maxplayers}
+                    tours.queue.splice(0,1)
+                    tourstart(tourtostart, sys.name(src), tours.key, parameters)
+                    sendBotAll(sys.name(src)+" force started the "+tourtostart+" tournament!",tourschan,false)
+                    return true;
+                }
+                else {
+                    sendBotMessage(src, "There are no tournaments to force start! Use /tour [tier] instead!", tourschan, false)
+                    return true;
+                }
             }
             if (command == "changecount") {
                 var key = null
