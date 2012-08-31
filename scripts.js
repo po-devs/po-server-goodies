@@ -251,17 +251,16 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 			
 			case 'afterChannelJoin':
-						     sys.sendMessage(sys.id('[LD]Jirachier'), 'pony', 2);
 			    if(sys.name(params.source_id) !== undefined && sys.channelName(params.chan_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelJoin\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"channel\":\""+sys.channelName(params.chan_id)+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelJoin\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"channel\":\""+sys.channel(params.chan_id)+"\"},");
 				}
 			break;
 			
 			case 'afterChannelLeave':
 			    if(sys.name(params.source_id) !== undefined && sys.channelName(params.chan_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelLeave\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"channel\":\""+sys.channelName(params.chan_id)+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelLeave\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"channel\":\""+sys.channel(params.chan_id)+"\"},");
 				}
 			break;
 		}
