@@ -177,7 +177,7 @@ update_web_logs = function() {
 
 getVal = function(valname) {
     var val = sys.getVal(valname);
-	return val.substr(1);
+	return val[0] == ':' ? val.substr(1) : val;
 };
 
 append_logs = function(params) { // Adds chat lines to the logs
