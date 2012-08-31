@@ -3935,7 +3935,7 @@ ownerCommand: function(src, command, commandData, tar) {
 		}
 		else if(commandData == 'off')
 		{
-		    if(stalked_chans.indexOf(sys.channel(channel).toLowerCase() == -1))
+		    if(stalked_chans.indexOf(sys.channel(channel).toLowerCase()) == -1)
 			{
 			    sendChanMessage(src, "±CommandBot: This channel is not being stalked");
 			}
