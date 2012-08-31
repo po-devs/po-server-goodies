@@ -2812,7 +2812,7 @@ this.possibleThemes[themeName] = 0;
             data = masterlist[z].split(":");
             if (data[3] <= 2) // New player
             {
-                 list = list + "Name: " + data[1] + " IP: " + data[0] + " Games Played: " + data[3] + " Last Visit: " + this.formatlastvisit(data[2]));
+                 list = list + "Name: " + data[1] + " IP: " + data[0] + " Games Played: " + data[3] + " Last Visit: " + this.formatlastvisit(data[2]);
             }
             sys.sendMessage(src, list, mafiachan);
         }
