@@ -3915,6 +3915,10 @@ adminCommand: function(src, command, commandData, tar) {
 ownerCommand: function(src, command, commandData, tar) {
     if(command == "stalk_chan") {
 	    var stalked_chans = sys.getVal('stalked_chans').split(':');
+		if(['on', 'off'].indexOf(commandData.toLowerCase()) == -1)
+		{
+		     sendChanMessage(src, "±CommandBot: You must specify a correct parameter");
+		}
 		if(commandData == 'on')
 		{
 		    if(stalked_chans.indexOf(sys.channel(channel).toLowerCase()) != -1)
