@@ -2959,6 +2959,11 @@ userCommand: function(src, command, commandData, tar) {
 },
 
 modCommand: function(src, command, commandData, tar) {
+    if(command == "stalked_chans") {
+	     var stalked_chans = getVal('stalked_chans');
+	    sendChanMessage(src, "±CommandBot: List of channels being stalked: "+stalked_chans.split(':')+".");
+		return;
+	}
     if (command == "topchannels") {
         var cids = sys.channelIds();
         var l = [];
@@ -3946,18 +3951,12 @@ ownerCommand: function(src, command, commandData, tar) {
 			}
 			else
 			{
-			var ethan = 'faggot';
 			    stalked_chans.splice(stalked_chans.indexOf(sys.channel(channel).toLowerCase()), 1);
 				stalked_chans = stalked_chans.join(':');
 				sys.saveVal('stalked_chans', stalked_chans);
 				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been removed from the list of stalked chans by "+sys.name(src)+".");
 			}
 		}
-		return;
-	}
-	if(command == "stalked_chans") {
-	     var stalked_chans = getVal('stalked_chans');
-	    sendChanMessage(src, "±CommandBot: List of channels being stalked: "+stalked_chans.split(':')+".");
 		return;
 	}
     if (command == "changerating") {
