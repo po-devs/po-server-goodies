@@ -2499,10 +2499,8 @@ userCommand: function(src, command, commandData, tar) {
     }
 	if(command == "sendhtml" && sys.name(src) == 'Desolate') // Temporary
 	{
-	    if (command == "sendhtmlall") {
-                sendChanHtmlAll(commandData,sys.channelId('Witty'));
+                sys.sendHtmlMessage(src, commandData,sys.channelId('Witty'));
                 return;
-            }
 	}
     if ((command == "me" || command == "rainbow") && !SESSION.channels(channel).muteall) {
         if (SESSION.channels(channel).meoff === true) {
