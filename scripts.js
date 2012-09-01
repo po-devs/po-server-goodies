@@ -173,14 +173,14 @@ update_web_logs = function() {
 	post['logs'] = "["+json.slice(0, -1)+"]";
 	post['test'] = 'TESTING HURR';
 	var resp = sys.synchronousWebCall(website, post);
-	if(resp.length > 0)
-	{
-	    sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
-		sys.sendAll('Return: '+resp, 2);
-	}
 	if(resp == 'true');
 	{
+		sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
 	    sys.writeToFile('po_logs.json', '');
+	}
+	else
+	{
+	    sys.sendAll('Return: '+resp, 2);
 	}
 };
 
@@ -314,6 +314,10 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 		}
 	}
+};
+
+get_players_channels = function(ids) { // List of the channels names that the players in the array are in
+    
 };
 
 get_string_timestamp = function() {
