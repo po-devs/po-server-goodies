@@ -174,7 +174,7 @@ update_web_logs = function() {
 	sys.webCall(website, function(resp) {  
 		sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
     }, post);
-    sys.writeToFile('po_logs.json', '');
+	sys.writeToFile('po_logs.json', '');
 };
 
 getVal = function(valname) { // Removes ":" if it's the first character of the val
@@ -242,9 +242,9 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 			
 			case 'afterPlayerAway':
-			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
+			    if(sys.name(params.source_id) !== undefined && typeof params.away == 'boolean' && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerAway\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerAway\", \"timestamp\":\""+params.timestamp+"\", \"away\":\""+params.away+"\" \"source\":\""+sys.name(params.source_id)+"\"},");
 				}
 			break;
 			
@@ -2132,8 +2132,8 @@ afterNewMessage : function (message) {
         this.init();
     }
 	// To catch overactives for the PO logs
-	var ip_overactive = new RegExp("^IP [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3} is being overactive\.$");
-	var player_overactive = new RegExp("^Player [^:]{1,20} \(IP [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\) is being overactive\.$");
+	var ip_overactive = new RegExp("^IP [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3} is being overactive\.$");
+	var player_overactive = new RegExp("^Player [^:]{1,20} \(IP [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\) is being overactive\.$");
 	if(ip_overactive.test(message) || player_overactive.test(message))
 	{
 	    sys.sendAll('overactive spotted !!!', 2);
@@ -5417,9 +5417,9 @@ afterChangeTier : function(src, team, oldtier, newtier) {
 	append_logs(params);
 },
 
-afterPlayerAway : function(src) {
+afterPlayerAway : function(src, away) {
     // PO logs stuff
-    var params = {event:'afterPlayerAway', source_id:src, timestamp:get_timestamp()};
+    var params = {event:'afterPlayerAway', source_id:src, "away":away, timestamp:get_timestamp()};
 	append_logs(params);
 },
 
