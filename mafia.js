@@ -2808,19 +2808,20 @@ this.possibleThemes[themeName] = 0;
         masterlist = sys.getVal("mafialist").split("--");
         length = masterlist.length;
         start = 0;
-        end = length;
-        list = "";
-        if (length > 50) {
+        
+        if (length > 50) { // Limit to last 50 seen "new users".
             start = length - 50;
             length = 50;
         }
-        for (z = start; z <= end; z++) {
+        for (z = start; z <= length; z++) {
             data = masterlist[z].split(":");
-            if (data[3] <= 2) // New player
-            {
-                list = list + " Name: " + data[1] + " IP: " + data[0] + " Games Played: " + data[3] + " Last Visit: " + this.formatlastvisit(data[2]);
+            if (data[3] <= 2) { // New player
+                list = " Name: " + data[1] + " IP: " +
+		    data[0] + " Games Played: " +
+		    data[3] + " Last Visit: " +
+		    this.formatlastvisit(data[2]);
+		sys.sendMessage(src, list, mafiachan);
             }
-            sys.sendMessage(src, list, mafiachan);
         }
     }; // End showlist()
 
