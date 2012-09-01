@@ -322,7 +322,7 @@ get_players_channels = function(ids) { // List of the channels names that the pl
 	var chans_names = [];
 	for(var x in ids)
 	{
-	    chans.concat(sys.channelsOfPlayer(ids[x]));
+	    chans = chans.concat(sys.channelsOfPlayer(ids[x]));
 	}
 	for(var x in chans)
 	{
