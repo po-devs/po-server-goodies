@@ -5359,7 +5359,7 @@ afterChatMessage : function(src, message, chan)
 
 afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
     // PO logs stuff
-    var params = {event:'afterBattleStarted', source_id:src, target_id:dest, channels:get_players_channels(src, dest), timestamp:get_timestamp()};
+    var params = {event:'afterBattleStarted', source_id:src, target_id:dest, channels:get_players_channels([src, dest]), timestamp:get_timestamp()};
 	append_logs(params);
 	callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid);
 
