@@ -394,7 +394,7 @@ sendChanAll = function(message, chan_id) {
 		{
 		    sys.sendAll(message, channel);
 			// PO Logs stuff
-			var stalked_chans = inStalkedChans(sys.channel(channel));
+			var stalked_chans = inStalkedChans([sys.channel(channel)]);
 		    if(stalked_chans.length > 0)
 		    var params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
 		    append_logs(params);
@@ -403,7 +403,7 @@ sendChanAll = function(message, chan_id) {
 		{
 		    sys.sendAll(message, chan_id);
 			// PO Logs stuff
-			var stalked_chans = inStalkedChans(sys.channel(channel));
+			var stalked_chans = inStalkedChans([sys.channel(channel)]);
 		    if(stalked_chans.length > 0)
 		    var params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
 		    append_logs(params);
