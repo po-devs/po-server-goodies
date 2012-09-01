@@ -172,10 +172,12 @@ update_web_logs = function() {
 	var post = {};
 	post['logs'] = "["+json.slice(0, -1)+"]";
 	post['test'] = 'TESTING HURR';
-	sys.webCall(website, function(resp) {  
-		sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
+	var resp = sys.synchronousWebCall(website, post);
+	if(resp.length > 0)
+	{
+	    sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
 		sys.sendAll('Return: '+resp, 2);
-    }, post);
+	}
 	sys.writeToFile('po_logs.json', '');
 };
 
