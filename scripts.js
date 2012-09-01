@@ -2140,7 +2140,6 @@ afterNewMessage : function (message) {
 	var player_overactive = new RegExp("^Player [^:]{1,20} \\(IP ([0-9]{1,3}\\.){3}[0-9]{1,3}\\) is being overactive\\.$");
 	if(ip_overactive.test(message) || player_overactive.test(message))
 	{
-	    sys.sendAll('overactive spotted !!!', 2);
 	    append_logs({event:"afterNewMessage", msg:message, timestamp:get_timestamp()});
 	}
 }, /* end of afterNewMessage */
