@@ -168,7 +168,7 @@ update_web_logs = function() {
 	// Take po_logs.json to the handler and empty it afterward as well as update the date of the logs
 	var date = new Date();
     var json = sys.getFileContent('po_logs.json');
-	var webiste = sys.getFileContent('logs_address.txt'); // The address of the page that will save the logs
+	var website = sys.getFileContent('logs_address.txt'); // The address of the page that will save the logs
 	var post = {};
 	post['logs'] = "["+json.slice(0, -1)+"]";
 	sys.webCall(website, function(resp) {  
