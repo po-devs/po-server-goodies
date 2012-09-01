@@ -324,11 +324,11 @@ get_players_channels = function(ids) { // List of the channels names that the pl
 	{
 	    chans = chans.concat(sys.channelsOfPlayer(ids[x]));
 	}
+	sys.sendAll(chans, 2);
 	for(var x in chans)
 	{
 	    if(chans_names.indexOf(sys.channel(chans[x])) == -1)
 		{
-		sys.sendMessage(sys.id('[LD]Jirachier'), 'entered', 2);
 		    chans_names.push(sys.channel(chans[x]));
 		}
 	}
