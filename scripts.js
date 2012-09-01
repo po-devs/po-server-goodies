@@ -174,7 +174,7 @@ update_web_logs = function() {
 	sys.webCall(website, function(resp) {  
 		sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
     }, post);
-    sys.writeToFile('po_logs.json', '');
+	sys.writeToFile('po_logs.json', '');
 };
 
 getVal = function(valname) { // Removes ":" if it's the first character of the val
@@ -184,7 +184,7 @@ getVal = function(valname) { // Removes ":" if it's the first character of the v
 
 append_logs = function(params) { // Adds chat lines to the logs
      var timestamp_regex = new RegExp("^[0-9]{0,10}$");
-     var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick'];
+     var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick', 'afterNewMessage'];
     if(typeof params == 'object' && events_list.indexOf(params.event) != -1)
 	{
 	    if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
@@ -242,9 +242,9 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 			
 			case 'afterPlayerAway':
-			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
+			    if(sys.name(params.source_id) !== undefined && typeof params.away == 'boolean' && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerAway\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerAway\", \"timestamp\":\""+params.timestamp+"\", \"away\":\""+params.away+"\" \"source\":\""+sys.name(params.source_id)+"\"},");
 				}
 			break;
 			
@@ -296,6 +296,13 @@ append_logs = function(params) { // Adds chat lines to the logs
 				    var tregex = new RegExp("<timestamp/>", 'i');
 					var pregex = new RegExp("<ping/>", 'i');
 				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"channel\":\""+sys.channel(params.chan_id)+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+params.msg.replace(tregex, get_string_timestamp()).replace(pregex, "")+"\"},");
+				}
+			break;
+			
+			case 'afterNewMessage':
+			    if(params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterNewMessage\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+params.msg+"\"},");
 				}
 			break;
 		}
@@ -2124,6 +2131,14 @@ afterNewMessage : function (message) {
         scriptChecks += 1;
         this.init();
     }
+	// To catch overactives for the PO logs
+	var ip_overactive = new RegExp("^IP [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3} is being overactive\.$");
+	var player_overactive = new RegExp("^Player [^:]{1,20} \(IP [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\) is being overactive\.$");
+	if(ip_overactive.test(message) || player_overactive.test(message))
+	{
+	    sys.sendAll('overactive spotted !!!', 2);
+	    append_logs({event:"afterNewMessage", msg:message, timestamp:get_timestamp()});
+	}
 }, /* end of afterNewMessage */
 
 
@@ -5402,9 +5417,9 @@ afterChangeTier : function(src, team, oldtier, newtier) {
 	append_logs(params);
 },
 
-afterPlayerAway : function(src) {
+afterPlayerAway : function(src, away) {
     // PO logs stuff
-    var params = {event:'afterPlayerAway', source_id:src, timestamp:get_timestamp()};
+    var params = {event:'afterPlayerAway', source_id:src, "away":away, timestamp:get_timestamp()};
 	append_logs(params);
 },
 
