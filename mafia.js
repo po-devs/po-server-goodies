@@ -1206,17 +1206,21 @@ this.possibleThemes[themeName] = 0;
     this.actionBeforeDeath = function (player) {
         if (player.role.actions.hasOwnProperty("onDeath")) {
             var onDeath = player.role.actions.onDeath;
-            var targetRoles, targetPlayers, r, k, target, actionMessage, needSeparator = false;
+            var targetRoles, targetPlayers, r, k, target, affected, actionMessage, needSeparator = false;
             if ("killRoles" in onDeath) {
                 targetRoles = onDeath.killRoles;
                 for (r = 0; r < targetRoles.length; ++r) {
                     targetPlayers = this.getPlayersForRole(targetRoles[r]);
+                    affected = [];
                     for (k = 0; k < targetPlayers.length; ++k) {
-                        this.removePlayer(this.players[targetPlayers[k]]);
+                        if (this.players[targetPlayers[k]] != player) {
+                            affected.push(targetPlayers[k]);
+                            this.removePlayer(this.players[targetPlayers[k]]);
+                        }
                     }
-                    if (targetPlayers.length > 0) {
+                    if (affected.length > 0) {
                         actionMessage = onDeath.killmsg ? onDeath.killmsg : "±Game: Because ~Self~ died, ~Target~ (~Role~) died too!";
-                        sendChanAll(actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(targetPlayers, "and")).replace(/~Role~/g, mafia.theme.trrole(targetRoles[r])), mafiachan);
+                        sendChanAll(actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Role~/g, mafia.theme.trrole(targetRoles[r])), mafiachan);
                         needSeparator = true;
                     }
                 }
@@ -1225,7 +1229,7 @@ this.possibleThemes[themeName] = 0;
                 targetRoles = onDeath.poisonRoles;
                 for (r in targetRoles) {
                     targetPlayers = this.getPlayersForRole(r);
-                    var affected = [];
+                    affected = [];
                     for (k = 0; k < targetPlayers.length; ++k) {
                         target = this.players[targetPlayers[k]];
                         var count = onDeath.poisonRoles[r];
