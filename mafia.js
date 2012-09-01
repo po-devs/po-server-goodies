@@ -2808,7 +2808,8 @@ this.possibleThemes[themeName] = 0;
         masterlist = sys.getVal("mafialist").split("--");
         length = masterlist.length;
         start = 0;
-        
+        list = "";
+
         if (length > 50) { // Limit to last 50 seen "new users".
             start = length - 50;
             length = 50;
