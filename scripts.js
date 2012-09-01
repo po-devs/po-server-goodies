@@ -303,7 +303,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 
 get_string_timestamp = function() {
     var date = new Date();
-	return '('+checkTime(date.getUTCHours())+':'+checkTime(date.getUTCMinutes())+':'checkTime(date.getUTCSeconds()')');
+	return '('+checkTime(date.getUTCHours())+':'+checkTime(date.getUTCMinutes())+':'+checkTime(date.getUTCSeconds()+')');
 }
 
 function checkTime(i) { //adds a 0 in front of one digit minutes/seconds
