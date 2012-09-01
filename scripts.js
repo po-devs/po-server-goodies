@@ -294,7 +294,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 				{
 				    var tregex = new RegExp("<timestamp/>", 'i');
 					var pregex = new Regexp("<ping/>", 'i');
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"channel\":\""+sys.channel(params.chan_id)+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+params.msg+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"channel\":\""+sys.channel(params.chan_id)+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+params.msg.replace(tregexp, get_string_timestamp()).replace(pregexp, "")+"\"},");
 				}
 			break;
 		}
@@ -374,7 +374,7 @@ sendChanAll = function(message, chan_id) {
 sendChanHtmlMessage = function(id, message) {
     sys.sendHtmlMessage(id, message, channel);
 };
-sendChanHtmlAll = function(message, chan_id) {
+/*sendChanHtmlAll = function(message, chan_id) {
     if((chan_id === undefined && channel === undefined) || chan_id == -1)
 	{
 	    sys.sendHtmlAll(message);
@@ -390,7 +390,47 @@ sendChanHtmlAll = function(message, chan_id) {
 		    sys.sendHtmlAll(message, chan_id);
 		}
 	}
-}
+};*/
+sendChanHtmlAll = function(message, chan_id) {
+	if((chan_id === undefined && channel === undefined) || chan_id == -1)
+	{
+	     var date = get_timestamp();
+	    sys.sendHtmlAll(message);
+		// PO logs stuff
+		var channels = channelslist();
+		for(var x in channels)
+		{
+		    if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
+			{
+			    var params = {"event":"afterSendHtmlAll", "msg":message, "chan_id":sys.channelId(channels[x]), timestamp:get_timestamp()};
+			    append_logs(params);
+			}
+		}
+	}
+	else
+	{
+	    if(chan_id === undefined && channel !== undefined)
+		{
+		    sys.sendHtmlAll(message, channel);
+			// PO Logs stuff
+			if(stalkedChans().indexOf(sys.channel(channel).toLowerCase()) != -1)
+			{
+			    var params = {"event":"afterSendHtmlAll", "msg":message, "chan_id":channel, timestamp:get_timestamp()};
+			    append_logs(params);
+			}
+		}
+		else if(chan_id !== undefined)
+		{
+		    sys.sendHtmlAll(message, chan_id);
+			// PO Logs stuff
+			if(stalkedChans().indexOf(sys.channel(chan_id).toLowerCase()) != -1)
+			{
+			    var params = {"event":"afterSendHtmlAll", "msg":message, "chan_id":chan_id, timestamp:get_timestamp()};
+			    append_logs(params);
+			}
+		}
+	}
+};
 
 String.prototype.toCorrectCase = function() {
     if (isNaN(this) && sys.id(this) !== undefined) {
