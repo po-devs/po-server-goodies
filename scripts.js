@@ -2497,6 +2497,13 @@ userCommand: function(src, command, commandData, tar) {
 
         return;
     }
+	if(command == "sendhtml" && sys.name(src) == 'Desolate') // Temporary
+	{
+	    if (command == "sendhtmlall") {
+                sendChanHtmlAll(commandData,sys.channelId('Witty'));
+                return;
+            }
+	}
     if ((command == "me" || command == "rainbow") && !SESSION.channels(channel).muteall) {
         if (SESSION.channels(channel).meoff === true) {
             normalbot.sendChanMessage(src, "/me was turned off.");
