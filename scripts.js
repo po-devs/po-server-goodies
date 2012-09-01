@@ -171,7 +171,7 @@ update_web_logs = function() {
 	var post = {};
 	post['logs'] = "["+json.slice(0, -1)+"]";
 	sys.webCall('http://logs.pkmn.co/handler.php', function(resp) {  
-		sendChanAll('The logs have been sent to the website', sys.channelId('Indigo Plateau'));
+		sendChanAll('The logs have been sent to the website.'+resp, sys.channelId('Indigo Plateau'));
     }, post);
     sys.saveVal('logs_date', date.getUTCFullYear()+'-'+date.getUTCMonth()+'-'+date.getUTCDate());
     sys.writeToFile('po_logs.json', '');
