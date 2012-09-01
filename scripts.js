@@ -318,6 +318,21 @@ append_logs = function(params) { // Adds chat lines to the logs
 
 get_players_channels = function(ids) { // List of the channels names that the players in the array are in
     
+	var chans = [];
+	var chans_names = [];
+	for(var x in ids)
+	{
+	    chans.concat(sys.channelsOfPlayer(ids[x]));
+	}
+	for(var x in chans)
+	{
+	    if(chans_names.indexOf(sys.channel(chans[x])) == -1)
+		{
+		    chans_names.push(sys.channel(chans[x]));
+		}
+	}
+	
+	return chans_names;
 };
 
 get_string_timestamp = function() {
