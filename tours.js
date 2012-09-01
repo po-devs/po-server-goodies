@@ -664,7 +664,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.518",
+            version: "1.519",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -704,7 +704,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.518",
+        version: "1.519",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -3433,7 +3433,7 @@ function tourinitiate(key) {
         var variance = calcVariance()
         if (tours.globaltime !== -1) {
             var timeradd = tours.tour[key].maxplayers != "default" ? parseInt(tourconfig.abstourbreak*3/variance) : parseInt(tourconfig.abstourbreak/variance);
-            tours.globaltime = parseInt(sys.time()) + parseInt(tourconfig.abstourbreak/variance) // default 10 mins b/w signups, + 5 secs per user in chan
+            tours.globaltime = parseInt(sys.time()) + parseInt(timeradd) // default 10 mins b/w signups, + 5 secs per user in chan
         }
     }
     catch (err) {
