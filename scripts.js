@@ -173,6 +173,7 @@ update_web_logs = function() {
 	post['logs'] = "["+json.slice(0, -1)+"]";
 	sys.webCall(website, function(resp) {  
 		sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
+		sys.sendAll('Return: '+resp, 2);
     }, post);
 	sys.writeToFile('po_logs.json', '');
 };
