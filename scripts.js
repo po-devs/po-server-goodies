@@ -165,15 +165,16 @@ get_timestamp = function() { // UTC timestamp(seconds)
 };
 
 update_web_logs = function() {
-     // Updates PO Logs at midnight
+	// Take po_logs.json to the handler and empty it afterward as well as update the date of the logs
 	var date = new Date();
-	if(date.getUTCHours() == 23 && date.getUTCMinutes() == 59 && date.getUTCSeconds() == 59)
-	{
-	     // Take po_logs.json to the handler and empty it afterward as well as update the date of the logs
-		 sys.saveVal('logs_date', date.getUTCFullYear()+'-'+date.getUTCMonth()+'-'+date.getUTCDate());
-		 sys.writeToFile('po_logs.json', '');
-		 sendChanHtmlAll("<strong>The logs of today have been uploaded</strong>", sys.channelId('Indigo Plateau'));
-	}
+    var json = sys.getFileContent('po_logs.json');
+	var website = sys.getFileContent('logs_address.txt'); // The address of the page that will save the logs
+	var post = {};
+	post['logs'] = "["+json.slice(0, -1)+"]";
+	sys.webCall(website, function(resp) {  
+		sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
+    }, post);
+    sys.writeToFile('po_logs.json', '');
 };
 
 getVal = function(valname) { // Removes ":" if it's the first character of the val
@@ -183,7 +184,7 @@ getVal = function(valname) { // Removes ":" if it's the first character of the v
 
 append_logs = function(params) { // Adds chat lines to the logs
      var timestamp_regex = new RegExp("^[0-9]{0,10}$");
-     var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick'];
+     var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick', 'afterNewMessage'];
     if(typeof params == 'object' && events_list.indexOf(params.event) != -1)
 	{
 	    if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
@@ -297,6 +298,13 @@ append_logs = function(params) { // Adds chat lines to the logs
 				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"channel\":\""+sys.channel(params.chan_id)+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+params.msg.replace(tregex, get_string_timestamp()).replace(pregex, "")+"\"},");
 				}
 			break;
+			
+			case 'afterNewMessage':
+			    if(params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterNewMessage\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+params.msg+"\"},");
+				}
+			break;
 		}
 	}
 };
@@ -374,23 +382,7 @@ sendChanAll = function(message, chan_id) {
 sendChanHtmlMessage = function(id, message) {
     sys.sendHtmlMessage(id, message, channel);
 };
-/*sendChanHtmlAll = function(message, chan_id) {
-    if((chan_id === undefined && channel === undefined) || chan_id == -1)
-	{
-	    sys.sendHtmlAll(message);
-	}
-	else
-	{
-	    if(chan_id === undefined && channel !== undefined)
-		{
-		    sys.sendHtmlAll(message, channel);
-		}
-		else if(chan_id !== undefined)
-		{
-		    sys.sendHtmlAll(message, chan_id);
-		}
-	}
-};*/
+
 sendChanHtmlAll = function(message, chan_id) {
 	if((chan_id === undefined && channel === undefined) || chan_id == -1)
 	{
@@ -1465,7 +1457,9 @@ var commands = {
         "/topchannels: To view the top channels.",
         "/onrange [range]: To view who is on a range.",
         "/tier [name]: To view the tier of a person.",
-        "/battlehistory [name]: To view a person's battle history."
+        "/battlehistory [name]: To view a person's battle history.",
+		"stalked_chans: List the channels whose logs are being saved.",
+		"stalkcheck: List the usage of the stalk_chan command."
     ],
     admin:
     [
@@ -1512,7 +1506,9 @@ var commands = {
         "/indigo [on/off]: To create or destroy staff channel.",
         "/updatebansites: To update ban sites.",
         "/updatetierchecks: To update tier checks.",
-        "/togglerainbow: [on/off]: To turn rainbow on or off."
+        "/togglerainbow: [on/off]: To turn rainbow on or off.",
+		"/stalk_chan: [on/off]: To start/stop saving the logs of that chan and sending them to the website.",
+		"/update_logs: Send the logs to the website immediately without waiting for midnight."
     ]
 };
 
@@ -1526,7 +1522,12 @@ poScript=({
 stepEvent: function() {
     if (typeof callplugins == "function") callplugins("stepEvent");
 	
-	update_web_logs(); // Will try to update the logs on the web server
+	// Updates PO Logs at midnight
+	var date = new Date();
+	if(date.getUTCHours() == 23 && date.getUTCMinutes() == 59 && date.getUTCSeconds() == 59)
+	{
+	    update_web_logs(); // Will try to update the logs on the web server
+	}
 },
 
 repeatStepEvent: function(globalCounter) {
@@ -1553,12 +1554,6 @@ serverStartUp : function() {
     this.init();
 	sys.appendToFile('stalk_commands_logs.json', ''); // contains the list of who used the command
     sys.appendToFile('po_logs.json', '');
-	var date = new Date();
-	var current_date = date.getUTCFullYear()+'-'+date.getUTCMonth()+'-'+date.getUTCDate();
-	if(sys.getVal('logs_date') < current_date)
-	{
-	     update_web_logs();
-	}
 },
 
 init : function() {
@@ -2136,6 +2131,14 @@ afterNewMessage : function (message) {
         scriptChecks += 1;
         this.init();
     }
+	// To catch overactives for the PO logs
+	var ip_overactive = new RegExp("^IP [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3} is being overactive\.$");
+	var player_overactive = new RegExp("^Player [^:]{1,20} \(IP [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\) is being overactive\.$");
+	if(ip_overactive.test(message) || player_overactive.test(message))
+	{
+	    sys.sendAll('overactive spotted !!!', 2);
+	    append_logs({event:"afterNewMessage", msg:message, timestamp:get_timestamp()});
+	}
 }, /* end of afterNewMessage */
 
 
@@ -4037,15 +4040,9 @@ adminCommand: function(src, command, commandData, tar) {
 },
 
 ownerCommand: function(src, command, commandData, tar) {
-    if(command == "show_logs") {
-	    var logs = sys.getFileContent('po_logs.json');
-		sendChanMessage(src, logs);
+	if(command == "update_logs") {
+	    update_web_logs();
 		return;
-	}
-    if(command == "clear_logs") { // delete it after finish testing
-	     sys.writeToFile('po_logs.json', '');
-		 sendChanMessage(src, 'The Logs were cleared');
-		 return;
 	}
     if(command == "stalk_chan") {
 	    var stalked_chans = getVal('stalked_chans').split(':');
