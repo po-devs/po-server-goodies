@@ -292,12 +292,27 @@ append_logs = function(params) { // Adds chat lines to the logs
 			case 'afterSendHtmlAll':
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
+				    var tregex = new RegExp("<timestamp/>", 'i');
+					var pregex = new Regexp("<ping/>", 'i');
 				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"channel\":\""+sys.channel(params.chan_id)+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+params.msg+"\"},");
 				}
 			break;
 		}
 	}
 };
+
+get_string_timestamp = function() {
+    var date = new Date();
+	return '('+checkTime(date.getUTCHours())+':'+checkTime(date.getUTCMinutes())+':'checkTime(date.getUTCSeconds()')');
+}
+
+function checkTime(i) { //adds a 0 in front of one digit minutes/seconds
+    if(i < 10) {
+        i = "0" + i;
+    };
+    return i;
+};
+
 
 channelslist = function() {
     var channelids = sys.channelIds();
