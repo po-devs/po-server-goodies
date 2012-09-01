@@ -299,7 +299,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 	}
 };
 
-channels = function() {
+channelslist = function() {
     var channelids = sys.channelids();
     var channels = [];
 	for(var x in channelids)
@@ -322,7 +322,7 @@ sendChanAll = function(message, chan_id) {
 	     var date = get_timestamp();
 	    sys.sendAll(message);
 		// PO logs stuff
-		var channels = channels();
+		var channels = channelslist();
 		for(var x in channels)
 		{
 		    if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
