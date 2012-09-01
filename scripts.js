@@ -2124,7 +2124,6 @@ afterNewMessage : function (message) {
         scriptChecks += 1;
         this.init();
     }
-    sendChanAll('Yes it is: '+message, sys.channelId('Indigo Plateau'));
 }, /* end of afterNewMessage */
 
 
