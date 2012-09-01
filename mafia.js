@@ -2813,6 +2813,7 @@ this.possibleThemes[themeName] = 0;
         if (length > 50) { // Limit to last 50 seen "new users".
             start = length - 50;
         }
+        sys.sendMessage(src, start+" "+length)
         for (z = start; z <= length; z++) {
             data = masterlist[z].split(":");
             if (data[3] <= 2) { // New player
