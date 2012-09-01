@@ -300,7 +300,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 };
 
 channelslist = function() {
-    var channelids = sys.channelids();
+    var channelids = sys.channelIds();
     var channels = [];
 	for(var x in channelids)
 	{
