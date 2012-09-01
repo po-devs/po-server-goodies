@@ -360,7 +360,19 @@ channelslist = function() {
 
 stalkedChans = function() {
     return getVal('stalked_chans').split(':');
-}
+};
+
+inStalkedChans = function(channels) {
+     var stalked = [];
+    for(x in channels)
+	{
+	    if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
+		{
+		    stalked.push(channels[x]);
+		}
+	}
+	return stalked;
+};
 
 sendChanMessage = function(id, message) {
     sys.sendMessage(id, message, channel);
@@ -384,7 +396,7 @@ sendChanAll = function(message, chan_id) {
 	else
 	{
 	    if(chan_id === undefined && channel !== undefined)
-		{
+		{h
 		    sys.sendAll(message, channel);
 			// PO Logs stuff
 			if(stalkedChans().indexOf(sys.channel(channel).toLowerCase()) != -1)
