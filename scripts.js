@@ -2132,8 +2132,8 @@ afterNewMessage : function (message) {
         this.init();
     }
 	// To catch overactives for the PO logs
-	var ip_overactive = new RegExp("^IP [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3} is being overactive\.$");
-	var player_overactive = new RegExp("^Player [^:]{1,20} \(IP [0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\) is being overactive\.$");
+	var ip_overactive = new RegExp("^IP ([0-9]{1,3}\\.){3}[0-9]{1,3} is being overactive\\.$");
+	var player_overactive = new RegExp("^Player [^:]{1,20} \(IP ([0-9]{1,3}\\.)[0-9]{1,3}\) is being overactive\\.$");
 	if(ip_overactive.test(message) || player_overactive.test(message))
 	{
 	    sys.sendAll('overactive spotted !!!', 2);
