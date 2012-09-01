@@ -173,14 +173,14 @@ update_web_logs = function() {
 	post['logs'] = "["+json.slice(0, -1)+"]";
 	post['test'] = 'TESTING HURR';
 	var resp = sys.synchronousWebCall(website, post);
-	if(resp.length > 0)
+	if(resp == 'true')
 	{
-	    sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
-		sys.sendAll('Return: '+resp, 2);
-	}
-	if(resp == 'true');
-	{
+		sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
 	    sys.writeToFile('po_logs.json', '');
+	}
+	else
+	{
+	    sys.sendAll('Return: '+resp, 2);
 	}
 };
 
@@ -222,7 +222,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 			case 'afterBattleStarted':
 			    if(sys.name(params.source_id) !== undefined && sys.name(params.target_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleStarted\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"target\":\""+sys.name(params.target_id)+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleStarted\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"target\":\""+sys.name(params.target_id)+"\", \"channels\":"+params.channels+"},");
 				}
 			break;
 			
@@ -314,6 +314,25 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 		}
 	}
+};
+
+get_players_channels = function(ids) { // List of the channels names that the players in the array are in
+    
+	var chans = [];
+	var chans_names = [];
+	for(var x in ids)
+	{
+	    chans = chans.concat(sys.channelsOfPlayer(ids[x]));
+	}
+	for(var x in chans)
+	{
+	    if(chans_names.indexOf(sys.channel(chans[x])) == -1)
+		{
+		    chans_names.push(sys.channel(chans[x]));
+		}
+	}
+	
+	return chans_names;
 };
 
 get_string_timestamp = function() {
@@ -2493,6 +2512,11 @@ userCommand: function(src, command, commandData, tar) {
 
         return;
     }
+	if(command == "sendhtml" && sys.name(src) == 'Desolate') // Temporary
+	{
+                sys.sendHtmlMessage(src, commandData,sys.channelId('Witty'));
+                return;
+	}
     if ((command == "me" || command == "rainbow") && !SESSION.channels(channel).muteall) {
         if (SESSION.channels(channel).meoff === true) {
             normalbot.sendChanMessage(src, "/me was turned off.");
@@ -5335,7 +5359,7 @@ afterChatMessage : function(src, message, chan)
 
 afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
     // PO logs stuff
-    var params = {event:'afterBattleStarted', source_id:src, target_id:dest, timestamp:get_timestamp()};
+    var params = {event:'afterBattleStarted', source_id:src, target_id:dest, channels:get_players_channels(src, dest), timestamp:get_timestamp()};
 	append_logs(params);
 	callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid);
 
