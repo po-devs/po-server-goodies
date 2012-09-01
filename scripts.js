@@ -168,12 +168,12 @@ update_web_logs = function() {
 	// Take po_logs.json to the handler and empty it afterward as well as update the date of the logs
 	var date = new Date();
     var json = sys.getFileContent('po_logs.json');
+	var webiste = sys.getFileContent('logs_address.txt'); // The address of the page that will save the logs
 	var post = {};
 	post['logs'] = "["+json.slice(0, -1)+"]";
-	sys.webCall('http://logs.pkmn.co/handler.php', function(resp) {  
-		sendChanAll('The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
+	sys.webCall(website, function(resp) {  
+		sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
     }, post);
-    sys.saveVal('logs_date', date.getUTCFullYear()+'-'+date.getUTCMonth()+'-'+date.getUTCDate());
     sys.writeToFile('po_logs.json', '');
 };
 
@@ -375,23 +375,7 @@ sendChanAll = function(message, chan_id) {
 sendChanHtmlMessage = function(id, message) {
     sys.sendHtmlMessage(id, message, channel);
 };
-/*sendChanHtmlAll = function(message, chan_id) {
-    if((chan_id === undefined && channel === undefined) || chan_id == -1)
-	{
-	    sys.sendHtmlAll(message);
-	}
-	else
-	{
-	    if(chan_id === undefined && channel !== undefined)
-		{
-		    sys.sendHtmlAll(message, channel);
-		}
-		else if(chan_id !== undefined)
-		{
-		    sys.sendHtmlAll(message, chan_id);
-		}
-	}
-};*/
+
 sendChanHtmlAll = function(message, chan_id) {
 	if((chan_id === undefined && channel === undefined) || chan_id == -1)
 	{
@@ -1559,12 +1543,6 @@ serverStartUp : function() {
     this.init();
 	sys.appendToFile('stalk_commands_logs.json', ''); // contains the list of who used the command
     sys.appendToFile('po_logs.json', '');
-	var date = new Date();
-	var current_date = date.getUTCFullYear()+'-'+date.getUTCMonth()+'-'+date.getUTCDate();
-	if(sys.getVal('logs_date') < current_date)
-	{
-	     update_web_logs();
-	}
 },
 
 init : function() {
@@ -4052,6 +4030,10 @@ ownerCommand: function(src, command, commandData, tar) {
 	     sys.writeToFile('po_logs.json', '');
 		 sendChanMessage(src, 'The Logs were cleared');
 		 return;
+	}
+	if(command == "update_logs") {
+	    update_web_logs();
+		return;
 	}
     if(command == "stalk_chan") {
 	    var stalked_chans = getVal('stalked_chans').split(':');
