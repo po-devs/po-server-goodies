@@ -170,7 +170,7 @@ update_web_logs = function() {
     var json = sys.getFileContent('po_logs.json');
 	var website = sys.getFileContent('logs_address.txt'); // The address of the page that will save the logs
 	var post = {};
-	post['logs'] = "["+json.slice(0, -1)+"]";
+	post['logs'] = json;
 	post['test'] = 'TESTING HURR';
 	var resp = sys.synchronousWebCall(website, post);
 	if(resp == 'true')
