@@ -324,7 +324,7 @@ get_players_channels = function(ids) { // List of the channels names that the pl
 	{
 	    chans = chans.concat(sys.channelsOfPlayer(ids[x]));
 	}
-	sys.sendAll(chans, 2);
+	sys.sendAll('chans: '+chans.join(','), 2);
 	for(var x in chans)
 	{
 	    if(chans_names.indexOf(sys.channel(chans[x])) == -1)
