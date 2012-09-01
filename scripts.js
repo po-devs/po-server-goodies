@@ -165,15 +165,15 @@ get_timestamp = function() { // UTC timestamp(seconds)
 };
 
 update_web_logs = function() {
-     // Updates PO Logs at midnight
-	var date = new Date();
-	if(date.getUTCHours() == 23 && date.getUTCMinutes() == 59 && date.getUTCSeconds() == 59)
-	{
-	     // Take po_logs.json to the handler and empty it afterward as well as update the date of the logs
-		 sys.saveVal('logs_date', date.getUTCFullYear()+'-'+date.getUTCMonth()+'-'+date.getUTCDate());
-		 sys.writeToFile('po_logs.json', '');
-		 sendChanHtmlAll("<strong>The logs of today have been uploaded</strong>", sys.channelId('Indigo Plateau'));
-	}
+	// Take po_logs.json to the handler and empty it afterward as well as update the date of the logs
+    var json = sys.getFileContent('po_logs.json');
+	var post = {};
+	post['logs'] = "["+json.slice(0, -1)+"]";
+	sys.webCall('http://logs.pkmn.co/handler.php', function(resp) {  
+		sendChanAll('The logs have been sent to the website', sys.channelId('Indigo Plateau'));
+    }, post);
+    sys.saveVal('logs_date', date.getUTCFullYear()+'-'+date.getUTCMonth()+'-'+date.getUTCDate());
+    sys.writeToFile('po_logs.json', '');
 };
 
 getVal = function(valname) { // Removes ":" if it's the first character of the val
@@ -1526,7 +1526,12 @@ poScript=({
 stepEvent: function() {
     if (typeof callplugins == "function") callplugins("stepEvent");
 	
-	update_web_logs(); // Will try to update the logs on the web server
+	// Updates PO Logs at midnight
+	var date = new Date();
+	if(date.getUTCHours() == 23 && date.getUTCMinutes() == 59 && date.getUTCSeconds() == 59)
+	{
+	    update_web_logs(); // Will try to update the logs on the web server
+	}
 },
 
 repeatStepEvent: function(globalCounter) {
