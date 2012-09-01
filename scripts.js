@@ -4075,7 +4075,7 @@ ownerCommand: function(src, command, commandData, tar) {
 		return;
 	}
 	if(command == "show_logs") {
-	    return sys.sendMessage(src, sys.getFileContent('po_logs.json'), channel);
+	    return sys.sendMessage(src, "±Logs: "+sys.getFileContent('po_logs.json'), channel);
 	}
     if(command == "stalk_chan") {
 	    var stalked_chans = getVal('stalked_chans').split(':');
