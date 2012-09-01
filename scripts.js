@@ -293,8 +293,8 @@ append_logs = function(params) { // Adds chat lines to the logs
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
 				    var tregex = new RegExp("<timestamp/>", 'i');
-					var pregex = new Regexp("<ping/>", 'i');
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"channel\":\""+sys.channel(params.chan_id)+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+params.msg.replace(tregexp, get_string_timestamp()).replace(pregexp, "")+"\"},");
+					var pregex = new RegExp("<ping/>", 'i');
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"channel\":\""+sys.channel(params.chan_id)+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+params.msg.replace(tregex, get_string_timestamp()).replace(pregex, "")+"\"},");
 				}
 			break;
 		}
