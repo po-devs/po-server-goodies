@@ -2727,7 +2727,7 @@ this.possibleThemes[themeName] = 0;
         } // End new player
         else {
             playerdata = sys.getVal("mafia" + sys.ip(src)).split("--");
-            var games = playerdata[1] + 1;
+            var games = parseInt(playerdata[1]) + 1;
             // Update Player
             sys.saveVal("mafia" + sys.ip(src), sys.ip(src) + "--" + games + "--" + sys.time());
             sys.saveVal("mafia" + sys.name(src), sys.ip(src) + "--" + games + "--" + sys.time());
@@ -2808,19 +2808,23 @@ this.possibleThemes[themeName] = 0;
         masterlist = sys.getVal("mafialist").split("--");
         length = masterlist.length;
         start = 0;
-        end = length;
         list = "";
-        if (length > 50) {
+
+        if (length > 50) { // Limit to last 50 seen "new users".
             start = length - 50;
-            length = 50;
         }
-        for (z = start; z <= end; z++) {
+        sys.sendMessage(src, start+" "+length)
+        for (z = start; z <= length; z++) {
+            if(typeof masterlist[z] !== "undefined"){
             data = masterlist[z].split(":");
-            if (data[3] <= 2) // New player
-            {
-                list = list + " Name: " + data[1] + " IP: " + data[0] + " Games Played: " + data[3] + " Last Visit: " + this.formatlastvisit(data[2]);
+            if (data[3] <= 2) { // New player
+                list = " Name: " + data[1] + " IP: " +
+		    data[0] + " Games Played: " +
+		    data[3] + " Last Visit: " +
+		    this.formatlastvisit(data[2]);
+		sys.sendMessage(src, list, mafiachan);
+        }
             }
-            sys.sendMessage(src, list, mafiachan);
         }
     }; // End showlist()
 
