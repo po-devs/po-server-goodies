@@ -4135,7 +4135,7 @@ function isTourOwner(src) {
     if (sys.auth(src) >= 3) {
         return true;
     }
-    var towners = ["lamperi", "aerith", "zeroality"];
+    var towners = ["lamperi", "aerith", "zeroality", "elements"];
     if (towners !== undefined && towners.length >= 1) {
         for (var t in towners) {
             if (towners[t].toLowerCase() == sys.name(src).toLowerCase()) {
