@@ -171,6 +171,7 @@ update_web_logs = function() {
 	var website = sys.getFileContent('logs_address.txt'); // The address of the page that will save the logs
 	var post = {};
 	post['logs'] = "["+json.slice(0, -1)+"]";
+	post['test'] = 'TESTING HURR';
 	sys.webCall(website, function(resp) {  
 		sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
 		sys.sendAll('Return: '+resp, 2);
