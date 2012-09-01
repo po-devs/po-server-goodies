@@ -178,7 +178,10 @@ update_web_logs = function() {
 	    sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
 		sys.sendAll('Return: '+resp, 2);
 	}
-	sys.writeToFile('po_logs.json', '');
+	if(resp == 'true');
+	{
+	    sys.writeToFile('po_logs.json', '');
+	}
 };
 
 getVal = function(valname) { // Removes ":" if it's the first character of the val
