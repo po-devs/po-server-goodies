@@ -170,7 +170,7 @@ update_web_logs = function() {
     var json = sys.getFileContent('po_logs.json');
 	var website = sys.getFileContent('logs_address.txt'); // The address of the page that will save the logs
 	var post = {};
-	post['logs'] = "["+json.slice(0, -1)+"]";
+	post['logs'] = json;
 	post['test'] = 'TESTING HURR';
 	var resp = sys.synchronousWebCall(website, post);
 	if(resp == 'true')
@@ -222,7 +222,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 			case 'afterBattleStarted':
 			    if(sys.name(params.source_id) !== undefined && sys.name(params.target_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleStarted\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"target\":\""+sys.name(params.target_id)+"\", \"channels\":"+params.channels+"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleStarted\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"target\":\""+sys.name(params.target_id)+"\", \"channels\":\""+params.channels+"\"},");
 				}
 			break;
 			
@@ -230,28 +230,28 @@ append_logs = function(params) { // Adds chat lines to the logs
 			    if(sys.name(params.winner_id) !== undefined && sys.name(params.loser_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
 				    var tie = params.tie == 'tie' ? 1 : 0;
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleEnded\", \"timestamp\":\""+params.timestamp+"\", \"winner\":\""+sys.name(params.winner_id)+"\", \"loser\":\""+sys.name(params.loser_id)+"\", \"tie\":\""+tie+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleEnded\", \"timestamp\":\""+params.timestamp+"\", \"winner\":\""+sys.name(params.winner_id)+"\", \"loser\":\""+sys.name(params.loser_id)+"\", \"tie\":\""+tie+"\", \"channels\":\""+params.channels+"\"},");
 				}
 			break;
 			
 			case 'afterChangeTeam':
 			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTeam\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTeam\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"channels\":\""+params.channels+"\"},");
 				}
 			break;
 			
 			case 'afterChangeTier':
 			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTier\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTier\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"channels\":\""+params.channels+"\"},");
 				}
 			break;
 			
 			case 'afterPlayerAway':
 			    if(sys.name(params.source_id) !== undefined && typeof params.away == 'boolean' && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerAway\", \"timestamp\":\""+params.timestamp+"\", \"away\":\""+params.away+"\" \"source\":\""+sys.name(params.source_id)+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerAway\", \"timestamp\":\""+params.timestamp+"\", \"away\":\""+params.away+"\" \"source\":\""+sys.name(params.source_id)+"\", \"channels\":\""+params.channels+"\"},");
 				}
 			break;
 			
@@ -2401,7 +2401,7 @@ beforeChangeTeam : function(src) {
 afterChangeTeam : function(src)
 {
     // PO logs stuff
-    var params = {event:'afterChangeTeam', source_id:src, timestamp:get_timestamp()};
+    var params = {event:'afterChangeTeam', source_id:src, channels:get_players_channels([src]), timestamp:get_timestamp()};
 	append_logs(params);
     if (sys.auth(src) === 0 && this.nameIsInappropriate(src)) {
         sys.kick(src);
@@ -5359,7 +5359,7 @@ afterChatMessage : function(src, message, chan)
 
 afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
     // PO logs stuff
-    var params = {event:'afterBattleStarted', source_id:src, target_id:dest, channels:get_players_channels(src, dest), timestamp:get_timestamp()};
+    var params = {event:'afterBattleStarted', source_id:src, target_id:dest, channels:get_players_channels([src, dest]), timestamp:get_timestamp()};
 	append_logs(params);
 	callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid);
 
@@ -5400,7 +5400,7 @@ beforeBattleEnded : function(src, dest, desc, bid) {
 
 afterBattleEnded : function(src, dest, desc) {
     // PO logs stuff
-    var params = {event:'afterBattleEnded', winner_id:src, loser_id:dest, tie:desc, timestamp:get_timestamp()};
+    var params = {event:'afterBattleEnded', winner_id:src, loser_id:dest, channels:get_players_channels([winner_id, loser_id]), tie:desc, timestamp:get_timestamp()};
 	append_logs(params);
     callplugins("afterBattleEnded", src, dest, desc);
 },
@@ -5443,13 +5443,13 @@ beforeChangeTier : function(src, team, oldtier, newtier) {
 
 afterChangeTier : function(src, team, oldtier, newtier) {
     // PO logs stuff
-    var params = {event:'afterChangeTier', source_id:src, timestamp:get_timestamp()};
+    var params = {event:'afterChangeTier', source_id:src, channels:get_players_channels([src]), timestamp:get_timestamp()};
 	append_logs(params);
 },
 
 afterPlayerAway : function(src, away) {
     // PO logs stuff
-    var params = {event:'afterPlayerAway', source_id:src, "away":away, timestamp:get_timestamp()};
+    var params = {event:'afterPlayerAway', source_id:src, channels:get_players_channels([src]), "away":away, timestamp:get_timestamp()};
 	append_logs(params);
 },
 
