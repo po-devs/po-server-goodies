@@ -2814,6 +2814,7 @@ this.possibleThemes[themeName] = 0;
             start = length - 50;
             length = 50;
         }
+        sys.sendMessage(src, start + " " + length)
         for (z = start; z <= end; z++) {
             data = masterlist[z].split(":");
             if (data[3] <= 2) // New player
