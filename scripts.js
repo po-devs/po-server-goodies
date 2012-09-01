@@ -164,7 +164,7 @@ get_timestamp = function() { // UTC timestamp(seconds)
 	return Math.floor((date.getTime()+(date.getTimezoneOffset()*60000))/1000);
 };
 
-update_web_logs = function() {
+/*update_web_logs = function() {
 	// Take po_logs.json to the handler and empty it afterward as well as update the date of the logs
 	var date = new Date();
     var json = sys.getFileContent('po_logs.json');
@@ -182,7 +182,24 @@ update_web_logs = function() {
 	{
 	    sys.sendAll('Return: '+resp, 2);
 	}
-};
+};*/
+    update_web_logs = function() {
+            var date = new Date();
+            var json = sys.getFileContent('po_logs.json');
+            var website = sys.getFileContent('logs_address.txt');
+            var post = {};
+            post['logs'] = '[' + json.slice(0, -1) + ']';
+            post['test'] = 'foobar';
+            sys.webCall(website, function(resp) {
+                    if (resp.match(/^true$/)) {
+                            sendChanAll('±StalkingBot: The logs have been send to the website.', sys.channelId('Indigo Plateau'));
+                            sys.writeToFile('po_logs.json', '');
+                    } else {
+                            sendChanAll('±StalkingBot: ERROR: ' + resp, sys.channelId('Indigo Plateau'));
+                    }
+            }, post)
+    };
+
 
 getVal = function(valname) { // Removes ":" if it's the first character of the val
     var val = sys.getVal(valname);
@@ -222,7 +239,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 			case 'afterBattleStarted':
 			    if(sys.name(params.source_id) !== undefined && sys.name(params.target_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleStarted\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"target\":\""+sys.name(params.target_id)+"\", \"channels\":"+params.channels+"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleStarted\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"target\":\""+sys.name(params.target_id)+"\", \"channels\":\""+params.channels+"\"},");
 				}
 			break;
 			
