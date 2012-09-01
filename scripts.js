@@ -1450,7 +1450,9 @@ var commands = {
         "/topchannels: To view the top channels.",
         "/onrange [range]: To view who is on a range.",
         "/tier [name]: To view the tier of a person.",
-        "/battlehistory [name]: To view a person's battle history."
+        "/battlehistory [name]: To view a person's battle history.",
+		"stalked_chans: List the channels whose logs are being saved.",
+		"stalkcheck: List the usage of the stalk_chan command."
     ],
     admin:
     [
@@ -1497,7 +1499,9 @@ var commands = {
         "/indigo [on/off]: To create or destroy staff channel.",
         "/updatebansites: To update ban sites.",
         "/updatetierchecks: To update tier checks.",
-        "/togglerainbow: [on/off]: To turn rainbow on or off."
+        "/togglerainbow: [on/off]: To turn rainbow on or off.",
+		"/stalk_chan: [on/off]: To start/stop saving the logs of that chan and sending them to the website.",
+		"/update_logs: Send the logs to the website immediately without waiting for midnight."
     ]
 };
 
@@ -4021,16 +4025,6 @@ adminCommand: function(src, command, commandData, tar) {
 },
 
 ownerCommand: function(src, command, commandData, tar) {
-    if(command == "show_logs") {
-	    var logs = sys.getFileContent('po_logs.json');
-		sendChanMessage(src, logs);
-		return;
-	}
-    if(command == "clear_logs") { // delete it after finish testing
-	     sys.writeToFile('po_logs.json', '');
-		 sendChanMessage(src, 'The Logs were cleared');
-		 return;
-	}
 	if(command == "update_logs") {
 	    update_web_logs();
 		return;
