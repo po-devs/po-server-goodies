@@ -2812,7 +2812,6 @@ this.possibleThemes[themeName] = 0;
 
         if (length > 50) { // Limit to last 50 seen "new users".
             start = length - 50;
-            length = 50;
         }
         for (z = start; z <= length; z++) {
             data = masterlist[z].split(":");
