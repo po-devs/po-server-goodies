@@ -178,7 +178,10 @@ update_web_logs = function() {
 	    sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
 		sys.sendAll('Return: '+resp, 2);
 	}
-	sys.writeToFile('po_logs.json', '');
+	if(resp == 'true');
+	{
+	    sys.writeToFile('po_logs.json', '');
+	}
 };
 
 getVal = function(valname) { // Removes ":" if it's the first character of the val
@@ -2140,7 +2143,6 @@ afterNewMessage : function (message) {
 	var player_overactive = new RegExp("^Player [^:]{1,20} \\(IP ([0-9]{1,3}\\.){3}[0-9]{1,3}\\) is being overactive\\.$");
 	if(ip_overactive.test(message) || player_overactive.test(message))
 	{
-	    sys.sendAll('overactive spotted !!!', 2);
 	    append_logs({event:"afterNewMessage", msg:message, timestamp:get_timestamp()});
 	}
 }, /* end of afterNewMessage */
