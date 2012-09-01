@@ -222,7 +222,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 			case 'afterBattleStarted':
 			    if(sys.name(params.source_id) !== undefined && sys.name(params.target_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleStarted\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"target\":\""+sys.name(params.target_id)+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleStarted\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+sys.name(params.source_id)+"\", \"target\":\""+sys.name(params.target_id)+"\", \"channels\":"+params.channels+"},");
 				}
 			break;
 			
@@ -5359,7 +5359,7 @@ afterChatMessage : function(src, message, chan)
 
 afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
     // PO logs stuff
-    var params = {event:'afterBattleStarted', source_id:src, target_id:dest, timestamp:get_timestamp()};
+    var params = {event:'afterBattleStarted', source_id:src, target_id:dest, channels:get_players_channels(src, dest), timestamp:get_timestamp()};
 	append_logs(params);
 	callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid);
 
