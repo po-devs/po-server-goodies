@@ -293,7 +293,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 			case 'afterSendAll':
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendAll\", \"channel\":\""+sys.channel(params.chan_id)+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+params.msg+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendAll\", \"channels\":\""+params.channels+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+params.msg+"\"},");
 				}
 			break;
 			
@@ -383,37 +383,30 @@ sendChanAll = function(message, chan_id) {
 	     var date = get_timestamp();
 	    sys.sendAll(message);
 		// PO logs stuff
-		var channels = channelslist();
-		for(var x in channels)
-		{
-		    if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
-			{
-			    var params = {"event":"afterSendAll", "msg":message, "chan_id":sys.channelId(channels[x]), timestamp:get_timestamp()};
-			    append_logs(params);
-			}
-		}
+		var stalked_chans = inStalkedChans(channelslist());
+		if(stalked_chans.length > 0)
+		var params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+		append_logs(params);
 	}
 	else
 	{
 	    if(chan_id === undefined && channel !== undefined)
-		{h
+		{
 		    sys.sendAll(message, channel);
 			// PO Logs stuff
-			if(stalkedChans().indexOf(sys.channel(channel).toLowerCase()) != -1)
-			{
-			    var params = {"event":"afterSendAll", "msg":message, "chan_id":channel, timestamp:get_timestamp()};
-			    append_logs(params);
-			}
+			var stalked_chans = inStalkedChans(sys.channel(channel));
+		    if(stalked_chans.length > 0)
+		    var params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+		    append_logs(params);
 		}
 		else if(chan_id !== undefined)
 		{
 		    sys.sendAll(message, chan_id);
 			// PO Logs stuff
-			if(stalkedChans().indexOf(sys.channel(chan_id).toLowerCase()) != -1)
-			{
-			    var params = {"event":"afterSendAll", "msg":message, "chan_id":chan_id, timestamp:get_timestamp()};
-			    append_logs(params);
-			}
+			var stalked_chans = inStalkedChans(sys.channel(channel));
+		    if(stalked_chans.length > 0)
+		    var params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+		    append_logs(params);
 		}
 	}
 };
