@@ -304,7 +304,7 @@ channelslist = function() {
     var channels = [];
 	for(var x in channelids)
 	{
-	    channels.push(channelids[x]);
+	    channels.push(sys.channelName(channelids[x]));
 	}
 	return channels;
 };
