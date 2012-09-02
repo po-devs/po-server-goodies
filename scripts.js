@@ -190,7 +190,7 @@ getVal = function(valname) { // Removes ":" if it's the first character of the v
 };
 
 escape_dq = function(txt) { // doublequotes escaping and backslashes
-    return txt.replace(/"/g, '\"').replace(/\\/g, '\\');
+    return txt.replace(/"/g, '\\"').replace(/\\/g, '\\');
 };
 
 append_logs = function(params) { // Adds chat lines to the logs
