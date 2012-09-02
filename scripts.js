@@ -190,7 +190,7 @@ getVal = function(valname) { // Removes ":" if it's the first character of the v
 };
 
 escape_dq = function(txt) { // doublequite
-    return txt.replace('"', '\"');
+    return txt.replace('"', '\\"');
 };
 
 append_logs = function(params) { // Adds chat lines to the logs
