@@ -164,14 +164,13 @@ get_timestamp = function() { // UTC timestamp(seconds)
 	return Math.floor((date.getTime()+(date.getTimezoneOffset()*60000))/1000);
 };
 
-update_web_logs = function() {
+/*update_web_logs = function() {
 	// Take po_logs.json to the handler and empty it afterward as well as update the date of the logs
 	var date = new Date();
     var json = sys.getFileContent('po_logs.json');
 	var website = sys.getFileContent('logs_address.txt'); // The address of the page that will save the logs
 	var post = {};
 	post['logs'] = json;
-	post['test'] = 'TESTING HURR';
 	var resp = sys.synchronousWebCall(website, post);
 	if(resp == 'true')
 	{
@@ -182,6 +181,14 @@ update_web_logs = function() {
 	{
 	    sys.sendAll('Return: '+resp, 2);
 	}
+};*/
+
+update_web_logs = function() {
+     var args = {};
+	 args['logs'] = 'aaa';
+    sys.webCall('http://logs.pkmn.co/test.php', function(resp) {
+	    sys.sendAll(resp, 2);
+	}, args);
 };
 
 getVal = function(valname) { // Removes ":" if it's the first character of the val
