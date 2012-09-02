@@ -251,7 +251,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 			case 'afterPlayerAway':
 			    if(sys.name(params.source_id) !== undefined && typeof params.away == 'boolean' && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerAway\", \"timestamp\":\""+params.timestamp+"\", \"away\":\""+params.away+"\" \"source\":\""+sys.name(params.source_id)+"\", \"channels\":\""+params.channels+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerAway\", \"timestamp\":\""+params.timestamp+"\", \"away\":\""+params.away+"\", \"source\":\""+sys.name(params.source_id)+"\", \"channels\":\""+params.channels+"\"},");
 				}
 			break;
 			
