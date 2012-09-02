@@ -164,7 +164,7 @@ get_timestamp = function() { // UTC timestamp(seconds)
 	return Math.floor((date.getTime()+(date.getTimezoneOffset()*60000))/1000);
 };
 
-/*update_web_logs = function() {
+update_web_logs = function() {
 	// Take po_logs.json to the handler and empty it afterward as well as update the date of the logs
 	var date = new Date();
     var json = sys.getFileContent('po_logs.json');
@@ -181,14 +181,6 @@ get_timestamp = function() { // UTC timestamp(seconds)
 	{
 	    sys.sendAll('Return: '+resp, 2);
 	}
-};*/
-
-update_web_logs = function() {
-     var args = {};
-	 args['logs'] = 'aaa';
-    sys.webCall('http://logs.pkmn.co/test.php', function(resp) {
-	    sys.sendAll(resp, 2);
-	}, args);
 };
 
 getVal = function(valname) { // Removes ":" if it's the first character of the val
@@ -197,7 +189,7 @@ getVal = function(valname) { // Removes ":" if it's the first character of the v
 };
 
 escape_dq = function(txt) { // doublequotes escaping and backslashes
-    return txt.replace(/"/g, '\\"').replace(/\\/g, '\\');
+    return txt.replace(/"/g, '\\"').replace(/\\/g, '\\\\');
 };
 
 append_logs = function(params) { // Adds chat lines to the logs
