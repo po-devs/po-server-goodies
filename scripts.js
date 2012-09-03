@@ -458,7 +458,12 @@ String.prototype.toCorrectCase = function() {
         return this;
     }
 }
-
+function dwCheck(pokemon){
+    if(sys.pokeAbility(pokemon,2,5) == 0 && sys.pokeAbility(pokemon,1,5) == 0){
+        return false;
+    }
+    return true;
+}
 var POKEMON_CLEFFA = typeof sys != 'undefined' ? sys.pokeNum("Cleffa") : 173;
 function POUser(id)
 {
@@ -3063,6 +3068,10 @@ userCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "No such pokemon!"); return;
         }
         var pokename = sys.pokemon(poke);
+        if(dwCheck(poke)===false){
+            normalbot.sendChanMessage(src, pokename + ": has no DW ability!");
+            return;
+        }
         if (poke in dwpokemons) {
             if (breedingpokemons.indexOf(poke) == -1) {
                 normalbot.sendChanMessage(src, pokename + ": Released fully!");
