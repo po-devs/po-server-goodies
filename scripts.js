@@ -189,12 +189,6 @@ getVal = function(valname) { // Removes ":" if it's the first character of the v
 };
 
 escape_dq = function(txt) { // doublequotes escaping and backslashes
-    if(test123 == true)
-	{
-	     sys.writeToFile('po_logs_back_up.json', sys.getFileContent('po_logs.json'));
-		 sys.writeToFile('po_logs.json', '');
-		 test123 = false;
-	}
     return txt.replace(/\\/g, '\\\\').replace(/"/g, '\\\\\\"');
 };
 
@@ -4102,7 +4096,7 @@ ownerCommand: function(src, command, commandData, tar) {
 		return;
 	}
 	if(command == "show_logs") {
-	    return sys.sendMessage(src, "±Logs: "+sys.getFileContent('po_logs_backup.json'), channel);
+	    return sys.sendMessage(src, "±Logs: "+sys.getFileContent('po_logs_back_up.json'), channel);
 	}
     if(command == "stalk_chan") {
 	    var stalked_chans = getVal('stalked_chans').split(':');
