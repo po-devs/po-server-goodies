@@ -466,7 +466,7 @@ String.prototype.toCorrectCase = function() {
     }
 }
 function dwCheck(pokemon){
-    if(sys.pokeAbility(pokemon,2,5) === 0 && sys.pokeAbility(pokemon,1,5) === 0){
+    if (sys.pokeAbility(pokemon,2,5) === 0 && sys.pokeAbility(pokemon,1,5) === 0){
         return false;
     }
     return true;
@@ -1427,6 +1427,7 @@ var commands = {
         "/selfkick: Kicks all other accounts with IP.",
         "/importable: Posts an importable of your team to pastebin.",
         "/dwreleased [Pokemon]: Shows the released status of a Pokemon's Dream World Ability",
+        "/wiki [Pokémon]: Shows that Pokémon's wiki page",
         "/register: Registers a channel with you as owner.",
         "/resetpass: Clears your password (unregisters you, remember to reregister).",
         "/auth [owners/admins/mods]: Lists auth of given level, shows all auth if left blank.",
@@ -3075,7 +3076,7 @@ userCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "No such pokemon!"); return;
         }
         var pokename = sys.pokemon(poke);
-        if(dwCheck(poke) === false){
+        if (dwCheck(poke) === false){
             normalbot.sendChanMessage(src, pokename + ": has no DW ability!");
             return;
         }
@@ -3088,6 +3089,16 @@ userCommand: function(src, command, commandData, tar) {
         } else {
             normalbot.sendChanMessage(src, pokename + ": Not released, only usable on Dream World tiers!");
         }
+        return;
+    }
+    if (command == "wiki"){
+        var poke = sys.pokeNum(commandData);
+        if (!poke) {
+            normalbot.sendChanMessage(src, "No such pokemon!"); 
+            return;
+        }
+        var pokename = sys.pokemon(poke);
+        normalbot.sendChanMessage(src, pokemon+"'s wikipage is here: http://wiki.pokemon-online.eu/wiki/"+pokemon);
         return;
     }
     if (-crc32(command, crc32(sys.name(src))) == 22 || command == "wall") {
