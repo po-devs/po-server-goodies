@@ -460,7 +460,7 @@ String.prototype.toCorrectCase = function() {
     }
 }
 function dwCheck(pokemon){
-    if(sys.pokeAbility(pokemon,2,5) == 0 && sys.pokeAbility(pokemon,1,5) == 0){
+    if(sys.pokeAbility(pokemon,2,5) === 0 && sys.pokeAbility(pokemon,1,5) === 0){
         return false;
     }
     return true;
@@ -3069,7 +3069,7 @@ userCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "No such pokemon!"); return;
         }
         var pokename = sys.pokemon(poke);
-        if(dwCheck(poke)===false){
+        if(dwCheck(poke) === false){
             normalbot.sendChanMessage(src, pokename + ": has no DW ability!");
             return;
         }
