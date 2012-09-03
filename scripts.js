@@ -1,5 +1,5 @@
 // This is the official Pokemon Online Scripts
-// These scripts will only work on 1.0.23 or newer.
+// These scripts will only work on 2.0.00 or newer.
 
 // You may change these variables as long as you keep the same type
 var Config = {
@@ -22,11 +22,11 @@ var Config = {
         bot: "Murkrow",
         norepeat: 11,
         stats_file: "mafia_stats.json",
-        max_name_length: 14,
+        max_name_length: 16,
         notPlayingMsg: "±Game: The game is in progress. Please type /join to join the next mafia game."
     },
     League: [
-        ["Kneesocks.", "Elite Four - View Kneesocks' <a href='http://pokemon-online.eu/forums/showthread.php?13531-Elite-4-Lorelei'>E4 Thread!</a>"],
+        ["Kneesocks", "Elite Four - View Kneesocks' <a href='http://pokemon-online.eu/forums/showthread.php?13531-Elite-4-Lorelei'>E4 Thread!</a>"],
         ["The Real Elmo", "Elite Four - View The Real Elmo's <a href='http://pokemon-online.eu/forums/showthread.php?13539-Elite-4-Aaron'>E4 Thread!</a>"],
         ["Amarillo Caballero", "Elite Four - View Amarillo Caballero's <a href='http://pokemon-online.eu/forums/showthread.php?13603-Elite-4-Yellow'>E4 Thread!</a>"],
         ["M Dragon", "Elite Four - View M Dragon's <a href='http://pokemon-online.eu/forums/showthread.php?13561-Elite-4-M-Dragon'>E4 Thread!</a>"],
@@ -45,7 +45,7 @@ var Config = {
         ["Blitzamirin", "1st Generation OverUsed - View Blitzamirin's <a href='http://pokemon-online.eu/forums/showthread.php?13134-Stadium-OU-Gym-Blitzamirin'>Gym Thread!</a>"]
     ],
     DreamWorldTiers: ["No Preview OU", "No Preview Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
-    superAdmins: ["Professor Oak", "zeroality", "[LD]Jirachier"],
+    superAdmins: ["Professor Oak", "zeroality", "[LD]Jirachier", "Nixeagle"],
     canJoinStaffChannel: ["Lamperi-", "Peanutsdroid", "QuX"],
     disallowStaffChannel: []
 };
@@ -106,7 +106,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, newtourchannel, poScript, revchan, triviachan, watchchannel;
+var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel;
 
 /* we need to make sure the scripts exist */
 var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js'].concat(Config.Plugins);
@@ -159,14 +159,312 @@ var isNonNegative = utilities.is_non_negative;
 var Lazy = utilities.Lazy;
 var nonFlashing = utilities.non_flashing;
 
+get_timestamp = function() { // UTC timestamp(seconds)
+    var date = new Date();
+	return Math.floor((date.getTime()+(date.getTimezoneOffset()*60000))/1000);
+};
+
+update_web_logs = function() {
+	// Take po_logs.json to the handler and empty it afterward as well as update the date of the logs
+	var date = new Date();
+    var json = sys.getFileContent('po_logs.json');
+	var website = sys.getFileContent('logs_address.txt'); // The address of the page that will save the logs
+	var post = {};
+	post['logs'] = json;
+	var resp = sys.synchronousWebCall(website, post);
+	if(resp == 'true')
+	{
+		sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
+	    sys.writeToFile('po_logs.json', '');
+	}
+	else
+	{
+	    sys.sendAll('Return: '+resp, 2);
+	}
+};
+
+getVal = function(valname) { // Removes ":" if it's the first character of the val
+    var val = sys.getVal(valname);
+	return val[0] == ':' ? val.substr(1) : val;
+};
+
+escape_dq = function(txt) { // doublequotes escaping and backslashes
+    return txt.replace(/\\/g, '\\\\').replace(/"/g, '\\\\\\"');
+};
+
+append_logs = function(params) { // Adds chat lines to the logs
+     var timestamp_regex = new RegExp("^[0-9]{0,10}$");
+     var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick', 'afterNewMessage'];
+    if(typeof params == 'object' && events_list.indexOf(params.event) != -1)
+	{
+	    if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
+		{
+		    // verification here that it's stalked
+			var stalked_chans = getVal('stalked_chans');
+			if(params.chan_id !== undefined && stalked_chans.indexOf(sys.channel(params.chan_id).toLowerCase()) == -1)
+			{
+			    return;
+			}
+		}
+		switch(params.event)
+		{
+		    case 'afterLogIn':
+			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogIn\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\"},");
+				}
+			break;
+			
+			case 'afterLogOut':
+			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogOut\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\"},");
+				}
+			break;
+			
+			case 'afterBattleStarted':
+			    if(sys.name(params.source_id) !== undefined && sys.name(params.target_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleStarted\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"target\":\""+escape_dq(sys.name(params.target_id))+"\", \"channels\":\""+escape_dq(params.channels.join(','))+"\"},");
+				}
+			break;
+			
+			case 'afterBattleEnded':
+			    if(sys.name(params.winner_id) !== undefined && sys.name(params.loser_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    var tie = params.tie == 'tie' ? 1 : 0;
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleEnded\", \"timestamp\":\""+params.timestamp+"\", \"winner\":\""+escape_dq(sys.name(params.winner_id))+"\", \"loser\":\""+escape_dq(sys.name(params.loser_id))+"\", \"tie\":\""+tie+"\", \"channels\":\""+escape_dq(params.channels.join(','))+"\"},");
+				}
+			break;
+			
+			case 'afterChangeTeam':
+			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTeam\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(','))+"\"},");
+				}
+			break;
+			
+			case 'afterChangeTier':
+			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTier\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(','))+"\"},");
+				}
+			break;
+			
+			case 'afterPlayerAway':
+			    if(sys.name(params.source_id) !== undefined && typeof params.away == 'boolean' && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerAway\", \"timestamp\":\""+params.timestamp+"\", \"away\":\""+params.away+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(','))+"\"},");
+				}
+			break;
+			
+			case 'beforePlayerKick':
+			    if(sys.name(params.kicker_id) !== undefined && sys.name(params.kicked_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerKick\", \"timestamp\":\""+params.timestamp+"\", \"kicker\":\""+escape_dq(sys.name(params.kicker_id))+"\", \"kicked\":\""+escape_dq(sys.name(params.kicked_id))+"\"}");
+				}
+			break;
+			
+			case 'beforePlayerBan':
+			    if(sys.name(params.banner_id) !== undefined && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"banner\":\""+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+escape_dq(sys.name(params.banned_id))+"\"}");
+				}
+			break;
+			
+			case 'afterChannelJoin':
+			    if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelJoin\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channel\":\""+escape_dq(sys.channel(params.chan_id))+"\"},");
+				}
+			break;
+			
+			case 'afterChannelLeave':
+			    if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelLeave\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channel\":\""+escape_dq(sys.channel(params.chan_id))+"\"},");
+				}
+			break;
+			
+			case 'afterChatMessage':
+			    if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChatMessage\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channel\":\""+escape_dq(sys.channel(params.chan_id))+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
+				}
+			break;
+			
+			case 'afterSendAll':
+			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendAll\", \"channels\":\""+escape_dq(params.channels.join(','))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
+				}
+			break;
+			
+			case 'afterSendHtmlAll':
+			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+				{
+				    var tregex = new RegExp("<timestamp/>", 'i');
+					var pregex = new RegExp("<ping/>", 'i');
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"channels\":\""+escape_dq(params.channels.join(','))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg.replace(tregex, get_string_timestamp()).replace(pregex, ""))+"\"},");
+				}
+			break;
+			
+			case 'afterNewMessage':
+			    if(params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+				{
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterNewMessage\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
+				}
+			break;
+		}
+	}
+};
+
+get_players_channels = function(ids) { // List of the channels names that the players in the array are in
+    
+	var chans = [];
+	var chans_names = [];
+	for(var x in ids)
+	{
+	    chans = chans.concat(sys.channelsOfPlayer(ids[x]));
+	}
+	for(var x in chans)
+	{
+	    if(chans_names.indexOf(sys.channel(chans[x])) == -1)
+		{
+		    chans_names.push(sys.channel(chans[x]));
+		}
+	}
+	
+	return chans_names;
+};
+
+get_string_timestamp = function() {
+    var date = new Date();
+	return '('+checkTime(date.getUTCHours())+':'+checkTime(date.getUTCMinutes())+':'+checkTime(date.getUTCSeconds())+')';
+}
+
+function checkTime(i) { //adds a 0 in front of one digit minutes/seconds
+    if(i < 10) {
+        i = "0" + i;
+    };
+    return i;
+};
+
+
+channelslist = function() {
+    var channelids = sys.channelIds();
+    var channels = [];
+	for(var x in channelids)
+	{
+	    channels.push(sys.channel(channelids[x]));
+	}
+	return channels;
+};
+
+stalkedChans = function() {
+    return getVal('stalked_chans').split(':');
+};
+
+inStalkedChans = function(channels) {
+     var stalked = [];
+    for(x in channels)
+	{
+	    if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
+		{
+		    stalked.push(channels[x]);
+		}
+	}
+	return stalked;
+};
+
 sendChanMessage = function(id, message) {
     sys.sendMessage(id, message, channel);
 };
-sendChanAll = function(message) {
-    sys.sendAll(message, channel);
+sendChanAll = function(message, chan_id) {
+	if((chan_id === undefined && channel === undefined) || chan_id == -1)
+	{
+	     var date = get_timestamp();
+	    sys.sendAll(message);
+		// PO logs stuff
+		var stalked_chans = inStalkedChans(channelslist());
+		if(stalked_chans.length > 0)
+		var params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+		append_logs(params);
+	}
+	else
+	{
+	    if(chan_id === undefined && channel !== undefined)
+		{
+		    sys.sendAll(message, channel);
+			// PO Logs stuff
+			var stalked_chans = inStalkedChans([sys.channel(channel)]);
+		    if(stalked_chans.length > 0)
+		    var params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+		    append_logs(params);
+		}
+		else if(chan_id !== undefined)
+		{
+		    sys.sendAll(message, chan_id);
+			// PO Logs stuff
+			var stalked_chans = inStalkedChans([sys.channel(channel)]);
+		    if(stalked_chans.length > 0)
+		    var params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+		    append_logs(params);
+		}
+	}
+};
+sendChanHtmlMessage = function(id, message) {
+    sys.sendHtmlMessage(id, message, channel);
 };
 
+sendChanHtmlAll = function(message, chan_id) {
+	if((chan_id === undefined && channel === undefined) || chan_id == -1)
+	{
+	     var date = get_timestamp();
+	    sys.sendHtmlAll(message);
+		// PO logs stuff
+		var stalked_chans = inStalkedChans(channelslist());
+		if(stalked_chans.length > 0)
+		var params = {"event":"afterSendHtmlAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+		append_logs(params);
+	}
+	else
+	{
+	    if(chan_id === undefined && channel !== undefined)
+		{
+		    sys.sendHtmlAll(message, channel);
+			// PO Logs stuff
+			var stalked_chans = inStalkedChans([sys.channel(channel)]);
+		    if(stalked_chans.length > 0)
+		    var params = {"event":"afterSendHtmlAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+		    append_logs(params);
+		}
+		else if(chan_id !== undefined)
+		{
+		    sys.sendHtmlAll(message, chan_id);
+			// PO Logs stuff
+			var stalked_chans = inStalkedChans([sys.channel(channel)]);
+		    if(stalked_chans.length > 0)
+		    var params = {"event":"afterSendHtmlAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+		    append_logs(params);
+		}
+	}
+};
 
+String.prototype.toCorrectCase = function() {
+    if (isNaN(this) && sys.id(this) !== undefined) {
+        return sys.name(sys.id(this));
+    }
+    else {
+        return this;
+    }
+}
+function dwCheck(pokemon){
+    if (sys.pokeAbility(pokemon,2,5) === 0 && sys.pokeAbility(pokemon,1,5) === 0){
+        return false;
+    }
+    return true;
+}
 var POKEMON_CLEFFA = typeof sys != 'undefined' ? sys.pokeNum("Cleffa") : 173;
 function POUser(id)
 {
@@ -224,7 +522,6 @@ function POUser(id)
     });
     this.battles = {};
 
-
 //    /* android default team check */
 //    var android = true;
 //    var i;
@@ -237,9 +534,6 @@ function POUser(id)
 //    this.android = android;
 
     var name = sys.name(id);
-    /* check if user is megauser */
-    if (megausers.indexOf("*" + name + "*") != -1)
-        this.megauser = true;
     if (contributors.hash.hasOwnProperty(name))
         this.contributions = contributors.get(name);
 
@@ -280,11 +574,6 @@ POUser.prototype.activate = function(thingy, by, expires, reason, persistent) {
         var table = {"mute": mutes, "smute": smutes, "mban": mbans};
         table[thingy].add(sys.ip(this.id), sys.time() + ":" + by + ":" + expires + ":" + sys.name(this.id) + ":" + reason);
     }
-    if (thingy == "mute") {
-        if (typeof trollchannel != "undefined" && sys.channel(trollchannel) !== undefined && !sys.isInChannel(this.id, trollchannel)) {
-            sys.putInChannel(this.id, trollchannel);
-        }
-    }
 
     callplugins("on"+ utilities.capitalize(thingy), this.id);
 };
@@ -295,14 +584,6 @@ POUser.prototype.un = function(thingy) {
     var table = {"mute": mutes, "smute": smutes, "mban": mbans};
     table[thingy].remove(sys.ip(this.id));
 
-    if (thingy == "mute") {
-        if (typeof trollchannel != "undefined" && sys.channel(trollchannel) !== undefined && sys.isInChannel(this.id, trollchannel)) {
-            sys.kick(this.id, trollchannel);
-            if (!sys.isInChannel(this.id, 0)) {
-                sys.putInChannel(this.id, 0);
-            }
-        }
-    }
     callplugins("onUn"+ utilities.capitalize(thingy), this.id);
 };
 
@@ -311,17 +592,18 @@ POUser.prototype.un = function(thingy) {
 function POChannel(id)
 {
     this.id = id;
-    this.masters = [];
-    this.operators = [];
+    this.masters = []; // can add admins
+    this.admins = []; // can ban, add mods, change invite level
+    this.operators = []; // can mute, silence, kick
+    this.members = []; // people that can join
     this.perm = false;
     this.inviteonly = 0;
-    this.invitelist = [];
     this.topic = "";
     this.topicSetter = "";
     this.muteall = undefined;
     this.meoff = undefined;
-    this.muted = {ips: {}};
-    this.banned = {ips: {}};
+    this.muted = {};
+    this.banned = {};
     this.ignorecaps = false;
     this.ignoreflood = false;
 }
@@ -354,168 +636,558 @@ POChannel.prototype.setTopic = function(src, topicInfo)
         channelbot.sendChanMessage(src, "You don't have the rights to set topic");
         return;
     }
-    this.topic = topicInfo;
-    this.topicSetter = sys.name(src);
+    this.changeParameter(src, "topic", topicInfo)
     SESSION.global().channelManager.update(this.id);
     channelbot.sendChanAll("" + sys.name(src) + " changed the topic to: " + topicInfo);
 };
 
-POChannel.prototype.isChannelMaster = function(id)
+POChannel.prototype.isChannelOwner = function(id)
 {
-    return this.masters.indexOf(sys.name(id).toLowerCase()) > -1;
+    if (!sys.dbRegistered(sys.name(id))) {
+        return false;
+    }
+    if (sys.auth(id) >= 3) {
+        return true;
+    }
+    if (typeof this.masters != "object") {
+        this.masters = [];
+    }
+    if (this.masters.indexOf(sys.name(id).toLowerCase()) > -1) {
+        return true;
+    }
+    return false;
+};
+POChannel.prototype.isChannelAdmin = function(id)
+{
+    if (!sys.dbRegistered(sys.name(id))) {
+        return false;
+    }
+    if (sys.auth(id) >= 2 || this.isChannelOwner(id)) {
+        return true;
+    }
+    if (typeof this.admins != "object") {
+        this.admins = [];
+    }
+    if (this.admins.indexOf(sys.name(id).toLowerCase()) > -1) {
+        return true;
+    }
+    return false;
 };
 POChannel.prototype.isChannelOperator = function(id)
 {
-    var channl = this.id;
-    return this.isChannelMaster(id) || this.operators.indexOf(sys.name(id).toLowerCase()) != -1 || (sys.auth(id) > 0 && (channl === 0 || channl == sys.channelId("Tournaments")));
+    if (!sys.dbRegistered(sys.name(id))) {
+        return false;
+    }
+    if ((sys.auth(id) >= 1 && this.id === 0) || this.isChannelAdmin(id)) {
+        return true;
+    }
+    if (typeof this.operators != "object") {
+        this.operators = [];
+    }
+    if (this.operators.indexOf(sys.name(id).toLowerCase()) > -1) {
+        return true;
+    }
+    return false;
 };
-POChannel.prototype.issueAuth = function(src, name, authlist)
+
+POChannel.prototype.addRole = function(src, tar, group, data)
 {
-    var lname;
-    var role = authlist.substring(0, authlist.length-1);
-    var tar = sys.id(name);
-    if (tar !== undefined) {
-        name = sys.name(tar);
-        lname = name.toLowerCase();
-        if (this[authlist].indexOf(lname) == -1) {
-            this[authlist].push(lname);
-            channelbot.sendChanAll(sys.name(src) + " made " + name + " a channel " + role + ".");
-        } else {
-            channelbot.sendChanMessage(src, "" + name + " is already a channel " + role + ".");
+    var name = tar.toLowerCase();
+    var auth = typeof src == "string" ? src : sys.name(src);
+    if (sys.dbIp(tar) === undefined) {
+        return ["self", "The user '"+tar.toCorrectCase()+"' doesn't exist!"];
+    }
+    if (!sys.dbRegistered(tar) && ["owner", "admin", "mod"].indexOf(group) != -1) {
+        return ["self", "The user '"+tar.toCorrectCase()+"' is not registered so you can't give them channel authority!"];
+    }
+    if (typeof this.operators != 'object')
+        this.operators = [];
+    if (typeof this.admins != 'object')
+        this.admins = [];
+    if (typeof this.masters != 'object')
+        this.masters = [];
+    if (typeof this.members != 'object')
+        this.members = [];
+    if (group == "owner") {
+        if (this.masters.indexOf(name) > -1) {
+            return ["self", tar.toCorrectCase()+" is already a channel owner!"];
         }
-    } else {
-        name = lname = name.toLowerCase();
-        if (this[authlist].indexOf(lname) == -1) {
-            this[authlist].push(lname);
-            channelbot.sendChanAll(sys.name(src) + " made " + name + " a channel " + role + ".");
-        } else {
-            channelbot.sendChanMessage(src, "" + name + " is already a channel " + role + ".");
+        if (this.masters.length > 10) {
+            return ["self", "There is a limit of 10 owners!"];
         }
+        this.masters.push(name);
+        return ["all", sys.name(src)+" made "+tar.toCorrectCase()+" a channel owner!"];
+    }
+    if (group == "admin") {
+        if (this.admins.indexOf(name) > -1) {
+            return ["self", tar.toCorrectCase()+" is already a channel admin!"];
+        }
+        if (this.admins.length > 50) {
+            return ["self", "There is a limit of 50 admins!"];
+        }
+        this.admins.push(name);
+        return ["all", sys.name(src)+" made "+tar.toCorrectCase()+" a channel admin!"];
+    }
+    if (group == "mod") {
+        if (this.operators.indexOf(name) > -1) {
+            return ["self", tar.toCorrectCase()+" is already a channel mod!"];
+        }
+        if (this.operators.length > 100) {
+            return ["self", "There is a limit of 100 mods!"];
+        }
+        this.operators.push(name);
+        return ["all", sys.name(src)+" made "+tar.toCorrectCase()+" a channel mod!"];
+    }
+    if (group == "member") {
+        if (this.members.indexOf(name) > -1) {
+            return ["self", tar.toCorrectCase()+" is already a member!"];
+        }
+        if (this.members.length > 250) {
+            return ["self", "There is a limit of 250 members!"];
+        }
+        this.members.push(name);
+        return ["all", sys.name(src)+" made "+tar.toCorrectCase()+" a member!"];
+    }
+    if (group == "muted") {
+        if (this.isPunished(name) !== "none") {
+            return ["self", tar.toCorrectCase()+" is already "+this.isPunished(name)+" from this channel!"];
+        }
+        if (!this.hasPermission(src, tar)) {
+            return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel mute them!"];
+        }
+        this.muted[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "issuetime": parseInt(sys.time()), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
+        var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
+        return ["all", auth+" muted "+tar.toCorrectCase()+timestring+" in this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
+    }
+    if (group == "banned") {
+        if (this.isPunished(name) === "banned") {
+            return ["self", tar.toCorrectCase()+" is already banned from this channel!"];
+        }
+        if (!this.hasPermission(src, tar)) {
+            return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel ban them!"];
+        }
+        this.banned[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "issuetime": parseInt(sys.time()), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
+        var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
+        return ["all", auth+" banned "+tar.toCorrectCase()+timestring+" from this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
+    }
+    return ["self", ""];
+};
+
+
+
+POChannel.prototype.removeRole = function(src, tar, group)
+{
+    var name = tar.toLowerCase();
+    if (typeof this.operators != 'object')
+        this.operators = [];
+    if (typeof this.admins != 'object')
+        this.admins = [];
+    if (typeof this.masters != 'object')
+        this.masters = [];
+    if (typeof this.members != 'object')
+        this.members = [];
+    if (group == "owner") {
+        if (this.masters.indexOf(name) == -1) {
+            return ["self", tar.toCorrectCase()+" is not a channel owner!"];
+        }
+        var index = this.masters.indexOf(name);
+        this.masters.splice(index,1);
+        return ["all", sys.name(src)+" removed "+tar.toCorrectCase()+" from the channel owner list!"];
+    }
+    if (group == "admin") {
+        if (this.admins.indexOf(name) == -1) {
+            return ["self", tar.toCorrectCase()+" is not a channel admin!"];
+        }
+        var index = this.admins.indexOf(name);
+        this.admins.splice(index,1);
+        return ["all", sys.name(src)+" removed "+tar.toCorrectCase()+" from the channel admin list!"];
+    }
+    if (group == "mod") {
+        if (this.operators.indexOf(name) == -1) {
+            return ["self", tar.toCorrectCase()+" is not a channel mod!"];
+        }
+        var index = this.operators.indexOf(name);
+        this.operators.splice(index,1);
+        return ["all", sys.name(src)+" removed "+tar.toCorrectCase()+" from the channel mod list!"];
+    }
+    if (group == "member") {
+        if (this.members.indexOf(name) == -1) {
+            return ["self", tar.toCorrectCase()+" is not a member!"];
+        }
+        var index = this.members.indexOf(name);
+        this.members.splice(index,1);
+        return ["all", sys.name(src)+" removed "+tar.toCorrectCase()+" from the channel member list!"];
+    }
+    if (group == "muted") {
+        if (!this.muted.hasOwnProperty(name)) {
+            return ["self", tar.toCorrectCase()+" is not muted in this channel!"];
+        }
+        delete this.muted[name];
+        return ["all", sys.name(src)+" unmuted "+tar.toCorrectCase()+" in this channel!"];
+    }
+    if (group == "banned") {
+        if (!this.banned.hasOwnProperty(name)) {
+            return ["self", tar.toCorrectCase()+" is not banned from this channel!"];
+        }
+        delete this.banned[name];
+        return ["all", sys.name(src)+" unbanned "+tar.toCorrectCase()+" from this channel!"];
+    }
+    return ["self", ""];
+};
+
+POChannel.prototype.issueAuth = function(src, name, group)
+{
+    var ret = this.addRole(src, name, group, {})
+    if (ret[0] == "self") {
+        channelbot.sendChanMessage(src, ret[1]);
+    }
+    else {
+        channelbot.sendChanAll(ret[1]);
+        SESSION.global().channelManager.update(this.id);
     }
 };
 
-POChannel.prototype.takeAuth = function(src, name, authlist)
+POChannel.prototype.takeAuth = function(src, name, group)
 {
-    var role = authlist.substring(0, authlist.length-1);
-    name = name.toLowerCase();
-    var index = this[authlist].indexOf(name);
-    if (index == -1 && name[0] == "~") {
-        index = parseInt(name.substr(1), 10);
-        name = this[authlist][index];
+    var ret = this.removeRole(src, name, group)
+    if (ret[0] == "self") {
+        channelbot.sendChanMessage(src, ret[1]);
     }
-    if (index != -1) {
-        this[authlist].splice(index,1);
-        channelbot.sendChanAll(sys.name(src) + " took away channel " + role + " from " + name + ".");
-    } else {
-        channelbot.sendChanMessage(src, "" + name + ": no such "+ role +".");
+    else {
+        channelbot.sendChanAll(ret[1]);
+        SESSION.global().channelManager.update(this.id);;
     }
-};
-
-POChannel.prototype.addOperator = function(src, name)
-{
-    this.issueAuth(src, name, "operators");
-    SESSION.global().channelManager.update(this.id);
-};
-POChannel.prototype.removeOperator = function(src, name)
-{
-    this.takeAuth(src, name, "operators");
-    SESSION.global().channelManager.update(this.id);
-};
-
-POChannel.prototype.addOwner = function(src, name)
-{
-    this.issueAuth(src, name, "masters");
-    SESSION.global().channelManager.update(this.id);
-};
-POChannel.prototype.removeOwner = function(src, name)
-{
-    this.takeAuth(src, name, "masters");
-    SESSION.global().channelManager.update(this.id);
 };
 
 POChannel.prototype.register = function(name)
 {
     if (this.masters.length === 0) {
         this.masters.push(name.toLowerCase());
+        SESSION.global().channelManager.update(this.id);
         return true;
     }
     return false;
 };
 
-POChannel.prototype.allowed = function(id, what)
-{
-    if (sys.auth(id) > 0)
-        return true;
-    if (this[what]) {
-        var ip = sys.ip(id);
-        if (this[what].ips.hasOwnProperty(ip))
-            return false;
-    }
-    return true;
-};
 POChannel.prototype.canJoin = function(id)
 {
-    return this.allowed(id, "banned") || this.isChannelOperator(id);
+    if (this.isBanned(id)) {
+        return "banned";
+    }
+    if (this.isChannelOperator(id)) {
+        return "allowed";
+    }
+    if (typeof this.members != "object") {
+        this.members = [];
+    }
+    if (this.members.indexOf(sys.name(id).toLowerCase()) > -1) {
+        return "allowed";
+    }
+    return "nil";
 };
 
 POChannel.prototype.canTalk = function(id)
 {
-    return this.allowed(id, "muted") || this.isChannelOperator(id);
+    return !this.isMuted(id);
 };
 
-POChannel.prototype.disallow = function(data, what)
+POChannel.prototype.ban = function(src, tar, data)
 {
-    var id = sys.id(data);
-    var ip = id ? sys.ip(id) : sys.dbIp(data);
-    if (ip) {
-        this[what].ips[ip] = data;
-        return true;
+    var ret = this.addRole(src, tar, "banned", data);
+    if (ret[0] == "self") {
+        if (typeof src == "number")
+            channelbot.sendChanMessage(src, ret[1]);
+    }
+    else {
+        channelbot.sendChanAll(ret[1]);
+        SESSION.global().channelManager.update(this.id);
+        // eject the offending user from the channel
+        if (sys.id(tar) !== undefined) {
+            if (sys.isInChannel(sys.id(tar), this.id)) {
+                if (sys.channelsOfPlayer(sys.id(tar)).length <= 1 && !sys.isInChannel(sys.id(tar), 0)) {
+                    sys.putInChannel(sys.id(tar), 0);
+                }
+                sys.kick(sys.id(tar), this.id);
+                channelbot.sendChanAll("And "+tar+" was gone!");
+            }
+        }
+    }
+};
+
+POChannel.prototype.unban = function(src, tar)
+{
+    var ret = this.removeRole(src, tar, "banned");
+    if (ret[0] == "self") {
+        channelbot.sendChanMessage(src, ret[1]);
+    }
+    else {
+        channelbot.sendChanAll(ret[1]);
+        SESSION.global().channelManager.update(this.id);
+    }
+};
+
+POChannel.prototype.mute = function(src, tar, data)
+{
+    var ret = this.addRole(src, tar, "muted", data);
+    if (ret[0] == "self") {
+        if (typeof src == "number")
+            channelbot.sendChanMessage(src, ret[1]);
+    }
+    else {
+        channelbot.sendChanAll(ret[1]);
+        SESSION.global().channelManager.update(this.id);
+    }
+};
+
+POChannel.prototype.unmute = function(src, tar)
+{
+    var ret = this.removeRole(src, tar, "muted");
+    if (ret[0] == "self") {
+        channelbot.sendChanMessage(src, ret[1]);
+    }
+    else {
+        channelbot.sendChanAll(ret[1]);
+        SESSION.global().channelManager.update(this.id);
+    }
+};
+
+POChannel.prototype.isBanned = function(id)
+{
+    // can't ban chan admins+
+    if (this.isChannelAdmin(id)) {
+        return false;
+    }
+    var banlist = this.banned;
+    var ip = sys.ip(id);
+    var name = sys.name(id);
+    for (var x in banlist) {
+        if (!banlist[x].hasOwnProperty("expiry")) {
+            delete this.banned[x];
+            continue;
+        }
+        if (banlist[x].expiry <= parseInt(sys.time())) {
+            delete this.banned[x];
+            continue;
+        }
+        if (cmp(x, name)) {
+            return true;
+        }
+        if (sys.dbIp(x) == ip) {
+            return true;
+        }
     }
     return false;
-};
+}
 
-POChannel.prototype.allow = function(data, what)
+POChannel.prototype.isMuted = function(id)
 {
-    var id = sys.id(data);
-    var ip = id ? sys.ip(id) : sys.dbIp(data);
-    if (this[what].ips.hasOwnProperty(ip)) {
-        delete this[what].ips[ip];
-        return true;
+    if (this.isChannelOperator(id)) {
+        return false;
     }
-    if (this[what].ips.hasOwnProperty(data)) {
-        delete this[what].ips[data];
-        return true;
+    var mutelist = this.muted;
+    var ip = sys.ip(id);
+    var name = sys.name(id);
+    for (var x in mutelist) {
+        if (!mutelist[x].hasOwnProperty("expiry")) {
+            delete this.muted[x];
+            continue;
+        }
+        if (mutelist[x].expiry <= parseInt(sys.time())) {
+            delete this.muted[x];
+            channelbot.sendChanAll(x+"'s channel mute expired.");
+            continue;
+        }
+        if (cmp(x, name)) {
+            return true;
+        }
+        if (sys.dbIp(x) == ip) {
+            return true;
+        }
     }
     return false;
-};
+}
 
-POChannel.prototype.ban = function(data)
+POChannel.prototype.isPunished = function(name)
 {
-    var ret = this.disallow(data, "banned");
-    SESSION.global().channelManager.update(this.id);
-    return ret;
-};
+    var banlist = this.banned;
+    for (var b in banlist) {
+        if (cmp(b, name)) {
+            return "banned";
+        }
+        if (sys.dbIp(b) == sys.dbIp(name)) {
+            return "banned";
+        }
+    }
+    var mutelist = this.muted;
+    for (var m in mutelist) {
+        if (cmp(m, name)) {
+            return "muted";
+        }
+        if (sys.dbIp(m) == sys.dbIp(name)) {
+            return "muted";
+        }
+    }
+    return "none";
+}
 
-POChannel.prototype.unban = function(data)
-{
-    var ret = this.allow(data, "banned");
-    SESSION.global().channelManager.update(this.id);
-    return ret;
-};
+POChannel.prototype.hasPermission = function(src, tar) {
+    var srcauth = 0;
+    if (typeof src == "string") {
+        srcauth = 1;
+    }
+    else {
+        if (this.isChannelOwner(src)) {
+            srcauth = 3;
+        }
+        else if (this.isChannelAdmin(src)) {
+            srcauth = 2;
+        }
+        else if (this.isChannelOperator(src)) {
+            srcauth = 1;
+        }
+    }
+    var tarauth = this.chanAuth(tar);
+    return srcauth > tarauth;
+}
 
-POChannel.prototype.mute = function(data)
-{
-    var ret = this.disallow(data, "muted");
-    SESSION.global().channelManager.update(this.id);
-    return ret;
-};
+POChannel.prototype.chanAuth = function(name) {
+    var maxauth = 0;
+    if (sys.dbAuth(name) >= 2 || this.id === 0) {
+        maxauth = sys.dbAuth(name);
+    }
+    var lname = name.toLowerCase();
+    if (typeof this.operators != 'object')
+        this.operators = [];
+    if (typeof this.admins != 'object')
+        this.admins = [];
+    if (typeof this.masters != 'object')
+        this.masters = [];
+    if (this.masters.indexOf(lname) > -1) {
+        maxauth = 3;
+    }
+    else if (this.admins.indexOf(lname) > -1 && maxauth < 2) {
+        maxauth = 2;
+    }
+    else if (this.operators.indexOf(lname) > -1 && maxauth < 1) {
+        maxauth = 1;
+    }
+    return maxauth;
+}
 
-POChannel.prototype.unmute = function(data)
+POChannel.prototype.changeParameter = function(src, parameter, value) {
+    if (parameter == "topic") {
+        this.topic = value;
+        this.topicSetter = sys.name(src);
+        return;
+    }
+    if (parameter == "allowcaps") {
+        if (value === true) {
+            this.ignorecaps = true;
+        }
+        else {
+            this.ignorecaps = false;
+        }
+        SESSION.global().channelManager.update(this.id);
+        return;
+    }
+    if (parameter == "allowflood") {
+        if (value === true) {
+            this.ignoreflood = true;
+        }
+        else {
+            this.ignoreflood = false;
+        }
+        SESSION.global().channelManager.update(this.id);
+        return;
+    }
+    if (parameter == "invitelevel") {
+        var level = parseInt(value);
+        var maxvalue = sys.auth(src) >= 3 ? 3 : sys.auth(src) + 1;
+        if (level <= 0 || isNaN(level)) {
+            level = 0;
+        }
+        else if (level > maxvalue) {
+            level = maxvalue;
+        }
+        this.inviteonly = level;
+        SESSION.global().channelManager.update(this.id);
+        if (level === 0) {
+            return sys.name(src)+" made this channel public.";
+        }
+        else {
+            return sys.name(src)+" made this channel invite only for users below auth level "+level+".";
+        }
+    }
+}
+
+POChannel.prototype.getReadableList = function(type)
 {
-    var ret = this.allow(data, "muted");
-    SESSION.global().channelManager.update(this.id);
-    return ret;
-};
+    try {
+        var name = "";
+        var mh = {};
+        if (type == "mutelist") {
+            mh = this.muted;
+            name = "Channel Muted";
+        }
+        else if (type == "banlist") {
+            mh = this.banned;
+            name = "Channel Banned";
+        }
+        else {
+            return "";
+        }
+        var width=4;
+        var max_message_length = 30000;
+        var tmp = [];
+        var t = parseInt(sys.time(), 10);
+        var toDelete = [];
+        for (var x in mh) {
+            if (!mh[x].hasOwnProperty("expiry")) {
+                continue;
+            }
+            var playername = utilities.html_escape(x);
+            var expirytime = isNaN(mh[x].expiry) ? "never" : mh[x].expiry-parseInt(sys.time());
+            if (expirytime <= 0) {
+                continue;
+            }
+            var issuetime = getTimeString(parseInt(sys.time())-mh[x].issuetime);
+            var auth = utilities.html_escape(mh[x].auth);
+            var reason = utilities.html_escape(mh[x].reason);
+            tmp.push([playername, auth, issuetime, isNaN(mh[x].expiry) ? expirytime : getTimeString(expirytime), reason])
+        }
+        tmp.sort(function(a,b) { return a[2] - b[2];});
+
+        // generate HTML
+        var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + utilities.html_escape(name) + '</strong></center></td></tr><tr><th>Name</th><th>By</th><th>Issued ago</th><th>Expires in</th><th>Reason</th>';
+        var table_footer = '</table>';
+        var table = table_header;
+        var line;
+        var send_rows = 0;
+        while(tmp.length > 0) {
+            line = '<tr><td>'+tmp[0].join('</td><td>')+'</td></tr>';
+            tmp.splice(0,1);
+            if (table.length + line.length + table_footer.length > max_message_length) {
+                if (send_rows === 0) continue; // Can't send this line!
+                table += table_footer;
+                sendChanHtmlMessage(src, table, channel);
+                table = table_header;
+                send_rows = 0;
+            }
+            table += line;
+            ++send_rows;
+        }
+        table += table_footer;
+        if (send_rows > 0) {
+            return table;
+        }
+        else {
+            return "";
+        }
+    }
+    catch (e) {
+        return "";
+    }
+}
 
 /* Object that manages channels */
 function POChannelManager(fname)
@@ -541,9 +1213,11 @@ POChannelManager.prototype.copyAttrs = [
     "topic",
     "topicSetter",
     "perm",
+    "members",
     "operators",
+    "admins",
     "masters",
-    "invitelevel",
+    "inviteonly",
     "muteall",
     "meoff",
     "muted",
@@ -633,7 +1307,6 @@ function POGlobal(id)
         plugins.push(plugin);
     }
     this.plugins = plugins;
-
     this.coins = 0;
     this.channelManager = new POChannelManager('channelHash.json');
     var manager = this.channelManager;
@@ -748,6 +1421,7 @@ var commands = {
         "/selfkick: Kicks all other accounts with IP.",
         "/importable: Posts an importable of your team to pastebin.",
         "/dwreleased [Pokemon]: Shows the released status of a Pokemon's Dream World Ability",
+        "/wiki [Pokémon]: Shows that Pokémon's wiki page",
         "/register: Registers a channel with you as owner.",
         "/resetpass: Clears your password (unregisters you, remember to reregister).",
         "/auth [owners/admins/mods]: Lists auth of given level, shows all auth if left blank.",
@@ -761,27 +1435,32 @@ var commands = {
     ],
     channel:
     [
+        "/register: To register the current channel you're on.",
         "/topic [topic]: Sets the topic of a channel. Only works if you're the first to log on a channel or have auth there. Displays current topic instead if no new one is given.",
         "/lt [name]: Kick someone from current channel.",
-        "/inviteonly [on|off] [level]: Makes a channel invite-only or public, with a minimum auth level of 'level' (level is optional).",
-        "/invite [name]: Invites a user to current channel.",
-        "/op [name]: Gives a user operator status.",
-        "/deop [name]: Removes operator status from a user.",
+        "/member [name]: Makes the user a member.",
+        "/demember [name]: Removes membership from a user.",
         "/csilence [minutes]: Prevents authless users from talking in current channel specified time.",
         "/csilenceoff: Allows users to talk in current channel.",
-        "/cmute [name]: Mutes someone in current channel.",
+        "/cmute [name]:[reason]:[time]: Mutes someone in current channel (reason and time optional).",
         "/cunmute [name]: Unmutes someone in current channel.",
         "/cmutes: Lists users muted in current channel.",
         "/cbans: Lists users banned from current channel.",
-        "Only channel masters may use the following commands:",
+        "*** Only channel admins may use the following commands ***",
+        "/op [name]: Gives a user channel operator status.",
+        "/deop [name]: Removes channel operator status from a user.",
+        "/inviteonly [on/off/level]: Makes a channel invite-only or public.",
         "/ctogglecaps: Turns on/off the server anti-caps bot in current channel.",
         "/ctoggleflood: Turns on/off the server anti-flood bot in current channel. Overactive still in effect.",
-        "/cban [name]: Bans someone from current channel.",
+        "/cban [name]:[reason]:[time]: Bans someone from current channel (reason and time optional).",
         "/cunban [name]: Unbans someone from current channel.",
-        "/owner [name]: Gives a user owner status.",
-        "/deowner [name]: Removes owner status from a user.",
         "/enabletours: Allows tours to be run in the channel.",
-        "/disabletours: Stops tours being run in the channel."
+        "/disabletours: Stops tours being run in the channel.",
+        "*** Only channel owners may use the following commands ***",
+        "/admin [name]: Gives a user channel admin status.",
+        "/deadmin [name]: Removes channel admin status from a user.",
+        "/owner [name]: Gives a user channel owner status.",
+        "/deowner [name]: Removes channel owner status from a user."
     ],
     mod:
     [
@@ -811,7 +1490,9 @@ var commands = {
         "/topchannels: To view the top channels.",
         "/onrange [range]: To view who is on a range.",
         "/tier [name]: To view the tier of a person.",
-        "/battlehistory [name]: To view a person's battle history."
+        "/battlehistory [name]: To view a person's battle history.",
+		"stalked_chans: List the channels whose logs are being saved.",
+		"stalkcheck: List the usage of the stalk_chan command."
     ],
     admin:
     [
@@ -858,7 +1539,9 @@ var commands = {
         "/indigo [on/off]: To create or destroy staff channel.",
         "/updatebansites: To update ban sites.",
         "/updatetierchecks: To update tier checks.",
-        "/togglerainbow: [on/off]: To turn rainbow on or off."
+        "/togglerainbow: [on/off]: To turn rainbow on or off.",
+		"/stalk_chan: [on/off]: To start/stop saving the logs of that chan and sending them to the website.",
+		"/update_logs: Send the logs to the website immediately without waiting for midnight."
     ]
 };
 
@@ -871,6 +1554,13 @@ poScript=({
 /* Executed every second */
 stepEvent: function() {
     if (typeof callplugins == "function") callplugins("stepEvent");
+	
+	// Updates PO Logs at midnight
+	var date = new Date();
+	if(date.getUTCHours() == 23 && date.getUTCMinutes() == 59 && date.getUTCSeconds() == 59)
+	{
+	    update_web_logs(); // Will try to update the logs on the web server
+	}
 },
 
 repeatStepEvent: function(globalCounter) {
@@ -895,28 +1585,27 @@ serverStartUp : function() {
     SESSION.global().startUpTime = parseInt(sys.time(), 10);
     scriptChecks = 0;
     this.init();
+	sys.appendToFile('stalk_commands_logs.json', ''); // contains the list of who used the command
+    sys.appendToFile('po_logs.json', '');
 },
 
 init : function() {
     lastMemUpdate = 0;
     this.startStepEvent();
 
-    callplugins("init");
     bannedUrls = [];
 
     mafiachan = SESSION.global().channelManager.createPermChannel("Mafia Channel", "Use /help to get started!");
     staffchannel = SESSION.global().channelManager.createPermChannel("Indigo Plateau", "Welcome to the Staff Channel! Discuss of all what users shouldn't hear here! Or more serious stuff...");
     sachannel = SESSION.global().channelManager.createPermChannel("Victory Road","Welcome MAs and SAs!");
     tourchannel = SESSION.global().channelManager.createPermChannel("Tournaments", 'Useful commands are "/join" (to join a tournament), "/unjoin" (to leave a tournament), "/viewround" (to view the status of matches) and "/megausers" (for a list of users who manage tournaments). Please read the full Tournament Guidelines: http://pokemon-online.eu/forums/showthread.php?2079-Tour-Rules');
-    trollchannel = SESSION.global().channelManager.createPermChannel("Mute City", 'This is a place to talk if you have been muted! Please behave, next stop will be bans.');
     watchchannel = SESSION.global().channelManager.createPermChannel("Watch", "Alerts displayed here");
-    newtourchannel = SESSION.global().channelManager.createPermChannel("Tours", "A new tournament system is currently being tested by Shadow Hax here. Use /help to see the commands.");
-	triviachan = SESSION.global().channelManager.createPermChannel("Trivia", "Play trivia here!");
-	revchan = SESSION.global().channelManager.createPermChannel("TrivReview", "For Trivia Admins to review questions");
-	mafiarev = SESSION.global().channelManager.createPermChannel("Mafia Review", "For Mafia Admins to review themes");
-	
-    var dwlist = ["Rattata", "Raticate", "Nidoran-F", "Nidorina", "Nidoqueen", "Nidoran-M", "Nidorino", "Nidoking", "Oddish", "Gloom", "Vileplume", "Bellossom", "Bellsprout", "Weepinbell", "Victreebel", "Ponyta", "Rapidash", "Farfetch'd", "Doduo", "Dodrio", "Exeggcute", "Exeggutor", "Lickitung", "Lickilicky", "Tangela", "Tangrowth", "Kangaskhan", "Sentret", "Furret", "Cleffa", "Clefairy", "Clefable", "Igglybuff", "Jigglypuff", "Wigglytuff", "Mareep", "Flaaffy", "Ampharos", "Hoppip", "Skiploom", "Jumpluff", "Sunkern", "Sunflora", "Stantler", "Poochyena", "Mightyena", "Lotad", "Ludicolo", "Lombre", "Taillow", "Swellow", "Surskit", "Masquerain", "Bidoof", "Bibarel", "Shinx", "Luxio", "Luxray", "Psyduck", "Golduck", "Growlithe", "Arcanine", "Scyther", "Scizor", "Tauros", "Azurill", "Marill", "Azumarill", "Bonsly", "Sudowoodo", "Girafarig", "Miltank", "Zigzagoon", "Linoone", "Electrike", "Manectric", "Castform", "Pachirisu", "Buneary", "Lopunny", "Glameow", "Purugly", "Natu", "Xatu", "Skitty", "Delcatty", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Espeon", "Umbreon", "Leafeon", "Glaceon", "Bulbasaur", "Charmander", "Squirtle", "Ivysaur", "Venusaur", "Charmeleon", "Charizard", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Infernape", "Monferno", "Piplup", "Prinplup", "Empoleon", "Treecko", "Sceptile", "Grovyle", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Caterpie", "Metapod", "Butterfree", "Pidgey", "Pidgeotto", "Pidgeot", "Spearow", "Fearow", "Zubat", "Golbat", "Crobat", "Aerodactyl", "Hoothoot", "Noctowl", "Ledyba", "Ledian", "Yanma", "Yanmega", "Murkrow", "Honchkrow", "Delibird", "Wingull", "Pelipper", "Swablu", "Altaria", "Starly", "Staravia", "Staraptor", "Gligar", "Gliscor", "Drifloon", "Drifblim", "Skarmory", "Tropius", "Chatot", "Slowpoke", "Slowbro", "Slowking", "Krabby", "Kingler", "Horsea", "Seadra", "Kingdra", "Goldeen", "Seaking", "Magikarp", "Gyarados", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Wooper", "Quagsire", "Qwilfish", "Corsola", "Remoraid", "Octillery", "Mantine", "Mantyke", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Barboach", "Whiscash", "Clamperl", "Gorebyss", "Huntail", "Relicanth", "Luvdisc", "Buizel", "Floatzel", "Finneon", "Lumineon", "Tentacool", "Tentacruel", "Corphish", "Crawdaunt", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas", "Milotic", "Shellos", "Gastrodon", "Lapras", "Dratini", "Dragonair", "Dragonite", "Elekid", "Electabuzz", "Electivire", "Poliwag", "Poliwrath", "Politoed", "Poliwhirl", "Vulpix", "Ninetales", "Musharna", "Munna", "Darmanitan", "Darumaka", "Mamoswine", "Togekiss", "Burmy", "Wormadam", "Mothim", "Pichu", "Pikachu", "Raichu","Abra","Kadabra","Alakazam","Spiritomb","Mr. Mime","Mime Jr.","Meditite","Medicham","Meowth","Persian","Shuppet","Banette","Spinarak","Ariados","Drowzee","Hypno","Wobbuffet","Wynaut","Snubbull","Granbull","Houndour","Houndoom","Smoochum","Jynx","Ralts","Gardevoir","Gallade","Sableye","Mawile","Volbeat","Illumise","Spoink","Grumpig","Stunky","Skuntank","Bronzong","Bronzor","Mankey","Primeape","Machop","Machoke","Machamp","Magnemite","Magneton","Magnezone","Koffing","Weezing","Rhyhorn","Rhydon","Rhyperior","Teddiursa","Ursaring","Slugma","Magcargo","Phanpy","Donphan","Magby","Magmar","Magmortar","Larvitar","Pupitar","Tyranitar","Makuhita","Hariyama","Numel","Camerupt","Torkoal","Spinda","Trapinch","Vibrava","Flygon","Cacnea","Cacturne","Absol","Beldum","Metang","Metagross","Hippopotas","Hippowdon","Skorupi","Drapion","Tyrogue","Hitmonlee","Hitmonchan","Hitmontop","Bagon","Shelgon","Salamence","Seel","Dewgong","Shellder","Cloyster","Chinchou","Lanturn","Smeargle","Porygon","Porygon2","Porygon-Z","Drilbur", "Excadrill", "Basculin", "Basculin-a", "Alomomola", "Stunfisk", "Druddigon", "Foongus", "Amoonguss", "Liepard", "Purrloin", "Minccino", "Cinccino", "Sandshrew", "Sandslash", "Vullaby", "Mandibuzz", "Rufflet", "Braviary", "Frillish", "Jellicent", "Weedle", "Kakuna", "Beedrill", "Shroomish", "Breloom", "Zangoose", "Seviper", "Combee", "Vespiquen", "Patrat", "Watchog", "Blitzle", "Zebstrika", "Woobat", "Swoobat", "Mienfoo", "Mienshao", "Bouffalant", "Staryu", "Starmie", "Togepi", "Shuckle", "Togetic", "Rotom", "Sigilyph", "Riolu", "Lucario", "Lugia", "Ho-Oh", "Dialga", "Palkia", "Giratina", "Grimer", "Muk", "Ditto", "Venonat", "Venomoth", "Herdier", "Lillipup", "Stoutland", "Sewaddle", "Swadloon", "Leavanny", "Cubchoo", "Beartic", "Landorus", "Thundurus", "Tornadus","Dunsparce", "Sneasel", "Weavile", "Nosepass", "Probopass", "Karrablast", "Escavalier", "Shelmet", "Accelgor", "Snorunt", "Glalie", "Froslass", "Heatran", "Pinsir", "Emolga", "Heracross", "Trubbish", "Garbodor", "Snover", "Abomasnow","Diglett", "Dugtrio", "Geodude", "Graveler", "Golem", "Onix", "Steelix", "Voltorb", "Electrode", "Cubone", "Marowak", "Whismur", "Loudred", "Exploud", "Aron", "Lairon", "Aggron", "Spheal", "Sealeo", "Walrein", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Gible", "Gabite", "Garchomp", "Pidove", "Tranquill", "Unfezant", "Tympole", "Palpitoad", "Seismitoad", "Cottonee", "Whimsicott", "Petilil", "Lilligant", "Ducklett", "Swanna", "Deerling", "Sawsbuck", "Elgyem", "Beheeyem", "Pawniard", "Bisharp", "Heatmor", "Durant","Venipede","Whirlipede", "Scolipede", "Tirtouga", "Carracosta", "Joltik", "Galvantula", "Maractus", "Dwebble", "Crustle", "Roggenrola", "Boldore", "Gigalith", "Vanillite", "Vanillish", "Vanilluxe", "Klink", "Klang", "Klinklang", "Swinub", "Piloswine", "Golett", "Golurk"];
-    
+    triviachan = SESSION.global().channelManager.createPermChannel("Trivia", "Play trivia here!");
+    revchan = SESSION.global().channelManager.createPermChannel("TrivReview", "For Trivia Admins to review questions");
+    mafiarev = SESSION.global().channelManager.createPermChannel("Mafia Review", "For Mafia Admins to review themes");
+
+    var dwlist = ["Rattata", "Raticate", "Nidoran-F", "Nidorina", "Nidoqueen", "Nidoran-M", "Nidorino", "Nidoking", "Oddish", "Gloom", "Vileplume", "Bellossom", "Bellsprout", "Weepinbell", "Victreebel", "Ponyta", "Rapidash", "Farfetch'd", "Doduo", "Dodrio", "Exeggcute", "Exeggutor", "Lickitung", "Lickilicky", "Tangela", "Tangrowth", "Kangaskhan", "Sentret", "Furret", "Cleffa", "Clefairy", "Clefable", "Igglybuff", "Jigglypuff", "Wigglytuff", "Mareep", "Flaaffy", "Ampharos", "Hoppip", "Skiploom", "Jumpluff", "Sunkern", "Sunflora", "Stantler", "Poochyena", "Mightyena", "Lotad", "Ludicolo", "Lombre", "Taillow", "Swellow", "Surskit", "Masquerain", "Bidoof", "Bibarel", "Shinx", "Luxio", "Luxray", "Psyduck", "Golduck", "Growlithe", "Arcanine", "Scyther", "Scizor", "Tauros", "Azurill", "Marill", "Azumarill", "Bonsly", "Sudowoodo", "Girafarig", "Miltank", "Zigzagoon", "Linoone", "Electrike", "Manectric", "Castform", "Pachirisu", "Buneary", "Lopunny", "Glameow", "Purugly", "Natu", "Xatu", "Skitty", "Delcatty", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Espeon", "Umbreon", "Leafeon", "Glaceon", "Bulbasaur", "Charmander", "Squirtle", "Ivysaur", "Venusaur", "Charmeleon", "Charizard", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Infernape", "Monferno", "Piplup", "Prinplup", "Empoleon", "Treecko", "Sceptile", "Grovyle", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Caterpie", "Metapod", "Butterfree", "Pidgey", "Pidgeotto", "Pidgeot", "Spearow", "Fearow", "Zubat", "Golbat", "Crobat", "Aerodactyl", "Hoothoot", "Noctowl", "Ledyba", "Ledian", "Yanma", "Yanmega", "Murkrow", "Honchkrow", "Delibird", "Wingull", "Pelipper", "Swablu", "Altaria", "Starly", "Staravia", "Staraptor", "Gligar", "Gliscor", "Drifloon", "Drifblim", "Skarmory", "Tropius", "Chatot", "Slowpoke", "Slowbro", "Slowking", "Krabby", "Kingler", "Horsea", "Seadra", "Kingdra", "Goldeen", "Seaking", "Magikarp", "Gyarados", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Wooper", "Quagsire", "Qwilfish", "Corsola", "Remoraid", "Octillery", "Mantine", "Mantyke", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Barboach", "Whiscash", "Clamperl", "Gorebyss", "Huntail", "Relicanth", "Luvdisc", "Buizel", "Floatzel", "Finneon", "Lumineon", "Tentacool", "Tentacruel", "Corphish", "Crawdaunt", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas", "Milotic", "Shellos", "Gastrodon", "Lapras", "Dratini", "Dragonair", "Dragonite", "Elekid", "Electabuzz", "Electivire", "Poliwag", "Poliwrath", "Politoed", "Poliwhirl", "Vulpix", "Ninetales", "Musharna", "Munna", "Darmanitan", "Darumaka", "Mamoswine", "Togekiss", "Burmy", "Wormadam", "Mothim", "Pichu", "Pikachu", "Raichu","Abra","Kadabra","Alakazam","Spiritomb","Mr. Mime","Mime Jr.","Meditite","Medicham","Meowth","Persian","Shuppet","Banette","Spinarak","Ariados","Drowzee","Hypno","Wobbuffet","Wynaut","Snubbull","Granbull","Houndour","Houndoom","Smoochum","Jynx","Ralts","Gardevoir","Gallade","Sableye","Mawile","Volbeat","Illumise","Spoink","Grumpig","Stunky","Skuntank","Bronzong","Bronzor","Mankey","Primeape","Machop","Machoke","Machamp","Magnemite","Magneton","Magnezone","Koffing","Weezing","Rhyhorn","Rhydon","Rhyperior","Teddiursa","Ursaring","Slugma","Magcargo","Phanpy","Donphan","Magby","Magmar","Magmortar","Larvitar","Pupitar","Tyranitar","Makuhita","Hariyama","Numel","Camerupt","Torkoal","Spinda","Trapinch","Vibrava","Flygon","Cacnea","Cacturne","Absol","Beldum","Metang","Metagross","Hippopotas","Hippowdon","Skorupi","Drapion","Tyrogue","Hitmonlee","Hitmonchan","Hitmontop","Bagon","Shelgon","Salamence","Seel","Dewgong","Shellder","Cloyster","Chinchou","Lanturn","Smeargle","Porygon","Porygon2","Porygon-Z","Drilbur", "Excadrill", "Basculin", "Basculin-a", "Alomomola", "Stunfisk", "Druddigon", "Foongus", "Amoonguss", "Liepard", "Purrloin", "Minccino", "Cinccino", "Sandshrew", "Sandslash", "Vullaby", "Mandibuzz", "Rufflet", "Braviary", "Frillish", "Jellicent", "Weedle", "Kakuna", "Beedrill", "Shroomish", "Breloom", "Zangoose", "Seviper", "Combee", "Vespiquen", "Patrat", "Watchog", "Blitzle", "Zebstrika", "Woobat", "Swoobat", "Mienfoo", "Mienshao", "Bouffalant", "Staryu", "Starmie", "Togepi", "Shuckle", "Togetic", "Rotom", "Sigilyph", "Riolu", "Lucario", "Lugia", "Ho-Oh", "Dialga", "Palkia", "Giratina", "Grimer", "Muk", "Ditto", "Venonat", "Venomoth", "Herdier", "Lillipup", "Stoutland", "Sewaddle", "Swadloon", "Leavanny", "Cubchoo", "Beartic", "Landorus", "Thundurus", "Tornadus","Dunsparce", "Sneasel", "Weavile", "Nosepass", "Probopass", "Karrablast", "Escavalier", "Shelmet", "Accelgor", "Snorunt", "Glalie", "Froslass", "Heatran", "Pinsir", "Emolga", "Heracross", "Trubbish", "Garbodor", "Snover", "Abomasnow","Diglett", "Dugtrio", "Geodude", "Graveler", "Golem", "Onix", "Steelix", "Voltorb", "Electrode", "Cubone", "Marowak", "Whismur", "Loudred", "Exploud", "Aron", "Lairon", "Aggron", "Spheal", "Sealeo", "Walrein", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Gible", "Gabite", "Garchomp", "Pidove", "Tranquill", "Unfezant", "Tympole", "Palpitoad", "Seismitoad", "Cottonee", "Whimsicott", "Petilil", "Lilligant", "Ducklett", "Swanna", "Deerling", "Sawsbuck", "Elgyem", "Beheeyem", "Pawniard", "Bisharp", "Heatmor", "Durant","Venipede","Whirlipede", "Scolipede", "Tirtouga", "Carracosta", "Joltik", "Galvantula", "Maractus", "Dwebble", "Crustle", "Roggenrola", "Boldore", "Gigalith", "Vanillite", "Vanillish", "Vanilluxe", "Klink", "Klang", "Klinklang", "Swinub", "Piloswine", "Golett", "Golurk","Gothitelle", "Gothorita"];
+
     /* use hash for faster lookup */
     dwpokemons = {};
     var announceChan = (typeof staffchannel == "number") ? staffchannel : 0;
@@ -924,9 +1613,9 @@ init : function() {
     for(dwpok in dwlist) {
         var num = sys.pokeNum(dwlist[dwpok]);
         if (num === undefined)
-            sys.sendAll("Script Check: Unknown poke in dwpokemons: '" +dwlist[dwpok]+"'.", announceChan);
+            sendChanAll("Script Check: Unknown poke in dwpokemons: '" +dwlist[dwpok]+"'.", announceChan);
         else if (dwpokemons[num] === true)
-            sys.sendAll("Script Check:  dwpokemons contains '" +dwlist[dwpok]+"' multiple times.", announceChan);
+            sendChanAll("Script Check:  dwpokemons contains '" +dwlist[dwpok]+"' multiple times.", announceChan);
         else
             dwpokemons[sys.pokeNum(dwlist[dwpok])] = true;
     }
@@ -939,7 +1628,7 @@ init : function() {
     bannedGSCSleep = [sys.moveNum("Spore"), sys.moveNum("Hypnosis"), sys.moveNum("Lovely Kiss"), sys.moveNum("Sing"), sys.moveNum("Sleep Powder")].sort();
     bannedGSCTrap = [sys.moveNum("Mean Look"), sys.moveNum("Spider Web")].sort();
 
-    var breedingList = ["Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Monferno", "Infernape", "Piplup", "Prinplup", "Empoleon", "Treecko", "Grovyle", "Sceptile", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Hitmonlee","Hitmonchan","Hitmontop","Tyrogue", "Porygon", "Porygon2", "Porygon-Z"];
+    var breedingList = ["Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Monferno", "Infernape", "Piplup", "Prinplup", "Empoleon", "Treecko", "Grovyle", "Sceptile", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Hitmonlee","Hitmonchan","Hitmontop","Tyrogue", "Porygon", "Porygon2", "Porygon-Z", "Gothorita", "Gothitelle"];
     breedingpokemons = [];
     for(var inpok in breedingList) {
         breedingpokemons.push(sys.pokeNum(breedingList[inpok]));
@@ -1052,8 +1741,6 @@ init : function() {
 
     battlesStopped = false;
 
-    megausers = sys.getVal("megausers");
-
     maxPlayersOnline = 0;
 
     lineCount = 0;
@@ -1116,9 +1803,11 @@ init : function() {
         return s.join(", ");
     };
     sendMainTour = function(message) {
-        sys.sendAll(message, 0);
-        sys.sendAll(message, tourchannel);
+        sendChanAll(message, 0);
+        sendChanAll(message, tourchannel);
     };
+
+    callplugins("init");
 
     VarsCreated = true;
 }, /* end of init */
@@ -1234,7 +1923,11 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             banbot.sendChanMessage(src, "You dont have sufficient auth to " + nomi + " " + commandData + ".");
             return;
         }
-        SESSION.users(tar).activate(type, sys.name(src), expires, reason, true);
+	var tarip = tar !== undefined ? sys.ip(tar) : sys.dbIp(commandData);
+	sys.playerIds().forEach(function(id) {
+		if (sys.loggedIn(id) && sys.ip(id) === tarip)
+		SESSION.users(id).activate(type, sys.name(src), expires, reason, true);
+	});
         if (reason.length > 0)
             sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
         else
@@ -1267,6 +1960,9 @@ Jolly Nature (+Spd, -SAtk)
     for (var i = 0; i < 6; ++i) {
       var poke = sys.teamPoke(id, team, i);
         if (poke === undefined)
+            continue;
+        // exclude missingno
+        if (poke === 0)
             continue;
 
         var item = sys.teamPokeItem(id, team, i);
@@ -1340,9 +2036,6 @@ beforeChannelJoin : function(src, channel) {
 
     callplugins("beforeChannelJoin", src, channel);
 
-    if (poChannel.isChannelOperator(src)){
-        return;
-    }
     // Can't ban from main
     if (channel === 0) return;
 
@@ -1357,25 +2050,16 @@ beforeChannelJoin : function(src, channel) {
         sys.putInChannel(src, sachannel);
         return;
     }
-
-    var index = poChannel.invitelist.indexOf(src);
-    if (index != -1) {
-        // allow to bypass all limits if invited
-        poChannel.invitelist.splice(index, 1);
-        return;
-    }
-    if (sys.auth(src) < 3 && !poChannel.canJoin(src)) {
+    if (sys.auth(src) < 3 && poChannel.canJoin(src) == "banned") {
         channelbot.sendMessage(src, "You are banned from this channel! You can't join unless channel operators and masters unban you.");
         sys.stopEvent();
         return;
     }
-    if (poChannel.inviteonly > sys.auth(src)) {
-        sys.sendMessage(src, "+Guard: Sorry, but this channel is for higher authority!");
-        sys.stopEvent();
+    if (poChannel.canJoin(src) == "allowed") {
         return;
     }
-    if (channel == trollchannel && (!poUser.mute.active && sys.auth(src) <= 1)) {
-        sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
+    if (poChannel.inviteonly > sys.auth(src)) {
+        sys.sendMessage(src, "+Guard: Sorry, but this channel is for higher authority!");
         sys.stopEvent();
         return;
     }
@@ -1422,8 +2106,20 @@ afterChannelJoin : function(player, chan) {
     if (SESSION.channels(chan).isChannelOperator(player)) {
         sys.sendMessage(player, Config.channelbot + ": use /topic <topic> to change the welcome message of this channel", chan);
     }
-	callplugins("afterChannelJoin", player, chan);
+    if (SESSION.channels(chan).masters.length <= 0) {
+        sys.sendMessage(player, Config.channelbot + ": This channel is unregistered. If you're looking to own this channel, type /register in order to prevent your channel from being stolen.", chan);
+    }
+    callplugins("afterChannelJoin", player, chan);
+	// PO logs stuff
+    var params = {event:'afterChannelJoin', source_id:player, chan_id:chan, timestamp:get_timestamp()};
+	append_logs(params);
 }, /* end of afterChannelJoin */
+
+afterChannelLeave : function(player, chan) {
+    // PO logs stuff
+    var params = {event:'afterChannelLeave', source_id:player, chan_id:chan, timestamp:get_timestamp()};
+	append_logs(params);
+},
 
 
 beforeChannelDestroyed : function(channel) {
@@ -1438,23 +2134,43 @@ beforePlayerBan : function(src, dest) {
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
+	
+	// PO logs stuff
+	var params = {event:'beforePlayerBan', banner_id:src, banned_id:dest, timestamp:get_timestamp()};
+	append_logs(params);
+},
+
+afterPlayerBan : function(src, dest) {
+    // NOT WORKING
 },
 
 beforePlayerKick:function(src, dest){
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestKick = [sys.name(dest), parseInt(sys.time(), 10)];
+	var params = {event:'beforePlayerKick', kicker_id:src, kicked_id:dest, timestamp:get_timestamp()};
+	append_logs(params);
 },
 
+afterPlayerKick:function(src, dest) {
+   // doesn't work for some reason
+},
 
 afterNewMessage : function (message) {
     if (message == "Script Check: OK") {
-        sys.sendAll("±ScriptCheck: Scripts were updated!");
+        sendChanAll("±ScriptCheck: Scripts were updated!", sys.channelId("Indigo Plateau"));
         if (typeof(scriptChecks)=='undefined')
             scriptChecks = 0;
         scriptChecks += 1;
         this.init();
     }
+	// To catch overactives for the PO logs
+	var ip_overactive = new RegExp("^IP ([0-9]{1,3}\\.){3}[0-9]{1,3} is being overactive\\.$");
+	var player_overactive = new RegExp("^Player [^:]{1,20} \\(IP ([0-9]{1,3}\\.){3}[0-9]{1,3}\\) is being overactive\\.$");
+	if(ip_overactive.test(message) || player_overactive.test(message))
+	{
+	    append_logs({event:"afterNewMessage", msg:message, timestamp:get_timestamp()});
+	}
 }, /* end of afterNewMessage */
 
 
@@ -1472,11 +2188,11 @@ isTempBannedName: function(name)
 {
     name = name.toLowerCase();
     for (var i in tempBans)
-	{
-		if (tempBans[i].target.toLowerCase() == name && this.isTempBanned(i))
-		return true;
-	}
-	return false;
+    {
+        if (tempBans[i].target.toLowerCase() == name && this.isTempBanned(i))
+        return true;
+    }
+    return false;
 },
 
 
@@ -1508,12 +2224,12 @@ beforeLogIn : function(src) {
     var allowedNames = ["sasukeanditachi", "sasukatandkitachi", "ata", "downpour", "broon89", "ifmltrailers", "probrem?", "salamander94", "realmanofgenius"];
     var name = sys.name(src).toLowerCase();
     if (this.isRangeBanned(ip) && allowedNames.indexOf(name) == -1) {
-            normalbot.sendMessage('You are banned!');
+            normalbot.sendMessage(src, 'You are banned!');
             sys.stopEvent();
             return;
     }
     if (proxy_ips.hasOwnProperty(ip)) {
-        normalbot.sendMessage('You are banned for using proxy!');
+        normalbot.sendMessage(src, 'You are banned for using proxy!');
         sys.stopEvent();
         return;
 
@@ -1611,12 +2327,16 @@ nameWarnTest : function(src) {
     for (var i = 0; i < nameWarns.length; ++i) {
         var regexp = nameWarns[i];
         if (regexp.test(lname)) {
-            sys.sendAll('Namewarning: Name `' + sys.name(src) + '´ matches the following regexp: `' + regexp + '´ on the IP `' + sys.ip(src) + "´.", watchchannel);
+            sendChanAll('Namewarning: Name `' + sys.name(src) + '´ matches the following regexp: `' + regexp + '´ on the IP `' + sys.ip(src) + "´.", watchchannel);
         }
     }
 },
 
 afterLogIn : function(src) {
+    // PO logs stuff
+    var params = {event:'afterLogIn', source_id:src, timestamp:get_timestamp()};
+	append_logs(params);
+	
     sys.sendMessage(src, "*** Type in /Rules to see the rules. ***");
     commandbot.sendMessage(src, "Use !commands to see the commands!");
 
@@ -1661,8 +2381,6 @@ afterLogIn : function(src) {
     authChangingTeam = (sys.auth(src) > 0 && sys.auth(src) <= 3);
     this.afterChangeTeam(src);
 
-    if (SESSION.users(src).mute.active)
-        sys.putInChannel(src, trollchannel);
     if (sys.auth(src) <= 3 && this.canJoinStaffChannel(src) && sys.name(src).toLowerCase() != "flames of corruption")
         sys.putInChannel(src, staffchannel);
 }, /* end of afterLogin */
@@ -1675,6 +2393,12 @@ beforeLogOut : function(src) {
         sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Disconnected as Auth" + "\n");
 },
 
+afterLogOut : function(src) {
+    // PO logs stuff
+    var params = {event:'afterLogOut', source_id:src, timestamp:get_timestamp()};
+	append_logs(params);
+},
+
 
 beforeChangeTeam : function(src) {
     authChangingTeam = (sys.auth(src) > 0 && sys.auth(src) <= 3);
@@ -1683,6 +2407,9 @@ beforeChangeTeam : function(src) {
 
 afterChangeTeam : function(src)
 {
+    // PO logs stuff
+    var params = {event:'afterChangeTeam', source_id:src, channels:get_players_channels([src]), timestamp:get_timestamp()};
+	append_logs(params);
     if (sys.auth(src) === 0 && this.nameIsInappropriate(src)) {
         sys.kick(src);
         return;
@@ -1701,17 +2428,6 @@ afterChangeTeam : function(src)
         }
     }
 
-    if (megausers.indexOf("*" + sys.name(src) + "*") != -1) {
-        if(!POuser.megauser) {
-            sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Changed name to MU" + "\n");
-        }
-        POuser.megauser = true;
-    } else {
-        if(POuser.megauser) {
-            sys.appendToFile("staffstats.txt", "~" + src + "~" + sys.time() + "~" + "Changed name from MU" + "\n");
-        }
-        POuser.megauser = false;
-    }
     POuser.contributions = contributors.hash.hasOwnProperty(sys.name(src)) ? contributors.get(sys.name(src)) : undefined;
     POuser.mafiaAdmin = mafiaAdmins.hash.hasOwnProperty(sys.name(src));
     if (authChangingTeam === false) {
@@ -1803,6 +2519,11 @@ userCommand: function(src, command, commandData, tar) {
 
         return;
     }
+	if(command == "sendhtml" && sys.name(src) == 'Desolate') // Temporary
+	{
+                sys.sendHtmlMessage(src, commandData,sys.channelId('Witty'));
+                return;
+	}
     if ((command == "me" || command == "rainbow") && !SESSION.channels(channel).muteall) {
         if (SESSION.channels(channel).meoff === true) {
             normalbot.sendChanMessage(src, "/me was turned off.");
@@ -1846,7 +2567,7 @@ userCommand: function(src, command, commandData, tar) {
                 var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
                 colour = clist[src % clist.length];
            }
-           sys.sendHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + messagetosend + "</font>", channel);
+           sendChanHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + messagetosend + "</font>", channel);
         } else if (command == "rainbow" && SESSION.global().allowRainbow && channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel != sys.channelId("Trivia")) {
             var auth = 1 <= sys.auth(src) && sys.auth(src) <= 3;
             var colours = ["red", "blue", "yellow", "cyan", "black", "orange", "green", "#FF0000", "#FF5A00", "#A5ff00", "#00ff5A", "#0000ff", "#FF00B4", "#FFff00"];
@@ -1859,22 +2580,9 @@ userCommand: function(src, command, commandData, tar) {
             toSend.push("<span style='color:" + randColour() + "'>:</b></span> ");
             if (auth) toSend.push("</i>");
             toSend.push(messagetosend);
-            sys.sendHtmlAll(toSend.join(""), channel);
+            sendChanHtmlAll(toSend.join(""), channel);
         }
         this.afterChatMessage(src, '/'+command+' '+commandData,channel);
-        return;
-    }
-    if (command == "megausers") {
-        sendChanMessage(src, "");
-        sendChanMessage(src, "*** MEGA USERS ***");
-        sendChanMessage(src, "");
-        var spl = megausers.split('*');
-        for (x = 0; x < spl.length; ++x) {
-            if (spl[x].length > 0) {
-                sendChanMessage(src, spl[x] + " " + (sys.id(spl[x]) !== undefined ? "(online):" : "(offline)"));
-            }
-        }
-        sendChanMessage(src, "");
         return;
     }
     if (command == "contributors") {
@@ -2097,15 +2805,15 @@ userCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-
-    if (command == "join"){
-        if (channel == sys.channelId("Trivia")) {
-            sendChanMessage(src, "±TriviaBot: You must use \\join to join a Trivia game!");
-            return;
-        }
-    }
     if (command == "topic") {
         SESSION.channels(channel).setTopic(src, commandData);
+        return;
+    }
+    if (command == "topicadd") {
+        if (SESSION.channels(channel).topic.length > 0)
+            SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + " | " + commandData);
+        else
+            SESSION.channels(channel).setTopic(src, commandData);
         return;
     }
     if (command == "uptime") {
@@ -2145,6 +2853,10 @@ userCommand: function(src, command, commandData, tar) {
     }
 
     if (command == "register") {
+        if (!sys.dbRegistered(sys.name(src))) {
+            channelbot.sendChanMessage(src, "You need to register on the server before registering a channel to yourself for security reasons!");
+            return;
+        }
         if (SESSION.channels(channel).register(sys.name(src))) {
             channelbot.sendChanMessage(src, "You registered this channel successfully. Take a look of /commands channel");
         } else {
@@ -2155,11 +2867,19 @@ userCommand: function(src, command, commandData, tar) {
     if (command == "cauth") {
         if (typeof SESSION.channels(channel).operators != 'object')
             SESSION.channels(channel).operators = [];
+        if (typeof SESSION.channels(channel).admins != 'object')
+            SESSION.channels(channel).admins = [];
         if (typeof SESSION.channels(channel).masters != 'object')
             SESSION.channels(channel).masters = [];
-        channelbot.sendChanMessage(src, "The channel auth of " + sys.channel(channel) + " are:");
-        channelbot.sendChanMessage(src, "Masters: " + SESSION.channels(channel).masters.join(", "));
-        channelbot.sendChanMessage(src, "Operators: " + SESSION.channels(channel).operators.join(", "));
+        if (typeof SESSION.channels(channel).members != 'object')
+            SESSION.channels(channel).members = [];
+        channelbot.sendChanMessage(src, "The channel members of " + sys.channel(channel) + " are:");
+        channelbot.sendChanMessage(src, "Owners: " + SESSION.channels(channel).masters.join(", "));
+        channelbot.sendChanMessage(src, "Admins: " + SESSION.channels(channel).admins.join(", "));
+        channelbot.sendChanMessage(src, "Mods: " + SESSION.channels(channel).operators.join(", "));
+        if (SESSION.channels(channel).inviteonly >= 1 || SESSION.channels(channel).members.length >= 1) {
+            channelbot.sendChanMessage(src, "Members: " + SESSION.channels(channel).members.join(", "));
+        }
         return;
     }
     // Tour alerts
@@ -2190,7 +2910,7 @@ userCommand: function(src, command, commandData, tar) {
         sendChanMessage(src, "");
         return;
     }
-    
+
     if(command == "addtouralert") {
         var tier = utilities.find_tier(commandData);
         if (tier === null) {
@@ -2350,6 +3070,10 @@ userCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "No such pokemon!"); return;
         }
         var pokename = sys.pokemon(poke);
+        if (dwCheck(poke) === false){
+            normalbot.sendChanMessage(src, pokename + ": has no DW ability!");
+            return;
+        }
         if (poke in dwpokemons) {
             if (breedingpokemons.indexOf(poke) == -1) {
                 normalbot.sendChanMessage(src, pokename + ": Released fully!");
@@ -2361,6 +3085,16 @@ userCommand: function(src, command, commandData, tar) {
         }
         return;
     }
+    if (command == "wiki"){
+        var poke = sys.pokeNum(commandData);
+        if (!poke) {
+            normalbot.sendChanMessage(src, "No such pokemon!"); 
+            return;
+        }
+        var pokename = sys.pokemon(poke);
+        normalbot.sendChanMessage(src, pokename+"'s wikipage is here: http://wiki.pokemon-online.eu/wiki/"+pokename);
+        return;
+    }
     if (-crc32(command, crc32(sys.name(src))) == 22 || command == "wall") {
         if (!isNonNegative(SESSION.global().coins)) SESSION.global().coins=0;
         if (!isNonNegative(SESSION.users(src).coins)) SESSION.users(src).coins=1;
@@ -2370,10 +3104,34 @@ userCommand: function(src, command, commandData, tar) {
         SESSION.global().coins = 0;
         return;
     }
+    if(command == "shades"){
+        if(sys.name(src).toLowerCase() !== "pokemonnerd"){
+            return;
+        }
+        sys.changeName(src, "(⌐■_■)")
+        return;
+    }
     return "no command";
 },
 
 modCommand: function(src, command, commandData, tar) {
+    if(command == "stalked_chans") {
+	     var stalked_chans = getVal('stalked_chans');
+	    sendChanMessage(src, "±CommandBot: List of channels being stalked: "+stalked_chans.split(':')+".");
+		return;
+	}
+	if(command == "stalkcheck") {
+	    var json = sys.getFileContent('stalk_commands_logs.json');
+		json = '['+json.slice(0, -1)+']';
+		json = sys.eval(json);
+		sendChanMessage(src, "*** Usage of the stalk_chan command ***", channel);
+		for(var x in json)
+		{
+		    var date = new Date(parseInt(json[x].timestamp));
+		    sendChanMessage(src, "±CommandBot: User: "+json[x].user+", channel: "+json[x].channel+", param: "+json[x].param+", time: "+date.toUTCString()+".", channel);
+		}
+		return;
+	}
     if (command == "topchannels") {
         var cids = sys.channelIds();
         var l = [];
@@ -2466,7 +3224,9 @@ modCommand: function(src, command, commandData, tar) {
             }
             var ip = sys.dbIp(commandData);
             if(ip !== undefined && mbans.get(ip)) {
-                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!");
+                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",staffchannel);
+                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",mafiachan)
+                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",sachannel)
                 mbans.remove(ip);
                 return;
             }
@@ -2481,7 +3241,9 @@ modCommand: function(src, command, commandData, tar) {
            mafiabot.sendChanMessage(src, "You may not unban yourself from Mafia");
            return;
         }
-        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!");
+        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",staffchannel);
+        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",mafiachan)
+        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",sachannel)
         SESSION.users(tar).un("mban");
         return;
     }
@@ -2758,7 +3520,6 @@ modCommand: function(src, command, commandData, tar) {
         }
 
         var registered = sys.dbRegistered(name);
-        var megauser = (megausers.toLowerCase().indexOf("*" + name.toLowerCase() + "*") != -1);
         var contribution = contributors.hash.hasOwnProperty(name) ? contributors.get(name) : "no";
         var authLevel;
         var ip;
@@ -2799,14 +3560,14 @@ modCommand: function(src, command, commandData, tar) {
             var userJson = {'type': 'UserInfo', 'id': tar ? tar : -1, 'username': name, 'auth': authLevel, 'megauser': megauser, 'contributor': contribution, 'ip': ip, 'online': online, 'registered': registered, 'lastlogin': lastLogin };
             sendChanMessage(src, ":"+JSON.stringify(userJson));
         } else if (command == "userinfo") {
-            querybot.sendChanMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ megauser: " + megauser + " ~ contributor: " + contribution + " ~ ip: " + ip + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"));
+            querybot.sendChanMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ contributor: " + contribution + " ~ ip: " + ip + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"));
         } else if (command == "whois") {
             var authName = function() {
                 switch (authLevel) {
                 case 3: return "owner";
                 case 2: return "admin";
                 case 1: return "moderator";
-                default: return megauser ? "megauser" : contribution != "no" ? "contributor" : "user";
+                default: return contribution != "no" ? "contributor" : "user";
                 }
             }();
 
@@ -2873,59 +3634,60 @@ modCommand: function(src, command, commandData, tar) {
         return;
     }
    if (command == "tempban") {
-	var tmp = commandData.split(":");
-	if (tmp.length != 3) {
-		normalbot.sendChanMessage(src, "Usage /tempban name:reason:minutes.");
-		return;
-	}
-	
-	var target_name = tmp[0];
-	var reason = tmp[1];
-	if (isNaN(tmp[2][0])) {
-		var minutes = 86400;
-	} else {
-		var minutes = getSeconds(tmp[2]);
-	}
-	tar = sys.id(target_name);
-	var minutes = parseInt(minutes, 10);
-	var timeString = getTimeString(minutes);
-	if (sys.auth(src) < 2 && minutes > 86400) {
-		normalbot.sendChanMessage(src, "Cannot ban for longer than a day!");
-		return;
-	}
-	var ip;
-	var name;
-	if (tar === undefined) {
-		ip = sys.dbIp(target_name);
-		name = target_name;
-		if (ip === undefined) {
-			normalbot.sendChanMessage(src, "No such name online / offline.");
-			return;
-		}
-	} else {
-		ip = sys.ip(tar);
-		name = sys.name(tar);
-	}
-	
-	if (sys.maxAuth(ip) >= sys.auth(src)) {
-		normalbot.sendChanMessage(src, "Can't do that to higher auth!");
-		return;
-	}
-	var authname = sys.name(src).toLowerCase();
-	tempBans[ip] = {
-		'auth' : authname,
-		'time' : parseInt(sys.time(), 10) + minutes,
-		'length' : minutes,
-		'reason' : reason,
-		'target' : target_name
-	};
-	normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " on " + ip + " for " + timeString + "! [Reason: " + reason + "]");
-	sys.kick(tar);
-	this.kickAll(ip);
-	
-	authStats[authname] = authStats[authname] || {};
-	authStats[authname].latestTempBan = [name, parseInt(sys.time(), 10)];
-	return;
+    var tmp = commandData.split(":");
+    if (tmp.length != 3) {
+        normalbot.sendChanMessage(src, "Usage /tempban name:reason:minutes.");
+        return;
+    }
+
+    var target_name = tmp[0];
+    var reason = tmp[1];
+    if (isNaN(tmp[2][0])) {
+        var minutes = 86400;
+    } else {
+        var minutes = getSeconds(tmp[2]);
+    }
+    tar = sys.id(target_name);
+    var minutes = parseInt(minutes, 10);
+    var timeString = getTimeString(minutes);
+    if (sys.auth(src) < 2 && minutes > 86400) {
+        normalbot.sendChanMessage(src, "Cannot ban for longer than a day!");
+        return;
+    }
+    var ip;
+    var name;
+    if (tar === undefined) {
+        ip = sys.dbIp(target_name);
+        name = target_name;
+        if (ip === undefined) {
+            normalbot.sendChanMessage(src, "No such name online / offline.");
+            return;
+        }
+    } else {
+        ip = sys.ip(tar);
+        name = sys.name(tar);
+    }
+
+    if (sys.maxAuth(ip) >= sys.auth(src)) {
+        normalbot.sendChanMessage(src, "Can't do that to higher auth!");
+        return;
+    }
+    var authname = sys.name(src).toLowerCase();
+    tempBans[ip] = {
+        'auth' : authname,
+        'time' : parseInt(sys.time(), 10) + minutes,
+        'length' : minutes,
+        'reason' : reason,
+        'target' : target_name
+    };
+        normalbot.sendAll("Target: " + name + ", IP: " + ip, staffchannel);
+        normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " for " + timeString + "! [Reason: " + reason + "]");
+        sys.kick(tar);
+        this.kickAll(ip);
+
+        authStats[authname] = authStats[authname] || {};
+        authStats[authname].latestTempBan = [name, parseInt(sys.time(), 10)];
+        return;
     }
     if (command == "tempunban") {
         var ip = sys.dbIp(commandData);
@@ -3059,15 +3821,6 @@ adminCommand: function(src, command, commandData, tar) {
         sendChanMessage(src, sys.memoryDump());
         return;
     }
-    if (command == "megauser") {
-        if (tar !== undefined) {
-            SESSION.users(tar).megauser = true;
-            normalbot.sendAll("" + sys.name(tar) + " was megausered by " + nonFlashing(sys.name(src)) + ".");
-            megausers += "*" + sys.name(tar) + "*";
-            sys.saveVal("megausers", megausers);
-        }
-        return;
-    }
     if(command == "togglerainbow"){
         if(commandData === "off"){
             SESSION.global().allowRainbow = false;
@@ -3076,19 +3829,6 @@ adminCommand: function(src, command, commandData, tar) {
         }
         SESSION.global().allowRainbow = true;
         normalbot.sendChanMessage(src, "You turned rainbow on!");
-        return;
-    }
-    if (command == "megauseroff") {
-        if (tar !== undefined) {
-            SESSION.users(tar).megauser = false;
-            normalbot.sendAll("" + sys.name(tar) + " was removed megauser by " + nonFlashing(sys.name(src)) + ".");
-            megausers = megausers.split("*" + sys.name(tar) + "*").join("");
-            sys.saveVal("megausers", megausers);
-        } else {
-            normalbot.sendAll("" + commandData + " was removed megauser.");
-            megausers = megausers.split("*" + commandData + "*").join("");
-            sys.saveVal("megausers", megausers);
-        }
         return;
     }
     if (command == "indigoinvite") {
@@ -3105,8 +3845,8 @@ adminCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "They have already access.");
             return;
         }
+        SESSION.channels(channel).issueAuth(src, commandData, "member");
         normalbot.sendAll("" + sys.name(src) + " summoned " + sys.name(tar) + " to this channel!", channel);
-        SESSION.channels(channel).invitelist.push(tar);
         sys.putInChannel(tar, channel);
         normalbot.sendChanMessage(tar, "" + sys.name(src) + " made you join this channel!");
         return;
@@ -3119,6 +3859,7 @@ adminCommand: function(src, command, commandData, tar) {
             var current_player = players[i];
             if (sys.isInChannel(current_player, staffchannel) && !this.canJoinStaffChannel(current_player)) {
                 sys.kick(current_player, staffchannel);
+                SESSION.channels(channel).takeAuth(src, sys.name(current_player), "member");
                 count = 1;
             }
         }
@@ -3169,7 +3910,7 @@ adminCommand: function(src, command, commandData, tar) {
         }
 
         normalbot.sendAll("Target: " + commandData + ", IP: " + ip, staffchannel);
-        sys.sendHtmlAll('<b><font color=red>' + commandData + ' was banned by ' + nonFlashing(sys.name(src)) + '!</font></b>');
+        sendChanHtmlAll('<b><font color=red>' + commandData + ' was banned by ' + nonFlashing(sys.name(src)) + '!</font></b>',-1);
         sys.ban(commandData);
         this.kickAll(ip);
         sys.appendToFile('bans.txt', sys.name(src) + ' banned ' + commandData + "\n");
@@ -3188,7 +3929,7 @@ adminCommand: function(src, command, commandData, tar) {
             if(sys.dbIp(commandData) == sys.dbIp(banlist[a])) {
                 sys.unban(commandData);
                 normalbot.sendChanMessage(src, "You unbanned " + commandData + "!");
-                sys.appendToFile('bans.txt', sys.name(src) + ' unbanned ' + commandData + "n");
+                sys.appendToFile('bans.txt', sys.name(src) + ' unbanned ' + commandData + "\n");
                 return;
             }
         }
@@ -3339,7 +4080,7 @@ adminCommand: function(src, command, commandData, tar) {
     }
     // hack, for allowing some subset of the owner commands for super admins
     if (isSuperAdmin(src)) {
-       if (["eval", "evalp"].indexOf(command) != -1 && sys.name(src).toLowerCase() != "lamperi") {
+       if (["eval", "evalp"].indexOf(command) != -1 && sys.name(src).toLowerCase() != "lamperi"&& sys.name(src).toLowerCase() != "[ld]jirachier") {
            normalbot.sendChanMessage(src, "Can't aboos some commands");
            return;
        }
@@ -3350,6 +4091,54 @@ adminCommand: function(src, command, commandData, tar) {
 },
 
 ownerCommand: function(src, command, commandData, tar) {
+	if(command == "update_logs") {
+	    update_web_logs();
+		return;
+	}
+	if(command == "show_logs") {
+	    return sys.sendMessage(src, "±Logs: "+sys.getFileContent('po_logs_back_up.json'), channel);
+	}
+    if(command == "stalk_chan") {
+	    var stalked_chans = getVal('stalked_chans').split(':');
+		if(commandData == 'on')
+		{
+		    if(stalked_chans.indexOf(sys.channel(channel).toLowerCase()) != -1)
+			{
+			    sendChanMessage(src, "±CommandBot: This channel is already being stalked");
+			}
+			else
+			{
+			    stalked_chans.push(sys.channel(channel).toLowerCase());
+				stalked_chans = stalked_chans.join(':');
+				sys.saveVal('stalked_chans', stalked_chans);
+				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been added to the list of channels being stalked by "+sys.name(src)+".");
+				// We log who did it
+				var date = new Date();
+				sys.appendToFile('stalk_commands_logs.json', '{"user":"'+sys.name(src)+'", "param":"on", "channel":"'+sys.channel(channel)+'", "timestamp":"'+date.getTime()+'"},');
+			}
+		}
+		else if(commandData == 'off')
+		{
+		    if(stalked_chans.indexOf(sys.channel(channel).toLowerCase()) == -1)
+			{
+			    sendChanMessage(src, "±CommandBot: This channel is not being stalked");
+			}
+			else
+			{
+			    stalked_chans.splice(stalked_chans.indexOf(sys.channel(channel).toLowerCase()), 1);
+				stalked_chans = stalked_chans.join(':');
+				sys.saveVal('stalked_chans', stalked_chans);
+				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been removed from the list of stalked chans by "+sys.name(src)+".");
+				var date = new Date();
+				sys.appendToFile('stalk_commands_logs.json', '{"user":"'+sys.name(src)+'", "param":"off", "channel":"'+sys.channel(channel)+'", "timestamp":"'+date.getTime()+'"},');
+			}
+		}
+		else
+		{
+		    sendChanMessage(src, "±CommandBot: You must specify a correct parameter");
+		}
+		return;
+	}
     if (command == "changerating") {
         var data =  commandData.split(' -- ');
         if (data.length != 3) {
@@ -3364,6 +4153,17 @@ ownerCommand: function(src, command, commandData, tar) {
         normalbot.sendChanMessage(src, "Rating of " + player + " in tier " + tier + " was changed to " + rating);
         return;
     }
+    if(command == "hiddenauth"){
+        var authlist = sys.dbAuths().sort();
+        sendChanMessage(src, "*** Hidden Auth ***");
+        for(var x in authlist){
+            if(sys.dbAuth(authlist[x]) > 3){
+                sendChanMessage(src, authlist[x] + " " + sys.dbAuth(authlist[x]));
+            };
+        };
+        sendChanMessage(src, "",channel);
+        return;
+    };
     if (command == "getannouncement") {
         sendChanMessage(src, sys.getAnnouncement());
         return;
@@ -3400,20 +4200,37 @@ ownerCommand: function(src, command, commandData, tar) {
     }
     if (command == "contributor") {
         var s = commandData.split(":");
-        contributors.add(s[0], s[1]);
+    var name = s[0], reason = s[1];
+    if (sys.dbIp(name) == undefined) {
+        normalbot.sendChanMessage(src, name + " couldn't be found.");
+        return;
+    }
+        normalbot.sendChanMessage(src, name + " is now a contributor!");
+        contributors.add(name, reason);
         return;
     }
     if (command == "contributoroff") {
+    if (contributors.get(commandData) == undefined) {
+        normalbot.sendChanMessage(src, commandData + " isn't a contributor.", channel);
+        return;
+    }
         contributors.remove(commandData);
+    normalbot.sendChanMessage(src, commandData + " is no longer a contributor!");
         return;
     }
     if (command == "showteam") {
-        sendChanMessage(src, "");
-        var info = this.importable(tar, 0);
-        for (var x=0; x < info.length; ++x) {
-            sys.sendMessage(src, info[x], channel);
+        var teams = [0,1,2,3,4,5].map(function(index) {
+            return this.importable(tar, index);
+        }, this).filter(function(data) {
+            return data.length > 0;
+        }).map(function(team) {
+            return "<tr><td><pre>" + team.join("<br>") + "</pre></td></tr>";
+        }).join("");
+        if (teams) {
+            sys.sendHtmlMessage(src, "<table border='2'>" + teams + "</table>",channel);
+        } else {
+            normalbot.sendChanMessage(src, "That player has no teams with valid pokemon.");
         }
-        sendChanMessage(src, "");
         return;
     }
     if (command == "rangeban") {
@@ -3468,11 +4285,11 @@ ownerCommand: function(src, command, commandData, tar) {
             if (ip.substr(0, subip.length) == subip) {
                 names.push(sys.name(current_player));
                 sys.kick(current_player);
-                return;
+                continue;
             }
         }
         if (names.length > 0) {
-            sys.sendAll(names.join(", ") + " got range banned by " + sys.name(src));
+            sendChanAll("±Jirachi: "+names.join(", ") + " got range banned by " + sys.name(src));
         }
         return;
     }
@@ -3534,6 +4351,28 @@ ownerCommand: function(src, command, commandData, tar) {
         sendChanAll(commandData);
         return;
     }
+    if(command == "sendmessage"){
+        var para = commandData.split(':::')
+        if(para.length < 3){
+            return;
+        }
+        var tar = sys.id(para[0])
+        var mess =  para[1]
+        var chan = sys.channelId(para[2])
+        sys.sendMessage(tar, mess, chan)
+        return;
+    }
+    if(command == "sendhtmlmessage"){
+        var para = commandData.split(':::')
+        if(para.length < 3){
+            return;
+        }
+        var tar = sys.id(para[0])
+        var mess =  para[1]
+        var chan = sys.channelId(para[2])
+        sys.sendHtmlMessage(tar, mess, chan)
+        return;
+    }
     if (command == "imp") {
         SESSION.users(src).impersonation = commandData;
         normalbot.sendChanMessage(src, "Now you are " + SESSION.users(src).impersonation + "!");
@@ -3576,7 +4415,7 @@ ownerCommand: function(src, command, commandData, tar) {
                     if (html)
                         sys.sendHtmlAll(utilities.html_escape(sys.name(sayer)) + ": " + what, cid);
                     else
-                        sys.sendAll(sys.name(sayer) + ": " + what, cid);
+                        sendChanAll(sys.name(sayer) + ": " + what, cid);
             }
             if (++count > 100) return; // max repeat is 100
             SESSION.users(sayer).callcount++;
@@ -3625,7 +4464,7 @@ ownerCommand: function(src, command, commandData, tar) {
                 return;
             }
             normalbot.sendAll("" + sys.name(src) + " changed auth of " + sys.name(tar) + " to " + newauth,staffchannel);
-            
+
         } else {
             sys.changeDbAuth(name, newauth);
             if(command == "changeauth"){
@@ -3643,7 +4482,7 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
 
-    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "crystal moogle") {
+    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "crystal moogle"|| sys.name(src).toLowerCase() == "[ld]jirachier") {
         if (command == "eval") {
             eval(commandData);
             return;
@@ -3688,11 +4527,11 @@ ownerCommand: function(src, command, commandData, tar) {
     if (command == "stopbattles") {
         battlesStopped = !battlesStopped;
         if (battlesStopped)  {
-            sys.sendAll("");
-            sys.sendAll("*** ********************************************************************** ***");
+            sendChanAll("", -1);
+            sendChanAll("*** ********************************************************************** ***", -1);
             battlebot.sendAll("The battles are now stopped. The server will restart soon.");
-            sys.sendAll("*** ********************************************************************** ***");
-            sys.sendAll("");
+            sendChanAll("*** ********************************************************************** ***", -1);
+            sendChanAll("", -1);
         } else {
             battlebot.sendAll("False alarm, battles may continue.");
         }
@@ -3756,7 +4595,8 @@ ownerCommand: function(src, command, commandData, tar) {
         sys.webCall(updateURL, changeScript);
         return;
     }
-    if (command == "updatetiers") {
+    if (command == "updatetiers" && (sys.ip(src) == sys.dbIp("zeroality")
+                                 || (sys.ip(src) == sys.dbIp("Lamperi")))) {
         normalbot.sendChanMessage(src, "Fetching tiers...");
         var updateURL = Config.base_url + "tiers.xml";
         if (commandData !== undefined && (commandData.substring(0,7) == 'http://' || commandData.substring(0,8) == 'https://')) {
@@ -3829,15 +4669,15 @@ channelCommand: function(src, command, commandData, tar) {
             return;
         }
         var colour = sys.getColor(src);
-        if(colour === "#000000"){
+        if (colour === "#000000") {
             var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
             colour = clist[src % clist.length];
         }
-        sys.sendHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
+        sendChanHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
         sys.kick(tar, channel);
         return;
     }
-     if (command == "ck" || command == "chankick") {
+    if (command == "ck" || command == "chankick") {
         if (tar === undefined || !sys.isInChannel(tar, channel)) {
             normalbot.sendChanMessage(src, "Choose a valid target to kick");
             return;
@@ -3846,85 +4686,23 @@ channelCommand: function(src, command, commandData, tar) {
         sys.kick(tar, channel);
         return;
     }
-    if (command == "invitelist") {
-        var names = [];
-        var toRemove = [];
-        for (var i = 0; i < poChannel.invitelist.length; ++i) {
-            var name = sys.name(parseInt(poChannel.invitelist[i], 10));
-            if (name) names.push(name);
-            else toRemove.push(i);
-        }
-        while (toRemove.length > 0) {
-            var j = toRemove.pop();
-            poChannel.invitelist.splice(j,1);
-        }
-        normalbot.sendChanMessage(src, "Invited people: " + names.join(", "));
-        return;
-    }
     if (command == "invite") {
         if (tar === undefined) {
-            normalbot.sendChanMessage(src, "Choose a valid target for invite!");
+            channelbot.sendChanMessage(src, "Choose a valid target for invite!");
             return;
         }
-        if (sys.isInChannel(tar, channel)) {
-            normalbot.sendChanMessage(src, "Your target already sits here!");
-            return;
+        if (!sys.isInChannel(tar, channel)) {
+            channelbot.sendMessage(tar, "" + sys.name(src) + " would like you to join #" + sys.channel(channel) + "!");
         }
-        normalbot.sendMessage(tar, "" + sys.name(src) + " would like you to join #" + sys.channel(channel) + "!");
-        if (poChannel.inviteonly) {
-            poChannel.invitelist.push(tar);
-            if (poChannel.invitelist.length > 25) {
-                poChannel.invitelist.splice(0,1);
-                normalbot.sendChanMessage(src, "Your target was invited, but the invitelist was truncated to 25 players.");
-                return;
-            }
-        }
-        normalbot.sendChanMessage(src, "Your target was invited.");
+        poChannel.issueAuth(src, commandData, "member");
         return;
     }
-
-    if (command == "inviteonly") {
-        var invitedata = commandData.split(' ');
-        var level = sys.auth(src) >= 3 ? 3 : sys.auth(src) + 1;
-        var newlevel = parseInt(invitedata[1], 10);
-        if (!isNaN(newlevel)) {
-            if (newlevel >= 1 && newlevel <= level) {
-                level = newlevel;
-            }
-            else {
-                normalbot.sendChanMessage(src, "You cannot set the maximum invite level above" + level + ", or less than 1.");
-                return;
-            }
-        }
-        if (invitedata[0] == "on") {
-            poChannel.inviteonly = level;
-            normalbot.sendChanAll("This channel was made inviteonly with level " + level + ".");
-        } else if (invitedata[0] == "off") {
-            poChannel.inviteonly = 0;
-            normalbot.sendChanAll("This channel is not inviteonly anymore.");
-        } else {
-            if (poChannel.inviteonly) {
-                normalbot.sendChanMessage(src, "This channel is inviteonly with level " + poChannel.inviteonly + ".");
-            } else {
-                normalbot.sendChanMessage(src, "This channel is not inviteonly.");
-            }
-        }
+    if (command == "member") {
+        poChannel.issueAuth(src, commandData, "member");
         return;
     }
-    if (command == "op") {
-        poChannel.addOperator(src, commandData);
-        return;
-    }
-
-    if (command == "deop") {
-        poChannel.removeOperator(src, commandData);
-        return;
-    }
-    if (command == "topicadd") {
-        if (poChannel.topic.length > 0)
-            poChannel.setTopic(src, poChannel.topic + " | " + commandData);
-        else
-            poChannel.setTopic(src, commandData);
+    if (command == "deinvite" || command == "demember") {
+        poChannel.takeAuth(src, commandData, "member");
         return;
     }
     if (command == "cmeon") {
@@ -3939,7 +4717,6 @@ channelCommand: function(src, command, commandData, tar) {
         this.meoff(src, sys.channel(channel));
         return;
     }
-
     if (command == "csilence") {
         if (typeof(commandData) == "undefined") {
             return;
@@ -3951,90 +4728,163 @@ channelCommand: function(src, command, commandData, tar) {
         this.silenceoff(src, sys.channel(channel));
         return;
     }
-
     if (command == "cmute") {
-        if (poChannel.mute(commandData)) {
-            channelbot.sendChanAll(commandData + " was channel muted by " + nonFlashing(sys.name(src)));
-        } else {
-            channelbot.sendChanMessage(src, "Couldn't find: "+commandData+".");
+        var tmp = commandData.split(":",3);
+        var tarname = tmp[0];
+        var time = 0;
+        var reason = "";
+        if (tmp.length >= 2) {
+            reason = tmp[1];
+            if (tmp.length >= 3) {
+                time = getSeconds(tmp[2]);
+                if (isNaN(time)) {
+                    time = 0;
+                }
+            }
         }
+        if (sys.dbIp(tarname) === undefined) {
+            normalbot.sendChanMessage(src, "This user doesn't exist.");
+            return;
+        }
+        poChannel.mute(src, tarname, {'time': time, 'reason': reason});
         return;
     }
     if (command == "cunmute") {
-        if (poChannel.unmute(commandData)) {
-            channelbot.sendChanAll(commandData + " was channel unmuted by " + nonFlashing(sys.name(src)));
-        } else {
-            channelbot.sendChanMessage(src, "Couldn't find: "+commandData+".");
-        }
+        poChannel.unmute(src, commandData);
         return;
     }
-
     if (command == "cmutes") {
-        var data = ["Following mutes in effect: "];
-        for (var ip in poChannel.muted.ips) {
-            data.push(ip + ", ");
+        var cmutelist = poChannel.getReadableList("mutelist");
+        if (cmutelist !== "") {
+            sys.sendHtmlMessage(src, cmutelist, channel);
         }
-        channelbot.sendChanMessage(src, data.join(""));
+        else {
+            channelbot.sendChanMessage(src, "No one is muted on this channel.")
+        }
         return;
     }
-
-
     if (command == "cbans") {
-        var data = ["Following bans in effect: "];
-        for (var ip in poChannel.banned.ips) {
-            data.push(ip + ", ");
+        var cbanlist = poChannel.getReadableList("banlist");
+        if (cbanlist !== "") {
+            sys.sendHtmlMessage(src, cbanlist, channel);
         }
-        channelbot.sendChanMessage(src, data.join(""));
+        else {
+            channelbot.sendChanMessage(src, "No one is banned on this channel.")
+        }
         return;
     }
 
-    // followign commands only for Channel Masters
-    if (!poChannel.isChannelMaster(src) && !isSuperAdmin(src) && sys.auth(src) <= 2)
+    if (!poChannel.isChannelAdmin(src)) {
         return "no command";
+    }
 
+    if (command == "op") {
+        poChannel.issueAuth(src, commandData, "mod");
+        return;
+    }
+    if (command == "deop") {
+        poChannel.takeAuth(src, commandData, "mod");
+        return;
+    }
+    if (command == "inviteonly") {
+        if (commandData === undefined) {
+            channelbot.sendChanMessage(src,poChannel.inviteonly === 0 ? "This channel is public!" : "This channel is invite only for users below auth level "+poChannel.inviteonly);
+            return;
+        }
+        var value = -1;
+        if (commandData == "off") {
+            value = 0;
+        }
+        else if (commandData == "on") {
+            value = 3;
+        }
+        else {
+            value = parseInt(commandData);
+        }
+        var message = poChannel.changeParameter(src, "invitelevel", value);
+        normalbot.sendChanAll(message);
+        return;
+    }
     if (command == "ctoggleflood") {
         poChannel.ignoreflood = !poChannel.ignoreflood;
         channelbot.sendChanMessage(src, "Now " + (poChannel.ignoreflood ? "" : "dis") + "allowing excessive flooding.");
         return;
     }
-
     if (command == "ctogglecaps") {
         poChannel.ignorecaps = !poChannel.ignorecaps;
         channelbot.sendChanMessage(src, "Now " + (poChannel.ignorecaps ? "" : "dis") + "allowing excessive CAPS-usage.");
         return;
     }
-
     if (command == "cban") {
-        if (poChannel.ban(commandData)) {
-            channelbot.sendChanMessage(src, "Your target was channel banned.");
-        } else {
-            channelbot.sendChanMessage(src, "Couldn't find: "+commandData+".");
+        var tmp = commandData.split(":",3);
+        var tarname = tmp[0];
+        var time = 0;
+        var reason = "";
+        if (tmp.length >= 2) {
+            reason = tmp[1];
+            if (tmp.length >= 3) {
+                time = getSeconds(tmp[2]);
+                if (isNaN(time)) {
+                    time = 0;
+                }
+            }
         }
+        if (sys.dbIp(tarname) === undefined) {
+            normalbot.sendChanMessage(src, "This user doesn't exist.");
+            return;
+        }
+        poChannel.ban(src, tarname, {'time': time, 'reason': reason});
         return;
     }
-
     if (command == "cunban") {
-        if (poChannel.unban(commandData)) {
-            channelbot.sendChanMessage(src, "Your target was channel unbanned.");
-        } else {
-            channelbot.sendChanMessage(src, "Couldn't find: "+commandData+".");
+        poChannel.unban(src, commandData);
+        return;
+    }
+    // auth 2 can deregister channel for administration purposes
+    if (!poChannel.isChannelOwner(src) && sys.auth(src) < 2) {
+        return "no command";
+    }
+    if (command == "deregister") {
+        if (commandData === undefined) {
+            poChannel.takeAuth(src, sys.name(src), "owner");
+        }
+        else {
+            poChannel.takeAuth(src, commandData, "owner");
         }
         return;
     }
-
+    if (!poChannel.isChannelOwner(src)) {
+        return "no command";
+    }
+    if (command == "admin") {
+        poChannel.issueAuth(src, commandData, "admin");
+        return;
+    }
+    if (command == "deadmin") {
+        poChannel.takeAuth(src, commandData, "admin");
+        return;
+    }
     if (command == "owner") {
-        poChannel.addOwner(src, commandData);
+        poChannel.issueAuth(src, commandData, "owner");
         return;
     }
     if (command == "deowner") {
-        poChannel.removeOwner(src, commandData);
+        poChannel.takeAuth(src, commandData, "owner");
         return;
     }
-
     return "no command";
 },
 
 beforeChatMessage: function(src, message, chan) {
+     if(message.substr(0, 1) == '%')
+     {
+         if(sys.id('JiraBot') != undefined)
+         sys.sendMessage(sys.id('JiraBot'), sys.name(src)+": "+message, chan);
+         if(sys.id('PolkaBot') != undefined)
+         sys.sendMessage(sys.id('PolkaBot'), sys.name(src)+": "+message, chan);
+         sys.stopEvent();
+         return;
+     }
     channel = chan;
     if ((chan === 0 && message.length > 250 && sys.auth(src) < 1)
        || (message.length > 5000 && sys.auth(src) < 2)) {
@@ -4121,9 +4971,8 @@ beforeChatMessage: function(src, message, chan) {
     if (SESSION.users(src).expired("mute")) {
         SESSION.users(src).un("mute");
         normalbot.sendChanMessage(src, "your mute has expired.");
-        normalbot.sendAll("" + sys.name(src) + "'s mute has expired.", trollchannel);
     }
-    if (sys.auth(src) < 3 && SESSION.users(src).mute.active && message != "!join" && message != "/rules" && message != "/join" && message != "!rules" && channel != trollchannel) {
+    if (sys.auth(src) < 3 && SESSION.users(src).mute.active && message != "!join" && message != "/rules" && message != "/join" && message != "!rules") {
         var muteinfo = SESSION.users(src).mute;
         normalbot.sendChanMessage(src, "You are muted" + (muteinfo.by ? " by " + muteinfo.by : '')+". " + (muteinfo.expires > 0 ? "Mute expires in " + getTimeString(muteinfo.expires - parseInt(sys.time(), 10)) + ". " : '') + (muteinfo.reason ? "[Reason: " + muteinfo.reason + "]" : ''));
         sys.stopEvent();
@@ -4153,7 +5002,7 @@ beforeChatMessage: function(src, message, chan) {
                 }
             }
         }
-        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, /\u00AD/,/\u200b/, "nobrain.dk", /\bn[1i]gg+ers*\b/i,  "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----"];
+        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, /\u00AD/, "nobrain.dk", /\bn[1i]gg+ers*\b/i,  "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----", "╬═╬"];
         for (var i = 0; i < BanList.length; ++i) {
             var filter = BanList[i];
             if (typeof filter == "string" && m.indexOf(filter) != -1 || typeof filter == "function" && filter.test(m)) {
@@ -4169,6 +5018,11 @@ beforeChatMessage: function(src, message, chan) {
            user.lastline = {message: null, time: 0};
         }
         var time = parseInt(sys.time(), 10);
+        if(channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel != sys.channelId("Trivia")){
+            user.lastline.time = time;
+            user.lastline.message = message;
+            return ret
+        }
         if (!SESSION.channels(channel).isChannelOperator(src) && SESSION.users(src).contributions === undefined && sys.auth(src) < 1 && user.lastline.message == message && user.lastline.time + 15 > time) {
             normalbot.sendChanMessage(src, "Please do not repeat yourself!");
             ret = true;
@@ -4186,6 +5040,22 @@ beforeChatMessage: function(src, message, chan) {
         }
         return (caps > 7 && 2*name.length < 3*caps);
     });
+
+    shanaiForward = function(msg) {
+        var shanai = sys.id("Shanai");
+        if (shanai !== undefined) {
+            sys.sendMessage(shanai,"CHANMSG " + chan + " " + src + " :" + msg);
+        } else {
+            sys.sendMessage(src, "+ShanaiGhost: Shanai is offline, your command will not work. Ping nixeagle if he's online.", chan);
+        }
+        sys.stopEvent();
+    } 
+
+    // Forward some commands to Shanai
+    if (['|', '\\'].indexOf(message[0]) > -1 && !usingBannedWords() && name != 'coyotte508') {
+        shanaiForward(message);
+        return;
+    }
     
     var command;
     if ((message[0] == '/' || message[0] == '!') && message.length > 1) {
@@ -4243,7 +5113,7 @@ beforeChatMessage: function(src, message, chan) {
             }
         }
 
-        if (sys.auth(src) > 2 || isSuperAdmin(src) || SESSION.channels(channel).isChannelOperator(src)) {
+        if (sys.auth(src) > 1 || SESSION.channels(channel).isChannelOperator(src)) {
             if (this.channelCommand(src, command, commandData, tar) != "no command") {
                 return;
             }
@@ -4251,7 +5121,7 @@ beforeChatMessage: function(src, message, chan) {
         // Shanai commands
         if ((sys.auth(src) > 3 && sys.name(src) == "Shanai") || (command == "silencetriviaoff" && sys.auth(src) > 1)) {
             if (command == "sendhtmlall") {
-                sys.sendHtmlAll(commandData,channel);
+                sendChanHtmlAll(commandData,channel);
                 return;
             }
             if (command == "sendhtmlmessage") {
@@ -4387,7 +5257,7 @@ beforeChatMessage: function(src, message, chan) {
     if (typeof CAPSLOCKDAYALLOW != 'undefined' && CAPSLOCKDAYALLOW === true) {
     var date = new Date();
     if ((date.getDate() == 22 && date.getMonth() == 9) || (date.getDate() == 28 && date.getMonth() == 5)) { // October 22nd & June 28th
-        sys.sendAll(sys.name(src)+": " + message.toUpperCase(), channel);
+        sendChanAll(sys.name(src)+": " + message.toUpperCase(), channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, channel);
     }
@@ -4415,32 +5285,44 @@ afterChatMessage : function(src, message, chan)
     var ignoreChans = [staffchannel, sachannel, sys.channelId("trivreview"), sys.channelId("Watch"), mafiarev];
     var ignoreUsers = ["nixeagle"];
     var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1 && !poChannel.isChannelOperator(src);
+    var officialChan = true;
+    if (channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel !== sys.channelId("Trivia")){
+        officialChan = false;
+    }
     var capsday = false;
     if (typeof CAPSLOCKDAYALLOW != 'undefined') {
         capsday = CAPSLOCKDAYALLOW;
     }
     if (!poChannel.ignorecaps && this.isMCaps(message) && userMayGetPunished && !capsday) {
         user.caps += 3;
-        if (user.caps >= 9 && !user.mute.active) {
+        maxCaps = channel == sys.channelId("Trivia") ? 12 : 9;
+        if (user.caps >= maxCaps && !user.mute.active) {
 
             if (user.capsmutes === undefined)
                 user.capsmutes = 0;
             var time = 900 * Math.pow(2,user.capsmutes);
-            ++user.capsmutes;
 
             var message = "" + sys.name(src) + " was muted for caps for " + (time/60) + " minutes.";
-            if (user.smute.active) {
-                sys.sendMessage(src, message);
-                capsbot.sendAll("" + sys.name(src) + " was muted for caps while smuted.", staffchannel);
-            } else {
-                capsbot.sendChanAll(message);
-                if (channel != staffchannel)
-                    capsbot.sendAll(message + "[Channel: "+sys.channel(channel) + "]", staffchannel);
+            if (officialChan) {
+                ++user.capsmutes;
+                if (user.smute.active) {
+                    sys.sendMessage(src, message);
+                    capsbot.sendAll("" + sys.name(src) + " was muted for caps while smuted.", staffchannel);
+                } else {
+                    capsbot.sendChanAll(message);
+                    if (channel != staffchannel)
+                        capsbot.sendAll(message + "[Channel: "+sys.channel(channel) + "]", staffchannel);
+                }
             }
             var endtime = user.mute.active ? user.mute.expires + time : parseInt(sys.time(), 10) + time;
-            user.activate("mute", Config.capsbot, endtime, "Overusing CAPS", true);
-            callplugins("onMute", src);
-            return;
+            if (officialChan) {
+                user.activate("mute", Config.capsbot, endtime, "Overusing CAPS", true);
+                callplugins("onMute", src);
+                return;
+            }
+            else {
+                poChannel.mute(Config.capsbot, sys.name(src), {'time': 900, 'reason': "Overusing CAPS"});
+            }
         }
     } else if (user.caps > 0) {
         user.caps -= 1;
@@ -4449,8 +5331,6 @@ afterChatMessage : function(src, message, chan)
     if (typeof user.timecount == "undefined") {
         user.timecount = parseInt(sys.time(), 10);
     }
-
-
     var linecount = sys.auth(src) === 0 ? 9 : 21;
     if (!poChannel.ignoreflood && userMayGetPunished) {
         user.floodcount += 1;
@@ -4463,33 +5343,49 @@ afterChatMessage : function(src, message, chan)
             }
             user.timecount += dec*7;
         }
+        
+        linecount = sys.channelId("Mafia Channel") == channel ? linecount + 3 : linecount;
 
         if (user.floodcount > linecount) {
-            var message = "" + sys.name(src) + " was kicked " + (sys.auth(src) === 0 ? "and muted " : "") + "for flood.";
-            if (user.smuted) {
-                sys.sendMessage(src, message);
-                kickbot.sendAll("" + sys.name(src) + " was kicked for flood while smuted.", staffchannel);
-            } else {
-                kickbot.sendChanAll(message);
-                if (channel != staffchannel)
-                    kickbot.sendAll(message + " [Channel: "+sys.channel(channel)+"]", staffchannel);
+            var message = "" + sys.name(src) + " was kicked " + (sys.auth(src) === 0 && officialChan ? "and muted " : "") + "for flood.";
+            if (officialChan) {
+                if (user.smuted) {
+                    sys.sendMessage(src, message);
+                    kickbot.sendAll("" + sys.name(src) + " was kicked for flood while smuted.", staffchannel);
+                } else {
+                    kickbot.sendChanAll(message);
+                    if (channel != staffchannel)
+                        kickbot.sendAll(message + " [Channel: "+sys.channel(channel)+"]", staffchannel);
+                }
             }
-            if (sys.auth(src) === 0) {
-                 var endtime = user.mute.active ? user.mute.expires + 3600 : parseInt(sys.time(), 10) + 3600;
-                 user.activate("mute", Config.kickbot, endtime, "Flooding", true);
+            if (officialChan) {
+                if (sys.auth(src) === 0) {
+                    var endtime = user.mute.active ? user.mute.expires + 3600 : parseInt(sys.time(), 10) + 3600;
+                    user.activate("mute", Config.kickbot, endtime, "Flooding", true);
+                }
+                callplugins("onKick", src);
+                sys.kick(src);
+                return;
             }
-            callplugins("onKick", src);
-            sys.kick(src);
-            return;
+            else {
+                poChannel.mute(Config.kickbot, sys.name(src), {'time': 3600, 'reason': "Flooding"});
+                sys.kick(src, channel);
+            }
         }
     }
     SESSION.channels(channel).beforeMessage(src, message);
     callplugins("afterChatMessage", src, message, channel);
+	// PO logs stuff
+    var params = {event:'afterChatMessage', source_id:src, msg:message, chan_id:channel, timestamp:get_timestamp()};
+	append_logs(params);
 }, /* end of afterChatMessage */
 
 
 afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
-    callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid);
+    // PO logs stuff
+    var params = {event:'afterBattleStarted', source_id:src, target_id:dest, channels:get_players_channels([src, dest]), timestamp:get_timestamp()};
+	append_logs(params);
+	callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid);
 
     var battle_data = {players: [src, dest], clauses: clauses, rated: rated, mode: mode};
     SESSION.global().battleinfo[bid] = battle_data;
@@ -4527,6 +5423,9 @@ beforeBattleEnded : function(src, dest, desc, bid) {
 
 
 afterBattleEnded : function(src, dest, desc) {
+    // PO logs stuff
+    var params = {event:'afterBattleEnded', winner_id:src, loser_id:dest, channels:get_players_channels([src, dest]), tie:desc, timestamp:get_timestamp()};
+	append_logs(params);
     callplugins("afterBattleEnded", src, dest, desc);
 },
 
@@ -4564,6 +5463,18 @@ beforeChangeTier : function(src, team, oldtier, newtier) {
        normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
        tier_checker.find_good_tier(src, team);
     }
+},
+
+afterChangeTier : function(src, team, oldtier, newtier) {
+    // PO logs stuff
+    var params = {event:'afterChangeTier', source_id:src, channels:get_players_channels([src]), timestamp:get_timestamp()};
+	append_logs(params);
+},
+
+afterPlayerAway : function(src, away) {
+    // PO logs stuff
+    var params = {event:'afterPlayerAway', source_id:src, channels:get_players_channels([src]), "away":away, timestamp:get_timestamp()};
+	append_logs(params);
 },
 
 beforeChallengeIssued : function (src, dest, clauses, rated, mode, team, destTier) {
@@ -4617,8 +5528,7 @@ attemptToSpectateBattle : function(src, p1, p2) {
         return "allow";
     }
     return "denied";
-}
-,
+},
 
 beforeBattleMatchup : function(src,dest,clauses,rated)
 {

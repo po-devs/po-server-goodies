@@ -20,13 +20,14 @@ TIER_TREES = [
 ]
 
 BANLIST = {
-    "Wifi OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Excadrill", "Blaziken", "Garchomp", "Thundurus", "Kyurem-W", "Kyurem-B"], # Ubers
-    "Wifi UU": ["Kingdra", "Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Wobbuffet", "Deoxys-D", "Thundurus-T", "Tornadus-T", "Landorus-T", "Keldeo", "Chansey", "Meloetta"], # BL
-    "Wifi LU": ["Cresselia", "Gorebyss", "Huntail", "Victini", "Rhyperior", "Medicham", "Durant", "Virizion", "Sharpedo"], # BL2
-    "Wifi NU": ["Feraligatr", "Sawsbuck", "Gligar", "Charizard", "Hitmonlee", "Scolipede", "Tangela", "Jynx", "Druddigon"], # BL3
+    "Wifi OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Excadrill", "Blaziken", "Garchomp", "Thundurus", "Kyurem-W"], # Ubers
+    "Wifi UU": ["Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Wobbuffet", "Deoxys-D", "Thundurus-T", "Tornadus-T", "Landorus-T", "Keldeo", "Chansey", "Meloetta", "Kyurem-B"], # BL
+    "Wifi LU": ["Cresselia", "Gorebyss", "Huntail", "Victini", "Rhyperior", "Durant", "Virizion", "Sharpedo"], # BL2
+    "Wifi NU": ["Feraligatr", "Sawsbuck", "Gligar", "Charizard", "Hitmonlee", "Scolipede", "Jynx", "Druddigon", "Gothitelle"], # BL3
     "No Preview OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Blaziken", "Garchomp", "Chandelure", "Excadrill", "Kyurem-B", "Kyurem-W"], # DW Ubers
-    "Wifi LC": ["Scyther", "Sneasel", "Yanma", "Tangela", "Vulpix", "Murkrow", "Scraggy", "Misdreavus", "Meditite", "Carvanha", "Gligar", "Drilbur"], # LC Ubers (in addition to all other pokemon...)
+    "Wifi LC": ["Scyther", "Sneasel", "Yanma", "Tangela", "Vulpix", "Carvanha", "Gligar"], # LC Ubers (in addition to all other pokemon...)
     "Wifi LC UU": ["Poliwag", "Axew"], # Wifi LC BL
+    # Scraggy, Meditite, Murkrow, Misdreavus, Gligar, and Drilbur to LC
 }
 ADDITIONAL_BANS = {
     "Wifi UU": ["Vulpix"], # Due to Drought being banned                
@@ -40,7 +41,8 @@ ITEM_BANS = {
 }
 
 def get_ranked_stats(tier):
-    today = date.today()
+    today = date.today() 
+    #today += relativedelta(months = - 1)
     even_month = -1 if today.month % 2 == 0 else 0
     last_month = today + relativedelta(months = -1 + even_month)
     previous_month =  today + relativedelta(months = -2 + even_month)

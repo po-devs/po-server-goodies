@@ -124,19 +124,19 @@ function Tournament(channel)
 		if (bot) {
 			message = Config.tourneybot + ": " + message;
 		}
-		sys.sendAll(message, self.channel);
+		sendChanAll(message, self.channel);
 	}
 
 	function wall(message) {
-		sys.sendAll(message, self.channel);
+		sendChanAll(message, self.channel);
 		if (self.main && self.channel !== 0) {
-			sys.sendAll(message, 0);
+			sendChanAll(message, 0);
 		}
 	}
 
 	function advertise(message) {
 		if (self.main && self.channel !== 0) {
-			sys.sendAll(message, 0);
+			sendChanAll(message, 0);
 		}
 	}
 
@@ -1152,7 +1152,7 @@ module.exports = {
 			}
 			/*if (channel == module.tourchannel)
 				return false;*/
-			if (command == "disabletours" && (sys.auth(source) >= 2 || SESSION.channels(channel).isChannelMaster(source))) {
+            if (command == "disabletours" && (sys.auth(source) >= 2 || SESSION.channels(channel).isChannelAdmin(source))) {
 				delete module.tournaments[channel];
 				tourneybot.sendAll('Tournaments have been disabled',channel)
 				var ind = SESSION.global().permaTours.indexOf(channel);
@@ -1161,7 +1161,7 @@ module.exports = {
 				}
 				return true;
 			}
-		} else if (command == "enabletours" && (sys.auth(source) >= 2 || SESSION.channels(channel).isChannelMaster(source))) {
+        } else if (command == "enabletours" && (sys.auth(source) >= 2 || SESSION.channels(channel).isChannelAdmin(source))) {
 			module.tournaments[channel] = new Tournament(channel);
 			module.tournaments[channel].announceInit();
 			SESSION.global().permaTours.push(channel);
