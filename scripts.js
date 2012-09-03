@@ -1491,8 +1491,9 @@ var commands = {
         "/onrange [range]: To view who is on a range.",
         "/tier [name]: To view the tier of a person.",
         "/battlehistory [name]: To view a person's battle history.",
-		"stalked_chans: List the channels whose logs are being saved.",
-		"stalkcheck: List the usage of the stalk_chan command."
+	"/channelusers [channel]: Lists users on a channel.",
+	"stalked_chans: List the channels whose logs are being saved.",
+	"stalkcheck: List the usage of the stalk_chan command."
     ],
     admin:
     [
@@ -1507,7 +1508,6 @@ var commands = {
         "/namewarn regexp: Adds a namewarning",
         "/nameunwarn full_regexp: Removes a namewarning",
         "/destroychan [channel]: Destroy a channel (official channels are protected).",
-        "/channelusers [channel]: Lists users on a channel.",
         "/indigoinvite [name]: To invite somebody to staff channels.",
         "/indigodeinvite: To deinvite unwanted visitors from staff channel."
     ],
@@ -3132,6 +3132,43 @@ modCommand: function(src, command, commandData, tar) {
 		}
 		return;
 	}
+	if (command == "channelusers") {
+	   if (commandData === undefined) {
+	   	normalbot.sendChanMessage(src, "Please give me a channelname!");
+	        return;
+	   }
+	   var chanid;
+	   var isbot;
+	   if (commandData[0] == "~") {
+	       chanid = sys.channelId(commandData.substring(1));
+	       isbot = true;
+	   } else {
+	       chanid = sys.channelId(commandData);
+	       isbot = false;
+	   }
+	   if (chanid === undefined) {
+	       channelbot.sendChanMessage(src, "Such a channel doesn't exist!");
+	       return;
+	   }
+	   var chanName = sys.channel(chanid);
+	   var players = sys.playersOfChannel(chanid);
+	   var objectList = [];
+	   var names = [];
+	   for (var i = 0; i < players.length; ++i) {
+	        var name = sys.name(players[i]);
+	        if (isbot)
+	        objectList.push({'id': players[i], 'name': name});
+	            else
+	        names.push(name);
+	   }
+	   if (isbot) {
+	       var channelData = {'type': 'ChannelUsers', 'channel-id': chanid, 'channel-name': chanName, 'players': objectList};
+	       sendChanMessage(src, ":"+JSON.stringify(channelData));
+	   } else {
+	       channelbot.sendChanMessage(src, "Users of channel #" + chanName + " are: " + names.join(", "));
+	   }
+	   return;
+    }
     if (command == "topchannels") {
         var cids = sys.channelIds();
         var l = [];
@@ -4038,43 +4075,6 @@ adminCommand: function(src, command, commandData, tar) {
             nameWarns.splice(toDelete,1);
         } else {
             normalbot.sendChanMessage(src, "No match.");
-        }
-        return;
-    }
-    if (command == "channelusers") {
-        if (commandData === undefined) {
-            normalbot.sendChanMessage(src, "Please give me a channelname!");
-            return;
-        }
-        var chanid;
-        var isbot;
-        if (commandData[0] == "~") {
-            chanid = sys.channelId(commandData.substring(1));
-            isbot = true;
-        } else {
-            chanid = sys.channelId(commandData);
-            isbot = false;
-        }
-        if (chanid === undefined) {
-            channelbot.sendChanMessage(src, "Such a channel doesn't exist!");
-            return;
-        }
-        var chanName = sys.channel(chanid);
-        var players = sys.playersOfChannel(chanid);
-        var objectList = [];
-        var names = [];
-        for (var i = 0; i < players.length; ++i) {
-            var name = sys.name(players[i]);
-            if (isbot)
-                objectList.push({'id': players[i], 'name': name});
-            else
-                names.push(name);
-        }
-        if (isbot) {
-            var channelData = {'type': 'ChannelUsers', 'channel-id': chanid, 'channel-name': chanName, 'players': objectList};
-            sendChanMessage(src, ":"+JSON.stringify(channelData));
-        } else {
-            channelbot.sendChanMessage(src, "Users of channel #" + chanName + " are: " + names.join(", "));
         }
         return;
     }
