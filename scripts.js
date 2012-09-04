@@ -5533,6 +5533,13 @@ attemptToSpectateBattle : function(src, p1, p2) {
     return "denied";
 },
 
+/* Prevents scouting */
+beforeSpectateBattle : function(src, p1, p2) {
+  if (callplugins("canSpectate", src, p1, p2) === "denied") {
+      sys.stopEvent();
+  }
+},
+
 beforeBattleMatchup : function(src,dest,clauses,rated)
 {
     if (battlesStopped) {

@@ -664,7 +664,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.563",
+            version: "1.565",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -704,7 +704,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.563",
+        version: "1.565",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -4563,6 +4563,35 @@ module.exports = {
             markActive(src, "post");
         }
     },
+    canSpectate : function (src, p1, p2) {
+        var srctour = isInTour(sys.name(src))
+        var p1tour = isInTour(sys.name(p1))
+        var p2tour = isInTour(sys.name(p2))
+        if (p1tour === false || p2tour === false || src === p1 || src === p2) {
+            return true;
+        }
+        var proxy = false;
+        if (srctour === false) {
+            var srcip = sys.ip(src);
+            var playerlist = tours.tour[p1tour].players;
+            for (var x in playerlist) {
+                if (sys.dbIp(playerlist[x]) == srcip && isInTour(playerlist[x])) {
+                    srctour = p1tour;
+                    proxy = toCorrectCase(playerlist[x]);
+                    break;
+                }
+            }
+        }
+        /* check for potential scouters */
+        var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"]
+        var isOkToSpectate = (tours.tour[p1tour].state == "final" || cctiers.indexOf(tours.tour[p1tour].tourtype) != -1)
+        if (srctour === p1tour && !isOkToSpectate) {
+            sendBotMessage(src, "You can't watch this match because you are in the same tournament!","all", false)
+            return "denied";
+        }
+        return true;
+    },
+    // This is for tour admins only.
     allowToSpectate : function(src, p1, p2) {
         var srctour = isInTour(sys.name(src))
         var p1tour = isInTour(sys.name(p1))
@@ -4570,54 +4599,12 @@ module.exports = {
         if (p1tour === false || p2tour === false || src === p1 || src === p2) {
             return false;
         }
-        var proxy = false;
-        if (srctour === false) {
-            var srcip = sys.ip(src);
-            var playerlist = tours.tour[p1tour].players;
-            for (var x in playerlist) {
-                if (sys.dbIp(playerlist[x]) == srcip && isInTour(playerlist[x]) === p1tour) {
-                    srctour = p1tour;
-                    proxy = toCorrectCase(playerlist[x]);
-                    break;
-                }
-            }
-        }
         if (isTourAdmin(src)) {
             if (p1tour !== p2tour) {
                 return false;
             }
             if (srctour !== p1tour) {
                 return true;
-            }
-        }
-        /* check for potential scouters */
-        var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"]
-        var isOkToSpectate = (tours.tour[p1tour].state == "final" || cctiers.indexOf(tours.tour[p1tour].tourtype) != -1)
-        var usingDisallowSpecs = false;
-        if (tours.tour[p1tour].battlers.hasOwnProperty[sys.name(p1).toLowerCase()]) {
-            if (tours.tour[p1tour].battlers[sys.name(p1).toLowerCase()].noSpecs === true) {
-                usingDisallowSpecs = true;
-                break;
-            }
-        }
-        if (srctour === p1tour && !isOkToSpectate && !usingDisallowSpecs) {
-            if (proxy) {
-                if (tours.tour[p1tour].maxplayers !== "default") {
-                    sendBotAll(proxy+" was disqualified from the "+tours.tour[p1tour].tourtype+" event tournament for scouting as "+sys.name(src)+".", tourschan, false)
-                    disqualify(proxy.toLowerCase(), srctour, false, true);
-                }
-                else {
-                    sendBotAll(sys.name(src)+" started watching the "+tours.tour[p1tour].tourtype+" tour battle between "+sys.name(p1)+" and "+sys.name(p2)+", so could be potentially scouting as "+proxy+".", sys.channelId("Victory Road"), false)
-                }
-            }
-            else {
-                if (tours.tour[p1tour].maxplayers !== "default") {
-                    sendBotAll(sys.name(src)+" was disqualified from the "+tours.tour[p1tour].tourtype+" event tournament for scouting.", tourschan, false)
-                    disqualify(sys.name(src).toLowerCase(), srctour, false, true);
-                }
-                else {
-                    sendBotAll(sys.name(src)+" started watching the "+tours.tour[p1tour].tourtype+" tour battle between "+sys.name(p1)+" and "+sys.name(p2)+", so could be potentially scouting.", sys.channelId("Victory Road"), false)
-                }
             }
         }
         return false;
