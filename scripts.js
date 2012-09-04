@@ -192,7 +192,7 @@ getVal = function(valname) { // Removes ":" if it's the first character of the v
 };
 escape_dq = function(txt) { // escaping for JSON
     //return txt.replace(/\\/g, '\\\\').replace(/"/g, '\\\\\\"');
-	return txt.replace(/\\/g, "\\\\").replace(/\//g, "\\/").replace(/\"/g, "\\\"").replace(/\n/g, "\\n").replace(/\n/g, "\\r").replace(/t/g, "\\t").replace(/\x08/g, "\\f").replace(/\x0c/g, "\\b");
+	return txt.replace(/\\/g, "\\\\").replace(/\//g, "\\/").replace(/\"/g, "\\\"").replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t").replace(/\x08/g, "\\f").replace(/\x0c/g, "\\b");
 };
 
 append_logs = function(params) { // Adds chat lines to the logs
