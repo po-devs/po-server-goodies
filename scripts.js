@@ -108,6 +108,9 @@ var updateModule = function updateModule(module_name, callback) {
 
 var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel;
 
+var isMafiaAdmin = require('mafia.js').isMafiaAdmin;
+var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
+
 /* we need to make sure the scripts exist */
 var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js'].concat(Config.Plugins);
 var missing = 0;
@@ -5094,9 +5097,6 @@ beforeChatMessage: function(src, message, chan) {
         if (this.userCommand(src, command, commandData, tar) != "no command") {
             return;
         }
-
-	var isMafiaAdmin = require('mafia.js').isMafiaAdmin;
-	var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
 
         if (sys.auth(src) > 0 || (isMafiaAdmin(src) || isMafiaSuperAdmin(src) && command == "mafiabans")) {
             if (this.modCommand(src, command, commandData, tar, channel) != "no command") {
