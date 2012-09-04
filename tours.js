@@ -664,7 +664,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.561",
+            version: "1.562",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -704,7 +704,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.561",
+        version: "1.562",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -753,6 +753,16 @@ function initTours() {
         }
         tours.touradmins = data
     }
+    /*if (typeof tourstats != "object") {
+        sendChanAll("Creating tournament stats object", tourschan)
+        var tourstatdata = sys.getFileContent('tastats.json');
+        if (tourstatdata === undefined || tourstatdata === "") {
+            tourstats = {'general': {}, 'staff': {}}
+        }
+        else {
+            tourstats = JSON.parse(tourstatdata)
+        }
+    }*/
     loadTourMutes()
     loadEventPlayers()
     sendChanAll("Version "+tourconfig.version+" of the tournaments system was loaded successfully in this channel!", tourschan)
@@ -2584,33 +2594,43 @@ function tourCommand(src, command, commandData) {
         }
         if (command == "help" || command == "commands") {
             var type = commandData.toLowerCase()
-            sys.sendMessage(src, border,tourschan);
-            sys.sendMessage(src, "*** Tournament Commands ***",tourschan);
+            var headersent = false;
+            var sendHeader = function() {
+                if (!headersent) {
+                    sys.sendMessage(src, border,tourschan);
+                    sys.sendMessage(src, "*** Tournament Commands ***",tourschan);
+                    headersent = true;
+                }
+            }
             if (type == "" || type == "tournament") {
+                sendHeader();
                 for (var t in tourcommands) {
                     sys.sendMessage(src, tourcommands[t],tourschan);
                 }
                 sys.sendMessage(src, border,tourschan);
             }
             if (isTourAdmin(src) && (type == "mod" || type == "megauser" || type == "")) {
+                sendHeader();
                 for (var m in tourmodcommands) {
                     sys.sendMessage(src, tourmodcommands[m],tourschan);
                 }
                 sys.sendMessage(src, border,tourschan);
             }
             if (isTourSuperAdmin(src) && (type == "admin" || type == "")) {
+                sendHeader();
                 for (var a in touradmincommands) {
                     sys.sendMessage(src, touradmincommands[a],tourschan);
                 }
                 sys.sendMessage(src, border,tourschan);
             }
             if (isTourOwner(src) && (type == "owner" || type == "")) {
+                sendHeader();
                 for (var o in tourownercommands) {
                     sys.sendMessage(src, tourownercommands[o],tourschan);
                 }
                 sys.sendMessage(src, border,tourschan);
             }
-            return true;
+            if (headersent) return true;
         }
         if (command == "rules" || command == "tourrules") {
             sys.sendMessage(src, border,tourschan);
@@ -4550,14 +4570,6 @@ module.exports = {
         if (p1tour === false || p2tour === false || src === p1 || src === p2) {
             return false;
         }
-        if (isTourAdmin(src)) {
-            if (p1tour !== p2tour) {
-                return false;
-            }
-            if (srctour !== p1tour) {
-                return true;
-            }
-        }
         var proxy = false;
         if (srctour === false) {
             var srcip = sys.ip(src);
@@ -4568,6 +4580,14 @@ module.exports = {
                     proxy = toCorrectCase(playerlist[x]);
                     break;
                 }
+            }
+        }
+        if (isTourAdmin(src)) {
+            if (p1tour !== p2tour) {
+                return false;
+            }
+            if (srctour !== p1tour) {
+                return true;
             }
         }
         /* check for potential scouters */
