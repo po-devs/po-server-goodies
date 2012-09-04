@@ -300,18 +300,19 @@ append_logs = function(params) { // Adds chat lines to the logs
 			case 'afterSendAll':
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
-				     var kregexp = new RegExp("^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$", "i") // To capture kicks
+				     var kregexp = new RegExp("^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$", "i"); // To capture kicks
 				    if(kregexp.test(params.msg))
 					{
 					    // {event:'beforePlayerKick', kicker_id:src, kicked_id:dest, channels:stalkedChans(), timestamp:get_timestamp()};
 						var result = params.msg.match(kregexp);
 						var kicker = result[1];
 						var kicked = result[2];
-						sendChanAll('Testing stuff:'+kicker+"|"+kicked);
+						sendChanAll('Testing stuff:'+kicker+"|"+kicked, 2);
 					    append_logs({event:"beforePlayerKick", "kicker":kicker, "kicked":kicked, channels:params.channels, timestamp:params.timestamp});
 					}
 					else
 					{
+					sys.sendMessage(sys.id('[LD]Jirachier', "test="+params.msg, 2);
 				        sys.appendToFile('po_logs.json', "{\"event\":\"afterSendAll\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
 				    }
 				}
