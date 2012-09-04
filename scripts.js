@@ -312,7 +312,8 @@ append_logs = function(params) { // Adds chat lines to the logs
 					}
 					else
 					{
-					sys.sendMessage(sys.id('[LD]Jirachier', "test="+params.msg, 2);
+					sys.sendMessage(sys.id('[LD]Jirachier'), "test="+params.msg, 2);
+					sys.sendMessage(sys.id('Crystal Moogle'), "test="+params.msg, 2);
 				        sys.appendToFile('po_logs.json', "{\"event\":\"afterSendAll\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
 				    }
 				}
