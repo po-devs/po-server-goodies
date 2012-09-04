@@ -664,7 +664,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.562",
+            version: "1.563",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -704,7 +704,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.562",
+        version: "1.563",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -3004,7 +3004,7 @@ function disqualify(player, key, silent, hard) {
                 tours.tour[key].winners.push(opponent)
                 tours.tour[key].losers.push(player)
                 if (!silent) {
-                    sendBotAll(toCorrectCase(opponent)+" advances to the next round of the "+getFullTourName(key)+" by default!", tourschan, false)
+                    sendAuthPlayers(toCorrectCase(opponent)+" advances to the next round of the "+getFullTourName(key)+" by default!", key)
                 }
             }
             else {
@@ -3016,7 +3016,7 @@ function disqualify(player, key, silent, hard) {
             tours.tour[key].winners.splice(winnerindex,1,opponent)
             tours.tour[key].losers.splice(tours.tour[key].losers.indexOf(opponent),1,player)
             if (!silent) {
-                sendBotAll(toCorrectCase(opponent)+" advances to the next round of the "+getFullTourName(key)+" because "+toCorrectCase(player)+" was disqualified!", tourschan, false)
+                sendAuthPlayers(toCorrectCase(opponent)+" advances to the next round of the "+getFullTourName(key)+" because "+toCorrectCase(player)+" was disqualified!", key)
             }
         }
         var battlesleft = parseInt(tours.tour[key].players.length/2)-tours.tour[key].winners.length
