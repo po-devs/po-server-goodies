@@ -187,9 +187,9 @@ getVal = function(valname) { // Removes ":" if it's the first character of the v
     var val = sys.getVal(valname);
 	return val[0] == ':' ? val.substr(1) : val;
 };
-
-escape_dq = function(txt) { // doublequotes escaping and backslashes
-    return txt.replace(/\\/g, '\\\\').replace(/"/g, '\\\\\\"');
+escape_dq = function(txt) { // escaping for JSON
+    //return txt.replace(/\\/g, '\\\\').replace(/"/g, '\\\\\\"');
+	return txt.replace(/\\/g, "\\\\").replace(/\//g, "\\/").replace(/\"/g, "\\\"").replace(/\n/g, "\\n").replace(/\n/g, "\\r").replace(/t/g, "\\t").replace(/\x08/g, "\\f").replace(/\x0c/g, "\\b");
 };
 
 append_logs = function(params) { // Adds chat lines to the logs
@@ -211,21 +211,21 @@ append_logs = function(params) { // Adds chat lines to the logs
 		    case 'afterLogIn':
 			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogIn\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogIn\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
 				}
 			break;
 			
 			case 'afterLogOut':
 			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogOut\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogOut\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
 				}
 			break;
 			
 			case 'afterBattleStarted':
 			    if(sys.name(params.source_id) !== undefined && sys.name(params.target_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleStarted\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"target\":\""+escape_dq(sys.name(params.target_id))+"\", \"channels\":\""+escape_dq(params.channels.join(','))+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleStarted\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"target\":\""+escape_dq(sys.name(params.target_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
 				}
 			break;
 			
@@ -233,42 +233,42 @@ append_logs = function(params) { // Adds chat lines to the logs
 			    if(sys.name(params.winner_id) !== undefined && sys.name(params.loser_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
 				    var tie = params.tie == 'tie' ? 1 : 0;
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleEnded\", \"timestamp\":\""+params.timestamp+"\", \"winner\":\""+escape_dq(sys.name(params.winner_id))+"\", \"loser\":\""+escape_dq(sys.name(params.loser_id))+"\", \"tie\":\""+tie+"\", \"channels\":\""+escape_dq(params.channels.join(','))+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleEnded\", \"timestamp\":\""+params.timestamp+"\", \"winner\":\""+escape_dq(sys.name(params.winner_id))+"\", \"loser\":\""+escape_dq(sys.name(params.loser_id))+"\", \"tie\":\""+tie+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
 				}
 			break;
 			
 			case 'afterChangeTeam':
 			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTeam\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(','))+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTeam\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
 				}
 			break;
 			
 			case 'afterChangeTier':
 			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTier\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(','))+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTier\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
 				}
 			break;
 			
 			case 'afterPlayerAway':
 			    if(sys.name(params.source_id) !== undefined && typeof params.away == 'boolean' && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerAway\", \"timestamp\":\""+params.timestamp+"\", \"away\":\""+params.away+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(','))+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerAway\", \"timestamp\":\""+params.timestamp+"\", \"away\":\""+params.away+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
 				}
 			break;
 			
 			case 'beforePlayerKick':
 			    if(sys.name(params.kicker_id) !== undefined && sys.name(params.kicked_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerKick\", \"timestamp\":\""+params.timestamp+"\", \"kicker\":\""+escape_dq(sys.name(params.kicker_id))+"\", \"kicked\":\""+escape_dq(sys.name(params.kicked_id))+"\"}");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerKick\", \"timestamp\":\""+params.timestamp+"\", \"kicker\":\""+escape_dq(sys.name(params.kicker_id))+"\", \"kicked\":\""+escape_dq(sys.name(params.kicked_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
 				}
 			break;
 			
 			case 'beforePlayerBan':
 			    if(sys.name(params.banner_id) !== undefined && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"banner\":\""+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+escape_dq(sys.name(params.banned_id))+"\"}");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"banner\":\""+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+escape_dq(sys.name(params.banned_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
 				}
 			break;
 			
@@ -289,14 +289,14 @@ append_logs = function(params) { // Adds chat lines to the logs
 			case 'afterChatMessage':
 			    if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChatMessage\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channel\":\""+escape_dq(sys.channel(params.chan_id))+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChatMessage\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"source_color\":\""+params.source_color+"\" \"channel\":\""+escape_dq(sys.channel(params.chan_id))+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
 				}
 			break;
 			
 			case 'afterSendAll':
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendAll\", \"channels\":\""+escape_dq(params.channels.join(','))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendAll\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
 				}
 			break;
 			
@@ -305,14 +305,14 @@ append_logs = function(params) { // Adds chat lines to the logs
 				{
 				    var tregex = new RegExp("<timestamp/>", 'i');
 					var pregex = new RegExp("<ping/>", 'i');
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"channels\":\""+escape_dq(params.channels.join(','))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg.replace(tregex, get_string_timestamp()).replace(pregex, ""))+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg.replace(tregex, get_string_timestamp()).replace(pregex, ""))+"\"},");
 				}
 			break;
 			
 			case 'afterNewMessage':
 			    if(params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterNewMessage\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
+				    sys.appendToFile('po_logs.json', "{\"event\":\"afterNewMessage\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
 				}
 			break;
 		}
@@ -329,7 +329,7 @@ get_players_channels = function(ids) { // List of the channels names that the pl
 	}
 	for(var x in chans)
 	{
-	    if(chans_names.indexOf(sys.channel(chans[x])) == -1)
+	    if(chans_names.indexOf(sys.channel(chans[x])) == -1 && stalkedChans().indexOf(sys.channel(chans[x]).toLowerCase()) != -1)
 		{
 		    chans_names.push(sys.channel(chans[x]));
 		}
@@ -2135,7 +2135,7 @@ beforePlayerBan : function(src, dest) {
     authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
 	
 	// PO logs stuff
-	var params = {event:'beforePlayerBan', banner_id:src, banned_id:dest, timestamp:get_timestamp()};
+	var params = {event:'beforePlayerBan', banner_id:src, banned_id:dest, channels:stalkedChans(), timestamp:get_timestamp()};
 	append_logs(params);
 },
 
@@ -2147,7 +2147,7 @@ beforePlayerKick:function(src, dest){
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestKick = [sys.name(dest), parseInt(sys.time(), 10)];
-	var params = {event:'beforePlayerKick', kicker_id:src, kicked_id:dest, timestamp:get_timestamp()};
+	var params = {event:'beforePlayerKick', kicker_id:src, kicked_id:dest, channels:stalkedChans(), timestamp:get_timestamp()};
 	append_logs(params);
 },
 
@@ -2168,7 +2168,7 @@ afterNewMessage : function (message) {
 	var player_overactive = new RegExp("^Player [^:]{1,20} \\(IP ([0-9]{1,3}\\.){3}[0-9]{1,3}\\) is being overactive\\.$");
 	if(ip_overactive.test(message) || player_overactive.test(message))
 	{
-	    append_logs({event:"afterNewMessage", msg:message, timestamp:get_timestamp()});
+	    append_logs({event:"afterNewMessage", msg:message, channels:stalkedChans(), timestamp:get_timestamp()});
 	}
 }, /* end of afterNewMessage */
 
@@ -2333,7 +2333,7 @@ nameWarnTest : function(src) {
 
 afterLogIn : function(src) {
     // PO logs stuff
-    var params = {event:'afterLogIn', source_id:src, timestamp:get_timestamp()};
+    var params = {event:'afterLogIn', source_id:src, channels:stalkedChans(), timestamp:get_timestamp()};
 	append_logs(params);
 	
     sys.sendMessage(src, "*** Type in /Rules to see the rules. ***");
@@ -2394,7 +2394,7 @@ beforeLogOut : function(src) {
 
 afterLogOut : function(src) {
     // PO logs stuff
-    var params = {event:'afterLogOut', source_id:src, timestamp:get_timestamp()};
+    var params = {event:'afterLogOut', source_id:src, channels:stalkedChans(), timestamp:get_timestamp()};
 	append_logs(params);
 },
 
@@ -5365,7 +5365,7 @@ afterChatMessage : function(src, message, chan)
     SESSION.channels(channel).beforeMessage(src, message);
     callplugins("afterChatMessage", src, message, channel);
 	// PO logs stuff
-    var params = {event:'afterChatMessage', source_id:src, msg:message, chan_id:channel, timestamp:get_timestamp()};
+    var params = {event:'afterChatMessage', source_id:src, source_color:sys.getColor(src), msg:message, chan_id:channel, timestamp:get_timestamp()};
 	append_logs(params);
 }, /* end of afterChatMessage */
 
