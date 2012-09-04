@@ -300,6 +300,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 			case 'afterSendAll':
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
+				     sys.sendAll(params.msg, sys.channelId('The test'));
 				     var kregexp = new RegExp("^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$", "i"); // To capture kicks
 				    if(kregexp.test(params.msg))
 					{
