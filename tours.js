@@ -4563,12 +4563,13 @@ module.exports = {
             markActive(src, "post");
         }
     },
+    // returns true if disallowed by the way...
     canSpectate : function (src, p1, p2) {
         var srctour = isInTour(sys.name(src))
         var p1tour = isInTour(sys.name(p1))
         var p2tour = isInTour(sys.name(p2))
         if (p1tour === false || p2tour === false || src === p1 || src === p2) {
-            return true;
+            return false;
         }
         var proxy = false;
         if (srctour === false) {
@@ -4587,9 +4588,9 @@ module.exports = {
         var isOkToSpectate = (tours.tour[p1tour].state == "final" || cctiers.indexOf(tours.tour[p1tour].tourtype) != -1)
         if (srctour === p1tour && !isOkToSpectate) {
             sendBotMessage(src, "You can't watch this match because you are in the same tournament!","all", false)
-            return "denied";
+            return true;
         }
-        return true;
+        return false;
     },
     // This is for tour admins only.
     allowToSpectate : function(src, p1, p2) {

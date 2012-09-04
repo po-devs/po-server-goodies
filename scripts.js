@@ -5535,9 +5535,9 @@ attemptToSpectateBattle : function(src, p1, p2) {
 
 /* Prevents scouting */
 beforeSpectateBattle : function(src, p1, p2) {
-  if (callplugins("canSpectate", src, p1, p2) === "denied") {
-      sys.stopEvent();
-  }
+    if (callplugins("canSpectate", src, p1, p2)) {
+        sys.stopEvent();
+    }
 },
 
 beforeBattleMatchup : function(src,dest,clauses,rated)
