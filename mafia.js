@@ -3541,7 +3541,7 @@ return;
             return;
         }
 
-        if (!this.isMafiaAdmin(src) && !this.isSuperMafiaAdmin(src))
+        if (!this.isMafiaAdmin(src) && !this.isMafiaSuperAdmin(src))
             throw ("no valid command");
 
         if (command in this.commands.auth) {
