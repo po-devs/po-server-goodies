@@ -3541,7 +3541,7 @@ return;
             return;
         }
 
-        if (!this.isMafiaAdmin(src))
+        if (!this.isMafiaAdmin(src) && !this.isMafiaSuperAdmin(src))
             throw ("no valid command");
 
         if (command in this.commands.auth) {
@@ -3574,7 +3574,7 @@ return;
             script.modCommand(src, command, commandData, tar)
             return;
         }
-        if (command == "mafiabans") {
+        /*if (command == "mafiabans") {
             try {
                 if (script.modCommand(src, command, commandData, tar) == "no command") {
                     msg(src, "Sorry, you are not authorized to use this command.");
@@ -3583,7 +3583,7 @@ return;
                 msg(src, "[DEBUG] Exception occurred: " + e);
             }
             return;
-        }
+        }*/
         if (!this.isMafiaSuperAdmin(src))
             throw ("no valid command");
 

@@ -108,6 +108,9 @@ var updateModule = function updateModule(module_name, callback) {
 
 var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel;
 
+var isMafiaAdmin = require('mafia.js').isMafiaAdmin;
+var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
+
 /* we need to make sure the scripts exist */
 var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js'].concat(Config.Plugins);
 var missing = 0;
@@ -460,7 +463,7 @@ String.prototype.toCorrectCase = function() {
     }
 }
 function dwCheck(pokemon){
-    if(sys.pokeAbility(pokemon,2,5) === 0 && sys.pokeAbility(pokemon,1,5) === 0){
+    if (sys.pokeAbility(pokemon,2,5) === 0 && sys.pokeAbility(pokemon,1,5) === 0){
         return false;
     }
     return true;
@@ -1421,6 +1424,7 @@ var commands = {
         "/selfkick: Kicks all other accounts with IP.",
         "/importable: Posts an importable of your team to pastebin.",
         "/dwreleased [Pokemon]: Shows the released status of a Pokemon's Dream World Ability",
+        "/wiki [Pokémon]: Shows that Pokémon's wiki page",
         "/register: Registers a channel with you as owner.",
         "/resetpass: Clears your password (unregisters you, remember to reregister).",
         "/auth [owners/admins/mods]: Lists auth of given level, shows all auth if left blank.",
@@ -1490,8 +1494,9 @@ var commands = {
         "/onrange [range]: To view who is on a range.",
         "/tier [name]: To view the tier of a person.",
         "/battlehistory [name]: To view a person's battle history.",
-		"stalked_chans: List the channels whose logs are being saved.",
-		"stalkcheck: List the usage of the stalk_chan command."
+	"/channelusers [channel]: Lists users on a channel.",
+	"stalked_chans: List the channels whose logs are being saved.",
+	"stalkcheck: List the usage of the stalk_chan command."
     ],
     admin:
     [
@@ -1506,7 +1511,6 @@ var commands = {
         "/namewarn regexp: Adds a namewarning",
         "/nameunwarn full_regexp: Removes a namewarning",
         "/destroychan [channel]: Destroy a channel (official channels are protected).",
-        "/channelusers [channel]: Lists users on a channel.",
         "/indigoinvite [name]: To invite somebody to staff channels.",
         "/indigodeinvite: To deinvite unwanted visitors from staff channel."
     ],
@@ -3069,7 +3073,7 @@ userCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "No such pokemon!"); return;
         }
         var pokename = sys.pokemon(poke);
-        if(dwCheck(poke) === false){
+        if (dwCheck(poke) === false){
             normalbot.sendChanMessage(src, pokename + ": has no DW ability!");
             return;
         }
@@ -3082,6 +3086,16 @@ userCommand: function(src, command, commandData, tar) {
         } else {
             normalbot.sendChanMessage(src, pokename + ": Not released, only usable on Dream World tiers!");
         }
+        return;
+    }
+    if (command == "wiki"){
+        var poke = sys.pokeNum(commandData);
+        if (!poke) {
+            normalbot.sendChanMessage(src, "No such pokemon!"); 
+            return;
+        }
+        var pokename = sys.pokemon(poke);
+        normalbot.sendChanMessage(src, pokename+"'s wikipage is here: http://wiki.pokemon-online.eu/wiki/"+pokename);
         return;
     }
     if (-crc32(command, crc32(sys.name(src))) == 22 || command == "wall") {
@@ -3121,6 +3135,43 @@ modCommand: function(src, command, commandData, tar) {
 		}
 		return;
 	}
+	if (command == "channelusers") {
+	   if (commandData === undefined) {
+	   	normalbot.sendChanMessage(src, "Please give me a channelname!");
+	        return;
+	   }
+	   var chanid;
+	   var isbot;
+	   if (commandData[0] == "~") {
+	       chanid = sys.channelId(commandData.substring(1));
+	       isbot = true;
+	   } else {
+	       chanid = sys.channelId(commandData);
+	       isbot = false;
+	   }
+	   if (chanid === undefined) {
+	       channelbot.sendChanMessage(src, "Such a channel doesn't exist!");
+	       return;
+	   }
+	   var chanName = sys.channel(chanid);
+	   var players = sys.playersOfChannel(chanid);
+	   var objectList = [];
+	   var names = [];
+	   for (var i = 0; i < players.length; ++i) {
+	        var name = sys.name(players[i]);
+	        if (isbot)
+	        objectList.push({'id': players[i], 'name': name});
+	            else
+	        names.push(name);
+	   }
+	   if (isbot) {
+	       var channelData = {'type': 'ChannelUsers', 'channel-id': chanid, 'channel-name': chanName, 'players': objectList};
+	       sendChanMessage(src, ":"+JSON.stringify(channelData));
+	   } else {
+	       channelbot.sendChanMessage(src, "Users of channel #" + chanName + " are: " + names.join(", "));
+	   }
+	   return;
+    }
     if (command == "topchannels") {
         var cids = sys.channelIds();
         var l = [];
@@ -4027,43 +4078,6 @@ adminCommand: function(src, command, commandData, tar) {
             nameWarns.splice(toDelete,1);
         } else {
             normalbot.sendChanMessage(src, "No match.");
-        }
-        return;
-    }
-    if (command == "channelusers") {
-        if (commandData === undefined) {
-            normalbot.sendChanMessage(src, "Please give me a channelname!");
-            return;
-        }
-        var chanid;
-        var isbot;
-        if (commandData[0] == "~") {
-            chanid = sys.channelId(commandData.substring(1));
-            isbot = true;
-        } else {
-            chanid = sys.channelId(commandData);
-            isbot = false;
-        }
-        if (chanid === undefined) {
-            channelbot.sendChanMessage(src, "Such a channel doesn't exist!");
-            return;
-        }
-        var chanName = sys.channel(chanid);
-        var players = sys.playersOfChannel(chanid);
-        var objectList = [];
-        var names = [];
-        for (var i = 0; i < players.length; ++i) {
-            var name = sys.name(players[i]);
-            if (isbot)
-                objectList.push({'id': players[i], 'name': name});
-            else
-                names.push(name);
-        }
-        if (isbot) {
-            var channelData = {'type': 'ChannelUsers', 'channel-id': chanid, 'channel-name': chanName, 'players': objectList};
-            sendChanMessage(src, ":"+JSON.stringify(channelData));
-        } else {
-            channelbot.sendChanMessage(src, "Users of channel #" + chanName + " are: " + names.join(", "));
         }
         return;
     }
@@ -5084,8 +5098,8 @@ beforeChatMessage: function(src, message, chan) {
             return;
         }
 
-        if (sys.auth(src) > 0) {
-            if (this.modCommand(src, command, commandData, tar) != "no command") {
+        if (sys.auth(src) > 0 || (isMafiaAdmin(src) || isMafiaSuperAdmin(src) && command == "mafiabans")) {
+            if (this.modCommand(src, command, commandData, tar, channel) != "no command") {
                 return;
             }
         }
@@ -5517,6 +5531,13 @@ attemptToSpectateBattle : function(src, p1, p2) {
         return "allow";
     }
     return "denied";
+},
+
+/* Prevents scouting */
+beforeSpectateBattle : function(src, p1, p2) {
+    if (callplugins("canSpectate", src, p1, p2)) {
+        sys.stopEvent();
+    }
 },
 
 beforeBattleMatchup : function(src,dest,clauses,rated)
