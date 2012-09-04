@@ -5095,8 +5095,11 @@ beforeChatMessage: function(src, message, chan) {
             return;
         }
 
-        if (sys.auth(src) > 0) {
-            if (this.modCommand(src, command, commandData, tar) != "no command") {
+	var isMafiaAdmin = require('mafia.js').isMafiaAdmin;
+	var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
+
+        if (sys.auth(src) > 0 || (isMafiaAdmin(src) || isMafiaSuperAdmin(src) && command == "mafiabans")) {
+            if (this.modCommand(src, command, commandData, tar, channel) != "no command") {
                 return;
             }
         }
