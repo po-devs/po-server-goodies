@@ -307,13 +307,10 @@ append_logs = function(params) { // Adds chat lines to the logs
 						var result = params.msg.match(kregexp);
 						var kicker = result[1];
 						var kicked = result[2];
-						sendChanAll('Testing stuff:'+kicker+"|"+kicked, 2);
 					    append_logs({event:"beforePlayerKick", "kicker":kicker, "kicked":kicked, channels:params.channels, timestamp:params.timestamp});
 					}
 					else
 					{
-					sys.sendMessage(sys.id('[LD]Jirachier'), "test="+params.msg, 2);
-					sys.sendMessage(sys.id('Crystal Moogle'), "test="+params.msg, 2);
 				        sys.appendToFile('po_logs.json', "{\"event\":\"afterSendAll\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
 				    }
 				}
