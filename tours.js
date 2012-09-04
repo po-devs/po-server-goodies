@@ -4563,7 +4563,7 @@ module.exports = {
             var srcip = sys.ip(src);
             var playerlist = tours.tour[p1tour].players;
             for (var x in playerlist) {
-                if (sys.dbIp(playerlist[x]) == srcip && isInTour(playerlist[x]) !== false) {
+                if (sys.dbIp(playerlist[x]) == srcip && isInTour(playerlist[x]) === p1tour) {
                     srctour = p1tour;
                     proxy = toCorrectCase(playerlist[x]);
                     break;
