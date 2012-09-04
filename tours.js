@@ -604,7 +604,7 @@ function sendAuthPlayers(message,key) {
 function sendHtmlAuthPlayers(message,key) {
     var arr = sys.playersOfChannel(tourschan)
     for (var x in arr) {
-        if (isTourAdmin(arr[x]) || tours.tour[key].seeds.indexOf(sys.name(arr[x]).toLowerCase()) != -1) {
+        if (isTourAdmin(arr[x]) || tours.tour[key].seeds.indexOf(sys.name(arr[x]).toLowerCase()) != -1 || tours.tour[key].players.indexOf(sys.name(arr[x]).toLowerCase()) != -1) {
             // send highlighted name in bracket
             var htmlname = html_escape(sys.name(arr[x]));
             var regex1 = "<td align='right'>"+htmlname+"</td>";
@@ -664,7 +664,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.550",
+            version: "1.565",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -704,7 +704,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.550",
+        version: "1.565",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -753,6 +753,16 @@ function initTours() {
         }
         tours.touradmins = data
     }
+    /*if (typeof tourstats != "object") {
+        sendChanAll("Creating tournament stats object", tourschan)
+        var tourstatdata = sys.getFileContent('tastats.json');
+        if (tourstatdata === undefined || tourstatdata === "") {
+            tourstats = {'general': {}, 'staff': {}}
+        }
+        else {
+            tourstats = JSON.parse(tourstatdata)
+        }
+    }*/
     loadTourMutes()
     loadEventPlayers()
     sendChanAll("Version "+tourconfig.version+" of the tournaments system was loaded successfully in this channel!", tourschan)
@@ -2584,33 +2594,43 @@ function tourCommand(src, command, commandData) {
         }
         if (command == "help" || command == "commands") {
             var type = commandData.toLowerCase()
-            sys.sendMessage(src, border,tourschan);
-            sys.sendMessage(src, "*** Tournament Commands ***",tourschan);
+            var headersent = false;
+            var sendHeader = function() {
+                if (!headersent) {
+                    sys.sendMessage(src, border,tourschan);
+                    sys.sendMessage(src, "*** Tournament Commands ***",tourschan);
+                    headersent = true;
+                }
+            }
             if (type == "" || type == "tournament") {
+                sendHeader();
                 for (var t in tourcommands) {
                     sys.sendMessage(src, tourcommands[t],tourschan);
                 }
                 sys.sendMessage(src, border,tourschan);
             }
             if (isTourAdmin(src) && (type == "mod" || type == "megauser" || type == "")) {
+                sendHeader();
                 for (var m in tourmodcommands) {
                     sys.sendMessage(src, tourmodcommands[m],tourschan);
                 }
                 sys.sendMessage(src, border,tourschan);
             }
             if (isTourSuperAdmin(src) && (type == "admin" || type == "")) {
+                sendHeader();
                 for (var a in touradmincommands) {
                     sys.sendMessage(src, touradmincommands[a],tourschan);
                 }
                 sys.sendMessage(src, border,tourschan);
             }
             if (isTourOwner(src) && (type == "owner" || type == "")) {
+                sendHeader();
                 for (var o in tourownercommands) {
                     sys.sendMessage(src, tourownercommands[o],tourschan);
                 }
                 sys.sendMessage(src, border,tourschan);
             }
-            return true;
+            if (headersent) return true;
         }
         if (command == "rules" || command == "tourrules") {
             sys.sendMessage(src, border,tourschan);
@@ -2984,7 +3004,7 @@ function disqualify(player, key, silent, hard) {
                 tours.tour[key].winners.push(opponent)
                 tours.tour[key].losers.push(player)
                 if (!silent) {
-                    sendBotAll(toCorrectCase(opponent)+" advances to the next round of the "+getFullTourName(key)+" by default!", tourschan, false)
+                    sendAuthPlayers(toCorrectCase(opponent)+" advances to the next round of the "+getFullTourName(key)+" by default!", key)
                 }
             }
             else {
@@ -2996,7 +3016,7 @@ function disqualify(player, key, silent, hard) {
             tours.tour[key].winners.splice(winnerindex,1,opponent)
             tours.tour[key].losers.splice(tours.tour[key].losers.indexOf(opponent),1,player)
             if (!silent) {
-                sendBotAll(toCorrectCase(opponent)+" advances to the next round of the "+getFullTourName(key)+" because "+toCorrectCase(player)+" was disqualified!", tourschan, false)
+                sendAuthPlayers(toCorrectCase(opponent)+" advances to the next round of the "+getFullTourName(key)+" because "+toCorrectCase(player)+" was disqualified!", key)
             }
         }
         var battlesleft = parseInt(tours.tour[key].players.length/2)-tours.tour[key].winners.length
@@ -4543,6 +4563,36 @@ module.exports = {
             markActive(src, "post");
         }
     },
+    // returns true if disallowed by the way...
+    canSpectate : function (src, p1, p2) {
+        var srctour = isInTour(sys.name(src))
+        var p1tour = isInTour(sys.name(p1))
+        var p2tour = isInTour(sys.name(p2))
+        if (p1tour === false || p2tour === false || src === p1 || src === p2) {
+            return false;
+        }
+        var proxy = false;
+        if (srctour === false) {
+            var srcip = sys.ip(src);
+            var playerlist = tours.tour[p1tour].players;
+            for (var x in playerlist) {
+                if (sys.dbIp(playerlist[x]) == srcip && isInTour(playerlist[x]) === p1tour) {
+                    srctour = p1tour;
+                    proxy = toCorrectCase(playerlist[x]);
+                    break;
+                }
+            }
+        }
+        /* check for potential scouters */
+        var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"]
+        var isOkToSpectate = (tours.tour[p1tour].state == "final" || cctiers.indexOf(tours.tour[p1tour].tourtype) != -1)
+        if (srctour === p1tour && !isOkToSpectate) {
+            sendBotMessage(src, "You can't watch this match because you are in the same tournament!","all", false)
+            return true;
+        }
+        return false;
+    },
+    // This is for tour admins only.
     allowToSpectate : function(src, p1, p2) {
         var srctour = isInTour(sys.name(src))
         var p1tour = isInTour(sys.name(p1))
@@ -4556,25 +4606,6 @@ module.exports = {
             }
             if (srctour !== p1tour) {
                 return true;
-            }
-        }
-        /* check for potential scouters */
-        var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"]
-        var isOkToSpectate = (tours.tour[p1tour].state == "final" || cctiers.indexOf(tours.tour[p1tour].tourtype) != -1)
-        var usingDisallowSpecs = false;
-        if (tours.tour[p1tour].battlers.hasOwnProperty[sys.name(p1).toLowerCase()]) {
-            if (tours.tour[p1tour].battlers[sys.name(p1).toLowerCase()].noSpecs === true) {
-                usingDisallowSpecs = true;
-                break;
-            }
-        }
-        if (srctour === p1tour && !isOkToSpectate && !usingDisallowSpecs) {
-            if (tours.tour[p1tour].maxplayers !== "default") {
-                sendBotAll(sys.name(src)+" was disqualified from the "+tours.tour[p1tour].tourtype+" event tournament for scouting.", tourschan, false)
-                disqualify(sys.name(src).toLowerCase(), srctour, false, true);
-            }
-            else {
-                sendBotAll(sys.name(src)+" started watching the "+tours.tour[p1tour].tourtype+" tour battle between "+sys.name(p1)+" and "+sys.name(p2)+", so could be potentially scouting.", sys.channelId("Victory Road"), false)
             }
         }
         return false;
