@@ -4099,6 +4099,9 @@ ownerCommand: function(src, command, commandData, tar) {
 		return;
 	}
 	if(command == "show_logs") {
+	     var logs = sys.getFileContent('po_logs.json');
+		 sys.writeToFile('po_logs.json', '');
+		 sys.writeToFile('po_logs_back_up.json', $logs);
 	    return sys.sendMessage(src, "±Logs: "+sys.getFileContent('po_logs_back_up.json'), channel);
 	}
     if(command == "stalk_chan") {
