@@ -604,7 +604,7 @@ function sendAuthPlayers(message,key) {
 function sendHtmlAuthPlayers(message,key) {
     var arr = sys.playersOfChannel(tourschan)
     for (var x in arr) {
-        if (isTourAdmin(arr[x]) || tours.tour[key].seeds.indexOf(sys.name(arr[x]).toLowerCase()) != -1) {
+        if (isTourAdmin(arr[x]) || tours.tour[key].seeds.indexOf(sys.name(arr[x]).toLowerCase()) != -1 || tours.tour[key].players.indexOf(sys.name(arr[x]).toLowerCase()) != -1) {
             // send highlighted name in bracket
             var htmlname = html_escape(sys.name(arr[x]));
             var regex1 = "<td align='right'>"+htmlname+"</td>";
