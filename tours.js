@@ -664,7 +664,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.560",
+            version: "1.561",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -704,7 +704,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.560",
+        version: "1.561",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -4563,7 +4563,7 @@ module.exports = {
             var srcip = sys.ip(src);
             var playerlist = tours.tour[p1tour].players;
             for (var x in playerlist) {
-                if (sys.dbIp(playerlist[x]) == srcip && isInTour(playerlist[x])) {
+                if (sys.dbIp(playerlist[x]) == srcip && isInTour(playerlist[x]) !== false) {
                     srctour = p1tour;
                     proxy = toCorrectCase(playerlist[x]);
                     break;
