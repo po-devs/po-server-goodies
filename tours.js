@@ -664,7 +664,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.565",
+            version: "1.566",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -704,7 +704,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.565",
+        version: "1.566",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -2291,6 +2291,10 @@ function tourCommand(src, command, commandData) {
                         break;
                     }
                 }
+            }
+            if (sys.battling(src)) {
+                sendBotMessage(src, "You can't join while battling! Finish your battle first!",tourschan,false)
+                return true;
             }
             if (!isInCorrectGen) {
                 sendBotMessage(src, "Your generation must be set to "+getSubgen(tours.tour[key].parameters.gen, true)+". Change it in the teambuilder.",tourschan,false)
