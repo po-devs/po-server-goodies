@@ -1,0 +1,4 @@
+#!/bin/bash
+
+content=$(cat po_logs.json)
+wget --post-data "logs=$content" http://logs.pkmn.co/test.php

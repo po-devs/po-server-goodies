@@ -9,7 +9,7 @@ Bot.prototype.formatMsg = function(message)
 Bot.prototype.sendAll = function(message, channel)
 {
     if (channel === undefined || channel == -1)
-        sendChanAll(this.formatMsg(message));
+        sendChanAll(this.formatMsg(message),-1);
     else
         sendChanAll(this.formatMsg(message), channel);
 }
