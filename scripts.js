@@ -173,12 +173,12 @@ update_web_logs = function() {
     var json = sys.getFileContent('po_logs.json');
 	var website = sys.getFileContent('logs_address.txt'); // The address of the page that will save the logs
 	var post = {};
-	post['logs'] = json;
+	posts.logs = json;
 	var resp = sys.synchronousWebCall(website, post);
 	if(resp == 'true')
 	{
 		sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
-	    sys.writeToFile('po_logs.json', '');
+	    sys.writeToFile('po_logs.json','');
 	}
 	else
 	{
@@ -300,15 +300,24 @@ append_logs = function(params) { // Adds chat lines to the logs
 			case 'afterSendAll':
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
-				     sys.sendAll(params.msg, sys.channelId('The test'));
-				     var kregexp = new RegExp("^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$", "i"); // To capture kicks
-				    if(kregexp.test(params.msg))
+				    sys.sendAll(params.msg, sys.channelId('The test'));
+					//new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
+					//normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " for " + timeString + "! [Reason: " + reason + "]");
+				    var kregexp = new RegExp("^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$", "i"); // To capture kicks
+				    var tbregexp = new RegExp("^±Dratini: ([^\n%*<:\(\)]{1,20}) banned ([^\n%*<:\(\)]{1,20}) for (([0-9]{1,} (weeks?|days?|hours?|minutes?|seconds?)(, ){0,}){1,})! \[Reason: [^:]{1,} \]", "i");
+					if(kregexp.test(params.msg))
 					{
-					    // {event:'beforePlayerKick', kicker_id:src, kicked_id:dest, channels:stalkedChans(), timestamp:get_timestamp()};
 						var result = params.msg.match(kregexp);
-						var kicker = result[1];
-						var kicked = result[2];
-					    append_logs({event:"beforePlayerKick", "kicker":kicker, "kicked":kicked, channels:params.channels, timestamp:params.timestamp});
+						var kicked = result[1];
+						var kicker = result[2];
+					    append_logs({event:"beforePlayerKick", kicker_id:sys.id(kicker), kicked_id:sys.id(kicked), channels:params.channels, timestamp:params.timestamp});
+					}
+					else if(tbregexp.test(params.msg))
+					{
+					    var result = params.msg.match(tbregexp);
+						var banner = result[1];
+						var banned = result[2];
+						var duration = result[3];
 					}
 					else
 					{
@@ -318,11 +327,23 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 			
 			case 'afterSendHtmlAll':
+			    sys.sendHtmlAll(params.msg, sys.channelId('The test'));
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
-				    var tregex = new RegExp("<timestamp/>", 'i');
-					var pregex = new RegExp("<ping/>", 'i');
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg.replace(tregex, get_string_timestamp()).replace(pregex, ""))+"\"},");
+					var bregexp = new RegExp("^<b><font color=red> ([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!</font></b>$", "i");
+					if(bregexp.test(params.msg))
+					{
+					    var result = params.msg.match(bregexp);
+						var banned = result[1];
+						var banner = result[2];
+						append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), banned_id:sys.id(banned), channels:params.channels, timestamp:params.timestamp});
+					}
+					else
+					{
+				        var tregex = new RegExp("<timestamp/>", 'i');
+					    var pregex = new RegExp("<ping/>", 'i');
+				        sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg.replace(tregex, get_string_timestamp()).replace(pregex, ""))+"\"},");
+				    }
 				}
 			break;
 			
@@ -1819,6 +1840,38 @@ init : function() {
         }
         return s.join(", ");
     };
+	getTimeStamp = function(string) {
+	    var arr = string.split(',');
+		var regexp = new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
+		var seconds = 0;
+		var result = [];
+		for(var x in arr)
+		{
+		       result = string.match(regexp);
+			   if(result[2] == 'second' || result[2] == 'seconds')
+			   {
+			        seconds += parseInt(result[1]);
+			   }
+			   else if(result[2] == 'minute' || result[2] == 'minutes')
+			   {
+			        seconds += parseInt(result[1])*60;
+			   }
+			   else if(result[2] == 'hour' || result[2] == 'hours')
+			   {
+			        seconds += parseInt(result[1])*60*60;
+			   }
+			   else if(result[2] == 'day' || result[2] == 'days')
+			   {
+			        seconds += parseInt(result[1]*60*60*24);
+			   }
+			   else if(result[2]== 'week' || result[2] == 'weeks')
+			   {
+			        seconds += parseInt(result[1]*60*60*24*7);
+			   }
+		}
+		
+		return seconds;
+	};
     sendMainTour = function(message) {
         sendChanAll(message, 0);
         sendChanAll(message, tourchannel);
