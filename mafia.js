@@ -1070,7 +1070,7 @@ this.possibleThemes[themeName] = 0;
                     this.advertiseToChannel(sys.channelId('Project Mafia'));
                 }
                 if (sys.existChannel("Mafia Tutoring")) {
-                    this.advertiseToChannel(sys.channelId('Mafia Tutorin'));
+                    this.advertiseToChannel(sys.channelId('Mafia Tutoring'));
                 }
             }
         }
