@@ -590,6 +590,27 @@ function isSub(name) {
     }
 }
 
+/* To track tour brackets in logs. */
+function sendLog(message, html) {
+    try {
+        var stalked_chans = inStalkedChans([sys.channel(tourschan)]);
+        if (stalked_chans.length > 0) {
+            if (html) {
+                var params = {"event":"afterSendHtmlAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+                append_logs(params);
+            }
+            else {
+                var params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+                append_logs(params);
+            }
+        }
+    }
+    catch (e) {
+        sendChanAll("Logging from Tournaments failed: "+err, tourserrchan)
+        return false;
+    };
+}
+
 // Sends a message to all tour auth and players in the current tour
 function sendAuthPlayers(message,key) {
     for (var x in sys.playersOfChannel(tourschan)) {
@@ -598,6 +619,7 @@ function sendAuthPlayers(message,key) {
             sendBotMessage(arr[x], message, tourschan, false)
         }
     }
+    sendLog(message, true);
 }
 
 // Sends a html  message to all tour auth and players that participated in the current tour
@@ -615,6 +637,7 @@ function sendHtmlAuthPlayers(message,key) {
             sys.sendHtmlMessage(arr[x], newmessage, tourschan)
         }
     }
+    sendLog(message, true);
 }
 
 // Send a flashing bracket
@@ -633,6 +656,7 @@ function sendFlashingBracket(message,key) {
         }
         sys.sendHtmlMessage(arr[x], newmessage, tourschan)
     }
+    sendLog(message, true);
 }
 
 // Sends a message to all tour auth
@@ -664,7 +688,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.565",
+            version: "1.568",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -704,7 +728,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.565",
+        version: "1.568",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -2257,6 +2281,10 @@ function tourCommand(src, command, commandData) {
                 sendBotMessage(src, "You need to register to play in #"+sys.channel(tourschan)+"! Click on the 'Register' button below and follow the instructions!", tourschan, false);
                 return true;
             }
+            if (SESSION.users(src).mute.active) {
+                sendBotMessage(src, "You are server muted so you are prohibited from playing!", tourschan, false);
+                return true;
+            }
             if (isTourMuted(src) || isTourBanned(src)) {
                 sendBotMessage(src, "You are tourmuted so you are prohibited from playing!", tourschan, false);
                 return true;
@@ -2291,6 +2319,10 @@ function tourCommand(src, command, commandData) {
                         break;
                     }
                 }
+            }
+            if (sys.battling(src)) {
+                sendBotMessage(src, "You can't join while battling! Finish your battle first!",tourschan,false)
+                return true;
             }
             if (!isInCorrectGen) {
                 sendBotMessage(src, "Your generation must be set to "+getSubgen(tours.tour[key].parameters.gen, true)+". Change it in the teambuilder.",tourschan,false)
@@ -3759,6 +3791,7 @@ function tourprintbracket(key) {
                     var player2data = "<td>"+toTourName(tours.tour[key].players[x+1])+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
                     roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
                 }
+		sendBotAll("Round "+tours.tour[key].round+" of the "+getFullTourName(key)+" tour has started. Type /viewround to view the round bracket.",tourschan,false);
                 sendHtmlAuthPlayers("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+"<br/>", key)
             }
             else {
@@ -3768,6 +3801,7 @@ function tourprintbracket(key) {
                     var player2data = "<td>"+toTourName(tours.tour[key].players[x+1])+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
                     roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
                 }
+		sendBotAll("Round "+tours.tour[key].round+" of the "+getFullTourName(key)+" tour has started. Type /viewround to view the round bracket.",tourschan,false);
                 sendHtmlAuthPlayers("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+"<br/>", key)
             }
             removebyes(key)

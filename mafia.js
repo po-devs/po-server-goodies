@@ -873,6 +873,17 @@ function Mafia(mafiachan) {
             this.players[p].safeguarded = undefined;
         }
     };
+    this.advertiseToChannel = function(channel){
+        sendChanAll("", channel);
+        sendChanAll(border, channel);
+        if (this.theme.name == "default") {
+            sendChanAll("±Game: A new mafia game was started at #" + sys.channel(mafiachan) + "!", channel);
+        } else {
+            sendChanAll("±Game: A new " + this.theme.name + "-themed mafia game was started at #" + sys.channel(mafiachan) + "!", channel);
+        }
+        sendChanAll(border, channel);
+        sendChanAll("", channel);
+    }
     this.clearVariables();
     /* callback for /start */
     this.userVote = function (src, commandData) {
@@ -1054,26 +1065,12 @@ this.possibleThemes[themeName] = 0;
             var time = parseInt(sys.time(), 10);
             if (time > this.lastAdvertise + 60 * 15) {
                 this.lastAdvertise = time;
-                sendChanAll("", 0);
-                sendChanAll(border, 0);
-                if (this.theme.name == "default") {
-                    sendChanAll("±Game: A new mafia game was started at #" + sys.channel(mafiachan) + "!", 0);
-                } else {
-                    sendChanAll("±Game: A new " + this.theme.name + "-themed mafia game was started at #" + sys.channel(mafiachan) + "!", 0);
-                }
-                sendChanAll(border, 0);
-                sendChanAll("", 0);
+                this.advertiseToChannel(0);
                 if (sys.existChannel("Project Mafia")) {
-                    var PM = sys.channelId("Project Mafia");
-                    sendChanAll("", PM);
-                    sendChanAll(border, PM);
-                    if (this.theme.name == "default") {
-                        sendChanAll("±Game: A new mafia game was started at #" + sys.channel(mafiachan) + "!", PM);
-                    } else {
-                        sendChanAll("±Game: A new " + this.theme.name + "-themed mafia game was started at #" + sys.channel(mafiachan) + "!", PM);
-                    }
-                    sendChanAll(border, PM);
-                    sendChanAll("", PM);
+                    this.advertiseToChannel(sys.channelId('Project Mafia'));
+                }
+                if (sys.existChannel("Mafia Tutoring")) {
+                    this.advertiseToChannel(sys.channelId('Mafia Tutoring'));
                 }
             }
         }
