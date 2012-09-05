@@ -173,12 +173,12 @@ update_web_logs = function() {
     var json = sys.getFileContent('po_logs.json');
 	var website = sys.getFileContent('logs_address.txt'); // The address of the page that will save the logs
 	var post = {};
-	post['logs'] = json;
+	posts.logs = json;
 	var resp = sys.synchronousWebCall(website, post);
 	if(resp == 'true')
 	{
 		sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
-	    sys.writeToFile('po_logs.json', '');
+	    sys.writeToFile('po_logs.json','');
 	}
 	else
 	{
@@ -318,6 +318,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 			
 			case 'afterSendHtmlAll':
+			    sys.sendHtmlAll(params.msg, sys.channelId('The test'));
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
 				    var tregex = new RegExp("<timestamp/>", 'i');
