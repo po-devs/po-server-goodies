@@ -300,7 +300,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 			case 'afterSendAll':
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
-				    //sys.sendAll(params.msg, sys.channelId('The test'));
+				    sys.sendAll(params.msg, sys.channelId('The test'));
 					//new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
 					//normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " for " + timeString + "! [Reason: " + reason + "]");
 				    var kregexp = new RegExp("^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$", "i"); // To capture kicks
@@ -327,7 +327,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 			
 			case 'afterSendHtmlAll':
-			    //sys.sendHtmlAll(params.msg, sys.channelId('The test'), sys.channelId('The test'));
+			    sys.sendHtmlAll(params.msg, sys.channelId('The test'));
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
 					var bregexp = new RegExp("^<b><font color=red> ([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!</font></b>$", "i");
