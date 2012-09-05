@@ -2055,7 +2055,12 @@ beforeChannelJoin : function(src, channel) {
 
     // Can't ban from main
     if (channel === 0) return;
-
+    
+    /*forces players to join Mafia Tutoring when joining mafia*/
+    if (channel === sys.channelId('Mafia Channel')){
+        sys.putInChannel(src, sys.channelId('Mafia Tutoring');
+        return;
+    }
     /* Tours redirect */
     if (sys.auth(src) <= 0 && channel == sys.channelId("Tours")) {
         sys.stopEvent();
