@@ -405,11 +405,6 @@ stalkedChans = function() {
 
 inStalkedChans = function(channels) {
      var stalked = [];
-	 if(typeof channels != 'object')
-	 {
-	     sys.sendMessage(sys.id('[LD]Jirachier'), channels, 2);
-	     return;
-	 }
     for(x in channels)
 	{
 	    if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
