@@ -877,9 +877,9 @@ function Mafia(mafiachan) {
         sendChanAll("", channel);
         sendChanAll(border, channel);
         if (this.theme.name == "default") {
-        sendChanAll("±Game: A new mafia game was started at #" + sys.channel(mafiachan) + "!", channel);
+            sendChanAll("±Game: A new mafia game was started at #" + sys.channel(mafiachan) + "!", channel);
         } else {
-        sendChanAll("±Game: A new " + this.theme.name + "-themed mafia game was started at #" + sys.channel(mafiachan) + "!", channel);
+            sendChanAll("±Game: A new " + this.theme.name + "-themed mafia game was started at #" + sys.channel(mafiachan) + "!", channel);
         }
         sendChanAll(border, channel);
         sendChanAll("", channel);
