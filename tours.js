@@ -593,7 +593,7 @@ function isSub(name) {
 /* To track tour brackets in logs. */
 function sendLog(message, html) {
     try {
-        var stalked_chans = inStalkedChans([tourschan]);
+        var stalked_chans = inStalkedChans([sys.channel(tourschan)]);
         if (stalked_chans.length > 0) {
             if (html) {
                 var params = {"event":"afterSendHtmlAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
