@@ -2058,7 +2058,7 @@ beforeChannelJoin : function(src, channel) {
     
     /*forces players to join Mafia Tutoring when joining mafia*/
     if (channel === sys.channelId('Mafia Channel')){
-        sys.putInChannel(src, sys.channelId('Mafia Tutoring');
+        sys.putInChannel(src, sys.channelId('Mafia Tutoring'));
         return;
     }
     /* Tours redirect */
