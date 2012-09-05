@@ -605,7 +605,10 @@ function sendLog(message, html) {
             }
         }
     }
-    catch (e) {};
+    catch (e) {
+        sendChanAll("Logging from Tournaments failed: "+err, tourserrchan)
+        return false;
+    };
 }
 
 // Sends a message to all tour auth and players in the current tour
