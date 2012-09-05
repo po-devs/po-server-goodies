@@ -688,7 +688,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.567",
+            version: "1.568",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -728,7 +728,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.567",
+        version: "1.568",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -2279,6 +2279,10 @@ function tourCommand(src, command, commandData) {
         if (command == "join") {
             if (!sys.dbRegistered(sys.name(src))) {
                 sendBotMessage(src, "You need to register to play in #"+sys.channel(tourschan)+"! Click on the 'Register' button below and follow the instructions!", tourschan, false);
+                return true;
+            }
+            if (SESSION.users(src).mute.active) {
+                sendBotMessage(src, "You are server muted so you are prohibited from playing!", tourschan, false);
                 return true;
             }
             if (isTourMuted(src) || isTourBanned(src)) {
