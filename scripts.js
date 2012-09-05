@@ -308,7 +308,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 						var result = params.msg.match(kregexp);
 						var kicker = result[1];
 						var kicked = result[2];
-					    append_logs({event:"beforePlayerKick", "kicker":sys.id(kicker), "kicked":sys.id(kicked), channels:params.channels, timestamp:params.timestamp});
+					    append_logs({event:"beforePlayerKick", kicker_id:sys.id(kicker), kicked_id:sys.id(kicked), channels:params.channels, timestamp:params.timestamp});
 					}
 					else
 					{
