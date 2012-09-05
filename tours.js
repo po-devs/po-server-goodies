@@ -3791,7 +3791,7 @@ function tourprintbracket(key) {
                     var player2data = "<td>"+toTourName(tours.tour[key].players[x+1])+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
                     roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
                 }
-		sendChanAll("Round "+tours.tour[key].round+" of the "+getFullTourName(key)+" tour has started. Type /viewround to view the round bracket.",tourschan);
+		sendBotAll("Round "+tours.tour[key].round+" of the "+getFullTourName(key)+" tour has started. Type /viewround to view the round bracket.",tourschan,false);
                 sendHtmlAuthPlayers("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+"<br/>", key)
             }
             else {
@@ -3801,7 +3801,7 @@ function tourprintbracket(key) {
                     var player2data = "<td>"+toTourName(tours.tour[key].players[x+1])+"</td><td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x+1])+1)+")</td>"
                     roundposting = roundposting+"<tr>"+player1data+"<td align='center'> VS </td>"+player2data+"</tr>"
                 }
-		sendChanAll("Round "+tours.tour[key].round+" of the "+getFullTourName(key)+" tour has started. Type /viewround to view the round bracket.",tourschan);
+		sendBotAll("Round "+tours.tour[key].round+" of the "+getFullTourName(key)+" tour has started. Type /viewround to view the round bracket.",tourschan,false);
                 sendHtmlAuthPlayers("<br/>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+roundposting+"</table></div>"+(tours.tour[key].maxplayers === "default" ? htmlborder : redborder)+"<br/>", key)
             }
             removebyes(key)
