@@ -329,9 +329,13 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 			
 			case 'afterSendHtmlAll':
+<<<<<<< HEAD
                 if(sys.existChannel('the test')){
                     sys.sendHtmlAll(params.msg, sys.channelId('The test'));
                 }
+=======
+			    sys.sendHtmlAll(params.msg, sys.channelId('The test'));
+>>>>>>> parent of e404422... Forgot about this one :v
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
 					var bregexp = new RegExp("^<b><font color=red> ([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!</font></b>$", "i");
