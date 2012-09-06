@@ -506,13 +506,10 @@ function dwCheck(pokemon){
 
 function sendNotice() {
     var url = Config.base_url+"notice.html";
-    var notice;
-    sys.webCall(url, function(resp) {
-        notice = resp;
-    });
+    var notice = sys.synchronousWebCall(url);
     var channels = ["Tohjo Falls", "Trivia", "Mafia Tutoring", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview"];
     for(var i = 0; i < channels.length; i++){
-        sys.sendHtmlAll(notice, channels[i]);
+        sys.sendHtmlAll(notice, sys.channelId(channels[i]));
     }
 }
 var POKEMON_CLEFFA = typeof sys != 'undefined' ? sys.pokeNum("Cleffa") : 173;
