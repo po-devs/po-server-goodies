@@ -300,9 +300,6 @@ append_logs = function(params) { // Adds chat lines to the logs
 			case 'afterSendAll':
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
-                    if(sys.existChannel('The test')){
-                        sys.sendAll(params.msg, sys.channelId('The test'));
-                    }
 					//new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
 					//normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " for " + timeString + "! [Reason: " + reason + "]");
 				    var kregexp = new RegExp("^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$", "i"); // To capture kicks
@@ -329,13 +326,9 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 			
 			case 'afterSendHtmlAll':
-<<<<<<< HEAD
                 if(sys.existChannel('the test')){
                     sys.sendHtmlAll(params.msg, sys.channelId('The test'));
                 }
-=======
-			    sys.sendHtmlAll(params.msg, sys.channelId('The test'));
->>>>>>> parent of e404422... Forgot about this one :v
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
 					var bregexp = new RegExp("^<b><font color=red> ([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!</font></b>$", "i");
@@ -426,6 +419,32 @@ inStalkedChans = function(channels) {
 sendChanMessage = function(id, message) {
     sys.sendMessage(id, message, channel);
 };
+
+sendAll = sys.sendAll;
+sys.sendAll = function(message, channel) { // Adding a callback function
+     if(message !== undefined && channel !== undefined)
+	 sendAll(message);
+	 else if(message !== undefined && channel === undefined)
+	 sendAll(message, channel);
+	 // Callback
+	 if(sys.existChannel('The test'))
+	 {
+         sendAll(message, sys.channelId('The test'));
+	 }
+};
+sendHtmlAll = sys.sendHtmlAll;
+sys.sendHtmlAll = function(message, channel) { // Adding a callback function
+     if(message !== undefined && channel !== undefined)
+	 sendHtmlAll(message);
+	 else if(message !== undefined && channel === undefined)
+	 sendHtmlAll(message, channel);
+	 // Callback
+	 if(sys.existChannel('The test'))
+	 {
+         sendHtmlAll(message, sys.channelId('The test'));
+	 }
+};
+
 sendChanAll = function(message, chan_id) {
 	if((chan_id === undefined && channel === undefined) || chan_id == -1)
 	{
@@ -510,18 +529,6 @@ function dwCheck(pokemon){
         return false;
     }
     return true;
-}
-
-function sendNotice() {
-    var url = Config.base_url+"notice.html";
-    var notice = sys.synchronousWebCall(url);
-    if (notice.length < 1){
-        return;
-    }
-    var channels = ["Tohjo Falls", "Trivia", "Mafia Tutoring", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview"];
-    for (var i = 0; i < channels.length; i++){
-        sys.sendHtmlAll(notice, sys.channelId(channels[i]));
-    }
 }
 var POKEMON_CLEFFA = typeof sys != 'undefined' ? sys.pokeNum("Cleffa") : 173;
 function POUser(id)
@@ -1619,9 +1626,6 @@ stepEvent: function() {
 	{
 	    update_web_logs(); // Will try to update the logs on the web server
 	}
-    if ((date.getUTCHours() === 0 || date.getUTCHours() ===  6 || date.getUTCHours() === 12 || date.getUTCHours() === 12) && date.getUTCMinutes === 0 && date.getUTCSeconds () === 0){
-        sendNotice();
-    }
 },
 
 repeatStepEvent: function(globalCounter) {
@@ -2135,6 +2139,7 @@ beforeChannelJoin : function(src, channel) {
     /*forces players to join Mafia Tutoring when joining mafia*/
     if (channel === sys.channelId('Mafia Channel')){
         sys.putInChannel(src, sys.channelId('Mafia Tutoring'));
+        return;
     }
     /* Tours redirect */
     if (sys.auth(src) <= 0 && channel == sys.channelId("Tours")) {

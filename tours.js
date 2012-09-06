@@ -77,7 +77,7 @@ var tourownercommands = ["clearrankings: clears the tour rankings (owner only)",
                     "cleantour [key]: removes all byes and subs (DEBUG)"]
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "Breaking the following rules may result in a tour mute:",
-                "#1: Team revealing or scouting in non CC tiers will result in disqualification.",
+                "#1: Team revealing or scouting in tiers other than CC or Metronome will result in disqualification.",
                 "- Scouting is watching the battle of someone else in the tournament to gain information.",
                 "- Team revealing is revealing any information about other entrants' teams.",
                 "- Players are always permitted to watch the final match of any tournament.",
@@ -89,12 +89,13 @@ var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "#7: Ask someone on the /activeta list if you need help or have problems.",
                 "#8: Avoid excessive minimodding.",
                 "- Reminding a player of the rules is fine, but doing it excessively is annoying and unwanted.",
-                "#9: Do not attempt to circumvent the rules",
-                "- Attempting to circumvent the rules through trickery, proxy or other such methods will be punished.",
-                "#10: Event tournaments (marked by red borders)",
+                "#9: Event tournaments (marked by red borders)",
                 "- Be aware that these are all double elimination. Breaking or attempting to break the above rules will result in immediate disqualification.",
-                "- You are not permitted to enter the battle of any player in the tournament while you are still in it (CC tiers are excepted)",
-                "- Breaking the above rule results in automatic disqualification, as it is impossible to tell whether a player is cheating or just checking the score."]
+                "#10: Respecting other players & Sportsmanship:",
+                "- Avoid complaining about hax, luck or other such things as much as possible.",
+                "- Avoid making inflammatory remarks/taunts towards other users - treat other users the way you would like to be treated.",
+                "#11: Do not attempt to circumvent the rules",
+                "- Attempting to circumvent the rules through trickery, proxy or other such methods will be punished."]
 
 function sendBotMessage(user, message, chan, html) {
     if (user === undefined) {
@@ -688,7 +689,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.568",
+            version: "1.570",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -728,7 +729,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.568",
+        version: "1.570",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -2893,6 +2894,14 @@ function removeinactive(key) {
                 dq1 = false
                 sendDebugMessage(player1+"'s opponent is offline; continuing", tourschan)
             }
+            else if (sys.hasTier(sys.id(player1), tours.tour[key].tourtype) && !sys.hasTier(sys.id(player2), tours.tour[key].tourtype)) {
+                dq1 = false
+                sendDebugMessage(player1+"'s opponent does not have a team; continuing", tourschan)
+            }
+            else if (!sys.away(sys.id(player1)) && sys.away(sys.id(player2))) {
+                dq1 = false
+                sendDebugMessage(player1+"'s opponent is idle; continuing", tourschan)
+            }
             else {
                 sendDebugMessage(player1+" is not active; disqualifying", tourschan)
             }
@@ -2905,6 +2914,14 @@ function removeinactive(key) {
             else if (sys.id(player2) !== undefined && sys.id(player1) === undefined) {
                 dq2 = false
                 sendDebugMessage(player2+"'s opponent is offline; continuing", tourschan)
+            }
+            else if (sys.hasTier(sys.id(player2), tours.tour[key].tourtype) && !sys.hasTier(sys.id(player1), tours.tour[key].tourtype)) {
+                dq2 = false
+                sendDebugMessage(player2+"'s opponent does not have a team; continuing", tourschan)
+            }
+            else if (!sys.away(sys.id(player2)) && sys.away(sys.id(player1))) {
+                dq2 = false
+                sendDebugMessage(player2+"'s opponent is idle; continuing", tourschan)
             }
             else {
                 sendDebugMessage(player2+" is not active; disqualifying", tourschan)
