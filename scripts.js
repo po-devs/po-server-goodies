@@ -300,7 +300,6 @@ append_logs = function(params) { // Adds chat lines to the logs
 			case 'afterSendAll':
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
-				    sys.sendAll(params.msg, sys.channelId('The test'));
 					//new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
 					//normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " for " + timeString + "! [Reason: " + reason + "]");
 				    var kregexp = new RegExp("^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$", "i"); // To capture kicks
@@ -327,7 +326,6 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 			
 			case 'afterSendHtmlAll':
-			    sys.sendHtmlAll(params.msg, sys.channelId('The test'));
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
 				{
 					var bregexp = new RegExp("^<b><font color=red> ([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!</font></b>$", "i");
@@ -418,6 +416,26 @@ inStalkedChans = function(channels) {
 sendChanMessage = function(id, message) {
     sys.sendMessage(id, message, channel);
 };
+
+sendAll = sys.sendAll;
+sys.sendAll = function(message, channel) { // Adding a callback function
+     if(message !== undefined && channel !== undefined)
+	 sendAll(message);
+	 else if(message !== undefined && channel === undefined)
+	 sendAll(message, channel);
+	 // Callback
+	 sendAll(message, sys.channelId('The test');
+};
+sendHtmlAll = sys.sendHtmlAll;
+sys.sendHtmlAll = function(message, channel) { // Adding a callback function
+     if(message !== undefined && channel !== undefined)
+	 sendHtmlAll(message);
+	 else if(message !== undefined && channel === undefined)
+	 sendHtmlAll(message, channel);
+	 // Callback
+	 sendHtmlAll(message, sys.channelId('The test');
+};
+
 sendChanAll = function(message, chan_id) {
 	if((chan_id === undefined && channel === undefined) || chan_id == -1)
 	{
