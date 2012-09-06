@@ -503,6 +503,18 @@ function dwCheck(pokemon){
     }
     return true;
 }
+
+function sendNotice() {
+    var url = Config.base_url+"notice.html";
+    var notice;
+    sys.webCall(url, function(resp) {
+        notice = resp;
+    });
+    var channels = ["Tohjo Falls", "Trivia", "Mafia Tutoring", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview"];
+    for(var i = 0; i < channels.length; i++){
+        sys.sendHtmlAll(notice, channels[i]);
+    }
+}
 var POKEMON_CLEFFA = typeof sys != 'undefined' ? sys.pokeNum("Cleffa") : 173;
 function POUser(id)
 {
@@ -1599,6 +1611,9 @@ stepEvent: function() {
 	{
 	    update_web_logs(); // Will try to update the logs on the web server
 	}
+    if ((date.getUTCHours() === 0 || date.getUTCHours() ===  6 || date.getUTCHours() === 12 || date.getUTCHours() === 12) && date.getUTCMinutes === 0 && date.getUTCSeconds () === 0){
+        sendNotice();
+    }
 },
 
 repeatStepEvent: function(globalCounter) {
