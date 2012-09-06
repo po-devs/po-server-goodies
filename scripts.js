@@ -423,7 +423,11 @@ sys.sendAll = function(message, channel) { // Adding a callback function
 	 sendAll(message);
 	 else if(message !== undefined && channel === undefined)
 	 sendAll(message, channel);
-
+	 // Callback
+	 if(sys.existChannel('The test'))
+	 {
+         sendAll(message, sys.channelId('The test'));
+	 }
 };
 sendHtmlAll = sys.sendHtmlAll;
 sys.sendHtmlAll = function(message, channel) { // Adding a callback function
@@ -431,7 +435,11 @@ sys.sendHtmlAll = function(message, channel) { // Adding a callback function
 	 sendHtmlAll(message);
 	 else if(message !== undefined && channel === undefined)
 	 sendHtmlAll(message, channel);
-
+	 // Callback
+	 if(sys.existChannel('The test'))
+	 {
+         sendHtmlAll(message, sys.channelId('The test'));
+	 }
 };
 
 sendChanAll = function(message, chan_id) {
