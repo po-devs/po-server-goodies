@@ -106,7 +106,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel;
+var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, getTimeStamp;
 
 var isMafiaAdmin = require('mafia.js').isMafiaAdmin;
 var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
@@ -162,359 +162,366 @@ var isNonNegative = utilities.is_non_negative;
 var Lazy = utilities.Lazy;
 var nonFlashing = utilities.non_flashing;
 
-get_timestamp = function() { // UTC timestamp(seconds)
+function get_timestamp() { // UTC timestamp(seconds)
     var date = new Date();
-	return Math.floor((date.getTime()+(date.getTimezoneOffset()*60000))/1000);
-};
+    return Math.floor((date.getTime()+(date.getTimezoneOffset()*60000))/1000);
+}
 
-update_web_logs = function() {
-	// Take po_logs.json to the handler and empty it afterward as well as update the date of the logs
-	var date = new Date();
+function update_web_logs() {
+    // Take po_logs.json to the handler and empty it afterward as well as update the date of the logs
+    var date = new Date();
     var json = sys.getFileContent('po_logs.json');
-	var website = sys.getFileContent('logs_address.txt'); // The address of the page that will save the logs
-	var post = {};
-	posts.logs = json;
-	var resp = sys.synchronousWebCall(website, post);
-	if(resp == 'true')
-	{
-		sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
-	    sys.writeToFile('po_logs.json','');
-	}
-	else
-	{
-	    sys.sendAll('Return: '+resp, 2);
-	}
-};
+    var website = sys.getFileContent('logs_address.txt'); // The address of the page that will save the logs
+    var post = {logs: json};
+    var resp = sys.synchronousWebCall(website, post);
+    if(resp == 'true')
+    {
+        sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
+        sys.writeToFile('po_logs.json','');
+    }
+    else
+    {
+        sys.sendAll('Return: '+resp, 2);
+    }
+}
 
-getVal = function(valname) { // Removes ":" if it's the first character of the val
+function getVal(valname) { // Removes ":" if it's the first character of the val
     var val = sys.getVal(valname);
-	return val[0] == ':' ? val.substr(1) : val;
-};
-escape_dq = function(txt) { // escaping for JSON
-    //return txt.replace(/\\/g, '\\\\').replace(/"/g, '\\\\\\"');
-	return txt.replace(/\\/g, "\\\\").replace(/\//g, "\\/").replace(/\"/g, "\\\"").replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t").replace(/\x08/g, "\\f").replace(/\x0c/g, "\\b");
-};
+    return val[0] == ':' ? val.substr(1) : val;
+}
+function escape_dq(txt) { // escaping for JSON
+    return txt.replace(/\\/g, "\\\\").replace(/\//g, "\\/").replace(/\"/g, "\\\"").replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t").replace(/\x08/g, "\\f").replace(/\x0c/g, "\\b");
+}
 
-append_logs = function(params) { // Adds chat lines to the logs
+function append_logs(params) { // Adds chat lines to the logs
      var timestamp_regex = new RegExp("^[0-9]{0,10}$");
      var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick', 'afterNewMessage'];
     if(typeof params == 'object' && events_list.indexOf(params.event) != -1)
-	{
-	    if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
-		{
-		    // verification here that it's stalked
-			var stalked_chans = getVal('stalked_chans');
-			if(params.chan_id !== undefined && stalked_chans.indexOf(sys.channel(params.chan_id).toLowerCase()) == -1)
-			{
-			    return;
-			}
-		}
-		switch(params.event)
-		{
-		    case 'afterLogIn':
-			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
-				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogIn\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
-				}
-			break;
-			
-			case 'afterLogOut':
-			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
-				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogOut\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
-				}
-			break;
-			
-			case 'afterBattleStarted':
-			    if(sys.name(params.source_id) !== undefined && sys.name(params.target_id) !== undefined && timestamp_regex.test(params.timestamp))
-				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleStarted\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"target\":\""+escape_dq(sys.name(params.target_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
-				}
-			break;
-			
-			case 'afterBattleEnded':
-			    if(sys.name(params.winner_id) !== undefined && sys.name(params.loser_id) !== undefined && timestamp_regex.test(params.timestamp))
-				{
-				    var tie = params.tie == 'tie' ? 1 : 0;
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleEnded\", \"timestamp\":\""+params.timestamp+"\", \"winner\":\""+escape_dq(sys.name(params.winner_id))+"\", \"loser\":\""+escape_dq(sys.name(params.loser_id))+"\", \"tie\":\""+tie+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
-				}
-			break;
-			
-			case 'afterChangeTeam':
-			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
-				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTeam\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
-				}
-			break;
-			
-			case 'afterChangeTier':
-			    if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
-				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTier\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
-				}
-			break;
-			
-			case 'afterPlayerAway':
-			    if(sys.name(params.source_id) !== undefined && typeof params.away == 'boolean' && timestamp_regex.test(params.timestamp))
-				{
-				    var away = params.away == true ? 1 : 0;
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerAway\", \"timestamp\":\""+params.timestamp+"\", \"away\":\""+away+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
-				}
-			break;
-			
-			case 'beforePlayerKick':
-			    if(sys.name(params.kicker_id) !== undefined && sys.name(params.kicked_id) !== undefined && timestamp_regex.test(params.timestamp))
-				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerKick\", \"timestamp\":\""+params.timestamp+"\", \"kicker\":\""+escape_dq(sys.name(params.kicker_id))+"\", \"kicked\":\""+escape_dq(sys.name(params.kicked_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
-				}
-			break;
-			
-			case 'beforePlayerBan':
-			    if(sys.name(params.banner_id) !== undefined && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
-				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"banner\":\""+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+escape_dq(sys.name(params.banned_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
-				}
-			break;
-			
-			case 'afterChannelJoin':
-			    if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && timestamp_regex.test(params.timestamp))
-				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelJoin\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channel\":\""+escape_dq(sys.channel(params.chan_id))+"\"},");
-				}
-			break;
-			
-			case 'afterChannelLeave':
-			    if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && timestamp_regex.test(params.timestamp))
-				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelLeave\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channel\":\""+escape_dq(sys.channel(params.chan_id))+"\"},");
-				}
-			break;
-			
-			case 'afterChatMessage':
-			    if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
-				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterChatMessage\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"source_color\":\""+params.source_color+"\", \"channel\":\""+escape_dq(sys.channel(params.chan_id))+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
-				}
-			break;
-			
-			case 'afterSendAll':
-			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
-				{
-					//new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
-					//normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " for " + timeString + "! [Reason: " + reason + "]");
-				    var kregexp = new RegExp("^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$", "i"); // To capture kicks
-				    var tbregexp = new RegExp("^±Dratini: ([^\n%*<:\(\)]{1,20}) banned ([^\n%*<:\(\)]{1,20}) for (([0-9]{1,} (weeks?|days?|hours?|minutes?|seconds?)(, ){0,}){1,})! \[Reason: [^:]{1,} \]", "i");
-					if(kregexp.test(params.msg))
-					{
-						var result = params.msg.match(kregexp);
-						var kicked = result[1];
-						var kicker = result[2];
-					    append_logs({event:"beforePlayerKick", kicker_id:sys.id(kicker), kicked_id:sys.id(kicked), channels:params.channels, timestamp:params.timestamp});
-					}
-					else if(tbregexp.test(params.msg))
-					{
-					    var result = params.msg.match(tbregexp);
-						var banner = result[1];
-						var banned = result[2];
-						var duration = result[3];
-					}
-					else
-					{
-				        sys.appendToFile('po_logs.json', "{\"event\":\"afterSendAll\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
-				    }
-				}
-			break;
-			
-			case 'afterSendHtmlAll':
+    {
+        if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
+        {
+            // verification here that it's stalked
+            var stalked_chans = getVal('stalked_chans');
+            if(params.chan_id !== undefined && stalked_chans.indexOf(sys.channel(params.chan_id).toLowerCase()) == -1)
+            {
+                return;
+            }
+        }
+        switch(params.event)
+        {
+            case 'afterLogIn':
+                if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
+                {
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogIn\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                }
+            break;
+            
+            case 'afterLogOut':
+                if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
+                {
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogOut\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                }
+            break;
+            
+            case 'afterBattleStarted':
+                if(sys.name(params.source_id) !== undefined && sys.name(params.target_id) !== undefined && timestamp_regex.test(params.timestamp))
+                {
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleStarted\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"target\":\""+escape_dq(sys.name(params.target_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                }
+            break;
+            
+            case 'afterBattleEnded':
+                if(sys.name(params.winner_id) !== undefined && sys.name(params.loser_id) !== undefined && timestamp_regex.test(params.timestamp))
+                {
+                    var tie = params.tie == 'tie' ? 1 : 0;
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleEnded\", \"timestamp\":\""+params.timestamp+"\", \"winner\":\""+escape_dq(sys.name(params.winner_id))+"\", \"loser\":\""+escape_dq(sys.name(params.loser_id))+"\", \"tie\":\""+tie+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                }
+            break;
+            
+            case 'afterChangeTeam':
+                if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
+                {
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTeam\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                }
+            break;
+            
+            case 'afterChangeTier':
+                if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
+                {
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTier\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                }
+            break;
+            
+            case 'afterPlayerAway':
+                if(sys.name(params.source_id) !== undefined && typeof params.away == 'boolean' && timestamp_regex.test(params.timestamp))
+                {
+                    var away = params.away ? 1 : 0;
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerAway\", \"timestamp\":\""+params.timestamp+"\", \"away\":\""+away+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                }
+            break;
+            
+            case 'beforePlayerKick':
+                if(sys.name(params.kicker_id) !== undefined && sys.name(params.kicked_id) !== undefined && timestamp_regex.test(params.timestamp))
+                {
+                    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerKick\", \"timestamp\":\""+params.timestamp+"\", \"kicker\":\""+escape_dq(sys.name(params.kicker_id))+"\", \"kicked\":\""+escape_dq(sys.name(params.kicked_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                }
+            break;
+            
+            case 'beforePlayerBan':
+                if(sys.name(params.banner_id) !== undefined && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
+                {
+                    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"banner\":\""+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+escape_dq(sys.name(params.banned_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                }
+            break;
+            
+            case 'afterChannelJoin':
+                if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && timestamp_regex.test(params.timestamp))
+                {
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelJoin\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channel\":\""+escape_dq(sys.channel(params.chan_id))+"\"},");
+                }
+            break;
+            
+            case 'afterChannelLeave':
+                if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && timestamp_regex.test(params.timestamp))
+                {
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelLeave\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channel\":\""+escape_dq(sys.channel(params.chan_id))+"\"},");
+                }
+            break;
+            
+            case 'afterChatMessage':
+                if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+                {
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterChatMessage\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"source_color\":\""+params.source_color+"\", \"channel\":\""+escape_dq(sys.channel(params.chan_id))+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
+                }
+            break;
+            
+            case 'afterSendAll':
+                if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+                {
+                    //new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
+                    //normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " for " + timeString + "! [Reason: " + reason + "]");
+                    var kregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$/i; // To capture kicks
+                    var tbregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) banned ([^\n%*<:\(\)]{1,20}) for (([0-9]{1,} (weeks?|days?|hours?|minutes?|seconds?)(, ){0,}){1,})! \[Reason: [^:]{1,} \]/i;
+                    if(kregexp.test(params.msg))
+                    {
+                        var result = params.msg.match(kregexp);
+                        var kicked = result[1];
+                        var kicker = result[2];
+                        append_logs({event:"beforePlayerKick", kicker_id:sys.id(kicker), kicked_id:sys.id(kicked), channels:params.channels, timestamp:params.timestamp});
+                    }
+                    else if(tbregexp.test(params.msg))
+                    {
+                        var result = params.msg.match(tbregexp);
+                        var banner = result[1];
+                        var banned = result[2];
+                        var duration = result[3];
+                    }
+                    else
+                    {
+                        sys.appendToFile('po_logs.json', "{\"event\":\"afterSendAll\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
+                    }
+                }
+            break;
+            
+            case 'afterSendHtmlAll':
                 if(sys.existChannel('the test')){
                     sys.sendHtmlAll(params.msg, sys.channelId('The test'));
                 }
-			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
-				{
-					var bregexp = new RegExp("^<b><font color=red> ([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!</font></b>$", "i");
-					if(bregexp.test(params.msg))
-					{
-					    var result = params.msg.match(bregexp);
-						var banned = result[1];
-						var banner = result[2];
-						append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), banned_id:sys.id(banned), channels:params.channels, timestamp:params.timestamp});
-					}
-					else
-					{
-				        var tregex = new RegExp("<timestamp/>", 'i');
-					    var pregex = new RegExp("<ping/>", 'i');
-				        sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg.replace(tregex, get_string_timestamp()).replace(pregex, ""))+"\"},");
-				    }
-				}
-			break;
-			
-			case 'afterNewMessage':
-			    if(params.msg.length > 0 && timestamp_regex.test(params.timestamp))
-				{
-				    sys.appendToFile('po_logs.json', "{\"event\":\"afterNewMessage\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
-				}
-			break;
-		}
-	}
-};
+                if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+                {
+                    var bregexp = /^<b><font color=red> ([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!<\/font><\/b>$/i;
+                    if(bregexp.test(params.msg))
+                    {
+                        var result = params.msg.match(bregexp);
+                        var banned = result[1];
+                        var banner = result[2];
+                        append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), banned_id:sys.id(banned), channels:params.channels, timestamp:params.timestamp});
+                    }
+                    else
+                    {
+                        var tregex = new RegExp("<timestamp/>", 'i');
+                        var pregex = new RegExp("<ping/>", 'i');
+                        sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg.replace(tregex, get_string_timestamp()).replace(pregex, ""))+"\"},");
+                    }
+                }
+            break;
+            
+            case 'afterNewMessage':
+                if(params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+                {
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterNewMessage\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                }
+            break;
+        }
+    }
+}
 
-get_players_channels = function(ids) { // List of the channels names that the players in the array are in
+function get_players_channels(ids) { // List of the channels names that the players in the array are in
     
-	var chans = [];
-	var chans_names = [];
-	for(var x in ids)
-	{
-	    chans = chans.concat(sys.channelsOfPlayer(ids[x]));
-	}
-	for(var x in chans)
-	{
-	    if(chans_names.indexOf(sys.channel(chans[x])) == -1 && stalkedChans().indexOf(sys.channel(chans[x]).toLowerCase()) != -1)
-		{
-		    chans_names.push(sys.channel(chans[x]));
-		}
-	}
-	
-	return chans_names;
-};
+    var chans = [];
+    var chans_names = [];
+    for(var x in ids)
+    {
+        chans = chans.concat(sys.channelsOfPlayer(ids[x]));
+    }
+    for(var x in chans)
+    {
+        if(chans_names.indexOf(sys.channel(chans[x])) == -1 && stalkedChans().indexOf(sys.channel(chans[x]).toLowerCase()) != -1)
+        {
+            chans_names.push(sys.channel(chans[x]));
+        }
+    }
+    
+    return chans_names;
+}
 
-get_string_timestamp = function() {
+function get_string_timestamp() {
     var date = new Date();
-	return '('+checkTime(date.getUTCHours())+':'+checkTime(date.getUTCMinutes())+':'+checkTime(date.getUTCSeconds())+')';
+    return '('+checkTime(date.getUTCHours())+':'+checkTime(date.getUTCMinutes())+':'+checkTime(date.getUTCSeconds())+')';
 }
 
 function checkTime(i) { //adds a 0 in front of one digit minutes/seconds
     if(i < 10) {
         i = "0" + i;
-    };
+    }
     return i;
-};
+}
 
 
-channelslist = function() {
+function channelslist() {
     var channelids = sys.channelIds();
     var channels = [];
-	for(var x in channelids)
-	{
-	    channels.push(sys.channel(channelids[x]));
-	}
-	return channels;
-};
+    for(var x in channelids)
+    {
+        channels.push(sys.channel(channelids[x]));
+    }
+    return channels;
+}
 
-stalkedChans = function() {
+function stalkedChans() {
     return getVal('stalked_chans').split(':');
-};
+}
 
-inStalkedChans = function(channels) {
-     var stalked = [];
-    for(x in channels)
-	{
-	    if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
-		{
-		    stalked.push(channels[x]);
-		}
-	}
-	return stalked;
-};
+function inStalkedChans(channels) {
+    var stalked = [];
+    for (var x in channels)
+    {
+        if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
+        {
+            stalked.push(channels[x]);
+        }
+    }
+    return stalked;
+}
 
-sendChanMessage = function(id, message) {
+function sendChanMessage(id, message) {
     sys.sendMessage(id, message, channel);
-};
+}
 
-sendAll = sys.sendAll;
+delete sys.sendAll;
+sys._sendAll = sys.sendAll;
 sys.sendAll = function(message, channel) { // Adding a callback function
      if(message !== undefined && channel !== undefined)
-	 sendAll(message);
-	 else if(message !== undefined && channel === undefined)
-	 sendAll(message, channel);
-	 // Callback
-	 if(sys.existChannel('The test'))
-	 {
-         sendAll(message, sys.channelId('The test'));
-	 }
+        sys._sendAll(message);
+     else if(message !== undefined && channel === undefined)
+        sys._sendAll(message, channel);
+     // Callback
+     if(sys.existChannel('The test'))
+     {
+         sys._sendAll(message, sys.channelId('The test'));
+     }
 };
-sendHtmlAll = sys.sendHtmlAll;
+
+// Remove any non-native replacements
+delete sys.sendHtmlAll;
+// Copy the native function
+sys._sendHtmlAll = sys.sendHtmlAll;
+// Replace the native function
 sys.sendHtmlAll = function(message, channel) { // Adding a callback function
      if(message !== undefined && channel !== undefined)
-	 sendHtmlAll(message);
-	 else if(message !== undefined && channel === undefined)
-	 sendHtmlAll(message, channel);
-	 // Callback
-	 if(sys.existChannel('The test'))
-	 {
-         sendHtmlAll(message, sys.channelId('The test'));
-	 }
+         sys._sendHtmlAll(message);
+     else if(message !== undefined && channel === undefined)
+         sys._sendHtmlAll(message, channel);
+     // Callback
+     if(sys.existChannel('The test'))
+     {
+         sys._sendHtmlAll(message, sys.channelId('The test'));
+     }
 };
 
-sendChanAll = function(message, chan_id) {
-	if((chan_id === undefined && channel === undefined) || chan_id == -1)
-	{
-	     var date = get_timestamp();
-	    sys.sendAll(message);
-		// PO logs stuff
-		var stalked_chans = inStalkedChans(channelslist());
-		if(stalked_chans.length > 0)
-		var params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
-		append_logs(params);
-	}
-	else
-	{
-	    if(chan_id === undefined && channel !== undefined)
-		{
-		    sys.sendAll(message, channel);
-			// PO Logs stuff
-			var stalked_chans = inStalkedChans([sys.channel(channel)]);
-		    if(stalked_chans.length > 0)
-		    var params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
-		    append_logs(params);
-		}
-		else if(chan_id !== undefined)
-		{
-		    sys.sendAll(message, chan_id);
-			// PO Logs stuff
-			var stalked_chans = inStalkedChans([sys.channel(channel)]);
-		    if(stalked_chans.length > 0)
-		    var params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
-		    append_logs(params);
-		}
-	}
-};
-sendChanHtmlMessage = function(id, message) {
+function sendChanAll(message, chan_id) {
+    var params;
+    if((chan_id === undefined && channel === undefined) || chan_id == -1)
+    {
+         var date = get_timestamp();
+        sys.sendAll(message);
+        // PO logs stuff
+        var stalked_chans = inStalkedChans(channelslist());
+        if(stalked_chans.length > 0)
+            params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+        append_logs(params);
+    }
+    else
+    {
+        if(chan_id === undefined && channel !== undefined)
+        {
+            sys.sendAll(message, channel);
+            // PO Logs stuff
+            var stalked_chans = inStalkedChans([sys.channel(channel)]);
+            if(stalked_chans.length > 0)
+                params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+            append_logs(params);
+        }
+        else if(chan_id !== undefined)
+        {
+            sys.sendAll(message, chan_id);
+            // PO Logs stuff
+            var stalked_chans = inStalkedChans([sys.channel(channel)]);
+            if(stalked_chans.length > 0)
+            var params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+            append_logs(params);
+        }
+    }
+}
+
+function sendChanHtmlMessage(id, message) {
     sys.sendHtmlMessage(id, message, channel);
-};
+}
 
-sendChanHtmlAll = function(message, chan_id) {
-	if((chan_id === undefined && channel === undefined) || chan_id == -1)
-	{
-	     var date = get_timestamp();
-	    sys.sendHtmlAll(message);
-		// PO logs stuff
-		var stalked_chans = inStalkedChans(channelslist());
-		if(stalked_chans.length > 0)
-		var params = {"event":"afterSendHtmlAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
-		append_logs(params);
-	}
-	else
-	{
-	    if(chan_id === undefined && channel !== undefined)
-		{
-		    sys.sendHtmlAll(message, channel);
-			// PO Logs stuff
-			var stalked_chans = inStalkedChans([sys.channel(channel)]);
-		    if(stalked_chans.length > 0)
-		    var params = {"event":"afterSendHtmlAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
-		    append_logs(params);
-		}
-		else if(chan_id !== undefined)
-		{
-		    sys.sendHtmlAll(message, chan_id);
-			// PO Logs stuff
-			var stalked_chans = inStalkedChans([sys.channel(channel)]);
-		    if(stalked_chans.length > 0)
-		    var params = {"event":"afterSendHtmlAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
-		    append_logs(params);
-		}
-	}
-};
+function sendChanHtmlAll(message, chan_id) {
+    var params;
+    if((chan_id === undefined && channel === undefined) || chan_id == -1)
+    {
+        var date = get_timestamp();
+        sys.sendHtmlAll(message);
+        // PO logs stuff
+        var stalked_chans = inStalkedChans(channelslist());
+        if(stalked_chans.length > 0)
+            params = {"event":"afterSendHtmlAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+        append_logs(params);
+    }
+    else
+    {
+        if(chan_id === undefined && channel !== undefined)
+        {
+            sys.sendHtmlAll(message, channel);
+            // PO Logs stuff
+            var stalked_chans = inStalkedChans([sys.channel(channel)]);
+            if(stalked_chans.length > 0)
+                params = {"event":"afterSendHtmlAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+            append_logs(params);
+        }
+        else if(chan_id !== undefined)
+        {
+            sys.sendHtmlAll(message, chan_id);
+            // PO Logs stuff
+            var stalked_chans = inStalkedChans([sys.channel(channel)]);
+            if(stalked_chans.length > 0)
+                params = {"event":"afterSendHtmlAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+            append_logs(params);
+        }
+    }
+}
 
 String.prototype.toCorrectCase = function() {
     if (isNaN(this) && sys.id(this) !== undefined) {
@@ -523,7 +530,7 @@ String.prototype.toCorrectCase = function() {
     else {
         return this;
     }
-}
+};
 function dwCheck(pokemon){
     if (sys.pokeAbility(pokemon,2,5) === 0 && sys.pokeAbility(pokemon,1,5) === 0){
         return false;
@@ -701,7 +708,7 @@ POChannel.prototype.setTopic = function(src, topicInfo)
         channelbot.sendChanMessage(src, "You don't have the rights to set topic");
         return;
     }
-    this.changeParameter(src, "topic", topicInfo)
+    this.changeParameter(src, "topic", topicInfo);
     SESSION.global().channelManager.update(this.id);
     channelbot.sendChanAll("" + sys.name(src) + " changed the topic to: " + topicInfo);
 };
@@ -820,7 +827,7 @@ POChannel.prototype.addRole = function(src, tar, group, data)
         if (!this.hasPermission(src, tar)) {
             return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel mute them!"];
         }
-        this.muted[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "issuetime": parseInt(sys.time()), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
+        this.muted[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time(),10) + data.time, "issuetime": parseInt(sys.time(),10), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
         var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
         return ["all", auth+" muted "+tar.toCorrectCase()+timestring+" in this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
     }
@@ -831,7 +838,7 @@ POChannel.prototype.addRole = function(src, tar, group, data)
         if (!this.hasPermission(src, tar)) {
             return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel ban them!"];
         }
-        this.banned[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time()) + data.time, "issuetime": parseInt(sys.time()), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
+        this.banned[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time(),10) + data.time, "issuetime": parseInt(sys.time(),10), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
         var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
         return ["all", auth+" banned "+tar.toCorrectCase()+timestring+" from this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
     }
@@ -902,7 +909,7 @@ POChannel.prototype.removeRole = function(src, tar, group)
 
 POChannel.prototype.issueAuth = function(src, name, group)
 {
-    var ret = this.addRole(src, name, group, {})
+    var ret = this.addRole(src, name, group, {});
     if (ret[0] == "self") {
         channelbot.sendChanMessage(src, ret[1]);
     }
@@ -914,13 +921,13 @@ POChannel.prototype.issueAuth = function(src, name, group)
 
 POChannel.prototype.takeAuth = function(src, name, group)
 {
-    var ret = this.removeRole(src, name, group)
+    var ret = this.removeRole(src, name, group);
     if (ret[0] == "self") {
         channelbot.sendChanMessage(src, ret[1]);
     }
     else {
         channelbot.sendChanAll(ret[1]);
-        SESSION.global().channelManager.update(this.id);;
+        SESSION.global().channelManager.update(this.id);
     }
 };
 
@@ -1030,7 +1037,7 @@ POChannel.prototype.isBanned = function(id)
             delete this.banned[x];
             continue;
         }
-        if (banlist[x].expiry <= parseInt(sys.time())) {
+        if (banlist[x].expiry <= parseInt(sys.time(),10)) {
             delete this.banned[x];
             continue;
         }
@@ -1042,7 +1049,7 @@ POChannel.prototype.isBanned = function(id)
         }
     }
     return false;
-}
+};
 
 POChannel.prototype.isMuted = function(id)
 {
@@ -1057,7 +1064,7 @@ POChannel.prototype.isMuted = function(id)
             delete this.muted[x];
             continue;
         }
-        if (mutelist[x].expiry <= parseInt(sys.time())) {
+        if (mutelist[x].expiry <= parseInt(sys.time(),10)) {
             delete this.muted[x];
             channelbot.sendChanAll(x+"'s channel mute expired.");
             continue;
@@ -1070,7 +1077,7 @@ POChannel.prototype.isMuted = function(id)
         }
     }
     return false;
-}
+};
 
 POChannel.prototype.isPunished = function(name)
 {
@@ -1093,7 +1100,7 @@ POChannel.prototype.isPunished = function(name)
         }
     }
     return "none";
-}
+};
 
 POChannel.prototype.hasPermission = function(src, tar) {
     var srcauth = 0;
@@ -1113,7 +1120,7 @@ POChannel.prototype.hasPermission = function(src, tar) {
     }
     var tarauth = this.chanAuth(tar);
     return srcauth > tarauth;
-}
+};
 
 POChannel.prototype.chanAuth = function(name) {
     var maxauth = 0;
@@ -1137,7 +1144,7 @@ POChannel.prototype.chanAuth = function(name) {
         maxauth = 1;
     }
     return maxauth;
-}
+};
 
 POChannel.prototype.changeParameter = function(src, parameter, value) {
     if (parameter == "topic") {
@@ -1166,7 +1173,7 @@ POChannel.prototype.changeParameter = function(src, parameter, value) {
         return;
     }
     if (parameter == "invitelevel") {
-        var level = parseInt(value);
+        var level = parseInt(value, 10);
         var maxvalue = sys.auth(src) >= 3 ? 3 : sys.auth(src) + 1;
         if (level <= 0 || isNaN(level)) {
             level = 0;
@@ -1183,7 +1190,7 @@ POChannel.prototype.changeParameter = function(src, parameter, value) {
             return sys.name(src)+" made this channel invite only for users below auth level "+level+".";
         }
     }
-}
+};
 
 POChannel.prototype.getReadableList = function(type)
 {
@@ -1211,14 +1218,14 @@ POChannel.prototype.getReadableList = function(type)
                 continue;
             }
             var playername = utilities.html_escape(x);
-            var expirytime = isNaN(mh[x].expiry) ? "never" : mh[x].expiry-parseInt(sys.time());
+            var expirytime = isNaN(mh[x].expiry) ? "never" : mh[x].expiry-parseInt(sys.time(),10);
             if (expirytime <= 0) {
                 continue;
             }
-            var issuetime = getTimeString(parseInt(sys.time())-mh[x].issuetime);
+            var issuetime = getTimeString(parseInt(sys.time(),10)-mh[x].issuetime);
             var auth = utilities.html_escape(mh[x].auth);
             var reason = utilities.html_escape(mh[x].reason);
-            tmp.push([playername, auth, issuetime, isNaN(mh[x].expiry) ? expirytime : getTimeString(expirytime), reason])
+            tmp.push([playername, auth, issuetime, isNaN(mh[x].expiry) ? expirytime : getTimeString(expirytime), reason]);
         }
         tmp.sort(function(a,b) { return a[2] - b[2];});
 
@@ -1234,7 +1241,9 @@ POChannel.prototype.getReadableList = function(type)
             if (table.length + line.length + table_footer.length > max_message_length) {
                 if (send_rows === 0) continue; // Can't send this line!
                 table += table_footer;
-                sendChanHtmlMessage(src, table, channel);
+                // Really need to return multiple tables from this function... return a list??
+                // Or give a callback
+                // sendChanHtmlMessage(src, table, channel);
                 table = table_header;
                 send_rows = 0;
             }
@@ -1252,7 +1261,7 @@ POChannel.prototype.getReadableList = function(type)
     catch (e) {
         return "";
     }
-}
+};
 
 /* Object that manages channels */
 function POChannelManager(fname)
@@ -1556,9 +1565,9 @@ var commands = {
         "/onrange [range]: To view who is on a range.",
         "/tier [name]: To view the tier of a person.",
         "/battlehistory [name]: To view a person's battle history.",
-	"/channelusers [channel]: Lists users on a channel.",
-	"stalked_chans: List the channels whose logs are being saved.",
-	"stalkcheck: List the usage of the stalk_chan command."
+    "/channelusers [channel]: Lists users on a channel.",
+    "stalked_chans: List the channels whose logs are being saved.",
+    "stalkcheck: List the usage of the stalk_chan command."
     ],
     admin:
     [
@@ -1605,8 +1614,8 @@ var commands = {
         "/updatebansites: To update ban sites.",
         "/updatetierchecks: To update tier checks.",
         "/togglerainbow: [on/off]: To turn rainbow on or off.",
-		"/stalk_chan: [on/off]: To start/stop saving the logs of that chan and sending them to the website.",
-		"/update_logs: Send the logs to the website immediately without waiting for midnight."
+        "/stalk_chan: [on/off]: To start/stop saving the logs of that chan and sending them to the website.",
+        "/update_logs: Send the logs to the website immediately without waiting for midnight."
     ]
 };
 
@@ -1619,13 +1628,13 @@ poScript=({
 /* Executed every second */
 stepEvent: function() {
     if (typeof callplugins == "function") callplugins("stepEvent");
-	
-	// Updates PO Logs at midnight
-	var date = new Date();
-	if(date.getUTCHours() == 23 && date.getUTCMinutes() == 59 && date.getUTCSeconds() == 59)
-	{
-	    update_web_logs(); // Will try to update the logs on the web server
-	}
+    
+    // Updates PO Logs at midnight
+    var date = new Date();
+    if(date.getUTCHours() == 23 && date.getUTCMinutes() == 59 && date.getUTCSeconds() == 59)
+    {
+        update_web_logs(); // Will try to update the logs on the web server
+    }
 },
 
 repeatStepEvent: function(globalCounter) {
@@ -1650,7 +1659,7 @@ serverStartUp : function() {
     SESSION.global().startUpTime = parseInt(sys.time(), 10);
     scriptChecks = 0;
     this.init();
-	sys.appendToFile('stalk_commands_logs.json', ''); // contains the list of who used the command
+    sys.appendToFile('stalk_commands_logs.json', ''); // contains the list of who used the command
     sys.appendToFile('po_logs.json', '');
 },
 
@@ -1867,38 +1876,38 @@ init : function() {
         }
         return s.join(", ");
     };
-	getTimeStamp = function(string) {
-	    var arr = string.split(',');
-		var regexp = new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
-		var seconds = 0;
-		var result = [];
-		for(var x in arr)
-		{
-		       result = string.match(regexp);
-			   if(result[2] == 'second' || result[2] == 'seconds')
-			   {
-			        seconds += parseInt(result[1]);
-			   }
-			   else if(result[2] == 'minute' || result[2] == 'minutes')
-			   {
-			        seconds += parseInt(result[1])*60;
-			   }
-			   else if(result[2] == 'hour' || result[2] == 'hours')
-			   {
-			        seconds += parseInt(result[1])*60*60;
-			   }
-			   else if(result[2] == 'day' || result[2] == 'days')
-			   {
-			        seconds += parseInt(result[1]*60*60*24);
-			   }
-			   else if(result[2]== 'week' || result[2] == 'weeks')
-			   {
-			        seconds += parseInt(result[1]*60*60*24*7);
-			   }
-		}
-		
-		return seconds;
-	};
+    getTimeStamp = function(string) {
+        var arr = string.split(',');
+        var regexp = new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
+        var seconds = 0;
+        var result = [];
+        for(var x in arr)
+        {
+               result = string.match(regexp);
+               if(result[2] == 'second' || result[2] == 'seconds')
+               {
+                    seconds += parseInt(result[1], 10);
+               }
+               else if(result[2] == 'minute' || result[2] == 'minutes')
+               {
+                    seconds += parseInt(result[1], 10)*60;
+               }
+               else if(result[2] == 'hour' || result[2] == 'hours')
+               {
+                    seconds += parseInt(result[1], 10)*60*60;
+               }
+               else if(result[2] == 'day' || result[2] == 'days')
+               {
+                    seconds += parseInt(result[1], 10)*60*60*24;
+               }
+               else if(result[2]== 'week' || result[2] == 'weeks')
+               {
+                    seconds += parseInt(result[1], 10)*60*60*24*7;
+               }
+        }
+        
+        return seconds;
+    };
     sendMainTour = function(message) {
         sendChanAll(message, 0);
         sendChanAll(message, tourchannel);
@@ -2020,11 +2029,11 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             banbot.sendChanMessage(src, "You dont have sufficient auth to " + nomi + " " + commandData + ".");
             return;
         }
-	var tarip = tar !== undefined ? sys.ip(tar) : sys.dbIp(commandData);
-	sys.playerIds().forEach(function(id) {
-		if (sys.loggedIn(id) && sys.ip(id) === tarip)
-		SESSION.users(id).activate(type, sys.name(src), expires, reason, true);
-	});
+    var tarip = tar !== undefined ? sys.ip(tar) : sys.dbIp(commandData);
+    sys.playerIds().forEach(function(id) {
+        if (sys.loggedIn(id) && sys.ip(id) === tarip)
+        SESSION.users(id).activate(type, sys.name(src), expires, reason, true);
+    });
         if (reason.length > 0)
             sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
         else
@@ -2212,15 +2221,15 @@ afterChannelJoin : function(player, chan) {
         sys.sendMessage(player, Config.channelbot + ": This channel is unregistered. If you're looking to own this channel, type /register in order to prevent your channel from being stolen.", chan);
     }
     callplugins("afterChannelJoin", player, chan);
-	// PO logs stuff
+    // PO logs stuff
     var params = {event:'afterChannelJoin', source_id:player, chan_id:chan, timestamp:get_timestamp()};
-	append_logs(params);
+    append_logs(params);
 }, /* end of afterChannelJoin */
 
 afterChannelLeave : function(player, chan) {
     // PO logs stuff
     var params = {event:'afterChannelLeave', source_id:player, chan_id:chan, timestamp:get_timestamp()};
-	append_logs(params);
+    append_logs(params);
 },
 
 
@@ -2236,10 +2245,10 @@ beforePlayerBan : function(src, dest) {
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
-	
-	// PO logs stuff
-	var params = {event:'beforePlayerBan', banner_id:src, banned_id:dest, channels:stalkedChans(), timestamp:get_timestamp()};
-	append_logs(params);
+    
+    // PO logs stuff
+    var params = {event:'beforePlayerBan', banner_id:src, banned_id:dest, channels:stalkedChans(), timestamp:get_timestamp()};
+    append_logs(params);
 },
 
 afterPlayerBan : function(src, dest) {
@@ -2250,8 +2259,8 @@ beforePlayerKick:function(src, dest){
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestKick = [sys.name(dest), parseInt(sys.time(), 10)];
-	var params = {event:'beforePlayerKick', kicker_id:src, kicked_id:dest, channels:stalkedChans(), timestamp:get_timestamp()};
-	append_logs(params);
+    var params = {event:'beforePlayerKick', kicker_id:src, kicked_id:dest, channels:stalkedChans(), timestamp:get_timestamp()};
+    append_logs(params);
 },
 
 afterPlayerKick:function(src, dest) {
@@ -2266,13 +2275,13 @@ afterNewMessage : function (message) {
         scriptChecks += 1;
         this.init();
     }
-	// To catch overactives for the PO logs
-	var ip_overactive = new RegExp("^IP ([0-9]{1,3}\\.){3}[0-9]{1,3} is being overactive\\.$");
-	var player_overactive = new RegExp("^Player [^:]{1,20} \\(IP ([0-9]{1,3}\\.){3}[0-9]{1,3}\\) is being overactive\\.$");
-	if(ip_overactive.test(message) || player_overactive.test(message))
-	{
-	    append_logs({event:"afterNewMessage", msg:message, channels:stalkedChans(), timestamp:get_timestamp()});
-	}
+    // To catch overactives for the PO logs
+    var ip_overactive = new RegExp("^IP ([0-9]{1,3}\\.){3}[0-9]{1,3} is being overactive\\.$");
+    var player_overactive = new RegExp("^Player [^:]{1,20} \\(IP ([0-9]{1,3}\\.){3}[0-9]{1,3}\\) is being overactive\\.$");
+    if(ip_overactive.test(message) || player_overactive.test(message))
+    {
+        append_logs({event:"afterNewMessage", msg:message, channels:stalkedChans(), timestamp:get_timestamp()});
+    }
 }, /* end of afterNewMessage */
 
 
@@ -2437,8 +2446,8 @@ nameWarnTest : function(src) {
 afterLogIn : function(src) {
     // PO logs stuff
     var params = {event:'afterLogIn', source_id:src, channels:stalkedChans(), timestamp:get_timestamp()};
-	append_logs(params);
-	
+    append_logs(params);
+    
     sys.sendMessage(src, "*** Type in /Rules to see the rules. ***");
     commandbot.sendMessage(src, "Use !commands to see the commands!");
 
@@ -2498,7 +2507,7 @@ beforeLogOut : function(src) {
 afterLogOut : function(src) {
     // PO logs stuff
     var params = {event:'afterLogOut', source_id:src, channels:stalkedChans(), timestamp:get_timestamp()};
-	append_logs(params);
+    append_logs(params);
 },
 
 
@@ -2511,7 +2520,7 @@ afterChangeTeam : function(src)
 {
     // PO logs stuff
     var params = {event:'afterChangeTeam', source_id:src, channels:get_players_channels([src]), timestamp:get_timestamp()};
-	append_logs(params);
+    append_logs(params);
     if (sys.auth(src) === 0 && this.nameIsInappropriate(src)) {
         sys.kick(src);
         return;
@@ -2621,11 +2630,11 @@ userCommand: function(src, command, commandData, tar) {
 
         return;
     }
-	if(command == "sendhtml" && sys.name(src) == 'Desolate') // Temporary
-	{
+    if(command == "sendhtml" && sys.name(src) == 'Desolate') // Temporary
+    {
                 sys.sendHtmlMessage(src, commandData,sys.channelId('Witty'));
                 return;
-	}
+    }
     if ((command == "me" || command == "rainbow") && !SESSION.channels(channel).muteall) {
         if (SESSION.channels(channel).meoff === true) {
             normalbot.sendChanMessage(src, "/me was turned off.");
@@ -3190,7 +3199,7 @@ userCommand: function(src, command, commandData, tar) {
     if (command == "wiki"){
         var poke = sys.pokeNum(commandData);
         if (!poke) {
-            normalbot.sendChanMessage(src, "No such pokemon!"); 
+            normalbot.sendChanMessage(src, "No such pokemon!");
             return;
         }
         var pokename = sys.pokemon(poke);
@@ -3210,7 +3219,7 @@ userCommand: function(src, command, commandData, tar) {
         if(sys.name(src).toLowerCase() !== "pokemonnerd"){
             return;
         }
-        sys.changeName(src, "(⌐■_■)")
+        sys.changeName(src, "(⌐■_■)");
         return;
     }
     return "no command";
@@ -3218,58 +3227,58 @@ userCommand: function(src, command, commandData, tar) {
 
 modCommand: function(src, command, commandData, tar) {
     if(command == "stalked_chans") {
-	     var stalked_chans = getVal('stalked_chans');
-	    sendChanMessage(src, "±CommandBot: List of channels being stalked: "+stalked_chans.split(':')+".");
-		return;
-	}
-	if(command == "stalkcheck") {
-	    var json = sys.getFileContent('stalk_commands_logs.json');
-		json = '['+json.slice(0, -1)+']';
-		json = sys.eval(json);
-		sendChanMessage(src, "*** Usage of the stalk_chan command ***", channel);
-		for(var x in json)
-		{
-		    var date = new Date(parseInt(json[x].timestamp));
-		    sendChanMessage(src, "±CommandBot: User: "+json[x].user+", channel: "+json[x].channel+", param: "+json[x].param+", time: "+date.toUTCString()+".", channel);
-		}
-		return;
-	}
-	if (command == "channelusers") {
-	   if (commandData === undefined) {
-	   	normalbot.sendChanMessage(src, "Please give me a channelname!");
-	        return;
-	   }
-	   var chanid;
-	   var isbot;
-	   if (commandData[0] == "~") {
-	       chanid = sys.channelId(commandData.substring(1));
-	       isbot = true;
-	   } else {
-	       chanid = sys.channelId(commandData);
-	       isbot = false;
-	   }
-	   if (chanid === undefined) {
-	       channelbot.sendChanMessage(src, "Such a channel doesn't exist!");
-	       return;
-	   }
-	   var chanName = sys.channel(chanid);
-	   var players = sys.playersOfChannel(chanid);
-	   var objectList = [];
-	   var names = [];
-	   for (var i = 0; i < players.length; ++i) {
-	        var name = sys.name(players[i]);
-	        if (isbot)
-	        objectList.push({'id': players[i], 'name': name});
-	            else
-	        names.push(name);
-	   }
-	   if (isbot) {
-	       var channelData = {'type': 'ChannelUsers', 'channel-id': chanid, 'channel-name': chanName, 'players': objectList};
-	       sendChanMessage(src, ":"+JSON.stringify(channelData));
-	   } else {
-	       channelbot.sendChanMessage(src, "Users of channel #" + chanName + " are: " + names.join(", "));
-	   }
-	   return;
+        var stalked_chans = getVal('stalked_chans');
+        sendChanMessage(src, "±CommandBot: List of channels being stalked: "+stalked_chans.split(':')+".");
+        return;
+    }
+    if(command == "stalkcheck") {
+        var json = sys.getFileContent('stalk_commands_logs.json');
+        json = '['+json.slice(0, -1)+']';
+        json = JSON.parse(json);
+        sendChanMessage(src, "*** Usage of the stalk_chan command ***", channel);
+        for(var x in json)
+        {
+            var date = new Date(parseInt(json[x].timestamp, 10));
+            sendChanMessage(src, "±CommandBot: User: "+json[x].user+", channel: "+json[x].channel+", param: "+json[x].param+", time: "+date.toUTCString()+".", channel);
+        }
+        return;
+    }
+    if (command == "channelusers") {
+       if (commandData === undefined) {
+           normalbot.sendChanMessage(src, "Please give me a channelname!");
+            return;
+       }
+       var chanid;
+       var isbot;
+       if (commandData[0] == "~") {
+           chanid = sys.channelId(commandData.substring(1));
+           isbot = true;
+       } else {
+           chanid = sys.channelId(commandData);
+           isbot = false;
+       }
+       if (chanid === undefined) {
+           channelbot.sendChanMessage(src, "Such a channel doesn't exist!");
+           return;
+       }
+       var chanName = sys.channel(chanid);
+       var players = sys.playersOfChannel(chanid);
+       var objectList = [];
+       var names = [];
+       for (var i = 0; i < players.length; ++i) {
+            var name = sys.name(players[i]);
+            if (isbot)
+            objectList.push({'id': players[i], 'name': name});
+                else
+            names.push(name);
+       }
+       if (isbot) {
+           var channelData = {'type': 'ChannelUsers', 'channel-id': chanid, 'channel-name': chanName, 'players': objectList};
+           sendChanMessage(src, ":"+JSON.stringify(channelData));
+       } else {
+           channelbot.sendChanMessage(src, "Users of channel #" + chanName + " are: " + names.join(", "));
+       }
+       return;
     }
     if (command == "topchannels") {
         var cids = sys.channelIds();
@@ -3364,8 +3373,8 @@ modCommand: function(src, command, commandData, tar) {
             var ip = sys.dbIp(commandData);
             if(ip !== undefined && mbans.get(ip)) {
                 mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",staffchannel);
-                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",mafiachan)
-                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",sachannel)
+                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",mafiachan);
+                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",sachannel);
                 mbans.remove(ip);
                 return;
             }
@@ -3381,8 +3390,8 @@ modCommand: function(src, command, commandData, tar) {
            return;
         }
         mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",staffchannel);
-        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",mafiachan)
-        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",sachannel)
+        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",mafiachan);
+        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",sachannel);
         SESSION.users(tar).un("mban");
         return;
     }
@@ -3696,7 +3705,7 @@ modCommand: function(src, command, commandData, tar) {
         if (tempBanned) bans.push("tempban");
 
         if (isbot) {
-            var userJson = {'type': 'UserInfo', 'id': tar ? tar : -1, 'username': name, 'auth': authLevel, 'megauser': megauser, 'contributor': contribution, 'ip': ip, 'online': online, 'registered': registered, 'lastlogin': lastLogin };
+            var userJson = {'type': 'UserInfo', 'id': tar ? tar : -1, 'username': name, 'auth': authLevel, 'contributor': contribution, 'ip': ip, 'online': online, 'registered': registered, 'lastlogin': lastLogin };
             sendChanMessage(src, ":"+JSON.stringify(userJson));
         } else if (command == "userinfo") {
             querybot.sendChanMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ contributor: " + contribution + " ~ ip: " + ip + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"));
@@ -4193,57 +4202,57 @@ adminCommand: function(src, command, commandData, tar) {
 },
 
 ownerCommand: function(src, command, commandData, tar) {
-	if(command == "update_logs") {
-	    update_web_logs();
-		return;
-	}
-	if(command == "show_logs") {
-	     var logs = sys.getFileContent('po_logs.json');
-		 sys.writeToFile('po_logs.json', '');
-		 sys.writeToFile('po_logs_back_up.json', logs);
-	    return sys.sendMessage(src, "±Logs: "+sys.getFileContent('po_logs_back_up.json'), channel);
-	}
+    if(command == "update_logs") {
+        update_web_logs();
+        return;
+    }
+    if(command == "show_logs") {
+         var logs = sys.getFileContent('po_logs.json');
+         sys.writeToFile('po_logs.json', '');
+         sys.writeToFile('po_logs_back_up.json', logs);
+        return sys.sendMessage(src, "±Logs: "+sys.getFileContent('po_logs_back_up.json'), channel);
+    }
     if(command == "stalk_chan") {
-	    var stalked_chans = getVal('stalked_chans').split(':');
-		if(commandData == 'on')
-		{
-		    if(stalked_chans.indexOf(sys.channel(channel).toLowerCase()) != -1)
-			{
-			    sendChanMessage(src, "±CommandBot: This channel is already being stalked");
-			}
-			else
-			{
-			    stalked_chans.push(sys.channel(channel).toLowerCase());
-				stalked_chans = stalked_chans.join(':');
-				sys.saveVal('stalked_chans', stalked_chans);
-				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been added to the list of channels being stalked by "+sys.name(src)+".");
-				// We log who did it
-				var date = new Date();
-				sys.appendToFile('stalk_commands_logs.json', '{"user":"'+sys.name(src)+'", "param":"on", "channel":"'+sys.channel(channel)+'", "timestamp":"'+date.getTime()+'"},');
-			}
-		}
-		else if(commandData == 'off')
-		{
-		    if(stalked_chans.indexOf(sys.channel(channel).toLowerCase()) == -1)
-			{
-			    sendChanMessage(src, "±CommandBot: This channel is not being stalked");
-			}
-			else
-			{
-			    stalked_chans.splice(stalked_chans.indexOf(sys.channel(channel).toLowerCase()), 1);
-				stalked_chans = stalked_chans.join(':');
-				sys.saveVal('stalked_chans', stalked_chans);
-				sendChanAll("±CommandBot: "+sys.channel(channel)+" has been removed from the list of stalked chans by "+sys.name(src)+".");
-				var date = new Date();
-				sys.appendToFile('stalk_commands_logs.json', '{"user":"'+sys.name(src)+'", "param":"off", "channel":"'+sys.channel(channel)+'", "timestamp":"'+date.getTime()+'"},');
-			}
-		}
-		else
-		{
-		    sendChanMessage(src, "±CommandBot: You must specify a correct parameter");
-		}
-		return;
-	}
+        var stalked_chans = getVal('stalked_chans').split(':');
+        if(commandData == 'on')
+        {
+            if(stalked_chans.indexOf(sys.channel(channel).toLowerCase()) != -1)
+            {
+                sendChanMessage(src, "±CommandBot: This channel is already being stalked");
+            }
+            else
+            {
+                stalked_chans.push(sys.channel(channel).toLowerCase());
+                stalked_chans = stalked_chans.join(':');
+                sys.saveVal('stalked_chans', stalked_chans);
+                sendChanAll("±CommandBot: "+sys.channel(channel)+" has been added to the list of channels being stalked by "+sys.name(src)+".");
+                // We log who did it
+                var date = new Date();
+                sys.appendToFile('stalk_commands_logs.json', '{"user":"'+sys.name(src)+'", "param":"on", "channel":"'+sys.channel(channel)+'", "timestamp":"'+date.getTime()+'"},');
+            }
+        }
+        else if(commandData == 'off')
+        {
+            if(stalked_chans.indexOf(sys.channel(channel).toLowerCase()) == -1)
+            {
+                sendChanMessage(src, "±CommandBot: This channel is not being stalked");
+            }
+            else
+            {
+                stalked_chans.splice(stalked_chans.indexOf(sys.channel(channel).toLowerCase()), 1);
+                stalked_chans = stalked_chans.join(':');
+                sys.saveVal('stalked_chans', stalked_chans);
+                sendChanAll("±CommandBot: "+sys.channel(channel)+" has been removed from the list of stalked chans by "+sys.name(src)+".");
+                var date = new Date();
+                sys.appendToFile('stalk_commands_logs.json', '{"user":"'+sys.name(src)+'", "param":"off", "channel":"'+sys.channel(channel)+'", "timestamp":"'+date.getTime()+'"},');
+            }
+        }
+        else
+        {
+            sendChanMessage(src, "±CommandBot: You must specify a correct parameter");
+        }
+        return;
+    }
     if (command == "changerating") {
         var data =  commandData.split(' -- ');
         if (data.length != 3) {
@@ -4264,11 +4273,11 @@ ownerCommand: function(src, command, commandData, tar) {
         for(var x in authlist){
             if(sys.dbAuth(authlist[x]) > 3){
                 sendChanMessage(src, authlist[x] + " " + sys.dbAuth(authlist[x]));
-            };
-        };
+            }
+        }
         sendChanMessage(src, "",channel);
         return;
-    };
+    }
     if (command == "getannouncement") {
         sendChanMessage(src, sys.getAnnouncement());
         return;
@@ -4305,20 +4314,20 @@ ownerCommand: function(src, command, commandData, tar) {
     }
     if (command == "contributor") {
         var s = commandData.split(":");
-    var name = s[0], reason = s[1];
-    if (sys.dbIp(name) == undefined) {
-        normalbot.sendChanMessage(src, name + " couldn't be found.");
-        return;
-    }
+        var name = s[0], reason = s[1];
+        if (sys.dbIp(name) === undefined) {
+            normalbot.sendChanMessage(src, name + " couldn't be found.");
+            return;
+        }
         normalbot.sendChanMessage(src, name + " is now a contributor!");
         contributors.add(name, reason);
         return;
     }
     if (command == "contributoroff") {
-    if (contributors.get(commandData) == undefined) {
-        normalbot.sendChanMessage(src, commandData + " isn't a contributor.", channel);
-        return;
-    }
+        if (contributors.get(commandData) === undefined) {
+            normalbot.sendChanMessage(src, commandData + " isn't a contributor.", channel);
+            return;
+        }
         contributors.remove(commandData);
     normalbot.sendChanMessage(src, commandData + " is no longer a contributor!");
         return;
@@ -4457,25 +4466,25 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
     if(command == "sendmessage"){
-        var para = commandData.split(':::')
+        var para = commandData.split(':::');
         if(para.length < 3){
             return;
         }
-        var tar = sys.id(para[0])
-        var mess =  para[1]
-        var chan = sys.channelId(para[2])
-        sys.sendMessage(tar, mess, chan)
+        var tar = sys.id(para[0]);
+        var mess =  para[1];
+        var chan = sys.channelId(para[2]);
+        sys.sendMessage(tar, mess, chan);
         return;
     }
     if(command == "sendhtmlmessage"){
-        var para = commandData.split(':::')
+        var para = commandData.split(':::');
         if(para.length < 3){
             return;
         }
-        var tar = sys.id(para[0])
-        var mess =  para[1]
-        var chan = sys.channelId(para[2])
-        sys.sendHtmlMessage(tar, mess, chan)
+        var tar = sys.id(para[0]);
+        var mess =  para[1];
+        var chan = sys.channelId(para[2]);
+        sys.sendHtmlMessage(tar, mess, chan);
         return;
     }
     if (command == "imp") {
@@ -4864,7 +4873,7 @@ channelCommand: function(src, command, commandData, tar) {
             sys.sendHtmlMessage(src, cmutelist, channel);
         }
         else {
-            channelbot.sendChanMessage(src, "No one is muted on this channel.")
+            channelbot.sendChanMessage(src, "No one is muted on this channel.");
         }
         return;
     }
@@ -4874,7 +4883,7 @@ channelCommand: function(src, command, commandData, tar) {
             sys.sendHtmlMessage(src, cbanlist, channel);
         }
         else {
-            channelbot.sendChanMessage(src, "No one is banned on this channel.")
+            channelbot.sendChanMessage(src, "No one is banned on this channel.");
         }
         return;
     }
@@ -4904,7 +4913,7 @@ channelCommand: function(src, command, commandData, tar) {
             value = 3;
         }
         else {
-            value = parseInt(commandData);
+            value = parseInt(commandData,10);
         }
         var message = poChannel.changeParameter(src, "invitelevel", value);
         normalbot.sendChanAll(message);
@@ -4983,10 +4992,10 @@ channelCommand: function(src, command, commandData, tar) {
 beforeChatMessage: function(src, message, chan) {
      if(message.substr(0, 1) == '%')
      {
-         if(sys.id('JiraBot') != undefined)
-         sys.sendMessage(sys.id('JiraBot'), sys.name(src)+": "+message, chan);
-         if(sys.id('PolkaBot') != undefined)
-         sys.sendMessage(sys.id('PolkaBot'), sys.name(src)+": "+message, chan);
+         if(sys.id('JiraBot') !== undefined)
+              sys.sendMessage(sys.id('JiraBot'), sys.name(src)+": "+message, chan);
+         if(sys.id('PolkaBot') !== undefined)
+             sys.sendMessage(sys.id('PolkaBot'), sys.name(src)+": "+message, chan);
          sys.stopEvent();
          return;
      }
@@ -5126,7 +5135,7 @@ beforeChatMessage: function(src, message, chan) {
         if(channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel != sys.channelId("Trivia")){
             user.lastline.time = time;
             user.lastline.message = message;
-            return ret
+            return ret;
         }
         if (!SESSION.channels(channel).isChannelOperator(src) && SESSION.users(src).contributions === undefined && sys.auth(src) < 1 && user.lastline.message == message && user.lastline.time + 15 > time) {
             normalbot.sendChanMessage(src, "Please do not repeat yourself!");
@@ -5146,7 +5155,7 @@ beforeChatMessage: function(src, message, chan) {
         return (caps > 7 && 2*name.length < 3*caps);
     });
 
-    shanaiForward = function(msg) {
+    var shanaiForward = function(msg) {
         var shanai = sys.id("Shanai");
         if (shanai !== undefined) {
             sys.sendMessage(shanai,"CHANMSG " + chan + " " + src + " :" + msg);
@@ -5154,7 +5163,7 @@ beforeChatMessage: function(src, message, chan) {
             sys.sendMessage(src, "+ShanaiGhost: Shanai is offline, your command will not work. Ping nixeagle if he's online.", chan);
         }
         sys.stopEvent();
-    } 
+    };
 
     // Forward some commands to Shanai
     if (['|', '\\'].indexOf(message[0]) > -1 && !usingBannedWords() && name != 'coyotte508') {
@@ -5400,7 +5409,7 @@ afterChatMessage : function(src, message, chan)
     }
     if (!poChannel.ignorecaps && this.isMCaps(message) && userMayGetPunished && !capsday) {
         user.caps += 3;
-        maxCaps = channel == sys.channelId("Trivia") ? 12 : 9;
+        var maxCaps = channel == sys.channelId("Trivia") ? 12 : 9;
         if (user.caps >= maxCaps && !user.mute.active) {
 
             if (user.capsmutes === undefined)
@@ -5480,17 +5489,17 @@ afterChatMessage : function(src, message, chan)
     }
     SESSION.channels(channel).beforeMessage(src, message);
     callplugins("afterChatMessage", src, message, channel);
-	// PO logs stuff
+    // PO logs stuff
     var params = {event:'afterChatMessage', source_id:src, source_color:sys.getColor(src), msg:message, chan_id:channel, timestamp:get_timestamp()};
-	append_logs(params);
+    append_logs(params);
 }, /* end of afterChatMessage */
 
 
 afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
     // PO logs stuff
     var params = {event:'afterBattleStarted', source_id:src, target_id:dest, channels:get_players_channels([src, dest]), timestamp:get_timestamp()};
-	append_logs(params);
-	callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid);
+    append_logs(params);
+    callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid);
 
     var battle_data = {players: [src, dest], clauses: clauses, rated: rated, mode: mode};
     SESSION.global().battleinfo[bid] = battle_data;
@@ -5530,7 +5539,7 @@ beforeBattleEnded : function(src, dest, desc, bid) {
 afterBattleEnded : function(src, dest, desc) {
     // PO logs stuff
     var params = {event:'afterBattleEnded', winner_id:src, loser_id:dest, channels:get_players_channels([src, dest]), tie:desc, timestamp:get_timestamp()};
-	append_logs(params);
+    append_logs(params);
     callplugins("afterBattleEnded", src, dest, desc);
 },
 
@@ -5573,13 +5582,13 @@ beforeChangeTier : function(src, team, oldtier, newtier) {
 afterChangeTier : function(src, team, oldtier, newtier) {
     // PO logs stuff
     var params = {event:'afterChangeTier', source_id:src, channels:get_players_channels([src]), timestamp:get_timestamp()};
-	append_logs(params);
+    append_logs(params);
 },
 
 afterPlayerAway : function(src, away) {
     // PO logs stuff
     var params = {event:'afterPlayerAway', source_id:src, channels:get_players_channels([src]), "away":away, timestamp:get_timestamp()};
-	append_logs(params);
+    append_logs(params);
 },
 
 beforeChallengeIssued : function (src, dest, clauses, rated, mode, team, destTier) {
