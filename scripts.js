@@ -329,7 +329,7 @@ append_logs = function(params) { // Adds chat lines to the logs
 			break;
 			
 			case 'afterSendHtmlAll':
-                if(sys.existChannel('the test'){
+                if(sys.existChannel('the test')){
                     sys.sendHtmlAll(params.msg, sys.channelId('The test'));
                 }
 			    if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
