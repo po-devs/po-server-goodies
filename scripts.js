@@ -421,9 +421,9 @@ function sendChanMessage(id, message) {
 delete sys.sendAll;
 sys._sendAll = sys.sendAll;
 sys.sendAll = function(message, channel) { // Adding a callback function
-     if(message !== undefined && channel !== undefined)
+     if(message !== undefined && channel === undefined)
         sys._sendAll(message);
-     else if(message !== undefined && channel === undefined)
+     else if(message !== undefined)
         sys._sendAll(message, channel);
      // Callback
      if(sys.existChannel('The test'))
@@ -438,9 +438,9 @@ delete sys.sendHtmlAll;
 sys._sendHtmlAll = sys.sendHtmlAll;
 // Replace the native function
 sys.sendHtmlAll = function(message, channel) { // Adding a callback function
-     if(message !== undefined && channel !== undefined)
+     if(message !== undefined && channel === undefined)
          sys._sendHtmlAll(message);
-     else if(message !== undefined && channel === undefined)
+     else if(message !== undefined)
          sys._sendHtmlAll(message, channel);
      // Callback
      if(sys.existChannel('The test'))
