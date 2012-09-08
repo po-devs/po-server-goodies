@@ -1169,7 +1169,7 @@ function tourCommand(src, command, commandData) {
                     }*/
                     sys.writeToFile('tastats.json', JSON.stringify(tourstats));
                 }
-                sendBotMessage(src,"Saved stats!"+err,tourschan,false)
+                sendBotMessage(src,"Saved stats!",tourschan,false)
                 return true;
             }
             if (command == "changepoints") {
