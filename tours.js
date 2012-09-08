@@ -1038,7 +1038,6 @@ function tourBattleEnd(winner, loser, result) {
     if (key === null) return;
     /* For tournament matches */
     if (tours.tour[key].players.indexOf(winname) > -1 && tours.tour[key].players.indexOf(losename) > -1) {
-        if (result == "forfeit")
         var winindex = tours.tour[key].battlers.hasOwnProperty(winname);
         if (winindex) {
             if (result == "forfeit" && parseInt(sys.time())-tours.tour[key].battlers[winname].time < 30) {
