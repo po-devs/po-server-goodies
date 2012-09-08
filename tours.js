@@ -1197,6 +1197,7 @@ function tourCommand(src, command, commandData) {
                 }
                 else {
                     file = "tourscores.txt";
+                    type = "normal";
                 }
                 var leaderboard = sys.getFileContent(file);
                 if (leaderboard === undefined) {
