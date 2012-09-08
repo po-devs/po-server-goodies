@@ -757,7 +757,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 5,
-            version: "1.600a",
+            version: "1.600a2",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -800,7 +800,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.600a",
+        version: "1.600a2",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -1244,6 +1244,7 @@ function tourCommand(src, command, commandData) {
                 for (var x in tierlist) {
                     seedDecay(tierlist[x]);
                 }
+                sendBotMessage(src,"Decay calculation successful",tourschan,false)
                 return true;
             }
             if (command == "resettours") {
@@ -4051,6 +4052,7 @@ function tourprintbracket(key) {
                 else {
                     garray[tier] = {'played': 1, 'players': players}
                 }
+                seedDecay(tours.tour[key].tourtype);
             }
             catch (err) {
                 sendChanAll("Error in saving tour stats, id "+key+": "+err, tourserrchan)
