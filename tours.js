@@ -2019,7 +2019,7 @@ function tourCommand(src, command, commandData) {
                 sys.sendMessage(src,"*** TOUR STATS ***",tourschan)
                 var gstats = tourstats.general;
                 for (var x in gstats) {
-                    sys.sendMessage(gstats[x]+": Played "+gstats[x].played+" times; average of "+Math.floor(gstats[x].players/gstats[x].played)+" players per tournament.");
+                    sys.sendMessage(src, gstats[x]+": Played "+gstats[x].played+" times; average of "+Math.floor(gstats[x].players/gstats[x].played)+" players per tournament.", tourschan);
                 }
                 return true;
             }
