@@ -1146,6 +1146,16 @@ function tourCommand(src, command, commandData) {
                 sendBotAll(sys.name(src)+" reset the tour system!",tourschan,false)
                 return true;
             }
+            if (command == "evalvar") {
+                try {
+                    var result = JSON.stringify(JSON.parse(commandData));
+                    sendBotMessage(src,"Result is: "+result,tourschan,false)
+                }
+                catch (err) {
+                    sendBotMessage(src,"Error in evalvar: "+err,tourschan,false)
+                }
+                return true;
+            }
             if (command == "evalvars") {
                 dumpVars(src)
                 return true;
