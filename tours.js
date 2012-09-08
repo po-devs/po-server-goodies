@@ -541,8 +541,9 @@ function seedDecay(tier) {
     }
 }
 
-function getExtraPoints(player) {
-    var data = sys.getFileContent("tourscores.txt")
+// This function gets the tier points
+function getExtraPoints(player, tier) {
+    var data = sys.getFileContent("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
     if (data === undefined) {
         return 0;
     }
@@ -757,7 +758,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 5,
-            version: "1.600a2",
+            version: "1.600a3",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -800,7 +801,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.600a2",
+        version: "1.600a3",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -3909,7 +3910,7 @@ function toursortbracket(size, key) {
             var added = false;
             var ishigher = false;
             var playerranking1 = getExtraTierPoints(tours.tour[key].players[t], tours.tour[key].tourtype)
-            var playerranking2 = getExtraPoints(tours.tour[key].players[t])
+            var playerranking2 = getExtraPoints(tours.tour[key].players[t], tours.tour[key].tourtype)
             var playerranking3 = sys.ranking(tours.tour[key].players[t], tours.tour[key].tourtype) !== undefined ? sys.ranking(tours.tour[key].players[t], tours.tour[key].tourtype) : sys.totalPlayersByTier(tours.tour[key].tourtype)+1
             if (isSub(tours.tour[key].players[t])) {
                 ladderlist.push(tours.tour[key].players[t])
@@ -3917,7 +3918,7 @@ function toursortbracket(size, key) {
             }
             for (var n=0; n<ladderlist.length;n++) {
                 var otherranking1 = getExtraTierPoints(ladderlist[n], tours.tour[key].tourtype)
-                var otherranking2 = getExtraPoints(ladderlist[n])
+                var otherranking2 = getExtraPoints(ladderlist[n], tours.tour[key].tourtype)
                 var otherranking3 = sys.totalPlayersByTier(tours.tour[key].tourtype)+2
                 if (isSub(ladderlist[n])) {
                     otherranking1 = -1
