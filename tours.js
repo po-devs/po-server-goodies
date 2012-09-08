@@ -470,6 +470,77 @@ function getTourWinMessages() {
     tourwinmessages = content.split("\n")
 }
 
+function awardSeedPoints(playername, tier, points) {
+    try {
+        // don't award any points to placeholders, or 0 points
+        if (points <= 0) {
+            return;
+        }
+        if (playername == "~Bye~" || playername == "~DQ~" || isSub(playername)) {
+            return;
+        }
+        if (tourseeds.hasOwnProperty(tier)) {
+            var tierinfo = tourseeds[tier];
+            if (tierinfo.hasOwnProperty(playername)) {
+                tourseeds[tier][playername].points += points;
+                tourseeds[tier][playername].lastwin = parseInt(sys.time());
+            }
+            else {
+                tourseeds[tier][playername] = {'points': points, 'lastwin': parseInt(sys.time())};
+            }
+        }
+        else {
+            tourseeds[tier] = {};
+            tourseeds[tier][playername] = {'points': points, 'lastwin': parseInt(sys.time())};
+        }
+    }
+    catch (err) {
+        sendChanAll("Error in seed calculation, "+err, tourserrchan)
+    }
+}
+
+function detSeedPoints(size, ranking) {
+    var rank = Math.floor(Math.log(size)/Math.LN2)-Math.floor(ranking);
+    if (rank < 0) {
+        return 0;
+    }
+    return Math.pow(2,rank);
+}
+
+/* This uses 3 factors
+decayrate: % that a user's seed ranking is decayed by
+decaytime: number of days before decay is applied since winning/placing
+decayglobalrate: % of the total of all seed rankings, that will be deducted from all decaying users
+*/
+function seedDecay(tier) {
+    try {
+        if (!tourseeds.hasOwnProperty(tier)) {
+            return;
+        }
+        var tierdecay = tourseeds[tier];
+        var totalpoints = 0;
+        for (var t in tierdecay) {
+            totalpoints += tourseeds[tier][t].points;
+        }
+        var totaldecay = Math.floor(totalpoints*tourconfig.decayglobalrate/100) // this will be an integer
+        for (var x in tierdecay) {
+            if (parseInt(sys.time())-tierdecay[x].lastwin > tourconfig.decaytime*24*60*60) {
+                tourseeds[tier][x].lastwin += tourconfig.decaytime*24*60*60 // add decay time back on
+                var newpoints = (Math.floor(tierdecay[x].points*(100-tourconfig.decayrate)/10)/10)-totaldecay; // to 1dp
+                if (newpoints <= 0) {
+                    delete tourseeds[tier][x];
+                }
+                else {
+                    tourseeds[tier][x].points = newpoints;
+                }
+            }
+        }
+    }
+    catch (err) {
+        sendChanAll("Error in rank decay, "+err, tourserrchan)
+    }
+}
+
 function getExtraPoints(player) {
     var data = sys.getFileContent("tourscores.txt")
     if (data === undefined) {
@@ -487,19 +558,13 @@ function getExtraPoints(player) {
     return score;
 }
 
-// This function will get a user's current tournament points in a tier
+// This function will get a user's current seed points in a tier
 function getExtraTierPoints(player, tier) {
-    var data = sys.getFileContent("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
-    if (data === undefined) {
-        return 0;
-    }
-    var array = data.split("\n")
-    var score = 0
-    for (var n in array) {
-        var scores = array[n].split(":::",2)
-        if (player.toLowerCase() === scores[0].toLowerCase()) {
-            score = parseInt(scores[1])
-            break;
+    var score = 0;
+    if (tourseeds.hasOwnProperty(tier)) {
+        var tierinfo = tourseeds[tier];
+        if (tierinfo.hasOwnProperty(player)) {
+            return tierinfo[player].points;
         }
     }
     return score;
@@ -689,7 +754,10 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.581",
+            decayrate: 10,
+            decaytime: 2,
+            decayglobalrate: 5,
+            version: "1.600",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -729,7 +797,10 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.581",
+        decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
+        decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
+        decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
+        version: "1.600",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -757,7 +828,7 @@ function initTours() {
     }
     try {
         getTourWinMessages()
-        sendChanAll("Win messages added", tourschan)
+        sendChanAll("Win messages loaded", tourschan)
     }
     catch (e) {
         // use a sample set of win messages
@@ -790,6 +861,21 @@ function initTours() {
             }
             catch (err) {
                 tourstats = {'general': {}, 'staff': {}};
+            }
+        }
+    }
+    if (typeof tourseeds != "object") {
+        sendChanAll("Creating tournament seeds object", tourschan)
+        var tourseeddata = sys.getFileContent('tourseeds.json');
+        if (tourseeddata === undefined || tourseeddata === "") {
+            tourseeds = {};
+        }
+        else {
+            try {
+                tourseeds = JSON.parse(tourseeddata);
+            }
+            catch (err) {
+                tourseeds = {};
             }
         }
     }
@@ -865,6 +951,9 @@ function tourStep() {
         // write tour stat data for reload
         if (typeof tourstats == "object") {
             sys.writeToFile('tastats.json', JSON.stringify(tourstats));
+        }
+        if (typeof tourseeds == "object") {
+            sys.writeToFile('tourseeds.json', JSON.stringify(tourseeds));
         }
     }
     for (var x in tours.tour) {
@@ -1156,11 +1245,15 @@ function tourCommand(src, command, commandData) {
             }
             if (command == "getstatfile") {
                 sys.sendMessage(src, sys.getFileContent("tastats.json"), tourschan);
+                sys.sendMessage(src, sys.getFileContent("tourseeds.json"), tourschan);
                 return true;
             }
             if (command == "savestats") {
                 if (typeof tourstats == "object") {
                     sys.writeToFile('tastats.json', JSON.stringify(tourstats));
+                }
+                if (typeof tourseeds == "object") {
+                    sys.writeToFile('tourseeds.json', JSON.stringify(tourstats));
                 }
                 sendBotMessage(src,"Saved stats!",tourschan,false)
                 return true;
@@ -2103,6 +2196,9 @@ function tourCommand(src, command, commandData) {
                 sys.sendMessage(src,"Absolute Tour Break Time: "+time_handle(tourconfig.abstourbreak),tourschan)
                 sys.sendMessage(src,"Tour Reminder Time: "+time_handle(tourconfig.reminder),tourschan)
                 sys.sendMessage(src,"Auto start when percentage of players is less than: "+tourconfig.minpercent+"%",tourschan)
+                sys.sendMessage(src,"Decay Rate: "+tourconfig.decayrate+"%",tourschan);
+                sys.sendMessage(src,"Decay Time: "+tourconfig.decaytime+" days",tourschan);
+                sys.sendMessage(src,"Decay Global Time: "+tourconfig.decayglobalrate+"%",tourschan);
                 sys.sendMessage(src,"Bot Name: "+tourconfig.tourbot,tourschan)
                 sys.sendMessage(src,"Colour: "+tourconfig.tourbotcolour,tourschan)
                 sys.sendMessage(src,"Channel: "+tourconfig.channel,tourschan)
@@ -2127,6 +2223,9 @@ function tourCommand(src, command, commandData) {
                     sys.sendMessage(src,"absbreaktime: "+time_handle(tourconfig.abstourbreak),tourschan);
                     sys.sendMessage(src,"remindertime: "+time_handle(tourconfig.reminder),tourschan);
                     sys.sendMessage(src,"minpercent: "+tourconfig.minpercent,tourschan);
+                    sys.sendMessage(src,"decayrate: "+tourconfig.decayrate,tourschan);
+                    sys.sendMessage(src,"decaytime: "+tourconfig.decaytime,tourschan);
+                    sys.sendMessage(src,"decayglobaltime: "+tourconfig.decayglobalrate,tourschan);
                     sys.sendMessage(src,"botname: "+tourconfig.tourbot,tourschan);
                     sys.sendMessage(src,"colour: "+tourconfig.tourbotcolour,tourschan);
                     sys.sendMessage(src,"channel: "+tourconfig.channel,tourschan);
@@ -2136,7 +2235,12 @@ function tourCommand(src, command, commandData) {
                 }
                 var option = commandData.substr(0,pos).toLowerCase()
                 if (["botname", "bot name", "channel", "errchannel", "color", "colour", "debug"].indexOf(option) == -1) {
-                    var value = parseFloat(commandData.substr(pos+1))
+                    if (['minpercent', 'decayrate', 'decaytime', 'decayglobalrate'].indexOf(option) != -1) {
+                        var value = parseFloat(commandData.substr(pos+1))
+                    }
+                    else {
+                        var value = parseInt(commandData.substr(pos+1))
+                    }
                 }
                 else {
                     var value = commandData.substr(pos+1)
@@ -2370,6 +2474,63 @@ function tourCommand(src, command, commandData) {
                     }
                     tourconfig.debug = false;
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" turned debug off.",tourschan,false);
+                    return true;
+                }
+                else if (option == 'decayrate') {
+                    if (!isTourOwner(src)) {
+                        sendBotMessage(src,"Can't change this config setting, ask an owner for this.",tourschan,false);
+                        return true;
+                    }
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"Decay rate of seed rankings, in %.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.decayrate+"%",tourschan,false);
+                        return true;
+                    }
+                    else if (value < 0 || value > 100) {
+                        sendBotMessage(src,"Value must be between 0 and 100.",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.decayrate = value
+                    sys.saveVal("tourconfig.txt", "decayrate", value)
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the decay percentage to "+tourconfig.decayrate+"%")
+                    return true;
+                }
+                else if (option == 'decaytime') {
+                    if (!isTourOwner(src)) {
+                        sendBotMessage(src,"Can't change this config setting, ask an owner for this.",tourschan,false);
+                        return true;
+                    }
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"Frequency of decay, in days.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.decaytime+" days",tourschan,false);
+                        return true;
+                    }
+                    else if (value < 1 || value > 30) {
+                        sendBotMessage(src,"Value must be between 1 and 30.",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.decaytime = value
+                    sys.saveVal("tourconfig.txt", "decaytime", value)
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the decay time to "+tourconfig.decaytime+" days.")
+                    return true;
+                }
+                else if (option == 'decayglobalrate') {
+                    if (!isTourOwner(src)) {
+                        sendBotMessage(src,"Can't change this config setting, ask an owner for this.",tourschan,false);
+                        return true;
+                    }
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"Global decay rate of seed rankings, in %.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.decayglobalrate+"%",tourschan,false);
+                        return true;
+                    }
+                    else if (value < 0 || value > 100) {
+                        sendBotMessage(src,"Value must be between 0 and 100.",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.decayglobalrate = value
+                    sys.saveVal("tourconfig.txt", "decayglobalrate", value)
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the global decay percentage to "+tourconfig.decayglobalrate+"%")
                     return true;
                 }
                 else {
@@ -3317,14 +3478,18 @@ function battleend(winner, loser, key) {
 function advanceround(key) {
     try {
         var newlist = []
-        var winners = tours.tour[key].winners
-        var bannednames = ["~Bye~", "~DQ~"]
+        var winners = tours.tour[key].winners;
+        var round = tours.tour[key].round;
+        var type = tours.tour[key].tourtype;
+        var mplayers = tours.tour[key].cpt;
+        var cplayers = tours.tour[key].players.length;
+        var bannednames = ["~Bye~", "~DQ~"];
         var doubleelim = tours.tour[key].parameters.type == "double" ? true : false;
         if (doubleelim) {
             var newwinbracket = [];
             var newlosebracket = [];
             if (tours.tour[key].round == 1) {
-                for (var x=0;x<tours.tour[key].players.length;x+=2) {
+                for (var x=0;x<cplayers;x+=2) {
                     if (winners.indexOf(tours.tour[key].players[x]) > -1 && bannednames.indexOf(tours.tour[key].players[x]) == -1) {
                         newwinbracket.push(tours.tour[key].players[x])
                         newlosebracket.push(tours.tour[key].players[x+1])
@@ -3340,9 +3505,11 @@ function advanceround(key) {
                 }
                 newlosebracket.reverse()
             }
-            else if (tours.tour[key].players.length == 2 && tours.tour[key].round%2 === 0) { // special case for 2 or less players, first battle
+            else if (cplayers == 2 && tours.tour[key].round%2 === 0) { // special case for 2 or less players, first battle
                 if (winners.indexOf(tours.tour[key].players[0]) > -1 && bannednames.indexOf(tours.tour[key].players[0]) == -1) {
                     newwinbracket.push(tours.tour[key].players[0])
+                    awardSeedPoints(tours.tour[key].players[0], type, detSeedPoints(mplayers,0));
+                    awardSeedPoints(tours.tour[key].players[1], type, detSeedPoints(mplayers,1));
                     if (tours.tour[key].maxplayers !== "default") {
                         tours.tour[key].rankings.push(tours.tour[key].players[1], tours.tour[key].players[0])
                     }
@@ -3353,6 +3520,7 @@ function advanceround(key) {
                     }
                     else {
                         newlosebracket.push(tours.tour[key].players[1])
+                        awardSeedPoints(tours.tour[key].players[1], type, detSeedPoints(mplayers,0));
                         if (tours.tour[key].maxplayers !== "default") {
                             tours.tour[key].rankings.push(tours.tour[key].players[0], tours.tour[key].players[1])
                         }
@@ -3362,15 +3530,19 @@ function advanceround(key) {
                     newlosebracket.push("~Bye~");
                 }
             }
-            else if (tours.tour[key].players.length == 2 && tours.tour[key].round%2 === 1) { // special case for 2 or less players, second battle
+            else if (cplayers == 2 && tours.tour[key].round%2 === 1) { // special case for 2 or less players, second battle
                 if (winners.indexOf(tours.tour[key].players[0]) > -1 && bannednames.indexOf(tours.tour[key].players[0]) == -1) {
                     newlosebracket.push(tours.tour[key].players[0])
+                    awardSeedPoints(tours.tour[key].players[0], type, detSeedPoints(mplayers,0));
+                    awardSeedPoints(tours.tour[key].players[1], type, detSeedPoints(mplayers,1));
                     if (tours.tour[key].maxplayers !== "default") {
                         tours.tour[key].rankings.push(tours.tour[key].players[1], tours.tour[key].players[0])
                     }
                 }
                 else if (winners.indexOf(tours.tour[key].players[1]) > -1 && bannednames.indexOf(tours.tour[key].players[1]) == -1) {
                     newlosebracket.push(tours.tour[key].players[1])
+                    awardSeedPoints(tours.tour[key].players[1], type, detSeedPoints(mplayers,0));
+                    awardSeedPoints(tours.tour[key].players[0], type, detSeedPoints(mplayers,1));
                     if (tours.tour[key].maxplayers !== "default") {
                         tours.tour[key].rankings.push(tours.tour[key].players[0], tours.tour[key].players[1])
                     }
@@ -3400,9 +3572,11 @@ function advanceround(key) {
                 for (var l=0;l<tours.tour[key].losebracket.length;l+=2) {
                     if (winners.indexOf(tours.tour[key].losebracket[l]) > -1 && bannednames.indexOf(tours.tour[key].losebracket[l]) == -1) {
                         winninglosers.push(tours.tour[key].losebracket[l])
+                        if (round > 3) awardSeedPoints(tours.tour[key].losebracket[l+1], type, detSeedPoints(mplayers,cplayers-1));
                     }
                     else if (winners.indexOf(tours.tour[key].losebracket[l+1]) > -1 && bannednames.indexOf(tours.tour[key].losebracket[l+1]) == -1) {
                         winninglosers.push(tours.tour[key].losebracket[l+1])
+                        if (round > 3) awardSeedPoints(tours.tour[key].losebracket[l], type, detSeedPoints(mplayers,cplayers-1));
                     }
                     else {
                         winninglosers.push("~Bye~")
@@ -3434,6 +3608,7 @@ function advanceround(key) {
                 for (var l=0;l<tours.tour[key].losebracket.length;l+=2) {
                     if (winners.indexOf(tours.tour[key].losebracket[l]) > -1 && bannednames.indexOf(tours.tour[key].losebracket[l]) == -1) {
                         winninglosers.push(tours.tour[key].losebracket[l])
+                        if (round > 3) awardSeedPoints(tours.tour[key].losebracket[l+1], type, detSeedPoints(mplayers,(cplayers*3/4)-1));
                         // 3rd Place
                         if (tours.tour[key].maxplayers !== "default" && tours.tour[key].losebracket.length == 2) {
                             tours.tour[key].rankings.push(tours.tour[key].losebracket[l+1])
@@ -3441,6 +3616,7 @@ function advanceround(key) {
                     }
                     else if (winners.indexOf(tours.tour[key].losebracket[l+1]) > -1 && bannednames.indexOf(tours.tour[key].losebracket[l+1]) == -1) {
                         winninglosers.push(tours.tour[key].losebracket[l+1])
+                        if (round > 3) awardSeedPoints(tours.tour[key].losebracket[l], type, detSeedPoints(mplayers,(cplayers*3/4)-1));
                         // 3rd Place
                         if (tours.tour[key].maxplayers !== "default" && tours.tour[key].losebracket.length == 2) {
                             tours.tour[key].rankings.push(tours.tour[key].losebracket[l])
@@ -3458,12 +3634,14 @@ function advanceround(key) {
             }
         }
         else {
-            for (var x=0;x<tours.tour[key].players.length;x+=2) {
+            for (var x=0;x<cplayers;x+=2) {
                 if (winners.indexOf(tours.tour[key].players[x]) > -1 && bannednames.indexOf(tours.tour[key].players[x]) == -1) {
                     newlist.push(tours.tour[key].players[x])
+                    if (round > 2 || cplayers.length == 2) awardSeedPoints(tours.tour[key].players[x+1], type, detSeedPoints(mplayers,cplayers));
                 }
                 else if (winners.indexOf(tours.tour[key].players[x+1]) > -1 && bannednames.indexOf(tours.tour[key].players[x+1]) == -1) {
                     newlist.push(tours.tour[key].players[x+1])
+                    if (round > 2 || cplayers.length == 2) awardSeedPoints(tours.tour[key].players[x], type, detSeedPoints(mplayers,cplayers));
                 }
                 else {
                     newlist.push("~Bye~")
