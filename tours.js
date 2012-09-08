@@ -1239,6 +1239,13 @@ function tourCommand(src, command, commandData) {
                 }
                 return true;
             }
+            if (command == "rundecay") {
+                var tierlist = sys.getTierList()
+                for (var x in tierlist) {
+                    seedDecay(tierlist[x]);
+                }
+                return true;
+            }
             if (command == "resettours") {
                 tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": [], "eventnames": []};
                 sendBotAll(sys.name(src)+" reset the tour system!",tourschan,false)
