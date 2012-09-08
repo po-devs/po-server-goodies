@@ -1270,8 +1270,8 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "readstats") {
-                sys.sendMessage(src, JSON.stringify(tourstats, null, 4), tourschan);
-                sys.sendMessage(src, JSON.stringify(tourseeds, null, 4), tourschan);
+                sys.sendMessage(src, JSON.stringify(tourstats, null, "\n "), tourschan);
+                sys.sendMessage(src, JSON.stringify(tourseeds, null, "\n "), tourschan);
                 return true;
             }
             if (command == "savestats") {
