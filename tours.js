@@ -1192,7 +1192,7 @@ function tourCommand(src, command, commandData) {
                     file = "tourscores.txt";
                 }
                 else if (find_tier(type) !== null) {
-                    var tier = find_tier("type");
+                    var tier = find_tier(type);
                     file = "tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt";
                 }
                 else {
