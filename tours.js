@@ -758,7 +758,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 5,
-            version: "1.600a3",
+            version: "1.600",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -801,7 +801,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.600a3",
+        version: "1.600",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -1130,8 +1130,9 @@ function tourBattleEnd(winner, loser, result) {
     if (tours.tour[key].players.indexOf(winname) > -1 && tours.tour[key].players.indexOf(losename) > -1) {
         var winindex = tours.tour[key].battlers.hasOwnProperty(winname);
         if (winindex) {
-            if (result == "forfeit" && parseInt(sys.time())-tours.tour[key].battlers[winname].time < 30) {
-                sendBotAll(sys.name(loser)+" forfeited against "+sys.name(winner)+" in a Tournament match in less than 30 seconds.",sys.channelId("Victory Road"), false)
+            var wintime = result == "forfeit" && parseInt(sys.time())-tours.tour[key].battlers[winname].time;
+            if ((wintime < 60 && !is1v1Tour(key)) || wintime < 20) {
+                sendBotAll(sys.name(loser)+" forfeited against "+sys.name(winner)+" in a "+getFullTourName(key)+" match after "+wintime+" seconds.",sys.channelId("Victory Road"), false)
             }
             delete tours.tour[key].battlers[winname];
         }
@@ -1266,6 +1267,11 @@ function tourCommand(src, command, commandData) {
             if (command == "getstatfile") {
                 sys.sendMessage(src, sys.getFileContent("tastats.json"), tourschan);
                 sys.sendMessage(src, sys.getFileContent("tourseeds.json"), tourschan);
+                return true;
+            }
+            if (command == "readstats") {
+                sys.sendMessage(src, JSON.stringify(tourstats, null, 4), tourschan);
+                sys.sendMessage(src, JSON.stringify(tourseeds, null, 4), tourschan);
                 return true;
             }
             if (command == "savestats") {
