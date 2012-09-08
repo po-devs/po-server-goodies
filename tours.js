@@ -689,7 +689,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.580",
+            version: "1.581",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -729,7 +729,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.580",
+        version: "1.581",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -1191,7 +1191,7 @@ function tourCommand(src, command, commandData) {
                 else if (type == "normal") {
                     file = "tourscores.txt";
                 }
-                else if (find_tier("type") !== "null") {
+                else if (find_tier("type") !== null) {
                     var tier = find_tier("type");
                     file = "tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt";
                 }
