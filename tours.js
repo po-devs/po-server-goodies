@@ -1228,6 +1228,17 @@ function tourCommand(src, command, commandData) {
                 sendBotAll(sys.name(src)+" cleared the event rankings!",tourschan,false)
                 return true;
             }
+            if (command == "clearmetric") {
+                if (commandData == "seeds") {
+                    tourseeds = {};
+                    sendBotAll(sys.name(src)+" cleared the tour seeds!",tourschan,false)
+                }
+                if (commandData == "stats") {
+                    tourstats = {};
+                    sendBotAll(sys.name(src)+" cleared the tour stats!",tourschan,false)
+                }
+                return true;
+            }
             if (command == "resettours") {
                 tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": [], "eventnames": []};
                 sendBotAll(sys.name(src)+" reset the tour system!",tourschan,false)
@@ -3637,11 +3648,19 @@ function advanceround(key) {
             for (var x=0;x<cplayers;x+=2) {
                 if (winners.indexOf(tours.tour[key].players[x]) > -1 && bannednames.indexOf(tours.tour[key].players[x]) == -1) {
                     newlist.push(tours.tour[key].players[x])
-                    if (round > 2 || cplayers.length == 2) awardSeedPoints(tours.tour[key].players[x+1], type, detSeedPoints(mplayers,cplayers));
+                    if (cplayers == 2) {
+                        awardSeedPoints(tours.tour[key].players[x+1], type, detSeedPoints(mplayers,2));
+                        awardSeedPoints(tours.tour[key].players[x], type, detSeedPoints(mplayers,1));
+                    }
+                    else if (round > 2) awardSeedPoints(tours.tour[key].players[x+1], type, detSeedPoints(mplayers,cplayers));
                 }
                 else if (winners.indexOf(tours.tour[key].players[x+1]) > -1 && bannednames.indexOf(tours.tour[key].players[x+1]) == -1) {
                     newlist.push(tours.tour[key].players[x+1])
-                    if (round > 2 || cplayers.length == 2) awardSeedPoints(tours.tour[key].players[x], type, detSeedPoints(mplayers,cplayers));
+                    if (cplayers == 2) {
+                        awardSeedPoints(tours.tour[key].players[x], type, detSeedPoints(mplayers,2));
+                        awardSeedPoints(tours.tour[key].players[x+1], type, detSeedPoints(mplayers,1));
+                    }
+                    else if (round > 2) awardSeedPoints(tours.tour[key].players[x], type, detSeedPoints(mplayers,cplayers));
                 }
                 else {
                     newlist.push("~Bye~")
