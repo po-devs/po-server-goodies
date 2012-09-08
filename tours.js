@@ -3767,8 +3767,7 @@ function tourprintbracket(key) {
                     garray[tier].players += players;
                 }
                 else {
-                    garray[tier].played = 1;
-                    garray[tier].players = players;
+                    garray[tier] = {'played': 1, 'players': players}
                 }
             }
             catch (err) {
