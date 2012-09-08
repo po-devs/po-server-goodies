@@ -1191,7 +1191,7 @@ function tourCommand(src, command, commandData) {
                 else if (type == "normal") {
                     file = "tourscores.txt";
                 }
-                else if (find_tier("type") !== null) {
+                else if (find_tier(type) !== null) {
                     var tier = find_tier("type");
                     file = "tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt";
                 }
