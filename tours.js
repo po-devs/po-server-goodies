@@ -1159,6 +1159,19 @@ function tourCommand(src, command, commandData) {
                 sys.sendMessage(src, sys.getFileContent("tastats.json"), tourschan);
                 return true;
             }
+            if (command == "savestats") {
+                if (typeof tourstats == "object") {
+                    var objToSave = function(key, value) {
+                        if (['general', 'staff'].indexOf(key) == -1) {
+                            return undefined;
+                        }
+                        else return value;
+                    }
+                    sys.writeToFile('tastats.json', JSON.stringify(tourstats, objToSave, "\t"));
+                }
+                sendBotMessage(src,"Saved stats!",tourschan,false)
+                return true;
+            }
             if (command == "changepoints") {
                 var tmp = commandData.split(":",3);
                 if (tmp.length != 3) {
