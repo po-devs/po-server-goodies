@@ -690,7 +690,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.575",
+            version: "1.576",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -730,7 +730,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.575",
+        version: "1.576",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -2019,7 +2019,7 @@ function tourCommand(src, command, commandData) {
                 sys.sendMessage(src,"*** TOUR STATS ***",tourschan)
                 var gstats = tourstats.general;
                 for (var x in gstats) {
-                    sys.sendMessage(src, gstats[x]+": Played "+gstats[x].played+" times; average of "+Math.floor(gstats[x].players/gstats[x].played)+" players per tournament.", tourschan);
+                    sys.sendMessage(src, x+": Played "+gstats[x].played+" times; average of "+Math.floor(gstats[x].players/gstats[x].played)+" players per tournament.", tourschan);
                 }
                 return true;
             }
