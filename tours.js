@@ -1161,15 +1161,15 @@ function tourCommand(src, command, commandData) {
             }
             if (command == "savestats") {
                 if (typeof tourstats == "object") {
-                    var objToSave = function(key, value) {
+                    /*var objToSave = function(key, value) {
                         if (['general', 'staff'].indexOf(key) == -1) {
                             return undefined;
                         }
                         else return value;
-                    }
-                    sys.writeToFile('tastats.json', JSON.stringify(tourstats, objToSave, "\t"));
+                    }*/
+                    sys.writeToFile('tastats.json', JSON.stringify(tourstats));
                 }
-                sendBotMessage(src,"Saved stats!",tourschan,false)
+                sendBotMessage(src,"Saved stats!"+err,tourschan,false)
                 return true;
             }
             if (command == "changepoints") {
