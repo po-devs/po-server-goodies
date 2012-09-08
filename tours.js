@@ -2216,7 +2216,7 @@ function tourCommand(src, command, commandData) {
                 sys.sendMessage(src,"Auto start when percentage of players is less than: "+tourconfig.minpercent+"%",tourschan)
                 sys.sendMessage(src,"Decay Rate: "+tourconfig.decayrate+"%",tourschan);
                 sys.sendMessage(src,"Decay Time: "+tourconfig.decaytime+" days",tourschan);
-                sys.sendMessage(src,"Decay Global Time: "+tourconfig.decayglobalrate+"%",tourschan);
+                sys.sendMessage(src,"Decay Global Rate: "+tourconfig.decayglobalrate+"%",tourschan);
                 sys.sendMessage(src,"Bot Name: "+tourconfig.tourbot,tourschan)
                 sys.sendMessage(src,"Colour: "+tourconfig.tourbotcolour,tourschan)
                 sys.sendMessage(src,"Channel: "+tourconfig.channel,tourschan)
@@ -2523,8 +2523,8 @@ function tourCommand(src, command, commandData) {
                         sendBotMessage(src,"Current Value: "+tourconfig.decaytime+" days",tourschan,false);
                         return true;
                     }
-                    else if (value < 1 || value > 30) {
-                        sendBotMessage(src,"Value must be between 1 and 30.",tourschan,false);
+                    else if (value < 0 || value > 30) {
+                        sendBotMessage(src,"Value must be between 0 and 30.",tourschan,false);
                         return true;
                     }
                     tourconfig.decaytime = value
