@@ -689,7 +689,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.576",
+            version: "1.580",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -729,7 +729,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.576",
+        version: "1.580",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -1152,6 +1152,68 @@ function tourCommand(src, command, commandData) {
                 }
                 catch (err) {
                     sendBotMessage(src,"Error in evalvar: "+err,tourschan,false)
+                }
+                return true;
+            }
+            if (command == "getstatfile") {
+                sys.sendMessage(src, sys.getFileContent("tastats.json"), tourschan);
+                return true;
+            }
+            if (command == "changepoints") {
+                var tmp = commandData.split(":",3);
+                if (tmp.length != 3) {
+                    sendBotMessage(src, "Usage: /changepoints name:type:newscore", tourschan, false);
+                    return true;
+                }
+                var name = tmp[0].toLowerCase();
+                var type = tmp[1].toLowerCase();
+                var newpoints = parseInt(tmp[2]);
+                if (isNaN(newpoints)) {
+                    newpoints = 0;
+                }
+                var file = "";
+                if (type == "event") {
+                    file = "eventscores.txt";
+                }
+                else if (type == "normal") {
+                    file = "tourscores.txt";
+                }
+                else if (find_tier("type") !== "null") {
+                    var tier = find_tier("type");
+                    file = "tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt";
+                }
+                else {
+                    file = "tourscores.txt";
+                }
+                var leaderboard = sys.getFileContent(file);
+                if (leaderboard === undefined) {
+                    sendBotMessage(src, "File not found.", tourschan, false);
+                    return true;
+                }
+                var array = leaderboard.split("\n")
+                var newarray = [];
+                var onscoreboard = false
+                for (var n in array) {
+                    if (array[n] === "") continue;
+                    var scores = array[n].split(":::", 2)
+                    if (name === scores[0]) {
+                        var newscore = newpoints
+                        newarray.push(scores[0]+":::"+newscore)
+                        onscoreboard = true;
+                    }
+                    else {
+                        newarray.push(array[n])
+                    }
+                }
+                if (!onscoreboard) {
+                    newarray.push(name+":::"+newpoints)
+                }
+                sys.writeToFile(file, newarray.join("\n"))
+                if (sys.existChannel("Victory Road")) {
+                    sendBotAll(sys.name(src)+" changed the score of '"+name+"' on the "+type+" leaderboard to "+newpoints, sys.channelId("Victory Road"), false);
+                }
+                else {
+                    sendBotAll(sys.name(src)+" changed the score of '"+name+"' on the "+type+" leaderboard to "+newpoints, tourschan, false);
                 }
                 return true;
             }
