@@ -54,6 +54,7 @@ var tourmodcommands = ["*** Parameter Information ***",
                     "cancelbattle [name]: cancels that player's current battle",
                     "config: shows config settings",
                     "start: starts next tournament in the queue immediately (use sparingly)",
+                    "viewstats: views tournament stats",
                     "configset [var]:[value]: changes config settings",
                     "passta [name]: passes your tour admin to a new name"]
 var touradmincommands = ["tourstart [tier]:[parameters]: starts a tier of that tournament immediately, provided one is not in signups.",
@@ -689,7 +690,7 @@ function getConfigValue(file, key) {
             errchannel: "Indigo Plateau",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
-            version: "1.570",
+            version: "1.575",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -729,7 +730,7 @@ function initTours() {
         errchannel: "Indigo Plateau",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
-        version: "1.570",
+        version: "1.575",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -778,16 +779,21 @@ function initTours() {
         }
         tours.touradmins = data
     }
-    /*if (typeof tourstats != "object") {
+    if (typeof tourstats != "object") {
         sendChanAll("Creating tournament stats object", tourschan)
         var tourstatdata = sys.getFileContent('tastats.json');
         if (tourstatdata === undefined || tourstatdata === "") {
             tourstats = {'general': {}, 'staff': {}}
         }
         else {
-            tourstats = JSON.parse(tourstatdata)
+            try {
+                tourstats = JSON.parse(tourstatdata);
+            }
+            catch (err) {
+                tourstats = {'general': {}, 'staff': {}};
+            }
         }
-    }*/
+    }
     loadTourMutes()
     loadEventPlayers()
     sendChanAll("Version "+tourconfig.version+" of the tournaments system was loaded successfully in this channel!", tourschan)
@@ -856,6 +862,16 @@ function tourStep() {
                 delete tours.tourmutes[m];
                 saveTourMutes();
             }
+        }
+        // write tour stat data for reload
+        if (typeof tourstats == "object") {
+            var objToSave = function(key, value) {
+                if (['general', 'staff'].indexOf(key) == -1) {
+                    return undefined;
+                }
+                else return value;
+            }
+            sys.writeToFile('tastats.json', JSON.stringify(tourstats, objToSave, "\t"));
         }
     }
     for (var x in tours.tour) {
@@ -1986,6 +2002,14 @@ function tourCommand(src, command, commandData) {
                     if (tours.tourmutes[t].expiry > parseInt(sys.time())) {
                         sys.sendMessage(src, tours.tourmutes[t].name + ": Set by "+tours.tourmutes[t].auth+"; expires in "+time_handle(tours.tourmutes[t].expiry-parseInt(sys.time()))+"; reason: "+tours.tourmutes[t].reason, tourschan)
                     }
+                }
+                return true;
+            }
+            if (command == "viewstats") {
+                sys.sendMessage(src,"*** TOUR STATS ***",tourschan)
+                var gstats = tourstats.general;
+                for (var x in gstats) {
+                    sys.sendMessage(gstats[x]+": Played "+gstats[x].played+" times; average of "+Math.floor(gstats[x].players/gstats[x].played)+" players per tournament.");
                 }
                 return true;
             }
@@ -3731,9 +3755,24 @@ function tourprintbracket(key) {
                 tours.history.unshift(getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players")
                 sys.appendToFile("eventwinners.txt", dateString + " ~ " +getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players\n")
             }
-
             if (tours.history.length > 25) {
                 tours.history.pop()
+            }
+            try {
+                var garray = tourstats.general;
+                var tier = tours.tour[key].tourtype;
+                var players = tours.tour[key].cpt;
+                if (garray.hasOwnProperty(tier)) {
+                    garray[tier].played += 1;
+                    garray[tier].players += players;
+                }
+                else {
+                    garray[tier].played = 1;
+                    garray[tier].players = players;
+                }
+            }
+            catch (err) {
+                sendChanAll("Error in saving tour stats, id "+key+": "+err, tourserrchan)
             }
             delete tours.tour[key];
             tours.keys.splice(tours.keys.indexOf(key), 1);
