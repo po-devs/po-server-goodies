@@ -757,7 +757,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 5,
-            version: "1.600",
+            version: "1.600a",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -800,7 +800,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.600",
+        version: "1.600a",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -1253,7 +1253,7 @@ function tourCommand(src, command, commandData) {
                     sys.writeToFile('tastats.json', JSON.stringify(tourstats));
                 }
                 if (typeof tourseeds == "object") {
-                    sys.writeToFile('tourseeds.json', JSON.stringify(tourstats));
+                    sys.writeToFile('tourseeds.json', JSON.stringify(tourseeds));
                 }
                 sendBotMessage(src,"Saved stats!",tourschan,false)
                 return true;
