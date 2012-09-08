@@ -2967,6 +2967,10 @@ userCommand: function(src, command, commandData, tar) {
             channelbot.sendChanMessage(src, "You need to register on the server before registering a channel to yourself for security reasons!");
             return;
         }
+        if (sys.auth(src) < 1 && (channel === 0 || channel === tourchannel || channel === mafiachan || channel === triviachan)) {
+            channelbot.sendChanMessage(src, "You don't have sufficient authority to register this channel!");
+            return;
+        }
         if (SESSION.channels(channel).register(sys.name(src))) {
             channelbot.sendChanMessage(src, "You registered this channel successfully. Take a look of /commands channel");
         } else {
