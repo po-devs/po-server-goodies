@@ -1434,6 +1434,9 @@ this.possibleThemes[themeName] = 0;
                 player.poisonCount = condition.poison.count || 2;
                 player.poisonDeadMessage = condition.poison.poisonDeadMessage;
             }
+			if ("clearPoison" in condition) {
+				player.poisoned = undefined;
+			}
         }
     };
     this.testWin = function () {
