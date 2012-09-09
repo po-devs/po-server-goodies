@@ -3566,7 +3566,13 @@ return;
             }
         }
         if (command == "mafiaban") {
-            script.issueBan("mban", src, tar, commandData, sys.auth(src) > 0 ? undefined : 86400);
+            var bantime;
+            if (sys.auth > 0 || this.isMafiaSuperAdmin(src)) {
+                bantime = undefined;
+            } else {
+                bantime = 86400;
+            }
+            script.issueBan("mban", src, tar, commandData, bantime);
             return;
         }
         if (command == "mafiaunban") {
