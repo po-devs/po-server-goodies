@@ -757,7 +757,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 5,
-            version: "1.610+",
+            version: "1.611",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -800,7 +800,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.610+",
+        version: "1.611",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -3777,7 +3777,7 @@ function tourstart(tier, starter, key, parameters) {
 function tourinitiate(key) {
     try {
         var size = tourmakebracket(key)
-        if (size < 4) {
+        if (tours.tour[key].cpt < 4) {
             if (tours.globaltime !== -1) {
                 tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
             }
