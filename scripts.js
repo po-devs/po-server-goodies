@@ -1390,7 +1390,7 @@ function POGlobal(id)
 }
 
 POGlobal.prototype.callplugins = function callplugins(event) {
-    /* if a plugin wishes to stop an event, it should return true */
+    /* if a plugin wishes to stop event, it should return true */
     var plugins = this.plugins;
     var ret = false;
     var args = Array.prototype.slice.call(arguments, 1);
