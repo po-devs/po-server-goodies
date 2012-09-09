@@ -13,7 +13,7 @@ if (typeof tourserrchan !== "string") {
 
 if (typeof tours !== "object") {
     sendChanAll("Creating new tournament object", tourschan)
-    tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": [], "eventnames": []}
+    tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "eventnames": []}
 }
 
 var utilities = require('utilities.js');
@@ -66,9 +66,6 @@ var touradmincommands = ["tourstart [tier]:[parameters]: starts a tier of that t
                     "push [player]: pushes a player into a tournament in signups (DON'T USE UNLESS ASKED)",
                     "tahistory [days]: views the activity of tour admins (days is optional, if excluded it will get the last 7 days if possible)",
                     "updatewinmessages: updates win messages from the web",
-                    "tourbans: list tour bans",
-                    "tourban [name]: bans a problematic player from tournaments",
-                    "tourunban [name]: unbans a player from tournaments",
                     "stopautostart: if there are no tournaments running, this will stop new ones from being automatically started by the server until another one is started manually."]
 var tourownercommands = ["clearrankings: clears the tour rankings (owner only)",
                     "evalvars: checks the current variable list for tours",
@@ -759,7 +756,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 5,
-            version: "1.600",
+            version: "1.610",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -802,7 +799,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.600",
+        version: "1.610",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -811,7 +808,7 @@ function initTours() {
     tourserrchan = utilities.get_or_create_channel(tourconfig.errchannel)
     if (typeof tours != "object") {
         sendChanAll("Creating new tournament object", tourschan)
-        tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": [], "eventnames": []}
+        tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "eventnames": []}
     }
     else {
         if (!tours.hasOwnProperty('queue')) tours.queue = [];
@@ -825,7 +822,6 @@ function initTours() {
         if (!tours.hasOwnProperty('activetas')) tours.activetas = [];
         if (!tours.hasOwnProperty('activehistory')) tours.activehistory = [];
         if (!tours.hasOwnProperty('tourmutes')) tours.tourmutes = {};
-        if (!tours.hasOwnProperty('tourbans')) tours.tourbans = [];
         if (!tours.hasOwnProperty('eventnames')) tours.eventnames = [];
     }
     try {
@@ -949,13 +945,6 @@ function tourStep() {
                 delete tours.tourmutes[m];
                 saveTourMutes();
             }
-        }
-        // write tour stat data for reload
-        if (typeof tourstats == "object") {
-            sys.writeToFile('tastats.json', JSON.stringify(tourstats));
-        }
-        if (typeof tourseeds == "object") {
-            sys.writeToFile('tourseeds.json', JSON.stringify(tourseeds));
         }
     }
     for (var x in tours.tour) {
@@ -1251,7 +1240,7 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "resettours") {
-                tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "tourbans": [], "eventnames": []};
+                tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": [], "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "eventnames": []};
                 sendBotAll(sys.name(src)+" reset the tour system!",tourschan,false)
                 return true;
             }
@@ -1363,16 +1352,6 @@ function tourCommand(src, command, commandData) {
                     sendBotData(getReadableList("leaderboard", tierlist[x]),target,true)
                 }
                 sendBotAll("Exporting rankings finished!", tourschan, false)
-                return true;
-            }
-            if (command == "cleantour" && sys.name(src) == "Aerith") {
-                var key = parseInt(commandData)
-                if (!tours.tour.hasOwnProperty(key)) {
-                    sendBotMessage(src, "No such tour exists.", tourschan, false);
-                    return true;
-                }
-                removebyes(key);
-                sendBotMessage(src, "Cleared tour id "+key, tourschan, false);
                 return true;
             }
             if (command == "clearevents") {
@@ -1686,62 +1665,6 @@ function tourCommand(src, command, commandData) {
                         sendBotMessage(src, 'Failed to update!', tourschan, false);
                     }
                 });
-                return true;
-            }
-            if (command == "tourbans") {
-                sys.sendMessage(src, "Active tourbans: "+tours.tourbans.join(", "),tourschan)
-                return true;
-            }
-            if (command == "tourban") {
-                var tar = commandData.toLowerCase();
-                if (sys.dbIp(tar) === undefined) {
-                    sendBotMessage(src, "No such user",tourschan,false)
-                    return true;
-                }
-                if (sys.dbAuth(tar) >= sys.auth(src) || isTourSuperAdmin(sys.id(tar))) {
-                    sendBotMessage(src, "Can't ban higher auth",tourschan,false)
-                    return true;
-                }
-                var index = tours.tourbans.indexOf(tar)
-                if (index != -1) {
-                    sendBotMessage(src, "They are already tourbanned!",tourschan,false)
-                    return true;
-                }
-                sendBotAll(sys.name(src)+" unleashed their wrath on "+toCorrectCase(tar)+"!",tourschan,false)
-                if (sys.id(tar) !== undefined) {
-                    if (sys.isInChannel(sys.id(tar), tourschan)) {
-                        sys.kick(sys.id(tar), tourschan)
-                    }
-                }
-                var key = isInTour(tar);
-                if (key !== false) {
-                    if (tours.tour[key].state == "signups") {
-                        var index = tours.tour[key].players.indexOf(tar.toLowerCase())
-                        tours.tour[key].players.splice(index, 1)
-                        tours.tour[key].cpt -= 1
-                        sendBotAll(toCorrectCase(tar)+" was taken out of the tournament signups by "+sys.name(src)+" from the "+getFullTourName(key)+" tournament!", tourschan, false);
-                    }
-                    else {
-                        disqualify(tar.toLowerCase(), key, false)
-                    }
-                }
-                sendBotAll("And "+toCorrectCase(tar)+" was gone!",tourschan,false)
-                tours.tourbans.push(tar)
-                return true;
-            }
-            if (command == "tourunban") {
-                var tar = commandData.toLowerCase();
-                if (sys.dbIp(tar) === undefined) {
-                    sendBotMessage(src, "No such user",tourschan,false)
-                    return true;
-                }
-                var index = tours.tourbans.indexOf(tar)
-                if (index == -1) {
-                    sendBotMessage(src, "They aren't tourbanned!",tourschan,false)
-                    return true;
-                }
-                tours.tourbans.splice(index,1)
-                sendBotMessage(src, "You unbanned "+toCorrectCase(tar)+" from tournaments!",tourschan,false)
                 return true;
             }
         }
@@ -2223,6 +2146,29 @@ function tourCommand(src, command, commandData) {
                 }
                 return true;
             }
+            if (command == "viewseeds") {
+                var thetier = find_tier(commandData);
+                if (thetier === null) {
+                    sendBotMessage(src,"No such tier exists.",tourschan,false)
+                    return true;
+                }
+                if (!tourseeds.hasOwnProperty(thetier)) {
+                    sendBotMessage(src,"No data exists.",tourschan,false)
+                    return true;
+                }
+                sys.sendMessage(src,"*** TOUR SEEDS ***",tourschan)
+                var seedstats = tourseeds[thetier];
+                var endarray = [];
+                for (var x in seedstats) {
+                    endarray.push([x, seedstats[x].points]);
+                }
+                endarray.sort(function(a,b) {return b[1]-a[1]});
+                for (var z=0; z<20; z++) {
+                    if (endarray.length < z) break;
+                    sys.sendMessage(src,endarray[z][0]+" ~ "+endarray[z][1],tourschan)
+                }
+                return true;
+            }
             if (command == "config") {
                 sys.sendMessage(src,"*** CURRENT CONFIGURATION ***",tourschan)
                 sys.sendMessage(src,"Maximum Queue Length: "+tourconfig.maxqueue,tourschan)
@@ -2588,7 +2534,7 @@ function tourCommand(src, command, commandData) {
                 sendBotMessage(src, "You are server muted so you are prohibited from playing!", tourschan, false);
                 return true;
             }
-            if (isTourMuted(src) || isTourBanned(src)) {
+            if (isTourMuted(src)) {
                 sendBotMessage(src, "You are tourmuted so you are prohibited from playing!", tourschan, false);
                 return true;
             }
@@ -4103,6 +4049,13 @@ function tourprintbracket(key) {
                     garray[tier] = {'played': 1, 'players': players}
                 }
                 seedDecay(tours.tour[key].tourtype);
+                // write tour stat data for reload
+                if (typeof tourstats == "object") {
+                    sys.writeToFile('tastats.json', JSON.stringify(tourstats));
+                }
+                if (typeof tourseeds == "object") {
+                    sys.writeToFile('tourseeds.json', JSON.stringify(tourseeds));
+                }
             }
             catch (err) {
                 sendChanAll("Error in saving tour stats, id "+key+": "+err, tourserrchan)
@@ -4644,23 +4597,6 @@ function isTourMuted(src) {
     }
 }
 
-function isTourBanned(src) {
-    // can't ban auth 2+
-    if (isTourSuperAdmin(src)){
-        return false;
-    }
-    var ip = sys.ip(src);
-    if (tours.tourbans.indexOf(sys.name(src).toLowerCase()) != -1) {
-        return true;
-    }
-    for (var x in tours.tourbans) {
-        if (sys.dbIp(tours.tourbans[x]) == ip) {
-            return true;
-        }
-    }
-    return false;
-}
-
 // writes tourmutes to tourmutes.txt
 function saveTourMutes() {
     sys.writeToFile("tourmutes.txt", "")
@@ -4924,7 +4860,7 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel === tourschan && !isTourBanned(source)) {
+        if (channel === tourschan) {
             return tourCommand(source, command, commandData)
         }
         return false;
@@ -4952,14 +4888,6 @@ module.exports = {
     },
     stepEvent : function() {
         tourStep()
-    },
-    beforeChannelJoin : function (src, channel) {
-        if (channel == tourschan) {
-            if (isTourBanned(src)) {
-                sendBotMessage(src,"You are tourbanned! You can't join unless the tour owners decide to unban you!", "all", false)
-                sys.stopEvent();
-            }
-        }
     },
     beforeChallengeIssued : function(source, dest, clauses, rated, mode, team, destTier) {
         var ret = false;
