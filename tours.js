@@ -55,7 +55,7 @@ var tourmodcommands = ["*** Parameter Information ***",
                     "config: shows config settings",
                     "start: starts next tournament in the queue immediately (use sparingly)",
                     "viewstats: views tournament stats",
-                    "viewseeds: views seed rankings for that tier",
+                    "viewseeds [tier]: views seed rankings for that tier",
                     "viewstaffstats: views tournament staff stats",
                     "configset [var]:[value]: changes config settings",
                     "passta [name]: passes your tour admin to a new name"]
