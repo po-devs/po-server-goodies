@@ -55,6 +55,7 @@ var tourmodcommands = ["*** Parameter Information ***",
                     "config: shows config settings",
                     "start: starts next tournament in the queue immediately (use sparingly)",
                     "viewstats: views tournament stats",
+                    "viewstaffstats: views tournament staff stats",
                     "configset [var]:[value]: changes config settings",
                     "passta [name]: passes your tour admin to a new name"]
 var touradmincommands = ["tourstart [tier]:[parameters]: starts a tier of that tournament immediately, provided one is not in signups.",
@@ -1270,8 +1271,7 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "readstats") {
-                sys.sendMessage(src, JSON.stringify(tourstats, null, "\n "), tourschan);
-                sys.sendMessage(src, JSON.stringify(tourseeds, null, "\n "), tourschan);
+                sys.sendMessage(src, JSON.stringify(tourseeds, null, 1), tourschan);
                 return true;
             }
             if (command == "savestats") {
@@ -1866,13 +1866,14 @@ function tourCommand(src, command, commandData) {
                 if (tours.queue.length != 0) {
                     var data = tours.queue[0].split(":::",6)
                     var tourtostart = data[0]
+                    var originalstarter = data[1]
                     var maxplayers = parseInt(data[5])
                     if (isNaN(maxplayers)) {
                         maxplayers = false;
                     }
                     var parameters = {"mode": data[2], "gen": data[3], "type": data[4], "maxplayers": maxplayers}
                     tours.queue.splice(0,1)
-                    tourstart(tourtostart, sys.name(src), tours.key, parameters)
+                    tourstart(tourtostart, originalstarter, tours.key, parameters)
                     sendBotAll(sys.name(src)+" force started the "+tourtostart+" tournament!",tourschan,false)
                     return true;
                 }
@@ -2198,6 +2199,18 @@ function tourCommand(src, command, commandData) {
                 for (var t in tours.tourmutes) {
                     if (tours.tourmutes[t].expiry > parseInt(sys.time())) {
                         sys.sendMessage(src, tours.tourmutes[t].name + ": Set by "+tours.tourmutes[t].auth+"; expires in "+time_handle(tours.tourmutes[t].expiry-parseInt(sys.time()))+"; reason: "+tours.tourmutes[t].reason, tourschan)
+                    }
+                }
+                return true;
+            }
+            if (command == "viewstaffstats") {
+                sys.sendMessage(src,"*** TOUR STAFF STATS ***",tourschan)
+                var stats = tourstats.staff;
+                for (var x in stats) {
+                    sys.sendMessage(src, "*** "+x+" ***", tourschan);
+                    var statfile = stats[x];
+                    for (var s in statfile) {
+                        sys.sendMessage(src, s+": Started "+statfile[s].started+" times; actually ran "+statfile[s].run+" times", tourschan);
                     }
                 }
                 return true;
@@ -3733,6 +3746,7 @@ function tourstart(tier, starter, key, parameters) {
         tours.tour[key].seeds = [];
         tours.tour[key].maxcpt = 0;
         tours.tour[key].active = {};
+        tours.tour[key].starter = starter.toLowerCase();
         tours.tour[key].parameters = parameters;
         tours.globaltime = 0;
         if (typeof parameters.maxplayers === "number" && !isNaN(parameters.maxplayers)) {
@@ -3792,6 +3806,20 @@ function tourstart(tier, starter, key, parameters) {
                 }
             }
         }
+        var lstarter = tours.tour[key].starter;
+        if (tourstats.staff.hasOwnProperty(lstarter)) {
+            var tstat = tourstats.staff[lstarter];
+            if (tstat.hasOwnProperty(tier)) {
+                tourstats.staff[lstarter][tier].started += 1;
+            }
+            else {
+                tourstats.staff[lstarter][tier] = {'started': 1, 'run': 0}
+            }
+        }
+        else {
+            tourstats.staff[lstarter] = {};
+            tourstats.staff[lstarter][tier] = {'started': 1, 'run': 0}
+        }
     }
     catch (err) {
         sendChanAll("Error in stating a tournament: "+err, tourserrchan)
@@ -3813,6 +3841,21 @@ function tourinitiate(key) {
         }
         toursortbracket(size, key)
         tourprintbracket(key)
+        var starter = tours.tour[key].starter;
+        var tier = tours.tour[key].tourtype
+        if (tourstats.staff.hasOwnProperty(starter)) {
+            var tstat = tourstats.staff[starter];
+            if (tstat.hasOwnProperty(tier)) {
+                tourstats.staff[starter][tier].run += 1;
+            }
+            else {
+                tourstats.staff[starter][tier] = {'started': 1, 'run': 1}
+            }
+        }
+        else {
+            tourstats.staff[starter] = {};
+            tourstats.staff[starter][tier] = {'started': 1, 'run': 1}
+        }
         var variance = calcVariance()
         if (tours.globaltime !== -1) {
             var timeradd = tours.tour[key].maxplayers != "default" ? parseInt(tourconfig.abstourbreak*3/variance) : parseInt(tourconfig.abstourbreak/variance);
