@@ -2697,7 +2697,7 @@ this.possibleThemes[themeName] = 0;
     this.isMafiaSuperAdmin = function (src) {
         if (sys.auth(src) >= 2)
             return true;
-        if (['steeledges'].indexOf(sys.name(src).toLowerCase()) >= 0) {
+        if (['steeledges', "bebbz"].indexOf(sys.name(src).toLowerCase()) >= 0) {
             return true;
         }
         return false;
