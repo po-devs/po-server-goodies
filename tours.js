@@ -55,6 +55,7 @@ var tourmodcommands = ["*** Parameter Information ***",
                     "config: shows config settings",
                     "start: starts next tournament in the queue immediately (use sparingly)",
                     "viewstats: views tournament stats",
+                    "viewseeds: views seed rankings for that tier",
                     "viewstaffstats: views tournament staff stats",
                     "configset [var]:[value]: changes config settings",
                     "passta [name]: passes your tour admin to a new name"]
@@ -756,7 +757,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 5,
-            version: "1.610",
+            version: "1.610+",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -799,7 +800,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.610",
+        version: "1.610+",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -2164,7 +2165,7 @@ function tourCommand(src, command, commandData) {
                 }
                 endarray.sort(function(a,b) {return b[1]-a[1]});
                 for (var z=0; z<20; z++) {
-                    if (endarray.length < z) break;
+                    if (endarray.length <= z) break;
                     sys.sendMessage(src,endarray[z][0]+" ~ "+endarray[z][1],tourschan)
                 }
                 return true;
