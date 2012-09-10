@@ -351,6 +351,7 @@ function Mafia(mafiachan) {
             if (theme.roleLists === 0)
                 throw "This theme has no roles1, it can not be played.";
             theme.villageCantLoseRoles = plain_theme.villageCantLoseRoles;
+            theme.minplayers = plain_theme.minplayers;
             theme.name = plain_theme.name;
             theme.author = plain_theme.author;
             theme.summary = plain_theme.summary;
@@ -1579,10 +1580,15 @@ this.possibleThemes[themeName] = 0;
             savePlayedGames();
 
             currentStalk.push("*** ::: ::: Log for " + mafia.theme.name + "-themed mafia game ::: ::: ***");
-
-            if (mafia.signups.length < 5) {
+            var minp
+            if (mafia.theme.minplayers === undefined || isNaN(mafia.theme.minplayers) || mafia.theme.minplayers < 3){
+                minp = 5;
+            } else {
+                minp = mafia.theme.minplayers;
+            }
+            if (mafia.signups.length < minp) {
                 sendChanAll("Well, Not Enough Players! :", mafiachan);
-                sendChanAll("You need at least 5 players to join (Current; " + mafia.signups.length + ").", mafiachan);
+                sendChanAll("You need at least "+minp+" players to join (Current; " + mafia.signups.length + ").", mafiachan);
                 sendChanAll(border, mafiachan);
                 mafia.clearVariables();
                 return;
