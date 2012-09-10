@@ -3800,11 +3800,11 @@ function tourstart(tier, starter, key, parameters) {
 function tourinitiate(key) {
     try {
         var size = tourmakebracket(key)
-        if (tours.tour[key].cpt < 4) {
+        if (tours.tour[key].cpt < tourconfig.minplayers) {
             if (tours.globaltime !== -1) {
                 tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
             }
-            sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least 4 players!"+(tours.globaltime > 0 ? " (A new tournament will start in "+time_handle(tourconfig.tourbreak)+")." : ""), tourschan, false)
+            sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least "+tourconfig.minplayers+" players!"+(tours.globaltime > 0 ? " (A new tournament will start in "+time_handle(tourconfig.tourbreak)+")." : ""), tourschan, false)
             delete tours.tour[key];
             tours.keys.splice(tours.keys.indexOf(key), 1)
             return;
