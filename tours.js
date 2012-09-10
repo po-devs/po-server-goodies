@@ -2157,16 +2157,16 @@ function tourCommand(src, command, commandData) {
                     sendBotMessage(src,"No data exists.",tourschan,false)
                     return true;
                 }
-                sys.sendMessage(src,"*** TOUR SEEDS ***",tourschan)
+                sys.sendMessage(src,"*** Tour seeds for "+thetier+" ***",tourschan)
                 var seedstats = tourseeds[thetier];
                 var endarray = [];
                 for (var x in seedstats) {
-                    endarray.push([x, seedstats[x].points]);
+                    endarray.push([x, seedstats[x].points, time_handle(parseInt(sys.time())-seedstats[x].lastwin)]);
                 }
                 endarray.sort(function(a,b) {return b[1]-a[1]});
-                for (var z=0; z<20; z++) {
+                for (var z=0; z<32; z++) {
                     if (endarray.length <= z) break;
-                    sys.sendMessage(src,endarray[z][0]+" ~ "+endarray[z][1],tourschan)
+                    sys.sendMessage(src,endarray[z][0]+" ~ "+endarray[z][1]+" ~ Last score: "+endarray[z][2],tourschan)
                 }
                 return true;
             }
