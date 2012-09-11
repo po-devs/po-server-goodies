@@ -574,6 +574,10 @@ function POUser(id)
     this.logintime = parseInt(sys.time(), 10);
     /* tier alerts */
     this.tiers = [];
+    /* last time a user PM'd */
+    this.lastpm = parseInt(sys.time(), 10);
+    /* amount of PM's a user has sent */
+    this.pmcount = 0;
     if (getKey('touralertson', id) == "true") {
         this.tiers = getKey("touralerts", id).split("*");
     }
@@ -4992,6 +4996,21 @@ channelCommand: function(src, command, commandData, tar) {
     return "no command";
 },
 
+beforeNewPM: function(src){
+    var user = SESSION.users(src);
+    if (typeof user.lastpm === "undefined") {
+        user.lastpm = parseInt(sys.time(), 10);
+    }
+    if (user.lastpm > parseInt(sys.time() - 20, 10)) {
+        user.pmcount += 1;
+    }
+    var pmlimit = 20;
+    if (user.pmcount > pmlimit){
+        sys.stopEvent();
+        normalbot.sendChanAll('User ' + sys.name(src) + ' is potentially spamming through PM', staffchannel);
+    }
+},
+
 beforeChatMessage: function(src, message, chan) {
      if(message.substr(0, 1) == '%')
      {
@@ -5212,7 +5231,7 @@ beforeChatMessage: function(src, message, chan) {
             return;
         }
 
-        if (sys.auth(src) > 0 || (isMafiaAdmin(src) || isMafiaSuperAdmin(src) && command == "mafiabans")) {
+        if (sys.auth(src) > 0 || (isMafiaAdmin(src) || isMafiaSuperAdmin(src)) && command == "mafiabans") {
             if (this.modCommand(src, command, commandData, tar, channel) != "no command") {
                 return;
             }
