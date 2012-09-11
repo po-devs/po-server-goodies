@@ -579,7 +579,7 @@ function POUser(id)
     /* amount of PM's a user has sent */
     this.pmcount = 0;
     /* stopping spam */
-    this.warned = false;
+    this.pmwarned = false;
     if (getKey('touralertson', id) == "true") {
         this.tiers = getKey("touralerts", id).split("*");
     }
