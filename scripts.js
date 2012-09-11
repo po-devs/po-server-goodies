@@ -578,6 +578,8 @@ function POUser(id)
     this.lastpm = parseInt(sys.time(), 10);
     /* amount of PM's a user has sent */
     this.pmcount = 0;
+    /* stopping spam */
+    this.warned = false;
     if (getKey('touralertson', id) == "true") {
         this.tiers = getKey("touralerts", id).split("*");
     }
@@ -5004,10 +5006,14 @@ beforeNewPM: function(src){
     if (user.lastpm > parseInt(sys.time() - 20, 10)) {
         user.pmcount += 1;
     }
+    if (user.lastpm < parseInt(sys.time() - 300, 10)) {
+        user.pmcount = 0;
+    }
     var pmlimit = 20;
     if (user.pmcount > pmlimit){
         sys.stopEvent();
-        normalbot.sendChanAll('User ' + sys.name(src) + ' is potentially spamming through PM', staffchannel);
+        normalbot.sendChanAll('User ' + sys.name(src) + ' is potentially spamming through PM', sys.channelId('Indigo Plateau'));
+        user.pmwarned = true;
         return;
     }
     user.lastpm = parseInt(sys.time(), 10);
