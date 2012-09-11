@@ -5012,7 +5012,7 @@ beforeNewPM: function(src){
     var pmlimit = 20;
     if (user.pmcount > pmlimit){
         sys.stopEvent();
-        normalbot.sendChanAll('User ' + sys.name(src) + ' is potentially spamming through PM', sys.channelId('Indigo Plateau'));
+        normalbot.sendAll('User ' + sys.name(src) + ' is potentially spamming through PM', sys.channelId('Indigo Plateau'));
         user.pmwarned = true;
         return;
     }
