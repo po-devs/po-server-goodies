@@ -5012,8 +5012,10 @@ beforeNewPM: function(src){
     var pmlimit = 20;
     if (user.pmcount > pmlimit){
         sys.stopEvent();
-        normalbot.sendAll('User ' + sys.name(src) + ' is potentially spamming through PM', sys.channelId('Indigo Plateau'));
-        user.pmwarned = true;
+        if (user.pmwarned === false) {
+            normalbot.sendAll('User ' + sys.name(src) + ' is potentially spamming through PM', sys.channelId('Indigo Plateau'));
+            user.pmwarned = true;
+        }
         return;
     }
     user.lastpm = parseInt(sys.time(), 10);
