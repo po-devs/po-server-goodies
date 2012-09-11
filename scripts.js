@@ -5008,7 +5008,9 @@ beforeNewPM: function(src){
     if (user.pmcount > pmlimit){
         sys.stopEvent();
         normalbot.sendChanAll('User ' + sys.name(src) + ' is potentially spamming through PM', staffchannel);
+        return;
     }
+    user.lastpm = parseInt(sys.time(), 10);
 },
 
 beforeChatMessage: function(src, message, chan) {
