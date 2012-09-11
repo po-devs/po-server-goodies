@@ -1,12 +1,26 @@
 This repository contains scripts.js and tiers.xml used in Pokemon Online Server.
 
-NOTICE IF UPDATING THESE SCRIPTS
+*** Installation instructions ***
 
-DON'T USE THE TAB CHARACTER. The scripts use 4 spaces and the mix of tab and spaces is what causes the formatting issues at times.
+Download as .zip (https://github.com/lamperi/po-server-goodies/zipball/master) or tarball,
+extract into the same folder with Pokemon-Online server executable.
+Note: some builds on Windows systems (2.0.0x) are missing the SSL libraries making
+the scripts impossible to reload from Github. (/updatescripts, /updatetiers etc.)
+
+Forking the repo is recommended as these scripts contain hardcoded configuration parameters
+only suitable for the server we are running.
+
+*** Guidelines for contributors ***
+
+DON'T USE THE TAB CHARACTER. The scripts use 4 spaces and the mix of tab and spaces is what
+causes the formatting issues at times.
 You can set Notepad++ to use 4 spaces when the tab key is hit though if you use that to edit.
 Settings->Preferences->Language Menu/Tab Settings
 Set it to "Tab Size 4" and tick the replace with space box
 
-If you're going to be using sys.sendAll() or sys.sendHtmlAll(), use sendChanAll or sendChanHtmlAll instead. 
-Jirachier has created these functions to catch messages. 
-For use it's just sendChanAll(message, optionalchannelid) if the optionalchannelid is -1 it sends to the entire server.
+Using jshint for checking some coding style is recommended.
+In particular, following practices are frowned upon:
+- tab character when indenting (see above)
+- trailing whitespace
+- undefined variabes (always use var in the outermost scope for that variable)
+
