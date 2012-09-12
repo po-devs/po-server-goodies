@@ -911,17 +911,16 @@ function Mafia(mafiachan) {
             var Check = PreviousGames.slice(-Config.Mafia.norepeat)
                         .reverse()
                         .map(function (g) { return g.what; });
-            // Disable player selection of themes.
-            /*
-if (themeName in this.themeManager.themes && this.themeManager.themes[themeName].enabled) {
-if (Check.indexOf(themeName) == -1 && themeName != "default") {
-if (!(themeName in this.possibleThemes)) {
-this.possibleThemes[themeName] = 0;
---total;
-}
-}
-}
-*/
+
+            if (themeName in this.themeManager.themes && this.themeManager.themes[themeName].enabled) {
+                if (Check.indexOf(themeName) == -1 && themeName != "default") {
+                    if (!(themeName in this.possibleThemes)) {
+                        this.possibleThemes[themeName] = 0;
+                        --total;
+                    }
+                }
+            }
+
             while (allThemes.length > 0 && total > 0) {
                 var indx = Math.floor(allThemes.length * Math.random());
                 var name = allThemes[indx];
@@ -1017,8 +1016,6 @@ this.possibleThemes[themeName] = 0;
                 sys.sendMessage(src, "±Game: No such theme!", mafiachan);
                 return;
             }
-            sys.sendMessage(src, "±Game: Command is currently disabled for testing. Try using /start instead!", mafiachan);
-            return;
         } else {
             this.theme = this.themeManager.themes[themeName];
         }
