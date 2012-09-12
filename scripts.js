@@ -5008,6 +5008,7 @@ beforeNewPM: function(src){
     }
     if (user.lastpm < parseInt(sys.time() - 300, 10)) {
         user.pmcount = 0;
+        user.pmwarned = false;
     }
     var pmlimit = 20;
     if (user.pmcount > pmlimit){
