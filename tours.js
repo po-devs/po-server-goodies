@@ -1124,7 +1124,7 @@ function tourBattleEnd(winner, loser, result) {
         var winindex = tours.tour[key].battlers.hasOwnProperty(winname);
         if (winindex) {
             var wintime = parseInt(sys.time())-tours.tour[key].battlers[winname].time;
-            if (result == "forfeit" && ((wintime < 60 && !is1v1Tour(key)) || wintime < 20)) {
+            if (result == "forfeit" && ((wintime < 30 && !is1v1Tour(key)) || wintime < 5)) {
                 sendBotAll(sys.name(loser)+" forfeited against "+sys.name(winner)+" in a "+getFullTourName(key)+" match after "+wintime+" seconds.",sys.channelId("Victory Road"), false)
             }
             delete tours.tour[key].battlers[winname];
