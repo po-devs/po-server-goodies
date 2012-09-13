@@ -4036,13 +4036,13 @@ adminCommand: function(src, command, commandData, tar) {
             return;
         }
         var players = sys.playersOfChannel(chid);
+        var channelDataFile = SESSION.global().channelManager.dataFileFor(chid);
+        sys.writeToFile(channelDataFile, "");
         for(var x in players) {
             sys.kick(players[x], chid);
             if (sys.isInChannel(players[x], 0) !== true) {
                 sys.putInChannel(players[x], 0);
             }
-            var channelDataFile = SESSION.global().channelManager.dataFileFor(chid);
-            sys.writeToFile(channelDataFile, "");
         }
         return;
     }
