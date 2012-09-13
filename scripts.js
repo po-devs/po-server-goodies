@@ -5018,6 +5018,10 @@ channelCommand: function(src, command, commandData, tar) {
 
 beforeNewPM: function(src){
     var user = SESSION.users(src);
+    if (user.smute.active){
+        sys.stopEvent();
+        return;
+    }
     if (typeof user.lastpm === "undefined") {
         user.lastpm = parseInt(sys.time(), 10);
     }
