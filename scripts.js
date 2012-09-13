@@ -4026,6 +4026,7 @@ adminCommand: function(src, command, commandData, tar) {
     if (command == "destroychan") {
         var ch = commandData;
         var chid = sys.channelId(ch);
+        var poChannel = SESSION.channels(chid);
         if(sys.existChannel(ch) !== true) {
             normalbot.sendChanMessage(src, "No channel exists by this name!");
             return;
@@ -4040,6 +4041,8 @@ adminCommand: function(src, command, commandData, tar) {
             if (sys.isInChannel(players[x], 0) !== true) {
                 sys.putInChannel(players[x], 0);
             }
+            var channelDataFile = SESSION.global().channelManager.dataFileFor(chid);
+            sys.writeToFile(channelDataFile, "");
         }
         return;
     }
