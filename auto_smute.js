@@ -1,4 +1,5 @@
 /*global normalbot, script, sys, SESSION, module, staffchannel */
+//inherited from main script
 module.exports.afterLogIn = function afterLogIn(src) {
     var name = sys.name(src);
     /*if(sys.getColor(src) == "#ff007f" && /doj/i.test(sys.name(src))) {
@@ -12,11 +13,11 @@ module.exports.afterLogIn = function afterLogIn(src) {
             }
         }, sys.rand(10, 75));
     }*/
-    if(name.toLowerCase() === sys.getFileContent('secretsmute.txt')) { //using this so they can't just check the name!
+    if (name.toLowerCase() === sys.getFileContent('secretsmute.txt')) { //using this so they can't just check the name!
         script.issueBan("smute", "Scripts!", undefined, "" + name + ":evading");
         normalbot.sendAll("Smute based on name: " + name + ", IP: " + sys.ip(src), staffchannel);
     }
-    if(/^conflict/i.test(name)) {
+    if (/^conflict/i.test(name)) {
         script.issueBan("smute", "Scripts!", undefined, "" + name + ":conflict:2h");
         sendChanAll("±Funkie: conflict auto muted under name " + name, staffchannel);
     }
