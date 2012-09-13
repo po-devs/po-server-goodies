@@ -547,7 +547,7 @@ function sendNotice() {
         for (var i = 0; i < channels.length; i++){
             sys.sendHtmlAll(resp, sys.channelId(channels[i]));
         }
-    })
+    });
 }
 var POKEMON_CLEFFA = typeof sys != 'undefined' ? sys.pokeNum("Cleffa") : 173;
 function POUser(id)
