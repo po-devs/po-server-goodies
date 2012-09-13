@@ -4,6 +4,8 @@
  * Contains code for pokemon online server scripted tournaments.
  * Original code by coyotte508/Lutra.
  */
+
+/*global sendChanAll*/
 if (typeof Config == "undefined")
 	Config = {};
 if (!Config.tourneybot) Config.tourneybot = '±TourneyBot';
@@ -360,7 +362,7 @@ function Tournament(channel)
 			return;
 		}
 
-        if (!sys.hasTier(source, self.tier)){
+		if (!sys.hasTier(source, self.tier)){
 			sendPM(source, "You are currently not battling in the " + self.tier + " tier. Change your tier to " + self.tier + " to be able to join.");
 			return;
 		}
@@ -409,7 +411,7 @@ function Tournament(channel)
 			return;
 		}
 
-        if (!sys.hasTier(source, self.tier)){
+		if (!sys.hasTier(source, self.tier)){
 			sendPM(source, "You are currently not battling in the " + self.tier + " tier. Change your tier to " + self.tier + " to be able to join.");
 			return;
 		}
@@ -955,7 +957,7 @@ function Tournament(channel)
 	}
 
 	// event beforeChallenge
-    function beforeChallenge(source, dest, clauses, rated, mode, team, destTier) {
+	function beforeChallenge(source, dest, clauses, rated, mode, team, destTier) {
 		if (!playingPhase())
 			return;
 		var name1 = sys.name(source),
@@ -965,8 +967,8 @@ function Tournament(channel)
 				sendPM(source, "This guy isn't your opponent in the tourney.");
 				return true;
 			}
-            var srcTier = sys.tier(source, team);
-            if (srcTier != destTier || !cmp(srcTier, self.tier)) {
+			var srcTier = sys.tier(source, team);
+			if (srcTier != destTier || !cmp(srcTier, self.tier)) {
 				sendPM(source, "You must be both in the tier " + self.tier + " to battle in the tourney.");
 				return true;
 			}
@@ -1089,8 +1091,12 @@ module.exports = {
 			SESSION.global().tournamentData = {};
 		tournamentData = SESSION.global().tournamentData;
 
-		if (!SESSION.global().hasOwnProperty("permaTours"))
+		if (!SESSION.global().hasOwnProperty("permaTours")) {
 			SESSION.global().permaTours = [];
+			try {
+			SESSION.global().permaTours = JSON.parse(sys.getVal("tournaments*permaTours")) || [];
+			} catch(e) { }
+		}
 		permaTours = SESSION.global().permaTours;
 
 		var tourchannel, channelname = "Tournaments";
@@ -1102,23 +1108,18 @@ module.exports = {
 
 		module.tourchannel = tourchannel;
 
-		/* Do not reinitialize - in case init is called many times
+		// Do not reinitialize - in case init is called many times
 		if (module.tournaments[tourchannel])
 			return;
 
-		var tournament = new Tournament(tourchannel);
-		tournament.main = true;
-		tournament.announceInit();
-		module.tournaments[tourchannel] = tournament;
-
 		for (var i = 0; i < permaTours.length; ++i) {
 			if (sys.channel(permaTours[i]) !== undefined) {
-				tournament = new Tournament(permaTours[i]);
+				var tournament = new Tournament(permaTours[i]);
 				tournament.announceInit();
 				module.tournaments[permaTours[i]] = tournament;
 			}
 		}
-		TODO: afterChannelDestroyed delete from SESSION*/
+		/*TODO: afterChannelDestroyed delete from SESSION*/
 	},
 
 	// debug for evaling private variables
@@ -1152,19 +1153,20 @@ module.exports = {
 			}
 			/*if (channel == module.tourchannel)
 				return false;*/
-            if (command == "disabletours" && (sys.auth(source) >= 2 || SESSION.channels(channel).isChannelAdmin(source))) {
+			if (command == "disabletours" && (sys.auth(source) >= 2 || SESSION.channels(channel).isChannelAdmin(source))) {
 				delete module.tournaments[channel];
-				tourneybot.sendAll('Tournaments have been disabled',channel)
+				sys.sendAll(Config.tourneybot + ': Tournaments have been disabled',channel);
 				var ind = SESSION.global().permaTours.indexOf(channel);
 				if (ind >= 0) {
 					SESSION.global().permaTours.splice(ind, 1);
 				}
 				return true;
 			}
-        } else if (command == "enabletours" && (sys.auth(source) >= 2 || SESSION.channels(channel).isChannelAdmin(source))) {
+		} else if (command == "enabletours" && (sys.auth(source) >= 2 || SESSION.channels(channel).isChannelAdmin(source))) {
 			module.tournaments[channel] = new Tournament(channel);
 			module.tournaments[channel].announceInit();
 			SESSION.global().permaTours.push(channel);
+			sys.saveVal("tournaments*permaTours", JSON.stringify(SESSION.global().permaTours));
 			return true;
 		}
 		return false;
@@ -1190,10 +1192,10 @@ module.exports = {
 		}
 	},
 
-    beforeChallengeIssued : function(source, dest, clauses, rated, mode, team, destTier) {
+	beforeChallengeIssued : function(source, dest, clauses, rated, mode, team, destTier) {
 		var ret = false;
 		for (var channel in module.tournaments) {
-            ret |= module.tournaments[channel].events.beforeChallengeIssued(source, dest, clauses, rated, mode, team, destTier);
+			ret |= module.tournaments[channel].events.beforeChallengeIssued(source, dest, clauses, rated, mode, team, destTier);
 		}
 		return ret;
 	},
@@ -1210,7 +1212,7 @@ module.exports = {
 
 	onHelp: function(src, topic, channel) {
 		var help = [];
-		if (topic == "tournaments" && channel == tourchannel) {
+		if (topic == "tournaments") {
 			help = [
 				"/join: Enters you to in a tournament.",
 				"/unjoin: Withdraws you from a tournament.",
