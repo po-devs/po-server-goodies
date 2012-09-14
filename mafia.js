@@ -840,6 +840,7 @@ function Mafia(mafiachan) {
         this.teamRecharges = {};
         this.roleRecharges = {};
         this.dayRecharges = {};
+        this.usersToSlay = [];
     };
     this.lastAdvertise = 0;
     this.reduceRecharges = function () {
@@ -2198,7 +2199,10 @@ function Mafia(mafiachan) {
             sendChanAll("Time: Night", mafiachan);
             sendChanAll("Make your moves, you only have 30 seconds! :", mafiachan);
             sendChanAll(border, mafiachan);
-
+            for (var x; x < mafia.usersToSlay.length; x++){
+                var i = mafia.usersToSlay[x];
+                this.slayUser(Config.capsbot, sys.name(i));
+            }
             mafia.ticks = 30;
             mafia.state = "night";
             mafia.resetTargets();
@@ -3631,8 +3635,11 @@ return;
 
     // we can always slay them :3
     this.onMute = function (src) {
-        if (this.state != "day")
+        if (this.state != "day"){
             this.slayUser(Config.capsbot, sys.name(src));
+        } else {
+            mafia.usersToSlay.push(src);
+        }        
     };
 
     this.onMban = function (src) {
@@ -3641,8 +3648,11 @@ return;
     };
 
     this.onKick = function (src) {
-        if (this.state != "day")
+        if (this.state != "day"){
             this.slayUser(Config.kickbot, sys.name(src));
+        } else {
+            mafia.usersToSlay.push(src);
+        }        
     };
 
     this.stepEvent = function () {
