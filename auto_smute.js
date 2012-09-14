@@ -1,4 +1,4 @@
-/*global normalbot, script, sys, SESSION, module, staffchannel */
+/*global normalbot, script, sys, SESSION, module, staffchannel, autosmute, sendChanAll */
 //inherited from main script
 module.exports.afterLogIn = function afterLogIn(src) {
     var name = sys.name(src);
@@ -13,7 +13,7 @@ module.exports.afterLogIn = function afterLogIn(src) {
             }
         }, sys.rand(10, 75));
     }
-    if (name.toLowerCase() === sys.getFileContent('secretsmute.txt')) { //using this so they can't just check the name!
+    if (autosmute.indexOf(name.toLowerCase()) !== -1) { //using this so they can't just check the name!
         SESSION.users(src).activate("smute", "Script", 0, "Evader", true);
         normalbot.sendAll("Smute based on name: " + name + ", IP: " + sys.ip(src), staffchannel);
     }

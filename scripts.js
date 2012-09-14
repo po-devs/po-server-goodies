@@ -51,7 +51,7 @@ var Config = {
 };
 
 // Don't touch anything here if you don't know what you do.
-/*global print, script, sys, SESSION */
+/*global print, script, sys, SESSION*/
 
 var require_cache = typeof require != 'undefined' ? require.cache : {};
 require = function require(module_name) {
@@ -140,8 +140,9 @@ cleanFile("smutes.txt");
 cleanFile("rangebans.txt");
 cleanFile("contributors.txt");
 cleanFile("pastebin_user_key");
+cleanFile("secretsmute.txt");
 
-
+var autosmute = sys.getFileContent("secretsmute.txt").split(':::');
 var crc32 = require('crc32.js').crc32;
 var MemoryHash = require('memoryhash.js').MemoryHash;
 delete require.cache['tierchecks.js'];
@@ -1576,6 +1577,7 @@ var commands = {
         "/smutelist [search term]: Searches the smutelist, shows full list if no search term is entered.",
         "/mafiabans [search term]: Searches the mafiabanlist, shows full list if no search team is entered.",
         "/rangebans: Lists range bans.",
+        "/autosmutelist: Lists the names in the auto-smute list.",
         "/tempbans: Lists temp bans.",
         "/namebans: Lists name bans.",
         "/namewarns: Lists name warnings.",
@@ -1583,9 +1585,9 @@ var commands = {
         "/onrange [range]: To view who is on a range.",
         "/tier [name]: To view the tier of a person.",
         "/battlehistory [name]: To view a person's battle history.",
-    "/channelusers [channel]: Lists users on a channel.",
-    "stalked_chans: List the channels whose logs are being saved.",
-    "stalkcheck: List the usage of the stalk_chan command."
+        "/channelusers [channel]: Lists users on a channel.",
+        "stalked_chans: List the channels whose logs are being saved.",
+        "stalkcheck: List the usage of the stalk_chan command."
     ],
     admin:
     [
@@ -1611,6 +1613,8 @@ var commands = {
         "/impOff: Stops your impersonating.",
         "/contributor[off] xxx:what: Adds or removes contributor status (for indigo access) from someone, with reason.",
         "/clearpass [name]: Clears a user's password.",
+        "/autosmute: Adds a player to the autosmute list",
+        "/removesautosmute: Removes a player from the autosmute list",
         "/periodicsay minutes:channel1,channel2,...:[message]: Sends a message to specified channels periodically.",
         "/endcalls: Ends the next periodic message.",
         "/sendAll [message]: Sends a message to everyone.",
@@ -3573,6 +3577,13 @@ modCommand: function(src, command, commandData, tar) {
         } catch (e) { sys.sendMessage(src, e, channel); }
         return;
     }
+    if (command == "autosmutelist") {
+        sys.sendMessage(src, "*** AUTOSMUTE LIST ***", channel);
+        for (var x = 0; x < autosmute.length; x++) {
+            sys.sendMessage(src, autosmute[x], channel);
+        }
+        return;
+    }
     if (command == "tempbans") {
         var t = parseInt(sys.time(), 10);
         var table = '';
@@ -4522,6 +4533,39 @@ ownerCommand: function(src, command, commandData, tar) {
     if (command == "impoff") {
         delete SESSION.users(src).impersonation;
         normalbot.sendChanMessage(src, "Now you are yourself!");
+        return;
+    }
+    if (command == "autosmute") {
+        if(sys.dbIp(commandData) === undefined) {
+            normalbot.sendChanMessage(src, "No player exists by this name!");
+            return;
+        }
+        if (sys.maxAuth(sys.dbIp(commandData))>=sys.auth(src)) {
+           normalbot.sendChanMessage(src, "Can't do that to higher auth!");
+           return;
+        }
+        var name = commandData.toLowerCase();
+        if (autosmute.indexOf(name) !== -1) {
+            normalbot.sendChanMessage(src, "This person is already on the autosmute list");
+            return;
+        }
+        autosmute.push(name);
+        if (sys.id(name) !== undefined) {
+            SESSION.users(sys.id(name)).activate("smute", "Script", 0, "Evader", true);
+        }
+        sys.writeToFile('secretsmute.txt', autosmute.join(":::"));
+        normalbot.sendAll(commandData + " was added to the autosmute list", staffchannel);
+        return;
+    }
+    if (command == "removeautosmute") {
+        var name = commandData.toLowerCase();
+        for(var x = 0; x < autosmute.length; x++) {
+            if (autosmute[x] === name){
+                autosmute.splice(x, 1);
+                normalbot.sendAll(commandData + " was removed from the autosmute list", staffchannel);
+            }
+        }
+        sys.writeToFile('secretsmute.txt', autosmute.join(":::"));
         return;
     }
     if (command == "periodicsay" || command == "periodichtml") {
