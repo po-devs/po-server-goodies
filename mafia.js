@@ -2201,7 +2201,7 @@ function Mafia(mafiachan) {
             sendChanAll(border, mafiachan);
             for (var x = 0; x < mafia.usersToSlay.length; x++){
                 var i = mafia.usersToSlay[x];
-                mafia.slayUser(Config.capsbot, sys.name(i));
+                mafia.slayUser(Config.capsbot, i);
             }
             mafia.usersToSlay = [];
             mafia.ticks = 30;
@@ -3639,7 +3639,7 @@ return;
         if (this.state != "day") {
             this.slayUser(Config.capsbot, sys.name(src));
         } else {
-            mafia.usersToSlay.push(src);
+            mafia.usersToSlay.push(sys.name(src));
         }        
     };
 
@@ -3652,7 +3652,7 @@ return;
         if (this.state != "day") {
             this.slayUser(Config.kickbot, sys.name(src));
         } else {
-            mafia.usersToSlay.push(src);
+            mafia.usersToSlay.push(sys.name(src));
         }        
     };
 
