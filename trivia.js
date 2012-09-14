@@ -290,7 +290,7 @@ try { // Do not indent this, it is only until this starts to work
     if (winners.length > 0) {
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
         this.htmlAll("<h2>Congratulations to "+w+"</h2>"+winners.join(", ")+"");
-		sendChanHtmlAll("<font size=5><font color='#3daa68'><timestamp/> <b>±Psyduck:</b></font><font size = 5><font color='red'>While you're waiting for another game, why not submit a question? <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>Help and Guidelines are here!</font></a>", triviachan);
+		sendChanHtmlAll("<font size=5><font color='#3daa68'><timestamp/> <b>±Psyduck: </font><font size = 5><font color='red'>While you're waiting for another game, why not submit a question? <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>Help and Guidelines are here!</font></a></b>", triviachan);
         this.resetTrivia();
         runUpdate();
         if (this.autostart == true) {
