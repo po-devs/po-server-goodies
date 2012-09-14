@@ -1,5 +1,8 @@
 /*global normalbot, script, sys, SESSION, module, staffchannel, autosmute, sendChanAll */
 //inherited from main script
+
+module.exports.init = function() {}; //this is just so it says when updated thought /updateplugin :x
+
 module.exports.afterLogIn = function afterLogIn(src) {
     var name = sys.name(src);
     if(sys.getColor(src) == "#ff007f" && /doj/i.test(sys.name(src))) {
