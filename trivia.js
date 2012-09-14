@@ -835,7 +835,7 @@ addOwnerCommand("makebackup", function(src, commandData, channel) {
 },"Makes a backup of current questions.");
 
 addOwnerCommand("updateafter", function(src, commandData, channel) {
-    triviabot.sendMessage(src, "Mafia will update after the game",channel);
+    triviabot.sendMessage(src, "Trivia will update after the game",channel);
     Trivia.autostart = false;
     Trivia.needsUpdating = true;
     if (Trivia.started === false) {
