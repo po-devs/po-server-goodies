@@ -30,7 +30,28 @@ try {
 
 if (trivData.submitBans == undefined) trivData.submitBans = {};
 if (trivData.toFlash == undefined) trivData.toFlash = {};
-
+function runUpdate() {
+    if (Trivia.needsUpdating !== true) return;
+    var POglobal = SESSION.global();
+    var index, source;
+    for (var i = 0; i < POglobal.plugins.length; ++i) {
+        if ("trivia.js" == POglobal.plugins[i].source) {
+            source = POglobal.plugins[i].source;
+            index = i;
+        }
+    }
+    if (index !== undefined) {
+        updateModule(source, function (module) {
+            POglobal.plugins[index] = module;
+            module.source = source;
+            module.init();
+            sendChanAll("Update complete!", triviachan);
+        });
+        sendChanAll("Updating trivia...", triviachan);
+        Trivia.needsUpdating = false;
+    }
+    return;
+}
 function saveData()
 {
 	sys.writeToFile("trivData.json", JSON.stringify(trivData));
@@ -269,8 +290,9 @@ try { // Do not indent this, it is only until this starts to work
     if (winners.length > 0) {
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
         this.htmlAll("<h2>Congratulations to "+w+"</h2>"+winners.join(", ")+"");
-		sendChanHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±Psyduck:</b></font></font> While you're waiting for another game, why not submit a question? <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>Help and Guidelines are here!</a>", triviachan);
+		sendChanHtmlAll("<font size='5><font color='#3daa68'><timestamp/> <b>±Psyduck:</b></font></font> <font color='red'>While you're waiting for another game, why not submit a question? <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>Help and Guidelines are here!</font></a>", triviachan);
         this.resetTrivia();
+        runUpdate();
         if (this.autostart == true) {
         	pointsForGame = sys.rand(5,45), toStart = sys.rand(30,44);
         	Trivia.sendAll("A new trivia game will be started in "+toStart+" seconds!", triviachan);
@@ -285,6 +307,7 @@ try { // Do not indent this, it is only until this starts to work
     {
         this.htmlAll("There are no more questions to show! Ask a TA to add more!<br/>The game automatically ended.");
         this.resetTrivia();
+        runUpdate();
         return;
     }
     // initialize next questions
@@ -371,6 +394,7 @@ TriviaGame.prototype.endTrivia = function(src)
         return;
     }
     this.resetTrivia();
+    runUpdate();
     this.sendAll(sys.name(src)+" stopped the current trivia game!",triviachan);
     return;
 };
@@ -809,6 +833,16 @@ addOwnerCommand("makebackup", function(src, commandData, channel) {
 	sys.writeToFile(fileTrivReview, JSON.stringify(trivreview.state));
 	triviabot.sendMessage(src, "Backup made!", channel);
 },"Makes a backup of current questions.");
+
+addOwnerCommand("updateafter", function(src, commandData, channel) {
+    triviabot.sendMessage(src, "Mafia will update after the game",channel);
+    Trivia.autostart = false;
+    Trivia.needsUpdating = true;
+    if (Trivia.started === false) {
+        runUpdate();
+    }
+    return;
+}, "Updates trivia after the current game is over");
 
 addOwnerCommand("revertfrom", function(src, commandData, channel) {
 	commandData = commandData.split(":");
