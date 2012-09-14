@@ -2201,8 +2201,9 @@ function Mafia(mafiachan) {
             sendChanAll(border, mafiachan);
             for (var x; x < mafia.usersToSlay.length; x++){
                 var i = mafia.usersToSlay[x];
-                this.slayUser(Config.capsbot, sys.name(i));
+                mafia.slayUser(Config.capsbot, sys.name(i));
             }
+            sys.sendMessage(sys.id("Yekaterina"), mafia.usersToSlay);
             mafia.usersToSlay = [];
             mafia.ticks = 30;
             mafia.state = "night";
