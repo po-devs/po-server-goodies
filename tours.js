@@ -781,7 +781,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 5,
-            version: "1.621",
+            version: "1.622p",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -825,7 +825,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.621",
+        version: "1.622p",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -1920,7 +1920,7 @@ function tourCommand(src, command, commandData) {
                 }
                 return true;
             }
-            if (command == "passta") {
+            if (command == "passta" || (command == "passtas" && sys.auth(src) >= 1)) {
                 var newname = commandData.toLowerCase();
                 var tadmins = tours.touradmins
                 if (sys.dbIp(newname) === undefined) {
@@ -1952,7 +1952,7 @@ function tourCommand(src, command, commandData) {
                 tadmins[newname] = desc;
                 tours.touradmins = tadmins
                 saveTourKeys()
-                sendBotAll(sys.name(src)+" passed their tour auth to "+toCorrectCase(newname)+"!","~st",false)
+                sendBotAll(sys.name(src)+" passed their tour auth to "+toCorrectCase(newname)+"!",command == "passta" ? "~st" : sys.channelId("Indigo Plateau"),false)
                 return true;
             }
             if (command == "dq") {
