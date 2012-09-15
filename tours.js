@@ -781,7 +781,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 5,
-            version: "1.622p",
+            version: "1.700p",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -825,7 +825,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.622p",
+        version: "1.700p",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -1644,30 +1644,33 @@ function tourCommand(src, command, commandData) {
                 if (tours.tour[key].maxcpt !== undefined) {
                     if (tours.tour[key].cpt > tours.tour[key].maxcpt && tours.tour[key].maxplayers === "default") {
                         tours.tour[key].maxcpt = tours.tour[key].cpt
-                        if (tours.tour[key].maxcpt == 5) {
+                        if (tours.tour[key].maxcpt == 9) {
                             tours.tour[key].time += Math.floor(tourconfig.toursignup/6)
                         }
-                        else if (tours.tour[key].maxcpt == 9) {
+                        else if (tours.tour[key].maxcpt == 17) {
                             tours.tour[key].time += Math.floor(tourconfig.toursignup/4)
                         }
-                        else if (tours.tour[key].maxcpt == 17) {
+                        else if (tours.tour[key].maxcpt == 33) {
                             tours.tour[key].time += Math.floor(tourconfig.toursignup/3)
                         }
-                        else if (tours.tour[key].maxcpt == 33) {
+                        else if (tours.tour[key].maxcpt == 65) {
                             tours.tour[key].time += Math.floor(tourconfig.toursignup/2)
                         }
-                        else if (tours.tour[key].maxcpt == 65) {
+                        else if (tours.tour[key].maxcpt == 129) {
                             tours.tour[key].time += Math.floor(tourconfig.toursignup/1.5)
                         }
-                        else if (tours.tour[key].maxcpt == 129) {
+                        else if (tours.tour[key].maxcpt == 257) {
                             tours.tour[key].time += Math.floor(tourconfig.toursignup)
+                        }
+                        else if (tours.tour[key].maxcpt == 513) {
+                            tours.tour[key].time += Math.floor(tourconfig.toursignup*2)
                         }
                     }
                 }
-                // 256 players for technical reasons
+                // 1024 players for technical reasons
                 if (tours.tour[key].maxplayers === "default") {
                     sendBotAll(toCorrectCase(target)+" was added to the "+getFullTourName(key)+" tournament by "+sys.name(src)+" (player #"+tours.tour[key].players.length+"), "+(tours.tour[key].time - parseInt(sys.time()))+" second"+(tours.tour[key].time - parseInt(sys.time()) == 1 ? "" : "s")+" remaining!", tourschan, false)
-                    if (tours.tour[key].players.length >= 256) {
+                    if (tours.tour[key].players.length >= 1024) {
                         tours.tour[key].time = parseInt(sys.time())
                     }
                 }
@@ -1677,7 +1680,6 @@ function tourCommand(src, command, commandData) {
                         tours.tour[key].time = parseInt(sys.time())
                     }
                 }
-
                 return true;
             }
             // enabled for now!
@@ -2645,34 +2647,39 @@ function tourCommand(src, command, commandData) {
                 if (tours.tour[key].maxcpt !== undefined) {
                     if (tours.tour[key].cpt > tours.tour[key].maxcpt && tours.tour[key].maxplayers === "default") {
                         tours.tour[key].maxcpt = tours.tour[key].cpt
-                        if (tours.tour[key].maxcpt == 5) {
+                        if (tours.tour[key].maxcpt == 9) {
                             tours.tour[key].time += Math.floor(tourconfig.toursignup/6)
                         }
-                        else if (tours.tour[key].maxcpt == 9) {
-                            tours.tour[key].time += Math.floor(tourconfig.toursignup/4)
-                        }
                         else if (tours.tour[key].maxcpt == 17) {
-                            tours.tour[key].time += Math.floor(tourconfig.toursignup/3)
+                            tours.tour[key].time += Math.floor(tourconfig.toursignup/4)
                             sendBotAll("Over 16 players have joined the "+html_escape(getFullTourName(key))+" tournament in <a href='po:join/"+html_escape(sys.channel(tourschan))+"'>#"+html_escape(sys.channel(tourschan))+"</a>! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0,true)
                         }
                         else if (tours.tour[key].maxcpt == 33) {
-                            tours.tour[key].time += Math.floor(tourconfig.toursignup/2)
+                            tours.tour[key].time += Math.floor(tourconfig.toursignup/3)
                             sendBotAll("Over 32 players have joined the "+html_escape(getFullTourName(key))+" tournament in <a href='po:join/"+html_escape(sys.channel(tourschan))+"'>#"+html_escape(sys.channel(tourschan))+"</a>! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0,true)
                         }
                         else if (tours.tour[key].maxcpt == 65) {
-                            tours.tour[key].time += Math.floor(tourconfig.toursignup/1.5)
+                            tours.tour[key].time += Math.floor(tourconfig.toursignup/2)
                             sendBotAll("Over 64 players have joined the "+html_escape(getFullTourName(key))+" tournament in <a href='po:join/"+html_escape(sys.channel(tourschan))+"'>#"+html_escape(sys.channel(tourschan))+"</a>! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0,true)
                         }
                         else if (tours.tour[key].maxcpt == 129) {
-                            tours.tour[key].time += Math.floor(tourconfig.toursignup)
+                            tours.tour[key].time += Math.floor(tourconfig.toursignup/1.5)
                             sendBotAll("Over 128 players have joined the "+html_escape(getFullTourName(key))+" tournament in <a href='po:join/"+html_escape(sys.channel(tourschan))+"'>#"+html_escape(sys.channel(tourschan))+"</a>! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0,true)
+                        }
+                        else if (tours.tour[key].maxcpt == 257) {
+                            tours.tour[key].time += Math.floor(tourconfig.toursignup)
+                            sendBotAll("Over 256 players have joined the "+html_escape(getFullTourName(key))+" tournament in <a href='po:join/"+html_escape(sys.channel(tourschan))+"'>#"+html_escape(sys.channel(tourschan))+"</a>! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0,true)
+                        }
+                        else if (tours.tour[key].maxcpt == 513) {
+                            tours.tour[key].time += Math.floor(tourconfig.toursignup*2)
+                            sendBotAll("Over 512 players have joined the "+html_escape(getFullTourName(key))+" tournament in <a href='po:join/"+html_escape(sys.channel(tourschan))+"'>#"+html_escape(sys.channel(tourschan))+"</a>! You still have "+time_handle(tours.tour[key].time - parseInt(sys.time()))+" to join!",0,true)
                         }
                     }
                 }
                 if (tours.tour[key].maxplayers === "default") {
                     sendBotAll("<b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(getFullTourName(key))+" tournament! "+(tours.tour[key].time - parseInt(sys.time()))+" second"+(tours.tour[key].time - parseInt(sys.time()) == 1 ? "" : "s")+" remaining!", tourschan, true)
-                    // 256 players max
-                    if (tours.tour[key].players.length >= 256) {
+                    // 1024 players max
+                    if (tours.tour[key].players.length >= 1024) {
                         tours.tour[key].time = parseInt(sys.time())
                     }
                 }
@@ -3907,8 +3914,14 @@ function tourmakebracket(key) {
         else if (tours.tour[key].players.length <= 128) {
             bracketsize = 128
         }
-        else {
+        else if (tours.tour[key].players.length <= 256) {
             bracketsize = 256
+        }
+        else if (tours.tour[key].players.length <= 512) {
+            bracketsize = 512
+        }
+        else {
+            bracketsize = 1024
         }
         var subnumber = 1
         // push the players into people in events
@@ -3960,61 +3973,61 @@ function push128(x, size) {
 }
 
 function push256(x, size) {
+    push128(x, size)
+    push128(size/128-x-1, size)
+}
+
+function push512(x, size) {
     push256(x, size)
-    push256(size/128-x-1, size)
+    push256(size/256-x-1, size)
+}
+
+function push1024(x, size) {
+    push512(x, size)
+    push512(size/512-x-1, size)
 }
 
 // Sorting the tour bracket
 function toursortbracket(size, key) {
     try {
-        ladderlist = []
+        ladderlist = [];
+        var templist = [];
+        var templists = [];
+        var players = tours.tour[key].players;
+        var ttype = tours.tour[key].tourtype;
         // This algorithm will sort players by ranking. 1st is tier points, 2nd is overall tour points, 3rd is ladder rankings.
-        ladderlist.push(tours.tour[key].players[0])
-        for (var t=1; t<size; t++) {
-            var added = false;
-            var ishigher = false;
-            var playerranking1 = getExtraTierPoints(tours.tour[key].players[t], tours.tour[key].tourtype)
-            var playerranking2 = getExtraPoints(tours.tour[key].players[t], tours.tour[key].tourtype)
-            var playerranking3 = sys.ranking(tours.tour[key].players[t], tours.tour[key].tourtype) !== undefined ? sys.ranking(tours.tour[key].players[t], tours.tour[key].tourtype) : sys.totalPlayersByTier(tours.tour[key].tourtype)+1
-            if (isSub(tours.tour[key].players[t])) {
-                ladderlist.push(tours.tour[key].players[t])
+        for (var t in players) {
+            var pl = players[t];
+            if (isSub(pl)) {
+                templist.push([pl, -1, -1, t])
                 continue;
             }
-            for (var n=0; n<ladderlist.length;n++) {
-                var otherranking1 = getExtraTierPoints(ladderlist[n], tours.tour[key].tourtype)
-                var otherranking2 = getExtraPoints(ladderlist[n], tours.tour[key].tourtype)
-                var otherranking3 = sys.totalPlayersByTier(tours.tour[key].tourtype)+2
-                if (isSub(ladderlist[n])) {
-                    otherranking1 = -1
-                }
-                else if (sys.ranking(ladderlist[n], tours.tour[key].tourtype) === undefined) {
-                    otherranking3 = sys.totalPlayersByTier(tours.tour[key].tourtype) + 1
-                }
-                else {
-                    otherranking3 = sys.ranking(ladderlist[n], tours.tour[key].tourtype)
-                }
-                if (playerranking1 > otherranking1) {
-                    ishigher = true;
-                }
-                else if (playerranking1 === otherranking1 && playerranking2 > otherranking2) {
-                    ishigher = true;
-                }
-                else if (playerranking1 === otherranking1 && playerranking2 === otherranking2 && ((playerranking3 < otherranking3) || (playerranking3 === otherranking3 && sys.rand(0,2) == 1))) {
-                    ishigher = true;
-                }
-                if (ishigher) {
-                    ladderlist.splice(n,0,tours.tour[key].players[t])
-                    added = true;
-                    break;
-                }
+            var pr1 = getExtraTierPoints(pl, ttype)
+            var pr2 = getExtraPoints(pl, ttype)
+            var pr3 = sys.ranking(pl, ttype) !== undefined ? sys.ranking(pl, ttype) : sys.totalPlayersByTier(ttype)+1
+            templist.push([pl, pr1, pr2, pr3]);
+        }
+        var sortalgorithim = function(a,b) {
+            if (a[1] !== b[1]) {
+                return b[1]-a[1];
             }
-            if (!added) {
-                ladderlist.push(tours.tour[key].players[t])
+            else if (a[2] !== b[2]) {
+                return b[2]-a[2];
+            }
+            else if (a[3] !== b[3]) {
+                return a[3]-b[3];
+            }
+            else {
+                return 0.5-Math.random();
             }
         }
-        playerlist = []
+        templist.sort(sortalgorithim)
+        for (var s in templist) {
+            ladderlist.push(templist[s][0])
+        }
+        playerlist = [];
         /* Seed Storage */
-        tours.tour[key].seeds = ladderlist
+        tours.tour[key].seeds = ladderlist;
         if (size == 4) {
             push4(0, size);
         }
@@ -4035,6 +4048,12 @@ function toursortbracket(size, key) {
         }
         else if (size == 256) {
             push256(0, size);
+        }
+        else if (size == 512) {
+            push512(0, size);
+        }
+        else if (size == 1024) {
+            push1024(0, size);
         }
         tours.tour[key].players = playerlist
         delete ladderlist;
@@ -4342,15 +4361,15 @@ function isValidTourBattle(src,dest,clauses,mode,team,destTier,key,challenge) { 
 // awards tournament points
 function awardTourPoints(player, size, tier, delim, place, event) {
     // each tournament has a 'tier'
-    // points for 4-7,8-15,16-31,32-63,64-127,128-255,256 players respectively. Tours with 3 players or less don't score. Double tours score in the higher up bracket
+    // points for 4-7,8-15,16-31,32-63,64-127,128-255,256-511,512 players respectively. Tours with 3 players or less don't score. Double tours score in the higher up bracket
     var tierscore = {
-        'a': [1,2,4,8,16,32,64], // for individual tiers scroes or high scoring tiers
-        'b': [1,2,3,5,8,12,18], // default
-        'c': [0,1,2,3,5,8,12],
-        'd': [0,0,1,2,3,5,8],
-        'e': [0,0,0,1,2,3,5],
-        'f': [0,0,0,0,1,2,3],
-        'z': [0,0,0,0,0,0,0]
+        'a': [1,2,4,8,16,32,64,128], // for individual tiers scroes or high scoring tiers
+        'b': [1,2,3,5,8,12,18,27], // default
+        'c': [0,1,2,3,5,8,12,18],
+        'd': [0,0,1,2,3,5,8,12],
+        'e': [0,0,0,1,2,3,5,8],
+        'f': [0,0,0,0,1,2,3,5],
+        'z': [0,0,0,0,0,0,0,0]
     }
     var now = new Date()
     var capsmonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -4361,14 +4380,17 @@ function awardTourPoints(player, size, tier, delim, place, event) {
     if (size < 4 || !tourconfig.points) return;
     var scale = 0;
     var points = 0;
-    for (var x=3;x<10;x++) {
+    for (var x=3;x<11;x++) {
         if (size < Math.pow(2,x)) {
             scale = x-3;
             break;
         }
     }
-    if (delim && scale != 6) {
-        scale += 1
+    if (delim) {
+        scale += 1;
+    }
+    if (scale > 7) {
+        scale = 7;
     }
     if (place != 1) {
         scale -= (place*2 - 2)
