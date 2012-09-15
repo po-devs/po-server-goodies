@@ -1526,9 +1526,9 @@ function tourCommand(src, command, commandData) {
                     sendBotMessage(src,"They already have tour authority!",tourschan,false)
                     return true;
                 }
-                var authority = command.substr(0, command.length-1);
-                var readauth = "megauser";
                 var silent = command.charAt(command.length-1) == "s";
+                var authority = silent ? command.substr(0, command.length-1) : command;
+                var readauth = "megauser";
                 var desc = "mu";
                 if (authority == "tsadmin") {
                     desc = "ta";
