@@ -34,6 +34,8 @@ var tourcommands = ["join: joins a tournament",
                     "eventleaderboard: shows the event leaderboard",
                     "monthlyleaderboard [month] [year]: shows tour rankings for the current month, or the current month and year if specified",
                     "tourinfo [name]: gives information on a person's recent tour wins",
+                    "viewstats: views tournament stats",
+                    "viewseeds [tier]: views seed rankings for that tier",
                     "activeta: lists active tournament admins",
                     "rules: lists the tournament rules",
                     "touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)",
@@ -54,8 +56,6 @@ var tourmodcommands = ["*** Parameter Information ***",
                     "cancelbattle [name]: cancels that player's current battle",
                     "config: shows config settings",
                     "start: starts next tournament in the queue immediately (use sparingly)",
-                    "viewstats: views tournament stats",
-                    "viewseeds [tier]: views seed rankings for that tier",
                     "viewstaffstats: views tournament staff stats",
                     "configset [var]:[value]: changes config settings",
                     "passta [name]: passes your tour admin to a new name"]
@@ -780,8 +780,8 @@ function getConfigValue(file, key) {
             minplayers: 3,
             decayrate: 10,
             decaytime: 2,
-            decayglobalrate: 5,
-            version: "1.700p",
+            decayglobalrate: 2,
+            version: "1.700p1",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -825,7 +825,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.700p",
+        version: "1.700p1",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -2150,37 +2150,6 @@ function tourCommand(src, command, commandData) {
                 }
                 return true;
             }
-            if (command == "viewstats") {
-                sys.sendMessage(src,"*** TOUR STATS ***",tourschan)
-                var gstats = tourstats.general;
-                for (var x in gstats) {
-                    sys.sendMessage(src, x+": Played "+gstats[x].played+" times; average of "+Math.floor(gstats[x].players/gstats[x].played)+" players per tournament.", tourschan);
-                }
-                return true;
-            }
-            if (command == "viewseeds") {
-                var thetier = find_tier(commandData);
-                if (thetier === null) {
-                    sendBotMessage(src,"No such tier exists.",tourschan,false)
-                    return true;
-                }
-                if (!tourseeds.hasOwnProperty(thetier)) {
-                    sendBotMessage(src,"No data exists.",tourschan,false)
-                    return true;
-                }
-                sys.sendMessage(src,"*** Tour seeds for "+thetier+" ***",tourschan)
-                var seedstats = tourseeds[thetier];
-                var endarray = [];
-                for (var x in seedstats) {
-                    endarray.push([x, seedstats[x].points, time_handle(tourconfig.decaytime*24*60*60-(parseInt(sys.time())-seedstats[x].lastwin))]);
-                }
-                endarray.sort(function(a,b) {return b[1]-a[1]});
-                for (var z=0; z<32; z++) {
-                    if (endarray.length <= z) break;
-                    sys.sendMessage(src,endarray[z][0]+" ~ "+endarray[z][1]+" ~ Decays in: "+endarray[z][2],tourschan)
-                }
-                return true;
-            }
             if (command == "config") {
                 sys.sendMessage(src,"*** CURRENT CONFIGURATION ***",tourschan)
                 sys.sendMessage(src,"Maximum Queue Length: "+tourconfig.maxqueue,tourschan)
@@ -2831,6 +2800,38 @@ function tourCommand(src, command, commandData) {
                 var roundstosend = htmlborder+rounddata.join(htmlborder)+htmlborder
                 sys.sendHtmlMessage(src, roundstosend, tourschan)
             }
+            return true;
+        }
+        if (command == "viewstats") {
+            sys.sendMessage(src,"*** TOUR STATS ***",tourschan)
+            var gstats = tourstats.general;
+            for (var x in gstats) {
+                sys.sendMessage(src, x+": Played "+gstats[x].played+" times; average of "+Math.floor(gstats[x].players/gstats[x].played)+" players per tournament.", tourschan);
+            }
+            return true;
+        }
+        if (command == "viewseeds") {
+            var thetier = find_tier(commandData);
+            if (thetier === null) {
+                sendBotMessage(src,"No such tier exists.",tourschan,false)
+                return true;
+            }
+            if (!tourseeds.hasOwnProperty(thetier)) {
+                sendBotMessage(src,"No data exists.",tourschan,false)
+                return true;
+            }
+            var htmltosend = "<table><tr><th colspan=3>Tour seeds for "+html_escape(thetier)+"</th></tr><tr><th>Name</th><th>Seed Points</th><th>Decays in</th></tr>"
+            var seedstats = tourseeds[thetier];
+            var endarray = [];
+            for (var x in seedstats) {
+                endarray.push([x, seedstats[x].points, time_handle(tourconfig.decaytime*24*60*60-(parseInt(sys.time())-seedstats[x].lastwin))]);
+            }
+            endarray.sort(function(a,b) {return b[1]-a[1]});
+            for (var z=0; z<32; z++) {
+                if (endarray.length <= z) break;
+                htmltosend = htmltosend+"<tr><td>"+html_escape(endarray[z][0])+"</td><td>"+(Math.round(endarray[z][1]*10)/10)+"</td><td>"+endarray[z][2]+"</td></tr>";
+            }
+            sys.sendHtmlMessage(src, htmltosend+"</table>", tourschan);
             return true;
         }
         if (command == "touradmins" || command == "megausers") {
@@ -4380,7 +4381,7 @@ function awardTourPoints(player, size, tier, delim, place, event) {
     if (size < 4 || !tourconfig.points) return;
     var scale = 0;
     var points = 0;
-    for (var x=3;x<11;x++) {
+    for (var x=3;x<12;x++) {
         if (size < Math.pow(2,x)) {
             scale = x-3;
             break;
