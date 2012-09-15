@@ -182,7 +182,7 @@ function update_web_logs() {
     }
     else
     {
-        sys.sendAll('Return: '+resp, 2);
+        //sys.sendAll('Return: '+resp, 2);
     }
 }
 
