@@ -352,6 +352,7 @@ function Mafia(mafiachan) {
                 throw "This theme has no roles1, it can not be played.";
             theme.villageCantLoseRoles = plain_theme.villageCantLoseRoles;
             theme.minplayers = plain_theme.minplayers;
+            theme.nolynch = plain_theme.nolynch;
             theme.name = plain_theme.name;
             theme.author = plain_theme.author;
             theme.summary = plain_theme.summary;
@@ -2119,13 +2120,31 @@ function Mafia(mafiachan) {
                     }
                 }
             }
-            sendChanAll("Time: Day", mafiachan);
-            sendChanAll("It's time to vote someone off, type /Vote [name], you only have " + mafia.ticks + " seconds! :", mafiachan);
-            sendChanAll(border, mafiachan);
+            var nolyn = false;
+            if (mafia.theme.nolynch !== undefined && mafia.theme.nolynch !== false){
+                nolyn = true;
+            }
+            if (nolyn === false){
+                sendChanAll("Time: Day", mafiachan);
+                sendChanAll("It's time to vote someone off, type /Vote [name], you only have " + mafia.ticks + " seconds! :", mafiachan);
+                sendChanAll(border, mafiachan);
 
-            mafia.state = "day";
-            mafia.votes = {};
-            mafia.voteCount = 0;
+                mafia.state = "day";
+                mafia.votes = {};
+                mafia.voteCount = 0;
+            } else {
+                sendChanAll("Time: Night", mafiachan);
+                sendChanAll("Make your moves, you only have 30 seconds! :", mafiachan);
+                sendChanAll(border, mafiachan);
+                for (var x = 0; x < mafia.usersToSlay.length; x++){
+                    var i = mafia.usersToSlay[x];
+                    mafia.slayUser(Config.capsbot, i);
+                }
+                mafia.usersToSlay = [];
+                mafia.ticks = 30;
+                mafia.state = "night";
+                mafia.resetTargets();
+            }
         },
         day: function () {
             sendChanAll(border, mafiachan);
