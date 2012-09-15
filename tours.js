@@ -781,7 +781,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 5,
-            version: "1.620",
+            version: "1.621",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -825,7 +825,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.620",
+        version: "1.621",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -1564,7 +1564,7 @@ function tourCommand(src, command, commandData) {
                 tours.touradmins = tadmins
                 saveTourKeys()
                 if (command == "tdeadmin") {
-                    sendBotAll(sys.name(src)+" fired "+commandData.toLowerCase()+" from running tournaments!",tourschan,false)
+                    sendBotAll(sys.name(src)+" fired "+commandData.toLowerCase()+" from running tournaments!","~st",false)
                 }
                 else {
                     sendBotAll(sys.name(src)+" fired "+commandData.toLowerCase()+" from running tournaments!",sys.channelId("Indigo Plateau"),false)
