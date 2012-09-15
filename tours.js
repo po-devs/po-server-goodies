@@ -843,7 +843,7 @@ function initTours() {
         if (!tours.hasOwnProperty('keys')) tours.keys = [];
         if (!tours.hasOwnProperty('tour')) tours.tour = {};
         if (!tours.hasOwnProperty('history')) tours.history = [];
-        /*if (!tours.hasOwnProperty('touradmins'))*/ tours.touradmins = {};
+        if (!tours.hasOwnProperty('touradmins')) tours.touradmins = {};
         if (!tours.hasOwnProperty('subscriptions')) tours.subscriptions = {};
         if (!tours.hasOwnProperty('activetas')) tours.activetas = [];
         if (!tours.hasOwnProperty('activehistory')) tours.activehistory = [];
@@ -1508,7 +1508,7 @@ function tourCommand(src, command, commandData) {
         }
         if (isTourSuperAdmin(src)) {
             /* Tournament Admins etc. */
-            if (command == "tadmin" || command == "tadmins" || (isTourOwner(src) && (command == "tsadmin" || command == "tsadmins")) || ((sys.auth(src) >= 3 || sys.name(src) == "Aerith") && (command == "towner" || command == "towners"))) {
+            if (command == "tadmin" || command == "tadmins" || (isTourOwner(src) && (command == "tsadmin" || command == "tsadmins")) || (sys.auth(src) >= 3 && (command == "towner" || command == "towners"))) {
                 var tadmins = tours.touradmins
                 if (sys.dbIp(commandData) === undefined) {
                     sendBotMessage(src,"This user doesn't exist!",tourschan,false)
