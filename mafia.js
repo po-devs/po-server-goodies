@@ -3543,8 +3543,13 @@ return;
                 "",
                 "*** MAFIA ADMINS ***",
                 ""];
+            var mas = [];
             for (x in mafiaAdmins.hash) {
-                out.push(x + (sys.id(x) !== undefined ? ":" : ""));
+                mas.push(x + (sys.id(x) !== undefined ? ":" : ""));
+            }
+            mas = mas.sort()
+            for (var i = 0; i < mas.length; i++) {
+                out.push(mas[i]);
             }
             out.push("");
             dump(src, out);
