@@ -1534,7 +1534,7 @@ function tourCommand(src, command, commandData) {
                     desc = "ta";
                     readauth = "tournament admin";
                 }
-                if (authortiy == "towner") {
+                if (authority == "towner") {
                     desc = "to";
                     readauth = "tournament owner";
                 }
