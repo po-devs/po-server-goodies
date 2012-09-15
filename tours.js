@@ -4593,14 +4593,6 @@ function isTourOwner(src) {
         return true;
     }
     var lname = sys.name(src).toLowerCase();
-    var towners = ["lamperi", "aerith", "zeroality", "elements"];
-    if (towners !== undefined && towners.length >= 1) {
-        for (var t in towners) {
-            if (cmp(towners[t].toLowerCase(),lname)) {
-                return true;
-            }
-        }
-    }
     var tadmins = tours.touradmins
     if (tadmins.hasOwnProperty(lname)) {
         if (tadmins[lname] == "to") return true;
