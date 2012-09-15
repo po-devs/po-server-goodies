@@ -353,6 +353,7 @@ function Mafia(mafiachan) {
             theme.villageCantLoseRoles = plain_theme.villageCantLoseRoles;
             theme.minplayers = plain_theme.minplayers;
             theme.nolynch = plain_theme.nolynch;
+            theme.votesniping = plain_theme.votesniping;
             theme.name = plain_theme.name;
             theme.author = plain_theme.author;
             theme.summary = plain_theme.summary;
@@ -3393,7 +3394,7 @@ return;
 
                 if (this.voteCount == Object.keys(mafia.players).length) {
                     mafia.ticks = 1;
-                } else if (mafia.ticks < 8) {
+                } else if (mafia.ticks < 8 && (mafia.theme.votesniping === undefined || mafia.theme.votesniping === false)) {
                     mafia.ticks = 8;
                 }
                 return;
