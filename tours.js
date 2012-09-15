@@ -1560,6 +1560,14 @@ function tourCommand(src, command, commandData) {
                     sendBotMessage(src,"They don't have tour authority!",tourschan,false)
                     return true;
                 }
+                if (tadmins[lname] == "to" && sys.auth(src) < 3) {
+                    sendBotMessage(src,"You don't have sufficient authority!",tourschan,false)
+                    return true;
+                }
+                if (tadmins[lname] == "ta" && !isTourOwner(src)) {
+                    sendBotMessage(src,"You don't have sufficient authority!",tourschan,false)
+                    return true;
+                }
                 delete tadmins[lname];
                 tours.touradmins = tadmins
                 saveTourKeys()
