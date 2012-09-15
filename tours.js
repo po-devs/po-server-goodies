@@ -4918,7 +4918,8 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel === tourschan) {
+        var globalcommands = ["tadmin", "tadmins", "tsadmin", "tsadmins", "towner", "towners"];
+        if (channel === tourschan || globalcommands.indexOf(command) > -1) {
             return tourCommand(source, command, commandData)
         }
         return false;
