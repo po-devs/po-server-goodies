@@ -87,14 +87,16 @@ var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "#4: Do not abuse the tournament commands.",
                 "#5: Do not leave or forfeit in a tournament you are in just so you can join another.",
                 "#6: Do not timestall (i.e. deliberately wait until timeout).",
-                "#7: Ask someone on the /activeta list if you need help or have problems.",
-                "#8: Event tournaments (marked by red borders)",
+                "#7: Inactive/Idle players will automatically be disqualified.",
+                "- Post a message and make sure you are not idle, otherwise you risk being disqualified.",
+                "#8: Ask someone on the /activeta list if you need help or have problems.",
+                "#9: Event tournaments (marked by red borders)",
                 "- Be aware that these are all double elimination. Breaking or attempting to break the above rules will result in immediate disqualification.",
-                "#9: Respecting other players, sportsmanship and integrity:",
+                "#10: Respecting other players, sportsmanship and integrity:",
                 "- Avoid complaining about hax, luck or other such things as much as possible.",
                 "- Avoid making inflammatory remarks/taunts towards other users - treat other users the way you would like to be treated.",
                 "- Any deliberate attempt to undermine the integrity of tournaments will result in a permanent ban from tournaments.",
-                "#10: Do not attempt to circumvent the rules",
+                "#11: Do not attempt to circumvent the rules",
                 "- Attempting to circumvent the rules through trickery, proxy or other such methods will be punished."]
 
 function sendBotMessage(user, message, chan, html) {
@@ -723,7 +725,11 @@ function sendHtmlAuthPlayers(message,key) {
             var regex2 = "<td>"+htmlname+"</td>";
             var newregex2 = "<td><font style='BACKGROUND-COLOR: #FFAAFF'>"+htmlname+"</font><ping/></td>";
             var newmessage = message.replace(regex1,newregex1).replace(regex2,newregex2)
-            sys.sendHtmlMessage(arr[x], newmessage, tourschan)
+            sys.sendHtmlMessage(arr[x], newmessage, tourschan);
+            if (isInSpecificTour(arr[x],key) && sys.away(sys.id(arr[x]))) {
+                sys.changeAway(sys.id(arr[x]), false);
+                sendBotMessage(sys.id(arr[x]),"You are no longer idle!",tourschan,false);
+            }
         }
     }
     sendLog(message, true);
@@ -744,6 +750,10 @@ function sendFlashingBracket(message,key) {
             newmessage = message.replace(regex1,newregex1).replace(regex2,newregex2)
         }
         sys.sendHtmlMessage(arr[x], newmessage, tourschan)
+        if (isInSpecificTour(arr[x],key) && sys.away(sys.id(arr[x]))) {
+            sys.changeAway(sys.id(arr[x]), false);
+            sendBotMessage(sys.id(arr[x]),"You are no longer idle!",tourschan,false);
+        }
     }
     sendLog(message, true);
 }
@@ -781,7 +791,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.700p1",
+            version: "1.700p2",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -825,7 +835,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.700p1",
+        version: "1.700p2",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -3212,7 +3222,7 @@ function removeinactive(key) {
                 sendDebugMessage("We don't need to check", tourschan)
                 continue;
             }
-            if (activelist.hasOwnProperty(player1)) {
+            if (activelist.hasOwnProperty(player1) && !sys.away(sys.id(player1))) {
                 if (activelist[player1] == "Battle" || (typeof activelist[player1] == "number" && activelist[player1]+tourconfig.activity >= parseInt(sys.time()))) {
                     sendDebugMessage(player1+" is active; continuing", tourschan)
                     dq1 = false
@@ -3233,7 +3243,7 @@ function removeinactive(key) {
             else {
                 sendDebugMessage(player1+" is not active; disqualifying", tourschan)
             }
-            if (activelist.hasOwnProperty(player2)) {
+            if (activelist.hasOwnProperty(player2) && !sys.away(sys.id(player2))) {
                 if (activelist[player2] == "Battle" || (typeof activelist[player2] == "number" && activelist[player2]+tourconfig.activity >= parseInt(sys.time()))) {
                     sendDebugMessage(player2+" is active; continuing", tourschan)
                     dq2 = false
