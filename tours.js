@@ -3221,8 +3221,8 @@ function removeinactive(key) {
                 sendDebugMessage("We don't need to check", tourschan)
                 continue;
             }
-            if (activelist.hasOwnProperty(player1) && !sys.away(sys.id(player1))) {
-                if (activelist[player1] == "Battle" || (typeof activelist[player1] == "number" && activelist[player1]+tourconfig.activity >= parseInt(sys.time()))) {
+            if (activelist.hasOwnProperty(player1)) {
+                if (activelist[player1] == "Battle" || (typeof activelist[player1] == "number" && activelist[player1]+tourconfig.activity >= parseInt(sys.time()) && !sys.away(sys.id(player1)))) {
                     sendDebugMessage(player1+" is active; continuing", tourschan)
                     dq1 = false
                 }
@@ -3242,8 +3242,8 @@ function removeinactive(key) {
             else {
                 sendDebugMessage(player1+" is not active; disqualifying", tourschan)
             }
-            if (activelist.hasOwnProperty(player2) && !sys.away(sys.id(player2))) {
-                if (activelist[player2] == "Battle" || (typeof activelist[player2] == "number" && activelist[player2]+tourconfig.activity >= parseInt(sys.time()))) {
+            if (activelist.hasOwnProperty(player2)) {
+                if (activelist[player2] == "Battle" || (typeof activelist[player2] == "number" && activelist[player2]+tourconfig.activity >= parseInt(sys.time()) && !sys.away(sys.id(player2)))) {
                     sendDebugMessage(player2+" is active; continuing", tourschan)
                     dq2 = false
                 }
