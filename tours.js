@@ -726,9 +726,9 @@ function sendHtmlAuthPlayers(message,key) {
             var newregex2 = "<td><font style='BACKGROUND-COLOR: #FFAAFF'>"+htmlname+"</font><ping/></td>";
             var newmessage = message.replace(regex1,newregex1).replace(regex2,newregex2)
             sys.sendHtmlMessage(arr[x], newmessage, tourschan);
-            if (isInSpecificTour(arr[x],key) && sys.away(sys.id(arr[x]))) {
-                sys.changeAway(sys.id(arr[x]), false);
-                sendBotMessage(sys.id(arr[x]),"You are no longer idle!",tourschan,false);
+            if (isInSpecificTour(sys.name(arr[x]),key) && sys.away(arr[x])) {
+                sys.changeAway(arr[x], false);
+                sendBotMessage(arr[x],"You are no longer idle!",tourschan,false);
             }
         }
     }
@@ -750,9 +750,9 @@ function sendFlashingBracket(message,key) {
             newmessage = message.replace(regex1,newregex1).replace(regex2,newregex2)
         }
         sys.sendHtmlMessage(arr[x], newmessage, tourschan)
-        if (isInSpecificTour(arr[x],key) && sys.away(sys.id(arr[x]))) {
-            sys.changeAway(sys.id(arr[x]), false);
-            sendBotMessage(sys.id(arr[x]),"You are no longer idle!",tourschan,false);
+        if (isInSpecificTour(sys.name(arr[x]),key) && sys.away(arr[x])) {
+            sys.changeAway(arr[x], false);
+            sendBotMessage(arr[x],"You are no longer idle!",tourschan,false);
         }
     }
     sendLog(message, true);
