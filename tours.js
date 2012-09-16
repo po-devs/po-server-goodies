@@ -781,7 +781,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.700x",
+            version: "1.700p1",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -825,7 +825,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.700x",
+        version: "1.700p1",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -4584,7 +4584,7 @@ function isTourAdmin(src) {
     if (sys.auth(src) < 0 || !sys.dbRegistered(sys.name(src))) {
         return false;
     }
-    if (isTourSuperAdmin(src)) {
+    if (sys.auth(src) >= 1 || isTourSuperAdmin(src)) {
         return true;
     }
     var tadmins = tours.touradmins
@@ -4598,7 +4598,7 @@ function isTourSuperAdmin(src) {
     if (sys.auth(src) < 1 || !sys.dbRegistered(sys.name(src))) {
         return false;
     }
-    if (isTourOwner(src)) {
+    if (sys.auth(src) >= 2 || isTourOwner(src)) {
         return true;
     }
     var tadmins = tours.touradmins
