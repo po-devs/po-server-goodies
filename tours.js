@@ -1923,10 +1923,14 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "passta" || (command == "passtas" && sys.auth(src) >= 1)) {
+                if (sys.auth(src) === 0) {
+                    sendBotMessage(src,"This command has been disabled, please ask one of the tournament owners.",tourschan,false)
+                    return true;
+                }
                 var newname = commandData.toLowerCase();
                 var tadmins = tours.touradmins
                 if (sys.dbIp(newname) === undefined) {
-                   sendBotMessage(src,"This user doesn't exist!",tourschan,false)
+                    sendBotMessage(src,"This user doesn't exist!",tourschan,false)
                     return true;
                 }
                 if (!sys.dbRegistered(newname)) {
@@ -4613,7 +4617,7 @@ function isTourOwner(src) {
     if (sys.auth(src) < 1 || !sys.dbRegistered(sys.name(src))) {
         return false;
     }
-    if (sys.auth(src) >= 3 || sys.name(src) == "Aerith") {
+    if (sys.auth(src) >= 3) {
         return true;
     }
     var lname = sys.name(src).toLowerCase();
