@@ -2714,7 +2714,7 @@ function tourCommand(src, command, commandData) {
             var key = null
             var atSignups = false;
             for (var x in tours.tour) {
-                if (isInTour(sys.name(src)) === x && typeof tours.tour[x].maxplayers == "number" && tours.tour[x].round > 4) {
+                if (isInTour(sys.name(src)) === x && typeof tours.tour[x].maxplayers == "number" && tours.tour[x].round > 4 && tours.tour[x].state == "round") {
                     key = x;
                     break;
                 }
