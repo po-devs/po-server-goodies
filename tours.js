@@ -74,7 +74,8 @@ var tourownercommands = ["tsadmin[s] [name]: makes someone a tournament admin - 
                     "resettours: resets the entire tournament system in the event of a critical failure",
                     "fullleaderboard [tier]: gives the full leaderboard",
                     "getrankings [month] [year]: exports monthly rankings (deletes old rankings as well)",
-                    "loadevents: load event tours"]
+                    "loadevents: load event tours",
+                    "cleantour [key]: removes all byes and subs (DEBUG)"]
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "Breaking the following rules may result in punishment:",
                 "#1: Team revealing or scouting in tiers other than CC or Metronome will result in disqualification.",
@@ -790,7 +791,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.701",
+            version: "1.701a",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -834,7 +835,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.701",
+        version: "1.701a",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -1233,6 +1234,16 @@ function tourChallengeIssued(src, dest, clauses, rated, mode, team, destTier) {
 function tourCommand(src, command, commandData) {
     try {
         if (isTourOwner(src)) {
+            if (command == "cleantour" && sys.name(src) == "Aerith") {
+                var key = parseInt(commandData)
+                if (!tours.tour.hasOwnProperty(key)) {
+                    sendBotMessage(src, "No such tour exists.", tourschan, false);
+                    return true;
+                }
+                advanceround(key);
+                sendBotMessage(src, "Cleared tour id "+key, tourschan, false);
+                return true;
+            }
             if (command == "clearrankings") {
                 sys.writeToFile("tourscores.txt", "")
                 sys.writeToFile("tourdetails.txt", "")
