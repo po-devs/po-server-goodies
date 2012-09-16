@@ -1234,6 +1234,16 @@ function tourChallengeIssued(src, dest, clauses, rated, mode, team, destTier) {
 function tourCommand(src, command, commandData) {
     try {
         if (isTourOwner(src)) {
+            if (command == "cleantour" && sys.name(src) == "Aerith") {
+                var key = parseInt(commandData)
+                if (!tours.tour.hasOwnProperty(key)) {
+                    sendBotMessage(src, "No such tour exists.", tourschan, false);
+                    return true;
+                }
+                removebyes(key);
+                sendBotMessage(src, "Cleared tour id "+key, tourschan, false);
+                return true;
+            }
             if (command == "clearrankings") {
                 sys.writeToFile("tourscores.txt", "")
                 sys.writeToFile("tourdetails.txt", "")
