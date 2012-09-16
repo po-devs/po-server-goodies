@@ -1240,7 +1240,7 @@ function tourCommand(src, command, commandData) {
                     sendBotMessage(src, "No such tour exists.", tourschan, false);
                     return true;
                 }
-                removebyes(key);
+                advanceround(key);
                 sendBotMessage(src, "Cleared tour id "+key, tourschan, false);
                 return true;
             }
