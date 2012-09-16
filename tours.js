@@ -981,7 +981,8 @@ function tourStep() {
         }
     }
     for (var x in tours.tour) {
-        if (tours.tour[x].time-parseInt(sys.time()) <= 10 || tours.tour[x].time-parseInt(sys.time())%30 === 0) {
+        var rtime = tours.tour[x].time-parseInt(sys.time());
+        if ((rtime <= 10 && rtime >= 0) || rtime%30 === 0) {
             sendDebugMessage("Time Remaining in the "+getFullTourName(x)+" tournament: "+time_handle(tours.tour[x].time-parseInt(sys.time()))+"; State: "+tours.tour[x].state,tourschan)
         }
         if (tours.tour[x].state == "signups") {
