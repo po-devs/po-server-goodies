@@ -790,7 +790,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.701",
+            version: "1.702",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -834,7 +834,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.701",
+        version: "1.702",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -981,7 +981,7 @@ function tourStep() {
         }
     }
     for (var x in tours.tour) {
-        if (tours.tour[x].time-parseInt(sys.time()) <= 10) {
+        if (tours.tour[x].time-parseInt(sys.time()) <= 10 || tours.tour[x].time-parseInt(sys.time())%30 === 0) {
             sendDebugMessage("Time Remaining in the "+getFullTourName(x)+" tournament: "+time_handle(tours.tour[x].time-parseInt(sys.time()))+"; State: "+tours.tour[x].state,tourschan)
         }
         if (tours.tour[x].state == "signups") {
