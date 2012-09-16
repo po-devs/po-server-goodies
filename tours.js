@@ -74,8 +74,7 @@ var tourownercommands = ["tsadmin[s] [name]: makes someone a tournament admin - 
                     "resettours: resets the entire tournament system in the event of a critical failure",
                     "fullleaderboard [tier]: gives the full leaderboard",
                     "getrankings [month] [year]: exports monthly rankings (deletes old rankings as well)",
-                    "loadevents: load event tours",
-                    "cleantour [key]: removes all byes and subs (DEBUG)"]
+                    "loadevents: load event tours"]
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "Breaking the following rules may result in punishment:",
                 "#1: Team revealing or scouting in tiers other than CC or Metronome will result in disqualification.",
@@ -87,14 +86,16 @@ var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "#4: Do not abuse the tournament commands.",
                 "#5: Do not leave or forfeit in a tournament you are in just so you can join another.",
                 "#6: Do not timestall (i.e. deliberately wait until timeout).",
-                "#7: Ask someone on the /activeta list if you need help or have problems.",
-                "#8: Event tournaments (marked by red borders)",
+                "#7: Inactive/Idle players will automatically be disqualified.",
+                "- Post a message and make sure you are not idle, otherwise you risk being disqualified.",
+                "#8: Ask someone on the /activeta list if you need help or have problems.",
+                "#9: Event tournaments (marked by red borders)",
                 "- Be aware that these are all double elimination. Breaking or attempting to break the above rules will result in immediate disqualification.",
-                "#9: Respecting other players, sportsmanship and integrity:",
+                "#10: Respecting other players, sportsmanship and integrity:",
                 "- Avoid complaining about hax, luck or other such things as much as possible.",
                 "- Avoid making inflammatory remarks/taunts towards other users - treat other users the way you would like to be treated.",
                 "- Any deliberate attempt to undermine the integrity of tournaments will result in a permanent ban from tournaments.",
-                "#10: Do not attempt to circumvent the rules",
+                "#11: Do not attempt to circumvent the rules",
                 "- Attempting to circumvent the rules through trickery, proxy or other such methods will be punished."]
 
 function sendBotMessage(user, message, chan, html) {
@@ -723,7 +724,11 @@ function sendHtmlAuthPlayers(message,key) {
             var regex2 = "<td>"+htmlname+"</td>";
             var newregex2 = "<td><font style='BACKGROUND-COLOR: #FFAAFF'>"+htmlname+"</font><ping/></td>";
             var newmessage = message.replace(regex1,newregex1).replace(regex2,newregex2)
-            sys.sendHtmlMessage(arr[x], newmessage, tourschan)
+            sys.sendHtmlMessage(arr[x], newmessage, tourschan);
+            if (isInSpecificTour(sys.name(arr[x]),key) && sys.away(arr[x])) {
+                sys.changeAway(arr[x], false);
+                sendBotMessage(arr[x],"You are no longer idle!",tourschan,false);
+            }
         }
     }
     sendLog(message, true);
@@ -744,6 +749,10 @@ function sendFlashingBracket(message,key) {
             newmessage = message.replace(regex1,newregex1).replace(regex2,newregex2)
         }
         sys.sendHtmlMessage(arr[x], newmessage, tourschan)
+        if (isInSpecificTour(sys.name(arr[x]),key) && sys.away(arr[x])) {
+            sys.changeAway(arr[x], false);
+            sendBotMessage(arr[x],"You are no longer idle!",tourschan,false);
+        }
     }
     sendLog(message, true);
 }
@@ -774,14 +783,14 @@ function getConfigValue(file, key) {
             absbreaktime: 600,
             remindertime: 30,
             channel: "Tournaments",
-            errchannel: "Indigo Plateau",
+            errchannel: "Developer's Den",
             tourbotcolour: "#3DAA68",
             minpercent: 5,
             minplayers: 3,
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.700p1",
+            version: "1.702",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -818,14 +827,14 @@ function initTours() {
         abstourbreak: parseInt(getConfigValue("tourconfig.txt", "absbreaktime")),
         reminder: parseInt(getConfigValue("tourconfig.txt", "remindertime")),
         channel: "Tournaments",
-        errchannel: "Indigo Plateau",
+        errchannel: "Developer's Den",
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
         minplayers: parseInt(getConfigValue("tourconfig.txt", "minplayers")),
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.700p1",
+        version: "1.702",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -972,7 +981,8 @@ function tourStep() {
         }
     }
     for (var x in tours.tour) {
-        if (tours.tour[x].time-parseInt(sys.time()) <= 10) {
+        var rtime = tours.tour[x].time-parseInt(sys.time());
+        if ((rtime <= 10 && rtime >= 0) || rtime%30 === 0) {
             sendDebugMessage("Time Remaining in the "+getFullTourName(x)+" tournament: "+time_handle(tours.tour[x].time-parseInt(sys.time()))+"; State: "+tours.tour[x].state,tourschan)
         }
         if (tours.tour[x].state == "signups") {
@@ -1923,10 +1933,14 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "passta" || (command == "passtas" && sys.auth(src) >= 1)) {
+                if (sys.auth(src) === 0) {
+                    sendBotMessage(src,"This command has been disabled, please ask one of the tournament owners.",tourschan,false)
+                    return true;
+                }
                 var newname = commandData.toLowerCase();
                 var tadmins = tours.touradmins
                 if (sys.dbIp(newname) === undefined) {
-                   sendBotMessage(src,"This user doesn't exist!",tourschan,false)
+                    sendBotMessage(src,"This user doesn't exist!",tourschan,false)
                     return true;
                 }
                 if (!sys.dbRegistered(newname)) {
@@ -2701,7 +2715,7 @@ function tourCommand(src, command, commandData) {
             var key = null
             var atSignups = false;
             for (var x in tours.tour) {
-                if (isInTour(sys.name(src)) === x && typeof tours.tour[x].maxplayers == "number" && tours.tour[x].round > 4) {
+                if (isInTour(sys.name(src)) === x && typeof tours.tour[x].maxplayers == "number" && tours.tour[x].round > 4 && tours.tour[x].state == "round") {
                     key = x;
                     break;
                 }
@@ -3209,7 +3223,7 @@ function removeinactive(key) {
                 continue;
             }
             if (activelist.hasOwnProperty(player1)) {
-                if (activelist[player1] == "Battle" || (typeof activelist[player1] == "number" && activelist[player1]+tourconfig.activity >= parseInt(sys.time()))) {
+                if (activelist[player1] == "Battle" || (typeof activelist[player1] == "number" && activelist[player1]+tourconfig.activity >= parseInt(sys.time()) && !sys.away(sys.id(player1)))) {
                     sendDebugMessage(player1+" is active; continuing", tourschan)
                     dq1 = false
                 }
@@ -3230,7 +3244,7 @@ function removeinactive(key) {
                 sendDebugMessage(player1+" is not active; disqualifying", tourschan)
             }
             if (activelist.hasOwnProperty(player2)) {
-                if (activelist[player2] == "Battle" || (typeof activelist[player2] == "number" && activelist[player2]+tourconfig.activity >= parseInt(sys.time()))) {
+                if (activelist[player2] == "Battle" || (typeof activelist[player2] == "number" && activelist[player2]+tourconfig.activity >= parseInt(sys.time()) && !sys.away(sys.id(player2)))) {
                     sendDebugMessage(player2+" is active; continuing", tourschan)
                     dq2 = false
                 }
