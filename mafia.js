@@ -1422,7 +1422,7 @@ function Mafia(mafiachan) {
         if (player.role.actions.night[action].limit !== undefined) {
             limit = player.role.actions.night[action].limit;
         }
-        var charges = mafia.getCharges(player, "night", command);
+        var charges = mafia.getCharges(player, "night", action);
         if (charges !== undefined && charges < limit) {
             limit = charges; //this is to stop it from potentially getting around the charge limit
         }
@@ -1833,7 +1833,9 @@ function Mafia(mafiachan) {
                     var charges = mafia.getCharges(player, "night", o.action);
                     
                     if (charges !== undefined && targets.length > 0 && rolecheck !== player.role.role && teamcheck !== player.role.side) {
-                        mafia.removeCharge(player, "night", o.action);
+                        for(var x in targets.length){
+                            mafia.removeCharge(player, "night", o.action);
+                        }
                         if (Action.common == "Role" && rolecheck === undefined) {
                             rolecheck = player.role.role;
                         }
