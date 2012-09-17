@@ -1636,6 +1636,7 @@ var commands = {
         "/updatebansites: To update ban sites.",
         "/updatetierchecks: To update tier checks.",
         "/togglerainbow: [on/off]: To turn rainbow on or off.",
+        "/towner[s] [name]: makes someone a tournament owner (tours.js plugin needs to be installed for this to work)",
         "/stalk_chan: [on/off]: To start/stop saving the logs of that chan and sending them to the website.",
         "/update_logs: Send the logs to the website immediately without waiting for midnight."
     ]
