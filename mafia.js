@@ -7,7 +7,7 @@
 
 // Global variables inherited from scripts.js
 /*global cmp, mafiabot, getTimeString, mafiaAdmins, updateModule, script, sys, saveKey, SESSION, sendChanAll, require, Config, module*/
-/*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
+
 var MAFIA_CHANNEL = "Mafia Channel";
 
 var is_command = require("utilities.js").is_command;
