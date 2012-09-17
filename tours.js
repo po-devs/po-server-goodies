@@ -800,7 +800,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.704",
+            version: "1.705",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -844,7 +844,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.704",
+        version: "1.705",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -4157,7 +4157,7 @@ function tourprintbracket(key) {
                     rankstring.push("#" + (r+1) + ": " + toCorrectCase(rankingorder[r]))
                 }
                 var capsmonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-                var dateString = now.getUTCDate()+" "+capsmonths[now.getUTCMonth()]+", "+now.getUTCMinutes()+":"+now.getUTCSeconds()+" GMT";
+                var dateString = now.getUTCDate()+" "+capsmonths[now.getUTCMonth()]+", "+now.getUTCHours()+":"+now.getUTCMinutes()+" GMT";
                 tours.history.unshift(getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players")
                 sys.appendToFile("eventwinners.txt", dateString + " ~ " +getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players\n")
             }
@@ -4413,7 +4413,7 @@ function awardTourPoints(player, size, tier, delim, place, event) {
     }
     var now = new Date();
     var capsmonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    var dateString = now.getUTCDate()+" "+capsmonths[now.getUTCMonth()]+", "+now.getUTCMinutes()+":"+now.getUTCSeconds()+" GMT";
+    var dateString = now.getUTCDate()+" "+capsmonths[now.getUTCMonth()]+", "+now.getUTCHours()+":"+now.getUTCMinutes()+" GMT";
     if (place == 1) {
         sys.appendToFile("tourdetails.txt", player+":::"+size+":::"+tier+":::"+dateString+"\n");
     }
