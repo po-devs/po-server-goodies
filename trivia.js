@@ -256,7 +256,12 @@ try { // Do not indent this, it is only until this starts to work
                 answeredCorrectly.push(name);
                 this.player(name).points += pointAdd;
             } else {
-                wrongAnswers.push("<span title='" + utilities.html_escape(name) + "'>" + utilities.html_escape(this.submittedAnswers[id].answer) + "</span>");
+            	var tanswer = this.submittedAnswers[id].answer;
+                wrongAnswers.push("<span title='" + utilities.html_escape(name) + "'>" + utilities.html_escape(tanswer) + "</span>");
+                if (/asshole|\bdick|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger/gi.test(tanswer)) {
+                    if (sys.existChannel("Victory Road"))
+                    triviabot.sendAll("Warning: Player "+name+" answered '"+tanswer+"' in Trivia", sys.channelId("Victory Road"));
+                }
             }
         }
     }
