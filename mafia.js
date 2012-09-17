@@ -1422,6 +1422,10 @@ function Mafia(mafiachan) {
         if (player.role.actions.night[action].limit !== undefined) {
             limit = player.role.actions.night[action].limit;
         }
+        var charges = mafia.getCharges(player, "night", command);
+        if (charges !== undefined && charges < limit) {
+            limit = charges; //this is to stop it from potentially getting around the charge limit
+        }
         var list;
         if (commonTarget == 'Self') {
             if (!(action in player.targets)) {
