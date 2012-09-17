@@ -1849,7 +1849,7 @@ function Mafia(mafiachan) {
                     var charges = mafia.getCharges(player, "night", o.action);
                     
                     if (charges !== undefined && targets.length > 0 && rolecheck !== player.role.role && teamcheck !== player.role.side) {
-                        for (var x; x < targets.length; x++) {
+                        for (var x = 0; x < targets.length; x++) {
                             mafia.removeCharge(player, "night", o.action);
                         }
                         if (Action.common == "Role" && rolecheck === undefined) {
