@@ -2898,7 +2898,7 @@ function tourCommand(src, command, commandData) {
             sys.sendMessage(src, "",tourschan)
             sys.sendMessage(src, "*** TOURNAMENT OWNERS ***",tourschan)
             for (var o in tos) {
-                if (sys.isInChannel(tos[o], tourschan)) {
+                if (sys.isInChannel(sys.id(tos[o]), tourschan)) {
                     sys.sendMessage(src, toCorrectCase(tos[o]) + " (Online):",tourschan)
                 }
                 else {
@@ -2908,7 +2908,7 @@ function tourCommand(src, command, commandData) {
             sys.sendMessage(src, "",tourschan)
             sys.sendMessage(src, "*** TOURNAMENT ADMINS ***",tourschan)
             for (var a in tas) {
-                if (sys.isInChannel(tas[a], tourschan)) {
+                if (sys.isInChannel(sys.id(tas[a]), tourschan)) {
                     sys.sendMessage(src, toCorrectCase(tas[a]) + " (Online):",tourschan)
                 }
                 else {
@@ -2918,7 +2918,7 @@ function tourCommand(src, command, commandData) {
             sys.sendMessage(src, "",tourschan)
             sys.sendMessage(src, "*** MEGAUSERS ***",tourschan)
             for (var m in mus) {
-                if (sys.isInChannel(mus[m], tourschan)) {
+                if (sys.isInChannel(sys.id(mus[m]), tourschan)) {
                     sys.sendMessage(src, toCorrectCase(mus[m]) + " (Online):",tourschan)
                 }
                 else {
