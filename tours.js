@@ -2843,9 +2843,15 @@ function tourCommand(src, command, commandData) {
         if (command == "viewstats") {
             sys.sendMessage(src,"*** TOUR STATS ***",tourschan)
             var gstats = tourstats.general;
+            var totalplayers = 0;
+            var totaltours = 0;
             for (var x in gstats) {
                 sys.sendMessage(src, x+": Played "+gstats[x].played+" times; average of "+Math.floor(gstats[x].players/gstats[x].played)+" players per tournament.", tourschan);
+                totalplayers += gstats[x].players;
+                totaltours += gstats[x].played;
             }
+            sys.sendMessage(src, "", tourschan);
+            sys.sendMessage(src, "Overall: Played "+totaltours+" tours; total of "+totalplayers+" places.", tourschan);
             return true;
         }
         if (command == "viewseeds") {
