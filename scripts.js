@@ -4249,7 +4249,7 @@ ownerCommand: function(src, command, commandData, tar) {
          var logs = sys.getFileContent('po_logs.json');
          sys.writeToFile('po_logs.json', '');
          sys.writeToFile('po_logs_back_up.json', logs);
-         sys.sendMessage(src, "±Logs: "+sys.getFileContent('po_logs_back_up.json'), channel);
+         sys.sendMessage(src, "±Logs: "+logs, channel);
 		 return;
     }
     if(command == "stalk_chan") {
