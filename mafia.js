@@ -354,7 +354,7 @@ function Mafia(mafiachan) {
             theme.minplayers = plain_theme.minplayers;
             theme.nolynch = plain_theme.nolynch;
             theme.nightphase = plain_theme.nightphase;
-            theme.standbyphase = plain_theme.standbyphase
+            theme.standbyphase = plain_theme.standbyphase;
             theme.votesniping = plain_theme.votesniping;
             theme.name = plain_theme.name;
             theme.author = plain_theme.author;
@@ -2144,9 +2144,9 @@ function Mafia(mafiachan) {
             if (mafia.players.length >= 15) {
                 mafia.ticks = mafia.ticks * 1.33;
             } else if (mafia.players.length <= 4) {
-                mafia.ticks = parseInt(mafia.ticks * 0.5);
+                mafia.ticks = parseInt(mafia.ticks * 0.5, 10);
                 if (mafia.ticks < 1){
-                    mafia.ticks = 1
+                    mafia.ticks = 1;
                 }
             }
 
