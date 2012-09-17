@@ -2141,7 +2141,7 @@ function Mafia(mafiachan) {
                 mafia.ticks = mafia.theme.ticks.standby;
             }
             if (mafia.players.length >= 15) {
-                mafia.ticks = mafia.ticks * 1.33;
+                mafia.ticks = parseInt(mafia.ticks * 1.33, 10);
             } else if (mafia.players.length <= 4) {
                 mafia.ticks = parseInt(mafia.ticks * 0.5, 10);
                 if (mafia.ticks < 1){
