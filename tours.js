@@ -1,6 +1,10 @@
 /*
 Code for tours.js
 Coding done by Shadowfist
+
+Files used: tourscores.txt, eventscores.txt, tourscores_tier.txt, tourwinverbs.txt, tourconfig.txt, eventtours.txt,
+tourdetails.txt, eventwinners.txt, eventplayers.txt, tourmonthscore_month.txt, tourmutes.txt,
+touradmins.json, tastats.json, tourseeds.json, tourhistory.json
 */
 
 if (typeof tourschan !== "string") {
@@ -56,7 +60,7 @@ var tourmodcommands = ["*** Parameter Information ***",
                     "cancelbattle [name]: cancels that player's current battle",
                     "config: shows config settings",
                     "start: starts next tournament in the queue immediately (use sparingly)",
-                    "viewstaffstats: views tournament staff stats",
+                    "viewstaffstats [name]: views tournament staff stats for a user",
                     "configset [var]:[value]: changes config settings",
                     "passta [name]: passes your tour admin to a new name"]
 var touradmincommands = ["tourstart [tier]:[parameters]: starts a tier of that tournament immediately, provided one is not in signups.",
@@ -601,6 +605,12 @@ function saveTourKeys() {
     return;
 }
 
+function saveTourHistory() {
+    var history = {'tours': tours.history, 'staff': tours.activehistory};
+    sys.writeToFile("tourhistory.json", JSON.stringify(history));
+    return;
+}
+
 // This function will get a tier's clauses in readable format
 function getTourClauses(tier) {
     // force Self-KO clause
@@ -790,7 +800,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.702",
+            version: "1.703",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -834,7 +844,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.702",
+        version: "1.703",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -910,6 +920,15 @@ function initTours() {
             }
         }
     }
+    try {
+        var history = sys.getFileContent('tourhistory.json');
+        var parseData = JSON.parse(history);
+        tours.history = parseData.history;
+        tours.activehistory = parseData.staff;
+    }
+    catch (err) {
+        sendChanAll("No tour history detected.", tourschan)
+    }
     loadTourMutes()
     loadEventPlayers()
     sendChanAll("Version "+tourconfig.version+" of the tournaments system was loaded successfully in this channel!", tourschan)
@@ -968,10 +987,13 @@ function tourStep() {
     if (parseInt(sys.time())%3600 === 0) {
         var comment = now + " ~ " + tours.activetas.join(", ")
         tours.activehistory.unshift(comment)
-        if (tours.activehistory.length > 168) {
+        if (tours.activehistory.length > 72) {
             tours.activehistory.pop()
         }
+        saveTourHistory();
         tours.activetas = [];
+        // save for reload
+        sys.writeToFile()
         // clear out tourmutes list
         for (var m in tours.tourmutes) {
             if (tours.tourmutes[m].expiry <= parseInt(sys.time())) {
@@ -2155,12 +2177,16 @@ function tourCommand(src, command, commandData) {
             if (command == "viewstaffstats") {
                 sys.sendMessage(src,"*** TOUR STAFF STATS ***",tourschan)
                 var stats = tourstats.staff;
-                for (var x in stats) {
-                    sys.sendMessage(src, "*** "+x+" ***", tourschan);
-                    var statfile = stats[x];
+                var lname = commandData.toLowerCase();
+                if (stats.hasOwnProperty(lname)) {
+                    sys.sendMessage(src, "*** TOUR STAFF STATS for "+lname+" ***", tourschan);
+                    var statfile = stats[lname];
                     for (var s in statfile) {
                         sys.sendMessage(src, s+": Started "+statfile[s].started+" times; actually ran "+statfile[s].run+" times", tourschan);
                     }
+                }
+                else {
+                    sendBotMessage(src, "No data exists for this user", tourschan, false);
                 }
                 return true;
             }
@@ -2872,7 +2898,7 @@ function tourCommand(src, command, commandData) {
             sys.sendMessage(src, "",tourschan)
             sys.sendMessage(src, "*** TOURNAMENT OWNERS ***",tourschan)
             for (var o in tos) {
-                if (sys.id(tos[o]) !== undefined) {
+                if (sys.isInChannel(tos[o], tourschan)) {
                     sys.sendMessage(src, toCorrectCase(tos[o]) + " (Online):",tourschan)
                 }
                 else {
@@ -2882,7 +2908,7 @@ function tourCommand(src, command, commandData) {
             sys.sendMessage(src, "",tourschan)
             sys.sendMessage(src, "*** TOURNAMENT ADMINS ***",tourschan)
             for (var a in tas) {
-                if (sys.id(tas[a]) !== undefined) {
+                if (sys.isInChannel(tas[a], tourschan)) {
                     sys.sendMessage(src, toCorrectCase(tas[a]) + " (Online):",tourschan)
                 }
                 else {
@@ -2892,7 +2918,7 @@ function tourCommand(src, command, commandData) {
             sys.sendMessage(src, "",tourschan)
             sys.sendMessage(src, "*** MEGAUSERS ***",tourschan)
             for (var m in mus) {
-                if (sys.id(mus[m]) !== undefined) {
+                if (sys.isInChannel(mus[m], tourschan)) {
                     sys.sendMessage(src, toCorrectCase(mus[m]) + " (Online):",tourschan)
                 }
                 else {
@@ -4133,13 +4159,14 @@ function tourprintbracket(key) {
                     rankstring.push("#" + (r+1) + ": " + toCorrectCase(rankingorder[r]))
                 }
                 var capsmonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-                var dateString = now.getUTCDate()+" "+capsmonths[now.getUTCMonth()]
+                var dateString = now.getUTCDate()+" "+capsmonths[now.getUTCMonth()]+", "+now.getUTCMinutes()+":"+now.getUTCSeconds()+" GMT";
                 tours.history.unshift(getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players")
                 sys.appendToFile("eventwinners.txt", dateString + " ~ " +getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players\n")
             }
             if (tours.history.length > 25) {
                 tours.history.pop()
             }
+            saveTourHistory();
             try {
                 var garray = tourstats.general;
                 var tier = tours.tour[key].tourtype;
@@ -4386,11 +4413,11 @@ function awardTourPoints(player, size, tier, delim, place, event) {
         'f': [0,0,0,0,1,2,3,5],
         'z': [0,0,0,0,0,0,0,0]
     }
-    var now = new Date()
-    var capsmonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    var dateString = now.getUTCDate()+" "+capsmonths[now.getUTCMonth()]
+    var now = new Date();
+    var capsmonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var dateString = now.getUTCDate()+" "+capsmonths[now.getUTCMonth()]+", "+now.getUTCMinutes()+":"+now.getUTCSeconds()+" GMT";
     if (place == 1) {
-        sys.appendToFile("tourdetails.txt", player+":::"+size+":::"+tier+":::"+dateString+"\n")
+        sys.appendToFile("tourdetails.txt", player+":::"+size+":::"+tier+":::"+dateString+"\n");
     }
     if (size < 4 || !tourconfig.points) return;
     var scale = 0;
