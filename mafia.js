@@ -7,7 +7,7 @@
 
 // Global variables inherited from scripts.js
 /*global cmp, mafiabot, getTimeString, mafiaAdmins, updateModule, script, sys, saveKey, SESSION, sendChanAll, require, Config, module*/
-
+/*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 var MAFIA_CHANNEL = "Mafia Channel";
 
 var is_command = require("utilities.js").is_command;
@@ -1691,7 +1691,7 @@ function Mafia(mafiachan) {
                     }
                 }
                 if ("standby" in initPlayer.role.actions) {
-                    for (act in initPlayer.role.actions.standby) {
+                    for (var act in initPlayer.role.actions.standby) {
                         if ("initialrecharge" in initPlayer.role.actions.standby[act]) {
                             mafia.setRechargeFor(initPlayer, "standby", act, initPlayer.role.actions.standby[act].initialrecharge);
                         }
@@ -2028,7 +2028,7 @@ function Mafia(mafiachan) {
                         }
                         else if (command == "inspect") {
                             var Sight = Action.Sight;
-                            targetMode = targetMode || {};
+                            var targetMode = targetMode || {};
                             if (targetMode.revealSide !== undefined || Sight === "Team") {
                                 mafia.sendPlayer(player.name, "±Info: " + target.name + " is sided with the " + mafia.theme.trside(target.role.side) + "!!");
                             } else if (typeof Sight == "object") {
@@ -3696,7 +3696,7 @@ return;
                         var haxPlayer = haxPlayers[j];
                         var r = Math.random();
                         var roleName = this.theme.trside(player.role.side);
-                        team = this.getPlayersForRole(player.role.side);
+                        var team = this.getPlayersForRole(player.role.side);
                         var playerRole = this.theme.trrole(player.role.role);
                         if (r < mafia.theme.roles[role].actions.standbyHax[command].revealTeam) {
                             this.sendPlayer(haxPlayer, "±Game: The " + roleName + " used " + command + " on " + commandData + "!");
