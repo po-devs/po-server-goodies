@@ -992,8 +992,6 @@ function tourStep() {
         }
         saveTourHistory();
         tours.activetas = [];
-        // save for reload
-        sys.writeToFile()
         // clear out tourmutes list
         for (var m in tours.tourmutes) {
             if (tours.tourmutes[m].expiry <= parseInt(sys.time())) {
