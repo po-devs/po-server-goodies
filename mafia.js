@@ -506,9 +506,9 @@ function Mafia(mafiachan) {
             }
         }
         if ("standbyHax" in obj.actions) {
-            for (i in obj.actions.hax) {
+            for (i in obj.actions.standbyHax) {
                 action = i;
-                if (!(action in this.haxRoles)) {
+                if (!(action in this.standbyHaxRoles)) {
                     this.standbyHaxRoles[action] = [];
                 }
                 this.standbyHaxRoles[action].push(obj.role);
