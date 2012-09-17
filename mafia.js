@@ -1840,8 +1840,8 @@ function Mafia(mafiachan) {
                     if (mafia.getCharges(player, "night", o.action) !== undefined) {
                         var charge = mafia.getCharges(player, "night", o.action);
                         var chargetxt = "You have " + charge + " charges remaining";
-                        if (Action.chargestext) {
-                            chargetxt = Action.chargestext.replace(/~Charges~/g, charge);
+                        if (Action.chargesmsg) {
+                            chargetxt = Action.chargesmsg.replace(/~Charges~/g, charge);
                         }
                         mafia.sendPlayer(player.name, "±Game: " + chargetxt);
                     }
