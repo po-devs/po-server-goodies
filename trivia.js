@@ -260,7 +260,7 @@ try { // Do not indent this, it is only until this starts to work
                 wrongAnswers.push("<span title='" + utilities.html_escape(name) + "'>" + utilities.html_escape(tanswer) + "</span>");
                 if (/asshole|\bdick|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger/gi.test(tanswer)) {
                     if (sys.existChannel("Victory Road"))
-                    triviabot.sendAll("Warning: Player "+name+" answered '"+tanswer+"' in Trivia", sys.channelId("Victory Road"));
+                    triviabot.sendAll("Warning: Player "+name+" answered '"+tanswer+"' to the question '"+triviaq.get(this.roundQuestion).question+"' in #Trivia", sys.channelId("Victory Road"));
                 }
             }
         }
