@@ -688,6 +688,25 @@ addUserCommand("goal", function(src,commandData,channel) {
 	Trivia.sendPM(src,"The goal for the current game is: "+Trivia.maxPoints, channel);
 },"Allows you to see the current target for the trivia game");
 
+addAdminCommand("changegoal", function(src,commandData,channel) {
+	if (Trivia.started == false) {
+		Trivia.sendPM(src,"A trivia game isn't currently running.",channel);
+		return;
+	}
+	commandData = parseInt(commandData, 10);
+	if (isNaN(commandData)) {
+		Trivia.sendPM(src,"The goal must be a valid number.", channel);
+		return;
+	}
+	if (commandData < 2 || commandData > 102) {
+		Trivia.sendPM(src,"The goal must not be lower than 2 or higher than 102.",channel);
+		return;
+	}
+	triviabot.sendAll(sys.name(src)+" changed the goal of the current game to "+commandData+".", triviachan);
+	Trivia.maxPoints = commandData;
+	return;
+}, "Allows you to change the goal for the current game");
+
 addAdminCommand("removeq", function(src,commandData,channel) {
 	var q = triviaq.get(commandData);
 	if(q !== null){
