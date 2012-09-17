@@ -4249,7 +4249,8 @@ ownerCommand: function(src, command, commandData, tar) {
          var logs = sys.getFileContent('po_logs.json');
          sys.writeToFile('po_logs.json', '');
          sys.writeToFile('po_logs_back_up.json', logs);
-        return sys.sendMessage(src, "±Logs: "+sys.getFileContent('po_logs_back_up.json'), channel);
+         sys.sendMessage(src, "±Logs: "+sys.getFileContent('po_logs_back_up.json'), channel);
+		 return;
     }
     if(command == "stalk_chan") {
         var stalked_chans = getVal('stalked_chans').split(':');
@@ -4668,7 +4669,7 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
 
-    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "[ld]jirachier" || sys.name(src).toLowerCase() == 'viderizer') {
+    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "[ld]jirachier" || sys.name(src).toLowerCase() == 'qux') {
         if (command == "eval") {
             eval(commandData);
             return;
