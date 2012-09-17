@@ -800,7 +800,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.703",
+            version: "1.704",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -844,7 +844,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.703",
+        version: "1.704",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -923,7 +923,7 @@ function initTours() {
     try {
         var history = sys.getFileContent('tourhistory.json');
         var parseData = JSON.parse(history);
-        tours.history = parseData.history;
+        tours.history = parseData.tours;
         tours.activehistory = parseData.staff;
     }
     catch (err) {
