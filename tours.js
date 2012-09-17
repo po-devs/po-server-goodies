@@ -568,6 +568,27 @@ function seedDecay(tier) {
     }
 }
 
+// Gets the top seed
+function topSeed(tier) {
+    try {
+        if (!tourseeds.hasOwnProperty(tier)) {
+            return "~Pokemon Online~";
+        }
+        var tierseeds = tourseeds[tier];
+        var leader = ["~Pokemon Online~", 0];
+        for (var x in tierseeds) {
+            if (tierseeds[x].points > leader[1]) {
+                leader = [x, tierseeds[x].points];
+            }
+        }
+        return toCorrectCase(leader[0]);
+    }
+    catch (err) {
+        sendChanAll("Error in determining top seed, "+err, tourserrchan);
+        return "~Pokemon Online~";
+    }
+}
+
 // This function gets the tier points
 function getExtraPoints(player, tier) {
     var data = sys.getFileContent("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
@@ -800,7 +821,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.706",
+            version: "1.707",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -844,7 +865,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.706",
+        version: "1.707",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -3815,6 +3836,7 @@ function tourstart(tier, starter, key, parameters) {
         tours.tour[key].active = {};
         tours.tour[key].starter = starter.toLowerCase();
         tours.tour[key].parameters = parameters;
+        tours.tour[key].leader = topSeed(tier); // best seed
         tours.globaltime = 0;
         if (typeof parameters.maxplayers === "number" && !isNaN(parameters.maxplayers)) {
             tours.tour[key].maxplayers = parameters.maxplayers;
@@ -4183,6 +4205,9 @@ function tourprintbracket(key) {
                     garray[tier] = {'played': 1, 'players': players}
                 }
                 seedDecay(tours.tour[key].tourtype);
+                if (topSeed(tier) !== tours.tour[key].leader) {
+                    sendBotAll(topSeed(tier) + " is now the top seed for "+tier+"!", tourschan, false)
+                }
                 // write tour stat data for reload
                 if (typeof tourstats == "object") {
                     sys.writeToFile('tastats.json', JSON.stringify(tourstats));
