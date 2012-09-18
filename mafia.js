@@ -862,7 +862,7 @@ function Mafia(mafiachan) {
         this.teamCharges = {};
         this.roleCharges = {};
         this.usersToSlay = [];
-        this.usersChargeWarn = []
+        this.usersChargeWarn = [];
     };
     this.lastAdvertise = 0;
     this.reduceRecharges = function () {
