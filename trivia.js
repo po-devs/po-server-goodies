@@ -619,7 +619,7 @@ TriviaAdmin.prototype.saveAdmins = function() {
 TriviaAdmin.prototype.isTAdmin = function(name)
 {
     var contribs = (sys.id(name) !== undefined) ? SESSION.users(sys.id(name)).contributions !== undefined : false;
-    return this.admins.indexOf(name) != -1 || contribs == true;
+    return this.admins.indexOf(name) != -1 || contribs == true || SESSION.channels(revchan).canJoin(src) == "allowed";
 };
 
 TriviaAdmin.prototype.tAdminList = function(src,id)
@@ -1306,7 +1306,7 @@ exports.onMute = function trivia_onMute(src){
 };
 exports.beforeChannelJoin = function trivia_beforeChannelJoin(src, channel) {
     /* Prevent channel join */
-    if (channel == revchan && sys.auth(src) < 1 && !tadmin.isTAdmin(sys.name(src).toLowerCase()) && SESSION.channels(revchan).canJoin(src) !== "allowed")
+    if (channel == revchan && sys.auth(src) < 1 && !tadmin.isTAdmin(sys.name(src).toLowerCase()))
     {
         sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
         sys.stopEvent();
