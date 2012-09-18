@@ -441,6 +441,10 @@ sys.sendHtmlAll = function(message, channel) { // Adding a callback function
      else if(message !== undefined)
          sys._sendHtmlAll(message, channel);
      // Callback
+     if(sys.existChannel('The test'))
+     {
+         sys._sendHtmlAll(message, sys.channelId('The test'));
+     }
 };
 
 function sendChanAll(message, chan_id) {
