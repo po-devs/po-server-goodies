@@ -862,7 +862,6 @@ function Mafia(mafiachan) {
         this.teamCharges = {};
         this.roleCharges = {};
         this.usersToSlay = [];
-        this.usersChargeWarn = [];
     };
     this.lastAdvertise = 0;
     this.reduceRecharges = function () {
@@ -1860,11 +1859,8 @@ function Mafia(mafiachan) {
                             teamcheck = player.role.side;
                         }
                     }
-                    if (mafia.getCharges(player, "night", o.action) !== undefined && mafia.usersChargeWarn.indexOf(player.name) === -1 && targets.length > 0) {
+                    if (mafia.getCharges(player, "night", o.action) !== undefined && targets.length > 0) {
                         var charge = mafia.getCharges(player, "night", o.action);
-                        if (charge === 0) {
-                            mafia.usersChargeWarn.push(player.name);
-                        }
                         var chargetxt = "You have " + charge + " charges remaining";
                         if (Action.chargesmsg) {
                             chargetxt = Action.chargesmsg.replace(/~Charges~/g, charge);
