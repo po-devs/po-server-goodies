@@ -2281,7 +2281,7 @@ beforePlayerBan : function(src, dest) {
     authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
     
     // PO logs stuff
-    var params = {event:'beforePlayerBan', banner_id:src, banned_id:dest, channels:stalkedChans(), timestamp:get_timestamp()};
+    var params = {event:'beforePlayerBan', banner_id:src, banned_id:dest, channels:stalkedChansCaps(), timestamp:get_timestamp()};
     append_logs(params);
 },
 
@@ -2293,7 +2293,7 @@ beforePlayerKick:function(src, dest){
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestKick = [sys.name(dest), parseInt(sys.time(), 10)];
-    var params = {event:'beforePlayerKick', kicker_id:src, kicked_id:dest, channels:stalkedChans(), timestamp:get_timestamp()};
+    var params = {event:'beforePlayerKick', kicker_id:src, kicked_id:dest, channels:stalkedChansCaps(), timestamp:get_timestamp()};
     append_logs(params);
 },
 
@@ -2314,7 +2314,7 @@ afterNewMessage : function (message) {
     var player_overactive = new RegExp("^Player [^:]{1,20} \\(IP ([0-9]{1,3}\\.){3}[0-9]{1,3}\\) is being overactive\\.$");
     if(ip_overactive.test(message) || player_overactive.test(message))
     {
-        append_logs({event:"afterNewMessage", msg:message, channels:stalkedChans(), timestamp:get_timestamp()});
+        append_logs({event:"afterNewMessage", msg:message, channels:stalkedChansCaps(), timestamp:get_timestamp()});
     }
 }, /* end of afterNewMessage */
 
@@ -2479,7 +2479,7 @@ nameWarnTest : function(src) {
 
 afterLogIn : function(src) {
     // PO logs stuff
-    var params = {event:'afterLogIn', source_id:src, channels:stalkedChans(), timestamp:get_timestamp()};
+    var params = {event:'afterLogIn', source_id:src, channels:stalkedChansCaps(), timestamp:get_timestamp()};
     append_logs(params);
     
     sys.sendMessage(src, "*** Type in /Rules to see the rules. ***");
@@ -2540,7 +2540,7 @@ beforeLogOut : function(src) {
 
 afterLogOut : function(src) {
     // PO logs stuff
-    var params = {event:'afterLogOut', source_id:src, channels:stalkedChans(), timestamp:get_timestamp()};
+    var params = {event:'afterLogOut', source_id:src, channels:stalkedChansCaps(), timestamp:get_timestamp()};
     append_logs(params);
 },
 
