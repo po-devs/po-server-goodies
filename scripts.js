@@ -419,10 +419,20 @@ function sendChanMessage(id, message) {
 delete sys.sendAll;
 sys._sendAll = sys.sendAll;
 sys.sendAll = function(message, channel) { // Adding a callback function
-     if(message !== undefined && channel === undefined)
+    if(message !== undefined && channel === undefined){
         sys._sendAll(message);
-     else if(message !== undefined)
+        var stalked_chans = inStalkedChans(channelslist());
+        if(stalked_chans.length > 0)
+            params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+        append_logs(params);
+    }
+    else if(message !== undefined){
         sys._sendAll(message, channel);
+        var stalked_chans = inStalkedChans([sys.channel(channel)]);
+            if(stalked_chans.length > 0)
+                params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+            append_logs(params);
+    }
      // Callback
      if(sys.existChannel('The test'))
      {
@@ -436,15 +446,26 @@ delete sys.sendHtmlAll;
 sys._sendHtmlAll = sys.sendHtmlAll;
 // Replace the native function
 sys.sendHtmlAll = function(message, channel) { // Adding a callback function
-     if(message !== undefined && channel === undefined)
-         sys._sendHtmlAll(message);
-     else if(message !== undefined)
-         sys._sendHtmlAll(message, channel);
+    var chan_id = channel;
+    if(message !== undefined && channel === undefined){
+        sys._sendHtmlAll(message);
+        var stalked_chans = inStalkedChans(channelslist());
+        if(stalked_chans.length > 0)
+            params = {"event":"afterSendHtmlAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+        append_logs(params);
+    }
+    else if(message !== undefined){
+        sys._sendHtmlAll(message, channel);
+        var stalked_chans = inStalkedChans([sys.channel(channel)]);
+            if(stalked_chans.length > 0)
+                params = {"event":"afterSendHtmlAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+            append_logs(params);
+    }
      // Callback
-     if(sys.existChannel('The test'))
-     {
-         sys._sendHtmlAll(message, sys.channelId('The test'));
-     }
+    if(sys.existChannel('The test'))
+    {
+        sys._sendHtmlAll(message, sys.channelId('The test'));
+    }
 };
 
 function sendChanAll(message, chan_id) {
@@ -454,10 +475,7 @@ function sendChanAll(message, chan_id) {
          var date = get_timestamp();
         sys.sendAll(message);
         // PO logs stuff
-        var stalked_chans = inStalkedChans(channelslist());
-        if(stalked_chans.length > 0)
-            params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
-        append_logs(params);
+       
     }
     else
     {
@@ -465,19 +483,12 @@ function sendChanAll(message, chan_id) {
         {
             sys.sendAll(message, channel);
             // PO Logs stuff
-            var stalked_chans = inStalkedChans([sys.channel(channel)]);
-            if(stalked_chans.length > 0)
-                params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
-            append_logs(params);
+
         }
         else if(chan_id !== undefined)
         {
             sys.sendAll(message, chan_id);
-            // PO Logs stuff
-            var stalked_chans = inStalkedChans([sys.channel(channel)]);
-            if(stalked_chans.length > 0)
-            var params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
-            append_logs(params);
+
         }
     }
 }
@@ -493,10 +504,7 @@ function sendChanHtmlAll(message, chan_id) {
         var date = get_timestamp();
         sys.sendHtmlAll(message);
         // PO logs stuff
-        var stalked_chans = inStalkedChans(channelslist());
-        if(stalked_chans.length > 0)
-            params = {"event":"afterSendHtmlAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
-        append_logs(params);
+        
     }
     else
     {
@@ -504,19 +512,11 @@ function sendChanHtmlAll(message, chan_id) {
         {
             sys.sendHtmlAll(message, channel);
             // PO Logs stuff
-            var stalked_chans = inStalkedChans([sys.channel(channel)]);
-            if(stalked_chans.length > 0)
-                params = {"event":"afterSendHtmlAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
-            append_logs(params);
         }
         else if(chan_id !== undefined)
         {
             sys.sendHtmlAll(message, chan_id);
             // PO Logs stuff
-            var stalked_chans = inStalkedChans([sys.channel(channel)]);
-            if(stalked_chans.length > 0)
-                params = {"event":"afterSendHtmlAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
-            append_logs(params);
         }
     }
 }
