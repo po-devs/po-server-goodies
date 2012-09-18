@@ -271,7 +271,7 @@ function append_logs(params) { // Adds chat lines to the logs
             case 'beforePlayerBan':
                 if(sys.name(params.banner_id) !== undefined && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
-                    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"banner\":\""+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+escape_dq(sys.name(params.banned_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"banner\":\""+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+escape_dq(sys.name(params.banned_id))+"\", \"channels\":"+params.duration+" \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
             break;
             
@@ -299,10 +299,8 @@ function append_logs(params) { // Adds chat lines to the logs
             case 'afterSendAll':
                 if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
-                    //new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
-                    //normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " for " + timeString + "! [Reason: " + reason + "]");
                     var kregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$/i; // To capture kicks
-                    var tbregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) banned ([^\n%*<:\(\)]{1,20}) for (([0-9]{1,} (weeks?|days?|hours?|minutes?|seconds?)(, ){0,}){1,})! \[Reason: [^:]{1,} \]/i;
+                    var tbregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) banned ([^\n%*<:\(\)]{1,20}) for (([0-9]{1,} (weeks?|days?|hours?|minutes?|seconds?)(, ){0,}){1,})! \[Reason: [^:]{1,}\]/i;
                     if(kregexp.test(params.msg))
                     {
                         var result = params.msg.match(kregexp);
@@ -333,7 +331,7 @@ function append_logs(params) { // Adds chat lines to the logs
                         var result = params.msg.match(bregexp);
                         var banned = result[1];
                         var banner = result[2];
-                        append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), banned_id:sys.id(banned), channels:params.channels, timestamp:params.timestamp});
+                        append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), banned_id:sys.id(banned), duration:0, channels:params.channels, timestamp:params.timestamp});
                     }
                     else
                     {
@@ -1909,7 +1907,7 @@ init : function() {
         return s.join(", ");
     };
     getTimeStamp = function(string) {
-        var arr = string.split(',');
+        var arr = string.split(', ');
         var regexp = new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
         var seconds = 0;
         var result = [];
@@ -2271,14 +2269,14 @@ beforeChannelDestroyed : function(channel) {
     }
 }, /* end of beforeChannelDestroyed */
 
-beforePlayerBan : function(src, dest) {
+beforePlayerBan : function(src, dest, dur) {
     normalbot.sendAll("Target: " + sys.name(dest) + ", IP: " + sys.ip(dest), staffchannel);
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
     
     // PO logs stuff
-    var params = {event:'beforePlayerBan', banner_id:src, banned_id:dest, channels:stalkedChansCaps(), timestamp:get_timestamp()};
+    var params = {event:'beforePlayerBan', banner_id:src, banned_id:dest, duration:dur, channels:stalkedChansCaps(), timestamp:get_timestamp()};
     append_logs(params);
 },
 
