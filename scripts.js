@@ -1915,7 +1915,7 @@ init : function() {
 		return 0;
         for(var x in arr)
         {
-               result = string.match(regexp);
+               result = arr[x].match(regexp);
                if(result[2] == 'second' || result[2] == 'seconds')
                {
                     seconds += parseInt(result[1], 10);
