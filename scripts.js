@@ -402,6 +402,15 @@ function channelslist() {
 function stalkedChans() {
     return getVal('stalked_chans').split(':');
 }
+function stalkedChansCaps() {
+    var array = [];
+	var stalked = stalkedChans();
+	for(var x in stalked)
+	{
+	    array.push(sys.channel(sys.channelId(stalked[x])));
+	}
+	return array;
+}
 
 function inStalkedChans(channels) {
     var stalked = [];
