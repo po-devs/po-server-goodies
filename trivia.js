@@ -260,7 +260,7 @@ try { // Do not indent this, it is only until this starts to work
                 wrongAnswers.push("<span title='" + utilities.html_escape(name) + "'>" + utilities.html_escape(tanswer) + "</span>");
                 if (/asshole|\bdick|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger/gi.test(tanswer)) {
                     if (sys.existChannel("Victory Road"))
-                    triviabot.sendAll("Warning: Player "+name+" answered '"+tanswer+"' in Trivia", sys.channelId("Victory Road"));
+                    triviabot.sendAll("Warning: Player "+name+" answered '"+tanswer+"' to the question '"+triviaq.get(this.roundQuestion).question+"' in #Trivia", sys.channelId("Victory Road"));
                 }
             }
         }
@@ -687,6 +687,25 @@ addUserCommand("goal", function(src,commandData,channel) {
 	
 	Trivia.sendPM(src,"The goal for the current game is: "+Trivia.maxPoints, channel);
 },"Allows you to see the current target for the trivia game");
+
+addAdminCommand("changegoal", function(src,commandData,channel) {
+	if (Trivia.started == false) {
+		Trivia.sendPM(src,"A trivia game isn't currently running.",channel);
+		return;
+	}
+	commandData = parseInt(commandData, 10);
+	if (isNaN(commandData)) {
+		Trivia.sendPM(src,"The goal must be a valid number.", channel);
+		return;
+	}
+	if (commandData < 2 || commandData > 102) {
+		Trivia.sendPM(src,"The goal must not be lower than 2 or higher than 102.",channel);
+		return;
+	}
+	triviabot.sendAll(sys.name(src)+" changed the goal of the current game to "+commandData+".", triviachan);
+	Trivia.maxPoints = commandData;
+	return;
+}, "Allows you to change the goal for the current game");
 
 addAdminCommand("removeq", function(src,commandData,channel) {
 	var q = triviaq.get(commandData);
