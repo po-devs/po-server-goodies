@@ -1860,10 +1860,10 @@ function Mafia(mafiachan) {
                             teamcheck = player.role.side;
                         }
                     }
-                    if (mafia.getCharges(player, "night", o.action) !== undefined && mafia.usersChargeWarn.indexOf(player.name) === -1) {
+                    if (mafia.getCharges(player, "night", o.action) !== undefined && mafia.usersChargeWarn.indexOf(player.name) === -1 && targets.length > 0) {
                         var charge = mafia.getCharges(player, "night", o.action);
-                        if(charge === 0){
-                            mafia.userschargeWarn.push(player.name)
+                        if (charge === 0) {
+                            mafia.usersChargeWarn.push(player.name);
                         }
                         var chargetxt = "You have " + charge + " charges remaining";
                         if (Action.chargesmsg) {
