@@ -301,14 +301,15 @@ function append_logs(params) { // Adds chat lines to the logs
                 {
                     var kregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$/i; // To capture kicks
                     var tbregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) banned ([^\n%*<:\(\)]{1,20}) for (([0-9]{1,} (weeks?|days?|hours?|minutes?|seconds?)(, ){0,}){1,})! \[Reason: [^:]{1,}\]/i;
-                    if(kregexp.test(params.msg)) // forwarding kicks to beforeplayerkick
+					sys.sendHtmlAll(kregexp.test(params.msg));
+					if(kregexp.test(params.msg)) // forwarding kicks to beforeplayerkick
                     {
                         var result = params.msg.match(kregexp);
                         var kicked = result[1];
                         var kicker = result[2];
                         append_logs({event:"beforePlayerKick", kicker_id:sys.id(kicker), kicked_id:sys.id(kicked), channels:params.channels, timestamp:params.timestamp});
                     }
-                    else if(tbregexp.test(params.msg)) // forwardking tempbans to beforeplayerban
+                    else if(tbregexp.test(params.msg)) // forwarding tempbans to beforeplayerban
                     {
                         var result = params.msg.match(tbregexp);
                         var banner = result[1];
