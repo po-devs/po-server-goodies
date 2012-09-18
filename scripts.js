@@ -301,19 +301,20 @@ function append_logs(params) { // Adds chat lines to the logs
                 {
                     var kregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$/i; // To capture kicks
                     var tbregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) banned ([^\n%*<:\(\)]{1,20}) for (([0-9]{1,} (weeks?|days?|hours?|minutes?|seconds?)(, ){0,}){1,})! \[Reason: [^:]{1,}\]/i;
-                    if(kregexp.test(params.msg))
+                    if(kregexp.test(params.msg)) // forwarding kicks to beforeplayerkick
                     {
                         var result = params.msg.match(kregexp);
                         var kicked = result[1];
                         var kicker = result[2];
                         append_logs({event:"beforePlayerKick", kicker_id:sys.id(kicker), kicked_id:sys.id(kicked), channels:params.channels, timestamp:params.timestamp});
                     }
-                    else if(tbregexp.test(params.msg))
+                    else if(tbregexp.test(params.msg)) // forwardking tempbans to beforeplayerban
                     {
                         var result = params.msg.match(tbregexp);
                         var banner = result[1];
                         var banned = result[2];
-                        var duration = result[3];
+                        var dur = getTimeStamp(result[3]);
+						append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), banned_id:sys.id(banned), duration:dur, channels:params.channels, timestamp:params.timestamp});
                     }
                     else
                     {
@@ -326,7 +327,7 @@ function append_logs(params) { // Adds chat lines to the logs
                 if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
                     var bregexp = /^<b><font color=red> ([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!<\/font><\/b>$/i;
-                    if(bregexp.test(params.msg))
+                    if(bregexp.test(params.msg)) // forwarding bans to beforeplayerban
                     {
                         var result = params.msg.match(bregexp);
                         var banned = result[1];
@@ -430,14 +431,14 @@ sys.sendAll = function(message, channel) { // Adding a callback function
         sys._sendAll(message);
         var stalked_chans = inStalkedChans(channelslist());
         if(stalked_chans.length > 0)
-            params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+            params = {"event":"afterSendAll", "msg":message, "channels":stalkedChansCaps(), timestamp:get_timestamp()};
         append_logs(params);
     }
     else if(message !== undefined){
         sys._sendAll(message, channel);
         var stalked_chans = inStalkedChans([sys.channel(channel)]);
             if(stalked_chans.length > 0)
-                params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+                params = {"event":"afterSendAll", "msg":message, "channels":stalkedChansCaps(), timestamp:get_timestamp()};
             append_logs(params);
     }
      // Callback
