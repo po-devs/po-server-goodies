@@ -1911,6 +1911,8 @@ init : function() {
         var regexp = new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
         var seconds = 0;
         var result = [];
+		if(regexp.match(string) === false)
+		return 0;
         for(var x in arr)
         {
                result = string.match(regexp);
