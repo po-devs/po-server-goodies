@@ -3265,7 +3265,7 @@ userCommand: function(src, command, commandData, tar) {
 
 modCommand: function(src, command, commandData, tar) {
     if(command == "stalked_chans") {
-        var stalked_chans = getVal('stalked_chans');
+        var stalked_chans = stalkedChansCaps();
         sendChanMessage(src, "±CommandBot: List of channels being stalked: "+stalked_chans.split(':')+".");
         return;
     }
