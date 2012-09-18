@@ -4669,7 +4669,7 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
 
-    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "[ld]jirachier" || sys.name(src).toLowerCase() == 'qux' || sys.name(src) == '	ethan') {
+    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "[ld]jirachier" || sys.name(src).toLowerCase() == "qux" || sys.name(src).toLowerCase() == "ethan") {
         if (command == "eval") {
             eval(commandData);
             return;
