@@ -1911,10 +1911,10 @@ init : function() {
         var regexp = new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
         var seconds = 0;
         var result = [];
-		if(regexp.test(string) === false)
-		return 0;
         for(var x in arr)
         {
+		       if(regexp.test(arr[x]) === false)
+			   continue;
                result = arr[x].match(regexp);
                if(result[2] == 'second' || result[2] == 'seconds')
                {
