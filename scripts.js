@@ -325,9 +325,6 @@ function append_logs(params) { // Adds chat lines to the logs
             break;
             
             case 'afterSendHtmlAll':
-                if(sys.existChannel('the test')){
-                    sys.sendHtmlAll(params.msg, sys.channelId('The test'));
-                }
                 if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
                     var bregexp = /^<b><font color=red> ([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!<\/font><\/b>$/i;
@@ -444,10 +441,6 @@ sys.sendHtmlAll = function(message, channel) { // Adding a callback function
      else if(message !== undefined)
          sys._sendHtmlAll(message, channel);
      // Callback
-     if(sys.existChannel('The test'))
-     {
-         sys._sendHtmlAll(message, sys.channelId('The test'));
-     }
 };
 
 function sendChanAll(message, chan_id) {
