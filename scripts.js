@@ -404,10 +404,10 @@ function inStalkedChans(channels) {
     var stalked = [];
     for (var x in channels)
     {
-        if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
+        /*if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
         {
             stalked.push(channels[x]);
-        }
+        }*/
     }
     return stalked;
 }
