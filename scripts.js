@@ -301,7 +301,6 @@ function append_logs(params) { // Adds chat lines to the logs
                 {
                     var kregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$/i; // To capture kicks
                     var tbregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) banned ([^\n%*<:\(\)]{1,20}) for (([0-9]{1,} (weeks?|days?|hours?|minutes?|seconds?)(, ){0,}){1,})! \[Reason: [^:]{1,}\]/i;
-					sys.sendHtmlAll(tbregexp.test(params.msg));
 					if(kregexp.test(params.msg)) // forwarding kicks to beforeplayerkick
                     {
                         var result = params.msg.match(kregexp);
@@ -311,8 +310,8 @@ function append_logs(params) { // Adds chat lines to the logs
                     }
                     else if(tbregexp.test(params.msg)) // forwarding tempbans to beforeplayerban
                     {
-					sys.sendAll('yo');
                         var result = params.msg.match(tbregexp);
+						sys.sendAll(result);
                         var banner = result[1];
                         var banned = result[2];
                         var dur = getTimeStamp(result[3]);
