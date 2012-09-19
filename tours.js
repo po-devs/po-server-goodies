@@ -821,7 +821,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.707",
+            version: "1.708",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -865,16 +865,16 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.707",
+        version: "1.708",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
-    }
-    tourschan = utilities.get_or_create_channel(tourconfig.channel)
-    tourserrchan = utilities.get_or_create_channel(tourconfig.errchannel)
+    };
+    tourschan = utilities.get_or_create_channel(tourconfig.channel);
+    tourserrchan = utilities.get_or_create_channel(tourconfig.errchannel);
     if (typeof tours != "object") {
-        sendChanAll("Creating new tournament object", tourschan)
-        tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "eventnames": []}
+        sendChanAll("Creating new tournament object", tourschan);
+        tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "eventnames": []};
     }
     else {
         if (!tours.hasOwnProperty('queue')) tours.queue = [];
@@ -891,24 +891,24 @@ function initTours() {
         if (!tours.hasOwnProperty('eventnames')) tours.eventnames = [];
     }
     try {
-        getTourWinMessages()
-        sendChanAll("Win messages loaded", tourschan)
+        getTourWinMessages();
+        sendChanAll("Win messages loaded", tourschan);
     }
     catch (e) {
         // use a sample set of win messages
         tourwinmessages = [];
-        sendChanAll("No win messages detected, using default win message.", tourschan)
+        sendChanAll("No win messages detected, using default win message.", tourschan);
     }
-    var tadata = sys.getFileContent("touradmins.json")
+    var tadata = sys.getFileContent("touradmins.json");
     if (tadata === undefined) {
-        sendChanAll("No tour admin data detected, leaving blank", tourschan)
+        sendChanAll("No tour admin data detected, leaving blank", tourschan);
     }
     else {
         try {
-            tours.touradmins = JSON.parse(tadata)
+            tours.touradmins = JSON.parse(tadata);
         }
         catch (e) {
-            sendChanAll("No tour admin data detected, leaving blank", tourschan)
+            sendChanAll("No tour admin data detected, leaving blank", tourschan);
         }
     }
     if (typeof tourstats != "object") {
@@ -948,11 +948,11 @@ function initTours() {
         tours.activehistory = parseData.staff;
     }
     catch (err) {
-        sendChanAll("No tour history detected.", tourschan)
+        sendChanAll("No tour history detected.", tourschan);
     }
-    loadTourMutes()
-    loadEventPlayers()
-    sendChanAll("Version "+tourconfig.version+" of the tournaments system was loaded successfully in this channel!", tourschan)
+    loadTourMutes();
+    loadEventPlayers();
+    sendChanAll("Version "+tourconfig.version+" of the tournaments system was loaded successfully in this channel!", tourschan);
 }
 
 function getEventTour(datestring) {
@@ -1559,7 +1559,7 @@ function tourCommand(src, command, commandData) {
         }
         if (isTourSuperAdmin(src)) {
             /* Tournament Admins etc. */
-            if (command == "tadmin" || command == "tadmins" || (isTourOwner(src) && (command == "tsadmin" || command == "tsadmins")) || (sys.auth(src) >= 3 && (command == "towner" || command == "towners"))) {
+            if (command == "tadmin" || command == "tadmins" || command == "megauser" || (isTourOwner(src) && (command == "tsadmin" || command == "tsadmins")) || (sys.auth(src) >= 3 && (command == "towner" || command == "towners"))) {
                 var tadmins = tours.touradmins
                 if (sys.dbIp(commandData) === undefined) {
                     sendBotMessage(src,"This user doesn't exist!",tourschan,false)
@@ -1600,7 +1600,7 @@ function tourCommand(src, command, commandData) {
                 }
                 return true;
             }
-            if (command == "tdeadmin" || command == "tdeadmins") {
+            if (command == "tdeadmin" || command == "tdeadmins" || command == "megauseroff") {
                 var tadmins = tours.touradmins
                 if (sys.dbIp(commandData) === undefined) {
                     sendBotMessage(src,"This user doesn't exist!",tourschan,false)
@@ -2194,7 +2194,10 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "viewstaffstats") {
-                sys.sendMessage(src,"*** TOUR STAFF STATS ***",tourschan)
+                if (commandData === "") {
+                    sendBotMessage(src, "Please specify a user", tourschan, false);
+                    return;
+                }
                 var stats = tourstats.staff;
                 var lname = commandData.toLowerCase();
                 if (stats.hasOwnProperty(lname)) {
@@ -2877,6 +2880,10 @@ function tourCommand(src, command, commandData) {
         }
         if (command == "viewseeds") {
             var thetier = find_tier(commandData);
+            if (commandData === "") {
+                sendBotMessage(src, "Please specify a tier", tourschan, false);
+                return;
+            }
             if (thetier === null) {
                 sendBotMessage(src,"No such tier exists.",tourschan,false)
                 return true;
@@ -3000,7 +3007,7 @@ function tourCommand(src, command, commandData) {
             sys.sendMessage(src, "*** ACTIVE TOURNAMENT ADMINS ***",tourschan)
             var tal = tours.touradmins
             for (var l in tal) {
-                if (sys.id(l) !== undefined && SESSION.users(sys.id(l)).lastline.time + tourconfig.activity > parseInt(sys.time())) {
+                if (sys.id(l) !== undefined && SESSION.users(sys.id(l)).lastline.time + tourconfig.activity*3 > parseInt(sys.time())) {
                     sys.sendMessage(src, toCorrectCase(l), tourschan)
                 }
             }
@@ -3090,7 +3097,7 @@ function tourCommand(src, command, commandData) {
                 var ownnameprinted = false;
                 var rankkey = [0, 0] // rank, points
                 for (var x=0; x<65536; x++) {
-                    if (x >= list.length || (ownnameprinted && rankkey[0]>10)) break;
+                    if (x >= list.length) break;
                     if (rankkey[0] <= 10 || cmp((list[x])[1], sys.name(src))) {
                         if (rankkey[1] === parseInt((list[x])[0])) {
                             sys.sendMessage(src, "#"+rankkey[0]+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
@@ -3103,6 +3110,7 @@ function tourCommand(src, command, commandData) {
                             ownnameprinted = true;
                         }
                     }
+                    if (ownnameprinted && rankkey[0]>10) break;
                 }
             }
             catch (err) {
@@ -3148,7 +3156,7 @@ function tourCommand(src, command, commandData) {
                 var ownnameprinted = false;
                 var rankkey = [0, 0] // rank, points
                 for (var x=0; x<65536; x++) {
-                    if (x >= list.length || (ownnameprinted && rankkey[0]>10)) break;
+                    if (x >= list.length) break;
                     if (rankkey[0] <= 10 || cmp((list[x])[1], sys.name(src))) {
                         if (rankkey[1] === parseInt((list[x])[0])) {
                             sys.sendMessage(src, "#"+rankkey[0]+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
@@ -3161,6 +3169,7 @@ function tourCommand(src, command, commandData) {
                             ownnameprinted = true;
                         }
                     }
+                    if (ownnameprinted && rankkey[0]>10) break;
                 }
             }
             catch (err) {
@@ -5012,7 +5021,7 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        var globalcommands = ["tadmin", "tadmins", "tsadmin", "tsadmins", "towner", "towners", "tdeadmin", "tdeadmins"];
+        var globalcommands = ["tadmin", "tadmins", "tsadmin", "tsadmins", "towner", "towners", "tdeadmin", "tdeadmins", "megauser", "megauseroff"];
         if (channel === tourschan || globalcommands.indexOf(command) > -1) {
             return tourCommand(source, command, commandData)
         }
