@@ -419,6 +419,7 @@ function sendChanMessage(id, message) {
 delete sys.sendAll;
 sys._sendAll = sys.sendAll;
 sys.sendAll = function(message, channel) { // Adding a callback function
+    var params;
     if(message !== undefined && channel === undefined){
         sys._sendAll(message);
         var stalked_chans = inStalkedChans(channelslist());
@@ -447,6 +448,7 @@ sys._sendHtmlAll = sys.sendHtmlAll;
 // Replace the native function
 sys.sendHtmlAll = function(message, channel) { // Adding a callback function
     var chan_id = channel;
+    var params;
     if(message !== undefined && channel === undefined){
         sys._sendHtmlAll(message);
         var stalked_chans = inStalkedChans(channelslist());
