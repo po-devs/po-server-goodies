@@ -1622,7 +1622,7 @@ function tourCommand(src, command, commandData) {
                 delete tadmins[lname];
                 tours.touradmins = tadmins
                 saveTourKeys()
-                if (command == "tdeadmin") {
+                if (command != "tdeadmins") {
                     sendBotAll(sys.name(src)+" fired "+commandData.toLowerCase()+" from running tournaments!","~st",false)
                 }
                 else {
