@@ -2457,7 +2457,7 @@ function tourCommand(src, command, commandData) {
                         sendBotMessage(src,"Can't turn win messages on/off, ask an admin.",tourschan,false);
                         return true;
                     }
-                    if (isNaN(value)) {
+                    if (value === "") {
                         sendBotMessage(src,"Using winmessages.",tourschan,false);
                         sendBotMessage(src,"Current Value: "+tourconfig.winmessages,tourschan,false);
                         return true;
