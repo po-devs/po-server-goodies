@@ -821,10 +821,11 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.708+",
+            version: "1.709",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
-            points: true
+            points: true,
+            winmessages: true
         }
         var configkeys = sys.getValKeys(file)
         if (configkeys.indexOf(key) == -1) {
@@ -865,10 +866,11 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.708+",
+        version: "1.709",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
-        points: true
+        points: true,
+        winmessages: getConfigValue("tourconfig.txt", "winmessages")
     };
     tourschan = utilities.get_or_create_channel(tourconfig.channel);
     tourserrchan = utilities.get_or_create_channel(tourconfig.errchannel);
@@ -2233,6 +2235,7 @@ function tourCommand(src, command, commandData) {
                 sys.sendMessage(src,"Channel: "+tourconfig.channel,tourschan)
                 sys.sendMessage(src,"Error Channel: "+tourconfig.errchannel,tourschan)
                 sys.sendMessage(src,"Scoring system activated: "+tourconfig.points,tourschan)
+                sys.sendMessage(src,"Using winmessages: "+tourconfig.winmessages,tourschan)
                 sys.sendMessage(src,"Debug: "+tourconfig.debug,tourschan)
                 return true;
             }
@@ -2260,11 +2263,12 @@ function tourCommand(src, command, commandData) {
                     sys.sendMessage(src,"colour: "+tourconfig.tourbotcolour,tourschan);
                     sys.sendMessage(src,"channel: "+tourconfig.channel,tourschan);
                     sys.sendMessage(src,"scoring: "+tourconfig.points,tourschan);
+                    sys.sendMessage(src,"winmessages: "+tourconfig.winmessages,tourschan);
                     sys.sendMessage(src,"debug: "+tourconfig.debug+" (to change this, type /debug [on/off])",tourschan);
                     return true;
                 }
                 var option = commandData.substr(0,pos).toLowerCase()
-                if (["botname", "bot name", "channel", "errchannel", "color", "colour", "debug"].indexOf(option) == -1) {
+                if (["botname", "bot name", "channel", "errchannel", "color", "colour", "debug", "winmessages"].indexOf(option) == -1) {
                     if (['minpercent', 'decayrate', 'decaytime', 'decayglobalrate'].indexOf(option) != -1) {
                         var value = parseFloat(commandData.substr(pos+1))
                     }
@@ -2446,6 +2450,27 @@ function tourCommand(src, command, commandData) {
                     tourconfig.minplayers = value
                     sys.saveVal("tourconfig.txt", "minplayers", value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the minimum number of players to "+tourconfig.minplayers,tourschan,false);
+                    return true;
+                }
+                else if (option == 'winmessages') {
+                    if (!isTourSuperAdmin(src)) {
+                        sendBotMessage(src,"Can't turn win messages on/off, ask an admin.",tourschan,false);
+                        return true;
+                    }
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"Using winmessages.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.winmessages,tourschan,false);
+                        return true;
+                    }
+                    if (value === "off") {
+                        value = false;
+                    }
+                    else {
+                        value = true;
+                    }
+                    tourconfig.winmessages = value;
+                    sys.saveVal("tourconfig.txt", "winmessgaes", value)
+                    sendBotAll(sys.name(src)+" "+(tourconfig.winmessages ? "enabled" : "disabled")+" custom win messages.",tourschan,false);
                     return true;
                 }
                 else if (option == 'color' || option == 'colour') {
@@ -3583,7 +3608,7 @@ function battleend(winner, loser, key) {
         tours.tour[key].losers.push(losename)
         var battlesleft = parseInt(tours.tour[key].players.length/2)-tours.tour[key].winners.length
         if (tours.tour[key].parameters.type == "double") {
-            if (tourwinmessages === undefined || tourwinmessages.length == 0) {
+            if (tourwinmessages === undefined || tourwinmessages.length == 0 || !tourconfig.winmessages) {
                 sendHtmlAuthPlayers("<font color='"+tourconfig.tourbotcolour+"'><timestamp/> <b>"+tourconfig.tourbot+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> won their match against <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+getFullTourName(key)+" tournament! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
             }
             else {
@@ -3594,7 +3619,7 @@ function battleend(winner, loser, key) {
             }
         }
         else {
-            if (tourwinmessages === undefined || tourwinmessages.length == 0) {
+            if (tourwinmessages === undefined || tourwinmessages.length == 0 || !tourconfig.winmessages) {
                 sendHtmlAuthPlayers("<font color='"+tourconfig.tourbotcolour+"'><timestamp/> <b>"+tourconfig.tourbot+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> won their match against <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+getFullTourName(key)+" tournament and advances to the next round! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
             }
             else {
