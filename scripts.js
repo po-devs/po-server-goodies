@@ -314,7 +314,7 @@ function append_logs(params) { // Adds chat lines to the logs
 						sys.sendAll(result);
                         var banner = result[1];
                         var banned = result[2];
-                        var dur = getTimeStamp(result[3]);
+                        var dur = parseInt(getTimeStamp(result[3]));
 						append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), banned_id:sys.id(banned), duration:dur, channels:params.channels, timestamp:params.timestamp});
                     }
                     else
