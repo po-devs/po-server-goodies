@@ -2465,9 +2465,9 @@ function tourCommand(src, command, commandData) {
                     if (value !== "off") {
                         value = "on";
                     }
-                    tourconfig.winmessages = value;
+                    tourconfig.winmessages = value === "off" ? false : true;
                     sys.saveVal("tourconfig.txt", "winmessages", value)
-                    sendBotAll(sys.name(src)+" "+(tourconfig.winmessages === "on" ? "enabled" : "disabled")+" custom win messages.",tourschan,false);
+                    sendBotAll(sys.name(src)+" "+(tourconfig.winmessages ? "enabled" : "disabled")+" custom win messages.",tourschan,false);
                     return true;
                 }
                 else if (option == 'color' || option == 'colour') {
