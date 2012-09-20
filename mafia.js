@@ -574,10 +574,18 @@ function Mafia(mafiachan) {
                         }
                     }
                     if ("vote" in role.actions) {
-                        abilities += "Vote counts as " + role.actions.vote + ". ";
+                        if (typeof role.actions.vote === "number") {
+                            abilities += "Vote counts as " + role.actions.vote + ". ";
+                        } else if (Array.isArray(role.actions.vote)) {
+                            abilities += "Vote counts randomly between " + role.actions.vote[0] + " (inclusive) and " + role.actions.vote[1] + " (exclusive). ";
+                        }
                     }
                     if ("voteshield" in role.actions) {
-                        abilities += "Receives " + role.actions.voteshield + " extra votes if voted for at all. ";
+                        if (typeof role.actions.voteshield === "number") {
+                            abilities += "Receives " + role.actions.voteshield + " extra votes if voted for at all. ";
+                        } else if (Array.isArray(role.actions.voteshield)) {
+                            abilities += "Receives between " + role.actions.voteshield[0] + " (inclusive) and " + role.actions.voteshield[1] + " (exclusive) extra votes randomly if voted for at all. ";
+                        }
                     }
                     if ("kill" in role.actions) {
                         if (role.actions.kill.mode == "ignore") {
@@ -1247,11 +1255,12 @@ function Mafia(mafiachan) {
             if ("poisonRoles" in onDeath) {
                 targetRoles = onDeath.poisonRoles;
                 for (r in targetRoles) {
+                    var count;
                     targetPlayers = this.getPlayersForRole(r);
                     affected = [];
                     for (k = 0; k < targetPlayers.length; ++k) {
                         target = this.players[targetPlayers[k]];
-                        var count = onDeath.poisonRoles[r];
+                        count = onDeath.poisonRoles[r];
                         if (target.poisoned === undefined || target.poisonCount - target.poisoned >= (count ? count : 2)) {
                             target.poisoned = 1;
                             target.poisonCount = count || 2;
@@ -1475,12 +1484,13 @@ function Mafia(mafiachan) {
             this.sendPlayer(player.name, "±Game: Your target(s) are " + list.join(', ') + "!");
     };
     this.setPlayerRole = function (player, role) {
+        var act;
         player.role = mafia.theme.roles[role];
         if (typeof mafia.theme.roles[role].side == "object") {
             player.role.side = randomSample(mafia.theme.roles[role].side.random);
         }
         if ("night" in player.role.actions) {
-            for (var act in player.role.actions.night) {
+            for (act in player.role.actions.night) {
                 if ("initialrecharge" in player.role.actions.night[act]) {
                     mafia.setRechargeFor(player, "night", act, player.role.actions.night[act].initialrecharge);
                 }
@@ -1490,7 +1500,7 @@ function Mafia(mafiachan) {
             }
         }
         if ("standby" in player.role.actions) {
-            for (var act in player.role.actions.standby) {
+            for (act in player.role.actions.standby) {
                 if ("initialrecharge" in player.role.actions.standby[act]) {
                     mafia.setRechargeFor(player, "standby", act, player.role.actions.standby[act].initialrecharge);
                 }
@@ -1509,7 +1519,6 @@ function Mafia(mafiachan) {
         }
     };
     this.testWin = function () {
-
         if (Object.keys(mafia.players).length === 0) {
             sendChanAll("±Game: " + (mafia.theme.drawmsg ? mafia.theme.drawmsg : "Everybody died! This is why we can't have nice things :("), mafiachan);
             sendChanAll(border, mafiachan);
@@ -1519,6 +1528,9 @@ function Mafia(mafiachan) {
             return true;
 
         }
+        
+        var x, ws;
+        
         outer:
             for (var p in mafia.players) {
                 //Roles which win when certain roles are dead
@@ -1538,9 +1550,9 @@ function Mafia(mafiachan) {
                 var goodPeople = [];
                 if (winByDeadRoles) {
                     players = mafia.getPlayersForTeam(winSide);
-                    for (var x in mafia.players) {
+                    for (x in mafia.players) {
                         if (mafia.players[x].role.hasOwnProperty("winningSides")) {
-                            var ws = mafia.players[x].role.winningSides;
+                            ws = mafia.players[x].role.winningSides;
                             if (players.indexOf(x) == -1 && (ws == "*" || (Array.isArray(ws) && ws.indexOf(winSide) >= 0))) {
                                 players.push(x);
                             }
@@ -1554,10 +1566,10 @@ function Mafia(mafiachan) {
                                 continue outer;
                         }
                     }
-                    for (var x in mafia.players) {
+                    for (x in mafia.players) {
                         // Roles which win with multiple sides
                         if (mafia.players[x].role.hasOwnProperty("winningSides")) {
-                            var ws = mafia.players[x].role.winningSides;
+                            ws = mafia.players[x].role.winningSides;
                             if (ws == "*" || (Array.isArray(ws) && ws.indexOf(winSide) >= 0)) {
                                 players.push(x);
                                 continue; // inner
@@ -2258,7 +2270,7 @@ function Mafia(mafiachan) {
             sendChanAll(border, mafiachan);
             sendChanAll("Times Up! :", mafiachan);
 
-            var voted = {}, player;
+            var voted = {}, player, vote;
             for (var pname in mafia.votes) {
                 player = mafia.players[pname];
                 var target = mafia.votes[pname];
@@ -2267,19 +2279,28 @@ function Mafia(mafiachan) {
                 if (!(target in voted)) {
                     voted[target] = 0;
                 }
-                if (player.role.actions.vote !== undefined) {
-                    voted[target] += player.role.actions.vote;
+                vote = player.role.actions.vote;
+                if (vote !== undefined) {
+                    if (typeof vote === "number") {
+                        voted[target] += vote;
+                    } else {
+                        voted[target] += sys.rand(vote[0], vote[1]);
+                    }                
                 } else {
                     voted[target] += 1;
                 }
             }
-            var tie = true;
-            var maxi = 0;
-            var downed = noPlayer;
+            var tie = true, maxi = 0, downed = noPlayer, voteshield;
             for (var x in voted) {
                 player = mafia.players[x];
-                if (player.role.actions.voteshield !== undefined)
-                    voted[x] += player.role.actions.voteshield;
+                voteshield = player.role.actions.voteshield;
+                if (voteshield !== undefined) {
+                    if (typeof voteshield === "number") {
+                        voted[x] += voteshield;
+                    } else {
+                        voted[x] += sys.rand(voteshield[0], voteshield[1]);
+                    }
+                }
                 if (voted[x] == maxi) {
                     tie = true;
                 } else if (voted[x] > maxi) {
