@@ -870,7 +870,7 @@ function initTours() {
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
-        winmessages: getConfigValue("tourconfig.txt", "winmessages")
+        winmessages: getConfigValue("tourconfig.txt", "winmessages") === "off" ? false : true
     };
     tourschan = utilities.get_or_create_channel(tourconfig.channel);
     tourserrchan = utilities.get_or_create_channel(tourconfig.errchannel);
@@ -2462,15 +2462,12 @@ function tourCommand(src, command, commandData) {
                         sendBotMessage(src,"Current Value: "+tourconfig.winmessages,tourschan,false);
                         return true;
                     }
-                    if (value === "off") {
-                        value = false;
-                    }
-                    else {
-                        value = true;
+                    if (value !== "off") {
+                        value = "on";
                     }
                     tourconfig.winmessages = value;
                     sys.saveVal("tourconfig.txt", "winmessages", value)
-                    sendBotAll(sys.name(src)+" "+(tourconfig.winmessages ? "enabled" : "disabled")+" custom win messages.",tourschan,false);
+                    sendBotAll(sys.name(src)+" "+(tourconfig.winmessages === "on" ? "enabled" : "disabled")+" custom win messages.",tourschan,false);
                     return true;
                 }
                 else if (option == 'color' || option == 'colour') {
