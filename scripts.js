@@ -413,10 +413,10 @@ function inStalkedChans(channels) {
     var stalked = [];
     for (var x in channels)
     {
-        if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
+        /*if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
         {
             stalked.push(channels[x]);
-        }
+        }*/
     }
     return stalked;
 }
@@ -428,6 +428,7 @@ function sendChanMessage(id, message) {
 delete sys.sendAll;
 sys._sendAll = sys.sendAll;
 sys.sendAll = function(message, channel) { // Adding a callback function
+    var params;
     if(message !== undefined && channel === undefined){
         sys._sendAll(message);
         var stalked_chans = inStalkedChans(channelslist());
@@ -456,6 +457,7 @@ sys._sendHtmlAll = sys.sendHtmlAll;
 // Replace the native function
 sys.sendHtmlAll = function(message, channel) { // Adding a callback function
     var chan_id = channel;
+    var params;
     if(message !== undefined && channel === undefined){
         sys._sendHtmlAll(message);
         var stalked_chans = inStalkedChans(channelslist());

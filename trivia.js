@@ -619,7 +619,7 @@ TriviaAdmin.prototype.saveAdmins = function() {
 TriviaAdmin.prototype.isTAdmin = function(name)
 {
     var contribs = (sys.id(name) !== undefined) ? SESSION.users(sys.id(name)).contributions !== undefined : false;
-    return this.admins.indexOf(name) != -1 || contribs == true;
+    return this.admins.indexOf(name) != -1 || contribs == true || SESSION.channels(revchan).canJoin(sys.id(name)) == "allowed";
 };
 
 TriviaAdmin.prototype.tAdminList = function(src,id)
