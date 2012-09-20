@@ -2469,7 +2469,7 @@ function tourCommand(src, command, commandData) {
                         value = true;
                     }
                     tourconfig.winmessages = value;
-                    sys.saveVal("tourconfig.txt", "winmessgaes", value)
+                    sys.saveVal("tourconfig.txt", "winmessages", value)
                     sendBotAll(sys.name(src)+" "+(tourconfig.winmessages ? "enabled" : "disabled")+" custom win messages.",tourschan,false);
                     return true;
                 }
