@@ -821,7 +821,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.708",
+            version: "1.708+",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true
@@ -865,7 +865,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.708",
+        version: "1.708+",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true
@@ -4084,7 +4084,10 @@ function toursortbracket(size, key) {
             templist.push([pl, pr1, pr2, pr3]);
         }
         var sortalgorithim = function(a,b) {
-            if (a[1] !== b[1]) {
+            if (ttype == "Metronome") {
+                return 0.5-Math.random();
+            }
+            else if (a[1] !== b[1]) {
                 return b[1]-a[1];
             }
             else if (a[2] !== b[2]) {
