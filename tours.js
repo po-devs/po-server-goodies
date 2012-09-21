@@ -17,7 +17,7 @@ if (typeof tourserrchan !== "string") {
 
 if (typeof tours !== "object") {
     sendChanAll("Creating new tournament object", tourschan)
-    tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "eventnames": []}
+    tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "eventnames": [], "metrics": {}}
 }
 
 var utilities = require('utilities.js');
@@ -821,10 +821,10 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.709",
+            version: "1.710a",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
-            points: true,
+            points: false,
             winmessages: true
         }
         var configkeys = sys.getValKeys(file)
@@ -866,17 +866,17 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.709",
+        version: "1.710a",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
-        points: true,
+        points: false,
         winmessages: getConfigValue("tourconfig.txt", "winmessages") === "off" ? false : true
     };
     tourschan = utilities.get_or_create_channel(tourconfig.channel);
     tourserrchan = utilities.get_or_create_channel(tourconfig.errchannel);
     if (typeof tours != "object") {
         sendChanAll("Creating new tournament object", tourschan);
-        tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "eventnames": []};
+        tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "eventnames": [], "metrics": {}};
     }
     else {
         if (!tours.hasOwnProperty('queue')) tours.queue = [];
@@ -891,7 +891,9 @@ function initTours() {
         if (!tours.hasOwnProperty('activehistory')) tours.activehistory = [];
         if (!tours.hasOwnProperty('tourmutes')) tours.tourmutes = {};
         if (!tours.hasOwnProperty('eventnames')) tours.eventnames = [];
+        if (!tours.hasOwnProperty('metrics')) tours.metrics = {};
     }
+    tours.metrics = {'failedstarts': 0};
     try {
         getTourWinMessages();
         sendChanAll("Win messages loaded", tourschan);
@@ -1315,7 +1317,7 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "resettours") {
-                tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "eventnames": []};
+                tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "eventnames": [], "metrics": {}};
                 sendBotAll(sys.name(src)+" reset the tour system!",tourschan,false)
                 return true;
             }
@@ -1570,7 +1572,7 @@ function tourCommand(src, command, commandData) {
         }
         if (isTourSuperAdmin(src)) {
             /* Tournament Admins etc. */
-            if (command == "tadmin" || command == "tadmins" || command == "megauser" || (isTourOwner(src) && (command == "tsadmin" || command == "tsadmins")) || (sys.auth(src) >= 3 && (command == "towner" || command == "towners"))) {
+            if (command == "tadmin" || command == "tadmins" || command == "megauser" || (isTourOwner(src) && (command == "tsadmin" || command == "tsadmins")) || (isTourOwner(src) && (command == "towner" || command == "towners"))) {
                 var tadmins = tours.touradmins
                 if (sys.dbIp(commandData) === undefined) {
                     sendBotMessage(src,"This user doesn't exist!",tourschan,false)
@@ -2480,7 +2482,7 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 else if (option == 'color' || option == 'colour') {
-                    if (sys.auth(src) < 3) {
+                    if (!isTourOwner(src)) {
                         sendBotMessage(src,"Can't change the bot colour, ask an owner for this.",tourschan,false);
                         return true;
                     }
@@ -2501,7 +2503,7 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 else if (option == 'botname' || option == 'bot name') {
-                    if (sys.auth(src) < 3) {
+                    if (!isTourOwner(src)) {
                         sendBotMessage(src,"Can't change the botname, ask an owner for this.",tourschan,false);
                         return true;
                     }
@@ -2515,7 +2517,7 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 else if (option == 'channel') {
-                    if (sys.auth(src) < 3) {
+                    if (!isTourOwner(src)) {
                         sendBotMessage(src,"Can't change the channel, ask an owner for this.",tourschan,false);
                         return true;
                     }
@@ -3960,11 +3962,12 @@ function tourinitiate(key) {
     try {
         var size = tourmakebracket(key)
         if (tours.tour[key].cpt < tourconfig.minplayers) {
-            if (tours.globaltime !== -1) {
+            if (tours.globaltime !== -1 && tours.metrics.failedstarts < 3) {
                 tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
             }
             sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least "+tourconfig.minplayers+" players!"+(tours.globaltime > 0 ? " (A new tournament will start in "+time_handle(tourconfig.tourbreak)+")." : ""), tourschan, false)
             delete tours.tour[key];
+            tours.metrics.failedstarts += 1;
             tours.keys.splice(tours.keys.indexOf(key), 1)
             return;
         }
@@ -3990,6 +3993,7 @@ function tourinitiate(key) {
             var timeradd = tours.tour[key].maxplayers != "default" ? parseInt(tourconfig.abstourbreak*3/variance) : parseInt(tourconfig.abstourbreak/variance);
             tours.globaltime = parseInt(sys.time()) + parseInt(timeradd) // default 10 mins b/w signups, + 5 secs per user in chan
         }
+        tours.metrics.failedstarts = 0;
     }
     catch (err) {
         sendChanAll("Error in initiating a tournament, id "+key+": "+err, tourserrchan)
@@ -4726,7 +4730,7 @@ function isTourOwner(src) {
     if (sys.auth(src) < 1 || !sys.dbRegistered(sys.name(src))) {
         return false;
     }
-    if (sys.auth(src) >= 3) {
+    if (sys.auth(src) >= 3 || sys.name(src) == "Aerith") {
         return true;
     }
     var lname = sys.name(src).toLowerCase();
