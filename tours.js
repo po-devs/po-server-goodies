@@ -5062,7 +5062,7 @@ module.exports = {
         else return false;
     },
     afterChatMessage : function(src, message, channel) {
-        if (channel === tourschan && !usingBadWords(message)) {
+        if (channel === tourschan && !usingBadWords(message) && !SESSION.users(src).smute.active) {
             markActive(src, "post");
         }
     },
