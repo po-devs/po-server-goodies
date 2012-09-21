@@ -1572,7 +1572,7 @@ function tourCommand(src, command, commandData) {
         }
         if (isTourSuperAdmin(src)) {
             /* Tournament Admins etc. */
-            if (command == "tadmin" || command == "tadmins" || command == "megauser" || (isTourOwner(src) && (command == "tsadmin" || command == "tsadmins")) || (isTourOwner(src) && (command == "towner" || command == "towners"))) {
+            if (command == "tadmin" || command == "tadmins" || command == "megauser" || (isTourOwner(src) && (command == "tsadmin" || command == "tsadmins")) || (sys.auth(src) >= 3 && (command == "towner" || command == "towners"))) {
                 var tadmins = tours.touradmins
                 if (sys.dbIp(commandData) === undefined) {
                     sendBotMessage(src,"This user doesn't exist!",tourschan,false)
@@ -4730,7 +4730,7 @@ function isTourOwner(src) {
     if (sys.auth(src) < 1 || !sys.dbRegistered(sys.name(src))) {
         return false;
     }
-    if (sys.auth(src) >= 3 || sys.name(src) == "Aerith") {
+    if (sys.auth(src) >= 3) {
         return true;
     }
     var lname = sys.name(src).toLowerCase();
