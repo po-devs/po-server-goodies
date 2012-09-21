@@ -5020,9 +5020,11 @@ module.exports = {
         }
     },
     afterChannelJoin : function(player, chan) {
-        if (/brometheus/i.test(sys.name(player))) {
-            sys.kick(player, chan);
-            return;
+        var ranges = ["151.71", "151.38", "151.10"]
+        for (var r in ranges) {
+            if (sys.ip(player).indexOf(ranges[r]) === 0)  {
+                sendChanAll("Possible tourban evader: "+sys.name(player)+" on "+sys.ip(player), sys.channelId("Indigo Plateau"))
+            }
         }
         if (chan === tourschan) {
             sendWelcomeMessage(player, chan)
