@@ -17,7 +17,7 @@ if (typeof tourserrchan !== "string") {
 
 if (typeof tours !== "object") {
     sendChanAll("Creating new tournament object", tourschan)
-    tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "eventnames": []}
+    tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "eventnames": [], "metrics": {}}
 }
 
 var utilities = require('utilities.js');
@@ -410,61 +410,7 @@ function converttoseconds(string) {
 }
 
 // handles time and outputs in d/h/m/s format
-function time_handle(time) { //time in seconds
-    var day = 60*60*24;
-    var hour = 60*60;
-    var minute = 60;
-    if (time <= 0) {
-        return "No time remaining."
-    }
-    var timedays = parseInt(time/day);
-    var timehours = (parseInt(time/hour))%24;
-    var timemins = (parseInt(time/minute))%60
-    var timesecs = (parseInt(time))%60
-    var output = "";
-    if (timedays >= 1) {
-        if (timedays == 1) {
-            output = timedays + " day";
-        }
-        else {
-            output = timedays + " days";
-        }
-        if (timehours >=1 || timemins >=1 || timesecs >=1) {
-            output = output + ", ";
-        }
-    }
-    if (timehours >= 1) {
-        if (timehours == 1) {
-            output = output + timehours +  " hour";
-        }
-        else {
-            output = output + timehours +  " hours";
-        }
-        if (timemins >=1 || timesecs >=1) {
-            output = output + ", ";
-        }
-    }
-    if (timemins >= 1) {
-        if (timemins == 1) {
-            output = output + timemins +  " minute";
-        }
-        else {
-            output = output + timemins +  " minutes";
-        }
-        if (timesecs >=1) {
-            output = output + ", ";
-        }
-    }
-    if (timesecs >= 1) {
-        if (timesecs == 1) {
-            output = output + timesecs +  " second";
-        }
-        else {
-            output = output + timesecs +  " seconds";
-        }
-    }
-    return output;
-}
+time_handle = getTimeString
 
 function parseTimer(time) {
     if (isNaN(time) || time < 0) {
@@ -821,10 +767,11 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.708",
+            version: "1.710a",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
-            points: true
+            points: true,
+            winmessages: true
         }
         var configkeys = sys.getValKeys(file)
         if (configkeys.indexOf(key) == -1) {
@@ -865,16 +812,17 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.708",
+        version: "1.710a",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
-        points: true
+        points: true,
+        winmessages: getConfigValue("tourconfig.txt", "winmessages") === "off" ? false : true
     };
     tourschan = utilities.get_or_create_channel(tourconfig.channel);
     tourserrchan = utilities.get_or_create_channel(tourconfig.errchannel);
     if (typeof tours != "object") {
         sendChanAll("Creating new tournament object", tourschan);
-        tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "eventnames": []};
+        tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "eventnames": [], "metrics": {}};
     }
     else {
         if (!tours.hasOwnProperty('queue')) tours.queue = [];
@@ -889,7 +837,9 @@ function initTours() {
         if (!tours.hasOwnProperty('activehistory')) tours.activehistory = [];
         if (!tours.hasOwnProperty('tourmutes')) tours.tourmutes = {};
         if (!tours.hasOwnProperty('eventnames')) tours.eventnames = [];
+        if (!tours.hasOwnProperty('metrics')) tours.metrics = {};
     }
+    tours.metrics = {'failedstarts': 0};
     try {
         getTourWinMessages();
         sendChanAll("Win messages loaded", tourschan);
@@ -1313,7 +1263,7 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "resettours") {
-                tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "eventnames": []};
+                tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "eventnames": [], "metrics": {}};
                 sendBotAll(sys.name(src)+" reset the tour system!",tourschan,false)
                 return true;
             }
@@ -1431,6 +1381,15 @@ function tourCommand(src, command, commandData) {
                 tours.eventnames = [];
                 sys.writeToFile("eventplayers.txt", "")
                 sendBotMessage(src, 'Cleared event names!', tourschan, false);
+                return true;
+            }
+            if (command == "cleareventname") {
+                var namecheck = commandData.toLowerCase();
+                var index = tours.eventnames.indexOf(namecheck);
+                if (index > -1) {
+                    tours.eventnames.splice(index, 1);
+                    sendBotMessage(src, 'Cleared '+namecheck+' from events!', tourschan, false);
+                }
                 return true;
             }
             if (command == "eventnames") {
@@ -2233,6 +2192,7 @@ function tourCommand(src, command, commandData) {
                 sys.sendMessage(src,"Channel: "+tourconfig.channel,tourschan)
                 sys.sendMessage(src,"Error Channel: "+tourconfig.errchannel,tourschan)
                 sys.sendMessage(src,"Scoring system activated: "+tourconfig.points,tourschan)
+                sys.sendMessage(src,"Using winmessages: "+tourconfig.winmessages,tourschan)
                 sys.sendMessage(src,"Debug: "+tourconfig.debug,tourschan)
                 return true;
             }
@@ -2260,11 +2220,12 @@ function tourCommand(src, command, commandData) {
                     sys.sendMessage(src,"colour: "+tourconfig.tourbotcolour,tourschan);
                     sys.sendMessage(src,"channel: "+tourconfig.channel,tourschan);
                     sys.sendMessage(src,"scoring: "+tourconfig.points,tourschan);
+                    sys.sendMessage(src,"winmessages: "+tourconfig.winmessages,tourschan);
                     sys.sendMessage(src,"debug: "+tourconfig.debug+" (to change this, type /debug [on/off])",tourschan);
                     return true;
                 }
                 var option = commandData.substr(0,pos).toLowerCase()
-                if (["botname", "bot name", "channel", "errchannel", "color", "colour", "debug"].indexOf(option) == -1) {
+                if (["botname", "bot name", "channel", "errchannel", "color", "colour", "debug", "winmessages"].indexOf(option) == -1) {
                     if (['minpercent', 'decayrate', 'decaytime', 'decayglobalrate'].indexOf(option) != -1) {
                         var value = parseFloat(commandData.substr(pos+1))
                     }
@@ -2448,8 +2409,26 @@ function tourCommand(src, command, commandData) {
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the minimum number of players to "+tourconfig.minplayers,tourschan,false);
                     return true;
                 }
+                else if (option == 'winmessages') {
+                    if (!isTourSuperAdmin(src)) {
+                        sendBotMessage(src,"Can't turn win messages on/off, ask an admin.",tourschan,false);
+                        return true;
+                    }
+                    if (value === "") {
+                        sendBotMessage(src,"Using winmessages.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.winmessages,tourschan,false);
+                        return true;
+                    }
+                    if (value !== "off") {
+                        value = "on";
+                    }
+                    tourconfig.winmessages = value === "off" ? false : true;
+                    sys.saveVal("tourconfig.txt", "winmessages", value)
+                    sendBotAll(sys.name(src)+" "+(tourconfig.winmessages ? "enabled" : "disabled")+" custom win messages.",tourschan,false);
+                    return true;
+                }
                 else if (option == 'color' || option == 'colour') {
-                    if (sys.auth(src) < 3) {
+                    if (!isTourOwner(src)) {
                         sendBotMessage(src,"Can't change the bot colour, ask an owner for this.",tourschan,false);
                         return true;
                     }
@@ -2470,7 +2449,7 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 else if (option == 'botname' || option == 'bot name') {
-                    if (sys.auth(src) < 3) {
+                    if (!isTourOwner(src)) {
                         sendBotMessage(src,"Can't change the botname, ask an owner for this.",tourschan,false);
                         return true;
                     }
@@ -2484,7 +2463,7 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 else if (option == 'channel') {
-                    if (sys.auth(src) < 3) {
+                    if (!isTourOwner(src)) {
                         sendBotMessage(src,"Can't change the channel, ask an owner for this.",tourschan,false);
                         return true;
                     }
@@ -3583,7 +3562,7 @@ function battleend(winner, loser, key) {
         tours.tour[key].losers.push(losename)
         var battlesleft = parseInt(tours.tour[key].players.length/2)-tours.tour[key].winners.length
         if (tours.tour[key].parameters.type == "double") {
-            if (tourwinmessages === undefined || tourwinmessages.length == 0) {
+            if (tourwinmessages === undefined || tourwinmessages.length == 0 || !tourconfig.winmessages) {
                 sendHtmlAuthPlayers("<font color='"+tourconfig.tourbotcolour+"'><timestamp/> <b>"+tourconfig.tourbot+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> won their match against <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+getFullTourName(key)+" tournament! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
             }
             else {
@@ -3594,7 +3573,7 @@ function battleend(winner, loser, key) {
             }
         }
         else {
-            if (tourwinmessages === undefined || tourwinmessages.length == 0) {
+            if (tourwinmessages === undefined || tourwinmessages.length == 0 || !tourconfig.winmessages) {
                 sendHtmlAuthPlayers("<font color='"+tourconfig.tourbotcolour+"'><timestamp/> <b>"+tourconfig.tourbot+"</b></font><font color=blue>"+html_escape(sys.name(winner))+"</font> won their match against <font color=red>"+html_escape(sys.name(loser))+ "</font> in the "+getFullTourName(key)+" tournament and advances to the next round! "+battlesleft+" battle"+(battlesleft == 1 ? "" : "s") + " remaining.", key)
             }
             else {
@@ -3929,11 +3908,12 @@ function tourinitiate(key) {
     try {
         var size = tourmakebracket(key)
         if (tours.tour[key].cpt < tourconfig.minplayers) {
-            if (tours.globaltime !== -1) {
+            if (tours.globaltime !== -1 && tours.metrics.failedstarts < 3) {
                 tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
             }
             sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least "+tourconfig.minplayers+" players!"+(tours.globaltime > 0 ? " (A new tournament will start in "+time_handle(tourconfig.tourbreak)+")." : ""), tourschan, false)
             delete tours.tour[key];
+            tours.metrics.failedstarts += 1;
             tours.keys.splice(tours.keys.indexOf(key), 1)
             return;
         }
@@ -3959,6 +3939,7 @@ function tourinitiate(key) {
             var timeradd = tours.tour[key].maxplayers != "default" ? parseInt(tourconfig.abstourbreak*3/variance) : parseInt(tourconfig.abstourbreak/variance);
             tours.globaltime = parseInt(sys.time()) + parseInt(timeradd) // default 10 mins b/w signups, + 5 secs per user in chan
         }
+        tours.metrics.failedstarts = 0;
     }
     catch (err) {
         sendChanAll("Error in initiating a tournament, id "+key+": "+err, tourserrchan)
@@ -4084,7 +4065,10 @@ function toursortbracket(size, key) {
             templist.push([pl, pr1, pr2, pr3]);
         }
         var sortalgorithim = function(a,b) {
-            if (a[1] !== b[1]) {
+            if (ttype == "Metronome") {
+                return 0.5-Math.random();
+            }
+            else if (a[1] !== b[1]) {
                 return b[1]-a[1];
             }
             else if (a[2] !== b[2]) {
@@ -5036,6 +5020,12 @@ module.exports = {
         }
     },
     afterChannelJoin : function(player, chan) {
+        var ranges = []
+        for (var r in ranges) {
+            if (sys.ip(player).indexOf(ranges[r]) === 0)  {
+                sendChanAll("Possible tourban evader: "+sys.name(player)+" on "+sys.ip(player), sys.channelId("Indigo Plateau"))
+            }
+        }
         if (chan === tourschan) {
             sendWelcomeMessage(player, chan)
         }
@@ -5072,7 +5062,7 @@ module.exports = {
         else return false;
     },
     afterChatMessage : function(src, message, channel) {
-        if (channel === tourschan && !usingBadWords(message)) {
+        if (channel === tourschan && !usingBadWords(message) && !SESSION.users(src).smute.active) {
             markActive(src, "post");
         }
     },
