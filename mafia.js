@@ -1117,7 +1117,9 @@ function Mafia(mafiachan) {
         sendChanAll("±Game: " + (src ? sys.name(src) : Config.Mafia.bot) + " has stopped the game!", mafiachan);
         sendChanAll(border, mafiachan);
         sendChanAll("", mafiachan);
-
+        if (sys.id('PolkaBot') !== undefined) {
+            sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
+        }
         mafia.clearVariables();
         sys.removeVal("mafiagameplayers");
         runUpdate();
@@ -1533,6 +1535,9 @@ function Mafia(mafiachan) {
         if (Object.keys(mafia.players).length === 0) {
             sendChanAll("±Game: " + (mafia.theme.drawmsg ? mafia.theme.drawmsg : "Everybody died! This is why we can't have nice things :("), mafiachan);
             sendChanAll(border, mafiachan);
+            if (sys.id('PolkaBot') !== undefined) {
+                sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
+            }
             mafia.clearVariables();
             sys.removeVal("mafiagameplayers");
             runUpdate();
@@ -1621,6 +1626,9 @@ function Mafia(mafiachan) {
                     }
                     sendChanAll(border, mafiachan);
                     mafia.clearVariables();
+                    if (sys.id('PolkaBot') !== undefined) {
+                        sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
+                    }
                     sys.removeVal("mafiagameplayers");
                     runUpdate();
                     return true;
@@ -3683,13 +3691,18 @@ return;
                             }
                         }
                         player.dayKill = player.dayKill + 1 || 1;
+                        if (sys.id('PolkaBot') !== undefined) {
+                            sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+name+" DIED", mafiachan);
+                        }
                         this.kill(mafia.players[commandData]);
                     } else {
                         if (target.role.actions.daykillrevengemsg !== undefined && typeof target.role.actions.daykillrevengemsg == "string") {
                             sendChanAll("±Game: " + target.role.actions.daykillrevengemsg.replace(/~Self~/g, commandData).replace(/~Target~/g, name), mafiachan);
                         } else {
                             sendChanAll("±Game: ~Target~ tries to attack ~Self~, but ~Self~ fights back and kills ~Target~!".replace(/~Self~/g, commandData).replace(/~Target~/g, name), mafiachan);
-
+                            if (sys.id('PolkaBot') !== undefined) {
+                                sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+name+" DIED", mafiachan);
+                            }
                         }
                         this.kill(mafia.players[name]);
                         if (target.role.actions.daykill === "bomb")
