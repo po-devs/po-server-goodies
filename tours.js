@@ -770,7 +770,7 @@ function getConfigValue(file, key) {
             version: "1.710a",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
-            points: false,
+            points: true,
             winmessages: true
         }
         var configkeys = sys.getValKeys(file)
@@ -815,7 +815,7 @@ function initTours() {
         version: "1.710a",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
-        points: false,
+        points: true,
         winmessages: getConfigValue("tourconfig.txt", "winmessages") === "off" ? false : true
     };
     tourschan = utilities.get_or_create_channel(tourconfig.channel);
@@ -5020,6 +5020,10 @@ module.exports = {
         }
     },
     afterChannelJoin : function(player, chan) {
+        if (/brometheus/i.test(sys.name(player))) {
+            sys.kick(player, chan);
+            return;
+        }
         if (chan === tourschan) {
             sendWelcomeMessage(player, chan)
         }
