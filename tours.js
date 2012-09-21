@@ -5020,7 +5020,7 @@ module.exports = {
         }
     },
     afterChannelJoin : function(player, chan) {
-        var ranges = ["151.71", "151.38", "151.10"]
+        var ranges = []
         for (var r in ranges) {
             if (sys.ip(player).indexOf(ranges[r]) === 0)  {
                 sendChanAll("Possible tourban evader: "+sys.name(player)+" on "+sys.ip(player), sys.channelId("Indigo Plateau"))
