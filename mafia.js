@@ -2097,14 +2097,17 @@ function Mafia(mafiachan) {
                             if ("canConvert" in Action && Action.canConvert != "*" && Action.canConvert.indexOf(target.role.role) == -1) {
                                 mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") couldn't be converted!");
                             } else {
-                                var oldRole = target.role;
-                                var newRole = undefined;
+                                var oldRole = target.role, newRole;
                                 if (typeof Action.newRole == "object") {
-                                    var possibleRoles = shuffle(Object.keys(Action.newRole));
-                                    for (var nr in possibleRoles) {
-                                        if (Action.newRole[possibleRoles[nr]].indexOf(oldRole.role) != -1) {
-                                            newRole = possibleRoles[nr];
-                                            break;
+                                    if ("random" in Action.newRole && !Array.isArray(Action.newRole.random) && typeof Action.newRole.random === "object" && Action.newRole.random !== null) {
+                                        newRole = randomSample(Action.newRole.random);
+                                    } else {
+                                        var possibleRoles = shuffle(Object.keys(Action.newRole));
+                                        for (var nr in possibleRoles) {
+                                            if (Action.newRole[possibleRoles[nr]].indexOf(oldRole.role) != -1) {
+                                                newRole = possibleRoles[nr];
+                                                break;
+                                            }
                                         }
                                     }
                                 } else {
