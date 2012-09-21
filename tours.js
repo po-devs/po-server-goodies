@@ -410,61 +410,7 @@ function converttoseconds(string) {
 }
 
 // handles time and outputs in d/h/m/s format
-function time_handle(time) { //time in seconds
-    var day = 60*60*24;
-    var hour = 60*60;
-    var minute = 60;
-    if (time <= 0) {
-        return "No time remaining."
-    }
-    var timedays = parseInt(time/day);
-    var timehours = (parseInt(time/hour))%24;
-    var timemins = (parseInt(time/minute))%60
-    var timesecs = (parseInt(time))%60
-    var output = "";
-    if (timedays >= 1) {
-        if (timedays == 1) {
-            output = timedays + " day";
-        }
-        else {
-            output = timedays + " days";
-        }
-        if (timehours >=1 || timemins >=1 || timesecs >=1) {
-            output = output + ", ";
-        }
-    }
-    if (timehours >= 1) {
-        if (timehours == 1) {
-            output = output + timehours +  " hour";
-        }
-        else {
-            output = output + timehours +  " hours";
-        }
-        if (timemins >=1 || timesecs >=1) {
-            output = output + ", ";
-        }
-    }
-    if (timemins >= 1) {
-        if (timemins == 1) {
-            output = output + timemins +  " minute";
-        }
-        else {
-            output = output + timemins +  " minutes";
-        }
-        if (timesecs >=1) {
-            output = output + ", ";
-        }
-    }
-    if (timesecs >= 1) {
-        if (timesecs == 1) {
-            output = output + timesecs +  " second";
-        }
-        else {
-            output = output + timesecs +  " seconds";
-        }
-    }
-    return output;
-}
+time_handle = getTimeString
 
 function parseTimer(time) {
     if (isNaN(time) || time < 0) {
