@@ -1930,7 +1930,7 @@ function Mafia(mafiachan) {
                             } else {
                                 target = mafia.players[target];
     
-                                var targetMode;
+                                var targetMode = undefined;
                                 var revenge = false;
                                 var revengetext = "±Game: You were killed during the night!";
                                 var poisonrevenge, poisonDeadMessage;
@@ -2106,7 +2106,7 @@ function Mafia(mafiachan) {
                             }
                             else if (command == "inspect") {
                                 var Sight = Action.Sight;
-                                var targetMode = targetMode || {};
+                                targetMode = targetMode || {};
                                 if (targetMode.revealSide !== undefined || Sight === "Team") {
                                     mafia.sendPlayer(player.name, "±Info: " + target.name + " is sided with the " + mafia.theme.trside(target.role.side) + "!!");
                                 } else if (typeof Sight == "object") {
