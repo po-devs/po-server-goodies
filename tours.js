@@ -1435,6 +1435,15 @@ function tourCommand(src, command, commandData) {
                 sendBotMessage(src, 'Cleared event names!', tourschan, false);
                 return true;
             }
+            if (command == "cleareventname") {
+                var namecheck = commandData.toLowerCase();
+                var index = tours.eventnames.indexOf(namecheck);
+                if (index > -1) {
+                    tours.eventnames.splice(index, 1);
+                    sendBotMessage(src, 'Cleared '+namecheck+' from events!', tourschan, false);
+                }
+                return true;
+            }
             if (command == "eventnames") {
                 sendBotMessage(src, 'Played today: '+tours.eventnames.join(), tourschan, false);
                 return true;
