@@ -4066,7 +4066,18 @@ function toursortbracket(size, key) {
         }
         var sortalgorithim = function(a,b) {
             if (ttype == "Metronome") {
-                return 0.5-Math.random();
+                if (a[1] == -1 && b[1] == -1) {
+                    return a[3]-b[3];
+                }
+                else if (a[1] == -1) {
+                    return 1;
+                }
+                else if (b[1] == -1) {
+                    return -1;
+                }
+                else {
+                    return 0.5-Math.random();
+                }
             }
             else if (a[1] !== b[1]) {
                 return b[1]-a[1];
