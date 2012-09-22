@@ -312,7 +312,8 @@ function append_logs(params) { // Adds chat lines to the logs
                     else if(tbregexp.test(params.msg) === true) // forwarding tempbans to beforeplayerban
                     {
 					sys.sendHtmlAll('2');
-                        var result = params.msg.match(tbregexp);
+					    var msg = params.msg;
+                        var result = msg.match(tbregexp);
 						sys.sendAll(result);
                         var banner = result[1];
                         var banned = result[2];
