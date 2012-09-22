@@ -3716,7 +3716,7 @@ return;
                         }
                         player.dayKill = player.dayKill + 1 || 1;
                         if (sys.id('PolkaBot') !== undefined) {
-                            sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+name+" DIED", mafiachan);
+                            sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+target.name+" DIED", mafiachan);
                         }
                         this.kill(mafia.players[commandData]);
                     } else {
