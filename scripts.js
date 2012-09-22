@@ -195,14 +195,12 @@ function escape_dq(txt) { // escaping for JSON
 }
 
 function append_logs(params) { // Adds chat lines to the logs
-     sys.sendAll('hur');
-	 var timestamp_regex = new RegExp("^[0-9]{0,10}$");
+     var timestamp_regex = new RegExp("^[0-9]{0,10}$");
      var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick', 'afterNewMessage'];
     if(typeof params == 'object' && events_list.indexOf(params.event) != -1)
     {
         if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
         {
-		sys.sendAll('dur');
             // verification here that it's stalked
             var stalked_chans = getVal('stalked_chans');
             if(params.chan_id !== undefined && stalked_chans.indexOf(sys.channel(params.chan_id).toLowerCase()) == -1)
@@ -303,14 +301,14 @@ function append_logs(params) { // Adds chat lines to the logs
                 {
                     var kregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$/i; // To capture kicks
                     var tbregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) banned ([^\n%*<:\(\)]{1,20}) for (([0-9]{1,} (weeks?|days?|hours?|minutes?|seconds?)(, ){0,}){1,})! \[Reason: [^:]{1,}\]/i;
-					if(kregexp.test(params.msg) === true) // forwarding kicks to beforeplayerkick
+					if(kregexp.test(params.msg)) // forwarding kicks to beforeplayerkick
                     {
                         var result = params.msg.match(kregexp);
                         var kicked = result[1];
                         var kicker = result[2];
                         append_logs({event:"beforePlayerKick", kicker_id:sys.id(kicker), kicked_id:sys.id(kicked), channels:params.channels, timestamp:params.timestamp});
                     }
-                    else if(tbregexp.test(params.msg) === true) // forwarding tempbans to beforeplayerban
+                    else if(tbregexp.test(params.msg)) // forwarding tempbans to beforeplayerban
                     {
                         var result = params.msg.match(tbregexp);
 						sys.sendAll(result);
@@ -330,7 +328,7 @@ function append_logs(params) { // Adds chat lines to the logs
                 if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
                     var bregexp = /^<b><font color=red> ([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!<\/font><\/b>$/i;
-                    if(bregexp.test(params.msg) === true) // forwarding bans to beforeplayerban
+                    if(bregexp.test(params.msg)) // forwarding bans to beforeplayerban
                     {
                         var result = params.msg.match(bregexp);
                         var banned = result[1];
