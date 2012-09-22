@@ -3211,7 +3211,7 @@ function Mafia(mafiachan) {
             name = this.correctCase(name);
             if (this.isInGame(name)) {
                 var player = this.players[name];
-                sendChanAll("±Kill: " + player.name + " (" + player.role.translation + ") was slayed by " + slayer + "!", mafiachan);
+                sendChanAll("±Kill: " + player.name + " (" + player.role.translation + ") was slain by " + slayer + "!", mafiachan);
                 this.removePlayer(player);
                 return;
             }
