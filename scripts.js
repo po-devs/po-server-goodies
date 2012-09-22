@@ -174,16 +174,13 @@ function update_web_logs() {
     var json = sys.getFileContent('po_logs.json');
     var website = sys.getFileContent('logs_address.txt'); // The address of the page that will save the logs
     var post = {logs: json};
-    var resp = sys.synchronousWebCall(website, post);
-    if(resp == 'true')
-    {
-        sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
-        sys.writeToFile('po_logs.json','');
-    }
-    else
-    {
-        //sys.sendAll('Return: '+resp, 2);
-    }
+	sys.webCall(website, function(resp) {
+	    if(resp == 'true')
+		{
+		    sys.sendAll('±StalkingBot: The logs have been sent to the website.', staffchannel);
+            sys.writeToFile('po_logs.json','');
+		}
+	}, post);
 }
 
 function getVal(valname) { // Removes ":" if it's the first character of the val
@@ -1687,11 +1684,14 @@ poScript=({
 stepEvent: function() {
     if (typeof callplugins == "function") callplugins("stepEvent");
     
-    // Updates PO Logs at midnight
+    // Updates PO logs once they reach over 5 mil characters
     var date = new Date();
-    if(date.getUTCHours() == 23 && date.getUTCMinutes() == 59 && date.getUTCSeconds() == 59)
+    if(date.getUTCSeconds() === 0)
     {
-        update_web_logs(); // Will try to update the logs on the web server
+	    if(sys.getFileContent('po_logs.json').length > 5000000)
+		{
+             update_web_logs(); // Will try to upload the logs on the web server
+		}
     }
     if ((date.getUTCHours() === 0 || date.getUTCHours() ===  6 || date.getUTCHours() === 12 || date.getUTCHours() === 12) && date.getUTCMinutes === 0 && date.getUTCSeconds () === 0){
         sendNotice();
@@ -4284,13 +4284,6 @@ ownerCommand: function(src, command, commandData, tar) {
     if(command == "update_logs") {
         update_web_logs();
         return;
-    }
-    if(command == "show_logs") {
-         var logs = sys.getFileContent('po_logs.json');
-         sys.writeToFile('po_logs.json', '');
-         sys.writeToFile('po_logs_back_up.json', logs);
-         sys.sendMessage(src, "±Logs: "+logs, channel);
-		 return;
     }
     if(command == "stalk_chan") {
         var stalked_chans = getVal('stalked_chans').split(':');
