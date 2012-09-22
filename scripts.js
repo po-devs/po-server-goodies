@@ -277,6 +277,7 @@ function append_logs(params) { // Adds chat lines to the logs
             break;
             
             case 'beforePlayerBan':
+			sys.sendAll('in');
                 if(sys.name(params.banner_id) !== undefined && params.duration == 0 && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
 				sys.sendAll('doped');
@@ -328,7 +329,7 @@ function append_logs(params) { // Adds chat lines to the logs
                         var banner = result[1];
                         var banned = result[2];
                         var dur = parseInt(getTimeStamp(result[3]));
-						append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), banned:banned, duration:dur, channels:params.channels, timestamp:params.timestamp});
+						append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), 'banned':banned, duration:dur, channels:params.channels, timestamp:params.timestamp});
                     }
                     else
                     {
