@@ -269,7 +269,16 @@ function append_logs(params) { // Adds chat lines to the logs
             break;
             
             case 'beforePlayerBan':
-			sys.sendAll('yoped'+params);
+			function printObject(o) {
+  var out = '';
+  for (var p in o) {
+    out += p + ': ' + o[p] + '\n';
+  }
+  sys.sendAll(out);
+}
+printObject(params);
+
+			sys.sendAll('yoped');
                 if(sys.name(params.banner_id) !== undefined && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
 				sys.sendAll('doped');
