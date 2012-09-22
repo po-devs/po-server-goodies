@@ -284,7 +284,7 @@ function append_logs(params) { // Adds chat lines to the logs
 				sys.sendAll('doped');
                     sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"duration\":"+params.duration+" \"banner\":\""+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+escape_dq(sys.name(params.banned_id))+"\", \"channels\":"+params.duration+" \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
-				else if(sys.name(params.banner_id) !== undefined && parseInt(params.duration) > 0 && banned !== undefined && timestamp_regex.test(params.timestamp))
+				else if(sys.name(params.banner_id) !== undefined && parseInt(params.duration) > 0 && params.banned !== undefined && timestamp_regex.test(params.timestamp))
 				{
 				sys.sendAll('donped');
                     sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"duration\":"+params.duration+", \"banner\":\""+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+escape_dq(params.banned)+"\", \"channels\":"+params.duration+" \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");				
