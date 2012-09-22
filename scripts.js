@@ -195,12 +195,14 @@ function escape_dq(txt) { // escaping for JSON
 }
 
 function append_logs(params) { // Adds chat lines to the logs
-     var timestamp_regex = new RegExp("^[0-9]{0,10}$");
+     sys.sendAll('hur');
+	 var timestamp_regex = new RegExp("^[0-9]{0,10}$");
      var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick', 'afterNewMessage'];
     if(typeof params == 'object' && events_list.indexOf(params.event) != -1)
     {
         if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
         {
+		sys.sendAll('dur');
             // verification here that it's stalked
             var stalked_chans = getVal('stalked_chans');
             if(params.chan_id !== undefined && stalked_chans.indexOf(sys.channel(params.chan_id).toLowerCase()) == -1)
