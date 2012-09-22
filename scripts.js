@@ -303,7 +303,6 @@ function append_logs(params) { // Adds chat lines to the logs
                     var tbregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) banned ([^\n%*<:\(\)]{1,20}) for (([0-9]{1,} (weeks?|days?|hours?|minutes?|seconds?)(, ){0,}){1,})! \[Reason: [^:]{1,}\]/i;
 					if(kregexp.test(params.msg) === true) // forwarding kicks to beforeplayerkick
                     {
-					sys.sendHtmlAll('1');
                         var result = params.msg.match(kregexp);
                         var kicked = result[1];
                         var kicker = result[2];
@@ -311,9 +310,8 @@ function append_logs(params) { // Adds chat lines to the logs
                     }
                     else if(tbregexp.test(params.msg) === true) // forwarding tempbans to beforeplayerban
                     {
-					    var msg = params.msg;
-                        var result = msg.match(tbregexp);
-						sys.sendAll(result);
+					    sys.sendHtmlAll(params.msg+" Params message");
+                        var result = params.msg.match(tbregexp);
                         var banner = result[1];
                         var banned = result[2];
                         var dur = parseInt(getTimeStamp(result[3]));
@@ -321,7 +319,6 @@ function append_logs(params) { // Adds chat lines to the logs
                     }
                     else
                     {
-					sys.sendHtmlAll('here');
                         sys.appendToFile('po_logs.json', "{\"event\":\"afterSendAll\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
                     }
                 }
