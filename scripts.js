@@ -269,9 +269,11 @@ function append_logs(params) { // Adds chat lines to the logs
             break;
             
             case 'beforePlayerBan':
+			sys.sendAll('yoped');
                 if(sys.name(params.banner_id) !== undefined && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
-                    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"banner\":\""+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+escape_dq(sys.name(params.banned_id))+"\", \"channels\":"+params.duration+" \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+				sys.sendAll('doped');
+                    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"duration\":"+params.duration+" \"banner\":\""+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+escape_dq(sys.name(params.banned_id))+"\", \"channels\":"+params.duration+" \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
             break;
             
@@ -310,12 +312,10 @@ function append_logs(params) { // Adds chat lines to the logs
                     }
                     else if(tbregexp.test(params.msg) === true) // forwarding tempbans to beforeplayerban
                     {
-					    sys.sendHtmlAll(params.msg+" Params message");
                         var result = params.msg.match(tbregexp);
                         var banner = result[1];
                         var banned = result[2];
                         var dur = parseInt(getTimeStamp(result[3]));
-						sys.sendAll("duration: "+dur);
 						append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), banned_id:sys.id(banned), duration:dur, channels:params.channels, timestamp:params.timestamp});
                     }
                     else
