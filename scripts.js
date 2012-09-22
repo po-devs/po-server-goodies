@@ -328,7 +328,7 @@ function append_logs(params) { // Adds chat lines to the logs
                 if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
                     var bregexp = /^<b><font color=red> ([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!<\/font><\/b>$/i;
-                    if(bregexp.test(params.msg)) // forwarding bans to beforeplayerban
+                    if(bregexp.test(params.msg) === true) // forwarding bans to beforeplayerban
                     {
                         var result = params.msg.match(bregexp);
                         var banned = result[1];
