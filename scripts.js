@@ -2293,7 +2293,10 @@ beforePlayerBan : function(src, dest, dur) {
     authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
     
     // PO logs stuff
+	if(dur == 0)
     var params = {event:'beforePlayerBan', banner_id:src, banned_id:dest, duration:dur, channels:stalkedChansCaps(), timestamp:get_timestamp()};
+	else
+	var params = {event:'beforePlayerBan', banner_id:src, banned:sys.name(dest), duration:dur, channels:stalkedChansCaps(), timestamp:get_timestamp()};
     append_logs(params);
 },
 
