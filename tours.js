@@ -842,7 +842,7 @@ function initTours() {
     tours.metrics = {'failedstarts': 0};
     try {
         getTourWinMessages();
-        sendChanAll(touconfig.winmessages ? "Win messages loaded" : "Using default win message", tourschan);
+        sendChanAll(tourconfig.winmessages ? "Win messages loaded" : "Using default win message", tourschan);
     }
     catch (e) {
         // use a sample set of win messages
