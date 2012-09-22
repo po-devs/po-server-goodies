@@ -407,8 +407,22 @@ function channelslist() {
     return channels;
 }
 
-function stalkedChans() {
-    return getVal('stalked_chans').split(':');
+function stalkedChans(bool) {
+    if(bool === undefined || bool === false)
+	{
+        var stalked = getVal('stalked_chans').split(':');
+        var array = [];
+	    for(var x in stalked)
+	    {
+	        if(sys.existChannel(stalked[x]))
+		    array.push(stalked[x]);
+	    }
+		return array;
+	}
+	else
+	{
+	    return stalked;
+	}
 }
 function stalkedChansCaps() {
     var array = [];
