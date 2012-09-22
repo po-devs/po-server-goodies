@@ -194,6 +194,14 @@ function escape_dq(txt) { // escaping for JSON
     return txt.replace(/\\/g, "\\\\").replace(/\//g, "\\/").replace(/\"/g, "\\\"").replace(/\n/g, "").replace(/\r/g, "").replace(/\t/g, "").replace(/\x08/g, "").replace(/\x0c/g, "");
 }
 
+function printObject(o) {
+  var out = '';
+  for (var p in o) {
+    out += p + ': ' + o[p] + '\n';
+  }
+  sys.sendAll(out);
+}
+
 function append_logs(params) { // Adds chat lines to the logs
      var timestamp_regex = new RegExp("^[0-9]{0,10}$");
      var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick', 'afterNewMessage'];
@@ -269,15 +277,7 @@ function append_logs(params) { // Adds chat lines to the logs
             break;
             
             case 'beforePlayerBan':
-			function printObject(o) {
-  var out = '';
-  for (var p in o) {
-    out += p + ': ' + o[p] + '\n';
-  }
-  sys.sendAll(out);
-}
-printObject(params);
-
+            printObject(params);
 			sys.sendAll('yoped');
                 if(sys.name(params.banner_id) !== undefined && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
@@ -325,6 +325,7 @@ printObject(params);
                         var banner = result[1];
                         var banned = result[2];
                         var dur = parseInt(getTimeStamp(result[3]));
+						printObject(result);
 						append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), banned_id:sys.id(banned), duration:dur, channels:params.channels, timestamp:params.timestamp});
                     }
                     else
