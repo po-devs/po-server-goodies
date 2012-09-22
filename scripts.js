@@ -301,14 +301,14 @@ function append_logs(params) { // Adds chat lines to the logs
                 {
                     var kregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$/i; // To capture kicks
                     var tbregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) banned ([^\n%*<:\(\)]{1,20}) for (([0-9]{1,} (weeks?|days?|hours?|minutes?|seconds?)(, ){0,}){1,})! \[Reason: [^:]{1,}\]/i;
-					if(kregexp.test(params.msg)) // forwarding kicks to beforeplayerkick
+					if(kregexp.test(params.msg) === true) // forwarding kicks to beforeplayerkick
                     {
                         var result = params.msg.match(kregexp);
                         var kicked = result[1];
                         var kicker = result[2];
                         append_logs({event:"beforePlayerKick", kicker_id:sys.id(kicker), kicked_id:sys.id(kicked), channels:params.channels, timestamp:params.timestamp});
                     }
-                    else if(tbregexp.test(params.msg)) // forwarding tempbans to beforeplayerban
+                    else if(tbregexp.test(params.msg) === true) // forwarding tempbans to beforeplayerban
                     {
                         var result = params.msg.match(tbregexp);
 						sys.sendAll(result);
@@ -328,7 +328,7 @@ function append_logs(params) { // Adds chat lines to the logs
                 if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
                     var bregexp = /^<b><font color=red> ([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!<\/font><\/b>$/i;
-                    if(bregexp.test(params.msg)) // forwarding bans to beforeplayerban
+                    if(bregexp.test(params.msg) === true) // forwarding bans to beforeplayerban
                     {
                         var result = params.msg.match(bregexp);
                         var banned = result[1];
@@ -337,8 +337,8 @@ function append_logs(params) { // Adds chat lines to the logs
                     }
                     else
                     {
-                        var tregex = new RegExp("<timestamp/>", 'i');
-                        var pregex = new RegExp("<ping/>", 'i');
+                        var tregex = new RegExp("<timestamp/>", 'gi');
+                        var pregex = new RegExp("<ping/>", 'gi');
                         sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg.replace(tregex, get_string_timestamp()).replace(pregex, ""))+"\"},");
                     }
                 }
