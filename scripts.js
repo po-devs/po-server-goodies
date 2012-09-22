@@ -308,7 +308,7 @@ function append_logs(params) { // Adds chat lines to the logs
                         var kicker = result[2];
                         append_logs({event:"beforePlayerKick", kicker_id:sys.id(kicker), kicked_id:sys.id(kicked), channels:params.channels, timestamp:params.timestamp});
                     }
-                    else if(tbregexp.test(params.msg)) // forwarding tempbans to beforeplayerban
+                    else if(tbregexp.test(params.msg) === true) // forwarding tempbans to beforeplayerban
                     {
                         var result = params.msg.match(tbregexp);
 						sys.sendAll(result);
