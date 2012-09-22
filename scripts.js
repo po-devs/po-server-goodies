@@ -277,13 +277,16 @@ function append_logs(params) { // Adds chat lines to the logs
             break;
             
             case 'beforePlayerBan':
-            printObject(params);
-			sys.sendAll('yoped');
-                if(sys.name(params.banner_id) !== undefined && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
+                if(sys.name(params.banner_id) !== undefined && params.duration == 0 && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
 				sys.sendAll('doped');
                     sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"duration\":"+params.duration+" \"banner\":\""+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+escape_dq(sys.name(params.banned_id))+"\", \"channels\":"+params.duration+" \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
+				else if(sys.name(params.banner_id) !== undefined && params.duration > 0 && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
+				{
+				sys.sendAll('donped');
+                    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"duration\":"+params.duration+" \"banner\":\""+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+escape_dq(params.banned)+"\", \"channels\":"+params.duration+" \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");				
+				}
             break;
             
             case 'afterChannelJoin':
@@ -325,8 +328,7 @@ function append_logs(params) { // Adds chat lines to the logs
                         var banner = result[1];
                         var banned = result[2];
                         var dur = parseInt(getTimeStamp(result[3]));
-						printObject(result);
-						append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), banned_id:sys.id(banned), duration:dur, channels:params.channels, timestamp:params.timestamp});
+						append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), banned:banned, duration:dur, channels:params.channels, timestamp:params.timestamp});
                     }
                     else
                     {
