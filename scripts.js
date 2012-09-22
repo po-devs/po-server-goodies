@@ -319,6 +319,7 @@ function append_logs(params) { // Adds chat lines to the logs
                     }
                     else
                     {
+					sys.sendAll('ploufed');
                         sys.appendToFile('po_logs.json', "{\"event\":\"afterSendAll\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
                     }
                 }
