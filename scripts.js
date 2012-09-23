@@ -351,7 +351,8 @@ function append_logs(params) { // Adds chat lines to the logs
             case 'afterSendHtmlAll':
                 if(params.msg != null && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
-                    var bregexp = /^<b><font color=red> ([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!<\/font><\/b>$/i;
+				    // sendChanHtmlAll('<b><font color=red>' + commandData + ' was banned by ' + nonFlashing(sys.name(src)) + '!</font></b>',-1);
+                    var bregexp = /^<b><font color=red>([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!<\/font><\/b>$/i;
                     if(bregexp.test(params.msg) === true) // forwarding bans to beforeplayerban
                     {
                         var result = params.msg.match(bregexp);
@@ -2326,7 +2327,7 @@ beforePlayerBan : function(src, dest, dur) {
 	if(dur == 0)
     var params = {event:'beforePlayerBan', banner_id:src, banned_id:dest, duration:dur, channels:stalkedChansCaps(), timestamp:get_timestamp()};
 	else
-	var params = {event:'beforePlayerBan', banner_id:src, banned:sys.name(dest), duration:dur, channels:stalkedChansCaps(), timestamp:get_timestamp()};
+	var params = {event:'beforePlayerBan', banner_id:src, banned:sys.name(dest), duration:parseInt(parseInt(dur)*60), channels:stalkedChansCaps(), timestamp:get_timestamp()};
     append_logs(params);
 },
 
