@@ -5140,7 +5140,7 @@ module.exports = {
             return false;
         }
         if (SESSION.channels(tourschan).isBanned(src)) {
-            sendBotMessage(src,"You are banned from Tournaments!",tourschan,false)
+            sendBotMessage(src,"You are banned from Tournaments!","all",false)
             return true;
         }
         var proxy = false;
