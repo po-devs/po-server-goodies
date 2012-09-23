@@ -241,7 +241,12 @@ function append_logs(params) { // Adds chat lines to the logs
             case 'afterBattleEnded':
                 if(sys.name(params.winner_id) !== undefined && sys.name(params.loser_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
-                    var tie = params.tie == 'tie' ? 1 : 0;
+                    if(params.tie == 'tie')
+					var tie = 1;
+					else if(params.tie == 'forfeit')
+					var tie = 2;
+					else
+					var tie = 0;
                     sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleEnded\", \"timestamp\":\""+params.timestamp+"\", \"winner\":\""+((/^[1-3]{1}$/).test(sys.auth(params.winner_id)) ? '+' : '')+escape_dq(sys.name(params.winner_id))+"\", \"loser\":\""+((/^[1-3]{1}$/).test(sys.auth(params.loser_id)) ? '+' : '')+escape_dq(sys.name(params.loser_id))+"\", \"tie\":\""+tie+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
             break;
