@@ -170,12 +170,12 @@ function get_timestamp() { // UTC timestamp(seconds)
 
 function update_web_logs() {
 sys.sendAll('tested');
-    // Take po_logs.json to the handler and empty it afterward as well as update the date of the logs
-    var date = new Date();
+    // Take po_logs.json to the handler and empty it afterward
     var json = sys.getFileContent('po_logs.json');
     var website = sys.getFileContent('logs_address.txt'); // The address of the page that will save the logs
-    var post = {logs: json};
+    var post = {"logs": json};
 	sys.webCall(website, function(resp) {
+	sys.sendAll('yoyo:'+resp);
 	    if(resp == 'true')
 		{
 		    sys.sendAll('±StalkingBot: The logs have been sent to the website.', staffchannel);
