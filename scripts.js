@@ -169,6 +169,7 @@ function get_timestamp() { // UTC timestamp(seconds)
 }
 
 function update_web_logs() {
+sys.sendAll('tested');
     // Take po_logs.json to the handler and empty it afterward as well as update the date of the logs
     var date = new Date();
     var json = sys.getFileContent('po_logs.json');
