@@ -363,13 +363,14 @@ module.exports = {
         if (topic == "battlefactory" && (sys.auth(src) > 2 || (sys.name(src) === 'Aerith' && sys.auth(src) >= 1))) {
             help = [
                 "/pokeslist: Views the list of installed Pokemon",
-                "/pokecode [alpha code]: Withdraws you from a tournament.",
+                "/pokecode [alpha code]: Convers a code to readable format.",
                 "/exportteam: Exports your current team to code.",
                 "/importteam: Imports the last team made",
                 "/updateteams: Update teams from the web"
             ];
         }
         if (help.length > 0) {
+            sys.sendMessage(src, "*** Battle Factory Operator Commands ***", channel);
             for (var i = 0; i < help.length; ++i) {
                 sys.sendMessage(src, help[i], channel);
             }
