@@ -7,14 +7,14 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.51";
+var bfversion = "0.52";
 var bfsets;
 
 function initFactory() {
     try {
         var file = sys.getFileContent("bfteams.json");
         if (file === undefined) {
-            var url = "https://raw.github.com/lamperi/po-server-goodies/master/bfteams.json";
+            var url = Config.base_url+"bfteams.json";
             normalbot.sendChanMessage(src, "Teams file not found, fetching teams from "+url);
             sys.webCall(url, function(resp) {
                 if (resp !== "") {
@@ -214,7 +214,7 @@ function factoryCommand(src, command, commandData) {
         return;
     }
     if (command == "updateteams") {
-        var url = "https://raw.github.com/lamperi/po-server-goodies/master/bfteams.json";
+        var url = Config.base_url+"bfteams.json";
         if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
             url = commandData;
         }
@@ -357,5 +357,24 @@ module.exports = {
             generateTeam(src, srcteam);
             generateTeam(dest, destteam);
         }
+    },
+    onHelp: function(src, topic, channel) {
+        var help = [];
+        if (topic == "battlefactory" && (sys.auth(src) > 2 || (sys.name(src) === 'Aerith' && sys.auth(src) >= 1))) {
+            help = [
+                "/pokeslist: Views the list of installed Pokemon",
+                "/pokecode [alpha code]: Withdraws you from a tournament.",
+                "/exportteam: Exports your current team to code.",
+                "/importteam: Imports the last team made",
+                "/updateteams: Update teams from the web"
+            ];
+        }
+        if (help.length > 0) {
+            for (var i = 0; i < help.length; ++i) {
+                sys.sendMessage(src, help[i], channel);
+            }
+            return true;
+        }
+        return false;
     }
 }
