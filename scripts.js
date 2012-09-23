@@ -176,6 +176,12 @@ function update_web_logs() {
 	sys.webCall(website, function(resp) {
 	    if(resp == 'true')
 		{
+		     sys.webCall(sys.getFileContent('logs_db_address.txt'), function(resp) {
+			     if(resp == 'true')
+				 {
+				     sys.sendAll('±StalkingBot: The logs database has been updated!.', staffchannel);
+				 }
+			 });
 		    sys.sendAll('±StalkingBot: The logs have been sent to the website.', staffchannel);
             sys.writeToFile('po_logs.json','');
 		}
