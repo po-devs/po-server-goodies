@@ -7,7 +7,7 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.5";
+var bfversion = "0.51";
 var bfsets;
 
 function initFactory() {
@@ -241,7 +241,7 @@ function factoryCommand(src, command, commandData) {
         var tfile = JSON.parse(sys.getFileContent("bfteams.json"));
         for (var t in tfile) {
             var poke = sys.pokemon(parseInt(t, 10));
-            var setlength = teamfile[t].length;
+            var setlength = tfile[t].length;
             normalbot.sendChanMessage(src, poke+": Has "+setlength+" sets.");
         }
         return;
