@@ -206,6 +206,8 @@ function append_logs(params) { // Adds chat lines to the logs
     {
 	    if(params.msg !== undefined && params.msg[0] == "/")
 		return;
+		if(typeof params.msg == 'object')
+		params.msg = params.msg.join(',');
         if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
         {
             // verification here that it's stalked
