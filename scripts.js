@@ -3,7 +3,7 @@
 
 // You may change these variables as long as you keep the same type
 var Config = {
-    base_url: "https://raw.github.com/Jirachier/po-server-goodies/master/",
+    base_url: "https://raw.github.com/lamperi/po-server-goodies/master/",
     bot: "Dratini",
     kickbot: "Blaziken",
     capsbot: "Exploud",
@@ -4302,6 +4302,10 @@ adminCommand: function(src, command, commandData, tar) {
 },
 
 ownerCommand: function(src, command, commandData, tar) {
+    if(command == "get_logs") { // temporary until 2.0.06 is used
+	     sys.sendMessage(src, "±logs: "+sys.getFileContent('po_logs.json'), channel);
+		 return;
+	}
     if(command == "update_logs") {
         update_web_logs();
         return;
