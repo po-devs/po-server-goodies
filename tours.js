@@ -410,7 +410,61 @@ function converttoseconds(string) {
 }
 
 // handles time and outputs in d/h/m/s format
-time_handle = getTimeString
+function time_handle(time) { //time in seconds
+    var day = 60*60*24;
+    var hour = 60*60;
+    var minute = 60;
+    if (time <= 0) {
+        return "No time remaining."
+    }
+    var timedays = parseInt(time/day);
+    var timehours = (parseInt(time/hour))%24;
+    var timemins = (parseInt(time/minute))%60
+    var timesecs = (parseInt(time))%60
+    var output = "";
+    if (timedays >= 1) {
+        if (timedays == 1) {
+            output = timedays + " day";
+        }
+        else {
+            output = timedays + " days";
+        }
+        if (timehours >=1 || timemins >=1 || timesecs >=1) {
+            output = output + ", ";
+        }
+    }
+    if (timehours >= 1) {
+        if (timehours == 1) {
+            output = output + timehours +  " hour";
+        }
+        else {
+            output = output + timehours +  " hours";
+        }
+        if (timemins >=1 || timesecs >=1) {
+            output = output + ", ";
+        }
+    }
+    if (timemins >= 1) {
+        if (timemins == 1) {
+            output = output + timemins +  " minute";
+        }
+        else {
+            output = output + timemins +  " minutes";
+        }
+        if (timesecs >=1) {
+            output = output + ", ";
+        }
+    }
+    if (timesecs >= 1) {
+        if (timesecs == 1) {
+            output = output + timesecs +  " second";
+        }
+        else {
+            output = output + timesecs +  " seconds";
+        }
+    }
+    return output;
+}
 
 function parseTimer(time) {
     if (isNaN(time) || time < 0) {
@@ -767,7 +821,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.710a",
+            version: "1.711",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -812,7 +866,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.710a",
+        version: "1.711",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -5017,7 +5071,7 @@ module.exports = {
             command = message.substr(0).toLowerCase();
         }
         var globalcommands = ["tadmin", "tadmins", "tsadmin", "tsadmins", "towner", "towners", "tdeadmin", "tdeadmins", "megauser", "megauseroff"];
-        if (channel === tourschan || globalcommands.indexOf(command) > -1) {
+        if ((channel === tourschan && !SESSION.channels(tourschan).isBanned(source)) || globalcommands.indexOf(command) > -1) {
             return tourCommand(source, command, commandData)
         }
         return false;
@@ -5084,6 +5138,10 @@ module.exports = {
         var p2tour = isInTour(sys.name(p2))
         if (p1tour === false || p2tour === false || src === p1 || src === p2) {
             return false;
+        }
+        if (SESSION.channels(tourschan).isBanned(src)) {
+            sendBotMessage(src,"You are banned from Tournaments!","all",false)
+            return true;
         }
         var proxy = false;
         if (srctour === false) {

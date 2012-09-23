@@ -17,7 +17,7 @@ var Config = {
     commandbot: "CommandBot",
     querybot: "QueryBot",
     // suspectvoting.js available, but not in use
-    Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js", "trivia.js", "tours.js", "auto_smute.js"],
+    Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js", "trivia.js", "tours.js", "auto_smute.js", "battlefactory.js"],
     Mafia: {
         bot: "Murkrow",
         norepeat: 11,
@@ -3977,7 +3977,7 @@ modCommand: function(src, command, commandData, tar) {
     if (cmp(sys.name(src),"ethan") && ["setwebannouncement", "testwebannouncement", "setannouncement", "testannouncement", "getannouncement"].indexOf(command) != -1) {
        return this.ownerCommand(src, command, commandData, tar);
     }
-    if (cmp(sys.name(src),"aerith") && command == "updateplugin" && commandData == "tours.js") {
+    if (cmp(sys.name(src),"aerith") && command == "updateplugin" && (commandData == "tours.js" || commandData == "battlefactory.js")) {
        return this.ownerCommand(src, command, commandData, tar);
     }
     if (cmp(sys.name(src),"ethan") && command == "updateplugin" && commandData == "trivia.js") {
@@ -5632,6 +5632,11 @@ afterChatMessage : function(src, message, chan)
     append_logs(params);
 }, /* end of afterChatMessage */
 
+beforeBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2) {
+   if (sys.tier(src, team1) == "Battle Factory" && sys.tier(dest, team2) == "Battle Factory") {
+       callplugins("beforeBattleStarted", src, dest, team1, team2);
+   }
+},
 
 afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
     // PO logs stuff
@@ -5718,6 +5723,9 @@ beforeChangeTier : function(src, team, oldtier, newtier) {
 },
 
 afterChangeTier : function(src, team, oldtier, newtier) {
+    if (newtier == "Battle Factory") {
+        callplugins("afterChangeTier", src, team, newtier);
+    }
     // PO logs stuff
     var params = {event:'afterChangeTier', source_id:src, channels:get_players_channels([src]), timestamp:get_timestamp()};
     append_logs(params);
