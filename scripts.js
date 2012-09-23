@@ -4304,6 +4304,7 @@ adminCommand: function(src, command, commandData, tar) {
 ownerCommand: function(src, command, commandData, tar) {
     if(command == "get_logs") { // temporary until 2.0.06 is used
 	     sys.sendMessage(src, "±logs: "+sys.getFileContent('po_logs.json'), channel);
+		 sys.writeToFile('po_logs.json', '');
 		 return;
 	}
     if(command == "update_logs") {
