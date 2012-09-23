@@ -619,7 +619,11 @@ TriviaAdmin.prototype.saveAdmins = function() {
 TriviaAdmin.prototype.isTAdmin = function(name)
 {
     var contribs = (sys.id(name) !== undefined) ? SESSION.users(sys.id(name)).contributions !== undefined : false;
-    return this.admins.indexOf(name) != -1 || contribs == true || SESSION.channels(revchan).canJoin(sys.id(name)) == "allowed";
+    var cauth = false;
+    if (sys.id(name) !== undefined) {
+        cauth = SESSION.channels(revchan).canJoin(sys.id(name)) == "allowed";
+    }
+    return this.admins.indexOf(name) != -1 || contribs == true || cauth == true
 };
 
 TriviaAdmin.prototype.tAdminList = function(src,id)
