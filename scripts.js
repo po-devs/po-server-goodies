@@ -206,8 +206,6 @@ function append_logs(params) { // Adds chat lines to the logs
     {
 	    if(params.msg !== undefined && params.msg[0] == "/")
 		return;
-		if(typeof params.msg == 'object')
-		params.msg = params.msg.join(',');
         if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
         {
             // verification here that it's stalked
@@ -308,14 +306,14 @@ function append_logs(params) { // Adds chat lines to the logs
             break;
             
             case 'afterChatMessage':
-                if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+                if(params.msg != null && sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
                     sys.appendToFile('po_logs.json', "{\"event\":\"afterChatMessage\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+((/^[1-3]{1}$/).test(sys.auth(params.source_id)) ? '+' : '')+escape_dq(sys.name(params.source_id))+"\", \"source_color\":\""+params.source_color+"\", \"channels\":\""+escape_dq(sys.channel(params.chan_id))+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
                 }
             break;
             
             case 'afterSendAll':
-                if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+                if(params.msg != null && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
                     var kregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$/i; // To capture kicks
                     var tbregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) banned ([^\n%*<:\(\)]{1,20}) for (([0-9]{1,} (weeks?|days?|hours?|minutes?|seconds?)(, ){0,}){1,})! \[Reason: [^:]{1,}\]/i;
@@ -342,7 +340,7 @@ function append_logs(params) { // Adds chat lines to the logs
             break;
             
             case 'afterSendHtmlAll':
-                if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+                if(params.msg != null && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
                     var bregexp = /^<b><font color=red> ([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!<\/font><\/b>$/i;
                     if(bregexp.test(params.msg) === true) // forwarding bans to beforeplayerban
@@ -362,7 +360,7 @@ function append_logs(params) { // Adds chat lines to the logs
             break;
             
             case 'afterNewMessage':
-                if(params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+                if(params.msg != null && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
                     sys.appendToFile('po_logs.json', "{\"event\":\"afterNewMessage\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
