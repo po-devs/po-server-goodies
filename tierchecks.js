@@ -10,7 +10,7 @@ TierChecker.prototype.add_new_check = function(exclusive, tiers, checker) {
 };
 
 TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent) {
-    if (tier == "Challenge Cup") return true;
+    if (tier == "Challenge Cup" || tier == "Battle Factory") return true;
     if (!sys.hasLegalTeamForTier(src, team, tier)) return false;
 
     var complaints = [];
