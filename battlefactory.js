@@ -39,7 +39,7 @@ function initFactory() {
     catch (e) {
         throw e;
     }
-    sendChanAll("Version "+bfversion+" of the Battle Factory loaded successfully!", -1);
+    sendChanAll("Version "+bfversion+" of the Battle Factory loaded successfully!", staffchannel);
 }
 
 function refresh() {

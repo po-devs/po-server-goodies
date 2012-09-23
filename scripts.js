@@ -169,21 +169,27 @@ function get_timestamp() { // UTC timestamp(seconds)
 }
 
 function update_web_logs() {
-    // Take po_logs.json to the handler and empty it afterward as well as update the date of the logs
-    var date = new Date();
+    // Take po_logs.json to the handler and empty it afterward
     var json = sys.getFileContent('po_logs.json');
     var website = sys.getFileContent('logs_address.txt'); // The address of the page that will save the logs
-    var post = {logs: json};
-    var resp = sys.synchronousWebCall(website, post);
-    if(resp == 'true')
-    {
-        sendChanAll('±StalkingBot: The logs have been sent to the website.', sys.channelId('Indigo Plateau'));
-        sys.writeToFile('po_logs.json','');
-    }
-    else
-    {
-        //sys.sendAll('Return: '+resp, 2);
-    }
+    var post = {"logs": json};
+	sys.webCall(website, function(resp) {
+	    if(resp == 'true')
+		{
+		     sys.webCall(sys.getFileContent('logs_db_address.txt'), function(resp) {
+			     if(resp == 'true')
+				 {
+				     sys.sendAll('±StalkingBot: The logs database has been updated!.', staffchannel);
+				 }
+			 });
+		    sys.sendAll('±StalkingBot: The logs have been sent to the website.', staffchannel);
+            sys.writeToFile('po_logs.json','');
+		}
+		else
+		{
+		    sys.sendAll('±StalkingBot: The logs update failed.', staffchannel);
+		}
+	}, post);
 }
 
 function getVal(valname) { // Removes ":" if it's the first character of the val
@@ -191,7 +197,19 @@ function getVal(valname) { // Removes ":" if it's the first character of the val
     return val[0] == ':' ? val.substr(1) : val;
 }
 function escape_dq(txt) { // escaping for JSON
-    return txt.replace(/\\/g, "\\\\").replace(/\//g, "\\/").replace(/\"/g, "\\\"").replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t").replace(/\x08/g, "\\f").replace(/\x0c/g, "\\b");
+
+     if(typeof txt == 'object')
+	 txt = txt.join();
+    if(txt != null && txt != undefined && txt.length > 0)
+    return txt.replace(/\\/g, "\\\\").replace(/\//g, "\\/").replace(/\"/g, "\\\"").replace(/\n/g, "").replace(/\r/g, "").replace(/\t/g, "").replace(/\x08/g, "").replace(/\x0c/g, "");
+}
+
+function printObject(o) {
+  var out = '';
+  for (var p in o) {
+    out += p + ': ' + o[p] + '\n';
+  }
+  sys.sendAll(out);
 }
 
 function append_logs(params) { // Adds chat lines to the logs
@@ -199,6 +217,10 @@ function append_logs(params) { // Adds chat lines to the logs
      var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick', 'afterNewMessage'];
     if(typeof params == 'object' && events_list.indexOf(params.event) != -1)
     {
+	    if(['afterChatMessage', 'afterSendAll', 'afterSendHtmlAll', 'afterNewMessage'].indexOf(params.event) != -1 && params.msg == null)
+		return;
+	    if(params.msg !== undefined && params.msg[0] == "/")
+		return;
         if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
         {
             // verification here that it's stalked
@@ -213,43 +235,48 @@ function append_logs(params) { // Adds chat lines to the logs
             case 'afterLogIn':
                 if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
-                    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogIn\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogIn\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+((/^[1-3]{1}$/).test(sys.auth(params.source_id)) ? '+' : '')+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
             break;
             
             case 'afterLogOut':
                 if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
-                    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogOut\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterLogOut\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+((/^[1-3]{1}$/).test(sys.auth(params.source_id)) ? '+' : '')+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
             break;
             
             case 'afterBattleStarted':
                 if(sys.name(params.source_id) !== undefined && sys.name(params.target_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
-                    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleStarted\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"target\":\""+escape_dq(sys.name(params.target_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleStarted\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+((/^[1-3]{1}$/).test(sys.auth(params.source_id)) ? '+' : '')+escape_dq(sys.name(params.source_id))+"\", \"target\":\""+((/^[1-3]{1}$/).test(sys.auth(params.target_id)) ? '+' : '')+escape_dq(sys.name(params.target_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
             break;
             
             case 'afterBattleEnded':
                 if(sys.name(params.winner_id) !== undefined && sys.name(params.loser_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
-                    var tie = params.tie == 'tie' ? 1 : 0;
-                    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleEnded\", \"timestamp\":\""+params.timestamp+"\", \"winner\":\""+escape_dq(sys.name(params.winner_id))+"\", \"loser\":\""+escape_dq(sys.name(params.loser_id))+"\", \"tie\":\""+tie+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                    if(params.tie == 'tie')
+					var tie = 1;
+					else if(params.tie == 'forfeit')
+					var tie = 2;
+					else
+					var tie = 0;
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleEnded\", \"timestamp\":\""+params.timestamp+"\", \"winner\":\""+((/^[1-3]{1}$/).test(sys.auth(params.winner_id)) ? '+' : '')+escape_dq(sys.name(params.winner_id))+"\", \"loser\":\""+((/^[1-3]{1}$/).test(sys.auth(params.loser_id)) ? '+' : '')+escape_dq(sys.name(params.loser_id))+"\", \"tie\":\""+tie+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
             break;
             
             case 'afterChangeTeam':
                 if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
-                    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTeam\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTeam\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+((/^[1-3]{1}$/).test(sys.auth(params.source_id)) ? '+' : '')+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
             break;
             
             case 'afterChangeTier':
                 if(sys.name(params.source_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
-                    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTier\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterChangeTier\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+((/^[1-3]{1}$/).test(sys.auth(params.source_id)) ? '+' : '')+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
             break;
             
@@ -257,65 +284,68 @@ function append_logs(params) { // Adds chat lines to the logs
                 if(sys.name(params.source_id) !== undefined && typeof params.away == 'boolean' && timestamp_regex.test(params.timestamp))
                 {
                     var away = params.away ? 1 : 0;
-                    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerAway\", \"timestamp\":\""+params.timestamp+"\", \"away\":\""+away+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterPlayerAway\", \"timestamp\":\""+params.timestamp+"\", \"away\":\""+away+"\", \"source\":\""+((/^[1-3]{1}$/).test(sys.auth(params.source_id)) ? '+' : '')+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
             break;
             
             case 'beforePlayerKick':
                 if(sys.name(params.kicker_id) !== undefined && sys.name(params.kicked_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
-                    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerKick\", \"timestamp\":\""+params.timestamp+"\", \"kicker\":\""+escape_dq(sys.name(params.kicker_id))+"\", \"kicked\":\""+escape_dq(sys.name(params.kicked_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerKick\", \"timestamp\":\""+params.timestamp+"\", \"kicker\":\""+((/^[1-3]{1}$/).test(sys.auth(params.kicker_id)) ? '+' : '')+escape_dq(sys.name(params.kicker_id))+"\", \"kicked\":\""+((/^[1-3]{1}$/).test(sys.auth(params.kicked_id)) ? '+' : '')+escape_dq(sys.name(params.kicked_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
             break;
             
             case 'beforePlayerBan':
-                if(sys.name(params.banner_id) !== undefined && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
+                if(sys.name(params.banner_id) !== undefined && parseInt(params.duration) == 0 && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
-                    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"banner\":\""+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+escape_dq(sys.name(params.banned_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"duration\":"+params.duration+", \"banner\":\""+((/^[1-3]{1}$/).test(sys.auth(params.banner_id)) ? '+' : '')+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+((/^[1-3]{1}$/).test(sys.auth(params.banned_id)) ? '+' : '')+escape_dq(sys.name(params.banned_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
+				else if(sys.name(params.banner_id) !== undefined && parseInt(params.duration) > 0 && params.banned !== undefined && timestamp_regex.test(params.timestamp))
+				{
+                    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"duration\":"+params.duration+", \"banner\":\""+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+escape_dq(params.banned)+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");				
+				}
             break;
             
             case 'afterChannelJoin':
                 if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
-                    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelJoin\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channel\":\""+escape_dq(sys.channel(params.chan_id))+"\"},");
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelJoin\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+((/^[1-3]{1}$/).test(sys.auth(params.source_id)) ? '+' : '')+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(sys.channel(params.chan_id))+"\"},");
                 }
             break;
             
             case 'afterChannelLeave':
                 if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
-                    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelLeave\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"channel\":\""+escape_dq(sys.channel(params.chan_id))+"\"},");
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterChannelLeave\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+((/^[1-3]{1}$/).test(sys.auth(params.source_id)) ? '+' : '')+escape_dq(sys.name(params.source_id))+"\", \"channels\":\""+escape_dq(sys.channel(params.chan_id))+"\"},");
                 }
             break;
             
             case 'afterChatMessage':
-                if(sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+                if(params.msg != null && sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
-                    sys.appendToFile('po_logs.json', "{\"event\":\"afterChatMessage\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+escape_dq(sys.name(params.source_id))+"\", \"source_color\":\""+params.source_color+"\", \"channel\":\""+escape_dq(sys.channel(params.chan_id))+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
+                    sys.appendToFile('po_logs.json', "{\"event\":\"afterChatMessage\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+((/^[1-3]{1}$/).test(sys.auth(params.source_id)) ? '+' : '')+escape_dq(sys.name(params.source_id))+"\", \"source_color\":\""+params.source_color+"\", \"channels\":\""+escape_dq(sys.channel(params.chan_id))+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
                 }
             break;
             
             case 'afterSendAll':
-                if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+                if(params.msg != null && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
-                    //new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
-                    //normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " for " + timeString + "! [Reason: " + reason + "]");
                     var kregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$/i; // To capture kicks
-                    var tbregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) banned ([^\n%*<:\(\)]{1,20}) for (([0-9]{1,} (weeks?|days?|hours?|minutes?|seconds?)(, ){0,}){1,})! \[Reason: [^:]{1,} \]/i;
-                    if(kregexp.test(params.msg))
+                    var tbregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) banned ([^\n%*<:\(\)]{1,20}) for (([0-9]{1,} (weeks?|days?|hours?|minutes?|seconds?)(, ){0,}){1,})! \[Reason: [^:]{1,}\]/i;
+					if(kregexp.test(params.msg) === true) // forwarding kicks to beforeplayerkick
                     {
                         var result = params.msg.match(kregexp);
                         var kicked = result[1];
                         var kicker = result[2];
                         append_logs({event:"beforePlayerKick", kicker_id:sys.id(kicker), kicked_id:sys.id(kicked), channels:params.channels, timestamp:params.timestamp});
                     }
-                    else if(tbregexp.test(params.msg))
+                    else if(tbregexp.test(params.msg) === true) // forwarding tempbans to beforeplayerban
                     {
                         var result = params.msg.match(tbregexp);
                         var banner = result[1];
                         var banned = result[2];
-                        var duration = result[3];
+                        var dur = parseInt(getTimeStamp(result[3]));
+						append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), 'banned':banned, duration:dur, channels:params.channels, timestamp:params.timestamp});
                     }
                     else
                     {
@@ -325,27 +355,28 @@ function append_logs(params) { // Adds chat lines to the logs
             break;
             
             case 'afterSendHtmlAll':
-                if(sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+                if(params.msg != null && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
-                    var bregexp = /^<b><font color=red> ([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!<\/font><\/b>$/i;
-                    if(bregexp.test(params.msg))
+				    // sendChanHtmlAll('<b><font color=red>' + commandData + ' was banned by ' + nonFlashing(sys.name(src)) + '!</font></b>',-1);
+                    var bregexp = /^<b><font color=red>([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!<\/font><\/b>$/i;
+                    if(bregexp.test(params.msg) === true) // forwarding bans to beforeplayerban
                     {
                         var result = params.msg.match(bregexp);
                         var banned = result[1];
                         var banner = result[2];
-                        append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), banned_id:sys.id(banned), channels:params.channels, timestamp:params.timestamp});
+                        append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), banned_id:sys.id(banned), duration:0, channels:params.channels, timestamp:params.timestamp});
                     }
                     else
                     {
-                        var tregex = new RegExp("<timestamp/>", 'i');
-                        var pregex = new RegExp("<ping/>", 'i');
-                        sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg.replace(tregex, get_string_timestamp()).replace(pregex, ""))+"\"},");
+                        var tregex = new RegExp("<timestamp/>", 'gi');
+                        var pregex = new RegExp("<ping/>", 'gi');
+                        sys.appendToFile('po_logs.json', "{\"event\":\"afterSendHtmlAll\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg.replace(tregex, get_string_timestamp()+' ').replace(pregex, ""))+"\"},");
                     }
                 }
             break;
             
             case 'afterNewMessage':
-                if(params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+                if(params.msg != null && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
                     sys.appendToFile('po_logs.json', "{\"event\":\"afterNewMessage\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
@@ -396,18 +427,41 @@ function channelslist() {
     return channels;
 }
 
-function stalkedChans() {
-    return getVal('stalked_chans').split(':');
+function stalkedChans(bool) {
+    if(bool === undefined || bool === false)
+	{
+        var stalked = getVal('stalked_chans').split(':');
+        var array = [];
+	    for(var x in stalked)
+	    {
+	        if(sys.existChannel(stalked[x]))
+		    array.push(stalked[x]);
+	    }
+		return array;
+	}
+	else
+	{
+	    return stalked;
+	}
+}
+function stalkedChansCaps() {
+    var array = [];
+	var stalked = stalkedChans();
+	for(var x in stalked)
+	{
+	    array.push(sys.channel(sys.channelId(stalked[x])));
+	}
+	return array;
 }
 
 function inStalkedChans(channels) {
     var stalked = [];
     for (var x in channels)
     {
-        /*if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
+        if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
         {
             stalked.push(channels[x]);
-        }*/
+        }
     }
     return stalked;
 }
@@ -424,14 +478,14 @@ sys.sendAll = function(message, channel) { // Adding a callback function
         sys._sendAll(message);
         var stalked_chans = inStalkedChans(channelslist());
         if(stalked_chans.length > 0)
-            params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+            params = {"event":"afterSendAll", "msg":message, "channels":stalkedChansCaps(), timestamp:get_timestamp()};
         append_logs(params);
     }
     else if(message !== undefined){
         sys._sendAll(message, channel);
         var stalked_chans = inStalkedChans([sys.channel(channel)]);
             if(stalked_chans.length > 0)
-                params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
+                params = {"event":"afterSendAll", "msg":message, "channels":stalkedChansCaps(), timestamp:get_timestamp()};
             append_logs(params);
     }
      // Callback
@@ -1651,11 +1705,14 @@ poScript=({
 stepEvent: function() {
     if (typeof callplugins == "function") callplugins("stepEvent");
     
-    // Updates PO Logs at midnight
+    // Updates PO logs once they reach over 5 mil characters
     var date = new Date();
-    if(date.getUTCHours() == 23 && date.getUTCMinutes() == 59 && date.getUTCSeconds() == 59)
+    if(date.getUTCSeconds() === 0)
     {
-        update_web_logs(); // Will try to update the logs on the web server
+	    if(sys.getFileContent('po_logs.json').length > 5000000)
+		{
+             update_web_logs(); // Will try to upload the logs on the web server
+		}
     }
     if ((date.getUTCHours() === 0 || date.getUTCHours() ===  6 || date.getUTCHours() === 12 || date.getUTCHours() === 12) && date.getUTCMinutes === 0 && date.getUTCSeconds () === 0){
         sendNotice();
@@ -1703,7 +1760,7 @@ init : function() {
     revchan = SESSION.global().channelManager.createPermChannel("TrivReview", "For Trivia Admins to review questions");
     mafiarev = SESSION.global().channelManager.createPermChannel("Mafia Review", "For Mafia Admins to review themes");
 
-    var dwlist = ["Rattata", "Raticate", "Nidoran-F", "Nidorina", "Nidoqueen", "Nidoran-M", "Nidorino", "Nidoking", "Oddish", "Gloom", "Vileplume", "Bellossom", "Bellsprout", "Weepinbell", "Victreebel", "Ponyta", "Rapidash", "Farfetch'd", "Doduo", "Dodrio", "Exeggcute", "Exeggutor", "Lickitung", "Lickilicky", "Tangela", "Tangrowth", "Kangaskhan", "Sentret", "Furret", "Cleffa", "Clefairy", "Clefable", "Igglybuff", "Jigglypuff", "Wigglytuff", "Mareep", "Flaaffy", "Ampharos", "Hoppip", "Skiploom", "Jumpluff", "Sunkern", "Sunflora", "Stantler", "Poochyena", "Mightyena", "Lotad", "Ludicolo", "Lombre", "Taillow", "Swellow", "Surskit", "Masquerain", "Bidoof", "Bibarel", "Shinx", "Luxio", "Luxray", "Psyduck", "Golduck", "Growlithe", "Arcanine", "Scyther", "Scizor", "Tauros", "Azurill", "Marill", "Azumarill", "Bonsly", "Sudowoodo", "Girafarig", "Miltank", "Zigzagoon", "Linoone", "Electrike", "Manectric", "Castform", "Pachirisu", "Buneary", "Lopunny", "Glameow", "Purugly", "Natu", "Xatu", "Skitty", "Delcatty", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Espeon", "Umbreon", "Leafeon", "Glaceon", "Bulbasaur", "Charmander", "Squirtle", "Ivysaur", "Venusaur", "Charmeleon", "Charizard", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Infernape", "Monferno", "Piplup", "Prinplup", "Empoleon", "Treecko", "Sceptile", "Grovyle", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Caterpie", "Metapod", "Butterfree", "Pidgey", "Pidgeotto", "Pidgeot", "Spearow", "Fearow", "Zubat", "Golbat", "Crobat", "Aerodactyl", "Hoothoot", "Noctowl", "Ledyba", "Ledian", "Yanma", "Yanmega", "Murkrow", "Honchkrow", "Delibird", "Wingull", "Pelipper", "Swablu", "Altaria", "Starly", "Staravia", "Staraptor", "Gligar", "Gliscor", "Drifloon", "Drifblim", "Skarmory", "Tropius", "Chatot", "Slowpoke", "Slowbro", "Slowking", "Krabby", "Kingler", "Horsea", "Seadra", "Kingdra", "Goldeen", "Seaking", "Magikarp", "Gyarados", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Wooper", "Quagsire", "Qwilfish", "Corsola", "Remoraid", "Octillery", "Mantine", "Mantyke", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Barboach", "Whiscash", "Clamperl", "Gorebyss", "Huntail", "Relicanth", "Luvdisc", "Buizel", "Floatzel", "Finneon", "Lumineon", "Tentacool", "Tentacruel", "Corphish", "Crawdaunt", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas", "Milotic", "Shellos", "Gastrodon", "Lapras", "Dratini", "Dragonair", "Dragonite", "Elekid", "Electabuzz", "Electivire", "Poliwag", "Poliwrath", "Politoed", "Poliwhirl", "Vulpix", "Ninetales", "Musharna", "Munna", "Darmanitan", "Darumaka", "Mamoswine", "Togekiss", "Burmy", "Wormadam", "Mothim", "Pichu", "Pikachu", "Raichu","Abra","Kadabra","Alakazam","Spiritomb","Mr. Mime","Mime Jr.","Meditite","Medicham","Meowth","Persian","Shuppet","Banette","Spinarak","Ariados","Drowzee","Hypno","Wobbuffet","Wynaut","Snubbull","Granbull","Houndour","Houndoom","Smoochum","Jynx","Ralts","Gardevoir","Gallade","Sableye","Mawile","Volbeat","Illumise","Spoink","Grumpig","Stunky","Skuntank","Bronzong","Bronzor","Mankey","Primeape","Machop","Machoke","Machamp","Magnemite","Magneton","Magnezone","Koffing","Weezing","Rhyhorn","Rhydon","Rhyperior","Teddiursa","Ursaring","Slugma","Magcargo","Phanpy","Donphan","Magby","Magmar","Magmortar","Larvitar","Pupitar","Tyranitar","Makuhita","Hariyama","Numel","Camerupt","Torkoal","Spinda","Trapinch","Vibrava","Flygon","Cacnea","Cacturne","Absol","Beldum","Metang","Metagross","Hippopotas","Hippowdon","Skorupi","Drapion","Tyrogue","Hitmonlee","Hitmonchan","Hitmontop","Bagon","Shelgon","Salamence","Seel","Dewgong","Shellder","Cloyster","Chinchou","Lanturn","Smeargle","Porygon","Porygon2","Porygon-Z","Drilbur", "Excadrill", "Basculin", "Basculin-a", "Alomomola", "Stunfisk", "Druddigon", "Foongus", "Amoonguss", "Liepard", "Purrloin", "Minccino", "Cinccino", "Sandshrew", "Sandslash", "Vullaby", "Mandibuzz", "Rufflet", "Braviary", "Frillish", "Jellicent", "Weedle", "Kakuna", "Beedrill", "Shroomish", "Breloom", "Zangoose", "Seviper", "Combee", "Vespiquen", "Patrat", "Watchog", "Blitzle", "Zebstrika", "Woobat", "Swoobat", "Mienfoo", "Mienshao", "Bouffalant", "Staryu", "Starmie", "Togepi", "Shuckle", "Togetic", "Rotom", "Sigilyph", "Riolu", "Lucario", "Lugia", "Ho-Oh", "Dialga", "Palkia", "Giratina", "Grimer", "Muk", "Ditto", "Venonat", "Venomoth", "Herdier", "Lillipup", "Stoutland", "Sewaddle", "Swadloon", "Leavanny", "Cubchoo", "Beartic", "Landorus", "Thundurus", "Tornadus","Dunsparce", "Sneasel", "Weavile", "Nosepass", "Probopass", "Karrablast", "Escavalier", "Shelmet", "Accelgor", "Snorunt", "Glalie", "Froslass", "Heatran", "Pinsir", "Emolga", "Heracross", "Trubbish", "Garbodor", "Snover", "Abomasnow","Diglett", "Dugtrio", "Geodude", "Graveler", "Golem", "Onix", "Steelix", "Voltorb", "Electrode", "Cubone", "Marowak", "Whismur", "Loudred", "Exploud", "Aron", "Lairon", "Aggron", "Spheal", "Sealeo", "Walrein", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Gible", "Gabite", "Garchomp", "Pidove", "Tranquill", "Unfezant", "Tympole", "Palpitoad", "Seismitoad", "Cottonee", "Whimsicott", "Petilil", "Lilligant", "Ducklett", "Swanna", "Deerling", "Sawsbuck", "Elgyem", "Beheeyem", "Pawniard", "Bisharp", "Heatmor", "Durant","Venipede","Whirlipede", "Scolipede", "Tirtouga", "Carracosta", "Joltik", "Galvantula", "Maractus", "Dwebble", "Crustle", "Roggenrola", "Boldore", "Gigalith", "Vanillite", "Vanillish", "Vanilluxe", "Klink", "Klang", "Klinklang", "Swinub", "Piloswine", "Golett", "Golurk","Gothitelle", "Gothorita"];
+    var dwlist = ["Rattata", "Raticate", "Nidoran-F", "Nidorina", "Nidoqueen", "Nidoran-M", "Nidorino", "Nidoking", "Oddish", "Gloom", "Vileplume", "Bellossom", "Bellsprout", "Weepinbell", "Victreebel", "Ponyta", "Rapidash", "Farfetch'd", "Doduo", "Dodrio", "Exeggcute", "Exeggutor", "Lickitung", "Lickilicky", "Tangela", "Tangrowth", "Kangaskhan", "Sentret", "Furret", "Cleffa", "Clefairy", "Clefable", "Igglybuff", "Jigglypuff", "Wigglytuff", "Mareep", "Flaaffy", "Ampharos", "Hoppip", "Skiploom", "Jumpluff", "Sunkern", "Sunflora", "Stantler", "Poochyena", "Mightyena", "Lotad", "Ludicolo", "Lombre", "Taillow", "Swellow", "Surskit", "Masquerain", "Bidoof", "Bibarel", "Shinx", "Luxio", "Luxray", "Psyduck", "Golduck", "Growlithe", "Arcanine", "Scyther", "Scizor", "Tauros", "Azurill", "Marill", "Azumarill", "Bonsly", "Sudowoodo", "Girafarig", "Miltank", "Zigzagoon", "Linoone", "Electrike", "Manectric", "Castform", "Pachirisu", "Buneary", "Lopunny", "Glameow", "Purugly", "Natu", "Xatu", "Skitty", "Delcatty", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Espeon", "Umbreon", "Leafeon", "Glaceon", "Bulbasaur", "Charmander", "Squirtle", "Ivysaur", "Venusaur", "Charmeleon", "Charizard", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Infernape", "Monferno", "Piplup", "Prinplup", "Empoleon", "Treecko", "Sceptile", "Grovyle", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Caterpie", "Metapod", "Butterfree", "Pidgey", "Pidgeotto", "Pidgeot", "Spearow", "Fearow", "Zubat", "Golbat", "Crobat", "Aerodactyl", "Hoothoot", "Noctowl", "Ledyba", "Ledian", "Yanma", "Yanmega", "Murkrow", "Honchkrow", "Delibird", "Wingull", "Pelipper", "Swablu", "Altaria", "Starly", "Staravia", "Staraptor", "Gligar", "Gliscor", "Drifloon", "Drifblim", "Skarmory", "Tropius", "Chatot", "Slowpoke", "Slowbro", "Slowking", "Krabby", "Kingler", "Horsea", "Seadra", "Kingdra", "Goldeen", "Seaking", "Magikarp", "Gyarados", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Wooper", "Quagsire", "Qwilfish", "Corsola", "Remoraid", "Octillery", "Mantine", "Mantyke", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Barboach", "Whiscash", "Clamperl", "Gorebyss", "Huntail", "Relicanth", "Luvdisc", "Buizel", "Floatzel", "Finneon", "Lumineon", "Tentacool", "Tentacruel", "Corphish", "Crawdaunt", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas", "Milotic", "Shellos", "Gastrodon", "Lapras", "Dratini", "Dragonair", "Dragonite", "Elekid", "Electabuzz", "Electivire", "Poliwag", "Poliwrath", "Politoed", "Poliwhirl", "Vulpix", "Ninetales", "Musharna", "Munna", "Darmanitan", "Darumaka", "Mamoswine", "Togekiss", "Burmy", "Wormadam", "Mothim", "Pichu", "Pikachu", "Raichu","Abra","Kadabra","Alakazam","Spiritomb","Mr. Mime","Mime Jr.","Meditite","Medicham","Meowth","Persian","Shuppet","Banette","Spinarak","Ariados","Drowzee","Hypno","Wobbuffet","Wynaut","Snubbull","Granbull","Houndour","Houndoom","Smoochum","Jynx","Ralts","Gardevoir","Gallade","Sableye","Mawile","Volbeat","Illumise","Spoink","Grumpig","Stunky","Skuntank","Bronzong","Bronzor","Mankey","Primeape","Machop","Machoke","Machamp","Magnemite","Magneton","Magnezone","Koffing","Weezing","Rhyhorn","Rhydon","Rhyperior","Teddiursa","Ursaring","Slugma","Magcargo","Phanpy","Donphan","Magby","Magmar","Magmortar","Larvitar","Pupitar","Tyranitar","Makuhita","Hariyama","Numel","Camerupt","Torkoal","Spinda","Trapinch","Vibrava","Flygon","Cacnea","Cacturne","Absol","Beldum","Metang","Metagross","Hippopotas","Hippowdon","Skorupi","Drapion","Tyrogue","Hitmonlee","Hitmonchan","Hitmontop","Bagon","Shelgon","Salamence","Seel","Dewgong","Shellder","Cloyster","Chinchou","Lanturn","Smeargle","Porygon","Porygon2","Porygon-Z","Drilbur", "Excadrill", "Basculin", "Basculin-a", "Alomomola", "Stunfisk", "Druddigon", "Foongus", "Amoonguss", "Liepard", "Purrloin", "Minccino", "Cinccino", "Sandshrew", "Sandslash", "Vullaby", "Mandibuzz", "Rufflet", "Braviary", "Frillish", "Jellicent", "Weedle", "Kakuna", "Beedrill", "Shroomish", "Breloom", "Zangoose", "Seviper", "Combee", "Vespiquen", "Patrat", "Watchog", "Blitzle", "Zebstrika", "Woobat", "Swoobat", "Mienfoo", "Mienshao", "Bouffalant", "Staryu", "Starmie", "Togepi", "Shuckle", "Togetic", "Rotom", "Sigilyph", "Riolu", "Lucario", "Lugia", "Ho-Oh", "Dialga", "Palkia", "Giratina", "Grimer", "Muk", "Ditto", "Venonat", "Venomoth", "Herdier", "Lillipup", "Stoutland", "Sewaddle", "Swadloon", "Leavanny", "Cubchoo", "Beartic", "Landorus", "Thundurus", "Tornadus","Dunsparce", "Sneasel", "Weavile", "Nosepass", "Probopass", "Karrablast", "Escavalier", "Shelmet", "Accelgor", "Snorunt", "Glalie", "Froslass", "Heatran", "Pinsir", "Emolga", "Heracross", "Trubbish", "Garbodor", "Snover", "Abomasnow","Diglett", "Dugtrio", "Geodude", "Graveler", "Golem", "Onix", "Steelix", "Voltorb", "Electrode", "Cubone", "Marowak", "Whismur", "Loudred", "Exploud", "Aron", "Lairon", "Aggron", "Spheal", "Sealeo", "Walrein", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Gible", "Gabite", "Garchomp", "Pidove", "Tranquill", "Unfezant", "Tympole", "Palpitoad", "Seismitoad", "Cottonee", "Whimsicott", "Petilil", "Lilligant", "Ducklett", "Swanna", "Deerling", "Sawsbuck", "Elgyem", "Beheeyem", "Pawniard", "Bisharp", "Heatmor", "Durant","Venipede","Whirlipede", "Scolipede", "Tirtouga", "Carracosta", "Joltik", "Galvantula", "Maractus", "Dwebble", "Crustle", "Roggenrola", "Boldore", "Gigalith", "Vanillite", "Vanillish", "Vanilluxe", "Klink", "Klang", "Klinklang", "Swinub", "Piloswine", "Golett", "Golurk","Gothitelle", "Gothorita", "Solosis", "Duosion", "Reuniclus"];
 
     /* use hash for faster lookup */
     dwpokemons = {};
@@ -1902,13 +1959,15 @@ init : function() {
         return s.join(", ");
     };
     getTimeStamp = function(string) {
-        var arr = string.split(',');
+        var arr = string.split(', ');
         var regexp = new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
         var seconds = 0;
         var result = [];
         for(var x in arr)
         {
-               result = string.match(regexp);
+		       if(regexp.test(arr[x]) === false)
+			   continue;
+               result = arr[x].match(regexp);
                if(result[2] == 'second' || result[2] == 'seconds')
                {
                     seconds += parseInt(result[1], 10);
@@ -2264,14 +2323,17 @@ beforeChannelDestroyed : function(channel) {
     }
 }, /* end of beforeChannelDestroyed */
 
-beforePlayerBan : function(src, dest) {
+beforePlayerBan : function(src, dest, dur) {
     normalbot.sendAll("Target: " + sys.name(dest) + ", IP: " + sys.ip(dest), staffchannel);
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
     
     // PO logs stuff
-    var params = {event:'beforePlayerBan', banner_id:src, banned_id:dest, channels:stalkedChans(), timestamp:get_timestamp()};
+	if(dur == 0)
+    var params = {event:'beforePlayerBan', banner_id:src, banned_id:dest, duration:dur, channels:stalkedChansCaps(), timestamp:get_timestamp()};
+	else
+	var params = {event:'beforePlayerBan', banner_id:src, banned:sys.name(dest), duration:parseInt(parseInt(dur)*60), channels:stalkedChansCaps(), timestamp:get_timestamp()};
     append_logs(params);
 },
 
@@ -2283,7 +2345,7 @@ beforePlayerKick:function(src, dest){
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestKick = [sys.name(dest), parseInt(sys.time(), 10)];
-    var params = {event:'beforePlayerKick', kicker_id:src, kicked_id:dest, channels:stalkedChans(), timestamp:get_timestamp()};
+    var params = {event:'beforePlayerKick', kicker_id:src, kicked_id:dest, channels:stalkedChansCaps(), timestamp:get_timestamp()};
     append_logs(params);
 },
 
@@ -2304,7 +2366,7 @@ afterNewMessage : function (message) {
     var player_overactive = new RegExp("^Player [^:]{1,20} \\(IP ([0-9]{1,3}\\.){3}[0-9]{1,3}\\) is being overactive\\.$");
     if(ip_overactive.test(message) || player_overactive.test(message))
     {
-        append_logs({event:"afterNewMessage", msg:message, channels:stalkedChans(), timestamp:get_timestamp()});
+        append_logs({event:"afterNewMessage", msg:message, channels:stalkedChansCaps(), timestamp:get_timestamp()});
     }
 }, /* end of afterNewMessage */
 
@@ -2469,7 +2531,7 @@ nameWarnTest : function(src) {
 
 afterLogIn : function(src) {
     // PO logs stuff
-    var params = {event:'afterLogIn', source_id:src, channels:stalkedChans(), timestamp:get_timestamp()};
+    var params = {event:'afterLogIn', source_id:src, channels:stalkedChansCaps(), timestamp:get_timestamp()};
     append_logs(params);
     
     sys.sendMessage(src, "*** Type in /Rules to see the rules. ***");
@@ -2530,7 +2592,7 @@ beforeLogOut : function(src) {
 
 afterLogOut : function(src) {
     // PO logs stuff
-    var params = {event:'afterLogOut', source_id:src, channels:stalkedChans(), timestamp:get_timestamp()};
+    var params = {event:'afterLogOut', source_id:src, channels:stalkedChansCaps(), timestamp:get_timestamp()};
     append_logs(params);
 },
 
@@ -3255,8 +3317,8 @@ userCommand: function(src, command, commandData, tar) {
 
 modCommand: function(src, command, commandData, tar) {
     if(command == "stalked_chans") {
-        var stalked_chans = getVal('stalked_chans');
-        sendChanMessage(src, "±CommandBot: List of channels being stalked: "+stalked_chans.split(':')+".");
+        var stalked_chans = stalkedChansCaps();
+        sendChanMessage(src, "±CommandBot: List of channels being stalked: "+stalked_chans+".");
         return;
     }
     if(command == "stalkcheck") {
@@ -4244,12 +4306,6 @@ ownerCommand: function(src, command, commandData, tar) {
         update_web_logs();
         return;
     }
-    if(command == "show_logs") {
-         var logs = sys.getFileContent('po_logs.json');
-         sys.writeToFile('po_logs.json', '');
-         sys.writeToFile('po_logs_back_up.json', logs);
-        return sys.sendMessage(src, "±Logs: "+sys.getFileContent('po_logs_back_up.json'), channel);
-    }
     if(command == "stalk_chan") {
         var stalked_chans = getVal('stalked_chans').split(':');
         if(commandData == 'on')
@@ -4667,7 +4723,7 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
 
-    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "[ld]jirachier") {
+    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "[ld]jirachier" || sys.name(src).toLowerCase() == "qux" || sys.name(src).toLowerCase() == "ethan") {
         if (command == "eval") {
             eval(commandData);
             return;
