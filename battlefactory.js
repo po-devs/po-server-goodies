@@ -332,7 +332,7 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (sys.auth(source) > 2 || (sys.name(source) === 'Aerith' && sys.auth(source >= 1))) {
+        if (sys.auth(source) > 2 || (sys.name(source) === 'Aerith' && sys.auth(source) >= 1)) {
             if (factoryCommand(source, command, commandData) != 'no command') {
                 return true;
             }
