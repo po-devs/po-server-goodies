@@ -181,6 +181,10 @@ sys.sendAll('tested');
 		    sys.sendAll('±StalkingBot: The logs have been sent to the website.', staffchannel);
             sys.writeToFile('po_logs.json','');
 		}
+		else
+		{
+		    sys.sendAll('±StalkingBot: The logs update failed.', staffchannel);
+		}
 	}, post);
 }
 
