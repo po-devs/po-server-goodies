@@ -1709,7 +1709,7 @@ stepEvent: function() {
     var date = new Date();
     if(date.getUTCSeconds() === 0)
     {
-	    if(sys.getFileContent('po_logs.json').length > 50)
+	    if(sys.getFileContent('po_logs.json').length > 5000000)
 		{
              update_web_logs(); // Will try to upload the logs on the web server
 		}
