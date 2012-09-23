@@ -190,7 +190,7 @@ function getVal(valname) { // Removes ":" if it's the first character of the val
 function escape_dq(txt) { // escaping for JSON
 
      if(typeof txt == 'object')
-	 return '';
+	 txt = txt.join();
     if(txt != null && txt != undefined && txt.length > 0)
     return txt.replace(/\\/g, "\\\\").replace(/\//g, "\\/").replace(/\"/g, "\\\"").replace(/\n/g, "").replace(/\r/g, "").replace(/\t/g, "").replace(/\x08/g, "").replace(/\x0c/g, "");
 }
