@@ -292,7 +292,7 @@ function append_logs(params) { // Adds chat lines to the logs
             case 'beforePlayerBan':
                 if(sys.name(params.banner_id) !== undefined && parseInt(params.duration) == 0 && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
-                    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"duration\":"+params.duration+" \"banner\":\""+((/^[1-3]{1}$/).test(sys.auth(params.banner_id)) ? '+' : '')+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+((/^[1-3]{1}$/).test(sys.auth(params.banned_id)) ? '+' : '')+escape_dq(sys.name(params.banned_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"duration\":"+params.duration+", \"banner\":\""+((/^[1-3]{1}$/).test(sys.auth(params.banner_id)) ? '+' : '')+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+((/^[1-3]{1}$/).test(sys.auth(params.banned_id)) ? '+' : '')+escape_dq(sys.name(params.banned_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
 				else if(sys.name(params.banner_id) !== undefined && parseInt(params.duration) > 0 && params.banned !== undefined && timestamp_regex.test(params.timestamp))
 				{
