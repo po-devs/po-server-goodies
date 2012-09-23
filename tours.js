@@ -821,7 +821,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.710a",
+            version: "1.711",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -866,7 +866,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.710a",
+        version: "1.711",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -5071,7 +5071,7 @@ module.exports = {
             command = message.substr(0).toLowerCase();
         }
         var globalcommands = ["tadmin", "tadmins", "tsadmin", "tsadmins", "towner", "towners", "tdeadmin", "tdeadmins", "megauser", "megauseroff"];
-        if (channel === tourschan || globalcommands.indexOf(command) > -1) {
+        if ((channel === tourschan && !SESSION.channels(tourschan).isBanned(source)) || globalcommands.indexOf(command) > -1) {
             return tourCommand(source, command, commandData)
         }
         return false;
@@ -5138,6 +5138,10 @@ module.exports = {
         var p2tour = isInTour(sys.name(p2))
         if (p1tour === false || p2tour === false || src === p1 || src === p2) {
             return false;
+        }
+        if (SESSION.channels(tourschan).isBanned(src)) {
+            sendBotMessage(src,"You are banned from Tournaments!",tourschan,false)
+            return true;
         }
         var proxy = false;
         if (srctour === false) {
