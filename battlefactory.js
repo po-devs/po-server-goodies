@@ -7,7 +7,7 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.53";
+var bfversion = "0.54";
 var bfsets;
 
 function initFactory() {
@@ -248,43 +248,8 @@ function factoryCommand(src, command, commandData) {
     }
     if (command == "pokecode") {
         try {
-            var set = commandData;
-            var info = {
-                'poke': sys.pokemon(toNumber(set.substr(0,2))+65536*toNumber(set.substr(2,1))),
-                'nature': sys.nature(toNumber(set.substr(3,1))),
-                'ability': sys.ability(toNumber(set.substr(4,2))),
-                'item': sys.item(toNumber(set.substr(6,3))),
-                'level': toNumber(set.substr(9,2)),
-                'moves': [sys.move(toNumber(set.substr(11,2))),sys.move(toNumber(set.substr(13,2))),sys.move(toNumber(set.substr(15,2))),sys.move(toNumber(set.substr(17,2)))],
-                'evs': [toNumber(set.substr(19,2)),toNumber(set.substr(21,2)),toNumber(set.substr(23,2)),toNumber(set.substr(25,2)),toNumber(set.substr(27,2)),toNumber(set.substr(29,2))],
-                'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))],
-                'gender': toNumber(set.substr(37,1))
-            };
-            var genders = ['', '(M) ', '(F) '];
-            var stats = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
-            var msg = ["<table border='2'><tr><td><pre>"+info.poke+" "+genders[info.gender]+"@ "+info.item];
-            msg.push("Ability: "+info.ability, info.nature+" Nature, Level "+info.level);
-            var evlist = [];
-            var dvlist = [];
-            for (var j in info.evs) {
-                if (info.evs[j] > 0) {
-                    evlist.push(info.evs[j]+" "+stats[j]);
-                }
-            }
-            for (var k in info.dvs) {
-                if (info.dvs[k] < 31) {
-                    dvlist.push(info.dvs[k]+" "+stats[k]);
-                }
-            }
-            if (dvlist.length === 0) {
-                dvlist = ["All 31"];
-            }
-            msg.push(info.moves.join(" / "),"EVs: "+evlist.join(" / "),"IVs: "+dvlist.join(" / "));
-            if (info.moves.indexOf("Hidden Power") != -1) {
-                var hptype = sys.hiddenPowerType(5,info.dvs[0],info.dvs[1],info.dvs[2],info.dvs[3],info.dvs[4],info.dvs[5]);
-                msg.push("Hidden Power "+sys.type(hptype));
-            }
-            sendChanHtmlMessage(src, msg.join("<br/>")+"</pre></td></tr></table>");
+            var msg = getReadablePoke(commandData);
+            sendChanHtmlMessage(src, "<table border='2'><tr><td><pre>"+msg.join("<br/>")+"</pre></td></tr></table>");
             return;
         }
         catch (err) {
@@ -292,7 +257,70 @@ function factoryCommand(src, command, commandData) {
             return;
         }
     }
+    if (command == "pokesets") {
+        var sets = [];
+        var id = sys.pokeNum(commandData);
+        if (!bfsets.hasOwnProperty(id)) {
+            normalbot.sendChanMessage(src, "No sets exist for that pokemon.");
+            return;
+        }
+        var pokesets = bfsets[id];
+        for (var b in pokesets) {
+            try {
+                sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
+            }
+            catch (err) {
+                normalbot.sendChanMessage(src, "Error (id: "+pokesets[b]+"): "+err);
+            }
+        }
+        if (sets.length > 0) {
+            sendChanHtmlMessage(src, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>");
+        }
+        return;
+    }
     return 'no command';
+}
+
+function getReadablePoke(set) {
+    if (set.length != 38) {
+        throw "Invalid Set, each set should be 38 alphanumeric characters long."
+    }
+    var info = {
+        'poke': sys.pokemon(toNumber(set.substr(0,2))+65536*toNumber(set.substr(2,1))),
+        'nature': sys.nature(toNumber(set.substr(3,1))),
+        'ability': sys.ability(toNumber(set.substr(4,2))),
+        'item': sys.item(toNumber(set.substr(6,3))),
+        'level': toNumber(set.substr(9,2)),
+        'moves': [sys.move(toNumber(set.substr(11,2))),sys.move(toNumber(set.substr(13,2))),sys.move(toNumber(set.substr(15,2))),sys.move(toNumber(set.substr(17,2)))],
+        'evs': [toNumber(set.substr(19,2)),toNumber(set.substr(21,2)),toNumber(set.substr(23,2)),toNumber(set.substr(25,2)),toNumber(set.substr(27,2)),toNumber(set.substr(29,2))],
+        'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))],
+        'gender': toNumber(set.substr(37,1))
+    };
+    var genders = ['', '(M) ', '(F) '];
+    var stats = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
+    var msg = [info.poke+" "+genders[info.gender]+"@ "+info.item];
+    msg.push("Ability: "+info.ability, info.nature+" Nature, Level "+info.level);
+    var evlist = [];
+    var dvlist = [];
+    for (var j in info.evs) {
+        if (info.evs[j] > 0) {
+            evlist.push(info.evs[j]+" "+stats[j]);
+        }
+    }
+    for (var k in info.dvs) {
+        if (info.dvs[k] < 31) {
+            dvlist.push(info.dvs[k]+" "+stats[k]);
+        }
+    }
+    if (dvlist.length === 0) {
+        dvlist = ["All 31"];
+    }
+    msg.push(info.moves.join(" / "),"EVs: "+evlist.join(" / "),"IVs: "+dvlist.join(" / "));
+    if (info.moves.indexOf("Hidden Power") != -1) {
+        var hptype = sys.hiddenPowerType(5,info.dvs[0],info.dvs[1],info.dvs[2],info.dvs[3],info.dvs[4],info.dvs[5]);
+        msg.push("Hidden Power "+sys.type(hptype));
+    }
+    return msg;
 }
 
 function generateTeam(src, team) {
@@ -409,7 +437,8 @@ module.exports = {
         if (topic == "battlefactory" && (sys.auth(src) > 2 || (sys.name(src) === 'Aerith' && sys.auth(src) >= 1))) {
             help = [
                 "/pokeslist: Views the list of installed Pokemon",
-                "/pokecode [alpha code]: Convers a code to readable format.",
+                "/pokecode [alpha code]: Converts a code to readable format.",
+                "/pokesets [poke]: Gets the sets for that pokemon in readable format",
                 "/exportteam: Exports your current team to code.",
                 "/importteam: Imports the last team made",
                 "/updateteams: Update teams from the web"
