@@ -188,7 +188,7 @@ function update_web_logs() {
 		}
 		else
 		{
-		    sys.sendAll('±StalkingBot: The logs update failed.', staffchannel);
+		    //sys.sendAll('±StalkingBot: The logs update failed.', staffchannel);
 		}
 	}, post);
 	*/
@@ -1711,13 +1711,13 @@ stepEvent: function() {
     
     // Updates PO logs once they reach over 5 mil characters
     var date = new Date();
-    if(date.getUTCSeconds() === 0)
+    /*if(date.getUTCSeconds() === 0)
     {
 	    if(sys.getFileContent('po_logs.json').length > 5000000)
 		{
              update_web_logs(); // Will try to upload the logs on the web server
 		}
-    }
+    }*/
     if ((date.getUTCHours() === 0 || date.getUTCHours() ===  6 || date.getUTCHours() === 12 || date.getUTCHours() === 12) && date.getUTCMinutes === 0 && date.getUTCSeconds () === 0){
         sendNotice();
     }
