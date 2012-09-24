@@ -230,7 +230,7 @@ function append_logs(params) { // Adds chat lines to the logs
                 return;
             }
         }
-		if(params.channels.length == 0)
+		if(params.channels === undefined || params.channels.length == 0)
 		{
 		     return;
 		}
@@ -400,7 +400,7 @@ function get_players_channels(ids) { // List of the channels names that the play
     }
     for(var x in chans)
     {
-        if(chans_names.indexOf(sys.channel(chans[x])) == -1 && stalkedChans().indexOf(sys.channel(chans[x]).toLowerCase()) != -1)
+        if(chans_names.indexOf(sys.channel(chans[x])) == -1 && stalkedChans().indexOf(sys.channel(chans[x]).toLowerCase()) != -1 && sys.channel(chans[x]) != undefined)
         {
             chans_names.push(sys.channel(chans[x]));
         }
