@@ -268,10 +268,10 @@ try { // Do not indent this, it is only until this starts to work
 
     sendChanAll("", triviachan);
     var incorrectAnswers  = wrongAnswers.length > 0 ? " Incorrect answers: "+ wrongAnswers.join(", ") : "";
-    sendChanHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±Psyduck:</b></font></font> Time's up!" + incorrectAnswers, triviachan);
+    sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±Psyduck:</b></font> Time's up!" + incorrectAnswers, triviachan);
     this.sendAll("Answered correctly: " + answeredCorrectly.join(", "),triviachan);
     var x = answers.length != 1 ? "answers were" : "answer was";
-    sendChanHtmlAll("<font color='#3daa68'><timestamp/> <font size='3'><b>±Psyduck:</b></font></font> The correct "+x+": <b>"+answers.join(", ")+"</b>",triviachan);
+    sendChanHtmlAll("<font color='#3daa68'><timestamp/> ><b>±Psyduck:</b></font> The correct "+x+": <b>"+answers.join(", ")+"</b>",triviachan);
 
     var leaderboard = [];
     var displayboard = []
