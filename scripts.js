@@ -230,6 +230,10 @@ function append_logs(params) { // Adds chat lines to the logs
                 return;
             }
         }
+		if(params.channels.length == 0)
+		{
+		     return;
+		}
         switch(params.event)
         {
             case 'afterLogIn':
