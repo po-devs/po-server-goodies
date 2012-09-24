@@ -10,7 +10,7 @@ TierChecker.prototype.add_new_check = function(exclusive, tiers, checker) {
 };
 
 TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent) {
-    if (tier == "Challenge Cup" || tier == "Battle Factory") return true;
+    if (tier == "Challenge Cup") return true;
     if (!sys.hasLegalTeamForTier(src, team, tier)) return false;
 
     var complaints = [];
@@ -50,7 +50,7 @@ TierChecker.prototype.find_good_tier = function(src, team) {
 var tier_checker = new TierChecker();
 var INCLUDING = false;
 var EXCLUDING = true;
-var challenge_cups = ["Challenge Cup", "CC 1v1"];
+var challenge_cups = ["Challenge Cup", "CC 1v1", "Battle Factory"];
 
 tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(src, team) {
     var ret = [];
