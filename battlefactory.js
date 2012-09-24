@@ -262,7 +262,7 @@ function factoryCommand(src, command, commandData) {
             };
             var genders = ['', '(M) ', '(F) '];
             var stats = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
-            var msg = ["<table frame='border'><tr><td>"+info.poke+" "+info.gender+"@ "+info.item+"</td>"];
+            var msg = ["<table frame='border'><tr><td>"+info.poke+" "+genders[info.gender]+"@ "+info.item+"</td>"];
             msg.push("<td>Ability: "+info.ability+"</td>", "<td>"+info.nature+" Nature, Level "+info.level+"</td>");
             var evlist = [];
             var dvlist = [];
@@ -285,6 +285,7 @@ function factoryCommand(src, command, commandData) {
                 msg.push("<td>Hidden Power "+sys.type(hptype)+"</td>");
             }
             sendChanHtmlMessage(src, msg.join("</tr><tr>")+"</table>");
+            return;
         }
         catch (err) {
             normalbot.sendChanMessage(src, "Invalid Code: "+err);
