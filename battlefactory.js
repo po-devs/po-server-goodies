@@ -262,8 +262,8 @@ function factoryCommand(src, command, commandData) {
             };
             var genders = ['', '(M) ', '(F) '];
             var stats = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
-            var msg = ["<table frame='border'><tr><td>"+info.poke+" "+genders[info.gender]+"@ "+info.item+"</td>"];
-            msg.push("<td>Ability: "+info.ability+"</td>", "<td>"+info.nature+" Nature, Level "+info.level+"</td>");
+            var msg = ["<table border='2'><tr><td><pre>"+info.poke+" "+genders[info.gender]+"@ "+info.item];
+            msg.push("Ability: "+info.ability, info.nature+" Nature, Level "+info.level);
             var evlist = [];
             var dvlist = [];
             for (var j in info.evs) {
@@ -279,12 +279,12 @@ function factoryCommand(src, command, commandData) {
             if (dvlist.length === 0) {
                 dvlist = ["All 31"];
             }
-            msg.push("<td>"+info.moves.join(" / ")+"</td>","<td>EVs: "+evlist.join(" / ")+"</td>","<td>IVs: "+dvlist.join(" / ")+"</td>");
+            msg.push(info.moves.join(" / "),"EVs: "+evlist.join(" / "),"IVs: "+dvlist.join(" / "));
             if (info.moves.indexOf("Hidden Power") != -1) {
                 var hptype = sys.hiddenPowerType(5,info.dvs[0],info.dvs[1],info.dvs[2],info.dvs[3],info.dvs[4],info.dvs[5]);
-                msg.push("<td>Hidden Power "+sys.type(hptype)+"</td>");
+                msg.push("Hidden Power "+sys.type(hptype));
             }
-            sendChanHtmlMessage(src, msg.join("</tr><tr>")+"</table>");
+            sendChanHtmlMessage(src, msg.join("<br/>")+"</pre></td></tr></table>");
             return;
         }
         catch (err) {
