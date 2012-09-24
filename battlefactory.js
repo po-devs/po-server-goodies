@@ -7,7 +7,7 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.52";
+var bfversion = "0.53";
 var bfsets;
 
 function initFactory() {
@@ -207,10 +207,10 @@ function factoryCommand(src, command, commandData) {
             sys.updatePlayer(src);
         }
         catch (err) {
-            normalbot.sendMessage(src, "Team file was empty or corrupt, could not import.");
+            normalbot.sendChanMessage(src, "Team file was empty or corrupt, could not import.");
             return;
         }
-        normalbot.sendMessage(src, "Imported the team.");
+        normalbot.sendChanMessage(src, "Imported the team.");
         return;
     }
     if (command == "updateteams") {
@@ -228,11 +228,11 @@ function factoryCommand(src, command, commandData) {
                     refresh();
                 }
                 catch (err) {
-                    normalbot.sendMessage(src, "FATAL ERROR: "+err);
+                    normalbot.sendChanMessage(src, "FATAL ERROR: "+err);
                 }
             }
             else {
-                normalbot.sendMessage(src, "Failed to update!");
+                normalbot.sendChanMessage(src, "Failed to update!");
             }
         });
         return;
@@ -245,6 +245,51 @@ function factoryCommand(src, command, commandData) {
             normalbot.sendChanMessage(src, poke+": Has "+setlength+" sets.");
         }
         return;
+    }
+    if (command == "pokecode") {
+        try {
+            var set = commandData;
+            var info = {
+                'poke': sys.pokemon(toNumber(set.substr(0,2))+65536*toNumber(set.substr(2,1))),
+                'nature': sys.nature(toNumber(set.substr(3,1))),
+                'ability': sys.ability(toNumber(set.substr(4,2))),
+                'item': sys.item(toNumber(set.substr(6,3))),
+                'level': toNumber(set.substr(9,2)),
+                'moves': [sys.move(toNumber(set.substr(11,2))),sys.move(toNumber(set.substr(13,2))),sys.move(toNumber(set.substr(15,2))),sys.move(toNumber(set.substr(17,2)))],
+                'evs': [toNumber(set.substr(19,2)),toNumber(set.substr(21,2)),toNumber(set.substr(23,2)),toNumber(set.substr(25,2)),toNumber(set.substr(27,2)),toNumber(set.substr(29,2))],
+                'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))],
+                'gender': toNumber(set.substr(37,1))
+            };
+            var genders = ['', '(M) ', '(F) '];
+            var stats = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
+            var msg = ["<table frame='border'><tr><td>"+info.poke+" "+info.gender+"@ "+info.item+"</td>"];
+            msg.push("<td>Ability: "+info.ability+"</td>", "<td>"+info.nature+" Nature, Level "+info.level+"</td>");
+            var evlist = [];
+            var dvlist = [];
+            for (var j in info.evs) {
+                if (info.evs[j] > 0) {
+                    evlist.push(info.evs[j]+" "+stats[j]);
+                }
+            }
+            for (var k in info.dvs) {
+                if (info.dvs[k] < 31) {
+                    dvlist.push(info.dvs[k]+" "+stats[k]);
+                }
+            }
+            if (dvlist.length === 0) {
+                dvlist = ["All 31"];
+            }
+            msg.push("<td>"+info.moves.join(" / ")+"</td>","<td>EVs: "+evlist.join(" / ")+"</td>","<td>IVs: "+dvlist.join(" / ")+"</td>");
+            if (info.moves.indexOf("Hidden Power") != -1) {
+                var hptype = sys.hiddenPowerType(5,info.dvs[0],info.dvs[1],info.dvs[2],info.dvs[3],info.dvs[4],info.dvs[5]);
+                msg.push("<td>Hidden Power "+sys.type(hptype)+"</td>");
+            }
+            sendChanHtmlMessage(src, msg.join("</tr><tr>")+"</table>");
+        }
+        catch (err) {
+            normalbot.sendChanMessage(src, "Invalid Code: "+err);
+            return;
+        }
     }
     return 'no command';
 }
