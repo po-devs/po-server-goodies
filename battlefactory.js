@@ -283,7 +283,7 @@ function factoryCommand(src, command, commandData) {
 
 function getReadablePoke(set) {
     if (set.length != 38) {
-        throw "Invalid Set, each set should be 38 alphanumeric characters long."
+        throw "Invalid Set, each set should be 38 alphanumeric characters long.";
     }
     var info = {
         'poke': sys.pokemon(toNumber(set.substr(0,2))+65536*toNumber(set.substr(2,1))),

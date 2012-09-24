@@ -81,7 +81,7 @@ var tourownercommands = ["tsadmin[s] [name]: makes someone a tournament admin - 
                     "loadevents: load event tours"]
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "Breaking the following rules may result in punishment:",
-                "#1: Team revealing or scouting in tiers other than CC or Metronome will result in disqualification.",
+                "#1: Team revealing or scouting in tiers other than CC, Battle Factory or Metronome will result in disqualification.",
                 "- Scouting is watching the battle of someone else in the tournament to gain information.",
                 "- Team revealing is revealing any information about other entrants' teams.",
                 "- Players are always permitted to watch the final match of any tournament.",
@@ -821,7 +821,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.711",
+            version: "1.712",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -866,7 +866,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.711",
+        version: "1.712",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -5156,7 +5156,7 @@ module.exports = {
             }
         }
         /* check for potential scouters */
-        var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"]
+        var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome", "Battle Factory"]
         var isOkToSpectate = (tours.tour[p1tour].state == "final" || cctiers.indexOf(tours.tour[p1tour].tourtype) != -1)
         if (srctour === p1tour && !isOkToSpectate) {
             sendBotMessage(src, "You can't watch this match because you are in the same tournament!","all", false)

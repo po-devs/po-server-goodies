@@ -187,7 +187,7 @@ function update_web_logs() {
 		}
 		else
 		{
-		    sys.sendAll('±StalkingBot: The logs update failed.', staffchannel);
+		    //sys.sendAll('±StalkingBot: The logs update failed.', staffchannel);
 		}
 	}, post);
 }
