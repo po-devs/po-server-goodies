@@ -169,29 +169,27 @@ function get_timestamp() { // UTC timestamp(seconds)
 }
 
 function update_web_logs() {
-     /*
     // Take po_logs.json to the handler and empty it afterward
     var json = sys.getFileContent('po_logs.json');
     var website = sys.getFileContent('logs_address.txt'); // The address of the page that will save the logs
     var post = {"logs": json};
-	sys.webCall(website, function(resp) {
-	    if(resp == 'true')
-		{
-		     sys.webCall(sys.getFileContent('logs_db_address.txt'), function(resp) {
-			     if(resp == 'true')
-				 {
-				     // sys.sendAll('±StalkingBot: The logs database has been updated!.', staffchannel);
-				 }
-			 });
-		    // sys.sendAll('±StalkingBot: The logs have been sent to the website.', staffchannel);
+    sys.webCall(website, function(resp) {
+        if(resp == 'true')
+        {
+            sys.webCall(sys.getFileContent('logs_db_address.txt'), function(resp) {
+                 if(resp == 'true')
+                 {
+                     sys.sendAll('±StalkingBot: The logs database has been updated!.', staffchannel);
+                 }
+             });
+            sys.sendAll('±StalkingBot: The logs have been sent to the website.', staffchannel);
             sys.writeToFile('po_logs.json','');
-		}
-		else
-		{
-		    //sys.sendAll('±StalkingBot: The logs update failed.', staffchannel);
-		}
-	}, post);
-	*/
+        }
+        else
+        {
+            //sys.sendAll('±StalkingBot: The logs update failed.', staffchannel);
+        }
+    }, post);
 }
 
 function getVal(valname) { // Removes ":" if it's the first character of the val
@@ -201,8 +199,8 @@ function getVal(valname) { // Removes ":" if it's the first character of the val
 function escape_dq(txt) { // escaping for JSON
 
      if(typeof txt == 'object')
-	 txt = txt.join();
-    if(txt != null && txt != undefined && txt.length > 0)
+     txt = txt.join();
+    if(txt !== null && txt !== undefined && txt.length > 0)
     return txt.replace(/\\/g, "\\\\").replace(/\//g, "\\/").replace(/\"/g, "\\\"").replace(/\n/g, "").replace(/\r/g, "").replace(/\t/g, "").replace(/\x08/g, "").replace(/\x0c/g, "");
 }
 
@@ -219,10 +217,10 @@ function append_logs(params) { // Adds chat lines to the logs
      var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick', 'afterNewMessage'];
     if(typeof params == 'object' && events_list.indexOf(params.event) != -1)
     {
-	    if(['afterChatMessage', 'afterSendAll', 'afterSendHtmlAll', 'afterNewMessage'].indexOf(params.event) != -1 && params.msg == null)
-		return;
-	    if(params.msg !== undefined && params.msg[0] == "/")
-		return;
+        if(['afterChatMessage', 'afterSendAll', 'afterSendHtmlAll', 'afterNewMessage'].indexOf(params.event) != -1 && params.msg === null)
+        return;
+        if(params.msg !== undefined && params.msg[0] == "/")
+        return;
         if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
         {
             // verification here that it's stalked
@@ -258,12 +256,13 @@ function append_logs(params) { // Adds chat lines to the logs
             case 'afterBattleEnded':
                 if(sys.name(params.winner_id) !== undefined && sys.name(params.loser_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
+                    var tie;
                     if(params.tie == 'tie')
-					var tie = 1;
-					else if(params.tie == 'forfeit')
-					var tie = 2;
-					else
-					var tie = 0;
+                    tie = 1;
+                    else if(params.tie == 'forfeit')
+                    tie = 2;
+                    else
+                    tie = 0;
                     sys.appendToFile('po_logs.json', "{\"event\":\"afterBattleEnded\", \"timestamp\":\""+params.timestamp+"\", \"winner\":\""+((/^[1-3]{1}$/).test(sys.auth(params.winner_id)) ? '+' : '')+escape_dq(sys.name(params.winner_id))+"\", \"loser\":\""+((/^[1-3]{1}$/).test(sys.auth(params.loser_id)) ? '+' : '')+escape_dq(sys.name(params.loser_id))+"\", \"tie\":\""+tie+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
             break;
@@ -298,14 +297,14 @@ function append_logs(params) { // Adds chat lines to the logs
             break;
             
             case 'beforePlayerBan':
-                if(sys.name(params.banner_id) !== undefined && parseInt(params.duration) == 0 && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
+                if(sys.name(params.banner_id) !== undefined && parseInt(params.duration, 10) === 0 && sys.name(params.banned_id) !== undefined && timestamp_regex.test(params.timestamp))
                 {
                     sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"duration\":"+params.duration+", \"banner\":\""+((/^[1-3]{1}$/).test(sys.auth(params.banner_id)) ? '+' : '')+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+((/^[1-3]{1}$/).test(sys.auth(params.banned_id)) ? '+' : '')+escape_dq(sys.name(params.banned_id))+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
-				else if(sys.name(params.banner_id) !== undefined && parseInt(params.duration) > 0 && params.banned !== undefined && timestamp_regex.test(params.timestamp))
-				{
-                    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"duration\":"+params.duration+", \"banner\":\""+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+escape_dq(params.banned)+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");				
-				}
+                else if(sys.name(params.banner_id) !== undefined && parseInt(params.duration, 10) > 0 && params.banned !== undefined && timestamp_regex.test(params.timestamp))
+                {
+                    sys.appendToFile('po_logs.json', "{\"event\":\"beforePlayerBan\", \"timestamp\":\""+params.timestamp+"\", \"duration\":"+params.duration+", \"banner\":\""+escape_dq(sys.name(params.banner_id))+"\", \"banned\":\""+escape_dq(params.banned)+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
+                }
             break;
             
             case 'afterChannelJoin':
@@ -323,18 +322,18 @@ function append_logs(params) { // Adds chat lines to the logs
             break;
             
             case 'afterChatMessage':
-                if(params.msg != null && sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+                if(params.msg !== null && sys.name(params.source_id) !== undefined && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
                     sys.appendToFile('po_logs.json', "{\"event\":\"afterChatMessage\", \"timestamp\":\""+params.timestamp+"\", \"source\":\""+((/^[1-3]{1}$/).test(sys.auth(params.source_id)) ? '+' : '')+escape_dq(sys.name(params.source_id))+"\", \"source_color\":\""+params.source_color+"\", \"channels\":\""+escape_dq(sys.channel(params.chan_id))+"\", \"message\":\""+escape_dq(params.msg)+"\"},");
                 }
             break;
             
             case 'afterSendAll':
-                if(params.msg != null && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+                if(params.msg !== null && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
                     var kregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) was mysteriously kicked by ([^\n%*<:\(\)]{1,20})!$/i; // To capture kicks
                     var tbregexp = /^±Dratini: ([^\n%*<:\(\)]{1,20}) banned ([^\n%*<:\(\)]{1,20}) for (([0-9]{1,} (weeks?|days?|hours?|minutes?|seconds?)(, ){0,}){1,})! \[Reason: [^:]{1,}\]/i;
-					if(kregexp.test(params.msg) === true) // forwarding kicks to beforeplayerkick
+                    if(kregexp.test(params.msg) === true) // forwarding kicks to beforeplayerkick
                     {
                         var result = params.msg.match(kregexp);
                         var kicked = result[1];
@@ -346,8 +345,8 @@ function append_logs(params) { // Adds chat lines to the logs
                         var result = params.msg.match(tbregexp);
                         var banner = result[1];
                         var banned = result[2];
-                        var dur = parseInt(getTimeStamp(result[3]));
-						append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), 'banned':banned, duration:dur, channels:params.channels, timestamp:params.timestamp});
+                        var dur = parseInt(getTimeStamp(result[3]), 10);
+                        append_logs({event:'beforePlayerBan', banner_id:sys.id(banner), 'banned':banned, duration:dur, channels:params.channels, timestamp:params.timestamp});
                     }
                     else
                     {
@@ -357,9 +356,9 @@ function append_logs(params) { // Adds chat lines to the logs
             break;
             
             case 'afterSendHtmlAll':
-                if(params.msg != null && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+                if(params.msg !== null && sys.channel(params.chan_id) !== undefined && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
-				    // sendChanHtmlAll('<b><font color=red>' + commandData + ' was banned by ' + nonFlashing(sys.name(src)) + '!</font></b>',-1);
+                    // sendChanHtmlAll('<b><font color=red>' + commandData + ' was banned by ' + nonFlashing(sys.name(src)) + '!</font></b>',-1);
                     var bregexp = /^<b><font color=red>([^\n%*<:\(\)]{1,20}) was banned by ([^\n%*<:\(\)]{1,20})!<\/font><\/b>$/i;
                     if(bregexp.test(params.msg) === true) // forwarding bans to beforeplayerban
                     {
@@ -378,7 +377,7 @@ function append_logs(params) { // Adds chat lines to the logs
             break;
             
             case 'afterNewMessage':
-                if(params.msg != null && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
+                if(params.msg !== null && params.msg.length > 0 && timestamp_regex.test(params.timestamp))
                 {
                     sys.appendToFile('po_logs.json', "{\"event\":\"afterNewMessage\", \"timestamp\":\""+params.timestamp+"\", \"message\":\""+escape_dq(params.msg)+"\", \"channels\":\""+escape_dq(params.channels.join(':'))+"\"},");
                 }
@@ -430,30 +429,31 @@ function channelslist() {
 }
 
 function stalkedChans(bool) {
+    var stalked;
     if(bool === undefined || bool === false)
-	{
-        var stalked = getVal('stalked_chans').split(':');
+    {
+        stalked = getVal('stalked_chans').split(':');
         var array = [];
-	    for(var x in stalked)
-	    {
-	        if(sys.existChannel(stalked[x]))
-		    array.push(stalked[x]);
-	    }
-		return array;
-	}
-	else
-	{
-	    return stalked;
-	}
+        for(var x in stalked)
+        {
+            if(sys.existChannel(stalked[x]))
+            array.push(stalked[x]);
+        }
+        return array;
+    }
+    else
+    {
+        return stalked;
+    }
 }
 function stalkedChansCaps() {
     var array = [];
-	var stalked = stalkedChans();
-	for(var x in stalked)
-	{
-	    array.push(sys.channel(sys.channelId(stalked[x])));
-	}
-	return array;
+    var stalked = stalkedChans();
+    for(var x in stalked)
+    {
+        array.push(sys.channel(sys.channelId(stalked[x])));
+    }
+    return array;
 }
 
 function inStalkedChans(channels) {
@@ -505,7 +505,6 @@ delete sys.sendHtmlAll;
 sys._sendHtmlAll = sys.sendHtmlAll;
 // Replace the native function
 sys.sendHtmlAll = function(message, channel) { // Adding a callback function
-    var chan_id = channel;
     var params;
     if(message !== undefined && channel === undefined){
         sys._sendHtmlAll(message);
@@ -529,10 +528,8 @@ sys.sendHtmlAll = function(message, channel) { // Adding a callback function
 };
 
 function sendChanAll(message, chan_id) {
-    var params;
     if((chan_id === undefined && channel === undefined) || chan_id == -1)
     {
-         var date = get_timestamp();
         sys.sendAll(message);
         // PO logs stuff
        
@@ -558,10 +555,8 @@ function sendChanHtmlMessage(id, message) {
 }
 
 function sendChanHtmlAll(message, chan_id) {
-    var params;
     if((chan_id === undefined && channel === undefined) || chan_id == -1)
     {
-        var date = get_timestamp();
         sys.sendHtmlAll(message);
         // PO logs stuff
         
@@ -1713,10 +1708,10 @@ stepEvent: function() {
     var date = new Date();
     /*if(date.getUTCSeconds() === 0)
     {
-	    if(sys.getFileContent('po_logs.json').length > 5000000)
-		{
+        if(sys.getFileContent('po_logs.json').length > 5000000)
+        {
              update_web_logs(); // Will try to upload the logs on the web server
-		}
+        }
     }*/
     if ((date.getUTCHours() === 0 || date.getUTCHours() ===  6 || date.getUTCHours() === 12 || date.getUTCHours() === 12) && date.getUTCMinutes === 0 && date.getUTCSeconds () === 0){
         sendNotice();
@@ -1969,8 +1964,8 @@ init : function() {
         var result = [];
         for(var x in arr)
         {
-		       if(regexp.test(arr[x]) === false)
-			   continue;
+               if(regexp.test(arr[x]) === false)
+               continue;
                result = arr[x].match(regexp);
                if(result[2] == 'second' || result[2] == 'seconds')
                {
@@ -2332,12 +2327,12 @@ beforePlayerBan : function(src, dest, dur) {
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
-    
+    var params;
     // PO logs stuff
-	if(dur == 0)
+    if(dur === 0)
     var params = {event:'beforePlayerBan', banner_id:src, banned_id:dest, duration:dur, channels:stalkedChansCaps(), timestamp:get_timestamp()};
-	else
-	var params = {event:'beforePlayerBan', banner_id:src, banned:sys.name(dest), duration:parseInt(parseInt(dur)*60), channels:stalkedChansCaps(), timestamp:get_timestamp()};
+    else
+    var params = {event:'beforePlayerBan', banner_id:src, banned:sys.name(dest), duration:parseInt(parseInt(dur, 10)*60, 10), channels:stalkedChansCaps(), timestamp:get_timestamp()};
     append_logs(params);
 },
 
@@ -4118,7 +4113,6 @@ adminCommand: function(src, command, commandData, tar) {
     if (command == "destroychan") {
         var ch = commandData;
         var chid = sys.channelId(ch);
-        var poChannel = SESSION.channels(chid);
         if(sys.existChannel(ch) !== true) {
             normalbot.sendChanMessage(src, "No channel exists by this name!");
             return;
@@ -4307,10 +4301,10 @@ adminCommand: function(src, command, commandData, tar) {
 
 ownerCommand: function(src, command, commandData, tar) {
     if(command == "get_logs") { // temporary until 2.0.06 is used
-	     sys.sendMessage(src, "±logs: "+sys.getFileContent('po_logs.json'), channel);
-		 sys.writeToFile('po_logs.json', '');
-		 return;
-	}
+         sys.sendMessage(src, "±logs: "+sys.getFileContent('po_logs.json'), channel);
+         sys.writeToFile('po_logs.json', '');
+         return;
+    }
     if(command == "update_logs") {
         update_web_logs();
         return;
