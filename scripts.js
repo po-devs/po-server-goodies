@@ -224,12 +224,16 @@ function append_logs(params) { // Adds chat lines to the logs
         if(['afterChannelJoin', 'afterChannelLeave', 'afterChatMessage'].indexOf(params.event) != -1) // If it's a channel event we must verify if it's a channel that is stalked or not
         {
             // verification here that it's stalked
-            var stalked_chans = getVal('stalked_chans');
-            if(params.chan_id !== undefined && stalked_chans.indexOf(sys.channel(params.chan_id).toLowerCase()) == -1)
+            var stalked_chans = stalkedChansCaps();
+            if(params.chan_id !== undefined && stalked_chans.indexOf(sys.channel(params.chan_id)) == -1)
             {
                 return;
             }
         }
+		if(params.channels === undefined || params.channels.length == 0)
+		{
+		     return;
+		}
         switch(params.event)
         {
             case 'afterLogIn':
@@ -396,7 +400,7 @@ function get_players_channels(ids) { // List of the channels names that the play
     }
     for(var x in chans)
     {
-        if(chans_names.indexOf(sys.channel(chans[x])) == -1 && stalkedChans().indexOf(sys.channel(chans[x]).toLowerCase()) != -1)
+        if(chans_names.indexOf(sys.channel(chans[x])) == -1 && stalkedChans().indexOf(sys.channel(chans[x]).toLowerCase()) != -1 && sys.channel(chans[x]) != undefined)
         {
             chans_names.push(sys.channel(chans[x]));
         }
@@ -458,13 +462,15 @@ function stalkedChansCaps() {
 
 function inStalkedChans(channels) {
     var stalked = [];
-    for (var x in channels)
-    {
-        if(stalkedChans().indexOf(channels[x].toLowerCase()) != -1)
-        {
-            stalked.push(channels[x]);
-        }
-    }
+	channels = channels.join(':').toLowerCase().split(':');
+	var stalked_chans = stalkedChansCaps();
+	for(var x in stalked_chans)
+	{
+	     if(channels.indexOf(stalked_chans[x].toLowerCase()) != -1)
+		 {
+		     stalked.push(stalked_chans[x]);
+		 }
+	}
     return stalked;
 }
 
@@ -480,14 +486,14 @@ sys.sendAll = function(message, channel) { // Adding a callback function
         sys._sendAll(message);
         var stalked_chans = inStalkedChans(channelslist());
         if(stalked_chans.length > 0)
-            params = {"event":"afterSendAll", "msg":message, "channels":stalkedChansCaps(), timestamp:get_timestamp()};
+            params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
         append_logs(params);
     }
     else if(message !== undefined){
         sys._sendAll(message, channel);
         var stalked_chans = inStalkedChans([sys.channel(channel)]);
             if(stalked_chans.length > 0)
-                params = {"event":"afterSendAll", "msg":message, "channels":stalkedChansCaps(), timestamp:get_timestamp()};
+                params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
             append_logs(params);
     }
      // Callback
