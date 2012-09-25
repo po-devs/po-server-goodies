@@ -230,7 +230,7 @@ function append_logs(params) { // Adds chat lines to the logs
                 return;
             }
         }
-        if((params.channels === undefined || params.channels.length === 0) || (params.chan_id === undefined))
+        if((params.channels === undefined || params.channels.length === 0) && (params.chan_id === undefined))
         {
              return;
         }
