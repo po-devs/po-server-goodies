@@ -227,6 +227,7 @@ function append_logs(params) { // Adds chat lines to the logs
             var stalked_chans = stalkedChansCaps();
             if(params.chan_id !== undefined && stalked_chans.indexOf(sys.channel(params.chan_id)) == -1)
             {
+			sys.sendAll('lol');
                 return;
             }
         }
