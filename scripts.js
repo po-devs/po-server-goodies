@@ -213,6 +213,8 @@ function printObject(o) {
 }
 
 function append_logs(params) { // Adds chat lines to the logs
+if(params.event == 'afterChatMessage');
+sys.sendAll('yoyo');
      var timestamp_regex = new RegExp("^[0-9]{0,10}$");
      var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick', 'afterNewMessage'];
     if(typeof params == 'object' && events_list.indexOf(params.event) != -1)
@@ -227,7 +229,6 @@ function append_logs(params) { // Adds chat lines to the logs
             var stalked_chans = stalkedChansCaps();
             if(params.chan_id !== undefined && stalked_chans.indexOf(sys.channel(params.chan_id)) == -1)
             {
-			sys.sendAll('lol');
                 return;
             }
         }
