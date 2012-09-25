@@ -21,6 +21,7 @@ if (typeof tours !== "object") {
 }
 
 var utilities = require('utilities.js');
+var bfactory = require('battlefactory.js');
 var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
 var htmlborder = "<font color=#3DAA68><b>"+border+"</b></font>";
 // Event tournaments highlighted in red
@@ -821,7 +822,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.712",
+            version: "1.712+",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -866,7 +867,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.712",
+        version: "1.712+",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -3904,6 +3905,9 @@ function tourstart(tier, starter, key, parameters) {
             sendChanHtmlAll("<timestamp/> A <b><a href='http://wiki.pokemon-online.eu/view/"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> "+(tours.tour[key].maxplayers === "default" ? "tournament" : "event")+" has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x])
             sendChanAll("CLAUSES: "+getTourClauses(tier),channels[x])
             sendChanAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : ""), channels[x])
+            if (tier == "Battle Factory") {
+                sendChanAll("VERSION: "+bfactory.getVersion("team"),channels[x]);
+            }
             if (channels[x] == tourschan) {
                 sendChanHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, "+(tours.tour[key].maxplayers === "default" ? "you have "+time_handle(tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!"), channels[x])
             }

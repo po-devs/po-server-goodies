@@ -489,5 +489,26 @@ module.exports = {
             return true;
         }
         return false;
+    },
+    getVersion: function(type) {
+        if (type == "script") {
+            return bfversion;
+        }
+        else if (type == "team") {
+            if (bfsets.hasOwnProperty('desc')) {
+                if (typeof bfsets.desc == "string") {
+                    return bfsets.desc;
+                }
+                else {
+                    return "Default";
+                }
+            }
+            else {
+                return "Default";
+            }
+        }
+        else {
+            return "Invalid Type";
+        }
     }
 }
