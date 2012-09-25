@@ -3,7 +3,7 @@
 
 // You may change these variables as long as you keep the same type
 var Config = {
-    base_url: "https://raw.github.com/lamperi/po-server-goodies/master/",
+    base_url: "https://raw.github.com/Jirachier/po-server-goodies/master/",
     bot: "Dratini",
     kickbot: "Blaziken",
     capsbot: "Exploud",
@@ -230,7 +230,7 @@ function append_logs(params) { // Adds chat lines to the logs
                 return;
             }
         }
-        if(params.channels === undefined || params.channels.length === 0)
+        if((params.channels === undefined || params.channels.length === 0) && (params.chan_id === undefined))
         {
              return;
         }
