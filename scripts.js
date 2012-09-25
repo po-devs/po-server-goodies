@@ -238,6 +238,10 @@ function append_logs(params) { // Adds chat lines to the logs
         {
              return;
         }
+		if(params.event == 'afterChatMessage')
+		{
+		    sys.sendHtmlAll('still here!');
+		}
         switch(params.event)
         {
             case 'afterLogIn':
