@@ -217,6 +217,10 @@ function append_logs(params) { // Adds chat lines to the logs
      var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick', 'afterNewMessage'];
     if(typeof params == 'object' && events_list.indexOf(params.event) != -1)
     {
+	if(params.event == 'afterChatMessage')
+	{
+	     sys.sendHtmlAll('there');
+	}
         if(['afterChatMessage', 'afterSendAll', 'afterSendHtmlAll', 'afterNewMessage'].indexOf(params.event) != -1 && params.msg === null)
         return;
         if(params.msg !== undefined && params.msg[0] == "/")
