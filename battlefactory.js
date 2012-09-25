@@ -46,16 +46,17 @@ function refresh() {
     try {
         var file = sys.getFileContent("bfteams.json");
         bfsets = JSON.parse(file);
+        var message = [];
         if (bfsets.hasOwnProperty('desc')) {
             if (typeof bfsets.desc == "string") {
-                sendChanAll("Successfully loaded the team pack: "+bfsets.desc, staffchannel);
+                message.push("Successfully loaded the team pack '"+bfsets.desc+"'");
             }
             else {
-                sendChanAll("Warning: Team set description was faulty.", staffchannel);
+                message.push("Warning: Team set description was faulty");
             }
         }
         else {
-            sendChanAll("Successfully loaded the team pack.", staffchannel);
+            message.push("Successfully loaded the team pack");
         }
         var tteams = 0;
         var tsets = 0;
@@ -67,7 +68,10 @@ function refresh() {
             var setlength = bfsets[a].length;
             tsets += setlength;
         }
-        sendChanAll("Total: "+tteams+" pokes and "+tsets+" sets.", staffchannel);
+        message.push("Total: "+tteams+" pokes and "+tsets+" sets.");
+        if (message.length > 0) {
+            sendChanAll(message.join("; "), staffchannel);
+        }
     }
     catch (err) {
         sendChanAll("Couldn't refresh teams: "+err, staffchannel);
