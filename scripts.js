@@ -230,10 +230,10 @@ function append_logs(params) { // Adds chat lines to the logs
                 return;
             }
         }
-		if(params.channels === undefined || params.channels.length == 0)
-		{
-		     return;
-		}
+        if(params.channels === undefined || params.channels.length === 0)
+        {
+             return;
+        }
         switch(params.event)
         {
             case 'afterLogIn':
@@ -400,7 +400,7 @@ function get_players_channels(ids) { // List of the channels names that the play
     }
     for(var x in chans)
     {
-        if(chans_names.indexOf(sys.channel(chans[x])) == -1 && stalkedChans().indexOf(sys.channel(chans[x]).toLowerCase()) != -1 && sys.channel(chans[x]) != undefined)
+        if(chans_names.indexOf(sys.channel(chans[x])) == -1 && stalkedChans().indexOf(sys.channel(chans[x]).toLowerCase()) != -1 && sys.channel(chans[x]) !== undefined)
         {
             chans_names.push(sys.channel(chans[x]));
         }
@@ -462,15 +462,15 @@ function stalkedChansCaps() {
 
 function inStalkedChans(channels) {
     var stalked = [];
-	channels = channels.join(':').toLowerCase().split(':');
-	var stalked_chans = stalkedChansCaps();
-	for(var x in stalked_chans)
-	{
-	     if(channels.indexOf(stalked_chans[x].toLowerCase()) != -1)
-		 {
-		     stalked.push(stalked_chans[x]);
-		 }
-	}
+    channels = channels.join(':').toLowerCase().split(':');
+    var stalked_chans = stalkedChansCaps();
+    for(var x in stalked_chans)
+    {
+         if(channels.indexOf(stalked_chans[x].toLowerCase()) != -1)
+         {
+             stalked.push(stalked_chans[x]);
+         }
+    }
     return stalked;
 }
 
