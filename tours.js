@@ -660,7 +660,7 @@ function clauseCheck(tier, issuedClauses) {
         var denom = Math.pow(2,c+1)
         var num = Math.pow(2,c)
         // don't check for disallow spects in non CC tiers , it's checked manually
-        if (c == 2 && ["Challenge Cup", "CC 1v1", "Wifi CC 1v1"].indexOf(tier) == -1) {
+        if (c == 2 && ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Battle Factory"].indexOf(tier) == -1) {
             continue;
         }
         if (requiredClauses%denom >= num) {
