@@ -7,7 +7,7 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.55";
+var bfversion = "0.56";
 var bfsets;
 
 function initFactory() {
@@ -48,9 +48,26 @@ function refresh() {
         bfsets = JSON.parse(file);
         if (bfsets.hasOwnProperty('desc')) {
             if (typeof bfsets.desc == "string") {
-                sendChanAll("Successfully loaded the set pack: "+bfsets.desc, staffchannel);
+                sendChanAll("Successfully loaded the team pack: "+bfsets.desc, staffchannel);
+            }
+            else {
+                sendChanAll("Warning: Team set description was faulty.", staffchannel);
             }
         }
+        else {
+            sendChanAll("Successfully loaded the team pack.", staffchannel);
+        }
+        var tteams = 0;
+        var tsets = 0;
+        for (var a in bfsets) {
+            if (typeof bfsets[a] != "object") {
+                continue;
+            }
+            tteams += 1;
+            var setlength = bfsets[a].length;
+            tsets += setlength;
+        }
+        sendChanAll("Total: "+tteams+" pokes and "+tsets+" sets.", staffchannel);
     }
     catch (err) {
         sendChanAll("Couldn't refresh teams: "+err, staffchannel);
