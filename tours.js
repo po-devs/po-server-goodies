@@ -21,6 +21,7 @@ if (typeof tours !== "object") {
 }
 
 var utilities = require('utilities.js');
+var bfactory = require('battlefactory.js');
 var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
 var htmlborder = "<font color=#3DAA68><b>"+border+"</b></font>";
 // Event tournaments highlighted in red
@@ -660,7 +661,7 @@ function clauseCheck(tier, issuedClauses) {
         var denom = Math.pow(2,c+1)
         var num = Math.pow(2,c)
         // don't check for disallow spects in non CC tiers , it's checked manually
-        if (c == 2 && ["Challenge Cup", "CC 1v1", "Wifi CC 1v1"].indexOf(tier) == -1) {
+        if (c == 2 && ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Battle Factory"].indexOf(tier) == -1) {
             continue;
         }
         if (requiredClauses%denom >= num) {
@@ -821,7 +822,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "1.712",
+            version: "1.713",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -866,7 +867,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "1.712",
+        version: "1.713",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1789,7 +1790,7 @@ function tourCommand(src, command, commandData) {
                         isSignups = true;
                     }
                 }
-                var detiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers"];
+                var detiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers", "Battle Factory"];
                 var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"];
                 var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": detiers.indexOf(tourtier) == -1 ? "single" : "double", "maxplayers": false};
                 if (data.length > 1) {
@@ -3904,6 +3905,9 @@ function tourstart(tier, starter, key, parameters) {
             sendChanHtmlAll("<timestamp/> A <b><a href='http://wiki.pokemon-online.eu/view/"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> "+(tours.tour[key].maxplayers === "default" ? "tournament" : "event")+" has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x])
             sendChanAll("CLAUSES: "+getTourClauses(tier),channels[x])
             sendChanAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : ""), channels[x])
+            if (tier == "Battle Factory") {
+                sendChanAll("VERSION: "+bfactory.getVersion("team"),channels[x]);
+            }
             if (channels[x] == tourschan) {
                 sendChanHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, "+(tours.tour[key].maxplayers === "default" ? "you have "+time_handle(tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!"), channels[x])
             }
@@ -4529,7 +4533,7 @@ function awardTourPoints(player, size, tier, delim, place, event) {
     }
     var tiers_a = []
     var tiers_b = [] // default
-    var tiers_c = ["Monotype"]
+    var tiers_c = ["Monotype", "Battle Factory"]
     var tiers_d = ["Challenge Cup"]
     var tiers_e = ["Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers"]
     var tiers_f = ["CC 1v1"]

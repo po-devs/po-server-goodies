@@ -165,7 +165,8 @@ var nonFlashing = utilities.non_flashing;
 
 function get_timestamp() { // UTC timestamp(seconds)
     var date = new Date();
-    return Math.floor((date.getTime()+(date.getTimezoneOffset()*60000))/1000);
+	//Math.floor((date.getTime()+(date.getTimezoneOffset()*60000))/1000);
+    return Math.floor(date.getTime()/1000);
 }
 
 function update_web_logs() {
@@ -230,7 +231,7 @@ function append_logs(params) { // Adds chat lines to the logs
                 return;
             }
         }
-        if(params.channels === undefined || params.channels.length === 0)
+        if((params.channels === undefined || params.channels.length === 0) && (params.chan_id === undefined))
         {
              return;
         }
