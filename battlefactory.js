@@ -7,7 +7,7 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.54";
+var bfversion = "0.55";
 var bfsets;
 
 function initFactory() {
@@ -46,6 +46,11 @@ function refresh() {
     try {
         var file = sys.getFileContent("bfteams.json");
         bfsets = JSON.parse(file);
+        if (bfsets.hasOwnProperty('desc')) {
+            if (typeof bfsets.desc == "string") {
+                sendChanAll("Successfully loaded the set pack: "+bfsets.desc, staffchannel);
+            }
+        }
     }
     catch (err) {
         sendChanAll("Couldn't refresh teams: "+err, staffchannel);
@@ -238,12 +243,21 @@ function factoryCommand(src, command, commandData) {
         return;
     }
     if (command == "pokeslist") {
-        var tfile = JSON.parse(sys.getFileContent("bfteams.json"));
+        var tfile = bfsets;
+        var tteams = 0;
+        var tsets = 0;
         for (var t in tfile) {
+            if (typeof tfile[t] != "object") {
+                continue;
+            }
             var poke = sys.pokemon(parseInt(t, 10));
+            tteams += 1;
             var setlength = tfile[t].length;
+            tsets += setlength;
             normalbot.sendChanMessage(src, poke+": Has "+setlength+" sets.");
         }
+        normalbot.sendChanMessage(src, "");
+        normalbot.sendChanMessage(src, "Total: "+tteams+" pokes and "+tsets+" sets.");
         return;
     }
     if (command == "pokecode") {
@@ -329,7 +343,9 @@ function generateTeam(src, team) {
         var teaminfo = [];
         var pokearray = [];
         for (var x in pokedata) {
-            pokearray.push(x);
+            if (typeof pokedata[x] == "object") {
+                pokearray.push(x);
+            }
         }
         for (var p=0;p<6;p++) {
             if (pokearray.length === 0) {
