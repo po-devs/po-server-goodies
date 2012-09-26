@@ -7,7 +7,7 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.70";
+var bfversion = "0.71";
 var bfsets, pokedb;
 
 function initFactory() {
@@ -490,8 +490,7 @@ function getStats(src, team, poke) {
             statlist.push(newstat+" "+stats[s]);
         }
     }
-    var msg = [info.poke+" "+info.gender+"@ "+info.item];
-    msg.push("Ability: "+info.ability, info.nature+" Nature, Level "+info.level);
+    var msg = [info.poke+" "+info.gender+"@ "+info.item+"; Ability: "+info.ability+"; "+info.nature+" Nature; Level "+info.level];
     msg.push(info.moves.join(" / "),"Stats: "+statlist.join(" / "));
     return msg;
 }
