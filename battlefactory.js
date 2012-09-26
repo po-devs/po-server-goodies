@@ -63,8 +63,10 @@ function dumpData(tar, team) {
     for (var b=0;b<6;b++) {
         sets.push(getStats(tar, team, b).join("<br/>"));
     }
-    if (sets.length > 0) {
-        sys.sendHtmlMessage(tar, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>");
+    var chans = sys.channelsOfPlayer(tar);
+    if (sets.length > 0 && chans.length > 0) {
+        var sendchannel = sys.isInChannel(tar, 0) ? 0 : chans[0];
+        sys.sendHtmlMessage(tar, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>",0);
     }
     return;
 }
