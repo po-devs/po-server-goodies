@@ -7,7 +7,7 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.56";
+var bfversion = "0.57";
 var bfsets;
 
 function initFactory() {
@@ -442,7 +442,7 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (sys.auth(source) > 2 || (sys.name(source) === 'Aerith' && sys.auth(source) >= 1)) {
+        if ((sys.auth(source) > 2 || (sys.name(source) === 'Aerith' && sys.auth(source) >= 1)) || command == "pokeslist") {
             if (factoryCommand(source, command, commandData) != 'no command') {
                 return true;
             }
