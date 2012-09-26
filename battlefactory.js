@@ -421,7 +421,6 @@ function generateTeam(src, team) {
             sys.changePokeLevel(src,team,s,pdata.level);
         }
         sys.updatePlayer(src);
-        normalbot.sendChanMessage(src, "Made a new Battle Factory team.");
         return;
     }
     catch (err) {
