@@ -2436,8 +2436,8 @@ function tourCommand(src, command, commandData) {
                         sendBotMessage(src,"Current Value: "+tourconfig.minpercent+"%",tourschan,false);
                         return true;
                     }
-                    else if (value < 1 || value > 30) {
-                        sendBotMessage(src,"Value must be between 1 and 30.",tourschan,false);
+                    else if (value < 0 || value > 30) {
+                        sendBotMessage(src,"Value must be between 0 and 30.",tourschan,false);
                         return true;
                     }
                     tourconfig.minpercent = value
