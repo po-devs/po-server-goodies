@@ -439,7 +439,7 @@ function getStats(src, team, poke) {
         var dv = sys.teamPokeDV(src, team, poke, d);
         dvlist.push(dv);
     }
-    var genders = ["", "(M) ", "(F) "]
+    var genders = ["", "(M) ", "(F) "];
     var info = {
         'poke': sys.pokemon(sys.teamPoke(src,team,poke)),
         'species': sys.pokemon(sys.teamPoke(src,team,poke)%65536),
@@ -490,7 +490,8 @@ function getStats(src, team, poke) {
             statlist.push(newstat+" "+stats[s]);
         }
     }
-    var msg = [info.poke+" "+info.gender+"@ "+info.item+"; Ability: "+info.ability+"; "+info.nature+" Nature; Level "+info.level];
+    var msg = [];
+    msg.push(info.poke+" "+info.gender+"@ "+info.item+"; Ability: "+info.ability+"; "+info.nature+" Nature; Level "+info.level)
     msg.push(info.moves.join(" / "),"Stats: "+statlist.join(" / "));
     return msg;
 }
