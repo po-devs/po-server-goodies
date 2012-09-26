@@ -53,8 +53,8 @@ function getPokeDb() {
             continue;
         }
         var thepokeid = data[0].split(":");
-        var thepoke = sys.pokemon(parseInt(thepokeid[0]) + 65536*parseInt(thepokeid[1]));
-        pokedb[thepoke] = [parseInt(data[1]), parseInt(data[2]), parseInt(data[3]), parseInt(data[4]), parseInt(data[5]), parseInt(data[6])];
+        var thepoke = sys.pokemon(parseInt(thepokeid[0],10) + 65536*parseInt(thepokeid[1],10));
+        pokedb[thepoke] = [parseInt(data[1],10), parseInt(data[2],10), parseInt(data[3],10), parseInt(data[4],10), parseInt(data[5],10), parseInt(data[6],10)];
     }
 }
 
@@ -416,7 +416,7 @@ function getNature(nature) {
         'Sassy': [4,5],
         'Careful': [4,3],
         'Quirky': [0,0]
-    }
+    };
     return naturetable[nature];
 }
 
