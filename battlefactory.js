@@ -7,8 +7,9 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.71";
+var bfversion = "0.72";
 var bfsets, pokedb;
+var randomgenders = true; // set to false if you want to play with set genders
 
 function initFactory() {
     try {
@@ -55,6 +56,17 @@ function getPokeDb() {
         var thepokeid = data[0].split(":");
         var thepoke = sys.pokemon(parseInt(thepokeid[0],10) + 65536*parseInt(thepokeid[1],10));
         pokedb[thepoke] = [parseInt(data[1],10), parseInt(data[2],10), parseInt(data[3],10), parseInt(data[4],10), parseInt(data[5],10), parseInt(data[6],10)];
+    }
+    var genderlist = sys.getFileContent("db/pokes/gender.txt");
+    var genders = genderlist.split("\n");
+    for (var g in genders) {
+        var gdata = genders[g].split(" ");
+        if (gdata.length != 2) {
+            continue;
+        }
+        var gpokeid = gdata[0].split(":");
+        var gpoke = sys.pokemon(parseInt(gpokeid[0]));
+        pokedb[gpoke].push(parseInt(gdata[1],10));
     }
 }
 
@@ -555,7 +567,20 @@ function generateTeam(src, team) {
             }
             sys.changePokeHappiness(src,team,s,happiness);
             sys.changePokeShine(src, team, s, sys.rand(0,8192) === 0 ? true : false);
-            sys.changePokeGender(src,team,s,pdata.gender);
+            if (pokedb.hasOwnProperty(sys.pokemon(pdata.poke%65536)) && randomgenders) {
+                var pokeinfo = pokedb[sys.pokemon(pdata.poke%65536)];
+                var gendernum = pokeinfo[6];
+                if (gendernum === 3) {
+                    gendernum = sys.rand(1,3);
+                }
+                if ([0,1,2].indexOf(gendernum) == -1) {
+                    throw "Invalid Gender";
+                }
+                sys.changePokeGender(src,team,s,gendernum);
+            }
+            else {
+                sys.changePokeGender(src,team,s,pdata.gender);
+            }
             sys.changePokeLevel(src,team,s,pdata.level);
         }
         sys.updatePlayer(src);
