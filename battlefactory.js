@@ -7,8 +7,8 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.72";
-var bfsets, pokedb;
+var bfversion = "0.73";
+var bfsets, pokedb, working;
 var randomgenders = true; // set to false if you want to play with set genders
 
 function initFactory() {
@@ -42,6 +42,7 @@ function initFactory() {
         throw e;
     }
     sendChanAll("Version "+bfversion+" of the Battle Factory loaded successfully!", staffchannel);
+    working = true;
 }
 
 function getPokeDb() {
@@ -474,7 +475,7 @@ function getStats(src, team, poke) {
         pokeinfo = pokedb[info.species];
     }
     else {
-        throw "UNHANDLED EXCEPTION";
+        throw "UNHANDLED EXCEPTION: Pokeinfo not found";
     }
     for (var s=0; s<6; s++) {
         var natureboost = getNature(info.nature);
@@ -588,7 +589,7 @@ function generateTeam(src, team) {
     }
     catch (err) {
         normalbot.sendMessage(src, "Team file was empty or corrupt, could not generate a team. Please report this issue on forums. [Error: "+err+"]");
-        return;
+        throw "Corrupt Team File: "+err;
     }
 }
 
@@ -609,7 +610,7 @@ module.exports = {
                 return true;
             }
         }
-        return;
+        return false;
     },
     init: function() {
         try {
@@ -617,19 +618,38 @@ module.exports = {
         }
         catch (err) {
             sendChanAll("Error in starting battle factory: "+err, staffchannel);
+            working = false;
         }
     },
+    beforeChallengeIssued : function(source, dest, clauses, rated, mode, team, destTier) {
+        if (sys.tier(source, team) == "Battle Factory" && destTier == "Battle Factory" && !working) {
+            sys.sendMessage(source, "Battle Factory is not working, so you can't issue challenges in that tier.");
+            return true;
+        }
+        return false;
+    },
     afterChangeTier: function(src, team, newtier) { // This shouldn't be needed, but it's here in case
+        if (!working) {
+            sys.sendMessage(src, "Battle Factory is not working, so you can't move into that tier. (Your team is now in Challenge Cup.)");
+            sys.changeTier(src, team, "Challenge Cup");
+            return true;
+        }
         if (newtier == "Battle Factory") {
             generateTeam(src, team);
         }
     },
     beforeBattleStarted: function(src, dest, srcteam, destteam) {
         if (sys.tier(src, srcteam) == "Battle Factory" && sys.tier(dest, destteam) == "Battle Factory") {
-            generateTeam(src, srcteam);
-            generateTeam(dest, destteam);
-            dumpData(src, srcteam);
-            dumpData(dest, destteam);
+            try {
+                generateTeam(src, srcteam);
+                generateTeam(dest, destteam);
+                dumpData(src, srcteam);
+                dumpData(dest, destteam);
+            }
+            catch (err) {
+                working = false;
+                sendChanAll("Error in generating teams: "+err, staffchannel);
+            }
         }
     },
     onHelp: function(src, topic, channel) {
