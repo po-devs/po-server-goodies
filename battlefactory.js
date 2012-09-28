@@ -7,7 +7,7 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.73";
+var bfversion = "0.74";
 var bfsets, pokedb, working;
 var randomgenders = true; // set to false if you want to play with set genders
 
@@ -79,7 +79,7 @@ function dumpData(tar, team) {
     var chans = sys.channelsOfPlayer(tar);
     if (sets.length > 0 && chans.length > 0) {
         var sendchannel = sys.isInChannel(tar, 0) ? 0 : chans[0];
-        sys.sendHtmlMessage(tar, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>",0);
+        sys.sendHtmlMessage(tar, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>",sendchannel);
     }
     return;
 }
