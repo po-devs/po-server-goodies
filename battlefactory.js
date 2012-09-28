@@ -7,8 +7,9 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.56";
-var bfsets;
+var bfversion = "0.75";
+var bfsets, pokedb, working;
+var randomgenders = true; // set to false if you want to play with set genders
 
 function initFactory() {
     try {
@@ -35,11 +36,52 @@ function initFactory() {
             });
         }
         bfsets = JSON.parse(file);
+        getPokeDb();
     }
     catch (e) {
         throw e;
     }
     sendChanAll("Version "+bfversion+" of the Battle Factory loaded successfully!", staffchannel);
+    working = true;
+}
+
+function getPokeDb() {
+    var pokelist = sys.getFileContent("db/pokes/stats.txt");
+    var pokes = pokelist.split("\n");
+    pokedb = {};
+    for (var x in pokes) {
+        var data = pokes[x].split(" ");
+        if (data.length != 7) {
+            continue;
+        }
+        var thepokeid = data[0].split(":");
+        var thepoke = sys.pokemon(parseInt(thepokeid[0],10) + 65536*parseInt(thepokeid[1],10));
+        pokedb[thepoke] = [parseInt(data[1],10), parseInt(data[2],10), parseInt(data[3],10), parseInt(data[4],10), parseInt(data[5],10), parseInt(data[6],10)];
+    }
+    var genderlist = sys.getFileContent("db/pokes/gender.txt");
+    var genders = genderlist.split("\n");
+    for (var g in genders) {
+        var gdata = genders[g].split(" ");
+        if (gdata.length != 2) {
+            continue;
+        }
+        var gpokeid = gdata[0].split(":");
+        var gpoke = sys.pokemon(parseInt(gpokeid[0]));
+        pokedb[gpoke].push(parseInt(gdata[1],10));
+    }
+}
+
+function dumpData(tar, team) {
+    var sets = [];
+    for (var b=0;b<6;b++) {
+        sets.push(getStats(tar, team, b).join("<br/>"));
+    }
+    var chans = sys.channelsOfPlayer(tar);
+    if (sets.length > 0 && chans.length > 0) {
+        var sendchannel = sys.isInChannel(tar, 0) ? 0 : chans[0];
+        sys.sendHtmlMessage(tar, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>",sendchannel);
+    }
+    return;
 }
 
 function refresh() {
@@ -358,6 +400,115 @@ function getReadablePoke(set) {
     return msg;
 }
 
+
+// Gets stat boost/drop of natures
+// 1=Atk, 2=Def, 3=SpA, 4=SpD, 5=Spe
+// reutnrs [up, down] or "";
+function getNature(nature) {
+    var naturetable = {
+        'Hardy': [0,0],
+        'Lonely': [1,2],
+        'Brave': [1,5],
+        'Adamant': [1,3],
+        'Naughty': [1,4],
+        'Bold': [2,1],
+        'Docile': [0,0],
+        'Relaxed': [2,5],
+        'Impish': [2,3],
+        'Lax': [2,4],
+        'Timid': [5,1],
+        'Hasty': [5,2],
+        'Serious': [0,0],
+        'Jolly': [5,3],
+        'Naive': [5,4],
+        'Modest': [3,1],
+        'Mild': [3,2],
+        'Quiet': [3,5],
+        'Bashful': [0,0],
+        'Rash': [3,4],
+        'Calm': [4,1],
+        'Gentle': [4,2],
+        'Sassy': [4,5],
+        'Careful': [4,3],
+        'Quirky': [0,0]
+    };
+    return naturetable[nature];
+}
+
+// This gets the stats for a Pokemon
+function getStats(src, team, poke) {
+    var movelist = [];
+    for (var m=0; m<4; m++) {
+        var move = sys.teamPokeMove(src, team, poke, m);
+        movelist.push(sys.move(move));
+    }
+    var evlist = [];
+    for (var e=0; e<6; e++) {
+        var ev = sys.teamPokeEV(src, team, poke, e);
+        evlist.push(ev);
+    }
+    var dvlist = [];
+    for (var d=0; d<6; d++) {
+        var dv = sys.teamPokeDV(src, team, poke, d);
+        dvlist.push(dv);
+    }
+    var genders = ["", "(M) ", "(F) "];
+    var info = {
+        'poke': sys.pokemon(sys.teamPoke(src,team,poke)),
+        'species': sys.pokemon(sys.teamPoke(src,team,poke)%65536),
+        'nature': sys.nature(sys.teamPokeNature(src,team,poke)),
+        'ability': sys.ability(sys.teamPokeAbility(src,team,poke)),
+        'item': sys.item(sys.teamPokeItem(src,team,poke)),
+        'level': sys.teamPokeLevel(src,team,poke),
+        'moves': movelist,
+        'evs': evlist,
+        'dvs': dvlist,
+        'gender': genders[sys.teamPokeGender(src,team,poke)]
+    };
+    var stats = ["HP", "Attack", "Defense", "Sp.Atk", "Sp.Def", "Speed"];
+    var statlist = [];
+    var pokeinfo = [];
+    if (pokedb.hasOwnProperty(info.poke)) {
+        pokeinfo = pokedb[info.poke];
+    }
+    else if (pokedb.hasOwnProperty(info.species)) {
+        pokeinfo = pokedb[info.species];
+    }
+    else {
+        throw "UNHANDLED EXCEPTION: Pokeinfo not found";
+    }
+    for (var s=0; s<6; s++) {
+        var natureboost = getNature(info.nature);
+        if (s === 0) { // HP Stat
+            if (pokeinfo[s] == 1) { // Shedinja
+                statlist.push("1 HP");
+            }
+            else {
+                var hstat = 10 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4+100)*info.level/100);
+                statlist.push(hstat+" HP");
+            }
+        }
+        else {
+            var bstat = 5 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4)*info.level/100);
+            var newstat = 0;
+            if (natureboost[0] === s) {
+                newstat = Math.floor(bstat*1.1);
+            }
+            else if (natureboost[1] === s) {
+                newstat = Math.floor(bstat*0.9);
+            }
+            else {
+                newstat = bstat;
+            }
+            statlist.push(newstat+" "+stats[s]);
+        }
+    }
+    var msg = [];
+    msg.push(info.poke+" "+info.gender+"@ "+info.item+"; Ability: "+info.ability+"; "+info.nature+" Nature; Level "+info.level)
+    msg.push(info.moves.join(" / "),"Stats: "+statlist.join(" / "));
+    return msg;
+}
+
 function generateTeam(src, team) {
     try {
         var pokedata = bfsets;
@@ -409,26 +560,37 @@ function generateTeam(src, team) {
             }
             var happiness = sys.rand(0,256);
             // maximise happiness if the poke has Return, minmise if it has frustration
-            if (sys.hasTeamPokeMove(src, team, x, sys.moveNum('Return'))) {
+            if (sys.hasTeamPokeMove(src, team, s, sys.moveNum('Return'))) {
                 happiness = 255;
             }
-            else if (sys.hasTeamPokeMove(src, team, x, sys.moveNum('Frustration'))) {
+            else if (sys.hasTeamPokeMove(src, team, s, sys.moveNum('Frustration'))) {
                 happiness = 0;
             }
             sys.changePokeHappiness(src,team,s,happiness);
             sys.changePokeShine(src, team, s, sys.rand(0,8192) === 0 ? true : false);
-            sys.changePokeGender(src,team,s,pdata.gender);
+            if (pokedb.hasOwnProperty(sys.pokemon(pdata.poke%65536)) && randomgenders) {
+                var pokeinfo = pokedb[sys.pokemon(pdata.poke%65536)];
+                var gendernum = pokeinfo[6];
+                if (gendernum === 3) {
+                    gendernum = sys.rand(1,3);
+                }
+                if ([0,1,2].indexOf(gendernum) == -1) {
+                    throw "Invalid Gender";
+                }
+                sys.changePokeGender(src,team,s,gendernum);
+            }
+            else {
+                sys.changePokeGender(src,team,s,pdata.gender);
+            }
             sys.changePokeLevel(src,team,s,pdata.level);
         }
         sys.updatePlayer(src);
-        normalbot.sendChanMessage(src, "Made a new Battle Factory team.");
         return;
     }
     catch (err) {
-        normalbot.sendChanMessage(src, "Team file was empty or corrupt, could not generate a team. Please report this issue on forums.");
-        return;
+        normalbot.sendMessage(src, "Team file was empty or corrupt, could not generate a team. Please report this issue on forums. [Error: "+err+"]");
+        throw "Corrupt Team File: "+err;
     }
-
 }
 
 module.exports = {
@@ -443,12 +605,12 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (sys.auth(source) > 2 || (sys.name(source) === 'Aerith' && sys.auth(source) >= 1)) {
+        if ((sys.auth(source) > 2 || (sys.name(source) === 'Aerith' && sys.auth(source) >= 1)) || command == "pokeslist") {
             if (factoryCommand(source, command, commandData) != 'no command') {
                 return true;
             }
         }
-        return;
+        return false;
     },
     init: function() {
         try {
@@ -456,17 +618,38 @@ module.exports = {
         }
         catch (err) {
             sendChanAll("Error in starting battle factory: "+err, staffchannel);
+            working = false;
         }
     },
+    beforeChallengeIssued : function(source, dest, clauses, rated, mode, team, destTier) {
+        if (sys.tier(source, team) == "Battle Factory" && destTier == "Battle Factory" && !working) {
+            sys.sendMessage(source, "Battle Factory is not working, so you can't issue challenges in that tier.");
+            return true;
+        }
+        return false;
+    },
     afterChangeTier: function(src, team, newtier) { // This shouldn't be needed, but it's here in case
+        if (!working) {
+            sys.sendMessage(src, "Battle Factory is not working, so you can't move into that tier. (Your team is now in Challenge Cup.)");
+            sys.changeTier(src, team, "Challenge Cup");
+            return true;
+        }
         if (newtier == "Battle Factory") {
             generateTeam(src, team);
         }
     },
     beforeBattleStarted: function(src, dest, srcteam, destteam) {
         if (sys.tier(src, srcteam) == "Battle Factory" && sys.tier(dest, destteam) == "Battle Factory") {
-            generateTeam(src, srcteam);
-            generateTeam(dest, destteam);
+            try {
+                generateTeam(src, srcteam);
+                generateTeam(dest, destteam);
+                dumpData(src, srcteam);
+                dumpData(dest, destteam);
+            }
+            catch (err) {
+                working = false;
+                sendChanAll("Error in generating teams: "+err, staffchannel);
+            }
         }
     },
     onHelp: function(src, topic, channel) {

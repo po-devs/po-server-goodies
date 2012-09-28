@@ -1790,7 +1790,7 @@ function tourCommand(src, command, commandData) {
                         isSignups = true;
                     }
                 }
-                var detiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers", "Battle Factory"];
+                var detiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers"];
                 var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"];
                 var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": detiers.indexOf(tourtier) == -1 ? "single" : "double", "maxplayers": false};
                 if (data.length > 1) {
@@ -2436,8 +2436,8 @@ function tourCommand(src, command, commandData) {
                         sendBotMessage(src,"Current Value: "+tourconfig.minpercent+"%",tourschan,false);
                         return true;
                     }
-                    else if (value < 1 || value > 30) {
-                        sendBotMessage(src,"Value must be between 1 and 30.",tourschan,false);
+                    else if (value < 0 || value > 30) {
+                        sendBotMessage(src,"Value must be between 0 and 30.",tourschan,false);
                         return true;
                     }
                     tourconfig.minpercent = value
