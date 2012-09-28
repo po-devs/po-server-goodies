@@ -7,7 +7,7 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.74";
+var bfversion = "0.75";
 var bfsets, pokedb, working;
 var randomgenders = true; // set to false if you want to play with set genders
 
@@ -560,10 +560,10 @@ function generateTeam(src, team) {
             }
             var happiness = sys.rand(0,256);
             // maximise happiness if the poke has Return, minmise if it has frustration
-            if (sys.hasTeamPokeMove(src, team, x, sys.moveNum('Return'))) {
+            if (sys.hasTeamPokeMove(src, team, s, sys.moveNum('Return'))) {
                 happiness = 255;
             }
-            else if (sys.hasTeamPokeMove(src, team, x, sys.moveNum('Frustration'))) {
+            else if (sys.hasTeamPokeMove(src, team, s, sys.moveNum('Frustration'))) {
                 happiness = 0;
             }
             sys.changePokeHappiness(src,team,s,happiness);
