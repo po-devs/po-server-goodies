@@ -17,7 +17,7 @@ var Config = {
     commandbot: "CommandBot",
     querybot: "QueryBot",
     // suspectvoting.js available, but not in use
-    Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js", "trivia.js", "tours.js", "auto_smute.js", "battlefactory.js"],
+    Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js", "trivia.js", "tours.js", "auto_smute.js", "battlefactory.js", "hangman.js"],
     Mafia: {
         bot: "Murkrow",
         norepeat: 11,
