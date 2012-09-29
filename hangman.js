@@ -384,7 +384,7 @@ module.exports = function () {
             } else {
                 command = message.substr(0).toLowerCase();
             }
-            if (command !== "help" && !SESSION.channels(triviachan).canTalk(src)) {
+            if (command !== "help" && !SESSION.channels(hangchan).canTalk(src)) {
                 sys.sendMessage(src, "Cannot play when cmuted");
                 return;
             }
