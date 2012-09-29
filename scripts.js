@@ -141,6 +141,7 @@ cleanFile("rangebans.txt");
 cleanFile("contributors.txt");
 cleanFile("pastebin_user_key");
 cleanFile("secretsmute.txt");
+cleanFile("ipApi.txt");
 
 var autosmute = sys.getFileContent("secretsmute.txt").split(':::');
 var crc32 = require('crc32.js').crc32;
@@ -213,6 +214,28 @@ function printObject(o) {
   sys.sendAll(out);
 }
 
+function ipInfo(ip){
+    var ipApi = sys.getFileContent('ipApi.txt'), string, countryName, countryTag, regionName, cityName, resp;
+    if (ipApi === undefined) {
+        return "";
+    }
+    resp = JSON.parse(sys.synchronousWebCall('http://api.ipinfodb.com/v3/ip-city/?key=' + ipApi + '&ip='+ ip + '&format=JSON'));
+    countryName = resp.countryName;
+    countryTag =  resp.countryCode;
+    regionName = resp.regionName;
+    cityName = resp.cityName;
+    string = "";
+    if (countryName !== "" && countryName !== "-") {
+        string += "Country: " + countryName + " (" + countryTag + "), ";
+    }
+    if (regionName !== "" && regionName !== "-") {
+        string += "Region: " + regionName + ", ";
+    }
+    if(cityName !== "" && cityName !== "-"){
+        string += "City: " + cityName;
+    }
+    return string;
+}
 function append_logs(params) { // Adds chat lines to the logs
      var timestamp_regex = new RegExp("^[0-9]{0,10}$");
      var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick', 'afterNewMessage'];
@@ -3828,7 +3851,8 @@ modCommand: function(src, command, commandData, tar) {
                "Online: " + (online ? "yes" : "no"),
                "Registered name: " + (registered ? "yes" : "no"),
                "Last Login: " + (online && logintime ? new Date(logintime*1000).toUTCString() : lastLogin),
-                bans.length > 0 ? "Bans: " + bans.join(", ") : "Bans: none"
+                bans.length > 0 ? "Bans: " + bans.join(", ") : "Bans: none",
+                "IP Details: " + (ipInfo(ip) !== "" ? ipInfo(ip) : "None Available")
             ];
             if (online) {
                 if (SESSION.users(tar).hostname != ip)
