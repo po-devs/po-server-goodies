@@ -1792,7 +1792,7 @@ function tourCommand(src, command, commandData) {
                         selftours += 1;
                     }
                 }
-                if (selftours > 3 && !isTourSuperAdmin(src)) {
+                if (selftours >= 3 && !isTourSuperAdmin(src)) {
                     sendBotMessage(src, "You already have 3 of your own tournaments in the queue, so you can't add anymore!", tourschan, false)
                     return true;
                 }
