@@ -384,10 +384,6 @@ module.exports = function () {
             } else {
                 command = message.substr(0).toLowerCase();
             }
-            if (command !== "help" && !SESSION.channels(hangchan).canTalk(src)) {
-                sys.sendMessage(src, "Cannot play when cmuted");
-                return;
-            }
             if (command in hangman.commands.user) {
                 hangman.commands.user[command][0].call(hangman, src, commandData);
                 return true;
