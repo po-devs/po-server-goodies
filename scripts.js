@@ -3774,6 +3774,7 @@ modCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "userinfo" || command == "whois" || command == "whoistxt") {
+        var bindChannel = channel;
         if (commandData === undefined) {
             querybot.sendChanMessage(src, "Please provide a username.");
             return;
@@ -3868,7 +3869,7 @@ modCommand: function(src, command, commandData, tar) {
                }
             }
             for (var j = 0; j < data.length; ++j) {
-                sendChanMessage(src, data[j]);
+                sys.sendMessage(src, data[j], bindChannel);
             }
         }
 
