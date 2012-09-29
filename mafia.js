@@ -356,6 +356,7 @@ function Mafia(mafiachan) {
             theme.nolynch = plain_theme.nolynch;
             theme.ticks = plain_theme.ticks;
             theme.votesniping = plain_theme.votesniping;
+            theme.silentVote = plain_theme.silentVote;
             theme.name = plain_theme.name;
             theme.author = plain_theme.author;
             theme.summary = plain_theme.summary;
@@ -1850,7 +1851,7 @@ function Mafia(mafiachan) {
                 names = mafia.getPlayersForRole(o.role);
                 var command = o.action;
                 var Action = mafia.theme.roles[o.role].actions.night[o.action];
-                var commandList = []
+                var commandList = [];
                 if ("command" in Action) {
                     if (Array.isArray(Action.command)) {
                         commandList = Action.command;
@@ -1858,7 +1859,7 @@ function Mafia(mafiachan) {
                         commandList.push(randomSample(Action.command));
                     } else if (typeof Action.command == "string") {
                         commandList.push(Action.command);
-                    } 
+                    }
                 } else {
                     commandList.push(o.action);
                 }
@@ -2234,7 +2235,7 @@ function Mafia(mafiachan) {
                             nightkill = true;
                             continue;
                         }
-                    } 
+                    }
                 }
             }
             // decrease counters
@@ -2372,7 +2373,7 @@ function Mafia(mafiachan) {
                         voted[target] += vote;
                     } else {
                         voted[target] += sys.rand(vote[0], vote[1]);
-                    }                
+                    }
                 } else {
                     voted[target] += 1;
                 }
@@ -3621,6 +3622,7 @@ return;
         } else if (this.state == "day") {
             if (this.isInGame(sys.name(src)) && command == "vote") {
                 commandData = this.correctCase(commandData);
+                var silentVote = mafia.theme.silentVote;
                 if (!this.isInGame(commandData)) {
                     sys.sendMessage(src, "±Game: That person is not playing!", mafiachan);
                     return;
@@ -3629,7 +3631,12 @@ return;
                     sys.sendMessage(src, "±Rule: You already voted!", mafiachan);
                     return;
                 }
-                sendChanAll("±Game:" + sys.name(src) + " voted for " + commandData + "!", mafiachan);
+                if (silentVote !== undefined && silentVote !== false) {
+                    sys.sendMessage(src, "±Game: You voted for " + commandData + "!", mafiachan);
+                    sendChanAll("±Game:" + sys.name(src) + " voted!");
+                } else {
+                    sendChanAll("±Game:" + sys.name(src) + " voted for " + commandData + "!", mafiachan);
+                }
                 this.votes[sys.name(src)] = commandData;
                 this.voteCount += 1;
 
