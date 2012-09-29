@@ -567,7 +567,7 @@ function generateTeam(src, team) {
                 happiness = 0;
             }
             sys.changePokeHappiness(src,team,s,happiness);
-            sys.changePokeShine(src, team, s, sys.rand(0,2) === 0 ? true : false);
+            sys.changePokeShine(src, team, s, sys.rand(0,8192) === 0 ? true : false);
             if (pokedb.hasOwnProperty(sys.pokemon(pdata.poke%65536)) && randomgenders) {
                 var pokeinfo = pokedb[sys.pokemon(pdata.poke%65536)];
                 var gendernum = pokeinfo[6];
