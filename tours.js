@@ -1060,7 +1060,7 @@ function refreshTicks() {
     if (time < 0) { // account for negative time interval
         time += 24*60*60;
     }
-    var frequency = 6*60*60; // every 6 hours
+    var frequency = 60*60; // every 6 hours
     tours.eventticks = time%frequency;
 }
 
@@ -5000,7 +5000,7 @@ function sendWelcomeMessage(src, chan) {
     var datestring = now.getUTCDate()+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
     var details = getEventTour(datestring)
     if (typeof details === "object") {
-        sys.sendMessage(src,"Today's Event Tournament: "+details[0]+" for "+details[1]+" players.",chan)
+        sys.sendMessage(src,"Today's Event Tournament: "+details[0]+(tours.eventticks > 0 ? "; starts in "+time_handle(tours.eventticks) : ""),chan)
     }
     sys.sendMessage(src,"",chan)
     sys.sendMessage(src,"*** Current Tournaments ***",chan)
