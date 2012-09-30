@@ -1943,7 +1943,7 @@ function tourCommand(src, command, commandData) {
                 if (tours.queue.length != 0) {
                     var data = tours.queue.splice(0,1);
                     var tourtostart = data.tier;
-                    var originalstarter = data.starter;
+                    var originalstarter = typeof data.starter == "string" ? data.starter : sys.name(src);
                     var parameters = data.parameters;
                     tourstart(tourtostart, originalstarter, tours.key, parameters);
                     sendBotAll(sys.name(src)+" force started the "+tourtostart+" tournament!",tourschan,false);
