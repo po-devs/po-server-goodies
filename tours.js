@@ -1055,7 +1055,7 @@ function refreshTicks() {
     var time = parseInt(sys.time());
     var now = new Date();
     var tzo = now.getTimezoneOffset();
-    time += 9900; // add 2h 45m
+    time += 2700; // add 45m
     time += tzo*60; // account for GMT
     if (time < 0) { // account for negative time interval
         time += 24*60*60;
