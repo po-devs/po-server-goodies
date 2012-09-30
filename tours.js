@@ -1056,12 +1056,9 @@ function refreshTicks() {
     var now = new Date();
     var tzo = now.getTimezoneOffset();
     time += tzo*60; // account for GMT
-    time -= 2700; // add 45m
-    if (time < 0) { // account for negative time interval
-        time += 24*60*60;
-    }
+    time += 2700; // add 45 mins
     var frequency = 60*60; // every 6 hours
-    tours.eventticks = time%frequency;
+    tours.eventticks = frequency-time%frequency;
 }
 
 /* Tournament Step Event
