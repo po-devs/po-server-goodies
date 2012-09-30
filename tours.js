@@ -1941,10 +1941,11 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 if (tours.queue.length != 0) {
-                    var data = tours.queue.splice(0,1);
+                    var data = tours.queue[0];
                     var tourtostart = data.tier;
-                    var originalstarter = typeof data.starter == "string" ? data.starter : sys.name(src);
+                    var originalstarter = data.starter;
                     var parameters = data.parameters;
+                    tours.queue.splice(0,1);
                     tourstart(tourtostart, originalstarter, tours.key, parameters);
                     sendBotAll(sys.name(src)+" force started the "+tourtostart+" tournament!",tourschan,false);
                     return true;
