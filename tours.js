@@ -832,7 +832,8 @@ function sendAuthPlayers(message,key) {
             var htmlname = html_escape(sys.name(arr[x]));
             var regex = flashtag+htmlname+flashtag;
             var newregex1 = "<font style='BACKGROUND-COLOR: #FFBB00'>"+htmlname+"</font><ping/>";
-            newmessage = message.replace(regex,newregex1).replace(flashtag,"");
+            var flashregex = new RegExp(flashtag,"g");
+            newmessage = message.replace(regex,newregex1).replace(flashregex,"");
             sendBotMessage(arr[x], newmessage, tourschan, true);
         }
     }
@@ -848,7 +849,8 @@ function sendHtmlAuthPlayers(message,key) {
             var htmlname = html_escape(sys.name(arr[x]));
             var regex = flashtag+htmlname+flashtag;
             var newregex1 = "<font style='BACKGROUND-COLOR: #FFAAFF'>"+htmlname+"</font><ping/>";
-            var newmessage = message.replace(regex,newregex1).replace(flashtag,"");
+            var flashregex = new RegExp(flashtag,"g");
+            var newmessage = message.replace(regex,newregex1).replace(flashregex,"");
             sys.sendHtmlMessage(arr[x], newmessage, tourschan);
             if (isInSpecificTour(sys.name(arr[x]),key) && sys.away(arr[x])) {
                 sys.changeAway(arr[x], false);
@@ -869,7 +871,8 @@ function sendFlashingBracket(message,key) {
             var htmlname = html_escape(sys.name(arr[x]));
             var regex = flashtag+htmlname+flashtag;
             var newregex1 = "<font style='BACKGROUND-COLOR: #FFAAFF'>"+htmlname+"</font><ping/>";
-            newmessage = message.replace(regex,newregex1).replace(flashtag,"");
+            var flashregex = new RegExp(flashtag,"g");
+            newmessage = message.replace(regex,newregex1).replace(flashregex,"");
         }
         sys.sendHtmlMessage(arr[x], newmessage, tourschan);
         if (isInSpecificTour(sys.name(arr[x]),key) && sys.away(arr[x])) {
@@ -913,7 +916,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.000a",
+            version: "2.000b",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -958,7 +961,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.000a",
+        version: "2.000b",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -3544,7 +3547,7 @@ function sendReminder(key) {
                 sendBotMessage(sys.id(player), "Your sub will be disqualified in "+time_handle(tours.tour[key].time-parseInt(sys.time())), tourschan, false)
             }
             else if (sys.id(player) !== undefined) {
-                var msg = "<ping/><font color=red><timestamp/> "+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(getFullTourName(key))+"</b> tournament, otherwise you may be disqualified for inactivity! You should talk to your opponent in #"+sys.channel(tourschan)+" to avoid disqualification - if they are not on, post a message in tournaments about it and contact a megauser if necessary.</font>";
+                var msg = "<ping/><font color=red>"+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(getFullTourName(key))+"</b> tournament, otherwise you may be disqualified for inactivity! You should talk to your opponent in #"+sys.channel(tourschan)+" to avoid disqualification - if they are not on, post a message in tournaments about it and contact a megauser if necessary.</font>";
                 if (sys.isInChannel(sys.id(player), tourschan)) {
                     sendBotMessage(sys.id(player), msg, tourschan, true)
                 }
@@ -3622,7 +3625,7 @@ function disqualify(player, key, silent, hard) {
                 tours.tour[key].winners.push(opponent)
                 tours.tour[key].losers.push(player)
                 if (!silent) {
-                    sendAuthPlayers(html_escape(toCorrectCase(opponent))+" advances to the next round of the "+html_escape(getFullTourName(key))+" by default!", key)
+                    sendAuthPlayers(flashtag+html_escape(toCorrectCase(opponent))+flashtag+" advances to the next round of the "+html_escape(getFullTourName(key))+" by default!", key)
                 }
             }
             else {
@@ -3634,7 +3637,7 @@ function disqualify(player, key, silent, hard) {
             tours.tour[key].winners.splice(winnerindex,1,opponent)
             tours.tour[key].losers.splice(tours.tour[key].losers.indexOf(opponent),1,player)
             if (!silent) {
-                sendAuthPlayers(html_escape(toCorrectCase(opponent))+" advances to the next round of the "+html_escape(getFullTourName(key))+" because "+html_escape(toCorrectCase(player))+" was disqualified!", key)
+                sendAuthPlayers(flashtag+html_escape(toCorrectCase(opponent))+flashtag+" advances to the next round of the "+html_escape(getFullTourName(key))+" because "+html_escape(toCorrectCase(player))+" was disqualified!", key)
             }
         }
         var battlesleft = parseInt(tours.tour[key].players.length/2)-tours.tour[key].winners.length
@@ -4037,11 +4040,13 @@ function tourstart(tier, starter, key, parameters) {
             tours.tour[key].maxplayers = parameters.maxplayers;
             tours.tour[key].time = parseInt(sys.time())+10*60; // 10 mins
             tours.tour[key].event = true;
+            tours.tour[key].rankings = [];
         }
         else if (parameters.event) { // triple the signup length for events
             tours.tour[key].time = parseInt(sys.time())+tourconfig.toursignup*3;
             tours.tour[key].maxplayers = "default";
             tours.tour[key].event = true;
+            tours.tour[key].rankings = [];
         }
         else if (typeof parameters.maxplayers === "number") {
             tours.tour[key].maxplayers = parameters.maxplayers;
@@ -5247,6 +5252,11 @@ module.exports = {
     beforeChatMessage : function(src, message, channel) {
         if (isTourMuted(src) && !isTourAdmin(src) && channel === tourschan) {
             sendBotMessage(src,"You are tourmuted by "+tours.tourmutes[sys.ip(src)].auth+". This expires in "+time_handle(tours.tourmutes[sys.ip(src)].expiry-parseInt(sys.time()))+". [Reason: "+tours.tourmutes[sys.ip(src)].reason+"]",tourschan,false)
+            return true;
+        }
+        else if (/f[uo]ck|assh[o0]le|arseh[o0]le|\bpussy\b|\bfck|nigga|\bcunt|pen[i1]s|vag|nigger/i.test(message) && channel === tourschan) {
+            sys.sendMessage(src, sys.name(src)+": "+message, channel);
+            script.afterChatMessage(src, message, channel);
             return true;
         }
         else return false;
