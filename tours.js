@@ -4924,8 +4924,8 @@ function markActive(src, reason) {
 function getListOfTours(num) {
     var list = [];
     for (var x=tours.queue.length-1;x>=0;x--) {
-        var tourdata = tours.queue[x].split(":::",5)
-        list.push(tourdata[0])
+        var tourdata = tours.queue[x];
+        list.push(tourdata.tier)
         if (list.length >= num) {
             return list;
         }
