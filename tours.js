@@ -1056,8 +1056,8 @@ function refreshTicks() {
     var now = new Date();
     var tzo = now.getTimezoneOffset();
     time += tzo*60; // account for GMT
-    time -= 1800;
-    var frequency = 60*60; // every 6 hours
+    time -= 10800; // offset
+    var frequency = 6*60*60; // every 6 hours
     tours.eventticks = frequency-time%frequency;
 }
 
