@@ -1053,10 +1053,7 @@ function getEventTour(datestring) {
 
 function refreshTicks() {
     var time = parseInt(sys.time());
-    var now = new Date();
-    var tzo = now.getTimezoneOffset();
-    time += tzo*60; // account for GMT
-    time -= 10800; // offset
+    time -= 9900; // offset
     var frequency = 6*60*60; // every 6 hours
     tours.eventticks = frequency-time%frequency;
 }
