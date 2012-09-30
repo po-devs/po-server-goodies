@@ -3923,7 +3923,7 @@ function tourstart(tier, starter, key, parameters) {
         tours.tour[key].leader = topSeed(tier); // best seed
         tours.tour[key].event = false;
         tours.globaltime = 0;
-        if (parameters.maxplayers === "number" && !isNaN(parameters.maxplayers) && parameters.event) {
+        if (typeof parameters.maxplayers === "number" && parameters.event) {
             tours.tour[key].maxplayers = parameters.maxplayers;
             tours.tour[key].time = parseInt(sys.time())+10*60; // 10 mins
             tours.tour[key].event = true;
@@ -3933,7 +3933,7 @@ function tourstart(tier, starter, key, parameters) {
             tours.tour[key].maxplayers = "default";
             tours.tour[key].event = true;
         }
-        else if (parameters.maxplayers === "number" && !isNaN(parameters.maxplayers)) {
+        else if (typeof parameters.maxplayers === "number") {
             tours.tour[key].maxplayers = parameters.maxplayers;
             tours.tour[key].time = parseInt(sys.time())+5*60; // 5 mins
         }
