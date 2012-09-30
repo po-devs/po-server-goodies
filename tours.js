@@ -1825,10 +1825,12 @@ function tourCommand(src, command, commandData) {
                 }
                 var cqueue = tours.queue;
                 var selftours = 0;
-                for (var c in cqueue) {
-                    var tmpq = cqueue[c].starter;
-                    if (cmp(tmpq[1], sys.name(src))) {
-                        selftours += 1;
+                if (cqueue.length > 0) {
+                    for (var c in cqueue) {
+                        var tmpq = cqueue[c].starter;
+                        if (cmp(tmpq[1], sys.name(src))) {
+                            selftours += 1;
+                        }
                     }
                 }
                 if (selftours >= 3 && !isTourSuperAdmin(src)) {
@@ -2878,6 +2880,9 @@ function tourCommand(src, command, commandData) {
                 nextstart = "Pending";
             }
             var firsttour = true;
+            if (queue.length === 0) {
+                sys.sendMessage(src, "No tournaments in the queue.", tourschan)
+            }
             for (var e in queue) {
                 var queuedata = queue[e];
                 var params = queuedata.parameters;
