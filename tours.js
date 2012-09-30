@@ -748,7 +748,7 @@ function sendAuthPlayers(message,key) {
             var htmlname = html_escape(sys.name(arr[x]));
             var regex = flashtag+htmlname+flashtag;
             var newregex1 = "<font style='BACKGROUND-COLOR: #FFBB00'>"+htmlname+"</font><ping/>";
-            newmessage = message.replace(regex,newregex1);
+            newmessage = message.replace(regex,newregex1).replace(flashtag,"");
             sendBotMessage(arr[x], newmessage, tourschan, true);
         }
     }
@@ -764,7 +764,7 @@ function sendHtmlAuthPlayers(message,key) {
             var htmlname = html_escape(sys.name(arr[x]));
             var regex = flashtag+htmlname+flashtag;
             var newregex1 = "<font style='BACKGROUND-COLOR: #FFAAFF'>"+htmlname+"</font><ping/>";
-            var newmessage = message.replace(regex,newregex1)
+            var newmessage = message.replace(regex,newregex1).replace(flashtag,"");
             sys.sendHtmlMessage(arr[x], newmessage, tourschan);
             if (isInSpecificTour(sys.name(arr[x]),key) && sys.away(arr[x])) {
                 sys.changeAway(arr[x], false);
@@ -785,7 +785,7 @@ function sendFlashingBracket(message,key) {
             var htmlname = html_escape(sys.name(arr[x]));
             var regex = flashtag+htmlname+flashtag;
             var newregex1 = "<font style='BACKGROUND-COLOR: #FFAAFF'>"+htmlname+"</font><ping/>";
-            newmessage = message.replace(regex,newregex1)
+            newmessage = message.replace(regex,newregex1).replace(flashtag,"");
         }
         sys.sendHtmlMessage(arr[x], newmessage, tourschan);
         if (isInSpecificTour(sys.name(arr[x]),key) && sys.away(arr[x])) {
