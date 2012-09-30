@@ -1145,7 +1145,7 @@ function tourStep() {
             sendBotAll("A <b>"+html_escape(details[0])+"</b> event is starting soon.",tourschan,true)
             sendBotAll("A <b>"+html_escape(details[0])+"</b> event is starting soon.",0,true)
             tours.queue.unshift({'tier': tourtier, 'starter': "~Pokemon Online~", 'parameters': details[1]})
-            tours.globaltime = -1;
+            tours.globaltime = parseInt(sys.time())+300;
             tours.eventticks = -1;
         }
         else {
