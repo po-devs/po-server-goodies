@@ -533,6 +533,90 @@ function awardSeedPoints(playername, tier, points) {
     }
 }
 
+function awardEventPoints(playername, points, datestring) {
+    if (points <= 0) {
+        return;
+    }
+    if (playername == "~Bye~" || playername == "~DQ~" || isSub(playername)) {
+        return;
+    }
+    if (eventscores.hasOwnProperty(playername)) {
+        var pscore = eventscores[playername];
+        if (pscore.hasOwnProperty(datestring)){
+            if (pscore[datestring] < points) {
+                eventscores[playername][datestring] = points;
+            }
+        }
+        else {
+            eventscores[playername][datestring] = points;
+        }
+    }
+    else {
+        eventscores[playername] = {};
+        eventscores[playername][datestring] = points;
+    }
+}
+
+function saveEventPoints() {
+    sys.writeToFile('eventdata.json', JSON.stringify(eventscores));
+}
+
+function detEventPoints(size, ranking, tier) {
+    var rank = Math.floor(ranking);
+    var mag = Math.floor(Math.log(size)/Math.LN2);
+    var tiers = [1,2,3,4,6,8,12,16,24];
+    var scale = tiers.indexOf(rank);
+    if (scale == -1) {
+        return 0;
+    }
+    if (["Battle Factory"].indexOf(tier) > -1) {
+        mag -= 1;
+    }
+    else if (["Challenge Cup"].indexOf(tier) > -1) {
+        mag -= 2;
+    }
+    if (mag < 2) {
+        return 0;
+    }
+    var scorearr = [0];
+    switch (mag) {
+        case 2:
+            scorearr = [1];
+            break;
+        case 3:
+            scorearr = [2,1];
+            break;
+        case 4:
+            scorearr = [4,2,1];
+            break;
+        case 5:
+            scorearr = [7,3,2,1];
+            break;
+        case 6:
+            scorearr = [11,5,3,2,1];
+            break;
+        case 7:
+            scorearr = [16,8,5,4,2,1];
+            break;
+        case 8:
+            scorearr = [22,11,7,5,3,2,1];
+            break;
+        case 9:
+            scorearr = [29,14,9,7,4,3,2,1];
+            break;
+        case 10:
+            scorearr = [37,18,12,9,6,4,3,2,1];
+            break;
+    }
+    if (scale < scorearr.length) {
+        return scorearr[scale];
+    }
+    else {
+        return 0;
+    }
+}
+
+
 function detSeedPoints(size, ranking) {
     var rank = Math.floor(Math.log(size)/Math.LN2)-Math.floor(ranking);
     if (rank < 0) {
@@ -950,6 +1034,21 @@ function initTours() {
             }
             catch (err) {
                 tourseeds = {};
+            }
+        }
+    }
+    if (typeof eventscores != "object") {
+        sendChanAll("Initiating event scoring", tourschan)
+        var eventscoredata = sys.getFileContent('eventdata.json');
+        if (eventscoredata === undefined || eventscoredata === "") {
+            eventscores = {};
+        }
+        else {
+            try {
+                eventscores = JSON.parse(eventscoredata);
+            }
+            catch (err) {
+                eventscores = {};
             }
         }
     }
@@ -3256,16 +3355,17 @@ function tourCommand(src, command, commandData) {
         }
         if (command == "eventleaderboard") {
             try {
-                if (sys.getFileContent("eventscores.txt") === undefined) {
-                    throw ("No data")
-                }
-                var rankings = sys.getFileContent("eventscores.txt").split("\n")
+                var rankings = eventscores;
                 var list = [];
                 for (var p in rankings) {
-                    if (rankings[p] == "") continue;
-                    var rankingdata = rankings[p].split(":::",2)
-                    if (rankingdata[1] < 1) continue;
-                    list.push([rankingdata[1], rankingdata[0]]);
+                    var pdata = rankings[p];
+                    var cscore = 0;
+                    for (var h in pdata) {
+                        if (typeof pdata[h] == "number" && pdata[h] > 0) {
+                            cscore += pdata[h];
+                        }
+                    }
+                    list.push([cscore,p])
                 }
                 list.sort(function(a,b) { return b[0] - a[0] ; });
                 sys.sendMessage(src, "*** EVENT RANKINGS "+(commandData != "" ? "("+commandData+") " : "")+"***",tourschan)
@@ -3689,6 +3789,7 @@ function advanceround(key) {
         var type = tours.tour[key].tourtype;
         var mplayers = tours.tour[key].cpt;
         var cplayers = tours.tour[key].players.length;
+        var cdate = tours.tour[key].date;
         var bannednames = ["~Bye~", "~DQ~"];
         var doubleelim = tours.tour[key].parameters.type == "double" ? true : false;
         if (doubleelim) {
@@ -3716,6 +3817,8 @@ function advanceround(key) {
                     newwinbracket.push(tours.tour[key].players[0])
                     awardSeedPoints(tours.tour[key].players[0], type, detSeedPoints(mplayers,0));
                     awardSeedPoints(tours.tour[key].players[1], type, detSeedPoints(mplayers,1));
+                    awardEventPoints(tours.tour[key].players[0],detEventPoints(mplayers,1,type),cdate);
+                    awardEventPoints(tours.tour[key].players[1],detEventPoints(mplayers,2,type),cdate);
                     if (tours.tour[key].maxplayers !== "default") {
                         tours.tour[key].rankings.push(tours.tour[key].players[1], tours.tour[key].players[0])
                     }
@@ -3727,6 +3830,7 @@ function advanceround(key) {
                     else {
                         newlosebracket.push(tours.tour[key].players[1])
                         awardSeedPoints(tours.tour[key].players[1], type, detSeedPoints(mplayers,0));
+                        awardEventPoints(tours.tour[key].players[1],detEventPoints(mplayers,1,type),cdate);
                         if (tours.tour[key].maxplayers !== "default") {
                             tours.tour[key].rankings.push(tours.tour[key].players[0], tours.tour[key].players[1])
                         }
@@ -3741,7 +3845,9 @@ function advanceround(key) {
                     newlosebracket.push(tours.tour[key].players[0])
                     awardSeedPoints(tours.tour[key].players[0], type, detSeedPoints(mplayers,0));
                     awardSeedPoints(tours.tour[key].players[1], type, detSeedPoints(mplayers,1));
-                    if (tours.tour[key].maxplayers !== "default") {
+                    if (tours.tour[key].event) {
+                        awardEventPoints(tours.tour[key].players[0],detEventPoints(mplayers,1,type),cdate);
+                        awardEventPoints(tours.tour[key].players[1],detEventPoints(mplayers,2,type),cdate);
                         tours.tour[key].rankings.push(tours.tour[key].players[1], tours.tour[key].players[0])
                     }
                 }
@@ -3749,7 +3855,9 @@ function advanceround(key) {
                     newlosebracket.push(tours.tour[key].players[1])
                     awardSeedPoints(tours.tour[key].players[1], type, detSeedPoints(mplayers,0));
                     awardSeedPoints(tours.tour[key].players[0], type, detSeedPoints(mplayers,1));
-                    if (tours.tour[key].maxplayers !== "default") {
+                    if (tours.tour[key].event) {
+                        awardEventPoints(tours.tour[key].players[1],detEventPoints(mplayers,1,type),cdate);
+                        awardEventPoints(tours.tour[key].players[0],detEventPoints(mplayers,2,type),cdate);
                         tours.tour[key].rankings.push(tours.tour[key].players[0], tours.tour[key].players[1])
                     }
                 }
@@ -3779,10 +3887,12 @@ function advanceround(key) {
                     if (winners.indexOf(tours.tour[key].losebracket[l]) > -1 && bannednames.indexOf(tours.tour[key].losebracket[l]) == -1) {
                         winninglosers.push(tours.tour[key].losebracket[l])
                         if (round > 3) awardSeedPoints(tours.tour[key].losebracket[l+1], type, detSeedPoints(mplayers,cplayers-1));
+                        if (tours.tour[key].event) awardEventPoints(tours.tour[key].losebracket[l+1],detEventPoints(mplayers,cplayers,type),cdate);
                     }
                     else if (winners.indexOf(tours.tour[key].losebracket[l+1]) > -1 && bannednames.indexOf(tours.tour[key].losebracket[l+1]) == -1) {
                         winninglosers.push(tours.tour[key].losebracket[l+1])
                         if (round > 3) awardSeedPoints(tours.tour[key].losebracket[l], type, detSeedPoints(mplayers,cplayers-1));
+                        if (tours.tour[key].event) awardEventPoints(tours.tour[key].losebracket[l],detEventPoints(mplayers,cplayers,type),cdate);
                     }
                     else {
                         winninglosers.push("~Bye~")
@@ -3815,16 +3925,18 @@ function advanceround(key) {
                     if (winners.indexOf(tours.tour[key].losebracket[l]) > -1 && bannednames.indexOf(tours.tour[key].losebracket[l]) == -1) {
                         winninglosers.push(tours.tour[key].losebracket[l])
                         if (round > 3) awardSeedPoints(tours.tour[key].losebracket[l+1], type, detSeedPoints(mplayers,(cplayers*3/4)-1));
+                        if (tours.tour[key].event) awardEventPoints(tours.tour[key].losebracket[l+1],detEventPoints(mplayers,cplayers*3/4,type),cdate);
                         // 3rd Place
-                        if (tours.tour[key].maxplayers !== "default" && tours.tour[key].losebracket.length == 2) {
+                        if (tours.tour[key].event && tours.tour[key].losebracket.length == 2) {
                             tours.tour[key].rankings.push(tours.tour[key].losebracket[l+1])
                         }
                     }
                     else if (winners.indexOf(tours.tour[key].losebracket[l+1]) > -1 && bannednames.indexOf(tours.tour[key].losebracket[l+1]) == -1) {
                         winninglosers.push(tours.tour[key].losebracket[l+1])
                         if (round > 3) awardSeedPoints(tours.tour[key].losebracket[l], type, detSeedPoints(mplayers,(cplayers*3/4)-1));
+                        if (tours.tour[key].event) awardEventPoints(tours.tour[key].losebracket[l],detEventPoints(mplayers,cplayers*3/4,type),cdate);
                         // 3rd Place
-                        if (tours.tour[key].maxplayers !== "default" && tours.tour[key].losebracket.length == 2) {
+                        if (tours.tour[key].event && tours.tour[key].losebracket.length == 2) {
                             tours.tour[key].rankings.push(tours.tour[key].losebracket[l])
                         }
                     }
@@ -3901,6 +4013,8 @@ function advanceround(key) {
 function tourstart(tier, starter, key, parameters) {
     try {
         var channels = tourschan === 0 ? [0] : [0, tourschan];
+        var now = new Date();
+        var datestring = now.getUTCDate()+"-"+now.getUTCMonth();
         tours.tour[key] = {}
         tours.tour[key].state = "signups"
         tours.tour[key].tourtype = tier
@@ -3917,6 +4031,7 @@ function tourstart(tier, starter, key, parameters) {
         tours.tour[key].parameters = parameters;
         tours.tour[key].leader = topSeed(tier); // best seed
         tours.tour[key].event = false;
+        tours.tour[key].date = datestring; // used to identify event tours
         tours.globaltime = 0;
         if (typeof parameters.maxplayers === "number" && parameters.event) {
             tours.tour[key].maxplayers = parameters.maxplayers;
@@ -4269,13 +4384,13 @@ function tourprintbracket(key) {
                 }
                 // award to winner
                 if (!tours.tour[key].event) {
-                    awardTourPoints(winner.toLowerCase(), tours.tour[key].cpt, tours.tour[key].tourtype, tours.tour[key].parameters.type == "double" ? true : false, 1, false)
+                    awardTourPoints(winner.toLowerCase(), tours.tour[key].cpt, tours.tour[key].tourtype, tours.tour[key].parameters.type == "double" ? true : false, 1)
                 }
                 else {
                     var rankingorder = (tours.tour[key].rankings).reverse()
                     for (var p=0; p<rankingorder.length; p++) {
                         if (rankingorder[p] != "~DQ~" && rankingorder[p] != "~Bye~")
-                            awardTourPoints(rankingorder[p], tours.tour[key].cpt, tours.tour[key].tourtype, tours.tour[key].parameters.type == "double" ? true : false, p+1, true)
+                            awardTourPoints(rankingorder[p], tours.tour[key].cpt, tours.tour[key].tourtype, tours.tour[key].parameters.type == "double" ? true : false, p+1)
                     }
                 }
             }
@@ -4325,6 +4440,7 @@ function tourprintbracket(key) {
             }
             if (tours.tour[key].event) {
                 tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
+                saveEventPoints();
                 refreshTicks();
             }
             tours.keys.splice(tours.keys.indexOf(key), 1);
@@ -4538,7 +4654,7 @@ function isValidTourBattle(src,dest,clauses,mode,team,destTier,key,challenge) { 
 }
 
 // awards tournament points
-function awardTourPoints(player, size, tier, delim, place, event) {
+function awardTourPoints(player, size, tier, delim, place) {
     // each tournament has a 'tier'
     // points for 4-7,8-15,16-31,32-63,64-127,128-255,256-511,512 players respectively. Tours with 3 players or less don't score. Double tours score in the higher up bracket
     var tierscore = {
@@ -4685,32 +4801,6 @@ function awardTourPoints(player, size, tier, delim, place, event) {
         newarray2.push(player+":::"+tierscore.a[scale])
     }
     sys.writeToFile("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt", newarray2.join("\n"))
-    // write event scores if necessary
-    if (!event) return;
-    var data4 = sys.getFileContent("eventscores.txt")
-    if (data4 === undefined) {
-        sys.appendToFile("eventscores.txt", "")
-        data4 = ""
-    }
-    var array4 = data4.split("\n")
-    var newarray4 = []
-    var onscoreboard4 = false
-    for (var a in array4) {
-        if (array4[a] === "") continue;
-        var scores4 = array4[a].split(":::", 2)
-        if (player === scores4[0]) {
-            var newscore4 = parseInt(scores4[1]) + points
-            newarray4.push(scores4[0]+":::"+newscore4)
-            onscoreboard4 = true;
-        }
-        else {
-            newarray4.push(array4[a])
-        }
-    }
-    if (!onscoreboard4) {
-        newarray4.push(player+":::"+points)
-    }
-    sys.writeToFile("eventscores.txt", newarray4.join("\n"))
     return;
 }
 
