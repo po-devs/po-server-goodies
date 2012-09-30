@@ -69,13 +69,12 @@ module.exports = function () {
 
         usedLetters.push(commandData.toLowerCase());
         sendChanHtmlAll(" ", hangchan);
-        sendChanHtmlAll("<font color='red'><timestamp/> <b>" + sys.name(src) + "</b> guessed <b>" + letter.toUpperCase() + "</b> and got it " + (correct ? "right":"wrong") + "!. <b>Current Word</b>: " + currentWord.join(" ") + "</font>", hangchan);
+        sendChanAll("±Guess: " + sys.name(src) + " guessed " + letter.toUpperCase() + " and got it " + (correct ? "right (" + p + " points)" :"wrong") + "!. Current Word: " + currentWord.join(" ") + "", hangchan);
 
         if (currentWord.indexOf("_") === -1) {
             this.applyPoints(src, p + 2);
             sendChanAll("*** ************************************************************ ***", hangchan);
             sendChanAll("±Game: " + sys.name(src) + " completed the word '" + currentWord.join("") + "'!", hangchan);
-            sendChanAll("±Game: " + sys.name(src) + " received " + p + " point(s)!", hangchan);
             this.countPoints();
             sendChanAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
@@ -85,8 +84,7 @@ module.exports = function () {
                 parts--;
             }
             if (parts > 0) {
-                sendChanHtmlAll("<font color='red'><timestamp/> [Hint: " + hint + "]  [Letters used: " +  usedLetters.map(function (x) { return x.toUpperCase(); }).join(", ") + "]  [Chances left: " + parts + "] </font>", hangchan);
-                sendChanAll("±Game: " + sys.name(src) + " received " + p + " point(s)!", hangchan);
+                sendChanAll("±Game: [Hint: " + hint + "]  [Letters used: " +  usedLetters.map(function (x) { return x.toUpperCase(); }).join(", ") + "]  [Chances left: " + parts + "] ", hangchan);
                 sendChanHtmlAll(" ", hangchan);
                 this.applyPoints(src, p);
                 SESSION.users(src).hangmanTime = (new Date()).getTime() + answerDelay * 1000;
@@ -115,7 +113,7 @@ module.exports = function () {
         }
 
         sendChanHtmlAll(" ", hangchan);
-        sendChanHtmlAll("<font color='red'><timestamp/> <b>" + sys.name(src) + "</b> answered <b>" + commandData + "</b>!</font>", hangchan);
+        sendChanAll("±Game: " + sys.name(src) + " answered " + commandData + "!", hangchan);
         if (commandData.toLowerCase() === word.toLowerCase()) {
             var p = 0, e;
             for (e in currentWord) {
@@ -133,7 +131,7 @@ module.exports = function () {
             sendChanHtmlAll(" ", hangchan);
         } else {
             this.addMiss(src);
-            sendChanHtmlAll("<font color='red'><timestamp/> <b>" + sys.name(src) + "'</b>s answer was wrong! The game continues!</font>", hangchan);
+            sendChanAll("±Game: " + sys.name(src) + "'s answer was wrong! The game continues!", hangchan);
             sendChanHtmlAll(" ", hangchan);
             SESSION.users(src).hangmanTime = (new Date()).getTime() + answerDelay * 2000;
         }
