@@ -3360,7 +3360,7 @@ function removeinactive(key) {
                 continue;
             }
             if (activelist.hasOwnProperty(player1)) {
-                if (activelist[player1] == "Battle" || (typeof activelist[player1] == "number" && activelist[player1]+tourconfig.activity >= parseInt(sys.time()) && !sys.away(sys.id(player1)))) {
+                if (activelist[player1] == "Battle" || (typeof activelist[player1] == "number" && activelist[player1]+tourconfig.activity >= parseInt(sys.time()))) {
                     sendDebugMessage(player1+" is active; continuing", tourschan)
                     dq1 = false
                 }
@@ -3381,7 +3381,7 @@ function removeinactive(key) {
                 sendDebugMessage(player1+" is not active; disqualifying", tourschan)
             }
             if (activelist.hasOwnProperty(player2)) {
-                if (activelist[player2] == "Battle" || (typeof activelist[player2] == "number" && activelist[player2]+tourconfig.activity >= parseInt(sys.time()) && !sys.away(sys.id(player2)))) {
+                if (activelist[player2] == "Battle" || (typeof activelist[player2] == "number" && activelist[player2]+tourconfig.activity >= parseInt(sys.time()))) {
                     sendDebugMessage(player2+" is active; continuing", tourschan)
                     dq2 = false
                 }
@@ -5167,7 +5167,7 @@ module.exports = {
         else return false;
     },
     afterChatMessage : function(src, message, channel) {
-        if (channel === tourschan && !usingBadWords(message) && !SESSION.users(src).smute.active) {
+        if (channel === tourschan && !usingBadWords(message) && !SESSION.users(src).smute.active && !sys.away(src)) {
             markActive(src, "post");
         }
     },
