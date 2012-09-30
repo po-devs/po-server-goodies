@@ -1361,7 +1361,7 @@ function tourCommand(src, command, commandData) {
                     sendBotAll(sys.name(src)+" cleared the tour seeds!",tourschan,false)
                 }
                 if (commandData == "stats") {
-                    tourstats = {};
+                    tourstats = {'general': {}, 'staff': {}};
                     sendBotAll(sys.name(src)+" cleared the tour stats!",tourschan,false)
                 }
                 return true;
