@@ -4958,8 +4958,8 @@ function calcVariance() {
             playersInTours += parseInt(tours.tour[x].players.length)
         }
     }
-    // stupid div/0 error :<
-    if (playersInChan === 0) {
+    // To escape unintended div/0 errs, because ln(1) = 0 and ln(0) = undef
+    if (playersInChan < 2) {
         return 0.5;
     }
     if (playersInTours === 0) { // use ln(#players)
