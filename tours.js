@@ -3954,7 +3954,7 @@ function tourstart(tier, starter, key, parameters) {
             else {
                 sendChanHtmlAll(redhtmlborder, channels[x])
             }
-            sendChanHtmlAll("<timestamp/> A <b><a href='http://wiki.pokemon-online.eu/view/"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> "+(tours.tour[key].maxplayers === "default" ? "tournament" : "event")+" has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x])
+            sendChanHtmlAll("<timestamp/> A <b><a href='http://wiki.pokemon-online.eu/view/"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x])
             sendChanAll("CLAUSES: "+getTourClauses(tier),channels[x])
             sendChanAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : "")+(parameters.event ? "; Event Tournament" : ""), channels[x])
             if (tier == "Battle Factory") {
