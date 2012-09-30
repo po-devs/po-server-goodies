@@ -1004,7 +1004,7 @@ function getEventTour(datestring) {
                         if (cmp(parameterset, "mode")) {
                             var singlesonlytiers = ["DW 1v1", "DW 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "No Preview OU", "No Preview Ubers", "Wifi OU", "Wifi Ubers"];
                             if ((modeOfTier(thetier) == "Doubles" || modeOfTier(thetier) == "Triples" || singlesonlytiers.indexOf(thetier) != -1) && !cmp(parametervalue, modeOfTier(thetier))) {
-                                sendBotMessage(src, "The "+thetier+" tier can only be played in " + modeOfTier(thetier) + " mode!", tourschan, false);
+                                sendBotAll("The "+thetier+" tier can only be played in " + modeOfTier(thetier) + " mode!", tourserrchan, false);
                                 return false;
                             }
                             if (cmp(parametervalue, "singles")) {
@@ -1024,20 +1024,20 @@ function getEventTour(datestring) {
                             }
                             else {
                                 parameters.gen = "5-1" // BW2
-                                sendBotAll(src, "Warning! The subgen '"+parametervalue+"' does not exist! Used BW2 instead!", tourschan, false);
+                                sendBotAll(src, "Warning! The subgen '"+parametervalue+"' does not exist! Used BW2 instead!", tourserrchan, false);
                             }
                         }
                         else if (cmp(parameterset, "maxplayers")) {
                             var players = parseInt(parametervalue)
                             var allowedcounts = [8,16,32,64,128,256,512,1024];
                             if (allowedcounts.indexOf(players) == -1) {
-                                sendBotAll("Invalid number of maximum players!", tourschan, false);
+                                sendBotAll("Invalid number of maximum players!", tourserrchan, false);
                                 return false;
                             }
                             parameters.maxplayers = players;
                         }
                         else {
-                            sendBotAll("Warning! The parameter '"+parameterset+"' does not exist!", tourschan, false);
+                            sendBotAll("Warning! The parameter '"+parameterset+"' does not exist!", tourserrchan, false);
                         }
                     }
                 }
