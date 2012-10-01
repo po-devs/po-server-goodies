@@ -569,11 +569,20 @@ function detEventPoints(size, ranking, tier) {
     if (scale == -1) {
         return 0;
     }
-    if (["Battle Factory"].indexOf(tier) > -1) {
+    else if (["Metronome"].indexOf(tier) > -1) {
+        return 0;
+    }
+    else if (["Battle Factory", "Monotype"].indexOf(tier) > -1) {
         mag -= 1;
     }
     else if (["Challenge Cup"].indexOf(tier) > -1) {
         mag -= 2;
+    }
+    else if (["Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers"].indexOf(tier) > -1) {
+        mag -= 3;
+    }
+    else if (["CC 1v1"].indexOf(tier) > -1) {
+        mag -= 4;
     }
     if (mag < 2) {
         return 0;
@@ -916,7 +925,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.000b",
+            version: "2.000+",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -961,7 +970,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.000b",
+        version: "2.000+",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1092,10 +1101,10 @@ function getEventTour(datestring) {
                 if (thetier === null) {
                     continue;
                 }
+                var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"];
                 var parameters = {"gen": "default", "mode": modeOfTier(thetier), "type": "double", "maxplayers": false, "event": true};
-                if (data.length >= 2) {
+                if (data.length > 2) {
                     var parameterdata = [];
-                    var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"];
                     for (var n=2;n<data.length;n++) {
                         parameterdata.push(data[n]);
                     }
@@ -1107,9 +1116,8 @@ function getEventTour(datestring) {
                             var singlesonlytiers = ["DW 1v1", "DW 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "No Preview OU", "No Preview Ubers", "Wifi OU", "Wifi Ubers"];
                             if ((modeOfTier(thetier) == "Doubles" || modeOfTier(thetier) == "Triples" || singlesonlytiers.indexOf(thetier) != -1) && !cmp(parametervalue, modeOfTier(thetier))) {
                                 sendBotAll("The "+thetier+" tier can only be played in " + modeOfTier(thetier) + " mode!", tourserrchan, false);
-                                return false;
                             }
-                            if (cmp(parametervalue, "singles")) {
+                            else if (cmp(parametervalue, "singles")) {
                                 parameters.mode = "Singles";
                             }
                             else if (cmp(parametervalue, "doubles")) {
@@ -1446,7 +1454,8 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "cleareventrankings") {
-                sys.writeToFile("eventscores.txt", "")
+                sys.writeToFile("eventdata.json", "")
+                eventscores = {};
                 sys.writeToFile("eventwinners.txt", "")
                 sendBotAll(sys.name(src)+" cleared the event rankings!",tourschan,false)
                 return true;
@@ -3820,9 +3829,9 @@ function advanceround(key) {
                     newwinbracket.push(tours.tour[key].players[0])
                     awardSeedPoints(tours.tour[key].players[0], type, detSeedPoints(mplayers,0));
                     awardSeedPoints(tours.tour[key].players[1], type, detSeedPoints(mplayers,1));
-                    awardEventPoints(tours.tour[key].players[0],detEventPoints(mplayers,1,type),cdate);
-                    awardEventPoints(tours.tour[key].players[1],detEventPoints(mplayers,2,type),cdate);
-                    if (tours.tour[key].maxplayers !== "default") {
+                    if (tours.tour[key].event) {
+                        awardEventPoints(tours.tour[key].players[0],detEventPoints(mplayers,1,type),cdate);
+                        awardEventPoints(tours.tour[key].players[1],detEventPoints(mplayers,2,type),cdate);
                         tours.tour[key].rankings.push(tours.tour[key].players[1], tours.tour[key].players[0])
                     }
                 }
@@ -3833,8 +3842,8 @@ function advanceround(key) {
                     else {
                         newlosebracket.push(tours.tour[key].players[1])
                         awardSeedPoints(tours.tour[key].players[1], type, detSeedPoints(mplayers,0));
-                        awardEventPoints(tours.tour[key].players[1],detEventPoints(mplayers,1,type),cdate);
-                        if (tours.tour[key].maxplayers !== "default") {
+                        if (tours.tour[key].event) {
+                            awardEventPoints(tours.tour[key].players[1],detEventPoints(mplayers,1,type),cdate);
                             tours.tour[key].rankings.push(tours.tour[key].players[0], tours.tour[key].players[1])
                         }
                     }
