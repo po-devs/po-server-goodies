@@ -916,7 +916,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.000b",
+            version: "2.000c",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -961,7 +961,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.000b",
+        version: "2.000c",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1092,10 +1092,10 @@ function getEventTour(datestring) {
                 if (thetier === null) {
                     continue;
                 }
+                var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"];
                 var parameters = {"gen": "default", "mode": modeOfTier(thetier), "type": "double", "maxplayers": false, "event": true};
-                if (data.length >= 2) {
+                if (data.length > 2) {
                     var parameterdata = [];
-                    var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"];
                     for (var n=2;n<data.length;n++) {
                         parameterdata.push(data[n]);
                     }
@@ -1107,9 +1107,8 @@ function getEventTour(datestring) {
                             var singlesonlytiers = ["DW 1v1", "DW 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "No Preview OU", "No Preview Ubers", "Wifi OU", "Wifi Ubers"];
                             if ((modeOfTier(thetier) == "Doubles" || modeOfTier(thetier) == "Triples" || singlesonlytiers.indexOf(thetier) != -1) && !cmp(parametervalue, modeOfTier(thetier))) {
                                 sendBotAll("The "+thetier+" tier can only be played in " + modeOfTier(thetier) + " mode!", tourserrchan, false);
-                                return false;
                             }
-                            if (cmp(parametervalue, "singles")) {
+                            else if (cmp(parametervalue, "singles")) {
                                 parameters.mode = "Singles";
                             }
                             else if (cmp(parametervalue, "doubles")) {
