@@ -569,11 +569,20 @@ function detEventPoints(size, ranking, tier) {
     if (scale == -1) {
         return 0;
     }
-    if (["Battle Factory"].indexOf(tier) > -1) {
+    else if (["Metronome"].indexOf(tier) > -1) {
+        return 0;
+    }
+    else if (["Battle Factory", "Monotype"].indexOf(tier) > -1) {
         mag -= 1;
     }
     else if (["Challenge Cup"].indexOf(tier) > -1) {
         mag -= 2;
+    }
+    else if (["Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers"].indexOf(tier) > -1) {
+        mag -= 3;
+    }
+    else if (["CC 1v1"].indexOf(tier) > -1) {
+        mag -= 4;
     }
     if (mag < 2) {
         return 0;
@@ -916,7 +925,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.000",
+            version: "2.000+",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -961,7 +970,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.000",
+        version: "2.000+",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
