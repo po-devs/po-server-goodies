@@ -353,7 +353,7 @@ module.exports = function () {
             break;
         }
     };
-    this.commands = {
+    this.hangcommands = {
         user: {
             help: [this.showHelp, "For a how-to-play guide"],
             g: [this.guessCharacter, "To guess a letter."],
@@ -382,13 +382,13 @@ module.exports = function () {
             } else {
                 command = message.substr(0).toLowerCase();
             }
-            if (command in hangman.commands.user) {
-                hangman.commands.user[command][0].call(hangman, src, commandData);
+            if (command in hangman.hangcommands.user) {
+                hangman.hangcommands.user[command][0].call(hangman, src, commandData);
                 return true;
             }
 
             if (sys.ip(src) === host && command === "end") {
-                hangman.commands.op[command][0].call(hangman, src, commandData);
+                hangman.hangcommands.op[command][0].call(hangman, src, commandData);
                 return true;
             }
 
@@ -396,8 +396,8 @@ module.exports = function () {
                 throw ("No valid command");
             }
 
-            if (command in hangman.commands.op) {
-                hangman.commands.op[command][0].call(hangman, src, commandData);
+            if (command in hangman.hangcommands.op) {
+                hangman.hangcommands.op[command][0].call(hangman, src, commandData);
                 return true;
             }
 
@@ -405,8 +405,8 @@ module.exports = function () {
                 throw ("No valid command");
             }
 
-            if (command in hangman.commands.admin) {
-                hangman.commands.admin[command][0].call(hangman, src, commandData);
+            if (command in hangman.hangcommands.admin) {
+                hangman.hangcommands.admin[command][0].call(hangman, src, commandData);
                 return true;
             }
 
