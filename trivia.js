@@ -9,6 +9,41 @@ var triviabot = new Bot("Psyduck");
 
 var testfiles = ['triviaq.json', 'trivreview.json', 'tadmins.txt'];
 
+var triviaCategories = [
+    'Anime/Manga',
+    'Animals',
+    'Art',
+    'Comics',
+    'Economics',
+    'Food/Drink',
+    'Games',
+    'Geography',
+    'History',
+    'Internet',
+    'Language',
+    'Literature',
+    'Math',
+    'Misc',
+    'Movies',
+    'Music',
+    'Mythology',
+    'Philosophy',
+    'PO',
+    'Pokemon',
+    'Politics',
+    'Psychology',
+    'Religion',
+    'Science',
+    'Society',
+    'Space',
+    'Sports',
+    'Technology',
+    'TV',
+    'Video Games'
+];
+
+// TO-DO: Read from file
+
 for (t in testfiles) {
 	if (sys.getFileContent(testfiles[t]) == "" || sys.getFileContent(testfiles[t]) == undefined) {
 		sys.writeToFile(testfiles[t], "{}");
@@ -668,6 +703,12 @@ function addOwnerCommand(commands, callback, help) {
     return addCommand(ownerCommands, commands, callback, help);
 }
 
+addUserCommand("categories", function(src,commandData,channel) {
+	if (typeof(triviaCategories) != "object") return;
+    triviabot.sendMessage(src, triviaCategories.join(", "), channel);
+    triviabot.sendMessage(src, "For more information, refer to: http://wiki.pokemon-online.eu/wiki/Trivia_Categories", channel);
+},"Allows you to view the trivia categories");
+
 addUserCommand("flashme", function(src,commandData,channel) {
 	if (trivData.toFlash[sys.ip(src)] == undefined) {
 		trivData.toFlash[sys.ip(src)] = {};
@@ -1049,6 +1090,33 @@ addAdminCommand("savedb", function(src, commandData, channel) {
 	triviaq.saveQuestions();
 	triviabot.sendAll("Trivia database saved!", channel);
 }, "Forces a save of the trivia database. Do so after accepting questions.");
+
+addAdminCommand("pushback", function(src, commandData, channel) {
+	var tr = trivreview.all();
+	if (trivreview.questionAmount() !== 0) {
+		if((time()-trivreview.declineTime)<=2){
+			triviabot.sendMessage(src, "Please wait before pushing back a question",channel);
+			return;
+		}
+		var id = Object.keys(tr)[0];
+		var q = trivreview.get(id);
+		/*triviaq.unsafeAdd(q.category,q.question,q.answer);
+		var all = triviaq.all(), qid;
+		for (var b in all){
+			var qu = triviaq.get(b);
+			if(qu.question===q.question){
+				qid = b;
+			}
+		}*/
+		triviabot.sendAll(sys.name(src)+" pushed back the current question to the end of review",revchan);
+		trivreview.declineTime = time();
+        trivreview.add(q.category,q.question,q.answer,q.name);
+		trivreview.remove(id);
+		trivreview.checkq(id+1);
+		return;
+	}
+	triviabot.sendMessage(src, "No more questions!",channel);
+},"Allows you to push back a question");
 
 // TODO: Maybe announce globally to trivreview when somebody accepts a question?
 

@@ -2328,7 +2328,11 @@ afterChannelJoin : function(player, chan) {
     if (SESSION.channels(chan).isChannelOperator(player)) {
         sys.sendMessage(player, Config.channelbot + ": use /topic <topic> to change the welcome message of this channel", chan);
     }
-    if (SESSION.channels(chan).masters.length <= 0) {
+    var officialChan = true;
+    if (chan !== 0 && chan !== tourchannel && chan !== mafiachan && chan !== sys.channelId("Trivia")){
+        officialChan = false;
+    }
+    if (SESSION.channels(chan).masters.length <= 0 && !officialChan) {
         sys.sendMessage(player, Config.channelbot + ": This channel is unregistered. If you're looking to own this channel, type /register in order to prevent your channel from being stolen.", chan);
     }
     callplugins("afterChannelJoin", player, chan);
@@ -2746,8 +2750,8 @@ userCommand: function(src, command, commandData, tar) {
     }
     if(command == "sendhtml" && sys.name(src) == 'Desolate') // Temporary
     {
-                sys.sendHtmlMessage(src, commandData,sys.channelId('Witty'));
-                return;
+        sys.sendHtmlMessage(src, commandData,sys.channelId('Witty'));
+        return;
     }
     if ((command == "me" || command == "rainbow") && !SESSION.channels(channel).muteall) {
         if (SESSION.channels(channel).meoff === true) {
@@ -3364,7 +3368,7 @@ modCommand: function(src, command, commandData, tar) {
     if (command == "channelusers") {
        if (commandData === undefined) {
            normalbot.sendChanMessage(src, "Please give me a channelname!");
-            return;
+           return;
        }
        var chanid;
        var isbot;
@@ -3442,7 +3446,11 @@ modCommand: function(src, command, commandData, tar) {
             querybot.sendChanMessage(src,"No such user online.");
             return;
         }
-        querybot.sendChanMessage(src,sys.name(tar)+" is in tier: "+sys.tier(tar,0));
+        var count = sys.teamCount(tar), tiers = [];
+        for (i = 0; i < count; ++i) {
+            tiers.push(sys.tier(tar, i));
+        }
+        querybot.sendChanMessage(src,sys.name(tar)+" is in tier"+(tiers.length <= 1?"":"s")+": "+tiers.join(", "));
         return;
     }
     if (command == "perm") {
@@ -4020,13 +4028,10 @@ modCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-    if (cmp(sys.name(src),"ethan") && ["setwebannouncement", "testwebannouncement", "setannouncement", "testannouncement", "getannouncement"].indexOf(command) != -1) {
+    if (cmp(sys.name(src),"ethan")) {
        return this.ownerCommand(src, command, commandData, tar);
     }
     if (cmp(sys.name(src),"aerith") && command == "updateplugin" && (commandData == "tours.js" || commandData == "battlefactory.js")) {
-       return this.ownerCommand(src, command, commandData, tar);
-    }
-    if (cmp(sys.name(src),"ethan") && command == "updateplugin" && commandData == "trivia.js") {
        return this.ownerCommand(src, command, commandData, tar);
     }
     return "no command";
@@ -4452,12 +4457,17 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "contributoroff") {
-        if (contributors.get(commandData) === undefined) {
+        var is_contrib = false;
+        for (x in contributors.hash) {
+            if (x.toLowerCase() == commandData.toLowerCase())
+            is_contrib = true;
+        }
+        if (!is_contrib) {
             normalbot.sendChanMessage(src, commandData + " isn't a contributor.", channel);
             return;
         }
         contributors.remove(commandData);
-    normalbot.sendChanMessage(src, commandData + " is no longer a contributor!");
+        normalbot.sendChanMessage(src, commandData + " is no longer a contributor!");
         return;
     }
     if (command == "showteam") {
@@ -5342,8 +5352,10 @@ beforeChatMessage: function(src, message, chan) {
         }
         return (caps > 7 && 2*name.length < 3*caps);
     });
+    
+    // Commenting out since no Shanai
 
-    var shanaiForward = function(msg) {
+    /*var shanaiForward = function(msg) {
         var shanai = sys.id("Shanai");
         if (shanai !== undefined) {
             sys.sendMessage(shanai,"CHANMSG " + chan + " " + src + " :" + msg);
@@ -5357,7 +5369,7 @@ beforeChatMessage: function(src, message, chan) {
     if (['|', '\\'].indexOf(message[0]) > -1 && !usingBannedWords() && name != 'coyotte508') {
         shanaiForward(message);
         return;
-    }
+    }*/
     
     var command;
     if ((message[0] == '/' || message[0] == '!') && message.length > 1) {
