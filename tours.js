@@ -925,7 +925,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.000+",
+            version: "2.001",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -970,7 +970,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.000+",
+        version: "2.001",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1930,16 +1930,17 @@ function tourCommand(src, command, commandData) {
                 }
                 var cqueue = tours.queue;
                 var selftours = 0;
+                var maxtours = sys.auth(src) > 0 ? 4 : 2;
                 if (cqueue.length > 0) {
                     for (var c in cqueue) {
                         var tmpq = cqueue[c].starter;
-                        if (cmp(tmpq[1], sys.name(src))) {
+                        if (cmp(tmpq, sys.name(src))) {
                             selftours += 1;
                         }
                     }
                 }
-                if (selftours >= 3 && !isTourSuperAdmin(src)) {
-                    sendBotMessage(src, "You already have 3 of your own tournaments in the queue, so you can't add anymore!", tourschan, false)
+                if (selftours >= maxtours && !isTourSuperAdmin(src)) {
+                    sendBotMessage(src, "You already have "+maxtours+" of your own tournaments in the queue, so you can't add anymore!", tourschan, false)
                     return true;
                 }
                 var isSignups = false;
