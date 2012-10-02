@@ -1930,7 +1930,7 @@ function tourCommand(src, command, commandData) {
                 }
                 var cqueue = tours.queue;
                 var selftours = 0;
-                var maxtours = sys.auth(src) > 0 ? 4 : 2;
+                var maxtours = sys.auth(src) > 0 ? 6 : 3;
                 if (cqueue.length > 0) {
                     for (var c in cqueue) {
                         var tmpq = cqueue[c].starter;
