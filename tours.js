@@ -4877,7 +4877,7 @@ function isTourAdmin(src) {
 }
 
 function isTourSuperAdmin(src) {
-    if (sys.auth(src) < 1 || !sys.dbRegistered(sys.name(src))) {
+    if (!sys.dbRegistered(sys.name(src))) {
         return false;
     }
     if (sys.auth(src) >= 2 || isTourOwner(src)) {
