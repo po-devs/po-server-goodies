@@ -526,6 +526,11 @@ QuestionHolder.prototype.remove = function(id)
     delete this.state.questions[id];
     this.saveQuestions();
 };
+
+QuestionHolder.prototype.unsafeRemove = function(id)
+{
+    delete this.state.questions[id];
+};
 QuestionHolder.prototype.checkq = function(id)
 {
 	if(trivreview.editingMode === true){
@@ -1164,7 +1169,6 @@ addAdminCommand("showq", function(src, commandData, channel){
 },"Allows you to see an already submitted question");
 
 addAdminCommand("editq", function(src, commandData, channel){
-    return;
 	var q = triviaq.get(commandData);
 	if(trivreview.editingMode === true){
 		triviabot.sendMessage(src, "A question is already in edit, use /checkq to see it!");
@@ -1175,7 +1179,7 @@ addAdminCommand("editq", function(src, commandData, channel){
 		trivreview.editingQuestion = q.question;
 		trivreview.editingCategory = q.category;
 		trivreview.editingAnswer = q.answer; //Moving it to front of queue seemed like a tedious job, so let's cheat it in, instead :3
-		triviaq.remove(commandData);
+		triviaq.unsafeRemove(commandData);
 		var tr = trivreview.all();
 		var id = Object.keys(tr)[0];
 		trivreview.currentId = id;
