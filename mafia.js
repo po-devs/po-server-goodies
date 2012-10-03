@@ -2168,7 +2168,7 @@ function Mafia(mafiachan) {
                                 if ("canConvert" in Action && Action.canConvert != "*" && Action.canConvert.indexOf(target.role.role) == -1) {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") couldn't be converted!");
                                 } else {
-                                    var oldRole = target.role, newRole;
+                                    var oldRole = target.role, newRole = undefined;
                                     if (typeof Action.newRole == "object") {
                                         if ("random" in Action.newRole && !Array.isArray(Action.newRole.random) && typeof Action.newRole.random === "object" && Action.newRole.random !== null) {
                                             newRole = randomSample(Action.newRole.random);
