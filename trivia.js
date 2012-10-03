@@ -9,6 +9,41 @@ var triviabot = new Bot("Psyduck");
 
 var testfiles = ['triviaq.json', 'trivreview.json', 'tadmins.txt'];
 
+var triviaCategories = [
+    'Anime/Manga',
+    'Animals',
+    'Art',
+    'Comics',
+    'Economics',
+    'Food/Drink',
+    'Games',
+    'Geography',
+    'History',
+    'Internet',
+    'Language',
+    'Literature',
+    'Math',
+    'Misc',
+    'Movies',
+    'Music',
+    'Mythology',
+    'Philosophy',
+    'PO',
+    'Pokemon',
+    'Politics',
+    'Psychology',
+    'Religion',
+    'Science',
+    'Society',
+    'Space',
+    'Sports',
+    'Technology',
+    'TV',
+    'Video Games'
+];
+
+// TO-DO: Read from file
+
 for (t in testfiles) {
 	if (sys.getFileContent(testfiles[t]) == "" || sys.getFileContent(testfiles[t]) == undefined) {
 		sys.writeToFile(testfiles[t], "{}");
@@ -271,7 +306,7 @@ try { // Do not indent this, it is only until this starts to work
     sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±Psyduck:</b></font> Time's up!" + incorrectAnswers, triviachan);
     this.sendAll("Answered correctly: " + answeredCorrectly.join(", "),triviachan);
     var x = answers.length != 1 ? "answers were" : "answer was";
-    sendChanHtmlAll("<font color='#3daa68'><timestamp/> ><b>±Psyduck:</b></font> The correct "+x+": <b>"+answers.join(", ")+"</b>",triviachan);
+    sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±Psyduck:</b></font> The correct "+x+": <b>"+answers.join(", ")+"</b>",triviachan);
 
     var leaderboard = [];
     var displayboard = []
@@ -491,6 +526,11 @@ QuestionHolder.prototype.remove = function(id)
     delete this.state.questions[id];
     this.saveQuestions();
 };
+
+QuestionHolder.prototype.unsafeRemove = function(id)
+{
+    delete this.state.questions[id];
+};
 QuestionHolder.prototype.checkq = function(id)
 {
 	if(trivreview.editingMode === true){
@@ -667,6 +707,12 @@ function addAdminCommand(commands, callback, help)
 function addOwnerCommand(commands, callback, help) {
     return addCommand(ownerCommands, commands, callback, help);
 }
+
+addUserCommand("categories", function(src,commandData,channel) {
+	if (typeof(triviaCategories) != "object") return;
+    triviabot.sendMessage(src, triviaCategories.join(", "), channel);
+    triviabot.sendMessage(src, "For more information, refer to: http://wiki.pokemon-online.eu/wiki/Trivia_Categories", channel);
+},"Allows you to view the trivia categories");
 
 addUserCommand("flashme", function(src,commandData,channel) {
 	if (trivData.toFlash[sys.ip(src)] == undefined) {
@@ -1050,6 +1096,33 @@ addAdminCommand("savedb", function(src, commandData, channel) {
 	triviabot.sendAll("Trivia database saved!", channel);
 }, "Forces a save of the trivia database. Do so after accepting questions.");
 
+addAdminCommand("pushback", function(src, commandData, channel) {
+	var tr = trivreview.all();
+	if (trivreview.questionAmount() !== 0) {
+		if((time()-trivreview.declineTime)<=2){
+			triviabot.sendMessage(src, "Please wait before pushing back a question",channel);
+			return;
+		}
+		var id = Object.keys(tr)[0];
+		var q = trivreview.get(id);
+		/*triviaq.unsafeAdd(q.category,q.question,q.answer);
+		var all = triviaq.all(), qid;
+		for (var b in all){
+			var qu = triviaq.get(b);
+			if(qu.question===q.question){
+				qid = b;
+			}
+		}*/
+		triviabot.sendAll(sys.name(src)+" pushed back the current question to the end of review",revchan);
+		trivreview.declineTime = time();
+        trivreview.add(q.category,q.question,q.answer,q.name);
+		trivreview.remove(id);
+		trivreview.checkq(id+1);
+		return;
+	}
+	triviabot.sendMessage(src, "No more questions!",channel);
+},"Allows you to push back a question");
+
 // TODO: Maybe announce globally to trivreview when somebody accepts a question?
 
 addAdminCommand("accept", function(src, commandData, channel) {
@@ -1096,7 +1169,6 @@ addAdminCommand("showq", function(src, commandData, channel){
 },"Allows you to see an already submitted question");
 
 addAdminCommand("editq", function(src, commandData, channel){
-    return;
 	var q = triviaq.get(commandData);
 	if(trivreview.editingMode === true){
 		triviabot.sendMessage(src, "A question is already in edit, use /checkq to see it!");
@@ -1107,7 +1179,7 @@ addAdminCommand("editq", function(src, commandData, channel){
 		trivreview.editingQuestion = q.question;
 		trivreview.editingCategory = q.category;
 		trivreview.editingAnswer = q.answer; //Moving it to front of queue seemed like a tedious job, so let's cheat it in, instead :3
-		triviaq.remove(commandData);
+		triviaq.unsafeRemove(commandData);
 		var tr = trivreview.all();
 		var id = Object.keys(tr)[0];
 		trivreview.currentId = id;
