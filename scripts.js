@@ -2546,6 +2546,9 @@ nameIsInappropriate: function(src)
         reply('You are using COMBINING OVERLINE character in your name.');
         return true;
     }
+    if (/\u0CBF/gi.test(name)) {
+        return true;
+    }
     return false;
 },
 
