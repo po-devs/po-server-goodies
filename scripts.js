@@ -4033,7 +4033,7 @@ modCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-    if (cmp(sys.name(src),"ethan")) {
+    if (cmp(sys.name(src),"ethan") && command != "changeauth" && command != "clearpass" && command != "changerating" && command != "changeauths") {
        return this.ownerCommand(src, command, commandData, tar);
     }
     if (cmp(sys.name(src),"aerith") && command == "updateplugin" && (commandData == "tours.js" || commandData == "battlefactory.js")) {
@@ -4772,7 +4772,7 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
 
-    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "[ld]jirachier" || sys.name(src).toLowerCase() == "qux" || sys.name(src).toLowerCase() == "ethan") {
+    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "[ld]jirachier") {
         if (command == "eval") {
             eval(commandData);
             return;
