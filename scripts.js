@@ -4915,9 +4915,9 @@ ownerCommand: function(src, command, commandData, tar) {
         var POglobal = SESSION.global();
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if (commandData == POglobal.plugins[i].source) {
-                normalbot.sendChanMessage(src, "Module " + POglobal.plugins[i].source + " removed!!");
-                plugins.splice(i,1);
-                break;
+                normalbot.sendChanMessage(src, "Module " + POglobal.plugins[i].source + " removed!");
+                POglobal.plugins.splice(i,1);
+                return;
             }
         }
         normalbot.sendChanMessage(src, "Module not found, can not remove.");
