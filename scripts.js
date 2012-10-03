@@ -3448,7 +3448,9 @@ modCommand: function(src, command, commandData, tar) {
         }
         var count = sys.teamCount(tar), tiers = [];
         for (i = 0; i < count; ++i) {
-            tiers.push(sys.tier(tar, i));
+            var ctier = sys.tier(tar, i);
+            if (tiers.indexOf(ctier) == -1)
+            tiers.push(ctier);
         }
         querybot.sendChanMessage(src,sys.name(tar)+" is in tier"+(tiers.length <= 1?"":"s")+": "+tiers.join(", "));
         return;
