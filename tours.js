@@ -925,7 +925,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.002",
+            version: "2.003",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -970,7 +970,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.002",
+        version: "2.003",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1586,14 +1586,14 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "loadevents") {
-                var url = "https://raw.github.com/lamperi/po-server-goodies/master/eventtours.txt"
+                var url = "https://raw.github.com/lamperi/po-server-goodies/master/eventtours.json"
                 if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
                     url = commandData;
                 }
                 sendBotMessage(src, "Fetching event tours from "+url, tourschan, false);
                 sys.webCall(url, function(resp) {
                     if (resp !== "") {
-                        sys.writeToFile('eventtours.txt', resp);
+                        sys.writeToFile('eventtours.json', resp);
                         sendBotAll('Updated list of event tours!', tourschan, false);
                     } else {
                         sendBotMessage(src, 'Failed to update!', tourschan, false);
