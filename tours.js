@@ -2,7 +2,7 @@
 Code for tours.js
 Coding done by Shadowfist
 
-Files used: tourscores.txt, eventscores.txt, tourscores_tier.txt, tourwinverbs.txt, tourconfig.txt, eventtours.txt,
+Files used: tourscores.txt, eventscores.txt, tourscores_tier.txt, tourwinverbs.txt, tourconfig.txt, eventtours.json,
 tourdetails.txt, eventwinners.txt, eventplayers.txt, tourmonthscore_month.txt, tourmutes.txt,
 touradmins.json, tastats.json, tourseeds.json, tourhistory.json
 */
@@ -29,7 +29,7 @@ var flashtag = "<!--f-->"; // This is used to check for flashes in the html code
 var redborder = "<font color=#FF0000><b>"+border+"</b></font>";
 var redhtmlborder = "<font color=#FF0000><timestamp/> <b>"+border+"</b></font>";
 var tourcommands = ["join: joins a tournament",
-                    "unjoin: unjoins a normal tournament during signups only, leaves an event tour",
+                    "unjoin: unjoins a tournament during signups only",
                     "queue: lists upcoming tournaments",
                     "viewround: views current round",
                     "iom: views list of ongoing matches",
