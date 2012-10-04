@@ -1079,90 +1079,74 @@ function initTours() {
 }
 
 function getEventTour(datestring) {
-    var eventfile = sys.getFileContent("eventtours.txt")
+    var eventfile = sys.getFileContent("eventtours.json")
     if (eventfile === undefined) {
         return false;
     }
-    var events = eventfile.split("\n")
+    try {
+        var events = JSON.parse(eventfile);
+    }
+    catch (e) {
+        return false;
+    }
     for (var x in events) {
-        if (events[x].length === 0) {
-            continue;
-        }
-        if (events[x].indexOf("#") === 0) {
-            continue;
-        }
-        var data = events[x].split(":")
-        if (data.length < 2) {
-            continue;
-        }
-        else {
-            if (data[0] == datestring) {
-                var tierstr = data[1];
-                if (tierstr.charAt(tierstr.length-1) == " ") {
-                    tierstr = tierstr.substr(0, tierstr.length-1);
-                }
-                var thetier = find_tier(tierstr);
-                if (thetier === null) {
-                    continue;
-                }
-                var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"];
-                var parameters = {"gen": "default", "mode": modeOfTier(thetier), "type": "double", "maxplayers": false, "event": true};
-                if (data.length > 2) {
-                    var parameterdata = [];
-                    for (var n=2;n<data.length;n++) {
-                        parameterdata.push(data[n]);
+        if (x == datestring) {
+            var eventdata = events[x];
+            var tierstr = eventdata.tier;
+            var thetier = find_tier(tierstr);
+            if (thetier === null) {
+                continue;
+            }
+            var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"];
+            var parameters = {"gen": "default", "mode": modeOfTier(thetier), "type": "double", "maxplayers": false, "event": true};
+            if (eventdata.hasOwnProperty(settings)) {
+                var parameterdata = eventdata.settings;
+                for (var p in parameterdata) {
+                    var parameterset = p;
+                    var parametervalue = parameterdata[p];
+                    if (cmp(parameterset, "mode")) {
+                        var singlesonlytiers = ["DW 1v1", "DW 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "No Preview OU", "No Preview Ubers", "Wifi OU", "Wifi Ubers"];
+                        if ((modeOfTier(thetier) == "Doubles" || modeOfTier(thetier) == "Triples" || singlesonlytiers.indexOf(thetier) != -1) && !cmp(parametervalue, modeOfTier(thetier))) {
+                            sendBotAll("The "+thetier+" tier can only be played in " + modeOfTier(thetier) + " mode!", tourserrchan, false);
+                        }
+                        else if (cmp(parametervalue, "singles")) {
+                            parameters.mode = "Singles";
+                        }
+                        else if (cmp(parametervalue, "doubles")) {
+                            parameters.mode = "Doubles";
+                        }
+                        else if (cmp(parametervalue, "triples")) {
+                            parameters.mode = "Triples";
+                        }
                     }
-                    for (var p in parameterdata) {
-                        var parameterinfo = parameterdata[p].split("=",2);
-                        var parameterset = parameterinfo[0]
-                        var parametervalue = parameterinfo[1]
-                        if (parametervalue.charAt(parametervalue.length-1) == " ") {
-                            parametervalue = parametervalue.substr(0, parametervalue.length-1);
-                        }
-                        if (cmp(parameterset, "mode")) {
-                            var singlesonlytiers = ["DW 1v1", "DW 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "No Preview OU", "No Preview Ubers", "Wifi OU", "Wifi Ubers"];
-                            if ((modeOfTier(thetier) == "Doubles" || modeOfTier(thetier) == "Triples" || singlesonlytiers.indexOf(thetier) != -1) && !cmp(parametervalue, modeOfTier(thetier))) {
-                                sendBotAll("The "+thetier+" tier can only be played in " + modeOfTier(thetier) + " mode!", tourserrchan, false);
-                            }
-                            else if (cmp(parametervalue, "singles")) {
-                                parameters.mode = "Singles";
-                            }
-                            else if (cmp(parametervalue, "doubles")) {
-                                parameters.mode = "Doubles";
-                            }
-                            else if (cmp(parametervalue, "triples")) {
-                                parameters.mode = "Triples";
-                            }
-                        }
-                        else if (cmp(parameterset, "gen") && allgentiers.indexOf(thetier) != -1) { // only allgentours can change gen
-                            var newgen = getSubgen(parametervalue, false)
-                            if (newgen !== false) {
-                                parameters.gen = newgen
-                            }
-                            else {
-                                parameters.gen = "5-1" // BW2
-                                sendBotAll(src, "Warning! The subgen '"+parametervalue+"' does not exist! Used BW2 instead!", tourserrchan, false);
-                            }
-                        }
-                        else if (cmp(parameterset, "maxplayers")) {
-                            var players = parseInt(parametervalue)
-                            var allowedcounts = [8,16,32,64,128,256,512,1024];
-                            if (allowedcounts.indexOf(players) == -1) {
-                                sendBotAll("Invalid number of maximum players!", tourserrchan, false);
-                                return false;
-                            }
-                            parameters.maxplayers = players;
+                    else if (cmp(parameterset, "gen") && allgentiers.indexOf(thetier) != -1) { // only allgentours can change gen
+                        var newgen = getSubgen(parametervalue, false)
+                        if (newgen !== false) {
+                            parameters.gen = newgen
                         }
                         else {
-                            sendBotAll("Warning! The parameter '"+parameterset+"' does not exist!", tourserrchan, false);
+                            parameters.gen = "5-1" // BW2
+                            sendBotAll(src, "Warning! The subgen '"+parametervalue+"' does not exist! Used BW2 instead!", tourserrchan, false);
                         }
                     }
+                    else if (cmp(parameterset, "maxplayers")) {
+                        var players = parseInt(parametervalue)
+                        var allowedcounts = [8,16,32,64,128,256,512,1024];
+                        if (allowedcounts.indexOf(players) == -1) {
+                            sendBotAll("Invalid number of maximum players!", tourserrchan, false);
+                            return false;
+                        }
+                        parameters.maxplayers = players;
+                    }
+                    else {
+                        sendBotAll("Warning! The parameter '"+parameterset+"' does not exist!", tourserrchan, false);
+                    }
                 }
-                if (allgentiers.indexOf(thetier) != -1 && parameters.gen === "default") {
-                    parameters.gen = "5-1";
-                }
-                return [thetier, parameters];
             }
+            if (allgentiers.indexOf(thetier) != -1 && parameters.gen === "default") {
+                parameters.gen = "5-1";
+            }
+            return [thetier, parameters];
         }
     }
     return false;
