@@ -2304,10 +2304,10 @@ function tourCommand(src, command, commandData) {
                 if (isTourOwner(src)) {
                     maxtime = Number.POSITIVE_INFINITY
                 }
-                else if (isTourSuperAdmin(src)) {
+                else if (isTourSuperAdmin(src) && sys.auth(src) >= 1) {
                     maxtime = 2592000
                 }
-                else if (sys.auth(src) >= 1) {
+                else if (sys.auth(src) >= 1 || isTourSuperAdmin(src)) {
                     maxtime = 86400
                 }
                 else {
