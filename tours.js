@@ -1707,7 +1707,7 @@ function tourCommand(src, command, commandData) {
         }
         if (isTourSuperAdmin(src)) {
             /* Tournament Admins etc. */
-            if (command == "tadmin" || command == "tadmins" || command == "megauser" || (isTourOwner(src) && (command == "tsadmin" || command == "tsadmins")) || (sys.auth(src) >= 3 && (command == "towner" || command == "towners"))) {
+            if ((sys.auth(src) >= 1 && (command == "tadmin" || command == "tadmins" || command == "megauser"))  || (isTourOwner(src) && (command == "tsadmin" || command == "tsadmins")) || (sys.auth(src) >= 3 && (command == "towner" || command == "towners"))) {
                 var tadmins = tours.touradmins
                 if (sys.dbIp(commandData) === undefined) {
                     sendBotMessage(src,"This user doesn't exist!",tourschan,false)
