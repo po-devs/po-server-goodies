@@ -2994,11 +2994,11 @@ function tourCommand(src, command, commandData) {
                 var params = queuedata.parameters;
                 if (firsttour && nextstart != "Pending" && !(params.event && tours.keys.length > 0)) {
                     sys.sendMessage(src,"1) "+queuedata.tier+": Set by "+queuedata.starter+"; Parameters: "+params.mode+" Mode"+(params.gen != "default" ? "; Gen: "+getSubgen(params.gen,true) : "")+(params.type == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(params.maxplayers)) ? "; For "+ params.maxplayers +" players": "")+(params.event ? "; Event Mode": "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
-                    firsttour = false
                 }
                 else {
                     sys.sendMessage(src,(parseInt(e)+1)+") "+queuedata.tier+": Set by "+queuedata.starter+"; Parameters: "+params.mode+" Mode"+(params.gen != "default" ? "; Gen: "+getSubgen(params.gen,true) : "")+(params.type == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(params.maxplayers)) ? "; For "+ params.maxplayers +" players": "")+(params.event ? "; Event Mode": ""), tourschan)
                 }
+                firsttour = false;
             }
             return true;
         }
