@@ -925,7 +925,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.001",
+            version: "2.002",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -970,7 +970,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.001",
+        version: "2.002",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1097,7 +1097,11 @@ function getEventTour(datestring) {
         }
         else {
             if (data[0] == datestring) {
-                var thetier = find_tier(data[1]);
+                var tierstr = data[1];
+                if (tierstr.charAt(tierstr.length-1) == " ") {
+                    tierstr = tierstr.substr(0, tierstr.length-1);
+                }
+                var thetier = find_tier(tierstr);
                 if (thetier === null) {
                     continue;
                 }
@@ -1112,6 +1116,9 @@ function getEventTour(datestring) {
                         var parameterinfo = parameterdata[p].split("=",2);
                         var parameterset = parameterinfo[0]
                         var parametervalue = parameterinfo[1]
+                        if (parametervalue.charAt(parametervalue.length-1) == " ") {
+                            parametervalue = parametervalue.substr(0, parametervalue.length-1);
+                        }
                         if (cmp(parameterset, "mode")) {
                             var singlesonlytiers = ["DW 1v1", "DW 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "No Preview OU", "No Preview Ubers", "Wifi OU", "Wifi Ubers"];
                             if ((modeOfTier(thetier) == "Doubles" || modeOfTier(thetier) == "Triples" || singlesonlytiers.indexOf(thetier) != -1) && !cmp(parametervalue, modeOfTier(thetier))) {
@@ -2146,10 +2153,10 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "passta" || (command == "passtas" && sys.auth(src) >= 1)) {
-                if (sys.auth(src) === 0) {
+                /*if (sys.auth(src) === 0) {
                     sendBotMessage(src,"This command has been disabled, please ask one of the tournament owners.",tourschan,false)
                     return true;
-                }
+                }*/
                 var newname = commandData.toLowerCase();
                 var tadmins = tours.touradmins
                 if (sys.dbIp(newname) === undefined) {
@@ -2993,7 +3000,7 @@ function tourCommand(src, command, commandData) {
             for (var e in queue) {
                 var queuedata = queue[e];
                 var params = queuedata.parameters;
-                if (firsttour && nextstart != "Pending") {
+                if (firsttour && nextstart != "Pending" && !(params.event && tours.keys.length > 0)) {
                     sys.sendMessage(src,"1) "+queuedata.tier+": Set by "+queuedata.starter+"; Parameters: "+params.mode+" Mode"+(params.gen != "default" ? "; Gen: "+getSubgen(params.gen,true) : "")+(params.type == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(params.maxplayers)) ? "; For "+ params.maxplayers +" players": "")+(params.event ? "; Event Mode": "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
                     firsttour = false
                 }
@@ -5136,7 +5143,7 @@ function sendWelcomeMessage(src, chan) {
     var nextmessage = "???"
     if (tours.queue.length >= 1) {
         var queuedata = tours.queue[0];
-        if (nextstart != "Pending") {
+        if (nextstart != "Pending" && !(queuedata.parameters.event && tours.keys.length > 0)) {
             nextmessage = queuedata.tier+"; Starts in "+nextstart;
         }
         else {
