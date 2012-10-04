@@ -1099,7 +1099,7 @@ function getEventTour(datestring) {
             }
             var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"];
             var parameters = {"gen": "default", "mode": modeOfTier(thetier), "type": "double", "maxplayers": false, "event": true};
-            if (eventdata.hasOwnProperty(settings)) {
+            if (eventdata.hasOwnProperty('settings')) {
                 var parameterdata = eventdata.settings;
                 for (var p in parameterdata) {
                     var parameterset = p;
