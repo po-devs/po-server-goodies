@@ -1,0 +1,188 @@
+{
+    "1-10-2012": {
+        "tier": "GSC OU",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "2-10-2012": {
+        "tier": "Wifi NU",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "3-10-2012": {
+        "tier": "HGSS OU",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "4-10-2012": {
+        "tier": "Wifi OU Doubles",
+        "settings": {
+            "mode": "doubles"
+        }
+    },
+    "5-10-2012": {
+        "tier": "Challenge Cup",
+        "settings": {
+            "gen": "1"
+        }
+    },
+    "6-10-2012": {
+        "tier": "Wifi Ubers",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "7-10-2012": {
+        "tier": "Wifi UU",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "8-10-2012": {
+        "tier": "RBY OU",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "9-10-2012": {
+        "tier": "Wifi LU",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "10-10-2012": {
+        "tier": "Adv OU",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "11-10-2012": {
+        "tier": "Wifi LC",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "12-10-2012": {
+        "tier": "Challenge Cup",
+        "settings": {
+            "gen": "2"
+        }
+    },
+    "13-10-2012": {
+        "tier": "Wifi OU",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "14-10-2012": {
+        "tier": "Battle Factory",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "15-10-2012": {
+        "tier": "GSC OU",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "16-10-2012": {
+        "tier": "Wifi NU",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "17-10-2012": {
+        "tier": "HGSS OU",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "18-10-2012": {
+        "tier": "Wifi Triples",
+        "settings": {
+            "mode": "triples"
+        }
+    },
+    "19-10-2012": {
+        "tier": "Challenge Cup",
+        "settings": {
+            "gen": "3"
+        }
+    },
+    "20-10-2012": {
+        "tier": "Wifi Ubers",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "21-10-2012": {
+        "tier": "Wifi UU",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "22-10-2012": {
+        "tier": "RBY OU",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "23-10-2012": {
+        "tier": "Wifi LU",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "24-10-2012": {
+        "tier": "Adv OU",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "25-10-2012": {
+        "tier": "Wifi LC",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "26-10-2012": {
+        "tier": "Challenge Cup",
+        "settings": {
+            "gen": "4"
+        }
+    },
+    "27-10-2012": {
+        "tier": "Wifi OU",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "28-10-2012": {
+        "tier": "Battle Factory",
+        "settings": {
+            "mode": "doubles"
+        }
+    },
+    "29-10-2012": {
+        "tier": "GBU Singles",
+        "settings": {
+            "mode": "singles"
+        }
+    },
+    "30-10-2012": {
+        "tier": "VGC 2012",
+        "settings": {
+            "mode": "doubles"
+        }
+    },
+    "31-10-2012": {
+        "tier": "Challenge Cup",
+        "settings": {
+            "gen": "5"
+        }
+    }
+}
