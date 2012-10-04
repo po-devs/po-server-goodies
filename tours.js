@@ -69,7 +69,7 @@ var touradmincommands = ["tourstart [tier]:[parameters]: starts a tier of that t
                     "shift [tier]:[parameters]: places a tournament in the front of the queue",
                     "tadmin[s] [name]: makes someone a megauser - s makes it only show in staff chan",
                     "tdeadmin[s] [name]: fires someone from being tournament authority - s makes it only show in staff chan",
-                    // "forcestart: ends signups immediately and starts the first round",
+                    "forcestart: ends signups immediately and starts the first round",
                     "push [player]: pushes a player into a tournament in signups (DON'T USE UNLESS ASKED)",
                     "tahistory [days]: views the activity of tour admins (days is optional, if excluded it will get the last 7 days if possible)",
                     "updatewinmessages: updates win messages from the web",
@@ -1720,31 +1720,39 @@ function tourCommand(src, command, commandData) {
                     }
                     return true;
                 }
-                var lname = commandData.toLowerCase();
-                if (tadmins.hasOwnProperty(lname)) {
-                    sendBotMessage(src,"They already have tour authority!",tourschan,false)
-                    return true;
-                }
                 var silent = command.charAt(command.length-1) == "s";
                 var authority = silent ? command.substr(0, command.length-1) : command;
                 var readauth = "megauser";
                 var desc = "mu";
+                var newauth = 1;
                 if (authority == "tsadmin") {
                     desc = "ta";
+                    newauth = 2;
                     readauth = "tournament admin";
                 }
                 if (authority == "towner") {
                     desc = "to";
+                    newauth = 3;
                     readauth = "tournament owner";
+                }
+                var lname = commandData.toLowerCase();
+                var oldauth = 0;
+                if (tadmins.hasOwnProperty(lname)) {
+                    if (tadmins[lname] == desc) {
+                        sendBotMessage(src,"They are already a "+readauth+"!",tourschan,false)
+                        return true;
+                    }
+                    oldauth = ["none", "mu", "ta", "to"].indexOf(tadmins[lname]);
                 }
                 tadmins[lname] = desc;
                 tours.touradmins = tadmins
+                var changeword = newauth > oldauth ? " promoted " : " demoted ";
                 saveTourKeys()
                 if (silent) {
-                    sendBotAll(sys.name(src)+" promoted "+commandData.toLowerCase()+" to a "+readauth+"!",sys.channelId("Indigo Plateau"),false)
+                    sendBotAll(sys.name(src)+changeword+commandData.toLowerCase()+" to a "+readauth+"!",sys.channelId("Indigo Plateau"),false)
                 }
                 else {
-                    sendBotAll(sys.name(src)+" promoted "+commandData.toLowerCase()+" to a "+readauth+"!","~st",false)
+                    sendBotAll(sys.name(src)+changeword+commandData.toLowerCase()+" to a "+readauth+"!","~st",false)
                 }
                 return true;
             }
