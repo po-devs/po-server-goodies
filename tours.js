@@ -1254,7 +1254,8 @@ function tourStep() {
             var starter = data.starter;
             var params = data.parameters;
             if (params.event && tours.keys.length > 0) {
-                return;
+                if ([3,9,15,21].indexOf(hour) == -1)
+                    return;
             }
             tours.queue.splice(0,1);
             tourstart(tourtostart,starter,tours.key,params)
