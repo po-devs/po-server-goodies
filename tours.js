@@ -925,7 +925,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.003",
+            version: "2.004",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -970,7 +970,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.003",
+        version: "2.004",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -2806,7 +2806,8 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (!sys.hasTier(src, tours.tour[key].tourtype)) {
-                sendBotMessage(src, "You need to have a team in the "+tours.tour[key].tourtype+" tier to join!",tourschan,false)
+                var needsteam = ["Challenge Cup", "Wifi CC 1v1", "CC 1v1", "Battle Factory"].indexOf(tours.tour[key].tourtype) == -1;
+                sendBotMessage(src, "You need to "+(needsteam ? "have a team for" : "change your tier to")+" the "+tours.tour[key].tourtype+" tier to join!",tourschan,false)
                 return true;
             }
             var isInCorrectGen = false;
@@ -3553,13 +3554,16 @@ function sendReminder(key) {
             if (tours.tour[key].battlers.hasOwnProperty(player)) {
                 continue;
             }
+            var activelist = tours.tour[key].active;
             if ((isSub(player) || isSub(opponent)) && sys.id(player) !== undefined) {
                 sendBotMessage(sys.id(player), "Your sub will be disqualified in "+time_handle(tours.tour[key].time-parseInt(sys.time())), tourschan, false)
             }
             else if (sys.id(player) !== undefined) {
                 var msg = "<ping/><font color=red>"+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(getFullTourName(key))+"</b> tournament, otherwise you may be disqualified for inactivity! You should talk to your opponent in #"+sys.channel(tourschan)+" to avoid disqualification - if they are not on, post a message in tournaments about it and contact a megauser if necessary.</font>";
+                var activemsg = "<ping/>"+html_escape(toCorrectCase(player))+", this is a reminder to battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(getFullTourName(key))+"</b> tournament. You should talk to your opponent in #"+sys.channel(tourschan)+" ASAP - if they are not on, post a message in tournaments about it and contact a megauser if necessary.";
+                var active = activelist.hasOwnProperty(player);
                 if (sys.isInChannel(sys.id(player), tourschan)) {
-                    sendBotMessage(sys.id(player), msg, tourschan, true)
+                    sendBotMessage(sys.id(player), active ? activemsg : msg, tourschan, true)
                 }
                 else {
                     sendBotMessage(sys.id(player), msg, "all", true)
