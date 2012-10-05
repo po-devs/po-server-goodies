@@ -5,7 +5,7 @@ module.exports = function () {
     var hangchan;
 
     var defaultMaster = "RiceKirby";
-    var defaultChannel = "Hangman Game";
+    var defaultChannel = "Hangman";
     var minBodyParts = 5;
     var winnerDelay = 60;
     var answerDelay = 10;
