@@ -313,6 +313,7 @@ function factoryCommand(src, command, commandData) {
                 if (res.suggestions.length > 0) {
                     sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
                 }
+                normalbot.sendChanMessage(src, "Finished checking.");
             });
         }
         else {
@@ -339,6 +340,7 @@ function factoryCommand(src, command, commandData) {
             if (res.suggestions.length > 0) {
                 sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
             }
+            normalbot.sendChanMessage(src, "Finished checking.");
         }
         return;
     }
