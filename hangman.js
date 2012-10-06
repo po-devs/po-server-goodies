@@ -161,6 +161,10 @@ module.exports = function () {
             sys.sendMessage(src, "±Game: You need to choose a word!", hangchan);
             return;
         }
+        if (a.length > 60 || a.length < 4) {
+            sys.sendMessage(src, "±Game: Your answer cannot be longer than 60 characters or shorter than 4 characters!");
+            return;
+        }
         var validCharacters = "abcdefghijklmnopqrstuvwxyz", validAnswer = false, l;
         for (l = 0; l < a.length; l++) {
             if (validCharacters.indexOf(a[l].toLowerCase()) !== -1) {
@@ -176,7 +180,6 @@ module.exports = function () {
             sys.sendMessage(src, "±Game: You need to write a hint!", hangchan);
             return;
         }
-
         hint = h;
         word = a.replace(/[^A-Za-z0-9\s']/g, "").toLowerCase();
         parts = (p && parseInt(p, 10) > 0) ? parseInt(p, 10) : minBodyParts;
