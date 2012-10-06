@@ -2,7 +2,7 @@
 Code for tours.js
 Coding done by Shadowfist
 
-Files used: tourscores.txt, eventscores.txt, tourscores_tier.txt, tourwinverbs.txt, tourconfig.txt, eventtours.txt,
+Files used: tourscores.txt, eventscores.txt, tourscores_tier.txt, tourwinverbs.txt, tourconfig.txt, eventtours.json,
 tourdetails.txt, eventwinners.txt, eventplayers.txt, tourmonthscore_month.txt, tourmutes.txt,
 touradmins.json, tastats.json, tourseeds.json, tourhistory.json
 */
@@ -29,7 +29,7 @@ var flashtag = "<!--f-->"; // This is used to check for flashes in the html code
 var redborder = "<font color=#FF0000><b>"+border+"</b></font>";
 var redhtmlborder = "<font color=#FF0000><timestamp/> <b>"+border+"</b></font>";
 var tourcommands = ["join: joins a tournament",
-                    "unjoin: unjoins a normal tournament during signups only, leaves an event tour",
+                    "unjoin: unjoins a tournament during signups only",
                     "queue: lists upcoming tournaments",
                     "viewround: views current round",
                     "iom: views list of ongoing matches",
@@ -69,7 +69,7 @@ var touradmincommands = ["tourstart [tier]:[parameters]: starts a tier of that t
                     "shift [tier]:[parameters]: places a tournament in the front of the queue",
                     "tadmin[s] [name]: makes someone a megauser - s makes it only show in staff chan",
                     "tdeadmin[s] [name]: fires someone from being tournament authority - s makes it only show in staff chan",
-                    // "forcestart: ends signups immediately and starts the first round",
+                    "forcestart: ends signups immediately and starts the first round",
                     "push [player]: pushes a player into a tournament in signups (DON'T USE UNLESS ASKED)",
                     "tahistory [days]: views the activity of tour admins (days is optional, if excluded it will get the last 7 days if possible)",
                     "updatewinmessages: updates win messages from the web",
@@ -925,7 +925,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.001",
+            version: "2.004",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -970,7 +970,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.001",
+        version: "2.004",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1079,83 +1079,74 @@ function initTours() {
 }
 
 function getEventTour(datestring) {
-    var eventfile = sys.getFileContent("eventtours.txt")
+    var eventfile = sys.getFileContent("eventtours.json")
     if (eventfile === undefined) {
         return false;
     }
-    var events = eventfile.split("\n")
+    try {
+        var events = JSON.parse(eventfile);
+    }
+    catch (e) {
+        return false;
+    }
     for (var x in events) {
-        if (events[x].length === 0) {
-            continue;
-        }
-        if (events[x].indexOf("#") === 0) {
-            continue;
-        }
-        var data = events[x].split(":")
-        if (data.length < 2) {
-            continue;
-        }
-        else {
-            if (data[0] == datestring) {
-                var thetier = find_tier(data[1]);
-                if (thetier === null) {
-                    continue;
-                }
-                var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"];
-                var parameters = {"gen": "default", "mode": modeOfTier(thetier), "type": "double", "maxplayers": false, "event": true};
-                if (data.length > 2) {
-                    var parameterdata = [];
-                    for (var n=2;n<data.length;n++) {
-                        parameterdata.push(data[n]);
+        if (x == datestring) {
+            var eventdata = events[x];
+            var tierstr = eventdata.tier;
+            var thetier = find_tier(tierstr);
+            if (thetier === null) {
+                continue;
+            }
+            var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"];
+            var parameters = {"gen": "default", "mode": modeOfTier(thetier), "type": "double", "maxplayers": false, "event": true};
+            if (eventdata.hasOwnProperty('settings')) {
+                var parameterdata = eventdata.settings;
+                for (var p in parameterdata) {
+                    var parameterset = p;
+                    var parametervalue = parameterdata[p];
+                    if (cmp(parameterset, "mode")) {
+                        var singlesonlytiers = ["DW 1v1", "DW 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "No Preview OU", "No Preview Ubers", "Wifi OU", "Wifi Ubers"];
+                        if ((modeOfTier(thetier) == "Doubles" || modeOfTier(thetier) == "Triples" || singlesonlytiers.indexOf(thetier) != -1) && !cmp(parametervalue, modeOfTier(thetier))) {
+                            sendBotAll("The "+thetier+" tier can only be played in " + modeOfTier(thetier) + " mode!", tourserrchan, false);
+                        }
+                        else if (cmp(parametervalue, "singles")) {
+                            parameters.mode = "Singles";
+                        }
+                        else if (cmp(parametervalue, "doubles")) {
+                            parameters.mode = "Doubles";
+                        }
+                        else if (cmp(parametervalue, "triples")) {
+                            parameters.mode = "Triples";
+                        }
                     }
-                    for (var p in parameterdata) {
-                        var parameterinfo = parameterdata[p].split("=",2);
-                        var parameterset = parameterinfo[0]
-                        var parametervalue = parameterinfo[1]
-                        if (cmp(parameterset, "mode")) {
-                            var singlesonlytiers = ["DW 1v1", "DW 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "No Preview OU", "No Preview Ubers", "Wifi OU", "Wifi Ubers"];
-                            if ((modeOfTier(thetier) == "Doubles" || modeOfTier(thetier) == "Triples" || singlesonlytiers.indexOf(thetier) != -1) && !cmp(parametervalue, modeOfTier(thetier))) {
-                                sendBotAll("The "+thetier+" tier can only be played in " + modeOfTier(thetier) + " mode!", tourserrchan, false);
-                            }
-                            else if (cmp(parametervalue, "singles")) {
-                                parameters.mode = "Singles";
-                            }
-                            else if (cmp(parametervalue, "doubles")) {
-                                parameters.mode = "Doubles";
-                            }
-                            else if (cmp(parametervalue, "triples")) {
-                                parameters.mode = "Triples";
-                            }
-                        }
-                        else if (cmp(parameterset, "gen") && allgentiers.indexOf(thetier) != -1) { // only allgentours can change gen
-                            var newgen = getSubgen(parametervalue, false)
-                            if (newgen !== false) {
-                                parameters.gen = newgen
-                            }
-                            else {
-                                parameters.gen = "5-1" // BW2
-                                sendBotAll(src, "Warning! The subgen '"+parametervalue+"' does not exist! Used BW2 instead!", tourserrchan, false);
-                            }
-                        }
-                        else if (cmp(parameterset, "maxplayers")) {
-                            var players = parseInt(parametervalue)
-                            var allowedcounts = [8,16,32,64,128,256,512,1024];
-                            if (allowedcounts.indexOf(players) == -1) {
-                                sendBotAll("Invalid number of maximum players!", tourserrchan, false);
-                                return false;
-                            }
-                            parameters.maxplayers = players;
+                    else if (cmp(parameterset, "gen") && allgentiers.indexOf(thetier) != -1) { // only allgentours can change gen
+                        var newgen = getSubgen(parametervalue, false)
+                        if (newgen !== false) {
+                            parameters.gen = newgen
                         }
                         else {
-                            sendBotAll("Warning! The parameter '"+parameterset+"' does not exist!", tourserrchan, false);
+                            parameters.gen = "5-1" // BW2
+                            sendBotAll(src, "Warning! The subgen '"+parametervalue+"' does not exist! Used BW2 instead!", tourserrchan, false);
                         }
                     }
+                    else if (cmp(parameterset, "maxplayers")) {
+                        var players = parseInt(parametervalue)
+                        var allowedcounts = [8,16,32,64,128,256,512,1024];
+                        if (allowedcounts.indexOf(players) == -1) {
+                            sendBotAll("Invalid number of maximum players!", tourserrchan, false);
+                            return false;
+                        }
+                        parameters.maxplayers = players;
+                    }
+                    else {
+                        sendBotAll("Warning! The parameter '"+parameterset+"' does not exist!", tourserrchan, false);
+                    }
                 }
-                if (allgentiers.indexOf(thetier) != -1 && parameters.gen === "default") {
-                    parameters.gen = "5-1";
-                }
-                return [thetier, parameters];
             }
+            if (allgentiers.indexOf(thetier) != -1 && parameters.gen === "default") {
+                parameters.gen = "5-1";
+            }
+            return [thetier, parameters];
         }
     }
     return false;
@@ -1263,7 +1254,8 @@ function tourStep() {
             var starter = data.starter;
             var params = data.parameters;
             if (params.event && tours.keys.length > 0) {
-                return;
+                if ([3,9,15,21].indexOf(hour) == -1)
+                    return;
             }
             tours.queue.splice(0,1);
             tourstart(tourtostart,starter,tours.key,params)
@@ -1595,14 +1587,14 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "loadevents") {
-                var url = "https://raw.github.com/lamperi/po-server-goodies/master/eventtours.txt"
+                var url = "https://raw.github.com/lamperi/po-server-goodies/master/eventtours.json"
                 if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
                     url = commandData;
                 }
                 sendBotMessage(src, "Fetching event tours from "+url, tourschan, false);
                 sys.webCall(url, function(resp) {
                     if (resp !== "") {
-                        sys.writeToFile('eventtours.txt', resp);
+                        sys.writeToFile('eventtours.json', resp);
                         sendBotAll('Updated list of event tours!', tourschan, false);
                     } else {
                         sendBotMessage(src, 'Failed to update!', tourschan, false);
@@ -1716,7 +1708,7 @@ function tourCommand(src, command, commandData) {
         }
         if (isTourSuperAdmin(src)) {
             /* Tournament Admins etc. */
-            if (command == "tadmin" || command == "tadmins" || command == "megauser" || (isTourOwner(src) && (command == "tsadmin" || command == "tsadmins")) || (sys.auth(src) >= 3 && (command == "towner" || command == "towners"))) {
+            if ((sys.auth(src) >= 1 && (command == "tadmin" || command == "tadmins" || command == "megauser"))  || (isTourOwner(src) && (command == "tsadmin" || command == "tsadmins")) || (sys.auth(src) >= 3 && (command == "towner" || command == "towners"))) {
                 var tadmins = tours.touradmins
                 if (sys.dbIp(commandData) === undefined) {
                     sendBotMessage(src,"This user doesn't exist!",tourschan,false)
@@ -1729,31 +1721,39 @@ function tourCommand(src, command, commandData) {
                     }
                     return true;
                 }
-                var lname = commandData.toLowerCase();
-                if (tadmins.hasOwnProperty(lname)) {
-                    sendBotMessage(src,"They already have tour authority!",tourschan,false)
-                    return true;
-                }
                 var silent = command.charAt(command.length-1) == "s";
                 var authority = silent ? command.substr(0, command.length-1) : command;
                 var readauth = "megauser";
                 var desc = "mu";
+                var newauth = 1;
                 if (authority == "tsadmin") {
                     desc = "ta";
+                    newauth = 2;
                     readauth = "tournament admin";
                 }
                 if (authority == "towner") {
                     desc = "to";
+                    newauth = 3;
                     readauth = "tournament owner";
+                }
+                var lname = commandData.toLowerCase();
+                var oldauth = 0;
+                if (tadmins.hasOwnProperty(lname)) {
+                    if (tadmins[lname] == desc) {
+                        sendBotMessage(src,"They are already a "+readauth+"!",tourschan,false)
+                        return true;
+                    }
+                    oldauth = ["none", "mu", "ta", "to"].indexOf(tadmins[lname]);
                 }
                 tadmins[lname] = desc;
                 tours.touradmins = tadmins
+                var changeword = newauth > oldauth ? " promoted " : " demoted ";
                 saveTourKeys()
                 if (silent) {
-                    sendBotAll(sys.name(src)+" promoted "+commandData.toLowerCase()+" to a "+readauth+"!",sys.channelId("Indigo Plateau"),false)
+                    sendBotAll(sys.name(src)+changeword+commandData.toLowerCase()+" to a "+readauth+"!",sys.channelId("Indigo Plateau"),false)
                 }
                 else {
-                    sendBotAll(sys.name(src)+" promoted "+commandData.toLowerCase()+" to a "+readauth+"!","~st",false)
+                    sendBotAll(sys.name(src)+changeword+commandData.toLowerCase()+" to a "+readauth+"!","~st",false)
                 }
                 return true;
             }
@@ -2146,10 +2146,10 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "passta" || (command == "passtas" && sys.auth(src) >= 1)) {
-                if (sys.auth(src) === 0) {
+                /*if (sys.auth(src) === 0) {
                     sendBotMessage(src,"This command has been disabled, please ask one of the tournament owners.",tourschan,false)
                     return true;
-                }
+                }*/
                 var newname = commandData.toLowerCase();
                 var tadmins = tours.touradmins
                 if (sys.dbIp(newname) === undefined) {
@@ -2305,10 +2305,10 @@ function tourCommand(src, command, commandData) {
                 if (isTourOwner(src)) {
                     maxtime = Number.POSITIVE_INFINITY
                 }
-                else if (isTourSuperAdmin(src)) {
+                else if (isTourSuperAdmin(src) && sys.auth(src) >= 1) {
                     maxtime = 2592000
                 }
-                else if (sys.auth(src) >= 1) {
+                else if (sys.auth(src) >= 1 || isTourSuperAdmin(src)) {
                     maxtime = 86400
                 }
                 else {
@@ -2806,7 +2806,8 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (!sys.hasTier(src, tours.tour[key].tourtype)) {
-                sendBotMessage(src, "You need to have a team in the "+tours.tour[key].tourtype+" tier to join!",tourschan,false)
+                var needsteam = ["Challenge Cup", "Wifi CC 1v1", "CC 1v1", "Battle Factory"].indexOf(tours.tour[key].tourtype) == -1;
+                sendBotMessage(src, "You need to "+(needsteam ? "have a team for" : "change your tier to")+" the "+tours.tour[key].tourtype+" tier to join!",tourschan,false)
                 return true;
             }
             var isInCorrectGen = false;
@@ -2993,13 +2994,13 @@ function tourCommand(src, command, commandData) {
             for (var e in queue) {
                 var queuedata = queue[e];
                 var params = queuedata.parameters;
-                if (firsttour && nextstart != "Pending") {
+                if (firsttour && nextstart != "Pending" && !(params.event && tours.keys.length > 0)) {
                     sys.sendMessage(src,"1) "+queuedata.tier+": Set by "+queuedata.starter+"; Parameters: "+params.mode+" Mode"+(params.gen != "default" ? "; Gen: "+getSubgen(params.gen,true) : "")+(params.type == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(params.maxplayers)) ? "; For "+ params.maxplayers +" players": "")+(params.event ? "; Event Mode": "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
-                    firsttour = false
                 }
                 else {
                     sys.sendMessage(src,(parseInt(e)+1)+") "+queuedata.tier+": Set by "+queuedata.starter+"; Parameters: "+params.mode+" Mode"+(params.gen != "default" ? "; Gen: "+getSubgen(params.gen,true) : "")+(params.type == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(params.maxplayers)) ? "; For "+ params.maxplayers +" players": "")+(params.event ? "; Event Mode": ""), tourschan)
                 }
+                firsttour = false;
             }
             return true;
         }
@@ -3553,13 +3554,16 @@ function sendReminder(key) {
             if (tours.tour[key].battlers.hasOwnProperty(player)) {
                 continue;
             }
+            var activelist = tours.tour[key].active;
             if ((isSub(player) || isSub(opponent)) && sys.id(player) !== undefined) {
                 sendBotMessage(sys.id(player), "Your sub will be disqualified in "+time_handle(tours.tour[key].time-parseInt(sys.time())), tourschan, false)
             }
             else if (sys.id(player) !== undefined) {
                 var msg = "<ping/><font color=red>"+html_escape(toCorrectCase(player))+", you must battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(getFullTourName(key))+"</b> tournament, otherwise you may be disqualified for inactivity! You should talk to your opponent in #"+sys.channel(tourschan)+" to avoid disqualification - if they are not on, post a message in tournaments about it and contact a megauser if necessary.</font>";
+                var activemsg = "<ping/>"+html_escape(toCorrectCase(player))+", this is a reminder to battle <b>"+(z%2 === 0 ? html_escape(toCorrectCase(tours.tour[key].players[z+1])) : html_escape(toCorrectCase(tours.tour[key].players[z-1])))+"</b> in the <b>"+html_escape(getFullTourName(key))+"</b> tournament. You should talk to your opponent in #"+sys.channel(tourschan)+" ASAP - if they are not on, post a message in tournaments about it and contact a megauser if necessary.";
+                var active = activelist.hasOwnProperty(player);
                 if (sys.isInChannel(sys.id(player), tourschan)) {
-                    sendBotMessage(sys.id(player), msg, tourschan, true)
+                    sendBotMessage(sys.id(player), active ? activemsg : msg, tourschan, true)
                 }
                 else {
                     sendBotMessage(sys.id(player), msg, "all", true)
@@ -5136,7 +5140,7 @@ function sendWelcomeMessage(src, chan) {
     var nextmessage = "???"
     if (tours.queue.length >= 1) {
         var queuedata = tours.queue[0];
-        if (nextstart != "Pending") {
+        if (nextstart != "Pending" && !(queuedata.parameters.event && tours.keys.length > 0)) {
             nextmessage = queuedata.tier+"; Starts in "+nextstart;
         }
         else {

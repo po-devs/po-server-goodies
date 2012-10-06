@@ -817,7 +817,7 @@ POChannel.prototype.isChannelOwner = function(id)
     if (!sys.dbRegistered(sys.name(id))) {
         return false;
     }
-    if (sys.auth(id) >= 3) {
+    if (sys.auth(id) >= 3 || isSuperAdmin(id)) {
         return true;
     }
     if (typeof this.masters != "object") {
@@ -2236,6 +2236,16 @@ canJoinStaffChannel : function(src) {
     return false;
 },
 
+isOfficialChan : function (chanid) {
+    var officialchans = [0, tourchannel, mafiachan, triviachan];
+    if (officialchans.indexOf(chanid) > -1) {
+        return true;
+    }
+    else {
+        return false;
+    }
+},
+
 kickAll : function(ip) {
         var players = sys.playerIds();
         var players_length = players.length;
@@ -2332,11 +2342,7 @@ afterChannelJoin : function(player, chan) {
     if (SESSION.channels(chan).isChannelOperator(player)) {
         sys.sendMessage(player, Config.channelbot + ": use /topic <topic> to change the welcome message of this channel", chan);
     }
-    var officialChan = true;
-    if (chan !== 0 && chan !== tourchannel && chan !== mafiachan && chan !== sys.channelId("Trivia")){
-        officialChan = false;
-    }
-    if (SESSION.channels(chan).masters.length <= 0 && !officialChan) {
+    if (SESSION.channels(chan).masters.length <= 0 && !this.isOfficialChan(chan)) {
         sys.sendMessage(player, Config.channelbot + ": This channel is unregistered. If you're looking to own this channel, type /register in order to prevent your channel from being stolen.", chan);
     }
     callplugins("afterChannelJoin", player, chan);
@@ -3093,7 +3099,7 @@ userCommand: function(src, command, commandData, tar) {
             channelbot.sendChanMessage(src, "You need to register on the server before registering a channel to yourself for security reasons!");
             return;
         }
-        if (sys.auth(src) < 1 && (channel === 0 || channel === tourchannel || channel === mafiachan || channel === triviachan)) {
+        if (sys.auth(src) < 1 && this.isOfficialChan(channel)) {
             channelbot.sendChanMessage(src, "You don't have sufficient authority to register this channel!");
             return;
         }
@@ -4919,9 +4925,9 @@ ownerCommand: function(src, command, commandData, tar) {
         var POglobal = SESSION.global();
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if (commandData == POglobal.plugins[i].source) {
-                normalbot.sendChanMessage(src, "Module " + POglobal.plugins[i].source + " removed!!");
-                plugins.splice(i,1);
-                break;
+                normalbot.sendChanMessage(src, "Module " + POglobal.plugins[i].source + " removed!");
+                POglobal.plugins.splice(i,1);
+                return;
             }
         }
         normalbot.sendChanMessage(src, "Module not found, can not remove.");
@@ -4996,6 +5002,12 @@ channelCommand: function(src, command, commandData, tar) {
     }
     if (command == "deinvite" || command == "demember") {
         poChannel.takeAuth(src, commandData, "member");
+        if (tar !== undefined) {
+            if (sys.isInChannel(tar, channel) && command == "deinvite") {
+                sys.kick(tar, channel);
+                channelbot.sendChanAll("And "+commandData+" was gone!");
+            }
+        }
         return;
     }
     if (command == "cmeon") {
@@ -5608,10 +5620,7 @@ afterChatMessage : function(src, message, chan)
     var ignoreChans = [staffchannel, sachannel, sys.channelId("trivreview"), sys.channelId("Watch"), mafiarev];
     var ignoreUsers = ["nixeagle"];
     var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1 && !poChannel.isChannelOperator(src);
-    var officialChan = true;
-    if (channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel !== sys.channelId("Trivia")){
-        officialChan = false;
-    }
+    var officialChan = this.isOfficialChan(chan);
     var capsday = false;
     if (typeof CAPSLOCKDAYALLOW != 'undefined') {
         capsday = CAPSLOCKDAYALLOW;

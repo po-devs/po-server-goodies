@@ -1,5 +1,5 @@
 /*
-Battle Factory Script
+Battle Factory Program Script for Pokemon Online
 
 Coding done by Shadowfist
 
@@ -7,21 +7,30 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.75";
+var bfversion = "0.8";
 var bfsets, pokedb, working;
 var randomgenders = true; // set to false if you want to play with set genders
+var utilities = require('utilities.js');
+
+// Will escape "&", ">", and "<" symbols for HTML output.
+var html_escape = utilities.html_escape;
 
 function initFactory() {
     try {
         var file = sys.getFileContent("bfteams.json");
         if (file === undefined) {
             var url = Config.base_url+"bfteams.json";
-            normalbot.sendChanMessage(src, "Teams file not found, fetching teams from "+url);
+            normalbot.sendAll("Teams file not found, fetching teams from "+url);
             sys.webCall(url, function(resp) {
                 if (resp !== "") {
                     try {
                         var test = JSON.parse(resp);
+                        var res = setlint(test, false);
+                        if (res.errors.length >= 1) {
+                            throw "Bad File";
+                        }
                         sys.writeToFile('bfteams.json', resp);
+                        bfsets = test;
                         sendChanAll('Updated Battle Factory Teams!', staffchannel);
                     }
                     catch (err) {
@@ -35,7 +44,9 @@ function initFactory() {
                 }
             });
         }
-        bfsets = JSON.parse(file);
+        else {
+            bfsets = JSON.parse(file);
+        }
         getPokeDb();
     }
     catch (e) {
@@ -66,7 +77,7 @@ function getPokeDb() {
             continue;
         }
         var gpokeid = gdata[0].split(":");
-        var gpoke = sys.pokemon(parseInt(gpokeid[0]));
+        var gpoke = sys.pokemon(parseInt(gpokeid[0]), 10);
         pokedb[gpoke].push(parseInt(gdata[1],10));
     }
 }
@@ -82,6 +93,22 @@ function dumpData(tar, team) {
         sys.sendHtmlMessage(tar, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>",sendchannel);
     }
     return;
+}
+
+// Whether the data is readable or not
+function isReadable() {
+    try {
+        var file = JSON.parse(sys.getFileContent("bfteams.json"));
+    }
+    catch (err) {
+        return false;
+    }
+    if (file.hasOwnProperty("readable")) {
+        if (file.readable === true) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function refresh() {
@@ -107,7 +134,16 @@ function refresh() {
                 continue;
             }
             tteams += 1;
-            var setlength = bfsets[a].length;
+            var setlength = 0;
+            if (isReadable()) {
+                var lteams = bfsets[a];
+                for (var k in lteams) {
+                    setlength += 1;
+                }
+            }
+            else {
+                setlength = bfsets[a].length;
+            }
             tsets += setlength;
         }
         message.push("Total: "+tteams+" pokes and "+tsets+" sets.");
@@ -145,142 +181,6 @@ function toNumber(charstring) {
 }
 
 function factoryCommand(src, command, commandData) {
-    // This can add sets through GUI, but it's hard to see the potential results.
-    if (command == "exportteam") {
-        normalbot.sendChanMessage(src, "This command is disabled, edit the sets externally.");
-        return;
-        /*var team = {};
-        for (var n=0;n<sys.teamCount(src);n++) {
-            for (var x=0;x<6;x++) {
-                var pokecode = "";
-                var poke = sys.teamPoke(src, n, x);
-                if (poke === 0) { // don't export missingno.
-                    continue;
-                }
-                // This accounts for formes
-                var pokenum = poke%65536;
-                var formnum = Math.floor(poke/65536);
-                var nature = sys.teamPokeNature(src, n, x);
-                var ability = sys.teamPokeAbility(src, n, x);
-                var item = sys.teamPokeItem(src, n, x);
-                var level = sys.teamPokeLevel(src, n, x);
-                pokecode = pokecode + toChars(pokenum,2) + toChars(formnum,1) + toChars(nature,1) + toChars(ability,2) + toChars(item,3) + toChars(level,2);
-                var movelist = [];
-                for (var m=0; m<4; m++) {
-                    var move = sys.teamPokeMove(src, n, x, m);
-                    movelist.push(sys.move(move));
-                    pokecode = pokecode + toChars(move, 2);
-                }
-                var evlist = [];
-                for (var e=0; e<6; e++) {
-                    var ev = sys.teamPokeEV(src, n, x, e);
-                    evlist.push(ev);
-                    pokecode = pokecode + toChars(ev, 2);
-                }
-                var dvlist = [];
-                for (var d=0; d<6; d++) {
-                    var dv = sys.teamPokeDV(src, n, x, d);
-                    dvlist.push(dv);
-                    pokecode = pokecode + toChars(dv, 1);
-                }
-                var gender = sys.teamPokeGender(src, n, x);
-                pokecode = pokecode + toChars(gender, 1);
-                team[pokecode] = {
-                    'poke': sys.pokemon(poke),
-                    'species': pokenum,
-                    'nature': sys.nature(nature),
-                    'ability': sys.ability(ability),
-                    'item': sys.item(item),
-                    'level': level,
-                    'moves': movelist,
-                    'evs': evlist,
-                    'dvs': dvlist,
-                    'gender': gender
-                };
-            }
-        }
-        var teamsave = {};
-        var exportfile = sys.getFileContent("bfteams.json");
-        if (exportfile !== undefined) {
-            try {
-                teamsave = JSON.parse(exportfile);
-            }
-            catch (err) {
-                normalbot.sendChanMessage(src, "Teamsave data was corrupt.");
-                return;
-            }
-        }
-        // Write the short code
-        for (var t in team) {
-            var species = team[t].species;
-            if (teamsave.hasOwnProperty(species)) {
-                if (teamsave[species].indexOf(t) == -1) {
-                    teamsave[species].push(t);
-                }
-                continue;
-            }
-            else {
-                teamsave[species] = [t];
-            }
-        }
-        sys.writeToFile("bfteams.json", JSON.stringify(teamsave, null, 4));
-        // Write the instant export
-        sys.writeToFile("exportteam.json", JSON.stringify(team, null, 4));
-        normalbot.sendChanMessage(src, "Exported the team.");
-        refresh();
-        return;*/
-    }
-    if (command == "importteam") {
-        var teamfile = sys.getFileContent("exportteam.json");
-        try {
-            var team = JSON.parse(teamfile);
-            var teaminfo = [];
-            for (var x in team) {
-                teaminfo.push(team[x]);
-                if (teaminfo.length >= 6) {
-                    break;
-                }
-            }
-            for (var s=0;s<6;s++) {
-                var pdata = teaminfo[s];
-                sys.changePokeNum(src,0,s,sys.pokeNum(pdata.poke));
-                sys.changePokeNature(src,0,s,sys.natureNum(pdata.nature));
-                sys.changePokeAbility(src,0,s,sys.abilityNum(pdata.ability));
-                sys.changePokeItem(src,0,s,sys.itemNum(pdata.item));
-                for (var m=0;m<4;m++) {
-                    sys.changePokeMove(src,0,s,m,sys.moveNum(pdata.moves[m]));
-                }
-                for (var c=0;c<6;c++) {
-                    sys.changeTeamPokeEV(src,0,s,c,0); // this resets the EV count
-                }
-                for (var e=0;e<6;e++) {
-                    sys.changeTeamPokeEV(src,0,s,e,pdata.evs[e]);
-                }
-                for (var d=0;d<6;d++) {
-                    sys.changeTeamPokeDV(src,0,s,d,pdata.dvs[d]);
-                }
-                var happiness = sys.rand(0,256);
-                // maximise happiness if the poke has Return, minmise if it has frustration
-                if (sys.hasTeamPokeMove(src, 0, x, sys.moveNum('Return'))) {
-                    happiness = 255;
-                }
-                else if (sys.hasTeamPokeMove(src, 0, x, sys.moveNum('Frustration'))) {
-                    happiness = 0;
-                }
-                sys.changePokeHappiness(src,0,s,happiness);
-                sys.changePokeShine(src, 0, s, sys.rand(0,8192) === 0 ? true : false);
-                sys.changePokeGender(src,0,s,pdata.gender);
-                sys.changePokeLevel(src,0,s,pdata.level);
-            }
-            sys.updatePlayer(src);
-        }
-        catch (err) {
-            normalbot.sendChanMessage(src, "Team file was empty or corrupt, could not import.");
-            return;
-        }
-        normalbot.sendChanMessage(src, "Imported the team.");
-        return;
-    }
     if (command == "updateteams") {
         var url = Config.base_url+"bfteams.json";
         if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
@@ -291,6 +191,17 @@ function factoryCommand(src, command, commandData) {
             if (resp !== "") {
                 try {
                     var test = JSON.parse(resp);
+                    var res = setlint(test, false);
+                    if (res.errors.length > 0) {
+                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=red>ERRORS</font></th><th>"+res.errors.length+"</th></tr><tr>"+res.errors.join("</tr><tr>")+"</tr></table>");
+                        throw "Bad File";
+                    }
+                    if (res.warnings.length > 0) {
+                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=orange>WARNINGS</font></th><th>"+res.warnings.length+"</th></tr><tr>"+res.warnings.join("</tr><tr>")+"</tr></table>");
+                    }
+                    if (res.suggestions.length > 0) {
+                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
+                    }
                     sys.writeToFile('bfteams.json', resp);
                     sendChanAll('Updated Battle Factory Teams!', staffchannel);
                     refresh();
@@ -315,7 +226,16 @@ function factoryCommand(src, command, commandData) {
             }
             var poke = sys.pokemon(parseInt(t, 10));
             tteams += 1;
-            var setlength = tfile[t].length;
+            var setlength = 0;
+            if (isReadable()) {
+                var lteams = tfile[t];
+                for (var k in lteams) {
+                    setlength += 1;
+                }
+            }
+            else {
+                setlength = tfile[t].length;
+            }
             tsets += setlength;
             normalbot.sendChanMessage(src, poke+": Has "+setlength+" sets.");
         }
@@ -344,7 +264,12 @@ function factoryCommand(src, command, commandData) {
         var pokesets = bfsets[id];
         for (var b in pokesets) {
             try {
-                sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
+                if (isReadable()) {
+                    sets.push(getReadablePoke(b).join("<br/>"));
+                }
+                else {
+                    sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
+                }
             }
             catch (err) {
                 normalbot.sendChanMessage(src, "Error (id: "+pokesets[b]+"): "+err);
@@ -355,7 +280,320 @@ function factoryCommand(src, command, commandData) {
         }
         return;
     }
+    if (command == "scansets") {
+        var res = {};
+        var checkfile;
+        var filename = "bfteams.json";
+        if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
+            var url = commandData;
+            normalbot.sendChanMessage(src, "Fetching teams from "+url+" for checking");
+            sys.webCall(url, function(resp) {
+                var localerr = false;
+                if (resp !== "") {
+                    try {
+                        checkfile = JSON.parse(resp);
+                        res = setlint(checkfile, true);
+                    }
+                    catch (err) {
+                        localerr = err;
+                    }
+                }
+                else {
+                    localerr = "Web file not found: Invalid URL or web functions are not working";
+                }
+                if (localerr !== false) {
+                    res = {'errors': ["<td>FATAL ERROR</td><td>"+localerr+"</td>"], 'warnings': [], 'suggestions': []};
+                }
+                if (res.errors.length > 0) {
+                    sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=red>ERRORS</font></th><th>"+res.errors.length+"</th></tr><tr>"+res.errors.join("</tr><tr>")+"</tr></table>");
+                }
+                if (res.warnings.length > 0) {
+                    sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=orange>WARNINGS</font></th><th>"+res.warnings.length+"</th></tr><tr>"+res.warnings.join("</tr><tr>")+"</tr></table>");
+                }
+                if (res.suggestions.length > 0) {
+                    sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
+                }
+                normalbot.sendChanMessage(src, "Finished checking.");
+            });
+        }
+        else {
+            try {
+                if (commandData !== "") {
+                    filename = commandData;
+                }
+                var test = sys.getFileContent(filename);
+                if (test === undefined) {
+                    throw "Invalid File Path: The file '"+filename+"' does not exist or could not be accessed";
+                }
+                checkfile = JSON.parse(test);
+                res = setlint(checkfile, true);
+            }
+            catch (err) {
+                res = {'errors': ["<td>FATAL ERROR</td><td>"+html_escape(err)+"</td>"], 'warnings': [], 'suggestions': []};
+            }
+            if (res.errors.length > 0) {
+                sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=red>ERRORS</font></th><th>"+res.errors.length+"</th></tr><tr>"+res.errors.join("</tr><tr>")+"</tr></table>");
+            }
+            if (res.warnings.length > 0) {
+                sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=orange>WARNINGS</font></th><th>"+res.warnings.length+"</th></tr><tr>"+res.warnings.join("</tr><tr>")+"</tr></table>");
+            }
+            if (res.suggestions.length > 0) {
+                sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
+            }
+            normalbot.sendChanMessage(src, "Finished checking.");
+        }
+        return;
+    }
     return 'no command';
+}
+
+// Set file checking
+function setlint(checkfile, strict) {
+    var errors = [];
+    var warnings = [];
+    var suggestions = [];
+    if (checkfile.hasOwnProperty('desc')) {
+        if (typeof checkfile.desc !== "string") {
+            warnings.push("<td>Description</td><td>desc property must be a string</td>");
+        }
+    }
+    else {
+        suggestions.push("<td>Description</td><td>desc property can be used to give a description for your team pack</td>");
+    }
+    var readable = false;
+    if (checkfile.hasOwnProperty("readable")) {
+        if (checkfile.readable === true) {
+            readable = true;
+        }
+    }
+    var stats = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
+    for (var x in checkfile) {
+        var setinfo = checkfile[x];
+        if (typeof setinfo !== 'object') {
+            if (["readable", "desc"].indexOf(x) == -1) {
+                warnings.push("<td>Bad property</td><td>'"+html_escape(x)+"' property must be an object</td>");
+            }
+            continue;
+        }
+        if (readable) {
+            var sets = checkfile[x];
+            var available = [];
+            var setids = [];
+            for (var t in sets) {
+                if (typeof sets[t] !== "object") {
+                    errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+t+": properties of it must be an object</td>");
+                    continue;
+                }
+                available.push(sets[t]);
+                setids.push(t);
+            }
+            for (var j in available) {
+                var prop = available[j];
+                var sid = setids[j];
+                for (var p in prop) {
+                    if (['poke', 'nature', 'ability', 'item'].indexOf(p) != -1) {
+                        if (typeof prop[p] !== "string") {
+                            errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+": property '"+p+"' must be a string</td>");
+                        }
+                    }
+                    else if (['level', 'gender'].indexOf(p) != -1) {
+                        if (typeof prop[p] !== "number") {
+                            errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+": property '"+p+"' must be a number</td>");
+                        }
+                        else if ([0,1,2].indexOf(prop.gender) == -1) {
+                            errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+": gender property must be 0, 1 or 2</td>");
+                        }
+                        else if (prop.level < 1 || prop.level > 100) {
+                            errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+": level property must be an integer between 1 and 100 (inclusive)</td>");
+                        }
+                    }
+                    else if (['moves', 'evs', 'dvs'].indexOf(p) != -1) {
+                        if (typeof prop[p] !== "object") {
+                            errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+": property '"+p+"' must be an array</td>");
+                        }
+                        else {
+                            if (p == 'moves' && prop[p].length != 4) {
+                                errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+": property '"+p+"' must be an array of length 4</td>");
+                            }
+                            if (['evs', 'dvs'].indexOf(p) != -1 && prop[p].length != 6) {
+                                errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+": property '"+p+"' must be an array of length 6</td>");
+                            }
+                            else if (p == 'dvs'){
+                                var dvlist = prop.dvs;
+                                for (var d in dvlist) {
+                                    if (typeof dvlist[d] !== "number" || dvlist[d] < 0 || dvlist[d] > 31) {
+                                        errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+"; property '"+p+"'; array values must be integers between 0 and 31 inclusive.</td>");
+                                    }
+                                }
+                            }
+                            else if (p == 'evs'){
+                                var evlist = prop.evs;
+                                var evsum = 0;
+                                for (var e in evlist) {
+                                    if (typeof evlist[e] !== "number" || evlist[e] < 0 || evlist[e] > 255) {
+                                        errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+"; property '"+p+"'; array values must be integers between 0 and 255 inclusive.</td>");
+                                    }
+                                    else {
+                                        evsum += evlist[e];
+                                    }
+                                }
+                                if (evsum > 510) {
+                                    errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+"; property '"+p+"'; maximum sum of EVs must not exceed 510.</td>");
+                                }
+                            }
+                            else {
+                                var moves = prop.moves;
+                                for (var m in moves) {
+                                    if (typeof moves[m] !== "string") {
+                                        errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+"; property '"+p+"'; array values must be strings.</td>");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else {
+                        warnings.push("<td>Unused Property</td><td>Property '"+html_escape(x)+"'; set "+sid+": unused property '"+p+"'</td>");
+                    }
+                }
+                var iserr = false;
+                var reqprops = ['poke', 'nature', 'ability', 'item', 'level', 'moves', 'evs', 'dvs', 'gender'];
+                for (var a in reqprops) {
+                    if (!prop.hasOwnProperty(reqprops[a])) {
+                        errors.push("<td>Missing property</td><td>Property '"+html_escape(x)+"'; set "+sid+": property '"+reqprops[a]+"' is missing</td>");
+                        iserr = true;
+                    }
+                }
+                if (iserr) {
+                    continue;
+                }
+                var testprop = {
+                    'poke': sys.pokeNum(prop.poke),
+                    'nature': sys.natureNum(prop.nature),
+                    'ability': sys.abilityNum(prop.ability),
+                    'item': sys.itemNum(prop.item),
+                    'level': prop.level,
+                    'moves': [sys.moveNum(prop.moves[0]),sys.moveNum(prop.moves[1]),sys.moveNum(prop.moves[2]),sys.moveNum(prop.moves[3])],
+                    'evs': prop.evs,
+                    'dvs': prop.dvs,
+                    'gender': prop.gender
+                };
+                if (testprop.poke === 0 || testprop.poke === undefined) {
+                    errors.push("<td>Missing Poke</td><td>Property '"+html_escape(x)+"'; set "+sid+": Pokemon detected was Missingno.</td>");
+                }
+                if (testprop.item === 0 || testprop.item === undefined) {
+                    warnings.push("<td>Missing Item</td><td>Property '"+html_escape(x)+"'; set "+sid+": Not holding an item.</td>");
+                }
+                var nummoves = 0;
+                for (var mm = 0; mm < 4; mm++) {
+                    if (testprop.moves[mm] === 0 || testprop.moves[mm] === undefined) {
+                        warnings.push("<td>Missing Move</td><td>Property '"+html_escape(x)+"'; set "+sid+": Moveslot "+(mm+1)+" is empty.</td>");
+                    }
+                    else {
+                        nummoves += 1;
+                    }
+                }
+                if (nummoves === 0) {
+                    errors.push("<td>No Moves</td><td>Property '"+html_escape(x)+"'; set "+sid+": Pokemon has no moves.</td>");
+                }
+                var ttlevsum = 0;
+                for (var ee in testprop.evs) {
+                    if (testprop.evs[ee]%4 !== 0) {
+                        warnings.push("<td>Wasted EVs</td><td>Property '"+html_escape(x)+"'; set "+sid+": EVs for "+stats[ee]+" are wasted. (Use a multiple of 4)</td>");
+                    }
+                    ttlevsum += testprop.evs[ee];
+                }
+                if (ttlevsum < 508) {
+                    warnings.push("<td>Unassigned EVs</td><td>Property '"+html_escape(x)+"'; set "+sid+": This Pokemon could have more EVs.</td>");
+                }
+            }
+        }
+        else {
+            var csets = checkfile[x];
+            var cavailable = [];
+            for (var ct in csets) {
+                if (typeof csets[ct] !== "string") {
+                    errors.push("<td>Bad set</td><td>Property '"+html_escape(x)+"'; array elements must be 38 character alphanumeric strings</td>");
+                    continue;
+                }
+                cavailable.push(csets[ct]);
+            }
+            for (var k in cavailable) {
+                var set = cavailable[k];
+                if (set.length != 38) {
+                    errors.push("<td>Bad set</td><td>Property '"+html_escape(x)+"'; array elements must be 38 character alphanumeric strings</td>");
+                    continue;
+                }
+                var ctestprop = {
+                    'poke': sys.pokemon(toNumber(set.substr(0,2))+65536*toNumber(set.substr(2,1))),
+                    'nature': sys.nature(toNumber(set.substr(3,1))),
+                    'ability': sys.ability(toNumber(set.substr(4,2))),
+                    'item': sys.item(toNumber(set.substr(6,3))),
+                    'level': toNumber(set.substr(9,2)),
+                    'moves': [sys.move(toNumber(set.substr(11,2))),sys.move(toNumber(set.substr(13,2))),sys.move(toNumber(set.substr(15,2))),sys.move(toNumber(set.substr(17,2)))],
+                    'evs': [toNumber(set.substr(19,2)),toNumber(set.substr(21,2)),toNumber(set.substr(23,2)),toNumber(set.substr(25,2)),toNumber(set.substr(27,2)),toNumber(set.substr(29,2))],
+                    'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))],
+                    'gender': toNumber(set.substr(37,1))
+                };
+                if (ctestprop.poke === sys.pokemon(0) || ctestprop.poke === undefined) {
+                    errors.push("<td>Missing Poke</td><td>Property '"+html_escape(x)+"'; set "+set+": Pokemon detected was Missingno.</td>");
+                }
+                if (ctestprop.level < 1 || ctestprop.level > 100) {
+                    errors.push("<td>Level out of range</td><td>Property '"+html_escape(x)+"'; set "+set+": level must be an integer between 1 and 100 (inclusive)</td>");
+                }
+                if ([0,1,2].indexOf(ctestprop.gender) == -1) {
+                    errors.push("<td>Invalid Gender</td><td>Property '"+html_escape(x)+"'; set "+t+": gender property must be 0, 1 or 2</td>");
+                }
+                if (ctestprop.item === sys.item(0) || ctestprop.item === undefined) {
+                    warnings.push("<td>Missing Item</td><td>Property '"+html_escape(x)+"'; set "+set+": Not holding an item.</td>");
+                }
+                var cnummoves = 0;
+                for (var cm = 0; cm < 4; cm++) {
+                    if (ctestprop.moves[cm] === 0  || ctestprop.moves[cm] === undefined) {
+                        warnings.push("<td>Missing Move</td><td>Property '"+html_escape(x)+"'; set "+set+": Moveslot "+(cm+1)+" is empty.</td>");
+                    }
+                    else {
+                        cnummoves += 1;
+                    }
+                }
+                if (cnummoves === 0) {
+                    errors.push("<td>No Moves</td><td>Property '"+html_escape(x)+"'; set "+set+": Pokemon has no moves.</td>");
+                }
+                var cttlevsum = 0;
+                for (var ce in ctestprop.evs) {
+                    if (typeof ctestprop.evs[ce] !== "number" || ctestprop.evs[ce] < 0 || ctestprop.evs[ce] > 255) {
+                        errors.push("<td>Bad EV Amount</td><td>Property '"+html_escape(x)+"'; set "+set+"; stat "+stats[ce]+" : EVs must be integers between 0 and 255 inclusive.</td>");
+                    }
+                    else if (ctestprop.evs[ce]%4 !== 0) {
+                        warnings.push("<td>Wasted EVs</td><td>Property '"+html_escape(x)+"'; set "+set+": EVs for "+stats[ce]+" are wasted. (Use a multiple of 4)</td>");
+                        cttlevsum += ctestprop.evs[ce];
+                    }
+                    else {
+                        cttlevsum += ctestprop.evs[ce];
+                    }
+                }
+                if (cttlevsum > 510) {
+                    errors.push("<td>Too many EVs</td><td>Property '"+html_escape(x)+"'; set "+set+": This Pokemon could have more EVs.</td>");
+                }
+                else if (cttlevsum < 508) {
+                    warnings.push("<td>Unassigned EVs</td><td>Property '"+html_escape(x)+"'; set "+set+": This Pokemon could have more EVs.</td>");
+                }
+                for (var cd in ctestprop.dvs) {
+                    if (typeof ctestprop.dvs[cd] !== "number" || ctestprop.dvs[cd] < 0 || ctestprop.dvs[cd] > 31) {
+                        errors.push("<td>Bad EV Amount</td><td>Property '"+html_escape(x)+"'; set "+set+"; stat "+stats[cd]+" : IVs must be integers between 0 and 31 inclusive.</td>");
+                    }
+                }
+            }
+        }
+    }
+    if (errors.length > 100) {
+        errors = errors.slice(0,100);
+        errors.push("<td>TOO MANY ERRORS</td><td>There are more than 100 errors in this file.</td>");
+    }
+    if (warnings.length > 100) {
+        warnings = warnings.slice(0,100);
+        errors.push("<td>TOO MANY WARNINGS</td><td>There are more than 100 warnings in this file.</td>");
+    }
+    return {'errors': errors, 'warnings': warnings, 'suggestions': suggestions};
 }
 
 function getReadablePoke(set) {
@@ -514,6 +752,7 @@ function generateTeam(src, team) {
         var pokedata = bfsets;
         var teaminfo = [];
         var pokearray = [];
+        var readable = isReadable();
         for (var x in pokedata) {
             if (typeof pokedata[x] == "object") {
                 pokearray.push(x);
@@ -526,18 +765,38 @@ function generateTeam(src, team) {
             }
             var pokes = pokearray.splice(sys.rand(0, pokearray.length),1);
             var sets = pokedata[pokes];
-            var set = sets[sys.rand(0, sets.length)]
-            teaminfo[p] = {
-                'poke': toNumber(set.substr(0,2))+65536*toNumber(set.substr(2,1)),
-                'nature': toNumber(set.substr(3,1)),
-                'ability': toNumber(set.substr(4,2)),
-                'item': toNumber(set.substr(6,3)),
-                'level': toNumber(set.substr(9,2)),
-                'moves': [toNumber(set.substr(11,2)),toNumber(set.substr(13,2)),toNumber(set.substr(15,2)),toNumber(set.substr(17,2))],
-                'evs': [toNumber(set.substr(19,2)),toNumber(set.substr(21,2)),toNumber(set.substr(23,2)),toNumber(set.substr(25,2)),toNumber(set.substr(27,2)),toNumber(set.substr(29,2))],
-                'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))],
-                'gender': toNumber(set.substr(37,1))
-            };
+            if (readable) {
+                var available = [];
+                for (var t in sets) {
+                    available.push(sets[t]);
+                }
+                var prop = available[sys.rand(0, available.length)]
+                teaminfo[p] = {
+                    'poke': sys.pokeNum(prop.poke),
+                    'nature': sys.natureNum(prop.nature),
+                    'ability': sys.abilityNum(prop.ability),
+                    'item': sys.itemNum(prop.item),
+                    'level': prop.level,
+                    'moves': [sys.moveNum(prop.moves[0]),sys.moveNum(prop.moves[1]),sys.moveNum(prop.moves[2]),sys.moveNum(prop.moves[3])],
+                    'evs': prop.evs,
+                    'dvs': prop.dvs,
+                    'gender': prop.gender
+                };
+            }
+            else {
+                var set = sets[sys.rand(0, sets.length)]
+                teaminfo[p] = {
+                    'poke': toNumber(set.substr(0,2))+65536*toNumber(set.substr(2,1)),
+                    'nature': toNumber(set.substr(3,1)),
+                    'ability': toNumber(set.substr(4,2)),
+                    'item': toNumber(set.substr(6,3)),
+                    'level': toNumber(set.substr(9,2)),
+                    'moves': [toNumber(set.substr(11,2)),toNumber(set.substr(13,2)),toNumber(set.substr(15,2)),toNumber(set.substr(17,2))],
+                    'evs': [toNumber(set.substr(19,2)),toNumber(set.substr(21,2)),toNumber(set.substr(23,2)),toNumber(set.substr(25,2)),toNumber(set.substr(27,2)),toNumber(set.substr(29,2))],
+                    'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))],
+                    'gender': toNumber(set.substr(37,1))
+                };
+            }
         }
         for (var s=0;s<6;s++) {
             var pdata = teaminfo[s];
@@ -659,9 +918,8 @@ module.exports = {
                 "/pokeslist: Views the list of installed Pokemon",
                 "/pokecode [alpha code]: Converts a code to readable format.",
                 "/pokesets [poke]: Gets the sets for that pokemon in readable format",
-                "/exportteam: Exports your current team to code.",
-                "/importteam: Imports the last team made",
-                "/updateteams: Update teams from the web"
+                "/updateteams: Update teams from the web",
+                "/scansets [url/location]: Scan a set file for any critical errors (scans current if no file specified)"
             ];
         }
         if (help.length > 0) {

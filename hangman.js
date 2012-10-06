@@ -5,10 +5,11 @@ module.exports = function () {
     var hangchan;
 
     var defaultMaster = "RiceKirby";
-    var defaultChannel = "Hangman Game";
+    var defaultChannel = "Hangman";
     var minBodyParts = 5;
     var winnerDelay = 60;
     var answerDelay = 10;
+    var maxAnswers = 3;
 
     var host;
     var hostName;
@@ -23,6 +24,7 @@ module.exports = function () {
 
     var points;
     var misses;
+    var answers;
 
     this.guessCharacter = function (src, commandData) {
         if (sys.ip(src) === host) {
@@ -69,7 +71,7 @@ module.exports = function () {
 
         usedLetters.push(commandData.toLowerCase());
         sendChanHtmlAll(" ", hangchan);
-        sendChanAll("±Guess: " + sys.name(src) + " guessed " + letter.toUpperCase() + " and got it " + (correct ? "right (" + p + " points)" :"wrong") + "!. Current Word: " + currentWord.join(" ") + "", hangchan);
+        sendChanAll("±Guess: " + sys.name(src) + " guessed " + letter.toUpperCase() + " and got it " + (correct ? "right (" + p + " points)" :"wrong") + "! Current Word: " + currentWord.join(" ") + "", hangchan);
 
         if (currentWord.indexOf("_") === -1) {
             this.applyPoints(src, p + 2);
@@ -111,17 +113,22 @@ module.exports = function () {
             sys.sendMessage(src, "±Game: You need to wait for another " + (Math.floor((SESSION.users(src).hangmanTime - now) / 1000) + 1) + " seconds before submitting another guess!", hangchan);
             return;
         }
+        if (sys.name(src) in answers && answers[sys.name(src)] >= maxAnswers) {
+            sys.sendMessage(src, "±Game: You can only use /a " + maxAnswers + " times!", hangchan);
+            return;
+        }
+        var ans = commandData.replace(/[^A-Za-z0-9\s']/g, "");
 
         sendChanHtmlAll(" ", hangchan);
-        sendChanAll("±Game: " + sys.name(src) + " answered " + commandData + "!", hangchan);
-        if (commandData.toLowerCase() === word.toLowerCase()) {
+        sendChanAll("±Game: " + sys.name(src) + " answered " + ans + "!", hangchan);
+        if (ans.toLowerCase() === word.toLowerCase()) {
             var p = 0, e;
             for (e in currentWord) {
                 if (currentWord[e] === "_") {
                     p++;
                 }
             }
-            p = Math.floor(p * 1.5) + (p === 1 ? 2 : 1);
+            p = Math.floor(p * 1.34);
             this.applyPoints(src, p);
 
             sendChanAll("*** ************************************************************ ***", hangchan);
@@ -131,6 +138,7 @@ module.exports = function () {
             sendChanHtmlAll(" ", hangchan);
         } else {
             this.addMiss(src);
+            this.addAnswerUse(src);
             sendChanAll("±Game: " + sys.name(src) + "'s answer was wrong! The game continues!", hangchan);
             sendChanHtmlAll(" ", hangchan);
             SESSION.users(src).hangmanTime = (new Date()).getTime() + answerDelay * 2000;
@@ -170,11 +178,12 @@ module.exports = function () {
         }
 
         hint = h;
-        word = a.toLowerCase();
+        word = a.replace(/[^A-Za-z0-9\s']/g, "").toLowerCase();
         parts = (p && parseInt(p, 10) > 0) ? parseInt(p, 10) : minBodyParts;
         parts = (parts < minBodyParts) ? minBodyParts : parts;
         points = {};
         misses = {};
+        answers = {};
 
         usedLetters = [];
         currentWord = [];
@@ -211,6 +220,12 @@ module.exports = function () {
             misses[sys.name(src)] = 0;
         }
         misses[sys.name(src)] += 1;
+    };
+    this.addAnswerUse = function(src) {
+        if (!answers[sys.name(src)]) {
+            answers[sys.name(src)] = 0;
+        }
+        answers[sys.name(src)] += 1;
     };
     this.countPoints = function () {
         var maxPoints = 0, winners = [], w;
@@ -266,6 +281,22 @@ module.exports = function () {
         winner = name;
         nextGame = (new Date()).getTime() + winnerDelay * 1000;
         this.resetTimers();
+    };
+    this.passWinner = function(src, commandData) {
+        if (word !== undefined) {
+            sys.sendMessage(src, "A game is already running!", hangchan);
+            return;
+        }
+        if (sys.name(src) !== winner && hangman.authLevel(src) < 1) {
+            sys.sendMessage(src, "You are not the last winner or auth!", hangchan);
+            return;
+        }
+        if (sys.id(commandData) == undefined || !sys.isInChannel(sys.id(commandData), hangchan) || sys.name(sys.id(commandData)) == winner) {
+            sys.sendMessage(src, "You cannot pass start rights to this person!", hangchan);
+            return;
+        }
+        this.setWinner(sys.name(sys.id(commandData)));
+        sendChanAll("±Game: " + sys.name(src) + " has passed starting rights to " + commandData + "!", hangchan);
     };
     this.endGame = function (src) {
         if (word) {
@@ -329,6 +360,7 @@ module.exports = function () {
             sys.sendMessage(src, "chances: Set minimum number of chances for any game (currently set to " + minBodyParts + " chances). ", hangchan);
             sys.sendMessage(src, "delay: Set delay (in seconds) between each guess. Full answers take double the time (currently set to " + answerDelay + " seconds). ", hangchan);
             sys.sendMessage(src, "winner: Set how many seconds the winner of a game have to start a new one before anyone can start (currently set to " + winnerDelay + " seconds). ", hangchan);
+            sys.sendMessage(src, "answers: Set how many times each player can use /a (currently set to " + maxAnswers + " seconds). ", hangchan);
             sys.sendHtmlMessage(src, " ", hangchan);
             return;
         }
@@ -351,6 +383,10 @@ module.exports = function () {
             winnerDelay = val;
             sys.sendMessage(src, "±Game: Winner will have " + val + " second(s) to start a new game.", hangchan);
             break;
+        case "answers":
+            maxAnswers = val;
+            sys.sendMessage(src, "±Game: Players can use /a " + val + " time per game.", hangchan);
+            break;
         }
     };
     this.hangcommands = {
@@ -359,7 +395,8 @@ module.exports = function () {
             g: [this.guessCharacter, "To guess a letter."],
             a: [this.submitAnswer, "To answer the question."],
             view: [this.viewGame, "To view the current game's state."],
-            start: [this.startGame, "To start a new game of Hangman."]
+            start: [this.startGame, "To start a new game of Hangman."],
+            pass: [this.passWinner, "To pass start rights to someone else. "]
         },
         op: {
             end: [this.endGame, "To stop a game."]
