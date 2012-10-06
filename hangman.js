@@ -341,9 +341,13 @@ module.exports = function () {
             "*** *********************************************************************** ***",
             "±Hosting: To host a game, type /start Answer:Hint. The host can't guess or answer during their own game.",
             "±Hosting: You can also type /start Answer:Hint:Number to set how many wrong guesses must be made before you win (minimum of " + minBodyParts + ").",
-            "±Hosting: The winner of the previous game have priority for hosting the next game. If the winner doesn't start a new game within " + winnerDelay + " seconds, anyone can host.",
+            "±Hosting: The winner of the previous game has priority for hosting the next game, and may use /pass User to give that priority to another user.",
+            "±Hosting: If the user with hosting priority doesn't start a new game within " + winnerDelay + " seconds, anyone can host.",
             "*** *********************************************************************** ***",
-            "±Rules: Server rules apply in this channel too.",
+            "±Rules: Do not ask the person with hosting priority to use /pass so that you may host a game.",
+            "±Rules: Do not create inappropriate answers, hints or guesses.",
+            "±Rules: Do not complain if another user guesses a letter, word or answer before you do.",
+            "±Rules: All server rules apply in this channel too - type /rules to view them.",
             "*** *********************************************************************** ***",
             ""
         ];
