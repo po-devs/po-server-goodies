@@ -484,7 +484,7 @@ function setlint(checkfile, strict) {
                     warnings.push("<td>Missing Item</td><td>Property '"+html_escape(x)+"'; set "+sid+": Not holding an item.</td>");
                 }
                 var nummoves = 0;
-                for (var mm in testprop.moves) {
+                for (var mm = 0; mm < 4; mm++) {
                     if (testprop.moves[mm] === 0 || testprop.moves[mm] === undefined) {
                         warnings.push("<td>Missing Move</td><td>Property '"+html_escape(x)+"'; set "+sid+": Moveslot "+(mm+1)+" is empty.</td>");
                     }
@@ -547,7 +547,7 @@ function setlint(checkfile, strict) {
                     warnings.push("<td>Missing Item</td><td>Property '"+html_escape(x)+"'; set "+set+": Not holding an item.</td>");
                 }
                 var cnummoves = 0;
-                for (var cm in ctestprop.moves) {
+                for (var cm = 0; cm < 4; cm++) {
                     if (ctestprop.moves[cm] === 0  || ctestprop.moves[cm] === undefined) {
                         warnings.push("<td>Missing Move</td><td>Property '"+html_escape(x)+"'; set "+set+": Moveslot "+(cm+1)+" is empty.</td>");
                     }
