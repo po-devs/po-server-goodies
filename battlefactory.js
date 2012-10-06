@@ -375,6 +375,10 @@ function setlint(checkfile, strict) {
             }
             continue;
         }
+        if (errors.length > 100) {
+            errors.push("<td>TOO MANY ERRORS</td><td>There are more than 100 errors in this file.</td>");
+            break;
+        }
         if (readable) {
             var sets = checkfile[x];
             var available = [];
