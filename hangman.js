@@ -5,7 +5,7 @@ module.exports = function () {
     var hangchan;
 
     var defaultMaster = "RiceKirby";
-    var defaultChannel = "Hangman Game";
+    var defaultChannel = "Hangman";
     var minBodyParts = 5;
     var winnerDelay = 60;
     var answerDelay = 10;
@@ -161,6 +161,10 @@ module.exports = function () {
             sys.sendMessage(src, "±Game: You need to choose a word!", hangchan);
             return;
         }
+        if (a.length > 60 || a.length < 4) {
+            sys.sendMessage(src, "±Game: Your answer cannot be longer than 60 characters or shorter than 4 characters!");
+            return;
+        }
         var validCharacters = "abcdefghijklmnopqrstuvwxyz", validAnswer = false, l;
         for (l = 0; l < a.length; l++) {
             if (validCharacters.indexOf(a[l].toLowerCase()) !== -1) {
@@ -176,7 +180,6 @@ module.exports = function () {
             sys.sendMessage(src, "±Game: You need to write a hint!", hangchan);
             return;
         }
-
         hint = h;
         word = a.replace(/[^A-Za-z0-9\s']/g, "").toLowerCase();
         parts = (p && parseInt(p, 10) > 0) ? parseInt(p, 10) : minBodyParts;
@@ -341,9 +344,14 @@ module.exports = function () {
             "*** *********************************************************************** ***",
             "±Hosting: To host a game, type /start Answer:Hint. The host can't guess or answer during their own game.",
             "±Hosting: You can also type /start Answer:Hint:Number to set how many wrong guesses must be made before you win (minimum of " + minBodyParts + ").",
-            "±Hosting: The winner of the previous game have priority for hosting the next game. If the winner doesn't start a new game within " + winnerDelay + " seconds, anyone can host.",
+            "±Hosting: The winner of the previous game has priority for hosting the next game, and may use /pass User to give that priority to another user.",
+            "±Hosting: If the user with hosting priority doesn't start a new game within " + winnerDelay + " seconds, anyone can host.",
             "*** *********************************************************************** ***",
-            "±Rules: Server rules apply in this channel too.",
+            "±Rules: Do not ask the person with hosting priority to use /pass so that you may host a game.",
+            "±Rules: Do not create inappropriate answers, hints or guesses.",
+            "±Rules: Do not complain if another user guesses a letter, word or answer before you do.",
+            "±Rules: Do not create an answer that is impossible for other people to guess, such as a personal nickname.",
+            "±Rules: All server rules apply in this channel too - type /rules to view them.",
             "*** *********************************************************************** ***",
             ""
         ];
