@@ -7,18 +7,7 @@ tourdetails.txt, eventwinners.txt, eventplayers.txt, tourmonthscore_month.txt, t
 touradmins.json, tastats.json, tourseeds.json, tourhistory.json
 */
 
-if (typeof tourschan !== "string") {
-    tourschan = sys.channelId("Tournaments")
-}
-
-if (typeof tourserrchan !== "string") {
-    tourserrchan = sys.channelId("Indigo Plateau")
-}
-
-if (typeof tours !== "object") {
-    sendChanAll("Creating new tournament object", tourschan)
-    tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1}
-}
+var tours, tourschan, tourserrchan, tourconfig;
 
 var utilities = require('utilities.js');
 var bfactory = require('battlefactory.js');
@@ -930,21 +919,21 @@ function getConfigValue(file, key) {
             debug: false,
             points: true,
             winmessages: true
-        }
-        var configkeys = sys.getValKeys(file)
+        };
+        var configkeys = sys.getValKeys(file);
         if (configkeys.indexOf(key) == -1) {
-            sendChanAll("No tour config data detected for '"+key+"', getting default value", tourschan)
+            sendChanAll("No tour config data detected for '"+key+"', getting default value", tourschan !== undefined ? tourschan : 0);
             if (defaultvars.hasOwnProperty(key))
                 return defaultvars[key];
             else
-                throw "Couldn't find the key!"
+                throw "Couldn't find the key!";
         }
         else {
             return sys.getVal(file, key);
         }
     }
     catch (err) {
-        sendChanAll("Error in getting config value '"+key+"': "+err, tourserrchan)
+        sendChanAll("Error in getting config value '"+key+"': "+err, tourserrchan !== undefined ? tourserrchan : 0);
         return null;
     }
 }
@@ -1023,7 +1012,7 @@ function initTours() {
         sendChanAll("Creating tournament stats object", tourschan)
         var tourstatdata = sys.getFileContent('tastats.json');
         if (tourstatdata === undefined || tourstatdata === "") {
-            tourstats = {'general': {}, 'staff': {}}
+            tourstats = {'general': {}, 'staff': {}};
         }
         else {
             try {
@@ -1035,7 +1024,7 @@ function initTours() {
         }
     }
     if (typeof tourseeds != "object") {
-        sendChanAll("Creating tournament seeds object", tourschan)
+        sendChanAll("Creating tournament seeds object", tourschan);
         var tourseeddata = sys.getFileContent('tourseeds.json');
         if (tourseeddata === undefined || tourseeddata === "") {
             tourseeds = {};
