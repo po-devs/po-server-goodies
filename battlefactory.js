@@ -548,7 +548,7 @@ function setlint(checkfile, strict) {
                 }
                 var cnummoves = 0;
                 for (var cm = 0; cm < 4; cm++) {
-                    if (ctestprop.moves[cm] === 0  || ctestprop.moves[cm] === undefined) {
+                    if (ctestprop.moves[cm] === sys.move(0) || ctestprop.moves[cm] === undefined) {
                         warnings.push("<td>Missing Move</td><td>Property '"+html_escape(x)+"'; set "+set+": Moveslot "+(cm+1)+" is empty.</td>");
                     }
                     else {
