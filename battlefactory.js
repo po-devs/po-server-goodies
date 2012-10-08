@@ -7,7 +7,7 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.8";
+var bfversion = "0.81";
 var bfsets, pokedb, working;
 var randomgenders = true; // set to false if you want to play with set genders
 var utilities = require('utilities.js');
@@ -216,7 +216,7 @@ function factoryCommand(src, command, commandData) {
         });
         return;
     }
-    if (command == "pokeslist") {
+    else if (command == "pokeslist") {
         var tfile = bfsets;
         var tteams = 0;
         var tsets = 0;
@@ -243,7 +243,7 @@ function factoryCommand(src, command, commandData) {
         normalbot.sendChanMessage(src, "Total: "+tteams+" pokes and "+tsets+" sets.");
         return;
     }
-    if (command == "pokecode") {
+    else if (command == "pokecode") {
         try {
             var msg = getReadablePoke(commandData);
             sendChanHtmlMessage(src, "<table border='2'><tr><td><pre>"+msg.join("<br/>")+"</pre></td></tr></table>");
@@ -254,7 +254,7 @@ function factoryCommand(src, command, commandData) {
             return;
         }
     }
-    if (command == "pokesets") {
+    else if (command == "pokesets") {
         var sets = [];
         var id = sys.pokeNum(commandData);
         if (!bfsets.hasOwnProperty(id)) {
@@ -280,7 +280,7 @@ function factoryCommand(src, command, commandData) {
         }
         return;
     }
-    if (command == "scansets") {
+    else if (command == "scansets") {
         var res = {};
         var checkfile;
         var filename = "bfteams.json";
@@ -344,7 +344,42 @@ function factoryCommand(src, command, commandData) {
         }
         return;
     }
-    return 'no command';
+    else if (command == "bfversion") {
+        var tfile = bfsets;
+        var tteams = 0;
+        var tsets = 0;
+        var pokes = [];
+        var info = "NO_NAME";
+        if (bfsets.hasOwnProperty('desc')) {
+            if (typeof bfsets.desc == "string") {
+                info = bfsets.desc;
+            }
+        }
+        for (var t in tfile) {
+            if (typeof tfile[t] != "object") {
+                continue;
+            }
+            var poke = sys.pokemon(parseInt(t, 10));
+            tteams += 1;
+            var setlength = 0;
+            if (isReadable()) {
+                var lteams = tfile[t];
+                for (var k in lteams) {
+                    setlength += 1;
+                }
+            }
+            else {
+                setlength = tfile[t].length;
+            }
+            tsets += setlength;
+            pokes.push(poke);
+        }
+        normalbot.sendChanMessage(src, "Installed Pokemon: "+pokes.sort());
+        normalbot.sendChanMessage(src, "Total: "+tteams+" pokes and "+tsets+" sets.");
+        normalbot.sendChanMessage(src, "Team Pack Description: "+info);
+        return;
+    }
+    else return 'no command';
 }
 
 // Set file checking
@@ -864,7 +899,7 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if ((sys.auth(source) > 2 || (sys.name(source) === 'Aerith' && sys.auth(source) >= 1)) || command == "pokeslist") {
+        if ((sys.auth(source) > 2 || (sys.name(source) === 'Aerith' && sys.auth(source) >= 1)) || command == "bfversion") {
             if (factoryCommand(source, command, commandData) != 'no command') {
                 return true;
             }
@@ -913,14 +948,22 @@ module.exports = {
     },
     onHelp: function(src, topic, channel) {
         var help = [];
-        if (topic == "battlefactory" && (sys.auth(src) > 2 || (sys.name(src) === 'Aerith' && sys.auth(src) >= 1))) {
-            help = [
-                "/pokeslist: Views the list of installed Pokemon",
-                "/pokecode [alpha code]: Converts a code to readable format.",
-                "/pokesets [poke]: Gets the sets for that pokemon in readable format",
-                "/updateteams: Update teams from the web",
-                "/scansets [url/location]: Scan a set file for any critical errors (scans current if no file specified)"
-            ];
+        if (topic == "battlefactory") {
+            if (sys.auth(src) > 2 || (sys.name(src) === 'Aerith' && sys.auth(src) >= 1)) {
+                help = [
+                    "/bfversion: Gives information about the battle factory",
+                    "/pokeslist: Views the list of installed Pokemon",
+                    "/pokecode [alpha code]: Converts a code to readable format.",
+                    "/pokesets [poke]: Gets the sets for that pokemon in readable format",
+                    "/updateteams [url]: Update teams from the web (url is optional)",
+                    "/scansets [url/location]: Scan a set file for any critical errors (scans current if no file specified)"
+                ];
+            }
+            else {
+                help = [
+                    "/bfversion: Gives information about the battle factory"
+                ];
+            }
         }
         if (help.length > 0) {
             sys.sendMessage(src, "*** Battle Factory Operator Commands ***", channel);
