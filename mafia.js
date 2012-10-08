@@ -1288,14 +1288,18 @@ function Mafia(mafiachan) {
                 for (r in targetRoles) {
                     var newRole = onDeath.convertRoles[r];
                     targetPlayers = this.getPlayersForRole(r);
+                    affected = [];
                     for (k = 0; k < targetPlayers.length; ++k) {
-                        target = this.players[targetPlayers[k]];
-                        mafia.setPlayerRole(target, newRole);
-                        mafia.showOwnRole(sys.id(targetPlayers[k]));
+                        if (this.players[targetPlayers[k]] != player) {
+                            affected.push(targetPlayers[k]);
+                            target = this.players[targetPlayers[k]];
+                            mafia.setPlayerRole(target, newRole);
+                            mafia.showOwnRole(sys.id(targetPlayers[k]));
+                        }
                     }
-                    if (targetPlayers.length > 0) {
+                    if (affected.length > 0) {
                         actionMessage = onDeath.convertmsg ? onDeath.convertmsg : "±Game: Because ~Self~ died, the ~Old~ became a ~New~!";
-                        sendChanAll(actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(targetPlayers, "and")).replace(/~Old~/g, mafia.theme.trrole(r)).replace(/~New~/, mafia.theme.trrole(newRole)), mafiachan);
+                        sendChanAll(actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(r)).replace(/~New~/, mafia.theme.trrole(newRole)), mafiachan);
                         needSeparator = true;
                     }
                 }
