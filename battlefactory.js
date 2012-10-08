@@ -374,7 +374,8 @@ function factoryCommand(src, command, commandData) {
             tsets += setlength;
             pokes.push(poke);
         }
-        normalbot.sendChanMessage(src, "Installed Pokemon: "+pokes.sort());
+        pokes.sort();
+        normalbot.sendChanMessage(src, "Installed Pokemon: "+pokes.join(", "));
         normalbot.sendChanMessage(src, "Total: "+tteams+" pokes and "+tsets+" sets.");
         normalbot.sendChanMessage(src, "Team Pack Description: "+info);
         return;
