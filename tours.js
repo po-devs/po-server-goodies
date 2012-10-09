@@ -4,7 +4,7 @@ Coding done by Shadowfist
 
 Files used: tourscores.txt, eventscores.txt, tourscores_tier.txt, tourwinverbs.txt, tourconfig.txt, eventtours.json,
 tourdetails.txt, eventwinners.txt, eventplayers.txt, tourmonthscore_month.txt, tourmutes.txt,
-touradmins.json, tastats.json, tourseeds.json, tourhistory.json
+touradmins.json, tastats.json, tourseeds.json, tourhistory.json, tours_cache.json
 */
 
 if (typeof tourschan !== "string") {
@@ -16,8 +16,14 @@ if (typeof tourserrchan !== "string") {
 }
 
 if (typeof tours !== "object") {
-    sendChanAll("Creating new tournament object", tourschan)
-    tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1}
+    try {
+        load_cache();
+        sendChanAll("Loaded cached tournament object", tourschan);
+    }
+    catch (e) {
+        sendChanAll("Creating new tournament object", tourschan);
+        tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1};
+    }
 }
 
 var utilities = require('utilities.js');
@@ -902,6 +908,27 @@ function sendAllTourAuth(message) {
     }
 }
 
+// Saving for server reloads
+function save_cache() {
+    sys.writeToFile("tours_cache.json", JSON.stringify(tours));
+}
+
+function load_cache() {
+    var test = JSON.parse(sys.getFileContent("tours_cache.json"));
+    tours = test;
+    tours.globaltime = 0;
+    for (var x in tours.tour) {
+        // don't reload tournaments that haven't started.
+        if (tours.tour[x].round === 0) {
+            delete tours.tour[x];
+            continue;
+        }
+        tours.tour[x].time = parseInt(sys.time())+600;
+        tours.tour[x].battlers = {};
+        tours.tour[x].active = {};
+    }
+}
+
 /* Get a config value
 Returns default if value doesn't exist*/
 function getConfigValue(file, key) {
@@ -925,7 +952,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.004",
+            version: "2.005",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -970,7 +997,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.004",
+        version: "2.005",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -979,8 +1006,14 @@ function initTours() {
     tourschan = utilities.get_or_create_channel(tourconfig.channel);
     tourserrchan = utilities.get_or_create_channel(tourconfig.errchannel);
     if (typeof tours != "object") {
-        sendChanAll("Creating new tournament object", tourschan);
-        tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1};
+        try {
+            load_cache();
+            sendChanAll("Loaded cached tournament object", tourschan);
+        }
+        catch (e) {
+            sendChanAll("Creating new tournament object", tourschan);
+            tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1};
+        }
     }
     else {
         if (!tours.hasOwnProperty('queue')) tours.queue = [];
@@ -1368,7 +1401,8 @@ function tourBattleEnd(winner, loser, result) {
             markActive(loser, "tie")
             return;
         }
-        battleend(winner, loser, key)
+        battleend(winner, loser, key);
+        save_cache();
     }
 }
 
@@ -2143,6 +2177,7 @@ function tourCommand(src, command, commandData) {
                     var variance = calcVariance();
                     tours.globaltime = parseInt(sys.time()) + parseInt(tourconfig.abstourbreak/variance); // default 10 mins b/w signups, + 5 secs per user in chan
                 }
+                save_cache();
                 return true;
             }
             if (command == "passta" || (command == "passtas" && sys.auth(src) >= 1)) {
@@ -3655,6 +3690,7 @@ function disqualify(player, key, silent, hard) {
             }
         }
         var battlesleft = parseInt(tours.tour[key].players.length/2)-tours.tour[key].winners.length
+        save_cache();
         if (battlesleft <= 0) {
             if (tours.tour[key].state == "subround") removesubs(key);
             advanceround(key)
@@ -3675,6 +3711,7 @@ function dqboth(player1, player2, key) {
         tours.tour[key].losers.push(player1, player2)
         tours.tour[key].winners.push("~DQ~")
         var battlesleft = parseInt(tours.tour[key].players.length/2)-tours.tour[key].winners.length
+        save_cache();
         if (battlesleft <= 0) {
             if (tours.tour[key].state == "subround") removesubs(key);
             advanceround(key)
@@ -4467,6 +4504,7 @@ function tourprintbracket(key) {
                 tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
             }
             delete tours.tour[key];
+            save_cache();
             return;
         }
         else if (tours.tour[key].players.length == 2) { // finals
@@ -5152,7 +5190,34 @@ function sendWelcomeMessage(src, chan) {
         sendBotMessage(src, "You need to register before playing in #"+sys.channel(chan)+"! Click on the 'Register' button below and follow the instructions!", chan, false);
     }
     sys.sendMessage(src,"*** Use /help to view the commands; and use /rules to view the tournament rules! ***",chan)
-    sys.sendMessage(src,border,chan)
+    sys.sendMessage(src,border,chan);
+    var key = isInTour(sys.name(src));
+    if (key !== false) {
+        var battlers = tours.tour[key].battlers;
+        var winners = tours.tour[key].winners;
+        var players = tours.tour[key].players;
+        if (tours.tour[key].round === 0) {
+            return;
+        }
+        var roundtable = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+tours.tour[key].tourtype+" Tournament</b><table><br/>"
+        for (var j=0; j<players.length; j+=2) {
+            if (winners.indexOf(players[j]) != -1 && players[j] != "~Bye~" && players[j] != "~DQ~") {
+                roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(players[j]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(players[j+1])+"</td></tr>"
+            }
+            else if (winners.indexOf(players[j+1]) != -1 && players[j+1] != "~Bye~" && players[j+1] != "~DQ~") {
+                roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(players[j+1]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(players[j])+"</td></tr>"
+            }
+            else if (battlers.hasOwnProperty(players[j])) {
+                var elapsedtime = parseTimer(parseInt(sys.time())-battlers[players[j]].time)
+                roundtable = roundtable + "<tr><td align='right'>"+toTourName(players[j]) +"</td><td align='center'> "+(isInSpecificTour(sys.name(src), key) || (battlers[players[j]].noSpecs && !isTourAdmin(src)) ? "is battling" : "<a href='po:watch/"+battlers[players[j]].battleId+"'>is battling</a>")+" </td><td>"+ toTourName(players[j+1])+"</td><td> ["+elapsedtime+"]</td></tr>"
+            }
+            else {
+                roundtable = roundtable + "<tr><td align='right'>"+toTourName(players[j]) +"</td><td align='center'> VS </td><td>"+ toTourName(players[j+1])+"</td></tr>"
+            }
+        }
+        var rounddata = (roundtable+"</table></div>");
+        sys.sendHtmlMessage(src, htmlborder+rounddata+htmlborder, chan);
+    }
 }
 
 function dumpVars(src) {
@@ -5241,7 +5306,7 @@ module.exports = {
     },
     afterBattleEnded : function(source, dest, desc) {
         try {
-            tourBattleEnd(source, dest, desc)
+            tourBattleEnd(source, dest, desc);
         }
         catch (err) {
             sendChanAll("Error in event 'tourBattleEnd': "+err, tourserrchan)

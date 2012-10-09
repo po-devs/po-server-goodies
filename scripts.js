@@ -46,7 +46,7 @@ var Config = {
     ],
     DreamWorldTiers: ["No Preview OU", "No Preview Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
     superAdmins: ["Professor Oak", "zeroality", "[LD]Jirachier", "Nixeagle"],
-    canJoinStaffChannel: ["Lamperi-", "Peanutsdroid", "QuX"],
+    canJoinStaffChannel: ["Lamperi-", "Peanutsdroid", "QuX", "Ethan-"],
     disallowStaffChannel: []
 };
 
@@ -1778,7 +1778,7 @@ init : function() {
 
     bannedUrls = [];
 
-    mafiachan = SESSION.global().channelManager.createPermChannel("Mafia Channel", "Use /help to get started!");
+    mafiachan = SESSION.global().channelManager.createPermChannel("Mafia", "Use /help to get started!");
     staffchannel = SESSION.global().channelManager.createPermChannel("Indigo Plateau", "Welcome to the Staff Channel! Discuss of all what users shouldn't hear here! Or more serious stuff...");
     sachannel = SESSION.global().channelManager.createPermChannel("Victory Road","Welcome MAs and SAs!");
     tourchannel = SESSION.global().channelManager.createPermChannel("Tournaments", 'Useful commands are "/join" (to join a tournament), "/unjoin" (to leave a tournament), "/viewround" (to view the status of matches) and "/megausers" (for a list of users who manage tournaments). Please read the full Tournament Guidelines: http://pokemon-online.eu/forums/showthread.php?2079-Tour-Rules');
@@ -2268,7 +2268,11 @@ beforeChannelJoin : function(src, channel) {
     if (channel === 0) return;
     
     /*forces players to join Mafia Tutoring when joining mafia*/
-    if (channel === sys.channelId('Mafia Channel')){
+    if (channel == sys.channelId("Mafia Channel")) {
+        sys.stopEvent();
+        sys.putInChannel(src, sys.channelId("Mafia"));
+    }
+    if (channel === sys.channelId('Mafia')){
         sys.putInChannel(src, sys.channelId('Mafia Tutoring'));
     }
     if (channel === sys.channelId('Hangman Game')) {
@@ -5676,7 +5680,7 @@ afterChatMessage : function(src, message, chan)
             user.timecount += dec*7;
         }
         
-        linecount = sys.channelId("Mafia Channel") == channel ? linecount + 3 : linecount;
+        linecount = sys.channelId("Mafia") == channel ? linecount + 3 : linecount;
 
         if (user.floodcount > linecount) {
             var message = "" + sys.name(src) + " was kicked " + (sys.auth(src) === 0 && officialChan ? "and muted " : "") + "for flood.";
