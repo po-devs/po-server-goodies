@@ -100,14 +100,17 @@ var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "#6: Do not timestall (i.e. deliberately wait until timeout).",
                 "#7: Inactive/Idle players will automatically be disqualified.",
                 "- Post a message and make sure you are not idle, otherwise you risk being disqualified.",
-                "#8: Ask someone on the /activeta list if you need help or have problems.",
-                "#9: Event tournaments (marked by red borders)",
+                "#8: If there is a problem with your match, contact a megauser as soon as possible.",
+                "- Using the suggest draw button is no longer allowed (both players will be disqualified)",
+                "- Your team is expected to be ready before the match starts - loading the wrong team is not a valid reason to restart.",
+                "#9: Ask someone on the /activeta list if you need help or have problems.",
+                "#10: Event tournaments (marked by red borders)",
                 "- Be aware that these are all double elimination. Breaking or attempting to break the above rules will result in immediate disqualification.",
-                "#10: Respecting other players, sportsmanship and integrity:",
+                "#11: Respecting other players, sportsmanship and integrity:",
                 "- Avoid complaining about hax, luck or other such things as much as possible.",
                 "- Avoid making inflammatory remarks/taunts towards other users - treat other users the way you would like to be treated.",
                 "- Any deliberate attempt to undermine the integrity of tournaments will result in a permanent ban from tournaments.",
-                "#11: Do not attempt to circumvent the rules",
+                "#12: Do not attempt to circumvent the rules",
                 "- Attempting to circumvent the rules through trickery, proxy or other such methods will be punished."]
 
 function sendBotMessage(user, message, chan, html) {
@@ -952,7 +955,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.005",
+            version: "2.006",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -997,7 +1000,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.005",
+        version: "2.006",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1383,10 +1386,10 @@ function tourBattleEnd(winner, loser, result) {
     /* For tournament matches */
     if (tours.tour[key].players.indexOf(winname) > -1 && tours.tour[key].players.indexOf(losename) > -1) {
         var winindex = tours.tour[key].battlers.hasOwnProperty(winname);
+        var battletime = parseInt(sys.time())-tours.tour[key].battlers[winname].time;
         if (winindex) {
-            var wintime = parseInt(sys.time())-tours.tour[key].battlers[winname].time;
-            if (result == "forfeit" && ((wintime < 30 && !is1v1Tour(key)) || wintime < 5)) {
-                sendBotAll(sys.name(loser)+" forfeited against "+sys.name(winner)+" in a "+getFullTourName(key)+" match after "+wintime+" seconds.",sys.channelId("Victory Road"), false)
+            if (result == "forfeit" && ((battletime < 30 && !is1v1Tour(key)) || battletime < 5)) {
+                sendBotAll(sys.name(loser)+" forfeited against "+sys.name(winner)+" in a "+getFullTourName(key)+" match after "+battletime+" seconds.",sys.channelId("Victory Road"), false)
             }
             delete tours.tour[key].battlers[winname];
         }
@@ -1396,9 +1399,16 @@ function tourBattleEnd(winner, loser, result) {
             return;
         }
         if (result == "tie") {
-            sendBotAll("The match between "+winname+" and "+losename+" ended in a tie, please rematch!", tourschan, false)
-            markActive(winner, "tie")
-            markActive(loser, "tie")
+            if (battletime < 60 && tours.tour[key].draws.indexOf(winname) == -1) {
+                sendBotAll("The match between "+winname+" and "+losename+" ended in a tie, please rematch!", tourschan, false);
+                markActive(winner, "tie");
+                markActive(loser, "tie");
+                tours.tour[key].draws.push(winname, losename);
+            }
+            else {
+                sendBotAll(winname+" and "+losename+" are both disqualified, neither player won!", tourschan, false);
+                dqboth(winname, losename, key);
+            }
             return;
         }
         battleend(winner, loser, key);
@@ -2888,6 +2898,13 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
             }
+            var joinlist = tours.tour[key].numjoins;
+            if (joinlist.hasOwnProperty(sys.ip(src))) {
+                if (joinlist[sys.ip(src)] > 3) {
+                    sendBotMessage(src, "You can't join/unjoin more than 3 times!",tourschan,false)
+                    return true;
+                }
+            }
             if (tours.tour[key].state == "signups") {
                 tours.tour[key].players.push(sys.name(src).toLowerCase())
                 tours.tour[key].cpt += 1
@@ -2936,6 +2953,12 @@ function tourCommand(src, command, commandData) {
                     if (tours.tour[key].players.length >= tours.tour[key].maxplayers) {
                         tours.tour[key].time = parseInt(sys.time())
                     }
+                }
+                if (joinlist.hasOwnProperty(sys.ip(src))) {
+                    tours.tour[key].numjoins[sys.ip(src)] += 1;
+                }
+                else {
+                    tours.tour[key].numjoins[sys.ip(src)] = 1;
                 }
                 return true;
             }
@@ -4033,10 +4056,11 @@ function advanceround(key) {
                 }
             }
         }
-        tours.tour[key].winners = []
-        tours.tour[key].losers = []
-        tours.tour[key].battlers = {}
-        tours.tour[key].active = {}
+        tours.tour[key].winners = [];
+        tours.tour[key].losers = [];
+        tours.tour[key].draws = [];
+        tours.tour[key].battlers = {};
+        tours.tour[key].active = {};
         // Clean bracket for double elimination
         if (doubleelim) {
             for (var p in newwinbracket) {
@@ -4086,6 +4110,8 @@ function tourstart(tier, starter, key, parameters) {
         tours.tour[key].leader = topSeed(tier); // best seed
         tours.tour[key].event = false;
         tours.tour[key].date = datestring; // used to identify event tours
+        tours.tour[key].draws = [];
+        tours.tour[key].numjoins = {};
         tours.globaltime = 0;
         if (typeof parameters.maxplayers === "number" && parameters.event) {
             tours.tour[key].maxplayers = parameters.maxplayers;
