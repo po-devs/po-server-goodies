@@ -2900,7 +2900,7 @@ function tourCommand(src, command, commandData) {
             }
             var joinlist = tours.tour[key].numjoins;
             if (joinlist.hasOwnProperty(sys.ip(src))) {
-                if (joinlist[sys.ip(src)] > 3) {
+                if (joinlist[sys.ip(src)] > 2) {
                     sendBotMessage(src, "You can't join/unjoin more than 3 times!",tourschan,false)
                     return true;
                 }
