@@ -5067,7 +5067,7 @@ function loadTourMutes() {
 
 // to prevent silly mute reasons
 function usingBadWords(message) {
-    if (/f[uo]ck|\bass\b|assh[o0]le|\barse|\bcum\b|\bdick|\bsex\b|pussy|bitch|porn|\bfck|nigga|\bcock\b|\bgay|\bhoe\b|slut|whore|cunt|clit|pen[i1]s|vag|nigger/i.test(message)) {
+    if (/f[uo]ck|\bass\b|assh[o0]le|\barse|\bcum\b|\bdick|\bsex\b|pussy|bitch|porn|\bfck|nigga|\bcock\b|\bgay|\bhoe\b|slut|whore|cunt|clit|pen[i1]s|vag|nigger|8=+d/i.test(message)) {
         return true;
     }
     else return false;
@@ -5359,7 +5359,7 @@ module.exports = {
             sendBotMessage(src,"You are tourmuted by "+tours.tourmutes[sys.ip(src)].auth+". This expires in "+time_handle(tours.tourmutes[sys.ip(src)].expiry-parseInt(sys.time()))+". [Reason: "+tours.tourmutes[sys.ip(src)].reason+"]",tourschan,false)
             return true;
         }
-        else if (/f[uo]ck|assh[o0]le|arseh[o0]le|\bpussy\b|\bfck|nigga|\bcunt|pen[i1]s|vag|nigger/i.test(message) && channel === tourschan) {
+        else if (/f[uo]ck|assh[o0]le|arseh[o0]le|\bpussy\b|\bfck|nigga|\bcunt|pen[i1]s|vag|nigger|8=+d/i.test(message) && channel === tourschan) {
             sys.sendMessage(src, sys.name(src)+": "+message, channel);
             script.afterChatMessage(src, message, channel);
             return true;
