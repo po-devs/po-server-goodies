@@ -2677,7 +2677,7 @@ function Mafia(mafiachan) {
             "±Rule: Do not reveal any information about the game once you're dead or voted off. ",
             "±Rule: Do not repeatedly target a user, as it ruins the fun for that user",
             "±Rule: Do not group together to ruin the game",
-            "±Rule: Do not reveal roles in order to harm your team's chances of winning.",
+            "±Rule: Do not intentionally harm your team's chances of winning.",
             "",
             "±Game: Disobey them and you will be banned from mafia/muted according to the MA/auth's wishes!",
             ""

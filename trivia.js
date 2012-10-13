@@ -175,7 +175,14 @@ TriviaGame.prototype.startGame = function(points, name)
 	sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
 	sendChanAll("", 0);
 	this.sendAll((name != "" ? name+" started a Trivia game! " : "A trivia game was started! ") + " First to "+points+" points wins!",triviachan);
-	this.answeringQuestion = false;
+    var players = sys.playersOfChannel(triviachan);
+    // Flash players who have it enabled
+    for (p in players) {
+    	player_id = players[p], player_ip = sys.ip(player_id);
+    	if (trivData.toFlash[player_ip] !== undefined)
+    	sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
+    }
+    this.answeringQuestion = false;
 	sys.delayedCall(function() { Trivia.startTriviaRound(); },15);
 };
 
@@ -201,20 +208,13 @@ TriviaGame.prototype.startTrivia = function(src,rand)
         return;
     }
     rand = parseInt(rand, 10);
-	if (rand > 102 || rand < 2 )
+	if (rand > 102 || rand < 2)
     {
         this.sendPM(src,"Please do not start a game with more than 102 points, or lower than 2 points.", triviachan);
         return;
     }
     rand = (isNaN(rand)) ? sys.rand(2,102) : +rand;
     this.startGame(rand, sys.name(src));
-    var players = sys.playersOfChannel(triviachan);
-    // flash players
-    for (p in players) {
-    	player_id = players[p], player_ip = sys.ip(player_id);
-    	if (trivData.toFlash[player_ip] !== undefined)
-    	sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
-    }
 };
 
 TriviaGame.prototype.startTriviaRound = function()
@@ -259,12 +259,8 @@ TriviaGame.prototype.finalizeAnswers = function()
 {
     if (this.started === false)
         return;
-try { // Do not indent this, it is only until this starts to work
-    // use concat to convert into array
-    var answer,
-        id,
-		answers = [].concat(triviaq.get(this.roundQuestion).answer);
-    
+        
+    var answer, id,answers = [].concat(triviaq.get(this.roundQuestion).answer);        
     this.answeringQuestion = false;
     /* We're going to judge points based on response time */
     var wrongAnswers = [],
@@ -286,14 +282,14 @@ try { // Do not indent this, it is only until this starts to work
                 var minus = realTime - responseTime;
                 var pointAdd = minus > 6 ? 5 : (minus < 7 && minus > 3 ? 3 : 2);
                 //sys.sendMessage(sys.id("Crystal Moogle"), "TriviaPointDebug: " + name + " took" + minus + " seconds, point add is " + pointAdd + ".", triviachan);
-                // TODO: check answer length, and base time between question off of that?
+                // TODO: check answer length, and base time allowed for the question off that?
 
                 answeredCorrectly.push(name);
                 this.player(name).points += pointAdd;
             } else {
             	var tanswer = this.submittedAnswers[id].answer;
                 wrongAnswers.push("<span title='" + utilities.html_escape(name) + "'>" + utilities.html_escape(tanswer) + "</span>");
-                if (/asshole|\bdick|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger/gi.test(tanswer)) {
+                if (/asshole|\bdick|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger/gi.test(tanswer) && !/dickens/gi.test(tanswer)) {
                     if (sys.existChannel("Victory Road"))
                     triviabot.sendAll("Warning: Player "+name+" answered '"+tanswer+"' to the question '"+triviaq.get(this.roundQuestion).question+"' in #Trivia", sys.channelId("Victory Road"));
                 }
@@ -356,10 +352,6 @@ try { // Do not indent this, it is only until this starts to work
     sys.delayedCall(function() {
         Trivia.startTriviaRound();
     }, rand);
-} catch(e) {
-// TODO REMOVE the catch block when this works
-    sendChanAll("script error: " + e, triviachan);
-}
 };
 
 TriviaGame.prototype.resetTrivia = function()
