@@ -1320,7 +1320,9 @@ function Mafia(mafiachan) {
         }
     };
     this.kill = function (player) {
-        if (this.theme.killmsg) {
+        if (player.role.deathmsg) {
+            sendChanAll(player.role.deathmsg.replace(/~Player~/g, player.name).replace(/~Role~/g, player.role.translation), mafiachan);
+        } else if (this.theme.killmsg) {
             sendChanAll(this.theme.killmsg.replace(/~Player~/g, player.name).replace(/~Role~/g, player.role.translation), mafiachan);
         } else {
             sendChanAll("±Kill: " + player.name + " (" + player.role.translation + ") died!", mafiachan);
