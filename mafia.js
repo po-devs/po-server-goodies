@@ -3924,6 +3924,7 @@ return;
             if (id !== undefined)
                 SESSION.users(id).mafiaAdmin = true;
             sys.sendMessage(src, "±Game: That person is now a mafia admin!", mafiachan);
+            sys.sendAll("±Murkrow: " + sys.name(src) + " promoted " + commandData, sys.channelId('Victory Road'));
             return;
         }
         if (command == "mafiaadminoff") {
@@ -3933,6 +3934,7 @@ return;
             if (id !== undefined)
                 SESSION.users(id).mafiaAdmin = false;
             sys.sendMessage(src, "±Game: That person is no more a mafia admin!", mafiachan);
+            sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData, sys.channelId('Victory Road'));
             return;
         }
 
