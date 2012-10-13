@@ -5804,8 +5804,8 @@ beforeChangeTier : function(src, team, oldtier, newtier) {
 },
 
 afterChangeTier : function(src, team, oldtier, newtier) {
-    if (newtier == "Battle Factory") {
-        callplugins("afterChangeTier", src, team, newtier);
+    if (newtier == "Battle Factory" || oldtier == "Battle Factory") {
+        callplugins("afterChangeTier", src, team, oldtier, newtier);
     }
     // PO logs stuff
     var params = {event:'afterChangeTier', source_id:src, channels:get_players_channels([src]), timestamp:get_timestamp()};

@@ -7,7 +7,7 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.81";
+var bfversion = "0.82";
 var bfsets, pokedb, working;
 var randomgenders = true; // set to false if you want to play with set genders
 var utilities = require('utilities.js');
@@ -923,7 +923,12 @@ module.exports = {
         }
         return false;
     },
-    afterChangeTier: function(src, team, newtier) { // This shouldn't be needed, but it's here in case
+    afterChangeTier: function(src, team, oldtier, newtier) { // This shouldn't be needed, but it's here in case
+        if (oldtier == "Battle Factory" && ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Battle Factory"].indexOf(newtier) == -1) {
+            sys.sendMessage(src, "Please reload your team from the menu to exit Battle Factory. (Your team is now in Challenge Cup.)");
+            sys.changeTier(src, team, "Challenge Cup");
+            return true;
+        }
         if (!working) {
             sys.sendMessage(src, "Battle Factory is not working, so you can't move into that tier. (Your team is now in Challenge Cup.)");
             sys.changeTier(src, team, "Challenge Cup");
