@@ -45,7 +45,7 @@ var Config = {
         ["Blitzamirin", "1st Generation OverUsed - View Blitzamirin's <a href='http://pokemon-online.eu/forums/showthread.php?13134-Stadium-OU-Gym-Blitzamirin'>Gym Thread!</a>"]
     ],
     DreamWorldTiers: ["No Preview OU", "No Preview Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
-    superAdmins: ["Lamperi", "Professor Oak", "zeroality", "[LD]Jirachier"],
+    superAdmins: ["Lamperi", "Professor Oak", "zeroality", "[LD]Jirachier", "Ethan"],
     canJoinStaffChannel: ["Lamperi-", "Peanutsdroid", "QuX"],
     disallowStaffChannel: []
 };
@@ -3311,7 +3311,7 @@ adminCommand: function(src, command, commandData, tar) {
     }
     // hack, for allowing some subset of the owner commands for super admins
     if (isSuperAdmin(src)) {
-       if (["eval", "evalp"].indexOf(command) != -1 && sys.name(src).toLowerCase() != "lamperi") {
+       if (["eval", "evalp"].indexOf(command) != -1 && sys.name(src).toLowerCase() != "lamperi" && sys.name(src).toLowerCase() != "ethan") {
            normalbot.sendChanMessage(src, "Can't aboos some commands");
            return;
        }
@@ -3610,7 +3610,7 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
 
-    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "crystal moogle") {
+    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.name(src).toLowerCase() == "crystal moogle" || sys.name(src).toLowerCase() == "ethan") {
         if (command == "eval") {
             eval(commandData);
             return;
