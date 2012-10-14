@@ -20,8 +20,9 @@ module.exports.afterLogIn = function afterLogIn(src) {
         sys.sendAll("±Funkie: conflict auto muted under name " + name, staffchannel);
     }
 
-    if (["173.10", "172.22"].indexOf(sys.ip(src).substr(0,6)) > -1) {
-        sys.sendAll("possible ban evader: "+sys.name(src)+", IP: "+sys.ip(src), staffchannel);
+    if (sys.auth(src) == 0 && name.substr(0,5).toLowerCase() == "ethan" && !isNaN(name.slice(5))) {
+        SESSION.users(src).activate("smute", "Script", parseInt(sys.time()) + 86400, "Evader", true);
+        sys.sendAll(name+" auto smuted; probably GangGreenGan", staffchannel);
     }
 
 }
