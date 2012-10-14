@@ -176,12 +176,13 @@ module.exports = function () {
             sys.sendMessage(src, "±Game: You need to write a hint!", hangchan);
             return;
         }
-        hint = h;
-        word = a.replace(/[^A-Za-z0-9\s']/g, "").toLowerCase();
-        if (word.length > 60 || word.length < 4) {
+        a = a.replace(/[^A-Za-z0-9\s']/g, "").toLowerCase();
+        if (a.length > 60 || a.length < 4) {
             sys.sendMessage(src, "±Game: Your answer cannot be longer than 60 characters or shorter than 4 characters!", hangchan);
             return;
         }
+        hint = h;
+        word = a;
         parts = (p && parseInt(p, 10) > 0) ? parseInt(p, 10) : minBodyParts;
         parts = (parts < minBodyParts) ? minBodyParts : parts;
         points = {};
