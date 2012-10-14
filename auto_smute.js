@@ -1,3 +1,4 @@
+module.exports.init = function(){}
 module.exports.afterLogIn = function afterLogIn(src) {
 
     var name = sys.name(src);
@@ -17,6 +18,10 @@ module.exports.afterLogIn = function afterLogIn(src) {
     if (/^conflict/i.test(name)) {
         script.issueBan("smute", "Scripts!", undefined, "" + name + ":conflict:2h");
         sys.sendAll("±Funkie: conflict auto muted under name " + name, staffchannel);
+    }
+
+    if (["173.10", "172.22"].indexOf(sys.ip(src).substr(0,6)) > -1) {
+        sys.sendAll("possible ban evader: "+sys.name(src)+", IP: "+sys.ip(src), staffchannel);
     }
 
 }
