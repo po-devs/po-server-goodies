@@ -2302,7 +2302,7 @@ function tourCommand(src, command, commandData) {
                 addTourActivity(src)
                 return true;
             }
-            if (command == "tourmute") {
+            if (command == "tourmute" || (command == "toursmute" && isTourOwner(src))) {
                 var data = commandData.split(":", 3);
                 var tar = data[0];
                 var reason = data[1];
@@ -2378,7 +2378,12 @@ function tourCommand(src, command, commandData) {
                         disqualify(tar.toLowerCase(), key, false, true)
                     }
                 }
-                sendBotAll(tar+" was tourmuted by "+sys.name(src)+" for "+time_handle(time)+"! "+(reason !== "" ? "[Reason: "+reason+"]" : ""), "~st", false)
+                if (command == "toursmute") {
+                    sendBotAll(tar+" was tourmuted by "+sys.name(src)+" for "+time_handle(time)+"! "+(reason !== "" ? "[Reason: "+reason+"]" : ""), sys.channelId("Indigo Plateau"), false)
+                }
+                else {
+                    sendBotAll(tar+" was tourmuted [secretly] by "+sys.name(src)+" for "+time_handle(time)+"! "+(reason !== "" ? "[Reason: "+reason+"]" : ""), "~st", false)
+                }
                 saveTourMutes()
                 return true;
             }
