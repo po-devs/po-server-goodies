@@ -5379,8 +5379,8 @@ module.exports = {
         if (p1tour === false || p2tour === false || src === p1 || src === p2) {
             return false;
         }
-        if (SESSION.channels(tourschan).isBanned(src)) {
-            sendBotMessage(src,"You are banned from Tournaments!","all",false)
+        if (SESSION.channels(tourschan).isBanned(src) || isTourMuted(src)) {
+            sendBotMessage(src,"You are banned from spectating tournaments!","all",false)
             return true;
         }
         var proxy = false;
