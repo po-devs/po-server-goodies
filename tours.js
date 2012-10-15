@@ -955,7 +955,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.006",
+            version: "2.006p1",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -1000,7 +1000,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.006",
+        version: "2.006p1",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1399,7 +1399,7 @@ function tourBattleEnd(winner, loser, result) {
             return;
         }
         if (result == "tie") {
-            if (battletime < 60 && tours.tour[key].draws.indexOf(winname) == -1) {
+            if ((battletime < 60 && tours.tour[key].draws.indexOf(winname) == -1) || !sys.loggedIn(winner) || !sys.loggedIn(loser)) {
                 sendBotAll("The match between "+winname+" and "+losename+" ended in a tie, please rematch!", tourschan, false);
                 markActive(winner, "tie");
                 markActive(loser, "tie");
