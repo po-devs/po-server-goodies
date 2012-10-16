@@ -955,7 +955,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.006p1",
+            version: "2.006p2",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -1000,7 +1000,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.006p1",
+        version: "2.006p2",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1017,6 +1017,7 @@ function initTours() {
             sendChanAll("Creating new tournament object", tourschan);
             tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1};
         }
+        refreshTicks(true);
     }
     else {
         if (!tours.hasOwnProperty('queue')) tours.queue = [];
@@ -1110,7 +1111,7 @@ function initTours() {
         sendChanAll("No tour history detected.", tourschan);
     }
     loadTourMutes();
-    refreshTicks();
+    refreshTicks(false);
     sendChanAll("Version "+tourconfig.version+" of the tournaments system was loaded successfully in this channel!", tourschan);
 }
 
@@ -1188,11 +1189,15 @@ function getEventTour(datestring) {
     return false;
 }
 
-function refreshTicks() {
+function refreshTicks(override) {
     var time = parseInt(sys.time());
     time -= 9900; // offset
     var frequency = 6*60*60; // every 6 hours
-    tours.eventticks = frequency-time%frequency;
+    var newtime = frequency-time%frequency;
+    var oldtime = tours.eventticks;
+    if (override || newtime < oldtime) {
+        tours.eventticks = newtime;
+    }
 }
 
 /* Tournament Step Event
@@ -1220,6 +1225,7 @@ function tourStep() {
                 saveTourMutes();
             }
         }
+        refreshTicks(false);
     }
     if (tours.eventticks > 0) {
         tours.eventticks -= 1;
@@ -4449,6 +4455,7 @@ function tourprintbracket(key) {
             var channels = [0, tourschan]
             var winner = toCorrectCase(tours.tour[key].players[0])
             var now = new Date();
+            var isevent = tours.tour[key].event;
             if (winner !== "~Bye~") {
                 for (var x in channels) {
                     sendChanAll("", channels[x])
@@ -4461,7 +4468,7 @@ function tourprintbracket(key) {
                     sendChanHtmlAll("<timestamp/> The winner of the "+getFullTourName(key)+" tournament is: <b>"+html_escape(winner)+"</b>!", channels[x])
                     sendChanAll("", channels[x])
                     sendBotAll("Please congratulate "+winner+" on their success!", channels[x], false)
-                    if (!tours.tour[key].event) {
+                    if (!isevent) {
                         sendChanAll(border, channels[x])
                     }
                     else {
@@ -4470,7 +4477,7 @@ function tourprintbracket(key) {
                     sendChanAll("", channels[x])
                 }
                 // award to winner
-                if (!tours.tour[key].event) {
+                if (!isevent) {
                     awardTourPoints(winner.toLowerCase(), tours.tour[key].cpt, tours.tour[key].tourtype, tours.tour[key].parameters.type == "double" ? true : false, 1)
                 }
                 else {
@@ -4482,7 +4489,7 @@ function tourprintbracket(key) {
                 }
             }
             else sendBotAll("The "+getFullTourName(key)+" ended by default!", tourschan, false)
-            if (!tours.tour[key].event) {
+            if (!isevent) {
                 tours.history.unshift(getFullTourName(key)+": Won by "+winner+" with "+tours.tour[key].cpt+" players")
             }
             else {
@@ -4525,10 +4532,9 @@ function tourprintbracket(key) {
             catch (err) {
                 sendChanAll("Error in saving tour stats, id "+key+": "+err, tourserrchan)
             }
-            if (tours.tour[key].event) {
+            if (isevent) {
                 tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
                 saveEventPoints();
-                refreshTicks();
             }
             tours.keys.splice(tours.keys.indexOf(key), 1);
             if (tours.keys.length === 0 && tours.globaltime > 0) {
@@ -4536,6 +4542,9 @@ function tourprintbracket(key) {
             }
             delete tours.tour[key];
             save_cache();
+            if (isevent) {
+                refreshTicks(true);
+            }
             return;
         }
         else if (tours.tour[key].players.length == 2) { // finals
