@@ -1111,7 +1111,6 @@ function initTours() {
         sendChanAll("No tour history detected.", tourschan);
     }
     loadTourMutes();
-    refreshTicks(false);
     sendChanAll("Version "+tourconfig.version+" of the tournaments system was loaded successfully in this channel!", tourschan);
 }
 
@@ -1523,6 +1522,7 @@ function tourCommand(src, command, commandData) {
             }
             if (command == "resettours") {
                 tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}};
+                refreshTicks(true);
                 sendBotAll(sys.name(src)+" reset the tour system!",tourschan,false)
                 return true;
             }
