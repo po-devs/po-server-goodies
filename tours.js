@@ -4547,21 +4547,25 @@ function tourprintbracket(key) {
                 tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
             }
             delete tours.tour[key];
-            save_cache();
             if (isevent) {
                 refreshTicks(true);
             }
+            save_cache();
             return;
         }
         else if (tours.tour[key].players.length == 2) { // finals
             /* Here in case it's ~Bye~ vs ~Bye~ */
             if (tours.tour[key].players[0] == "~Bye~" && tours.tour[key].players[1] == "~Bye~") {
                 sendBotAll("The "+getFullTourName(key)+" ended by default!", tourschan, false)
+                if (tours.tour[key].event) {
+                    refreshTicks(true);
+                }
                 delete tours.tour[key];
                 tours.keys.splice(tours.keys.indexOf(key), 1);
                 if (tours.keys.length === 0 && tours.globaltime > 0) {
                     tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
                 }
+                save_cache();
                 return;
             }
             tours.tour[key].state = "final"
