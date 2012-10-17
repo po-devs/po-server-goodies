@@ -955,7 +955,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.006p2",
+            version: "2.006p3",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -1000,7 +1000,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.006p2",
+        version: "2.006p3",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -2187,6 +2187,9 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by "+sys.name(src)+"!", tourschan,false);
+                if (tours.tour[key].event) {
+                    refreshTicks(true);
+                }
                 delete tours.tour[key];
                 tours.keys.splice(tours.keys.indexOf(key), 1);
                 if (tours.globaltime !== -1) {
@@ -4224,6 +4227,9 @@ function tourinitiate(key) {
                 tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
             }
             sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least "+tourconfig.minplayers+" players!"+(tours.globaltime > 0 ? " (A new tournament will start in "+time_handle(tourconfig.tourbreak)+")." : ""), tourschan, false)
+            if (tours.tour[key].event) {
+                refreshTicks(true);
+            }
             delete tours.tour[key];
             tours.metrics.failedstarts += 1;
             tours.keys.splice(tours.keys.indexOf(key), 1)
