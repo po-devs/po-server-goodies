@@ -3940,6 +3940,7 @@ channelCommand: function(src, command, commandData, tar) {
         var data = ["Following mutes in effect: "];
         for (var ip in poChannel.muted.ips) {
 	    var name = poChannel.banned.ips[ip];
+	    if (name !== undefined)
             data.push(name + ", ");
         }
         channelbot.sendChanMessage(src, data.join(""));
@@ -3951,6 +3952,7 @@ channelCommand: function(src, command, commandData, tar) {
         var data = ["Following bans in effect: "];
         for (var ip in poChannel.banned.ips) {
 	    var name = poChannel.banned.ips[ip];
+	    if (name !== undefined)
             data.push(name + ", ");
         }
         channelbot.sendChanMessage(src, data.join(""));
