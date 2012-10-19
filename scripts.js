@@ -3939,7 +3939,7 @@ channelCommand: function(src, command, commandData, tar) {
     if (command == "cmutes") {
         var data = ["Following mutes in effect: "];
         for (var ip in poChannel.muted.ips) {
-	    var name = poChannel.banned.ips[ip];
+	    var name = poChannel.muted.ips[ip];
 	    if (name !== undefined)
             data.push(name + ", ");
         }
