@@ -3937,6 +3937,8 @@ channelCommand: function(src, command, commandData, tar) {
     }
 
     if (command == "cmutes") {
+    	channelbot.sendChanMessage(src, "This command is currently disabled.");
+    	return;
         var data = ["Following mutes in effect: "];
         for (var ip in poChannel.muted.ips) {
             data.push(ip + ", ");
@@ -3947,6 +3949,8 @@ channelCommand: function(src, command, commandData, tar) {
 
 
     if (command == "cbans") {
+    	channelbot.sendChanMessage(src, "This command is currently disabled.");
+    	return;
         var data = ["Following bans in effect: "];
         for (var ip in poChannel.banned.ips) {
             data.push(ip + ", ");
