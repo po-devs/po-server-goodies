@@ -109,6 +109,7 @@ function isTriviaMuted(ip) {
     }
     if (trivData.mutes[ip].expires <= sys.time()) {
         delete trivData.mutes[ip];
+        saveData();
         return false;
     }
     return true;
@@ -1400,6 +1401,7 @@ addAdminCommand("triviamute", function(src, commandData, channel) {
         trivia.removePlayer(sys.id(user));
         triviabot.sendAll(user+" was removed from the game!", triviachan);
     }
+    saveData();
 }, "Trivia mute a user.");
 
 addAdminCommand("triviaunmute", function(src, commandData, channel) {
@@ -1426,6 +1428,7 @@ addAdminCommand("triviaunmute", function(src, commandData, channel) {
         var current = chans[x];
         triviabot.sendAll(commandData+" was trivia unmuted by "+nonFlashing(sys.name(src))+ "!", current);
     }
+    saveData();
 }, "Trivia unmute a user.");
 
 addAdminCommand("triviamutes", function(src, commandData, channel) {
