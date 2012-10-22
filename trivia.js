@@ -1397,8 +1397,8 @@ addAdminCommand("triviamute", function(src, commandData, channel) {
         var current = chans[x];
         triviabot.sendAll(user+" was trivia muted by "+nonFlashing(sys.name(src))+ (time!="forever"? " " + timestring : "") + "! [Reason: "+reason+"]", current);
     }
-    if (sys.id(user) != undefined && trivia.playerPlaying(sys.id(user)) && sys.ip(sys.id(user)) == tarip) {
-        trivia.removePlayer(sys.id(user));
+    if (sys.id(user) != undefined && Trivia.playerPlaying(sys.id(user))) {
+        Trivia.removePlayer(sys.id(user));
         triviabot.sendAll(user+" was removed from the game!", triviachan);
     }
     saveData();
