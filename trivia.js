@@ -1393,6 +1393,10 @@ addAdminCommand("triviamute", function(src, commandData, channel) {
         var current = chans[x];
         triviabot.sendAll(user+" was trivia muted by "+sys.name(src)+ (time!="forever"? " " + timestring : "") + "! [Reason: "+reason+"]", current);
     }
+    if (sys.id(user) != undefined && trivia.PlayerPlaying(src)) {
+        trivia.removePlayer(src);
+        Trivia.sendAll(user + " was removed from the game!",triviachan);
+    }
 }, "Trivia mute a user.");
 
 addAdminCommand("triviaunmute", function(src, commandData, channel) {
