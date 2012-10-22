@@ -1364,7 +1364,7 @@ addAdminCommand("triviamute", function(src, commandData, channel) {
         return;
     }
     var tarip = sys.id(user) == undefined ? sys.dbIp(user) : sys.ip(sys.id(user));
-    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0;
+    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user.toLowerCase());
     if (sys.maxAuth(tarip) >= sys.auth(src) && !ok) {
         triviabot.sendMessage(src, "Can't do that to higher auth!", channel);
         return;
@@ -1395,6 +1395,10 @@ addAdminCommand("triviamute", function(src, commandData, channel) {
     for (x in chans) {
         var current = chans[x];
         triviabot.sendAll(user+" was trivia muted by "+nonFlashing(sys.name(src))+ (time!="forever"? " " + timestring : "") + "! [Reason: "+reason+"]", current);
+    }
+    if (sys.id(user) != undefined && trivia.playerPlaying(sys.id(user)) && sys.ip(sys.id(user)) == tarip) {
+        trivia.removePlayer(sys.id(user));
+        triviabot.sendAll(user+" was removed from the game!", triviachan);
     }
 }, "Trivia mute a user.");
 
