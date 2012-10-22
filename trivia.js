@@ -65,6 +65,52 @@ try {
 
 if (trivData.submitBans == undefined) trivData.submitBans = {};
 if (trivData.toFlash == undefined) trivData.toFlash = {};
+if (trivData.mutes == undefined) trivData.mutes = {};
+//TODO:Load from utilities.js
+getSeconds = function(s) {
+    var parts = s.split(" ");
+    var secs = 0;
+    for (var i = 0; i < parts.length; ++i) {
+        var c = (parts[i][parts[i].length-1]).toLowerCase();
+        var mul = 60;
+        if (c == "s") { mul = 1; }
+        else if (c == "m") { mul = 60; }
+        else if (c == "h") { mul = 60*60; }
+        else if (c == "d") { mul = 24*60*60; }
+        else if (c == "w") { mul = 7*24*60*60; }
+        secs += mul * parseInt(parts[i], 10);
+    }
+    return secs;
+};
+getTimeString = function(sec) {
+    var s = [];
+    var n;
+    var d = [[7*24*60*60, "week"], [24*60*60, "day"], [60*60, "hour"], [60, "minute"], [1, "second"]];
+    for (var j = 0; j < 5; ++j) {
+        n = parseInt(sec / d[j][0], 10);
+        if (n > 0) {
+            s.push((n + " " + d[j][1] + (n > 1 ? "s" : "")));
+            sec -= n * d[j][0];
+            if (s.length >= 2) break;
+        }
+    }
+    return s.join(", ");
+};
+
+function isTriviaMuted(ip) {
+    if (trivData.mutes[ip] == undefined) {
+        return false;
+    }
+    if (trivData.mutes[ip].expires == "never") {
+        return true;
+    }
+    if (trivData.mutes[ip].expires <= sys.time()) {
+        delete trivData.mutes[ip];
+        return false;
+    }
+    return true;
+}
+    
 function runUpdate() {
     if (Trivia.needsUpdating !== true) return;
     var POglobal = SESSION.global();
@@ -793,13 +839,13 @@ addUserCommand("submitq", function(src, commandData, channel) {
 },"Allows you to submit a question for review, format /submitq Category*Question*Answer1,Answer2,etc");
 
 addUserCommand("join", function(src, commandData, channel) {
-    if(SESSION.users(src).mute.active || !SESSION.channels(triviachan).canTalk(src)){
-        Trivia.sendPM(src, "You cannot join when muted!",channel);
-        return;
-    }
     if (Trivia.started === false)
     {
         Trivia.sendPM(src,"A game hasn't started!",channel);
+        return;
+    }
+    if(SESSION.users(src).mute.active || isTriviaMuted(sys.ip(src)) || !SESSION.channels(triviachan).canTalk(src)){
+        Trivia.sendPM(src, "You cannot join when muted!",channel);
         return;
     }
     if (!sys.dbRegistered(sys.name(src)))
@@ -1303,6 +1349,119 @@ addAdminCommand("submitbans", function(src, commandData, channel) {
 	return;
 }, "View submit bans.");
 
+addAdminCommand("triviamute", function(src, commandData, channel) {
+    if (commandData == undefined || commandData.indexOf(":") == -1) {
+        triviabot.sendMessage(src, "Usage: name:reason:time", channel);
+        return;
+    }
+    commandData = commandData.split(":");
+    var user = commandData[0], reason = commandData[1], time = commandData[2];
+    if (sys.dbIp(user) == undefined) {
+        triviabot.sendMessage(src, "Couldn't find "+commandData, channel);
+        return;
+    }
+    var tarip = sys.id(user) == undefined ? sys.dbIp(user) : sys.ip(sys.id(user));
+    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0;
+    if (sys.maxAuth(tarip) >= sys.auth(src) && !ok) {
+        triviabot.sendMessage(src, "Can't do that to higher auth!", channel);
+        return;
+    }
+    if (isTriviaMuted(tarip)) {
+        triviabot.sendMessage(src, user+" is already trivia muted!", channel);
+        return;
+    }
+    timestring = "for ";
+    seconds = getSeconds(time);
+    if (!time || seconds < 1) {
+        if (!isTriviaOwner(src)) {
+            triviabot.sendMessage(src, "Please specify time!", channel);
+            return;
+        }
+        time = "forever";
+    }
+    timestring += getTimeString(seconds);
+    expires = (time == "forever") ? "never" : parseInt(sys.time()) + parseInt(seconds);
+    trivData.mutes[tarip] = {
+        'name': user,
+        'reason': reason,
+        'by': sys.name(src),
+        'issued': parseInt(sys.time()),
+        'expires': expires
+    };
+    var chans = [triviachan, revchan, sachannel];
+    for (x in chans) {
+        var current = chans[x];
+        triviabot.sendAll(user+" was trivia muted by "+sys.name(src)+ (time!="forever"? " " + timestring : "") + "! [Reason: "+reason+"]", current);
+    }
+}, "Trivia mute a user.");
+
+addAdminCommand("triviaunmute", function(src, commandData, channel) {
+    if (commandData == undefined) {
+        triviabot.sendMessage(src, "Specify a user!", channel);
+        return;
+    }
+    if (sys.dbIp(commandData) == undefined) {
+        triviabot.sendMessage(src, "Couldn't find "+commandData, channel);
+        return;
+    }
+    var tarip = sys.id(commandData) == undefined ? sys.dbIp(commandData) : sys.ip(sys.id(commandData));
+    if (!isTriviaMuted(tarip)) {
+        triviabot.sendMessage(src, commandData+" isn't trivia muted!", channel);
+        return;
+    }
+    if (tarip == sys.ip(src) && isTriviaMuted(tarip)) {
+        triviabot.sendMessage(src, "You may not trivia unmute yourself!", channel);
+        return;
+    }
+    delete trivData.mutes[tarip];
+    var chans = [triviachan, revchan, sachannel];
+    for (x in chans) {
+        var current = chans[x];
+        triviabot.sendAll(commandData+" was trivia unmuted by "+sys.name(src)+ "!", current);
+    }
+}, "Trivia unmute a user.");
+
+addAdminCommand("triviamutes", function(src, commandData, channel) {
+        var name = "Trivia mutes";
+        var width=5;
+        var max_message_length = 30000;
+        var tmp = [];
+        var t = parseInt(sys.time(), 10);
+        var toDelete = [];
+        
+        for (ip in trivData.mutes) {
+            if (!isTriviaMuted(ip)) continue;
+            cmute = trivData.mutes[ip], banned_name = cmute.name, by = cmute.by, banTime = cmute.issued, expires = cmute.expires, reason = cmute.reason;
+            tmp.push([ip, banned_name, by, (banTime === 0 ? "unknown" : getTimeString(t-banTime)), (expires === "never" ? "never" : getTimeString(expires-t)), utilities.html_escape(reason)]);
+        }
+
+        tmp.sort(function(a,b) { return a[3] - b[3];});
+
+        // generate HTML
+        var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + utilities.html_escape(name) + '</strong></center></td></tr><tr><th>IP</th><th>Name</th><th>By</th><th>Issued ago</th><th>Expires in</th><th>Reason</th>';
+        var table_footer = '</table>';
+        var table = table_header;
+        var line;
+        var send_rows = 0;
+        while(tmp.length > 0) {
+            line = '<tr><td>'+tmp[0].join('</td><td>')+'</td></tr>';
+            tmp.splice(0,1);
+            if (table.length + line.length + table_footer.length > max_message_length) {
+                if (send_rows === 0) continue; // Can't send this line!
+                table += table_footer;
+                sys.sendHtmlMessage(src, table, channel);
+                table = table_header;
+                send_rows = 0;
+            }
+            table += line;
+            ++send_rows;
+        }
+        table += table_footer;
+        if (send_rows > 0)
+            sys.sendHtmlMessage(src, table, channel);
+        return;
+}, "View trivia mutes.");
+
 addAdminCommand("autostart", function(src, commandData, channel) {
 	Trivia.autostart = !Trivia.autostart;
 	triviabot.sendMessage(src, "Autostart is now " + (Trivia.autostart == true ? "on" : "off") + ".", channel);
@@ -1399,8 +1558,6 @@ exports.beforeChatMessage = function trivia_beforeChatMessage(src, message, chan
     	return true;
     }
 
-try { // debug only, do not indent
-    // allow commands, except me
     if (utilities.is_command(message) && message.substr(1,2).toLowerCase() != "me")
     return;
 
@@ -1427,10 +1584,13 @@ try { // debug only, do not indent
         Trivia.addAnswer(src, message.replace(/,/gi,""));
         Trivia.sendPM(src, "Your answer was submitted.", triviachan);
         return true;
-    }
-} catch(e) {
-    sys.sendMessage(src, "Error in beforeChatMessage: " + e, channel);
-}
+   }
+   
+   if (isTriviaMuted(sys.ip(src))) {
+      var mute = trivData.mutes[sys.ip(src)];
+      triviabot.sendMessage(src, "You are trivia muted by "+mute.by+ (mute.expires == "never" ? "" : " for "+getTimeString(mute.expires - sys.time()))+"! [Reason: "+reason+"]", channel);
+      return true;
+   }
 };
 
 exports.init = function trivia_init()
