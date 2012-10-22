@@ -97,6 +97,9 @@ getTimeString = function(sec) {
     return s.join(", ");
 };
 
+var utilities = require("utilities.js");
+var nonFlashing = utilities.non_flashing;
+
 function isTriviaMuted(ip) {
     if (trivData.mutes[ip] == undefined) {
         return false;
@@ -1391,11 +1394,7 @@ addAdminCommand("triviamute", function(src, commandData, channel) {
     var chans = [triviachan, revchan, sachannel];
     for (x in chans) {
         var current = chans[x];
-        triviabot.sendAll(user+" was trivia muted by "+sys.name(src)+ (time!="forever"? " " + timestring : "") + "! [Reason: "+reason+"]", current);
-    }
-    if (sys.id(user) != undefined && trivia.PlayerPlaying(src)) {
-        trivia.removePlayer(src);
-        Trivia.sendAll(user + " was removed from the game!",triviachan);
+        triviabot.sendAll(user+" was trivia muted by "+nonFlashing(sys.name(src))+ (time!="forever"? " " + timestring : "") + "! [Reason: "+reason+"]", current);
     }
 }, "Trivia mute a user.");
 
@@ -1421,7 +1420,7 @@ addAdminCommand("triviaunmute", function(src, commandData, channel) {
     var chans = [triviachan, revchan, sachannel];
     for (x in chans) {
         var current = chans[x];
-        triviabot.sendAll(commandData+" was trivia unmuted by "+sys.name(src)+ "!", current);
+        triviabot.sendAll(commandData+" was trivia unmuted by "+nonFlashing(sys.name(src))+ "!", current);
     }
 }, "Trivia unmute a user.");
 
