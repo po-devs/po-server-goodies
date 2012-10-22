@@ -110,6 +110,12 @@ function isTriviaMuted(ip) {
     if (trivData.mutes[ip].expires <= sys.time()) {
         delete trivData.mutes[ip];
         saveData();
+        // Let player know their mute expired...
+        var aliases = sys.aliases(ip);
+        aliases.forEach(function(name) {
+            if (sys.id(name) !== undefined)
+            triviabot.sendMessage(sys.id(name), "Your trivia mute has expired.", triviachan);
+        });
         return false;
     }
     return true;
