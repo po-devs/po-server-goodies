@@ -2564,6 +2564,15 @@ nameIsInappropriate: function(src)
     return false;
 },
 
+getColor: function(src) {
+    var colour = sys.getColor(src);
+    if (colour === "#000000") {
+        var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
+        colour = clist[src % clist.length];
+    }
+    return colour;
+},
+
 nameWarnTest : function(src) {
     if (sys.auth(src) > 0)
         return;
@@ -4959,15 +4968,6 @@ ownerCommand: function(src, command, commandData, tar) {
     return "no command";
 },
 
-getColor: function(src) {
-    var colour = sys.getColor(src);
-    if (colour === "#000000") {
-        var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
-        colour = clist[src % clist.length];
-    }
-    return colour;
-},
-
 channelCommand: function(src, command, commandData, tar) {
     var poChannel = SESSION.channels(channel);
     if (poChannel.operators === undefined)
@@ -5714,11 +5714,7 @@ afterChatMessage : function(src, message, chan)
     SESSION.channels(channel).beforeMessage(src, message);
     callplugins("afterChatMessage", src, message, channel);
     // PO logs stuff
-    var colour = sys.getColor(src);
-    if(colour === "#000000"){
-        var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
-        colour = clist[src % clist.length];
-    }
+    var colour = this.getColor(src);
     var params = {event:'afterChatMessage', source_id:src, source_color:colour, msg:message, chan_id:channel, timestamp:get_timestamp()};
     append_logs(params);
 }, /* end of afterChatMessage */
