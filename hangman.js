@@ -339,6 +339,7 @@ module.exports = function () {
             "±Goal: Your goal is to guess a word on a letter by letter basis. A hint and the number of characters will be provided as a help.",
             "±Goal: Whenever someone guess a letter correctly, that letter will be filled in the word.",
             "*** *********************************************************************** ***",
+            "±Actions: To see the current puzzle, type /view.",
             "±Actions: To guess a character, type /g [character]. For example, to guess F, type /g F.",
             "±Actions: If you think you already know the answer, you can use /a [answer] to submit a full answer.",
             "±Actions: If you guess wrong too many times, the host wins!",
