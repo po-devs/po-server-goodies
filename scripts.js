@@ -45,7 +45,7 @@ var Config = {
         ["Blitzamirin", "1st Generation OverUsed - View Blitzamirin's <a href='http://pokemon-online.eu/forums/showthread.php?13134-Stadium-OU-Gym-Blitzamirin'>Gym Thread!</a>"]
     ],
     DreamWorldTiers: ["No Preview OU", "No Preview Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
-    superAdmins: ["Professor Oak", "zeroality", "[LD]Jirachier", "Nixeagle", "Ethan"],
+    superAdmins: ["[LD]Jirachier", "Ethan"],
     canJoinStaffChannel: ["Lamperi-", "Peanutsdroid", "QuX", "Ethan-"],
     disallowStaffChannel: []
 };
@@ -624,7 +624,7 @@ function sendNotice() {
         if (resp.length < 1){
             return;
         }
-        var channels = ["Tohjo Falls", "Trivia", "Mafia Tutoring", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview"];
+        var channels = ["Tohjo Falls", "Trivia", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview"];
         for (var i = 0; i < channels.length; i++){
             sys.sendHtmlAll(resp, sys.channelId(channels[i]));
         }
@@ -1592,7 +1592,7 @@ var commands = {
         "/myalts: Lists your alts.",
         "/me [message]: Sends a message with *** before your name.",
         "/selfkick: Kicks all other accounts with IP.",
-        "/importable: Posts an importable of your team to pastebin.",
+        //"/importable: Posts an importable of your team to pastebin.",
         "/dwreleased [Pokemon]: Shows the released status of a Pokemon's Dream World Ability",
         "/wiki [Pokémon]: Shows that Pokémon's wiki page",
         "/register: Registers a channel with you as owner.",
@@ -2269,14 +2269,9 @@ beforeChannelJoin : function(src, channel) {
     // Can't ban from main
     if (channel === 0) return;
     
-    /* mafia redirect */
     if (channel == sys.channelId("Mafia Channel")) {
         sys.stopEvent();
         sys.putInChannel(src, sys.channelId("Mafia"));
-    }
-    /*forces players to join Mafia Tutoring when joining mafia*/
-    if (channel === sys.channelId('Mafia')){
-        sys.putInChannel(src, sys.channelId('Mafia Tutoring'));
     }
     if (channel === sys.channelId('Hangman Game')) {
         sys.stopEvent();
@@ -2813,11 +2808,7 @@ userCommand: function(src, command, commandData, tar) {
             }
         }
         if (command == "me") {
-            var colour = sys.getColor(src);
-            if(colour === "#000000"){
-                var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
-                colour = clist[src % clist.length];
-           }
+            var colour = script.getColor(src);
            sendChanHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + messagetosend + "</font>", channel);
         } else if (command == "rainbow" && SESSION.global().allowRainbow && channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel != sys.channelId("Trivia")) {
             var auth = 1 <= sys.auth(src) && sys.auth(src) <= 3;
@@ -3069,16 +3060,19 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "resetpass") {
+        if (!sys.dbRegistered(sys.name(src))) {
+            normalbot.sendChanMessage(src, "You are not registered!");
+            return;
+        }
         sys.clearPass(sys.name(src));
         normalbot.sendChanMessage(src, "Your password was cleared!");
         sys.sendNetworkCommand(src, 14); // make the register button active again
         return;
     }
-
-    if (command == "importable") {
+    /*if (command == "importable") {
         normalbot.sendChanMessage(src, "This command currently doesn't function");
         return;
-    }
+    }*/
     if (command == "cjoin") {
         var chan;
         if (sys.existChannel(commandData)) {
@@ -4447,10 +4441,14 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "capslockday") {
-        if (commandData == "off")
+        if (commandData == "off") {
             CAPSLOCKDAYALLOW = false;
-        else
+            normalbot.sendChanMessage(src, "You turned caps lock day off!");
+        }
+        else if (commandData == "on") {
             CAPSLOCKDAYALLOW = true;
+            normalbot.sendChanMessage(src, "You turned caps lock day on!");
+        }
         return;
     }
     if (command == "contributor") {
@@ -4895,7 +4893,17 @@ ownerCommand: function(src, command, commandData, tar) {
             updateURL = commandData;
         }
         normalbot.sendChanMessage(src, "Fetching tiers from " + updateURL);
-        sys.webCall(updateURL, "sys.writeToFile('tiers.xml', resp); sys.reloadTiers();");
+        var updateTiers = function(resp) {
+            if (resp == "") return;
+            try {
+                sys.writeToFile("tiers.xml", resp);
+                sys.reloadTiers();
+            } catch (e) {
+                normalbot.sendChanMessage(src, "ERROR: "+e);
+                return;
+            }
+        };
+        sys.webCall(updateURL, updateTiers);
         return;
     }
     if (command == "addplugin") {
@@ -4951,6 +4959,15 @@ ownerCommand: function(src, command, commandData, tar) {
     return "no command";
 },
 
+getColor: function(src) {
+    var colour = sys.getColor(src);
+    if (colour === "#000000") {
+        var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
+        colour = clist[src % clist.length];
+    }
+    return colour;
+},
+
 channelCommand: function(src, command, commandData, tar) {
     var poChannel = SESSION.channels(channel);
     if (poChannel.operators === undefined)
@@ -4960,11 +4977,7 @@ channelCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "Choose a valid target for your love!");
             return;
         }
-        var colour = sys.getColor(src);
-        if (colour === "#000000") {
-            var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
-            colour = clist[src % clist.length];
-        }
+        var colour = this.getColor(src);
         sendChanHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
         sys.kick(tar, channel);
         return;
