@@ -820,6 +820,15 @@ function isSub(name) {
     }
 }
 
+function battlesLeft(key) {
+    if (!tours.tour.hasOwnProperty(key)) {
+        return NaN;
+    }
+    else {
+        return parseInt(tours.tour[key].players.length/2)-tours.tour[key].winners.length;
+    }
+}
+
 /* To track tour brackets in logs. */
 function sendLog(message, html) {
     try {
@@ -920,6 +929,7 @@ function load_cache() {
     var test = JSON.parse(sys.getFileContent("tours_cache.json"));
     tours = test;
     tours.globaltime = 0;
+    tours.eventticks = -1;
     for (var x in tours.tour) {
         // don't reload tournaments that haven't started.
         if (tours.tour[x].round === 0) {
@@ -955,7 +965,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.006p3",
+            version: "2.006p4",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -1000,7 +1010,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.006p3",
+        version: "2.006p4",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1017,7 +1027,15 @@ function initTours() {
             sendChanAll("Creating new tournament object", tourschan);
             tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1};
         }
-        refreshTicks(true);
+        var refresh = true;
+        for (var x in tours.tour) {
+            if (tours.tour[x].event) {
+                refresh = false;
+            }
+        }
+        if (refresh) {
+            refreshTicks(true);
+        }
     }
     else {
         if (!tours.hasOwnProperty('queue')) tours.queue = [];
@@ -1521,7 +1539,7 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "resettours") {
-                tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}};
+                tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1};
                 refreshTicks(true);
                 sendBotAll(sys.name(src)+" reset the tour system!",tourschan,false)
                 return true;
