@@ -1604,7 +1604,7 @@ exports.beforeChatMessage = function trivia_beforeChatMessage(src, message, chan
    
    if (isTriviaMuted(sys.ip(src))) {
       var mute = trivData.mutes[sys.ip(src)];
-      triviabot.sendMessage(src, "You are trivia muted by "+mute.by+ (mute.expires == "never" ? "" : " for "+getTimeString(mute.expires - sys.time()))+"! [Reason: "+reason+"]", channel);
+      triviabot.sendMessage(src, "You are trivia muted by "+mute.by+ (mute.expires == "never" ? "" : " for "+getTimeString(mute.expires - sys.time()))+"! [Reason: "+mute.reason+"]", channel);
       return true;
    }
 };
