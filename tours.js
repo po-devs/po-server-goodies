@@ -24,6 +24,15 @@ if (typeof tours !== "object") {
         sendChanAll("Creating new tournament object", tourschan);
         tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1};
     }
+    var refresh = true;
+    for (var x in tours.tour) {
+        if (tours.tour[x].event) {
+            refresh = false;
+        }
+    }
+    if (refresh) {
+        refreshTicks(true);
+    }
 }
 
 var utilities = require('utilities.js');
