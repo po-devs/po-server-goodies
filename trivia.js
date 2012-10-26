@@ -122,13 +122,13 @@ function isTriviaMuted(ip) {
 }
 
 function isSubmitBanned(ip) {
-    if (trivData.submitBans[ip] == undefined || trivData.submitBans[ip].expires == undefined) {
+    if (trivData.submitBans[ip] == undefined) {
         return false;
-    }    
-    if (trivData.submitBans[ip].expires == "never") {
+    }
+    if (trivData.submitBans[ip].expires !== undefined && trivData.submitBans[ip].expires == "never") {
         return true;
     }
-    if (trivData.submitBans[ip].expires <= sys.time()) {
+    if (trivData.submitBans[ip].expires !== undefined && trivData.submitBans[ip].expires <= sys.time()) {
         delete trivData.submitBans[ip];
         saveData();
         // Let player know their ban expired...
