@@ -6,7 +6,7 @@ module.exports.init = function() {}; //this is just so it says when updated thou
 module.exports.beforeChatMessage = function beforeChatMessage(src, message, channel){
     if (!sys.dbRegistered(sys.name(src)) && channel === 0) {
         if ("http://www.youtube.com/watch?v=gQtGq-KtaYc".indexOf(message) > -1) {
-            normalbot.sendAll(sys.name(src)+" sent message '"+message+"'. Message supressed.", staffchan);
+            normalbot.sendAll(sys.name(src)+" sent message '"+message+"'. Message supressed.", staffchannel);
             sys.sendMessage(src, sys.name(src)+": "+message, channel);
             return true;
         }
