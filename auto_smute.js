@@ -3,6 +3,16 @@
 
 module.exports.init = function() {}; //this is just so it says when updated thought /updateplugin :x
 
+module.exports.beforeChatMessage = function beforeChatMessage(src, message, channel){
+    if (!sys.dbRegistered(sys.name(src)) && channel === 0) {
+        if ("http://www.youtube.com/watch?v=gQtGq-KtaYc".indexOf(message) > -1) {
+            normalbot.sendAll(sys.name(src)+" sent message '"+message+"'. Message supressed.");
+            sys.sendMessage(src, sys.name(src)+": "+message, channel);
+            return true;
+        }
+    }
+};
+
 module.exports.afterLogIn = function afterLogIn(src) {
     var name = sys.name(src);
     if(sys.getColor(src) == "#ff007f" && /doj/i.test(sys.name(src))) {
