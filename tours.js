@@ -22,7 +22,7 @@ if (typeof tours !== "object") {
     }
     catch (e) {
         sendChanAll("Creating new tournament object", tourschan);
-        tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1};
+        tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1, "working": true};
     }
     var refresh = true;
     for (var x in tours.tour) {
@@ -93,6 +93,8 @@ var tourownercommands = ["tsadmin[s] [name]: makes someone a tournament admin - 
                     "clearrankings: clears the tour rankings (owner only)",
                     "evalvars: checks the current variable list for tours",
                     "resettours: resets the entire tournament system in the event of a critical failure",
+                    "starttours: reverts effect of /stoptours",
+                    "stoptours: stops the tournament system for maintenabce",
                     "fullleaderboard [tier]: gives the full leaderboard",
                     "getrankings [month] [year]: exports monthly rankings (deletes old rankings as well)",
                     "loadevents: load event tours"]
@@ -974,7 +976,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.006p5",
+            version: "2.007",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -1019,7 +1021,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.006p5",
+        version: "2.007",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1034,7 +1036,7 @@ function initTours() {
         }
         catch (e) {
             sendChanAll("Creating new tournament object", tourschan);
-            tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1};
+            tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1, "working": true};
         }
         var refresh = true;
         for (var x in tours.tour) {
@@ -1060,6 +1062,7 @@ function initTours() {
         if (!tours.hasOwnProperty('tourmutes')) tours.tourmutes = {};
         if (!tours.hasOwnProperty('metrics')) tours.metrics = {};
         if (!tours.hasOwnProperty('eventticks')) tours.eventticks = -1;
+        if (!tours.hasOwnProperty('working')) tours.working = true;
     }
     tours.metrics = {'failedstarts': 0};
     try {
@@ -1292,6 +1295,9 @@ function tourStep() {
         if (tours.tour[x].state == "signups" || tours.tour[x].state == "subround") {
             canstart = false;
         }
+    }
+    if (!tours.working) {
+        canstart = false;
     }
     if (calcPercentage() >= tourconfig.minpercent) {
         canautostart = false;
@@ -1547,8 +1553,30 @@ function tourCommand(src, command, commandData) {
                 sendBotMessage(src,"Decay calculation successful",tourschan,false)
                 return true;
             }
+            if (command == "stoptours") {
+                if (!tours.working) {
+                    sendBotMessage(src,"Tournaments are already disabled!",tourschan,false)
+                    return true;
+                }
+                tours.working = false;
+                sendChanAll(border, tourschan)
+                sendBotAll(sys.name(src)+" disabled the tournaments system as it is undergoing maintenance. No new tournaments will start.",tourschan,false)
+                sendChanAll(border, tourschan)
+                return true;
+            }
+            if (command == "starttours") {
+                if (!tours.working) {
+                    sendBotMessage(src,"Tournaments are already enabled!",tourschan,false)
+                    return true;
+                }
+                tours.working = true;
+                sendChanAll(border, tourschan)
+                sendBotAll(sys.name(src)+" re-enabled the tournaments system.",tourschan,false)
+                sendChanAll(border, tourschan)
+                return true;
+            }
             if (command == "resettours") {
-                tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1};
+                tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1, "working": false};
                 refreshTicks(true);
                 sendBotAll(sys.name(src)+" reset the tour system!",tourschan,false)
                 return true;
@@ -1988,6 +2016,10 @@ function tourCommand(src, command, commandData) {
         }
         if (isTourAdmin(src)) {
             if (command == "tour" || ((command == "tourstart" || command == "shift") && isTourSuperAdmin(src))) {
+                if (!tours.working) {
+                    sendBotMessage(src, 'Tournaments are disabled!', tourschan, false);
+                    return true;
+                }
                 var splitpoint = commandData.indexOf(":")
                 var data = splitpoint != -1 ? [commandData.substr(0,splitpoint), commandData.substr(splitpoint+1)] : [commandData, false];
                 var tourtier = find_tier(data[0])
@@ -2113,6 +2145,10 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "start") {
+                if (!tours.working) {
+                    sendBotMessage(src, 'Tournaments are disabled!', tourschan, false);
+                    return true;
+                }
                 for (var x in tours.tour) {
                     if (tours.tour[x].state == "signups") {
                         sendBotMessage(src, "A tournament is already in signups!", tourschan, false)
@@ -3093,7 +3129,7 @@ function tourCommand(src, command, commandData) {
             for (var e in queue) {
                 var queuedata = queue[e];
                 var params = queuedata.parameters;
-                if (firsttour && nextstart != "Pending" && !(params.event && tours.keys.length > 0)) {
+                if (firsttour && nextstart != "Pending" && !(params.event && tours.keys.length > 0) && tours.working) {
                     sys.sendMessage(src,"1) "+queuedata.tier+": Set by "+queuedata.starter+"; Parameters: "+params.mode+" Mode"+(params.gen != "default" ? "; Gen: "+getSubgen(params.gen,true) : "")+(params.type == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(params.maxplayers)) ? "; For "+ params.maxplayers +" players": "")+(params.event ? "; Event Mode": "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
                 }
                 else {
@@ -5255,7 +5291,7 @@ function sendWelcomeMessage(src, chan) {
     var nextmessage = "???"
     if (tours.queue.length >= 1) {
         var queuedata = tours.queue[0];
-        if (nextstart != "Pending" && !(queuedata.parameters.event && tours.keys.length > 0)) {
+        if (nextstart != "Pending" && !(queuedata.parameters.event && tours.keys.length > 0) && tours.working) {
             nextmessage = queuedata.tier+"; Starts in "+nextstart;
         }
         else {
