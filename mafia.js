@@ -1481,8 +1481,8 @@ function Mafia(mafiachan) {
             }
             list = this.teamTargets[player.role.side][action];
             if ("restrict" in player.role.actions.night[action]) {
-                if (!(player.role.role in this.teamRestrictions)) {
-                    this.teamRestrictions[player.role.role] = [];
+                if (!(player.role.side in this.teamRestrictions)) {
+                    this.teamRestrictions[player.role.side] = [];
                 }
                 this.teamRestrictions[player.role.side] = this.teamRestrictions[player.role.side].concat(player.role.actions.night[action].restrict);
             }
