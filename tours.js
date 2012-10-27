@@ -1565,7 +1565,7 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "starttours") {
-                if (!tours.working) {
+                if (tours.working) {
                     sendBotMessage(src,"Tournaments are already enabled!",tourschan,false)
                     return true;
                 }
