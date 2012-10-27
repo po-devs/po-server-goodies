@@ -64,7 +64,7 @@ var tourcommands = ["join: joins a tournament",
                     "removetouralert [tier] : Removes a tour alert for the specified tier"]
 var tourmodcommands = ["*** Parameter Information ***",
                     "Parameters can be used by putting 'gen=x'; 'mode=singles/doubles/triples'; 'type=single/double'.",
-                    "For example '/tour CC 1v1:gen=RBY mode=doubles type=double' starts a RBY CC 1v1 double elimination tournament.",
+                    "For example '/tour Challenge Cup:gen=RBY mode=triples type=double' starts a RBY Challenge Cup double elimination tournament (in Triples mode).",
                     "tour [tier]:[parameters]: starts a tier of that tournament.",
                     "tourmute [player]:[reason]:[time]: tourmutes a problematic player.",
                     "tourunmute [player]: untourmutes a player.",
@@ -974,7 +974,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.006p4",
+            version: "2.006p5",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -1019,7 +1019,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.006p4",
+        version: "2.006p5",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1168,7 +1168,7 @@ function getEventTour(datestring) {
                     var parameterset = p;
                     var parametervalue = parameterdata[p];
                     if (cmp(parameterset, "mode")) {
-                        var singlesonlytiers = ["DW 1v1", "DW 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "No Preview OU", "No Preview Ubers", "Wifi OU", "Wifi Ubers"];
+                        var singlesonlytiers = ["Gen 5 1v1", "Gen 5 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "No Preview OU", "No Preview Ubers", "Wifi OU", "Wifi Ubers"];
                         if ((modeOfTier(thetier) == "Doubles" || modeOfTier(thetier) == "Triples" || singlesonlytiers.indexOf(thetier) != -1) && !cmp(parametervalue, modeOfTier(thetier))) {
                             sendBotAll("The "+thetier+" tier can only be played in " + modeOfTier(thetier) + " mode!", tourserrchan, false);
                         }
