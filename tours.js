@@ -1849,6 +1849,10 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     oldauth = ["none", "mu", "ta", "to"].indexOf(tadmins[lname]);
+                    if ((oldauth > 1 && !isTourOwner(src)) || (oldauth > 2 && sys.auth(src) < 3)) {
+                        sendBotMessage(src,"You don't have sufficient authority!",tourschan,false)
+                        return true;
+                    }
                 }
                 tadmins[lname] = desc;
                 tours.touradmins = tadmins
