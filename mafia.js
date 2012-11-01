@@ -1026,7 +1026,7 @@ function Mafia(mafiachan) {
         // We exclude mafia admins from this.
         var i;
         if (src) {
-            var PlayerCheck = PreviousGames.slice(-2).reverse();
+            var PlayerCheck = PreviousGames.slice(-5).reverse();
             if (!this.isMafiaAdmin(src)) {
                 for (i = 0; i < PlayerCheck.length; i++) {
                     var who = PlayerCheck[i].who;
