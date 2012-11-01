@@ -1691,6 +1691,10 @@ function tourCommand(src, command, commandData) {
                 sendBotAll("Exporting rankings finished!", tourschan, false)
                 return true;
             }
+            if (command == "exportevents") {
+                sys.sendMessage(src, JSON.stringify(eventscores), tourschan);
+                return true;
+            }
             if (command == "loadevents") {
                 var url = "https://raw.github.com/lamperi/po-server-goodies/master/eventtours.json"
                 if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
