@@ -1804,7 +1804,7 @@ init : function() {
             dwpokemons[sys.pokeNum(dwlist[dwpok])] = true;
     }
 
-    var lclist = ["Bulbasaur", "Charmander", "Squirtle", "Croagunk", "Turtwig", "Chimchar", "Piplup", "Treecko","Torchic","Mudkip"];
+    var lclist = []; //since LC has taken a stance that LC "sets" the pokémon to level to 5, this is technically pointless
     lcpokemons = [];
     for(dwpok in lclist) {
         lcpokemons.push(sys.pokeNum(lclist[dwpok]));
