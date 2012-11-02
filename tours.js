@@ -52,7 +52,7 @@ var tourcommands = ["join: joins a tournament",
                     "history: views recently played tiers",
                     "touradmins: lists all users that can start tournaments",
                     "leaderboard [tier]: shows tournament rankings, tier is optional",
-                    "eventleaderboard: shows the event leaderboard",
+                    "eventleaderboard [month]: shows the event leaderboard (month is optional)",
                     "monthlyleaderboard [month] [year]: shows tour rankings for the current month, or the current month and year if specified",
                     "tourinfo [name]: gives information on a person's recent tour wins",
                     "viewstats: views tournament stats",
@@ -94,7 +94,7 @@ var tourownercommands = ["tsadmin[s] [name]: makes someone a tournament admin - 
                     "evalvars: checks the current variable list for tours",
                     "resettours: resets the entire tournament system in the event of a critical failure",
                     "starttours: reverts effect of /stoptours",
-                    "stoptours: stops the tournament system for maintenabce",
+                    "stoptours: stops the tournament system for maintenance",
                     "fullleaderboard [tier]: gives the full leaderboard",
                     "getrankings [month] [year]: exports monthly rankings (deletes old rankings as well)",
                     "loadevents: load event tours"]
@@ -976,7 +976,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.007",
+            version: "2.008",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -1021,7 +1021,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.007",
+        version: "2.008",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -3457,7 +3457,7 @@ function tourCommand(src, command, commandData) {
         if (command == "monthlyleaderboard") {
             try {
                 var now = new Date()
-                var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "decemeber"]
+                var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"]
                 if (commandData == "") {
                     var monthlyfile = "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()+".txt"
                 }
@@ -3514,10 +3514,21 @@ function tourCommand(src, command, commandData) {
             try {
                 var rankings = eventscores;
                 var list = [];
+                var months = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
+                var now = new Date();
+                var thismonth = now.getUTCMonth();
+                var mindex = months.indexOf(commandData.toLowerCase());
+                if (mindex != -1) {
+                    thismonth = mindex;
+                }
                 for (var p in rankings) {
                     var pdata = rankings[p];
                     var cscore = 0;
                     for (var h in pdata) {
+                        var dstring = h.split("-",2);
+                        if (parseInt(dstring[1]) != thismonth) {
+                            continue;
+                        }
                         if (typeof pdata[h] == "number" && pdata[h] > 0) {
                             cscore += pdata[h];
                         }
