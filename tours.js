@@ -4,7 +4,7 @@ Coding done by Shadowfist
 
 Files used: tourscores.txt, eventscores.txt, tourscores_tier.txt, tourwinverbs.txt, tourconfig.txt, eventtours.json,
 tourdetails.txt, eventwinners.txt, eventplayers.txt, tourmonthscore_month.txt, tourmutes.txt,
-touradmins.json, tastats.json, tourseeds.json, tourhistory.json, tours_cache.json
+touradmins.json, tastats.json, tourseeds.json, tourhistory.json, tours_cache.json, tourwarns.json
 */
 
 if (typeof tourschan !== "string") {
@@ -91,6 +91,9 @@ var touradmincommands = ["tourstart [tier]:[parameters]: starts a tier of that t
                     "stopautostart: if there are no tournaments running, this will stop new ones from being automatically started by the server until another one is started manually."]
 var tourownercommands = ["tsadmin[s] [name]: makes someone a tournament admin - s makes it only show in staff chan",
                     "clearrankings: clears the tour rankings (owner only)",
+                    "addrangewarning [ip range]: adds a range warning",
+                    "removerangewarning [ip range]: removes a range warning",
+                    "rangewarns: checks the current range warnings",
                     "evalvars: checks the current variable list for tours",
                     "resettours: resets the entire tournament system in the event of a critical failure",
                     "starttours: reverts effect of /stoptours",
@@ -1140,6 +1143,13 @@ function initTours() {
     catch (err) {
         sendChanAll("No tour history detected.", tourschan);
     }
+    try {
+        var twarns = sys.getFileContent('tourwarns.json');
+        tourwarnings = JSON.parse(twarns);
+    }
+    catch (err) {
+        tourwarnings = {'ranges': []};
+    };
     loadTourMutes();
     sendChanAll("Version "+tourconfig.version+" of the tournaments system was loaded successfully in this channel!", tourschan);
 }
@@ -1608,6 +1618,50 @@ function tourCommand(src, command, commandData) {
                     sys.writeToFile('tourseeds.json', JSON.stringify(tourseeds));
                 }
                 sendBotMessage(src,"Saved stats!",tourschan,false)
+                return true;
+            }
+            if (command == "addrangewarning") {
+                var tmp = commandData.split(".",4);
+                var ret = [];
+                for (var m in tmp) {
+                    var num = parseInt(tmp[m]);
+                    if (isNaN(num) || num < 0 || num > 255) {
+                        sendBotMessage(src,"Invalid IP Range!",tourschan,false);
+                        return true;
+                    }
+                    ret.push(num);
+                }
+                if (ret.length === 0) {
+                    sendBotMessage(src,"Can't ban empty ranges!",tourschan,false);
+                    return true;
+                }
+                var iprange = ret.join(".") + (ret.length === 4 ? "" : ".");
+                if (tourwarnings.ranges.indexOf(iprange) > -1) {
+                    sendBotMessage(src,"This range is already banned!",tourschan,false);
+                    return true;
+                }
+                tourwarnings.ranges.push(iprange);
+                sys.writeToFile('tourwarns.json', JSON.stringify(tourwarnings));
+                sendBotMessage(src,"Added range warning for the range: "+iprange,tourschan,false);
+                return true;
+            }
+            if (command == "removerangewarning") {
+                var windex = tourwarnings.ranges.indexOf(commandData);
+                if (windex == -1) {
+                    sendBotMessage(src,"This range is not banned!",tourschan,false);
+                    return true;
+                }
+                tourwarnings.ranges.splice(windex, 1);
+                sys.writeToFile('tourwarns.json', JSON.stringify(tourwarnings));
+                sendBotMessage(src,"Removed range warning for the range: "+commandData,tourschan,false);
+                return true;
+            }
+            if (command == "rangewarns") {
+                var twarns = tourwarnings.ranges;
+                sys.sendMessage(src,"*** RANGE WARNS ***",tourschan);
+                for (var t in twarns) {
+                    sys.sendMessage(src,twarns[t],tourschan);
+                }
                 return true;
             }
             if (command == "changepoints") {
@@ -5426,13 +5480,17 @@ module.exports = {
         }
     },
     afterChannelJoin : function(player, chan) {
-        var ranges = []
-        for (var r in ranges) {
-            if (sys.ip(player).indexOf(ranges[r]) === 0)  {
-                sendChanAll("Possible tourban evader: "+sys.name(player)+" on "+sys.ip(player), sys.channelId("Indigo Plateau"))
-            }
-        }
         if (chan === tourschan) {
+            var ranges = [];
+            if (tourwarnings.hasOwnProperty('ranges')) {
+                ranges = tourwarnings.ranges;
+            }
+            for (var r in ranges) {
+                if (sys.ip(player).indexOf(ranges[r]) === 0)  {
+                    sendChanAll("Possible tourban evader: "+sys.name(player)+" on "+sys.ip(player), sys.channelId("Indigo Plateau"))
+                    break;
+                }
+            }
             sendWelcomeMessage(player, chan)
         }
     },
