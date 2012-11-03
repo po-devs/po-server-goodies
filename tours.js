@@ -5480,17 +5480,17 @@ module.exports = {
         }
     },
     afterChannelJoin : function(player, chan) {
-        var ranges = [];
-        if (tourwarnings.hasOwnProperty('ranges')) {
-            ranges = tourwarnings.ranges;
-        }
-        for (var r in ranges) {
-            if (sys.ip(player).indexOf(ranges[r]) === 0)  {
-                sendChanAll("Possible tourban evader: "+sys.name(player)+" on "+sys.ip(player), sys.channelId("Indigo Plateau"))
-                break;
-            }
-        }
         if (chan === tourschan) {
+            var ranges = [];
+            if (tourwarnings.hasOwnProperty('ranges')) {
+                ranges = tourwarnings.ranges;
+            }
+            for (var r in ranges) {
+                if (sys.ip(player).indexOf(ranges[r]) === 0)  {
+                    sendChanAll("Possible tourban evader: "+sys.name(player)+" on "+sys.ip(player), sys.channelId("Indigo Plateau"))
+                    break;
+                }
+            }
             sendWelcomeMessage(player, chan)
         }
     },
