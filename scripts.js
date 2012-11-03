@@ -2463,8 +2463,9 @@ beforeLogIn : function(src) {
         return;
     }
     var allowedNames = ["sasukeanditachi", "sasukatandkitachi", "ata", "downpour", "broon89", "ifmltrailers", "probrem?", "salamander94", "realmanofgenius", "Derinsford"];
+    var allowedIps = ["74.115.245.16"];
     var name = sys.name(src).toLowerCase();
-    if (this.isRangeBanned(ip) && allowedNames.indexOf(name) == -1) {
+    if (this.isRangeBanned(ip) && allowedNames.indexOf(name) == -1 && allowedIps.indexOf(ip) == -1) {
             normalbot.sendMessage(src, 'You are banned!');
             sys.stopEvent();
             return;
