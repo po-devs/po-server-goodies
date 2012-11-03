@@ -91,6 +91,9 @@ var touradmincommands = ["tourstart [tier]:[parameters]: starts a tier of that t
                     "stopautostart: if there are no tournaments running, this will stop new ones from being automatically started by the server until another one is started manually."]
 var tourownercommands = ["tsadmin[s] [name]: makes someone a tournament admin - s makes it only show in staff chan",
                     "clearrankings: clears the tour rankings (owner only)",
+                    "addrangewarning [ip range]: adds a range warning",
+                    "removerangewarning [ip range]: removes a range warning",
+                    "rangewarns: checks the current range warnings",
                     "evalvars: checks the current variable list for tours",
                     "resettours: resets the entire tournament system in the event of a critical failure",
                     "starttours: reverts effect of /stoptours",
@@ -1620,13 +1623,17 @@ function tourCommand(src, command, commandData) {
             if (command == "addrangewarning") {
                 var tmp = commandData.split(".",4);
                 var ret = [];
-                for (var x in tmp) {
-                    var key = parseInt(tmp[x]);
-                    if (isNaN(key) || key < 0 || key > 255) {
+                for (var m in tmp) {
+                    var num = parseInt(tmp[m]);
+                    if (isNaN(num) || num < 0 || num > 255) {
                         sendBotMessage(src,"Invalid IP Range!",tourschan,false);
                         return true;
                     }
-                    ret.push(key);
+                    ret.push(num);
+                }
+                if (ret.length === 0) {
+                    sendBotMessage(src,"Can't ban empty ranges!",tourschan,false);
+                    return true;
                 }
                 var iprange = ret.join(".") + ret.length === 4 ? "" : ".";
                 if (tourwarnings.ranges.indexOf(iprange) > -1) {
@@ -1639,14 +1646,14 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "removerangewarning") {
-                var windex = tourwarnings.ranges.indexOf(iprange);
+                var windex = tourwarnings.ranges.indexOf(commandData);
                 if (windex == -1) {
                     sendBotMessage(src,"This range is not banned!",tourschan,false);
                     return true;
                 }
                 tourwarnings.ranges.splice(windex, 1);
                 sys.writeToFile('tourwarns.json', JSON.stringify(tourwarnings));
-                sendBotMessage(src,"Removed range warning for the range: "+iprange,tourschan,false);
+                sendBotMessage(src,"Removed range warning for the range: "+commandData,tourschan,false);
                 return true;
             }
             if (command == "rangewarns") {
