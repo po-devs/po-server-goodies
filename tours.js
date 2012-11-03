@@ -1635,7 +1635,7 @@ function tourCommand(src, command, commandData) {
                     sendBotMessage(src,"Can't ban empty ranges!",tourschan,false);
                     return true;
                 }
-                var iprange = ret.join(".") + ret.length === 4 ? "" : ".";
+                var iprange = ret.join(".") + (ret.length === 4 ? "" : ".");
                 if (tourwarnings.ranges.indexOf(iprange) > -1) {
                     sendBotMessage(src,"This range is already banned!",tourschan,false);
                     return true;
