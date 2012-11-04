@@ -979,7 +979,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.008",
+            version: "2.009",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -1024,7 +1024,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.008",
+        version: "2.009",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -2214,6 +2214,10 @@ function tourCommand(src, command, commandData) {
                 for (var x in tours.tour) {
                     if (tours.tour[x].state == "signups") {
                         sendBotMessage(src, "A tournament is already in signups!", tourschan, false)
+                        return true;
+                    }
+                    if (tours.tour[x].event === true && !isTourOwner(src)) {
+                        sendBotMessage(src, "An event tournament is running, so you can't force start the next tournament!", tourschan, false)
                         return true;
                     }
                 }
