@@ -1567,10 +1567,6 @@ addAdminCommand("autostart", function(src, commandData, channel) {
 // Normal command handling.
 exports.handleCommand = function trivia_handleCommand(src, command, channel)
 {
-    // Only care about trivia channels
-    if (channel != triviachan && channel != revchan)
-        return;
-try { // Debug only, do not indent
     var commandData;
     var indx = command.indexOf(' ');
     if (indx != -1) {
@@ -1579,7 +1575,10 @@ try { // Debug only, do not indent
     } else {
         commandData = ""; // sane default to avoid undefined errors
     }
-
+    // Only care about trivia channels
+    if (channel != triviachan && channel != revchan && command !== "triviamute" && command !== "triviaunmute")
+        return;
+try { // Debug only, do not indent
     // Trivia user commands
     if (userCommands.hasOwnProperty(command)) {
         userCommands[command].call(null, src, commandData, channel);
