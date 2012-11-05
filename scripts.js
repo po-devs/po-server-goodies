@@ -3538,6 +3538,7 @@ modCommand: function(src, command, commandData, tar) {
     }
     if (command == "k") {
         if (tar === undefined) {
+            normalbot.sendMessage(src, "No such user");
             return;
         }
         normalbot.sendAll("" + commandData + " was mysteriously kicked by " + nonFlashing(sys.name(src)) + "!");
