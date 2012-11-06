@@ -3922,7 +3922,10 @@ modCommand: function(src, command, commandData, tar) {
             bb = new Date(bb[0], bb[1]-1, bb[2])
             return bb-aa;
         });
-        aliases = sorts;
+        aliases = [];
+        for (var x = 0; x < sorts.length; x++) {
+            aliases.push(sorts[x][0])
+        }
         var prefix = "";
         for(var i = 0; i < aliases.length; ++i) {
             var id = sys.id(aliases[i]);
