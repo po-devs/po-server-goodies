@@ -3910,7 +3910,19 @@ modCommand: function(src, command, commandData, tar) {
             ip = sys.dbIp(commandData);
         }
         var smessage = "The aliases for the IP " + ip + " are: ";
+        var sorts = [];
         var aliases = sys.aliases(ip);
+        for (var i = 0; i < aliases.length; ++i) {
+            sorts.push([aliases[i], sys.dbLastOn(aliases[i])]);
+        }
+        sorts.sort(function (a, b) { //i feel as if there's a much better way to do this :x
+            var aa = a[1].split(/-/);
+            var bb = b[1].split(/-/);
+            aa = new Date(aa[0], aa[1]-1, aa[2])
+            bb = new Date(bb[0], bb[1]-1, bb[2])
+            return bb-aa;
+        });
+        aliases = sorts;
         var prefix = "";
         for(var i = 0; i < aliases.length; ++i) {
             var id = sys.id(aliases[i]);
