@@ -3278,7 +3278,7 @@ function Mafia(mafiachan) {
             return;
         }
         var dlurl;
-        if (url.substr(0, 7) != "http://" || url.substr(0, 8) != "https://") {
+        if (url.substr(0, 7) != "http://" && url.substr(0, 8) != "https://") {
             for (var i = 0; i < mafia.themeManager.themeInfo.length; ++i) {
                 if (mafia.themeManager.themeInfo[i][0].toLowerCase() == name.toLowerCase()) {
                     dlurl = mafia.themeManager.themeInfo[i][1];
