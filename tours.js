@@ -5471,10 +5471,6 @@ module.exports = {
         }
         var globalcommands = ["tadmin", "tadmins", "tsadmin", "tsadmins", "towner", "towners", "tdeadmin", "tdeadmins", "megauser", "megauseroff"];
         if ((channel === tourschan && !SESSION.channels(tourschan).isBanned(source)) || globalcommands.indexOf(command) > -1) {
-            if (command == "chanowner" && isTourOwner(source)) {
-                SESSION.channels(tourschan).addRole(source, sys.name(source), 'owner', '');
-                return;
-            }
             return tourCommand(source, command, commandData)
         }
         return false;
