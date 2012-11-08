@@ -5490,7 +5490,7 @@ module.exports = {
                 ranges = tourwarnings.ranges;
             }
             for (var r in ranges) {
-                if (sys.ip(player).indexOf(ranges[r]) === 0 && sys.existChannel('Indigo Plateau'))  {
+                if (sys.ip(player).indexOf(ranges[r]) === 0 && sys.existChannel('Indigo Plateau') && !isTourAdmin(player))  {
                     sendChanAll("Possible tourban evader: "+sys.name(player)+" on "+sys.ip(player), sys.channelId("Indigo Plateau"))
                     break;
                 }
