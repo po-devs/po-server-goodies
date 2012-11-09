@@ -5349,7 +5349,7 @@ beforeChatMessage: function(src, message, chan) {
            user.lastline = {message: null, time: 0};
         }
         var time = parseInt(sys.time(), 10);
-        if(!this.isOfficialChan(channel)){
+        if(!script.isOfficialChan(channel)){
             user.lastline.time = time;
             user.lastline.message = message;
             return ret;
