@@ -928,8 +928,8 @@ POChannel.prototype.addRole = function(src, tar, group, data)
         if (!this.hasPermission(src, tar)) {
             return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel mute them!"];
         }
-        if (script.isOfficialChan(this.id) && !this.isChannelOwner(this.id)) {
-            var maxtime = this.isChannelAdmin(this.id) ? 7*24*60*60 : 24*60*60;
+        if (script.isOfficialChan(this.id) && !this.isChannelOwner(src)) {
+            var maxtime = this.isChannelAdmin(src) ? 7*24*60*60 : 24*60*60;
             if (data.time > maxtime || data.time === 0) {
                 data.time = maxtime;
             }
@@ -948,7 +948,7 @@ POChannel.prototype.addRole = function(src, tar, group, data)
         if (!this.hasPermission(src, tar)) {
             return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel ban them!"];
         }
-        if (script.isOfficialChan(this.id) && !this.isChannelOwner(this.id)) {
+        if (script.isOfficialChan(this.id) && !this.isChannelOwner(src)) {
             if (data.time > 7*24*60*60 || data.time === 0) {
                 data.time = 7*24*60*60;
             }
