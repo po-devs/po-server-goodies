@@ -140,6 +140,7 @@ exports = {
         }
         return cid;
     },
+    
     html_escape : function(text) {
         var m = String(text);
         if (m.length > 0) {
@@ -150,5 +151,36 @@ exports = {
         }else{
             return "";
         }
+    },
+    
+    getSeconds : function(s) {
+        var parts = s.split(" ");
+        var secs = 0;
+        for (var i = 0; i < parts.length; ++i) {
+            var c = (parts[i][parts[i].length-1]).toLowerCase();
+            var mul = 60;
+            if (c == "s") { mul = 1; }
+            else if (c == "m") { mul = 60; }
+            else if (c == "h") { mul = 60*60; }
+            else if (c == "d") { mul = 24*60*60; }
+            else if (c == "w") { mul = 7*24*60*60; }
+            secs += mul * parseInt(parts[i], 10);
+        }
+        return secs;
+    },
+    
+    getTimeString : function(sec) {
+        var s = [];
+        var n;
+        var d = [[7*24*60*60, "week"], [24*60*60, "day"], [60*60, "hour"], [60, "minute"], [1, "second"]];
+        for (var j = 0; j < 5; ++j) {
+            n = parseInt(sec / d[j][0], 10);
+            if (n > 0) {
+                s.push((n + " " + d[j][1] + (n > 1 ? "s" : "")));
+                sec -= n * d[j][0];
+                if (s.length >= 2) break;
+            }
+        }
+        return s.join(", ");
     }
 };

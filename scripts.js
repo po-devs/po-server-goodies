@@ -163,6 +163,8 @@ var utilities = require('utilities.js');
 var isNonNegative = utilities.is_non_negative;
 var Lazy = utilities.Lazy;
 var nonFlashing = utilities.non_flashing;
+var getSeconds = utilities.getSeconds;
+var getTimeString = utilities.getTimeString;
 
 function get_timestamp() { // UTC timestamp(seconds)
     var date = new Date();
@@ -1957,35 +1959,6 @@ init : function() {
 
 
     /* global utility helpers */
-    getSeconds = function(s) {
-        var parts = s.split(" ");
-        var secs = 0;
-        for (var i = 0; i < parts.length; ++i) {
-            var c = (parts[i][parts[i].length-1]).toLowerCase();
-            var mul = 60;
-            if (c == "s") { mul = 1; }
-            else if (c == "m") { mul = 60; }
-            else if (c == "h") { mul = 60*60; }
-            else if (c == "d") { mul = 24*60*60; }
-            else if (c == "w") { mul = 7*24*60*60; }
-            secs += mul * parseInt(parts[i], 10);
-        }
-        return secs;
-    };
-    getTimeString = function(sec) {
-        var s = [];
-        var n;
-        var d = [[7*24*60*60, "week"], [24*60*60, "day"], [60*60, "hour"], [60, "minute"], [1, "second"]];
-        for (var j = 0; j < 5; ++j) {
-            n = parseInt(sec / d[j][0], 10);
-            if (n > 0) {
-                s.push((n + " " + d[j][1] + (n > 1 ? "s" : "")));
-                sec -= n * d[j][0];
-                if (s.length >= 2) break;
-            }
-        }
-        return s.join(", ");
-    };
     getTimeStamp = function(string) {
         var arr = string.split(', ');
         var regexp = new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
@@ -2466,9 +2439,9 @@ beforeLogIn : function(src) {
     var allowedIps = ["74.115.245.16"];
     var name = sys.name(src).toLowerCase();
     if (this.isRangeBanned(ip) && allowedIps.indexOf(ip) == -1) {
-            normalbot.sendMessage(src, 'You are banned!');
-            sys.stopEvent();
-            return;
+        normalbot.sendMessage(src, 'You are banned!');
+        sys.stopEvent();
+        return;
     }
     if (proxy_ips.hasOwnProperty(ip)) {
         normalbot.sendMessage(src, 'You are banned for using proxy!');
@@ -3436,6 +3409,7 @@ modCommand: function(src, command, commandData, tar) {
         var names = [];
         for (var i = 0; i < players_length; ++i) {
             var current_player = players[i];
+            if (!sys.loggedIn(current_player)) continue;
             var ip = sys.ip(current_player);
             if (ip.substr(0, subip.length) == subip) {
                 names.push(current_player);
@@ -3508,6 +3482,7 @@ modCommand: function(src, command, commandData, tar) {
         if (tar === undefined) {
             if (mbans.get(commandData)) {
                 mafiabot.sendAll("IP address " + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!", staffchannel);
+                mafiabot.sendAll("IP address " + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!", sachannel);
                 mbans.remove(commandData);
                 return;
             }
@@ -5232,15 +5207,15 @@ beforeNewPM: function(src){
 },
 
 beforeChatMessage: function(src, message, chan) {
-     if(message.substr(0, 1) == '%')
-     {
+    if(message.substr(0, 1) == '%')
+    {
          if(sys.id('JiraBot') !== undefined)
               sys.sendMessage(sys.id('JiraBot'), sys.name(src)+": "+message, chan);
          if(sys.id('PolkaBot') !== undefined)
              sys.sendMessage(sys.id('PolkaBot'), sys.name(src)+": "+message, chan);
          sys.stopEvent();
          return;
-     }
+    }
     channel = chan;
     if ((chan === 0 && message.length > 250 && sys.auth(src) < 1)
        || (message.length > 5000 && sys.auth(src) < 2)) {
@@ -5374,7 +5349,7 @@ beforeChatMessage: function(src, message, chan) {
            user.lastline = {message: null, time: 0};
         }
         var time = parseInt(sys.time(), 10);
-        if(channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel != sys.channelId("Trivia")){
+        if(!this.isOfficialChan(channel)){
             user.lastline.time = time;
             user.lastline.message = message;
             return ret;

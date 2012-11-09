@@ -66,39 +66,11 @@ try {
 if (trivData.submitBans == undefined) trivData.submitBans = {};
 if (trivData.toFlash == undefined) trivData.toFlash = {};
 if (trivData.mutes == undefined) trivData.mutes = {};
-//TODO:Load from utilities.js
-getSeconds = function(s) {
-    var parts = s.split(" ");
-    var secs = 0;
-    for (var i = 0; i < parts.length; ++i) {
-        var c = (parts[i][parts[i].length-1]).toLowerCase();
-        var mul = 60;
-        if (c == "s") { mul = 1; }
-        else if (c == "m") { mul = 60; }
-        else if (c == "h") { mul = 60*60; }
-        else if (c == "d") { mul = 24*60*60; }
-        else if (c == "w") { mul = 7*24*60*60; }
-        secs += mul * parseInt(parts[i], 10);
-    }
-    return secs;
-};
-getTimeString = function(sec) {
-    var s = [];
-    var n;
-    var d = [[7*24*60*60, "week"], [24*60*60, "day"], [60*60, "hour"], [60, "minute"], [1, "second"]];
-    for (var j = 0; j < 5; ++j) {
-        n = parseInt(sec / d[j][0], 10);
-        if (n > 0) {
-            s.push((n + " " + d[j][1] + (n > 1 ? "s" : "")));
-            sec -= n * d[j][0];
-            if (s.length >= 2) break;
-        }
-    }
-    return s.join(", ");
-};
 
 var utilities = require("utilities.js");
-var nonFlashing = utilities.non_flashing;
+var nonFlashing = utilities.non_flashing,
+getSeconds = utilities.getSeconds,
+getTimeString = utilities.getTimeString;
 
 function isTriviaMuted(ip) {
     if (trivData.mutes[ip] == undefined) {
@@ -1560,7 +1532,7 @@ addAdminCommand("triviamutes", function(src, commandData, channel) {
 
 addAdminCommand("autostart", function(src, commandData, channel) {
 	Trivia.autostart = !Trivia.autostart;
-	triviabot.sendAll("" + sys.name(src) + "turned auto start " + (Trivia.autostart == true ? "on" : "off") + ".", revchan);
+	triviabot.sendAll("" + sys.name(src) + " turned auto start " + (Trivia.autostart == true ? "on" : "off") + ".", revchan);
 	return;
 }, "Auto start games.");
 
