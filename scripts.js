@@ -928,6 +928,15 @@ POChannel.prototype.addRole = function(src, tar, group, data)
         if (!this.hasPermission(src, tar)) {
             return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel mute them!"];
         }
+        if (script.isOfficialChan(this.id) && !this.isChannelOwner(this.id)) {
+            var maxtime = this.isChannelAdmin(this.id) ? 7*24*60*60 : 24*60*60;
+            if (data.time > maxtime || data.time === 0) {
+                data.time = maxtime;
+            }
+            if (data.reason === "") {
+                return ["self", "You need to provide a reason for the channel mute!"];
+            }
+        }
         this.muted[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time(),10) + data.time, "issuetime": parseInt(sys.time(),10), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
         var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
         return ["all", auth+" muted "+tar.toCorrectCase()+timestring+" in this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
@@ -938,6 +947,14 @@ POChannel.prototype.addRole = function(src, tar, group, data)
         }
         if (!this.hasPermission(src, tar)) {
             return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel ban them!"];
+        }
+        if (script.isOfficialChan(this.id) && !this.isChannelOwner(this.id)) {
+            if (data.time > 7*24*60*60 || data.time === 0) {
+                data.time = 7*24*60*60;
+            }
+            if (data.reason === "") {
+                return ["self", "You need to provide a reason for the channel ban!"];
+            }
         }
         this.banned[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time(),10) + data.time, "issuetime": parseInt(sys.time(),10), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
         var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
@@ -2212,7 +2229,7 @@ canJoinStaffChannel : function(src) {
 },
 
 isOfficialChan : function (chanid) {
-    var officialchans = [0, tourchannel, mafiachan, triviachan];
+    var officialchans = [0, tourchannel, mafiachan, triviachan, hangmanchan];
     if (officialchans.indexOf(chanid) > -1) {
         return true;
     }
