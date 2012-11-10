@@ -161,10 +161,6 @@ module.exports = function () {
             sys.sendMessage(src, "±Game: You need to choose a word!", hangchan);
             return;
         }
-        if (a.length > 60 || a.length < 4) {
-            sys.sendMessage(src, "±Game: Your answer cannot be longer than 60 characters or shorter than 4 characters!");
-            return;
-        }
         var validCharacters = "abcdefghijklmnopqrstuvwxyz", validAnswer = false, l;
         for (l = 0; l < a.length; l++) {
             if (validCharacters.indexOf(a[l].toLowerCase()) !== -1) {
@@ -180,8 +176,13 @@ module.exports = function () {
             sys.sendMessage(src, "±Game: You need to write a hint!", hangchan);
             return;
         }
+        a = a.replace(/[^A-Za-z0-9\s']/g, "").toLowerCase();
+        if (a.length > 60 || a.length < 4) {
+            sys.sendMessage(src, "±Game: Your answer cannot be longer than 60 characters or shorter than 4 characters!", hangchan);
+            return;
+        }
         hint = h;
-        word = a.replace(/[^A-Za-z0-9\s']/g, "").toLowerCase();
+        word = a;
         parts = (p && parseInt(p, 10) > 0) ? parseInt(p, 10) : minBodyParts;
         parts = (parts < minBodyParts) ? minBodyParts : parts;
         points = {};
@@ -329,6 +330,7 @@ module.exports = function () {
         sys.sendHtmlMessage(src, " ", hangchan);
         sys.sendHtmlMessage(src, "<font color='red'><b>Current Word</b>: " + currentWord.join(" ") + "</font>", hangchan);
         sys.sendHtmlMessage(src, "<font color='red'>[Hint: " + hint + "]  [Letters used: " +  usedLetters.map(function (x) { return x.toUpperCase(); }).join(", ") + "]  [Chances left: " + parts + "] </font>", hangchan);
+        sys.sendHtmlMessage(src, "<font color='red'>Current game started by " + hostName + "</font>", hangchan);
         sys.sendHtmlMessage(src, " ", hangchan);
     };
     this.showHelp = function (src) {
@@ -338,6 +340,7 @@ module.exports = function () {
             "±Goal: Your goal is to guess a word on a letter by letter basis. A hint and the number of characters will be provided as a help.",
             "±Goal: Whenever someone guess a letter correctly, that letter will be filled in the word.",
             "*** *********************************************************************** ***",
+            "±Actions: To see the current puzzle, type /view.",
             "±Actions: To guess a character, type /g [character]. For example, to guess F, type /g F.",
             "±Actions: If you think you already know the answer, you can use /a [answer] to submit a full answer.",
             "±Actions: If you guess wrong too many times, the host wins!",

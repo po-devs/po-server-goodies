@@ -45,7 +45,7 @@ var Config = {
         ["Blitzamirin", "1st Generation OverUsed - View Blitzamirin's <a href='http://pokemon-online.eu/forums/showthread.php?13134-Stadium-OU-Gym-Blitzamirin'>Gym Thread!</a>"]
     ],
     DreamWorldTiers: ["No Preview OU", "No Preview Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
-    superAdmins: ["Professor Oak", "zeroality", "[LD]Jirachier", "Nixeagle"],
+    superAdmins: ["[LD]Jirachier", "Ethan"],
     canJoinStaffChannel: ["Lamperi-", "Peanutsdroid", "QuX", "Ethan-"],
     disallowStaffChannel: []
 };
@@ -163,6 +163,8 @@ var utilities = require('utilities.js');
 var isNonNegative = utilities.is_non_negative;
 var Lazy = utilities.Lazy;
 var nonFlashing = utilities.non_flashing;
+var getSeconds = utilities.getSeconds;
+var getTimeString = utilities.getTimeString;
 
 function get_timestamp() { // UTC timestamp(seconds)
     var date = new Date();
@@ -624,7 +626,7 @@ function sendNotice() {
         if (resp.length < 1){
             return;
         }
-        var channels = ["Tohjo Falls", "Trivia", "Mafia Tutoring", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview"];
+        var channels = ["Tohjo Falls", "Trivia", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview"];
         for (var i = 0; i < channels.length; i++){
             sys.sendHtmlAll(resp, sys.channelId(channels[i]));
         }
@@ -926,6 +928,15 @@ POChannel.prototype.addRole = function(src, tar, group, data)
         if (!this.hasPermission(src, tar)) {
             return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel mute them!"];
         }
+        if (script.isOfficialChan(this.id) && !this.isChannelOwner(src)) {
+            var maxtime = this.isChannelAdmin(src) ? 7*24*60*60 : 24*60*60;
+            if (data.time > maxtime || data.time === 0) {
+                data.time = maxtime;
+            }
+            if (data.reason === "") {
+                return ["self", "You need to provide a reason for the channel mute!"];
+            }
+        }
         this.muted[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time(),10) + data.time, "issuetime": parseInt(sys.time(),10), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
         var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
         return ["all", auth+" muted "+tar.toCorrectCase()+timestring+" in this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
@@ -936,6 +947,14 @@ POChannel.prototype.addRole = function(src, tar, group, data)
         }
         if (!this.hasPermission(src, tar)) {
             return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel ban them!"];
+        }
+        if (script.isOfficialChan(this.id) && !this.isChannelOwner(src)) {
+            if (data.time > 7*24*60*60 || data.time === 0) {
+                data.time = 7*24*60*60;
+            }
+            if (data.reason === "") {
+                return ["self", "You need to provide a reason for the channel ban!"];
+            }
         }
         this.banned[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time(),10) + data.time, "issuetime": parseInt(sys.time(),10), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
         var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
@@ -1592,7 +1611,7 @@ var commands = {
         "/myalts: Lists your alts.",
         "/me [message]: Sends a message with *** before your name.",
         "/selfkick: Kicks all other accounts with IP.",
-        "/importable: Posts an importable of your team to pastebin.",
+        //"/importable: Posts an importable of your team to pastebin.",
         "/dwreleased [Pokemon]: Shows the released status of a Pokemon's Dream World Ability",
         "/wiki [Pokémon]: Shows that Pokémon's wiki page",
         "/register: Registers a channel with you as owner.",
@@ -1663,11 +1682,11 @@ var commands = {
         "/namewarns: Lists name warnings.",
         "/topchannels: To view the top channels.",
         "/onrange [range]: To view who is on a range.",
-        "/tier [name]: To view the tier of a person.",
+        "/tier [name]: To view the tier(s) of a person.",
         "/battlehistory [name]: To view a person's battle history.",
         "/channelusers [channel]: Lists users on a channel.",
-        "stalked_chans: List the channels whose logs are being saved.",
-        "stalkcheck: List the usage of the stalk_chan command."
+        "/stalked_chans: List the channels whose logs are being saved.",
+        "/stalkcheck: List the usage of the stalk_chan command."
     ],
     admin:
     [
@@ -1694,7 +1713,7 @@ var commands = {
         "/contributor[off] xxx:what: Adds or removes contributor status (for indigo access) from someone, with reason.",
         "/clearpass [name]: Clears a user's password.",
         "/autosmute [name]: Adds a player to the autosmute list",
-        "/removesautosmute [name]: Removes a player from the autosmute list",
+        "/removeautosmute [name]: Removes a player from the autosmute list",
         "/periodicsay minutes:channel1,channel2,...:[message]: Sends a message to specified channels periodically.",
         "/endcalls: Ends the next periodic message.",
         "/sendAll [message]: Sends a message to everyone.",
@@ -1788,7 +1807,7 @@ init : function() {
     mafiarev = SESSION.global().channelManager.createPermChannel("Mafia Review", "For Mafia Admins to review themes");
     hangmanchan = SESSION.global().channelManager.createPermChannel("Hangman", "Type /help to see how to play!");
 
-    var dwlist = ["Rattata", "Raticate", "Nidoran-F", "Nidorina", "Nidoqueen", "Nidoran-M", "Nidorino", "Nidoking", "Oddish", "Gloom", "Vileplume", "Bellossom", "Bellsprout", "Weepinbell", "Victreebel", "Ponyta", "Rapidash", "Farfetch'd", "Doduo", "Dodrio", "Exeggcute", "Exeggutor", "Lickitung", "Lickilicky", "Tangela", "Tangrowth", "Kangaskhan", "Sentret", "Furret", "Cleffa", "Clefairy", "Clefable", "Igglybuff", "Jigglypuff", "Wigglytuff", "Mareep", "Flaaffy", "Ampharos", "Hoppip", "Skiploom", "Jumpluff", "Sunkern", "Sunflora", "Stantler", "Poochyena", "Mightyena", "Lotad", "Ludicolo", "Lombre", "Taillow", "Swellow", "Surskit", "Masquerain", "Bidoof", "Bibarel", "Shinx", "Luxio", "Luxray", "Psyduck", "Golduck", "Growlithe", "Arcanine", "Scyther", "Scizor", "Tauros", "Azurill", "Marill", "Azumarill", "Bonsly", "Sudowoodo", "Girafarig", "Miltank", "Zigzagoon", "Linoone", "Electrike", "Manectric", "Castform", "Pachirisu", "Buneary", "Lopunny", "Glameow", "Purugly", "Natu", "Xatu", "Skitty", "Delcatty", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Espeon", "Umbreon", "Leafeon", "Glaceon", "Bulbasaur", "Charmander", "Squirtle", "Ivysaur", "Venusaur", "Charmeleon", "Charizard", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Infernape", "Monferno", "Piplup", "Prinplup", "Empoleon", "Treecko", "Sceptile", "Grovyle", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Caterpie", "Metapod", "Butterfree", "Pidgey", "Pidgeotto", "Pidgeot", "Spearow", "Fearow", "Zubat", "Golbat", "Crobat", "Aerodactyl", "Hoothoot", "Noctowl", "Ledyba", "Ledian", "Yanma", "Yanmega", "Murkrow", "Honchkrow", "Delibird", "Wingull", "Pelipper", "Swablu", "Altaria", "Starly", "Staravia", "Staraptor", "Gligar", "Gliscor", "Drifloon", "Drifblim", "Skarmory", "Tropius", "Chatot", "Slowpoke", "Slowbro", "Slowking", "Krabby", "Kingler", "Horsea", "Seadra", "Kingdra", "Goldeen", "Seaking", "Magikarp", "Gyarados", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Wooper", "Quagsire", "Qwilfish", "Corsola", "Remoraid", "Octillery", "Mantine", "Mantyke", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Barboach", "Whiscash", "Clamperl", "Gorebyss", "Huntail", "Relicanth", "Luvdisc", "Buizel", "Floatzel", "Finneon", "Lumineon", "Tentacool", "Tentacruel", "Corphish", "Crawdaunt", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas", "Milotic", "Shellos", "Gastrodon", "Lapras", "Dratini", "Dragonair", "Dragonite", "Elekid", "Electabuzz", "Electivire", "Poliwag", "Poliwrath", "Politoed", "Poliwhirl", "Vulpix", "Ninetales", "Musharna", "Munna", "Darmanitan", "Darumaka", "Mamoswine", "Togekiss", "Burmy", "Wormadam", "Mothim", "Pichu", "Pikachu", "Raichu","Abra","Kadabra","Alakazam","Spiritomb","Mr. Mime","Mime Jr.","Meditite","Medicham","Meowth","Persian","Shuppet","Banette","Spinarak","Ariados","Drowzee","Hypno","Wobbuffet","Wynaut","Snubbull","Granbull","Houndour","Houndoom","Smoochum","Jynx","Ralts","Gardevoir","Gallade","Sableye","Mawile","Volbeat","Illumise","Spoink","Grumpig","Stunky","Skuntank","Bronzong","Bronzor","Mankey","Primeape","Machop","Machoke","Machamp","Magnemite","Magneton","Magnezone","Koffing","Weezing","Rhyhorn","Rhydon","Rhyperior","Teddiursa","Ursaring","Slugma","Magcargo","Phanpy","Donphan","Magby","Magmar","Magmortar","Larvitar","Pupitar","Tyranitar","Makuhita","Hariyama","Numel","Camerupt","Torkoal","Spinda","Trapinch","Vibrava","Flygon","Cacnea","Cacturne","Absol","Beldum","Metang","Metagross","Hippopotas","Hippowdon","Skorupi","Drapion","Tyrogue","Hitmonlee","Hitmonchan","Hitmontop","Bagon","Shelgon","Salamence","Seel","Dewgong","Shellder","Cloyster","Chinchou","Lanturn","Smeargle","Porygon","Porygon2","Porygon-Z","Drilbur", "Excadrill", "Basculin", "Basculin-a", "Alomomola", "Stunfisk", "Druddigon", "Foongus", "Amoonguss", "Liepard", "Purrloin", "Minccino", "Cinccino", "Sandshrew", "Sandslash", "Vullaby", "Mandibuzz", "Rufflet", "Braviary", "Frillish", "Jellicent", "Weedle", "Kakuna", "Beedrill", "Shroomish", "Breloom", "Zangoose", "Seviper", "Combee", "Vespiquen", "Patrat", "Watchog", "Blitzle", "Zebstrika", "Woobat", "Swoobat", "Mienfoo", "Mienshao", "Bouffalant", "Staryu", "Starmie", "Togepi", "Shuckle", "Togetic", "Rotom", "Sigilyph", "Riolu", "Lucario", "Lugia", "Ho-Oh", "Dialga", "Palkia", "Giratina", "Grimer", "Muk", "Ditto", "Venonat", "Venomoth", "Herdier", "Lillipup", "Stoutland", "Sewaddle", "Swadloon", "Leavanny", "Cubchoo", "Beartic", "Landorus", "Thundurus", "Tornadus","Dunsparce", "Sneasel", "Weavile", "Nosepass", "Probopass", "Karrablast", "Escavalier", "Shelmet", "Accelgor", "Snorunt", "Glalie", "Froslass", "Heatran", "Pinsir", "Emolga", "Heracross", "Trubbish", "Garbodor", "Snover", "Abomasnow","Diglett", "Dugtrio", "Geodude", "Graveler", "Golem", "Onix", "Steelix", "Voltorb", "Electrode", "Cubone", "Marowak", "Whismur", "Loudred", "Exploud", "Aron", "Lairon", "Aggron", "Spheal", "Sealeo", "Walrein", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Gible", "Gabite", "Garchomp", "Pidove", "Tranquill", "Unfezant", "Tympole", "Palpitoad", "Seismitoad", "Cottonee", "Whimsicott", "Petilil", "Lilligant", "Ducklett", "Swanna", "Deerling", "Sawsbuck", "Elgyem", "Beheeyem", "Pawniard", "Bisharp", "Heatmor", "Durant","Venipede","Whirlipede", "Scolipede", "Tirtouga", "Carracosta", "Joltik", "Galvantula", "Maractus", "Dwebble", "Crustle", "Roggenrola", "Boldore", "Gigalith", "Vanillite", "Vanillish", "Vanilluxe", "Klink", "Klang", "Klinklang", "Swinub", "Piloswine", "Golett", "Golurk","Gothitelle", "Gothorita", "Solosis", "Duosion", "Reuniclus"];
+    var dwlist = ["Rattata", "Raticate", "Nidoran-F", "Nidorina", "Nidoqueen", "Nidoran-M", "Nidorino", "Nidoking", "Oddish", "Gloom", "Vileplume", "Bellossom", "Bellsprout", "Weepinbell", "Victreebel", "Ponyta", "Rapidash", "Farfetch'd", "Doduo", "Dodrio", "Exeggcute", "Exeggutor", "Lickitung", "Lickilicky", "Tangela", "Tangrowth", "Kangaskhan", "Sentret", "Furret", "Cleffa", "Clefairy", "Clefable", "Igglybuff", "Jigglypuff", "Wigglytuff", "Mareep", "Flaaffy", "Ampharos", "Hoppip", "Skiploom", "Jumpluff", "Sunkern", "Sunflora", "Stantler", "Poochyena", "Mightyena", "Lotad", "Ludicolo", "Lombre", "Taillow", "Swellow", "Surskit", "Masquerain", "Bidoof", "Bibarel", "Shinx", "Luxio", "Luxray", "Psyduck", "Golduck", "Growlithe", "Arcanine", "Scyther", "Scizor", "Tauros", "Azurill", "Marill", "Azumarill", "Bonsly", "Sudowoodo", "Girafarig", "Miltank", "Zigzagoon", "Linoone", "Electrike", "Manectric", "Castform", "Pachirisu", "Buneary", "Lopunny", "Glameow", "Purugly", "Natu", "Xatu", "Skitty", "Delcatty", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Espeon", "Umbreon", "Leafeon", "Glaceon", "Bulbasaur", "Charmander", "Squirtle", "Ivysaur", "Venusaur", "Charmeleon", "Charizard", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Infernape", "Monferno", "Piplup", "Prinplup", "Empoleon", "Treecko", "Sceptile", "Grovyle", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Caterpie", "Metapod", "Butterfree", "Pidgey", "Pidgeotto", "Pidgeot", "Spearow", "Fearow", "Zubat", "Golbat", "Crobat", "Aerodactyl", "Hoothoot", "Noctowl", "Ledyba", "Ledian", "Yanma", "Yanmega", "Murkrow", "Honchkrow", "Delibird", "Wingull", "Pelipper", "Swablu", "Altaria", "Starly", "Staravia", "Staraptor", "Gligar", "Gliscor", "Drifloon", "Drifblim", "Skarmory", "Tropius", "Chatot", "Slowpoke", "Slowbro", "Slowking", "Krabby", "Kingler", "Horsea", "Seadra", "Kingdra", "Goldeen", "Seaking", "Magikarp", "Gyarados", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Wooper", "Quagsire", "Qwilfish", "Corsola", "Remoraid", "Octillery", "Mantine", "Mantyke", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Barboach", "Whiscash", "Clamperl", "Gorebyss", "Huntail", "Relicanth", "Luvdisc", "Buizel", "Floatzel", "Finneon", "Lumineon", "Tentacool", "Tentacruel", "Corphish", "Crawdaunt", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas", "Milotic", "Shellos", "Gastrodon", "Lapras", "Dratini", "Dragonair", "Dragonite", "Elekid", "Electabuzz", "Electivire", "Poliwag", "Poliwrath", "Politoed", "Poliwhirl", "Vulpix", "Ninetales", "Musharna", "Munna", "Darmanitan", "Darumaka", "Mamoswine", "Togekiss", "Burmy", "Wormadam", "Mothim", "Pichu", "Pikachu", "Raichu","Abra","Kadabra","Alakazam","Spiritomb","Mr. Mime","Mime Jr.","Meditite","Medicham","Meowth","Persian","Shuppet","Banette","Spinarak","Ariados","Drowzee","Hypno","Wobbuffet","Wynaut","Snubbull","Granbull","Houndour","Houndoom","Smoochum","Jynx","Ralts","Gardevoir","Gallade","Sableye","Mawile","Volbeat","Illumise","Spoink","Grumpig","Stunky","Skuntank","Bronzong","Bronzor","Mankey","Primeape","Machop","Machoke","Machamp","Magnemite","Magneton","Magnezone","Koffing","Weezing","Rhyhorn","Rhydon","Rhyperior","Teddiursa","Ursaring","Slugma","Magcargo","Phanpy","Donphan","Magby","Magmar","Magmortar","Larvitar","Pupitar","Tyranitar","Makuhita","Hariyama","Numel","Camerupt","Torkoal","Spinda","Trapinch","Vibrava","Flygon","Cacnea","Cacturne","Absol","Beldum","Metang","Metagross","Hippopotas","Hippowdon","Skorupi","Drapion","Tyrogue","Hitmonlee","Hitmonchan","Hitmontop","Bagon","Shelgon","Salamence","Seel","Dewgong","Shellder","Cloyster","Chinchou","Lanturn","Smeargle","Porygon","Porygon2","Porygon-Z","Drilbur", "Excadrill", "Basculin", "Basculin-a", "Alomomola", "Stunfisk", "Druddigon", "Foongus", "Amoonguss", "Liepard", "Purrloin", "Minccino", "Cinccino", "Sandshrew", "Sandslash", "Vullaby", "Mandibuzz", "Rufflet", "Braviary", "Frillish", "Jellicent", "Weedle", "Kakuna", "Beedrill", "Shroomish", "Breloom", "Zangoose", "Seviper", "Combee", "Vespiquen", "Patrat", "Watchog", "Blitzle", "Zebstrika", "Woobat", "Swoobat", "Mienfoo", "Mienshao", "Bouffalant", "Staryu", "Starmie", "Togepi", "Shuckle", "Togetic", "Rotom", "Sigilyph", "Riolu", "Lucario", "Lugia", "Ho-Oh", "Dialga", "Palkia", "Giratina", "Grimer", "Muk", "Ditto", "Venonat", "Venomoth", "Herdier", "Lillipup", "Stoutland", "Sewaddle", "Swadloon", "Leavanny", "Cubchoo", "Beartic", "Landorus", "Thundurus", "Tornadus","Dunsparce", "Sneasel", "Weavile", "Nosepass", "Probopass", "Karrablast", "Escavalier", "Shelmet", "Accelgor", "Snorunt", "Glalie", "Froslass", "Heatran", "Pinsir", "Emolga", "Heracross", "Trubbish", "Garbodor", "Snover", "Abomasnow","Diglett", "Dugtrio", "Geodude", "Graveler", "Golem", "Onix", "Steelix", "Voltorb", "Electrode", "Cubone", "Marowak", "Whismur", "Loudred", "Exploud", "Aron", "Lairon", "Aggron", "Spheal", "Sealeo", "Walrein", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Gible", "Gabite", "Garchomp", "Pidove", "Tranquill", "Unfezant", "Tympole", "Palpitoad", "Seismitoad", "Cottonee", "Whimsicott", "Petilil", "Lilligant", "Ducklett", "Swanna", "Deerling", "Sawsbuck", "Elgyem", "Beheeyem", "Pawniard", "Bisharp", "Heatmor", "Durant","Venipede","Whirlipede", "Scolipede", "Tirtouga", "Carracosta", "Joltik", "Galvantula", "Maractus", "Dwebble", "Crustle", "Roggenrola", "Boldore", "Gigalith", "Vanillite", "Vanillish", "Vanilluxe", "Klink", "Klang", "Klinklang", "Swinub", "Piloswine", "Golett", "Golurk", "Gothitelle", "Gothorita", "Solosis", "Duosion", "Reuniclus", "Deerling-Summer", "Deerling-Autumn", "Deerling-Winter", "Sawsbuck-Summer", "Sawsbuck-Autumn", "Sawsbuck-Winter"];
 
     /* use hash for faster lookup */
     dwpokemons = {};
@@ -1804,7 +1823,7 @@ init : function() {
             dwpokemons[sys.pokeNum(dwlist[dwpok])] = true;
     }
 
-    var lclist = ["Bulbasaur", "Charmander", "Squirtle", "Croagunk", "Turtwig", "Chimchar", "Piplup", "Treecko","Torchic","Mudkip"];
+    var lclist = []; //since LC has taken a stance that LC "sets" the pokémon to level to 5, this is technically pointless
     lcpokemons = [];
     for(dwpok in lclist) {
         lcpokemons.push(sys.pokeNum(lclist[dwpok]));
@@ -1957,35 +1976,6 @@ init : function() {
 
 
     /* global utility helpers */
-    getSeconds = function(s) {
-        var parts = s.split(" ");
-        var secs = 0;
-        for (var i = 0; i < parts.length; ++i) {
-            var c = (parts[i][parts[i].length-1]).toLowerCase();
-            var mul = 60;
-            if (c == "s") { mul = 1; }
-            else if (c == "m") { mul = 60; }
-            else if (c == "h") { mul = 60*60; }
-            else if (c == "d") { mul = 24*60*60; }
-            else if (c == "w") { mul = 7*24*60*60; }
-            secs += mul * parseInt(parts[i], 10);
-        }
-        return secs;
-    };
-    getTimeString = function(sec) {
-        var s = [];
-        var n;
-        var d = [[7*24*60*60, "week"], [24*60*60, "day"], [60*60, "hour"], [60, "minute"], [1, "second"]];
-        for (var j = 0; j < 5; ++j) {
-            n = parseInt(sec / d[j][0], 10);
-            if (n > 0) {
-                s.push((n + " " + d[j][1] + (n > 1 ? "s" : "")));
-                sec -= n * d[j][0];
-                if (s.length >= 2) break;
-            }
-        }
-        return s.join(", ");
-    };
     getTimeStamp = function(string) {
         var arr = string.split(', ');
         var regexp = new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
@@ -2141,11 +2131,13 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             banbot.sendChanMessage(src, "You dont have sufficient auth to " + nomi + " " + commandData + ".");
             return;
         }
-    var tarip = tar !== undefined ? sys.ip(tar) : sys.dbIp(commandData);
-    sys.playerIds().forEach(function(id) {
-        if (sys.loggedIn(id) && sys.ip(id) === tarip)
-        SESSION.users(id).activate(type, sys.name(src), expires, reason, true);
-    });
+        
+        var tarip = tar !== undefined ? sys.ip(tar) : sys.dbIp(commandData);
+        sys.playerIds().forEach(function(id) {
+            if (sys.loggedIn(id) && sys.ip(id) === tarip)
+            SESSION.users(id).activate(type, sys.name(src), expires, reason, true);
+        });
+        
         if (reason.length > 0)
             sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
         else
@@ -2237,7 +2229,7 @@ canJoinStaffChannel : function(src) {
 },
 
 isOfficialChan : function (chanid) {
-    var officialchans = [0, tourchannel, mafiachan, triviachan];
+    var officialchans = [0, tourchannel, mafiachan, triviachan, hangmanchan];
     if (officialchans.indexOf(chanid) > -1) {
         return true;
     }
@@ -2247,15 +2239,15 @@ isOfficialChan : function (chanid) {
 },
 
 kickAll : function(ip) {
-        var players = sys.playerIds();
-        var players_length = players.length;
-        for (var i = 0; i < players_length; ++i) {
-            var current_player = players[i];
-            if (ip == sys.ip(current_player)) {
-                sys.kick(current_player);
-            }
+    var players = sys.playerIds();
+    var players_length = players.length;
+    for (var i = 0; i < players_length; ++i) {
+        var current_player = players[i];
+        if (ip == sys.ip(current_player)) {
+            sys.kick(current_player);
         }
-        return;
+    }
+    return;
 },
 
 beforeChannelJoin : function(src, channel) {
@@ -2267,13 +2259,9 @@ beforeChannelJoin : function(src, channel) {
     // Can't ban from main
     if (channel === 0) return;
     
-    /*forces players to join Mafia Tutoring when joining mafia*/
     if (channel == sys.channelId("Mafia Channel")) {
         sys.stopEvent();
         sys.putInChannel(src, sys.channelId("Mafia"));
-    }
-    if (channel === sys.channelId('Mafia')){
-        sys.putInChannel(src, sys.channelId('Mafia Tutoring'));
     }
     if (channel === sys.channelId('Hangman Game')) {
         sys.stopEvent();
@@ -2464,12 +2452,13 @@ beforeLogIn : function(src) {
     if (sys.auth(src) > 0) {
         return;
     }
-    var allowedNames = ["sasukeanditachi", "sasukatandkitachi", "ata", "downpour", "broon89", "ifmltrailers", "probrem?", "salamander94", "realmanofgenius", "Derinsford"];
+    //var allowedNames = ["sasukeanditachi", "sasukatandkitachi", "ata", "downpour", "broon89", "ifmltrailers", "probrem?", "salamander94", "realmanofgenius", "Derinsford"];
+    var allowedIps = ["74.115.245.16"];
     var name = sys.name(src).toLowerCase();
-    if (this.isRangeBanned(ip) && allowedNames.indexOf(name) == -1) {
-            normalbot.sendMessage(src, 'You are banned!');
-            sys.stopEvent();
-            return;
+    if (this.isRangeBanned(ip) && allowedIps.indexOf(ip) == -1) {
+        normalbot.sendMessage(src, 'You are banned!');
+        sys.stopEvent();
+        return;
     }
     if (proxy_ips.hasOwnProperty(ip)) {
         normalbot.sendMessage(src, 'You are banned for using proxy!');
@@ -2566,6 +2555,15 @@ nameIsInappropriate: function(src)
     return false;
 },
 
+getColor: function(src) {
+    var colour = sys.getColor(src);
+    if (colour === "#000000") {
+        var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
+        colour = clist[src % clist.length];
+    }
+    return colour;
+},
+
 nameWarnTest : function(src) {
     if (sys.auth(src) > 0)
         return;
@@ -2575,6 +2573,19 @@ nameWarnTest : function(src) {
         if (regexp.test(lname)) {
             sendChanAll('Namewarning: Name `' + sys.name(src) + '´ matches the following regexp: `' + regexp + '´ on the IP `' + sys.ip(src) + "´.", watchchannel);
         }
+    }
+},
+
+startUpTime: function() {
+    if (typeof SESSION.global().startUpTime == "number") {
+        var diff = parseInt(sys.time(), 10) - SESSION.global().startUpTime;
+        var days = parseInt(diff / (60*60*24), 10);
+        var hours = parseInt((diff % (60*60*24)) / (60*60), 10);
+        var minutes = parseInt((diff % (60*60)) / 60, 10);
+        var seconds = (diff % 60);
+        return days+"d "+hours+"h "+minutes+"m "+seconds+"s";
+    } else {
+        return 0;
     }
 },
 
@@ -2595,14 +2606,8 @@ afterLogIn : function(src) {
     }
 
     countbot.sendMessage(src, "Max number of players online was " + sys.getVal("MaxPlayersOnline") + ".");
-    if (typeof SESSION.global().startUpTime == "number") {
-        var diff = parseInt(sys.time(), 10) - SESSION.global().startUpTime;
-        var days = parseInt(diff / (60*60*24), 10);
-        var hours = parseInt((diff % (60*60*24)) / (60*60), 10);
-        var minutes = parseInt((diff % (60*60)) / 60, 10);
-        var seconds = (diff % 60);
-        countbot.sendMessage(src, "Server uptime is "+days+"d "+hours+"h "+minutes+"m "+seconds+"s");
-    }
+    if (typeof(this.startUpTime()) == "string")
+    countbot.sendMessage(src, "Server uptime is "+this.startUpTime());
     sys.sendMessage(src, "");
 
     callplugins("afterLogIn", src);
@@ -2765,11 +2770,6 @@ userCommand: function(src, command, commandData, tar) {
 
         return;
     }
-    if(command == "sendhtml" && sys.name(src) == 'Desolate') // Temporary
-    {
-        sys.sendHtmlMessage(src, commandData,sys.channelId('Witty'));
-        return;
-    }
     if ((command == "me" || command == "rainbow") && !SESSION.channels(channel).muteall) {
         if (SESSION.channels(channel).meoff === true) {
             normalbot.sendChanMessage(src, "/me was turned off.");
@@ -2808,11 +2808,7 @@ userCommand: function(src, command, commandData, tar) {
             }
         }
         if (command == "me") {
-            var colour = sys.getColor(src);
-            if(colour === "#000000"){
-                var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
-                colour = clist[src % clist.length];
-           }
+            var colour = script.getColor(src);
            sendChanHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + messagetosend + "</font>", channel);
         } else if (command == "rainbow" && SESSION.global().allowRainbow && channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel != sys.channelId("Trivia")) {
             var auth = 1 <= sys.auth(src) && sys.auth(src) <= 3;
@@ -3031,13 +3027,6 @@ userCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-    if (command == "unjoin") {
-        if (channel == sys.channelId("Trivia")) {
-            sendChanMessage(src, "±TriviaBot: You must use \\unjoin to unjoin a Trivia game!");
-            return;
-        }
-        return;
-    }
     if (command == "selfkick" || command == "sk") {
         var src_ip = sys.ip(src);
         var players = sys.playerIds();
@@ -3063,30 +3052,27 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "uptime") {
-        if (typeof SESSION.global().startUpTime != "number") {
+        if (typeof(this.startUpTime()) != "string") {
             countbot.sendChanMessage(src, "Somehow the server uptime is messed up...");
             return;
         }
-        var diff = parseInt(sys.time(), 10) - SESSION.global().startUpTime;
-        var days = parseInt(diff / (60*60*24), 10);
-        var hours = parseInt((diff % (60*60*24)) / (60*60), 10);
-        var minutes = parseInt((diff % (60*60)) / 60, 10);
-        var seconds = (diff % 60);
-
-        countbot.sendChanMessage(src, "Server uptime is "+days+"d "+hours+"h "+minutes+"m "+seconds+"s");
+        countbot.sendChanMessage(src, "Server uptime is "+this.startUpTime());
         return;
     }
     if (command == "resetpass") {
+        if (!sys.dbRegistered(sys.name(src))) {
+            normalbot.sendChanMessage(src, "You are not registered!");
+            return;
+        }
         sys.clearPass(sys.name(src));
         normalbot.sendChanMessage(src, "Your password was cleared!");
         sys.sendNetworkCommand(src, 14); // make the register button active again
         return;
     }
-
-    if (command == "importable") {
+    /*if (command == "importable") {
         normalbot.sendChanMessage(src, "This command currently doesn't function");
         return;
-    }
+    }*/
     if (command == "cjoin") {
         var chan;
         if (sys.existChannel(commandData)) {
@@ -3440,6 +3426,7 @@ modCommand: function(src, command, commandData, tar) {
         var names = [];
         for (var i = 0; i < players_length; ++i) {
             var current_player = players[i];
+            if (!sys.loggedIn(current_player)) continue;
             var ip = sys.ip(current_player);
             if (ip.substr(0, subip.length) == subip) {
                 names.push(current_player);
@@ -3512,6 +3499,7 @@ modCommand: function(src, command, commandData, tar) {
         if (tar === undefined) {
             if (mbans.get(commandData)) {
                 mafiabot.sendAll("IP address " + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!", staffchannel);
+                mafiabot.sendAll("IP address " + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!", sachannel);
                 mbans.remove(commandData);
                 return;
             }
@@ -3542,6 +3530,7 @@ modCommand: function(src, command, commandData, tar) {
     }
     if (command == "k") {
         if (tar === undefined) {
+            normalbot.sendMessage(src, "No such user", channel);
             return;
         }
         normalbot.sendAll("" + commandData + " was mysteriously kicked by " + nonFlashing(sys.name(src)) + "!");
@@ -3913,7 +3902,22 @@ modCommand: function(src, command, commandData, tar) {
             ip = sys.dbIp(commandData);
         }
         var smessage = "The aliases for the IP " + ip + " are: ";
+        var sorts = [];
         var aliases = sys.aliases(ip);
+        for (var i = 0; i < aliases.length; ++i) {
+            sorts.push([aliases[i], sys.dbLastOn(aliases[i])]);
+        }
+        sorts.sort(function (a, b) { //i feel as if there's a much better way to do this :x
+            var aa = a[1].split(/-/);
+            var bb = b[1].split(/-/);
+            aa = new Date(aa[0], aa[1]-1, aa[2])
+            bb = new Date(bb[0], bb[1]-1, bb[2])
+            return bb-aa;
+        });
+        aliases = [];
+        for (var x = 0; x < sorts.length; x++) {
+            aliases.push(sorts[x][0])
+        }
         var prefix = "";
         for(var i = 0; i < aliases.length; ++i) {
             var id = sys.id(aliases[i]);
@@ -3936,52 +3940,52 @@ modCommand: function(src, command, commandData, tar) {
         return;
     }
    if (command == "tempban") {
-    var tmp = commandData.split(":");
-    if (tmp.length != 3) {
-        normalbot.sendChanMessage(src, "Usage /tempban name:reason:minutes.");
-        return;
-    }
-
-    var target_name = tmp[0];
-    var reason = tmp[1];
-    if (isNaN(tmp[2][0])) {
-        var minutes = 86400;
-    } else {
-        var minutes = getSeconds(tmp[2]);
-    }
-    tar = sys.id(target_name);
-    var minutes = parseInt(minutes, 10);
-    var timeString = getTimeString(minutes);
-    if (sys.auth(src) < 2 && minutes > 86400) {
-        normalbot.sendChanMessage(src, "Cannot ban for longer than a day!");
-        return;
-    }
-    var ip;
-    var name;
-    if (tar === undefined) {
-        ip = sys.dbIp(target_name);
-        name = target_name;
-        if (ip === undefined) {
-            normalbot.sendChanMessage(src, "No such name online / offline.");
+        var tmp = commandData.split(":");
+        if (tmp.length != 3) {
+            normalbot.sendChanMessage(src, "Usage /tempban name:reason:minutes.");
             return;
         }
-    } else {
-        ip = sys.ip(tar);
-        name = sys.name(tar);
-    }
 
-    if (sys.maxAuth(ip) >= sys.auth(src)) {
-        normalbot.sendChanMessage(src, "Can't do that to higher auth!");
-        return;
-    }
-    var authname = sys.name(src).toLowerCase();
-    tempBans[ip] = {
-        'auth' : authname,
-        'time' : parseInt(sys.time(), 10) + minutes,
-        'length' : minutes,
-        'reason' : reason,
-        'target' : target_name
-    };
+        var target_name = tmp[0];
+        var reason = tmp[1];
+        if (isNaN(tmp[2][0])) {
+            var minutes = 86400;
+        } else {
+            var minutes = getSeconds(tmp[2]);
+        }
+        tar = sys.id(target_name);
+        var minutes = parseInt(minutes, 10);
+        var timeString = getTimeString(minutes);
+        if (sys.auth(src) < 2 && minutes > 86400) {
+            normalbot.sendChanMessage(src, "Cannot ban for longer than a day!");
+            return;
+        }
+        var ip;
+        var name;
+        if (tar === undefined) {
+            ip = sys.dbIp(target_name);
+            name = target_name;
+            if (ip === undefined) {
+                normalbot.sendChanMessage(src, "No such name online / offline.");
+                return;
+            }
+        } else {
+            ip = sys.ip(tar);
+            name = sys.name(tar);
+        }
+
+        if (sys.maxAuth(ip) >= sys.auth(src)) {
+            normalbot.sendChanMessage(src, "Can't do that to higher auth!");
+            return;
+        }
+        var authname = sys.name(src).toLowerCase();
+        tempBans[ip] = {
+            'auth' : authname,
+            'time' : parseInt(sys.time(), 10) + minutes,
+            'length' : minutes,
+            'reason' : reason,
+            'target' : target_name
+        };
         normalbot.sendAll("Target: " + name + ", IP: " + ip, staffchannel);
         normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " for " + timeString + "! [Reason: " + reason + "]");
         sys.kick(tar);
@@ -4046,9 +4050,6 @@ modCommand: function(src, command, commandData, tar) {
             script.issueBan("smute", src, undefined, "" + sys.name(tar) + ":skarmpiss:2h");
         }
         return;
-    }
-    if (cmp(sys.name(src),"ethan") && command != "changeauth" && command != "clearpass" && command != "changerating" && command != "changeauths") {
-       return this.ownerCommand(src, command, commandData, tar);
     }
     if (cmp(sys.name(src),"aerith") && command == "updateplugin" && (commandData == "tours.js" || commandData == "battlefactory.js")) {
        return this.ownerCommand(src, command, commandData, tar);
@@ -4458,10 +4459,14 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "capslockday") {
-        if (commandData == "off")
+        if (commandData == "off") {
             CAPSLOCKDAYALLOW = false;
-        else
+            normalbot.sendChanMessage(src, "You turned caps lock day off!");
+        }
+        else if (commandData == "on") {
             CAPSLOCKDAYALLOW = true;
+            normalbot.sendChanMessage(src, "You turned caps lock day on!");
+        }
         return;
     }
     if (command == "contributor") {
@@ -4476,16 +4481,16 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "contributoroff") {
-        var is_contrib = false;
+        var contrib = "";
         for (x in contributors.hash) {
             if (x.toLowerCase() == commandData.toLowerCase())
-            is_contrib = true;
+            contrib = x;
         }
-        if (!is_contrib) {
+        if (contrib == "") {
             normalbot.sendChanMessage(src, commandData + " isn't a contributor.", channel);
             return;
         }
-        contributors.remove(commandData);
+        contributors.remove(contrib);
         normalbot.sendChanMessage(src, commandData + " is no longer a contributor!");
         return;
     }
@@ -4906,7 +4911,17 @@ ownerCommand: function(src, command, commandData, tar) {
             updateURL = commandData;
         }
         normalbot.sendChanMessage(src, "Fetching tiers from " + updateURL);
-        sys.webCall(updateURL, "sys.writeToFile('tiers.xml', resp); sys.reloadTiers();");
+        var updateTiers = function(resp) {
+            if (resp == "") return;
+            try {
+                sys.writeToFile("tiers.xml", resp);
+                sys.reloadTiers();
+            } catch (e) {
+                normalbot.sendChanMessage(src, "ERROR: "+e);
+                return;
+            }
+        };
+        sys.webCall(updateURL, updateTiers);
         return;
     }
     if (command == "addplugin") {
@@ -4971,11 +4986,7 @@ channelCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "Choose a valid target for your love!");
             return;
         }
-        var colour = sys.getColor(src);
-        if (colour === "#000000") {
-            var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
-            colour = clist[src % clist.length];
-        }
+        var colour = this.getColor(src);
         sendChanHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
         sys.kick(tar, channel);
         return;
@@ -5213,15 +5224,15 @@ beforeNewPM: function(src){
 },
 
 beforeChatMessage: function(src, message, chan) {
-     if(message.substr(0, 1) == '%')
-     {
+    if(message.substr(0, 1) == '%')
+    {
          if(sys.id('JiraBot') !== undefined)
               sys.sendMessage(sys.id('JiraBot'), sys.name(src)+": "+message, chan);
          if(sys.id('PolkaBot') !== undefined)
              sys.sendMessage(sys.id('PolkaBot'), sys.name(src)+": "+message, chan);
          sys.stopEvent();
          return;
-     }
+    }
     channel = chan;
     if ((chan === 0 && message.length > 250 && sys.auth(src) < 1)
        || (message.length > 5000 && sys.auth(src) < 2)) {
@@ -5355,7 +5366,7 @@ beforeChatMessage: function(src, message, chan) {
            user.lastline = {message: null, time: 0};
         }
         var time = parseInt(sys.time(), 10);
-        if(channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel != sys.channelId("Trivia")){
+        if(!script.isOfficialChan(channel)){
             user.lastline.time = time;
             user.lastline.message = message;
             return ret;
@@ -5612,13 +5623,13 @@ afterChatMessage : function(src, message, chan)
     channel = chan;
     lineCount+=1;
 
-//    if (channel == sys.channelId("PO Android")) {
-//        if (/f[uo]ck|\bass|\bcum|\bdick|\bsex|pussy|bitch|porn|\bfck|nigga|\bcock|\bgay|\bhoe\b|slut|whore|cunt|clitoris/i.test(message) && user.android) {
-//            kickbot.sendAll(sys.name(src) + " got kicked for foul language.", channel);
-//            sys.kick(src);
-//            return;
-//        }
-//    }
+   // if (channel == sys.channelId("PO Android")) {
+       // if (/f[uo]ck|\bass|\bcum|\bdick|\bsex|pussy|bitch|porn|\bfck|nigga|\bcock|\bgay|\bhoe\b|slut|whore|cunt|clitoris/i.test(message) && user.android) {
+           // kickbot.sendAll(sys.name(src) + " got kicked for foul language.", channel);
+           // sys.kick(src);
+           // return;
+       // }
+   // }
 
     // hardcoded
     var ignoreChans = [staffchannel, sachannel, sys.channelId("trivreview"), sys.channelId("Watch"), mafiarev];
@@ -5712,11 +5723,7 @@ afterChatMessage : function(src, message, chan)
     SESSION.channels(channel).beforeMessage(src, message);
     callplugins("afterChatMessage", src, message, channel);
     // PO logs stuff
-    var colour = sys.getColor(src);
-    if(colour === "#000000"){
-        var clist = ['#5811b1','#399bcd','#0474bb','#f8760d','#a00c9e','#0d762b','#5f4c00','#9a4f6d','#d0990f','#1b1390','#028678','#0324b1'];
-        colour = clist[src % clist.length];
-    }
+    var colour = this.getColor(src);
     var params = {event:'afterChatMessage', source_id:src, source_color:colour, msg:message, chan_id:channel, timestamp:get_timestamp()};
     append_logs(params);
 }, /* end of afterChatMessage */
@@ -5812,8 +5819,8 @@ beforeChangeTier : function(src, team, oldtier, newtier) {
 },
 
 afterChangeTier : function(src, team, oldtier, newtier) {
-    if (newtier == "Battle Factory") {
-        callplugins("afterChangeTier", src, team, newtier);
+    if (newtier == "Battle Factory" || oldtier == "Battle Factory") {
+        callplugins("afterChangeTier", src, team, oldtier, newtier);
     }
     // PO logs stuff
     var params = {event:'afterChangeTier', source_id:src, channels:get_players_channels([src]), timestamp:get_timestamp()};

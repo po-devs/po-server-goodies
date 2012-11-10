@@ -65,6 +65,55 @@ try {
 
 if (trivData.submitBans == undefined) trivData.submitBans = {};
 if (trivData.toFlash == undefined) trivData.toFlash = {};
+if (trivData.mutes == undefined) trivData.mutes = {};
+
+var utilities = require("utilities.js");
+var nonFlashing = utilities.non_flashing,
+getSeconds = utilities.getSeconds,
+getTimeString = utilities.getTimeString;
+
+function isTriviaMuted(ip) {
+    if (trivData.mutes[ip] == undefined) {
+        return false;
+    }
+    if (trivData.mutes[ip].expires == "never") {
+        return true;
+    }
+    if (trivData.mutes[ip].expires <= sys.time()) {
+        delete trivData.mutes[ip];
+        saveData();
+        // Let player know their mute expired...
+        var aliases = sys.aliases(ip);
+        aliases.forEach(function(name) {
+            if (sys.id(name) !== undefined)
+            triviabot.sendMessage(sys.id(name), "Your trivia mute has expired.", triviachan);
+        });
+        return false;
+    }
+    return true;
+}
+
+function isSubmitBanned(ip) {
+    if (trivData.submitBans[ip] == undefined) {
+        return false;
+    }
+    if (trivData.submitBans[ip].expires !== undefined && trivData.submitBans[ip].expires == "never") {
+        return true;
+    }
+    if (trivData.submitBans[ip].expires !== undefined && trivData.submitBans[ip].expires <= sys.time()) {
+        delete trivData.submitBans[ip];
+        saveData();
+        // Let player know their ban expired...
+        var aliases = sys.aliases(ip);
+        aliases.forEach(function(name) {
+            if (sys.id(name) !== undefined)
+            triviabot.sendMessage(sys.id(name), "Your submit ban has expired.", triviachan);
+        });
+        return false;
+    }
+    return true;
+}
+    
 function runUpdate() {
     if (Trivia.needsUpdating !== true) return;
     var POglobal = SESSION.global();
@@ -175,7 +224,14 @@ TriviaGame.prototype.startGame = function(points, name)
 	sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
 	sendChanAll("", 0);
 	this.sendAll((name != "" ? name+" started a Trivia game! " : "A trivia game was started! ") + " First to "+points+" points wins!",triviachan);
-	this.answeringQuestion = false;
+    var players = sys.playersOfChannel(triviachan);
+    // Flash players who have it enabled
+    for (p in players) {
+    	player_id = players[p], player_ip = sys.ip(player_id);
+    	if (trivData.toFlash[player_ip] !== undefined)
+    	sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
+    }
+    this.answeringQuestion = false;
 	sys.delayedCall(function() { Trivia.startTriviaRound(); },15);
 };
 
@@ -201,20 +257,13 @@ TriviaGame.prototype.startTrivia = function(src,rand)
         return;
     }
     rand = parseInt(rand, 10);
-	if (rand > 102 || rand < 2 )
+	if (rand > 102 || rand < 2)
     {
         this.sendPM(src,"Please do not start a game with more than 102 points, or lower than 2 points.", triviachan);
         return;
     }
     rand = (isNaN(rand)) ? sys.rand(2,102) : +rand;
     this.startGame(rand, sys.name(src));
-    var players = sys.playersOfChannel(triviachan);
-    // flash players
-    for (p in players) {
-    	player_id = players[p], player_ip = sys.ip(player_id);
-    	if (trivData.toFlash[player_ip] !== undefined)
-    	sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
-    }
 };
 
 TriviaGame.prototype.startTriviaRound = function()
@@ -259,12 +308,8 @@ TriviaGame.prototype.finalizeAnswers = function()
 {
     if (this.started === false)
         return;
-try { // Do not indent this, it is only until this starts to work
-    // use concat to convert into array
-    var answer,
-        id,
-		answers = [].concat(triviaq.get(this.roundQuestion).answer);
-    
+        
+    var answer, id,answers = [].concat(triviaq.get(this.roundQuestion).answer);        
     this.answeringQuestion = false;
     /* We're going to judge points based on response time */
     var wrongAnswers = [],
@@ -286,14 +331,14 @@ try { // Do not indent this, it is only until this starts to work
                 var minus = realTime - responseTime;
                 var pointAdd = minus > 6 ? 5 : (minus < 7 && minus > 3 ? 3 : 2);
                 //sys.sendMessage(sys.id("Crystal Moogle"), "TriviaPointDebug: " + name + " took" + minus + " seconds, point add is " + pointAdd + ".", triviachan);
-                // TODO: check answer length, and base time between question off of that?
+                // TODO: check answer length, and base time allowed for the question off that?
 
                 answeredCorrectly.push(name);
                 this.player(name).points += pointAdd;
             } else {
             	var tanswer = this.submittedAnswers[id].answer;
                 wrongAnswers.push("<span title='" + utilities.html_escape(name) + "'>" + utilities.html_escape(tanswer) + "</span>");
-                if (/asshole|\bdick|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger/gi.test(tanswer)) {
+                if (/asshole|\bdick|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger/gi.test(tanswer) && !/dickens/gi.test(tanswer)) {
                     if (sys.existChannel("Victory Road"))
                     triviabot.sendAll("Warning: Player "+name+" answered '"+tanswer+"' to the question '"+triviaq.get(this.roundQuestion).question+"' in #Trivia", sys.channelId("Victory Road"));
                 }
@@ -356,10 +401,6 @@ try { // Do not indent this, it is only until this starts to work
     sys.delayedCall(function() {
         Trivia.startTriviaRound();
     }, rand);
-} catch(e) {
-// TODO REMOVE the catch block when this works
-    sendChanAll("script error: " + e, triviachan);
-}
 };
 
 TriviaGame.prototype.resetTrivia = function()
@@ -769,9 +810,10 @@ addAdminCommand("removeq", function(src,commandData,channel) {
 
 addUserCommand("submitq", function(src, commandData, channel) {
     var user_ip = sys.ip(src), user_ban = trivData.submitBans[user_ip], isAdmin = tadmin.isTAdmin(sys.name(src).toLowerCase());
-    if (user_ban !== undefined && !isAdmin) {
-	Trivia.sendPM(src, "Sorry, you are banned from submitting.", channel);
-	return;
+    if (isSubmitBanned(user_ip) && !isAdmin) {
+        var ban = trivData.submitBans[ip];
+        Trivia.sendPM(src, "You are banned from submitting questions"+(ban.expires == "never" ? "" : "for  "+getTimeString(ban.expires - sys.time()))+". "+(ban.reason!==undefined?"[Reason: "+ban.reason+"]" : ""), channel);
+        return;
     }
     commandData = commandData.split("*");
     if (commandData.length!=3)
@@ -801,13 +843,13 @@ addUserCommand("submitq", function(src, commandData, channel) {
 },"Allows you to submit a question for review, format /submitq Category*Question*Answer1,Answer2,etc");
 
 addUserCommand("join", function(src, commandData, channel) {
-    if(SESSION.users(src).mute.active || !SESSION.channels(triviachan).canTalk(src)){
-        Trivia.sendPM(src, "You cannot join when muted!",channel);
-        return;
-    }
     if (Trivia.started === false)
     {
         Trivia.sendPM(src,"A game hasn't started!",channel);
+        return;
+    }
+    if(SESSION.users(src).mute.active || isTriviaMuted(sys.ip(src)) || !SESSION.channels(triviachan).canTalk(src)){
+        Trivia.sendPM(src, "You cannot join when muted!",channel);
         return;
     }
     if (!sys.dbRegistered(sys.name(src)))
@@ -1244,43 +1286,69 @@ addAdminCommand("shove", function(src, commandData, channel){
 }, "Allows you to remove a player from the game");
 
 addAdminCommand("submitban", function(src, commandData, channel) {
-	var name = commandData;
-	if (sys.dbIp(name) == undefined) {
-		triviabot.sendMessage(src, "He/She doesn't exist!");
-		return;
-	}
-	var ableToBan = sys.dbAuth(name) < 1 && !tadmin.isTAdmin(name.toLowerCase());
-	var ip = (sys.id(name) !== undefined) ? sys.ip(sys.id(name)) : sys.dbIp(name);
-	if (trivData.submitBans[ip] !== undefined) {
-		triviabot.sendMessage(src, commandData+" is already banned from submitting.", channel);
-		return;
-	}
-	if (ableToBan) {
-		trivData.submitBans[ip] = {
-			'by' : sys.name(src),
-			'name' : name
-		};
-		var channels = [sys.channelId("Indigo Plateau"), sys.channelId("Victory Road"), revchan]
-		for (var x in channels) {
-			if (sys.existChannel(sys.channel(channels[x]))) {
-				triviabot.sendAll(sys.name(src)+" banned "+name+" from submitting questions.", channels[x]);
-			}
-		}
-		saveData();
-		return;
-	} else {
-		triviabot.sendMessage(src, "Sorry, you are unable to ban "+name+" from submitting.", channel);
-		return;
-	}
+    if (commandData == undefined || commandData.indexOf(":") == -1) {
+        triviabot.sendMessage(src, "Usage: name:reason:time", channel);
+        return;
+    }
+    commandData = commandData.split(":");
+    var user = commandData[0], reason = commandData[1], time = commandData[2];
+    if (sys.dbIp(user) == undefined) {
+        triviabot.sendMessage(src, "Couldn't find "+user, channel);
+        return;
+    }
+    var tarip = sys.id(user) == undefined ? sys.dbIp(user) : sys.ip(sys.id(user));
+    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user.toLowerCase());
+    if (sys.maxAuth(tarip) >= sys.auth(src) && !ok) {
+        triviabot.sendMessage(src, "Can't do that to higher auth!", channel);
+        return;
+    }
+    if (isSubmitBanned(tarip)) {
+        triviabot.sendMessage(src, user+" is already submit banned!", channel);
+        return;
+    }
+    timestring = "for ";
+    seconds = getSeconds(time);
+    if (isNaN(seconds)) {
+        triviabot.sendMessage(src, "The time is a bit odd...", channel);
+        return;
+    }
+    if (!time || seconds < 1) {
+        if (!isTriviaOwner(src)) {
+            triviabot.sendMessage(src, "Please specify time!", channel);
+            return;
+        }
+        time = "forever";
+    }
+    timestring += getTimeString(seconds);
+    expires = (time == "forever") ? "never" : parseInt(sys.time()) + parseInt(seconds);
+    trivData.submitBans[tarip] = {
+        'name': user,
+        'reason': reason,
+        'by': sys.name(src),
+        'issued': parseInt(sys.time()),
+        'expires': expires
+    };
+    saveData();
+    var channels = [sys.channelId("Indigo Plateau"), sys.channelId("Victory Road"), revchan]
+    for (var x in channels) {
+        if (sys.existChannel(sys.channel(channels[x]))) {
+            triviabot.sendAll(sys.name(src)+" banned "+user+" from submitting questions "+timestring+"! [Reason: "+reason+"]", channels[x]);
+        }
+    }
+    saveData();
 }, "Ban a user from submitting.");
 
 addAdminCommand("submitunban", function(src, commandData, channel) {
+    if (commandData == undefined) {
+        triviabot.sendMessage(src, "Specify a user!", channel);
+        return;
+    }
 	if (sys.dbIp(commandData) == undefined) {
-		triviabot.sendMessage(src, "He/She doesn't exist!");
+		triviabot.sendMessage(src, "Couldn't find "+commandData);
 		return;
 	}
 	var ip = (sys.id(commandData) !== undefined) ? sys.ip(sys.id(commandData)) : sys.dbIp(commandData);
-	if (trivData.submitBans[ip] === undefined) {
+	if (!isSubmitBanned(ip)) {
 		triviabot.sendMessage(src, commandData+" isn't banned from submitting.",channel);
 		return;
 	}
@@ -1296,34 +1364,181 @@ addAdminCommand("submitunban", function(src, commandData, channel) {
 }, "Unban a user from submitting.");
 
 addAdminCommand("submitbans", function(src, commandData, channel) {
-	if (Object.keys(trivData.submitBans) <= 0) {
-		triviabot.sendMessage(src, "There are no submit bans.", channel);
-		return;
-	}
-	// TODO: Make this look nicer later.
-	triviabot.sendMessage(src, "Current submit bans:", channel);
-	for (b in trivData.submitBans) {
-		ip = b;
-		who = trivData.submitBans[b].name;
-		by = trivData.submitBans[b].by;
-		triviabot.sendMessage(src, ip+" ("+who+"). Banned by "+by+".", channel);
-	}
-	return;
+	var name = "Submit bans";
+    var width=5;
+    var max_message_length = 30000;
+    var tmp = [];
+    var t = parseInt(sys.time(), 10);
+    var toDelete = [];
+    
+    for (ip in trivData.submitBans) {
+        if (!isSubmitBanned(ip)) continue;
+        cban = trivData.submitBans[ip], banned_name = cban.name, by = cban.by, banTime = cban.issued, expires = cban.expires, reason = cban.reason;
+        if (banTime == undefined) banTime = 0;
+        if (expires == undefined) expires = "never";
+        if (reason == undefined) reason = "none";
+        tmp.push([ip, banned_name, by, (banTime === 0 ? "unknown" : getTimeString(t-banTime)), (expires === "never" ? "never" : getTimeString(expires-t)), utilities.html_escape(reason)]);
+    }
+
+    tmp.sort(function(a,b) { return a[3] - b[3];});
+
+    // generate HTML
+    var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + utilities.html_escape(name) + '</strong></center></td></tr><tr><th>IP</th><th>Name</th><th>By</th><th>Issued ago</th><th>Expires in</th><th>Reason</th>';
+    var table_footer = '</table>';
+    var table = table_header;
+    var line;
+    var send_rows = 0;
+    while(tmp.length > 0) {
+        line = '<tr><td>'+tmp[0].join('</td><td>')+'</td></tr>';
+        tmp.splice(0,1);
+        if (table.length + line.length + table_footer.length > max_message_length) {
+            if (send_rows === 0) continue; // Can't send this line!
+            table += table_footer;
+            sys.sendHtmlMessage(src, table, channel);
+            table = table_header;
+            send_rows = 0;
+        }
+        table += line;
+        ++send_rows;
+    }
+    table += table_footer;
+    if (send_rows > 0)
+        sys.sendHtmlMessage(src, table, channel);
+    return;
 }, "View submit bans.");
+
+addAdminCommand("triviamute", function(src, commandData, channel) {
+    if (commandData == undefined || commandData.indexOf(":") == -1) {
+        triviabot.sendMessage(src, "Usage: name:reason:time", channel);
+        return;
+    }
+    commandData = commandData.split(":");
+    var user = commandData[0], reason = commandData[1], time = commandData[2];
+    if (sys.dbIp(user) == undefined) {
+        triviabot.sendMessage(src, "Couldn't find "+commandData, channel);
+        return;
+    }
+    var tarip = sys.id(user) == undefined ? sys.dbIp(user) : sys.ip(sys.id(user));
+    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user.toLowerCase());
+    if (sys.maxAuth(tarip) >= sys.auth(src) && !ok) {
+        triviabot.sendMessage(src, "Can't do that to higher auth!", channel);
+        return;
+    }
+    if (isTriviaMuted(tarip)) {
+        triviabot.sendMessage(src, user+" is already trivia muted!", channel);
+        return;
+    }
+    timestring = "for ";
+    seconds = getSeconds(time);
+    if (isNaN(seconds)) {
+        triviabot.sendMessage(src, "The time is a bit odd...", channel);
+        return;
+    }
+    if (!time || seconds < 1) {
+        if (!isTriviaOwner(src)) {
+            triviabot.sendMessage(src, "Please specify time!", channel);
+            return;
+        }
+        time = "forever";
+    }
+    timestring += getTimeString(seconds);
+    expires = (time == "forever") ? "never" : parseInt(sys.time()) + parseInt(seconds);
+    trivData.mutes[tarip] = {
+        'name': user,
+        'reason': reason,
+        'by': sys.name(src),
+        'issued': parseInt(sys.time()),
+        'expires': expires
+    };
+    var chans = [triviachan, revchan, sachannel];
+    for (x in chans) {
+        var current = chans[x];
+        triviabot.sendAll(user+" was trivia muted by "+nonFlashing(sys.name(src))+ (time!="forever"? " " + timestring : "") + "! [Reason: "+reason+"]", current);
+    }
+    if (sys.id(user) != undefined && Trivia.playerPlaying(sys.id(user))) {
+        Trivia.removePlayer(sys.id(user));
+        triviabot.sendAll(user+" was removed from the game!", triviachan);
+    }
+    saveData();
+}, "Trivia mute a user.");
+
+addAdminCommand("triviaunmute", function(src, commandData, channel) {
+    if (commandData == undefined) {
+        triviabot.sendMessage(src, "Specify a user!", channel);
+        return;
+    }
+    if (sys.dbIp(commandData) == undefined) {
+        triviabot.sendMessage(src, "Couldn't find "+commandData, channel);
+        return;
+    }
+    var tarip = sys.id(commandData) == undefined ? sys.dbIp(commandData) : sys.ip(sys.id(commandData));
+    if (!isTriviaMuted(tarip)) {
+        triviabot.sendMessage(src, commandData+" isn't trivia muted!", channel);
+        return;
+    }
+    if (tarip == sys.ip(src) && isTriviaMuted(tarip)) {
+        triviabot.sendMessage(src, "You may not trivia unmute yourself!", channel);
+        return;
+    }
+    delete trivData.mutes[tarip];
+    var chans = [triviachan, revchan, sachannel];
+    for (x in chans) {
+        var current = chans[x];
+        triviabot.sendAll(commandData+" was trivia unmuted by "+nonFlashing(sys.name(src))+ "!", current);
+    }
+    saveData();
+}, "Trivia unmute a user.");
+
+addAdminCommand("triviamutes", function(src, commandData, channel) {
+        var name = "Trivia mutes";
+        var width=5;
+        var max_message_length = 30000;
+        var tmp = [];
+        var t = parseInt(sys.time(), 10);
+        var toDelete = [];
+        
+        for (ip in trivData.mutes) {
+            if (!isTriviaMuted(ip)) continue;
+            cmute = trivData.mutes[ip], banned_name = cmute.name, by = cmute.by, banTime = cmute.issued, expires = cmute.expires, reason = cmute.reason;
+            tmp.push([ip, banned_name, by, (banTime === 0 ? "unknown" : getTimeString(t-banTime)), (expires === "never" ? "never" : getTimeString(expires-t)), utilities.html_escape(reason)]);
+        }
+
+        tmp.sort(function(a,b) { return a[3] - b[3];});
+
+        // generate HTML
+        var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + utilities.html_escape(name) + '</strong></center></td></tr><tr><th>IP</th><th>Name</th><th>By</th><th>Issued ago</th><th>Expires in</th><th>Reason</th>';
+        var table_footer = '</table>';
+        var table = table_header;
+        var line;
+        var send_rows = 0;
+        while(tmp.length > 0) {
+            line = '<tr><td>'+tmp[0].join('</td><td>')+'</td></tr>';
+            tmp.splice(0,1);
+            if (table.length + line.length + table_footer.length > max_message_length) {
+                if (send_rows === 0) continue; // Can't send this line!
+                table += table_footer;
+                sys.sendHtmlMessage(src, table, channel);
+                table = table_header;
+                send_rows = 0;
+            }
+            table += line;
+            ++send_rows;
+        }
+        table += table_footer;
+        if (send_rows > 0)
+            sys.sendHtmlMessage(src, table, channel);
+        return;
+}, "View trivia mutes.");
 
 addAdminCommand("autostart", function(src, commandData, channel) {
 	Trivia.autostart = !Trivia.autostart;
-	triviabot.sendMessage(src, "Autostart is now " + (Trivia.autostart == true ? "on" : "off") + ".", channel);
+	triviabot.sendAll("" + sys.name(src) + " turned auto start " + (Trivia.autostart == true ? "on" : "off") + ".", revchan);
 	return;
 }, "Auto start games.");
 
 // Normal command handling.
 exports.handleCommand = function trivia_handleCommand(src, command, channel)
 {
-    // Only care about trivia channels
-    if (channel != triviachan && channel != revchan)
-        return;
-try { // Debug only, do not indent
     var commandData;
     var indx = command.indexOf(' ');
     if (indx != -1) {
@@ -1332,7 +1547,10 @@ try { // Debug only, do not indent
     } else {
         commandData = ""; // sane default to avoid undefined errors
     }
-
+    // Only care about trivia channels
+    if (channel != triviachan && channel != revchan && command !== "triviamute" && command !== "triviaunmute")
+        return;
+try { // Debug only, do not indent
     // Trivia user commands
     if (userCommands.hasOwnProperty(command)) {
         userCommands[command].call(null, src, commandData, channel);
@@ -1407,8 +1625,6 @@ exports.beforeChatMessage = function trivia_beforeChatMessage(src, message, chan
     	return true;
     }
 
-try { // debug only, do not indent
-    // allow commands, except me
     if (utilities.is_command(message) && message.substr(1,2).toLowerCase() != "me")
     return;
 
@@ -1435,10 +1651,13 @@ try { // debug only, do not indent
         Trivia.addAnswer(src, message.replace(/,/gi,""));
         Trivia.sendPM(src, "Your answer was submitted.", triviachan);
         return true;
-    }
-} catch(e) {
-    sys.sendMessage(src, "Error in beforeChatMessage: " + e, channel);
-}
+   }
+   
+   if (isTriviaMuted(sys.ip(src))) {
+      var mute = trivData.mutes[sys.ip(src)];
+      triviabot.sendMessage(src, "You are trivia muted by "+mute.by+ (mute.expires == "never" ? "" : " for "+getTimeString(mute.expires - sys.time()))+"! [Reason: "+mute.reason+"]", channel);
+      return true;
+   }
 };
 
 exports.init = function trivia_init()

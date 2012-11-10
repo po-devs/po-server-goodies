@@ -3,6 +3,9 @@
 
 module.exports.init = function() {}; //this is just so it says when updated thought /updateplugin :x
 
+module.exports.beforeChatMessage = function beforeChatMessage(src, message, channel) {
+};
+
 module.exports.afterLogIn = function afterLogIn(src) {
     var name = sys.name(src);
     if(sys.getColor(src) == "#ff007f" && /doj/i.test(sys.name(src))) {

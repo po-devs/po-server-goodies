@@ -1026,7 +1026,7 @@ function Mafia(mafiachan) {
         // We exclude mafia admins from this.
         var i;
         if (src) {
-            var PlayerCheck = PreviousGames.slice(-2).reverse();
+            var PlayerCheck = PreviousGames.slice(-5).reverse();
             if (!this.isMafiaAdmin(src)) {
                 for (i = 0; i < PlayerCheck.length; i++) {
                     var who = PlayerCheck[i].who;
@@ -1480,8 +1480,8 @@ function Mafia(mafiachan) {
             }
             list = this.teamTargets[player.role.side][action];
             if ("restrict" in player.role.actions.night[action]) {
-                if (!(player.role.role in this.teamRestrictions)) {
-                    this.teamRestrictions[player.role.role] = [];
+                if (!(player.role.side in this.teamRestrictions)) {
+                    this.teamRestrictions[player.role.side] = [];
                 }
                 this.teamRestrictions[player.role.side] = this.teamRestrictions[player.role.side].concat(player.role.actions.night[action].restrict);
             }
@@ -2676,7 +2676,7 @@ function Mafia(mafiachan) {
             "±Rule: Do not reveal any information about the game once you're dead or voted off. ",
             "±Rule: Do not repeatedly target a user, as it ruins the fun for that user",
             "±Rule: Do not group together to ruin the game",
-            "±Rule: Do not reveal roles in order to harm your team's chances of winning.",
+            "±Rule: Do not intentionally harm your team's chances of winning.",
             "",
             "±Game: Disobey them and you will be banned from mafia/muted according to the MA/auth's wishes!",
             ""
@@ -3277,7 +3277,7 @@ function Mafia(mafiachan) {
             return;
         }
         var dlurl;
-        if (url.substr(0, 7) != "http://") {
+        if (url.substr(0, 7) != "http://" && url.substr(0, 8) != "https://") {
             for (var i = 0; i < mafia.themeManager.themeInfo.length; ++i) {
                 if (mafia.themeManager.themeInfo[i][0].toLowerCase() == name.toLowerCase()) {
                     dlurl = mafia.themeManager.themeInfo[i][1];
@@ -3938,6 +3938,7 @@ return;
             if (id !== undefined)
                 SESSION.users(id).mafiaAdmin = true;
             sys.sendMessage(src, "±Game: That person is now a mafia admin!", mafiachan);
+            sys.sendAll("±Murkrow: " + sys.name(src) + " promoted " + commandData, sys.channelId('Victory Road'));
             return;
         }
         if (command == "mafiaadminoff") {
@@ -3947,6 +3948,7 @@ return;
             if (id !== undefined)
                 SESSION.users(id).mafiaAdmin = false;
             sys.sendMessage(src, "±Game: That person is no more a mafia admin!", mafiachan);
+            sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData, sys.channelId('Victory Road'));
             return;
         }
 
