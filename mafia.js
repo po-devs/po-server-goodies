@@ -1251,11 +1251,12 @@ function Mafia(mafiachan) {
         return noPlayer;
     };
     this.removePlayer = function (player) {
+        //sys.sendAll("removing player " + player.name, mafiachan);
         for (var action in player.role.actions.night) {
             var targetMode = player.role.actions.night[action].target;
             var team = this.getPlayersForTeam(player.role.side);
             var role = this.getPlayersForRole(player.role.role);
-            if ((targetMode == 'AnyButSelf' || targetMode == 'Any' || Array.isArray(targetMode))
+            if ((targetMode == 'AnyButSelf' || targetMode == 'Any')
              || (targetMode == 'AnyButTeam' && team.length == 1)
              || (targetMode == 'AnyButRole' && role.length == 1)) {
                 this.removeTarget(player, action);
@@ -3600,23 +3601,16 @@ return;
 
                 this.addPhaseStalkAction(name, command, target.name);
 
-                if (typeof player.role.actions.night[command].target === "string") {
-                    if (["Any", "Self", "OnlySelf"].indexOf(player.role.actions.night[command].target) == -1 && commandData == name) {
-                        sys.sendMessage(src, "±Hint: Nope, this won't work... You can't target yourself!", mafiachan);
-                        return;
-                    } else if (player.role.actions.night[command].target == "OnlySelf" && commandData != name) {
-                        sys.sendMessage(src, "±Hint: Nope, this won't work... You can only use this action on yourself!", mafiachan);
-                        return;
-                    } else if (player.role.actions.night[command].target == 'AnyButTeam' && player.role.side == target.role.side
-                     || player.role.actions.night[command].target == 'AnyButRole' && player.role.role == target.role.role) {
-                        sys.sendMessage(src, "±Hint: Nope, this won't work... You can't target your partners!", mafiachan);
-                        return;
-                    }
-                } else if (Array.isArray(player.role.actions.night[command].target)) {
-                    if (player.role.actions.night[command].target.indexOf(target.role.role) == -1) {
-                        sys.sendMessage(src, "±Hint: Nope, this won't work... You can't target " + commandData + "!", mafiachan);
-                        return;
-                    }
+                if (["Any", "Self", "OnlySelf"].indexOf(player.role.actions.night[command].target) == -1 && commandData == name) {
+                    sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target yourself!", mafiachan);
+                    return;
+                } else if (player.role.actions.night[command].target == "OnlySelf" && commandData != name) {
+                    sys.sendMessage(src, "±Hint: You can only use this action on yourself!", mafiachan);
+                    return;
+                } else if (player.role.actions.night[command].target == 'AnyButTeam' && player.role.side == target.role.side
+                 || player.role.actions.night[command].target == 'AnyButRole' && player.role.role == target.role.role) {
+                    sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target your partners!", mafiachan);
+                    return;
                 }
 
                 var recharge = mafia.getRecharge(player, "night", command);
@@ -3738,22 +3732,14 @@ return;
                     command = commandObject.command;
 
                 if (target !== null) {
-                    if (typeof commandObject.target === "string") {
-                        if ((["Self", "Any"].indexOf(commandObject.target) == -1) && player == target) {
-                            sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target yourself!", mafiachan);
-                            return;
-                        } else if (commandObject.target == 'AnyButTeam' && player.role.side == target.role.side
-                            || commandObject.target == 'AnyButRole' && player.role.role == target.role.role) {
-                            sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target your partners!", mafiachan);
-                            return;
-                        }
-                    } else if (Array.isArray(commandObject.target)) {
-                        if (commandObject.target.indexOf(target.role.role) === -1) {
-                            sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target " + commandData + "!", mafiachan);
-                            return;
-                        }
+                    if ((commandObject.target === undefined || ["Self", "Any"].indexOf(commandObject.target) == -1) && player == target) {
+                        sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target yourself!", mafiachan);
+                        return;
+                    } else if (commandObject.target == 'AnyButTeam' && player.role.side == target.role.side
+                        || commandObject.target == 'AnyButRole' && player.role.role == target.role.role) {
+                        sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target your partners!", mafiachan);
+                        return;
                     }
-                    
                     this.addPhaseStalkAction(name, command, target.name);
                 }
 
