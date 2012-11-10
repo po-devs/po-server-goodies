@@ -1538,9 +1538,17 @@ function Mafia(mafiachan) {
         if (this.ticks > 0 && limit > 1)
             this.sendPlayer(player.name, "±Game: Your target(s) are " + list.join(', ') + "!");
     };
-    this.setPlayerRole = function (player, role) {
+    this.setPlayerRole = function (player, role, noInitialCondition) {
         var act;
-        player.role = mafia.theme.roles[role];
+
+        role = mafia.theme.roles[role];
+
+        if (!role) {
+            return;
+        }
+
+        player.role = role;
+
         if (typeof mafia.theme.roles[role].side == "object") {
             player.role.side = randomSample(mafia.theme.roles[role].side.random);
         }
@@ -1561,15 +1569,27 @@ function Mafia(mafiachan) {
                 }
             }
         }
-        if ("initialCondition" in player.role.actions) {
-            var condition = player.role.actions.initialCondition;
-            if ("poison" in condition) {
-                player.poisoned = 1;
-                player.poisonCount = condition.poison.count || 2;
-                player.poisonDeadMessage = condition.poison.poisonDeadMessage;
-            }
-            if ("clearPoison" in condition) {
-                player.poisoned = undefined;
+        if (noInitialCondition) { // Safety: Prevents endless loops of initialCondition.convert
+            if ("initialCondition" in player.role.actions) {
+                var condition = player.role.actions.initialCondition;
+                if ("poison" in condition) {
+                    player.poisoned = 1;
+                    player.poisonCount = condition.poison.count || 2;
+                    player.poisonDeadMessage = condition.poison.poisonDeadMessage;
+                }
+                if ("clearPoison" in condition) {
+                    player.poisoned = undefined;
+                }
+
+                if ("convert" in condition) {
+                    if (typeof condition.convert === "object" && "random" in condition.convert) {
+                        mafia.setPlayerRole(player, randomSample(condition.convert.random), true);
+                        mafia.showOwnRole(sys.id(player.name));
+                    } else if (condition.convert === "string") {
+                        mafia.setPlayerRole(player, condition.convert, true);
+                        mafia.showOwnRole(sys.id(player.name));
+                    }
+                }
             }
         }
     };
@@ -1751,7 +1771,6 @@ function Mafia(mafiachan) {
 
             for (i = 0; i < srcArray.length; ++i) {
                 mafia.players[mafia.signups[i]] = { 'name': mafia.signups[i], 'role': mafia.theme.roles[srcArray[i]], 'targets': {}, 'recharges': {}, 'dayrecharges': {}, 'charges' : {}, "restrictions": [] };
-                var rechargeplayer = mafia.players[mafia.signups[i]];
                 var initPlayer = mafia.players[mafia.signups[i]];
                 if ("night" in initPlayer.role.actions) {
                     for (var act in initPlayer.role.actions.night) {
@@ -1776,6 +1795,13 @@ function Mafia(mafiachan) {
                         initPlayer.poisoned = 1;
                         initPlayer.poisonCount = condition.poison.count || 2;
                         initPlayer.poisonDeadMessage = condition.poison.poisonDeadMessage;
+                    }
+                    if ("convert" in condition) {
+                        if (typeof condition.convert === "object" && "random" in condition.convert) {
+                            initPlayer.role = randomSample(condition.convert.random);
+                        } else if (condition.convert === "string") {
+                            initPlayer.role = condition.convert;
+                        }
                     }
                 }
                 if (typeof mafia.theme.roles[srcArray[i]].side == "object") {
