@@ -873,6 +873,10 @@ function Mafia(mafiachan) {
         this.teamRestrictions = {};
         this.roleRestrictions = {};
         this.usersToSlay = [];
+        this.time = {
+            "nights": 0,
+            "days": 0
+        };
     };
     this.lastAdvertise = 0;
     this.reduceRecharges = function () {
@@ -1814,7 +1818,10 @@ function Mafia(mafiachan) {
             } else {
                 mafia.ticks = mafia.theme.ticks.night;
             }
-            sendChanAll("Time: Night", mafiachan);
+
+            mafia.time.nights++;
+
+            sendChanAll("Time: Night " + mafia.time.nights, mafiachan);
             sendChanAll("Make your moves, you only have " + mafia.ticks + " seconds! :", mafiachan);
             sendChanAll(border, mafiachan);
             mafia.state = "night";
@@ -2291,7 +2298,10 @@ function Mafia(mafiachan) {
                 var side = player.role.side;
                 mafia.sendPlayer(player.name, "Current Team: " + mafia.getRolesForTeamS(side));
             }
-            sendChanAll("Time: Day", mafiachan);
+
+            mafia.time.days++;
+
+            sendChanAll("Time: Day " + mafia.time.days, mafiachan);
             sendChanAll("You have " + mafia.ticks + " seconds to debate who are the bad guys! :", mafiachan);
             for (var role in mafia.theme.standbyRoles) {
                 names = mafia.getPlayersForRole(mafia.theme.standbyRoles[role]);
@@ -2332,7 +2342,7 @@ function Mafia(mafiachan) {
                 nolyn = true;
             }
             if (nolyn === false) {
-                sendChanAll("Time: Day", mafiachan);
+                sendChanAll("Time: Day " + mafia.time.days, mafiachan);
                 sendChanAll("It's time to vote someone off, type /Vote [name], you only have " + mafia.ticks + " seconds! :", mafiachan);
                 sendChanAll(border, mafiachan);
 
@@ -2345,7 +2355,10 @@ function Mafia(mafiachan) {
                 } else {
                     mafia.ticks = mafia.theme.ticks.night;
                 }
-                sendChanAll("Time: Night", mafiachan);
+
+                mafia.time.nights++;
+
+                sendChanAll("Time: Night " + mafia.time.nights, mafiachan);
                 sendChanAll("Make your moves, you only have " + mafia.ticks + " seconds! :", mafiachan);
                 sendChanAll(border, mafiachan);
                 for (var x = 0; x < mafia.usersToSlay.length; x++) {
@@ -2441,7 +2454,10 @@ function Mafia(mafiachan) {
             } else {
                 mafia.ticks = mafia.theme.ticks.night;
             }
-            sendChanAll("Time: Night", mafiachan);
+
+            mafia.time.nights++;
+
+            sendChanAll("Time: Night " + mafia.time.nights, mafiachan);
             sendChanAll("Make your moves, you only have " + mafia.ticks + " seconds! :", mafiachan);
             sendChanAll(border, mafiachan);
             for (var x = 0; x < mafia.usersToSlay.length; x++) {
@@ -2481,7 +2497,7 @@ function Mafia(mafiachan) {
                 mafia.ticks = 40;
                 sendChanAll("±Game: " + this.signups.join(", ") + " joined the game!", mafiachan);
             } else {
-                sendChanAll("Really? No votes, so no game.", mafiachan);
+                sendChanAll("±Game: Really? No votes, so no game.", mafiachan);
             }
         }
     };
