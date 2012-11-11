@@ -4879,7 +4879,7 @@ ownerCommand: function(src, command, commandData, tar) {
             } catch (err) {
                 sys.changeScript(sys.getFileContent('scripts.js'));
                 normalbot.sendAll('Updating failed, loaded old scripts!', staffchannel);
-                sys.sendMessage(src, "ERROR: " + err, channel_local);
+                sys.sendMessage(src, "ERROR: " + err + (err.lineNumber ? " on " + err.lineNumber : ""), channel_local);
                 print(err);
             }
         };
