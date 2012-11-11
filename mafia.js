@@ -3416,6 +3416,13 @@ function Mafia(mafiachan) {
             mafia.themeManager.loadWebTheme(dlurl, true, true, authorMatch ? theme.name.toLowerCase() : null);
         }
     };
+	this.announceTest = function (src, name) {
+		sendChanAll("", mafiachan);
+		sendChanAll(DEFAULT_BORDER, mafiachan);
+		sendChanAll("±Murkrow: " + name + " theme is being tested on the Pokemon Online 2 server!", mafiachan);
+		sendChanAll(DEFAULT_BORDER, mafiachan).
+		sendChanAll("", mafiachan);
+	};
     this.removeTheme = function (src, name) {
         if (!mafia.isMafiaSuperAdmin(src)) {
             msg(src, "admin+ command.");
@@ -3499,6 +3506,7 @@ function Mafia(mafiachan) {
             slay: [this.slayUser, "To slay users in a Mafia game."],
             shove: [this.slayUser, "To remove users before a game starts."],
             end: [this.endGame, "To cancel a Mafia game!"],
+			mafiatest: [this.announceTest, "To gather people to test a theme on PO2."],
             readlog: [this.readStalkLog, "To read the log of actions from a previous game"],
             add: [this.addTheme, "To add a Mafia Theme!"],
             remove: [this.removeTheme, "To remove a Mafia Theme!"],
