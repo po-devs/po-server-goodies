@@ -360,6 +360,7 @@ function Mafia(mafiachan) {
             theme.name = plain_theme.name;
             theme.author = plain_theme.author;
             theme.summary = plain_theme.summary;
+            theme.guide = plain_theme.guide;
             theme.killmsg = plain_theme.killmsg;
             theme.killusermsg = plain_theme.killusermsg;
             theme.drawmsg = plain_theme.drawmsg;
@@ -2846,6 +2847,37 @@ function Mafia(mafiachan) {
         mess.push("</table>");
         sys.sendHtmlMessage(src, mess.join(""), mafiachan);
     };
+    this.showThemeGuide = function (src, commandData) {
+        var themeName = "default";
+        if (mafia.state != "blank") {
+            themeName = mafia.theme.name.toLowerCase();
+        }
+        if (commandData != noPlayer) {
+            themeName = commandData.toLowerCase();
+            if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
+                sys.sendMessage(src, "±Game: No such theme!", mafiachan);
+                return;
+            }
+        }
+        var theme = mafia.themeManager.themes[themeName],
+            guide = theme.guide;
+
+        if (!!guide) {
+            sys.sendMessage(src, "±Game: This theme (" + themeName + ") doesn't have a guide.", mafiachan);
+            return;
+        }
+
+        sys.sendMessage(src, "±Game: " + themeName + "'s theme guide: ", mafiachan);
+        if (typeof guide === "string") {
+            sys.sendHtmlMessage(src, guide, mafiachan);
+        } else if (Array.isArray(guide)) {
+            sys.sendHtmlMessage(src, guide.join("<br/>"), mafiachan);
+        } else {
+            sys.sendMessage(src, "±Game: This theme's guide couldn't be displayed. Please inform it's author.", mafiachan);
+        }
+
+        sys.sendMessage(src, "", mafiachan);
+    };
     this.showThemeDetails = function (src, commandData) {
         var themeName = "default";
         if (mafia.state != "blank") {
@@ -3512,6 +3544,7 @@ function Mafia(mafiachan) {
             themes: [this.showThemes, "To view installed themes."],
             themeinfo: [this.showThemeInfo, "To view installed themes (more details)."],
             details: [this.showThemeDetails, "To view info about a specific theme."],
+            guide: [this.showThemeGuide, "To view a theme's guide (if any)."],
             priority: [this.showPriority, "To view the priority list of a theme. "],
             flashme: [this.flashPlayer, "To get a alert when a new mafia game starts. Type /flashme help for more info."],
             playedgames: [this.showPlayedGames, "To view recently played games"],
