@@ -115,7 +115,7 @@ var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "#7: Inactive/Idle players will automatically be disqualified.",
                 "- Post a message and make sure you are not idle, otherwise you risk being disqualified.",
                 "#8: If there is a problem with your match, contact a megauser as soon as possible.",
-                "- Using the suggest draw button is no longer allowed after 1 minute (both players will be disqualified)",
+                "- Deliberately drawing your matches using the Suggest Draw button is not permitted unless you have permission from a megauser to restart.",
                 "- Your team is expected to be ready before the match starts - loading the wrong team is not a valid reason to restart.",
                 "#9: Ask someone on the /activeta list if you need help or have problems.",
                 "#10: Event tournaments (marked by red borders)",
@@ -979,7 +979,7 @@ function getConfigValue(file, key) {
             decayrate: 10,
             decaytime: 2,
             decayglobalrate: 2,
-            version: "2.009a",
+            version: "2.010",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -1024,7 +1024,7 @@ function initTours() {
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.009a",
+        version: "2.010",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1447,15 +1447,14 @@ function tourBattleEnd(winner, loser, result) {
             return;
         }
         if (result == "tie") {
-            if ((battletime < 60 && tours.tour[key].draws.indexOf(winname) == -1) || !sys.loggedIn(winner) || !sys.loggedIn(loser)) {
-                sendBotAll("The match between "+winname+" and "+losename+" ended in a tie, please rematch!", tourschan, false);
-                markActive(winner, "tie");
-                markActive(loser, "tie");
+            sendBotAll("The match between "+winname+" and "+losename+" ended in a tie, please rematch!", tourschan, false);
+            markActive(winner, "tie");
+            markActive(loser, "tie");
+            if (tours.tour[key].draws.indexOf(winname) == -1) {
                 tours.tour[key].draws.push(winname, losename);
             }
             else {
-                sendBotAll(winname+" and "+losename+" are both disqualified, neither player won!", tourschan, false);
-                dqboth(winname, losename, key);
+                sendBotAll(winname+" and "+losename+" drew more than once! Please check their match!", sys.channelId("Victory Road"), false);
             }
             return;
         }
