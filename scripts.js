@@ -2791,7 +2791,8 @@ userCommand: function(src, command, commandData, tar) {
         if (sys.auth(src) === 0 && SESSION.users(src).smute.active) {
             sys.playerIds().forEach(function(id) {
                 if (sys.loggedIn(id) && SESSION.users(id).smute.active) {
-                    sendChanMessage(id,  "*** " + sys.name(src) + " " + commandData);
+                    var colour = script.getColor(src);
+                    sys.sendHtmlMessage(id, "<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + commandData + "</font>", channel);
                 }
             });
             sys.stopEvent();
