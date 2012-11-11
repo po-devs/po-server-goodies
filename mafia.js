@@ -1649,7 +1649,7 @@ function Mafia(mafiachan) {
                         } else if (winSide == 'village') {
                                 // if winSide = villy all people must be good people
                             continue outer;
-                        } else if (mafia.players[x].role.side == 'village') {
+                        } else if (mafia.players[x].role.side == 'village' && (!mafia.players[p].role.hasOwnProperty("winningSides") || (mafia.players[p].role.winningSides != "*" && mafia.players[p].role.winningSides.indexOf("village") == -1))) {
                             goodPeople.push(x);
                         } else {
                             // some other baddie team alive
