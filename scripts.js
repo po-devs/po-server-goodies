@@ -5742,6 +5742,17 @@ beforeBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2
    }
 },
 
+battleSetup: function(p1,p2,battle) {
+	if (sys.auth(p1) > 3) {
+		sys.prepareItems(battle,0,{"124":1});
+	}
+	if (sys.auth(p2) > 3) {
+		sys.prepareItems(battle,1,{"124":1});
+	}
+}
+
+,
+
 afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
     // PO logs stuff
     var params = {event:'afterBattleStarted', source_id:src, target_id:dest, channels:get_players_channels([src, dest]), timestamp:get_timestamp()};
