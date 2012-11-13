@@ -978,8 +978,9 @@ function getConfigValue(file, key) {
             minplayers: 3,
             decayrate: 10,
             decaytime: 2,
+            norepeat: 7,
             decayglobalrate: 2,
-            version: "2.010",
+            version: "2.011",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -1023,8 +1024,9 @@ function initTours() {
         minplayers: parseInt(getConfigValue("tourconfig.txt", "minplayers")),
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
+        norepeat: parseInt(getConfigValue("tourconfig.txt", "norepeat")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.010",
+        version: "2.011",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -2092,7 +2094,7 @@ function tourCommand(src, command, commandData) {
                     sendBotMessage(src, "You are not permitted to run Smogon tier tournaments!", tourschan, false)
                     return true;
                 }
-                var lasttours = getListOfTours(7);
+                var lasttours = getListOfTours(tourconfig.norepeat);
                 var lastindex = lasttours.indexOf(tourtier);
                 if (lastindex != -1 && !isTourSuperAdmin(src)) {
                     sendBotMessage(src, "A "+tourtier+" tournament is in the queue, is running or was recently run, no repeating!", tourschan, false)
@@ -2574,7 +2576,7 @@ function tourCommand(src, command, commandData) {
             if (command == "config") {
                 sys.sendMessage(src,"*** CURRENT CONFIGURATION ***",tourschan)
                 sys.sendMessage(src,"Maximum Queue Length: "+tourconfig.maxqueue,tourschan)
-                sys.sendMessage(src,"Maximum Number of Simultaneous Tours: "+tourconfig.maxrunning,tourschan)
+                sys.sendMessage(src,"Maximum Number of Automatic Simultaneous Tours: "+tourconfig.maxrunning,tourschan)
                 sys.sendMessage(src,"Tour Sign Ups Length: "+time_handle(tourconfig.toursignup),tourschan)
                 sys.sendMessage(src,"Tour Auto DQ length: "+time_handle(tourconfig.tourdq),tourschan)
                 sys.sendMessage(src,"Tour Activity Check: "+time_handle(tourconfig.activity),tourschan)
@@ -2587,6 +2589,7 @@ function tourCommand(src, command, commandData) {
                 sys.sendMessage(src,"Decay Rate: "+tourconfig.decayrate+"%",tourschan);
                 sys.sendMessage(src,"Decay Time: "+tourconfig.decaytime+" days",tourschan);
                 sys.sendMessage(src,"Decay Global Rate: "+tourconfig.decayglobalrate+"%",tourschan);
+                sys.sendMessage(src,"Same tier restrictions: "+tourconfig.norepeat+" tournaments",tourschan);
                 sys.sendMessage(src,"Bot Name: "+tourconfig.tourbot,tourschan)
                 sys.sendMessage(src,"Colour: "+tourconfig.tourbotcolour,tourschan)
                 sys.sendMessage(src,"Channel: "+tourconfig.channel,tourschan)
@@ -2616,6 +2619,7 @@ function tourCommand(src, command, commandData) {
                     sys.sendMessage(src,"decayrate: "+tourconfig.decayrate,tourschan);
                     sys.sendMessage(src,"decaytime: "+tourconfig.decaytime,tourschan);
                     sys.sendMessage(src,"decayglobalrate: "+tourconfig.decayglobalrate,tourschan);
+                    sys.sendMessage(src,"norepeat: "+tourconfig.norepeat,tourschan);
                     sys.sendMessage(src,"botname: "+tourconfig.tourbot,tourschan);
                     sys.sendMessage(src,"colour: "+tourconfig.tourbotcolour,tourschan);
                     sys.sendMessage(src,"channel: "+tourconfig.channel,tourschan);
@@ -2788,6 +2792,25 @@ function tourCommand(src, command, commandData) {
                     tourconfig.minpercent = value
                     sys.saveVal("tourconfig.txt", "minpercent", value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the auto start percentage to "+tourconfig.minpercent+"%")
+                    return true;
+                }
+                else if (option == 'norepeat') {
+                    if (!isTourSuperAdmin(src)) {
+                        sendBotMessage(src,"Can't change this config setting, ask an admin for this.",tourschan,false);
+                        return true;
+                    }
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"Minimum number of tours that must run before another one of the same tier can run.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.norepeat+" tournaments.",tourschan,false);
+                        return true;
+                    }
+                    else if (value < 0 || value > (sys.getTierList().length - 1)) {
+                        sendBotMessage(src,"Value must be between 0 and "+(sys.getTierList().length - 1)+".",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.norepeat = value
+                    sys.saveVal("tourconfig.txt", "norepeat", value)
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the repeat limit to "+tourconfig.norepeat+" tournaments")
                     return true;
                 }
                 else if (option == 'minplayers') {
