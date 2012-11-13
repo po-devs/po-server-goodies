@@ -1829,9 +1829,9 @@ init : function() {
         lcpokemons.push(sys.pokeNum(lclist[dwpok]));
     }
     lcmoves = {
-        "Bronzor":["Hypnosis","Iron Defense"],
-        "Golett":["Shadow Punch","Focus Punch"],
-        "Klink":["Shift Gear","Gear Grind"],
+        "Bronzor":["Iron Defense"],
+        "Golett":["Rollout","Shadow Punch","Iron Defense","Mega Punch","Magnitude","DynamicPunch","Night Shade","Curse","Hammer Arm","Focus Punch"],
+        "Klink":["Charge""Thundershock","Gear Grind","Bind","Mirror Shot","Screech","Discharge","Metal Sound","Shift Gear","Lock-On","Zap Cannon"].
         "Petilil":["Entrainment"],
         "Rufflet":["Wing Attack","Scary Face","Slash","Defog","Air Slash","Crush Claw","Whirlwind","Brave Bird","Thrash"]
     };
