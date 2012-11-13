@@ -3899,7 +3899,7 @@ modCommand: function(src, command, commandData, tar) {
     }
    if (command == "tempban") {
         var tmp = commandData.split(":");
-        if (tmp.length != 2) {
+        if (tmp.length = 0) {
             normalbot.sendChanMessage(src, "Usage /tempban name:minutes.");
             return;
         }
