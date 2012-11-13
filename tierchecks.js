@@ -76,6 +76,13 @@ tier_checker.add_new_check(INCLUDING, ["Wifi LC", "Wifi LC Ubers", "Wifi UU LC"]
             ret.push("" + sys.pokemon(x) + " is not allowed with a Dream World ability in this tier. Change it in the teambuilder.");
 
         }
+        if (x !== 0 && lcmoves.hasOwnProperty(sys.pokemon(x))) {
+            for (var j = 0; j < 4; j++) {
+                if (lcmoves[sys.pokemon(x)].indexOf(sys.move(sys.teamPokeMove(src, team, i, j))) !== -1) {
+                    ret.push("" + sys.pokemon(x) + " is not allowed in this in tier with the move " + sys.move(sys.teamPokeMove(src, team, i, j)) + ". Change it in the teambuilder.");
+                }
+            }
+        }
     }
     return ret;
 });
