@@ -3904,7 +3904,7 @@ modCommand: function(src, command, commandData, tar) {
             return;
         }
         var target_name = tmp[0];
-        if (isNaN(tmp[1][0])) {
+        if (tmp[1] === undefined || isNaN(tmp[1][0])) {
             var minutes = 86400;
         } else {
             var minutes = getSeconds(tmp[1]);
