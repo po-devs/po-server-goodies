@@ -106,7 +106,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, getTimeStamp, lcmoves;
+var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, getTimeStamp, lcmoves, hangmanchan;
 
 var isMafiaAdmin = require('mafia.js').isMafiaAdmin;
 var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
@@ -1665,8 +1665,9 @@ var commands = {
         "/userinfo [name]: Displays information about a user (pretty display).",
         "/whois [name]: Displays information about a user (one line, slightly more info).",
         "/aliases [IP/name]: Shows the aliases of an IP or name.",
-        "/tempban [name]:[reason]:[time]: Bans someone for 24 hours or less. Time is optional and defaults to 1 day",
+        "/tempban [name]:[time]: Bans someone for 24 hours or less. Time is optional and defaults to 1 day",
         "/tempunban [name]: Unbans a temporary banned user (standard unban doesn't work).",
+        "/checkbantime [name]: Checks how long a user is banned for.",
         "/mafiaban [name]:[reason]:[time]: Bans a player from Mafia. Time is optional and defaults to 7 days.",
         "/mafiaunban [name]: Unbans a player from Mafia.",
         "/passauth [target]: Passes your mods to another megauser (only for mega-mods) or to your online alt.",
@@ -1677,7 +1678,6 @@ var commands = {
         "/mafiabans [search term]: Searches the mafiabanlist, shows full list if no search team is entered.",
         "/rangebans: Lists range bans.",
         "/autosmutelist: Lists the names in the auto-smute list.",
-        "/tempbans: Lists temp bans.",
         "/namebans: Lists name bans.",
         "/namewarns: Lists name warnings.",
         "/topchannels: To view the top channels.",
@@ -1833,8 +1833,8 @@ init : function() {
         "Golett":["Shadow Punch","Focus Punch"],
         "Klink":["Shift Gear","Gear Grind"],
         "Petilil":["Entrainment"],
-        "Rufflet":["Wing Attack","Scary Face","Slash","Defog","Air Slash","Crush Claw","Whirlwind","Brave Bird","Thrash"] 
-    }
+        "Rufflet":["Wing Attack","Scary Face","Slash","Defog","Air Slash","Crush Claw","Whirlwind","Brave Bird","Thrash"]
+    };
     bannedGSCSleep = [sys.moveNum("Spore"), sys.moveNum("Hypnosis"), sys.moveNum("Lovely Kiss"), sys.moveNum("Sing"), sys.moveNum("Sleep Powder")].sort();
     bannedGSCTrap = [sys.moveNum("Mean Look"), sys.moveNum("Spider Web")].sort();
 
@@ -1882,9 +1882,6 @@ init : function() {
     if (typeof authStats == 'undefined')
         authStats = {};
 
-    if (typeof tempBans == 'undefined') {
-        tempBans = {};
-    }
     if (typeof nameBans == 'undefined') {
         nameBans = [];
         try {
@@ -2421,28 +2418,13 @@ isRangeBanned : function(ip) {
     return false;
 },
 
-
-isTempBannedName: function(name)
-{
-    name = name.toLowerCase();
-    for (var i in tempBans)
-    {
-        if (tempBans[i].target.toLowerCase() == name && this.isTempBanned(i))
-        return true;
-    }
-    return false;
-},
-
-
 isTempBanned : function(ip) {
-    if (ip in tempBans) {
-        var time = parseInt(sys.time(), 10);
-        if (time > parseInt(tempBans[ip].time, 10)) {
-            delete tempBans[ip];
-        } else {
-            return true;
+    var aliases = sys.aliases(ip);
+        for (var x = 0; x < aliases.length; x++) {
+            if (sys.dbTempBanTime(aliases[x]) < 2000000000) {
+                return true;
+            }
         }
-    }
     return false;
 },
 
@@ -2450,11 +2432,6 @@ isTempBanned : function(ip) {
 beforeLogIn : function(src) {
 
     var ip = sys.ip(src);
-    if ((this.isTempBanned(ip) || this.isTempBannedName(sys.name(src))) && sys.auth(src) < 2) {
-        normalbot.sendMessage(src, 'You are banned!');
-        sys.stopEvent();
-        return;
-    }
     // auth can evade rangebans and namebans
     if (sys.auth(src) > 0) {
         return;
@@ -3459,7 +3436,7 @@ modCommand: function(src, command, commandData, tar) {
             return;
         }
         var count = sys.teamCount(tar), tiers = [];
-        for (i = 0; i < count; ++i) {
+        for (var i = 0; i < count; ++i) {
             var ctier = sys.tier(tar, i);
             if (tiers.indexOf(ctier) == -1)
             tiers.push(ctier);
@@ -3698,33 +3675,6 @@ modCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-    if (command == "tempbans") {
-        var t = parseInt(sys.time(), 10);
-        var table = '';
-        table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="6"><center><strong>Temp banned</strong></center></td></tr><tr><th>IP</th><th>Name</th><th>By</th><th>Length</th><th>Expires in</th><th>Reason</th></tr>';
-        for (var ip in tempBans) {
-            if(this.isTempBanned(ip) === false){
-               continue;
-            }
-            var ban_length = tempBans[ip].length === undefined ? "undefined" : getTimeString(tempBans[ip].length);
-            var auth = tempBans[ip].auth === undefined ? "undefined" : tempBans[ip].auth;
-            var time = tempBans[ip].time === undefined ? "undefined" : tempBans[ip].time;
-            var expire_time = tempBans[ip].time === undefined ? "undefined" : getTimeString(tempBans[ip].time - t);
-            var reason = tempBans[ip].reason === undefined ? "undefined" : tempBans[ip].reason;
-            var target = tempBans[ip].target === undefined ? "undefined" : tempBans[ip].target;
-            table += '<tr><td>' + ip +
-                '</td><td>'     + target +
-                '</td><td>'     + auth +
-                '</td><td>'     + ban_length +
-                '</td><td>'     + expire_time +
-                '</td><td>'     + reason +
-                '</td><td>'     + time +
-                '</td></tr>';
-        }
-        table += '</table>';
-        sys.sendHtmlMessage(src, table, channel);
-        return;
-    }
     if (command == "namebans") {
         var table = '';
         table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Name banned</strong></center></td></tr>';
@@ -3918,13 +3868,13 @@ modCommand: function(src, command, commandData, tar) {
         sorts.sort(function (a, b) { //i feel as if there's a much better way to do this :x
             var aa = a[1].split(/-/);
             var bb = b[1].split(/-/);
-            aa = new Date(aa[0], aa[1]-1, aa[2])
-            bb = new Date(bb[0], bb[1]-1, bb[2])
+            aa = new Date(aa[0], aa[1]-1, aa[2]);
+            bb = new Date(bb[0], bb[1]-1, bb[2]);
             return bb-aa;
         });
         aliases = [];
         for (var x = 0; x < sorts.length; x++) {
-            aliases.push(sorts[x][0])
+            aliases.push(sorts[x][0]);
         }
         var prefix = "";
         for(var i = 0; i < aliases.length; ++i) {
@@ -3949,17 +3899,15 @@ modCommand: function(src, command, commandData, tar) {
     }
    if (command == "tempban") {
         var tmp = commandData.split(":");
-        if (tmp.length != 3) {
-            normalbot.sendChanMessage(src, "Usage /tempban name:reason:minutes.");
+        if (tmp.length != 2) {
+            normalbot.sendChanMessage(src, "Usage /tempban name:minutes.");
             return;
         }
-
         var target_name = tmp[0];
-        var reason = tmp[1];
-        if (isNaN(tmp[2][0])) {
+        if (isNaN(tmp[1][0])) {
             var minutes = 86400;
         } else {
-            var minutes = getSeconds(tmp[2]);
+            var minutes = getSeconds(tmp[1]);
         }
         tar = sys.id(target_name);
         var minutes = parseInt(minutes, 10);
@@ -3968,39 +3916,25 @@ modCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "Cannot ban for longer than a day!");
             return;
         }
-        var ip;
-        var name;
-        if (tar === undefined) {
-            ip = sys.dbIp(target_name);
-            name = target_name;
-            if (ip === undefined) {
-                normalbot.sendChanMessage(src, "No such name online / offline.");
-                return;
-            }
-        } else {
-            ip = sys.ip(tar);
-            name = sys.name(tar);
-        }
-
-        if (sys.maxAuth(ip) >= sys.auth(src)) {
-            normalbot.sendChanMessage(src, "Can't do that to higher auth!");
+        var ip = sys.dbIp(target_name);
+        if (ip === undefined) {
+            normalbot.sendChanMessage(src, "No such user!");
             return;
         }
-        var authname = sys.name(src).toLowerCase();
-        tempBans[ip] = {
-            'auth' : authname,
-            'time' : parseInt(sys.time(), 10) + minutes,
-            'length' : minutes,
-            'reason' : reason,
-            'target' : target_name
-        };
-        normalbot.sendAll("Target: " + name + ", IP: " + ip, staffchannel);
-        normalbot.sendAll("" + nonFlashing(sys.name(src)) + " banned " + name + " for " + timeString + "! [Reason: " + reason + "]");
-        sys.kick(tar);
+        var banlist=sys.banList();
+        for (var a in banlist) {
+            if (ip == sys.dbIp(banlist[a])) {
+                normalbot.sendChanMessage(src, "He/she's already banned!");
+                return;
+            }
+        }
+        normalbot.sendAll("Target: " + target_name + ", IP: " + ip, staffchannel);
+        sys.sendHtmlAll('<b><font color=red>' + target_name + ' was banned by ' + nonFlashing(sys.name(src)) + ' for ' + getTimeString(minutes) + '!</font></b>');
+        sys.tempBan(target_name, parseInt(minutes/60, 10));
         this.kickAll(ip);
-
+        var authname = sys.name(src);
         authStats[authname] = authStats[authname] || {};
-        authStats[authname].latestTempBan = [name, parseInt(sys.time(), 10)];
+        authStats[authname].latestTempBan = [target_name, parseInt(sys.time(), 10)];
         return;
     }
     if (command == "tempunban") {
@@ -4009,13 +3943,24 @@ modCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "No such user!");
             return;
         }
-        if (!(ip in tempBans)) {
-            normalbot.sendChanMessage(src, "No such user tempbanned!");
+        if (sys.dbTempBanTime(commandData) > 86400 && sys.auth(src) < 2) {
+            normalbot.sendChanMessage(src, "You cannot unban people who are banned for longer than a day!");
             return;
         }
-        var now = parseInt(sys.time(), 10);
-        normalbot.sendAll("" + commandData + " was released from their cell by " + nonFlashing(sys.name(src)) + " just " + ((tempBans[ip].time - now)/60).toFixed(2) + " minutes beforehand!");
-        delete tempBans[ip];
+        normalbot.sendAll(sys.name(src) + " unbanned " + commandData, staffchannel);
+        return;
+    }
+    if (command == "checkbantime") {
+        var ip = sys.dbIp(commandData);
+        if (ip === undefined) {
+            normalbot.sendChanMessage(src, "No such user!");
+            return;
+        }
+        if (sys.dbTempBanTime(commandData) > 2000000000) { //it returns a high number if the person is either not banned or permantly banned
+            normalbot.sendChanMessage(src, "User is not tempbanned");
+            return;
+        }
+        normalbot.sendMessage(src, commandData + " is banned for another " + getTimeString(sys.dbTempBanTime(commandData)));
         return;
     }
     if (command == "passauth" || command == "passauths") {
@@ -4213,7 +4158,7 @@ adminCommand: function(src, command, commandData, tar) {
         }
         var banlist=sys.banList();
         for(var a in banlist) {
-            if(ip == sys.dbIp(banlist[a])) {
+            if(ip == sys.dbIp(banlist[a]) && !this.isTempBanned(ip)) {
                 normalbot.sendChanMessage(src, "He/she's already banned!");
                 return;
             }
@@ -4490,11 +4435,11 @@ ownerCommand: function(src, command, commandData, tar) {
     }
     if (command == "contributoroff") {
         var contrib = "";
-        for (x in contributors.hash) {
+        for (var x in contributors.hash) {
             if (x.toLowerCase() == commandData.toLowerCase())
             contrib = x;
         }
-        if (contrib == "") {
+        if (contrib === "") {
             normalbot.sendChanMessage(src, commandData + " isn't a contributor.", channel);
             return;
         }
@@ -4920,7 +4865,7 @@ ownerCommand: function(src, command, commandData, tar) {
         }
         normalbot.sendChanMessage(src, "Fetching tiers from " + updateURL);
         var updateTiers = function(resp) {
-            if (resp == "") return;
+            if (resp === "") return;
             try {
                 sys.writeToFile("tiers.xml", resp);
                 sys.reloadTiers();
