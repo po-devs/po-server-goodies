@@ -3784,7 +3784,7 @@ return;
                 }
                 if (silentVote !== undefined && silentVote !== false) {
                     sys.sendMessage(src, "±Game: You voted for " + commandData + "!", mafiachan);
-                    sendChanAll("±Game:" + sys.name(src) + " voted!");
+                    sendChanAll("±Game:" + sys.name(src) + " voted!", mafiachan);
                 } else {
                     sendChanAll("±Game:" + sys.name(src) + " voted for " + commandData + "!", mafiachan);
                 }
