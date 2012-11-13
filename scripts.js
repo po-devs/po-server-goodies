@@ -3948,6 +3948,7 @@ modCommand: function(src, command, commandData, tar) {
             return;
         }
         normalbot.sendAll(sys.name(src) + " unbanned " + commandData, staffchannel);
+        sys.unban(commandData);
         return;
     }
     if (command == "checkbantime") {
