@@ -2201,6 +2201,12 @@ function Mafia(mafiachan) {
                             else if (command == "poison") {
                                 if (target.poisoned === undefined || target.poisonCount - target.poisoned >= (Action.count ? Action.count : 2)) {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was poisoned!");
+                                    var team = getTeam(player.role, Action.common);
+                                    for (var x in team) {
+                                        if (team[x] != player.name) {
+                                            mafia.sendPlayer(team[x], "±Game: Your target (" + target.name + ") was poisoned!");
+                                        }
+                                    }
                                     target.poisoned = 1;
                                     target.poisonCount = Action.count || 2;
                                     target.poisonDeadMessage = Action.poisonDeadMessage;
