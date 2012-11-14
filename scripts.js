@@ -5776,6 +5776,12 @@ isMCaps : function(message) {
 },
 
 beforeChangeTier : function(src, team, oldtier, newtier) {
+    if (newtier == "Battle Factory" || oldtier == "Battle Factory") {
+        if (callplugins("beforeChangeTier", src, team, oldtier, newtier))
+            sys.stopEvent();
+            return;
+        }
+    }
     if (!tier_checker.has_legal_team_for_tier(src, team, newtier)) {
        sys.stopEvent();
        normalbot.sendMessage(src, "Sorry, you can not change into that tier.");
@@ -5784,9 +5790,6 @@ beforeChangeTier : function(src, team, oldtier, newtier) {
 },
 
 afterChangeTier : function(src, team, oldtier, newtier) {
-    if (newtier == "Battle Factory" || oldtier == "Battle Factory") {
-        callplugins("afterChangeTier", src, team, oldtier, newtier);
-    }
     // PO logs stuff
     var params = {event:'afterChangeTier', source_id:src, channels:get_players_channels([src]), timestamp:get_timestamp()};
     append_logs(params);
