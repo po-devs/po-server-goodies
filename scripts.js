@@ -5777,7 +5777,7 @@ isMCaps : function(message) {
 
 beforeChangeTier : function(src, team, oldtier, newtier) {
     if (newtier == "Battle Factory" || oldtier == "Battle Factory") {
-        if (callplugins("beforeChangeTier", src, team, oldtier, newtier))
+        if (callplugins("beforeChangeTier", src, team, oldtier, newtier)) {
             sys.stopEvent();
             return;
         }
