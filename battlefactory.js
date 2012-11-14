@@ -923,7 +923,7 @@ module.exports = {
         }
         return false;
     },
-    beforeChangeTier: function(src, team, oldtier, newtier) { // This shouldn't be needed, but it's here in case
+    afterChangeTier: function(src, team, oldtier, newtier) { // This shouldn't be needed, but it's here in case
         if (oldtier == "Battle Factory" && ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Battle Factory"].indexOf(newtier) == -1) {
             sys.sendMessage(src, "Please reload your team from the menu to exit Battle Factory. (Your team is now in Challenge Cup.)");
             // clear old teams
