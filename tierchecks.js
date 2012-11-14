@@ -146,69 +146,30 @@ tier_checker.add_new_check(INCLUDING, ["Clear Skies"], function weatherlesstierc
 
 tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, team) {
     // TODO: this is too complicated.
-    var TypeA = sys.pokeType1(sys.teamPoke(src, team, 0), 5);
-    var TypeB = sys.pokeType2(sys.teamPoke(src, team, 0), 5);
-    var k;
-    var checkType;
-    for (var i = 1; i < 6 ; i++) {
-        if (sys.teamPoke(src, team, i) === 0) continue;
-        var temptypeA = sys.pokeType1(sys.teamPoke(src, team, i), 5);
-        var temptypeB = sys.pokeType2(sys.teamPoke(src, team, i), 5);
-
-        if(checkType !== undefined) {
-            k=3;
+    var type1, type2, typea = 0, typeb = 0,teamLength = 0;
+    for (var i = 0; i < 6; i++) {
+        var poke = sys.teamPoke(src, team, i);
+        if (poke === 0) {
+            continue;
         }
-        if(i==1){
-            k=1;
+        type1 = sys.pokeType1(poke, 5)
+        type2 = sys.pokeType2(poke, 5)
+        teamLength++;
+    }
+    for (var i = 0; i < 6; i++) {
+        var poke = sys.teamPoke(src, team, i);
+        if (poke === 0) {
+            continue;
         }
-        if(TypeB !=17){
-            if(temptypeA == TypeA && temptypeB == TypeB && k == 1 || temptypeA == TypeB && temptypeB == TypeA && k == 1){
-                k=2;
-            }
+        if (type1 === sys.pokeType1(poke, 5) || type1 === sys.pokeType2(poke, 5)) {
+            typea++
         }
-        if (temptypeA == TypeA && k == 1 || temptypeB == TypeA && k == 1) {
-            checkType=TypeA;
+        if (type2 === sys.pokeType1(poke, 5) || type2 === sys.pokeType2(poke, 5)) {
+            typeb++
         }
-        if (temptypeA == TypeB && k == 1 || temptypeB == TypeB && k == 1) {
-           if(TypeB != 17){
-                   checkType=TypeB;
-                   }
-                   if(TypeB == 17)
-                   checkType=TypeA;
-        }
-        if(i>1 && k == 2) {
-            k=1;
-            if(temptypeA == TypeA && temptypeB == TypeB && k == 1 || temptypeA == TypeB && temptypeB == TypeA && k == 1){
-                k=2;
-            }
-            if (temptypeA == TypeA && k == 1 || temptypeB == TypeA && k == 1) {
-                checkType=TypeA;
-            }
-            if (temptypeA == TypeB && k == 1 || temptypeB == TypeB && k == 1) {
-                 if(TypeB != 17){
-                   checkType=TypeB;
-                   }
-                   if(TypeB == 17)
-                   checkType=TypeA;
-            }
-        }
-        if(k==3){
-
-            if(temptypeA != checkType && temptypeB != checkType) {
-
-                return ["Team not Monotype as " + sys.pokemon(sys.teamPoke(src, team, i)) + " is not " + sys.type(checkType) + "!"];
-            }
-        }
-
-        if(k==1) {
-                    if(TypeB == 17){
-                        TypeB = TypeA;
-                        }
-            if (temptypeA != TypeA && temptypeB != TypeA && temptypeA != TypeB && temptypeB != TypeB) {
-                return ["Team not Monotype as " + sys.pokemon(sys.teamPoke(src, team, i)) + " does not share a type with " + sys.pokemon(sys.teamPoke(src, team, 0)) + "!"];
-            }
-
-        }
+    }
+    if (typea < teamLength && typeb < teamLength) {
+        return ["Team is not monotype as not every team member is " + (typea >= typeb ? sys.type(type1) : sys.type(type2))]
     }
 });
 
