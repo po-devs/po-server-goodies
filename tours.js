@@ -1594,10 +1594,11 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "purgekeys") {
-                for (var k in tours.keys) {
+                for (var k=0; k < tours.keys.length; k++) {
                     var keynum = tours.keys[k];
-                    if (!tours.tour.hasOwnProperty(k)) {
-                        tours.keys.splice(tours.keys.indexOf(k), 1);
+                    if (!tours.tour.hasOwnProperty(keynum)) {
+                        tours.keys.splice(tours.keys.indexOf(keynum), 1);
+                        k -= 1;
                     }
                 }
                 sendBotMessage(src,"Purged non-usable keys!",tourschan,false)
