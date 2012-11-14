@@ -948,6 +948,7 @@ function load_cache() {
         // don't reload tournaments that haven't started.
         if (tours.tour[x].round === 0) {
             delete tours.tour[x];
+            tours.keys.splice(tours.keys.indexOf(x), 1);
             continue;
         }
         tours.tour[x].time = parseInt(sys.time())+600;
@@ -980,7 +981,7 @@ function getConfigValue(file, key) {
             decaytime: 2,
             norepeat: 7,
             decayglobalrate: 2,
-            version: "2.011",
+            version: "2.012",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -1026,7 +1027,7 @@ function initTours() {
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         norepeat: parseInt(getConfigValue("tourconfig.txt", "norepeat")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.011",
+        version: "2.012",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1590,6 +1591,17 @@ function tourCommand(src, command, commandData) {
                 tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1, "working": false};
                 refreshTicks(true);
                 sendBotAll(sys.name(src)+" reset the tour system!",tourschan,false)
+                return true;
+            }
+            if (command == "purgekeys") {
+                for (var k=0; k < tours.keys.length; k++) {
+                    var keynum = tours.keys[k];
+                    if (!tours.tour.hasOwnProperty(keynum)) {
+                        tours.keys.splice(tours.keys.indexOf(keynum), 1);
+                        k -= 1;
+                    }
+                }
+                sendBotMessage(src,"Purged non-usable keys!",tourschan,false)
                 return true;
             }
             if (command == "evalvar") {
@@ -5440,6 +5452,7 @@ function dumpVars(src) {
     sys.sendMessage(src, "*** Main ***", tourschan)
     sys.sendMessage(src, "GlobalTime: "+tours.globaltime, tourschan)
     sys.sendMessage(src, "CurrentTime: "+sys.time(), tourschan)
+    sys.sendMessage(src, "CurrentKeys: "+tours.keys.join(", "), tourschan)
     sys.sendMessage(src, "% players in Tours: "+Math.floor(calcPercentage())+"%", tourschan)
     for (var x in tours.tour) {
         activelist = [];
