@@ -152,8 +152,8 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
         if (poke === 0) {
             continue;
         }
-        type1 = sys.pokeType1(poke, 5)
-        type2 = sys.pokeType2(poke, 5)
+        type1 = sys.pokeType1(poke, 5);
+        type2 = sys.pokeType2(poke, 5);
         teamLength++;
     }
     for (var i = 0; i < 6; i++) {
@@ -162,14 +162,14 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
             continue;
         }
         if (type1 === sys.pokeType1(poke, 5) || type1 === sys.pokeType2(poke, 5)) {
-            typea++
+            typea++;
         }
         if (type2 === sys.pokeType1(poke, 5) || type2 === sys.pokeType2(poke, 5)) {
-            typeb++
+            typeb++;
         }
     }
     if (typea < teamLength && typeb < teamLength) {
-        return ["Team is not monotype as not every team member is " + (typea >= typeb ? sys.type(type1) : sys.type(type2))]
+        return ["Team is not monotype as not every team member is " + (typea >= typeb ? sys.type(type1) : sys.type(type2))];
     }
 });
 
