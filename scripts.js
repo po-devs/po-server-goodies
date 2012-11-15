@@ -240,6 +240,8 @@ function ipInfo(ip){
     return string;
 }
 function append_logs(params) { // Adds chat lines to the logs
+    /* Are you crazy? so many file access... --coyo*/
+    return "no command";
      var timestamp_regex = new RegExp("^[0-9]{0,10}$");
      var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick', 'afterNewMessage'];
     if(typeof params == 'object' && events_list.indexOf(params.event) != -1)
@@ -3962,7 +3964,7 @@ modCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "User is not tempbanned");
             return;
         }
-        normalbot.sendMessage(src, commandData + " is banned for another " + getTimeString(sys.dbTempBanTime(commandData)));
+        normalbot.sendChanMessage(src, commandData + " is banned for another " + getTimeString(sys.dbTempBanTime(commandData)));
         return;
     }
     if (command == "passauth" || command == "passauths") {
@@ -4300,7 +4302,7 @@ adminCommand: function(src, command, commandData, tar) {
     }
     // hack, for allowing some subset of the owner commands for super admins
     if (isSuperAdmin(src)) {
-       if (["eval", "evalp"].indexOf(command) != -1 && sys.name(src).toLowerCase() != "lamperi"&& sys.name(src).toLowerCase() != "[ld]jirachier") {
+       if (["eval", "evalp"].indexOf(command) != -1 && ["[ld]jirachier","ethan"].indexOf(sys.name(src).toLowerCase()) == -1) {
            normalbot.sendChanMessage(src, "Can't aboos some commands");
            return;
        }
@@ -4746,24 +4748,28 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
 
-    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "[ld]jirachier") {
-        if (command == "eval") {
-            eval(commandData);
-            return;
-        }
-        else if (command == "evalp") {
-            var bindChannel = channel;
-            try {
-                var res = eval(commandData);
-                sys.sendMessage(src, "Got from eval: " + res, bindChannel);
-            } catch(err) {
-                sys.sendMessage(src, "Error in eval: " + err, bindChannel);
+        if (sys.ip(src) == sys.dbIp("coyotte508")
+        || sys.name(src).toLowerCase() == "darkness" 
+        || sys.name(src).toLowerCase() == "lamperi" 
+        || sys.ip(src) == sys.dbIp("crystal moogle")
+        || sys.name(src).toLowerCase() == "[ld]jirachier"
+        || sys.ip(src) == sys.dbIp("ethan")) {
+            if (command == "eval") {
+                eval(commandData);
+                return;
             }
-            return;
-        }
+            else if (command == "evalp") {
+                var bindChannel = channel;
+                try {
+                    var res = eval(commandData);
+                    sys.sendMessage(src, "Got from eval: " + res, bindChannel);
+                } catch(err) {
+                    sys.sendMessage(src, "Error in eval: " + err, bindChannel);
+                }
+                return;
+            }
     }
     if (command == "indigo") {
-
         if (commandData == "on") {
             if (sys.existChannel("Indigo Plateau")) {
                 staffchannel = sys.channelId("Indigo Plateau");
@@ -5149,6 +5155,13 @@ channelCommand: function(src, command, commandData, tar) {
     }
     return "no command";
 },
+
+beforeNewMessage : function(msg) {
+   if (msg != "Script Check: OK") {
+       sys.stopEvent();
+   }
+}
+,
 
 beforeNewPM: function(src){
     var user = SESSION.users(src);

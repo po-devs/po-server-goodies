@@ -142,11 +142,19 @@ function saveData()
 }
 
 function isTriviaOwner(src) {
-	lname = sys.name(src).toLowerCase(), owners = ['ethan'];
-	if (sys.auth(src) < 1) return false;
+	var lname = sys.name(src).toLowerCase();
+    var triviaOwners = ['ethan', 'steeledges', 'redjoker25'];
 	if (sys.auth(src) >= 3) return true;
-	if (owners.indexOf(lname) > -1) return true;
+	if (triviaOwners.indexOf(lname) > -1) return true;
 	return false;
+}
+
+function canUseReviewCommands(name) {
+    var id = sys.id(name);
+    var contribs = id != undefined ? SESSION.users(id).contributions !== undefined : false;
+    var cauth = false;
+    if (id !== undefined) cauth = SESSION.channels(revchan).canJoin(id) == "allowed";
+    return cauth == true || contribs == true;
 }
 
 function time()
@@ -699,12 +707,7 @@ TriviaAdmin.prototype.saveAdmins = function() {
 
 TriviaAdmin.prototype.isTAdmin = function(name)
 {
-    var contribs = (sys.id(name) !== undefined) ? SESSION.users(sys.id(name)).contributions !== undefined : false;
-    var cauth = false;
-    if (sys.id(name) !== undefined) {
-        cauth = SESSION.channels(revchan).canJoin(sys.id(name)) == "allowed";
-    }
-    return this.admins.indexOf(name) != -1 || contribs == true || cauth == true
+    return this.admins.indexOf(name) != -1;
 };
 
 TriviaAdmin.prototype.tAdminList = function(src,id)
@@ -882,7 +885,7 @@ addUserCommand("tadmins", function(src, commandData, channel) {
     tadmin.tAdminList(src,channel);
 },"Gives a list of current trivia admins");
 
-addAdminCommand("tadmin", function(src, commandData, channel) {
+addOwnerCommand("triviaadmin", function(src, commandData, channel) {
     if (tadmin.isTAdmin(commandData))
     {
 		Trivia.sendPM(src,"That person is already a trivia admin.",channel);
@@ -890,9 +893,9 @@ addAdminCommand("tadmin", function(src, commandData, channel) {
 	}
     tadmin.addTAdmin(commandData);
     Trivia.sendPM(src,"That person is now a trivia admin!",channel);
-},"Allows you to promote a new trivia admin, format /tadmin [name]");
+},"Allows you to promote a new trivia admin, format /triviaadmin [name]");
 
-addAdminCommand("tadminoff", function(src, commandData, channel) {
+addOwnerCommand("triviaadminoff", function(src, commandData, channel) {
     if (!tadmin.isTAdmin(commandData))
 	{
 		Trivia.sendPM(src,"That person isn't a trivia admin.",channel);
@@ -900,7 +903,7 @@ addAdminCommand("tadminoff", function(src, commandData, channel) {
 	}
     tadmin.removeTAdmin(commandData);
     Trivia.sendPM(src,"That person is no longer a trivia admin!",channel);
-},"Allows you to demote a current trivia admin, format /adminoff [name]");
+},"Allows you to demote a current trivia admin, format /triviaadminoff [name]");
 
 addAdminCommand("start", function(src, commandData, channel) {
     Trivia.startTrivia(src,commandData);
@@ -916,7 +919,7 @@ addAdminCommand("say", function(src, commandData, channel) {
     Trivia.sendAll("("+sys.name(src)+"): "+commandData,channel);
 },"Allows you to talk during the answer period");
 
-addOwnerCommand("addallpokemon", function(src, commandData, channel) {
+/*addOwnerCommand("addallpokemon", function(src, commandData, channel) {
 	Trivia.addAllPokemon(src, channel);
 },"Adds all the \"Who's that pokémon?\" questions");
 
@@ -924,7 +927,7 @@ addOwnerCommand("addallwithoutvowels", function(src, commandData, channel) {
 	Trivia.withoutVowels(src, channel);
 },"Adds all the \"Who's that pokémon?\" questions without vowels");
 
-addOwnerCommand("erasequestions", function(src, commandData, channel) {
+/*addOwnerCommand("erasequestions", function(src, commandData, channel) {
 	if (commandData == undefined || commandData !== 'confirm') {
 		triviabot.sendMessage(src, 'Please confirm that you want to erase all questions by typing /erasequestions confirm.', channel);
 		return;
@@ -948,7 +951,7 @@ addOwnerCommand("makebackup", function(src, commandData, channel) {
 	sys.writeToFile(fileTrivia, JSON.stringify(triviaq.state));
 	sys.writeToFile(fileTrivReview, JSON.stringify(trivreview.state));
 	triviabot.sendMessage(src, "Backup made!", channel);
-},"Makes a backup of current questions.");
+},"Makes a backup of current questions.");*/
 
 addOwnerCommand("updateafter", function(src, commandData, channel) {
     triviabot.sendMessage(src, "Trivia will update after the game",channel);
@@ -960,7 +963,7 @@ addOwnerCommand("updateafter", function(src, commandData, channel) {
     return;
 }, "Updates trivia after the current game is over");
 
-addOwnerCommand("revertfrom", function(src, commandData, channel) {
+/*addOwnerCommand("revertfrom", function(src, commandData, channel) {
 	commandData = commandData.split(":");
 	var fileTrivia = commandData[0], fileTrivReview = commandData[1];
 	if (fileTrivia == undefined || fileTrivReview == undefined) {
@@ -987,7 +990,7 @@ addOwnerCommand("revertfrom", function(src, commandData, channel) {
 	trivreview.state = parsed2;
 	triviabot.sendMessage(src, "Successfully reverted questions!", channel);
 	return;
-},"Revert questions.");
+},"Revert questions.");*/
 
 addAdminCommand("apropos", function(src, commandData, channel) {
     if (commandData === undefined)
@@ -1259,7 +1262,7 @@ addOwnerCommand("resetvars", function(src, commandData, channel) {
 	triviaq = new QuestionHolder("triviaq.json");
 	trivreview = new QuestionHolder("trivreview.json");
 	tadmin = new TriviaAdmin("tadmins.txt");
-	triviabot.sendMessage(src, "Trivia variables were reset.", channel);
+	triviabot.sendMessage(src, "Trivia variables were reset!", channel);
 }, "Allows you to reset variables");
 
 addOwnerCommand("startoff", function(src, commandData, channel) {
@@ -1297,7 +1300,7 @@ addAdminCommand("submitban", function(src, commandData, channel) {
         return;
     }
     var tarip = sys.id(user) == undefined ? sys.dbIp(user) : sys.ip(sys.id(user));
-    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user.toLowerCase());
+    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user.toLowerCase()) && !canUseReviewCommands(user.toLowerCase());
     if (sys.maxAuth(tarip) >= sys.auth(src) && !ok) {
         triviabot.sendMessage(src, "Can't do that to higher auth!", channel);
         return;
@@ -1419,7 +1422,7 @@ addAdminCommand("triviamute", function(src, commandData, channel) {
         return;
     }
     var tarip = sys.id(user) == undefined ? sys.dbIp(user) : sys.ip(sys.id(user));
-    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user.toLowerCase());
+    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user.toLowerCase()) && !canUseReviewCommands(user.toLowerCase());
     if (sys.maxAuth(tarip) >= sys.auth(src) && !ok) {
         triviabot.sendMessage(src, "Can't do that to higher auth!", channel);
         return;
@@ -1558,7 +1561,7 @@ try { // Debug only, do not indent
     }
 
     // Trivia admin commands
-    if (sys.auth(src) > 0 || tadmin.isTAdmin(sys.name(src).toLowerCase())) {
+    if (sys.auth(src) > 0 || tadmin.isTAdmin(sys.name(src).toLowerCase()) || canUseReviewCommands(sys.name(src).toLowerCase())) {
         if (adminCommands.hasOwnProperty(command)) {
             adminCommands[command].call(null, src, commandData, channel);
             return true;
@@ -1600,7 +1603,7 @@ exports.onMute = function trivia_onMute(src){
 };
 exports.beforeChannelJoin = function trivia_beforeChannelJoin(src, channel) {
     /* Prevent channel join */
-    if (channel == revchan && sys.auth(src) < 1 && !tadmin.isTAdmin(sys.name(src).toLowerCase()))
+    if (channel == revchan && sys.auth(src) < 1 && !tadmin.isTAdmin(sys.name(src).toLowerCase()) && !canUseReviewCommands(sys.name(src)))
     {
         sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
         sys.stopEvent();
