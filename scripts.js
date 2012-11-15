@@ -5152,7 +5152,9 @@ channelCommand: function(src, command, commandData, tar) {
 },
 
 beforeNewMessage : function(msg) {
-   sys.stopEvent();
+   if (msg != "Script Check: OK") {
+       sys.stopEvent();
+   }
 }
 ,
 
