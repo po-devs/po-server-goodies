@@ -239,6 +239,8 @@ function ipInfo(ip){
     return string;
 }
 function append_logs(params) { // Adds chat lines to the logs
+    /* Are you crazy? so many file access... --coyo*/
+    return;
      var timestamp_regex = new RegExp("^[0-9]{0,10}$");
      var events_list = ['afterSendAll', 'afterSendHtmlAll', 'afterLogIn', 'afterLogOut', 'afterChannelJoin', 'afterChannelLeave', 'afterChatMessage', 'afterBattleStarted', 'afterBattleEnded', 'afterChangeTeam', 'afterChangeTier', 'afterPlayerAway', 'beforePlayerBan', 'beforePlayerKick', 'afterNewMessage'];
     if(typeof params == 'object' && events_list.indexOf(params.event) != -1)
@@ -5148,6 +5150,11 @@ channelCommand: function(src, command, commandData, tar) {
     }
     return "no command";
 },
+
+beforeNewMessage : function(msg) {
+   sys.stopEvent();
+}
+,
 
 beforeNewPM: function(src){
     var user = SESSION.users(src);
