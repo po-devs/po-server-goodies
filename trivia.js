@@ -142,10 +142,10 @@ function saveData()
 }
 
 function isTriviaOwner(src) {
-	lname = sys.name(src).toLowerCase(), owners = ['ethan'];
-	if (sys.auth(src) < 1) return false;
+	var lname = sys.name(src).toLowerCase();
+    var triviaOwners = ['ethan', 'steeledges', 'redjoker25'];
 	if (sys.auth(src) >= 3) return true;
-	if (owners.indexOf(lname) > -1) return true;
+	if (triviaOwners.indexOf(lname) > -1) return true;
 	return false;
 }
 
@@ -885,7 +885,7 @@ addUserCommand("tadmins", function(src, commandData, channel) {
     tadmin.tAdminList(src,channel);
 },"Gives a list of current trivia admins");
 
-addAdminCommand("triviaadmin", function(src, commandData, channel) {
+addOwnerCommand("triviaadmin", function(src, commandData, channel) {
     if (tadmin.isTAdmin(commandData))
     {
 		Trivia.sendPM(src,"That person is already a trivia admin.",channel);
@@ -895,7 +895,7 @@ addAdminCommand("triviaadmin", function(src, commandData, channel) {
     Trivia.sendPM(src,"That person is now a trivia admin!",channel);
 },"Allows you to promote a new trivia admin, format /triviaadmin [name]");
 
-addAdminCommand("triviaadminoff", function(src, commandData, channel) {
+addOwnerCommand("triviaadminoff", function(src, commandData, channel) {
     if (!tadmin.isTAdmin(commandData))
 	{
 		Trivia.sendPM(src,"That person isn't a trivia admin.",channel);
@@ -919,7 +919,7 @@ addAdminCommand("say", function(src, commandData, channel) {
     Trivia.sendAll("("+sys.name(src)+"): "+commandData,channel);
 },"Allows you to talk during the answer period");
 
-addOwnerCommand("addallpokemon", function(src, commandData, channel) {
+/*addOwnerCommand("addallpokemon", function(src, commandData, channel) {
 	Trivia.addAllPokemon(src, channel);
 },"Adds all the \"Who's that pokémon?\" questions");
 
@@ -927,8 +927,7 @@ addOwnerCommand("addallwithoutvowels", function(src, commandData, channel) {
 	Trivia.withoutVowels(src, channel);
 },"Adds all the \"Who's that pokémon?\" questions without vowels");
 
-addOwnerCommand("erasequestions", function(src, commandData, channel) {
-    return;
+/*addOwnerCommand("erasequestions", function(src, commandData, channel) {
 	if (commandData == undefined || commandData !== 'confirm') {
 		triviabot.sendMessage(src, 'Please confirm that you want to erase all questions by typing /erasequestions confirm.', channel);
 		return;
@@ -952,7 +951,7 @@ addOwnerCommand("makebackup", function(src, commandData, channel) {
 	sys.writeToFile(fileTrivia, JSON.stringify(triviaq.state));
 	sys.writeToFile(fileTrivReview, JSON.stringify(trivreview.state));
 	triviabot.sendMessage(src, "Backup made!", channel);
-},"Makes a backup of current questions.");
+},"Makes a backup of current questions.");*/
 
 addOwnerCommand("updateafter", function(src, commandData, channel) {
     triviabot.sendMessage(src, "Trivia will update after the game",channel);
@@ -964,7 +963,7 @@ addOwnerCommand("updateafter", function(src, commandData, channel) {
     return;
 }, "Updates trivia after the current game is over");
 
-addOwnerCommand("revertfrom", function(src, commandData, channel) {
+/*addOwnerCommand("revertfrom", function(src, commandData, channel) {
 	commandData = commandData.split(":");
 	var fileTrivia = commandData[0], fileTrivReview = commandData[1];
 	if (fileTrivia == undefined || fileTrivReview == undefined) {
@@ -991,7 +990,7 @@ addOwnerCommand("revertfrom", function(src, commandData, channel) {
 	trivreview.state = parsed2;
 	triviabot.sendMessage(src, "Successfully reverted questions!", channel);
 	return;
-},"Revert questions.");
+},"Revert questions.");*/
 
 addAdminCommand("apropos", function(src, commandData, channel) {
     if (commandData === undefined)
@@ -1263,7 +1262,7 @@ addOwnerCommand("resetvars", function(src, commandData, channel) {
 	triviaq = new QuestionHolder("triviaq.json");
 	trivreview = new QuestionHolder("trivreview.json");
 	tadmin = new TriviaAdmin("tadmins.txt");
-	triviabot.sendMessage(src, "Trivia variables were reset.", channel);
+	triviabot.sendMessage(src, "Trivia variables were reset!", channel);
 }, "Allows you to reset variables");
 
 addOwnerCommand("startoff", function(src, commandData, channel) {
