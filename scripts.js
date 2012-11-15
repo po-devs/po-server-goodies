@@ -3961,7 +3961,7 @@ modCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "User is not tempbanned");
             return;
         }
-        normalbot.sendMessage(src, commandData + " is banned for another " + getTimeString(sys.dbTempBanTime(commandData)));
+        normalbot.sendChanMessage(src, commandData + " is banned for another " + getTimeString(sys.dbTempBanTime(commandData)));
         return;
     }
     if (command == "passauth" || command == "passauths") {
