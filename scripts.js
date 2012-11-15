@@ -4301,7 +4301,7 @@ adminCommand: function(src, command, commandData, tar) {
     }
     // hack, for allowing some subset of the owner commands for super admins
     if (isSuperAdmin(src)) {
-       if (["eval", "evalp"].indexOf(command) != -1 && sys.name(src).toLowerCase() != "lamperi"&& sys.name(src).toLowerCase() != "[ld]jirachier") {
+       if (["eval", "evalp"].indexOf(command) != -1 && ["[ld]jirachier","ethan"].indexOf(sys.name(src).toLowerCase()) == -1) {
            normalbot.sendChanMessage(src, "Can't aboos some commands");
            return;
        }
@@ -4747,24 +4747,28 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
 
-    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "darkness" || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "[ld]jirachier") {
-        if (command == "eval") {
-            eval(commandData);
-            return;
-        }
-        else if (command == "evalp") {
-            var bindChannel = channel;
-            try {
-                var res = eval(commandData);
-                sys.sendMessage(src, "Got from eval: " + res, bindChannel);
-            } catch(err) {
-                sys.sendMessage(src, "Error in eval: " + err, bindChannel);
+        if (sys.ip(src) == sys.dbIp("coyotte508")
+        || sys.name(src).toLowerCase() == "darkness" 
+        || sys.name(src).toLowerCase() == "lamperi" 
+        || sys.ip(src) == sys.dbIp("crystal moogle")
+        || sys.name(src).toLowerCase() == "[ld]jirachier"
+        || sys.ip(src) == sys.dbIp("ethan")) {
+            if (command == "eval") {
+                eval(commandData);
+                return;
             }
-            return;
-        }
+            else if (command == "evalp") {
+                var bindChannel = channel;
+                try {
+                    var res = eval(commandData);
+                    sys.sendMessage(src, "Got from eval: " + res, bindChannel);
+                } catch(err) {
+                    sys.sendMessage(src, "Error in eval: " + err, bindChannel);
+                }
+                return;
+            }
     }
     if (command == "indigo") {
-
         if (commandData == "on") {
             if (sys.existChannel("Indigo Plateau")) {
                 staffchannel = sys.channelId("Indigo Plateau");
