@@ -33,7 +33,7 @@ var Config = {
         ["Problems", "5th Generation WiFi Ubers - View Problem's <a href='http://pokemon-online.eu/forums/showthread.php?16966-Wifi-Ubers-Gym-Problems'>Gym Thread!</a>"],
         ["Finchinator", "5th Generation WiFi OverUsed - View Finchinator's <a href='http://pokemon-online.eu/forums/showthread.php?16967-Wifi-OU-Nikitas-and-Finchinator'>Gym Thread!</a>"],
         ["Nikitas", "5th Generation WiFi OverUsed - View Nikitas's <a href='http://pokemon-online.eu/forums/showthread.php?16967-Wifi-OU-Nikitas-and-Finchinator'>Gym Thread!</a>"],
-        ["ThatIsWhatSheSaid", "5th Generation WiFi UnderUsed - View ThatIsWhatSheSaid's <a href='http://pokemon-online.eu/forums/showthread.php?13550-Wifi-UnderUsed-Gym-ThatIsWhatSheSaid'>Gym Thread!</a> "],
+        ["ThatIsWhatSheSaid", "5th Generation WiFi UnderUsed - View ThatIsWhatSheSaid's <a href='http://pokemon-online.eu/forums/showthread.php?16988-Wifi-UU-ThatIsWhatSheSaid</a> "],
         ["New Breed", "5th Generation WiFi LittleUsed Gym - View New Breed's <a href='http://pokemon-online.eu/forums/showthread.php?16980-Wifi-LU-New-Breed'>Gym Thread!</a>"],
         ["Z+V", "5th Generation WiFi NeverUsed Gym - View Z+V's <a href='http://pokemon-online.eu/forums/showthread.php?16978-Wifi-NU-Gym-Z-V'>Gym Thread!</a>"],
         ["fitzyhbbe", "5th Generation WiFi Little Cup - View fitzyhbbe's <a href='http://pokemon-online.eu/forums/showthread.php?16964-Wifi-LC-Fitzyhbbe'>Gym Thread!</a>"],
@@ -43,7 +43,7 @@ var Config = {
         ["Harlot", "4th Generation OverUsed - View Harlot's <a href='http://pokemon-online.eu/forums/showthread.php?16968-DPP-OU-Gym-Harlot'>Gym Thread!</a>"],
         ["Tanner", "3rd Generation OverUsed - View Tanner's <a href='http://pokemon-online.eu/forums/showthread.php?14094-ADV-OU-Gym-Tanner'>Gym Thread!</a>"],
         ["Luck>Skill", "2nd Generation OverUsed - View Luck>Skill's <a href='http://pokemon-online.eu/forums/showthread.php?16973-GSC-OU-Luck-gt-Skill'>Gym Thread!</a>"],
-        ["-Isa", "1st Generation OverUsed - View -Isa's <a href='http://pokemon-online.eu/forums/showthread.php?16963-RBY-OU-Gym-Isa'>Gym Thread!</a>"]
+        ["Isa-", "1st Generation OverUsed - View Isa-'s <a href='http://pokemon-online.eu/forums/showthread.php?16963-RBY-OU-Gym-Isa'>Gym Thread!</a>"]
     ],
     DreamWorldTiers: ["No Preview OU", "No Preview Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
     superAdmins: ["[LD]Jirachier", "Ethan"],
