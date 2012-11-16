@@ -161,10 +161,10 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
         if (poke === 0) {
             continue;
         }
-        if (type1 === sys.pokeType1(poke, 5) || type1 === sys.pokeType2(poke, 5)) {
+        if ((type1 === sys.pokeType1(poke, 5) || type1 === sys.pokeType2(poke, 5)) && type1 !== 17) {
             typea++;
         }
-        if (type2 === sys.pokeType1(poke, 5) || type2 === sys.pokeType2(poke, 5)) {
+        if ((type2 === sys.pokeType1(poke, 5) || type2 === sys.pokeType2(poke, 5)) && type2 !== 17) {
             typeb++;
         }
     }
