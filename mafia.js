@@ -2185,10 +2185,10 @@ function Mafia(mafiachan) {
                                 targetMode = targetMode || {};
                                 var sendInspect = function (message, targetInfo) {
                                     var players = [player.name], x,
-                                        msg = (Action.broadcastmsg || message).replace(/~Self~/g, player.name).replace(/~Target~/g, target.name).replace(/~TargetInfo~/g, targetInfo);
-                                    if (Action.broadcast.toLowerCase() === "team") {
+                                        msg = (Action.inspectmsg || message).replace(/~Self~/g, player.name).replace(/~Target~/g, target.name).replace(/~TargetInfo~/g, targetInfo);
+                                    if (Action.broadcastInspect.toLowerCase() === "team") {
                                         players = mafia.getPlayersForTeam(player.role.side);
-                                    } else if (Action.broadcast.toLowerCase() === "role") {
+                                    } else if (Action.broadcastInspect.toLowerCase() === "role") {
                                         players = mafia.getPlayersForRole(player.role.role);
                                     }
 
@@ -2492,28 +2492,30 @@ function Mafia(mafiachan) {
             } else {
                 var lynched = mafia.players[downed],
                     lynch = lynched.role.actions.lynch;
-                if (!!lynch && "convertRoles" in lynch) {
-                    var targetRoles = lynch.convertRoles, targetNewRole, affectedPlayers, affected, target, actionMessage, targetPlayers;
+                if (!!lynch) {
+                    if ("convertRoles" in lynch) {
+                        var targetRoles = lynch.convertRoles, targetNewRole, affectedPlayers, affected, target, actionMessage, targetPlayers;
 
-                    newRole = lynched.role.actions.lynch.convertTo;
+                        newRole = lynched.role.actions.lynch.convertTo;
 
-                    for (r in targetRoles) {
-                        targetNewRole = targetRoles[r];
+                        for (r in targetRoles) {
+                            targetNewRole = targetRoles[r];
 
-                        targetPlayers = this.getPlayersForRole(r);
-                        affected = [];
-                        for (k = 0; k < targetPlayers.length; ++k) {
-                            if (this.players[targetPlayers[k]] != lynched) {
-                                affected.push(targetPlayers[k]);
-                                target = this.players[targetPlayers[k]];
-                                mafia.setPlayerRole(target, targetNewRole);
-                                mafia.showOwnRole(sys.id(targetPlayers[k]));
+                            targetPlayers = this.getPlayersForRole(r);
+                            affected = [];
+                            for (k = 0; k < targetPlayers.length; ++k) {
+                                if (this.players[targetPlayers[k]] != lynched) {
+                                    affected.push(targetPlayers[k]);
+                                    target = this.players[targetPlayers[k]];
+                                    mafia.setPlayerRole(target, targetNewRole);
+                                    mafia.showOwnRole(sys.id(targetPlayers[k]));
+                                }
                             }
-                        }
-                        if (affected.length > 0) {
-                            actionMessage = lynch.convertRolesmsg ? lynch.convertRolesmsg : "±Game: Because ~Self~ was lynched, ~Old~ became a ~New~!";
-                            sendChanAll(actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(r)).replace(/~New~/, mafia.theme.trrole(newRole)), mafiachan);
-                            needSeparator = true;
+                            if (affected.length > 0) {
+                                actionMessage = lynch.convertRolesmsg ? lynch.convertRolesmsg : "±Game: Because ~Self~ was lynched, ~Old~ became a ~New~!";
+                                sendChanAll(actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(r)).replace(/~New~/, mafia.theme.trrole(newRole)), mafiachan);
+                                needSeparator = true;
+                            }
                         }
                     }
                     if ("lynch" in lynched.role.actions && "convertTo" in lynched.role.actions.lynch) {
