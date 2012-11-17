@@ -117,7 +117,7 @@ module.exports = function () {
             sys.sendMessage(src, "±Game: You can only use /a " + maxAnswers + " times!", hangchan);
             return;
         }
-        var ans = commandData.replace(/[^A-Za-z0-9\s']/g, "");
+        var ans = commandData.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g,'');
 
         sendChanHtmlAll(" ", hangchan);
         sendChanAll("±Game: " + sys.name(src) + " answered " + ans + "!", hangchan);
@@ -176,7 +176,7 @@ module.exports = function () {
             sys.sendMessage(src, "±Game: You need to write a hint!", hangchan);
             return;
         }
-        a = a.replace(/[^A-Za-z0-9\s']/g, "").toLowerCase();
+        a = a.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g,'').toLowerCase();
         if (a.length > 60 || a.length < 4) {
             sys.sendMessage(src, "±Game: Your answer cannot be longer than 60 characters or shorter than 4 characters!", hangchan);
             return;
@@ -193,7 +193,7 @@ module.exports = function () {
         currentWord = [];
         var e;
         for (e = 0; e < word.length; e++) {
-            if (word[e] === " ") {
+            if (word[e] === " " || word[e] === "-") {
                 currentWord.push("-");
             } else if (validCharacters.indexOf(word[e]) !== -1) {
                 currentWord.push("_");
