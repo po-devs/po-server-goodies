@@ -989,7 +989,7 @@ function getConfigValue(file, key) {
             points: true,
             winmessages: true
         }
-        var configkeys = sys.getValKeys(file)
+        var configkeys = sys.getValKeys(configDir+file)
         if (configkeys.indexOf(key) == -1) {
             sendChanAll("No tour config data detected for '"+key+"', getting default value", tourschan)
             if (defaultvars.hasOwnProperty(key))
@@ -998,7 +998,7 @@ function getConfigValue(file, key) {
                 throw "Couldn't find the key!"
         }
         else {
-            return sys.getVal(file, key);
+            return sys.getVal(configDir+file, key);
         }
     }
     catch (err) {
@@ -2665,7 +2665,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     tourconfig.maxqueue = value
-                    sys.saveVal("tourconfig.txt", "maxqueue", value)
+                    sys.saveVal(configDir+"tourconfig.txt", "maxqueue", value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the maximum queue length to "+tourconfig.maxqueue)
                     return true;
                 }
@@ -2680,7 +2680,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     tourconfig.maxrunning = value
-                    sys.saveVal("tourconfig.txt", "maxrunning", value)
+                    sys.saveVal(configDir+"tourconfig.txt", "maxrunning", value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the maximum number of simultaneous tours to "+tourconfig.maxrunning)
                     return true;
                 }
@@ -2695,7 +2695,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     tourconfig.toursignup = value
-                    sys.saveVal("tourconfig.txt", "toursignup", value)
+                    sys.saveVal(configDir+"tourconfig.txt", "toursignup", value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the sign up time to "+time_handle(tourconfig.toursignup))
                     return true;
                 }
@@ -2710,7 +2710,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     tourconfig.tourdq = value
-                    sys.saveVal("tourconfig.txt", "tourdq", value)
+                    sys.saveVal(configDir+"tourconfig.txt", "tourdq", value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the disqualification time to "+time_handle(tourconfig.tourdq))
                     return true;
                 }
@@ -2725,7 +2725,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     tourconfig.activity = value
-                    sys.saveVal("tourconfig.txt", "touractivity", value)
+                    sys.saveVal(configDir+"tourconfig.txt", "touractivity", value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the activity time to "+time_handle(tourconfig.activity))
                     return true;
                 }
@@ -2740,7 +2740,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     tourconfig.subtime = value
-                    sys.saveVal("tourconfig.txt", "subtime", value)
+                    sys.saveVal(configDir+"tourconfig.txt", "subtime", value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the sub time to "+time_handle(tourconfig.subtime))
                     return true;
                 }
@@ -2755,7 +2755,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     tourconfig.tourbreak = value
-                    sys.saveVal("tourconfig.txt", "breaktime", value)
+                    sys.saveVal(configDir+"tourconfig.txt", "breaktime", value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the break time (betweeen cancelled tournaments) to "+time_handle(tourconfig.tourbreak))
                     return true;
                 }
@@ -2770,7 +2770,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     tourconfig.abstourbreak = value
-                    sys.saveVal("tourconfig.txt", "absbreaktime", value)
+                    sys.saveVal(configDir+"tourconfig.txt", "absbreaktime", value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the absolute break time (base time between starting tours) to "+time_handle(tourconfig.abstourbreak))
                     return true;
                 }
@@ -2785,7 +2785,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     tourconfig.reminder = value
-                    sys.saveVal("tourconfig.txt", "remindertime", value)
+                    sys.saveVal(configDir+"tourconfig.txt", "remindertime", value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the reminder time to "+time_handle(tourconfig.reminder))
                     return true;
                 }
@@ -2804,7 +2804,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     tourconfig.minpercent = value
-                    sys.saveVal("tourconfig.txt", "minpercent", value)
+                    sys.saveVal(configDir+"tourconfig.txt", "minpercent", value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the auto start percentage to "+tourconfig.minpercent+"%")
                     return true;
                 }
@@ -2823,7 +2823,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     tourconfig.norepeat = value
-                    sys.saveVal("tourconfig.txt", "norepeat", value)
+                    sys.saveVal(configDir+"tourconfig.txt", "norepeat", value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the repeat limit to "+tourconfig.norepeat+" tournaments")
                     return true;
                 }
@@ -2842,7 +2842,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     tourconfig.minplayers = value
-                    sys.saveVal("tourconfig.txt", "minplayers", value)
+                    sys.saveVal(configDir+"tourconfig.txt", "minplayers", value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the minimum number of players to "+tourconfig.minplayers,tourschan,false);
                     return true;
                 }
@@ -2860,7 +2860,7 @@ function tourCommand(src, command, commandData) {
                         value = "on";
                     }
                     tourconfig.winmessages = value === "off" ? false : true;
-                    sys.saveVal("tourconfig.txt", "winmessages", value)
+                    sys.saveVal(configDir+"tourconfig.txt", "winmessages", value)
                     sendBotAll(sys.name(src)+" "+(tourconfig.winmessages ? "enabled" : "disabled")+" custom win messages.",tourschan,false);
                     return true;
                 }
@@ -2881,7 +2881,7 @@ function tourCommand(src, command, commandData) {
                         }
                     }
                     tourconfig.tourbotcolour = "#"+value
-                    sys.saveVal("tourconfig.txt", "tourbotcolour", "#"+value)
+                    sys.saveVal(configDir+"tourconfig.txt", "tourbotcolour", "#"+value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the tourbot colour to "+tourconfig.tourbotcolour,tourschan,false);
                     return true;
                 }
@@ -2895,7 +2895,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     tourconfig.tourbot = value+" "
-                    sys.saveVal("tourconfig.txt", "tourbot", value+" ")
+                    sys.saveVal(configDir+"tourconfig.txt", "tourbot", value+" ")
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the tourbot name to "+tourconfig.tourbot,tourschan,false);
                     return true;
                 }
@@ -2956,7 +2956,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     tourconfig.decayrate = value
-                    sys.saveVal("tourconfig.txt", "decayrate", value)
+                    sys.saveVal(configDir+"tourconfig.txt", "decayrate", value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the decay percentage to "+tourconfig.decayrate+"%")
                     return true;
                 }
@@ -2975,7 +2975,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     tourconfig.decaytime = value
-                    sys.saveVal("tourconfig.txt", "decaytime", value)
+                    sys.saveVal(configDir+"tourconfig.txt", "decaytime", value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the decay time to "+tourconfig.decaytime+" days.")
                     return true;
                 }
@@ -2994,7 +2994,7 @@ function tourCommand(src, command, commandData) {
                         return true;
                     }
                     tourconfig.decayglobalrate = value
-                    sys.saveVal("tourconfig.txt", "decayglobalrate", value)
+                    sys.saveVal(configDir+"tourconfig.txt", "decayglobalrate", value)
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the global decay percentage to "+tourconfig.decayglobalrate+"%")
                     return true;
                 }
