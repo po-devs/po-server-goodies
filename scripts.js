@@ -42,7 +42,7 @@ var Config = {
         ["Nainil", "All Gen CC - View Nainil's <a href='http://pokemon-online.eu/forums/showthread.php?16977-All-Generation-Challenge-Cup-Gym-Nainil-amp-Winona'>Gym Thread!</a>"],
         ["Michael", "Monotype - View Michael's <a href='http://pokemon-online.eu/forums/showthread.php?16970-Monotype-Gym-Michael'>Gym Thread!</a>"],
         ["Harlot", "4th Generation OverUsed - View Harlot's <a href='http://pokemon-online.eu/forums/showthread.php?16968-DPP-OU-Gym-Harlot'>Gym Thread!</a>"],
-        ["Tanner", "3rd Generation OverUsed - View Tanner's <a href='http://pokemon-online.eu/forums/showthread.php?14094-ADV-OU-Gym-Tanner'>Gym Thread!</a>"],
+        ["Tanner", "3rd Generation OverUsed - View Tanner's <a href='http://pokemon-online.eu/forums/showthread.php?17023-ADV-OU-Gym-BIG-TIFF'>Gym Thread!</a>"],
         ["Luck>Skill", "2nd Generation OverUsed - View Luck>Skill's <a href='http://pokemon-online.eu/forums/showthread.php?16973-GSC-OU-Luck-gt-Skill'>Gym Thread!</a>"],
         ["Isa-", "1st Generation OverUsed - View Isa-'s <a href='http://pokemon-online.eu/forums/showthread.php?16963-RBY-OU-Gym-Isa'>Gym Thread!</a>"]
     ],
