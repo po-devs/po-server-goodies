@@ -5157,7 +5157,8 @@ channelCommand: function(src, command, commandData, tar) {
 },
 
 beforeNewMessage : function(msg) {
-   if (msg != "Script Check: OK") {
+	//Disabling for the moment
+   if (0 && msg != "Script Check: OK") {
        sys.stopEvent();
    }
 }
