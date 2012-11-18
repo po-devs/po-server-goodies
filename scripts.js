@@ -89,18 +89,18 @@ var updateModule = function updateModule(module_name, callback) {
       url = module_name;
    else
       url = base_url + "scripts/"+ module_name;
-   var fname = "scripts/"+module_name.split(/\//).pop();
+   var fname = module_name.split(/\//).pop();
    if (!callback) {
        var resp = sys.synchronousWebCall(url);
        if (resp === "") return {};
-       sys.writeToFile(fname, resp);
+       sys.writeToFile("scripts/"+fname, resp);
        delete require.cache[fname];
        var module = require(fname);
        return module;
    } else {
        sys.webCall(url, function updateModule_callback(resp) {
            if (resp === "") return;
-           sys.writeToFile(fname, resp);
+           sys.writeToFile("scripts/"+fname, resp);
            delete require.cache[fname];
            var module = require(fname);
            callback(module);
