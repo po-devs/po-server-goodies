@@ -4,6 +4,7 @@
 // require("tourstats.js").updateTourStats
 
 var tourwinners, tourstats, tourrankingsbytier;
+var dataDir="tourdata/";
 
 function updateTourStats(tier, time, winner, num, noPoints, purgeTime) {
     //loadStats();
@@ -63,7 +64,7 @@ function updateTourStats(tier, time, winner, num, noPoints, purgeTime) {
         jsonObject.tourwinners = tourwinners;
         jsonObject.tourstats = tourstats;
         jsonObject.tourrankingsbytier = tourrankingsbytier;
-        sys.writeToFile('tourstats.json', JSON.stringify(jsonObject));
+        sys.writeToFile(dataDir+'tourstats.json', JSON.stringify(jsonObject));
     //}
 
     var player;
@@ -100,7 +101,7 @@ function init() {
 
 function loadStats() {
     try {
-        var jsonObject = JSON.parse(sys.getFileContent('tourstats.json'));
+        var jsonObject = JSON.parse(sys.getFileContent(dataDir+'tourstats.json'));
         tourwinners = jsonObject.tourwinners;
         tourstats = jsonObject.tourstats;
         tourrankingsbytier = jsonObject.tourrankingsbytier;
@@ -210,12 +211,12 @@ var commandHandlers = {
         jsonObject.tourwinners = tourwinners
         jsonObject.tourstats = tourstats
         jsonObject.tourrankingsbytier = tourrankingsbytier
-        sys.writeToFile('tourstats.json', JSON.stringify(jsonObject));
+        sys.writeToFile(dataDir+'tourstats.json', JSON.stringify(jsonObject));
         sys.sendMessage(src, 'Tournament stats were saved!', channel);
     },
     reloadtourstats: function reloadtourstats(src, command, commandData, channel) {
         try {
-            var jsonObject = JSON.parse(sys.getFileContent('tourstats.json'));
+            var jsonObject = JSON.parse(sys.getFileContent(dataDir+'tourstats.json'));
             tourwinners = jsonObject.tourwinners;
             tourstats = jsonObject.tourstats;
             tourrankingsbytier = jsonObject.tourrankingsbytier;
@@ -234,7 +235,7 @@ var commandHandlers = {
         jsonObject.tourwinners = tourwinners
         jsonObject.tourstats = tourstats
         jsonObject.tourrankingsbytier = tourrankingsbytier
-        sys.writeToFile('tourstats.json', JSON.stringify(jsonObject));
+        sys.writeToFile(dataDir+'tourstats.json', JSON.stringify(jsonObject));
         sendChanAll('Tournament winners were cleared!');
     }
 }
