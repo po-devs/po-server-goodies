@@ -37,7 +37,7 @@ var Config = {
         ["New Breed", "5th Generation WiFi LittleUsed Gym - View New Breed's <a href='http://pokemon-online.eu/forums/showthread.php?16980-Wifi-LU-New-Breed'>Gym Thread!</a>"],
         ["Z+V", "5th Generation WiFi NeverUsed Gym - View Z+V's <a href='http://pokemon-online.eu/forums/showthread.php?16978-Wifi-NU-Gym-Z-V'>Gym Thread!</a>"],
         ["fitzyhbbe", "5th Generation WiFi Little Cup - View fitzyhbbe's <a href='http://pokemon-online.eu/forums/showthread.php?16964-Wifi-LC-Fitzyhbbe'>Gym Thread!</a>"],
-        ["?e?e?o??a??? pycc???", "All Gen CC - View ?e?e?o??a??? pycc???'s <a href='http://pokemon-online.eu/forums/showthread.php?16977-All-Generation-Challenge-Cup-Gym-Nainil-amp-Winona'>Gym Thread!</a>"],
+        ["зeлeнoглaзый pyccкий", "All Gen CC - View ?e?e?o??a??? pycc???'s <a href='http://pokemon-online.eu/forums/showthread.php?16977-All-Generation-Challenge-Cup-Gym-Nainil-amp-Winona'>Gym Thread!</a>"],
         ["Nainil", "All Gen CC - View Nainil's <a href='http://pokemon-online.eu/forums/showthread.php?16977-All-Generation-Challenge-Cup-Gym-Nainil-amp-Winona'>Gym Thread!</a>"],
         ["Michael", "Monotype - View Michael's <a href='http://pokemon-online.eu/forums/showthread.php?16970-Monotype-Gym-Michael'>Gym Thread!</a>"],
         ["Harlot", "4th Generation OverUsed - View Harlot's <a href='http://pokemon-online.eu/forums/showthread.php?16968-DPP-OU-Gym-Harlot'>Gym Thread!</a>"],
@@ -3332,7 +3332,7 @@ userCommand: function(src, command, commandData, tar) {
         if(sys.name(src).toLowerCase() !== "pokemonnerd"){
             return;
         }
-        sys.changeName(src, "(¬¦_¦)");
+        sys.changeName(src, "(⌐■_■)");
         return;
     }
     return "no command";
@@ -5319,7 +5319,7 @@ beforeChatMessage: function(src, message, chan) {
                 }
             }
         }
-        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, /\u00AD/, "nobrain.dk", /\bn[1i]gg+ers*\b/i,  "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----", "+-+"];
+        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, /\u00AD/, "nobrain.dk", /\bn[1i]gg+ers*\b/i,  "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----", "╬═╬"];
         for (var i = 0; i < BanList.length; ++i) {
             var filter = BanList[i];
             if (typeof filter == "string" && m.indexOf(filter) != -1 || typeof filter == "function" && filter.test(m)) {
