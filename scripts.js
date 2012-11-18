@@ -117,7 +117,7 @@ var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
 var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js'].concat(Config.Plugins);
 var missing = 0;
 for (var i = 0; i < deps.length; ++i) {
-    if (!sys.getFileContent(deps[i])) {
+    if (!sys.getFileContent("scripts/"+deps[i])) {
         if (missing++ === 0) sys.sendAll('Server is updating its script modules, it might take a while...');
         var module = updateModule(deps[i]);
         module.source = deps[i];
