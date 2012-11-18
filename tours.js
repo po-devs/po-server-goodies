@@ -35,6 +35,8 @@ if (typeof tours !== "object") {
     }
 }
 
+var configDir = "tourconfig/";
+var dataDir = "tourdata/";
 var utilities = require('utilities.js');
 var bfactory = require('battlefactory.js');
 var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
@@ -212,11 +214,11 @@ function getReadableList(type, parameter) {
         var name = "";
         if (type == "leaderboard") {
             if (parameter == "") {
-                var rankdata = sys.getFileContent("tourscores.txt")
+                var rankdata = sys.getFileContent(dataDir+"tourscores.txt")
                 name = "General Leaderboard";
             }
             else if (parameter == "eventscores") {
-                var rankdata = sys.getFileContent("eventscores.txt")
+                var rankdata = sys.getFileContent(dataDir+"eventscores.txt")
                 name = "Event Leaderboard";
             }
             else {
@@ -224,7 +226,7 @@ function getReadableList(type, parameter) {
                 if (tourtier === null) {
                     throw ("Not a valid tier")
                 }
-                var rankdata = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
+                var rankdata = sys.getFileContent(dataDir+"tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
                 name = tourtier+" Leaderboard";
             }
             if (rankdata === undefined) {
@@ -523,7 +525,7 @@ function is1v1Tour(key) {
 // This function will get a user's current tournament points overall
 
 function getTourWinMessages() {
-    var content = sys.getFileContent("tourwinverbs.txt")
+    var content = sys.getFileContent(configDir+"tourwinverbs.txt")
     tourwinmessages = content.split("\n")
 }
 
@@ -581,7 +583,7 @@ function awardEventPoints(playername, points, datestring) {
 }
 
 function saveEventPoints() {
-    sys.writeToFile('eventdata.json', JSON.stringify(eventscores));
+    sys.writeToFile(dataDir+'eventdata.json', JSON.stringify(eventscores));
 }
 
 function detEventPoints(size, ranking, tier) {
@@ -714,7 +716,7 @@ function topSeed(tier) {
 
 // This function gets the tier points
 function getExtraPoints(player, tier) {
-    var data = sys.getFileContent("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
+    var data = sys.getFileContent(dataDir+"tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
     if (data === undefined) {
         return 0;
     }
@@ -745,13 +747,13 @@ function getExtraTierPoints(player, tier) {
 // saving tour admins list
 function saveTourKeys() {
     var tal = JSON.stringify(tours.touradmins)
-    sys.writeToFile("touradmins.json", tal)
+    sys.writeToFile(configDir+"touradmins.json", tal)
     return;
 }
 
 function saveTourHistory() {
     var history = {'tours': tours.history, 'staff': tours.activehistory};
-    sys.writeToFile("tourhistory.json", JSON.stringify(history));
+    sys.writeToFile(dataDir+"tourhistory.json", JSON.stringify(history));
     return;
 }
 
@@ -936,11 +938,11 @@ function sendAllTourAuth(message) {
 
 // Saving for server reloads
 function save_cache() {
-    sys.writeToFile("tours_cache.json", JSON.stringify(tours));
+    sys.writeToFile(dataDir+"tours_cache.json", JSON.stringify(tours));
 }
 
 function load_cache() {
-    var test = JSON.parse(sys.getFileContent("tours_cache.json"));
+    var test = JSON.parse(sys.getFileContent(dataDir+"tours_cache.json"));
     tours = test;
     tours.globaltime = 0;
     tours.eventticks = -1;
@@ -1080,7 +1082,7 @@ function initTours() {
         tourwinmessages = [];
         sendChanAll("No win messages detected, using default win message.", tourschan);
     }
-    var tadata = sys.getFileContent("touradmins.json");
+    var tadata = sys.getFileContent(configDir+"touradmins.json");
     if (tadata === undefined) {
         sendChanAll("No tour admin data detected, leaving blank", tourschan);
     }
@@ -1094,7 +1096,7 @@ function initTours() {
     }
     if (typeof tourstats != "object") {
         sendChanAll("Creating tournament stats object", tourschan)
-        var tourstatdata = sys.getFileContent('tastats.json');
+        var tourstatdata = sys.getFileContent(dataDir+'tastats.json');
         if (tourstatdata === undefined || tourstatdata === "") {
             tourstats = {'general': {}, 'staff': {}}
         }
@@ -1109,7 +1111,7 @@ function initTours() {
     }
     if (typeof tourseeds != "object") {
         sendChanAll("Creating tournament seeds object", tourschan)
-        var tourseeddata = sys.getFileContent('tourseeds.json');
+        var tourseeddata = sys.getFileContent(dataDir+'tourseeds.json');
         if (tourseeddata === undefined || tourseeddata === "") {
             tourseeds = {};
         }
@@ -1124,7 +1126,7 @@ function initTours() {
     }
     if (typeof eventscores != "object") {
         sendChanAll("Initiating event scoring", tourschan)
-        var eventscoredata = sys.getFileContent('eventdata.json');
+        var eventscoredata = sys.getFileContent(dataDir+'eventdata.json');
         if (eventscoredata === undefined || eventscoredata === "") {
             eventscores = {};
         }
@@ -1138,7 +1140,7 @@ function initTours() {
         }
     }
     try {
-        var history = sys.getFileContent('tourhistory.json');
+        var history = sys.getFileContent(dataDir+'tourhistory.json');
         var parseData = JSON.parse(history);
         tours.history = parseData.tours;
         tours.activehistory = parseData.staff;
@@ -1147,7 +1149,7 @@ function initTours() {
         sendChanAll("No tour history detected.", tourschan);
     }
     try {
-        var twarns = sys.getFileContent('tourwarns.json');
+        var twarns = sys.getFileContent(dataDir+'tourwarns.json');
         tourwarnings = JSON.parse(twarns);
     }
     catch (err) {
@@ -1158,7 +1160,7 @@ function initTours() {
 }
 
 function getEventTour(datestring) {
-    var eventfile = sys.getFileContent("eventtours.json")
+    var eventfile = sys.getFileContent(dataDir+"eventtours.json")
     if (eventfile === undefined) {
         return false;
     }
@@ -1528,21 +1530,21 @@ function tourCommand(src, command, commandData) {
     try {
         if (isTourOwner(src)) {
             if (command == "clearrankings") {
-                sys.writeToFile("tourscores.txt", "")
-                sys.writeToFile("tourdetails.txt", "")
+                sys.writeToFile(dataDir+"tourscores.txt", "")
+                sys.writeToFile(dataDir+"tourdetails.txt", "")
                 // sys.writeToFile("eventscores.txt", "")
                 // sys.writeToFile("eventwinners.txt", "")
                 var tiers = sys.getTierList()
                 for (var x in tiers) {
-                    sys.writeToFile("tourscores_"+tiers[x].replace(/ /g,"_").replace(/\//g,"-slash-")+".txt","")
+                    sys.writeToFile(dataDir+"tourscores_"+tiers[x].replace(/ /g,"_").replace(/\//g,"-slash-")+".txt","")
                 }
                 sendBotAll(sys.name(src)+" cleared the tour rankings!",tourschan,false)
                 return true;
             }
             if (command == "cleareventrankings") {
-                sys.writeToFile("eventdata.json", "")
+                sys.writeToFile(dataDir+"eventdata.json", "")
                 eventscores = {};
-                sys.writeToFile("eventwinners.txt", "")
+                sys.writeToFile(dataDir+"eventwinners.txt", "")
                 sendBotAll(sys.name(src)+" cleared the event rankings!",tourschan,false)
                 return true;
             }
@@ -1615,8 +1617,8 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "getstatfile") {
-                sys.sendMessage(src, sys.getFileContent("tastats.json"), tourschan);
-                sys.sendMessage(src, sys.getFileContent("tourseeds.json"), tourschan);
+                sys.sendMessage(src, sys.getFileContent(dataDir+"tastats.json"), tourschan);
+                sys.sendMessage(src, sys.getFileContent(dataDir+"tourseeds.json"), tourschan);
                 return true;
             }
             if (command == "readstats") {
@@ -1625,10 +1627,10 @@ function tourCommand(src, command, commandData) {
             }
             if (command == "savestats") {
                 if (typeof tourstats == "object") {
-                    sys.writeToFile('tastats.json', JSON.stringify(tourstats));
+                    sys.writeToFile(dataDir+'tastats.json', JSON.stringify(tourstats));
                 }
                 if (typeof tourseeds == "object") {
-                    sys.writeToFile('tourseeds.json', JSON.stringify(tourseeds));
+                    sys.writeToFile(dataDir+'tourseeds.json', JSON.stringify(tourseeds));
                 }
                 sendBotMessage(src,"Saved stats!",tourschan,false)
                 return true;
@@ -1654,7 +1656,7 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 tourwarnings.ranges.push(iprange);
-                sys.writeToFile('tourwarns.json', JSON.stringify(tourwarnings));
+                sys.writeToFile(dataDir+'tourwarns.json', JSON.stringify(tourwarnings));
                 sendBotMessage(src,"Added range warning for the range: "+iprange,tourschan,false);
                 return true;
             }
@@ -1704,7 +1706,7 @@ function tourCommand(src, command, commandData) {
                     file = "tourscores.txt";
                     type = "normal";
                 }
-                var leaderboard = sys.getFileContent(file);
+                var leaderboard = sys.getFileContent(dataDir+file);
                 if (leaderboard === undefined) {
                     sendBotMessage(src, "File not found.", tourschan, false);
                     return true;
@@ -1727,7 +1729,7 @@ function tourCommand(src, command, commandData) {
                 if (!onscoreboard) {
                     newarray.push(name+":::"+newpoints)
                 }
-                sys.writeToFile(file, newarray.join("\n"))
+                sys.writeToFile(dataDir+file, newarray.join("\n"))
                 if (sys.existChannel("Victory Road")) {
                     sendBotAll(sys.name(src)+" changed the score of '"+name+"' on the "+type+" leaderboard to "+newpoints, sys.channelId("Victory Road"), false);
                 }
@@ -1770,7 +1772,7 @@ function tourCommand(src, command, commandData) {
                 sendBotMessage(src, "Fetching event tours from "+url, tourschan, false);
                 sys.webCall(url, function(resp) {
                     if (resp !== "") {
-                        sys.writeToFile('eventtours.json', resp);
+                        sys.writeToFile(dataDir+'eventtours.json', resp);
                         sendBotAll('Updated list of event tours!', tourschan, false);
                     } else {
                         sendBotMessage(src, 'Failed to update!', tourschan, false);
@@ -1781,7 +1783,7 @@ function tourCommand(src, command, commandData) {
             if (command == "fullleaderboard") {
                 try {
                     if (commandData == "") {
-                        var rankdata = sys.getFileContent("tourscores.txt")
+                        var rankdata = sys.getFileContent(dataDir+"tourscores.txt")
                     }
                     else {
                         var tourtier = find_tier(commandData)
@@ -1842,10 +1844,10 @@ function tourCommand(src, command, commandData) {
                         }
                         var monthlyfile = "tourmonthscore_"+monthdata[0]+"_"+monthdata[1]+".txt"
                     }
-                    if (sys.getFileContent(monthlyfile) === undefined) {
+                    if (sys.getFileContent(dataDir+monthlyfile) === undefined) {
                         throw ("No data")
                     }
-                    var rankings = sys.getFileContent(monthlyfile).split("\n")
+                    var rankings = sys.getFileContent(dataDir+monthlyfile).split("\n")
                     var list = [];
                     for (var p in rankings) {
                         if (rankings[p] == "") continue;
@@ -2079,7 +2081,7 @@ function tourCommand(src, command, commandData) {
                 sendBotMessage(src, "Fetching win messages from "+url, tourschan, false);
                 sys.webCall(url, function(resp) {
                     if (resp !== "") {
-                        sys.writeToFile('tourwinverbs.txt', resp);
+                        sys.writeToFile(configDir+'tourwinverbs.txt', resp);
                         getTourWinMessages()
                         sendBotAll('Updated win messages!', tourschan, false);
                     } else {
@@ -3388,7 +3390,7 @@ function tourCommand(src, command, commandData) {
                 }
                 else {
                     var score = 0;
-                    var rankings = sys.getFileContent("tourscores.txt").split("\n")
+                    var rankings = sys.getFileContent(dataDir+"tourscores.txt").split("\n")
                     if (rankings === undefined) {
                         throw ("No data")
                     }
@@ -3492,14 +3494,14 @@ function tourCommand(src, command, commandData) {
         if (command == "leaderboard") {
             try {
                 if (commandData == "") {
-                    var rankdata = sys.getFileContent("tourscores.txt")
+                    var rankdata = sys.getFileContent(dataDir+"tourscores.txt")
                 }
                 else {
                     var tourtier = find_tier(commandData)
                     if (tourtier === null) {
                         throw ("Not a valid tier")
                     }
-                    var rankdata = sys.getFileContent("tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
+                    var rankdata = sys.getFileContent(dataDir+"tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
                 }
                 if (rankdata === undefined) {
                     throw ("No data")
@@ -3560,10 +3562,10 @@ function tourCommand(src, command, commandData) {
                     }
                     var monthlyfile = "tourmonthscore_"+monthdata[0]+"_"+monthdata[1]+".txt"
                 }
-                if (sys.getFileContent(monthlyfile) === undefined) {
+                if (sys.getFileContent(dataDir+monthlyfile) === undefined) {
                     throw ("No data")
                 }
-                var rankings = sys.getFileContent(monthlyfile).split("\n")
+                var rankings = sys.getFileContent(dataDir+monthlyfile).split("\n")
                 var list = [];
                 for (var p in rankings) {
                     if (rankings[p] == "") continue;
@@ -3659,10 +3661,10 @@ function tourCommand(src, command, commandData) {
         }
         if (command == "eventwinners") {
             try {
-                if (sys.getFileContent("eventwinners.txt") === undefined) {
+                if (sys.getFileContent(dataDir+"eventwinners.txt") === undefined) {
                     throw ("No data")
                 }
-                var rankings = sys.getFileContent("eventwinners.txt").split("\n")
+                var rankings = sys.getFileContent(dataDir+"eventwinners.txt").split("\n")
                 sys.sendMessage(src, "*** EVENT WINNERS ***",tourschan)
                 for (var x in rankings) {
                     if (rankings[x].length >= 1)
@@ -4680,7 +4682,7 @@ function tourprintbracket(key) {
                 var capsmonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
                 var dateString = now.getUTCDate()+" "+capsmonths[now.getUTCMonth()]+", "+parseTimer(now.getUTCHours()*60+now.getUTCMinutes())+" GMT";
                 tours.history.unshift(getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players")
-                sys.appendToFile("eventwinners.txt", dateString + " ~ " +getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players\n")
+                sys.appendToFile(dataDir+"eventwinners.txt", dateString + " ~ " +getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players\n")
             }
             if (tours.history.length > 25) {
                 tours.history.pop()
@@ -4703,10 +4705,10 @@ function tourprintbracket(key) {
                 }
                 // write tour stat data for reload
                 if (typeof tourstats == "object") {
-                    sys.writeToFile('tastats.json', JSON.stringify(tourstats));
+                    sys.writeToFile(dataDir+'tastats.json', JSON.stringify(tourstats));
                 }
                 if (typeof tourseeds == "object") {
-                    sys.writeToFile('tourseeds.json', JSON.stringify(tourseeds));
+                    sys.writeToFile(dataDir+'tourseeds.json', JSON.stringify(tourseeds));
                 }
             }
             catch (err) {
@@ -4951,7 +4953,7 @@ function awardTourPoints(player, size, tier, delim, place) {
     var capsmonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     var dateString = now.getUTCDate()+" "+capsmonths[now.getUTCMonth()]+", "+parseTimer(now.getUTCHours()*60+now.getUTCMinutes())+" GMT";
     if (place == 1) {
-        sys.appendToFile("tourdetails.txt", player+":::"+size+":::"+tier+":::"+dateString+"\n");
+        sys.appendToFile(dataDir+"tourdetails.txt", player+":::"+size+":::"+tier+":::"+dateString+"\n");
     }
     if (size < 4 || !tourconfig.points) return;
     var scale = 0;
@@ -5006,9 +5008,9 @@ function awardTourPoints(player, size, tier, delim, place) {
         points = tierscore.b[scale]
     }
     // writing global scores
-    var data = sys.getFileContent("tourscores.txt")
+    var data = sys.getFileContent(dataDir+"tourscores.txt")
     if (data === undefined) {
-        sys.appendToFile("tourscores.txt", "")
+        sys.appendToFile(dataDir+"tourscores.txt", "")
         data = ""
     }
     var array = data.split("\n")
@@ -5029,13 +5031,13 @@ function awardTourPoints(player, size, tier, delim, place) {
     if (!onscoreboard) {
         newarray.push(player+":::"+points)
     }
-    sys.writeToFile("tourscores.txt", newarray.join("\n"))
+    sys.writeToFile(dataDir+"tourscores.txt", newarray.join("\n"))
     // writing global monthly scores
     var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "decemeber"]
     var monthlyfile = "tourmonthscore_"+themonths[now.getUTCMonth()]+"_"+now.getUTCFullYear()+".txt"
-    var data3 = sys.getFileContent(monthlyfile)
+    var data3 = sys.getFileContent(dataDir+monthlyfile)
     if (data3 === undefined) {
-        sys.appendToFile(monthlyfile, "")
+        sys.appendToFile(dataDir+monthlyfile, "")
         data3 = ""
     }
     var array3 = data3.split("\n")
@@ -5056,11 +5058,11 @@ function awardTourPoints(player, size, tier, delim, place) {
     if (!onscoreboard3) {
         newarray3.push(player+":::"+points)
     }
-    sys.writeToFile(monthlyfile, newarray3.join("\n"))
+    sys.writeToFile(dataDir+monthlyfile, newarray3.join("\n"))
     // writing tier scores
-    var data2 = sys.getFileContent("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
+    var data2 = sys.getFileContent(dataDir+"tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt")
     if (data2 === undefined) {
-        sys.appendToFile("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt", "")
+        sys.appendToFile(dataDir+"tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt", "")
         data2 = ""
     }
     var array2 = data2.split("\n")
@@ -5081,7 +5083,7 @@ function awardTourPoints(player, size, tier, delim, place) {
     if (!onscoreboard2) {
         newarray2.push(player+":::"+tierscore.a[scale])
     }
-    sys.writeToFile("tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt", newarray2.join("\n"))
+    sys.writeToFile(dataDir+"tourscores_"+tier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt", newarray2.join("\n"))
     return;
 }
 
@@ -5230,18 +5232,18 @@ function isTourMuted(src) {
 
 // writes tourmutes to tourmutes.txt
 function saveTourMutes() {
-    sys.writeToFile("tourmutes.txt", "")
+    sys.writeToFile(dataDir+"tourmutes.txt", "")
     for (var x in tours.tourmutes) {
         if (tours.tourmutes[x].expiry <= parseInt(sys.time())) {
             delete tours.tourmutes[x];
             continue;
         }
-        sys.appendToFile("tourmutes.txt", x+":::"+tours.tourmutes[x].expiry+":::"+tours.tourmutes[x].reason+":::"+tours.tourmutes[x].auth+":::"+tours.tourmutes[x].name+"\n")
+        sys.appendToFile(dataDir+"tourmutes.txt", x+":::"+tours.tourmutes[x].expiry+":::"+tours.tourmutes[x].reason+":::"+tours.tourmutes[x].auth+":::"+tours.tourmutes[x].name+"\n")
     }
 }
 
 function loadTourMutes() {
-    var mutefile = sys.getFileContent("tourmutes.txt")
+    var mutefile = sys.getFileContent(dataDir+"tourmutes.txt")
     if (mutefile === undefined) {
         return;
     }
