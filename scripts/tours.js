@@ -950,14 +950,22 @@ function load_cache() {
         // don't reload tournaments that haven't started.
         if (tours.tour[x].round === 0) {
             delete tours.tour[x];
-            if (tours.keys.indexOf(x) > -1) {
-                tours.keys.splice(tours.keys.indexOf(x), 1);
-            }
+            purgeKeys();
             continue;
         }
         tours.tour[x].time = parseInt(sys.time())+600;
         tours.tour[x].battlers = {};
         tours.tour[x].active = {};
+    }
+}
+
+function purgeKeys() {
+    for (var k=0; k < tours.keys.length; k++) {
+        var keynum = tours.keys[k];
+        if (!tours.tour.hasOwnProperty(keynum)) {
+            tours.keys.splice(tours.keys.indexOf(keynum), 1);
+            k -= 1;
+        }
     }
 }
 
@@ -985,7 +993,7 @@ function getConfigValue(file, key) {
             decaytime: 2,
             norepeat: 7,
             decayglobalrate: 2,
-            version: "2.012",
+            version: "2.013",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -1031,7 +1039,7 @@ function initTours() {
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         norepeat: parseInt(getConfigValue("tourconfig.txt", "norepeat")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.012",
+        version: "2.013",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1598,13 +1606,7 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "purgekeys") {
-                for (var k=0; k < tours.keys.length; k++) {
-                    var keynum = tours.keys[k];
-                    if (!tours.tour.hasOwnProperty(keynum)) {
-                        tours.keys.splice(tours.keys.indexOf(keynum), 1);
-                        k -= 1;
-                    }
-                }
+                purgeKeys();
                 sendBotMessage(src,"Purged non-usable keys!",tourschan,false)
                 return true;
             }
@@ -2337,9 +2339,7 @@ function tourCommand(src, command, commandData) {
                     refreshTicks(true);
                 }
                 delete tours.tour[key];
-                if (tours.keys.indexOf(key) > -1) {
-                    tours.keys.splice(tours.keys.indexOf(key), 1);
-                }
+                purgeKeys();
                 if (tours.globaltime !== -1) {
                     var variance = calcVariance();
                     tours.globaltime = parseInt(sys.time()) + parseInt(tourconfig.abstourbreak/variance); // default 10 mins b/w signups, + 5 secs per user in chan
@@ -4415,9 +4415,7 @@ function tourinitiate(key) {
             }
             delete tours.tour[key];
             tours.metrics.failedstarts += 1;
-            if (tours.keys.indexOf(key) > -1) {
-                tours.keys.splice(tours.keys.indexOf(key), 1)
-            }
+            purgeKeys();
             return;
         }
         toursortbracket(size, key)
@@ -4727,13 +4725,11 @@ function tourprintbracket(key) {
                 tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
                 saveEventPoints();
             }
-            if (tours.keys.indexOf(key) > -1) {
-                tours.keys.splice(tours.keys.indexOf(key), 1);
-            }
             if (tours.keys.length === 0 && tours.globaltime > 0) {
                 tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
             }
             delete tours.tour[key];
+            purgeKeys();
             if (isevent) {
                 refreshTicks(true);
             }
@@ -4748,9 +4744,7 @@ function tourprintbracket(key) {
                     refreshTicks(true);
                 }
                 delete tours.tour[key];
-                if (tours.keys.indexOf(key) > -1) {
-                    tours.keys.splice(tours.keys.indexOf(key), 1);
-                }
+                purgeKeys();
                 if (tours.keys.length === 0 && tours.globaltime > 0) {
                     tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
                 }

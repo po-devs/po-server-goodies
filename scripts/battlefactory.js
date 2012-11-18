@@ -7,7 +7,8 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.83";
+var bfversion = "0.85";
+var dataDir = "bfdata/";
 var bfsets, pokedb, working;
 var randomgenders = true; // set to false if you want to play with set genders
 var utilities = require('utilities.js');
@@ -16,10 +17,11 @@ var utilities = require('utilities.js');
 var html_escape = utilities.html_escape;
 
 function initFactory() {
+    sys.makeDir("bfdata");
     try {
-        var file = sys.getFileContent("bfteams.json");
+        var file = sys.getFileContent(dataDir+"bfteams.json");
         if (file === undefined) {
-            var url = Config.base_url+"bfteams.json";
+            var url = Config.base_url+dataDir+"bfteams.json";
             normalbot.sendAll("Teams file not found, fetching teams from "+url);
             sys.webCall(url, function(resp) {
                 if (resp !== "") {
@@ -29,7 +31,7 @@ function initFactory() {
                         if (res.errors.length >= 1) {
                             throw "Bad File";
                         }
-                        sys.writeToFile('bfteams.json', resp);
+                        sys.writeToFile(dataDir+'bfteams.json', resp);
                         bfsets = test;
                         sendChanAll('Updated Battle Factory Teams!', staffchannel);
                     }
@@ -98,7 +100,7 @@ function dumpData(tar, team) {
 // Whether the data is readable or not
 function isReadable() {
     try {
-        var file = JSON.parse(sys.getFileContent("bfteams.json"));
+        var file = bfsets;
     }
     catch (err) {
         return false;
@@ -113,7 +115,7 @@ function isReadable() {
 
 function refresh() {
     try {
-        var file = sys.getFileContent("bfteams.json");
+        var file = sys.getFileContent(dataDir+"bfteams.json");
         bfsets = JSON.parse(file);
         var message = [];
         if (bfsets.hasOwnProperty('desc')) {
@@ -182,7 +184,7 @@ function toNumber(charstring) {
 
 function factoryCommand(src, command, commandData) {
     if (command == "updateteams") {
-        var url = Config.base_url+"bfteams.json";
+        var url = Config.base_url+dataDir+"bfteams.json";
         if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
             url = commandData;
         }
@@ -202,7 +204,7 @@ function factoryCommand(src, command, commandData) {
                     if (res.suggestions.length > 0) {
                         sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
                     }
-                    sys.writeToFile('bfteams.json', resp);
+                    sys.writeToFile(dataDir+'bfteams.json', resp);
                     sendChanAll('Updated Battle Factory Teams!', staffchannel);
                     refresh();
                 }
@@ -283,7 +285,7 @@ function factoryCommand(src, command, commandData) {
     else if (command == "scansets") {
         var res = {};
         var checkfile;
-        var filename = "bfteams.json";
+        var filename = dataDir+"bfteams.json";
         if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
             var url = commandData;
             normalbot.sendChanMessage(src, "Fetching teams from "+url+" for checking");
@@ -321,7 +323,8 @@ function factoryCommand(src, command, commandData) {
                 if (commandData !== "") {
                     filename = commandData;
                 }
-                var test = sys.getFileContent(filename);
+                // Only allow search of bfdata directory
+                var test = sys.getFileContent(dataDir+filename);
                 if (test === undefined) {
                     throw "Invalid File Path: The file '"+filename+"' does not exist or could not be accessed";
                 }
