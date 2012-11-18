@@ -65,10 +65,10 @@ require = function require(module_name) {
     module.exports = {};
     module.source = module_name;
     with (module) {
-        var content = sys.getFileContent(module_name);
+        var content = sys.getFileContent("scripts/"+module_name);
         if (content) {
             try {
-                 eval(sys.getFileContent(module_name));
+                 eval(sys.getFileContent("scripts/"+module_name));
             } catch(e) {
                 if (this.staffchannel)
                     sys.sendAll("Error loading module " + module_name + ": " + e + (e.lineNumber ? " on line: " + e.lineNumber : ""), this.staffchannel);
@@ -88,8 +88,8 @@ var updateModule = function updateModule(module_name, callback) {
    if (/^https?:\/\//.test(module_name))
       url = module_name;
    else
-      url = base_url + module_name;
-   var fname = module_name.split(/\//).pop();
+      url = base_url + "scripts/"+ module_name;
+   var fname = "scripts/"+module_name.split(/\//).pop();
    if (!callback) {
        var resp = sys.synchronousWebCall(url);
        if (resp === "") return {};
