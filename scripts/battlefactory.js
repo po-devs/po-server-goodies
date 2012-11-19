@@ -1187,6 +1187,7 @@ module.exports = {
     stepEvent : function() {
         if (parseInt(sys.time())%saveInterval === 0) {
             autoSave();
+            normalbot.sendAll("Autosaved user generated sets.", teamrevchan);
         }
     },
     init: function() {
