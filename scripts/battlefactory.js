@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "0.99";
+var bfversion = "0.995";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -554,6 +554,10 @@ function factoryCommand(src, command, commandData) {
             return;
         }
         var accept = (userqueue.splice(0,1))[0];
+        if (accept.ip == sys.ip(src) && sys.auth(src) < 2) {
+            normalbot.sendChanMessage(src, "Can't accept your own sets.");
+            return;
+        }
         sendChanAll(accept.name+"'s submission was accepted by "+sys.name(src),teamrevchan);
         var teamsave = usersets;
         var team = accept.sets;
