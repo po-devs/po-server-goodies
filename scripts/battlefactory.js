@@ -1133,7 +1133,7 @@ module.exports = {
         }
     },
     afterChannelJoin : function(player, chan) {
-        if (chan === sys.channelId('BF Review') && sys.auth(player) > 1) {
+        if (chan === sys.channelId('BF Review') && sys.auth(player) >= 1) {
             sendQueueItem(player, 0)
         }
     },
