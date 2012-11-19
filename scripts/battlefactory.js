@@ -14,11 +14,10 @@ var bfversion = "0.96";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
-var bfsets, pokedb, working, usersets, userqueue, messagebox, teamrevchan;
+var bfsets, pokedb, working, usersets, userqueue, messagebox, teamrevchan, submitbans;
 var randomgenders = true; // set to false if you want to play with set genders
 var utilities = require('utilities.js');
 var saveInterval = 3600; // autosave every 1 hour
-// var reviewers = ['Aerith', 'SteelEdges', 'Avatar Roku', 'Kneesocks']; // people who can review sets
 
 // Will escape "&", ">", and "<" symbols for HTML output.
 var html_escape = utilities.html_escape;
@@ -68,6 +67,12 @@ function initFactory() {
     catch (e) {
         sendChanAll("No Battle Factory queue detected!", staffchannel);
         userqueue = [];
+    }
+    try {
+        submitbans = JSON.parse(sys.getFileContent(submitDir+"bans.json"));
+    }
+    catch (e) {
+        submitbans = {};
     }
     try {
         usersets = JSON.parse(sys.getFileContent(dataDir+"bfteams_user.json"));
@@ -453,8 +458,12 @@ function factoryCommand(src, command, commandData) {
     }
     else if (command == "submitsets") {
         // This will export the first team to a submission queue
-        if (sys.auth(src) < 1 && SESSION.users(src).contributions === undefined) {
-            normalbot.sendChanMessage(src, "You don't have the permissions to submit sets.");
+        if (!sys.dbRegistered(sys.name(src))) {
+            normalbot.sendChanMessage(src, "You need to register to submit sets.");
+            return;
+        }
+        if (submitbans.hasOwnProperty(sys.ip(src))) {
+            normalbot.sendChanMessage(src, "You are banned from submitting sets!");
             return;
         }
         var submissions = 0;
@@ -463,7 +472,7 @@ function factoryCommand(src, command, commandData) {
                 submissions += 1;
             }
         }
-        var maxsubmissions = 20;
+        var maxsubmissions = sys.auth(src) >= 1 ? 100 : 15;
         if (sys.auth(src) < 2 && submissions >= maxsubmissions) {
             normalbot.sendChanMessage(src, "You already have "+maxsubmissions+" or more submissions in the queue, please wait until they get reviewed!");
             return;
@@ -581,6 +590,58 @@ function factoryCommand(src, command, commandData) {
     else if (command == 'savesets') {
         autoSave();
         normalbot.sendChanMessage(src, "Saved user generated sets!");
+        return;
+    }
+    else if (command == 'submitbans') {
+        sendChanMessage(src, "*** SUBMIT BANS ***");
+        for (var j in submitbans) {
+            sendChanMessage(src, submitbans[j].user+": Banned by "+submitbans[j].auth);
+        }
+        sendChanMessage(src, "*** END OF SUBMIT BANS ***");
+    }
+    else if (command == 'submitban') {
+        if (commandData === "") {
+            normalbot.sendChanMessage(src, "Must specify a user!");
+            return;
+        }
+        var target = commandData;
+        var tarip = sys.dbIp(target);
+        if (tarip === undefined) {
+            normalbot.sendChanMessage(src, "No such user.");
+            return;
+        }
+        var maxAuth = sys.maxAuth(sys.dbIp(target));
+        if (maxAuth >= 1) {
+            normalbot.sendChanMessage(src, "Can't submit ban auth.");
+            return;
+        }
+        if (submitbans.hasOwnProperty(tarip)) {
+            normalbot.sendChanMessage(src, commandData+" is already banned from submitting!");
+            return;
+        }
+        submitbans[tarip] = {'user': commandData.toLowerCase(), 'auth': sys.name(src)};
+        normalbot.sendAll(commandData+" was banned from submitting sets by "+sys.name(src)+"!",teamrevchan);
+        sys.writeToFile(submitDir+"bans.json", JSON.stringify(submitbans));
+        return;
+    }
+    else if (command == 'submitunban') {
+        if (commandData === "") {
+            normalbot.sendChanMessage(src, "Must specify a user!");
+            return;
+        }
+        var target = commandData;
+        var tarip = sys.dbIp(target);
+        if (tarip === undefined) {
+            normalbot.sendChanMessage(src, "No such user.");
+            return;
+        }
+        if (!submitbans.hasOwnProperty(tarip)) {
+            normalbot.sendChanMessage(src, commandData+" is not banned from submitting!");
+            return;
+        }
+        delete submitbans[tarip];
+        normalbot.sendAll(commandData+" was unbanned from submitting sets by "+sys.name(src)+"!",teamrevchan);
+        sys.writeToFile(submitDir+"bans.json", JSON.stringify(submitbans));
         return;
     }
     else return 'no command';
@@ -1193,7 +1254,9 @@ module.exports = {
                     "/rejectset: Rejects the current set in the queue",
                     "/nextset: Goes to the next set in the queue",
                     "/savesets: Saves user generated Battle Factory sets (use before updating/server downtime)",
-                    "/submitsets: Submits your first team in teambuilder for the battle factory (sets are reviewed)"
+                    "/submitsets: Submits your first team in teambuilder for the battle factory (sets are reviewed)",
+                    "/submit[un]ban: [Un]bans players from submitting sets",
+                    "/submitbans: Views list of submit bans"
                 ];
             }
             else {
