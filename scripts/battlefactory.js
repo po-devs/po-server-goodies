@@ -466,6 +466,10 @@ function factoryCommand(src, command, commandData) {
             normalbot.sendChanMessage(src, "You are banned from submitting sets!");
             return;
         }
+        if (sys.tier(src, 0) != "Wifi OU") {
+            normalbot.sendChanMessage(src, "Your team must be in Wifi OU to submit it!");
+            return;
+        }
         var submissions = 0;
         for (var q in userqueue) {
             if (userqueue[q].ip == sys.ip(src) || userqueue[q].name == sys.name(src)) {
