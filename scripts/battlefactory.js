@@ -1082,10 +1082,10 @@ module.exports = {
             command = message.substr(0).toLowerCase();
         }
         if ((sys.auth(source) > 2 || (reviewers.indexOf(sys.name(src)) > -1 && sys.auth(source) >= 1)) || ["bfversion", "submitsets"].indexOf(command) > -1) {
-            if (['acceptset', 'rejectset', 'checkqueue', 'nextset'].indexOf(command) > -1 && channel != teamrevchan) {
+            /*if (['acceptset', 'rejectset', 'checkqueue', 'nextset'].indexOf(command) > -1 && channel != teamrevchan) {
                 normalbot.sendChanMessage(source, "These commands will only work in the #BF Review Channel!");
                 return true;
-            }
+            }*/
             if (factoryCommand(source, command, commandData) != 'no command') {
                 return true;
             }
