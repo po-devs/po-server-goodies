@@ -444,8 +444,9 @@ function factoryCommand(src, command, commandData) {
                 submissions += 1;
             }
         }
-        if (sys.auth(src) < 2 && submissions > 2) {
-            normalbot.sendChanMessage(src, "You already have 3 or more submissions in the queue, please wait until they get reviewed!");
+        var maxsubmissions = 20;
+        if (sys.auth(src) < 2 && submissions >= maxsubmissions) {
+            normalbot.sendChanMessage(src, "You already have "+maxsubmissions+" or more submissions in the queue, please wait until they get reviewed!");
             return;
         }
         var team = [];
@@ -490,12 +491,14 @@ function factoryCommand(src, command, commandData) {
             normalbot.sendChanMessage(src, "You have no Pokemon!");
             return;
         }
-        var submission = {
-            'ip': sys.ip(src),
-            'name': sys.name(src),
-            'sets': team
-        };
-        userqueue.push(submission);
+        for (var s in team) {
+            var submission = {
+                'ip': sys.ip(src),
+                'name': sys.name(src),
+                'sets': [team[s]]
+            };
+            userqueue.push(submission);
+        }
         normalbot.sendChanMessage(src, "Submitted your sets. See your submission below.");
         var sets = [];
         for (var b in team) {
