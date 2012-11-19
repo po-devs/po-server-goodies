@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "0.95";
+var bfversion = "0.96";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -228,6 +228,25 @@ function seeQueueItem(index) {
     sendChanHtmlAll("<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", teamrevchan);
     sendChanAll("", teamrevchan);
     normalbot.sendChanAll("Use /acceptset to accept this submission, /rejectset to reject it, or /nextset to view the next and come back to this later.", teamrevchan);
+}
+
+function sendQueueItem(src, index) {
+    if (index > userqueue.length || index < 0 || userqueue.length === 0) {
+        normalbot.sendMessage(src, "Nothing in the queue"+(index === 0 ? "." : " at index "+index), teamrevchan);
+        return;
+    }
+    var submitinfo = userqueue[0];
+    var sets = [];
+    normalbot.sendMessage(src, "Queue length is currently "+userqueue.length+". The set for review is shown below.", teamrevchan);
+    sys.sendMessage(src, "", teamrevchan);
+    normalbot.sendMessage(src, "User: "+submitinfo.name, teamrevchan);
+    var pokesets = submitinfo.sets;
+    for (var b in pokesets) {
+        sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
+    }
+    sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", teamrevchan);
+    sys.sendMessage(src, "", teamrevchan);
+    normalbot.sendMessage(src, "Use /acceptset to accept this submission, /rejectset to reject it, or /nextset to view the next and come back to this later.", teamrevchan);
 }
 
 function factoryCommand(src, command, commandData) {
@@ -1111,6 +1130,11 @@ module.exports = {
         catch (err) {
             sendChanAll("Error in starting battle factory: "+err, staffchannel);
             working = false;
+        }
+    },
+    afterChannelJoin : function(player, chan) {
+        if (chan === sys.channelId('BF Review') && sys.auth(player) > 1) {
+            sendQueueItem(player, 0)
         }
     },
     beforeChallengeIssued : function(source, dest, clauses, rated, mode, team, destTier) {
