@@ -18,7 +18,7 @@ var bfsets, pokedb, working, usersets, userqueue, messagebox, teamrevchan;
 var randomgenders = true; // set to false if you want to play with set genders
 var utilities = require('utilities.js');
 var saveInterval = 3600; // autosave every 1 hour
-var reviewers = ['Aerith', 'SteelEdges', 'Avatar Roku', 'Kneesocks']; // people who can review sets
+// var reviewers = ['Aerith', 'SteelEdges', 'Avatar Roku', 'Kneesocks']; // people who can review sets
 
 // Will escape "&", ">", and "<" symbols for HTML output.
 var html_escape = utilities.html_escape;
@@ -1081,9 +1081,13 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if ((sys.auth(source) > 2 || (reviewers.indexOf(sys.name(source)) > -1 && sys.auth(source) >= 1)) || ["bfversion", "submitsets"].indexOf(command) > -1) {
+        if (sys.auth(source) > 1 || ["bfversion", "submitsets"].indexOf(command) > -1) {
             if (['acceptset', 'rejectset', 'checkqueue', 'nextset'].indexOf(command) > -1 && channel != sys.channelId('BF Review')) {
                 normalbot.sendChanMessage(source, "These commands will only work in the #BF Review Channel!");
+                return true;
+            }
+            if (['updateteams'].indexOf(command) > -1 && sys.auth(source) < 3 && sys.name(source) != "Aerith") {
+                normalbot.sendChanMessage(source, "You can't use this command!");
                 return true;
             }
             if (factoryCommand(source, command, commandData) != 'no command') {
@@ -1149,7 +1153,7 @@ module.exports = {
     onHelp: function(src, topic, channel) {
         var help = [];
         if (topic == "battlefactory") {
-            if (sys.auth(src) > 2 || (reviewers.indexOf(sys.name(src)) > -1 && sys.auth(src) >= 1)) {
+            if (sys.auth(src) > 1) {
                 help = [
                     "/bfversion: Gives information about the battle factory",
                     "/[user]pokeslist: Views the list of installed Pokemon",
