@@ -76,7 +76,7 @@ function initFactory() {
         sendChanAll("No Battle Factory user sets detected!", staffchannel);
         usersets = {};
     }
-    var teamrevchan = utilities.get_or_create_channel("BF Review");
+    teamrevchan = utilities.get_or_create_channel("BF Review");
     sendChanAll("Version "+bfversion+" of the Battle Factory loaded successfully!", staffchannel);
     working = true;
 }
