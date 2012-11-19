@@ -1081,11 +1081,11 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if ((sys.auth(source) > 2 || (reviewers.indexOf(sys.name(src)) > -1 && sys.auth(source) >= 1)) || ["bfversion", "submitsets"].indexOf(command) > -1) {
-            /*if (['acceptset', 'rejectset', 'checkqueue', 'nextset'].indexOf(command) > -1 && channel != teamrevchan) {
+        if ((sys.auth(source) > 2 || (reviewers.indexOf(sys.name(source)) > -1 && sys.auth(source) >= 1)) || ["bfversion", "submitsets"].indexOf(command) > -1) {
+            if (['acceptset', 'rejectset', 'checkqueue', 'nextset'].indexOf(command) > -1 && channel != sys.channelId('BF Review')) {
                 normalbot.sendChanMessage(source, "These commands will only work in the #BF Review Channel!");
                 return true;
-            }*/
+            }
             if (factoryCommand(source, command, commandData) != 'no command') {
                 return true;
             }
@@ -1148,7 +1148,6 @@ module.exports = {
     },
     onHelp: function(src, topic, channel) {
         var help = [];
-
         if (topic == "battlefactory") {
             if (sys.auth(src) > 2 || (reviewers.indexOf(sys.name(src)) > -1 && sys.auth(src) >= 1)) {
                 help = [
