@@ -1081,7 +1081,7 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (sys.auth(source) > 1 || ["bfversion", "submitsets"].indexOf(command) > -1) {
+        if (sys.auth(source) >= 1 || ["bfversion", "submitsets"].indexOf(command) > -1) {
             if (['acceptset', 'rejectset', 'checkqueue', 'nextset'].indexOf(command) > -1 && channel != sys.channelId('BF Review')) {
                 normalbot.sendChanMessage(source, "These commands will only work in the #BF Review Channel!");
                 return true;
@@ -1153,7 +1153,7 @@ module.exports = {
     onHelp: function(src, topic, channel) {
         var help = [];
         if (topic == "battlefactory") {
-            if (sys.auth(src) > 1) {
+            if (sys.auth(src) >= 1) {
                 help = [
                     "/bfversion: Gives information about the battle factory",
                     "/[user]pokeslist: Views the list of installed Pokemon",
