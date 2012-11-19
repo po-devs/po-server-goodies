@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "0.96";
+var bfversion = "0.99";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -528,6 +528,7 @@ function factoryCommand(src, command, commandData) {
             userqueue.push(submission);
         }
         normalbot.sendChanMessage(src, "Submitted your sets. See your submission below.");
+        normalbot.sendAll(sys.name(src)+" submitted some sets for Battle Factory.", teamrevchan);
         var sets = [];
         for (var b in team) {
             sets.push(getReadablePoke(team[b]).join("<br/>"));
