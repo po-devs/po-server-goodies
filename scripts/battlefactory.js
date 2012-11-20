@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "0.995";
+var bfversion = "1.000";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -330,7 +330,7 @@ function factoryCommand(src, command, commandData) {
     }
     else if (command == "pokesets" || command == "userpokesets") {
         var sets = [];
-        var id = sys.pokeNum(commandData);
+        var id = sys.pokeNum(commandData)%65536;
         var revsets = command == "pokesets" ? bfsets : usersets;
         if (!revsets.hasOwnProperty(id)) {
             normalbot.sendChanMessage(src, "No sets exist for that pokemon.");
@@ -355,10 +355,10 @@ function factoryCommand(src, command, commandData) {
         }
         return;
     }
-    else if (command == "scansets") {
+    else if (command == "scansets" || command == "scanusersets") {
         var res = {};
         var checkfile;
-        var filename = "bfteams.json";
+        var filename = command == "scansets" ? "bfteams.json" : "bfteams_user.json";
         if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
             var url = commandData;
             normalbot.sendChanMessage(src, "Fetching teams from "+url+" for checking");
@@ -553,12 +553,12 @@ function factoryCommand(src, command, commandData) {
             normalbot.sendChanMessage(src, "Nothing in the queue.");
             return;
         }
-        var accept = (userqueue.splice(0,1))[0];
-        if (accept.ip == sys.ip(src) && sys.auth(src) < 2) {
+        var accept = userqueue[0];
+        if (accept.ip == sys.ip(src) && sys.auth(src) < 2 && sys.name(src) != "Aerith") {
             normalbot.sendChanMessage(src, "Can't accept your own sets.");
             return;
         }
-        sendChanAll(accept.name+"'s submission was accepted by "+sys.name(src),teamrevchan);
+        normalbot.sendAll(accept.name+"'s submission was accepted by "+sys.name(src),teamrevchan);
         var teamsave = usersets;
         var team = accept.sets;
         // Write the short code
@@ -576,6 +576,7 @@ function factoryCommand(src, command, commandData) {
             }
         }
         usersets = teamsave;
+        userqueue.splice(0,1);
         seeQueueItem(0);
         return;
     }
@@ -584,9 +585,10 @@ function factoryCommand(src, command, commandData) {
             normalbot.sendChanMessage(src, "Nothing in the queue.");
             return;
         }
-        var reject = (userqueue.splice(0,1))[0];
+        var reject = userqueue[0];
         normalbot.sendChanMessage(src, "You rejected the current set.");
-        sendChanAll(reject.name+"'s submission was rejected by "+sys.name(src),teamrevchan);
+        normalbot.sendAll(reject.name+"'s submission was rejected by "+sys.name(src),teamrevchan);
+        userqueue.splice(0,1);
         seeQueueItem(0);
         return;
     }
@@ -599,6 +601,31 @@ function factoryCommand(src, command, commandData) {
     else if (command == 'savesets') {
         autoSave();
         normalbot.sendChanMessage(src, "Saved user generated sets!");
+        return;
+    }
+    else if (command == 'deleteset') {
+        var found = false;
+        for (var u in usersets) {
+            var setlist = usersets[u];
+            var index = setlist.indexOf(commandData);
+            if (index > -1) {
+                setlist.splice(index,1);
+                if (setlist.length === 0) {
+                    delete usersets[u];
+                }
+                else {
+                    usersets[u] = setlist;
+                }
+                found = true;
+            }
+        }
+        if (!found) {
+            normalbot.sendChanMessage(src, "No such set exists!");
+            return;
+        }
+        var deletemsg = getReadablePoke(commandData);
+        sendChanHtmlAll("<table border='2'><tr><td style='background-color:#ff7777;'><pre>"+deletemsg.join("<br/>")+"</pre></td></tr></table>",teamrevchan);
+        normalbot.sendAll(sys.name(src)+" deleted set id "+commandData+"!", teamrevchan);
         return;
     }
     else if (command == 'submitbans') {
@@ -855,6 +882,12 @@ function setlint(checkfile, strict) {
                 if (ctestprop.item === sys.item(0) || ctestprop.item === undefined) {
                     warnings.push("<td>Missing Item</td><td>Property '"+html_escape(x)+"'; set "+set+": Not holding an item.</td>");
                 }
+                if (ctestprop.nature === undefined) {
+                    errors.push("<td>Invalid Nature</td><td>Property '"+html_escape(x)+"'; set "+set+": This set has an invalid nature.</td>");
+                }
+                if ([sys.nature(0), sys.nature(6), sys.nature(12), sys.nature(18), sys.nature(24)].indexOf(ctestprop.nature) > -1) {
+                    suggestions.push("<td>Neutral Nature?</td><td>Property '"+html_escape(x)+"'; set "+set+": This set has a Neutral Nature (may not be what you intend).</td>");
+                }
                 var cnummoves = 0;
                 for (var cm = 0; cm < 4; cm++) {
                     if (ctestprop.moves[cm] === sys.move(0) || ctestprop.moves[cm] === undefined) {
@@ -881,7 +914,7 @@ function setlint(checkfile, strict) {
                     }
                 }
                 if (cttlevsum > 510) {
-                    errors.push("<td>Too many EVs</td><td>Property '"+html_escape(x)+"'; set "+set+": This Pokemon could have more EVs.</td>");
+                    errors.push("<td>Too many EVs</td><td>Property '"+html_escape(x)+"'; set "+set+"; maximum sum of EVs must not exceed 510.</td>");
                 }
                 else if (cttlevsum < 508) {
                     warnings.push("<td>Unassigned EVs</td><td>Property '"+html_escape(x)+"'; set "+set+": This Pokemon could have more EVs.</td>");
@@ -922,7 +955,7 @@ function getReadablePoke(set) {
     };
     var genders = ['', '(M) ', '(F) '];
     var stats = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
-    var msg = [info.poke+" "+genders[info.gender]+"@ "+info.item];
+    var msg = [set, info.poke+" "+genders[info.gender]+"@ "+info.item];
     msg.push("Ability: "+info.ability, info.nature+" Nature, Level "+info.level);
     var evlist = [];
     var dvlist = [];
@@ -1173,9 +1206,13 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (sys.auth(source) >= 1 || ["bfversion", "submitsets"].indexOf(command) > -1) {
+        if (sys.auth(source) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(source) || ["bfversion", "submitsets"].indexOf(command) > -1) {
             if (['acceptset', 'rejectset', 'checkqueue', 'nextset'].indexOf(command) > -1 && channel != sys.channelId('BF Review')) {
                 normalbot.sendChanMessage(source, "These commands will only work in the #BF Review Channel!");
+                return true;
+            }
+            if (['submitban', 'submitunban', 'submitbans', 'scansets'].indexOf(command) > -1 && sys.auth(source) < 1) {
+                normalbot.sendChanMessage(source, "You can't use this command!");
                 return true;
             }
             if (['updateteams'].indexOf(command) > -1 && sys.auth(source) < 3 && sys.name(source) != "Aerith") {
@@ -1204,7 +1241,7 @@ module.exports = {
         }
     },
     afterChannelJoin : function(player, chan) {
-        if (chan === sys.channelId('BF Review') && sys.auth(player) >= 1) {
+        if (chan === sys.channelId('BF Review') && (sys.auth(player) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(player))) {
             sendQueueItem(player, 0)
         }
     },
@@ -1251,17 +1288,18 @@ module.exports = {
     onHelp: function(src, topic, channel) {
         var help = [];
         if (topic == "battlefactory") {
-            if (sys.auth(src) >= 1) {
+            if (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src)) {
                 help = [
                     "/bfversion: Gives information about the battle factory",
                     "/[user]pokeslist: Views the list of installed Pokemon",
                     "/pokecode [alpha code]: Converts a code to readable format.",
                     "/[user]pokesets [poke]: Gets the sets for that pokemon in readable format",
                     "/updateteams [url]: Update teams from the web (url is optional)",
-                    "/scansets [url/location]: Scan a set file for any critical errors (scans current if no file specified)",
+                    "/scansets [url/location]: Scan a set file for any critical errors (scans current if no file specified, /scanusersets scans the user sets)",
                     "/checkqueue: Checks the current set in the queue",
                     "/acceptset: Accepts the current set in the queue",
                     "/rejectset: Rejects the current set in the queue",
+                    "/deleteset [code]: Deletes a faulty set.",
                     "/nextset: Goes to the next set in the queue",
                     "/savesets: Saves user generated Battle Factory sets (use before updating/server downtime)",
                     "/submitsets: Submits your first team in teambuilder for the battle factory (sets are reviewed)",
