@@ -7,7 +7,7 @@ var utilities = require("utilities.js");
 var triviachan, revchan;
 var triviabot = new Bot("Psyduck");
 
-var testfiles = ['triviaq.json', 'trivreview.json', 'tadmins.txt'];
+var testfiles = ['triviaq.json', 'trivreview.json'];
 
 var triviaCategories = [
     'Anime/Manga',
@@ -674,13 +674,12 @@ function TriviaAdmin(file)
     this.admins = [];
     var fileContent = sys.getFileContent(this.file);
     if (fileContent === undefined || fileContent === "") {
-		this.saveAdmins();
-    } else {
-        try {
-            this.admins = JSON.parse(fileContent);
-        } catch(e) {
-            // TODO: recovery
-        }
+		sys.writeToFile(file, "[]");
+    }
+    try {
+        this.admins = JSON.parse(fileContent);
+    } catch(e) {
+        // TODO: recovery
     }
 }
 

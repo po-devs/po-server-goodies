@@ -3,24 +3,33 @@ Battle Factory Program Script for Pokemon Online
 
 Coding done by Shadowfist
 
-Requires bfteams.json to work, exportteam.json is optional.
+Requires bfteams.json to work.
+
+Files: bfteams.json
+Folders created: submissions, (messagebox may be used in the future, but not now)
 */
 
 // Globals
-var bfversion = "0.83";
-var bfsets, pokedb, working;
+var bfversion = "0.995";
+var dataDir = "bfdata/";
+var submitDir = dataDir+"submit/";
+var messDir = dataDir+"messages/";
+var bfsets, pokedb, working, usersets, userqueue, messagebox, teamrevchan, submitbans;
 var randomgenders = true; // set to false if you want to play with set genders
 var utilities = require('utilities.js');
+var saveInterval = 3600; // autosave every 1 hour
 
 // Will escape "&", ">", and "<" symbols for HTML output.
 var html_escape = utilities.html_escape;
 
 function initFactory() {
+    sys.makeDir("bfdata");
+    sys.makeDir("bfdata/submit");
     try {
-        var file = sys.getFileContent("bfteams.json");
+        var file = sys.getFileContent(dataDir+"bfteams.json");
         if (file === undefined) {
-            var url = Config.base_url+"bfteams.json";
-            normalbot.sendAll("Teams file not found, fetching teams from "+url);
+            var url = Config.base_url+dataDir+"bfteams.json";
+            normalbot.sendAll("Teams file not found, fetching teams from "+url, staffchannel);
             sys.webCall(url, function(resp) {
                 if (resp !== "") {
                     try {
@@ -29,7 +38,7 @@ function initFactory() {
                         if (res.errors.length >= 1) {
                             throw "Bad File";
                         }
-                        sys.writeToFile('bfteams.json', resp);
+                        sys.writeToFile(dataDir+'bfteams.json', resp);
                         bfsets = test;
                         sendChanAll('Updated Battle Factory Teams!', staffchannel);
                     }
@@ -52,8 +61,35 @@ function initFactory() {
     catch (e) {
         throw e;
     }
+    try {
+        userqueue = JSON.parse(sys.getFileContent(submitDir+"index.json"));
+    }
+    catch (e) {
+        sendChanAll("No Battle Factory queue detected!", staffchannel);
+        userqueue = [];
+    }
+    try {
+        submitbans = JSON.parse(sys.getFileContent(submitDir+"bans.json"));
+    }
+    catch (e) {
+        submitbans = {};
+    }
+    try {
+        usersets = JSON.parse(sys.getFileContent(dataDir+"bfteams_user.json"));
+    }
+    catch (e) {
+        sendChanAll("No Battle Factory user sets detected!", staffchannel);
+        usersets = {};
+    }
+    teamrevchan = utilities.get_or_create_channel("BF Review");
     sendChanAll("Version "+bfversion+" of the Battle Factory loaded successfully!", staffchannel);
     working = true;
+}
+
+// Save user generated info periodically as a backup
+function autoSave() {
+    sys.writeToFile(submitDir+"index.json", JSON.stringify(userqueue));
+    sys.writeToFile(dataDir+"bfteams_user.json", JSON.stringify(usersets));
 }
 
 function getPokeDb() {
@@ -98,7 +134,7 @@ function dumpData(tar, team) {
 // Whether the data is readable or not
 function isReadable() {
     try {
-        var file = JSON.parse(sys.getFileContent("bfteams.json"));
+        var file = bfsets;
     }
     catch (err) {
         return false;
@@ -113,7 +149,7 @@ function isReadable() {
 
 function refresh() {
     try {
-        var file = sys.getFileContent("bfteams.json");
+        var file = sys.getFileContent(dataDir+"bfteams.json");
         bfsets = JSON.parse(file);
         var message = [];
         if (bfsets.hasOwnProperty('desc')) {
@@ -180,9 +216,47 @@ function toNumber(charstring) {
     return result;
 }
 
+function seeQueueItem(index) {
+    if (index > userqueue.length || index < 0 || userqueue.length === 0) {
+        normalbot.sendChanAll("Nothing in the queue"+(index === 0 ? "." : " at index "+index), teamrevchan);
+        return;
+    }
+    var submitinfo = userqueue[0];
+    var sets = [];
+    normalbot.sendChanAll("Queue length is currently "+userqueue.length+". The set for review is shown below.", teamrevchan);
+    sendChanAll("", teamrevchan);
+    normalbot.sendChanAll("User: "+submitinfo.name, teamrevchan);
+    var pokesets = submitinfo.sets;
+    for (var b in pokesets) {
+        sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
+    }
+    sendChanHtmlAll("<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", teamrevchan);
+    sendChanAll("", teamrevchan);
+    normalbot.sendChanAll("Use /acceptset to accept this submission, /rejectset to reject it, or /nextset to view the next and come back to this later.", teamrevchan);
+}
+
+function sendQueueItem(src, index) {
+    if (index > userqueue.length || index < 0 || userqueue.length === 0) {
+        normalbot.sendMessage(src, "Nothing in the queue"+(index === 0 ? "." : " at index "+index), teamrevchan);
+        return;
+    }
+    var submitinfo = userqueue[0];
+    var sets = [];
+    normalbot.sendMessage(src, "Queue length is currently "+userqueue.length+". The set for review is shown below.", teamrevchan);
+    sys.sendMessage(src, "", teamrevchan);
+    normalbot.sendMessage(src, "User: "+submitinfo.name, teamrevchan);
+    var pokesets = submitinfo.sets;
+    for (var b in pokesets) {
+        sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
+    }
+    sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", teamrevchan);
+    sys.sendMessage(src, "", teamrevchan);
+    normalbot.sendMessage(src, "Use /acceptset to accept this submission, /rejectset to reject it, or /nextset to view the next and come back to this later.", teamrevchan);
+}
+
 function factoryCommand(src, command, commandData) {
     if (command == "updateteams") {
-        var url = Config.base_url+"bfteams.json";
+        var url = Config.base_url+dataDir+"bfteams.json";
         if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
             url = commandData;
         }
@@ -202,7 +276,7 @@ function factoryCommand(src, command, commandData) {
                     if (res.suggestions.length > 0) {
                         sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
                     }
-                    sys.writeToFile('bfteams.json', resp);
+                    sys.writeToFile(dataDir+'bfteams.json', resp);
                     sendChanAll('Updated Battle Factory Teams!', staffchannel);
                     refresh();
                 }
@@ -216,8 +290,8 @@ function factoryCommand(src, command, commandData) {
         });
         return;
     }
-    else if (command == "pokeslist") {
-        var tfile = bfsets;
+    else if (command == "pokeslist" || command == "userpokeslist") {
+        var tfile = command == "pokeslist" ? bfsets : usersets;
         var tteams = 0;
         var tsets = 0;
         for (var t in tfile) {
@@ -254,14 +328,15 @@ function factoryCommand(src, command, commandData) {
             return;
         }
     }
-    else if (command == "pokesets") {
+    else if (command == "pokesets" || command == "userpokesets") {
         var sets = [];
         var id = sys.pokeNum(commandData);
-        if (!bfsets.hasOwnProperty(id)) {
+        var revsets = command == "pokesets" ? bfsets : usersets;
+        if (!revsets.hasOwnProperty(id)) {
             normalbot.sendChanMessage(src, "No sets exist for that pokemon.");
             return;
         }
-        var pokesets = bfsets[id];
+        var pokesets = revsets[id];
         for (var b in pokesets) {
             try {
                 if (isReadable()) {
@@ -321,7 +396,8 @@ function factoryCommand(src, command, commandData) {
                 if (commandData !== "") {
                     filename = commandData;
                 }
-                var test = sys.getFileContent(filename);
+                // Only allow search of bfdata directory
+                var test = sys.getFileContent(dataDir+filename);
                 if (test === undefined) {
                     throw "Invalid File Path: The file '"+filename+"' does not exist or could not be accessed";
                 }
@@ -378,6 +454,203 @@ function factoryCommand(src, command, commandData) {
         normalbot.sendChanMessage(src, "Installed Pokemon: "+pokes.join(", "));
         normalbot.sendChanMessage(src, "Total: "+tteams+" pokes and "+tsets+" sets.");
         normalbot.sendChanMessage(src, "Team Pack Description: "+info);
+        return;
+    }
+    else if (command == "submitsets") {
+        // This will export the first team to a submission queue
+        if (!sys.dbRegistered(sys.name(src))) {
+            normalbot.sendChanMessage(src, "You need to register to submit sets.");
+            return;
+        }
+        if (submitbans.hasOwnProperty(sys.ip(src))) {
+            normalbot.sendChanMessage(src, "You are banned from submitting sets!");
+            return;
+        }
+        if (sys.tier(src, 0) != "Wifi OU") {
+            normalbot.sendChanMessage(src, "Your team must be in Wifi OU to submit it!");
+            return;
+        }
+        var submissions = 0;
+        for (var q in userqueue) {
+            if (userqueue[q].ip == sys.ip(src) || userqueue[q].name == sys.name(src)) {
+                submissions += 1;
+            }
+        }
+        var maxsubmissions = sys.auth(src) >= 1 ? 100 : 15;
+        if (sys.auth(src) < 2 && submissions >= maxsubmissions) {
+            normalbot.sendChanMessage(src, "You already have "+maxsubmissions+" or more submissions in the queue, please wait until they get reviewed!");
+            return;
+        }
+        var team = [];
+        for (var x=0;x<6;x++) {
+            var pokecode = "";
+            var poke = sys.teamPoke(src, 0, x);
+            if (poke === 0) { // don't export missingno.
+                continue;
+            }
+            // This accounts for formes
+            var pokenum = poke%65536;
+            var formnum = Math.floor(poke/65536);
+            var nature = sys.teamPokeNature(src, 0, x);
+            var ability = sys.teamPokeAbility(src, 0, x);
+            var item = sys.teamPokeItem(src, 0, x);
+            var level = sys.teamPokeLevel(src, 0, x);
+            pokecode = pokecode + toChars(pokenum,2) + toChars(formnum,1) + toChars(nature,1) + toChars(ability,2) + toChars(item,3) + toChars(level,2);
+            var movelist = [];
+            for (var m=0; m<4; m++) {
+                var move = sys.teamPokeMove(src, 0, x, m);
+                movelist.push(sys.move(move));
+                pokecode = pokecode + toChars(move, 2);
+            }
+            var evlist = [];
+            for (var e=0; e<6; e++) {
+                var ev = sys.teamPokeEV(src, 0, x, e);
+                evlist.push(ev);
+                pokecode = pokecode + toChars(ev, 2);
+            }
+            var dvlist = [];
+            for (var d=0; d<6; d++) {
+                var dv = sys.teamPokeDV(src, 0, x, d);
+                dvlist.push(dv);
+                pokecode = pokecode + toChars(dv, 1);
+            }
+            var gender = sys.teamPokeGender(src, 0, x);
+            pokecode = pokecode + toChars(gender, 1);
+            team.push(pokecode);
+        }
+        // Write the short code for export
+        if (team.length === 0) {
+            normalbot.sendChanMessage(src, "You have no Pokemon!");
+            return;
+        }
+        for (var s in team) {
+            var submission = {
+                'ip': sys.ip(src),
+                'name': sys.name(src),
+                'sets': [team[s]]
+            };
+            userqueue.push(submission);
+        }
+        normalbot.sendChanMessage(src, "Submitted your sets. See your submission below.");
+        normalbot.sendAll(sys.name(src)+" submitted some sets for Battle Factory.", teamrevchan);
+        var sets = [];
+        for (var b in team) {
+            sets.push(getReadablePoke(team[b]).join("<br/>"));
+        }
+        sendChanHtmlMessage(src, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>");
+        return;
+    }
+    else if (command == 'checkqueue') {
+        if (userqueue.length === 0) {
+            normalbot.sendChanMessage(src, "Nothing in the queue.");
+            return;
+        }
+        seeQueueItem(0);
+        return;
+    }
+    else if (command == 'acceptset') {
+        if (userqueue.length === 0) {
+            normalbot.sendChanMessage(src, "Nothing in the queue.");
+            return;
+        }
+        var accept = (userqueue.splice(0,1))[0];
+        if (accept.ip == sys.ip(src) && sys.auth(src) < 2) {
+            normalbot.sendChanMessage(src, "Can't accept your own sets.");
+            return;
+        }
+        sendChanAll(accept.name+"'s submission was accepted by "+sys.name(src),teamrevchan);
+        var teamsave = usersets;
+        var team = accept.sets;
+        // Write the short code
+        for (var g in team) {
+            var set = team[g];
+            var species = toNumber(set.substr(0,2));
+            if (teamsave.hasOwnProperty(species)) {
+                if (teamsave[species].indexOf(set) == -1) {
+                    teamsave[species].push(set);
+                }
+                continue;
+            }
+            else {
+                teamsave[species] = [set];
+            }
+        }
+        usersets = teamsave;
+        seeQueueItem(0);
+        return;
+    }
+    else if (command == 'rejectset') {
+        if (userqueue.length === 0) {
+            normalbot.sendChanMessage(src, "Nothing in the queue.");
+            return;
+        }
+        var reject = (userqueue.splice(0,1))[0];
+        normalbot.sendChanMessage(src, "You rejected the current set.");
+        sendChanAll(reject.name+"'s submission was rejected by "+sys.name(src),teamrevchan);
+        seeQueueItem(0);
+        return;
+    }
+    else if (command == 'nextset') {
+        var shift = (userqueue.splice(0,1))[0];
+        userqueue.push(shift);
+        seeQueueItem(0);
+        return;
+    }
+    else if (command == 'savesets') {
+        autoSave();
+        normalbot.sendChanMessage(src, "Saved user generated sets!");
+        return;
+    }
+    else if (command == 'submitbans') {
+        sendChanMessage(src, "*** SUBMIT BANS ***");
+        for (var j in submitbans) {
+            sendChanMessage(src, submitbans[j].user+": Banned by "+submitbans[j].auth);
+        }
+        sendChanMessage(src, "*** END OF SUBMIT BANS ***");
+    }
+    else if (command == 'submitban') {
+        if (commandData === "") {
+            normalbot.sendChanMessage(src, "Must specify a user!");
+            return;
+        }
+        var target = commandData;
+        var tarip = sys.dbIp(target);
+        if (tarip === undefined) {
+            normalbot.sendChanMessage(src, "No such user.");
+            return;
+        }
+        var maxAuth = sys.maxAuth(sys.dbIp(target));
+        if (maxAuth >= 1) {
+            normalbot.sendChanMessage(src, "Can't submit ban auth.");
+            return;
+        }
+        if (submitbans.hasOwnProperty(tarip)) {
+            normalbot.sendChanMessage(src, commandData+" is already banned from submitting!");
+            return;
+        }
+        submitbans[tarip] = {'user': commandData.toLowerCase(), 'auth': sys.name(src)};
+        normalbot.sendAll(commandData+" was banned from submitting sets by "+sys.name(src)+"!",teamrevchan);
+        sys.writeToFile(submitDir+"bans.json", JSON.stringify(submitbans));
+        return;
+    }
+    else if (command == 'submitunban') {
+        if (commandData === "") {
+            normalbot.sendChanMessage(src, "Must specify a user!");
+            return;
+        }
+        var target = commandData;
+        var tarip = sys.dbIp(target);
+        if (tarip === undefined) {
+            normalbot.sendChanMessage(src, "No such user.");
+            return;
+        }
+        if (!submitbans.hasOwnProperty(tarip)) {
+            normalbot.sendChanMessage(src, commandData+" is not banned from submitting!");
+            return;
+        }
+        delete submitbans[tarip];
+        normalbot.sendAll(commandData+" was unbanned from submitting sets by "+sys.name(src)+"!",teamrevchan);
+        sys.writeToFile(submitDir+"bans.json", JSON.stringify(submitbans));
         return;
     }
     else return 'no command';
@@ -900,12 +1173,26 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if ((sys.auth(source) > 2 || (sys.name(source) === 'Aerith' && sys.auth(source) >= 1)) || command == "bfversion") {
+        if (sys.auth(source) >= 1 || ["bfversion", "submitsets"].indexOf(command) > -1) {
+            if (['acceptset', 'rejectset', 'checkqueue', 'nextset'].indexOf(command) > -1 && channel != sys.channelId('BF Review')) {
+                normalbot.sendChanMessage(source, "These commands will only work in the #BF Review Channel!");
+                return true;
+            }
+            if (['updateteams'].indexOf(command) > -1 && sys.auth(source) < 3 && sys.name(source) != "Aerith") {
+                normalbot.sendChanMessage(source, "You can't use this command!");
+                return true;
+            }
             if (factoryCommand(source, command, commandData) != 'no command') {
                 return true;
             }
         }
         return false;
+    },
+    stepEvent : function() {
+        if (parseInt(sys.time())%saveInterval === 0) {
+            autoSave();
+            normalbot.sendAll("Autosaved user generated sets.", teamrevchan);
+        }
     },
     init: function() {
         try {
@@ -914,6 +1201,11 @@ module.exports = {
         catch (err) {
             sendChanAll("Error in starting battle factory: "+err, staffchannel);
             working = false;
+        }
+    },
+    afterChannelJoin : function(player, chan) {
+        if (chan === sys.channelId('BF Review') && sys.auth(player) >= 1) {
+            sendQueueItem(player, 0)
         }
     },
     beforeChallengeIssued : function(source, dest, clauses, rated, mode, team, destTier) {
@@ -959,19 +1251,28 @@ module.exports = {
     onHelp: function(src, topic, channel) {
         var help = [];
         if (topic == "battlefactory") {
-            if (sys.auth(src) > 2 || (sys.name(src) === 'Aerith' && sys.auth(src) >= 1)) {
+            if (sys.auth(src) >= 1) {
                 help = [
                     "/bfversion: Gives information about the battle factory",
-                    "/pokeslist: Views the list of installed Pokemon",
+                    "/[user]pokeslist: Views the list of installed Pokemon",
                     "/pokecode [alpha code]: Converts a code to readable format.",
-                    "/pokesets [poke]: Gets the sets for that pokemon in readable format",
+                    "/[user]pokesets [poke]: Gets the sets for that pokemon in readable format",
                     "/updateteams [url]: Update teams from the web (url is optional)",
-                    "/scansets [url/location]: Scan a set file for any critical errors (scans current if no file specified)"
+                    "/scansets [url/location]: Scan a set file for any critical errors (scans current if no file specified)",
+                    "/checkqueue: Checks the current set in the queue",
+                    "/acceptset: Accepts the current set in the queue",
+                    "/rejectset: Rejects the current set in the queue",
+                    "/nextset: Goes to the next set in the queue",
+                    "/savesets: Saves user generated Battle Factory sets (use before updating/server downtime)",
+                    "/submitsets: Submits your first team in teambuilder for the battle factory (sets are reviewed)",
+                    "/submit[un]ban: [Un]bans players from submitting sets",
+                    "/submitbans: Views list of submit bans"
                 ];
             }
             else {
                 help = [
-                    "/bfversion: Gives information about the battle factory"
+                    "/bfversion: Gives information about the battle factory",
+                    "/submitsets: Submits your first team in teambuilder for the battle factory (sets are reviewed)"
                 ];
             }
         }
