@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "0.999";
+var bfversion = "1.000";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -624,7 +624,7 @@ function factoryCommand(src, command, commandData) {
             return;
         }
         var deletemsg = getReadablePoke(commandData);
-        sendChanHtmlAll("<table border='2' color=red><tr><td><pre>"+deletemsg.join("<br/>")+"</pre></td></tr></table>",teamrevchan);
+        sendChanHtmlAll("<table border='2' border=red><tr><td><pre>"+deletemsg.join("<br/>")+"</pre></td></tr></table>",teamrevchan);
         normalbot.sendAll(sys.name(src)+" deleted set id "+commandData+"!", teamrevchan);
         return;
     }
