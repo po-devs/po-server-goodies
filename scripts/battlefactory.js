@@ -554,7 +554,7 @@ function factoryCommand(src, command, commandData) {
             return;
         }
         var accept = userqueue[0];
-        if (accept.ip == sys.ip(src) && sys.auth(src) < 2) {
+        if (accept.ip == sys.ip(src) && sys.auth(src) < 2 && sys.name(src) != "Aerith") {
             normalbot.sendChanMessage(src, "Can't accept your own sets.");
             return;
         }
@@ -610,7 +610,12 @@ function factoryCommand(src, command, commandData) {
             var index = setlist.indexOf(commandData);
             if (index > -1) {
                 setlist.splice(index,1);
-                usersets[u] = setlist;
+                if (setlist.length === 0) {
+                    delete usersets[u];
+                }
+                else {
+                    usersets[u] = setlist;
+                }
                 found = true;
             }
         }
