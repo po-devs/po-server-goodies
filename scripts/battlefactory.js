@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "0.998";
+var bfversion = "0.999";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -601,6 +601,26 @@ function factoryCommand(src, command, commandData) {
         normalbot.sendChanMessage(src, "Saved user generated sets!");
         return;
     }
+    else if (command == 'deleteset') {
+        var found = false;
+        for (var u in usersets) {
+            var setlist = usersets[u];
+            var index = setlist.indexOf(commandData);
+            if (index > -1) {
+                setlist.splice(index,1);
+                usersets[u] = setlist;
+                found = true;
+            }
+        }
+        if (!found) {
+            normalbot.sendChanMessage(src, "No such set exists!");
+            return;
+        }
+        var deletemsg = getReadablePoke(commandData);
+        sendChanHtmlAll("<table border='2' color=red><tr><td><pre>"+deletemsg.join("<br/>")+"</pre></td></tr></table>",teamrevchan);
+        normalbot.sendAll(sys.name(src)+" deleted set id "+commandData+"!", teamrevchan);
+        return;
+    }
     else if (command == 'submitbans') {
         sendChanMessage(src, "*** SUBMIT BANS ***");
         for (var j in submitbans) {
@@ -855,6 +875,12 @@ function setlint(checkfile, strict) {
                 if (ctestprop.item === sys.item(0) || ctestprop.item === undefined) {
                     warnings.push("<td>Missing Item</td><td>Property '"+html_escape(x)+"'; set "+set+": Not holding an item.</td>");
                 }
+                if (ctestprop.nature === undefined) {
+                    errors.push("<td>Invalid Nature</td><td>Property '"+html_escape(x)+"'; set "+set+": This set has an invalid nature.</td>");
+                }
+                if ([sys.nature(0), sys.nature(6), sys.nature(12), sys.nature(18), sys.nature(24)].indexOf(ctestprop.nature) > -1) {
+                    suggestions.push("<td>Neutral Nature?</td><td>Property '"+html_escape(x)+"'; set "+set+": This set has a Neutral Nature (may not be what you intend).</td>");
+                }
                 var cnummoves = 0;
                 for (var cm = 0; cm < 4; cm++) {
                     if (ctestprop.moves[cm] === sys.move(0) || ctestprop.moves[cm] === undefined) {
@@ -881,7 +907,7 @@ function setlint(checkfile, strict) {
                     }
                 }
                 if (cttlevsum > 510) {
-                    errors.push("<td>Too many EVs</td><td>Property '"+html_escape(x)+"'; set "+set+": This Pokemon could have more EVs.</td>");
+                    errors.push("<td>Too many EVs</td><td>Property '"+html_escape(x)+"'; set "+set+"; maximum sum of EVs must not exceed 510.</td>");
                 }
                 else if (cttlevsum < 508) {
                     warnings.push("<td>Unassigned EVs</td><td>Property '"+html_escape(x)+"'; set "+set+": This Pokemon could have more EVs.</td>");
@@ -922,7 +948,7 @@ function getReadablePoke(set) {
     };
     var genders = ['', '(M) ', '(F) '];
     var stats = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
-    var msg = [info.poke+" "+genders[info.gender]+"@ "+info.item];
+    var msg = [set, info.poke+" "+genders[info.gender]+"@ "+info.item];
     msg.push("Ability: "+info.ability, info.nature+" Nature, Level "+info.level);
     var evlist = [];
     var dvlist = [];
@@ -1266,6 +1292,7 @@ module.exports = {
                     "/checkqueue: Checks the current set in the queue",
                     "/acceptset: Accepts the current set in the queue",
                     "/rejectset: Rejects the current set in the queue",
+                    "/deleteset [code]: Deletes a faulty set.",
                     "/nextset: Goes to the next set in the queue",
                     "/savesets: Saves user generated Battle Factory sets (use before updating/server downtime)",
                     "/submitsets: Submits your first team in teambuilder for the battle factory (sets are reviewed)",
