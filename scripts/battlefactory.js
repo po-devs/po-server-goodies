@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "0.997";
+var bfversion = "0.998";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -330,7 +330,7 @@ function factoryCommand(src, command, commandData) {
     }
     else if (command == "pokesets" || command == "userpokesets") {
         var sets = [];
-        var id = sys.pokeNum(commandData);
+        var id = sys.pokeNum(commandData)%65536;
         var revsets = command == "pokesets" ? bfsets : usersets;
         if (!revsets.hasOwnProperty(id)) {
             normalbot.sendChanMessage(src, "No sets exist for that pokemon.");
@@ -355,10 +355,10 @@ function factoryCommand(src, command, commandData) {
         }
         return;
     }
-    else if (command == "scansets") {
+    else if (command == "scansets" || command == "scanusersets") {
         var res = {};
         var checkfile;
-        var filename = "bfteams.json";
+        var filename = command == "scansets" ? "bfteams.json" : "bfteams_user.json";
         if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
             var url = commandData;
             normalbot.sendChanMessage(src, "Fetching teams from "+url+" for checking");
@@ -558,7 +558,7 @@ function factoryCommand(src, command, commandData) {
             normalbot.sendChanMessage(src, "Can't accept your own sets.");
             return;
         }
-        sendChanAll(accept.name+"'s submission was accepted by "+sys.name(src),teamrevchan);
+        normalbot.sendAll(accept.name+"'s submission was accepted by "+sys.name(src),teamrevchan);
         var teamsave = usersets;
         var team = accept.sets;
         // Write the short code
@@ -586,7 +586,7 @@ function factoryCommand(src, command, commandData) {
         }
         var reject = (userqueue.splice(0,1))[0];
         normalbot.sendChanMessage(src, "You rejected the current set.");
-        sendChanAll(reject.name+"'s submission was rejected by "+sys.name(src),teamrevchan);
+        normalbot.sendAll(reject.name+"'s submission was rejected by "+sys.name(src),teamrevchan);
         seeQueueItem(0);
         return;
     }
@@ -1262,7 +1262,7 @@ module.exports = {
                     "/pokecode [alpha code]: Converts a code to readable format.",
                     "/[user]pokesets [poke]: Gets the sets for that pokemon in readable format",
                     "/updateteams [url]: Update teams from the web (url is optional)",
-                    "/scansets [url/location]: Scan a set file for any critical errors (scans current if no file specified)",
+                    "/scansets [url/location]: Scan a set file for any critical errors (scans current if no file specified, /scanusersets scans the user sets)",
                     "/checkqueue: Checks the current set in the queue",
                     "/acceptset: Accepts the current set in the queue",
                     "/rejectset: Rejects the current set in the queue",
