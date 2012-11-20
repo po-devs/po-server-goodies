@@ -624,7 +624,7 @@ function factoryCommand(src, command, commandData) {
             return;
         }
         var deletemsg = getReadablePoke(commandData);
-        sendChanHtmlAll("<table border='2' border=red><tr><td><pre>"+deletemsg.join("<br/>")+"</pre></td></tr></table>",teamrevchan);
+        sendChanHtmlAll("<table border='2'><tr><td style='background-color:#ff7777;'><pre>"+deletemsg.join("<br/>")+"</pre></td></tr></table>",teamrevchan);
         normalbot.sendAll(sys.name(src)+" deleted set id "+commandData+"!", teamrevchan);
         return;
     }
