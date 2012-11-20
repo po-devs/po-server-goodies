@@ -553,7 +553,7 @@ function factoryCommand(src, command, commandData) {
             normalbot.sendChanMessage(src, "Nothing in the queue.");
             return;
         }
-        var accept = (userqueue.splice(0,1))[0];
+        var accept = userqueue[0];
         if (accept.ip == sys.ip(src) && sys.auth(src) < 2) {
             normalbot.sendChanMessage(src, "Can't accept your own sets.");
             return;
@@ -576,6 +576,7 @@ function factoryCommand(src, command, commandData) {
             }
         }
         usersets = teamsave;
+        userqueue.splice(0,1);
         seeQueueItem(0);
         return;
     }
@@ -584,9 +585,10 @@ function factoryCommand(src, command, commandData) {
             normalbot.sendChanMessage(src, "Nothing in the queue.");
             return;
         }
-        var reject = (userqueue.splice(0,1))[0];
+        var reject = userqueue[0];
         normalbot.sendChanMessage(src, "You rejected the current set.");
         normalbot.sendAll(reject.name+"'s submission was rejected by "+sys.name(src),teamrevchan);
+        userqueue.splice(0,1);
         seeQueueItem(0);
         return;
     }
