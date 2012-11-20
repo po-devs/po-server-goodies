@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "0.995";
+var bfversion = "0.997";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -1173,9 +1173,13 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (sys.auth(source) >= 1 || ["bfversion", "submitsets"].indexOf(command) > -1) {
+        if (sys.auth(source) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(source) || ["bfversion", "submitsets"].indexOf(command) > -1) {
             if (['acceptset', 'rejectset', 'checkqueue', 'nextset'].indexOf(command) > -1 && channel != sys.channelId('BF Review')) {
                 normalbot.sendChanMessage(source, "These commands will only work in the #BF Review Channel!");
+                return true;
+            }
+            if (['submitban', 'submitunban', 'submitbans', 'scansets'].indexOf(command) > -1 && sys.auth(source) < 1) {
+                normalbot.sendChanMessage(source, "You can't use this command!");
                 return true;
             }
             if (['updateteams'].indexOf(command) > -1 && sys.auth(source) < 3 && sys.name(source) != "Aerith") {
@@ -1204,7 +1208,7 @@ module.exports = {
         }
     },
     afterChannelJoin : function(player, chan) {
-        if (chan === sys.channelId('BF Review') && sys.auth(player) >= 1) {
+        if (chan === sys.channelId('BF Review') && (sys.auth(player) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(player))) {
             sendQueueItem(player, 0)
         }
     },
@@ -1251,7 +1255,7 @@ module.exports = {
     onHelp: function(src, topic, channel) {
         var help = [];
         if (topic == "battlefactory") {
-            if (sys.auth(src) >= 1) {
+            if (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src)) {
                 help = [
                     "/bfversion: Gives information about the battle factory",
                     "/[user]pokeslist: Views the list of installed Pokemon",
