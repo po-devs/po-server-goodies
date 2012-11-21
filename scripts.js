@@ -1877,7 +1877,7 @@ init : function() {
     "1. Pokemon Online is an international server:",
     "- Respect other peoples' cultures and do not demand they speak English. Everyone is welcome at Pokemon Online, as long as they follow the rules.",
     "2. No advertising, excessive messages, inappropriate/obscene links, or text art:",
-    "- Do not post links unless they are to notable sites (YouTube, Smogon, Serebii, etc). We are not interested in your start-up community. Do not monopolize the chat with large amounts of messages, or short ones in rapid succession. Posting ASCII art is punishable with a ban, as is posting anything with any type of pornography.",
+    "- Do not post links unless they are to notable sites (Youtube, Smogon, Serebii, etc). Linking to your own YouTube video IS advertising. We are not interested in your start-up community. Do not monopolize the chat with large amounts of messages, or short ones in rapid succession. Posting ASCII art is punishable with a ban, as is posting anything with any type of pornography.",
     "3. Use Find Battle, or join tournaments instead of asking in the main chat:",
     "- The official channels on Pokemon Online have too much activity to allow battle requests in the chat. Use Find Battle or go join the tournaments channel and participate. The only exception is if you are unable to find a battle for a low-played tier, then asking once every 5 minutes or so is acceptable.",
     "4. Do not ask for authority:",
