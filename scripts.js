@@ -1830,7 +1830,7 @@ init : function() {
             dwpokemons[sys.pokeNum(dwlist[dwpok])] = true;
     }
 
-    var lclist = ["Bulbasaur", "Charmander", "Squirtle", "Croagunk", "Turtwig", "Chimchar", "Piplup", "Treecko","Torchic","Mudkip"];
+    var lclist = ["Bulbasaur", "Charmander", "Squirtle", "Croagunk", "Turtwig", "Chimchar", "Piplup", "Treecko","Torchic","Mudkip", "Pansage", "Pansear", "Panpour"];
     lcpokemons = [];
     for(dwpok in lclist) {
         lcpokemons.push(sys.pokeNum(lclist[dwpok]));
