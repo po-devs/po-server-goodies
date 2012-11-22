@@ -2447,7 +2447,6 @@ beforeLogIn : function(src) {
     }
     //var allowedNames = ["sasukeanditachi", "sasukatandkitachi", "ata", "downpour", "broon89", "ifmltrailers", "probrem?", "salamander94", "realmanofgenius", "Derinsford"];
     var allowedIps = ["74.115.245.16"];
-    var name = sys.name(src).toLowerCase();
     if (this.isRangeBanned(ip) && allowedIps.indexOf(ip) == -1) {
         normalbot.sendMessage(src, 'You are banned!');
         sys.stopEvent();
@@ -3909,7 +3908,7 @@ modCommand: function(src, command, commandData, tar) {
     }
    if (command == "tempban") {
         var tmp = commandData.split(":");
-        if (tmp.length == 0) {
+        if (tmp.length === 0) {
             normalbot.sendChanMessage(src, "Usage /tempban name:minutes.");
             return;
         }
@@ -3921,7 +3920,6 @@ modCommand: function(src, command, commandData, tar) {
         }
         tar = sys.id(target_name);
         var minutes = parseInt(minutes, 10);
-        var timeString = getTimeString(minutes);
         if (sys.auth(src) < 2 && minutes > 86400) {
             normalbot.sendChanMessage(src, "Cannot ban for longer than a day!");
             return;
@@ -4756,8 +4754,8 @@ ownerCommand: function(src, command, commandData, tar) {
     }
 
         if (sys.ip(src) == sys.dbIp("coyotte508")
-        || sys.name(src).toLowerCase() == "darkness" 
-        || sys.name(src).toLowerCase() == "lamperi" 
+        || sys.name(src).toLowerCase() == "darkness"
+        || sys.name(src).toLowerCase() == "lamperi"
         || sys.ip(src) == sys.dbIp("crystal moogle")
         || sys.name(src).toLowerCase() == "[ld]jirachier"
         || sys.ip(src) == sys.dbIp("ethan")) {
@@ -5168,8 +5166,7 @@ beforeNewMessage : function(msg) {
    if (0 && msg != "Script Check: OK") {
        sys.stopEvent();
    }
-}
-,
+},
 
 beforeNewPM: function(src){
     var user = SESSION.users(src);
@@ -5717,9 +5714,7 @@ battleSetup: function(p1,p2,battle) {
 	if (sys.auth(p2) > 3) {
 		sys.prepareItems(battle,1,{"124":1});
 	}
-}
-
-,
+},
 
 afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
     // PO logs stuff
