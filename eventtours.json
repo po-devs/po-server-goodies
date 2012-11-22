@@ -88,23 +88,19 @@
         "tier": "Adv OU"
     },
     "22-11-2012": {
-        "tier": "Wifi Uber Triples"
+        "tier": "No Preview Ubers"
     },
     "23-11-2012": {
         "tier": "Challenge Cup",
         "settings": {
-            "mode": "doubles",
             "gen": "HGSS"
         }
     },
     "24-11-2012": {
-        "tier": "Wifi Triples"
+        "tier": "No Preview OU"
     },
     "25-11-2012": {
         "tier": "Battle Factory",
-        "settings": {
-            "mode": "triples"
-        }
     },
     "26-11-2012": {
         "tier": "Wifi NU"
@@ -116,12 +112,11 @@
         "tier": "HGSS OU"
     },
     "29-11-2012": {
-        "tier": "VGC 2012"
+        "tier": "GBU Singles"
     },
     "30-11-2012": {
         "tier": "Challenge Cup",
         "settings": {
-            "mode": "doubles",
             "gen": "BW2"
         }
     }
