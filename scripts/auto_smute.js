@@ -12,7 +12,10 @@ module.exports.afterChangeTeam = function afterChangeTeam(src){
 
 module.exports.afterLogIn = function afterLogIn(src) {
     var name = sys.name(src);
-    if(sys.getColor(src) == "#ff007f" && /doj/i.test(sys.name(src))) {
+    if (SESSION.users(src).smute.active) {
+        return;
+    }
+    if (sys.getColor(src) == "#ff007f" && /doj/i.test(sys.name(src))) {
         normalbot.sendAll("Smute based on color: " + sys.name(src) + ", IP: " + sys.ip(src), staffchannel);
         var endtime = parseInt(sys.time(), 10) + 86400;
         SESSION.users(src).activate("smute", "Script", endtime, "User is probably Doj; color based auto smute", true);
