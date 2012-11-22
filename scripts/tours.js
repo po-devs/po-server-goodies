@@ -1776,8 +1776,14 @@ function tourCommand(src, command, commandData) {
                 sendBotMessage(src, "Fetching event tours from "+url, tourschan, false);
                 sys.webCall(url, function(resp) {
                     if (resp !== "") {
-                        sys.writeToFile(dataDir+'eventtours.json', resp);
-                        sendBotAll('Updated list of event tours!', tourschan, false);
+                        try {
+                            var test = JSON.parse(resp);
+                            sys.writeToFile(dataDir+'eventtours.json', resp);
+                            sendBotAll('Updated list of event tours!', tourschan, false);
+                        }
+                        catch (err) {
+                            sendBotMessage(src, 'Failed to update! [Error: '+err+']', tourschan, false);
+                        }
                     } else {
                         sendBotMessage(src, 'Failed to update!', tourschan, false);
                     }

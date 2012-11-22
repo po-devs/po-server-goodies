@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "1.000";
+var bfversion = "1.001";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -488,6 +488,10 @@ function factoryCommand(src, command, commandData) {
             if (poke === 0) { // don't export missingno.
                 continue;
             }
+            if (poke === sys.pokeNum('Ditto')) {
+                normalbot.sendChanMessage(src, "Ditto is not able to be submitted.");
+                continue;
+            }
             // This accounts for formes
             var pokenum = poke%65536;
             var formnum = Math.floor(poke/65536);
@@ -499,6 +503,11 @@ function factoryCommand(src, command, commandData) {
             var movelist = [];
             for (var m=0; m<4; m++) {
                 var move = sys.teamPokeMove(src, 0, x, m);
+                var bannedmoves = ['Double Team', 'Minimize', 'Guillotine', 'Horn Drill', 'Sheer Cold', 'Fissure'];
+                if (bannedmoves.indexOf(sys.move(move)) > -1) {
+                    normalbot.sendChanMessage(src, "The move "+sys.move(move)+" is not allowed!");
+                    continue;
+                }
                 movelist.push(sys.move(move));
                 pokecode = pokecode + toChars(move, 2);
             }
@@ -1207,7 +1216,7 @@ module.exports = {
             command = message.substr(0).toLowerCase();
         }
         if (sys.auth(source) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(source) || ["bfversion", "submitsets"].indexOf(command) > -1) {
-            if (['acceptset', 'rejectset', 'checkqueue', 'nextset'].indexOf(command) > -1 && channel != sys.channelId('BF Review')) {
+            if (['acceptset', 'rejectset', 'deleteset','checkqueue', 'nextset'].indexOf(command) > -1 && channel != sys.channelId('BF Review')) {
                 normalbot.sendChanMessage(source, "These commands will only work in the #BF Review Channel!");
                 return true;
             }
@@ -1243,6 +1252,9 @@ module.exports = {
     afterChannelJoin : function(player, chan) {
         if (chan === sys.channelId('BF Review') && (sys.auth(player) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(player))) {
             sendQueueItem(player, 0)
+        }
+        if (teamrevchan != sys.channelId("BF Review")) {
+            teamrevchan = sys.channelId("BF Review");
         }
     },
     beforeChallengeIssued : function(source, dest, clauses, rated, mode, team, destTier) {
