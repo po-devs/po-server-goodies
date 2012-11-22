@@ -2650,6 +2650,7 @@ beforeChangeTeam : function(src) {
 afterChangeTeam : function(src)
 {
     // PO logs stuff
+    callplugins("afterChangeTeam", src);
     var params = {event:'afterChangeTeam', source_id:src, channels:get_players_channels([src]), timestamp:get_timestamp()};
     append_logs(params);
     if (sys.auth(src) === 0 && this.nameIsInappropriate(src)) {

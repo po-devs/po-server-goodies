@@ -6,7 +6,12 @@ module.exports.init = function() {}; //this is just so it says when updated thou
 module.exports.beforeChatMessage = function beforeChatMessage(src, message, channel) {
 };
 
+module.exports.afterChangeTeam = function afterChangeTeam(src){
+    this.afterLogIn(src);
+};
+
 module.exports.afterLogIn = function afterLogIn(src) {
+    print(this);
     var name = sys.name(src);
     if(sys.getColor(src) == "#ff007f" && /doj/i.test(sys.name(src))) {
         normalbot.sendAll("Smute based on color: " + sys.name(src) + ", IP: " + sys.ip(src), staffchannel);
