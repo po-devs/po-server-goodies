@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "1.001";
+var bfversion = "1.002";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -1098,9 +1098,9 @@ function getStats(src, team, poke) {
     return msg;
 }
 
-function generateTeam(src, team) {
+function generateTeam(src, team, mode) {
     try {
-        var pokedata = bfsets;
+        var pokedata = mode == "user" ? usersets : bfsets;
         var teaminfo = [];
         var pokearray = [];
         var readable = isReadable();
@@ -1280,14 +1280,15 @@ module.exports = {
             return true;
         }
         if (newtier == "Battle Factory") {
-            generateTeam(src, team);
+            generateTeam(src, team, "normal");
         }
     },
     beforeBattleStarted: function(src, dest, srcteam, destteam) {
         if (sys.tier(src, srcteam) == "Battle Factory" && sys.tier(dest, destteam) == "Battle Factory") {
             try {
-                generateTeam(src, srcteam);
-                generateTeam(dest, destteam);
+                var type = sys.rand(0,2) === 1 ? "user" : "standard";
+                generateTeam(src, srcteam, type);
+                generateTeam(dest, destteam, type);
                 dumpData(src, srcteam);
                 dumpData(dest, destteam);
             }
