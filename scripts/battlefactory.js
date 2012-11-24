@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "1.002";
+var bfversion = "1.003";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -217,7 +217,7 @@ function toNumber(charstring) {
 }
 
 function seeQueueItem(index) {
-    if (index > userqueue.length || index < 0 || userqueue.length === 0) {
+    if (index > userqueue.length || index < 0 || userqueue.length === 0 || userqueue[0] === undefined) {
         normalbot.sendChanAll("Nothing in the queue"+(index === 0 ? "." : " at index "+index), teamrevchan);
         return;
     }
@@ -236,7 +236,7 @@ function seeQueueItem(index) {
 }
 
 function sendQueueItem(src, index) {
-    if (index > userqueue.length || index < 0 || userqueue.length === 0) {
+    if (index > userqueue.length || index < 0 || userqueue.length === 0 || userqueue[0] === undefined) {
         normalbot.sendMessage(src, "Nothing in the queue"+(index === 0 ? "." : " at index "+index), teamrevchan);
         return;
     }
