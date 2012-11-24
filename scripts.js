@@ -3852,9 +3852,9 @@ modCommand: function(src, command, commandData, tar) {
                    data.push("Latest " + key.substr(6).toLowerCase() + ": " + stats[key][0] + " on " + new Date(stats[key][1]*1000).toUTCString());
                }
             }
-            for (var j = 0; j < data.length; ++j) {
-                if (sys.isInChannel(src, bindChannel)) {
-                    sys.sendMessage(src, data[j], bindChannel);
+            if (sys.isInChannel(src, bindChannel)) {
+                for (var j = 0; j < data.length; ++j) {
+                        sys.sendMessage(src, data[j], bindChannel);
                 }
             }
         }
