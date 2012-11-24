@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "1.003";
+var bfversion = "1.004";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -88,6 +88,7 @@ function initFactory() {
 
 // Save user generated info periodically as a backup
 function autoSave() {
+    cleanEntries();
     sys.writeToFile(submitDir+"index.json", JSON.stringify(userqueue));
     sys.writeToFile(dataDir+"bfteams_user.json", JSON.stringify(usersets));
 }
@@ -190,6 +191,26 @@ function refresh() {
     catch (err) {
         sendChanAll("Couldn't refresh teams: "+err, staffchannel);
     }
+}
+
+function cleanEntries() {
+    var deleted = 0;
+    for (var x=0; x<userqueue.length; x++) {
+        var obj = userqueue[x];
+        if (typeof obj != 'object' || obj === null) {
+            userqueue.splice(x,1);
+            x -= 1;
+            deleted += 1;
+            continue;
+        }
+        if (!obj.hasOwnProperty('ip') || !obj.hasOwnProperty('name') || !obj.hasOwnProperty('sets')) {
+            userqueue.splice(x,1);
+            x -= 1;
+            deleted += 1;
+            continue;
+        }
+    }
+    if (deleted > 0) sendChanAll("Invalid Entries Removed: "+deleted, staffchannel);
 }
 
 function toChars(number, maxchars) {
