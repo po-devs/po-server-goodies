@@ -3853,7 +3853,9 @@ modCommand: function(src, command, commandData, tar) {
                }
             }
             for (var j = 0; j < data.length; ++j) {
-                sys.sendMessage(src, data[j], bindChannel);
+                if (sys.isInChannel(src, bindChannel)) {
+                    sys.sendMessage(src, data[j], bindChannel);
+                }
             }
         }
 
