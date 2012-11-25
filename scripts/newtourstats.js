@@ -56,6 +56,7 @@ function saveStats(elements) {
         sys.writeToFile(dataDir+"leaderboard.json", JSON.stringify(leaderboard));
         sys.writeToFile(dataDir+"eventdata.json", JSON.stringify(eventleaderboard));
         sys.writeToFile(dataDir+"tourseeds.json", JSON.stringify(tourseeds));
+        sys.writeToFile(dataDir+"eventwinners.json", JSON.stringify(eventwinners));
     }
     else {
         for (var e in elements) {
