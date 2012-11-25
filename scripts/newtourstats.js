@@ -227,7 +227,6 @@ function addWinner(player, size, tier, date, points, month) {
         'points': points,
         'month': month
     };
-    saveStats(['winners']);
 }
 
 function addEventResult(player, size, tier, datestring, ranking, points) {
@@ -945,7 +944,6 @@ module.exports = {
     },
     addtourpoints: function (player, size, tier, delim, place) {
         awardTourPoints(player, size, tier, delim, place);
-        saveStats(['leaderboard']);
     },
     addseedpoints: function (playername, tier, points) {
         awardSeedPoints(playername, tier, points);

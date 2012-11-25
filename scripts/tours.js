@@ -4137,12 +4137,12 @@ function tourprintbracket(key) {
             }
             if (isevent) {
                 tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
-                tstats.savestats(["eventleaderboard", "eventwinners", "seeds"]);
             }
             if (tours.keys.length === 0 && tours.globaltime > 0) {
                 tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
             }
             delete tours.tour[key];
+            tstats.savestats("all");
             purgeKeys();
             if (isevent) {
                 refreshTicks(true);
