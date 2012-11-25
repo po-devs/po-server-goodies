@@ -24,7 +24,7 @@ function statInit() {
     }
     catch (err) {
         eventwinners = {};
-        sendChanAll('No tour winners detected.', tourschan);
+        sendChanAll('No event winners detected.', tourschan);
     }
     try {
         leaderboard = JSON.parse(sys.getFileContent(dataDir+"leaderboard.json"));
