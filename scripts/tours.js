@@ -1353,7 +1353,8 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "importold") {
-                tstats.importold();
+                sendBotMessage(src,"This command is obsolete!",tourschan,false);
+                // tstats.importold();
                 return true;
             }
             if (command == "rundecay") {
