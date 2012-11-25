@@ -735,7 +735,7 @@ function getEventWinners(name) {
             tmp.push({'date': x, 'tier': windata[x].tier, 'size': windata[x].size, 'points': windata[x].points, 'ranking': windata[x].ranking});
         }
         while(tmp.length > 0) {
-            line = '<tr><td>'+tmp[0].date+'</td><td>'+tmp[0].tier+'</td><td>'+tmp[0].size+'</td><td>'+tmp[0].points+'</td><td>#'+tmp[0].ranking+'</td></tr>';
+            line = '<tr><td>'+toDateString(tmp[0].date)+'</td><td>'+tmp[0].tier+'</td><td>'+tmp[0].size+'</td><td>'+tmp[0].points+'</td><td>#'+tmp[0].ranking+'</td></tr>';
             tmp.splice(0,1);
             table += line;
             ++send_rows;
