@@ -6,6 +6,7 @@ module.exports = function () {
 
     var defaultMaster = "RiceKirby";
     var defaultChannel = "Hangman";
+    var defaultParts = 7;
     var minBodyParts = 5;
     var winnerDelay = 60;
     var answerDelay = 10;
@@ -183,7 +184,7 @@ module.exports = function () {
         }
         hint = h;
         word = a;
-        parts = (p && parseInt(p, 10) > 0) ? parseInt(p, 10) : minBodyParts;
+        parts = (p && parseInt(p, 10) > 0) ? parseInt(p, 10) : defaultParts;
         parts = (parts < minBodyParts) ? minBodyParts : parts;
         points = {};
         misses = {};
