@@ -593,11 +593,13 @@ function clauseCheck(key, issuedClauses) {
     var tier = tours.tour[key].tourtype;
     // force Self-KO clause every time
     var requiredClauses = sys.getClauses(tier) > 255 ? sys.getClauses(tier) : sys.getClauses(tier)+256
-    if (tours.tour[key].parameters.wifi && requiredClauses%256 < 128) {
-        requiredClauses += 128;
-    }
-    else if (!tours.tour[key].parameters.wifi && requiredClauses%256 >= 128) {
-        requiredClauses -= 128;
+    if (parameters.hasOwnProperty('wifi')) {
+        if (tours.tour[key].parameters.wifi && requiredClauses%256 < 128) {
+            requiredClauses += 128;
+        }
+        else if (!tours.tour[key].parameters.wifi && requiredClauses%256 >= 128) {
+            requiredClauses -= 128;
+        }
     }
     var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Wifi Battle", "Self-KO Clause"]
     var clause1 = false;
