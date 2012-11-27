@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "1.004";
+var bfversion = "1.005";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -1226,6 +1226,19 @@ function generateTeam(src, team, mode) {
     }
 }
 
+// tfile is a json object
+
+function numPokes(tfile) {
+    var tteams = 0;
+    for (var t in tfile) {
+        if (typeof tfile[t] != "object") {
+            continue;
+        }
+        tteams += 1;
+    }
+    return tteams;
+}
+
 module.exports = {
     handleCommand: function(source, message, channel) {
         var command;
@@ -1309,7 +1322,8 @@ module.exports = {
     beforeBattleStarted: function(src, dest, srcteam, destteam) {
         if (sys.tier(src, srcteam) == "Battle Factory" && sys.tier(dest, destteam) == "Battle Factory") {
             try {
-                var type = sys.rand(0,2) === 1 ? "user" : "standard";
+                // If there are 20 or more user submitted pokemon, use the user sets, otherwise use the built in sets.
+                var type = numPokes(usersets) >= 20 ? "user" : "standard";
                 generateTeam(src, srcteam, type);
                 generateTeam(dest, destteam, type);
                 dumpData(src, srcteam);
