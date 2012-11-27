@@ -2897,7 +2897,7 @@ function tourCommand(src, command, commandData) {
                     sys.sendMessage(src,"1) "+queuedata.tier+": Set by "+queuedata.starter+"; Parameters: "+params.mode+" Mode"+(params.gen != "default" ? "; Gen: "+getSubgen(params.gen,true) : "")+(params.type == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(params.maxplayers)) ? "; For "+ params.maxplayers +" players": "")+(wifiuse != "default" ? "; "+wifiuse : "")+(params.event ? "; Event Mode": "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
                 }
                 else {
-                    sys.sendMessage(src,(parseInt(e)+1)+") "+queuedata.tier+": Set by "+queuedata.starter+"; Parameters: "+params.mode+" Mode"+(params.gen != "default" ? "; Gen: "+getSubgen(params.gen,true) : "")+(params.type == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(params.maxplayers)) ? "; For "+ params.maxplayers +" players": "")+(params.event ? "; Event Mode": ""), tourschan)
+                    sys.sendMessage(src,(parseInt(e)+1)+") "+queuedata.tier+": Set by "+queuedata.starter+"; Parameters: "+params.mode+" Mode"+(params.gen != "default" ? "; Gen: "+getSubgen(params.gen,true) : "")+(params.type == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(params.maxplayers)) ? "; For "+ params.maxplayers +" players": "")+(wifiuse != "default" ? "; "+wifiuse : "")+(params.event ? "; Event Mode": ""), tourschan)
                 }
                 firsttour = false;
             }
