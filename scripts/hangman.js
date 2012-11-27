@@ -296,6 +296,10 @@ module.exports = function () {
             sys.sendMessage(src, "You are not the last winner or auth!", hangchan);
             return;
         }
+        if (hangman.authLevel(src)< 1 && (new Date()).getTime() > nextGame) {
+            sys.sendMessage(src, winnerDelay + " seconds already passed! Anyone can start a game now!", hangchan);
+            return;
+        }
         if (sys.id(commandData) == undefined || !sys.isInChannel(sys.id(commandData), hangchan) || sys.name(sys.id(commandData)) == winner) {
             sys.sendMessage(src, "You cannot pass start rights to this person!", hangchan);
             return;
@@ -499,9 +503,16 @@ module.exports = function () {
         }
         return false;
     };
+    this.afterChannelJoin = function(src, channel) {
+        if (channel == hangchan) {
+            hangman.viewGame(src);
+        }
+        return false;
+    };
     return {
         init: hangman.init,
         handleCommand: hangman.handleCommand,
-        beforeChannelJoin: hangman.beforeChannelJoin
+        beforeChannelJoin: hangman.beforeChannelJoin,
+        afterChannelJoin: hangman.afterChannelJoin
     };
 }();
