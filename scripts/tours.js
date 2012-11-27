@@ -67,8 +67,8 @@ var tourcommands = ["join: joins a tournament",
                     "addtouralert [tier] : Adds a tour alert for the specified tier",
                     "removetouralert [tier] : Removes a tour alert for the specified tier"]
 var tourmodcommands = ["*** Parameter Information ***",
-                    "Parameters can be used by putting 'gen=x'; 'mode=singles/doubles/triples'; 'type=single/double'.",
-                    "For example '/tour Challenge Cup:gen=RBY mode=triples type=double' starts a RBY Challenge Cup double elimination tournament (in Triples mode).",
+                    "Parameters can be used by putting 'gen=x'; 'mode=singles/doubles/triples'; 'type=single/double'; 'wifi=on/off'.",
+                    "For example '/tour Challenge Cup:gen=RBY:mode=triples:type=double:wifi=on' starts a RBY Challenge Cup double elimination tournament (in Triples mode) with Team Preview.",
                     "tour [tier]:[parameters]: starts a tier of that tournament.",
                     "tourmute [player]:[reason]:[time]: tourmutes a problematic player.",
                     "tourunmute [player]: untourmutes a player.",
@@ -324,13 +324,18 @@ function cmp(x1, x2) {
 function getFullTourName(key) {
     var mode = tours.tour[key].parameters.mode;
     var type = tours.tour[key].tourtype;
+    var isEvent = tours.tour[key].event;
+    var ret = type;
     if (tours.tour[key].parameters.gen != "default") {
-        return getSubgen(tours.tour[key].parameters.gen,true) + " " + type + (mode != modeOfTier(type) ? " ["+mode+"]" : "");
+        ret = getSubgen(tours.tour[key].parameters.gen,true) + " " + ret;
     }
-    else if (mode != modeOfTier(type)) {
-        return type + " ["+mode+"]";
+    if (mode != modeOfTier(type)) {
+        ret = ret + " ["+mode+"]";
     }
-    else return tours.tour[key].tourtype;
+    if (isEvent) {
+        ret = ret + " Event";
+    }
+    return ret;
 }
 
 // Finds a tier
@@ -562,9 +567,16 @@ function saveTourHistory() {
 }
 
 // This function will get a tier's clauses in readable format
-function getTourClauses(tier) {
+function getTourClauses(key) {
     // force Self-KO clause
+    var tier = tours.tour[key].tourtype;
     var tierclauses = sys.getClauses(tier) > 255 ? sys.getClauses(tier) : sys.getClauses(tier)+256
+    if (tours.tour[key].parameters.wifi && tierclauses%256 < 128) {
+        tierclauses += 128;
+    }
+    else if (!tours.tour[key].parameters.wifi && tierclauses%256 >= 128) {
+        tierclauses -= 128;
+    }
     var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Wifi Battle", "Self-KO Clause"]
     var neededclauses = [];
     for (var c=0;c<9;c++) {
@@ -577,9 +589,16 @@ function getTourClauses(tier) {
     return neededclauses.join(", ");
 }
 
-function clauseCheck(tier, issuedClauses) {
+function clauseCheck(key, issuedClauses) {
+    var tier = tours.tour[key].tourtype;
     // force Self-KO clause every time
     var requiredClauses = sys.getClauses(tier) > 255 ? sys.getClauses(tier) : sys.getClauses(tier)+256
+    if (tours.tour[key].parameters.wifi && requiredClauses%256 < 128) {
+        requiredClauses += 128;
+    }
+    else if (!tours.tour[key].parameters.wifi && requiredClauses%256 >= 128) {
+        requiredClauses -= 128;
+    }
     var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Wifi Battle", "Self-KO Clause"]
     var clause1 = false;
     var clause2 = false;
@@ -797,7 +816,7 @@ function getConfigValue(file, key) {
             decaytime: 2,
             norepeat: 7,
             decayglobalrate: 2,
-            version: "2.100",
+            version: "2.101",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -845,7 +864,7 @@ function initTours() {
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         norepeat: parseInt(getConfigValue("tourconfig.txt", "norepeat")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.100",
+        version: "2.101",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -965,7 +984,7 @@ function getEventTour(datestring) {
                 continue;
             }
             var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"];
-            var parameters = {"gen": "default", "mode": modeOfTier(thetier), "type": "double", "maxplayers": false, "event": true};
+            var parameters = {"gen": "default", "mode": modeOfTier(thetier), "type": "double", "maxplayers": false, "event": true, "wifi": sys.getClauses(thetier)%256 >= 128 ? true : false};
             if (eventdata.hasOwnProperty('settings')) {
                 var parameterdata = eventdata.settings;
                 for (var p in parameterdata) {
@@ -1004,6 +1023,18 @@ function getEventTour(datestring) {
                             return false;
                         }
                         parameters.maxplayers = players;
+                    }
+                    else if (cmp(parameterset, "wifi")) {
+                        if (cmp(parametervalue, "on")) {
+                            parameters.wifi = true;
+                        }
+                        else if (cmp(parametervalue, "off")) {
+                            parameters.wifi = false;
+                        }
+                        else {
+                            sendBotMessage(src, "Parameter Usage: wifi=on or wifi=off", tourserrchan, false);
+                            return true;
+                        }
                     }
                     else {
                         sendBotAll("Warning! The parameter '"+parameterset+"' does not exist!", tourserrchan, false);
@@ -1141,7 +1172,7 @@ function tourStep() {
             var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1"];
             var tourtostart = tourarray[tours.key%tourarray.length]
             var tourtype = doubleelimtiers.indexOf(tourtostart) != -1 ? "double" : "single"
-            tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? "5-1" : "default"), "type": tourtype, "maxplayers": false, "event": false})
+            tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? "5-1" : "default"), "type": tourtype, "maxplayers": false, "event": false,  "wifi": sys.getClauses(tourtostart)%256 >= 128 ? true : false})
         }
     }
 }
@@ -1752,7 +1783,7 @@ function tourCommand(src, command, commandData) {
                 }
                 var detiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers"];
                 var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1"];
-                var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": detiers.indexOf(tourtier) == -1 ? "single" : "double", "maxplayers": false, "event": false};
+                var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": detiers.indexOf(tourtier) == -1 ? "single" : "double", "maxplayers": false, "event": false, "wifi": (sys.getClauses(tourtier)%256 >= 128 ? true : false)};
                 if (data[1] !== false) {
                     var parameterdata = data[1].split(":");
                     for (var p in parameterdata) {
@@ -1805,6 +1836,18 @@ function tourCommand(src, command, commandData) {
                                 return true;
                             }
                             parameters.maxplayers = players;
+                        }
+                        else if (cmp(parameterset, "wifi")) {
+                            if (cmp(parametervalue, "on")) {
+                                parameters.wifi = true;
+                            }
+                            else if (cmp(parametervalue, "off")) {
+                                parameters.wifi = false;
+                            }
+                            else {
+                                sendBotMessage(src, "Parameter Usage: wifi=on or wifi=off", tourschan, false);
+                                return true;
+                            }
                         }
                         else {
                             sendBotMessage(src, "Warning! The parameter '"+parameterset+"' does not exist!", tourschan, false);
@@ -3753,6 +3796,10 @@ function tourstart(tier, starter, key, parameters) {
             tours.tour[key].winbracket = [];
             tours.tour[key].losebracket = [];
         }
+        var wifiuse = "default";
+        if ((sys.getClauses(tier)%256 >= 128 && !parameters.wifi) || (sys.getClauses(tier)%256 < 128 && parameters.wifi)) {
+            wifiuse = parameters.wifi ? "Preview Mode" : "No Preview Mode";
+        }
         for (var x in channels) {
             sendChanAll("", channels[x])
             if (!parameters.event) {
@@ -3762,8 +3809,8 @@ function tourstart(tier, starter, key, parameters) {
                 sendChanHtmlAll(redhtmlborder, channels[x])
             }
             sendChanHtmlAll("<timestamp/> A <b><a href='http://wiki.pokemon-online.eu/view/"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x])
-            sendChanAll("CLAUSES: "+getTourClauses(tier),channels[x])
-            sendChanAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : "")+(parameters.event ? "; Event Tournament" : ""), channels[x])
+            sendChanAll("CLAUSES: "+getTourClauses(key),channels[x])
+            sendChanAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : "")+(parameters.event ? "; Event Tournament" : "")+(wifiuse != "default" ? "; "+wifiuse : ""), channels[x])
             if (tier == "Battle Factory") {
                 sendChanAll("VERSION: "+bfactory.getVersion("team"),channels[x]);
             }
@@ -4273,7 +4320,7 @@ function isValidTourBattle(src,dest,clauses,mode,team,destTier,key,challenge) { 
         var destbtt= tours.tour[key].battlers.hasOwnProperty(sys.name(dest).toLowerCase())
         var srcwin = tours.tour[key].winners.indexOf(sys.name(src).toLowerCase())
         var destwin = tours.tour[key].winners.indexOf(sys.name(dest).toLowerCase())
-        var checklist = clauseCheck(tours.tour[key].tourtype, clauses)
+        var checklist = clauseCheck(key, clauses)
         var invalidmsg = ""
         var isInCorrectGen = true;
         if (tours.tour[key].parameters.gen != "default") {
