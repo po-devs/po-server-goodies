@@ -242,6 +242,7 @@ function seeQueueItem(index) {
         normalbot.sendChanAll("Nothing in the queue"+(index === 0 ? "." : " at index "+index), teamrevchan);
         return;
     }
+    cleanEntries();
     var submitinfo = userqueue[0];
     var sets = [];
     normalbot.sendChanAll("Queue length is currently "+userqueue.length+". The set for review is shown below.", teamrevchan);
@@ -479,6 +480,7 @@ function factoryCommand(src, command, commandData) {
     }
     else if (command == "submitsets") {
         // This will export the first team to a submission queue
+        cleanEntries(); // clean out any invalid entries
         if (!sys.dbRegistered(sys.name(src))) {
             normalbot.sendChanMessage(src, "You need to register to submit sets.");
             return;
