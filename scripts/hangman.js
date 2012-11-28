@@ -6,6 +6,7 @@ module.exports = function () {
 
     var defaultMaster = "RiceKirby";
     var defaultChannel = "Hangman";
+    var defaultParts = 7;
     var minBodyParts = 5;
     var winnerDelay = 60;
     var answerDelay = 10;
@@ -183,7 +184,7 @@ module.exports = function () {
         }
         hint = h;
         word = a;
-        parts = (p && parseInt(p, 10) > 0) ? parseInt(p, 10) : minBodyParts;
+        parts = (p && parseInt(p, 10) > 0) ? parseInt(p, 10) : defaultParts;
         parts = (parts < minBodyParts) ? minBodyParts : parts;
         points = {};
         misses = {};
@@ -293,6 +294,10 @@ module.exports = function () {
         }
         if (sys.name(src) !== winner && hangman.authLevel(src) < 1) {
             sys.sendMessage(src, "You are not the last winner or auth!", hangchan);
+            return;
+        }
+        if (hangman.authLevel(src)< 1 && (new Date()).getTime() > nextGame) {
+            sys.sendMessage(src, winnerDelay + " seconds already passed! Anyone can start a game now!", hangchan);
             return;
         }
         if (sys.id(commandData) == undefined || !sys.isInChannel(sys.id(commandData), hangchan) || sys.name(sys.id(commandData)) == winner) {
@@ -498,9 +503,16 @@ module.exports = function () {
         }
         return false;
     };
+    this.afterChannelJoin = function(src, channel) {
+        if (channel == hangchan) {
+            hangman.viewGame(src);
+        }
+        return false;
+    };
     return {
         init: hangman.init,
         handleCommand: hangman.handleCommand,
-        beforeChannelJoin: hangman.beforeChannelJoin
+        beforeChannelJoin: hangman.beforeChannelJoin,
+        afterChannelJoin: hangman.afterChannelJoin
     };
 }();

@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "1.003";
+var bfversion = "1.005";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -88,6 +88,7 @@ function initFactory() {
 
 // Save user generated info periodically as a backup
 function autoSave() {
+    cleanEntries();
     sys.writeToFile(submitDir+"index.json", JSON.stringify(userqueue));
     sys.writeToFile(dataDir+"bfteams_user.json", JSON.stringify(usersets));
 }
@@ -192,6 +193,26 @@ function refresh() {
     }
 }
 
+function cleanEntries() {
+    var deleted = 0;
+    for (var x=0; x<userqueue.length; x++) {
+        var obj = userqueue[x];
+        if (typeof obj != 'object' || obj === null) {
+            userqueue.splice(x,1);
+            x -= 1;
+            deleted += 1;
+            continue;
+        }
+        if (!obj.hasOwnProperty('ip') || !obj.hasOwnProperty('name') || !obj.hasOwnProperty('sets')) {
+            userqueue.splice(x,1);
+            x -= 1;
+            deleted += 1;
+            continue;
+        }
+    }
+    if (deleted > 0) sendChanAll("Invalid Entries Removed: "+deleted, staffchannel);
+}
+
 function toChars(number, maxchars) {
     var digits = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
     var result = '';
@@ -221,6 +242,7 @@ function seeQueueItem(index) {
         normalbot.sendChanAll("Nothing in the queue"+(index === 0 ? "." : " at index "+index), teamrevchan);
         return;
     }
+    cleanEntries();
     var submitinfo = userqueue[0];
     var sets = [];
     normalbot.sendChanAll("Queue length is currently "+userqueue.length+". The set for review is shown below.", teamrevchan);
@@ -458,6 +480,7 @@ function factoryCommand(src, command, commandData) {
     }
     else if (command == "submitsets") {
         // This will export the first team to a submission queue
+        cleanEntries(); // clean out any invalid entries
         if (!sys.dbRegistered(sys.name(src))) {
             normalbot.sendChanMessage(src, "You need to register to submit sets.");
             return;
@@ -1203,6 +1226,19 @@ function generateTeam(src, team, mode) {
     }
 }
 
+// tfile is a json object
+
+function numPokes(tfile) {
+    var tteams = 0;
+    for (var t in tfile) {
+        if (typeof tfile[t] != "object") {
+            continue;
+        }
+        tteams += 1;
+    }
+    return tteams;
+}
+
 module.exports = {
     handleCommand: function(source, message, channel) {
         var command;
@@ -1286,7 +1322,8 @@ module.exports = {
     beforeBattleStarted: function(src, dest, srcteam, destteam) {
         if (sys.tier(src, srcteam) == "Battle Factory" && sys.tier(dest, destteam) == "Battle Factory") {
             try {
-                var type = sys.rand(0,2) === 1 ? "user" : "standard";
+                // If there are 20 or more user submitted pokemon, use the user sets, otherwise use the built in sets.
+                var type = numPokes(usersets) >= 20 ? "user" : "standard";
                 generateTeam(src, srcteam, type);
                 generateTeam(dest, destteam, type);
                 dumpData(src, srcteam);

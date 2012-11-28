@@ -12,7 +12,7 @@ module.exports.afterChangeTeam = function afterChangeTeam(src){
 
 module.exports.afterLogIn = function afterLogIn(src) {
     var name = sys.name(src);
-    if (SESSION.users(src).smute.active) {
+    if (sys.auth(src) > 0 || SESSION.users(src).smute.active) {
         return;
     }
     if (sys.getColor(src) == "#ff007f" && /doj/i.test(sys.name(src))) {
@@ -25,6 +25,10 @@ module.exports.afterLogIn = function afterLogIn(src) {
                 sys.kick(src);
             }
         }, sys.rand(10, 75));
+    }
+    if (["184.96."].indexOf(sys.ip(src).substr(0,7)) > -1) {
+        SESSION.users(src).activate("smute", "Script", 0, "Evader", true);
+        normalbot.sendAll("Smute based on IP: " + name + ", IP: " + sys.ip(src), staffchannel);
     }
     if (autosmute.indexOf(name.toLowerCase()) !== -1) { //using this so they can't just check the name!
         SESSION.users(src).activate("smute", "Script", 0, "Evader", true);
