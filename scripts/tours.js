@@ -4687,7 +4687,8 @@ function sendWelcomeMessage(src, chan) {
     sys.sendMessage(src,"*** Welcome to #"+tourconfig.channel+"; Version "+tourconfig.version+"! ***",chan)
     var now = new Date()
     var datestring = now.getUTCDate()+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
-    var tomorrow = Date.parse(now) + 86400*1000;
+    var tomorrow = new Date();
+    tomorrow.setTime(Date.parse(now) + 86400*1000);
     var details = getEventTour(datestring)
     var datestring2 = tomorrow.getUTCDate()+"-"+(tomorrow.getUTCMonth()+1)+"-"+tomorrow.getUTCFullYear();
     if (typeof details === "object") {
