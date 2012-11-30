@@ -816,7 +816,7 @@ function getConfigValue(file, key) {
             decaytime: 2,
             norepeat: 7,
             decayglobalrate: 2,
-            version: "2.103",
+            version: "2.103+",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -864,7 +864,7 @@ function initTours() {
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         norepeat: parseInt(getConfigValue("tourconfig.txt", "norepeat")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.103",
+        version: "2.103+",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -3782,8 +3782,8 @@ function tourstart(tier, starter, key, parameters) {
             tours.tour[key].event = true;
             tours.tour[key].rankings = [];
         }
-        else if (parameters.event) { // triple the signup length for events
-            tours.tour[key].time = parseInt(sys.time())+tourconfig.toursignup*3;
+        else if (parameters.event) { // double the signup length for events
+            tours.tour[key].time = parseInt(sys.time())+tourconfig.toursignup*2;
             tours.tour[key].maxplayers = "default";
             tours.tour[key].event = true;
             tours.tour[key].rankings = [];
