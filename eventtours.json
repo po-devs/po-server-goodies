@@ -1,123 +1,142 @@
 {
-    "30-10-2012": {
-        "tier": "VGC 2012",
-        "settings": {
-            "mode": "doubles"
-        }
-    },
-    "31-10-2012": {
-        "tier": "Challenge Cup",
-        "settings": {
-            "gen": "5"
-        }
-    },
-    "1-11-2012": {
-        "tier": "Wifi Ubers"
-    },
-    "2-11-2012": {
-        "tier": "Challenge Cup",
-        "settings": {
-            "gen": "RBY"
-        }
-    },
-    "3-11-2012": {
-        "tier": "Wifi OU"
-    },
-    "4-11-2012": {
-        "tier": "Battle Factory"
-    },
-    "5-11-2012": {
-        "tier": "Wifi LC"
-    },
-    "6-11-2012": {
-        "tier": "Wifi UU"
-    },
-    "7-11-2012": {
-        "tier": "RBY OU"
-    },
-    "8-11-2012": {
-        "tier": "Wifi Uber Doubles"
-    },
-    "9-11-2012": {
-        "tier": "Challenge Cup",
-        "settings": {
-            "mode": "doubles",
-            "gen": "GSC"
-        }
-    },
-    "10-11-2012": {
-        "tier": "Wifi OU Doubles"
-    },
-    "11-11-2012": {
-        "tier": "Battle Factory",
-        "settings": {
-            "mode": "doubles"
-        }
-    },
-    "12-11-2012": {
-        "tier": "Wifi NU"
-    },
-    "13-11-2012": {
-        "tier": "Wifi LU"
-    },
-    "14-11-2012": {
-        "tier": "GSC OU"
-    },
-    "15-11-2012": {
-        "tier": "Wifi Ubers"
-    },
-    "16-11-2012": {
-        "tier": "Challenge Cup",
-        "settings": {
-            "gen": "RSE"
-        }
-    },
-    "17-11-2012": {
-        "tier": "Wifi OU"
-    },
-    "18-11-2012": {
-        "tier": "Battle Factory"
-    },
-    "19-11-2012": {
-        "tier": "Wifi LC"
-    },
-    "20-11-2012": {
-        "tier": "Wifi UU"
-    },
-    "21-11-2012": {
-        "tier": "Adv OU"
-    },
-    "22-11-2012": {
-        "tier": "No Preview Ubers"
-    },
-    "23-11-2012": {
-        "tier": "Challenge Cup",
-        "settings": {
-            "gen": "HGSS"
-        }
-    },
-    "24-11-2012": {
-        "tier": "No Preview OU"
-    },
-    "25-11-2012": {
-        "tier": "Battle Factory"
-    },
-    "26-11-2012": {
-        "tier": "Wifi NU"
-    },
-    "27-11-2012": {
-        "tier": "Wifi LU"
-    },
-    "28-11-2012": {
-        "tier": "HGSS OU"
-    },
-    "29-11-2012": {
-        "tier": "GBU Singles"
-    },
     "30-11-2012": {
         "tier": "Challenge Cup",
         "settings": {
             "gen": "BW2"
         }
+    },
+    "1-12-2012": {
+        "tier": "RBY OU",
+        "settings": {}
+    },
+    "2-12-2012": {
+        "tier": "Challenge Cup",
+        "settings": {
+            "gen": "RBY"
+        }
+    },
+    "3-12-2012": {
+        "tier": "GSC OU",
+        "settings": {}
+    },
+    "4-12-2012": {
+        "tier": "VGC 2012",
+        "settings": {}
+    },
+    "5-12-2012": {
+        "tier": "No Preview OU",
+        "settings": {}
+    },
+    "6-12-2012": {
+        "tier": "Wifi NU",
+        "settings": {}
+    },
+    "7-12-2012": {
+        "tier": "Wifi UU",
+        "settings": {}
+    },
+    "8-12-2012": {
+        "tier": "GSC OU",
+        "settings": {}
+    },
+    "9-12-2012": {
+        "tier": "Challenge Cup",
+        "settings": {
+            "gen": "GSC"
+        }
+    },
+    "10-12-2012": {
+        "tier": "Adv OU",
+        "settings": {}
+    },
+    "11-12-2012": {
+        "tier": "Random Battle",
+        "settings": {}
+    },
+    "12-12-2012": {
+        "tier": "Wifi LC",
+        "settings": {}
+    },
+    "13-12-2012": {
+        "tier": "Wifi LU",
+        "settings": {}
+    },
+    "14-12-2012": {
+        "tier": "Wifi Ubers",
+        "settings": {}
+    },
+    "15-12-2012": {
+        "tier": "Adv OU",
+        "settings": {}
+    },
+    "16-12-2012": {
+        "tier": "Challenge Cup",
+        "settings": {
+            "gen": "RSE"
+        }
+    },
+    "17-12-2012": {
+        "tier": "HGSS OU",
+        "settings": {}
+    },
+    "18-12-2012": {
+        "tier": "VGC 2012",
+        "settings": {}
+    },
+    "19-12-2012": {
+        "tier": "No Preview OU",
+        "settings": {}
+    },
+    "20-12-2012": {
+        "tier": "Wifi NU",
+        "settings": {}
+    },
+    "21-12-2012": {
+        "tier": "Wifi UU",
+        "settings": {}
+    },
+    "22-12-2012": {
+        "tier": "HGSS OU",
+        "settings": {}
+    },
+    "23-12-2012": {
+        "tier": "Challenge Cup",
+        "settings": {
+            "gen": "HGSS"
+        }
+    },
+    "24-12-2012": {
+        "tier": "Wifi OU",
+        "settings": {}
+    },
+    "25-12-2012": {
+        "tier": "Battle Factory",
+        "settings": {}
+    },
+    "26-12-2012": {
+        "tier": "Wifi LC",
+        "settings": {}
+    },
+    "27-12-2012": {
+        "tier": "Wifi LU",
+        "settings": {}
+    },
+    "28-12-2012": {
+        "tier": "Wifi Ubers",
+        "settings": {}
+    },
+    "29-12-2012": {
+        "tier": "Wifi OU",
+        "settings": {}
+    },
+    "30-12-2012": {
+        "tier": "Challenge Cup",
+        "settings": {
+            "gen": "BW2"
+        }
+    },
+    "31-12-2012": {
+        "tier": "Battle Factory",
+        "settings": {}
     }
 }
