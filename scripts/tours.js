@@ -4696,7 +4696,7 @@ function sendWelcomeMessage(src, chan) {
     }
     var details2 = getEventTour(datestring2)
     if (typeof details2 === "object") {
-        sys.sendMessage(src,"Tommorrow's Event Tournament: "+details2[0],chan)
+        sys.sendMessage(src,"Tomorrow's Event Tournament: "+details2[0],chan)
     }
     sys.sendMessage(src,"",chan)
     sys.sendMessage(src,"*** Current Tournaments ***",chan)
