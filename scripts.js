@@ -3853,8 +3853,8 @@ modCommand: function(src, command, commandData, tar) {
             };
             var ipApi = sys.getFileContent(Config.dataDir+'ipApi.txt');
             sys.webCall('http://api.ipinfodb.com/v3/ip-city/?key=' + ipApi + '&ip='+ ip + '&format=JSON', whois);
-            return;
         }
+        return;
     }
     if (command == "aliases") {
         var max_message_length = 30000;
