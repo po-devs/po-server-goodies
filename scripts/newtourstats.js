@@ -108,7 +108,7 @@ function toCorrectCase(name) {
 
 // Converts stuff like dd-mm into actual readable text. Note months go from 0-11
 function toDateString(dmstring) {
-    var themonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "Decemeber"];
+    var themonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     var dmparts = dmstring.split("-",2);
     return dmparts[0] + " " + themonths[parseInt(dmparts[1])];
 }

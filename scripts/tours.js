@@ -816,7 +816,7 @@ function getConfigValue(file, key) {
             decaytime: 2,
             norepeat: 7,
             decayglobalrate: 2,
-            version: "2.102",
+            version: "2.103+",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -864,7 +864,7 @@ function initTours() {
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         norepeat: parseInt(getConfigValue("tourconfig.txt", "norepeat")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.102",
+        version: "2.103+",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -3782,8 +3782,8 @@ function tourstart(tier, starter, key, parameters) {
             tours.tour[key].event = true;
             tours.tour[key].rankings = [];
         }
-        else if (parameters.event) { // triple the signup length for events
-            tours.tour[key].time = parseInt(sys.time())+tourconfig.toursignup*3;
+        else if (parameters.event) { // double the signup length for events
+            tours.tour[key].time = parseInt(sys.time())+tourconfig.toursignup*2;
             tours.tour[key].maxplayers = "default";
             tours.tour[key].event = true;
             tours.tour[key].rankings = [];
@@ -3823,7 +3823,7 @@ function tourstart(tier, starter, key, parameters) {
             }
             else {
                 sendChanAll(tourconfig.tourbot+"Go to the #"+sys.channel(tourschan)+" channel and type /join to enter the tournament!", channels[x])
-                sendChanAll("*** "+(tours.tour[key].maxplayers === "default" ? "You have "+time_handle(parameters.event ? tourconfig.toursignup*3 : tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!")+" ***", channels[x])
+                sendChanAll("*** "+(tours.tour[key].maxplayers === "default" ? "You have "+time_handle(parameters.event ? tourconfig.toursignup*2 : tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!")+" ***", channels[x])
             }
             if (!parameters.event) {
                 sendChanAll(border, channels[x])
@@ -4687,9 +4687,16 @@ function sendWelcomeMessage(src, chan) {
     sys.sendMessage(src,"*** Welcome to #"+tourconfig.channel+"; Version "+tourconfig.version+"! ***",chan)
     var now = new Date()
     var datestring = now.getUTCDate()+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
+    var tomorrow = new Date();
+    tomorrow.setTime(Date.parse(now) + 86400*1000);
     var details = getEventTour(datestring)
+    var datestring2 = tomorrow.getUTCDate()+"-"+(tomorrow.getUTCMonth()+1)+"-"+tomorrow.getUTCFullYear();
     if (typeof details === "object") {
         sys.sendMessage(src,"Today's Event Tournament: "+details[0]+(tours.eventticks > 0 ? "; starts in "+time_handle(tours.eventticks) : ""),chan)
+    }
+    var details2 = getEventTour(datestring2)
+    if (typeof details2 === "object") {
+        sys.sendMessage(src,"Tomorrow's Event Tournament: "+details2[0],chan)
     }
     sys.sendMessage(src,"",chan)
     sys.sendMessage(src,"*** Current Tournaments ***",chan)
