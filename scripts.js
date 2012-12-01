@@ -1,6 +1,7 @@
 // This is the official Pokemon Online Scripts
 // These scripts will only work on 2.0.00 or newer.
-
+/*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
+/*global sys,client, playerswarn:true */
 // You may change these variables as long as you keep the same type
 var Config = {
     base_url: "https://raw.github.com/lamperi/po-server-goodies/master/",
@@ -218,28 +219,6 @@ function printObject(o) {
   sys.sendAll(out);
 }
 
-function ipInfo(ip){
-    var ipApi = sys.getFileContent(Config.dataDir+'ipApi.txt'), string, countryName, countryTag, regionName, cityName, resp;
-    if (ipApi === undefined) {
-        return "";
-    }
-    resp = JSON.parse(sys.synchronousWebCall('http://api.ipinfodb.com/v3/ip-city/?key=' + ipApi + '&ip='+ ip + '&format=JSON'));
-    countryName = resp.countryName;
-    countryTag =  resp.countryCode;
-    regionName = resp.regionName;
-    cityName = resp.cityName;
-    string = "";
-    if (countryName !== "" && countryName !== "-") {
-        string += "Country: " + countryName + " (" + countryTag + "), ";
-    }
-    if (regionName !== "" && regionName !== "-") {
-        string += "Region: " + regionName + ", ";
-    }
-    if(cityName !== "" && cityName !== "-"){
-        string += "City: " + cityName;
-    }
-    return string;
-}
 function append_logs(params) { // Adds chat lines to the logs
     /* So many file access... --coyo
 	
@@ -3819,47 +3798,64 @@ modCommand: function(src, command, commandData, tar) {
         } else if (command == "userinfo") {
             querybot.sendChanMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ contributor: " + contribution + " ~ ip: " + ip + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"));
         } else if (command == "whois") {
-            var authName = function() {
-                switch (authLevel) {
-                case 3: return "owner";
-                case 2: return "admin";
-                case 1: return "moderator";
-                default: return contribution != "no" ? "contributor" : "user";
+            var whois = function(resp) {
+                var authName = function() {
+                    switch (authLevel) {
+                    case 3: return "owner";
+                    case 2: return "admin";
+                    case 1: return "moderator";
+                    default: return contribution != "no" ? "contributor" : "user";
+                    }
+                }();
+                resp = JSON.parse(resp);
+                var countryName = resp.countryName;
+                var countryTag =  resp.countryCode;
+                var regionName = resp.regionName;
+                var cityName = resp.cityName;
+                var ipInfo = "";
+                if (countryName !== "" && countryName !== "-") {
+                    ipInfo += "Country: " + countryName + " (" + countryTag + "), ";
                 }
-            }();
-
-            var logintime = false;
-            if (online) logintime = SESSION.users(tar).logintime;
-            var data = [
-               "User: " + name + " @ " + ip,
-               "Auth: " + authName,
-               "Online: " + (online ? "yes" : "no"),
-               "Registered name: " + (registered ? "yes" : "no"),
-               "Last Login: " + (online && logintime ? new Date(logintime*1000).toUTCString() : lastLogin),
-                bans.length > 0 ? "Bans: " + bans.join(", ") : "Bans: none",
-                "IP Details: " + (ipInfo(ip) !== "" ? ipInfo(ip) : "None Available")
-            ];
-            if (online) {
-                if (SESSION.users(tar).hostname != ip)
-                    data[0] += " (" + SESSION.users(tar).hostname + ")";
-                data.push("Idle for: " + getTimeString(parseInt(sys.time(), 10) - SESSION.users(tar).lastline.time));
-                data.push("Channels: " + channels.join(", "));
-                data.push("Names during current session: " + (online && SESSION.users(tar).namehistory ? SESSION.users(tar).namehistory.map(function(e){return e[0];}).join(", ") : name));
-            }
-            if (authLevel > 0) {
-               var stats = authStats[name.toLowerCase()] || {};
-               for (var key in stats) {
-                   data.push("Latest " + key.substr(6).toLowerCase() + ": " + stats[key][0] + " on " + new Date(stats[key][1]*1000).toUTCString());
-               }
-            }
-            if (sys.isInChannel(src, bindChannel)) {
-                for (var j = 0; j < data.length; ++j) {
+                if (regionName !== "" && regionName !== "-") {
+                    ipInfo += "Region: " + regionName + ", ";
+                }
+                if(cityName !== "" && cityName !== "-"){
+                    ipInfo += "City: " + cityName;
+                }
+                var logintime = false;
+                if (online) logintime = SESSION.users(tar).logintime;
+                var data = [
+                    "User: " + name + " @ " + ip,
+                    "Auth: " + authName,
+                    "Online: " + (online ? "yes" : "no"),
+                    "Registered name: " + (registered ? "yes" : "no"),
+                    "Last Login: " + (online && logintime ? new Date(logintime*1000).toUTCString() : lastLogin),
+                    bans.length > 0 ? "Bans: " + bans.join(", ") : "Bans: none",
+                    "IP Details: " + (ipInfo !== "" ? ipInfo : "None Available")
+                ];
+                if (online) {
+                    if (SESSION.users(tar).hostname != ip)
+                        data[0] += " (" + SESSION.users(tar).hostname + ")";
+                        data.push("Idle for: " + getTimeString(parseInt(sys.time(), 10) - SESSION.users(tar).lastline.time));
+                        data.push("Channels: " + channels.join(", "));
+                        data.push("Names during current session: " + (online && SESSION.users(tar).namehistory ? SESSION.users(tar).namehistory.map(function(e){return e[0];}).join(", ") : name));
+                    }
+                if (authLevel > 0) {
+                    var stats = authStats[name.toLowerCase()] || {};
+                    for (var key in stats) {
+                        data.push("Latest " + key.substr(6).toLowerCase() + ": " + stats[key][0] + " on " + new Date(stats[key][1]*1000).toUTCString());
+                    }
+                }
+                if (sys.isInChannel(src, bindChannel)) {
+                    for (var j = 0; j < data.length; ++j) {
                         sys.sendMessage(src, data[j], bindChannel);
+                    }
                 }
-            }
+            };
+            var ipApi = sys.getFileContent(Config.dataDir+'ipApi.txt');
+            sys.webCall('http://api.ipinfodb.com/v3/ip-city/?key=' + ipApi + '&ip='+ ip + '&format=JSON', whois);
+            return;
         }
-
-        return;
     }
     if (command == "aliases") {
         var max_message_length = 30000;
