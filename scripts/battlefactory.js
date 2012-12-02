@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "1.005";
+var bfversion = "1.005+";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -1251,8 +1251,8 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (sys.auth(source) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(source) || ["bfversion", "submitsets"].indexOf(command) > -1) {
-            if (['acceptset', 'rejectset', 'deleteset','checkqueue', 'nextset'].indexOf(command) > -1 && channel != sys.channelId('BF Review')) {
+        if (sys.auth(source) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(source) || ["bfversion", "submitsets", "userpokesets"].indexOf(command) > -1) {
+            if (['acceptset', 'rejectset', 'deleteset','checkqueue', 'nextset', 'userpokesets'].indexOf(command) > -1 && channel != sys.channelId('BF Review')) {
                 normalbot.sendChanMessage(source, "These commands will only work in the #BF Review Channel!");
                 return true;
             }
