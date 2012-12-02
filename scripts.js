@@ -37,7 +37,7 @@ var Config = {
         ["Emac", "5th Generation WiFi NeverUsed Gym - View Emac's <a href='http://pokemon-online.eu/forums/showthread.php?13410-Wifi-NU-Gym-Emac'>Gym Thread!</a>"],
         ["Xdevo", "5th Generation WiFi Little Cup - View Xdevo's <a href='http://pokemon-online.eu/forums/showthread.php?13536-Wifi-LC-Gym-Xdevo'>Gym Thread!</a>"],
         ["Mary Skarm", "All Gen CC - View Mary Skarm's <a href='http://pokemon-online.eu/forums/showthread.php?14392-All-Gen-CC-Gym-Mary-Skarm-amp-Nainil'>Gym Thread!</a>"],
-		["Nainil", "All Gen CC - View Nainil's <a href='http://pokemon-online.eu/forums/showthread.php?14392-All-Gen-CC-Gym-Mary-Skarm-amp-Nainil'>Gym Thread!</a>"],
+	["Nainil", "All Gen CC - View Nainil's <a href='http://pokemon-online.eu/forums/showthread.php?14392-All-Gen-CC-Gym-Mary-Skarm-amp-Nainil'>Gym Thread!</a>"],
         ["Marik", "VGC 2012 - View Marik's <a href='http://pokemon-online.eu/forums/showthread.php?13532-VGC-2012-Gym-Marik'>Gym Thread!</a>"],
         ["Fakes", "4th Generation OverUsed - View Fakes' <a href='http://pokemon-online.eu/forums/showthread.php?14026-DPP-OU-Gym-Fakes'>Gym Thread!</a>"],
         ["Tanner", "3rd Generation OverUsed - View Tanner's <a href='http://pokemon-online.eu/forums/showthread.php?14094-ADV-OU-Gym-Tanner'>Gym Thread!</a>"],
@@ -959,7 +959,9 @@ revchan = SESSION.global().channelManager.createPermChannel("TrivReview", "For T
     "4. Do not ask for authority:",
     "- By asking, you may have eliminated your chances of becoming one in the future. If you are genuinely interested in becoming a staff member then a good way to get noticed is to become an active member of the community. Engaging others in intelligent chats and offering to help with graphics, programming, the wiki, or our YouTube channel (among others) is a good way to get noticed.",
     "5. No trolling, flaming, or harassing other players. Do not complain about hax in the chat, beyond a one line comment:",
-    "- Inciting responses with inflammatory comments, using verbal abuse against other players, or spamming them via chat/PM/challenges will not be tolerated. Harassing other players by constantly aggravating them or revealing personal information will be severely punished. A one line comment regarding hax after a loss to vent is fine, but excessive bemoaning is not acceptable."
+    "- Inciting responses with inflammatory comments, using verbal abuse against other players, or spamming them via chat/PM/challenges will not be tolerated. Harassing other players by constantly aggravating them or revealing personal information will be severely punished. A one line comment regarding hax after a loss to vent is fine, but excessive bemoaning is not acceptable.",
+    "6. Do not attempt to circumvent the rules:",
+    "- Ignorance of the rules is not a valid reason for breaking them. Do not attempt to find or create any loopholes in these rules, or try to adapt them in order to have a punishment overturned or to justify your actions. Doing so may incur a further punishment. Make valid appeals directly to the authority of the server."
     ];
 
     if (typeof authStats == 'undefined')
