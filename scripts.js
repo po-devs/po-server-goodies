@@ -3798,6 +3798,8 @@ modCommand: function(src, command, commandData, tar) {
             querybot.sendChanMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ contributor: " + contribution + " ~ ip: " + ip + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"));
         } else if (command == "whois") {
             var whois = function(resp) {
+                /* May have dced, this being an async call */
+                online = sys.loggedIn(tar);
                 var authName = function() {
                     switch (authLevel) {
                     case 3: return "owner";
@@ -5385,6 +5387,7 @@ beforeChatMessage: function(src, message, chan) {
         }
 
         sys.stopEvent();
+        print("-- Command: " + sys.name(src) + ": " + message);
 
         var commandData;
         var pos = message.indexOf(' ');
