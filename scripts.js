@@ -3909,6 +3909,7 @@ modCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "Usage /tempban name:minutes.");
             return;
         }
+        
         var target_name = tmp[0];
         if (tmp[1] === undefined || isNaN(tmp[1][0])) {
             var minutes = 86400;
@@ -3925,6 +3926,10 @@ modCommand: function(src, command, commandData, tar) {
         if (ip === undefined) {
             normalbot.sendChanMessage(src, "No such user!");
             return;
+        }
+        if (sys.maxAuth(ip)>=sys.auth(src)) {
+           normalbot.sendChanMessage(src, "Can't do that to higher auth!");
+           return;
         }
         var banlist=sys.banList();
         for (var a in banlist) {
