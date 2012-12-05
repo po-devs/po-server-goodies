@@ -3798,6 +3798,8 @@ modCommand: function(src, command, commandData, tar) {
             querybot.sendChanMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ contributor: " + contribution + " ~ ip: " + ip + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"));
         } else if (command == "whois") {
             var whois = function(resp) {
+                /* May have dced, this being an async call */
+                online = sys.loggedIn(tar);
                 var authName = function() {
                     switch (authLevel) {
                     case 3: return "owner";
@@ -3835,10 +3837,10 @@ modCommand: function(src, command, commandData, tar) {
                 if (online) {
                     if (SESSION.users(tar).hostname != ip)
                         data[0] += " (" + SESSION.users(tar).hostname + ")";
-                        data.push("Idle for: " + getTimeString(parseInt(sys.time(), 10) - SESSION.users(tar).lastline.time));
-                        data.push("Channels: " + channels.join(", "));
-                        data.push("Names during current session: " + (online && SESSION.users(tar).namehistory ? SESSION.users(tar).namehistory.map(function(e){return e[0];}).join(", ") : name));
-                    }
+                    data.push("Idle for: " + getTimeString(parseInt(sys.time(), 10) - SESSION.users(tar).lastline.time));
+                    data.push("Channels: " + channels.join(", "));
+                    data.push("Names during current session: " + (online && SESSION.users(tar).namehistory ? SESSION.users(tar).namehistory.map(function(e){return e[0];}).join(", ") : name));
+                }
                 if (authLevel > 0) {
                     var stats = authStats[name.toLowerCase()] || {};
                     for (var key in stats) {
@@ -5390,6 +5392,7 @@ beforeChatMessage: function(src, message, chan) {
         }
 
         sys.stopEvent();
+        print("-- Command: " + sys.name(src) + ": " + message);
 
         var commandData;
         var pos = message.indexOf(' ');
