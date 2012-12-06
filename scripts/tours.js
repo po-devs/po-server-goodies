@@ -816,7 +816,7 @@ function getConfigValue(file, key) {
             decaytime: 2,
             norepeat: 7,
             decayglobalrate: 2,
-            version: "2.103+",
+            version: "2.104",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -864,7 +864,7 @@ function initTours() {
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         norepeat: parseInt(getConfigValue("tourconfig.txt", "norepeat")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.103+",
+        version: "2.104",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -4187,16 +4187,14 @@ function tourprintbracket(key) {
             catch (err) {
                 sendChanAll("Error in saving tour stats, id "+key+": "+err, tourserrchan)
             }
-            if (isevent) {
-                tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
-            }
-            if (tours.keys.length === 0 && tours.globaltime > 0) {
-                tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
-            }
             delete tours.tour[key];
             tstats.savestats("all");
             purgeKeys();
+            if (tours.keys.length === 0 && tours.globaltime > 0) {
+                tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
+            }
             if (isevent) {
+                tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
                 refreshTicks(true);
             }
             save_cache();
