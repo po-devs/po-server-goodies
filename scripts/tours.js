@@ -2891,7 +2891,7 @@ function tourCommand(src, command, commandData) {
                 var params = queuedata.parameters;
                 var wifiuse = "default";
                 if ((sys.getClauses(queuedata.tier)%256 >= 128 && !params.wifi) || (sys.getClauses(queuedata.tier)%256 < 128 && params.wifi)) {
-                    wifiuse = parameters.wifi ? "Preview Mode" : "No Preview Mode";
+                    wifiuse = params.wifi ? "Preview Mode" : "No Preview Mode";
                 }
                 if (firsttour && nextstart != "Pending" && !(params.event && tours.keys.length > 0) && tours.working) {
                     sys.sendMessage(src,"1) "+queuedata.tier+": Set by "+queuedata.starter+"; Parameters: "+params.mode+" Mode"+(params.gen != "default" ? "; Gen: "+getSubgen(params.gen,true) : "")+(params.type == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(params.maxplayers)) ? "; For "+ params.maxplayers +" players": "")+(wifiuse != "default" ? "; "+wifiuse : "")+(params.event ? "; Event Mode": "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
