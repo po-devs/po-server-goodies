@@ -324,10 +324,14 @@ function cmp(x1, x2) {
 function getFullTourName(key) {
     var mode = tours.tour[key].parameters.mode;
     var type = tours.tour[key].tourtype;
+    var wifi = tours.tour[key].parameters.wifi;
     var isEvent = tours.tour[key].event;
     var ret = type;
     if (tours.tour[key].parameters.gen != "default") {
         ret = getSubgen(tours.tour[key].parameters.gen,true) + " " + ret;
+    }
+    if ((sys.getClauses(type)%256 >= 128 && wifi === false) || (sys.getClauses(type)%256 < 128 && wifi === true)) {
+        ret = ret + " " + (wifi ? "Preview" : "No Preview");
     }
     if (mode != modeOfTier(type)) {
         ret = ret + " ["+mode+"]";
@@ -816,7 +820,7 @@ function getConfigValue(file, key) {
             decaytime: 2,
             norepeat: 7,
             decayglobalrate: 2,
-            version: "2.103+",
+            version: "2.104",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -864,7 +868,7 @@ function initTours() {
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         norepeat: parseInt(getConfigValue("tourconfig.txt", "norepeat")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.103+",
+        version: "2.104",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1102,10 +1106,10 @@ function tourStep() {
                 continue;
             }
             if (tours.tour[x].time-parseInt(sys.time()) == 60 && tours.tour[x].parameters.event) {
-                sendBotAll("Signups for the "+tours.tour[x].tourtype+" event tournament close in 1 minute.", "~mt", false)
+                sendBotAll("Signups for the "+getFullTourName(x)+" tournament close in 1 minute.", "~mt", false)
             }
             else if (tours.tour[x].time-parseInt(sys.time()) == 30) {
-                sendBotAll("Signups for the "+tours.tour[x].tourtype+" tournament close in 30 seconds.", "~mt", false)
+                sendBotAll("Signups for the "+getFullTourName(x)+" tournament close in 30 seconds.", "~mt", false)
             }
             continue;
         }
@@ -1838,7 +1842,11 @@ function tourCommand(src, command, commandData) {
                             parameters.maxplayers = players;
                         }
                         else if (cmp(parameterset, "wifi")) {
-                            if (cmp(parametervalue, "on")) {
+                            if (['CC 1v1', 'Wifi CC 1v1', 'Wifi Ubers', 'Wifi OU', 'No Preview Ubers', 'No Preview OU', 'Wifi Triples', 'Wifi Uber Triples', 'No Preview OU Triples', 'No Preview Uber Triples', 'Wifi OU Doubles', 'Wifi Uber Doubles', 'No Preview OU Doubles', 'No Preview Uber Doubles'].indexOf(tourtier) > -1) {
+                                sendBotMessage(src, "You cannot change the Team Preview Setting for the "+tourtier+" tier!", tourschan, false);
+                                return true;
+                            }
+                            else if (cmp(parametervalue, "on")) {
                                 parameters.wifi = true;
                             }
                             else if (cmp(parametervalue, "off")) {
@@ -2891,7 +2899,7 @@ function tourCommand(src, command, commandData) {
                 var params = queuedata.parameters;
                 var wifiuse = "default";
                 if ((sys.getClauses(queuedata.tier)%256 >= 128 && !params.wifi) || (sys.getClauses(queuedata.tier)%256 < 128 && params.wifi)) {
-                    wifiuse = parameters.wifi ? "Preview Mode" : "No Preview Mode";
+                    wifiuse = params.wifi ? "Preview Mode" : "No Preview Mode";
                 }
                 if (firsttour && nextstart != "Pending" && !(params.event && tours.keys.length > 0) && tours.working) {
                     sys.sendMessage(src,"1) "+queuedata.tier+": Set by "+queuedata.starter+"; Parameters: "+params.mode+" Mode"+(params.gen != "default" ? "; Gen: "+getSubgen(params.gen,true) : "")+(params.type == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(params.maxplayers)) ? "; For "+ params.maxplayers +" players": "")+(wifiuse != "default" ? "; "+wifiuse : "")+(params.event ? "; Event Mode": "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time())),tourschan)
@@ -4187,16 +4195,14 @@ function tourprintbracket(key) {
             catch (err) {
                 sendChanAll("Error in saving tour stats, id "+key+": "+err, tourserrchan)
             }
-            if (isevent) {
-                tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
-            }
-            if (tours.keys.length === 0 && tours.globaltime > 0) {
-                tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
-            }
             delete tours.tour[key];
             tstats.savestats("all");
             purgeKeys();
+            if (tours.keys.length === 0 && tours.globaltime > 0) {
+                tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
+            }
             if (isevent) {
+                tours.globaltime = parseInt(sys.time())+tourconfig.tourbreak; // for next tournament
                 refreshTicks(true);
             }
             save_cache();

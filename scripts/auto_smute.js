@@ -11,6 +11,8 @@ module.exports.afterChangeTeam = function afterChangeTeam(src){
 };
 
 module.exports.afterLogIn = function afterLogIn(src) {
+    if (!SESSION.users(src)) return;
+
     var name = sys.name(src);
     if (sys.auth(src) > 0 || SESSION.users(src).smute.active) {
         return;
