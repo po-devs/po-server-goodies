@@ -324,10 +324,14 @@ function cmp(x1, x2) {
 function getFullTourName(key) {
     var mode = tours.tour[key].parameters.mode;
     var type = tours.tour[key].tourtype;
+    var wifi = tours.tour[key].parameters.wifi;
     var isEvent = tours.tour[key].event;
     var ret = type;
     if (tours.tour[key].parameters.gen != "default") {
         ret = getSubgen(tours.tour[key].parameters.gen,true) + " " + ret;
+    }
+    if ((sys.getClauses(type)%256 >= 128 && wifi === false) || (sys.getClauses(type)%256 < 128 && wifi === true)) {
+        ret = ret + " " + (wifi ? "Preview" : "No Preview");
     }
     if (mode != modeOfTier(type)) {
         ret = ret + " ["+mode+"]";
@@ -1102,10 +1106,10 @@ function tourStep() {
                 continue;
             }
             if (tours.tour[x].time-parseInt(sys.time()) == 60 && tours.tour[x].parameters.event) {
-                sendBotAll("Signups for the "+tours.tour[x].tourtype+" event tournament close in 1 minute.", "~mt", false)
+                sendBotAll("Signups for the "+getFullTourName(x)+" tournament close in 1 minute.", "~mt", false)
             }
             else if (tours.tour[x].time-parseInt(sys.time()) == 30) {
-                sendBotAll("Signups for the "+tours.tour[x].tourtype+" tournament close in 30 seconds.", "~mt", false)
+                sendBotAll("Signups for the "+getFullTourName(x)+" tournament close in 30 seconds.", "~mt", false)
             }
             continue;
         }
@@ -1838,7 +1842,11 @@ function tourCommand(src, command, commandData) {
                             parameters.maxplayers = players;
                         }
                         else if (cmp(parameterset, "wifi")) {
-                            if (cmp(parametervalue, "on")) {
+                            if (['CC 1v1', 'Wifi CC 1v1', 'Wifi Ubers', 'Wifi OU', 'No Preview Ubers', 'No Preview OU', 'Wifi Triples', 'Wifi Uber Triples', 'No Preview OU Triples', 'No Preview Uber Triples', 'Wifi OU Doubles', 'Wifi Uber Doubles', 'No Preview OU Doubles', 'No Preview Uber Doubles'].indexOf(tourtier) > -1) {
+                                sendBotMessage(src, "You cannot change the Team Preview Setting for the "+tourtier+" tier!", tourschan, false);
+                                return true;
+                            }
+                            else if (cmp(parametervalue, "on")) {
                                 parameters.wifi = true;
                             }
                             else if (cmp(parametervalue, "off")) {
