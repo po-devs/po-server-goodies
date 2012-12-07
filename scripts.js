@@ -5385,7 +5385,7 @@ beforeChatMessage: function(src, message, chan) {
     }*/
     
     var command;
-    if ((message[0] == '/' || message[0] == '!') && message.length > 1) {
+    if ((message[0] == '/' || message[0] == '!' && message[1] != "!") && message.length > 1) {
         if (parseInt(sys.time(), 10) - lastMemUpdate > 500) {
             sys.clearChat();
             lastMemUpdate = parseInt(sys.time(), 10);
