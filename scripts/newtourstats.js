@@ -599,16 +599,16 @@ function getLeaderBoard(src, tier, full, month) {
         list.sort(function(a,b) { return b[0] - a[0] ; });
         sys.sendMessage(src, "*** TOURNAMENT RANKINGS "+(tier != "" ? "("+tourtier+") " : "")+"***",tourschan);
         var ownnameprinted = false;
-        var rankkey = [0, 0] // rank, points
+        var rankkey = [0, 0]; // rank, points
         for (var x=0; x<65536; x++) {
             if (x >= list.length) break;
             if (rankkey[0] <= 10 || cmp((list[x])[1], sys.name(src)) || full) {
                 if (rankkey[1] === parseInt((list[x])[0])) {
-                    sys.sendMessage(src, "#"+rankkey[0]+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
+                    sys.sendMessage(src, "#"+rankkey[0]+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan);
                 }
                 else {
-                    sys.sendMessage(src, "#"+(x+1)+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan)
-                    rankkey = [x+1, parseInt((list[x])[0])]
+                    sys.sendMessage(src, "#"+(x+1)+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan);
+                    rankkey = [x+1, parseInt((list[x])[0])];
                 }
                 if (cmp((list[x])[1], sys.name(src))) {
                     ownnameprinted = true;
@@ -619,13 +619,13 @@ function getLeaderBoard(src, tier, full, month) {
     }
     catch (err) {
         if (err == "Not a valid tier") {
-            sendBotMessage(src, tier+" is not a valid tier!",tourschan, false)
+            sendBotMessage(src, tier+" is not a valid tier!",tourschan, false);
         }
         else if (err == "No data") {
-            sendBotMessage(src, "No data exists yet!",tourschan, false)
+            sendBotMessage(src, "No data exists yet!",tourschan, false);
         }
         else {
-            throw(err)
+            throw(err);
         }
     }
 }
@@ -644,15 +644,19 @@ function getWinners(name) {
         var rankkey = [0, 0] // rank, points
         var tmp = [];
         var windata = tourwinners[name];
+        var totalwins = 0;
+        var totalpoints = 0;
         for (var x in windata) {
             tmp.push({'date': x, 'tier': windata[x].tier, 'size': windata[x].size, 'points': windata[x].points});
+            totalpoints += windata[x].points;
         }
         while(tmp.length > 0) {
-            line = '<tr><td>'+tmp[0].date+'</td><td>'+tmp[0].tier+'</td><td>'+tmp[0].size+'</td><td>'+tmp[0].points+'</td></tr>';
+            line = '<tr><td>'+tmp[0].date+'</td><td>'+tmp[0].tier+'</td><td>'+tmp[0].size+'</td><td align="right">'+tmp[0].points+'</td></tr>';
             tmp.splice(0,1);
             table += line;
             ++send_rows;
         }
+        table += '<tr><td colspan="3"><b>Total Points</b></td><td align="right">'+totalpoints+'</td></tr>';
         table += table_footer;
         if (send_rows > 0) {
             return table;
