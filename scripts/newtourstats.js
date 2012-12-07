@@ -656,7 +656,7 @@ function getWinners(name) {
             table += line;
             ++send_rows;
         }
-        table += '<tr><td colspan="3"><b>Total Points</b></td><td align="right">'+totalpoints+'</td></tr>';
+        table += '<tr><td></td><td></td><td><b>Total</b></td><td align="right">'+totalpoints+'</td></tr>';
         table += table_footer;
         if (send_rows > 0) {
             return table;
