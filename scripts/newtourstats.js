@@ -575,7 +575,7 @@ function getLeaderBoard(src, tier, full, month) {
             if (tourtier === null) {
                 throw ("Not a valid tier");
             }
-            var rankdata = leaderboard[tier];
+            var rankdata = leaderboard[tourtier];
         }
         if (rankdata === undefined) {
             throw ("No data")
@@ -644,7 +644,6 @@ function getWinners(name) {
         var rankkey = [0, 0] // rank, points
         var tmp = [];
         var windata = tourwinners[name];
-        var totalwins = 0;
         var totalpoints = 0;
         for (var x in windata) {
             tmp.push({'date': x, 'tier': windata[x].tier, 'size': windata[x].size, 'points': windata[x].points});
