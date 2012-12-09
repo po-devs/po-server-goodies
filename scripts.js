@@ -3672,7 +3672,7 @@ modCommand: function(src, command, commandData, tar) {
         } catch (e) { sys.sendMessage(src, e, channel); }
         return;
     }
-    if (command == "ipbansbans") {
+    if (command == "ipbans") {
         var TABLE_HEADER, TABLE_LINE, TABLE_END;
         if (!commandData || commandData.indexOf('-text') == -1) {
            TABLE_HEADER = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Ip Banned</strong></center></td></tr><tr><th>IP subaddress</th><th>Comment on ipban</th></tr>';
