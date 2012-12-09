@@ -141,6 +141,7 @@ cleanFile("mbans.txt");
 cleanFile("smutes.txt");
 cleanFile("rangebans.txt");
 cleanFile("contributors.txt");
+cleanFile("ipbans.txt");
 cleanFile(Config.dataDir+"pastebin_user_key");
 cleanFile("secretsmute.txt");
 cleanFile("ipApi.txt");
@@ -1836,6 +1837,7 @@ init : function() {
     rangebans = new MemoryHash("rangebans.txt");
     contributors = new MemoryHash("contributors.txt");
     mafiaAdmins = new MemoryHash("mafiaadmins.txt");
+    ipbans = new MemoryHash("ipbans.txt");
     proxy_ips = {};
     function addProxybans(content) {
         var lines = content.split(/\n/);
@@ -2405,6 +2407,15 @@ isRangeBanned : function(ip) {
     return false;
 },
 
+isIpBanned: function(ip) {
+    for (var subip in ipbans.hash) {
+        if (subip.length > 0 && ip.substr(0, subip.length) == subip) {
+             return true;
+        }
+    }
+    return false;
+},
+
 isTempBanned : function(ip) {
     var aliases = sys.aliases(ip);
         for (var x = 0; x < aliases.length; x++) {
@@ -2416,7 +2427,7 @@ isTempBanned : function(ip) {
 },
 
 beforeIPConnected : function(ip) { //commands and stuff later for this, just fixing this quickly for now
-    if (ip == "151.51.183.227") { 
+    if(this.isIpBanned(ip)) { 
         sys.stopEvent();
     }
 },
@@ -4327,6 +4338,47 @@ adminCommand: function(src, command, commandData, tar) {
 },
 
 ownerCommand: function(src, command, commandData, tar) {
+    if (command == "ipban") {
+        var subip;
+        var comment;
+        var space = commandData.indexOf(' ');
+        if (space != -1) {
+            subip = commandData.substring(0,space);
+            comment = commandData.substring(space+1);
+        } else {
+            subip = commandData;
+            comment = '';
+        }
+        /* check ip */
+        var i = 0;
+        var nums = 0;
+        var dots = 0;
+        var correct = (subip.length > 0); // zero length ip is baaad
+        while (i < subip.length) {
+            var c = subip[i];
+            if (c == '.' && nums > 0 && dots < 3) {
+                nums = 0;
+                ++dots;
+                ++i;
+            } else if (c == '.' && nums === 0) {
+                correct = false;
+                break;
+            } else if (/^[0-9]$/.test(c) && nums < 3) {
+                ++nums;
+                ++i;
+            } else {
+                correct = false;
+                break;
+            }
+        }
+        if (!correct) {
+            normalbot.sendChanMessage(src, "The IP address looks strange, you might want to correct it: " + subip);
+            return;
+        }
+        ipbans.add(subip);
+        normalbot.sendChanAll("IP ban added successfully for IP subrange: " + ip + " by "+ sys.name(src));
+    }
+    
     if(command == "get_logs") { // temporary until 2.0.06 is used
          sys.sendMessage(src, "±logs: "+sys.getFileContent('logs/po_logs.json'), channel);
          sys.writeToFile('logs/po_logs.json', '');
