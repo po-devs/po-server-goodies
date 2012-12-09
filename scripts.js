@@ -108,7 +108,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, getTimeStamp, lcmoves, hangmanchan;
+var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, getTimeStamp, lcmoves, hangmanchan, ipbans;
 
 var isMafiaAdmin = require('mafia.js').isMafiaAdmin;
 var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
@@ -1663,6 +1663,7 @@ var commands = {
         "/smutelist [search term]: Searches the smutelist, shows full list if no search term is entered.",
         "/mafiabans [search term]: Searches the mafiabanlist, shows full list if no search team is entered.",
         "/rangebans: Lists range bans.",
+        "/ipbans : Lists ip bans.",
         "/autosmutelist: Lists the names in the auto-smute list.",
         "/namebans: Lists name bans.",
         "/namewarns: Lists name warnings.",
@@ -2427,7 +2428,7 @@ isTempBanned : function(ip) {
 },
 
 beforeIPConnected : function(ip) { //commands and stuff later for this, just fixing this quickly for now
-    if(this.isIpBanned(ip)) { 
+    if(this.isIpBanned(ip)) {
         sys.stopEvent();
     }
 },
@@ -3671,6 +3672,32 @@ modCommand: function(src, command, commandData, tar) {
         } catch (e) { sys.sendMessage(src, e, channel); }
         return;
     }
+    if (command == "ipbansbans") {
+        var TABLE_HEADER, TABLE_LINE, TABLE_END;
+        if (!commandData || commandData.indexOf('-text') == -1) {
+           TABLE_HEADER = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Ip Banned</strong></center></td></tr><tr><th>IP subaddress</th><th>Comment on ipban</th></tr>';
+           TABLE_LINE = '<tr><td>{0}</td><td>{1}</td></tr>';
+           TABLE_END = '</table>';
+        } else {
+           TABLE_HEADER = 'Ip Banned: IP subaddress, Command on ipban';
+           TABLE_LINE = ' || {0} / {1}';
+           TABLE_END = '';
+        }
+        try {
+        var table = TABLE_HEADER;
+        var tmp = [];
+        for (var key in ipbans.hash) {
+            tmp.push([key, ipbans.get(key)]);
+        }
+        tmp.sort(function(a,b) { return a[0] < b[0] ? -1 : 1; });
+        for (var row = 0; row < tmp.length; ++row) {
+            table += TABLE_LINE.format(tmp[row][0], tmp[row][1]);
+        }
+        table += TABLE_END;
+        sys.sendHtmlMessage(src, table, channel);
+        } catch (e) { sys.sendMessage(src, e, channel); }
+        return;
+    }
     if (command == "autosmutelist") {
         sys.sendMessage(src, "*** AUTOSMUTE LIST ***", channel);
         for (var x = 0; x < autosmute.length; x++) {
@@ -3801,11 +3828,13 @@ modCommand: function(src, command, commandData, tar) {
         var nameBanned = this.nameIsInappropriate(name);
         var rangeBanned = this.isRangeBanned(ip);
         var tempBanned = this.isTempBanned(ip);
+        var ipBanned = this.isIpBanned(ip);
         var bans = [];
         if (isBanned) bans.push("normal ban");
         if (nameBanned) bans.push("nameban");
         if (rangeBanned) bans.push("rangeban");
         if (tempBanned) bans.push("tempban");
+        if(ipBanned) bans.push("ip ban");
 
         if (isbot) {
             var userJson = {'type': 'UserInfo', 'id': tar ? tar : -1, 'username': name, 'auth': authLevel, 'contributor': contribution, 'ip': ip, 'online': online, 'registered': registered, 'lastlogin': lastLogin };
@@ -4375,7 +4404,7 @@ ownerCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "The IP address looks strange, you might want to correct it: " + subip);
             return;
         }
-        ipbans.add(subip);
+        ipbans.add(subip, "Name: " +sys.name(src) + "Comment: " + rangebans.escapeValue(comment));
         normalbot.sendChanAll("IP ban added successfully for IP subrange: " + subip + " by "+ sys.name(src),staffchannel);
         return;
     }
