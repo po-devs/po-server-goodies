@@ -39,7 +39,7 @@ exports = {
     
     is_command: function is_command(string)
     {
-        return (string[0] == '/' || string[0] == '!') && string.length > 1 && this.isLetter(message[1]);
+        return (string[0] == '/' || string[0] == '!') && string.length > 1 && this.isLetter(string[1]);
     },
 
     as_command: function as_command(string, delim, limit)
