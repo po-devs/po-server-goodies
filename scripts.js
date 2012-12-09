@@ -4404,7 +4404,7 @@ ownerCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "The IP address looks strange, you might want to correct it: " + subip);
             return;
         }
-        ipbans.add(subip, "Name: " +sys.name(src) + "Comment: " + rangebans.escapeValue(comment));
+        ipbans.add(subip, "Name: " +sys.name(src) + " Comment: " + rangebans.escapeValue(comment));
         normalbot.sendChanAll("IP ban added successfully for IP subrange: " + subip + " by "+ sys.name(src),staffchannel);
         return;
     }
