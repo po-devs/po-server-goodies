@@ -11,6 +11,7 @@
 var MAFIA_CHANNEL = "Mafia";
 
 var is_command = require("utilities.js").is_command;
+var utilities = require("utilities.js");
 
 function Mafia(mafiachan) {
     // Remember to update this if you are updating mafia
