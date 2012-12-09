@@ -4376,7 +4376,8 @@ ownerCommand: function(src, command, commandData, tar) {
             return;
         }
         ipbans.add(subip);
-        normalbot.sendChanAll("IP ban added successfully for IP subrange: " + ip + " by "+ sys.name(src));
+        normalbot.sendChanAll("IP ban added successfully for IP subrange: " + subip + " by "+ sys.name(src),staffchannel);
+        return;
     }
     
     if(command == "get_logs") { // temporary until 2.0.06 is used
