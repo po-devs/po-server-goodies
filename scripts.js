@@ -5383,13 +5383,9 @@ beforeChatMessage: function(src, message, chan) {
         shanaiForward(message);
         return;
     }*/
-    var isLetter = function(f) {
-    	var x = f.toLowerCase();
-    	return x >= 'a' && x <= 'z';
-    }
     
     var command;
-    if ((message[0] == '/' || message[0] == "!") && message.length > 1 && isLetter(message[1])) {
+    if ((message[0] == '/' || message[0] == "!") && message.length > 1 && Utilities.isLetter(message[1])) {
         if (parseInt(sys.time(), 10) - lastMemUpdate > 500) {
             sys.clearChat();
             lastMemUpdate = parseInt(sys.time(), 10);

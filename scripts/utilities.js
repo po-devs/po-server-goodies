@@ -31,10 +31,15 @@ exports = {
         }
         return arr;
     },
-
+    
+    isLetter : function(f) {
+    	var x = f.toLowerCase();
+    	return x >= 'a' && x <= 'z';
+    },
+    
     is_command: function is_command(string)
     {
-        return (string[0] == '/' || string[0] == '!') && string.length > 1;
+        return (string[0] == '/' || string[0] == '!') && string.length > 1 && this.isLetter(message[1]);
     },
 
     as_command: function as_command(string, delim, limit)
