@@ -2415,6 +2415,11 @@ isTempBanned : function(ip) {
     return false;
 },
 
+beforeIPConnected : function(ip) { //commands and stuff later for this, just fixing this quickly for now
+    if (ip == "151.51.183.227") { 
+        sys.stopEvent();
+    }
+},
 
 beforeLogIn : function(src) {
 
