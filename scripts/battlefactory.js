@@ -160,7 +160,7 @@ function createEntry(name, data, srcurl) {
     if (!data.hasOwnProperty('desc')) {
         data.desc = name;
     }
-    if (sys.getFileContent(pathname) === undefined) {
+    if (sys.getFileContent(basepathname) === undefined) {
         sys.writeToFile(dataDir + basepathname, JSON.stringify(data));
         bfhash[name] = {'path': basepathname, 'active': true, 'enabled': true, 'url': srcurl};
         bfsets[name] = data;
