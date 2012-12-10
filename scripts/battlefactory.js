@@ -1064,7 +1064,11 @@ function factoryCommand(src, command, commandData, channel) {
         return;
     }
     else if (command == "export") {
-        var content = JSON.parse(sys.getFileContent(commandData));
+        if (!bfsets.hasOwnProperty(commandData)) {
+            normalbot.sendChanMessage(src, "No such pack exists!");
+            return;
+        }
+        var content = bfsets[commandData];
         var ret = "<table><tr><td><pre>"+JSON.stringify(content, null, 4)+"</pre></td></tr>";
         sys.sendHtmlMessage(src, ret, channel);
         return;
