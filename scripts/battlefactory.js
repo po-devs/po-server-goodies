@@ -121,6 +121,7 @@ function initFactory() {
         else {
             try {
                 var teamfile = JSON.parse(teampack);
+                bfsets[x] = teamfile;
                 var res = setlint(teamfile, false);
                 if (res.errors.length >= 1) {
                     throw "Bad File";
@@ -128,7 +129,6 @@ function initFactory() {
                 if (numPokes(teamfile) < 12) {
                     throw "Not enough Pokemon";
                 }
-                bfsets[x] = teamfile;
                 bfhash[x].enabled = true;
                 validsetpacks += 1;
             }
@@ -897,12 +897,12 @@ function factoryCommand(src, command, commandData, channel) {
             normalbot.sendChanMessage(src, "You are not authorised to review "+accept.tier+" sets.");
             return;
         }
-        normalbot.sendAll(accept.name+"'s submission was accepted by "+sys.name(src),teamrevchan);
         var srctier = accept.tier;
         if (!bfsets.hasOwnProperty(srctier)) {
             normalbot.sendChanMessage(src, "No sets can be accepted for that tier.");
             return;
         }
+        normalbot.sendAll(accept.name+"'s submission was accepted by "+sys.name(src),teamrevchan);
         var teamsave = bfsets[srctier];
         var team = accept.sets;
         // Write the short code
