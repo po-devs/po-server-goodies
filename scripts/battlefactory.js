@@ -88,6 +88,7 @@ function initFactory() {
             'Wifi LC': [],
             'Middle Cup': []
         };
+        sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
     }
     try {
         bfhash = JSON.parse(sys.getFileContent(dataDir+"bfhash.json"));
@@ -170,13 +171,27 @@ function createEntry(name, data, srcurl) {
 }
 
 // Save user generated info periodically as a backup
-function autoSave() {
-    cleanEntries();
-    sys.writeToFile(submitDir+"index.json", JSON.stringify(userqueue));
-    sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfhash));
-    for (var x in bfhash) {
-        if (bfsets.hasOwnProperty(x)) {
-            sys.writeToFile(dataDir + bfhash[x].path, JSON.stringify(bfsets[x]));
+function autoSave(type, params) {
+    if (type == "all") {
+        cleanEntries();
+        sys.writeToFile(submitDir+"index.json", JSON.stringify(userqueue));
+        sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfhash));
+        for (var x in bfhash) {
+            if (bfsets.hasOwnProperty(x)) {
+                sys.writeToFile(dataDir + bfhash[x].path, JSON.stringify(bfsets[x]));
+            }
+        }
+    }
+    if (type == "queue") {
+        cleanEntries();
+        sys.writeToFile(submitDir+"index.json", JSON.stringify(userqueue));
+    }
+    if (type == "teams") {
+        sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfhash));
+        for (var b in bfhash) {
+            if (bfsets.hasOwnProperty(b) && (params == "all" || params == b)) {
+                sys.writeToFile(dataDir + bfhash[b].path, JSON.stringify(bfsets[b]));
+            }
         }
     }
 }
@@ -397,7 +412,7 @@ function factoryCommand(src, command, commandData, channel) {
                         sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
                     }
                     sys.writeToFile(dataDir+'bfteams.json', resp);
-                    autoSave();
+                    autoSave("teams", "preset");
                     sendChanAll('Updated Battle Factory Teams!', staffchannel);
                     refresh('preset');
                 }
@@ -446,7 +461,7 @@ function factoryCommand(src, command, commandData, channel) {
                         sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
                     }
                     if (createEntry(tmp[0],test,url)) {
-                        autoSave();
+                        autoSave("teams", tmp[0]);
                         sendChanAll('Added the team pack '+tmp[0]+'!', staffchannel);
                         refresh(tmp[0]);
                     }
@@ -506,7 +521,7 @@ function factoryCommand(src, command, commandData, channel) {
                     }
                     bfhash[tmp[0]].url = url;
                     sys.writeToFile(dataDir+hash.path, resp);
-                    autoSave();
+                    autoSave("teams", tmp[0]);
                     sendChanAll('Updated '+tmp[0]+' Battle Factory Teams!', staffchannel);
                     refresh(tmp[0]);
                 }
@@ -535,7 +550,7 @@ function factoryCommand(src, command, commandData, channel) {
             delete bfhash[delkey];
             delete bfsets[delkey];
             normalbot.sendChanMessage(src, "Removed the team pack "+delkey+"!");
-            autoSave();
+            autoSave("teams", "");
         }
         else {
             normalbot.sendChanMessage(src, "Couldn't find a team pack with the name "+delkey+"!");
@@ -553,7 +568,7 @@ function factoryCommand(src, command, commandData, channel) {
         }
         bfhash[commandData].active = false;
         normalbot.sendChanMessage(src, "Disabled the pack: "+commandData);
-        autoSave();
+        autoSave("teams", "");
         return;
     }
     else if (command == "enablepack") {
@@ -567,7 +582,7 @@ function factoryCommand(src, command, commandData, channel) {
         }
         bfhash[commandData].active = true;
         normalbot.sendChanMessage(src, "Enabled the pack: "+commandData);
-        autoSave();
+        autoSave("teams", "");
         return;
     }
     else if (command == "pokeslist") {
@@ -933,7 +948,7 @@ function factoryCommand(src, command, commandData, channel) {
         return;
     }
     else if (command == 'savesets') {
-        autoSave();
+        autoSave("all", "");
         normalbot.sendChanMessage(src, "Saved user generated sets!");
         return;
     }
@@ -1635,7 +1650,7 @@ function isReviewer(src) {
 }
 
 function isTierReviewer(src, tier) {
-    if (reviewers.hasOwnProperty(tier)) {
+    if (!reviewers.hasOwnProperty(tier)) {
         return false;
     }
     if (isReviewAdmin(src)) {
@@ -1685,7 +1700,7 @@ module.exports = {
     },
     stepEvent : function() {
         if (parseInt(sys.time())%saveInterval === 0) {
-            autoSave();
+            autoSave("all", "");
             normalbot.sendAll("Autosaved user generated sets.", teamrevchan);
         }
     },
