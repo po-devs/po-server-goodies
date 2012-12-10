@@ -1678,15 +1678,30 @@ function isReviewAdmin(src) {
     return (sys.auth(src) >= 2 || SESSION.channels(sys.channelId('BF Review')).isChannelAdmin(src));
 }
 
-function isReviewer(src) {
+function isGlobalReviewer(src) {
     return (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src));
+}
+
+function isReviewer(src) {
+    if (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src)) {
+        return true;
+    }
+    for (var r in reviewers) {
+        var tierrev = reviewers[r];
+        for (var x in tierrev) {
+            if (sys.name(src).toLowerCase() === tierrev[x].toLowerCase()) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 function isTierReviewer(src, tier) {
     if (!reviewers.hasOwnProperty(tier)) {
         return false;
     }
-    if (isReviewAdmin(src)) {
+    if (isGlobalReviewer(src)) {
         return true;
     }
     var tierrev = reviewers[tier];
