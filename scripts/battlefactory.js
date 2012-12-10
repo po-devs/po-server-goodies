@@ -121,11 +121,11 @@ function initFactory() {
         else {
             try {
                 var teamfile = JSON.parse(teampack);
-                bfsets[x] = teamfile;
                 var res = setlint(teamfile, false);
                 if (res.errors.length >= 1) {
                     throw "Bad File";
                 }
+                bfsets[x] = teamfile;
                 if (numPokes(teamfile) < 12) {
                     throw "Not enough Pokemon";
                 }
@@ -265,6 +265,7 @@ function refresh(key) {
         if (teamfile.hasOwnProperty('desc')) {
             if (typeof teamfile.desc == "string") {
                 message.push("Successfully loaded the team pack '"+teamfile.desc+"'");
+                bfhash[key].enabled = true;
             }
             else {
                 message.push("Warning: Team set description was faulty");
@@ -272,6 +273,13 @@ function refresh(key) {
         }
         else {
             message.push("Successfully loaded the team pack: "+key);
+        }
+
+        if (numPokes(teamfile) < 12) {
+            message.push("Not enough Pokemon for the pack: "+key);
+            bfhash[key].enabled = false;
+        }
+        else {
             bfhash[key].enabled = true;
         }
         var tteams = 0;
@@ -622,6 +630,16 @@ function factoryCommand(src, command, commandData, channel) {
             normalbot.sendChanMessage(src, "Invalid Code: "+err);
             return;
         }
+    }
+    else if (command == "refresh") {
+        if (!bfsets.hasOwnProperty(commandData)) {
+            normalbot.sendChanMessage(src, "No such pack exists!");
+            return;
+        }
+        autoSave("teams", commandData);
+        refresh(commandData);
+        normalbot.sendChanMessage(src, "Refreshed the "+commandData+" pack!");
+        return;
     }
     else if (command == "pokesets") {
         var tmp = commandData.split(":",2);
@@ -1795,6 +1813,7 @@ module.exports = {
                 "/deleteset [pack]:[code]: Deletes a faulty set.",
                 "/nextset: Goes to the next set in the queue",
                 "/savesets: Saves user generated Battle Factory sets (use before updating/server downtime)",
+                "/refresh: Refreshes a team pack (saves and checks if it's working)",
                 "/submit[un]ban: [Un]bans players from submitting sets",
                 "/submitbans: Views list of submit bans"
             ];
