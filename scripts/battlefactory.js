@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "1.100a";
+var bfversion = "1.110";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -63,11 +63,12 @@ function initFactory() {
         throw e;
     }
     try {
+        throw "x";
         userqueue = JSON.parse(sys.getFileContent(submitDir+"index.json"));
     }
     catch (e) {
         sendChanAll("No Battle Factory queue detected!", teamrevchan);
-        userqueue = [];
+        userqueue = {};
     }
     try {
         submitbans = JSON.parse(sys.getFileContent(submitDir+"bans.json"));
@@ -314,19 +315,21 @@ function refresh(key) {
 
 function cleanEntries() {
     var deleted = 0;
-    for (var x=0; x<userqueue.length; x++) {
+    for (var x in userqueue) {
         var obj = userqueue[x];
-        if (typeof obj != 'object' || obj === null) {
-            userqueue.splice(x,1);
-            x -= 1;
-            deleted += 1;
-            continue;
-        }
-        if (!obj.hasOwnProperty('ip') || !obj.hasOwnProperty('name') || !obj.hasOwnProperty('sets') || !obj.hasOwnProperty('tier')) {
-            userqueue.splice(x,1);
-            x -= 1;
-            deleted += 1;
-            continue;
+        for (var o in obj) {
+            if (typeof obj[o] != 'object' || obj[o] === null) {
+                userqueue[x].splice(o,1);
+                o -= 1;
+                deleted += 1;
+                continue;
+            }
+            if (!obj[o].hasOwnProperty('ip') || !obj[o].hasOwnProperty('name') || !obj[o].hasOwnProperty('sets') || !obj[o].hasOwnProperty('tier')) {
+                userqueue[x].splice(o,1);
+                o -= 1;
+                deleted += 1;
+                continue;
+            }
         }
     }
     if (deleted > 0) sendChanAll("Invalid Entries Removed: "+deleted, staffchannel);
@@ -356,15 +359,20 @@ function toNumber(charstring) {
     return result;
 }
 
-function seeQueueItem(index) {
-    if (index > userqueue.length || index < 0 || userqueue.length === 0 || userqueue[0] === undefined) {
+function seeQueueItem(index, tier) {
+    if (!userqueue.hasOwnProperty(tier)) {
+        normalbot.sendChanAll("Nothing in the queue.", teamrevchan);
+        return;
+    }
+    var tierqueue = userqueue[tier];
+    if (index > tierqueue.length || index < 0 || tierqueue.length === 0 || tierqueue[0] === undefined) {
         normalbot.sendChanAll("Nothing in the queue"+(index === 0 ? "." : " at index "+index), teamrevchan);
         return;
     }
     cleanEntries();
-    var submitinfo = userqueue[0];
+    var submitinfo = tierqueue[0];
     var sets = [];
-    normalbot.sendChanAll("Queue length is currently "+userqueue.length+". The set for review is shown below.", teamrevchan);
+    normalbot.sendChanAll(tier + " queue length is currently "+tierqueue.length+". The set for review is shown below.", teamrevchan);
     sendChanAll("", teamrevchan);
     normalbot.sendChanAll("User: "+submitinfo.name, teamrevchan);
     normalbot.sendChanAll("Tier: "+submitinfo.tier, teamrevchan);
@@ -374,17 +382,22 @@ function seeQueueItem(index) {
     }
     sendChanHtmlAll("<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", teamrevchan);
     sendChanAll("", teamrevchan);
-    normalbot.sendChanAll("Use /acceptset to accept this submission, /rejectset to reject it, or /nextset to view the next and come back to this later.", teamrevchan);
+    normalbot.sendChanAll("Use /acceptset "+tier+" to accept this submission, /rejectset "+tier+" to reject it, or /nextset "+tier+" to view the next and come back to this later.", teamrevchan);
 }
 
-function sendQueueItem(src, index) {
-    if (index > userqueue.length || index < 0 || userqueue.length === 0 || userqueue[0] === undefined) {
+function sendQueueItem(src, index, tier) {
+    if (!userqueue.hasOwnProperty(tier)) {
+        normalbot.sendMessage(src, "Nothing in the queue.", teamrevchan);
+        return;
+    }
+    var tierqueue = userqueue[tier];
+    if (index > tierqueue.length || index < 0 || tierqueue.length === 0 || tierqueue[0] === undefined) {
         normalbot.sendMessage(src, "Nothing in the queue"+(index === 0 ? "." : " at index "+index), teamrevchan);
         return;
     }
-    var submitinfo = userqueue[0];
+    var submitinfo = tierqueue[0];
     var sets = [];
-    normalbot.sendMessage(src, "Queue length is currently "+userqueue.length+". The set for review is shown below.", teamrevchan);
+    normalbot.sendMessage(src, tier+" queue length is currently "+tierqueue.length+". The set for review is shown below.", teamrevchan);
     sys.sendMessage(src, "", teamrevchan);
     normalbot.sendMessage(src, "User: "+submitinfo.name, teamrevchan);
     normalbot.sendMessage(src, "Tier: "+submitinfo.tier, teamrevchan);
@@ -394,7 +407,7 @@ function sendQueueItem(src, index) {
     }
     sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", teamrevchan);
     sys.sendMessage(src, "", teamrevchan);
-    normalbot.sendMessage(src, "Use /acceptset to accept this submission, /rejectset to reject it, or /nextset to view the next and come back to this later.", teamrevchan);
+    normalbot.sendMessage(src, "Use /acceptset "+tier+" to accept this submission, /rejectset "+tier+" to reject it, or /nextset "+tier+" to view the next and come back to this later.", teamrevchan);
 }
 
 function factoryCommand(src, command, commandData, channel) {
@@ -804,8 +817,11 @@ function factoryCommand(src, command, commandData, channel) {
         }
         var submissions = 0;
         for (var q in userqueue) {
-            if (userqueue[q].ip == sys.ip(src) || userqueue[q].name == sys.name(src)) {
-                submissions += 1;
+            var tqueue = userqueue[q];
+            for (var j in tqueue) {
+                if (tqueue[j].ip == sys.ip(src) || tqueue[j].name == sys.name(src)) {
+                    submissions += 1;
+                }
             }
         }
         var maxsubmissions = sys.auth(src) >= 1 ? 100 : 15;
@@ -876,6 +892,7 @@ function factoryCommand(src, command, commandData, channel) {
             normalbot.sendChanMessage(src, "You have no Pokemon!");
             return;
         }
+        var submitlist = [];
         for (var s in team) {
             var submission = {
                 'ip': sys.ip(src),
@@ -883,7 +900,14 @@ function factoryCommand(src, command, commandData, channel) {
                 'sets': [team[s]],
                 'tier': submittier
             };
-            userqueue.push(submission);
+            submitlist.push(submission);
+        }
+        if (userqueue.hasOwnProperty(submittier)) {
+            var oldarr = userqueue[submittier];
+            userqueue[submittier] = oldarr.concat(submitlist);
+        }
+        else {
+            userqueue[submittier] = submitlist;
         }
         normalbot.sendChanMessage(src, "Submitted your sets. See your submission below.");
         normalbot.sendAll(sys.name(src)+" submitted some "+submittier+" sets for Battle Factory.", teamrevchan);
@@ -895,19 +919,27 @@ function factoryCommand(src, command, commandData, channel) {
         return;
     }
     else if (command == 'checkqueue') {
-        if (userqueue.length === 0) {
-            normalbot.sendChanMessage(src, "Nothing in the queue.");
+        if (!userqueue.hasOwnProperty(commandData)) {
+            normalbot.sendChanMessage(src, "Usage: /checkqueue [tier] (tier is case sensitive)");
+            return;
+        }
+        if (userqueue[commandData].length === 0) {
+            normalbot.sendChanMessage(src, "Nothing in the "+commandData+" queue.");
             return;
         }
         seeQueueItem(0);
         return;
     }
     else if (command == 'acceptset') {
-        if (userqueue.length === 0) {
-            normalbot.sendChanMessage(src, "Nothing in the queue.");
+        if (!userqueue.hasOwnProperty(commandData)) {
+            normalbot.sendChanMessage(src, "Usage: /acceptset [tier] (tier is case sensitive)");
             return;
         }
-        var accept = userqueue[0];
+        if (userqueue[commandData].length === 0) {
+            normalbot.sendChanMessage(src, "Nothing in the "+commandData+" queue.");
+            return;
+        }
+        var accept = userqueue[commandData][0];
         if (accept.ip == sys.ip(src) && !isReviewAdmin(src)) {
             normalbot.sendChanMessage(src, "Can't accept your own sets.");
             return;
@@ -939,16 +971,20 @@ function factoryCommand(src, command, commandData, channel) {
             }
         }
         bfsets[srctier] = teamsave;
-        userqueue.splice(0,1);
-        seeQueueItem(0);
+        userqueue[commandData].splice(0,1);
+        seeQueueItem(0, commandData);
         return;
     }
     else if (command == 'rejectset') {
-        if (userqueue.length === 0) {
-            normalbot.sendChanMessage(src, "Nothing in the queue.");
+        if (!userqueue.hasOwnProperty(commandData)) {
+            normalbot.sendChanMessage(src, "Usage: /rejectset [tier] (tier is case sensitive)");
             return;
         }
-        var reject = userqueue[0];
+        if (userqueue[commandData].length === 0) {
+            normalbot.sendChanMessage(src, "Nothing in the "+commandData+" queue.");
+            return;
+        }
+        var reject = userqueue[commandData][0];
         // Maybe change the reject mechanics?
         if (!isTierReviewer(src, reject.tier) && reject.name != sys.name(src)) {
             normalbot.sendChanMessage(src, "You are not authorised to review "+reject.tier+" sets.");
@@ -956,14 +992,22 @@ function factoryCommand(src, command, commandData, channel) {
         }
         normalbot.sendChanMessage(src, "You rejected the current set.");
         normalbot.sendAll(reject.name+"'s submission was rejected by "+sys.name(src),teamrevchan);
-        userqueue.splice(0,1);
-        seeQueueItem(0);
+        userqueue[commandData].splice(0,1);
+        seeQueueItem(0, commandData);
         return;
     }
     else if (command == 'nextset') {
-        var shift = (userqueue.splice(0,1))[0];
-        userqueue.push(shift);
-        seeQueueItem(0);
+        if (!userqueue.hasOwnProperty(commandData)) {
+            normalbot.sendChanMessage(src, "Usage: /nextset [tier] (tier is case sensitive)");
+            return;
+        }
+        if (userqueue[commandData].length === 0) {
+            normalbot.sendChanMessage(src, "Nothing in the "+commandData+" queue.");
+            return;
+        }
+        var shift = (userqueue[commandData].splice(0,1))[0];
+        userqueue[commandData].push(shift);
+        seeQueueItem(0, commandData);
         return;
     }
     else if (command == 'savesets') {
@@ -1135,6 +1179,22 @@ function factoryCommand(src, command, commandData, channel) {
         for (var r in reviewers) {
             sys.sendMessage(src, r+": "+reviewers[r].join(", "), channel);
         }
+        return;
+    }
+    else if (command == 'backlog') {
+        sys.sendMessage(src, "*** Current Queue Lengths ***", channel);
+        for (var a in bfhash) {
+            if (a == "preset") {
+                continue;
+            }
+            if (!userqueue.hasOwnProperty(a)) {
+                sys.sendMessage(src, a+": 0", channel);
+            }
+            else {
+                sys.sendMessage(src, a+": "+userqueue[a].length, channel);
+            }
+        }
+        return;
     }
     else return 'no command';
 }
@@ -1763,7 +1823,11 @@ module.exports = {
     },
     afterChannelJoin : function(player, chan) {
         if (chan === sys.channelId('BF Review') && (sys.auth(player) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(player))) {
-            sendQueueItem(player, 0)
+            for (var x in userqueue) {
+                if (isTierReviewer(player, x) && userqueue[x].length > 0) {
+                    sendQueueItem(player, 0, x)
+                }
+            }
         }
         if (teamrevchan != sys.channelId("BF Review")) {
             teamrevchan = sys.channelId("BF Review");
@@ -1837,9 +1901,9 @@ module.exports = {
                 "/pokecode [alpha code]: Converts a code to readable format.",
                 "/pokesets [poke]:[pack] Gets the sets for that pokemon in a Battle Factory Pack in readable format",
                 "/scansets [url/location]: Scan a set file for any critical errors (scans current if no file specified, /scanusersets scans the user sets)",
-                "/checkqueue: Checks the current set in the queue",
-                "/acceptset: Accepts the current set in the queue",
-                "/rejectset: Rejects the current set in the queue",
+                "/checkqueue [tier]: Checks the current set in the queue for that tier",
+                "/acceptset [tier]: Accepts the current set in the queue for that tier",
+                "/rejectset [tier]: Rejects the current set in the queue for that tier",
                 "/deleteset [pack]:[code]: Deletes a faulty set.",
                 "/nextset: Goes to the next set in the queue",
                 "/savesets: Saves user generated Battle Factory sets (use before updating/server downtime)",
@@ -1851,6 +1915,7 @@ module.exports = {
                 "/bfversion: Gives information about the battle factory",
                 "/viewpacks: Views installed Battle Factory Packs",
                 "/reviewers: Views the list of authorised reviewers",
+                "/backlog: Views the queue length",
                 "/submitsets: Submits your first team in teambuilder for the battle factory, in the tier that team is currently in (sets are reviewed)"
             ];
             if (sys.auth(src) >= 2 || SESSION.channels(sys.channelId('BF Review')).isChannelAdmin(src)) {
