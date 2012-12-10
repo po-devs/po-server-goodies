@@ -256,7 +256,7 @@ function refresh(key) {
         }
         var file = sys.getFileContent(dataDir + bfhash[key].path);
         if (file === undefined) {
-            sendChanAll("Team Pack "+key+" is missing!", staffchannel);
+            sendChanAll("Team Pack "+key+" is missing!", teamrevchan);
             throw "File not found";
         }
         bfsets[key] = JSON.parse(file);
@@ -303,11 +303,11 @@ function refresh(key) {
         }
         message.push("Total: "+tteams+" pokes and "+tsets+" sets.");
         if (message.length > 0) {
-            sendChanAll(message.join("; "), staffchannel);
+            sendChanAll(message.join("; "), teamrevchan);
         }
     }
     catch (err) {
-        sendChanAll("Couldn't refresh teams: "+err, staffchannel);
+        sendChanAll("Couldn't refresh teams: "+err, teamrevchan);
     }
 }
 
