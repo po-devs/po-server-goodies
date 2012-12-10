@@ -63,7 +63,6 @@ function initFactory() {
         throw e;
     }
     try {
-        throw "x";
         userqueue = JSON.parse(sys.getFileContent(submitDir+"index.json"));
     }
     catch (e) {
@@ -1787,7 +1786,7 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (isReviewer(source) || ["bfversion", "submitsets", "viewpacks", "userpokesets", "reviewers"].indexOf(command) > -1) {
+        if (isReviewer(source) || ["bfversion", "submitsets", "viewpacks", "userpokesets", "reviewers", "backlog"].indexOf(command) > -1) {
             if (['acceptset', 'rejectset', 'deleteset','checkqueue', 'nextset', 'userpokesets'].indexOf(command) > -1 && channel != sys.channelId('BF Review')) {
                 normalbot.sendChanMessage(source, "These commands will only work in the #BF Review Channel!");
                 return true;
@@ -1825,7 +1824,7 @@ module.exports = {
         if (chan === sys.channelId('BF Review') && (sys.auth(player) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(player))) {
             for (var x in userqueue) {
                 if (isTierReviewer(player, x) && userqueue[x].length > 0) {
-                    sendQueueItem(player, 0, x)
+                    sendQueueItem(player, 0, x);
                 }
             }
         }
