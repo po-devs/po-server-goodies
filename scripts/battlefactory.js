@@ -242,7 +242,7 @@ function refresh(key) {
         var file = sys.getFileContent(dataDir + bfhash[key].path);
         if (file === undefined) {
             sendChanAll("Team Pack "+key+" is missing!", staffchannel);
-            continue;
+            throw "File not found";
         }
         bfsets[key] = JSON.parse(file);
         var message = [];
