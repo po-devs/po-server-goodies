@@ -530,9 +530,9 @@ function factoryCommand(src, command, commandData, channel) {
                     }
                     bfhash[tmp[0]].url = url;
                     sys.writeToFile(dataDir+hash.path, resp);
-                    autoSave("teams", tmp[0]);
-                    sendChanAll('Updated '+tmp[0]+' Battle Factory Teams!', staffchannel);
+                    sendChanAll('Updated '+tmp[0]+' Battle Factory Teams!', teamrevchan);
                     refresh(tmp[0]);
+                    autoSave("teams", tmp[0]);
                 }
                 catch (err) {
                     normalbot.sendChanMessage(src, "FATAL ERROR: "+err);
