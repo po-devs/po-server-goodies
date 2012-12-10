@@ -128,6 +128,7 @@ function initFactory() {
                 }
                 bfsets[x] = teamfile;
                 bfhash[x].enabled = true;
+                validsetpacks += 1;
             }
             catch (e) {
                 sendChanAll("Set pack "+x+" is invalid: "+e, staffchannel);
@@ -147,7 +148,7 @@ function initFactory() {
 function createDefaultEntry(path, desc) {
     var pathname = dataDir + path;
     if (sys.getFileContent(pathname) === undefined) {
-        sys.writeToFile(pathname, {'desc': desc});
+        sys.writeToFile(pathname, JSON.stringify({'desc': desc}));
         return true;
     }
     return false;
