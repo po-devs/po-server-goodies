@@ -926,7 +926,7 @@ function factoryCommand(src, command, commandData, channel) {
             normalbot.sendChanMessage(src, "Nothing in the "+commandData+" queue.");
             return;
         }
-        seeQueueItem(0);
+        seeQueueItem(0, commandData);
         return;
     }
     else if (command == 'acceptset') {
