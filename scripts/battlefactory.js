@@ -535,6 +535,7 @@ function factoryCommand(src, command, commandData, channel) {
             delete bfhash[delkey];
             delete bfsets[delkey];
             normalbot.sendChanMessage(src, "Removed the team pack "+delkey+"!");
+            autoSave();
         }
         else {
             normalbot.sendChanMessage(src, "Couldn't find a team pack with the name "+delkey+"!");
@@ -552,6 +553,7 @@ function factoryCommand(src, command, commandData, channel) {
         }
         bfhash[commandData].active = false;
         normalbot.sendChanMessage(src, "Disabled the pack: "+commandData);
+        autoSave();
         return;
     }
     else if (command == "enablepack") {
@@ -565,6 +567,7 @@ function factoryCommand(src, command, commandData, channel) {
         }
         bfhash[commandData].active = true;
         normalbot.sendChanMessage(src, "Enabled the pack: "+commandData);
+        autoSave();
         return;
     }
     else if (command == "pokeslist") {
