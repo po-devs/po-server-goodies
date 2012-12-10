@@ -951,7 +951,7 @@ function factoryCommand(src, command, commandData, channel) {
         var reject = userqueue[0];
         // Maybe change the reject mechanics?
         if (!isTierReviewer(src, reject.tier) && reject.name != sys.name(src)) {
-            normalbot.sendChanMessage(src, "You are not authorised to review "+accept.tier+" sets.");
+            normalbot.sendChanMessage(src, "You are not authorised to review "+reject.tier+" sets.");
             return;
         }
         normalbot.sendChanMessage(src, "You rejected the current set.");
@@ -980,6 +980,10 @@ function factoryCommand(src, command, commandData, channel) {
         }
         if (!bfsets.hasOwnProperty(tmp[0])) {
             normalbot.sendChanMessage(src, "No such pack exists!");
+            return;
+        }
+        if (!isTierReviewer(src, tmp[0])) {
+            normalbot.sendChanMessage(src, "You are not authorised to review "+tmp[0]+" sets.");
             return;
         }
         var deletesets = bfsets[tmp[0]];
@@ -1057,6 +1061,12 @@ function factoryCommand(src, command, commandData, channel) {
         delete submitbans[tarip];
         normalbot.sendAll(commandData+" was unbanned from submitting sets by "+sys.name(src)+"!",teamrevchan);
         sys.writeToFile(submitDir+"bans.json", JSON.stringify(submitbans));
+        return;
+    }
+    else if (command == "export") {
+        var content = JSON.parse(sys.getFileContent(commandData));
+        var ret = "<table><tr><td><pre>"+JSON.stringify(content, null, 4)+"</pre></td></tr>";
+        sys.sendHtmlMessage(src, ret, channel);
         return;
     }
     else if (command == 'addreviewer') {
