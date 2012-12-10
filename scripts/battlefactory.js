@@ -558,7 +558,7 @@ function factoryCommand(src, command, commandData, channel) {
             sys.deleteFile(dataDir + bfhash[delkey].path)
             delete bfhash[delkey];
             delete bfsets[delkey];
-            normalbot.sendChanMessage(src, "Removed the team pack "+delkey+"!");
+            normalbot.sendAll("Removed the team pack "+delkey+"!", teamrevchan);
             autoSave("teams", "");
         }
         else {
@@ -576,7 +576,7 @@ function factoryCommand(src, command, commandData, channel) {
             return;
         }
         bfhash[commandData].active = false;
-        normalbot.sendChanMessage(src, "Disabled the pack: "+commandData);
+        normalbot.sendAll("Disabled the pack: "+commandData, teamrevchan);
         autoSave("teams", "");
         return;
     }
@@ -590,7 +590,7 @@ function factoryCommand(src, command, commandData, channel) {
             return;
         }
         bfhash[commandData].active = true;
-        normalbot.sendChanMessage(src, "Enabled the pack: "+commandData);
+        normalbot.sendAll("Enabled the pack: "+commandData, teamrevchan);
         autoSave("teams", "");
         return;
     }
