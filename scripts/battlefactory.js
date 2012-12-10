@@ -156,11 +156,11 @@ function createDefaultEntry(path, desc) {
 }
 
 function createEntry(name, data, srcurl) {
-    var basepathname = dataDir + "bfteams_" + (name.replace(/ /g, "")).toLowerCase() + ".json";
+    var basepathname = "bfteams_" + (name.replace(/ /g, "")).toLowerCase() + ".json";
     if (!data.hasOwnProperty('desc')) {
         data.desc = name;
     }
-    if (sys.getFileContent(basepathname) === undefined) {
+    if (sys.getFileContent(dataDir + basepathname) === undefined) {
         sys.writeToFile(dataDir + basepathname, JSON.stringify(data));
         bfhash[name] = {'path': basepathname, 'active': true, 'enabled': true, 'url': srcurl};
         bfsets[name] = data;
