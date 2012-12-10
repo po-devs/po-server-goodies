@@ -1003,7 +1003,7 @@ function factoryCommand(src, command, commandData, channel) {
         var deletemsg = getReadablePoke(tmp[1]);
         bfsets[tmp[0]] = deletesets;
         sendChanHtmlAll("<table border='2'><tr><td style='background-color:#ff7777;'><pre>"+deletemsg.join("<br/>")+"</pre></td></tr></table>",teamrevchan);
-        normalbot.sendAll(sys.name(src)+" deleted set id "+tmp[1]+"!", teamrevchan);
+        normalbot.sendAll(sys.name(src)+" deleted set id "+tmp[1]+" from "+tmp[0]+"!", teamrevchan);
         return;
     }
     else if (command == 'submitbans') {
