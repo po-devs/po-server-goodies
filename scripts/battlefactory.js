@@ -106,6 +106,7 @@ function initFactory() {
             'Wifi LC': {'path': 'bfteams_wifilc.json', 'active': true, 'enabled': false},
             'Middle Cup': {'path': 'bfteams_middlecup.json', 'active': true, 'enabled': false}
         };
+        sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfhash));
     }
     var validsetpacks = 0;
     bfsets = {};
@@ -172,6 +173,7 @@ function createEntry(name, data, srcurl) {
 function autoSave() {
     cleanEntries();
     sys.writeToFile(submitDir+"index.json", JSON.stringify(userqueue));
+    sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfhash));
     for (var x in bfhash) {
         if (bfsets.hasOwnProperty(x)) {
             sys.writeToFile(dataDir + bfhash[x].path, JSON.stringify(bfsets[x]));
@@ -395,6 +397,7 @@ function factoryCommand(src, command, commandData, channel) {
                         sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
                     }
                     sys.writeToFile(dataDir+'bfteams.json', resp);
+                    autoSave();
                     sendChanAll('Updated Battle Factory Teams!', staffchannel);
                     refresh('preset');
                 }
@@ -503,6 +506,7 @@ function factoryCommand(src, command, commandData, channel) {
                     }
                     bfhash[tmp[0]].url = url;
                     sys.writeToFile(dataDir+hash.path, resp);
+                    autoSave();
                     sendChanAll('Updated '+tmp[0]+' Battle Factory Teams!', staffchannel);
                     refresh(tmp[0]);
                 }
