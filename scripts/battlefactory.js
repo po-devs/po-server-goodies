@@ -743,7 +743,7 @@ function factoryCommand(src, command, commandData, channel) {
     else if (command == "viewpacks") {
         var table = "<table><tr><th colspan=4>Battle Factory Packs</th></tr><tr><th>Name</th><th>Enabled</th><th>Working</th><th>URL</th></tr>";
         for (var h in bfhash) {
-            table += "<tr><td>"+html_escape(h)+"</td><td>"+(bfhash[h].active ? "Yes" : "No")+"</td><td>"+(bfhash[h].enabled ? "Yes" : "No")+"</td><td>"+(bfhash[h].hasOwnProperty(url) ? "<a href="+bfhash[h].url+">"+html_escape(bfhash[h].url)+"</a></td></tr>" : "Not Specified");
+            table += "<tr><td>"+html_escape(h)+"</td><td>"+(bfhash[h].active ? "Yes" : "No")+"</td><td>"+(bfhash[h].enabled ? "Yes" : "No")+"</td><td>"+(bfhash[h].hasOwnProperty('url') ? "<a href="+bfhash[h].url+">"+html_escape(bfhash[h].url)+"</a></td></tr>" : "Not Specified");
         }
         table += "</table>"
         sys.sendHtmlMessage(src,table,channel);
