@@ -1069,7 +1069,7 @@ function factoryCommand(src, command, commandData, channel) {
             return;
         }
         var content = bfsets[commandData];
-        var ret = "<table><tr><td><pre>"+JSON.stringify(content, null, 4)+"</pre></td></tr>";
+        var ret = "<table><tr><td><pre>"+JSON.stringify(content, null, 4)+"</pre></td></tr></table>";
         sys.sendHtmlMessage(src, ret, channel);
         return;
     }
@@ -1133,7 +1133,7 @@ function factoryCommand(src, command, commandData, channel) {
     else if (command == 'reviewers') {
         sys.sendMessage(src, "*** Current Reviewers ***", channel);
         for (var r in reviewers) {
-            sys.sendMessage(src, r+": "+reviewers[r].join(", "));
+            sys.sendMessage(src, r+": "+reviewers[r].join(", "), channel);
         }
     }
     else return 'no command';
