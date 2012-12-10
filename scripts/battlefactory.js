@@ -25,11 +25,12 @@ var html_escape = utilities.html_escape;
 function initFactory() {
     sys.makeDir("bfdata");
     sys.makeDir("bfdata/submit");
+    teamrevchan = utilities.get_or_create_channel("BF Review");
     try {
         var file = sys.getFileContent(dataDir+"bfteams.json");
         if (file === undefined) {
             var url = Config.base_url+dataDir+"bfteams.json";
-            normalbot.sendAll("Teams file not found, fetching teams from "+url, staffchannel);
+            normalbot.sendAll("Teams file not found, fetching teams from "+url, teamrevchan);
             sys.webCall(url, function(resp) {
                 if (resp !== "") {
                     try {
@@ -40,15 +41,15 @@ function initFactory() {
                         }
                         sys.writeToFile(dataDir+'bfteams.json', resp);
                         defaultsets = test;
-                        sendChanAll('Updated Battle Factory Teams!', staffchannel);
+                        sendChanAll('Updated Battle Factory Teams!', teamrevchan);
                     }
                     catch (err) {
-                        sendChanAll("FATAL ERROR: "+err, staffchannel);
+                        sendChanAll("FATAL ERROR: "+err, teamrevchan);
                         throw "Battle Factory web file is corrupt!";
                     }
                 }
                 else {
-                    sendChanAll("Failed to load teams!", staffchannel);
+                    sendChanAll("Failed to load teams!", teamrevchan);
                     throw "Couldn't load the Battle Factory file!";
                 }
             });
@@ -65,7 +66,7 @@ function initFactory() {
         userqueue = JSON.parse(sys.getFileContent(submitDir+"index.json"));
     }
     catch (e) {
-        sendChanAll("No Battle Factory queue detected!", staffchannel);
+        sendChanAll("No Battle Factory queue detected!", teamrevchan);
         userqueue = [];
     }
     try {
@@ -94,7 +95,7 @@ function initFactory() {
         bfhash = JSON.parse(sys.getFileContent(dataDir+"bfhash.json"));
     }
     catch (e) {
-        sendChanAll("Making default bfhash", staffchannel);
+        sendChanAll("Making default bfhash", teamrevchan);
         // name, filepath, whether it is being actively used (human choice), whether it is enabled (automated)
         bfhash = {
             'preset': {'path': 'bfteams.json', 'active': true, 'enabled': false, 'url': Config.base_url+dataDir+"bfteams.json"},
@@ -133,16 +134,16 @@ function initFactory() {
                 validsetpacks += 1;
             }
             catch (e) {
-                sendChanAll("Set pack "+x+" is invalid: "+e, staffchannel);
+                sendChanAll("Set pack "+x+" is invalid: "+e, teamrevchan);
                 bfhash[x].enabled = false;
             }
         }
     }
     if (validsetpacks === 0) {
-        sendChanAll("No valid Battle Factory sets detected!", staffchannel);
+        sendChanAll("No valid Battle Factory sets detected!", teamrevchan);
         throw "No valid set packs available";
     }
-    teamrevchan = utilities.get_or_create_channel("BF Review");
+
     sendChanAll("Version "+bfversion+" of the Battle Factory loaded successfully!", staffchannel);
     working = true;
 }
