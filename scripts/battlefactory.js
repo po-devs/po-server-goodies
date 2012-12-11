@@ -1735,15 +1735,17 @@ function validPacks() {
 }
 
 function isReviewAdmin(src) {
-    return (sys.auth(src) >= 2 || SESSION.channels(sys.channelId('BF Review')).isChannelAdmin(src));
+    return (sys.auth(src) >= 3 || SESSION.channels(sys.channelId('BF Review')).isChannelOwner(src));
 }
 
 function isGlobalReviewer(src) {
-    return (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src));
+    return (sys.auth(src) >= 3 || SESSION.channels(sys.channelId('BF Review')).isChannelOwner(src));
+    // return (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src));
 }
 
 function isReviewer(src) {
-    if (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src)) {
+    return (sys.auth(src) >= 3 || SESSION.channels(sys.channelId('BF Review')).isChannelOwner(src));
+    /*if (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src)) {
         return true;
     }
     for (var r in reviewers) {
@@ -1754,7 +1756,7 @@ function isReviewer(src) {
             }
         }
     }
-    return false;
+    return false;*/
 }
 
 function isTierReviewer(src, tier) {
