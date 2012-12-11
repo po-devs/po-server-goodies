@@ -1042,6 +1042,7 @@ function factoryCommand(src, command, commandData, channel) {
                     deletesets[u] = setlist;
                 }
                 found = true;
+                break;
             }
         }
         if (!found) {
