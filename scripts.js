@@ -5795,7 +5795,7 @@ afterChatMessage : function(src, message, chan)
 
 beforeBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2) {
    if (sys.tier(src, team1) == "Battle Factory" && sys.tier(dest, team2) == "Battle Factory") {
-       callplugins("beforeBattleStarted", src, dest, team1, team2);
+       callplugins("beforeBattleStarted", src, dest, rated, mode, team1, team2);
    }
 },
 

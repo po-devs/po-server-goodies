@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "1.110";
+var bfversion = "1.120";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -358,30 +358,47 @@ function toNumber(charstring) {
     return result;
 }
 
+function sendReviewers(message, tier, html) {
+    if (!sys.existChannel('BF Review')) {
+        return;
+    }
+    var arr = sys.playersOfChannel(teamrevchan);
+    for (var x in arr) {
+        if (isTierReviewer(arr[x],tier)) {
+            if (html) {
+                sys.sendHtmlMessage(arr[x], message, teamrevchan);
+            }
+            else {
+                normalbot.sendMessage(arr[x], message, teamrevchan);
+            }
+        }
+    }
+}
+
 function seeQueueItem(index, tier) {
     if (!userqueue.hasOwnProperty(tier)) {
-        normalbot.sendChanAll("Nothing in the queue.", teamrevchan);
+        sendReviewers("Nothing in the "+tier+" queue.", tier, false);
         return;
     }
     var tierqueue = userqueue[tier];
     if (index > tierqueue.length || index < 0 || tierqueue.length === 0 || tierqueue[0] === undefined) {
-        normalbot.sendChanAll("Nothing in the queue"+(index === 0 ? "." : " at index "+index), teamrevchan);
+        sendReviewers("Nothing in the "+tier+" queue"+(index === 0 ? "." : " at index "+index), tier, false);
         return;
     }
     cleanEntries();
     var submitinfo = tierqueue[0];
     var sets = [];
-    normalbot.sendChanAll(tier + " queue length is currently "+tierqueue.length+". The set for review is shown below.", teamrevchan);
-    sendChanAll("", teamrevchan);
-    normalbot.sendChanAll("User: "+submitinfo.name, teamrevchan);
-    normalbot.sendChanAll("Tier: "+submitinfo.tier, teamrevchan);
+    sendReviewers(tier + " queue length is currently "+tierqueue.length+". The set for review is shown below.", tier, false);
+    sendReviewers("", tier, true);
+    sendReviewers("User: "+submitinfo.name, tier, false);
+    sendReviewers("Tier: "+submitinfo.tier, tier, false);
     var pokesets = submitinfo.sets;
     for (var b in pokesets) {
         sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
     }
-    sendChanHtmlAll("<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", teamrevchan);
-    sendChanAll("", teamrevchan);
-    normalbot.sendChanAll("Use /acceptset "+tier+" to accept this submission, /rejectset "+tier+" to reject it, or /nextset "+tier+" to view the next and come back to this later.", teamrevchan);
+    sendReviewers("<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", tier, true);
+    sendReviewers("", tier, true);
+    sendReviewers("Use /acceptset "+tier+" to accept this submission, /rejectset "+tier+" to reject it, or /nextset "+tier+" to view the next and come back to this later.", tier, false);
 }
 
 function sendQueueItem(src, index, tier) {
@@ -1018,11 +1035,11 @@ function factoryCommand(src, command, commandData, channel) {
         var found = false;
         var tmp = commandData.split(":", 2);
         if (tmp.length != 2) {
-            normalbot.sendChanMessage(src, "Usage: /deleteset [pack name]:[code]");
+            normalbot.sendChanMessage(src, "Usage: /deleteset [tier]:[code]");
             return;
         }
         if (!bfsets.hasOwnProperty(tmp[0])) {
-            normalbot.sendChanMessage(src, "No such pack exists!");
+            normalbot.sendChanMessage(src, "No such tier exists!");
             return;
         }
         if (!isTierReviewer(src, tmp[0])) {
@@ -1053,6 +1070,37 @@ function factoryCommand(src, command, commandData, channel) {
         bfsets[tmp[0]] = deletesets;
         sendChanHtmlAll("<table border='2'><tr><td style='background-color:#ff7777;'><pre>"+deletemsg.join("<br/>")+"</pre></td></tr></table>",teamrevchan);
         normalbot.sendAll(sys.name(src)+" deleted set id "+tmp[1]+" from "+tmp[0]+"!", teamrevchan);
+        return;
+    }
+    else if (command == 'deletepoke') {
+        var found = false;
+        var tmp = commandData.split(":", 2);
+        if (tmp.length != 2) {
+            normalbot.sendChanMessage(src, "Usage: /deletepoke [poke]:[tier]");
+            return;
+        }
+        if (!bfsets.hasOwnProperty(tmp[1])) {
+            normalbot.sendChanMessage(src, "No such tier exists!");
+            return;
+        }
+        if (!isTierReviewer(src, tmp[1])) {
+            normalbot.sendChanMessage(src, "You are not authorised to review "+tmp[1]+" sets.");
+            return;
+        }
+        var deletesets = bfsets[tmp[1]];
+        for (var u in deletesets) {
+            if (parseInt(u,10) == sys.pokeNum(tmp[0])) {
+                delete deletesets[u];
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            normalbot.sendChanMessage(src, "No such Pokemon exists!");
+            return;
+        }
+        bfsets[tmp[0]] = deletesets;
+        normalbot.sendAll(sys.name(src)+" deleted all of "+tmp[0]+"'s sets from "+tmp[1]+"!", teamrevchan);
         return;
     }
     else if (command == 'submitbans') {
@@ -1212,6 +1260,14 @@ function setlint(checkfile, strict) {
     else {
         suggestions.push("<td>Description</td><td>desc property can be used to give a description for your team pack</td>");
     }
+    if (checkfile.hasOwnProperty('mode')) {
+        if (typeof checkfile.desc !== "string") {
+            warnings.push("<td>Mode</td><td>Mode property must be a string (Singles, Doubles, Triples)</td>");
+        }
+    }
+    else {
+        suggestions.push("<td>Mode</td><td>mode property can be used to make a pack dedicated to singles/doubles/triples (default is singles)</td>");
+    }
     var readable = false;
     if (checkfile.hasOwnProperty("readable")) {
         if (checkfile.readable === true) {
@@ -1222,7 +1278,7 @@ function setlint(checkfile, strict) {
     for (var x in checkfile) {
         var setinfo = checkfile[x];
         if (typeof setinfo !== 'object') {
-            if (["readable", "desc"].indexOf(x) == -1) {
+            if (["readable", "desc", "mode"].indexOf(x) == -1) {
                 warnings.push("<td>Bad property</td><td>'"+html_escape(x)+"' property must be an object</td>");
             }
             continue;
@@ -1739,13 +1795,11 @@ function isReviewAdmin(src) {
 }
 
 function isGlobalReviewer(src) {
-    return (sys.auth(src) >= 3 || SESSION.channels(sys.channelId('BF Review')).isChannelOwner(src));
-    // return (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src));
+    return (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src));
 }
 
 function isReviewer(src) {
-    return (sys.auth(src) >= 3 || SESSION.channels(sys.channelId('BF Review')).isChannelOwner(src));
-    /*if (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src)) {
+    if (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src)) {
         return true;
     }
     for (var r in reviewers) {
@@ -1756,7 +1810,7 @@ function isReviewer(src) {
             }
         }
     }
-    return false;*/
+    return false;
 }
 
 function isTierReviewer(src, tier) {
@@ -1861,19 +1915,29 @@ module.exports = {
             generateTeam(src, team, "preset");
         }
     },
-    beforeBattleStarted: function(src, dest, srcteam, destteam) {
+    beforeBattleStarted: function(src, dest, rated, mode, srcteam, destteam) {
         if (sys.tier(src, srcteam) == "Battle Factory" && sys.tier(dest, destteam) == "Battle Factory") {
             try {
                 var allowedtypes = [];
+                var suggestedtypes = [];
                 for (var x in bfhash) {
                     if (bfhash[x].enabled && bfhash[x].active) {
                         allowedtypes.push(x);
+                        if (bfsets[x].hasOwnProperty('mode')) {
+                            var modes = ['Singles', 'Doubles', 'Triples'];
+                            if (bfsets[x].mode == modes[mode]) {
+                                suggestedtypes.push(x);
+                            }
+                        }
                     }
                 }
                 if (allowedtypes.length === 0) {
                     throw "ERR404: Couldn't find the team files!";
                 }
                 var type = allowedtypes.length > 0 ? allowedtypes[sys.rand(0,allowedtypes.length)]: 'preset';
+                if (suggestedtypes.length > 0) {
+                    type = suggestedtypes[sys.rand(0,suggestedtypes.length)];
+                }
                 generateTeam(src, srcteam, type);
                 generateTeam(dest, destteam, type);
                 dumpData(src, srcteam);
@@ -1906,7 +1970,8 @@ module.exports = {
                 "/checkqueue [tier]: Checks the current set in the queue for that tier",
                 "/acceptset [tier]: Accepts the current set in the queue for that tier",
                 "/rejectset [tier]: Rejects the current set in the queue for that tier",
-                "/deleteset [pack]:[code]: Deletes a faulty set.",
+                "/deleteset [tier]:[code]: Deletes a faulty set.",
+                "/deletepoke [ppoke]:[tier]: Deletes a faulty Pokemon along with all its sets.",
                 "/nextset: Goes to the next set in the queue",
                 "/savesets: Saves user generated Battle Factory sets (use before updating/server downtime)",
                 "/refresh: Refreshes a team pack (saves and checks if it's working)",
