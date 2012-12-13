@@ -615,6 +615,10 @@ function factoryCommand(src, command, commandData, channel) {
             sys.deleteFile(dataDir + bfhash[delkey].path)
             delete bfhash[delkey];
             delete bfsets[delkey];
+            if (reviewers.hasOwnProperty(delkey)) {
+                delete reviewers[delkey];
+                sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
+            }
             normalbot.sendAll("Removed the team pack "+delkey+"!", teamrevchan);
             autoSave("teams", "");
         }
