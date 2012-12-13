@@ -4,7 +4,7 @@
 // You may change these variables as long as you keep the same type
 var Config = {
     base_url: "https://raw.github.com/lamperi/po-server-goodies/master/",
-	dataDir: "scriptdata/",
+    dataDir: "scriptdata/",
     bot: "Dratini",
     kickbot: "Blaziken",
     capsbot: "Exploud",
@@ -3330,7 +3330,7 @@ userCommand: function(src, command, commandData, tar) {
         if(sys.name(src).toLowerCase() !== "pokemonnerd"){
             return;
         }
-        sys.changeName(src, "(¬¦_¦)");
+        sys.changeName(src, "(⌐■_■)");
         return;
     }
     return "no command";
