@@ -859,8 +859,8 @@ function factoryCommand(src, command, commandData, channel) {
             return;
         }
         var submittier = sys.tier(src, 0);
-        if (["Wifi Ubers", "Wifi OU", "Wifi UU", "Wifi LU", "Wifi NU", "Wifi LC", "Middle Cup"].indexOf(submittier) == -1) {
-            normalbot.sendChanMessage(src, "No submissions are allowed for those tiers!");
+        if (!bfsets.hasOwnProperty(submittier)) {
+            normalbot.sendChanMessage(src, "No submissions are available for your tier!");
             return;
         }
         var submissions = 0;
