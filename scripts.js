@@ -1714,9 +1714,6 @@ var commands = {
         "/removeplugin [plugin]: Removes a plugin.",
         "/updateplugin [plugin]: Updates plugin from the web.",
         "/updateScripts: Updates scripts from the web.",
-        "/getannouncement: To view the announcement.",
-        "/test[web]announcement: To test an announcement (from web).",
-        "/set[web]announcement: To set an announcement (from web).",
         "/capslockday [on/off]: To turn caps lock day on or off.",
         "/indigo [on/off]: To create or destroy staff channel.",
         "/updatebansites: To update ban sites.",
@@ -4484,7 +4481,8 @@ ownerCommand: function(src, command, commandData, tar) {
         sendChanMessage(src, "",channel);
         return;
     }
-    if (command == "getannouncement") {
+    // Removing announcement commands because of web interface to server
+    /*if (command == "getannouncement") {
         sendChanMessage(src, sys.getAnnouncement());
         return;
     }
@@ -4510,7 +4508,7 @@ ownerCommand: function(src, command, commandData, tar) {
             sys.changeAnnouncement(resp);
         });
         return;
-    }
+    }*/
     if (command == "capslockday") {
         if (commandData == "off") {
             CAPSLOCKDAYALLOW = false;
