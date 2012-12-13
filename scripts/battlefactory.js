@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "1.120";
+var bfversion = "1.121";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -21,6 +21,7 @@ var saveInterval = 3600; // autosave every 1 hour
 
 // Will escape "&", ">", and "<" symbols for HTML output.
 var html_escape = utilities.html_escape;
+var find_tier = utilities.find_tier;
 
 function initFactory() {
     sys.makeDir("bfdata");
@@ -464,6 +465,33 @@ function factoryCommand(src, command, commandData, channel) {
         });
         return;
     }
+    else if (command == "addtier") {
+        var tmp = commandData.split(":",2);
+        var ltier = find_tier(tmp[0])
+        if (ltier === null) {
+            normalbot.sendChanMessage(src, "No such tier");
+            return;
+        }
+        if (bfhash.hasOwnProperty(ltier)) {
+            normalbot.sendChanMessage(src, "This tier already exists!");
+            return;
+        }
+
+        var template = {'desc': ltier};
+        if (tmp.length == 2) {
+            template.mode = tmp[1];
+        }
+        if (createEntry(ltier,template,url)) {
+            autoSave("teams", ltier);
+            sendChanAll('Added the tier '+ltier+'!', teamrevchan);
+            refresh(ltier);
+            reviewers[ltier] = [];
+            sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
+        }
+        else {
+            sendChanAll('A pack with that name already exists!', teamrevchan);
+        }
+    }
     else if (command == "addpack") {
         var url;
         var tmp = commandData.split(" ~ ",2);
@@ -500,11 +528,11 @@ function factoryCommand(src, command, commandData, channel) {
                     }
                     if (createEntry(tmp[0],test,url)) {
                         autoSave("teams", tmp[0]);
-                        sendChanAll('Added the team pack '+tmp[0]+'!', staffchannel);
+                        sendChanAll('Added the team pack '+tmp[0]+'!', teamrevchan);
                         refresh(tmp[0]);
                     }
                     else {
-                        sendChanAll('A pack with that name already exists!', staffchannel);
+                        sendChanAll('A pack with that name already exists!', teamrevchan);
                     }
                 }
                 catch (err) {
