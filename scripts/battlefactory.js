@@ -1880,7 +1880,7 @@ module.exports = {
                 normalbot.sendChanMessage(source, "You can't use this command!");
                 return true;
             }
-            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer'].indexOf(command) > -1 && !isReviewAdmin(source)) {
+            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier'].indexOf(command) > -1 && !isReviewAdmin(source)) {
                 normalbot.sendChanMessage(source, "You can't use this command!");
                 return true;
             }
@@ -1988,6 +1988,7 @@ module.exports = {
                 "/disablepack [name]: Disallows a Battle Factory Pack to be used",
                 "/addreviewer [name]:[tier]: Allows a user to review for that tier",
                 "/removereviewer [name]:[tier]: Removes review powers for that user in that tier",
+                "/addtier [tier]:[mode]: Adds a tier to review, mode is optional (Singles/Doubles/Triples)",
                 "/updateteams: Update default teams from the web"
             ];
             var reviewHelp = [
@@ -1999,7 +2000,7 @@ module.exports = {
                 "/acceptset [tier]: Accepts the current set in the queue for that tier",
                 "/rejectset [tier]: Rejects the current set in the queue for that tier",
                 "/deleteset [tier]:[code]: Deletes a faulty set.",
-                "/deletepoke [ppoke]:[tier]: Deletes a faulty Pokemon along with all its sets.",
+                "/deletepoke [poke]:[tier]: Deletes a faulty Pokemon along with all its sets.",
                 "/nextset: Goes to the next set in the queue",
                 "/savesets: Saves user generated Battle Factory sets (use before updating/server downtime)",
                 "/refresh: Refreshes a team pack (saves and checks if it's working)",
