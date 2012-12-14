@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "1.121";
+var bfversion = "1.122";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -390,15 +390,15 @@ function seeQueueItem(index, tier) {
     var submitinfo = tierqueue[0];
     var sets = [];
     sendReviewers(tier + " queue length is currently "+tierqueue.length+". The set for review is shown below.", tier, false);
-    sendReviewers("", tier, true);
+    normalbot.sendAll("", teamrevchan);
     sendReviewers("User: "+submitinfo.name, tier, false);
-    sendReviewers("Tier: "+submitinfo.tier, tier, false);
+    normalbot.sendAll("Tier: "+submitinfo.tier, teamrevchan);
     var pokesets = submitinfo.sets;
     for (var b in pokesets) {
         sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
     }
-    sendReviewers("<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", tier, true);
-    sendReviewers("", tier, true);
+    sys.sendHtmlAll("<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", teamrevchan);
+    normalbot.sendAll("", teamrevchan);
     sendReviewers("Use /acceptset "+tier+" to accept this submission, /rejectset "+tier+" to reject it, or /nextset "+tier+" to view the next and come back to this later.", tier, false);
 }
 
