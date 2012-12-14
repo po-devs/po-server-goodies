@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "1.122";
+var bfversion = "1.123";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -847,7 +847,7 @@ function factoryCommand(src, command, commandData, channel) {
         sys.sendHtmlMessage(src,table,channel);
         return;
     }
-    else if (command == "submitsets") {
+    else if (command == "submitsets" || command == "bulksubmit") {
         // This will export the first team to a submission queue
         cleanEntries(); // clean out any invalid entries
         if (!sys.dbRegistered(sys.name(src))) {
@@ -941,11 +941,23 @@ function factoryCommand(src, command, commandData, channel) {
             return;
         }
         var submitlist = [];
-        for (var s in team) {
-            var submission = {
+        var submission = {};
+        if (command == "submitsets") {
+            for (var s in team) {
+                submission = {
+                    'ip': sys.ip(src),
+                    'name': sys.name(src),
+                    'sets': [team[s]],
+                    'tier': submittier
+                };
+                submitlist.push(submission);
+            }
+        }
+        else {
+            submission = {
                 'ip': sys.ip(src),
                 'name': sys.name(src),
-                'sets': [team[s]],
+                'sets': team,
                 'tier': submittier
             };
             submitlist.push(submission);
