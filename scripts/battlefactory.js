@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "1.123";
+var bfversion = "1.124";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -1593,6 +1593,44 @@ function getReadablePoke(set) {
         var hptype = sys.hiddenPowerType(5,info.dvs[0],info.dvs[1],info.dvs[2],info.dvs[3],info.dvs[4],info.dvs[5]);
         msg.push("Hidden Power "+sys.type(hptype));
     }
+    var statlist = [];
+    var pokeinfo = [];
+    if (pokedb.hasOwnProperty(info.poke)) {
+        pokeinfo = pokedb[info.poke];
+    }
+    else if (pokedb.hasOwnProperty(info.species)) {
+        pokeinfo = pokedb[info.species];
+    }
+    else {
+        throw "UNHANDLED EXCEPTION: Pokeinfo not found";
+    }
+    for (var s=0; s<6; s++) {
+        var natureboost = getNature(info.nature);
+        if (s === 0) { // HP Stat
+            if (pokeinfo[s] == 1) { // Shedinja
+                statlist.push("1 HP");
+            }
+            else {
+                var hstat = 10 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4+100)*info.level/100);
+                statlist.push(hstat+" HP");
+            }
+        }
+        else {
+            var bstat = 5 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4)*info.level/100);
+            var newstat = 0;
+            if (natureboost[0] === s) {
+                newstat = Math.floor(bstat*1.1);
+            }
+            else if (natureboost[1] === s) {
+                newstat = Math.floor(bstat*0.9);
+            }
+            else {
+                newstat = bstat;
+            }
+            statlist.push(newstat+" "+stats[s]);
+        }
+    }
+    msg.push("Stats: "+statlist.join(" / "));
     return msg;
 }
 
