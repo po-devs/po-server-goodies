@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "1.125";
+var bfversion = "1.125+";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -1874,7 +1874,7 @@ function validPacks() {
 }
 
 function isReviewAdmin(src) {
-    return (sys.auth(src) >= 3 || SESSION.channels(sys.channelId('BF Review')).isChannelOwner(src));
+    return (sys.auth(src) >= 2 || SESSION.channels(sys.channelId('BF Review')).isChannelAdmin(src));
 }
 
 function isGlobalReviewer(src) {
@@ -2069,10 +2069,10 @@ module.exports = {
                 "/backlog: Views the queue length",
                 "/submitsets: Submits your first team in teambuilder for the battle factory, in the tier that team is currently in (sets are reviewed)"
             ];
-            if (sys.auth(src) >= 2 || SESSION.channels(sys.channelId('BF Review')).isChannelAdmin(src)) {
+            if (isReviewAdmin(src)) {
                 help = adminHelp.concat(reviewHelp, userHelp);
             }
-            else if (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src)) {
+            else if (isReviewer(src)) {
                 help = reviewHelp.concat(userHelp);
             }
             else {
