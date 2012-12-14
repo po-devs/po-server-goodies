@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "1.124";
+var bfversion = "1.125";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -1560,6 +1560,7 @@ function getReadablePoke(set) {
     }
     var info = {
         'poke': sys.pokemon(toNumber(set.substr(0,2))+65536*toNumber(set.substr(2,1))),
+        'species': sys.pokemon(toNumber(set.substr(0,2))),
         'nature': sys.nature(toNumber(set.substr(3,1))),
         'ability': sys.ability(toNumber(set.substr(4,2))),
         'item': sys.item(toNumber(set.substr(6,3))),
