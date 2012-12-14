@@ -390,7 +390,7 @@ function seeQueueItem(index, tier) {
     var submitinfo = tierqueue[0];
     var sets = [];
     sendReviewers(tier + " queue length is currently "+tierqueue.length+". The set for review is shown below.", tier, false);
-    normalbot.sendAll("", teamrevchan);
+    sys.sendAll("", teamrevchan);
     sendReviewers("User: "+submitinfo.name, tier, false);
     normalbot.sendAll("Tier: "+submitinfo.tier, teamrevchan);
     var pokesets = submitinfo.sets;
@@ -398,7 +398,7 @@ function seeQueueItem(index, tier) {
         sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
     }
     sys.sendHtmlAll("<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", teamrevchan);
-    normalbot.sendAll("", teamrevchan);
+    sys.sendAll("", teamrevchan);
     sendReviewers("Use /acceptset "+tier+" to accept this submission, /rejectset "+tier+" to reject it, or /nextset "+tier+" to view the next and come back to this later.", tier, false);
 }
 
