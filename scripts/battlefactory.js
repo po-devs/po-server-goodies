@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "1.125+";
+var bfversion = "1.099";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -463,6 +463,16 @@ function factoryCommand(src, command, commandData, channel) {
                 normalbot.sendChanMessage(src, "Failed to update!");
             }
         });
+        return;
+    }
+    else if (command == "destroyreview") {
+        var parr = sys.playersOfChannel(teamrevchan);
+        for (var x in parr) {
+            if (!isReviewAdmin(src)) {
+                sys.kick(src, teamrevchan);
+            }
+        }
+        normalbot.sendChanMessage(src, "Destroyed Review Channel");
         return;
     }
     else if (command == "addtier") {
@@ -1874,26 +1884,15 @@ function validPacks() {
 }
 
 function isReviewAdmin(src) {
-    return (sys.auth(src) >= 2 || SESSION.channels(sys.channelId('BF Review')).isChannelAdmin(src));
+    return (sys.auth(src) >= 3 || SESSION.channels(sys.channelId('BF Review')).isChannelOwner(src));
 }
 
 function isGlobalReviewer(src) {
-    return (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src));
+    return isReviewAdmin(src);
 }
 
 function isReviewer(src) {
-    if (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src)) {
-        return true;
-    }
-    for (var r in reviewers) {
-        var tierrev = reviewers[r];
-        for (var x in tierrev) {
-            if (sys.name(src).toLowerCase() === tierrev[x].toLowerCase()) {
-                return true;
-            }
-        }
-    }
-    return false;
+    return isReviewAdmin(src)
 }
 
 function isTierReviewer(src, tier) {
@@ -1935,7 +1934,7 @@ module.exports = {
                 normalbot.sendChanMessage(source, "You can't use this command!");
                 return true;
             }
-            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier'].indexOf(command) > -1 && !isReviewAdmin(source)) {
+            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier', 'destroyreview'].indexOf(command) > -1 && !isReviewAdmin(source)) {
                 normalbot.sendChanMessage(source, "You can't use this command!");
                 return true;
             }
@@ -1959,6 +1958,9 @@ module.exports = {
             sendChanAll("Error in starting battle factory: "+err, staffchannel);
             working = false;
         }
+    },
+    beforeChannelJoin : function(player, chan) {
+        return !isReviewAdmin(player) && chan === sys.channelId('BF Review');
     },
     afterChannelJoin : function(player, chan) {
         if (chan === sys.channelId('BF Review') && (sys.auth(player) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(player))) {
@@ -2021,8 +2023,8 @@ module.exports = {
                 if (suggestedtypes.length > 0) {
                     type = suggestedtypes[sys.rand(0,suggestedtypes.length)];
                 }
-                generateTeam(src, srcteam, type);
-                generateTeam(dest, destteam, type);
+                this.generateTeam(src, srcteam);
+                this.generateTeam(dest, destteam);
                 dumpData(src, srcteam);
                 dumpData(dest, destteam);
             }

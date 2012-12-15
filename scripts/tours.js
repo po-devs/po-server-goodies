@@ -1495,7 +1495,7 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (command == "loadevents") {
-                var url = "https://raw.github.com/lamperi/po-server-goodies/master/eventtours.json"
+                var url = Config.base_url + "tourdata/eventtours.json";
                 if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
                     url = commandData;
                 }
