@@ -1960,7 +1960,9 @@ module.exports = {
         }
     },
     beforeChannelJoin : function(player, chan) {
-        return !isReviewAdmin(player) && chan === sys.channelId('BF Review');
+        if (!isReviewAdmin(player) && chan === sys.channelId('BF Review')) {
+            sys.stopEvent();
+        }
     },
     afterChannelJoin : function(player, chan) {
         if (chan === sys.channelId('BF Review') && (sys.auth(player) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(player))) {
