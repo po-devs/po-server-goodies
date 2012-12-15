@@ -4,7 +4,7 @@
 // You may change these variables as long as you keep the same type
 var Config = {
     base_url: "https://raw.github.com/lamperi/po-server-goodies/master/",
-	dataDir: "scriptdata/",
+    dataDir: "scriptdata/",
     bot: "Dratini",
     kickbot: "Blaziken",
     capsbot: "Exploud",
@@ -1714,9 +1714,6 @@ var commands = {
         "/removeplugin [plugin]: Removes a plugin.",
         "/updateplugin [plugin]: Updates plugin from the web.",
         "/updateScripts: Updates scripts from the web.",
-        "/getannouncement: To view the announcement.",
-        "/test[web]announcement: To test an announcement (from web).",
-        "/set[web]announcement: To set an announcement (from web).",
         "/capslockday [on/off]: To turn caps lock day on or off.",
         "/indigo [on/off]: To create or destroy staff channel.",
         "/updatebansites: To update ban sites.",
@@ -3333,7 +3330,7 @@ userCommand: function(src, command, commandData, tar) {
         if(sys.name(src).toLowerCase() !== "pokemonnerd"){
             return;
         }
-        sys.changeName(src, "(¬¦_¦)");
+        sys.changeName(src, "(⌐■_■)");
         return;
     }
     return "no command";
@@ -4484,7 +4481,8 @@ ownerCommand: function(src, command, commandData, tar) {
         sendChanMessage(src, "",channel);
         return;
     }
-    if (command == "getannouncement") {
+    // Removing announcement commands because of web interface to server
+    /*if (command == "getannouncement") {
         sendChanMessage(src, sys.getAnnouncement());
         return;
     }
@@ -4510,7 +4508,7 @@ ownerCommand: function(src, command, commandData, tar) {
             sys.changeAnnouncement(resp);
         });
         return;
-    }
+    }*/
     if (command == "capslockday") {
         if (commandData == "off") {
             CAPSLOCKDAYALLOW = false;
@@ -5796,7 +5794,7 @@ afterChatMessage : function(src, message, chan)
 
 beforeBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2) {
    if (sys.tier(src, team1) == "Battle Factory" && sys.tier(dest, team2) == "Battle Factory") {
-       callplugins("beforeBattleStarted", src, dest, team1, team2);
+       callplugins("beforeBattleStarted", src, dest, rated, mode, team1, team2);
    }
 },
 

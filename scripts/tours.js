@@ -42,6 +42,7 @@ var bfactory = require('battlefactory.js');
 var tstats = require("newtourstats.js");
 var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
 var htmlborder = "<font color=#3DAA68><b>"+border+"</b></font>";
+var blueborder = "<font color=#0044BB><b>"+border+"</b></font>";
 var flashtag = "<!--f-->"; // This is used to check for flashes in the html code
 // Event tournaments highlighted in red
 var redborder = "<font color=#FF0000><b>"+border+"</b></font>";
@@ -720,7 +721,11 @@ function sendHtmlAuthPlayers(message,key) {
             var regex = flashtag+htmlname+flashtag;
             var newregex1 = "<font style='BACKGROUND-COLOR: #FFAAFF'>"+htmlname+"</font><ping/>";
             var flashregex = new RegExp(flashtag,"g");
+            var borderregex = new RegExp(htmlborder, "g");
             var newmessage = message.replace(regex,newregex1).replace(flashregex,"");
+            if (!isInSpecificTour(sys.name(arr[x]),key) && tours.tour[key].seeds.indexOf(sys.name(arr[x]).toLowerCase()) != -1) {
+                newmessage = newmessage.replace(borderregex, blueborder);
+            }
             sys.sendHtmlMessage(arr[x], newmessage, tourschan);
             if (isInSpecificTour(sys.name(arr[x]),key) && sys.away(arr[x])) {
                 sys.changeAway(arr[x], false);
@@ -820,7 +825,7 @@ function getConfigValue(file, key) {
             decaytime: 2,
             norepeat: 7,
             decayglobalrate: 2,
-            version: "2.104",
+            version: "2.105+",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -868,7 +873,7 @@ function initTours() {
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         norepeat: parseInt(getConfigValue("tourconfig.txt", "norepeat")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.104",
+        version: "2.105+",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -3827,7 +3832,7 @@ function tourstart(tier, starter, key, parameters) {
                 sendChanAll("VERSION: "+bfactory.getVersion("team"),channels[x]);
             }
             if (channels[x] == tourschan) {
-                sendChanHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, "+(tours.tour[key].maxplayers === "default" ? "you have "+time_handle(parameters.event ? tourconfig.toursignup*3 : tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!"), channels[x])
+                sendChanHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, "+(tours.tour[key].maxplayers === "default" ? "you have "+time_handle(parameters.event ? tourconfig.toursignup*2 : tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!"), channels[x])
             }
             else {
                 sendChanAll(tourconfig.tourbot+"Go to the #"+sys.channel(tourschan)+" channel and type /join to enter the tournament!", channels[x])

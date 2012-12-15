@@ -10,26 +10,28 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "1.005+";
+var bfversion = "1.125+";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
-var bfsets, pokedb, working, usersets, userqueue, messagebox, teamrevchan, submitbans;
+var bfsets, pokedb, working, defaultsets, userqueue, messagebox, teamrevchan, submitbans, bfhash, reviewers;
 var randomgenders = true; // set to false if you want to play with set genders
 var utilities = require('utilities.js');
 var saveInterval = 3600; // autosave every 1 hour
 
 // Will escape "&", ">", and "<" symbols for HTML output.
 var html_escape = utilities.html_escape;
+var find_tier = utilities.find_tier;
 
 function initFactory() {
     sys.makeDir("bfdata");
     sys.makeDir("bfdata/submit");
+    teamrevchan = utilities.get_or_create_channel("BF Review");
     try {
         var file = sys.getFileContent(dataDir+"bfteams.json");
         if (file === undefined) {
             var url = Config.base_url+dataDir+"bfteams.json";
-            normalbot.sendAll("Teams file not found, fetching teams from "+url, staffchannel);
+            normalbot.sendAll("Teams file not found, fetching teams from "+url, teamrevchan);
             sys.webCall(url, function(resp) {
                 if (resp !== "") {
                     try {
@@ -39,22 +41,22 @@ function initFactory() {
                             throw "Bad File";
                         }
                         sys.writeToFile(dataDir+'bfteams.json', resp);
-                        bfsets = test;
-                        sendChanAll('Updated Battle Factory Teams!', staffchannel);
+                        defaultsets = test;
+                        sendChanAll('Updated Battle Factory Teams!', teamrevchan);
                     }
                     catch (err) {
-                        sendChanAll("FATAL ERROR: "+err, staffchannel);
+                        sendChanAll("FATAL ERROR: "+err, teamrevchan);
                         throw "Battle Factory web file is corrupt!";
                     }
                 }
                 else {
-                    sendChanAll("Failed to load teams!", staffchannel);
+                    sendChanAll("Failed to load teams!", teamrevchan);
                     throw "Couldn't load the Battle Factory file!";
                 }
             });
         }
         else {
-            bfsets = JSON.parse(file);
+            defaultsets = JSON.parse(file);
         }
         getPokeDb();
     }
@@ -65,8 +67,8 @@ function initFactory() {
         userqueue = JSON.parse(sys.getFileContent(submitDir+"index.json"));
     }
     catch (e) {
-        sendChanAll("No Battle Factory queue detected!", staffchannel);
-        userqueue = [];
+        sendChanAll("No Battle Factory queue detected!", teamrevchan);
+        userqueue = {};
     }
     try {
         submitbans = JSON.parse(sys.getFileContent(submitDir+"bans.json"));
@@ -75,22 +77,125 @@ function initFactory() {
         submitbans = {};
     }
     try {
-        usersets = JSON.parse(sys.getFileContent(dataDir+"bfteams_user.json"));
+        reviewers = JSON.parse(sys.getFileContent(submitDir+"reviewers.json"));
     }
     catch (e) {
-        sendChanAll("No Battle Factory user sets detected!", staffchannel);
-        usersets = {};
+        reviewers = {
+            'Wifi Ubers': [],
+            'Wifi OU': [],
+            'Random Battle': [],
+            'Wifi UU': [],
+            'Wifi LU': [],
+            'Wifi NU': [],
+            'Wifi LC': [],
+            'Middle Cup': []
+        };
+        sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
     }
-    teamrevchan = utilities.get_or_create_channel("BF Review");
+    try {
+        bfhash = JSON.parse(sys.getFileContent(dataDir+"bfhash.json"));
+    }
+    catch (e) {
+        sendChanAll("Making default bfhash", teamrevchan);
+        // name, filepath, whether it is being actively used (human choice), whether it is enabled (automated)
+        bfhash = {
+            'preset': {'path': 'bfteams.json', 'active': true, 'enabled': false, 'url': Config.base_url+dataDir+"bfteams.json"},
+            'Wifi Ubers': {'path': 'bfteams_wifiubers.json', 'active': true, 'enabled': false},
+            'Wifi OU': {'path': 'bfteams_wifiou.json', 'active': true, 'enabled': false},
+            'Random Battle': {'path': 'bfteams_randombattle.json', 'active': true, 'enabled': false},
+            'Wifi UU': {'path': 'bfteams_wifiuu.json', 'active': true, 'enabled': false},
+            'Wifi LU': {'path': 'bfteams_wifilu.json', 'active': true, 'enabled': false},
+            'Wifi NU': {'path': 'bfteams_wifinu.json', 'active': true, 'enabled': false},
+            'Wifi LC': {'path': 'bfteams_wifilc.json', 'active': true, 'enabled': false},
+            'Middle Cup': {'path': 'bfteams_middlecup.json', 'active': true, 'enabled': false}
+        };
+        sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfhash));
+    }
+    var validsetpacks = 0;
+    bfsets = {};
+    for (var x in bfhash) {
+        var teampack = sys.getFileContent(dataDir + bfhash[x].path);
+        if (teampack === undefined) {
+            createDefaultEntry(bfhash[x].path, x);
+            bfsets[x] = {};
+            continue;
+        }
+        else {
+            try {
+                var teamfile = JSON.parse(teampack);
+                var res = setlint(teamfile, false);
+                if (res.errors.length >= 1) {
+                    throw "Bad File";
+                }
+                bfsets[x] = teamfile;
+                if (numPokes(teamfile) < 12) {
+                    throw "Not enough Pokemon";
+                }
+                bfhash[x].enabled = true;
+                validsetpacks += 1;
+            }
+            catch (e) {
+                sendChanAll("Set pack "+x+" is invalid: "+e, teamrevchan);
+                bfhash[x].enabled = false;
+            }
+        }
+    }
+    if (validsetpacks === 0) {
+        sendChanAll("No valid Battle Factory sets detected!", teamrevchan);
+        throw "No valid set packs available";
+    }
+
     sendChanAll("Version "+bfversion+" of the Battle Factory loaded successfully!", staffchannel);
     working = true;
 }
 
+function createDefaultEntry(path, desc) {
+    var pathname = dataDir + path;
+    if (sys.getFileContent(pathname) === undefined) {
+        sys.writeToFile(pathname, JSON.stringify({'desc': desc}));
+        return true;
+    }
+    return false;
+}
+
+function createEntry(name, data, srcurl) {
+    var basepathname = "bfteams_" + (name.replace(/ /g, "")).toLowerCase() + ".json";
+    if (!data.hasOwnProperty('desc')) {
+        data.desc = name;
+    }
+    if (sys.getFileContent(dataDir + basepathname) === undefined) {
+        sys.writeToFile(dataDir + basepathname, JSON.stringify(data));
+        bfhash[name] = {'path': basepathname, 'active': true, 'enabled': true, 'url': srcurl};
+        bfsets[name] = data;
+        return true;
+    }
+    return false;
+}
+
 // Save user generated info periodically as a backup
-function autoSave() {
-    cleanEntries();
-    sys.writeToFile(submitDir+"index.json", JSON.stringify(userqueue));
-    sys.writeToFile(dataDir+"bfteams_user.json", JSON.stringify(usersets));
+function autoSave(type, params) {
+    if (type == "all") {
+        cleanEntries();
+        sys.writeToFile(submitDir+"index.json", JSON.stringify(userqueue));
+        sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfhash));
+        for (var x in bfhash) {
+            if (bfsets.hasOwnProperty(x)) {
+                sys.writeToFile(dataDir + bfhash[x].path, JSON.stringify(bfsets[x]));
+            }
+        }
+    }
+    if (type == "queue") {
+        cleanEntries();
+        sys.writeToFile(submitDir+"index.json", JSON.stringify(userqueue));
+    }
+    if (type == "teams") {
+        sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfhash));
+        for (var b in bfhash) {
+            if (bfsets.hasOwnProperty(b) && (params == "all" || params == b)) {
+                sys.writeToFile(dataDir + bfhash[b].path, JSON.stringify(bfsets[b]));
+            }
+        }
+    }
 }
 
 function getPokeDb() {
@@ -133,13 +238,11 @@ function dumpData(tar, team) {
 }
 
 // Whether the data is readable or not
-function isReadable() {
-    try {
-        var file = bfsets;
-    }
-    catch (err) {
+function isReadable(key) {
+    if (!bfsets.hasOwnProperty(key)) {
         return false;
     }
+    var file = bfsets[key];
     if (file.hasOwnProperty("readable")) {
         if (file.readable === true) {
             return true;
@@ -148,66 +251,85 @@ function isReadable() {
     return false;
 }
 
-function refresh() {
+function refresh(key) {
     try {
-        var file = sys.getFileContent(dataDir+"bfteams.json");
-        bfsets = JSON.parse(file);
+        if (!bfhash.hasOwnProperty(key)) {
+            return;
+        }
+        var file = sys.getFileContent(dataDir + bfhash[key].path);
+        if (file === undefined) {
+            sendChanAll("Team Pack "+key+" is missing!", teamrevchan);
+            throw "File not found";
+        }
+        bfsets[key] = JSON.parse(file);
         var message = [];
-        if (bfsets.hasOwnProperty('desc')) {
-            if (typeof bfsets.desc == "string") {
-                message.push("Successfully loaded the team pack '"+bfsets.desc+"'");
+        var teamfile = bfsets[key];
+        if (teamfile.hasOwnProperty('desc')) {
+            if (typeof teamfile.desc == "string") {
+                message.push("Successfully loaded the team pack '"+teamfile.desc+"'");
+                bfhash[key].enabled = true;
             }
             else {
                 message.push("Warning: Team set description was faulty");
             }
         }
         else {
-            message.push("Successfully loaded the team pack");
+            message.push("Successfully loaded the team pack: "+key);
+        }
+
+        if (numPokes(teamfile) < 12) {
+            message.push("Not enough Pokemon for the pack: "+key);
+            bfhash[key].enabled = false;
+        }
+        else {
+            bfhash[key].enabled = true;
         }
         var tteams = 0;
         var tsets = 0;
-        for (var a in bfsets) {
-            if (typeof bfsets[a] != "object") {
+        for (var a in teamfile) {
+            if (typeof teamfile[a] != "object") {
                 continue;
             }
             tteams += 1;
             var setlength = 0;
-            if (isReadable()) {
-                var lteams = bfsets[a];
+            if (isReadable(key)) {
+                var lteams = teamfile[a];
                 for (var k in lteams) {
                     setlength += 1;
                 }
             }
             else {
-                setlength = bfsets[a].length;
+                setlength = teamfile[a].length;
             }
             tsets += setlength;
         }
         message.push("Total: "+tteams+" pokes and "+tsets+" sets.");
         if (message.length > 0) {
-            sendChanAll(message.join("; "), staffchannel);
+            sendChanAll(message.join("; "), teamrevchan);
         }
     }
     catch (err) {
-        sendChanAll("Couldn't refresh teams: "+err, staffchannel);
+        sendChanAll("Couldn't refresh teams: "+err, teamrevchan);
     }
 }
 
 function cleanEntries() {
     var deleted = 0;
-    for (var x=0; x<userqueue.length; x++) {
+    for (var x in userqueue) {
         var obj = userqueue[x];
-        if (typeof obj != 'object' || obj === null) {
-            userqueue.splice(x,1);
-            x -= 1;
-            deleted += 1;
-            continue;
-        }
-        if (!obj.hasOwnProperty('ip') || !obj.hasOwnProperty('name') || !obj.hasOwnProperty('sets')) {
-            userqueue.splice(x,1);
-            x -= 1;
-            deleted += 1;
-            continue;
+        for (var o in obj) {
+            if (typeof obj[o] != 'object' || obj[o] === null) {
+                userqueue[x].splice(o,1);
+                o -= 1;
+                deleted += 1;
+                continue;
+            }
+            if (!obj[o].hasOwnProperty('ip') || !obj[o].hasOwnProperty('name') || !obj[o].hasOwnProperty('sets') || !obj[o].hasOwnProperty('tier')) {
+                userqueue[x].splice(o,1);
+                o -= 1;
+                deleted += 1;
+                continue;
+            }
         }
     }
     if (deleted > 0) sendChanAll("Invalid Entries Removed: "+deleted, staffchannel);
@@ -237,51 +359,81 @@ function toNumber(charstring) {
     return result;
 }
 
-function seeQueueItem(index) {
-    if (index > userqueue.length || index < 0 || userqueue.length === 0 || userqueue[0] === undefined) {
-        normalbot.sendChanAll("Nothing in the queue"+(index === 0 ? "." : " at index "+index), teamrevchan);
+function sendReviewers(message, tier, html) {
+    if (!sys.existChannel('BF Review')) {
+        return;
+    }
+    var arr = sys.playersOfChannel(teamrevchan);
+    for (var x in arr) {
+        if (isTierReviewer(arr[x],tier)) {
+            if (html) {
+                sys.sendHtmlMessage(arr[x], message, teamrevchan);
+            }
+            else {
+                normalbot.sendMessage(arr[x], message, teamrevchan);
+            }
+        }
+    }
+}
+
+function seeQueueItem(index, tier) {
+    if (!userqueue.hasOwnProperty(tier)) {
+        sendReviewers("Nothing in the "+tier+" queue.", tier, false);
+        return;
+    }
+    var tierqueue = userqueue[tier];
+    if (index > tierqueue.length || index < 0 || tierqueue.length === 0 || tierqueue[0] === undefined) {
+        sendReviewers("Nothing in the "+tier+" queue"+(index === 0 ? "." : " at index "+index), tier, false);
         return;
     }
     cleanEntries();
-    var submitinfo = userqueue[0];
+    var submitinfo = tierqueue[0];
     var sets = [];
-    normalbot.sendChanAll("Queue length is currently "+userqueue.length+". The set for review is shown below.", teamrevchan);
-    sendChanAll("", teamrevchan);
-    normalbot.sendChanAll("User: "+submitinfo.name, teamrevchan);
+    sendReviewers(tier + " queue length is currently "+tierqueue.length+". The set for review is shown below.", tier, false);
+    sys.sendAll("", teamrevchan);
+    sendReviewers("User: "+submitinfo.name, tier, false);
+    normalbot.sendAll("Tier: "+submitinfo.tier, teamrevchan);
     var pokesets = submitinfo.sets;
     for (var b in pokesets) {
         sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
     }
-    sendChanHtmlAll("<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", teamrevchan);
-    sendChanAll("", teamrevchan);
-    normalbot.sendChanAll("Use /acceptset to accept this submission, /rejectset to reject it, or /nextset to view the next and come back to this later.", teamrevchan);
+    sys.sendHtmlAll("<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", teamrevchan);
+    sys.sendAll("", teamrevchan);
+    sendReviewers("Use /acceptset "+tier+" to accept this submission, /rejectset "+tier+" to reject it, or /nextset "+tier+" to view the next and come back to this later.", tier, false);
 }
 
-function sendQueueItem(src, index) {
-    if (index > userqueue.length || index < 0 || userqueue.length === 0 || userqueue[0] === undefined) {
+function sendQueueItem(src, index, tier) {
+    if (!userqueue.hasOwnProperty(tier)) {
+        normalbot.sendMessage(src, "Nothing in the queue.", teamrevchan);
+        return;
+    }
+    var tierqueue = userqueue[tier];
+    if (index > tierqueue.length || index < 0 || tierqueue.length === 0 || tierqueue[0] === undefined) {
         normalbot.sendMessage(src, "Nothing in the queue"+(index === 0 ? "." : " at index "+index), teamrevchan);
         return;
     }
-    var submitinfo = userqueue[0];
+    var submitinfo = tierqueue[0];
     var sets = [];
-    normalbot.sendMessage(src, "Queue length is currently "+userqueue.length+". The set for review is shown below.", teamrevchan);
+    normalbot.sendMessage(src, tier+" queue length is currently "+tierqueue.length+". The set for review is shown below.", teamrevchan);
     sys.sendMessage(src, "", teamrevchan);
     normalbot.sendMessage(src, "User: "+submitinfo.name, teamrevchan);
+    normalbot.sendMessage(src, "Tier: "+submitinfo.tier, teamrevchan);
     var pokesets = submitinfo.sets;
     for (var b in pokesets) {
         sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
     }
     sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", teamrevchan);
     sys.sendMessage(src, "", teamrevchan);
-    normalbot.sendMessage(src, "Use /acceptset to accept this submission, /rejectset to reject it, or /nextset to view the next and come back to this later.", teamrevchan);
+    normalbot.sendMessage(src, "Use /acceptset "+tier+" to accept this submission, /rejectset "+tier+" to reject it, or /nextset "+tier+" to view the next and come back to this later.", teamrevchan);
 }
 
-function factoryCommand(src, command, commandData) {
+function factoryCommand(src, command, commandData, channel) {
+    // default
     if (command == "updateteams") {
         var url = Config.base_url+dataDir+"bfteams.json";
-        if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
-            url = commandData;
-        }
+        // if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
+        //    url = commandData;
+        // }
         normalbot.sendChanMessage(src, "Fetching teams from "+url);
         sys.webCall(url, function(resp) {
             if (resp !== "") {
@@ -299,8 +451,9 @@ function factoryCommand(src, command, commandData) {
                         sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
                     }
                     sys.writeToFile(dataDir+'bfteams.json', resp);
+                    autoSave("teams", "preset");
                     sendChanAll('Updated Battle Factory Teams!', staffchannel);
-                    refresh();
+                    refresh('preset');
                 }
                 catch (err) {
                     normalbot.sendChanMessage(src, "FATAL ERROR: "+err);
@@ -312,8 +465,198 @@ function factoryCommand(src, command, commandData) {
         });
         return;
     }
-    else if (command == "pokeslist" || command == "userpokeslist") {
-        var tfile = command == "pokeslist" ? bfsets : usersets;
+    else if (command == "addtier") {
+        var tmp = commandData.split(":",2);
+        var ltier = find_tier(tmp[0])
+        if (ltier === null) {
+            normalbot.sendChanMessage(src, "No such tier");
+            return;
+        }
+        if (bfhash.hasOwnProperty(ltier)) {
+            normalbot.sendChanMessage(src, "This tier already exists!");
+            return;
+        }
+
+        var template = {'desc': ltier};
+        if (tmp.length == 2) {
+            template.mode = tmp[1];
+        }
+        if (createEntry(ltier,template,url)) {
+            autoSave("teams", ltier);
+            sendChanAll('Added the tier '+ltier+'!', teamrevchan);
+            refresh(ltier);
+            reviewers[ltier] = [];
+            sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
+        }
+        else {
+            sendChanAll('A pack with that name already exists!', teamrevchan);
+        }
+    }
+    else if (command == "addpack") {
+        var url;
+        var tmp = commandData.split(" ~ ",2);
+        if (tmp.length != 2) {
+            normalbot.sendChanMessage(src, "Usage: /addteampack [name] ~ [url]");
+            return;
+        }
+        if (tmp[0] === "") {
+            normalbot.sendChanMessage(src, "Please specify a valid name!");
+            return;
+        }
+        if (tmp[1].indexOf("http://") === 0 || tmp[1].indexOf("https://") === 0) {
+            url = tmp[1];
+        }
+        else {
+            normalbot.sendChanMessage(src, "Please specify a valid URL to update from");
+            return;
+        }
+        normalbot.sendChanMessage(src, "Fetching teams from "+url);
+        sys.webCall(url, function(resp) {
+            if (resp !== "") {
+                try {
+                    var test = JSON.parse(resp);
+                    var res = setlint(test, false);
+                    if (res.errors.length > 0) {
+                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=red>ERRORS</font></th><th>"+res.errors.length+"</th></tr><tr>"+res.errors.join("</tr><tr>")+"</tr></table>");
+                        throw "Bad File";
+                    }
+                    if (res.warnings.length > 0) {
+                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=orange>WARNINGS</font></th><th>"+res.warnings.length+"</th></tr><tr>"+res.warnings.join("</tr><tr>")+"</tr></table>");
+                    }
+                    if (res.suggestions.length > 0) {
+                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
+                    }
+                    if (createEntry(tmp[0],test,url)) {
+                        autoSave("teams", tmp[0]);
+                        sendChanAll('Added the team pack '+tmp[0]+'!', teamrevchan);
+                        refresh(tmp[0]);
+                    }
+                    else {
+                        sendChanAll('A pack with that name already exists!', teamrevchan);
+                    }
+                }
+                catch (err) {
+                    normalbot.sendChanMessage(src, "FATAL ERROR: "+err);
+                }
+            }
+            else {
+                normalbot.sendChanMessage(src, "Failed to add the team pack!");
+            }
+        });
+        return;
+    }
+    else if (command == "updatepack") {
+        var url;
+        var tmp = commandData.split(" ~ ",2);
+        if (tmp[0] === "" || !bfhash.hasOwnProperty(tmp[0])) {
+            normalbot.sendChanMessage(src, "Please specify a valid pack to update!");
+            return;
+        }
+        if (tmp.length == 2) {
+            if (tmp[1].indexOf("http://") === 0 || tmp[1].indexOf("https://") === 0) {
+                url = tmp[1];
+            }
+            else {
+                normalbot.sendChanMessage(src, "Invalid URL!");
+                return;
+            }
+        }
+        else if (bfhash[tmp[0]].hasOwnProperty('url')) {
+            url = bfhash[tmp[0]].url;
+        }
+        else {
+            normalbot.sendChanMessage(src, "Please specify a valid URL to update from!");
+            return;
+        }
+        normalbot.sendChanMessage(src, "Updating "+tmp[0]+" teams from "+url);
+        var hash = bfhash[tmp[0]];
+        sys.webCall(url, function(resp) {
+            if (resp !== "") {
+                try {
+                    var test = JSON.parse(resp);
+                    var res = setlint(test, false);
+                    if (res.errors.length > 0) {
+                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=red>ERRORS</font></th><th>"+res.errors.length+"</th></tr><tr>"+res.errors.join("</tr><tr>")+"</tr></table>");
+                        throw "Bad File";
+                    }
+                    if (res.warnings.length > 0) {
+                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=orange>WARNINGS</font></th><th>"+res.warnings.length+"</th></tr><tr>"+res.warnings.join("</tr><tr>")+"</tr></table>");
+                    }
+                    if (res.suggestions.length > 0) {
+                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
+                    }
+                    bfhash[tmp[0]].url = url;
+                    sys.writeToFile(dataDir+hash.path, resp);
+                    sendChanAll('Updated '+tmp[0]+' Battle Factory Teams!', teamrevchan);
+                    refresh(tmp[0]);
+                    autoSave("teams", tmp[0]);
+                }
+                catch (err) {
+                    normalbot.sendChanMessage(src, "FATAL ERROR: "+err);
+                }
+            }
+            else {
+                normalbot.sendChanMessage(src, "Failed to update!");
+            }
+        });
+        return;
+    }
+    else if (command == "deletepack") {
+        if (commandData === "") {
+            normalbot.sendChanMessage(src, "Please specify a team pack to remove!");
+            return;
+        }
+        if (commandData === "preset") {
+            normalbot.sendChanMessage(src, "Can't remove the built in pack!");
+            return;
+        }
+        var delkey = commandData;
+        if (bfhash.hasOwnProperty(delkey)) {
+            sys.deleteFile(dataDir + bfhash[delkey].path)
+            delete bfhash[delkey];
+            delete bfsets[delkey];
+            if (reviewers.hasOwnProperty(delkey)) {
+                delete reviewers[delkey];
+                sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
+            }
+            normalbot.sendAll("Removed the team pack "+delkey+"!", teamrevchan);
+            autoSave("teams", "");
+        }
+        else {
+            normalbot.sendChanMessage(src, "Couldn't find a team pack with the name "+delkey+"!");
+        }
+        return;
+    }
+    else if (command == "disablepack") {
+        if (!bfhash.hasOwnProperty(commandData)) {
+            normalbot.sendChanMessage(src, "Please specify a valid team pack to disable!");
+            return;
+        }
+        if (bfhash[commandData].active === false) {
+            normalbot.sendChanMessage(src, "This pack is already disabled!");
+            return;
+        }
+        bfhash[commandData].active = false;
+        normalbot.sendAll("Disabled the pack: "+commandData, teamrevchan);
+        autoSave("teams", "");
+        return;
+    }
+    else if (command == "enablepack") {
+        if (!bfhash.hasOwnProperty(commandData)) {
+            normalbot.sendChanMessage(src, "Please specify a valid team pack to enable!");
+            return;
+        }
+        if (bfhash[commandData].active === true) {
+            normalbot.sendChanMessage(src, "This pack is already enabled!");
+            return;
+        }
+        bfhash[commandData].active = true;
+        normalbot.sendAll("Enabled the pack: "+commandData, teamrevchan);
+        autoSave("teams", "");
+        return;
+    }
+    else if (command == "pokeslist") {
+        var tfile = bfsets.hasOwnProperty(commandData) ? bfsets[commandData] : bfsets.preset;
         var tteams = 0;
         var tsets = 0;
         for (var t in tfile) {
@@ -350,10 +693,27 @@ function factoryCommand(src, command, commandData) {
             return;
         }
     }
-    else if (command == "pokesets" || command == "userpokesets") {
+    else if (command == "refresh") {
+        if (!bfsets.hasOwnProperty(commandData)) {
+            normalbot.sendChanMessage(src, "No such pack exists!");
+            return;
+        }
+        autoSave("teams", commandData);
+        refresh(commandData);
+        normalbot.sendChanMessage(src, "Refreshed the "+commandData+" pack!");
+        return;
+    }
+    else if (command == "pokesets") {
+        var tmp = commandData.split(":",2);
         var sets = [];
-        var id = sys.pokeNum(commandData)%65536;
-        var revsets = command == "pokesets" ? bfsets : usersets;
+        var id = sys.pokeNum(tmp[0])%65536;
+        var revsets = {};
+        if (tmp.length == 2) {
+            revsets = bfsets.hasOwnProperty(tmp[1]) ? bfsets[tmp[1]] : bfsets.preset;
+        }
+        else {
+            revsets = bfsets.preset;
+        }
         if (!revsets.hasOwnProperty(id)) {
             normalbot.sendChanMessage(src, "No sets exist for that pokemon.");
             return;
@@ -443,14 +803,14 @@ function factoryCommand(src, command, commandData) {
         return;
     }
     else if (command == "bfversion") {
-        var tfile = bfsets;
+        var tfile = bfsets.hasOwnProperty(commandData) ? bfsets[commandData] : bfsets.preset;
         var tteams = 0;
         var tsets = 0;
         var pokes = [];
         var info = "NO_NAME";
-        if (bfsets.hasOwnProperty('desc')) {
-            if (typeof bfsets.desc == "string") {
-                info = bfsets.desc;
+        if (tfile.hasOwnProperty('desc')) {
+            if (typeof tfile.desc == "string") {
+                info = tfile.desc;
             }
         }
         for (var t in tfile) {
@@ -478,7 +838,16 @@ function factoryCommand(src, command, commandData) {
         normalbot.sendChanMessage(src, "Team Pack Description: "+info);
         return;
     }
-    else if (command == "submitsets") {
+    else if (command == "viewpacks") {
+        var table = "<table><tr><th colspan=4>Battle Factory Packs</th></tr><tr><th>Name</th><th>Enabled</th><th>Working</th><th>URL</th></tr>";
+        for (var h in bfhash) {
+            table += "<tr><td>"+html_escape(h)+"</td><td>"+(bfhash[h].active ? "Yes" : "No")+"</td><td>"+(bfhash[h].enabled ? "Yes" : "No")+"</td><td>"+(bfhash[h].hasOwnProperty('url') ? "<a href="+bfhash[h].url+">"+html_escape(bfhash[h].url)+"</a></td></tr>" : "Not Specified");
+        }
+        table += "</table>"
+        sys.sendHtmlMessage(src,table,channel);
+        return;
+    }
+    else if (command == "submitsets" || command == "bulksubmit") {
         // This will export the first team to a submission queue
         cleanEntries(); // clean out any invalid entries
         if (!sys.dbRegistered(sys.name(src))) {
@@ -489,14 +858,18 @@ function factoryCommand(src, command, commandData) {
             normalbot.sendChanMessage(src, "You are banned from submitting sets!");
             return;
         }
-        if (sys.tier(src, 0) != "Wifi OU") {
-            normalbot.sendChanMessage(src, "Your team must be in Wifi OU to submit it!");
+        var submittier = sys.tier(src, 0);
+        if (!bfsets.hasOwnProperty(submittier)) {
+            normalbot.sendChanMessage(src, "No submissions are available for your tier!");
             return;
         }
         var submissions = 0;
         for (var q in userqueue) {
-            if (userqueue[q].ip == sys.ip(src) || userqueue[q].name == sys.name(src)) {
-                submissions += 1;
+            var tqueue = userqueue[q];
+            for (var j in tqueue) {
+                if (tqueue[j].ip == sys.ip(src) || tqueue[j].name == sys.name(src)) {
+                    submissions += 1;
+                }
             }
         }
         var maxsubmissions = sys.auth(src) >= 1 ? 100 : 15;
@@ -522,13 +895,25 @@ function factoryCommand(src, command, commandData) {
             var ability = sys.teamPokeAbility(src, 0, x);
             var item = sys.teamPokeItem(src, 0, x);
             var level = sys.teamPokeLevel(src, 0, x);
+            if (['Middle Cup'].indexOf(submittier) > -1 && level > 50) {
+                normalbot.sendChanMessage(src, sys.pokemon(poke) + " must not be above Level 50 for Middle Cup.");
+                continue;
+            }
+            if (['Wifi LC'].indexOf(submittier) > -1 && level > 5) {
+                normalbot.sendChanMessage(src, sys.pokemon(poke) + " must not be above Level 5 for Little Cup.");
+                continue;
+            }
+            if (['Random Battle'].indexOf(submittier) > -1 && level > 50) {
+                normalbot.sendChanMessage(src, sys.pokemon(poke) + " was scaled down to Level 50 for Random Battle.");
+                level = 50;
+            }
             pokecode = pokecode + toChars(pokenum,2) + toChars(formnum,1) + toChars(nature,1) + toChars(ability,2) + toChars(item,3) + toChars(level,2);
             var movelist = [];
             for (var m=0; m<4; m++) {
                 var move = sys.teamPokeMove(src, 0, x, m);
                 var bannedmoves = ['Double Team', 'Minimize', 'Guillotine', 'Horn Drill', 'Sheer Cold', 'Fissure'];
-                if (bannedmoves.indexOf(sys.move(move)) > -1) {
-                    normalbot.sendChanMessage(src, "The move "+sys.move(move)+" is not allowed!");
+                if (bannedmoves.indexOf(sys.move(move)) > -1 && submittier != "Random Battle") {
+                    normalbot.sendChanMessage(src, "The move "+sys.move(move)+" is not allowed in this tier!");
                     continue;
                 }
                 movelist.push(sys.move(move));
@@ -555,16 +940,37 @@ function factoryCommand(src, command, commandData) {
             normalbot.sendChanMessage(src, "You have no Pokemon!");
             return;
         }
-        for (var s in team) {
-            var submission = {
+        var submitlist = [];
+        var submission = {};
+        if (command == "submitsets") {
+            for (var s in team) {
+                submission = {
+                    'ip': sys.ip(src),
+                    'name': sys.name(src),
+                    'sets': [team[s]],
+                    'tier': submittier
+                };
+                submitlist.push(submission);
+            }
+        }
+        else {
+            submission = {
                 'ip': sys.ip(src),
                 'name': sys.name(src),
-                'sets': [team[s]]
+                'sets': team,
+                'tier': submittier
             };
-            userqueue.push(submission);
+            submitlist.push(submission);
+        }
+        if (userqueue.hasOwnProperty(submittier)) {
+            var oldarr = userqueue[submittier];
+            userqueue[submittier] = oldarr.concat(submitlist);
+        }
+        else {
+            userqueue[submittier] = submitlist;
         }
         normalbot.sendChanMessage(src, "Submitted your sets. See your submission below.");
-        normalbot.sendAll(sys.name(src)+" submitted some sets for Battle Factory.", teamrevchan);
+        normalbot.sendAll(sys.name(src)+" submitted some "+submittier+" sets for Battle Factory.", teamrevchan);
         var sets = [];
         for (var b in team) {
             sets.push(getReadablePoke(team[b]).join("<br/>"));
@@ -573,25 +979,42 @@ function factoryCommand(src, command, commandData) {
         return;
     }
     else if (command == 'checkqueue') {
-        if (userqueue.length === 0) {
-            normalbot.sendChanMessage(src, "Nothing in the queue.");
+        if (!userqueue.hasOwnProperty(commandData)) {
+            normalbot.sendChanMessage(src, "Usage: /checkqueue [tier] (tier is case sensitive)");
             return;
         }
-        seeQueueItem(0);
+        if (userqueue[commandData].length === 0) {
+            normalbot.sendChanMessage(src, "Nothing in the "+commandData+" queue.");
+            return;
+        }
+        seeQueueItem(0, commandData);
         return;
     }
     else if (command == 'acceptset') {
-        if (userqueue.length === 0) {
-            normalbot.sendChanMessage(src, "Nothing in the queue.");
+        if (!userqueue.hasOwnProperty(commandData)) {
+            normalbot.sendChanMessage(src, "Usage: /acceptset [tier] (tier is case sensitive)");
             return;
         }
-        var accept = userqueue[0];
-        if (accept.ip == sys.ip(src) && sys.auth(src) < 2 && sys.name(src) != "Aerith") {
+        if (userqueue[commandData].length === 0) {
+            normalbot.sendChanMessage(src, "Nothing in the "+commandData+" queue.");
+            return;
+        }
+        var accept = userqueue[commandData][0];
+        if (accept.ip == sys.ip(src) && !isReviewAdmin(src)) {
             normalbot.sendChanMessage(src, "Can't accept your own sets.");
             return;
         }
+        if (!isTierReviewer(src, accept.tier)) {
+            normalbot.sendChanMessage(src, "You are not authorised to review "+accept.tier+" sets.");
+            return;
+        }
+        var srctier = accept.tier;
+        if (!bfsets.hasOwnProperty(srctier)) {
+            normalbot.sendChanMessage(src, "No sets can be accepted for that tier.");
+            return;
+        }
         normalbot.sendAll(accept.name+"'s submission was accepted by "+sys.name(src),teamrevchan);
-        var teamsave = usersets;
+        var teamsave = bfsets[srctier];
         var team = accept.sets;
         // Write the short code
         for (var g in team) {
@@ -607,57 +1030,121 @@ function factoryCommand(src, command, commandData) {
                 teamsave[species] = [set];
             }
         }
-        usersets = teamsave;
-        userqueue.splice(0,1);
-        seeQueueItem(0);
+        bfsets[srctier] = teamsave;
+        userqueue[commandData].splice(0,1);
+        seeQueueItem(0, commandData);
         return;
     }
     else if (command == 'rejectset') {
-        if (userqueue.length === 0) {
-            normalbot.sendChanMessage(src, "Nothing in the queue.");
+        if (!userqueue.hasOwnProperty(commandData)) {
+            normalbot.sendChanMessage(src, "Usage: /rejectset [tier] (tier is case sensitive)");
             return;
         }
-        var reject = userqueue[0];
+        if (userqueue[commandData].length === 0) {
+            normalbot.sendChanMessage(src, "Nothing in the "+commandData+" queue.");
+            return;
+        }
+        var reject = userqueue[commandData][0];
+        // Maybe change the reject mechanics?
+        if (!isTierReviewer(src, reject.tier) && reject.name != sys.name(src)) {
+            normalbot.sendChanMessage(src, "You are not authorised to review "+reject.tier+" sets.");
+            return;
+        }
         normalbot.sendChanMessage(src, "You rejected the current set.");
         normalbot.sendAll(reject.name+"'s submission was rejected by "+sys.name(src),teamrevchan);
-        userqueue.splice(0,1);
-        seeQueueItem(0);
+        userqueue[commandData].splice(0,1);
+        seeQueueItem(0, commandData);
         return;
     }
     else if (command == 'nextset') {
-        var shift = (userqueue.splice(0,1))[0];
-        userqueue.push(shift);
-        seeQueueItem(0);
+        if (!userqueue.hasOwnProperty(commandData)) {
+            normalbot.sendChanMessage(src, "Usage: /nextset [tier] (tier is case sensitive)");
+            return;
+        }
+        if (userqueue[commandData].length === 0) {
+            normalbot.sendChanMessage(src, "Nothing in the "+commandData+" queue.");
+            return;
+        }
+        var shift = (userqueue[commandData].splice(0,1))[0];
+        userqueue[commandData].push(shift);
+        seeQueueItem(0, commandData);
         return;
     }
     else if (command == 'savesets') {
-        autoSave();
+        autoSave("all", "");
         normalbot.sendChanMessage(src, "Saved user generated sets!");
         return;
     }
     else if (command == 'deleteset') {
         var found = false;
-        for (var u in usersets) {
-            var setlist = usersets[u];
-            var index = setlist.indexOf(commandData);
+        var tmp = commandData.split(":", 2);
+        if (tmp.length != 2) {
+            normalbot.sendChanMessage(src, "Usage: /deleteset [tier]:[code]");
+            return;
+        }
+        if (!bfsets.hasOwnProperty(tmp[0])) {
+            normalbot.sendChanMessage(src, "No such tier exists!");
+            return;
+        }
+        if (!isTierReviewer(src, tmp[0])) {
+            normalbot.sendChanMessage(src, "You are not authorised to review "+tmp[0]+" sets.");
+            return;
+        }
+        var deletesets = bfsets[tmp[0]];
+        for (var u in deletesets) {
+            var setlist = deletesets[u];
+            var index = setlist.indexOf(tmp[1]);
             if (index > -1) {
                 setlist.splice(index,1);
                 if (setlist.length === 0) {
-                    delete usersets[u];
+                    delete deletesets[u];
                 }
                 else {
-                    usersets[u] = setlist;
+                    deletesets[u] = setlist;
                 }
                 found = true;
+                break;
             }
         }
         if (!found) {
             normalbot.sendChanMessage(src, "No such set exists!");
             return;
         }
-        var deletemsg = getReadablePoke(commandData);
+        var deletemsg = getReadablePoke(tmp[1]);
+        bfsets[tmp[0]] = deletesets;
         sendChanHtmlAll("<table border='2'><tr><td style='background-color:#ff7777;'><pre>"+deletemsg.join("<br/>")+"</pre></td></tr></table>",teamrevchan);
-        normalbot.sendAll(sys.name(src)+" deleted set id "+commandData+"!", teamrevchan);
+        normalbot.sendAll(sys.name(src)+" deleted set id "+tmp[1]+" from "+tmp[0]+"!", teamrevchan);
+        return;
+    }
+    else if (command == 'deletepoke') {
+        var found = false;
+        var tmp = commandData.split(":", 2);
+        if (tmp.length != 2) {
+            normalbot.sendChanMessage(src, "Usage: /deletepoke [poke]:[tier]");
+            return;
+        }
+        if (!bfsets.hasOwnProperty(tmp[1])) {
+            normalbot.sendChanMessage(src, "No such tier exists!");
+            return;
+        }
+        if (!isTierReviewer(src, tmp[1])) {
+            normalbot.sendChanMessage(src, "You are not authorised to review "+tmp[1]+" sets.");
+            return;
+        }
+        var deletesets = bfsets[tmp[1]];
+        for (var u in deletesets) {
+            if (parseInt(u,10) == sys.pokeNum(tmp[0])) {
+                delete deletesets[u];
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            normalbot.sendChanMessage(src, "No such Pokemon exists!");
+            return;
+        }
+        bfsets[tmp[0]] = deletesets;
+        normalbot.sendAll(sys.name(src)+" deleted all of "+tmp[0]+"'s sets from "+tmp[1]+"!", teamrevchan);
         return;
     }
     else if (command == 'submitbans') {
@@ -712,6 +1199,95 @@ function factoryCommand(src, command, commandData) {
         sys.writeToFile(submitDir+"bans.json", JSON.stringify(submitbans));
         return;
     }
+    else if (command == "export") {
+        if (!bfsets.hasOwnProperty(commandData)) {
+            normalbot.sendChanMessage(src, "No such pack exists!");
+            return;
+        }
+        var content = bfsets[commandData];
+        var ret = "<table><tr><td><pre>"+JSON.stringify(content, null, 4)+"</pre></td></tr></table>";
+        sys.sendHtmlMessage(src, ret, channel);
+        return;
+    }
+    else if (command == 'addreviewer') {
+        var tmp = commandData.split(":", 2);
+        if (tmp.length != 2) {
+            normalbot.sendChanMessage(src, "Usage: /addreviewer [name]:[tier] (tier is case sensitive)");
+            return;
+        }
+        if (!reviewers.hasOwnProperty(tmp[1])) {
+            normalbot.sendChanMessage(src, "You can't add reviewers for that tier!");
+            return;
+        }
+        if (sys.dbIp(tmp[0]) === undefined) {
+            normalbot.sendChanMessage(src, "No such user.");
+            return;
+        }
+        if (!sys.dbRegistered(tmp[0])) {
+            normalbot.sendChanMessage(src, "Reviewers must be registered!");
+            return;
+        }
+        var tierrev = reviewers[tmp[1]];
+        for (var v in tierrev) {
+            if (tmp[0].toLowerCase() === tierrev[v].toLowerCase()) {
+                normalbot.sendChanMessage(src, "They are already a reviewer!");
+                return;
+            }
+        }
+        reviewers[tmp[1]].push(tmp[0]);
+        normalbot.sendAll(sys.name(src)+" made "+tmp[0]+" an approved reviewer of "+tmp[1]+"!",teamrevchan);
+        sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
+    }
+    else if (command == 'removereviewer') {
+        var tmp = commandData.split(":", 2);
+        if (tmp.length != 2) {
+            normalbot.sendChanMessage(src, "Usage: /removereviewer [name]:[tier] (tier is case sensitive)");
+            return;
+        }
+        if (!reviewers.hasOwnProperty(tmp[1])) {
+            normalbot.sendChanMessage(src, "You can't remove reviewers for that tier!");
+            return;
+        }
+        var tierrev = reviewers[tmp[1]];
+        var removed = false;
+        for (var v in tierrev) {
+            if (tmp[0].toLowerCase() === tierrev[v].toLowerCase()) {
+                removed = true;
+                var removeindex = reviewers[tmp[1]].indexOf(tierrev[v]);
+                reviewers[tmp[1]].splice(removeindex, 1);
+            }
+        }
+        if (removed) {
+            normalbot.sendAll(sys.name(src)+" fired "+tmp[0]+" from reviewing "+tmp[1]+"!",teamrevchan);
+            sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
+        }
+        else {
+            normalbot.sendChanMessage(src, "They are not a reviewer!");
+        }
+        return;
+    }
+    else if (command == 'reviewers') {
+        sys.sendMessage(src, "*** Current Reviewers ***", channel);
+        for (var r in reviewers) {
+            sys.sendMessage(src, r+": "+reviewers[r].join(", "), channel);
+        }
+        return;
+    }
+    else if (command == 'backlog') {
+        sys.sendMessage(src, "*** Current Queue Lengths ***", channel);
+        for (var a in bfhash) {
+            if (a == "preset") {
+                continue;
+            }
+            if (!userqueue.hasOwnProperty(a)) {
+                sys.sendMessage(src, a+": 0", channel);
+            }
+            else {
+                sys.sendMessage(src, a+": "+userqueue[a].length, channel);
+            }
+        }
+        return;
+    }
     else return 'no command';
 }
 
@@ -728,6 +1304,14 @@ function setlint(checkfile, strict) {
     else {
         suggestions.push("<td>Description</td><td>desc property can be used to give a description for your team pack</td>");
     }
+    if (checkfile.hasOwnProperty('mode')) {
+        if (typeof checkfile.desc !== "string") {
+            warnings.push("<td>Mode</td><td>Mode property must be a string (Singles, Doubles, Triples)</td>");
+        }
+    }
+    else {
+        suggestions.push("<td>Mode</td><td>mode property can be used to make a pack dedicated to singles/doubles/triples (default is singles)</td>");
+    }
     var readable = false;
     if (checkfile.hasOwnProperty("readable")) {
         if (checkfile.readable === true) {
@@ -738,7 +1322,7 @@ function setlint(checkfile, strict) {
     for (var x in checkfile) {
         var setinfo = checkfile[x];
         if (typeof setinfo !== 'object') {
-            if (["readable", "desc"].indexOf(x) == -1) {
+            if (["readable", "desc", "mode"].indexOf(x) == -1) {
                 warnings.push("<td>Bad property</td><td>'"+html_escape(x)+"' property must be an object</td>");
             }
             continue;
@@ -976,6 +1560,7 @@ function getReadablePoke(set) {
     }
     var info = {
         'poke': sys.pokemon(toNumber(set.substr(0,2))+65536*toNumber(set.substr(2,1))),
+        'species': sys.pokemon(toNumber(set.substr(0,2))),
         'nature': sys.nature(toNumber(set.substr(3,1))),
         'ability': sys.ability(toNumber(set.substr(4,2))),
         'item': sys.item(toNumber(set.substr(6,3))),
@@ -1009,6 +1594,44 @@ function getReadablePoke(set) {
         var hptype = sys.hiddenPowerType(5,info.dvs[0],info.dvs[1],info.dvs[2],info.dvs[3],info.dvs[4],info.dvs[5]);
         msg.push("Hidden Power "+sys.type(hptype));
     }
+    var statlist = [];
+    var pokeinfo = [];
+    if (pokedb.hasOwnProperty(info.poke)) {
+        pokeinfo = pokedb[info.poke];
+    }
+    else if (pokedb.hasOwnProperty(info.species)) {
+        pokeinfo = pokedb[info.species];
+    }
+    else {
+        throw "UNHANDLED EXCEPTION: Pokeinfo not found";
+    }
+    for (var s=0; s<6; s++) {
+        var natureboost = getNature(info.nature);
+        if (s === 0) { // HP Stat
+            if (pokeinfo[s] == 1) { // Shedinja
+                statlist.push("1 HP");
+            }
+            else {
+                var hstat = 10 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4+100)*info.level/100);
+                statlist.push(hstat+" HP");
+            }
+        }
+        else {
+            var bstat = 5 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4)*info.level/100);
+            var newstat = 0;
+            if (natureboost[0] === s) {
+                newstat = Math.floor(bstat*1.1);
+            }
+            else if (natureboost[1] === s) {
+                newstat = Math.floor(bstat*0.9);
+            }
+            else {
+                newstat = bstat;
+            }
+            statlist.push(newstat+" "+stats[s]);
+        }
+    }
+    msg.push("Stats: "+statlist.join(" / "));
     return msg;
 }
 
@@ -1123,7 +1746,7 @@ function getStats(src, team, poke) {
 
 function generateTeam(src, team, mode) {
     try {
-        var pokedata = mode == "user" ? usersets : bfsets;
+        var pokedata = bfsets.hasOwnProperty(mode) ? bfsets[mode] : bfsets.preset;
         var teaminfo = [];
         var pokearray = [];
         var readable = isReadable();
@@ -1239,6 +1862,58 @@ function numPokes(tfile) {
     return tteams;
 }
 
+// Valid Packs
+function validPacks() {
+    var packs = 0;
+    for (var x in bfhash) {
+        if (bfhash[x].enabled && bfhash[x].active) {
+            packs += 1;
+        }
+    }
+    return packs;
+}
+
+function isReviewAdmin(src) {
+    return (sys.auth(src) >= 2 || SESSION.channels(sys.channelId('BF Review')).isChannelAdmin(src));
+}
+
+function isGlobalReviewer(src) {
+    return (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src));
+}
+
+function isReviewer(src) {
+    if (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src)) {
+        return true;
+    }
+    for (var r in reviewers) {
+        var tierrev = reviewers[r];
+        for (var x in tierrev) {
+            if (sys.name(src).toLowerCase() === tierrev[x].toLowerCase()) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function isTierReviewer(src, tier) {
+    if (!reviewers.hasOwnProperty(tier)) {
+        return false;
+    }
+    if (isGlobalReviewer(src)) {
+        return true;
+    }
+    var tierrev = reviewers[tier];
+    if (isReviewer(src)) {
+        for (var x in tierrev) {
+            if (sys.name(src).toLowerCase() === tierrev[x].toLowerCase()) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 module.exports = {
     handleCommand: function(source, message, channel) {
         var command;
@@ -1251,7 +1926,7 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (sys.auth(source) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(source) || ["bfversion", "submitsets", "userpokesets"].indexOf(command) > -1) {
+        if (isReviewer(source) || ["bfversion", "submitsets", "viewpacks", "userpokesets", "reviewers", "backlog"].indexOf(command) > -1) {
             if (['acceptset', 'rejectset', 'deleteset','checkqueue', 'nextset', 'userpokesets'].indexOf(command) > -1 && channel != sys.channelId('BF Review')) {
                 normalbot.sendChanMessage(source, "These commands will only work in the #BF Review Channel!");
                 return true;
@@ -1260,11 +1935,11 @@ module.exports = {
                 normalbot.sendChanMessage(source, "You can't use this command!");
                 return true;
             }
-            if (['updateteams'].indexOf(command) > -1 && sys.auth(source) < 3 && sys.name(source) != "Aerith") {
+            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier'].indexOf(command) > -1 && !isReviewAdmin(source)) {
                 normalbot.sendChanMessage(source, "You can't use this command!");
                 return true;
             }
-            if (factoryCommand(source, command, commandData) != 'no command') {
+            if (factoryCommand(source, command, commandData, channel) != 'no command') {
                 return true;
             }
         }
@@ -1272,7 +1947,7 @@ module.exports = {
     },
     stepEvent : function() {
         if (parseInt(sys.time())%saveInterval === 0) {
-            autoSave();
+            autoSave("all", "");
             normalbot.sendAll("Autosaved user generated sets.", teamrevchan);
         }
     },
@@ -1287,14 +1962,18 @@ module.exports = {
     },
     afterChannelJoin : function(player, chan) {
         if (chan === sys.channelId('BF Review') && (sys.auth(player) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(player))) {
-            sendQueueItem(player, 0)
+            for (var x in userqueue) {
+                if (isTierReviewer(player, x) && userqueue[x].length > 0) {
+                    sendQueueItem(player, 0, x);
+                }
+            }
         }
         if (teamrevchan != sys.channelId("BF Review")) {
             teamrevchan = sys.channelId("BF Review");
         }
     },
     beforeChallengeIssued : function(source, dest, clauses, rated, mode, team, destTier) {
-        if (sys.tier(source, team) == "Battle Factory" && destTier == "Battle Factory" && !working) {
+        if (sys.tier(source, team) == "Battle Factory" && destTier == "Battle Factory" && (!working || validPacks() === 0)) {
             sys.sendMessage(source, "Battle Factory is not working, so you can't issue challenges in that tier.");
             return true;
         }
@@ -1310,20 +1989,38 @@ module.exports = {
             sys.changeTier(src, team, "Challenge Cup");
             return true;
         }
-        if (!working) {
+        if (newtier == "Battle Factory" && (!working || validPacks() === 0)) {
             sys.sendMessage(src, "Battle Factory is not working, so you can't move into that tier. (Your team is now in Challenge Cup.)");
             sys.changeTier(src, team, "Challenge Cup");
             return true;
         }
         if (newtier == "Battle Factory") {
-            generateTeam(src, team, "normal");
+            generateTeam(src, team, "preset");
         }
     },
-    beforeBattleStarted: function(src, dest, srcteam, destteam) {
+    beforeBattleStarted: function(src, dest, rated, mode, srcteam, destteam) {
         if (sys.tier(src, srcteam) == "Battle Factory" && sys.tier(dest, destteam) == "Battle Factory") {
             try {
-                // If there are 20 or more user submitted pokemon, use the user sets, otherwise use the built in sets.
-                var type = numPokes(usersets) >= 20 ? "user" : "standard";
+                var allowedtypes = [];
+                var suggestedtypes = [];
+                for (var x in bfhash) {
+                    if (bfhash[x].enabled && bfhash[x].active) {
+                        allowedtypes.push(x);
+                        if (bfsets[x].hasOwnProperty('mode')) {
+                            var modes = ['Singles', 'Doubles', 'Triples'];
+                            if (bfsets[x].mode == modes[mode]) {
+                                suggestedtypes.push(x);
+                            }
+                        }
+                    }
+                }
+                if (allowedtypes.length === 0) {
+                    throw "ERR404: Couldn't find the team files!";
+                }
+                var type = allowedtypes.length > 0 ? allowedtypes[sys.rand(0,allowedtypes.length)]: 'preset';
+                if (suggestedtypes.length > 0) {
+                    type = suggestedtypes[sys.rand(0,suggestedtypes.length)];
+                }
                 generateTeam(src, srcteam, type);
                 generateTeam(dest, destteam, type);
                 dumpData(src, srcteam);
@@ -1338,30 +2035,48 @@ module.exports = {
     onHelp: function(src, topic, channel) {
         var help = [];
         if (topic == "battlefactory") {
-            if (sys.auth(src) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src)) {
-                help = [
-                    "/bfversion: Gives information about the battle factory",
-                    "/[user]pokeslist: Views the list of installed Pokemon",
-                    "/pokecode [alpha code]: Converts a code to readable format.",
-                    "/[user]pokesets [poke]: Gets the sets for that pokemon in readable format",
-                    "/updateteams [url]: Update teams from the web (url is optional)",
-                    "/scansets [url/location]: Scan a set file for any critical errors (scans current if no file specified, /scanusersets scans the user sets)",
-                    "/checkqueue: Checks the current set in the queue",
-                    "/acceptset: Accepts the current set in the queue",
-                    "/rejectset: Rejects the current set in the queue",
-                    "/deleteset [code]: Deletes a faulty set.",
-                    "/nextset: Goes to the next set in the queue",
-                    "/savesets: Saves user generated Battle Factory sets (use before updating/server downtime)",
-                    "/submitsets: Submits your first team in teambuilder for the battle factory (sets are reviewed)",
-                    "/submit[un]ban: [Un]bans players from submitting sets",
-                    "/submitbans: Views list of submit bans"
-                ];
+            var adminHelp = [
+                "/addpack [name] ~ [url]: Downloads a Battle Factory Pack from the internet",
+                "/updatepack [name] ~ [url]: Updates a Battle Factory Pack from the internet, loads from the last known URL if no URL is specified",
+                "/deletepack [name]: Deletes a Battle Factory Pack",
+                "/enablepack [name]: Allows a Battle Factory Pack to be used",
+                "/disablepack [name]: Disallows a Battle Factory Pack to be used",
+                "/addreviewer [name]:[tier]: Allows a user to review for that tier",
+                "/removereviewer [name]:[tier]: Removes review powers for that user in that tier",
+                "/addtier [tier]:[mode]: Adds a tier to review, mode is optional (Singles/Doubles/Triples)",
+                "/updateteams: Update default teams from the web"
+            ];
+            var reviewHelp = [
+                "/pokeslist [pack]: Views the list of installed Pokemon for that pack.",
+                "/pokecode [alpha code]: Converts a code to readable format.",
+                "/pokesets [poke]:[pack] Gets the sets for that pokemon in a Battle Factory Pack in readable format",
+                "/scansets [url/location]: Scan a set file for any critical errors (scans current if no file specified, /scanusersets scans the user sets)",
+                "/checkqueue [tier]: Checks the current set in the queue for that tier",
+                "/acceptset [tier]: Accepts the current set in the queue for that tier",
+                "/rejectset [tier]: Rejects the current set in the queue for that tier",
+                "/deleteset [tier]:[code]: Deletes a faulty set.",
+                "/deletepoke [poke]:[tier]: Deletes a faulty Pokemon along with all its sets.",
+                "/nextset: Goes to the next set in the queue",
+                "/savesets: Saves user generated Battle Factory sets (use before updating/server downtime)",
+                "/refresh: Refreshes a team pack (saves and checks if it's working)",
+                "/submit[un]ban: [Un]bans players from submitting sets",
+                "/submitbans: Views list of submit bans"
+            ];
+            var userHelp = [
+                "/bfversion: Gives information about the battle factory",
+                "/viewpacks: Views installed Battle Factory Packs",
+                "/reviewers: Views the list of authorised reviewers",
+                "/backlog: Views the queue length",
+                "/submitsets: Submits your first team in teambuilder for the battle factory, in the tier that team is currently in (sets are reviewed)"
+            ];
+            if (isReviewAdmin(src)) {
+                help = adminHelp.concat(reviewHelp, userHelp);
+            }
+            else if (isReviewer(src)) {
+                help = reviewHelp.concat(userHelp);
             }
             else {
-                help = [
-                    "/bfversion: Gives information about the battle factory",
-                    "/submitsets: Submits your first team in teambuilder for the battle factory (sets are reviewed)"
-                ];
+                help = userHelp;
             }
         }
         if (help.length > 0) {
@@ -1393,5 +2108,9 @@ module.exports = {
         else {
             return "Invalid Type";
         }
+    },
+    generateTeam : function(src, team) {
+        generateTeam(src, team, 'preset'); // generates a team for players with no pokes
+        return true;
     }
 }
