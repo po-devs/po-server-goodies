@@ -4775,7 +4775,8 @@ ownerCommand: function(src, command, commandData, tar) {
                 var cid = cids[i];
                 if (sys.isInChannel(sayer, cid))
                     if (html)
-                        sys.sendHtmlAll(utilities.html_escape(sys.name(sayer)) + ": " + what, cid);
+                        var colour = script.getColor(sayer);
+                        sys.sendHtmlAll("<font color='"+colour+"'><timestamp/> <b>" + utilities.html_escape(sys.name(sayer)) + ":</b> " + what, cid);
                     else
                         sendChanAll(sys.name(sayer) + ": " + what, cid);
             }
