@@ -16,7 +16,7 @@ var utilities = require("utilities.js");
 function Mafia(mafiachan) {
     // Remember to update this if you are updating mafia
     // Otherwise mafia game won't get reloaded
-    this.version = "2012-08-13.1";
+    this.version = "2012-12-15";
     var mafia = this;
 
     var noPlayer = '*';
@@ -24,19 +24,13 @@ function Mafia(mafiachan) {
     var PreviousGames;
     var MAFIA_SAVE_FILE = Config.Mafia.stats_file;
     var MAFIA_LOG_FILE = "mafialogs.txt";
-    var MAFIA_VILLIFIED_FILE = "mafiavillified.json";
     var stalkLogs = [];
     var currentStalk = [];
     var phaseStalk = {};
 
-    var villifiedPlayers = [];
-
     var DEFAULT_BORDER = "***************************************************************************************";
     var border;
 
-    var saveVillifiedPlayers = function () {
-        sys.writeToFile(MAFIA_VILLIFIED_FILE, JSON.stringify(villifiedPlayers));
-    };
     var savePlayedGames = function () {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
     };
@@ -50,11 +44,6 @@ function Mafia(mafiachan) {
             stalkLogs = sys.getFileContent(MAFIA_LOG_FILE).split("::@@::");
         } catch (e) {
             stalkLogs = [];
-        }
-        try {
-            villifiedPlayers = JSON.parse(sys.getFileContent(MAFIA_VILLIFIED_FILE));
-        } catch (e) {
-            villifiedPlayers = [];
         }
     };
     loadPlayedGames();
@@ -4027,23 +4016,6 @@ return;
             return;
         }
         var tar = sys.id(commandData);
-        if (command == "mafiavillify") { // mark a IP to always be villy.
-            villifiedPlayers.push(sys.ip(tar));
-            saveVillifiedPlayers();
-            sys.sendMessage(src, "Game: You villified " + commandData + " (" + sys.ip(tar) + ")!", mafiachan);
-            return;
-        }
-        if (command == "mafiaunvillify") {
-            villifiedPlayers.splice(villifiedPlayers.indexOf(sys.ip(tar)), 1);
-            saveVillifiedPlayers();
-            sys.sendMessage(src, "Game: You unvillified " + commandData + " (" + sys.ip(tar) + ")!", mafiachan);
-            return;
-        }
-        if (command == "mafiavillified") {
-            for (var i = 0; i < villifiedPlayers.length; i++) {
-                msg(src, villifiedPlayers[i]);
-            }
-        }
         if (command == "mafiaban") {
             var bantime;
             if (sys.auth > 0 || this.isMafiaSuperAdmin(src)) {
