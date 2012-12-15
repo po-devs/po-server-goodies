@@ -829,7 +829,8 @@ addUserCommand("leaderboard", function(src, commandData, channel) {
     var leaderboard = trivData.leaderBoard;
     if (leaderboard.length < 1) return;
     leaderboard.sort(function(a,b) { return b[1]-a[1]; });
-    for (var i = 0; i < leaderboard.length; ++i) {
+    var limit = leaderboard.length > 10 ? 10 : leaderboard.length;
+    for (var i = 0; i < limit; ++i) {
         var current = leaderboard[i];
         var name = current[0];
         var points = parseInt(current[1]);
