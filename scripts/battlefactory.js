@@ -468,7 +468,7 @@ function factoryCommand(src, command, commandData, channel) {
     else if (command == "destroyreview") {
         var parr = sys.playersOfChannel(teamrevchan);
         for (var x in parr) {
-            if (!isReviewAdmin(src)) {
+            if (!isReviewAdmin(parr[x])) {
                 sys.kick(src, teamrevchan);
             }
         }
