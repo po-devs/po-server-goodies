@@ -469,7 +469,7 @@ function factoryCommand(src, command, commandData, channel) {
         var parr = sys.playersOfChannel(teamrevchan);
         for (var x in parr) {
             if (!isReviewAdmin(parr[x])) {
-                sys.kick(src, teamrevchan);
+                sys.kick(parr[x], teamrevchan);
             }
         }
         normalbot.sendChanMessage(src, "Destroyed Review Channel");
