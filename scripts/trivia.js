@@ -784,7 +784,7 @@ TriviaAdmin.prototype.saveAdmins = function() {
 
 TriviaAdmin.prototype.isTAdmin = function(name)
 {
-    return this.admins.indexOf(name) != -1;
+    return this.admins.indexOf(name.toLowerCase()) != -1;
 };
 
 TriviaAdmin.prototype.tAdminList = function(src,id)
