@@ -2787,9 +2787,9 @@ userCommand: function(src, command, commandData, tar) {
             return;
         }
 
-        if (sys.auth(src) === 0 && SESSION.users(src).smute.active) {
+        if (SESSION.users(src).smute.active) {
             sys.playerIds().forEach(function(id) {
-                if (sys.loggedIn(id) && SESSION.users(id).smute.active) {
+                if (sys.loggedIn(id) && SESSION.users(id).smute.active && sys.isInChannel(src, channel)) {
                     var colour = script.getColor(src);
                     sys.sendHtmlMessage(id, "<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + commandData + "</font>", channel);
                 }
