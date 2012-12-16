@@ -214,7 +214,9 @@ function escape_dq(txt) { // escaping for JSON
 function printObject(o) {
   var out = '';
   for (var p in o) {
-    out += p + ': ' + o[p] + '\n';
+    if (o.hasOwnProperty(p)) {
+        out += p + ': ' + o[p] + '\n';
+    }
   }
   sys.sendAll(out);
 }
@@ -406,11 +408,11 @@ function get_players_channels(ids) { // List of the channels names that the play
     
     var chans = [];
     var chans_names = [];
-    for(var x in ids)
+    for (var x = 0; x < ids.length; x++)
     {
         chans = chans.concat(sys.channelsOfPlayer(ids[x]));
     }
-    for(var x in chans)
+    for(var x = 0; x < chans.length; x++)
     {
         if(chans_names.indexOf(sys.channel(chans[x])) == -1 && stalkedChans().indexOf(sys.channel(chans[x]).toLowerCase()) != -1 && sys.channel(chans[x]) !== undefined)
         {
@@ -437,7 +439,7 @@ function checkTime(i) { //adds a 0 in front of one digit minutes/seconds
 function channelslist() {
     var channelids = sys.channelIds();
     var channels = [];
-    for(var x in channelids)
+    for (var x = 0; x < channelids; x++)
     {
         channels.push(sys.channel(channelids[x]));
     }
@@ -465,7 +467,7 @@ function stalkedChans(bool) {
 function stalkedChansCaps() {
     var array = [];
     var stalked = stalkedChans();
-    for(var x in stalked)
+    for (var x = 0; x < stalked.length; x++)
     {
         array.push(sys.channel(sys.channelId(stalked[x])));
     }
@@ -1137,22 +1139,24 @@ POChannel.prototype.isBanned = function(id)
     var ip = sys.ip(id);
     var name = sys.name(id);
     for (var x in banlist) {
-        if (!banlist[x].hasOwnProperty("expiry")) {
-            delete this.banned[x];
-            continue;
-        }
-        if (banlist[x].expiry <= parseInt(sys.time(),10)) {
-            delete this.banned[x];
-            continue;
-        }
-        if (cmp(x, name)) {
-            return true;
-        }
-        if (sys.dbIp(x) == ip) {
-            return true;
+        if(banlist.hasOwnProperty(x)) {
+            if (!banlist[x].hasOwnProperty("expiry")) {
+                delete this.banned[x];
+                continue;
+            }
+            if (banlist[x].expiry <= parseInt(sys.time(),10)) {
+                delete this.banned[x];
+                continue;
+            }
+            if (cmp(x, name)) {
+                return true;
+            }
+            if (sys.dbIp(x) == ip) {
+                return true;
+            }
+        return false;
         }
     }
-    return false;
 };
 
 POChannel.prototype.isMuted = function(id)
@@ -1164,43 +1168,49 @@ POChannel.prototype.isMuted = function(id)
     var ip = sys.ip(id);
     var name = sys.name(id);
     for (var x in mutelist) {
-        if (!mutelist[x].hasOwnProperty("expiry")) {
-            delete this.muted[x];
-            continue;
-        }
-        if (mutelist[x].expiry <= parseInt(sys.time(),10)) {
-            delete this.muted[x];
-            channelbot.sendChanAll(x+"'s channel mute expired.");
-            continue;
-        }
-        if (cmp(x, name)) {
-            return true;
-        }
-        if (sys.dbIp(x) == ip) {
-            return true;
+        if (mutelist.hasOwnProperty(x)) {
+            if (!mutelist[x].hasOwnProperty("expiry")) {
+                delete this.muted[x];
+                continue;
+            }
+            if (mutelist[x].expiry <= parseInt(sys.time(),10)) {
+                delete this.muted[x];
+                channelbot.sendChanAll(x+"'s channel mute expired.");
+                continue;
+            }
+            if (cmp(x, name)) {
+                return true;
+            }
+            if (sys.dbIp(x) == ip) {
+                return true;
+            }
+        return false;
         }
     }
-    return false;
 };
 
 POChannel.prototype.isPunished = function(name)
 {
     var banlist = this.banned;
     for (var b in banlist) {
-        if (cmp(b, name)) {
-            return "banned";
-        }
-        if (sys.dbIp(b) == sys.dbIp(name)) {
-            return "banned";
+        if (banlist.hasOwnProperty(b)) {
+            if (cmp(b, name)) {
+                return "banned";
+            }
+            if (sys.dbIp(b) == sys.dbIp(name)) {
+                return "banned";
+            }
         }
     }
     var mutelist = this.muted;
     for (var m in mutelist) {
-        if (cmp(m, name)) {
-            return "muted";
-        }
-        if (sys.dbIp(m) == sys.dbIp(name)) {
-            return "muted";
+        if (mutelist.hasOwnProperty(m)) {
+            if (cmp(m, name)) {
+                return "muted";
+            }
+            if (sys.dbIp(m) == sys.dbIp(name)) {
+                return "muted";
+            }
         }
     }
     return "none";
@@ -1318,6 +1328,7 @@ POChannel.prototype.getReadableList = function(type)
         var t = parseInt(sys.time(), 10);
         var toDelete = [];
         for (var x in mh) {
+            if (mh.hasOwnProperty(x)) {
             if (!mh[x].hasOwnProperty("expiry")) {
                 continue;
             }
@@ -1330,6 +1341,7 @@ POChannel.prototype.getReadableList = function(type)
             var auth = utilities.html_escape(mh[x].auth);
             var reason = utilities.html_escape(mh[x].reason);
             tmp.push([playername, auth, issuetime, isNaN(mh[x].expiry) ? expirytime : getTimeString(expirytime), reason]);
+            }
         }
         tmp.sort(function(a,b) { return a[2] - b[2];});
 
@@ -1797,7 +1809,7 @@ init : function() {
     dwpokemons = {};
     var announceChan = (typeof staffchannel == "number") ? staffchannel : 0;
     var dwpok;
-    for(dwpok in dwlist) {
+    for (dwpok = 0; dwpoke < dwlist.length; dwpok++) {
         var num = sys.pokeNum(dwlist[dwpok]);
         if (num === undefined)
             sendChanAll("Script Check: Unknown poke in dwpokemons: '" +dwlist[dwpok]+"'.", announceChan);
@@ -1809,7 +1821,7 @@ init : function() {
 
     var lclist = ["Bulbasaur", "Charmander", "Squirtle", "Croagunk", "Turtwig", "Chimchar", "Piplup", "Treecko","Torchic","Mudkip", "Pansage", "Pansear", "Panpour"];
     lcpokemons = [];
-    for(dwpok in lclist) {
+    for(dwpok = 0; dwpoke < lclist.length; dwpok++) {
         lcpokemons.push(sys.pokeNum(lclist[dwpok]));
     }
     lcmoves = {
@@ -1824,7 +1836,7 @@ init : function() {
 
     var breedingList = ["Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Monferno", "Infernape", "Piplup", "Prinplup", "Empoleon", "Treecko", "Grovyle", "Sceptile", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Hitmonlee","Hitmonchan","Hitmontop","Tyrogue", "Porygon", "Porygon2", "Porygon-Z", "Gothorita", "Gothitelle","Pansage", "Pansear", "Panpour", "Simisear", "Simisage", "Simipour"];
     breedingpokemons = [];
-    for(var inpok in breedingList) {
+    for(var inpok = 0; inpok < breedingList.length; inpok++) {
         breedingpokemons.push(sys.pokeNum(breedingList[inpok]));
     }
 
@@ -1945,7 +1957,7 @@ init : function() {
 
     var sepPokes = list.split('='),
         sepMovesPoke, sepMoves, movenat;
-    for (var x in sepPokes) {
+    for (var x = 0; x < sepPokes.length; x++) {
         sepMovesPoke = sepPokes[x].split('-');
         sepMoves = sepMovesPoke[1].split('|');
 
@@ -1972,7 +1984,7 @@ init : function() {
         var regexp = new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
         var seconds = 0;
         var result = [];
-        for(var x in arr)
+        for(var x = 0; x < arr; x++)
         {
                if(regexp.test(arr[x]) === false)
                continue;
@@ -2729,9 +2741,11 @@ userCommand: function(src, command, commandData, tar) {
             }
             var pluginhelps = getplugins("help-string");
             for (var module in pluginhelps) {
-                var help = typeof pluginhelps[module] == "string" ? [pluginhelps[module]] : pluginhelps[module];
-                for (i = 0; i < help.length; ++i)
-                    sendChanMessage(src, "/commands " + help[i]);
+                if (pluginshelps.hasOwnProperty(module)) {
+                    var help = typeof pluginhelps[module] == "string" ? [pluginhelps[module]] : pluginhelps[module];
+                    for (i = 0; i < help.length; ++i)
+                        sendChanMessage(src, "/commands " + help[i]);
+                }
             }
             /* Commenting out since no Shanai
             sendChanMessage(src, "");
@@ -2747,7 +2761,7 @@ userCommand: function(src, command, commandData, tar) {
             || (commandData == "megauser" && (sys.auth(src) > 0 || SESSION.users(src).megauser || SESSION.channels(tourchannel).isChannelOperator(src)))
             || (commandData == "channel") ) {
             sendChanMessage(src, "*** " + commandData.toUpperCase() + " Commands ***");
-            for(var helpindex in commands[commandData]) {
+            for(var helpindex = 0; helpindex < commands[commandData].length; helpindex++) {
                 sendChanMessage(src, commands[commandData][helpindex]);
             }
         }
@@ -2817,8 +2831,10 @@ userCommand: function(src, command, commandData, tar) {
         sendChanMessage(src, "");
         sendChanMessage(src, "*** CONTRIBUTORS ***");
         sendChanMessage(src, "");
-        for (x in contributors.hash) {
-            sendChanMessage(src, x + "'s contributions: " + contributors.get(x));
+        for (var x in contributors.hash) {
+            if (contributors.hash.hasOwnProperty(x)) {
+                sendChanMessage(src, x + "'s contributions: " + contributors.get(x));
+            }
         }
         sendChanMessage(src, "");
         return;
@@ -2847,7 +2863,7 @@ userCommand: function(src, command, commandData, tar) {
             sendChanMessage(src, rules[num+1]);
             return;
         }
-        for (var rule in rules) {
+        for (var rule = 0; rule < rules; rule++) {
             sendChanMessage(src, rules[rule]);
         }
         return;
@@ -3349,8 +3365,10 @@ modCommand: function(src, command, commandData, tar) {
         sendChanMessage(src, "*** Usage of the stalk_chan command ***", channel);
         for(var x in json)
         {
-            var date = new Date(parseInt(json[x].timestamp, 10));
-            sendChanMessage(src, "±CommandBot: User: "+json[x].user+", channel: "+json[x].channel+", param: "+json[x].param+", time: "+date.toUTCString()+".", channel);
+            if (json.hasOwnProperty(x)) {
+                var date = new Date(parseInt(json[x].timestamp, 10));
+                sendChanMessage(src, "±CommandBot: User: "+json[x].user+", channel: "+json[x].channel+", param: "+json[x].param+", time: "+date.toUTCString()+".", channel);
+            }
         }
         return;
     }
@@ -3582,35 +3600,37 @@ modCommand: function(src, command, commandData, tar) {
         var t = parseInt(sys.time(), 10);
         var toDelete = [];
         for (var ip in mh.hash) {
-            var values = mh.hash[ip].split(":");
-            var banTime = 0;
-            var by = "";
-            var expires = 0;
-            var banned_name;
-            var reason = "";
-            if (values.length >= 5) {
-                banTime = parseInt(values[0], 10);
-                by = values[1];
-                expires = parseInt(values[2], 10);
-                banned_name = values[3];
-                reason = values.slice(4);
-                if (expires !== 0 && expires < t) {
-                    toDelete.push(ip);
-                    continue;
-                }
-            } else if (command == "smutelist") {
-                var aliases = sys.aliases(ip);
-                if (aliases[0] !== undefined) {
-                    banned_name = aliases[0];
+            if (mh.hash.hasOwnProperty(ip)) {
+                var values = mh.hash[ip].split(":");
+                var banTime = 0;
+                var by = "";
+                var expires = 0;
+                var banned_name;
+                var reason = "";
+                if (values.length >= 5) {
+                    banTime = parseInt(values[0], 10);
+                    by = values[1];
+                    expires = parseInt(values[2], 10);
+                    banned_name = values[3];
+                    reason = values.slice(4);
+                    if (expires !== 0 && expires < t) {
+                        toDelete.push(ip);
+                        continue;
+                    }
+                } else if (command == "smutelist") {
+                    var aliases = sys.aliases(ip);
+                    if (aliases[0] !== undefined) {
+                        banned_name = aliases[0];
+                    } else {
+                        banned_name = "~Unknown~";
+                    }
                 } else {
-                    banned_name = "~Unknown~";
+                    banTime = parseInt(values[0], 10);
                 }
-            } else {
-                banTime = parseInt(values[0], 10);
+                if(typeof commandData != 'undefined' && (!banned_name || banned_name.toLowerCase().indexOf(commandData.toLowerCase()) == -1))
+                    continue;
+                tmp.push([ip, banned_name, by, (banTime === 0 ? "unknown" : getTimeString(t-banTime)), (expires === 0 ? "never" : getTimeString(expires-t)), utilities.html_escape(reason)]);
             }
-            if(typeof commandData != 'undefined' && (!banned_name || banned_name.toLowerCase().indexOf(commandData.toLowerCase()) == -1))
-                continue;
-            tmp.push([ip, banned_name, by, (banTime === 0 ? "unknown" : getTimeString(t-banTime)), (expires === 0 ? "never" : getTimeString(expires-t)), utilities.html_escape(reason)]);
         }
         for (var k = 0; k < toDelete.length; ++k)
            delete mh.hash[toDelete[k]];
@@ -3658,7 +3678,9 @@ modCommand: function(src, command, commandData, tar) {
         var table = TABLE_HEADER;
         var tmp = [];
         for (var key in rangebans.hash) {
-            tmp.push([key, rangebans.get(key)]);
+            if (rangebans.hash.hasOwnProperty(key)) {
+                tmp.push([key, rangebans.get(key)]);
+            }
         }
         tmp.sort(function(a,b) { return a[0] < b[0] ? -1 : 1; });
         for (var row = 0; row < tmp.length; ++row) {
@@ -3684,7 +3706,9 @@ modCommand: function(src, command, commandData, tar) {
         var table = TABLE_HEADER;
         var tmp = [];
         for (var key in ipbans.hash) {
-            tmp.push([key, ipbans.get(key)]);
+            if (ipbans.hash.hasOwnProperty(key)) {
+                tmp.push([key, ipbans.get(key)]);
+            }
         }
         tmp.sort(function(a,b) { return a[0] < b[0] ? -1 : 1; });
         for (var row = 0; row < tmp.length; ++row) {
@@ -3886,7 +3910,9 @@ modCommand: function(src, command, commandData, tar) {
                 if (authLevel > 0) {
                     var stats = authStats[name.toLowerCase()] || {};
                     for (var key in stats) {
-                        data.push("Latest " + key.substr(6).toLowerCase() + ": " + stats[key][0] + " on " + new Date(stats[key][1]*1000).toUTCString());
+                        if (stats.hasOwnProperty(key)) {
+                            data.push("Latest " + key.substr(6).toLowerCase() + ": " + stats[key][0] + " on " + new Date(stats[key][1]*1000).toUTCString());
+                        }
                     }
                 }
                 if (sys.isInChannel(src, bindChannel)) {
@@ -4188,7 +4214,7 @@ adminCommand: function(src, command, commandData, tar) {
         var players = sys.playersOfChannel(chid);
         var channelDataFile = SESSION.global().channelManager.dataFileFor(chid);
         sys.writeToFile(channelDataFile, "");
-        for(var x in players) {
+        for(var x = 0; x < players.length; x++) {
             sys.kick(players[x], chid);
             if (sys.isInChannel(players[x], 0) !== true) {
                 sys.putInChannel(players[x], 0);
@@ -4880,7 +4906,7 @@ ownerCommand: function(src, command, commandData, tar) {
         if (commandData == "off") {
             SESSION.channels(staffchannel).perm = false;
             var players = sys.playersOfChannel(staffchannel);
-            for(var x in players) {
+            for (var x = 0; x < players.length; x++) {
                 sys.kick(players[x], staffchannel);
                 if (sys.isInChannel(players[x], 0) !== true) {
                     sys.putInChannel(players[x], 0);
@@ -5611,7 +5637,7 @@ beforeChatMessage: function(src, message, chan) {
             normalbot.sendAll(sys.name(src) + " tried to send a .tk link!",staffchannel);
         }
         var aliases = sys.aliases(sys.ip(src));
-        for (var x in aliases){
+        for (var x = 0; x < aliases.length; x++){
             var id = sys.id(aliases[x]);
             if(id !== undefined){
                 sys.sendMessage(id, sys.name(src)+": " + message, channel);
@@ -5981,7 +6007,7 @@ beforeBattleMatchup : function(src,dest,clauses,rated)
     }
     // warn players if their account is unregistered and ladder rating is >1200 or in top 5%
     var players = [src,dest];
-    for (var p in players) {
+    for (var p = 0; p < players.length; p++) {
         var id = players[p];
         if (sys.dbRegistered(sys.name(id))) {
             continue;
