@@ -7,7 +7,7 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.85+";
+var bfversion = "0.88+";
 var dataDir = "bfdata/";
 var bfsets, pokedb, working;
 var randomgenders = true; // set to false if you want to play with set genders
@@ -180,6 +180,13 @@ function toNumber(charstring) {
         result = digits.indexOf(charstring.charAt(0));
     }
     return result;
+}
+
+Array.prototype.shuffle = function() {
+    var sfunction = function(a,b) {
+        return Math.random()-0.5;
+    }
+    this.sort(sfunction);
 }
 
 function factoryCommand(src, command, commandData) {
@@ -844,6 +851,7 @@ function generateTeam(src, team) {
             sys.changePokeNature(src,team,s,pdata.nature);
             sys.changePokeAbility(src,team,s,pdata.ability);
             sys.changePokeItem(src,team,s,pdata.item);
+            pdata.moves.shuffle();
             for (var m=0;m<4;m++) {
                 sys.changePokeMove(src,team,s,m,pdata.moves[m]);
             }
@@ -853,8 +861,32 @@ function generateTeam(src, team) {
             for (var e=0;e<6;e++) {
                 sys.changeTeamPokeEV(src,team,s,e,pdata.evs[e]);
             }
+            var ivprioritise = [5,1,3,2,4,0];
+            var keptIVs = [];
+            var EVlist = [];
+            for (var l=0; l<6; l++) {
+                EVlist.push({'stat': l, 'value': pdata.evs[l]});
+            }
+            var sortalgorithm = function (a,b) {
+                if (pdata.dvs[b.stat] === 0 || pdata.dvs[a.stat] === 0) {
+                    return a-b;
+                }
+                else if (b.value !== a.value) {
+                    return b-a;
+                }
+                else {
+                    return ivprioritise.indexOf(a.stat) - ivprioritise.indexOf(b.stat);
+                }
+            }
+            EVlist.sort(sortalgorithm);
+            keptIVs = [EVlist[0].stat, EVlist[1].stat];
             for (var d=0;d<6;d++) {
-                sys.changeTeamPokeDV(src,team,s,d,pdata.dvs[d]);
+                if (keptIVs.indexOf(d) > -1) {
+                    sys.changeTeamPokeDV(src,team,s,d,pdata.dvs[d]);
+                }
+                else {
+                    sys.changeTeamPokeDV(src,team,s,d,sys.rand(0,32));
+                }
             }
             var happiness = sys.rand(0,256);
             // maximise happiness if the poke has Return, minmise if it has frustration
