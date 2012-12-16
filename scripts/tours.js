@@ -38,7 +38,6 @@ if (typeof tours !== "object") {
 var configDir = "tourconfig/";
 var dataDir = "tourdata/";
 var utilities = require('utilities.js');
-var bfactory = require('battlefactory.js');
 var tstats = require("newtourstats.js");
 var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
 var htmlborder = "<font color=#3DAA68><b>"+border+"</b></font>";
@@ -3828,9 +3827,6 @@ function tourstart(tier, starter, key, parameters) {
             sendChanHtmlAll("<timestamp/> A <b><a href='http://wiki.pokemon-online.eu/view/"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x])
             sendChanAll("CLAUSES: "+getTourClauses(key),channels[x])
             sendChanAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : "")+(parameters.event ? "; Event Tournament" : "")+(wifiuse != "default" ? "; "+wifiuse : ""), channels[x])
-            if (tier == "Battle Factory") {
-                sendChanAll("VERSION: "+bfactory.getVersion("team"),channels[x]);
-            }
             if (channels[x] == tourschan) {
                 sendChanHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, "+(tours.tour[key].maxplayers === "default" ? "you have "+time_handle(parameters.event ? tourconfig.toursignup*2 : tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!"), channels[x])
             }
