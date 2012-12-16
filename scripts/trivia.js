@@ -229,9 +229,11 @@ function canUseReviewCommands(name) {
 function canShowOnLeaderboard(ip) {
     /* Trivia Admins / Reviewers / Auth shouldn't show on leaderboard */
     if (sys.maxAuth(ip) > 0) return false;
-    sys.aliases(ip).forEach(function(alt) {
+    var aliases = sys.aliases(ip);
+    for (var i = 0; i < aliases.length; ++i) {
+        var alt = aliases[i];
         if (canUseReviewCommands(alt) || tadmin.isTAdmin(alt)) return false;
-    });
+    }
     return true;
 }
 
