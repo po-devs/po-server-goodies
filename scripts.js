@@ -2863,7 +2863,7 @@ userCommand: function(src, command, commandData, tar) {
             sendChanMessage(src, rules[num+1]);
             return;
         }
-        for (var rule = 0; rule < rules; rule++) {
+        for (var rule = 0; rule < rules.length; rule++) {
             sendChanMessage(src, rules[rule]);
         }
         return;
