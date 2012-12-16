@@ -824,7 +824,7 @@ function getConfigValue(file, key) {
             decaytime: 2,
             norepeat: 7,
             decayglobalrate: 2,
-            version: "2.105+",
+            version: "2.106",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -872,7 +872,7 @@ function initTours() {
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         norepeat: parseInt(getConfigValue("tourconfig.txt", "norepeat")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.105+",
+        version: "2.106",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -2087,7 +2087,7 @@ function tourCommand(src, command, commandData) {
                     var index = tours.tour[key].battlers[lname].battleId;
                     var opponent = null;
                     for (var o in tours.tour[key].battlers) {
-                        if (tours.tour[key].battlers[o].battleId === index) {
+                        if (tours.tour[key].battlers[o].battleId === index && !cmp(o, lname)) {
                             opponent = o;
                             break;
                         }
@@ -4464,7 +4464,7 @@ function isTourAdmin(src) {
     if (sys.auth(src) < 0 || !sys.dbRegistered(sys.name(src))) {
         return false;
     }
-    if (sys.auth(src) >= 1 || isTourSuperAdmin(src)) {
+    if (sys.auth(src) >= 3 || isTourSuperAdmin(src)) {
         return true;
     }
     var tadmins = tours.touradmins
@@ -4478,7 +4478,7 @@ function isTourSuperAdmin(src) {
     if (!sys.dbRegistered(sys.name(src))) {
         return false;
     }
-    if (sys.auth(src) >= 2 || isTourOwner(src)) {
+    if (sys.auth(src) >= 3 || isTourOwner(src)) {
         return true;
     }
     var tadmins = tours.touradmins
