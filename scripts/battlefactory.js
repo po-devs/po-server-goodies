@@ -182,11 +182,11 @@ function toNumber(charstring) {
     return result;
 }
 
-Array.prototype.shuffle = function() {
+function shuffle(array) {
     var sfunction = function(a,b) {
         return Math.random()-0.5;
     }
-    this.sort(sfunction);
+    return array.sort(sfunction);
 }
 
 function factoryCommand(src, command, commandData) {
@@ -851,9 +851,9 @@ function generateTeam(src, team) {
             sys.changePokeNature(src,team,s,pdata.nature);
             sys.changePokeAbility(src,team,s,pdata.ability);
             sys.changePokeItem(src,team,s,pdata.item);
-            pdata.moves.shuffle();
+            var newmoves = shuffle(pdata.moves);
             for (var m=0;m<4;m++) {
-                sys.changePokeMove(src,team,s,m,pdata.moves[m]);
+                sys.changePokeMove(src,team,s,m,newmoves[m]);
             }
             for (var c=0;c<6;c++) {
                 sys.changeTeamPokeEV(src,team,s,c,0); // this resets the EV count
