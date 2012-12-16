@@ -950,7 +950,7 @@ module.exports = {
             generateTeam(src, team);
         }
     },
-    beforeBattleStarted: function(src, dest, srcteam, destteam) {
+    beforeBattleStarted: function(src, dest, rated, mode, srcteam, destteam) {
         if (sys.tier(src, srcteam) == "Battle Factory" && sys.tier(dest, destteam) == "Battle Factory") {
             try {
                 generateTeam(src, srcteam);
