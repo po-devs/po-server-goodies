@@ -106,7 +106,7 @@ function isTrivia(data, ip) {
     return true;
 }
 
-function showTrivia(src, what) {
+function showTrivia(src, channel, what) {
     var whichName = {"mutes" : "mutes", "submitBans" : "Submit Bans"}[what];
     var name = "Trivia " + whichName;
     var width = 5;
@@ -1364,7 +1364,7 @@ addAdminCommand("submitunban", function(src, commandData, channel) {
 }, "Unban a user from submitting.");
 
 addAdminCommand("submitbans", function(src, commandData, channel) {
-    showTrivia(src, "submitBans");
+    showTrivia(src, channel, "submitBans");
 }, "View submit bans.");
 
 addAdminCommand("triviamute", function(src, commandData, channel) {
@@ -1450,7 +1450,7 @@ addAdminCommand("triviaunmute", function(src, commandData, channel) {
 }, "Trivia unmute a user.");
 
 addAdminCommand("triviamutes", function(src, commandData, channel) {
-    showTrivia(src, "mutes");
+    showTrivia(src, channel, "mutes");
 }, "View trivia mutes.");
 
 addAdminCommand("autostart", function(src, commandData, channel) {

@@ -2787,9 +2787,9 @@ userCommand: function(src, command, commandData, tar) {
             return;
         }
 
-        if (sys.auth(src) === 0 && SESSION.users(src).smute.active) {
+        if (SESSION.users(src).smute.active) {
             sys.playerIds().forEach(function(id) {
-                if (sys.loggedIn(id) && SESSION.users(id).smute.active) {
+                if (sys.loggedIn(id) && SESSION.users(id).smute.active && sys.isInChannel(src, channel)) {
                     var colour = script.getColor(src);
                     sys.sendHtmlMessage(id, "<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + commandData + "</font>", channel);
                 }
@@ -5826,10 +5826,10 @@ beforeBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2
 },
 
 battleSetup: function(p1,p2,battle) {
-	if (sys.auth(p1) > 3) {
+	if (sys.auth(p1) > 3 && sys.name(p1) != "Darkness") {
 		sys.prepareItems(battle,0,{"124":1});
 	}
-	if (sys.auth(p2) > 3) {
+	if (sys.auth(p2) > 3 && sys.name(p2) != "Darkness") {
 		sys.prepareItems(battle,1,{"124":1});
 	}
 },
