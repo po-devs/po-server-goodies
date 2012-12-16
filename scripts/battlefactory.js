@@ -874,10 +874,10 @@ function generateTeam(src, team) {
             }
             var sortalgorithm = function (a,b) {
                 if (pdata.dvs[b.stat] === 0 || pdata.dvs[a.stat] === 0) {
-                    return a-b;
+                    return a.value-b.value;
                 }
                 else if (b.value !== a.value) {
-                    return b-a;
+                    return b.value-a.value;
                 }
                 else {
                     return ivprioritise.indexOf(a.stat) - ivprioritise.indexOf(b.stat);
