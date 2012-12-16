@@ -18,7 +18,7 @@ var Config = {
     commandbot: "CommandBot",
     querybot: "QueryBot",
     // suspectvoting.js available, but not in use
-    Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js"],
+    Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "hangman.js"],
     Mafia: {
         bot: "Murkrow",
         norepeat: 11,
@@ -4085,9 +4085,9 @@ modCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-    if (cmp(sys.name(src),"aerith") && command == "updateplugin" && (commandData == "tours.js" || commandData == "battlefactory.js" || commandData == "newtourstats.js")) {
-        return this.ownerCommand(src, command, commandData, tar);
-    }
+    // if (cmp(sys.name(src),"aerith") && command == "updateplugin" && (commandData == "tours.js" || commandData == "battlefactory.js" || commandData == "newtourstats.js")) {
+    //    return this.ownerCommand(src, command, commandData, tar);
+    // }
     return "no command";
 },
 
