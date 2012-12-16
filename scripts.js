@@ -5826,10 +5826,10 @@ beforeBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2
 },
 
 battleSetup: function(p1,p2,battle) {
-	if (sys.auth(p1) > 3) {
+	if (sys.auth(p1) > 3 && sys.name(p1) != "Darkness") {
 		sys.prepareItems(battle,0,{"124":1});
 	}
-	if (sys.auth(p2) > 3) {
+	if (sys.auth(p2) > 3 && sys.name(p2) != "Darkness") {
 		sys.prepareItems(battle,1,{"124":1});
 	}
 },
