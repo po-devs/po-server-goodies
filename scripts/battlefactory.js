@@ -7,7 +7,7 @@ Requires bfteams.json to work, exportteam.json is optional.
 */
 
 // Globals
-var bfversion = "0.88+";
+var bfversion = "0.89+";
 var dataDir = "bfdata/";
 var bfsets, pokedb, working;
 var randomgenders = true; // set to false if you want to play with set genders
@@ -223,6 +223,11 @@ function factoryCommand(src, command, commandData) {
                 normalbot.sendChanMessage(src, "Failed to update!");
             }
         });
+        return;
+    }
+    else if (command == "resetladder") {
+        sys.resetLadder("Battle Factory");
+        normalbot.sendAll("Battle Factory ladder was reset by "+sys.name(src)+"!", staffchannel);
         return;
     }
     else if (command == "pokeslist") {
@@ -1002,6 +1007,7 @@ module.exports = {
             if (sys.auth(src) > 2 || (sys.name(src) === 'Aerith' && sys.auth(src) >= 1)) {
                 help = [
                     "/bfversion: Gives information about the battle factory",
+                    "/resetladder: Resets the battle factory ladder in case of failure/abuse",
                     "/pokeslist: Views the list of installed Pokemon",
                     "/pokecode [alpha code]: Converts a code to readable format.",
                     "/pokesets [poke]: Gets the sets for that pokemon in readable format",
