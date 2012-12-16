@@ -439,7 +439,7 @@ function checkTime(i) { //adds a 0 in front of one digit minutes/seconds
 function channelslist() {
     var channelids = sys.channelIds();
     var channels = [];
-    for (var x = 0; x < channelids; x++)
+    for (var x = 0; x < channelids.length; x++)
     {
         channels.push(sys.channel(channelids[x]));
     }
@@ -1809,7 +1809,7 @@ init : function() {
     dwpokemons = {};
     var announceChan = (typeof staffchannel == "number") ? staffchannel : 0;
     var dwpok;
-    for (dwpok = 0; dwpoke < dwlist.length; dwpok++) {
+    for (dwpok = 0; dwpok < dwlist.length; dwpok++) {
         var num = sys.pokeNum(dwlist[dwpok]);
         if (num === undefined)
             sendChanAll("Script Check: Unknown poke in dwpokemons: '" +dwlist[dwpok]+"'.", announceChan);
@@ -1821,7 +1821,7 @@ init : function() {
 
     var lclist = ["Bulbasaur", "Charmander", "Squirtle", "Croagunk", "Turtwig", "Chimchar", "Piplup", "Treecko","Torchic","Mudkip", "Pansage", "Pansear", "Panpour"];
     lcpokemons = [];
-    for(dwpok = 0; dwpoke < lclist.length; dwpok++) {
+    for(dwpok = 0; dwpok < lclist.length; dwpok++) {
         lcpokemons.push(sys.pokeNum(lclist[dwpok]));
     }
     lcmoves = {
