@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "A1.003";
+var bfversion = "A1.004";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -133,14 +133,14 @@ function initFactory() {
 }
 
 function isinBFTier(src, team) {
-    if (['Battle Factory', 'Battle Factory 6v6'].indexOf(sys.tier(src, team))) {
+    if (['Battle Factory', 'Battle Factory 6v6'].indexOf(sys.tier(src, team)) > -1) {
         return true;
     }
     else return false;
 }
 
 function isBFTier(tier) {
-    if (['Battle Factory', 'Battle Factory 6v6'].indexOf(tier)) {
+    if (['Battle Factory', 'Battle Factory 6v6'].indexOf(tier) > -1) {
         return true;
     }
     else return false;
