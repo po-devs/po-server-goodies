@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "A1";
+var bfversion = "A1.002";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -64,7 +64,6 @@ function initFactory() {
         throw e;
     }
     try {
-        throw e;
         userqueue = JSON.parse(sys.getFileContent(submitDir+"index.json"));
     }
     catch (e) {
@@ -78,7 +77,6 @@ function initFactory() {
         submitbans = {};
     }
     try {
-        throw e;
         reviewers = JSON.parse(sys.getFileContent(submitDir+"reviewers.json"));
     }
     catch (e) {
@@ -86,7 +84,6 @@ function initFactory() {
         sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
     }
     try {
-        throw e;
         bfhash = JSON.parse(sys.getFileContent(dataDir+"bfhash.json"));
     }
     catch (e) {
@@ -131,7 +128,7 @@ function initFactory() {
         throw "No valid set packs available";
     }
 
-    sendChanAll("Version "+bfversion+" of the Battle Factory loaded successfully!", sys.channelId("Developer's Den"));
+    sendChanAll("Version "+bfversion+" of the Battle Factory loaded successfully!", teamrevchan);
     working = true;
 }
 
@@ -1910,15 +1907,15 @@ function validPacks() {
 }
 
 function isReviewAdmin(src) {
-    return (sys.auth(src) >= 3 || SESSION.channels(sys.channelId('BF Review')).isChannelAdmin(src));
+    return (sys.auth(src) >= 3 || (sys.auth(src) >= 1 && sys.name(src) == "Aerith"));
 }
 
 function isGlobalReviewer(src) {
-    return (sys.auth(src) >= 3 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src));
+    return (sys.auth(src) >= 3 || (sys.auth(src) >= 1 && sys.name(src) == "Aerith"));
 }
 
 function isReviewer(src) {
-    if (sys.auth(src) >= 3 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(src)) {
+    if (sys.auth(src) >= 3 || (sys.auth(src) >= 1 && sys.name(src) == "Aerith")) {
         return true;
     }
     for (var r in reviewers) {
@@ -1994,6 +1991,15 @@ module.exports = {
         catch (err) {
             sendChanAll("Error in starting battle factory: "+err, staffchannel);
             working = false;
+        }
+    },
+    beforeChannelJoin : function (src, chan) {
+        if (sys.auth(src) < 1 && chan == teamrevchan) {
+            sys.stopEvent();
+            return;
+        }
+        if (sys.auth(src) < 3 && sys.name(src) != "Aerith" && chan == teamrevchan) {
+            sys.stopEvent();
         }
     },
     afterChannelJoin : function(player, chan) {
