@@ -108,7 +108,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, getTimeStamp, lcmoves, hangmanchan, ipbans;
+var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans;
 
 var isMafiaAdmin = require('mafia.js').isMafiaAdmin;
 var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
@@ -230,6 +230,7 @@ function dwCheck(pokemon){
     }
     return true;
 }
+
 function sendNotice() {
     var url = Config.base_url + "notice.html";
     sys.webCall(url, function (resp){
@@ -1428,10 +1429,7 @@ init : function() {
     }
 
     var lclist = ["Bulbasaur", "Charmander", "Squirtle", "Croagunk", "Turtwig", "Chimchar", "Piplup", "Treecko","Torchic","Mudkip", "Pansage", "Pansear", "Panpour"];
-    lcpokemons = [];
-    for(dwpok = 0; dwpok < lclist.length; dwpok++) {
-        lcpokemons.push(sys.pokeNum(lclist[dwpok]));
-    }
+    lcpokemons = lclist.map(sys.pokeNum);
     lcmoves = {
         "Bronzor":["Iron Defense"],
         "Golett":["Rollout","Shadow Punch","Iron Defense","Mega Punch","Magnitude","DynamicPunch","Night Shade","Curse","Hammer Arm","Focus Punch"],
@@ -1443,10 +1441,7 @@ init : function() {
     bannedGSCTrap = [sys.moveNum("Mean Look"), sys.moveNum("Spider Web")].sort();
 
     var breedingList = ["Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Monferno", "Infernape", "Piplup", "Prinplup", "Empoleon", "Treecko", "Grovyle", "Sceptile", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Hitmonlee","Hitmonchan","Hitmontop","Tyrogue", "Porygon", "Porygon2", "Porygon-Z", "Gothorita", "Gothitelle","Pansage", "Pansear", "Panpour", "Simisear", "Simisage", "Simipour"];
-    breedingpokemons = [];
-    for(var inpok = 0; inpok < breedingList.length; inpok++) {
-        breedingpokemons.push(sys.pokeNum(breedingList[inpok]));
-    }
+    breedingpokemons = breedingList.map(sys.pokeNum);
 
     /* restore mutes, smutes, mafiabans, rangebans, megausers */
     mutes = new MemoryHash("mutes.txt");
@@ -1585,42 +1580,6 @@ init : function() {
         normalbot.sendAll("Couldn't load api keys: " + e, staffchannel);
     }
 
-
-    /* global utility helpers */
-    getTimeStamp = function(string) {
-        var arr = string.split(', ');
-        var regexp = new RegExp("^([0-9]{1,}) (week(s)?|day(s)?|hour(s)?|minute(s)?|second(s)?){1}$", "i");
-        var seconds = 0;
-        var result = [];
-        for(var x = 0; x < arr; x++)
-        {
-               if(regexp.test(arr[x]) === false)
-               continue;
-               result = arr[x].match(regexp);
-               if(result[2] == 'second' || result[2] == 'seconds')
-               {
-                    seconds += parseInt(result[1], 10);
-               }
-               else if(result[2] == 'minute' || result[2] == 'minutes')
-               {
-                    seconds += parseInt(result[1], 10)*60;
-               }
-               else if(result[2] == 'hour' || result[2] == 'hours')
-               {
-                    seconds += parseInt(result[1], 10)*60*60;
-               }
-               else if(result[2] == 'day' || result[2] == 'days')
-               {
-                    seconds += parseInt(result[1], 10)*60*60*24;
-               }
-               else if(result[2]== 'week' || result[2] == 'weeks')
-               {
-                    seconds += parseInt(result[1], 10)*60*60*24*7;
-               }
-        }
-        
-        return seconds;
-    };
     sendMainTour = function(message) {
         sendChanAll(message, 0);
         sendChanAll(message, tourchannel);
@@ -1640,17 +1599,12 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         var sendAll =  {
             "smute": function(line) {
                 banbot.sendAll(line, staffchannel);
-                var authlist = sys.dbAuths();
                 line = line.replace(" by " +sys.name(src), "");
-                 for(var x in authlist) {
-                    if(sys.id(authlist[x]) !== undefined){
-                    var chanlist = sys.channelsOfPlayer(sys.id(authlist[x]));
-                        for(var y in chanlist) {
-                            if(chanlist[y] != staffchannel) {
-                                banbot.sendMessage(sys.id(authlist[x]), line, chanlist[y]);
-                        }   }
-                    }
-                }
+                sys.dbAuths().map(sys.id).filter(function(uid) { return uid !== undefined; }).forEach(function(uid) {
+                    sys.channelsOfPlayer(uid).filter(function(cid) { return cid !== staffchannel; }).forEach(function(cid) {
+                        banbot.sendMessage(uid, line, cid);
+                    });
+                });
             },
             "mban": function(line) {
                 banbot.sendAll(line, staffchannel);
@@ -2333,9 +2287,9 @@ userCommand: function(src, command, commandData, tar) {
             || (commandData == "megauser" && (sys.auth(src) > 0 || SESSION.users(src).megauser || SESSION.channels(tourchannel).isChannelOperator(src)))
             || (commandData == "channel") ) {
             sendChanMessage(src, "*** " + commandData.toUpperCase() + " Commands ***");
-            for(var helpindex = 0; helpindex < commands[commandData].length; helpindex++) {
-                sendChanMessage(src, commands[commandData][helpindex]);
-            }
+            commands[commandData].forEach(function(help) {
+                sendChanMessage(src, help);
+            });
         }
         callplugins("onHelp", src, commandData, channel);
 
@@ -2486,92 +2440,42 @@ userCommand: function(src, command, commandData, tar) {
     }
     if (command == "auth") {
         var DoNotShowIfOffline = ["loseyourself", "oneballjay"];
+        var filterByAuth = function(level) { return function(name) { return sys.dbAuth(name) == level; }; };
+        var printOnlineOffline = function(name) {
+            if (sys.id(name) === undefined && DoNotShowIfOffline.indexOf(name) == -1) {
+                sys.sendMessage(src, name + " (Offline)", channel);
+            } else {
+                sys.sendHtmlMessage(src, '<timestamp/><font color = "green">' + name.correctCase() + ' (Online)</font>', channel);
+            }
+        };
         var authlist = sys.dbAuths().sort();
         sendChanMessage(src, "");
-        if(commandData == "owners") {
-            sendChanMessage(src, "*** Owners ***");
-            for(x in authlist) {
-                if(sys.dbAuth(authlist[x]) == 3) {
-                    if(sys.id(authlist[x]) === undefined) {
-                       sendChanMessage(src, authlist[x] + " (Offline)");
-                    }
-                    if(sys.id(authlist[x]) !== undefined) {
-                        sys.sendHtmlMessage(src, '<timestamp/><font color = "green">' + sys.name(sys.id(authlist[x])) + ' (Online)</font>',channel);
-                    }
-                }
-            }
-            sendChanMessage(src, "",channel);
+        switch (commandData) {
+        case "owners":
+            sys.sendMessage(src, "*** Owners ***", channel);
+            authlist.map(filterByAuth(3)).forEach(printOnlineOffline);
+            break;
+        case "admins":
+        case "administrators":
+            sys.sendMessage(src, "*** Administrators ***", channel);
+            authlist.map(filterByAuth(2)).forEach(printOnlineOffline);
+            break;
+        case "mods":
+        case "moderators":
+            sys.sendMessage(src, "*** Moderators ***", channel);
+            authlist.map(filterByAuth(1)).forEach(printOnlineOffline);
+            break;
+        default:
+            sys.sendMessage(src, "*** Owners ***", channel);
+            authlist.map(filterByAuth(3)).forEach(printOnlineOffline);
+            sys.sendMessage(src, '', channel);
+            sys.sendMessage(src, "*** Administrators ***", channel);
+            authlist.map(filterByAuth(2)).forEach(printOnlineOffline);
+            sys.sendMessage(src, '', channel);
+            sys.sendMessage(src, "*** Moderators ***", channel);
+            authlist.map(filterByAuth(1)).forEach(printOnlineOffline);
         }
-        if(commandData == "admins" || commandData == "administrators") {
-            sendChanMessage(src, "*** Administrators ***");
-            for(x in authlist) {
-                if(sys.dbAuth(authlist[x]) == 2) {
-                    if(sys.id(authlist[x]) === undefined) {
-                        sendChanMessage(src, authlist[x] + " (Offline)");
-                    }
-                    if(sys.id(authlist[x]) !== undefined) {
-                        sys.sendHtmlMessage(src, '<timestamp/><font color = "green">' + sys.name(sys.id(authlist[x])) + ' (Online)</font>',channel);
-                    }
-                }
-            }
-            sys.sendMessage(src, "",channel);
-        }
-        if(commandData == "mods" || commandData == "moderators") {
-            sendChanMessage(src, "*** Moderators ***");
-            for(x in authlist) {
-                if(sys.dbAuth(authlist[x]) == 1) {
-                    if(sys.id(authlist[x]) === undefined) {
-                        if (DoNotShowIfOffline.indexOf(authlist[x]) == -1)
-                        sendChanMessage(src, authlist[x] + " (Offline)");
-                    }
-                    if(sys.id(authlist[x]) !== undefined) {
-                        sys.sendHtmlMessage(src, '<timestamp/><font color = "green">' + sys.name(sys.id(authlist[x])) + ' (Online)</font>',channel);
-                    }
-                }
-            }
-            sys.sendMessage(src, "",channel);
-        }
-
-        if(commandData != "moderators" && commandData != "mods" && commandData != "administrators" && commandData != "admins" && commandData != "owners") {
-
-            sendChanMessage(src, "*** Owners ***");
-            for(x in authlist) {
-                if(sys.dbAuth(authlist[x]) == 3) {
-                    if(sys.id(authlist[x]) === undefined) {
-                        sendChanMessage(src, authlist[x] + " (Offline)");
-                    }
-                    if(sys.id(authlist[x]) !== undefined) {
-                        sys.sendHtmlMessage(src, '<timestamp/><font color = "green">' + sys.name(sys.id(authlist[x])) + ' (Online)</font>',channel);
-                    }
-                }
-            }
-            sendChanMessage(src, "");
-            sendChanMessage(src, "*** Administrators ***");
-            for(x in authlist) {
-                if(sys.dbAuth(authlist[x]) == 2) {
-                    if(sys.id(authlist[x]) === undefined) {
-                        sendChanMessage(src, authlist[x] + " (Offline)");
-                    }
-                    if(sys.id(authlist[x]) !== undefined) {
-                        sys.sendHtmlMessage(src, '<timestamp/><font color = "green">' + sys.name(sys.id(authlist[x])) + ' (Online)</font>',channel);
-                    }
-                }
-
-            }
-            sendChanMessage(src, "");
-            sendChanMessage(src, "*** Moderators ***");
-            for(x in authlist) {
-                if(sys.dbAuth(authlist[x]) == 1) {
-                    if(sys.id(authlist[x]) === undefined) {
-                        if (DoNotShowIfOffline.indexOf(authlist[x]) == -1)
-                        sendChanMessage(src, authlist[x] + " (Offline)");
-                    }
-                    if(sys.id(authlist[x]) !== undefined) {
-                        sys.sendHtmlMessage(src, '<timestamp/><font color = "green">' + sys.name(sys.id(authlist[x])) + ' (Online)</font>',channel);
-                    }
-                }
-            }
-        }
+        sys.sendMessage(src, '', channel);
         return;
     }
     if (command == "sametier") {
@@ -3391,14 +3295,7 @@ modCommand: function(src, command, commandData, tar) {
             ip = sys.dbIp(name);
             online = false;
         }
-        var isBanned = false;
-        var banlist=sys.banList();
-        for(var a in banlist) {
-            if(ip == sys.dbIp(banlist[a])) {
-                isBanned = true;
-                break;
-            }
-        }
+        var isBanned = sys.banList().filter(function(name) { return ip == sys.dbIp(name); }).length > 0;
         var nameBanned = this.nameIsInappropriate(name);
         var rangeBanned = this.isRangeBanned(ip);
         var tempBanned = this.isTempBanned(ip);
@@ -3488,41 +3385,39 @@ modCommand: function(src, command, commandData, tar) {
         } else if (sys.dbIp(commandData) !== undefined) {
             ip = sys.dbIp(commandData);
         }
+        if (!ip) {
+            querybot.sendChanMessage(src, "Unknown user or IP.");
+            return;
+        }
+        var myAuth = sys.auth(src);
+        var allowedToAlias = function(target) {
+            return !(myAuth < 3 && sys.dbAuth(target) > myAuth);
+        };
+
+        /* Higher auth: don't give the alias list */
+        if (!allowedToAlias(commandData)) {
+            querybot.sendChanMessage(src, "Not allowed to alias higher auth: " + commandData);
+            return;
+        }
+
         var smessage = "The aliases for the IP " + ip + " are: ";
-        var sorts = [];
-        var aliases = sys.aliases(ip);
-        for (var i = 0; i < aliases.length; ++i) {
-            sorts.push([aliases[i], sys.dbLastOn(aliases[i])]);
-        }
-        sorts.sort(function (a, b) { //i feel as if there's a much better way to do this :x
-            var aa = a[1].split(/-/);
-            var bb = b[1].split(/-/);
-            aa = new Date(aa[0], aa[1]-1, aa[2]);
-            bb = new Date(bb[0], bb[1]-1, bb[2]);
-            return bb-aa;
-        });
-        aliases = [];
-        for (var x = 0; x < sorts.length; x++) {
-            aliases.push(sorts[x][0]);
-        }
         var prefix = "";
-        for(var i = 0; i < aliases.length; ++i) {
-            var id = sys.id(aliases[i]);
-            var status = (id !== undefined) ? "online" : "Last Login: " + sys.dbLastOn(aliases[i]);
-            if(sys.dbAuth(aliases[i])>sys.auth(src) && aliases[i] !== commandData.toLowerCase() && sys.auth(src) < 3){
-                continue;
+        sys.aliases.map(function(name) {
+            return [sys.dbLastOn(name), name];
+        }).sort().forEach(function(alias_tuple) {
+            var last_login = alias_tuple[0],
+                alias = alias_tuple[1];
+            if (!allowedToAlias(alias)) {
+                return;
             }
-            if(sys.dbAuth(aliases[i])>sys.auth(src) && aliases[i] === commandData.toLowerCase() && sys.auth(src) < 3){
-                smessage = "The aliases for the IP " + ip + " are: " + aliases[i] + " ("+status+"), ";
-                break;
-            }
-            smessage = smessage + aliases[i] + " ("+status+"), ";
+            var status = (sys.id(alias) !== undefined) ? "online" : "Last Login: " + last_login;
+            smessage = smessage + alias + " ("+status+"), ";
             if (smessage.length > max_message_length) {
                 querybot.sendChanMessage(src, prefix + smessage + " ...");
                 prefix = "... ";
                 smessage = "";
             }
-        }
+        });
         querybot.sendChanMessage(src, prefix + smessage);
         return;
     }
@@ -3764,15 +3659,14 @@ adminCommand: function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "This channel cannot be destroyed!");
             return;
         }
-        var players = sys.playersOfChannel(chid);
         var channelDataFile = SESSION.global().channelManager.dataFileFor(chid);
         sys.writeToFile(channelDataFile, "");
-        for(var x = 0; x < players.length; x++) {
-            sys.kick(players[x], chid);
-            if (sys.isInChannel(players[x], 0) !== true) {
-                sys.putInChannel(players[x], 0);
+        sys.playersOfChannel(chid).forEach(function(player) {
+            sys.kick(player, chid);
+            if (sys.isInChannel(player, 0) !== true) {
+                sys.putInChannel(player, 0);
             }
-        }
+        });
         return;
     }
     if (command == "ban") {
@@ -3879,19 +3773,17 @@ adminCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "nameunban") {
-        var toDelete = -1;
-        for (var i = 0; i < nameBans.length; ++i) {
-            if (nameBans[i].toString() == commandData) {
-                toDelete = i;
-                break;
+        var unban = false;
+        nameBans = nameBans.filter(function(name) {
+            if (name.toString() == commandData) {
+                normalbot.sendChanMessage(src, "You unbanned: " + nameBans[toDelete].toString());
+                unban = true;
+                return false;
             }
-        }
-        if (toDelete >= 0) {
-            normalbot.sendChanMessage(src, "You unbanned: " + nameBans[toDelete].toString());
-            nameBans.splice(toDelete,1);
-        } else {
+            return true;
+        });
+        if (!unban)
             normalbot.sendChanMessage(src, "No match.");
-        }
         return;
     }
     if (command == "namewarn") {
@@ -4000,44 +3892,13 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
     if(command == "hiddenauth"){
-        var authlist = sys.dbAuths().sort();
         sendChanMessage(src, "*** Hidden Auth ***");
-        for(var x in authlist){
-            if(sys.dbAuth(authlist[x]) > 3){
-                sendChanMessage(src, authlist[x] + " " + sys.dbAuth(authlist[x]));
-            }
-        }
+        sys.dbAuths().sort().filter(function(name) { return sys.dbAuth(name) > 3; }).forEach(function(name) {
+            sendChanMessage(src, name + " " + sys.dbAuth(name));
+        });
         sendChanMessage(src, "",channel);
         return;
     }
-    // Removing announcement commands because of web interface to server
-    /*if (command == "getannouncement") {
-        sendChanMessage(src, sys.getAnnouncement());
-        return;
-    }
-    if (command == "testannouncement") {
-        sys.setAnnouncement(commandData, src);
-        return;
-    }
-    if (command == "setannouncement") {
-        normalbot.sendChanMessage(src, "Use /setwebannouncement and edit announcement.html in the repo.");
-        //sys.changeAnnouncement(commandData);
-        return;
-    }
-    if (command == "testwebannouncement") {
-        var updateURL = Config.base_url + "announcement.html";
-        sys.webCall(updateURL, function(resp) {
-            sys.setAnnouncement(resp, src);
-        });
-        return;
-    }
-    if (command == "setwebannouncement") {
-        var updateURL = Config.base_url + "announcement.html";
-        sys.webCall(updateURL, function(resp) {
-            sys.changeAnnouncement(resp);
-        });
-        return;
-    }*/
     if (command == "capslockday") {
         if (commandData == "off") {
             CAPSLOCKDAYALLOW = false;
@@ -4263,12 +4124,12 @@ ownerCommand: function(src, command, commandData, tar) {
     }
     if (command == "removeautosmute") {
         var name = commandData.toLowerCase();
-        for(var x = 0; x < autosmute.length; x++) {
-            if (autosmute[x] === name){
-                autosmute.splice(x, 1);
+        autosmute = autosmute.filter(function(list_name) {
+            if (list_name == name) {
                 normalbot.sendAll(commandData + " was removed from the autosmute list", staffchannel);
+                return true;
             }
-        }
+        });
         sys.writeToFile('secretsmute.txt', autosmute.join(":::"));
         return;
     }
@@ -4280,11 +4141,9 @@ ownerCommand: function(src, command, commandData, tar) {
             return;
         }
         var channels = args[1].split(",");
-        var cids = [];
-        for (var i = 0; i < channels.length; ++i) {
-            var cid = sys.channelId(channels[i].replace(/(^\s*)|(\s*$)/g, ""));
-            if (cid !== undefined) cids.push(cid);
-        }
+        var cids = channels.map(function(text) {
+            return sys.channelId(text.replace(/(^\s*)|(\s*$)/g, ""));
+        }).filter(function(cid) { return cid !== undefined; });
         if (cids.length === 0) return;
         var what = args.slice(2).join(":");
         var count = 1;
@@ -4298,8 +4157,7 @@ ownerCommand: function(src, command, commandData, tar) {
                 SESSION.users(sayer).endcalls = false;
                 return;
             }
-            for (var i = 0; i < cids.length; ++i) {
-                var cid = cids[i];
+            cids.forEach(function(cid) {
                 if (sys.isInChannel(sayer, cid))
                     if (html) {
                         var colour = script.getColor(sayer);
@@ -4307,7 +4165,7 @@ ownerCommand: function(src, command, commandData, tar) {
                     } else {
                         sendChanAll(sys.name(sayer) + ": " + what, cid);
                     }
-            }
+            });
             if (++count > 100) return; // max repeat is 100
             SESSION.users(sayer).callcount++;
             sys.delayedCall(function() { callback(sayer, minutes, cids, what, count) ;}, 60*minutes);
