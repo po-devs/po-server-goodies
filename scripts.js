@@ -3533,9 +3533,6 @@ modCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-    if (cmp(sys.name(src),"aerith") && command == "updateplugin" && (commandData == "tours.js" || commandData == "battlefactory.js" || commandData == "newtourstats.js")) {
-        return this.ownerCommand(src, command, commandData, tar);
-    }
     return "no command";
 },
 
