@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "A1";
+var bfversion = "A1.001";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -64,7 +64,6 @@ function initFactory() {
         throw e;
     }
     try {
-        throw e;
         userqueue = JSON.parse(sys.getFileContent(submitDir+"index.json"));
     }
     catch (e) {
@@ -78,7 +77,6 @@ function initFactory() {
         submitbans = {};
     }
     try {
-        throw e;
         reviewers = JSON.parse(sys.getFileContent(submitDir+"reviewers.json"));
     }
     catch (e) {
@@ -86,7 +84,6 @@ function initFactory() {
         sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
     }
     try {
-        throw e;
         bfhash = JSON.parse(sys.getFileContent(dataDir+"bfhash.json"));
     }
     catch (e) {
