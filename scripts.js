@@ -2048,9 +2048,9 @@ nameIsInappropriate: function(src)
         reply('You are using cyrillic letters similar to latin letters in your name.');
         return true;
     }
-    var creek = /[\u0370-\u03ff]/;
-    if (creek.test(name)) {
-        reply('You are using creek letters similar to latin letters in your name.');
+    var greek = /[\u0370-\u03ff]/;
+    if (greek.test(name)) {
+        reply('You are using Greek letters similar to Latin letters in your name.');
         return true;
     }
 
