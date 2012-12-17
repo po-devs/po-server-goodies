@@ -169,48 +169,6 @@ var nonFlashing = utilities.non_flashing;
 var getSeconds = utilities.getSeconds;
 var getTimeString = utilities.getTimeString;
 
-function get_timestamp() { // UTC timestamp(seconds)
-    var date = new Date();
-	//Math.floor((date.getTime()+(date.getTimezoneOffset()*60000))/1000);
-    return Math.floor(date.getTime()/1000);
-}
-
-function update_web_logs() {
-    // Take po_logs.json to the handler and empty it afterward
-    var json = sys.getFileContent('logs/po_logs.json');
-    var website = sys.getFileContent(Config.dataDir+'logs_address.txt'); // The address of the page that will save the logs
-    var post = {"logs": json};
-    sys.webCall(website, function(resp) {
-        if(resp == 'true')
-        {
-            sys.webCall(sys.getFileContent(Config.dataDir+'logs_db_address.txt'), function(resp) {
-                 if(resp == 'true')
-                 {
-                     sys.sendAll('±StalkingBot: The logs database has been updated!.', staffchannel);
-                 }
-             });
-            sys.sendAll('±StalkingBot: The logs have been sent to the website.', staffchannel);
-            sys.writeToFile('logs/po_logs.json','');
-        }
-        else
-        {
-            //sys.sendAll('±StalkingBot: The logs update failed.', staffchannel);
-        }
-    }, post);
-}
-
-function getVal(valname) { // Removes ":" if it's the first character of the val
-    var val = sys.getVal(valname);
-    return val[0] == ':' ? val.substr(1) : val;
-}
-function escape_dq(txt) { // escaping for JSON
-
-     if(typeof txt == 'object')
-     txt = txt.join();
-    if(txt !== null && txt !== undefined && txt.length > 0)
-    return txt.replace(/\\/g, "\\\\").replace(/\//g, "\\/").replace(/\"/g, "\\\"").replace(/\n/g, "").replace(/\r/g, "").replace(/\t/g, "").replace(/\x08/g, "").replace(/\x0c/g, "");
-}
-
 /* Useful for evalp purposes */
 function printObject(o) {
   var out = '';
@@ -1393,8 +1351,7 @@ var commands = {
         "/updatebansites: To update ban sites.",
         "/updatetierchecks: To update tier checks.",
         "/togglerainbow: [on/off]: To turn rainbow on or off.",
-        "/towner[s] [name]: makes someone a tournament owner (tours.js plugin needs to be installed for this to work)",
-        "/update_logs: Send the logs to the website immediately without waiting for midnight."
+        "/towner[s] [name]: makes someone a tournament owner (tours.js plugin needs to be installed for this to work)"
     ]
 };
 
@@ -4028,15 +3985,6 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
     
-    if(command == "get_logs") { // temporary until 2.0.06 is used
-         sys.sendMessage(src, "±logs: "+sys.getFileContent('logs/po_logs.json'), channel);
-         sys.writeToFile('logs/po_logs.json', '');
-         return;
-    }
-    if(command == "update_logs") {
-        update_web_logs();
-        return;
-    }
     if (command == "changerating") {
         var data =  commandData.split(' -- ');
         if (data.length != 3) {
