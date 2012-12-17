@@ -1580,7 +1580,7 @@ function tourCommand(src, command, commandData) {
                     sendBotMessage(src,"They don't have tour authority!",tourschan,false)
                     return true;
                 }
-                if (tadmins[lname] == "to" && sys.auth(src) < 3 && sys.name(src) != "Aerith") {
+                if (tadmins[lname] == "to" && sys.auth(src) < 3) {
                     sendBotMessage(src,"You don't have sufficient authority!",tourschan,false)
                     return true;
                 }
@@ -1595,7 +1595,7 @@ function tourCommand(src, command, commandData) {
                     sendBotAll(sys.name(src)+" fired "+commandData.toLowerCase()+" from running tournaments!","~st",false)
                 }
                 else {
-                    // sendBotAll(sys.name(src)+" fired "+commandData.toLowerCase()+" from running tournaments!",sys.channelId("Indigo Plateau"),false)
+                    sendBotAll(sys.name(src)+" fired "+commandData.toLowerCase()+" from running tournaments!",sys.channelId("Indigo Plateau"),false)
                 }
                 return true;
             }
