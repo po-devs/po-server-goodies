@@ -1936,15 +1936,15 @@ function validPacks() {
 }
 
 function isReviewAdmin(src) {
-    return (sys.auth(src) >= 3 || (sys.auth(src) >= 1 && sys.name(src) == "Aerith"));
+    return sys.auth(src) >= 3;
 }
 
 function isGlobalReviewer(src) {
-    return (sys.auth(src) >= 3 || (sys.auth(src) >= 1 && sys.name(src) == "Aerith"));
+    return sys.auth(src) >= 3;
 }
 
 function isReviewer(src) {
-    if (sys.auth(src) >= 3 || (sys.auth(src) >= 1 && sys.name(src) == "Aerith")) {
+    if (sys.auth(src) >= 3) {
         return true;
     }
     for (var r in reviewers) {
@@ -2023,11 +2023,7 @@ module.exports = {
         }
     },
     beforeChannelJoin : function (src, chan) {
-        if (sys.auth(src) < 1 && chan == teamrevchan) {
-            sys.stopEvent();
-            return;
-        }
-        if (sys.auth(src) < 3 && sys.name(src) != "Aerith" && chan == teamrevchan) {
+        if (sys.auth(src) < 3 && chan == teamrevchan) {
             sys.stopEvent();
         }
     },
