@@ -10,14 +10,14 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "A1.002";
+var bfversion = "A1.004";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
 var bfsets, pokedb, working, defaultsets, userqueue, messagebox, teamrevchan, submitbans, bfhash, reviewers;
 var randomgenders = true; // set to false if you want to play with set genders
 var utilities = require('utilities.js');
-var saveInterval = 3600; // autosave every 1 hour
+var saveInterval = 86400; // autosave every day
 
 // Will escape "&", ">", and "<" symbols for HTML output.
 var html_escape = utilities.html_escape;
@@ -130,6 +130,20 @@ function initFactory() {
 
     sendChanAll("Version "+bfversion+" of the Battle Factory loaded successfully!", teamrevchan);
     working = true;
+}
+
+function isinBFTier(src, team) {
+    if (['Battle Factory', 'Battle Factory 6v6'].indexOf(sys.tier(src, team)) > -1) {
+        return true;
+    }
+    else return false;
+}
+
+function isBFTier(tier) {
+    if (['Battle Factory', 'Battle Factory 6v6'].indexOf(tier) > -1) {
+        return true;
+    }
+    else return false;
 }
 
 function createDefaultEntry(path, desc) {
@@ -1272,6 +1286,16 @@ function factoryCommand(src, command, commandData, channel) {
         }
         return;
     }
+    else if (command == "destroyreview") {
+        var parr = sys.playersOfChannel(teamrevchan);
+        for (var x in parr) {
+            if (!isReviewAdmin(parr[x])) {
+                sys.kick(parr[x], teamrevchan);
+            }
+        }
+        normalbot.sendChanMessage(src, "Destroyed Review Channel");
+        return;
+    }
     else if (command == 'backlog') {
         sys.sendMessage(src, "*** Current Queue Lengths ***", channel);
         for (var a in bfhash) {
@@ -1321,7 +1345,7 @@ function setlint(checkfile, strict) {
     for (var x in checkfile) {
         var setinfo = checkfile[x];
         if (typeof setinfo !== 'object') {
-            if (["readable", "desc", "mode", "perfectivs"].indexOf(x) == -1) {
+            if (["readable", "desc", "mode", "perfectivs", "maxpokes"].indexOf(x) == -1) {
                 warnings.push("<td>Bad property</td><td>'"+html_escape(x)+"' property must be an object</td>");
             }
             continue;
@@ -1856,7 +1880,12 @@ function generateTeam(src, team, mode) {
                 happiness = 0;
             }
             sys.changePokeHappiness(src,team,s,happiness);
-            sys.changePokeShine(src, team, s, sys.rand(0,8192) === 0 ? true : false);
+            var shinechance = 8192;
+            if (sys.ladderRating(src, "Battle Factory") !== undefined) {
+                var rating = sys.ladderRating(src, "Battle Factory") > 0 ? sys.ladderRating(src, "Battle Factory") : 1;
+                shinechance = Math.ceil(8192 * 1000000 / Math.pow(sys.ladderRating(src, "Battle Factory"), 2));
+            }
+            sys.changePokeShine(src, team, s, sys.rand(0,shinechance) === 0 ? true : false);
             if (pokedb.hasOwnProperty(sys.pokemon(pdata.poke%65536)) && randomgenders) {
                 var pokeinfo = pokedb[sys.pokemon(pdata.poke%65536)];
                 var gendernum = pokeinfo[6];
@@ -1968,7 +1997,7 @@ module.exports = {
                 normalbot.sendChanMessage(source, "You can't use this command!");
                 return true;
             }
-            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier', 'resetladder'].indexOf(command) > -1 && !isReviewAdmin(source)) {
+            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier', 'resetladder', 'destroyreview'].indexOf(command) > -1 && !isReviewAdmin(source)) {
                 normalbot.sendChanMessage(source, "You can't use this command!");
                 return true;
             }
@@ -2022,7 +2051,7 @@ module.exports = {
         return false;
     },
     beforeChangeTier: function(src, team, oldtier, newtier) { // This shouldn't be needed, but it's here in case
-        if (oldtier == "Battle Factory" && ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Battle Factory"].indexOf(newtier) == -1) {
+        if (isBFTier(oldtier) && ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Battle Factory", "Battle Factory 6v6"].indexOf(newtier) == -1) {
             sys.sendMessage(src, "Please reload your team from the menu to exit Battle Factory. (Your team is now in Challenge Cup.)");
             // clear old teams
             for (var x=0; x<6; x++) {
@@ -2031,17 +2060,17 @@ module.exports = {
             sys.changeTier(src, team, "Challenge Cup");
             return true;
         }
-        if (newtier == "Battle Factory" && (!working || validPacks() === 0)) {
+        if (isBFTier(newtier) && (!working || validPacks() === 0)) {
             sys.sendMessage(src, "Battle Factory is not working, so you can't move into that tier. (Your team is now in Challenge Cup.)");
             sys.changeTier(src, team, "Challenge Cup");
             return true;
         }
-        if (newtier == "Battle Factory") {
+        if (isBFTier(newtier)) {
             generateTeam(src, team, "preset");
         }
     },
     beforeBattleStarted: function(src, dest, rated, mode, srcteam, destteam) {
-        if (sys.tier(src, srcteam) == "Battle Factory" && sys.tier(dest, destteam) == "Battle Factory") {
+        if (isinBFTier(src, srcteam) && isinBFTier(dest, destteam)) {
             try {
                 var allowedtypes = [];
                 var suggestedtypes = [];
@@ -2052,6 +2081,17 @@ module.exports = {
                             var modes = ['Singles', 'Doubles', 'Triples'];
                             if (bfsets[x].mode == modes[mode]) {
                                 suggestedtypes.push(x);
+                                continue;
+                            }
+                        }
+                        if (bfsets[x].hasOwnProperty('maxpokes')) {
+                            if (bfsets[x].maxpokes == 3 && sys.tier(src, srcteam) == sys.tier(dest, destteam) && sys.tier(src, srcteam) == "Battle Factory") {
+                                suggestedtypes.push(x);
+                                continue;
+                            }
+                            else if (bfsets[x].maxpokes == 6 && sys.tier(src, srcteam) == sys.tier(dest, destteam) && sys.tier(src, srcteam) == "Battle Factory 6v6") {
+                                suggestedtypes.push(x);
+                                continue;
                             }
                         }
                     }

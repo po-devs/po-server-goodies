@@ -672,27 +672,6 @@ function battlesLeft(key) {
     }
 }
 
-/* To track tour brackets in logs. */
-function sendLog(message, html) {
-    try {
-        var stalked_chans = inStalkedChans([sys.channel(tourschan)]);
-        if (stalked_chans.length > 0) {
-            if (html) {
-                var params = {"event":"afterSendHtmlAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
-                append_logs(params);
-            }
-            else {
-                var params = {"event":"afterSendAll", "msg":message, "channels":stalked_chans, timestamp:get_timestamp()};
-                append_logs(params);
-            }
-        }
-    }
-    catch (e) {
-        sendChanAll("Logging from Tournaments failed: "+err, tourserrchan);
-        return false;
-    }
-}
-
 // Sends a message to all tour auth and players in the current tour
 function sendAuthPlayers(message,key) {
     for (var x in sys.playersOfChannel(tourschan)) {
@@ -707,7 +686,6 @@ function sendAuthPlayers(message,key) {
             sendBotMessage(arr[x], newmessage, tourschan, true);
         }
     }
-    sendLog(message, true);
 }
 
 // Sends a html  message to all tour auth and players that participated in the current tour
@@ -732,7 +710,6 @@ function sendHtmlAuthPlayers(message,key) {
             }
         }
     }
-    sendLog(message, true);
 }
 
 // Send a flashing bracket
@@ -754,7 +731,6 @@ function sendFlashingBracket(message,key) {
             sendBotMessage(arr[x],"You are no longer idle!",tourschan,false);
         }
     }
-    sendLog(message, true);
 }
 
 // Sends a message to all tour auth
@@ -824,7 +800,7 @@ function getConfigValue(file, key) {
             decaytime: 2,
             norepeat: 7,
             decayglobalrate: 2,
-            version: "2.106",
+            version: "2.106z",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -872,7 +848,7 @@ function initTours() {
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         norepeat: parseInt(getConfigValue("tourconfig.txt", "norepeat")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.106",
+        version: "2.106z",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,

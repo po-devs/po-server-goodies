@@ -5177,7 +5177,7 @@ afterChatMessage : function(src, message, chan)
 }, /* end of afterChatMessage */
 
 beforeBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2) {
-   if (sys.tier(src, team1) == "Battle Factory" && sys.tier(dest, team2) == "Battle Factory") {
+   if ((sys.tier(src, team1) == "Battle Factory" || sys.tier(src, team1) == "Battle Factory 6v6") && (sys.tier(dest, team2) == "Battle Factory" || sys.tier(dest, team2) == "Battle Factory 6v6")) {
        callplugins("beforeBattleStarted", src, dest, rated, mode, team1, team2);
    }
 },
@@ -5262,7 +5262,7 @@ isMCaps : function(message) {
 },
 
 beforeChangeTier : function(src, team, oldtier, newtier) {
-    if (newtier == "Battle Factory" || oldtier == "Battle Factory") {
+    if (newtier == "Battle Factory" || newtier == "Battle Factory 6v6" || oldtier == "Battle Factory" || oldtier == "Battle Factory 6v6") {
         if (callplugins("beforeChangeTier", src, team, oldtier, newtier)) {
             sys.stopEvent();
             return;
