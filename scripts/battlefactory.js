@@ -1885,6 +1885,7 @@ function generateTeam(src, team, mode) {
                 var rating = sys.ladderRating(src, "Battle Factory") > 0 ? sys.ladderRating(src, "Battle Factory") : 1;
                 shinechance = Math.ceil(8192 * 1000000 / Math.pow(sys.ladderRating(src, "Battle Factory"), 2));
             }
+            sys.changePokeShine(src, team, s, sys.rand(0,shinechance) === 0 ? true : false);
             if (pokedb.hasOwnProperty(sys.pokemon(pdata.poke%65536)) && randomgenders) {
                 var pokeinfo = pokedb[sys.pokemon(pdata.poke%65536)];
                 var gendernum = pokeinfo[6];
