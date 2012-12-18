@@ -3402,7 +3402,7 @@ modCommand: function(src, command, commandData, tar) {
 
         var smessage = "The aliases for the IP " + ip + " are: ";
         var prefix = "";
-        sys.aliases.map(function(name) {
+        sys.aliases(ip).map(function(name) {
             return [sys.dbLastOn(name), name];
         }).sort().forEach(function(alias_tuple) {
             var last_login = alias_tuple[0],
