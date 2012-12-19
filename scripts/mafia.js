@@ -4075,6 +4075,25 @@ return;
             }
         }
     };
+    
+    this.afterChannelJoin = function(src, channel) {
+        if (channel == mafiachan) {
+            switch (mafia.state) {
+                case "blank":
+                    sys.sendMessage(src, "±Info: No game is running! You can start a game by typing /start or /starttheme.", mafiachan);
+                    break;
+                case "voting":
+                    sys.sendMessage(src, "±Info: A voting for the next game is running now! Type /start [theme name] to vote for " + readable(Object.keys(this.possibleThemes), "or") + "!", mafiachan);
+                    break;
+                case "entry":
+                    sys.sendMessage(src, "±Info: You can join a " + (mafia.theme.name == "default" ? "" : mafia.theme.name + "-themed ") + "mafia game now by typing /join! ", mafiachan);
+                    break;
+                default:
+                    sys.sendMessage(src, "±Info: A " + (mafia.theme.name == "default" ? "" : mafia.theme.name + "-themed ") + "mafia game is in progress! You can join the next game by typing /join! ", mafiachan);
+            }
+            return false;
+        }
+    };
 
     // we can always slay them :3
     this.onMute = function (src) {
