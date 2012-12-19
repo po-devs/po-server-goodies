@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "A1.004";
+var bfversion = "A1.005";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -163,6 +163,28 @@ function createEntry(name, data, srcurl) {
     if (sys.getFileContent(dataDir + basepathname) === undefined) {
         sys.writeToFile(dataDir + basepathname, JSON.stringify(data));
         bfhash[name] = {'path': basepathname, 'active': true, 'enabled': true, 'url': srcurl};
+        bfsets[name] = data;
+        return true;
+    }
+    return false;
+}
+
+function importOld(name) {
+    var basepathname = "bfteams_" + (name.replace(/ /g, "")).toLowerCase() + ".json";
+    if (sys.getFileContent(dataDir + basepathname) !== undefined) {
+        try {
+            var data = JSON.parse(sys.getFileContent(dataDir + basepathname));
+        }
+        catch (err) {
+            return false;
+        }
+        if (!data.hasOwnProperty('desc')) {
+            data.desc = name;
+        }
+        if (!data.hasOwnProperty('maxpokes')) {
+            data.maxpokes = 6;
+        }
+        bfhash[name] = {'path': basepathname, 'active': true, 'enabled': true, 'url': "Unknown"};
         bfsets[name] = data;
         return true;
     }
@@ -328,7 +350,7 @@ function cleanEntries() {
                 deleted += 1;
                 continue;
             }
-            if (!obj[o].hasOwnProperty('ip') || !obj[o].hasOwnProperty('name') || !obj[o].hasOwnProperty('sets') || !obj[o].hasOwnProperty('tier')) {
+            if (!obj[o].hasOwnProperty('ip') || !obj[o].hasOwnProperty('name') || !obj[o].hasOwnProperty('sets') || !obj[o].hasOwnProperty('tier') || !obj[o].hasOwnProperty('comment')) {
                 userqueue[x].splice(o,1);
                 o -= 1;
                 deleted += 1;
@@ -403,6 +425,9 @@ function seeQueueItem(index, tier) {
     }
     sys.sendHtmlAll("<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", teamrevchan);
     sys.sendAll("", teamrevchan);
+    if (submitinfo.comment !== "") {
+        sendReviewers("Comment: "+submitinfo.comment, tier, false);
+    }
     sendReviewers("Use /acceptset "+tier+" to accept this submission, /rejectset "+tier+" to reject it, or /nextset "+tier+" to view the next and come back to this later.", tier, false);
 }
 
@@ -428,6 +453,9 @@ function sendQueueItem(src, index, tier) {
     }
     sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", teamrevchan);
     sys.sendMessage(src, "", teamrevchan);
+    if (submitinfo.comment !== "") {
+        normalbot.sendMessage(src, "Comment: "+submitinfo.comment, teamrevchan);
+    }
     normalbot.sendMessage(src, "Use /acceptset "+tier+" to accept this submission, /rejectset "+tier+" to reject it, or /nextset "+tier+" to view the next and come back to this later.", teamrevchan);
 }
 
@@ -471,7 +499,7 @@ function factoryCommand(src, command, commandData, channel) {
     }
     else if (command == "addtier") {
         var tmp = commandData.split(":",2);
-        var ltier = find_tier(tmp[0])
+        var ltier = find_tier(tmp[0]);
         if (ltier === null) {
             normalbot.sendChanMessage(src, "No such tier");
             return;
@@ -494,6 +522,27 @@ function factoryCommand(src, command, commandData, channel) {
         }
         else {
             sendChanAll('A pack with that name already exists!', teamrevchan);
+        }
+    }
+    else if (command == "importold") {
+        var ltier = find_tier(commandData);
+        if (ltier === null) {
+            normalbot.sendChanMessage(src, "No such tier");
+            return;
+        }
+        if (bfhash.hasOwnProperty(ltier)) {
+            normalbot.sendChanMessage(src, "This tier already exists!");
+            return;
+        }
+        if (importOld(ltier)) {
+            autoSave("teams", ltier);
+            sendChanAll('Added the tier '+ltier+'!', teamrevchan);
+            refresh(ltier);
+            reviewers[ltier] = [];
+            sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
+        }
+        else {
+            sendChanAll('Unable to import old files!', teamrevchan);
         }
     }
     else if (command == "addpack") {
@@ -660,7 +709,7 @@ function factoryCommand(src, command, commandData, channel) {
         return;
     }
     else if (command == "resetladder") {
-        if (sys.auth(src) < 3 && sys.name(src) != "Aerith") {
+        if (sys.auth(src) < 3 && sys.name(src) != "Biospark27") {
             normalbot.sendChanMessage(src, "Can't use this command!");
             return;
         }
@@ -863,6 +912,7 @@ function factoryCommand(src, command, commandData, channel) {
     else if (command == "submitsets" || command == "bulksubmit") {
         // This will export the first team to a submission queue
         cleanEntries(); // clean out any invalid entries
+        var comment = commandData;
         if (!sys.dbRegistered(sys.name(src))) {
             normalbot.sendChanMessage(src, "You need to register to submit sets.");
             return;
@@ -961,7 +1011,8 @@ function factoryCommand(src, command, commandData, channel) {
                     'ip': sys.ip(src),
                     'name': sys.name(src),
                     'sets': [team[s]],
-                    'tier': submittier
+                    'tier': submittier,
+                    'comment': comment
                 };
                 submitlist.push(submission);
             }
@@ -971,7 +1022,8 @@ function factoryCommand(src, command, commandData, channel) {
                 'ip': sys.ip(src),
                 'name': sys.name(src),
                 'sets': team,
-                'tier': submittier
+                'tier': submittier,
+                'comment': comment
             };
             submitlist.push(submission);
         }
@@ -1936,11 +1988,11 @@ function validPacks() {
 }
 
 function isReviewAdmin(src) {
-    return sys.auth(src) >= 3;
+    return sys.auth(src) >= 3 || SESSION.channels(teamrevchan).isChannelAdmin(src);
 }
 
 function isGlobalReviewer(src) {
-    return sys.auth(src) >= 3;
+    return sys.auth(src) >= 2 || SESSION.channels(teamrevchan).isChannelOperator(src);
 }
 
 function isReviewer(src) {
@@ -1997,7 +2049,7 @@ module.exports = {
                 normalbot.sendChanMessage(source, "You can't use this command!");
                 return true;
             }
-            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier', 'resetladder', 'destroyreview'].indexOf(command) > -1 && !isReviewAdmin(source)) {
+            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier', 'resetladder', 'destroyreview', 'importold'].indexOf(command) > -1 && !isReviewAdmin(source)) {
                 normalbot.sendChanMessage(source, "You can't use this command!");
                 return true;
             }
@@ -2023,7 +2075,8 @@ module.exports = {
         }
     },
     beforeChannelJoin : function (src, chan) {
-        if (sys.auth(src) < 3 && chan == teamrevchan) {
+        if (!isReviewer(src) && chan == teamrevchan) {
+            capsbot.sendMessage(src, "You cannot access this channel!");
             sys.stopEvent();
         }
     },
@@ -2145,7 +2198,7 @@ module.exports = {
                 "/viewpacks: Views installed Battle Factory Packs",
                 "/reviewers: Views the list of authorised reviewers",
                 "/backlog: Views the queue length",
-                "/submitsets: Submits your first team in teambuilder for the battle factory, in the tier that team is currently in (sets are reviewed)"
+                "/submitsets [comment]: Submits your first team in teambuilder for the battle factory, in the tier that team is currently in. Comments are optional."
             ];
             if (isReviewAdmin(src)) {
                 help = adminHelp.concat(reviewHelp, userHelp);

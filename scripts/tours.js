@@ -800,7 +800,7 @@ function getConfigValue(file, key) {
             decaytime: 2,
             norepeat: 7,
             decayglobalrate: 2,
-            version: "2.106z",
+            version: "2.107",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -848,7 +848,7 @@ function initTours() {
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         norepeat: parseInt(getConfigValue("tourconfig.txt", "norepeat")),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.106z",
+        version: "2.107",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -1551,7 +1551,7 @@ function tourCommand(src, command, commandData) {
                         sendBotMessage(src,"They are already a "+readauth+"!",tourschan,false)
                         return true;
                     }
-                    oldauth = ["none", "mu", "ta", "to"].indexOf(tadmins[lname]);
+                    oldauth = ["none", "mu", "ta", "hidden", "to"].indexOf(tadmins[lname]);
                     if ((oldauth > 1 && !isTourOwner(src)) || (oldauth > 2 && sys.auth(src) < 3)) {
                         sendBotMessage(src,"You don't have sufficient authority!",tourschan,false)
                         return true;
@@ -1580,7 +1580,7 @@ function tourCommand(src, command, commandData) {
                     sendBotMessage(src,"They don't have tour authority!",tourschan,false)
                     return true;
                 }
-                if (tadmins[lname] == "to" && sys.auth(src) < 3) {
+                if ((tadmins[lname] == "to" || tadmins[lname] == "hidden")  && sys.auth(src) < 3) {
                     sendBotMessage(src,"You don't have sufficient authority!",tourschan,false)
                     return true;
                 }
@@ -2986,12 +2986,16 @@ function tourCommand(src, command, commandData) {
             var tos = [];
             var tas = [];
             var mus = [];
+            var hidden = [];
             for (var l in tal) {
                 if (tal[l] == "to") {
                     tos.push(l);
                 }
                 else if (tal[l] == "ta") {
                     tas.push(l);
+                }
+                else if (tal[l] == "hidden") {
+                    hidden.push(l);
                 }
                 else {
                     mus.push(l);
@@ -3000,6 +3004,7 @@ function tourCommand(src, command, commandData) {
             tos.sort();
             tas.sort();
             mus.sort();
+            hidden.sort();
             sys.sendMessage(src, "",tourschan)
             sys.sendMessage(src, "*** TOURNAMENT OWNERS ***",tourschan)
             for (var o in tos) {
@@ -3008,6 +3013,13 @@ function tourCommand(src, command, commandData) {
                 }
                 else {
                     sys.sendMessage(src, tos[o],tourschan)
+                }
+            }
+            if (isTourOwner(src)) {
+                sys.sendMessage(src, "",tourschan)
+                sys.sendMessage(src, "*** HIDDEN STAFF ***",tourschan)
+                for (var h in hidden) {
+                    sys.sendMessage(src, hidden[h],tourschan)
                 }
             }
             sys.sendMessage(src, "",tourschan)
@@ -4475,7 +4487,7 @@ function isTourOwner(src) {
     var lname = sys.name(src).toLowerCase();
     var tadmins = tours.touradmins
     if (tadmins.hasOwnProperty(lname)) {
-        if (tadmins[lname] == "to") return true;
+        if (tadmins[lname] == "to" || tadmins[lname] == "hidden") return true;
     }
     return false;
 }
