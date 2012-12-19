@@ -1684,7 +1684,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             return;
         }
         if (sys.auth(tar) >= sys.auth(src) && sys.auth(tar) > 0) {
-            banbot.sendChanMessage(src, "You dont have sufficient auth to " + nomi + " " + commandData + ".");
+            banbot.sendChanMessage(src, "You don't have sufficient auth to " + nomi + " " + commandData + ".");
             return;
         }
         
@@ -1770,14 +1770,12 @@ canJoinStaffChannel : function(src) {
     var disallowedNames = Config.disallowStaffChannel;
     if (disallowedNames.indexOf(sys.name(src)) > -1)
         return false;
-
     if (sys.auth(src) > 0)
         return true;
     if (SESSION.users(src).megauser)
         return true;
     if (SESSION.users(src).contributions !== undefined)
         return true;
-
     var allowedNames = Config.canJoinStaffChannel;
     if (allowedNames.indexOf(sys.name(src)) > -1)
         return true;
@@ -1786,12 +1784,10 @@ canJoinStaffChannel : function(src) {
 
 isOfficialChan : function (chanid) {
     var officialchans = [0, tourchannel, mafiachan, triviachan, hangmanchan];
-    if (officialchans.indexOf(chanid) > -1) {
+    if (officialchans.indexOf(chanid) > -1)
         return true;
-    }
-    else {
+    else
         return false;
-    }
 },
 
 kickAll : function(ip) {
@@ -1896,10 +1892,6 @@ afterChannelJoin : function(player, chan) {
     callplugins("afterChannelJoin", player, chan);
 }, /* end of afterChannelJoin */
 
-afterChannelLeave : function(player, chan) {
-},
-
-
 beforeChannelDestroyed : function(channel) {
     if (channel == tourchannel || (SESSION.channels(channel).perm === true) ) {
         sys.stopEvent();
@@ -1914,18 +1906,10 @@ beforePlayerBan : function(src, dest, dur) {
     authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
 },
 
-afterPlayerBan : function(src, dest) {
-    // NOT WORKING
-},
-
 beforePlayerKick:function(src, dest){
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestKick = [sys.name(dest), parseInt(sys.time(), 10)];
-},
-
-afterPlayerKick:function(src, dest) {
-   // doesn't work for some reason
 },
 
 afterNewMessage : function (message) {
@@ -1963,22 +1947,21 @@ isIpBanned: function(ip) {
 
 isTempBanned : function(ip) {
     var aliases = sys.aliases(ip);
-        for (var x = 0; x < aliases.length; x++) {
-            if (sys.dbTempBanTime(aliases[x]) < 2000000000) {
-                return true;
-            }
+    for (var x = 0; x < aliases.length; x++) {
+        if (sys.dbTempBanTime(aliases[x]) < 2000000000) {
+            return true;
         }
+    }
     return false;
 },
 
 beforeIPConnected : function(ip) { //commands and stuff later for this, just fixing this quickly for now
-    if(this.isIpBanned(ip)) {
+    if (this.isIpBanned(ip)) {
         sys.stopEvent();
     }
 },
 
 beforeLogIn : function(src) {
-
     var ip = sys.ip(src);
     // auth can evade rangebans and namebans
     if (sys.auth(src) > 0) {
@@ -1997,26 +1980,6 @@ beforeLogIn : function(src) {
         return;
 
     }
-//    var arr =  ["172.", "72.20.", "199.255.",
-//                "199.58.", "188.227.", "174.129.",
-//                "174.36.", "174.37.", "94.46.",
-//                "142.16", "156.34.", "67.228.",
-//                "183.173.180.", "66.199.",
-//                "216.169.110.", "31.3.",
-//                "216.169.",
-//                "109.200.",
-//                "86.187.",
-//                "98.226.", /* skarm */
-//                "85.17.",
-//                "180.191.", /*Tonico*/
-//                "187.65.", /* retyples and hax re */
-//                "99.140.2" /* gaffpot, the gaff */];
-//    for (var i = 0; i < arr.length; i++) {
-//        if (ip.substr(0, arr[i].length) == arr[i] &&
-//            !sys.dbRegistered(sys.name(src))) {
-//            sys.sendAll("Potential ban evader: " + sys.name(src) + " on IP: " + ip, staffchannel);
-//        }
-//    }
     if (this.nameIsInappropriate(src)) {
         sys.stopEvent();
     }
@@ -2121,7 +2084,6 @@ startUpTime: function() {
 },
 
 afterLogIn : function(src) {
-    
     sys.sendMessage(src, "*** Type in /Rules to see the rules. ***");
     commandbot.sendMessage(src, "Use !commands to see the commands!");
 
@@ -2302,17 +2264,14 @@ userCommand: function(src, command, commandData, tar) {
         }
         if (commandData === undefined)
             return;
-
         if (channel == sys.channelId("Trivia") && SESSION.channels(channel).triviaon) {
             sys.sendMessage(src, "±Trivia: Answer using \\a, /me not allowed now.", channel);
             return;
         }
-
         if (usingBannedWords() || repeatingOneself() || capsName()) {
             sys.stopEvent();
             return;
         }
-
         if (SESSION.users(src).smute.active) {
             sys.playerIds().forEach(function(id) {
                 if (sys.loggedIn(id) && SESSION.users(id).smute.active && sys.isInChannel(src, channel)) {
@@ -2367,7 +2326,6 @@ userCommand: function(src, command, commandData, tar) {
     }
     if (command == "league") {
         if (!Config.League) return;
-
         sendChanMessage(src, "");
         sendChanMessage(src, "*** Pokemon Online League ***");
         sendChanMessage(src, "");
@@ -2443,8 +2401,7 @@ userCommand: function(src, command, commandData, tar) {
         var filterByAuth = function(level) { return function(name) { if (sys.dbAuth(name) == level) { return name; } } };
         var printOnlineOffline = function(name) {
             if (name == undefined) return;
-            var id = sys.id(name);
-            if (id === undefined) {
+            if (sys.id(name) === undefined) {
                 if (DoNotShowIfOffline.indexOf(name) == -1) sys.sendMessage(src, name + " (Offline)", channel);
             } else {
                 sys.sendHtmlMessage(src, '<timestamp/><font color = "green">' + name.toCorrectCase() + ' (Online)</font>', channel);
@@ -3748,7 +3705,6 @@ adminCommand: function(src, command, commandData, tar) {
         }
         normalbot.sendAll("" + commandData + " was secretly unmuted by " + nonFlashing(sys.name(src)) + "!", staffchannel);
         SESSION.users(sys.id(commandData)).un("smute");
-
         return;
     }
     if (command == "nameban") {
@@ -3775,7 +3731,8 @@ adminCommand: function(src, command, commandData, tar) {
         var unban = false;
         nameBans = nameBans.filter(function(name) {
             if (name.toString() == commandData) {
-                normalbot.sendChanMessage(src, "You unbanned: " + nameBans[toDelete].toString());
+                var toDelete = nameBans.indexOf(name.toString());
+                normalbot.sendChanMessage(src, "You unbanned: " + name.toString());
                 unban = true;
                 return false;
             }
@@ -3783,6 +3740,8 @@ adminCommand: function(src, command, commandData, tar) {
         });
         if (!unban)
             normalbot.sendChanMessage(src, "No match.");
+        else
+            sys.writeToFile("nameBans.json", JSON.stringify(nameBans));
         return;
     }
     if (command == "namewarn") {
@@ -3806,19 +3765,20 @@ adminCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "nameunwarn") {
-        var toDelete = -1;
-        for (var i = 0; i < nameWarns.length; ++i) {
-            if (nameWarns[i].toString() == commandData) {
-                toDelete = i;
-                break;
+        var unwarn = false;
+        nameWarns = nameWarns.filter(function(name) {
+            if (name.toString() == commandData) {
+                var toDelete = nameWarns.indexOf(name.toString());
+                normalbot.sendChanMessage(src, "You removed a warning for: " + name.toString());
+                unwarn = true;
+                return false;
             }
-        }
-        if (toDelete >= 0) {
-            normalbot.sendChanMessage(src, "You removed a warning for: " + nameWarns[toDelete].toString());
-            nameWarns.splice(toDelete,1);
-        } else {
+            return true;
+        });
+        if (!unwarn)
             normalbot.sendChanMessage(src, "No match.");
-        }
+        else
+            sys.writeToFile("nameWarns.json", JSON.stringify(nameWarns));
         return;
     }
     // hack, for allowing some subset of the owner commands for super admins
@@ -4173,7 +4133,6 @@ ownerCommand: function(src, command, commandData, tar) {
         SESSION.users(sayer).callcount = SESSION.users(sayer).callcount || 0;
         SESSION.users(sayer).callcount++;
         callback(sayer, minutes, cids, what, count);
-
         return;
     }
     if (command == "endcalls") {
@@ -4191,37 +4150,19 @@ ownerCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-    if (command == "changeauth"||command == "changeauths") {
+    if (command == "changeauth" || command == "changeauths") {
         var pos = commandData.indexOf(' ');
-        if (pos == -1) {
-            return;
-        }
-
-        var newauth = commandData.substring(0, pos);
-        var name = commandData.substr(pos+1);
-        var tar = sys.id(name);
-        if(newauth>0 && sys.dbRegistered(name)===false){
+        if (pos == -1) return;
+        var newauth = commandData.substring(0, pos), name = commandData.substr(pos+1), tar = sys.id(name), silent = command == "changeauths";
+        if (newauth > 0 && !sys.dbRegistered(name)) {
             normalbot.sendMessage(src, "This person is not registered");
             normalbot.sendMessage(tar, "Please register, before getting auth");
             return;
         }
-        if (tar !== undefined) {
-            sys.changeAuth(tar, newauth);
-            if(command == "changeauth"){
-                normalbot.sendAll("" + sys.name(src) + " changed auth of " + sys.name(tar) + " to " + newauth);
-                return;
-            }
-            normalbot.sendAll("" + sys.name(src) + " changed auth of " + sys.name(tar) + " to " + newauth,staffchannel);
-
-        } else {
-            sys.changeDbAuth(name, newauth);
-            if(command == "changeauth"){
-                normalbot.sendAll("" + sys.name(src) + " changed auth of " + name + " to " + newauth);
-                return;
-            }
-            normalbot.sendAll("" + sys.name(src) + " changed auth of " + name + " to " + newauth,staffchannel);
-        }
-
+        if (tar !== undefined) sys.changeAuth(sys.id(name), newauth);
+        else sys.changeDbAuth(name, newauth);
+        if (!silent) normalbot.sendAll("" + sys.name(src) + " changed auth of " + name + " to " + newauth);
+        else normalbot.sendAll("" + sys.name(src) + " changed auth of " + name + " to " + newauth, staffchannel);
         return;
     }
     if (command == "variablereset") {
