@@ -4440,7 +4440,7 @@ function isTourAdmin(src) {
     if (sys.auth(src) < 0 || !sys.dbRegistered(sys.name(src))) {
         return false;
     }
-    if (sys.auth(src) >= 3 || isTourSuperAdmin(src)) {
+    if (sys.auth(src) >= 1 || isTourSuperAdmin(src)) {
         return true;
     }
     var tadmins = tours.touradmins
@@ -4454,7 +4454,7 @@ function isTourSuperAdmin(src) {
     if (!sys.dbRegistered(sys.name(src))) {
         return false;
     }
-    if (sys.auth(src) >= 3 || isTourOwner(src)) {
+    if (sys.auth(src) >= 2 || isTourOwner(src)) {
         return true;
     }
     var tadmins = tours.touradmins
