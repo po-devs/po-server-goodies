@@ -350,6 +350,7 @@ function Mafia(mafiachan) {
             theme.name = plain_theme.name;
             theme.author = plain_theme.author;
             theme.summary = plain_theme.summary;
+            theme.changelog = plain_theme.changelog;
             theme.killmsg = plain_theme.killmsg;
             theme.killusermsg = plain_theme.killusermsg;
             theme.drawmsg = plain_theme.drawmsg;
@@ -2842,6 +2843,41 @@ function Mafia(mafiachan) {
         mess.push("</table>");
         sys.sendHtmlMessage(src, mess.join(""), mafiachan);
     };
+    this.showThemeChangelog = function (src, commandData) {
+        var themeName = "default";
+        if (mafia.state != "blank") {
+            themeName = mafia.theme.name.toLowerCase();
+        }
+        if (commandData != noPlayer) {
+            themeName = commandData.toLowerCase();
+            if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
+                sys.sendMessage(src, "±Game: No such theme!", mafiachan);
+                return;
+            }
+        }
+
+        var theme = mafia.themeManager.themes[themeName],
+            name = theme.name;
+
+        if (!theme.changelog) {
+            sys.sendMessage(src, "±Game: " + name + " doesn't have a changelog!", mafiachan);
+            return;
+        }
+
+        sys.sendMessage(src, "±Game: " + name + "'s changelog: ", mafiachan);
+
+        if (Array.isArray(theme.changelog)) {
+            theme.changelog.forEach(function (line) {
+                sys.sendMessage(src, line, mafiachan);
+            });
+        } else if (typeof theme.changelog === "object") {
+            for (var x in theme.changelog) {
+                sys.sendMessage(src, x + ": " + theme.changelog[x], mafiachan);
+            }
+        }
+
+        sys.sendMessage(src, "", mafiachan);
+    };
     this.showThemeDetails = function (src, commandData) {
         var themeName = "default";
         if (mafia.state != "blank") {
@@ -3507,6 +3543,7 @@ function Mafia(mafiachan) {
             rules: [this.showRules, "To see the Rules for the Game/Server."],
             themes: [this.showThemes, "To view installed themes."],
             themeinfo: [this.showThemeInfo, "To view installed themes (more details)."],
+            changelog: [this.showThemeChangelog, "To view a theme's changelog (if it has one)"],
             details: [this.showThemeDetails, "To view info about a specific theme."],
             priority: [this.showPriority, "To view the priority list of a theme. "],
             flashme: [this.flashPlayer, "To get a alert when a new mafia game starts. Type /flashme help for more info."],
