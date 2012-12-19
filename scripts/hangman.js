@@ -6,6 +6,7 @@ module.exports = function () {
 
     var defaultMaster = "RiceKirby";
     var defaultChannel = "Hangman";
+    var defaultParts = 7;
     var minBodyParts = 5;
     var winnerDelay = 60;
     var answerDelay = 10;
@@ -117,7 +118,7 @@ module.exports = function () {
             sys.sendMessage(src, "±Game: You can only use /a " + maxAnswers + " times!", hangchan);
             return;
         }
-        var ans = commandData.replace(/[^A-Za-z0-9\s']/g, "");
+        var ans = commandData.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g,'');
 
         sendChanHtmlAll(" ", hangchan);
         sendChanAll("±Game: " + sys.name(src) + " answered " + ans + "!", hangchan);
@@ -176,14 +177,14 @@ module.exports = function () {
             sys.sendMessage(src, "±Game: You need to write a hint!", hangchan);
             return;
         }
-        a = a.replace(/[^A-Za-z0-9\s']/g, "").toLowerCase();
+        a = a.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g,'').toLowerCase();
         if (a.length > 60 || a.length < 4) {
             sys.sendMessage(src, "±Game: Your answer cannot be longer than 60 characters or shorter than 4 characters!", hangchan);
             return;
         }
         hint = h;
         word = a;
-        parts = (p && parseInt(p, 10) > 0) ? parseInt(p, 10) : minBodyParts;
+        parts = (p && parseInt(p, 10) > 0) ? parseInt(p, 10) : defaultParts;
         parts = (parts < minBodyParts) ? minBodyParts : parts;
         points = {};
         misses = {};
@@ -193,7 +194,7 @@ module.exports = function () {
         currentWord = [];
         var e;
         for (e = 0; e < word.length; e++) {
-            if (word[e] === " ") {
+            if (word[e] === " " || word[e] === "-") {
                 currentWord.push("-");
             } else if (validCharacters.indexOf(word[e]) !== -1) {
                 currentWord.push("_");
@@ -293,6 +294,10 @@ module.exports = function () {
         }
         if (sys.name(src) !== winner && hangman.authLevel(src) < 1) {
             sys.sendMessage(src, "You are not the last winner or auth!", hangchan);
+            return;
+        }
+        if (hangman.authLevel(src)< 1 && (new Date()).getTime() > nextGame) {
+            sys.sendMessage(src, winnerDelay + " seconds already passed! Anyone can start a game now!", hangchan);
             return;
         }
         if (sys.id(commandData) == undefined || !sys.isInChannel(sys.id(commandData), hangchan) || sys.name(sys.id(commandData)) == winner) {
@@ -498,9 +503,16 @@ module.exports = function () {
         }
         return false;
     };
+    this.afterChannelJoin = function(src, channel) {
+        if (channel == hangchan) {
+            hangman.viewGame(src);
+        }
+        return false;
+    };
     return {
         init: hangman.init,
         handleCommand: hangman.handleCommand,
-        beforeChannelJoin: hangman.beforeChannelJoin
+        beforeChannelJoin: hangman.beforeChannelJoin,
+        afterChannelJoin: hangman.afterChannelJoin
     };
 }();

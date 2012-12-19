@@ -21,9 +21,9 @@ TIER_TREES = [
 
 BANLIST = {
     "Wifi OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Excadrill", "Blaziken", "Garchomp", "Thundurus", "Kyurem-W"], # Ubers
-    "Wifi UU": ["Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Wobbuffet", "Deoxys-D", "Thundurus-T", "Tornadus-T", "Landorus-T", "Keldeo", "Chansey", "Kyurem-B", "Hydreigon"], # BL
-    "Wifi LU": ["Cresselia", "Gorebyss", "Huntail", "Victini", "Rhyperior", "Durant", "Virizion", "Sharpedo", "Meloetta"], # BL2
-    "Wifi NU": ["Feraligatr", "Gligar", "Charizard", "Hitmonlee", "Scolipede", "Jynx", "Druddigon", "Gothitelle", "Venomoth"], # BL3
+    "Wifi UU": ["Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Wobbuffet", "Deoxys-D", "Thundurus-T", "Tornadus-T", "Landorus-T", "Keldeo", "Chansey", "Kyurem-B", "Hydreigon", "Gothitelle"], # BL
+    "Wifi LU": ["Gorebyss", "Huntail", "Victini", "Rhyperior", "Virizion", "Sharpedo", "Meloetta"], # BL2
+    "Wifi NU": ["Cresselia", "Durant", "Feraligatr", "Gligar", "Hitmonlee", "Scolipede", "Jynx", "Druddigon", "Gothitelle", "Venomoth"], # BL3
     "Wifi NEU": ["Mandibuzz"], # BL4
     "No Preview OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Blaziken", "Garchomp", "Chandelure", "Excadrill", "Kyurem-B", "Kyurem-W"], # DW Ubers
     "Wifi LC": ["Scyther", "Sneasel", "Yanma", "Tangela", "Vulpix", "Carvanha", "Gligar", "Meditite", "Scraggy"], # LC Ubers (in addition to all other pokemon...)
