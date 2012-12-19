@@ -2440,12 +2440,14 @@ userCommand: function(src, command, commandData, tar) {
     }
     if (command == "auth") {
         var DoNotShowIfOffline = ["loseyourself", "oneballjay"];
-        var filterByAuth = function(level) { return function(name) { return sys.dbAuth(name) == level; }; };
+        var filterByAuth = function(level) { return function(name) { if (sys.dbAuth(name) == level) { return name; } } };
         var printOnlineOffline = function(name) {
-            if (sys.id(name) === undefined && DoNotShowIfOffline.indexOf(name) == -1) {
-                sys.sendMessage(src, name + " (Offline)", channel);
+            if (name == undefined) return;
+            var id = sys.id(name);
+            if (id === undefined) {
+                if (DoNotShowIfOffline.indexOf(name) == -1) sys.sendMessage(src, name + " (Offline)", channel);
             } else {
-                sys.sendHtmlMessage(src, '<timestamp/><font color = "green">' + name.correctCase() + ' (Online)</font>', channel);
+                sys.sendHtmlMessage(src, '<timestamp/><font color = "green">' + name.toCorrectCase() + ' (Online)</font>', channel);
             }
         };
         var authlist = sys.dbAuths().sort();
