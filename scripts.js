@@ -4159,7 +4159,7 @@ ownerCommand: function(src, command, commandData, tar) {
             normalbot.sendMessage(tar, "Please register, before getting auth");
             return;
         }
-        if (tar !== undefined) sys.changeAuth(sys.id(name), newauth);
+        if (tar !== undefined) sys.changeAuth(tar, newauth);
         else sys.changeDbAuth(name, newauth);
         if (!silent) normalbot.sendAll("" + sys.name(src) + " changed auth of " + name + " to " + newauth);
         else normalbot.sendAll("" + sys.name(src) + " changed auth of " + name + " to " + newauth, staffchannel);
