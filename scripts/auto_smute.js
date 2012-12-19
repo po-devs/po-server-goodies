@@ -28,10 +28,6 @@ module.exports.afterLogIn = function afterLogIn(src) {
             }
         }, sys.rand(10, 75));
     }
-    if (["184.96."].indexOf(sys.ip(src).substr(0,7)) > -1) {
-        SESSION.users(src).activate("smute", "Script", 0, "Evader", true);
-        normalbot.sendAll("Smute based on IP: " + name + ", IP: " + sys.ip(src), staffchannel);
-    }
     if (autosmute.indexOf(name.toLowerCase()) !== -1) { //using this so they can't just check the name!
         SESSION.users(src).activate("smute", "Script", 0, "Evader", true);
         normalbot.sendAll("Smute based on name: " + name + ", IP: " + sys.ip(src), staffchannel);
