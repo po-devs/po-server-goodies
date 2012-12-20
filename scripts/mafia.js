@@ -3467,8 +3467,8 @@ function Mafia(mafiachan) {
 	this.announceTest = function (src, name) {
 		sendChanAll("", mafiachan);
 		sendChanAll(DEFAULT_BORDER, mafiachan);
-		sendChanAll("±Murkrow: " + name + " theme is being tested on the Pokemon Online 2 server!", mafiachan);
-		sendChanAll(DEFAULT_BORDER, mafiachan).
+		sendChanAll("±Murkrow: A " + name + " mafia theme is being tested on the Pokemon Online 2 server! Get over there to participate on the testing yourself.", mafiachan);
+		sendChanAll(DEFAULT_BORDER, mafiachan);
 		sendChanAll("", mafiachan);
 	};
     this.removeTheme = function (src, name) {
