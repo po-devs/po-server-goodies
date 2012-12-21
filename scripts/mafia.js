@@ -350,6 +350,7 @@ function Mafia(mafiachan) {
             theme.name = plain_theme.name;
             theme.author = plain_theme.author;
             theme.summary = plain_theme.summary;
+            theme.changelog = plain_theme.changelog;
             theme.killmsg = plain_theme.killmsg;
             theme.killusermsg = plain_theme.killusermsg;
             theme.drawmsg = plain_theme.drawmsg;
@@ -2842,6 +2843,41 @@ function Mafia(mafiachan) {
         mess.push("</table>");
         sys.sendHtmlMessage(src, mess.join(""), mafiachan);
     };
+    this.showThemeChangelog = function (src, commandData) {
+        var themeName = "default";
+        if (mafia.state != "blank") {
+            themeName = mafia.theme.name.toLowerCase();
+        }
+        if (commandData != noPlayer) {
+            themeName = commandData.toLowerCase();
+            if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
+                sys.sendMessage(src, "±Game: No such theme!", mafiachan);
+                return;
+            }
+        }
+
+        var theme = mafia.themeManager.themes[themeName],
+            name = theme.name;
+
+        if (!theme.changelog) {
+            sys.sendMessage(src, "±Game: " + name + " doesn't have a changelog!", mafiachan);
+            return;
+        }
+
+        sys.sendMessage(src, "±Game: " + name + "'s changelog: ", mafiachan);
+
+        if (Array.isArray(theme.changelog)) {
+            theme.changelog.forEach(function (line) {
+                sys.sendMessage(src, line, mafiachan);
+            });
+        } else if (typeof theme.changelog === "object") {
+            for (var x in theme.changelog) {
+                sys.sendMessage(src, x + ": " + theme.changelog[x], mafiachan);
+            }
+        }
+
+        sys.sendMessage(src, "", mafiachan);
+    };
     this.showThemeDetails = function (src, commandData) {
         var themeName = "default";
         if (mafia.state != "blank") {
@@ -3431,8 +3467,8 @@ function Mafia(mafiachan) {
 	this.announceTest = function (src, name) {
 		sendChanAll("", mafiachan);
 		sendChanAll(DEFAULT_BORDER, mafiachan);
-		sendChanAll("±Murkrow: " + name + " theme is being tested on the Pokemon Online 2 server!", mafiachan);
-		sendChanAll(DEFAULT_BORDER, mafiachan).
+		sendChanAll("±Murkrow: A " + name + " mafia theme is being tested on the Pokemon Online 2 server! Get over there to participate on the testing yourself.", mafiachan);
+		sendChanAll(DEFAULT_BORDER, mafiachan);
 		sendChanAll("", mafiachan);
 	};
     this.removeTheme = function (src, name) {
@@ -3507,6 +3543,7 @@ function Mafia(mafiachan) {
             rules: [this.showRules, "To see the Rules for the Game/Server."],
             themes: [this.showThemes, "To view installed themes."],
             themeinfo: [this.showThemeInfo, "To view installed themes (more details)."],
+            changelog: [this.showThemeChangelog, "To view a theme's changelog (if it has one)"],
             details: [this.showThemeDetails, "To view info about a specific theme."],
             priority: [this.showPriority, "To view the priority list of a theme. "],
             flashme: [this.flashPlayer, "To get a alert when a new mafia game starts. Type /flashme help for more info."],
@@ -4073,6 +4110,25 @@ return;
                 sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
                 return true;
             }
+        }
+    };
+    
+    this.afterChannelJoin = function(src, channel) {
+        if (channel == mafiachan) {
+            switch (mafia.state) {
+                case "blank":
+                    sys.sendMessage(src, "±Info: No game is running! You can start a game by typing /start or /starttheme.", mafiachan);
+                    break;
+                case "voting":
+                    sys.sendMessage(src, "±Info: A voting for the next game is running now! Type /start [theme name] to vote for " + readable(Object.keys(this.possibleThemes), "or") + "!", mafiachan);
+                    break;
+                case "entry":
+                    sys.sendMessage(src, "±Info: You can join a " + (mafia.theme.name == "default" ? "" : mafia.theme.name + "-themed ") + "mafia game now by typing /join! ", mafiachan);
+                    break;
+                default:
+                    sys.sendMessage(src, "±Info: A " + (mafia.theme.name == "default" ? "" : mafia.theme.name + "-themed ") + "mafia game is in progress! You can join the next game by typing /join! ", mafiachan);
+            }
+            return false;
         }
     };
 
