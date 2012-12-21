@@ -1996,7 +1996,7 @@ function isGlobalReviewer(src) {
 }
 
 function isReviewer(src) {
-    if (sys.auth(src) >= 3) {
+    if (sys.auth(src) >= 3 || isReviewAdmin(src) || isGlobalReviewer(src)) {
         return true;
     }
     for (var r in reviewers) {
@@ -2075,7 +2075,7 @@ module.exports = {
         }
     },
     beforeChannelJoin : function (src, chan) {
-        if ( (!isReviewer(src) && !isReviewAdmin(src)) && chan == teamrevchan) {
+        if ( (!isReviewer(src)) && chan == teamrevchan) {
             capsbot.sendMessage(src, "You cannot access this channel!");
             sys.stopEvent();
         }
