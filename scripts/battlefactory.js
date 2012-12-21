@@ -2075,7 +2075,7 @@ module.exports = {
         }
     },
     beforeChannelJoin : function (src, chan) {
-        if (!isReviewer(src) && chan == teamrevchan) {
+        if ( (!isReviewer(src) && !isReviewAdmin(src)) && chan == teamrevchan) {
             capsbot.sendMessage(src, "You cannot access this channel!");
             sys.stopEvent();
         }
