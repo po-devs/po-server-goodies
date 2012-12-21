@@ -2093,7 +2093,7 @@ module.exports = {
         }
     },
     beforeChallengeIssued : function(source, dest, clauses, rated, mode, team, destTier) {
-        if (sys.tier(source, team) == "Battle Factory" && destTier == "Battle Factory" && (!working || validPacks() === 0)) {
+        if (isinBFTier(source, team) && isBFTier(destTier) && (!working || validPacks() === 0)) {
             sys.sendMessage(source, "Battle Factory is not working, so you can't issue challenges in that tier.");
             return true;
         }
