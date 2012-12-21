@@ -1992,7 +1992,7 @@ function isReviewAdmin(src) {
 }
 
 function isGlobalReviewer(src) {
-    return sys.auth(src) >= 2 || SESSION.channels(teamrevchan).isChannelOperator(src);
+    return SESSION.channels(teamrevchan).isChannelOperator(src);
 }
 
 function isReviewer(src) {
