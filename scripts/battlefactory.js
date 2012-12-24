@@ -10,7 +10,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "A1.005";
+var bfversion = "A1.006";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -659,7 +659,7 @@ function factoryCommand(src, command, commandData, channel) {
             normalbot.sendChanMessage(src, "Please specify a team pack to remove!");
             return;
         }
-        if (commandData === "preset") {
+        if (commandData === "preset" || commandData === "preset 2") {
             normalbot.sendChanMessage(src, "Can't remove the built in pack!");
             return;
         }
@@ -709,7 +709,7 @@ function factoryCommand(src, command, commandData, channel) {
         return;
     }
     else if (command == "resetladder") {
-        if (sys.auth(src) < 3 && sys.name(src) != "Biospark27") {
+        if (sys.auth(src) < 3) {
             normalbot.sendChanMessage(src, "Can't use this command!");
             return;
         }
@@ -926,6 +926,8 @@ function factoryCommand(src, command, commandData, channel) {
             normalbot.sendChanMessage(src, "No submissions are available for your tier!");
             return;
         }
+        // Needed for gen checker
+        var submitgen = sys.gen(tier, 0);
         var submissions = 0;
         for (var q in userqueue) {
             var tqueue = userqueue[q];
@@ -954,9 +956,21 @@ function factoryCommand(src, command, commandData, channel) {
             // This accounts for formes
             var pokenum = poke%65536;
             var formnum = Math.floor(poke/65536);
-            var nature = sys.teamPokeNature(src, 0, x);
-            var ability = sys.teamPokeAbility(src, 0, x);
-            var item = sys.teamPokeItem(src, 0, x);
+            var nature, ability, item;
+            if (submitgen >= 3) {
+                nature = sys.teamPokeNature(src, 0, x);
+                ability = sys.teamPokeAbility(src, 0, x);
+            }
+            else {
+                nature = 0;
+                ability = 0;
+            }
+            if (submitgen >= 2) {
+                item = sys.teamPokeItem(src, 0, x);
+            }
+            else {
+                item = 0;
+            }
             var level = sys.teamPokeLevel(src, 0, x);
             if (['Middle Cup'].indexOf(submittier) > -1 && level > 50) {
                 normalbot.sendChanMessage(src, sys.pokemon(poke) + " must not be above Level 50 for Middle Cup.");
@@ -970,7 +984,7 @@ function factoryCommand(src, command, commandData, channel) {
                 normalbot.sendChanMessage(src, sys.pokemon(poke) + " was scaled down to Level 50 for Random Battle.");
                 level = 50;
             }
-            pokecode = pokecode + toChars(pokenum,2) + toChars(formnum,1) + toChars(nature,1) + toChars(ability,2) + toChars(item,3) + toChars(level,2);
+            pokecode = pokecode + toChars(pokenum,2) + toChars(formnum,1) + toChars(nature,1) + toChars(ability,2) + toChars(item,3) + toChars(level,2) + submitgen;
             var movelist = [];
             for (var m=0; m<4; m++) {
                 var move = sys.teamPokeMove(src, 0, x, m);
@@ -1539,15 +1553,15 @@ function setlint(checkfile, strict) {
             var cavailable = [];
             for (var ct in csets) {
                 if (typeof csets[ct] !== "string") {
-                    errors.push("<td>Bad set</td><td>Property '"+html_escape(x)+"'; array elements must be 38 character alphanumeric strings</td>");
+                    errors.push("<td>Bad set</td><td>Property '"+html_escape(x)+"'; array elements must be 39 character alphanumeric strings</td>");
                     continue;
                 }
                 cavailable.push(csets[ct]);
             }
             for (var k in cavailable) {
                 var set = cavailable[k];
-                if (set.length != 38) {
-                    errors.push("<td>Bad set</td><td>Property '"+html_escape(x)+"'; array elements must be 38 character alphanumeric strings</td>");
+                if (set.length != 39) {
+                    errors.push("<td>Bad set</td><td>Property '"+html_escape(x)+"'; array elements must be 39 character alphanumeric strings</td>");
                     continue;
                 }
                 var ctestprop = {
@@ -1556,10 +1570,11 @@ function setlint(checkfile, strict) {
                     'ability': sys.ability(toNumber(set.substr(4,2))),
                     'item': sys.item(toNumber(set.substr(6,3))),
                     'level': toNumber(set.substr(9,2)),
-                    'moves': [sys.move(toNumber(set.substr(11,2))),sys.move(toNumber(set.substr(13,2))),sys.move(toNumber(set.substr(15,2))),sys.move(toNumber(set.substr(17,2)))],
-                    'evs': [toNumber(set.substr(19,2)),toNumber(set.substr(21,2)),toNumber(set.substr(23,2)),toNumber(set.substr(25,2)),toNumber(set.substr(27,2)),toNumber(set.substr(29,2))],
-                    'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))],
-                    'gender': toNumber(set.substr(37,1))
+                    'gen': toNumber(set.substr(11,1)),
+                    'moves': [sys.move(toNumber(set.substr(12,2))),sys.move(toNumber(set.substr(14,2))),sys.move(toNumber(set.substr(16,2))),sys.move(toNumber(set.substr(18,2)))],
+                    'evs': [toNumber(set.substr(20,2)),toNumber(set.substr(22,2)),toNumber(set.substr(24,2)),toNumber(set.substr(26,2)),toNumber(set.substr(28,2)),toNumber(set.substr(30,2))],
+                    'dvs': [toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1)),toNumber(set.substr(37,1))],
+                    'gender': toNumber(set.substr(38,1))
                 };
                 if (ctestprop.poke === sys.pokemon(0) || ctestprop.poke === undefined) {
                     errors.push("<td>Missing Poke</td><td>Property '"+html_escape(x)+"'; set "+set+": Pokemon detected was Missingno.</td>");
@@ -1570,13 +1585,13 @@ function setlint(checkfile, strict) {
                 if ([0,1,2].indexOf(ctestprop.gender) == -1) {
                     errors.push("<td>Invalid Gender</td><td>Property '"+html_escape(x)+"'; set "+t+": gender property must be 0, 1 or 2</td>");
                 }
-                if (ctestprop.item === sys.item(0) || ctestprop.item === undefined) {
+                if ((ctestprop.item === sys.item(0) || ctestprop.item === undefined) && ctestprop.gen >= 2) {
                     warnings.push("<td>Missing Item</td><td>Property '"+html_escape(x)+"'; set "+set+": Not holding an item.</td>");
                 }
-                if (ctestprop.nature === undefined) {
+                if (ctestprop.nature === undefined && ctestprop.gen >= 3) {
                     errors.push("<td>Invalid Nature</td><td>Property '"+html_escape(x)+"'; set "+set+": This set has an invalid nature.</td>");
                 }
-                if ([sys.nature(0), sys.nature(6), sys.nature(12), sys.nature(18), sys.nature(24)].indexOf(ctestprop.nature) > -1) {
+                if ([sys.nature(0), sys.nature(6), sys.nature(12), sys.nature(18), sys.nature(24)].indexOf(ctestprop.nature) > -1 && ctestprop.gen >= 3) {
                     suggestions.push("<td>Neutral Nature?</td><td>Property '"+html_escape(x)+"'; set "+set+": This set has a Neutral Nature (may not be what you intend).</td>");
                 }
                 var cnummoves = 0;
@@ -1591,28 +1606,31 @@ function setlint(checkfile, strict) {
                 if (cnummoves === 0) {
                     errors.push("<td>No Moves</td><td>Property '"+html_escape(x)+"'; set "+set+": Pokemon has no moves.</td>");
                 }
-                var cttlevsum = 0;
-                for (var ce in ctestprop.evs) {
-                    if (typeof ctestprop.evs[ce] !== "number" || ctestprop.evs[ce] < 0 || ctestprop.evs[ce] > 255) {
-                        errors.push("<td>Bad EV Amount</td><td>Property '"+html_escape(x)+"'; set "+set+"; stat "+stats[ce]+" : EVs must be integers between 0 and 255 inclusive.</td>");
+                if (ctestprop.gen >= 3) {
+                    var cttlevsum = 0;
+                    for (var ce in ctestprop.evs) {
+                        if (typeof ctestprop.evs[ce] !== "number" || ctestprop.evs[ce] < 0 || ctestprop.evs[ce] > 255) {
+                            errors.push("<td>Bad EV Amount</td><td>Property '"+html_escape(x)+"'; set "+set+"; stat "+stats[ce]+" : EVs must be integers between 0 and 255 inclusive.</td>");
+                        }
+                        else if (ctestprop.evs[ce]%4 !== 0) {
+                            warnings.push("<td>Wasted EVs</td><td>Property '"+html_escape(x)+"'; set "+set+": EVs for "+stats[ce]+" are wasted. (Use a multiple of 4)</td>");
+                            cttlevsum += ctestprop.evs[ce];
+                        }
+                        else {
+                            cttlevsum += ctestprop.evs[ce];
+                        }
                     }
-                    else if (ctestprop.evs[ce]%4 !== 0) {
-                        warnings.push("<td>Wasted EVs</td><td>Property '"+html_escape(x)+"'; set "+set+": EVs for "+stats[ce]+" are wasted. (Use a multiple of 4)</td>");
-                        cttlevsum += ctestprop.evs[ce];
+                    if (cttlevsum > 510) {
+                        errors.push("<td>Too many EVs</td><td>Property '"+html_escape(x)+"'; set "+set+"; maximum sum of EVs must not exceed 510.</td>");
                     }
-                    else {
-                        cttlevsum += ctestprop.evs[ce];
+                    else if (cttlevsum < 508) {
+                        warnings.push("<td>Unassigned EVs</td><td>Property '"+html_escape(x)+"'; set "+set+": This Pokemon could have more EVs.</td>");
                     }
                 }
-                if (cttlevsum > 510) {
-                    errors.push("<td>Too many EVs</td><td>Property '"+html_escape(x)+"'; set "+set+"; maximum sum of EVs must not exceed 510.</td>");
-                }
-                else if (cttlevsum < 508) {
-                    warnings.push("<td>Unassigned EVs</td><td>Property '"+html_escape(x)+"'; set "+set+": This Pokemon could have more EVs.</td>");
-                }
+                var maxiv = ctestprop.gen >= 3 ? 31 : 15;
                 for (var cd in ctestprop.dvs) {
-                    if (typeof ctestprop.dvs[cd] !== "number" || ctestprop.dvs[cd] < 0 || ctestprop.dvs[cd] > 31) {
-                        errors.push("<td>Bad EV Amount</td><td>Property '"+html_escape(x)+"'; set "+set+"; stat "+stats[cd]+" : IVs must be integers between 0 and 31 inclusive.</td>");
+                    if (typeof ctestprop.dvs[cd] !== "number" || ctestprop.dvs[cd] < 0 || ctestprop.dvs[cd] > maxiv) {
+                        errors.push("<td>Bad EV Amount</td><td>Property '"+html_escape(x)+"'; set "+set+"; stat "+stats[cd]+" : IVs must be integers between 0 and "+maxiv+" inclusive.</td>");
                     }
                 }
             }
@@ -1630,8 +1648,8 @@ function setlint(checkfile, strict) {
 }
 
 function getReadablePoke(set) {
-    if (set.length != 38) {
-        throw "Invalid Set, each set should be 38 alphanumeric characters long.";
+    if (set.length != 39) {
+        throw "Invalid Set, each set should be 39 alphanumeric characters long.";
     }
     var info = {
         'poke': sys.pokemon(toNumber(set.substr(0,2))+65536*toNumber(set.substr(2,1))),
@@ -1640,10 +1658,11 @@ function getReadablePoke(set) {
         'ability': sys.ability(toNumber(set.substr(4,2))),
         'item': sys.item(toNumber(set.substr(6,3))),
         'level': toNumber(set.substr(9,2)),
-        'moves': [sys.move(toNumber(set.substr(11,2))),sys.move(toNumber(set.substr(13,2))),sys.move(toNumber(set.substr(15,2))),sys.move(toNumber(set.substr(17,2)))],
-        'evs': [toNumber(set.substr(19,2)),toNumber(set.substr(21,2)),toNumber(set.substr(23,2)),toNumber(set.substr(25,2)),toNumber(set.substr(27,2)),toNumber(set.substr(29,2))],
-        'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))],
-        'gender': toNumber(set.substr(37,1))
+        'gen': toNumber(set.substr(11,1)),
+        'moves': [sys.move(toNumber(set.substr(12,2))),sys.move(toNumber(set.substr(14,2))),sys.move(toNumber(set.substr(16,2))),sys.move(toNumber(set.substr(18,2)))],
+        'evs': [toNumber(set.substr(20,2)),toNumber(set.substr(22,2)),toNumber(set.substr(24,2)),toNumber(set.substr(26,2)),toNumber(set.substr(28,2)),toNumber(set.substr(30,2))],
+        'dvs': [toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1)),toNumber(set.substr(37,1))],
+        'gender': toNumber(set.substr(38,1))
     };
     var genders = ['', '(M) ', '(F) '];
     var stats = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
@@ -1819,13 +1838,13 @@ function getStats(src, team, poke) {
     return msg;
 }
 
-function generateTeam(src, team, mode) {
+function generateTeam(src, team, mode, gen) {
     try {
         var pokedata = bfsets.hasOwnProperty(mode) ? bfsets[mode] : bfsets.preset;
         var teaminfo = [];
         var pokearray = [];
         var readable = isReadable(pokedata);
-        var maxPerfectIVs = 6;
+        var maxPerfectIVs = 3;
         for (var x in pokedata) {
             if (typeof pokedata[x] == "object") {
                 pokearray.push(x);
@@ -1869,29 +1888,39 @@ function generateTeam(src, team, mode) {
                     'ability': toNumber(set.substr(4,2)),
                     'item': toNumber(set.substr(6,3)),
                     'level': toNumber(set.substr(9,2)),
-                    'moves': [toNumber(set.substr(11,2)),toNumber(set.substr(13,2)),toNumber(set.substr(15,2)),toNumber(set.substr(17,2))],
-                    'evs': [toNumber(set.substr(19,2)),toNumber(set.substr(21,2)),toNumber(set.substr(23,2)),toNumber(set.substr(25,2)),toNumber(set.substr(27,2)),toNumber(set.substr(29,2))],
-                    'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))],
-                    'gender': toNumber(set.substr(37,1))
+                    'gen': toNumber(set.substr(11,1)),
+                    'moves': [toNumber(set.substr(12,2)),toNumber(set.substr(14,2)),toNumber(set.substr(16,2)),toNumber(set.substr(18,2))],
+                    'evs': [toNumber(set.substr(20,2)),toNumber(set.substr(22,2)),toNumber(set.substr(24,2)),toNumber(set.substr(26,2)),toNumber(set.substr(28,2)),toNumber(set.substr(30,2))],
+                    'dvs': [toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1)),toNumber(set.substr(37,1))],
+                    'gender': toNumber(set.substr(38,1))
                 };
             }
         }
         for (var s=0;s<6;s++) {
             var pdata = teaminfo[s];
+            if (pdata.gen != gen) {
+                throw "invalid behaviour";
+            }
             sys.changePokeNum(src,team,s,pdata.poke);
             sys.changePokeName(src,team,s,sys.pokemon(pdata.poke))
-            sys.changePokeNature(src,team,s,pdata.nature);
-            sys.changePokeAbility(src,team,s,pdata.ability);
-            sys.changePokeItem(src,team,s,pdata.item);
+            if (pdata.gen >= 3) {
+                sys.changePokeNature(src,team,s,pdata.nature);
+                sys.changePokeAbility(src,team,s,pdata.ability);
+            }
+            if (pdata.gen >= 2) {
+                sys.changePokeItem(src,team,s,pdata.item);
+            }
             var newmoves = shuffle(pdata.moves);
             for (var m=0;m<4;m++) {
                 sys.changePokeMove(src,team,s,m,newmoves[m]);
             }
-            for (var c=0;c<6;c++) {
-                sys.changeTeamPokeEV(src,team,s,c,0); // this resets the EV count
-            }
-            for (var e=0;e<6;e++) {
-                sys.changeTeamPokeEV(src,team,s,e,pdata.evs[e]);
+            if (pdata.gen >= 3) {
+                for (var c=0;c<6;c++) {
+                    sys.changeTeamPokeEV(src,team,s,c,0); // this resets the EV count
+                }
+                for (var e=0;e<6;e++) {
+                    sys.changeTeamPokeEV(src,team,s,e,pdata.evs[e]);
+                }
             }
             var ivprioritise = [5,1,3,2,4,0];
             var keptIVs = [];
@@ -1920,7 +1949,7 @@ function generateTeam(src, team, mode) {
                     sys.changeTeamPokeDV(src,team,s,d,pdata.dvs[d]);
                 }
                 else {
-                    sys.changeTeamPokeDV(src,team,s,d,sys.rand(0,32));
+                    sys.changeTeamPokeDV(src,team,s,d,sys.rand(0,pdata.gen >= 3 ? 32 : 16));
                 }
             }
             var happiness = sys.rand(0,256);
@@ -1937,20 +1966,22 @@ function generateTeam(src, team, mode) {
                 var rating = sys.ladderRating(src, "Battle Factory") > 0 ? sys.ladderRating(src, "Battle Factory") : 1;
                 shinechance = Math.ceil(8192 * 1000000 / Math.pow(sys.ladderRating(src, "Battle Factory"), 2));
             }
-            sys.changePokeShine(src, team, s, sys.rand(0,shinechance) === 0 ? true : false);
-            if (pokedb.hasOwnProperty(sys.pokemon(pdata.poke%65536)) && randomgenders) {
-                var pokeinfo = pokedb[sys.pokemon(pdata.poke%65536)];
-                var gendernum = pokeinfo[6];
-                if (gendernum === 3) {
-                    gendernum = sys.rand(1,3);
+            if (pdata.gen >= 3) {
+                sys.changePokeShine(src, team, s, sys.rand(0,shinechance) === 0 ? true : false);
+                if (pokedb.hasOwnProperty(sys.pokemon(pdata.poke%65536)) && randomgenders) {
+                    var pokeinfo = pokedb[sys.pokemon(pdata.poke%65536)];
+                    var gendernum = pokeinfo[6];
+                    if (gendernum === 3) {
+                        gendernum = sys.rand(1,3);
+                    }
+                    if ([0,1,2].indexOf(gendernum) == -1) {
+                        throw "Invalid Gender";
+                    }
+                    sys.changePokeGender(src,team,s,gendernum);
                 }
-                if ([0,1,2].indexOf(gendernum) == -1) {
-                    throw "Invalid Gender";
+                else {
+                    sys.changePokeGender(src,team,s,pdata.gender);
                 }
-                sys.changePokeGender(src,team,s,gendernum);
-            }
-            else {
-                sys.changePokeGender(src,team,s,pdata.gender);
             }
             sys.changePokeLevel(src,team,s,pdata.level);
         }
@@ -2152,8 +2183,8 @@ module.exports = {
                 if (suggestedtypes.length > 0) {
                     type = suggestedtypes[sys.rand(0,suggestedtypes.length)];
                 }
-                generateTeam(src, srcteam, type);
-                generateTeam(dest, destteam, type);
+                generateTeam(src, srcteam, type, sys.gen(srcteam));
+                generateTeam(dest, destteam, type, sys.gen(destteam));
                 dumpData(src, srcteam);
                 dumpData(dest, destteam);
             }
@@ -2231,7 +2262,7 @@ module.exports = {
         }
     },
     generateTeam : function(src, team) {
-        generateTeam(src, team, 'preset'); // generates a team for players with no pokes
+        generateTeam(src, team, 'preset', sys.gen(team)); // generates a team for players with no pokes
         return true;
     }
 }
