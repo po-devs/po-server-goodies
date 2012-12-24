@@ -2114,7 +2114,10 @@ afterLogIn : function(src) {
 //        }
 //    }
 
-
+    if (SESSION.users(src).hostname.toLowerCase().indexOf('tor') !== -1) {
+        sys.sendAll('Possible TOR user: ' + sys.name(src), staffchannel);
+    }
+    
     if (SESSION.users(src).megauser)
         sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Connected as MU" + "\n");
     if (sys.auth(src) > 0 && sys.auth(src) <= 3)
@@ -2124,6 +2127,7 @@ afterLogIn : function(src) {
 
     if (sys.auth(src) <= 3 && this.canJoinStaffChannel(src) && sys.ip(src) != sys.dbIp("Shadowfist"))
         sys.putInChannel(src, staffchannel);
+    
 }, /* end of afterLogin */
 
 
