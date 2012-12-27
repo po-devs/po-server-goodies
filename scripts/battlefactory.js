@@ -947,10 +947,6 @@ function factoryCommand(src, command, commandData, channel) {
             if (poke === 0) { // don't export missingno.
                 continue;
             }
-            if (poke === sys.pokeNum('Ditto')) {
-                normalbot.sendChanMessage(src, "Ditto is not able to be submitted.");
-                continue;
-            }
             // This accounts for formes
             var pokenum = poke%65536;
             var formnum = Math.floor(poke/65536);
