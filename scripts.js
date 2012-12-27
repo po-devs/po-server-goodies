@@ -777,9 +777,9 @@ POChannel.prototype.isBanned = function(id)
             if (sys.dbIp(x) == ip) {
                 return true;
             }
-        return false;
         }
     }
+    return false;
 };
 
 POChannel.prototype.isMuted = function(id)
@@ -807,9 +807,9 @@ POChannel.prototype.isMuted = function(id)
             if (sys.dbIp(x) == ip) {
                 return true;
             }
-        return false;
         }
     }
+    return false;
 };
 
 POChannel.prototype.isPunished = function(name)
