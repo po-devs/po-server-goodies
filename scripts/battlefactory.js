@@ -1158,6 +1158,9 @@ function factoryCommand(src, command, commandData, channel) {
         var deletesets = bfsets[tmp[0]];
         for (var u in deletesets) {
             var setlist = deletesets[u];
+            if (typeof setlist !== "object") {
+                continue;
+            }
             var index = setlist.indexOf(tmp[1]);
             if (index > -1) {
                 setlist.splice(index,1);
