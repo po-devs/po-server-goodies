@@ -4112,7 +4112,7 @@ return;
             id = sys.id(commandData);
             if (id !== undefined)
                 SESSION.users(id).mafiaAdmin = false;
-            sys.sendMessage(src, "±Game: That person is no more a mafia admin!", mafiachan);
+            sys.sendMessage(src, "±Game: That person is no longer a mafia admin!", mafiachan);
             sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData, sys.channelId('Victory Road'));
             return;
         }
@@ -4130,7 +4130,7 @@ return;
         if (command == "mafiasadminoff" || command == "mafiasuperadminoff") {
             mafiaSuperAdmins.remove(commandData);
             mafiaSuperAdmins.remove(commandData.toLowerCase());
-            sys.sendMessage(src, "±Game: That person is no more a mafia super admin!", mafiachan);
+            sys.sendMessage(src, "±Game: That person is no longer a mafia super admin!", mafiachan);
             sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData, sys.channelId('Victory Road'));
             return;
         }
