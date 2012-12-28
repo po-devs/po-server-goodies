@@ -466,7 +466,7 @@ function factoryCommand(src, command, commandData, channel) {
         // if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
         //    url = commandData;
         // }
-        normalbot.sendChanMessage(src, "Fetching teams from "+url);
+        normalbot.sendMessage(src, "Fetching teams from "+url, channel);
         sys.webCall(url, function(resp) {
             if (resp !== "") {
                 try {
@@ -488,11 +488,11 @@ function factoryCommand(src, command, commandData, channel) {
                     refresh('preset');
                 }
                 catch (err) {
-                    normalbot.sendChanMessage(src, "FATAL ERROR: "+err);
+                    normalbot.sendMessage(src, "FATAL ERROR: "+err, channel);
                 }
             }
             else {
-                normalbot.sendChanMessage(src, "Failed to update!");
+                normalbot.sendMessage(src, "Failed to update!", channel);
             }
         });
         return;
@@ -501,11 +501,11 @@ function factoryCommand(src, command, commandData, channel) {
         var tmp = commandData.split(":",2);
         var ltier = find_tier(tmp[0]);
         if (ltier === null) {
-            normalbot.sendChanMessage(src, "No such tier");
+            normalbot.sendMessage(src, "No such tier", channel);
             return;
         }
         if (bfhash.hasOwnProperty(ltier)) {
-            normalbot.sendChanMessage(src, "This tier already exists!");
+            normalbot.sendMessage(src, "This tier already exists!", channel);
             return;
         }
 
@@ -527,11 +527,11 @@ function factoryCommand(src, command, commandData, channel) {
     else if (command == "importold") {
         var ltier = find_tier(commandData);
         if (ltier === null) {
-            normalbot.sendChanMessage(src, "No such tier");
+            normalbot.sendMessage(src, "No such tier", channel);
             return;
         }
         if (bfhash.hasOwnProperty(ltier)) {
-            normalbot.sendChanMessage(src, "This tier already exists!");
+            normalbot.sendMessage(src, "This tier already exists!", channel);
             return;
         }
         if (importOld(ltier)) {
@@ -549,21 +549,21 @@ function factoryCommand(src, command, commandData, channel) {
         var url;
         var tmp = commandData.split(" ~ ",2);
         if (tmp.length != 2) {
-            normalbot.sendChanMessage(src, "Usage: /addteampack [name] ~ [url]");
+            normalbot.sendMessage(src, "Usage: /addteampack [name] ~ [url]", channel);
             return;
         }
         if (tmp[0] === "") {
-            normalbot.sendChanMessage(src, "Please specify a valid name!");
+            normalbot.sendMessage(src, "Please specify a valid name!", channel);
             return;
         }
         if (tmp[1].indexOf("http://") === 0 || tmp[1].indexOf("https://") === 0) {
             url = tmp[1];
         }
         else {
-            normalbot.sendChanMessage(src, "Please specify a valid URL to update from");
+            normalbot.sendMessage(src, "Please specify a valid URL to update from", channel);
             return;
         }
-        normalbot.sendChanMessage(src, "Fetching teams from "+url);
+        normalbot.sendMessage(src, "Fetching teams from "+url, channel);
         sys.webCall(url, function(resp) {
             if (resp !== "") {
                 try {
@@ -589,11 +589,11 @@ function factoryCommand(src, command, commandData, channel) {
                     }
                 }
                 catch (err) {
-                    normalbot.sendChanMessage(src, "FATAL ERROR: "+err);
+                    normalbot.sendMessage(src, "FATAL ERROR: "+err, channel);
                 }
             }
             else {
-                normalbot.sendChanMessage(src, "Failed to add the team pack!");
+                normalbot.sendMessage(src, "Failed to add the team pack!", channel);
             }
         });
         return;
@@ -602,7 +602,7 @@ function factoryCommand(src, command, commandData, channel) {
         var url;
         var tmp = commandData.split(" ~ ",2);
         if (tmp[0] === "" || !bfhash.hasOwnProperty(tmp[0])) {
-            normalbot.sendChanMessage(src, "Please specify a valid pack to update!");
+            normalbot.sendMessage(src, "Please specify a valid pack to update!", channel);
             return;
         }
         if (tmp.length == 2) {
@@ -610,7 +610,7 @@ function factoryCommand(src, command, commandData, channel) {
                 url = tmp[1];
             }
             else {
-                normalbot.sendChanMessage(src, "Invalid URL!");
+                normalbot.sendMessage(src, "Invalid URL!", channel);
                 return;
             }
         }
@@ -618,10 +618,10 @@ function factoryCommand(src, command, commandData, channel) {
             url = bfhash[tmp[0]].url;
         }
         else {
-            normalbot.sendChanMessage(src, "Please specify a valid URL to update from!");
+            normalbot.sendMessage(src, "Please specify a valid URL to update from!", channel);
             return;
         }
-        normalbot.sendChanMessage(src, "Updating "+tmp[0]+" teams from "+url);
+        normalbot.sendMessage(src, "Updating "+tmp[0]+" teams from "+url, channel);
         var hash = bfhash[tmp[0]];
         sys.webCall(url, function(resp) {
             if (resp !== "") {
@@ -645,22 +645,22 @@ function factoryCommand(src, command, commandData, channel) {
                     autoSave("teams", tmp[0]);
                 }
                 catch (err) {
-                    normalbot.sendChanMessage(src, "FATAL ERROR: "+err);
+                    normalbot.sendMessage(src, "FATAL ERROR: "+err, channel);
                 }
             }
             else {
-                normalbot.sendChanMessage(src, "Failed to update!");
+                normalbot.sendMessage(src, "Failed to update!", channel);
             }
         });
         return;
     }
     else if (command == "deletepack") {
         if (commandData === "") {
-            normalbot.sendChanMessage(src, "Please specify a team pack to remove!");
+            normalbot.sendMessage(src, "Please specify a team pack to remove!", channel);
             return;
         }
         if (commandData === "preset") {
-            normalbot.sendChanMessage(src, "Can't remove the built in pack!");
+            normalbot.sendMessage(src, "Can't remove the built in pack!", channel);
             return;
         }
         var delkey = commandData;
@@ -676,17 +676,17 @@ function factoryCommand(src, command, commandData, channel) {
             autoSave("teams", "");
         }
         else {
-            normalbot.sendChanMessage(src, "Couldn't find a team pack with the name "+delkey+"!");
+            normalbot.sendMessage(src, "Couldn't find a team pack with the name "+delkey+"!", channel);
         }
         return;
     }
     else if (command == "disablepack") {
         if (!bfhash.hasOwnProperty(commandData)) {
-            normalbot.sendChanMessage(src, "Please specify a valid team pack to disable!");
+            normalbot.sendMessage(src, "Please specify a valid team pack to disable!", channel);
             return;
         }
         if (bfhash[commandData].active === false) {
-            normalbot.sendChanMessage(src, "This pack is already disabled!");
+            normalbot.sendMessage(src, "This pack is already disabled!", channel);
             return;
         }
         bfhash[commandData].active = false;
@@ -696,11 +696,11 @@ function factoryCommand(src, command, commandData, channel) {
     }
     else if (command == "enablepack") {
         if (!bfhash.hasOwnProperty(commandData)) {
-            normalbot.sendChanMessage(src, "Please specify a valid team pack to enable!");
+            normalbot.sendMessage(src, "Please specify a valid team pack to enable!", channel);
             return;
         }
         if (bfhash[commandData].active === true) {
-            normalbot.sendChanMessage(src, "This pack is already enabled!");
+            normalbot.sendMessage(src, "This pack is already enabled!", channel);
             return;
         }
         bfhash[commandData].active = true;
@@ -710,7 +710,7 @@ function factoryCommand(src, command, commandData, channel) {
     }
     else if (command == "resetladder") {
         if (sys.auth(src) < 3 && sys.name(src) != "Biospark27") {
-            normalbot.sendChanMessage(src, "Can't use this command!");
+            normalbot.sendMessage(src, "Can't use this command!", channel);
             return;
         }
         sys.resetLadder("Battle Factory");
@@ -738,10 +738,10 @@ function factoryCommand(src, command, commandData, channel) {
                 setlength = tfile[t].length;
             }
             tsets += setlength;
-            normalbot.sendChanMessage(src, poke+": Has "+setlength+" sets.");
+            normalbot.sendMessage(src, poke+": Has "+setlength+" sets.", channel);
         }
-        normalbot.sendChanMessage(src, "");
-        normalbot.sendChanMessage(src, "Total: "+tteams+" pokes and "+tsets+" sets.");
+        normalbot.sendMessage(src, "", channel);
+        normalbot.sendMessage(src, "Total: "+tteams+" pokes and "+tsets+" sets.", channel);
         return;
     }
     else if (command == "pokecode") {
@@ -751,18 +751,18 @@ function factoryCommand(src, command, commandData, channel) {
             return;
         }
         catch (err) {
-            normalbot.sendChanMessage(src, "Invalid Code: "+err);
+            normalbot.sendMessage(src, "Invalid Code: "+err, channel);
             return;
         }
     }
     else if (command == "refresh") {
         if (!bfsets.hasOwnProperty(commandData)) {
-            normalbot.sendChanMessage(src, "No such pack exists!");
+            normalbot.sendMessage(src, "No such pack exists!", channel);
             return;
         }
         autoSave("teams", commandData);
         refresh(commandData);
-        normalbot.sendChanMessage(src, "Refreshed the "+commandData+" pack!");
+        normalbot.sendMessage(src, "Refreshed the "+commandData+" pack!", channel);
         return;
     }
     else if (command == "pokesets") {
@@ -777,7 +777,7 @@ function factoryCommand(src, command, commandData, channel) {
             revsets = bfsets.preset;
         }
         if (!revsets.hasOwnProperty(id)) {
-            normalbot.sendChanMessage(src, "No sets exist for that pokemon.");
+            normalbot.sendMessage(src, "No sets exist for that pokemon.", channel);
             return;
         }
         var pokesets = revsets[id];
@@ -791,7 +791,7 @@ function factoryCommand(src, command, commandData, channel) {
                 }
             }
             catch (err) {
-                normalbot.sendChanMessage(src, "Error (id: "+pokesets[b]+"): "+err);
+                normalbot.sendMessage(src, "Error (id: "+pokesets[b]+"): "+err, channel);
             }
         }
         if (sets.length > 0) {
@@ -805,7 +805,7 @@ function factoryCommand(src, command, commandData, channel) {
         var filename = command == "scansets" ? "bfteams.json" : "bfteams_user.json";
         if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
             var url = commandData;
-            normalbot.sendChanMessage(src, "Fetching teams from "+url+" for checking");
+            normalbot.sendMessage(src, "Fetching teams from "+url+" for checking", channel);
             sys.webCall(url, function(resp) {
                 var localerr = false;
                 if (resp !== "") {
@@ -832,7 +832,7 @@ function factoryCommand(src, command, commandData, channel) {
                 if (res.suggestions.length > 0) {
                     sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
                 }
-                normalbot.sendChanMessage(src, "Finished checking.");
+                normalbot.sendMessage(src, "Finished checking.", channel);
             });
         }
         else {
@@ -860,7 +860,7 @@ function factoryCommand(src, command, commandData, channel) {
             if (res.suggestions.length > 0) {
                 sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
             }
-            normalbot.sendChanMessage(src, "Finished checking.");
+            normalbot.sendMessage(src, "Finished checking.", channel);
         }
         return;
     }
@@ -895,9 +895,9 @@ function factoryCommand(src, command, commandData, channel) {
             pokes.push(poke);
         }
         pokes.sort();
-        normalbot.sendChanMessage(src, "Installed Pokemon: "+pokes.join(", "));
-        normalbot.sendChanMessage(src, "Total: "+tteams+" pokes and "+tsets+" sets.");
-        normalbot.sendChanMessage(src, "Team Pack Description: "+info);
+        normalbot.sendMessage(src, "Installed Pokemon: "+pokes.join(", "), channel);
+        normalbot.sendMessage(src, "Total: "+tteams+" pokes and "+tsets+" sets.", channel);
+        normalbot.sendMessage(src, "Team Pack Description: "+info, channel);
         return;
     }
     else if (command == "viewpacks") {
@@ -914,16 +914,16 @@ function factoryCommand(src, command, commandData, channel) {
         cleanEntries(); // clean out any invalid entries
         var comment = commandData;
         if (!sys.dbRegistered(sys.name(src))) {
-            normalbot.sendChanMessage(src, "You need to register to submit sets.");
+            normalbot.sendMessage(src, "You need to register to submit sets.", channel);
             return;
         }
         if (submitbans.hasOwnProperty(sys.ip(src))) {
-            normalbot.sendChanMessage(src, "You are banned from submitting sets!");
+            normalbot.sendMessage(src, "You are banned from submitting sets!", channel);
             return;
         }
         var submittier = sys.tier(src, 0);
         if (!bfsets.hasOwnProperty(submittier)) {
-            normalbot.sendChanMessage(src, "No submissions are available for your tier!");
+            normalbot.sendMessage(src, "No submissions are available for your tier!", channel);
             return;
         }
         var submissions = 0;
@@ -937,7 +937,7 @@ function factoryCommand(src, command, commandData, channel) {
         }
         var maxsubmissions = sys.auth(src) >= 1 ? 100 : 15;
         if (sys.auth(src) < 2 && submissions >= maxsubmissions) {
-            normalbot.sendChanMessage(src, "You already have "+maxsubmissions+" or more submissions in the queue, please wait until they get reviewed!");
+            normalbot.sendMessage(src, "You already have "+maxsubmissions+" or more submissions in the queue, please wait until they get reviewed!", channel);
             return;
         }
         var team = [];
@@ -955,15 +955,15 @@ function factoryCommand(src, command, commandData, channel) {
             var item = sys.teamPokeItem(src, 0, x);
             var level = sys.teamPokeLevel(src, 0, x);
             if (['Middle Cup'].indexOf(submittier) > -1 && level > 50) {
-                normalbot.sendChanMessage(src, sys.pokemon(poke) + " must not be above Level 50 for Middle Cup.");
+                normalbot.sendMessage(src, sys.pokemon(poke) + " must not be above Level 50 for Middle Cup.", channel);
                 continue;
             }
             if (['Wifi LC'].indexOf(submittier) > -1 && level > 5) {
-                normalbot.sendChanMessage(src, sys.pokemon(poke) + " must not be above Level 5 for Little Cup.");
+                normalbot.sendMessage(src, sys.pokemon(poke) + " must not be above Level 5 for Little Cup.", channel);
                 continue;
             }
             if (['Random Battle'].indexOf(submittier) > -1 && level > 50) {
-                normalbot.sendChanMessage(src, sys.pokemon(poke) + " was scaled down to Level 50 for Random Battle.");
+                normalbot.sendMessage(src, sys.pokemon(poke) + " was scaled down to Level 50 for Random Battle.", channel);
                 level = 50;
             }
             pokecode = pokecode + toChars(pokenum,2) + toChars(formnum,1) + toChars(nature,1) + toChars(ability,2) + toChars(item,3) + toChars(level,2);
@@ -972,7 +972,7 @@ function factoryCommand(src, command, commandData, channel) {
                 var move = sys.teamPokeMove(src, 0, x, m);
                 var bannedmoves = ['Double Team', 'Minimize', 'Guillotine', 'Horn Drill', 'Sheer Cold', 'Fissure'];
                 if (bannedmoves.indexOf(sys.move(move)) > -1 && submittier != "Random Battle") {
-                    normalbot.sendChanMessage(src, "The move "+sys.move(move)+" is not allowed in this tier!");
+                    normalbot.sendMessage(src, "The move "+sys.move(move)+" is not allowed in this tier!", channel);
                     continue;
                 }
                 movelist.push(sys.move(move));
@@ -996,7 +996,7 @@ function factoryCommand(src, command, commandData, channel) {
         }
         // Write the short code for export
         if (team.length === 0) {
-            normalbot.sendChanMessage(src, "You have no Pokemon!");
+            normalbot.sendMessage(src, "You have no Pokemon!", channel);
             return;
         }
         var submitlist = [];
@@ -1030,7 +1030,7 @@ function factoryCommand(src, command, commandData, channel) {
         else {
             userqueue[submittier] = submitlist;
         }
-        normalbot.sendChanMessage(src, "Submitted your sets. See your submission below.");
+        normalbot.sendMessage(src, "Submitted your sets. See your submission below.", channel);
         normalbot.sendAll(sys.name(src)+" submitted some "+submittier+" sets for Battle Factory.", teamrevchan);
         var sets = [];
         for (var b in team) {
@@ -1041,11 +1041,11 @@ function factoryCommand(src, command, commandData, channel) {
     }
     else if (command == 'checkqueue') {
         if (!userqueue.hasOwnProperty(commandData)) {
-            normalbot.sendChanMessage(src, "Usage: /checkqueue [tier] (tier is case sensitive)");
+            normalbot.sendMessage(src, "Usage: /checkqueue [tier] (tier is case sensitive)", channel);
             return;
         }
         if (userqueue[commandData].length === 0) {
-            normalbot.sendChanMessage(src, "Nothing in the "+commandData+" queue.");
+            normalbot.sendMessage(src, "Nothing in the "+commandData+" queue.", channel);
             return;
         }
         seeQueueItem(0, commandData);
@@ -1053,25 +1053,25 @@ function factoryCommand(src, command, commandData, channel) {
     }
     else if (command == 'acceptset') {
         if (!userqueue.hasOwnProperty(commandData)) {
-            normalbot.sendChanMessage(src, "Usage: /acceptset [tier] (tier is case sensitive)");
+            normalbot.sendMessage(src, "Usage: /acceptset [tier] (tier is case sensitive)", channel);
             return;
         }
         if (userqueue[commandData].length === 0) {
-            normalbot.sendChanMessage(src, "Nothing in the "+commandData+" queue.");
+            normalbot.sendMessage(src, "Nothing in the "+commandData+" queue.", channel);
             return;
         }
         var accept = userqueue[commandData][0];
         if (accept.ip == sys.ip(src) && !isReviewAdmin(src)) {
-            normalbot.sendChanMessage(src, "Can't accept your own sets.");
+            normalbot.sendMessage(src, "Can't accept your own sets.", channel);
             return;
         }
         if (!isTierReviewer(src, accept.tier)) {
-            normalbot.sendChanMessage(src, "You are not authorised to review "+accept.tier+" sets.");
+            normalbot.sendMessage(src, "You are not authorised to review "+accept.tier+" sets.", channel);
             return;
         }
         var srctier = accept.tier;
         if (!bfsets.hasOwnProperty(srctier)) {
-            normalbot.sendChanMessage(src, "No sets can be accepted for that tier.");
+            normalbot.sendMessage(src, "No sets can be accepted for that tier.", channel);
             return;
         }
         normalbot.sendAll(accept.name+"'s submission was accepted by "+sys.name(src),teamrevchan);
@@ -1098,20 +1098,20 @@ function factoryCommand(src, command, commandData, channel) {
     }
     else if (command == 'rejectset') {
         if (!userqueue.hasOwnProperty(commandData)) {
-            normalbot.sendChanMessage(src, "Usage: /rejectset [tier] (tier is case sensitive)");
+            normalbot.sendMessage(src, "Usage: /rejectset [tier] (tier is case sensitive)", channel);
             return;
         }
         if (userqueue[commandData].length === 0) {
-            normalbot.sendChanMessage(src, "Nothing in the "+commandData+" queue.");
+            normalbot.sendMessage(src, "Nothing in the "+commandData+" queue.", channel);
             return;
         }
         var reject = userqueue[commandData][0];
         // Maybe change the reject mechanics?
         if (!isTierReviewer(src, reject.tier) && reject.name != sys.name(src)) {
-            normalbot.sendChanMessage(src, "You are not authorised to review "+reject.tier+" sets.");
+            normalbot.sendMessage(src, "You are not authorised to review "+reject.tier+" sets.", channel);
             return;
         }
-        normalbot.sendChanMessage(src, "You rejected the current set.");
+        normalbot.sendMessage(src, "You rejected the current set.", channel);
         normalbot.sendAll(reject.name+"'s submission was rejected by "+sys.name(src),teamrevchan);
         userqueue[commandData].splice(0,1);
         seeQueueItem(0, commandData);
@@ -1119,11 +1119,11 @@ function factoryCommand(src, command, commandData, channel) {
     }
     else if (command == 'nextset') {
         if (!userqueue.hasOwnProperty(commandData)) {
-            normalbot.sendChanMessage(src, "Usage: /nextset [tier] (tier is case sensitive)");
+            normalbot.sendMessage(src, "Usage: /nextset [tier] (tier is case sensitive)", channel);
             return;
         }
         if (userqueue[commandData].length === 0) {
-            normalbot.sendChanMessage(src, "Nothing in the "+commandData+" queue.");
+            normalbot.sendMessage(src, "Nothing in the "+commandData+" queue.", channel);
             return;
         }
         var shift = (userqueue[commandData].splice(0,1))[0];
@@ -1133,22 +1133,22 @@ function factoryCommand(src, command, commandData, channel) {
     }
     else if (command == 'savesets') {
         autoSave("all", "");
-        normalbot.sendChanMessage(src, "Saved user generated sets!");
+        normalbot.sendMessage(src, "Saved user generated sets!", channel);
         return;
     }
     else if (command == 'deleteset') {
         var found = false;
         var tmp = commandData.split(":", 2);
         if (tmp.length != 2) {
-            normalbot.sendChanMessage(src, "Usage: /deleteset [tier]:[code]");
+            normalbot.sendMessage(src, "Usage: /deleteset [tier]:[code]", channel);
             return;
         }
         if (!bfsets.hasOwnProperty(tmp[0])) {
-            normalbot.sendChanMessage(src, "No such tier exists!");
+            normalbot.sendMessage(src, "No such tier exists!", channel);
             return;
         }
         if (!isTierReviewer(src, tmp[0])) {
-            normalbot.sendChanMessage(src, "You are not authorised to review "+tmp[0]+" sets.");
+            normalbot.sendMessage(src, "You are not authorised to review "+tmp[0]+" sets.", channel);
             return;
         }
         var deletesets = bfsets[tmp[0]];
@@ -1171,7 +1171,7 @@ function factoryCommand(src, command, commandData, channel) {
             }
         }
         if (!found) {
-            normalbot.sendChanMessage(src, "No such set exists!");
+            normalbot.sendMessage(src, "No such set exists!", channel);
             return;
         }
         var deletemsg = getReadablePoke(tmp[1]);
@@ -1184,15 +1184,15 @@ function factoryCommand(src, command, commandData, channel) {
         var found = false;
         var tmp = commandData.split(":", 2);
         if (tmp.length != 2) {
-            normalbot.sendChanMessage(src, "Usage: /deletepoke [poke]:[tier]");
+            normalbot.sendMessage(src, "Usage: /deletepoke [poke]:[tier]", channel);
             return;
         }
         if (!bfsets.hasOwnProperty(tmp[1])) {
-            normalbot.sendChanMessage(src, "No such tier exists!");
+            normalbot.sendMessage(src, "No such tier exists!", channel);
             return;
         }
         if (!isTierReviewer(src, tmp[1])) {
-            normalbot.sendChanMessage(src, "You are not authorised to review "+tmp[1]+" sets.");
+            normalbot.sendMessage(src, "You are not authorised to review "+tmp[1]+" sets.", channel);
             return;
         }
         var deletesets = bfsets[tmp[1]];
@@ -1204,7 +1204,7 @@ function factoryCommand(src, command, commandData, channel) {
             }
         }
         if (!found) {
-            normalbot.sendChanMessage(src, "No such Pokemon exists!");
+            normalbot.sendMessage(src, "No such Pokemon exists!", channel);
             return;
         }
         bfsets[tmp[0]] = deletesets;
@@ -1212,30 +1212,30 @@ function factoryCommand(src, command, commandData, channel) {
         return;
     }
     else if (command == 'submitbans') {
-        sendChanMessage(src, "*** SUBMIT BANS ***");
+        sys.sendMessage(src, "*** SUBMIT BANS ***", channel);
         for (var j in submitbans) {
-            sendChanMessage(src, submitbans[j].user+": Banned by "+submitbans[j].auth);
+            sys.sendMessage(src, submitbans[j].user+": Banned by "+submitbans[j].auth, channel);
         }
-        sendChanMessage(src, "*** END OF SUBMIT BANS ***");
+        sys.sendMessage(src, "*** END OF SUBMIT BANS ***", channel);
     }
     else if (command == 'submitban') {
         if (commandData === "") {
-            normalbot.sendChanMessage(src, "Must specify a user!");
+            normalbot.sendMessage(src, "Must specify a user!", channel);
             return;
         }
         var target = commandData;
         var tarip = sys.dbIp(target);
         if (tarip === undefined) {
-            normalbot.sendChanMessage(src, "No such user.");
+            normalbot.sendMessage(src, "No such user.", channel);
             return;
         }
         var maxAuth = sys.maxAuth(sys.dbIp(target));
         if (maxAuth >= 1) {
-            normalbot.sendChanMessage(src, "Can't submit ban auth.");
+            normalbot.sendMessage(src, "Can't submit ban auth.", channel);
             return;
         }
         if (submitbans.hasOwnProperty(tarip)) {
-            normalbot.sendChanMessage(src, commandData+" is already banned from submitting!");
+            normalbot.sendMessage(src, commandData+" is already banned from submitting!", channel);
             return;
         }
         submitbans[tarip] = {'user': commandData.toLowerCase(), 'auth': sys.name(src)};
@@ -1245,17 +1245,17 @@ function factoryCommand(src, command, commandData, channel) {
     }
     else if (command == 'submitunban') {
         if (commandData === "") {
-            normalbot.sendChanMessage(src, "Must specify a user!");
+            normalbot.sendMessage(src, "Must specify a user!", channel);
             return;
         }
         var target = commandData;
         var tarip = sys.dbIp(target);
         if (tarip === undefined) {
-            normalbot.sendChanMessage(src, "No such user.");
+            normalbot.sendMessage(src, "No such user.", channel);
             return;
         }
         if (!submitbans.hasOwnProperty(tarip)) {
-            normalbot.sendChanMessage(src, commandData+" is not banned from submitting!");
+            normalbot.sendMessage(src, commandData+" is not banned from submitting!", channel);
             return;
         }
         delete submitbans[tarip];
@@ -1265,7 +1265,7 @@ function factoryCommand(src, command, commandData, channel) {
     }
     else if (command == "export") {
         if (!bfsets.hasOwnProperty(commandData)) {
-            normalbot.sendChanMessage(src, "No such pack exists!");
+            normalbot.sendMessage(src, "No such pack exists!", channel);
             return;
         }
         var content = bfsets[commandData];
@@ -1276,25 +1276,25 @@ function factoryCommand(src, command, commandData, channel) {
     else if (command == 'addreviewer') {
         var tmp = commandData.split(":", 2);
         if (tmp.length != 2) {
-            normalbot.sendChanMessage(src, "Usage: /addreviewer [name]:[tier] (tier is case sensitive)");
+            normalbot.sendMessage(src, "Usage: /addreviewer [name]:[tier] (tier is case sensitive)", channel);
             return;
         }
         if (!reviewers.hasOwnProperty(tmp[1])) {
-            normalbot.sendChanMessage(src, "You can't add reviewers for that tier!");
+            normalbot.sendMessage(src, "You can't add reviewers for that tier!", channel);
             return;
         }
         if (sys.dbIp(tmp[0]) === undefined) {
-            normalbot.sendChanMessage(src, "No such user.");
+            normalbot.sendMessage(src, "No such user.", channel);
             return;
         }
         if (!sys.dbRegistered(tmp[0])) {
-            normalbot.sendChanMessage(src, "Reviewers must be registered!");
+            normalbot.sendMessage(src, "Reviewers must be registered!", channel);
             return;
         }
         var tierrev = reviewers[tmp[1]];
         for (var v in tierrev) {
             if (tmp[0].toLowerCase() === tierrev[v].toLowerCase()) {
-                normalbot.sendChanMessage(src, "They are already a reviewer!");
+                normalbot.sendMessage(src, "They are already a reviewer!", channel);
                 return;
             }
         }
@@ -1305,11 +1305,11 @@ function factoryCommand(src, command, commandData, channel) {
     else if (command == 'removereviewer') {
         var tmp = commandData.split(":", 2);
         if (tmp.length != 2) {
-            normalbot.sendChanMessage(src, "Usage: /removereviewer [name]:[tier] (tier is case sensitive)");
+            normalbot.sendMessage(src, "Usage: /removereviewer [name]:[tier] (tier is case sensitive)", channel);
             return;
         }
         if (!reviewers.hasOwnProperty(tmp[1])) {
-            normalbot.sendChanMessage(src, "You can't remove reviewers for that tier!");
+            normalbot.sendMessage(src, "You can't remove reviewers for that tier!", channel);
             return;
         }
         var tierrev = reviewers[tmp[1]];
@@ -1326,7 +1326,7 @@ function factoryCommand(src, command, commandData, channel) {
             sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
         }
         else {
-            normalbot.sendChanMessage(src, "They are not a reviewer!");
+            normalbot.sendMessage(src, "They are not a reviewer!", channel);
         }
         return;
     }
@@ -1344,7 +1344,7 @@ function factoryCommand(src, command, commandData, channel) {
                 sys.kick(parr[x], teamrevchan);
             }
         }
-        normalbot.sendChanMessage(src, "Destroyed Review Channel");
+        normalbot.sendMessage(src, "Destroyed Review Channel", channel);
         return;
     }
     else if (command == 'backlog') {
@@ -2041,15 +2041,15 @@ module.exports = {
         }
         if (isReviewer(source) || ["bfversion", "submitsets", "viewpacks", "userpokesets", "reviewers", "backlog"].indexOf(command) > -1) {
             if (['acceptset', 'rejectset', 'deleteset','checkqueue', 'nextset', 'userpokesets'].indexOf(command) > -1 && channel != sys.channelId('BF Review')) {
-                normalbot.sendChanMessage(source, "These commands will only work in the #BF Review Channel!");
+                normalbot.sendMessage(source, "These commands will only work in the #BF Review Channel!", channel);
                 return true;
             }
             if (['submitban', 'submitunban', 'submitbans', 'scansets'].indexOf(command) > -1 && sys.auth(source) < 1) {
-                normalbot.sendChanMessage(source, "You can't use this command!");
+                normalbot.sendMessage(source, "You can't use this command!", channel);
                 return true;
             }
             if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier', 'resetladder', 'destroyreview', 'importold'].indexOf(command) > -1 && !isReviewAdmin(source)) {
-                normalbot.sendChanMessage(source, "You can't use this command!");
+                normalbot.sendMessage(source, "You can't use this command!", channel);
                 return true;
             }
             if (factoryCommand(source, command, commandData, channel) != 'no command') {
