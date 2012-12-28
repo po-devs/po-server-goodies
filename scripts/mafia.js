@@ -3123,7 +3123,7 @@ function Mafia(mafiachan) {
     this.isMafiaSuperAdmin = function (src) {
         if (sys.auth(src) >= 2)
             return true;
-        if (['steeledges', "bebbz"].indexOf(sys.name(src).toLowerCase()) >= 0) {
+        if (['steeledges', "bebbz", "narshen"].indexOf(sys.name(src).toLowerCase()) >= 0) {
             return true;
         }
         return false;
