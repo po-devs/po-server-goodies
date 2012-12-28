@@ -1450,6 +1450,7 @@ init : function() {
     rangebans = new MemoryHash("rangebans.txt");
     contributors = new MemoryHash("contributors.txt");
     mafiaAdmins = new MemoryHash("mafiaadmins.txt");
+    mafiaSuperAdmins = new MemoryHash("mafiasuperadmins.txt");
     ipbans = new MemoryHash("ipbans.txt");
     proxy_ips = {};
     function addProxybans(content) {
@@ -2343,6 +2344,10 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "rules") {
+        if (commandData === "mafia") {
+            require('mafia.js').showRules(src, commandData, channel);
+            return;
+        }
         var norules = (rules.length-1)/2; //formula for getting the right amount of rules
         if(commandData !== undefined && !isNaN(commandData) && commandData >0 && commandData < norules){
             var num = parseInt(commandData, 10);

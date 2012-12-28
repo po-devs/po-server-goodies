@@ -48,9 +48,12 @@ function Mafia(mafiachan) {
     };
     loadPlayedGames();
 
-    function dump(src, mess) {
+    function dump(src, mess, channel) {
+        if (channel === undefined) {
+            channel = mafiachan;
+        }
         for (var x in mess) {
-            sys.sendMessage(src, mess[x], mafiachan);
+            sys.sendMessage(src, mess[x], channel);
         }
     }
     function msg(src, mess) {
@@ -2796,7 +2799,7 @@ function Mafia(mafiachan) {
         var sides = mafia.themeManager.themes[themeName].sideInfo;
         dump(src, sides);
     };
-    this.showRules = function (src) {
+    this.showRules = function (src, commandData, channel) {
         var rules = [
             "",
             " Server Rules: ",
@@ -2818,7 +2821,7 @@ function Mafia(mafiachan) {
             "±Game: Disobey them and you will be banned from mafia/muted according to the MA/auth's wishes!",
             ""
         ];
-        dump(src, rules);
+        dump(src, rules, channel);
     };
     this.showThemes = function (src) {
         var l = [];
@@ -3123,7 +3126,8 @@ function Mafia(mafiachan) {
     this.isMafiaSuperAdmin = function (src) {
         if (sys.auth(src) >= 2)
             return true;
-        if (['steeledges', "bebbz", "narshen"].indexOf(sys.name(src).toLowerCase()) >= 0) {
+
+        if (mafiaSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
             return true;
         }
         return false;
@@ -3656,7 +3660,7 @@ return;
             command = message.substr(0).toLowerCase();
         }
         if (command in this.commands.user) {
-            this.commands.user[command][0].call(this, src, commandData);
+            this.commands.user[command][0].call(this, src, commandData, channel);
             return true;
         }
         var name, x, player, target;
@@ -4030,10 +4034,22 @@ return;
         if (command == "mafiaadmins") {
             var out = [
                 "",
-                "*** MAFIA ADMINS ***",
+                "*** MAFIA SUPER ADMINS ***",
                 ""];
+            var smas = [];
+            for (var y in mafiaSuperAdmins.hash) {
+                smas.push(y + (sys.id(y) !== undefined ? ":" : ""));
+            }
+            smas = smas.sort();
+            for (var i = 0; i < smas.length; i++) {
+                out.push(smas[i]);
+            }
+            out.push.apply(out,[
+                "",
+                "*** MAFIA ADMINS ***",
+                ""]);
             var mas = [];
-            for (x in mafiaAdmins.hash) {
+            for (var x in mafiaAdmins.hash) {
                 mas.push(x + (sys.id(x) !== undefined ? ":" : ""));
             }
             mas = mas.sort();
@@ -4097,6 +4113,24 @@ return;
             if (id !== undefined)
                 SESSION.users(id).mafiaAdmin = false;
             sys.sendMessage(src, "±Game: That person is no more a mafia admin!", mafiachan);
+            sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData, sys.channelId('Victory Road'));
+            return;
+        }
+        
+        if (sys.auth(src) < 3) {
+            throw ("no valid command")
+        }
+        if (command == "mafiasadmin" || command == "mafiasuperadmin") {
+            mafiaSuperAdmins.add(commandData.toLowerCase(), "");
+            sys.sendMessage(src, "±Game: That person is now a mafia super admin!", mafiachan);
+            sys.sendAll("±Murkrow: " + sys.name(src) + " promoted " + commandData, sys.channelId('Victory Road'));
+            return;
+        }
+        
+        if (command == "mafiasadminoff" || command == "mafiasuperadminoff") {
+            mafiaSuperAdmins.remove(commandData);
+            mafiaSuperAdmins.remove(commandData.toLowerCase());
+            sys.sendMessage(src, "±Game: That person is no more a mafia super admin!", mafiachan);
             sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData, sys.channelId('Victory Road'));
             return;
         }
