@@ -612,7 +612,7 @@ function clauseCheck(key, issuedClauses) {
         var denom = Math.pow(2,c+1)
         var num = Math.pow(2,c)
         // don't check for disallow spects in non CC tiers , it's checked manually
-        if (c == 2 && ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Battle Factory"].indexOf(tier) == -1) {
+        if (c == 2 && ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Battle Factory", "Battle Factory 6v6"].indexOf(tier) == -1) {
             continue;
         }
         if (requiredClauses%denom >= num) {
@@ -2676,7 +2676,7 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (!sys.hasTier(src, tours.tour[key].tourtype)) {
-                var needsteam = ["Challenge Cup", "Wifi CC 1v1", "CC 1v1", "Battle Factory"].indexOf(tours.tour[key].tourtype) == -1;
+                var needsteam = ["Challenge Cup", "Wifi CC 1v1", "CC 1v1", "Battle Factory", "Battle Factory 6v6"].indexOf(tours.tour[key].tourtype) == -1;
                 sendBotMessage(src, "You need to "+(needsteam ? "have a team for" : "change your tier to")+" the "+tours.tour[key].tourtype+" tier to join!",tourschan,false)
                 return true;
             }
@@ -4925,7 +4925,7 @@ module.exports = {
             }
         }
         /* check for potential scouters */
-        var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome", "Battle Factory"]
+        var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome", "Battle Factory", "Battle Factory 6v6"]
         var isOkToSpectate = (tours.tour[p1tour].state == "final" || cctiers.indexOf(tours.tour[p1tour].tourtype) != -1)
         if (srctour === p1tour && !isOkToSpectate) {
             sendBotMessage(src, "You can't watch this match because you are in the same tournament!","all", false)
