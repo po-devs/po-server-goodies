@@ -473,14 +473,14 @@ function factoryCommand(src, command, commandData, channel) {
                     var test = JSON.parse(resp);
                     var res = setlint(test, false);
                     if (res.errors.length > 0) {
-                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=red>ERRORS</font></th><th>"+res.errors.length+"</th></tr><tr>"+res.errors.join("</tr><tr>")+"</tr></table>");
+                        sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=red>ERRORS</font></th><th>"+res.errors.length+"</th></tr><tr>"+res.errors.join("</tr><tr>")+"</tr></table>", channel);
                         throw "Bad File";
                     }
                     if (res.warnings.length > 0) {
-                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=orange>WARNINGS</font></th><th>"+res.warnings.length+"</th></tr><tr>"+res.warnings.join("</tr><tr>")+"</tr></table>");
+                        sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=orange>WARNINGS</font></th><th>"+res.warnings.length+"</th></tr><tr>"+res.warnings.join("</tr><tr>")+"</tr></table>", channel);
                     }
                     if (res.suggestions.length > 0) {
-                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
+                        sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>", channel);
                     }
                     sys.writeToFile(dataDir+'bfteams.json', resp);
                     autoSave("teams", "preset");
@@ -570,14 +570,14 @@ function factoryCommand(src, command, commandData, channel) {
                     var test = JSON.parse(resp);
                     var res = setlint(test, false);
                     if (res.errors.length > 0) {
-                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=red>ERRORS</font></th><th>"+res.errors.length+"</th></tr><tr>"+res.errors.join("</tr><tr>")+"</tr></table>");
+                        sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=red>ERRORS</font></th><th>"+res.errors.length+"</th></tr><tr>"+res.errors.join("</tr><tr>")+"</tr></table>", channel);
                         throw "Bad File";
                     }
                     if (res.warnings.length > 0) {
-                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=orange>WARNINGS</font></th><th>"+res.warnings.length+"</th></tr><tr>"+res.warnings.join("</tr><tr>")+"</tr></table>");
+                        sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=orange>WARNINGS</font></th><th>"+res.warnings.length+"</th></tr><tr>"+res.warnings.join("</tr><tr>")+"</tr></table>", channel);
                     }
                     if (res.suggestions.length > 0) {
-                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
+                        sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>", channel);
                     }
                     if (createEntry(tmp[0],test,url)) {
                         autoSave("teams", tmp[0]);
@@ -629,14 +629,14 @@ function factoryCommand(src, command, commandData, channel) {
                     var test = JSON.parse(resp);
                     var res = setlint(test, false);
                     if (res.errors.length > 0) {
-                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=red>ERRORS</font></th><th>"+res.errors.length+"</th></tr><tr>"+res.errors.join("</tr><tr>")+"</tr></table>");
+                        sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=red>ERRORS</font></th><th>"+res.errors.length+"</th></tr><tr>"+res.errors.join("</tr><tr>")+"</tr></table>", channel);
                         throw "Bad File";
                     }
                     if (res.warnings.length > 0) {
-                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=orange>WARNINGS</font></th><th>"+res.warnings.length+"</th></tr><tr>"+res.warnings.join("</tr><tr>")+"</tr></table>");
+                        sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=orange>WARNINGS</font></th><th>"+res.warnings.length+"</th></tr><tr>"+res.warnings.join("</tr><tr>")+"</tr></table>", channel);
                     }
                     if (res.suggestions.length > 0) {
-                        sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
+                        sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>", channel);
                     }
                     bfhash[tmp[0]].url = url;
                     sys.writeToFile(dataDir+hash.path, resp);
@@ -747,7 +747,7 @@ function factoryCommand(src, command, commandData, channel) {
     else if (command == "pokecode") {
         try {
             var msg = getReadablePoke(commandData);
-            sendChanHtmlMessage(src, "<table border='2'><tr><td><pre>"+msg.join("<br/>")+"</pre></td></tr></table>");
+            sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>"+msg.join("<br/>")+"</pre></td></tr></table>", channel);
             return;
         }
         catch (err) {
@@ -795,7 +795,7 @@ function factoryCommand(src, command, commandData, channel) {
             }
         }
         if (sets.length > 0) {
-            sendChanHtmlMessage(src, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>");
+            sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", channel);
         }
         return;
     }
@@ -824,13 +824,13 @@ function factoryCommand(src, command, commandData, channel) {
                     res = {'errors': ["<td>FATAL ERROR</td><td>"+localerr+"</td>"], 'warnings': [], 'suggestions': []};
                 }
                 if (res.errors.length > 0) {
-                    sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=red>ERRORS</font></th><th>"+res.errors.length+"</th></tr><tr>"+res.errors.join("</tr><tr>")+"</tr></table>");
+                    sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=red>ERRORS</font></th><th>"+res.errors.length+"</th></tr><tr>"+res.errors.join("</tr><tr>")+"</tr></table>", channel);
                 }
                 if (res.warnings.length > 0) {
-                    sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=orange>WARNINGS</font></th><th>"+res.warnings.length+"</th></tr><tr>"+res.warnings.join("</tr><tr>")+"</tr></table>");
+                    sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=orange>WARNINGS</font></th><th>"+res.warnings.length+"</th></tr><tr>"+res.warnings.join("</tr><tr>")+"</tr></table>", channel);
                 }
                 if (res.suggestions.length > 0) {
-                    sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
+                    sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>", channel);
                 }
                 normalbot.sendMessage(src, "Finished checking.", channel);
             });
@@ -852,13 +852,13 @@ function factoryCommand(src, command, commandData, channel) {
                 res = {'errors': ["<td>FATAL ERROR</td><td>"+html_escape(err)+"</td>"], 'warnings': [], 'suggestions': []};
             }
             if (res.errors.length > 0) {
-                sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=red>ERRORS</font></th><th>"+res.errors.length+"</th></tr><tr>"+res.errors.join("</tr><tr>")+"</tr></table>");
+                sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=red>ERRORS</font></th><th>"+res.errors.length+"</th></tr><tr>"+res.errors.join("</tr><tr>")+"</tr></table>", channel);
             }
             if (res.warnings.length > 0) {
-                sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=orange>WARNINGS</font></th><th>"+res.warnings.length+"</th></tr><tr>"+res.warnings.join("</tr><tr>")+"</tr></table>");
+                sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=orange>WARNINGS</font></th><th>"+res.warnings.length+"</th></tr><tr>"+res.warnings.join("</tr><tr>")+"</tr></table>", channel);
             }
             if (res.suggestions.length > 0) {
-                sendChanHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>");
+                sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>", channel);
             }
             normalbot.sendMessage(src, "Finished checking.", channel);
         }
@@ -1036,7 +1036,7 @@ function factoryCommand(src, command, commandData, channel) {
         for (var b in team) {
             sets.push(getReadablePoke(team[b]).join("<br/>"));
         }
-        sendChanHtmlMessage(src, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>");
+        sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", channel);
         return;
     }
     else if (command == 'checkqueue') {
