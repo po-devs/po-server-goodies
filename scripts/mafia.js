@@ -4316,9 +4316,6 @@ return;
                 default:
                     sys.sendMessage(src, "±Info: A " + (mafia.theme.name == "default" ? "" : mafia.theme.name + "-themed ") + "mafia game is in progress! You can join the next game by typing /join! ", mafiachan);
             }
-            if (SESSION.users(src).detained.active) {
-                detainedUsers.push(src);
-            }
             return false;
         }
     };
