@@ -1244,9 +1244,6 @@ function Mafia(mafiachan) {
         delete this.players[player.name];
     };
     this.actionBeforeDeath = function (player) {
-        if ("startup" in player.role.actions && "revealAs" in player.role.actions.startup) {
-            mafia.sendPlayer(player.name, "±Game: Your actual role was " + player.role.translation + ", a role that sees itself as " + this.theme.trrole(player.role.actions.startup.revealAs) + ".");
-        }
         if (player.role.actions.hasOwnProperty("onDeath")) {
             var onDeath = player.role.actions.onDeath;
             var targetRoles, targetPlayers, r, k, target, affected, actionMessage, needSeparator = false;
