@@ -4123,6 +4123,9 @@ return;
                     sys.sendMessage(src, "±Murkrow: Cannot detain someone with auth")
                     return;
                 }
+                if (!SESSION.users(tar)) {
+                    SESSION.users(tar).detained = {active: false, by: null, games: 0, reason: null}
+                }
                 SESSION.users(tar).detained.active = true;
                 SESSION.users(tar).detained.by = sys.name(src);
                 SESSION.users(tar).detained.games = val;
@@ -4167,6 +4170,9 @@ return;
                 }
                 sys.sendMessage(src, "±Murkrow: They are not detained");
                 return;
+            }
+            if (!SESSION.users(tar).detained) {
+                SESSION.users(tar).detained = {active: false, by: null, games: 0, reason: null}
             }
             if (!SESSION.users(tar).detained.games) {
                 sys.sendMessage(src, "±Murkrow: They are not detained");
