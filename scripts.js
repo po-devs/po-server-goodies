@@ -142,6 +142,7 @@ cleanFile("smutes.txt");
 cleanFile("rangebans.txt");
 cleanFile("contributors.txt");
 cleanFile("ipbans.txt");
+cleanFile("detained.txt");
 cleanFile(Config.dataDir+"pastebin_user_key");
 cleanFile("secretsmute.txt");
 cleanFile("ipApi.txt");
@@ -257,6 +258,8 @@ function POUser(id)
     this.mban = {active: false, by: null, expires: 0, time: null, reason: null};
     /* whether user is secrectly muted */
     this.smute = {active: false, by: null, expires: 0, time: null, reason: null};
+    /* detain for mafia */
+    this.detained = {active: false, by: null, games: 0, reason: null};
     /* caps counter for user */
     this.caps = 0;
     /* whether user is impersonating someone */
@@ -323,17 +326,23 @@ function POUser(id)
 
     /* check if user is banned or mafiabanned */
     var data;
-    var loopArgs = [["mute", mutes], ["mban", mbans], ["smute", smutes]];
-    for (i = 0; i < 3; ++i) {
+    var loopArgs = [["mute", mutes], ["mban", mbans], ["smute", smutes], ["detained", detained]];
+    for (i = 0; i < 4; ++i) {
         var action = loopArgs[i][0];
         if ((data = loopArgs[i][1].get(sys.ip(id))) !== undefined) {
             this[action].active=true;
             var args = data.split(":");
-            this[action].time = parseInt(args[0], 10);
-            if (args.length == 5) {
+            if (action !== "detained") {
+                this[action].time = parseInt(args[0], 10);
+                if (args.length == 5) {
+                    this[action].by = args[1];
+                    this[action].expires = parseInt(args[2], 10);
+                    this[action].reason = args.slice(4).join(":");
+                }
+            } else {
                 this[action].by = args[1];
-                this[action].expires = parseInt(args[2], 10);
-                this[action].reason = args.slice(4).join(":");
+                this[action].games = parseInt(args[0], 10);
+                this[action].reason = args.slice(3).join(":");
             }
         }
     }
@@ -1452,6 +1461,7 @@ init : function() {
     mafiaAdmins = new MemoryHash("mafiaadmins.txt");
     mafiaSuperAdmins = new MemoryHash("mafiasuperadmins.txt");
     ipbans = new MemoryHash("ipbans.txt");
+    detained = new MemoryHash("detained.txt");
     proxy_ips = {};
     function addProxybans(content) {
         var lines = content.split(/\n/);

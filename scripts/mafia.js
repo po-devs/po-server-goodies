@@ -1684,6 +1684,22 @@ function Mafia(mafiachan) {
                         sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
                     }
                     sys.removeVal("mafiagameplayers");
+                    sys.playersOfChannel(mafiachan).forEach(function(id) {
+                        var detain = SESSION.users(id).detained;
+                        if (detain) {
+                            if (detain.active) {
+                                detain.games = detain.games - 1;
+                                if (detain.games < 1) {
+                                    SESSION.users(id).detained.active = false;
+                                    SESSION.users(id).detained.games = 0;
+                                    detained.remove(sys.ip(id));
+                                    sys.sendMessage(id, "±Game: You are no longer detained from mafia!");
+                                } else {
+                                    detained.add(sys.ip(id), detain.games + ":" + detain.by + ":" + sys.name(id) + ":"  + detain.reason);
+                                }
+                            }
+                        }
+                    })
                     runUpdate();
                     return true;
                 }
@@ -3573,12 +3589,20 @@ function Mafia(mafiachan) {
             trimplayers: [this.trimplayers, "To trim the master player list."]
         }
     };
-    this.handleCommand = function (src, message, channel) {
-        // only on mafia channel
-        if (channel != mafiachan)
+    this.handleCommand = function (src, message, channel) {     
+        var command;
+        var commandData = '*';
+        var pos = message.indexOf(' ');
+        if (pos != -1) {
+            command = message.substring(0, pos).toLowerCase();
+            commandData = message.substr(pos + 1);
+        } else {
+            command = message.substr(0).toLowerCase();
+        }   
+        if (channel != mafiachan && ["mafiaban","mafiaunban","mafiabans","detained","detainlist"].indexOf(command) === -1)
             return;
         try {
-            mafia.handleCommandOld(src, message, channel);
+            mafia.handleCommandOld(src, command, commandData, channel);
             return true;
         } catch (e) {
             if (e != "no valid command") {
@@ -3598,6 +3622,10 @@ function Mafia(mafiachan) {
         }
         if (SESSION.users(src).mute.active) {
             sys.sendMessage(src, "±Game: You are muted!", mafiachan);
+            return;
+        }
+        if (SESSION.users(src).detained.active) {
+            sys.sendMessage(src, "±Game: You are detained for " + SESSION.users(src).detained.games + " more games", mafiachan);
             return;
         }
         if (SESSION.users(src).android === true) {
@@ -3647,18 +3675,7 @@ return;
         }
         phaseStalk = {};
     };
-    this.handleCommandOld = function (src, message, channel) {
-
-        var command;
-        var commandData = '*';
-        var pos = message.indexOf(' ');
-
-        if (pos != -1) {
-            command = message.substring(0, pos).toLowerCase();
-            commandData = message.substr(pos + 1);
-        } else {
-            command = message.substr(0).toLowerCase();
-        }
+    this.handleCommandOld = function (src, command, commandData, channel) {
         if (command in this.commands.user) {
             this.commands.user[command][0].call(this, src, commandData, channel);
             return true;
@@ -4071,7 +4088,7 @@ return;
         var tar = sys.id(commandData);
         if (command == "mafiaban") {
             var bantime;
-            if (sys.auth > 0 || this.isMafiaSuperAdmin(src)) {
+            if (sys.auth(src) > 0 || this.isMafiaSuperAdmin(src)) {
                 bantime = undefined;
             } else {
                 bantime = 86400;
@@ -4081,6 +4098,143 @@ return;
         }
         if (command == "mafiaunban") {
             script.modCommand(src, command, commandData, tar);
+            return;
+        }
+        
+        if (command == "detain") {
+            var name = commandData.split(':')[0];
+            var reason = commandData.split(':')[1];
+            var val = commandData.split(':')[2];
+            if (reason === undefined && !this.isMafiaSuperAdmin(src)) {
+                sys.sendMessage(src, "±Murkrow: You must provide a reason")
+                return;
+            }
+            if (val === undefined || isNaN(val) || val <= 0) {
+                val = 3;
+            }
+            var tar = sys.id(name);
+            if (tar) {
+                if (sys.auth(tar) > 0 || this.isMafiaAdmin(tar)) {
+                    sys.sendMessage(src, "±Murkrow: Cannot detain someone with auth")
+                    return;
+                }
+                SESSION.users(tar).detained.active = true;
+                SESSION.users(tar).detained.by = sys.name(src);
+                SESSION.users(tar).detained.games = val;
+                SESSION.users(tar).detained.reason = reason;
+                detained.add(sys.ip(tar), val + ":" + sys.name(src) + ":" + sys.name(tar) + ":"  + reason);
+                sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " detained " + nonFlashing(sys.name(tar)) + " for " + val + " games [Reason: " + reason + "]", staffchannel);
+                sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " detained " + nonFlashing(sys.name(tar)) + " for " + val + " games [Reason: " + reason + "]", sachannel);
+                sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " detained " + nonFlashing(sys.name(tar)) + " for " + val + " games [Reason: " + reason + "]", mafiachan);
+                return;
+            }
+            var ip = sys.dbIp(name);
+            if (ip) {
+                if (sys.maxAuth(ip) > 0) {
+                    sys.sendMessage(src, "±Murkrow: Cannot detain someone with auth")
+                    return;
+                }
+                detained.add(ip, val + ":" + sys.name(src) + ":" + name + ":" + reason);
+                sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " detained " + name + " for " + val + " games [Reason: " + reason + "]", staffchannel);
+                sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " detained " + name + " for " + val + " games [Reason: " + reason + "]", sachannel);
+                sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " detained " + name + " for " + val + " games [Reason: " + reason + "]", mafiachan);
+                return;
+            }
+            sys.sendMessage(src, "±Murkrow: Player not found");
+            return;
+        }
+        
+        if (command == "undetain" || command == "release") { //"undetain" is terrible! :3
+            var tar = sys.id(commandData);
+            if (!tar) {
+                if (detained.get(commandData)) {
+                    sys.sendAll("±Murkrow: IP Address " + commandData + " was released by " + nonFlashing(sys.name(src)) + "!", staffchannel);
+                    sys.sendAll("±Murkrow: IP Address " + commandData + " was released by " + nonFlashing(sys.name(src)) + "!", sachannel);
+                    detained.remove(commandData);
+                    return;
+                }
+                var ip = sys.dbIp(commandData);
+                if (ip && detained.get(ip)) {
+                    sys.sendAll("±Murkrow: " + commandData + " was released by " + nonFlashing(sys.name(src)) + "!", staffchannel);
+                    sys.sendAll("±Murkrow: " + commandData + " was released by " + nonFlashing(sys.name(src)) + "!", sachannel);
+                    detained.remove(ip);
+                    return;
+                }
+                sys.sendMessage(src, "±Murkrow: They are not detained");
+                return;
+            }
+            if (!SESSION.users(tar).detained.games) {
+                sys.sendMessage(src, "±Murkrow: They are not detained");
+                return;
+            }
+            sys.sendAll("±Murkrow: " + commandData + " was released by " + nonFlashing(sys.name(src)) + "!", staffchannel);
+            sys.sendAll("±Murkrow: " + commandData + " was released by " + nonFlashing(sys.name(src)) + "!", sachannel);
+            sys.sendAll("±Murkrow: " + commandData + " was released by " + nonFlashing(sys.name(src)) + "!", mafiachan);
+            SESSION.users(tar).detained.active = false;
+            SESSION.users(tar).detained.games = 0;
+            detained.remove(sys.ip(tar));
+            return;
+        }
+        
+        if (command == "detained" || command == "detainlist") {
+            var mh = detained;
+            var name = "Detained";
+            var width=5;
+            var max_message_length = 30000;
+            var tmp = [];
+            var toDelete = [];
+            for (var ip in mh.hash) {
+                if (mh.hash.hasOwnProperty(ip)) {
+                    var values = mh.hash[ip].split(":");
+                    var games = 0;
+                    var by = "";
+                    var expires = 0;
+                    var banned_name;
+                    var reason = "";
+                    if (values.length >= 4) {
+                        games = parseInt(values[0], 10);
+                        by = values[1];
+                        banned_name = values[2];
+                        reason = values.slice(3);
+                        if (games === 0) {
+                            toDelete.push(ip);
+                            continue;
+                        }
+                    }                
+                    if(commandData != "*" && (!banned_name || banned_name.toLowerCase().indexOf(commandData.toLowerCase()) == -1))
+                        continue;
+                    tmp.push([ip, banned_name, by, games, utilities.html_escape(reason)]);
+                }
+            }
+            for (var k = 0; k < toDelete.length; ++k)
+                delete mh.hash[toDelete[k]];
+            if (toDelete.length > 0)
+                mh.save();
+
+            tmp.sort(function(a,b) { return a[3] - b[3];});
+
+            // generate HTML
+            var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + utilities.html_escape(name) + '</strong></center></td></tr><tr><th>IP</th><th>Name</th><th>By</th><th>Games until expiry</th><th>Reason</th>';
+            var table_footer = '</table>';
+            var table = table_header;
+            var line;
+            var send_rows = 0;
+            while(tmp.length > 0) {
+                line = '<tr><td>'+tmp[0].join('</td><td>')+'</td></tr>';
+                tmp.splice(0,1);
+                if (table.length + line.length + table_footer.length > max_message_length) {
+                    if (send_rows === 0) continue; // Can't send this line!
+                    table += table_footer;
+                    sys.sendHtmlMessage(src, table, channel);
+                    table = table_header;
+                    send_rows = 0;
+                }
+                table += line;
+                ++send_rows;
+            }
+            table += table_footer;
+            if (send_rows > 0)
+                sys.sendHtmlMessage(src, table, channel);
             return;
         }
         /*if (command == "mafiabans") {
@@ -4161,6 +4315,9 @@ return;
                     break;
                 default:
                     sys.sendMessage(src, "±Info: A " + (mafia.theme.name == "default" ? "" : mafia.theme.name + "-themed ") + "mafia game is in progress! You can join the next game by typing /join! ", mafiachan);
+            }
+            if (SESSION.users(src).detained.active) {
+                detainedUsers.push(src);
             }
             return false;
         }
