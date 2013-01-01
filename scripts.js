@@ -108,7 +108,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans;
+var channel, getKey, megausers, contributors, mutes, mbans, smutes, detained, mafiaSuperAdmins, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans;
 
 var isMafiaAdmin = require('mafia.js').isMafiaAdmin;
 var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
@@ -2417,9 +2417,9 @@ userCommand: function(src, command, commandData, tar) {
     }
     if (command == "auth") {
         var DoNotShowIfOffline = ["loseyourself", "oneballjay"];
-        var filterByAuth = function(level) { return function(name) { if (sys.dbAuth(name) == level) { return name; } } };
+        var filterByAuth = function(level) { return function(name) { if (sys.dbAuth(name) == level) { return name; } }; };
         var printOnlineOffline = function(name) {
-            if (name == undefined) return;
+            if (name === undefined) return;
             if (sys.id(name) === undefined) {
                 if (DoNotShowIfOffline.indexOf(name) == -1) sys.sendMessage(src, name + " (Offline)", channel);
             } else {
@@ -2536,7 +2536,11 @@ userCommand: function(src, command, commandData, tar) {
         } else {
             chan = sys.createChannel(commandData);
         }
-        sys.putInChannel(src, chan);
+        if (sys.isInChannel(src, chan)) {
+            normalbot.sendChanMessage(src, "You are already on #" + commandData);
+        } else {
+            sys.putInChannel(src, chan);
+        }
         return;
     }
 
