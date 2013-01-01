@@ -1302,7 +1302,7 @@ var commands = {
         "/mafiaunban [name]: Unbans a player from Mafia.",
         "/detain [user]:[reason]:[# Mafia Games]: Sentences a player to probation for # of Mafia Games.",
         "/release [user]: Removes a player from probation in Mafia.",
-	"/detainlist [search term]: Searches the detainlist, show full list if no search term is entered.",
+        "/detainlist [search term]: Searches the detainlist, show full list if no search term is entered.",
         "/passauth [target]: Passes your mods to another megauser (only for mega-mods) or to your online alt.",
         "/passauths [target]: Passes your mods silently.",
         "/banlist [search term]: Searches the banlist, shows full list if no search term is entered.",
