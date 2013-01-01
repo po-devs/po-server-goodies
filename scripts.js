@@ -3757,10 +3757,15 @@ adminCommand: function(src, command, commandData, tar) {
             }
             return true;
         });
-        if (!unban)
+        if (!unban) {
             normalbot.sendChanMessage(src, "No match.");
-        else
-            sys.writeToFile("nameBans.json", JSON.stringify(nameBans));
+        } else {
+            var serialized = {nameBans: []};
+            for (var i = 0; i < nameBans.length; ++i) {
+                serialized.nameBans.push(nameBans[i].source);
+            }
+            sys.writeToFile("nameBans.json", JSON.stringify(serialized);
+        }
         return;
     }
     if (command == "namewarn") {
