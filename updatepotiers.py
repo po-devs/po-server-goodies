@@ -25,7 +25,7 @@ SPECIAL_CUTOFFS = {"Wifi UU": 3.5}
 
 BANLIST = {
     "Wifi OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Excadrill", "Blaziken", "Garchomp", "Thundurus", "Kyurem-W"], # Ubers
-    "Wifi UU": ["Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Wobbuffet", "Deoxys-D", "Thundurus-T", "Tornadus-T", "Landorus-T", "Keldeo", "Chansey", "Kyurem-B", "Hydreigon", "Gothitelle"], # BL
+    "Wifi UU": ["Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Wobbuffet", "Deoxys-D", "Thundurus-T", "Tornadus-T", "Landorus-T", "Keldeo", "Chansey", "Hydreigon", "Gothitelle"], # BL
     "Wifi LU": ["Cresselia", "Gorebyss", "Huntail", "Victini", "Rhyperior", "Virizion", "Sharpedo", "Meloetta"], # BL2
     "Wifi NU": ["Durant", "Feraligatr", "Gligar", "Hitmonlee", "Scolipede", "Jynx", "Druddigon", "Gothitelle", "Venomoth"], # BL3
     "Wifi NEU": ["Mandibuzz"], # BL4
