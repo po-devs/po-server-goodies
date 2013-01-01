@@ -3764,7 +3764,7 @@ adminCommand: function(src, command, commandData, tar) {
             for (var i = 0; i < nameBans.length; ++i) {
                 serialized.nameBans.push(nameBans[i].source);
             }
-            sys.writeToFile("nameBans.json", JSON.stringify(serialized);
+            sys.writeToFile("nameBans.json", JSON.stringify(serialized));
         }
         return;
     }
