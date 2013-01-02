@@ -5,7 +5,7 @@
     },
     "2-1-2013": {
         "tier": "GSC OU",
-        "settings": {}
+        "settings": {"type":"single"}
     },
     "3-1-2013": {
         "tier": "Monotype",
