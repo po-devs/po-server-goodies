@@ -1020,6 +1020,13 @@ function getEventTour(datestring) {
                             return true;
                         }
                     }
+                    else if (cmp(parameterset, "type")) {
+                        if (cmp(parametervalue, "single")) {
+                            parameters.type = "single";
+                        } else {
+                            parameters.type = "double";
+                        }
+                    }
                     else {
                         sendBotAll("Warning! The parameter '"+parameterset+"' does not exist!", tourserrchan, false);
                     }
