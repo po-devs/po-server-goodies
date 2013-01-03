@@ -842,7 +842,7 @@ function Mafia(mafiachan) {
         return noPlayer;
     };
     this.saveStalkLog = function () {
-        if (this.state !== "blank" && this.state !== "voting" && currentStalk.length > 0) {
+        if (this.state !== "blank" && currentStalk.length > 0) {
             var lastLog = currentStalk.join("::**::");
             stalkLogs.unshift(lastLog);
             if (stalkLogs.length > 10) {
@@ -3574,8 +3574,11 @@ function Mafia(mafiachan) {
             push: [this.pushUser, "To push users to a Mafia game."],
             slay: [this.slayUser, "To slay users in a Mafia game."],
             shove: [this.slayUser, "To remove users before a game starts."],
+	    detain [name]:reason:# of games [this.detainUser, "To make a player sit out for a certain number of games."],
+	    undetain: [this.undetainUser, "To let someone out of detainment early."],
+	    release: [this.releaseUser, "To let someone out of detainment early."],
             end: [this.endGame, "To cancel a Mafia game!"],
-			mafiatest: [this.announceTest, "To gather people to test a theme on PO2."],
+	    mafiatest: [this.announceTest, "To gather people to test a theme on PO2."],
             readlog: [this.readStalkLog, "To read the log of actions from a previous game"],
             add: [this.addTheme, "To add a Mafia Theme!"],
             remove: [this.removeTheme, "To remove a Mafia Theme!"],
