@@ -238,7 +238,7 @@ function sendNotice() {
         if (resp.length < 1){
             return;
         }
-        var channels = ["Tohjo Falls", "Trivia", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview"];
+        var channels = ["Tohjo Falls", "Trivia", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview", "Mafia", "Hangman"];
         for (var i = 0; i < channels.length; i++){
             sys.sendHtmlAll(resp, sys.channelId(channels[i]));
         }
@@ -1631,7 +1631,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         }[type];
 
         var expires = 0;
-        var defaultTime = {"mute": "24h", "mban": "7d", "smute": "0"}[type];
+        var defaultTime = {"mute": "24h", "mban": "1d", "smute": "0"}[type];
         var reason = "";
         var timeString = "";
         var tindex = 10;
@@ -1659,7 +1659,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
 
         var secs = getSeconds(data.length > tindex ? data[tindex] : defaultTime);
         // limit it!
-        if (typeof maxTime == "number") secs = secs > maxTime ? maxTime : secs;
+        if (typeof maxTime == "number") {secs = (secs > maxTime || secs === 0) ? maxTime : secs;
         if (secs > 0) {
             timeString = " for " + getTimeString(secs);
             expires = secs + parseInt(sys.time(), 10);
