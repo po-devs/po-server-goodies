@@ -3599,7 +3599,7 @@ function Mafia(mafiachan) {
         } else {
             command = message.substr(0).toLowerCase();
         }   
-        if (channel != mafiachan && ["mafiaban","mafiaunban","mafiabans","detained","detainlist"].indexOf(command) === -1)
+        if (channel != mafiachan && ["detain","undetain","release","mafiaban","mafiaunban","mafiabans","detained","detainlist"].indexOf(command) === -1)
             return;
         try {
             mafia.handleCommandOld(src, command, commandData, channel);
