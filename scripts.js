@@ -1659,7 +1659,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
 
         var secs = getSeconds(data.length > tindex ? data[tindex] : defaultTime);
         // limit it!
-        if (typeof maxTime == "number") secs = (secs > maxTime || secs === 0) ? maxTime : secs;
+        if (typeof maxTime == "number") secs = (secs > maxTime || secs === 0 || isNaN(secs)) ? maxTime : secs;
         if (secs > 0) {
             timeString = " for " + getTimeString(secs);
             expires = secs + parseInt(sys.time(), 10);
