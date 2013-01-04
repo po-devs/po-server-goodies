@@ -4330,23 +4330,30 @@ return;
 
     // we can always slay them :3
     this.onMute = function (src) {
-        if (this.state != "day") {
-            this.slayUser(Config.capsbot, sys.name(src));
-        } else {
-            mafia.usersToSlay.push(sys.name(src));
+        if (this.isInGame(sys.name(src))) {
+            if (this.state != "day") {
+                this.slayUser(Config.capsbot, sys.name(src));
+            } else {
+                mafia.usersToSlay.push(sys.name(src));
+            }
         }
     };
 
     this.onMban = function (src) {
-        this.slayUser(Config.Mafia.bot, sys.name(src));
-        sys.kick(src, mafiachan);
+        if (this.isInGame(sys.name(src))) {
+            this.slayUser(Config.Mafia.bot, sys.name(src));
+            if (sys.isInChannel(src, mafiachan))
+                sys.kick(src, mafiachan);
+        }
     };
 
     this.onKick = function (src) {
-        if (this.state != "day") {
-            this.slayUser(Config.kickbot, sys.name(src));
-        } else {
-            mafia.usersToSlay.push(sys.name(src));
+        if (this.isInGame(sys.name(src))) {
+            if (this.state != "day") {
+                this.slayUser(Config.kickbot, sys.name(src));
+            } else {
+                mafia.usersToSlay.push(sys.name(src));
+            }
         }
     };
 
