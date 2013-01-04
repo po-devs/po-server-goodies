@@ -398,7 +398,7 @@ TriviaGame.prototype.finalizeAnswers = function()
                 if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|anus|boner|\btits\b|condom|\brape\b/gi.test(tanswer)) {
                     if (sys.existChannel("Victory Road"))
                         triviabot.sendAll("Warning: Player "+name+" answered '"+tanswer+"' to the question '"+triviaq.get(this.roundQuestion).question+"' in #Trivia", sys.channelId("Victory Road"));
-                    triviabot.sendAll("Warning: Player "+name+" answered '"+tanswer+"' to the question '"+triviaq.get(this.roundQuestion).question+"' in #Trivia", recvhan;
+                    triviabot.sendAll("Warning: Player "+name+" answered '"+tanswer+"' to the question '"+triviaq.get(this.roundQuestion).question+"' in #Trivia", recvhan);
                 }
             }
         }
