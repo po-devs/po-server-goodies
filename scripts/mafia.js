@@ -842,7 +842,7 @@ function Mafia(mafiachan) {
         return noPlayer;
     };
     this.saveStalkLog = function () {
-        if (this.state !== "blank" && currentStalk.length > 0) {
+        if (this.state !== "blank" && this.state !== "voting" && currentStalk.length > 0) {
             var lastLog = currentStalk.join("::**::");
             stalkLogs.unshift(lastLog);
             if (stalkLogs.length > 10) {
@@ -1888,7 +1888,7 @@ function Mafia(mafiachan) {
             sendChanAll(border, mafiachan);
             sendChanAll("Times Up! :", mafiachan);
 
-            this.compilePhaseStalk("NIGHT");
+            this.compilePhaseStalk("NIGHT PHASE " + mafia.time.nights);
 
             var nightkill = false;
             var getTeam = function (role, commonTarget) {
@@ -2459,7 +2459,7 @@ function Mafia(mafiachan) {
         standby: function () {
             mafia.ticks = 30;
             
-            this.compilePhaseStalk("STANDBY");
+            this.compilePhaseStalk("STANDBY PHASE " + mafia.time.days);
 
             sendChanAll(border, mafiachan);
 
@@ -2513,6 +2513,8 @@ function Mafia(mafiachan) {
         day: function () {
             sendChanAll(border, mafiachan);
             sendChanAll("Times Up! :", mafiachan);
+            
+            this.compilePhaseStalk("VOTING PHASE " + mafia.time.days);
 
             var voted = {}, player, vote;
             for (var pname in mafia.votes) {
@@ -3844,6 +3846,7 @@ return;
                 } else {
                     sendChanAll("±Game:" + sys.name(src) + " voted for " + commandData + "!", mafiachan);
                 }
+                this.addPhaseStalkAction(sys.name(src), "vote", commandData);
                 this.votes[sys.name(src)] = commandData;
                 this.voteCount += 1;
 
