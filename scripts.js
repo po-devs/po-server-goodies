@@ -1375,31 +1375,13 @@ var commands = {
 
 poScript=({
 /* Executed every second */
-stepEvent: function() {
+step: function() {
     if (typeof callplugins == "function") callplugins("stepEvent");
     
     var date = new Date();
     if ((date.getUTCHours() === 0 || date.getUTCHours() ===  6 || date.getUTCHours() === 12 || date.getUTCHours() === 12) && date.getUTCMinutes === 0 && date.getUTCSeconds () === 0){
         sendNotice();
     }
-},
-
-repeatStepEvent: function(globalCounter) {
-    if (stepCounter != globalCounter) {
-        return;
-    }
-
-    stepCounter = stepCounter+1;
-    sys.callQuickly("script.repeatStepEvent(" + stepCounter + ")", 1000);
-
-    /* Using script. instead of this. so as to stop it when this function is removed */
-    script.stepEvent();
-},
-
-startStepEvent: function() {
-    stepCounter = 0;
-
-    this.repeatStepEvent(0);
 },
 
 serverStartUp : function() {
@@ -1410,8 +1392,6 @@ serverStartUp : function() {
 
 init : function() {
     lastMemUpdate = 0;
-    this.startStepEvent();
-
     bannedUrls = [];
 
     mafiachan = SESSION.global().channelManager.createPermChannel("Mafia", "Use /help to get started!");
