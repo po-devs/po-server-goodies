@@ -395,7 +395,7 @@ TriviaGame.prototype.finalizeAnswers = function()
             } else {
             	var tanswer = this.submittedAnswers[id].answer;
                 wrongAnswers.push("<span title='" + utilities.html_escape(name) + "'>" + utilities.html_escape(tanswer) + "</span>");
-                if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|anus|boner|\btits\b|condom|\brape\b/gi.test(tanswer)) {
+                if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|\banus|boner|\btits\b|condom|\brape\b/gi.test(tanswer)) {
                     if (sys.existChannel("Victory Road"))
                         triviabot.sendAll("Warning: Player "+name+" answered '"+tanswer+"' to the question '"+triviaq.get(this.roundQuestion).question+"' in #Trivia", sys.channelId("Victory Road"));
                     triviabot.sendAll("Warning: Player "+name+" answered '"+tanswer+"' to the question '"+triviaq.get(this.roundQuestion).question+"' in #Trivia", revchan);
