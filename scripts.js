@@ -1384,24 +1384,6 @@ stepEvent: function() {
     }
 },
 
-repeatStepEvent: function(globalCounter) {
-    if (stepCounter != globalCounter) {
-        return;
-    }
-
-    stepCounter = stepCounter+1;
-    sys.callQuickly("script.repeatStepEvent(" + stepCounter + ")", 1000);
-
-    /* Using script. instead of this. so as to stop it when this function is removed */
-    script.stepEvent();
-},
-
-startStepEvent: function() {
-    stepCounter = 0;
-
-    this.repeatStepEvent(0);
-},
-
 serverStartUp : function() {
     SESSION.global().startUpTime = parseInt(sys.time(), 10);
     scriptChecks = 0;
@@ -1410,8 +1392,6 @@ serverStartUp : function() {
 
 init : function() {
     lastMemUpdate = 0;
-    this.startStepEvent();
-
     bannedUrls = [];
 
     mafiachan = SESSION.global().channelManager.createPermChannel("Mafia", "Use /help to get started!");
