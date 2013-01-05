@@ -1375,7 +1375,7 @@ var commands = {
 
 poScript=({
 /* Executed every second */
-stepEvent: function() {
+step: function() {
     if (typeof callplugins == "function") callplugins("stepEvent");
     
     var date = new Date();
