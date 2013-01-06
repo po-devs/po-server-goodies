@@ -995,6 +995,19 @@ addOwnerCommand("updateafter", function(src, commandData, channel) {
     return;
 }, "Updates trivia after the current game is over");
 
+addOwnerCommand("basestatquestions", function(src, commandData, channel) { //this should maybe be removed later!
+    var pokemon = ["Terrakion","Politoed","Ferrothorn","Tentacruel","Espeon","Mamoswine","Gyarados","Heatran","Ninetales","Tyranitar","Darmanitan","Snorlax","Mienshao","Chandelure","Raikou","Nidoking","Kingdra","Arcanine","Crobat","Gligar","Slowking","Sceptile","Steelix","Tangrowth","Gallade","Clefable","Tornadus","Sandslash","Miltank","Qwilfish","Crustle","Sawk","Exeggutor","Bisharp","Torkoal","Emboar","Klinklang","Regirock","Tauros","Pinsir","Mienfoo","Porygon","Abra","Houndour","Snover"];
+    var baseStats = ["HP","Attack","Defense","Special Attack","Special Defense","Speed"];
+    var pokenum = pokemon.map(sys.pokeNum);
+    pokenum.forEach(function(num) {
+        for (var x = 0; x < 6; x++) {
+            triviaq.unsafeAdd("Pokemon", "What is " + sys.pokemon(num) + "'s base " + baseStats[x] + " stat?", sys.pokeBaseStats(num)[x]);
+        }
+    });
+    triviabot.sendMessage(src, "Base stat questions added! Remember to /savedb");
+    return;
+}, "Adds the base stat questions to trivia");
+
 /*addOwnerCommand("revertfrom", function(src, commandData, channel) {
 	commandData = commandData.split(":");
 	var fileTrivia = commandData[0], fileTrivReview = commandData[1];
