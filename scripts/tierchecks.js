@@ -1,5 +1,5 @@
 // Global variables inherited from scripts.js
-/*global breedingpokemons, dwpokemons, checkbot, normalbot, lcpokemons, staffchannel, pokeNatures */
+/*global breedingpokemons, dwpokemons, checkbot, normalbot, lcpokemons, staffchannel, pokeNatures, lcmoves */
 
 function TierChecker() {
     this.checkers = [];
@@ -37,7 +37,7 @@ TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent
 
 TierChecker.prototype.find_good_tier = function(src, team) {
     // TODO: write up
-    var testPath = ["Wifi LC", "DW LC", "Wifi LC Ubers", "Wifi NU", "Wifi LU", "Wifi UU", "Wifi OU", "No Preview OU", "Wifi Ubers", "No Preview Ubers", "Battle Factory", "Challenge Cup"];
+    var testPath = ["Wifi LC", "DW LC", "Wifi LC Ubers", "Wifi NU", "Wifi LU", "Wifi UU", "Wifi OU", "No Preview OU", "Wifi Ubers", "No Preview Ubers", "Challenge Cup"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
         if (sys.hasLegalTeamForTier(src, team, testtier) && this.has_legal_team_for_tier(src, team, testtier, true)) {
