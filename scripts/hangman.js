@@ -216,7 +216,7 @@ module.exports = function () {
         sendChanHtmlAll(" ", hangchan);
         var time = parseInt(sys.time(), 10);
         if (time > this.lastAdvertise + 60 * 20) {
-            lastAdvertise = time;
+            this.lastAdvertise = time;
             sys.sendAll("*** ************************************************************ ***", 0);
             sys.sendAll("±Game: A new game of Hangman started in #Hangman!", 0)
             sys.sendAll("*** ************************************************************ ***", 0);
