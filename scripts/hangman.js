@@ -26,7 +26,8 @@ module.exports = function () {
     var points;
     var misses;
     var answers;
-
+    
+    this.lastAdvertise = 0;
     this.guessCharacter = function (src, commandData) {
         if (sys.ip(src) === host) {
             sys.sendMessage(src, "±Game: You started the game, so you can't answer!", hangchan);
@@ -213,6 +214,13 @@ module.exports = function () {
         sendChanAll("±Hint: " + hint, hangchan);
         sendChanAll("*** ************************************************************ ***", hangchan);
         sendChanHtmlAll(" ", hangchan);
+        var time = parseInt(sys.time(), 10);
+        if (time > this.lastAdvertise + 60 * 20) {
+            lastAdvertise = time;
+            sys.sendAll("*** ************************************************************ ***", 0);
+            sys.sendAll("±Game: A new game of Hangman started in #Hangman!", 0)
+            sys.sendAll("*** ************************************************************ ***", 0);
+        }
     };
     this.applyPoints = function (src, p) {
         if (!points[sys.name(src)]) {
