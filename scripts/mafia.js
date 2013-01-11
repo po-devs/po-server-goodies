@@ -3875,28 +3875,28 @@ return;
         if (command == "passma") { //partially copied from tours.js
             var newname = commandData.toLowerCase();
             if (sys.dbIp(newname) === undefined) {
-                this.sendMessage(src,"This user doesn't exist!");
+                sys.sendMessage(src,"This user doesn't exist!");
                 return true;
             }
             if (!sys.dbRegistered(newname)) {
-                this.sendMessage(src,"That account isn't registered so you can't give it authority!");
+                sys.sendMessage(src,"That account isn't registered so you can't give it authority!");
                 return true;
             }
             if (sys.id(newname) === undefined) {
-                this.sendMessage(src,"The target is offline!");
+                sys.sendMessage(src,"The target is offline!");
                 return true;
             }
             if (sys.ip(sys.id(newname)) !== sys.ip(src)) {
-                this.sendMessage(src,"Both accounts must be on the same IP to switch!");
+                sys.sendMessage(src,"Both accounts must be on the same IP to switch!");
                 return true;
             }
             if (this.isMafiaAdmin(sys.id(newname))) {
-                this.sendMessage(src,"The target is already MA!");
+                sys.sendMessage(src,"The target is already MA!");
                 return true;
             }
             // now copied from /mafiaadmin and /mafiaadminoff
-            mafiaAdmins.remove(src);
-            mafiaAdmins.remove(src.toLowerCase());
+            mafiaAdmins.remove(sys.name(src));
+            mafiaAdmins.remove(sys.name(src).toLowerCase());
             mafiaAdmins.add(commandData.toLowerCase(), "");
             id = sys.id(commandData);
             if (id !== undefined)
