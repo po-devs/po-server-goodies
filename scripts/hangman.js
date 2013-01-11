@@ -80,10 +80,10 @@ module.exports = function () {
 
         if (currentWord.indexOf("_") === -1) {
             this.applyPoints(src, p + 2);
-            hangbot.sendAll("*** ************************************************************ ***", hangchan);
+            sys.sendAll("*** ************************************************************ ***", hangchan);
             hangbot.sendAll("" + sys.name(src) + " completed the word '" + currentWord.join("") + "'!", hangchan);
             this.countPoints();
-            hangbot.sendAll("*** ************************************************************ ***", hangchan);
+            sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
         } else {
             if (!correct) {
@@ -96,9 +96,9 @@ module.exports = function () {
                 this.applyPoints(src, p);
                 SESSION.users(src).hangmanTime = (new Date()).getTime() + answerDelay * 1000;
             } else {
-                hangbot.sendAll("*** ************************************************************ ***", hangchan);
+                sys.sendAll("*** ************************************************************ ***", hangchan);
                 hangbot.sendAll("HANGED! No one guessed the word '" + word.toUpperCase() + "' correctly, so the host (" + hostName + ") has won this game!", hangchan);
-                hangbot.sendAll("*** ************************************************************ ***", hangchan);
+                sys.sendAll("*** ************************************************************ ***", hangchan);
                 sendChanHtmlAll(" ", hangchan);
                 this.setWinner(hostName);
             }
@@ -136,10 +136,10 @@ module.exports = function () {
             p = Math.floor(p * 1.34);
             this.applyPoints(src, p);
 
-            hangbot.sendAll("*** ************************************************************ ***", hangchan);
+            sys.sendAll("*** ************************************************************ ***", hangchan);
             hangbot.sendAll("" + sys.name(src) + " answered correctly and got " + p + " points!", hangchan);
             this.countPoints();
-            hangbot.sendAll("*** ************************************************************ ***", hangchan);
+            sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
         } else {
             this.addMiss(src);
@@ -211,18 +211,18 @@ module.exports = function () {
         hostName = sys.name(src);
 
         sendChanHtmlAll(" ", hangchan);
-        hangbot.sendAll("*** ************************************************************ ***", hangchan);
+        sys.sendAll("*** ************************************************************ ***", hangchan);
         hangbot.sendAll(sys.name(src) + " started a new game of Hangman!", hangchan);
         hangbot.sendAll(currentWord.join(" "), hangchan);
         hangbot.sendAll(hint, hangchan);
-        hangbot.sendAll("*** ************************************************************ ***", hangchan);
+        sys.sendAll("*** ************************************************************ ***", hangchan);
         sendChanHtmlAll(" ", hangchan);
         var time = parseInt(sys.time(), 10);
         if (time > this.lastAdvertise + 60 * 20) {
             this.lastAdvertise = time;
-            hangbot.sendAll("*** ************************************************************ ***", 0);
+            sys.sendAll("*** ************************************************************ ***", 0);
             hangbot.sendAll("A new game of Hangman started in #Hangman!", 0)
-            hangbot.sendAll("*** ************************************************************ ***", 0);
+            sys.sendAll("*** ************************************************************ ***", 0);
         }
     };
     this.applyPoints = function (src, p) {
@@ -321,9 +321,9 @@ module.exports = function () {
     this.endGame = function (src) {
         if (word) {
             sendChanHtmlAll(" ", hangchan);
-            hangbot.sendAll("*** ************************************************************ ***", hangchan);
+            sys.sendAll("*** ************************************************************ ***", hangchan);
             hangbot.sendAll("" + sys.name(src) + " stopped the game!", hangchan);
-            hangbot.sendAll("*** ************************************************************ ***", hangchan);
+            sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
             word = undefined;
             winner = undefined;
