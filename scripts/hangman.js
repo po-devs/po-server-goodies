@@ -1,5 +1,5 @@
 /*jshint noarg:true, noempty:true, eqeqeq:true, bitwise:true, undef:true, curly:true, browser:true, indent:4, maxerr:50 */
-/*global sys:true, sendChanAll:true, sendChanHtmlAll:true, module:true, SESSION:true */
+/*global sys:true, hangbot.sendAll:true, sendChanHtmlAll:true, module:true, SESSION:true */
 module.exports = function () {
     var hangman = this;
     var hangchan;
@@ -27,32 +27,35 @@ module.exports = function () {
     var misses;
     var answers;
     
+    var Bot = require("bot.js").Bot;
+    var hangbot = new Bot("Unown");
+    
     this.lastAdvertise = 0;
     this.guessCharacter = function (src, commandData) {
         if (sys.ip(src) === host) {
-            sys.sendMessage(src, "±Game: You started the game, so you can't answer!", hangchan);
+            hangbot.sendMessage(src, "You started the game, so you can't answer!", hangchan);
             return;
         }
         if (!word) {
-            sys.sendMessage(src, "±Game: No game is running!", hangchan);
+            hangbot.sendMessage(src, "No game is running!", hangchan);
             return;
         }
         var now = (new Date()).getTime();
         if (now < SESSION.users(src).hangmanTime) {
-            sys.sendMessage(src, "±Game: You need to wait for another " + (Math.floor((SESSION.users(src).hangmanTime - now) / 1000) + 1) + " seconds before submitting another guess!", hangchan);
+            hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanTime - now) / 1000) + 1) + " seconds before submitting another guess!", hangchan);
             return;
         }
         var letter = commandData.toLowerCase();
         if (letter.length > 1) {
-            sys.sendMessage(src, "±Game: This is not a valid answer!", hangchan);
+            hangbot.sendMessage(src, "This is not a valid answer!", hangchan);
             return;
         }
         if ("abcdefghijklmnopqrstuvwxyz".indexOf(letter) === -1) {
-            sys.sendMessage(src, "±Game: This is not a valid answer!", hangchan);
+            hangbot.sendMessage(src, "This is not a valid answer!", hangchan);
             return;
         }
         if (usedLetters.indexOf(letter) >= 0) {
-            sys.sendMessage(src, "±Game: This letter was already used!", hangchan);
+            hangbot.sendMessage(src, "This letter was already used!", hangchan);
             return;
         }
 
@@ -73,14 +76,14 @@ module.exports = function () {
 
         usedLetters.push(commandData.toLowerCase());
         sendChanHtmlAll(" ", hangchan);
-        sendChanAll("±Guess: " + sys.name(src) + " guessed " + letter.toUpperCase() + " and got it " + (correct ? "right (" + p + " points)" :"wrong") + "! Current Word: " + currentWord.join(" ") + "", hangchan);
+        hangbot.sendAll("" + sys.name(src) + " guessed " + letter.toUpperCase() + " and got it " + (correct ? "right (" + p + " points)" :"wrong") + "! Current Word: " + currentWord.join(" ") + "", hangchan);
 
         if (currentWord.indexOf("_") === -1) {
             this.applyPoints(src, p + 2);
-            sendChanAll("*** ************************************************************ ***", hangchan);
-            sendChanAll("±Game: " + sys.name(src) + " completed the word '" + currentWord.join("") + "'!", hangchan);
+            hangbot.sendAll("*** ************************************************************ ***", hangchan);
+            hangbot.sendAll("" + sys.name(src) + " completed the word '" + currentWord.join("") + "'!", hangchan);
             this.countPoints();
-            sendChanAll("*** ************************************************************ ***", hangchan);
+            hangbot.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
         } else {
             if (!correct) {
@@ -88,14 +91,14 @@ module.exports = function () {
                 parts--;
             }
             if (parts > 0) {
-                sendChanAll("±Game: [Hint: " + hint + "]  [Letters used: " +  usedLetters.map(function (x) { return x.toUpperCase(); }).join(", ") + "]  [Chances left: " + parts + "] ", hangchan);
+                hangbot.sendAll("[Hint: " + hint + "]  [Letters used: " +  usedLetters.map(function (x) { return x.toUpperCase(); }).join(", ") + "]  [Chances left: " + parts + "] ", hangchan);
                 sendChanHtmlAll(" ", hangchan);
                 this.applyPoints(src, p);
                 SESSION.users(src).hangmanTime = (new Date()).getTime() + answerDelay * 1000;
             } else {
-                sendChanAll("*** ************************************************************ ***", hangchan);
-                sendChanAll("±Game: HANGED! No one guessed the word '" + word.toUpperCase() + "' correctly, so the host (" + hostName + ") has won this game!", hangchan);
-                sendChanAll("*** ************************************************************ ***", hangchan);
+                hangbot.sendAll("*** ************************************************************ ***", hangchan);
+                hangbot.sendAll("HANGED! No one guessed the word '" + word.toUpperCase() + "' correctly, so the host (" + hostName + ") has won this game!", hangchan);
+                hangbot.sendAll("*** ************************************************************ ***", hangchan);
                 sendChanHtmlAll(" ", hangchan);
                 this.setWinner(hostName);
             }
@@ -103,26 +106,26 @@ module.exports = function () {
     };
     this.submitAnswer = function (src, commandData) {
         if (sys.ip(src) === host) {
-            sys.sendMessage(src, "±Game: You started the game, so you can't answer!", hangchan);
+            hangbot.sendMessage(src, "You started the game, so you can't answer!", hangchan);
             return;
         }
         if (!word) {
-            sys.sendMessage(src, "±Game: No game is running!", hangchan);
+            hangbot.sendMessage(src, "No game is running!", hangchan);
             return;
         }
         var now = (new Date()).getTime();
         if (now < SESSION.users(src).hangmanTime) {
-            sys.sendMessage(src, "±Game: You need to wait for another " + (Math.floor((SESSION.users(src).hangmanTime - now) / 1000) + 1) + " seconds before submitting another guess!", hangchan);
+            hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanTime - now) / 1000) + 1) + " seconds before submitting another guess!", hangchan);
             return;
         }
         if (sys.name(src) in answers && answers[sys.name(src)] >= maxAnswers) {
-            sys.sendMessage(src, "±Game: You can only use /a " + maxAnswers + " times!", hangchan);
+            hangbot.sendMessage(src, "You can only use /a " + maxAnswers + " times!", hangchan);
             return;
         }
         var ans = commandData.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g,'');
 
         sendChanHtmlAll(" ", hangchan);
-        sendChanAll("±Game: " + sys.name(src) + " answered " + ans + "!", hangchan);
+        hangbot.sendAll("" + sys.name(src) + " answered " + ans + "!", hangchan);
         if (ans.toLowerCase() === word.toLowerCase()) {
             var p = 0, e;
             for (e in currentWord) {
@@ -133,26 +136,26 @@ module.exports = function () {
             p = Math.floor(p * 1.34);
             this.applyPoints(src, p);
 
-            sendChanAll("*** ************************************************************ ***", hangchan);
-            sendChanAll("±Game: " + sys.name(src) + " answered correctly and got " + p + " points!", hangchan);
+            hangbot.sendAll("*** ************************************************************ ***", hangchan);
+            hangbot.sendAll("" + sys.name(src) + " answered correctly and got " + p + " points!", hangchan);
             this.countPoints();
-            sendChanAll("*** ************************************************************ ***", hangchan);
+            hangbot.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
         } else {
             this.addMiss(src);
             this.addAnswerUse(src);
-            sendChanAll("±Game: " + sys.name(src) + "'s answer was wrong! The game continues!", hangchan);
+            hangbot.sendAll("" + sys.name(src) + "'s answer was wrong! The game continues!", hangchan);
             sendChanHtmlAll(" ", hangchan);
             SESSION.users(src).hangmanTime = (new Date()).getTime() + answerDelay * 2000;
         }
     };
     this.startGame = function (src, commandData) {
         if (word) {
-            sys.sendMessage(src, "±Game: A game is already running! You can start a new one once this game is over!", hangchan);
+            hangbot.sendMessage(src, "A game is already running! You can start a new one once this game is over!", hangchan);
             return;
         }
         if (winner && (new Date()).getTime() < nextGame && sys.name(src).toLowerCase() !== winner.toLowerCase()) {
-            sys.sendMessage(src, "±Game: Only the last winner can start a game! If the winner takes more than " + winnerDelay + " seconds, anyone can start a new game!", hangchan);
+            hangbot.sendMessage(src, "Only the last winner can start a game! If the winner takes more than " + winnerDelay + " seconds, anyone can start a new game!", hangchan);
             return;
         }
         var a = commandData.split(":")[0];
@@ -160,7 +163,7 @@ module.exports = function () {
         var p = commandData.split(":")[2];
 
         if (!a) {
-            sys.sendMessage(src, "±Game: You need to choose a word!", hangchan);
+            hangbot.sendMessage(src, "You need to choose a word!", hangchan);
             return;
         }
         var validCharacters = "abcdefghijklmnopqrstuvwxyz", validAnswer = false, l;
@@ -171,16 +174,16 @@ module.exports = function () {
             }
         }
         if (!validAnswer) {
-            sys.sendMessage(src, "±Game: Answer must containt at least one valid letter (A-Z characters)!", hangchan);
+            hangbot.sendMessage(src, "Answer must containt at least one valid letter (A-Z characters)!", hangchan);
             return;
         }
         if (!h) {
-            sys.sendMessage(src, "±Game: You need to write a hint!", hangchan);
+            hangbot.sendMessage(src, "You need to write a hint!", hangchan);
             return;
         }
         a = a.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g,'').toLowerCase();
         if (a.length > 60 || a.length < 4) {
-            sys.sendMessage(src, "±Game: Your answer cannot be longer than 60 characters or shorter than 4 characters!", hangchan);
+            hangbot.sendMessage(src, "Your answer cannot be longer than 60 characters or shorter than 4 characters!", hangchan);
             return;
         }
         hint = h;
@@ -208,18 +211,18 @@ module.exports = function () {
         hostName = sys.name(src);
 
         sendChanHtmlAll(" ", hangchan);
-        sendChanAll("*** ************************************************************ ***", hangchan);
-        sendChanAll("±Game: " + sys.name(src) + " started a new game of Hangman!", hangchan);
-        sendChanAll("±Word: " + currentWord.join(" "), hangchan);
-        sendChanAll("±Hint: " + hint, hangchan);
-        sendChanAll("*** ************************************************************ ***", hangchan);
+        hangbot.sendAll("*** ************************************************************ ***", hangchan);
+        hangbot.sendAll(sys.name(src) + " started a new game of Hangman!", hangchan);
+        hangbot.sendAll(currentWord.join(" "), hangchan);
+        hangbot.sendAll(hint, hangchan);
+        hangbot.sendAll("*** ************************************************************ ***", hangchan);
         sendChanHtmlAll(" ", hangchan);
         var time = parseInt(sys.time(), 10);
         if (time > this.lastAdvertise + 60 * 20) {
             this.lastAdvertise = time;
-            sys.sendAll("*** ************************************************************ ***", 0);
-            sys.sendAll("±Game: A new game of Hangman started in #Hangman!", 0)
-            sys.sendAll("*** ************************************************************ ***", 0);
+            hangbot.sendAll("*** ************************************************************ ***", 0);
+            hangbot.sendAll("A new game of Hangman started in #Hangman!", 0)
+            hangbot.sendAll("*** ************************************************************ ***", 0);
         }
     };
     this.applyPoints = function (src, p) {
@@ -281,12 +284,12 @@ module.exports = function () {
         } else {
             w = winners[0];
         }
-        sendChanAll("±Game: " + w + " has won this game with " + maxPoints + " points!", hangchan);
+        hangbot.sendAll("" + w + " has won this game with " + maxPoints + " points!", hangchan);
         var ranking = [], p;
         for (p in points) {
             ranking.push(p + " (" + points[p] + " points" + (p in misses ? ", " + misses[p] + " miss(es)" : "") + ")");
         }
-        sendChanAll("±Results: " + ranking.join(", "), hangchan);
+        hangbot.sendAll("±Results: " + ranking.join(", "), hangchan);
         this.setWinner(w);
     };
     this.setWinner = function (name) {
@@ -297,36 +300,36 @@ module.exports = function () {
     };
     this.passWinner = function(src, commandData) {
         if (word !== undefined) {
-            sys.sendMessage(src, "A game is already running!", hangchan);
+            hangbot.sendMessage(src, "A game is already running!", hangchan);
             return;
         }
         if (sys.name(src) !== winner && hangman.authLevel(src) < 1) {
-            sys.sendMessage(src, "You are not the last winner or auth!", hangchan);
+            hangbot.sendMessage(src, "You are not the last winner or auth!", hangchan);
             return;
         }
         if (hangman.authLevel(src)< 1 && (new Date()).getTime() > nextGame) {
-            sys.sendMessage(src, winnerDelay + " seconds already passed! Anyone can start a game now!", hangchan);
+            hangbot.sendMessage(src, winnerDelay + " seconds already passed! Anyone can start a game now!", hangchan);
             return;
         }
         if (sys.id(commandData) == undefined || !sys.isInChannel(sys.id(commandData), hangchan) || sys.name(sys.id(commandData)) == winner) {
-            sys.sendMessage(src, "You cannot pass start rights to this person!", hangchan);
+            hangbot.sendMessage(src, "You cannot pass start rights to this person!", hangchan);
             return;
         }
         this.setWinner(sys.name(sys.id(commandData)));
-        sendChanAll("±Game: " + sys.name(src) + " has passed starting rights to " + commandData + "!", hangchan);
+        hangbot.sendAll("" + sys.name(src) + " has passed starting rights to " + commandData + "!", hangchan);
     };
     this.endGame = function (src) {
         if (word) {
             sendChanHtmlAll(" ", hangchan);
-            sendChanAll("*** ************************************************************ ***", hangchan);
-            sendChanAll("±Game: " + sys.name(src) + " stopped the game!", hangchan);
-            sendChanAll("*** ************************************************************ ***", hangchan);
+            hangbot.sendAll("*** ************************************************************ ***", hangchan);
+            hangbot.sendAll("" + sys.name(src) + " stopped the game!", hangchan);
+            hangbot.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
             word = undefined;
             winner = undefined;
             this.resetTimers();
         } else {
-            sys.sendMessage(src, "±Game: No game is running!", hangchan);
+            hangbot.sendMessage(src, "No game is running!", hangchan);
         }
     };
     this.resetTimers = function () {
@@ -337,7 +340,7 @@ module.exports = function () {
     };
     this.viewGame = function (src) {
         if (!word) {
-            sys.sendMessage(src, "±Game: No game is running!", hangchan);
+            hangbot.sendMessage(src, "No game is running!", hangchan);
             return;
         }
         sys.sendHtmlMessage(src, " ", hangchan);
@@ -372,7 +375,7 @@ module.exports = function () {
             ""
         ];
         for (x in help) {
-            sys.sendMessage(src, help[x], hangchan);
+            hangbot.sendMessage(src, help[x], hangchan);
         }
     };
     this.configGame = function (src, commandData) {
@@ -380,16 +383,16 @@ module.exports = function () {
         var val = commandData.split(":")[1];
         if (!param || !val) {
             sys.sendHtmlMessage(src, " ", hangchan);
-            sys.sendMessage(src, "±How to use /config: Use /config [parameter]:[value]. Possible parameters are:", hangchan);
-            sys.sendMessage(src, "chances: Set minimum number of chances for any game (currently set to " + minBodyParts + " chances). ", hangchan);
-            sys.sendMessage(src, "delay: Set delay (in seconds) between each guess. Full answers take double the time (currently set to " + answerDelay + " seconds). ", hangchan);
-            sys.sendMessage(src, "winner: Set how many seconds the winner of a game have to start a new one before anyone can start (currently set to " + winnerDelay + " seconds). ", hangchan);
-            sys.sendMessage(src, "answers: Set how many times each player can use /a (currently set to " + maxAnswers + " seconds). ", hangchan);
+            hangbot.sendMessage(src, "±How to use /config: Use /config [parameter]:[value]. Possible parameters are:", hangchan);
+            hangbot.sendMessage(src, "chances: Set minimum number of chances for any game (currently set to " + minBodyParts + " chances). ", hangchan);
+            hangbot.sendMessage(src, "delay: Set delay (in seconds) between each guess. Full answers take double the time (currently set to " + answerDelay + " seconds). ", hangchan);
+            hangbot.sendMessage(src, "winner: Set how many seconds the winner of a game have to start a new one before anyone can start (currently set to " + winnerDelay + " seconds). ", hangchan);
+            hangbot.sendMessage(src, "answers: Set how many times each player can use /a (currently set to " + maxAnswers + " seconds). ", hangchan);
             sys.sendHtmlMessage(src, " ", hangchan);
             return;
         }
         if (parseInt(val, 10) <= 0) {
-            sys.sendMessage(src, "±Game: Value must be a valid number!", hangchan);
+            hangbot.sendMessage(src, "Value must be a valid number!", hangchan);
             return;
         }
         val = parseInt(val, 10);
@@ -397,19 +400,19 @@ module.exports = function () {
         switch (param.toLowerCase()) {
         case "chances":
             minBodyParts = val;
-            sys.sendMessage(src, "±Game: Minimum chances set to " + val + ".", hangchan);
+            hangbot.sendMessage(src, "Minimum chances set to " + val + ".", hangchan);
             break;
         case "delay":
             answerDelay = val;
-            sys.sendMessage(src, "±Game: Delay between guesses set to " + val + " second(s).", hangchan);
+            hangbot.sendMessage(src, "Delay between guesses set to " + val + " second(s).", hangchan);
             break;
         case "winner":
             winnerDelay = val;
-            sys.sendMessage(src, "±Game: Winner will have " + val + " second(s) to start a new game.", hangchan);
+            hangbot.sendMessage(src, "Winner will have " + val + " second(s) to start a new game.", hangchan);
             break;
         case "answers":
             maxAnswers = val;
-            sys.sendMessage(src, "±Game: Players can use /a " + val + " time per game.", hangchan);
+            hangbot.sendMessage(src, "Players can use /a " + val + " time per game.", hangchan);
             break;
         }
     };
@@ -474,7 +477,7 @@ module.exports = function () {
             throw ("No valid command");
         } catch (e) {
             if (e !== "No valid command") {
-                sendChanAll("Error on hangman command: " + e, hangchan);
+                hangbot.sendAll("Error on hangman command: " + e, hangchan);
                 return true;
             }
         }
