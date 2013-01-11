@@ -1,5 +1,5 @@
 /*jshint noarg:true, noempty:true, eqeqeq:true, bitwise:true, undef:true, curly:true, browser:true, indent:4, maxerr:50 */
-/*global sys:true, hangbot.sendAll:true, sendChanHtmlAll:true, module:true, SESSION:true */
+/*global sys:true, sendChanHtmlAll:true, module:true, SESSION:true */
 module.exports = function () {
     var hangman = this;
     var hangchan;
