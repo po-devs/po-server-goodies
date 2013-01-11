@@ -3356,7 +3356,7 @@ function Mafia(mafiachan) {
             disable: [this.disableTheme, "To disable a Mafia Theme!"],
             enable: [this.enableTheme, "To enable a disabled Mafia Theme!"],
             updateafter: [this.updateAfter, "To update mafia after current game!"],
-            importold: [this.importOld, ""],
+            importold: [this.importOld, ""]
         }
     };
     this.handleCommand = function (src, message, channel) {
@@ -3874,7 +3874,6 @@ return;
         var id;
         if (command == "passma") { //partially copied from tours.js
             var newname = commandData.toLowerCase();
-            var MAs = mafiaAdmins.hash;
             if (sys.dbIp(newname) === undefined) {
                 this.sendMessage(src,"This user doesn't exist!");
                 return true;
@@ -4000,7 +3999,6 @@ return;
                     var values = mh.hash[ip].split(":");
                     var games = 0;
                     var by = "";
-                    var expires = 0;
                     var banned_name;
                     var reason = "";
                     if (values.length >= 4) {
