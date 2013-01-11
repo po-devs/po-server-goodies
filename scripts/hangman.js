@@ -289,7 +289,7 @@ module.exports = function () {
         for (p in points) {
             ranking.push(p + " (" + points[p] + " points" + (p in misses ? ", " + misses[p] + " miss(es)" : "") + ")");
         }
-        hangbot.sendAll("±Results: " + ranking.join(", "), hangchan);
+        sys.sendAll("±Results: " + ranking.join(", "), hangchan);
         this.setWinner(w);
     };
     this.setWinner = function (name) {
@@ -375,7 +375,7 @@ module.exports = function () {
             ""
         ];
         for (x in help) {
-            hangbot.sendMessage(src, help[x], hangchan);
+            sys.sendMessage(src, help[x], hangchan);
         }
     };
     this.configGame = function (src, commandData) {
@@ -383,7 +383,7 @@ module.exports = function () {
         var val = commandData.split(":")[1];
         if (!param || !val) {
             sys.sendHtmlMessage(src, " ", hangchan);
-            hangbot.sendMessage(src, "±How to use /config: Use /config [parameter]:[value]. Possible parameters are:", hangchan);
+            hangbot.sendMessage(src, "How to use /config: Use /config [parameter]:[value]. Possible parameters are:", hangchan);
             hangbot.sendMessage(src, "chances: Set minimum number of chances for any game (currently set to " + minBodyParts + " chances). ", hangchan);
             hangbot.sendMessage(src, "delay: Set delay (in seconds) between each guess. Full answers take double the time (currently set to " + answerDelay + " seconds). ", hangchan);
             hangbot.sendMessage(src, "winner: Set how many seconds the winner of a game have to start a new one before anyone can start (currently set to " + winnerDelay + " seconds). ", hangchan);
