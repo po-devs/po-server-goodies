@@ -3211,6 +3211,7 @@ function Mafia(mafiachan) {
         }
     }; // End showCurrentPlayers()
 
+	
     this.trimplayers = function (src, cutoff) {
         if (!cutoff) {
             sys.sendMessage(src, "You must specify how long a player hasn't played a game to be deleted.");
@@ -4105,6 +4106,41 @@ return;
             script.modCommand(src, command, commandData, tar);
             return;
         }
+		var ID; // to differ from lowercase var id for sMA command
+	if (command == "passma") { //partially copied from tours.js
+		var newname = commandData.toLowerCase();
+		var MAs = mafiaAdmins.hash;
+				if (sys.dbIp(newname) === undefined) {
+					this.sendMessage(src,"This user doesn't exist!")
+					return true;
+				}
+				if (!sys.dbRegistered(newname)) {
+					this.sendMessage(src,"That account isn't registered so you can't give it authority!")
+					return true;
+				}
+                if (sys.id(newname) === undefined) {
+                    this.sendMessage(src,"The target is offline!")
+                    return true;
+                }
+                if (sys.ip(sys.id(newname)) !== sys.ip(src)) {
+                    this.sendMessage(src,"Both accounts must be on the same IP to switch!")
+                    return true;
+                }
+                if (this.isMafiaAdmin(sys.id(newname))) {
+                    this.sendMessage(src,"The target is already MA!")
+                    return true;
+                }
+		// now copied from /mafiaadmin and /mafiaadminoff 
+            mafiaAdmins.remove(src);
+            mafiaAdmins.remove(src.toLowerCase());
+            mafiaAdmins.add(commandData.toLowerCase(), "");
+            ID = sys.id(commandData);
+            if (ID !== undefined)
+                SESSION.users(ID).mafiaAdmin = true;
+            sys.sendMessage(src, "±Game: Your auth has been transferred!", mafiachan);
+            sys.sendAll("±Murkrow: " + sys.name(src) + " passed their Mafia auth to " + commandData, sys.channelId('Victory Road'));
+            return;
+	}
         
         if (command == "detain") {
             var name = commandData.split(':')[0];
