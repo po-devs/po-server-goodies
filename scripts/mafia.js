@@ -2648,24 +2648,20 @@ function Mafia(mafiachan) {
             sendChanAll("Error occurred in mafia while handling the end of '" + state + "' phase: " + e, mafiachan);
         }
     };
-if (command == "commands") {
-    if (commandData == undefined) {
-	    sendChanMessage(src, "*** Mafia Commands ***");
-		if(this.isMafiaAdmin || this.isMafiaSuperAdmin || sys.auth(src) > 0) {
-		    for(x = 0; x < mcommands.user.length; ++x){
-			    sendChanMessage(src, mcommands.user[x]);
-				}
-			for(x = 0; x <mcommands.auth.length; ++x) {
-			    sendChanMessage(src,mcommands.auth[x]);
-				}
-			}
-		else{
-		    for(x = 0; x < mcommands.user.length; ++x){
-			    sendChanMessage(src, mcommands.user[x]);
-				}
-			}
-		}
-	};
+    this.showCommands = function (src) {
+        sys.sendMessage(src, "", mafiachan);
+        sys.sendMessage(src, "Server Commands:", mafiachan);
+        for (var x in mafia.commands.user) {
+            sys.sendMessage(src, "/" + cap(x) + " - " + mafia.commands.user[x][1], mafiachan);
+        }
+        if (sys.auth(src) > 0 || this.isMafiaAdmin(src)) {
+            sys.sendMessage(src, "Authority Commands:", mafiachan);
+            for (x in mafia.commands.auth) {
+                sys.sendMessage(src, "/" + cap(x) + " - " + mafia.commands.auth[x][1], mafiachan);
+            }
+        }
+        sys.sendMessage(src, "", mafiachan);
+    };
     this.showHelp = function (src) {
         var help = [
             "*** *********************************************************************** ***",
@@ -3592,47 +3588,6 @@ if (command == "commands") {
             trimplayers: [this.trimplayers, "To trim the master player list."]
         }
     };
-    var mcommands= {
-user: [
-" /Start - Start voting for a new game theme / or vote!"
-" /Votetheme - Start voting for a new game theme / or vote!"
-" /Starttheme - Starts a Game of Mafia with specified theme."
-" /Help - For info on how to win in a game."
-" /Roles - For info on all the Roles in the game."
-" /Sides - For info on all teams in the game."
-" /Myrole - To view again your role, help text and teammates."
-" /Rules - To see the Rules for the Game/Server."
-" /Themes - To view installed themes."
-" /Themeinfo - To view installed themes (more details)."
-" /Changelog - To view a theme's changelog (if it has one)"
-" /Details - To view info about a specific theme."
-" /Priority - To view the priority list of a theme. "
-" /Flashme - To get a alert when a new mafia game starts. Type /flashme help for more info."
-" /Playedgames - To view recently played games"
-" /Update - To update a Mafia Theme!"
-],
-auth: [
-" /Push - To push users to a Mafia game."
-" /Slay - To slay users in a Mafia game."
-" /Shove - To remove users before a game starts."
-" /End - To cancel a Mafia game!"
-" /detain:reason:# of game - To make a user sit out specified number of games."
-" /undetain - To allow a player to play again before their number of detained games is over."
-" /release - Same as undetain."
-" /Mafiatest - To gather people to test a theme on PO2."
-" /Readlog - To read the log of actions from a previous game"
-" /Add - To add a Mafia Theme!"
-" /Remove - To remove a Mafia Theme!"
-" /Disable - To disable a Mafia Theme!"
-" /Enable - To enable a disabled Mafia Theme!"
-" /Updateafter - To update mafia after current game!"
-" /Importold - "
-" /Showplayers - To show the list of current players in the game."
-" /Showlist - To view the master player list."
-" /Searchlist - To search the master list."
-" /Trimplayers - To trim the master player list."	
-]
-};
     this.handleCommand = function (src, message, channel) {     
         var command;
         var commandData = '*';
