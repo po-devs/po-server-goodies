@@ -2831,6 +2831,7 @@ function Mafia(mafiachan) {
             "±Rule: Do not botquote. Mafia is about convincing your fellow players of your role and working together, it defeats the purpose if you simply botquote.",
             "±Rule: Do not whine or rage. This is simply a game. If a theme comes up that you dislike, simply do not join it. No need to announce your dislike for it in the main chat. Additionally, childlike displays of anger will not be tolerated. Playful banter or taunting is one thing, outbursts of unpleasant words are another.",
             "±Rule: Do not ruin the game for others. Very straightforward. Ask yourself: Do my actions consistently prevent another user from enjoying this game? If the answer is yes, stop it. Do not group together, target others or be unpleasant.",
+            "±Rule: When joining make sure that your name is not able to be confused with someone else's.  Trying to impersonate someone is something that should not be done because this will ruin the game and can cause confusion.",
             "±Rule: Use your head. Again, this is straightforward and ties in with the above rules. By giving some foresight to your actions, you'll be able to eliminate virtually all negative incidents and be able to enjoy mafia with ease.",
             "",
             "±Game: Failure to obey these rules may result in punishment at the discretion of the mafia admins or authority members.",
