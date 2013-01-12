@@ -1,5 +1,5 @@
 // Global variables inherited from scripts.js
-/*global breedingpokemons, dwpokemons, checkbot, normalbot, lcpokemons, staffchannel, pokeNatures */
+/*global breedingpokemons, dwpokemons, checkbot, normalbot, lcpokemons, staffchannel, pokeNatures, lcmoves */
 
 function TierChecker() {
     this.checkers = [];
@@ -10,7 +10,7 @@ TierChecker.prototype.add_new_check = function(exclusive, tiers, checker) {
 };
 
 TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent) {
-    if (tier == "Challenge Cup" || tier == "Battle Factory" || tier == "CC 1v1" || tier == "Wifi CC 1v1") return true;
+    if (tier == "Challenge Cup" || tier == "Battle Factory" || tier == "CC 1v1" || tier == "Wifi CC 1v1" || tier == "Battle Factory 6v6") return true;
     if (!sys.hasLegalTeamForTier(src, team, tier)) return false;
 
     var complaints = [];
@@ -37,7 +37,7 @@ TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent
 
 TierChecker.prototype.find_good_tier = function(src, team) {
     // TODO: write up
-    var testPath = ["Wifi LC", "DW LC", "Wifi LC Ubers", "Wifi NU", "Wifi LU", "Wifi UU", "Wifi OU", "No Preview OU", "Wifi Ubers", "No Preview Ubers", "Battle Factory", "Challenge Cup"];
+    var testPath = ["Wifi LC", "DW LC", "Wifi LC Ubers", "Wifi NU", "Wifi LU", "Wifi UU", "Wifi OU", "No Preview OU", "Wifi Ubers", "No Preview Ubers", "Challenge Cup"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
         if (sys.hasLegalTeamForTier(src, team, testtier) && this.has_legal_team_for_tier(src, team, testtier, true)) {
@@ -53,7 +53,7 @@ TierChecker.prototype.find_good_tier = function(src, team) {
 var tier_checker = new TierChecker();
 var INCLUDING = false;
 var EXCLUDING = true;
-var challenge_cups = ["Challenge Cup", "CC 1v1", "Battle Factory"];
+var challenge_cups = ["Challenge Cup", "CC 1v1", "Battle Factory", "Battle Factory 6v6"];
 
 tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(src, team) {
     var ret = [];
@@ -255,6 +255,14 @@ tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU"], functio
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Snow Warning"){
             return ["Snow Warning is not allowed in " + tier + "."];
+        }
+    }
+});
+
+tier_checker.add_new_check(INCLUDING, ["Wifi UU"], function bannedPokes(src, team, tier) { //for bans that need to be done quickly and tiers cannot be updated right away
+    for (var i = 0; i < 6; ++i) {
+        if (sys.teamPoke(src, team, i) === sys.pokeNum("Kyurem-B")){
+            return ["Kyurem-B is banned in " + tier + "."];
         }
     }
 });

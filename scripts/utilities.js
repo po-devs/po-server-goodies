@@ -131,9 +131,7 @@ exports = {
     },
 
     non_flashing: function nonFlashing(name) {
-        return name;
-        // PO version 1.0.53 has a bug with zwsp due to (we think) qt.
-        /* return name[0] + '\u200b' + name.substr(1) */
+        return name[0] + '\u200b' + name.substr(1);
     },
 
     get_or_create_channel: function getOrCreateChannel(name) {

@@ -19,11 +19,15 @@ TIER_TREES = [
     ["Wifi LC", "Wifi LC UU"]
 ]
 
+# Cutoff percentages:
+DEFAULT_CUTOFF = 4.0
+SPECIAL_CUTOFFS = {"Wifi UU": 3.5}
+
 BANLIST = {
     "Wifi OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Excadrill", "Blaziken", "Garchomp", "Thundurus", "Kyurem-W"], # Ubers
-    "Wifi UU": ["Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Wobbuffet", "Deoxys-D", "Thundurus-T", "Tornadus-T", "Landorus-T", "Keldeo", "Chansey", "Kyurem-B", "Hydreigon", "Gothitelle"], # BL
-    "Wifi LU": ["Gorebyss", "Huntail", "Victini", "Rhyperior", "Virizion", "Sharpedo", "Meloetta"], # BL2
-    "Wifi NU": ["Cresselia", "Durant", "Feraligatr", "Gligar", "Hitmonlee", "Scolipede", "Jynx", "Druddigon", "Gothitelle", "Venomoth"], # BL3
+    "Wifi UU": ["Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Wobbuffet", "Deoxys-D", "Thundurus-T", "Tornadus-T", "Landorus-T", "Keldeo", "Chansey", "Hydreigon", "Gothitelle"], # BL
+    "Wifi LU": ["Cresselia", "Gorebyss", "Huntail", "Victini", "Rhyperior", "Virizion", "Sharpedo", "Meloetta"], # BL2
+    "Wifi NU": ["Durant", "Feraligatr", "Gligar", "Hitmonlee", "Scolipede", "Jynx", "Druddigon", "Gothitelle", "Venomoth"], # BL3
     "Wifi NEU": ["Mandibuzz"], # BL4
     "No Preview OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Blaziken", "Garchomp", "Chandelure", "Excadrill", "Kyurem-B", "Kyurem-W"], # DW Ubers
     "Wifi LC": ["Scyther", "Sneasel", "Yanma", "Tangela", "Vulpix", "Carvanha", "Gligar", "Meditite", "Scraggy"], # LC Ubers (in addition to all other pokemon...)
@@ -72,7 +76,8 @@ def update_tiers(tiers):
                 stats = get_ranked_stats(ban_parent)
                 tier_usage[ban_parent] = dict((s[0], float(s[1])) for s in stats)
 
-                tier_pokemon[ban_parent] = [entry[0] for entry in stats if float(entry[1]) >= 4.0]
+                cutoff = SPECIAL_CUTOFFS.get(tier, DEFAULT_CUTOFF)
+                tier_pokemon[ban_parent] = [entry[0] for entry in stats if float(entry[1]) >= cutoff]
 
             # Bans 
             parent_pokemon = tier_pokemon[ban_parent] if ban_parent else set()
@@ -86,7 +91,7 @@ def update_tiers(tiers):
             if grand_ban_parent:
                 # Calculate drops using very heuristic approach.
                 for pokemon in tier_usage[grand_ban_parent]:
-                    if pokemon not in (all_bans | pokemon_bans) and 0.1 < tier_usage[grand_ban_parent][pokemon] < 4.0 and tier_usage[ban_parent].get(pokemon, 0) * 20 < tier_usage[grand_ban_parent][pokemon]:
+                    if pokemon not in (all_bans | pokemon_bans) and 0.1 < tier_usage[grand_ban_parent][pokemon] < SPECIAL_CUTOFFS.get(ban_parent, DEFAULT_CUTOFF) and tier_usage[ban_parent].get(pokemon, 0) * 20 < tier_usage[grand_ban_parent][pokemon]:
                         drops.add(pokemon)
             pokemon_bans |= drops            
  

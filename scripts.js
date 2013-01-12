@@ -3,7 +3,7 @@
 
 // You may change these variables as long as you keep the same type
 var Config = {
-    base_url: "https://raw.github.com/po-scripters/po-server-goodies/master/",
+    base_url: "https://raw.github.com/po-devs/po-server-goodies/master/",
     dataDir: "scriptdata/",
     bot: "Dratini",
     kickbot: "Blaziken",
@@ -108,7 +108,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, getKey, megausers, contributors, mutes, mbans, smutes, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans;
+var channel, getKey, megausers, contributors, mutes, mbans, smutes, detained, mafiaSuperAdmins, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans;
 
 var isMafiaAdmin = require('mafia.js').isMafiaAdmin;
 var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
@@ -142,6 +142,7 @@ cleanFile("smutes.txt");
 cleanFile("rangebans.txt");
 cleanFile("contributors.txt");
 cleanFile("ipbans.txt");
+cleanFile("detained.txt");
 cleanFile(Config.dataDir+"pastebin_user_key");
 cleanFile("secretsmute.txt");
 cleanFile("ipApi.txt");
@@ -237,7 +238,7 @@ function sendNotice() {
         if (resp.length < 1){
             return;
         }
-        var channels = ["Tohjo Falls", "Trivia", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview"];
+        var channels = ["Tohjo Falls", "Trivia", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview", "Mafia", "Hangman"];
         for (var i = 0; i < channels.length; i++){
             sys.sendHtmlAll(resp, sys.channelId(channels[i]));
         }
@@ -257,6 +258,8 @@ function POUser(id)
     this.mban = {active: false, by: null, expires: 0, time: null, reason: null};
     /* whether user is secrectly muted */
     this.smute = {active: false, by: null, expires: 0, time: null, reason: null};
+    /* detain for mafia */
+    this.detained = {active: false, by: null, games: 0, reason: null};
     /* caps counter for user */
     this.caps = 0;
     /* whether user is impersonating someone */
@@ -323,17 +326,23 @@ function POUser(id)
 
     /* check if user is banned or mafiabanned */
     var data;
-    var loopArgs = [["mute", mutes], ["mban", mbans], ["smute", smutes]];
-    for (i = 0; i < 3; ++i) {
+    var loopArgs = [["mute", mutes], ["mban", mbans], ["smute", smutes], ["detained", detained]];
+    for (i = 0; i < 4; ++i) {
         var action = loopArgs[i][0];
         if ((data = loopArgs[i][1].get(sys.ip(id))) !== undefined) {
             this[action].active=true;
             var args = data.split(":");
-            this[action].time = parseInt(args[0], 10);
-            if (args.length == 5) {
+            if (action !== "detained") {
+                this[action].time = parseInt(args[0], 10);
+                if (args.length == 5) {
+                    this[action].by = args[1];
+                    this[action].expires = parseInt(args[2], 10);
+                    this[action].reason = args.slice(4).join(":");
+                }
+            } else {
                 this[action].by = args[1];
-                this[action].expires = parseInt(args[2], 10);
-                this[action].reason = args.slice(4).join(":");
+                this[action].games = parseInt(args[0], 10);
+                this[action].reason = args.slice(3).join(":");
             }
         }
     }
@@ -777,9 +786,9 @@ POChannel.prototype.isBanned = function(id)
             if (sys.dbIp(x) == ip) {
                 return true;
             }
-        return false;
         }
     }
+    return false;
 };
 
 POChannel.prototype.isMuted = function(id)
@@ -807,9 +816,9 @@ POChannel.prototype.isMuted = function(id)
             if (sys.dbIp(x) == ip) {
                 return true;
             }
-        return false;
         }
     }
+    return false;
 };
 
 POChannel.prototype.isPunished = function(name)
@@ -1291,6 +1300,9 @@ var commands = {
         "/checkbantime [name]: Checks how long a user is banned for.",
         "/mafiaban [name]:[reason]:[time]: Bans a player from Mafia. Time is optional and defaults to 7 days.",
         "/mafiaunban [name]: Unbans a player from Mafia.",
+        "/detain [user]:[reason]:[# Mafia Games]: Sentences a player to probation for # of Mafia Games.",
+        "/release [user]: Removes a player from probation in Mafia.",
+        "/detainlist [search term]: Searches the detainlist, show full list if no search term is entered.",
         "/passauth [target]: Passes your mods to another megauser (only for mega-mods) or to your online alt.",
         "/passauths [target]: Passes your mods silently.",
         "/banlist [search term]: Searches the banlist, shows full list if no search term is entered.",
@@ -1363,31 +1375,13 @@ var commands = {
 
 poScript=({
 /* Executed every second */
-stepEvent: function() {
+step: function() {
     if (typeof callplugins == "function") callplugins("stepEvent");
     
     var date = new Date();
     if ((date.getUTCHours() === 0 || date.getUTCHours() ===  6 || date.getUTCHours() === 12 || date.getUTCHours() === 12) && date.getUTCMinutes === 0 && date.getUTCSeconds () === 0){
         sendNotice();
     }
-},
-
-repeatStepEvent: function(globalCounter) {
-    if (stepCounter != globalCounter) {
-        return;
-    }
-
-    stepCounter = stepCounter+1;
-    sys.callQuickly("script.repeatStepEvent(" + stepCounter + ")", 1000);
-
-    /* Using script. instead of this. so as to stop it when this function is removed */
-    script.stepEvent();
-},
-
-startStepEvent: function() {
-    stepCounter = 0;
-
-    this.repeatStepEvent(0);
 },
 
 serverStartUp : function() {
@@ -1398,8 +1392,6 @@ serverStartUp : function() {
 
 init : function() {
     lastMemUpdate = 0;
-    this.startStepEvent();
-
     bannedUrls = [];
 
     mafiachan = SESSION.global().channelManager.createPermChannel("Mafia", "Use /help to get started!");
@@ -1450,7 +1442,9 @@ init : function() {
     rangebans = new MemoryHash("rangebans.txt");
     contributors = new MemoryHash("contributors.txt");
     mafiaAdmins = new MemoryHash("mafiaadmins.txt");
+    mafiaSuperAdmins = new MemoryHash("mafiasuperadmins.txt");
     ipbans = new MemoryHash("ipbans.txt");
+    detained = new MemoryHash("detained.txt");
     proxy_ips = {};
     function addProxybans(content) {
         var lines = content.split(/\n/);
@@ -1617,7 +1611,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         }[type];
 
         var expires = 0;
-        var defaultTime = {"mute": "24h", "mban": "7d", "smute": "0"}[type];
+        var defaultTime = {"mute": "24h", "mban": "1d", "smute": "0"}[type];
         var reason = "";
         var timeString = "";
         var tindex = 10;
@@ -1645,7 +1639,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
 
         var secs = getSeconds(data.length > tindex ? data[tindex] : defaultTime);
         // limit it!
-        if (typeof maxTime == "number") secs = secs > maxTime ? maxTime : secs;
+        if (typeof maxTime == "number") secs = (secs > maxTime || secs === 0 || isNaN(secs)) ? maxTime : secs;
         if (secs > 0) {
             timeString = " for " + getTimeString(secs);
             expires = secs + parseInt(sys.time(), 10);
@@ -2114,7 +2108,10 @@ afterLogIn : function(src) {
 //        }
 //    }
 
-
+    if (SESSION.users(src).hostname.toLowerCase().indexOf('tor') !== -1) {
+        sys.sendAll('Possible TOR user: ' + sys.name(src), staffchannel);
+    }
+    
     if (SESSION.users(src).megauser)
         sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Connected as MU" + "\n");
     if (sys.auth(src) > 0 && sys.auth(src) <= 3)
@@ -2124,6 +2121,7 @@ afterLogIn : function(src) {
 
     if (sys.auth(src) <= 3 && this.canJoinStaffChannel(src) && sys.ip(src) != sys.dbIp("Shadowfist"))
         sys.putInChannel(src, staffchannel);
+    
 }, /* end of afterLogin */
 
 
@@ -2339,6 +2337,10 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "rules") {
+        if (commandData === "mafia") {
+            require('mafia.js').showRules(src, commandData, channel);
+            return;
+        }
         var norules = (rules.length-1)/2; //formula for getting the right amount of rules
         if(commandData !== undefined && !isNaN(commandData) && commandData >0 && commandData < norules){
             var num = parseInt(commandData, 10);
@@ -2398,9 +2400,9 @@ userCommand: function(src, command, commandData, tar) {
     }
     if (command == "auth") {
         var DoNotShowIfOffline = ["loseyourself", "oneballjay"];
-        var filterByAuth = function(level) { return function(name) { if (sys.dbAuth(name) == level) { return name; } } };
+        var filterByAuth = function(level) { return function(name) { if (sys.dbAuth(name) == level) { return name; } }; };
         var printOnlineOffline = function(name) {
-            if (name == undefined) return;
+            if (name === undefined) return;
             if (sys.id(name) === undefined) {
                 if (DoNotShowIfOffline.indexOf(name) == -1) sys.sendMessage(src, name + " (Offline)", channel);
             } else {
@@ -2517,7 +2519,11 @@ userCommand: function(src, command, commandData, tar) {
         } else {
             chan = sys.createChannel(commandData);
         }
-        sys.putInChannel(src, chan);
+        if (sys.isInChannel(src, chan)) {
+            normalbot.sendChanMessage(src, "You are already on #" + commandData);
+        } else {
+            sys.putInChannel(src, chan);
+        }
         return;
     }
 
@@ -3738,10 +3744,15 @@ adminCommand: function(src, command, commandData, tar) {
             }
             return true;
         });
-        if (!unban)
+        if (!unban) {
             normalbot.sendChanMessage(src, "No match.");
-        else
-            sys.writeToFile("nameBans.json", JSON.stringify(nameBans));
+        } else {
+            var serialized = {nameBans: []};
+            for (var i = 0; i < nameBans.length; ++i) {
+                serialized.nameBans.push(nameBans[i].source);
+            }
+            sys.writeToFile("nameBans.json", JSON.stringify(serialized));
+        }
         return;
     }
     if (command == "namewarn") {

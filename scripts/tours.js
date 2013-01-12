@@ -86,8 +86,8 @@ var tourmodcommands = ["*** Parameter Information ***",
                     "passta [name]: passes your tour admin to a new name"]
 var touradmincommands = ["tourstart [tier]:[parameters]: starts a tier of that tournament immediately, provided one is not in signups.",
                     "shift [tier]:[parameters]: places a tournament in the front of the queue",
-                    "tadmin[s] [name]: makes someone a megauser - s makes it only show in staff chan",
-                    "tdeadmin[s] [name]: fires someone from being tournament authority - s makes it only show in staff chan",
+                    "megauser / tadmin[s] [name]: makes someone a megauser - s makes it only show in staff chan",
+                    "megauseroff / tdeadmin[s] [name]: fires someone from being tournament authority - s makes it only show in staff chan",
                     "forcestart: ends signups immediately and starts the first round",
                     "push [player]: pushes a player into a tournament in signups (DON'T USE UNLESS ASKED)",
                     "tahistory [days]: views the activity of tour admins (days is optional, if excluded it will get the last 7 days if possible)",
@@ -113,7 +113,7 @@ var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "#2: Have a team and be ready when you join, otherwise you can be disqualified",
                 "#3: Tierspamming, repeatedly asking for tournaments in the chat, is not allowed.",
                 "#4: Do not abuse the tournament commands.",
-                "#5: Do not leave or forfeit in a tournament you are in just so you can join another.",
+                "#5: Do not leave or forfeit in a tournament you are in just so you can join another or to give your opponent a 'free' win.",
                 "#6: Do not timestall (i.e. deliberately wait until timeout).",
                 "#7: Inactive/Idle players will automatically be disqualified.",
                 "- Post a message and make sure you are not idle, otherwise you risk being disqualified.",
@@ -346,7 +346,7 @@ function getFullTourName(key) {
 find_tier = utilities.find_tier;
 
 function modeOfTier(tier) {
-    if (tier.indexOf("Doubles") != -1 || ["JAA", "VGC 2009", "VGC 2010", "VGC 2011", "VGC 2012"].indexOf(tier) != -1) {
+    if (tier.indexOf("Doubles") != -1 || ["JAA", "VGC 2009", "VGC 2010", "VGC 2011", "VGC 2012", "VGC 2013"].indexOf(tier) != -1) {
         return "Doubles";
     }
     else if (tier.indexOf("Triples") != -1) {
@@ -612,7 +612,7 @@ function clauseCheck(key, issuedClauses) {
         var denom = Math.pow(2,c+1)
         var num = Math.pow(2,c)
         // don't check for disallow spects in non CC tiers , it's checked manually
-        if (c == 2 && ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Battle Factory"].indexOf(tier) == -1) {
+        if (c == 2 && ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Battle Factory", "Battle Factory 6v6"].indexOf(tier) == -1) {
             continue;
         }
         if (requiredClauses%denom >= num) {
@@ -1018,6 +1018,13 @@ function getEventTour(datestring) {
                         else {
                             sendBotMessage(src, "Parameter Usage: wifi=on or wifi=off", tourserrchan, false);
                             return true;
+                        }
+                    }
+                    else if (cmp(parameterset, "type")) {
+                        if (cmp(parametervalue, "single")) {
+                            parameters.type = "single";
+                        } else {
+                            parameters.type = "double";
                         }
                     }
                     else {
@@ -1516,7 +1523,7 @@ function tourCommand(src, command, commandData) {
         }
         if (isTourSuperAdmin(src)) {
             /* Tournament Admins etc. */
-            if ((sys.auth(src) >= 1 && (command == "tadmin" || command == "tadmins" || command == "megauser"))  || (isTourOwner(src) && (command == "tsadmin" || command == "tsadmins")) || (sys.auth(src) >= 3 && (command == "towner" || command == "towners"))) {
+            if (command == "tadmin" || command == "tadmins" || command == "megauser" || (isTourOwner(src) && (command == "tsadmin" || command == "tsadmins")) || (sys.auth(src) >= 3 && (command == "towner" || command == "towners"))) {
                 var tadmins = tours.touradmins
                 if (sys.dbIp(commandData) === undefined) {
                     sendBotMessage(src,"This user doesn't exist!",tourschan,false)
@@ -2676,7 +2683,7 @@ function tourCommand(src, command, commandData) {
                 return true;
             }
             if (!sys.hasTier(src, tours.tour[key].tourtype)) {
-                var needsteam = ["Challenge Cup", "Wifi CC 1v1", "CC 1v1", "Battle Factory"].indexOf(tours.tour[key].tourtype) == -1;
+                var needsteam = ["Challenge Cup", "Wifi CC 1v1", "CC 1v1", "Battle Factory", "Battle Factory 6v6"].indexOf(tours.tour[key].tourtype) == -1;
                 sendBotMessage(src, "You need to "+(needsteam ? "have a team for" : "change your tier to")+" the "+tours.tour[key].tourtype+" tier to join!",tourschan,false)
                 return true;
             }
@@ -4452,7 +4459,7 @@ function isTourAdmin(src) {
     if (sys.auth(src) < 0 || !sys.dbRegistered(sys.name(src))) {
         return false;
     }
-    if (isTourSuperAdmin(src)) {
+    if (sys.auth(src) >= 1 || isTourSuperAdmin(src)) {
         return true;
     }
     var tadmins = tours.touradmins
@@ -4466,7 +4473,7 @@ function isTourSuperAdmin(src) {
     if (!sys.dbRegistered(sys.name(src))) {
         return false;
     }
-    if (isTourOwner(src)) {
+    if (sys.auth(src) >= 2 || isTourOwner(src)) {
         return true;
     }
     var tadmins = tours.touradmins
@@ -4478,7 +4485,7 @@ function isTourSuperAdmin(src) {
 }
 
 function isTourOwner(src) {
-    if (sys.auth(src) < 1 || !sys.dbRegistered(sys.name(src))) {
+    if (!sys.dbRegistered(sys.name(src))) {
         return false;
     }
     if (sys.auth(src) >= 3) {
@@ -4925,7 +4932,7 @@ module.exports = {
             }
         }
         /* check for potential scouters */
-        var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome", "Battle Factory"]
+        var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome", "Battle Factory", "Battle Factory 6v6"]
         var isOkToSpectate = (tours.tour[p1tour].state == "final" || cctiers.indexOf(tours.tour[p1tour].tourtype) != -1)
         if (srctour === p1tour && !isOkToSpectate) {
             sendBotMessage(src, "You can't watch this match because you are in the same tournament!","all", false)
