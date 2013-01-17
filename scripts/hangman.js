@@ -472,7 +472,7 @@ module.exports = function () {
     };
     this.handleCommand = function (src, message, channel) {
         var command;
-        var commandData = '*';
+        var commandData;
         var pos = message.indexOf(' ');
         if (pos !== -1) {
             command = message.substring(0, pos).toLowerCase();
@@ -551,9 +551,6 @@ module.exports = function () {
         return;
     };
     this.hangmanBanList = function(src, commandData) {
-        if (commandData == "*") {
-            commandData = undefined;
-        }
         script.modCommand(src, "hangmanbans", commandData, -1);
         return;
     };
