@@ -379,7 +379,7 @@ module.exports = function () {
             "±Rules: Do not ask the person with hosting priority to use /pass so that you may host a game.",
             "±Rules: Do not create inappropriate answers, hints or guesses.",
             "±Rules: Do not complain if another user guesses a letter, word or answer before you do.",
-            "±Rules: Do not create an answer that is impossible for other people to guess, such as a personal nickname.",
+            "±Rules: Do not create an answer that is impossible for other people to guess, such as a personal nickname or an opinion.",
             "±Rules: All server rules apply in this channel too - type /rules to view them.",
             "*** *********************************************************************** ***",
             ""
@@ -471,7 +471,7 @@ module.exports = function () {
         },
         op: {
             end: [this.endGame, "To stop a game."],
-            hangmanban: [this.hangmanBan, "To ban a player from hangman"],
+            hangmanban: [this.hangmanBan, "To ban a player from hangman. Proper format: /hangmanban [name]:[reason]:[time]"],
             hangmanunban: [this.hangmanUnban, "To unban a player from hangman"],
             hangmanbans: [this.hangmanBanList, "To show the current banlist"]
         },
