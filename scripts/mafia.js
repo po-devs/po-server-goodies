@@ -3394,11 +3394,9 @@ function Mafia(mafiachan) {
             sys.sendMessage(src, "±Game: You are muted!", mafiachan);
             return;
         }
-        if (SESSION.users(src).detained) { //remove this later
-            if (SESSION.users(src).detained.active) {
-                sys.sendMessage(src, "±Game: You are detained for " + SESSION.users(src).detained.games + " more games", mafiachan);
-                return;
-            }
+        if (SESSION.users(src).detained.active) {
+            sys.sendMessage(src, "±Game: You are detained for " + SESSION.users(src).detained.games + " more games", mafiachan);
+            return;
         }
         if (SESSION.users(src).android === true) {
             sys.sendMessage(src, "±Game: Android users can not play mafia!", mafiachan);
