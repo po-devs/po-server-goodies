@@ -4299,7 +4299,7 @@ ownerCommand: function(src, command, commandData, tar) {
         sys.webCall(updateURL, changeScript);
         return;
     }
-    if (command == "updatetiers") {
+    if (command == "updatetiers" || command == "updatetierssoft") {
         normalbot.sendChanMessage(src, "Fetching tiers...");
         var updateURL = Config.base_url + "tiers.xml";
         if (commandData !== undefined && (commandData.substring(0,7) == 'http://' || commandData.substring(0,8) == 'https://')) {
@@ -4310,7 +4310,11 @@ ownerCommand: function(src, command, commandData, tar) {
             if (resp === "") return;
             try {
                 sys.writeToFile("tiers.xml", resp);
-                sys.reloadTiers();
+                if (command == "updatetiers") {
+                    sys.reloadTiers();
+                } else {
+                    normalbot.sendMessage(src, "Tiers.xml updated!", channel);
+                }
             } catch (e) {
                 normalbot.sendChanMessage(src, "ERROR: "+e);
                 return;
