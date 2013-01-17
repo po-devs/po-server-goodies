@@ -10,12 +10,11 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Globals
-var bfversion = "A1.005";
+var bfversion = "1.100";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
-var bfsets, pokedb, working, defaultsets, userqueue, messagebox, teamrevchan, submitbans, bfhash, reviewers;
-var randomgenders = true; // set to false if you want to play with set genders
+var bfsets, working, defaultsets, userqueue, messagebox, teamrevchan, submitbans, bfhash, reviewers;
 var utilities = require('utilities.js');
 var saveInterval = 86400; // autosave every day
 
@@ -58,7 +57,6 @@ function initFactory() {
         else {
             defaultsets = JSON.parse(file);
         }
-        getPokeDb();
     }
     catch (e) {
         throw e;
@@ -217,32 +215,6 @@ function autoSave(type, params) {
     }
 }
 
-function getPokeDb() {
-    var pokelist = sys.getFileContent("db/pokes/stats.txt");
-    var pokes = pokelist.split("\n");
-    pokedb = {};
-    for (var x in pokes) {
-        var data = pokes[x].split(" ");
-        if (data.length != 7) {
-            continue;
-        }
-        var thepokeid = data[0].split(":");
-        var thepoke = sys.pokemon(parseInt(thepokeid[0],10) + 65536*parseInt(thepokeid[1],10));
-        pokedb[thepoke] = [parseInt(data[1],10), parseInt(data[2],10), parseInt(data[3],10), parseInt(data[4],10), parseInt(data[5],10), parseInt(data[6],10)];
-    }
-    var genderlist = sys.getFileContent("db/pokes/gender.txt");
-    var genders = genderlist.split("\n");
-    for (var g in genders) {
-        var gdata = genders[g].split(" ");
-        if (gdata.length != 2) {
-            continue;
-        }
-        var gpokeid = gdata[0].split(":");
-        var gpoke = sys.pokemon(parseInt(gpokeid[0]), 10);
-        pokedb[gpoke].push(parseInt(gdata[1],10));
-    }
-}
-
 function dumpData(tar, team) {
     var sets = [];
     for (var b=0;b<6;b++) {
@@ -275,6 +247,63 @@ function shuffle(array) {
         return Math.random()-0.5;
     }
     return array.sort(sfunction);
+}
+
+// Tests for exact same sets, if exact is selected arr elements must be in correct order and match
+function hasSameElements(arr1, arr2, exact) {
+    var test1 = exact ? arr1.sort() : arr1;
+    var test2 = exact ? arr2.sort() : arr2;
+    if (test1.length !== test2.length) {
+        return false;
+    }
+    for (var x=0; x<arr1.length; x++) {
+        if (test1[x] !== test2[x]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Checks for equivlance
+function isEquivalent(code1, code2) {
+    var ctestprop1 = {
+        'poke': sys.pokemon(toNumber(code1.substr(0,2))+65536*toNumber(code1.substr(2,1))),
+        'nature': sys.nature(toNumber(code1.substr(3,1))),
+        'ability': sys.ability(toNumber(code1.substr(4,2))),
+        'item': sys.item(toNumber(code1.substr(6,3))),
+        'level': toNumber(code1.substr(9,2)),
+        'moves': [sys.move(toNumber(code1.substr(11,2))),sys.move(toNumber(code1.substr(13,2))),sys.move(toNumber(code1.substr(15,2))),sys.move(toNumber(code1.substr(17,2)))],
+        'evs': [toNumber(code1.substr(19,2)),toNumber(code1.substr(21,2)),toNumber(code1.substr(23,2)),toNumber(code1.substr(25,2)),toNumber(code1.substr(27,2)),toNumber(code1.substr(29,2))],
+        'dvs': [toNumber(code1.substr(31,1)),toNumber(code1.substr(32,1)),toNumber(code1.substr(33,1)),toNumber(code1.substr(34,1)),toNumber(code1.substr(35,1)),toNumber(code1.substr(36,1))]
+    };
+    var ctestprop2 = {
+        'poke': sys.pokemon(toNumber(code2.substr(0,2))+65536*toNumber(code2.substr(2,1))),
+        'nature': sys.nature(toNumber(code2.substr(3,1))),
+        'ability': sys.ability(toNumber(code2.substr(4,2))),
+        'item': sys.item(toNumber(code2.substr(6,3))),
+        'level': toNumber(code2.substr(9,2)),
+        'moves': [sys.move(toNumber(code2.substr(11,2))),sys.move(toNumber(code2.substr(13,2))),sys.move(toNumber(code2.substr(15,2))),sys.move(toNumber(code2.substr(17,2)))],
+        'evs': [toNumber(code2.substr(19,2)),toNumber(code2.substr(21,2)),toNumber(code2.substr(23,2)),toNumber(code2.substr(25,2)),toNumber(code2.substr(27,2)),toNumber(code2.substr(29,2))],
+        'dvs': [toNumber(code2.substr(31,1)),toNumber(code2.substr(32,1)),toNumber(code2.substr(33,1)),toNumber(code2.substr(34,1)),toNumber(code2.substr(35,1)),toNumber(code2.substr(36,1))]
+    };
+    for (var x in ctestprop1) {
+        if (x == "moves") {
+            if (!hasSameElements(ctestprop1.moves, ctestprop2.moves, false)) {
+                return false;
+            }
+        }
+        else if (['evs', 'dvs'].indexOf(x) > -1) {
+            if (!hasSameElements(ctestprop1[x], ctestprop2[x], true)) {
+                return false;
+            }
+        }
+        else {
+            if (ctestprop1[x] !== ctestprop2[x]) {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 function refresh(key) {
@@ -350,7 +379,7 @@ function cleanEntries() {
                 deleted += 1;
                 continue;
             }
-            if (!obj[o].hasOwnProperty('ip') || !obj[o].hasOwnProperty('name') || !obj[o].hasOwnProperty('sets') || !obj[o].hasOwnProperty('tier') || !obj[o].hasOwnProperty('comment')) {
+            if (!obj[o].hasOwnProperty('ip') || !obj[o].hasOwnProperty('name') || !obj[o].hasOwnProperty('sets') || !obj[o].hasOwnProperty('tier') || !obj[o].hasOwnProperty('comment') || !obj[o].hasOwnProperty('rating')) {
                 userqueue[x].splice(o,1);
                 o -= 1;
                 deleted += 1;
@@ -522,27 +551,6 @@ function factoryCommand(src, command, commandData, channel) {
         }
         else {
             sendChanAll('A pack with that name already exists!', teamrevchan);
-        }
-    }
-    else if (command == "importold") {
-        var ltier = find_tier(commandData);
-        if (ltier === null) {
-            normalbot.sendMessage(src, "No such tier", channel);
-            return;
-        }
-        if (bfhash.hasOwnProperty(ltier)) {
-            normalbot.sendMessage(src, "This tier already exists!", channel);
-            return;
-        }
-        if (importOld(ltier)) {
-            autoSave("teams", ltier);
-            sendChanAll('Added the tier '+ltier+'!', teamrevchan);
-            refresh(ltier);
-            reviewers[ltier] = [];
-            sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
-        }
-        else {
-            sendChanAll('Unable to import old files!', teamrevchan);
         }
     }
     else if (command == "addpack") {
@@ -787,7 +795,11 @@ function factoryCommand(src, command, commandData, channel) {
                     sets.push(getReadablePoke(b).join("<br/>"));
                 }
                 else {
-                    sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
+                    if (typeof pokesets[b] == "object") {
+                        var newarr = getReadablePoke(pokesets[b].set);
+                        newarr.push("Submitted By: "+html_escape(pokesets[b].submitter), "Accepted By: "+html_escape(pokesets[b].auth));
+                        sets.push(newarr.join("<br/>"));
+                    }
                 }
             }
             catch (err) {
@@ -990,13 +1002,35 @@ function factoryCommand(src, command, commandData, channel) {
                 dvlist.push(dv);
                 pokecode = pokecode + toChars(dv, 1);
             }
-            var gender = sys.teamPokeGender(src, 0, x);
-            pokecode = pokecode + toChars(gender, 1);
+            pokecode = pokecode + toChars(sys.gen(src,0), 1) + toChars(sys.subgen(src,0), 1);
+            // Getting rid of duplicate entries here
+            var pastdb = bfsets[submittier];
+            if (pastdb.hasOwnProperty(pokenum)) {
+                var arr = pastdb[pokenum];
+                var equal = false;
+                for (var p in arr) {
+                    if (typeof arr[p] == "object") {
+                        if (isEquivalent(arr[p].set, pokecode)) {
+                            equal = true;
+                            break;
+                        }
+                    }
+                    else {
+                        if (isEquivalent(arr[p], pokecode)) {
+                            equal = true;
+                            break;
+                        }
+                    }
+                }
+                if (equal) {
+                    continue;
+                }
+            }
             team.push(pokecode);
         }
         // Write the short code for export
         if (team.length === 0) {
-            normalbot.sendMessage(src, "You have no Pokemon!", channel);
+            normalbot.sendMessage(src, "You have no Pokemon that can be submitted!", channel);
             return;
         }
         var submitlist = [];
@@ -1008,7 +1042,8 @@ function factoryCommand(src, command, commandData, channel) {
                     'name': sys.name(src),
                     'sets': [team[s]],
                     'tier': submittier,
-                    'comment': comment
+                    'comment': comment,
+                    'rating': 0
                 };
                 submitlist.push(submission);
             }
@@ -1019,7 +1054,8 @@ function factoryCommand(src, command, commandData, channel) {
                 'name': sys.name(src),
                 'sets': team,
                 'tier': submittier,
-                'comment': comment
+                'comment': comment,
+                'rating': 0
             };
             submitlist.push(submission);
         }
@@ -1079,12 +1115,10 @@ function factoryCommand(src, command, commandData, channel) {
         var team = accept.sets;
         // Write the short code
         for (var g in team) {
-            var set = team[g];
+            var set = {'set': team[g], 'submitter': accept.name, 'auth': sys.name(src)};
             var species = toNumber(set.substr(0,2));
             if (teamsave.hasOwnProperty(species)) {
-                if (teamsave[species].indexOf(set) == -1) {
-                    teamsave[species].push(set);
-                }
+                teamsave[species].push(set);
                 continue;
             }
             else {
@@ -1157,7 +1191,21 @@ function factoryCommand(src, command, commandData, channel) {
             if (typeof setlist !== "object") {
                 continue;
             }
-            var index = setlist.indexOf(tmp[1]);
+            var index = -1;
+            for (var y=0; y<setlist.length; y++) {
+                if (typeof setlist[y] == "object") {
+                    if (setlist[y].set === tmp[1]) {
+                        index = y;
+                        break;
+                    }
+                }
+                else {
+                    if (setlist[y] === tmp[1]) {
+                        index = y;
+                        break;
+                    }
+                }
+            }
             if (index > -1) {
                 setlist.splice(index,1);
                 if (setlist.length === 0) {
@@ -1388,9 +1436,7 @@ function setlint(checkfile, strict) {
     }
     var readable = false;
     if (checkfile.hasOwnProperty("readable")) {
-        if (checkfile.readable === true) {
-            readable = true;
-        }
+        warnings.push("<td>Readable Property</td><td>Readable Property is depreciated, avoid using readable set packs where possible</td>");
     }
     var stats = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
     for (var x in checkfile) {
@@ -1422,12 +1468,9 @@ function setlint(checkfile, strict) {
                             errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+": property '"+p+"' must be a string</td>");
                         }
                     }
-                    else if (['level', 'gender'].indexOf(p) != -1) {
+                    else if (['level'].indexOf(p) != -1) {
                         if (typeof prop[p] !== "number") {
                             errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+": property '"+p+"' must be a number</td>");
-                        }
-                        else if ([0,1,2].indexOf(prop.gender) == -1) {
-                            errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+": gender property must be 0, 1 or 2</td>");
                         }
                         else if (prop.level < 1 || prop.level > 100) {
                             errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+": level property must be an integer between 1 and 100 (inclusive)</td>");
@@ -1482,7 +1525,7 @@ function setlint(checkfile, strict) {
                     }
                 }
                 var iserr = false;
-                var reqprops = ['poke', 'nature', 'ability', 'item', 'level', 'moves', 'evs', 'dvs', 'gender'];
+                var reqprops = ['poke', 'nature', 'ability', 'item', 'level', 'moves', 'evs', 'dvs'];
                 for (var a in reqprops) {
                     if (!prop.hasOwnProperty(reqprops[a])) {
                         errors.push("<td>Missing property</td><td>Property '"+html_escape(x)+"'; set "+sid+": property '"+reqprops[a]+"' is missing</td>");
@@ -1500,8 +1543,7 @@ function setlint(checkfile, strict) {
                     'level': prop.level,
                     'moves': [sys.moveNum(prop.moves[0]),sys.moveNum(prop.moves[1]),sys.moveNum(prop.moves[2]),sys.moveNum(prop.moves[3])],
                     'evs': prop.evs,
-                    'dvs': prop.dvs,
-                    'gender': prop.gender
+                    'dvs': prop.dvs
                 };
                 if (testprop.poke === 0 || testprop.poke === undefined) {
                     errors.push("<td>Missing Poke</td><td>Property '"+html_escape(x)+"'; set "+sid+": Pokemon detected was Missingno.</td>");
@@ -1538,15 +1580,22 @@ function setlint(checkfile, strict) {
             var cavailable = [];
             for (var ct in csets) {
                 if (typeof csets[ct] !== "string") {
-                    errors.push("<td>Bad set</td><td>Property '"+html_escape(x)+"'; array elements must be 38 character alphanumeric strings</td>");
+                    if (typeof csets[ct] === "object") {
+                        cavailable.push(csets[ct].set);
+                    }
+                    else {
+                        errors.push("<td>Bad set</td><td>Property '"+html_escape(x)+"'; array elements must be 39 character alphanumeric strings or objects with a 39 char set property</td>");
+                    }
                     continue;
                 }
-                cavailable.push(csets[ct]);
+                else {
+                    cavailable.push(csets[ct]);
+                }
             }
             for (var k in cavailable) {
                 var set = cavailable[k];
-                if (set.length != 38) {
-                    errors.push("<td>Bad set</td><td>Property '"+html_escape(x)+"'; array elements must be 38 character alphanumeric strings</td>");
+                if (set.length != 39) {
+                    errors.push("<td>Bad set</td><td>Property '"+html_escape(x)+"'; array elements must be 39 character alphanumeric strings</td>");
                     continue;
                 }
                 var ctestprop = {
@@ -1557,17 +1606,13 @@ function setlint(checkfile, strict) {
                     'level': toNumber(set.substr(9,2)),
                     'moves': [sys.move(toNumber(set.substr(11,2))),sys.move(toNumber(set.substr(13,2))),sys.move(toNumber(set.substr(15,2))),sys.move(toNumber(set.substr(17,2)))],
                     'evs': [toNumber(set.substr(19,2)),toNumber(set.substr(21,2)),toNumber(set.substr(23,2)),toNumber(set.substr(25,2)),toNumber(set.substr(27,2)),toNumber(set.substr(29,2))],
-                    'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))],
-                    'gender': toNumber(set.substr(37,1))
+                    'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))]
                 };
                 if (ctestprop.poke === sys.pokemon(0) || ctestprop.poke === undefined) {
                     errors.push("<td>Missing Poke</td><td>Property '"+html_escape(x)+"'; set "+set+": Pokemon detected was Missingno.</td>");
                 }
                 if (ctestprop.level < 1 || ctestprop.level > 100) {
                     errors.push("<td>Level out of range</td><td>Property '"+html_escape(x)+"'; set "+set+": level must be an integer between 1 and 100 (inclusive)</td>");
-                }
-                if ([0,1,2].indexOf(ctestprop.gender) == -1) {
-                    errors.push("<td>Invalid Gender</td><td>Property '"+html_escape(x)+"'; set "+t+": gender property must be 0, 1 or 2</td>");
                 }
                 if (ctestprop.item === sys.item(0) || ctestprop.item === undefined) {
                     warnings.push("<td>Missing Item</td><td>Property '"+html_escape(x)+"'; set "+set+": Not holding an item.</td>");
@@ -1629,8 +1674,8 @@ function setlint(checkfile, strict) {
 }
 
 function getReadablePoke(set) {
-    if (set.length != 38) {
-        throw "Invalid Set, each set should be 38 alphanumeric characters long.";
+    if (set.length != 39) {
+        throw "Invalid Set, each set should be 39 alphanumeric characters long.";
     }
     var info = {
         'poke': sys.pokemon(toNumber(set.substr(0,2))+65536*toNumber(set.substr(2,1))),
@@ -1642,11 +1687,10 @@ function getReadablePoke(set) {
         'moves': [sys.move(toNumber(set.substr(11,2))),sys.move(toNumber(set.substr(13,2))),sys.move(toNumber(set.substr(15,2))),sys.move(toNumber(set.substr(17,2)))],
         'evs': [toNumber(set.substr(19,2)),toNumber(set.substr(21,2)),toNumber(set.substr(23,2)),toNumber(set.substr(25,2)),toNumber(set.substr(27,2)),toNumber(set.substr(29,2))],
         'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))],
-        'gender': toNumber(set.substr(37,1))
+        'gen': sys.generation(toNumber(set.substr(37,1)),toNumber(set.substr(38,1)))
     };
-    var genders = ['', '(M) ', '(F) '];
     var stats = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
-    var msg = [set, info.poke+" "+genders[info.gender]+"@ "+info.item];
+    var msg = [set, info.poke+" @ "+info.item];
     msg.push("Ability: "+info.ability, info.nature+" Nature, Level "+info.level);
     var evlist = [];
     var dvlist = [];
@@ -1669,16 +1713,7 @@ function getReadablePoke(set) {
         msg.push("Hidden Power "+sys.type(hptype));
     }
     var statlist = [];
-    var pokeinfo = [];
-    if (pokedb.hasOwnProperty(info.poke)) {
-        pokeinfo = pokedb[info.poke];
-    }
-    else if (pokedb.hasOwnProperty(info.species)) {
-        pokeinfo = pokedb[info.species];
-    }
-    else {
-        throw "UNHANDLED EXCEPTION: Pokeinfo not found";
-    }
+    var pokeinfo = sys.pokeBaseStats(info.poke)
     for (var s=0; s<6; s++) {
         var natureboost = getNature(info.nature);
         if (s === 0) { // HP Stat
@@ -1705,7 +1740,7 @@ function getReadablePoke(set) {
             statlist.push(newstat+" "+stats[s]);
         }
     }
-    msg.push("Stats: "+statlist.join(" / "));
+    msg.push("Stats: "+statlist.join(" / "), "Generation: "+info.gen);
     return msg;
 }
 
@@ -1761,7 +1796,6 @@ function getStats(src, team, poke) {
         var dv = sys.teamPokeDV(src, team, poke, d);
         dvlist.push(dv);
     }
-    var genders = ["", "(M) ", "(F) "];
     var info = {
         'poke': sys.pokemon(sys.teamPoke(src,team,poke)),
         'species': sys.pokemon(sys.teamPoke(src,team,poke)%65536),
@@ -1771,21 +1805,11 @@ function getStats(src, team, poke) {
         'level': sys.teamPokeLevel(src,team,poke),
         'moves': movelist,
         'evs': evlist,
-        'dvs': dvlist,
-        'gender': genders[sys.teamPokeGender(src,team,poke)]
+        'dvs': dvlist
     };
     var stats = ["HP", "Attack", "Defense", "Sp.Atk", "Sp.Def", "Speed"];
     var statlist = [];
-    var pokeinfo = [];
-    if (pokedb.hasOwnProperty(info.poke)) {
-        pokeinfo = pokedb[info.poke];
-    }
-    else if (pokedb.hasOwnProperty(info.species)) {
-        pokeinfo = pokedb[info.species];
-    }
-    else {
-        throw "UNHANDLED EXCEPTION: Pokeinfo not found";
-    }
+    var pokeinfo = sys.pokeBaseStats(sys.teamPoke(src,team,poke))
     for (var s=0; s<6; s++) {
         var natureboost = getNature(info.nature);
         if (s === 0) { // HP Stat
@@ -1813,7 +1837,7 @@ function getStats(src, team, poke) {
         }
     }
     var msg = [];
-    msg.push(info.poke+" "+info.gender+"@ "+info.item+"; Ability: "+info.ability+"; "+info.nature+" Nature; Level "+info.level)
+    msg.push(info.poke+" @ "+info.item+"; Ability: "+info.ability+"; "+info.nature+" Nature; Level "+info.level)
     msg.push(info.moves.join(" / "),"Stats: "+statlist.join(" / "));
     return msg;
 }
@@ -1824,7 +1848,7 @@ function generateTeam(src, team, mode) {
         var teaminfo = [];
         var pokearray = [];
         var readable = isReadable(pokedata);
-        var maxPerfectIVs = 6;
+        var maxPerfectIVs = 2;
         for (var x in pokedata) {
             if (typeof pokedata[x] == "object") {
                 pokearray.push(x);
@@ -1856,12 +1880,18 @@ function generateTeam(src, team, mode) {
                     'level': prop.level,
                     'moves': [sys.moveNum(prop.moves[0]),sys.moveNum(prop.moves[1]),sys.moveNum(prop.moves[2]),sys.moveNum(prop.moves[3])],
                     'evs': prop.evs,
-                    'dvs': prop.dvs,
-                    'gender': prop.gender
+                    'dvs': prop.dvs
                 };
             }
             else {
                 var set = sets[sys.rand(0, sets.length)]
+                var actualset = "";
+                if (typeof set == "object") {
+                    actualset = set.set;
+                }
+                else {
+                    actualset = set;
+                }
                 teaminfo[p] = {
                     'poke': toNumber(set.substr(0,2))+65536*toNumber(set.substr(2,1)),
                     'nature': toNumber(set.substr(3,1)),
@@ -1870,8 +1900,7 @@ function generateTeam(src, team, mode) {
                     'level': toNumber(set.substr(9,2)),
                     'moves': [toNumber(set.substr(11,2)),toNumber(set.substr(13,2)),toNumber(set.substr(15,2)),toNumber(set.substr(17,2))],
                     'evs': [toNumber(set.substr(19,2)),toNumber(set.substr(21,2)),toNumber(set.substr(23,2)),toNumber(set.substr(25,2)),toNumber(set.substr(27,2)),toNumber(set.substr(29,2))],
-                    'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))],
-                    'gender': toNumber(set.substr(37,1))
+                    'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))]
                 };
             }
         }
@@ -1937,20 +1966,24 @@ function generateTeam(src, team, mode) {
                 shinechance = Math.ceil(8192 * 1000000 / Math.pow(sys.ladderRating(src, "Battle Factory"), 2));
             }
             sys.changePokeShine(src, team, s, sys.rand(0,shinechance) === 0 ? true : false);
-            if (pokedb.hasOwnProperty(sys.pokemon(pdata.poke%65536)) && randomgenders) {
-                var pokeinfo = pokedb[sys.pokemon(pdata.poke%65536)];
-                var gendernum = pokeinfo[6];
-                if (gendernum === 3) {
-                    gendernum = sys.rand(1,3);
+            var possiblegenders = sys.pokeGenders(pdata.poke);
+            var newgender = 0;
+            if (possiblegenders.hasOwnProperty("neutral")) {
+                newgender = 0;
+            }
+            else if (possiblegenders.hasOwnProperty("male")) {
+                var rand = Math.random()*100;
+                if (rand > possiblegenders['male']) {
+                    newgender = 2;
                 }
-                if ([0,1,2].indexOf(gendernum) == -1) {
-                    throw "Invalid Gender";
+                else {
+                    newgender = 1;
                 }
-                sys.changePokeGender(src,team,s,gendernum);
             }
             else {
-                sys.changePokeGender(src,team,s,pdata.gender);
+                newgender = 2;
             }
+            sys.changePokeGender(src,team,s,newgender);
             sys.changePokeLevel(src,team,s,pdata.level);
         }
         sys.updatePlayer(src);
@@ -2074,13 +2107,14 @@ module.exports = {
         }
     },
     beforeChannelJoin : function (src, chan) {
-        if ( (!isReviewer(src)) && chan == teamrevchan) {
-            capsbot.sendMessage(src, "You cannot access this channel!");
-            sys.stopEvent();
-        }
+        // Review is public now as of 17 Jan, channel bans still override if necessary
+        // if ((!isReviewer(src)) && chan == teamrevchan) {
+        //     capsbot.sendMessage(src, "You cannot access this channel!");
+        //     sys.stopEvent();
+        // }
     },
     afterChannelJoin : function(player, chan) {
-        if (chan === sys.channelId('BF Review') && (sys.auth(player) >= 1 || SESSION.channels(sys.channelId('BF Review')).isChannelOperator(player))) {
+        if (chan === sys.channelId('BF Review') && isReviewer(player)) {
             for (var x in userqueue) {
                 if (isTierReviewer(player, x) && userqueue[x].length > 0) {
                     sendQueueItem(player, 0, x);
@@ -2133,11 +2167,7 @@ module.exports = {
                             }
                         }
                         if (bfsets[x].hasOwnProperty('maxpokes')) {
-                            if (bfsets[x].maxpokes == 3 && sys.tier(src, srcteam) == sys.tier(dest, destteam) && sys.tier(src, srcteam) == "Battle Factory") {
-                                suggestedtypes.push(x);
-                                continue;
-                            }
-                            else if (bfsets[x].maxpokes == 6 && sys.tier(src, srcteam) == sys.tier(dest, destteam) && sys.tier(src, srcteam) == "Battle Factory 6v6") {
+                            if (bfsets[x].maxpokes == 6 && sys.tier(src, srcteam) == sys.tier(dest, destteam) && sys.tier(src, srcteam) == "Battle Factory 6v6") {
                                 suggestedtypes.push(x);
                                 continue;
                             }
@@ -2150,6 +2180,9 @@ module.exports = {
                 var type = allowedtypes.length > 0 ? allowedtypes[sys.rand(0,allowedtypes.length)]: 'preset';
                 if (suggestedtypes.length > 0) {
                     type = suggestedtypes[sys.rand(0,suggestedtypes.length)];
+                }
+                if (sys.tier(src, srcteam) == sys.tier(dest, destteam) && sys.tier(src, srcteam) == "Battle Factory") {
+                    type = "preset";
                 }
                 generateTeam(src, srcteam, type);
                 generateTeam(dest, destteam, type);
@@ -2169,8 +2202,8 @@ module.exports = {
                 "/addpack [name] ~ [url]: Downloads a Battle Factory Pack from the internet",
                 "/updatepack [name] ~ [url]: Updates a Battle Factory Pack from the internet, loads from the last known URL if no URL is specified",
                 "/deletepack [name]: Deletes a Battle Factory Pack",
-                "/enablepack [name]: Allows a Battle Factory Pack to be used",
-                "/disablepack [name]: Disallows a Battle Factory Pack to be used",
+                "/enablepack [name]: Allows a Battle Factory Pack to be used in 6v6",
+                "/disablepack [name]: Disallows a Battle Factory Pack to be used in 6v6",
                 "/addreviewer [name]:[tier]: Allows a user to review for that tier",
                 "/removereviewer [name]:[tier]: Removes review powers for that user in that tier",
                 "/addtier [tier]:[mode]: Adds a tier to review, mode is optional (Singles/Doubles/Triples)",
