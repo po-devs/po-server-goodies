@@ -471,21 +471,21 @@ module.exports = function () {
         }
     };
     this.handleCommand = function (src, message, channel) {
-        if (channel !== hangchan) {
+        var command;
+        var commandData = '*';
+        var pos = message.indexOf(' ');
+        if (pos !== -1) {
+            command = message.substring(0, pos).toLowerCase();
+            commandData = message.substr(pos + 1);
+        } else {
+            command = message.substr(0).toLowerCase();
+        }
+        if (channel !== hangchan && ["hangmanban", "hangmanunban", "hangmanbans"].indexOf(command) === -1) {
             return;
         }
         try {
-            var command;
-            var commandData = '*';
-            var pos = message.indexOf(' ');
-            if (pos !== -1) {
-                command = message.substring(0, pos).toLowerCase();
-                commandData = message.substr(pos + 1);
-            } else {
-                command = message.substr(0).toLowerCase();
-            }
             if (command in hangman.hangcommands.user) {
-                hangman.hangcommands.user[command][0].call(hangman, src, commandData);
+                hangman.hangcommands.user[command][0].call(hangman, src, commandData, channel);
                 return true;
             }
 
@@ -557,7 +557,7 @@ module.exports = function () {
         script.modCommand(src, "hangmanbans", commandData, -1);
         return;
     };
-    this.hangmanAuth = function (src) {
+    this.hangmanAuth = function (src, commandData, channel) {
         var out = [
             "",
             "*** HANGMAN SUPER ADMINS ***",
@@ -584,7 +584,7 @@ module.exports = function () {
         }
         out.push("");
         for (var x in out) {
-            sys.sendMessage(src, out[x]);
+            sys.sendMessage(src, out[x], channel);
         }
         return;
     };
