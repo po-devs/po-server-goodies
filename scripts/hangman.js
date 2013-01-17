@@ -535,6 +535,9 @@ module.exports = function () {
         }
     };
     this.hangmanBan = function (src, commandData) {
+        if (commandData === undefined) {
+            return;
+        }
         var tar = sys.id(commandData);
         var bantime;
         if (this.authLevel(src) > 1 || sys.auth(src) > 0) {
@@ -546,6 +549,9 @@ module.exports = function () {
         return;
     };
     this.hangmanUnban = function (src, commandData) {
+        if (commandData === undefined) {
+            return;
+        }
         var tar = sys.id(commandData);
         script.modCommand(src, "hangmanunban", commandData, tar);
         return;
@@ -586,18 +592,27 @@ module.exports = function () {
         return;
     };
     this.promoteAdmin = function (src, commandData) {
+        if (commandData === undefined) {
+            return;
+        }
         hangmanAdmins.add(commandData.toLowerCase(), "");
         sys.sendMessage(src, "±Unown: That person is now a hangman admin!", hangmanchan);
         sys.sendAll("±Unown: " + sys.name(src) + " promoted " + commandData, sys.channelId('Victory Road'));
         return;
     };
     this.promoteSuperAdmin = function (src, commandData) {
+        if (commandData === undefined) {
+            return;
+        }
         hangmanSuperAdmins.add(commandData.toLowerCase(), "");
         sys.sendMessage(src, "±Unown: That person is now a hangman super admin!", hangmanchan);
         sys.sendAll("±Unown: " + sys.name(src) + " promoted " + commandData, sys.channelId('Victory Road'));
         return;
     };
     this.demoteAdmin = function (src, commandData) {
+        if (commandData === undefined) {
+            return;
+        }
         hangmanAdmins.remove(commandData);
         hangmanAdmins.remove(commandData.toLowerCase());
         sys.sendMessage(src, "±Unown: That person is no longer a hangman admin!", hangmanchan);
@@ -605,6 +620,9 @@ module.exports = function () {
         return;
     };
     this.demoteSuperAdmin = function (src, commandData) {
+        if (commandData === undefined) {
+            return;
+        }
         hangmanSuperAdmins.remove(commandData);
         hangmanSuperAdmins.remove(commandData.toLowerCase());
         sys.sendMessage(src, "±Unown: That person is no longer a hangman super admin!", hangmanchan);
