@@ -30,6 +30,9 @@ module.exports = function () {
 
     this.lastAdvertise = 0;
     this.guessCharacter = function (src, commandData) {
+        if (commandData === undefined) {
+            return;
+        }
         if (sys.ip(src) === host) {
             hangbot.sendMessage(src, "You started the game, so you can't answer!", hangchan);
             return;
@@ -103,6 +106,9 @@ module.exports = function () {
         }
     };
     this.submitAnswer = function (src, commandData) {
+        if (commandData === undefined) {
+            return;
+        }
         if (sys.ip(src) === host) {
             hangbot.sendMessage(src, "You started the game, so you can't answer!", hangchan);
             return;
@@ -148,6 +154,9 @@ module.exports = function () {
         }
     };
     this.startGame = function (src, commandData) {
+        if (commandData === undefined) {
+            return;
+        }
         if (word) {
             hangbot.sendMessage(src, "A game is already running! You can start a new one once this game is over!", hangchan);
             return;
@@ -297,6 +306,9 @@ module.exports = function () {
         this.resetTimers();
     };
     this.passWinner = function(src, commandData) {
+        if (commandData === undefined) {
+            return;
+        }
         if (word !== undefined) {
             hangbot.sendMessage(src, "A game is already running!", hangchan);
             return;
@@ -377,6 +389,9 @@ module.exports = function () {
         }
     };
     this.configGame = function (src, commandData) {
+        if (commandData === undefined) {
+            commandData = "*";
+        }
         var param = commandData.split(":")[0];
         var val = commandData.split(":")[1];
         if (!param || !val) {
