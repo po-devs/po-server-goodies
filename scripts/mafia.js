@@ -3133,6 +3133,11 @@ function Mafia(mafiachan) {
     this.isMafiaAdmin = function (src) {
         if (sys.auth(src) >= 1)
             return true;
+        
+        if (mafia.isMafiaSuperAdmin(src)) {
+            return true;
+        }
+        
         if (mafiaAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
             return true;
         }
