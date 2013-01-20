@@ -117,6 +117,9 @@ module.exports = function () {
             hangbot.sendMessage(src, "No game is running!", hangchan);
             return;
         }
+        if (commandData.length < 4) {
+            hangbot.sendMessage(src, "The answer must have at least four letters!", hangchan);
+        }
         var now = (new Date()).getTime();
         if (now < SESSION.users(src).hangmanTime) {
             hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanTime - now) / 1000) + 1) + " seconds before submitting another guess!", hangchan);
@@ -146,9 +149,10 @@ module.exports = function () {
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
         } else {
+            parts--;
             this.addMiss(src);
             this.addAnswerUse(src);
-            hangbot.sendAll("" + sys.name(src) + "'s answer was wrong! The game continues!", hangchan);
+            hangbot.sendAll("" + sys.name(src) + "'s answer was wrong! The game continues with " + parts + " chances left!", hangchan);
             sendChanHtmlAll(" ", hangchan);
             SESSION.users(src).hangmanTime = (new Date()).getTime() + answerDelay * 2000;
         }
@@ -367,8 +371,8 @@ module.exports = function () {
             "±Goal: Whenever someone guess a letter correctly, that letter will be filled in the word.",
             "*** *********************************************************************** ***",
             "±Actions: To see the current puzzle, type /view.",
-            "±Actions: To guess a character, type /g [character]. For example, to guess F, type /g F.",
-            "±Actions: If you think you already know the answer, you can use /a [answer] to submit a full answer.",
+            "±Actions: To guess a character, type /g or /guess [character]. For example, to guess F, type /g F.",
+            "±Actions: If you think you already know the answer, you can use /a or /answer [answer] to submit a full answer.",
             "±Actions: If you guess wrong too many times, the host wins!",
             "*** *********************************************************************** ***",
             "±Hosting: To host a game, type /start Answer:Hint. The host can't guess or answer during their own game.",
@@ -381,6 +385,7 @@ module.exports = function () {
             "±Rules: Do not complain if another user guesses a letter, word or answer before you do.",
             "±Rules: Do not create an answer that is impossible for other people to guess, such as a personal nickname or an opinion.",
             "±Rules: All server rules apply in this channel too - type /rules to view them.",
+            "±Rules: If you have doubts or think someone is breaking the rules, use /hadmins to see a list of people who may help!"
             "*** *********************************************************************** ***",
             ""
         ];
@@ -462,12 +467,14 @@ module.exports = function () {
         user: {
             help: [this.showHelp, "For a how-to-play guide"],
             g: [this.guessCharacter, "To guess a letter."],
+            guess: [this.guessCharacter, "To guess a letter."]
             a: [this.submitAnswer, "To answer the question."],
+            answer: [this.submitAnswer, "To answer the question."]
             view: [this.viewGame, "To view the current game's state."],
             start: [this.startGame, "To start a new game of Hangman."],
             pass: [this.passWinner, "To pass start rights to someone else. "],
             hangmancommands: [this.showCommands, "To see the commands"],
-            hangmanauth: [this.hangmanAuth, "To see the list of hangman auth"]
+            hadmins: [this.hangmanAuth, "To see the list of hangman auth"]
         },
         op: {
             end: [this.endGame, "To stop a game."],
