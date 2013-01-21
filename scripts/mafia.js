@@ -7,7 +7,7 @@
 
 // Global variables inherited from scripts.js
 /*global cmp, mafiabot, getTimeString, mafiaAdmins, updateModule, script, sys, saveKey, SESSION, sendChanAll, require, Config, module, nonFlashing, sachannel, detained, staffchannel, mafiaSuperAdmins*/
-
+/*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 var MAFIA_CHANNEL = "Mafia";
 
 var is_command = require("utilities.js").is_command;
@@ -2662,125 +2662,125 @@ function Mafia(mafiachan) {
         sys.sendMessage(src, "", mafiachan);
     };
     this.showHelp = function (src, commandData) {
-	if (commandData == "commands") {
-	    var helpcommands = [
-			"*** *********************************************************************** ***",
-			"±Game: Commands can have a custom name but you will be told what the command does if it does have a different name than below.",
-			"*** *********************************************************************** ***",
-			"±Command: Inspect",
-			"±Explanation: Allows the user to find out the role of the person they target.",
-			"*** *********************************************************************** ***",
-			"±Command: Protect",
-			"±Explanation: Allows the user keep their target from being killed.",
-			"*** *********************************************************************** ***",
-			"±Command: Kill",
-			"±Explanation: Kills the target taking them out of the game.",
-			"*** *********************************************************************** ***",
-			"±Command: Poison",
-			"±Explanation: Causes the target to die a specific number of days later. Different for each theme.",
-			"*** *********************************************************************** ***",
-			"±Command: Safeguard",
-			"±Explanation: Allows the user to keep their target from getting poisoned, inspected, converted, cursed, stalked, and copied.",
-			"*** *********************************************************************** ***",
-			"±Command: Distract",
-			"±Explanation: Allows the user to stop their target from doing their action at night.",
-			"*** *********************************************************************** ***",
-			"±Command: Stalk",
-			"±Explanation: Allows the user to find out who their target visited at night.",
-			"*** *********************************************************************** ***",
-			"±Command: Convert",
-			"±Explanation: Allows the user to change the role of their target.",
-			"*** *********************************************************************** ***",
-			"±Command: Expose",
-			"±Explanation: Allows the user to tell everyone in the game their targets role.",
-			"*** *********************************************************************** ***",
-			"±Command: Reveal",
-			"±Explanation: Allows the user to tell everyone in the game their role.",
-			"*** *********************************************************************** ***",
-			"±Command: Curse",
-			"±Explanation: Allows the user to make the target changed roles in a certain number of days.  The number of days is different in each theme.",
-			"*** *********************************************************************** ***",
-			""
-			];
-			dump(src, helpcommands);
-			}
-		else if (commandData == "roles") {
-			    var helproles = [
-			"*** *********************************************************************** ***",
-			"±Game: Not all roles are named what is below but they are all based off of them.",
-			"±Game: Power Roles, or PRs, are what people say when they are talking about any non-villager role on the village's side.",
-			"*** *********************************************************************** ***",
-			"±Role: Villager",
-			"±Explanation: This role doesn't do anything special. It is just able to vote during the day.",
-			"*** *********************************************************************** ***",
-			"±Role: Inspector",
-			"±Explanation: This role is able to use the inspect command to find someone's role.",
-			"*** *********************************************************************** ***",
-			"±Role: Vigilante",
-			"±Explanation: This role is able to kill someone at night.",
-			"*** *********************************************************************** ***",
-			"±Role: Bodyguard",
-			"±Explanation: This role is able to use the protect command to stop your target from getting killed.  Often referred to as the BG.",
-			"*** *********************************************************************** ***",
-			"±Role: Spy",
-			"±Explanation: This role is able to get hax on commands. This means they are sometimes able to tell who is getting killed and if lucky get to see who is killing.",
-			"*** *********************************************************************** ***",
-			"±Role: Mayor",
-			"±Explanation: This role has a vote higher than 1 allowing them a greater influence in the voting phase.",
-			"*** *********************************************************************** ***",
-			"±Role: Hooker",
-			"±Explanation: This role is able to use the distract command to stop their target from doing their night action.  Often referred to as the PL.",
-			"*** *********************************************************************** ***",
-			"±Role: Safeguarder",
-			"±Explanation: This role is able to use the safeguard command to stop their target from being poisoned, inspected, stalked, converted, copied and cursed.",
-			"*** *********************************************************************** ***",
-			"±Role: Poisoner",
-			"±Explanation: This role is able to use the poison command to cause their target to die a certain number of days later.",
-			"*** *********************************************************************** ***",
-			"±Role: Stalker",
-			"±Explanation: This role is able to use the stalk command to find out who their target visited.",
-			"*** *********************************************************************** ***",
-			"±Role: Converter",
-			"±Explanation: This role is able to use the convert command to change the role of their target.",
-			"*** *********************************************************************** ***",
-			"±Role: Curser",
-			"±Explanation: This role is able to use the curse command to change their target to a different role in a certain number of days.",
-			"*** *********************************************************************** ***",
-			"±Role: Samurai",
-			"±Explanation: This role is able to use the kill command during the day.",
-			"*** *********************************************************************** ***",
-			"±Role: Exposer",
-			"±Explanation: This role is able to use the expose command to reveal the role of their target to the whole game.",
-			"*** *********************************************************************** ***",
-			"±Role: WereWolf",
-			"±Explanation: This role is able to use the kill command and bypasses protect.  Often referred to as the WW.",
-			"*** *********************************************************************** ***",
-			""
-			];
-			dump(src, helproles);
-			}
-		else if (commandData == "hints") {
-		    var helphints = [
-			"±Game: When you are mafia if your teammate is guaranteed to be voted out you are allowed to vote them so you don't look suspicious.",
-			"±Game: In general if you are the inspector it is a good idea to claim so that you can be protected.",
-			"±Game: When you find your teammates it is a good idea to PM them so you remember who they are and so you can talk strategy.",
-			"±Game: Don't claim as a villager because it exposes the Power Roles.",
-			"±Game: Don't say to quiet because the people who are silent tend to be voted out a lot.",
-			"±Game: A rand is when someone choses who to vote/kill randomly with no real logic behind it.",
-			"±Game: Communication with your team is the key to victory.",
-			""
-			];
-			dump(src, helphints);
-			}			
-		else {
-		    var help = [			
+        if (commandData == "commands") {
+            var helpcommands = [
+            "*** *********************************************************************** ***",
+            "±Game: Commands can have a custom name but you will be told what the command does if it does have a different name than below.",
+            "*** *********************************************************************** ***",
+            "±Command: Inspect",
+            "±Explanation: Allows the user to find out the role of the person they target.",
+            "*** *********************************************************************** ***",
+            "±Command: Protect",
+            "±Explanation: Allows the user keep their target from being killed.",
+            "*** *********************************************************************** ***",
+            "±Command: Kill",
+            "±Explanation: Kills the target taking them out of the game.",
+            "*** *********************************************************************** ***",
+            "±Command: Poison",
+            "±Explanation: Causes the target to die a specific number of days later. Different for each theme.",
+            "*** *********************************************************************** ***",
+            "±Command: Safeguard",
+            "±Explanation: Allows the user to keep their target from getting poisoned, inspected, converted, cursed, stalked, and copied.",
+            "*** *********************************************************************** ***",
+            "±Command: Distract",
+            "±Explanation: Allows the user to stop their target from doing their action at night.",
+            "*** *********************************************************************** ***",
+            "±Command: Stalk",
+            "±Explanation: Allows the user to find out who their target visited at night.",
+            "*** *********************************************************************** ***",
+            "±Command: Convert",
+            "±Explanation: Allows the user to change the role of their target.",
+            "*** *********************************************************************** ***",
+            "±Command: Expose",
+            "±Explanation: Allows the user to tell everyone in the game their targets role.",
+            "*** *********************************************************************** ***",
+            "±Command: Reveal",
+            "±Explanation: Allows the user to tell everyone in the game their role.",
+            "*** *********************************************************************** ***",
+            "±Command: Curse",
+            "±Explanation: Allows the user to make the target changed roles in a certain number of days.  The number of days is different in each theme.",
+            "*** *********************************************************************** ***",
+            ""
+            ];
+            dump(src, helpcommands);
+        }
+        else if (commandData == "roles") {
+            var helproles = [
+            "*** *********************************************************************** ***",
+            "±Game: Not all roles are named what is below but they are all based off of them.",
+            "±Game: Power Roles, or PRs, are what people say when they are talking about any non-villager role on the village's side.",
+            "*** *********************************************************************** ***",
+            "±Role: Villager",
+            "±Explanation: This role doesn't do anything special. It is just able to vote during the day.",
+            "*** *********************************************************************** ***",
+            "±Role: Inspector",
+            "±Explanation: This role is able to use the inspect command to find someone's role.",
+            "*** *********************************************************************** ***",
+            "±Role: Vigilante",
+            "±Explanation: This role is able to kill someone at night.",
+            "*** *********************************************************************** ***",
+            "±Role: Bodyguard",
+            "±Explanation: This role is able to use the protect command to stop your target from getting killed.  Often referred to as the BG.",
+            "*** *********************************************************************** ***",
+            "±Role: Spy",
+            "±Explanation: This role is able to get hax on commands. This means they are sometimes able to tell who is getting killed and if lucky get to see who is killing.",
+            "*** *********************************************************************** ***",
+            "±Role: Mayor",
+            "±Explanation: This role has a vote higher than 1 allowing them a greater influence in the voting phase.",
+            "*** *********************************************************************** ***",
+            "±Role: Hooker",
+            "±Explanation: This role is able to use the distract command to stop their target from doing their night action.  Often referred to as the PL.",
+            "*** *********************************************************************** ***",
+            "±Role: Safeguarder",
+            "±Explanation: This role is able to use the safeguard command to stop their target from being poisoned, inspected, stalked, converted, copied and cursed.",
+            "*** *********************************************************************** ***",
+            "±Role: Poisoner",
+            "±Explanation: This role is able to use the poison command to cause their target to die a certain number of days later.",
+            "*** *********************************************************************** ***",
+            "±Role: Stalker",
+            "±Explanation: This role is able to use the stalk command to find out who their target visited.",
+            "*** *********************************************************************** ***",
+            "±Role: Converter",
+            "±Explanation: This role is able to use the convert command to change the role of their target.",
+            "*** *********************************************************************** ***",
+            "±Role: Curser",
+            "±Explanation: This role is able to use the curse command to change their target to a different role in a certain number of days.",
+            "*** *********************************************************************** ***",
+            "±Role: Samurai",
+            "±Explanation: This role is able to use the kill command during the day.",
+            "*** *********************************************************************** ***",
+            "±Role: Exposer",
+            "±Explanation: This role is able to use the expose command to reveal the role of their target to the whole game.",
+            "*** *********************************************************************** ***",
+            "±Role: WereWolf",
+            "±Explanation: This role is able to use the kill command and bypasses protect.  Often referred to as the WW.",
+            "*** *********************************************************************** ***",
+            ""
+            ];
+            dump(src, helproles);
+        }
+        else if (commandData == "hints") {
+            var helphints = [
+            "±Game: When you are mafia if your teammate is guaranteed to be voted out you are allowed to vote them so you don't look suspicious.",
+            "±Game: In general if you are the inspector it is a good idea to claim so that you can be protected.",
+            "±Game: When you find your teammates it is a good idea to PM them so you remember who they are and so you can talk strategy.",
+            "±Game: Don't claim as a villager because it exposes the Power Roles.",
+            "±Game: Don't say to quiet because the people who are silent tend to be voted out a lot.",
+            "±Game: A rand is when someone choses who to vote/kill randomly with no real logic behind it.",
+            "±Game: Communication with your team is the key to victory.",
+            ""
+            ];
+            dump(src, helphints);
+        }
+        else {
+            var help = [
             "Type /help commands to get an explanation about what each mafia command does.",
-			"Type /help roles to get an outline of the most common roles in mafia.",
-			"Type /help hints to get advice that will help you do better in mafia games."
+            "Type /help roles to get an outline of the most common roles in mafia.",
+            "Type /help hints to get advice that will help you do better in mafia games."
         ];
-        dump(src, help);
-    }
-};
+            dump(src, help);
+        }
+    };
     this.showRoles = function (src, commandData) {
         var themeName = "default";
         var data = commandData.split(":");
