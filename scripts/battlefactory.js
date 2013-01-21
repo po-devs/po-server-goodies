@@ -1893,14 +1893,14 @@ function generateTeam(src, team, mode) {
                     actualset = set;
                 }
                 teaminfo[p] = {
-                    'poke': toNumber(set.substr(0,2))+65536*toNumber(set.substr(2,1)),
-                    'nature': toNumber(set.substr(3,1)),
-                    'ability': toNumber(set.substr(4,2)),
-                    'item': toNumber(set.substr(6,3)),
-                    'level': toNumber(set.substr(9,2)),
-                    'moves': [toNumber(set.substr(11,2)),toNumber(set.substr(13,2)),toNumber(set.substr(15,2)),toNumber(set.substr(17,2))],
-                    'evs': [toNumber(set.substr(19,2)),toNumber(set.substr(21,2)),toNumber(set.substr(23,2)),toNumber(set.substr(25,2)),toNumber(set.substr(27,2)),toNumber(set.substr(29,2))],
-                    'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))]
+                    'poke': toNumber(actualset.substr(0,2))+65536*toNumber(actualset.substr(2,1)),
+                    'nature': toNumber(actualset.substr(3,1)),
+                    'ability': toNumber(actualset.substr(4,2)),
+                    'item': toNumber(actualset.substr(6,3)),
+                    'level': toNumber(actualset.substr(9,2)),
+                    'moves': [toNumber(actualset.substr(11,2)),toNumber(actualset.substr(13,2)),toNumber(actualset.substr(15,2)),toNumber(actualset.substr(17,2))],
+                    'evs': [toNumber(actualset.substr(19,2)),toNumber(actualset.substr(21,2)),toNumber(actualset.substr(23,2)),toNumber(actualset.substr(25,2)),toNumber(actualset.substr(27,2)),toNumber(actualset.substr(29,2))],
+                    'dvs': [toNumber(actualset.substr(31,1)),toNumber(actualset.substr(32,1)),toNumber(actualset.substr(33,1)),toNumber(actualset.substr(34,1)),toNumber(actualset.substr(35,1)),toNumber(actualset.substr(36,1))]
                 };
             }
         }
@@ -2186,6 +2186,12 @@ module.exports = {
                 }
                 generateTeam(src, srcteam, type);
                 generateTeam(dest, destteam, type);
+                if (find_tier(type)) {
+                    while (!tier_checker.has_legal_team_for_tier(src, srcteam, type, true) || !tier_checker.has_legal_team_for_tier(dest, destteam, type, true)) { //for complex bans like SS+Drizzle
+                        generateTeam(src, srcteam, type);
+                        generateTeam(dest, destteam, type);
+                    }
+                }
                 dumpData(src, srcteam);
                 dumpData(dest, destteam);
             }
