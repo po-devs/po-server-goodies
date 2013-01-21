@@ -3356,20 +3356,22 @@ modCommand: function(src, command, commandData, tar) {
                     default: return contribution != "no" ? "contributor" : "user";
                     }
                 }();
-                resp = JSON.parse(resp);
-                var countryName = resp.countryName;
-                var countryTag =  resp.countryCode;
-                var regionName = resp.regionName;
-                var cityName = resp.cityName;
                 var ipInfo = "";
-                if (countryName !== "" && countryName !== "-") {
-                    ipInfo += "Country: " + countryName + " (" + countryTag + "), ";
-                }
-                if (regionName !== "" && regionName !== "-") {
-                    ipInfo += "Region: " + regionName + ", ";
-                }
-                if(cityName !== "" && cityName !== "-"){
-                    ipInfo += "City: " + cityName;
+                if (resp !== undefined) {
+                    resp = JSON.parse(resp);
+                    var countryName = resp.countryName;
+                    var countryTag =  resp.countryCode;
+                    var regionName = resp.regionName;
+                    var cityName = resp.cityName;
+                    if (countryName !== "" && countryName !== "-") {
+                        ipInfo += "Country: " + countryName + " (" + countryTag + "), ";
+                    }
+                    if (regionName !== "" && regionName !== "-") {
+                        ipInfo += "Region: " + regionName + ", ";
+                    }
+                    if(cityName !== "" && cityName !== "-"){
+                        ipInfo += "City: " + cityName;
+                    }
                 }
                 var logintime = false;
                 if (online) logintime = SESSION.users(tar).logintime;
@@ -3380,7 +3382,7 @@ modCommand: function(src, command, commandData, tar) {
                     "Registered name: " + (registered ? "yes" : "no"),
                     "Last Login: " + (online && logintime ? new Date(logintime*1000).toUTCString() : lastLogin),
                     bans.length > 0 ? "Bans: " + bans.join(", ") : "Bans: none",
-                    "IP Details: " + (ipInfo !== "" ? ipInfo : "None Available")
+                    "IP Details: " + (ipInfo !== ""  ? ipInfo : "None Available")
                 ];
                 if (online) {
                     if (SESSION.users(tar).hostname != ip)
@@ -3403,8 +3405,9 @@ modCommand: function(src, command, commandData, tar) {
                     }
                 }
             };
-            var ipApi = sys.getFileContent(Config.dataDir+'ipApi.txt');
-            sys.webCall('http://api.ipinfodb.com/v3/ip-city/?key=' + ipApi + '&ip='+ ip + '&format=JSON', whois);
+            //var ipApi = sys.getFileContent(Config.dataDir+'ipApi.txt');
+            //sys.webCall('http://api.ipinfodb.com/v3/ip-city/?key=' + ipApi + '&ip='+ ip + '&format=JSON', whois);
+            whois();
         }
         return;
     }
