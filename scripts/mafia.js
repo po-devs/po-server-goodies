@@ -6,7 +6,7 @@
 */
 
 // Global variables inherited from scripts.js
-/*global cmp, mafiabot, getTimeString, mafiaAdmins, updateModule, script, sys, saveKey, SESSION, sendChanAll, require, Config, module*/
+/*global cmp, mafiabot, getTimeString, mafiaAdmins, updateModule, script, sys, saveKey, SESSION, sendChanAll, require, Config, module, nonFlashing, sachannel, detained, staffchannel, mafiaSuperAdmins*/
 
 var MAFIA_CHANNEL = "Mafia";
 
@@ -689,7 +689,7 @@ function Mafia(mafiachan) {
                         if ((typeof v == "string" && v == role.role) || (typeof v == "object" && role.role in v)) {
                             start = e;
                             break;
-                        } 
+                        }
                     }
                     var last = end;
                     end = this[role_i].length;
@@ -1135,7 +1135,6 @@ function Mafia(mafiachan) {
             sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
         }
         mafia.clearVariables();
-        sys.removeVal("mafiagameplayers");
         runUpdate();
     };
     /* called every second */
@@ -1590,7 +1589,6 @@ function Mafia(mafiachan) {
                 sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
             }
             mafia.clearVariables();
-            sys.removeVal("mafiagameplayers");
             runUpdate();
             return true;
 
@@ -1683,7 +1681,6 @@ function Mafia(mafiachan) {
                     if (sys.id('PolkaBot') !== undefined) {
                         sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
                     }
-                    sys.removeVal("mafiagameplayers");
                     sys.playersOfChannel(mafiachan).forEach(function(id) {
                         var detain = SESSION.users(id).detained;
                         if (detain) {
@@ -1699,7 +1696,7 @@ function Mafia(mafiachan) {
                                 }
                             }
                         }
-                    })
+                    });
                     runUpdate();
                     return true;
                 }
@@ -2183,7 +2180,7 @@ function Mafia(mafiachan) {
                                 } else if (targetMode.revealAs !== undefined) {
                                     if (typeof targetMode.revealAs == "string") {
                                         if (targetMode.revealAs == "*") {
-                                            var rrole = Object.keys(mafia.players).map(function(x) { return this.players[x].role.role }, mafia);
+                                            var rrole = Object.keys(mafia.players).map(function(x) { return this.players[x].role.role; }, mafia);
                                             mafia.sendPlayer(player.name, "±Info: " + target.name + " is the " + mafia.theme.trrole(rrole[Math.floor(Math.random() * rrole.length)]) + "!!");
                                         } else {
                                             mafia.sendPlayer(player.name, "±Info: " + target.name + " is the " + mafia.theme.trrole(targetMode.revealAs) + "!!");
@@ -2827,16 +2824,16 @@ function Mafia(mafiachan) {
             "±Tip: Type /rules on another channel to see the full rules.",
             "",
             " Game Rules: ",
-            "±Rule: Do not quote any of the Bots, removing the \"bot\" part is still botquoting.",
-            "±Rule: Do not quit the game before you are dead.",
-            "±Rule: Ask to be slain by a mafia admin if you must leave, but do not join the next game if you do so.",
-            "±Rule: Do not vote yourself / get yourself killed on purpose",
-            "±Rule: Do not reveal any information about the game once you're dead or voted off. ",
-            "±Rule: Do not repeatedly target a user, as it ruins the fun for that user",
-            "±Rule: Do not group together to ruin the game",
-            "±Rule: Do not intentionally harm your team's chances of winning.",
+            "±Rule: Do not intentionally harm your team's chances of winning. Voting yourself when you have no hope of surviving is one thing, voting out your confirmed ally is quite another.",
+            "±Rule: Do not deadtalk. After dying, you are out of the game and should consider it done with. Do not relay any information you may have retained during the course of the game to anyone else until the game is officially over.",
+            "±Rule: Do not join a game if you know you will have to leave soon. Often, mafia games take longer than one would expect, make time for it. If something unexpected happens, feel free to ask for a slay. Please do not abuse this privilege.",
+            "±Rule: Do not botquote. Mafia is about convincing your fellow players of your role and working together, it defeats the purpose if you simply botquote.",
+            "±Rule: Do not whine or rage. This is simply a game. If a theme comes up that you dislike, simply do not join it. No need to announce your dislike for it in the main chat. Additionally, childlike displays of anger will not be tolerated. Playful banter or taunting is one thing, outbursts of unpleasant words are another.",
+            "±Rule: Do not ruin the game for others. Very straightforward. Ask yourself: Do my actions consistently prevent another user from enjoying this game? If the answer is yes, stop it. Do not group together, target others or be unpleasant.",
+            "±Rule: When joining make sure that your name is not able to be confused with someone else's.  Trying to impersonate someone is something that should not be done because this will ruin the game and can cause confusion.",
+            "±Rule: Use your head. Again, this is straightforward and ties in with the above rules. By giving some foresight to your actions, you'll be able to eliminate virtually all negative incidents and be able to enjoy mafia with ease.",
             "",
-            "±Game: Disobey them and you will be banned from mafia/muted according to the MA/auth's wishes!",
+            "±Game: Failure to obey these rules may result in punishment at the discretion of the mafia admins or authority members.",
             ""
         ];
         dump(src, rules, channel);
@@ -3136,6 +3133,11 @@ function Mafia(mafiachan) {
     this.isMafiaAdmin = function (src) {
         if (sys.auth(src) >= 1)
             return true;
+        
+        if (mafia.isMafiaSuperAdmin(src)) {
+            return true;
+        }
+        
         if (mafiaAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
             return true;
         }
@@ -3150,232 +3152,7 @@ function Mafia(mafiachan) {
         }
         return false;
     };
-
-    this.saveMafiaData = function (src) {
-        var playerlist;
-        var mafialist;
-        var playerdata;
-        if (!sys.getVal("mafia" + sys.ip(src)) && !sys.getVal("mafia" + sys.name(src))) {
-            /* New player
-			* We save three parameters: player ip, games played, and the last played time */
-            sys.saveVal("mafia" + sys.ip(src), sys.ip(src) + "--" + 0 + "--" + sys.time());
-            sys.saveVal("mafia" + sys.name(src), sys.ip(src) + "--" + 0 + "--" + sys.time());
-            var games = 0;
-            // Update the player list
-            if (!sys.getVal("mafialist")) {
-                sys.saveVal("mafialist", sys.ip(src) + ":" + sys.name(src) + ":" + sys.time() + ":" + games);
-            }
-            else {
-                mafialist = sys.getVal("mafialist");
-                sys.saveVal("mafialist", mafialist + "--" + sys.ip(src) + ":" + sys.name(src) + ":" + sys.time() + ":" + games);
-            }
-            // Now add to the game list
-            if (sys.getVal("mafiagameplayers")) {
-                playerlist = sys.getVal("mafiagameplayers");
-                // Use a colon to separate the ip from the game count to allow for more data control.
-                sys.saveVal("mafiagameplayers", playerlist + "--" + sys.ip(src) + ":" + sys.name(src) + ":" + games);
-            }
-            else {
-                sys.saveVal("mafiagameplayers", sys.ip(src) + ":" + sys.name(src) + ":" + games);
-            }
-        } // End new player
-        else {
-            playerdata = sys.getVal("mafia" + sys.ip(src)).split("--");
-            var games = parseInt(playerdata[1], 10) + 1;
-            // Update Player
-            sys.saveVal("mafia" + sys.ip(src), sys.ip(src) + "--" + games + "--" + sys.time());
-            sys.saveVal("mafia" + sys.name(src), sys.ip(src) + "--" + games + "--" + sys.time());
-            if (!sys.getVal("mafialist")) {
-                sys.saveVal("mafialist", sys.ip(src) + ":" + sys.name(src) + ":" + sys.time() + ":" + games);
-            }
-            else {
-                mafialist = sys.getVal("mafialist");
-                sys.saveVal("mafialist", mafialist + "--" + sys.ip(src) + ":" + sys.name(src) + ":" + sys.time() + ":" + games);
-            }
-            if (sys.getVal("mafiagameplayers")) {
-                playerlist = sys.getVal("mafiagameplayers");
-                // Use a colon to separate the ip from the game count to allow for more data control.
-                sys.saveVal("mafiagameplayers", playerlist + "--" + sys.ip(src) + ":" + sys.name(src) + ":" + games);
-            }
-            else {
-                sys.saveVal("mafiagameplayers", sys.ip(src) + ":" + sys.name(src) + ":" + games);
-            }
-        } // End updating a player
-    }; // End saveMafiaData()
-
-    this.showplayers = function (src) {
-        var mafiagameplayers = sys.getVal("mafiagameplayers").split("--");
-        for (var z in mafiagameplayers) {
-            var playerdata = mafiagameplayers[z].split(":");
-            sys.sendMessage(src, "Name: " + playerdata[0] + " IP: " + playerdata[1] + " Games Played: " + playerdata[2]);
-        }
-    }; // End showCurrentPlayers()
-
-    this.trimplayers = function (src, cutoff) {
-        if (!cutoff) {
-            sys.sendMessage(src, "You must specify how long a player hasn't played a game to be deleted.");
-            return;
-        }
-        var masterlist = sys.getVal("mafialist").split("--");
-        var multiplier;
-        if (cutoff.indexOf("m")) {
-            multiplier = 60;
-        }
-        if (cutoff.indexOf("h")) {
-            multiplier = 3600;
-        }
-        if (cutoff.indexOf("d")) {
-            multiplier = 86400;
-        }
-        if (cutoff.indexOf("mo")) {
-            multiplier = 86400 * 30;
-        }
-        var string = cutoff.replace(/m|mo|h|d/gi, "");
-        var currenttime = sys.time();
-        var finalcutoff = currenttime - multiplier * string;
-        var newlist = "";
-        var n = 1;
-        var playersremoved = 0;
-        for (var z in masterlist) {
-            var data = masterlist[z].split(":");
-            if (data[2] < finalcutoff) {
-                // Player goes away
-                sys.removeVal("mafia" + data[0]);
-                sys.removeVal("mafia" + data[1]);
-                playersremoved = playersremoved + 1;
-            }
-            else {
-                // Player is active
-                if (n != 1) {
-                    newlist = newlist + "--" + data[0] + ":" + data[1] + ":" + data[2] + ":" + data[3];
-                }
-                else {
-                    newlist = data[0] + ":" + data[1] + ":" + data[2] + ":" + data[3];
-                }
-                n = n + 1;
-            }
-        }
-        sys.saveVal("mafialist", newlist);
-        sendChanAll(sys.name(src) + " has trimmed the mafia player database.  Players removed: " + playersremoved + ".", mafiachan);
-    }; // End trimPlayers()
-
-    this.showlist = function (src) {
-        var masterlist = sys.getVal("mafialist").split("--");
-        var length = masterlist.length;
-        var start = 0;
-        var list = "";
-
-        if (length > 50) { // Limit to last 50 seen "new users".
-            start = length - 50;
-        }
-        sys.sendMessage(src, start+" "+length);
-        for (var z = start; z <= length; z++) {
-            if (typeof masterlist[z] !== "undefined") {
-            var data = masterlist[z].split(":");
-            if (data[3] <= 2) { // New player
-                list = " Name: " + data[1] + " IP: " +
-            data[0] + " Games Played: " +
-            data[3] + " Last Visit: " +
-            this.formatlastvisit(data[2]);
-		sys.sendMessage(src, list, mafiachan);
-        }
-            }
-        }
-    }; // End showlist()
-
-    this.searchlist = function (src, conditions) {
-        var masterlist = sys.getVal("mafialist").split("--");
-        var conditions = conditions.split(" ");
-        /* How many conditions do we have to satisfy? */
-        var originallength = conditions.length;
-        var totalconditions = conditions.length;
-        var resultcount = 0;
-        var list = "";
-        for (var z in masterlist) {
-            /* Split the player information in order to test conditions. */
-            var data = masterlist[z].split(":");
-            var conditionsmet = 0;
-            var length = 1;
-            var last = 0;
-            var show = 0;
-            for (var x in conditions) {
-                if (conditions[x] != "or") // Allow for an or clause
-                {
-                    /* In order to allow for multiple conditions, we must separate each condition first. */
-                    var search = conditions[x].split("=");
-                    var name = search[0].toLowerCase();
-                    var value = search[1];
-                    if (name === "games" && value == data[3]) {
-                        conditionsmet += 1;
-                    }
-                    if (name === "name" && data[1].match(value)) {
-                        conditionsmet = conditionsmet + 1;
-                    }
-                    if (name === "ip" && data[0].match(value)) {
-                        conditionsmet += 1;
-                    }
-                    if (name === "lastactive" && data[2] >= sys.time() - value) {
-                        conditionsmet += 1;
-                    }
-                }
-                if (conditions[x] === "or") {
-                    totalconditions = totalconditions - 1 - length;
-                    last = last + length;
-                }
-                if (conditionsmet >= totalconditions) {
-                    if (show != 1) {
-                        resultcount += 1;
-                    }
-                    show = 1;
-                }
-                if (conditions[x] === "or") {
-                    length = 1;
-                    conditionsmet = 0;
-                }
-                else {
-                    length += 1;
-                }
-            } // Close conditions check
-            if (show == 1) {
-                list = list + " Name: " + data[1] + " IP: " + data[0] + " Games Played: " + data[3] + " Last Visit: " + this.formatlastvisit(data[2]);
-            }
-        } // Close list
-        if (resultcount>=150) {// Impose a hard limit for matches
-            sys.sendMessage(src, "Your search had too many results.  Please make your search more specific.", mafiachan);
-        }
-        else {
-            sys.sendMessage(src, list, mafiachan);
-            sys.sendMessage(src, "Querybot: Found " + resultcount + " matches for " + conditions + ".");
-        }
-    }; // End searchlist()
-
-    this.formatlastvisit = function (time) {
-        if (!time) {
-            time = sys.time();
-        }
-        var currenttime = sys.time();
-        var difference = currenttime - time;
-        var hours;
-        var lastvisit;
-        var months;
-        var days;
-        if (difference < 86400) {
-            hours = Math.floor(difference / 3600);
-            lastvisit = hours + " hours ago.";
-        }
-        else if (difference > 86400 && difference < 2592000) {
-            days = Math.floor(difference / 86400);
-            lastvisit = days + " days ago.";
-        }
-        else if (difference > 2592000 && difference < 31104000) {
-            months = Math.floor(difference / 2592000);
-            lastvisit = "More than " + months + " months ago.";
-        }
-        else {
-            lastvisit = "More than a year ago.";
-        }
-        return lastvisit;
-    }; // formatLastVisit()
+    
     this.pushUser = function (src, name) {
         if (!mafia.isMafiaSuperAdmin(src)) {
             msg(src, "Super Admin Command.");
@@ -3486,13 +3263,13 @@ function Mafia(mafiachan) {
             mafia.themeManager.loadWebTheme(dlurl, true, true, authorMatch ? theme.name.toLowerCase() : null);
         }
     };
-	this.announceTest = function (src, name) {
-		sendChanAll("", mafiachan);
-		sendChanAll(DEFAULT_BORDER, mafiachan);
-		sendChanAll("±Murkrow: A " + name + " mafia theme is being tested on the Pokemon Online 2 server! Get over there to participate on the testing yourself.", mafiachan);
-		sendChanAll(DEFAULT_BORDER, mafiachan);
-		sendChanAll("", mafiachan);
-	};
+    this.announceTest = function (src, name) {
+        sendChanAll("", mafiachan);
+        sendChanAll(DEFAULT_BORDER, mafiachan);
+        sendChanAll("±Murkrow: A " + name + " mafia theme is being tested on the Pokemon Online 2 server! Get over there to participate on the testing yourself.", mafiachan);
+        sendChanAll(DEFAULT_BORDER, mafiachan);
+        sendChanAll("", mafiachan);
+    };
     this.removeTheme = function (src, name) {
         if (!mafia.isMafiaSuperAdmin(src)) {
             msg(src, "admin+ command.");
@@ -3577,21 +3354,17 @@ function Mafia(mafiachan) {
             slay: [this.slayUser, "To slay users in a Mafia game."],
             shove: [this.slayUser, "To remove users before a game starts."],
             end: [this.endGame, "To cancel a Mafia game!"],
-	    mafiatest: [this.announceTest, "To gather people to test a theme on PO2."],
+            mafiatest: [this.announceTest, "To gather people to test a theme on PO2."],
             readlog: [this.readStalkLog, "To read the log of actions from a previous game"],
             add: [this.addTheme, "To add a Mafia Theme!"],
             remove: [this.removeTheme, "To remove a Mafia Theme!"],
             disable: [this.disableTheme, "To disable a Mafia Theme!"],
             enable: [this.enableTheme, "To enable a disabled Mafia Theme!"],
             updateafter: [this.updateAfter, "To update mafia after current game!"],
-            importold: [this.importOld, ""],
-            showplayers: [this.showplayers, "To show the list of current players in the game."],
-            showlist: [this.showlist, "To view the master player list."],
-            searchlist: [this.searchlist, "To search the master list."],
-            trimplayers: [this.trimplayers, "To trim the master player list."]
+            importold: [this.importOld, ""]
         }
     };
-    this.handleCommand = function (src, message, channel) {     
+    this.handleCommand = function (src, message, channel) {
         var command;
         var commandData = '*';
         var pos = message.indexOf(' ');
@@ -3600,7 +3373,7 @@ function Mafia(mafiachan) {
             commandData = message.substr(pos + 1);
         } else {
             command = message.substr(0).toLowerCase();
-        }   
+        }
         if (channel != mafiachan && ["detain","undetain","release","mafiaban","mafiaunban","mafiabans","detained","detainlist"].indexOf(command) === -1)
             return;
         try {
@@ -3626,11 +3399,9 @@ function Mafia(mafiachan) {
             sys.sendMessage(src, "±Game: You are muted!", mafiachan);
             return;
         }
-        if (SESSION.users(src).detained) { //remove this later
-            if (SESSION.users(src).detained.active) {
-                sys.sendMessage(src, "±Game: You are detained for " + SESSION.users(src).detained.games + " more games", mafiachan);
-                return;
-            }
+        if (SESSION.users(src).detained.active) {
+            sys.sendMessage(src, "±Game: You are detained for " + SESSION.users(src).detained.games + " more games", mafiachan);
+            return;
         }
         if (SESSION.users(src).android === true) {
             sys.sendMessage(src, "±Game: Android users can not play mafia!", mafiachan);
@@ -3695,8 +3466,6 @@ return;
                     return;
                 }
                 name = sys.name(src);
-                // This next statement allows one to view a list of players in the current game and maintain a master list.
-                this.saveMafiaData(src);
 
                 this.signups.push(name);
                 this.ips.push(sys.ip(src));
@@ -4105,13 +3874,47 @@ return;
             script.modCommand(src, command, commandData, tar);
             return;
         }
+        var id;
+        if (command == "passma") { //partially copied from tours.js
+            var newname = commandData.toLowerCase();
+            if (sys.dbIp(newname) === undefined) {
+                sys.sendMessage(src,"This user doesn't exist!");
+                return true;
+            }
+            if (!sys.dbRegistered(newname)) {
+                sys.sendMessage(src,"That account isn't registered so you can't give it authority!");
+                return true;
+            }
+            if (sys.id(newname) === undefined) {
+                sys.sendMessage(src,"The target is offline!");
+                return true;
+            }
+            if (sys.ip(sys.id(newname)) !== sys.ip(src)) {
+                sys.sendMessage(src,"Both accounts must be on the same IP to switch!");
+                return true;
+            }
+            if (this.isMafiaAdmin(sys.id(newname))) {
+                sys.sendMessage(src,"The target is already MA!");
+                return true;
+            }
+            // now copied from /mafiaadmin and /mafiaadminoff
+            mafiaAdmins.remove(sys.name(src));
+            mafiaAdmins.remove(sys.name(src).toLowerCase());
+            mafiaAdmins.add(commandData.toLowerCase(), "");
+            id = sys.id(commandData);
+            if (id !== undefined)
+                SESSION.users(id).mafiaAdmin = true;
+            sys.sendMessage(src, "±Game: Your auth has been transferred!", mafiachan);
+            sys.sendAll("±Murkrow: " + sys.name(src) + " passed their Mafia auth to " + commandData, sys.channelId('Victory Road'));
+            return;
+        }
         
         if (command == "detain") {
             var name = commandData.split(':')[0];
             var reason = commandData.split(':')[1];
             var val = commandData.split(':')[2];
             if (reason === undefined && !this.isMafiaSuperAdmin(src)) {
-                sys.sendMessage(src, "±Murkrow: You must provide a reason")
+                sys.sendMessage(src, "±Murkrow: You must provide a reason");
                 return;
             }
             if (val === undefined || isNaN(val) || val <= 0) {
@@ -4120,11 +3923,11 @@ return;
             var tar = sys.id(name);
             if (tar) {
                 if (sys.auth(tar) > 0 || this.isMafiaAdmin(tar)) {
-                    sys.sendMessage(src, "±Murkrow: Cannot detain someone with auth")
+                    sys.sendMessage(src, "±Murkrow: Cannot detain someone with auth");
                     return;
                 }
                 if (!SESSION.users(tar)) {
-                    SESSION.users(tar).detained = {active: false, by: null, games: 0, reason: null}
+                    SESSION.users(tar).detained = {active: false, by: null, games: 0, reason: null};
                 }
                 SESSION.users(tar).detained.active = true;
                 SESSION.users(tar).detained.by = sys.name(src);
@@ -4139,7 +3942,7 @@ return;
             var ip = sys.dbIp(name);
             if (ip) {
                 if (sys.maxAuth(ip) > 0) {
-                    sys.sendMessage(src, "±Murkrow: Cannot detain someone with auth")
+                    sys.sendMessage(src, "±Murkrow: Cannot detain someone with auth");
                     return;
                 }
                 detained.add(ip, val + ":" + sys.name(src) + ":" + name + ":" + reason);
@@ -4172,7 +3975,7 @@ return;
                 return;
             }
             if (!SESSION.users(tar).detained) {
-                SESSION.users(tar).detained = {active: false, by: null, games: 0, reason: null}
+                SESSION.users(tar).detained = {active: false, by: null, games: 0, reason: null};
             }
             if (!SESSION.users(tar).detained.games) {
                 sys.sendMessage(src, "±Murkrow: They are not detained");
@@ -4199,7 +4002,6 @@ return;
                     var values = mh.hash[ip].split(":");
                     var games = 0;
                     var by = "";
-                    var expires = 0;
                     var banned_name;
                     var reason = "";
                     if (values.length >= 4) {
@@ -4211,7 +4013,7 @@ return;
                             toDelete.push(ip);
                             continue;
                         }
-                    }                
+                    }
                     if(commandData != "*" && (!banned_name || banned_name.toLowerCase().indexOf(commandData.toLowerCase()) == -1))
                         continue;
                     tmp.push([ip, banned_name, by, games, utilities.html_escape(reason)]);
@@ -4261,7 +4063,6 @@ return;
         if (!this.isMafiaSuperAdmin(src))
             throw ("no valid command");
 
-        var id;
         if (command == "mafiaadmin") {
             mafiaAdmins.add(commandData.toLowerCase(), "");
             id = sys.id(commandData);
@@ -4283,7 +4084,7 @@ return;
         }
         
         if (sys.auth(src) < 3) {
-            throw ("no valid command")
+            throw ("no valid command");
         }
         if (command == "mafiasadmin" || command == "mafiasuperadmin") {
             mafiaSuperAdmins.add(commandData.toLowerCase(), "");
@@ -4345,8 +4146,9 @@ return;
     this.onMban = function (src) {
         if (this.isInGame(sys.name(src))) {
             this.slayUser(Config.Mafia.bot, sys.name(src));
-            if (sys.isInChannel(src, mafiachan))
-                sys.kick(src, mafiachan);
+        }
+        if (sys.isInChannel(src, mafiachan)) {
+            sys.kick(src, mafiachan);
         }
     };
 

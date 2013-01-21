@@ -1,6 +1,6 @@
 // This is the official Pokemon Online Scripts
 // These scripts will only work on 2.0.00 or newer.
-
+/*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 // You may change these variables as long as you keep the same type
 var Config = {
     base_url: "https://raw.github.com/po-devs/po-server-goodies/master/",
@@ -17,6 +17,7 @@ var Config = {
     battlebot: "Blastoise",
     commandbot: "CommandBot",
     querybot: "QueryBot",
+    hangbot: "Unown",
     // suspectvoting.js available, but not in use
     Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js"],
     Mafia: {
@@ -108,7 +109,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, getKey, megausers, contributors, mutes, mbans, smutes, detained, mafiaSuperAdmins, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans;
+var channel, getKey, megausers, contributors, mutes, mbans, smutes, detained, hbans, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans;
 
 var isMafiaAdmin = require('mafia.js').isMafiaAdmin;
 var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
@@ -138,11 +139,14 @@ cleanFile("mafiathemes/metadata.json");
 cleanFile("channelData.json");
 cleanFile("mutes.txt");
 cleanFile("mbans.txt");
+cleanFile("hbans.txt");
 cleanFile("smutes.txt");
 cleanFile("rangebans.txt");
 cleanFile("contributors.txt");
 cleanFile("ipbans.txt");
 cleanFile("detained.txt");
+cleanFile("hangmanadmins.txt");
+cleanFile("hangmansuperadmins.txt");
 cleanFile(Config.dataDir+"pastebin_user_key");
 cleanFile("secretsmute.txt");
 cleanFile("ipApi.txt");
@@ -260,6 +264,8 @@ function POUser(id)
     this.smute = {active: false, by: null, expires: 0, time: null, reason: null};
     /* detain for mafia */
     this.detained = {active: false, by: null, games: 0, reason: null};
+    /* whether user is hangmanbanned or not */
+    this.hban = {active: false, by: null, expires: 0, time: null, reason: null};
     /* caps counter for user */
     this.caps = 0;
     /* whether user is impersonating someone */
@@ -326,8 +332,8 @@ function POUser(id)
 
     /* check if user is banned or mafiabanned */
     var data;
-    var loopArgs = [["mute", mutes], ["mban", mbans], ["smute", smutes], ["detained", detained]];
-    for (i = 0; i < 4; ++i) {
+    var loopArgs = [["mute", mutes], ["mban", mbans], ["smute", smutes], ["detained", detained], ["hban", hbans]];
+    for (i = 0; i < 5; ++i) {
         var action = loopArgs[i][0];
         if ((data = loopArgs[i][1].get(sys.ip(id))) !== undefined) {
             this[action].active=true;
@@ -364,7 +370,7 @@ POUser.prototype.activate = function(thingy, by, expires, reason, persistent) {
     this[thingy].time = parseInt(sys.time(), 10);
     this[thingy].reason = reason;
     if (persistent) {
-        var table = {"mute": mutes, "smute": smutes, "mban": mbans};
+        var table = {"mute": mutes, "smute": smutes, "mban": mbans, "hban":hbans};
         table[thingy].add(sys.ip(this.id), sys.time() + ":" + by + ":" + expires + ":" + sys.name(this.id) + ":" + reason);
     }
 
@@ -374,7 +380,7 @@ POUser.prototype.activate = function(thingy, by, expires, reason, persistent) {
 POUser.prototype.un = function(thingy) {
     this[thingy].active = false;
     this[thingy].expires = 0;
-    var table = {"mute": mutes, "smute": smutes, "mban": mbans};
+    var table = {"mute": mutes, "smute": smutes, "mban": mbans, "hban": hbans};
     table[thingy].remove(sys.ip(this.id));
 
     callplugins("onUn"+ utilities.capitalize(thingy), this.id);
@@ -1232,6 +1238,7 @@ rankingbot = new Bot(Config.rankingbot);
 battlebot = new Bot(Config.battlebot);
 commandbot = new Bot(Config.commandbot);
 querybot = new Bot(Config.querybot);
+hangbot = new Bot(Config.hangbot);
 
 var commands = {
     user:
@@ -1452,8 +1459,11 @@ init : function() {
     contributors = new MemoryHash("contributors.txt");
     mafiaAdmins = new MemoryHash("mafiaadmins.txt");
     mafiaSuperAdmins = new MemoryHash("mafiasuperadmins.txt");
+    hangmanAdmins = new MemoryHash("hangmanadmins.txt");
+    hangmanSuperAdmins = new MemoryHash("hangmansuperadmins.txt");
     ipbans = new MemoryHash("ipbans.txt");
     detained = new MemoryHash("detained.txt");
+    hbans = new MemoryHash("hbans.txt");
     proxy_ips = {};
     function addProxybans(content) {
         var lines = content.split(/\n/);
@@ -1595,10 +1605,10 @@ init : function() {
 
 
 issueBan : function(type, src, tar, commandData, maxTime) {
-        var memoryhash = {"mute": mutes, "mban": mbans, "smute": smutes}[type];
+        var memoryhash = {"mute": mutes, "mban": mbans, "smute": smutes, "hban": hbans}[type];
         var banbot = type == "mban" ? mafiabot : normalbot;
-        var verb = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted"}[type];
-        var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute"}[type];
+        var verb = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted", "hban": "banned from hangman"}[type];
+        var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "hban": "ban from hangman"}[type];
         var sendAll =  {
             "smute": function(line) {
                 banbot.sendAll(line, staffchannel);
@@ -1616,11 +1626,16 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             },
             "mute": function(line) {
                 banbot.sendAll(line);
+            },
+            "hban" : function(line) {
+                banbot.sendAll(line, staffchannel);
+                banbot.sendAll(line, hangmanchan);
+                banbot.sendAll(line, sachannel);
             }
         }[type];
 
         var expires = 0;
-        var defaultTime = {"mute": "24h", "mban": "1d", "smute": "0"}[type];
+        var defaultTime = {"mute": "24h", "mban": "1d", "smute": "0", "hban": "1d"}[type];
         var reason = "";
         var timeString = "";
         var tindex = 10;
@@ -1694,7 +1709,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         var tarip = tar !== undefined ? sys.ip(tar) : sys.dbIp(commandData);
         sys.playerIds().forEach(function(id) {
             if (sys.loggedIn(id) && sys.ip(id) === tarip)
-            SESSION.users(id).activate(type, sys.name(src), expires, reason, true);
+                SESSION.users(id).activate(type, sys.name(src), expires, reason, true);
         });
         
         if (reason.length > 0)
@@ -1846,22 +1861,25 @@ beforeChannelJoin : function(src, channel) {
         sys.stopEvent();
         return;
     }
-    if ((channel == staffchannel || channel == sachannel || channel == mafiarev) && !this.canJoinStaffChannel(src)) {
+    if ((channel == staffchannel || channel == sachannel) && !this.canJoinStaffChannel(src)) {
         sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
         sys.stopEvent();
         return;
     }
-    if (channel == mafiachan && poUser.mban.active) {
-        if (poUser.expired("mban")) {
-            poUser.un("mban");
-            mafiabot.sendMessage(src, "Your ban from Mafia expired.");
-            mafiabot.sendAll("" + sys.name(src) + "'s ban from Mafia expired.", mafiachan);
-        } else {
-
-            var mbaninfo = poUser.mban;
-            sys.sendMessage(src, "+Guard: You are banned from Mafia" + (mbaninfo.by ? " by " + mbaninfo.by : '')+". " + (mbaninfo.expires > 0 ? "Ban expires in " + getTimeString(mbaninfo.expires - parseInt(sys.time(), 10)) + ". " : '') + (mbaninfo.reason ? "[Reason: " + mbaninfo.reason + "]" : ''));
-            sys.stopEvent();
-            return;
+    var channels = [mafiachan, hangmanchan];
+    var bans = ["mban", "hban"];
+    var type = ["Mafia", "Hangman"];
+    for(var x = 0; x < channels.length; x++) {
+        if (channel == channels[x] && poUser[bans[x]].active) {
+            if (poUser.expired(bans[x])) {
+                poUser.un(bans[x]);
+                normalBot.sendMessage(src, "Your ban from " + type[x] + " expired.");
+            } else {
+                var info = poUser[bans[x]];
+                sys.sendMessage(src, "+Guard: You are banned from " + type[x] + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Ban expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''));
+                sys.stopEvent();
+                return;
+            }
         }
     }
     if (channel == watchchannel && sys.auth(src) < 1) {
@@ -2926,6 +2944,43 @@ modCommand: function(src, command, commandData, tar) {
         this.silenceoff(src, commandData);
         return;
     }
+    if (command == "hangmanban") {
+        script.issueBan("hban", src, sys.id(commandData), commandData);
+        return;
+    }
+    if (command == "hangmanunban") {
+        if (tar === undefined) {
+            if (hbans.get(commandData)) {
+                hangbot.sendAll("IP address " + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!", staffchannel);
+                hangbot.sendAll("IP address " + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!", sachannel);
+                hbans.remove(commandData);
+                return;
+            }
+            var ip = sys.dbIp(commandData);
+            if(ip !== undefined && hbans.get(ip)) {
+                hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",staffchannel);
+                hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",hangmanchan);
+                hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",sachannel);
+                hbans.remove(ip);
+                return;
+            }
+            hangbot.sendChanMessage(src, "He/she's not banned from hangman.");
+            return;
+        }
+        if (!SESSION.users(tar).hban.active) {
+            hangbot.sendChanMessage(src, "He/she's not banned from hangman.");
+            return;
+        }
+        if(SESSION.users(src).hban.active && tar==src) {
+           hangbot.sendChanMessage(src, "You may not unban yourself from hangman");
+           return;
+        }
+        hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",staffchannel);
+        hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",hangmanchan);
+        hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",sachannel);
+        SESSION.users(tar).un("hban");
+        return;
+    }
     if (command == "mafiaban") {
         script.issueBan("mban", src, sys.id(commandData), commandData);
         return;
@@ -3011,7 +3066,7 @@ modCommand: function(src, command, commandData, tar) {
         return;
 
     }
-    if (command == "mutelist" || command == "smutelist" || command == "mafiabans") {
+    if (command == "mutelist" || command == "smutelist" || command == "mafiabans" || command == "hangmanbans") {
         var mh;
         var name;
         if (command == "mutelist") {
@@ -3023,6 +3078,9 @@ modCommand: function(src, command, commandData, tar) {
         } else if (command == "mafiabans") {
             mh = mbans;
             name = "Mafiabans";
+        } else if (command == "hangmanbans") {
+            mh = hbans;
+            name = "Hangman Bans";
         }
 
         var width=5;
@@ -4308,7 +4366,7 @@ ownerCommand: function(src, command, commandData, tar) {
         sys.webCall(updateURL, changeScript);
         return;
     }
-    if (command == "updatetiers") {
+    if (command == "updatetiers" || command == "updatetierssoft") {
         normalbot.sendChanMessage(src, "Fetching tiers...");
         var updateURL = Config.base_url + "tiers.xml";
         if (commandData !== undefined && (commandData.substring(0,7) == 'http://' || commandData.substring(0,8) == 'https://')) {
@@ -4319,7 +4377,11 @@ ownerCommand: function(src, command, commandData, tar) {
             if (resp === "") return;
             try {
                 sys.writeToFile("tiers.xml", resp);
-                sys.reloadTiers();
+                if (command == "updatetiers") {
+                    sys.reloadTiers();
+                } else {
+                    normalbot.sendMessage(src, "Tiers.xml updated!", channel);
+                }
             } catch (e) {
                 normalbot.sendChanMessage(src, "ERROR: "+e);
                 return;
