@@ -1379,7 +1379,16 @@ step: function() {
     if (typeof callplugins == "function") callplugins("stepEvent");
     
     var date = new Date();
-    if ((date.getUTCHours() === 0 || date.getUTCHours() ===  6 || date.getUTCHours() === 12 || date.getUTCHours() === 12) && date.getUTCMinutes === 0 && date.getUTCSeconds () === 0){
+    if (date.getUTCMinutes === 10 && date.getUTCSeconds() === 0) {
+        sys.get_output("nc -z server.pokemon-online.eu 10509", function callback(exit_code) {
+            if (exit_code !== 0) {
+                sys.sendAll("±NetCat: Cannot reach Webclient Proxy - it may be down.");
+            }
+        }, function errback(error) {
+                sys.sendAll("±NetCat: Cannot reach Webclient Proxy - it may be down: " + error);
+        });
+    }
+    if ([0, 6, 12, 18].indexOf(date.getUTCHours()) != -1 && date.getUTCMinutes === 0 && date.getUTCSeconds() === 0) {
         sendNotice();
     }
 },
