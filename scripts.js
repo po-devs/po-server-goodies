@@ -1386,7 +1386,7 @@ step: function() {
     if (typeof callplugins == "function") callplugins("stepEvent");
     
     var date = new Date();
-    if (date.getUTCMinutes === 10 && date.getUTCSeconds() === 0) {
+    if (date.getUTCMinutes() === 10 && date.getUTCSeconds() === 0) {
         sys.get_output("nc -z server.pokemon-online.eu 10509", function callback(exit_code) {
             if (exit_code !== 0) {
                 sys.sendAll("±NetCat: Cannot reach Webclient Proxy - it may be down.");
@@ -1395,7 +1395,7 @@ step: function() {
                 sys.sendAll("±NetCat: Cannot reach Webclient Proxy - it may be down: " + error);
         });
     }
-    if ([0, 6, 12, 18].indexOf(date.getUTCHours()) != -1 && date.getUTCMinutes === 0 && date.getUTCSeconds() === 0) {
+    if ([0, 6, 12, 18].indexOf(date.getUTCHours()) != -1 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
         sendNotice();
     }
 },
@@ -1873,7 +1873,7 @@ beforeChannelJoin : function(src, channel) {
         if (channel == channels[x] && poUser[bans[x]].active) {
             if (poUser.expired(bans[x])) {
                 poUser.un(bans[x]);
-                normalBot.sendMessage(src, "Your ban from " + type[x] + " expired.");
+                normalbot.sendMessage(src, "Your ban from " + type[x] + " expired.");
             } else {
                 var info = poUser[bans[x]];
                 sys.sendMessage(src, "+Guard: You are banned from " + type[x] + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Ban expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''));
