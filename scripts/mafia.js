@@ -2762,6 +2762,7 @@ function Mafia(mafiachan) {
 			}
 		else if (commandData == "hints") {
 		    var helphints = [
+		    	"*** *********************************************************************** ***",
 			"±Game: When you are mafia if your teammate is guaranteed to be voted out you are allowed to vote them so you don't look suspicious.",
 			"±Game: In general if you are the inspector it is a good idea to claim so that you can be protected.",
 			"±Game: When you find your teammates it is a good idea to PM them so you remember who they are and so you can talk strategy.",
@@ -2769,15 +2770,18 @@ function Mafia(mafiachan) {
 			"±Game: Don't say to quiet because the people who are silent tend to be voted out a lot.",
 			"±Game: A rand is when someone choses who to vote/kill randomly with no real logic behind it.",
 			"±Game: Communication with your team is the key to victory.",
+			"*** *********************************************************************** ***",
 			""
 			];
 			dump(src, helphints);
 			}			
 		else {
 		    var help = [			
+		    	"*** *********************************************************************** ***",
             "Type /help commands to get an explanation about what each mafia command does.",
 			"Type /help roles to get an outline of the most common roles in mafia.",
-			"Type /help hints to get advice that will help you do better in mafia games."
+			"Type /help hints to get advice that will help you do better in mafia games.",
+			"*** *********************************************************************** ***"
         ];
         dump(src, help);
     }
