@@ -1,13 +1,18 @@
 /*
 Battle Factory Program Script for Pokemon Online
 
-Coding done by Shadowfist
+Original coding by Shadowfist 2012
+Maintenance by PO Scripters 2013
 
 Requires bfteams.json to work.
 
 Files: bfteams.json
 Folders created: submissions, (messagebox may be used in the future, but not now)
 */
+
+// Coding style: semicolon are not required here but great caution is required
+/*jshint asi:true*/
+/*global sendChanAll, normalbot, staffchannel, tier_checker, sendChanHtmlAll*/
 
 // Globals
 var bfversion = "1.100";
@@ -170,8 +175,9 @@ function createEntry(name, data, srcurl) {
 function importOld(name) {
     var basepathname = "bfteams_" + (name.replace(/ /g, "")).toLowerCase() + ".json";
     if (sys.getFileContent(dataDir + basepathname) !== undefined) {
+        var data;
         try {
-            var data = JSON.parse(sys.getFileContent(dataDir + basepathname));
+            data = JSON.parse(sys.getFileContent(dataDir + basepathname));
         }
         catch (err) {
             return false;
@@ -542,7 +548,7 @@ function factoryCommand(src, command, commandData, channel) {
         if (tmp.length == 2) {
             template.mode = tmp[1];
         }
-        if (createEntry(ltier,template,url)) {
+        if (createEntry(ltier,template,"No URL for addtier")) {
             autoSave("teams", ltier);
             sendChanAll('Added the tier '+ltier+'!', teamrevchan);
             refresh(ltier);
@@ -673,7 +679,7 @@ function factoryCommand(src, command, commandData, channel) {
         }
         var delkey = commandData;
         if (bfhash.hasOwnProperty(delkey)) {
-            sys.deleteFile(dataDir + bfhash[delkey].path)
+            sys.deleteFile(dataDir + bfhash[delkey].path);
             delete bfhash[delkey];
             delete bfsets[delkey];
             if (reviewers.hasOwnProperty(delkey)) {
@@ -1904,6 +1910,18 @@ function generateTeam(src, team, mode) {
                 };
             }
         }
+        var ivprioritise = [5,1,3,2,4,0];
+        var sortalgorithm = function (a,b) {
+                if (pdata.dvs[b.stat] === 0 || pdata.dvs[a.stat] === 0) {
+                    return a.value-b.value;
+                }
+                else if (b.value !== a.value) {
+                    return b.value-a.value;
+                }
+                else {
+                    return ivprioritise.indexOf(a.stat) - ivprioritise.indexOf(b.stat);
+                }
+            }
         for (var s=0;s<6;s++) {
             var pdata = teaminfo[s];
             sys.changePokeNum(src,team,s,pdata.poke);
@@ -1921,23 +1939,12 @@ function generateTeam(src, team, mode) {
             for (var e=0;e<6;e++) {
                 sys.changeTeamPokeEV(src,team,s,e,pdata.evs[e]);
             }
-            var ivprioritise = [5,1,3,2,4,0];
             var keptIVs = [];
             var EVlist = [];
             for (var l=0; l<6; l++) {
                 EVlist.push({'stat': l, 'value': pdata.evs[l]});
             }
-            var sortalgorithm = function (a,b) {
-                if (pdata.dvs[b.stat] === 0 || pdata.dvs[a.stat] === 0) {
-                    return a.value-b.value;
-                }
-                else if (b.value !== a.value) {
-                    return b.value-a.value;
-                }
-                else {
-                    return ivprioritise.indexOf(a.stat) - ivprioritise.indexOf(b.stat);
-                }
-            }
+           
             EVlist.sort(sortalgorithm);
             keptIVs = [];
             for (var k=0; k<maxPerfectIVs; k++) {
@@ -1973,7 +1980,7 @@ function generateTeam(src, team, mode) {
             }
             else if (possiblegenders.hasOwnProperty("male")) {
                 var rand = Math.random()*100;
-                if (rand > possiblegenders['male']) {
+                if (rand > possiblegenders.male) {
                     newgender = 2;
                 }
                 else {
@@ -2092,7 +2099,7 @@ module.exports = {
         return false;
     },
     stepEvent : function() {
-        if (parseInt(sys.time())%saveInterval === 0) {
+        if ((+sys.time())%saveInterval === 0) {
             autoSave("all", "");
             normalbot.sendAll("Autosaved user generated sets.", teamrevchan);
         }
