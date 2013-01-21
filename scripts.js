@@ -1387,7 +1387,7 @@ step: function() {
     
     var date = new Date();
     if (date.getUTCMinutes() === 10 && date.getUTCSeconds() === 0) {
-        sys.get_output("nc -z server.pokemon-online.eu 10509", function callback(exit_code) {
+        sys.get_output("nc -z server.pokemon-online.eu 10508", function callback(exit_code) {
             if (exit_code !== 0) {
                 sys.sendAll("±NetCat: Cannot reach Webclient Proxy - it may be down.");
             }
