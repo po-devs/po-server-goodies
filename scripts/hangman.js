@@ -119,6 +119,7 @@ module.exports = function () {
         }
         if (commandData.length < 4) {
             hangbot.sendMessage(src, "The answer must have at least four letters!", hangchan);
+            return;
         }
         var now = (new Date()).getTime();
         if (now < SESSION.users(src).hangmanTime) {
@@ -384,7 +385,7 @@ module.exports = function () {
             "±Rules: Do not complain if another user guesses a letter, word or answer before you do.",
             "±Rules: Do not create an answer that is impossible for other people to guess, such as a personal nickname or an opinion.",
             "±Rules: All server rules apply in this channel too - type /rules to view them.",
-            "±Rules: If you have doubts or think someone is breaking the rules, use /hadmins to see a list of people who may help!"
+            "±Rules: If you have doubts or think someone is breaking the rules, use /hadmins to see a list of people who may help!",
             "*** *********************************************************************** ***",
             ""
         ];
@@ -466,9 +467,9 @@ module.exports = function () {
         user: {
             help: [this.showHelp, "For a how-to-play guide"],
             g: [this.guessCharacter, "To guess a letter."],
-            guess: [this.guessCharacter, "To guess a letter."]
+            guess: [this.guessCharacter, "To guess a letter."],
             a: [this.submitAnswer, "To answer the question."],
-            answer: [this.submitAnswer, "To answer the question."]
+            answer: [this.submitAnswer, "To answer the question."],
             view: [this.viewGame, "To view the current game's state."],
             start: [this.startGame, "To start a new game of Hangman."],
             pass: [this.passWinner, "To pass start rights to someone else. "],
