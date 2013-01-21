@@ -1116,7 +1116,7 @@ function factoryCommand(src, command, commandData, channel) {
         // Write the short code
         for (var g in team) {
             var set = {'set': team[g], 'submitter': accept.name, 'auth': sys.name(src)};
-            var species = toNumber(set.substr(0,2));
+            var species = toNumber(set.set.substr(0,2));
             if (teamsave.hasOwnProperty(species)) {
                 teamsave[species].push(set);
                 continue;
