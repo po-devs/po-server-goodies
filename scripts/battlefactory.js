@@ -1865,7 +1865,7 @@ function generateTeam(src, team, mode) {
         var teaminfo = [];
         var pokearray = [];
         var readable = isReadable(pokedata);
-        var maxPerfectIVs = 2;
+        var maxPerfectIVs = 6;
         for (var x in pokedata) {
             if (typeof pokedata[x] == "object") {
                 pokearray.push(x);
