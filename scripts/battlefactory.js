@@ -779,6 +779,15 @@ function factoryCommand(src, command, commandData, channel) {
         normalbot.sendMessage(src, "Refreshed the "+commandData+" pack!", channel);
         return;
     }
+    else if (command == "loadfromfile") {
+        if (!bfsets.hasOwnProperty(commandData)) {
+            normalbot.sendMessage(src, "No such pack exists!", channel);
+            return;
+        }
+        refresh(commandData);
+        normalbot.sendMessage(src, "Loaded " + commandData + "file");
+        return;
+    }
     else if (command == "pokesets") {
         var tmp = commandData.split(":",2);
         var sets = [];
