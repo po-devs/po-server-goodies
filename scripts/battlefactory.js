@@ -785,7 +785,7 @@ function factoryCommand(src, command, commandData, channel) {
             return;
         }
         refresh(commandData);
-        normalbot.sendMessage(src, "Loaded " + commandData + " file");
+        normalbot.sendMessage(src, "Loaded " + commandData + " file", channel);
         return;
     }
     else if (command == "pokesets") {
