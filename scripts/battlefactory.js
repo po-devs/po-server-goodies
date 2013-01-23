@@ -785,7 +785,7 @@ function factoryCommand(src, command, commandData, channel) {
             return;
         }
         refresh(commandData);
-        normalbot.sendMessage(src, "Loaded " + commandData + "file");
+        normalbot.sendMessage(src, "Loaded " + commandData + " file");
         return;
     }
     else if (command == "pokesets") {
@@ -814,6 +814,8 @@ function factoryCommand(src, command, commandData, channel) {
                         var newarr = getReadablePoke(pokesets[b].set);
                         newarr.push("Submitted By: "+html_escape(pokesets[b].submitter), "Accepted By: "+html_escape(pokesets[b].auth));
                         sets.push(newarr.join("<br/>"));
+                    } else {
+                        sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
                     }
                 }
             }
