@@ -2684,7 +2684,7 @@ function Mafia(mafiachan) {
             "±Explanation: Allows the user to keep their target from getting poisoned, inspected, converted, cursed, stalked, and copied.",
             "*** *********************************************************************** ***",
             "±Command: Distract",
-            "±Explanation: Allows the user to stop their target from doing their action at night.",
+            "±Explanation: Allows the user to stop their target from performing their action at night.",
             "*** *********************************************************************** ***",
             "±Command: Stalk",
             "±Explanation: Allows the user to find out who their target visited at night.",
@@ -2699,7 +2699,7 @@ function Mafia(mafiachan) {
             "±Explanation: Allows the user to tell everyone in the game their role.",
             "*** *********************************************************************** ***",
             "±Command: Curse",
-            "±Explanation: Allows the user to make the target changed roles in a certain number of days. The number of days is different in each theme.",
+            "±Explanation: Allows the user to make the target change roles in a certain number of days. The number of days is different in each theme.",
             "*** *********************************************************************** ***",
             ""
             ];
@@ -2730,7 +2730,7 @@ function Mafia(mafiachan) {
             "±Explanation: This role has a vote higher than 1 allowing them a greater influence in the voting phase.",
             "*** *********************************************************************** ***",
             "±Role: Hooker",
-            "±Explanation: This role is able to use the distract command to stop their target from doing their night action. Often referred to as the PL.",
+            "±Explanation: This role is able to use the distract command to stop their target from performing their night action. Often referred to as the PL.",
             "*** *********************************************************************** ***",
             "±Role: Safeguarder",
             "±Explanation: This role is able to use the safeguard command to stop their target from being poisoned, inspected, stalked, converted, copied and cursed.",
@@ -2756,6 +2756,9 @@ function Mafia(mafiachan) {
             "±Role: WereWolf",
             "±Explanation: This role is able to use the kill command and bypasses protect. Often referred to as the WW.",
             "*** *********************************************************************** ***",
+            "±Role: Bomb",
+            "±Explanation: This role kills the person who killed them.",
+            "*** *********************************************************************** ***",
             ""
             ];
             dump(src, helproles);
@@ -2763,13 +2766,13 @@ function Mafia(mafiachan) {
         else if (commandData == "hints") {
             var helphints = [
             "*** *********************************************************************** ***",
-            "±Game: When you are mafia if your teammate is guaranteed to be voted out you are allowed to vote them so you don't look suspicious.",
-            "±Game: In general if you are the inspector it is a good idea to claim so that you can be protected.",
-            "±Game: When you find your teammates it is a good idea to PM them so you remember who they are and so you can talk strategy.",
-            "±Game: Don't claim as a villager because it exposes the Power Roles.",
-            "±Game: Don't say to quiet because the people who are silent tend to be voted out a lot.",
-            "±Game: A rand is when someone choses who to vote/kill randomly with no real logic behind it.",
-            "±Game: Communication with your team is the key to victory.",
+            "Hint 1: When you are mafia if your teammate is guaranteed to be voted out you are allowed to vote them to avoid suspicion.",
+            "Hint 2: In general, if you are the inspector it is a good idea to claim.",
+            "Hint 3: When you find your teammates PM them so you remember who they are and to talk strategy.",
+            "Hint 4: Don't claim as a villager as it may expose Power Roles.",
+            "Hint 5: Don't stay to quiet because it looks suspicious.",
+            "Hint 6: A rand is when someone choses who to vote/kill with no real logic behind it.",
+            "Hint 7: Communication is the key to victory.",
             "*** *********************************************************************** ***",
             ""
             ];
