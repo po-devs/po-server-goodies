@@ -1663,6 +1663,8 @@ function Mafia(mafiachan) {
                     }
                 }
                 winSide = mafia.players[p].role.side;
+                players = [];
+                goodPeople = [];
                 if (winByDeadRoles) {
                     players = mafia.getPlayersForTeam(winSide);
                     for (x in mafia.players) {
