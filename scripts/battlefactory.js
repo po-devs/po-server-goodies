@@ -1730,7 +1730,7 @@ function getReadablePoke(set) {
         msg.push("Hidden Power "+sys.type(hptype));
     }
     var statlist = [];
-    var pokeinfo = sys.pokeBaseStats(info.poke)
+    var pokeinfo = sys.pokeBaseStats(sys.pokeNum(info.poke));
     for (var s=0; s<6; s++) {
         var natureboost = getNature(info.nature);
         if (s === 0) { // HP Stat
