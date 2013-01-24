@@ -33,6 +33,7 @@ function Mafia(mafiachan) {
 
     var savePlayedGames = function () {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
+        sys.saveVal("Stats/MafiaGamesPlayed", 1 + (+sys.getVal("Stats/MafiaGamesPlayed")));
     };
     var loadPlayedGames = function () {
         try {
