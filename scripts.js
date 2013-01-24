@@ -110,7 +110,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, getKey, megausers, contributors, mutes, mbans, smutes, detained, hbans, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans;
+var channel, getKey, megausers, contributors, mutes, mbans, smutes, detained, hbans, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, trollchannel, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, stepCounter, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, tempBans, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared;
 
 var isMafiaAdmin = require('mafia.js').isMafiaAdmin;
 var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
@@ -1382,6 +1382,7 @@ var commands = {
  * All the events are defined here
  */
 
+var lastStatUpdate = new Date();
 poScript=({
 /* Executed every second */
 step: function() {
@@ -1400,10 +1401,30 @@ step: function() {
     if ([0, 6, 12, 18].indexOf(date.getUTCHours()) != -1 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
         sendNotice();
     }
+    // Reset stats monthly
+    var JSONP_FILE = "usage_stats/formatted/stats.jsonp";
+    if (lastCleared != date.getUTCMonth()) {
+        lastCleared = date.getUTCMonth();
+        battlesFought = 0;
+        sys.saveVal("Stats/BattlesFought", 0);
+        sys.saveVal("Stats/LastCleared", lastCleared);
+        sys.saveVal("Stats/MafiaGamesPlayed", 0);
+    }
+    if (date - lastStatUpdate > 60) {
+        lastStatUpdate = date;
+        // QtScript is able to JSON.stringify dates
+        var stats = {
+            lastUpdate: date,
+            usercount: sys.playerIds().map(sys.loggedIn).length,
+            battlesFought: battlesFought,
+            mafiaPlayed: +sys.getVal("Stats/MafiaGamesPlayed")
+        };
+        sys.writeToFile(JSONP_FILE, "setServerStats(" + JSON.stringify(stats) + ");");
+    }
 },
 
 serverStartUp : function() {
-    SESSION.global().startUpTime = parseInt(sys.time(), 10);
+    SESSION.global().startUpTime = +sys.time();
     scriptChecks = 0;
     this.init();
 },
@@ -1411,6 +1432,8 @@ serverStartUp : function() {
 init : function() {
     lastMemUpdate = 0;
     bannedUrls = [];
+    battlesFought = +sys.getVal("Stats/BattlesFought");
+    lastCleared = +sys.getVal("Stats/LastCleared");
 
     mafiachan = SESSION.global().channelManager.createPermChannel("Mafia", "Use /help to get started!");
     staffchannel = SESSION.global().channelManager.createPermChannel("Indigo Plateau", "Welcome to the Staff Channel! Discuss of all what users shouldn't hear here! Or more serious stuff...");
@@ -5257,6 +5280,9 @@ beforeBattleEnded : function(src, dest, desc, bid) {
 
 
 afterBattleEnded : function(src, dest, desc) {
+    ++battlesFought;
+    // TODO: maybe save on script unload / server shutdown too
+    if (battlesFought % 100 === 0) sys.saveVal("Stats/BattlesFought", battlesFought);
     callplugins("afterBattleEnded", src, dest, desc);
 },
 
