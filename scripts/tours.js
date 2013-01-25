@@ -10,7 +10,6 @@ touradmins.json, tastats.json, tourseeds.json, tourhistory.json, tours_cache.jso
 
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global print, script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, Config, module*/
-var tourschan, tourserrchan, tours, tourconfig, html_escape, getChan, find_tier, playerlist, ladderlist, tourwinmessages, tourstats, tourwarnings;
 
 if (typeof tourschan !== "string") {
     tourschan = sys.channelId("Tournaments");
