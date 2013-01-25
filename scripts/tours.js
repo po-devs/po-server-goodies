@@ -1050,7 +1050,7 @@ function getEventTour(datestring) {
 function refreshTicks(override) {
     var time = parseInt(sys.time(), 10);
     time -= 9900; // offset
-    var frequency = 1*60*60; // every 6 hours
+    var frequency = 6*60*60; // every 6 hours
     var newtime = frequency-time%frequency;
     var oldtime = tours.eventticks;
     if (override || newtime < oldtime) {
