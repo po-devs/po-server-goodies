@@ -4199,8 +4199,17 @@ function tourprintbracket(key) {
             if (tours.keys.length === 0 && tours.globaltime > 0) {
                 tours.globaltime = parseInt(sys.time(), 10)+tourconfig.tourbreak; // for next tournament
             }
+            var signups = false
+            for (var x in tours.tour) {
+                if (tours.tour[x].state == "signups") {
+                    signups == true;
+                    break;
+                }
+            }
             if (isevent) {
-                tours.globaltime = parseInt(sys.time(), 10)+tourconfig.tourbreak; // for next tournament
+                if (!signups) {
+                    tours.globaltime = parseInt(sys.time(), 10)+tourconfig.tourbreak; // for next tournament
+                }
                 refreshTicks(true);
             }
             save_cache();
