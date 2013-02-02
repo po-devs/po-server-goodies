@@ -228,6 +228,8 @@ module.exports = function () {
         hangbot.sendAll(hint, hangchan);
         sys.sendAll("*** ************************************************************ ***", hangchan);
         sendChanHtmlAll(" ", hangchan);
+        hangbot.sendAll("Type /g [letter] to guess a letter, and /a [answer] to guess the answer!", hangchan);
+        sendChanHtmlAll(" ", hangchan);
         var time = parseInt(sys.time(), 10);
         if (time > this.lastAdvertise + 60 * 20) {
             this.lastAdvertise = time;
@@ -384,6 +386,7 @@ module.exports = function () {
             "±Rules: Do not create inappropriate answers, hints or guesses.",
             "±Rules: Do not complain if another user guesses a letter, word or answer before you do.",
             "±Rules: Do not create an answer that is impossible for other people to guess, such as a personal nickname or an opinion.",
+            "±Rules: Do not spoil the answer for the rest of the channel, as that ruins the game.",
             "±Rules: All server rules apply in this channel too - type /rules to view them.",
             "±Rules: If you have doubts or think someone is breaking the rules, use /hadmins to see a list of people who may help!",
             "*** *********************************************************************** ***",
