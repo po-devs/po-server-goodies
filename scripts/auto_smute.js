@@ -8,7 +8,7 @@ module.exports.beforeChatMessage = function beforeChatMessage(src, message, chan
     var name = sys.name(src);
     var lowerM = message.toLowerCase();
     if (sys.auth(src) > 0) return;
-    if (/(the )?muted [A-Za-z]{3,10}+/i.test(name) && !sys.dbRegistered(name) && lowerM.match(/satan/gi).length > 3) {
+    if (/(the )?muted [A-Za-z]{3,10}/i.test(name) && !sys.dbRegistered(name) && lowerM.match(/satan/gi).length > 3) {
         SESSION.users(src).activate("smute", "Script", 0, "Evader", true);
         normalbot.sendAll("Evader auto-smuted: " + name + ", message: " + message, staffchannel);
         return true;
