@@ -4202,7 +4202,7 @@ function tourprintbracket(key) {
             var signups = false
             for (var x in tours.tour) {
                 if (tours.tour[x].state == "signups") {
-                    signups == true;
+                    signups = true;
                     break;
                 }
             }
