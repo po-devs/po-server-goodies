@@ -2090,7 +2090,7 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (isReviewer(source) || ["bfversion", "submitsets", "viewpacks", "userpokesets", "reviewers", "backlog", "pokecode", "pokesets"].indexOf(command) > -1) {
+        if (isReviewer(source) || ["bfversion", "submitsets", "viewpacks", "userpokesets", "reviewers", "backlog", "pokecode", "pokesets", "pokeslist"].indexOf(command) > -1) {
             if (['acceptset', 'rejectset', 'deleteset','checkqueue', 'nextset', 'userpokesets'].indexOf(command) > -1 && channel != sys.channelId('BF Review')) {
                 bfbot.sendMessage(source, "These commands will only work in the #BF Review Channel!", channel);
                 return true;
