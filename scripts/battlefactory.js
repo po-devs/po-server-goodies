@@ -2199,9 +2199,9 @@ module.exports = {
                 if (suggestedtypes.length > 0) {
                     type = suggestedtypes[sys.rand(0,suggestedtypes.length)];
                 }
-                if (sys.tier(src, srcteam) == sys.tier(dest, destteam) && sys.tier(src, srcteam) == "Battle Factory") {
+                /*if (sys.tier(src, srcteam) == sys.tier(dest, destteam) && sys.tier(src, srcteam) == "Battle Factory") {
                     type = "preset";
-                }
+                }*/
                 generateTeam(src, srcteam, type);
                 generateTeam(dest, destteam, type);
                 if (find_tier(type)) {
