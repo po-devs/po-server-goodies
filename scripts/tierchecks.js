@@ -259,9 +259,17 @@ tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU"], functio
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi UU"], function bannedPokes(src, team, tier) { //for bans that need to be done quickly and tiers cannot be updated right away
+tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function sandVeilCheck(src, team, tier) {
+    for(var i = 0; i <6; ++i){
+        if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Sand Veil"){
+            return ["Sand Veil is not allowed in " + tier + "."];
+        }
+    }
+});
+
+tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function bannedPokes(src, team, tier) { //for bans that need to be done quickly and tiers cannot be updated right away
     for (var i = 0; i < 6; ++i) {
-        var bans = ["Kyurem-B", "Froslass"];
+        var bans = ["Genesect"];
         for (var j = 0; j < bans.length; j++) {
             if (sys.teamPoke(src, team, i) === sys.pokeNum(bans[j])){
                 return [bans[j] + " is banned in " + tier + "."];
