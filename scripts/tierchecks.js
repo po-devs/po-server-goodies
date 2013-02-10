@@ -267,6 +267,14 @@ tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function sandVeilCheck(src, t
     }
 });
 
+tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function sandVeilCheck(src, team, tier) {
+    for(var i = 0; i <6; ++i){
+        if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Snow Cloak"){
+            return ["Sand Veil is not allowed in " + tier + "."];
+        }
+    }
+});
+
 tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function bannedPokes(src, team, tier) { //for bans that need to be done quickly and tiers cannot be updated right away
     for (var i = 0; i < 6; ++i) {
         var bans = ["Genesect"];
