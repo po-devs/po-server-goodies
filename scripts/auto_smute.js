@@ -4,19 +4,6 @@
 module.exports.init = function() {}; //this is just so it says when updated thought /updateplugin :x
 
 module.exports.beforeChatMessage = function beforeChatMessage(src, message, channel) {
-    if (!SESSION.users(src) || SESSION.users(src).smute.active) return;
-    var name = sys.name(src);
-    var lowerM = message.toLowerCase();
-    if (sys.auth(src) > 0) return;
-    var check1 = /(the )?muted [A-Za-z]{3,10}/i.test(name) && lowerM.match(/satan/gi).length >= 3;
-    var check2 = /gigolo/i.test(name) && lowerM.match(/penis/gi).length >= 3;
-    if (check1 || check2) {
-        if (sys.dbRegistered(name) || channel !== 0) return;
-        SESSION.users(src).activate("smute", "Script", 0, "Evader", true);
-        normalbot.sendAll("Evader auto-smuted: " + name + ", message: " + message, staffchannel);
-        sys.sendMessage(src, name+": "+message, channel);
-        return true;
-    }
 };
 
 module.exports.afterChangeTeam = function afterChangeTeam(src){
