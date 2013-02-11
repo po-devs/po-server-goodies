@@ -3573,6 +3573,11 @@ ownerCommand: function(src, command, commandData, tar) {
         }
         return;
     }
+    if (command == "public") {
+    	sys.makeServerPublic(false);
+    	sys.makeServerPublic(true);
+    	return;
+    }
     if (command == "changeauth"||command == "changeauths") {
         var pos = commandData.indexOf(' ');
         if (pos == -1) {
