@@ -764,10 +764,10 @@ function Mafia(mafiachan) {
         for (var r = 0; r < role_order.length; ++r) {
             try {
                 role = this.roles[role_order[r]];
-//Don't add this role
-if (role.hide) {
-continue;
-}
+                //Don't add this role
+                if (role.hide) {
+                        continue;
+                }
                 if (typeof role.side == "string") {
                     if (side_list[role.side] === undefined)
                         side_list[role.side] = [];
@@ -789,10 +789,10 @@ continue;
         for (var s = 0; s < side_order.length; ++s) {
             try {
                 side = side_order[s];
-//Don't add this side
-if (side.hide) {
-continue;
-}
+                //Don't add this side
+                if (side.hide) {
+                    continue;
+                }
                 if (side_list[side] !== undefined)
                     sides.push("±Side: The " + this.trside(side) + " consists of " + side_list[side].join(", ") + ".");
             } catch (err) {
