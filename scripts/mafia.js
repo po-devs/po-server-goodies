@@ -362,6 +362,7 @@ function Mafia(mafiachan) {
             theme.border = plain_theme.border;
             theme.generateRoleInfo();
             theme.generateSideInfo();
+            theme.generatePriorityInfo();
             theme.enabled = true;
             return theme;
         } catch (err) {
@@ -515,7 +516,8 @@ function Mafia(mafiachan) {
                 var priority = obj.actions.night[i].priority;
                 action = i;
                 var role = obj.role;
-                this.nightPriority.push({ 'priority': priority, 'action': action, 'role': role });
+                var hide = "hide" in obj.actions.night[action];
+                this.nightPriority.push({ 'priority': priority, 'action': action, 'role': role, 'hide': hide });
             }
             this.nightPriority.sort(function (a, b) { return a.priority - b.priority; });
         }
@@ -805,6 +807,16 @@ function Mafia(mafiachan) {
         sides.push(sep);
         this.sideInfo = sides;
     };
+    Theme.prototype.generatePriorityInfo = function () {
+        var priority = [];
+        for (var p = 0; p < this.nightPriority.length; ++p) {
+            var prio = this.nightPriority[p];
+            if (!prio.hide) {
+                priority.push("[" + prio.priority + "] " + this.roles[prio.role].translation + " (" + cap(prio.action) + ")");
+            }
+        }
+        this.priorityInfo = priority;
+    }
 
     /* Theme Loading and Storing */
     Theme.prototype.trside = function (side) {
@@ -3248,9 +3260,8 @@ function Mafia(mafiachan) {
         var theme = mafia.themeManager.themes[themeName];
         sys.sendHtmlMessage(src, "", mafiachan);
         sys.sendHtmlMessage(src, "Priority List for theme <b>" + theme.name + ":</b>", mafiachan);
-        for (var p = 0; p < theme.nightPriority.length; ++p) {
-            var prio = theme.nightPriority[p];
-            sys.sendHtmlMessage(src, "[" + prio.priority + "] " + theme.roles[prio.role].translation + " (" + cap(prio.action) + ")", mafiachan);
+        for (var p = 0; p < theme.priorityInfo.length; ++p) {
+            sys.sendHtmlMessage(src, theme.priorityInfo[p], mafiachan);
         }
         sys.sendHtmlMessage(src, "", mafiachan);
     };
