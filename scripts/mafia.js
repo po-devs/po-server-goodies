@@ -516,7 +516,7 @@ function Mafia(mafiachan) {
                 var priority = obj.actions.night[i].priority;
                 action = i;
                 var role = obj.role;
-                var hide = "hide" in obj.actions.night[action];
+                var hide = obj.actions.night[action].hide || false;
                 this.nightPriority.push({ 'priority': priority, 'action': action, 'role': role, 'hide': hide });
             }
             this.nightPriority.sort(function (a, b) { return a.priority - b.priority; });
