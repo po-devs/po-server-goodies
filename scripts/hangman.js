@@ -131,6 +131,13 @@ module.exports = function () {
             return;
         }
         var ans = commandData.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g, '');
+            if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|\banus|boner|\btits\b|condom|\brape\b/gi.test(ans)) {
+                if (sys.existChannel("Victory Road"))
+                    hangbot.sendAll("Warning: Player "+name+" answered '"+ans+"' in #Hangman", sys.channelId("Victory Road"));
+                hangbot.sendAll("Warning: Player "+name+" answered '"+ans+"' in #Hangman", revchan);
+            }
+        sendChanHtmlAll(" ", hangchan);
+        
 
         sendChanHtmlAll(" ", hangchan);
         hangbot.sendAll("" + sys.name(src) + " answered " + ans + "!", hangchan);
@@ -191,6 +198,11 @@ module.exports = function () {
         if (!h) {
             hangbot.sendMessage(src, "You need to write a hint!", hangchan);
             return;
+        }
+        if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|\banus|boner|\btits\b|condom|\brape\b/gi.test(hint)) {
+            if (sys.existChannel("Victory Road"))
+                hangbot.sendAll("Warning: Player "+name+" made the hint '"+hint+"' in #Hangman", sys.channelId("Victory Road"));
+            hangbot.sendAll("Warning: Player "+name+" made the hint '"+hint+"' in #Hangman", revchan);
         }
         a = a.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g,'').toLowerCase();
         if (a.length > 60 || a.length < 4) {
@@ -341,6 +353,9 @@ module.exports = function () {
             hangbot.sendAll("" + sys.name(src) + " stopped the game!", hangchan);
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
+            if (sys.existChannel("Victory Road"))
+                hangbot.sendAll("Warning: Player "+name+" stopped the game in #Hangman", sys.channelId("Victory Road"));
+            hangbot.sendAll("Warning: Player "+name+" stopped the game in #Hangman", revchan);
             word = undefined;
             winner = undefined;
             this.resetTimers();
