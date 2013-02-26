@@ -128,7 +128,7 @@ module.exports = function () {
             return;
         }
         if (sys.name(src) in answers && answers[sys.name(src)] < maxAnswers) {
-            hangbot.sendMessage(src, "You can only use /a " + (answers[sys.name(src)] - maxAnswers) + "more times!", hangchan);
+            hangbot.sendMessage(src, "You can only use /a " + (maxAnswers - answers[sys.name(src)]) + "more times!", hangchan);
             return;
         }
         if (sys.name(src) in answers && answers[sys.name(src)] >= maxAnswers) {
