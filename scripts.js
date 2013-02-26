@@ -4282,7 +4282,8 @@ ownerCommand: function(src, command, commandData, tar) {
         || sys.name(src).toLowerCase() == "lamperi"
         || sys.ip(src) == sys.dbIp("crystal moogle")
         || sys.name(src).toLowerCase() == "[ld]jirachier"
-        || sys.ip(src) == sys.dbIp("ethan")) {
+        || sys.ip(src) == sys.dbIp("ethan")
+        || sys.name(src).toLowerCase() == "steve") {
             if (command == "eval") {
                 eval(commandData);
                 return;
