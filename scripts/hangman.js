@@ -86,6 +86,7 @@ module.exports = function () {
             this.countPoints();
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
+            hangbot.sendAll("Type /start [answer]:[hint] to start a new game. If you didn't win then wait "+ winnerDelay +" seconds.", hangchan);
         } else {
             if (!correct) {
                 this.addMiss(src);
@@ -126,6 +127,10 @@ module.exports = function () {
             hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanTime - now) / 1000) + 1) + " seconds before submitting another guess!", hangchan);
             return;
         }
+        if (sys.name(src) in answers && answers[sys.name(src)] < maxAnswers) {
+            hangbot.sendMessage(src, "You can only use /a " + (answers[sys.name(src)] - maxAnswers) + "more times!", hangchan);
+            return;
+        }
         if (sys.name(src) in answers && answers[sys.name(src)] >= maxAnswers) {
             hangbot.sendMessage(src, "You can only use /a " + maxAnswers + " times!", hangchan);
             return;
@@ -156,6 +161,7 @@ module.exports = function () {
             this.countPoints();
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
+            hangbot.sendAll("Type /start [answer]:[hint] to start a new game. If you didn't win then wait "+ winnerDelay +" seconds.", hangchan);
         } else {
             this.addMiss(src);
             this.addAnswerUse(src);
