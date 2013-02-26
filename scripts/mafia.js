@@ -547,6 +547,10 @@ function Mafia(mafiachan) {
         for (var r = 0; r < role_order.length; ++r) {
             try {
                 role = this.roles[role_order[r]];
+                  // Don't add this role to /roles
+                    if (role.hide) {
+                        continue;
+                    }
                 roles.push("±Role: " + role.translation);
 
                 // check which abilities the role has
@@ -760,6 +764,10 @@ function Mafia(mafiachan) {
         for (var r = 0; r < role_order.length; ++r) {
             try {
                 role = this.roles[role_order[r]];
+                //Don't add this role
+                if (role.hide) {
+                        continue;
+                }
                 if (typeof role.side == "string") {
                     if (side_list[role.side] === undefined)
                         side_list[role.side] = [];
@@ -781,6 +789,10 @@ function Mafia(mafiachan) {
         for (var s = 0; s < side_order.length; ++s) {
             try {
                 side = side_order[s];
+                //Don't add this side
+                if (side.hide) {
+                    continue;
+                }
                 if (side_list[side] !== undefined)
                     sides.push("±Side: The " + this.trside(side) + " consists of " + side_list[side].join(", ") + ".");
             } catch (err) {
@@ -2694,7 +2706,7 @@ function Mafia(mafiachan) {
             "±Explanation: Allows the user to keep their target from getting poisoned, inspected, converted, cursed, stalked, and copied.",
             "*** *********************************************************************** ***",
             "±Command: Distract",
-            "±Explanation: Allows the user to stop their target from doing their action at night.",
+            "±Explanation: Allows the user to stop their target from performing their action at night.",
             "*** *********************************************************************** ***",
             "±Command: Stalk",
             "±Explanation: Allows the user to find out who their target visited at night.",
@@ -2710,6 +2722,9 @@ function Mafia(mafiachan) {
             "*** *********************************************************************** ***",
             "±Command: Curse",
             "±Explanation: Allows the user to make the target changed roles in a certain number of days.  The number of days is different in each theme.",
+            "*** *********************************************************************** ***",
+            "±Command: Copy",
+            "±Explanation: Allows the user to convert based on the target's role. Example: Kirby.",
             "*** *********************************************************************** ***",
             ""
             ];
@@ -2766,28 +2781,35 @@ function Mafia(mafiachan) {
             "±Role: WereWolf",
             "±Explanation: This role is able to use the kill command and bypasses protect.  Often referred to as the WW.",
             "*** *********************************************************************** ***",
+            "±Role: Bomb",
+            "±Explanation: This role kills the person who killed them.",
+            "*** *********************************************************************** ***",
             ""
             ];
             dump(src, helproles);
         }
         else if (commandData == "hints") {
             var helphints = [
-            "±Game: When you are mafia if your teammate is guaranteed to be voted out you are allowed to vote them so you don't look suspicious.",
-            "±Game: In general if you are the inspector it is a good idea to claim so that you can be protected.",
-            "±Game: When you find your teammates it is a good idea to PM them so you remember who they are and so you can talk strategy.",
-            "±Game: Don't claim as a villager because it exposes the Power Roles.",
-            "±Game: Don't say to quiet because the people who are silent tend to be voted out a lot.",
-            "±Game: A rand is when someone choses who to vote/kill randomly with no real logic behind it.",
-            "±Game: Communication with your team is the key to victory.",
+            "*** *********************************************************************** ***",
+            "±Hint: When you are mafia if your teammate is guaranteed to be voted out you are allowed to vote them so you don't look suspicious.",
+            "±Hint: In general if you are the inspector it is a good idea to claim so that you can be protected.",
+            "±Hint: When you find your teammates it is a good idea to PM them so you remember who they are and so you can talk strategy.",
+            "±Hint: Don't claim as a villager because it exposes the Power Roles.",
+            "±Hint: Don't say to quiet because the people who are silent tend to be voted out a lot.",
+            "±Hint: A rand is when someone choses who to vote/kill randomly with no real logic behind it.",
+            "±Hint: Communication with your team is the key to victory.",
+            "*** *********************************************************************** ***",
             ""
             ];
             dump(src, helphints);
         }
         else {
             var help = [
+            "*** *********************************************************************** ***",
             "Type /help commands to get an explanation about what each mafia command does.",
             "Type /help roles to get an outline of the most common roles in mafia.",
-            "Type /help hints to get advice that will help you do better in mafia games."
+            "Type /help hints to get advice that will help you do better in mafia games.",
+            "*** *********************************************************************** ***"
         ];
             dump(src, help);
         }
