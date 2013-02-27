@@ -127,10 +127,6 @@ module.exports = function () {
             hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanTime - now) / 1000) + 1) + " seconds before submitting another guess!", hangchan);
             return;
         }
-        if (sys.name(src) in answers && answers[sys.name(src)] < maxAnswers) {
-            hangbot.sendMessage(src, "You can only use /a " + (maxAnswers - answers[sys.name(src)]) + "more times!", hangchan);
-            return;
-        }
         if (sys.name(src) in answers && answers[sys.name(src)] >= maxAnswers) {
             hangbot.sendMessage(src, "You can only use /a " + maxAnswers + " times!", hangchan);
             return;
@@ -138,7 +134,7 @@ module.exports = function () {
         var ans = commandData.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g, '');
             if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|\banus|boner|\btits\b|condom|\brape\b/gi.test(ans)) {
                 if (sys.existChannel("Victory Road"))
-                    hangbot.sendAll("Warning: Player "+name+" answered '"+ans+"' in #Hangman", sys.channelId("Victory Road"));
+                    hangbot.sendAll("Warning: Player "+sys.name(src)+" answered '"+ans+"' in #Hangman", sys.channelId("Victory Road"));
             }
         sendChanHtmlAll(" ", hangchan);
         
@@ -206,7 +202,7 @@ module.exports = function () {
         }
         if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|\banus|boner|\btits\b|condom|\brape\b/gi.test(hint)) {
             if (sys.existChannel("Victory Road"))
-                hangbot.sendAll("Warning: Player "+name+" made the hint '"+hint+"' in #Hangman", sys.channelId("Victory Road"));
+                hangbot.sendAll("Warning: Player "+sys.name(src)+" made the hint '"+hint+"' in #Hangman", sys.channelId("Victory Road"));
         }
         a = a.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g,'').toLowerCase();
         if (a.length > 60 || a.length < 4) {
@@ -358,7 +354,7 @@ module.exports = function () {
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
             if (sys.existChannel("Victory Road"))
-                hangbot.sendAll("Warning: Player "+name+" stopped the game in #Hangman", sys.channelId("Victory Road"));
+                hangbot.sendAll("Warning: Player "+sys.name(src)+" stopped the game in #Hangman", sys.channelId("Victory Road"));
             word = undefined;
             winner = undefined;
             this.resetTimers();
