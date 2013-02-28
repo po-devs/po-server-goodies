@@ -205,6 +205,10 @@ module.exports = function () {
                 hangbot.sendAll("Warning: Player "+sys.name(src)+" made the hint '"+hint+"' in #Hangman", sys.channelId("Victory Road"));
         }
         a = a.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g,'').toLowerCase();
+        if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|\banus|boner|\btits\b|condom|\brape\b/gi.test(a)) {
+            if (sys.existChannel("Victory Road"))
+                hangbot.sendAll("Warning: Player "+sys.name(src)+" made the answer '"+ans+"' in #Hangman", sys.channelId("Victory Road"));
+        }
         if (a.length > 60 || a.length < 4) {
             hangbot.sendMessage(src, "Your answer cannot be longer than 60 characters or shorter than 4 characters!", hangchan);
             return;
@@ -267,6 +271,7 @@ module.exports = function () {
             answers[sys.name(src)] = 0;
         }
         answers[sys.name(src)] += 1;
+        hangbot.sendMessage(src, "You can only use /a " + (maxAnswers- answers[sys.name(src)]) + " more times!", hangchan);
     };
     this.countPoints = function () {
         var maxPoints = 0, winners = [], w;
