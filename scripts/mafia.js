@@ -362,6 +362,7 @@ function Mafia(mafiachan) {
             theme.border = plain_theme.border;
             theme.generateRoleInfo();
             theme.generateSideInfo();
+            theme.generatePriorityInfo();
             theme.enabled = true;
             return theme;
         } catch (err) {
@@ -515,7 +516,8 @@ function Mafia(mafiachan) {
                 var priority = obj.actions.night[i].priority;
                 action = i;
                 var role = obj.role;
-                this.nightPriority.push({ 'priority': priority, 'action': action, 'role': role });
+                var hide = obj.actions.night[action].hide || false;
+                this.nightPriority.push({ 'priority': priority, 'action': action, 'role': role, 'hide': hide });
             }
             this.nightPriority.sort(function (a, b) { return a.priority - b.priority; });
         }
@@ -805,6 +807,16 @@ function Mafia(mafiachan) {
         sides.push(sep);
         this.sideInfo = sides;
     };
+    Theme.prototype.generatePriorityInfo = function () {
+        var priority = [];
+        for (var p = 0; p < this.nightPriority.length; ++p) {
+            var prio = this.nightPriority[p];
+            if (!prio.hide) {
+                priority.push("[" + prio.priority + "] " + this.roles[prio.role].translation + " (" + cap(prio.action) + ")");
+            }
+        }
+        this.priorityInfo = priority;
+    }
 
     /* Theme Loading and Storing */
     Theme.prototype.trside = function (side) {
@@ -2011,7 +2023,7 @@ function Mafia(mafiachan) {
                     outer:
                     for (t in targets) {
                         for (var c in commandList) {
-                            var targetMode;
+                            var targetMode = null;
                             var revenge = false, revengetext;
                             var revengetext = "±Game: You were killed during the night!";
                             var poisonrevenge, poisonDeadMessage;
@@ -2260,7 +2272,7 @@ function Mafia(mafiachan) {
                                 if ("canConvert" in Action && Action.canConvert != "*" && Action.canConvert.indexOf(target.role.role) == -1) {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") couldn't be converted!");
                                 } else {
-                                    var oldRole = target.role, newRole;
+                                    var oldRole = target.role, newRole = null;
                                     if (typeof Action.newRole == "object") {
                                         if ("random" in Action.newRole && !Array.isArray(Action.newRole.random) && typeof Action.newRole.random === "object" && Action.newRole.random !== null) {
                                             newRole = randomSample(Action.newRole.random);
@@ -2276,7 +2288,7 @@ function Mafia(mafiachan) {
                                     } else {
                                         newRole = Action.newRole;
                                     }
-                                    if (newRole === undefined) {
+                                    if (newRole === null) {
                                         mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") couldn't be converted!");
                                     } else {
                                         mafia.setPlayerRole(target, newRole);
@@ -2303,7 +2315,7 @@ function Mafia(mafiachan) {
                                 if (Action.copyAs == "*" && "canCopy" in Action && Action.canCopy != "*" && Action.canCopy.indexOf(target.role.role) == -1) {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") can't be copied!");
                                 } else {
-                                    var oldRole = player.role, newRole;
+                                    var oldRole = player.role, newRole = null;
                                     if (typeof Action.copyAs == "object") {
                                         var possibleRoles = shuffle(Object.keys(Action.copyAs));
                                         for (var nr in possibleRoles) {
@@ -2315,7 +2327,7 @@ function Mafia(mafiachan) {
                                     } else if (Action.copyAs == "*") {
                                         newRole = target.role.role;
                                     }
-                                    if (newRole === undefined) {
+                                    if (newRole === null) {
                                         mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") can't be copied!");
                                     } else {
                                     mafia.setPlayerRole(player, newRole);
@@ -2335,7 +2347,7 @@ function Mafia(mafiachan) {
                                 if ("canCurse" in Action && Action.canCurse != "*" && Action.canCurse.indexOf(target.role.role) == -1) {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") couldn't be cursed!");
                                 } else {
-                                    var oldRole = target.role, cursedRole;
+                                    var oldRole = target.role, cursedRole = null;
                                     if (typeof Action.cursedRole == "object") {
                                         if ("random" in Action.cursedRole && !Array.isArray(Action.cursedRole.random) && typeof Action.cursedRole.random === "object" && Action.cursedRole.random !== null) {
                                             cursedRole = randomSample(Action.cursedRole.random);
@@ -2351,7 +2363,7 @@ function Mafia(mafiachan) {
                                     } else {
                                         cursedRole = Action.cursedRole;
                                     }
-                                    if (cursedRole === undefined) {
+                                    if (cursedRole === null) {
                                         mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") couldn't be cursed!");
                                     } else {
                                         mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was cursed!");
@@ -3251,9 +3263,8 @@ function Mafia(mafiachan) {
         var theme = mafia.themeManager.themes[themeName];
         sys.sendHtmlMessage(src, "", mafiachan);
         sys.sendHtmlMessage(src, "Priority List for theme <b>" + theme.name + ":</b>", mafiachan);
-        for (var p = 0; p < theme.nightPriority.length; ++p) {
-            var prio = theme.nightPriority[p];
-            sys.sendHtmlMessage(src, "[" + prio.priority + "] " + theme.roles[prio.role].translation + " (" + cap(prio.action) + ")", mafiachan);
+        for (var p = 0; p < theme.priorityInfo.length; ++p) {
+            sys.sendHtmlMessage(src, theme.priorityInfo[p], mafiachan);
         }
         sys.sendHtmlMessage(src, "", mafiachan);
     };
