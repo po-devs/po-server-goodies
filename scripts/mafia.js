@@ -1126,6 +1126,9 @@ function Mafia(mafiachan) {
                 if (sys.existChannel("Mafia Tutoring")) {
                     this.advertiseToChannel(sys.channelId('Mafia Tutoring'));
                 }
+                if (sys.existChannel("Mafia Social")) {
+                    this.advertiseToChannel(sys.channelId('Mafia Social'));
+                }
             }
         }
         this.clearVariables();
