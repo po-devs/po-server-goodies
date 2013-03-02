@@ -21,12 +21,12 @@ TIER_TREES = [
 
 # Cutoff percentages:
 DEFAULT_CUTOFF = 4.0
-SPECIAL_CUTOFFS = {"Wifi UU": 3.5}
+SPECIAL_CUTOFFS = {}
 
 BANLIST = {
-    "Wifi OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Excadrill", "Blaziken", "Garchomp", "Thundurus", "Kyurem-W"], # Ubers
-    "Wifi UU": ["Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Wobbuffet", "Deoxys-D", "Thundurus-T", "Tornadus-T", "Landorus-T", "Keldeo", "Chansey", "Hydreigon", "Gothitelle"], # BL
-    "Wifi LU": ["Cresselia", "Gorebyss", "Huntail", "Victini", "Rhyperior", "Virizion", "Sharpedo", "Meloetta"], # BL2
+    "Wifi OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Excadrill", "Blaziken", "Thundurus", "Kyurem-W", "Genesect"], # Ubers
+    "Wifi UU": ["Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Wobbuffet", "Deoxys-D", "Thundurus-T", "Tornadus-T", "Landorus-T", "Keldeo", "Chansey", "Hydreigon", "Gothitelle", "Froslass", "Garchomp", "Kyurem-B"], # BL
+    "Wifi LU": ["Cresselia", "Victini", "Rhyperior", "Virizion", "Sharpedo", "Meloetta"], # BL2
     "Wifi NU": ["Durant", "Feraligatr", "Gligar", "Hitmonlee", "Scolipede", "Jynx", "Druddigon", "Gothitelle", "Venomoth"], # BL3
     "Wifi NEU": ["Mandibuzz"], # BL4
     "No Preview OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Blaziken", "Garchomp", "Chandelure", "Excadrill", "Kyurem-B", "Kyurem-W"], # DW Ubers
@@ -41,7 +41,7 @@ ADDITIONAL_BANS = {
 # TODO: enforce these
 ITEM_BANS = {
     "Wifi NU": [],
-    "Wifi LC": ["Berry Juice", "DeepSeaTooth"],
+    "Wifi LC": ["Berry Juice"],
 }
 
 def get_ranked_stats(tier):
