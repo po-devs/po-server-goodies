@@ -293,6 +293,7 @@ tier_check.add_new_check(INCLUDING, ["Wifi LU"], function smashPassCheck(src, te
             ret.push(sys.pokemon(sys.teamPoke(src, i)) + " has the combination of Shell Smash and Baton Pass which is banned in " + tier + " please remove before entering the tier");
         }
     }
+    return ret;
 });
 
 tier_checker.add_new_check(INCLUDING, ["Shanai Cup"], function shanaiAbilityCheck(src, team) {
