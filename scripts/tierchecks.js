@@ -286,7 +286,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function bannedPokes(src, tea
     }
 });
 
-tier_check.add_new_check(INCLUDING, ["Wifi LU"], function smashPassCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["Wifi LU"], function smashPassCheck(src, team, tier) {
     var ret = [];
     for (var i = 0; i < 6; i++) {
         if (sys.hasTeamPokeMove(src, i, sys.moveNum("Shell Smash")) && sys.hasTeamPokeMove(src, i, sys.moveNum("Baton Pass"))) {
