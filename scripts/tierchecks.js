@@ -289,8 +289,8 @@ tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function bannedPokes(src, tea
 tier_checker.add_new_check(INCLUDING, ["Wifi LU"], function smashPassCheck(src, team, tier) {
     var ret = [];
     for (var i = 0; i < 6; i++) {
-        if (sys.hasTeamPokeMove(src, i, sys.moveNum("Shell Smash")) && sys.hasTeamPokeMove(src, i, sys.moveNum("Baton Pass"))) {
-            ret.push(sys.pokemon(sys.teamPoke(src, i)) + " has the combination of Shell Smash and Baton Pass which is banned in " + tier + " please remove before entering the tier");
+        if (sys.hasTeamPokeMove(src, team, i, sys.moveNum("Shell Smash")) && sys.hasTeamPokeMove(src, team, i, sys.moveNum("Baton Pass"))) {
+            ret.push(sys.pokemon(sys.teamPoke(src, team, i)) + " has the combination of Shell Smash and Baton Pass which is banned in " + tier + " please remove before entering the tier");
         }
     }
     return ret;
