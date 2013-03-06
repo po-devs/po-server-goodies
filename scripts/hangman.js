@@ -200,7 +200,7 @@ module.exports = function () {
             hangbot.sendMessage(src, "You need to write a hint!", hangchan);
             return;
         }
-        if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|\banus|boner|\btits\b|condom|\brape\b/gi.test(hint)) {
+        if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|\banus|boner|\btits\b|condom|\brape\b/gi.test(h)) {
             if (sys.existChannel("Victory Road"))
                 hangbot.sendAll("Warning: Player "+sys.name(src)+" made the hint '"+hint+"' in #Hangman", sys.channelId("Victory Road"));
         }
