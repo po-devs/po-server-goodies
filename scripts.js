@@ -4278,10 +4278,8 @@ ownerCommand: function(src, command, commandData, tar) {
     }
 
         if (sys.ip(src) == sys.dbIp("coyotte508")
-        || sys.name(src).toLowerCase() == "darkness"
         || sys.name(src).toLowerCase() == "lamperi"
         || sys.ip(src) == sys.dbIp("crystal moogle")
-        || sys.name(src).toLowerCase() == "[ld]jirachier"
         || sys.ip(src) == sys.dbIp("ethan")
         || sys.name(src).toLowerCase() == "steve") {
             if (command == "eval") {
