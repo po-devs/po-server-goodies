@@ -1502,15 +1502,11 @@ function tourCommand(src, command, commandData) {
                 });
                 return true;
             }
-            if (command == "fullleaderboard") {
-                tstats.rankings(src, commandData, true, "all");
-                return true;
-            }
             if (command == "fulleventleaderboard") {
                 tstats.erankings(src, true, commandData);
                 return true;
             }
-            if (command == "fullmonthlyleaderboard") {
+            if (command == "fullmonthlyleaderboard" || command == "fullleaderboard") {
                 var month = false;
                 var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
                 var mindex = themonths.indexOf(commandData.toLowerCase());
@@ -1518,8 +1514,8 @@ function tourCommand(src, command, commandData) {
                     month = mindex;
                 }
                 if (month === false) {
-                    sendBotMessage(src,"Please specify a month!",tourschan,false);
-                    return true;
+                    var date = new Date();
+                    var mindex = date.getMonth();
                 }
                 tstats.rankings(src, "", true, mindex);
                 return true;
@@ -3133,11 +3129,7 @@ function tourCommand(src, command, commandData) {
             sys.sendMessage(src, border,tourschan);
             return true;
         }
-        if (command == "leaderboard") {
-            tstats.rankings(src, commandData, false, "all");
-            return true;
-        }
-        if (command == "monthlyleaderboard") {
+        if (command == "monthlyleaderboard" || command == "leaderboard") {
             var month = false;
             var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
             var mindex = themonths.indexOf(commandData.toLowerCase());
@@ -3145,8 +3137,8 @@ function tourCommand(src, command, commandData) {
                 month = mindex;
             }
             if (month === false) {
-                sendBotMessage(src,"Please specify a month!",tourschan,false);
-                return true;
+                var date = new Date();
+                var mindex = date.getMonth();
             }
             tstats.rankings(src, "", false, mindex);
             return true;
@@ -4199,7 +4191,7 @@ function tourprintbracket(key) {
             if (tours.keys.length === 0 && tours.globaltime > 0) {
                 tours.globaltime = parseInt(sys.time(), 10)+tourconfig.tourbreak; // for next tournament
             }
-            var signups = false
+            var signups = false;
             for (var x in tours.tour) {
                 if (tours.tour[x].state == "signups") {
                     signups = true;

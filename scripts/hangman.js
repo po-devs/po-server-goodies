@@ -509,7 +509,7 @@ module.exports = function () {
             help: [this.showHelp, "For a how-to-play guide"],
             g: [this.guessCharacter, "To guess a letter."],
             guess: [this.guessCharacter, "To guess a letter."],
-            hangmanrules: [this.showRules, "To see the Hangman rules."]
+            hangmanrules: [this.showRules, "To see the Hangman rules."],
             a: [this.submitAnswer, "To answer the question."],
             answer: [this.submitAnswer, "To answer the question."],
             view: [this.viewGame, "To view the current game's state."],
