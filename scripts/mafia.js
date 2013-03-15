@@ -867,6 +867,9 @@ function Mafia(mafiachan) {
         return noPlayer;
     };
     this.saveStalkLog = function () {
+        if (this.state == "standby") {
+            this.compilePhaseStalk("STANDBY " + mafia.time.days);
+        }
         if (this.state !== "blank" && this.state !== "voting" && currentStalk.length > 0) {
             var lastLog = currentStalk.join("::**::");
             stalkLogs.unshift(lastLog);
