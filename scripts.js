@@ -1415,7 +1415,7 @@ step: function() {
         // QtScript is able to JSON.stringify dates
         var stats = {
             lastUpdate: date,
-            usercount: sys.playerIds().map(sys.loggedIn).length,
+            usercount: sys.playerIds().filter(sys.loggedIn).length,
             battlesFought: battlesFought,
             mafiaPlayed: +sys.getVal("Stats/MafiaGamesPlayed")
         };
@@ -2451,9 +2451,8 @@ userCommand: function(src, command, commandData, tar) {
     }
     if (command == "auth") {
         var DoNotShowIfOffline = ["loseyourself", "oneballjay"];
-        var filterByAuth = function(level) { return function(name) { if (sys.dbAuth(name) == level) { return name; } }; };
+        var filterByAuth = function(level) { return function(name) { return sys.dbAuth(name) == level; }; };
         var printOnlineOffline = function(name) {
-            if (name === undefined) return;
             if (sys.id(name) === undefined) {
                 if (DoNotShowIfOffline.indexOf(name) == -1) sys.sendMessage(src, name + " (Offline)", channel);
             } else {
@@ -2465,27 +2464,27 @@ userCommand: function(src, command, commandData, tar) {
         switch (commandData) {
         case "owners":
             sys.sendMessage(src, "*** Owners ***", channel);
-            authlist.map(filterByAuth(3)).forEach(printOnlineOffline);
+            authlist.filter(filterByAuth(3)).forEach(printOnlineOffline);
             break;
         case "admins":
         case "administrators":
             sys.sendMessage(src, "*** Administrators ***", channel);
-            authlist.map(filterByAuth(2)).forEach(printOnlineOffline);
+            authlist.filter(filterByAuth(2)).forEach(printOnlineOffline);
             break;
         case "mods":
         case "moderators":
             sys.sendMessage(src, "*** Moderators ***", channel);
-            authlist.map(filterByAuth(1)).forEach(printOnlineOffline);
+            authlist.filter(filterByAuth(1)).forEach(printOnlineOffline);
             break;
         default:
             sys.sendMessage(src, "*** Owners ***", channel);
-            authlist.map(filterByAuth(3)).forEach(printOnlineOffline);
+            authlist.filter(filterByAuth(3)).forEach(printOnlineOffline);
             sys.sendMessage(src, '', channel);
             sys.sendMessage(src, "*** Administrators ***", channel);
-            authlist.map(filterByAuth(2)).forEach(printOnlineOffline);
+            authlist.filter(filterByAuth(2)).forEach(printOnlineOffline);
             sys.sendMessage(src, '', channel);
             sys.sendMessage(src, "*** Moderators ***", channel);
-            authlist.map(filterByAuth(1)).forEach(printOnlineOffline);
+            authlist.filter(filterByAuth(1)).forEach(printOnlineOffline);
         }
         sys.sendMessage(src, '', channel);
         return;
