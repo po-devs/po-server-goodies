@@ -867,6 +867,9 @@ function Mafia(mafiachan) {
         return noPlayer;
     };
     this.saveStalkLog = function () {
+        if (this.state == "standby") {
+            this.compilePhaseStalk("STANDBY " + mafia.time.days);
+        }
         if (this.state !== "blank" && this.state !== "voting" && currentStalk.length > 0) {
             var lastLog = currentStalk.join("::**::");
             stalkLogs.unshift(lastLog);
@@ -2324,8 +2327,12 @@ function Mafia(mafiachan) {
                                                 break;
                                             }
                                         }
-                                    } else if (Action.copyAs == "*") {
-                                        newRole = target.role.role;
+                                    } else if (typeof Action.copyAs == "string") {
+                                        if (Action.copyAs == "*") {
+                                            newRole = target.role.role;
+                                        } else {
+                                            newRole = Action.copyAs;
+                                        }
                                     }
                                     if (newRole === null) {
                                         mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") can't be copied!");
@@ -2333,7 +2340,7 @@ function Mafia(mafiachan) {
                                     mafia.setPlayerRole(player, newRole);
                                         if (!Action.silent) {
                                             if ("copymsg" in Action) {
-                                                sendChanAll("±Game: " + Action.copymsg.replace(/~Self~/g, player.name).replace(/~Target~/g, target.name).replace(/~Old~/g, oldRole.translation).replace(/~New~/g, target.role.translation), mafiachan);
+                                                sendChanAll("±Game: " + Action.copymsg.replace(/~Self~/g, player.name).replace(/~Target~/g, target.name).replace(/~Old~/g, oldRole.translation).replace(/~New~/g, player.role.translation), mafiachan);
                                             } else {
                                                 sendChanAll("±Game: A " + oldRole.translation + " has been converted into a " + player.role.translation + "!", mafiachan);
                                             }
