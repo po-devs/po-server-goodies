@@ -202,7 +202,7 @@ module.exports = function () {
         }
         if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|\banus|boner|\btits\b|condom|\brape\b/gi.test(h)) {
             if (sys.existChannel("Victory Road"))
-                hangbot.sendAll("Warning: Player "+sys.name(src)+" made the hint '"+hint+"' in #Hangman", sys.channelId("Victory Road"));
+                hangbot.sendAll("Warning: Player "+sys.name(src)+" made the hint '"+h+"' in #Hangman", sys.channelId("Victory Road"));
         }
         a = a.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g,'').toLowerCase();
         if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|\banus|boner|\btits\b|condom|\brape\b/gi.test(a)) {
