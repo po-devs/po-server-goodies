@@ -127,7 +127,8 @@ var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "- Avoid complaining about hax, luck or other such things as much as possible.",
                 "- Avoid making inflammatory remarks/taunts towards other users - treat other users the way you would like to be treated.",
                 "- Any deliberate attempt to undermine the integrity of tournaments will result in a permanent ban from tournaments.",
-                "#12: Do not attempt to circumvent the rules",
+                "#12: Do not join multiple tours for any reason, even if you are using a different alt."
+                "#13: Do not attempt to circumvent the rules",
                 "- Attempting to circumvent the rules through trickery, proxy or other such methods will be punished."]
 
 function sendBotMessage(user, message, chan, html) {
