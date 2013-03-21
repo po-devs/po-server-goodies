@@ -3939,7 +3939,16 @@ ownerCommand: function(src, command, commandData, tar) {
         normalbot.sendChanAll("IP ban added successfully for IP subrange: " + subip + " by "+ sys.name(src),staffchannel);
         return;
     }
-    
+    if (command == "rangeunban") {
+        var subip = commandData;
+        if (ipbans.get(subip) !== undefined) {
+            ipbans.remove(subip);
+            normalbot.sendChanMessage(src, "IP ban removed successfully for IP subrange: " + subip);
+        } else {
+            normalbot.sendChanMessage(src, "No such IP ban.");
+        }
+        return;
+    }
     if (command == "changerating") {
         var data =  commandData.split(' -- ');
         if (data.length != 3) {
