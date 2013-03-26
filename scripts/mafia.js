@@ -3069,9 +3069,37 @@ function Mafia(mafiachan) {
         mess.push("<b>Theme: </b>" + theme.name);
         mess.push("<b>Author: </b>" + (theme.author ? readable(theme.author, "and") : "Unknown"));
         mess.push("<b>Enabled: </b>" + (theme.enabled ? "Yes" : "No"));
-        mess.push("<b>Number of Players: </b> Up to " + (theme["roles" + theme.roleLists].length) + " players");
+        mess.push("<b>Number of Players: </b>" + (theme.minplayers == undefined ? "5" : theme.minplayers) + " to " + (theme["roles" + theme.roleLists].length) + " players");
         mess.push("<b>Summary: </b>" + (theme.summary ? theme.summary : "No summary available."));
-        mess.push("(For more information about this theme, type <b>/roles " + theme.name + "</b>)");
+        
+        var features = [];
+        if (theme.nolynch == true) {
+            features.push("-No Voting Phase");
+        } else {
+            if (theme.votesniping == true) {
+                features.push("-Vote Sniping");
+            }
+            if (theme.silentvote == true) {
+                features.push("-Silent Vote");
+            }
+        }
+        if (theme.ticks != undefined) {
+            var ticksMsg = "";
+            if (theme.ticks.night != undefined && theme.ticks.night != 30) {
+                features.push("-Night Phase: " + theme.ticks.night + " seconds");
+            }
+            if (theme.ticks.standby != undefined && theme.ticks.standby != 30) {
+                features.push("-Standby Phase: " + theme.ticks.standby + " seconds");
+            }
+        }
+        if (features.length > 0) {
+            mess.push("<b>Special Features:</b>");
+            for (i = 0; i < features.length; ++i) {
+                mess.push(features[i]);
+            }
+        }
+        
+        mess.push("(For more information about this theme, type <b>/roles " + theme.name + "</b>, <b>/sides " + theme.name + "</b>, <b>/priority " + theme.name + "</b> and <b>/changelog " + theme.name + "</b>)");
         if (link == "No link found") {
             mess.push('<b>Code: </b>' + link);
         } else {
@@ -3155,6 +3183,11 @@ function Mafia(mafiachan) {
             msg(src, "Alert for mafia games is now on!");
             user.mafiaalertson = true;
             saveKey("mafiaalertson", src, true);
+            if (user.mafiaalertsany == undefined) {
+                user.mafiaalertsany = true;
+                msg(src, "You will get alerts for any theme. To only receive alerts for specific themes, use /flashme add:theme name");
+                saveKey("mafiaalertsany", src, user.mafiaalertsany);
+            }
             return;
         }
         else if (action == "off") {
@@ -3192,6 +3225,10 @@ function Mafia(mafiachan) {
             if (themesAdded.length > 0) {
                 msg(src, "Added alert for the themes: " + readable(themesAdded, "and") + ". ");
                 saveKey("mafiathemes", src, user.mafiathemes.join("*"));
+                
+                user.mafiaalertsany = false;
+                msg(src, "You will get alerts for specific themes only. To only receive alerts for any theme, use /flashme any.");
+                saveKey("mafiaalertsany", src, user.mafiaalertsany);
             }
             if (repeatedThemes.length > 0) {
                 msg(src, "You already have alerts for the themes: " + readable(repeatedThemes, "and") + ". ");
@@ -3253,6 +3290,7 @@ function Mafia(mafiachan) {
             } else {
                 msg(src, "You currently get alerts for the following themes: " + readable(user.mafiathemes.sort(), "and") + ". ");
             }
+            msg(src, "To learn how to set alerts, type /flashme help");
         }
     };
     this.showPriority = function (src, commandData) {
