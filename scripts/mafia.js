@@ -3084,7 +3084,6 @@ function Mafia(mafiachan) {
             }
         }
         if (theme.ticks != undefined) {
-            var ticksMsg = "";
             if (theme.ticks.night != undefined && theme.ticks.night != 30) {
                 features.push("-Night Phase: " + theme.ticks.night + " seconds");
             }
