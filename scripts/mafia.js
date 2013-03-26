@@ -2128,7 +2128,7 @@ function Mafia(mafiachan) {
                                         if (!targetMode.targetmsg) {
                                             mafia.sendPlayer(player.name, "±Game: You tried to " + o.action + " " + target.name + ", but they got scared and died!");
                                         } else {
-                                            mafia.sendPlayer(player.name, "±Game: " + targetMode.targetmsg.replace(/~Self~/g, player.name).replace(/~Action~/g, o.action));
+                                            mafia.sendPlayer(player.name, "±Game: " + targetMode.targetmsg.replace(/~Self~/g, target.name).replace(/~Action~/g, o.action));
                                         }
                                         mafia.kill(target);
                                         nightkill = true;
