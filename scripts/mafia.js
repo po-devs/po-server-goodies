@@ -2438,10 +2438,10 @@ function Mafia(mafiachan) {
                             sendChanAll("±Game: " + player.curseConvertMessage.replace(/~Target~/g, player.name).replace(/~Player~/g, player.name).replace(/~Old~/g, player.role.translation).replace(/~New~/g, mafia.theme.roles[player.cursedRole].translation), mafiachan);
                             player.curseConvertMessage = undefined;
                         }
+                        player.curseCount = undefined;
                         mafia.sendPlayer(player.name, "±Game: Your curse took effect and you changed roles!");
                         mafia.setPlayerRole (player, player.cursedRole);
                         mafia.showOwnRole(sys.id(player.name));
-                        player.curseCount = undefined;
                     }
                 }
             }
