@@ -3970,10 +3970,10 @@ return;
                 /* Hax-related to command */
                 // some roles can get "hax" from other people using some commands...
                 // however, roles can have avoidStandbyHax: ["kill", "reveal"] in actions..
-                if ("avoidStandbyHax" in player.role.actions && player.role.actions.avoidStandbyHax.indexOf(command) != -1) {
+                if ("avoidStandbyHax" in player.role.actions && player.role.actions.avoidStandbyHax.indexOf(commandName) != -1) {
                     return;
                 }
-                var haxRoles = mafia.theme.getStandbyHaxRolesFor(command);
+                var haxRoles = mafia.theme.getStandbyHaxRolesFor(commandName);
                 for (var i in haxRoles) {
                     var role = haxRoles[i];
                     var haxPlayers = this.getPlayersForRole(role);
@@ -3983,16 +3983,16 @@ return;
                         var roleName = this.theme.trside(player.role.side);
                         var team = this.getPlayersForRole(player.role.side);
                         var playerRole = this.theme.trrole(player.role.role);
-                        if (r < mafia.theme.roles[role].actions.standbyHax[command].revealTeam) {
-                            this.sendPlayer(haxPlayer, "±Game: The " + roleName + " used " + command + " on " + commandData + "!");
+                        if (r < mafia.theme.roles[role].actions.standbyHax[commandName].revealTeam) {
+                            this.sendPlayer(haxPlayer, "±Game: The " + roleName + " used " + commandName + " on " + commandData + "!");
                         }
-                        if (r < mafia.theme.roles[role].actions.standbyHax[command].revealPlayer) {
+                        if (r < mafia.theme.roles[role].actions.standbyHax[commandName].revealPlayer) {
                             if (team.length > 1)
                                 this.sendPlayer(haxPlayer, "±Game: " + name + " is one of The " + roleName + "!");
                             else
                                 this.sendPlayer(haxPlayer, "±Game: " + name + " is The " + roleName + "!");
                         }
-                        if (r < mafia.theme.roles[role].actions.standbyHax[command].revealRole) {
+                        if (r < mafia.theme.roles[role].actions.standbyHax[commandName].revealRole) {
                             this.sendPlayer(haxPlayer, "±Game: " + name + " is " + playerRole + "!");
                         }
 
