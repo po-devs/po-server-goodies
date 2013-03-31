@@ -3080,7 +3080,7 @@ function Mafia(mafiachan) {
             if (theme.votesniping == true) {
                 features.push("-Vote Sniping");
             }
-            if (theme.silentvote == true) {
+            if (theme.silentVote == true) {
                 features.push("-Silent Vote");
             }
         }
