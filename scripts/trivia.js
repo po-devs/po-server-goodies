@@ -1063,16 +1063,16 @@ addAdminCommand("apropos", function(src, commandData, channel) {
 addAdminCommand("category", function(src, commandData, channel){
 	if (commandData === undefined)
         return;
-	Trivia.sendPM(src, "Questions in category: "+commandData, channel);
 	var all = triviaq.all(), b, q;
+	var count = 0;
     for (b in all)
     {
         q = triviaq.get(b)
-		var answer = String(q.answer)
         if (q.category.toLowerCase()==commandData.toLowerCase())
-        Trivia.sendPM(src,"Question: '"+q.question+ "' Answer: '"+q.answer+"' (id='" + b + "')", channel);
+        count+=1;
     }
-}, "Allows you to view questions from a category");
+	Trivia.sendPM(src, "There are "+count+" questions with the category "+commandData+ ".", channel);
+}, "Shows how many questions are in a specified category");
 
 addAdminCommand("checkq", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
