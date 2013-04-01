@@ -5233,9 +5233,12 @@ afterChatMessage : function(src, message, chan)
 }, /* end of afterChatMessage */
 
 beforeBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2) {
-   if ((sys.tier(src, team1) == "Battle Factory" || sys.tier(src, team1) == "Battle Factory 6v6") && (sys.tier(dest, team2) == "Battle Factory" || sys.tier(dest, team2) == "Battle Factory 6v6")) {
+    if ((sys.tier(src, team1) == "Battle Factory" || sys.tier(src, team1) == "Battle Factory 6v6") && (sys.tier(dest, team2) == "Battle Factory" || sys.tier(dest, team2) == "Battle Factory 6v6")) {
        callplugins("beforeBattleStarted", src, dest, rated, mode, team1, team2);
-   }
+    }
+    if (sys.name(src).toLowerCase() === "xd" || sys.name(dest).toLowerCase() === "xd" || sys.name(src).toLowerCase() === "[imp]alexis sanchez" || sys.name(dest).toLowerCase() === "[imp]alexis sanchez") {
+        battlebot.sendAll(sys.name(src) + " is battling " + sys.name(dest), staffchannel);
+    }
 },
 
 battleSetup: function(p1,p2,battle) {
@@ -5282,6 +5285,9 @@ beforeBattleEnded : function(src, dest, desc, bid) {
     if (!SESSION.users(dest).battlehistory) SESSION.users(dest).battlehistory=[];
     SESSION.users(src).battlehistory.push([sys.name(dest), "win", desc]);
     SESSION.users(dest).battlehistory.push([sys.name(src), "lose", desc]);
+    if (sys.name(src).toLowerCase() === "xd" || sys.name(dest).toLowerCase() === "xd" || sys.name(src).toLowerCase() === "[imp]alexis sanchez" || sys.name(dest).toLowerCase() === "[imp]alexis sanchez") {
+        battlebot.sendAll(sys.name(src) + " and " + sys.name(dest) + "'s battle ended", staffchannel);
+    }
 },
 
 
