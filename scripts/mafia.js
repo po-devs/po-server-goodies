@@ -2315,7 +2315,7 @@ function Mafia(mafiachan) {
                                 }
                             }
                             else if (command == "copy") {
-                                if (Action.copyAs == "*" && "canCopy" in Action && Action.canCopy != "*" && Action.canCopy.indexOf(target.role.role) == -1) {
+                                if (typeof Action.copyAs == "string" && "canCopy" in Action && Action.canCopy != "*" && Action.canCopy.indexOf(target.role.role) == -1) {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") can't be copied!");
                                 } else {
                                     var oldRole = player.role, newRole = null;
@@ -3030,6 +3030,7 @@ function Mafia(mafiachan) {
             return;
         }
 
+        sys.sendMessage(src, "", mafiachan);
         sys.sendMessage(src, "±Game: " + name + "'s changelog: ", mafiachan);
 
         if (Array.isArray(theme.changelog)) {
@@ -3079,7 +3080,7 @@ function Mafia(mafiachan) {
             if (theme.votesniping == true) {
                 features.push("-Vote Sniping");
             }
-            if (theme.silentvote == true) {
+            if (theme.silentVote == true) {
                 features.push("-Silent Vote");
             }
         }
