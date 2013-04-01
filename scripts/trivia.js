@@ -10,10 +10,6 @@
         - backupQuestions.json, backupReview.json
 */
 
-function rev(str) {
-    return str.split("").reverse().join("");
-}
-
 var Bot = require("bot.js").Bot;
 var utilities = require("utilities.js");
 
@@ -376,11 +372,7 @@ TriviaGame.prototype.finalizeAnswers = function()
 {
     if (this.started === false)
         return; 
-    var answer, id, reganswers = [].concat(triviaq.get(this.roundQuestion).answer);     
-    var answers = [];
-    for (var i in reganswers) {
-        answers.push(rev(reganswers[i]));
-    }         
+    var answer, id,answers = [].concat(triviaq.get(this.roundQuestion).answer);        
     this.answeringQuestion = false;
     var wrongAnswers = [],
         answeredCorrectly = [];
