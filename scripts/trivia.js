@@ -355,7 +355,7 @@ TriviaGame.prototype.startTriviaRound = function()
     }*/
 	this.answeringQuestion = true;
     this.roundQuestion = questionNumber;
-    this.htmlAll("<b>Category:</b> "+category.join(", ").toUpperCase()+"<br>"+question);
+    this.htmlAll("<b>Category:</b> "+category.toUpperCase()+"<br>"+question);
     this.alreadyUsed[questionNumber] = true;
 	//this.alreadyUsedCat[category] = true
 	/*sys.delayedCall(function() {
@@ -586,7 +586,7 @@ QuestionHolder.prototype.unsafeAdd = function(category,question,answer,name)
 {
 	var id = this.freeId();
     var q = this.state.questions[id] = {};
-    q.category = [].concat(category);
+    q.category = category;
     q.question = question;
     q.answer = [].concat(answer);
 	if(typeof(name)!==undefined){
@@ -878,7 +878,7 @@ addUserCommand("submitq", function(src, commandData, channel) {
         Trivia.sendPM(src,"Separate multiple answers with ','.", channel);
         return;
     }
-    var category = utilities.html_escape(commandData[0]).split(",");
+    var category = utilities.html_escape(commandData[0]);
     var question = utilities.html_escape(commandData[1]);
 	var fixAnswer = commandData[2].replace(/ *, */gi, ",").replace(/^ +/, "");
     var answer = fixAnswer.split(",");
@@ -894,7 +894,7 @@ addUserCommand("submitq", function(src, commandData, channel) {
 	if (needsreview){
 		trivreview.checkq(id);
 	}
-},"Allows you to submit a question for review, format /submitq Category1,Category2,etc*Question*Answer1,Answer2,etc");
+},"Allows you to submit a question for review, format /submitq Category*Question*Answer1,Answer2,etc");
 
 addUserCommand("join", function(src, commandData, channel) {
     if (Trivia.started === false)
@@ -1152,7 +1152,7 @@ addAdminCommand("changeq", function(src, commandData, channel) {
 
 addAdminCommand("changec", function(src, commandData, channel) {
 	if(trivreview.editingMode === true){
-		trivreview.editingCategory = commandData.split(",");
+		trivreview.editingCategory = commandData;
 		triviabot.sendAll("The category for the current question in edit was changed to "+trivreview.editingCategory+" by " + sys.name(src), channel);
 		trivreview.checkq();
 		return;
@@ -1160,7 +1160,7 @@ addAdminCommand("changec", function(src, commandData, channel) {
     var tr = trivreview.all();
 	if (trivreview.questionAmount() !== 0) {
 		var id = Object.keys(tr)[0];
-		var category = commandData.split(",");
+		var category = commandData;
 		trivreview.changeCategory(id, category);
 		triviabot.sendAll("The category for ID #"+id+" was changed to "+category+" by "+sys.name(src), channel);
 		trivreview.checkq(id);
