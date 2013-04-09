@@ -259,7 +259,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU"], functio
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi OU", "Monotype"], function sandVeilCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["Wifi OU", "No Preview OU", "Monotype"], function sandVeilCheck(src, team, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Sand Veil"){
             return ["Sand Veil is not allowed in " + tier + "."];
@@ -267,7 +267,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi OU", "Monotype"], function sandVeil
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi OU", "Monotype"], function snowCloakCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["Wifi OU", "No Preview OU", "Monotype"], function snowCloakCheck(src, team, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Snow Cloak"){
             return ["Snow Cloak is not allowed in " + tier + "."];
