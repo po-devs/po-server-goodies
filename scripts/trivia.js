@@ -288,6 +288,7 @@ TriviaGame.prototype.startGame = function(points, name)
 	sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
 	sendChanAll("", 0);
 	this.sendAll((name != "" ? name+" started a Trivia game! " : "A trivia game was started! ") + " First to "+points+" points wins!",triviachan);
+	this.sendAll("Type <b>/join</b> to join the game!",triviachan);
     var players = sys.playersOfChannel(triviachan);
     // Flash players who have it enabled
     for (var p in players) {
