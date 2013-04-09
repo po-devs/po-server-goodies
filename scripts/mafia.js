@@ -4358,7 +4358,7 @@ return;
     this.init = function () {
         this.themeManager.loadThemes();
         mafiachan = sys.channelId(MAFIA_CHANNEL);
-        msgAll("Mafia was reloaded, please start a new game!");
+        /*msgAll("Mafia was reloaded, please start a new game!");*/
     };
 
 }

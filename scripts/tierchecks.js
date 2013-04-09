@@ -259,7 +259,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU"], functio
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi OU", "Monotype"], function sandVeilCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["Wifi OU", "No Preview OU", "Monotype"], function sandVeilCheck(src, team, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Sand Veil"){
             return ["Sand Veil is not allowed in " + tier + "."];
@@ -267,7 +267,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi OU", "Monotype"], function sandVeil
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi OU", "Monotype"], function snowCloakCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["Wifi OU", "No Preview OU", "Monotype"], function snowCloakCheck(src, team, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Snow Cloak"){
             return ["Snow Cloak is not allowed in " + tier + "."];
@@ -278,6 +278,17 @@ tier_checker.add_new_check(INCLUDING, ["Wifi OU", "Monotype"], function snowCloa
 tier_checker.add_new_check(INCLUDING, ["Wifi UU"], function bannedPokes(src, team, tier) { //for bans that need to be done quickly and tiers cannot be updated right away
     for (var i = 0; i < 6; ++i) {
         var bans = ["Haxorus"];
+        for (var j = 0; j < bans.length; j++) {
+            if (sys.teamPoke(src, team, i) === sys.pokeNum(bans[j])){
+                return [bans[j] + " is banned in " + tier + "."];
+            }
+        }
+    }
+});
+
+tier_checker.add_new_check(INCLUDING, ["Wifi LC", "LC UU"], function bannedPokes(src, team, tier) {
+    for (var i = 0; i < 6; ++i) {
+        var bans = ["Mienfoo"];
         for (var j = 0; j < bans.length; j++) {
             if (sys.teamPoke(src, team, i) === sys.pokeNum(bans[j])){
                 return [bans[j] + " is banned in " + tier + "."];
