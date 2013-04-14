@@ -1863,12 +1863,12 @@ beforeChannelJoin : function(src, channel) {
         sys.putInChannel(src, hangmanchan);
     }
     /* Tours redirect */
-    if (sys.auth(src) <= 0 && channel == sys.channelId("Tours")) {
+    if (channel == sys.channelId("Tours")) {
         sys.stopEvent();
         sys.putInChannel(src, tourchannel);
         return;
     }
-    if (sys.auth(src) === 0 && channel == sys.channelId("shanaindigo")) {
+    if (channel == sys.channelId("shanaindigo")) {
         sys.stopEvent();
         sys.putInChannel(src, sachannel);
         return;
