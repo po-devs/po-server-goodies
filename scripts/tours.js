@@ -2163,7 +2163,7 @@ function tourCommand(src, command, commandData) {
                     maxtime = 86400;
                 }
                 else {
-                    maxtime = 3600;
+                    maxtime = 86400;
                 }
                 if (isNaN(time)) {
                     time = 900;
