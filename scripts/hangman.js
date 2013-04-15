@@ -200,12 +200,12 @@ module.exports = function () {
             hangbot.sendMessage(src, "You need to write a hint!", hangchan);
             return;
         }
-        if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|\banus|boner|\btits\b|condom|\brape\b/gi.test(h)) {
+        if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|\banus|boner|\btits\b|condom|\brape\b/gi.test(hint)) {
             if (sys.existChannel("Victory Road"))
                 hangbot.sendAll("Warning: Player "+sys.name(src)+" made the hint '"+h+"' in #Hangman", sys.channelId("Victory Road"));
         }
         a = a.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g,'').toLowerCase();
-        if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|\banus|boner|\btits\b|condom|\brape\b/gi.test(a)) {
+        if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|\banus|boner|\btits\b|condom|\brape\b/gi.test(currentWord.join(" "))) {
             if (sys.existChannel("Victory Road"))
                 hangbot.sendAll("Warning: Player "+sys.name(src)+" made the answer '"+ans+"' in #Hangman", sys.channelId("Victory Road"));
         }
@@ -515,6 +515,7 @@ module.exports = function () {
             view: [this.viewGame, "To view the current game's state."],
             start: [this.startGame, "To start a new game of Hangman."],
             pass: [this.passWinner, "To pass start rights to someone else. "],
+            end: [this.endGame, "To stop the game. Can only be used if you started the game."],
             hangmancommands: [this.showCommands, "To see the commands"],
             hadmins: [this.hangmanAuth, "To see the list of hangman auth"]
         },
