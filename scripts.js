@@ -51,7 +51,8 @@ var Config = {
     DreamWorldTiers: ["No Preview OU", "No Preview Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
     superAdmins: ["[LD]Jirachier", "Ethan"],
     canJoinStaffChannel: ["Lamperi-", "Peanutsdroid", "QuX", "Ethan-"],
-    disallowStaffChannel: []
+    disallowStaffChannel: [],
+    topic_delimiter: " | "
 };
 
 // Don't touch anything here if you don't know what you do.
@@ -2535,9 +2536,33 @@ userCommand: function(src, command, commandData, tar) {
     }
     if (command == "topicadd") {
         if (SESSION.channels(channel).topic.length > 0)
-            SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + " | " + commandData);
+            SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandData);
         else
             SESSION.channels(channel).setTopic(src, commandData);
+        return;
+    }
+    if (command == "removepart") {
+        var topic = SESSION.channels(channel).topic;
+        topic = topic.split(Config.topic_delimiter);
+        if (isNaN(commandData) || commandData - 1 < 0 || commandData-1 > topic.length - 1) {
+            return;
+        }
+        topic.splice(commandData - 1, 1);
+        SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
+        return;
+    }
+    if (command == "updatepart") {
+        var topic = SESSION.channels(channel).topic;
+        topic = topic.split(Config.topic_delimiter);
+        var pos = commandData.indexOf(" ");
+        if (pos === -1) {
+            return;
+        }
+        if (isNaN(commandData.substring(0, pos)) || commandData.substring(0, pos) - 1 < 0 || commandData.substring(0, pos) - 1 > topic.length - 1) {
+            return;
+        }
+        topic[commandData.substring(0, pos) - 1] = commandData.substr(pos+1);
+        SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
         return;
     }
     if (command == "uptime") {
