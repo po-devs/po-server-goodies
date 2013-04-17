@@ -2589,7 +2589,7 @@ userCommand: function(src, command, commandData, tar) {
             teamNumber = commandData;
         }
         var name = sys.name(src) + '\'s ' + sys.tier(src, teamNumber) + ' team';
-        var team = this.importable(src, true).join("\n");
+        var team = this.importable(src, teamNumber, true).join("\n");
         var post = {};
         post['api_option'] = 'paste'; // paste, duh
         post['api_dev_key'] = pastebin_api_key; // Developer's personal key, set in the beginning
