@@ -2583,10 +2583,27 @@ userCommand: function(src, command, commandData, tar) {
         sys.sendNetworkCommand(src, 14); // make the register button active again
         return;
     }
-    /*if (command == "importable") {
-        normalbot.sendChanMessage(src, "This command currently doesn't function");
+    if (command == "importable") {
+        var name = sys.name(src) + '\'s ' + sys.tier(src) + ' team';
+        var team = this.importable(src, true).join("\n");
+        var post = {};
+        post['api_option'] = 'paste'; // paste, duh
+        post['api_dev_key'] = pastebin_api_key; // Developer's personal key, set in the beginning
+        //post['api_user_key'] = pastebin_user_key; // Pastes are marked to our account
+        post['api_paste_private'] = 1; // private
+        post['api_paste_name'] = name; // name
+        post['api_paste_code'] = team; // text itself
+        post['api_paste_expire_date'] = '1M'; // expires in 1 month
+        sys.webCall('http://pastebin.com/api/api_post.php', function (resp) {
+            if (/^http:\/\//.test(resp))
+                normalbot.sendChanMessage(src, "Your team is available at: " + resp); // success
+            else {
+                normalbot.sendChanMessage(src, "Sorry, unexpected error: " + resp); // an error occured
+                normalbot.sendAll("" + sys.name(src) + "'s /importable failed: " + resp, staffchannel); // message to indigo
+            }
+        }, post);
         return;
-    }*/
+    }
     if (command == "cjoin") {
         var chan;
         if (sys.existChannel(commandData)) {
