@@ -2584,7 +2584,11 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "importable") {
-        var name = sys.name(src) + '\'s ' + sys.tier(src) + ' team';
+        var teamNumber = 0;
+        if (!isNaN(commandData) && commandData >= 0 && commandData < sys.teamCount(src)) {
+            teamNumber = commandData;
+        }
+        var name = sys.name(src) + '\'s ' + sys.tier(src, teamNumber) + ' team';
         var team = this.importable(src, true).join("\n");
         var post = {};
         post['api_option'] = 'paste'; // paste, duh
