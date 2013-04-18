@@ -4329,26 +4329,32 @@ ownerCommand: function(src, command, commandData, tar) {
         this.init();
         return;
     }
-
-        if (sys.ip(src) == sys.dbIp("coyotte508")
-        || sys.name(src).toLowerCase() == "lamperi"
-        || sys.ip(src) == sys.dbIp("crystal moogle")
-        || sys.ip(src) == sys.dbIp("ethan")
-        || sys.name(src).toLowerCase() == "steve") {
-            if (command == "eval") {
-                eval(commandData);
-                return;
+    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.ip(src) == sys.dbIp("ethan") || sys.name(src).toLowerCase() == "steve") {
+        if (command == "eval") {
+            eval(commandData);
+            return;
+        }
+        else if (command == "evalp") {
+            var bindChannel = channel;
+            try {
+                var res = eval(commandData);
+                sys.sendMessage(src, "Got from eval: " + res, bindChannel);
             }
-            else if (command == "evalp") {
-                var bindChannel = channel;
-                try {
-                    var res = eval(commandData);
-                    sys.sendMessage(src, "Got from eval: " + res, bindChannel);
-                } catch(err) {
-                    sys.sendMessage(src, "Error in eval: " + err, bindChannel);
-                }
-                return;
+            catch (err) {
+                sys.sendMessage(src, "Error in eval: " + err, bindChannel);
             }
+            return;
+        }
+    }
+    if (command == "resetladder") {
+        var tier = utilities.find_tier(commandData);
+        if(tier) {
+            sys.resetLadder(tier);
+            normalbot.sendAll(tier + " ladder has been reset!");
+            return;
+        }
+        normalbot.sendMessage(src, commandData + " is not a tier");
+        return;
     }
     if (command == "indigo") {
         if (commandData == "on") {
