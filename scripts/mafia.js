@@ -2029,7 +2029,7 @@ function Mafia(mafiachan) {
                             var targetMode = null;
                             var revenge = false, revengetext;
                             var revengetext = "±Game: You were killed during the night!";
-                            var poisonrevenge, poisonDeadMessage;
+                            var poisonrevenge = 0, poisonDeadMessage;
                             var poisonrevengetext = "±Game: Your target poisoned you!";
                             target = targets[t];
                             command = commandList[c];
