@@ -4346,7 +4346,7 @@ ownerCommand: function(src, command, commandData, tar) {
             return;
         }
     }
-    if (command == "resetladder") {
+    if (command == "clearladder") {
         var tier = utilities.find_tier(commandData);
         if(tier) {
             sys.resetLadder(tier);
