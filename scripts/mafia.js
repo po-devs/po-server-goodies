@@ -3585,7 +3585,7 @@ function Mafia(mafiachan) {
             return;
         }
         if (SESSION.users(src).detained.active) {
-            sys.sendMessage(src, "±Game: You are detained for " + SESSION.users(src).detained.games + " more games", mafiachan);
+            sys.sendMessage(src, "±Game: You are detained for " + SESSION.users(src).detained.games + " more games [Reason: " + SESSION.users(src).detained.reason + " ].", mafiachan);
             return;
         }
         if (SESSION.users(src).android === true) {
