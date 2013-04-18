@@ -288,7 +288,7 @@ TriviaGame.prototype.startGame = function(points, name)
 	sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:",0)
 	sendChanAll("", 0);
 	this.sendAll((name != "" ? name+" started a Trivia game! " : "A trivia game was started! ") + " First to "+points+" points wins!",triviachan);
-	sendChanHtmlAll("<font color='#319d9f'><timestamp/> <b>±Psyduck:</b></font> Type <b>/join</b> to join!",triviachan);
+	sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> Type <b>/join</b> to join!",triviachan);
     var players = sys.playersOfChannel(triviachan);
     // Flash players who have it enabled
     for (var p in players) {
@@ -406,10 +406,10 @@ TriviaGame.prototype.finalizeAnswers = function()
     }
     sendChanAll("", triviachan);
     var incorrectAnswers  = wrongAnswers.length > 0 ? " Incorrect answers: "+ wrongAnswers.join(", ") : "";
-    sendChanHtmlAll("<font color='#319d9f'><timestamp/> <b>±Psyduck:</b></font> Time's up!" + incorrectAnswers, triviachan);
+    sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> Time's up!" + incorrectAnswers, triviachan);
     this.sendAll("Answered correctly: " + answeredCorrectly.join(", "),triviachan);
     var x = answers.length != 1 ? "answers were" : "answer was";
-    sendChanHtmlAll("<font color='#319d9f'><timestamp/> <b>±Psyduck:</b></font> The correct "+x+": <b>"+answers.join(", ")+"</b>",triviachan);
+    sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> The correct "+x+": <b>"+answers.join(", ")+"</b>",triviachan);
 
     var leaderboard = [];
     var displayboard = [];
@@ -439,7 +439,7 @@ TriviaGame.prototype.finalizeAnswers = function()
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
         winners.sort(function(a,b) { return b[1]-a[1]; });
         this.htmlAll("<h2>Congratulations to "+w+"</h2>"+winners.join(", ")+"");
-		sendChanHtmlAll("<font size=5><font color='#319d9f'><timestamp/> <b>±Psyduck: </b><font color='red'>While you're waiting for another game, why not submit a question? <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>Help and Guidelines are here!</a></font></font></font>", triviachan);
+		sendChanHtmlAll("<font size=5><font color='#318739'><timestamp/> <b>±Psyduck: </b><font color='red'>While you're waiting for another game, why not submit a question? <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>Help and Guidelines are here!</a></font></font></font>", triviachan);
         //updateLeaderboard(obj);
         this.resetTrivia();
         runUpdate();
@@ -1572,7 +1572,7 @@ exports.beforeChatMessage = function trivia_beforeChatMessage(src, message, chan
     {
         if (joined === false && Trivia.answeringQuestion === true)
         {
-            Trivia.sendPM(src, "You haven't joined, so you are unable to submit an answer.", channel);
+            Trivia.sendPM(src, "You haven't joined, so you are unable to submit an answer. Type /join to join.", channel);
             return true;
         }
     }
