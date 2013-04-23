@@ -1426,7 +1426,12 @@ function factoryCommand(src, command, commandData, channel) {
             }
         }
         return;
+    } else if (command == 'forcestart') {
+        working = true;
+        bfbot.sendMessage(src, "Battle Factory is working again", channel);
+        return;
     }
+
     else return 'no command';
 }
 
@@ -2099,7 +2104,7 @@ module.exports = {
                 bfbot.sendMessage(source, "You can't use this command!", channel);
                 return true;
             }
-            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier', 'resetladder', 'destroyreview', 'importold'].indexOf(command) > -1 && !isReviewAdmin(source)) {
+            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier', 'resetladder', 'destroyreview', 'importold', 'forcestart'].indexOf(command) > -1 && !isReviewAdmin(source)) {
                 bfbot.sendMessage(source, "You can't use this command!", channel);
                 return true;
             }
@@ -2234,7 +2239,8 @@ module.exports = {
                 "/addreviewer [name]:[tier]: Allows a user to review for that tier",
                 "/removereviewer [name]:[tier]: Removes review powers for that user in that tier",
                 "/addtier [tier]:[mode]: Adds a tier to review, mode is optional (Singles/Doubles/Triples)",
-                "/updateteams: Update default teams from the web"
+                "/updateteams: Update default teams from the web",
+                "/forcestart: Allows to get battle factory working again, even after an error"
             ];
             var reviewHelp = [
                 "/pokeslist [pack]: Views the list of installed Pokemon for that pack.",
