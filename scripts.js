@@ -250,6 +250,15 @@ function sendNotice() {
         }
     });
 }
+
+function isAndroid(id) {
+    if (sys.os) {
+        return sys.os(id) === "android";
+    } else {
+        return sys.info(id) === "Android player." && sys.avatar(id) === 72;
+    }
+}
+
 var POKEMON_CLEFFA = typeof sys != 'undefined' ? sys.pokeNum("Cleffa") : 173;
 function POUser(id)
 {
