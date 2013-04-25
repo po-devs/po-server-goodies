@@ -2292,5 +2292,6 @@ module.exports = {
     generateTeam : function(src, team) {
         generateTeam(src, team, 'preset'); // generates a team for players with no pokes
         return true;
-    }
+    },
+    "help-string": ["battlefactory: To know the battlefactory commands"]
 }
