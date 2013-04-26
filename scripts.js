@@ -2594,6 +2594,7 @@ userCommand: function(src, command, commandData, tar) {
     }
     if (command == "importable") {
         var teamNumber = 0;
+        var bind_channel = channel;
         if (!isNaN(commandData) && commandData >= 0 && commandData < sys.teamCount(src)) {
             teamNumber = commandData;
         }
@@ -2609,9 +2610,9 @@ userCommand: function(src, command, commandData, tar) {
         post['api_paste_expire_date'] = '1M'; // expires in 1 month
         sys.webCall('http://pastebin.com/api/api_post.php', function (resp) {
             if (/^http:\/\//.test(resp))
-                normalbot.sendChanMessage(src, "Your team is available at: " + resp); // success
+                normalbot.sendMessage(src, "Your team is available at: " + resp, bind_channel); // success
             else {
-                normalbot.sendChanMessage(src, "Sorry, unexpected error: " + resp); // an error occured
+                normalbot.sendMessage(src, "Sorry, unexpected error: " + resp, bind_channel); // an error occured
                 normalbot.sendAll("" + sys.name(src) + "'s /importable failed: " + resp, staffchannel); // message to indigo
             }
         }, post);
@@ -4514,13 +4515,14 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "updateplugin") {
+        var bind_channel = channel;
         var POglobal = SESSION.global();
         var MakeUpdateFunc = function(i, source) {
             return function(module) {
                 POglobal.plugins[i] = module;
                 module.source = source;
                 module.init();
-                normalbot.sendChanMessage(src, "Module " + source + " updated!");
+                normalbot.sendMessage(src, "Module " + source + " updated!", bind_channel);
             };
         };
         for (var i = 0; i < POglobal.plugins.length; ++i) {
