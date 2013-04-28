@@ -1150,6 +1150,23 @@ function Mafia(mafiachan) {
         mafia.state = "entry";
 
         mafia.ticks = 60;
+        
+        if (src !== null) {
+            if (this.canJoin(src) !== true) {
+                return;
+            }
+            name = sys.name(src);
+
+            this.signups.push(name);
+            this.ips.push(sys.ip(src));
+            if (this.numjoins.hasOwnProperty(sys.ip(src))) {
+                this.numjoins[sys.ip(src)] += 1;
+            }
+            else {
+                this.numjoins[sys.ip(src)] = 1;
+            }
+            sendChanAll("±Game: " + name + " joined the game!", mafiachan);
+        }
     };
     /* callback for /end */
     this.endGame = function (src) {
