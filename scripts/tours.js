@@ -1072,7 +1072,7 @@ function tourStep() {
     if (parseInt(sys.time(), 10)%3600 === 0) {
         var comment = now + " ~ " + tours.activetas.join(", ");
         tours.activehistory.unshift(comment);
-        if (tours.activehistory.length > 72) {
+        if (tours.activehistory.length > 168) {
             tours.activehistory.pop();
         }
         saveTourHistory();
