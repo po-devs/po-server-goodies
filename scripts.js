@@ -2420,7 +2420,7 @@ userCommand: function(src, command, commandData, tar) {
 	        var android = 0;
 	        sys.playerIds().forEach(function (id) {
 	            if (isAndroid(id)) {
-	                android += android
+	                android += 1;
 	            }
 	        });
 	        countbot.sendMessage(src, "There are  " + android + " android players online");
