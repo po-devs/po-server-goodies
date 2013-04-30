@@ -2415,10 +2415,20 @@ userCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-    if (command == "players") {
-        countbot.sendChanMessage(src, "There are " + sys.numPlayers() + " players online.");
-        return;
-    }
+	if (command == "players") {
+	    if (commandData === "android") {
+	        var android = 0;
+	        sys.playerIds().forEach(function (id) {
+	            if (isAndroid(id)) {
+	                android += android
+	            }
+	        });
+	        countbot.sendMessage(src, "There are  " + android + " android players online");
+	        return;
+	    }
+	    countbot.sendChanMessage(src, "There are " + sys.numPlayers() + " players online.");
+	    return;
+	}
     if (command == "ranking") {
         var announceTier = function(tier) {
             var rank = sys.ranking(sys.name(src), tier);
