@@ -2423,7 +2423,7 @@ userCommand: function(src, command, commandData, tar) {
 	                android += 1;
 	            }
 	        });
-	        countbot.sendMessage(src, "There are  " + android + " android players online");
+	        countbot.sendMessage(src, "There are  " + android + " android players online", channel);
 	        return;
 	    }
 	    countbot.sendChanMessage(src, "There are " + sys.numPlayers() + " players online.");
