@@ -2416,14 +2416,14 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
 	if (command == "players") {
-	    if (commandData === "android") {
+	    if (["windows", "linux", "android", "mac", "webclient"].indexOf(commandData) !== -1) {
 	        var android = 0;
 	        sys.playerIds().forEach(function (id) {
-	            if (isAndroid(id)) {
+	            if (sys.os(id) === commandData) {
 	                android += 1;
 	            }
 	        });
-	        countbot.sendMessage(src, "There are  " + android + " android players online", channel);
+	        countbot.sendMessage(src, "There are  " + android + " " + commandData + " players online", channel);
 	        return;
 	    }
 	    countbot.sendChanMessage(src, "There are " + sys.numPlayers() + " players online.");
@@ -3479,6 +3479,7 @@ modCommand: function(src, command, commandData, tar) {
                     data.push("Idle for: " + getTimeString(parseInt(sys.time(), 10) - SESSION.users(tar).lastline.time));
                     data.push("Channels: " + channels.join(", "));
                     data.push("Names during current session: " + (online && SESSION.users(tar).namehistory ? SESSION.users(tar).namehistory.map(function(e){return e[0];}).join(", ") : name));
+                    data.push("Client Type: " + utilities.capitalize(sys.os(tar)));
                 }
                 if (authLevel > 0) {
                     var stats = authStats[name.toLowerCase()] || {};
