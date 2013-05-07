@@ -275,9 +275,9 @@ tier_checker.add_new_check(INCLUDING, ["Wifi OU", "No Preview OU", "Monotype"], 
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi UU"], function bannedPokes(src, team, tier) { //for bans that need to be done quickly and tiers cannot be updated right away
+tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function bannedPokes(src, team, tier) { //for bans that need to be done quickly and tiers cannot be updated right away
     for (var i = 0; i < 6; ++i) {
-        var bans = ["Haxorus"];
+        var bans = ["Deoxys-D", "Tornadus-T"];
         for (var j = 0; j < bans.length; j++) {
             if (sys.teamPoke(src, team, i) === sys.pokeNum(bans[j])){
                 return [bans[j] + " is banned in " + tier + "."];
