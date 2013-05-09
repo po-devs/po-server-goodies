@@ -30,7 +30,7 @@ BANLIST = {
     "Wifi NU": ["Durant", "Feraligatr", "Gligar", "Hitmonlee", "Scolipede", "Jynx", "Druddigon", "Gothitelle", "Venomoth"], # BL3
     "Wifi NEU": ["Mandibuzz"], # BL4
     #"No Preview OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Blaziken", "Garchomp", "Chandelure", "Excadrill", "Kyurem-B", "Kyurem-W"], # DW Ubers
-    "Wifi LC": ["Scyther", "Sneasel", "Yanma", "Tangela", "Vulpix", "Carvanha", "Gligar", "Meditite", "Scraggy"], # LC Ubers (in addition to all other pokemon...)
+    "Wifi LC": ["Scyther", "Sneasel", "Yanma", "Tangela", "Vulpix", "Carvanha", "Gligar", "Meditite", "Scraggy", "Mienfoo"], # LC Ubers (in addition to all other pokemon...)
     "Wifi LC UU": ["Poliwag", "Axew", "Shellder"], # Wifi LC BL
     # Scraggy, Meditite, Murkrow, Misdreavus, Gligar, and Drilbur to LC
 }
