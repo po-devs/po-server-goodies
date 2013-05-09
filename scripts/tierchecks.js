@@ -286,9 +286,9 @@ tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function bannedPokes(src, tea
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi LC", "LC UU"], function bannedPokes(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["Wifi LC", "LC UU"], function bannedPokes2(src, team, tier) {
     for (var i = 0; i < 6; ++i) {
-        var bans = ["Mienfoo"];
+        var bans = ["Meloetta"];
         for (var j = 0; j < bans.length; j++) {
             if (sys.teamPoke(src, team, i) === sys.pokeNum(bans[j])){
                 return [bans[j] + " is banned in " + tier + "."];
