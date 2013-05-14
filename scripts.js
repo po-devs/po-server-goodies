@@ -1382,6 +1382,7 @@ var commands = {
         "/indigo [on/off]: To create or destroy staff channel.",
         "/updatebansites: To update ban sites.",
         "/updatetierchecks: To update tier checks.",
+        "/updatetiers[soft]: To update tiers. Soft saves to file only without reloading.",
         "/togglerainbow: [on/off]: To turn rainbow on or off.",
         "/towner[s] [name]: makes someone a tournament owner (tours.js plugin needs to be installed for this to work)"
     ]
