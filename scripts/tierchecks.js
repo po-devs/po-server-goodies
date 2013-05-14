@@ -275,7 +275,16 @@ tier_checker.add_new_check(INCLUDING, ["Wifi OU", "No Preview OU", "Monotype"], 
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function bannedPokes(src, team, tier) { //for bans that need to be done quickly and tiers cannot be updated right away
+tier_checker.add_new_check(INCLUDING, ["Wifi LC"], function regeneratorCheck(src, team, tier) {
+    for(var i = 0; i <6; ++i){
+        if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Regenerator"){
+            return ["Regenerator is not allowed in " + tier + "."];
+        }
+    }
+});
+
+//remove these after tiers are updated on server
+tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function bannedPokes(src, team, tier) {
     for (var i = 0; i < 6; ++i) {
         var bans = ["Deoxys-D", "Tornadus-T"];
         for (var j = 0; j < bans.length; j++) {
@@ -289,6 +298,17 @@ tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function bannedPokes(src, tea
 tier_checker.add_new_check(INCLUDING, ["Wifi LU"], function bannedPokes2(src, team, tier) {
     for (var i = 0; i < 6; ++i) {
         var bans = ["Meloetta"];
+        for (var j = 0; j < bans.length; j++) {
+            if (sys.teamPoke(src, team, i) === sys.pokeNum(bans[j])){
+                return [bans[j] + " is banned in " + tier + "."];
+            }
+        }
+    }
+});
+
+tier_checker.add_new_check(INCLUDING, ["Wifi LC"], function bannedPokes3(src, team, tier) {
+    for (var i = 0; i < 6; ++i) {
+        var bans = ["Murkrow"];
         for (var j = 0; j < bans.length; j++) {
             if (sys.teamPoke(src, team, i) === sys.pokeNum(bans[j])){
                 return [bans[j] + " is banned in " + tier + "."];
