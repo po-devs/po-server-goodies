@@ -2567,7 +2567,11 @@ userCommand: function(src, command, commandData, tar) {
         if (isNaN(commandData) || commandData > topic.length) {
             return;
         }
-        topic.splice(commandData - 1, 1);
+        var part = commandData;
+        if (part > 0) {
+            part = part -1;
+        }
+        topic.splice(part, 1);
         SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
         return;
     }
