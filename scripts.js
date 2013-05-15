@@ -2564,7 +2564,7 @@ userCommand: function(src, command, commandData, tar) {
     if (command == "removepart") {
         var topic = SESSION.channels(channel).topic;
         topic = topic.split(Config.topic_delimiter);
-        if (isNaN(commandData) || commandData - 1 < 0 || commandData-1 > topic.length - 1) {
+        if (isNaN(commandData) || commandData > topic.length) {
             return;
         }
         topic.splice(commandData - 1, 1);
