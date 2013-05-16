@@ -4723,7 +4723,7 @@ channelCommand: function(src, command, commandData, tar) {
     }
     if (command == "ctoggleswear") {
         poChannel.allowSwear = !poChannel.allowSwear;
-        channelbot.sendChanMessage(src, "Now " + (poChannel.allowSwear ? "" : "dis") + "allowing swearing.");
+        channelbot.sendChanAll(sys.name(src) + " " + (poChannel.allowSwear ? "" : "dis") + "allowed swearing.", poChannel.id);
         return;
     }
     if (command == "ctogglecaps") {
