@@ -5146,7 +5146,7 @@ beforeChatMessage: function(src, message, chan) {
 
     //Swear check
     if (SESSION.channels(channel).allowSwear === false) {
-        if(/f[uo]ck|\bass|\bcum|\bdick|\bsex|pussy|bitch|porn|\bfck|nigga|\bcock|\bgay|\bhoe\b|slut|whore|cunt|clitoris|\bfag/i).test(message) {
+        if(/f[uo]ck|\bass|\bcum|\bdick|\bsex|pussy|bitch|porn|\bfck|nigga|\bcock|\bgay|\bhoe\b|slut|whore|cunt|clitoris|\bfag/i).test(message)) {
              sys.stopEvent();
              return;
         }
