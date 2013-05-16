@@ -416,6 +416,7 @@ function POChannel(id)
     this.banned = {};
     this.ignorecaps = false;
     this.ignoreflood = false;
+    this.allowSwear = true;
 }
 
 POChannel.prototype.beforeMessage = function(src, msg) {
@@ -935,6 +936,16 @@ POChannel.prototype.changeParameter = function(src, parameter, value) {
         SESSION.global().channelManager.update(this.id);
         return;
     }
+    if (parameter == "allowswear") {
+        if (value === true) {
+            this.allowSwear = true;
+        }
+        else {
+            this.allowSwear = false;
+        }
+        SESSION.global().channelManager.update(this.id);
+        return;
+    }
     if (parameter == "invitelevel") {
         var level = parseInt(value, 10);
         var maxvalue = sys.auth(src) >= 3 ? 3 : sys.auth(src) + 1;
@@ -1293,6 +1304,7 @@ var commands = {
         "/inviteonly [on/off/level]: Makes a channel invite-only or public.",
         "/ctogglecaps: Turns on/off the server anti-caps bot in current channel.",
         "/ctoggleflood: Turns on/off the server anti-flood bot in current channel. Overactive still in effect.",
+        "/ctoggleswear: Turns on/off the use of some common swear words.",
         "/cban [name]:[reason]:[time]: Bans someone from current channel (reason and time optional).",
         "/cunban [name]: Unbans someone from current channel.",
         "/enabletours: Allows tours to be run in the channel.",
@@ -4709,6 +4721,11 @@ channelCommand: function(src, command, commandData, tar) {
         channelbot.sendChanMessage(src, "Now " + (poChannel.ignoreflood ? "" : "dis") + "allowing excessive flooding.");
         return;
     }
+    if (command == "ctoggleswear") {
+        poChannel.allowSwear = !poChannel.allowSwear;
+        channelbot.sendChanMessage(src, "Now " + (poChannel.allowSwear ? "" : "dis") + "allowing swearing.");
+        return;
+    }
     if (command == "ctogglecaps") {
         poChannel.ignorecaps = !poChannel.ignorecaps;
         channelbot.sendChanMessage(src, "Now " + (poChannel.ignorecaps ? "" : "dis") + "allowing excessive CAPS-usage.");
@@ -5125,6 +5142,14 @@ beforeChatMessage: function(src, message, chan) {
         normalbot.sendChanMessage(src, "Respect the minutes of silence!");
         sys.stopEvent();
         return;
+    }
+
+    //Swear check
+    if (SESSION.channels(channel).allowSwear === false) {
+        if(/f[uo]ck|\bass|\bcum|\bdick|\bsex|pussy|bitch|porn|\bfck|nigga|\bcock|\bgay|\bhoe\b|slut|whore|cunt|clitoris|\bfag/i).test(message) {
+             sys.stopEvent();
+             return;
+        }
     }
 
     // Banned words
