@@ -34,6 +34,7 @@ if (typeof (Trivia) != 'object' || Trivia.started === false) {
 triviaq = new QuestionHolder("triviaq.json"),
 trivreview = new QuestionHolder("trivreview.json"),
 tadmin = new TriviaAdmin("tadmins.txt");
+tsadmin = new TriviaAdmin("tsadmins.txt");
 
 try {
     trivData = JSON.parse(sys.getFileContent("trivData.json"));
@@ -938,6 +939,24 @@ addOwnerCommand("triviaadminoff", function (src, commandData, channel) {
     tadmin.removeTAdmin(commandData);
     Trivia.sendPM(src, "That person is no longer a trivia admin!", channel);
 }, "Allows you to demote a current trivia admin, format /triviaadminoff [name]");
+
+addOwnerCommand("triviaadmin", function (src, commandData, channel) {
+    if (tsadmin.isTAdmin(commandData)) {
+        Trivia.sendPM(src, "That person is already a trivia super admin.", channel);
+        return;
+    }
+    tsadmin.addTAdmin(commandData);
+    Trivia.sendPM(src, "That person is now a trivia super admin!", channel);
+}, "Allows you to promote a new trivia super admin, format /triviasuperadmin [name]");
+
+addOwnerCommand("triviasuperadminoff", function (src, commandData, channel) {
+    if (!tsadmin.isTAdmin(commandData)) {
+        Trivia.sendPM(src, "That person isn't a trivia super admin.", channel);
+        return;
+    }
+    tsadmin.removeTAdmin(commandData);
+    Trivia.sendPM(src, "That person is no longer a trivia super admin!", channel);
+}, "Allows you to demote a current trivia super admin, format /triviasuperadminoff [name]");
 
 addAdminCommand("start", function (src, commandData, channel) {
     Trivia.startTrivia(src, commandData);
