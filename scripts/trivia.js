@@ -729,7 +729,7 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
     }
     tadmins.sort();
     sys.sendMessage(src, "", id);
-    sys.sendMessage(src, "*** " + type.upperCase() + " ***", id);
+    sys.sendMessage(src, "*** " + type.toUpperCase() + " ***", id);
     sys.sendMessage(src, "", id);
     for (var b in tadmins) {
         sys.sendMessage(src, tadmins[b], id);
