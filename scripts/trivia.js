@@ -736,7 +736,7 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
             sys.sendMessage(src, tadmins[b], id);
         }
         else {
-            sys.sendHtmlMessage(src, "<timestamp/><font color = " + sys.getColor(sys.id(tadmins[b])) + "><b>" + tadmins[b].toCorrectCase() + "</b></font color>", id);
+            sys.sendHtmlMessage(src, "<timestamp/><font color = " + script.getColor(sys.id(tadmins[b])) + "><b>" + tadmins[b].toCorrectCase() + "</b></font color>", id);
         }
     }
     sys.sendMessage(src, "", id);
