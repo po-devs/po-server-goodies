@@ -11,7 +11,6 @@
 */
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global updateModule, script, sys, saveKey, SESSION, sendChanAll, require, Config, module*/
-
 var Bot = require("bot.js").Bot;
 var utilities = require("utilities.js");
 
@@ -43,15 +42,14 @@ catch (e) {
     trivData = {};
 }
 
-var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard"];
+var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard", "triviaWarnings"];
 for (var i = 0; i < neededData.length; ++i) {
     var data = neededData[i];
     if (trivData[data] === undefined) {
-        switch (data) {
-        case 'leaderBoard':
+        if (data === 'leaderBoard' || data === 'triviaWarnings') {
             trivData[data] = [];
-            break;
-        default:
+        }
+        else {
             trivData[data] = {};
         }
     }
@@ -400,10 +398,14 @@ TriviaGame.prototype.finalizeAnswers = function () {
             else {
                 var tanswer = this.submittedAnswers[id].answer;
                 wrongAnswers.push("<span title='" + utilities.html_escape(name) + "'>" + utilities.html_escape(tanswer) + "</span>");
-                if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|\banus|boner|\btits\b|condom|\bfag\b|faggot|\brape\b/gi.test(tanswer)) {
-                    if (sys.existChannel("Victory Road"))
-                        triviabot.sendAll("Warning: Player " + name + " answered '" + tanswer + "' to the question '" + triviaq.get(this.roundQuestion).question + "' in #Trivia", sys.channelId("Victory Road"));
-                    triviabot.sendAll("Warning: Player " + name + " answered '" + tanswer + "' to the question '" + triviaq.get(this.roundQuestion).question + "' in #Trivia", revchan);
+                for (var i = 0; i < trivData.triviaWarnings.length; ++i) {
+                    var regexp = trivData.triviaWarnings[i];
+                    if (regexp.test(tanswer)) {
+                        if (sys.existChannel("Victory Road")) {
+                            triviabot.sendAll("Warning: Player " + name + " answered '" + tanswer + "' to the question '" + triviaq.get(this.roundQuestion).question + "' in #Trivia", sys.channelId("Victory Road"));
+                        }
+                        triviabot.sendAll("Warning: Player " + name + " answered '" + tanswer + "' to the question '" + triviaq.get(this.roundQuestion).question + "' in #Trivia", revchan);
+                    }
                 }
             }
         }
@@ -976,7 +978,7 @@ addOwnerCommand("updateafter", function (src, commandData, channel) {
     return;
 }, "Updates trivia after the current game is over");
 
-addOwnerCommand("basestatquestions", function (src, commandData, channel) { //this should maybe be removed later!
+/*addOwnerCommand("basestatquestions", function (src, commandData, channel) { //this should maybe be removed later!
     var pokemon = ["Terrakion", "Politoed", "Ferrothorn", "Tentacruel", "Espeon", "Mamoswine", "Gyarados", "Heatran", "Ninetales", "Tyranitar", "Darmanitan", "Snorlax", "Mienshao", "Chandelure", "Raikou", "Nidoking", "Kingdra", "Arcanine", "Crobat", "Gligar", "Slowking", "Sceptile", "Steelix", "Tangrowth", "Gallade", "Clefable", "Tornadus", "Sandslash", "Miltank", "Qwilfish", "Crustle", "Sawk", "Exeggutor", "Bisharp", "Torkoal", "Emboar", "Klinklang", "Regirock", "Tauros", "Pinsir", "Mienfoo", "Porygon", "Abra", "Houndour", "Snover"];
     var baseStats = ["HP", "Attack", "Defense", "Special Attack", "Special Defense", "Speed"];
     var pokenum = pokemon.map(sys.pokeNum);
@@ -987,7 +989,40 @@ addOwnerCommand("basestatquestions", function (src, commandData, channel) { //th
     });
     triviabot.sendMessage(src, "Base stat questions added! Remember to /savedb");
     return;
-}, "Adds the base stat questions to trivia");
+}, "Adds the base stat questions to trivia"); */
+
+addOwnerCommand("addwordwarn", function (src, commandData, channel) {
+    if (commandData === undefined) {
+        triviabot.sendChanMessage(src, "Can't add warnings for blank words");
+        return;
+    }
+    var regex;
+    try {
+        regex = new RegExp(commandData.toLowerCase()); // incase sensitive
+    }
+    catch (e) {
+        triviabot.sendChanMessage(src, "Sorry, your regular expression '" + commandData + "' fails. (" + e + ")");
+    }
+    trivData.triviaWarnings.push(regex);
+    saveData();
+    triviabot.sendChanMessage(src, "You added a warning for: " + regex.toString());
+    return;
+}, "Adds an answer warning to trivia");
+
+addOwnerCommand("removewordwarn", function (src, commandData, channel) {
+    if (commandData === undefined) {
+        triviabot.sendChanMessage(src, "Can't remove warnings for blank words");
+        return;
+    }
+    if (trivData.triviaWarnings.indexOf(commandData) !== -1) {
+        trivData.triviaWarnings.splice(trivData.triviaWarnings.indexOf(commandData), 1);
+        saveData();
+        triviabot.sendChanMessage(src, "You removed a warning for: " + commandData);
+    }
+    else {
+        triviabot.sendChanMessage(src, commandData + " is not on the warning list");
+    }
+}, "Removes a warning from trivia");
 
 /*addOwnerCommand("revertfrom", function(src, commandData, channel) {
 	commandData = commandData.split(":");
