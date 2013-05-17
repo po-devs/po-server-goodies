@@ -722,14 +722,14 @@ TriviaAdmin.prototype.isTAdmin = function (name) {
     return this.admins.indexOf(name.toLowerCase()) != -1;
 };
 
-TriviaAdmin.prototype.tAdminList = function (src, id) {
+TriviaAdmin.prototype.tAdminList = function (src, id, type) {
     var tadmins = [];
     for (var a in this.admins) {
         tadmins.push(this.admins[a] + (sys.id(this.admins[a]) === undefined ? "" : ":"));
     }
     tadmins.sort();
     sys.sendMessage(src, "", id);
-    sys.sendMessage(src, "*** TRIVIA ADMINS ***", id);
+    sys.sendMessage(src, "*** " + type.upperCase() + " ***", id);
     sys.sendMessage(src, "", id);
     for (var b in tadmins) {
         sys.sendMessage(src, tadmins[b], id);
@@ -917,7 +917,8 @@ addUserCommand("qamount", function (src, commandData, channel) {
 }, "Shows you the current amount of questions");
 
 addUserCommand("tadmins", function (src, commandData, channel) {
-    tadmin.tAdminList(src, channel);
+    tsadmin.tAdminList(src, channel, "Trivia Super Admins");
+    tadmin.tAdminList(src, channel, "Trivia Admins");
 }, "Gives a list of current trivia admins");
 
 addOwnerCommand("triviaadmin", function (src, commandData, channel) {
@@ -938,7 +939,7 @@ addOwnerCommand("triviaadminoff", function (src, commandData, channel) {
     Trivia.sendPM(src, "That person is no longer a trivia admin!", channel);
 }, "Allows you to demote a current trivia admin, format /triviaadminoff [name]");
 
-addOwnerCommand("triviaadmin", function (src, commandData, channel) {
+addOwnerCommand("triviasuperadmin", function (src, commandData, channel) {
     if (tsadmin.isTAdmin(commandData)) {
         Trivia.sendPM(src, "That person is already a trivia super admin.", channel);
         return;
