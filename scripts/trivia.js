@@ -1003,7 +1003,7 @@ addOwnerCommand("addwordwarn", function (src, commandData, channel) {
     catch (e) {
         triviabot.sendChanMessage(src, "Sorry, your regular expression '" + commandData + "' fails. (" + e + ")");
     }
-    trivData.triviaWarnings.push(regex);
+    trivData.triviaWarnings.push(regex.toString());
     saveData();
     triviabot.sendChanMessage(src, "You added a warning for: " + regex.toString());
     return;
