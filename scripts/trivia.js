@@ -1028,7 +1028,7 @@ addAdminCommand("apropos", function (src, commandData, channel) {
         q = triviaq.get(b);
         var answer = String(q.answer);
         if (q.question.toLowerCase().indexOf(commandData.toLowerCase()) > -1 || answer.toLowerCase().indexOf(commandData.toLowerCase()) > -1) {
-            output.push("Question: '" + q.question + "' Answer: '" + q.answer + "' (id='" + b + "')", channel);
+            output.push("Question: '" + q.question + "' Answer: '" + q.answer + "' (id='" + b + "')");
         }
     }
     all = trivreview.all();
@@ -1036,7 +1036,7 @@ addAdminCommand("apropos", function (src, commandData, channel) {
         q = trivreview.get(b);
         var answer = String(q.answer);
         if (q.question.toLowerCase().indexOf(commandData.toLowerCase()) > -1 || answer.toLowerCase().indexOf(commandData.toLowerCase()) > -1) {
-            output.push("Question under review: '" + q.question + "' Answer: '" + q.answer + "' (id='" + b + "')", channel);
+            output.push("Question under review: '" + q.question + "' Answer: '" + q.answer + "' (id='" + b + "')");
         }
     }
     var x = 0;
