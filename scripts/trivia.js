@@ -1005,7 +1005,7 @@ addOwnerCommand("addwordwarn", function (src, commandData, channel) {
     }
     trivData.triviaWarnings.push(regex.source);
     saveData();
-    triviabot.sendChanMessage(src, "You added a warning for: " + regex.toString());
+    triviabot.sendChanMessage(src, "You added a warning for: " + regex.source);
     return;
 }, "Adds an answer warning to trivia");
 
