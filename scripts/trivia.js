@@ -399,7 +399,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 var tanswer = this.submittedAnswers[id].answer;
                 wrongAnswers.push("<span title='" + utilities.html_escape(name) + "'>" + utilities.html_escape(tanswer) + "</span>");
                 for (var i = 0; i < trivData.triviaWarnings.length; ++i) {
-                    var regexp = trivData.triviaWarnings[i];
+                    var regexp = new RegExp(trivData.triviaWarnings[i]);
                     if (regexp.test(tanswer.toLowerCase())) {
                         if (sys.existChannel("Victory Road")) {
                             triviabot.sendAll("Warning: Player " + name + " answered '" + tanswer + "' to the question '" + triviaq.get(this.roundQuestion).question + "' in #Trivia", sys.channelId("Victory Road"));
