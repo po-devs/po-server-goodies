@@ -221,7 +221,7 @@ function saveData() {
 
 function isTriviaOwner(src) {
     if (sys.auth(src) >= 3) return true;
-    if (tsadmin.isTAdmin(sys.name(src).toLowerCase)) return true;
+    if (tsadmin.isTAdmin(sys.name(src)) return true;
     return false;
 }
 
