@@ -220,10 +220,8 @@ function saveData() {
 }
 
 function isTriviaOwner(src) {
-    var lname = sys.name(src).toLowerCase();
-    var triviaOwners = ['ethan', 'steeledges', 'redjoker25'];
     if (sys.auth(src) >= 3) return true;
-    if (triviaOwners.indexOf(lname) > -1) return true;
+    if (tsadmin.isTAdmin(sys.name(src).toLowerCase)) return true;
     return false;
 }
 
