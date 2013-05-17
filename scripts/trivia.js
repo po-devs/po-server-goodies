@@ -732,12 +732,12 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
     sys.sendMessage(src, "*** " + type.toUpperCase() + " ***", id);
     sys.sendMessage(src, "", id);
     for (var b in tadmins) {
-    	if (sys.id(tadmins[b])===undefined){
-    		sys.sendMessage(src, tadmins[b], id);
-    	}
-    	else {
-    		sys.sendHtmlMessage(src, "<timestamp/><font color = " + sys.getColor(sys.id(tadmins[b])) + "><b>" + tadmins[b].toCorrectCase() "</b></font color>, id);
-    	}
+        if (sys.id(tadmins[b]) === undefined) {
+            sys.sendMessage(src, tadmins[b], id);
+        }
+        else {
+            sys.sendHtmlMessage(src, "<timestamp/><font color = " + sys.getColor(sys.id(tadmins[b])) + "><b>" + tadmins[b].toCorrectCase() + "</b></font color>", id);
+        }
     }
     sys.sendMessage(src, "", id);
 };
