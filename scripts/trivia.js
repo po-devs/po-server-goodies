@@ -1,7 +1,7 @@
 /*
     * trivia.js
         - Plugin on Pokémon Online servers for Trivia Games
-        - Script done with the help of Ethan, Lamperi, and Crystal Moogle
+        - Script done with the help of Ethan, Lamperi, Crystal Moogle, and Wriggle Nightbug
     * Files used:
         - trivData.json
         - triviaq.json
@@ -1405,6 +1405,21 @@ addAdminCommand("submitunban", function (src, commandData, channel) {
 addAdminCommand("submitbans", function (src, commandData, channel) {
     showTrivia(src, channel, "submitBans");
 }, "View submit bans.");
+
+addAdminCommand("wordwarns", function (src, commandData, channel) {
+    var table = '';
+    table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Trivia Warnings</strong></center></td></tr>';
+    for (var i = 0; i < trivData.triviaWarnings.length; i += 5) {
+        table += '<tr>';
+        for (var j = 0; j < 5 && i + j < trivData.triviaWarnings.length; ++j) {
+            table += '<td>' + trivData.triviaWarnings[i + j].toString() + '</td>';
+        }
+        table += '</tr>';
+    }
+    table += '</table>';
+    sys.sendHtmlMessage(src, table, channel);
+    return;
+}, "View word warnings.");
 
 addAdminCommand("triviamute", function (src, commandData, channel) {
     if (commandData === undefined || commandData.indexOf(":") == -1) {
