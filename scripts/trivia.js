@@ -414,7 +414,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         var pointAdd = Math.min(Math.ceil(Object.keys(this.triviaPlayers).length / answeredCorrectly.length), 4);
         this.sendAll("Points awarded for this question: " + pointAdd);
         for (var i = 0; i < answeredCorrectly.length; i++) {
-            var name = this.submittedAnswers[i].name;
+            var name = answeredCorrectly[i];
             this.player(name).points += pointAdd;
         }
     }
