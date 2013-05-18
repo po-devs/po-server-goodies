@@ -387,12 +387,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         if (sys.id(name) !== undefined && this.player(name) !== null) {
             answer = this.submittedAnswers[id].answer.toLowerCase();
             if (ignoreCaseAnswers.indexOf(answer) != -1) {
-                var responseTime = this.submittedAnswers[id].time;
-                var realTime = time();
-                var minus = realTime - responseTime;
-                var pointAdd = minus > 6 ? 5 : (minus < 7 && minus > 3 ? 3 : 2);
                 answeredCorrectly.push(name);
-                this.player(name).points += pointAdd;
             }
             else {
                 var tanswer = this.submittedAnswers[id].answer;
@@ -415,6 +410,13 @@ TriviaGame.prototype.finalizeAnswers = function () {
     this.sendAll("Answered correctly: " + answeredCorrectly.join(", "), triviachan);
     var x = answers.length != 1 ? "answers were" : "answer was";
     sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> The correct " + x + ": <b>" + answers.join(", ") + "</b>", triviachan);
+    var pointAdd=Math.min(Math.ceil(triviaPlayers.length/answeredCorrectly.length), 4);
+    this.sendAll("Points awarded for this question: " + pointAdd);
+    for(var i = 0; i < answeredCorrectly.length; i++) {
+    	var name = this.submittedAnswers[i].name;
+    	this.player(name).points += pointAdd;
+    }
+    }
 
     var leaderboard = [];
     var displayboard = [];
@@ -451,7 +453,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         this.resetTrivia();
         runUpdate();
         if (this.autostart === true) {
-            pointsForGame = sys.rand(5, 45), toStart = sys.rand(30, 44);
+            pointsForGame = sys.rand(12, 45), toStart = sys.rand(30, 44);
             Trivia.sendAll("A new trivia game will be started in " + toStart + " seconds!", triviachan);
             sys.delayedCall(function () {
                 Trivia.startGame(pointsForGame, "");
