@@ -1489,7 +1489,7 @@ addAdminCommand("triviamute", function (src, commandData, channel) {
         'issued': parseInt(sys.time(), 10),
         'expires': expires
     };
-    var chans = [triviachan, revchan, sachannel];
+    var chans = [triviachan, revchan, sachannel, staffchannel];
     for (var x in chans) {
         var current = chans[x];
         triviabot.sendAll(user + " was trivia muted by " + nonFlashing(sys.name(src)) + (time != "forever" ? " " + timestring : "") + "! [Reason: " + reason + "]", current);
@@ -1520,7 +1520,7 @@ addAdminCommand("triviaunmute", function (src, commandData, channel) {
         return;
     }
     delete trivData.mutes[tarip];
-    var chans = [triviachan, revchan, sachannel];
+    var chans = [triviachan, revchan, sachannel, staffchannel];
     for (var x in chans) {
         var current = chans[x];
         triviabot.sendAll(commandData + " was trivia unmuted by " + nonFlashing(sys.name(src)) + "!", current);
