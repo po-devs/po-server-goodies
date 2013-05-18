@@ -411,7 +411,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
     var x = answers.length != 1 ? "answers were" : "answer was";
     sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> The correct " + x + ": <b>" + answers.join(", ") + "</b>", triviachan);
     if (answeredCorrectly.length != 0) {
-        var pointAdd = Math.min(Math.ceil(triviaPlayers.length / answeredCorrectly.length), 4);
+        var pointAdd = Math.min(Math.ceil(this.triviaPlayers.length / answeredCorrectly.length), 4);
         this.sendAll("Points awarded for this question: " + pointAdd);
         for (var i = 0; i < answeredCorrectly.length; i++) {
             var name = this.submittedAnswers[i].name;
