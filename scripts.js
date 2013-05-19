@@ -3439,7 +3439,7 @@ modCommand: function(src, command, commandData, tar) {
         var tempBanned = this.isTempBanned(ip);
         var ipBanned = this.isIpBanned(ip);
         var bans = [];
-        if (isBanned) bans.push("normal ban");
+        if (isBanned && !tempBanned) bans.push("normal ban");
         if (nameBanned) bans.push("nameban");
         if (rangeBanned) bans.push("rangeban");
         if (tempBanned) bans.push("tempban");
