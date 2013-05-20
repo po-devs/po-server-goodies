@@ -6,12 +6,11 @@
 */
 
 // Global variables inherited from scripts.js
-/*global cmp, mafiabot, getTimeString, mafiaAdmins, updateModule, script, sys, saveKey, SESSION, sendChanAll, require, Config, module, nonFlashing, sachannel, detained, staffchannel, mafiaSuperAdmins*/
+/*global cmp, mafiabot, getTimeString, mafiaAdmins, updateModule, script, sys, saveKey, SESSION, sendChanAll, require, Config, module, detained, mafiaSuperAdmins*/
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 var MAFIA_CHANNEL = "Mafia";
 
 var is_command = require("utilities.js").is_command;
-var utilities = require("utilities.js");
 
 function Mafia(mafiachan) {
     // Remember to update this if you are updating mafia
@@ -816,7 +815,7 @@ function Mafia(mafiachan) {
             }
         }
         this.priorityInfo = priority;
-    }
+    };
 
     /* Theme Loading and Storing */
     Theme.prototype.trside = function (side) {
@@ -971,7 +970,6 @@ function Mafia(mafiachan) {
             this.votes = {};
             this.possibleThemes = {};
             var total = 5;
-            var i;
             if (PreviousGames.length === 0 || PreviousGames.slice(-1)[0].what != "default") {
                 this.possibleThemes["default"] = 0;
                 --total;
@@ -1052,7 +1050,6 @@ function Mafia(mafiachan) {
             return;
         }
 
-        var previous = this.theme ? this.theme.name : undefined;
         var themeName = commandData == noPlayer ? "default" : commandData.toLowerCase();
 
         // Prevent a single player from dominating the theme selections.
@@ -1155,7 +1152,7 @@ function Mafia(mafiachan) {
             if (this.canJoin(src) !== true) {
                 return;
             }
-            name = sys.name(src);
+            var name = sys.name(src);
 
             this.signups.push(name);
             this.ips.push(sys.ip(src));
@@ -1832,7 +1829,6 @@ function Mafia(mafiachan) {
             for (i = 0; i < srcArray.length; ++i) {
                 var playerRole = typeof srcArray[i] == "string" ? srcArray[i] : randomSample(srcArray[i]);
                 mafia.players[mafia.signups[i]] = { 'name': mafia.signups[i], 'role': mafia.theme.roles[playerRole], 'targets': {}, 'recharges': {}, 'dayrecharges': {}, 'charges' : {}, "restrictions": [] };
-                var rechargeplayer = mafia.players[mafia.signups[i]];
                 var initPlayer = mafia.players[mafia.signups[i]];
                 if ("night" in initPlayer.role.actions) {
                     for (var act in initPlayer.role.actions.night) {
@@ -3087,25 +3083,25 @@ function Mafia(mafiachan) {
         mess.push("<b>Theme: </b>" + theme.name);
         mess.push("<b>Author: </b>" + (theme.author ? readable(theme.author, "and") : "Unknown"));
         mess.push("<b>Enabled: </b>" + (theme.enabled ? "Yes" : "No"));
-        mess.push("<b>Number of Players: </b>" + (theme.minplayers == undefined ? "5" : theme.minplayers) + " to " + (theme["roles" + theme.roleLists].length) + " players");
+        mess.push("<b>Number of Players: </b>" + (theme.minplayers === undefined ? "5" : theme.minplayers) + " to " + (theme["roles" + theme.roleLists].length) + " players");
         mess.push("<b>Summary: </b>" + (theme.summary ? theme.summary : "No summary available."));
         
         var features = [];
-        if (theme.nolynch == true) {
+        if (theme.nolynch === true) {
             features.push("-No Voting Phase");
         } else {
-            if (theme.votesniping == true) {
+            if (theme.votesniping === true) {
                 features.push("-Vote Sniping");
             }
-            if (theme.silentVote == true) {
+            if (theme.silentVote === true) {
                 features.push("-Silent Vote");
             }
         }
-        if (theme.ticks != undefined) {
-            if (theme.ticks.night != undefined && theme.ticks.night != 30) {
+        if (theme.ticks !== undefined) {
+            if (theme.ticks.night !== undefined && theme.ticks.night != 30) {
                 features.push("-Night Phase: " + theme.ticks.night + " seconds");
             }
-            if (theme.ticks.standby != undefined && theme.ticks.standby != 30) {
+            if (theme.ticks.standby !== undefined && theme.ticks.standby != 30) {
                 features.push("-Standby Phase: " + theme.ticks.standby + " seconds");
             }
         }
@@ -3200,7 +3196,7 @@ function Mafia(mafiachan) {
             msg(src, "Alert for mafia games is now on!");
             user.mafiaalertson = true;
             saveKey("mafiaalertson", src, true);
-            if (user.mafiaalertsany == undefined) {
+            if (user.mafiaalertsany === undefined) {
                 user.mafiaalertsany = true;
                 msg(src, "You will get alerts for any theme. To only receive alerts for specific themes, use /flashme add:theme name");
                 saveKey("mafiaalertsany", src, user.mafiaalertsany);
@@ -3518,7 +3514,7 @@ function Mafia(mafiachan) {
         return;
     }
 
-    this.importOld = function (src, name) {
+    this.importOld = function () {
         msgAll("Importing old themes", mafiachan);
         mafia.themeManager.loadTheme(defaultTheme);
         mafia.themeManager.saveToFile(defaultTheme);

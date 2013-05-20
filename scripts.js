@@ -2425,20 +2425,20 @@ userCommand: function(src, command, commandData, tar) {
         }
         return;
     }
-	if (command == "players") {
-	    if (["windows", "linux", "android", "mac", "webclient"].indexOf(commandData) !== -1) {
-	        var android = 0;
-	        sys.playerIds().forEach(function (id) {
-	            if (sys.os(id) === commandData) {
-	                android += 1;
-	            }
-	        });
-	        countbot.sendMessage(src, "There are  " + android + " " + commandData + " players online", channel);
-	        return;
-	    }
-	    countbot.sendChanMessage(src, "There are " + sys.numPlayers() + " players online.");
-	    return;
-	}
+    if (command == "players") {
+        if (["windows", "linux", "android", "mac", "webclient"].indexOf(commandData) !== -1) {
+            var android = 0;
+            sys.playerIds().forEach(function (id) {
+                if (sys.os(id) === commandData) {
+                    android += 1;
+                }
+            });
+            countbot.sendMessage(src, "There are  " + android + " " + commandData + " players online", channel);
+            return;
+        }
+        countbot.sendChanMessage(src, "There are " + sys.numPlayers() + " players online.");
+        return;
+    }
     if (command == "ranking") {
         var announceTier = function(tier) {
             var rank = sys.ranking(sys.name(src), tier);
@@ -4789,7 +4789,7 @@ channelCommand: function(src, command, commandData, tar) {
 },
 
 beforeNewMessage : function(msg) {
-	//Disabling for the moment
+    //Disabling for the moment
    if (0 && msg != "Script Check: OK") {
        sys.stopEvent();
    }
@@ -5340,12 +5340,12 @@ beforeBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2
 },
 
 battleSetup: function(p1,p2,battle) {
-	if (sys.auth(p1) > 3 && sys.name(p1) != "Darkness") {
-		sys.prepareItems(battle,0,{"124":1});
-	}
-	if (sys.auth(p2) > 3 && sys.name(p2) != "Darkness") {
-		sys.prepareItems(battle,1,{"124":1});
-	}
+    if (sys.auth(p1) > 3 && sys.name(p1) != "Darkness") {
+        sys.prepareItems(battle,0,{"124":1});
+    }
+    if (sys.auth(p2) > 3 && sys.name(p2) != "Darkness") {
+        sys.prepareItems(battle,1,{"124":1});
+    }
 },
 
 afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
