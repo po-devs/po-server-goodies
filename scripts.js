@@ -146,7 +146,6 @@ cleanFile("smutes.txt");
 cleanFile("rangebans.txt");
 cleanFile("contributors.txt");
 cleanFile("ipbans.txt");
-cleanFile("detained.txt");
 cleanFile("hangmanadmins.txt");
 cleanFile("hangmansuperadmins.txt");
 cleanFile(Config.dataDir+"pastebin_user_key");
@@ -273,8 +272,6 @@ function POUser(id)
     this.mban = {active: false, by: null, expires: 0, time: null, reason: null};
     /* whether user is secrectly muted */
     this.smute = {active: false, by: null, expires: 0, time: null, reason: null};
-    /* detain for mafia */
-    this.detained = {active: false, by: null, games: 0, reason: null};
     /* whether user is hangmanbanned or not */
     this.hban = {active: false, by: null, expires: 0, time: null, reason: null};
     /* caps counter for user */
@@ -343,7 +340,7 @@ function POUser(id)
 
     /* check if user is banned or mafiabanned */
     var data;
-    var loopArgs = [["mute", mutes], ["mban", mbans], ["smute", smutes], ["detained", detained], ["hban", hbans]];
+    var loopArgs = [["mute", mutes], ["mban", mbans], ["smute", smutes], ["hban", hbans]];
     for (i = 0; i < 5; ++i) {
         var action = loopArgs[i][0];
         if ((data = loopArgs[i][1].get(sys.ip(id))) !== undefined) {
