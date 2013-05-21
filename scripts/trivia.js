@@ -450,6 +450,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         });
         this.htmlAll("<h2>Congratulations to " + w + "</h2>" + winners.join(", ") + "");
         sendChanHtmlAll("<font size=5><font color='#318739'><timestamp/> <b>±Psyduck: </b><font color='red'>While you're waiting for another game, why not submit a question? <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>Help and Guidelines are here!</a></font></font></font>", triviachan);
+        sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> Never want to miss a Trivia game? Try the <b>/flashme</b> command!", triviachan);
         //updateLeaderboard(obj);
         this.resetTrivia();
         runUpdate();
