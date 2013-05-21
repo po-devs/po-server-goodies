@@ -385,7 +385,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
     for (id in this.submittedAnswers) {
         var name = this.submittedAnswers[id].name;
         if (sys.id(name) !== undefined && this.player(name) !== null) {
-            answer = this.submittedAnswers[id].answer.toLowerCase();
+            answer = this.submittedAnswers[id].answer.toLowerCase().replace(/ {2,}/g," ");
             if (ignoreCaseAnswers.indexOf(answer) != -1) {
                 answeredCorrectly.push(name);
             }
