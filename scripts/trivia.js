@@ -1051,6 +1051,22 @@ addOwnerCommand("removewordwarn", function (src, commandData, channel) {
     }
 }, "Removes a warning from trivia");
 
+addAdminCommand("flashtas", function (src, commandData, channel) {
+    if ([revchan, sachannel].indexOf(channel) === -1) {
+        Trivia.sendPM(src, "Please only use /flashtas in TrivReview or Victory Road!", channel);
+        return;
+    };
+    sys.sendHtmlMessage(src, "<timestamp/>" + sys.name(src).toCorrectCase() + ": Flashing all Trivia Admins!", id);
+    var admins = ["tadmin", "tsadmin"];
+    for(var auth = 0, auth < admins.length, auth++){
+        for(var i = 0,i < auth.admins.length, i++) {
+            if(sys.id(tadmins[i]) != undefined) {
+                sys.sendHtmlMessage(sys.id(tadmins[i]), "<ping/>", triviachan);
+            };
+        };
+    };
+}, "Pings all online Trivia Admins. Abuse will be punished");
+
 /*addOwnerCommand("revertfrom", function(src, commandData, channel) {
 	commandData = commandData.split(":");
 	var fileTrivia = commandData[0], fileTrivReview = commandData[1];
