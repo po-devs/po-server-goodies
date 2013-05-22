@@ -1058,8 +1058,8 @@ addAdminCommand("flashtas", function (src, commandData, channel) {
     };
     sys.sendHtmlMessage(src, "<timestamp/>" + sys.name(src).toCorrectCase() + ": Flashing all Trivia Admins!", id);
     var admins = ["tadmin", "tsadmin"];
-    for(var auth = 0, auth < admins.length, auth++){
-        for(var i = 0,i < auth.admins.length, i++) {
+    for(var auth = 0; auth < admins.length; auth++){
+        for(var i = 0; i < auth.admins.length; i++) {
             if(sys.id(tadmins[i]) != undefined) {
                 sys.sendHtmlMessage(sys.id(tadmins[i]), "<ping/>", triviachan);
             };
