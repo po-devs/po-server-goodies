@@ -1057,11 +1057,11 @@ addAdminCommand("flashtas", function (src, commandData, channel) {
         return;
     };
     sys.sendHtmlMessage(src, "<timestamp/>" + sys.name(src).toCorrectCase() + ": Flashing all Trivia Admins!", channel);
-    var admins = ["tadmin", "tsadmin"];
-    for(var auth = 0; auth < admins.length; auth++){
-        for(var i = 0; i < auth.admins.length; i++) {
-            if(sys.id(auth.admins[i]) != undefined) {
-                sys.sendHtmlMessage(sys.id(auth.admins[i]), "<ping/>", channel);
+    var admins = [tadmin, tsadmin];
+    for(var auth = 0; auth < admins.length; auth++) {
+        for(var i = 0; i < admins[auth].admins.length; i++) {
+            if(sys.id(admins[auth].admins[i]) != undefined) {
+                sys.sendHtmlMessage(sys.id(admins[auth].admins[i]), "<ping/>", channel);
             };
         };
     };
