@@ -1056,12 +1056,12 @@ addAdminCommand("flashtas", function (src, commandData, channel) {
         Trivia.sendPM(src, "Please only use /flashtas in TrivReview or Victory Road!", channel);
         return;
     };
-    sys.sendHtmlMessage(src, "<timestamp/>" + sys.name(src).toCorrectCase() + ": Flashing all Trivia Admins!", id);
+    sys.sendHtmlMessage(src, "<timestamp/>" + sys.name(src).toCorrectCase() + ": Flashing all Trivia Admins!", channel);
     var admins = ["tadmin", "tsadmin"];
     for(var auth = 0; auth < admins.length; auth++){
         for(var i = 0; i < auth.admins.length; i++) {
-            if(sys.id(tadmins[i]) != undefined) {
-                sys.sendHtmlMessage(sys.id(tadmins[i]), "<ping/>", triviachan);
+            if(sys.id(auth.admins[i]) != undefined) {
+                sys.sendHtmlMessage(sys.id(auth.admins[i]), "<ping/>", channel);
             };
         };
     };
