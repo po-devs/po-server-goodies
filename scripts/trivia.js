@@ -1056,12 +1056,12 @@ addAdminCommand("flashtas", function (src, commandData, channel) {
         Trivia.sendPM(src, "Please only use /flashtas in TrivReview or Victory Road!", channel);
         return;
     };
-    sys.sendHtmlMessage(src, "<timestamp/>" + sys.name(src).toCorrectCase() + ": Flashing all Trivia Admins!", channel);
+    sys.sendAll(sys.name(src).toCorrectCase() + ": Flashing all Trivia Admins!", channel);
     var admins = [tadmin, tsadmin];
     for(var auth = 0; auth < admins.length; auth++) {
         for(var i = 0; i < admins[auth].admins.length; i++) {
             if(sys.id(admins[auth].admins[i]) != undefined) {
-                sys.sendHtmlMessage(sys.id(admins[auth].admins[i]), "<ping/>", channel);
+                sys.sendHtmlMessage(sys.id(admins[auth].admins[i]), "<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> You're needed in this channel!<ping/>", channel);
             };
         };
     };
@@ -1569,7 +1569,7 @@ exports.handleCommand = function trivia_handleCommand(src, command, channel) {
         commandData = ""; // sane default to avoid undefined errors
     }
     // Only care about trivia channels
-    if (channel != triviachan && channel != revchan && ["triviamute", "triviaunmute"].indexOf(command) == -1)
+    if (channel != triviachan && channel != revchan && ["triviamute", "triviaunmute", "flashtas"].indexOf(command) == -1)
         return;
     try {
         // Trivia user commands
