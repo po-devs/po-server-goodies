@@ -73,8 +73,8 @@ require = function require(module_name) {
             try {
                  eval(sys.getFileContent("scripts/"+module_name));
             } catch(e) {
-                if (this.staffchannel)
-                    sys.sendAll("Error loading module " + module_name + ": " + e + (e.lineNumber ? " on line: " + e.lineNumber : ""), this.staffchannel);
+                if (staffchannel)
+                    sys.sendAll("Error loading module " + module_name + ": " + e + (e.lineNumber ? " on line: " + e.lineNumber : ""), staffchannel);
                 else
                     sys.sendAll("Error loading module " + module_name + ": " + e);
             }
