@@ -341,7 +341,7 @@ function POUser(id)
     /* check if user is banned or mafiabanned */
     var data;
     var loopArgs = [["mute", mutes], ["mban", mbans], ["smute", smutes], ["hban", hbans]];
-    for (i = 0; i < 5; ++i) {
+    for (i = 0; i < 4; ++i) {
         var action = loopArgs[i][0];
         if ((data = loopArgs[i][1].get(sys.ip(id))) !== undefined) {
             this[action].active=true;
