@@ -975,7 +975,7 @@ addAdminCommand("stop", function (src, commandData, channel) {
 }, "Allows you to stop a current trivia game");
 
 addAdminCommand("say", function (src, commandData, channel) {
-    if (commandData === undefined)
+    if (commandData === "")
         return;
     Trivia.sendAll("(" + sys.name(src) + "): " + commandData, channel);
 }, "Allows you to talk during the answer period");
@@ -1056,13 +1056,13 @@ addAdminCommand("flashtas", function (src, commandData, channel) {
         Trivia.sendPM(src, "Please only use /flashtas in TrivReview or Victory Road!", channel);
         return;
     };
-    var message = (commandData === undefined ? "Flashing all Trivia Admins!" : commandData);
+    var message = (commandData === "" ? "Flashing all Trivia Admins!" : commandData);
     sys.sendAll(sys.name(src).toCorrectCase() + ": " + message, channel);
     var admins = [tadmin, tsadmin];
     for(var auth = 0; auth < admins.length; auth++) {
         for(var i = 0; i < admins[auth].admins.length; i++) {
             if(sys.id(admins[auth].admins[i]) != undefined) {
-                sys.sendHtmlMessage(sys.id(admins[auth].admins[i]), "<font color='#318739'><timestamp/> <b>±Psyduck:</font> You're needed in this channel!</b><ping/>", channel);
+                sys.sendHtmlMessage(sys.id(admins[auth].admins[i]), "<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> <b>You're needed in this channel!</b><ping/>", channel);
             };
         };
     };
