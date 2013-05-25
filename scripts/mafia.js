@@ -266,19 +266,19 @@ function Mafia(mafiachan) {
             "translation": "Miller",
             "side": "village",
             "help": "You dont have any special commands during the night! Vote to remove people in the day!",
-            "actions": { "inspect": { "revealAs": "mafia" }, "lynch": { "revealAs": "mafia" }, "startup": { "revealAs": "villager" }, "onlist": "mafia" }
+            "actions": { "inspect": { "revealAs": "mafia" }, "lynch": { "revealAs": "truemiller" }, "startup": { "revealAs": "villager" }, "onlist": "mafia" }
         }, {
             "role": "miller1",
             "translation": "Miller",
             "side": "village",
             "help": "You dont have any special commands during the night! Vote to remove people in the day!",
-            "actions": { "inspect": { "revealAs": "mafia1" }, "lynch": { "revealAs": "mafia1" }, "startup": { "revealAs": "villager" }, "onlist": "mafia1" }
+            "actions": { "inspect": { "revealAs": "mafia1" }, "lynch": { "revealAs": "miller1" }, "startup": { "revealAs": "villager" }, "onlist": "mafia1" }
         }, {
             "role": "miller2",
             "translation": "Miller",
             "side": "village",
             "help": "You dont have any special commands during the night! Vote to remove people in the day!",
-            "actions": { "inspect": { "revealAs": "mafia2" }, "lynch": { "revealAs": "mafia2" }, "startup": { "revealAs": "villager" }, "onlist": "mafia2" }
+            "actions": { "inspect": { "revealAs": "mafia2" }, "lynch": { "revealAs": "miller2" }, "startup": { "revealAs": "villager" }, "onlist": "mafia2" }
         }],
         roles1: ["bodyguard", "mafia", "inspector", "werewolf", "hooker", "villager", "truemiller",
                  "villager", "mafia", "villager", "mayor"],
