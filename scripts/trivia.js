@@ -1056,16 +1056,17 @@ addAdminCommand("flashtas", function (src, commandData, channel) {
         Trivia.sendPM(src, "Please only use /flashtas in TrivReview or Victory Road!", channel);
         return;
     };
-    sys.sendAll(sys.name(src).toCorrectCase() + ": Flashing all Trivia Admins!", channel);
+    var message = (commandData === undefined ? "Flashing all Trivia Admins!" : commandData);
+    sys.sendAll(sys.name(src).toCorrectCase() + ": " + message, channel);
     var admins = [tadmin, tsadmin];
     for(var auth = 0; auth < admins.length; auth++) {
         for(var i = 0; i < admins[auth].admins.length; i++) {
             if(sys.id(admins[auth].admins[i]) != undefined) {
-                sys.sendHtmlMessage(sys.id(admins[auth].admins[i]), "<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> You're needed in this channel!<ping/>", channel);
+                sys.sendHtmlMessage(sys.id(admins[auth].admins[i]), "<font color='#318739'><timestamp/> <b>±Psyduck:</font> You're needed in this channel!</b><ping/>", channel);
             };
         };
     };
-}, "Pings all online Trivia Admins. Abuse will be punished");
+}, "Pings all online Trivia Admins. Use with /flashtas [phrase]. Abuse will be punished");
 
 /*addOwnerCommand("revertfrom", function(src, commandData, channel) {
 	commandData = commandData.split(":");
