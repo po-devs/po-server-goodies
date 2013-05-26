@@ -257,6 +257,7 @@ function startRound() {
     }
     if (Object.keys(blackJack.players).length < 1) {
         sendBotAll("Not enough players");
+        endGame();
         return;
     }
     blackJack.phase = "playing";
@@ -484,7 +485,7 @@ function sortResults(a, b) {
     else if (a.type === "5 card" && b.type === "5 card") {
         return 0;
     }
-    else if (a.type === b.type && b.type === "normal") {
+    else if (a.total === b.total && b.type === "normal") {
         return 0;
     }
     else {
