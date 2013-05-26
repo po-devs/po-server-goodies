@@ -1,12 +1,11 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global print, sys, Config, cleanFile, require, module*/
 /*TODO: Add split (Top priority)
-        Limit /end
-        Add currency maybe?
-        Add a way to edit config
-        Maybe a basic auth system (not sure if really needed)
-*/
-
+ Limit /end
+ Add currency maybe?
+ Add a way to edit config
+ Maybe a basic auth system (not sure if really needed)
+ */
 //imported functions from main scripts and other plugins. Variables from here are prefixed with "mainScripts"
 var mainScripts = {
     cleanFile: cleanFile,
@@ -31,6 +30,7 @@ var blackJack = {
 };
 
 //blackjack functions
+
 function init() {
     config = getConfig();
     blackjackbot = new mainScripts.Bot(config.bot);
@@ -422,9 +422,15 @@ function showResults(winners, breakEven, losers) {
     for (var z = 0; z < losers.length; z++) {
         lOutput.push(losers[x].name + " with " + losers[x].total + " (" + losers[x].cards + ")");
     }
-    wOutput.length > 0 ? sendBotAll("Winners: " + wOutput.join(",")) : null;
-    beOutput.length > 0 ? sendBotAll("Broke Even: " + beOutput.join(",")) : null;
-    lOutput.length > 0 ? sendBotAll("Losers: " + lOutput.join(",")) : null;
+    if (wOutput.length) {
+        sendBotAll("Winners: " + wOutput.join(","));
+    }
+    if (beOutput.length) {
+        sendBotAll("Broke Even: " + beOutput.join(","));
+    }
+    if (lOutput.length) {
+        sendBotAll("Losers: " + lOutput.join(","));
+    }
 }
 
 function sortResults(b, a) {
