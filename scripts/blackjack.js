@@ -123,9 +123,9 @@ function onHelp(src, commandData, channel) {
         sys.sendMessage(src, "/start: Starts a blackjack game.", channel);
         sys.sendMessage(src, "/join: Join a game of blackjack.", channel);
         sys.sendMessage(src, "/hit: Draw a card.", channel);
-        sys.sendMessage(src, "/stand: Stand at current total.");
-        sys.sendMessage(src, "/check: Check what cards you have");
-        sys.sendMessage(src, "/end: Ends the current game.");
+        sys.sendMessage(src, "/stand: Stand at current total.", channel);
+        sys.sendMessage(src, "/check: Check what cards you have", channel);
+        sys.sendMessage(src, "/end: Ends the current game.", channel);
     }
 }
 
@@ -268,9 +268,9 @@ function startRound() {
     };
     dealer.cards.push(getCard());
     dealer.total = checkTotal(dealer.cards);
-    sys.sendAll("");
+    sys.sendAll("", blackjackchan);
     sendBotAll("Dealer has a " + dealer.cards + " showing");
-    sys.sendAll("");
+    sys.sendAll("", blackjackchan);
     for (var x in blackJack.players) {
         if (blackJack.players.hasOwnProperty(x) && x !== "dealer") {
             var player = blackJack.players[x];
