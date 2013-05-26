@@ -411,7 +411,7 @@ function endRound() {
                 if (player.total > 22) {
                     losers.push(player);
                 }
-                if (player.total > dealer.total) {
+                else if (player.total > dealer.total) {
                     winners.push(player);
                 }
                 else if (player.type === "5 card" && dealer.type !== "blackjack") {
