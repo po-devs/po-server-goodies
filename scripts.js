@@ -3,7 +3,7 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 // You may change these variables as long as you keep the same type
 var Config = {
-    base_url: "https://raw.github.com/po-devs/po-server-goodies/master/",
+    base_url: "https://raw.github.com/Crystal Moogle/po-server-goodies/blackjack/",
     dataDir: "scriptdata/",
     bot: "Dratini",
     kickbot: "Blaziken",
@@ -20,7 +20,7 @@ var Config = {
     hangbot: "Unown",
     bfbot: "Deoxys",
     // suspectvoting.js available, but not in use
-    Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js"],
+    Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js", "blackjack,js"],
     Mafia: {
         bot: "Murkrow",
         norepeat: 11,
