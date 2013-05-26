@@ -1,10 +1,11 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global print, sys, Config, cleanFile, require, module*/
 /*TODO: Add split (Top priority)
- Limit /end
- Add currency maybe?
- Add a way to edit config
- Maybe a basic auth system (not sure if really needed)
+        Limit /end
+        Add currency maybe?
+        Add a way to edit config
+        Maybe a basic auth system (not sure if really needed)
+        Auto end game after x amount of time, in case of AFK-ers
  */
 //imported functions from main scripts and other plugins. Variables from here are prefixed with "mainScripts"
 var mainScripts = {
@@ -97,6 +98,10 @@ function testCommand(src, commandLine, channel) {
         endGame();
         return;
     }
+    if (command === "check") {
+        checkCards(src);
+        return;
+    }
     throw "Command doesn't exist";
 }
 
@@ -107,6 +112,7 @@ function onHelp(src, commandData, channel) {
         sys.sendMessage(src, "/join: Join a game of blackjack.", channel);
         sys.sendMessage(src, "/hit: Draw a card.", channel);
         sys.sendMessage(src, "/stand: Stand at current total.");
+        sys.sendMessage(src, "/check: Check what cards you have");
         sys.sendMessage(src, "/end: Ends the current game.");
     }
 }
@@ -192,6 +198,20 @@ function checkTotal(cards) {
     return total;
 }
 
+function checkCards(src) {
+    if (blackJack.phase !== "playing") {
+        throw "Game not started";
+    }
+    if (!blackJack.players.hasOwnProperty(src)) {
+        throw "You haven't joined this game!";
+    }
+    var player = blackJack.players[src];
+    if (player.out) {
+        throw "You're already standing at " + player.total;
+    }
+    blackjackbotsendMessage(src, "Your cards are " + player.cards + ". Total: " + player.total + ".", blackjackchan);
+}
+
 function startGame() {
     if (blackJack.phase !== "") {
         throw "Game has already started";
@@ -239,6 +259,7 @@ function startRound() {
     dealer.cards.push(getCard());
     dealer.total = checkTotal(dealer.cards);
     sendBotAll("Dealer has a " + dealer.cards + " showing");
+    sys.sendAll("");
     for (var x in blackJack.players) {
         if (blackJack.players.hasOwnProperty(x) && x !== "dealer") {
             var player = blackJack.players[x];
@@ -422,6 +443,7 @@ function showResults(winners, breakEven, losers) {
     for (var z = 0; z < losers.length; z++) {
         lOutput.push(losers[x].name + " with " + losers[x].total + " (" + losers[x].cards + ")");
     }
+    sys.sendAll("", blackjackchan);
     if (wOutput.length) {
         sendBotAll("Winners: " + wOutput.join(","));
     }
