@@ -90,7 +90,7 @@ function onHelp(src, commandData, channel) {
 
 function createDeck() {
     if(typeof (deck) === "undefined") {
-        deck = {};
+        deck = [];
         var scard = [];
         var cards = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
         var suits = ["♠", "♣", "♦", "♥"];
@@ -109,7 +109,7 @@ function createDeck() {
 }
 
 function shuffle() {
-    var decklength = Object.keys(deck).length;
+    var decklength = deck.length;
     for(var i = 0; i < 3; i++) {
         for(var j = 0; j < decklength; j++) {
             var k = sys.rand(0, decklength);
@@ -135,18 +135,8 @@ function getConfig() {
 }
 
 function getCard() {
-    var first;
-    for(var x in deck) {
-        if (deck.hasOwnProperty(x)) {
-            first = x;
-            break;
-        }
-    }
-    var card = deck[first].card;
-    delete deck[first];
-    deck[Object.keys(deck).length+1] = {
-        card: card
-    };
+    var card = deck.shift().card;
+    deck.push(card);
     return card
 }
 
