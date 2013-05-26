@@ -136,7 +136,7 @@ function createDeck() {
             tempdeck.push(cards[b] + suits[a]);
         }
     }
-    shuffle(tempdeck);
+    return shuffle(tempdeck);
 }
 
 function shuffle(tempdeck) {
