@@ -311,6 +311,7 @@ function dealerTurn() {
     }
     if (dealer.total === 21 && dealer.cards.length === 2) {
         sendBotAll("Dealer got Blackjack!");
+        dealer.type = "blackjack";
         dealer.out = true;
     }
     if (dealer.total > config.hitlimit && dealer.total < 22) {
@@ -464,20 +465,20 @@ function showResults(winners, breakEven, losers) {
     }
 }
 
-function sortResults(b, a) {
+function sortResults(a, b) {
     if (a.total > b.total) {
         return 1;
     }
-    else if (a.type === "Blackjack" && b.type === "normal") {
+    else if (a.type === "blackjack" && b.type === "normal") {
         return 1;
     }
-    else if (a.type === "Blackjack" && b.type === "5 card") {
+    else if (a.type === "blackjack" && b.type === "5 card") {
         return 1;
     }
     else if (a.type === "5 card" && b.type === "normal") {
         return 1;
     }
-    else if (a.type === "Blackjack" && b.type === "Blackjack") {
+    else if (a.type === "blackjack" && b.type === "blackjack") {
         return 0;
     }
     else if (a.type === "5 card" && b.type === "5 card") {
