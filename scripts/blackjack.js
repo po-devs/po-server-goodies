@@ -408,7 +408,7 @@ function endRound() {
         for (x in blackJack.players) {
             if (blackJack.players.hasOwnProperty(x) && x !== "dealer") {
                 player = blackJack.players[x];
-                if (player.total > 22) {
+                if (player.total > 21) {
                     losers.push(player);
                 }
                 else if (player.total > dealer.total) {
