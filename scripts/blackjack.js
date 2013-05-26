@@ -56,7 +56,7 @@ function testCommand(src, commandLine, channel) {
     } else {
         command = commandLine;
     }
-    if (command === "blackjackcommands" || "bjcommands") {
+    if (command === "blackjackcommands" || command === "bjcommands") {
         onHelp(src, "blackjack", channel);
         return;
     }
