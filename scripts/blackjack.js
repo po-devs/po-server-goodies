@@ -1,5 +1,12 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global print, sys, Config, cleanFile, require, module*/
+/*TODO: Add split (Top priority)
+        Limit /end
+        Add currency maybe?
+        Add a way to edit config
+        Maybe a basic auth system (not sure if really needed)
+*/
+
 //imported functions from main scripts and other plugins. Variables from here are prefixed with "mainScripts"
 var mainScripts = {
     cleanFile: cleanFile,
@@ -24,7 +31,6 @@ var blackJack = {
 };
 
 //blackjack functions
-
 function init() {
     config = getConfig();
     blackjackbot = new mainScripts.Bot(config.bot);
@@ -89,21 +95,6 @@ function testCommand(src, commandLine, channel) {
     }
     if (command === "end") {
         endGame();
-        return;
-    }
-    if (command === "test") {
-        if (commandData === "deck") {
-            sys.sendMessage(src, JSON.stringify(deck));
-        }
-        if (commandData === "card") {
-            sys.sendMessage(src, getCard());
-        }
-        if (commandData === "totals") {
-            var card1 = getCard();
-            var card2 = getCard();
-            var total = checkTotal([card1, card2]);
-            sys.sendMessage(src, card1 + " " + card2 + " " + total);
-        }
         return;
     }
     throw "Command doesn't exist";
