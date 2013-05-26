@@ -264,11 +264,11 @@ function checkGame() {
         }
     }
     if (over === true) {
-        dealer();
+        dealerTurn();
     }
 }
 
-function dealer() {
+function dealerTurn() {
     var dealer = blackJack.players.dealer;
     if (dealer.out === true) {
         endRound();
@@ -293,7 +293,7 @@ function dealer() {
         sendBotAll("Dealer drew a " + card + ". They now have " + dealer.cards + " with total of " + dealer.total + "!");
     }
     sys.setTimer(function () {
-        dealer();
+        dealerTurn();
     }, 2000, false);
 }
 
@@ -400,7 +400,7 @@ function endRound() {
         }
     }
     showResults(winners, breakEven, losers);
-    blackJack.phase = "";
+    endGame();
 }
 
 function showResults(winners, breakEven, losers) {
@@ -449,6 +449,12 @@ function sortResults(b, a) {
     else {
         return -1;
     }
+}
+
+function endGame() {
+    blackJack.phase = "";
+    blackJack.players = {};
+    sendBotAll("Game has ended!");
 }
 
 //exports to main script
