@@ -1,5 +1,5 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global print, sys, SESSION, Config, cleanFile*/
+/*global print, sys, Config, cleanFile, require, module*/
 
 //imported functions from main scripts and other plugins. Variables from here are prefixed with "mainScripts"
 var mainScripts = {
@@ -24,7 +24,6 @@ var blackJack = {
 };
 
 //blackjack functions
-
 function init() {
     config = getConfig();
     blackjackbot = new mainScripts.Bot(config.bot);
@@ -123,7 +122,7 @@ function createDeck() {
     var suits = ["♠", "♣", "♦", "♥"];
     for (var a = 0; a < 4; a++) {
         for (var b = 0; b < 13; b++) {
-            deck.push(cards[b] + suits[a])
+            deck.push(cards[b] + suits[a]);
         }
     }
     shuffle();
@@ -148,7 +147,7 @@ function getConfig() {
         return config;
     }
     try {
-        return JSON.parse(configFile)
+        return JSON.parse(configFile);
     }
     catch (e) {
         print("Error in config:" + e);
@@ -181,7 +180,7 @@ function checkTotal(cards) {
             ace = ace + 1;
             cardadd = 11;
         }
-        total = total + parseInt(cardadd)
+        total = total + parseInt(cardadd, 10);
     }
     while (ace > 0 && total > 21) {
         ace = ace - 1;
@@ -198,7 +197,7 @@ function startGame() {
     sendBotAll("You have 30 seconds to join!");
     blackJack.phase = "joining";
     sys.setTimer(function () {
-        startRound()
+        startRound();
     }, 30000, false);
 }
 
@@ -238,7 +237,7 @@ function startRound() {
     dealer.total = checkTotal(dealer.cards);
     sendBotAll("Dealer has a " + dealer.cards + " showing");
     for (var x in blackJack.players) {
-        if (blackJack.players.hasOwnProperty(x)) {
+        if (blackJack.players.hasOwnProperty(x) || x !== "dealer") {
             var player = blackJack.players[x];
             var name = player.name;
             player.cards.push(getCard(), getCard());
@@ -258,7 +257,7 @@ function startRound() {
 function checkGame() {
     var over = true;
     for (var x in blackJack.players) {
-        if(blackJack.players.hasOwnProperty(x) && x !== "dealer") {
+        if (blackJack.players.hasOwnProperty(x) && x !== "dealer") {
             if (blackJack.players.out === false) {
                 over = false;
             }
@@ -293,7 +292,9 @@ function dealer() {
         dealer.total = checkTotal(dealer.cards);
         sendBotAll("Dealer drew a " + card + ". They now have " + dealer.cards + " with total of " + dealer.total + "!");
     }
-    sys.setTimer(function () { dealer() }, 2000, false);
+    sys.setTimer(function () {
+        dealer();
+    }, 2000, false);
 }
 
 function hit(src) {
@@ -351,24 +352,26 @@ function checkStatus(src) {
     }
 }
 
-function endRound () {
+function endRound() {
     var player, x;
-    var dealer = blackJack.players["dealer"];
+    var dealer = blackJack.players.dealer;
     var winners = [];
     var breakEven = [];
     var losers = [];
     if (dealer.total > 21) {
-        for(x in blackJack.players) {
+        for (x in blackJack.players) {
             if (blackJack.players.hasOwnProperty(x) && x !== "dealer") {
                 player = blackJack.players[x];
                 if (player.total < 22) {
                     winners.push(player);
-                } else {
+                }
+                else {
                     losers.push(player);
                 }
             }
         }
-    } else {
+    }
+    else {
         for (x in blackJack.players) {
             if (blackJack.players.hasOwnProperty(x) && x !== "dealer") {
                 player = blackJack.players[x];
@@ -377,15 +380,20 @@ function endRound () {
                 }
                 if (player.total > dealer.total) {
                     winners.push(player);
-                } else if (player.type === "5 card" && dealer.type !== "blackjack") {
+                }
+                else if (player.type === "5 card" && dealer.type !== "blackjack") {
                     winners.push(player);
-                } else if (player.type === "blackjack" && dealer.type !== "blackjack") {
+                }
+                else if (player.type === "blackjack" && dealer.type !== "blackjack") {
                     winners.push(player);
-                } else if (player.type === "blackjack" && dealer.type === "blackjack") {
+                }
+                else if (player.type === "blackjack" && dealer.type === "blackjack") {
                     breakEven.push(player);
-                } else if (player.total === dealer.total && player.type === "normal" && dealer.type === "normal") {
+                }
+                else if (player.total === dealer.total && player.type === "normal" && dealer.type === "normal") {
                     breakEven.push(player);
-                } else {
+                }
+                else {
                     losers.push(player);
                 }
             }
@@ -408,7 +416,7 @@ function showResults(winners, breakEven, losers) {
         beOutput.push(breakEven[x].name + " with " + breakEven[x].total + " (" + breakEven[x].cards + ")");
     }
     for (var z = 0; z < losers.length; z++) {
-        lOutput.push(losers[x].name + "with " + losers[x].total + " (" + losers[x].cards + ")");
+        lOutput.push(losers[x].name + " with " + losers[x].total + " (" + losers[x].cards + ")");
     }
     sendBotAll("Winners: " + wOutput.join(","));
     sendBotAll("Broke Even: " + beOutput.join(","));
@@ -418,20 +426,27 @@ function showResults(winners, breakEven, losers) {
 function sortResults(b, a) {
     if (a.total > b.total) {
         return 1;
-    } else if (a.type === "Blackjack" && b.type === "normal") {
+    }
+    else if (a.type === "Blackjack" && b.type === "normal") {
         return 1;
-    } else if (a.type === "Blackjack" && b.type === "5 card") {
+    }
+    else if (a.type === "Blackjack" && b.type === "5 card") {
         return 1;
-    } else if (a.type === "5 card" && b.type === "normal") {
+    }
+    else if (a.type === "5 card" && b.type === "normal") {
         return 1;
-    } else if (a.type === "Blackjack" && b.type === "Blackjack") {
+    }
+    else if (a.type === "Blackjack" && b.type === "Blackjack") {
         return 0;
-    } else if (a.type === "5 card" && b.type === "5 card") {
+    }
+    else if (a.type === "5 card" && b.type === "5 card") {
         return 0;
-    } else if (a.type === b.type && b.type === "normal") {
-        return 0
-    } else {
-        return -1
+    }
+    else if (a.type === b.type && b.type === "normal") {
+        return 0;
+    }
+    else {
+        return -1;
     }
 }
 
