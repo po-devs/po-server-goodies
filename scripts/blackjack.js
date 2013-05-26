@@ -444,7 +444,7 @@ function showResults(winners, breakEven, losers) {
     breakEven.sort(sortResults);
     losers.sort(sortResults);
     for (var x = 0; x < winners.length; x++) {
-        wOutput.push(winners[x].name + " with " + (winners[x].type === "normal" ? "Total: " + winners[x].total : winners[x].type) + " (" + winners[x].cards + ")");
+        wOutput.push(winners[x].name + " with " + (winners[x].type === "normal" ? winners[x].total : winners[x].type) + " (" + winners[x].cards + ")");
     }
     for (var y = 0; y < breakEven.length; y++) {
         beOutput.push(breakEven[y].name + " with " + breakEven[y].total + " (" + breakEven[y].cards + ")");
