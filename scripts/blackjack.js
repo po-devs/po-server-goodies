@@ -4,8 +4,8 @@
 //imported functions from main scripts and other plugins. Variables from here are prefixed with "mainScripts"
 var mainScripts = {
     cleanFile: cleanFile,
-    Bot: require("bot.js").Bot,
-    dataDir: Config.dataDir
+    dataDir: Config.dataDir,
+    Bot: require("bot.js").Bot
 };
 
 //blackjack global defines
@@ -74,6 +74,14 @@ function testCommand(src, commandLine, channel) {
         joinGame(src);
         return;
     }
+    if (command === "hit") {
+        hit(src);
+        return;
+    }
+    if (command === "stand" || command === "stay") {
+        stand(src);
+        return;
+    }
     if (command === "test") {
         if (commandData === "deck") {
             sys.sendMessage(src, JSON.stringify(deck));
@@ -96,7 +104,17 @@ function onHelp(src, commandData, channel) {
     if (commandData === "blackjack") {
         sys.sendMessage(src, "/bjcommands: Allows you to see the blackjack commands", channel);
         sys.sendMessage(src, "/start: Starts a blackjack game", channel);
+        sys.sendMessage(src, "/join: Join a game of blackjack", channel);
+        sys.sendMessage(src, "/hit: Draw a card", channel);
+        sys.sendMessage(src, "/stand: Stand at current total");
     }
+}
+
+function sendBotAll(message, channel) {
+    if (channel === undefined) {
+        channel = blackjackchan;
+    }
+    blackjackbot.sendAll(message, channel);
 }
 
 function createDeck() {
@@ -176,8 +194,8 @@ function startGame() {
     if (blackJack.phase !== "") {
         throw "Game has already started";
     }
-    blackjackbot.sendAll("A new blackjack game has started!", blackjackchan);
-    blackjackbot.sendAll("You have 30 seconds to join!", blackjackchan);
+    sendBotAll("A new blackjack game has started!");
+    sendBotAll("You have 30 seconds to join!");
     blackJack.phase = "joining";
     sys.setTimer(function () {
         startRound()
@@ -198,7 +216,7 @@ function joinGame(src) {
         total: 0,
         type: "normal"
     };
-    blackjackbot.sendAll(sys.name(src) + " joined the game!");
+    blackjackbot.sendBotAll(sys.name(src) + " joined the game!");
 }
 
 function startRound() {
@@ -206,10 +224,19 @@ function startRound() {
         return;
     }
     if (Object.keys(blackJack.players).length < 1) {
-        blackjackbot.sendAll("Not enough players", blackjackchan);
+        sendBotAll("Not enough players");
         return;
     }
     blackJack.phase = "playing";
+    var dealer = blackJack.players.dealer = {
+        cards: [],
+        out: false,
+        total: 0,
+        type: "normal"
+    };
+    dealer.cards.push(getCard());
+    dealer.total = checkTotal(dealer.cards);
+    blackjackbot.sendBotAll("Dealer has a " + dealer.cards + " showing");
     for (var x in blackJack.players) {
         if (blackJack.players.hasOwnProperty(x)) {
             var player = blackJack.players[x];
@@ -217,17 +244,196 @@ function startRound() {
             player.cards.push(getCard(), getCard());
             var cards = player.cards;
             player.total = checkTotal(cards);
-            blackjackbot.sendAll(name + "'s cards are " + cards + ". Total: " + player.total + ".");
+            blackjackbot.sendBotAll(name + "'s cards are " + cards + ". Total: " + player.total + ".");
             if (player.total == 21) {
-                blackjackbot.sendAll(name + " got blackjack!");
+                blackjackbot.sendBotAll(name + " got blackjack!");
                 player.type = "blackjack";
                 player.out = true;
-                //checkGame();
+                checkGame();
             }
         }
     }
 }
 
+function checkGame() {
+    var over = true;
+    for (var x in blackJack.players) {
+        if(blackJack.players.hasOwnProperty(x) && x !== "dealer") {
+            if (blackJack.players.out === false) {
+                over = false;
+            }
+        }
+    }
+    if (over === true) {
+        dealer();
+    }
+}
+
+function dealer() {
+    var dealer = blackJack.players.dealer;
+    if (dealer.out === true) {
+        endRound();
+        return;
+    }
+    if (dealer.total === 21 && dealer.cards.length === 2) {
+        sendBotAll("Dealer got Blackjack!");
+        dealer.out = true;
+    }
+    if (dealer.total > config.hitlimit && dealer.total < 22) {
+        sendBotAll("Dealer stands at: " + dealer.total);
+        dealer.out = true;
+    }
+    if (dealer.total > 21) {
+        sendBotAll("Dealer went bust!");
+        dealer.out = true;
+    }
+    if (dealer.total <= config.hitlimit) {
+        var card = getCard();
+        dealer.cards.push(card);
+        dealer.total = checkTotal(dealer.cards);
+        sendBotAll("Dealer drew a " + card + ". They now have " + dealer.cards + " with total of " + dealer.total + "!");
+    }
+    sys.setTimer(function () { dealer() }, 2000, false);
+}
+
+function hit(src) {
+    if (blackJack.phase !== "playing") {
+        throw "Game not started";
+    }
+    if (!blackJack.players.hasOwnProperty(src)) {
+        throw "You haven't joined this game!";
+    }
+    var player = blackJack.players[src];
+    if (player.out) {
+        throw "You're already standing at " + player.total;
+    }
+    var card = getCard();
+    player.cards.push(card);
+    player.total = checkTotal(player.cards);
+    sendBotAll(player.name + " drew a " + card + ". They now have " + player.cards + " with a total of " + player.total + "!");
+    checkStatus(src);
+}
+
+function stand(src) {
+    if (blackJack.phase !== "playing") {
+        throw "Game not started";
+    }
+    if (!blackJack.players.hasOwnProperty(src)) {
+        throw "You haven't joined this game!";
+    }
+    var player = blackJack.players[src];
+    if (player.out) {
+        throw "You're already standing at " + player.total;
+    }
+    sendBotAll(player.name + " stands at " + player.total + " (" + player.cards + ")");
+    player.out = true;
+    checkGame();
+}
+
+function checkStatus(src) {
+    var player = blackJack.players[src];
+    if (player.cards.length === 5 && player.total < 22) {
+        sendBotAll(player.name + " got a 5 card charlie!");
+        player.out = true;
+        player.total = 21;
+        player.type = "5 card";
+        checkGame();
+    }
+    else if (player.total == 21) {
+        sendBotAll(player.name + " stands at " + player.total + " (" + player.cards + ")");
+        player.out = true;
+        checkGame();
+    }
+    else if (player.total > 21) {
+        sendBotAll(player.name + " has gone bust!");
+        player.out = true;
+        checkGame();
+    }
+}
+
+function endRound () {
+    var player, x;
+    var dealer = blackJack.players["dealer"];
+    var winners = [];
+    var breakEven = [];
+    var losers = [];
+    if (dealer.total > 21) {
+        for(x in blackJack.players) {
+            if (blackJack.players.hasOwnProperty(x) && x !== "dealer") {
+                player = blackJack.players[x];
+                if (player.total < 22) {
+                    winners.push(player);
+                } else {
+                    losers.push(player);
+                }
+            }
+        }
+    } else {
+        for (x in blackJack.players) {
+            if (blackJack.players.hasOwnProperty(x) && x !== "dealer") {
+                player = blackJack.players[x];
+                if (player.total > 22) {
+                    losers.push(player);
+                }
+                if (player.total > dealer.total) {
+                    winners.push(player);
+                } else if (player.type === "5 card" && dealer.type !== "blackjack") {
+                    winners.push(player);
+                } else if (player.type === "blackjack" && dealer.type !== "blackjack") {
+                    winners.push(player);
+                } else if (player.type === "blackjack" && dealer.type === "blackjack") {
+                    breakEven.push(player);
+                } else if (player.total === dealer.total && player.type === "normal" && dealer.type === "normal") {
+                    breakEven.push(player);
+                } else {
+                    losers.push(player);
+                }
+            }
+        }
+    }
+    showResults(winners, breakEven, losers);
+}
+
+function showResults(winners, breakEven, losers) {
+    var wOutput = [];
+    var beOutput = [];
+    var lOutput = [];
+    winners.sort(sortResults);
+    breakEven.sort(sortResults);
+    losers.sort(sortResults);
+    for (var x = 0; x < winners.length; x++) {
+        wOutput.push(winners[x].name + " with " + (winners[x].type === "normal" ? "Total: " + winners[x].total : winners[x].type) + " (" + winners[x].cards + ")");
+    }
+    for (var y = 0; y < breakEven.length; y++) {
+        beOutput.push(breakEven[x].name + " with " + breakEven[x].total + " (" + breakEven[x].cards + ")");
+    }
+    for (var z = 0; z < losers.length; z++) {
+        lOutput.push(losers[x].name + "with " + losers[x].total + " (" + losers[x].cards + ")");
+    }
+    sendBotAll("Winners: " + wOutput.join(","));
+    sendBotAll("Broke Even: " + beOutput.join(","));
+    sendBotAll("Losers: " + lOutput.join(","));
+}
+
+function sortResults(b, a) {
+    if (a.total > b.total) {
+        return 1;
+    } else if (a.type === "Blackjack" && b.type === "normal") {
+        return 1;
+    } else if (a.type === "Blackjack" && b.type === "5 card") {
+        return 1;
+    } else if (a.type === "5 card" && b.type === "normal") {
+        return 1;
+    } else if (a.type === "Blackjack" && b.type === "Blackjack") {
+        return 0;
+    } else if (a.type === "5 card" && b.type === "5 card") {
+        return 0;
+    } else if (a.type === b.type && b.type === "normal") {
+        return 0
+    } else {
+        return -1
+    }
+}
 
 //exports to main script
 module.exports = {
