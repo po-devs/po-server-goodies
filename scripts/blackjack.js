@@ -9,13 +9,14 @@ var mainScripts = {
 };
 
 //blackjack global defines
-var blackjackbot, deck, blackjackchan
+var blackjackbot, deck, blackjackchan;
 
 var config = {
     bot: "Scrafty", //name of channel bot
     channel: "Blackjack", //channel Blackjack to be played in
     hitlimit: 16, //Upper limit dealer can hit on
-    owner: "Crystal Moogle" //default channel owner
+    owner: "Crystal Moogle", //default channel owner
+    deckNumber: 2 //amount of decks to use
 };
 
 var blackJack = {
@@ -28,8 +29,11 @@ function init() {
     config = getConfig();
     blackjackbot = new mainScripts.Bot(config.bot);
     blackjackchan = sys.channelId(config.channel);
-    createDeck();
-    sys.unsetAllTimers()
+    deck = [];
+    for (var x = 0; x < config.deckNumber; ++x) {
+        deck.concat(createDeck());
+    }
+    sys.unsetAllTimers();
 }
 
 function handleCommand(src, commandLine, channel) {
@@ -112,7 +116,7 @@ function onHelp(src, commandData, channel) {
         sys.sendMessage(src, "/join: Join a game of blackjack.", channel);
         sys.sendMessage(src, "/hit: Draw a card.", channel);
         sys.sendMessage(src, "/stand: Stand at current total.");
-        sys.sendMessage(src, "/end: Ends the current game.")
+        sys.sendMessage(src, "/end: Ends the current game.");
     }
 }
 
@@ -124,7 +128,6 @@ function sendBotAll(message, channel) {
 }
 
 function createDeck() {
-    deck = [];
     var cards = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
     var suits = ["♠", "♣", "♦", "♥"];
     for (var a = 0; a < 4; a++) {
@@ -137,7 +140,7 @@ function createDeck() {
 
 function shuffle() {
     var decklength = deck.length;
-    for (var i = 0; i < 3; i++) {
+    for (var i = 0; i < 4; i++) {
         for (var j = 0; j < decklength; j++) {
             var k = sys.rand(0, decklength);
             var temp = deck[j];
@@ -462,12 +465,13 @@ function endGame() {
     blackJack.phase = "";
     blackJack.players = {};
     sendBotAll("Game has ended!");
-    sys.unsetAllTimers();
+    shuffle();
 }
 
 //exports to main script
 module.exports = {
     init: init,
     handleCommand: handleCommand,
-    onHelp: onHelp
-};
+    onHelp: onHelp,
+    "help-string": ["blackjack: To know the blackjack commands"]
+}
