@@ -209,7 +209,7 @@ function checkCards(src) {
     if (player.out) {
         throw "You're already standing at " + player.total;
     }
-    blackjackbotsendMessage(src, "Your cards are " + player.cards + ". Total: " + player.total + ".", blackjackchan);
+    blackjackbot.sendMessage(src, "Your cards are " + player.cards + ". Total: " + player.total + ".", blackjackchan);
 }
 
 function startGame() {
@@ -258,6 +258,7 @@ function startRound() {
     };
     dealer.cards.push(getCard());
     dealer.total = checkTotal(dealer.cards);
+    sys.sendAll("");
     sendBotAll("Dealer has a " + dealer.cards + " showing");
     sys.sendAll("");
     for (var x in blackJack.players) {
