@@ -293,7 +293,7 @@ function checkGame() {
     var over = true;
     for (var x in blackJack.players) {
         if (blackJack.players.hasOwnProperty(x) && x !== "dealer") {
-            if (blackJack.players.out === false) {
+            if (blackJack.players[x].out === false) {
                 over = false;
             }
         }
