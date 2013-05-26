@@ -27,10 +27,23 @@ var config = {
 
 var blackJack = {
     phase: "",
-    players: {}
+    players: {},
+    time: -1
 };
 
 //blackjack functions
+
+function step() {
+    if (isNaN(blackJack.time) || blackJack.time === -1) {
+        return;
+    }
+    if (blackJack.time === 0) {
+        startRound();
+        blackJack.time = -1;
+        return;
+    }
+    blackJack.time = blackJack.time - 1;
+}
 
 function init() {
     config = getConfig();
@@ -40,7 +53,6 @@ function init() {
     for (var x = 0; x < config.deckNumber; ++x) {
         deck = deck.concat(createDeck());
     }
-    sys.unsetAllTimers();
 }
 
 function handleCommand(src, commandLine, channel) {
@@ -219,9 +231,7 @@ function startGame() {
     sendBotAll("A new blackjack game has started!");
     sendBotAll("You have 30 seconds to join!");
     blackJack.phase = "joining";
-    sys.setTimer(function () {
-        startRound();
-    }, 30000, false);
+    blackJack.time = 30;
 }
 
 function joinGame(src) {
@@ -317,9 +327,7 @@ function dealerTurn() {
         dealer.total = checkTotal(dealer.cards);
         sendBotAll("Dealer drew a " + card + ". They now have " + dealer.cards + " with total of " + dealer.total + "!");
     }
-    sys.setTimer(function () {
-        dealerTurn();
-    }, 2000, false);
+    dealerTurn();
 }
 
 function hit(src) {
@@ -491,6 +499,7 @@ function endGame() {
     blackJack.players = {};
     sendBotAll("Game has ended!");
     shuffle(deck);
+    blackJack.time = -1;
 }
 
 //exports to main script
@@ -498,5 +507,6 @@ module.exports = {
     init: init,
     handleCommand: handleCommand,
     onHelp: onHelp,
+    stepEvent: step,
     "help-string": ["blackjack: To know the blackjack commands"]
 };
