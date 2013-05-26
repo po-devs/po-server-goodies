@@ -31,7 +31,7 @@ function init() {
     blackjackchan = sys.channelId(config.channel);
     deck = [];
     for (var x = 0; x < config.deckNumber; ++x) {
-        deck.concat(createDeck());
+        deck = deck.concat(createDeck());
     }
     sys.unsetAllTimers();
 }
