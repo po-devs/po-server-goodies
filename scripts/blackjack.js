@@ -31,23 +31,24 @@ function init() {
 }
 
 function handleCommand(src, commandLine, channel) {
+    if (channel !== sys.channelId(config.channel)) {
+        return false;
+    }
     var returnVal = false;
     try {
         testCommand(src, commandLine, channel);
         returnVal = true;
     } catch(e) {
-        if (e.toString() === "Command doesn't exist") {
+        if (e === "Command doesn't exist") {
             returnVal = false;
+        } else {
+            blackjackbot.sendMessage(src, e);
         }
-        blackjackbot.sendMessage(src, e);
     }
     return returnVal;
 }
 
 function testCommand(src, commandLine, channel) {
-    if (channel !== sys.channelId(config.channel)) {
-        return false;
-    }
     var index = commandLine.indexOf(' ');
     var command, commandData;
     if (index !== -1) {
