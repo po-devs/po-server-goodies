@@ -89,23 +89,15 @@ function onHelp(src, commandData, channel) {
 }
 
 function createDeck() {
-    if(typeof (deck) === "undefined") {
-        deck = [];
-        var scard = [];
-        var cards = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
-        var suits = ["♠", "♣", "♦", "♥"];
-        for(var a = 0; a < 4; a++) {
-            for(var b = 0; b < 13; b++) {
-                scard.push(cards[b] + suits[a])
-            }
+    deck = [];
+    var cards = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
+    var suits = ["♠", "♣", "♦", "♥"];
+    for(var a = 0; a < 4; a++) {
+        for(var b = 0; b < 13; b++) {
+            deck.push(cards[b] + suits[a])
         }
-        for(var x = 0; x < scard.length; x++) {
-            deck[x] = {
-                card: scard[x]
-            }
-        }
-        shuffle();
     }
+    shuffle();
 }
 
 function shuffle() {
@@ -113,9 +105,9 @@ function shuffle() {
     for(var i = 0; i < 3; i++) {
         for(var j = 0; j < decklength; j++) {
             var k = sys.rand(0, decklength);
-            var temp = deck[j].card;
-            deck[j].card = deck[k].card;
-            deck[k].card = temp;
+            var temp = deck[j];
+            deck[j] = deck[k];
+            deck[k] = temp;
         }
     }
 }
@@ -135,7 +127,7 @@ function getConfig() {
 }
 
 function getCard() {
-    var card = deck[0].card;
+    var card = deck[0];
     deck.push(deck.shift());
     return card
 }
