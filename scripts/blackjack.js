@@ -9,7 +9,7 @@ var mainScripts = {
 };
 
 //blackjack global defines
-var blackjackbot, deck, lastkey;
+var blackjackbot, deck;
 
 var config = {
     bot: "Scrafty", //name of channel bot
@@ -31,12 +31,23 @@ function init() {
 }
 
 function handleCommand(src, commandLine, channel) {
+    try {
+        testCommand(src, commandLine, channel);
+    } catch(e) {
+        if (e === "Command doesn't exist") {
+            return false;
+        }
+        blackjackbot.sendMessage(src, e);
+    }
+    return true;
+}
+
+function testCommand(src, commandLine, channel) {
     if (channel !== sys.channelId(config.channel)) {
         return false;
     }
-    var index = commandLine.indexOf(' ')
+    var index = commandLine.indexOf(' ');
     var command, commandData;
-    var isCommand = false;
     if (index !== -1) {
         command = commandLine.substr(0, index);
         commandData = commandLine.substr(index+1);
@@ -45,9 +56,28 @@ function handleCommand(src, commandLine, channel) {
     }
     if (command === "blackjackcommands" || "bjcommands") {
         onHelp(src, "blackjack", channel);
-        isCommand = true;
+        return;
     }
-    return isCommand;
+    if (command === "start") {
+        startGame();
+        return;
+    }
+    if (command === "test") {
+        if (commandData === "deck") {
+            sys.sendMessage(src, JSON.stringify(deck));
+        }
+        if (commandData === "card") {
+            sys.sendMessage(src, getCard());
+        }
+        if (commandData === "totals") {
+            var card1 = getCard();
+            var card2 = getCard();
+            var total = checkTotal([card1,card2]);
+            sys.sendMessage(src, card1 + " " + card2 + " " + total);
+        }
+        return;
+    }
+    throw "Command doesn't exist";
 }
 
 function onHelp(src, commandData, channel) {
@@ -71,7 +101,6 @@ function createDeck() {
                 card: scard[x]
             }
         }
-        lastkey = (parseInt(Object.keys(deck).length) + 1, 10);
         shuffle();
     }
 }
@@ -102,6 +131,57 @@ function getConfig() {
     }
 }
 
+function getCard() {
+    var first;
+    for(var x in deck) {
+        if (deck.hasOwnProperty(x)) {
+            first = x;
+            break;
+        }
+    }
+    var card = deck[first].card;
+    delete deck[first];
+    deck[Object.keys(deck).length+1] = {
+        card: card
+    };
+    return card
+}
+
+function checkTotal(cards) {
+    var fcards = ["J", "Q", "K"];
+    var ace = 0;
+    var total = 0;
+    for(var y = 0; y < cards.length; y++) {
+        var cardadd;
+        if(cards[y][1] == "0") {
+            cardadd = cards[y][0] + cards[y][1];
+        } else {
+            cardadd = cards[y][0];
+        }
+        if(fcards.indexOf(cardadd) !== -1) {
+            cardadd = 10;
+        }
+        if(cardadd == "A") {
+            ace = ace + 1;
+            cardadd = 11;
+        }
+        total = total + parseInt(cardadd)
+    }
+    while(ace > 0 && total > 21) {
+        ace = ace - 1;
+        total = total - 10;
+    }
+    return total;
+}
+
+function startGame() {
+    if (blackJack.started === true) {
+        throw "Game has already started";
+    }
+    blackjackbot.sendAll("A new blackjack game has started!", config.channel);
+    blackjackbot.sendAll("You have 30 seconds to join!", config.channel);
+    blackJack.started = true;
+}
 //exports to main script
 module.exports = {
     init:init,
