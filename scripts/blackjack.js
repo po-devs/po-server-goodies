@@ -237,7 +237,7 @@ function startRound() {
     dealer.total = checkTotal(dealer.cards);
     sendBotAll("Dealer has a " + dealer.cards + " showing");
     for (var x in blackJack.players) {
-        if (blackJack.players.hasOwnProperty(x) || x !== "dealer") {
+        if (blackJack.players.hasOwnProperty(x) && x !== "dealer") {
             var player = blackJack.players[x];
             var name = player.name;
             player.cards.push(getCard(), getCard());
@@ -400,6 +400,7 @@ function endRound() {
         }
     }
     showResults(winners, breakEven, losers);
+    blackJack.phase = "";
 }
 
 function showResults(winners, breakEven, losers) {
