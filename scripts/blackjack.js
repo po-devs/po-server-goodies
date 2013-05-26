@@ -9,7 +9,7 @@ var mainScripts = {
 };
 
 //blackjack global defines
-var blackjackbot, deck, blackjackchan;
+var blackjackbot, deck, blackjackchan
 
 var config = {
     bot: "Scrafty", //name of channel bot
@@ -29,6 +29,7 @@ function init() {
     blackjackbot = new mainScripts.Bot(config.bot);
     blackjackchan = sys.channelId(config.channel);
     createDeck();
+    sys.unsetAllTimers()
 }
 
 function handleCommand(src, commandLine, channel) {
@@ -83,7 +84,7 @@ function testCommand(src, commandLine, channel) {
         return;
     }
     if (command === "end") {
-        endGame(src);
+        endGame();
         return;
     }
     if (command === "test") {
@@ -461,6 +462,7 @@ function endGame() {
     blackJack.phase = "";
     blackJack.players = {};
     sendBotAll("Game has ended!");
+    sys.unsetAllTimers();
 }
 
 //exports to main script
