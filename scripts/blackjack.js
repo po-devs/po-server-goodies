@@ -216,7 +216,7 @@ function joinGame(src) {
         total: 0,
         type: "normal"
     };
-    blackjackbot.sendBotAll(sys.name(src) + " joined the game!");
+    sendBotAll(sys.name(src) + " joined the game!");
 }
 
 function startRound() {
@@ -236,7 +236,7 @@ function startRound() {
     };
     dealer.cards.push(getCard());
     dealer.total = checkTotal(dealer.cards);
-    blackjackbot.sendBotAll("Dealer has a " + dealer.cards + " showing");
+    sendBotAll("Dealer has a " + dealer.cards + " showing");
     for (var x in blackJack.players) {
         if (blackJack.players.hasOwnProperty(x)) {
             var player = blackJack.players[x];
@@ -244,9 +244,9 @@ function startRound() {
             player.cards.push(getCard(), getCard());
             var cards = player.cards;
             player.total = checkTotal(cards);
-            blackjackbot.sendBotAll(name + "'s cards are " + cards + ". Total: " + player.total + ".");
+            sendBotAll(name + "'s cards are " + cards + ". Total: " + player.total + ".");
             if (player.total == 21) {
-                blackjackbot.sendBotAll(name + " got blackjack!");
+                sendBotAll(name + " got blackjack!");
                 player.type = "blackjack";
                 player.out = true;
                 checkGame();
