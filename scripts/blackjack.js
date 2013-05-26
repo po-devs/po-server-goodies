@@ -214,11 +214,11 @@ function startRound() {
         if (blackJack.players.hasOwnProperty(x)) {
             var player = blackJack.players[x];
             var name = player.name;
-            var cards = player.cards.push(getCard(), getCard());
-            var total = checkTotal(cards);
-            player.total = total;
-            blackjackbot.sendAll(name + "'s cards are " + cards + ". Total: " + total + ".");
-            if (total == 21) {
+            player.cards.push(getCard(), getCard());
+            var cards = player.cards;
+            player.total = checkTotal(cards);
+            blackjackbot.sendAll(name + "'s cards are " + cards + ". Total: " + player.total + ".");
+            if (player.total == 21) {
                 blackjackbot.sendAll(name + " got blackjack!");
                 player.type = "blackjack";
                 player.out = true;
