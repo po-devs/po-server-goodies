@@ -128,26 +128,28 @@ function sendBotAll(message, channel) {
 }
 
 function createDeck() {
+    var tempdeck = [];
     var cards = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"];
     var suits = ["♠", "♣", "♦", "♥"];
     for (var a = 0; a < 4; a++) {
         for (var b = 0; b < 13; b++) {
-            deck.push(cards[b] + suits[a]);
+            tempdeck.push(cards[b] + suits[a]);
         }
     }
-    shuffle();
+    shuffle(tempdeck);
 }
 
-function shuffle() {
-    var decklength = deck.length;
+function shuffle(tempdeck) {
+    var decklength = tempdeck.length;
     for (var i = 0; i < 4; i++) {
         for (var j = 0; j < decklength; j++) {
             var k = sys.rand(0, decklength);
-            var temp = deck[j];
-            deck[j] = deck[k];
-            deck[k] = temp;
+            var temp = tempdeck[j];
+            tempdeck[j] = tempdeck[k];
+            tempdeck[k] = temp;
         }
     }
+    return tempdeck;
 }
 
 function getConfig() {
