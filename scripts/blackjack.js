@@ -31,15 +31,17 @@ function init() {
 }
 
 function handleCommand(src, commandLine, channel) {
+    var returnVal = false;
     try {
         testCommand(src, commandLine, channel);
+        returnVal = true;
     } catch(e) {
-        if (e === "Command doesn't exist") {
-            return false;
+        if (e.toString() === "Command doesn't exist") {
+            returnVal = false;
         }
         blackjackbot.sendMessage(src, e);
     }
-    return true;
+    return returnVal;
 }
 
 function testCommand(src, commandLine, channel) {
