@@ -1,6 +1,5 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global print, sys, Config, cleanFile, require, module*/
-
 //imported functions from main scripts and other plugins. Variables from here are prefixed with "mainScripts"
 var mainScripts = {
     cleanFile: cleanFile,
@@ -25,6 +24,7 @@ var blackJack = {
 };
 
 //blackjack functions
+
 function init() {
     config = getConfig();
     blackjackbot = new mainScripts.Bot(config.bot);
@@ -431,9 +431,9 @@ function showResults(winners, breakEven, losers) {
     for (var z = 0; z < losers.length; z++) {
         lOutput.push(losers[x].name + " with " + losers[x].total + " (" + losers[x].cards + ")");
     }
-    sendBotAll("Winners: " + wOutput.join(","));
-    sendBotAll("Broke Even: " + beOutput.join(","));
-    sendBotAll("Losers: " + lOutput.join(","));
+    wOutput.length > 0 ? sendBotAll("Winners: " + wOutput.join(",")) : null;
+    beOutput.length > 0 ? sendBotAll("Broke Even: " + beOutput.join(",")) : null;
+    lOutput.length > 0 ? sendBotAll("Losers: " + lOutput.join(",")) : null;
 }
 
 function sortResults(b, a) {
