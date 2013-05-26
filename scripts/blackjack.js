@@ -467,7 +467,7 @@ function endGame() {
     blackJack.phase = "";
     blackJack.players = {};
     sendBotAll("Game has ended!");
-    shuffle();
+    shuffle(deck);
 }
 
 //exports to main script
@@ -476,4 +476,4 @@ module.exports = {
     handleCommand: handleCommand,
     onHelp: onHelp,
     "help-string": ["blackjack: To know the blackjack commands"]
-}
+};
