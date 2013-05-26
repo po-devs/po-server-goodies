@@ -5,12 +5,11 @@
 var mainScripts = {
     cleanFile: cleanFile,
     Bot: require("bot.js").Bot,
-    dataDir: Config.dataDir,
-    createChannel: SESSION.global().channelManager.createPermChannel
+    dataDir: Config.dataDir
 };
 
 //blackjack global defines
-var blackjackbot, deck, blackjackchannel;
+var blackjackbot, deck, blackjackchan;
 
 var config = {
     bot: "Scrafty", //name of channel bot
@@ -29,12 +28,12 @@ var blackJack = {
 function init() {
     config = getConfig();
     blackjackbot = new mainScripts.Bot(config.bot);
-    blackjackchannel = mainScripts.createChannel(sys.channelId(config.channel), "Play Blackjack here!");
+    blackjackchan = sys.channelId(config.channel);
     createDeck();
 }
 
 function handleCommand(src, commandLine, channel) {
-    if (channel !== blackjackchannel) {
+    if (channel !== blackjackchan) {
         return false;
     }
     var returnVal = false;
@@ -177,8 +176,8 @@ function startGame() {
     if (blackJack.phase !== "") {
         throw "Game has already started";
     }
-    blackjackbot.sendAll("A new blackjack game has started!", blackjackchannel);
-    blackjackbot.sendAll("You have 30 seconds to join!", blackjackchannel);
+    blackjackbot.sendAll("A new blackjack game has started!", blackjackchan);
+    blackjackbot.sendAll("You have 30 seconds to join!", blackjackchan);
     blackJack.phase = "joining";
     sys.setTimer(function () {
         startRound()
@@ -207,7 +206,7 @@ function startRound() {
         return;
     }
     if (Object.keys(blackJack.players).length < 1) {
-        blackjackbot.sendAll("Not enough players", blackjackchannel);
+        blackjackbot.sendAll("Not enough players", blackjackchan);
         return;
     }
     blackJack.phase = "playing";
