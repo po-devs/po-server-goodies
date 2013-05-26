@@ -135,8 +135,8 @@ function getConfig() {
 }
 
 function getCard() {
-    var card = deck.shift().card;
-    deck.push(card);
+    var card = deck[0].card;
+    deck.push(deck.shift());
     return card
 }
 
