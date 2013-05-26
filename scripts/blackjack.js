@@ -447,10 +447,10 @@ function showResults(winners, breakEven, losers) {
         wOutput.push(winners[x].name + " with " + (winners[x].type === "normal" ? "Total: " + winners[x].total : winners[x].type) + " (" + winners[x].cards + ")");
     }
     for (var y = 0; y < breakEven.length; y++) {
-        beOutput.push(breakEven[x].name + " with " + breakEven[x].total + " (" + breakEven[x].cards + ")");
+        beOutput.push(breakEven[y].name + " with " + breakEven[y].total + " (" + breakEven[y].cards + ")");
     }
     for (var z = 0; z < losers.length; z++) {
-        lOutput.push(losers[x].name + " with " + losers[x].total + " (" + losers[x].cards + ")");
+        lOutput.push(losers[z].name + " with " + losers[z].total + " (" + losers[z].cards + ")");
     }
     sys.sendAll("", blackjackchan);
     if (wOutput.length) {
