@@ -46,6 +46,7 @@ function handleCommand(src, commandLine, channel) {
         }
         else {
             blackjackbot.sendMessage(src, e, channel);
+            returnVal = true;
         }
     }
     return returnVal;
@@ -81,6 +82,10 @@ function testCommand(src, commandLine, channel) {
         stand(src);
         return;
     }
+    if (command === "end") {
+        endGame(src);
+        return;
+    }
     if (command === "test") {
         if (commandData === "deck") {
             sys.sendMessage(src, JSON.stringify(deck));
@@ -101,11 +106,12 @@ function testCommand(src, commandLine, channel) {
 
 function onHelp(src, commandData, channel) {
     if (commandData === "blackjack") {
-        sys.sendMessage(src, "/bjcommands: Allows you to see the blackjack commands", channel);
-        sys.sendMessage(src, "/start: Starts a blackjack game", channel);
-        sys.sendMessage(src, "/join: Join a game of blackjack", channel);
-        sys.sendMessage(src, "/hit: Draw a card", channel);
-        sys.sendMessage(src, "/stand: Stand at current total");
+        sys.sendMessage(src, "/bjcommands: Allows you to see the blackjack commands.", channel);
+        sys.sendMessage(src, "/start: Starts a blackjack game.", channel);
+        sys.sendMessage(src, "/join: Join a game of blackjack.", channel);
+        sys.sendMessage(src, "/hit: Draw a card.", channel);
+        sys.sendMessage(src, "/stand: Stand at current total.");
+        sys.sendMessage(src, "/end: Ends the current game.")
     }
 }
 
