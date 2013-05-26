@@ -483,6 +483,9 @@ function sortResults(b, a) {
 }
 
 function endGame() {
+    if (blackJack.phase === "") {
+        throw "Game not started";
+    }
     blackJack.phase = "";
     blackJack.players = {};
     sendBotAll("Game has ended!");
