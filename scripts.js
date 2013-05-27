@@ -2886,7 +2886,7 @@ userCommand: function(src, command, commandData, tar) {
             var parts = date.split("-");
             d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10)-1, parseInt(parts[2], 10));
         }
-        querybot.sendChanMessage(src, commandData + " was last seen: "+ d.toDateString());
+        querybot.sendChanMessage(src, commandData + " was last seen: "+ d.toUTCString());
         return;
     }
     if (command == "dwreleased") {
