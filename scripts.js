@@ -3475,7 +3475,7 @@ modCommand: function(src, command, commandData, tar) {
                     default: return contribution != "no" ? "contributor" : "user";
                     }
                 }();
-                var ipInfo;
+                var ipInfo = "";
                 if (resp !== undefined) {
                     resp = JSON.parse(resp);
                     var countryName = resp.countryName;
@@ -3501,7 +3501,7 @@ modCommand: function(src, command, commandData, tar) {
                     "Registered name: " + (registered ? "yes" : "no"),
                     "Last Login: " + (online && logintime ? new Date(logintime*1000).toUTCString() : lastLogin),
                     bans.length > 0 ? "Bans: " + bans.join(", ") : "Bans: none",
-                    ipInfo !== undefined  ? "IP Details: " + ipInfo : ""
+                    ipInfo !== ""  ? "IP Details: " + ipInfo : ""
                 ];
                 if (online) {
                     if (SESSION.users(tar).hostname != ip)
