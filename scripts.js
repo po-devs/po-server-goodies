@@ -3407,7 +3407,7 @@ modCommand: function(src, command, commandData, tar) {
         sys.sendHtmlMessage(src, res.join("<br>"), channel);
         return;
     }
-    if (command == "userinfo" || command == "whois" || command == "whoistxt") {
+    if (command == "userinfo" || command == "whois" || command == "whoistxt" || command == "whereis") {
         var bindChannel = channel;
         if (commandData === undefined) {
             querybot.sendChanMessage(src, "Please provide a username.");
@@ -3463,7 +3463,7 @@ modCommand: function(src, command, commandData, tar) {
             sendChanMessage(src, ":"+JSON.stringify(userJson));
         } else if (command == "userinfo") {
             querybot.sendChanMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ contributor: " + contribution + " ~ ip: " + ip + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"));
-        } else if (command == "whois") {
+        } else if (command == "whois" || command == "whereis") {
             var whois = function(resp) {
                 /* May have dced, this being an async call */
                 online = sys.loggedIn(tar);
@@ -3525,9 +3525,12 @@ modCommand: function(src, command, commandData, tar) {
                     }
                 }
             };
-            var ipApi = sys.getFileContent(Config.dataDir+'ipApi.txt');
-            sys.webCall('http://api.ipinfodb.com/v3/ip-city/?key=' + ipApi + '&ip='+ ip + '&format=JSON', whois);
-            //whois();
+            if (command === "whereis") {
+                var ipApi = sys.getFileContent(Config.dataDir+'ipApi.txt');
+                sys.webCall('http://api.ipinfodb.com/v3/ip-city/?key=' + ipApi + '&ip='+ ip + '&format=JSON', whois);
+            } else {
+                whois();
+            }
         }
         return;
     }
