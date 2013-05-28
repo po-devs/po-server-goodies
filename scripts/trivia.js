@@ -1145,7 +1145,7 @@ addAdminCommand("category", function (src, commandData, channel) {
 
 addAdminCommand("listc", function (src, commandData, channel) {
     var categories = [];
-    for (var i in triviaq.all) {
+    for (var i in triviaq.all()) {
         var cat = triviaq.get(i).category, match = false;
         categories.forEach(function(string) {if(string.toLowerCase() === cat.toLowerCase) match = true;});
         if (!match) {
@@ -1161,7 +1161,7 @@ addAdminCommand("showqinc", function (src, commandData, channel) {
         return;
     Trivia.sendPM(src, "Questions in " + commandData + " category are:", channel);
     var count = 0;
-    for (var i in triviaq.all) {
+    for (var i in triviaq.all()) {
         var q = triviaq.get(i);
         if (commandData === q.category){
             Trivia.sendPM(src, "Question under review: '" + q.question + "' Answer: '" + q.answer + "' (id='" + i + "')", channel);
@@ -1183,7 +1183,7 @@ addOwnerCommand("changeallc", function (src, commandData, channel) {
     var changed = false;
     var oldCat = commandData[0];
     var newCat = commandData[1];
-    for (var i in triviaq.all) {
+    for (var i in triviaq.all()) {
         var c = triviaq.get(i).category;
         if (c === oldCat) {
             changed = true;
