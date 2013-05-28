@@ -251,7 +251,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU", "Wifi NE
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU"], function snowWarningCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU", "Wifi NEU"], function snowWarningCheck(src, team, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Snow Warning"){
             return ["Snow Warning is not allowed in " + tier + "."];
