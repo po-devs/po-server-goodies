@@ -243,7 +243,7 @@ tier_checker.add_new_check(INCLUDING, ["Smogon UU"], function droughtCheck(src, 
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU", "Wifi LC"], function sandStreamCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU", "Wifi NEU", "Wifi LC"], function sandStreamCheck(src, team, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Sand Stream"){
             return ["Sand Stream is not allowed in " + tier + "."];
