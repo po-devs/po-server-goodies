@@ -2395,7 +2395,7 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "league") {
-        normabot.sendMessage(src, "The league is not running right now, however the gym leader sign ups are open! Apply here: http://pokemon-online.eu/forums/showthread.php?20194-PO-Gym-Leader-Applications-Summer-2013-Season!", channel)
+        normalbot.sendMessage(src, "The league is not running right now, however the gym leader sign ups are open! Apply here: http://pokemon-online.eu/forums/showthread.php?20194-PO-Gym-Leader-Applications-Summer-2013-Season!", channel);
         return;
         /*if (!Config.League) return;
         sendChanMessage(src, "");
