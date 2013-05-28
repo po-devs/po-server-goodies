@@ -1147,7 +1147,7 @@ addAdminCommand("listc", function (src, commandData, channel) {
     var categories = [];
     for (var i in triviaq.all()) {
         var cat = triviaq.get(i).category, match = false;
-        categories.forEach(function(string) {if(string.toLowerCase() === cat.toLowerCase) match = true;});
+        categories.forEach(function(string) {if(string.toLowerCase() === cat.toLowerCase()) match = true;});
         if (!match) {
             categories.push(cat);
         }
@@ -1163,8 +1163,8 @@ addAdminCommand("showqinc", function (src, commandData, channel) {
     var count = 0;
     for (var i in triviaq.all()) {
         var q = triviaq.get(i);
-        if (commandData === q.category){
-            Trivia.sendPM(src, "Question under review: '" + q.question + "' Answer: '" + q.answer + "' (id='" + i + "')", channel);
+        if (commandData.toLowerCase() === q.category.toLowerCase()){
+            Trivia.sendPM(src, "Question: '" + q.question + "' Answer: '" + q.answer + "' (id='" + i + "')", channel);
             count++;
             if (count === 50) {
                 Trivia.sendPM(src, "Too many results were found for this query.", channel);
