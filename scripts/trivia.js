@@ -1159,7 +1159,7 @@ addAdminCommand("listc", function (src, commandData, channel) {
 addAdminCommand("showqinc", function (src, commandData, channel) {
     if (commandData === undefined)
         return;
-    Trivia.sendPM(src, "Questions in " + commandData + " category are:"
+    Trivia.sendPM(src, "Questions in " + commandData + " category are:", channel);
     var count = 0;
     for (var i in triviaq.all) {
         var q = triviaq.get(i);
