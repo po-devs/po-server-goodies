@@ -1143,6 +1143,61 @@ addAdminCommand("category", function (src, commandData, channel) {
     Trivia.sendPM(src, "There are " + count + " questions with the category " + commandData + ".", channel);
 }, "Shows how many questions are in a specified category");
 
+addAdminCommand("listc", function (src, commandData, channel) {
+    var categories = [];
+    for (var i in triviaq.all) {
+        var cat = triviaq.get(i).category, match = false;
+        categories.forEach(function(string) {if(string.toLowerCase() === cat.toLowerCase) match = true;});
+        if (!match) {
+            categories.push(cat);
+        }
+    }
+    categories = categories.sort();
+    Trivia.sendPM(src, "All currently used categories: \"" + categories.join("\", \"") + "\".", channel);
+}, "Lists every category currently used. Useful for picking out any incorrect categories.");
+
+addAdminCommand("showqinc", function (src, commandData, channel) {
+    if (commandData === undefined)
+        return;
+    Trivia.sendPM(src, "Questions in " + commandData + " category are:"
+    var count = 0;
+    for (var i in triviaq.all) {
+        var q = triviaq.get(i);
+        if (commandData === q.category){
+            Trivia.sendPM(src, "Question under review: '" + q.question + "' Answer: '" + q.answer + "' (id='" + i + "')", channel);
+            count++;
+            if (count === 50) {
+                Trivia.sendPM(src, "Too many results were found for this query.", channel);
+                return;
+            }
+        }
+    }
+}, "Lists every question in the specified category.");
+
+addOwnerCommand("changeallc", function (src, commandData, channel) {
+    commandData = commandData.split("*");
+    if (commandData.length != 2) {
+        Trivia.sendPM(src, "Syntax error! This command's format is /changeallc oldcat*newcat", channel);
+        return;
+    }
+    var changed = false;
+    var oldCat = commandData[0];
+    var newCat = commandData[1];
+    for (var i in triviaq.all) {
+        var c = triviaq.get(i).category;
+        if (c === oldCat) {
+            changed = true;
+            c = newCat;
+        }
+    }
+    if (!changed) {
+        Trivia.sendPM(src, "No questions with that category were found! Try using /category first.", channel);
+    }
+    else {
+        Trivia.sendAll("All questions under category " + oldCat + " were changed to the category " + newCat + "!", revchan);
+    }
+}, "Changes all questions from one category to another. Format: /changeallc oldcat*newcat.");
+
 addAdminCommand("checkq", function (src, commandData, channel) {
     if (trivreview.editingMode === true) {
         sys.sendMessage(src, "", channel);
