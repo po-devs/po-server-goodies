@@ -925,7 +925,7 @@ addUserCommand("qamount", function (src, commandData, channel) {
     }
 }, "Shows you the current amount of questions");
 
-addUserCommand("tadmins", function (src, commandData, channel) {
+addUserCommand("triviaadmins", function (src, commandData, channel) {
     tsadmin.tAdminList(src, channel, "Trivia Super Admins");
     tadmin.tAdminList(src, channel, "Trivia Admins");
 }, "Gives a list of current trivia admins");
