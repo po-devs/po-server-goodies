@@ -1629,7 +1629,7 @@ exports.handleCommand = function trivia_handleCommand(src, command, channel) {
         return;
         
     if (command == "tadmins") {
-        command === "triviaadmins"; //allows both to be used
+        command = "triviaadmins"; //allows both to be used
     }
     try {
         // Trivia user commands
