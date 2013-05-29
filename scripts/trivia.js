@@ -1628,7 +1628,7 @@ exports.handleCommand = function trivia_handleCommand(src, command, channel) {
     if (channel != triviachan && channel != revchan && ["triviamute", "triviaunmute", "flashtas"].indexOf(command) == -1)
         return;
         
-    if (command == "tadmin") {
+    if (command == "tadmins") {
         command === "triviaadmins"; //allows both to be used
     }
     try {
