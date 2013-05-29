@@ -936,8 +936,8 @@ addOwnerCommand("triviaadmin", function (src, commandData, channel) {
         return;
     }
     tadmin.addTAdmin(commandData);
-    Trivia.sendAll(src, sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Trivia Admin!", revchan);
-    Trivia.sendAll(src, sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Trivia Admin!", sachannel);
+    Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Trivia Admin!", revchan);
+    Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Trivia Admin!", sachannel);
 }, "Allows you to promote a new trivia admin, format /triviaadmin [name]");
 
 addOwnerCommand("triviaadminoff", function (src, commandData, channel) {
@@ -946,8 +946,8 @@ addOwnerCommand("triviaadminoff", function (src, commandData, channel) {
         return;
     }
     tadmin.removeTAdmin(commandData);
-    Trivia.sendAll(src, sys.name(src) + " demoted " + commandData.toCorrectCase() + " from being a Trivia Admin!", revchan);
-    Trivia.sendAll(src, sys.name(src) + " demoted " + commandData.toCorrectCase() + " from being a Trivia Admin!", sachannel);
+    Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from being a Trivia Admin!", revchan);
+    Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from being a Trivia Admin!", sachannel);
 }, "Allows you to demote a current trivia admin, format /triviaadminoff [name]");
 
 addOwnerCommand("triviasuperadmin", function (src, commandData, channel) {
@@ -956,8 +956,8 @@ addOwnerCommand("triviasuperadmin", function (src, commandData, channel) {
         return;
     }
     tsadmin.addTAdmin(commandData);
-    Trivia.sendAll(src, sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Trivia Admin!", revchan);
-    Trivia.sendAll(src, sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Trivia Admin!", sachannel);
+    Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Trivia Admin!", revchan);
+    Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Trivia Admin!", sachannel);
 }, "Allows you to promote a new trivia super admin, format /triviasuperadmin [name]");
 
 addOwnerCommand("triviasuperadminoff", function (src, commandData, channel) {
@@ -966,8 +966,8 @@ addOwnerCommand("triviasuperadminoff", function (src, commandData, channel) {
         return;
     }
     tsadmin.removeTAdmin(commandData);
-    Trivia.sendAll(src, sys.name(src) + " demoted " + commandData.toCorrectCase() + " from being a Super Trivia Admin!", revchan);
-    Trivia.sendAll(src, sys.name(src) + " demoted " + commandData.toCorrectCase() + " from being a Super Trivia Admin!", sachannel);
+    Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from being a Super Trivia Admin!", revchan);
+    Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from being a Super Trivia Admin!", sachannel);
 }, "Allows you to demote a current trivia super admin, format /triviasuperadminoff [name]");
 
 addAdminCommand("start", function (src, commandData, channel) {
