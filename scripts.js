@@ -249,7 +249,7 @@ function sendNotice() {
     var notice = sys.getFileContent(Config.dataDir + "notice.html");
     if (notice) {
         ["Tohjo Falls", "Trivia", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview", "Mafia", "Hangman"].forEach(function(c) {
-            sys.sendHtmlAll(notice, c);
+            sys.sendHtmlAll(notice, sys.channelId(c));
         });
     }
 }
