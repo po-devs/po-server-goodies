@@ -1181,10 +1181,10 @@ addOwnerCommand("changeallc", function (src, commandData, channel) {
         return;
     }
     var changed = false;
-    var oldCat = commandData[0];
+    var oldCat = commandData[0].toLowerCase();
     var newCat = commandData[1];
     for (var i in triviaq.all()) {
-        var c = triviaq.get(i).category;
+        var c = triviaq.get(i).category.toLowerCase();
         if (c === oldCat) {
             changed = true;
             triviaq.get(i).category = newCat;
