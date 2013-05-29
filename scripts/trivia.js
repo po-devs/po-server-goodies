@@ -873,8 +873,8 @@ addUserCommand("submitq", function (src, commandData, channel) {
         Trivia.sendPM(src, "Separate multiple answers with ','.", channel);
         return;
     }
-    var category = utilities.html_escape(commandData[0]);
-    var question = utilities.html_escape(commandData[1]);
+    var category = utilities.html_escape(commandData[0]).trim();
+    var question = utilities.html_escape(commandData[1]).trim();
     var fixAnswer = commandData[2].replace(/ *, */gi, ",").replace(/^ +/, "");
     var answer = fixAnswer.split(",");
     var needsreview = false;
