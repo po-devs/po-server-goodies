@@ -151,6 +151,7 @@ cleanFile("hangmansuperadmins.txt");
 cleanFile(Config.dataDir+"pastebin_user_key");
 cleanFile("secretsmute.txt");
 cleanFile("ipApi.txt");
+cleanFile(Config.dataDir + "notice.html");
 
 var autosmute = sys.getFileContent("secretsmute.txt").split(':::');
 var crc32 = require('crc32.js').crc32;
@@ -237,17 +238,20 @@ function dwCheck(pokemon){
     return true;
 }
 
-function sendNotice() {
+function updateNotice() {
     var url = Config.base_url + "notice.html";
     sys.webCall(url, function (resp){
-        if (resp.length < 1){
-            return;
-        }
-        var channels = ["Tohjo Falls", "Trivia", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview", "Mafia", "Hangman"];
-        for (var i = 0; i < channels.length; i++){
-            sys.sendHtmlAll(resp, sys.channelId(channels[i]));
-        }
+        sys.writeToFile(Config.dataDir + "notice.html", resp);
     });
+}
+
+function sendNotice() {
+    var notice = sys.getFileContent(Config.dataDir + "notice.html");
+    if (notice) {
+        ["Tohjo Falls", "Trivia", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview", "Mafia", "Hangman"].forEach(function(channel) {
+            sys.sendHtmlAll(notice, channel);
+        });
+    }
 }
 
 function isAndroid(id) {
@@ -4462,6 +4466,12 @@ ownerCommand: function(src, command, commandData, tar) {
             normalbot.sendMessage(tar, "Your password was cleared by " + mod + "!");
             sys.sendNetworkCommand(tar, 14); // make the register button active again
         }
+        return;
+    }
+    if (command == "updatenotice") {
+        updateNotice();
+        sendNotice();
+        normalbot.sendMessage(src, "Notice updated!");
         return;
     }
     if (command == "updatebansites") {
