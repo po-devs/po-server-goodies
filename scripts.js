@@ -1939,6 +1939,10 @@ beforeChannelJoin : function(src, channel) {
     }
 }, /* end of beforeChannelJoin */
 
+beforeChannelLeave: function(src, channel) {
+    callplugins("beforeChannelLeave", src, channel);
+}, /* end of beforeChannelLeave */
+
 beforeChannelCreated : function(chan, name, src) {
     if (name == "x") { sys.stopEvent(); }
 },
