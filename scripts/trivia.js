@@ -411,7 +411,13 @@ TriviaGame.prototype.finalizeAnswers = function () {
     var x = answers.length != 1 ? "answers were" : "answer was";
     sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> The correct " + x + ": <b>" + answers.join(", ") + "</b>", triviachan);
     if (answeredCorrectly.length != 0) {
-        var pointAdd = Math.min(Math.ceil((Object.keys(this.triviaPlayers).length / answeredCorrectly.length) - 0.5), 4);
+        var totalPlayers = 0;
+        for (var id in this.triviaPlayers) {
+            if (this.triviaPlayers[id].playing === true) {
+                totalPlayers++;
+           }
+        }
+        var pointAdd = Math.min(Math.ceil((totalPlayers / answeredCorrectly.length) - 0.5), 4);
         this.sendAll("Points awarded for this question: " + pointAdd);
         for (var i = 0; i < answeredCorrectly.length; i++) {
             var name = answeredCorrectly[i];
@@ -426,13 +432,15 @@ TriviaGame.prototype.finalizeAnswers = function () {
     obj.winners = [];
     obj.goal = this.maxPoints;*/
     for (id in this.triviaPlayers) {
-        var regname = this.triviaPlayers[id].name;
-        var numPoints = this.triviaPlayers[id].points;
-        var nohtmlname = utilities.html_escape(regname);
-        leaderboard.push([regname, numPoints]);
-        if (this.triviaPlayers[id].points >= this.maxPoints) {
-            winners.push(nohtmlname + " (" + this.triviaPlayers[id].points + ")");
-            //obj.winners.push([regname, numPoints]);
+        if (this.triviaPlayers[id].playing === true) {
+            var regname = this.triviaPlayers[id].name;
+            var numPoints = this.triviaPlayers[id].points;
+            var nohtmlname = utilities.html_escape(regname);
+            leaderboard.push([regname, numPoints]);
+            if (this.triviaPlayers[id].points >= this.maxPoints) {
+                winners.push(nohtmlname + " (" + this.triviaPlayers[id].points + ")");
+                //obj.winners.push([regname, numPoints]);
+            }
         }
     }
     leaderboard.sort(function (a, b) {
@@ -527,28 +535,46 @@ TriviaGame.prototype.tBorder = function () {
 
 TriviaGame.prototype.player = function (src) {
     var key = this.key(src);
-    return this.triviaPlayers.hasOwnProperty(key) ? this.triviaPlayers[key] : null;
+    if(!this.triviaPlayers.hasOwnProperty(key)||!this.triviaPlayers[key].playing) {
+        return null;
+    }
+    else {
+        return this.triviaPlayers[key];
+    }
 };
 
 TriviaGame.prototype.playerPlaying = function (src) {
     var key = this.key(src);
-    return this.triviaPlayers.hasOwnProperty(key);
+    return (this.triviaPlayers.hasOwnProperty(key) && this.triviaPlayers[key].playing);
 };
 
 TriviaGame.prototype.addPlayer = function (src) {
     var key = this.key(src);
+    if (this.triviaPlayers.hasOwnProperty(key)) {
+        this.triviaPlayers[key].playing = true;
+    }
+    else {
+        for (var id in this.triviaPlayers) {
+            if (this.triviaPlayers[id].name.toLowerCase === sys.name(src) {
+                this.triviaPlayers[key] = this.triviaPlayers[id];
+                this.triviaPlayers[key].playing = true;
+                delete this.triviaPlayers[id];
+            }
+        }
+    }
     if (!this.triviaPlayers.hasOwnProperty(key)) {
         this.triviaPlayers[key] = {
             name: sys.name(src),
-            points: 0
-        };
+            points: 0,
+            playing: true
+        }
     }
 };
 
 TriviaGame.prototype.removePlayer = function (src) {
     var key = this.key(src);
     if (this.triviaPlayers.hasOwnProperty(key)) {
-        delete this.triviaPlayers[key];
+        this.triviaPlayers[key].playing = false;
     }
 };
 
@@ -909,7 +935,12 @@ addUserCommand("join", function (src, commandData, channel) {
         return;
     }
     Trivia.addPlayer(src);
-    Trivia.sendAll(sys.name(src) + " joined the game!", triviachan);
+    if (Trivia.triviaPlayers[src].points === 0) {
+        Trivia.sendAll(sys.name(src) + " joined the game!", triviachan);
+    }
+    else {
+    	Trivia.sendAll(sys.name(src) + " returned to the game with " + Trivia.triviaPlayers[src].points + " points!", triviachan);
+    }
 }, "Allows you to join a current game of trivia");
 
 addUserCommand("unjoin", function (src, commandData, channel) {
@@ -1692,8 +1723,8 @@ exports.beforeChannelJoin = function trivia_beforeChannelJoin(src, channel) {
     }
 };
 
-exports.beforeLogOut = function trivia_beforeLogOut(src) {
-    if (Trivia.started === true) {
+exports.beforeChannelLeave = function trivia_beforeChannelLeave(src, channel) {
+    if (Trivia.started === true && channel === triviachan)
         Trivia.removePlayer(src);
     }
 };
