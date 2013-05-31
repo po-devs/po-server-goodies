@@ -4592,7 +4592,16 @@ ownerCommand: function(src, command, commandData, tar) {
         normalbot.sendChanMessage(src, "Module not found, can not update.");
         return;
     }
-
+    if (command == "loadstats") {
+        sys.loadServerPlugin("serverplugins/libusagestats.so");
+        normalbot.sendChanMessage(src, "Usage Stats plugin loaded");
+        return;
+    }
+    if (command == "unloadstats") {
+        sys.unloadServerPlugin("Usage Statistics");
+        normalbot.sendChanMessage(src, "Usage Stats plugin unloaded");
+        return;
+    }
     return "no command";
 },
 
