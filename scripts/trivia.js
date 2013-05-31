@@ -10,7 +10,7 @@
         - backupQuestions.json, backupReview.json
 */
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global updateModule, script, sys, saveKey, SESSION, sendChanAll, require, Config, module*/
+/*global updateModule, script, sys, saveKey, SESSION, sendChanAll, sendChanHtmlAll, require, Config, module*/
 var Bot = require("bot.js").Bot;
 var utilities = require("utilities.js");
 
@@ -122,6 +122,7 @@ function showTrivia(src, channel, what) {
     var tmp = [];
     var t = parseInt(sys.time(), 10);
     var toDelete = [];
+    var current, by, banTime, expires, reason, banned_name;
     for (var ip in trivData[what]) {
         var which = {
             "submitBans": "submitbanned",
@@ -295,6 +296,7 @@ TriviaGame.prototype.startGame = function (points, name) {
     sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> Type <b>/join</b> to join!", triviachan);
     var players = sys.playersOfChannel(triviachan);
     // Flash players who have it enabled
+    var player_id, player_ip;
     for (var p in players) {
         player_id = players[p], player_ip = sys.ip(player_id);
         if (trivData.toFlash[player_ip] !== undefined)
@@ -315,13 +317,13 @@ TriviaGame.prototype.startTrivia = function (src, rand) {
         this.sendPM(src, "/start is off. Most likely because Trivia is being updated.", triviachan);
         return;
     }
+    if (triviaq.questionAmount() < 1) {
+        this.sendPM(src, "There are no questions.", triviachan);
+        return;
+    }
     var x = time() - this.lastStopped;
     if (x < 16) {
         this.sendPM(src, "Sorry, a game was just stopped " + parseInt(x, 10) + " seconds ago.", triviachan);
-        return;
-    }
-    if (triviaq.questionAmount() < 1) {
-        this.sendPM(src, "There are no questions.", triviachan);
         return;
     }
     rand = parseInt(rand, 10);
@@ -354,7 +356,7 @@ TriviaGame.prototype.startTriviaRound = function () {
         question = q.question,
         answer = q.answer;
     /*if(this.alreadyUsedCat.hasOwnProperty(category)){
-		sys.delayedCall(function() { Trivia.startTriviaRound(); }, 1);
+        sys.delayedCall(function() { Trivia.startTriviaRound(); }, 1);
         return;
     }*/
     this.answeringQuestion = true;
@@ -363,10 +365,10 @@ TriviaGame.prototype.startTriviaRound = function () {
     this.alreadyUsed[questionNumber] = true;
     //this.alreadyUsedCat[category] = true
     /*sys.delayedCall(function() {
-		if(Trivia.started !== false){
-			delete(Trivia.alreadyUsedCat[category])
-		}
-	},240)*/ //time is placeholder, maybe make it by round number instead?
+        if(Trivia.started !== false){
+            delete(Trivia.alreadyUsedCat[category])
+        }
+    },240)*/ //time is placeholder, maybe make it by round number instead?
     sys.delayedCall(function () {
         Trivia.finalizeAnswers();
     }, 10);
@@ -410,7 +412,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
     this.sendAll("Answered correctly: " + answeredCorrectly.join(", "), triviachan);
     var x = answers.length != 1 ? "answers were" : "answer was";
     sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> The correct " + x + ": <b>" + answers.join(", ") + "</b>", triviachan);
-    if (answeredCorrectly.length != 0) {
+    if (answeredCorrectly.length !== 0) {
         var totalPlayers = 0;
         for (var id in this.triviaPlayers) {
             if (this.triviaPlayers[id].playing === true) {
@@ -462,6 +464,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         //updateLeaderboard(obj);
         this.resetTrivia();
         runUpdate();
+        var toStart, pointsForGame;
         if (this.autostart === true) {
             pointsForGame = sys.rand(12, 45), toStart = sys.rand(30, 44);
             Trivia.sendAll("A new trivia game will be started in " + toStart + " seconds!", triviachan);
@@ -498,10 +501,15 @@ TriviaGame.prototype.resetTrivia = function () {
 };
 
 TriviaGame.prototype.key = function (src) {
-    if (typeof src == "string")
-        return src.toLowerCase();
-    else
-        return sys.name(src).toLowerCase();
+    var returnval = src;
+    if (typeof src === "string") {
+        for (var id in this.triviaPlayers) {
+            if (this.triviaPlayers[id].name.toLowerCase() === src.toLowerCase()) {
+                returnval = id;
+            }
+        }
+    }
+    return returnval;
 };
 
 TriviaGame.prototype.unjoin = function (src) {
@@ -555,7 +563,7 @@ TriviaGame.prototype.addPlayer = function (src) {
     }
     else {
         for (var id in this.triviaPlayers) {
-            if (this.triviaPlayers[id].name.toLowerCase === sys.name(src) {
+            if (this.triviaPlayers[id].name.toLowerCase() === sys.name(src).toLowerCase()) {
                 this.triviaPlayers[key] = this.triviaPlayers[id];
                 this.triviaPlayers[key].playing = true;
                 delete this.triviaPlayers[id];
@@ -567,7 +575,7 @@ TriviaGame.prototype.addPlayer = function (src) {
             name: sys.name(src),
             points: 0,
             playing: true
-        }
+        };
     }
 };
 
@@ -939,7 +947,7 @@ addUserCommand("join", function (src, commandData, channel) {
         Trivia.sendAll(sys.name(src) + " joined the game!", triviachan);
     }
     else {
-    	Trivia.sendAll(sys.name(src) + " returned to the game with " + Trivia.triviaPlayers[src].points + " points!", triviachan);
+        Trivia.sendAll(sys.name(src) + " returned to the game with " + Trivia.triviaPlayers[src].points + " points!", triviachan);
     }
 }, "Allows you to join a current game of trivia");
 
@@ -1016,18 +1024,18 @@ addAdminCommand("say", function (src, commandData, channel) {
 }, "Allows you to talk during the answer period");
 
 /*addOwnerCommand("makebackup", function(src, commandData, channel) {
-	commandData = commandData.split(":");
-	var fileTrivia = commandData[0], fileTrivReview = commandData[1];
-	if (fileTrivia == undefined || fileTrivReview == undefined) {
-		fileTrivia = "backupQuestions.json", fileTrivReview = "backupReview.json";
-	}
-	if (fileTrivia.indexOf(".json") == -1 || fileTrivReview.indexOf(".json") == -1) {
-		triviabot.sendMessage(src, 'Please add .json to make sure you are specifying a valid file.', channel);
-		return;
-	}
-	sys.writeToFile(fileTrivia, JSON.stringify(triviaq.state));
-	sys.writeToFile(fileTrivReview, JSON.stringify(trivreview.state));
-	triviabot.sendMessage(src, "Backup made!", channel);
+    commandData = commandData.split(":");
+    var fileTrivia = commandData[0], fileTrivReview = commandData[1];
+    if (fileTrivia == undefined || fileTrivReview == undefined) {
+        fileTrivia = "backupQuestions.json", fileTrivReview = "backupReview.json";
+    }
+    if (fileTrivia.indexOf(".json") == -1 || fileTrivReview.indexOf(".json") == -1) {
+        triviabot.sendMessage(src, 'Please add .json to make sure you are specifying a valid file.', channel);
+        return;
+    }
+    sys.writeToFile(fileTrivia, JSON.stringify(triviaq.state));
+    sys.writeToFile(fileTrivReview, JSON.stringify(trivreview.state));
+    triviabot.sendMessage(src, "Backup made!", channel);
 },"Makes a backup of current questions.");*/
 
 addOwnerCommand("updateafter", function (src, commandData, channel) {
@@ -1090,46 +1098,46 @@ addAdminCommand("flashtas", function (src, commandData, channel) {
     if ([revchan, sachannel].indexOf(channel) === -1) {
         Trivia.sendPM(src, "Please only use /flashtas in TrivReview or Victory Road!", channel);
         return;
-    };
+    }
     var message = (commandData === "" ? "Flashing all Trivia Admins!" : commandData);
     sys.sendAll(sys.name(src).toCorrectCase() + ": " + message, channel);
     var admins = [tadmin, tsadmin];
     for(var auth = 0; auth < admins.length; auth++) {
         for(var i = 0; i < admins[auth].admins.length; i++) {
-            if(sys.id(admins[auth].admins[i]) != undefined) {
+            if(sys.id(admins[auth].admins[i]) !== undefined) {
                 sys.sendHtmlMessage(sys.id(admins[auth].admins[i]), "<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> <b>You're needed in this channel!</b><ping/>", channel);
-            };
-        };
-    };
+            }
+        }
+    }
 }, "Pings all online Trivia Admins. Use with /flashtas [phrase]. Abuse will be punished");
 
 /*addOwnerCommand("revertfrom", function(src, commandData, channel) {
-	commandData = commandData.split(":");
-	var fileTrivia = commandData[0], fileTrivReview = commandData[1];
-	if (fileTrivia == undefined || fileTrivReview == undefined) {
-		fileTrivia = "backupQuestions.json", fileTrivReview = "backupReview.json";
-	}
-	var content1 = sys.getFileContent(fileTrivia), content2 = sys.getFileContent(fileTrivReview);
-	if (content1 == undefined || content1 == '' || content2 == undefined || content2 == '') {
-		triviabot.sendMessage(src, 'The content of either file is undefined or blank.', channel);
-		return;
-	}
-	if (fileTrivia.indexOf(".json") == -1 || fileTrivReview.indexOf(".json") == -1) {
-		triviabot.sendMessage(src, 'Please add .json to make sure you are specifying a valid file.', channel);
-		return;
-	}
-	try {
-		var parsed = JSON.parse(content1), parsed2 = JSON.parse(content2);
-	} catch (e) {
-		triviabot.sendMessage(src, "Couldn't revert: "+e, channel);
-		return;
-	}
-	sys.writeToFile("triviaq.json", content1);
-	triviaq.state = parsed;
-	sys.writeToFile("trivreview.json", content2);
-	trivreview.state = parsed2;
-	triviabot.sendMessage(src, "Successfully reverted questions!", channel);
-	return;
+    commandData = commandData.split(":");
+    var fileTrivia = commandData[0], fileTrivReview = commandData[1];
+    if (fileTrivia == undefined || fileTrivReview == undefined) {
+        fileTrivia = "backupQuestions.json", fileTrivReview = "backupReview.json";
+    }
+    var content1 = sys.getFileContent(fileTrivia), content2 = sys.getFileContent(fileTrivReview);
+    if (content1 == undefined || content1 == '' || content2 == undefined || content2 == '') {
+        triviabot.sendMessage(src, 'The content of either file is undefined or blank.', channel);
+        return;
+    }
+    if (fileTrivia.indexOf(".json") == -1 || fileTrivReview.indexOf(".json") == -1) {
+        triviabot.sendMessage(src, 'Please add .json to make sure you are specifying a valid file.', channel);
+        return;
+    }
+    try {
+        var parsed = JSON.parse(content1), parsed2 = JSON.parse(content2);
+    } catch (e) {
+        triviabot.sendMessage(src, "Couldn't revert: "+e, channel);
+        return;
+    }
+    sys.writeToFile("triviaq.json", content1);
+    triviaq.state = parsed;
+    sys.writeToFile("trivreview.json", content2);
+    trivreview.state = parsed2;
+    triviabot.sendMessage(src, "Successfully reverted questions!", channel);
+    return;
 },"Revert questions.");*/
 
 addAdminCommand("apropos", function (src, commandData, channel) {
@@ -1724,7 +1732,7 @@ exports.beforeChannelJoin = function trivia_beforeChannelJoin(src, channel) {
 };
 
 exports.beforeChannelLeave = function trivia_beforeChannelLeave(src, channel) {
-    if (Trivia.started === true && channel === triviachan)
+    if (Trivia.started === true && channel === triviachan) {
         Trivia.removePlayer(src);
     }
 };
