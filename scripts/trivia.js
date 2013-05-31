@@ -519,7 +519,16 @@ TriviaGame.prototype.unjoin = function (src) {
     }
     if (this.playerPlaying(src)) {
         this.removePlayer(src);
-        this.sendAll(sys.name(src) + " left the game!", triviachan);
+        switch (Trivia.triviaPlayers[src].points) {
+            case 0:
+                Trivia.sendAll(sys.name(src) + " left the game!", triviachan);
+                break;
+            case 1:
+                Trivia.sendAll(sys.name(src) + " left the game with 1 point!", triviachan);
+                break;
+            default:
+                Trivia.sendAll(sys.name(src) + " left the game with " + Trivia.triviaPlayers[src].points + " points!", triviachan);
+        }
     }
     else {
         this.sendPM(src, "You haven't joined the game!", triviachan);
@@ -943,11 +952,15 @@ addUserCommand("join", function (src, commandData, channel) {
         return;
     }
     Trivia.addPlayer(src);
-    if (Trivia.triviaPlayers[src].points === 0) {
-        Trivia.sendAll(sys.name(src) + " joined the game!", triviachan);
-    }
-    else {
-        Trivia.sendAll(sys.name(src) + " returned to the game with " + Trivia.triviaPlayers[src].points + " points!", triviachan);
+    switch (Trivia.triviaPlayers[src].points) {
+        case 0:
+            Trivia.sendAll(sys.name(src) + " joined the game!", triviachan);
+            break;
+        case 1:
+            Trivia.sendAll(sys.name(src) + " returned to the game with 1 point!", triviachan);
+            break;
+        default:
+            Trivia.sendAll(sys.name(src) + " returned to the game with " + Trivia.triviaPlayers[src].points + " points!", triviachan);
     }
 }, "Allows you to join a current game of trivia");
 
@@ -1733,7 +1746,7 @@ exports.beforeChannelJoin = function trivia_beforeChannelJoin(src, channel) {
 
 exports.beforeChannelLeave = function trivia_beforeChannelLeave(src, channel) {
     if (Trivia.started === true && channel === triviachan) {
-        Trivia.removePlayer(src);
+        Trivia.unjoin(src);
     }
 };
 
