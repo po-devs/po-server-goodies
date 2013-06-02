@@ -2515,9 +2515,9 @@ function Mafia(mafiachan) {
                             player.curseConvertMessage = undefined;
                         }
                         player.curseCount = undefined;
+                        mafia.setPlayerRole(player, player.cursedRole);
                         if (!player.silentCurse) {
                             mafia.sendPlayer(player.name, "±Game: Your curse took effect and you changed roles!");
-                            mafia.setPlayerRole (player, player.cursedRole);
                             mafia.showOwnRole(sys.id(player.name));
                         }
                     }
