@@ -3054,6 +3054,7 @@ function Mafia(mafiachan) {
             "±Rules: Do not attempt to ruin the game by any other means.",
             "±Rules: Do not flash multiple people in order to get them to play. If they want to play they will join of their own will.",
             "±Rules: Do not insult themes needlessly. If you have a legitimate complaint about a certain theme, post it in that theme's forum thread.",
+            "±Rules: Do not insult players if they make a mistake. Helping them to learn the game instead of insulting will make the game a lot more enjoyable for all.",
             "±Rules: Ignorance of the rules does not justify breaking them.",
             "±Rules: Mafia Admins, or MAs are here for the benefit of the channel. If you are asked to do something by an MA, it is advised you do so. Insulting of MAs will result in punishment.",
             "±Rules: All server rules apply in this channel too - type /rules to view them.",
