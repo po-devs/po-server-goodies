@@ -18,6 +18,7 @@ var triviachan, revchan;
 var triviabot = new Bot("Psyduck");
 
 var triviaCategories = ['Anime/Manga', 'Animals', 'Art', 'Comics', 'Economics', 'Food/Drink', 'Games', 'Geography', 'History', 'Internet', 'Language', 'Literature', 'Math', 'Misc', 'Movies', 'Music', 'Mythology', 'Philosophy', 'PO', 'Pokemon', 'Politics', 'Psychology', 'Religion', 'Science', 'Society', 'Space', 'Sports', 'Technology', 'TV', 'Video Games'];
+var saveDBTime = parseInt(sys.time());
 
 var neededFiles = ["triviaq.json", "trivreview.json"];
 for (var i in neededFiles) {
@@ -1351,7 +1352,12 @@ addAdminCommand("savedb", function (src, commandData, channel) {
     triviabot.sendAll("Saving trivia database...", channel);
     triviaq.saveQuestions();
     triviabot.sendAll("Trivia database saved!", channel);
+    saveDBTime = parseInt(sys.time());
 }, "Forces a save of the trivia database. Do so after accepting questions.");
+
+addAdminCommand("lastsavedb", function(src, commandData, channel) {
+    Trivia.sendPM(src, "The database was last saved " + getTimeString(sys.time() - saveDBTime) + " ago.", channel);
+}, "View when the question database was last saved.");
 
 addAdminCommand("pushback", function (src, commandData, channel) {
     var tr = trivreview.all();
