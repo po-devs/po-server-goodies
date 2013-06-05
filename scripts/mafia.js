@@ -3628,7 +3628,7 @@ function Mafia(mafiachan) {
         } else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel != mafiachan && ["mafiaban","mafiaunban","mafiabans","detained","detainlist"].indexOf(command) === -1)
+        if (channel != mafiachan && ["mafiaban","mafiaunban","mafiabans","detained","detainlist", "mafiaadmins", "madmins"].indexOf(command) === -1)
             return;
         try {
             mafia.handleCommandOld(src, command, commandData, channel);
@@ -4097,7 +4097,7 @@ return;
             return;
         }
 
-        if (command == "mafiaadmins") {
+        if (command == "mafiaadmins" || command == "madmins") {
             var out = [
                 "",
                 "*** MAFIA SUPER ADMINS ***",
