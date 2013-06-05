@@ -235,6 +235,42 @@ function canUseReviewCommands(name) {
     return cauth === true || contribs === true;
 }
 
+function PMcheckq (src, channel) {
+    if (trivreview.editingMode === true) {
+        sys.sendMessage(src, "", channel);
+        triviabot.sendMessage(src, "This question needs to be reviewed:", channel);
+        triviabot.sendMessage(src, "EDITING MODE: USE THE CHANGE COMMANDS TO EDIT AND THEN /ACCEPT OR /DECLINE TO DELETE", channel);
+        triviabot.sendMessage(src, "Category: " + trivreview.editingCategory, channel);
+        triviabot.sendMessage(src, "Question: " + trivreview.editingQuestion, channel);
+        triviabot.sendMessage(src, "Answer: " + trivreview.editingAnswer, channel);
+        triviabot.sendMessage(src, "Questions Approved: " + triviaq.questionAmount() + ". Questions Left: " + trivreview.questionAmount() + ".", channel);
+        sys.sendMessage(src, "", channel);
+        return;
+    }
+    if (trivreview.questionAmount() === 0) {
+        Trivia.sendPM(src, "There are no questions to be reviewed.", channel);
+        return;
+    }
+    var q = trivreview.all();
+    var questionId = Object.keys(q)[0];
+    var questionInfo = trivreview.get(questionId);
+    if (questionId === undefined || questionInfo === undefined) {
+        Trivia.sendPM(src, "Oops! There was an error.", channel);
+        return;
+    }
+    sys.sendMessage(src, "", channel);
+    Trivia.sendPM(src, "This question needs to be reviewed:", channel);
+    Trivia.sendPM(src, "ID: " + questionId, channel);
+    Trivia.sendPM(src, "Category: " + questionInfo.category, channel);
+    Trivia.sendPM(src, "Question: " + questionInfo.question, channel);
+    Trivia.sendPM(src, "Answer: " + questionInfo.answer, channel);
+    Trivia.sendPM(src, "Questions Approved: " + triviaq.questionAmount() + ". Questions Left: " + trivreview.questionAmount() + ".", channel);
+    if (questionInfo.name !== undefined) {
+        Trivia.sendPM(src, "Submitted By:" + questionInfo.name, channel);
+    }
+    sys.sendMessage(src, "", channel);
+};
+
 /*function canShowOnLeaderboard(ip) {
     if (sys.maxAuth(ip) > 0) return false;
     var aliases = sys.aliases(ip);
@@ -1256,39 +1292,7 @@ addOwnerCommand("changeallc", function (src, commandData, channel) {
 }, "Changes all questions from one category to another. Format: /changeallc oldcat*newcat.");
 
 addAdminCommand("checkq", function (src, commandData, channel) {
-    if (trivreview.editingMode === true) {
-        sys.sendMessage(src, "", channel);
-        triviabot.sendMessage(src, "This question needs to be reviewed:", channel);
-        triviabot.sendMessage(src, "EDITING MODE: USE THE CHANGE COMMANDS TO EDIT AND THEN /ACCEPT OR /DECLINE TO DELETE", channel);
-        triviabot.sendMessage(src, "Category: " + trivreview.editingCategory, channel);
-        triviabot.sendMessage(src, "Question: " + trivreview.editingQuestion, channel);
-        triviabot.sendMessage(src, "Answer: " + trivreview.editingAnswer, channel);
-        triviabot.sendMessage(src, "Questions Approved: " + triviaq.questionAmount() + ". Questions Left: " + trivreview.questionAmount() + ".", channel);
-        sys.sendMessage(src, "", channel);
-        return;
-    }
-    if (trivreview.questionAmount() === 0) {
-        Trivia.sendPM(src, "There are no questions to be reviewed.", channel);
-        return;
-    }
-    var q = trivreview.all();
-    var questionId = Object.keys(q)[0];
-    var questionInfo = trivreview.get(questionId);
-    if (questionId === undefined || questionInfo === undefined) {
-        Trivia.sendPM(src, "Oops! There was an error.", channel);
-        return;
-    }
-    sys.sendMessage(src, "", channel);
-    Trivia.sendPM(src, "This question needs to be reviewed:", channel);
-    Trivia.sendPM(src, "ID: " + questionId, channel);
-    Trivia.sendPM(src, "Category: " + questionInfo.category, channel);
-    Trivia.sendPM(src, "Question: " + questionInfo.question, channel);
-    Trivia.sendPM(src, "Answer: " + questionInfo.answer, channel);
-    Trivia.sendPM(src, "Questions Approved: " + triviaq.questionAmount() + ". Questions Left: " + trivreview.questionAmount() + ".", channel);
-    if (questionInfo.name !== undefined) {
-        Trivia.sendPM(src, "Submitted By:" + questionInfo.name, channel);
-    }
-    sys.sendMessage(src, "", channel);
+    PMcheckq(src, channel);
 }, "Allows you to check the current question in review");
 
 addAdminCommand("changea", function (src, commandData, channel) {
@@ -1747,6 +1751,12 @@ exports.beforeChannelJoin = function trivia_beforeChannelJoin(src, channel) {
         sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
         sys.stopEvent();
         return;
+    }
+};
+
+exports.afterChannelJoin = function trivia_afterChannelJoin(src, channel) {
+    if (channel === revchan) {
+        PMcheckq(src, channel);
     }
 };
 
