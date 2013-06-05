@@ -1687,7 +1687,7 @@ exports.handleCommand = function trivia_handleCommand(src, command, channel) {
         commandData = ""; // sane default to avoid undefined errors
     }
     // Only care about trivia channels
-    if (channel != triviachan && channel != revchan && ["triviamute", "triviaunmute", "flashtas"].indexOf(command) == -1)
+    if (channel != triviachan && channel != revchan && ["triviamute", "triviaunmute", "flashtas", "triviaadmins"].indexOf(command) == -1)
         return;
         
     if (command == "tadmins") {
