@@ -4123,7 +4123,7 @@ return;
                 out.push(mas[i]);
             }
             out.push("");
-            dump(src, out);
+            dump(src, out, channel);
             return;
         }
 
