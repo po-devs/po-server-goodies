@@ -1686,13 +1686,13 @@ exports.handleCommand = function trivia_handleCommand(src, command, channel) {
     else {
         commandData = ""; // sane default to avoid undefined errors
     }
+    if (command == "tadmins") {
+        command = "triviaadmins"; //allows both to be used
+    }
     // Only care about trivia channels
     if (channel != triviachan && channel != revchan && ["triviamute", "triviaunmute", "flashtas", "triviaadmins"].indexOf(command) == -1)
         return;
         
-    if (command == "tadmins") {
-        command = "triviaadmins"; //allows both to be used
-    }
     try {
         // Trivia user commands
         if (userCommands.hasOwnProperty(command)) {
