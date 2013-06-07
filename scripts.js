@@ -4606,13 +4606,19 @@ ownerCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "loadstats") {
-        sys.loadServerPlugin("serverplugins/libusagestats.so");
-        normalbot.sendChanMessage(src, "Usage Stats plugin loaded");
+        if (sys.loadServerPlugin("serverplugins/libusagestats.so")) {
+            normalbot.sendChanMessage(src, "Usage Stats plugin loaded");
+            return;
+        }
+        normalbot.sendChanMessage(src, "Usage Stats failed to load");
         return;
     }
     if (command == "unloadstats") {
-        sys.unloadServerPlugin("Usage Statistics");
-        normalbot.sendChanMessage(src, "Usage Stats plugin unloaded");
+        if (sys.unloadServerPlugin("Usage Statistics")){
+            normalbot.sendChanMessage(src, "Usage Stats plugin unloaded");
+            return;
+        }
+        normalbot.sendChanMessage(src, "Usage stats failed to unload");
         return;
     }
     return "no command";
