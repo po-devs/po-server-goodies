@@ -285,6 +285,17 @@ function time() {
     return Date.now() / 1000;
 }
 
+function trivia_onMute(src) {
+    if (Trivia.started === false) {
+        return;
+    }
+    if (Trivia.playerPlaying(src)) {
+        Trivia.removePlayer(src);
+        Trivia.sendAll(sys.name(src) + " left the game!", triviachan);
+        return;
+    }
+};
+
 function TriviaGame() {
     this.id = triviachan;
     this.round = 0;
@@ -1734,16 +1745,9 @@ exports.onHelp = function trivia_onHelp(src, commandData, channel) {
     }
 };
 
-exports.onMute = function trivia_onMute(src) {
-    if (Trivia.started === false) {
-        return;
-    }
-    if (Trivia.playerPlaying(src)) {
-        Trivia.removePlayer(src);
-        Trivia.sendAll(sys.name(src) + " left the game!", triviachan);
-        return;
-    }
-};
+exports.onMute = trivia_onMute;
+exports.onKick = trivia_onMute;
+exports.onBan = trivia_onMute;
 
 exports.beforeChannelJoin = function trivia_beforeChannelJoin(src, channel) {
     /* Prevent channel join */
