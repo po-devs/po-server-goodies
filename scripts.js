@@ -1052,7 +1052,7 @@ function POChannelManager(fname)
         print('Error: ' + err);
         this.channelMap = {};
     }
-    sys.system("mkdir -p channeldata");
+    sys.makeDir("channeldata");
 }
 
 POChannelManager.prototype.toString = function()
