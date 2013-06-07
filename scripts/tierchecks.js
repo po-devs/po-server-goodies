@@ -277,8 +277,8 @@ tier_checker.add_new_check(INCLUDING, ["Wifi OU", "No Preview OU", "Monotype"], 
 
 tier_checker.add_new_check(INCLUDING, ["Wifi LC"], function regeneratorCheck(src, team, tier) {
     for(var i = 0; i <6; ++i){
-        if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Regenerator"){
-            return ["Regenerator is not allowed in " + tier + "."];
+        if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Speed Boost"){
+            return ["Speed Boost is not allowed in " + tier + "."];
         }
     }
 });
