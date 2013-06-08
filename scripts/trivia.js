@@ -442,7 +442,7 @@ TriviaGame.prototype.startTrivia = function (src, data) {
     }
     for (var i = 1; i < data.length; i++) {
         for (var j = i + 1; j < data.length; j++){
-            if (data[i] === data[j]) {
+            if (data[i].toLowerCase() === data[j].toLowerCase()) {
                  data.splice(j, 1);
                  j--;
             }
