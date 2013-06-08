@@ -475,8 +475,16 @@ TriviaGame.prototype.startTriviaRound = function () {
     this.round++;
     /* Make a random number to get the ID of the (going to be) asked question */
     var questionNumber = Trivia.randomId();
-    while (triviaq.get(questionNumber) === null) {
+    var i = 0;
+    while (triviaq.get(questionNumber) === null && i !== 200) {
        questionNumber = Trivia.randomId();
+       i++;
+    }
+    if (i === 200) {
+        this.htmlAll("There are no more questions to show! This is the perfect chance to submit more!<br/>The game automatically ended.");
+        this.resetTrivia();
+        runUpdate();
+        return;
     }
     /* Get the category, question, and answer */
     var q = triviaq.get(questionNumber);
