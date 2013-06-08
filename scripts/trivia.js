@@ -18,7 +18,7 @@ var triviachan, revchan;
 var triviabot = new Bot("Psyduck");
 
 var triviaCategories = ['Anime/Manga', 'Animals', 'Art', 'Comics', 'Economics', 'Food/Drink', 'Games', 'Geography', 'History', 'Internet', 'Language', 'Literature', 'Math', 'Misc', 'Movies', 'Music', 'Mythology', 'Philosophy', 'PO', 'Pokemon', 'Politics', 'Psychology', 'Religion', 'Science', 'Society', 'Space', 'Sports', 'Technology', 'TV', 'Video Games'];
-var saveDBTime = parseInt(sys.time());
+var saveDBTime = parseInt(sys.time(), 10);
 var lastCatGame = 0;
 var lastUsedCats = [];
 
@@ -271,7 +271,7 @@ function PMcheckq (src, channel) {
         Trivia.sendPM(src, "Submitted By:" + questionInfo.name, channel);
     }
     sys.sendMessage(src, "", channel);
-};
+}
 
 /*function canShowOnLeaderboard(ip) {
     if (sys.maxAuth(ip) > 0) return false;
@@ -296,7 +296,7 @@ function trivia_onMute(src) {
         Trivia.sendAll(sys.name(src) + " left the game!", triviachan);
         return;
     }
-};
+}
 
 function TriviaGame() {
     this.id = triviachan;
@@ -368,7 +368,7 @@ TriviaGame.prototype.startNormalGame = function (points, name) {
         if (trivData.toFlash[player_ip] !== undefined)
             sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
     }
-    for (var q in triviaq.all) {
+    for (var q in triviaq.all()) {
         this.qSource.push(q);
     }
     this.answeringQuestion = false;
@@ -378,8 +378,8 @@ TriviaGame.prototype.startNormalGame = function (points, name) {
 };
 
 TriviaGame.prototype.startCatGame = function (points, cats, name) {
-    for (var q in triviaq.all) {
-        if (cats.indexOf(triviaq.get(q).category != -1) {
+    for (var q in triviaq.all()) {
+        if (cats.indexOf(triviaq.get(q).category) != -1) {
             this.qSource.push(q);
         }
     }
@@ -389,15 +389,16 @@ TriviaGame.prototype.startCatGame = function (points, cats, name) {
     }
     this.started = true;
     var lastCat;
-    if(cats.length > 1) {
+    var catsLength = cats.length;
+    if (cats.length > 1) {
         lastCat = cats.splice(-1, 1);
     }
     sendChanAll("", 0);
     sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
-    this.sendAll("A Category game has started in #Trivia! Test your knowledge on " + (cats.length > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to x points wins!", 0);
+    this.sendAll("A Category game has started in #Trivia! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " points wins!", 0);
     sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
     sendChanAll("", 0);
-    this.sendAll(name + " has started a Category Game! Test your knowledge on " +  (cats.length > 1 ? cats.join(", ") + " and " + lastCat : cats[0])  + ". First to x points wins!", triviachan);
+    this.sendAll(name + " has started a Category Game! Test your knowledge on " +  (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0])  + ". First to " + points + " points wins!", triviachan);
     sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> Type <b>/join</b> to join!", triviachan);
     var players = sys.playersOfChannel(triviachan);
     // Flash players who have it enabled
@@ -444,7 +445,7 @@ TriviaGame.prototype.startTrivia = function (src, data) {
         }
     }
     data[0] = (isNaN(rand)) ? sys.rand(2, 102) : +rand;
-    data = data.join(*);
+    data = data.join("*");
     this.startGame(data, sys.name(src));
 };
 
@@ -469,7 +470,7 @@ TriviaGame.prototype.startTriviaRound = function () {
     this.answeringQuestion = true;
     this.roundQuestion = questionNumber;
     this.htmlAll("<b>Category:</b> " + category.toUpperCase() + "<br>" + question);
-    var index = qSource.indexOf(questionNumber);
+    var index = this.qSource.indexOf(questionNumber);
     this.qSource.splice(index, 1);
     //this.alreadyUsedCat[category] = true
     /*sys.delayedCall(function() {
@@ -575,7 +576,7 @@ obj.goal = this.maxPoints;*/
             lastUsedCats = this.usingCats;
         }
         else {
-            if (lastCatGame != 0) {
+            if (lastCatGame !== 0) {
                 lastCatGame++;
             }
         }
@@ -592,7 +593,7 @@ obj.goal = this.maxPoints;*/
         }
         return;
     }
-    if (qSource.length === 0) {
+    if (this.qSource.length === 0) {
         this.htmlAll("There are no more questions to show! This is the perfect chance to submit more!<br/>The game automatically ended.");
         this.resetTrivia();
         runUpdate();
@@ -632,7 +633,7 @@ TriviaGame.prototype.key = function (src) {
 };
 
 TriviaGame.prototype.randomId = function () {
-    var questions = this.qSource.length;
+    var questions = this.qSource;
     return questions[Math.floor(Math.random() * questions.length)];
 };
 
@@ -1446,7 +1447,7 @@ addAdminCommand("savedb", function (src, commandData, channel) {
     triviabot.sendAll("Saving trivia database...", channel);
     triviaq.saveQuestions();
     triviabot.sendAll("Trivia database saved!", channel);
-    saveDBTime = parseInt(sys.time());
+    saveDBTime = parseInt(sys.time(), 10);
 }, "Forces a save of the trivia database. Do so after accepting questions.");
 
 addAdminCommand("lastsavedb", function(src, commandData, channel) {
