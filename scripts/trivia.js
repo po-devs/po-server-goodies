@@ -19,6 +19,8 @@ var triviabot = new Bot("Psyduck");
 
 var triviaCategories = ['Anime/Manga', 'Animals', 'Art', 'Comics', 'Economics', 'Food/Drink', 'Games', 'Geography', 'History', 'Internet', 'Language', 'Literature', 'Math', 'Misc', 'Movies', 'Music', 'Mythology', 'Philosophy', 'PO', 'Pokemon', 'Politics', 'Psychology', 'Religion', 'Science', 'Society', 'Space', 'Sports', 'Technology', 'TV', 'Video Games'];
 var saveDBTime = parseInt(sys.time());
+var lastCatGame = 0;
+var lastUsedCats = [];
 
 var neededFiles = ["triviaq.json", "trivreview.json"];
 for (var i in neededFiles) {
@@ -301,7 +303,9 @@ function TriviaGame() {
     this.round = 0;
     this.started = false;
     this.maxPoints = 0;
-    this.alreadyUsed = {};
+    this.qSource = [];
+    this.catGame = false;
+    this.usingCats = [];
     //this.alreadyUsedCat = {}; //uncomment when proper defined categories are added
     this.triviaPlayers = {};
     this.submittedAnswers = {};
@@ -326,14 +330,28 @@ TriviaGame.prototype.sendAll = function (message, channel) {
     triviabot.sendAll(message, channel === undefined ? triviachan : channel);
 };
 
-TriviaGame.prototype.startGame = function (points, name) {
+TriviaGame.prototype.startGame = function (data, name) {
     if (this.started === true) return;
     if (this.startoff === true) return;
     if (triviaq.questionAmount() < 1) return;
     var x = time() - this.lastStopped;
     if (x < 16) return;
     if (name === "" && this.autostart === false) return;
-    this.maxPoints = points;
+    data = data.split("*");
+    this.maxPoints = data[0];
+    if (data.length > 1) {
+        this.catGame = true;
+        this.usingCats = data.slice(1);
+    }
+    if (this.catGame) {
+        this.startCatGame(this.maxPoints, this.usingCats, name);
+    }
+    else {
+        this.startNormalGame(this.maxPoints, name);
+    }
+};
+
+TriviaGame.prototype.startNormalGame = function (points, name) {
     this.started = true;
     sendChanAll("", 0);
     sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
@@ -350,13 +368,52 @@ TriviaGame.prototype.startGame = function (points, name) {
         if (trivData.toFlash[player_ip] !== undefined)
             sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
     }
+    for (var q in triviaq.all) {
+        this.qSource.push(q);
+    }
     this.answeringQuestion = false;
     sys.delayedCall(function () {
         Trivia.startTriviaRound();
     }, 15);
 };
 
-TriviaGame.prototype.startTrivia = function (src, rand) {
+TriviaGame.prototype.startCatGame = function (points, cats, name) {
+    for (var q in triviaq.all) {
+        if (cats.indexOf(triviaq.get(q).category != -1) {
+            this.qSource.push(q);
+        }
+    }
+    if (this.qSource.length === 0) {
+        Trivia.sendPM(sys.id(name), "There are no questions that match your request, a Category game cannot be started.", triviachan);
+        return;
+    }
+    this.started = true;
+    var lastCat;
+    if(cats.length > 1) {
+        lastCat = cats.splice(-1, 1);
+    }
+    sendChanAll("", 0);
+    sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
+    this.sendAll("A Category game has started in #Trivia! Test your knowledge on " + (cats.length > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to x points wins!", 0);
+    sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
+    sendChanAll("", 0);
+    this.sendAll(name + " has started a Category Game! Test your knowledge on " +  (cats.length > 1 ? cats.join(", ") + " and " + lastCat : cats[0])  + ". First to x points wins!", triviachan);
+    sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> Type <b>/join</b> to join!", triviachan);
+    var players = sys.playersOfChannel(triviachan);
+    // Flash players who have it enabled
+    var player_id, player_ip;
+    for (var p in players) {
+        player_id = players[p], player_ip = sys.ip(player_id);
+        if (trivData.toFlash[player_ip] !== undefined)
+            sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
+    }
+    this.answeringQuestion = false;
+    sys.delayedCall(function () {
+        Trivia.startTriviaRound();
+    }, 15);
+};
+
+TriviaGame.prototype.startTrivia = function (src, data) {
     if (this.started === true) {
         this.sendPM(src, "A trivia game has already started!", triviachan);
         return;
@@ -374,13 +431,21 @@ TriviaGame.prototype.startTrivia = function (src, rand) {
         this.sendPM(src, "Sorry, a game was just stopped " + parseInt(x, 10) + " seconds ago.", triviachan);
         return;
     }
-    rand = parseInt(rand, 10);
+    data = data.split("*");
+    rand = parseInt(data[0], 10);
     if (rand > 102 || rand < 2) {
         this.sendPM(src, "Please do not start a game with more than 102 points, or lower than 2 points.", triviachan);
         return;
     }
-    rand = (isNaN(rand)) ? sys.rand(2, 102) : +rand;
-    this.startGame(rand, sys.name(src));
+    for (var i = 1; i < data.length; i++) {
+        if (data[i] === "") {
+            data.splice(i,1);
+            i--;
+        }
+    }
+    data[0] = (isNaN(rand)) ? sys.rand(2, 102) : +rand;
+    data = data.join(*);
+    this.startGame(data, sys.name(src));
 };
 
 TriviaGame.prototype.startTriviaRound = function () {
@@ -391,13 +456,7 @@ TriviaGame.prototype.startTriviaRound = function () {
     /* Advance round */
     this.round++;
     /* Make a random number to get the ID of the (going to be) asked question */
-    var questionNumber = triviaq.randomId();
-    if (this.alreadyUsed.hasOwnProperty(questionNumber)) {
-        sys.delayedCall(function () {
-            Trivia.startTriviaRound();
-        }, 1);
-        return;
-    }
+    var questionNumber = Trivia.randomId();
     /* Get the category, question, and answer */
     var q = triviaq.get(questionNumber);
     var category = q.category,
@@ -410,7 +469,8 @@ TriviaGame.prototype.startTriviaRound = function () {
     this.answeringQuestion = true;
     this.roundQuestion = questionNumber;
     this.htmlAll("<b>Category:</b> " + category.toUpperCase() + "<br>" + question);
-    this.alreadyUsed[questionNumber] = true;
+    var index = qSource.indexOf(questionNumber);
+    this.qSource.splice(index, 1);
     //this.alreadyUsedCat[category] = true
     /*sys.delayedCall(function() {
         if(Trivia.started !== false){
@@ -479,8 +539,8 @@ TriviaGame.prototype.finalizeAnswers = function () {
     var displayboard = [];
     var winners = [];
     /*var obj = {};
-    obj.winners = [];
-    obj.goal = this.maxPoints;*/
+obj.winners = [];
+obj.goal = this.maxPoints;*/
     for (id in this.triviaPlayers) {
         if (this.triviaPlayers[id].playing === true) {
             var regname = this.triviaPlayers[id].name;
@@ -510,6 +570,15 @@ TriviaGame.prototype.finalizeAnswers = function () {
         sendChanHtmlAll("<font size=5><font color='#318739'><timestamp/> <b>±Psyduck: </b><font color='red'>While you're waiting for another game, why not submit a question? <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>Help and Guidelines are here!</a></font></font></font>", triviachan);
         sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> Never want to miss a Trivia game? Try the <b>/flashme</b> command!", triviachan);
         //updateLeaderboard(obj);
+        if (this.catGame) {
+            lastCatGame = 1;
+            lastUsedCats = this.usingCats;
+        }
+        else {
+            if (lastCatGame != 0) {
+                lastCatGame++;
+            }
+        }
         this.resetTrivia();
         runUpdate();
         var toStart, pointsForGame;
@@ -523,8 +592,8 @@ TriviaGame.prototype.finalizeAnswers = function () {
         }
         return;
     }
-    if (Object.keys(this.alreadyUsed).length >= triviaq.questionAmount()) {
-        this.htmlAll("There are no more questions to show! Ask a TA to add more!<br/>The game automatically ended.");
+    if (qSource.length === 0) {
+        this.htmlAll("There are no more questions to show! This is the perfect chance to submit more!<br/>The game automatically ended.");
         this.resetTrivia();
         runUpdate();
         return;
@@ -540,7 +609,9 @@ TriviaGame.prototype.resetTrivia = function () {
     this.started = false;
     this.round = 0;
     this.maxPoints = 0;
-    this.alreadyUsed = {};
+    this.qSource = [];
+    this.catGame = false;
+    this.usingCats = [];
     this.triviaPlayers = {};
     this.submittedAnswers = {};
     this.roundQuestion = 0;
@@ -558,6 +629,11 @@ TriviaGame.prototype.key = function (src) {
         }
     }
     return returnval;
+};
+
+TriviaGame.prototype.randomId = function () {
+    var questions = this.qSource.length;
+    return questions[Math.floor(Math.random() * questions.length)];
 };
 
 TriviaGame.prototype.unjoin = function (src) {
@@ -749,11 +825,6 @@ QuestionHolder.prototype.questionAmount = function () {
 
 QuestionHolder.prototype.freeId = function () {
     return this.state.freeId++;
-};
-
-QuestionHolder.prototype.randomId = function () {
-    var keys = Object.keys(this.state.questions);
-    return keys[Math.floor(Math.random() * keys.length)];
 };
 
 QuestionHolder.prototype.changeCategory = function (id, category) {
@@ -1072,7 +1143,15 @@ addOwnerCommand("triviasuperadminoff", function (src, commandData, channel) {
 
 addAdminCommand("start", function (src, commandData, channel) {
     Trivia.startTrivia(src, commandData);
-}, "Allows you to start a trivia game, format /start [number] leave number blank for random");
+}, "Allows you to start a trivia game, format /start [number][*category1][*category2][...] leave number blank for random.");
+
+addUserCommand("lastcat", function (src, commandData, channel) {
+    if (lastCatGame === 0) {
+        Trivia.sendPM(src, "There hasn't been a Category Game since Trivia was last updated.", channel);
+        return;
+    }
+    Trivia.sendPM(src, "The last Category Game occurred " + lastCatGame + " games ago, with categories: " + lastUsedCats.join(", "), channel);
+}, "Allows you to check when the last Category Game occurred");
 
 addAdminCommand("stop", function (src, commandData, channel) {
     Trivia.endTrivia(src);
