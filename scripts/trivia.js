@@ -379,7 +379,7 @@ TriviaGame.prototype.startNormalGame = function (points, name) {
 
 TriviaGame.prototype.startCatGame = function (points, cats, name) {
     for (var q in triviaq.all()) {
-        if (cats.indexOf(triviaq.get(q).category) != -1) {
+        if (cats.join("*").toLowerCase().split("*").indexOf(triviaq.get(q).category.toLowerCase()) != -1) {
             this.qSource.push(q);
         }
     }
@@ -442,7 +442,7 @@ TriviaGame.prototype.startTrivia = function (src, data) {
     }
     for (var i = 1; i < data.length; i++) {
         for (var j = i + 1; j < data.length; j++){
-            if (data.[i] === data.[j]) {
+            if (data[i] === data[j]) {
                  data.splice(j, 1);
                  j--;
             }
@@ -451,12 +451,12 @@ TriviaGame.prototype.startTrivia = function (src, data) {
     for (var i = 1; i < data.length; i++) {
         var match = false;
         for (var q in triviaq.all()) {
-            if (data[i] === triviaq.get(q).category) {
+            if (data[i].toLowerCase() === triviaq.get(q).category.toLowerCase()) {
                 match = true;
             }
         }
         if (match === false) {
-            Trivia.sendPM(src, "Category " + data[i] + " was removed because it isn't an existing category.", triviachan);)
+            this.sendPM(src, "Category " + data[i] + " was removed because it isn't an existing category.", triviachan);
             data.splice(i, 1);
             i--;
         }
