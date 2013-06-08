@@ -383,10 +383,6 @@ TriviaGame.prototype.startCatGame = function (points, cats, name) {
             this.qSource.push(q);
         }
     }
-    if (this.qSource.length === 0) {
-        Trivia.sendPM(sys.id(name), "There are no questions that match your request, a Category game cannot be started.", triviachan);
-        return;
-    }
     this.started = true;
     var lastCat;
     var catsLength = cats.length;
@@ -440,7 +436,28 @@ TriviaGame.prototype.startTrivia = function (src, data) {
     }
     for (var i = 1; i < data.length; i++) {
         if (data[i] === "") {
-            data.splice(i,1);
+            data.splice(i, 1);
+            i--;
+        }
+    }
+    for (var i = 1; i < data.length; i++) {
+        for (var j = i + 1; j < data.length; j++){
+            if (data.[i] === data.[j]) {
+                 data.splice(j, 1);
+                 j--;
+            }
+        }
+    }
+    for (var i = 1; i < data.length; i++) {
+        var match = false;
+        for (var q in triviaq.all()) {
+            if (data[i] === triviaq.get(q).category) {
+                match = true;
+            }
+        }
+        if (match === false) {
+            Trivia.sendPM(src, "Category " + data[i] + " was removed because it isn't an existing category.", triviachan);)
+            data.splice(i, 1);
             i--;
         }
     }
@@ -458,6 +475,9 @@ TriviaGame.prototype.startTriviaRound = function () {
     this.round++;
     /* Make a random number to get the ID of the (going to be) asked question */
     var questionNumber = Trivia.randomId();
+    while (triviaq.get(questionNumber) === null) {
+       questionNumber = Trivia.randomId();
+    }
     /* Get the category, question, and answer */
     var q = triviaq.get(questionNumber);
     var category = q.category,
