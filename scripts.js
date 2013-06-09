@@ -1397,7 +1397,10 @@ var commands = {
         "/updatetierchecks: To update tier checks.",
         "/updatetiers[soft]: To update tiers. Soft saves to file only without reloading.",
         "/togglerainbow: [on/off]: To turn rainbow on or off.",
-        "/towner[s] [name]: makes someone a tournament owner (tours.js plugin needs to be installed for this to work)"
+        "/towner[s] [name]: makes someone a tournament owner (tours.js plugin needs to be installed for this to work)",
+        "/loadstats: loads the usage stats plugin.",
+        "/unloadstats: unloads the usage stats plugin.",
+        "/warnwebclients [message]: sends a big alert message to webclient users."
     ]
 };
 
@@ -4619,6 +4622,15 @@ ownerCommand: function(src, command, commandData, tar) {
             return;
         }
         normalbot.sendChanMessage(src, "Usage stats failed to unload");
+        return;
+    }
+    if (command == "warnwebclients") {
+        var data = utilities.html_escape(commandData);
+        sys.playerIds().forEach(function(id) {
+            if (sys.loggedIn(id) && sys.proxyIp(id) === "127.0.0.1") {
+                sys.sendHtmlMessage(id, "<font color=red size=7><b>" + data + "</b></font>");
+            }
+        });
         return;
     }
     return "no command";
