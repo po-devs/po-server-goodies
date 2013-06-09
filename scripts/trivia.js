@@ -1098,7 +1098,7 @@ addUserCommand("join", function (src, commandData, channel) {
     if (Trivia.playerPlaying(src)) {
         if (Trivia.triviaPlayers[src].name !== sys.name(src)) {
             Trivia.triviaPlayers[src].name = sys.name(src);
-            Trivia.sendPM(src, "You returned to the game");
+            Trivia.sendPM(src, "You returned to the game", channel);
         } else {
             Trivia.sendPM(src, "You've already joined the game!", channel);
         }
