@@ -521,6 +521,11 @@ TriviaGame.prototype.finalizeAnswers = function () {
     var ignoreCaseAnswers = answers.map(function (s) {
         return String(s).toLowerCase();
     });
+    for (id in this.triviaPlayers) {
+        if (this.triviaPlayers[id].name != sys.name(id) {
+            this.triviaPlayers[id].name = sys.name(id);
+        }
+    }
     for (id in this.submittedAnswers) {
         var name = this.submittedAnswers[id].name;
         if (sys.id(name) !== undefined && this.player(name) !== null) {
@@ -1096,12 +1101,7 @@ addUserCommand("join", function (src, commandData, channel) {
         return;
     }
     if (Trivia.playerPlaying(src)) {
-        if (Trivia.triviaPlayers[src].name !== sys.name(src)) {
-            Trivia.triviaPlayers[src].name = sys.name(src);
-            Trivia.sendPM(src, "You returned to the game", channel);
-        } else {
-            Trivia.sendPM(src, "You've already joined the game!", channel);
-        }
+        Trivia.sendPM(src, "You've already joined the game!", channel);
         return;
     }
     Trivia.addPlayer(src);
