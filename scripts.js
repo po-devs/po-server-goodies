@@ -242,6 +242,7 @@ function updateNotice() {
     var url = Config.base_url + "notice.html";
     sys.webCall(url, function (resp){
         sys.writeToFile(Config.dataDir + "notice.html", resp);
+        sendNotice();
     });
 }
 
@@ -4486,7 +4487,6 @@ ownerCommand: function(src, command, commandData, tar) {
     }
     if (command == "updatenotice") {
         updateNotice();
-        sendNotice();
         normalbot.sendMessage(src, "Notice updated!");
         return;
     }
