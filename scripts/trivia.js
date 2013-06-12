@@ -522,7 +522,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         return String(s).toLowerCase();
     });
     for (id in this.triviaPlayers) {
-        if (this.triviaPlayers[id].name != sys.name(id) {
+        if (this.triviaPlayers[id].name != sys.name(id)) {
             this.triviaPlayers[id].name = sys.name(id);
         }
     }
