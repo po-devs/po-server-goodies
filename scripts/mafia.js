@@ -362,7 +362,9 @@ function Mafia(mafiachan) {
             theme.generateRoleInfo();
             theme.generateSideInfo();
             theme.generatePriorityInfo();
-            theme.enabled = true;
+            if (theme.enabled === undefined) {
+                theme.enabled = true;
+            }
             return theme;
         } catch (err) {
             msgAll("Couldn't use theme " + plain_theme.name + ": " + err + ".");
@@ -452,7 +454,8 @@ function Mafia(mafiachan) {
                 }
             }
             sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
-            msg(src, "theme " + name + " enabled.");
+            mafiabot.sendAll(sys.name(src) + " enabled theme " + name + ".", sachannel);
+            mafiabot.sendAll(sys.name(src) + " enabled theme " + name + ".", mafiachan);
         }
     };
 
@@ -467,7 +470,8 @@ function Mafia(mafiachan) {
                 }
             }
             sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
-            msg(src, "theme " + name + " disabled.");
+            mafiabot.sendAll(sys.name(src) + " disabled theme " + name + ".", sachannel);
+            mafiabot.sendAll(sys.name(src) + " disabled theme " + name + ".", mafiachan);
         }
     };
 
