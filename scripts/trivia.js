@@ -620,7 +620,7 @@ obj.goal = this.maxPoints;*/
             pointsForGame = sys.rand(12, 45), toStart = sys.rand(30, 44);
             Trivia.sendAll("A new trivia game will be started in " + toStart + " seconds!", triviachan);
             sys.delayedCall(function () {
-                Trivia.startNormalGame(pointsForGame, "");
+                Trivia.startGame(pointsForGame.toString(), "");
             }, toStart);
             return;
         }
