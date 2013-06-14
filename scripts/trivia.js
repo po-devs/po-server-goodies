@@ -156,6 +156,7 @@ function showTrivia(src, channel, what) {
 
 function runUpdate() {
     if (Trivia.needsUpdating !== true) return;
+    triviaq.saveQuestions();
     var POglobal = SESSION.global();
     var index, source;
     for (var i = 0; i < POglobal.plugins.length; ++i) {
