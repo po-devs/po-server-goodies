@@ -22,14 +22,6 @@ var saveDBTime = parseInt(sys.time(), 10);
 var lastCatGame = 0;
 var lastUsedCats = [];
 
-var neededFiles = ["triviaq.json", "trivreview.json"];
-for (var i in neededFiles) {
-    var fileName = neededFiles[i];
-    if (sys.getFileContent(fileName) === "" || sys.getFileContent(fileName) === undefined) {
-        sys.writeToFile(fileName, "{}");
-    }
-}
-
 if (typeof (Trivia) != 'object' || Trivia.started === false) {
     Trivia = new TriviaGame();
 }
@@ -770,7 +762,7 @@ function QuestionHolder(f) {
     var state = new MemoryHash(this.file);
     this.state.questions = state;
     if (Object.keys(state.hash).length !== 0) {
-        this.state.freeId = parseInt(Object.keys(state.hash)[Object.keys(state.hash).length - 1]) + 1;
+        this.state.freeId = parseInt(Object.keys(state.hash)[Object.keys(state.hash).length - 1], 10) + 1;
     } else {
         this.state.freeId = 0;
     }
