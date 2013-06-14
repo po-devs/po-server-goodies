@@ -18,7 +18,6 @@ var triviachan, revchan;
 var triviabot = new Bot("Psyduck");
 
 var triviaCategories = ['Anime/Manga', 'Animals', 'Art', 'Comics', 'Food/Drink', 'Games', 'Geography', 'History', 'Internet', 'Language', 'Literature', 'Math', 'Misc', 'Movies', 'Music', 'Mythology', 'PO', 'Pokemon', 'Politics', 'Religion', 'Science', 'Social Science', 'Society', 'Space', 'Sports', 'Technology', 'TV', 'Video Games'];
-var saveDBTime = parseInt(sys.time(), 10);
 var lastCatGame = 0;
 var lastUsedCats = [];
 
@@ -883,10 +882,6 @@ QuestionHolder.prototype.changeAnswer = function (id, answer) {
     this.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + q.name);
 };
 
-QuestionHolder.prototype.saveQuestions = function () {
-    this.state.questions.save();
-};
-
 QuestionHolder.prototype.all = function (src) {
     return this.state.questions.hash;
 };
@@ -1486,17 +1481,6 @@ addAdminCommand("changec", function (src, commandData, channel) {
     triviabot.sendMessage(src, "No question");
 }, "Allows you to change the category to a question in review, format /changec newcategory");
 
-addAdminCommand("savedb", function (src, commandData, channel) {
-    triviabot.sendAll("Saving trivia database...", channel);
-    triviaq.saveQuestions();
-    triviabot.sendAll("Trivia database saved!", channel);
-    saveDBTime = parseInt(sys.time(), 10);
-}, "Forces a save of the trivia database. Do so after accepting questions.");
-
-addAdminCommand("lastsavedb", function (src, commandData, channel) {
-    Trivia.sendPM(src, "The database was last saved " + getTimeString(sys.time() - saveDBTime) + " ago.", channel);
-}, "View when the question database was last saved.");
-
 addAdminCommand("pushback", function (src, commandData, channel) {
     var tr = trivreview.all();
     if (trivreview.questionAmount() !== 0) {
@@ -1541,7 +1525,7 @@ addAdminCommand("accept", function (src, commandData, channel) {
                 qid = b;
             }
         }
-        triviabot.sendAll(sys.name(src) + " accepted question: id, " + qid + " category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, revchan);
+        triviabot.sendAll(sys.name(src) + " accepted question: id: " + qid + ", category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, revchan);
         trivreview.declineTime = time();
         trivreview.remove(id);
         trivreview.checkq(id + 1);
@@ -1595,7 +1579,7 @@ addAdminCommand("decline", function (src, commandData, channel) {
         }
         var id = Object.keys(tr)[0];
         var q = trivreview.get(id);
-        triviabot.sendAll(sys.name(src) + " declined question: id, " + id + " category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, revchan);
+        triviabot.sendAll(sys.name(src) + " declined question: id: " + id + ", category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, revchan);
         trivreview.declineTime = time();
         trivreview.remove(id);
         trivreview.checkq(id + 1);
@@ -1812,14 +1796,6 @@ addAdminCommand("autostart", function (src, commandData, channel) {
     Trivia.autostart = !Trivia.autostart;
     triviabot.sendAll("" + sys.name(src) + " turned auto start " + (Trivia.autostart === true ? "on" : "off") + ".", revchan);
 }, "Auto start games.");
-
-addOwnerCommand("megazord", function (src, commandData, channel) {
-    for (id in triviaq.all()) {
-        var q = triviaq.get(id);
-        sys.appendToFile("triviaq.txt", id + '*' + q.category + ":::" + q.question + ":::" + q.answer + '\n');
-    }
-    Trivia.sendAll("Successfully created triviaq.txt.", revchan);
-}, "ENGAGE NEW TRIVIA MODE!");
 
 // Normal command handling.
 exports.handleCommand = function trivia_handleCommand(src, command, channel) {
