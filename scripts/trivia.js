@@ -514,7 +514,7 @@ TriviaGame.prototype.startTriviaRound = function () {
 TriviaGame.prototype.finalizeAnswers = function () {
     if (this.started === false)
         return;
-    var answer, id, answers = [].concat(triviaq.get(this.roundQuestion).answer);
+    var answer, id, answers = [].concat(triviaq.get(this.roundQuestion).answer.split(","));
     this.answeringQuestion = false;
     var wrongAnswers = [],
         answeredCorrectly = [];
@@ -765,10 +765,8 @@ TriviaGame.prototype.addAnswer = function (src, answer) {
 function QuestionHolder(f) {
     this.file = f;
     this.state = {};
+    sys.appendToFile(this.file, ""); //clean file
     var fileContent = sys.getFileContent(this.file);
-    if (fileContent === undefined || fileContent === "") {
-        sys.appendToFile(this.file, "");
-    }
     var state = new MemoryHash(this.file);
     this.state.questions = state;
     if (Object.keys(state.hash).length !== 0) {
@@ -789,17 +787,8 @@ QuestionHolder.prototype.add = function (category, question, answer, name) {
     return id
 };
 
-QuestionHolder.prototype.unsafeAdd = function (category, question, answer, name) {
-    this.add(category, question, answer, name); //laziness
-};
-
 QuestionHolder.prototype.remove = function (id) {
-    delete this.state.questions[id];
-    this.saveQuestions();
-};
-
-QuestionHolder.prototype.unsafeRemove = function (id) {
-    delete this.state.questions[id];
+    this.state.questions.remove(id);
 };
 
 QuestionHolder.prototype.checkq = function (id) {
@@ -841,7 +830,7 @@ QuestionHolder.prototype.checkq = function (id) {
 QuestionHolder.prototype.get = function (id) {
     var q;
     var data = this.state.questions.get(id);
-    if (data !== null) {
+    if (data !== undefined) {
         data = data.split(":::");
         q = {};
         q.category = data[0];
@@ -855,7 +844,7 @@ QuestionHolder.prototype.get = function (id) {
 };
 
 QuestionHolder.prototype.questionAmount = function () {
-    return Object.keys(this.state.questions).length;
+    return Object.keys(this.state.questions.hash).length;
 };
 
 QuestionHolder.prototype.freeId = function () {
@@ -1229,7 +1218,7 @@ addOwnerCommand("updateafter", function (src, commandData, channel) {
     var pokenum = pokemon.map(sys.pokeNum);
     pokenum.forEach(function (num) {
         for (var x = 0; x < 6; x++) {
-            triviaq.unsafeAdd("Pokemon", "What is " + sys.pokemon(num) + "'s base " + baseStats[x] + " stat?", sys.pokeBaseStats(num)[x]);
+            triviaq.add("Pokemon", "What is " + sys.pokemon(num) + "'s base " + baseStats[x] + " stat?", sys.pokeBaseStats(num)[x]);
         }
     });
     triviabot.sendMessage(src, "Base stat questions added! Remember to /savedb");
@@ -1512,7 +1501,7 @@ addAdminCommand("pushback", function (src, commandData, channel) {
 
 addAdminCommand("accept", function (src, commandData, channel) {
     if (trivreview.editingMode === true) {
-        triviaq.unsafeAdd(trivreview.editingCategory, trivreview.editingQuestion, trivreview.editingAnswer);
+        triviaq.add(trivreview.editingCategory, trivreview.editingQuestion, trivreview.editingAnswer);
         trivreview.editingMode = false;
         triviabot.sendAll("The question in edit was saved", channel);
         trivreview.checkq(trivreview.currentId);
@@ -1526,7 +1515,7 @@ addAdminCommand("accept", function (src, commandData, channel) {
         }
         var id = Object.keys(tr)[0];
         var q = trivreview.get(id);
-        triviaq.unsafeAdd(q.category, q.question, q.answer);
+        triviaq.add(q.category, q.question, q.answer);
         var all = triviaq.all(),
             qid;
         for (var b in all) {
@@ -1564,7 +1553,7 @@ addAdminCommand("editq", function (src, commandData, channel) {
         trivreview.editingQuestion = q.question;
         trivreview.editingCategory = q.category;
         trivreview.editingAnswer = q.answer; //Moving it to front of queue seemed like a tedious job, so let's cheat it in, instead :3
-        triviaq.unsafeRemove(commandData);
+        triviaq.remove(commandData);
         var tr = trivreview.all();
         var id = Object.keys(tr)[0];
         trivreview.currentId = id;
