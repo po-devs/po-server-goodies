@@ -29,24 +29,25 @@ var Config = {
         notPlayingMsg: "±Game: The game is in progress. Please type /join to join the next mafia game."
     },
     League: [
-        ["Kneesocks", "Elite Four - View Kneesocks' <a href='http://pokemon-online.eu/forums/showthread.php?13531-Elite-4-Lorelei'>E4 Thread!</a>"],
-        ["The Real Elmo", "Elite Four - View The Real Elmo's <a href='http://pokemon-online.eu/forums/showthread.php?13539-Elite-4-Aaron'>E4 Thread!</a>"],
-        ["Amarillo Caballero", "Elite Four - View Amarillo Caballero's <a href='http://pokemon-online.eu/forums/showthread.php?13603-Elite-4-Yellow'>E4 Thread!</a>"],
-        ["M Dragon", "Elite Four - View M Dragon's <a href='http://pokemon-online.eu/forums/showthread.php?13561-Elite-4-M-Dragon'>E4 Thread!</a>"],
-        ["Problems", "5th Generation WiFi Ubers - View Problem's <a href='http://pokemon-online.eu/forums/showthread.php?16966-Wifi-Ubers-Gym-Problems'>Gym Thread!</a>"],
-        ["Finchinator", "5th Generation WiFi OverUsed - View Finchinator's <a href='http://pokemon-online.eu/forums/showthread.php?16967-Wifi-OU-Nikitas-and-Finchinator'>Gym Thread!</a>"],
-        ["Nikitas", "5th Generation WiFi OverUsed - View Nikitas's <a href='http://pokemon-online.eu/forums/showthread.php?16967-Wifi-OU-Nikitas-and-Finchinator'>Gym Thread!</a>"],
-        ["ThatIsWhatSheSaid", "5th Generation WiFi UnderUsed - View ThatIsWhatSheSaid's <a href='http://pokemon-online.eu/forums/showthread.php?16988-Wifi-UU-ThatIsWhatSheSaid'>Gym Thread!</a> "],
-        ["New Breed", "5th Generation WiFi LittleUsed Gym - View New Breed's <a href='http://pokemon-online.eu/forums/showthread.php?16980-Wifi-LU-New-Breed'>Gym Thread!</a>"],
-        ["Z+V", "5th Generation WiFi NeverUsed Gym - View Z+V's <a href='http://pokemon-online.eu/forums/showthread.php?16978-Wifi-NU-Gym-Z-V'>Gym Thread!</a>"],
-        ["fitzyhbbe", "5th Generation WiFi Little Cup - View fitzyhbbe's <a href='http://pokemon-online.eu/forums/showthread.php?16964-Wifi-LC-Fitzyhbbe'>Gym Thread!</a>"],
-        ["зeлeнoглaзый pyccкий", "All Gen CC - View зeлeнoглaзый pyccкий's <a href='http://pokemon-online.eu/forums/showthread.php?16977-All-Generation-Challenge-Cup-Gym-Nainil-amp-Winona'>Gym Thread!</a>"],
-        ["Nainil", "All Gen CC - View Nainil's <a href='http://pokemon-online.eu/forums/showthread.php?16977-All-Generation-Challenge-Cup-Gym-Nainil-amp-Winona'>Gym Thread!</a>"],
-        ["Michael", "Monotype - View Michael's <a href='http://pokemon-online.eu/forums/showthread.php?16970-Monotype-Gym-Michael'>Gym Thread!</a>"],
-        ["Bugs Kubrick", "4th Generation OverUsed - View Bugs Kubrick's <a href='http://pokemon-online.eu/forums/showthread.php?17490'>Gym Thread!</a>"],
-        ["Tanner", "3rd Generation OverUsed - View Tanner's <a href='http://pokemon-online.eu/forums/showthread.php?17023-ADV-OU-Gym-BIG-TIFF'>Gym Thread!</a>"],
-        ["Luck>Skill", "2nd Generation OverUsed - View Luck>Skill's <a href='http://pokemon-online.eu/forums/showthread.php?16973-GSC-OU-Luck-gt-Skill'>Gym Thread!</a>"],
-        ["Isa-", "1st Generation OverUsed - View Isa-'s <a href='http://pokemon-online.eu/forums/showthread.php?16963-RBY-OU-Gym-Isa'>Gym Thread!</a>"]
+        ["Luck>Skill", "Elite Four - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20483-Current-Gym-Leaders-and-Elite-Four'>E4 Thread!</a>"],
+        ["The Real Elmo", "Elite Four - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20483-Current-Gym-Leaders-and-Elite-Four'>E4 Thread!</a>"],
+        ["Thatiswhatshesaid", "Elite Four - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20483-Current-Gym-Leaders-and-Elite-Four'>E4 Thread!</a>"],
+        ["Fitzyhbbe", "Elite Four - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20483-Current-Gym-Leaders-and-Elite-Four'>E4 Thread!</a>"],
+        ["Problems", "5th Generation WiFi Ubers - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20491-Wifi-Ubers-Gym-Probs'>Gym Thread!</a>"],
+        ["Finchinator", "5th Generation WiFi OverUsed - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20494-Wifi-OU-Gym-Hannah-and-Finchinator'>Gym Thread!</a>"],
+        ["Hannah", "5th Generation WiFi OverUsed - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20494-Wifi-OU-Gym-Hannah-and-Finchinator'>Gym Thread!</a>"],
+        ["MeowMix", "5th Generation WiFi UnderUsed - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20502-Wifi-UU-Gym-MeowMix'>Gym Thread!</a> "],
+        ["xdevo", "5th Generation WiFi LittleUsed Gym - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20490-Wifi-LU-Gym-Xdevo'>Gym Thread!</a>"],
+        ["CasedVictory", "5th Generation WiFi NeverUsed Gym - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20499-Wifi-NU-Gym-CasedVictory'>Gym Thread!</a>"],
+        ["Artemisa", "5th Generation WiFi Little Cup - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20495-Wifi-LC-Arte'>Gym Thread!</a>"],
+        ["зeлeнoглaзый pyccкий", "All Gen CC - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?16977-All-Generation-Challenge-Cup-Gym-Nainil-amp-Winona'>Gym Thread!</a>"],
+        ["diamondslight", "All Gen CC - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20484-Challenge-Cup-Gym-Green-Eyed-Russian-amp-diamondslight'>Gym Thread!</a>"],
+        ["sulcata", "Monotype - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20485-sulcata-s-Monotype-gym'>Gym Thread!</a>"],
+        ["Pkftmfw", "4th Generation OverUsed - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20487-DPP-OU-Gym-Pkftmfw'>Gym Thread!</a>"],
+        ["Tanner", "3rd Generation OverUsed - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20489-ADV-OU-GYM-BIG-BAD-BLINGAS'>Gym Thread!</a>"],
+        ["Lavos Spawn", "2nd Generation OverUsed - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20511-GSC-OU-Gym-Lavos-Spawn'>Gym Thread!</a>"],
+        ["Isa-", "1st Generation OverUsed - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20534-RBY-OU-Gym-Isa'>Gym Thread!</a>"],
+        ["IronStorm", "VGC 2013 - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20528-VGC-2013-Gym-IronStorm'>Gym Thread!</a>"]
     ],
     DreamWorldTiers: ["No Preview OU", "No Preview Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
     superAdmins: ["[LD]Jirachier", "Ethan"],
@@ -2423,7 +2424,7 @@ userCommand: function(src, command, commandData, tar) {
         ar = Config.League;
         for (x = 0; x < ar.length; ++x) {
             if (ar[x].length > 0) {
-                sys.sendHtmlMessage(src, "<span style='font-weight: bold'>" + utilities.html_escape(ar[x][0]) + "</span> - " + ar[x][1] + " " + (sys.id(ar[x][0]) !== undefined ? "<span style='color: green'>(online)</span>" : "<span style='color: red'>(offline)</span>"), channel);
+                sys.sendHtmlMessage(src, "<span style='font-weight: bold'>" + utilities.html_escape(ar[x][0]) + "</span> - " + ar[x][1].format(utilities.html_escape(ar[x][0])) + " " + (sys.id(ar[x][0]) !== undefined ? "<span style='color: green'>(online)</span>" : "<span style='color: red'>(offline)</span>"), channel);
             }
         }
         sendChanMessage(src, "");
