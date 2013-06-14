@@ -245,7 +245,7 @@ function PMcheckq(src, channel) {
         return;
     }
     var q = trivreview.all();
-    var questionId = Object.keys(q)[0];
+    var questionId = Object.keys(q).sort()[0];
     var questionInfo = trivreview.get(questionId);
     if (questionId === undefined || questionInfo === undefined) {
         Trivia.sendPM(src, "Oops! There was an error.", channel);
@@ -799,7 +799,7 @@ QuestionHolder.prototype.checkq = function (id) {
         return;
     }
     var q = trivreview.all();
-    var questionId = Object.keys(q)[0];
+    var questionId = Object.keys(q).sort()[0];
     var questionInfo = trivreview.get(questionId);
     if (questionId === undefined || questionInfo === undefined) {
         triviabot.sendAll("Oops! There was an error.", revchan);
@@ -1433,7 +1433,7 @@ addAdminCommand("changea", function (src, commandData, channel) {
     }
     var tr = trivreview.all();
     if (trivreview.questionAmount() !== 0) {
-        var id = Object.keys(tr)[0];
+        var id = Object.keys(tr).sort()[0];
         var answer = commandData.split(",");
         trivreview.changeAnswer(id, answer);
         triviabot.sendAll("The answer for ID #" + id + " was changed to " + answer + " by " + sys.name(src), revchan);
@@ -1452,7 +1452,7 @@ addAdminCommand("changeq", function (src, commandData, channel) {
     }
     var tr = trivreview.all();
     if (trivreview.questionAmount() !== 0) {
-        var id = Object.keys(tr)[0];
+        var id = Object.keys(tr).sort()[0];
         var question = commandData;
         trivreview.changeQuestion(id, question);
         triviabot.sendAll("The question for ID #" + id + " was changed to " + question + " by " + sys.name(src), revchan);
@@ -1471,7 +1471,7 @@ addAdminCommand("changec", function (src, commandData, channel) {
     }
     var tr = trivreview.all();
     if (trivreview.questionAmount() !== 0) {
-        var id = Object.keys(tr)[0];
+        var id = Object.keys(tr).sort()[0];
         var category = commandData;
         trivreview.changeCategory(id, category);
         triviabot.sendAll("The category for ID #" + id + " was changed to " + category + " by " + sys.name(src), revchan);
