@@ -1803,6 +1803,14 @@ addAdminCommand("autostart", function (src, commandData, channel) {
     triviabot.sendAll("" + sys.name(src) + " turned auto start " + (Trivia.autostart === true ? "on" : "off") + ".", revchan);
 }, "Auto start games.");
 
+addOwnerCommand("megazord", function (src, commandData, channel) {
+    for (id in triviaq.all()) {
+        var q = triviaq.get(id);
+        sys.appendToFile("triviaq.txt", id + '*' + q.category + ":::" + q.question + ":::" + q.answer + '\n');
+    }
+    Trivia.sendAll("Successfully created triviaq.txt.", revchan);
+}, "ENGAGE NEW TRIVIA MODE!");
+
 // Normal command handling.
 exports.handleCommand = function trivia_handleCommand(src, command, channel) {
     var commandData;
