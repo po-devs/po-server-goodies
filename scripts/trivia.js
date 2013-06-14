@@ -784,7 +784,7 @@ QuestionHolder.prototype.add = function (category, question, answer, name) {
     else {
         this.state.questions.add(id, category + ":::" + question + ":::" + answer + ":::" + name);
     }
-    return id
+    return id;
 };
 
 QuestionHolder.prototype.remove = function (id) {
@@ -852,18 +852,43 @@ QuestionHolder.prototype.freeId = function () {
 };
 
 QuestionHolder.prototype.changeCategory = function (id, category) {
-    this.state.questions[id].category = category;
-    this.saveQuestions();
+    var data = this.state.questions.get(id).split(":::");
+    var q;
+    q = {};
+    q.category = category;
+    q.question = data[1];
+    q.answer = data[2];
+    if (data[3]) {
+        q.name = data[3];
+    }
+    this.state.questions.remove(id);
+    this.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + q.name);
 };
 
 QuestionHolder.prototype.changeQuestion = function (id, question) {
-    this.state.questions[id].question = question;
-    this.saveQuestions();
+    var data = this.state.questions.get(id).split(":::");
+    var q = {};
+    q.category = data[0];
+    q.question = question;
+    q.answer = data[2];
+    if (data[3]) {
+        q.name = data[3];
+    }
+    this.state.questions.remove(id);
+    this.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + q.name);
 };
 
 QuestionHolder.prototype.changeAnswer = function (id, answer) {
-    this.state.questions[id].answer = answer;
-    this.saveQuestions();
+    var data = this.state.questions.get(id).split(":::");
+    var q = {};
+    q.category = data[0];
+    q.question = data[1];
+    q.answer = answer;
+    if (data[3]) {
+        q.name = data[3];
+    }
+    this.state.questions.remove(id);
+    this.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + q.name);
 };
 
 QuestionHolder.prototype.saveQuestions = function () {
