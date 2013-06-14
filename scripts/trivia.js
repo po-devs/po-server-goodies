@@ -1514,7 +1514,7 @@ addAdminCommand("accept", function (src, commandData, channel) {
             triviabot.sendMessage(src, "Please wait before accepting a question", channel);
             return;
         }
-        var id = Object.keys(tr)[0];
+        var id = Object.keys(tr).sort()[0];
         var q = trivreview.get(id);
         triviaq.add(q.category, q.question, q.answer);
         var all = triviaq.all(),
@@ -1577,7 +1577,7 @@ addAdminCommand("decline", function (src, commandData, channel) {
             triviabot.sendMessage(src, "Please wait before declining a question", channel);
             return;
         }
-        var id = Object.keys(tr)[0];
+        var id = Object.keys(tr).sort()[0];
         var q = trivreview.get(id);
         triviabot.sendAll(sys.name(src) + " declined question: id: " + id + ", category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, revchan);
         trivreview.declineTime = time();
