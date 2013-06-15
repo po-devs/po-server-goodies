@@ -552,7 +552,8 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 totalPlayers++;
             }
         }
-        var pointAdd = Math.min(Math.ceil((totalPlayers / answeredCorrectly.length) - 0.5), 4);
+        var pointAdd = (1.65 * Math.log(totalPlayers / answeredCorrectly.length) + 1).toFixed(0);
+        +pointAdd;
         this.sendAll("Points awarded for this question: " + pointAdd);
         for (var i = 0; i < answeredCorrectly.length; i++) {
             var name = answeredCorrectly[i];
