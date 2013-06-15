@@ -1222,7 +1222,6 @@ addAdminCommand("suggest", function (src, commandData, channel) {
     suggestion.id = commandData;
     suggestion.suggester = src;
     suggestion.asked = false;
-    Trivia.sendPM(src, "Your suggestion will be asked next in this Trivia game", channel);
     Trivia.sendAll(sys.name(src) + " made a suggestion for the next question to be asked in Trivia.", revchan); 
 }, "Allows you to suggest a question to be asked next in Trivia. Format /suggest ID.");
 
