@@ -1216,7 +1216,7 @@ addAdminCommand("suggest", function (src, commandData, channel) {
         Trivia.sendPM(src, "Don't cheat, you cheater!", channel);
         return;
     }
-    if (Trivia.qsource.indexOf(commandData) === -1) {
+    if (Trivia.qSource.indexOf(commandData) === -1) {
         Trivia.sendPM(src, "The ID you specified is invalid for this Trivia game.", channel);
         return;
     }
