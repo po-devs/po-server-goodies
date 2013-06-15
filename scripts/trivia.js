@@ -20,6 +20,7 @@ var triviabot = new Bot("Psyduck");
 var triviaCategories = ['Anime/Manga', 'Animals', 'Art', 'Comics', 'Food/Drink', 'Games', 'Geography', 'History', 'Internet', 'Language', 'Literature', 'Math', 'Misc', 'Movies', 'Music', 'Mythology', 'PO', 'Pokemon', 'Politics', 'Religion', 'Science', 'Social Science', 'Society', 'Space', 'Sports', 'Technology', 'TV', 'Video Games'];
 var lastCatGame = 0;
 var lastUsedCats = [];
+var suggestion = {};
 
 if (typeof (Trivia) != 'object' || Trivia.started === false) {
     Trivia = new TriviaGame();
@@ -253,7 +254,6 @@ function PMcheckq(src, channel) {
     }
     sys.sendMessage(src, "", channel);
     Trivia.sendPM(src, "This question needs to be reviewed:", channel);
-    Trivia.sendPM(src, "ID: " + questionId, channel);
     Trivia.sendPM(src, "Category: " + questionInfo.category, channel);
     Trivia.sendPM(src, "Question: " + questionInfo.question, channel);
     Trivia.sendPM(src, "Answer: " + questionInfo.answer, channel);
@@ -464,18 +464,25 @@ TriviaGame.prototype.startTriviaRound = function () {
     this.submittedAnswers = {};
     /* Advance round */
     this.round++;
-    /* Make a random number to get the ID of the (going to be) asked question */
-    var questionNumber = Trivia.randomId();
-    var i = 0;
-    while (triviaq.get(questionNumber) === null && i !== 200) {
-        questionNumber = Trivia.randomId();
-        i++;
+    /* Make a random number to get the ID of the (going to be) asked question, or use the suggestion */
+    var questionNumber;
+    if (suggestion.id != undefined) {
+        questionNumber = suggestion.id;
+        suggestion.asked = true;
     }
-    if (i === 200) {
-        this.htmlAll("There are no more questions to show! This is the perfect chance to submit more!<br/>The game automatically ended.");
-        this.resetTrivia();
-        runUpdate();
-        return;
+    else {
+        questionNumber = Trivia.randomId();
+        var i = 0;
+        while (triviaq.get(questionNumber) === null && i !== 200) {
+            questionNumber = Trivia.randomId();
+            i++;
+        }
+        if (i === 200) {
+            this.htmlAll("There are no more questions to show! This is the perfect chance to submit more!<br/>The game automatically ended.");
+            this.resetTrivia();
+            runUpdate();
+            return;
+        }
     }
     /* Get the category, question, and answer */
     var q = triviaq.get(questionNumber);
@@ -483,9 +490,9 @@ TriviaGame.prototype.startTriviaRound = function () {
         question = q.question,
         answer = q.answer;
     /*if(this.alreadyUsedCat.hasOwnProperty(category)){
-        sys.delayedCall(function() { Trivia.startTriviaRound(); }, 1);
-        return;
-    }*/
+sys.delayedCall(function() { Trivia.startTriviaRound(); }, 1);
+return;
+}*/
     this.answeringQuestion = true;
     this.roundQuestion = questionNumber;
     this.htmlAll("<b>Category:</b> " + category.toUpperCase() + "<br>" + question);
@@ -493,10 +500,10 @@ TriviaGame.prototype.startTriviaRound = function () {
     this.qSource.splice(index, 1);
     //this.alreadyUsedCat[category] = true
     /*sys.delayedCall(function() {
-        if(Trivia.started !== false){
-            delete(Trivia.alreadyUsedCat[category])
-        }
-    },240)*/ //time is placeholder, maybe make it by round number instead?
+if(Trivia.started !== false){
+delete(Trivia.alreadyUsedCat[category])
+}
+},240)*/ //time is placeholder, maybe make it by round number instead?
     sys.delayedCall(function () {
         Trivia.finalizeAnswers();
     }, 10);
@@ -622,6 +629,9 @@ obj.goal = this.maxPoints;*/
         this.resetTrivia();
         runUpdate();
         return;
+    }
+    if (suggestion.asked === true) {
+        suggestion = {};
     }
     var rand = sys.rand(17, 30);
     this.sendAll("Please wait " + rand + " seconds until the next question!", triviachan);
@@ -1106,6 +1116,10 @@ addUserCommand("join", function (src, commandData, channel) {
         Trivia.sendPM(src, "You've already joined the game!", channel);
         return;
     }
+    if (suggestion.suggester === src) {
+        Trivia.sendPM(src, "You can't join the game right after suggesting a question, you cheater!", channel);
+        return;
+    }
     Trivia.addPlayer(src);
     switch (Trivia.triviaPlayers[src].points) {
     case 0:
@@ -1192,6 +1206,26 @@ addUserCommand("lastcat", function (src, commandData, channel) {
 addAdminCommand("stop", function (src, commandData, channel) {
     Trivia.endTrivia(src);
 }, "Allows you to stop a current trivia game");
+
+addAdminCommand("suggest", function (src, commandData, channel) {
+    if (Trivia.started === false) {
+        Trivia.sendPM(src, "A game hasn't started!", channel);
+        return;
+    }
+    if (Trivia.playerPlaying(src)) {
+        Trivia.sendPM(src, "Don't cheat, you cheater!", channel);
+        return;
+    }
+    if (Trivia.qsource.indexOf(commandData) === -1) {
+        Trivia.sendPM(src, "The ID you specified is invalid for this Trivia game.", channel);
+        return;
+    }
+    suggestion.id = commandData;
+    suggestion.suggester = src;
+    suggestion.asked = false;
+    Trivia.sendPM(src, "Your suggestion will be asked next in this Trivia game", channel);
+    Trivia.sendAll(sys.name(src) + " made a suggestion for the next question to be asked in Trivia.", revchan); 
+}, "Allows you to suggest a question to be asked next in Trivia. Format /suggest ID.");
 
 addAdminCommand("say", function (src, commandData, channel) {
     if (commandData === "")
