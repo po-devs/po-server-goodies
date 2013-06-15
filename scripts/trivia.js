@@ -817,7 +817,6 @@ QuestionHolder.prototype.checkq = function (id) {
     }
     sendChanAll("", revchan);
     triviabot.sendAll("This question needs to be reviewed:", revchan);
-    triviabot.sendAll("ID: " + questionId, revchan);
     triviabot.sendAll("Category: " + questionInfo.category, revchan);
     triviabot.sendAll("Question: " + questionInfo.question, revchan);
     triviabot.sendAll("Answer: " + questionInfo.answer, revchan);
