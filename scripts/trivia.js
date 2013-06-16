@@ -421,8 +421,8 @@ TriviaGame.prototype.startTrivia = function (src, data) {
     }
     data = data.split("*");
     rand = parseInt(data[0], 10);
-    if (rand > 102 || rand < 2) {
-        this.sendPM(src, "Please do not start a game with more than 102 points, or lower than 2 points.", triviachan);
+    if (rand > 102 || rand < 1) {
+        this.sendPM(src, "Please do not start a game with more than 102 points, or lower than 1 points.", triviachan);
         return;
     }
     for (var i = 1; i < data.length; i++) {
@@ -452,7 +452,7 @@ TriviaGame.prototype.startTrivia = function (src, data) {
             i--;
         }
     }
-    data[0] = (isNaN(rand)) ? sys.rand(2, 102) : +rand;
+    data[0] = (isNaN(rand)) ? sys.rand(9, 30) : +rand;
     data = data.join("*");
     this.startGame(data, sys.name(src));
 };
@@ -615,7 +615,7 @@ obj.goal = this.maxPoints;*/
         runUpdate();
         var toStart, pointsForGame;
         if (this.autostart === true) {
-            pointsForGame = sys.rand(12, 45), toStart = sys.rand(30, 44);
+            pointsForGame = sys.rand(9, 25), toStart = sys.rand(30, 44);
             Trivia.sendAll("A new trivia game will be started in " + toStart + " seconds!", triviachan);
             sys.delayedCall(function () {
                 Trivia.startGame(pointsForGame.toString(), "");
@@ -1046,8 +1046,8 @@ addAdminCommand("changegoal", function (src, commandData, channel) {
         Trivia.sendPM(src, "The goal must be a valid number.", channel);
         return;
     }
-    if (commandData < 2 || commandData > 102) {
-        Trivia.sendPM(src, "The goal must not be lower than 2 or higher than 102.", channel);
+    if (commandData < 1 || commandData > 102) {
+        Trivia.sendPM(src, "The goal must not be lower than 1 or higher than 102.", channel);
         return;
     }
     triviabot.sendAll(sys.name(src) + " changed the goal of the current game to " + commandData + ".", triviachan);
@@ -1611,7 +1611,7 @@ addAdminCommand("decline", function (src, commandData, channel) {
         }
         var id = Object.keys(tr).sort()[0];
         var q = trivreview.get(id);
-        triviabot.sendAll(sys.name(src) + " declined question: id: " + id + ", category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, revchan);
+        triviabot.sendAll(sys.name(src) + " declined question: category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, revchan);
         trivreview.declineTime = time();
         trivreview.remove(id);
         trivreview.checkq(id + 1);
