@@ -1459,7 +1459,7 @@ addAdminCommand("checkq", function (src, commandData, channel) {
 addAdminCommand("changea", function (src, commandData, channel) {
     if (trivreview.editingMode === true) {
         trivreview.editingAnswer = commandData.split(",");
-        triviabot.sendAll("The answer for the current question in edit was changed to " + trivreview.editingAnswer + " by " + sys.name(src), revchan);
+        triviabot.sendAll("The answer for the question in edit was changed to " + trivreview.editingAnswer + " by " + sys.name(src), revchan);
         trivreview.checkq();
         return;
     }
@@ -1468,7 +1468,7 @@ addAdminCommand("changea", function (src, commandData, channel) {
         var id = Object.keys(tr).sort()[0];
         var answer = commandData.split(",");
         trivreview.changeAnswer(id, answer);
-        triviabot.sendAll("The answer for ID #" + id + " was changed to " + answer + " by " + sys.name(src), revchan);
+        triviabot.sendAll("The answer for the current question was changed to " + answer + " by " + sys.name(src), revchan);
         trivreview.checkq(id);
         return;
     }
@@ -1478,7 +1478,7 @@ addAdminCommand("changea", function (src, commandData, channel) {
 addAdminCommand("changeq", function (src, commandData, channel) {
     if (trivreview.editingMode === true) {
         trivreview.editingQuestion = commandData;
-        triviabot.sendAll("The question for the current question in edit was changed to " + trivreview.editingQuestion + " by " + sys.name(src), revchan);
+        triviabot.sendAll("The question for the question in edit was changed to " + trivreview.editingQuestion + " by " + sys.name(src), revchan);
         trivreview.checkq();
         return;
     }
@@ -1487,7 +1487,7 @@ addAdminCommand("changeq", function (src, commandData, channel) {
         var id = Object.keys(tr).sort()[0];
         var question = commandData;
         trivreview.changeQuestion(id, question);
-        triviabot.sendAll("The question for ID #" + id + " was changed to " + question + " by " + sys.name(src), revchan);
+        triviabot.sendAll("The question for the current question was changed to " + question + " by " + sys.name(src), revchan);
         trivreview.checkq(id);
         return;
     }
@@ -1497,7 +1497,7 @@ addAdminCommand("changeq", function (src, commandData, channel) {
 addAdminCommand("changec", function (src, commandData, channel) {
     if (trivreview.editingMode === true) {
         trivreview.editingCategory = commandData;
-        triviabot.sendAll("The category for the current question in edit was changed to " + trivreview.editingCategory + " by " + sys.name(src), revchan);
+        triviabot.sendAll("The category for the question in edit was changed to " + trivreview.editingCategory + " by " + sys.name(src), revchan);
         trivreview.checkq();
         return;
     }
@@ -1506,7 +1506,7 @@ addAdminCommand("changec", function (src, commandData, channel) {
         var id = Object.keys(tr).sort()[0];
         var category = commandData;
         trivreview.changeCategory(id, category);
-        triviabot.sendAll("The category for ID #" + id + " was changed to " + category + " by " + sys.name(src), revchan);
+        triviabot.sendAll("The category for the current question was changed to " + category + " by " + sys.name(src), revchan);
         trivreview.checkq(id);
         return;
     }
