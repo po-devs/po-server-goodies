@@ -1342,6 +1342,59 @@ function tourChallengeIssued(src, dest, clauses, rated, mode, team, destTier) {
 function tourCommand(src, command, commandData) {
     try {
         if (isTourOwner(src)) {
+            if (command == "megazord") {
+                for (var x in tourwinners) {
+                     var value = [];
+                     for (var y in tourwinners[x]) {
+                         var z = tourwinners[x][y];
+                         value.push(y + ":::" + z.tier + ":::" + z.size + ":::" + z.points + ":::" + z.month);
+                     }
+                     value = value.join(";;;");
+                     sys.appendToFile(dataDir+"winners.txt", x +'*' + value + '\n');
+                }
+                sendBotAll("Successfully created winners.txt", tachan, false);
+                for (var x in eventwinners) {
+                    var value = [];
+                    for (var y) in eventwinners [x]) {
+                        var z = eventwinners[x][y];
+                        value.push(y + "::: + z.tier + ":::" + z.size + ":::" + z.points + ":::" + z.ranking);
+                    }
+                    value = value.join(";;;");
+                    sys.appendToFile(dataDir+"eventwinners.txt", x +'*' + value + '\n');
+                }
+                sendBotAll("Successfully created eventwinners.txt", tachan, false);
+                for (var x in leaderboard) {
+                    var value = [];
+                    for (var y in leaderboard[x]) {
+                        for (var z in leaderboard[x][y]) {
+                            var w = leaderboard[x][y][z];
+                            value.push(y + ":::" + z + ":::" + w);
+                        }
+                    }
+                    value = value.join(";;;");
+                    sys.appendToFile(dataDir+"leaderboard.txt", x +'*' + value + '\n');
+                }
+                sendBotAll("Successfully created leaderboard.txt", tachan, false);
+                for (var x in eventleaderboard) {
+                    value = [];
+                    for (var y in eventleaderboard[x]) {
+                        value.push(y + ":::" + eventleaderboard[x][y]);
+                    }
+                    value = value.join(";;;");
+                    sys.appendToFile(dataDir+"eventdata.txt", x +'*' + value + '\n');
+                }
+                sendBotAll("Successfully created eventdata.txt", tachan, false);
+                for (var x in tourseeds) {
+                    value = [];
+                    for (var y in tourseeds[x]) {
+                        var z = tourseeds[x][y];
+                        value.push(y + ":::" + z.points + ":::" + z.lastwin);
+                    }
+                    value = value.join(";;;");
+                    sys.appendToFile(dataDir+"tourseeds.txt", x +'*' + value + '\n');
+                }
+                sendBotAll("Successfully created tourseeds.txt", tachan, false);
+            }
             if (command == "clearrankings") {
                 var month = false;
                 var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
