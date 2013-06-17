@@ -1343,7 +1343,7 @@ function tourCommand(src, command, commandData) {
     try {
         if (isTourOwner(src)) {
             if (command == "megazord") {
-                tstats.converttours;
+                tstats.converttours();
                 return true;
             }
             if (command == "clearrankings") {
