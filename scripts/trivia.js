@@ -335,7 +335,11 @@ TriviaGame.prototype.startGame = function (data, name) {
         this.usingCats = data.slice(1);
     }
     if (this.catGame) {
-        this.startCatGame(this.maxPoints, this.usingCats, name);
+        var cats = [];
+        for (var x in this.usingCats) {
+           cats.push(this.usingCats[]);
+        }
+        this.startCatGame(this.maxPoints, cats, name);
     }
     else {
         this.startNormalGame(this.maxPoints, name);
