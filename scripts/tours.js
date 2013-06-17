@@ -1457,7 +1457,7 @@ function tourCommand(src, command, commandData) {
                     return true;
                 }
                 tourwarnings.ranges.splice(windex, 1);
-                sys.writeToFile('tourwarns.json', JSON.stringify(tourwarnings));
+                sys.writeToFile(dataDir + 'tourwarns.json', JSON.stringify(tourwarnings));
                 sendBotMessage(src,"Removed range warning for the range: "+commandData,tourschan,false);
                 return true;
             }
