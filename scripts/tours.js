@@ -1342,6 +1342,10 @@ function tourChallengeIssued(src, dest, clauses, rated, mode, team, destTier) {
 function tourCommand(src, command, commandData) {
     try {
         if (isTourOwner(src)) {
+            if (command == "megazord") {
+                tstats.converttours;
+                return true;
+            }
             if (command == "clearrankings") {
                 var month = false;
                 var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
