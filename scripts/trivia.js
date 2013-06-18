@@ -516,6 +516,9 @@ delete(Trivia.alreadyUsedCat[category])
 TriviaGame.prototype.finalizeAnswers = function () {
     if (this.started === false)
         return;
+    if (suggestion.asked === true) {
+        suggestion = {};
+    }
     var answer, id, answers = [].concat(triviaq.get(this.roundQuestion).answer.split(","));
     this.answeringQuestion = false;
     var wrongAnswers = [],
@@ -633,9 +636,6 @@ obj.goal = this.maxPoints;*/
         this.resetTrivia();
         runUpdate();
         return;
-    }
-    if (suggestion.asked === true) {
-        suggestion = {};
     }
     var rand = sys.rand(17, 30);
     this.sendAll("Please wait " + rand + " seconds until the next question!", triviachan);
