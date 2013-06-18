@@ -29,7 +29,7 @@ var Config = {
         notPlayingMsg: "±Game: The game is in progress. Please type /join to join the next mafia game."
     },
     League: [
-        ["Luck>Skill", "Elite Four - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20483-Current-Gym-Leaders-and-Elite-Four'>E4 Thread!</a>"],
+        ["Hikari", "Elite Four - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20483-Current-Gym-Leaders-and-Elite-Four'>E4 Thread!</a>"],
         ["The Real Elmo", "Elite Four - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20483-Current-Gym-Leaders-and-Elite-Four'>E4 Thread!</a>"],
         ["Thatiswhatshesaid", "Elite Four - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20483-Current-Gym-Leaders-and-Elite-Four'>E4 Thread!</a>"],
         ["Fitzyhbbe", "Elite Four - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20483-Current-Gym-Leaders-and-Elite-Four'>E4 Thread!</a>"],
