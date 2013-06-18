@@ -337,7 +337,7 @@ TriviaGame.prototype.startGame = function (data, name) {
     if (this.catGame) {
         var cats = [];
         for (var x in this.usingCats) {
-           cats.push(this.usingCats[]);
+           cats.push(this.usingCats[x]);
         }
         this.startCatGame(this.maxPoints, cats, name);
     }
