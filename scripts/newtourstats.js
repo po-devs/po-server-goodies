@@ -7,75 +7,189 @@ var dataDir = "tourdata/";
 var utilities = require('utilities.js');
 var find_tier = utilities.find_tier;
 
-var tourwinners, leaderboard, eventleaderboard, tourschan, tourserrchan, tourseeds, eventwinners;
+var tourwinners, leaderboard, eventleaderboard, tourschan, tourserrchan, tourseeds, eventwinners, winnersMH, eventwinnersMH, leaderboardMH, eventdataMH, tourseedsMH;
 
 
 function statInit() {
     tourschan = sys.channelId("Tournaments");
     tourserrchan = sys.channelId("Developer's Den");
     try {
-        tourwinners = JSON.parse(sys.getFileContent(dataDir+"winners.json"));
+        winnersMH = new MemoryHash(dataDir+"winners.txt");
     }
     catch (err) {
         tourwinners = {};
         sendChanAll('No tour winners detected.', tourschan);
     }
     try {
-        eventwinners = JSON.parse(sys.getFileContent(dataDir+"eventwinners.json"));
+        eventwinnersMH = new MemoryHash(dataDir+"eventwinners.txt");
     }
     catch (err) {
         eventwinners = {};
         sendChanAll('No event winners detected.', tourschan);
     }
     try {
-        leaderboard = JSON.parse(sys.getFileContent(dataDir+"leaderboard.json"));
+        leaderboardMH = new MemoryHash(dataDir+"leaderboard.txt");
     }
     catch (err) {
         leaderboard = {'general': {}};
         sendChanAll('No leaderboard detected.', tourschan);
     }
     try {
-        eventleaderboard = JSON.parse(sys.getFileContent(dataDir+'eventdata.json'));
+        eventdataMH = new MemoryHash(dataDir+"eventdata.txt");
     }
     catch (err) {
         eventleaderboard = {};
         sendChanAll('No event leaderboard detected.', tourschan);
     }
     try {
-        tourseeds = JSON.parse(sys.getFileContent(dataDir+'tourseeds.json'));
+        tourseedsMH = new memoryHash(dataDir+"tourseeds.txt");
     }
     catch (err) {
         tourseeds = {};
         sendChanAll('No tour seeds detected.', tourschan);
     }
+    for (var player in winnersMH.hash) {
+    var dates = winnersMH.hash[player].split(";;;");
+        for (var x in dates) {
+            var playerData = dates[x].split(":::");
+            tourwinners[player][playerData[0]] = {
+                'tier': playerData[1],
+                'size': playerData[2],
+                'points': playerData[3],
+                'month': playerData[4]
+            };
+        }    
+    }
+    for (var player in eventwinnersMH) {
+    var dates = eventwinnersMH[player].split(";;;");
+        for (var x in dates) {
+            var playerData = dates[x].split(":::");
+            eventwinners[player][playerData[0]] = {
+                'tier': playerData[1],
+                'size': playerData[2],
+                'points': playerData[3],
+                'ranking':playerData[4]
+            };
+        }
+    }
+    for (var tier in leaderboardMH) {
+        var players = leaderboardMH[tier].split(";;;");
+        for (var x in players) {
+            var leaderData = players[x].split(":::");
+            leaderboard[tier][leaderData[0]][leaderData[1]] = leaderData[2];
+        }
+    }
+    for (var player in eventdataMH) {
+    var dates = eventdataMH[player].split(";;;");
+        for (var x in dates) {
+            var playerData = dates[x].split(":::");
+            eventleaderboard[player][playerData[0] = playerData[1];
+        }
+    }
+    for (var tier in tourseedsMH) {
+    var players = tourseedsMH[tier].split(";;;");
+        for (var x in players) {
+            var playerData = players[x].split(":::");
+            tourseeds[tier][playerData[0]] = {
+                'points': playerData[1],
+                'lastwin': playerData[2]
+            };
+        }
+    }
     sendChanAll('Tournament stats are ready.', tourschan);
+}
+
+function saveWinners() {
+    winnersMH.clear();
+    for (var x in tourwinners) {
+        var value = [];
+        for (var y in tourwinners[x]) {
+            var z = tourwinners[x][y];
+            value.push(y + ":::" + z.tier + ":::" + z.size + ":::" + z.points + ":::" + z.month);
+        }
+        value = value.join(";;;");
+        tourwinnersMH.add(x, value);
+    }
+}
+
+function saveEventWinners() {
+    eventwinnersMH.clear();
+    for (var x in eventwinners) {
+        var value = [];
+        for (var y) in eventwinners [x]) {
+            var z = eventwinners[x][y];
+            value.push(y + "::: + z.tier + ":::" + z.size + ":::" + z.points + ":::" + z.ranking);
+            }
+    value = value.join(";;;");
+    eventwinnersMH.add(x, value);
+    }
+}
+
+function saveLeaderboard () {
+    leaderboardMH.clear();
+    for (var x in leaderboard) {
+        var value = [];
+        for (var y in leaderboard[x]) {
+            for (var z in leaderboard[x][y]) {
+                var w = leaderboard[x][y][z];
+                value.push(y + ":::" + z + ":::" + w);
+            }
+        }
+        value = value.join(";;;");
+        leaderboardMH.add(x, value);
+    }
+}
+
+function saveEventData() {
+    eventdataMH.clear();
+    for (var x in eventleaderboard) {
+        value = [];
+        for (var y in eventleaderboard[x]) {
+            value.push(y + ":::" + eventleaderboard[x][y]);
+        }
+        value = value.join(";;;");
+        eventdataMH.add(x, value);
+    }
+}
+
+function saveTourSeeds() {
+    tourseedsMH.clear();
+    for (var x in tourseeds) {
+        value = [];
+        for (var y in tourseeds[x]) {
+            var z = tourseeds[x][y];
+            value.push(y + ":::" + z.points + ":::" + z.lastwin);
+        }
+        value = value.join(";;;");
+        tourseeds.add(x, value);
+    }
 }
 
 function saveStats(elements) {
     if (elements == "all") {
-        sys.writeToFile(dataDir+"winners.json", JSON.stringify(tourwinners));
-        sys.writeToFile(dataDir+"leaderboard.json", JSON.stringify(leaderboard));
-        sys.writeToFile(dataDir+"eventdata.json", JSON.stringify(eventleaderboard));
-        sys.writeToFile(dataDir+"tourseeds.json", JSON.stringify(tourseeds));
-        sys.writeToFile(dataDir+"eventwinners.json", JSON.stringify(eventwinners));
+        saveWinners();
+        saveLeaderboard();
+        saveEventData();
+        saveTourSeeds();
+        saveEventWinners();
     }
     else {
         for (var e in elements) {
             var sfile = elements[e];
             if (sfile == 'winners') {
-                sys.writeToFile(dataDir+"winners.json", JSON.stringify(tourwinners));
+                saveWinners();
             }
             else if (sfile == 'leaderboard') {
-                sys.writeToFile(dataDir+"leaderboard.json", JSON.stringify(leaderboard));
+                saveLeaderboard();
             }
             else if (sfile == 'eventleaderboard') {
-                sys.writeToFile(dataDir+"eventdata.json", JSON.stringify(eventleaderboard));
+                saveEventData();
             }
             else if (sfile == 'seeds') {
-                sys.writeToFile(dataDir+"tourseeds.json", JSON.stringify(tourseeds));
+                saveTourSeeds();
             }
             else if (sfile == 'eventwinners') {
-                sys.writeToFile(dataDir+"eventwinners.json", JSON.stringify(eventwinners));
+                saveEventWinners();
             }
         }
     }
