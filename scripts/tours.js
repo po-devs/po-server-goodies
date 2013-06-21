@@ -2992,8 +2992,8 @@ function tourCommand(src, command, commandData) {
             return true;
         }
         if (command == "touradmins" || command == "megausers") {
-            sys.sendMessage(src, "",tourschan);
-            sys.sendMessage(src, "*** TOURNAMENT STAFF ***",tourschan);
+            sys.sendMessage(src, "",channel);
+            sys.sendMessage(src, "*** TOURNAMENT STAFF ***",channel);
             var tal = tours.touradmins;
             var tos = [];
             var tas = [];
@@ -3017,44 +3017,44 @@ function tourCommand(src, command, commandData) {
             tas.sort();
             mus.sort();
             hidden.sort();
-            sys.sendMessage(src, "",tourschan);
-            sys.sendMessage(src, "*** TOURNAMENT OWNERS ***",tourschan);
+            sys.sendMessage(src, "",channel);
+            sys.sendMessage(src, "*** TOURNAMENT OWNERS ***",channel);
             for (var o in tos) {
-                if (sys.isInChannel(sys.id(tos[o]), tourschan)) {
-                    sys.sendMessage(src, toCorrectCase(tos[o]) + " (Online):",tourschan);
+                if (sys.isInChannel(sys.id(tos[o]), channel)) {
+                    sys.sendMessage(src, toCorrectCase(tos[o]) + " (Online):",channel);
                 }
                 else {
-                    sys.sendMessage(src, tos[o],tourschan);
+                    sys.sendMessage(src, tos[o],channel);
                 }
             }
             if (isTourOwner(src)) {
-                sys.sendMessage(src, "",tourschan);
-                sys.sendMessage(src, "*** HIDDEN STAFF ***",tourschan);
+                sys.sendMessage(src, "",channel);
+                sys.sendMessage(src, "*** HIDDEN STAFF ***",channel);
                 for (var h in hidden) {
-                    sys.sendMessage(src, hidden[h],tourschan);
+                    sys.sendMessage(src, hidden[h],channel);
                 }
             }
-            sys.sendMessage(src, "",tourschan);
-            sys.sendMessage(src, "*** TOURNAMENT ADMINS ***",tourschan);
+            sys.sendMessage(src, "",channel);
+            sys.sendMessage(src, "*** TOURNAMENT ADMINS ***",channel);
             for (var a in tas) {
-                if (sys.isInChannel(sys.id(tas[a]), tourschan)) {
-                    sys.sendMessage(src, toCorrectCase(tas[a]) + " (Online):",tourschan);
+                if (sys.isInChannel(sys.id(tas[a]), channel)) {
+                    sys.sendMessage(src, toCorrectCase(tas[a]) + " (Online):",channel);
                 }
                 else {
-                    sys.sendMessage(src, tas[a],tourschan);
+                    sys.sendMessage(src, tas[a],channel);
                 }
             }
-            sys.sendMessage(src, "",tourschan);
-            sys.sendMessage(src, "*** MEGAUSERS ***",tourschan);
+            sys.sendMessage(src, "",channel);
+            sys.sendMessage(src, "*** MEGAUSERS ***",channel);
             for (var m in mus) {
-                if (sys.isInChannel(sys.id(mus[m]), tourschan)) {
-                    sys.sendMessage(src, toCorrectCase(mus[m]) + " (Online):",tourschan);
+                if (sys.isInChannel(sys.id(mus[m]), channel)) {
+                    sys.sendMessage(src, toCorrectCase(mus[m]) + " (Online):",channel);
                 }
                 else {
-                    sys.sendMessage(src, mus[m],tourschan);
+                    sys.sendMessage(src, mus[m],channel);
                 }
             }
-            sys.sendMessage(src, "",tourschan);
+            sys.sendMessage(src, "",channel);
             return true;
         }
         if (command == "tourinfo") {
