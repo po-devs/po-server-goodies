@@ -77,7 +77,6 @@ var tourmodcommands = ["*** Parameter Information ***",
                     "tourmute [player]:[reason]:[time]: tourmutes a problematic player.",
                     "tourunmute [player]: untourmutes a player.",
                     "tourmutes: list tour mutes.",
-                    "changecount [number]: changed the number of players for an event tournament",
                     "endtour [tour]: ends the tour of that tier",
                     "sub [newname]:[oldname]: subs newname for oldname",
                     "dq [player]: disqualifies a player",
@@ -95,7 +94,6 @@ var touradmincommands = ["tourstart [tier]:[parameters]: starts a tier of that t
                     "forcestart: ends signups immediately and starts the first round",
                     "push [player]: pushes a player into a tournament in signups (DON'T USE UNLESS ASKED)",
                     "tahistory [days]: views the activity of tour admins (days is optional, if excluded it will get the last 7 days if possible)",
-                    "updatewinmessages: updates win messages from the web",
                     "stopautostart: if there are no tournaments running, this will stop new ones from being automatically started by the server until another one is started manually."];
 var tourownercommands = ["tsadmin[s] [name]: makes someone a tournament admin - s makes it only show in staff chan",
                     "clearrankings [all/month]: clears the tour rankings, 'all' clears all history, [month] will only clear a particular month (eg /clearrankings January)",
@@ -1383,11 +1381,6 @@ function tourCommand(src, command, commandData) {
                 }
                 return true;
             }
-            if (command == "importold") {
-                sendBotMessage(src,"This command is obsolete!",tourschan,false);
-                // tstats.importold();
-                return true;
-            }
             if (command == "rundecay") {
                 var tierlist = sys.getTierList();
                 for (var x in tierlist) {
@@ -1473,16 +1466,8 @@ function tourCommand(src, command, commandData) {
                 }
                 return true;
             }
-            if (command == "changepoints") {
-                sendBotMessage(src,"This command is obsolete!",tourschan,false);
-                return true;
-            }
             if (command == "evalvars") {
                 dumpVars(src);
-                return true;
-            }
-            if (command == "exportrankings") {
-                sendBotMessage(src,"This command is obsolete!",tourschan,false);
                 return true;
             }
             if (command == "loadevents") {
@@ -1714,24 +1699,6 @@ function tourCommand(src, command, commandData) {
                 }
                 return true;
             }
-            // enabled for now!
-            if (command == "updatewinmessages") {
-                var url = "https://raw.github.com/lamperi/po-server-goodies/master/tourwinverbs.txt";
-                if ((commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) && sys.auth(src) > 2) {
-                    url = commandData;
-                }
-                sendBotMessage(src, "Fetching win messages from "+url, tourschan, false);
-                sys.webCall(url, function(resp) {
-                    if (resp !== "") {
-                        sys.writeToFile(configDir+'tourwinverbs.txt', resp);
-                        getTourWinMessages();
-                        sendBotAll('Updated win messages!', tourschan, false);
-                    } else {
-                        sendBotMessage(src, 'Failed to update!', tourschan, false);
-                    }
-                });
-                return true;
-            }
         }
         if (isTourAdmin(src)) {
             if (command == "tour" || ((command == "tourstart" || command == "shift") && isTourSuperAdmin(src))) {
@@ -1912,37 +1879,6 @@ function tourCommand(src, command, commandData) {
                     sendBotMessage(src, "There are no tournaments to force start! Use /tour [tier] instead!", tourschan, false);
                     return true;
                 }
-            }
-            if (command == "changecount") {
-                var key = null;
-                for (var x in tours.tour) {
-                    if (tours.tour[x].state == "signups") {
-                        key = x;
-                    }
-                }
-                if (key === null) {
-                    sendBotMessage(src,"No tournament is in signups!",tourschan,false);
-                    return true;
-                }
-                if (tours.tour[key].maxplayers === "default") {
-                    sendBotMessage(src,"Can't change the count of a timed tour!",tourschan,false);
-                    return true;
-                }
-                var players = parseInt(commandData, 10);
-                var allowedcounts = [8,16,32,64,128,256,512,1024];
-                if (allowedcounts.indexOf(players) == -1) {
-                    sendBotMessage(src, "Invalid number of players!", tourschan, false);
-                    return true;
-                }
-                else if (players < tours.tour[key].cpt) {
-                    sendBotMessage(src, "There are more players in the tournament then you specified!", tourschan, false);
-                    return true;
-                }
-                else {
-                    tours.tour[key].maxplayers = players;
-                    sendBotAll(sys.name(src)+" changed the number of places in the "+tours.tour[key].tourtype+" tournament to "+players+"! There are now "+(tours.tour[key].maxplayers - tours.tour[key].cpt)+" place"+(tours.tour[key].maxplayers - tours.tour[key].cpt == 1 ? "" : "s")+" remaining!", tourschan,false);
-                }
-                return true;
             }
             if (command == "remove") {
                 var index = -1;
