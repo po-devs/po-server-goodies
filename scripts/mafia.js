@@ -3935,7 +3935,7 @@ return;
                     var revenge = false;
                     if (target.role.actions.hasOwnProperty("daykill")) {
                         if (target.role.actions.daykill == "evade") {
-                            sys.sendMessage(src, "±Game: That person is gone, you can't kill them!", mafiachan);
+                            sys.sendMessage(src, "±Game: That person cannot be killed right now!", mafiachan);
                             return;
                         } else if (target.role.actions.daykill == "revenge" || target.role.actions.daykill == "bomb") {
                             revenge = true;
