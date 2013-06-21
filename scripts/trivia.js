@@ -4,10 +4,10 @@
         - Script done with the help of Ethan, Lamperi, Crystal Moogle, and Wriggle Nightbug
     * Files used:
         - trivData.json
-        - triviaq.json
-        - trivreview.json
+        - triviaq.txt
+        - trivreview.txt
         - tadmins.txt
-        - backupQuestions.json, backupReview.json
+        - tsadmins.txt
 */
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global updateModule, script, sys, saveKey, SESSION, sendChanAll, sendChanHtmlAll, require, Config, module*/
