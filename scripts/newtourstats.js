@@ -112,7 +112,7 @@ function statInit() {
             for (var x in players) {
                 var playerData = players[x].split(":::");
                 tourseeds[key][playerData[0]] = {
-                    'points': playerData[1],
+                    'points': parseInt(playerData[1]),
                     'lastwin': parseInt(playerData[2])
                 };
             }
