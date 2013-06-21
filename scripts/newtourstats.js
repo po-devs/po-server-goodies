@@ -27,7 +27,7 @@ function statInit() {
                 tourwinners[key][playerData[0]] = {
                     'tier': playerData[1],
                     'size': playerData[2],
-                    'points': playerData[3],
+                    'points': parseInt(playerData[3]),
                     'month': playerData[4]
                 };
             }
@@ -51,7 +51,7 @@ function statInit() {
                 eventwinners[key][playerData[0]] = {
                     'tier': playerData[1],
                     'size': playerData[2],
-                    'points': playerData[3],
+                    'points': parseInt(playerData[3]),
                     'ranking':playerData[4]
                 };
             }
@@ -73,7 +73,7 @@ function statInit() {
             for (var x in dates) {
                 var leaderData = dates[x].split(":::");
                 leaderboard[key][leaderData[0]] = {};
-                leaderboard[key][leaderData[0]][leaderData[1]] = leaderData[2];
+                leaderboard[key][leaderData[0]][leaderData[1]] = parseInt(leaderData[2]);
             }
         }
     }
@@ -92,7 +92,7 @@ function statInit() {
             var dates = value.split(";;;");
             for (var x in dates) {
                 var playerData = dates[x].split(":::");
-                eventleaderboard[key][playerData[0]] = playerData[1];
+                eventleaderboard[key][playerData[0]] = parseInt(playerData[1]);
             }
         }
     }
@@ -108,12 +108,12 @@ function statInit() {
             var key = line.splice(0, 1);
             var value = line.join("*");
             tourseeds[key] = {};
-            var dates = value.split(";;;");
+            var players = value.split(";;;");
             for (var x in players) {
                 var playerData = players[x].split(":::");
                 tourseeds[key][playerData[0]] = {
                     'points': playerData[1],
-                    'lastwin': playerData[2]
+                    'lastwin': parseInt(playerData[2])
                 };
             }
         }
@@ -142,9 +142,9 @@ function saveEventWinners() {
     sys.writeToFile(dataDir+"eventwinners.txt", "");
     for (var x in eventwinners) {
         var value = [];
-        for (var y) in eventwinners [x]) {
+        for (var y in eventwinners [x]) {
             var z = eventwinners[x][y];
-            value.push(y + "::: + z.tier + ":::" + z.size + ":::" + z.points + ":::" + z.ranking);
+            value.push(y + ":::" + z.tier + ":::" + z.size + ":::" + z.points + ":::" + z.ranking);
         }
         value = value.join(";;;");
         sys.appendToFile(dataDir+"eventwinners.txt", x +'*' + value + '\n');
