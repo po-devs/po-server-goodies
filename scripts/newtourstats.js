@@ -87,7 +87,7 @@ function conversion() {
     sys.writeToFile(dataDir+"eventwinners.txt", "");
     sys.writeToFile(dataDir+"leaderboard.txt", "");
     sys.writeToFile(dataDir+"eventdata.txt", "");
-    sys.writeToFile(dataDir+"tourseeds", "");
+    sys.writeToFile(dataDir+"tourseeds.txt", "");
     var value, x, y, z;
     for (x in tourwinners) {
         value = [];
