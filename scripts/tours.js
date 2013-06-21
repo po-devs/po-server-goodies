@@ -1337,7 +1337,7 @@ function tourChallengeIssued(src, dest, clauses, rated, mode, team, destTier) {
 }
 
 // Tournament Command Handler
-function tourCommand(src, command, commandData) {
+function tourCommand(src, command, commandData, channel) {
     try {
         if (isTourOwner(src)) {
             if (command == "megazord") {
@@ -4769,7 +4769,7 @@ module.exports = {
         }
         var globalcommands = ["tadmin", "tadmins", "tsadmin", "tsadmins", "towner", "towners", "tdeadmin", "tdeadmins", "megauser", "megauseroff", "touradmins", "megausers"];
         if ((channel === tourschan && !SESSION.channels(tourschan).isBanned(source)) || globalcommands.indexOf(command) > -1) {
-            return tourCommand(source, command, commandData);
+            return tourCommand(source, command, commandData, channel);
         }
         return false;
     },
