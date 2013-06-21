@@ -14,109 +14,35 @@ function statInit() {
     tourschan = sys.channelId("Tournaments");
     tourserrchan = sys.channelId("Developer's Den");
     try {
-        var winners = sys.getFileContent(dataDir+"winners.txt").split("\n");
-        tourwinners = {};
-        for (var player in winners) {
-            var line = winners[player].split("*");
-            var key = line.splice(0, 1);
-            var value = line.join("*");
-            tourwinners[key] = {};
-            var dates = value.split(";;;");
-            for (var x in dates) {
-                var playerData = dates[x].split(":::");
-                tourwinners[key][playerData[0]] = {
-                    'tier': playerData[1],
-                    'size': playerData[2],
-                    'points': playerData[3],
-                    'month': playerData[4]
-                };
-            }
-        }
+        tourwinners = JSON.parse(sys.getFileContent(dataDir+"winners.json"));
     }
     catch (err) {
         tourwinners = {};
         sendChanAll('No tour winners detected.', tourschan);
     }
     try {
-        var winners = sys.getFileContent(dataDir+"eventwinners.txt").split("\n");
-        eventwinners = {};
-        for (var player in winners) {
-            var line = winners[player].split("*");
-            var key = line.splice(0, 1);
-            var value = line.join("*");
-            eventwinners[key] = {};
-            var dates = value.split(";;;");
-            for (var x in dates) {
-                var playerData = dates[x].split(":::");
-                eventwinners[key][playerData[0]] = {
-                    'tier': playerData[1],
-                    'size': playerData[2],
-                    'points': playerData[3],
-                    'ranking':playerData[4]
-                };
-            }
-        }
+        eventwinners = JSON.parse(sys.getFileContent(dataDir+"eventwinners.json"));
     }
     catch (err) {
         eventwinners = {};
         sendChanAll('No event winners detected.', tourschan);
     }
     try {
-        var tiers = sys.getFileContent(dataDir+"leaderboard.txt").split("\n");
-        leaderboard = {};
-        for (var tier in tiers) {
-            var line = tiers[tier].split("*");
-            var key = line.splice(0, 1);
-            var value = line.join("*");
-            leaderboard[key] = {};
-            var dates = value.split(";;;");
-            for (var x in dates) {
-                var leaderData = dates[x].split(":::");
-                leaderboard[key][leaderData[0]] = {};
-                leaderboard[key][leaderData[0]][leaderData[1]] = leaderData[2];
-            }
-        }
+        leaderboard = JSON.parse(sys.getFileContent(dataDir+"leaderboard.json"));
     }
     catch (err) {
         leaderboard = {'general': {}};
         sendChanAll('No leaderboard detected.', tourschan);
     }
     try {
-        var players = sys.getFileContent(dataDir+"eventdata.txt").split("\n");
-        eventleaderboard = {};
-        for (var player in players) {
-            var line = players[player].split("*");
-            var key = line.splice(0, 1);
-            var value = line.join("*");
-            eventleaderboard[key] = {};
-            var dates = value.split(";;;");
-            for (var x in dates) {
-                var playerData = dates[x].split(":::");
-                eventleaderboard[key][playerData[0]] = playerData[1];
-            }
-        }
+        eventleaderboard = JSON.parse(sys.getFileContent(dataDir+'eventdata.json'));
     }
     catch (err) {
         eventleaderboard = {};
         sendChanAll('No event leaderboard detected.', tourschan);
     }
     try {
-        var tiers = sys.getFileContent(dataDir+"tourseeds.txt").split("\n");
-        tourseeds = {};
-        for (var tier in tiers) {
-            var line = tiers[tier].split("*");
-            var key = line.splice(0, 1);
-            var value = line.join("*");
-            tourseeds[key] = {};
-            var dates = value.split(";;;");
-            for (var x in players) {
-                var playerData = players[x].split(":::");
-                tourseeds[key][playerData[0]] = {
-                    'points': playerData[1],
-                    'lastwin': playerData[2]
-                };
-            }
-        }
+        tourseeds = JSON.parse(sys.getFileContent(dataDir+'tourseeds.json'));
     }
     catch (err) {
         tourseeds = {};
@@ -125,97 +51,31 @@ function statInit() {
     sendChanAll('Tournament stats are ready.', tourschan);
 }
 
-function saveWinners() {
-    sys.writeToFile(dataDir+"winners.txt", "");
-    for (var x in tourwinners) {
-        var value = [];
-        for (var y in tourwinners[x]) {
-            var z = tourwinners[x][y];
-            value.push(y + ":::" + z.tier + ":::" + z.size + ":::" + z.points + ":::" + z.month);
-        }
-        value = value.join(";;;");
-        sys.appendToFile(dataDir+"winners.txt", x +'*' + value + '\n');
-    }
-}
-
-function saveEventWinners() {
-    sys.writeToFile(dataDir+"eventwinners.txt", "");
-    for (var x in eventwinners) {
-        var value = [];
-        for (var y) in eventwinners [x]) {
-            var z = eventwinners[x][y];
-            value.push(y + "::: + z.tier + ":::" + z.size + ":::" + z.points + ":::" + z.ranking);
-        }
-        value = value.join(";;;");
-        sys.appendToFile(dataDir+"eventwinners.txt", x +'*' + value + '\n');
-    }
-}
-
-function saveLeaderboard() {
-    sys.writeToFile(dataDir+"leaderboard.txt", "");
-    for (var x in leaderboard) {
-        var value = [];
-        for (var y in leaderboard[x]) {
-            for (var z in leaderboard[x][y]) {
-                var w = leaderboard[x][y][z];
-                value.push(y + ":::" + z + ":::" + w);
-            }
-        }
-        value = value.join(";;;");
-        sys.appendToFile(dataDir+"leaderboard.txt", x +'*' + value + '\n');
-    }
-}
-
-function saveEventData() {
-    sys.writeToFile(dataDir+"eventdata.txt", "");
-    for (var x in eventleaderboard) {
-        value = [];
-        for (var y in eventleaderboard[x]) {
-            value.push(y + ":::" + eventleaderboard[x][y]);
-        }
-        value = value.join(";;;");
-        sys.appendToFile(dataDir+"eventdata.txt", x +'*' + value + '\n');
-    }
-}
-
-function saveTourSeeds() {
-    sys.writeToFile(dataDir+"tourseeds.txt", "");
-    for (var x in tourseeds) {
-        value = [];
-        for (var y in tourseeds[x]) {
-            var z = tourseeds[x][y];
-            value.push(y + ":::" + z.points + ":::" + z.lastwin);
-        }
-        value = value.join(";;;");
-        sys.appendToFile(dataDir+"tourseeds.txt", x +'*' + value + '\n');
-    }
-}
-
 function saveStats(elements) {
     if (elements == "all") {
-        saveWinners();
-        saveLeaderboard();
-        saveEventData();
-        saveTourSeeds();
-        saveEventWinners();
+        sys.writeToFile(dataDir+"winners.json", JSON.stringify(tourwinners));
+        sys.writeToFile(dataDir+"leaderboard.json", JSON.stringify(leaderboard));
+        sys.writeToFile(dataDir+"eventdata.json", JSON.stringify(eventleaderboard));
+        sys.writeToFile(dataDir+"tourseeds.json", JSON.stringify(tourseeds));
+        sys.writeToFile(dataDir+"eventwinners.json", JSON.stringify(eventwinners));
     }
     else {
         for (var e in elements) {
             var sfile = elements[e];
             if (sfile == 'winners') {
-                saveWinners();
+                sys.writeToFile(dataDir+"winners.json", JSON.stringify(tourwinners));
             }
             else if (sfile == 'leaderboard') {
-                saveLeaderboard();
+                sys.writeToFile(dataDir+"leaderboard.json", JSON.stringify(leaderboard));
             }
             else if (sfile == 'eventleaderboard') {
-                saveEventData();
+                sys.writeToFile(dataDir+"eventdata.json", JSON.stringify(eventleaderboard));
             }
             else if (sfile == 'seeds') {
-                saveTourSeeds();
+                sys.writeToFile(dataDir+"tourseeds.json", JSON.stringify(tourseeds));
             }
             else if (sfile == 'eventwinners') {
-                saveEventWinners();
+                sys.writeToFile(dataDir+"eventwinners.json", JSON.stringify(eventwinners));
             }
         }
     }
