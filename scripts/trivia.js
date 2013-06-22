@@ -1543,7 +1543,7 @@ addAdminCommand("pushback", function (src, commandData, channel) {
             triviabot.sendMessage(src, "Please wait before pushing back a question", channel);
             return;
         }
-        var id = Object.keys(tr)[0];
+        var id = Object.keys(tr).sort()[0];
         var q = trivreview.get(id);
         triviabot.sendAll(sys.name(src) + " pushed back the current question to the end of review", revchan);
         trivreview.declineTime = time();
