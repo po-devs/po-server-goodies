@@ -1388,6 +1388,21 @@ addAdminCommand("apropos", function (src, commandData, channel) {
 
 }, "Allows you to search through the questions, format /apropos [query]");
 
+addAdminCommand("apnumber", function (src, commandData, channel) {
+    if (commandData === undefined) {
+	    return;
+	}
+	var count = 0;
+	for (var x in triviaq.all()) {
+	    var q = triviaq.get(x);
+		var answer = String(q.answer);
+		if (q.question.toLowerCase().indexOf(commandData.toLowerCase()) > -1 || answer.toLowerCase().indexOf(commandData.toLowerCase()) > -1) {
+		count++;
+		}
+	}
+	Trivia.sendPM(src, "There are " + count + " questions matching with '" + commandData + "'.", channel);
+}, "Counts how many questions fit an /apropos search");
+
 addAdminCommand("category", function (src, commandData, channel) {
     if (commandData === undefined)
         return;
