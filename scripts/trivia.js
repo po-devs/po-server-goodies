@@ -246,7 +246,9 @@ function PMcheckq(src, channel) {
         return;
     }
     var q = trivreview.all();
-    var questionId = Object.keys(q).sort()[0];
+    var questionId = Object.keys(q).sort(function (a, b) {
+            return a - b;
+        })[0];
     var questionInfo = trivreview.get(questionId);
     if (questionId === undefined || questionInfo === undefined) {
         Trivia.sendPM(src, "Oops! There was an error.", channel);
@@ -818,7 +820,9 @@ QuestionHolder.prototype.checkq = function (id) {
         return;
     }
     var q = trivreview.all();
-    var questionId = Object.keys(q).sort()[0];
+    var questionId = Object.keys(q).sort(function (a, b) {
+            return a - b;
+        })[0];
     var questionInfo = trivreview.get(questionId);
     if (questionId === undefined || questionInfo === undefined) {
         triviabot.sendAll("Oops! There was an error.", revchan);
@@ -1489,7 +1493,9 @@ addAdminCommand("changea", function (src, commandData, channel) {
     }
     var tr = trivreview.all();
     if (trivreview.questionAmount() !== 0) {
-        var id = Object.keys(tr).sort()[0];
+        var id = Object.keys(tr).sort(function (a, b) {
+            return a - b;
+        })[0];
         var answer = commandData.split(",");
         trivreview.changeAnswer(id, answer);
         triviabot.sendAll("The answer for the current question was changed to " + answer + " by " + sys.name(src), revchan);
@@ -1508,7 +1514,9 @@ addAdminCommand("changeq", function (src, commandData, channel) {
     }
     var tr = trivreview.all();
     if (trivreview.questionAmount() !== 0) {
-        var id = Object.keys(tr).sort()[0];
+        var id = Object.keys(tr).sort(function (a, b) {
+            return a - b;
+        })[0];
         var question = commandData;
         trivreview.changeQuestion(id, question);
         triviabot.sendAll("The question for the current question was changed to " + question + " by " + sys.name(src), revchan);
@@ -1527,7 +1535,9 @@ addAdminCommand("changec", function (src, commandData, channel) {
     }
     var tr = trivreview.all();
     if (trivreview.questionAmount() !== 0) {
-        var id = Object.keys(tr).sort()[0];
+        var id = Object.keys(tr).sort(function (a, b) {
+            return a - b;
+        })[0];
         var category = commandData;
         trivreview.changeCategory(id, category);
         triviabot.sendAll("The category for the current question was changed to " + category + " by " + sys.name(src), revchan);
@@ -1544,7 +1554,9 @@ addAdminCommand("pushback", function (src, commandData, channel) {
             triviabot.sendMessage(src, "Please wait before pushing back a question", channel);
             return;
         }
-        var id = Object.keys(tr).sort()[0];
+        var id = Object.keys(tr).sort(function (a, b) {
+            return a - b;
+        })[0];
         var q = trivreview.get(id);
         triviabot.sendAll(sys.name(src) + " pushed back the current question to the end of review", revchan);
         trivreview.declineTime = time();
@@ -1570,7 +1582,9 @@ addAdminCommand("accept", function (src, commandData, channel) {
             triviabot.sendMessage(src, "Please wait before accepting a question", channel);
             return;
         }
-        var id = Object.keys(tr).sort()[0];
+        var id = Object.keys(tr).sort(function (a, b) {
+            return a - b;
+        })[0];
         var q = trivreview.get(id);
         triviaq.add(q.category, q.question, q.answer);
         var all = triviaq.all(),
@@ -1633,7 +1647,9 @@ addAdminCommand("decline", function (src, commandData, channel) {
             triviabot.sendMessage(src, "Please wait before declining a question", channel);
             return;
         }
-        var id = Object.keys(tr).sort()[0];
+        var id = Object.keys(tr).sort(function (a, b) {
+            return a - b;
+        })[0];
         var q = trivreview.get(id);
         triviabot.sendAll(sys.name(src) + " declined question: category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, revchan);
         trivreview.declineTime = time();
