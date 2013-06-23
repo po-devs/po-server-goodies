@@ -1683,20 +1683,22 @@ addAdminCommand("submitban", function (src, commandData, channel) {
         triviabot.sendMessage(src, user + " is already submit banned!", channel);
         return;
     }
-    timestring = "for ";
-    seconds = getSeconds(time);
-    if (isNaN(seconds)) {
-        triviabot.sendMessage(src, "The time is a bit odd...", channel);
-        return;
+    if (time === undefined) {
+        time = 0;
     }
-    if (!time || seconds < 1) {
+    var seconds = getSeconds(time);
+    if (isNaN(seconds)) {
+    triviabot.sendMessage(src, "The time is a bit odd...", channel);
+    return;
+    }
+    if (seconds < 1) {
         if (!isTriviaOwner(src)) {
             triviabot.sendMessage(src, "Please specify time!", channel);
             return;
         }
         time = "forever";
     }
-    timestring += getTimeString(seconds);
+    var timestring = (time === "forever" ? "forever" : "for " + getTimeString(seconds));
     expires = (time == "forever") ? "never" : parseInt(sys.time(), 10) + parseInt(seconds, 10);
     trivData.submitBans[tarip] = {
         'name': user,
@@ -1705,7 +1707,6 @@ addAdminCommand("submitban", function (src, commandData, channel) {
         'issued': parseInt(sys.time(), 10),
         'expires': expires
     };
-    saveData();
     var channels = [sys.channelId("Indigo Plateau"), sys.channelId("Victory Road"), revchan];
     for (var x in channels) {
         if (sys.existChannel(sys.channel(channels[x]))) {
@@ -1782,20 +1783,22 @@ addAdminCommand("triviamute", function (src, commandData, channel) {
         triviabot.sendMessage(src, user + " is already trivia muted!", channel);
         return;
     }
-    timestring = "for ";
-    seconds = getSeconds(time);
+    if (time === undefined) {
+        time = 0;
+    }
+    var seconds = getSeconds(time);
     if (isNaN(seconds)) {
         triviabot.sendMessage(src, "The time is a bit odd...", channel);
         return;
     }
-    if (!time || seconds < 1) {
+    if (seconds < 1) {
         if (!isTriviaOwner(src)) {
             triviabot.sendMessage(src, "Please specify time!", channel);
             return;
         }
         time = "forever";
     }
-    timestring += getTimeString(seconds);
+    var timestring = (time === "forever" ? "forever" : "for " + getTimeString(seconds));
     expires = (time == "forever") ? "never" : parseInt(sys.time(), 10) + parseInt(seconds, 10);
     trivData.mutes[tarip] = {
         'name': user,
@@ -1807,7 +1810,7 @@ addAdminCommand("triviamute", function (src, commandData, channel) {
     var chans = [triviachan, revchan, sachannel, staffchannel];
     for (var x in chans) {
         var current = chans[x];
-        triviabot.sendAll(user + " was trivia muted by " + nonFlashing(sys.name(src)) + (time != "forever" ? " " + timestring : "") + "! [Reason: " + reason + "]", current);
+        triviabot.sendAll(user + " was trivia muted by " + nonFlashing(sys.name(src)) + " " + timestring + "! [Reason: " + reason + "]", current);
     }
     if (sys.id(user) !== undefined && Trivia.playerPlaying(sys.id(user))) {
         Trivia.removePlayer(sys.id(user));
