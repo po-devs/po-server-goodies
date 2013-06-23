@@ -338,7 +338,7 @@ TriviaGame.prototype.startGame = function (data, name) {
     if (this.catGame) {
         var cats = [];
         for (var x in this.usingCats) {
-           cats.push(this.usingCats[x]);
+            cats.push(this.usingCats[x]);
         }
         this.startCatGame(this.maxPoints, cats, name);
     }
@@ -471,7 +471,7 @@ TriviaGame.prototype.startTriviaRound = function () {
     this.round++;
     /* Make a random number to get the ID of the (going to be) asked question, or use the suggestion */
     var questionNumber;
-    if (suggestion.id != undefined) {
+    if (suggestion.id !== undefined) {
         questionNumber = suggestion.id;
         suggestion.asked = true;
     }
@@ -606,9 +606,9 @@ obj.goal = this.maxPoints;*/
         winners.sort(function (a, b) {
             return b[1] - a[1];
         });
-        if (Object.keys(suggestion).length != 0) {
-           this.sendAll(sys.name(suggestion.suggester) + "'s suggestion was cancelled because the game ended before it could be asked.", revchan);
-        } 
+        if (Object.keys(suggestion).length !== 0) {
+            this.sendAll(sys.name(suggestion.suggester) + "'s suggestion was cancelled because the game ended before it could be asked.", revchan);
+        }
         this.htmlAll("<h2>Congratulations to " + w + "</h2>" + winners.join(", ") + "");
         sendChanHtmlAll("<font size=5><font color='#318739'><timestamp/> <b>±Psyduck: </b><font color='red'>While you're waiting for another game, why not submit a question? <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>Help and Guidelines are here!</a></font></font></font>", triviachan);
         sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> Never want to miss a Trivia game? Try the <b>/flashme</b> command!", triviachan);
@@ -780,7 +780,8 @@ function QuestionHolder(f) {
     this.state.questions = state;
     if (Object.keys(state.hash).length !== 0) {
         this.state.freeId = parseInt(Object.keys(state.hash)[Object.keys(state.hash).length - 1], 10) + 1;
-    } else {
+    }
+    else {
         this.state.freeId = 0;
     }
 }
@@ -1230,7 +1231,7 @@ addAdminCommand("suggest", function (src, commandData, channel) {
     suggestion.id = commandData;
     suggestion.suggester = src;
     suggestion.asked = false;
-    Trivia.sendAll(sys.name(src) + " made a suggestion for the next question to be asked in Trivia.", revchan); 
+    Trivia.sendAll(sys.name(src) + " made a suggestion for the next question to be asked in Trivia.", revchan);
 }, "Allows you to suggest a question to be asked next in Trivia. Format /suggest ID.");
 
 addAdminCommand("say", function (src, commandData, channel) {
@@ -1397,7 +1398,7 @@ addAdminCommand("apnumber", function (src, commandData, channel) {
         var q = triviaq.get(x);
         var answer = String(q.answer);
         if (q.question.toLowerCase().indexOf(commandData.toLowerCase()) > -1 || answer.toLowerCase().indexOf(commandData.toLowerCase()) > -1) {
-        count++;
+            count++;
         }
     }
     Trivia.sendPM(src, "There are " + count + " questions matching with '" + commandData + "'.", channel);
@@ -1688,8 +1689,8 @@ addAdminCommand("submitban", function (src, commandData, channel) {
     }
     var seconds = getSeconds(time);
     if (isNaN(seconds)) {
-    triviabot.sendMessage(src, "The time is a bit odd...", channel);
-    return;
+        triviabot.sendMessage(src, "The time is a bit odd...", channel);
+        return;
     }
     if (seconds < 1) {
         if (!isTriviaOwner(src)) {
