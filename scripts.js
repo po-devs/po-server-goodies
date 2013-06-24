@@ -1717,7 +1717,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         // limit it!
         if (typeof maxTime == "number") secs = (secs > maxTime || secs === 0 || isNaN(secs)) ? maxTime : secs;
         if (secs > 0) {
-            timeString = " for " + getTimeString(secs);
+            timeString = getTimeString(secs);
             expires = secs + parseInt(sys.time(), 10);
         }
 
@@ -1749,10 +1749,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             banbot.sendChanMessage(src, "Couldn't find " + commandData);
             return;
         }
-        if (SESSION.users(tar)[type].active) {
-            banbot.sendChanMessage(src, "He/she's already " + verb + ".");
-            return;
-        }
+        
         if (sys.auth(tar) >= sys.auth(src) && sys.auth(tar) > 0) {
             banbot.sendChanMessage(src, "You don't have sufficient auth to " + nomi + " " + commandData + ".");
             return;
@@ -1765,9 +1762,9 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         });
         
         if (reason.length > 0)
-            sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
+            sendAll((SESSION.users(tar)[type].active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timestring === "" ? "forever!" : timestring + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timestring === "" ? "" : "for") + timestring + "!") + " [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
         else
-            sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Channel: "+sys.channel(channel) + "]");
+            sendAll((SESSION.users(tar)[type].active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timestring === "" ? "forever!" : timestring + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timestring === "" ? "" : "for") + timeString + "!") + " [Channel: "+sys.channel(channel) + "]");
 
         var authority= sys.name(src).toLowerCase();
         authStats[authority] =  authStats[authority] || {};
