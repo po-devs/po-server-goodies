@@ -4091,7 +4091,7 @@ return;
                     }
                 }
                 if (haxers.length > 0) {
-                    this.addPhaseStalkHax(name, command, target.name, haxers);
+                    this.addPhaseStalkHax(name, command, commandData, haxers);
                 }
                 return;
             }
