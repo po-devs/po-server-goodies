@@ -1796,10 +1796,6 @@ addAdminCommand("triviamute", function (src, commandData, channel) {
         triviabot.sendMessage(src, "Can't do that to higher auth!", channel);
         return;
     }
-    if (isTrivia("muted", tarip)) {
-        triviabot.sendMessage(src, user + " is already trivia muted!", channel);
-        return;
-    }
     if (time === undefined) {
         time = 0;
     }
@@ -1815,7 +1811,7 @@ addAdminCommand("triviamute", function (src, commandData, channel) {
         }
         time = "forever";
     }
-    var timestring = (time === "forever" ? "forever" : "for " + getTimeString(seconds));
+    var timestring = (time === "forever" ? "forever" : getTimeString(seconds));
     expires = (time == "forever") ? "never" : parseInt(sys.time(), 10) + parseInt(seconds, 10);
     trivData.mutes[tarip] = {
         'name': user,
@@ -1824,10 +1820,11 @@ addAdminCommand("triviamute", function (src, commandData, channel) {
         'issued': parseInt(sys.time(), 10),
         'expires': expires
     };
+    "changed yyy's unmute time to xxx time from now!"
     var chans = [triviachan, revchan, sachannel, staffchannel];
     for (var x in chans) {
         var current = chans[x];
-        triviabot.sendAll(user + " was trivia muted by " + nonFlashing(sys.name(src)) + " " + timestring + "! [Reason: " + reason + "]", current);
+        triviabot.sendAll((isTrivia("muted", tarip) ? nonFlashing(sys.name(src)) + " changed " + user + "'s triviamute time to " + (timestring === "forever" ? "forever" : timestring + "from now") : user + " was trivia muted by " + nonFlashing(sys.name(src)) + (timestring === "forever" ? " forever" : " for " + timestring)) + "! [Reason: " + reason + "]", current;
     }
     if (sys.id(user) !== undefined && Trivia.playerPlaying(sys.id(user))) {
         Trivia.removePlayer(sys.id(user));
