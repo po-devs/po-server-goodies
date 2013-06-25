@@ -1735,7 +1735,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             }
             if(ip !== undefined) {
                 if (memoryhash.get(ip)) {
-                    sendAll(sys.name(src)) + " changed " + commandData + "'s" + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!"));
+                    sendAll(sys.name(src) + " changed " + commandData + "'s" + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!"));
                 } else {
                     sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
                 }
