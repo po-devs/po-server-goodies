@@ -1735,9 +1735,9 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             }
             if(ip !== undefined) {
                 if (memoryhash.get(ip)) {
-                    sendAll(sys.name(src) + " changed " + commandData + "'s" + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!"));
+                    sendAll(sys.name(src) + " changed " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!"));
                 } else {
-                    sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for")  + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
+                    sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for ")  + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
                 }
                 memoryhash.add(ip, sys.time() + ":" + sys.name(src) + ":" + expires + ":" + commandData + ":" + reason);
                 var authname = sys.name(src).toLowerCase();
@@ -1766,9 +1766,9 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         });
         
         if (reason.length > 0)
-            sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : "for") + timeString + "!") + " [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
+            sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for ") + timeString + "!") + " [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
         else
-            sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : "for") + timeString + "!") + " [Channel: "+sys.channel(channel) + "]");
+            sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for ") + timeString + "!") + " [Channel: "+sys.channel(channel) + "]");
 
         var authority= sys.name(src).toLowerCase();
         authStats[authority] =  authStats[authority] || {};
