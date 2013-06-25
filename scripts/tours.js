@@ -2073,10 +2073,6 @@ function tourCommand(src, command, commandData, channel) {
                     sendBotMessage(src,"This person doesn't exist!",tourschan,false);
                     return true;
                 }
-                if (tours.tourmutes.hasOwnProperty(ip)) {
-                    sendBotMessage(src,"They are already tourmuted!",tourschan,false);
-                    return true;
-                }
                 if (reason === undefined) {
                     reason = "";
                 }
@@ -2111,6 +2107,10 @@ function tourCommand(src, command, commandData, channel) {
                 if (time > maxtime) {
                     time = maxtime;
                 }
+                var already = false;
+                if (tours.tourmutes.hasOwnProperty(ip)) {
+                    already = true;
+                }
                 tours.tourmutes[ip] = {'expiry': parseInt(sys.time(), 10) + time, 'reason': reason, 'auth': sys.name(src), 'name': tar.toLowerCase()};
                 var key = isInTour(tar);
                 if (key !== false) {
@@ -2125,10 +2125,10 @@ function tourCommand(src, command, commandData, channel) {
                     }
                 }
                 if (command == "toursmute") {
-                    sendBotAll(tar+" was tourmuted [secretly] by "+sys.name(src)+" for "+time_handle(time)+"! "+(reason !== "" ? "[Reason: "+reason+"]" : ""), sys.channelId("Indigo Plateau"), false);
+                    sendBotAll((already ? sys.name(src) + " changed " + tar + "'s secret tourmute time to " + time_handle(time) + " from now! " : tar+" was tourmuted [secretly] by "+sys.name(src)+" for "+time_handle(time)+"! ") + (reason !== "" ? "[Reason: "+reason+"]" : ""), sys.channelId("Indigo Plateau"), false);
                 }
                 else {
-                    sendBotAll(tar+" was tourmuted by "+sys.name(src)+" for "+time_handle(time)+"! "+(reason !== "" ? "[Reason: "+reason+"]" : ""), "~st", false);
+                    sendBotAll((already ? sys.name(src) + " changed " + tar + "'s tourmute time to " + time_handle(time) + " from now! " : tar+" was tourmuted by "+sys.name(src)+" for "+time_handle(time)+"! ") + (reason !== "" ? "[Reason: "+reason+"]" : ""), "~st", false);
                 }
                 saveTourMutes();
                 return true;

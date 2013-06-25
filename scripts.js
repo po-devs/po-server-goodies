@@ -1720,56 +1720,38 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             timeString = getTimeString(secs);
             expires = secs + parseInt(sys.time(), 10);
         }
-
         if (reason === "" && sys.auth(src) < 3) {
            banbot.sendChanMessage(src, "You need to give a reason to the " + nomi + "!");
            return;
         }
-
-        if (tar === undefined) {
-            ip = sys.dbIp(commandData);
-            var maxAuth = sys.maxAuth(ip);
-            if(maxAuth>=sys.auth(src) && maxAuth > 0) {
-               banbot.sendChanMessage(src, "Can't do that to higher auth!");
-               return;
-            }
-            if(ip !== undefined) {
-                if (memoryhash.get(ip)) {
-                    sendAll(sys.name(src) + " changed " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!"));
-                } else {
-                    sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for ")  + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
-                }
-                memoryhash.add(ip, sys.time() + ":" + sys.name(src) + ":" + expires + ":" + commandData + ":" + reason);
-                var authname = sys.name(src).toLowerCase();
-                authStats[authname] =  authStats[authname] || {};
-                authStats[authname]["latest" + type] = [commandData, parseInt(sys.time(), 10)];
-                return;
-            }
-
+        var tarip = tar !== undefined ? sys.ip(tar) : sys.dbIp(commandData);
+        if (tarip === undefined) {
             banbot.sendChanMessage(src, "Couldn't find " + commandData);
             return;
         }
-        
-        if (sys.auth(tar) >= sys.auth(src) && sys.auth(tar) > 0) {
+        var maxAuth = sys.maxAuth(tarip);
+        if (maxAuth>=sys.auth(src) && maxAuth > 0) {
             banbot.sendChanMessage(src, "You don't have sufficient auth to " + nomi + " " + commandData + ".");
             return;
         }
-        
-        var tarip = tar !== undefined ? sys.ip(tar) : sys.dbIp(commandData);
         var active = false;
-        if (SESSION.users(tar)[type].active) {
+        if (memoryhash.get(tarip)) {
             active = true;
+        }
+        if (sys.loggedIn(tar)) {
+            if (SESSION.users(tar)[type].active) {
+                active = true;
+            }
         }
         sys.playerIds().forEach(function(id) {
             if (sys.loggedIn(id) && sys.ip(id) === tarip)
                 SESSION.users(id).activate(type, sys.name(src), expires, reason, true);
         });
+        if (!sys.loggedIn(tar)) {
+            memoryhash.add(ip, sys.time() + ":" + sys.name(src) + ":" + expires + ":" + commandData + ":" + reason);
+        }
         
-        if (reason.length > 0)
-            sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for ") + timeString + "!") + " [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
-        else
-            sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for ") + timeString + "!") + " [Channel: "+sys.channel(channel) + "]");
-
+        sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for ") + timeString + "!") + (reason.length > 0 ? " [Reason: " + reason + "]" : "") + " [Channel: "+sys.channel(channel) + "]");
         var authority= sys.name(src).toLowerCase();
         authStats[authority] =  authStats[authority] || {};
         authStats[authority]["latest" + type] = [commandData, parseInt(sys.time(), 10)];
