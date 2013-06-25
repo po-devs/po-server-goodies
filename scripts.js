@@ -1735,10 +1735,10 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             }
             if(ip !== undefined) {
                 if (memoryhash.get(ip)) {
-                    banbot.sendChanMessage(src, "He/she's already " + verb + ".");
-                    return;
+                    sendAll(sys.name(src)) + " changed " + commandData + "'s" + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!"));
+                } else {
+                    sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
                 }
-                sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + timeString + "! [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
                 memoryhash.add(ip, sys.time() + ":" + sys.name(src) + ":" + expires + ":" + commandData + ":" + reason);
                 var authname = sys.name(src).toLowerCase();
                 authStats[authname] =  authStats[authname] || {};
@@ -1756,15 +1756,19 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         }
         
         var tarip = tar !== undefined ? sys.ip(tar) : sys.dbIp(commandData);
+        var active = false;
+        if (SESSION.users(tar)[type].active) {
+            active = true;
+        }
         sys.playerIds().forEach(function(id) {
             if (sys.loggedIn(id) && sys.ip(id) === tarip)
                 SESSION.users(id).activate(type, sys.name(src), expires, reason, true);
         });
         
         if (reason.length > 0)
-            sendAll((SESSION.users(tar)[type].active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timestring === "" ? "forever!" : timestring + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timestring === "" ? "" : "for") + timestring + "!") + " [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
+            sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : "for") + timeString + "!") + " [Reason: " + reason + "] [Channel: "+sys.channel(channel) + "]");
         else
-            sendAll((SESSION.users(tar)[type].active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timestring === "" ? "forever!" : timestring + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timestring === "" ? "" : "for") + timeString + "!") + " [Channel: "+sys.channel(channel) + "]");
+            sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : "for") + timeString + "!") + " [Channel: "+sys.channel(channel) + "]");
 
         var authority= sys.name(src).toLowerCase();
         authStats[authority] =  authStats[authority] || {};
