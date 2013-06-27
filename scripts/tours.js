@@ -2109,9 +2109,13 @@ function tourCommand(src, command, commandData, channel) {
                 }
                 var already = false;
                 if (tours.tourmutes.hasOwnProperty(ip)) {
+                    if (sys.time() - tours.tourmutes[ip].issued < 15) {
+                        sendBotMessage(src, "This person was recently muted!", tourschan, false);
+                        return true;
+                    }
                     already = true;
                 }
-                tours.tourmutes[ip] = {'expiry': parseInt(sys.time(), 10) + time, 'reason': reason, 'auth': sys.name(src), 'name': tar.toLowerCase()};
+                tours.tourmutes[ip] = {'expiry': parseInt(sys.time(), 10) + time, 'reason': reason, 'auth': sys.name(src), 'name': tar.toLowerCase(), 'issued' : parseInt(sys.time(), 10)};
                 var key = isInTour(tar);
                 if (key !== false) {
                     if (tours.tour[key].state == "signups") {
@@ -4503,7 +4507,7 @@ function loadTourMutes() {
     }
     var mutedata = mutefile.split("\n");
     for (var x in mutedata) {
-        var data = mutedata[x].split(":::", 5);
+        var data = mutedata[x].split(":::", 6);
         if (data.length < 5) {
             continue;
         }
@@ -4515,7 +4519,8 @@ function loadTourMutes() {
         var reason = data[2];
         var auth = data[3];
         var player = data[4];
-        tours.tourmutes[ip] = {'expiry': expiry, 'reason': reason, 'auth': auth, 'name': player};
+        var issued = data[5];
+        tours.tourmutes[ip] = {'expiry': expiry, 'reason': reason, 'auth': auth, 'name': player, 'issued' : issued};
     }
 }
 

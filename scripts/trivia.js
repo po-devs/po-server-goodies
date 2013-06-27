@@ -1713,6 +1713,10 @@ addAdminCommand("submitban", function (src, commandData, channel) {
     }
     var already = false;
     if (isTrivia("submitbanned", tarip)) {
+        if (sys.time() - triviaData.submitBans[tarip].issued < 15) {
+            triviabot.sendMessage(src, "This person was recently banned!", channel);
+            return;
+        }
         already = true;
     }
     var timestring = (time === "forever" ? "forever" : getTimeString(seconds));
@@ -1814,6 +1818,10 @@ addAdminCommand("triviamute", function (src, commandData, channel) {
     
     var already = false;
     if (isTrivia("muted", tarip)) {
+        if (sys.time() - triviaData.mutes[tarip].issued < 15) {
+            triviabot.sendMessage(src, "This person was recently muted!", channel);
+            return;
+        }
         already = true;
     }
     var timestring = (time === "forever" ? "forever" : getTimeString(seconds));
