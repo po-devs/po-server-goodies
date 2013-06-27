@@ -56,37 +56,6 @@ var nonFlashing = utilities.non_flashing,
     getSeconds = utilities.getSeconds,
     getTimeString = utilities.getTimeString;
 
-/*function calculateLeaderboardPoints(place, goal) {
-    var first = place == 1, second = place == 2, third = place == 3;
-    var ret = 0;
-    if (goal > 1 && goal < 16) {
-        if (first) ret = 1;
-        if (second) ret = 0;
-        if (third) ret = 0;
-    } else if (goal > 15 && goal < 31) {
-        if (first) ret = 2;
-        if (second) ret = 1;
-        if (third) ret = 0;
-    } else if (goal > 30 && goal < 46) {
-        if (first) ret = 3;
-        if (second) ret = 2;
-        if (third) ret = 1;
-    } else if (goal > 45 && goal < 61) {
-        if (first) ret = 4;
-        if (second) ret = 3;
-        if (third) ret = 2;
-    } else if (goal > 60 && goal < 75) {
-        if (first) ret = 6;
-        if (second) ret = 4;
-        if (third) ret = 2;
-    } else {
-        if (first) ret = 8;
-        if (second) ret = 5;
-        if (third) ret = 3;
-    }
-    return ret;
-};*/
-
 function isTrivia(data, ip) {
     var which = {
         "submitbanned": "submitBans",
@@ -177,40 +146,6 @@ function runUpdate() {
     return;
 }
 
-/*function updateLeaderboard(game) {
-    if (typeof(game.winners) === "undefined") throw "";
-    var winners = game.winners, goal = game.goal;
-    var currentLeaderboard = trivData.leaderBoard;
-    var currentLeaderboardIps = {};
-    var currentGamePoints = {};
-    var newLeaderboard = [];
-    var wereInGame = [];
-    for (var i = 0; i < winners.length; ++i) { wereInGame.push(sys.dbIp(winners[i][0])); }
-    for (var i = 0; i < currentLeaderboard.length; ++i) { currentLeaderboardIps[sys.dbIp(currentLeaderboard[i][0])] = currentLeaderboard[i][1]; }
-    var sorted = winners.sort(function(a,b) { return b[1]-a[1]; });
-    if (currentLeaderboard.length > 0) {
-        for (var i = 0; i < currentLeaderboard.length; ++i) {
-            var current = currentLeaderboard[i];
-            var name = current[0], points = current[1];
-            if (wereInGame.indexOf(sys.dbIp(name)) == -1) newLeaderboard.push([name, points]);
-        }
-    }
-    var end = winners.length > 3 ? 3 : winners.length;
-    for (var i = 0; i < end; ++i) {
-        var j = i+1;
-        var current = sorted[i];
-        var place = j, name = current[0], points = current[1];
-        if (currentLeaderboardIps[sys.dbIp(name)] == undefined)
-        var oldPoints = 0;
-            else
-        var oldPoints = parseInt(currentLeaderboardIps[sys.dbIp(name)]);
-        var points = calculateLeaderboardPoints(place, goal);
-        newLeaderboard.push([name, oldPoints + points]);
-    }
-    trivData.leaderBoard = newLeaderboard;
-    saveData();
-}*/
-
 function saveData() {
     sys.writeToFile("trivData.json", JSON.stringify(trivData));
 }
@@ -265,16 +200,6 @@ function PMcheckq(src, channel) {
     }
     sys.sendMessage(src, "", channel);
 }
-
-/*function canShowOnLeaderboard(ip) {
-    if (sys.maxAuth(ip) > 0) return false;
-    var aliases = sys.aliases(ip);
-    for (var i = 0; i < aliases.length; ++i) {
-        var alt = aliases[i];
-        if (canUseReviewCommands(alt) || tadmin.isTAdmin(alt)) return false;
-    }
-    return true;
-}*/
 
 function time() {
     return Date.now() / 1000;
@@ -580,9 +505,6 @@ TriviaGame.prototype.finalizeAnswers = function () {
     var leaderboard = [];
     var displayboard = [];
     var winners = [];
-    /*var obj = {};
-obj.winners = [];
-obj.goal = this.maxPoints;*/
     for (id in this.triviaPlayers) {
         if (this.triviaPlayers[id].playing === true) {
             var regname = this.triviaPlayers[id].name;
@@ -591,7 +513,6 @@ obj.goal = this.maxPoints;*/
             leaderboard.push([regname, numPoints]);
             if (this.triviaPlayers[id].points >= this.maxPoints) {
                 winners.push(nohtmlname + " (" + this.triviaPlayers[id].points + ")");
-                //obj.winners.push([regname, numPoints]);
             }
         }
     }
@@ -991,35 +912,6 @@ function addAdminCommand(commands, callback, help) {
 function addOwnerCommand(commands, callback, help) {
     return addCommand(ownerCommands, commands, callback, help);
 }
-
-addOwnerCommand("resetleaderboard", function (src, commandData, channel) {
-    triviabot.sendMessage(src, "The trivia leaderboard was reset!", channel);
-    trivData.leaderBoard = [];
-    saveData();
-}, "Reset the Trivia leaderboard.");
-
-/*addUserCommand("leaderboard", function(src, commandData, channel) {
-    sys.sendMessage(src, "*** TRIVIA LEADERBOARD ***", channel);
-    var leaderboard = trivData.leaderBoard;
-    if (leaderboard.length < 1) return;
-    leaderboard.sort(function(a,b) { return b[1]-a[1]; });
-    var limit = leaderboard.length > 10 ? 10 : leaderboard.length;
-    var usedIps = []; // Leaderboard now should disclude multiple IPs, but this is here just in case
-    for (var i = 0; i < limit; ++i) {
-        var current = leaderboard[i];
-        var name = current[0];
-        var points = parseInt(current[1]);
-        var plural = points == 1 ? "" : "s";
-        var ip = sys.dbIp(name);
-        var num = i;
-        if (name == undefined || points == undefined || isNaN(points) || points < 1 || usedIps.indexOf(ip) > -1 || !canShowOnLeaderboard(sys.dbIp(name))) {
-            num--;
-            continue;
-        }
-        sys.sendMessage(src, "#"+parseInt(num+1) + ": " + name + " ~ " + points + " point" + plural, channel);
-        usedIps.push(ip);
-    }
-}, "View the Trivia leaderboard");*/
 
 addUserCommand("categories", function (src, commandData, channel) {
     if (typeof (triviaCategories) != "object") return;
