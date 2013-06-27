@@ -45,7 +45,7 @@ var Config = {
         ["sulcata", "Monotype - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20485-sulcata-s-Monotype-gym'>Gym Thread!</a>"],
         ["Pkftmfw", "4th Generation OverUsed - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20487-DPP-OU-Gym-Pkftmfw'>Gym Thread!</a>"],
         ["Tanner", "3rd Generation OverUsed - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20489-ADV-OU-GYM-BIG-BAD-BLINGAS'>Gym Thread!</a>"],
-        ["Lavos Spawn", "2nd Generation OverUsed - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20511-GSC-OU-Gym-Lavos-Spawn'>Gym Thread!</a>"],
+        ["HODOR", "2nd Generation OverUsed - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20821-GSC-OU-Gym-IFM'>Gym Thread!</a>"],
         ["Isa-", "1st Generation OverUsed - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20534-RBY-OU-Gym-Isa'>Gym Thread!</a>"],
         ["IronStorm", "VGC 2013 - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?20528-VGC-2013-Gym-IronStorm'>Gym Thread!</a>"]
     ],
