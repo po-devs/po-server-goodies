@@ -1828,7 +1828,7 @@ addAdminCommand("triviamute", function (src, commandData, channel) {
     var chans = [triviachan, revchan, sachannel, staffchannel];
     for (var x in chans) {
         var current = chans[x];
-        triviabot.sendAll((already ? nonFlashing(sys.name(src)) + " changed " + user + "'s triviamute time to " + (timestring === "forever" ? "forever" : timestring + "from now") : user + " was trivia muted by " + nonFlashing(sys.name(src)) + (timestring === "forever" ? " forever" : " for " + timestring)) + "! [Reason: " + reason + "]", current);
+        triviabot.sendAll((already ? nonFlashing(sys.name(src)) + " changed " + user + "'s triviamute time to " + (timestring === "forever" ? "forever" : timestring + " from now") : user + " was trivia muted by " + nonFlashing(sys.name(src)) + (timestring === "forever" ? " forever" : " for " + timestring)) + "! [Reason: " + reason + "]", current);
     }
     if (sys.id(user) !== undefined && Trivia.playerPlaying(sys.id(user))) {
         Trivia.removePlayer(sys.id(user));
