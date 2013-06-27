@@ -1713,7 +1713,7 @@ addAdminCommand("submitban", function (src, commandData, channel) {
     }
     var already = false;
     if (isTrivia("submitbanned", tarip)) {
-        if (sys.time() - triviaData.submitBans[tarip].issued < 15) {
+        if (sys.time() - trivData.submitBans[tarip].issued < 15) {
             triviabot.sendMessage(src, "This person was recently banned!", channel);
             return;
         }
@@ -1818,7 +1818,7 @@ addAdminCommand("triviamute", function (src, commandData, channel) {
     
     var already = false;
     if (isTrivia("muted", tarip)) {
-        if (sys.time() - triviaData.mutes[tarip].issued < 15) {
+        if (sys.time() - trivData.mutes[tarip].issued < 15) {
             triviabot.sendMessage(src, "This person was recently muted!", channel);
             return;
         }
