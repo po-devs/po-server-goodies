@@ -53,7 +53,8 @@ var Config = {
     superAdmins: ["[LD]Jirachier", "Ethan"],
     canJoinStaffChannel: ["Lamperi-", "Peanutsdroid", "QuX", "Ethan-"],
     disallowStaffChannel: [],
-    topic_delimiter: " | "
+    topic_delimiter: " | ",
+    registeredLimit: 0
 };
 
 // Don't touch anything here if you don't know what you do.
@@ -2194,6 +2195,19 @@ afterLogIn : function(src) {
     
 }, /* end of afterLogin */
 
+beforePlayerRegister : function(src) {
+    if (sys.name(src).match(/\bguest[0-9]/i)) {
+        sys.stopEvent();
+        normalbot.sendMessage(src, "You cannot register guest names!");
+        return;
+    }
+    var limit = Config.registeredLimit;
+    if (limit > 0 && sys.numRegistered(sys.ip(src)) > limit && sys.auth(src) === 0) {
+        sys.stopEvent();
+        normalbot.sendMessage(src, "You cannot register more than " + limit + " names!");
+        return;
+    }
+},
 
 beforeLogOut : function(src) {
     if (SESSION.users(src).megauser)
