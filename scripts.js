@@ -1736,6 +1736,10 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         }
         var active = false;
         if (memoryhash.get(tarip)) {
+            if (sys.time() - memoryhash.get(tarip).split(":")[0] < 15) {
+                banbot.sendChanMessage(src, "This person was recently muted!")
+                return;
+            }
             active = true;
         }
         if (sys.loggedIn(tar)) {
