@@ -261,7 +261,7 @@ function PMcheckq(src, channel) {
     Trivia.sendPM(src, "Answer: " + questionInfo.answer, channel);
     Trivia.sendPM(src, "Questions Approved: " + triviaq.questionAmount() + ". Questions Left: " + trivreview.questionAmount() + ".", channel);
     if (questionInfo.name !== undefined) {
-        Trivia.sendPM(src, "Submitted By:" + questionInfo.name, channel);
+        Trivia.sendPM(src, "Submitted By: " + questionInfo.name, channel);
     }
     sys.sendMessage(src, "", channel);
 }
@@ -1696,10 +1696,6 @@ addAdminCommand("submitban", function (src, commandData, channel) {
         triviabot.sendMessage(src, "Can't do that to higher auth!", channel);
         return;
     }
-    if (isTrivia("submitbanned", tarip)) {
-        triviabot.sendMessage(src, user + " is already submit banned!", channel);
-        return;
-    }
     if (time === undefined) {
         time = 0;
     }
@@ -1715,7 +1711,11 @@ addAdminCommand("submitban", function (src, commandData, channel) {
         }
         time = "forever";
     }
-    var timestring = (time === "forever" ? "forever" : "for " + getTimeString(seconds));
+    var already = false;
+    if (isTrivia("submitbanned", tarip)) {
+        already = true;
+    }
+    var timestring = (time === "forever" ? "forever" : getTimeString(seconds));
     expires = (time == "forever") ? "never" : parseInt(sys.time(), 10) + parseInt(seconds, 10);
     trivData.submitBans[tarip] = {
         'name': user,
@@ -1727,7 +1727,7 @@ addAdminCommand("submitban", function (src, commandData, channel) {
     var channels = [sys.channelId("Indigo Plateau"), sys.channelId("Victory Road"), revchan];
     for (var x in channels) {
         if (sys.existChannel(sys.channel(channels[x]))) {
-            triviabot.sendAll(sys.name(src) + " banned " + user + " from submitting questions " + timestring + "! [Reason: " + reason + "]", channels[x]);
+            triviabot.sendAll(already? sys.name(src) + " changed " + user + "'s submit ban time to " + (timestring ==== "forever" ? timestring : timestring + " from now") + "!" : (sys.name(src) + " banned " + user + " from submitting questions " + (timestring === "forever" ? "" : "for ") + timestring + "!") + " [Reason: " + reason + "]", channels[x]);
         }
     }
     saveData();
@@ -1811,6 +1811,11 @@ addAdminCommand("triviamute", function (src, commandData, channel) {
         }
         time = "forever";
     }
+    
+    var already = false;
+    if (isTrivia("muted", tarip)) {
+        already = true;
+    }
     var timestring = (time === "forever" ? "forever" : getTimeString(seconds));
     expires = (time == "forever") ? "never" : parseInt(sys.time(), 10) + parseInt(seconds, 10);
     trivData.mutes[tarip] = {
@@ -1820,11 +1825,10 @@ addAdminCommand("triviamute", function (src, commandData, channel) {
         'issued': parseInt(sys.time(), 10),
         'expires': expires
     };
-    "changed yyy's unmute time to xxx time from now!"
     var chans = [triviachan, revchan, sachannel, staffchannel];
     for (var x in chans) {
         var current = chans[x];
-        triviabot.sendAll((isTrivia("muted", tarip) ? nonFlashing(sys.name(src)) + " changed " + user + "'s triviamute time to " + (timestring === "forever" ? "forever" : timestring + "from now") : user + " was trivia muted by " + nonFlashing(sys.name(src)) + (timestring === "forever" ? " forever" : " for " + timestring)) + "! [Reason: " + reason + "]", current;
+        triviabot.sendAll((already ? nonFlashing(sys.name(src)) + " changed " + user + "'s triviamute time to " + (timestring === "forever" ? "forever" : timestring + "from now") : user + " was trivia muted by " + nonFlashing(sys.name(src)) + (timestring === "forever" ? " forever" : " for " + timestring)) + "! [Reason: " + reason + "]", current;
     }
     if (sys.id(user) !== undefined && Trivia.playerPlaying(sys.id(user))) {
         Trivia.removePlayer(sys.id(user));
