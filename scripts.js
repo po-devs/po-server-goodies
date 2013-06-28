@@ -54,7 +54,7 @@ var Config = {
     canJoinStaffChannel: ["Lamperi-", "Peanutsdroid", "QuX", "Ethan-"],
     disallowStaffChannel: [],
     topic_delimiter: " | ",
-    registeredLimit: 0
+    registeredLimit: 10
 };
 
 // Don't touch anything here if you don't know what you do.
