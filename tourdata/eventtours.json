@@ -1,128 +1,134 @@
 {
-    "1-6-2013": {
-        "tier": "Wifi OU",
-        "settings": {}
-    },
-    "2-6-2013": {
-        "tier": "Monogen",
-        "settings": {}
-    },
-    "3-6-2013": {
+    "1-7-2013": {
         "tier": "Wifi UU",
         "settings": {}
     },
-    "4-6-2013": {
+    "2-7-2013": {
         "tier": "Challenge Cup",
         "settings": {
             "gen": "RSE"
         }
     },
-    "5-6-2013": {
-        "tier": "Wifi Ubers",
-        "settings": {}
-    },
-    "6-6-2013": {
-        "tier": "Wifi NU",
-        "settings": {}
-    },
-    "7-6-2013": {
-        "tier": "Monotype",
-        "settings": {}
-    },
-    "8-6-2013": {
-        "tier": "Battle Factory",
-        "settings": {}
-    },
-    "9-6-2013": {
-        "tier": "Wifi OU Doubles",
-        "settings": {}
-    },
-    "10-6-2013": {
-        "tier": "Wifi LC",
-        "settings": {}
-    },
-    "11-6-2013": {
-        "tier": "Adv OU",
-        "settings": {}
-    },
-    "12-6-2013": {
-        "tier": "No Preview OU",
-        "settings": {}
-    },
-    "13-6-2013": {
-        "tier": "Monocolour",
-        "settings": {}
-    },
-    "14-6-2013": {
-        "tier": "No Preview Ubers",
-        "settings": {}
-    },
-    "15-6-2013": {
-        "tier": "Wifi OU",
-        "settings": {}
-    },
-    "16-6-2013": {
+    "3-7-2013": {
         "tier": "Random Battle",
         "settings": {}
     },
-    "17-6-2013": {
-        "tier": "Wifi LU",
-        "settings": {}
-    },
-    "18-6-2013": {
-        "tier": "Challenge Cup",
-        "settings": {}
-    },
-    "19-6-2013": {
-        "tier": "VGC 2013",
-        "settings": {}
-    },
-    "20-6-2013": {
+    "4-7-2013": {
         "tier": "HGSS OU",
         "settings": {}
     },
-    "21-6-2013": {
-        "tier": "Clear Skies",
-        "settings": {}
-    },
-    "22-6-2013": {
-        "tier": "Wifi UU",
-        "settings": {}
-    },
-    "23-6-2013": {
-        "tier": "Battle Factory 6v6",
-        "settings": {}
-    },
-    "24-6-2013": {
-        "tier": "Wifi Ubers",
-        "settings": {}
-    },
-    "25-6-2013": {
-        "tier": "Wifi NU",
-        "settings": {}
-    },
-    "26-6-2013": {
-        "tier": "RBY OU",
-        "settings": {}
-    },
-    "27-6-2013": {
-        "tier": "Wifi NEU",
-        "settings": {}
-    },
-    "28-6-2013": {
-        "tier": "Wifi LU",
-        "settings": {}
-    },
-    "29-6-2013": {
-        "tier": "Wifi OU",
-        "settings": {}
-    },
-    "30-6-2013": {
+    "5-7-2013": {
         "tier": "Monotype",
         "settings": {}
     },
-    "31-5-2013": {
+    "6-7-2013": {
+        "tier": "Wifi OU",
+        "settings": {}
+    },
+    "7-7-2013": {
+        "tier": "No Preview Ubers",
+        "settings": {}
+    },
+    "8-7-2013": {
         "tier": "Wifi LU",
+        "settings": {}
+    },
+    "9-7-2013": {
+        "tier": "Monogen",
+        "settings": {}
+    },
+    "10-7-2013": {
+        "tier": "Wifi NU",
+        "settings": {}
+    },
+    "11-7-2013": {
+        "tier": "RBY OU",
+        "settings": {}
+    },
+    "12-7-2013": {
+        "tier": "Wifi OU Doubles",
+        "settings": {}
+    },
+    "13-7-2013": {
+        "tier": "Battle Factory 6v6",
+        "settings": {}
+    },
+    "14-7-2013": {
+        "tier": "Wifi Ubers",
+        "settings": {}
+    },
+    "15-7-2013": {
+        "tier": "Wifi LC",
+        "settings": {}
+    },
+    "16-7-2013": {
+        "tier": "Challenge Cup",
+        "settings": {
+            "gen": "HGSS"
+        }
+    },
+    "17-7-2013": {
+        "tier": "Wifi UU",
+        "settings": {}
+    },
+    "18-7-2013": {
+        "tier": "Wifi Triples",
+        "settings": {}
+    },
+    "19-7-2013": {
+        "tier": "Monocolour",
+        "settings": {}
+    },
+    "20-7-2013": {
+        "tier": "Wifi OU",
+        "settings": {}
+    },
+    "21-7-2013": {
+        "tier": "VGC 2013",
+        "settings": {}
+    },
+    "22-7-2013": {
+        "tier": "Wifi NEU",
+        "settings": {}
+    },
+    "23-7-2013": {
+        "tier": "Adv OU",
+        "settings": {}
+    },
+    "24-7-2013": {
+        "tier": "Wifi LU",
+        "settings": {}
+    },
+    "25-7-2013": {
+        "tier": "No Preview OU",
+        "settings": {}
+    },
+    "26-7-2013": {
+        "tier": "Wifi Ubers",
+        "settings": {}
+    },
+    "27-7-2013": {
+        "tier": "Monotype",
+        "settings": {}
+    },
+    "28-7-2013": {
+        "tier": "Battle Factory",
+        "settings": {}
+    },
+    "29-7-2013": {
+        "tier": "Wifi OU",
+        "settings": {}
+    },
+    "30-7-2013": {
+        "tier": "Challenge Cup",
+        "settings": {}
+    },
+    "31-7-2013": {
+        "tier": "Wifi NU",
+        "settings": {}
+    },
+    "30-6-2013": {
+        "tier": "Wifi OU",
         "settings": {}
     }
 }
