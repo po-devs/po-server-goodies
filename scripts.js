@@ -1969,6 +1969,7 @@ beforePlayerBan : function(src, dest, dur) {
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
+    callplugins("onBan", src);
 },
 
 beforePlayerKick:function(src, dest){
@@ -2202,7 +2203,7 @@ beforePlayerRegister : function(src) {
         return;
     }
     var limit = Config.registeredLimit;
-    if (limit > 0 && sys.numRegistered(sys.ip(src)) > limit && sys.auth(src) === 0) {
+    if (limit > 0 && sys.numRegistered(sys.ip(src)) >= limit && sys.auth(src) === 0) {
         sys.stopEvent();
         normalbot.sendMessage(src, "You cannot register more than " + limit + " names!");
         return;

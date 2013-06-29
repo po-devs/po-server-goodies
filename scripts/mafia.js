@@ -4280,7 +4280,16 @@ return;
             }
         }
     };
-
+    
+    this.onBan = function (src) {
+        if (this.isInGame(sys.name(src))) {
+            this.slayUser(Config.Mafia.bot, sys.name(src));
+        }
+        if (sys.isInChannel(src, mafiachan)) {
+            sys.kick(src, mafiachan);
+        }
+    };
+    
     this.onMban = function (src) {
         if (this.isInGame(sys.name(src))) {
             this.slayUser(Config.Mafia.bot, sys.name(src));
