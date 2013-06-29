@@ -486,7 +486,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
     sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> Time's up!" + incorrectAnswers, triviachan);
     this.sendAll("Answered correctly: " + answeredCorrectly.join(", "), triviachan);
     var x = answers.length != 1 ? "answers were" : "answer was";
-    sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> The correct " + x + ": <b>" + answers.join(", ") + "</b>", triviachan);
+    sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±Psyduck:</b></font> The correct " + x + ": <b>" + utilities.html_escape(answers.join(", ")) + "</b>", triviachan);
     if (answeredCorrectly.length !== 0) {
         var totalPlayers = 0;
         for (var id in this.triviaPlayers) {
