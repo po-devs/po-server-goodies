@@ -185,7 +185,7 @@ function PMcheckq(src, channel) {
     Trivia.sendPM(src, "Answer: " + questionInfo.answer, channel);
     Trivia.sendPM(src, "Questions Approved: " + triviaq.questionAmount() + ". Questions Left: " + trivreview.questionAmount() + ".", channel);
     if (questionInfo.name !== undefined) {
-        if (+questionId === -1) {
+        if (+questionId < 0) {
             Trivia.sendPM(src, "Put into edit by: " + questionInfo.name, channel);
         } else {
             Trivia.sendPM(src, "Submitted By: " + questionInfo.name, channel);
@@ -738,7 +738,7 @@ QuestionHolder.prototype.checkq = function (id) {
     triviabot.sendAll("Answer: " + questionInfo.answer, revchan);
     triviabot.sendAll("Questions Approved: " + triviaq.questionAmount() + ". Questions Left: " + trivreview.questionAmount() + ".", revchan);
     if (questionInfo.name !== undefined) {
-        if (+questionId === -1) {
+        if (+questionId < 0) {
             triviabot.sendAll("Put into edit by: " + questionInfo.name, revchan);
         } else {
             triviabot.sendAll("Submitted By: " + questionInfo.name, revchan);
@@ -1486,13 +1486,15 @@ addAdminCommand("showq", function (src, commandData, channel) {
 
 addAdminCommand("editq", function (src, commandData, channel) {
     var q = triviaq.get(commandData);
-    if (trivreview.get(-1)) {
-        triviabot.sendMessage(src, "A question is already in edit, use /checkq to see it!");
-        return;
+    var id = -1;
+    if (trivreview.get(id)) {
+        id = Object.keys(trivreview.all()).sort(function (a, b) {
+            return a - b;
+        })[0];
     }
     if (q !== null) {
         triviaq.remove(commandData);
-        trivreview.state.questions.add(-1, q.category + ":::" + q.question + ":::" + q.answer + ":::" + sys.name(src));
+        trivreview.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + sys.name(src));
         trivreview.checkq();
         return;
     }
