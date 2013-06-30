@@ -725,17 +725,6 @@ QuestionHolder.prototype.remove = function (id) {
 };
 
 QuestionHolder.prototype.checkq = function (id) {
-    if (trivreview.editingMode === true) {
-        sendChanAll("", revchan);
-        triviabot.sendAll("This question needs to be reviewed:", revchan);
-        triviabot.sendAll("EDITING MODE: USE THE CHANGE COMMANDS TO EDIT AND THEN /ACCEPT OR /DECLINE TO DELETE", revchan);
-        triviabot.sendAll("Category: " + trivreview.editingCategory, revchan);
-        triviabot.sendAll("Question: " + trivreview.editingQuestion, revchan);
-        triviabot.sendAll("Answer: " + trivreview.editingAnswer, revchan);
-        triviabot.sendAll("Questions Approved: " + triviaq.questionAmount() + ". Questions Left: " + trivreview.questionAmount() + ".", revchan);
-        sendChanAll("", revchan);
-        return;
-    }
     if (trivreview.questionAmount() === 0) {
         triviabot.sendAll("There are no more questions to be reviewed.", revchan);
         return;
@@ -1461,13 +1450,6 @@ addAdminCommand("pushback", function (src, commandData, channel) {
 }, "Allows you to push back a question");
 
 addAdminCommand("accept", function (src, commandData, channel) {
-    if (trivreview.editingMode === true) {
-        triviaq.add(trivreview.editingCategory, trivreview.editingQuestion, trivreview.editingAnswer);
-        trivreview.editingMode = false;
-        triviabot.sendAll("The question in edit was saved", channel);
-        trivreview.checkq(trivreview.currentId);
-        return;
-    }
     var tr = trivreview.all();
     if (trivreview.questionAmount() !== 0) {
         if ((time() - trivreview.declineTime) <= 2) {
@@ -1507,32 +1489,20 @@ addAdminCommand("showq", function (src, commandData, channel) {
 
 addAdminCommand("editq", function (src, commandData, channel) {
     var q = triviaq.get(commandData);
-    if (trivreview.editingMode === true) {
+    if (trivreview.get(-1) === true) {
         triviabot.sendMessage(src, "A question is already in edit, use /checkq to see it!");
         return;
     }
     if (q !== null) {
-        trivreview.editingMode = true;
-        trivreview.editingQuestion = q.question;
-        trivreview.editingCategory = q.category;
-        trivreview.editingAnswer = q.answer; //Moving it to front of queue seemed like a tedious job, so let's cheat it in, instead :3
         triviaq.remove(commandData);
-        var tr = trivreview.all();
-        var id = Object.keys(tr)[0];
-        trivreview.currentId = id;
-        trivreview.checkq(); //id isn't needed or shouldn't be needed
+        trivreview.state.questions.add(-1, q.category + ":::" + q.question + ":::" + q.answer);
+        trivreview.checkq();
         return;
     }
     triviabot.sendMessage(src, "This question does not exist", channel);
 }, "Allows you to edit an already submitted question");
 
 addAdminCommand("decline", function (src, commandData, channel) {
-    if (trivreview.editingMode === true) {
-        trivreview.editingMode = false;
-        triviabot.sendAll("The question in edit was deleted", channel);
-        trivreview.checkq(trivreview.currentId);
-        return;
-    }
     var tr = trivreview.all();
     if (trivreview.questionAmount() !== 0) {
         if ((time() - trivreview.declineTime) <= 2) {
