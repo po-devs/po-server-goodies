@@ -1490,7 +1490,7 @@ addAdminCommand("editq", function (src, commandData, channel) {
     if (trivreview.get(id)) {
         id = Object.keys(trivreview.all()).sort(function (a, b) {
             return a - b;
-        })[0];
+        })[0] - 1;
     }
     if (q !== null) {
         triviaq.remove(commandData);
