@@ -1486,7 +1486,7 @@ addAdminCommand("showq", function (src, commandData, channel) {
 
 addAdminCommand("editq", function (src, commandData, channel) {
     var q = triviaq.get(commandData);
-    if (trivreview.get(-1) === true) {
+    if (trivreview.get(-1)) {
         triviabot.sendMessage(src, "A question is already in edit, use /checkq to see it!");
         return;
     }
