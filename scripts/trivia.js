@@ -185,7 +185,7 @@ function PMcheckq(src, channel) {
     Trivia.sendPM(src, "Answer: " + questionInfo.answer, channel);
     Trivia.sendPM(src, "Questions Approved: " + triviaq.questionAmount() + ". Questions Left: " + trivreview.questionAmount() + ".", channel);
     if (questionInfo.name !== undefined) {
-        if (questionId === -1) {
+        if (+questionId === -1) {
             Trivia.sendPM(src, "Put into edit by: " + questionInfo.name, channel);
         } else {
             Trivia.sendPM(src, "Submitted By: " + questionInfo.name, channel);
@@ -738,7 +738,7 @@ QuestionHolder.prototype.checkq = function (id) {
     triviabot.sendAll("Answer: " + questionInfo.answer, revchan);
     triviabot.sendAll("Questions Approved: " + triviaq.questionAmount() + ". Questions Left: " + trivreview.questionAmount() + ".", revchan);
     if (questionInfo.name !== undefined) {
-        if (questionId === -1) {
+        if (+questionId === -1) {
             triviabot.sendAll("Put into edit by: " + questionInfo.name, revchan);
         } else {
             triviabot.sendAll("Submitted By: " + questionInfo.name, revchan);
