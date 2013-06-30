@@ -2194,6 +2194,10 @@ afterLogIn : function(src) {
     if (sys.auth(src) <= 3 && this.canJoinStaffChannel(src) && sys.ip(src) != sys.dbIp("Shadowfist"))
         sys.putInChannel(src, staffchannel);
     
+    if (isAndroid(src)) {
+        normalbot.sendMessage(src, "There's now an android teambuilder at: http://pkmn.in !");
+        normalbot.sendMessage(src, "Remember to report any android related bugs at: https://docs.google.com/document/d/1TPuZUx85uc5wVN_tzxDoNOTfGN8PkFWqPrVZY3i1UVU/edit");
+    }
 }, /* end of afterLogin */
 
 beforePlayerRegister : function(src) {
