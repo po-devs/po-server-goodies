@@ -165,17 +165,6 @@ function canUseReviewCommands(name) {
 }
 
 function PMcheckq(src, channel) {
-    if (trivreview.editingMode === true) {
-        sys.sendMessage(src, "", channel);
-        triviabot.sendMessage(src, "This question needs to be reviewed:", channel);
-        triviabot.sendMessage(src, "EDITING MODE: USE THE CHANGE COMMANDS TO EDIT AND THEN /ACCEPT OR /DECLINE TO DELETE", channel);
-        triviabot.sendMessage(src, "Category: " + trivreview.editingCategory, channel);
-        triviabot.sendMessage(src, "Question: " + trivreview.editingQuestion, channel);
-        triviabot.sendMessage(src, "Answer: " + trivreview.editingAnswer, channel);
-        triviabot.sendMessage(src, "Questions Approved: " + triviaq.questionAmount() + ". Questions Left: " + trivreview.questionAmount() + ".", channel);
-        sys.sendMessage(src, "", channel);
-        return;
-    }
     if (trivreview.questionAmount() === 0) {
         Trivia.sendPM(src, "There are no questions to be reviewed.", channel);
         return;
@@ -196,7 +185,11 @@ function PMcheckq(src, channel) {
     Trivia.sendPM(src, "Answer: " + questionInfo.answer, channel);
     Trivia.sendPM(src, "Questions Approved: " + triviaq.questionAmount() + ". Questions Left: " + trivreview.questionAmount() + ".", channel);
     if (questionInfo.name !== undefined) {
-        Trivia.sendPM(src, "Submitted By: " + questionInfo.name, channel);
+        if (questionId === -1) {
+            Trivia.sendPM(src, "Put into edit by: " + questionInfo.name, channel);
+        } else {
+            Trivia.sendPM(src, "Submitted By: " + questionInfo.name, channel);
+        }
     }
     sys.sendMessage(src, "", channel);
 }
@@ -745,7 +738,11 @@ QuestionHolder.prototype.checkq = function (id) {
     triviabot.sendAll("Answer: " + questionInfo.answer, revchan);
     triviabot.sendAll("Questions Approved: " + triviaq.questionAmount() + ". Questions Left: " + trivreview.questionAmount() + ".", revchan);
     if (questionInfo.name !== undefined) {
-        triviabot.sendAll("Submitted By: " + questionInfo.name, revchan);
+        if (questionId === -1) {
+            triviabot.sendAll("Put into edit by: " + questionInfo.name, revchan);
+        } else {
+            triviabot.sendAll("Submitted By: " + questionInfo.name, revchan);
+        }
     }
     sendChanAll("", revchan);
 };
@@ -1495,7 +1492,7 @@ addAdminCommand("editq", function (src, commandData, channel) {
     }
     if (q !== null) {
         triviaq.remove(commandData);
-        trivreview.state.questions.add(-1, q.category + ":::" + q.question + ":::" + q.answer);
+        trivreview.state.questions.add(-1, q.category + ":::" + q.question + ":::" + q.answer + ":::" + sys.name(src));
         trivreview.checkq();
         return;
     }
