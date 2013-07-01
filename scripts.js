@@ -2209,7 +2209,7 @@ beforePlayerRegister : function(src) {
     var limit = Config.registeredLimit;
     if (limit > 0 && sys.numRegistered(sys.ip(src)) >= limit && sys.auth(src) === 0) {
         sys.stopEvent();
-        normalbot.sendMessage(src, "You cannot register more than " + limit + " names!");
+        normalbot.sendMessage(src, "You cannot register more than " + limit + " names! Use /myalts to get a list of your alts.");
         return;
     }
 },
