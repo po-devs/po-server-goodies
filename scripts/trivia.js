@@ -1558,7 +1558,7 @@ addAdminCommand("submitban", function (src, commandData, channel) {
         return;
     }
     var tarip = sys.id(user) === undefined ? sys.dbIp(user) : sys.ip(sys.id(user));
-    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user));
+    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user);
     if (sys.maxAuth(tarip) >= sys.auth(src) && !ok) {
         triviabot.sendMessage(src, "Can't do that to higher auth!", channel);
         return;
@@ -1662,7 +1662,7 @@ addAdminCommand("triviamute", function (src, commandData, channel) {
         return;
     }
     var tarip = sys.id(user) === undefined ? sys.dbIp(user) : sys.ip(sys.id(user));
-    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user));
+    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user);
     if (sys.maxAuth(tarip) >= sys.auth(src) && !ok) {
         triviabot.sendMessage(src, "Can't do that to higher auth!", channel);
         return;
@@ -1803,13 +1803,13 @@ module.exports = {
             if (sys.auth(src) > 1 || tadmin.isTAdmin(sys.name(src))) {
                 sys.sendMessage(src, "*** Trivia Admin commands ***", channel);
                 adminCommandHelp.forEach(function (h) {
-                    sys,sendMessage(src, h, channel);
+                    sys.sendMessage(src, h, channel);
                 });
             }
             if (isTriviaOwner(src)) {
                 sys.sendMessage(src, "*** Trivia Owner commands ***", channel);
                 ownerCommandHelp.forEach(function (h) {
-                    sys,sendMessage(src, h, channel);
+                    sys.sendMessage(src, h, channel);
                 });
             }
         }
