@@ -156,7 +156,7 @@ function isTriviaOwner(src) {
     return false;
 }
 
-function canUseReviewCommands(name) {
+function hasReviewAccess(name) {
     var id = sys.id(name);
     var contribs = id !== undefined ? SESSION.users(id).contributions !== undefined : false;
     var cauth = false;
@@ -877,26 +877,32 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
 var userCommands = {};
 var adminCommands = {};
 var ownerCommands = {};
-var commandHelp = [];
-
-function addCommand(ds, commands, callback, help) {
-    commands = [].concat(commands);
-    for (var i = 0; i < commands.length; ++i) {
-        ds[commands[i]] = callback;
-    }
-    commandHelp.push("/" + commands[0] + ": " + (help === undefined ? "no help" : help));
-}
+var userCommandHelp = [];
+var adminCommandHelp = [];
+var ownerCommandHelp = [];
 
 function addUserCommand(commands, callback, help) {
-    return addCommand(userCommands, commands, callback, help);
+    commands = [].concat(commands);
+        for (var i = 0; i < commands.length; ++i) {
+        userCommands[commands[i]] = callback;
+    }
+    userCommandHelp.push("/" + commands[0] + ": " + (help === undefined ? "no help" : help));
 }
 
 function addAdminCommand(commands, callback, help) {
-    return addCommand(adminCommands, commands, callback, help);
+    commands = [].concat(commands);
+        for (var i = 0; i < commands.length; ++i) {
+        adminCommands[commands[i]] = callback;
+    }
+    adminCommandHelp.push("/" + commands[0] + ": " + (help === undefined ? "no help" : help));
 }
 
 function addOwnerCommand(commands, callback, help) {
-    return addCommand(ownerCommands, commands, callback, help);
+    commands = [].concat(commands);
+        for (var i = 0; i < commands.length; ++i) {
+        ownerCommands[commands[i]] = callback;
+    }
+    ownerCommandHelp.push("/" + commands[0] + ": " + (help === undefined ? "no help" : help));
 }
 
 addUserCommand("categories", function (src, commandData, channel) {
@@ -1552,7 +1558,7 @@ addAdminCommand("submitban", function (src, commandData, channel) {
         return;
     }
     var tarip = sys.id(user) === undefined ? sys.dbIp(user) : sys.ip(sys.id(user));
-    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user) && !canUseReviewCommands(user.toLowerCase());
+    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user));
     if (sys.maxAuth(tarip) >= sys.auth(src) && !ok) {
         triviabot.sendMessage(src, "Can't do that to higher auth!", channel);
         return;
@@ -1656,7 +1662,7 @@ addAdminCommand("triviamute", function (src, commandData, channel) {
         return;
     }
     var tarip = sys.id(user) === undefined ? sys.dbIp(user) : sys.ip(sys.id(user));
-    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user) && !canUseReviewCommands(user.toLowerCase());
+    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user));
     if (sys.maxAuth(tarip) >= sys.auth(src) && !ok) {
         triviabot.sendMessage(src, "Can't do that to higher auth!", channel);
         return;
@@ -1742,132 +1748,147 @@ addAdminCommand("autostart", function (src, commandData, channel) {
     triviabot.sendAll("" + sys.name(src) + " turned auto start " + (Trivia.autostart === true ? "on" : "off") + ".", revchan);
 }, "Auto start games.");
 
-// Normal command handling.
-exports.handleCommand = function trivia_handleCommand(src, command, channel) {
-    var commandData;
-    var indx = command.indexOf(' ');
-    if (indx != -1) {
-        commandData = command.substr(indx + 1);
-        command = command.substr(0, indx).toLowerCase();
-    }
-    else {
-        commandData = ""; // sane default to avoid undefined errors
-    }
-    if (command == "tadmins") {
-        command = "triviaadmins"; //allows both to be used
-    }
-    // Only care about trivia channels
-    if (channel != triviachan && channel != revchan && ["triviamute", "triviaunmute", "flashtas", "triviaadmins"].indexOf(command) == -1)
-        return;
 
-    try {
-        // Trivia user commands
-        if (userCommands.hasOwnProperty(command)) {
-            userCommands[command].call(null, src, commandData, channel);
+module.exports = {
+    // Normal command handling.
+    handleCommand: function trivia_handleCommand(src, command, channel) {
+        var commandData;
+        var indx = command.indexOf(' ');
+        if (indx != -1) {
+            commandData = command.substr(indx + 1);
+            command = command.substr(0, indx).toLowerCase();
+        }
+        else {
+            commandData = ""; // sane default to avoid undefined errors
+        }
+        if (command == "tadmins") {
+            command = "triviaadmins"; //allows both to be used
+        }
+        // Only care about trivia channels
+        if (channel != triviachan && channel != revchan && ["triviamute", "triviaunmute", "flashtas", "triviaadmins"].indexOf(command) == -1)
+            return;
+
+        try {
+            // Trivia user commands
+            if (userCommands.hasOwnProperty(command)) {
+                userCommands[command].call(null, src, commandData, channel);
+                return true;
+            }
+            // Trivia admin commands
+            if (sys.auth(src) > 0 || tadmin.isTAdmin(sys.name(src))) {
+                if (adminCommands.hasOwnProperty(command)) {
+                    adminCommands[command].call(null, src, commandData, channel);
+                    return true;
+                }
+            }
+            // Trivia owner commands
+            if (isTriviaOwner(src)) {
+                if (ownerCommands.hasOwnProperty(command)) {
+                    ownerCommands[command].call(null, src, commandData, channel);
+                    return true;
+                }
+            }
+        }
+        catch (e) {
+            sys.sendMessage(src, "Error in your trivia command: " + e + " on line " + e.lineNumber, channel);
+        }
+    },
+
+    onHelp: function trivia_onHelp(src, commandData, channel) {
+        if (commandData.toLowerCase() == "trivia") {
+            sys.sendMessage(src, "*** Trivia commands ***", channel);
+            userCommandHelp.forEach(function (h) {
+                sys.sendMessage(src, h, channel);
+            });
+            if (sys.auth(src) > 1 || tadmin.isTAdmin(sys.name(src))) {
+                sys.sendMessage(src, "*** Trivia Admin commands ***", channel);
+                adminCommandHelp.forEach(function (h) {
+                    sys,sendMessage(src, h, channel);
+                });
+            }
+            if (isTriviaOwner(src)) {
+                sys.sendMessage(src, "*** Trivia Owner commands ***", channel);
+                ownerCommandHelp.forEach(function (h) {
+                    sys,sendMessage(src, h, channel);
+                });
+            }
+        }
+    },
+
+    onMute: trivia_onMute,
+    onKick: trivia_onMute,
+    onBan: trivia_onMute,
+
+    beforeChannelJoin: function trivia_beforeChannelJoin(src, channel) {
+        /* Prevent channel join */
+        if (channel == revchan && sys.auth(src) < 1 && !tadmin.isTAdmin(sys.name(src).toLowerCase()) && !hasReviewAccess(sys.name(src))) {
+            sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
+            sys.stopEvent();
+            return;
+        }
+    },
+
+    afterChannelJoin: function trivia_afterChannelJoin(src, channel) {
+        if (channel === revchan) {
+            PMcheckq(src, channel);
+        }
+    },
+
+    beforeChannelLeave: function trivia_beforeChannelLeave(src, channel) {
+        if (Trivia.started === true && channel === triviachan) {
+            Trivia.unjoin(src);
+        }
+    },
+
+    beforeChatMessage: function trivia_beforeChatMessage(src, message, channel) {
+        if (channel !== triviachan)
+            return;
+
+        if (message.substr(0, 5) == "\\join") {
+            Trivia.sendPM(src, "You must use /join to join a Trivia game!", channel);
             return true;
         }
-        // Trivia admin commands
-        if (sys.auth(src) > 0 || tadmin.isTAdmin(sys.name(src)) || canUseReviewCommands(sys.name(src).toLowerCase())) {
-            if (adminCommands.hasOwnProperty(command)) {
-                adminCommands[command].call(null, src, commandData, channel);
+
+        if (utilities.is_command(message) && message.substr(1, 2).toLowerCase() != "me")
+            return;
+
+        /* Trivia checks */
+        var joined = Trivia.playerPlaying(src);
+        if (Trivia.started === true) {
+            if (joined === false && Trivia.answeringQuestion === true) {
+                Trivia.sendPM(src, "You haven't joined, so you are unable to submit an answer. Type /join to join.", channel);
                 return true;
             }
         }
-        // Trivia owner commands
-        if (isTriviaOwner(src)) {
-            if (ownerCommands.hasOwnProperty(command)) {
-                ownerCommands[command].call(null, src, commandData, channel);
+        if (joined === true && Trivia.started === true && Trivia.answeringQuestion === true) {
+            if (message.length > 60) {
+                Trivia.sendPM(src, "Sorry! Your answer is too long.", channel);
                 return true;
             }
-        }
-    }
-    catch (e) {
-        sys.sendMessage(src, "Error in your trivia command: " + e + " on line " + e.lineNumber, channel);
-    }
-};
-
-exports.onHelp = function trivia_onHelp(src, commandData, channel) {
-    if (commandData.toLowerCase() == "trivia") {
-        sys.sendMessage(src, "", channel);
-        sys.sendMessage(src, "Trivia commands", channel);
-        sys.sendMessage(src, "", channel);
-        commandHelp.forEach(function (h) {
-            sys.sendMessage(src, h, channel);
-        });
-    }
-};
-
-exports.onMute = trivia_onMute;
-exports.onKick = trivia_onMute;
-exports.onBan = trivia_onMute;
-
-exports.beforeChannelJoin = function trivia_beforeChannelJoin(src, channel) {
-    /* Prevent channel join */
-    if (channel == revchan && sys.auth(src) < 1 && !tadmin.isTAdmin(sys.name(src).toLowerCase()) && !canUseReviewCommands(sys.name(src))) {
-        sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
-        sys.stopEvent();
-        return;
-    }
-};
-
-exports.afterChannelJoin = function trivia_afterChannelJoin(src, channel) {
-    if (channel === revchan) {
-        PMcheckq(src, channel);
-    }
-};
-
-exports.beforeChannelLeave = function trivia_beforeChannelLeave(src, channel) {
-    if (Trivia.started === true && channel === triviachan) {
-        Trivia.unjoin(src);
-    }
-};
-
-exports.beforeChatMessage = function trivia_beforeChatMessage(src, message, channel) {
-    if (channel !== triviachan)
-        return;
-
-    if (message.substr(0, 5) == "\\join") {
-        Trivia.sendPM(src, "You must use /join to join a Trivia game!", channel);
-        return true;
-    }
-
-    if (utilities.is_command(message) && message.substr(1, 2).toLowerCase() != "me")
-        return;
-
-    /* Trivia checks */
-    var joined = Trivia.playerPlaying(src);
-    if (Trivia.started === true) {
-        if (joined === false && Trivia.answeringQuestion === true) {
-            Trivia.sendPM(src, "You haven't joined, so you are unable to submit an answer. Type /join to join.", channel);
+            // Remove commas so the listing looks better
+            // This is fine as no answers should include comma.
+            Trivia.addAnswer(src, message.replace(/,/gi, ""));
+            Trivia.sendPM(src, "Your answer was submitted.", triviachan);
             return true;
         }
-    }
-    if (joined === true && Trivia.started === true && Trivia.answeringQuestion === true) {
-        if (message.length > 60) {
-            Trivia.sendPM(src, "Sorry! Your answer is too long.", channel);
+        if (isTrivia("muted", sys.ip(src))) {
+            var mute = trivData.mutes[sys.ip(src)];
+            triviabot.sendMessage(src, "You are trivia muted by " + mute.by + (mute.expires == "never" ? "" : " for " + getTimeString(mute.expires - sys.time())) + "! [Reason: " + mute.reason + "]", channel);
             return true;
         }
-        // Remove commas so the listing looks better
-        // This is fine as no answers should include comma.
-        Trivia.addAnswer(src, message.replace(/,/gi, ""));
-        Trivia.sendPM(src, "Your answer was submitted.", triviachan);
-        return true;
-    }
-    if (isTrivia("muted", sys.ip(src))) {
-        var mute = trivData.mutes[sys.ip(src)];
-        triviabot.sendMessage(src, "You are trivia muted by " + mute.by + (mute.expires == "never" ? "" : " for " + getTimeString(mute.expires - sys.time())) + "! [Reason: " + mute.reason + "]", channel);
-        return true;
-    }
-};
+    },
 
-exports.init = function trivia_init() {
-    triviachan = sys.channelId('Trivia');
-    revchan = sys.channelId('TrivReview');
-    if (typeof Trivia === "undefined" || typeof Trivia != "object") {
-        Trivia = new TriviaGame();
-        triviaq = new QuestionHolder("triviaq.txt");
-        trivreview = new QuestionHolder("trivreview.txt");
-        tadmin = new TriviaAdmin("tadmins.txt");
-    }
-    //Trivia.sendAll("Trivia is now running!");
+    init: function trivia_init() {
+        triviachan = sys.channelId('Trivia');
+        revchan = sys.channelId('TrivReview');
+        if (typeof Trivia === "undefined" || typeof Trivia != "object") {
+            Trivia = new TriviaGame();
+            triviaq = new QuestionHolder("triviaq.txt");
+            trivreview = new QuestionHolder("trivreview.txt");
+            tadmin = new TriviaAdmin("tadmins.txt");
+        }
+        //Trivia.sendAll("Trivia is now running!");
+    },
+    
+    "help-string": ["trivia: To know the trivia commands"]
 };
