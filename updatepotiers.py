@@ -24,13 +24,13 @@ DEFAULT_CUTOFF = 4.0
 SPECIAL_CUTOFFS = {}
 
 BANLIST = {
-    "Wifi OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Excadrill", "Blaziken", "Thundurus", "Kyurem-W", "Genesect", "Deoxys-D", "Tornadus-T"], # Ubers
-    "Wifi UU": ["Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Wobbuffet", "Deoxys-D", "Thundurus-T", "Tornadus-T", "Landorus-T", "Keldeo", "Chansey", "Hydreigon", "Gothitelle", "Froslass", "Garchomp", "Kyurem-B", "Haxorus"], # BL
+    "Wifi OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Excadrill", "Blaziken", "Kyurem-W", "Genesect", "Deoxys-D", "Tornadus-T"], # Ubers
+    "Wifi UU": ["Kyurem", "Latias", "Roserade", "Smeargle", "Staraptor", "Wobbuffet", "Deoxys-D", "Thundurus-T", "Tornadus-T", "Landorus-T", "Keldeo", "Chansey", "Hydreigon", "Gothitelle", "Froslass", "Garchomp", "Kyurem-B", "Haxorus", "Thundurus"], # BL
     "Wifi LU": ["Cresselia", "Victini", "Rhyperior", "Virizion", "Sharpedo", "Meloetta"], # BL2
-    "Wifi NU": ["Durant", "Feraligatr", "Gligar", "Hitmonlee", "Scolipede", "Jynx", "Druddigon", "Gothitelle", "Venomoth"], # BL3
+    "Wifi NU": ["Durant", "Feraligatr", "Gligar", "Hitmonlee", "Scolipede", "Jynx", "Druddigon", "Gothitelle", "Venomoth", "Gothorita"], # BL3
     "Wifi NEU": ["Mandibuzz"], # BL4
     #"No Preview OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Manaphy", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Blaziken", "Garchomp", "Chandelure", "Excadrill", "Kyurem-B", "Kyurem-W"], # DW Ubers
-    "Wifi LC": ["Scyther", "Sneasel", "Yanma", "Tangela", "Vulpix", "Carvanha", "Gligar", "Meditite", "Scraggy", "Murkrow"], # LC Ubers (in addition to all other pokemon...)
+    "Wifi LC": ["Scyther", "Sneasel", "Tangela", "Vulpix", "Gligar", "Meditite", "Scraggy", "Murkrow", "Mienfoo"], # LC Ubers (in addition to all other pokemon...)
     "Wifi LC UU": ["Poliwag", "Axew", "Shellder"], # Wifi LC BL
     # Scraggy, Meditite, Murkrow, Misdreavus, Gligar, and Drilbur to LC
 }
