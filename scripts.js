@@ -2196,7 +2196,7 @@ afterLogIn : function(src) {
     
     if (isAndroid(src)) {
         normalbot.sendMessage(src, "There's now an android teambuilder at: http://pkmn.in !");
-        normalbot.sendMessage(src, "Remember to report any android related bugs at: https://docs.google.com/document/d/1TPuZUx85uc5wVN_tzxDoNOTfGN8PkFWqPrVZY3i1UVU/edit");
+        normalbot.sendMessage(src, "Remember to report any android teambuilder related bugs at: http://pokemon-online.eu/forums/showthread.php?20883-TBuilder-for-Android");
     }
 }, /* end of afterLogin */
 
