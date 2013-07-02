@@ -564,8 +564,8 @@ POChannel.prototype.addRole = function(src, tar, group, data)
         return ["all", sys.name(src)+" made "+tar.toCorrectCase()+" a member!"];
     }
     if (group == "muted") {
-        if (this.isPunished(name) !== "none") {
-            return ["self", tar.toCorrectCase()+" is already "+this.isPunished(name)+" from this channel!"];
+        if (this.isPunished(name) === "banned") {
+            return ["self", tar.toCorrectCase()+" is already banned from this channel!"];
         }
         if (!this.hasPermission(src, tar)) {
             return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel mute them!"];
@@ -579,14 +579,17 @@ POChannel.prototype.addRole = function(src, tar, group, data)
                 return ["self", "You need to provide a reason for the channel mute!"];
             }
         }
+        var already = (this.isPunished(name) === "muted");
         this.muted[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time(),10) + data.time, "issuetime": parseInt(sys.time(),10), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
-        var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
-        return ["all", auth+" muted "+tar.toCorrectCase()+timestring+" in this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
+        var timestring = data.time > 0 ? getTimeString(data.time) : "";
+        if (!already) {
+            return ["all", auth + " muted " + tar.toCorrectCase() + (timestring === "" ? " permanently" : " for " + timestring) + " in this channel!" + (data.reason !== "" ? " [Reason: " + data.reason + "]" : "")];
+        }
+        else {
+            return ["all", tar.toCorrectCase() + "'s mute time in this channel was changed to " + (timestring === "" ? "forever" : timestring) + " by " + auth + "!" + (data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
+        }
     }
     if (group == "banned") {
-        if (this.isPunished(name) === "banned") {
-            return ["self", tar.toCorrectCase()+" is already banned from this channel!"];
-        }
         if (!this.hasPermission(src, tar)) {
             return ["self", tar.toCorrectCase()+" has equal or higher auth than you, so you can't channel ban them!"];
         }
@@ -598,9 +601,15 @@ POChannel.prototype.addRole = function(src, tar, group, data)
                 return ["self", "You need to provide a reason for the channel ban!"];
             }
         }
+        var already = (this.isPunished(name) === "banned");
         this.banned[name] = {"expiry": data.time === 0 ? "never" : parseInt(sys.time(),10) + data.time, "issuetime": parseInt(sys.time(),10), "auth": auth, "reason": data.reason !== "" ? data.reason : "N/A" };
-        var timestring = data.time > 0 ? " for "+getTimeString(data.time) : " permanently";
-        return ["all", auth+" banned "+tar.toCorrectCase()+timestring+" from this channel!"+(data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
+        var timestring = data.time > 0 ? getTimeString(data.time) : "";
+        if (!already) {
+            return ["all", auth + " banned " + tar.toCorrectCase() + (timestring === "" ? " permanently" : " for " + timestring) + " from this channel!" + (data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
+        }
+        else {
+            return ["all", tar.toCorrectCase() + "'s ban time from this channel was changed to " + (timestring === "" ? "forever" : timestring) + " by " + auth + "!" + (data.reason !== "" ? " [Reason: "+data.reason+"]" : "")];
+        }
     }
     return ["self", ""];
 };
