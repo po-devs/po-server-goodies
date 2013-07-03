@@ -1069,7 +1069,7 @@ function Mafia(mafiachan) {
                         sys.sendMessage(src, "±Game: Sorry, you have started a game " + (i + 1) + " games ago, let someone else have a chance!", mafiachan);
                         return;
                     }
-                    if (themeName !== "default" && what == themeName) {
+                    if (what == themeName) {
                         sys.sendMessage(src, "±Game: This theme was started " + (i + 1) + " games ago! No repeat!", mafiachan);
                         return;
                     }
