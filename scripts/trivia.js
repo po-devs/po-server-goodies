@@ -1501,6 +1501,7 @@ addAdminCommand("editq", function (src, commandData, channel) {
     if (q !== null) {
         triviaq.remove(commandData);
         trivreview.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + sys.name(src));
+        triviabot.sendAll(sys.name(src) + " placed a question at the top of the review queue.", revchan);
         trivreview.checkq();
         return;
     }
