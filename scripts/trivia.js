@@ -905,6 +905,19 @@ function addOwnerCommand(commands, callback, help) {
     ownerCommandHelp.push("/" + commands[0] + ": " + (help === undefined ? "no help" : help));
 }
 
+addUserCommand("triviarules", function (src, commandData, channel) {
+    sys.sendMessage(src, "", channel);
+    sys.sendMessage(src, "*** Trivia rules ***", channel);
+    sys.sendMessage(src, "1. #Trivia is an official channel, and as such, server rules apply in it:", channel);
+    sys.sendMessage(src, "- This means that every offense in chat will be handled by a moderator, and every offense in Trivia answers can be punished with a Triviamute from any Trivia Admin, and in extreme cases may result in a server punishment as well.", channel);
+    sys.sendMessage(src, "2. Do not abuse Trivia commands or hamper game progression:", channel);
+    sys.sendMessage(src, "- This includes, but is not limited to, joining and unjoining a game repeatedly, joining a game just to answer a single question then immediately leaving multiple times, purposefully getting answers wrong in order to prolong a game from ending.", channel);
+    sys.sendMessage(src, "3. Do not excessively brag or complain about other players' skill:", channel);
+    sys.sendMessage(src, "- Trivia is a game for all to enjoy, and bad sportsmanship can turn that into a less pleasant experience for everyone involved.", channel);
+    sys.sendMessage(src, "4. Do not abuse question submission:", channel);
+    sys.sendMessage(src, "- This includes, but is not limited to, submitting questions that are plainly wrong, offensive to other users, racist, inappropriate, trolling, spamming the same question multiple times, purposefully submitting questions that are already in the database. Trivia Admins can revoke a user's submitting privileges at any time id they deem it necessary.", channel);
+}, "Shows the rules of the Trivia channel");
+
 addUserCommand("categories", function (src, commandData, channel) {
     if (typeof (triviaCategories) != "object") return;
     triviabot.sendMessage(src, triviaCategories.join(", "), channel);
@@ -912,13 +925,12 @@ addUserCommand("categories", function (src, commandData, channel) {
 }, "Allows you to view the trivia categories");
 
 addUserCommand("flashme", function (src, commandData, channel) {
-    switch (trivData.toFlash[sys.ip(src)]) {
-    case undefined:
+    if (trivData.toFlash[sys.ip(src)]) {
         trivData.toFlash[sys.ip(src)] = {};
         saveData();
         triviabot.sendMessage(src, "You are now going to be flashed when a game starts.", channel);
-        break;
-    default:
+    }
+    else {
         delete trivData.toFlash[sys.ip(src)];
         saveData();
         triviabot.sendMessage(src, "You are no longer going to be flashed when a game starts.", channel);
