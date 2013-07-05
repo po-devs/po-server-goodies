@@ -915,7 +915,7 @@ addUserCommand("triviarules", function (src, commandData, channel) {
     sys.sendMessage(src, "3. Do not excessively brag or complain about other players' skill:", channel);
     sys.sendMessage(src, "- Trivia is a game for all to enjoy, and bad sportsmanship can turn that into a less pleasant experience for everyone involved.", channel);
     sys.sendMessage(src, "4. Do not abuse question submission:", channel);
-    sys.sendMessage(src, "- This includes, but is not limited to, submitting questions that are plainly wrong, offensive to other users, racist, inappropriate, trolling, spamming the same question multiple times, purposefully submitting questions that are already in the database. Trivia Admins can revoke a user's submitting privileges at any time id they deem it necessary.", channel);
+    sys.sendMessage(src, "- This includes, but is not limited to, submitting questions that are plainly wrong, offensive to other users, racist, inappropriate, trolling, spamming the same question multiple times, purposefully submitting questions that are already in the database. Trivia Admins can revoke a user's submitting privileges at any time if they deem it necessary.", channel);
 }, "Shows the rules of the Trivia channel");
 
 addUserCommand("categories", function (src, commandData, channel) {
