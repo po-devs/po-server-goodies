@@ -2844,7 +2844,6 @@ function tourCommand(src, command, commandData, channel) {
                 }
             }
             tos.sort();
-            tas.sort();
             mus.sort();
             sys.sendMessage(src, "",channel);
             sys.sendMessage(src, "*** TOURNAMENT OWNERS ***",channel);
