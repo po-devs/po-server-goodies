@@ -1610,7 +1610,7 @@ function tourCommand(src, command, commandData, channel) {
             }
         }
         if (isMegaUser(src)) {
-            if (command == "tour" || command == "shift" || ((command == "tourstart" && isTourOwner(src))) {
+            if (command == "tour" || command == "shift" || ((command == "tourstart" && isTourOwner(src)))) {
                 if (!tours.working) {
                     sendBotMessage(src, 'Tournaments are disabled!', tourschan, false);
                     return true;
