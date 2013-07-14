@@ -1296,7 +1296,8 @@ var commands = {
         "/uptime: Shows time since the server was last offline.",
         "/players: Shows the number of players online.",
         "/sameTier [on/off]: Turn on/off auto-rejection of challenges from players in a different tier from you.",
-        "/seen [name]: Allows you to see the last login of a user."
+        "/seen [name]: Allows you to see the last login of a user.",
+        "/changetier [tier]:[team]: Allows you to switch tier. Team is a number between 0-5 indicating loaded teams. Default is 0"
     ],
     channel:
     [
@@ -1357,6 +1358,7 @@ var commands = {
         "/namewarns: Lists name warnings.",
         "/topchannels: To view the top channels.",
         "/onrange [range]: To view who is on a range.",
+        "/onos [os]: Lists players on a certain operating system (May lag a little with certain OS)",
         "/tier [name]: To view the tier(s) of a person.",
         "/battlehistory [name]: To view a person's battle history.",
         "/channelusers [channel]: Lists users on a channel."
@@ -2461,6 +2463,7 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "players") {
+        commandData = commandData.toLowerCase();
         if (["windows", "linux", "android", "mac", "webclient"].indexOf(commandData) !== -1) {
             var android = 0;
             sys.playerIds().forEach(function (id) {
@@ -2970,6 +2973,21 @@ userCommand: function(src, command, commandData, tar) {
         sys.changeName(src, "(⌐■_■)");
         return;
     }
+    if (command == "changetier") {
+        commandData = commandData.split(":");
+        var tier = utilities.find_tier(commandData[0]);
+        var team = 0;
+        if (commandData[1] && commandData[1] < sys.teamCount(src) -1) {
+            team = commandData[1];
+        }
+        if (tier && tier_checker.has_legal_team_for_tier(src, team, tier)) {
+            sys.changeTier(src, team, tier);
+            normalbot.sendMessage(src, "You switched to " + tier, channel);
+            return;
+        }
+        normalbot.sendMessage(src, "You cannot switch to " + tier, channel);
+        return;
+    }
     return "no command";
 },
 
@@ -3048,6 +3066,18 @@ modCommand: function(src, command, commandData, tar) {
         } else {
             sys.sendMessage(src,"Players: Nothing interesting here!",channel);
         }
+        return;
+    }
+    if (command == "onos") {
+        commandData = commandData.toLowerCase();
+        if (["windows", "linux", "android", "mac", "webclient"].indexOf(commandData) !== -1) {
+            var output = sys.playerIds().filter(function (id) {
+                return sys.os(id) === commandData;
+            }).map(sys.name);
+            querybot.sendMessage(src, "Players on OS " + commandData + " are: " + output.join(", "), channel);
+            return;
+        }
+        normalbot.sendMessage(src, commandData + " is not a valid OS", channel);
         return;
     }
     if (command == "tier")
