@@ -284,7 +284,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi LC"], function regeneratorCheck(src
 });
 
 //remove these after tiers are updated on server
-tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function bannedPokes(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function bannedPokesOU(src, team, tier) {
     for (var i = 0; i < 6; ++i) {
         var bans = ["Thundurus"];
         for (var j = 0; j < bans.length; j++) {
