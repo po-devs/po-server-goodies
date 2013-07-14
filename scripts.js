@@ -2463,7 +2463,9 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "players") {
-        commandData = commandData.toLowerCase();
+        if (commandData) {
+            commandData = commandData.toLowerCase();
+        }
         if (["windows", "linux", "android", "mac", "webclient"].indexOf(commandData) !== -1) {
             var android = 0;
             sys.playerIds().forEach(function (id) {
