@@ -284,6 +284,17 @@ tier_checker.add_new_check(INCLUDING, ["Wifi LC"], function regeneratorCheck(src
 });
 
 //remove these after tiers are updated on server
+tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function bannedPokes(src, team, tier) {
+    for (var i = 0; i < 6; ++i) {
+        var bans = ["Thundurus"];
+        for (var j = 0; j < bans.length; j++) {
+            if (sys.teamPoke(src, team, i) === sys.pokeNum(bans[j])){
+                return [bans[j] + " is banned in " + tier + "."];
+            }
+        }
+    }
+});
+
 tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU", "Wifi NEU"], function bannedPokes(src, team, tier) {
     for (var i = 0; i < 6; ++i) {
         var bans = ["Blissey", "Liepard"];
