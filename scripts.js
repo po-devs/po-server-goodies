@@ -241,7 +241,7 @@ function dwCheck(pokemon){
 }
 
 function calcStat (base, IV, EV, level, nature) {
-    var stat = Math.floor(Math.floor((IV + (2 * base) + (EV / 4)) * level / 100 + 5) * nature);
+    var stat = Math.floor(Math.floor((IV + (2 * base) + Math.floor(EV / 4)) * level / 100 + 5) * nature);
     return stat;
 };
 
@@ -249,7 +249,7 @@ function calcHP (base, IV, EV, level) {
     if (base === 1) {
         return 1;
     }
-    var HP = Math.floor((IV + (2 * base) + (EV / 4) + 100) * level / 100 + 10);
+    var HP = Math.floor((IV + (2 * base) + Math.floor(EV / 4) + 100) * level / 100 + 10);
     return HP;
 };
 
@@ -3016,7 +3016,7 @@ userCommand: function(src, command, commandData, tar) {
     if (command === "pokemon") {
         var pokeId = sys.pokeNum(commandData);
         if (!pokeId) {
-            sys.sendMessage(src, commandData + " is not a valid Pokémon!", channel);
+            normalbot.sendMessage(src, commandData + " is not a valid Pokémon!", channel);
             return;
         }
         var type1 = sys.type(sys.pokeType1(pokeId));
@@ -3024,12 +3024,7 @@ userCommand: function(src, command, commandData, tar) {
         var ability1 = sys.ability(sys.pokeAbility(pokeId, 0));
         var ability2 = sys.ability(sys.pokeAbility(pokeId, 1));
         var ability3 = sys.ability(sys.pokeAbility(pokeId, 2));
-        var baseHP = sys.baseStats(pokeId, 0);
-        var baseAttack = sys.baseStats(pokeId, 1);
-        var baseDefense = sys.baseStats(pokeId, 2);
-        var baseSpAtk = sys.baseStats(pokeId, 3);
-        var baseSpDef = sys.baseStats(pokeId, 4);
-        var baseSpeed = sys.baseStats(pokeId, 5);
+        var baseStats = sys.pokeBaseStats(pokeId);
         var stats = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"];
         var levels = [5, 50, 100];
         sys.sendHtmlMessage(src, "", channel);
@@ -3044,7 +3039,7 @@ userCommand: function(src, command, commandData, tar) {
         table += "<tr><th rowspan = 2 valign = middle><font size = 5>Stats</font></th><th rowspan = 2 valign = middle>Base</th><th colspan = 3>Level 5</th><th colspan = 3>Level 50</th><th colspan = 3>Level 100</th></tr>";
         table += "<tr><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th>";
         for (var x = 0; x < stats.length; x++) {
-            var baseStat = sys.baseStats(pokeId, x);
+            var baseStat = baseStats[x];
             table += "<tr><td valign = middle><b>" + stats[x] + "</b></td><td><center><font size = 4>" + baseStat + "</font></center></td>";
             for (var i = 0; i < levels.length; i++) {
                 if (x == 0) {
