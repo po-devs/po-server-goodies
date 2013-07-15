@@ -240,6 +240,60 @@ function dwCheck(pokemon){
     return true;
 }
 
+function calcStat (base, IV, EV, level, nature) {
+    var stat = Math.floor(Math.floor((IV + (2 * base) + (EV / 4)) * level / 100 + 5) * nature);
+    return stat;
+};
+
+function calcHP (base, IV, EV, level) {
+    if (base === 1) {
+        return 1;
+    }
+    var HP = Math.floor((IV + (2 * base) + (EV / 4) + 100) * level / 100 + 10);
+    return HP;
+};
+
+function getDBIndex (pokeId) {
+    var id = pokeId % 65536;
+    var forme = (pokeId - id) / 65536;
+    return id + ":" + forme;
+};
+
+function getWeight (pokeId) {
+    var data = sys.getFileContent('db/pokes/weight.txt').split('\n');
+    var key = getDBIndex(pokeId);
+    for (var i in data) {
+        var index = data[i].indexOf(" ");
+        var id = data[i].substr(0, index);
+        if (id === key){
+            return data[i].substr(index + 1);
+        }
+    }
+};
+
+function getHeight (pokeId) {
+    var data = sys.getFileContent('db/pokes/height.txt').split('\n');
+    var key = getDBIndex(pokeId);
+    for (var i in data) {
+        var index = data[i].indexOf(" ");
+        var id = data[i].substr(0, index);
+        if (id === key){
+            return data[i].substr(index + 1);
+        }
+    }
+};
+
+function weightPower (weight) {
+    var power = 0;
+    if (weight < 10) power = 20;
+    if (weight >= 10 && weight < 25) power = 40;
+    if (weight >= 25 && weight < 50) power = 60;
+    if (weight >= 50 && weight < 100) power = 80;
+    if (weight >= 100 && weight < 200) power = 100;
+    if (weight >= 200) power = 120;
+    return power;
+};
+
 function updateNotice() {
     var url = Config.base_url + "notice.html";
     sys.webCall(url, function (resp){
@@ -1287,6 +1341,7 @@ var commands = {
         //"/importable: Posts an importable of your team to pastebin.",
         "/dwreleased [Pokemon]: Shows the released status of a Pokemon's Dream World Ability",
         "/wiki [Pokémon]: Shows that Pokémon's wiki page",
+        "/pokemon [Pokémon]: Shows basic information for that Pokémon",
         "/register: Registers a channel with you as owner.",
         "/resetpass: Clears your password (unregisters you, remember to reregister).",
         "/auth [owners/admins/mods]: Lists auth of given level, shows all auth if left blank.",
@@ -2956,6 +3011,53 @@ userCommand: function(src, command, commandData, tar) {
         } else {
             normalbot.sendChanMessage(src, pokename + ": Not released, only usable on Dream World tiers!");
         }
+        return;
+    }
+    if (command === "pokemon") {
+        var pokeId = sys.pokeNum(commandData);
+        if (!pokeId) {
+            sys.sendMessage(src, commandData + " is not a valid Pokémon!", channel);
+            return;
+        }
+        var type1 = sys.type(sys.pokeType1(pokeId));
+        var type2 = sys.type(sys.pokeType2(pokeId));
+        var ability1 = sys.ability(sys.pokeAbility(pokeId, 0));
+        var ability2 = sys.ability(sys.pokeAbility(pokeId, 1));
+        var ability3 = sys.ability(sys.pokeAbility(pokeId, 2));
+        var baseHP = sys.baseStats(pokeId, 0);
+        var baseAttack = sys.baseStats(pokeId, 1);
+        var baseDefense = sys.baseStats(pokeId, 2);
+        var baseSpAtk = sys.baseStats(pokeId, 3);
+        var baseSpDef = sys.baseStats(pokeId, 4);
+        var baseSpeed = sys.baseStats(pokeId, 5);
+        var stats = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"];
+        var levels = [5, 50, 100];
+        sys.sendHtmlMessage(src, "", channel);
+        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.pokemon(pokeId) + "</font></b>", channel);
+        sys.sendHtmlMessage(src, "<img src='pokemon:num=" + pokeId + "'><img src='pokemon:num=" + pokeId + "&shiny=true'>", channel);
+        sys.sendHtmlMessage(src, "<b>Type:</b> " + type1 + (type2 === "???" ? "" : "/" + type2), channel);
+        sys.sendHtmlMessage(src, "<b>Abilities:</b> " + ability1 + (ability2 === "(No Ability)" ? "" : ", " + ability2) + (ability3 === "(No Ability)" ? "" : ", " + ability3 + " (Dream World)"), channel);
+        sys.sendHtmlMessage(src, "<b>Height:</b> " + getHeight(pokeId) + " m", channel);
+        sys.sendHtmlMessage(src, "<b>Weight:</b> " + getWeight(pokeId) + " kg", channel);
+        sys.sendHtmlMessage(src, "<b>Base Power of Low Kick/Grass Knot:</b> " + weightPower(getWeight(pokeId)), channel);
+        var table = "<table border = 1 cellpadding = 3>";
+        table += "<tr><th rowspan = 2 valign = middle><font size = 5>Stats</font></th><th rowspan = 2 valign = middle>Base</th><th colspan = 3>Level 5</th><th colspan = 3>Level 50</th><th colspan = 3>Level 100</th></tr>";
+        table += "<tr><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th>";
+        for (var x = 0; x < stats.length; x++) {
+            var baseStat = sys.baseStats(pokeId, x);
+            table += "<tr><td valign = middle><b>" + stats[x] + "</b></td><td><center><font size = 4>" + baseStat + "</font></center></td>";
+            for (var i = 0; i < levels.length; i++) {
+                if (x == 0) {
+                    table += "<td valign = middle><center>" + calcHP(baseStat, 31, 0, levels[i]) + "</center></td><td valign = middle><center>" + calcHP(baseStat, 31, 252, levels[i]) + "</center></td><td valign = middle><center>-</center></td>";
+                }
+                else {
+                    table += "<td valign = middle><center>" + calcStat(baseStat, 31, 0, levels[i], 1) + "</center></td><td valign = middle><center>" + calcStat(baseStat, 31, 252, levels[i], 1) + "</center></td><td valign = middle><center>" + calcStat(baseStat, 31, 252, levels[i], 1.1) + "</center></td>";
+                }
+            }
+            table += "</tr>";
+        }
+        table += "</table>";
+        sys.sendHtmlMessage(src, table, channel);
         return;
     }
     if (command == "wiki"){
