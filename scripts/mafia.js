@@ -3915,8 +3915,8 @@ return;
                         sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target your partners!", mafiachan);
                         return;
                     }
-                    this.addPhaseStalkAction(name, command, target.name);
                 }
+                this.addPhaseStalkAction(name, command, commandData);
 
                 var recharge = mafia.getRecharge(player, "standby", commandName);
                 if (recharge !== undefined && recharge > 0) {
