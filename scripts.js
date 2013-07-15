@@ -2891,7 +2891,15 @@ userCommand: function(src, command, commandData, tar) {
     }
     if (command == "myalts") {
         var ip = sys.ip(src);
-        var alts = sys.aliases(ip);
+        var alts = [];
+        sys.aliases(ip).forEach(function (alias) {
+            if (sys.dbRegistered(alias)) {
+                alts.push(alias + " (Registered) ")
+            }
+            else {
+                alts.push(alias)
+            };
+        })
         bot.sendChanMessage(src, "Your alts are: " + alts);
         return;
     }
