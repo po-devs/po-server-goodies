@@ -15,22 +15,47 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 /*global sendChanAll, bfbot, staffchannel, tier_checker, sendChanHtmlAll*/
 
 // Globals
-var bfversion = "1.100";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
 var bfsets, working, defaultsets, userqueue, messagebox, teamrevchan, submitbans, bfhash, reviewers;
 var utilities = require('utilities.js');
 var saveInterval = 86400; // autosave every day
+var bfversion;
 
 // Will escape "&", ">", and "<" symbols for HTML output.
 var html_escape = utilities.html_escape;
 var find_tier = utilities.find_tier;
 
+function getBFVersionInfo(verbose) {
+    var versiondata = sys.getFileContent(dataDir+"bfversion.txt");
+    if (versiondata === undefined) {
+        return 0;
+    }
+    var data = versiondata.split("\n");
+    if (verbose) {
+        var returndata = [parseFloat(data[0],10)];
+        var commentstart = false;
+        for (var x=1; x<data.length; x++) {
+            if (commentstart) {
+                returndata.push(data[x]);
+            }
+            else if (data[x] === "# Comments #") {
+                commentstart = !commentstart;
+            }
+        }
+        return returndata;
+    }
+    else {
+        return parseFloat(data[0],10);
+    }
+}
+
 function initFactory() {
     sys.makeDir("bfdata");
     sys.makeDir("bfdata/submit");
     teamrevchan = utilities.get_or_create_channel("BF Review");
+    bfversion = getBFVersionInfo(false);
     try {
         var file = sys.getFileContent(dataDir+"bfteams.json");
         if (file === undefined) {
@@ -2074,6 +2099,42 @@ function isTierReviewer(src, tier) {
     return false;
 }
 
+// Generation of a pack
+function packGen(pack) {
+    var gen, subgen, checkset, setstring;
+    for (var x in pack) {
+        if (typeof pack[x] === "object") {
+            checkset = pack[x][0];
+            if (typeof checkset == "object") {
+                setstring = checkset.set;
+            }
+            else {
+                setstring = checkset;
+            }
+            gen = toNumber(setstring.substr(37,1));
+            subgen = toNumber(setstring.substr(38,1));
+            break;
+        }
+    }
+    if (gen > 0 && subgen > 0) {
+        return sys.generation(gen, subgen);
+    }
+    else {
+        return "Unknown";
+    }
+}
+
+function allowedTypes(src, srcteam) {
+    var allowedtypes = [];
+    var generation = sys.generation(sys.gen(src, srcteam), sys.subgen(src, srcteam));
+    for (var x in bfhash) {
+        if (bfhash[x].enabled && bfhash[x].active && packGen(bfsets[x]) == generation) {
+            allowedtypes.push(x);
+        }
+    }
+    return allowedtypes;
+}
+
 module.exports = {
     handleCommand: function(source, message, channel) {
         var command;
@@ -2144,6 +2205,10 @@ module.exports = {
             sys.sendMessage(source, "Battle Factory is not working, so you can't issue challenges in that tier.");
             return true;
         }
+        if (allowedTypes(source, team).length === 0) {
+            sys.sendMessage(source, "There are no packs available for your generation.");
+            return true;
+        }
         return false;
     },
     beforeChangeTier: function(src, team, oldtier, newtier) { // This shouldn't be needed, but it's here in case
@@ -2161,6 +2226,11 @@ module.exports = {
             sys.changeTier(src, team, "Challenge Cup");
             return true;
         }
+        if (allowedTypes(src, team).length === 0) {
+            sys.sendMessage(src, "There are no packs available for your generation.");
+            sys.changeTier(src, team, "Challenge Cup");
+            return true;
+        }
         if (isBFTier(newtier)) {
             generateTeam(src, team, "preset");
         }
@@ -2168,20 +2238,13 @@ module.exports = {
     beforeBattleStarted: function(src, dest, rated, mode, srcteam, destteam) {
         if (isinBFTier(src, srcteam) && isinBFTier(dest, destteam)) {
             try {
-                var allowedtypes = [];
+                var allowedtypes = allowedTypes(src, srcteam);
                 var suggestedtypes = [];
                 for (var x in bfhash) {
                     if (bfhash[x].enabled && bfhash[x].active) {
-                        allowedtypes.push(x);
                         if (bfsets[x].hasOwnProperty('mode')) {
                             var modes = ['Singles', 'Doubles', 'Triples'];
-                            if (bfsets[x].mode == modes[mode]) {
-                                suggestedtypes.push(x);
-                                continue;
-                            }
-                        }
-                        if (bfsets[x].hasOwnProperty('maxpokes')) {
-                            if (bfsets[x].maxpokes == 6 && sys.tier(src, srcteam) == sys.tier(dest, destteam) && sys.tier(src, srcteam) == "Battle Factory 6v6") {
+                            if (bfsets[x].mode == modes[mode] && allowedtypes.indexOf(x) > -1) {
                                 suggestedtypes.push(x);
                                 continue;
                             }
@@ -2200,6 +2263,7 @@ module.exports = {
                 }*/
                 generateTeam(src, srcteam, type);
                 generateTeam(dest, destteam, type);
+                // TODO: Custom in built tier chacks to avoid recursion errors
                 if (find_tier(type)) {
                     var k = 0;
                     while (!tier_checker.has_legal_team_for_tier(src, srcteam, type, true) || !tier_checker.has_legal_team_for_tier(dest, destteam, type, true)) { //for complex bans like SS+Drizzle
@@ -2247,7 +2311,8 @@ module.exports = {
                 "/savesets: Saves user generated Battle Factory sets (use before updating/server downtime)",
                 "/refresh: Refreshes a team pack (saves and checks if it's working)",
                 "/submit[un]ban: [Un]bans players from submitting sets",
-                "/submitbans: Views list of submit bans"
+                "/submitbans: Views list of submit bans",
+                "/export [pack]: Exports code for a particular pack"
             ];
             var userHelp = [
                 "/bfversion: Gives information about the battle factory",

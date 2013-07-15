@@ -1,0 +1,8 @@
+﻿1.00
+
+Top line stores version info (use a floating point number otherwise you get errors)
+Add comments/update notes between the two comments lines
+
+# Comments #
+Fixed problem with generations
+# Comments #
