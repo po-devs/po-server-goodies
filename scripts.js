@@ -1411,7 +1411,8 @@ var commands = {
         "/towner[s] [name]: makes someone a tournament owner (tours.js plugin needs to be installed for this to work)",
         "/loadstats: loads the usage stats plugin.",
         "/unloadstats: unloads the usage stats plugin.",
-        "/warnwebclients [message]: sends a big alert message to webclient users."
+        "/warnwebclients [message]: sends a big alert message to webclient users.",
+        "/clearladder [tier]: clears rankings from a tier."
     ]
 };
 

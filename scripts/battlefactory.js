@@ -722,15 +722,6 @@ function factoryCommand(src, command, commandData, channel) {
         autoSave("teams", "");
         return;
     }
-    else if (command == "resetladder") {
-        if (sys.auth(src) < 3 && sys.name(src) != "Biospark27") {
-            bfbot.sendMessage(src, "Can't use this command!", channel);
-            return;
-        }
-        sys.resetLadder("Battle Factory");
-        bfbot.sendAll("Battle Factory ladder was reset by "+sys.name(src)+"!", staffchannel);
-        return;
-    }
     else if (command == "pokeslist") {
         var tfile = bfsets.hasOwnProperty(commandData) ? bfsets[commandData] : bfsets.preset;
         var tteams = 0;
