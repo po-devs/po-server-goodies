@@ -354,6 +354,7 @@ tier_checker.add_new_check(EXCLUDING, [], function eventShinies(player, team) {
     beasts[sys.pokeNum('Raikou')]  = ['Extremespeed', 'Aura Sphere', 'Weather Ball', 'Zap Cannon'] .map(sys.moveNum);
     beasts[sys.pokeNum('Suicune')] = ['Extremespeed', 'Aqua Ring',   'Sheer Cold',   'Air Slash']  .map(sys.moveNum);
     beasts[sys.pokeNum('Entei')]   = ['Extremespeed', 'Howl',        'Crush Claw',   'Flare Blitz'].map(sys.moveNum);
+    beasts[sys.pokeNum('Genesect')] = ['Extremespeed', 'Blaze Kick', 'Shift Gear'].map(sys.moveNum);
  
     for (var beast in beasts)
         for (var slot=0; slot<6; slot++)
