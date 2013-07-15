@@ -3056,6 +3056,8 @@ function Mafia(mafiachan) {
             "±Rules: Do not reveal any members of your team for any reason.",
             "±Rules: Do not purposefully target a certain user or group of users repeatedly.",
             "±Rules: Do not attempt to ruin the game by any other means.",
+            "±Rules: Do not stall the game for any reason what so ever.",
+            "±Rules: Do not team up with your people when they are not on your team.",
             "±Rules: Do not flash multiple people in order to get them to play. If they want to play they will join of their own will.",
             "±Rules: Do not insult themes needlessly. If you have a legitimate complaint about a certain theme, post it in that theme's forum thread.",
             "±Rules: Do not insult players if they make a mistake. Helping them to learn the game instead of insulting will make the game a lot more enjoyable for all.",
@@ -3551,6 +3553,10 @@ function Mafia(mafiachan) {
         mafia.themeManager.enable(src, name);
     };
     this.updateAfter = function (src) {
+        if (!mafia.isMafiaSuperAdmin(src)) {
+            msg(src, "Super Admin Command.");
+            return;
+        }
         msg(src, "Mafia will update after the game");
         mafia.needsUpdating = true;
         if (mafia.state == "blank") {
