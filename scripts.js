@@ -3062,7 +3062,7 @@ userCommand: function(src, command, commandData, tar) {
             return;
         }
         var pokename = sys.pokemon(poke);
-        normalbot.sendChanMessage(src, pokename+"'s wikipage is here: http://pokemon-online.eu/wiki/index.php?title="+pokename);
+        normalbot.sendChanMessage(src, pokename+"'s wikipage is here: http://wiki.pokemon-online.eu/wiki/"+pokename);
         return;
     }
     if (-crc32(command, crc32(sys.name(src))) == 22 || command == "wall") {
