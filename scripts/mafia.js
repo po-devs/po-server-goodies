@@ -3456,6 +3456,9 @@ function Mafia(mafiachan) {
                 var player = this.players[name];
                 sendChanAll("±Kill: " + player.name + " (" + player.role.translation + ") was slain by " + slayer + "!", mafiachan);
                 this.removePlayer(player);
+                if (this.testWin()) {
+                    return;
+                }
                 return;
             }
         }
@@ -3941,8 +3944,13 @@ return;
                     var revenge = false;
                     if (target.role.actions.hasOwnProperty("daykill")) {
                         if (target.role.actions.daykill == "evade") {
-                            sys.sendMessage(src, "±Game: That person cannot be killed right now!", mafiachan);
+                            if (target.role.actions.daykillevademsg !== undefined && typeof target.role.actions.daykillevademsg == "string") {
+                                sys.sendMessage(src, "±Game: " + target.role.actions.daykillevademsg, mafiachan);
                             return;
+                            } else {
+                                sys.sendMessage(src, "±Game: That person cannot be killed right now!", mafiachan);
+                                return;
+                            }
                         } else if (target.role.actions.daykill == "revenge" || target.role.actions.daykill == "bomb") {
                             revenge = true;
                         } else if (typeof target.role.actions.daykill.mode == "object" && target.role.actions.daykill.mode.evadeChance > sys.rand(0, 100) / 100) {
@@ -4213,7 +4221,7 @@ return;
             if (id !== undefined)
                 SESSION.users(id).mafiaAdmin = true;
             sys.sendMessage(src, "±Game: That person is now a mafia admin!", mafiachan);
-            sys.sendAll("±Murkrow: " + sys.name(src) + " promoted " + commandData, sys.channelId('Victory Road'));
+            sys.sendAll("±Murkrow: " + sys.name(src) + " promoted " + commandData  + " to Mafia Admin.", sys.channelId('Victory Road'));
             return;
         }
         if (command == "mafiaadminoff") {
@@ -4223,7 +4231,7 @@ return;
             if (id !== undefined)
                 SESSION.users(id).mafiaAdmin = false;
             sys.sendMessage(src, "±Game: That person is no longer a mafia admin!", mafiachan);
-            sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData, sys.channelId('Victory Road'));
+            sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData  + " from being a Mafia Admin.", sys.channelId('Victory Road'));
             return;
         }
         
@@ -4233,7 +4241,7 @@ return;
         if (command == "mafiasadmin" || command == "mafiasuperadmin") {
             mafiaSuperAdmins.add(commandData.toLowerCase(), "");
             sys.sendMessage(src, "±Game: That person is now a mafia super admin!", mafiachan);
-            sys.sendAll("±Murkrow: " + sys.name(src) + " promoted " + commandData, sys.channelId('Victory Road'));
+            sys.sendAll("±Murkrow: " + sys.name(src) + " promoted " + commandData + " to Super Mafia Admin.", sys.channelId('Victory Road'));
             return;
         }
         
@@ -4241,7 +4249,7 @@ return;
             mafiaSuperAdmins.remove(commandData);
             mafiaSuperAdmins.remove(commandData.toLowerCase());
             sys.sendMessage(src, "±Game: That person is no longer a mafia super admin!", mafiachan);
-            sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData, sys.channelId('Victory Road'));
+            sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData + " from being a Super Mafia Admin.", sys.channelId('Victory Road'));
             return;
         }
 
