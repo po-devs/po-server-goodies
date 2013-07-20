@@ -399,7 +399,7 @@ function Mafia(mafiachan) {
         sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
     };
 
-    ThemeManager.prototype.loadWebTheme = function (url, announce, update, updatename) {
+    ThemeManager.prototype.loadWebTheme = function (url, announce, update, updatename, src) {
         if (typeof sys != 'object') return;
         var manager = this;
         sys.webCall(url, function (resp) {
@@ -418,7 +418,7 @@ function Mafia(mafiachan) {
                 manager.themes[lower] = theme;
                 manager.save(theme.name, url, resp, update);
                 if (announce) {
-                    msgAll("Loaded theme " + theme.name);
+                    mafiabot.sendAll(sys.name(src) + " loaded theme " + theme.name + ".");
                 }
             } catch (err) {
                 msgAll("Couldn't download theme from " + url);
@@ -439,7 +439,7 @@ function Mafia(mafiachan) {
                 }
             }
             sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
-            msg(src, "theme " + name + " removed.");
+            mafiabot.sendAll(sys.name(src) + " removed the theme " + name + ".");
         }
     };
 
@@ -3455,6 +3455,7 @@ function Mafia(mafiachan) {
             if (this.isInGame(name)) {
                 var player = this.players[name];
                 sendChanAll("±Kill: " + player.name + " (" + player.role.translation + ") was slain by " + slayer + "!", mafiachan);
+                sys.sendAll("±Kill: " + player.name + " (" + player.role.translation + ") was slain by " + slayer + "!", sachannel);
                 this.removePlayer(player);
                 if (this.testWin()) {
                     return;
@@ -3501,7 +3502,7 @@ function Mafia(mafiachan) {
             msg(src, "admin+ command.");
             return;
         }
-        mafia.themeManager.loadWebTheme(url, true, false);
+        mafia.themeManager.loadWebTheme(url, true, false, null, src);
     };
     this.updateTheme = function (src, data) {
         var url = data, name = data;
@@ -3531,7 +3532,7 @@ function Mafia(mafiachan) {
         }
         msg(src, "Download url: " + dlurl);
         if (dlurl) {
-            mafia.themeManager.loadWebTheme(dlurl, true, true, authorMatch ? theme.name.toLowerCase() : null);
+            mafia.themeManager.loadWebTheme(dlurl, true, true, authorMatch ? theme.name.toLowerCase() : null, src);
         }
     };
     this.removeTheme = function (src, name) {
@@ -3945,8 +3946,8 @@ return;
                     if (target.role.actions.hasOwnProperty("daykill")) {
                         if (target.role.actions.daykill == "evade") {
                             if (target.role.actions.daykillevademsg !== undefined && typeof target.role.actions.daykillevademsg == "string") {
-                                sys.sendMessage(src, "±Game: " + target.role.actions.daykillevademsg, mafiachan);
-                            return;
+                                sys.sendMessage(src, "±Game: " + target.role.actions.daykillevademsg.replace(/~Self~/g, name).replace(/~Target~/g, commandData), mafiachan);
+                                return;
                             } else {
                                 sys.sendMessage(src, "±Game: That person cannot be killed right now!", mafiachan);
                                 return;
@@ -3954,8 +3955,16 @@ return;
                         } else if (target.role.actions.daykill == "revenge" || target.role.actions.daykill == "bomb") {
                             revenge = true;
                         } else if (typeof target.role.actions.daykill.mode == "object" && target.role.actions.daykill.mode.evadeChance > sys.rand(0, 100) / 100) {
-                            sys.sendMessage(src, "±Game: Your kill was evaded!", mafiachan);
-                            sys.sendMessage(sys.id(target.name), "±Game: You evaded a kill!", mafiachan);
+                            if (player.role.actions.daykillmissmsg !== undefined && typeof player.role.actions.daykillmissmsg == "string") {
+                                sys.sendMessage(src, "±Game: " + player.role.actions.daykillmissmsg.replace(/~Self~/g, name).replace(/~Target~/g, commandData), mafiachan);
+                            } else {
+                                sys.sendMessage(src, "±Game: Your kill was evaded!", mafiachan);
+                            }
+                            if (target.role.actions.daykill.mode.evasionmsg !== undefined && typeof target.role.actions.daykill.mode.evasionmsg == "string") {
+                                sys.sendMessage(sys.id(target.name), "±Game: " + target.role.actions.daykill.mode.evasionmsg.replace(/~Target~/g, name).replace(/~Self~/g, commandData), mafiachan);
+                            } else {
+                                sys.sendMessage(sys.id(target.name), "±Game: You evaded a kill!", mafiachan);
+                            }
                             player.dayKill = player.dayKill + 1 || 1;
                             if ("recharge" in commandObject) {
                                 if (!(player.name in this.dayRecharges)) {
@@ -4026,6 +4035,7 @@ return;
                         return;
                     }
                     var exposeMessage = commandObject.exposemsg ? commandObject.exposemsg : "~Self~ revealed that ~Target~ is the ~Role~!";
+                    var exposeTargetMessage = commandObject.exposedtargetmsg;
                     var inspectMode = target.role.actions.inspect || {};
                     var revealedRole;
                     if (inspectMode.revealAs !== undefined) {
@@ -4054,6 +4064,9 @@ return;
                         } else {
                             sendChanAll("±Game: While exposing, " + name + " (" + mafia.players[name].role.translation + ") made a mistake and was revealed!", mafiachan);
                         }
+                    }
+                    if ("exposedtargetmsg" in commandObject && typeof commandObject.exposedtargetmsg == "string") {
+                        sys.sendMessage(src, "±Game: " + exposeTargetMessage.replace(/~Self~/g, name).replace(/~Target~/g, commandData), mafiachan);
                     }
                     sendChanAll(border, mafiachan);
                     player.exposeUse = player.exposeUse + 1 || 1;
