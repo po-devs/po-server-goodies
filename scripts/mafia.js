@@ -418,7 +418,7 @@ function Mafia(mafiachan) {
                 manager.themes[lower] = theme;
                 manager.save(theme.name, url, resp, update);
                 if (announce) {
-                    mafiabot.sendAll(sys.name(src) + " loaded theme " + theme.name + ".");
+                    msgAll(sys.name(src) + " loaded theme " + theme.name + ".");
                 }
             } catch (err) {
                 msgAll("Couldn't download theme from " + url);
@@ -439,7 +439,7 @@ function Mafia(mafiachan) {
                 }
             }
             sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
-            mafiabot.sendAll(sys.name(src) + " removed the theme " + name + ".");
+            msgAll(sys.name(src) + " removed the theme " + name + ".");
         }
     };
 
