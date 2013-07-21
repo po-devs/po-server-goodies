@@ -2262,7 +2262,7 @@ afterLogIn : function(src) {
         sys.putInChannel(src, staffchannel);
     
     if (isAndroid(src)) {
-        normalbot.sendMessage(src, "There's now an android teambuilder at: http://pkmn.in !");
+        normalbot.sendMessage(src, "Give suggestions for the Android Teambuilder here: http://goo.gl/Bois5");
         normalbot.sendMessage(src, "Remember to report any android teambuilder related bugs at: http://pokemon-online.eu/forums/showthread.php?20883-TBuilder-for-Android");
     }
 }, /* end of afterLogin */
