@@ -1813,7 +1813,7 @@ module.exports = {
             userCommandHelp.forEach(function (h) {
                 sys.sendMessage(src, h, channel);
             });
-            if (sys.auth(src) > 1 || tadmin.isTAdmin(sys.name(src)) || isTriviaOwner(src)) {
+            if (sys.auth(src) > 0 || tadmin.isTAdmin(sys.name(src)) || isTriviaOwner(src)) {
                 sys.sendMessage(src, "*** Trivia Admin commands ***", channel);
                 adminCommandHelp.forEach(function (h) {
                     sys.sendMessage(src, h, channel);
