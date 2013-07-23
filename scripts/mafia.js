@@ -3233,6 +3233,12 @@ function Mafia(mafiachan) {
                         mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
                     }
                 }
+                if (typeof role.actions.startup == "object" && Array.isArray(role.actions.startup["team-revealif-with-roles"])) {
+                    if (role.actions.startup["team-revealif-with-roles"].indexOf(role.side) != -1) {
+                        var playersRole = mafia.getPlayersForTeam(role.side).map(name_trrole, mafia.theme);
+                        mafia.sendPlayer(player.name, "±Game: Your team is " + readable(playersRole, "and") + ".");
+                    }
+                }
                 if (role.actions.startup == "role-reveal") {
                     mafia.sendPlayer(player.name, "±Game: People with your role are " + mafia.getPlayersForRoleS(role.role) + ".");
                 }
@@ -3828,7 +3834,7 @@ return;
                     }
                 }
 
-                                /* Hax-related to command */
+                /* Hax-related to command */
                 // some roles can get "hax" from other people using some commands...
                 // however, roles can have avoidHax: ["kill", "distract"] in actions..
                 if ("avoidHax" in player.role.actions && player.role.actions.avoidHax.indexOf(command) != -1) {
@@ -3977,7 +3983,7 @@ return;
                             targetMode = target.role.actions.daykill; 
                             if (targetMode.silent !== true) {
                                 if (targetMode.msg) {
-                                    mafia.sendPlayer(player.name, targetMode.msg.replace(/~Self~/g, target.name));
+                                    mafia.sendPlayer(player.name, targetMode.msg.replace(/~Self~/g, target.name).replace(/~Role~/g, target.role.translation));
                                      return;
                                 } else {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded your " + commandName + "!");
@@ -4082,7 +4088,7 @@ return;
                             targetMode = target.role.actions.expose;
                             if (targetMode.silent !== true) {
                                 if (targetMode.msg) {
-                                    mafia.sendPlayer(player.name, targetMode.msg.replace(/~Self~/g, target.name));
+                                    mafia.sendPlayer(player.name, targetMode.msg.replace(/~Target~/g, target.name).replace(/~Role~/g, target.role.translation));
                                      return;
                                 } else {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded your " + commandName + "!");
@@ -4135,9 +4141,9 @@ return;
                         
                     } else {
                         if (target.role.actions.exposerevengemsg !== undefined && typeof target.role.actions.exposerevengemsg == "string") {
-                            sendChanAll("±Game: " + target.role.actions.exposerevengemsg.replace(/~Self~/g, commandData).replace(/~Target~/g, name), mafiachan);
+                            sendChanAll("±Game: " + target.role.actions.exposerevengemsg.replace(/~Self~/g, commandData).replace(/~Target~/g, name).replace(/~Role~/g, player.role.translation), mafiachan);
                         } else {
-                            sendChanAll("±Game: ~Target~ tries to expose ~Self~, but ~Self~ gets startled and kills ~Target~!".replace(/~Self~/g, commandData).replace(/~Target~/g, name), mafiachan);
+                            sendChanAll("±Game: " + name + " tries to expose " + commandData + ", but " + commandData + " gets startled and kills " + name + " (" + player.role.translation +")!", mafiachan);
                         }
                         
                         if (sys.id('PolkaBot') !== undefined) {
@@ -4158,8 +4164,6 @@ return;
                     }
                     this.dayRecharges[player.name][commandName] = 1;
                 }
-                
-                
                 
                 /* Hax-related to command */
                 // some roles can get "hax" from other people using some commands...
