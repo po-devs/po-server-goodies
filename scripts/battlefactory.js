@@ -171,29 +171,6 @@ function createEntry(name, data, srcurl) {
     return false;
 }
 
-function importOld(name) {
-    var basepathname = "bfteams_" + (name.replace(/ /g, "")).toLowerCase() + ".json";
-    if (sys.getFileContent(dataDir + basepathname) !== undefined) {
-        var data;
-        try {
-            data = JSON.parse(sys.getFileContent(dataDir + basepathname));
-        }
-        catch (err) {
-            return false;
-        }
-        if (!data.hasOwnProperty('desc')) {
-            data.desc = name;
-        }
-        if (!data.hasOwnProperty('maxpokes')) {
-            data.maxpokes = 6;
-        }
-        bfhash[name] = {'path': basepathname, 'active': true, 'enabled': true, 'url': "Unknown"};
-        bfsets[name] = data;
-        return true;
-    }
-    return false;
-}
-
 // Save user generated info periodically as a backup
 function autoSave(type, params) {
     if (type == "all") {
@@ -1392,16 +1369,6 @@ function factoryCommand(src, command, commandData, channel) {
         }
         return;
     }
-    else if (command == "destroyreview") {
-        var parr = sys.playersOfChannel(teamrevchan);
-        for (var x in parr) {
-            if (!isReviewAdmin(parr[x])) {
-                sys.kick(parr[x], teamrevchan);
-            }
-        }
-        bfbot.sendMessage(src, "Destroyed Review Channel", channel);
-        return;
-    }
     else if (command == 'backlog') {
         sys.sendMessage(src, "*** Current Queue Lengths ***", channel);
         for (var a in bfhash) {
@@ -1572,6 +1539,7 @@ function getReadablePoke(set) {
         'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))],
         'gen': sys.generation(toNumber(set.substr(37,1)),toNumber(set.substr(38,1)))
     };
+    var maingen = toNumber(set.substr(37,1));
     var stats = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
     var msg = [set, info.poke+" @ "+info.item];
     msg.push("Ability: "+info.ability, info.nature+" Nature, Level "+info.level);
@@ -1583,16 +1551,16 @@ function getReadablePoke(set) {
         }
     }
     for (var k in info.dvs) {
-        if (info.dvs[k] < 31) {
+        if (info.dvs[k] < (maingen >= 3 ? 31 : 15)) {
             dvlist.push(info.dvs[k]+" "+stats[k]);
         }
     }
     if (dvlist.length === 0) {
-        dvlist = ["All 31"];
+        dvlist = ["All "+(maingen >= 3 ? 31 : 15)];
     }
     msg.push(info.moves.join(" / "),"EVs: "+evlist.join(" / "),"IVs: "+dvlist.join(" / "));
     if (info.moves.indexOf("Hidden Power") != -1) {
-        var hptype = sys.hiddenPowerType(5,info.dvs[0],info.dvs[1],info.dvs[2],info.dvs[3],info.dvs[4],info.dvs[5]);
+        var hptype = sys.hiddenPowerType(maingen,info.dvs[0],info.dvs[1],info.dvs[2],info.dvs[3],info.dvs[4],info.dvs[5]);
         msg.push("Hidden Power "+sys.type(hptype));
     }
     var statlist = [];
@@ -1604,12 +1572,12 @@ function getReadablePoke(set) {
                 statlist.push("1 HP");
             }
             else {
-                var hstat = 10 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4+100)*info.level/100);
+                var hstat = 10 + Math.floor(Math.floor(info.dvs[s]*(maingen >= 3 ? 1 : 2)+2*pokeinfo[s]+info.evs[s]/4+100)*info.level/100);
                 statlist.push(hstat+" HP");
             }
         }
         else {
-            var bstat = 5 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4)*info.level/100);
+            var bstat = 5 + Math.floor(Math.floor(info.dvs[s]*(maingen >= 3 ? 1 : 2)+2*pokeinfo[s]+info.evs[s]/4)*info.level/100);
             var newstat = 0;
             if (natureboost[0] === s) {
                 newstat = Math.floor(bstat*1.1);
@@ -2010,7 +1978,7 @@ module.exports = {
                 bfbot.sendMessage(source, "You can't use this command!", channel);
                 return true;
             }
-            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier', 'resetladder', 'destroyreview', 'importold', 'forcestart'].indexOf(command) > -1 && !isReviewAdmin(source)) {
+            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier', 'resetladder', 'forcestart'].indexOf(command) > -1 && !isReviewAdmin(source)) {
                 bfbot.sendMessage(source, "You can't use this command!", channel);
                 return true;
             }
@@ -2163,7 +2131,8 @@ module.exports = {
                 "/deletepoke [poke]:[tier]: Deletes a faulty Pokemon along with all its sets.",
                 "/nextset: Goes to the next set in the queue",
                 "/savesets: Saves user generated Battle Factory sets (use before updating/server downtime)",
-                "/refresh: Refreshes a team pack (saves and checks if it's working)",
+                "/refresh [pack]: Refreshes a team pack (saves and checks if it's working)",
+                "/loadfromfile [pack]: Loads a team pack from the last saved state (useful for reverting changes)",
                 "/submit[un]ban: [Un]bans players from submitting sets",
                 "/submitbans: Views list of submit bans",
                 "/export [pack]: Exports code for a particular pack"
