@@ -6,7 +6,7 @@
 */
 
 // Global variables inherited from scripts.js
-/*global cmp, mafiabot, getTimeString, mafiaAdmins, updateModule, script, sys, saveKey, SESSION, sendChanAll, require, Config, module, detained, mafiaSuperAdmins*/
+/*global cmp, mafiabot, getTimeString, mafiaAdmins, updateModule, script, sys, saveKey, SESSION, sendChanAll, require, Config, module, detained, mafiaSuperAdmins, sachannel*/
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 var MAFIA_CHANNEL = "Mafia";
 
@@ -352,6 +352,7 @@ function Mafia(mafiachan) {
             theme.silentVote = plain_theme.silentVote;
             theme.name = plain_theme.name;
             theme.author = plain_theme.author;
+            theme.nonPeak = plain_theme.nonPeak;
             theme.summary = plain_theme.summary;
             theme.changelog = plain_theme.changelog;
             theme.killmsg = plain_theme.killmsg;
@@ -4212,6 +4213,28 @@ return;
                 SESSION.users(id).mafiaAdmin = true;
             sys.sendMessage(src, "±Game: Your auth has been transferred!", mafiachan);
             sys.sendAll("±Murkrow: " + sys.name(src) + " passed their Mafia auth to " + commandData, sys.channelId('Victory Road'));
+            return;
+        }
+        
+        if (command === "enablenonpeak" || command === "disablenonpeak") {
+            var themes = mafia.themeManager.themes;
+            var bool = false;
+            var enable = command === "enablenonpeak";
+            for (var x in themes) {
+                if (themes[x].nonPeak) {
+                    if (enable) {
+                        mafia.themeManager.enable(src, x);
+                    } else {
+                        mafia.themeManager.disable(src, x);
+                    }
+                    bool = true;
+                }
+            }
+            if (bool) {
+                sys.sendAll("±Murkrow: non-peak themes have been " + (enable ? "enabled" : "disabled"), mafiachan);
+            } else {
+                sys.sendMessage(src, "±Murkrow: No non-peak themes found", mafiachan);
+            }
             return;
         }
 
