@@ -4318,6 +4318,7 @@ return;
             }
             if (bool) {
                 sys.sendAll("±Murkrow: non-peak themes have been " + (enable ? "enabled" : "disabled"), mafiachan);
+                sys.sendAll("±Murkrow: non-peak themes have been " + (enable ? "enabled" : "disabled"), sachannel);
             } else {
                 sys.sendMessage(src, "±Murkrow: No non-peak themes found", mafiachan);
             }
