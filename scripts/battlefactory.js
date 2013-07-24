@@ -1532,7 +1532,7 @@ function setlint(checkfile, strict) {
                     cttlevsum += ctestprop.evs[ce];
                 }
             }
-            if (cttlevsum > 510 && gen >= 3)) {
+            if (cttlevsum > 510 && gen >= 3) {
                 errors.push("<td>Too many EVs</td><td>Property '"+html_escape(x)+"'; set "+set+"; maximum sum of EVs must not exceed 510.</td>");
             }
             else if (cttlevsum < 508) {
