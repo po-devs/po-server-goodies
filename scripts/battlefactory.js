@@ -1451,7 +1451,7 @@ function setlint(checkfile, strict) {
         errors.push("<td>Readable Property</td><td>Readable Property no longer works!</td>");
     }
     var stats = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
-    var gen = packGen(pack, "gen");
+    var gen = packGen(checkfile, "gen");
     for (var x in checkfile) {
         var setinfo = checkfile[x];
         if (typeof setinfo !== 'object') {
