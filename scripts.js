@@ -113,7 +113,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, getKey, contributors, mutes, mbans, smutes, detained, hbans, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan;
+var channel, getKey, contributors, mutes, mbans, smutes, detained, hbans, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList;
 
 var isMafiaAdmin = require('mafia.js').isMafiaAdmin;
 var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
@@ -260,27 +260,43 @@ function getDBIndex (pokeId) {
 };
 
 function getWeight (pokeId) {
-    var data = sys.getFileContent('db/pokes/weight.txt').split('\n');
-    var key = getDBIndex(pokeId);
-    for (var i in data) {
-        var index = data[i].indexOf(" ");
-        var id = data[i].substr(0, index);
-        if (id === key){
-            return data[i].substr(index + 1);
+    if (weightList === undefined) {
+        weightList = {};
+        var data = sys.getFileContent('db/pokes/weight.txt').split('\n');
+        for (var i = 0; i < data.length; i++) {
+            var index = data[i].indexOf(" ");
+            var id = data[i].substr(0, index);
+            var weight = data[i].substr(index + 1);
+            weightList[id] = weight;
         }
     }
+    var key = getDBIndex(pokeId);
+    if (weightList[key] != undefined) {
+        return weightList[key];
+    }
+    var index = key.indexOf(":") + 1;
+    var base = key.substr(0, index);
+    return weightList[base + "0"];
 };
 
 function getHeight (pokeId) {
-    var data = sys.getFileContent('db/pokes/height.txt').split('\n');
-    var key = getDBIndex(pokeId);
-    for (var i in data) {
-        var index = data[i].indexOf(" ");
-        var id = data[i].substr(0, index);
-        if (id === key){
-            return data[i].substr(index + 1);
+    if (heightList === undefined) {
+        heightList = {};
+        var data = sys.getFileContent('db/pokes/height.txt').split('\n');
+        for (var i = 0; i < data.length; i++) {
+            var index = data[i].indexOf(" ");
+            var id = data[i].substr(0, index);
+            var height = data[i].substr(index + 1);
+            heightList[id] = height;
         }
     }
+    var key = getDBIndex(pokeId);
+    if (heightList[key] != undefined) {
+        return heightList[key];
+    }
+    var index = key.indexOf(":") + 1;
+    var base = key.substr(0, index);
+    return heightList[base + "0"];
 };
 
 function weightPower (weight) {
