@@ -3041,6 +3041,9 @@ userCommand: function(src, command, commandData, tar) {
         var ability2 = sys.ability(sys.pokeAbility(pokeId, 1));
         var ability3 = sys.ability(sys.pokeAbility(pokeId, 2));
         var baseStats = sys.pokeBaseStats(pokeId);
+        var height = getHeight(pokeId);
+        var weight = getWeight(pokeId);
+        var BP = weightPower(weight);
         var stats = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"];
         var levels = [5, 50, 100];
         sys.sendHtmlMessage(src, "", channel);
@@ -3048,9 +3051,9 @@ userCommand: function(src, command, commandData, tar) {
         sys.sendHtmlMessage(src, "<img src='pokemon:num=" + pokeId + "'><img src='pokemon:num=" + pokeId + "&shiny=true'>", channel);
         sys.sendHtmlMessage(src, "<b>Type:</b> " + type1 + (type2 === "???" ? "" : "/" + type2), channel);
         sys.sendHtmlMessage(src, "<b>Abilities:</b> " + ability1 + (ability2 === "(No Ability)" ? "" : ", " + ability2) + (ability3 === "(No Ability)" ? "" : ", " + ability3 + " (Dream World)"), channel);
-        sys.sendHtmlMessage(src, "<b>Height:</b> " + getHeight(pokeId) + " m", channel);
-        sys.sendHtmlMessage(src, "<b>Weight:</b> " + getWeight(pokeId) + " kg", channel);
-        sys.sendHtmlMessage(src, "<b>Base Power of Low Kick/Grass Knot:</b> " + weightPower(getWeight(pokeId)), channel);
+        sys.sendHtmlMessage(src, "<b>Height:</b> " + height + " m", channel);
+        sys.sendHtmlMessage(src, "<b>Weight:</b> " + weight + " kg", channel);
+        sys.sendHtmlMessage(src, "<b>Base Power of Low Kick/Grass Knot:</b> " + BP, channel);
         var table = "<table border = 1 cellpadding = 3>";
         table += "<tr><th rowspan = 2 valign = middle><font size = 5>Stats</font></th><th rowspan = 2 valign = middle>Base</th><th colspan = 3>Level 5</th><th colspan = 3>Level 50</th><th colspan = 3>Level 100</th></tr>";
         table += "<tr><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th>";
