@@ -4302,7 +4302,7 @@ ownerCommand: function(src, command, commandData, tar) {
         }).join("");
         if (teams) {
             sys.sendHtmlMessage(src, "<table border='2'>" + teams + "</table>",channel);
-            normalBot.sendAll(sys.name(src) + " just viewed " + sys.name(tar) + "'s team.", staffchannel);
+            normalbot.sendAll(sys.name(src) + " just viewed " + sys.name(tar) + "'s team.", staffchannel);
         } else {
             normalbot.sendChanMessage(src, "That player has no teams with valid pokemon.");
         }
@@ -4954,7 +4954,7 @@ channelCommand: function(src, command, commandData, tar) {
     }
     if (command == "ctoggleswear") {
         poChannel.allowSwear = !poChannel.allowSwear;
-        channelbot.sendChanAll(sys.name(src) + " " + (poChannel.allowSwear ? "" : "dis") + "allowed swearing.", poChannel.id);
+        channelbot.sendAll(sys.name(src) + " " + (poChannel.allowSwear ? "" : "dis") + "allowed swearing.", poChannel.id);
         return;
     }
     if (command == "ctogglecaps") {
