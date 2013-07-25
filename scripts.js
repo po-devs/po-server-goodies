@@ -261,6 +261,7 @@ function getDBIndex (pokeId) {
 
 function getWeight (pokeId) {
     if (weightList === undefined) {
+        weightList = {};
         var data = sys.getFileContent('db/pokes/weight.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
             var index = data[i].indexOf(" ");
@@ -280,6 +281,7 @@ function getWeight (pokeId) {
 
 function getHeight (pokeId) {
     if (heightList === undefined) {
+        heightList = {};
         var data = sys.getFileContent('db/pokes/height.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
             var index = data[i].indexOf(" ");
