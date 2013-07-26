@@ -1363,7 +1363,7 @@ bots = {
     'query': querybot, 'hang': hangbot, 'bf': bfbot
 };
 
-var commands = {
+push_properties( {
     user:
     [
         "/rules [x]: Shows the rules (x is optionally parameter to show a specific rule)",
@@ -1502,7 +1502,7 @@ var commands = {
         "/warnwebclients [message]: sends a big alert message to webclient users.",
         "/clearladder [tier]: clears rankings from a tier."
     ]
-};
+}, commands);
 
 /* Start script-object
  *
