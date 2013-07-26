@@ -126,7 +126,7 @@ var commandfiles = ['commands.js', 'channelcommands.js','ownercommands.js', 'mod
 var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js'].concat(commandfiles).concat(Config.Plugins);
 var missing = 0;
 for (var i = 0; i < deps.length; ++i) {
-    if (!sys.exists("scripts/"+deps[i])) {
+    if (!sys.fexists("scripts/"+deps[i])) {
         if (missing++ === 0) sys.sendAll('Server is updating its script modules, it might take a while...');
         var module = updateModule(deps[i]);
         module.source = deps[i];
@@ -138,7 +138,7 @@ if (missing) sys.sendAll('Done. Updated ' + missing + ' modules.');
 /* To avoid a load of warning for new users of the script,
         create all the files that will be read further on*/
 var cleanFile = function(filename) {
-    if (typeof sys != 'undefined' && !sys.exists(filename))
+    if (typeof sys != 'undefined' && !sys.fexists(filename))
         sys.appendToFile(filename, "");
 };
 cleanFile("mafia_stats.json");
