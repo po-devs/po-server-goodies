@@ -1110,7 +1110,7 @@ function Mafia(mafiachan) {
             if (this.theme.name == "default") {
                 sendChanAll("±Game: " + sys.name(src) + " started a game!", mafiachan);
             } else {
-                sendChanAll("±Game: " + sys.name(src) + " started a game with theme " + this.theme.name + (this.theme.altname ? "(" + this.theme.altname + ")" : "")+ "!", mafiachan);
+                sendChanAll("±Game: " + sys.name(src) + " started a game with theme " + this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")+ "!", mafiachan);
             }
             sendChanAll("±Game: Type /Join to enter the game!", mafiachan);
             sendChanAll(border, mafiachan);
