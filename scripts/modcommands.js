@@ -761,3 +761,38 @@ exports.modCommand = function(src, command, commandData, tar) {
     }
     return "no command";
 };
+
+exports.mod =
+[
+    "/k [name]: Kicks someone.",
+    "/mute [name]:[reason]:[time]: Mutes someone. Time is optional and defaults to 1 day.",
+    "/unmute [name]: Unmutes someone.",
+    "/silence [minutes]:[channel]: Prevents authless users from talking in a channel for specified time. Affects all official channels if no channel is given.",
+    "/silenceoff [channel]: Removes silence from a channel. Affects all official channels if none is specified.",
+    "/perm [on/off]: Make the current permanent channel or not (permanent channels remain listed when they have no users).",
+    "/userinfo [name]: Displays information about a user (pretty display).",
+    "/whois [name]: Displays information about a user (one line, slightly more info).",
+    "/aliases [IP/name]: Shows the aliases of an IP or name.",
+    "/tempban [name]:[time]: Bans someone for 24 hours or less. Time is optional and defaults to 1 day",
+    "/tempunban [name]: Unbans a temporary banned user (standard unban doesn't work).",
+    "/checkbantime [name]: Checks how long a user is banned for.",
+    "/mafiaban [name]:[reason]:[time]: Bans a player from Mafia. Time is optional and defaults to 7 days.",
+    "/mafiaunban [name]: Unbans a player from Mafia.",
+    "/passauth [target]: Passes your mods to another megauser (only for mega-mods) or to your online alt.",
+    "/passauths [target]: Passes your mods silently.",
+    "/banlist [search term]: Searches the banlist, shows full list if no search term is entered.",
+    "/mutelist [search term]: Searches the mutelist, shows full list if no search term is entered.",
+    "/smutelist [search term]: Searches the smutelist, shows full list if no search term is entered.",
+    "/mafiabans [search term]: Searches the mafiabanlist, shows full list if no search team is entered.",
+    "/rangebans: Lists range bans.",
+    "/ipbans : Lists ip bans.",
+    "/autosmutelist: Lists the names in the auto-smute list.",
+    "/namebans: Lists name bans.",
+    "/namewarns: Lists name warnings.",
+    "/topchannels: To view the top channels.",
+    "/onrange [range]: To view who is on a range.",
+    "/onos [os]: Lists players on a certain operating system (May lag a little with certain OS)",
+    "/tier [name]: To view the tier(s) of a person.",
+    "/battlehistory [name]: To view a person's battle history.",
+    "/channelusers [channel]: Lists users on a channel."
+];

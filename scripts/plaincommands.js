@@ -737,3 +737,27 @@ exports.userCommand = function(src, command, commandData, tar) {
     }
     return "no command";
 };
+
+exports.user =
+[
+    "/rules [x]: Shows the rules (x is optionally parameter to show a specific rule)",
+    "/ranking: Shows your ranking in your current tier.",
+    "/myalts: Lists your alts.",
+    "/me [message]: Sends a message with *** before your name.",
+    "/selfkick: Kicks all other accounts with IP.",
+    //"/importable: Posts an importable of your team to pastebin.",
+    "/dwreleased [Pokemon]: Shows the released status of a Pokemon's Dream World Ability",
+    "/wiki [Pokémon]: Shows that Pokémon's wiki page",
+    "/pokemon [Pokémon]: Shows basic information for that Pokémon",
+    "/register: Registers a channel with you as owner.",
+    "/resetpass: Clears your password (unregisters you, remember to reregister).",
+    "/auth [owners/admins/mods]: Lists auth of given level, shows all auth if left blank.",
+    "/cauth: Lists all users with channel auth in the current channel.",
+    "/contributors: Lists contributors.",
+    "/league: Lists gym leaders and elite four of the PO league.",
+    "/uptime: Shows time since the server was last offline.",
+    "/players: Shows the number of players online.",
+    "/sameTier [on/off]: Turn on/off auto-rejection of challenges from players in a different tier from you.",
+    "/seen [name]: Allows you to see the last login of a user.",
+    "/changetier [tier]:[team]: Allows you to switch tier. Team is a number between 0-5 indicating loaded teams. Default is 0"
+];

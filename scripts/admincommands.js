@@ -241,3 +241,20 @@ exports.adminCommand = function(src, command, commandData, tar) {
 
     return "no command";
 };
+
+exports.admin =
+[
+    "/ban [name]: Bans a user.",
+    "/unban [name]: Unbans a user.",
+    "/smute xxx: Secretly mutes a user. Can't smute auth.",
+    "/sunmute xxx: Removes secret mute from a user.",
+    "/megauser[off] xxx: Adds or removes megauser powers from someone.",
+    "/memorydump: Shows the state of the memory.",
+    "/nameban regexp: Adds a regexp ban on usernames.",
+    "/nameunban full_regexp: Removes a regexp ban on usernames.",
+    "/namewarn regexp: Adds a namewarning",
+    "/nameunwarn full_regexp: Removes a namewarning",
+    "/destroychan [channel]: Destroy a channel (official channels are protected).",
+    "/indigoinvite [name]: To invite somebody to staff channels.",
+    "/indigodeinvite: To deinvite unwanted visitors from staff channel."
+];

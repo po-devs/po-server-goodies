@@ -220,3 +220,34 @@ exports.channelCommand = function(src, command, commandData, tar) {
     }
     return "no command";
 };
+
+exports.channel =
+[
+    "/register: To register the current channel you're on.",
+    "/topic [topic]: Sets the topic of a channel. Only works if you're the first to log on a channel or have auth there. Displays current topic instead if no new one is given.",
+    "/lt [name]: Kick someone from current channel.",
+    "/member [name]: Makes the user a member.",
+    "/demember [name]: Removes membership from a user.",
+    "/csilence [minutes]: Prevents authless users from talking in current channel specified time.",
+    "/csilenceoff: Allows users to talk in current channel.",
+    "/cmute [name]:[reason]:[time]: Mutes someone in current channel (reason and time optional).",
+    "/cunmute [name]: Unmutes someone in current channel.",
+    "/cmutes: Lists users muted in current channel.",
+    "/cbans: Lists users banned from current channel.",
+    "*** Only channel admins may use the following commands ***",
+    "/op [name]: Gives a user channel operator status.",
+    "/deop [name]: Removes channel operator status from a user.",
+    "/inviteonly [on/off/level]: Makes a channel invite-only or public.",
+    "/ctogglecaps: Turns on/off the server anti-caps bot in current channel.",
+    "/ctoggleflood: Turns on/off the server anti-flood bot in current channel. Overactive still in effect.",
+    "/ctoggleswear: Turns on/off the use of some common swear words.",
+    "/cban [name]:[reason]:[time]: Bans someone from current channel (reason and time optional).",
+    "/cunban [name]: Unbans someone from current channel.",
+    "/enabletours: Allows tours to be run in the channel.",
+    "/disabletours: Stops tours being run in the channel.",
+    "*** Only channel owners may use the following commands ***",
+    "/admin [name]: Gives a user channel admin status.",
+    "/deadmin [name]: Removes channel admin status from a user.",
+    "/owner [name]: Gives a user channel owner status.",
+    "/deowner [name]: Removes channel owner status from a user."
+];

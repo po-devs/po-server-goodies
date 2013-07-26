@@ -614,3 +614,39 @@ exports.ownerCommands = function(src, command, commandData, tar) {
     }
     return "no command";
 };
+
+exports.owner =
+[
+    "/changeRating [player] -- [tier] -- [rating]: Changes the rating of a rating abuser.",
+    "/stopBattles: Stops all new battles to allow for server restart with less problems for users.",
+    "/imp [name]: Lets you speak as someone",
+    "/impOff: Stops your impersonating.",
+    "/contributor[off] xxx:what: Adds or removes contributor status (for indigo access) from someone, with reason.",
+    "/clearpass [name]: Clears a user's password.",
+    "/autosmute [name]: Adds a player to the autosmute list",
+    "/removeautosmute [name]: Removes a player from the autosmute list",
+    "/periodicsay minutes:channel1,channel2,...:[message]: Sends a message to specified channels periodically.",
+    "/endcalls: Ends the next periodic message.",
+    "/sendAll [message]: Sends a message to everyone.",
+    "/changeAuth[s] [auth] [name]: Changes the auth of a user.",
+    "/showteam xxx: Displays the team of a user (to help people who have problems with event moves or invalid teams).",
+    "/rangeban [ip] [comment]: Makes a range ban.",
+    "/rangeunban: [ip]: Removes a rangeban.",
+    "/purgemutes [time]: Purges old mutes. Time is given in seconds. Defaults is 4 weeks.",
+    "/purgembans [time]: Purges old mafiabans. Time is given in seconds. Default is 1 week.",
+    "/addplugin [plugin]: Add a plugin from the web.",
+    "/removeplugin [plugin]: Removes a plugin.",
+    "/updateplugin [plugin]: Updates plugin from the web.",
+    "/updateScripts: Updates scripts from the web.",
+    "/capslockday [on/off]: To turn caps lock day on or off.",
+    "/indigo [on/off]: To create or destroy staff channel.",
+    "/updatebansites: To update ban sites.",
+    "/updatetierchecks: To update tier checks.",
+    "/updatetiers[soft]: To update tiers. Soft saves to file only without reloading.",
+    "/togglerainbow: [on/off]: To turn rainbow on or off.",
+    "/towner[s] [name]: makes someone a tournament owner (tours.js plugin needs to be installed for this to work)",
+    "/loadstats: loads the usage stats plugin.",
+    "/unloadstats: unloads the usage stats plugin.",
+    "/warnwebclients [message]: sends a big alert message to webclient users.",
+    "/clearladder [tier]: clears rankings from a tier."
+];
