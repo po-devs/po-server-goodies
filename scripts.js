@@ -3114,7 +3114,6 @@ userCommand: function(src, command, commandData, tar) {
         }
         sys.sendHtmlMessage(tar, "<font color='brown'><timestamp/><b>±Sentret:  </b></font><a href='po:watchplayer/"+ sys.name(src) +"'><b>"+html_escape(sys.name(src))+"</b> would like you to watch their battle!</a>");
         SESSION.users(src).inviteDelay = (new Date()).getTime() + 15000;
-        normalbot.sendMessage(src, inviteDelay);
         return;
     }
     return "no command";
