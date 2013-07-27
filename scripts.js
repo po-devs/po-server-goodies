@@ -3122,6 +3122,12 @@ userCommand: function(src, command, commandData, tar) {
             normalbot.sendMessage(src, "You are not currently battling!");
             return;
         }  
+        
+        if (sys.away(tar)) {
+            normalbot.sendMessage(src, "You cannot ask idle players to watch your battle.");
+            return;
+        }
+        
         /*Delay code ripped from Hangman */
         var now = (new Date()).getTime();
         if (now < SESSION.users(src).inviteDelay) {
