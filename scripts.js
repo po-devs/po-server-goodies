@@ -3096,6 +3096,27 @@ userCommand: function(src, command, commandData, tar) {
         normalbot.sendMessage(src, "You cannot switch to " + tier, channel);
         return;
     }
+    
+    if (command == "invitespec") {
+        if (tar === undefined) {
+            normalbot.sendMessage(src, "Choose a valid target to watch your battle!");
+            return;
+        }
+        if (!sys.battling(src)) {
+            normalbot.sendMessage(src, "You are not currently battling!");
+            return;
+        }  
+        /*Delay code ripped from Hangman */
+        var now = (new Date()).getTime();
+        if (now < SESSION.users(src).inviteDelay) {
+            normalbot.sendMessage(src, "Please wait before sending another invite!");
+            return;
+        }
+        sys.sendHtmlMessage(tar, "<font color='brown'><timestamp/><b>±Sentret:  </b></font><a href='po:watchplayer/"+ sys.name(src) +"'><b>"+html_escape(sys.name(src))+"</b> would like you to watch their battle!</a>");
+        SESSION.users(src).inviteDelay = (new Date()).getTime() + 15000;
+        normalbot.sendMessage(src, inviteDelay);
+        return;
+    }
     return "no command";
 },
 
