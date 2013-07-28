@@ -3109,7 +3109,7 @@ userCommand: function(src, command, commandData, tar) {
             normalbot.sendMessage(src, "You switched to " + tier, channel);
             return;
         }
-        normalbot.sendMessage(src, "You cannot switch to " + tier, channel);
+        normalbot.sendMessage(src, "You cannot switch to " + commandData[0], channel);
         return;
     }
     
