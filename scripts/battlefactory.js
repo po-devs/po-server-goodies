@@ -15,7 +15,6 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 /*global sendChanAll, bfbot, staffchannel, tier_checker, sendChanHtmlAll*/
 
 // Globals
-var bfversion = "1.100";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
 var messDir = dataDir+"messages/";
@@ -131,7 +130,7 @@ function initFactory() {
         throw "No valid set packs available";
     }
 
-    sendChanAll("Version "+bfversion+" of the Battle Factory loaded successfully!", teamrevchan);
+    sendChanAll("Battle Factory loaded successfully!", teamrevchan);
     working = true;
 }
 
@@ -166,29 +165,6 @@ function createEntry(name, data, srcurl) {
     if (sys.getFileContent(dataDir + basepathname) === undefined) {
         sys.writeToFile(dataDir + basepathname, JSON.stringify(data));
         bfhash[name] = {'path': basepathname, 'active': true, 'enabled': true, 'url': srcurl};
-        bfsets[name] = data;
-        return true;
-    }
-    return false;
-}
-
-function importOld(name) {
-    var basepathname = "bfteams_" + (name.replace(/ /g, "")).toLowerCase() + ".json";
-    if (sys.getFileContent(dataDir + basepathname) !== undefined) {
-        var data;
-        try {
-            data = JSON.parse(sys.getFileContent(dataDir + basepathname));
-        }
-        catch (err) {
-            return false;
-        }
-        if (!data.hasOwnProperty('desc')) {
-            data.desc = name;
-        }
-        if (!data.hasOwnProperty('maxpokes')) {
-            data.maxpokes = 6;
-        }
-        bfhash[name] = {'path': basepathname, 'active': true, 'enabled': true, 'url': "Unknown"};
         bfsets[name] = data;
         return true;
     }
@@ -1393,16 +1369,6 @@ function factoryCommand(src, command, commandData, channel) {
         }
         return;
     }
-    else if (command == "destroyreview") {
-        var parr = sys.playersOfChannel(teamrevchan);
-        for (var x in parr) {
-            if (!isReviewAdmin(parr[x])) {
-                sys.kick(parr[x], teamrevchan);
-            }
-        }
-        bfbot.sendMessage(src, "Destroyed Review Channel", channel);
-        return;
-    }
     else if (command == 'backlog') {
         sys.sendMessage(src, "*** Current Queue Lengths ***", channel);
         for (var a in bfhash) {
@@ -1449,9 +1415,10 @@ function setlint(checkfile, strict) {
     }
     var readable = false;
     if (checkfile.hasOwnProperty("readable")) {
-        warnings.push("<td>Readable Property</td><td>Readable Property is depreciated, avoid using readable set packs where possible</td>");
+        errors.push("<td>Readable Property</td><td>Readable Property no longer works!</td>");
     }
     var stats = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
+    var gen = packGen(checkfile, "gen");
     for (var x in checkfile) {
         var setinfo = checkfile[x];
         if (typeof setinfo !== 'object') {
@@ -1460,217 +1427,87 @@ function setlint(checkfile, strict) {
             }
             continue;
         }
-        if (readable) {
-            var sets = checkfile[x];
-            var available = [];
-            var setids = [];
-            for (var t in sets) {
-                if (typeof sets[t] !== "object") {
-                    errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+t+": properties of it must be an object</td>");
-                    continue;
-                }
-                available.push(sets[t]);
-                setids.push(t);
-            }
-            for (var j in available) {
-                var prop = available[j];
-                var sid = setids[j];
-                for (var p in prop) {
-                    if (['poke', 'nature', 'ability', 'item'].indexOf(p) != -1) {
-                        if (typeof prop[p] !== "string") {
-                            errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+": property '"+p+"' must be a string</td>");
-                        }
-                    }
-                    else if (['level'].indexOf(p) != -1) {
-                        if (typeof prop[p] !== "number") {
-                            errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+": property '"+p+"' must be a number</td>");
-                        }
-                        else if (prop.level < 1 || prop.level > 100) {
-                            errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+": level property must be an integer between 1 and 100 (inclusive)</td>");
-                        }
-                    }
-                    else if (['moves', 'evs', 'dvs'].indexOf(p) != -1) {
-                        if (typeof prop[p] !== "object") {
-                            errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+": property '"+p+"' must be an array</td>");
-                        }
-                        else {
-                            if (p == 'moves' && prop[p].length != 4) {
-                                errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+": property '"+p+"' must be an array of length 4</td>");
-                            }
-                            if (['evs', 'dvs'].indexOf(p) != -1 && prop[p].length != 6) {
-                                errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+": property '"+p+"' must be an array of length 6</td>");
-                            }
-                            else if (p == 'dvs'){
-                                var dvlist = prop.dvs;
-                                for (var d in dvlist) {
-                                    if (typeof dvlist[d] !== "number" || dvlist[d] < 0 || dvlist[d] > 31) {
-                                        errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+"; property '"+p+"'; array values must be integers between 0 and 31 inclusive.</td>");
-                                    }
-                                }
-                            }
-                            else if (p == 'evs'){
-                                var evlist = prop.evs;
-                                var evsum = 0;
-                                for (var e in evlist) {
-                                    if (typeof evlist[e] !== "number" || evlist[e] < 0 || evlist[e] > 255) {
-                                        errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+"; property '"+p+"'; array values must be integers between 0 and 255 inclusive.</td>");
-                                    }
-                                    else {
-                                        evsum += evlist[e];
-                                    }
-                                }
-                                if (evsum > 510) {
-                                    errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+"; property '"+p+"'; maximum sum of EVs must not exceed 510.</td>");
-                                }
-                            }
-                            else {
-                                var moves = prop.moves;
-                                for (var m in moves) {
-                                    if (typeof moves[m] !== "string") {
-                                        errors.push("<td>Bad set property</td><td>Property '"+html_escape(x)+"'; set "+sid+"; property '"+p+"'; array values must be strings.</td>");
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        warnings.push("<td>Unused Property</td><td>Property '"+html_escape(x)+"'; set "+sid+": unused property '"+p+"'</td>");
-                    }
-                }
-                var iserr = false;
-                var reqprops = ['poke', 'nature', 'ability', 'item', 'level', 'moves', 'evs', 'dvs'];
-                for (var a in reqprops) {
-                    if (!prop.hasOwnProperty(reqprops[a])) {
-                        errors.push("<td>Missing property</td><td>Property '"+html_escape(x)+"'; set "+sid+": property '"+reqprops[a]+"' is missing</td>");
-                        iserr = true;
-                    }
-                }
-                if (iserr) {
-                    continue;
-                }
-                var testprop = {
-                    'poke': sys.pokeNum(prop.poke),
-                    'nature': sys.natureNum(prop.nature),
-                    'ability': sys.abilityNum(prop.ability),
-                    'item': sys.itemNum(prop.item),
-                    'level': prop.level,
-                    'moves': [sys.moveNum(prop.moves[0]),sys.moveNum(prop.moves[1]),sys.moveNum(prop.moves[2]),sys.moveNum(prop.moves[3])],
-                    'evs': prop.evs,
-                    'dvs': prop.dvs
-                };
-                if (testprop.poke === 0 || testprop.poke === undefined) {
-                    errors.push("<td>Missing Poke</td><td>Property '"+html_escape(x)+"'; set "+sid+": Pokemon detected was Missingno.</td>");
-                }
-                if (testprop.item === 0 || testprop.item === undefined) {
-                    warnings.push("<td>Missing Item</td><td>Property '"+html_escape(x)+"'; set "+sid+": Not holding an item.</td>");
-                }
-                var nummoves = 0;
-                for (var mm = 0; mm < 4; mm++) {
-                    if (testprop.moves[mm] === 0 || testprop.moves[mm] === undefined) {
-                        warnings.push("<td>Missing Move</td><td>Property '"+html_escape(x)+"'; set "+sid+": Moveslot "+(mm+1)+" is empty.</td>");
-                    }
-                    else {
-                        nummoves += 1;
-                    }
-                }
-                if (nummoves === 0) {
-                    errors.push("<td>No Moves</td><td>Property '"+html_escape(x)+"'; set "+sid+": Pokemon has no moves.</td>");
-                }
-                var ttlevsum = 0;
-                for (var ee in testprop.evs) {
-                    if (testprop.evs[ee]%4 !== 0) {
-                        warnings.push("<td>Wasted EVs</td><td>Property '"+html_escape(x)+"'; set "+sid+": EVs for "+stats[ee]+" are wasted. (Use a multiple of 4)</td>");
-                    }
-                    ttlevsum += testprop.evs[ee];
-                }
-                if (ttlevsum < 508) {
-                    warnings.push("<td>Unassigned EVs</td><td>Property '"+html_escape(x)+"'; set "+sid+": This Pokemon could have more EVs.</td>");
-                }
-            }
-        }
-        else {
-            var csets = checkfile[x];
-            var cavailable = [];
-            for (var ct in csets) {
-                if (typeof csets[ct] !== "string") {
-                    if (typeof csets[ct] === "object") {
-                        cavailable.push(csets[ct].set);
-                    }
-                    else {
-                        errors.push("<td>Bad set</td><td>Property '"+html_escape(x)+"'; array elements must be 39 character alphanumeric strings or objects with a 39 char set property</td>");
-                    }
-                    continue;
+        var csets = checkfile[x];
+        var cavailable = [];
+        for (var ct in csets) {
+            if (typeof csets[ct] !== "string") {
+                if (typeof csets[ct] === "object") {
+                    cavailable.push(csets[ct].set);
                 }
                 else {
-                    cavailable.push(csets[ct]);
+                    errors.push("<td>Bad set</td><td>Property '"+html_escape(x)+"'; array elements must be 39 character alphanumeric strings or objects with a 39 char set property</td>");
+                }
+                continue;
+            }
+            else {
+                cavailable.push(csets[ct]);
+            }
+        }
+        for (var k in cavailable) {
+            var set = cavailable[k];
+            if (set.length != 39) {
+                errors.push("<td>Bad set</td><td>Property '"+html_escape(x)+"'; array elements must be 39 character alphanumeric strings</td>");
+                continue;
+            }
+            var ctestprop = {
+                'poke': sys.pokemon(toNumber(set.substr(0,2))+65536*toNumber(set.substr(2,1))),
+                'nature': sys.nature(toNumber(set.substr(3,1))),
+                'ability': sys.ability(toNumber(set.substr(4,2))),
+                'item': sys.item(toNumber(set.substr(6,3))),
+                'level': toNumber(set.substr(9,2)),
+                'moves': [sys.move(toNumber(set.substr(11,2))),sys.move(toNumber(set.substr(13,2))),sys.move(toNumber(set.substr(15,2))),sys.move(toNumber(set.substr(17,2)))],
+                'evs': [toNumber(set.substr(19,2)),toNumber(set.substr(21,2)),toNumber(set.substr(23,2)),toNumber(set.substr(25,2)),toNumber(set.substr(27,2)),toNumber(set.substr(29,2))],
+                'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))]
+            };
+            if (ctestprop.poke === sys.pokemon(0) || ctestprop.poke === undefined) {
+                errors.push("<td>Missing Poke</td><td>Property '"+html_escape(x)+"'; set "+set+": Pokemon detected was Missingno.</td>");
+            }
+            if (ctestprop.level < 1 || ctestprop.level > 100) {
+                errors.push("<td>Level out of range</td><td>Property '"+html_escape(x)+"'; set "+set+": level must be an integer between 1 and 100 (inclusive)</td>");
+            }
+            if ((ctestprop.item === sys.item(0) && gen >= 2) || ctestprop.item === undefined) {
+                warnings.push("<td>Missing Item</td><td>Property '"+html_escape(x)+"'; set "+set+": Not holding an item.</td>");
+            }
+            if (ctestprop.nature === undefined) {
+                errors.push("<td>Invalid Nature</td><td>Property '"+html_escape(x)+"'; set "+set+": This set has an invalid nature.</td>");
+            }
+            if ([sys.nature(0), sys.nature(6), sys.nature(12), sys.nature(18), sys.nature(24)].indexOf(ctestprop.nature) > -1  && gen >= 3) {
+                suggestions.push("<td>Neutral Nature?</td><td>Property '"+html_escape(x)+"'; set "+set+": This set has a Neutral Nature (may not be what you intend).</td>");
+            }
+            var cnummoves = 0;
+            for (var cm = 0; cm < 4; cm++) {
+                if (ctestprop.moves[cm] === sys.move(0) || ctestprop.moves[cm] === undefined) {
+                    warnings.push("<td>Missing Move</td><td>Property '"+html_escape(x)+"'; set "+set+": Moveslot "+(cm+1)+" is empty.</td>");
+                }
+                else {
+                    cnummoves += 1;
                 }
             }
-            for (var k in cavailable) {
-                var set = cavailable[k];
-                if (set.length != 39) {
-                    errors.push("<td>Bad set</td><td>Property '"+html_escape(x)+"'; array elements must be 39 character alphanumeric strings</td>");
-                    continue;
+            if (cnummoves === 0) {
+                errors.push("<td>No Moves</td><td>Property '"+html_escape(x)+"'; set "+set+": Pokemon has no moves.</td>");
+            }
+            var cttlevsum = 0;
+            for (var ce in ctestprop.evs) {
+                if (typeof ctestprop.evs[ce] !== "number" || ctestprop.evs[ce] < 0 || ctestprop.evs[ce] > 255) {
+                    errors.push("<td>Bad EV Amount</td><td>Property '"+html_escape(x)+"'; set "+set+"; stat "+stats[ce]+" : EVs must be integers between 0 and 255 inclusive.</td>");
                 }
-                var ctestprop = {
-                    'poke': sys.pokemon(toNumber(set.substr(0,2))+65536*toNumber(set.substr(2,1))),
-                    'nature': sys.nature(toNumber(set.substr(3,1))),
-                    'ability': sys.ability(toNumber(set.substr(4,2))),
-                    'item': sys.item(toNumber(set.substr(6,3))),
-                    'level': toNumber(set.substr(9,2)),
-                    'moves': [sys.move(toNumber(set.substr(11,2))),sys.move(toNumber(set.substr(13,2))),sys.move(toNumber(set.substr(15,2))),sys.move(toNumber(set.substr(17,2)))],
-                    'evs': [toNumber(set.substr(19,2)),toNumber(set.substr(21,2)),toNumber(set.substr(23,2)),toNumber(set.substr(25,2)),toNumber(set.substr(27,2)),toNumber(set.substr(29,2))],
-                    'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))]
-                };
-                if (ctestprop.poke === sys.pokemon(0) || ctestprop.poke === undefined) {
-                    errors.push("<td>Missing Poke</td><td>Property '"+html_escape(x)+"'; set "+set+": Pokemon detected was Missingno.</td>");
+                else if (ctestprop.evs[ce]%4 !== 0 && gen >= 3) {
+                    warnings.push("<td>Wasted EVs</td><td>Property '"+html_escape(x)+"'; set "+set+": EVs for "+stats[ce]+" are wasted. (Use a multiple of 4)</td>");
+                    cttlevsum += ctestprop.evs[ce];
                 }
-                if (ctestprop.level < 1 || ctestprop.level > 100) {
-                    errors.push("<td>Level out of range</td><td>Property '"+html_escape(x)+"'; set "+set+": level must be an integer between 1 and 100 (inclusive)</td>");
+                else {
+                    cttlevsum += ctestprop.evs[ce];
                 }
-                if (ctestprop.item === sys.item(0) || ctestprop.item === undefined) {
-                    warnings.push("<td>Missing Item</td><td>Property '"+html_escape(x)+"'; set "+set+": Not holding an item.</td>");
-                }
-                if (ctestprop.nature === undefined) {
-                    errors.push("<td>Invalid Nature</td><td>Property '"+html_escape(x)+"'; set "+set+": This set has an invalid nature.</td>");
-                }
-                if ([sys.nature(0), sys.nature(6), sys.nature(12), sys.nature(18), sys.nature(24)].indexOf(ctestprop.nature) > -1) {
-                    suggestions.push("<td>Neutral Nature?</td><td>Property '"+html_escape(x)+"'; set "+set+": This set has a Neutral Nature (may not be what you intend).</td>");
-                }
-                var cnummoves = 0;
-                for (var cm = 0; cm < 4; cm++) {
-                    if (ctestprop.moves[cm] === sys.move(0) || ctestprop.moves[cm] === undefined) {
-                        warnings.push("<td>Missing Move</td><td>Property '"+html_escape(x)+"'; set "+set+": Moveslot "+(cm+1)+" is empty.</td>");
-                    }
-                    else {
-                        cnummoves += 1;
-                    }
-                }
-                if (cnummoves === 0) {
-                    errors.push("<td>No Moves</td><td>Property '"+html_escape(x)+"'; set "+set+": Pokemon has no moves.</td>");
-                }
-                var cttlevsum = 0;
-                for (var ce in ctestprop.evs) {
-                    if (typeof ctestprop.evs[ce] !== "number" || ctestprop.evs[ce] < 0 || ctestprop.evs[ce] > 255) {
-                        errors.push("<td>Bad EV Amount</td><td>Property '"+html_escape(x)+"'; set "+set+"; stat "+stats[ce]+" : EVs must be integers between 0 and 255 inclusive.</td>");
-                    }
-                    else if (ctestprop.evs[ce]%4 !== 0) {
-                        warnings.push("<td>Wasted EVs</td><td>Property '"+html_escape(x)+"'; set "+set+": EVs for "+stats[ce]+" are wasted. (Use a multiple of 4)</td>");
-                        cttlevsum += ctestprop.evs[ce];
-                    }
-                    else {
-                        cttlevsum += ctestprop.evs[ce];
-                    }
-                }
-                if (cttlevsum > 510) {
-                    errors.push("<td>Too many EVs</td><td>Property '"+html_escape(x)+"'; set "+set+"; maximum sum of EVs must not exceed 510.</td>");
-                }
-                else if (cttlevsum < 508) {
-                    warnings.push("<td>Unassigned EVs</td><td>Property '"+html_escape(x)+"'; set "+set+": This Pokemon could have more EVs.</td>");
-                }
-                for (var cd in ctestprop.dvs) {
-                    if (typeof ctestprop.dvs[cd] !== "number" || ctestprop.dvs[cd] < 0 || ctestprop.dvs[cd] > 31) {
-                        errors.push("<td>Bad EV Amount</td><td>Property '"+html_escape(x)+"'; set "+set+"; stat "+stats[cd]+" : IVs must be integers between 0 and 31 inclusive.</td>");
-                    }
+            }
+            if (cttlevsum > 510 && gen >= 3) {
+                errors.push("<td>Too many EVs</td><td>Property '"+html_escape(x)+"'; set "+set+"; maximum sum of EVs must not exceed 510.</td>");
+            }
+            else if (cttlevsum < 508) {
+                warnings.push("<td>Unassigned EVs</td><td>Property '"+html_escape(x)+"'; set "+set+": This Pokemon could have more EVs.</td>");
+            }
+            for (var cd in ctestprop.dvs) {
+                if (typeof ctestprop.dvs[cd] !== "number" || ctestprop.dvs[cd] < 0 || ctestprop.dvs[cd] > (gen >= 3 ? 31 : 15)) {
+                    errors.push("<td>Bad EV Amount</td><td>Property '"+html_escape(x)+"'; set "+set+"; stat "+stats[cd]+" : IVs must be integers between 0 and "+(gen >= 3 ? 31 : 15)+" inclusive.</td>");
                 }
             }
         }
@@ -1702,6 +1539,7 @@ function getReadablePoke(set) {
         'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))],
         'gen': sys.generation(toNumber(set.substr(37,1)),toNumber(set.substr(38,1)))
     };
+    var maingen = toNumber(set.substr(37,1));
     var stats = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
     var msg = [set, info.poke+" @ "+info.item];
     msg.push("Ability: "+info.ability, info.nature+" Nature, Level "+info.level);
@@ -1713,16 +1551,16 @@ function getReadablePoke(set) {
         }
     }
     for (var k in info.dvs) {
-        if (info.dvs[k] < 31) {
+        if (info.dvs[k] < (maingen >= 3 ? 31 : 15)) {
             dvlist.push(info.dvs[k]+" "+stats[k]);
         }
     }
     if (dvlist.length === 0) {
-        dvlist = ["All 31"];
+        dvlist = ["All "+(maingen >= 3 ? 31 : 15)];
     }
     msg.push(info.moves.join(" / "),"EVs: "+evlist.join(" / "),"IVs: "+dvlist.join(" / "));
     if (info.moves.indexOf("Hidden Power") != -1) {
-        var hptype = sys.hiddenPowerType(5,info.dvs[0],info.dvs[1],info.dvs[2],info.dvs[3],info.dvs[4],info.dvs[5]);
+        var hptype = sys.hiddenPowerType(maingen,info.dvs[0],info.dvs[1],info.dvs[2],info.dvs[3],info.dvs[4],info.dvs[5]);
         msg.push("Hidden Power "+sys.type(hptype));
     }
     var statlist = [];
@@ -1734,12 +1572,12 @@ function getReadablePoke(set) {
                 statlist.push("1 HP");
             }
             else {
-                var hstat = 10 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4+100)*info.level/100);
+                var hstat = 10 + Math.floor(Math.floor(info.dvs[s]*(maingen >= 3 ? 1 : 2)+2*pokeinfo[s]+info.evs[s]/4+100)*info.level/100);
                 statlist.push(hstat+" HP");
             }
         }
         else {
-            var bstat = 5 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4)*info.level/100);
+            var bstat = 5 + Math.floor(Math.floor(info.dvs[s]*(maingen >= 3 ? 1 : 2)+2*pokeinfo[s]+info.evs[s]/4)*info.level/100);
             var newstat = 0;
             if (natureboost[0] === s) {
                 newstat = Math.floor(bstat*1.1);
@@ -2074,6 +1912,51 @@ function isTierReviewer(src, tier) {
     return false;
 }
 
+// Generation of a pack
+// Type being full, gen or subgen (default full)
+function packGen(pack, type) {
+    var gen, subgen, checkset, setstring;
+    for (var x in pack) {
+        if (typeof pack[x] === "object") {
+            checkset = pack[x][0];
+            if (typeof checkset == "object") {
+                setstring = checkset.set;
+            }
+            else {
+                setstring = checkset;
+            }
+            gen = toNumber(setstring.substr(37,1));
+            subgen = toNumber(setstring.substr(38,1));
+            break;
+        }
+    }
+    if (gen > 0 && subgen > 0) {
+        if (type == "gen") {
+            return gen;
+        }
+        else if (type == "subgen") {
+            return subgen;
+        }
+        else {
+            return sys.generation(gen, subgen);
+        }
+    }
+    else {
+        return "Unknown";
+    }
+}
+
+function allowedTypes(src, srcteam) {
+    var allowedtypes = [];
+    var generation = sys.generation(sys.gen(src, srcteam), sys.subgen(src, srcteam));
+    for (var x in bfhash) {
+        if (bfhash[x].enabled && bfhash[x].active && packGen(bfsets[x], "full") == generation) {
+            allowedtypes.push(x);
+        }
+    }
+    return allowedtypes;
+}
+
 module.exports = {
     handleCommand: function(source, message, channel) {
         var command;
@@ -2095,7 +1978,7 @@ module.exports = {
                 bfbot.sendMessage(source, "You can't use this command!", channel);
                 return true;
             }
-            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier', 'resetladder', 'destroyreview', 'importold', 'forcestart'].indexOf(command) > -1 && !isReviewAdmin(source)) {
+            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier', 'resetladder', 'forcestart'].indexOf(command) > -1 && !isReviewAdmin(source)) {
                 bfbot.sendMessage(source, "You can't use this command!", channel);
                 return true;
             }
@@ -2144,6 +2027,10 @@ module.exports = {
             sys.sendMessage(source, "Battle Factory is not working, so you can't issue challenges in that tier.");
             return true;
         }
+        if (allowedTypes(source, team).length === 0) {
+            sys.sendMessage(source, "There are no packs available for your generation.");
+            return true;
+        }
         return false;
     },
     beforeChangeTier: function(src, team, oldtier, newtier) { // This shouldn't be needed, but it's here in case
@@ -2161,6 +2048,11 @@ module.exports = {
             sys.changeTier(src, team, "Challenge Cup");
             return true;
         }
+        if (allowedTypes(src, team).length === 0) {
+            sys.sendMessage(src, "There are no packs available for your generation.");
+            sys.changeTier(src, team, "Challenge Cup");
+            return true;
+        }
         if (isBFTier(newtier)) {
             generateTeam(src, team, "preset");
         }
@@ -2168,20 +2060,13 @@ module.exports = {
     beforeBattleStarted: function(src, dest, rated, mode, srcteam, destteam) {
         if (isinBFTier(src, srcteam) && isinBFTier(dest, destteam)) {
             try {
-                var allowedtypes = [];
+                var allowedtypes = allowedTypes(src, srcteam);
                 var suggestedtypes = [];
                 for (var x in bfhash) {
                     if (bfhash[x].enabled && bfhash[x].active) {
-                        allowedtypes.push(x);
                         if (bfsets[x].hasOwnProperty('mode')) {
                             var modes = ['Singles', 'Doubles', 'Triples'];
-                            if (bfsets[x].mode == modes[mode]) {
-                                suggestedtypes.push(x);
-                                continue;
-                            }
-                        }
-                        if (bfsets[x].hasOwnProperty('maxpokes')) {
-                            if (bfsets[x].maxpokes == 6 && sys.tier(src, srcteam) == sys.tier(dest, destteam) && sys.tier(src, srcteam) == "Battle Factory 6v6") {
+                            if (bfsets[x].mode == modes[mode] && allowedtypes.indexOf(x) > -1) {
                                 suggestedtypes.push(x);
                                 continue;
                             }
@@ -2200,6 +2085,7 @@ module.exports = {
                 }*/
                 generateTeam(src, srcteam, type);
                 generateTeam(dest, destteam, type);
+                // TODO: Custom in built tier chacks to avoid recursion errors
                 if (find_tier(type)) {
                     var k = 0;
                     while (!tier_checker.has_legal_team_for_tier(src, srcteam, type, true) || !tier_checker.has_legal_team_for_tier(dest, destteam, type, true)) { //for complex bans like SS+Drizzle
@@ -2245,9 +2131,11 @@ module.exports = {
                 "/deletepoke [poke]:[tier]: Deletes a faulty Pokemon along with all its sets.",
                 "/nextset: Goes to the next set in the queue",
                 "/savesets: Saves user generated Battle Factory sets (use before updating/server downtime)",
-                "/refresh: Refreshes a team pack (saves and checks if it's working)",
+                "/refresh [pack]: Refreshes a team pack (saves and checks if it's working)",
+                "/loadfromfile [pack]: Loads a team pack from the last saved state (useful for reverting changes)",
                 "/submit[un]ban: [Un]bans players from submitting sets",
-                "/submitbans: Views list of submit bans"
+                "/submitbans: Views list of submit bans",
+                "/export [pack]: Exports code for a particular pack"
             ];
             var userHelp = [
                 "/bfversion: Gives information about the battle factory",
@@ -2277,7 +2165,7 @@ module.exports = {
     },
     getVersion: function(type) {
         if (type == "script") {
-            return bfversion;
+            return 0;
         }
         else if (type == "team") {
             return "Default";
