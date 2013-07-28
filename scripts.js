@@ -1352,7 +1352,8 @@ var commands = {
         "/players: Shows the number of players online.",
         "/sameTier [on/off]: Turn on/off auto-rejection of challenges from players in a different tier from you.",
         "/seen [name]: Allows you to see the last login of a user.",
-        "/changetier [tier]:[team]: Allows you to switch tier. Team is a number between 0-5 indicating loaded teams. Default is 0"
+        "/changetier [tier]:[team]: Allows you to switch tier. Team is a number between 0-5 indicating loaded teams. Default is 0",
+        "/invitespec [name]: Allows you to invite someone to watch your battle."
     ],
     channel:
     [
