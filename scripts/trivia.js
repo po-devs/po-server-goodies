@@ -281,7 +281,7 @@ TriviaGame.prototype.startNormalGame = function (points, name) {
     var player_id, player_ip;
     for (var p in players) {
         player_id = players[p], player_ip = sys.ip(player_id);
-        if (trivData.toFlash[player_ip] !== undefined)
+        if (trivData.toFlash[player_ip])
             sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
     }
     for (var q in triviaq.all()) {
@@ -317,7 +317,7 @@ TriviaGame.prototype.startCatGame = function (points, cats, name) {
     var player_id, player_ip;
     for (var p in players) {
         player_id = players[p], player_ip = sys.ip(player_id);
-        if (trivData.toFlash[player_ip] !== undefined)
+        if (trivData.toFlash[player_ip])
             sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
     }
     this.answeringQuestion = false;
@@ -925,8 +925,8 @@ addUserCommand("categories", function (src, commandData, channel) {
 }, "Allows you to view the trivia categories");
 
 addUserCommand("flashme", function (src, commandData, channel) {
-    if (trivData.toFlash[sys.ip(src)]) {
-        trivData.toFlash[sys.ip(src)] = {};
+    if (!trivData.toFlash[sys.ip(src)]) {
+        trivData.toFlash[sys.ip(src)] = true;
         saveData();
         triviabot.sendMessage(src, "You are now going to be flashed when a game starts.", channel);
     }
