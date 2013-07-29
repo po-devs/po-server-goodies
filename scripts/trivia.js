@@ -909,11 +909,11 @@ addUserCommand("triviarules", function (src, commandData, channel) {
     sys.sendMessage(src, "", channel);
     sys.sendMessage(src, "*** Trivia rules ***", channel);
     sys.sendMessage(src, "1. #Trivia is an official channel, and as such, server rules apply in it:", channel);
-    sys.sendMessage(src, "- This means that every offense in chat will be handled by a moderator, and every offense in Trivia answers can be punished with a Triviamute from any Trivia Admin, and in extreme cases may result in a server punishment as well.", channel);
+    sys.sendMessage(src, "- This means that every offense, whether in chat or in answers, will be handled by a moderator.", channel);
     sys.sendMessage(src, "2. Do not abuse Trivia commands or hamper game progression:", channel);
     sys.sendMessage(src, "- This includes, but is not limited to, joining and unjoining a game repeatedly, joining a game just to answer a single question then immediately leaving multiple times, purposefully getting answers wrong in order to prolong a game from ending.", channel);
     sys.sendMessage(src, "3. Have good sportsmanship:", channel);
-    sys.sendMessage(src, "- Trivia is a game for all to enjoy, and bad sportsmanship can turn that into a less pleasant experience for everyone involved. Do not brag when you get a question right, and do not insult others when you get it wrong. Any form of cheating isn't allowed, whether by gaining an unfair advantage for yourself, or hampering someone else's ability to answer.", channel);
+    sys.sendMessage(src, "- Trivia is a game for all to enjoy, and bad sportsmanship can turn that into a less pleasant experience for everyone involved. Do not brag when you get a question right, and do not be a sore loser when you get it wrong. Any form of cheating isn't allowed, whether by gaining an unfair advantage for yourself, or hampering someone else's ability to answer.", channel);
     sys.sendMessage(src, "4. Do not abuse question submission:", channel);
     sys.sendMessage(src, "- This includes, but is not limited to, submitting questions that are plainly wrong, offensive to other users, racist, inappropriate, trolling, spamming the same question multiple times, purposefully submitting questions that are already in the database. Trivia Admins can revoke a user's submitting privileges at any time if they deem it necessary.", channel);
 }, "Shows the rules of the Trivia channel");
