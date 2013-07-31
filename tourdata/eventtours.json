@@ -4,7 +4,8 @@
         "settings": {}
     },
     "2-8-2013": {
-        "tier": "Wifi LC"
+        "tier": "Wifi LC",
+        "settings": {}
     },
     "3-8-2013": {
         "tier": "Wifi OU",
@@ -43,7 +44,7 @@
         "settings": {}
     },
     "12-8-2013": {
-        "tier": "Battle Factory 6v6s",
+        "tier": "Battle Factory 6v6",
         "settings": {}
     },
     "13-8-2013": {
@@ -60,9 +61,7 @@
     },
     "16-8-2013": {
         "tier": "Wifi Triples",
-        "settings": {
-            "gen": "HGSS"
-        }
+        "settings": {}
     },
     "17-8-2013": {
         "tier": "Wifi UU",
