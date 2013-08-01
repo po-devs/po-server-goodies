@@ -906,7 +906,7 @@ function getEventLeaderboard(src, full, month) {
         var rankkey = [0, 0]; // rank, points
         for (var x=0; x<65536; x++) {
             if (x >= list.length || (ownnameprinted && rankkey[0]>10)) break;
-            if (rankkey[0] <= 10 || cmp((list[x])[1], sys.name(src))) {
+            if (rankkey[0] <= 10 && list[x][0] > 0|| cmp((list[x])[1], sys.name(src))) {
                 if (rankkey[1] === parseInt((list[x])[0], 10)) {
                     sys.sendMessage(src, "#"+rankkey[0]+": "+(list[x])[1]+" ~ "+(list[x])[0]+" point"+((list[x])[0] != 1 ? "s" : ""),tourschan);
                 }
