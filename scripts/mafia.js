@@ -2672,6 +2672,7 @@ function Mafia(mafiachan) {
             }
             var tie = true, maxi = 0, downed = noPlayer, voteshield;
             for (var x in voted) {
+                voted[x] = voted[x].toFixed(2); //stops floating point rounding errors
                 player = mafia.players[x];
                 voteshield = player.role.actions.voteshield;
                 if (voteshield !== undefined) {
