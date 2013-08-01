@@ -3592,12 +3592,16 @@ function Mafia(mafiachan) {
         sendChanAll("±Game: " + name + " joined the game! (pushed by " + nonFlashing(sys.name(src)) + ")", sachannel);
     };
     
-    this.slayUser = function (src, name) {
+    this.slayUser = function (src, name, bot) {
         var slayer = typeof src == "string" ? src : sys.name(src);
         name = this.correctCase(name);
         var player = this.players[name]; 
         if (this.state == "entry") {
-                msg(src, "The game has not yet started. Use /shove to prevent the player from playing.");
+                if (bot) {
+                    this.shoveUser(src, name);
+                } else {
+                    msg(src, "The game has not yet started. Use /shove to prevent the player from playing.");
+                }
                 return;
         }
         if (this.isInGame(name)) {
@@ -4596,7 +4600,7 @@ return;
     
     this.onBan = function (src) {
         if (this.isInGame(sys.name(src))) {
-            this.slayUser(Config.Mafia.bot, sys.name(src));
+            this.slayUser(Config.Mafia.bot, sys.name(src), true);
         }
         if (sys.isInChannel(src, mafiachan)) {
             sys.kick(src, mafiachan);
@@ -4605,7 +4609,7 @@ return;
     
     this.onMban = function (src) {
         if (this.isInGame(sys.name(src))) {
-            this.slayUser(Config.Mafia.bot, sys.name(src));
+            this.slayUser(Config.Mafia.bot, sys.name(src), true);
         }
         if (sys.isInChannel(src, mafiachan)) {
             sys.kick(src, mafiachan);
@@ -4615,7 +4619,7 @@ return;
     this.onKick = function (src) {
         if (this.isInGame(sys.name(src))) {
             if (this.state != "day") {
-                this.slayUser(Config.kickbot, sys.name(src));
+                this.slayUser(Config.kickbot, sys.name(src), true);
             } else {
                 mafia.usersToSlay[sys.name(src)] = Config.capsbot
             }
