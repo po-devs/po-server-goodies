@@ -310,6 +310,91 @@ function weightPower (weight) {
     return power;
 };
 
+getMoveBP = function (moveId) {
+    if (powerList === undefined) {
+        powerList = {};
+        var data = sys.getFileContent('db/moves/5G/power.txt').split('\n');
+        for (var i = 0; i < data.length; i++) {
+            var index = data[i].indexOf(" ");
+            var key = data[i].substr(0, index);
+            var power = data[i].substr(index + 1);
+            powerList[key] = power;
+        }
+    }
+    if (powerList[moveId] === undefined || powerList[moveId] === "1") {
+        return "---"
+    }
+    return powerList[moveId];
+};
+
+getMoveCategory = function (moveId) {
+    if (categoryList === undefined) {
+        categoryList = {};
+        var data = sys.getFileContent('db/moves/5G/damage_class.txt').split('\n');
+        for (var i = 0; i < data.length; i++) {
+            var index = data[i].indexOf(" ");
+            var key = data[i].substr(0, index);
+            var category = data[i].substr(index + 1);
+            categoryList[key] = category;
+        }
+    }
+    if (categoryList[moveId] === "1") {
+        return "Physical";
+    }
+    if (categoryList[moveId] === "2") {
+        return "Special";
+    }
+    return "Other";
+};
+
+getMoveAccuracy = function (moveId) {
+    if (accList === undefined) {
+        accList = {};
+        var data = sys.getFileContent('db/moves/5G/accuracy.txt').split('\n');
+        for (var i = 0; i < data.length; i++) {
+            var index = data[i].indexOf(" ");
+            var key = data[i].substr(0, index);
+            var accuracy = data[i].substr(index + 1);
+            accList[key] = accuracy;
+        }
+    }
+    if (accList[moveId] === "101") {
+        return "---";
+    }
+    return accList[moveId];
+};
+
+getMovePP = function (moveId) {
+    if (ppList === undefined) {
+        ppList = {};
+        var data = sys.getFileContent('db/moves/5G/pp.txt').split('\n');
+        for (var i = 0; i < data.length; i++) {
+            var index = data[i].indexOf(" ");
+            var key = data[i].substr(0, index);
+            var pp = data[i].substr(index + 1);
+            ppList[key] = pp;
+        }
+    }
+    return ppList[moveId];
+};
+
+getMoveEffect = function (moveId) {
+    if (moveEffList === undefined) {
+        moveEffList = {};
+        var data = sys.getFileContent('db/moves/5G/effect.txt').split('\n');
+        for (var i = 0; i < data.length; i++) {
+            var index = data[i].indexOf(" ");
+            var key = data[i].substr(0, index);
+            var effect = data[i].substr(index + 1);
+            moveEffList[key] = effect;
+        }
+    }
+    if (moveEffList[moveId] === undefined) {
+        return "Deals normal damage.";
+    }
+    return moveEffList[moveId].replace(/[\[\]{}]/g, "");
+};
+
 function updateNotice() {
     var url = Config.base_url + "notice.html";
     sys.webCall(url, function (resp){
@@ -1357,7 +1442,8 @@ var commands = {
         //"/importable: Posts an importable of your team to pastebin.",
         "/dwreleased [Pokemon]: Shows the released status of a Pokemon's Dream World Ability",
         "/wiki [Pokémon]: Shows that Pokémon's wiki page",
-        "/pokemon [Pokémon]: Shows basic information for that Pokémon",
+        "/pokemon [Pokémon]: Displays basic information for that Pokémon",
+        "/move [move]: Displays basic information for that move",
         "/register: Registers a channel with you as owner.",
         "/resetpass: Clears your password (unregisters you, remember to reregister).",
         "/auth [owners/admins/mods]: Lists auth of given level, shows all auth if left blank.",
@@ -3031,6 +3117,10 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command === "pokemon") {
+        if (!commandData) {
+            normalbot.sendMessage(src, "Please specify a Pokémon!", channel);
+            return;
+        }
         var pokeId = sys.pokeNum(commandData);
         if (!pokeId) {
             normalbot.sendMessage(src, commandData + " is not a valid Pokémon!", channel);
@@ -3070,6 +3160,33 @@ userCommand: function(src, command, commandData, tar) {
         }
         table += "</table>";
         sys.sendHtmlMessage(src, table, channel);
+        return;
+    }
+    if (command === "move") {
+        if (!commandData)
+            normalbot.sendMessage(src, "Please specify a move!", channel);
+            return;
+        }
+        var moveId = sys.moveNum(commandData);
+        if (!moveId) {
+            normalbot.sendMessage(src, commandData + " is not a valid move!", channel);
+            return;
+        }
+        var type = sys.type(sys.moveType(moveId));
+        var category = getMoveCategory(moveId);
+        var BP = getMoveBP(moveId);
+        var accuracy = getMoveAccuracy(moveId);
+        var PP = getMovePP(moveId);
+        sys.sendHtmlMessage(src, "", channel, true);
+        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.move(moveId) + "</font></b>", channel, true);
+        var table = "<table border = 1 cellpadding = 2>";
+        table += "<tr><th>Type</th><th>Category</th><th>Power</th><th>Accuracy</th><th>PP (Max)</th></tr>";
+        table += "<tr><td><center>" + type + "</center></td><td><center>" + category + "</center></td><td><center>" + BP + "</center></td><td><center>" + accuracy + "</center></td><td><center>" + PP + " (" + PP * 8/5 + ")</center></td></tr>";
+        table += "</table>";
+        sys.sendHtmlMessage(src, table, channel, true);
+        sys.sendHtmlMessage(src, "", channel, true);
+        sys.sendHtmlMessage(src, "<b>Effect:</b> " + getMoveEffect(moveId), channel, true);
+        sys.sendHtmlMessage(src, "", channel, true);
         return;
     }
     if (command == "wiki"){
