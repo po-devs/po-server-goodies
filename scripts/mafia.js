@@ -4523,7 +4523,7 @@ return;
                     } else {
                         mafia.themeManager.disable(src, x, true);
                     }
-                    npThemes.push(themes[x]);
+                    npThemes.push(themes[x].name);
                 }
             }
             if (npThemes.length) {
