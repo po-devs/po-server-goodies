@@ -72,7 +72,7 @@ function statInit() {
             var dates = value.split(";;;");
             for (var x in dates) {
                 var leaderData = dates[x].split(":::");
-                if (!leaderboard[key][leaderData[0]]) 
+                if (!leaderboard[key][leaderData[0]]) {
                     leaderboard[key][leaderData[0]] = {};
                 }
                 leaderboard[key][leaderData[0]][leaderData[1]] = parseInt(leaderData[2]);
