@@ -2694,7 +2694,6 @@ function Mafia(mafiachan) {
             }
             var tie = true, maxi = 0, downed = noPlayer, voteshield;
             for (var x in voted) {
-                voted[x] = voted[x].toFixed(2); //stops floating point rounding errors
                 player = mafia.players[x];
                 voteshield = player.role.actions.voteshield;
                 if (voteshield !== undefined) {
@@ -2730,7 +2729,7 @@ function Mafia(mafiachan) {
                 } else {
                     var roleName = typeof mafia.players[downed].role.actions.lynch == "object" && typeof mafia.players[downed].role.actions.lynch.revealAs == "string" ? mafia.theme.trrole(mafia.players[downed].role.actions.lynch.revealAs) : mafia.players[downed].role.translation;
                     var lynchmsg = mafia.theme.lynchmsg ? mafia.theme.lynchmsg : "±Game: ~Player~ (~Role~) was removed from the game!";
-                    sendChanAll(lynchmsg.replace(/~Player~/g, downed).replace(/~Role~/g, roleName).replace(/~Side~/g, mafia.theme.trside(mafia.players[downed].role.side)).replace(/~Count~/g, maxi), mafiachan);
+                    sendChanAll(lynchmsg.replace(/~Player~/g, downed).replace(/~Role~/g, roleName).replace(/~Side~/g, mafia.theme.trside(mafia.players[downed].role.side)).replace(/~Count~/g, maxi.toFixed(2)), mafiachan);
                     mafia.actionBeforeDeath(lynched);
                     mafia.removePlayer(mafia.players[downed]);
                 }
