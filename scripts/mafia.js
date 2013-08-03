@@ -406,6 +406,7 @@ function Mafia(mafiachan) {
     ThemeManager.prototype.loadWebTheme = function (url, announce, update, updatename, src) {
         if (typeof sys != 'object') return;
         var manager = this;
+        url = mafia.checkLink(url);
         sys.webCall(url, function (resp) {
             try {
                 var plain_theme = JSON.parse(resp);
@@ -1054,8 +1055,8 @@ function Mafia(mafiachan) {
         var themes = mafia.themeManager.themes;
         var data = data.toLowerCase();
         for (var x in themes) {
-            if (themes[x].altname.toLowerCase() === data) {
-                data = themes[x].toLowerCase();
+            if (themes[x].altname && themes[x].altname.toLowerCase() === data) {
+                data = themes[x].name.toLowerCase();
             }
         }
         return data;
@@ -3081,7 +3082,7 @@ function Mafia(mafiachan) {
             dump(src, help);
         }
     };
-    this.showRoles = function (src, commandData) {
+    this.showRoles = function (src, commandData, channel) {
         var themeName = "default";
         var data = commandData.split(":");
         if (mafia.state != "blank") {
@@ -3090,7 +3091,7 @@ function Mafia(mafiachan) {
         if (data[0] != noPlayer && data[0] !== "") {
             themeName = data[0].toLowerCase();
             if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
-                sys.sendMessage(src, "±Game: No such theme!", mafiachan);
+                sys.sendMessage(src, "±Game: No such theme!", channel);
                 return;
             }
         }
@@ -3190,9 +3191,9 @@ function Mafia(mafiachan) {
             filterRoles.push("");
             roles = filterRoles;
         }
-        dump(src, roles);
+        dump(src, roles, channel);
     };
-    this.showSides = function (src, commandData) {
+    this.showSides = function (src, commandData, channel) {
         var themeName = "default";
         if (mafia.state != "blank") {
             themeName = mafia.theme.name.toLowerCase();
@@ -3200,12 +3201,12 @@ function Mafia(mafiachan) {
         if (commandData != noPlayer) {
             themeName = commandData.toLowerCase();
             if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
-                sys.sendMessage(src, "±Game: No such theme!", mafiachan);
+                sys.sendMessage(src, "±Game: No such theme!", channel);
                 return;
             }
         }
         var sides = mafia.themeManager.themes[themeName].sideInfo;
-        dump(src, sides);
+        dump(src, sides, channel);
     };
     this.showRules = function (src, commandData, channel) {
         var mrules = [
@@ -3239,7 +3240,7 @@ function Mafia(mafiachan) {
         }
         msg(src, "Installed themes are: " + l.join(", "));
     };
-    this.showThemeInfo = function (src, data) {
+    this.showThemeInfo = function (src, data, channel) {
         data = data.toLowerCase();
         mafia.themeManager.themeInfo.sort(function (a, b) { return a[0].localeCompare(b[0]); });
         var mess = [];
@@ -3253,7 +3254,7 @@ function Mafia(mafiachan) {
             }
         }
         mess.push("</table>");
-        sys.sendHtmlMessage(src, mess.join(""), mafiachan);
+        sys.sendHtmlMessage(src, mess.join(""), channel);
     };
     this.showThemeChangelog = function (src, commandData) {
         var themeName = "default";
@@ -3548,7 +3549,7 @@ function Mafia(mafiachan) {
             msg(src, "To learn how to set alerts, type /flashme help");
         }
     };
-    this.showPriority = function (src, commandData) {
+    this.showPriority = function (src, commandData, channel) {
         var themeName = "default";
         if (mafia.state != "blank") {
             themeName = mafia.theme.name.toLowerCase();
@@ -3556,17 +3557,17 @@ function Mafia(mafiachan) {
         if (commandData != noPlayer) {
             themeName = commandData.toLowerCase();
             if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
-                sys.sendMessage(src, "±Game: No such theme!", mafiachan);
+                sys.sendMessage(src, "±Game: No such theme!", channel);
                 return;
             }
         }
         var theme = mafia.themeManager.themes[themeName];
-        sys.sendHtmlMessage(src, "", mafiachan);
-        sys.sendHtmlMessage(src, "Priority List for theme <b>" + theme.name + ":</b>", mafiachan);
+        sys.sendHtmlMessage(src, "", channel);
+        sys.sendHtmlMessage(src, "Priority List for theme <b>" + theme.name + ":</b>", channel);
         for (var p = 0; p < theme.priorityInfo.length; ++p) {
-            sys.sendHtmlMessage(src, theme.priorityInfo[p], mafiachan);
+            sys.sendHtmlMessage(src, theme.priorityInfo[p], channel);
         }
-        sys.sendHtmlMessage(src, "", mafiachan);
+        sys.sendHtmlMessage(src, "", channel);
     };
 
     // Auth commands
@@ -3730,7 +3731,7 @@ function Mafia(mafiachan) {
                 }
             }
         } else {
-            dlurl = this.checkLink(url);
+            dlurl = url;
         }
         msg(src, "Download url: " + dlurl);
         if (dlurl) {
@@ -3740,7 +3741,7 @@ function Mafia(mafiachan) {
     this.checkLink = function (url) {
         var dlurl = url;
         if (url.indexOf("pastebin") !== -1 && url.indexOf("raw") === -1) {
-            dlurl = url.replace(/http:\/\/pastebin.com\/(.*)/i, "http://pastebin.com/raw.php?$1");
+            dlurl = url.replace(/http:\/\/pastebin.com\/(.*)/i, "http://pastebin.com/raw.php?i=$1");
         }
         return dlurl;
     };
@@ -3851,7 +3852,7 @@ function Mafia(mafiachan) {
         } else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel != mafiachan && ["mafiaban","mafiaunban","mafiabans","detained","detainlist", "mafiaadmins", "madmins"].indexOf(command) === -1)
+        if (channel != mafiachan && ["mafiaban","mafiaunban","mafiabans","detained","detainlist", "mafiaadmins", "madmins", "roles", "priority", "sides", "themeinfo"].indexOf(command) === -1)
             return;
         try {
             mafia.handleCommandOld(src, command, commandData, channel);
