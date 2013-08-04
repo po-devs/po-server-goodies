@@ -4627,12 +4627,9 @@ return;
         }
     };
     
-    this.onBan = function (src) {
-        if (this.isInGame(sys.name(src))) {
-            this.slayUser(Config.Mafia.bot, sys.name(src), true);
-        }
-        if (sys.isInChannel(src, mafiachan)) {
-            sys.kick(src, mafiachan);
+    this.onBan = function (src, dest) {
+        if (this.isInGame(sys.name(dest))) {
+            this.slayUser(Config.Mafia.bot, sys.name(dest), true);
         }
     };
     
