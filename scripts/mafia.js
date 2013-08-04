@@ -4724,7 +4724,7 @@ return;
     this.onMute = function (src) {
         if (this.isInGame(sys.name(src))) {
             if (this.state != "day") {
-                this.slayUser(Config.capsbot, sys.name(src));
+                this.slayUser(Config.capsbot, sys.name(src), true);
             } else {
                 mafia.usersToSlay[sys.name(src)] = Config.capsbot;
             }
