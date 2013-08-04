@@ -243,7 +243,7 @@ function dwCheck(pokemon){
 function calcStat (base, IV, EV, level, nature) {
     var stat = Math.floor(Math.floor((IV + (2 * base) + Math.floor(EV / 4)) * level / 100 + 5) * nature);
     return stat;
-};
+}
 
 function calcHP (base, IV, EV, level) {
     if (base === 1) {
@@ -251,13 +251,13 @@ function calcHP (base, IV, EV, level) {
     }
     var HP = Math.floor((IV + (2 * base) + Math.floor(EV / 4) + 100) * level / 100 + 10);
     return HP;
-};
+}
 
 function getDBIndex (pokeId) {
     var id = pokeId % 65536;
     var forme = (pokeId - id) / 65536;
     return id + ":" + forme;
-};
+}
 
 function getWeight (pokeId) {
     if (weightList === undefined) {
@@ -271,13 +271,13 @@ function getWeight (pokeId) {
         }
     }
     var key = getDBIndex(pokeId);
-    if (weightList[key] != undefined) {
+    if (weightList[key] !== undefined) {
         return weightList[key];
     }
     var index = key.indexOf(":") + 1;
     var base = key.substr(0, index);
     return weightList[base + "0"];
-};
+}
 
 function getHeight (pokeId) {
     if (heightList === undefined) {
@@ -291,13 +291,13 @@ function getHeight (pokeId) {
         }
     }
     var key = getDBIndex(pokeId);
-    if (heightList[key] != undefined) {
+    if (heightList[key] !== undefined) {
         return heightList[key];
     }
     var index = key.indexOf(":") + 1;
     var base = key.substr(0, index);
     return heightList[base + "0"];
-};
+}
 
 function weightPower (weight) {
     var power = 0;
@@ -308,9 +308,9 @@ function weightPower (weight) {
     if (weight >= 100 && weight < 200) power = 100;
     if (weight >= 200) power = 120;
     return power;
-};
+}
 
-getMoveBP = function (moveId) {
+function getMoveBP (moveId) {
     if (powerList === undefined) {
         powerList = {};
         var data = sys.getFileContent('db/moves/5G/power.txt').split('\n');
@@ -322,12 +322,12 @@ getMoveBP = function (moveId) {
         }
     }
     if (powerList[moveId] === undefined || powerList[moveId] === "1") {
-        return "---"
+        return "---";
     }
     return powerList[moveId];
-};
+}
 
-getMoveCategory = function (moveId) {
+function getMoveCategory (moveId) {
     if (categoryList === undefined) {
         categoryList = {};
         var data = sys.getFileContent('db/moves/5G/damage_class.txt').split('\n');
@@ -345,9 +345,9 @@ getMoveCategory = function (moveId) {
         return "Special";
     }
     return "Other";
-};
+}
 
-getMoveAccuracy = function (moveId) {
+function getMoveAccuracy (moveId) {
     if (accList === undefined) {
         accList = {};
         var data = sys.getFileContent('db/moves/5G/accuracy.txt').split('\n');
@@ -362,9 +362,9 @@ getMoveAccuracy = function (moveId) {
         return "---";
     }
     return accList[moveId];
-};
+}
 
-getMovePP = function (moveId) {
+function getMovePP (moveId) {
     if (ppList === undefined) {
         ppList = {};
         var data = sys.getFileContent('db/moves/5G/pp.txt').split('\n');
@@ -376,9 +376,9 @@ getMovePP = function (moveId) {
         }
     }
     return ppList[moveId];
-};
+}
 
-getMoveEffect = function (moveId) {
+function getMoveEffect (moveId) {
     if (moveEffList === undefined) {
         moveEffList = {};
         var data = sys.getFileContent('db/moves/5G/effect.txt').split('\n');
@@ -393,7 +393,7 @@ getMoveEffect = function (moveId) {
         return "Deals normal damage.";
     }
     return moveEffList[moveId].replace(/[\[\]{}]/g, "");
-};
+}
 
 function updateNotice() {
     var url = Config.base_url + "notice.html";
@@ -3052,12 +3052,12 @@ userCommand: function(src, command, commandData, tar) {
         var alts = [];
         sys.aliases(ip).forEach(function (alias) {
             if (sys.dbRegistered(alias)) {
-                alts.push(alias + " (Registered) ")
+                alts.push(alias + " (Registered) ");
             }
             else {
-                alts.push(alias)
-            };
-        })
+                alts.push(alias);
+            }
+        });
         bot.sendChanMessage(src, "Your alts are: " + alts);
         return;
     }
@@ -3149,7 +3149,7 @@ userCommand: function(src, command, commandData, tar) {
             var baseStat = baseStats[x];
             table += "<tr><td valign = middle><b>" + stats[x] + "</b></td><td><center><font size = 4>" + baseStat + "</font></center></td>";
             for (var i = 0; i < levels.length; i++) {
-                if (x == 0) {
+                if (x === 0) {
                     table += "<td valign = middle><center>" + calcHP(baseStat, 31, 0, levels[i]) + "</center></td><td valign = middle><center>" + calcHP(baseStat, 31, 252, levels[i]) + "</center></td><td valign = middle><center>-</center></td>";
                 }
                 else {
@@ -3163,7 +3163,7 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command === "move") {
-        if (!commandData)
+        if (!commandData) {
             normalbot.sendMessage(src, "Please specify a move!", channel);
             return;
         }
@@ -3239,7 +3239,7 @@ userCommand: function(src, command, commandData, tar) {
         if (!sys.battling(src)) {
             normalbot.sendMessage(src, "You are not currently battling!");
             return;
-        }  
+        }
         
         if (sys.away(tar)) {
             normalbot.sendMessage(src, "You cannot ask idle players to watch your battle.");
@@ -3252,7 +3252,7 @@ userCommand: function(src, command, commandData, tar) {
             normalbot.sendMessage(src, "Please wait before sending another invite!");
             return;
         }
-        sys.sendHtmlMessage(tar, "<font color='brown'><timestamp/><b>±Sentret:  </b></font><a href='po:watchplayer/"+ sys.name(src) +"'><b>"+html_escape(sys.name(src))+"</b> would like you to watch their battle!</a>");
+        sys.sendHtmlMessage(tar, "<font color='brown'><timestamp/><b>±Sentret:  </b></font><a href='po:watchplayer/"+ sys.name(src) +"'><b>"+utilities.html_escape(sys.name(src))+"</b> would like you to watch their battle!</a>");
         SESSION.users(src).inviteDelay = (new Date()).getTime() + 15000;
         return;
     }

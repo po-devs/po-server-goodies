@@ -2282,7 +2282,7 @@ function Mafia(mafiachan) {
                                             } else {
                                                 Action.count = Math.round(Action.count * 2);
                                             }
-                                        } 
+                                        }
                                         if (command == "curse") {
                                             oldActionCurseCount = Action.curseCount;
                                             if (typeof targetMode.rate == "number") {
@@ -2303,7 +2303,7 @@ function Mafia(mafiachan) {
                                             } else {
                                                 Action.count = Math.ceil(Action.count / 2);
                                             }
-                                        } 
+                                        }
                                         if (command == "curse") {
                                             oldActionCurseCount = Action.curseCount;
                                             if (typeof targetMode.rate == "number") {
@@ -2563,7 +2563,7 @@ function Mafia(mafiachan) {
                                     } else {
                                         mafia.sendPlayer(target.name, "±Game: You were cured of poison!");
                                     }
-                                } else {  
+                                } else {
                                     if ("failmsg" in Action) {
                                         mafia.sendPlayer(player.name,"±Game: " + Action.failmsg.replace(/~Target~/g, target.name));
                                     } else {
@@ -2590,13 +2590,13 @@ function Mafia(mafiachan) {
                                     } else {
                                         mafia.sendPlayer(target.name, "±Game: You were freed from your curse!");
                                     }
-                                } else {  
+                                } else {
                                     if ("failmsg" in Action) {
                                         mafia.sendPlayer(player.name,"±Game: " + Action.failmsg.replace(/~Target~/g, target.name));
                                     } else {
                                         mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") isn't cursed!");
                                     }
-                                }  
+                                }
                             }
     
                             //Post-Action effects here
