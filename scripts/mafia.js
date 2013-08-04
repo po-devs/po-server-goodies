@@ -2272,6 +2272,48 @@ function Mafia(mafiachan) {
                                             stalkTargets[target.name] = {};
                                             continue outer;
                                         }
+                                    } else if (targetMode.mode == "resistant") {
+                                        if (command == "poison") {
+                                            oldActionCount = Action.count;
+                                            if (typeof targetMode.rate == "number") {
+                                                Action.count = Math.round(Action.count * targetMode.rate);
+                                            } else if (typeof targetMode.constant == "number") {
+                                                Action.count = Action.count + targetMode.constant;
+                                            } else {
+                                                Action.count = Math.round(Action.count * 2);
+                                            }
+                                        } 
+                                        if (command == "curse") {
+                                            oldActionCurseCount = Action.curseCount;
+                                            if (typeof targetMode.rate == "number") {
+                                                Action.curseCount = Math.round(Action.curseCount * targetMode.rate);
+                                            } else if (typeof targetMode.constant == "number") {
+                                                Action.curseCount = Action.curseCount + targetMode.constant;
+                                            } else {
+                                                Action.curseCount = Math.round(Action.curseCount * 2);
+                                            }
+                                        }
+                                    } else if (targetMode.mode == "susceptible") {
+                                        if (command == "poison") {
+                                            oldActionCount = Action.count;
+                                            if (typeof targetMode.rate == "number") {
+                                                Action.count = Math.ceil(Action.count / targetMode.rate);
+                                            } else if (typeof targetMode.constant == "number") {
+                                                Action.count = Action.count - targetMode.constant;
+                                            } else {
+                                                Action.count = Math.ceil(Action.count / 2);
+                                            }
+                                        } 
+                                        if (command == "curse") {
+                                            oldActionCurseCount = Action.curseCount;
+                                            if (typeof targetMode.rate == "number") {
+                                                Action.curseCount = Math.ceil(Action.curseCount / targetMode.rate);
+                                            } else if (typeof targetMode.constant == "number") {
+                                                Action.curseCount = Action.curseCount - targetMode.constant;
+                                            } else {
+                                                Action.curseCount = Math.ceil(Action.curseCount / 2);
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -2363,6 +2405,10 @@ function Mafia(mafiachan) {
                                     target.poisoned = 1;
                                     target.poisonCount = Action.count || 2;
                                     target.poisonDeadMessage = Action.poisonDeadMessage;
+                                }
+                                var oldActionCount;
+                                if (oldActionCount !== undefined) {
+                                    Action.count = oldActionCount;
                                 }
                             }
                             else if (command == "stalk") {
@@ -2493,6 +2539,64 @@ function Mafia(mafiachan) {
                                         }
                                     }
                                 }
+                                var oldActionCurseCount;
+                                if (oldActionCurseCount !== undefined) {
+                                    Action.curseCount = oldActionCurseCount;
+                                }
+                            } else if (command == "detox") {
+                                if (target.poisoned !== undefined) {
+                                    target.poisoned = undefined;
+                                    if (!Action.silent) {
+                                        if ("detoxmsg" in Action) {
+                                            sendChanAll("±Game: " + Action.detoxmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, target.name).replace(/~Role~/g, player.role.translation), mafiachan);
+                                        } else {
+                                            sendChanAll("±Game: A player was cured of poison!", mafiachan);
+                                        }
+                                    }
+                                    if ("msg" in Action) {
+                                        mafia.sendPlayer(player.name,"±Game: " + Action.msg.replace(/~Target~/g, target.name).replace(/~Role~/g, target.role.translation));
+                                    } else {
+                                        mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was cured of poison!");
+                                    }
+                                    if ("targetmsg" in Action) {
+                                        mafia.sendPlayer(target.name,"±Game: " + Action.targetmsg.replace(/~Self~/g, player.name).replace(/~Role~/g, player.role.translation));
+                                    } else {
+                                        mafia.sendPlayer(target.name, "±Game: You were cured of poison!");
+                                    }
+                                } else {  
+                                    if ("failmsg" in Action) {
+                                        mafia.sendPlayer(player.name,"±Game: " + Action.failmsg.replace(/~Target~/g, target.name));
+                                    } else {
+                                        mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") isn't poisoned!");
+                                    }
+                                }
+                            } else if (command == "dispel") {
+                                if (target.cursed !== undefined) {
+                                    target.cursed =  undefined;
+                                    if (!Action.silent) {
+                                        if ("dispelmsg" in Action) {
+                                            sendChanAll("±Game: " + Action.dispelmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, target.name).replace(/~Role~/g, player.role.translation), mafiachan);
+                                        } else {
+                                            sendChanAll("±Game: A player's curse was dispelled!", mafiachan);
+                                        }
+                                    }
+                                    if ("msg" in Action) {
+                                        mafia.sendPlayer(player.name,"±Game: " + Action.msg.replace(/~Target~/g, target.name).replace(/~Role~/g, target.role.translation));
+                                    } else {
+                                        mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was freed from their curse!");
+                                    }
+                                    if ("targetmsg" in Action) {
+                                        mafia.sendPlayer(target.name,"±Game: " + Action.targetmsg.replace(/~Self~/g, player.name).replace(/~Role~/g, player.role.translation));
+                                    } else {
+                                        mafia.sendPlayer(target.name, "±Game: You were freed from your curse!");
+                                    }
+                                } else {  
+                                    if ("failmsg" in Action) {
+                                        mafia.sendPlayer(player.name,"±Game: " + Action.failmsg.replace(/~Target~/g, target.name));
+                                    } else {
+                                        mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") isn't cursed!");
+                                    }
+                                }  
                             }
     
                             //Post-Action effects here
@@ -4161,7 +4265,7 @@ return;
                                 sys.sendMessage(src, "±Game: That person cannot be killed right now!", mafiachan);
                                 return;
                             }
-                        } else if (target.role.actions.daykill == "revenge" || target.role.actions.daykill == "bomb") {
+                        } else if (target.role.actions.daykill == "revenge" || target.role.actions.daykill == "bomb" || (typeof target.role.actions.daykill.mode == "object" && "revenge" in target.role.actions.daykill.mode && target.role.actions.daykill.mode.revenge.indexOf(player.role.role) != -1)) {
                             revenge = true;
                         } else if (typeof target.role.actions.daykill.mode == "object" && target.role.actions.daykill.mode.evadeChance > sys.rand(0, 100) / 100) {
                             if (player.role.actions.daykillmissmsg !== undefined && typeof player.role.actions.daykillmissmsg == "string") {
@@ -4269,7 +4373,7 @@ return;
                                 sys.sendMessage(src, "±Game: That person cannot be exposed right now!", mafiachan);
                                 return;
                             }
-                        } else if (target.role.actions.expose == "revenge") {
+                        } else if (target.role.actions.expose == "revenge" || (typeof target.role.actions.expose.mode == "object" && "revenge" in target.role.actions.expose.mode && target.role.actions.expose.mode.revenge.indexOf(player.role.role) != -1)) {
                             revenge = true;
                         } else if (typeof target.role.actions.expose.mode == "object" && target.role.actions.expose.mode.evadeChance > sys.rand(0, 100) / 100) {
                             if (player.role.actions.exposemissmsg !== undefined && typeof player.role.actions.exposemissmsg == "string") {
