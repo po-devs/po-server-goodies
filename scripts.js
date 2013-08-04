@@ -2053,7 +2053,7 @@ beforePlayerBan : function(src, dest, dur) {
     var authname = sys.name(src).toLowerCase();
     authStats[authname] =  authStats[authname] || {};
     authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
-    callplugins("onBan", src);
+    callplugins("onBan", src, dest);
 },
 
 beforePlayerKick:function(src, dest){
