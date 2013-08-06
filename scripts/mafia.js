@@ -3914,7 +3914,7 @@ function Mafia(mafiachan) {
                 POglobal.plugins[index] = module;
                 module.source = source;
                 module.init();
-                this.endGame();
+                mafia.endGame();
                 sendChanAll("Update complete!", mafiachan);
             });
             sendChanAll("Updating mafia game...", mafiachan);
