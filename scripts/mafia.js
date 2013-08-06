@@ -648,6 +648,33 @@ function Mafia(mafiachan) {
                         }
                         else if (typeof role.actions.poison.mode == "object" && role.actions.poison.mode.evadeChance > 0) {
                             abilities += "Has a " + Math.floor(role.actions.poison.mode.evadeChance * 100) + "% chance of evading poison. ";
+                        } else if (role.actions.poison.mode == "resistant") {
+                            if (typeof role.actions.poison.constant == "number") {
+                                abilities += "Dies " + role.actions.poison.constant + " nights slower from poison. ";
+                            } else {
+                                abilities += "Dies " + (role.actions.poison.rate ? role.actions.poison.rate : 2) + " times slower from poison. ";
+                            }
+                        } else if (role.actions.poison.mode == "susceptible") {
+                            if (typeof role.actions.poison.constant == "number") {
+                                abilities += "Dies " + role.actions.poison.constant + " nights faster from poison. ";
+                            } else {
+                                abilities += "Dies " + (role.actions.poison.rate ? role.actions.poison.rate : 2) + " times faster from poison. ";
+                            }
+                        }
+                    }
+                    if ("curse" in role.actions) {
+                        if (role.actions.curse.mode == "resistant") {
+                            if (typeof role.actions.curse.constant == "number") {
+                                abilities += "Converts " + role.actions.curse.constant + " nights slower from curses. ";
+                            } else {
+                                abilities += "Converts " + (role.actions.curse.rate ? role.actions.curse.rate : 2) + " times faster from curses. ";
+                            }
+                        } else if (role.actions.curse.mode == "susceptible") {
+                            if (typeof role.actions.curse.constant == "number") {
+                                abilities += "Converts " + role.actions.curse.constant + " nights faster from curses. ";
+                            } else {
+                                abilities += "Converts " + (role.actions.curse.rate ? role.actions.curse.rate : 2) + " times slower from curses. ";
+                            }
                         }
                     }
                     if ("hax" in role.actions && Object.keys) {
@@ -2130,6 +2157,8 @@ function Mafia(mafiachan) {
                             var revengetext = "±Game: You were killed during the night!";
                             var poisonrevenge = 0, poisonDeadMessage;
                             var poisonrevengetext = "±Game: Your target poisoned you!";
+                            var finalPoisonCount = Action.count || 2;
+                            var finalCurseCount = Action.curseCount || 2;
                             target = targets[t];
                             command = commandList[c];
                             if (["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "convert", "copy", "curse", "detox", "dispel"].indexOf(command) == -1) {
@@ -2274,44 +2303,40 @@ function Mafia(mafiachan) {
                                         }
                                     } else if (targetMode.mode == "resistant") {
                                         if (command == "poison") {
-                                            oldActionCount = Action.count;
                                             if (typeof targetMode.rate == "number") {
-                                                Action.count = Math.round(Action.count * targetMode.rate);
+                                                finalPoisonCount = Math.round(finalPoisonCount * targetMode.rate);
                                             } else if (typeof targetMode.constant == "number") {
-                                                Action.count = Action.count + targetMode.constant;
+                                                finalPoisonCount = finalPoisonCount + targetMode.constant;
                                             } else {
-                                                Action.count = Math.round(Action.count * 2);
+                                                finalPoisonCount = Math.round(finalPoisonCount * 2);
                                             }
                                         }
                                         if (command == "curse") {
-                                            oldActionCurseCount = Action.curseCount;
                                             if (typeof targetMode.rate == "number") {
-                                                Action.curseCount = Math.round(Action.curseCount * targetMode.rate);
+                                                finalCurseCount = Math.round(finalCurseCount * targetMode.rate);
                                             } else if (typeof targetMode.constant == "number") {
-                                                Action.curseCount = Action.curseCount + targetMode.constant;
+                                                finalCurseCount = finalCurseCount + targetMode.constant;
                                             } else {
-                                                Action.curseCount = Math.round(Action.curseCount * 2);
+                                                finalCurseCount = Math.round(finalCurseCount * 2);
                                             }
                                         }
                                     } else if (targetMode.mode == "susceptible") {
                                         if (command == "poison") {
-                                            oldActionCount = Action.count;
                                             if (typeof targetMode.rate == "number") {
-                                                Action.count = Math.ceil(Action.count / targetMode.rate);
+                                                finalPoisonCount = Math.ceil(finalPoisonCount / targetMode.rate);
                                             } else if (typeof targetMode.constant == "number") {
-                                                Action.count = Action.count - targetMode.constant;
+                                                finalPoisonCount = finalPoisonCount - targetMode.constant;
                                             } else {
-                                                Action.count = Math.ceil(Action.count / 2);
+                                                finalPoisonCount = Math.ceil(finalPoisonCount / 2);
                                             }
                                         }
                                         if (command == "curse") {
-                                            oldActionCurseCount = Action.curseCount;
                                             if (typeof targetMode.rate == "number") {
-                                                Action.curseCount = Math.ceil(Action.curseCount / targetMode.rate);
+                                                finalCurseCount = Math.ceil(finalCurseCount / targetMode.rate);
                                             } else if (typeof targetMode.constant == "number") {
-                                                Action.curseCount = Action.curseCount - targetMode.constant;
+                                                finalCurseCount = finalCurseCount - targetMode.constant;
                                             } else {
-                                                Action.curseCount = Math.ceil(Action.curseCount / 2);
+                                                finalCurseCount = Math.ceil(finalCurseCount / 2);
                                             }
                                         }
                                     }
@@ -2394,7 +2419,7 @@ function Mafia(mafiachan) {
                                 nightkill = true;
                             }
                             else if (command == "poison") {
-                                if (target.poisoned === undefined || target.poisonCount - target.poisoned >= (Action.count ? Action.count : 2)) {
+                                if (target.poisoned === undefined || target.poisonCount - target.poisoned >= finalPoisonCount) {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was poisoned!");
                                     var team = getTeam(player.role, Action.common);
                                     for (var x in team) {
@@ -2403,12 +2428,8 @@ function Mafia(mafiachan) {
                                         }
                                     }
                                     target.poisoned = 1;
-                                    target.poisonCount = Action.count || 2;
+                                    target.poisonCount = finalPoisonCount;
                                     target.poisonDeadMessage = Action.poisonDeadMessage;
-                                }
-                                var oldActionCount;
-                                if (oldActionCount !== undefined) {
-                                    Action.count = oldActionCount;
                                 }
                             }
                             else if (command == "stalk") {
@@ -2531,17 +2552,13 @@ function Mafia(mafiachan) {
                                     } else {
                                         mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was cursed!");
                                         target.cursed = 1;
-                                        target.curseCount = Action.curseCount || 2;
+                                        target.curseCount = finalCurseCount;
                                         target.cursedRole = cursedRole;
                                         target.silentCurse = Action.silentCurse || false;
                                         if (!Action.silent) {
                                             target.curseConvertMessage = Action.curseConvertMessage || "~Target~'s has been converted into a ~New~!";
                                         }
                                     }
-                                }
-                                var oldActionCurseCount;
-                                if (oldActionCurseCount !== undefined) {
-                                    Action.curseCount = oldActionCurseCount;
                                 }
                             } else if (command == "detox") {
                                 if (target.poisoned !== undefined) {
@@ -3320,7 +3337,8 @@ function Mafia(mafiachan) {
             "±Rules: Do not copy other peoples' names or make your name similar to someone elses.",
             "±Rules: Make sure you can stay active for the entire game if you join. If you must leave, ask a Mafia Admin for assistance. Leaving will result in punishment.",
             "±Rules: If you ask to be removed from a game, do not join the next game. Do not attempt to get yourself killed or go inactive because you don't like your role.",
-            "±Rules: Do not reveal any members of your team for any reason.",
+            "±Rules: Do not attempt to get your teammate voted off without their consent.",
+            "±Rules: Do not reveal any members of your team for any reason. This includes stating that someone teamvoted or killed.",
             "±Rules: Do not purposefully target a certain user or group of users repeatedly.",
             "±Rules: Do not attempt to ruin the game by any other means.",
             "±Rules: Do not stall the game for any reason what so ever.",
