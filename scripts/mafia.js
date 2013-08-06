@@ -1230,7 +1230,6 @@ function Mafia(mafiachan) {
             return;
         }
         sendChanAll(border, mafiachan);
-
         sendChanAll("±Game: " + (src ? sys.name(src) : Config.Mafia.bot) + " has stopped the game!", mafiachan);
         sendChanAll(border, mafiachan);
         sendChanAll("", mafiachan);
@@ -3915,6 +3914,7 @@ function Mafia(mafiachan) {
                 POglobal.plugins[index] = module;
                 module.source = source;
                 module.init();
+                mafia.endGame();
                 sendChanAll("Update complete!", mafiachan);
             });
             sendChanAll("Updating mafia game...", mafiachan);
