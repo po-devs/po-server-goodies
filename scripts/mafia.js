@@ -2132,7 +2132,7 @@ function Mafia(mafiachan) {
                             var poisonrevengetext = "±Game: Your target poisoned you!";
                             target = targets[t];
                             command = commandList[c];
-                            if (["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "convert", "copy", "curse"].indexOf(command) == -1) {
+                            if (["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "convert", "copy", "curse", "detox", "dispel"].indexOf(command) == -1) {
                                 continue;
                             }
                             if (!mafia.isInGame(target)) {
@@ -2142,7 +2142,7 @@ function Mafia(mafiachan) {
                                 target = mafia.players[target];
 
                                 // Action blocked by Protect or Safeguard
-                                if (Action.pierce !== true && ((target.guarded && command == "kill") || (target.safeguarded && ["distract", "inspect", "stalk", "poison", "convert", "copy", "curse"].indexOf(command) !== -1))) {
+                                if (Action.pierce !== true && ((target.guarded && command == "kill") || (target.safeguarded && ["distract", "inspect", "stalk", "poison", "convert", "copy", "curse", "detox", "dispel"].indexOf(command) !== -1))) {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was " + (command == "kill" ? "protected" : "guarded") + "!");
                                     // Action can be countered even if target is protected/guarded
                                     if (command in target.role.actions) {
@@ -3734,12 +3734,12 @@ function Mafia(mafiachan) {
             if (this.state != "day") {
                 sendChanAll("±Kill: " + player.name + " (" + player.role.translation + ") was slain by " + nonFlashing(slayer) + "!", mafiachan);
                 sys.sendAll("±Kill: " + player.name + " (" + player.role.translation + ") was slain by " + nonFlashing(slayer) + "!", sachannel);
-                this.removePlayer(player);
                 if (player.role.actions.hasOwnProperty("onDeath")) {
                     if (player.role.actions.onDeath.onslay !== false) {
                         this.actionBeforeDeath(player);
                     }
                 }
+                this.removePlayer(player);
                 if (this.testWin(true)) {
                     return;
                 }
