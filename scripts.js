@@ -1837,9 +1837,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
                 banbot.sendAll(line, staffchannel);
                 line = line.replace(" by " +sys.name(src), "");
                 sys.dbAuths().map(sys.id).filter(function(uid) { return uid !== undefined; }).forEach(function(uid) {
-                    sys.channelsOfPlayer(uid).filter(function(cid) { return cid !== staffchannel; }).forEach(function(cid) {
-                        banbot.sendMessage(uid, line, cid);
-                    });
+                        banbot.sendMessage(uid, line);
                 });
             },
             "mban": function(line) {
