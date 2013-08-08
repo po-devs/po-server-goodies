@@ -2213,7 +2213,6 @@ module.exports = {
                 dumpData(dest, destteam);
             }
             catch (err) {
-                working = false;
                 sendChanAll("Error in generating teams: "+err, staffchannel);
             }
         }
