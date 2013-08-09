@@ -117,7 +117,7 @@ var channel, getKey, contributors, mutes, mbans, smutes, detained, hbans, mafiaS
 
 var isMafiaAdmin = require('mafia.js').isMafiaAdmin;
 var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
-
+sys.makeDir("scripts");
 /* we need to make sure the scripts exist */
 var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js'].concat(Config.Plugins);
 var missing = 0;
@@ -2829,7 +2829,7 @@ userCommand: function(src, command, commandData, tar) {
         post['api_paste_name'] = name; // name
         post['api_paste_code'] = team; // text itself
         post['api_paste_expire_date'] = '1M'; // expires in 1 month
-        sys.webCall('http://pastebin.com/api/api_post.php', function (resp) {
+        sys.webCall('https://api.github.com/gists?client_id=10d28edcfdd2ccaf111d&client_secret=baf5fa2720d8d55d47ad9f280d8f4733024635e5', function (resp) {
             if (/^http:\/\//.test(resp))
                 normalbot.sendMessage(src, "Your team is available at: " + resp, bind_channel); // success
             else {
