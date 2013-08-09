@@ -2814,6 +2814,9 @@ userCommand: function(src, command, commandData, tar) {
         return;
     }
     if (command == "importable") {
+        if (channel !== sys.channelId("Indigo Plateau")) {
+            return;
+        }
         var teamNumber = 0;
         var bind_channel = channel;
         if (!isNaN(commandData) && commandData >= 0 && commandData < sys.teamCount(src)) {
