@@ -563,7 +563,7 @@ function Mafia(mafiachan) {
             try {
                 role = this.roles[role_order[r]];
                   // Don't add this role to /roles
-                    if (role.hide) {
+                    if ((role.hide && role.hide !== "side") || role.hide == "both") {
                         continue;
                     }
                 roles.push("±Role: " + role.translation);
@@ -648,33 +648,37 @@ function Mafia(mafiachan) {
                         }
                         else if (typeof role.actions.poison.mode == "object" && role.actions.poison.mode.evadeChance > 0) {
                             abilities += "Has a " + Math.floor(role.actions.poison.mode.evadeChance * 100) + "% chance of evading poison. ";
-                        } else if (role.actions.poison.mode == "resistant") {
-                            if (typeof role.actions.poison.constant == "number") {
-                                abilities += "Dies " + role.actions.poison.constant + " nights slower from poison. ";
+                        } else if (role.actions.poison.mode == "resistance") {
+                            if (typeof role.actions.poison.rate == "number") {
+                                if (role.actions.poison.rate > 1) {
+                                    abilities += "Dies " + role.actions.poison.rate + " times faster from poison. ";
+                                } else {
+                                    abilities += "Dies " + Math.round(1 / role.actions.poison.rate) + " times slower from poison. ";
+                                }
                             } else {
-                                abilities += "Dies " + (role.actions.poison.rate ? role.actions.poison.rate : 2) + " times slower from poison. ";
-                            }
-                        } else if (role.actions.poison.mode == "susceptible") {
-                            if (typeof role.actions.poison.constant == "number") {
-                                abilities += "Dies " + role.actions.poison.constant + " nights faster from poison. ";
-                            } else {
-                                abilities += "Dies " + (role.actions.poison.rate ? role.actions.poison.rate : 2) + " times faster from poison. ";
-                            }
+                                if (role.actions.poison.constant > 0 || role.actions.poison.constant == undefined) {
+                                    abilities += "Dies " + (role.actions.poison.constant ? role.actions.poison.constant : 1) + " nights slower from poison. ";
+                                } else {
+                                    abilities += "Dies " + Math.abs(role.actions.poison.constant) + " nights faster from poison. ";
+                                }
+                            } 
                         }
                     }
                     if ("curse" in role.actions) {
-                        if (role.actions.curse.mode == "resistant") {
-                            if (typeof role.actions.curse.constant == "number") {
-                                abilities += "Converts " + role.actions.curse.constant + " nights slower from curses. ";
+                        if (role.actions.curse.mode == "resistance") {
+                            if (typeof role.actions.curse.rate == "number") {
+                                if (role.actions.curse.rate > 1) {
+                                    abilities += "Converts " + role.actions.curse.rate  + " times faster from curses. ";
+                                } else {
+                                    abilities += "Converts " + Math.round(1 / role.actions.curse.rate)  + " times slower from curses. ";
+                                }
                             } else {
-                                abilities += "Converts " + (role.actions.curse.rate ? role.actions.curse.rate : 2) + " times faster from curses. ";
-                            }
-                        } else if (role.actions.curse.mode == "susceptible") {
-                            if (typeof role.actions.curse.constant == "number") {
-                                abilities += "Converts " + role.actions.curse.constant + " nights faster from curses. ";
-                            } else {
-                                abilities += "Converts " + (role.actions.curse.rate ? role.actions.curse.rate : 2) + " times slower from curses. ";
-                            }
+                                if (role.actions.curse.constant > 0 || role.actions.curse.constant == undefined) {
+                                    abilities += "Converts " + (role.actions.curse.constant ? role.actions.curse.constant : 1) + " nights slower from curses. ";
+                                } else {    
+                                    abilities += "Converts " + Math.abs(role.actions.curse.constant) + " nights faster from curses. ";
+                                }
+                            } 
                         }
                     }
                     if ("hax" in role.actions && Object.keys) {
@@ -807,7 +811,7 @@ function Mafia(mafiachan) {
             try {
                 role = this.roles[role_order[r]];
                 //Don't add this role
-                if (role.hide) {
+                if ((role.hide && role.hide !== "role") || role.hide == "both") {
                         continue;
                 }
                 if (typeof role.side == "string") {
@@ -2300,42 +2304,19 @@ function Mafia(mafiachan) {
                                             stalkTargets[target.name] = {};
                                             continue outer;
                                         }
-                                    } else if (targetMode.mode == "resistant") {
+                                    } else if (targetMode.mode == "resistance") {
                                         if (command == "poison") {
                                             if (typeof targetMode.rate == "number") {
                                                 finalPoisonCount = Math.round(finalPoisonCount * targetMode.rate);
-                                            } else if (typeof targetMode.constant == "number") {
-                                                finalPoisonCount = finalPoisonCount + targetMode.constant;
                                             } else {
-                                                finalPoisonCount = Math.round(finalPoisonCount * 2);
-                                            }
+                                                finalPoisonCount = finalPoisonCount + (targetMode.constant || 1);
+                                            } 
                                         }
                                         if (command == "curse") {
                                             if (typeof targetMode.rate == "number") {
                                                 finalCurseCount = Math.round(finalCurseCount * targetMode.rate);
-                                            } else if (typeof targetMode.constant == "number") {
-                                                finalCurseCount = finalCurseCount + targetMode.constant;
                                             } else {
-                                                finalCurseCount = Math.round(finalCurseCount * 2);
-                                            }
-                                        }
-                                    } else if (targetMode.mode == "susceptible") {
-                                        if (command == "poison") {
-                                            if (typeof targetMode.rate == "number") {
-                                                finalPoisonCount = Math.ceil(finalPoisonCount / targetMode.rate);
-                                            } else if (typeof targetMode.constant == "number") {
-                                                finalPoisonCount = finalPoisonCount - targetMode.constant;
-                                            } else {
-                                                finalPoisonCount = Math.ceil(finalPoisonCount / 2);
-                                            }
-                                        }
-                                        if (command == "curse") {
-                                            if (typeof targetMode.rate == "number") {
-                                                finalCurseCount = Math.ceil(finalCurseCount / targetMode.rate);
-                                            } else if (typeof targetMode.constant == "number") {
-                                                finalCurseCount = finalCurseCount - targetMode.constant;
-                                            } else {
-                                                finalCurseCount = Math.ceil(finalCurseCount / 2);
+                                                finalCurseCount = finalCurseCount + (targetMode.constant || 1);
                                             }
                                         }
                                     }
@@ -3337,7 +3318,7 @@ function Mafia(mafiachan) {
             "±Rules: Make sure you can stay active for the entire game if you join. If you must leave, ask a Mafia Admin for assistance. Leaving will result in punishment.",
             "±Rules: If you ask to be removed from a game, do not join the next game. Do not attempt to get yourself killed or go inactive because you don't like your role.",
             "±Rules: Do not attempt to get your teammate voted off without their consent.",
-            "±Rules: Do not reveal any members of your team for any reason. This includes stating that someone teamvoted or killed.",
+            "±Rules: Do not reveal any members of your team for any reason. This includes stating that someone teamvoted or killed without them already being revealed.",
             "±Rules: Do not purposefully target a certain user or group of users repeatedly.",
             "±Rules: Do not attempt to ruin the game by any other means.",
             "±Rules: Do not stall the game for any reason what so ever.",
