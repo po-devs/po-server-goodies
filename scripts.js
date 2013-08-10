@@ -420,6 +420,16 @@ function isAndroid(id) {
     }
 }
 
+function clearTeamFiles() {
+    var files = sys.filesForDirectory("usage_stats/formatted/team");
+    for (var x = 0; x < files.length; x++) {
+        var time = files.split("-")[0];
+        if (sys.time() - time > 86400) {
+            sys.deleteFile("usage/stats/formatted/team/files[x]");
+        }
+    }
+}
+
 var POKEMON_CLEFFA = typeof sys != 'undefined' ? sys.pokeNum("Cleffa") : 173;
 function POUser(id)
 {
@@ -1594,6 +1604,7 @@ step: function() {
         }, function errback(error) {
                 sys.sendAll("±NetCat: Cannot reach Webclient Proxy - it may be down: " + error);
         });
+        clearTeamFiles();
     }
     if ([0, 6, 12, 18].indexOf(date.getUTCHours()) != -1 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
         sendNotice();
@@ -2822,8 +2833,9 @@ userCommand: function(src, command, commandData, tar) {
         if (!isNaN(commandData) && commandData >= 0 && commandData < sys.teamCount(src)) {
             teamNumber = commandData;
         }
-        var name = sys.name(src) + '\'s ' + sys.tier(src, teamNumber) + ' team';
         var team = this.importable(src, teamNumber, true).join("\n");
+        /* commenting out instead so I don't have to write it again later if needed :(
+        var name = sys.name(src) + '\'s ' + sys.tier(src, teamNumber) + ' team';
         var post = {};
         post['api_option'] = 'paste'; // paste, duh
         post['api_dev_key'] = pastebin_api_key; // Developer's personal key, set in the beginning
@@ -2839,7 +2851,10 @@ userCommand: function(src, command, commandData, tar) {
                 normalbot.sendMessage(src, "Sorry, unexpected error: " + resp, bind_channel); // an error occured
                 normalbot.sendAll("" + sys.name(src) + "'s /importable failed: " + resp, staffchannel); // message to indigo
             }
-        }, post);
+        }, post);*/
+        var filename = sys.time() + "-" + sys.rand(1000, 10000) + ".txt";
+        sys.writeToFile("usage_stats/formatted/team/"+filename, team);
+        normalbot.sendMessage(src, "You team can be found here: http://server.pokemon-online.eu/team/" + filename + " Remember this will be deleted in 24 hous");
         return;
     }
     if (command == "cjoin") {
