@@ -897,7 +897,7 @@ function Mafia(mafiachan) {
         if (sys.id(string)) {
             return sys.name(sys.id(string));
         }
-        return noPlayer;
+        return string;
     };
     this.saveStalkLog = function () {
         if (this.state == "standby") {
