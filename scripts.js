@@ -2854,7 +2854,7 @@ userCommand: function(src, command, commandData, tar) {
         }, post);*/
         var filename = sys.time() + "-" + sys.rand(1000, 10000) + ".txt";
         sys.writeToFile("usage_stats/formatted/team/"+filename, team);
-        normalbot.sendMessage(src, "You team can be found here: http://server.pokemon-online.eu/team/" + filename + " Remember this will be deleted in 24 hous");
+        normalbot.sendMessage(src, "You team can be found here: http://server.pokemon-online.eu/team/" + filename + " Remember this will be deleted in 24 hours", channel);
         return;
     }
     if (command == "cjoin") {
