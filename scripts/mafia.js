@@ -904,7 +904,7 @@ function Mafia(mafiachan) {
             if (y.toLowerCase() == lstring)
                 return this.players[y].name;
         }
-        return string;
+        return noPlayer;
     };
     this.saveStalkLog = function () {
         if (this.state == "standby") {
@@ -3737,8 +3737,6 @@ function Mafia(mafiachan) {
     
     this.slayUser = function (src, name, bot) {
         var slayer = typeof src == "string" ? src : sys.name(src);
-        name = this.correctCase(name);
-        var player = this.players[name];
         if (this.state == "entry") {
                 if (bot) {
                     this.shoveUser(src, name);
@@ -3747,6 +3745,8 @@ function Mafia(mafiachan) {
                 }
                 return;
         }
+        name = this.correctCase(name);
+        var player = this.players[name];
         if (this.isInGame(name)) {
             if (this.state != "day") {
                 sendChanAll("±Kill: " + player.name + " (" + player.role.translation + ") was slain by " + nonFlashing(slayer) + "!", mafiachan);
