@@ -4987,8 +4987,7 @@ channelCommand: function(src, command, commandData, tar) {
             channelbot.sendChanMessage(src, "Choose a valid target for invite!");
             return;
         }
-        var isMember = SESSION.channels(channel).members.indexOf(sys.name(tar).toLowerCase()) !== -1;
-        if (sys.isInChannel(tar, channel) && isMember === true) {
+        if (sys.isInChannel(tar, channel) && SESSION.channels(channel).canJoin(tar) == "allowed") {
             channelbot.sendChanMessage(src, "Your target already sits here!");
             return;
         }
@@ -5000,7 +4999,7 @@ channelCommand: function(src, command, commandData, tar) {
             channelbot.sendMessage(tar, "" + sys.name(src) + " would like you to join #" + sys.channel(channel) + "!");
         }
         var guardedChans = [staffchannel, sachannel, watchchannel, revchan];
-        if ((sys.auth(tar) < SESSION.channels(channel).inviteonly || guardedChans.indexOf(channel) !== -1) && isMember === false) {
+        if ((sys.auth(tar) < SESSION.channels(channel).inviteonly || guardedChans.indexOf(channel) !== -1) && SESSION.channels(channel).canJoin(tar) != "allowed") {
             poChannel.issueAuth(src, commandData, "member");
         } else {
             channelbot.sendChanMessage(src, "Your target was invited.");
