@@ -425,7 +425,7 @@ function clearTeamFiles() {
     for (var x = 0; x < files.length; x++) {
         var time = files[x].split("-")[0];
         if (sys.time() - time > 86400) {
-            sys.deleteFile("usage/stats/formatted/team/" + files[x]);
+            sys.deleteFile("usage_stats/formatted/team/" + files[x]);
         }
     }
 }
