@@ -3065,13 +3065,13 @@ userCommand: function(src, command, commandData, tar) {
         var alts = [];
         sys.aliases(ip).forEach(function (alias) {
             if (sys.dbRegistered(alias)) {
-                alts.push(alias + " (Registered) ");
+                alts.push(alias + " (Registered)");
             }
             else {
                 alts.push(alias);
             }
         });
-        bot.sendChanMessage(src, "Your alts are: " + alts);
+        bot.sendChanMessage(src, "Your alts are: " + alts.join(", "));
         return;
     }
     if (command == "seen") {
