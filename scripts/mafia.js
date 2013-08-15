@@ -4630,7 +4630,7 @@ return;
             }
             if (npThemes.length) {
                 sys.sendAll("±Murkrow: Non-peak themes (" + npThemes.join(", ") + ") have been " + (enable ? "enabled" : "disabled"), mafiachan);
-                sys.sendAll("±Murkrow: Non-peak themes (" + npThemes.join(", ") + ")have been " + (enable ? "enabled" : "disabled"), sachannel);
+                sys.sendAll("±Murkrow: Non-peak themes (" + npThemes.join(", ") + ") have been " + (enable ? "enabled" : "disabled"), sachannel);
             } else {
                 sys.sendMessage(src, "±Murkrow: No non-peak themes found", mafiachan);
             }
