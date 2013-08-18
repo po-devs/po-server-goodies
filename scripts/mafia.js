@@ -760,7 +760,7 @@ function Mafia(mafiachan) {
                 if (parts.length > 0) {
                     parts[parts.length - 1] = parts[parts.length - 1][0] < parts[parts.length - 1][1] ? parts[parts.length - 1].join("-") : parts[parts.length - 1][1];
                 }
-                roles.push("±Game: " + parts.join(", ") + " Players");
+                roles.push("±Players: " + parts.join(", ") + " Players");
 
                 roles.push(sep);
             } catch (err) {
@@ -3697,11 +3697,15 @@ function Mafia(mafiachan) {
     
     this.pushUser = function (src, name) {
         if (!mafia.isMafiaSuperAdmin(src)) {
-            msg(src, "Super Admin Command.");
+            msg(src, "Super Mafia Admin Command.");
             return;
         }
         if (this.state != "entry") {
             msg(src, "Pushing makes no sense outside entry...");
+            return;
+        }
+        if (this.signups.length > this.theme["roles" + this.theme.roleLists].length) {
+            sys.sendMessage(src, "±Game: This theme only supports a maximum of " + this.theme["roles" + this.theme.roleLists].length + " players!", mafiachan);
             return;
         }
         var id = sys.id(name);
@@ -3730,8 +3734,8 @@ function Mafia(mafiachan) {
         var player = this.players[name];
         if (this.isInGame(name)) {
             if (this.state != "day") {
-                sendChanAll("±Kill: " + player.name + " (" + player.role.translation + ") was slain by " + nonFlashing(slayer) + "!", mafiachan);
-                sys.sendAll("±Kill: " + player.name + " (" + player.role.translation + ") was slain by " + nonFlashing(slayer) + "!", sachannel);
+                sendChanAll("±Slay: " + player.name + " (" + player.role.translation + ") was slain by " + nonFlashing(slayer) + "!", mafiachan);
+                sys.sendAll("±Slay: " + player.name + " (" + player.role.translation + ") was slain by " + nonFlashing(slayer) + "!", sachannel);
                 if (player.role.actions.hasOwnProperty("onDeath")) {
                     if (player.role.actions.onDeath.onslay !== false) {
                         this.actionBeforeDeath(player);
@@ -3743,7 +3747,11 @@ function Mafia(mafiachan) {
                 }
                 return;
             } else {
-                sendChanAll("±Kill: " + player.name + " will be slain by " + slayer + " after the voting phase finishes!", mafiachan);
+                if (name in mafia.usersToSlay) {
+                    sys.sendMessage(src, "±Slay: " + player.name + " is already going to be slain after the voting phase ends!", mafiachan);
+                    return;
+                }
+                sendChanAll("±Slay: " + player.name + " will be slain by " + slayer + " after the voting phase ends!", mafiachan);
                 mafia.usersToSlay[name] = slayer;
                 return;
             }
@@ -3991,6 +3999,10 @@ function Mafia(mafiachan) {
             sys.sendMessage(src, "±Game: You can't join/unjoin more than 3 times!", mafiachan);
             return;
         }
+        if (this.signups.length > this.theme["roles" + this.theme.roleLists].length) {
+            sys.sendMessage(src, "±Game: This theme only supports a maximum of " + this.theme["roles" + this.theme.roleLists].length + " players!", mafiachan);
+            return;
+        }
         var name = sys.name(src);
         for (var x in name) {
             var code = name.charCodeAt(x);
@@ -4040,12 +4052,12 @@ return;
                 if (this.canJoin(src) !== true) {
                     return;
                 }
-                if (this.signups.length >= this.theme["roles" + this.theme.roleLists].length) {
-                    sys.sendMessage(src, "±Game: There can't be more than " + this.theme["roles" + this.theme.roleLists].length + " players!", mafiachan);
-                    return;
-                }
                 name = sys.name(src);
-
+                if (this.signups.length > this.theme["roles" + this.theme.roleLists].length){
+                    sys.sendMessage(src, "±Game: This theme only supports a maximum of " + this.theme["roles" + this.theme.roleLists].length + " players!", mafiachan);
+                    return;
+                } 
+                
                 this.signups.push(name);
                 this.ips.push(sys.ip(src));
                 if (this.numjoins.hasOwnProperty(sys.ip(src))) {
@@ -4053,7 +4065,7 @@ return;
                 }
                 else {
                     this.numjoins[sys.ip(src)] = 1;
-                }
+                } 
                 sendChanAll("±Game: " + name + " joined the game!", mafiachan);
                 if (this.signups.length == this.theme["roles" + this.theme.roleLists].length) {
                     this.ticks = 1;
@@ -4466,7 +4478,7 @@ return;
                     }
                     
                     if ("exposedtargetmsg" in commandObject && typeof commandObject.exposedtargetmsg == "string") {
-                        sys.sendMessage(src, "±Game: " + exposeTargetMessage.replace(/~Self~/g, name).replace(/~Target~/g, commandData), mafiachan);
+                        sys.sendMessage(src, "±Game: " + exposeTargetMessage.replace(/~Role~/g, revealedrole).replace(/~Target~/g, commandData), mafiachan);
                     }
                     sendChanAll(border, mafiachan);
                     //player.exposeUse = player.exposeUse + 1 || 1;
@@ -4579,6 +4591,12 @@ return;
             script.modCommand(src, command, commandData, tar);
             return;
         }
+        if (command == "aliases") {
+            if (this.isMafiaSuperAdmin(src)) {
+                script.modCommand(src, command, commandData, tar);
+            }
+            return;
+        }
         var id;
         if (command == "passma") { //partially copied from tours.js
             var newname = commandData.toLowerCase();
@@ -4630,7 +4648,7 @@ return;
             }
             if (npThemes.length) {
                 sys.sendAll("±Murkrow: Non-peak themes (" + npThemes.join(", ") + ") have been " + (enable ? "enabled" : "disabled"), mafiachan);
-                sys.sendAll("±Murkrow: Non-peak themes (" + npThemes.join(", ") + ")have been " + (enable ? "enabled" : "disabled"), sachannel);
+                sys.sendAll("±Murkrow: Non-peak themes (" + npThemes.join(", ") + ") have been " + (enable ? "enabled" : "disabled"), sachannel);
             } else {
                 sys.sendMessage(src, "±Murkrow: No non-peak themes found", mafiachan);
             }
