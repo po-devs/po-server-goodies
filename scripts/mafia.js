@@ -3961,7 +3961,7 @@ function Mafia(mafiachan) {
             return true;
         } catch (e) {
             if (e != "no valid command") {
-                sendChanAll("Error on mafia command: " + e, mafiachan);
+                sendChanAll("Error on mafia command: " + e + (e.lineNumber ? " on line " + e.lineNumber : ""), mafiachan);
                 return true;
             }
         }
