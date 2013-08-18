@@ -3704,7 +3704,7 @@ function Mafia(mafiachan) {
             msg(src, "Pushing makes no sense outside entry...");
             return;
         }
-        if (this.signups.length >= this.theme["roles" + this.theme.roleLists].length) {
+        if (this.signups.length > this.theme["roles" + this.theme.roleLists].length) {
             sys.sendMessage(src, "±Game: This theme only supports a maximum of " + this.theme["roles" + this.theme.roleLists].length + " players!", mafiachan);
             return;
         }
@@ -3999,7 +3999,7 @@ function Mafia(mafiachan) {
             sys.sendMessage(src, "±Game: You can't join/unjoin more than 3 times!", mafiachan);
             return;
         }
-        if (this.signups.length >= this.theme["roles" + this.theme.roleLists].length) {
+        if (this.signups.length > this.theme["roles" + this.theme.roleLists].length) {
             sys.sendMessage(src, "±Game: This theme only supports a maximum of " + this.theme["roles" + this.theme.roleLists].length + " players!", mafiachan);
             return;
         }
@@ -4053,7 +4053,11 @@ return;
                     return;
                 }
                 name = sys.name(src);
-
+                if (this.signups.length > this.theme["roles" + this.theme.roleLists].length){
+                    sys.sendMessage(src, "±Game: This theme only supports a maximum of " + this.theme["roles" + this.theme.roleLists].length + " players!", mafiachan);
+                    return;
+                } 
+                
                 this.signups.push(name);
                 this.ips.push(sys.ip(src));
                 if (this.numjoins.hasOwnProperty(sys.ip(src))) {
@@ -4061,11 +4065,7 @@ return;
                 }
                 else {
                     this.numjoins[sys.ip(src)] = 1;
-                }
-                if (this.signups.length >= this.theme["roles" + this.theme.roleLists].length){
-                    sys.sendMessage(src, "±Game: This theme only supports a maximum of " + this.theme["roles" + this.theme.roleLists].length + " players!", mafiachan);
-                    return;
-                }                
+                } 
                 sendChanAll("±Game: " + name + " joined the game!", mafiachan);
                 if (this.signups.length == this.theme["roles" + this.theme.roleLists].length) {
                     this.ticks = 1;
