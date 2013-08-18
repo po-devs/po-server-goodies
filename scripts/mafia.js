@@ -4478,7 +4478,7 @@ return;
                     }
                     
                     if ("exposedtargetmsg" in commandObject && typeof commandObject.exposedtargetmsg == "string") {
-                        sys.sendMessage(src, "±Game: " + exposeTargetMessage.replace(/~Self~/g, name).replace(/~Target~/g, commandData), mafiachan);
+                        sys.sendMessage(src, "±Game: " + exposeTargetMessage.replace(/~Role~/g, revealedrole).replace(/~Target~/g, commandData), mafiachan);
                     }
                     sendChanAll(border, mafiachan);
                     //player.exposeUse = player.exposeUse + 1 || 1;
