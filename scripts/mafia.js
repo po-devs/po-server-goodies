@@ -3999,10 +3999,6 @@ function Mafia(mafiachan) {
             sys.sendMessage(src, "±Game: You can't join/unjoin more than 3 times!", mafiachan);
             return;
         }
-        if (this.signups.length > this.theme["roles" + this.theme.roleLists].length) {
-            sys.sendMessage(src, "±Game: This theme only supports a maximum of " + this.theme["roles" + this.theme.roleLists].length + " players!", mafiachan);
-            return;
-        }
         var name = sys.name(src);
         for (var x in name) {
             var code = name.charCodeAt(x);
