@@ -1323,16 +1323,25 @@ addAdminCommand("listc", function (src, commandData, channel) {
     for (var i in triviaq.all()) {
         var cat = triviaq.get(i).category,
             match = false;
-        categories.forEach(function (string) {
-            if (string.toLowerCase() === cat.toLowerCase()) match = true;
+        categories.forEach(function (object) {
+            if (object.category.toLowerCase() === cat.toLowerCase()){
+            object.count++;
+            match = true;
+            }
         });
         if (!match) {
-            categories.push(cat);
+            categories.push({category: cat, count: 1});
         }
     }
-    categories = categories.sort();
-    Trivia.sendPM(src, "All currently used categories: \"" + categories.join("\", \"") + "\".", channel);
-}, "Lists every category currently used. Useful for picking out any incorrect categories.");
+    categories.sort(function(a,b){
+        return b.count - a.count;
+    });
+    Trivia.sendPM(src, "All currently used categories:", channel);
+    for (var x = 0; x < categories.length; x++) {
+        var object = categories[x];
+        Trivia.sendPM(src, object.category + " - " + object.count + " questions.");
+    }
+}, "Lists every category currently used and the amount of questions in each.");
 
 addAdminCommand("showqinc", function (src, commandData, channel) {
     if (commandData === undefined)
