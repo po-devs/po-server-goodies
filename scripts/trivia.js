@@ -1339,7 +1339,7 @@ addAdminCommand("listc", function (src, commandData, channel) {
     Trivia.sendPM(src, "All currently used categories:", channel);
     for (var x = 0; x < categories.length; x++) {
         var object = categories[x];
-        Trivia.sendPM(src, object.category + " - " + object.count + " questions.");
+        Trivia.sendPM(src, object.category + " - " + object.count + " questions.", channel);
     }
 }, "Lists every category currently used and the amount of questions in each.");
 
