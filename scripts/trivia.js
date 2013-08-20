@@ -17,7 +17,7 @@ var utilities = require("utilities.js");
 var triviachan, revchan;
 var triviabot = new Bot("Psyduck");
 
-var triviaCategories = ['Anime/Manga', 'Animals', 'Art', 'Comics', 'Food/Drink', 'Games', 'Geography', 'History', 'Internet', 'Language', 'Literature', 'Math', 'Misc', 'Movies', 'Music', 'Mythology', 'PO', 'Pokemon', 'Politics', 'Religion', 'Science', 'Social Science', 'Society', 'Space', 'Sports', 'Technology', 'TV', 'Video Games'];
+var triviaCategories = ['Anime/Manga', 'Animals', 'Art', 'Comics', 'Food/Drink', 'Games', 'Geography', 'History', 'Internet', 'Language', 'Literature', 'Math', 'Misc', 'Movies', 'Music', 'Mythology', 'Pokemon', 'Pokemon Online', 'Politics', 'Religion', 'Science', 'Social Science', 'Society', 'Space', 'Sports', 'Technology', 'TV', 'Video Games'];
 var lastCatGame = 0;
 var lastUsedCats = [];
 var suggestion = {};
@@ -1323,16 +1323,25 @@ addAdminCommand("listc", function (src, commandData, channel) {
     for (var i in triviaq.all()) {
         var cat = triviaq.get(i).category,
             match = false;
-        categories.forEach(function (string) {
-            if (string.toLowerCase() === cat.toLowerCase()) match = true;
+        categories.forEach(function (object) {
+            if (object.category.toLowerCase() === cat.toLowerCase()){
+            object.count++;
+            match = true;
+            }
         });
         if (!match) {
-            categories.push(cat);
+            categories.push({category: cat, count: 1});
         }
     }
-    categories = categories.sort();
-    Trivia.sendPM(src, "All currently used categories: \"" + categories.join("\", \"") + "\".", channel);
-}, "Lists every category currently used. Useful for picking out any incorrect categories.");
+    categories.sort(function(a,b){
+        return b.count - a.count;
+    });
+    Trivia.sendPM(src, "All currently used categories:", channel);
+    for (var x = 0; x < categories.length; x++) {
+        var object = categories[x];
+        Trivia.sendPM(src, object.category + " - " + object.count + " questions.", channel);
+    }
+}, "Lists every category currently used and the amount of questions in each.");
 
 addAdminCommand("showqinc", function (src, commandData, channel) {
     if (commandData === undefined)
@@ -1365,7 +1374,7 @@ addOwnerCommand("changeallc", function (src, commandData, channel) {
         var c = triviaq.get(i).category.toLowerCase();
         if (c === oldCat) {
             changed = true;
-            triviaq.get(i).category = newCat;
+            triviaq.changeCategory(i, newCat);
         }
     }
     if (!changed) {
