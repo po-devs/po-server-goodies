@@ -1374,7 +1374,7 @@ addOwnerCommand("changeallc", function (src, commandData, channel) {
         var c = triviaq.get(i).category.toLowerCase();
         if (c === oldCat) {
             changed = true;
-            triviaq.get(i).category = newCat;
+            triviaq.changeCategory(i, newCat);
         }
     }
     if (!changed) {
