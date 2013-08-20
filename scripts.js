@@ -113,7 +113,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, getKey, contributors, mutes, mbans, smutes, detained, hbans, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList, powerList, accList, ppList, categoryList, moveEffList;
+var channel, getKey, contributors, mutes, mbans, smutes, detained, hbans, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList, powerList, accList, ppList, categoryList, moveEffList, namesToWatch;
 
 var isMafiaAdmin = require('mafia.js').isMafiaAdmin;
 var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
@@ -148,6 +148,7 @@ cleanFile("smutes.txt");
 cleanFile("rangebans.txt");
 cleanFile("contributors.txt");
 cleanFile("ipbans.txt");
+cleanFile(Config.dataDir+"namesToWatch.txt");
 cleanFile("hangmanadmins.txt");
 cleanFile("hangmansuperadmins.txt");
 cleanFile(Config.dataDir+"pastebin_user_key");
@@ -1698,6 +1699,7 @@ init : function() {
     ipbans = new MemoryHash("ipbans.txt");
     detained = new MemoryHash("detained.txt");
     hbans = new MemoryHash("hbans.txt");
+    namesToWatch = new MemoryHash(Config.dataDir+"namesToWatch.txt");
     proxy_ips = {};
     function addProxybans(content) {
         var lines = content.split(/\n/);
@@ -5780,14 +5782,21 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
 
 beforeBattleEnded : function(src, dest, desc, bid) {
     var rated = SESSION.users(src).battles[bid].rated;
+    var tie = desc === "tie";
     delete SESSION.global().battleinfo[bid];
     delete SESSION.users(src).battles[bid];
     delete SESSION.users(dest).battles[bid];
 
     if (!SESSION.users(src).battlehistory) SESSION.users(src).battlehistory=[];
     if (!SESSION.users(dest).battlehistory) SESSION.users(dest).battlehistory=[];
-    SESSION.users(src).battlehistory.push([sys.name(dest), "win", desc, rated]);
-    SESSION.users(dest).battlehistory.push([sys.name(src), "lose", desc, rated]);
+    SESSION.users(src).battlehistory.push([sys.name(dest), tie ? "tie":"win", desc, rated]);
+    SESSION.users(dest).battlehistory.push([sys.name(src), tie ? "tie":"lose", desc, rated]);
+    if (rated & (namesToWatch.get(sys.name(src).toLowerCase()) || namesToWatch.get(sys.name(dest).toLowerCase()))) {
+        if (sys.channelId("Channel")) {
+            sys.sendHtmlAll("<b><font color = blue>" + sys.name(src) + " and " + sys.name(dest) + " finished a battle with result " + (tie ? "tie" : sys.name(src) + " winning") + (desc === "forfeit" ? " (forfeit)." : ".") + "</font></b>", sys.channelId("Channel"));
+            sys.sendAll(sys.name(src) + "'s IP: " + sys.ip(src) + " " + sys.name(dest) + "'s IP: " + sys.ip(dest), sys.channelId("Channel"));
+        }
+    }
 },
 
 
