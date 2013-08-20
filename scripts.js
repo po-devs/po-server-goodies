@@ -3747,7 +3747,7 @@ modCommand: function(src, command, commandData, tar) {
         }
         var res = [];
         for (var i = 0; i < hist.length; ++i) {
-             res.push("Battle against <b>" + hist[i][0] + "</b>, result <b>" + hist[i][1] + "</b>" + (hist[i][2] == "forfeit" ? " <i>due to forfeit</i>." : "."));
+             res.push("Battle against <b>" + hist[i][0] + "</b>, result <b>" + hist[i][1] + "</b>" + (hist[i][2] == "forfeit" ? " <i>due to forfeit</i>" : "") + (hist[1][3] ? "(rated)." : "."));
         }
         sys.sendHtmlMessage(src, res.join("<br>"), channel);
         return;
@@ -5779,14 +5779,15 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
 
 
 beforeBattleEnded : function(src, dest, desc, bid) {
+    var rated = SESSION.users(src).battles[bid].rated;
     delete SESSION.global().battleinfo[bid];
     delete SESSION.users(src).battles[bid];
     delete SESSION.users(dest).battles[bid];
 
     if (!SESSION.users(src).battlehistory) SESSION.users(src).battlehistory=[];
     if (!SESSION.users(dest).battlehistory) SESSION.users(dest).battlehistory=[];
-    SESSION.users(src).battlehistory.push([sys.name(dest), "win", desc]);
-    SESSION.users(dest).battlehistory.push([sys.name(src), "lose", desc]);
+    SESSION.users(src).battlehistory.push([sys.name(dest), "win", desc, rated]);
+    SESSION.users(dest).battlehistory.push([sys.name(src), "lose", desc, rated]);
 },
 
 
