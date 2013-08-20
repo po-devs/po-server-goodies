@@ -3749,7 +3749,7 @@ modCommand: function(src, command, commandData, tar) {
         }
         var res = [];
         for (var i = 0; i < hist.length; ++i) {
-             res.push("Battle against <b>" + hist[i][0] + "</b>, result <b>" + hist[i][1] + "</b>" + (hist[i][2] == "forfeit" ? " <i>due to forfeit</i>" : "") + (hist[i][3] ? " (<b>rated</b>)." : "."));
+             res.push("Battle against <b>" + hist[i][0] + "</b>, result <b>" + hist[i][1] + "</b>" + (hist[i][2] == "forfeit" ? " <i>due to forfeit</i>" : "") + (hist[i][3] ? " (<b>rated</b>)" : "") + (hist[i][4] ? "Tier: " + hist[i][4] + "." : "."));
         }
         sys.sendHtmlMessage(src, res.join("<br>"), channel);
         return;
@@ -5754,10 +5754,13 @@ battleSetup: function(p1,p2,battle) {
     }
 },
 
-afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
-    callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid);
-
-    var battle_data = {players: [src, dest], clauses: clauses, rated: rated, mode: mode};
+afterBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2) {
+    callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid, team1, team2);
+    var tier = false;
+    if (sys.tier(src, team1) === sys.tier(dest, team2)) {
+        tier = sys.tier(src, team1);
+    }
+    var battle_data = {players: [src, dest], clauses: clauses, rated: rated, mode: mode, tier: tier};
     SESSION.global().battleinfo[bid] = battle_data;
     SESSION.users(src).battles[bid] = battle_data;
     SESSION.users(dest).battles[bid] = battle_data;
@@ -5782,6 +5785,7 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid) {
 
 beforeBattleEnded : function(src, dest, desc, bid) {
     var rated = SESSION.users(src).battles[bid].rated;
+    var tier = SESSION.users(src).battles[bid].tier;
     var tie = desc === "tie";
     delete SESSION.global().battleinfo[bid];
     delete SESSION.users(src).battles[bid];
@@ -5789,11 +5793,11 @@ beforeBattleEnded : function(src, dest, desc, bid) {
 
     if (!SESSION.users(src).battlehistory) SESSION.users(src).battlehistory=[];
     if (!SESSION.users(dest).battlehistory) SESSION.users(dest).battlehistory=[];
-    SESSION.users(src).battlehistory.push([sys.name(dest), tie ? "tie":"win", desc, rated]);
-    SESSION.users(dest).battlehistory.push([sys.name(src), tie ? "tie":"lose", desc, rated]);
+    SESSION.users(src).battlehistory.push([sys.name(dest), tie ? "tie":"win", desc, rated, tier]);
+    SESSION.users(dest).battlehistory.push([sys.name(src), tie ? "tie":"lose", desc, rated, tier]);
     if (rated & (namesToWatch.get(sys.name(src).toLowerCase()) || namesToWatch.get(sys.name(dest).toLowerCase()))) {
         if (sys.channelId("Channel")) {
-            sys.sendHtmlAll("<b><font color = blue>" + sys.name(src) + " and " + sys.name(dest) + " finished a battle with result " + (tie ? "tie" : sys.name(src) + " winning") + (desc === "forfeit" ? " (forfeit)." : ".") + "</font></b>", sys.channelId("Channel"));
+            sys.sendHtmlAll("<b><font color = blue>" + sys.name(src) + " and " + sys.name(dest) + " finished a battle with result " + (tie ? "tie" : sys.name(src) + " winning") + (desc === "forfeit" ? " (forfeit)" : "") + (tier ? " in tier " + tier + ".": ".") + "</font></b>", sys.channelId("Channel"));
             sys.sendAll(sys.name(src) + "'s IP: " + sys.ip(src) + " " + sys.name(dest) + "'s IP: " + sys.ip(dest), sys.channelId("Channel"));
         }
     }
