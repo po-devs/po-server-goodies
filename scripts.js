@@ -3749,7 +3749,7 @@ modCommand: function(src, command, commandData, tar) {
         }
         var res = [];
         for (var i = 0; i < hist.length; ++i) {
-             res.push("Battle against <b>" + hist[i][0] + "</b>, result <b>" + hist[i][1] + "</b>" + (hist[i][2] == "forfeit" ? " <i>due to forfeit</i>" : "") + (hist[i][3] ? " (<b>rated</b>)" : "") + (hist[i][4] ? "Tier: " + hist[i][4] + "." : "."));
+             res.push("Battle against <b>" + hist[i][0] + "</b>, result <b>" + hist[i][1] + "</b>" + (hist[i][2] == "forfeit" ? " <i>due to forfeit</i>" : "") + (hist[i][3] ? " (<b>rated</b>)" : "") + (hist[i][4] ? " Tier: " + hist[i][4] + "." : "."));
         }
         sys.sendHtmlMessage(src, res.join("<br>"), channel);
         return;
