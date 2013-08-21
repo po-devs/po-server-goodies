@@ -2959,9 +2959,11 @@ function Mafia(mafiachan) {
                 
                 if ("lynch" in lynched.role.actions && "convertTo" in lynched.role.actions.lynch) {
                     var newRole = lynched.role.actions.lynch.convertTo;
-                    if ("convertmsg" in lynched.role.actions.lynch) {
-                        sendChanAll("±Game: " + lynched.role.actions.lynch.convertmsg.replace(/~Self~/g, downed).replace(/~Old~/g, lynched.role.translation).replace(/~New~/g, mafia.theme.trrole(newRole)).replace(/~Count~/g, Math.round(maxi * 100) / 100), mafiachan);
-                    } else {
+                    if ("lynchmsg" in lynched.role.actions.lynch) {
+                         sendChanAll("±Game: " + lynched.role.actions.lynch.lynchmsg.replace(/~Self~/g, downed).replace(/~Old~/g, lynched.role.translation).replace(/~New~/g, mafia.theme.trrole(newRole)).replace(/~Count~/g, Math.round(maxi * 100) / 100), mafiachan);
+                    } else if ("convertmsg" in lynched.role.actions.lynch && !("convertRoles" in lynched.role.actions.lynch)) {
+                         sendChanAll("±Game: " + lynched.role.actions.lynch.convertmsg.replace(/~Self~/g, downed).replace(/~Old~/g, lynched.role.translation).replace(/~New~/g, mafia.theme.trrole(newRole)).replace(/~Count~/g, Math.round(maxi * 100) / 100), mafiachan);
+                    }  else {
                         sendChanAll("±Game: " + downed + ", the " + lynched.role.translation + " survived the lynch and became a " + mafia.theme.trrole(newRole) + "!", mafiachan);
                     }
                     mafia.setPlayerRole(lynched, newRole);
