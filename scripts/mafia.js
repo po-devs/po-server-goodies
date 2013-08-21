@@ -2541,7 +2541,7 @@ function Mafia(mafiachan) {
                                         target.cursedRole = cursedRole;
                                         target.silentCurse = Action.silentCurse || false;
                                         if (!Action.silent) {
-                                            target.curseConvertMessage = Action.curseConvertMessage || "~Target~'s has been converted into a ~New~!";
+                                            target.curseConvertMessage = Action.curseConvertMessage || "~Target~ has been converted into a ~New~!";
                                         }
                                     }
                                 }
