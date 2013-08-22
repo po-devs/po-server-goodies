@@ -5775,7 +5775,8 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2)
     if (sys.tier(src, team1) === sys.tier(dest, team2)) {
         tier = sys.tier(src, team1);
     }
-    var battle_data = {players: [src, dest], clauses: clauses, rated: rated, mode: mode, tier: tier};
+    var time = parseInt(sys.time(), 10);
+    var battle_data = {players: [src, dest], clauses: clauses, rated: rated, mode: mode, tier: tier, time: time};
     SESSION.global().battleinfo[bid] = battle_data;
     SESSION.users(src).battles[bid] = battle_data;
     SESSION.users(dest).battles[bid] = battle_data;
@@ -5801,6 +5802,7 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2)
 beforeBattleEnded : function(src, dest, desc, bid) {
     var rated = SESSION.users(src).battles[bid].rated;
     var tier = SESSION.users(src).battles[bid].tier;
+    var time = SESSION.users(src).battles[bid].time;
     var tie = desc === "tie";
     delete SESSION.global().battleinfo[bid];
     delete SESSION.users(src).battles[bid];
@@ -5812,7 +5814,7 @@ beforeBattleEnded : function(src, dest, desc, bid) {
     SESSION.users(dest).battlehistory.push([sys.name(src), tie ? "tie":"lose", desc, rated, tier]);
     if (rated && (namesToWatch.get(sys.name(src).toLowerCase()) || namesToWatch.get(sys.name(dest).toLowerCase()))) {
         if (sys.channelId("Channel")) {
-            sys.sendHtmlAll("<b><font color = blue>" + sys.name(src) + " and " + sys.name(dest) + " finished a battle with result " + (tie ? "tie" : sys.name(src) + " winning") + (desc === "forfeit" ? " (forfeit)" : "") + (tier ? " in tier " + tier + ".": ".") + "</font></b>", sys.channelId("Channel"));
+            sys.sendHtmlAll("<b><font color = blue>" + sys.name(src) + " and " + sys.name(dest) + " finished a battle with result " + (tie ? "tie" : sys.name(src) + " winning") + (desc === "forfeit" ? " (forfeit)" : "") + (tier ? " in tier " + tier: "") + (time ? " after " + getTimeString(sys.time() - time) + "." : "." ) + "</font></b>", sys.channelId("Channel"));
             sys.sendAll(sys.name(src) + "'s IP: " + sys.ip(src) + " " + sys.name(dest) + "'s IP: " + sys.ip(dest), sys.channelId("Channel"));
         }
     }
