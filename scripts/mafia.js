@@ -2033,12 +2033,12 @@ function Mafia(mafiachan) {
                     }
                 }
             }
-            sendChanAll("Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
-            sendChanAll("Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
+            sendChanAll("±Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
+            sendChanAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
             // Send players all roles sided with them
             for (p in mafia.players) {
                 player = mafia.players[p];
-                mafia.sendPlayer(player.name, "Current Team: " + mafia.getRolesForTeamS(player.role.side));
+                mafia.sendPlayer(player.name, "±Current Team: " + mafia.getRolesForTeamS(player.role.side));
             }
             if (mafia.theme.ticks === undefined || isNaN(mafia.theme.ticks.night) || mafia.theme.ticks.night < 1 || mafia.theme.ticks.night > 60) {
                 mafia.ticks = 30;
@@ -2049,7 +2049,7 @@ function Mafia(mafiachan) {
             mafia.time.nights++;
             mafia.state = "night";
 
-            sendChanAll("Time: Night " + mafia.time.nights, mafiachan);
+            sendChanAll("±Time: Night " + mafia.time.nights, mafiachan);
             sendChanAll("Make your moves, you only have " + mafia.ticks + " seconds! :", mafiachan);
             sendChanAll(border, mafiachan);
             mafia.resetTargets();
@@ -2694,19 +2694,19 @@ function Mafia(mafiachan) {
 
             sendChanAll(border, mafiachan);
 
-            sendChanAll("Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
-            sendChanAll("Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
+            sendChanAll("±Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
+            sendChanAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
             // Send players all roles sided with them
             for (p in mafia.players) {
                 player = mafia.players[p];
                 var side = player.role.side;
-                mafia.sendPlayer(player.name, "Current Team: " + mafia.getRolesForTeamS(side));
+                mafia.sendPlayer(player.name, "±Current Team: " + mafia.getRolesForTeamS(side));
             }
 
             mafia.time.days++;
             mafia.state = "standby";
             
-            sendChanAll("Time: Day " + mafia.time.days, mafiachan);
+            sendChanAll("±Time: Day " + mafia.time.days, mafiachan);
             sendChanAll("You have " + mafia.ticks + " seconds to debate who are the bad guys! :", mafiachan);
             for (var role in mafia.theme.standbyRoles) {
                 names = mafia.getPlayersForRole(mafia.theme.standbyRoles[role]);
@@ -2727,13 +2727,13 @@ function Mafia(mafiachan) {
 
             sendChanAll(border, mafiachan);
 
-            sendChanAll("Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
-            sendChanAll("Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
+            sendChanAll("±Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
+            sendChanAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
             // Send players all roles sided with them
             for (var p in mafia.players) {
                 var player = mafia.players[p];
                 var side = player.role.side;
-                mafia.sendPlayer(player.name, "Current Team: " + mafia.getRolesForTeamS(side));
+                mafia.sendPlayer(player.name, "±Current Team: " + mafia.getRolesForTeamS(side));
                 if (p in mafia.dayRecharges) {
                     for (var r in mafia.dayRecharges[p]) {
                         mafia.setRechargeFor(player, "standby", r, player.role.actions.standby[r].recharge);
@@ -2745,7 +2745,7 @@ function Mafia(mafiachan) {
                 nolyn = true;
             }
             if (nolyn === false) {
-                sendChanAll("Time: Day " + mafia.time.days, mafiachan);
+                sendChanAll("±Time: Day " + mafia.time.days, mafiachan);
                 sendChanAll("It's time to vote someone off, type /Vote [name], you only have " + mafia.ticks + " seconds! :", mafiachan);
                 sendChanAll(border, mafiachan);
 
@@ -2762,7 +2762,7 @@ function Mafia(mafiachan) {
                 mafia.time.nights++;
                 mafia.state = "night";
                 
-                sendChanAll("Time: Night " + mafia.time.nights, mafiachan);
+                sendChanAll("±Time: Night " + mafia.time.nights, mafiachan);
                 sendChanAll("Make your moves, you only have " + mafia.ticks + " seconds! :", mafiachan);
                 sendChanAll(border, mafiachan);
                 for (var x in mafia.usersToSlay) {
@@ -2981,13 +2981,13 @@ function Mafia(mafiachan) {
                     return;
             }
 
-            sendChanAll("Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
-            sendChanAll("Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
+            sendChanAll("±Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
+            sendChanAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
             // Send players all roles sided with them
             for (var p in mafia.players) {
                 player = mafia.players[p];
                 var side = player.role.side;
-                mafia.sendPlayer(player.name, "Current Team: " + mafia.getRolesForTeamS(side));
+                mafia.sendPlayer(player.name, "±Current Team: " + mafia.getRolesForTeamS(side));
             }
             if (mafia.theme.ticks === undefined || isNaN(mafia.theme.ticks.night) || mafia.theme.ticks.night < 1 || mafia.theme.ticks.night > 60) {
                 mafia.ticks = 30;
@@ -2998,7 +2998,7 @@ function Mafia(mafiachan) {
             mafia.time.nights++;
             mafia.state = "night";
 
-            sendChanAll("Time: Night " + mafia.time.nights, mafiachan);
+            sendChanAll("±Time: Night " + mafia.time.nights, mafiachan);
             sendChanAll("Make your moves, you only have " + mafia.ticks + " seconds! :", mafiachan);
             sendChanAll(border, mafiachan);
             for (var x in mafia.usersToSlay) {
