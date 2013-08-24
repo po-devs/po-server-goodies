@@ -351,6 +351,7 @@ function Mafia(mafiachan) {
             theme.ticks = plain_theme.ticks;
             theme.votesniping = plain_theme.votesniping;
             theme.silentVote = plain_theme.silentVote;
+            theme.votemsg = plain_theme.votemsg;
             theme.name = plain_theme.name;
             theme.altname = plain_theme.altname;
             theme.author = plain_theme.author;
@@ -1332,6 +1333,13 @@ function Mafia(mafiachan) {
         }
         return list.sort().join(", ");
 
+    };
+    this.getPlayersForBroadcast = function () {
+        var team = [];
+        for (var p in this.players) {
+            team.push(this.players[p].name);
+        }
+        return team;
     };
     this.player = function (role) {
         for (var p in this.players) {
@@ -4138,27 +4146,26 @@ return;
                 this.setTarget(player, target, command);
                 var team;
                 var broadcast = player.role.actions.night[command].broadcast;
+                var broadcastmsg = player.role.actions.night[command].broadcastmsg ? player.role.actions.night[command].broadcastmsg : "Your partner (~Player~) has decided to ~Action~ '~Target~'!";
                 if (broadcast !== undefined) {
                     team = [];
                     if (broadcast == "team") {
                         team = this.getPlayersForTeam(player.role.side);
                     } else if (broadcast == "role") {
                         team = this.getPlayersForRole(player.role.role);
+                    } else if (broadcast == "*" || broadcast == "all") {
+                        broadcastmsg = player.role.actions.night[command].broadcastmsg ? player.role.actions.night[command].broadcastmsg : "The ~Role~ is going to ~Action~ ~Target~";
+                        team = this.getPlayersForBroadcast();
                     } else if (Array.isArray(broadcast)) {
                         for (var z in mafia.players) {
                             if (broadcast.indexOf(mafia.players[z].role.role) != -1) {
                                 team.push(mafia.players[z].name);
                             }
                         }
-                    }
-                    
-                    var broadcastmsg = "±Game: Your partner(s) have decided to " + command + " '" + commandData + "'!";
-                    if (player.role.actions.night[command].broadcastmsg) {
-                        broadcastmsg = player.role.actions.night[command].broadcastmsg.replace(/~Player~/g, name).replace(/~Target~/g, commandData).replace(/~Action~/, command);
-                    }
+                    }                    
                     for (x in team) {
                         if (team[x] != name) {
-                            this.sendPlayer(team[x], broadcastmsg);
+                            this.sendPlayer(team[x], "±Game: " + broadcastmsg.replace(/~Player~/g, name).replace(/~Target~/g, commandData).replace(/~Action~/, command).replace(/~Role~/, player.role.translation));
                         }
                     }
                 }
@@ -4227,7 +4234,10 @@ return;
                     sys.sendMessage(src, "±Game: You voted for " + commandData + "!", mafiachan);
                     sendChanAll("±Game: " + sys.name(src) + " voted!", mafiachan);
                 } else {
-                    sendChanAll("±Game: " + sys.name(src) + " voted for " + commandData + "!", mafiachan);
+                    var votemsg = mafia.theme.votemsg ? mafia.theme.votemsg : "±Game: ~Player~ voted for ~Target~!";
+                    if ((votemsg.indexOf("~Target~") === -1) || (votemsg.indexOf("~Player~") === -1) )
+                        sys.sendMessage(src, "±Game: You voted for " + commandData + "!", mafiachan);
+                    sendChanAll("±Game: " + votemsg.replace(/~Player~/g, sys.name(src)).replace(/~Target~/g, commandData), mafiachan);
                 }
                 this.addPhaseStalkAction(sys.name(src), "vote", commandData);
                 this.votes[sys.name(src)] = commandData;
