@@ -3339,7 +3339,7 @@ function Mafia(mafiachan) {
             "±Rules: After you have died, don't discuss the game with anyone else in the game. This is also known as 'deadtalking'.",
             "±Rules: Do not quote any of the game bots. This includes in private messages.",
             "±Rules: Do not copy other peoples' names or make your name similar to someone elses.",
-            "±Rules: Make sure you can stay active for the entire game if you join. If you must leave, ask a Mafia Admin for a "slay" in the game chat. Leaving without asking for a slay will result in punishment.",
+            "±Rules: Make sure you can stay active for the entire game if you join. If you must leave, ask a Mafia Admin for a ''slay'' in the game chat. Leaving without asking for a slay will result in punishment.",
             "±Rules: If you ask to be removed from a game (slain), do not join the next game. Do not attempt to get yourself killed or go inactive because you don't like your role.",
             "±Rules: A valid reason must be given for a slay. Being in a tour, not paying attention, not liking your role, and not liking your teammates are not valid reasons.",
             "±Rules: Do not attempt to get your teammate voted off without their consent.",
