@@ -486,7 +486,7 @@ function Mafia(mafiachan) {
                 } else {
                     mafiabot.sendAll(Config.Mafia.bot + " disabled theme " + name + ".", sachannel);
                     mafiabot.sendAll(Config.Mafia.bot + " disabled theme " + name + ".", mafiachan);
-                }                
+                }
             }
         }
     };
@@ -662,12 +662,12 @@ function Mafia(mafiachan) {
                                     abilities += "Dies " + Math.round(1 / role.actions.poison.rate) + " times slower from poison. ";
                                 }
                             } else {
-                                if (role.actions.poison.constant > 0 || role.actions.poison.constant == undefined) {
+                                if (role.actions.poison.constant > 0 || role.actions.poison.constant === undefined) {
                                     abilities += "Dies " + (role.actions.poison.constant ? role.actions.poison.constant : 1) + " nights slower from poison. ";
                                 } else {
                                     abilities += "Dies " + Math.abs(role.actions.poison.constant) + " nights faster from poison. ";
                                 }
-                            } 
+                            }
                         }
                     }
                     if ("curse" in role.actions) {
@@ -679,12 +679,12 @@ function Mafia(mafiachan) {
                                     abilities += "Converts " + Math.round(1 / role.actions.curse.rate)  + " times slower from curses. ";
                                 }
                             } else {
-                                if (role.actions.curse.constant > 0 || role.actions.curse.constant == undefined) {
+                                if (role.actions.curse.constant > 0 || role.actions.curse.constant === undefined) {
                                     abilities += "Converts " + (role.actions.curse.constant ? role.actions.curse.constant : 1) + " nights slower from curses. ";
-                                } else {    
+                                } else {
                                     abilities += "Converts " + Math.abs(role.actions.curse.constant) + " nights faster from curses. ";
                                 }
-                            } 
+                            }
                         }
                     }
                     if ("hax" in role.actions && Object.keys) {
@@ -2323,7 +2323,7 @@ function Mafia(mafiachan) {
                                                 finalPoisonCount = Math.round(finalPoisonCount * targetMode.rate);
                                             } else {
                                                 finalPoisonCount = finalPoisonCount + (targetMode.constant || 1);
-                                            } 
+                                            }
                                         }
                                         if (command == "curse") {
                                             if (typeof targetMode.rate == "number") {
@@ -2553,7 +2553,7 @@ function Mafia(mafiachan) {
                                         }
                                     }
                                 }
-                            } 
+                            }
                             else if (command == "detox") {
                                 if (target.poisoned !== undefined) {
                                     target.poisoned = undefined;
@@ -2581,7 +2581,7 @@ function Mafia(mafiachan) {
                                         mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") isn't poisoned!");
                                     }
                                 }
-                            } 
+                            }
                             else if (command == "dispel") {
                                 if (target.cursed !== undefined) {
                                     target.cursed =  undefined;
@@ -3354,7 +3354,7 @@ function Mafia(mafiachan) {
             "±Rules: Mafia is a game that involves heavy communication. Do not disable private messages (PMs) if you wish to play Mafia, else you may ruin the game for others.",
             "±Rules: Do not attempt to ruin the game by any other means.",
             "±Rules: Mafia Admins, or MAs are here for the benefit of the channel. If you are asked to do something by an MA, it is advised you do so.",
-            "±Rules: PM an MA to report an instance of rulebreaking. Shouting out "BAN" and "teamvote!" and such in the chat is pointless and disrupts the game. You can use /mafiaadmins or /madmins to get a listing of who is an MA.",
+            "±Rules: PM an MA to report an instance of rulebreaking. Shouting out \"BAN\" and \"teamvote!\" and such in the chat is pointless and disrupts the game. You can use /mafiaadmins or /madmins to get a listing of who is an MA.",
             "±Rules: Just because someone else breaks a rule, it does not justify you breaking the same rule.",
             "±Rules: Ignorance of the rules does not justify breaking them.",
             ""
@@ -4064,7 +4064,7 @@ return;
                 if (this.signups.length > this.theme["roles" + this.theme.roleLists].length){
                     sys.sendMessage(src, "±Game: This theme only supports a maximum of " + this.theme["roles" + this.theme.roleLists].length + " players!", mafiachan);
                     return;
-                } 
+                }
                 
                 this.signups.push(name);
                 this.ips.push(sys.ip(src));
@@ -4073,7 +4073,7 @@ return;
                 }
                 else {
                     this.numjoins[sys.ip(src)] = 1;
-                } 
+                }
                 sendChanAll("±Game: " + name + " joined the game!", mafiachan);
                 if (this.signups.length == this.theme["roles" + this.theme.roleLists].length) {
                     this.ticks = 1;
@@ -4151,7 +4151,7 @@ return;
                                 team.push(mafia.players[z].name);
                             }
                         }
-                    }                    
+                    }
                     for (x in team) {
                         if (team[x] != name) {
                             this.sendPlayer(team[x], "±Game: " + broadcastmsg.replace(/~Player~/g, name).replace(/~Target~/g, commandData).replace(/~Action~/, command).replace(/~Role~/, player.role.translation));
@@ -4488,7 +4488,7 @@ return;
                     }
                     
                     if ("exposedtargetmsg" in commandObject && typeof commandObject.exposedtargetmsg == "string") {
-                        sys.sendMessage(src, "±Game: " + exposeTargetMessage.replace(/~Role~/g, revealedrole).replace(/~Target~/g, commandData), mafiachan);
+                        sys.sendMessage(src, "±Game: " + exposeTargetMessage.replace(/~Role~/g, revealedRole).replace(/~Target~/g, commandData), mafiachan);
                     }
                     sendChanAll(border, mafiachan);
                     //player.exposeUse = player.exposeUse + 1 || 1;
@@ -4691,7 +4691,7 @@ return;
                 mafiaSuperAdmins.add(ma, "");
                 mafiaAdmins.remove(ma);
                 sMA = true;
-            } else {            
+            } else {
                 mafiaAdmins.add(ma, "");
             }
             id = sys.id(commandData);
@@ -4706,7 +4706,7 @@ return;
             if (mafiaSuperAdmins.hash.hasOwnProperty(ma) && sys.auth(src) >= 3) {
                 mafiaSuperAdmins.remove(ma);
                 sMA = true;
-            }    
+            }
             mafiaAdmins.remove(ma);
             id = sys.id(commandData);
             if (id !== undefined)
