@@ -42,7 +42,7 @@ TierChecker.prototype.find_good_tier = function(src, team) {
         var testtier = testPath[i];
         if (sys.hasLegalTeamForTier(src, team, testtier) && this.has_legal_team_for_tier(src, team, testtier, true)) {
             sys.changeTier(src, team, testtier);
-            if (testtier == "Battle Factory") {
+            if (testtier == "Battle Factory" || testtier == "Battle Factory 6v6") {
                 require('battlefactory.js').generateTeam(src, team);
             }
             return;

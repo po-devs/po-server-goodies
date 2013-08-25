@@ -3254,6 +3254,9 @@ userCommand: function(src, command, commandData, tar) {
         }
         if (tier && tier_checker.has_legal_team_for_tier(src, team, tier)) {
             sys.changeTier(src, team, tier);
+            if (tier == "Battle Factory" || tier == "Battle Factory 6v6") {
+                require('battlefactory.js').generateTeam(src, team);
+            }
             normalbot.sendMessage(src, "You switched to " + tier, channel);
             return;
         }
