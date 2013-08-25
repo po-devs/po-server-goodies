@@ -4223,7 +4223,7 @@ return;
                     sys.sendMessage(src, "±Game: You voted for " + commandData + "!", mafiachan);
                     sendChanAll("±Game: " + sys.name(src) + " voted!", mafiachan);
                 } else {
-                    var votemsg = mafia.theme.votemsg ? mafia.theme.votemsg : "±Game: ~Player~ voted for ~Target~!";
+                    var votemsg = mafia.theme.votemsg ? mafia.theme.votemsg : "~Player~ voted for ~Target~!";
                     if ((votemsg.indexOf("~Target~") === -1) || (votemsg.indexOf("~Player~") === -1) )
                         sys.sendMessage(src, "±Game: You voted for " + commandData + "!", mafiachan);
                     sendChanAll("±Game: " + votemsg.replace(/~Player~/g, sys.name(src)).replace(/~Target~/g, commandData), mafiachan);
