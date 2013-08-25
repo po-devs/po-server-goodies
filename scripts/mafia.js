@@ -4012,7 +4012,7 @@ function Mafia(mafiachan) {
             return;
         }
         var name = sys.name(src);
-        for (var x in name) {
+        for (var x = 0; x < name.length; x++) {
             var code = name.charCodeAt(x);
             if (name[x] != ' ' && name[x] != '.' && (code < 'a'.charCodeAt(0) || code > 'z'.charCodeAt(0))
                 && (code < 'A'.charCodeAt(0) || code > 'Z'.charCodeAt(0)) && name[x] != '-' && name[x] != '_' && name[x] != '<' && name[x] != '>' && (code < '0'.charCodeAt(0) || code > '9'.charCodeAt(0))) {
