@@ -3339,7 +3339,7 @@ function Mafia(mafiachan) {
             "±Rules: After you have died, don't discuss the game with anyone else in the game. This is also known as 'deadtalking'.",
             "±Rules: Do not quote any of the game bots. This includes in private messages.",
             "±Rules: Do not copy other peoples' names or make your name similar to someone elses.",
-            "±Rules: Make sure you can stay active for the entire game if you join. If you must leave, ask a Mafia Admin for a ''slay'' in the game chat. Leaving without asking for a slay will result in punishment.",
+            "±Rules: Make sure you can stay active for the entire game if you join. If you must leave, ask a Mafia Admin for a \"slay\" in the game chat. Leaving without asking for a slay will result in punishment.",
             "±Rules: If you ask to be removed from a game (slain), do not join the next game. Do not attempt to get yourself killed or go inactive because you don't like your role.",
             "±Rules: A valid reason must be given for a slay. Being in a tour, not paying attention, not liking your role, and not liking your teammates are not valid reasons.",
             "±Rules: Do not attempt to get your teammate voted off without their consent.",
@@ -3354,7 +3354,7 @@ function Mafia(mafiachan) {
             "±Rules: Mafia is a game that involves heavy communication. Do not disable private messages (PMs) if you wish to play Mafia, else you may ruin the game for others.",
             "±Rules: Do not attempt to ruin the game by any other means.",
             "±Rules: Mafia Admins, or MAs are here for the benefit of the channel. If you are asked to do something by an MA, it is advised you do so.",
-            "±Rules: PM an MA to report an instance of rulebreaking. Shouting out "BAN" and "teamvote!" and such in the chat is pointless and disrupts the game. You can use /mafiaadmins or /madmins to get a listing of who is an MA.",
+            "±Rules: PM an MA to report an instance of rulebreaking. Shouting out \"BAN\" and \"teamvote!\" and such in the chat is pointless and disrupts the game. You can use /mafiaadmins or /madmins to get a listing of who is an MA.",
             "±Rules: Just because someone else breaks a rule, it does not justify you breaking the same rule.",
             "±Rules: Ignorance of the rules does not justify breaking them.",
             ""
