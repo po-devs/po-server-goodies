@@ -3804,37 +3804,22 @@ function Mafia(mafiachan) {
         msg(src, "No such target.");
     };
     
-    this.readStalkLog = function (src, data) {
-        var num, outputChan = mafiachan;
-        if (data.indexOf(":") >= 0) {
-            var splitData = data.split(":");
-            num = Number(splitData[0]);
-            outputChan = sys.channelId(splitData[1]);
-        } else {
-            num = Number(data);
-        }
+    this.readStalkLog = function (src, data, channel) {
+        var num = Number(data);
         if (!num) {
-            sys.sendMessage(src, "±Info: This is not a valid number!", mafiachan);
-            return;
-        }
-        if (outputChan === undefined) {
-            sys.sendMessage(src, "±Info: This is not a valid channel!", mafiachan);
+            sys.sendMessage(src, "±Info: This is not a valid number!", channel);
             return;
         }
         if (num < 1 || num > stalkLogs.length) {
-            sys.sendMessage(src, "±Info: There's no log with this id!", mafiachan);
+            sys.sendMessage(src, "±Info: There's no log with this id!", channel);
             return;
         }
-
-        sys.sendMessage(src, "", outputChan);
+        sys.sendMessage(src, "", channel);
         var stalkLog = stalkLogs[num - 1].split("::**::");
         for (var c = 0; c < stalkLog.length; ++c) {
-            sys.sendMessage(src, stalkLog[c], outputChan);
+            sys.sendMessage(src, stalkLog[c], channel);
         }
-        sys.sendMessage(src, "", outputChan);
-        if (outputChan != mafiachan) {
-            sys.sendMessage(src, "±Info: Game log was printed in channel " + sys.channel(outputChan), mafiachan);
-        }
+        sys.sendMessage(src, "", channel);
     };
     this.addTheme = function (src, url) {
         if (!mafia.isMafiaAdmin(src)) {
@@ -3989,7 +3974,7 @@ function Mafia(mafiachan) {
         } else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel != mafiachan && ["mafiaban","mafiaunban","mafiabans","detained","detainlist", "mafiaadmins", "madmins", "roles", "priority", "sides", "themeinfo"].indexOf(command) === -1)
+        if (channel != mafiachan && ["mafiaban","mafiaunban","mafiabans","detained","detainlist", "mafiaadmins", "madmins", "roles", "priority", "sides", "themeinfo", "readlog", "aliases", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiarules", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "passma"].indexOf(command) === -1)
             return;
         try {
             mafia.handleCommandOld(src, command, commandData, channel);
@@ -4598,7 +4583,7 @@ return;
             throw ("no valid command");
 
         if (command in this.commands.auth) {
-            this.commands.auth[command][0].call(this, src, commandData);
+            this.commands.auth[command][0].call(this, src, commandData, channel);
             return;
         }
         var tar = sys.id(commandData);
@@ -4617,14 +4602,16 @@ return;
             return;
         }
         if (command == "aliases") {
-            if (this.isMafiaSuperAdmin(src)) {
+            if (this.isMafiaSuperAdmin(src) || sys.auth(src) > 0) {
                 script.modCommand(src, command, commandData, tar);
             }
             return;
         }
         var id;
         if (command == "passma") { //partially copied from tours.js
+            var oldname = sys.name(src).toLowerCase();
             var newname = commandData.toLowerCase();
+            var sMA = false;
             if (sys.dbIp(newname) === undefined) {
                 sys.sendMessage(src,"This user doesn't exist!");
                 return true;
@@ -4641,19 +4628,23 @@ return;
                 sys.sendMessage(src,"Both accounts must be on the same IP to switch!");
                 return true;
             }
-            if (this.isMafiaAdmin(sys.id(newname))) {
-                sys.sendMessage(src,"The target is already MA!");
+            if (this.isMafiaAdmin(sys.id(newname)) || this.isMafiaSuperAdmin(sys.id(newname))) {
+                sys.sendMessage(src, "The target is already a Mafia Admin!");
                 return true;
             }
-            // now copied from /mafiaadmin and /mafiaadminoff
-            mafiaAdmins.remove(sys.name(src));
-            mafiaAdmins.remove(sys.name(src).toLowerCase());
-            mafiaAdmins.add(commandData.toLowerCase(), "");
+            
+            if (this.isMafiaSuperAdmin(src)) {
+                mafiaSuperAdmins.remove(oldname);
+                mafiaSuperAdmins.add(newname, "");
+                sMA = true,
+            } else {
+                mafiaAdmins.remove(oldname);
+                mafiaAdmins.add(newname, "");
+            }
             id = sys.id(commandData);
             if (id !== undefined)
                 SESSION.users(id).mafiaAdmin = true;
-            sys.sendMessage(src, "±Game: Your auth has been transferred!", mafiachan);
-            sys.sendAll("±Murkrow: " + sys.name(src) + " passed their Mafia auth to " + commandData, sys.channelId('Victory Road'));
+            sys.sendAll("±Murkrow: " + sys.name(src) + " passed their " + (sMA ? "Super Mafia Admin powers" : "Mafia auth") + " to " + commandData, sachannel);
             return;
         }
         
@@ -4679,7 +4670,6 @@ return;
             }
             return;
         }
-
         /*if (command == "mafiabans") {
             try {
                 if (script.modCommand(src, command, commandData, tar) == "no command") {
@@ -4690,47 +4680,40 @@ return;
             }
             return;
         }*/
+        
         if (!this.isMafiaSuperAdmin(src))
             throw ("no valid command");
 
-        if (command == "mafiaadmin") {
-            mafiaAdmins.add(commandData.toLowerCase(), "");
+        if (command == "mafiaadmin" || command == "mafiasadmin" || command == "mafiasuperadmin") {
+            var ma = commandData.toLowerCase();
+            var sMA = false;
+            if ((command == "mafiasadmin" || command == "mafiasuperadmin") && sys.auth(src) >= 3) {
+                mafiaSuperAdmins.add(ma, "");
+                mafiaAdmins.remove(ma);
+                sMA = true;
+            } else {            
+                mafiaAdmins.add(ma, "");
+            }
             id = sys.id(commandData);
             if (id !== undefined)
                 SESSION.users(id).mafiaAdmin = true;
-            sys.sendMessage(src, "±Game: That person is now a mafia admin!", mafiachan);
-            sys.sendAll("±Murkrow: " + sys.name(src) + " promoted " + commandData  + " to Mafia Admin.", sys.channelId('Victory Road'));
+            sys.sendAll("±Murkrow: " + sys.name(src) + " promoted " + commandData + " to " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
             return;
         }
         if (command == "mafiaadminoff") {
-            mafiaAdmins.remove(commandData);
-            mafiaAdmins.remove(commandData.toLowerCase());
+            var ma = commandData.toLowerCase();
+            var sMA = false;
+            if (mafiaSuperAdmins.hash.hasOwnProperty(ma) && sys.auth(src) >= 3) {
+                mafiaSuperAdmins.remove(ma);
+                sMA = true;
+            }    
+            mafiaAdmins.remove(ma);
             id = sys.id(commandData);
             if (id !== undefined)
                 SESSION.users(id).mafiaAdmin = false;
-            sys.sendMessage(src, "±Game: That person is no longer a mafia admin!", mafiachan);
-            sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData  + " from being a Mafia Admin.", sys.channelId('Victory Road'));
+            sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData  + " from being a " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
             return;
         }
-        
-        if (sys.auth(src) < 3) {
-            throw ("no valid command");
-        }
-        if (command == "mafiasadmin" || command == "mafiasuperadmin") {
-            mafiaSuperAdmins.add(commandData.toLowerCase(), "");
-            sys.sendMessage(src, "±Game: That person is now a mafia super admin!", mafiachan);
-            sys.sendAll("±Murkrow: " + sys.name(src) + " promoted " + commandData + " to Super Mafia Admin.", sys.channelId('Victory Road'));
-            return;
-        }
-        
-        if (command == "mafiasadminoff" || command == "mafiasuperadminoff") {
-            mafiaSuperAdmins.remove(commandData);
-            mafiaSuperAdmins.remove(commandData.toLowerCase());
-            sys.sendMessage(src, "±Game: That person is no longer a mafia super admin!", mafiachan);
-            sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData + " from being a Super Mafia Admin.", sys.channelId('Victory Road'));
-            return;
-        }
-
         throw ("no valid command");
     };
 
