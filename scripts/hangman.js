@@ -747,7 +747,7 @@ module.exports = function () {
         if (commandData === undefined) {
             return;
         }
-        if (hangmanAdmins.hasOwnProperty(commandData.toLowerCase())) {
+        if (hangmanAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
             sys.sendMessage(src, "±Unown: " + commandData + " is already a Hangman Admin!", channel);
             return;
         }
@@ -759,7 +759,7 @@ module.exports = function () {
         if (commandData === undefined) {
             return;
         }
-        if (hangmanSuperAdmins.hasOwnProperty(commandData.toLowerCase())) {
+        if (hangmanSuperAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
             sys.sendMessage(src, "±Unown: " + commandData + " is already a Super Hangman Admin!", channel);
             return;
         }
@@ -771,7 +771,7 @@ module.exports = function () {
         if (commandData === undefined) {
             return;
         }
-        if (!hangmanAdmins.hasOwnProperty(commandData.toLowerCase())) {
+        if (!hangmanAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
             sys.sendMessage(src, "±Unown: " + commandData + " is not a Hangman Admin!", channel);
             return;
         }
@@ -784,7 +784,7 @@ module.exports = function () {
         if (commandData === undefined) {
             return;
         }
-        if (!hangmanAdmins.hasOwnProperty(commandData.toLowerCase())) {
+        if (!hangmanAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
             sys.sendMessage(src, "±Unown: " + commandData + " is not a Super Hangman Admin!", channel);
             return;
         }
