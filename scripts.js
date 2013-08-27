@@ -5012,6 +5012,11 @@ channelCommand: function(src, command, commandData, tar) {
             channelbot.sendChanMessage(src, "Your target is banned from this channel!");
             return;
         }
+        var now = (new Date()).getTime();
+        if (now < SESSION.users(src).inviteDelay) {
+            channelbot.sendMessage(src, "Please wait before sending another invite!");
+            return;
+        }
         if (!sys.isInChannel(tar, channel)) {
             channelbot.sendMessage(tar, "" + sys.name(src) + " would like you to join #" + sys.channel(channel) + "!");
         }
@@ -5021,6 +5026,7 @@ channelCommand: function(src, command, commandData, tar) {
         } else {
             channelbot.sendChanMessage(src, "Your target was invited.");
         }
+        SESSION.users(src).inviteDelay = (new Date()).getTime() + 8000;
         return;
     }
     if (command == "member") {
