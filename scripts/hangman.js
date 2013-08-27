@@ -747,38 +747,50 @@ module.exports = function () {
         if (commandData === undefined) {
             return;
         }
+        if (hangmanAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
+            sys.sendMessage(src, "±Unown: " + commandData + " is already a Hangman Admin!", channel);
+            return;
+        }
         hangmanAdmins.add(commandData.toLowerCase(), "");
-        sys.sendMessage(src, "±Unown: That person is now a hangman admin!", hangmanchan);
-        sys.sendAll("±Unown: " + sys.name(src) + " promoted " + commandData, sys.channelId('Victory Road'));
+        sys.sendAll("±Unown: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Hangman Admin.", sys.channelId('Victory Road'));
         return;
     };
     this.promoteSuperAdmin = function (src, commandData) {
         if (commandData === undefined) {
             return;
         }
+        if (hangmanSuperAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
+            sys.sendMessage(src, "±Unown: " + commandData + " is already a Super Hangman Admin!", channel);
+            return;
+        }
         hangmanSuperAdmins.add(commandData.toLowerCase(), "");
-        sys.sendMessage(src, "±Unown: That person is now a hangman super admin!", hangmanchan);
-        sys.sendAll("±Unown: " + sys.name(src) + " promoted " + commandData, sys.channelId('Victory Road'));
+        sys.sendAll("±Unown: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Hangman Admin.", sys.channelId('Victory Road'));
         return;
     };
     this.demoteAdmin = function (src, commandData) {
         if (commandData === undefined) {
             return;
         }
+        if (!hangmanAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
+            sys.sendMessage(src, "±Unown: " + commandData + " is not a Hangman Admin!", channel);
+            return;
+        }
         hangmanAdmins.remove(commandData);
         hangmanAdmins.remove(commandData.toLowerCase());
-        sys.sendMessage(src, "±Unown: That person is no longer a hangman admin!", hangmanchan);
-        sys.sendAll("±Unown: " + sys.name(src) + " demoted " + commandData, sys.channelId('Victory Road'));
+        sys.sendAll("±Unown: " + sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Hangman Admin.", sys.channelId('Victory Road'));
         return;
     };
     this.demoteSuperAdmin = function (src, commandData) {
         if (commandData === undefined) {
             return;
         }
+        if (!hangmanAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
+            sys.sendMessage(src, "±Unown: " + commandData + " is not a Super Hangman Admin!", channel);
+            return;
+        }
         hangmanSuperAdmins.remove(commandData);
         hangmanSuperAdmins.remove(commandData.toLowerCase());
-        sys.sendMessage(src, "±Unown: That person is no longer a hangman super admin!", hangmanchan);
-        sys.sendAll("±Unown: " + sys.name(src) + " demoted " + commandData, sys.channelId('Victory Road'));
+        sys.sendAll("±Unown: " + sys.name(src) + " demoted " + commandData.toCorrectCase() " from Super Hangman Admin.", sys.channelId('Victory Road'));
         return;
     };
     this.isHangmanAdmin = function (src) {

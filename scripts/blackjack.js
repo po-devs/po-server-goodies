@@ -86,10 +86,6 @@ function testCommand(src, commandLine, channel) {
     else {
         command = commandLine;
     }
-    if (command === "blackjackcommands" || command === "bjcommands") {
-        onHelp(src, "blackjack", channel);
-        return;
-    }
     if (command === "start") {
         startGame();
         return;
@@ -119,7 +115,6 @@ function testCommand(src, commandLine, channel) {
 
 function onHelp(src, commandData, channel) {
     if (commandData === "blackjack") {
-        sys.sendMessage(src, "/bjcommands: Allows you to see the blackjack commands.", channel);
         sys.sendMessage(src, "/start: Starts a blackjack game.", channel);
         sys.sendMessage(src, "/join: Join a game of blackjack.", channel);
         sys.sendMessage(src, "/hit: Draw a card.", channel);

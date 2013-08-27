@@ -1513,28 +1513,28 @@ function tourCommand(src, command, commandData, channel) {
                 if (!sys.dbRegistered(commandData)) {
                     sendBotMessage(src,"They aren't registered so you can't give them authority!",tourschan,false);
                     if (sys.id(commandData) !== undefined) {
-                        sendBotMessage(sys.id(commandData), "Please register ASAP, before getting tour authority.","all",false);
+                        sendBotMessage(sys.id(commandData), "Please register ASAP, before getting tour authority.", "all", false);
                     }
                     return true;
                 }
-                var readauth = "megauser";
+                var readauth = "Megauser";
                 var desc = "mu";
                 var newauth = 1;
                 if (command == "towner") {
                     desc = "to";
                     newauth = 2;
-                    readauth = "tournament owner";
+                    readauth = "Tournament Owner";
                 }
                 var lname = commandData.toLowerCase();
                 var oldauth = 0;
                 if (tadmins.hasOwnProperty(lname)) {
                     if (tadmins[lname] == desc) {
-                        sendBotMessage(src,"They are already a "+readauth+"!",tourschan,false);
+                        sendBotMessage(src, "They are already a " + readauth + "!", tourschan, false);
                         return true;
                     }
                     oldauth = ["none", "mu", "to"].indexOf(tadmins[lname]);
                     if ((oldauth > 1 && !isTourOwner(src)) || (oldauth > 1 && sys.auth(src) < 3)) {
-                        sendBotMessage(src,"You don't have sufficient authority!",tourschan,false);
+                        sendBotMessage(src, "You don't have sufficient authority!", tourschan, false);
                         return true;
                     }
                 }
@@ -1542,33 +1542,34 @@ function tourCommand(src, command, commandData, channel) {
                 tours.touradmins = tadmins;
                 var changeword = newauth > oldauth ? " promoted " : " demoted ";
                 saveTourKeys();
-                sendBotAll(sys.name(src)+changeword+commandData.toLowerCase()+" to a "+readauth+"!","~st",false);
+                sendBotAll(sys.name(src) + changeword + commandData.toCorrectCase() + " to " + readauth + ".","~st",false);
                 return true;
             }
             if (command === "megauseroff") {
                 var tadmins = tours.touradmins;
                 if (sys.dbIp(commandData) === undefined) {
-                    sendBotMessage(src,"This user doesn't exist!",tourschan,false);
+                    sendBotMessage(src, "This user doesn't exist!", tourschan, false);
                     return true;
                 }
                 var lname = commandData.toLowerCase();
                 if (!tadmins.hasOwnProperty(lname)) {
-                    sendBotMessage(src,"They don't have tour authority!",tourschan,false);
+                    sendBotMessage(src, "They don't have tour authority!", tourschan, false);
                     return true;
                 }
                 if ((tadmins[lname] == "to")  && sys.auth(src) < 3) {
-                    sendBotMessage(src,"You don't have sufficient authority!",tourschan,false);
+                    sendBotMessage(src, "You don't have sufficient authority!", tourschan, false);
                     return true;
                 }
+                var oldauth = (tadmins[lname] === "mu" ? "Megauser" : "Tournament Owner");
                 delete tadmins[lname];
                 tours.touradmins = tadmins;
                 saveTourKeys();
-                sendBotAll(sys.name(src)+" fired "+commandData.toLowerCase()+" from running tournaments!","~st",false);
+                sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldauth + ".", "~st", false);
                 return true;
             }
             // active history command
             if (command == "muhistory") {
-                sys.sendMessage(src, "*** MEGAUSER HISTORY ***",tourschan);
+                sys.sendMessage(src, "*** MEGAUSER HISTORY ***", tourschan);
                 var length = 168;
                 if (commandData === "") {
                     length = tours.activehistory.length;
