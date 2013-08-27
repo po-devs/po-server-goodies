@@ -490,6 +490,9 @@ function POUser(id)
     this.pmcount = 0;
     /* stopping spam */
     this.pmwarned = false;
+    /* invite delay */
+    this.inviteDelay = 0;
+    /* tour alert */
     if (getKey('touralertson', id) == "true") {
         this.tiers = getKey("touralerts", id).split("*");
     }

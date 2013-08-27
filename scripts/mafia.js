@@ -4009,7 +4009,7 @@ function Mafia(mafiachan) {
             sys.sendMessage(src, "±Rule: You must change it if you want to join!", mafiachan);
             return true;
         }
-    };   
+    };
     this.canJoin = function (src) {
         if (this.isInGame(sys.name(src))) {
             sys.sendMessage(src, "±Game: You already joined!", mafiachan);
@@ -4036,7 +4036,7 @@ function Mafia(mafiachan) {
             return;
         }
         if (this.invalidName(src)) {
-            return
+            return;
         }
         /* Requirement of laddering before joining..
         if ((sys.auth(src) == 0) && sys.ratedBattles(src) == 0 ||
