@@ -3069,14 +3069,14 @@ function Mafia(mafiachan) {
     };
     this.showCommands = function (src) {
         sys.sendMessage(src, "", mafiachan);
-        sys.sendMessage(src, "Server Commands:", mafiachan);
+        sys.sendMessage(src, "*** Mafia commands ***", mafiachan);
         for (var x in mafia.commands.user) {
-            sys.sendMessage(src, "/" + cap(x) + " - " + mafia.commands.user[x][1], mafiachan);
+            sys.sendMessage(src, "/" + x + ": " + mafia.commands.user[x][1], mafiachan);
         }
         if (sys.auth(src) > 0 || this.isMafiaAdmin(src)) {
-            sys.sendMessage(src, "Authority Commands:", mafiachan);
+            sys.sendMessage(src, "*** Mafia Admin commands ***", mafiachan);
             for (x in mafia.commands.auth) {
-                sys.sendMessage(src, "/" + cap(x) + " - " + mafia.commands.auth[x][1], mafiachan);
+                sys.sendMessage(src, "/" + x + ": " + mafia.commands.auth[x][1], mafiachan);
             }
         }
         sys.sendMessage(src, "", mafiachan);
@@ -4709,7 +4709,7 @@ function Mafia(mafiachan) {
             id = sys.id(commandData);
             if (id !== undefined)
                 SESSION.users(id).mafiaAdmin = true;
-            sys.sendAll("±Murkrow: " + sys.name(src) + " promoted " + commandData + " to " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
+            sys.sendAll("±Murkrow: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
             return;
         }
         if (command == "mafiaadminoff") {
@@ -4723,7 +4723,7 @@ function Mafia(mafiachan) {
             id = sys.id(commandData);
             if (id !== undefined)
                 SESSION.users(id).mafiaAdmin = false;
-            sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData  + " from being a " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
+            sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData.toCorrectCase()  + " from being a " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
             return;
         }
         throw ("no valid command");
