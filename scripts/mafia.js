@@ -4148,6 +4148,10 @@ function Mafia(mafiachan) {
                 var team;
                 var broadcast = player.role.actions.night[command].broadcast;
                 var broadcastmsg = player.role.actions.night[command].broadcastmsg ? player.role.actions.night[command].broadcastmsg : "Your partner (~Player~) has decided to ~Action~ '~Target~'!";
+                var needsBot = false;
+                if (broadcast.indexOf(":") === -1 || broadcastmsg.indexOf("***") === -1){
+                    needsBot = true;
+                }
                 if (broadcast !== undefined) {
                     team = [];
                     if (broadcast == "team") {
@@ -4166,7 +4170,7 @@ function Mafia(mafiachan) {
                     }
                     for (x in team) {
                         if (team[x] != name) {
-                            this.sendPlayer(team[x], broadcastmsg.replace(/~Player~/g, name).replace(/~Target~/g, commandData).replace(/~Action~/, command).replace(/~Role~/, player.role.translation));
+                            this.sendPlayer(team[x], (needsBot ? "±Game:" : "") + broadcastmsg.replace(/~Player~/g, name).replace(/~Target~/g, commandData).replace(/~Action~/, command).replace(/~Role~/, player.role.translation));
                         }
                     }
                 }
