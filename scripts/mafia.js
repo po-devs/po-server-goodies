@@ -4166,7 +4166,7 @@ function Mafia(mafiachan) {
                     }
                     for (x in team) {
                         if (team[x] != name) {
-                            this.sendPlayer(team[x], "±Game: " + broadcastmsg.replace(/~Player~/g, name).replace(/~Target~/g, commandData).replace(/~Action~/, command).replace(/~Role~/, player.role.translation));
+                            this.sendPlayer(team[x], broadcastmsg.replace(/~Player~/g, name).replace(/~Target~/g, commandData).replace(/~Action~/, command).replace(/~Role~/, player.role.translation));
                         }
                     }
                 }
