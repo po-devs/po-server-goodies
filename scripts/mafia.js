@@ -4149,7 +4149,7 @@ function Mafia(mafiachan) {
                 var broadcast = player.role.actions.night[command].broadcast;
                 var broadcastmsg = player.role.actions.night[command].broadcastmsg ? player.role.actions.night[command].broadcastmsg : "Your partner (~Player~) has decided to ~Action~ '~Target~'!";
                 var needsBot = false;
-                if (broadcast.indexOf(":") === -1 || broadcastmsg.indexOf("***") === -1){
+                if (broadcastmsg.indexOf(":") === -1 || broadcastmsg.indexOf("***") === -1){
                     needsBot = true;
                 }
                 if (broadcast !== undefined) {
