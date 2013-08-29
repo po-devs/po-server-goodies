@@ -4164,12 +4164,14 @@ function Mafia(mafiachan) {
                             }
                         }
                     }
-                    var needsBot = false;
-                    if (broadcastmsg.indexOf(":") === -1 && broadcastmsg.indexOf("***") === -1)
-                        needsBot = true;
+                    var needsBot = 0;
+                    if (broadcastmsg.indexOf(":") === -1)
+                        needsBot++;
+                    if (broadcastmsg.indexOf("***") === -1)
+                        needsBot++;
                     for (x in team) {
                         if (team[x] != name) {
-                            this.sendPlayer(team[x], (needsBot ? "±Game: " : "") + broadcastmsg.replace(/~Player~/g, name).replace(/~Target~/g, commandData).replace(/~Action~/, command).replace(/~Role~/, player.role.translation));
+                            this.sendPlayer(team[x], (needsBot >= 2 ? "±Game: " : "") + broadcastmsg.replace(/~Player~/g, name).replace(/~Target~/g, commandData).replace(/~Action~/, command).replace(/~Role~/, player.role.translation));
                         }
                     }
                 }
