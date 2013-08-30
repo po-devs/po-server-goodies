@@ -9,7 +9,7 @@ TierChecker.prototype.add_new_check = function(exclusive, tiers, checker) {
     this.checkers.push({tiers: tiers, checker: checker, exclusive: exclusive});
 };
 
-TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent) {
+TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent, returncomp) {
     if (tier == "Challenge Cup" || tier == "Battle Factory" || tier == "CC 1v1" || tier == "Wifi CC 1v1" || tier == "Battle Factory 6v6") return true;
     if (!sys.hasLegalTeamForTier(src, team, tier)) return false;
 
@@ -31,6 +31,9 @@ TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent
         for (var j = 0; j < complaints.length; ++j) {
             checkbot.sendMessage(src, complaints[j]);
         }
+    }
+    if (returncomp) {
+        return complaints;
     }
     return false;
 };
