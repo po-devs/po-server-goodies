@@ -1166,7 +1166,7 @@ function Mafia(mafiachan) {
                 if (singleAffected.length > 0) {
                     var needsBot = false;
                     if (onDeath.singlekillmsg.indexOf(":") === -1 && onDeath.singlekillmsg.indexOf("***") === -1)
-                        needsBot = true;                    
+                        needsBot = true;
                     sendChanAll((needsBot ? "±Kill: " : "") + onDeath.singlekillmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
                 }
             }
@@ -1822,7 +1822,7 @@ function Mafia(mafiachan) {
             }
             sendChanAll("±Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
             sendChanAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
-            if (!(mafia.theme.closedSetup === true)) {
+            if (mafia.theme.closedSetup !== true) {
                 // Send players all roles sided with them
                 for (p in mafia.players) {
                     player = mafia.players[p];
@@ -2488,7 +2488,7 @@ function Mafia(mafiachan) {
 
             sendChanAll("±Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
             sendChanAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
-            if (!(mafia.theme.closedSetup === true)) {
+            if (mafia.theme.closedSetup !== true) {
                 // Send players all roles sided with them
                 for (p in mafia.players) {
                     player = mafia.players[p];
@@ -2526,7 +2526,7 @@ function Mafia(mafiachan) {
             for (var p in mafia.players) {
                 var player = mafia.players[p];
                 var side = player.role.side;
-                if (!(mafia.theme.closedSetup === true)) {
+                if (mafia.theme.closedSetup !== true) {
                     mafia.sendPlayer(player.name, "±Current Team: " + mafia.getRolesForTeamS(side));
                 }
                 if (p in mafia.dayRecharges) {
@@ -2786,7 +2786,7 @@ function Mafia(mafiachan) {
 
             sendChanAll("±Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
             sendChanAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
-            if (!(mafia.theme.closedSetup === true)) {
+            if (mafia.theme.closedSetup !== true) {
                 // Send players all roles sided with them
                 for (var p in mafia.players) {
                     player = mafia.players[p];
@@ -4179,7 +4179,7 @@ function Mafia(mafiachan) {
         }
         
         if (command === "themeinfo") {
-            data = data.toLowerCase();
+            var data = commandData.toLowerCase();
             mafia.themeManager.themeInfo.sort(function (a, b) { return a[0].localeCompare(b[0]); });
             var mess = [];
             mess.push("<table><tr><th>Theme</th><th>URL</th><th>Author</th><th>Enabled</th></tr>");
@@ -4457,8 +4457,8 @@ function Mafia(mafiachan) {
         }
         
         if (command === "update") {
-            var url = data, name = data;
-            if (data.indexOf("::") >= 0) {
+            var url = commandData, name = commandData;
+            if (commandData.indexOf("::") >= 0) {
                 var parts = url.split("::");
                 name = parts[0];
                 url = parts[1];
@@ -4577,7 +4577,7 @@ function Mafia(mafiachan) {
             return;
         }
         if (command === "readlog") {
-            var num = Number(data);
+            var num = parseInt(commandData, 10);
             if (!num) {
                 sys.sendMessage(src, "±Info: This is not a valid number!", channel);
                 return;
@@ -4843,7 +4843,7 @@ function Mafia(mafiachan) {
                     sys.sendMessage(src, x, channel);
                 });
             }
-            if (this.isMafiaSuperAdmin(src) {
+            if (this.isMafiaSuperAdmin(src)) {
                 sys.sendMessage(src, "*** Super Mafia Admin commands ***", channel);
                 this.commands.sma.forEach(function (x) {
                     sys.sendMessage(src, x, channel);
@@ -4852,7 +4852,7 @@ function Mafia(mafiachan) {
         }
     };
     
-    this.help-string = ["mafia: To know the mafia commands"]
+    this["help-string"] = ["mafia: To know the mafia commands"];
 }
 /* Functions defined by mafia which should be called from main script:
 * - init
