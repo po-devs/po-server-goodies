@@ -3252,6 +3252,7 @@ function Mafia(mafiachan) {
                 module.init();
                 mafia.endGame();
                 sendChanAll("Update complete!", mafiachan);
+                print(mafia.state);
             });
             sendChanAll("Updating mafia game...", mafiachan);
             mafia.needsUpdating = false;
