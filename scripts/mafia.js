@@ -997,6 +997,7 @@ function Mafia(mafiachan) {
             this.players[p].restrictions = [];
         }
     };
+    this.clearVariables();
     this.advertiseToChannel = function(channel) {
         sendChanAll("", channel);
         sendChanAll(border, channel);
@@ -3252,7 +3253,6 @@ function Mafia(mafiachan) {
                 module.init();
                 mafia.endGame();
                 sendChanAll("Update complete!", mafiachan);
-                print(mafia.state);
             });
             sendChanAll("Updating mafia game...", mafiachan);
             mafia.needsUpdating = false;
