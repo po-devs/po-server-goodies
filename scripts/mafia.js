@@ -4596,19 +4596,7 @@ function Mafia(mafiachan) {
             return;
         }
         if (command === "end") {
-            if (mafia.state == "blank") {
-                sys.sendMessage(src, "±Game: No game is going on.", mafiachan);
-                return;
-            }
-            sendChanAll(border, mafiachan);
-            sendChanAll("±Game: " + (src ? sys.name(src) : Config.Mafia.bot) + " has stopped the game!", mafiachan);
-            sendChanAll(border, mafiachan);
-            sendChanAll("", mafiachan);
-            if (sys.id('PolkaBot') !== undefined) {
-                sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
-            }
-            mafia.clearVariables();
-            runUpdate();
+            mafia.endGame(src);
             return;
         }
         if (command === "readlog") {
