@@ -4029,6 +4029,7 @@ function Mafia(mafiachan) {
             ];
                 dump(src, help);
             }
+            return;
         }
         
         if (command === "roles") {
@@ -4141,6 +4142,7 @@ function Mafia(mafiachan) {
                 roles = filterRoles;
             }
             dump(src, roles, channel);
+            return;
         }
         
         if (command === "sides") {
@@ -4157,6 +4159,7 @@ function Mafia(mafiachan) {
             }
             var sides = mafia.themeManager.themes[themeName].sideInfo;
             dump(src, sides, channel);
+            return;
 
         }
         
@@ -4193,6 +4196,7 @@ function Mafia(mafiachan) {
                 ""
             ];
             dump(src, mrules, channel);
+            return;
         }
         
         if (command === "themes") {
@@ -4201,6 +4205,7 @@ function Mafia(mafiachan) {
                 l.push(mafia.themeManager.themes[t].name);
             }
             msg(src, "Installed themes are: " + l.join(", "));
+            return;
         }
         
         if (command === "themeinfo") {
@@ -4218,6 +4223,7 @@ function Mafia(mafiachan) {
             }
             mess.push("</table>");
             sys.sendHtmlMessage(src, mess.join(""), channel);
+            return;
         }
         
         if (command === "changelog") {
@@ -4255,6 +4261,7 @@ function Mafia(mafiachan) {
             }
 
             sys.sendMessage(src, "", mafiachan);
+            return;
         }
         
         if (command === "details") {
@@ -4324,6 +4331,7 @@ function Mafia(mafiachan) {
             for (var x in mess) {
                 sys.sendHtmlMessage(src, mess[x], mafiachan);
             }
+            return;
         }
         
         if (command === "priority") {
@@ -4345,6 +4353,7 @@ function Mafia(mafiachan) {
                 sys.sendHtmlMessage(src, theme.priorityInfo[p], channel);
             }
             sys.sendHtmlMessage(src, "", channel);
+            return;
         }
         
         if (command === "flashme") {
@@ -4466,6 +4475,7 @@ function Mafia(mafiachan) {
                 }
                 msg(src, "To learn how to set alerts, type /flashme help");
             }
+            return;
         }
         
         if (command === "playedgames") {
@@ -4479,6 +4489,7 @@ function Mafia(mafiachan) {
             }
             mess.push("</table>");
             sys.sendHtmlMessage(src, mess.join(""), mafiachan);
+            return;
         }
         
         if (command === "update") {
@@ -4511,6 +4522,7 @@ function Mafia(mafiachan) {
             if (dlurl) {
                 mafia.themeManager.loadWebTheme(dlurl, true, true, authorMatch ? theme.name.toLowerCase() : null, src);
             }
+            return;
         }
         
         if (command == "join") {
