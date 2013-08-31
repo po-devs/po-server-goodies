@@ -1019,6 +1019,250 @@ function Mafia(mafiachan) {
         }
         return data;
     };
+    this.userVote = function (src, commandData) {
+        if (SESSION.channels(mafiachan).muteall && !SESSION.channels(mafiachan).isChannelOperator(src) && sys.auth(src) === 0) {
+            sys.sendMessage(src, "±Game: You can't start a voting when the channel is silenced.", mafiachan);
+            return;
+        }
+        if (this.invalidName(src))
+                return;
+
+        var themeName = commandData.toLowerCase();
+
+        if (this.state == "blank") {
+            this.state = "voting";
+            this.ticks = 20;
+            this.votes = {};
+            this.possibleThemes = {};
+            var total = 5;
+            if (PreviousGames.length === 0 || PreviousGames.slice(-1)[0].what != "default") {
+                this.possibleThemes["default"] = 0;
+                --total;
+            }
+            var allThemes = Object.keys(this.themeManager.themes);
+            var Check = PreviousGames.slice(-Config.Mafia.norepeat)
+                        .reverse()
+                        .map(function (g) { return g.what; });
+
+            if (themeName in this.themeManager.themes && this.themeManager.themes[themeName].enabled) {
+                if (Check.indexOf(themeName) == -1 && themeName != "default") {
+                    if (!(themeName in this.possibleThemes)) {
+                        this.possibleThemes[themeName] = 0;
+                        --total;
+                    }
+                }
+            }
+
+            while (allThemes.length > 0 && total > 0) {
+                var indx = Math.floor(allThemes.length * Math.random());
+                var name = allThemes[indx];
+                allThemes.splice(indx, 1);
+                // exclude themes played recently
+                if (name != "default" && Check.indexOf(name) != -1) {
+                    continue;
+                }
+                // exclude disabled themes
+                if (this.themeManager.themes[name].enabled && !(name in this.possibleThemes)) {
+                    this.possibleThemes[name] = 0;
+                    --total;
+                }
+            }
+            border = DEFAULT_BORDER;
+            sendChanAll("", mafiachan);
+            sendChanAll(border, mafiachan);
+            sendChanAll("±Game: " + sys.name(src) + " started a voting for next game's theme!. You have " + this.ticks + " seconds to vote with /votetheme!", mafiachan);
+            sendChanAll("±Game: Choose from these themes: " + Object.keys(this.possibleThemes).join(", ") + " !", mafiachan);
+            sendChanAll(border, mafiachan);
+            sendChanAll("", mafiachan);
+        }
+        if (this.state != "voting") {
+            sys.sendMessage(src, "±Game: This command makes no sense during a game, right?!", mafiachan);
+            return;
+        }
+        if (this.canJoin(src) !== true) {
+            return;
+        }
+        if (!this.possibleThemes.hasOwnProperty(themeName)) {
+            sys.sendMessage(src, "±Game: You can not vote this theme!", mafiachan);
+            return;
+        }
+        var ip = sys.ip(src);
+        if (this.votes.hasOwnProperty(ip)) {
+            if (this.numvotes[sys.ip(src)] >= 3) {
+                sys.sendMessage(src, "±Game: You can't change your vote more than 3 times!", mafiachan);
+                return;
+            } else if (this.votes[ip] != themeName) {
+                sendChanAll("±Game: " + sys.name(src) + " changed their vote to " + this.themeManager.themes[themeName].name + "!", mafiachan);
+                this.numvotes[sys.ip(src)] += 1;
+            }
+        } else {
+            sendChanAll("±Game: " + sys.name(src) + " voted for " + this.themeManager.themes[themeName].name + "!", mafiachan);
+            this.numvotes[sys.ip(src)] = 1;
+        }
+        this.votes[sys.ip(src)] = { theme: themeName, who: sys.name(src) };
+    };
+    this.getThemeName = function (data) {
+        var themes = mafia.themeManager.themes;
+        var data = data.toLowerCase();
+        for (var x in themes) {
+            if (themes[x].altname && themes[x].altname.toLowerCase() === data) {
+                data = themes[x].name.toLowerCase();
+            }
+        }
+        return data;
+    };
+    this.startGame = function (src, commandData) {
+        if (SESSION.channels(mafiachan).muteall && !SESSION.channels(mafiachan).isChannelOperator(src) && sys.auth(src) === 0) {
+            sys.sendMessage(src, "±Game: You can't start a game when the channel is silenced.", mafiachan);
+            return;
+        }
+        var now = (new Date()).getTime();
+        if (src !== null) {
+            if (SESSION.users(src).mafia_start !== undefined && SESSION.users(src).mafia_start + 5000 > now) {
+                sys.sendMessage(src, "±Game: Wait a moment before trying to start again!", mafiachan);
+                return;
+            }
+            SESSION.users(src).mafia_start = now;
+        }
+        if (this.state != "blank") {
+            sys.sendMessage(src, "±Game: A game is going on. Wait until it's finished to start another one", mafiachan);
+            sys.sendMessage(src, "±Game: You can join the game by typing /join !", mafiachan);
+            return;
+        }
+
+        var themeName = commandData == noPlayer ? "default" : this.getThemeName(commandData);
+
+        // Prevent a single player from dominating the theme selections.
+        // We exclude mafia admins from this.
+        var i;
+        if (src) {
+            if (this.invalidName(src))
+                return;
+
+            var PlayerCheck = PreviousGames.slice(-5).reverse();
+            if (!this.isMafiaAdmin(src)) {
+                for (i = 0; i < PlayerCheck.length; i++) {
+                    var who = PlayerCheck[i].who;
+                    var what = PlayerCheck[i].what;
+                    if (who == sys.name(src)) {
+                        sys.sendMessage(src, "±Game: Sorry, you have started a game " + (i + 1) + " games ago, let someone else have a chance!", mafiachan);
+                        return;
+                    }
+                    if (what == themeName) {
+                        sys.sendMessage(src, "±Game: This theme was started " + (i + 1) + " games ago! No repeat!", mafiachan);
+                        return;
+                    }
+                }
+            }
+
+            if (themeName in this.themeManager.themes) {
+                if (!this.themeManager.themes[themeName].enabled) {
+                    sys.sendMessage(src, "±Game: This theme is disabled!", mafiachan);
+                    return;
+                }
+                this.theme = this.themeManager.themes[themeName];
+            } else {
+                sys.sendMessage(src, "±Game: No such theme!", mafiachan);
+                return;
+            }
+        } else {
+            this.theme = this.themeManager.themes[themeName];
+        }
+
+        border = this.theme.border ? this.theme.border : DEFAULT_BORDER;
+        CurrentGame = { who: src !== null ? sys.name(src) : "voted", what: themeName, when: parseInt(sys.time(), 10), playerCount: 0 };
+
+        if (src !== null) {
+            sendChanAll("", mafiachan);
+            sendChanAll(border, mafiachan);
+            if (this.theme.name == "default") {
+                sendChanAll("±Game: " + sys.name(src) + " started a game!", mafiachan);
+            } else {
+                sendChanAll("±Game: " + sys.name(src) + " started a game with theme " + this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")+ "!", mafiachan);
+            }
+            sendChanAll("±Game: Type /Join to enter the game!", mafiachan);
+            sendChanAll(border, mafiachan);
+            sendChanAll("", mafiachan);
+        }
+
+        var playerson = sys.playerIds();
+        for (var x = 0; x < playerson.length; ++x) {
+            var id = playerson[x];
+            var user = SESSION.users(id);
+            if (sys.loggedIn(id) && user && user.mafiaalertson && (user.mafiaalertsany || user.mafiathemes.indexOf(this.theme.name.toLowerCase()) != -1)) {
+                if (sys.isInChannel(id, mafiachan)) {
+                    sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : this.theme.name + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", mafiachan);
+                    continue;
+                } else if (sys.isInChannel(id, 0)) {
+                    sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : this.theme.name + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", 0);
+                    continue;
+                } else if (sys.existChannel("Project Mafia") && sys.isInChannel(id, sys.channelId("Project Mafia"))) {
+                    sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : this.theme.name + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", sys.channelId("Project Mafia"));
+                    continue;
+                }
+                sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : this.theme.name + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!");
+            }
+        }
+
+        if (this.theme.summary === undefined) {
+            sendChanAll("±Game: Consider adding a summary field to this theme that describes the setting of the game and points out the odd quirks of the theme!", mafiachan);
+        } else {
+            sendChanAll("±Game: " + this.theme.summary, mafiachan);
+        }
+
+        if (sys.playersOfChannel(mafiachan).length < 150) {
+            var time = parseInt(sys.time(), 10);
+            if (time > this.lastAdvertise + 60 * 15) {
+                this.lastAdvertise = time;
+                this.advertiseToChannel(0);
+                if (sys.existChannel("Project Mafia")) {
+                    this.advertiseToChannel(sys.channelId('Project Mafia'));
+                }
+                if (sys.existChannel("Mafia Tutoring")) {
+                    this.advertiseToChannel(sys.channelId('Mafia Tutoring'));
+                }
+                if (sys.existChannel("Mafia Social")) {
+                    this.advertiseToChannel(sys.channelId('Mafia Social'));
+                }
+            }
+        }
+        this.clearVariables();
+        mafia.state = "entry";
+
+        mafia.ticks = 60;
+        
+        if (src !== null) {
+            if (this.canJoin(src) !== true) {
+                return;
+            }
+            var name = sys.name(src);
+
+            this.signups.push(name);
+            this.ips.push(sys.ip(src));
+            if (this.numjoins.hasOwnProperty(sys.ip(src))) {
+                this.numjoins[sys.ip(src)] += 1;
+            }
+            else {
+                this.numjoins[sys.ip(src)] = 1;
+            }
+            sendChanAll("±Game: " + name + " joined the game!", mafiachan);
+        }
+    };
+    this.endGame = function (src) {
+        if (mafia.state == "blank") {
+            sys.sendMessage(src, "±Game: No game is going on.", mafiachan);
+            return;
+        }
+        sendChanAll(border, mafiachan);
+        sendChanAll("±Game: " + (src ? sys.name(src) : Config.Mafia.bot) + " has stopped the game!", mafiachan);
+        sendChanAll(border, mafiachan);
+        sendChanAll("", mafiachan);
+        if (sys.id('PolkaBot') !== undefined) {
+            sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
+        }
+        mafia.clearVariables();
+        runUpdate();
+    };
     /* called every second */
     this.tickDown = function () {
         if (this.ticks <= 0) {
@@ -2858,7 +3102,61 @@ function Mafia(mafiachan) {
             mafia.themeManager.disable(Config.Mafia.bot, mafia.theme.name, false);
         }
     };
+    this.showOwnRole = function (src) {
+        var name = sys.name(src);
+        if (mafia.state != "blank" && mafia.state != "entry") {
+            if (mafia.isInGame(name)) {
+                var player = mafia.players[name];
+                var role = player.role;
 
+                if (typeof role.actions.startup == "object" && typeof role.actions.startup.revealAs == "string") {
+                    mafia.sendPlayer(player.name, "±Game: You are a " + mafia.theme.trrole(role.actions.startup.revealAs) + "!");
+                } else {
+                    mafia.sendPlayer(player.name, "±Game: You are a " + role.translation + "!");
+                }
+                mafia.sendPlayer(player.name, "±Game: " + role.help);
+
+                if (role.actions.startup == "team-reveal") {
+                    mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
+                }
+                if (role.actions.startup == "team-reveal-with-roles") {
+                    var playersRole = mafia.getPlayersForTeam(role.side).map(name_trrole, mafia.theme);
+                    mafia.sendPlayer(player.name, "±Game: Your team is " + readable(playersRole, "and") + ".");
+                }
+                if (typeof role.actions.startup == "object" && Array.isArray(role.actions.startup["team-revealif"])) {
+                    if (role.actions.startup["team-revealif"].indexOf(role.side) != -1) {
+                        mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
+                    }
+                }
+                if (typeof role.actions.startup == "object" && Array.isArray(role.actions.startup["team-revealif-with-roles"])) {
+                    if (role.actions.startup["team-revealif-with-roles"].indexOf(role.side) != -1) {
+                        var playersRole = mafia.getPlayersForTeam(role.side).map(name_trrole, mafia.theme);
+                        mafia.sendPlayer(player.name, "±Game: Your team is " + readable(playersRole, "and") + ".");
+                    }
+                }
+                if (role.actions.startup == "role-reveal") {
+                    mafia.sendPlayer(player.name, "±Game: People with your role are " + mafia.getPlayersForRoleS(role.role) + ".");
+                }
+
+                if (typeof role.actions.startup == "object" && role.actions.startup.revealRole) {
+                    if (typeof role.actions.startup.revealRole == "string") {
+                        if (mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) !== "")
+                            mafia.sendPlayer(player.name, "±Game: The " + mafia.theme.roles[role.actions.startup.revealRole].translation + " is " + mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) + "!");
+                    } else if (Array.isArray(role.actions.startup.revealRole)) {
+                        for (var s = 0, l = role.actions.startup.revealRole.length; s < l; ++s) {
+                            var revealrole = role.actions.startup.revealRole[s];
+                            if (mafia.getPlayersForRoleS(revealrole) !== "")
+                                mafia.sendPlayer(player.name, "±Game: The " + mafia.theme.roles[revealrole].translation + " is " + mafia.getPlayersForRoleS(revealrole) + "!");
+                        }
+                    }
+                }
+            } else {
+                sys.sendMessage(src, "±Game: You are not in the game!", mafiachan);
+            }
+        } else {
+            sys.sendMessage(src, "±Game: No game running!", mafiachan);
+        }
+    };
     // Auth commands
     this.isMafiaAdmin = function (src) {
         if (sys.auth(src) >= 1)
@@ -3603,224 +3901,13 @@ function Mafia(mafiachan) {
             }
         }
         if (command === "start" || command === "votetheme") {
-            if (SESSION.channels(mafiachan).muteall && !SESSION.channels(mafiachan).isChannelOperator(src) && sys.auth(src) === 0) {
-                sys.sendMessage(src, "±Game: You can't start a voting when the channel is silenced.", mafiachan);
-                return;
-            }
-            if (this.invalidName(src))
-                    return;
-
-            var themeName = commandData.toLowerCase();
-
-            if (this.state == "blank") {
-                this.state = "voting";
-                this.ticks = 20;
-                this.votes = {};
-                this.possibleThemes = {};
-                var total = 5;
-                if (PreviousGames.length === 0 || PreviousGames.slice(-1)[0].what != "default") {
-                    this.possibleThemes["default"] = 0;
-                    --total;
-                }
-                var allThemes = Object.keys(this.themeManager.themes);
-                var Check = PreviousGames.slice(-Config.Mafia.norepeat)
-                            .reverse()
-                            .map(function (g) { return g.what; });
-
-                if (themeName in this.themeManager.themes && this.themeManager.themes[themeName].enabled) {
-                    if (Check.indexOf(themeName) == -1 && themeName != "default") {
-                        if (!(themeName in this.possibleThemes)) {
-                            this.possibleThemes[themeName] = 0;
-                            --total;
-                        }
-                    }
-                }
-
-                while (allThemes.length > 0 && total > 0) {
-                    var indx = Math.floor(allThemes.length * Math.random());
-                    var name = allThemes[indx];
-                    allThemes.splice(indx, 1);
-                    // exclude themes played recently
-                    if (name != "default" && Check.indexOf(name) != -1) {
-                        continue;
-                    }
-                    // exclude disabled themes
-                    if (this.themeManager.themes[name].enabled && !(name in this.possibleThemes)) {
-                        this.possibleThemes[name] = 0;
-                        --total;
-                    }
-                }
-                border = DEFAULT_BORDER;
-                sendChanAll("", mafiachan);
-                sendChanAll(border, mafiachan);
-                sendChanAll("±Game: " + sys.name(src) + " started a voting for next game's theme!. You have " + this.ticks + " seconds to vote with /votetheme!", mafiachan);
-                sendChanAll("±Game: Choose from these themes: " + Object.keys(this.possibleThemes).join(", ") + " !", mafiachan);
-                sendChanAll(border, mafiachan);
-                sendChanAll("", mafiachan);
-            }
-            if (this.state != "voting") {
-                sys.sendMessage(src, "±Game: This command makes no sense during a game, right?!", mafiachan);
-                return;
-            }
-            if (this.canJoin(src) !== true) {
-                return;
-            }
-            if (!this.possibleThemes.hasOwnProperty(themeName)) {
-                sys.sendMessage(src, "±Game: You can not vote this theme!", mafiachan);
-                return;
-            }
-            var ip = sys.ip(src);
-            if (this.votes.hasOwnProperty(ip)) {
-                if (this.numvotes[sys.ip(src)] >= 3) {
-                    sys.sendMessage(src, "±Game: You can't change your vote more than 3 times!", mafiachan);
-                    return;
-                } else if (this.votes[ip] != themeName) {
-                    sendChanAll("±Game: " + sys.name(src) + " changed their vote to " + this.themeManager.themes[themeName].name + "!", mafiachan);
-                    this.numvotes[sys.ip(src)] += 1;
-                }
-            } else {
-                sendChanAll("±Game: " + sys.name(src) + " voted for " + this.themeManager.themes[themeName].name + "!", mafiachan);
-                this.numvotes[sys.ip(src)] = 1;
-            }
-            this.votes[sys.ip(src)] = { theme: themeName, who: sys.name(src) };
+            mafia.userVote(src, commandData);
+            return;
         }
         
         if (command === "starttheme") {
-            if (SESSION.channels(mafiachan).muteall && !SESSION.channels(mafiachan).isChannelOperator(src) && sys.auth(src) === 0) {
-                sys.sendMessage(src, "±Game: You can't start a game when the channel is silenced.", mafiachan);
-                return;
-            }
-            var now = (new Date()).getTime();
-            if (src !== null) {
-                if (SESSION.users(src).mafia_start !== undefined && SESSION.users(src).mafia_start + 5000 > now) {
-                    sys.sendMessage(src, "±Game: Wait a moment before trying to start again!", mafiachan);
-                    return;
-                }
-                SESSION.users(src).mafia_start = now;
-            }
-            if (this.state != "blank") {
-                sys.sendMessage(src, "±Game: A game is going on. Wait until it's finished to start another one", mafiachan);
-                sys.sendMessage(src, "±Game: You can join the game by typing /join !", mafiachan);
-                return;
-            }
-
-            var themeName = commandData == noPlayer ? "default" : this.getThemeName(commandData);
-
-            // Prevent a single player from dominating the theme selections.
-            // We exclude mafia admins from this.
-            var i;
-            if (src) {
-                if (this.invalidName(src))
-                    return;
-
-                var PlayerCheck = PreviousGames.slice(-5).reverse();
-                if (!this.isMafiaAdmin(src)) {
-                    for (i = 0; i < PlayerCheck.length; i++) {
-                        var who = PlayerCheck[i].who;
-                        var what = PlayerCheck[i].what;
-                        if (who == sys.name(src)) {
-                            sys.sendMessage(src, "±Game: Sorry, you have started a game " + (i + 1) + " games ago, let someone else have a chance!", mafiachan);
-                            return;
-                        }
-                        if (what == themeName) {
-                            sys.sendMessage(src, "±Game: This theme was started " + (i + 1) + " games ago! No repeat!", mafiachan);
-                            return;
-                        }
-                    }
-                }
-
-                if (themeName in this.themeManager.themes) {
-                    if (!this.themeManager.themes[themeName].enabled) {
-                        sys.sendMessage(src, "±Game: This theme is disabled!", mafiachan);
-                        return;
-                    }
-                    this.theme = this.themeManager.themes[themeName];
-                } else {
-                    sys.sendMessage(src, "±Game: No such theme!", mafiachan);
-                    return;
-                }
-            } else {
-                this.theme = this.themeManager.themes[themeName];
-            }
-
-            border = this.theme.border ? this.theme.border : DEFAULT_BORDER;
-            CurrentGame = { who: src !== null ? sys.name(src) : "voted", what: themeName, when: parseInt(sys.time(), 10), playerCount: 0 };
-
-            if (src !== null) {
-                sendChanAll("", mafiachan);
-                sendChanAll(border, mafiachan);
-                if (this.theme.name == "default") {
-                    sendChanAll("±Game: " + sys.name(src) + " started a game!", mafiachan);
-                } else {
-                    sendChanAll("±Game: " + sys.name(src) + " started a game with theme " + this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")+ "!", mafiachan);
-                }
-                sendChanAll("±Game: Type /Join to enter the game!", mafiachan);
-                sendChanAll(border, mafiachan);
-                sendChanAll("", mafiachan);
-            }
-
-            var playerson = sys.playerIds();
-            for (var x = 0; x < playerson.length; ++x) {
-                var id = playerson[x];
-                var user = SESSION.users(id);
-                if (sys.loggedIn(id) && user && user.mafiaalertson && (user.mafiaalertsany || user.mafiathemes.indexOf(this.theme.name.toLowerCase()) != -1)) {
-                    if (sys.isInChannel(id, mafiachan)) {
-                        sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : this.theme.name + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", mafiachan);
-                        continue;
-                    } else if (sys.isInChannel(id, 0)) {
-                        sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : this.theme.name + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", 0);
-                        continue;
-                    } else if (sys.existChannel("Project Mafia") && sys.isInChannel(id, sys.channelId("Project Mafia"))) {
-                        sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : this.theme.name + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", sys.channelId("Project Mafia"));
-                        continue;
-                    }
-                    sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : this.theme.name + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!");
-                }
-            }
-
-            if (this.theme.summary === undefined) {
-                sendChanAll("±Game: Consider adding a summary field to this theme that describes the setting of the game and points out the odd quirks of the theme!", mafiachan);
-            } else {
-                sendChanAll("±Game: " + this.theme.summary, mafiachan);
-            }
-
-            if (sys.playersOfChannel(mafiachan).length < 150) {
-                var time = parseInt(sys.time(), 10);
-                if (time > this.lastAdvertise + 60 * 15) {
-                    this.lastAdvertise = time;
-                    this.advertiseToChannel(0);
-                    if (sys.existChannel("Project Mafia")) {
-                        this.advertiseToChannel(sys.channelId('Project Mafia'));
-                    }
-                    if (sys.existChannel("Mafia Tutoring")) {
-                        this.advertiseToChannel(sys.channelId('Mafia Tutoring'));
-                    }
-                    if (sys.existChannel("Mafia Social")) {
-                        this.advertiseToChannel(sys.channelId('Mafia Social'));
-                    }
-                }
-            }
-            this.clearVariables();
-            mafia.state = "entry";
-
-            mafia.ticks = 60;
-            
-            if (src !== null) {
-                if (this.canJoin(src) !== true) {
-                    return;
-                }
-                var name = sys.name(src);
-
-                this.signups.push(name);
-                this.ips.push(sys.ip(src));
-                if (this.numjoins.hasOwnProperty(sys.ip(src))) {
-                    this.numjoins[sys.ip(src)] += 1;
-                }
-                else {
-                    this.numjoins[sys.ip(src)] = 1;
-                }
-                sendChanAll("±Game: " + name + " joined the game!", mafiachan);
-            }
+            mafia.startGame(src, commandData);
+            return;
         }
         
         if (command === "help") {
@@ -4084,61 +4171,9 @@ function Mafia(mafiachan) {
         }
         
         if (command === "myrole") {
-            var name = sys.name(src);
-            if (mafia.state != "blank" && mafia.state != "entry") {
-                if (mafia.isInGame(name)) {
-                    var player = mafia.players[name];
-                    var role = player.role;
-
-                    if (typeof role.actions.startup == "object" && typeof role.actions.startup.revealAs == "string") {
-                        mafia.sendPlayer(player.name, "±Game: You are a " + mafia.theme.trrole(role.actions.startup.revealAs) + "!");
-                    } else {
-                        mafia.sendPlayer(player.name, "±Game: You are a " + role.translation + "!");
-                    }
-                    mafia.sendPlayer(player.name, "±Game: " + role.help);
-
-                    if (role.actions.startup == "team-reveal") {
-                        mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
-                    }
-                    if (role.actions.startup == "team-reveal-with-roles") {
-                        var playersRole = mafia.getPlayersForTeam(role.side).map(name_trrole, mafia.theme);
-                        mafia.sendPlayer(player.name, "±Game: Your team is " + readable(playersRole, "and") + ".");
-                    }
-                    if (typeof role.actions.startup == "object" && Array.isArray(role.actions.startup["team-revealif"])) {
-                        if (role.actions.startup["team-revealif"].indexOf(role.side) != -1) {
-                            mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
-                        }
-                    }
-                    if (typeof role.actions.startup == "object" && Array.isArray(role.actions.startup["team-revealif-with-roles"])) {
-                        if (role.actions.startup["team-revealif-with-roles"].indexOf(role.side) != -1) {
-                            var playersRole = mafia.getPlayersForTeam(role.side).map(name_trrole, mafia.theme);
-                            mafia.sendPlayer(player.name, "±Game: Your team is " + readable(playersRole, "and") + ".");
-                        }
-                    }
-                    if (role.actions.startup == "role-reveal") {
-                        mafia.sendPlayer(player.name, "±Game: People with your role are " + mafia.getPlayersForRoleS(role.role) + ".");
-                    }
-
-                    if (typeof role.actions.startup == "object" && role.actions.startup.revealRole) {
-                        if (typeof role.actions.startup.revealRole == "string") {
-                            if (mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) !== "")
-                                mafia.sendPlayer(player.name, "±Game: The " + mafia.theme.roles[role.actions.startup.revealRole].translation + " is " + mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) + "!");
-                        } else if (Array.isArray(role.actions.startup.revealRole)) {
-                            for (var s = 0, l = role.actions.startup.revealRole.length; s < l; ++s) {
-                                var revealrole = role.actions.startup.revealRole[s];
-                                if (mafia.getPlayersForRoleS(revealrole) !== "")
-                                    mafia.sendPlayer(player.name, "±Game: The " + mafia.theme.roles[revealrole].translation + " is " + mafia.getPlayersForRoleS(revealrole) + "!");
-                            }
-                        }
-                    }
-                } else {
-                    sys.sendMessage(src, "±Game: You are not in the game!", mafiachan);
-                }
-            } else {
-                sys.sendMessage(src, "±Game: No game running!", mafiachan);
-            }
+            mafia.showOwnRole(src);
+            return;
         }
-        
         if (command === "mafiarules") {
             var mrules = [
                 "",
