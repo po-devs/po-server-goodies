@@ -1008,17 +1008,6 @@ function Mafia(mafiachan) {
         sendChanAll(border, channel);
         sendChanAll("", channel);
     };
-    this.clearVariables();
-    this.getThemeName = function (data) {
-        var themes = mafia.themeManager.themes;
-        var data = data.toLowerCase();
-        for (var x in themes) {
-            if (themes[x].altname && themes[x].altname.toLowerCase() === data) {
-                data = themes[x].name.toLowerCase();
-            }
-        }
-        return data;
-    };
     this.userVote = function (src, commandData) {
         if (SESSION.channels(mafiachan).muteall && !SESSION.channels(mafiachan).isChannelOperator(src) && sys.auth(src) === 0) {
             sys.sendMessage(src, "±Game: You can't start a voting when the channel is silenced.", mafiachan);
