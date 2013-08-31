@@ -1374,7 +1374,7 @@ POGlobal.prototype.callplugins = function callplugins(event) {
                     break;
                 }
             } catch (e) {
-                sys.sendAll('Plugins-error on {0}: {1}'.format(plugins[i].source, e), staffchannel);
+                sys.sendAll('Plugins-error on {0}: {1}'.format(plugins[i].source, e + (e.lineNumber ? " on line: " + e.lineNumber : ""), staffchannel);
             }
         }
     }
