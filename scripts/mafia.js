@@ -1275,6 +1275,11 @@ function Mafia(mafiachan) {
             return;
         sys.sendMessage(id, message, mafiachan);
     };
+    this.needsBot = function (gamemsg) {
+        if (gamemsg.indexOf(":") === -1 && gamemsg.indexOf("***") === -1)
+            return true;
+    };
+    
     // Grab a list of all roles belonging to a given team.
     this.getRolesForTeam = function (side) {
         var team = [];
@@ -1389,19 +1394,13 @@ function Mafia(mafiachan) {
                             singleAffected = singleAffected.concat(affected);
                         } else {
                             actionMessage = onDeath.killmsg ? onDeath.killmsg : "±Kill: Because ~Self~ died, ~Target~ (~Role~) died too!";
-                            var needsBot = false;
-                            if (actionMessage.indexOf(":") === -1 && actionMessage.indexOf("***") === -1)
-                                needsBot = true;
-                            sendChanAll((needsBot ? "±Kill: " : "") + actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Role~/g, mafia.theme.trrole(targetRoles[r])), mafiachan);
+                            sendChanAll((this.needsBot(actionMessage) ? "±Kill: " : "") + actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Role~/g, mafia.theme.trrole(targetRoles[r])), mafiachan);
                         }
                         needSeparator = true;
                     }
                 }
                 if (singleAffected.length > 0) {
-                    var needsBot = false;
-                    if (onDeath.singlekillmsg.indexOf(":") === -1 && onDeath.singlekillmsg.indexOf("***") === -1)
-                        needsBot = true;
-                    sendChanAll((needsBot ? "±Kill: " : "") + onDeath.singlekillmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
+                    sendChanAll((this.needsBot(onDeath.singlekillmsg) ? "±Kill: " : "") + onDeath.singlekillmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
                 }
             }
             if ("poisonRoles" in onDeath) {
@@ -1426,13 +1425,13 @@ function Mafia(mafiachan) {
                             singleAffected = singleAffected.concat(affected);
                         } else {
                             actionMessage = onDeath.poisonmsg ? onDeath.poisonmsg : "±Game: Because ~Self~ died, the ~Role~ was poisoned!";
-                            sendChanAll(actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Role~/g, mafia.theme.trrole(r)).replace(/~Count~/, count), mafiachan);
+                            sendChanAll((this.needsBot(actionMessage) ? "±Game: " : "") + actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Role~/g, mafia.theme.trrole(r)).replace(/~Count~/, count), mafiachan);
                         }
                         needSeparator = true;
                     }
                 }
                 if (singleAffected.length > 0) {
-                    sendChanAll(onDeath.singlepoisonmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
+                    sendChanAll((this.needsBot(onDeath.singlepoisonmsg) ? "±Game: " : "") + onDeath.singlepoisonmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
                 }
             }
             if ("convertRoles" in onDeath) {
@@ -1457,13 +1456,13 @@ function Mafia(mafiachan) {
                             singleAffected = singleAffected.concat(affected);
                         } else {
                             actionMessage = onDeath.convertmsg ? onDeath.convertmsg : "±Game: Because ~Self~ died, the ~Old~ became a ~New~!";
-                            sendChanAll(actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(r)).replace(/~New~/, mafia.theme.trrole(newRole)), mafiachan);
+                            sendChanAll((this.needsBot(actionMessage) ? "±Game: " : "") + actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(r)).replace(/~New~/, mafia.theme.trrole(newRole)), mafiachan);
                         }
                         needSeparator = true;
                     }
                 }
                 if (singleAffected.length > 0) {
-                    sendChanAll(onDeath.singleconvertmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
+                    sendChanAll((this.needsBot(onDeath.singleconvertmsg) ? "±Game: " : "") + onDeath.singleconvertmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
                 }
             }
             if ("curseRoles" in onDeath) {
@@ -1489,13 +1488,13 @@ function Mafia(mafiachan) {
                             singleAffected = singleAffected.concat(affected);
                         } else {
                             actionMessage = onDeath.cursemsg ? onDeath.cursemsg : "±Game: Because ~Self~ died, the ~Old~ got cursed and will become a ~New~ soon!";
-                            sendChanAll(actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(r)).replace(/~New~/g, mafia.theme.trrole(cursedRole)).replace(/~Count~/g, count || 2), mafiachan);
+                            sendChanAll((this.needsBot(actionMessage) ? "±Game: " : "") + actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(r)).replace(/~New~/g, mafia.theme.trrole(cursedRole)).replace(/~Count~/g, count || 2), mafiachan);
                         }
                         needSeparator = true;
                     }
                 }
                 if (singleAffected.length > 0) {
-                    sendChanAll(onDeath.singlecursemsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
+                    sendChanAll((this.needsBot(onDeath.singlecursemsg) ? "±Game: " : "") + onDeath.singlecursemsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
                 }
             }
             if ("exposeRoles" in onDeath) {
@@ -1504,7 +1503,7 @@ function Mafia(mafiachan) {
                     targetPlayers = this.getPlayersForRole(targetRoles[r]);
                     if (targetPlayers.length > 0) {
                         actionMessage = onDeath.exposemsg ? onDeath.exposemsg : "±Game: Before dying, ~Self~ exposed ~Target~ as the ~Role~!";
-                        sendChanAll(actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(targetPlayers, "and")).replace(/~Role~/g, mafia.theme.trrole(targetRoles[r])), mafiachan);
+                        sendChanAll((this.needsBot(actionMessage) ? "±Game: " : "") + actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(targetPlayers, "and")).replace(/~Role~/g, mafia.theme.trrole(targetRoles[r])), mafiachan);
                         needSeparator = true;
                     }
                 }
@@ -1516,10 +1515,7 @@ function Mafia(mafiachan) {
     };
     this.kill = function (player) {
         if (this.theme.killmsg) {
-            var needsBot = false;
-            if (this.theme.killmsg.indexOf(":") === -1 && this.theme.killmsg.indexOf("***") === -1)
-                needsBot = true;
-            sendChanAll((needsBot ? "±Kill: " : "") + this.theme.killmsg.replace(/~Player~/g, player.name).replace(/~Role~/g, player.role.translation), mafiachan);
+            sendChanAll((this.needsBot(this.theme.killmsg) ? "±Kill: " : "") + this.theme.killmsg.replace(/~Player~/g, player.name).replace(/~Role~/g, player.role.translation), mafiachan);
         } else {
             sendChanAll("±Kill: " + player.name + " (" + player.role.translation + ") died!", mafiachan);
         }
@@ -1786,7 +1782,7 @@ function Mafia(mafiachan) {
             }
             mafia.compilePhaseStalk("GAME END");
             if (winSide in mafia.theme.sideWinMsg) {
-                sendChanAll(mafia.theme.sideWinMsg[winSide].replace(/~Players~/g, readable(players, "and")), mafiachan);
+                sendChanAll((this.needsBot(mafia.theme.sideWinMsg[winSide]) ? "±Game: " : "") + mafia.theme.sideWinMsg[winSide].replace(/~Players~/g, readable(players, "and")), mafiachan);
             } else {
                 sendChanAll("±Game: The " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ") wins!", mafiachan);
             }
@@ -2416,15 +2412,9 @@ function Mafia(mafiachan) {
                             else if (command == "kill") {
                                 if (!Action.msg) {
                                     var killMessage = mafia.theme.killusermsg ? mafia.theme.killusermsg : "±Game: You were killed during the night!";
-                                    var needsBot = false;
-                                    if (killMessage.indexOf(":") === -1 && killMessage.indexOf("***") === -1)
-                                        needsBot = true;
-                                    mafia.sendPlayer(target.name, (needsBot ? "±Game: " : "") + killMessage);
+                                    mafia.sendPlayer(target.name, (this.needsBot(killmsg) ? "±Game: " : "") + killMessage);
                                 } else {
-                                    var needsBot = false;
-                                    if (Action.msg.indexOf(":") === -1 && Action.msg.indexOf("***") === -1)
-                                        needsBot = true;
-                                    mafia.sendPlayer(target.name, (needsBot ? "±Game: " : "") + Action.msg); // custom kill message for the killer
+                                    mafia.sendPlayer(target.name, (this.needsBot(Action.msg) ? "±Game: " : "") + Action.msg); // custom kill message for the killer
                                 }
                                 mafia.kill(target);
                                 nightkill = true;
@@ -2874,18 +2864,12 @@ function Mafia(mafiachan) {
                                     singleAffected = singleAffected.concat(affected);
                                 } else {
                                     actionMessage = lyn.killmsg ? lyn.killmsg : "±Kill: Because ~Self~ was lynched, ~Target~ (~Role~) died!";
-                                var needsBot = false;
-                                if (lyn.killmsg.indexOf(":") === -1 && lyn.killmsg.indexOf("***") === -1)
-                                    needsBot = true;
-                                sendChanAll((needsBot ? "±Kill: " : "") + actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Role~/g, mafia.theme.trrole(targetRoles[r])), mafiachan);
+                                    sendChanAll((this.needsBot(actionMessage) ? "±Kill: " : "") + actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Role~/g, mafia.theme.trrole(targetRoles[r])), mafiachan);
                                 }
                             }
                         }
                         if (singleAffected.length > 0) {
-                            var needsBot = false;
-                            if (lyn.singlekillmsg.indexOf(":") === -1 && lyn.singlekillmsg.indexOf("***") === -1)
-                                needsBot = true;
-                            sendChanAll((needsBot ? "±Kill: " : "") + lyn.singlekillmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
+                            sendChanAll((this.needsBot(lyn.singlekillmsg) ? "±Kill: " : "") + lyn.singlekillmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
                         }
                     }
                     if ("poisonRoles" in lyn) {
@@ -2910,12 +2894,12 @@ function Mafia(mafiachan) {
                                     singleAffected = singleAffected.concat(affected);
                                 } else {
                                     actionMessage = lyn.poisonmsg ? lyn.poisonmsg : "±Game: Because ~Self~ was lynched, the ~Role~ was poisoned!";
-                                    sendChanAll(actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Role~/g, mafia.theme.trrole(r)).replace(/~Count~/, count), mafiachan);
+                                    sendChanAll((this.needsBot(actionMessage) ? "±Game: " : "") +  actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Role~/g, mafia.theme.trrole(r)).replace(/~Count~/, count), mafiachan);
                                 }
                             }
                         }
                         if (singleAffected.length > 0) {
-                            sendChanAll(lyn.singlepoisonmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
+                            sendChanAll(((this.needsBot(lyn.singlepoisonmsg) ? "±Game: " : "") + lyn.singlepoisonmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
                         }
                     }
                     if ("convertRoles" in lyn) {
@@ -2940,12 +2924,12 @@ function Mafia(mafiachan) {
                                     singleAffected = singleAffected.concat(affected);
                                 } else {
                                     actionMessage = lyn.convertmsg ? lyn.convertmsg : "±Game: Because ~Self~ was lynched, the ~Old~ became a ~New~!";
-                                    sendChanAll(actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(r)).replace(/~New~/, mafia.theme.trrole(newRole)), mafiachan);
+                                    sendChanAll((this.needsBot(lyn.convertmsg) ? "±Game: " : "") + actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(r)).replace(/~New~/, mafia.theme.trrole(newRole)), mafiachan);
                                 }
                             }
                         }
                         if (singleAffected.length > 0) {
-                            sendChanAll(lyn.singleconvertmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
+                            sendChanAll((this.needsBot(lyn.singleconvertmsg) ? "±Game: " : "") + lyn.singleconvertmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
                         }
                     }
                     if ("curseRoles" in lyn) {
@@ -2971,12 +2955,12 @@ function Mafia(mafiachan) {
                                     singleAffected = singleAffected.concat(affected);
                                 } else {
                                     actionMessage = lyn.cursemsg ? lyn.cursemsg : "±Game: Because ~Self~ was lynched, the ~Old~ got cursed and will become a ~New~ soon!";
-                                    sendChanAll(actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(r)).replace(/~New~/g, mafia.theme.trrole(cursedRole)).replace(/~Count~/g, count || 2), mafiachan);
+                                    sendChanAll((this.needsBot(actionMessage) ? "±Game: " : "") + actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(r)).replace(/~New~/g, mafia.theme.trrole(cursedRole)).replace(/~Count~/g, count || 2), mafiachan);
                                 }
                             }
                         }
                         if (singleAffected.length > 0) {
-                            sendChanAll(lyn.singlecursemsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
+                            sendChanAll((this.needsBot(lyn.singlecursemsg) ? "±Game: " : "") + lyn.singlecursemsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
                         }
                     }
                     if ("exposeRoles" in lyn) {
@@ -2985,7 +2969,7 @@ function Mafia(mafiachan) {
                             targetPlayers = this.getPlayersForRole(targetRoles[r]);
                             if (targetPlayers.length > 0) {
                                 actionMessage = lyn.exposemsg ? lyn.exposemsg : "±Game: Before getting lynched, ~Self~ revealed ~Target~ as the ~Role~!";
-                                sendChanAll(actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(targetPlayers, "and")).replace(/~Role~/g, mafia.theme.trrole(targetRoles[r])), mafiachan);
+                                sendChanAll((this.needsBot(actionMessage) ? "±Game: " : "") +  actionMessage.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(targetPlayers, "and")).replace(/~Role~/g, mafia.theme.trrole(targetRoles[r])), mafiachan);
                             }
                         }
                     }
@@ -3005,10 +2989,7 @@ function Mafia(mafiachan) {
                 } else {
                     var roleName = typeof mafia.players[downed].role.actions.lynch == "object" && typeof mafia.players[downed].role.actions.lynch.revealAs == "string" ? mafia.theme.trrole(mafia.players[downed].role.actions.lynch.revealAs) : mafia.players[downed].role.translation;
                     var lynchmsg = mafia.theme.lynchmsg ? mafia.theme.lynchmsg : "±Game: ~Player~ (~Role~) was removed from the game!";
-                    var needsBot = false;
-                    if (lynchmsg.indexOf(":") === -1 && lynchmsg.indexOf("***") === -1)
-                        needsBot = true;
-                    sendChanAll((needsBot ? "±Game: " : "") + lynchmsg.replace(/~Player~/g, downed).replace(/~Role~/g, roleName).replace(/~Side~/g, mafia.theme.trside(mafia.players[downed].role.side)).replace(/~Count~/g, Math.round(maxi * 100) / 100), mafiachan);
+                    sendChanAll((this.needsBot(lynchmsg) ? "±Game: " : "") + lynchmsg.replace(/~Player~/g, downed).replace(/~Role~/g, roleName).replace(/~Side~/g, mafia.theme.trside(mafia.players[downed].role.side)).replace(/~Count~/g, Math.round(maxi * 100) / 100), mafiachan);
                     if (!("lynch" in lynched.role.actions)){
                         mafia.actionBeforeDeath(lynched);
                     }
@@ -3492,12 +3473,9 @@ function Mafia(mafiachan) {
                             }
                         }
                     }
-                    var needsBot = false;
-                    if (broadcastmsg.indexOf(":") === -1 && broadcastmsg.indexOf("***") === -1)
-                        needsBot = true;
                     for (x in team) {
                         if (team[x] != name) {
-                            this.sendPlayer(team[x], (needsBot ? "±Game: " : "") + broadcastmsg.replace(/~Player~/g, name).replace(/~Target~/g, commandData).replace(/~Action~/, command).replace(/~Role~/, player.role.translation));
+                            this.sendPlayer(team[x], (this.needsBot(broadcastmsg) ? "±Game: " : "") + broadcastmsg.replace(/~Player~/g, name).replace(/~Target~/g, commandData).replace(/~Action~/, command).replace(/~Role~/, player.role.translation));
                         }
                     }
                 }
@@ -3654,12 +3632,12 @@ function Mafia(mafiachan) {
                             var targetMode = target.role.actions.daykill;
                             if (targetMode.silent !== true) {
                                 if (targetMode.msg) {
-                                    mafia.sendPlayer(player.name, targetMode.msg.replace(/~Target~/g, target.name).replace(/~Role~/g, target.role.translation));
+                                    mafia.sendPlayer(player.name, "±Game: " +targetMode.msg.replace(/~Target~/g, target.name).replace(/~Role~/g, target.role.translation));
                                 } else {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded your " + commandName + "!");
                                 }
                                 if (targetMode.targetmsg) {
-                                    mafia.sendPlayer(target.name, targetMode.targetmsg.replace(/~Self~/g, player.name).replace(/~Role~/g, player.role.translation));
+                                    mafia.sendPlayer(target.name, "±Game:  " +targetMode.targetmsg.replace(/~Self~/g, player.name).replace(/~Role~/g, player.role.translation));
                                 } else {
                                     mafia.sendPlayer(target.name, "±Game: You evaded a " + commandName + "!");
                                 }
@@ -3670,10 +3648,7 @@ function Mafia(mafiachan) {
                     }
                     sendChanAll(border, mafiachan);
                     if (!revenge) {
-                        var needsBot = false;
-                        if (commandObject.killmsg.indexOf(":") === -1 && commandObject.killmsg.indexOf("***") === -1)
-                            needsBot = true;
-                        sendChanAll((needsBot ? "±Kill: " : "") + commandObject.killmsg.replace(/~Self~/g, name).replace(/~Target~/g, commandData), mafiachan);
+                        sendChanAll((this.needsBot(killmsg) ? "±Kill: " : "") + commandObject.killmsg.replace(/~Self~/g, name).replace(/~Target~/g, commandData), mafiachan);
                         if ("revealChance" in commandObject && commandObject.revealChance > sys.rand(0, 100) / 100) {
                             if (commandObject.revealmsg !== undefined && typeof commandObject.revealmsg == "string") {
                                 sendChanAll("±Game: " + commandObject.revealmsg.replace(/~Self~/g, name).replace(/~Role~/g, mafia.players[name].role.translation), mafiachan);
@@ -3765,12 +3740,12 @@ function Mafia(mafiachan) {
                             var targetMode = target.role.actions.expose;
                             if (targetMode.silent !== true) {
                                 if (targetMode.msg) {
-                                    mafia.sendPlayer(player.name, targetMode.msg.replace(/~Target~/g, target.name).replace(/~Role~/g, target.role.translation));
+                                    mafia.sendPlayer(player.name, "±Game: " + targetMode.msg.replace(/~Target~/g, target.name).replace(/~Role~/g, target.role.translation));
                                 } else {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") evaded your " + commandName + "!");
                                 }
                                 if (targetMode.targetmsg) {
-                                    mafia.sendPlayer(target.name, targetMode.targetmsg.replace(/~Self~/g, player.name).replace(/~Role~/g, player.role.translation));
+                                    mafia.sendPlayer(target.name, "±Game: " + targetMode.targetmsg.replace(/~Self~/g, player.name).replace(/~Role~/g, player.role.translation));
                                 } else {
                                     mafia.sendPlayer(target.name, "±Game: You evaded a " + commandName + "!");
                                 }
