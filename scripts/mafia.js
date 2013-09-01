@@ -1782,7 +1782,7 @@ function Mafia(mafiachan) {
             }
             mafia.compilePhaseStalk("GAME END");
             if (winSide in mafia.theme.sideWinMsg) {
-                sendChanAll((this.needsBot(mafia.theme.sideWinMsg[winSide]) ? "±Game: " : "") + mafia.theme.sideWinMsg[winSide].replace(/~Players~/g, readable(players, "and")), mafiachan);
+                sendChanAll((mafia.needsBot(mafia.theme.sideWinMsg[winSide]) ? "±Game: " : "") + mafia.theme.sideWinMsg[winSide].replace(/~Players~/g, readable(players, "and")), mafiachan);
             } else {
                 sendChanAll("±Game: The " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ") wins!", mafiachan);
             }
@@ -4603,7 +4603,7 @@ function Mafia(mafiachan) {
             return;
         }
         if (command === "enable") {
-            mafia.themeManager.enable(src, name);
+            mafia.themeManager.enable(src, commandData);
             return;
         }
         if (command === "importold") {
