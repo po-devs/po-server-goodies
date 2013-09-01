@@ -4766,6 +4766,7 @@ function Mafia(mafiachan) {
         }
         if (command === "remove"){
             mafia.themeManager.remove(src, commandData);
+            return;
         }
         if (command === "updateafter") {
             msg(src, "Mafia will update after the game");
