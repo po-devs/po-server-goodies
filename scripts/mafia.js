@@ -4628,7 +4628,7 @@ function Mafia(mafiachan) {
         }
         if (command == "aliases") { // Maybe rename this command and give it normal sMA limitations?
             if (this.isMafiaSuperAdmin(src) || sys.auth(src) > 0) {
-                script.modCommand(src, command, commandData, tar);
+                require["modcommands.js"].handleCommand(src, command, commandData, tar);
             }
             return;
         }
