@@ -3293,7 +3293,7 @@ function Mafia(mafiachan) {
         } else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel != mafiachan && ["mafiaban","mafiaunban","mafiabans","detained","detainlist", "mafiaadmins", "madmins", "roles", "priority", "sides", "themeinfo", "readlog", "aliases", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiarules", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "passma"].indexOf(command) === -1)
+        if (channel != mafiachan && ["mafiaban","mafiaunban","mafiabans","detained","detainlist", "mafiaadmins", "madmins", "roles", "priority", "sides", "themeinfo", "readlog", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiarules", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "passma"].indexOf(command) === -1)
             return;
         try {
             mafia.handleCommandOld(src, command, commandData, channel);
