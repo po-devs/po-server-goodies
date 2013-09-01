@@ -6,7 +6,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
     if (command == "commands" || command == "command") {
         if (commandData === undefined) {
             sendChanMessage(src, "*** Commands ***");
-            for (x = 0; x < this.help.length; ++x) {
+            for (x = 0; x < script.help.length; ++x) {
                 sendChanMessage(src, this.help[x]);
             }
             sendChanMessage(src, "*** Other Commands ***");
@@ -68,7 +68,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
                 }
             });
             sys.stopEvent();
-            this.afterChatMessage(src, '/'+command+ ' '+commandData,channel);
+            script.afterChatMessage(src, '/'+command+ ' '+commandData,channel);
             return;
         }
         SESSION.channels(channel).beforeMessage(src, "/me " + commandData);
@@ -106,7 +106,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
             toSend.push(messagetosend);
             sendChanHtmlAll(toSend.join(""), channel);
         }
-        this.afterChatMessage(src, '/' + command + ' ' + commandData, channel);
+        script.afterChatMessage(src, '/' + command + ' ' + commandData, channel);
         return;
     }
     if (command == "contributors") {
@@ -330,11 +330,11 @@ exports.handleCommand = function(src, command, commandData, tar) {
         return;
     }
     if (command == "uptime") {
-        if (typeof(this.startUpTime()) != "string") {
+        if (typeof(script.startUpTime()) != "string") {
             countbot.sendChanMessage(src, "Somehow the server uptime is messed up...");
             return;
         }
-        countbot.sendChanMessage(src, "Server uptime is "+this.startUpTime());
+        countbot.sendChanMessage(src, "Server uptime is "+script.startUpTime());
         return;
     }
     if (command == "resetpass") {
@@ -353,7 +353,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
         if (!isNaN(commandData) && commandData >= 0 && commandData < sys.teamCount(src)) {
             teamNumber = commandData;
         }
-        var team = this.importable(src, teamNumber, true).join("\n");
+        var team = script.importable(src, teamNumber, true).join("\n");
         /* commenting out instead so I don't have to write it again later if needed :(
         var name = sys.name(src) + '\'s ' + sys.tier(src, teamNumber) + ' team';
         var post = {};
@@ -397,7 +397,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
             channelbot.sendChanMessage(src, "You need to register on the server before registering a channel to yourself for security reasons!");
             return;
         }
-        if (sys.auth(src) < 1 && this.isOfficialChan(channel)) {
+        if (sys.auth(src) < 1 && script.isOfficialChan(channel)) {
             channelbot.sendChanMessage(src, "You don't have sufficient authority to register this channel!");
             return;
         }

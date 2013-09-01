@@ -127,11 +127,11 @@ exports.handleCommand = function(src, command, commandData, tar) {
             minutes = commandData;
             chanName = sys.channel(channel);
         }
-        this.silence(src, minutes, chanName);
+        script.silence(src, minutes, chanName);
         return;
     }
     if (command == "silenceoff") {
-        this.silenceoff(src, commandData);
+        script.silenceoff(src, commandData);
         return;
     }
     if (command == "hangmanban") {
@@ -518,10 +518,10 @@ exports.handleCommand = function(src, command, commandData, tar) {
             online = false;
         }
         var isBanned = sys.banList().filter(function(name) { return ip == sys.dbIp(name); }).length > 0;
-        var nameBanned = this.nameIsInappropriate(name);
-        var rangeBanned = this.isRangeBanned(ip);
-        var tempBanned = this.isTempBanned(ip);
-        var ipBanned = this.isIpBanned(ip);
+        var nameBanned = script.nameIsInappropriate(name);
+        var rangeBanned = script.isRangeBanned(ip);
+        var tempBanned = script.isTempBanned(ip);
+        var ipBanned = script.isIpBanned(ip);
         var bans = [];
         if (isBanned && !tempBanned) bans.push("normal ban");
         if (nameBanned) bans.push("nameban");
@@ -688,7 +688,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
         normalbot.sendAll("Target: " + target_name + ", IP: " + ip, staffchannel);
         sys.sendHtmlAll('<b><font color=red>' + target_name + ' was banned by ' + nonFlashing(sys.name(src)) + ' for ' + getTimeString(minutes) + '!</font></b>');
         sys.tempBan(target_name, parseInt(minutes/60, 10));
-        this.kickAll(ip);
+        script.kickAll(ip);
         var authname = sys.name(src);
         authStats[authname] = authStats[authname] || {};
         authStats[authname].latestTempBan = [target_name, parseInt(sys.time(), 10)];

@@ -110,7 +110,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
     }
     if (command == "showteam") {
         var teams = [0,1,2,3,4,5].map(function(index) {
-            return this.importable(tar, index);
+            return script.importable(tar, index);
         }, this).filter(function(data) {
             return data.length > 0;
         }).map(function(team) {
@@ -382,7 +382,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
     }
     if (command == "variablereset") {
         VarsCreated = undefined;
-        this.init();
+        script.init();
         return;
     }
     if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.ip(src) == sys.dbIp("ethan") || sys.name(src).toLowerCase() == "steve") {

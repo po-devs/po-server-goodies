@@ -39,7 +39,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
         var players_length = players.length;
         for (var i = 0; i < players_length; ++i) {
             var current_player = players[i];
-            if (sys.isInChannel(current_player, staffchannel) && !this.canJoinStaffChannel(current_player)) {
+            if (sys.isInChannel(current_player, staffchannel) && !script.canJoinStaffChannel(current_player)) {
                 sys.kick(current_player, staffchannel);
                 SESSION.channels(channel).takeAuth(src, sys.name(current_player), "member");
                 count = 1;
@@ -86,7 +86,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
         }
         var banlist=sys.banList();
         for(var a in banlist) {
-            if(ip == sys.dbIp(banlist[a]) && !this.isTempBanned(ip)) {
+            if(ip == sys.dbIp(banlist[a]) && !script.isTempBanned(ip)) {
                 normalbot.sendChanMessage(src, "He/she's already banned!");
                 return;
             }
@@ -95,7 +95,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
         normalbot.sendAll("Target: " + commandData + ", IP: " + ip, staffchannel);
         sendChanHtmlAll('<b><font color=red>' + commandData + ' was banned by ' + nonFlashing(sys.name(src)) + '!</font></b>',-1);
         sys.ban(commandData);
-        this.kickAll(ip);
+        script.kickAll(ip);
         sys.appendToFile('bans.txt', sys.name(src) + ' banned ' + commandData + "\n");
         var authname = sys.name(src).toLowerCase();
         authStats[authname] =  authStats[authname] || {};
@@ -236,7 +236,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
            normalbot.sendChanMessage(src, "Can't aboos some commands");
            return;
        }
-       return this.ownerCommand(src, command, commandData, tar);
+       return script.ownerCommand(src, command, commandData, tar);
     }
 
     return "no command";
