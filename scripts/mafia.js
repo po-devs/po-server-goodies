@@ -2412,7 +2412,7 @@ function Mafia(mafiachan) {
                             else if (command == "kill") {
                                 if (!Action.msg) {
                                     var killMessage = mafia.theme.killusermsg ? mafia.theme.killusermsg : "±Game: You were killed during the night!";
-                                    mafia.sendPlayer(target.name, (this.needsBot(killmsg) ? "±Game: " : "") + killMessage);
+                                    mafia.sendPlayer(target.name, (this.needsBot(killMessage) ? "±Game: " : "") + killMessage);
                                 } else {
                                     mafia.sendPlayer(target.name, (this.needsBot(Action.msg) ? "±Game: " : "") + Action.msg); // custom kill message for the killer
                                 }
@@ -2899,7 +2899,7 @@ function Mafia(mafiachan) {
                             }
                         }
                         if (singleAffected.length > 0) {
-                            sendChanAll(((this.needsBot(lyn.singlepoisonmsg) ? "±Game: " : "") + lyn.singlepoisonmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
+                            sendChanAll(((this.needsBot(lyn.singlepoisonmsg) ? "±Game: " : "") + lyn.singlepoisonmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and"))), mafiachan);
                         }
                     }
                     if ("convertRoles" in lyn) {
@@ -3648,7 +3648,7 @@ function Mafia(mafiachan) {
                     }
                     sendChanAll(border, mafiachan);
                     if (!revenge) {
-                        sendChanAll((this.needsBot(killmsg) ? "±Kill: " : "") + commandObject.killmsg.replace(/~Self~/g, name).replace(/~Target~/g, commandData), mafiachan);
+                        sendChanAll((this.needsBot(commandObject.killmsg) ? "±Kill: " : "") + commandObject.killmsg.replace(/~Self~/g, name).replace(/~Target~/g, commandData), mafiachan);
                         if ("revealChance" in commandObject && commandObject.revealChance > sys.rand(0, 100) / 100) {
                             if (commandObject.revealmsg !== undefined && typeof commandObject.revealmsg == "string") {
                                 sendChanAll("±Game: " + commandObject.revealmsg.replace(/~Self~/g, name).replace(/~Role~/g, mafia.players[name].role.translation), mafiachan);
