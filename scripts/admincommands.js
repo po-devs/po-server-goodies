@@ -236,7 +236,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
            normalbot.sendChanMessage(src, "Can't aboos some commands");
            return;
        }
-       return script.ownerCommand(src, command, commandData, tar);
+       return require("ownercommands.js").handleCommand(src, command, commandData, tar);
     }
 
     return "no command";

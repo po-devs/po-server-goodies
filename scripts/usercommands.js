@@ -6,7 +6,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
     if (command == "commands" || command == "command") {
         if (commandData === undefined) {
             sendChanMessage(src, "*** Commands ***");
-            for (x = 0; x < script.help.length; ++x) {
+            for (x = 0; x < this.help.length; ++x) {
                 sendChanMessage(src, this.help[x]);
             }
             sendChanMessage(src, "*** Other Commands ***");
