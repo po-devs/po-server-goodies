@@ -298,12 +298,12 @@ tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function bannedPokesOU(src, t
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU", "Wifi NEU"], function bannedPokes(src, team, tier) {
+tier_checker.add_new_check(EXCLUDING, challenge_cups, function shedinja(src, team, tier) {
     for (var i = 0; i < 6; ++i) {
-        var bans = ["Blissey", "Liepard"];
+        var bans = ["Shedinja"];
         for (var j = 0; j < bans.length; j++) {
             if (sys.teamPoke(src, team, i) === sys.pokeNum(bans[j])){
-                return [bans[j] + " is banned in " + tier + "."];
+                return ["Shedinja is currently banned due to a bug!"];
             }
         }
     }
