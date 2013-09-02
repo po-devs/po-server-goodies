@@ -488,6 +488,14 @@ exports.handleCommand = function(src, command, commandData, tar) {
         delete require.cache['tierchecks.js'];
         tier_checker = require('tierchecks.js');
         normalbot.sendAll('Updated tier checks!', staffchannel);
+        sys.playerIds().forEach(function(id) {
+            for (var team = 0; team < sys.teamCount(id); team++) {
+                if (!tier_checker.has_legal_team_for_tier(src, team, sys.tier(src, team))) {
+                    tier_checker.find_good_tier(src, team);
+                    normalbot.sendMessage(src, "You were placed into '" + sys.tier(src, team) + "' tier.");
+                }
+            }
+        });
         return;
     }
     if (command == "updatecommands") {

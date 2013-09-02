@@ -143,24 +143,7 @@ var cleanFile = function(filename) {
     if (typeof sys != 'undefined')
         sys.appendToFile(filename, "");
 };
-cleanFile("mafia_stats.json");
-cleanFile("suspectvoting.json");
-cleanFile("mafiathemes/metadata.json");
-cleanFile("channelData.json");
-cleanFile("mutes.txt");
-cleanFile("mbans.txt");
-cleanFile("hbans.txt");
-cleanFile("smutes.txt");
-cleanFile("rangebans.txt");
-cleanFile("contributors.txt");
-cleanFile("ipbans.txt");
-cleanFile(Config.dataDir+"namesToWatch.txt");
-cleanFile("hangmanadmins.txt");
-cleanFile("hangmansuperadmins.txt");
-cleanFile(Config.dataDir+"pastebin_user_key");
-cleanFile("secretsmute.txt");
-cleanFile("ipApi.txt");
-cleanFile(Config.dataDir + "notice.html");
+["mafia_stats.json", "suspectvoting.json", "mafiathemes/metadata.json", "channelData.json", "mutes.txt", "mbans.txt", "hbans.txt", "smutes.txt", "rangebans.txt", "contributors.txt", "ipbans.txt", Config.dataDir+"namesToWatch.txt", "hangmanadmins.txt", "hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", "secretsmute.txt", "ipApi.txt", Config.dataDir + "notice.html"].forEach(cleanFile);
 
 var autosmute = sys.getFileContent("secretsmute.txt").split(':::');
 var crc32 = require('crc32.js').crc32;
