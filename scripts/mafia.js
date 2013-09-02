@@ -4623,7 +4623,7 @@ function Mafia(mafiachan) {
             return;
         }
         if (command == "mafiaunban") {
-            script.modCommand(src, command, commandData, tar);
+            require("modcommands.js").handleCommand(src, command, commandData, tar);
             return;
         }
         if (command == "aliases") { // Maybe rename this command and give it normal sMA limitations?
