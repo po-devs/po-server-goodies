@@ -10,7 +10,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
     if (modCommands === undefined) {
         modCommands = require("modcommands.js");
     }
-    if (sys.auth(src) > 0 || (isMafiaAdmin(src) || isMafiaSuperAdmin(src)) && command == "mafiabans") {
+    if (sys.auth(src) > 0 || (isMafiaAdmin(src) || isMafiaSuperAdmin(src)) && command == "mafiabans" || isMafiaSuperAdmin(src) && command == "aliases") {
         if (modCommands.handleCommand(src, command, commandData, tar, channel) != "no command") {
             return;
         }
