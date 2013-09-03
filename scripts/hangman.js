@@ -705,11 +705,11 @@ module.exports = function () {
             return;
         }
         var tar = sys.id(commandData);
-        script.modCommand(src, "hangmanunban", commandData, tar);
+        require("modcommands.js").handleCommand(src, "hangmanunban", commandData, tar);
         return;
     };
     this.hangmanBanList = function (src, commandData) {
-        script.modCommand(src, "hangmanbans", commandData, -1);
+        require("modcommands.js").handleCommand(src, "hangmanbans", commandData, -1);
         return;
     };
     this.hangmanAuth = function (src, commandData, channel) {
