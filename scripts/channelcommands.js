@@ -7,7 +7,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "Choose a valid target for your love!");
             return;
         }
-        var colour = this.getColor(src);
+        var colour = script.getColor(src);
         sendChanHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
         sys.kick(tar, channel);
         return;
@@ -66,7 +66,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
         return;
     }
     if (command == "cmeon") {
-        this.meon(src, sys.channel(channel));
+        script.meon(src, sys.channel(channel));
         return;
     }
     if (command == "cmeoff") {
@@ -74,18 +74,18 @@ exports.handleCommand = function(src, command, commandData, tar) {
             normalbot.sendChanMessage(src, "/me can't be turned off here.");
             return;
         }
-        this.meoff(src, sys.channel(channel));
+        script.meoff(src, sys.channel(channel));
         return;
     }
     if (command == "csilence") {
         if (typeof(commandData) == "undefined") {
             return;
         }
-        this.silence(src, commandData, sys.channel(channel));
+        script.silence(src, commandData, sys.channel(channel));
         return;
     }
     if (command == "csilenceoff") {
-        this.silenceoff(src, sys.channel(channel));
+        script.silenceoff(src, sys.channel(channel));
         return;
     }
     if (command == "cmute") {
