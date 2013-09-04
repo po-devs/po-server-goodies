@@ -583,7 +583,7 @@ module.exports = function () {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel !== hangchan && ["hangmanban", "hangmanunban", "hangmanbans", "hangmanadmins", "hadmins"].indexOf(command) === -1) {
+        if (channel !== hangchan && ["hangmanban", "hangmanunban", "hangmanbans", "hangmanadmins", "hadmins", "has"].indexOf(command) === -1) {
             return;
         }
         if (command === "help") {
@@ -618,7 +618,7 @@ module.exports = function () {
             hangman.showCommands(src);
             return true;
         }
-        if (command === "hangmanadmins" || command === "hadmins") {
+        if (command === "hangmanadmins" || command === "hadmins" || command === "has") {
             hangman.hangmanAuth(src, commandData, channel);
             return true;
         }
