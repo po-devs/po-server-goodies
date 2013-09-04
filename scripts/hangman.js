@@ -784,7 +784,7 @@ module.exports = function () {
         if (commandData === undefined) {
             return;
         }
-        if (!hangmanAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
+        if (!hangmanSuperAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
             sys.sendMessage(src, "±Unown: " + commandData + " is not a Super Hangman Admin!", channel);
             return;
         }
