@@ -120,6 +120,8 @@ var updateModule = function updateModule(module_name, callback) {
 
 var channel, getKey, contributors, mutes, mbans, smutes, detained, hbans, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList, powerList, accList, ppList, categoryList, moveEffList, moveFlagList, namesToWatch;
 
+var pokeDir = "db/pokes/";
+var moveDir = "db/moves/5G/";
 var isMafiaAdmin = require('mafia.js').isMafiaAdmin;
 var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
 sys.makeDir("scripts");
@@ -254,7 +256,7 @@ function getDBIndex (pokeId) {
 function getWeight (pokeId) {
     if (weightList === undefined) {
         weightList = {};
-        var data = sys.getFileContent('db/pokes/weight.txt').split('\n');
+        var data = sys.getFileContent(pokeDir + 'weight.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
             var index = data[i].indexOf(" ");
             var id = data[i].substr(0, index);
@@ -274,7 +276,7 @@ function getWeight (pokeId) {
 function getHeight (pokeId) {
     if (heightList === undefined) {
         heightList = {};
-        var data = sys.getFileContent('db/pokes/height.txt').split('\n');
+        var data = sys.getFileContent(pokeDir + 'height.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
             var index = data[i].indexOf(" ");
             var id = data[i].substr(0, index);
@@ -305,7 +307,7 @@ function weightPower (weight) {
 function getMoveBP (moveId) {
     if (powerList === undefined) {
         powerList = {};
-        var data = sys.getFileContent('db/moves/5G/power.txt').split('\n');
+        var data = sys.getFileContent(moveDir + 'power.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
             var index = data[i].indexOf(" ");
             var key = data[i].substr(0, index);
@@ -322,7 +324,7 @@ function getMoveBP (moveId) {
 function getMoveCategory (moveId) {
     if (categoryList === undefined) {
         categoryList = {};
-        var data = sys.getFileContent('db/moves/5G/damage_class.txt').split('\n');
+        var data = sys.getFileContent(moveDir + 'damage_class.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
             var index = data[i].indexOf(" ");
             var key = data[i].substr(0, index);
@@ -342,7 +344,7 @@ function getMoveCategory (moveId) {
 function getMoveAccuracy (moveId) {
     if (accList === undefined) {
         accList = {};
-        var data = sys.getFileContent('db/moves/5G/accuracy.txt').split('\n');
+        var data = sys.getFileContent(moveDir + 'accuracy.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
             var index = data[i].indexOf(" ");
             var key = data[i].substr(0, index);
@@ -359,7 +361,7 @@ function getMoveAccuracy (moveId) {
 function getMovePP (moveId) {
     if (ppList === undefined) {
         ppList = {};
-        var data = sys.getFileContent('db/moves/5G/pp.txt').split('\n');
+        var data = sys.getFileContent(moveDir + 'pp.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
             var index = data[i].indexOf(" ");
             var key = data[i].substr(0, index);
@@ -373,7 +375,7 @@ function getMovePP (moveId) {
 function getMoveEffect (moveId) {
     if (moveEffList === undefined) {
         moveEffList = {};
-        var data = sys.getFileContent('db/moves/5G/effect.txt').split('\n');
+        var data = sys.getFileContent(moveDir + 'effect.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
             var index = data[i].indexOf(" ");
             var key = data[i].substr(0, index);
@@ -390,7 +392,7 @@ function getMoveEffect (moveId) {
 function getMoveContact (moveId) {
     if (moveFlagList === undefined) {
         moveFlagList = {};
-        var data = sys.getFileContent('db/moves/5G/flags.txt').split('\n');
+        var data = sys.getFileContent(moveDir + 'flags.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
             var index = data[i].indexOf(" ");
             var key = data[i].substr(0, index);
