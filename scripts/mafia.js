@@ -3143,7 +3143,7 @@ function Mafia(mafiachan) {
         return false;
     };
     this.isMafiaSuperAdmin = function (src) {
-        if (sys.auth(src) >= 2)
+        if (sys.auth(src) >= 3)
             return true;
 
         if (mafiaSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
@@ -4505,33 +4505,41 @@ function Mafia(mafiachan) {
             return;
         }
 
-        if (command == "mafiaadmins" || command == "madmins") {
-            var out = [
-                "",
-                "*** MAFIA SUPER ADMINS ***",
-                ""];
+        if (command == "mafiaadmins" || command == "madmins" || command ===  "mas") {
             var smas = [];
             for (var y in mafiaSuperAdmins.hash) {
-                smas.push(y + (sys.id(y) !== undefined ? ":" : ""));
+                smas.push(y);
             }
             smas = smas.sort();
+            sys.sendMessage(src, "", channel);
+            sys.sendMessage(src, "*** MAFIA SUPER ADMINS", channel);
+            sys.sendMessage(src, "");
             for (var i = 0; i < smas.length; i++) {
-                out.push(smas[i]);
+                var id = sys.id(smas[i]);
+                if (!id) {
+                    sys.sendMessage(src, smas[i], channel);
+                }
+                else {
+                    sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+                }
             }
-            out.push.apply(out,[
-                "",
-                "*** MAFIA ADMINS ***",
-                ""]);
             var mas = [];
             for (var x in mafiaAdmins.hash) {
-                mas.push(x + (sys.id(x) !== undefined ? ":" : ""));
+                mas.push(x);
             }
             mas = mas.sort();
+            sys.sendMessage(src, "", channel);
+            sys.sendMessage(src, "*** MAFIA ADMINS", channel);
+            sys.sendMessage(src, "");
             for (var i = 0; i < mas.length; i++) {
-                out.push(mas[i]);
+                var id = sys.id(mas[i]);
+                if (!id) {
+                    sys.sendMessage(src, mas[i], channel);
+                }
+                else {
+                    sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+                }
             }
-            out.push("");
-            dump(src, out, channel);
             return;
         }
 
