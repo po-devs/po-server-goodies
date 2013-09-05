@@ -478,6 +478,19 @@ exports.handleCommand = function(src, command, commandData, tar) {
         sys.sendHtmlMessage(src, res.join("<br>"), channel);
         return;
     }
+    if (command == "ping") {
+    if (commandData.toLowerCase() == sys.name(src).toLowerCase()){
+        normalbot.sendChanMessage(src, "You cannot ping yourself.");
+        return;
+    }
+    if (sys.id(commandData.toLowerCase()) == undefined){
+        normalbot.sendChanMessage(src, "Your target is offline.");
+        return;
+    }
+        sys.sendHtmlMessage(sys.id(commandData.toLowerCase()), "<ping/>You've been pinged by "+sys.name(src)+"");
+        sys.sendHtmlMessage(src, "You have pinged "+commandData.toLowerCase()+"", channel);
+        return;
+    }
     if (command == "userinfo" || command == "whois" || command == "whoistxt" || command == "whereis") {
         var bindChannel = channel;
         if (commandData === undefined) {
