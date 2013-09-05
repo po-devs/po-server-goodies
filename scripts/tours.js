@@ -2830,7 +2830,7 @@ function tourCommand(src, command, commandData, channel) {
             sys.sendHtmlMessage(src, htmltosend+"</table>", tourschan);
             return true;
         }
-        if (command == "megausers") {
+        if (command == "megausers" || command === "mus") {
             sys.sendMessage(src, "",channel);
             sys.sendMessage(src, "*** TOURNAMENT STAFF ***",channel);
             var tal = tours.touradmins;
@@ -4622,7 +4622,7 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        var globalcommands = ["towner", "megauser", "megauseroff", "megausers"];
+        var globalcommands = ["towner", "megauser", "megauseroff", "megausers", "mus"];
         if ((channel === tourschan && !SESSION.channels(tourschan).isBanned(source)) || globalcommands.indexOf(command) > -1) {
             return tourCommand(source, command, commandData, channel);
         }
