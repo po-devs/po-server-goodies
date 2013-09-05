@@ -10,6 +10,7 @@ touradmins.json, tastats.json, tourseeds.json, tourhistory.json, tours_cache.jso
 
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, Config, module*/
+var tourschan, tourserrchan, tours, tourconfig, tourwinmessages, tourstats, tourwarnings;
 
 if (typeof tourschan !== "string") {
     tourschan = sys.channelId("Tournaments");
@@ -3770,31 +3771,31 @@ function toursortbracket(size, key) {
         /* Seed Storage */
         tours.tour[key].seeds = ladderlist;
         if (size == 4) {
-            push4(0, size);
+            push4(0, size, playerlist, ladderlist);
         }
         else if (size == 8) {
-            push8(0, size);
+            push8(0, size, playerlist, ladderlist);
         }
         else if (size == 16) {
-            push16(0, size);
+            push16(0, size, playerlist, ladderlist);
         }
         else if (size == 32) {
-            push32(0, size);
+            push32(0, size, playerlist, ladderlist);
         }
         else if (size == 64) {
-            push64(0, size);
+            push64(0, size, playerlist, ladderlist);
         }
         else if (size == 128) {
-            push128(0, size);
+            push128(0, size, playerlist, ladderlist);
         }
         else if (size == 256) {
-            push256(0, size);
+            push256(0, size, playerlist, ladderlist);
         }
         else if (size == 512) {
-            push512(0, size);
+            push512(0, size, playerlist, ladderlist);
         }
         else if (size == 1024) {
-            push1024(0, size);
+            push1024(0, size, playerlist, ladderlist);
         }
         tours.tour[key].players = playerlist;
     }
