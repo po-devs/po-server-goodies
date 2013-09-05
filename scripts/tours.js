@@ -1504,7 +1504,7 @@ function tourCommand(src, command, commandData, channel) {
                 tstats.rankings(src, "", true, mindex);
                 return true;
             }
-            if (command == "megauser" || (sys.auth(src) >= 3 && command == "towner")) {
+            if (command == "megauser" || (sys.auth(src) >= 3 && command == "towner") || (sys.auth(src) >= 3 && command === "tourowner")) {
                 var tadmins = tours.touradmins;
                 if (sys.dbIp(commandData) === undefined) {
                     sendBotMessage(src,"This user doesn't exist!",tourschan,false);
@@ -1520,7 +1520,7 @@ function tourCommand(src, command, commandData, channel) {
                 var readauth = "Megauser";
                 var desc = "mu";
                 var newauth = 1;
-                if (command == "towner") {
+                if (command == "towner" || command === "tourowner") {
                     desc = "to";
                     newauth = 2;
                     readauth = "Tournament Owner";
