@@ -9,7 +9,7 @@ touradmins.json, tastats.json, tourseeds.json, tourhistory.json, tours_cache.jso
 */
 
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global print, script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, Config, module*/
+/*global script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, Config, module*/
 
 if (typeof tourschan !== "string") {
     tourschan = sys.channelId("Tournaments");
@@ -194,99 +194,6 @@ function sendBotAll(message, chan, html) {
     }
 }
 
-// Bot forwarding, for data sending
-function sendBotData(message, user, html) {
-    if (!sys.isInChannel(user, tourschan)) {
-        return;
-    }
-    if (message === "") {
-        return;
-    }
-    if (html) {
-        sys.sendHtmlMessage(user, message, tourschan);
-    }
-    else {
-        sys.sendMessage(user, "TOURSBOT: "+message, tourschan);
-    }
-}
-
-// for sending to the bot
-function getReadableList(type, parameter) {
-    try {
-        var name = "";
-        var list = [];
-        if (type == "leaderboard") {
-            var rankdata;
-            if (parameter === "") {
-                rankdata = sys.getFileContent(dataDir+"tourscores.txt");
-                name = "General Leaderboard";
-            }
-            else if (parameter == "eventscores") {
-                rankdata = sys.getFileContent(dataDir+"eventscores.txt");
-                name = "Event Leaderboard";
-            }
-            else {
-                var tourtier = find_tier(parameter);
-                if (tourtier === null) {
-                    throw ("Not a valid tier");
-                }
-                rankdata = sys.getFileContent(dataDir+"tourscores_"+tourtier.replace(/ /g,"_").replace(/\//g,"-slash-")+".txt");
-                name = tourtier+" Leaderboard";
-            }
-            if (rankdata === undefined) {
-                throw ("No data");
-            }
-            var rankings = rankdata.split("\n");
-            for (var p in rankings) {
-                if (rankings[p] === "") continue;
-                var rankingdata = rankings[p].split(":::",2);
-                if (rankingdata[1] < 1) continue;
-                list.push([rankingdata[0], rankingdata[1]]);
-            }
-            list.sort(function(a,b) { return b[1] - a[1] ; });
-        }
-        else {
-            return "";
-        }
-        var width=3;
-        var max_message_length = 30000;
-
-        // generate HTML
-        var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + utilities.html_escape(name) + '</strong></center></td></tr><tr><th>Ranking</th><th>Name</th><th>Points</th></tr>';
-        var table_footer = '</table>';
-        var table = table_header;
-        var line;
-        var send_rows = 0;
-        var rankkey = [0, 0]; // rank, points
-        var tmp = list;
-        while(tmp.length > 0) {
-            if (rankkey[1] === parseInt((tmp[0])[1], 10)) {
-                line = '<tr><td>#'+rankkey[0]+'</td><td>'+tmp[0].join('</td><td>')+'</td></tr>';
-            }
-            else {
-                line = '<tr><td>#'+(send_rows+1)+'</td><td>'+tmp[0].join('</td><td>')+'</td></tr>';
-                rankkey = [send_rows+1, parseInt((tmp[0])[1], 10)];
-            }
-            tmp.splice(0,1);
-            if (table.length + line.length + table_footer.length > max_message_length) {
-                break;
-            }
-            table += line;
-            ++send_rows;
-        }
-        table += table_footer;
-        if (send_rows > 0) {
-            return table;
-        }
-        else {
-            return "";
-        }
-    }
-    catch (e) {
-        return "ERROR: "+e;
-    }
-}
-
 // Debug Messages
 function sendDebugMessage(message, chan) {
     if (chan === tourschan && typeof tourconfig.debug == "string" && sys.existChannel(sys.channel(tourserrchan))) {
@@ -303,10 +210,7 @@ function addTourActivity(src) {
 }
 
 // Will escape "&", ">", and "<" symbols for HTML output.
-html_escape = utilities.html_escape;
-
-// Channel function
-getChan = utilities.get_or_create_channel;
+var html_escape = utilities.html_escape;
 
 function cmp(x1, x2) {
     if (typeof x1 !== typeof x2) {
@@ -345,7 +249,7 @@ function getFullTourName(key) {
 }
 
 // Finds a tier
-find_tier = utilities.find_tier;
+var find_tier = utilities.find_tier;
 
 function modeOfTier(tier) {
     if (tier.indexOf("Doubles") != -1 || ["JAA", "VGC 2009", "VGC 2010", "VGC 2011", "VGC 2012", "VGC 2013"].indexOf(tier) != -1) {
@@ -665,15 +569,6 @@ function isSub(name) {
     }
 }
 
-function battlesLeft(key) {
-    if (!tours.tour.hasOwnProperty(key)) {
-        return NaN;
-    }
-    else {
-        return parseInt(tours.tour[key].players.length/2, 10)-tours.tour[key].winners.length;
-    }
-}
-
 // Sends a message to all tour auth and players in the current tour
 function sendAuthPlayers(message,key) {
     for (var x in sys.playersOfChannel(tourschan)) {
@@ -751,20 +646,24 @@ function save_cache() {
 }
 
 function load_cache() {
-    var test = JSON.parse(sys.getFileContent(dataDir+"tours_cache.json"));
-    tours = test;
-    tours.globaltime = 0;
-    tours.eventticks = -1;
-    for (var x in tours.tour) {
-        // don't reload tournaments that haven't started.
-        if (tours.tour[x].round === 0) {
-            delete tours.tour[x];
-            purgeKeys();
-            continue;
+    if (typeof SESSION.global().tours !== "object") {
+        var test = JSON.parse(sys.getFileContent(dataDir+"tours_cache.json"));
+        tours = test;
+        tours.globaltime = 0;
+        tours.eventticks = -1;
+        for (var x in tours.tour) {
+            // don't reload tournaments that haven't started.
+            if (tours.tour[x].round === 0) {
+                delete tours.tour[x];
+                purgeKeys();
+                continue;
+            }
+            tours.tour[x].time = parseInt(sys.time(), 10)+600;
+            tours.tour[x].battlers = {};
+            tours.tour[x].active = {};
         }
-        tours.tour[x].time = parseInt(sys.time(), 10)+600;
-        tours.tour[x].battlers = {};
-        tours.tour[x].active = {};
+    } else {
+        tours = SESSION.global().tours;
     }
 }
 
@@ -1062,6 +961,7 @@ Used for things such as
 - disqualifying/reminding inactive players
 - removing subs */
 function tourStep() {
+    SESSION.global().tours = tours;
     var canstart = true;
     var canautostart = true;
     var now = new Date();
@@ -3778,60 +3678,60 @@ function tourmakebracket(key) {
 }
 
 // tour pushing functions used for constructing the bracket
-function push2(x, size) {
+function push2(x, size, playerlist, ladderlist) {
     playerlist.push(ladderlist[x]);
     playerlist.push(ladderlist[size-x-1]);
 }
 
-function push4(x, size) {
-    push2(x, size);
-    push2(size/2-x-1, size);
+function push4(x, size, playerlist, ladderlist) {
+    push2(x, size, playerlist, ladderlist);
+    push2(size/2-x-1, size, playerlist, ladderlist);
 }
 
-function push8(x, size) {
-    push4(x, size);
-    push4(size/4-x-1, size);
+function push8(x, size, playerlist, ladderlist) {
+    push4(x, size, playerlist, ladderlist);
+    push4(size/4-x-1, size, playerlist, ladderlist);
 }
 
-function push16(x, size) {
-    push8(x, size);
-    push8(size/8-x-1, size);
+function push16(x, size, playerlist, ladderlist) {
+    push8(x, size, playerlist, ladderlist);
+    push8(size/8-x-1, size, playerlist, ladderlist);
 }
 
-function push32(x, size) {
-    push16(x, size);
-    push16(size/16-x-1, size);
+function push32(x, size, playerlist, ladderlist) {
+    push16(x, size, playerlist, ladderlist);
+    push16(size/16-x-1, size, playerlist, ladderlist);
 }
 
-function push64(x, size) {
-    push32(x, size);
-    push32(size/32-x-1, size);
+function push64(x, size, playerlist, ladderlist) {
+    push32(x, size, playerlist, ladderlist);
+    push32(size/32-x-1, size, playerlist, ladderlist);
 }
 
-function push128(x, size) {
-    push64(x, size);
-    push64(size/64-x-1, size);
+function push128(x, size, playerlist, ladderlist) {
+    push64(x, size, playerlist, ladderlist);
+    push64(size/64-x-1, size, playerlist, ladderlist);
 }
 
-function push256(x, size) {
-    push128(x, size);
-    push128(size/128-x-1, size);
+function push256(x, size, playerlist, ladderlist) {
+    push128(x, size, playerlist, ladderlist);
+    push128(size/128-x-1, size, playerlist, ladderlist);
 }
 
-function push512(x, size) {
-    push256(x, size);
-    push256(size/256-x-1, size);
+function push512(x, size, playerlist, ladderlist) {
+    push256(x, size, playerlist, ladderlist);
+    push256(size/256-x-1, size, playerlist, ladderlist);
 }
 
-function push1024(x, size) {
-    push512(x, size);
-    push512(size/512-x-1, size);
+function push1024(x, size, playerlist, ladderlist) {
+    push512(x, size, playerlist, ladderlist);
+    push512(size/512-x-1, size, playerlist, ladderlist);
 }
 
 // Sorting the tour bracket
 function toursortbracket(size, key) {
     try {
-        ladderlist = [];
+        var ladderlist = [];
         var templist = [];
         var players = tours.tour[key].players;
         var ttype = tours.tour[key].tourtype;
@@ -3865,7 +3765,7 @@ function toursortbracket(size, key) {
         for (var s in templist) {
             ladderlist.push(templist[s][0]);
         }
-        playerlist = [];
+        var playerlist = [];
         /* Seed Storage */
         tours.tour[key].seeds = ladderlist;
         if (size == 4) {
@@ -4670,7 +4570,7 @@ module.exports = {
     afterBattleStarted : function(source, dest, clauses, rated, mode, bid) {
         return tourBattleStart(source, dest, clauses, rated, mode, bid);
     },
-    beforeBattleMatchup : function(source, dest, clauses, rated) {
+    beforeBattleMatchup : function(source, dest) {
         var ret = false;
         ret |= (isInTour(sys.name(source)) !== false || isInTour(sys.name(dest)) !== false);
         return ret;
