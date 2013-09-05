@@ -713,33 +713,39 @@ module.exports = function () {
         return;
     };
     this.hangmanAuth = function (src, commandData, channel) {
-        var out = [
-            "",
-            "*** HANGMAN SUPER ADMINS ***",
-            ""];
         var shas = [];
         for (var y in hangmanSuperAdmins.hash) {
-            shas.push(y + (sys.id(y) !== undefined ? ":" : ""));
+            shas.push(y);
         }
         shas = shas.sort();
+        sys.sendMessage(src, "", channel);
+        sys.sendMessage(src, "*** SUPER HANGMAN ADMINS ***", channel);
+        sys.sendMessage(src, "", channel);
         for (var i = 0; i < shas.length; i++) {
-            out.push(shas[i]);
+            var id = sys.id(shas[i]);
+            if(!id) {
+                sys.sendMessage(src, shas[i], channel);
+            }
+            else {
+                sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+            }
         }
-        out.push.apply(out, [
-            "",
-            "*** HANGMAN ADMINS ***",
-            ""]);
         var has = [];
         for (var x in hangmanAdmins.hash) {
-            has.push(x + (sys.id(x) !== undefined ? ":" : ""));
+            has.push(x);
         }
         has = has.sort();
+        sys.sendMessage(src, "", channel);
+        sys.sendMessage(src, "*** HANGMAN ADMINS ***", channel);
+        sys.sendMessage(src, "", channel);
         for (var i = 0; i < has.length; i++) {
-            out.push(has[i]);
-        }
-        out.push("");
-        for (var x in out) {
-            sys.sendMessage(src, out[x], channel);
+            var id = sys.id(has[i]);
+            if(!id) {
+                sys.sendMessage(src, has[i], channel);
+            }
+            else {
+                sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+            }
         }
         return;
     };
