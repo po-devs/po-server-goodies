@@ -516,47 +516,42 @@ module.exports = function () {
         }
     };
     this.onHelp = function (src, topic, channel) {
-        if (topic === "hangman" && channel === hangchan) {
-            hangman.showCommands(src);
+        if (topic === "hangman") {
+            hangman.showCommands(src, channel);
             return true;
         }
         return false;
     };
-    this.showCommands = function (src) {
+    this.showCommands = function (src, channel) {
         var userHelp = [
             "",
             "*** Hangman Commands ***",
             "/help: For a how-to-play guide.",
             "/guess [character]: To guess a letter.",
             "/answer [word]: To answer the question.",
-            "/hangmanrules: To see the Hangman rules.",
+            "/hangmanrules: To see the hangman rules.",
             "/view: To view the current game's state.",
             "/start [answer]:[hint]:[number]: To start a new game of hangman.",
             "/pass [name]: To pass starting rights to someone else.",
-            "/hangmancommands: To see the commands.",
-            "/hadmins: To see a list of hangman auth.",
-            "/end: To end a game you started.",
-            ""
+            "/hangmanadmins: To see a list of hangman auth.",
+            "/end: To end a game you started."
         ];
         var adminHelp = [
             "*** Hangman Admin Commands ***",
             "/hangmanban [name]:[reason]:[time]: To ban a user from hangman.",
             "/hangmanunban [name]: To unban a user from hangman.",
             "/hangmanbans [search term]: Searches the hangman banlist, show full list if no search term is entered.",
-            ""
         ];
         var superAdminHelp = [
             "*** Hangman Super Admin Commands ***",
             "/config [parameter]:[value]: To change the answer delay time and other settings. Type /config by itself to see more help.",
             "/hangmanadmin [name]: To promote a new Hangman admin.",
             "/hangmanadminoff [name]: To demote a Hangman admin.",
-            ""
         ];
         var ownerHelp = [
             "*** Hangman Owner Commands ***",
             "/hangmansuperadmin [name]: To promote a new Hangman Super Admin.",
             "/hangmansuperadminoff [name]: To demote a Hangman Super Admin.",
-            ""
         ];
         var help = userHelp;
         if (this.authLevel(src) > 0) {
@@ -569,9 +564,11 @@ module.exports = function () {
             help.push.apply(help, ownerHelp);
         }
         for (var x = 0; x < help.length; x++) {
-            sys.sendMessage(src, help[x], hangmanchan);
+            sys.sendMessage(src, help[x], channel);
         }
     };
+    this["help-string"] = ["hangman: To know the hangman commands"];
+    
     this.handleCommand = function (src, message, channel) {
         var command;
         var commandData;
@@ -612,10 +609,6 @@ module.exports = function () {
         }
         if (command === "pass") {
             hangman.passWinner(src, commandData);
-            return true;
-        }
-        if (command === "hcommands" || command === "hangmancommands") {
-            hangman.showCommands(src);
             return true;
         }
         if (command === "hangmanadmins" || command === "hadmins" || command === "has") {
