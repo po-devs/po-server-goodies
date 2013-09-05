@@ -1054,7 +1054,7 @@ addUserCommand("qamount", function (src, commandData, channel) {
     }
 }, "Shows you the current amount of questions");
 
-addUserCommand("triviaadmins", function (src, commandData, channel) {
+addUserCommand(["triviaadmins","tadmins","tas"], function (src, commandData, channel) {
     tsadmin.tAdminList(src, channel, "Trivia Super Admins");
     tadmin.tAdminList(src, channel, "Trivia Admins");
 }, "Gives a list of current trivia admins");
@@ -1783,11 +1783,8 @@ module.exports = {
         else {
             commandData = ""; // sane default to avoid undefined errors
         }
-        if (command == "tadmins") {
-            command = "triviaadmins"; //allows both to be used
-        }
         // Only care about trivia channels
-        if (channel != triviachan && channel != revchan && ["triviamute", "triviaunmute", "flashtas", "triviaadmins"].indexOf(command) == -1)
+        if (channel != triviachan && channel != revchan && ["triviamute", "triviaunmute", "flashtas", "triviaadmins", "tadmins", "tas"].indexOf(command) == -1)
             return;
 
         try {
