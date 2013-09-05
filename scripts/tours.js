@@ -2831,8 +2831,6 @@ function tourCommand(src, command, commandData, channel) {
             return true;
         }
         if (command == "megausers" || command === "mus") {
-            sys.sendMessage(src, "",channel);
-            sys.sendMessage(src, "*** TOURNAMENT STAFF ***",channel);
             var tal = tours.touradmins;
             var tos = [];
             var mus = [];
@@ -2846,27 +2844,30 @@ function tourCommand(src, command, commandData, channel) {
             }
             tos.sort();
             mus.sort();
-            sys.sendMessage(src, "",channel);
-            sys.sendMessage(src, "*** TOURNAMENT OWNERS ***",channel);
+            sys.sendMessage(src, "", channel);
+            sys.sendMessage(src, "*** TOURNAMENT OWNERS ***", channel);
+            sys.sendMessage(src, "", channel);
             for (var o in tos) {
-                if (sys.isInChannel(sys.id(tos[o]), tourschan)) {
-                    sys.sendMessage(src, toCorrectCase(tos[o]) + " (Online):",channel);
+                var id = sys.id(tos[o]);
+                if (!id) {
+                    sys.sendMessage(src, tos[o], channel);
                 }
                 else {
-                    sys.sendMessage(src, tos[o],channel);
+                    sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
                 }
             }
-            sys.sendMessage(src, "",channel);
-            sys.sendMessage(src, "*** MEGAUSERS ***",channel);
+            sys.sendMessage(src, "", channel);
+            sys.sendMessage(src, "*** MEGAUSERS ***", channel);
+            sys.sendMessage(src, "", channel);
             for (var m in mus) {
-                if (sys.isInChannel(sys.id(mus[m]), tourschan)) {
-                    sys.sendMessage(src, toCorrectCase(mus[m]) + " (Online):",channel);
+                var id = sys.id(mus[m]);
+                if (!id) {
+                    sys.sendMessage(src, mus[m], channel);
                 }
                 else {
-                    sys.sendMessage(src, mus[m],channel);
+                    sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
                 }
             }
-            sys.sendMessage(src, "",channel);
             return true;
         }
         if (command == "tourinfo") {
