@@ -2445,7 +2445,7 @@ beforeChatMessage: function(src, message, chan) {
          sys.stopEvent();
          return;
     }
-    var channel = chan;
+    channel = chan;
     if ((chan === 0 && message.length > 250 && sys.auth(src) < 1)
        || (message.length > 5000 && sys.auth(src) < 2)) {
         normalbot.sendChanMessage(src, "Hi! Your message is too long, please make it shorter :3");
@@ -2750,7 +2750,7 @@ afterChatMessage : function(src, message, chan)
 
     var user = SESSION.users(src);
     var poChannel = SESSION.channels(chan);
-    var channel = chan;
+    channel = chan;
     lineCount+=1;
 
    // if (channel == sys.channelId("PO Android")) {
