@@ -110,7 +110,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 
         SESSION.channels(channel).perm = (commandData.toLowerCase() == 'on');
         SESSION.global().channelManager.update(channel);
-        channelbot.sendChanAll("" + sys.name(src) + (SESSION.channels(channel).perm ? " made the channel permanent." : " made the channel a temporary channel again."));
+        channelbot.sendAll("" + sys.name(src) + (SESSION.channels(channel).perm ? " made the channel permanent." : " made the channel a temporary channel again."), channel);
         return;
     }
     if (command == "silence") {

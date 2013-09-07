@@ -523,13 +523,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         if (tar === undefined) {
             if (!isNonNegative(SESSION.global().coins)) SESSION.global().coins = 0;
-            coinbot.sendChanAll("" + sys.name(src) + " threw " + SESSION.users(src).coins + " coin(s) at the wall!");
+            coinbot.sendAll("" + sys.name(src) + " threw " + SESSION.users(src).coins + " coin(s) at the wall!", channel);
             SESSION.global().coins += SESSION.users(src).coins;
         } else if (tar == src) {
             coinbot.sendMessage(src, "No way...", channel);
             return;
         } else {
-            coinbot.sendChanAll("" + sys.name(src) + " threw " + SESSION.users(src).coins + " coin(s) at " + sys.name(tar) + "!");
+            coinbot.sendAll("" + sys.name(src) + " threw " + SESSION.users(src).coins + " coin(s) at " + sys.name(tar) + "!", channel);
             if (!isNonNegative(SESSION.users(tar).coins)) SESSION.users(tar).coins = 0;
             SESSION.users(tar).coins += SESSION.users(src).coins;
         }
@@ -745,7 +745,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (!isNonNegative(SESSION.global().coins)) SESSION.global().coins=0;
         if (!isNonNegative(SESSION.users(src).coins)) SESSION.users(src).coins=1;
         if (SESSION.global().coins < 100) return;
-        coinbot.sendChanAll("" + sys.name(src) + " found " + SESSION.global().coins + " coins besides the wall!");
+        coinbot.sendAll("" + sys.name(src) + " found " + SESSION.global().coins + " coins besides the wall!", channel);
         SESSION.users(src).coins += SESSION.global().coins;
         SESSION.global().coins = 0;
         return;

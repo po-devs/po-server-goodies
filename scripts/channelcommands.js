@@ -17,7 +17,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "Choose a valid target to kick", channel);
             return;
         }
-        normalbot.sendChanAll(sys.name(src) + " kicked "+commandData+" from the channel!");
+        normalbot.sendAll(sys.name(src) + " kicked "+commandData+" from the channel!", channel);
         sys.kick(tar, channel);
         return;
     }
@@ -60,7 +60,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (tar !== undefined) {
             if (sys.isInChannel(tar, channel) && command == "deinvite") {
                 sys.kick(tar, channel);
-                channelbot.sendChanAll("And "+commandData+" was gone!");
+                channelbot.sendAll("And "+commandData+" was gone!", channel);
             }
         }
         return;
@@ -162,7 +162,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             value = parseInt(commandData,10);
         }
         var message = poChannel.changeParameter(src, "invitelevel", value);
-        normalbot.sendChanAll(message);
+        normalbot.sendAll(message, channel);
         return;
     }
     if (command == "ctoggleflood") {

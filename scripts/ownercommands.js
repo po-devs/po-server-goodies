@@ -37,7 +37,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         ipbans.add(subip, "Name: " +sys.name(src) + " Comment: " + rangebans.escapeValue(comment));
-        normalbot.sendChanAll("IP ban added successfully for IP subrange: " + subip + " by "+ sys.name(src),staffchannel);
+        normalbot.sendAll("IP ban added successfully for IP subrange: " + subip + " by "+ sys.name(src),staffchannel, channel);
         return;
     }
     if (command == "ipunban") {
@@ -180,7 +180,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             }
         }
         if (names.length > 0) {
-            sendChanAll("±Jirachi: "+names.join(", ") + " got range banned by " + sys.name(src), staffchannel);
+            sys.sendAll("±Jirachi: "+names.join(", ") + " got range banned by " + sys.name(src), staffchannel, channel);
         }
         return;
     }
@@ -239,7 +239,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "sendall") {
-        sendChanAll(commandData);
+        sys.sendAll(commandData, channel);
         return;
     }
     if(command == "sendmessage"){
@@ -337,7 +337,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                         var colour = script.getColor(sayer);
                         sys.sendHtmlAll("<font color='"+colour+"'><timestamp/> <b>" + utilities.html_escape(sys.name(sayer)) + ":</font></b> " + what, cid);
                     } else {
-                        sendChanAll(sys.name(sayer) + ": " + what, cid);
+                        sys.sendAll(sys.name(sayer) + ": " + what, cid, channel);
                     }
             });
             if (++count > 100) return; // max repeat is 100
@@ -440,11 +440,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "stopbattles") {
         battlesStopped = !battlesStopped;
         if (battlesStopped)  {
-            sendChanAll("", -1);
-            sendChanAll("*** ********************************************************************** ***", -1);
+            sys.sendAll("", -1, channel);
+            sys.sendAll("*** ********************************************************************** ***", -1, channel);
             battlebot.sendAll("The battles are now stopped. The server will restart soon.");
-            sendChanAll("*** ********************************************************************** ***", -1);
-            sendChanAll("", -1);
+            sys.sendAll("*** ********************************************************************** ***", -1, channel);
+            sys.sendAll("", -1, channel);
         } else {
             battlebot.sendAll("False alarm, battles may continue.");
         }
