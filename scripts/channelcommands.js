@@ -1,4 +1,4 @@
-exports.handleCommand = function(src, command, commandData, tar) {
+exports.handleCommand = function(src, command, commandData, tar, channel) {
     var poChannel = SESSION.channels(channel);
     if (poChannel.operators === undefined)
         poChannel.operators = [];

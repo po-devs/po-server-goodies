@@ -2644,7 +2644,7 @@ beforeChatMessage: function(src, message, chan) {
         if (callplugins("handleCommand", src, message.substr(1), channel)) {
             return;
         }
-        commands.handleCommand(src, command, commandData, tar);
+        commands.handleCommand(src, command, commandData, tar, channel);
         return;
     } /* end of commands */
 

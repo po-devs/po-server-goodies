@@ -1,4 +1,4 @@
-exports.handleCommand = function(src, command, commandData, tar) {
+exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "channelusers") {
        if (commandData === undefined) {
            normalbot.sendChanMessage(src, "Please give me a channelname!");

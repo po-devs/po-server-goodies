@@ -1,4 +1,4 @@
-exports.handleCommand = function(src, command, commandData, tar) {
+exports.handleCommand = function(src, command, commandData, tar, channel) {
     // loop indices
     var i, x;
     // temp array
