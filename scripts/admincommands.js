@@ -1,36 +1,36 @@
 exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "memorydump") {
-        sendChanMessage(src, sys.memoryDump());
+        sys.sendMessage(src, sys.memoryDump(), channel);
         return;
     }
     if(command == "togglerainbow"){
         if(commandData === "off"){
             SESSION.global().allowRainbow = false;
-            normalbot.sendChanMessage(src, "You turned rainbow off!");
+            normalbot.sendMessage(src, "You turned rainbow off!", channel);
             return;
         }
         SESSION.global().allowRainbow = true;
-        normalbot.sendChanMessage(src, "You turned rainbow on!");
+        normalbot.sendMessage(src, "You turned rainbow on!", channel);
         return;
     }
     if (command == "indigoinvite") {
 
         if (channel != staffchannel && channel != sachannel) {
-            normalbot.sendChanMessage(src, "Can't use on this channel.");
+            normalbot.sendMessage(src, "Can't use on this channel.", channel);
             return;
         }
         if (tar === undefined) {
-            normalbot.sendChanMessage(src, "Your target is not online.");
+            normalbot.sendMessage(src, "Your target is not online.", channel);
             return;
         }
         if (SESSION.users(tar).megauser || SESSION.users(tar).contributions || sys.auth(tar) > 0) {
-            normalbot.sendChanMessage(src, "They have already access.");
+            normalbot.sendMessage(src, "They have already access.", channel);
             return;
         }
         SESSION.channels(channel).issueAuth(src, commandData, "member");
         normalbot.sendAll("" + sys.name(src) + " summoned " + sys.name(tar) + " to this channel!", channel);
         sys.putInChannel(tar, channel);
-        normalbot.sendChanMessage(tar, "" + sys.name(src) + " made you join this channel!");
+        normalbot.sendMessage(tar, "" + sys.name(src) + " made you join this channel!", channel);
         return;
     }
     if (command == "indigodeinvite") {
@@ -52,11 +52,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var ch = commandData;
         var chid = sys.channelId(ch);
         if(sys.existChannel(ch) !== true) {
-            normalbot.sendChanMessage(src, "No channel exists by this name!");
+            normalbot.sendMessage(src, "No channel exists by this name!", channel);
             return;
         }
         if (chid === 0 || chid == staffchannel ||  chid == tourchannel || SESSION.channels(chid).perm) {
-            normalbot.sendChanMessage(src, "This channel cannot be destroyed!");
+            normalbot.sendMessage(src, "This channel cannot be destroyed!", channel);
             return;
         }
         var channelDataFile = SESSION.global().channelManager.dataFileFor(chid);
@@ -71,23 +71,23 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "ban") {
         if(sys.dbIp(commandData) === undefined) {
-            normalbot.sendChanMessage(src, "No player exists by this name!");
+            normalbot.sendMessage(src, "No player exists by this name!", channel);
             return;
         }
         if (sys.maxAuth(sys.ip(tar))>=sys.auth(src)) {
-           normalbot.sendChanMessage(src, "Can't do that to higher auth!");
+           normalbot.sendMessage(src, "Can't do that to higher auth!", channel);
            return;
         }
 
         var ip = sys.dbIp(commandData);
         if(sys.maxAuth(ip)>=sys.auth(src)) {
-           normalbot.sendChanMessage(src, "Can't do that to higher auth!");
+           normalbot.sendMessage(src, "Can't do that to higher auth!", channel);
            return;
         }
         var banlist=sys.banList();
         for(var a in banlist) {
             if(ip == sys.dbIp(banlist[a]) && !script.isTempBanned(ip)) {
-                normalbot.sendChanMessage(src, "He/she's already banned!");
+                normalbot.sendMessage(src, "He/she's already banned!", channel);
                 return;
             }
         }
@@ -104,19 +104,19 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "unban") {
         if(sys.dbIp(commandData) === undefined) {
-            normalbot.sendChanMessage(src, "No player exists by this name!");
+            normalbot.sendMessage(src, "No player exists by this name!", channel);
             return;
         }
         var banlist=sys.banList();
         for(var a in banlist) {
             if(sys.dbIp(commandData) == sys.dbIp(banlist[a])) {
                 sys.unban(commandData);
-                normalbot.sendChanMessage(src, "You unbanned " + commandData + "!");
+                normalbot.sendMessage(src, "You unbanned " + commandData + "!", channel);
                 sys.appendToFile('bans.txt', sys.name(src) + ' unbanned ' + commandData + "\n");
                 return;
             }
         }
-        normalbot.sendChanMessage(src, "He/she's not banned!");
+        normalbot.sendMessage(src, "He/she's not banned!", channel);
         return;
     }
 
@@ -138,13 +138,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                     smutes.remove(ip);
                     return;
                 }
-                normalbot.sendChanMessage(src, "He/she's not secretly muted.");
+                normalbot.sendMessage(src, "He/she's not secretly muted.", channel);
                 return;
             }
             return;
         }
         if (!SESSION.users(sys.id(commandData)).smute.active) {
-            normalbot.sendChanMessage(src, "He/she's not secretly muted.");
+            normalbot.sendMessage(src, "He/she's not secretly muted.", channel);
             return;
         }
         normalbot.sendAll("" + commandData + " was secretly unmuted by " + nonFlashing(sys.name(src)) + "!", staffchannel);
@@ -153,14 +153,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "nameban") {
         if (commandData === undefined) {
-            normalbot.sendChanMessage(src, "Sorry, can't name ban empty names.");
+            normalbot.sendMessage(src, "Sorry, can't name ban empty names.", channel);
             return;
         }
         var regex;
         try {
             regex = new RegExp(commandData.toLowerCase()); // incase sensitive
         } catch (e) {
-            normalbot.sendChanMessage(src, "Sorry, your regular expression '" +commandData + "' fails. (" + e + ")");
+            normalbot.sendMessage(src, "Sorry, your regular expression '" +commandData + "' fails. (" + e + ")", channel);
         }
         nameBans.push(regex);
         var serialized = {nameBans: []};
@@ -168,7 +168,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             serialized.nameBans.push(nameBans[i].source);
         }
         sys.writeToFile("nameBans.json", JSON.stringify(serialized));
-        normalbot.sendChanMessage(src, "You banned: " + regex.toString());
+        normalbot.sendMessage(src, "You banned: " + regex.toString(), channel);
         return;
     }
     if (command == "nameunban") {
@@ -176,14 +176,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         nameBans = nameBans.filter(function(name) {
             if (name.toString() == commandData) {
                 var toDelete = nameBans.indexOf(name.toString());
-                normalbot.sendChanMessage(src, "You unbanned: " + name.toString());
+                normalbot.sendMessage(src, "You unbanned: " + name.toString(), channel);
                 unban = true;
                 return false;
             }
             return true;
         });
         if (!unban) {
-            normalbot.sendChanMessage(src, "No match.");
+            normalbot.sendMessage(src, "No match.", channel);
         } else {
             var serialized = {nameBans: []};
             for (var i = 0; i < nameBans.length; ++i) {
@@ -195,14 +195,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "namewarn") {
         if (commandData === undefined) {
-            normalbot.sendChanMessage(src, "Sorry, can't set warning for empty names.");
+            normalbot.sendMessage(src, "Sorry, can't set warning for empty names.", channel);
             return;
         }
         var regex;
         try {
             regex = new RegExp(commandData.toLowerCase()); // incase sensitive
         } catch (e) {
-            normalbot.sendChanMessage(src, "Sorry, your regular expression '" +commandData + "' fails. (" + e + ")");
+            normalbot.sendMessage(src, "Sorry, your regular expression '" +commandData + "' fails. (" + e + ")", channel);
         }
         nameWarns.push(regex);
         var serialized = {nameWarns: []};
@@ -210,7 +210,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             serialized.nameWarns.push(nameWarns[i].source);
         }
         sys.writeToFile("nameWarns.json", JSON.stringify(serialized));
-        normalbot.sendChanMessage(src, "You set a warning for: " + regex.toString());
+        normalbot.sendMessage(src, "You set a warning for: " + regex.toString(), channel);
         return;
     }
     if (command == "nameunwarn") {
@@ -218,14 +218,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         nameWarns = nameWarns.filter(function(name) {
             if (name.toString() == commandData) {
                 var toDelete = nameWarns.indexOf(name.toString());
-                normalbot.sendChanMessage(src, "You removed a warning for: " + name.toString());
+                normalbot.sendMessage(src, "You removed a warning for: " + name.toString(), channel);
                 unwarn = true;
                 return false;
             }
             return true;
         });
         if (!unwarn)
-            normalbot.sendChanMessage(src, "No match.");
+            normalbot.sendMessage(src, "No match.", channel);
         else
             sys.writeToFile("nameWarns.json", JSON.stringify(nameWarns));
         return;
@@ -233,7 +233,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     // hack, for allowing some subset of the owner commands for super admins
     if (isSuperAdmin(src)) {
        if (["eval", "evalp"].indexOf(command) != -1 && ["[ld]jirachier","ethan"].indexOf(sys.name(src).toLowerCase()) == -1) {
-           normalbot.sendChanMessage(src, "Can't aboos some commands");
+           normalbot.sendMessage(src, "Can't aboos some commands", channel);
            return;
        }
        return require("ownercommands.js").handleCommand(src, command, commandData, tar);

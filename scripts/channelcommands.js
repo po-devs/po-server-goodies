@@ -4,7 +4,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         poChannel.operators = [];
     if (command == "lt" || command == "lovetap") {
         if (tar === undefined) {
-            normalbot.sendChanMessage(src, "Choose a valid target for your love!");
+            normalbot.sendMessage(src, "Choose a valid target for your love!", channel);
             return;
         }
         var colour = script.getColor(src);
@@ -14,7 +14,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "ck" || command == "chankick") {
         if (tar === undefined || !sys.isInChannel(tar, channel)) {
-            normalbot.sendChanMessage(src, "Choose a valid target to kick");
+            normalbot.sendMessage(src, "Choose a valid target to kick", channel);
             return;
         }
         normalbot.sendChanAll(sys.name(src) + " kicked "+commandData+" from the channel!");
@@ -23,15 +23,15 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "invite") {
         if (tar === undefined) {
-            channelbot.sendChanMessage(src, "Choose a valid target for invite!");
+            channelbot.sendMessage(src, "Choose a valid target for invite!", channel);
             return;
         }
         if (sys.isInChannel(tar, channel) && SESSION.channels(channel).canJoin(tar) == "allowed") {
-            channelbot.sendChanMessage(src, "Your target already sits here!");
+            channelbot.sendMessage(src, "Your target already sits here!", channel);
             return;
         }
         if (SESSION.channels(channel).canJoin(tar) == "banned") {
-            channelbot.sendChanMessage(src, "Your target is banned from this channel!");
+            channelbot.sendMessage(src, "Your target is banned from this channel!", channel);
             return;
         }
         var now = (new Date()).getTime();
@@ -46,7 +46,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if ((sys.auth(tar) < SESSION.channels(channel).inviteonly || guardedChans.indexOf(channel) !== -1) && SESSION.channels(channel).canJoin(tar) != "allowed") {
             poChannel.issueAuth(src, commandData, "member");
         } else {
-            channelbot.sendChanMessage(src, "Your target was invited.");
+            channelbot.sendMessage(src, "Your target was invited.", channel);
         }
         SESSION.users(src).inviteDelay = (new Date()).getTime() + 8000;
         return;
@@ -71,7 +71,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "cmeoff") {
         if (channel === 0 || channel == tourchannel) {
-            normalbot.sendChanMessage(src, "/me can't be turned off here.");
+            normalbot.sendMessage(src, "/me can't be turned off here.", channel);
             return;
         }
         script.meoff(src, sys.channel(channel));
@@ -103,7 +103,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             }
         }
         if (sys.dbIp(tarname) === undefined) {
-            normalbot.sendChanMessage(src, "This user doesn't exist.");
+            normalbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
         }
         poChannel.mute(src, tarname, {'time': time, 'reason': reason});
@@ -119,7 +119,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             sys.sendHtmlMessage(src, cmutelist, channel);
         }
         else {
-            channelbot.sendChanMessage(src, "No one is muted on this channel.");
+            channelbot.sendMessage(src, "No one is muted on this channel.", channel);
         }
         return;
     }
@@ -129,7 +129,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             sys.sendHtmlMessage(src, cbanlist, channel);
         }
         else {
-            channelbot.sendChanMessage(src, "No one is banned on this channel.");
+            channelbot.sendMessage(src, "No one is banned on this channel.", channel);
         }
         return;
     }
@@ -167,7 +167,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "ctoggleflood") {
         poChannel.ignoreflood = !poChannel.ignoreflood;
-        channelbot.sendChanMessage(src, "Now " + (poChannel.ignoreflood ? "" : "dis") + "allowing excessive flooding.");
+        channelbot.sendMessage(src, "Now " + (poChannel.ignoreflood ? "" : "dis") + "allowing excessive flooding.", channel);
         return;
     }
     if (command == "ctoggleswear") {
@@ -177,7 +177,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "ctogglecaps") {
         poChannel.ignorecaps = !poChannel.ignorecaps;
-        channelbot.sendChanMessage(src, "Now " + (poChannel.ignorecaps ? "" : "dis") + "allowing excessive CAPS-usage.");
+        channelbot.sendMessage(src, "Now " + (poChannel.ignorecaps ? "" : "dis") + "allowing excessive CAPS-usage.", channel);
         return;
     }
     if (command == "cban") {
@@ -195,7 +195,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             }
         }
         if (sys.dbIp(tarname) === undefined) {
-            normalbot.sendChanMessage(src, "This user doesn't exist.");
+            normalbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
         }
         poChannel.ban(src, tarname, {'time': time, 'reason': reason});
