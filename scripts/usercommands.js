@@ -34,8 +34,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
         commandData = commandData.toLowerCase();
         if ( (commandData == "mod" && sys.auth(src) > 0)
             || (commandData == "admin" && sys.auth(src) > 1)
-            || (commandData == "owner" && (sys.auth(src) > 2  || isSuperAdmin(src)))
-            || (commandData == "channel") ) {
+            || (commandData == "owner" && (sys.auth(src) > 2  || isSuperAdmin(src))) ) {
             sendChanMessage(src, "*** " + commandData.toUpperCase() + " Commands ***");
             require(commandData+"commands.js").help.forEach(function(help) {
                 sendChanMessage(src, help);
@@ -807,7 +806,7 @@ exports.help =
         "/me [message]: Sends a message with *** before your name.",
         "/selfkick: Kicks all other accounts with IP.",
         "/importable: Posts an importable of your team to pastebin.",
-        "/dwreleased [Pokemon]: Shows the released status of a Pokemon's Dream World Ability",
+        "/dwreleased [Pokémon]: Shows the released status of a Pokémon's Dream World Ability",
         "/wiki [Pokémon]: Shows that Pokémon's wiki page",
         "/pokemon [Pokémon]: Displays basic information for that Pokémon",
         "/move [move]: Displays basic information for that move",
