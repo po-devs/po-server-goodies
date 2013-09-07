@@ -527,31 +527,31 @@ module.exports = function () {
             "",
             "*** Hangman Commands ***",
             "/help: For a how-to-play guide.",
-            "/guess [character]: To guess a letter.",
-            "/answer [word]: To answer the question.",
+            "/guess: To guess a letter.",
+            "/answer: To answer the question.",
             "/hangmanrules: To see the hangman rules.",
             "/view: To view the current game's state.",
-            "/start [answer]:[hint]:[number]: To start a new game of hangman.",
-            "/pass [name]: To pass starting rights to someone else.",
+            "/start: To start a new game of hangman. Format /start answer:hint:number",
+            "/pass: To pass starting rights to someone else.",
             "/hangmanadmins: To see a list of hangman auth.",
             "/end: To end a game you started."
         ];
         var adminHelp = [
             "*** Hangman Admin Commands ***",
-            "/hangmanban [name]:[reason]:[time]: To ban a user from hangman.",
-            "/hangmanunban [name]: To unban a user from hangman.",
-            "/hangmanbans [search term]: Searches the hangman banlist, show full list if no search term is entered.",
+            "/hangmanban: To ban a user from hangman. Format /hangmanban name:reason:time",
+            "/hangmanunban: To unban a user from hangman.",
+            "/hangmanbans: Searches the hangman banlist, show full list if no search term is entered.",
         ];
         var superAdminHelp = [
             "*** Hangman Super Admin Commands ***",
-            "/config [parameter]:[value]: To change the answer delay time and other settings. Type /config by itself to see more help.",
-            "/hangmanadmin [name]: To promote a new Hangman admin.",
-            "/hangmanadminoff [name]: To demote a Hangman admin.",
+            "/config: To change the answer delay time and other settings. Format /config parameter:value. Type /config by itself to see more help.",
+            "/hangmanadmin: To promote a new Hangman admin.",
+            "/hangmanadminoff: To demote a Hangman admin.",
         ];
         var ownerHelp = [
             "*** Hangman Owner Commands ***",
-            "/hangmansuperadmin [name]: To promote a new Hangman Super Admin.",
-            "/hangmansuperadminoff [name]: To demote a Hangman Super Admin.",
+            "/hangmansuperadmin: To promote a new Hangman Super Admin.",
+            "/hangmansuperadminoff: To demote a Hangman Super Admin.",
         ];
         var help = userHelp;
         if (this.authLevel(src) > 0) {
