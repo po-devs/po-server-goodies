@@ -185,7 +185,8 @@ function printObject(o) {
 
 /* Functions using the implicit variable 'channel' set on various events */
 // TODO: remove the possibility for implictit channel
-function sendChanMessage(id, message) {
+// TODO: REMOVE THESE FUNCTIONS THAT LIKE BREAKING AT RANDOM TIMES
+function sendChanMessage(id, message, channel) {
     sys.sendMessage(id, message, channel);
 }
 
@@ -611,20 +612,20 @@ POChannel.prototype.setTopic = function(src, topicInfo)
     var canSetTopic = (sys.auth(src) > 0 || this.isChannelOperator(src));
     if (topicInfo === undefined) {
         if (typeof this.topic != 'undefined') {
-            channelbot.sendChanMessage(src, "Topic for this channel is: " + this.topic);
+            channelbot.sendMessage(src, "Topic for this channel is: " + this.topic, channel);
             if (SESSION.channels(channel).topicSetter) {
-                channelbot.sendChanMessage(src, "Topic was set by " + nonFlashing(this.topicSetter));
+                channelbot.sendMessage(src, "Topic was set by " + nonFlashing(this.topicSetter), channel);
             }
         } else {
-            channelbot.sendChanMessage(src, "No topic set for this channel.");
+            channelbot.sendMessage(src, "No topic set for this channel.", channel);
         }
         if (canSetTopic) {
-            channelbot.sendChanMessage(src, "Specify a topic to set one!");
+            channelbot.sendMessage(src, "Specify a topic to set one!", channel);
         }
         return;
     }
     if (!canSetTopic) {
-        channelbot.sendChanMessage(src, "You don't have the rights to set topic");
+        channelbot.sendMessage(src, "You don't have the rights to set topic", channel);
         return;
     }
     this.changeParameter(src, "topic", topicInfo);
@@ -856,7 +857,7 @@ POChannel.prototype.issueAuth = function(src, name, group)
 {
     var ret = this.addRole(src, name, group, {});
     if (ret[0] == "self") {
-        channelbot.sendChanMessage(src, ret[1]);
+        channelbot.sendMessage(src, ret[1], channel);
     }
     else {
         channelbot.sendAll(ret[1], channel);
@@ -868,7 +869,7 @@ POChannel.prototype.takeAuth = function(src, name, group)
 {
     var ret = this.removeRole(src, name, group);
     if (ret[0] == "self") {
-        channelbot.sendChanMessage(src, ret[1]);
+        channelbot.sendMessage(src, ret[1], channel);
     }
     else {
         channelbot.sendAll(ret[1], channel);
@@ -913,7 +914,7 @@ POChannel.prototype.ban = function(src, tar, data)
     var ret = this.addRole(src, tar, "banned", data);
     if (ret[0] == "self") {
         if (typeof src == "number")
-            channelbot.sendChanMessage(src, ret[1]);
+            channelbot.sendMessage(src, ret[1], channel);
     }
     else {
         channelbot.sendAll(ret[1], channel);
@@ -935,7 +936,7 @@ POChannel.prototype.unban = function(src, tar)
 {
     var ret = this.removeRole(src, tar, "banned");
     if (ret[0] == "self") {
-        channelbot.sendChanMessage(src, ret[1]);
+        channelbot.sendMessage(src, ret[1], channel);
     }
     else {
         channelbot.sendAll(ret[1], channel);
@@ -948,7 +949,7 @@ POChannel.prototype.mute = function(src, tar, data)
     var ret = this.addRole(src, tar, "muted", data);
     if (ret[0] == "self") {
         if (typeof src == "number")
-            channelbot.sendChanMessage(src, ret[1]);
+            channelbot.sendMessage(src, ret[1], channel);
     }
     else {
         channelbot.sendAll(ret[1], channel);
@@ -960,7 +961,7 @@ POChannel.prototype.unmute = function(src, tar)
 {
     var ret = this.removeRole(src, tar, "muted");
     if (ret[0] == "self") {
-        channelbot.sendChanMessage(src, ret[1]);
+        channelbot.sendMessage(src, ret[1], channel);
     }
     else {
         channelbot.sendAll(ret[1], channel);
@@ -1770,23 +1771,23 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             expires = secs + parseInt(sys.time(), 10);
         }
         if (reason === "" && sys.auth(src) < 3) {
-           banbot.sendChanMessage(src, "You need to give a reason to the " + nomi + "!");
+           banbot.sendMessage(src, "You need to give a reason to the " + nomi + "!", channel);
            return;
         }
         var tarip = tar !== undefined ? sys.ip(tar) : sys.dbIp(commandData);
         if (tarip === undefined) {
-            banbot.sendChanMessage(src, "Couldn't find " + commandData);
+            banbot.sendMessage(src, "Couldn't find " + commandData, channel);
             return;
         }
         var maxAuth = sys.maxAuth(tarip);
         if (maxAuth>=sys.auth(src) && maxAuth > 0) {
-            banbot.sendChanMessage(src, "You don't have sufficient auth to " + nomi + " " + commandData + ".");
+            banbot.sendMessage(src, "You don't have sufficient auth to " + nomi + " " + commandData + ".", channel);
             return;
         }
         var active = false;
         if (memoryhash.get(tarip)) {
             if (sys.time() - memoryhash.get(tarip).split(":")[0] < 15) {
-                banbot.sendChanMessage(src, "This person was recently " + verb);
+                banbot.sendMessage(src, "This person was recently " + verb, channel);
                 return;
             }
             active = true;
@@ -2344,10 +2345,10 @@ afterChangeTeam : function(src)
 silence: function(src, minutes, chanName) {
     var delay = parseInt(minutes * 60, 10);
     if (isNaN(delay) || delay <= 0) {
-        channelbot.sendChanMessage(src, "Sorry, I couldn't read your minutes.");
+        channelbot.sendMessage(src, "Sorry, I couldn't read your minutes.", channel);
     }
     if (!chanName) {
-        bot.sendChanMessage(src, "Sorry, global silence is disabled. Use /silence 5 Channel Name");
+        bot.sendMessage(src, "Sorry, global silence is disabled. Use /silence 5 Channel Name", channel);
     } else {
         var cid = sys.channelId(chanName);
         if (cid !== undefined) {
@@ -2360,7 +2361,7 @@ silence: function(src, minutes, chanName) {
                 normalbot.sendAll("Silence is over in "+chanName+".",cid);
             }, delay);
         } else {
-            channelbot.sendChanMessage(src, "Sorry, I couldn't find a channel with that name.");
+            channelbot.sendMessage(src, "Sorry, I couldn't find a channel with that name.", channel);
         }
     }
 },
@@ -2369,7 +2370,7 @@ silenceoff: function(src, chanName) {
     if (chanName !== undefined) {
         var cid = sys.channelId(chanName);
         if (!SESSION.channels(cid).muteall) {
-            channelbot.sendChanMessage(src, "The channel is not muted.");
+            channelbot.sendMessage(src, "The channel is not muted.", channel);
             return;
         }
         channelbot.sendAll("" + sys.name(src) + " cancelled the Minutes of Silence in "+chanName+"!", cid);
@@ -2385,7 +2386,7 @@ meoff: function(src, commandData) {
         SESSION.channels(cid).meoff = true;
         normalbot.sendAll("" + sys.name(src) + " turned off /me in "+commandData+".", cid);
     } else {
-        normalbot.sendChanMessage(src, "Sorry, that channel is unknown to me.");
+        normalbot.sendMessage(src, "Sorry, that channel is unknown to me.", channel);
     }
     return;
 },
@@ -2396,7 +2397,7 @@ meon: function(src, commandData) {
         SESSION.channels(cid).meoff = false;
         normalbot.sendAll("" + sys.name(src) + " turned on /me in "+commandData+".", cid);
     } else {
-        normalbot.sendChanMessage(src, "Sorry, that channel is unknown to me.");
+        normalbot.sendMessage(src, "Sorry, that channel is unknown to me.", channel);
     }
 },
 
@@ -2448,7 +2449,7 @@ beforeChatMessage: function(src, message, chan) {
     channel = chan;
     if ((chan === 0 && message.length > 250 && sys.auth(src) < 1)
        || (message.length > 5000 && sys.auth(src) < 2)) {
-        normalbot.sendChanMessage(src, "Hi! Your message is too long, please make it shorter :3");
+        normalbot.sendMessage(src, "Hi! Your message is too long, please make it shorter :3", channel);
         sys.stopEvent();
         return;
     }
@@ -2459,7 +2460,7 @@ beforeChatMessage: function(src, message, chan) {
     }
 
     if (message == ".") {
-        sendChanMessage(src, sys.name(src)+": .", true);
+        sys.sendMessage(src, sys.name(src)+": .", true, channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, chan);
         return;
@@ -2530,17 +2531,17 @@ beforeChatMessage: function(src, message, chan) {
 
     if (SESSION.users(src).expired("mute")) {
         SESSION.users(src).un("mute");
-        normalbot.sendChanMessage(src, "your mute has expired.");
+        normalbot.sendMessage(src, "your mute has expired.", channel);
     }
     if (sys.auth(src) < 3 && SESSION.users(src).mute.active && message != "!join" && message != "/rules" && message != "/join" && message != "!rules") {
         var muteinfo = SESSION.users(src).mute;
-        normalbot.sendChanMessage(src, "You are muted" + (muteinfo.by ? " by " + muteinfo.by : '')+". " + (muteinfo.expires > 0 ? "Mute expires in " + getTimeString(muteinfo.expires - parseInt(sys.time(), 10)) + ". " : '') + (muteinfo.reason ? "[Reason: " + muteinfo.reason + "]" : ''));
+        normalbot.sendMessage(src, "You are muted" + (muteinfo.by ? " by " + muteinfo.by : '')+". " + (muteinfo.expires > 0 ? "Mute expires in " + getTimeString(muteinfo.expires - parseInt(sys.time(), 10)) + ". " : '') + (muteinfo.reason ? "[Reason: " + muteinfo.reason + "]" : ''), channel);
         sys.stopEvent();
         return;
     }
     var poChannel = SESSION.channels(channel);
     if (sys.auth(src) < 1 && !poChannel.canTalk(src)) {
-        channelbot.sendChanMessage(src, "You are muted on this channel! You can't speak unless channel operators and masters unmute you.");
+        channelbot.sendMessage(src, "You are muted on this channel! You can't speak unless channel operators and masters unmute you.", channel);
         sys.stopEvent();
         return;
     }
@@ -2584,7 +2585,7 @@ beforeChatMessage: function(src, message, chan) {
             return ret;
         }
         if (!SESSION.channels(channel).isChannelOperator(src) && SESSION.users(src).contributions === undefined && sys.auth(src) < 1 && user.lastline.message == message && user.lastline.time + 15 > time) {
-            normalbot.sendChanMessage(src, "Please do not repeat yourself!");
+            normalbot.sendMessage(src, "Please do not repeat yourself!", channel);
             ret = true;
         }
         user.lastline.time = time;
@@ -2657,7 +2658,7 @@ beforeChatMessage: function(src, message, chan) {
 
     // Minutes of Silence
     if (SESSION.channels(channel).muteall && !SESSION.channels(channel).isChannelOperator(src) && sys.auth(src) === 0) {
-        normalbot.sendChanMessage(src, "Respect the minutes of silence!");
+        normalbot.sendMessage(src, "Respect the minutes of silence!", channel);
         sys.stopEvent();
         return;
     }
@@ -2695,7 +2696,7 @@ beforeChatMessage: function(src, message, chan) {
         capsday = CAPSLOCKDAYALLOW;
     }
     if (capsName() && !capsday) {
-        normalbot.sendChanMessage(src, "You have too many CAPS letters in your name. Please remove them to speak freely. 7 CAPS letters are allowed. Lowercase name will keep your ladder score.");
+        normalbot.sendMessage(src, "You have too many CAPS letters in your name. Please remove them to speak freely. 7 CAPS letters are allowed. Lowercase name will keep your ladder score.", channel);
         sys.stopEvent();
         return;
     }
@@ -2708,7 +2709,7 @@ beforeChatMessage: function(src, message, chan) {
         } else {
             sys.playerIds().forEach(function(id) {
                 if (sys.loggedIn(id) && SESSION.users(id).smute.active) {
-                    sendChanMessage(id,  sys.name(src)+": "+message);
+                    sys.sendMessage(id,  sys.name(src)+": "+message, channel);
                 }
             });
             sys.stopEvent();
