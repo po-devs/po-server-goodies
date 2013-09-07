@@ -51,60 +51,65 @@ var flashtag = "<!--f-->"; // This is used to check for flashes in the html code
 // Event tournaments highlighted in red
 var redborder = "<font color=#FF0000><b>"+border+"</b></font>";
 var redhtmlborder = "<font color=#FF0000><timestamp/> <b>"+border+"</b></font>";
-var tourcommands = ["join: joins a tournament",
-                    "unjoin: unjoins a tournament during signups only",
-                    "queue: lists upcoming tournaments",
-                    "viewround: views current round",
-                    "iom: views list of ongoing matches",
-                    "ipm: views list of matches yet to start",
-                    "history: views recently played tiers",
-                    "megausers: lists all users that can start tournaments",
-                    "leaderboard [tier]: shows tournament rankings, tier is optional",
-                    "eventleaderboard [month]: shows the event leaderboard (month is optional)",
-                    "monthlyleaderboard [month]: shows tour rankings for the current month",
-                    "tourinfo [name]: gives information on a person's recent tour wins",
-                    "eventinfo [name]: gives information on a person's recent event wins",
-                    "viewstats: views tournament stats",
-                    "viewseeds [tier]: views seed rankings for that tier",
-                    "activemu: lists active megausers",
-                    "rules: lists the tournament rules",
-                    "touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)",
-                    "addtouralert [tier] : Adds a tour alert for the specified tier",
-                    "removetouralert [tier] : Removes a tour alert for the specified tier"];
+var tourcommands = ["/join: Joins a tournament",
+                    "/unjoin: Unjoins a tournament during signups only",
+                    "/queue: Lists upcoming tournaments",
+                    "/viewround: Views current round",
+                    "/iom: Views list of ongoing matches",
+                    "/ipm: Views list of matches yet to start",
+                    "/history: Views recently played tiers",
+                    "/megausers: Lists all users that can start tournaments",
+                    "/leaderboard [tier]: Shows tournament rankings, tier is optional",
+                    "/eventleaderboard [month]: Shows the event leaderboard (month is optional)",
+                    "/monthlyleaderboard [month]: Shows tour rankings for the current month",
+                    "/tourinfo: Gives information on a person's recent tour wins",
+                    "/eventinfo: Gives information on a person's recent event wins",
+                    "/viewstats: Views tournament stats",
+                    "/viewseeds [tier]: Views seed rankings for that tier",
+                    "/activemu: Lists active megausers",
+                    "/rules: Lists the tournament rules",
+                    "/touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)",
+                    "/addtouralert: Adds a tour alert for the specified tier",
+                    "/removetouralert: Removes a tour alert for the specified tier"];
 var tourmodcommands = ["*** Parameter Information ***",
-                    "Parameters can be used by putting 'gen=x'; 'mode=singles/doubles/triples'; 'type=single/double'; 'wifi=on/off'.",
-                    "For example '/tour Challenge Cup:gen=RBY:mode=triples:type=double:wifi=on' starts a RBY Challenge Cup double elimination tournament (in Triples mode) with Team Preview.",
-                    "tour [tier]:[parameters]: starts a tier of that tournament.",
-                    "tourmute [player]:[reason]:[time]: tourmutes a problematic player.",
-                    "tourunmute [player]: untourmutes a player.",
-                    "tourmutes: list tour mutes.",
-                    "endtour [tour]: ends the tour of that tier",
-                    "sub [newname]:[oldname]: subs newname for oldname",
-                    "dq [player]: disqualifies a player",
-                    "remove [tour/number]: removes a tournament from the queue. If a number is put in, it will remove the tour in the queue with the corresponding number. If a tier is put in, it will remove the tournament of that tier (starting from the back)",
-                    "cancelbattle [name]: cancels that player's current battle",
-                    "config: shows config settings",
-                    "configset [var]:[value]: changes config settings",
-                    "start: starts next tournament in the queue immediately (use sparingly)",
-                    "viewstaffstats [name]: views tournament staff stats for a user",
-                    "shift [tier]:[parameters]: places a tournament in the front of the queue",
-                    "passmu [name]: passes your megauser to a new name"];
-var tourownercommands = ["megauser [name]: makes someone a megauser",
-                    "megauseroff [name]: fires someone from being tournament authority",
-                    "forcestart: ends signups immediately and starts the first round",
-                    "muhistory [days]: views the activity of megausers (days is optional, if excluded it will get the last 7 days if possible)",
-                    "stopautostart: if there are no tournaments running, this will stop new ones from being automatically started by the server until another one is started manually.",
-                    "tourstart [tier]:[parameters]: starts a tier of that tournament immediately, provided one is not in signups.",
-                    "clearrankings [all/month]: clears the tour rankings, 'all' clears all history, [month] will only clear a particular month (eg /clearrankings January)",
-                    "addrangewarning [ip range]: adds a range warning",
-                    "removerangewarning [ip range]: removes a range warning",
-                    "rangewarns: checks the current range warnings",
-                    "evalvars: checks the current variable list for tours",
-                    "resettours: resets the entire tournament system in the event of a critical failure",
-                    "starttours: reverts effect of /stoptours",
-                    "stoptours: stops the tournament system for maintenance",
-                    "fullleaderboard [tier]: gives the full leaderboard",
-                    "loadevents: load event tours"];
+                    "Parameters: They can be used by putting 'gen=x'; 'mode=singles/doubles/triples'; 'type=single/double'; 'wifi=on/off'.",
+                    "For example: '/tour Challenge Cup:gen=RBY:mode=triples:type=double:wifi=on' starts a RBY Challenge Cup double elimination tournament (in Triples mode) with Team Preview.",
+                    "/tour: Puts a tour in the queue. Format is /tour tier:parameters",
+                    "/tourmute: Tourmutes a problematic player. Format is /tourmute player:reason:time",
+                    "/tourunmute: Untourmutes a player.",
+                    "/tourmutes: Lists tour mutes.",
+                    "/endtour: Ands the tour of the specified tier",
+                    "/sub: Subs in a player for another in a tournament. Format is /sub newname:oldname",
+                    "/dq: disqualifies a player",
+                    "/remove [tour/number]: Removes a tournament from the queue. If a number is put in, it will remove the tour in the queue with the corresponding number. If a tier is put in, it will remove the tournament of that tier (starting from the back)",
+                    "/cancelbattle: Cancels a player's current battle",
+                    "/start: Starts next tournament in the queue immediately (use sparingly)",
+                    "/viewstaffstats: Views tournament staff stats for a user",
+                    "/shift: Places a tournament in the front of the queue. Format is /shift tier:parameters",
+                    "/passmu: Passes your megauser to a new name"];
+var tourownercommands = ["/megauser: Makes someone a megauser",
+                    "/megauseroff: Fires someone from being tournament authority",
+                    "/forcestart: Ends signups immediately and starts the first round",
+                    "/muhistory [days]: Views the activity of megausers (days is optional, if excluded it will get the last 7 days if possible)",
+                    "/stopautostart: If there are no tournaments running, this will stop new ones from being automatically started by the server until another one is started manually.",
+                    "/tourstart: Starts a tour of that tournament immediately, provided one is not in signups. Format is /tourstart tier:parameters",
+                    "/clearrankings [all/month]: Clears the tour rankings, 'all' clears all history, [month] will only clear a particular month (eg /clearrankings January)",
+                    "/cleareventrankings [all/month]: Clears the event rankings, 'all' clears all history, [month] will only clear a particular month (eg /clearrankings January)",
+                    "/clearmetric: Clears all tournaments stats (?)",
+                    "/rundecay: Forces a calculation of decay (?)",
+                    "/purgekeys: Purges non-usable keys (??)",
+                    "/addrangewarning: Adds a warning for an IP range",
+                    "/removerangewarning: Removes a warning for an IP range",
+                    "/rangewarns: Checks the current IP range warnings",
+                    "/evalvars: Checks the current variable list for tours",
+                    "/config: Shows config settings",
+                    "/configset: Changes config settings. Format is /configset var:value",
+                    "/resettours: Resets the entire tournament system in the event of a critical failure",
+                    "/starttours: Reverts effect of /stoptours",
+                    "/stoptours: Stops the tournament system for maintenance",
+                    "/fullleaderboard: Gives the full leaderboard for a specified tier",
+                    "/fullmonthlyleaderboard: Gives the full monthly leaderboard for a specified month",
+                    "/loadevents: Load event tours"];
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "Breaking the following rules may result in punishment:",
                 "#1: Team revealing or scouting in tiers other than CC, Battle Factory or Metronome will result in disqualification.",
@@ -1486,6 +1491,423 @@ function tourCommand(src, command, commandData, channel) {
                 }
                 return true;
             }
+            if (command == "config") {
+                sys.sendMessage(src,"*** CURRENT CONFIGURATION ***",tourschan);
+                sys.sendMessage(src,"Maximum Queue Length: "+tourconfig.maxqueue,tourschan);
+                sys.sendMessage(src,"Maximum Number of Automatic Simultaneous Tours: "+tourconfig.maxrunning,tourschan);
+                sys.sendMessage(src,"Tour Sign Ups Length: "+time_handle(tourconfig.toursignup),tourschan);
+                sys.sendMessage(src,"Tour Auto DQ length: "+time_handle(tourconfig.tourdq),tourschan);
+                sys.sendMessage(src,"Tour Activity Check: "+time_handle(tourconfig.activity),tourschan);
+                sys.sendMessage(src,"Substitute Time: "+time_handle(tourconfig.subtime),tourschan);
+                sys.sendMessage(src,"Tour Break Time: "+time_handle(tourconfig.tourbreak),tourschan);
+                sys.sendMessage(src,"Absolute Tour Break Time: "+time_handle(tourconfig.abstourbreak),tourschan);
+                sys.sendMessage(src,"Tour Reminder Time: "+time_handle(tourconfig.reminder),tourschan);
+                sys.sendMessage(src,"Auto start when percentage of players is less than: "+tourconfig.minpercent+"%",tourschan);
+                sys.sendMessage(src,"Minimum number of players: "+tourconfig.minplayers,tourschan);
+                sys.sendMessage(src,"Decay Rate: "+tourconfig.decayrate+"%",tourschan);
+                sys.sendMessage(src,"Decay Time: "+tourconfig.decaytime+" days",tourschan);
+                sys.sendMessage(src,"Decay Global Rate: "+tourconfig.decayglobalrate+"%",tourschan);
+                sys.sendMessage(src,"Same tier restrictions: "+tourconfig.norepeat+" tournaments",tourschan);
+                sys.sendMessage(src,"Bot Name: "+tourconfig.tourbot,tourschan);
+                sys.sendMessage(src,"Colour: "+tourconfig.tourbotcolour,tourschan);
+                sys.sendMessage(src,"Channel: "+tourconfig.channel,tourschan);
+                sys.sendMessage(src,"Error Channel: "+tourconfig.errchannel,tourschan);
+                sys.sendMessage(src,"Scoring system activated: "+tourconfig.points,tourschan);
+                sys.sendMessage(src,"Using winmessages: "+tourconfig.winmessages,tourschan);
+                sys.sendMessage(src,"Debug: "+tourconfig.debug,tourschan);
+                return true;
+            }
+            if (command == "configset") {
+                var pos = commandData.indexOf(":");
+                if (pos == -1) {
+                    sys.sendMessage(src,"*** CONFIG SETTINGS ***",tourschan);
+                    sys.sendMessage(src,"Usage: /configset [var]:[value]. Variable list and current values are below:",tourschan);
+                    sys.sendMessage(src,"Example: '/configset maxqueue:3' will set the maximum queue length to 3:",tourschan);
+                    sys.sendMessage(src,"maxqueue: "+tourconfig.maxqueue,tourschan);
+                    sys.sendMessage(src,"maxrunning: "+tourconfig.maxrunning,tourschan);
+                    sys.sendMessage(src,"toursignup: "+time_handle(tourconfig.toursignup),tourschan);
+                    sys.sendMessage(src,"tourdq: "+time_handle(tourconfig.tourdq),tourschan);
+                    sys.sendMessage(src,"touractivity: "+time_handle(tourconfig.activity),tourschan);
+                    sys.sendMessage(src,"subtime: "+time_handle(tourconfig.subtime),tourschan);
+                    sys.sendMessage(src,"breaktime: "+time_handle(tourconfig.tourbreak),tourschan);
+                    sys.sendMessage(src,"absbreaktime: "+time_handle(tourconfig.abstourbreak),tourschan);
+                    sys.sendMessage(src,"remindertime: "+time_handle(tourconfig.reminder),tourschan);
+                    sys.sendMessage(src,"minpercent: "+tourconfig.minpercent,tourschan);
+                    sys.sendMessage(src,"minplayers: "+tourconfig.minplayers,tourschan);
+                    sys.sendMessage(src,"decayrate: "+tourconfig.decayrate,tourschan);
+                    sys.sendMessage(src,"decaytime: "+tourconfig.decaytime,tourschan);
+                    sys.sendMessage(src,"decayglobalrate: "+tourconfig.decayglobalrate,tourschan);
+                    sys.sendMessage(src,"norepeat: "+tourconfig.norepeat,tourschan);
+                    sys.sendMessage(src,"botname: "+tourconfig.tourbot,tourschan);
+                    sys.sendMessage(src,"colour: "+tourconfig.tourbotcolour,tourschan);
+                    sys.sendMessage(src,"channel: "+tourconfig.channel,tourschan);
+                    sys.sendMessage(src,"scoring: "+tourconfig.points,tourschan);
+                    sys.sendMessage(src,"winmessages: "+tourconfig.winmessages,tourschan);
+                    sys.sendMessage(src,"debug: "+tourconfig.debug+" (to change this, type /debug [on/off])",tourschan);
+                    return true;
+                }
+                var option = commandData.substr(0,pos).toLowerCase();
+                var value;
+                if (["botname", "bot name", "channel", "errchannel", "color", "colour", "debug", "winmessages"].indexOf(option) == -1) {
+                    if (['minpercent', 'decayrate', 'decaytime', 'decayglobalrate'].indexOf(option) != -1) {
+                        value = parseFloat(commandData.substr(pos+1));
+                    }
+                    else {
+                        value = parseInt(commandData.substr(pos+1), 10);
+                    }
+                }
+                else {
+                    var value = commandData.substr(pos+1);
+                }
+                if (option == 'maxqueue' || option == "maximum queue length") {
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"A value between 1 and 255 that determines the maximum queue length. Admins and owners can bypass this restriction.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.maxqueue,tourschan,false);
+                        return true;
+                    }
+                    else if (value < 1 || value > 255) {
+                        sendBotMessage(src,"Value must be between 1 and 255.",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.maxqueue = value;
+                    sys.saveVal(configDir+"tourconfig.txt", "maxqueue", value);
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the maximum queue length to "+tourconfig.maxqueue);
+                    return true;
+                }
+                else if (option == 'maxrunning' || option == 'maximum number of simultaneous tours') {
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"A value between 1 and 255 that determines the maximum rumber of simultaneous tours.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.maxrunning,tourschan,false);
+                        return true;
+                    }
+                    else if (value < 1 || value > 255) {
+                        sendBotMessage(src,"Value must be between 1 and 255.",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.maxrunning = value;
+                    sys.saveVal(configDir+"tourconfig.txt", "maxrunning", value);
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the maximum number of simultaneous tours to "+tourconfig.maxrunning);
+                    return true;
+                }
+                else if (option == 'toursignup' || option == 'tour sign ups length') {
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"A value (in seconds) between 10 and 600 that determines the intial signup length.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.toursignup,tourschan,false);
+                        return true;
+                    }
+                    else if (value < 10 || value > 600) {
+                        sendBotMessage(src,"Value must be between 10 and 600.",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.toursignup = value;
+                    sys.saveVal(configDir+"tourconfig.txt", "toursignup", value);
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the sign up time to "+time_handle(tourconfig.toursignup));
+                    return true;
+                }
+                else if (option == 'tourdq' || option == 'tour auto dq length') {
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"A value (in seconds) between 30 and 300 that determines how long it is before inactive users are disqualified.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.tourdq,tourschan,false);
+                        return true;
+                    }
+                    else if (value < 30 || value > 300) {
+                        sendBotMessage(src,"Value must be between 30 and 300.",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.tourdq = value;
+                    sys.saveVal(configDir+"tourconfig.txt", "tourdq", value);
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the disqualification time to "+time_handle(tourconfig.tourdq));
+                    return true;
+                }
+                else if (option == 'touractivity' || option == 'tour activity check') {
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"A value (in seconds) between 60 and 300 that determines how long it is from a user's last message before a user is considered inactive.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.activity,tourschan,false);
+                        return true;
+                    }
+                    else if (value < 60 || value > 300) {
+                        sendBotMessage(src,"Value must be between 60 and 300.",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.activity = value;
+                    sys.saveVal(configDir+"tourconfig.txt", "touractivity", value);
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the activity time to "+time_handle(tourconfig.activity));
+                    return true;
+                }
+                else if (option == 'subtime' || option == 'substitute time') {
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"A value (in seconds) between 30 and 300 that determines how long it is before subs are disqualified.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.subtime,tourschan,false);
+                        return true;
+                    }
+                    else if (value < 30 || value > 300) {
+                        sendBotMessage(src,"Value must be between 30 and 300.",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.subtime = value;
+                    sys.saveVal(configDir+"tourconfig.txt", "subtime", value);
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the sub time to "+time_handle(tourconfig.subtime));
+                    return true;
+                }
+                else if (option == 'breaktime' || option == 'tour break time') {
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"A value (in seconds) between 30 and 300 that determines how long it is before another tournament is started if one gets cancelled.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.tourbreak,tourschan,false);
+                        return true;
+                    }
+                    else if (value < 30 || value > 300) {
+                        sendBotMessage(src,"Value must be between 30 and 300.",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.tourbreak = value;
+                    sys.saveVal(configDir+"tourconfig.txt", "breaktime", value);
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the break time (betweeen cancelled tournaments) to "+time_handle(tourconfig.tourbreak));
+                    return true;
+                }
+                else if (option == 'absbreaktime' || option == 'absolute tour break time') {
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"A value (in seconds) between 300 and 1800 that influences how long it is between tournaments starting. The actual time will depend on other factors.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.abstourbreak,tourschan,false);
+                        return true;
+                    }
+                    else if (value < 300 || value > 1800) {
+                        sendBotMessage(src,"Value must be between 300 and 1800.",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.abstourbreak = value;
+                    sys.saveVal(configDir+"tourconfig.txt", "absbreaktime", value);
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the absolute break time (base time between starting tours) to "+time_handle(tourconfig.abstourbreak));
+                    return true;
+                }
+                else if (option == 'remindertime' || option == 'tour reminder time') {
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"A value (in seconds) that determines how long it is before a battle reminder is sent to players from the start of the round",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.reminder,tourschan,false);
+                        return true;
+                    }
+                    else if (value < 15 || value > (tourconfig.tourdq-30)) {
+                        sendBotMessage(src,"Value must be between 15 and "+(tourconfig.tourdq-30)+".",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.reminder = value;
+                    sys.saveVal(configDir+"tourconfig.txt", "remindertime", value);
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the reminder time to "+time_handle(tourconfig.reminder));
+                    return true;
+                }
+                else if (option == 'minpercent') {
+                    if (!isTourOwner(src)) {
+                        sendBotMessage(src,"Can't change this config setting, ask an admin for this.",tourschan,false);
+                        return true;
+                    }
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"When the percentage of players drops below this value, a new tournament will start if possible. Overides maximum number of simultaneous tours.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.minpercent+"%",tourschan,false);
+                        return true;
+                    }
+                    else if (value < 0 || value > 30) {
+                        sendBotMessage(src,"Value must be between 0 and 30.",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.minpercent = value;
+                    sys.saveVal(configDir+"tourconfig.txt", "minpercent", value);
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the auto start percentage to "+tourconfig.minpercent+"%");
+                    return true;
+                }
+                else if (option == 'norepeat') {
+                    if (!isTourOwner(src)) {
+                        sendBotMessage(src,"Can't change this config setting, ask an admin for this.",tourschan,false);
+                        return true;
+                    }
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"Minimum number of tours that must run before another one of the same tier can run.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.norepeat+" tournaments.",tourschan,false);
+                        return true;
+                    }
+                    else if (value < 0 || value > (sys.getTierList().length - 1)) {
+                        sendBotMessage(src,"Value must be between 0 and "+(sys.getTierList().length - 1)+".",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.norepeat = value;
+                    sys.saveVal(configDir+"tourconfig.txt", "norepeat", value);
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the repeat limit to "+tourconfig.norepeat+" tournaments");
+                    return true;
+                }
+                else if (option == 'minplayers') {
+                    if (!isTourOwner(src)) {
+                        sendBotMessage(src,"Can't change minimum number of players, ask a tour owner.",tourschan,false);
+                        return true;
+                    }
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"Minimum muber of players required to start a tournament.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.minplayers,tourschan,false);
+                        return true;
+                    }
+                    if (value < 3 || value > 255) {
+                        sendBotMessage(src,"Value must be between 3 and 255.",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.minplayers = value;
+                    sys.saveVal(configDir+"tourconfig.txt", "minplayers", value);
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the minimum number of players to "+tourconfig.minplayers,tourschan,false);
+                    return true;
+                }
+                else if (option == 'winmessages') {
+                    if (!isTourOwner(src)) {
+                        sendBotMessage(src,"Can't turn win messages on/off, ask an admin.",tourschan,false);
+                        return true;
+                    }
+                    if (value === "") {
+                        sendBotMessage(src,"Using winmessages.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.winmessages,tourschan,false);
+                        return true;
+                    }
+                    if (value !== "off") {
+                        value = "on";
+                    }
+                    tourconfig.winmessages = value === "off" ? false : true;
+                    sys.saveVal(configDir+"tourconfig.txt", "winmessages", value);
+                    sendBotAll(sys.name(src)+" "+(tourconfig.winmessages ? "enabled" : "disabled")+" custom win messages.",tourschan,false);
+                    return true;
+                }
+                else if (option == 'color' || option == 'colour') {
+                    if (!isTourOwner(src)) {
+                        sendBotMessage(src,"Can't change the bot colour, ask an owner for this.",tourschan,false);
+                        return true;
+                    }
+                    else if (value.length !== 6) {
+                        sendBotMessage(src,"String must be 6 hexnumbers long",tourschan,false);
+                        return true;
+                    }
+                    for (var x=0;x<6;x++) {
+                        var allowedchars = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
+                        if (allowedchars.indexOf(value.charAt(x)) == -1) {
+                            sendBotMessage(src,"There was an error with the colour code you tried to put in.",tourschan,false);
+                            return true;
+                        }
+                    }
+                    tourconfig.tourbotcolour = "#"+value;
+                    sys.saveVal(configDir+"tourconfig.txt", "tourbotcolour", "#"+value);
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the tourbot colour to "+tourconfig.tourbotcolour,tourschan,false);
+                    return true;
+                }
+                else if (option == 'botname' || option == 'bot name') {
+                    if (!isTourOwner(src)) {
+                        sendBotMessage(src,"Can't change the botname, ask an owner for this.",tourschan,false);
+                        return true;
+                    }
+                    else if (value.length === 0) {
+                        sendBotMessage(src,"Botname can't be empty!",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.tourbot = value+" ";
+                    sys.saveVal(configDir+"tourconfig.txt", "tourbot", value+" ");
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the tourbot name to "+tourconfig.tourbot,tourschan,false);
+                    return true;
+                }
+                else if (option == 'channel') {
+                    if (!isTourOwner(src)) {
+                        sendBotMessage(src,"Can't change the channel, ask an owner for this.",tourschan,false);
+                        return true;
+                    }
+                    else if (!sys.existChannel(value)) {
+                        sendBotMessage(src,"The channel needs to exist!",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.channel = value;
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the tournament channel to "+tourconfig.channel,tourschan,false);
+                    tourschan = sys.channelId(tourconfig.channel);
+                    sendChanAll("Version "+tourconfig.version+" of tournaments has been loaded successfully in this channel!", tourschan);
+                    return true;
+                }
+                else if (option == 'scoring') {
+                    if (!isTourOwner(src)) {
+                        sendBotMessage(src,"Can't turn scoring on/off, ask an owner for this.",tourschan,false);
+                        return true;
+                    }
+                    if (value !== 0 && value != 1) {
+                        sendBotMessage(src,"Value must be 0 (turns debug off) or 1 (turns it on).",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.points = (value == 1 ? true : false);
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the scoring mode to "+tourconfig.points,tourschan,false);
+                    return true;
+                }
+                else if (option == 'debug') {
+                    if (!isTourOwner(src)) {
+                        sendBotMessage(src,"Can't turn debug on/off, ask an owner for this.",tourschan,false);
+                        return true;
+                    }
+                    if (cmp(value, "on")) {
+                        sendBotMessage(src,"You turned debug mode on!",tourschan,false);
+                        tourconfig.debug = sys.name(src);
+                        return true;
+                    }
+                    tourconfig.debug = false;
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" turned debug off.",tourschan,false);
+                    return true;
+                }
+                else if (option == 'decayrate') {
+                    if (!isTourOwner(src)) {
+                        sendBotMessage(src,"Can't change this config setting, ask an owner for this.",tourschan,false);
+                        return true;
+                    }
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"Decay rate of seed rankings, in %.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.decayrate+"%",tourschan,false);
+                        return true;
+                    }
+                    else if (value < 0 || value > 100) {
+                        sendBotMessage(src,"Value must be between 0 and 100.",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.decayrate = value;
+                    sys.saveVal(configDir+"tourconfig.txt", "decayrate", value);
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the decay percentage to "+tourconfig.decayrate+"%");
+                    return true;
+                }
+                else if (option == 'decaytime') {
+                    if (!isTourOwner(src)) {
+                        sendBotMessage(src,"Can't change this config setting, ask an owner for this.",tourschan,false);
+                        return true;
+                    }
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"Frequency of decay, in days.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.decaytime+" days",tourschan,false);
+                        return true;
+                    }
+                    else if (value < 0 || value > 30) {
+                        sendBotMessage(src,"Value must be between 0 and 30.",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.decaytime = value;
+                    sys.saveVal(configDir+"tourconfig.txt", "decaytime", value);
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the decay time to "+tourconfig.decaytime+" days.");
+                    return true;
+                }
+                else if (option == 'decayglobalrate') {
+                    if (!isTourOwner(src)) {
+                        sendBotMessage(src,"Can't change this config setting, ask an owner for this.",tourschan,false);
+                        return true;
+                    }
+                    if (isNaN(value)) {
+                        sendBotMessage(src,"Global decay rate of seed rankings, in %.",tourschan,false);
+                        sendBotMessage(src,"Current Value: "+tourconfig.decayglobalrate+"%",tourschan,false);
+                        return true;
+                    }
+                    else if (value < 0 || value > 100) {
+                        sendBotMessage(src,"Value must be between 0 and 100.",tourschan,false);
+                        return true;
+                    }
+                    tourconfig.decayglobalrate = value;
+                    sys.saveVal(configDir+"tourconfig.txt", "decayglobalrate", value);
+                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the global decay percentage to "+tourconfig.decayglobalrate+"%");
+                    return true;
+                }
+                else {
+                    sendBotMessage(src,"The configuration option '"+option+"' does not exist.",tourschan,false);
+                    return true;
+                }
+            }
             if (command == "stopautostart") {
                 tours.globaltime = -1;
                 sendBotAll(sys.name(src)+" stopped tournaments from auto starting for now, this will be removed when another tour is started.",tourschan,false);
@@ -1984,423 +2406,6 @@ function tourCommand(src, command, commandData, channel) {
                 }
                 return true;
             }
-            if (command == "config") {
-                sys.sendMessage(src,"*** CURRENT CONFIGURATION ***",tourschan);
-                sys.sendMessage(src,"Maximum Queue Length: "+tourconfig.maxqueue,tourschan);
-                sys.sendMessage(src,"Maximum Number of Automatic Simultaneous Tours: "+tourconfig.maxrunning,tourschan);
-                sys.sendMessage(src,"Tour Sign Ups Length: "+time_handle(tourconfig.toursignup),tourschan);
-                sys.sendMessage(src,"Tour Auto DQ length: "+time_handle(tourconfig.tourdq),tourschan);
-                sys.sendMessage(src,"Tour Activity Check: "+time_handle(tourconfig.activity),tourschan);
-                sys.sendMessage(src,"Substitute Time: "+time_handle(tourconfig.subtime),tourschan);
-                sys.sendMessage(src,"Tour Break Time: "+time_handle(tourconfig.tourbreak),tourschan);
-                sys.sendMessage(src,"Absolute Tour Break Time: "+time_handle(tourconfig.abstourbreak),tourschan);
-                sys.sendMessage(src,"Tour Reminder Time: "+time_handle(tourconfig.reminder),tourschan);
-                sys.sendMessage(src,"Auto start when percentage of players is less than: "+tourconfig.minpercent+"%",tourschan);
-                sys.sendMessage(src,"Minimum number of players: "+tourconfig.minplayers,tourschan);
-                sys.sendMessage(src,"Decay Rate: "+tourconfig.decayrate+"%",tourschan);
-                sys.sendMessage(src,"Decay Time: "+tourconfig.decaytime+" days",tourschan);
-                sys.sendMessage(src,"Decay Global Rate: "+tourconfig.decayglobalrate+"%",tourschan);
-                sys.sendMessage(src,"Same tier restrictions: "+tourconfig.norepeat+" tournaments",tourschan);
-                sys.sendMessage(src,"Bot Name: "+tourconfig.tourbot,tourschan);
-                sys.sendMessage(src,"Colour: "+tourconfig.tourbotcolour,tourschan);
-                sys.sendMessage(src,"Channel: "+tourconfig.channel,tourschan);
-                sys.sendMessage(src,"Error Channel: "+tourconfig.errchannel,tourschan);
-                sys.sendMessage(src,"Scoring system activated: "+tourconfig.points,tourschan);
-                sys.sendMessage(src,"Using winmessages: "+tourconfig.winmessages,tourschan);
-                sys.sendMessage(src,"Debug: "+tourconfig.debug,tourschan);
-                return true;
-            }
-            if (command == "configset") {
-                var pos = commandData.indexOf(":");
-                if (pos == -1) {
-                    sys.sendMessage(src,"*** CONFIG SETTINGS ***",tourschan);
-                    sys.sendMessage(src,"Usage: /configset [var]:[value]. Variable list and current values are below:",tourschan);
-                    sys.sendMessage(src,"Example: '/configset maxqueue:3' will set the maximum queue length to 3:",tourschan);
-                    sys.sendMessage(src,"maxqueue: "+tourconfig.maxqueue,tourschan);
-                    sys.sendMessage(src,"maxrunning: "+tourconfig.maxrunning,tourschan);
-                    sys.sendMessage(src,"toursignup: "+time_handle(tourconfig.toursignup),tourschan);
-                    sys.sendMessage(src,"tourdq: "+time_handle(tourconfig.tourdq),tourschan);
-                    sys.sendMessage(src,"touractivity: "+time_handle(tourconfig.activity),tourschan);
-                    sys.sendMessage(src,"subtime: "+time_handle(tourconfig.subtime),tourschan);
-                    sys.sendMessage(src,"breaktime: "+time_handle(tourconfig.tourbreak),tourschan);
-                    sys.sendMessage(src,"absbreaktime: "+time_handle(tourconfig.abstourbreak),tourschan);
-                    sys.sendMessage(src,"remindertime: "+time_handle(tourconfig.reminder),tourschan);
-                    sys.sendMessage(src,"minpercent: "+tourconfig.minpercent,tourschan);
-                    sys.sendMessage(src,"minplayers: "+tourconfig.minplayers,tourschan);
-                    sys.sendMessage(src,"decayrate: "+tourconfig.decayrate,tourschan);
-                    sys.sendMessage(src,"decaytime: "+tourconfig.decaytime,tourschan);
-                    sys.sendMessage(src,"decayglobalrate: "+tourconfig.decayglobalrate,tourschan);
-                    sys.sendMessage(src,"norepeat: "+tourconfig.norepeat,tourschan);
-                    sys.sendMessage(src,"botname: "+tourconfig.tourbot,tourschan);
-                    sys.sendMessage(src,"colour: "+tourconfig.tourbotcolour,tourschan);
-                    sys.sendMessage(src,"channel: "+tourconfig.channel,tourschan);
-                    sys.sendMessage(src,"scoring: "+tourconfig.points,tourschan);
-                    sys.sendMessage(src,"winmessages: "+tourconfig.winmessages,tourschan);
-                    sys.sendMessage(src,"debug: "+tourconfig.debug+" (to change this, type /debug [on/off])",tourschan);
-                    return true;
-                }
-                var option = commandData.substr(0,pos).toLowerCase();
-                var value;
-                if (["botname", "bot name", "channel", "errchannel", "color", "colour", "debug", "winmessages"].indexOf(option) == -1) {
-                    if (['minpercent', 'decayrate', 'decaytime', 'decayglobalrate'].indexOf(option) != -1) {
-                        value = parseFloat(commandData.substr(pos+1));
-                    }
-                    else {
-                        value = parseInt(commandData.substr(pos+1), 10);
-                    }
-                }
-                else {
-                    var value = commandData.substr(pos+1);
-                }
-                if (option == 'maxqueue' || option == "maximum queue length") {
-                    if (isNaN(value)) {
-                        sendBotMessage(src,"A value between 1 and 255 that determines the maximum queue length. Admins and owners can bypass this restriction.",tourschan,false);
-                        sendBotMessage(src,"Current Value: "+tourconfig.maxqueue,tourschan,false);
-                        return true;
-                    }
-                    else if (value < 1 || value > 255) {
-                        sendBotMessage(src,"Value must be between 1 and 255.",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.maxqueue = value;
-                    sys.saveVal(configDir+"tourconfig.txt", "maxqueue", value);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the maximum queue length to "+tourconfig.maxqueue);
-                    return true;
-                }
-                else if (option == 'maxrunning' || option == 'maximum number of simultaneous tours') {
-                    if (isNaN(value)) {
-                        sendBotMessage(src,"A value between 1 and 255 that determines the maximum rumber of simultaneous tours.",tourschan,false);
-                        sendBotMessage(src,"Current Value: "+tourconfig.maxrunning,tourschan,false);
-                        return true;
-                    }
-                    else if (value < 1 || value > 255) {
-                        sendBotMessage(src,"Value must be between 1 and 255.",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.maxrunning = value;
-                    sys.saveVal(configDir+"tourconfig.txt", "maxrunning", value);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the maximum number of simultaneous tours to "+tourconfig.maxrunning);
-                    return true;
-                }
-                else if (option == 'toursignup' || option == 'tour sign ups length') {
-                    if (isNaN(value)) {
-                        sendBotMessage(src,"A value (in seconds) between 10 and 600 that determines the intial signup length.",tourschan,false);
-                        sendBotMessage(src,"Current Value: "+tourconfig.toursignup,tourschan,false);
-                        return true;
-                    }
-                    else if (value < 10 || value > 600) {
-                        sendBotMessage(src,"Value must be between 10 and 600.",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.toursignup = value;
-                    sys.saveVal(configDir+"tourconfig.txt", "toursignup", value);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the sign up time to "+time_handle(tourconfig.toursignup));
-                    return true;
-                }
-                else if (option == 'tourdq' || option == 'tour auto dq length') {
-                    if (isNaN(value)) {
-                        sendBotMessage(src,"A value (in seconds) between 30 and 300 that determines how long it is before inactive users are disqualified.",tourschan,false);
-                        sendBotMessage(src,"Current Value: "+tourconfig.tourdq,tourschan,false);
-                        return true;
-                    }
-                    else if (value < 30 || value > 300) {
-                        sendBotMessage(src,"Value must be between 30 and 300.",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.tourdq = value;
-                    sys.saveVal(configDir+"tourconfig.txt", "tourdq", value);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the disqualification time to "+time_handle(tourconfig.tourdq));
-                    return true;
-                }
-                else if (option == 'touractivity' || option == 'tour activity check') {
-                    if (isNaN(value)) {
-                        sendBotMessage(src,"A value (in seconds) between 60 and 300 that determines how long it is from a user's last message before a user is considered inactive.",tourschan,false);
-                        sendBotMessage(src,"Current Value: "+tourconfig.activity,tourschan,false);
-                        return true;
-                    }
-                    else if (value < 60 || value > 300) {
-                        sendBotMessage(src,"Value must be between 60 and 300.",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.activity = value;
-                    sys.saveVal(configDir+"tourconfig.txt", "touractivity", value);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the activity time to "+time_handle(tourconfig.activity));
-                    return true;
-                }
-                else if (option == 'subtime' || option == 'substitute time') {
-                    if (isNaN(value)) {
-                        sendBotMessage(src,"A value (in seconds) between 30 and 300 that determines how long it is before subs are disqualified.",tourschan,false);
-                        sendBotMessage(src,"Current Value: "+tourconfig.subtime,tourschan,false);
-                        return true;
-                    }
-                    else if (value < 30 || value > 300) {
-                        sendBotMessage(src,"Value must be between 30 and 300.",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.subtime = value;
-                    sys.saveVal(configDir+"tourconfig.txt", "subtime", value);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the sub time to "+time_handle(tourconfig.subtime));
-                    return true;
-                }
-                else if (option == 'breaktime' || option == 'tour break time') {
-                    if (isNaN(value)) {
-                        sendBotMessage(src,"A value (in seconds) between 30 and 300 that determines how long it is before another tournament is started if one gets cancelled.",tourschan,false);
-                        sendBotMessage(src,"Current Value: "+tourconfig.tourbreak,tourschan,false);
-                        return true;
-                    }
-                    else if (value < 30 || value > 300) {
-                        sendBotMessage(src,"Value must be between 30 and 300.",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.tourbreak = value;
-                    sys.saveVal(configDir+"tourconfig.txt", "breaktime", value);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the break time (betweeen cancelled tournaments) to "+time_handle(tourconfig.tourbreak));
-                    return true;
-                }
-                else if (option == 'absbreaktime' || option == 'absolute tour break time') {
-                    if (isNaN(value)) {
-                        sendBotMessage(src,"A value (in seconds) between 300 and 1800 that influences how long it is between tournaments starting. The actual time will depend on other factors.",tourschan,false);
-                        sendBotMessage(src,"Current Value: "+tourconfig.abstourbreak,tourschan,false);
-                        return true;
-                    }
-                    else if (value < 300 || value > 1800) {
-                        sendBotMessage(src,"Value must be between 300 and 1800.",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.abstourbreak = value;
-                    sys.saveVal(configDir+"tourconfig.txt", "absbreaktime", value);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the absolute break time (base time between starting tours) to "+time_handle(tourconfig.abstourbreak));
-                    return true;
-                }
-                else if (option == 'remindertime' || option == 'tour reminder time') {
-                    if (isNaN(value)) {
-                        sendBotMessage(src,"A value (in seconds) that determines how long it is before a battle reminder is sent to players from the start of the round",tourschan,false);
-                        sendBotMessage(src,"Current Value: "+tourconfig.reminder,tourschan,false);
-                        return true;
-                    }
-                    else if (value < 15 || value > (tourconfig.tourdq-30)) {
-                        sendBotMessage(src,"Value must be between 15 and "+(tourconfig.tourdq-30)+".",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.reminder = value;
-                    sys.saveVal(configDir+"tourconfig.txt", "remindertime", value);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the reminder time to "+time_handle(tourconfig.reminder));
-                    return true;
-                }
-                else if (option == 'minpercent') {
-                    if (!isTourOwner(src)) {
-                        sendBotMessage(src,"Can't change this config setting, ask an admin for this.",tourschan,false);
-                        return true;
-                    }
-                    if (isNaN(value)) {
-                        sendBotMessage(src,"When the percentage of players drops below this value, a new tournament will start if possible. Overides maximum number of simultaneous tours.",tourschan,false);
-                        sendBotMessage(src,"Current Value: "+tourconfig.minpercent+"%",tourschan,false);
-                        return true;
-                    }
-                    else if (value < 0 || value > 30) {
-                        sendBotMessage(src,"Value must be between 0 and 30.",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.minpercent = value;
-                    sys.saveVal(configDir+"tourconfig.txt", "minpercent", value);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the auto start percentage to "+tourconfig.minpercent+"%");
-                    return true;
-                }
-                else if (option == 'norepeat') {
-                    if (!isTourOwner(src)) {
-                        sendBotMessage(src,"Can't change this config setting, ask an admin for this.",tourschan,false);
-                        return true;
-                    }
-                    if (isNaN(value)) {
-                        sendBotMessage(src,"Minimum number of tours that must run before another one of the same tier can run.",tourschan,false);
-                        sendBotMessage(src,"Current Value: "+tourconfig.norepeat+" tournaments.",tourschan,false);
-                        return true;
-                    }
-                    else if (value < 0 || value > (sys.getTierList().length - 1)) {
-                        sendBotMessage(src,"Value must be between 0 and "+(sys.getTierList().length - 1)+".",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.norepeat = value;
-                    sys.saveVal(configDir+"tourconfig.txt", "norepeat", value);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the repeat limit to "+tourconfig.norepeat+" tournaments");
-                    return true;
-                }
-                else if (option == 'minplayers') {
-                    if (!isTourOwner(src)) {
-                        sendBotMessage(src,"Can't change minimum number of players, ask a tour owner.",tourschan,false);
-                        return true;
-                    }
-                    if (isNaN(value)) {
-                        sendBotMessage(src,"Minimum muber of players required to start a tournament.",tourschan,false);
-                        sendBotMessage(src,"Current Value: "+tourconfig.minplayers,tourschan,false);
-                        return true;
-                    }
-                    if (value < 3 || value > 255) {
-                        sendBotMessage(src,"Value must be between 3 and 255.",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.minplayers = value;
-                    sys.saveVal(configDir+"tourconfig.txt", "minplayers", value);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the minimum number of players to "+tourconfig.minplayers,tourschan,false);
-                    return true;
-                }
-                else if (option == 'winmessages') {
-                    if (!isTourOwner(src)) {
-                        sendBotMessage(src,"Can't turn win messages on/off, ask an admin.",tourschan,false);
-                        return true;
-                    }
-                    if (value === "") {
-                        sendBotMessage(src,"Using winmessages.",tourschan,false);
-                        sendBotMessage(src,"Current Value: "+tourconfig.winmessages,tourschan,false);
-                        return true;
-                    }
-                    if (value !== "off") {
-                        value = "on";
-                    }
-                    tourconfig.winmessages = value === "off" ? false : true;
-                    sys.saveVal(configDir+"tourconfig.txt", "winmessages", value);
-                    sendBotAll(sys.name(src)+" "+(tourconfig.winmessages ? "enabled" : "disabled")+" custom win messages.",tourschan,false);
-                    return true;
-                }
-                else if (option == 'color' || option == 'colour') {
-                    if (!isTourOwner(src)) {
-                        sendBotMessage(src,"Can't change the bot colour, ask an owner for this.",tourschan,false);
-                        return true;
-                    }
-                    else if (value.length !== 6) {
-                        sendBotMessage(src,"String must be 6 hexnumbers long",tourschan,false);
-                        return true;
-                    }
-                    for (var x=0;x<6;x++) {
-                        var allowedchars = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
-                        if (allowedchars.indexOf(value.charAt(x)) == -1) {
-                            sendBotMessage(src,"There was an error with the colour code you tried to put in.",tourschan,false);
-                            return true;
-                        }
-                    }
-                    tourconfig.tourbotcolour = "#"+value;
-                    sys.saveVal(configDir+"tourconfig.txt", "tourbotcolour", "#"+value);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the tourbot colour to "+tourconfig.tourbotcolour,tourschan,false);
-                    return true;
-                }
-                else if (option == 'botname' || option == 'bot name') {
-                    if (!isTourOwner(src)) {
-                        sendBotMessage(src,"Can't change the botname, ask an owner for this.",tourschan,false);
-                        return true;
-                    }
-                    else if (value.length === 0) {
-                        sendBotMessage(src,"Botname can't be empty!",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.tourbot = value+" ";
-                    sys.saveVal(configDir+"tourconfig.txt", "tourbot", value+" ");
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the tourbot name to "+tourconfig.tourbot,tourschan,false);
-                    return true;
-                }
-                else if (option == 'channel') {
-                    if (!isTourOwner(src)) {
-                        sendBotMessage(src,"Can't change the channel, ask an owner for this.",tourschan,false);
-                        return true;
-                    }
-                    else if (!sys.existChannel(value)) {
-                        sendBotMessage(src,"The channel needs to exist!",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.channel = value;
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the tournament channel to "+tourconfig.channel,tourschan,false);
-                    tourschan = sys.channelId(tourconfig.channel);
-                    sendChanAll("Version "+tourconfig.version+" of tournaments has been loaded successfully in this channel!", tourschan);
-                    return true;
-                }
-                else if (option == 'scoring') {
-                    if (!isTourOwner(src)) {
-                        sendBotMessage(src,"Can't turn scoring on/off, ask an owner for this.",tourschan,false);
-                        return true;
-                    }
-                    if (value !== 0 && value != 1) {
-                        sendBotMessage(src,"Value must be 0 (turns debug off) or 1 (turns it on).",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.points = (value == 1 ? true : false);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the scoring mode to "+tourconfig.points,tourschan,false);
-                    return true;
-                }
-                else if (option == 'debug') {
-                    if (!isTourOwner(src)) {
-                        sendBotMessage(src,"Can't turn debug on/off, ask an owner for this.",tourschan,false);
-                        return true;
-                    }
-                    if (cmp(value, "on")) {
-                        sendBotMessage(src,"You turned debug mode on!",tourschan,false);
-                        tourconfig.debug = sys.name(src);
-                        return true;
-                    }
-                    tourconfig.debug = false;
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" turned debug off.",tourschan,false);
-                    return true;
-                }
-                else if (option == 'decayrate') {
-                    if (!isTourOwner(src)) {
-                        sendBotMessage(src,"Can't change this config setting, ask an owner for this.",tourschan,false);
-                        return true;
-                    }
-                    if (isNaN(value)) {
-                        sendBotMessage(src,"Decay rate of seed rankings, in %.",tourschan,false);
-                        sendBotMessage(src,"Current Value: "+tourconfig.decayrate+"%",tourschan,false);
-                        return true;
-                    }
-                    else if (value < 0 || value > 100) {
-                        sendBotMessage(src,"Value must be between 0 and 100.",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.decayrate = value;
-                    sys.saveVal(configDir+"tourconfig.txt", "decayrate", value);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the decay percentage to "+tourconfig.decayrate+"%");
-                    return true;
-                }
-                else if (option == 'decaytime') {
-                    if (!isTourOwner(src)) {
-                        sendBotMessage(src,"Can't change this config setting, ask an owner for this.",tourschan,false);
-                        return true;
-                    }
-                    if (isNaN(value)) {
-                        sendBotMessage(src,"Frequency of decay, in days.",tourschan,false);
-                        sendBotMessage(src,"Current Value: "+tourconfig.decaytime+" days",tourschan,false);
-                        return true;
-                    }
-                    else if (value < 0 || value > 30) {
-                        sendBotMessage(src,"Value must be between 0 and 30.",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.decaytime = value;
-                    sys.saveVal(configDir+"tourconfig.txt", "decaytime", value);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the decay time to "+tourconfig.decaytime+" days.");
-                    return true;
-                }
-                else if (option == 'decayglobalrate') {
-                    if (!isTourOwner(src)) {
-                        sendBotMessage(src,"Can't change this config setting, ask an owner for this.",tourschan,false);
-                        return true;
-                    }
-                    if (isNaN(value)) {
-                        sendBotMessage(src,"Global decay rate of seed rankings, in %.",tourschan,false);
-                        sendBotMessage(src,"Current Value: "+tourconfig.decayglobalrate+"%",tourschan,false);
-                        return true;
-                    }
-                    else if (value < 0 || value > 100) {
-                        sendBotMessage(src,"Value must be between 0 and 100.",tourschan,false);
-                        return true;
-                    }
-                    tourconfig.decayglobalrate = value;
-                    sys.saveVal(configDir+"tourconfig.txt", "decayglobalrate", value);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the global decay percentage to "+tourconfig.decayglobalrate+"%");
-                    return true;
-                }
-                else {
-                    sendBotMessage(src,"The configuration option '"+option+"' does not exist.",tourschan,false);
-                    return true;
-                }
-            }
         }
         // Normal User Commands
         if (command == "join") {
@@ -2800,39 +2805,7 @@ function tourCommand(src, command, commandData, channel) {
             }
             return true;
         }
-        if (command == "help" || command == "commands") {
-            var type = commandData.toLowerCase();
-            var headersent = false;
-            var sendHeader = function() {
-                if (!headersent) {
-                    sys.sendMessage(src, border,tourschan);
-                    sys.sendMessage(src, "*** Tournament Commands ***",tourschan);
-                    headersent = true;
-                }
-            };
-            if (type === "" || type == "tournament") {
-                sendHeader();
-                for (var t in tourcommands) {
-                    sys.sendMessage(src, tourcommands[t],tourschan);
-                }
-                sys.sendMessage(src, border,tourschan);
-            }
-            if (isMegaUser(src) && (type == "mod" || type == "megauser" || type === "")) {
-                sendHeader();
-                for (var m in tourmodcommands) {
-                    sys.sendMessage(src, tourmodcommands[m],tourschan);
-                }
-                sys.sendMessage(src, border,tourschan);
-            }
-            if (isTourOwner(src) && (type == "owner" || type === "")) {
-                sendHeader();
-                for (var o in tourownercommands) {
-                    sys.sendMessage(src, tourownercommands[o],tourschan);
-                }
-                sys.sendMessage(src, border,tourschan);
-            }
-            if (headersent) return true;
-        }
+
         if (command == "rules" || command == "tourrules") {
             sys.sendMessage(src, border,tourschan);
             for (var t in tourrules) {
@@ -4433,7 +4406,7 @@ function sendWelcomeMessage(src, chan) {
     if (!sys.dbRegistered(sys.name(src))) {
         sendBotMessage(src, "You need to register before playing in #"+sys.channel(chan)+"! Click on the 'Register' button below and follow the instructions!", chan, false);
     }
-    sys.sendMessage(src,"*** Use /help to view the commands; and use /rules to view the tournament rules! ***",chan);
+    sys.sendMessage(src,"*** Use /commands tournament to view the commands; and use /rules to view the tournament rules! ***",chan);
     sys.sendMessage(src,border,chan);
     var key = isInTour(sys.name(src));
     if (key !== false) {
@@ -4644,5 +4617,29 @@ module.exports = {
             }
         }
         return false;
-    }
+    },
+    
+    onHelp: function(src, commandData, channel) {
+        if (commandData === "tournaments") {
+            sys.sendMessage(src, "", channel);
+            sys.sendMessage(src, "*** Tournaments commands ***", channel);
+            for (var t in tourcommands) {
+                sys.sendMessage(src, tourcommands[t], channel);
+            }
+            if (isMegaUser(src)) {
+                sys.sendMessage(src, "*** Megauser commands ***", channel);
+                for (var m in tourmodcommands) {
+                    sys.sendMessage(src, tourmodcommands[m], channel);
+                }
+            }
+            if (isTourOwner(src)) {
+                sys.sendMessage(src, "*** Tournaments Owner commands ***", channel);
+                for (var o in tourownercommands) {
+                    sys.sendMessage(src, tourownercommands[o],tourschan);
+                }
+            }
+        }
+    },
+    
+    "help-string": ["tournaments: To know the tournament commands"]
 };
