@@ -1,4 +1,4 @@
-exports.handleCommand = function(src, command, commandData, tar) {
+exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "ipban") {
         var subip;
         var comment;
@@ -33,27 +33,27 @@ exports.handleCommand = function(src, command, commandData, tar) {
             }
         }
         if (!correct) {
-            normalbot.sendChanMessage(src, "The IP address looks strange, you might want to correct it: " + subip);
+            normalbot.sendMessage(src, "The IP address looks strange, you might want to correct it: " + subip, channel);
             return;
         }
         ipbans.add(subip, "Name: " +sys.name(src) + " Comment: " + rangebans.escapeValue(comment));
-        normalbot.sendChanAll("IP ban added successfully for IP subrange: " + subip + " by "+ sys.name(src),staffchannel);
+        normalbot.sendAll("IP ban added successfully for IP subrange: " + subip + " by "+ sys.name(src),staffchannel, channel);
         return;
     }
     if (command == "ipunban") {
         var subip = commandData;
         if (ipbans.get(subip) !== undefined) {
             ipbans.remove(subip);
-            normalbot.sendChanMessage(src, "IP ban removed successfully for IP subrange: " + subip);
+            normalbot.sendMessage(src, "IP ban removed successfully for IP subrange: " + subip, channel);
         } else {
-            normalbot.sendChanMessage(src, "No such IP ban.");
+            normalbot.sendMessage(src, "No such IP ban.", channel);
         }
         return;
     }
     if (command == "changerating") {
         var data =  commandData.split(' -- ');
         if (data.length != 3) {
-            normalbot.sendChanMessage(src, "You need to give 3 parameters.");
+            normalbot.sendMessage(src, "You need to give 3 parameters.", channel);
             return;
         }
         var player = data[0];
@@ -61,25 +61,25 @@ exports.handleCommand = function(src, command, commandData, tar) {
         var rating = parseInt(data[2], 10);
 
         sys.changeRating(player, tier, rating);
-        normalbot.sendChanMessage(src, "Rating of " + player + " in tier " + tier + " was changed to " + rating);
+        normalbot.sendMessage(src, "Rating of " + player + " in tier " + tier + " was changed to " + rating, channel);
         return;
     }
     if(command == "hiddenauth"){
-        sendChanMessage(src, "*** Hidden Auth ***");
+        sys.sendMessage(src, "*** Hidden Auth ***", channel);
         sys.dbAuths().sort().filter(function(name) { return sys.dbAuth(name) > 3; }).forEach(function(name) {
-            sendChanMessage(src, name + " " + sys.dbAuth(name));
+            sys.sendMessage(src, name + " " + sys.dbAuth(name), channel);
         });
-        sendChanMessage(src, "",channel);
+        sys.sendMessage(src, "",channel, channel);
         return;
     }
     if (command == "capslockday") {
         if (commandData == "off") {
             CAPSLOCKDAYALLOW = false;
-            normalbot.sendChanMessage(src, "You turned caps lock day off!");
+            normalbot.sendMessage(src, "You turned caps lock day off!", channel);
         }
         else if (commandData == "on") {
             CAPSLOCKDAYALLOW = true;
-            normalbot.sendChanMessage(src, "You turned caps lock day on!");
+            normalbot.sendMessage(src, "You turned caps lock day on!", channel);
         }
         return;
     }
@@ -87,10 +87,10 @@ exports.handleCommand = function(src, command, commandData, tar) {
         var s = commandData.split(":");
         var name = s[0], reason = s[1];
         if (sys.dbIp(name) === undefined) {
-            normalbot.sendChanMessage(src, name + " couldn't be found.");
+            normalbot.sendMessage(src, name + " couldn't be found.", channel);
             return;
         }
-        normalbot.sendChanMessage(src, name + " is now a contributor!");
+        normalbot.sendMessage(src, name + " is now a contributor!", channel);
         contributors.add(name, reason);
         return;
     }
@@ -101,11 +101,11 @@ exports.handleCommand = function(src, command, commandData, tar) {
             contrib = x;
         }
         if (contrib === "") {
-            normalbot.sendChanMessage(src, commandData + " isn't a contributor.", channel);
+            normalbot.sendMessage(src, commandData + " isn't a contributor.", channel, channel);
             return;
         }
         contributors.remove(contrib);
-        normalbot.sendChanMessage(src, commandData + " is no longer a contributor!");
+        normalbot.sendMessage(src, commandData + " is no longer a contributor!", channel);
         return;
     }
     if (command == "showteam") {
@@ -120,7 +120,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
             sys.sendHtmlMessage(src, "<table border='2'>" + teams + "</table>",channel);
             normalbot.sendAll(sys.name(src) + " just viewed " + sys.name(tar) + "'s team.", staffchannel);
         } else {
-            normalbot.sendChanMessage(src, "That player has no teams with valid pokemon.");
+            normalbot.sendMessage(src, "That player has no teams with valid pokemon.", channel);
         }
         return;
     }
@@ -158,13 +158,13 @@ exports.handleCommand = function(src, command, commandData, tar) {
             }
         }
         if (!correct) {
-            normalbot.sendChanMessage(src, "The IP address looks strange, you might want to correct it: " + subip);
+            normalbot.sendMessage(src, "The IP address looks strange, you might want to correct it: " + subip, channel);
             return;
         }
 
         /* add rangeban */
         rangebans.add(subip, rangebans.escapeValue(comment));
-        normalbot.sendChanMessage(src, "Rangeban added successfully for IP subrange: " + subip);
+        normalbot.sendMessage(src, "Rangeban added successfully for IP subrange: " + subip, channel);
         /* kick them */
         var players = sys.playerIds();
         var players_length = players.length;
@@ -180,7 +180,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
             }
         }
         if (names.length > 0) {
-            sendChanAll("±Jirachi: "+names.join(", ") + " got range banned by " + sys.name(src), staffchannel);
+            sys.sendAll("±Jirachi: "+names.join(", ") + " got range banned by " + sys.name(src), staffchannel, channel);
         }
         return;
     }
@@ -188,9 +188,9 @@ exports.handleCommand = function(src, command, commandData, tar) {
         var subip = commandData;
         if (rangebans.get(subip) !== undefined) {
             rangebans.remove(subip);
-            normalbot.sendChanMessage(src, "Rangeban removed successfully for IP subrange: " + subip);
+            normalbot.sendMessage(src, "Rangeban removed successfully for IP subrange: " + subip, channel);
         } else {
-            normalbot.sendChanMessage(src, "No such rangeban.");
+            normalbot.sendMessage(src, "No such rangeban.", channel);
         }
         return;
     }
@@ -210,9 +210,9 @@ exports.handleCommand = function(src, command, commandData, tar) {
             return false;
         });
         if (removed.length > 0) {
-            normalbot.sendChanMessage(src, "" + removed.length + " mutes purged successfully.");
+            normalbot.sendMessage(src, "" + removed.length + " mutes purged successfully.", channel);
         } else {
-            normalbot.sendChanMessage(src, "No mutes were purged.");
+            normalbot.sendMessage(src, "No mutes were purged.", channel);
         }
         return;
     }
@@ -232,14 +232,14 @@ exports.handleCommand = function(src, command, commandData, tar) {
             return false;
         });
         if (removed.length > 0) {
-            normalbot.sendChanMessage(src, "" + removed.length + " mafiabans purged successfully.");
+            normalbot.sendMessage(src, "" + removed.length + " mafiabans purged successfully.", channel);
         } else {
-            normalbot.sendChanMessage(src, "No mafiabans were purged.");
+            normalbot.sendMessage(src, "No mafiabans were purged.", channel);
         }
         return;
     }
     if (command == "sendall") {
-        sendChanAll(commandData);
+        sys.sendAll(commandData, channel);
         return;
     }
     if(command == "sendmessage"){
@@ -266,26 +266,26 @@ exports.handleCommand = function(src, command, commandData, tar) {
     }
     if (command == "imp") {
         SESSION.users(src).impersonation = commandData;
-        normalbot.sendChanMessage(src, "Now you are " + SESSION.users(src).impersonation + "!");
+        normalbot.sendMessage(src, "Now you are " + SESSION.users(src).impersonation + "!", channel);
         return;
     }
     if (command == "impoff") {
         delete SESSION.users(src).impersonation;
-        normalbot.sendChanMessage(src, "Now you are yourself!");
+        normalbot.sendMessage(src, "Now you are yourself!", channel);
         return;
     }
     if (command == "autosmute") {
         if(sys.dbIp(commandData) === undefined) {
-            normalbot.sendChanMessage(src, "No player exists by this name!");
+            normalbot.sendMessage(src, "No player exists by this name!", channel);
             return;
         }
         if (sys.maxAuth(sys.dbIp(commandData))>=sys.auth(src)) {
-           normalbot.sendChanMessage(src, "Can't do that to higher auth!");
+           normalbot.sendMessage(src, "Can't do that to higher auth!", channel);
            return;
         }
         var name = commandData.toLowerCase();
         if (autosmute.indexOf(name) !== -1) {
-            normalbot.sendChanMessage(src, "This person is already on the autosmute list");
+            normalbot.sendMessage(src, "This person is already on the autosmute list", channel);
             return;
         }
         autosmute.push(name);
@@ -337,7 +337,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
                         var colour = script.getColor(sayer);
                         sys.sendHtmlAll("<font color='"+colour+"'><timestamp/> <b>" + utilities.html_escape(sys.name(sayer)) + ":</font></b> " + what, cid);
                     } else {
-                        sendChanAll(sys.name(sayer) + ": " + what, cid);
+                        sys.sendAll(sys.name(sayer) + ": " + what, cid, channel);
                     }
             });
             if (++count > 100) return; // max repeat is 100
@@ -440,11 +440,11 @@ exports.handleCommand = function(src, command, commandData, tar) {
     if (command == "stopbattles") {
         battlesStopped = !battlesStopped;
         if (battlesStopped)  {
-            sendChanAll("", -1);
-            sendChanAll("*** ********************************************************************** ***", -1);
+            sys.sendAll("", -1, channel);
+            sys.sendAll("*** ********************************************************************** ***", -1, channel);
             battlebot.sendAll("The battles are now stopped. The server will restart soon.");
-            sendChanAll("*** ********************************************************************** ***", -1);
-            sendChanAll("", -1);
+            sys.sendAll("*** ********************************************************************** ***", -1, channel);
+            sys.sendAll("", -1, channel);
         } else {
             battlebot.sendAll("False alarm, battles may continue.");
         }
@@ -457,7 +457,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
             return;
         }
         sys.clearPass(commandData);
-        normalbot.sendChanMessage(src, "" + commandData + "'s password was cleared!");
+        normalbot.sendMessage(src, "" + commandData + "'s password was cleared!", channel);
         if (tar !== undefined) {
             normalbot.sendMessage(tar, "Your password was cleared by " + mod + "!");
             sys.sendNetworkCommand(tar, 14); // make the register button active again
@@ -470,7 +470,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
         return;
     }
     if (command == "updatebansites") {
-        normalbot.sendChanMessage(src, "Fetching ban sites...");
+        normalbot.sendMessage(src, "Fetching ban sites...", channel);
         sys.webCall(Config.base_url + "bansites.txt", function(resp) {
             if (resp !== "") {
                 sys.writeToFile('bansites.txt', resp);
@@ -512,7 +512,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
         return;
     }
     if (command == "updatescripts") {
-        normalbot.sendChanMessage(src, "Fetching scripts...");
+        normalbot.sendMessage(src, "Fetching scripts...", channel);
         var updateURL = Config.base_url + "scripts.js";
         if (commandData !== undefined && (commandData.substring(0,7) == 'http://' || commandData.substring(0,8) == 'https://')) {
             updateURL = commandData;
@@ -530,17 +530,17 @@ exports.handleCommand = function(src, command, commandData, tar) {
                 print(err);
             }
         };
-        normalbot.sendChanMessage(src, "Fetching scripts from " + updateURL);
+        normalbot.sendMessage(src, "Fetching scripts from " + updateURL, channel);
         sys.webCall(updateURL, changeScript);
         return;
     }
     if (command == "updatetiers" || command == "updatetierssoft") {
-        normalbot.sendChanMessage(src, "Fetching tiers...");
+        normalbot.sendMessage(src, "Fetching tiers...", channel);
         var updateURL = Config.base_url + "tiers.xml";
         if (commandData !== undefined && (commandData.substring(0,7) == 'http://' || commandData.substring(0,8) == 'https://')) {
             updateURL = commandData;
         }
-        normalbot.sendChanMessage(src, "Fetching tiers from " + updateURL);
+        normalbot.sendMessage(src, "Fetching tiers from " + updateURL, channel);
         var updateTiers = function(resp) {
             if (resp === "") return;
             try {
@@ -551,7 +551,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
                     normalbot.sendMessage(src, "Tiers.xml updated!", channel);
                 }
             } catch (e) {
-                normalbot.sendChanMessage(src, "ERROR: "+e);
+                normalbot.sendMessage(src, "ERROR: "+e, channel);
                 return;
             }
         };
@@ -571,19 +571,19 @@ exports.handleCommand = function(src, command, commandData, tar) {
                 sys.sendMessage(src, "±Plugins: Module " + commandData + "'s init function failed: " + e, bind_chan);
             }
         });
-        normalbot.sendChanMessage(src, "Downloading module " + commandData + "!");
+        normalbot.sendMessage(src, "Downloading module " + commandData + "!", channel);
         return;
     }
     if (command == "removeplugin") {
         var POglobal = SESSION.global();
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if (commandData == POglobal.plugins[i].source) {
-                normalbot.sendChanMessage(src, "Module " + POglobal.plugins[i].source + " removed!");
+                normalbot.sendMessage(src, "Module " + POglobal.plugins[i].source + " removed!", channel);
                 POglobal.plugins.splice(i,1);
                 return;
             }
         }
-        normalbot.sendChanMessage(src, "Module not found, can not remove.");
+        normalbot.sendMessage(src, "Module not found, can not remove.", channel);
         return;
     }
     if (command == "updateplugin") {
@@ -601,27 +601,27 @@ exports.handleCommand = function(src, command, commandData, tar) {
             if (commandData == POglobal.plugins[i].source) {
                 var source = POglobal.plugins[i].source;
                 updateModule(source, MakeUpdateFunc(i, source));
-                normalbot.sendChanMessage(src, "Downloading module " + source + "!");
+                normalbot.sendMessage(src, "Downloading module " + source + "!", channel);
                 return;
             }
         }
-        normalbot.sendChanMessage(src, "Module not found, can not update.");
+        normalbot.sendMessage(src, "Module not found, can not update.", channel);
         return;
     }
     if (command == "loadstats") {
         if (sys.loadServerPlugin("serverplugins/libusagestats.so")) {
-            normalbot.sendChanMessage(src, "Usage Stats plugin loaded");
+            normalbot.sendMessage(src, "Usage Stats plugin loaded", channel);
             return;
         }
-        normalbot.sendChanMessage(src, "Usage Stats failed to load");
+        normalbot.sendMessage(src, "Usage Stats failed to load", channel);
         return;
     }
     if (command == "unloadstats") {
         if (sys.unloadServerPlugin("Usage Statistics")){
-            normalbot.sendChanMessage(src, "Usage Stats plugin unloaded");
+            normalbot.sendMessage(src, "Usage Stats plugin unloaded", channel);
             return;
         }
-        normalbot.sendChanMessage(src, "Usage stats failed to unload");
+        normalbot.sendMessage(src, "Usage stats failed to unload", channel);
         return;
     }
     if (command == "warnwebclients") {

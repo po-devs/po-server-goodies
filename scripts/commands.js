@@ -1,10 +1,10 @@
 var userCommands, modCommands, adminCommands, ownerCommands, channelCommands;
 
-exports.handleCommand = function(src, command, commandData, tar) {
+exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (userCommands === undefined) {
         userCommands = require("usercommands.js");
     }
-    if (userCommands.handleCommand(src, command, commandData, tar) != "no command") {
+    if (userCommands.handleCommand(src, command, commandData, tar, channel) != "no command") {
         return;
     }
     if (modCommands === undefined) {
@@ -19,7 +19,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
         adminCommands = require("admincommands.js");
     }
     if (sys.auth(src) > 1) {
-        if (adminCommands.handleCommand(src, command, commandData, tar) != "no command") {
+        if (adminCommands.handleCommand(src, command, commandData, tar, channel) != "no command") {
             return;
         }
     }
@@ -27,7 +27,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
         ownerCommands = require("ownercommands.js");
     }
     if (sys.auth(src) > 2) {
-        if (ownerCommands.handleCommand(src, command, commandData, tar) != "no command") {
+        if (ownerCommands.handleCommand(src, command, commandData, tar, channel) != "no command") {
             return;
         }
     }
@@ -35,7 +35,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
         channelCommands = require("channelcommands.js");
     }
     if (sys.auth(src) > 1 || SESSION.channels(channel).isChannelOperator(src)) {
-        if (channelCommands.handleCommand(src, command, commandData, tar) != "no command") {
+        if (channelCommands.handleCommand(src, command, commandData, tar, channel) != "no command") {
             return;
         }
     }

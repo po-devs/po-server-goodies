@@ -1,7 +1,7 @@
-exports.handleCommand = function(src, command, commandData, tar) {
+exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "channelusers") {
        if (commandData === undefined) {
-           normalbot.sendChanMessage(src, "Please give me a channelname!");
+           normalbot.sendMessage(src, "Please give me a channelname!", channel);
            return;
        }
        var chanid;
@@ -14,7 +14,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
            isbot = false;
        }
        if (chanid === undefined) {
-           channelbot.sendChanMessage(src, "Such a channel doesn't exist!");
+           channelbot.sendMessage(src, "Such a channel doesn't exist!", channel);
            return;
        }
        var chanName = sys.channel(chanid);
@@ -30,9 +30,9 @@ exports.handleCommand = function(src, command, commandData, tar) {
        }
        if (isbot) {
            var channelData = {'type': 'ChannelUsers', 'channel-id': chanid, 'channel-name': chanName, 'players': objectList};
-           sendChanMessage(src, ":"+JSON.stringify(channelData));
+           sys.sendMessage(src, ":"+JSON.stringify(channelData), channel);
        } else {
-           channelbot.sendChanMessage(src, "Users of channel #" + chanName + " are: " + names.join(", "));
+           channelbot.sendMessage(src, "Users of channel #" + chanName + " are: " + names.join(", "), channel);
        }
        return;
     }
@@ -44,9 +44,9 @@ exports.handleCommand = function(src, command, commandData, tar) {
         }
         l.sort(function(a,b) { return b[1]-a[1]; });
         var topchans = l.slice(0,10);
-        channelbot.sendChanMessage(src, "Most used channels:");
+        channelbot.sendMessage(src, "Most used channels:", channel);
         for (var i = 0; i < topchans.length; ++i) {
-            sendChanMessage(src, "" + sys.channel(topchans[i][0]) + " with " + topchans[i][1] + " players.");
+            sys.sendMessage(src, "" + sys.channel(topchans[i][0]) + " with " + topchans[i][1] + " players.", channel);
         }
         return;
     }
@@ -99,18 +99,18 @@ exports.handleCommand = function(src, command, commandData, tar) {
             if (tiers.indexOf(ctier) == -1)
             tiers.push(ctier);
         }
-        querybot.sendChanMessage(src,sys.name(tar)+" is in tier"+(tiers.length <= 1?"":"s")+": "+tiers.join(", "));
+        querybot.sendMessage(src,sys.name(tar)+" is in tier"+(tiers.length <= 1?"":"s")+": "+tiers.join(", "), channel);
         return;
     }
     if (command == "perm") {
         if (channel == staffchannel || channel === 0) {
-            channelbot.sendChanMessage(src, "you can't do that here.");
+            channelbot.sendMessage(src, "you can't do that here.", channel);
             return;
         }
 
         SESSION.channels(channel).perm = (commandData.toLowerCase() == 'on');
         SESSION.global().channelManager.update(channel);
-        channelbot.sendChanAll("" + sys.name(src) + (SESSION.channels(channel).perm ? " made the channel permanent." : " made the channel a temporary channel again."));
+        channelbot.sendAll("" + sys.name(src) + (SESSION.channels(channel).perm ? " made the channel permanent." : " made the channel a temporary channel again."), channel);
         return;
     }
     if (command == "silence") {
@@ -154,15 +154,15 @@ exports.handleCommand = function(src, command, commandData, tar) {
                 hbans.remove(ip);
                 return;
             }
-            hangbot.sendChanMessage(src, "He/she's not banned from hangman.");
+            hangbot.sendMessage(src, "He/she's not banned from hangman.", channel);
             return;
         }
         if (!SESSION.users(tar).hban.active) {
-            hangbot.sendChanMessage(src, "He/she's not banned from hangman.");
+            hangbot.sendMessage(src, "He/she's not banned from hangman.", channel);
             return;
         }
         if(SESSION.users(src).hban.active && tar==src) {
-           hangbot.sendChanMessage(src, "You may not unban yourself from hangman");
+           hangbot.sendMessage(src, "You may not unban yourself from hangman", channel);
            return;
         }
         hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",staffchannel);
@@ -191,15 +191,15 @@ exports.handleCommand = function(src, command, commandData, tar) {
                 mbans.remove(ip);
                 return;
             }
-            mafiabot.sendChanMessage(src, "He/she's not banned from Mafia.");
+            mafiabot.sendMessage(src, "He/she's not banned from Mafia.", channel);
             return;
         }
         if (!SESSION.users(tar).mban.active) {
-            mafiabot.sendChanMessage(src, "He/she's not banned from Mafia.");
+            mafiabot.sendMessage(src, "He/she's not banned from Mafia.", channel);
             return;
         }
         if(SESSION.users(src).mban.active && tar==src) {
-           mafiabot.sendChanMessage(src, "You may not unban yourself from Mafia");
+           mafiabot.sendMessage(src, "You may not unban yourself from Mafia", channel);
            return;
         }
         mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",staffchannel);
@@ -446,15 +446,15 @@ exports.handleCommand = function(src, command, commandData, tar) {
                 mutes.remove(ip);
                 return;
             }
-            normalbot.sendChanMessage(src, "He/she's not muted.");
+            normalbot.sendMessage(src, "He/she's not muted.", channel);
             return;
         }
         if (!SESSION.users(sys.id(commandData)).mute.active) {
-            normalbot.sendChanMessage(src, "He/she's not muted.");
+            normalbot.sendMessage(src, "He/she's not muted.", channel);
             return;
         }
         if(SESSION.users(src).mute.active && tar==src) {
-           normalbot.sendChanMessage(src, "You may not unmute yourself!");
+           normalbot.sendMessage(src, "You may not unmute yourself!", channel);
            return;
         }
         SESSION.users(tar).un("mute");
@@ -463,12 +463,12 @@ exports.handleCommand = function(src, command, commandData, tar) {
     }
     if (command == "battlehistory") {
         if (tar === undefined) {
-            querybot.sendChanMessage(src, "Usage: /battleHistory username. Only works on online users.");
+            querybot.sendMessage(src, "Usage: /battleHistory username. Only works on online users.", channel);
             return;
         }
         var hist = SESSION.users(tar).battlehistory;
         if (!hist) {
-            querybot.sendChanMessage(src, "Your target has not battled after logging in.");
+            querybot.sendMessage(src, "Your target has not battled after logging in.", channel);
             return;
         }
         var res = [];
@@ -481,7 +481,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
     if (command == "userinfo" || command == "whois" || command == "whoistxt" || command == "whereis") {
         var bindChannel = channel;
         if (commandData === undefined) {
-            querybot.sendChanMessage(src, "Please provide a username.");
+            querybot.sendMessage(src, "Please provide a username.", channel);
             return;
         }
         var name = commandData;
@@ -493,7 +493,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
         }
         var lastLogin = sys.dbLastOn(name);
         if (lastLogin === undefined) {
-            querybot.sendChanMessage(src, "No such user.");
+            querybot.sendMessage(src, "No such user.", channel);
             return;
         }
 
@@ -531,9 +531,9 @@ exports.handleCommand = function(src, command, commandData, tar) {
 
         if (isbot) {
             var userJson = {'type': 'UserInfo', 'id': tar ? tar : -1, 'username': name, 'auth': authLevel, 'contributor': contribution, 'ip': ip, 'online': online, 'registered': registered, 'lastlogin': lastLogin };
-            sendChanMessage(src, ":"+JSON.stringify(userJson));
+            sys.sendMessage(src, ":"+JSON.stringify(userJson), channel);
         } else if (command == "userinfo") {
-            querybot.sendChanMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ contributor: " + contribution + " ~ ip: " + ip + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"));
+            querybot.sendMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ contributor: " + contribution + " ~ ip: " + ip + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"), channel);
         } else if (command == "whois" || command == "whereis") {
             var whois = function(resp) {
                 /* May have dced, this being an async call */
@@ -615,7 +615,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
             ip = sys.dbIp(commandData);
         }
         if (!ip) {
-            querybot.sendChanMessage(src, "Unknown user or IP.");
+            querybot.sendMessage(src, "Unknown user or IP.", channel);
             return;
         }
         var myAuth = sys.auth(src);
@@ -625,7 +625,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
 
         /* Higher auth: don't give the alias list */
         if (!allowedToAlias(commandData)) {
-            querybot.sendChanMessage(src, "Not allowed to alias higher auth: " + commandData);
+            querybot.sendMessage(src, "Not allowed to alias higher auth: " + commandData, channel);
             return;
         }
 
@@ -642,18 +642,18 @@ exports.handleCommand = function(src, command, commandData, tar) {
             var status = (sys.id(alias) !== undefined) ? "online" : "Last Login: " + last_login;
             smessage = smessage + alias + " ("+status+"), ";
             if (smessage.length > max_message_length) {
-                querybot.sendChanMessage(src, prefix + smessage + " ...");
+                querybot.sendMessage(src, prefix + smessage + " ...", channel);
                 prefix = "... ";
                 smessage = "";
             }
         });
-        querybot.sendChanMessage(src, prefix + smessage);
+        querybot.sendMessage(src, prefix + smessage, channel);
         return;
     }
    if (command == "tempban") {
         var tmp = commandData.split(":");
         if (tmp.length === 0) {
-            normalbot.sendChanMessage(src, "Usage /tempban name:minutes.");
+            normalbot.sendMessage(src, "Usage /tempban name:minutes.", channel);
             return;
         }
         
@@ -666,22 +666,22 @@ exports.handleCommand = function(src, command, commandData, tar) {
         tar = sys.id(target_name);
         var minutes = parseInt(minutes, 10);
         if (sys.auth(src) < 2 && minutes > 86400) {
-            normalbot.sendChanMessage(src, "Cannot ban for longer than a day!");
+            normalbot.sendMessage(src, "Cannot ban for longer than a day!", channel);
             return;
         }
         var ip = sys.dbIp(target_name);
         if (ip === undefined) {
-            normalbot.sendChanMessage(src, "No such user!");
+            normalbot.sendMessage(src, "No such user!", channel);
             return;
         }
         if (sys.maxAuth(ip)>=sys.auth(src)) {
-           normalbot.sendChanMessage(src, "Can't do that to higher auth!");
+           normalbot.sendMessage(src, "Can't do that to higher auth!", channel);
            return;
         }
         var banlist=sys.banList();
         for (var a in banlist) {
             if (ip == sys.dbIp(banlist[a])) {
-                normalbot.sendChanMessage(src, "He/she's already banned!");
+                normalbot.sendMessage(src, "He/she's already banned!", channel);
                 return;
             }
         }
@@ -697,11 +697,11 @@ exports.handleCommand = function(src, command, commandData, tar) {
     if (command == "tempunban") {
         var ip = sys.dbIp(commandData);
         if (ip === undefined) {
-            normalbot.sendChanMessage(src, "No such user!");
+            normalbot.sendMessage(src, "No such user!", channel);
             return;
         }
         if (sys.dbTempBanTime(commandData) > 86400 && sys.auth(src) < 2) {
-            normalbot.sendChanMessage(src, "You cannot unban people who are banned for longer than a day!");
+            normalbot.sendMessage(src, "You cannot unban people who are banned for longer than a day!", channel);
             return;
         }
         normalbot.sendAll(sys.name(src) + " unbanned " + commandData, staffchannel);
@@ -711,19 +711,19 @@ exports.handleCommand = function(src, command, commandData, tar) {
     if (command == "checkbantime") {
         var ip = sys.dbIp(commandData);
         if (ip === undefined) {
-            normalbot.sendChanMessage(src, "No such user!");
+            normalbot.sendMessage(src, "No such user!", channel);
             return;
         }
         if (sys.dbTempBanTime(commandData) > 2000000000) { //it returns a high number if the person is either not banned or permantly banned
-            normalbot.sendChanMessage(src, "User is not tempbanned");
+            normalbot.sendMessage(src, "User is not tempbanned", channel);
             return;
         }
-        normalbot.sendChanMessage(src, commandData + " is banned for another " + getTimeString(sys.dbTempBanTime(commandData)));
+        normalbot.sendMessage(src, commandData + " is banned for another " + getTimeString(sys.dbTempBanTime(commandData)), channel);
         return;
     }
     if (command == "passauth" || command == "passauths") {
         if (tar === undefined) {
-            normalbot.sendChanMessage(src, "The target is offline.");
+            normalbot.sendMessage(src, "The target is offline.", channel);
             return;
         }
         if (sys.ip(src) == sys.ip(tar) && sys.auth(tar) === 0) {
@@ -731,16 +731,16 @@ exports.handleCommand = function(src, command, commandData, tar) {
         }
         else {
             if (sys.auth(src) !== 0 || !SESSION.users(src).megauser) {
-                normalbot.sendChanMessage(src, "You need to be mega-auth to pass auth.");
+                normalbot.sendMessage(src, "You need to be mega-auth to pass auth.", channel);
                 return;
             }
             if (!SESSION.users(tar).megauser || sys.auth(tar) > 0) {
-                normalbot.sendChanMessage(src, "The target must be megauser and not auth, or from your IP.");
+                normalbot.sendMessage(src, "The target must be megauser and not auth, or from your IP.", channel);
                 return;
             }
         }
         if (!sys.dbRegistered(sys.name(tar))) {
-            normalbot.sendChanMessage(src, "The target name must be registered.");
+            normalbot.sendMessage(src, "The target name must be registered.", channel);
             return;
         }
         var current = sys.auth(src);
