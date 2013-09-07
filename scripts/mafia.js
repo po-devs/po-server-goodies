@@ -4631,7 +4631,36 @@ function Mafia(mafiachan) {
             return;
         }
         if (command == "mafiaunban") {
-            require("modcommands.js").handleCommand(src, command, commandData, tar);
+            if (tar === undefined) {
+                if (mbans.get(commandData)) {
+                    mafiabot.sendAll("IP address " + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!", staffchannel);
+                    mafiabot.sendAll("IP address " + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!", sachannel);
+                    mbans.remove(commandData);
+                    return;
+                }
+                var ip = sys.dbIp(commandData);
+                if(ip !== undefined && mbans.get(ip)) {
+                    mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",staffchannel);
+                    mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",mafiachan);
+                    mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",sachannel);
+                    mbans.remove(ip);
+                    return;
+                }
+                mafiabot.sendMessage(src, "He/she's not banned from Mafia.", channel);
+                return;
+            }
+            if (!SESSION.users(tar).mban.active) {
+                mafiabot.sendMessage(src, "He/she's not banned from Mafia.", channel);
+                return;
+            }
+            if(SESSION.users(src).mban.active && tar==src) {
+               mafiabot.sendMessage(src, "You may not unban yourself from Mafia", channel);
+               return;
+            }
+            mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",staffchannel);
+            mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",mafiachan);
+            mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",sachannel);
+            SESSION.users(tar).un("mban");
             return;
         }
         var id;
@@ -4836,6 +4865,7 @@ function Mafia(mafiachan) {
     
     this.onHelp = function (src, commandData, channel) {
         if (commandData.toLowerCase() === "mafia") {
+            sys.sendMessage(src, "", channel);
             sys.sendMessage(src, "*** Mafia commands ***", channel);
             this.commands.user.forEach(function (x) {
                 sys.sendMessage(src, x, channel);

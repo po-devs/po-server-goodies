@@ -241,8 +241,6 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 };
 exports.help = function(src, channel) {
     var poChannel = SESSION.channels(channel);
-    sys.sendMessage(src, "", channel);
-    sys.sendMessage(src, "*** Channel commands ***", channel);
     sys.sendMessage(src, "/cauth: Shows a list of channel auth.", channel);
     if (poChannel.isChannelOperator(src) || poChannel.isChannelAdmin(src) || poChannel.isChannelOwner(src)) {
         sys.sendMessage(src, "*** Channel Mod commands ***", channel);

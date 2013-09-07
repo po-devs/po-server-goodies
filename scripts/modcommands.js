@@ -87,8 +87,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, commandData + " is not a valid OS", channel);
         return;
     }
-    if (command == "tier")
-    {
+    if (command == "tier") {
         if (tar === undefined){
             querybot.sendChanMessage(src,"No such user online.");
             return;
@@ -132,80 +131,6 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "silenceoff") {
         script.silenceoff(src, commandData);
-        return;
-    }
-    if (command == "hangmanban") {
-        script.issueBan("hban", src, sys.id(commandData), commandData);
-        return;
-    }
-    if (command == "hangmanunban") {
-        if (tar === undefined) {
-            if (hbans.get(commandData)) {
-                hangbot.sendAll("IP address " + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!", staffchannel);
-                hangbot.sendAll("IP address " + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!", sachannel);
-                hbans.remove(commandData);
-                return;
-            }
-            var ip = sys.dbIp(commandData);
-            if(ip !== undefined && hbans.get(ip)) {
-                hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",staffchannel);
-                hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",hangmanchan);
-                hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",sachannel);
-                hbans.remove(ip);
-                return;
-            }
-            hangbot.sendMessage(src, "He/she's not banned from hangman.", channel);
-            return;
-        }
-        if (!SESSION.users(tar).hban.active) {
-            hangbot.sendMessage(src, "He/she's not banned from hangman.", channel);
-            return;
-        }
-        if(SESSION.users(src).hban.active && tar==src) {
-           hangbot.sendMessage(src, "You may not unban yourself from hangman", channel);
-           return;
-        }
-        hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",staffchannel);
-        hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",hangmanchan);
-        hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",sachannel);
-        SESSION.users(tar).un("hban");
-        return;
-    }
-    if (command == "mafiaban") {
-        script.issueBan("mban", src, sys.id(commandData), commandData);
-        return;
-    }
-    if (command == "mafiaunban") {
-        if (tar === undefined) {
-            if (mbans.get(commandData)) {
-                mafiabot.sendAll("IP address " + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!", staffchannel);
-                mafiabot.sendAll("IP address " + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!", sachannel);
-                mbans.remove(commandData);
-                return;
-            }
-            var ip = sys.dbIp(commandData);
-            if(ip !== undefined && mbans.get(ip)) {
-                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",staffchannel);
-                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",mafiachan);
-                mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",sachannel);
-                mbans.remove(ip);
-                return;
-            }
-            mafiabot.sendMessage(src, "He/she's not banned from Mafia.", channel);
-            return;
-        }
-        if (!SESSION.users(tar).mban.active) {
-            mafiabot.sendMessage(src, "He/she's not banned from Mafia.", channel);
-            return;
-        }
-        if(SESSION.users(src).mban.active && tar==src) {
-           mafiabot.sendMessage(src, "You may not unban yourself from Mafia", channel);
-           return;
-        }
-        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",staffchannel);
-        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",mafiachan);
-        mafiabot.sendAll("" + commandData + " was unbanned from Mafia by " + nonFlashing(sys.name(src)) + "!",sachannel);
-        SESSION.users(tar).un("mban");
         return;
     }
     if (command == "k") {
@@ -478,7 +403,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendHtmlMessage(src, res.join("<br>"), channel);
         return;
     }
-    if (command == "userinfo" || command == "whois" || command == "whoistxt" || command == "whereis") {
+    if (command == "userinfo" || command == "whois" || command == "whereis") {
         var bindChannel = channel;
         if (commandData === undefined) {
             querybot.sendMessage(src, "Please provide a username.", channel);
@@ -763,35 +688,33 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 };
 exports.help = 
     [
-        "/k [name]: Kicks someone.",
-        "/mute [name]:[reason]:[time]: Mutes someone. Time is optional and defaults to 1 day.",
-        "/unmute [name]: Unmutes someone.",
-        "/silence [minutes]:[channel]: Prevents authless users from talking in a channel for specified time. Affects all official channels if no channel is given.",
-        "/silenceoff [channel]: Removes silence from a channel. Affects all official channels if none is specified.",
+        "/k: Kicks someone.",
+        "/mute: Mutes someone. Format is /mute name:reason:time. Time is optional and defaults to 1 day.",
+        "/unmute: Unmutes someone.",
+        "/silence: Prevents authless users from talking in a channel for specified time. Format is /silence minutes:channel. Affects all official channels if no channel is given.",
+        "/silenceoff: Removes silence from a channel. Affects all official channels if none is specified.",
         "/perm [on/off]: Make the current permanent channel or not (permanent channels remain listed when they have no users).",
-        "/userinfo [name]: Displays information about a user (pretty display).",
-        "/whois [name]: Displays information about a user (one line, slightly more info).",
-        "/aliases [IP/name]: Shows the aliases of an IP or name.",
-        "/tempban [name]:[time]: Bans someone for 24 hours or less. Time is optional and defaults to 1 day",
-        "/tempunban [name]: Unbans a temporary banned user (standard unban doesn't work).",
-        "/checkbantime [name]: Checks how long a user is banned for.",
-        "/mafiaban [name]:[reason]:[time]: Bans a player from Mafia. Time is optional and defaults to 7 days.",
-        "/mafiaunban [name]: Unbans a player from Mafia.",
-        "/passauth [target]: Passes your mods to another megauser (only for mega-mods) or to your online alt.",
-        "/passauths [target]: Passes your mods silently.",
-        "/banlist [search term]: Searches the banlist, shows full list if no search term is entered.",
-        "/mutelist [search term]: Searches the mutelist, shows full list if no search term is entered.",
-        "/smutelist [search term]: Searches the smutelist, shows full list if no search term is entered.",
-        "/mafiabans [search term]: Searches the mafiabanlist, shows full list if no search team is entered.",
+        "/userinfo: Displays basic information about a user on a single line.",
+        "/whois: Displays detailed information about a user.",
+        "/aliases: Shows the aliases of an IP or name.",
+        "/tempban: Bans someone for 24 hours or less. Format is /tempban name:time Time is optional and defaults to 1 day",
+        "/tempunban: Unbans a temporary banned user (standard unban doesn't work).",
+        "/checkbantime: Checks how long a user is banned for.",
+        "/passauth: Passes your mods to an online alt of yours.",
+        "/passauths: Passes your mods silently.",
+        "/banlist: Searches the banlist for a string, shows full list if no search term is entered.",
+        "/mutelist: Searches the mutelist for a string, shows full list if no search term is entered.",
+        "/smutelist: Searches the smutelist for a string, shows full list if no search term is entered.",
+        "/mafiabans: Searches the mafiabanlist for a string, shows full list if no search term is entered.",
         "/rangebans: Lists range bans.",
-        "/ipbans : Lists ip bans.",
+        "/ipbans: Lists ip bans.",
         "/autosmutelist: Lists the names in the auto-smute list.",
         "/namebans: Lists name bans.",
         "/namewarns: Lists name warnings.",
         "/topchannels: To view the top channels.",
-        "/onrange [range]: To view who is on a range.",
-        "/onos [os]: Lists players on a certain operating system (May lag a little with certain OS)",
-        "/tier [name]: To view the tier(s) of a person.",
-        "/battlehistory [name]: To view a person's battle history.",
-        "/channelusers [channel]: Lists users on a channel."
+        "/onrange: To view who is on an IP range.",
+        "/onos: Lists players on a certain operating system (May lag a little with certain OS)",
+        "/tier: To view the tier(s) of a user.",
+        "/battlehistory: To view a user's battle history.",
+        "/channelusers: Lists users on a channel."
     ]

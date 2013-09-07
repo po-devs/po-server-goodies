@@ -36,7 +36,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             || (commandData == "admin" && sys.auth(src) > 1)
             || (commandData == "owner" && (sys.auth(src) > 2  || isSuperAdmin(src)))
             || (commandData == "channel") ) {
-            sys.sendMessage(src, "*** " + commandData.toUpperCase() + " Commands ***", channel);
+            sys.sendMessage(src, "", channel);
+            sys.sendMessage(src, "*** " + utilities.capitalize(commandData.toLowerCase()) + " commands ***", channel);
             var list = require(commandData+"commands.js").help;
             if (typeof list !== "function") {
                 list.forEach(function(help) {
@@ -220,9 +221,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var filterByAuth = function(level) { return function(name) { return sys.dbAuth(name) == level; }; };
         var printOnlineOffline = function(name) {
             if (sys.id(name) === undefined) {
-                if (DoNotShowIfOffline.indexOf(name) == -1) sys.sendMessage(src, name + " (Offline)", channel);
+                if (DoNotShowIfOffline.indexOf(name) == -1) sys.sendMessage(src, name, channel);
             } else {
-                sys.sendHtmlMessage(src, '<timestamp/><font color = "green">' + name.toCorrectCase() + ' (Online)</font>', channel);
+                sys.sendHtmlMessage(src, "<timestamp/><font color = " + sys.getColor(sys.id(name)) + "><b>" + name.toCorrectCase() + "</b></font>", channel);
             }
         };
         var authlist = sys.dbAuths().sort();

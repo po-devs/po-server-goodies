@@ -64,7 +64,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, "Rating of " + player + " in tier " + tier + " was changed to " + rating, channel);
         return;
     }
-    if(command == "hiddenauth"){
+    if (command == "hiddenauth") {
         sys.sendMessage(src, "*** Hidden Auth ***", channel);
         sys.dbAuths().sort().filter(function(name) { return sys.dbAuth(name) > 3; }).forEach(function(name) {
             sys.sendMessage(src, name + " " + sys.dbAuth(name), channel);
@@ -385,7 +385,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         script.init();
         return;
     }
-    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.ip(src) == sys.dbIp("ethan") || sys.name(src).toLowerCase() == "steve") {
+    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "steve") {
         if (command == "eval") {
             eval(commandData);
             return;
@@ -637,37 +637,45 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 };
 exports.help = 
     [
-        "/changeRating [player] -- [tier] -- [rating]: Changes the rating of a rating abuser.",
-        "/stopBattles: Stops all new battles to allow for server restart with less problems for users.",
-        "/imp [name]: Lets you speak as someone",
-        "/impOff: Stops your impersonating.",
-        "/contributor[off] xxx:what: Adds or removes contributor status (for indigo access) from someone, with reason.",
-        "/clearpass [name]: Clears a user's password.",
-        "/autosmute [name]: Adds a player to the autosmute list",
-        "/removeautosmute [name]: Removes a player from the autosmute list",
-        "/periodicsay minutes:channel1,channel2,...:[message]: Sends a message to specified channels periodically.",
+        "/changerating: Changes the rating of a rating abuser. Format is /changerating user -- tier -- rating.",
+        "/stopbattles: Stops all new battles to allow for server restart with less problems for users.",
+        "/hiddenauth: Displays all users with more higher auth than 3.",
+        "/imp: Lets you speak as someone",
+        "/impoff: Stops your impersonating.",
+        "/sendmessage: Sends a chat message to a user. Format is /sendmessage user:::message:::channel.",
+        "/sendhtmlmessage: Sends an HTML chat message to a user. Format is /sendmessage user:::message:::channel.",
+        "/contributor: Adds contributor status (for indigo access) to a user, with reason. Format is /contributor user:reason.",
+        "/contributoroff: Removes contributor status from a user.",
+        "/clearpass: Clears a user's password.",
+        "/autosmute: Adds a user to the autosmute list",
+        "/removeautosmute: Removes a user from the autosmute list",
+        "/periodicsay: Sends a message to specified channels periodically. Format is /periodicsay minutes:channel1,channel2,...:message",
+        "/periodichtml: Sends a message to specified channels periodically, using HTML formatting. Format is /periodichtml minutes:channel1,channel2,...:message",
         "/endcalls: Ends the next periodic message.",
-        "/sendAll [message]: Sends a message to everyone.",
-        "/changeAuth[s] [auth] [name]: Changes the auth of a user.",
-        "/showteam xxx: Displays the team of a user (to help people who have problems with event moves or invalid teams).",
-        "/rangeban [ip] [comment]: Makes a range ban.",
-        "/rangeunban: [ip]: Removes a rangeban.",
-        "/purgemutes [time]: Purges old mutes. Time is given in seconds. Defaults is 4 weeks.",
-        "/purgembans [time]: Purges old mafiabans. Time is given in seconds. Default is 1 week.",
-        "/addplugin [plugin]: Add a plugin from the web.",
-        "/removeplugin [plugin]: Removes a plugin.",
-        "/updateplugin [plugin]: Updates plugin from the web.",
-        "/updateScripts: Updates scripts from the web.",
+        "/sendall: Sends a message to everyone.",
+        "/changeauth[s]: Changes the auth of a user. Format is /changeauth auth user. If using /changeauths, the change will be silent.",
+        "/showteam: Displays the team of a user (to help people who have problems with event moves or invalid teams).",
+        "/ipban: Bans an IP. Format is /ipban ip comment.",
+        "/ipunban: Unbans an IP.",
+        "/rangeban: Makes a range ban. Format is /rangeban ip comment.",
+        "/rangeunban: Removes a rangeban.",
+        "/purgemutes: Purges mutes older than the given time in seconds. Default is 4 weeks.",
+        "/purgembans: Purges mafiabans older than the given time in seconds. Default is 1 week.",
+        "/addplugin: Add a plugin from the web.",
+        "/removeplugin: Removes a plugin.",
+        "/updateplugin: Updates plugin from the web.",
+        "/updatenotice: Updates notice from the web.",
+        "/updatescripts: Updates scripts from the web.",
+        "/variablereset: Resets scripts variables.",
         "/capslockday [on/off]: To turn caps lock day on or off.",
         "/indigo [on/off]: To create or destroy staff channel.",
         "/updatebansites: To update ban sites.",
         "/updatetierchecks: To update tier checks.",
         "/updatecommands: To update command files.",
         "/updatetiers[soft]: To update tiers. Soft saves to file only without reloading.",
-        "/togglerainbow: [on/off]: To turn rainbow on or off.",
-        "/towner[s] [name]: makes someone a tournament owner (tours.js plugin needs to be installed for this to work)",
-        "/loadstats: loads the usage stats plugin.",
-        "/unloadstats: unloads the usage stats plugin.",
-        "/warnwebclients [message]: sends a big alert message to webclient users.",
-        "/clearladder [tier]: clears rankings from a tier."
+        "/towner: Makes a user a Tournament Owner (tours.js plugin needs to be installed for this to work)",
+        "/loadstats: Loads the usage stats plugin.",
+        "/unloadstats: Unloads the usage stats plugin.",
+        "/warnwebclients: Sends a big alert with your message to webclient users.",
+        "/clearladder: Clears rankings from a tier."
     ];
