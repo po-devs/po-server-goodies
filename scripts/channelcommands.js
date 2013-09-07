@@ -240,6 +240,7 @@ exports.handleCommand = function(src, command, commandData, tar) {
     return "no command";
 };
 exports.help = function(src, channel) {
+    var poChannel = SESSION.channels(channel);
     sys.sendMessage(src, "", channel);
     sys.sendMessage(src, "*** Channel commands ***", channel);
     sys.sendMessage(src, "/cauth: Shows a list of channel auth.", channel);
