@@ -37,7 +37,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         ipbans.add(subip, "Name: " +sys.name(src) + " Comment: " + rangebans.escapeValue(comment));
-        normalbot.sendAll("IP ban added successfully for IP subrange: " + subip + " by "+ sys.name(src),staffchannel, channel);
+        normalbot.sendAll("IP ban added successfully for IP subrange: " + subip + " by "+ sys.name(src),staffchannel);
         return;
     }
     if (command == "ipunban") {
@@ -69,7 +69,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.dbAuths().sort().filter(function(name) { return sys.dbAuth(name) > 3; }).forEach(function(name) {
             sys.sendMessage(src, name + " " + sys.dbAuth(name), channel);
         });
-        sys.sendMessage(src, "",channel, channel);
+        sys.sendMessage(src, "",channel);
         return;
     }
     if (command == "capslockday") {
@@ -101,7 +101,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             contrib = x;
         }
         if (contrib === "") {
-            normalbot.sendMessage(src, commandData + " isn't a contributor.", channel, channel);
+            normalbot.sendMessage(src, commandData + " isn't a contributor.", channel);
             return;
         }
         contributors.remove(contrib);
@@ -180,7 +180,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             }
         }
         if (names.length > 0) {
-            sys.sendAll("±Jirachi: "+names.join(", ") + " got range banned by " + sys.name(src), staffchannel, channel);
+            sys.sendAll("±Jirachi: "+names.join(", ") + " got range banned by " + sys.name(src), staffchannel);
         }
         return;
     }
@@ -337,7 +337,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                         var colour = script.getColor(sayer);
                         sys.sendHtmlAll("<font color='"+colour+"'><timestamp/> <b>" + utilities.html_escape(sys.name(sayer)) + ":</font></b> " + what, cid);
                     } else {
-                        sys.sendAll(sys.name(sayer) + ": " + what, cid, channel);
+                        sys.sendAll(sys.name(sayer) + ": " + what, cid);
                     }
             });
             if (++count > 100) return; // max repeat is 100
@@ -440,11 +440,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "stopbattles") {
         battlesStopped = !battlesStopped;
         if (battlesStopped)  {
-            sys.sendAll("", -1, channel);
-            sys.sendAll("*** ********************************************************************** ***", -1, channel);
+            sys.sendAll("");
+            sys.sendAll("*** ********************************************************************** ***");
             battlebot.sendAll("The battles are now stopped. The server will restart soon.");
-            sys.sendAll("*** ********************************************************************** ***", -1, channel);
-            sys.sendAll("", -1, channel);
+            sys.sendAll("*** ********************************************************************** ***");
+            sys.sendAll("");
         } else {
             battlebot.sendAll("False alarm, battles may continue.");
         }

@@ -1532,9 +1532,9 @@ init : function() {
     for (dwpok = 0; dwpok < dwlist.length; dwpok++) {
         var num = sys.pokeNum(dwlist[dwpok]);
         if (num === undefined)
-            sys.sendAll("Script Check: Unknown poke in dwpokemons: '" +dwlist[dwpok]+"'.", announceChan, channel);
+            sys.sendAll("Script Check: Unknown poke in dwpokemons: '" +dwlist[dwpok]+"'.", announceChan);
         else if (dwpokemons[num] === true)
-            sys.sendAll("Script Check:  dwpokemons contains '" +dwlist[dwpok]+"' multiple times.", announceChan, channel);
+            sys.sendAll("Script Check:  dwpokemons contains '" +dwlist[dwpok]+"' multiple times.", announceChan);
         else
             dwpokemons[sys.pokeNum(dwlist[dwpok])] = true;
     }
@@ -1698,8 +1698,8 @@ init : function() {
     }
 
     sendMainTour = function(message) {
-        sys.sendAll(message, 0, channel);
-        sys.sendAll(message, tourchannel, channel);
+        sys.sendAll(message, 0);
+        sys.sendAll(message, tourchannel);
     };
 
     callplugins("init");
@@ -2029,7 +2029,7 @@ beforePlayerKick:function(src, dest){
 
 afterNewMessage : function (message) {
     if (message == "Script Check: OK") {
-        sys.sendAll("±ScriptCheck: Scripts were updated!", sys.channelId("Indigo Plateau"), channel);
+        sys.sendAll("±ScriptCheck: Scripts were updated!", sys.channelId("Indigo Plateau"));
         if (typeof(scriptChecks)=='undefined')
             scriptChecks = 0;
         scriptChecks += 1;
@@ -2180,7 +2180,7 @@ nameWarnTest : function(src) {
     for (var i = 0; i < nameWarns.length; ++i) {
         var regexp = nameWarns[i];
         if (regexp.test(lname)) {
-            sys.sendAll('Namewarning: Name `' + sys.name(src) + '´ matches the following regexp: `' + regexp + '´ on the IP `' + sys.ip(src) + "´.", watchchannel, channel);
+            sys.sendAll('Namewarning: Name `' + sys.name(src) + '´ matches the following regexp: `' + regexp + '´ on the IP `' + sys.ip(src) + "´.", watchchannel);
         }
     }
 },
@@ -2460,7 +2460,7 @@ beforeChatMessage: function(src, message, chan) {
     }
 
     if (message == ".") {
-        sys.sendMessage(src, sys.name(src)+": .", true, channel);
+        sys.sendMessage(src, sys.name(src)+": .", channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, chan);
         return;
@@ -2738,7 +2738,7 @@ beforeChatMessage: function(src, message, chan) {
     if (typeof CAPSLOCKDAYALLOW != 'undefined' && CAPSLOCKDAYALLOW === true) {
     var date = new Date();
     if ((date.getDate() == 22 && date.getMonth() == 9) || (date.getDate() == 28 && date.getMonth() == 5)) { // October 22nd & June 28th
-        sys.sendAll(sys.name(src)+": " + message.toUpperCase(), channel, channel);
+        sys.sendAll(sys.name(src)+": " + message.toUpperCase(), channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, channel);
     }
