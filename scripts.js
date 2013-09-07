@@ -189,7 +189,7 @@ function sendChanMessage(id, message) {
     sys.sendMessage(id, message, channel);
 }
 
-function sys.sendAll(message, chan_id, channel) {
+function sendChanAll(message, chan_id, channel) {
     if((chan_id === undefined && channel === undefined) || chan_id == -1)
     {
         sys.sendAll(message);
