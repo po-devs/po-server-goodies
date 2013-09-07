@@ -36,9 +36,14 @@ exports.handleCommand = function(src, command, commandData, tar) {
             || (commandData == "admin" && sys.auth(src) > 1)
             || (commandData == "owner" && (sys.auth(src) > 2  || isSuperAdmin(src))) ) {
             sendChanMessage(src, "*** " + commandData.toUpperCase() + " Commands ***");
-            require(commandData+"commands.js").help.forEach(function(help) {
-                sendChanMessage(src, help);
-            });
+            var list = require(commandData+"commands.js").help;
+            if (typeof list !== "function") {
+                list.forEach(function(help) {
+                    sendChanMessage(src, help);
+                });
+            } else {
+                list(src, channel);
+            }
         }
         callplugins("onHelp", src, commandData, channel);
 
