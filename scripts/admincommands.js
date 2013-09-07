@@ -3,8 +3,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendMessage(src, sys.memoryDump(), channel);
         return;
     }
-    if(command == "togglerainbow"){
-        if(commandData === "off"){
+    if (command == "togglerainbow") {
+        if (commandData === "off") {
             SESSION.global().allowRainbow = false;
             normalbot.sendMessage(src, "You turned rainbow off!", channel);
             return;
@@ -243,17 +243,17 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 };
 exports.help = 
     [
-        "/ban [name]: Bans a user.",
-        "/unban [name]: Unbans a user.",
-        "/smute xxx: Secretly mutes a user. Can't smute auth.",
-        "/sunmute xxx: Removes secret mute from a user.",
-        "/megauser[off] xxx: Adds or removes megauser powers from someone.",
+        "/ban: Bans a user.",
+        "/unban: Unbans a user.",
+        "/smute: Secretly mutes a user. Can't smute auth.",
+        "/sunmute: Removes secret mute from a user.",
+        "/togglerainbow [on/off]: Turns /rainbow or on off in the server",
         "/memorydump: Shows the state of the memory.",
-        "/nameban regexp: Adds a regexp ban on usernames.",
-        "/nameunban full_regexp: Removes a regexp ban on usernames.",
-        "/namewarn regexp: Adds a namewarning",
-        "/nameunwarn full_regexp: Removes a namewarning",
-        "/destroychan [channel]: Destroy a channel (official channels are protected).",
-        "/indigoinvite [name]: To invite somebody to staff channels.",
+        "/nameban: Adds a regexp ban on usernames.",
+        "/nameunban: Removes a regexp ban on usernames.",
+        "/namewarn: Adds a regexp namewarning",
+        "/nameunwarn: Removes a regexp namewarning",
+        "/destroychan: Destroy a channel (official channels are protected).",
+        "/indigoinvite: To invite somebody to staff channels.",
         "/indigodeinvite: To deinvite unwanted visitors from staff channel."
     ];

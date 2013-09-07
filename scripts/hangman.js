@@ -698,7 +698,36 @@ module.exports = function () {
             return;
         }
         var tar = sys.id(commandData);
-        require("modcommands.js").handleCommand(src, "hangmanunban", commandData, tar);
+        if (tar === undefined) {
+            if (hbans.get(commandData)) {
+                hangbot.sendAll("IP address " + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!", staffchannel);
+                hangbot.sendAll("IP address " + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!", sachannel);
+                hbans.remove(commandData);
+                return;
+            }
+            var ip = sys.dbIp(commandData);
+            if(ip !== undefined && hbans.get(ip)) {
+                hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",staffchannel);
+                hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",hangmanchan);
+                hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",sachannel);
+                hbans.remove(ip);
+                return;
+            }
+            hangbot.sendMessage(src, "He/she's not banned from hangman.", channel);
+            return;
+        }
+        if (!SESSION.users(tar).hban.active) {
+            hangbot.sendMessage(src, "He/she's not banned from hangman.", channel);
+            return;
+        }
+        if(SESSION.users(src).hban.active && tar==src) {
+           hangbot.sendMessage(src, "You may not unban yourself from hangman", channel);
+           return;
+        }
+        hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",staffchannel);
+        hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",hangmanchan);
+        hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",sachannel);
+        SESSION.users(tar).un("hban");
         return;
     };
     this.hangmanBanList = function (src, commandData) {

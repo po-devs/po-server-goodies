@@ -1815,6 +1815,7 @@ module.exports = {
 
     onHelp: function trivia_onHelp(src, commandData, channel) {
         if (commandData.toLowerCase() == "trivia") {
+            sys.sendMessage(src, "", channel);
             sys.sendMessage(src, "*** Trivia commands ***", channel);
             userCommandHelp.forEach(function (h) {
                 sys.sendMessage(src, h, channel);
