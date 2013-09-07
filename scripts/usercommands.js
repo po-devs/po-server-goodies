@@ -34,7 +34,8 @@ exports.handleCommand = function(src, command, commandData, tar) {
         commandData = commandData.toLowerCase();
         if ( (commandData == "mod" && sys.auth(src) > 0)
             || (commandData == "admin" && sys.auth(src) > 1)
-            || (commandData == "owner" && (sys.auth(src) > 2  || isSuperAdmin(src))) ) {
+            || (commandData == "owner" && (sys.auth(src) > 2  || isSuperAdmin(src)))
+            || (commandData == "channel") ) {
             sendChanMessage(src, "*** " + commandData.toUpperCase() + " Commands ***");
             var list = require(commandData+"commands.js").help;
             if (typeof list !== "function") {
