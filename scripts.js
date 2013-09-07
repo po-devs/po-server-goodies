@@ -189,7 +189,7 @@ function sendChanMessage(id, message) {
     sys.sendMessage(id, message, channel);
 }
 
-function sendChanAll(message, chan_id) {
+function sys.sendAll(message, chan_id, channel) {
     if((chan_id === undefined && channel === undefined) || chan_id == -1)
     {
         sys.sendAll(message);
@@ -629,7 +629,7 @@ POChannel.prototype.setTopic = function(src, topicInfo)
     }
     this.changeParameter(src, "topic", topicInfo);
     SESSION.global().channelManager.update(this.id);
-    channelbot.sendChanAll("" + sys.name(src) + " changed the topic to: " + topicInfo);
+    channelbot.sendAll("" + sys.name(src) + " changed the topic to: " + topicInfo, channel);
 };
 
 POChannel.prototype.isChannelOwner = function(id)
@@ -859,7 +859,7 @@ POChannel.prototype.issueAuth = function(src, name, group)
         channelbot.sendChanMessage(src, ret[1]);
     }
     else {
-        channelbot.sendChanAll(ret[1]);
+        channelbot.sendAll(ret[1], channel);
         SESSION.global().channelManager.update(this.id);
     }
 };
@@ -871,7 +871,7 @@ POChannel.prototype.takeAuth = function(src, name, group)
         channelbot.sendChanMessage(src, ret[1]);
     }
     else {
-        channelbot.sendChanAll(ret[1]);
+        channelbot.sendAll(ret[1], channel);
         SESSION.global().channelManager.update(this.id);
     }
 };
@@ -916,7 +916,7 @@ POChannel.prototype.ban = function(src, tar, data)
             channelbot.sendChanMessage(src, ret[1]);
     }
     else {
-        channelbot.sendChanAll(ret[1]);
+        channelbot.sendAll(ret[1], channel);
         SESSION.global().channelManager.update(this.id);
         // eject the offending user from the channel
         if (sys.id(tar) !== undefined) {
@@ -925,7 +925,7 @@ POChannel.prototype.ban = function(src, tar, data)
                     sys.putInChannel(sys.id(tar), 0);
                 }
                 sys.kick(sys.id(tar), this.id);
-                channelbot.sendChanAll("And "+tar+" was gone!");
+                channelbot.sendAll("And "+tar+" was gone!", channel);
             }
         }
     }
@@ -938,7 +938,7 @@ POChannel.prototype.unban = function(src, tar)
         channelbot.sendChanMessage(src, ret[1]);
     }
     else {
-        channelbot.sendChanAll(ret[1]);
+        channelbot.sendAll(ret[1], channel);
         SESSION.global().channelManager.update(this.id);
     }
 };
@@ -951,7 +951,7 @@ POChannel.prototype.mute = function(src, tar, data)
             channelbot.sendChanMessage(src, ret[1]);
     }
     else {
-        channelbot.sendChanAll(ret[1]);
+        channelbot.sendAll(ret[1], channel);
         SESSION.global().channelManager.update(this.id);
     }
 };
@@ -963,7 +963,7 @@ POChannel.prototype.unmute = function(src, tar)
         channelbot.sendChanMessage(src, ret[1]);
     }
     else {
-        channelbot.sendChanAll(ret[1]);
+        channelbot.sendAll(ret[1], channel);
         SESSION.global().channelManager.update(this.id);
     }
 };
@@ -1014,7 +1014,7 @@ POChannel.prototype.isMuted = function(id)
             }
             if (mutelist[x].expiry <= parseInt(sys.time(),10)) {
                 delete this.muted[x];
-                channelbot.sendChanAll(x+"'s channel mute expired.");
+                channelbot.sendAll(x+"'s channel mute expired.", channel);
                 continue;
             }
             if (cmp(x, name)) {
@@ -1531,9 +1531,9 @@ init : function() {
     for (dwpok = 0; dwpok < dwlist.length; dwpok++) {
         var num = sys.pokeNum(dwlist[dwpok]);
         if (num === undefined)
-            sendChanAll("Script Check: Unknown poke in dwpokemons: '" +dwlist[dwpok]+"'.", announceChan);
+            sys.sendAll("Script Check: Unknown poke in dwpokemons: '" +dwlist[dwpok]+"'.", announceChan, channel);
         else if (dwpokemons[num] === true)
-            sendChanAll("Script Check:  dwpokemons contains '" +dwlist[dwpok]+"' multiple times.", announceChan);
+            sys.sendAll("Script Check:  dwpokemons contains '" +dwlist[dwpok]+"' multiple times.", announceChan, channel);
         else
             dwpokemons[sys.pokeNum(dwlist[dwpok])] = true;
     }
@@ -1697,8 +1697,8 @@ init : function() {
     }
 
     sendMainTour = function(message) {
-        sendChanAll(message, 0);
-        sendChanAll(message, tourchannel);
+        sys.sendAll(message, 0, channel);
+        sys.sendAll(message, tourchannel, channel);
     };
 
     callplugins("init");
@@ -2028,7 +2028,7 @@ beforePlayerKick:function(src, dest){
 
 afterNewMessage : function (message) {
     if (message == "Script Check: OK") {
-        sendChanAll("±ScriptCheck: Scripts were updated!", sys.channelId("Indigo Plateau"));
+        sys.sendAll("±ScriptCheck: Scripts were updated!", sys.channelId("Indigo Plateau"), channel);
         if (typeof(scriptChecks)=='undefined')
             scriptChecks = 0;
         scriptChecks += 1;
@@ -2179,7 +2179,7 @@ nameWarnTest : function(src) {
     for (var i = 0; i < nameWarns.length; ++i) {
         var regexp = nameWarns[i];
         if (regexp.test(lname)) {
-            sendChanAll('Namewarning: Name `' + sys.name(src) + '´ matches the following regexp: `' + regexp + '´ on the IP `' + sys.ip(src) + "´.", watchchannel);
+            sys.sendAll('Namewarning: Name `' + sys.name(src) + '´ matches the following regexp: `' + regexp + '´ on the IP `' + sys.ip(src) + "´.", watchchannel, channel);
         }
     }
 },
@@ -2651,7 +2651,7 @@ beforeChatMessage: function(src, message, chan) {
     // Impersonation
     if (typeof SESSION.users(src).impersonation != 'undefined') {
         sys.stopEvent();
-        sendChanAll(SESSION.users(src).impersonation + ": " + message);
+        sys.sendAll(SESSION.users(src).impersonation + ": " + message, channel);
         return;
     }
 
@@ -2737,7 +2737,7 @@ beforeChatMessage: function(src, message, chan) {
     if (typeof CAPSLOCKDAYALLOW != 'undefined' && CAPSLOCKDAYALLOW === true) {
     var date = new Date();
     if ((date.getDate() == 22 && date.getMonth() == 9) || (date.getDate() == 28 && date.getMonth() == 5)) { // October 22nd & June 28th
-        sendChanAll(sys.name(src)+": " + message.toUpperCase(), channel);
+        sys.sendAll(sys.name(src)+": " + message.toUpperCase(), channel, channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, channel);
     }
@@ -2786,7 +2786,7 @@ afterChatMessage : function(src, message, chan)
                     sys.sendMessage(src, message);
                     capsbot.sendAll("" + sys.name(src) + " was muted for caps while smuted.", staffchannel);
                 } else {
-                    capsbot.sendChanAll(message);
+                    capsbot.sendAll(message, channel);
                     if (channel != staffchannel)
                         capsbot.sendAll(message + "[Channel: "+sys.channel(channel) + "]", staffchannel);
                 }
@@ -2830,7 +2830,7 @@ afterChatMessage : function(src, message, chan)
                     sys.sendMessage(src, message);
                     kickbot.sendAll("" + sys.name(src) + " was kicked for flood while smuted.", staffchannel);
                 } else {
-                    kickbot.sendChanAll(message);
+                    kickbot.sendAll(message, channel);
                     if (channel != staffchannel)
                         kickbot.sendAll(message + " [Channel: "+sys.channel(channel)+"]", staffchannel);
                 }
