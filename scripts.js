@@ -2239,12 +2239,11 @@ afterLogIn : function(src) {
     authChangingTeam = (sys.auth(src) > 0 && sys.auth(src) <= 3);
     this.afterChangeTeam(src);
 
-    if (sys.auth(src) <= 3 && this.canJoinStaffChannel(src) && sys.ip(src) != sys.dbIp("Shadowfist"))
+    if (sys.auth(src) <= 3 && this.canJoinStaffChannel(src))
         sys.putInChannel(src, staffchannel);
     
     if (isAndroid(src)) {
-        normalbot.sendMessage(src, "Give suggestions for the Android Teambuilder here: http://goo.gl/Bois5");
-        normalbot.sendMessage(src, "Remember to report any android teambuilder related bugs at: http://pokemon-online.eu/forums/showthread.php?20883-TBuilder-for-Android");
+        normalbot.sendMessage(src, "New android version with included teambuilder! See: http://pokemon-online.eu/forums/showthread.php?22137-Android-App-with-Teambuilder");
     }
 }, /* end of afterLogin */
 
