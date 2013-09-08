@@ -39,5 +39,5 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
     }
-    commandbot.sendChanMessage(src, "The command " + command + " doesn't exist");
+    commandbot.sendMessage(src, "The command " + command + " doesn't exist", channel);
 };
