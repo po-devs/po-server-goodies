@@ -242,9 +242,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 exports.help = function(src, channel) {
     var poChannel = SESSION.channels(channel);
     sys.sendMessage(src, "/cauth: Shows a list of channel auth.", channel);
+    sys.sendMessage(src, "/register: To register the current channel you're on if it isn't registered already.", channel);
     if (poChannel.isChannelOperator(src) || poChannel.isChannelAdmin(src) || poChannel.isChannelOwner(src)) {
         sys.sendMessage(src, "*** Channel Mod commands ***", channel);
-        sys.sendMessage(src, "/register: To register the current channel you're on.", channel);
         sys.sendMessage(src, "/topic [topic]: Sets the topic of a channel. Only works if you're the first to log on a channel or have auth there. Displays current topic instead if no new one is given.", channel);
         sys.sendMessage(src, "/ck: Kicks someone from current channel.", channel);
         sys.sendMessage(src, "/member: Makes the user a member.", channel);
