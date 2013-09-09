@@ -343,6 +343,20 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         countbot.sendMessage(src, "Server uptime is "+script.startUpTime(), channel);
         return;
     }
+    if (command == "topchannels") {
+        var cids = sys.channelIds();
+        var l = [];
+        for (var i = 0; i < cids.length; ++i) {
+            l.push([cids[i], sys.playersOfChannel(cids[i]).length]);
+        }
+        l.sort(function(a,b) { return b[1]-a[1]; });
+        var topchans = l.slice(0,10);
+        channelbot.sendMessage(src, "Most used channels:", channel);
+        for (var i = 0; i < topchans.length; ++i) {
+            sys.sendMessage(src, "" + sys.channel(topchans[i][0]) + " with " + topchans[i][1] + " players.", channel);
+        }
+        return;
+    }
     if (command == "resetpass") {
         if (!sys.dbRegistered(sys.name(src))) {
             normalbot.sendMessage(src, "You are not registered!", channel);
@@ -825,6 +839,7 @@ exports.help =
         "/league: Lists gym leaders and elite four of the PO league.",
         "/uptime: Shows time since the server was last offline.",
         "/players: Shows the number of players online.",
+        "/topchannels: To view the top channels."
         "/sameTier [on/off]: Turn on/off auto-rejection of challenges from players in a different tier from you.",
         "/seen [name]: Allows you to see the last login of a user.",
         "/changetier [tier]:[team]: Allows you to switch tier. Team is a number between 0-5 indicating loaded teams. Default is 0",
