@@ -839,7 +839,7 @@ exports.help =
         "/league: Lists gym leaders and elite four of the PO league.",
         "/uptime: Shows time since the server was last offline.",
         "/players: Shows the number of players online.",
-        "/topchannels: To view the top channels."
+        "/topchannels: To view the top channels.",
         "/sameTier [on/off]: Turn on/off auto-rejection of challenges from players in a different tier from you.",
         "/seen [name]: Allows you to see the last login of a user.",
         "/changetier [tier]:[team]: Allows you to switch tier. Team is a number between 0-5 indicating loaded teams. Default is 0",
