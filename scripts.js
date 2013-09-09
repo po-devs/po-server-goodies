@@ -1811,7 +1811,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         authStats[authority]["latest" + type] = [commandData, parseInt(sys.time(), 10)];
 },
 
-unBan: function(type, src, tar, commandData) {
+unban: function(type, src, tar, commandData) {
     var memoryhash = {"mute": mutes, "mban": mbans, "smute": smutes, "hban": hbans}[type];
     var banbot = type == "mban" ? mafiabot : normalbot;
     var verb = {"mute": "unmuted", "mban": "unbanned from mafia", "smute": "secretly unmuted", "hban": "unbanned from hangman"}[type];
