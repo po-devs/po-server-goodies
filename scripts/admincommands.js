@@ -125,31 +125,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "sunmute") {
-        if (tar === undefined) {
-            if(sys.dbIp(commandData) !== undefined) {
-                if (smutes.get(commandData)) {
-                    normalbot.sendAll("IP address " + commandData + " was secretly unmuted by " + nonFlashing(sys.name(src)) + "!", staffchannel);
-                    smutes.remove(commandData);
-                    return;
-                }
-                var ip = sys.dbIp(commandData);
-                if (smutes.get(ip)) {
-                    normalbot.sendAll("" + commandData + " was secretly unmuted by " + nonFlashing(sys.name(src)) + "!", staffchannel);
-                    smutes.remove(ip);
-                    return;
-                }
-                normalbot.sendMessage(src, "He/she's not secretly muted.", channel);
-                return;
-            }
-            return;
-        }
-        if (!SESSION.users(sys.id(commandData)).smute.active) {
-            normalbot.sendMessage(src, "He/she's not secretly muted.", channel);
-            return;
-        }
-        normalbot.sendAll("" + commandData + " was secretly unmuted by " + nonFlashing(sys.name(src)) + "!", staffchannel);
-        SESSION.users(sys.id(commandData)).un("smute");
-        return;
+        script.unban("smute", src, tar, commandData);
     }
     if (command == "nameban") {
         if (commandData === undefined) {

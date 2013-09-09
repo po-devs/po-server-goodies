@@ -1811,6 +1811,158 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         authStats[authority]["latest" + type] = [commandData, parseInt(sys.time(), 10)];
 },
 
+unBan: function(type, src, tar, commandData) {
+    var memoryhash = {"mute": mutes, "mban": mbans, "smute": smutes, "hban": hbans}[type];
+    var banbot = type == "mban" ? mafiabot : normalbot;
+    var verb = {"mute": "unmuted", "mban": "unbanned from mafia", "smute": "secretly unmuted", "hban": "unbanned from hangman"}[type];
+    var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "hban": "ban from hangman"}[type];
+    var past = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted", "hban": "banned from hangman"}[type];
+    var sendAll =  {
+        "smute": function(line) {
+            banbot.sendAll(line, staffchannel);
+        },
+        "mban": function(line, ip) {
+            if (ip) {
+                banbot.sendAll(line, staffchannel);
+                banbot.sendAll(line, sachannel);
+            } else {
+                banbot.sendAll(line, staffchannel);
+                banbot.sendAll(line, mafiachan);
+                banbot.sendAll(line, sachannel);
+            }
+        },
+        "mute": function(line, ip) {
+            if (ip) {
+                banbot.sendAll(line, staffchannel);
+            } else {
+                banbot.sendAll(line);
+            }
+        },
+        "hban" : function(line, ip) {
+            if (ip) {
+                banbot.sendAll(line, staffchannel);
+                banbot.sendAll(line, sachannel);
+            } else {
+                banbot.sendAll(line, hangmanchan);
+                banbot.sendAll(line, sachannel);
+                banbot.sendAll(line, staffchannel);
+            }
+        }
+    }[type];
+    if (tar === undefined) {
+        if (memoryhash.get(commandData)) {
+            sendAll("IP address " + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + "!", true);
+            memoryhash.remove(commandData);
+            return;
+        }
+        var ip = sys.dbIp(commandData);
+        if(ip !== undefined && memoryhash.get(ip)) {
+            sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + "!");
+            memoryhash.remove(ip);
+            return;
+        }
+        banbot.sendMessage(src, "He/she's not " + past, channel);
+        return;
+    }
+    if (!SESSION.users(sys.id(commandData))[type].active) {
+        banbot.sendMessage(src, "He/she's not " + past, channel);
+        return;
+    }
+    if(SESSION.users(src)[type].active && tar == src) {
+       banbot.sendMessage(src, "You may not " + nomi + " yourself!", channel);
+       return;
+    }
+    SESSION.users(tar).un(type);
+    sendAll("" + commandData + " was unmuted by " + nonFlashing(sys.name(src)) + "!");
+},
+
+banList: function (src, command, commandData) {
+    var mh;
+    var name;
+    if (command == "mutelist") {
+        mh = mutes;
+        name = "Muted list";
+    } else if (command == "smutelist") {
+        mh = smutes;
+        name = "Secretly muted list";
+    } else if (command == "mafiabans") {
+        mh = mbans;
+        name = "Mafiabans";
+    } else if (command == "hangmanbans") {
+        mh = hbans;
+        name = "Hangman Bans";
+    }
+
+    var width=5;
+    var max_message_length = 30000;
+    var tmp = [];
+    var t = parseInt(sys.time(), 10);
+    var toDelete = [];
+    for (var ip in mh.hash) {
+        if (mh.hash.hasOwnProperty(ip)) {
+            var values = mh.hash[ip].split(":");
+            var banTime = 0;
+            var by = "";
+            var expires = 0;
+            var banned_name;
+            var reason = "";
+            if (values.length >= 5) {
+                banTime = parseInt(values[0], 10);
+                by = values[1];
+                expires = parseInt(values[2], 10);
+                banned_name = values[3];
+                reason = values.slice(4);
+                if (expires !== 0 && expires < t) {
+                    toDelete.push(ip);
+                    continue;
+                }
+            } else if (command == "smutelist") {
+                var aliases = sys.aliases(ip);
+                if (aliases[0] !== undefined) {
+                    banned_name = aliases[0];
+                } else {
+                    banned_name = "~Unknown~";
+                }
+            } else {
+                banTime = parseInt(values[0], 10);
+            }
+            if(typeof commandData != 'undefined' && (!banned_name || banned_name.toLowerCase().indexOf(commandData.toLowerCase()) == -1))
+                continue;
+            tmp.push([ip, banned_name, by, (banTime === 0 ? "unknown" : getTimeString(t-banTime)), (expires === 0 ? "never" : getTimeString(expires-t)), utilities.html_escape(reason)]);
+        }
+    }
+    for (var k = 0; k < toDelete.length; ++k)
+       delete mh.hash[toDelete[k]];
+    if (toDelete.length > 0)
+        mh.save();
+
+    tmp.sort(function(a,b) { return a[3] - b[3];});
+
+    // generate HTML
+    var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + utilities.html_escape(name) + '</strong></center></td></tr><tr><th>IP</th><th>Name</th><th>By</th><th>Issued ago</th><th>Expires in</th><th>Reason</th>';
+    var table_footer = '</table>';
+    var table = table_header;
+    var line;
+    var send_rows = 0;
+    while(tmp.length > 0) {
+        line = '<tr><td>'+tmp[0].join('</td><td>')+'</td></tr>';
+        tmp.splice(0,1);
+        if (table.length + line.length + table_footer.length > max_message_length) {
+            if (send_rows === 0) continue; // Can't send this line!
+            table += table_footer;
+            sys.sendHtmlMessage(src, table, channel);
+            table = table_header;
+            send_rows = 0;
+        }
+        table += line;
+        ++send_rows;
+    }
+    table += table_footer;
+    if (send_rows > 0)
+        sys.sendHtmlMessage(src, table, channel);
+    return;
+},
+
 importable : function(id, team, compactible) {
 /*
 Tyranitar (M) @ Choice Scarf

@@ -631,7 +631,7 @@ module.exports = function () {
         }
 
         if (command === "hangmanunban") {
-            hangman.hangmanUnban(src, commandData);
+            script.unban("hban", src, type, commandData);
             return true;
         }
 
@@ -691,43 +691,6 @@ module.exports = function () {
             bantime = 86400;
         }
         script.issueBan("hban", src, tar, commandData, bantime);
-        return;
-    };
-    this.hangmanUnban = function (src, commandData) {
-        if (commandData === undefined) {
-            return;
-        }
-        var tar = sys.id(commandData);
-        if (tar === undefined) {
-            if (hbans.get(commandData)) {
-                hangbot.sendAll("IP address " + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!", staffchannel);
-                hangbot.sendAll("IP address " + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!", sachannel);
-                hbans.remove(commandData);
-                return;
-            }
-            var ip = sys.dbIp(commandData);
-            if(ip !== undefined && hbans.get(ip)) {
-                hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",staffchannel);
-                hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",hangmanchan);
-                hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",sachannel);
-                hbans.remove(ip);
-                return;
-            }
-            hangbot.sendMessage(src, "He/she's not banned from hangman.", channel);
-            return;
-        }
-        if (!SESSION.users(tar).hban.active) {
-            hangbot.sendMessage(src, "He/she's not banned from hangman.", channel);
-            return;
-        }
-        if(SESSION.users(src).hban.active && tar==src) {
-           hangbot.sendMessage(src, "You may not unban yourself from hangman", channel);
-           return;
-        }
-        hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",staffchannel);
-        hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",hangmanchan);
-        hangbot.sendAll("" + commandData + " was unbanned from hangman by " + nonFlashing(sys.name(src)) + "!",sachannel);
-        SESSION.users(tar).un("hban");
         return;
     };
     this.hangmanBanList = function (src, commandData) {
