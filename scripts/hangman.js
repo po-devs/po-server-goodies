@@ -631,7 +631,7 @@ module.exports = function () {
         }
 
         if (command === "hangmanunban") {
-            script.unban("hban", src, tar, commandData);
+            script.unban("hban", src, sys.id(commandData), commandData);
             return true;
         }
 
