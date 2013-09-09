@@ -931,7 +931,7 @@ unban: function(type, src, tar, commandData) {
        return;
     }
     SESSION.users(tar).un(type);
-    sendAll("" + commandData + " was unmuted by " + nonFlashing(sys.name(src)) + "!");
+    sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + "!");
 },
 
 banList: function (src, command, commandData) {
