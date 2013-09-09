@@ -1252,7 +1252,7 @@ function Mafia(mafiachan) {
         if (sys.id('PolkaBot') !== undefined) {
             sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
         }
-        this.mafiaStats.result("dead");
+        mafia.mafiaStats.result("dead");
         mafia.clearVariables();
         runUpdate();
     };
@@ -1761,7 +1761,7 @@ function Mafia(mafiachan) {
             
             mafia.compilePhaseStalk("GAME END");
             currentStalk.push("Winners: None (game ended in a draw).");
-            this.mafiaStats.result(mafia.theme.name);
+            mafia.mafiaStats.result(mafia.theme.name);
             if (sys.id('PolkaBot') !== undefined) {
                 sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
             }
@@ -1790,7 +1790,7 @@ function Mafia(mafiachan) {
             } else {
                 sendChanAll("±Game: The " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ") wins!", mafiachan);
             }
-            this.mafiaStats.result(mafia.theme.trside(winSide));
+            mafia.mafiaStats.result(mafia.theme.trside(winSide));
             currentStalk.push("Winners: " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ")");
             if (winByDeadRoles) {
                 var losingSides = [];
@@ -1937,8 +1937,8 @@ function Mafia(mafiachan) {
             CurrentGame.playerCount = mafia.signups.length;
             PreviousGames.push(CurrentGame);
             savePlayedGames();
-            this.mafiaStats.players = mafia.signups.length;
-            this.mafiaStats.theme = mafia.theme.name;
+            mafia.mafiaStats.players = mafia.signups.length;
+            mafia.mafiaStats.theme = mafia.theme.name;
             
             currentStalk.push("*** ::: ::: Log for " + mafia.theme.name + "-themed mafia game ::: ::: ***");
             var minp;
@@ -1952,7 +1952,7 @@ function Mafia(mafiachan) {
                 sendChanAll("You need at least "+minp+" players to join (Current; " + mafia.signups.length + ").", mafiachan);
                 sendChanAll(border, mafiachan);
                 mafia.clearVariables();
-                this.mafiaStats.result("dead");
+                mafia.mafiaStats.result("dead");
                 return;
             }
 
