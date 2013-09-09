@@ -36,20 +36,6 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
        }
        return;
     }
-    if (command == "topchannels") {
-        var cids = sys.channelIds();
-        var l = [];
-        for (var i = 0; i < cids.length; ++i) {
-            l.push([cids[i], sys.playersOfChannel(cids[i]).length]);
-        }
-        l.sort(function(a,b) { return b[1]-a[1]; });
-        var topchans = l.slice(0,10);
-        channelbot.sendMessage(src, "Most used channels:", channel);
-        for (var i = 0; i < topchans.length; ++i) {
-            sys.sendMessage(src, "" + sys.channel(topchans[i][0]) + " with " + topchans[i][1] + " players.", channel);
-        }
-        return;
-    }
     if (command == "onrange") {
         var subip = commandData;
         var players = sys.playerIds();
@@ -605,7 +591,6 @@ exports.help =
         "/autosmutelist: Lists the names in the auto-smute list.",
         "/namebans: Lists name bans.",
         "/namewarns: Lists name warnings.",
-        "/topchannels: To view the top channels.",
         "/onrange: To view who is on an IP range.",
         "/onos: Lists players on a certain operating system (May lag a little with certain OS)",
         "/tier: To view the tier(s) of a user.",
