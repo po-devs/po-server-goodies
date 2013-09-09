@@ -28,6 +28,7 @@ function mafiaStats() {
         var date = new Date();
         if (date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
             this.saveFile();
+            this.compileData();
         }
     };
     this.saveFile = function () {
