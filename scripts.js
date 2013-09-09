@@ -1453,6 +1453,21 @@ querybot = new Bot(Config.querybot);
 hangbot = new Bot(Config.hangbot);
 bfbot = new Bot(Config.bfbot);
 
+/* restore mutes, smutes, mafiabans, rangebans, megausers */
+mutes = new MemoryHash("mutes.txt");
+mbans = new MemoryHash("mbans.txt");
+smutes = new MemoryHash("smutes.txt");
+rangebans = new MemoryHash("rangebans.txt");
+contributors = new MemoryHash("contributors.txt");
+mafiaAdmins = new MemoryHash("mafiaadmins.txt");
+mafiaSuperAdmins = new MemoryHash("mafiasuperadmins.txt");
+hangmanAdmins = new MemoryHash("hangmanadmins.txt");
+hangmanSuperAdmins = new MemoryHash("hangmansuperadmins.txt");
+ipbans = new MemoryHash("ipbans.txt");
+detained = new MemoryHash("detained.txt");
+hbans = new MemoryHash("hbans.txt");
+namesToWatch = new MemoryHash(Config.dataDir+"namesToWatch.txt");
+
 /* Start script-object
  *
  * All the events are defined here
@@ -1554,20 +1569,6 @@ init : function() {
     var breedingList = ["Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Monferno", "Infernape", "Piplup", "Prinplup", "Empoleon", "Treecko", "Grovyle", "Sceptile", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Hitmonlee","Hitmonchan","Hitmontop","Tyrogue", "Porygon", "Porygon2", "Porygon-Z", "Gothorita", "Gothitelle","Pansage", "Pansear", "Panpour", "Simisear", "Simisage", "Simipour"];
     breedingpokemons = breedingList.map(sys.pokeNum);
 
-    /* restore mutes, smutes, mafiabans, rangebans, megausers */
-    mutes = new MemoryHash("mutes.txt");
-    mbans = new MemoryHash("mbans.txt");
-    smutes = new MemoryHash("smutes.txt");
-    rangebans = new MemoryHash("rangebans.txt");
-    contributors = new MemoryHash("contributors.txt");
-    mafiaAdmins = new MemoryHash("mafiaadmins.txt");
-    mafiaSuperAdmins = new MemoryHash("mafiasuperadmins.txt");
-    hangmanAdmins = new MemoryHash("hangmanadmins.txt");
-    hangmanSuperAdmins = new MemoryHash("hangmansuperadmins.txt");
-    ipbans = new MemoryHash("ipbans.txt");
-    detained = new MemoryHash("detained.txt");
-    hbans = new MemoryHash("hbans.txt");
-    namesToWatch = new MemoryHash(Config.dataDir+"namesToWatch.txt");
     proxy_ips = {};
     function addProxybans(content) {
         var lines = content.split(/\n/);
