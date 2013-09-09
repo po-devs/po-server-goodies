@@ -18,7 +18,9 @@ function Mafia(mafiachan) {
     // Otherwise mafia game won't get reloaded
     this.version = "2012-12-15";
     var mafia = this;
-
+    
+    this.mafiaStats = require("mafiastats.js");
+    
     var noPlayer = '*';
     var CurrentGame;
     var PreviousGames;
@@ -1250,6 +1252,7 @@ function Mafia(mafiachan) {
         if (sys.id('PolkaBot') !== undefined) {
             sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
         }
+        this.mafiaStats.result("dead");
         mafia.clearVariables();
         runUpdate();
     };
@@ -1758,6 +1761,7 @@ function Mafia(mafiachan) {
             
             mafia.compilePhaseStalk("GAME END");
             currentStalk.push("Winners: None (game ended in a draw).");
+            this.mafiaStats.result(mafia.theme.name);
             if (sys.id('PolkaBot') !== undefined) {
                 sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
             }
@@ -1786,6 +1790,7 @@ function Mafia(mafiachan) {
             } else {
                 sendChanAll("±Game: The " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ") wins!", mafiachan);
             }
+            this.mafiaStats.result(mafia.theme.trside(winSide));
             currentStalk.push("Winners: " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ")");
             if (winByDeadRoles) {
                 var losingSides = [];
@@ -1932,7 +1937,9 @@ function Mafia(mafiachan) {
             CurrentGame.playerCount = mafia.signups.length;
             PreviousGames.push(CurrentGame);
             savePlayedGames();
-
+            this.mafiaStats.players = mafia.signups.length;
+            this.mafiaStats.theme = mafia.theme.name;
+            
             currentStalk.push("*** ::: ::: Log for " + mafia.theme.name + "-themed mafia game ::: ::: ***");
             var minp;
             if (mafia.theme.minplayers === undefined || isNaN(mafia.theme.minplayers) || mafia.theme.minplayers < 3) {
@@ -1945,6 +1952,7 @@ function Mafia(mafiachan) {
                 sendChanAll("You need at least "+minp+" players to join (Current; " + mafia.signups.length + ").", mafiachan);
                 sendChanAll(border, mafiachan);
                 mafia.clearVariables();
+                this.mafiaStats.result("dead");
                 return;
             }
 
@@ -3221,6 +3229,7 @@ function Mafia(mafiachan) {
         if (mafia.needsUpdating !== true) return;
         var POglobal = SESSION.global();
         var index, source;
+        mafia.mafiaStats.update();
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if ("mafia.js" == POglobal.plugins[i].source) {
                 source = POglobal.plugins[i].source;
@@ -4548,6 +4557,7 @@ function Mafia(mafiachan) {
 
         var tar = sys.id(commandData);
         if (command === "push") {
+            var name = commandData;
             if (!mafia.isMafiaSuperAdmin(src)) {
                 msg(src, "Super Mafia Admin Command.");
                 return;
