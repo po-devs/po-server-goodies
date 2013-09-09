@@ -31,25 +31,25 @@ POChannel.prototype.setTopic = function(src, topicInfo)
     var canSetTopic = (sys.auth(src) > 0 || this.isChannelOperator(src));
     if (topicInfo === undefined) {
         if (typeof this.topic != 'undefined') {
-            channelbot.sendMessage(src, "Topic for this channel is: " + this.topic, channel);
+            channelbot.sendMessage(src, "Topic for this channel is: " + this.topic, this.id);
             if (SESSION.channels(channel).topicSetter) {
-                channelbot.sendMessage(src, "Topic was set by " + nonFlashing(this.topicSetter), channel);
+                channelbot.sendMessage(src, "Topic was set by " + nonFlashing(this.topicSetter), this.id);
             }
         } else {
-            channelbot.sendMessage(src, "No topic set for this channel.", channel);
+            channelbot.sendMessage(src, "No topic set for this channel.", this.id);
         }
         if (canSetTopic) {
-            channelbot.sendMessage(src, "Specify a topic to set one!", channel);
+            channelbot.sendMessage(src, "Specify a topic to set one!", this.id);
         }
         return;
     }
     if (!canSetTopic) {
-        channelbot.sendMessage(src, "You don't have the rights to set topic", channel);
+        channelbot.sendMessage(src, "You don't have the rights to set topic", this.id);
         return;
     }
     this.changeParameter(src, "topic", topicInfo);
     SESSION.global().channelManager.update(this.id);
-    channelbot.sendAll("" + sys.name(src) + " changed the topic to: " + topicInfo, channel);
+    channelbot.sendAll("" + sys.name(src) + " changed the topic to: " + topicInfo, this.id);
 };
 
 POChannel.prototype.isChannelOwner = function(id)
@@ -276,10 +276,10 @@ POChannel.prototype.issueAuth = function(src, name, group)
 {
     var ret = this.addRole(src, name, group, {});
     if (ret[0] == "self") {
-        channelbot.sendMessage(src, ret[1], channel);
+        channelbot.sendMessage(src, ret[1], this.id);
     }
     else {
-        channelbot.sendAll(ret[1], channel);
+        channelbot.sendAll(ret[1], this.id);
         SESSION.global().channelManager.update(this.id);
     }
 };
@@ -288,10 +288,10 @@ POChannel.prototype.takeAuth = function(src, name, group)
 {
     var ret = this.removeRole(src, name, group);
     if (ret[0] == "self") {
-        channelbot.sendMessage(src, ret[1], channel);
+        channelbot.sendMessage(src, ret[1], this.id);
     }
     else {
-        channelbot.sendAll(ret[1], channel);
+        channelbot.sendAll(ret[1], this.id);
         SESSION.global().channelManager.update(this.id);
     }
 };
@@ -333,10 +333,10 @@ POChannel.prototype.ban = function(src, tar, data)
     var ret = this.addRole(src, tar, "banned", data);
     if (ret[0] == "self") {
         if (typeof src == "number")
-            channelbot.sendMessage(src, ret[1], channel);
+            channelbot.sendMessage(src, ret[1], this.id);
     }
     else {
-        channelbot.sendAll(ret[1], channel);
+        channelbot.sendAll(ret[1], this.id);
         SESSION.global().channelManager.update(this.id);
         // eject the offending user from the channel
         if (sys.id(tar) !== undefined) {
@@ -345,7 +345,7 @@ POChannel.prototype.ban = function(src, tar, data)
                     sys.putInChannel(sys.id(tar), 0);
                 }
                 sys.kick(sys.id(tar), this.id);
-                channelbot.sendAll("And "+tar+" was gone!", channel);
+                channelbot.sendAll("And "+tar+" was gone!", this.id);
             }
         }
     }
@@ -355,10 +355,10 @@ POChannel.prototype.unban = function(src, tar)
 {
     var ret = this.removeRole(src, tar, "banned");
     if (ret[0] == "self") {
-        channelbot.sendMessage(src, ret[1], channel);
+        channelbot.sendMessage(src, ret[1], this.id);
     }
     else {
-        channelbot.sendAll(ret[1], channel);
+        channelbot.sendAll(ret[1], this.id);
         SESSION.global().channelManager.update(this.id);
     }
 };
@@ -368,10 +368,10 @@ POChannel.prototype.mute = function(src, tar, data)
     var ret = this.addRole(src, tar, "muted", data);
     if (ret[0] == "self") {
         if (typeof src == "number")
-            channelbot.sendMessage(src, ret[1], channel);
+            channelbot.sendMessage(src, ret[1], this.id);
     }
     else {
-        channelbot.sendAll(ret[1], channel);
+        channelbot.sendAll(ret[1], this.id);
         SESSION.global().channelManager.update(this.id);
     }
 };
@@ -380,10 +380,10 @@ POChannel.prototype.unmute = function(src, tar)
 {
     var ret = this.removeRole(src, tar, "muted");
     if (ret[0] == "self") {
-        channelbot.sendMessage(src, ret[1], channel);
+        channelbot.sendMessage(src, ret[1], this.id);
     }
     else {
-        channelbot.sendAll(ret[1], channel);
+        channelbot.sendAll(ret[1], this.id);
         SESSION.global().channelManager.update(this.id);
     }
 };
@@ -434,7 +434,7 @@ POChannel.prototype.isMuted = function(id)
             }
             if (mutelist[x].expiry <= parseInt(sys.time(),10)) {
                 delete this.muted[x];
-                channelbot.sendAll(x+"'s channel mute expired.", channel);
+                channelbot.sendAll(x+"'s channel mute expired.", this.id);
                 continue;
             }
             if (cmp(x, name)) {
@@ -628,7 +628,7 @@ POChannel.prototype.getReadableList = function(type)
                 table += table_footer;
                 // Really need to return multiple tables from this function... return a list??
                 // Or give a callback
-                // sendChanHtmlMessage(src, table, channel);
+                // sendChanHtmlMessage(src, table, this.id);
                 table = table_header;
                 send_rows = 0;
             }

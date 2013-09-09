@@ -511,6 +511,22 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendAll("Updated commands!", staffchannel);
         return;
     }
+    if (command == "updatechannels") {
+        var commandFiles = ["channelfunctions.js", "channelmanager.js"];
+        commandFiles.forEach(function(file) {
+            var module = updateModule(file)
+            module.source = file;
+            delete require.cache[file];
+            if (file === "channelfunctions.js") { 
+                POChannel = require(file);
+            }
+            if (file === "channelmanager.js") { 
+                POChannelManager = require(file);
+            }
+        });
+        normalbot.sendAll("Updated channel functions!", staffchannel);
+        return;
+    }
     if (command == "updatescripts") {
         normalbot.sendMessage(src, "Fetching scripts...", channel);
         var updateURL = Config.base_url + "scripts.js";
