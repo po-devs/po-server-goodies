@@ -4632,6 +4632,7 @@ function Mafia(mafiachan) {
         }
         if (command == "mafiaunban") {
             script.unban("mban", src, tar, commandData);
+            return;
         }
         var id;
         if (command == "passma") { //partially copied from tours.js

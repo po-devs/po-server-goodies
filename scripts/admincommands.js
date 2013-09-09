@@ -126,6 +126,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "sunmute") {
         script.unban("smute", src, tar, commandData);
+        return;
     }
     if (command == "nameban") {
         if (commandData === undefined) {

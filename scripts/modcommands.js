@@ -278,6 +278,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "unmute") {
         script.unban("mute", src, tar, commandData);
+        return;
     }
     if (command == "battlehistory") {
         if (tar === undefined) {
