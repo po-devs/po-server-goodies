@@ -4476,6 +4476,11 @@ function Mafia(mafiachan) {
             return;
         }
         
+        if (command === "topthemes") {
+            mafiaStats.getTopThemes(src, channel, commandData);
+            return;
+        }
+        
         if (command === "update") {
             var url = commandData, name = commandData;
             if (commandData.indexOf("::") >= 0) {
