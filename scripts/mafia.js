@@ -2678,7 +2678,7 @@ function Mafia(mafiachan) {
                                 }
                             } else if (command == "shield") {
                                 target.redirectTo = player.name;
-                                target.redirectActions = Action.redirectActions || "*";
+                                target.redirectActions = Action.shieldActions || "*";
                             }
     
                             //Post-Action effects here
