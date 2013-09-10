@@ -244,7 +244,7 @@ function mafiaStats() {
         var data = this.compileWinData(theme, true);
         var totalTeam = data[0];
         var gamesPlayed = data[1];
-        sys.sendMessage(src, "*** " + theme.upperCase() + " WIN DATA ***", channel);
+        sys.sendMessage(src, "*** " + theme.toUpperCase() + " WIN DATA ***", channel);
         sys.sendMessage(src, "", channel);
         sys.sendMessage(src, "Theme Played: " + gamesPlayed + " times", channel);
         var count = 0;
