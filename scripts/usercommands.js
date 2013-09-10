@@ -119,9 +119,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendMessage(src, "", channel);
         sys.sendMessage(src, "*** CONTRIBUTORS ***", channel);
         sys.sendMessage(src, "", channel);
-        for (var x in contributors.hash) {
-            if (contributors.hash.hasOwnProperty(x)) {
-                sys.sendMessage(src, x + "'s contributions: " + contributors.get(x), channel);
+        for (var x in script.contributors.hash) {
+            if (script.contributors.hash.hasOwnProperty(x)) {
+                sys.sendMessage(src, x + "'s contributions: " + script.contributors.get(x), channel);
             }
         }
         sys.sendMessage(src, "", channel);

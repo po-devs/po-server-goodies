@@ -613,19 +613,19 @@ init : function() {
     breedingpokemons = breedingList.map(sys.pokeNum);
 
     /* restore mutes, smutes, mafiabans, rangebans, megausers */
-    mutes = new MemoryHash("mutes.txt");
-    mbans = new MemoryHash("mbans.txt");
-    smutes = new MemoryHash("smutes.txt");
-    rangebans = new MemoryHash("rangebans.txt");
-    contributors = new MemoryHash("contributors.txt");
-    mafiaAdmins = new MemoryHash("mafiaadmins.txt");
-    mafiaSuperAdmins = new MemoryHash("mafiasuperadmins.txt");
-    hangmanAdmins = new MemoryHash("hangmanadmins.txt");
-    hangmanSuperAdmins = new MemoryHash("hangmansuperadmins.txt");
-    ipbans = new MemoryHash("ipbans.txt");
-    detained = new MemoryHash("detained.txt");
-    hbans = new MemoryHash("hbans.txt");
-    namesToWatch = new MemoryHash(Config.dataDir+"namesToWatch.txt");
+    script.mutes = new MemoryHash("mutes.txt");
+    script.mbans = new MemoryHash("mbans.txt");
+    script.smutes = new MemoryHash("smutes.txt");
+    script.rangebans = new MemoryHash("rangebans.txt");
+    script.contributors = new MemoryHash("contributors.txt");
+    script.mafiaAdmins = new MemoryHash("mafiaadmins.txt");
+    script.mafiaSuperAdmins = new MemoryHash("mafiasuperadmins.txt");
+    script.hangmanAdmins = new MemoryHash("hangmanadmins.txt");
+    script.hangmanSuperAdmins = new MemoryHash("hangmansuperadmins.txt");
+    script.ipbans = new MemoryHash("ipbans.txt");
+    script.detained = new MemoryHash("detained.txt");
+    script.hbans = new MemoryHash("hbans.txt");
+    script.namesToWatch = new MemoryHash(Config.dataDir+"namesToWatch.txt");
     proxy_ips = {};
     function addProxybans(content) {
         var lines = content.split(/\n/);
@@ -767,7 +767,7 @@ init : function() {
 
 
 issueBan : function(type, src, tar, commandData, maxTime) {
-        var memoryhash = {"mute": mutes, "mban": mbans, "smute": smutes, "hban": hbans}[type];
+        var memoryhash = {"mute": script.mutes, "mban": script.mbans, "smute": script.smutes, "hban": script.hbans}[type];
         var banbot = type == "mban" ? mafiabot : normalbot;
         var verb = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted", "hban": "banned from hangman"}[type];
         var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "hban": "ban from hangman"}[type];
@@ -870,7 +870,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
 },
 
 unban: function(type, src, tar, commandData) {
-    var memoryhash = {"mute": mutes, "mban": mbans, "smute": smutes, "hban": hbans}[type];
+    var memoryhash = {"mute": script.mutes, "mban": script.mbans, "smute": script.smutes, "hban": script.hbans}[type];
     var banbot = type == "mban" ? mafiabot : normalbot;
     var verb = {"mute": "unmuted", "mban": "unbanned from mafia", "smute": "secretly unmuted", "hban": "unbanned from hangman"}[type];
     var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "hban": "ban from hangman"}[type];
@@ -938,16 +938,16 @@ banList: function (src, command, commandData) {
     var mh;
     var name;
     if (command == "mutelist") {
-        mh = mutes;
+        mh = script.mutes;
         name = "Muted list";
     } else if (command == "smutelist") {
-        mh = smutes;
+        mh = script.smutes;
         name = "Secretly muted list";
     } else if (command == "mafiabans") {
-        mh = mbans;
+        mh = script.mbans;
         name = "Mafiabans";
     } else if (command == "hangmanbans") {
-        mh = hbans;
+        mh = script.hbans;
         name = "Hangman Bans";
     }
 
@@ -1253,7 +1253,7 @@ afterNewMessage : function (message) {
 
 
 isRangeBanned : function(ip) {
-    for (var subip in rangebans.hash) {
+    for (var subip in script.rangebans.hash) {
         if (subip.length > 0 && ip.substr(0, subip.length) == subip) {
              return true;
         }
@@ -1262,7 +1262,7 @@ isRangeBanned : function(ip) {
 },
 
 isIpBanned: function(ip) {
-    for (var subip in ipbans.hash) {
+    for (var subip in script.ipbans.hash) {
         if (subip.length > 0 && ip.substr(0, subip.length) == subip) {
              return true;
         }
@@ -1509,7 +1509,7 @@ afterChangeTeam : function(src)
         }
     }
 
-    POuser.contributions = contributors.hash.hasOwnProperty(sys.name(src)) ? contributors.get(sys.name(src)) : undefined;
+    POuser.contributions = script.contributors.hash.hasOwnProperty(sys.name(src)) ? script.contributors.get(sys.name(src)) : undefined;
     POuser.mafiaAdmin = mafiaAdmins.hash.hasOwnProperty(sys.name(src));
     if (authChangingTeam === false) {
         if (sys.auth(src) > 0 && sys.auth(src) <= 3)
@@ -2123,7 +2123,7 @@ beforeBattleEnded : function(src, dest, desc, bid) {
     if (!SESSION.users(dest).battlehistory) SESSION.users(dest).battlehistory=[];
     SESSION.users(src).battlehistory.push([sys.name(dest), tie ? "tie":"win", desc, rated, tier]);
     SESSION.users(dest).battlehistory.push([sys.name(src), tie ? "tie":"lose", desc, rated, tier]);
-    if (rated && (namesToWatch.get(sys.name(src).toLowerCase()) || namesToWatch.get(sys.name(dest).toLowerCase()))) {
+    if (rated && (script.namesToWatch.get(sys.name(src).toLowerCase()) || script.namesToWatch.get(sys.name(dest).toLowerCase()))) {
         if (sys.channelId("Channel")) {
             sys.sendHtmlAll("<b><font color = blue>" + sys.name(src) + " and " + sys.name(dest) + " finished a battle with result " + (tie ? "tie" : sys.name(src) + " winning") + (desc === "forfeit" ? " (forfeit)" : "") + (tier ? " in tier " + tier: "") + (time ? " after " + getTimeString(sys.time() - time) + "." : "." ) + "</font></b>", sys.channelId("Channel"));
             sys.sendAll(sys.name(src) + "'s IP: " + sys.ip(src) + " " + sys.name(dest) + "'s IP: " + sys.ip(dest), sys.channelId("Channel"));

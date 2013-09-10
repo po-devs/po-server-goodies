@@ -185,9 +185,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         try {
         var table = TABLE_HEADER;
         var tmp = [];
-        for (var key in rangebans.hash) {
-            if (rangebans.hash.hasOwnProperty(key)) {
-                tmp.push([key, rangebans.get(key)]);
+        for (var key in script.rangebans.hash) {
+            if (script.rangebans.hash.hasOwnProperty(key)) {
+                tmp.push([key, script.rangebans.get(key)]);
             }
         }
         tmp.sort(function(a,b) { return a[0] < b[0] ? -1 : 1; });
@@ -213,9 +213,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         try {
         var table = TABLE_HEADER;
         var tmp = [];
-        for (var key in ipbans.hash) {
-            if (ipbans.hash.hasOwnProperty(key)) {
-                tmp.push([key, ipbans.get(key)]);
+        for (var key in script.ipbans.hash) {
+            if (script.ipbans.hash.hasOwnProperty(key)) {
+                tmp.push([key, script.ipbans.get(key)]);
             }
         }
         tmp.sort(function(a,b) { return a[0] < b[0] ? -1 : 1; });
@@ -303,7 +303,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
 
         var registered = sys.dbRegistered(name);
-        var contribution = contributors.hash.hasOwnProperty(name) ? contributors.get(name) : "no";
+        var contribution = script.contributors.hash.hasOwnProperty(name) ? script.contributors.get(name) : "no";
         var authLevel;
         var ip;
         var online;

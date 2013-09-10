@@ -36,14 +36,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "The IP address looks strange, you might want to correct it: " + subip, channel);
             return;
         }
-        ipbans.add(subip, "Name: " +sys.name(src) + " Comment: " + rangebans.escapeValue(comment));
+        script.ipbans.add(subip, "Name: " +sys.name(src) + " Comment: " + script.rangebans.escapeValue(comment));
         normalbot.sendAll("IP ban added successfully for IP subrange: " + subip + " by "+ sys.name(src),staffchannel);
         return;
     }
     if (command == "ipunban") {
         var subip = commandData;
-        if (ipbans.get(subip) !== undefined) {
-            ipbans.remove(subip);
+        if (script.ipbans.get(subip) !== undefined) {
+            script.ipbans.remove(subip);
             normalbot.sendMessage(src, "IP ban removed successfully for IP subrange: " + subip, channel);
         } else {
             normalbot.sendMessage(src, "No such IP ban.", channel);
@@ -91,12 +91,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         normalbot.sendMessage(src, name + " is now a contributor!", channel);
-        contributors.add(name, reason);
+        script.contributors.add(name, reason);
         return;
     }
     if (command == "contributoroff") {
         var contrib = "";
-        for (var x in contributors.hash) {
+        for (var x in script.contributors.hash) {
             if (x.toLowerCase() == commandData.toLowerCase())
             contrib = x;
         }
@@ -104,7 +104,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, commandData + " isn't a contributor.", channel);
             return;
         }
-        contributors.remove(contrib);
+        script.contributors.remove(contrib);
         normalbot.sendMessage(src, commandData + " is no longer a contributor!", channel);
         return;
     }
@@ -163,7 +163,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
 
         /* add rangeban */
-        rangebans.add(subip, rangebans.escapeValue(comment));
+        script.rangebans.add(subip, script.rangebans.escapeValue(comment));
         normalbot.sendMessage(src, "Rangeban added successfully for IP subrange: " + subip, channel);
         /* kick them */
         var players = sys.playerIds();
@@ -186,8 +186,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "rangeunban") {
         var subip = commandData;
-        if (rangebans.get(subip) !== undefined) {
-            rangebans.remove(subip);
+        if (script.rangebans.get(subip) !== undefined) {
+            script.rangebans.remove(subip);
             normalbot.sendMessage(src, "Rangeban removed successfully for IP subrange: " + subip, channel);
         } else {
             normalbot.sendMessage(src, "No such rangeban.", channel);
@@ -501,7 +501,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "updatecommands") {
         var commandFiles = ["usercommands.js", "modcommands.js", "admincommands.js", "ownercommands.js", "channelcommands.js", "commands.js"];
         commandFiles.forEach(function(file) {
-            var module = updateModule(file)
+            var module = updateModule(file);
             module.source = file;
             delete require.cache[file];
             if (file === "commands.js") {
@@ -514,7 +514,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "updatechannels") {
         var commandFiles = ["channelfunctions.js", "channelmanager.js"];
         commandFiles.forEach(function(file) {
-            var module = updateModule(file)
+            var module = updateModule(file);
             module.source = file;
             delete require.cache[file];
             if (file === "channelfunctions.js") { 

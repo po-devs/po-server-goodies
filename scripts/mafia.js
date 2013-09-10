@@ -3145,7 +3145,7 @@ function Mafia(mafiachan) {
             return true;
         }
         
-        if (mafiaAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
+        if (script.mafiaAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
             return true;
         }
         return false;
@@ -3154,7 +3154,7 @@ function Mafia(mafiachan) {
         if (sys.auth(src) >= 3)
             return true;
 
-        if (mafiaSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
+        if (script.mafiaSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
             return true;
         }
         return false;
@@ -4542,7 +4542,7 @@ function Mafia(mafiachan) {
 
         if (command == "mafiaadmins" || command == "madmins" || command ===  "mas") {
             var smas = [];
-            for (var y in mafiaSuperAdmins.hash) {
+            for (var y in script.mafiaSuperAdmins.hash) {
                 smas.push(y);
             }
             smas = smas.sort();
@@ -4559,7 +4559,7 @@ function Mafia(mafiachan) {
                 }
             }
             var mas = [];
-            for (var x in mafiaAdmins.hash) {
+            for (var x in script.mafiaAdmins.hash) {
                 mas.push(x);
             }
             mas = mas.sort();
@@ -4697,12 +4697,12 @@ function Mafia(mafiachan) {
             }
             
             if (this.isMafiaSuperAdmin(src)) {
-                mafiaSuperAdmins.remove(oldname);
-                mafiaSuperAdmins.add(newname, "");
+                script.mafiaSuperAdmins.remove(oldname);
+                script.mafiaSuperAdmins.add(newname, "");
                 sMA = true,
             } else {
-                mafiaAdmins.remove(oldname);
-                mafiaAdmins.add(newname, "");
+                script.mafiaAdmins.remove(oldname);
+                script.mafiaAdmins.add(newname, "");
             }
             id = sys.id(commandData);
             if (id !== undefined)
@@ -4751,11 +4751,11 @@ function Mafia(mafiachan) {
             var ma = commandData.toLowerCase();
             var sMA = false;
             if ((command == "mafiasadmin" || command == "mafiasuperadmin") && sys.auth(src) >= 3) {
-                mafiaSuperAdmins.add(ma, "");
-                mafiaAdmins.remove(ma);
+                script.mafiaSuperAdmins.add(ma, "");
+                script.mafiaAdmins.remove(ma);
                 sMA = true;
             } else {
-                mafiaAdmins.add(ma, "");
+                script.mafiaAdmins.add(ma, "");
             }
             id = sys.id(commandData);
             if (id !== undefined)
@@ -4766,11 +4766,11 @@ function Mafia(mafiachan) {
         if (command == "mafiaadminoff") {
             var ma = commandData.toLowerCase();
             var sMA = false;
-            if (mafiaSuperAdmins.hash.hasOwnProperty(ma) && sys.auth(src) >= 3) {
-                mafiaSuperAdmins.remove(ma);
+            if (script.mafiaSuperAdmins.hash.hasOwnProperty(ma) && sys.auth(src) >= 3) {
+                script.mafiaSuperAdmins.remove(ma);
                 sMA = true;
             }
-            mafiaAdmins.remove(ma);
+            script.mafiaAdmins.remove(ma);
             id = sys.id(commandData);
             if (id !== undefined)
                 SESSION.users(id).mafiaAdmin = false;

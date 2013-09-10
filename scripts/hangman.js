@@ -1,5 +1,5 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global sys:true, sendChanHtmlAll:true, module:true, SESSION:true, hangmanchan, hangbot, hangmanAdmins, hangmanSuperAdmins, script */
+/*global sys:true, sendChanHtmlAll:true, module:true, SESSION:true, hangmanchan, hangbot, require, script */
 module.exports = function () {
     var hangman = this;
     var hangchan;
@@ -540,18 +540,18 @@ module.exports = function () {
             "*** Hangman Admin Commands ***",
             "/hangmanban: To ban a user from hangman. Format /hangmanban name:reason:time",
             "/hangmanunban: To unban a user from hangman.",
-            "/hangmanbans: Searches the hangman banlist, show full list if no search term is entered.",
+            "/hangmanbans: Searches the hangman banlist, show full list if no search term is entered."
         ];
         var superAdminHelp = [
             "*** Hangman Super Admin Commands ***",
             "/config: To change the answer delay time and other settings. Format /config parameter:value. Type /config by itself to see more help.",
             "/hangmanadmin: To promote a new Hangman admin.",
-            "/hangmanadminoff: To demote a Hangman admin.",
+            "/hangmanadminoff: To demote a Hangman admin."
         ];
         var ownerHelp = [
             "*** Hangman Owner Commands ***",
             "/hangmansuperadmin: To promote a new Hangman Super Admin.",
-            "/hangmansuperadminoff: To demote a Hangman Super Admin.",
+            "/hangmansuperadminoff: To demote a Hangman Super Admin."
         ];
         var help = userHelp;
         if (this.authLevel(src) > 0) {
@@ -699,7 +699,7 @@ module.exports = function () {
     };
     this.hangmanAuth = function (src, commandData, channel) {
         var shas = [];
-        for (var y in hangmanSuperAdmins.hash) {
+        for (var y in script.hangmanSuperAdmins.hash) {
             shas.push(y);
         }
         shas = shas.sort();
@@ -716,7 +716,7 @@ module.exports = function () {
             }
         }
         var has = [];
-        for (var x in hangmanAdmins.hash) {
+        for (var x in script.hangmanAdmins.hash) {
             has.push(x);
         }
         has = has.sort();
@@ -738,11 +738,11 @@ module.exports = function () {
         if (commandData === undefined) {
             return;
         }
-        if (hangmanAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
+        if (script.hangmanAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
             sys.sendMessage(src, "±Unown: " + commandData + " is already a Hangman Admin!", channel);
             return;
         }
-        hangmanAdmins.add(commandData.toLowerCase(), "");
+        script.hangmanAdmins.add(commandData.toLowerCase(), "");
         sys.sendAll("±Unown: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Hangman Admin.", sys.channelId('Victory Road'));
         return;
     };
@@ -750,11 +750,11 @@ module.exports = function () {
         if (commandData === undefined) {
             return;
         }
-        if (hangmanSuperAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
+        if (script.hangmanSuperAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
             sys.sendMessage(src, "±Unown: " + commandData + " is already a Super Hangman Admin!", channel);
             return;
         }
-        hangmanSuperAdmins.add(commandData.toLowerCase(), "");
+        script.hangmanSuperAdmins.add(commandData.toLowerCase(), "");
         sys.sendAll("±Unown: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Hangman Admin.", sys.channelId('Victory Road'));
         return;
     };
@@ -762,12 +762,12 @@ module.exports = function () {
         if (commandData === undefined) {
             return;
         }
-        if (!hangmanAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
+        if (!script.hangmanAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
             sys.sendMessage(src, "±Unown: " + commandData + " is not a Hangman Admin!", channel);
             return;
         }
-        hangmanAdmins.remove(commandData);
-        hangmanAdmins.remove(commandData.toLowerCase());
+        script.hangmanAdmins.remove(commandData);
+        script.hangmanAdmins.remove(commandData.toLowerCase());
         sys.sendAll("±Unown: " + sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Hangman Admin.", sys.channelId('Victory Road'));
         return;
     };
@@ -775,19 +775,19 @@ module.exports = function () {
         if (commandData === undefined) {
             return;
         }
-        if (!hangmanSuperAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
+        if (!script.hangmanSuperAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
             sys.sendMessage(src, "±Unown: " + commandData + " is not a Super Hangman Admin!", channel);
             return;
         }
-        hangmanSuperAdmins.remove(commandData);
-        hangmanSuperAdmins.remove(commandData.toLowerCase());
+        script.hangmanSuperAdmins.remove(commandData);
+        script.hangmanSuperAdmins.remove(commandData.toLowerCase());
         sys.sendAll("±Unown: " + sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Super Hangman Admin.", sys.channelId('Victory Road'));
         return;
     };
     this.isHangmanAdmin = function (src) {
         if (sys.auth(src) >= 1)
             return true;
-        if (hangmanAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
+        if (script.hangmanAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
             return true;
         }
         return false;
@@ -795,7 +795,7 @@ module.exports = function () {
     this.isSuperHangmanAdmin = function (src) {
         if (sys.auth(src) >= 2)
             return true;
-        if (hangmanSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
+        if (script.hangmanSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
             return true;
         }
         return false;
