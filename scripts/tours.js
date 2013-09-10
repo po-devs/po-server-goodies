@@ -3969,7 +3969,7 @@ function tourprintbracket(key) {
         }
     }
     catch (err) {
-        sendChanAll("Error in printing the bracket, id "+key+": "+err, tourserrchan);
+        sendChanAll("Error in printing the bracket, id "+key+": "+err + (err.lineNumber ? " on line: " + err.lineNumber : ""), tourserrchan);
     }
 }
 
