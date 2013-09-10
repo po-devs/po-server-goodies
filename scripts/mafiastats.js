@@ -180,7 +180,7 @@ function mafiaStats() {
     };
     this.compileHourData = function () {
         var hData = this.data.hoursData;
-        var output = ["<b><font size=4>*** Games Played and Average Players per hour (UTC) ***</font></b>"];
+        var output = ["<b><font size=4>*** Games Played Per Hour (UTC) ***</font></b>"];
         for (var x = 0; x < 24; x++) {
             var average = Math.round(hData[x].players / hData[x].gamesPlayed * 100) / 100;
             output.push("Games Played between " + x + ":00 and " + x + ":59, " + hData[x].gamesPlayed + ". Average Players : " + (average ? average : "0"));
