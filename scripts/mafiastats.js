@@ -176,7 +176,7 @@ function mafiaStats() {
         sys.writeToFile(saveDir + theme.replace(/\ /g, "_") + "_stats.html", template.format(theme, output.join("<br>")));
     };
     this.compileHourData = function () {
-        var hData = this.data.hourData;
+        var hData = this.data.hoursData;
         var output = ["<b><font size=4>*** Games Played and Average Players per hour (UTC) ***</font></b>"];
         for (var x = 0; x < 24; x++) {
             output.push("Games Played between " + x + ":00 and " + x + ":59" + hData[x].gamesPlayed + ". Average Players : " + Math.round(hData[x].players / hData[x].gamesPlayed * 100) / 100);
