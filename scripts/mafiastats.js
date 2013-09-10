@@ -164,6 +164,9 @@ function mafiaStats() {
     };
     this.compileWinData = function (theme, returnval) {
         var tData = this.data[theme];
+        if (tData === undefined && returnval) {
+            return null;
+        }
         var keys = Object.keys(tData);
         var totalTeam = [];
         var gameTotal = 0;
@@ -242,6 +245,10 @@ function mafiaStats() {
     };
     this.getWinData = function (src, channel, theme) {
         var data = this.compileWinData(theme, true);
+        if (data === null) {
+            sys.sendMessage(src, "This theme has no data", channel);
+            return;
+        }
         var totalTeam = data[0];
         var gamesPlayed = data[1];
         sys.sendMessage(src, "*** " + theme.toUpperCase() + " WIN DATA ***", channel);
