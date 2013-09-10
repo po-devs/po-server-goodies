@@ -71,7 +71,7 @@ function POUser(id)
 
     /* check if user is banned or mafiabanned */
     var data;
-    var loopArgs = [["mute", scripts.mutes], ["mban", scripts.mbans], ["smute", scripts.smutes], ["hban", scripts.hbans]];
+    var loopArgs = [["mute", script.mutes], ["mban", script.mbans], ["smute", script.smutes], ["hban", script.hbans]];
     for (i = 0; i < 4; ++i) {
         var action = loopArgs[i][0];
         if ((data = loopArgs[i][1].get(sys.ip(id))) !== undefined) {
@@ -109,7 +109,7 @@ POUser.prototype.activate = function(thingy, by, expires, reason, persistent) {
     this[thingy].time = parseInt(sys.time(), 10);
     this[thingy].reason = reason;
     if (persistent) {
-        var table = {"mute": scripts.mutes, "smute": scripts.smutes, "mban": scripts.mbans, "hban":scripts.hbans};
+        var table = {"mute": script.mutes, "smute": script.smutes, "mban": script.mbans, "hban":script.hbans};
         table[thingy].add(sys.ip(this.id), sys.time() + ":" + by + ":" + expires + ":" + sys.name(this.id) + ":" + reason);
     }
 
@@ -119,7 +119,7 @@ POUser.prototype.activate = function(thingy, by, expires, reason, persistent) {
 POUser.prototype.un = function(thingy) {
     this[thingy].active = false;
     this[thingy].expires = 0;
-    var table = {"mute": scripts.mutes, "smute": scripts.smutes, "mban": scripts.mbans, "hban": scripts.hbans};
+    var table = {"mute": script.mutes, "smute": script.smutes, "mban": script.mbans, "hban": script.hbans};
     table[thingy].remove(sys.ip(this.id));
 
     callplugins("onUn"+ utilities.capitalize(thingy), this.id);
