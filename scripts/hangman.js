@@ -720,6 +720,24 @@ module.exports = function () {
             has.push(x);
         }
         has = has.sort();
+        if (hasAuthMembers(has)) {
+            sys.sendMessage(src, "", channel);
+            sys.sendMessage(src, "*** AUTH HANGMAN ADMINS ***", channel);
+            sys.sendMessage(src, "", channel);
+            for (var i = 0; i < has.length; i++) {
+                if (sys.dbAuths().indexOf(has[i]) != -1) {
+                    var id = sys.id(has[i]);
+                    if(!id) {
+                        sys.sendMessage(src, has[i], channel);
+                    }
+                    else {
+                        sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+                    }
+                    has.splice(i, 1);
+                    i--;
+                }
+            }
+        }
         sys.sendMessage(src, "", channel);
         sys.sendMessage(src, "*** HANGMAN ADMINS ***", channel);
         sys.sendMessage(src, "", channel);
