@@ -4477,7 +4477,7 @@ function Mafia(mafiachan) {
         }
         
         if (command === "topthemes") {
-            mafiaStats.getTopThemes(src, channel, commandData);
+            mafia.mafiaStats.getTopThemes(src, channel, commandData);
             return;
         }
         
