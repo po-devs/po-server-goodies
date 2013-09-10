@@ -120,7 +120,10 @@ function mafiaStats() {
             this.compileWinData(gamesPlayed[x][0]);
         }
         output.push("");
-        output.push(this.compileHourData());
+        var hourData = this.compileHourData();
+        for (var x = 0; x < hourData.length; x++) {
+            output.push(hourData[x]);
+        }
         output.push("");
         var date = new Date();
         var current = date.getUTCFullYear() + "-" + ("0" + (date.getUTCMonth() + 1)).slice(-2) + "-" + ("0" + date.getUTCDate()).slice(-2) + " " + ("0" + date.getUTCHours()).slice(-2) + ":" + ("0" + date.getUTCMinutes()).slice(-2) + ":" + ("0" + date.getUTCSeconds()).slice(-2)+ " (UTC)";
@@ -179,7 +182,8 @@ function mafiaStats() {
         var hData = this.data.hoursData;
         var output = ["<b><font size=4>*** Games Played and Average Players per hour (UTC) ***</font></b>"];
         for (var x = 0; x < 24; x++) {
-            output.push("Games Played between " + x + ":00 and " + x + ":59" + hData[x].gamesPlayed + ". Average Players : " + Math.round(hData[x].players / hData[x].gamesPlayed * 100) / 100);
+            var average = Math.round(hData[x].players / hData[x].gamesPlayed * 100) / 100;
+            output.push("Games Played between " + x + ":00 and " + x + ":59, " + hData[x].gamesPlayed + ". Average Players : " + average ? average : "0");
         }
         return output;
     };
