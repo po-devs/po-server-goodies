@@ -13,7 +13,7 @@ var html = {
     page: "<!doctype html><html lang='en'><head><meta charset='utf-8'><title>{0}</title></head>{1}</body></html>",
     title: "<b><font size=4>*** {0} ***</font></b>",
     date: "<i><font size=2>Last Updated: {0} </font></i>"
-}
+};
 function mafiaStats() {
     this.init = function () {
         sys.makeDir(mafiaDataDir);
@@ -113,7 +113,7 @@ function mafiaStats() {
             return b[1] - a[1];
         });
         var count = 0;
-        var output = [html.format.title("Games Played")];
+        var output = [html.title.format("Games Played")];
         output.push("");
         output.push("<i>Total Games Played: " + total + "</i>");
         output.push("");
@@ -130,7 +130,7 @@ function mafiaStats() {
         var date = new Date();
         var current = date.getUTCFullYear() + "-" + ("0" + (date.getUTCMonth() + 1)).slice(-2) + "-" + ("0" + date.getUTCDate()).slice(-2) + " " + ("0" + date.getUTCHours()).slice(-2) + ":" + ("0" + date.getUTCMinutes()).slice(-2) + ":" + ("0" + date.getUTCSeconds()).slice(-2)+ " (UTC)";
         output.push(html.date.format(current));
-        sys.writeToFile(saveDir + "index.html", template.format("Mafia Stats", output.join("<br>")));
+        sys.writeToFile(saveDir + "index.html", html.page.format("Mafia Stats", output.join("<br>")));
     };
     this.getAverage = function (theme) {
         var tData = this.data[theme];
@@ -178,7 +178,7 @@ function mafiaStats() {
         for (var x = 0; x < totalTeam.length; x++) {
             output.push(++count + ": <b>" + totalTeam[x][0] + "</b>. Times Won: " + totalTeam[x][1] + ". Average Players per win " + totalTeam[x][2]);
         }
-        sys.writeToFile(saveDir + theme.replace(/\ /g, "_") + "_stats.html", template.format(theme, output.join("<br>")));
+        sys.writeToFile(saveDir + theme.replace(/\ /g, "_") + "_stats.html", html.page.format(theme, output.join("<br>")));
     };
     this.compileHourData = function () {
         var hData = this.data.hoursData;
