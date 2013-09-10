@@ -2,7 +2,6 @@
     TODO:
     Add starting stats
     Add ability to see stats on server
-    Add players/gamestarted per hour
     Allow for past stats to be saved (currently the data deletes itself every month)
     Add more templates for easier html editing
 */
