@@ -2766,6 +2766,24 @@ function tourCommand(src, command, commandData, channel) {
                     sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
                 }
             }
+            if (hasAuthElements(mus) {
+                sys.sendMessage(src, "", channel);
+                sys.sendMessage(src, "*** AUTH MEGAUSERS ***", channel);
+                sys.sendMessage(src, "", channel);
+                for (var m in mus) {
+                    if (sys.dbAuths().indexOf(mus[m]) != -1) {
+                        var id = sys.id(mus[m]);
+                        if (!id) {
+                            sys.sendMessage(src, mus[m], channel);
+                        }
+                        else {
+                            sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+                        }
+                        mus.splice(m, 1);
+                        m--;
+                    }
+                }
+            }
             sys.sendMessage(src, "", channel);
             sys.sendMessage(src, "*** MEGAUSERS ***", channel);
             sys.sendMessage(src, "", channel);

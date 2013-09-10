@@ -859,6 +859,25 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
         tadmins.push(this.admins[a]);
     }
     tadmins.sort();
+    if (type.toLowerCase() === "trivia admins") {
+        if hasAuthElements(tadmins) {
+            sys.sendMessage(src, "", id);
+            sys.sendMessage(src, "*** AUTH TRIVIA ADMINS ***", id);
+            sys.sendMessage(src, "", id);
+            for (var b in tadmins) {
+                if (sys.dbAuths().indexOf(tadmins[b]) != -1) {
+                    if (sys.id(tadmins[b]) === undefined) {
+                        sys.sendMessage(src, tadmins[b], id);
+                    }
+                    else {
+                        sys.sendHtmlMessage(src, "<timestamp/><font color = " + script.getColor(sys.id(tadmins[b])) + "><b>" + tadmins[b].toCorrectCase() + "</b></font color>", id);
+                    }
+                    tadmins.splice(b, 1);
+                    b--;
+                }
+            }
+        }
+    }
     sys.sendMessage(src, "", id);
     sys.sendMessage(src, "*** " + type.toUpperCase() + " ***", id);
     sys.sendMessage(src, "", id);
