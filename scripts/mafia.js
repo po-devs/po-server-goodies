@@ -3391,7 +3391,7 @@ function Mafia(mafiachan) {
                     return;
                 }
                 name = sys.name(src);
-                if (this.signups.length > this.theme["roles" + this.theme.roleLists].length){
+                if (this.signups.length >= this.theme["roles" + this.theme.roleLists].length){
                     sys.sendMessage(src, "±Game: This theme only supports a maximum of " + this.theme["roles" + this.theme.roleLists].length + " players!", mafiachan);
                     return;
                 }
@@ -4566,7 +4566,7 @@ function Mafia(mafiachan) {
                 msg(src, "Pushing makes no sense outside entry...");
                 return;
             }
-            if (this.signups.length > this.theme["roles" + this.theme.roleLists].length) {
+            if (this.signups.length >= this.theme["roles" + this.theme.roleLists].length) {
                 sys.sendMessage(src, "±Game: This theme only supports a maximum of " + this.theme["roles" + this.theme.roleLists].length + " players!", mafiachan);
                 return;
             }
