@@ -837,7 +837,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             banbot.sendMessage(src, "Couldn't find " + commandData, channel);
             return;
         }
-        var maxAuth = sys.maxAuth(tarip);
+        var maxAuth = (tar ? sys.auth(tar) : sys.maxAuth(tarip));
         if (maxAuth>=sys.auth(src) && maxAuth > 0) {
             banbot.sendMessage(src, "You don't have sufficient auth to " + nomi + " " + commandData + ".", channel);
             return;

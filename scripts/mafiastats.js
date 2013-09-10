@@ -9,8 +9,11 @@
 /*global cmp, mafiabot, getTimeString, mafiaAdmins, updateModule, script, sys, saveKey, SESSION, sendChanAll, require, Config, module, detained, mafiaSuperAdmins, sachannel*/
 var mafiaDataDir = "scriptData/mafiastats/";
 var saveDir = "usage_stats/formatted/mafiathemes/";
-var template = "<!doctype html><html lang='en'><head><meta charset='utf-8'><title>{0}</title></head>{1}</body></html>";
-
+var html = {
+    page: "<!doctype html><html lang='en'><head><meta charset='utf-8'><title>{0}</title></head>{1}</body></html>",
+    title: "<b><font size=4>*** {0} ***</font></b>",
+    date: "<i><font size=2>Last Updated: {0} </font></i>"
+}
 function mafiaStats() {
     this.init = function () {
         sys.makeDir(mafiaDataDir);
@@ -110,7 +113,7 @@ function mafiaStats() {
             return b[1] - a[1];
         });
         var count = 0;
-        var output = ["<b><font size=4>*** Games Played ***</b></font>"];
+        var output = [html.format.title("Games Played")];
         output.push("");
         output.push("<i>Total Games Played: " + total + "</i>");
         output.push("");
@@ -126,7 +129,7 @@ function mafiaStats() {
         output.push("");
         var date = new Date();
         var current = date.getUTCFullYear() + "-" + ("0" + (date.getUTCMonth() + 1)).slice(-2) + "-" + ("0" + date.getUTCDate()).slice(-2) + " " + ("0" + date.getUTCHours()).slice(-2) + ":" + ("0" + date.getUTCMinutes()).slice(-2) + ":" + ("0" + date.getUTCSeconds()).slice(-2)+ " (UTC)";
-        output.push("<i><font size=2>Last Updated: " + current + "</font></i>");
+        output.push(html.date.format(current));
         sys.writeToFile(saveDir + "index.html", template.format("Mafia Stats", output.join("<br>")));
     };
     this.getAverage = function (theme) {
@@ -168,7 +171,7 @@ function mafiaStats() {
             return b[1] - a[1];
         });
         var count = 0;
-        var output = ["<b><font size=4>*** Times Won ***</font></b>"];
+        var output = [html.title.format("Times Won")];
         output.push("");
         output.push("<i>Theme Played: " + gameTotal + " times</i>");
         output.push("");
@@ -179,7 +182,7 @@ function mafiaStats() {
     };
     this.compileHourData = function () {
         var hData = this.data.hoursData;
-        var output = ["<b><font size=4>*** Games Played Per Hour (UTC) ***</font></b>"];
+        var output = [html.title.format("Games Played Per Hour (UTC)")];
         for (var x = 0; x < 24; x++) {
             var average = Math.round(hData[x].players / hData[x].gamesPlayed * 100) / 100;
             output.push("Games Played between " + x + ":00 and " + x + ":59, " + hData[x].gamesPlayed + ". Average Players : " + (average ? average : "0"));
