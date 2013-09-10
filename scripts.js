@@ -1510,7 +1510,7 @@ afterChangeTeam : function(src)
     }
 
     POuser.contributions = script.contributors.hash.hasOwnProperty(sys.name(src)) ? script.contributors.get(sys.name(src)) : undefined;
-    POuser.mafiaAdmin = mafiaAdmins.hash.hasOwnProperty(sys.name(src));
+    POuser.mafiaAdmin = script.mafiaAdmins.hash.hasOwnProperty(sys.name(src));
     if (authChangingTeam === false) {
         if (sys.auth(src) > 0 && sys.auth(src) <= 3)
             sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Changed name to Auth" + "\n");
