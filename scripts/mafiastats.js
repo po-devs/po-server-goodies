@@ -37,7 +37,6 @@ function mafiaStats() {
     this.stepEvent = function () {
         var date = new Date();
         if (date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
-            this.saveFile();
             this.compileData();
         }
     };
@@ -86,6 +85,7 @@ function mafiaStats() {
             data[theme].gamesPlayed = 1;
         }
         this.saveHourData();
+        this.saveFile();
         this.clear();
     };
     this.saveHourData = function () {
