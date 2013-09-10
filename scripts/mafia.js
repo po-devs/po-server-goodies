@@ -3269,6 +3269,8 @@ function Mafia(mafiachan) {
             "/priority: To view the priority list of a theme. ",
             "/flashme: To get a alert when a new mafia game starts. Type /flashme help for more info.",
             "/playedgames: To view recently played games",
+            "/topthemes: To view top themes. Default amount is 10, however other numbers can be used (higher numbers may cause lag)",
+            "/windata: To view the win data of a theme",
             "/update: To update a Mafia Theme!"],
         ma: ["/push: To push users to a Mafia game.",
             "/slay: To slay users in a Mafia game.",
