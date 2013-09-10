@@ -3,12 +3,20 @@
     Add starting stats
     Add ability to see stats on server
     Allow for past stats to be saved (currently the data deletes itself every month)
-    Add more templates for easier html editing
+    Add more templates for easier html editing (some done)
 */
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global cmp, mafiabot, getTimeString, mafiaAdmins, updateModule, script, sys, saveKey, SESSION, sendChanAll, require, Config, module, detained, mafiaSuperAdmins, sachannel*/
+/*global updateModule, sys, SESSION, module*/
 var mafiaDataDir = "scriptData/mafiastats/";
 var saveDir = "usage_stats/formatted/mafiathemes/";
+
+/*  Essentially a more lazy way to implement something CSS-like. I could use actual CSS, but I prefer this all being in one file and is easier for others to edit
+    Basically {0},{1},etc is what's going to be replaced.
+    For page {0} is the title (the thing that will appear at the browser top and tab) {1} is the entire content itself
+    For title {0} is the header (Games Played for example)
+    For date {0} is the date at the bottom.
+    Adding to these strings will change their look the next time the html page is generated (by default, at the top of the hour UTC)
+*/
 var html = {
     page: "<!doctype html><html lang='en'><head><meta charset='utf-8'><title>{0}</title></head>{1}</body></html>",
     title: "<b><font size=4>*** {0} ***</font></b>",
@@ -98,6 +106,30 @@ function mafiaStats() {
         data.hoursData[date.getUTCHours()].gamesPlayed += 1;
     };
     this.compileData = function () {
+        var data = this.getData();
+        var gamesPlayed = data[0];
+        var total = parseInt(data[1], 10);
+        var count = 0;
+        var output = [html.title.format("Games Played")];
+        output.push("");
+        output.push("<i>Total Games Played: " + total + "</i>");
+        output.push("");
+        for (var x = 0; x < gamesPlayed.length; x++) {
+            output.push(++count + ": <b><a href = '" + gamesPlayed[x][0].replace(/\ /g, "_") + "_stats.html'> " + gamesPlayed[x][0] + "</a></b>. Played " + gamesPlayed[x][1] + " times. Average players: " + gamesPlayed[x][2]);
+            this.compileWinData(gamesPlayed[x][0]);
+        }
+        output.push("");
+        var hourData = this.compileHourData();
+        for (var x = 0; x < hourData.length; x++) {
+            output.push(hourData[x]);
+        }
+        output.push("");
+        var date = new Date();
+        var current = date.getUTCFullYear() + "-" + ("0" + (date.getUTCMonth() + 1)).slice(-2) + "-" + ("0" + date.getUTCDate()).slice(-2) + " " + ("0" + date.getUTCHours()).slice(-2) + ":" + ("0" + date.getUTCMinutes()).slice(-2) + ":" + ("0" + date.getUTCSeconds()).slice(-2)+ " (UTC)";
+        output.push(html.date.format(current));
+        sys.writeToFile(saveDir + "index.html", html.page.format("Mafia Stats", output.join("<br>")));
+    };
+    this.getData = function () {
         var data = this.data;
         var gamesPlayed = [];
         var keys = Object.keys(data);
@@ -112,25 +144,7 @@ function mafiaStats() {
         gamesPlayed.sort(function (a, b) {
             return b[1] - a[1];
         });
-        var count = 0;
-        var output = [html.title.format("Games Played")];
-        output.push("");
-        output.push("<i>Total Games Played: " + total + "</i>");
-        output.push("");
-        for (var x = 0; x < gamesPlayed.length; x++) {
-            output.push(++count + ": <b><a href = '" + gamesPlayed[x][0].replace(/\ /g, "_") + "_stats.html'> " + gamesPlayed[x][0] + "</a></b>. Played " + gamesPlayed[x][1] + " times. Average players : " + gamesPlayed[x][2]);
-            this.compileWinData(gamesPlayed[x][0]);
-        }
-        output.push("");
-        var hourData = this.compileHourData();
-        for (var x = 0; x < hourData.length; x++) {
-            output.push(hourData[x]);
-        }
-        output.push("");
-        var date = new Date();
-        var current = date.getUTCFullYear() + "-" + ("0" + (date.getUTCMonth() + 1)).slice(-2) + "-" + ("0" + date.getUTCDate()).slice(-2) + " " + ("0" + date.getUTCHours()).slice(-2) + ":" + ("0" + date.getUTCMinutes()).slice(-2) + ":" + ("0" + date.getUTCSeconds()).slice(-2)+ " (UTC)";
-        output.push(html.date.format(current));
-        sys.writeToFile(saveDir + "index.html", html.page.format("Mafia Stats", output.join("<br>")));
+        return [gamesPlayed, total];
     };
     this.getAverage = function (theme) {
         var tData = this.data[theme];
@@ -185,7 +199,7 @@ function mafiaStats() {
         var output = [html.title.format("Games Played Per Hour (UTC)")];
         for (var x = 0; x < 24; x++) {
             var average = Math.round(hData[x].players / hData[x].gamesPlayed * 100) / 100;
-            output.push("Games Played between " + x + ":00 and " + x + ":59, " + hData[x].gamesPlayed + ". Average Players : " + (average ? average : "0"));
+            output.push("Games Played between " + x + ":00 and " + x + ":59, " + hData[x].gamesPlayed + ". Average Players: " + (average ? average : "0"));
         }
         return output;
     };
@@ -204,6 +218,23 @@ function mafiaStats() {
                 module.source = source;
                 module.init();
             });
+        }
+    };
+    this.getTopThemes = function (src, channel, amount) {
+        amount = parseInt(amount, 10);
+        if (amount === undefined || isNaN(amount) || amount <= 0) {
+            amount = 10;
+        }
+        var data = this.getData();
+        var gamesPlayed = data[0];
+        var total = parseInt(data[1], 10);
+        gamesPlayed = gamesPlayed.slice(0, amount);
+        sys.sendMessage(src, "*** TOP " + amount + " THEMES ***", channel);
+        sys.sendMessage(src, "", channel);
+        sys.sendMessage(src, "Games Played: " + total, channel);
+        var count = 0;
+        for (var x = 0; x < gamesPlayed.length; x++) {
+            sys.sendMessage(++count + ": " + gamesPlayed[x][0] + ". Played " + gamesPlayed[x][1] + " times. Average Players: " + gamesPlayed[x][2]);
         }
     };
 }
