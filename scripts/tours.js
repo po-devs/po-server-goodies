@@ -746,7 +746,7 @@ function initTours() {
         abstourbreak: parseInt(getConfigValue("tourconfig.txt", "absbreaktime"), 10),
         reminder: parseInt(getConfigValue("tourconfig.txt", "remindertime"), 10),
         channel: "Tournaments",
-        errchannel: "Developer's Den",
+        errchannel: getConfigValue("tourconfig.txt", "errchannel"),
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
         minplayers: parseInt(getConfigValue("tourconfig.txt", "minplayers"), 10),
@@ -1692,6 +1692,11 @@ function tourCommand(src, command, commandData, channel) {
                     sys.saveVal(configDir+"tourconfig.txt", "remindertime", value);
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the reminder time to "+time_handle(tourconfig.reminder));
                     return true;
+                }
+                else if (option == 'errchannel') {
+                    tourserrchan = utilities.get_or_create_channel(value);
+                    tourconfig.errchannel = value;
+                    sys.saveVal(configDir+"tourconfig.txt", "errchannel", value);
                 }
                 else if (option == 'minpercent') {
                     if (!isTourOwner(src)) {
