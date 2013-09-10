@@ -4481,6 +4481,25 @@ function Mafia(mafiachan) {
             return;
         }
         
+        if (command === "windata") {
+            var themeName;
+            if (commandData === noPlayer) {
+                themeName = "default";
+                if (mafia.state != "blank") {
+                    themeName = mafia.theme.name.toLowerCase();
+                }
+            } else {
+                themeName = commandData.toLowerCase();
+            }
+            if (mafia.themeManager.themes[themeName]) {
+                mafia.mafiaStats.getWinData(src, channel, mafia.themeManager.themes[themeName].name);
+                return;
+            } else {
+                mafiabot.sendMessage(src, commandData + " is not a theme", channel);
+            }
+            return;
+        }
+        
         if (command === "update") {
             var url = commandData, name = commandData;
             if (commandData.indexOf("::") >= 0) {

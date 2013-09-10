@@ -1,9 +1,9 @@
 /* mafiastats.js 
     TODO:
     Add starting stats
-    Add ability to see stats on server
     Allow for past stats to be saved (currently the data deletes itself every month)
     Add more templates for easier html editing (some done)
+    Add table with wins/players for specific themes
 */
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global updateModule, sys, SESSION, module*/
@@ -162,7 +162,7 @@ function mafiaStats() {
         }
         return Math.round(totalPlayers / tData.gamesPlayed * 100) / 100;
     };
-    this.compileWinData = function (theme) {
+    this.compileWinData = function (theme, returnval) {
         var tData = this.data[theme];
         var keys = Object.keys(tData);
         var totalTeam = [];
@@ -184,13 +184,16 @@ function mafiaStats() {
         totalTeam.sort(function (a, b) {
             return b[1] - a[1];
         });
+        if (returnval) {
+            return [totalTeam, gameTotal];
+        }
         var count = 0;
         var output = [html.title.format("Times Won")];
         output.push("");
         output.push("<i>Theme Played: " + gameTotal + " times</i>");
         output.push("");
         for (var x = 0; x < totalTeam.length; x++) {
-            output.push(++count + ": <b>" + totalTeam[x][0] + "</b>. Times Won: " + totalTeam[x][1] + ". Average Players per win " + totalTeam[x][2]);
+            output.push(++count + ": <b>" + totalTeam[x][0] + "</b>. Times Won: " + totalTeam[x][1] + ". Average Players per win: " + totalTeam[x][2]);
         }
         sys.writeToFile(saveDir + theme.replace(/\ /g, "_") + "_stats.html", html.page.format(theme, output.join("<br>")));
     };
@@ -235,6 +238,18 @@ function mafiaStats() {
         var count = 0;
         for (var x = 0; x < gamesPlayed.length; x++) {
             sys.sendMessage(src, ++count + ": " + gamesPlayed[x][0] + ". Played " + gamesPlayed[x][1] + " times. Average Players: " + gamesPlayed[x][2], channel);
+        }
+    };
+    this.getWinData = function (src, channel, theme) {
+        var data = this.compileWinData(theme, true);
+        var totalTeam = data[0];
+        var gamesPlayed = data[1];
+        sys.sendMessage(src, "*** " + theme.upperCase() + " WIN DATA ***", channel);
+        sys.sendMessage(src, "", channel);
+        sys.sendMessage(src, "Theme Played: " + gamesPlayed + " times", channel);
+        var count = 0;
+        for (var x = 0; x < totalTeam.length; x++) {
+            sys.sendMessage(src, ++count + ": " + totalTeam[x][0] + ". Times Won: " + totalTeam[x][1] + ". Average Players per win: " + totalTeam[x][2], channel);
         }
     };
 }
