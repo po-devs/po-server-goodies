@@ -762,7 +762,7 @@ module.exports = function () {
         }
         script.hangmanAdmins.add(commandData.toLowerCase(), "");
         if (!silent) {
-            .sendAll("±Unown: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Hangman Admin.", hangchan);
+            sys.sendAll("±Unown: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Hangman Admin.", hangchan);
         }
         sys.sendAll("±Unown: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Hangman Admin.", sys.channelId('Victory Road'));
         return;
