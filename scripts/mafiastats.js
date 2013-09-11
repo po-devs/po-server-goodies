@@ -235,9 +235,10 @@ function mafiaStats() {
         var gamesPlayed = data[0];
         var total = parseInt(data[1], 10);
         gamesPlayed = gamesPlayed.slice(0, amount);
-        sys.sendMessage(src, "*** TOP " + amount + " THEMES ***", channel);
         sys.sendMessage(src, "", channel);
+        sys.sendMessage(src, "*** TOP " + amount + " THEMES ***", channel);
         sys.sendMessage(src, "Games Played: " + total, channel);
+        sys.sendMessage(src, "", channel);
         var count = 0;
         for (var x = 0; x < gamesPlayed.length; x++) {
             sys.sendMessage(src, ++count + ": " + gamesPlayed[x][0] + ". Played " + gamesPlayed[x][1] + " times. Average Players: " + gamesPlayed[x][2], channel);
@@ -251,9 +252,10 @@ function mafiaStats() {
         }
         var totalTeam = data[0];
         var gamesPlayed = data[1];
-        sys.sendMessage(src, "*** " + theme.toUpperCase() + " WIN DATA ***", channel);
         sys.sendMessage(src, "", channel);
+        sys.sendMessage(src, "*** " + theme.toUpperCase() + " WIN DATA ***", channel);
         sys.sendMessage(src, "Theme Played: " + gamesPlayed + " times", channel);
+        sys.sendMessage(src, "", channel);
         var count = 0;
         for (var x = 0; x < totalTeam.length; x++) {
             sys.sendMessage(src, ++count + ": " + totalTeam[x][0] + ". Times Won: " + totalTeam[x][1] + ". Average Players per win: " + totalTeam[x][2], channel);
