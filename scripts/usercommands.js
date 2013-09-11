@@ -143,7 +143,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "rules") {
         if (commandData === "mafia") {
-            require('mafia.js').showRules(src, commandData, channel);
+            require('mafia.js').showRules(src, channel);
             return;
         }
         var norules = (rules.length-1)/2; //formula for getting the right amount of rules
