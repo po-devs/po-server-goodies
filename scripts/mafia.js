@@ -4667,7 +4667,7 @@ function Mafia(mafiachan) {
                 mas.push(x);
             }
             mas = mas.sort();
-            if (hasAuthElements(mas)) {
+            if (script.hasAuthElements(mas)) {
                 sys.sendMessage(src, "", channel);
                 sys.sendMessage(src, "*** AUTH MAFIA ADMINS ***", channel);
                 sys.sendMessage(src, "", channel);

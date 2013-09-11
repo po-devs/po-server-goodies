@@ -860,7 +860,7 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
     }
     tadmins.sort();
     if (type.toLowerCase() === "trivia admins") {
-        if (hasAuthElements(tadmins)) {
+        if (script.hasAuthElements(tadmins)) {
             sys.sendMessage(src, "", id);
             sys.sendMessage(src, "*** AUTH TRIVIA ADMINS ***", id);
             sys.sendMessage(src, "", id);

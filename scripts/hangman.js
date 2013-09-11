@@ -720,7 +720,7 @@ module.exports = function () {
             has.push(x);
         }
         has = has.sort();
-        if (hasAuthElements(has)) {
+        if (script.hasAuthElements(has)) {
             sys.sendMessage(src, "", channel);
             sys.sendMessage(src, "*** AUTH HANGMAN ADMINS ***", channel);
             sys.sendMessage(src, "", channel);

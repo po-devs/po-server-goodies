@@ -443,18 +443,6 @@ function clearTeamFiles() {
     }
 }
 
-function hasAuthElements(array) {
-    if (!Array.isArray(array)) {
-        return;
-    }
-    for (var i = 0; i < array.length; i++) {
-        if (sys.dbAuths().indexOf(array[i]) != -1) {
-            return true;
-        }
-    }
-    return false;
-}
-
 var POKEMON_CLEFFA = typeof sys != 'undefined' ? sys.pokeNum("Cleffa") : 173;
 function callplugins() {
     return SESSION.global().callplugins.apply(SESSION.global(), arguments);
@@ -2282,6 +2270,18 @@ beforeBattleMatchup : function(src,dest,clauses,rated)
             }
         }
     }
+},
+
+hasAuthElements: function (array) {
+    if (!Array.isArray(array)) {
+        return;
+    }
+    for (var i = 0; i < array.length; i++) {
+        if (sys.dbAuths().indexOf(array[i]) != -1) {
+            return true;
+        }
+    }
+    return false;
 }
 
 });
