@@ -444,7 +444,7 @@ function clearTeamFiles() {
 }
 
 function hasAuthElements(array) {
-    if (typeof array != "array") {
+    if (!Array.isArray(array)) {
         return;
     }
     for (var i = 0; i < array.length; i++) {
