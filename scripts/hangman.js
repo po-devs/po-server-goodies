@@ -545,13 +545,13 @@ module.exports = function () {
         var superAdminHelp = [
             "*** Hangman Super Admin Commands ***",
             "/config: To change the answer delay time and other settings. Format /config parameter:value. Type /config by itself to see more help.",
-            "/hangmanadmin: To promote a new Hangman admin.",
-            "/hangmanadminoff: To demote a Hangman admin."
+            "/hangmanadmin: To promote a new Hangman admin. Use /shangmanadmin for a silent promotion.",
+            "/hangmanadminoff: To demote a Hangman admin. Use /shangmanadminoff for a silent demotion."
         ];
         var ownerHelp = [
             "*** Hangman Owner Commands ***",
-            "/hangmansuperadmin: To promote a new Hangman Super Admin.",
-            "/hangmansuperadminoff: To demote a Hangman Super Admin."
+            "/hangmansuperadmin: To promote a new Hangman Super Admin. Use /shangmansuperadmin for a silent promotion.",
+            "/hangmansuperadminoff: To demote a Hangman Super Admin. Use /shangmansuperadminoff for a silent demotion."
         ];
         var help = userHelp;
         if (this.authLevel(src) > 0) {
@@ -649,13 +649,13 @@ module.exports = function () {
             return true;
         }
 
-        if (command === "hangmanadmin" || command === "hangmanadmins") {
-            hangman.promoteAdmin(src, commandData, channel, (command === "hangmanadmins"));
+        if (command === "hangmanadmin" || command === "shangmanadmin") {
+            hangman.promoteAdmin(src, commandData, channel, (command === "shangmanadmin"));
             return true;
         }
 
         if (command === "hangmanadminoff" || command === "hangmanadminoffs") {
-            hangman.demoteAdmin(src, commandData, channel, (command === "hangmanadminoffs"));
+            hangman.demoteAdmin(src, commandData, channel, (command === "shangmanadminoff"));
             return true;
         }
 
@@ -663,12 +663,12 @@ module.exports = function () {
             return false;
         }
         if (command === "hangmansuperadmin" || command === "hangmansuperadmins") {
-            hangman.promoteSuperAdmin(src, commandData, channel, (command === "hangmansuperadmins"));
+            hangman.promoteSuperAdmin(src, commandData, channel, (command === "shangmansuperadmin"));
             return true;
         }
 
         if (command === "hangmansuperadminoff" || command === "hangmansuperadminoffs") {
-            hangman.demoteSuperAdmin(src, commandData, channel, (command === "hangmansuperadminoffs"));
+            hangman.demoteSuperAdmin(src, commandData, channel, (command === "shangmansuperadminoff"));
             return true;
         }
         return false;

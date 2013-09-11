@@ -698,7 +698,7 @@ exports.help =
         "/updatetierchecks: To update tier checks.",
         "/updatecommands: To update command files.",
         "/updatetiers[soft]: To update tiers. Soft saves to file only without reloading.",
-        "/towner: Makes a user a Tournament Owner (tours.js plugin needs to be installed for this to work)",
+        "/tourowner: Makes a user a Tournament Owner. Use /stowner for a silent promotion.",
         "/loadstats: Loads the usage stats plugin.",
         "/unloadstats: Unloads the usage stats plugin.",
         "/warnwebclients: Sends a big alert with your message to webclient users.",

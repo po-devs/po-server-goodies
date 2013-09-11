@@ -3358,9 +3358,9 @@ function Mafia(mafiachan) {
             "/importold: To import old themes."],
         sma: ["/aliases: To check a user's known alts.",
             "/remove: To remove a Mafia Theme!",
-            "/mafiaadmin: To promote a user to Mafia Admin.",
-            "/mafiasuperadmin: To promote a user to Super Mafia Admin.",
-            "/mafiaadminoff: To strip a user of all Mafia authority.",
+            "/mafiaadmin: To promote a user to Mafia Admin. Use /smafiaadmin for a silent promotion.",
+            "/mafiasuperadmin: To promote a user to Super Mafia Admin. Use /smafiasuperadmin for a silent promotion.",
+            "/mafiaadminoff: To strip a user of all Mafia authority. Use /smafiaadminoff for a silent demotion.",
             "/updateafter: To update mafia after current game!"]
     };
 
@@ -4846,12 +4846,12 @@ function Mafia(mafiachan) {
         if (!this.isMafiaSuperAdmin(src))
             throw ("no valid command");
 
-        if (command == "mafiaadmin" || command == "mafiasadmin" || command == "mafiasuperadmin" || command == "mafiaadmins" || command == "mafiasadmins" || command == "mafiasuperadmins") {
+        if (command == "mafiaadmin" || command == "mafiasadmin" || command == "mafiasuperadmin" || command == "smafiaadmin" || command == "smafiasadmin" || command == "smafiasuperadmin") {
             var ma = commandData.toLowerCase();
             var sMA = false;
             var silent = false;
-            if (command == "mafiaadmins" || command == "mafiasadmins" || command == "mafiasuperadmins") {
-                command.splice(command.length - 1, 1);
+            if (command == "smafiaadmin" || command == "smafiasadmin" || command == "smafiasuperadmin") {
+                command = command.substr(1);
                 silent = true;
             }
             if ((command == "mafiasadmin" || command == "mafiasuperadmin") && sys.auth(src) >= 3) {
@@ -4871,10 +4871,10 @@ function Mafia(mafiachan) {
             sys.sendAll("±Murkrow: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
             return;
         }
-        if (command == "mafiaadminoff" || command == "mafiaadminoffs") {
+        if (command == "mafiaadminoff" || command == "smafiaadminoff") {
             var ma = commandData.toLowerCase();
             var sMA = false;
-            var silent = (command === "mafiaadminoffs");
+            var silent = (command === "smafiaadminoff");
             if (script.mafiaSuperAdmins.hash.hasOwnProperty(ma) && sys.auth(src) >= 3) {
                 script.mafiaSuperAdmins.remove(ma);
                 sMA = true;
