@@ -443,6 +443,18 @@ function clearTeamFiles() {
     }
 }
 
+function hasAuthElements(array) {
+    if (typeof array != "array") {
+        return;
+    }
+    for (var i = 0; i < array.length; i++) {
+        if (sys.dbAuths().indexOf(array[i]) != -1) {
+            return true;
+        }
+    }
+    return false;
+}
+
 var POKEMON_CLEFFA = typeof sys != 'undefined' ? sys.pokeNum("Cleffa") : 173;
 function callplugins() {
     return SESSION.global().callplugins.apply(SESSION.global(), arguments);

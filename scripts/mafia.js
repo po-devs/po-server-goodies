@@ -4563,6 +4563,24 @@ function Mafia(mafiachan) {
                 mas.push(x);
             }
             mas = mas.sort();
+            if (hasAuthElements(mas)) {
+                sys.sendMessage(src, "", channel);
+                sys.sendMessage(src, "*** AUTH MAFIA ADMINS ***", channel);
+                sys.sendMessage(src, "", channel);
+                for (var i = 0; i < mas.length; i++) {
+                    if (sys.dbAuths().indexOf(mas[i]) != -1) {
+                        var id = sys.id(mas[i]);
+                        if (!id) {
+                            sys.sendMessage(src, mas[i], channel);
+                        }
+                        else {
+                            sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+                        }
+                        mas.splice(i, 1);
+                        i--;
+                    }
+                }
+            }
             sys.sendMessage(src, "", channel);
             sys.sendMessage(src, "*** MAFIA ADMINS ***", channel);
             sys.sendMessage(src, "", channel);
