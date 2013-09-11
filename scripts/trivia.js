@@ -1078,45 +1078,57 @@ addUserCommand(["triviaadmins","tadmins","tas"], function (src, commandData, cha
     tadmin.tAdminList(src, channel, "Trivia Admins");
 }, "Gives a list of current trivia admins");
 
-addOwnerCommand("triviaadmin", function (src, commandData, channel) {
+addOwnerCommand(["triviaadmin", "striviaadmin"], function (src, commandData, channel) {
     if (tadmin.isTAdmin(commandData)) {
         Trivia.sendPM(src, "That person is already a Trivia Admin.", channel);
         return;
     }
     tadmin.addTAdmin(commandData);
+    if (command === "triviaadmin") {
+        Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Trivia Admin.", triviachan);
+    }
     Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Trivia Admin.", revchan);
     Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Trivia Admin.", sachannel);
-}, "Allows you to promote a new trivia admin, format /triviaadmin [name]");
+}, "Allows you to promote a new trivia admin, use /striviaadmin for a silent promotion.");
 
-addOwnerCommand("triviaadminoff", function (src, commandData, channel) {
+addOwnerCommand(["triviaadminoff", "striviaadminoff"], function (src, commandData, channel) {
     if (!tadmin.isTAdmin(commandData)) {
         Trivia.sendPM(src, "That person isn't a Trivia Admin.", channel);
         return;
     }
     tadmin.removeTAdmin(commandData);
+    if (command === "triviaadminoff") {
+        Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Trivia Admin.", triviachan);
+    }
     Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Trivia Admin.", revchan);
     Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Trivia Admin.", sachannel);
-}, "Allows you to demote a current trivia admin, format /triviaadminoff [name]");
+}, "Allows you to demote a current trivia admin, use /strivaadminoff for a silent demotion.");
 
-addOwnerCommand("triviasuperadmin", function (src, commandData, channel) {
+addOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, commandData, channel) {
     if (tsadmin.isTAdmin(commandData)) {
         Trivia.sendPM(src, "That person is already a Trivia Super Admin.", channel);
         return;
     }
     tsadmin.addTAdmin(commandData);
+    if (command === "triviasuperadmin") {
+        Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Trivia Admin.", triviachan);
+    }
     Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Trivia Admin.", revchan);
     Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Trivia Admin.", sachannel);
-}, "Allows you to promote a new trivia super admin, format /triviasuperadmin [name]");
+}, "Allows you to promote a new trivia super admin, use /striviasuperadmin for a silent promotion.");
 
-addOwnerCommand("triviasuperadminoff", function (src, commandData, channel) {
+addOwnerCommand(["triviasuperadminoff", "striviasuperadminoff"], function (src, commandData, channel) {
     if (!tsadmin.isTAdmin(commandData)) {
         Trivia.sendPM(src, "That person isn't a Trivia Super Admin.", channel);
         return;
     }
     tsadmin.removeTAdmin(commandData);
+    if (command === "triviasuperadminoff") {
+        Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Super Trivia Admin.", triviachan);
+    }
     Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Super Trivia Admin.", revchan);
     Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Super Trivia Admin.", sachannel);
-}, "Allows you to demote a current trivia super admin, format /triviasuperadminoff [name]");
+}, "Allows you to demote a current trivia super admin, use /striviasuperadminoff for a silent demotion.");
 
 addAdminCommand("start", function (src, commandData, channel) {
     Trivia.startTrivia(src, commandData);
@@ -1130,9 +1142,9 @@ addUserCommand("lastcat", function (src, commandData, channel) {
     Trivia.sendPM(src, "The last Category Game occurred " + lastCatGame + " games ago, with categories: " + lastUsedCats.join(", "), channel);
 }, "Allows you to check when the last Category Game occurred");
 
-addAdminCommand("stop", function (src, commandData, channel) {
+addAdminCommand("end", function (src, commandData, channel) {
     Trivia.endTrivia(src);
-}, "Allows you to stop a current trivia game");
+}, "Allows you to end a current trivia game");
 
 addAdminCommand("suggest", function (src, commandData, channel) {
     if (Trivia.started === false) {
