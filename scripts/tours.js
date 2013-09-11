@@ -159,7 +159,7 @@ function sendBotMessage(user, message, chan, html) {
 }
 
 // Functions to send bot messages to channels
-// "all" sends to every channel, "~mt" sends to main channel and tours, "~st" sends to staff channels and tours.
+// "all" sends to every channel, "~mt" sends to main channel and tours, "~st" sends to Victory Road and tours.
 function sendBotAll(message, chan, html) {
     var staffchan = sys.channelId("Indigo Plateau");
     var tachan = sys.channelId("Victory Road");
@@ -173,7 +173,6 @@ function sendBotAll(message, chan, html) {
         }
         else if (chan === "~st") {
             sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,tourschan);
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,staffchan);
             sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,tachan);
         }
         else {
@@ -190,7 +189,6 @@ function sendBotAll(message, chan, html) {
         }
         else if (chan === "~st") {
             sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),tourschan);
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),staffchan);
             sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),tachan);
         }
         else {
@@ -1409,8 +1407,16 @@ function tourCommand(src, command, commandData, channel) {
                 tstats.rankings(src, "", true, mindex);
                 return true;
             }
-            if (command == "megauser" || (sys.auth(src) >= 3 && command == "towner") || (sys.auth(src) >= 3 && command === "tourowner")) {
+            if (command === "megauser" || command === "towner" || command === "tourowner" || command === "megausers" || command === "towners" || command === "tourowners") {
                 var tadmins = tours.touradmins;
+                var silent = false;
+                if (command === "megausers" || command === "towners" || command === "tourowners") {
+                    command.splice(command.length - 1, 1);
+                    silent = true;
+                }
+                if ((command === "towner" || command === "tourowner") && sys.auth(src) < 3) {
+                    return true;
+                }
                 if (sys.dbIp(commandData) === undefined) {
                     sendBotMessage(src,"This user doesn't exist!",tourschan,false);
                     return true;
@@ -1447,11 +1453,17 @@ function tourCommand(src, command, commandData, channel) {
                 tours.touradmins = tadmins;
                 var changeword = newauth > oldauth ? " promoted " : " demoted ";
                 saveTourKeys();
-                sendBotAll(sys.name(src) + changeword + commandData.toCorrectCase() + " to " + readauth + ".","~st",false);
+                if (!silent) {
+                    sendBotAll(sys.name(src) + changeword + commandData.toCorrectCase() + " to " + readauth + ".", "~st", false);
+                }
+                else {
+                    sendBotAll(sys.name(src) + changeword + commandData.toCorrectCase() + " to " + readauth + ".", tachan, false);
+                }
                 return true;
             }
-            if (command === "megauseroff") {
+            if (command === "megauseroff" || command === "megauseroffs") {
                 var tadmins = tours.touradmins;
+                var silent = (command === "megauseroffs");
                 if (sys.dbIp(commandData) === undefined) {
                     sendBotMessage(src, "This user doesn't exist!", tourschan, false);
                     return true;
@@ -1469,7 +1481,12 @@ function tourCommand(src, command, commandData, channel) {
                 delete tadmins[lname];
                 tours.touradmins = tadmins;
                 saveTourKeys();
-                sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldauth + ".", "~st", false);
+                if (!silent) {
+                    sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldauth + ".", "~st", false);
+                }
+                else {
+                    sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldauth + ".", tachan, false);
+                }
                 return true;
             }
             // active history command
@@ -2209,7 +2226,7 @@ function tourCommand(src, command, commandData, channel) {
                 tadmins[newname] = desc;
                 tours.touradmins = tadmins;
                 saveTourKeys();
-                sendBotAll(sys.name(src)+" passed their tour auth to "+toCorrectCase(newname)+"!","~st",false);
+                sendBotAll(sys.name(src)+" passed their tour auth to "+toCorrectCase(newname)+"!",tachan,false);
                 return true;
             }
             if (command == "dq") {
@@ -2386,7 +2403,7 @@ function tourCommand(src, command, commandData, channel) {
                 sys.sendMessage(src,"*** TOURS MUTELIST ***",tourschan);
                 for (var t in tours.tourmutes) {
                     if (tours.tourmutes[t].expiry > parseInt(sys.time(), 10)) {
-                        sys.sendMessage(src, tours.tourmutes[t].name + ": Set by "+tours.tourmutes[t].auth+"; expires in "+time_handle(tours.tourmutes[t].expiry-parseInt(sys.time(), 10))+"; reason: "+tours.tourmutes[t].reason, tourschan);
+                        sys.sendMessage(src, tours.tourmutes[t].name + " on IP " + t + ": Set by "+tours.tourmutes[t].auth+"; expires in "+time_handle(tours.tourmutes[t].expiry-parseInt(sys.time(), 10))+"; reason: "+tours.tourmutes[t].reason, tourschan);
                     }
                 }
                 return true;
