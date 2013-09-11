@@ -2766,7 +2766,7 @@ function tourCommand(src, command, commandData, channel) {
                     sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
                 }
             }
-            if (hasAuthElements(mus) {
+            if (hasAuthElements(mus)) {
                 sys.sendMessage(src, "", channel);
                 sys.sendMessage(src, "*** AUTH MEGAUSERS ***", channel);
                 sys.sendMessage(src, "", channel);

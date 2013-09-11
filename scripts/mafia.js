@@ -6,7 +6,7 @@
 */
 
 // Global variables inherited from scripts.js
-/*global cmp, mafiabot, getTimeString, mafiaAdmins, updateModule, script, sys, saveKey, SESSION, sendChanAll, require, Config, module, detained, mafiaSuperAdmins, sachannel*/
+/*global cmp, mafiabot, getTimeString, updateModule, script, sys, saveKey, SESSION, sendChanAll, require, Config, module, detained, hasAuthElements, sachannel*/
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 var MAFIA_CHANNEL = "Mafia";
 
@@ -1544,7 +1544,7 @@ function Mafia(mafiachan) {
                         convertPlayers[p] = r;
                     }
                 }
-            } 
+            }
         }
         for (p in convertPlayers) {
             player = this.players[p];
@@ -3677,7 +3677,7 @@ function Mafia(mafiachan) {
                     return;
                 }
                 
-                function dayChargesMessage(player, commandName, action) {
+                var dayChargesMessage = function(player, commandName, action) {
                     if (mafia.getCharges(player, "standby", commandName) !== undefined) {
                         var charge = mafia.getCharges(player, "standby", commandName);
                         var chargetxt = "You have " + charge + " charges remaining";
@@ -3686,7 +3686,7 @@ function Mafia(mafiachan) {
                         }
                         mafia.sendPlayer(player.name, "±Game: " + chargetxt);
                     }
-                }
+                };
                     
                 if (command == "kill") {
                     if (player.dayKill >= (commandObject.limit || 1)) {
