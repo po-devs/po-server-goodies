@@ -51,64 +51,64 @@ var flashtag = "<!--f-->"; // This is used to check for flashes in the html code
 // Event tournaments highlighted in red
 var redborder = "<font color=#FF0000><b>"+border+"</b></font>";
 var redhtmlborder = "<font color=#FF0000><timestamp/> <b>"+border+"</b></font>";
-var tourcommands = ["/join: Joins a tournament",
-                    "/unjoin: Unjoins a tournament during signups only",
-                    "/queue: Lists upcoming tournaments",
-                    "/viewround: Views current round",
-                    "/iom: Views list of ongoing matches",
-                    "/ipm: Views list of matches yet to start",
-                    "/history: Views recently played tiers",
-                    "/megausers: Lists all users that can start tournaments",
-                    "/leaderboard [tier]: Shows tournament rankings, tier is optional",
-                    "/eventleaderboard [month]: Shows the event leaderboard (month is optional)",
-                    "/monthlyleaderboard [month]: Shows tour rankings for the current month",
-                    "/tourinfo: Gives information on a person's recent tour wins",
-                    "/eventinfo: Gives information on a person's recent event wins",
-                    "/viewstats: Views tournament stats",
-                    "/viewseeds [tier]: Views seed rankings for that tier",
-                    "/activemu: Lists active megausers",
-                    "/rules: Lists the tournament rules",
-                    "/touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)",
-                    "/addtouralert: Adds a tour alert for the specified tier",
-                    "/removetouralert: Removes a tour alert for the specified tier"];
+var tourcommands = ["/join: Joins a tournament.",
+                    "/unjoin: Unjoins a tournament during signups only.",
+                    "/queue: Lists upcoming tournaments.",
+                    "/viewround: Views current round.",
+                    "/iom: Views list of ongoing matches.",
+                    "/ipm: Views list of matches yet to start.",
+                    "/history: Views recently played tiers.",
+                    "/megausers: Lists all users that can start tournaments.",
+                    "/leaderboard [tier]: Shows tournament rankings, tier is optional.",
+                    "/eventleaderboard [month]: Shows the event leaderboard (month is optional).",
+                    "/monthlyleaderboard [month]: Shows tour rankings for the current month.",
+                    "/tourinfo: Gives information on a person's recent tour wins.",
+                    "/eventinfo: Gives information on a person's recent event wins.",
+                    "/viewstats: Views tournament stats.",
+                    "/viewseeds [tier]: Views seed rankings for that tier.",
+                    "/activemu: Lists active megausers.",
+                    "/rules: Lists the tournament rules.",
+                    "/touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified).",
+                    "/addtouralert: Adds a tour alert for the specified tier.",
+                    "/removetouralert: Removes a tour alert for the specified tier."];
 var tourmodcommands = ["Parameters: They can be used by putting 'gen=x'; 'mode=singles/doubles/triples'; 'type=single/double'; 'wifi=on/off'.",
                     "For example: '/tour Challenge Cup:gen=RBY:mode=triples:type=double:wifi=on' starts a RBY Challenge Cup double elimination tournament (in Triples mode) with Team Preview.",
-                    "/tour: Puts a tour in the queue. Format is /tour tier:parameters",
-                    "/tourmute: Tourmutes a problematic player. Format is /tourmute player:reason:time",
+                    "/tour: Puts a tour in the queue. Format is /tour tier:parameters.",
+                    "/tourmute: Tourmutes a problematic player. Format is /tourmute player:reason:time.",
                     "/tourunmute: Untourmutes a player.",
                     "/tourmutes: Lists tour mutes.",
-                    "/endtour: Ands the tour of the specified tier",
-                    "/sub: Subs in a player for another in a tournament. Format is /sub newname:oldname",
-                    "/dq: disqualifies a player",
-                    "/remove [tour/number]: Removes a tournament from the queue. If a number is put in, it will remove the tour in the queue with the corresponding number. If a tier is put in, it will remove the tournament of that tier (starting from the back)",
-                    "/cancelbattle: Cancels a player's current battle",
-                    "/start: Starts next tournament in the queue immediately (use sparingly)",
-                    "/viewstaffstats: Views tournament staff stats for a user",
-                    "/shift: Places a tournament in the front of the queue. Format is /shift tier:parameters",
-                    "/passmu: Passes your megauser to a new name"];
-var tourownercommands = ["/megauser: Makes someone a megauser",
-                    "/megauseroff: Fires someone from being tournament authority",
-                    "/forcestart: Ends signups immediately and starts the first round",
-                    "/muhistory [days]: Views the activity of megausers (days is optional, if excluded it will get the last 7 days if possible)",
+                    "/endtour: Ands the tour of the specified tier.",
+                    "/sub: Subs in a player for another in a tournament. Format is /sub newname:oldname.",
+                    "/dq: disqualifies a player.",
+                    "/remove [tour/number]: Removes a tournament from the queue. If a number is put in, it will remove the tour in the queue with the corresponding number. If a tier is put in, it will remove the tournament of that tier (starting from the back).",
+                    "/cancelbattle: Cancels a player's current battle.",
+                    "/start: Starts next tournament in the queue immediately (use sparingly).",
+                    "/viewstaffstats: Views tournament staff stats for a user.",
+                    "/shift: Places a tournament in the front of the queue. Format is /shift tier:parameters.",
+                    "/passmu: Passes your megauser to a new name."];
+var tourownercommands = ["/megauser: Makes someone a megauser. Use /smegauser for a silent promotion.",
+                    "/megauseroff: Fires someone from being tournament authority. Use /smegauseroff for a silent demotion.",
+                    "/forcestart: Ends signups immediately and starts the first round.",
+                    "/muhistory [days]: Views the activity of megausers (days is optional, if excluded it will get the last 7 days if possible).",
                     "/stopautostart: If there are no tournaments running, this will stop new ones from being automatically started by the server until another one is started manually.",
-                    "/tourstart: Starts a tour of that tournament immediately, provided one is not in signups. Format is /tourstart tier:parameters",
-                    "/clearrankings [all/month]: Clears the tour rankings, 'all' clears all history, [month] will only clear a particular month (eg /clearrankings January)",
-                    "/cleareventrankings [all/month]: Clears the event rankings, 'all' clears all history, [month] will only clear a particular month (eg /clearrankings January)",
-                    "/clearmetric: Clears all tournaments stats (?)",
-                    "/rundecay: Forces a calculation of decay (?)",
-                    "/purgekeys: Purges non-usable keys (??)",
-                    "/addrangewarning: Adds a warning for an IP range",
-                    "/removerangewarning: Removes a warning for an IP range",
-                    "/rangewarns: Checks the current IP range warnings",
-                    "/evalvars: Checks the current variable list for tours",
-                    "/config: Shows config settings",
-                    "/configset: Changes config settings. Format is /configset var:value",
-                    "/resettours: Resets the entire tournament system in the event of a critical failure",
-                    "/starttours: Reverts effect of /stoptours",
-                    "/stoptours: Stops the tournament system for maintenance",
-                    "/fullleaderboard: Gives the full leaderboard for a specified tier",
-                    "/fullmonthlyleaderboard: Gives the full monthly leaderboard for a specified month",
-                    "/loadevents: Load event tours"];
+                    "/tourstart: Starts a tour of that tournament immediately, provided one is not in signups. Format is /tourstart tier:parameters.",
+                    "/clearrankings [all/month]: Clears the tour rankings, 'all' clears all history, [month] will only clear a particular month (eg /clearrankings January).",
+                    "/cleareventrankings [all/month]: Clears the event rankings, 'all' clears all history, [month] will only clear a particular month (eg /clearrankings January).",
+                    "/clearmetric: Clears all tournaments stats (?).",
+                    "/rundecay: Forces a calculation of decay (?).",
+                    "/purgekeys: Purges non-usable keys (??).",
+                    "/addrangewarning: Adds a warning for an IP range.",
+                    "/removerangewarning: Removes a warning for an IP range.",
+                    "/rangewarns: Checks the current IP range warnings.",
+                    "/evalvars: Checks the current variable list for tours.",
+                    "/config: Shows config settings.",
+                    "/configset: Changes config settings. Format is /configset var:value.",
+                    "/resettours: Resets the entire tournament system in the event of a critical failure.",
+                    "/starttours: Reverts effect of /stoptours.",
+                    "/stoptours: Stops the tournament system for maintenance.",
+                    "/fullleaderboard: Gives the full leaderboard for a specified tier.",
+                    "/fullmonthlyleaderboard: Gives the full monthly leaderboard for a specified month.",
+                    "/loadevents: Load event tours."];
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "Breaking the following rules may result in punishment:",
                 "#1: Team revealing or scouting in tiers other than CC, Battle Factory or Metronome will result in disqualification.",
@@ -159,7 +159,7 @@ function sendBotMessage(user, message, chan, html) {
 }
 
 // Functions to send bot messages to channels
-// "all" sends to every channel, "~mt" sends to main channel and tours, "~st" sends to staff channels and tours.
+// "all" sends to every channel, "~mt" sends to main channel and tours, "~st" sends to Victory Road and tours.
 function sendBotAll(message, chan, html) {
     var staffchan = sys.channelId("Indigo Plateau");
     var tachan = sys.channelId("Victory Road");
@@ -173,7 +173,6 @@ function sendBotAll(message, chan, html) {
         }
         else if (chan === "~st") {
             sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,tourschan);
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,staffchan);
             sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,tachan);
         }
         else {
@@ -190,7 +189,6 @@ function sendBotAll(message, chan, html) {
         }
         else if (chan === "~st") {
             sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),tourschan);
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),staffchan);
             sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),tachan);
         }
         else {
@@ -1409,8 +1407,16 @@ function tourCommand(src, command, commandData, channel) {
                 tstats.rankings(src, "", true, mindex);
                 return true;
             }
-            if (command == "megauser" || (sys.auth(src) >= 3 && command == "towner") || (sys.auth(src) >= 3 && command === "tourowner")) {
+            if (command === "megauser" || command === "towner" || command === "tourowner" || command === "smegauser" || command === "stowner" || command === "stourowner") {
                 var tadmins = tours.touradmins;
+                var silent = false;
+                if (command === "smegauser" || command === "stowner" || command === "stourowner") {
+                    command.splice(command.length - 1, 1);
+                    silent = true;
+                }
+                if ((command === "towner" || command === "tourowner") && sys.auth(src) < 3) {
+                    return true;
+                }
                 if (sys.dbIp(commandData) === undefined) {
                     sendBotMessage(src,"This user doesn't exist!",tourschan,false);
                     return true;
@@ -1447,11 +1453,17 @@ function tourCommand(src, command, commandData, channel) {
                 tours.touradmins = tadmins;
                 var changeword = newauth > oldauth ? " promoted " : " demoted ";
                 saveTourKeys();
-                sendBotAll(sys.name(src) + changeword + commandData.toCorrectCase() + " to " + readauth + ".","~st",false);
+                if (!silent) {
+                    sendBotAll(sys.name(src) + changeword + commandData.toCorrectCase() + " to " + readauth + ".", "~st", false);
+                }
+                else {
+                    sendBotAll(sys.name(src) + changeword + commandData.toCorrectCase() + " to " + readauth + ".", tachan, false);
+                }
                 return true;
             }
-            if (command === "megauseroff") {
+            if (command === "megauseroff" || command === "smegauseroff") {
                 var tadmins = tours.touradmins;
+                var silent = (command === "smegauseroff");
                 if (sys.dbIp(commandData) === undefined) {
                     sendBotMessage(src, "This user doesn't exist!", tourschan, false);
                     return true;
@@ -1469,7 +1481,12 @@ function tourCommand(src, command, commandData, channel) {
                 delete tadmins[lname];
                 tours.touradmins = tadmins;
                 saveTourKeys();
-                sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldauth + ".", "~st", false);
+                if (!silent) {
+                    sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldauth + ".", "~st", false);
+                }
+                else {
+                    sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldauth + ".", tachan, false);
+                }
                 return true;
             }
             // active history command
@@ -2209,7 +2226,7 @@ function tourCommand(src, command, commandData, channel) {
                 tadmins[newname] = desc;
                 tours.touradmins = tadmins;
                 saveTourKeys();
-                sendBotAll(sys.name(src)+" passed their tour auth to "+toCorrectCase(newname)+"!","~st",false);
+                sendBotAll(sys.name(src)+" passed their tour auth to "+toCorrectCase(newname)+"!",tachan,false);
                 return true;
             }
             if (command == "dq") {
@@ -2386,7 +2403,7 @@ function tourCommand(src, command, commandData, channel) {
                 sys.sendMessage(src,"*** TOURS MUTELIST ***",tourschan);
                 for (var t in tours.tourmutes) {
                     if (tours.tourmutes[t].expiry > parseInt(sys.time(), 10)) {
-                        sys.sendMessage(src, tours.tourmutes[t].name + ": Set by "+tours.tourmutes[t].auth+"; expires in "+time_handle(tours.tourmutes[t].expiry-parseInt(sys.time(), 10))+"; reason: "+tours.tourmutes[t].reason, tourschan);
+                        sys.sendMessage(src, tours.tourmutes[t].name + " on IP " + t + ": Set by "+tours.tourmutes[t].auth+"; expires in "+time_handle(tours.tourmutes[t].expiry-parseInt(sys.time(), 10))+"; reason: "+tours.tourmutes[t].reason, tourschan);
                     }
                 }
                 return true;

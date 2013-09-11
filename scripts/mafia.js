@@ -3343,8 +3343,7 @@ function Mafia(mafiachan) {
             "/topthemes: To view top themes. Default amount is 10, however other numbers can be used (higher numbers may cause lag)",
             "/windata: To view the win data of a theme",
             "/update: To update a Mafia Theme!"],
-        ma: ["/push: To push users to a Mafia game.",
-            "/slay: To slay users in a Mafia game.",
+        ma: ["/slay: To slay users in a Mafia game.",
             "/shove: To remove users before a game starts.",
             "/mafiaban: To ban a user from the Mafia channel, format /mafiaban user:reason:time",
             "/mafiaunban: To unban a user from the Mafia channel.",
@@ -3359,9 +3358,9 @@ function Mafia(mafiachan) {
             "/importold: To import old themes."],
         sma: ["/aliases: To check a user's known alts.",
             "/remove: To remove a Mafia Theme!",
-            "/mafiaadmin: To promote a user to Mafia Admin.",
-            "/mafiasuperadmin: To promote a user to Super Mafia Admin.",
-            "/mafiaadminoff: To strip a user of all Mafia authority.",
+            "/mafiaadmin: To promote a user to Mafia Admin. Use /smafiaadmin for a silent promotion.",
+            "/mafiasuperadmin: To promote a user to Super Mafia Admin. Use /smafiasuperadmin for a silent promotion.",
+            "/mafiaadminoff: To strip a user of all Mafia authority. Use /smafiaadminoff for a silent demotion.",
             "/updateafter: To update mafia after current game!"]
     };
 
@@ -4707,32 +4706,6 @@ function Mafia(mafiachan) {
             throw ("no valid command");
 
         var tar = sys.id(commandData);
-        if (command === "push") {
-            var name = commandData;
-            if (!mafia.isMafiaSuperAdmin(src)) {
-                msg(src, "Super Mafia Admin Command.");
-                return;
-            }
-            if (this.state != "entry") {
-                msg(src, "Pushing makes no sense outside entry...");
-                return;
-            }
-            if (this.signups.length >= this.theme["roles" + this.theme.roleLists].length) {
-                sys.sendMessage(src, "±Game: This theme only supports a maximum of " + this.theme["roles" + this.theme.roleLists].length + " players!", mafiachan);
-                return;
-            }
-            var id = sys.id(name);
-            if (id) {
-                name = sys.name(id);
-                this.signups.push(name);
-                this.ips.push(sys.ip(id));
-            } else {
-                this.signups.push(name);
-            }
-            sendChanAll("±Game: " + name + " joined the game! (pushed by " + nonFlashing(sys.name(src)) + ")", mafiachan);
-            sendChanAll("±Game: " + name + " joined the game! (pushed by " + nonFlashing(sys.name(src)) + ")", sachannel);
-            return;
-        }
         if (command === "slay") {
             this.slayUser(src, commandData);
             return;
@@ -4873,9 +4846,14 @@ function Mafia(mafiachan) {
         if (!this.isMafiaSuperAdmin(src))
             throw ("no valid command");
 
-        if (command == "mafiaadmin" || command == "mafiasadmin" || command == "mafiasuperadmin") {
+        if (command == "mafiaadmin" || command == "mafiasadmin" || command == "mafiasuperadmin" || command == "smafiaadmin" || command == "smafiasadmin" || command == "smafiasuperadmin") {
             var ma = commandData.toLowerCase();
             var sMA = false;
+            var silent = false;
+            if (command == "smafiaadmin" || command == "smafiasadmin" || command == "smafiasuperadmin") {
+                command = command.substr(1);
+                silent = true;
+            }
             if ((command == "mafiasadmin" || command == "mafiasuperadmin") && sys.auth(src) >= 3) {
                 script.mafiaSuperAdmins.add(ma, "");
                 script.mafiaAdmins.remove(ma);
@@ -4884,23 +4862,32 @@ function Mafia(mafiachan) {
                 script.mafiaAdmins.add(ma, "");
             }
             id = sys.id(commandData);
-            if (id !== undefined)
+            if (id !== undefined) {
                 SESSION.users(id).mafiaAdmin = true;
+            }
+            if (!silent) {
+                sys.sendAll("±Murkrow: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to " + (sMA ? "Super " : "") + "Mafia Admin.", mafiachan);
+            }
             sys.sendAll("±Murkrow: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
             return;
         }
-        if (command == "mafiaadminoff") {
+        if (command == "mafiaadminoff" || command == "smafiaadminoff") {
             var ma = commandData.toLowerCase();
             var sMA = false;
+            var silent = (command === "smafiaadminoff");
             if (script.mafiaSuperAdmins.hash.hasOwnProperty(ma) && sys.auth(src) >= 3) {
                 script.mafiaSuperAdmins.remove(ma);
                 sMA = true;
             }
             script.mafiaAdmins.remove(ma);
             id = sys.id(commandData);
-            if (id !== undefined)
+            if (id !== undefined) {
                 SESSION.users(id).mafiaAdmin = false;
-            sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData.toCorrectCase()  + " from being a " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
+            }
+            if (!silent) {
+                sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData.toCorrectCase()  + " from " + (sMA ? "Super " : "") + "Mafia Admin.", mafiachan);
+            }
+            sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData.toCorrectCase()  + " from " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
             return;
         }
         if (command === "remove"){

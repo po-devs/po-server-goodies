@@ -545,13 +545,13 @@ module.exports = function () {
         var superAdminHelp = [
             "*** Hangman Super Admin Commands ***",
             "/config: To change the answer delay time and other settings. Format /config parameter:value. Type /config by itself to see more help.",
-            "/hangmanadmin: To promote a new Hangman admin.",
-            "/hangmanadminoff: To demote a Hangman admin."
+            "/hangmanadmin: To promote a new Hangman admin. Use /shangmanadmin for a silent promotion.",
+            "/hangmanadminoff: To demote a Hangman admin. Use /shangmanadminoff for a silent demotion."
         ];
         var ownerHelp = [
             "*** Hangman Owner Commands ***",
-            "/hangmansuperadmin: To promote a new Hangman Super Admin.",
-            "/hangmansuperadminoff: To demote a Hangman Super Admin."
+            "/hangmansuperadmin: To promote a new Hangman Super Admin. Use /shangmansuperadmin for a silent promotion.",
+            "/hangmansuperadminoff: To demote a Hangman Super Admin. Use /shangmansuperadminoff for a silent demotion."
         ];
         var help = userHelp;
         if (this.authLevel(src) > 0) {
@@ -649,26 +649,26 @@ module.exports = function () {
             return true;
         }
 
-        if (command === "hangmanadmin") {
-            hangman.promoteAdmin(src, commandData, channel);
+        if (command === "hangmanadmin" || command === "shangmanadmin") {
+            hangman.promoteAdmin(src, commandData, channel, (command === "shangmanadmin"));
             return true;
         }
 
-        if (command === "hangmanadminoff") {
-            hangman.demoteAdmin(src, commandData, channel);
+        if (command === "hangmanadminoff" || command === "hangmanadminoffs") {
+            hangman.demoteAdmin(src, commandData, channel, (command === "shangmanadminoff"));
             return true;
         }
 
         if (hangman.authLevel(src) < 3) {
             return false;
         }
-        if (command === "hangmansuperadmin") {
-            hangman.promoteSuperAdmin(src, commandData, channel);
+        if (command === "hangmansuperadmin" || command === "hangmansuperadmins") {
+            hangman.promoteSuperAdmin(src, commandData, channel, (command === "shangmansuperadmin"));
             return true;
         }
 
-        if (command === "hangmansuperadminoff") {
-            hangman.demoteSuperAdmin(src, commandData, channel);
+        if (command === "hangmansuperadminoff" || command === "hangmansuperadminoffs") {
+            hangman.demoteSuperAdmin(src, commandData, channel, (command === "shangmansuperadminoff"));
             return true;
         }
         return false;
@@ -752,7 +752,7 @@ module.exports = function () {
         }
         return;
     };
-    this.promoteAdmin = function (src, commandData, channel) {
+    this.promoteAdmin = function (src, commandData, channel, silent) {
         if (commandData === undefined) {
             return;
         }
@@ -761,10 +761,13 @@ module.exports = function () {
             return;
         }
         script.hangmanAdmins.add(commandData.toLowerCase(), "");
+        if (!silent) {
+            .sendAll("±Unown: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Hangman Admin.", hangchan);
+        }
         sys.sendAll("±Unown: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Hangman Admin.", sys.channelId('Victory Road'));
         return;
     };
-    this.promoteSuperAdmin = function (src, commandData, channel) {
+    this.promoteSuperAdmin = function (src, commandData, channel, silent) {
         if (commandData === undefined) {
             return;
         }
@@ -773,10 +776,13 @@ module.exports = function () {
             return;
         }
         script.hangmanSuperAdmins.add(commandData.toLowerCase(), "");
+        if (!silent) {
+            sys.sendAll("±Unown: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Hangman Admin.", hangchan);
+        }
         sys.sendAll("±Unown: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Hangman Admin.", sys.channelId('Victory Road'));
         return;
     };
-    this.demoteAdmin = function (src, commandData, channel) {
+    this.demoteAdmin = function (src, commandData, channel, silent) {
         if (commandData === undefined) {
             return;
         }
@@ -786,10 +792,13 @@ module.exports = function () {
         }
         script.hangmanAdmins.remove(commandData);
         script.hangmanAdmins.remove(commandData.toLowerCase());
+        if (!silent) {
+            sys.sendAll("±Unown: " + sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Hangman Admin.", hangchan);
+        }
         sys.sendAll("±Unown: " + sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Hangman Admin.", sys.channelId('Victory Road'));
         return;
     };
-    this.demoteSuperAdmin = function (src, commandData, channel) {
+    this.demoteSuperAdmin = function (src, commandData, channel, silent) {
         if (commandData === undefined) {
             return;
         }
@@ -799,6 +808,9 @@ module.exports = function () {
         }
         script.hangmanSuperAdmins.remove(commandData);
         script.hangmanSuperAdmins.remove(commandData.toLowerCase());
+        if (!silent) {
+            sys.sendAll("±Unown: " + sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Super Hangman Admin.", hangchan);
+        }
         sys.sendAll("±Unown: " + sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Super Hangman Admin.", sys.channelId('Victory Road'));
         return;
     };
