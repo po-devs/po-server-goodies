@@ -111,7 +111,6 @@ function mafiaStats() {
         var total = parseInt(data[1], 10);
         var count = 0;
         var output = [html.title.format("Games Played")];
-        output.push("");
         output.push("<i>Total Games Played: " + total + "</i>");
         output.push("");
         for (var x = 0; x < gamesPlayed.length; x++) {
@@ -192,7 +191,6 @@ function mafiaStats() {
         }
         var count = 0;
         var output = [html.title.format("Times Won")];
-        output.push("");
         output.push("<i>Theme Played: " + gameTotal + " times</i>");
         output.push("");
         for (var x = 0; x < totalTeam.length; x++) {
@@ -203,6 +201,7 @@ function mafiaStats() {
     this.compileHourData = function () {
         var hData = this.data.hoursData;
         var output = [html.title.format("Games Played Per Hour (UTC)")];
+        output.push("");
         for (var x = 0; x < 24; x++) {
             var average = Math.round(hData[x].players / hData[x].gamesPlayed * 100) / 100;
             output.push("Games Played between " + x + ":00 and " + x + ":59, " + hData[x].gamesPlayed + ". Average Players: " + (average ? average : "0"));
