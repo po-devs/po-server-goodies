@@ -159,7 +159,7 @@ function sendBotMessage(user, message, chan, html) {
 }
 
 // Functions to send bot messages to channels
-// "all" sends to every channel, "~mt" sends to main channel and tours, "~st" sends to Victory Road and tours.
+// "all" sends to every channel, "~mt" sends to main channel and tours, "~st" sends to staff channels and tours, "~tr" sends to Victory Road and tours.
 function sendBotAll(message, chan, html) {
     var staffchan = sys.channelId("Indigo Plateau");
     var tachan = sys.channelId("Victory Road");
@@ -172,6 +172,11 @@ function sendBotAll(message, chan, html) {
             sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,0);
         }
         else if (chan === "~st") {
+            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,tourschan);
+            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,tachan);
+            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,staffchan);
+        }
+        else if (chan === "~tr") {
             sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,tourschan);
             sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,tachan);
         }
@@ -188,6 +193,11 @@ function sendBotAll(message, chan, html) {
             sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),0);
         }
         else if (chan === "~st") {
+            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),tourschan);
+            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),tachan);
+            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),staffchan);
+        }
+        else if (chan === "~tr") {
             sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),tourschan);
             sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),tachan);
         }
@@ -1454,7 +1464,7 @@ function tourCommand(src, command, commandData, channel) {
                 var changeword = newauth > oldauth ? " promoted " : " demoted ";
                 saveTourKeys();
                 if (!silent) {
-                    sendBotAll(sys.name(src) + changeword + commandData.toCorrectCase() + " to " + readauth + ".", "~st", false);
+                    sendBotAll(sys.name(src) + changeword + commandData.toCorrectCase() + " to " + readauth + ".", "~tr", false);
                 }
                 else {
                     sendBotAll(sys.name(src) + changeword + commandData.toCorrectCase() + " to " + readauth + ".", tachan, false);
@@ -1482,7 +1492,7 @@ function tourCommand(src, command, commandData, channel) {
                 tours.touradmins = tadmins;
                 saveTourKeys();
                 if (!silent) {
-                    sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldauth + ".", "~st", false);
+                    sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldauth + ".", "~tr", false);
                 }
                 else {
                     sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldauth + ".", tachan, false);
