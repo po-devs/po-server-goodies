@@ -27,10 +27,17 @@ var saveInterval = 86400; // autosave every day
 var html_escape = utilities.html_escape;
 var find_tier = utilities.find_tier;
 
+startBF();
+
 function initFactory() {
+    teamrevchan = utilities.get_or_create_channel("BF Review");
+    sendChanAll("Version "+bfversion+" of the Battle Factory loaded successfully!", teamrevchan);
+    working = true;
+}
+
+function startBF() {
     sys.makeDir("bfdata");
     sys.makeDir("bfdata/submit");
-    teamrevchan = utilities.get_or_create_channel("BF Review");
     try {
         var file = sys.getFileContent(dataDir+"bfteams.json");
         if (file === undefined) {
@@ -130,9 +137,6 @@ function initFactory() {
         sendChanAll("No valid Battle Factory sets detected!", teamrevchan);
         throw "No valid set packs available";
     }
-
-    sendChanAll("Version "+bfversion+" of the Battle Factory loaded successfully!", teamrevchan);
-    working = true;
 }
 
 function isinBFTier(src, team) {
