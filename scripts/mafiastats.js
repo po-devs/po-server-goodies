@@ -18,10 +18,11 @@ var saveDir = "usage_stats/formatted/mafiathemes/";
     Adding to these strings will change their look the next time the html page is generated (by default, at the top of the hour UTC)
 */
 var html = {
-    page: "<!doctype html><html lang='en'><head><meta charset='utf-8'><title>{0}</title></head>{1}</body></html>",
+    page: "<!doctype html><html lang='en'><head><meta charset='utf-8'><style type='text/css'>td,th{width:50px;height:30px;}td{text-align:center;}th{background:#85AAF5}</style><title>{0}</title></head>{1}</body></html>",
     title: "<b><font size=4>*** {0} ***</font></b>",
     date: "<i><font size=2>Last Updated: {0} </font></i>"
 };
+
 function mafiaStats() {
     this.init = function () {
         sys.makeDir(mafiaDataDir);
@@ -124,7 +125,7 @@ function mafiaStats() {
         }
         output.push("");
         var date = new Date();
-        var current = date.getUTCFullYear() + "-" + ("0" + (date.getUTCMonth() + 1)).slice(-2) + "-" + ("0" + date.getUTCDate()).slice(-2) + " " + ("0" + date.getUTCHours()).slice(-2) + ":" + ("0" + date.getUTCMinutes()).slice(-2) + ":" + ("0" + date.getUTCSeconds()).slice(-2)+ " (UTC)";
+        var current = date.getUTCFullYear() + "-" + ("0" + (date.getUTCMonth() + 1)).slice(-2) + "-" + ("0" + date.getUTCDate()).slice(-2) + " " + ("0" + date.getUTCHours()).slice(-2) + ":" + ("0" + date.getUTCMinutes()).slice(-2) + ":" + ("0" + date.getUTCSeconds()).slice(-2) + " (UTC)";
         output.push(html.date.format(current));
         sys.writeToFile(saveDir + "index.html", html.page.format("Mafia Stats", output.join("<br>")));
     };
@@ -275,18 +276,19 @@ function mafiaStats() {
         output.push("<tr><th/>");
         var end = themeData["roles" + themeData.roleLists].length;
         for (var x = +start; x < +end + 1; x++) {
-            output.push("<th><b>"+x+"</b></th>");
+            output.push("<th><b>" + x + "</b></th>");
         }
-        output.push("</tr>");
+        output.push("<tr><th>Sides/Players</th>");
         var keys = Object.keys(this.data[theme]);
         for (var x = 0; x < keys.length; x++) {
             if (keys[x] !== "gamesPlayed") {
-                output.push("<tr><th><b>"+keys[x]+"</b></th>");
+                output.push("<tr><th><b>" + keys[x] + "</b></th>");
                 for (var y = +start; y < +end + 1; y++) {
                     if (this.data[theme][keys[x]][y] !== undefined) {
-                        output.push("<td>"+this.data[theme][keys[x]][y]+"</td>");
-                    } else {
-                        output.push("<td>"+0+"</td>");
+                        output.push("<td>" + this.data[theme][keys[x]][y] + "</td>");
+                    }
+                    else {
+                        output.push("<td>" + 0 + "</td>");
                     }
                 }
                 output.push("</tr>");
