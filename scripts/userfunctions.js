@@ -66,8 +66,8 @@ function POUser(id)
     this.battles = {};
 
     var name = sys.name(id);
-    if (contributors.hash.hasOwnProperty(name))
-        this.contributions = contributors.get(name);
+    if (script.contributors.hash.hasOwnProperty(name))
+        this.contributions = script.contributors.get(name);
 
     /* check if user is banned or mafiabanned */
     var data;
