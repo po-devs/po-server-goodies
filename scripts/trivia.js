@@ -625,7 +625,7 @@ TriviaGame.prototype.endTrivia = function (src) {
     }
     this.resetTrivia();
     runUpdate();
-    this.sendAll(sys.name(src) + " stopped the current trivia game!", triviachan);
+    this.sendAll(sys.name(src) + " ended the current trivia game!", triviachan);
     return;
 };
 
