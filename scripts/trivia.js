@@ -1078,7 +1078,7 @@ addUserCommand(["triviaadmins","tadmins","tas"], function (src, commandData, cha
     tadmin.tAdminList(src, channel, "Trivia Admins");
 }, "Gives a list of current trivia admins");
 
-addOwnerCommand(["triviaadmin", "striviaadmin"], function (src, commandData, channel) {
+addOwnerCommand(["triviaadmin", "striviaadmin"], function (src, commandData, channel, command) {
     if (tadmin.isTAdmin(commandData)) {
         Trivia.sendPM(src, "That person is already a Trivia Admin.", channel);
         return;
@@ -1091,7 +1091,7 @@ addOwnerCommand(["triviaadmin", "striviaadmin"], function (src, commandData, cha
     Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Trivia Admin.", sachannel);
 }, "Allows you to promote a new trivia admin, use /striviaadmin for a silent promotion.");
 
-addOwnerCommand(["triviaadminoff", "striviaadminoff"], function (src, commandData, channel) {
+addOwnerCommand(["triviaadminoff", "striviaadminoff"], function (src, commandData, channel, command) {
     if (!tadmin.isTAdmin(commandData)) {
         Trivia.sendPM(src, "That person isn't a Trivia Admin.", channel);
         return;
@@ -1104,7 +1104,7 @@ addOwnerCommand(["triviaadminoff", "striviaadminoff"], function (src, commandDat
     Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Trivia Admin.", sachannel);
 }, "Allows you to demote a current trivia admin, use /strivaadminoff for a silent demotion.");
 
-addOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, commandData, channel) {
+addOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, commandData, channel, command) {
     if (tsadmin.isTAdmin(commandData)) {
         Trivia.sendPM(src, "That person is already a Trivia Super Admin.", channel);
         return;
@@ -1117,7 +1117,7 @@ addOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, comman
     Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Trivia Admin.", sachannel);
 }, "Allows you to promote a new trivia super admin, use /striviasuperadmin for a silent promotion.");
 
-addOwnerCommand(["triviasuperadminoff", "striviasuperadminoff"], function (src, commandData, channel) {
+addOwnerCommand(["triviasuperadminoff", "striviasuperadminoff"], function (src, commandData, channel, command) {
     if (!tsadmin.isTAdmin(commandData)) {
         Trivia.sendPM(src, "That person isn't a Trivia Super Admin.", channel);
         return;
@@ -1821,20 +1821,20 @@ module.exports = {
         try {
             // Trivia user commands
             if (userCommands.hasOwnProperty(command)) {
-                userCommands[command].call(null, src, commandData, channel);
+                userCommands[command].call(null, src, commandData, channel, command);
                 return true;
             }
             // Trivia admin commands
             if (sys.auth(src) > 0 || tadmin.isTAdmin(sys.name(src)) || isTriviaOwner(src)) {
                 if (adminCommands.hasOwnProperty(command)) {
-                    adminCommands[command].call(null, src, commandData, channel);
+                    adminCommands[command].call(null, src, commandData, channel, command);
                     return true;
                 }
             }
             // Trivia owner commands
             if (isTriviaOwner(src)) {
                 if (ownerCommands.hasOwnProperty(command)) {
-                    ownerCommands[command].call(null, src, commandData, channel);
+                    ownerCommands[command].call(null, src, commandData, channel, command);
                     return true;
                 }
             }
