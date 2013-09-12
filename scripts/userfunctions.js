@@ -45,15 +45,15 @@ function POUser(id)
     /* invite delay */
     this.inviteDelay = 0;
     /* tour alert */
-    if (getKey('touralertson', id) == "true") {
-        this.tiers = getKey("touralerts", id).split("*");
+    if (script.getKey('touralertson', id) == "true") {
+        this.tiers = script.getKey("touralerts", id).split("*");
     }
     /* mafia alerts */
     this.mafiathemes = [];
-    if (getKey("mafiaalertson", id) == "true") {
+    if (script.getKey("mafiaalertson", id) == "true") {
         this.mafiaalertson = true;
-        this.mafiaalertsany = getKey("mafiaalertsany", id) == "true" ? true : false;
-        this.mafiathemes = getKey("mafiathemes", id).split("*");
+        this.mafiaalertsany = script.getKey("mafiaalertsany", id) == "true" ? true : false;
+        this.mafiathemes = script.getKey("mafiathemes", id).split("*");
     }
     /* host name */
     this.hostname = "pending";

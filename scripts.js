@@ -118,7 +118,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, getKey, contributors, mutes, mbans, smutes, detained, hbans, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, isSuperAdmin, cmp, key, saveKey, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList, powerList, accList, ppList, categoryList, moveEffList, moveFlagList, namesToWatch;
+var channel, contributors, mutes, mbans, smutes, detained, hbans, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList, powerList, accList, ppList, categoryList, moveEffList, moveFlagList, namesToWatch;
 
 var pokeDir = "db/pokes/";
 var moveDir = "db/moves/5G/";
@@ -711,15 +711,15 @@ init : function() {
         return a + "*" + sys.ip(b);
     };
 
-    saveKey = function(thing, id, val) {
+    script.saveKey = function(thing, id, val) {
         sys.saveVal(key(thing,id), val);
     };
 
-    getKey = function(thing, id) {
+    script.getKey = function(thing, id) {
         return sys.getVal(key(thing,id));
     };
 
-    cmp = function(a, b) {
+    script.cmp = function(a, b) {
         return a.toLowerCase() == b.toLowerCase();
     };
 
@@ -1519,9 +1519,9 @@ afterChangeTeam : function(src)
             sys.appendToFile("staffstats.txt", "~" + src + "~" + sys.time() + "~" + "Changed name from Auth" + "\n");
     }
 
-    POuser.sametier = getKey("forceSameTier", src) == "1";
+    POuser.sametier = script.getKey("forceSameTier", src) == "1";
 
-    if (getKey("autoIdle", src) == "1") {
+    if (script.getKey("autoIdle", src) == "1") {
         sys.changeAway(src, true);
     }
 

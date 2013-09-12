@@ -6,7 +6,7 @@
 */
 
 // Global variables inherited from scripts.js
-/*global cmp, mafiabot, getTimeString, updateModule, script, sys, saveKey, SESSION, sendChanAll, require, Config, module, detained, hasAuthElements, sachannel*/
+/*global script.cmp, mafiabot, getTimeString, updateModule, script, sys, script.saveKey, SESSION, sendChanAll, require, Config, module, detained, hasAuthElements, sachannel*/
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 var MAFIA_CHANNEL = "Mafia";
 
@@ -306,7 +306,7 @@ function Mafia(mafiachan) {
         sys.writeToFile(fname, resp);
         var done = false;
         for (var i = 0; i < this.themeInfo.length; ++i) {
-            if (cmp(name, this.themeInfo[i][0])) {
+            if (script.cmp(name, this.themeInfo[i][0])) {
                 done = true;
                 this.themeInfo[i] = [name, url, fname, true];
                 break;
@@ -442,7 +442,7 @@ function Mafia(mafiachan) {
         if (name in this.themes) {
             delete this.themes[name];
             for (var i = 0; i < this.themeInfo.length; ++i) {
-                if (cmp(name, this.themeInfo[i][0])) {
+                if (script.cmp(name, this.themeInfo[i][0])) {
                     this.themeInfo.splice(i, 1);
                     break;
                 }
@@ -458,7 +458,7 @@ function Mafia(mafiachan) {
         if (name in this.themes) {
             this.themes[name].enabled = true;
             for (var i = 0; i < this.themeInfo.length; ++i) {
-                if (cmp(name, this.themeInfo[i][0])) {
+                if (script.cmp(name, this.themeInfo[i][0])) {
                     this.themeInfo[i][3] = true;
                     break;
                 }
@@ -476,7 +476,7 @@ function Mafia(mafiachan) {
         if (name in this.themes) {
             this.themes[name].enabled = false;
             for (var i = 0; i < this.themeInfo.length; ++i) {
-                if (cmp(name, this.themeInfo[i][0])) {
+                if (script.cmp(name, this.themeInfo[i][0])) {
                     this.themeInfo[i][3] = false;
                     break;
                 }
@@ -4457,24 +4457,24 @@ function Mafia(mafiachan) {
             if (action == "on") {
                 msg(src, "Alert for mafia games is now on!");
                 user.mafiaalertson = true;
-                saveKey("mafiaalertson", src, true);
+                script.saveKey("mafiaalertson", src, true);
                 if (user.mafiaalertsany === undefined) {
                     user.mafiaalertsany = true;
                     msg(src, "You will get alerts for any theme. To only receive alerts for specific themes, use /flashme add:theme name");
-                    saveKey("mafiaalertsany", src, user.mafiaalertsany);
+                    script.saveKey("mafiaalertsany", src, user.mafiaalertsany);
                 }
                 return;
             }
             else if (action == "off") {
                 msg(src, "Alert for mafia games is now off!");
                 user.mafiaalertson = false;
-                saveKey("mafiaalertson", src, false);
+                script.saveKey("mafiaalertson", src, false);
                 return;
             }
             else if (action == "any") {
                 user.mafiaalertsany = !user.mafiaalertsany;
                 msg(src, "You'll get alerts for " + (user.mafiaalertsany ? "any theme" : "specific themes only") + "!");
-                saveKey("mafiaalertsany", src, user.mafiaalertsany);
+                script.saveKey("mafiaalertsany", src, user.mafiaalertsany);
                 return;
             }
             else if (action == "add") {
@@ -4499,11 +4499,11 @@ function Mafia(mafiachan) {
                 }
                 if (themesAdded.length > 0) {
                     msg(src, "Added alert for the themes: " + readable(themesAdded, "and") + ". ");
-                    saveKey("mafiathemes", src, user.mafiathemes.join("*"));
+                    script.saveKey("mafiathemes", src, user.mafiathemes.join("*"));
                     
                     user.mafiaalertsany = false;
                     msg(src, "You will get alerts for specific themes only. To only receive alerts for any theme, use /flashme any.");
-                    saveKey("mafiaalertsany", src, user.mafiaalertsany);
+                    script.saveKey("mafiaalertsany", src, user.mafiaalertsany);
                 }
                 if (repeatedThemes.length > 0) {
                     msg(src, "You already have alerts for the themes: " + readable(repeatedThemes, "and") + ". ");
@@ -4533,7 +4533,7 @@ function Mafia(mafiachan) {
                 }
                 if (themesRemoved.length > 0) {
                     msg(src, "Removed alert for the themes: " + readable(themesRemoved, "and") + ". ");
-                    saveKey("mafiathemes", src, user.mafiathemes.join("*"));
+                    script.saveKey("mafiathemes", src, user.mafiathemes.join("*"));
                 }
                 if (themesNotRemoved.length > 0) {
                     msg(src, "Couldn't remove alert for the themes: " + readable(themesNotRemoved, "and") + ". ");

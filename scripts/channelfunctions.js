@@ -407,7 +407,7 @@ POChannel.prototype.isBanned = function(id)
                 delete this.banned[x];
                 continue;
             }
-            if (cmp(x, name)) {
+            if (script.cmp(x, name)) {
                 return true;
             }
             if (sys.dbIp(x) == ip) {
@@ -437,7 +437,7 @@ POChannel.prototype.isMuted = function(id)
                 channelbot.sendAll(x+"'s channel mute expired.", this.id);
                 continue;
             }
-            if (cmp(x, name)) {
+            if (script.cmp(x, name)) {
                 return true;
             }
             if (sys.dbIp(x) == ip) {
@@ -453,7 +453,7 @@ POChannel.prototype.isPunished = function(name)
     var banlist = this.banned;
     for (var b in banlist) {
         if (banlist.hasOwnProperty(b)) {
-            if (cmp(b, name)) {
+            if (script.cmp(b, name)) {
                 return "banned";
             }
             if (sys.dbIp(b) == sys.dbIp(name)) {
@@ -464,7 +464,7 @@ POChannel.prototype.isPunished = function(name)
     var mutelist = this.muted;
     for (var m in mutelist) {
         if (mutelist.hasOwnProperty(m)) {
-            if (cmp(m, name)) {
+            if (script.cmp(m, name)) {
                 return "muted";
             }
             if (sys.dbIp(m) == sys.dbIp(name)) {

@@ -266,17 +266,17 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         } else {
             battlebot.sendMessage(src, "Currently: " + (SESSION.users(src).sametier ? "enforcing same tier" : "allow different tiers") + ". Use /sametier on/off to change it!", channel);
         }
-        saveKey("forceSameTier", src, SESSION.users(src).sametier * 1);
+        script.saveKey("forceSameTier", src, SESSION.users(src).sametier * 1);
         return;
     }
     if (command == "idle") {
         if (commandData == "on") {
             battlebot.sendMessage(src, "You are now idling.", channel);
-            saveKey("autoIdle", src, 1);
+            script.saveKey("autoIdle", src, 1);
             sys.changeAway(src, true);
         } else if (commandData == "off") {
             battlebot.sendMessage(src, "You are back and ready for battles!", channel);
-            saveKey("autoIdle", src, 0);
+            script.saveKey("autoIdle", src, 0);
             sys.changeAway(src, false);
         } else {
             battlebot.sendMessage(src, "You are currently " + (sys.away(src) ? "idling" : "here and ready to battle") + ". Use /idle on/off to change it.", channel);
@@ -449,15 +449,15 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     // Tour alerts
     if(command == "touralerts") {
         if(commandData == "on"){
-            SESSION.users(src).tiers = getKey("touralerts", src).split("*");
+            SESSION.users(src).tiers = script.getKey("touralerts", src).split("*");
             normalbot.sendMessage(src, "You have turned tour alerts on!", channel);
-            saveKey("touralertson", src, "true");
+            script.saveKey("touralertson", src, "true");
             return;
         }
         if(commandData == "off") {
             delete SESSION.users(src).tiers;
             normalbot.sendMessage(src, "You have turned tour alerts off!", channel);
-            saveKey("touralertson", src, "false");
+            script.saveKey("touralertson", src, "false");
             return;
         }
         if(typeof(SESSION.users(src).tiers) == "undefined" || SESSION.users(src).tiers.length === 0){
@@ -488,7 +488,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             SESSION.users(src).tiers = SESSION.users(src).tiers.split("*");
         }
         SESSION.users(src).tiers.push(tier);
-        saveKey("touralerts", src, SESSION.users(src).tiers.join("*"));
+        script.saveKey("touralerts", src, SESSION.users(src).tiers.join("*"));
         normalbot.sendMessage(src, "Added a tour alert for the tier: " + tier + "!", channel);
         return;
     }
@@ -506,7 +506,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         while ((idx = SESSION.users(src).tiers.indexOf(tier)) != -1) {
             SESSION.users(src).tiers.splice(idx, 1);
         }
-        saveKey("touralerts", src, SESSION.users(src).tiers.join("*"));
+        script.saveKey("touralerts", src, SESSION.users(src).tiers.join("*"));
         normalbot.sendMessage(src, "Removed a tour alert for the tier: " + tier + "!", channel);
         return;
     }
