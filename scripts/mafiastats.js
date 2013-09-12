@@ -6,7 +6,7 @@
     Add table with wins/players for specific themes
 */
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global updateModule, sys, SESSION, module*/
+/*global updateModule, sys, SESSION, module, require*/
 var mafiaDataDir = "scriptData/mafiastats/";
 var saveDir = "usage_stats/formatted/mafiathemes/";
 
@@ -196,6 +196,11 @@ function mafiaStats() {
         for (var x = 0; x < totalTeam.length; x++) {
             output.push(++count + ": <b>" + totalTeam[x][0] + "</b>. Times Won: " + totalTeam[x][1] + ". Average Players per win: " + totalTeam[x][2]);
         }
+        output.push("");
+        var table = this.createTable(theme);
+        if (table) {
+            output.push(table);
+        }
         sys.writeToFile(saveDir + theme.replace(/\ /g, "_") + "_stats.html", html.page.format(theme, output.join("<br>")));
     };
     this.compileHourData = function () {
@@ -259,6 +264,37 @@ function mafiaStats() {
         for (var x = 0; x < totalTeam.length; x++) {
             sys.sendMessage(src, ++count + ": " + totalTeam[x][0] + ". Times Won: " + totalTeam[x][1] + ". Average Players per win: " + totalTeam[x][2], channel);
         }
+    };
+    this.createTable = function (theme) {
+        var themeData = require("mafia.js").themeManager.themes[theme.toLowerCase()];
+        if (!themeData) {
+            return null; //not a theme on server
+        }
+        var start = theme.minplayers === undefined ? 5 : themeData.minplayers;
+        var output = ["<table>"];
+        output.push("<tr><th/>");
+        var end = themeData["roles" + themeData.roleLists].length;
+        for (var x = +start; x < +end + 1; x++) {
+            output.push("<th><b>"+x+"</b></th>");
+        }
+        output.push("</tr>");
+        var keys = Object.keys(this.data[theme]);
+        for (var x = 0; x < keys.length; x++) {
+            if (keys[x] !== "gamesPlayed") {
+                output.push("<tr><th><b>"+keys[x]+"</b></th>");
+                for (var y = +start; y < +end + 1; y++) {
+                    if (this.data[theme][keys[x]][y] !== undefined) {
+                        var players = y * this.data[theme][keys[x]][y];
+                        output.push("<th>"+players+"</th>");
+                    } else {
+                        output.push("<th>"+0+"</th>");
+                    }
+                }
+                output.push("</tr>");
+            }
+        }
+        output.push("</table>");
+        return output.join("");
     };
 }
 module.exports = new mafiaStats();
