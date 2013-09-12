@@ -2252,6 +2252,7 @@ function Mafia(mafiachan) {
                             var finalPoisonCount = Action.count || 2;
                             var finalCurseCount = Action.curseCount || 2;
                             command = commandList[c];
+                            target = targets[t];
                             if (["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "convert", "copy", "curse", "detox", "dispel", "shield"].indexOf(command) == -1) {
                                 continue;
                             }
