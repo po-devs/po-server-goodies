@@ -2253,7 +2253,7 @@ function Mafia(mafiachan) {
                             var finalCurseCount = Action.curseCount || 2;
                             command = commandList[c];
                             target = targets[t];
-                            if (["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "convert", "copy", "curse", "detox", "dispel", "shield"].indexOf(command) == -1) {
+                            if (["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "convert", "copy", "curse", "detox", "dispel", "shield", "dummy", "dummy2", "dummy3"].indexOf(command) == -1) {
                                 continue;
                             }
                             if (!mafia.isInGame(target)) {
@@ -2263,7 +2263,7 @@ function Mafia(mafiachan) {
                                 target = mafia.players[target];
 
                                 // Action blocked by Protect or Safeguard
-                                if (Action.pierce !== true && ((target.guarded && command == "kill") || (target.safeguarded && ["distract", "inspect", "stalk", "poison", "convert", "copy", "curse", "detox", "dispel"].indexOf(command) !== -1))) {
+                                if (Action.pierce !== true && ((target.guarded && command == "kill") || (target.safeguarded && ["distract", "inspect", "stalk", "poison", "convert", "copy", "curse", "detox", "dispel", "dummy", "dummy2", "dummy3"].indexOf(command) !== -1))) {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was " + (command == "kill" ? "protected" : "guarded") + "!");
                                     // Action can be countered even if target is protected/guarded
                                     if (command in target.role.actions) {
@@ -2308,7 +2308,7 @@ function Mafia(mafiachan) {
                                         }
                                         continue;
                                     }
-                                    else if (targetMode.mode == "ChangeTarget") {
+                                    if (targetMode.mode == "ChangeTarget") {
                                         if (targetMode.targetmsg) {
                                             mafia.sendPlayer(player.name, "±Game: " + targetMode.targetmsg);
                                         } else if (targetMode.hookermsg) {
@@ -2321,25 +2321,25 @@ function Mafia(mafiachan) {
                                         stalkTargets[target.name] = {};
                                         continue outer;
                                     }
-                                    else if (targetMode.mode == "killattacker" || targetMode.mode == "killattackerevenifprotected") {
+                                    if (targetMode.mode == "killattacker" || targetMode.mode == "killattackerevenifprotected") {
                                         revenge = true;
                                         if (targetMode.msg)
                                             revengetext = targetMode.msg;
                                     }
-                                    else if (targetMode.mode == "poisonattacker" || targetMode.mode == "poisonattackerevenifprotected") {
+                                    if (targetMode.mode == "poisonattacker" || targetMode.mode == "poisonattackerevenifprotected") {
                                         poisonrevenge = targetMode.count || 2;
                                         poisonDeadMessage = targetMode.poisonDeadMessage;
                                         if (targetMode.msg)
                                             poisonrevengetext = targetMode.msg;
                                     }
-                                    else if (targetMode.mode == "identify") {
+                                    if (targetMode.mode == "identify") {
                                         if (!targetMode.msg) {
                                             mafia.sendPlayer(target.name, "±Game: You identified " + player.name + " as the " + mafia.theme.trrole(player.role.role) + " that tried to " + o.action + " you!");
                                         } else {
                                             mafia.sendPlayer(target.name, "±Game: " + targetMode.msg.replace(/~Target~/g, player.name).replace(/~Role~/g, mafia.theme.trrole(player.role.role)).replace(/~Action~/g, o.action));
                                         }
                                     }
-                                    else if (targetMode.mode == "die") {
+                                    if (targetMode.mode == "die") {
                                         if (!targetMode.msg) {
                                             mafia.sendPlayer(target.name, "±Game: " + player.name + " tried to " + o.action + " you, but you got scared and died!");
                                         } else {
@@ -2354,7 +2354,7 @@ function Mafia(mafiachan) {
                                         nightkill = true;
                                         continue;
                                     }
-                                    else if (typeof targetMode.mode == "object") {
+                                    if (typeof targetMode.mode == "object") {
                                         if ("evadeChance" in targetMode.mode && targetMode.mode.evadeChance > evadeChance) {
                                             if (targetMode.silent !== true) {
                                                 if (targetMode.msg) {
@@ -2400,7 +2400,8 @@ function Mafia(mafiachan) {
                                                 mafia.sendPlayer(target.name, "±Game: " + targetMode.identifymsg.replace(/~Target~/g, player.name).replace(/~Role~/g, mafia.theme.trrole(player.role.role)).replace(/~Action~/g, o.action));
                                             }
                                         }
-                                    } else if (targetMode.mode == "resistance") {
+                                    }
+                                    if (targetMode.mode == "resistance") {
                                         if (command == "poison") {
                                             if (typeof targetMode.rate == "number") {
                                                 finalPoisonCount = Math.round(finalPoisonCount * targetMode.rate);
@@ -2692,7 +2693,9 @@ function Mafia(mafiachan) {
                             } else if (command == "shield") {
                                 target.redirectTo = player.name;
                                 target.redirectActions = Action.shieldActions || "*";
-                            }
+                            } else if (command == "dummy" || command == "dummy2" || command == "dummy3") {
+                                //Dummy actions to trigger modes without replacing useful commands. Great for large themes that want more freedom.
+                            }                            
     
                             //Post-Action effects here
                             if (revenge) {
