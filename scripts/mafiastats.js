@@ -284,8 +284,7 @@ function mafiaStats() {
                 output.push("<tr><th><b>"+keys[x]+"</b></th>");
                 for (var y = +start; y < +end + 1; y++) {
                     if (this.data[theme][keys[x]][y] !== undefined) {
-                        var players = y * this.data[theme][keys[x]][y];
-                        output.push("<th>"+players+"</th>");
+                        output.push("<th>"+this.data[theme][keys[x]][y];+"</th>");
                     } else {
                         output.push("<th>"+0+"</th>");
                     }
