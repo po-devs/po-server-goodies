@@ -18,7 +18,7 @@ var saveDir = "usage_stats/formatted/mafiathemes/";
     Adding to these strings will change their look the next time the html page is generated (by default, at the top of the hour UTC)
 */
 var html = {
-    page: "<!doctype html><html lang='en'><head><meta charset='utf-8'><style type='text/css'>td,th{width:50px;height:30px;}td{text-align:center;}th{background:#85AAF5}</style><title>{0}</title></head>{1}</body></html>",
+    page: "<!doctype html><html lang='en'><head><meta charset='utf-8'><style type='text/css'>table{width:50px;height:30px;}td{text-align:center;}th{background:#85AAF5}</style><title>{0}</title></head>{1}</body></html>",
     title: "<b><font size=4>*** {0} ***</font></b>",
     date: "<i><font size=2>Last Updated: {0} </font></i>"
 };
