@@ -273,12 +273,12 @@ function mafiaStats() {
         }
         var start = theme.minplayers === undefined ? 5 : themeData.minplayers;
         var output = ["<table>"];
-        output.push("<tr><th/>");
+        output.push("<tr><th>Sides/Players</th>");
         var end = themeData["roles" + themeData.roleLists].length;
         for (var x = +start; x < +end + 1; x++) {
             output.push("<th><b>" + x + "</b></th>");
         }
-        output.push("<tr><th>Sides/Players</th>");
+        output.push("</tr>");
         var keys = Object.keys(this.data[theme]);
         for (var x = 0; x < keys.length; x++) {
             if (keys[x] !== "gamesPlayed") {
