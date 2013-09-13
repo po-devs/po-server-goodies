@@ -4684,7 +4684,7 @@ module.exports = {
             if (isTourOwner(src)) {
                 sys.sendMessage(src, "*** Tournaments Owner commands ***", channel);
                 for (var o in tourownercommands) {
-                    sys.sendMessage(src, tourownercommands[o],tourschan);
+                    sys.sendMessage(src, tourownercommands[o], channel);
                 }
             }
         }
