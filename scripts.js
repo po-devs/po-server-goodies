@@ -122,8 +122,6 @@ var channel, contributors, mutes, mbans, smutes, detained, hbans, mafiaSuperAdmi
 
 var pokeDir = "db/pokes/";
 var moveDir = "db/moves/5G/";
-var isMafiaAdmin = require('mafia.js').isMafiaAdmin;
-var isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
 sys.makeDir("scripts");
 /* we need to make sure the scripts exist */
 var commandfiles = ['commands.js', 'channelcommands.js','ownercommands.js', 'modcommands.js', 'usercommands.js', "admincommands.js"];
@@ -722,6 +720,8 @@ init : function() {
     script.cmp = function(a, b) {
         return a.toLowerCase() == b.toLowerCase();
     };
+    script.isMafiaAdmin = require('mafia.js').isMafiaAdmin;
+    script.isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
 
     battlesStopped = false;
 
