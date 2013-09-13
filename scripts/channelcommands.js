@@ -148,7 +148,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "inviteonly") {
         if (commandData === undefined) {
-            channelbot.sendChanMessage(src,poChannel.inviteonly === 0 ? "This channel is public!" : "This channel is invite only for users below auth level "+poChannel.inviteonly);
+            channelbot.sendMessage(src,poChannel.inviteonly === 0 ? "This channel is public!" : "This channel is invite only for users below auth level "+poChannel.inviteonly, channel);
             return;
         }
         var value = -1;
