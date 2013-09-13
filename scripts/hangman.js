@@ -1,5 +1,8 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global sys:true, sendChanHtmlAll:true, module:true, SESSION:true, hangmanchan, hangbot, require, script, hasAuthElements */
+
+var nonFlashing = require("utilities.js").non_flashing;
+
 module.exports = function () {
     var hangman = this;
     var hangchan;
@@ -540,7 +543,8 @@ module.exports = function () {
             "*** Hangman Admin Commands ***",
             "/hangmanban: To ban a user from hangman. Format /hangmanban name:reason:time",
             "/hangmanunban: To unban a user from hangman.",
-            "/hangmanbans: Searches the hangman banlist, show full list if no search term is entered."
+            "/hangmanbans: Searches the hangman banlist, show full list if no search term is entered.",
+            "/passha: To give your Hangman Admin powers to an alt of yours."
         ];
         var superAdminHelp = [
             "*** Hangman Super Admin Commands ***",
@@ -580,7 +584,7 @@ module.exports = function () {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel !== hangchan && ["hangmanban", "hangmanunban", "hangmanbans", "hangmanadmins", "hadmins", "has"].indexOf(command) === -1) {
+        if (channel !== hangchan && ["hangmanban", "hangmanunban", "hangmanbans", "hangmanadmins", "hadmins", "has", "passha", "hangmanadminoff", "hangmanadmin", "hangmansadmin", "hangmansuperadmin", "shangmanadmin", "shangmansuperadmin", "shangmanadminoff", ].indexOf(command) === -1) {
             return;
         }
         if (command === "help") {
@@ -618,6 +622,45 @@ module.exports = function () {
 
         if (hangman.authLevel(src) < 1 && !(command === "end" && sys.ip(src) === host)) {
             return false;
+        }
+        var id;
+        if (command == "passha") {
+            var oldname = sys.name(src).toLowerCase();
+            var newname = commandData.toLowerCase();
+            var sHA = false;
+            if (sys.dbIp(newname) === undefined) {
+                sys.sendMessage(src, "±Unown: This user doesn't exist!");
+                return true;
+            }
+            if (!sys.dbRegistered(newname)) {
+                sys.sendMessage(src, "±Unown: That account isn't registered so you can't give it authority!");
+                return true;
+            }
+            if (sys.id(newname) === undefined) {
+                sys.sendMessage(src, "±Unown: Your target is offline!");
+                return true;
+            }
+            if (sys.ip(sys.id(newname)) !== sys.ip(src)) {
+                sys.sendMessage(src, "±Unown: Both accounts must be on the same IP to switch!");
+                return true;
+            }
+            if (this.isHangmanAdmin(sys.id(newname)) || this.isHangmanSuperAdmin(sys.id(newname))) {
+                sys.sendMessage(src, "±Unown: Your target is already a Hangman Admin!");
+                return true;
+            }
+            if (this.isHangmanSuperAdmin(src)) {
+                script.hangmanSuperAdmins.remove(oldname);
+                script.hangmanSuperAdmins.add(newname, "");
+                sHA = true,
+            } else {
+                script.hangmanAdmins.remove(oldname);
+                script.hangmanAdmins.add(newname, "");
+            }
+            id = sys.id(commandData);
+            if (id !== undefined)
+                SESSION.users(id).hangmanAdmin = true;
+            sys.sendAll("±Unown: " + sys.name(src) + " passed their " + (sHA ? "Super Hangman Admin powers" : "Hangman auth") + " to " + commandData, sachannel);
+            return;
         }
 
         if (command === "end") {
@@ -793,9 +836,9 @@ module.exports = function () {
         script.hangmanAdmins.remove(commandData);
         script.hangmanAdmins.remove(commandData.toLowerCase());
         if (!silent) {
-            sys.sendAll("±Unown: " + sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Hangman Admin.", hangchan);
+            sys.sendAll("±Unown: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase() + " from Hangman Admin.", hangchan);
         }
-        sys.sendAll("±Unown: " + sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Hangman Admin.", sys.channelId('Victory Road'));
+        sys.sendAll("±Unown: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase() + " from Hangman Admin.", sys.channelId('Victory Road'));
         return;
     };
     this.demoteSuperAdmin = function (src, commandData, channel, silent) {
@@ -809,32 +852,26 @@ module.exports = function () {
         script.hangmanSuperAdmins.remove(commandData);
         script.hangmanSuperAdmins.remove(commandData.toLowerCase());
         if (!silent) {
-            sys.sendAll("±Unown: " + sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Super Hangman Admin.", hangchan);
+            sys.sendAll("±Unown: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase() + " from Super Hangman Admin.", hangchan);
         }
-        sys.sendAll("±Unown: " + sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Super Hangman Admin.", sys.channelId('Victory Road'));
+        sys.sendAll("±Unown: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase() + " from Super Hangman Admin.", sys.channelId('Victory Road'));
         return;
     };
     this.isHangmanAdmin = function (src) {
-        if (sys.auth(src) >= 1)
+        if (sys.auth(src) >= 1 || script.hangmanAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase()))
             return true;
-        if (script.hangmanAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
-            return true;
-        }
         return false;
     };
-    this.isSuperHangmanAdmin = function (src) {
-        if (sys.auth(src) >= 2)
+    this.isHangmanSuperAdmin = function (src) {
+        if (sys.auth(src) >= 3 || script.hangmanSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase()))
             return true;
-        if (script.hangmanSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
-            return true;
-        }
         return false;
     };
     this.authLevel = function (src) {
         if (sys.auth(src) > 2) {
             return 3;
         }
-        else if (this.isSuperHangmanAdmin(src)) {
+        else if (this.isHangmanSuperAdmin(src)) {
             return 2;
         }
         else if (this.isHangmanAdmin(src)) {

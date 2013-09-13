@@ -3216,25 +3216,13 @@ function Mafia(mafiachan) {
     };
     // Auth commands
     this.isMafiaAdmin = function (src) {
-        if (sys.auth(src) >= 1)
+        if (sys.auth(src) >= 1 || mafia.isMafiaSuperAdmin(src) || script.mafiaAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase()))
             return true;
-        
-        if (mafia.isMafiaSuperAdmin(src)) {
-            return true;
-        }
-        
-        if (script.mafiaAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
-            return true;
-        }
         return false;
     };
     this.isMafiaSuperAdmin = function (src) {
-        if (sys.auth(src) >= 3)
+        if (sys.auth(src) >= 3 || script.mafiaSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase()))
             return true;
-
-        if (script.mafiaSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
-            return true;
-        }
         return false;
     };
     
@@ -3382,7 +3370,7 @@ function Mafia(mafiachan) {
         } else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel != mafiachan && ["mafiaban","mafiaunban","mafiabans","detained","detainlist", "mafiaadmins", "madmins", "mas", "roles", "priority", "sides", "themeinfo", "readlog", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiarules", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "passma"].indexOf(command) === -1)
+        if (channel != mafiachan && ["mafiaban","mafiaunban","mafiabans","detained","detainlist", "mafiaadmins", "madmins", "mas", "roles", "priority", "sides", "themeinfo", "readlog", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiarules", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "smafiaadmin", "smafiasuperadmin", "smafiaadminoff", "passma"].indexOf(command) === -1)
             return;
         try {
             mafia.handleCommandOld(src, command, commandData, channel);
@@ -4783,26 +4771,25 @@ function Mafia(mafiachan) {
             var newname = commandData.toLowerCase();
             var sMA = false;
             if (sys.dbIp(newname) === undefined) {
-                sys.sendMessage(src,"This user doesn't exist!");
+                sys.sendMessage(src, "±Murkrow: This user doesn't exist!");
                 return true;
             }
             if (!sys.dbRegistered(newname)) {
-                sys.sendMessage(src,"That account isn't registered so you can't give it authority!");
+                sys.sendMessage(src, "±Murkrow: That account isn't registered so you can't give it authority!");
                 return true;
             }
             if (sys.id(newname) === undefined) {
-                sys.sendMessage(src,"The target is offline!");
+                sys.sendMessage(src, "±Murkrow: Your target is offline!");
                 return true;
             }
             if (sys.ip(sys.id(newname)) !== sys.ip(src)) {
-                sys.sendMessage(src,"Both accounts must be on the same IP to switch!");
+                sys.sendMessage(src, "±Murkrow: Both accounts must be on the same IP to switch!");
                 return true;
             }
             if (this.isMafiaAdmin(sys.id(newname)) || this.isMafiaSuperAdmin(sys.id(newname))) {
-                sys.sendMessage(src, "The target is already a Mafia Admin!");
+                sys.sendMessage(src, "±Murkrow: Your target is already a Mafia Admin!");
                 return true;
             }
-            
             if (this.isMafiaSuperAdmin(src)) {
                 script.mafiaSuperAdmins.remove(oldname);
                 script.mafiaSuperAdmins.add(newname, "");
@@ -4874,9 +4861,9 @@ function Mafia(mafiachan) {
                 SESSION.users(id).mafiaAdmin = true;
             }
             if (!silent) {
-                sys.sendAll("±Murkrow: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to " + (sMA ? "Super " : "") + "Mafia Admin.", mafiachan);
+                sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " promoted " + commandData.toCorrectCase() + " to " + (sMA ? "Super " : "") + "Mafia Admin.", mafiachan);
             }
-            sys.sendAll("±Murkrow: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
+            sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " promoted " + commandData.toCorrectCase() + " to " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
             return;
         }
         if (command == "mafiaadminoff" || command == "smafiaadminoff") {
@@ -4893,9 +4880,9 @@ function Mafia(mafiachan) {
                 SESSION.users(id).mafiaAdmin = false;
             }
             if (!silent) {
-                sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData.toCorrectCase()  + " from " + (sMA ? "Super " : "") + "Mafia Admin.", mafiachan);
+                sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase()  + " from " + (sMA ? "Super " : "") + "Mafia Admin.", mafiachan);
             }
-            sys.sendAll("±Murkrow: " + sys.name(src) + " demoted " + commandData.toCorrectCase()  + " from " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
+            sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase()  + " from " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
             return;
         }
         if (command === "remove"){
