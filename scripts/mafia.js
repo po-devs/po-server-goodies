@@ -4354,7 +4354,7 @@ function Mafia(mafiachan) {
         
         if (command === "details") {
             var themeName = "default";
-            if (mafia.state != "blank") {
+            if (mafia.theme && mafia.state != "blank") {
                 themeName = mafia.theme.name.toLowerCase();
             }
             if (commandData != noPlayer) {
@@ -4589,7 +4589,7 @@ function Mafia(mafiachan) {
             var themeName;
             if (commandData === noPlayer) {
                 themeName = "default";
-                if (mafia.state != "blank") {
+                if (mafia.theme && mafia.state != "blank") {
                     themeName = mafia.theme.name.toLowerCase();
                 }
             } else {
