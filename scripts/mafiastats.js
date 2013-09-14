@@ -271,7 +271,7 @@ function mafiaStats() {
         if (!themeData) {
             return null; //not a theme on server
         }
-        var start = theme.minplayers === undefined ? 5 : themeData.minplayers;
+        var start = themeData.minplayers === undefined ? 5 : themeData.minplayers;
         var output = ["<table>"];
         output.push("<tr><th>Sides/Players</th>");
         var end = themeData["roles" + themeData.roleLists].length;
