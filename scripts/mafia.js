@@ -2707,6 +2707,15 @@ function Mafia(mafiachan) {
                                 target.redirectActions = Action.shieldActions || "*";
                             } else if (command == "dummy" || command == "dummy2" || command == "dummy3") {
                                 //Dummy actions to trigger modes without replacing useful commands. Great for large themes that want more freedom.
+                                if (Action[command + "usermsg"]) {
+                                    mafia.sendPlayer(player.name, needsBot(Action[command + "usermsg"]).replace(/~Self~/gi, player.name).replace(/~Target~/gi, target.name).replace(/~Role~/gi, player.role.translation).replace(/~TargetRole~/gi, target.role.translation).replace(/~Side~/gi, mafia.theme.trside(player.role.side)).replace(/~TargetSide~/gi, mafia.theme.trside(target.role.side)));
+                                }
+                                if (Action[command + "targetmsg"]) {
+                                    mafia.sendPlayer(target.name, needsBot(Action[command + "targetmsg"]).replace(/~Self~/gi, player.name).replace(/~Target~/gi, target.name).replace(/~Role~/gi, player.role.translation).replace(/~TargetRole~/gi, target.role.translation).replace(/~Side~/gi, mafia.theme.trside(player.role.side)).replace(/~TargetSide~/gi, mafia.theme.trside(target.role.side)));
+                                }
+                                if (Action[command + "broadcastmsg"]) {
+                                    sendChanAll(needsBot(Action[command + "broadcastmsg"]).replace(/~Self~/gi, player.name).replace(/~Target~/gi, target.name).replace(/~Role~/gi, player.role.translation).replace(/~TargetRole~/gi, target.role.translation).replace(/~Side~/gi, mafia.theme.trside(player.role.side)).replace(/~TargetSide~/gi, mafia.theme.trside(target.role.side)), mafiachan);
+                                }
                             }
     
                             //Post-Action effects here
