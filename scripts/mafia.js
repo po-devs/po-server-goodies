@@ -411,7 +411,7 @@ function Mafia(mafiachan) {
         sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
     };
 
-    ThemeManager.prototype.loadWebTheme = function (url, announce, update, updatename, src) {
+    ThemeManager.prototype.loadWebTheme = function (url, announce, update, updatename, src, isNew) {
         if (typeof sys != 'object') return;
         var manager = this;
         url = mafia.checkLink(url);
@@ -431,7 +431,7 @@ function Mafia(mafiachan) {
                 manager.themes[lower] = theme;
                 manager.save(theme.name, url, resp, update);
                 if (announce) {
-                    msgAll(sys.name(src) + " loaded theme " + theme.name + ".");
+                    msgAll(sys.name(src) + (isNew ? " added " : " updated ") + "theme " + theme.name + ".");
                 }
             } catch (err) {
                 msgAll("Couldn't download theme from " + url);
@@ -441,7 +441,7 @@ function Mafia(mafiachan) {
         });
     };
 
-    ThemeManager.prototype.remove = function (src, name) {
+    ThemeManager.prototype.remove = function (src, name, silent) {
         name = name.toLowerCase();
         if (name in this.themes) {
             delete this.themes[name];
@@ -452,7 +452,11 @@ function Mafia(mafiachan) {
                 }
             }
             sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
-            mafiabot.sendAll(nonFlashing(sys.name(src)) + " removed the theme " + name + ".", mafiachan);
+            if (silent) {
+                sys.sendMessage(src, "±Murkrow: You removed the theme " + name + ".", mafiachan)
+            } else {
+                mafiabot.sendAll(nonFlashing(sys.name(src)) + " removed the theme " + name + ".", mafiachan);
+            }
             mafiabot.sendAll(nonFlashing(sys.name(src)) + " removed the theme " + name + ".", sachannel);
         }
     };
@@ -2325,25 +2329,25 @@ function Mafia(mafiachan) {
                                         stalkTargets[target.name] = {};
                                         continue outer;
                                     }
-                                    if (targetMode.mode == "killattacker" || targetMode.mode == "killattackerevenifprotected") {
+                                    else if (targetMode.mode == "killattacker" || targetMode.mode == "killattackerevenifprotected") {
                                         revenge = true;
                                         if (targetMode.msg)
                                             revengetext = targetMode.msg;
                                     }
-                                    if (targetMode.mode == "poisonattacker" || targetMode.mode == "poisonattackerevenifprotected") {
+                                    else if (targetMode.mode == "poisonattacker" || targetMode.mode == "poisonattackerevenifprotected") {
                                         poisonrevenge = targetMode.count || 2;
                                         poisonDeadMessage = targetMode.poisonDeadMessage;
                                         if (targetMode.msg)
                                             poisonrevengetext = targetMode.msg;
                                     }
-                                    if (targetMode.mode == "identify") {
+                                    else if (targetMode.mode == "identify") {
                                         if (!targetMode.msg) {
                                             mafia.sendPlayer(target.name, "±Game: You identified " + player.name + " as the " + mafia.theme.trrole(player.role.role) + " that tried to " + o.action + " you!");
                                         } else {
                                             mafia.sendPlayer(target.name, "±Game: " + targetMode.msg.replace(/~Target~/g, player.name).replace(/~Role~/g, mafia.theme.trrole(player.role.role)).replace(/~Action~/g, o.action));
                                         }
                                     }
-                                    if (targetMode.mode == "die") {
+                                    else if (targetMode.mode == "die") {
                                         if (!targetMode.msg) {
                                             mafia.sendPlayer(target.name, "±Game: " + player.name + " tried to " + o.action + " you, but you got scared and died!");
                                         } else {
@@ -2358,7 +2362,7 @@ function Mafia(mafiachan) {
                                         nightkill = true;
                                         continue;
                                     }
-                                    if (typeof targetMode.mode == "object") {
+                                    else if (typeof targetMode.mode == "object") {
                                         if ("evadeChance" in targetMode.mode && targetMode.mode.evadeChance > evadeChance) {
                                             if (targetMode.silent !== true) {
                                                 if (targetMode.msg) {
@@ -2405,7 +2409,7 @@ function Mafia(mafiachan) {
                                             }
                                         }
                                     }
-                                    if (targetMode.mode == "resistance") {
+                                    else if (targetMode.mode == "resistance") {
                                         if (command == "poison") {
                                             if (typeof targetMode.rate == "number") {
                                                 finalPoisonCount = Math.round(finalPoisonCount * targetMode.rate);
@@ -3387,7 +3391,7 @@ function Mafia(mafiachan) {
         } else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel != mafiachan && ["mafiaban","mafiaunban","mafiabans","detained","detainlist", "mafiaadmins", "madmins", "mas", "roles", "priority", "sides", "themeinfo", "readlog", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiarules", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "smafiaadmin", "smafiasuperadmin", "smafiaadminoff", "passma"].indexOf(command) === -1)
+        if (channel != mafiachan && ["mafiaban", "mafiaunban", "mafiabans", "mafiaadmins", "madmins", "mas", "roles", "priority", "sides", "themeinfo", "readlog", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiarules", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "smafiaadmin", "smafiasuperadmin", "smafiaadminoff", "passma"].indexOf(command) === -1)
             return;
         try {
             mafia.handleCommandOld(src, command, commandData, channel);
@@ -4649,7 +4653,7 @@ function Mafia(mafiachan) {
             }
             msg(src, "Download url: " + dlurl);
             if (dlurl) {
-                mafia.themeManager.loadWebTheme(dlurl, true, true, authorMatch ? theme.name.toLowerCase() : null, src);
+                mafia.themeManager.loadWebTheme(dlurl, true, true, authorMatch ? theme.name.toLowerCase() : null, src, false);
             }
             return;
         }
@@ -4751,7 +4755,7 @@ function Mafia(mafiachan) {
             return;
         }
         if (command === "add") {
-            mafia.themeManager.loadWebTheme(commandData, true, false, null, src);
+            mafia.themeManager.loadWebTheme(commandData, true, false, null, src, true);
             return;
         }
         if (command === "disable") {
@@ -4837,8 +4841,8 @@ function Mafia(mafiachan) {
                 }
             }
             if (npThemes.length) {
-                sys.sendAll("±Murkrow: Non-peak themes (" + npThemes.join(", ") + ") have been " + (enable ? "enabled" : "disabled"), mafiachan);
-                sys.sendAll("±Murkrow: Non-peak themes (" + npThemes.join(", ") + ") have been " + (enable ? "enabled" : "disabled"), sachannel);
+                sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + (enable ? " enabled " : " disabled ") + "non-peak themes (" + npThemes.join(", ") + ").", mafiachan);
+                sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + (enable ? " enabled " : " disabled ") + "non-peak themes (" + npThemes.join(", ") + ").", sachannel);
             } else {
                 sys.sendMessage(src, "±Murkrow: No non-peak themes found", mafiachan);
             }
@@ -4902,8 +4906,9 @@ function Mafia(mafiachan) {
             sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase()  + " from " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
             return;
         }
-        if (command === "remove"){
-            mafia.themeManager.remove(src, commandData);
+        if (command === "remove" || command === "sremove"){
+            var silent = (command === "sremove");
+            mafia.themeManager.remove(src, commandData, silent);
             return;
         }
         if (command === "updateafter") {
