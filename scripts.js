@@ -1364,7 +1364,7 @@ nameIsInappropriate: function(src)
     }
 
     // COMBINING OVERLINE
-    if (/\u0305/.test(name)) {
+    if (/\u0305|\u0336/.test(name)) {
         reply('You are using COMBINING OVERLINE character in your name.');
         return true;
     }
