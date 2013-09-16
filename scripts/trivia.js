@@ -1809,7 +1809,7 @@ addAdminCommand("autostart", function (src, commandData, channel) {
         return;
     }
     if (commandData.toLowerCase() === "on" || commandData.toLowerCase() === "off") {
-        if (Trivia.autostart === (commandData.toLowerCase === "on")) {
+        if (Trivia.autostart === (commandData.toLowerCase() === "on")) {
             triviabot.sendMessage(src, "Autostart is already " + (Trivia.autostart ? "on" : "off") + "!", channel);
             return;
         }
