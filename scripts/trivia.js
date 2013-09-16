@@ -549,7 +549,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         var toStart, pointsForGame;
         if (this.autostart === true) {
             var startRange = trivData.autostartRange;
-            pointsForGame = sys.rand(startRange.min, startRange.max + 1), toStart = sys.rand(30, 44);
+            pointsForGame = sys.rand(startRange.min, parseInt(startRange.max, 10) + 1), toStart = sys.rand(30, 44);
             Trivia.sendAll("A new trivia game will be started in " + toStart + " seconds!", triviachan);
             sys.delayedCall(function () {
                 Trivia.startGame(pointsForGame.toString(), "");
