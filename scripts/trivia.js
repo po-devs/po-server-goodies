@@ -10,7 +10,7 @@
         - tsadmins.txt
 */
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global updateModule, script, sys, script.saveKey, SESSION, sendChanAll, sendChanHtmlAll, require, Config, module*/
+/*global updateModule, script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, Config, module*/
 var Bot = require("bot.js").Bot;
 var utilities = require("utilities.js");
 

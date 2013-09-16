@@ -6,7 +6,7 @@
 */
 
 // Global variables inherited from scripts.js
-/*global script.cmp, mafiabot, getTimeString, updateModule, script, sys, script.saveKey, SESSION, sendChanAll, require, Config, module, detained, hasAuthElements, sachannel*/
+/*global mafiabot, getTimeString, updateModule, script, sys, SESSION, sendChanAll, require, Config, module, detained, sachannel*/
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 var MAFIA_CHANNEL = "Mafia";
 
@@ -453,7 +453,7 @@ function Mafia(mafiachan) {
             }
             sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
             if (silent) {
-                sys.sendMessage(src, "±Murkrow: You removed the theme " + name + ".", mafiachan)
+                sys.sendMessage(src, "±Murkrow: You removed the theme " + name + ".", mafiachan);
             } else {
                 mafiabot.sendAll(nonFlashing(sys.name(src)) + " removed the theme " + name + ".", mafiachan);
             }
@@ -2268,7 +2268,7 @@ function Mafia(mafiachan) {
 
                                 // Action blocked by Protect or Safeguard
                                 var piercing = false;
-                                if (("pierceChance" in Action && Action.pierceChance > Math.random()) || Action.pierce == true) {
+                                if (("pierceChance" in Action && Action.pierceChance > Math.random()) || Action.pierce === true) {
                                     piercing = true;
                                 }
                                 if (piercing !== true && ((target.guarded && command == "kill") || (target.safeguarded && ["distract", "inspect", "stalk", "poison", "convert", "copy", "curse", "detox", "dispel", "dummy", "dummy2", "dummy3"].indexOf(command) !== -1))) {
