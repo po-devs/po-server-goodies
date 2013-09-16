@@ -38,12 +38,18 @@ catch (e) {
     trivData = {};
 }
 
-var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard", "triviaWarnings"];
+var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard", "triviaWarnings", "autostartRange"];
 for (var i = 0; i < neededData.length; ++i) {
     var data = neededData[i];
     if (trivData[data] === undefined) {
         if (data === 'leaderBoard' || data === 'triviaWarnings') {
             trivData[data] = [];
+        }
+        if (data === "autostartRange") {
+            trivData[data] = {
+                min: 9,
+                max: 24
+            };
         }
         else {
             trivData[data] = {};
@@ -542,7 +548,8 @@ TriviaGame.prototype.finalizeAnswers = function () {
         runUpdate();
         var toStart, pointsForGame;
         if (this.autostart === true) {
-            pointsForGame = sys.rand(9, 25), toStart = sys.rand(30, 44);
+            var startRange = trivData.autostartRange;
+            pointsForGame = sys.rand(startRange.min, startRange.max + 1), toStart = sys.rand(30, 44);
             Trivia.sendAll("A new trivia game will be started in " + toStart + " seconds!", triviachan);
             sys.delayedCall(function () {
                 Trivia.startGame(pointsForGame.toString(), "");
@@ -1797,9 +1804,33 @@ addAdminCommand("triviamutes", function (src, commandData, channel) {
 }, "View trivia mutes.");
 
 addAdminCommand("autostart", function (src, commandData, channel) {
-    Trivia.autostart = !Trivia.autostart;
-    triviabot.sendAll("" + sys.name(src) + " turned auto start " + (Trivia.autostart === true ? "on" : "off") + ".", revchan);
-}, "Auto start games.");
+    if (commandData === "") {
+        triviabot.sendMessage(src, "Autostart is currently " + (Trivia.autostart ? "on" : "off") + " with range " + trivData.autostartRange.min + "-" + trivData.autostartRange.max + ".", channel);
+        return;
+    }
+    if (commandData.toLowerCase() === "on" || commandData.toLowerCase() === "off") {
+        if (Trivia.autostart === (commandData.toLowerCase === "on")) {
+            triviabot.sendMessage(src, "Autostart is already " + (Trivia.autostart ? "on" : "off") + "!", channel);
+            return;
+        }
+        Trivia.autostart = !Trivia.autostart;
+        triviabot.sendAll(nonFlashing(sys.name(src)) + " turned autostart " + (Trivia.autostart ? "on" : "off") + ".", revchan);
+        return;
+    }
+    var data = commandData.split("-");
+    if (data.length != 2) {
+        triviabot.sendMessage(src, "That's not how this command works. To change autostart range, use /autostart min-max. To turn autostart on or off, use /autostart on/off.", channel);
+        return;
+    }
+    if (isNaN(data[0]) || isNaN(data[1])) {
+        triviabot.sendMessage(src, "Both the minimum and maximum for the point range have to be numbers!", channel);
+        return;
+    }
+    trivData.autostartRange.min = data[0];
+    trivData.autostartRange.max = data[1];
+    saveData();
+    triviabot.sendAll(nonFlashing(sys.name(src)) + " changed the autostart range to " + data[0] + "-" + data[1] + ".", revchan);
+}, "Checks whether autostart is turned on or off, the range of it, and lets you change both. Use /autostart on/off and /autostart min-max.");
 
 
 module.exports = {
