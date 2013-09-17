@@ -1247,7 +1247,12 @@ function Mafia(mafiachan) {
             else {
                 this.numjoins[sys.ip(src)] = 1;
             }
-            sendChanAll("±Game: " + name + " joined the game!", mafiachan);
+            if (SESSION.users(src).smute.active) {
+                sys.sendMessageMessage(src, "±Game: " + name + " joined the game!", mafiachan);
+                mafia.shoveUser("Murkrow", sys.name(src), true);
+            } else {
+                sendChanAll("±Game: " + name + " joined the game!", mafiachan);
+            }
         }
     };
     this.endGame = function (src) {
@@ -3167,6 +3172,13 @@ function Mafia(mafiachan) {
                 this.ips = ips[winner.theme];
                 mafia.ticks = 40;
                 sendChanAll("±Game: " + this.signups.join(", ") + " joined the game!", mafiachan);
+                for (var x = 0; x < this.signups.length; x++) {
+                    if (SESSION.users(sys.id(this.signups[x]))) {
+                        if (SESSION.users(sys.id(this.signups[x])).smute.active) {
+                            mafia.shoveUser("Murkrow", this.signups[x], true);
+                        }
+                    }
+                }
             } else {
                 sendChanAll("±Game: Really? No votes, so no game.", mafiachan);
             }
@@ -3290,13 +3302,15 @@ function Mafia(mafiachan) {
         msg(src, "No such target.");
     };
     
-    this.shoveUser = function (src, name) {
+    this.shoveUser = function (src, name, silent) {
         var shover = typeof src == "string" ? src : sys.name(src);
         if (this.state == "entry") {
             for (var i = 0; i < this.signups.length; ++i) {
                 if (name.toLowerCase() == this.signups[i].toLowerCase()) {
-                    msgAll(" " + this.signups[i] + " was taken out from the game by " + nonFlashing(shover) + "!");
-                    mafiabot.sendAll(" " + this.signups[i] + " was taken out from the game by " + nonFlashing(shover) + "!", sachannel);
+                    if (!silent) {
+                        msgAll(" " + this.signups[i] + " was taken out from the game by " + nonFlashing(shover) + "!");
+                        mafiabot.sendAll(" " + this.signups[i] + " was taken out from the game by " + nonFlashing(shover) + "!", sachannel);
+                    }
                     this.signups.splice(i, 1);
                     return;
                 }
