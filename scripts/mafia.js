@@ -3382,7 +3382,8 @@ function Mafia(mafiachan) {
             "/mafiaadmin: To promote a user to Mafia Admin. Use /smafiaadmin for a silent promotion.",
             "/mafiasuperadmin: To promote a user to Super Mafia Admin. Use /smafiasuperadmin for a silent promotion.",
             "/mafiaadminoff: To strip a user of all Mafia authority. Use /smafiaadminoff for a silent demotion.",
-            "/updateafter: To update mafia after current game!"]
+            "/updateafter: To update mafia after current game!",
+            "/updatestats: To update the mafia stats webpage (Use after mafiastat script changes)"]
     };
 
     this.handleCommand = function (src, message, channel) {
@@ -4952,6 +4953,11 @@ function Mafia(mafiachan) {
             if (mafia.state == "blank") {
                 runUpdate();
             }
+            return;
+        }
+        if (command === "updatestats") {
+            mafia.mafiaStats.compileData();
+            mafiabot.sendMessage(src, "Mafia stats page was updated!");
             return;
         }
         throw ("no valid command");
