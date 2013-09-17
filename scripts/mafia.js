@@ -1262,7 +1262,7 @@ function Mafia(mafiachan) {
         if (sys.id('PolkaBot') !== undefined) {
             sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
         }
-        mafiabot.sendAll("GAME ENDED", mafiachan);
+        //mafiabot.sendAll("GAME ENDED", mafiachan);
         mafia.mafiaStats.result("dead");
         mafia.clearVariables();
         runUpdate();
@@ -1817,7 +1817,7 @@ function Mafia(mafiachan) {
             if (sys.id('PolkaBot') !== undefined) {
                 sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
             }
-            mafiabot.sendAll("GAME ENDED", mafiachan);
+            //mafiabot.sendAll("GAME ENDED", mafiachan);
             mafia.clearVariables();
             runUpdate();
             return true;
@@ -1870,7 +1870,7 @@ function Mafia(mafiachan) {
             if (sys.id('PolkaBot') !== undefined) {
                 sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
             }
-            mafiabot.sendAll("GAME ENDED", mafiachan);
+            //mafiabot.sendAll("GAME ENDED", mafiachan);
             sys.playersOfChannel(mafiachan).forEach(function(id) {
                 var detain = SESSION.users(id).detained;
                 if (detain) {
