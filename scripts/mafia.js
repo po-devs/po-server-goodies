@@ -2862,7 +2862,7 @@ function Mafia(mafiachan) {
                 }
                 if (p in mafia.dayRecharges) {
                     for (var r in mafia.dayRecharges[p]) {
-                        mafia.setRechargeFor(player, "standby", r, player.role.actions.standby[r].recharge);
+                        mafia.setRechargeFor(player, "standby", r, mafia.dayRecharges[p][r]);
                     }
                 }
             }
@@ -3775,7 +3775,7 @@ function Mafia(mafiachan) {
                                 if (!(player.name in this.dayRecharges)) {
                                     this.dayRecharges[player.name] = {};
                                 }
-                                this.dayRecharges[player.name][commandName] = 1;
+                                this.dayRecharges[player.name][commandName] = commandObject.recharge;
                             }
                             if (charges !== undefined) {
                                 mafia.removeCharge(player, "standby", commandName);
@@ -3890,7 +3890,7 @@ function Mafia(mafiachan) {
                                 if (!(player.name in this.dayRecharges)) {
                                     this.dayRecharges[player.name] = {};
                                 }
-                                this.dayRecharges[player.name][commandName] = 1;
+                                this.dayRecharges[player.name][commandName] = commandObject.recharge;
                             }
                             if (charges !== undefined) {
                                 mafia.removeCharge(player, "standby", commandName);
@@ -3979,7 +3979,7 @@ function Mafia(mafiachan) {
                     if (!(player.name in this.dayRecharges)) {
                         this.dayRecharges[player.name] = {};
                     }
-                    this.dayRecharges[player.name][commandName] = 1;
+                    this.dayRecharges[player.name][commandName] = commandObject.recharge;
                 }
                 if (charges !== undefined) {
                     mafia.removeCharge(player, "standby", commandName);
