@@ -18,7 +18,7 @@ var saveDir = "usage_stats/formatted/mafiathemes/";
     Adding to these strings will change their look the next time the html page is generated (by default, at the top of the hour UTC)
 */
 var html = {
-    page: "<!doctype html><html lang='en'><head><meta charset='utf-8'><style type='text/css'>td{text-align:center;width:50px;height:30px;}th{background:#85AAF5}</style><title>{0}</title></head>{1}</body></html>",
+    page: "<!doctype html><html lang='en'><head><meta charset='utf-8'><style type='text/css'>td{text-align:center;width:50px;height:30px;}td:nth-of-type(even){background-color:#eee;}th{background:#85AAF5}</style><title>{0}</title></head>{1}</body></html>",
     title: "<b><font size=4>*** {0} ***</font></b>",
     date: "<i><font size=2>Last Updated: {0} </font></i>"
 };
@@ -280,12 +280,42 @@ function mafiaStats() {
         }
         output.push("</tr>");
         var keys = Object.keys(this.data[theme]);
+        var overall = {};
+        for (var x = 0; x < keys.length; x++) {
+            if (keys[x] !== "gamesPlayed") {
+                output.push("<tr><th><b>" + keys[x] + "</b></th>");
+                for (var y = +start; y < +end + 1; y++) {
+                    if (!(y in overall)) {
+                        overall[y] = 0;
+                    }
+                    if (this.data[theme][keys[x]][y] !== undefined) {
+                        output.push("<td>" + this.data[theme][keys[x]][y] + "</td>");
+                        overall[y] += this.data[theme][keys[x]][y];
+                    }
+                    else {
+                        output.push("<td>" + 0 + "</td>");
+                    }
+                }
+                output.push("</tr>");
+            }
+        }
+        output.push("<tr><th>Games Played</th>");
+        for (x = +start; x < +end + 1; x++) {
+            output.push("<td><b>" + overall[x] + "</b></td>");
+        }
+        output.push("</table>");
+        
+        output.push("<br><table>");
+        output.push("<tr><th>Sides/Players</th>");
+        for (var x = +start; x < +end + 1; x++) {
+            output.push("<th><b>" + x + "</b></th>");
+        }
         for (var x = 0; x < keys.length; x++) {
             if (keys[x] !== "gamesPlayed") {
                 output.push("<tr><th><b>" + keys[x] + "</b></th>");
                 for (var y = +start; y < +end + 1; y++) {
                     if (this.data[theme][keys[x]][y] !== undefined) {
-                        output.push("<td>" + this.data[theme][keys[x]][y] + "</td>");
+                        output.push("<td>" + Math.round(this.data[theme][keys[x]][y] / overall[y] * 100) + "%</td>");
                     }
                     else {
                         output.push("<td>" + 0 + "</td>");
@@ -295,6 +325,7 @@ function mafiaStats() {
             }
         }
         output.push("</table>");
+        
         return output.join("");
     };
 }
