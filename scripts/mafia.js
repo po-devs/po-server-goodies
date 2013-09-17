@@ -934,7 +934,7 @@ function Mafia(mafiachan) {
         if (this.state !== "blank" && this.state !== "voting" && currentStalk.length > 0) {
             var lastLog = currentStalk.join("::**::");
             stalkLogs.unshift(lastLog);
-            if (stalkLogs.length > 10) {
+            if (stalkLogs.length > 20) {
                 stalkLogs.pop();
             }
             sys.writeToFile(MAFIA_LOG_FILE, stalkLogs.join("::@@::"));
@@ -1262,6 +1262,7 @@ function Mafia(mafiachan) {
         if (sys.id('PolkaBot') !== undefined) {
             sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
         }
+        mafiabot.sendAll("GAME ENDED", mafiachan);
         mafia.mafiaStats.result("dead");
         mafia.clearVariables();
         runUpdate();
@@ -1816,6 +1817,7 @@ function Mafia(mafiachan) {
             if (sys.id('PolkaBot') !== undefined) {
                 sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
             }
+            mafiabot.sendAll("GAME ENDED", mafiachan);
             mafia.clearVariables();
             runUpdate();
             return true;
@@ -1868,6 +1870,7 @@ function Mafia(mafiachan) {
             if (sys.id('PolkaBot') !== undefined) {
                 sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
             }
+            mafiabot.sendAll("GAME ENDED", mafiachan);
             sys.playersOfChannel(mafiachan).forEach(function(id) {
                 var detain = SESSION.users(id).detained;
                 if (detain) {
@@ -3366,6 +3369,7 @@ function Mafia(mafiachan) {
             "/mafiaunban: To unban a user from the Mafia channel.",
             "/end: To cancel a Mafia game!",
             "/readlog: To read the log of actions from a previous game",
+            "/targetlog: To read the log of Turn 1 actions from a set of previous games.",
             "/passma: To give your Mafia Admin powers to an alt of yours.",
             "/add: To add a Mafia Theme!",
             "/enable: To enable a disabled Mafia Theme!",
@@ -3391,7 +3395,7 @@ function Mafia(mafiachan) {
         } else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel != mafiachan && ["mafiaban", "mafiaunban", "mafiabans", "mafiaadmins", "madmins", "mas", "roles", "priority", "sides", "themeinfo", "readlog", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiarules", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "smafiaadmin", "smafiasuperadmin", "smafiaadminoff", "passma"].indexOf(command) === -1)
+        if (channel != mafiachan && ["mafiaban", "mafiaunban", "mafiabans", "mafiaadmins", "madmins", "mas", "roles", "priority", "sides", "themeinfo", "readlog", "targetlog", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiarules", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "smafiaadmin", "smafiasuperadmin", "smafiaadminoff", "passma"].indexOf(command) === -1)
             return;
         try {
             mafia.handleCommandOld(src, command, commandData, channel);
@@ -4750,6 +4754,37 @@ function Mafia(mafiachan) {
             var stalkLog = stalkLogs[num - 1].split("::**::");
             for (var c = 0; c < stalkLog.length; ++c) {
                 sys.sendMessage(src, stalkLog[c], channel);
+            }
+            sys.sendMessage(src, "", channel);
+            return;
+        }
+        if (command === "targetlog") {
+            var num = parseInt(commandData, 10);
+            if (!num) {
+                sys.sendMessage(src, "±Info: This is not a valid number!", channel);
+                return;
+            }
+            if (num < 1) {
+                num = 1;
+            } else if (num > stalkLogs.length) {
+                num = stalkLogs.length;
+            }
+            var result = [], stalkLog, index;
+            sys.sendMessage(src, "", channel);
+            for (var c = 0; c < num; ++c) {
+                stalkLog = stalkLogs[c].split("::**::");
+                
+                index = stalkLog.indexOf("*** NIGHT PHASE 2 ***");
+                if (index === -1) {
+                    index = stalkLog.length - 1;
+                }
+                if (index !== -1) {
+                    result = result.concat(stalkLog.splice(0, index));
+                    result.push("");
+                }
+            }
+            for (c = 0; c < result.length; ++c) {
+                sys.sendMessage(src, result[c], channel);
             }
             sys.sendMessage(src, "", channel);
             return;
