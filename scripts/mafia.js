@@ -1248,7 +1248,7 @@ function Mafia(mafiachan) {
                 this.numjoins[sys.ip(src)] = 1;
             }
             if (SESSION.users(src).smute.active) {
-                sys.sendMessageMessage(src, "±Game: " + name + " joined the game!", mafiachan);
+                sys.sendMessage(src, "±Game: " + name + " joined the game!", mafiachan);
                 mafia.shoveUser("Murkrow", sys.name(src), true);
             } else {
                 sendChanAll("±Game: " + name + " joined the game!", mafiachan);
