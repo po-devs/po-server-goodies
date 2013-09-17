@@ -3542,7 +3542,13 @@ function Mafia(mafiachan) {
                 else {
                     this.numjoins[sys.ip(src)] = 1;
                 }
-                sendChanAll("±Game: " + name + " joined the game!", mafiachan);
+                if (SESSION.users(src).smute.active) {
+                    sys.sendMessage(src, "±Game: " + name + " joined the game!", mafiachan);
+                    mafia.shoveUser("Murkrow", sys.name(src), true);
+                } else {
+                    sendChanAll("±Game: " + name + " joined the game!", mafiachan);
+                
+                }
                 if (this.signups.length == this.theme["roles" + this.theme.roleLists].length) {
                     this.ticks = 1;
                 }
