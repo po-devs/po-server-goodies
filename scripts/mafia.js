@@ -6,7 +6,7 @@
 */
 
 // Global variables inherited from scripts.js
-/*global mafiabot, getTimeString, updateModule, script, sys, SESSION, sendChanAll, require, Config, module, detained, sachannel*/
+/*global mafiabot, getTimeString, updateModule, script, sys, SESSION, sendChanAll, require, Config, module, sachannel*/
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 var MAFIA_CHANNEL = "Mafia";
 
@@ -1046,7 +1046,7 @@ function Mafia(mafiachan) {
             }
             sendChanAll(DEFAULT_BORDER, mafiachan);
         }
-    }
+    };
     this.userVote = function (src, commandData) {
         if (SESSION.channels(mafiachan).muteall && !SESSION.channels(mafiachan).isChannelOperator(src) && sys.auth(src) === 0) {
             sys.sendMessage(src, "±Game: You can't start a voting when the channel is silenced.", mafiachan);
@@ -1297,7 +1297,7 @@ function Mafia(mafiachan) {
         mafia.mafiaStats.result("dead");
         mafia.clearVariables();
         runUpdate();
-        this.advertiseFeaturedTheme();        
+        this.advertiseFeaturedTheme();
     };
     /* called every second */
     this.tickDown = function () {
