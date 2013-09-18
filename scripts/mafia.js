@@ -1903,7 +1903,7 @@ function Mafia(mafiachan) {
                 sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
             }
             //mafiabot.sendAll("GAME ENDED", mafiachan);
-            this.advertiseFeaturedTheme();
+            mafia.advertiseFeaturedTheme();
         };
         outer:
             for (var p in mafia.players) {
