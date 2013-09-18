@@ -21,14 +21,17 @@ function Mafia(mafiachan) {
     
     this.mafiaStats = require("mafiastats.js");
     
-    var noPlayer = '*';
-    var CurrentGame;
-    var PreviousGames;
-    var MAFIA_SAVE_FILE = Config.Mafia.stats_file;
-    var MAFIA_LOG_FILE = "mafialogs.txt";
-    var stalkLogs = [];
-    var currentStalk = [];
-    var phaseStalk = {};
+    var noPlayer = '*',
+        CurrentGame,
+        PreviousGames,
+        MAFIA_SAVE_FILE = Config.Mafia.stats_file,
+        MAFIA_LOG_FILE = "mafialogs.txt",
+        stalkLogs = [],
+        currentStalk = [],
+        phaseStalk = {},
+        featuredTheme,
+        featuredTheme2,
+        votingthread;
 
     var DEFAULT_BORDER = "***************************************************************************************";
     var border;
@@ -970,6 +973,7 @@ function Mafia(mafiachan) {
         };
     };
     this.lastAdvertise = 0;
+    this.lastFeaturedAd = 0;
     this.reduceRecharges = function () {
         var o, a;
         for (o in this.teamRecharges) {
@@ -1021,6 +1025,25 @@ function Mafia(mafiachan) {
         sendChanAll(border, channel);
         sendChanAll("", channel);
     };
+    this.advertiseFeaturedTheme = function () {
+        if (featuredTheme === undefined || !mafia.themeManager.themes.hasOwnProperty(featuredTheme)) {
+            return;
+        }
+        
+        var ftime = parseInt(sys.time(), 10);
+        if (ftime > this.lastFeaturedAd + 60 * 120) {
+            this.lastFeaturedAd = ftime;
+            var ftheme = mafia.themeManager.themes[featuredTheme].threadlink;
+            var featured = (ftheme ? '<a href="' + ftheme + '">' + featuredTheme2 + '</a>' : featuredTheme2 );
+            
+            sendChanAll(DEFAULT_BORDER, mafiachan);
+            sys.sendHtmlAll("<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> Looking for a theme to play? Try out the Featured Theme: <b>" + featured + "</b>", mafiachan);
+            if (votingthread) {
+                sys.sendHtmlAll("<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> Click " + '<a href="' + votingthread + '">' + "here" + '</a>' + " to vote for the next Featured Theme!", mafiachan);
+            }
+            sendChanAll(DEFAULT_BORDER, mafiachan);
+        }
+    }
     this.userVote = function (src, commandData) {
         if (SESSION.channels(mafiachan).muteall && !SESSION.channels(mafiachan).isChannelOperator(src) && sys.auth(src) === 0) {
             sys.sendMessage(src, "±Game: You can't start a voting when the channel is silenced.", mafiachan);
@@ -1271,6 +1294,7 @@ function Mafia(mafiachan) {
         mafia.mafiaStats.result("dead");
         mafia.clearVariables();
         runUpdate();
+        this.advertiseFeaturedTheme();        
     };
     /* called every second */
     this.tickDown = function () {
@@ -1825,8 +1849,8 @@ function Mafia(mafiachan) {
             //mafiabot.sendAll("GAME ENDED", mafiachan);
             mafia.clearVariables();
             runUpdate();
+            this.advertiseFeaturedTheme();
             return true;
-
         }
         
         var x, ws;
@@ -1876,22 +1900,7 @@ function Mafia(mafiachan) {
                 sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
             }
             //mafiabot.sendAll("GAME ENDED", mafiachan);
-            sys.playersOfChannel(mafiachan).forEach(function(id) {
-                var detain = SESSION.users(id).detained;
-                if (detain) {
-                    if (detain.active) {
-                        detain.games = detain.games - 1;
-                        if (detain.games < 1) {
-                            SESSION.users(id).detained.active = false;
-                            SESSION.users(id).detained.games = 0;
-                            detained.remove(sys.ip(id));
-                            sys.sendMessage(id, "±Game: You are no longer detained from mafia!");
-                        } else {
-                            detained.add(sys.ip(id), detain.games + ":" + detain.by + ":" + sys.name(id) + ":"  + detain.reason);
-                        }
-                    }
-                }
-            });
+            this.advertiseFeaturedTheme();
         };
         outer:
             for (var p in mafia.players) {
@@ -3397,7 +3406,10 @@ function Mafia(mafiachan) {
             "/mafiasuperadmin: To promote a user to Super Mafia Admin. Use /smafiasuperadmin for a silent promotion.",
             "/mafiaadminoff: To strip a user of all Mafia authority. Use /smafiaadminoff for a silent demotion.",
             "/updateafter: To update mafia after current game!",
-            "/updatestats: To update the mafia stats webpage (Use after mafiastat script changes)"]
+            "/updatestats: To update the mafia stats webpage (Use after mafiastat script changes)",
+            "/featuretheme: To change the currently featured theme (Leave blank to disable Feature Themes)",
+            "/votingthread: To update the link to the current Featured Theme Voting thread (Leave blank to remove URL and the line in the broadcast).",
+            "/forcefeature: To force the \"Featured Theme\" message to display."]
     };
 
     this.handleCommand = function (src, message, channel) {
@@ -4978,6 +4990,36 @@ function Mafia(mafiachan) {
         if (command === "updatestats") {
             mafia.mafiaStats.compileData();
             mafiabot.sendMessage(src, "Mafia stats page was updated!");
+            return;
+        }
+        if (command === "featuretheme") {
+            featuredTheme = commandData.toLowerCase();
+            featuredTheme2 = commandData;
+            if (!mafia.themeManager.themes.hasOwnProperty(featuredTheme)) {
+                msg(src, "You cleared the currently featured theme.");
+            } else {
+                msg(src, featuredTheme2 + " is now being featured. [Note: This is how it will display in the broadcasted message]");
+            }
+            return;
+        }
+        if (command === "votingthread") {
+            if (commandData.indexOf("www.") == -1) {
+                votingthread = undefined;
+                msg(src, "You cleared the current voting thread. Use a URL with \"www\" in it to set a new voting thread.");
+                return;
+            }
+            votingthread = commandData;
+            msg(src, "You updated the voting thread to " + votingthread + ".");
+            return;
+        }
+        if (command === "forcefeature") {
+            if (!mafia.themeManager.themes.hasOwnProperty(featuredTheme)) {
+                msg(src, "No Featured Theme was found.");
+            } else {
+                this.lastFeaturedAd = 0;
+                this.advertiseFeaturedTheme();
+                msg(src, "You forced the Featured Theme message to display!");
+            }
             return;
         }
         throw ("no valid command");
