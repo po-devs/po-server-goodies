@@ -2160,18 +2160,23 @@ function Mafia(mafiachan) {
                 }
                 return team;
             };
-            var stalkTargets = {};
-            for (var s in mafia.players) {
-                stalkTargets[s] = {};
-                if (!("night" in mafia.players[s].role.actions)) continue;
-                var targetActions = Object.keys(mafia.players[s].role.actions.night);
-                for (var act = 0; act < targetActions.length; ++act) {
-                    var foundTargets = mafia.getTargetsFor(mafia.players[s], targetActions[act]);
-                    for (var f = 0; f < foundTargets.length; ++f) {
-                        stalkTargets[s][foundTargets[f]] = 1;
+            var stalkTargets;
+            var updateStalkTargets = function() {
+                stalkTargets = {};
+                for (var s in mafia.players) {
+                    stalkTargets[s] = {};
+                    if (!("night" in mafia.players[s].role.actions)) continue;
+                    var targetActions = Object.keys(mafia.players[s].role.actions.night);
+                    for (var act = 0; act < targetActions.length; ++act) {
+                        var foundTargets = mafia.getTargetsFor(mafia.players[s], targetActions[act]);
+                        for (var f = 0; f < foundTargets.length; ++f) {
+                            stalkTargets[s][foundTargets[f]] = 1;
+                        }
                     }
                 }
-            }
+            };
+            updateStalkTargets();
+            
             var player, names, j;
             var getPlayerRoleId = function(x) { return this.players[x].role.role; };
             for (var i in mafia.theme.nightPriority) {
@@ -2334,7 +2339,7 @@ function Mafia(mafiachan) {
                                         mafia.kill(player);
                                         nightkill = true;
                                         mafia.removeTargets(target);
-                                        stalkTargets[target.name] = {};
+                                        updateStalkTargets();
                                         continue outer;
                                     }
                                     else if (targetMode.mode == "killattacker" || targetMode.mode == "killattackerevenifprotected") {
@@ -2406,7 +2411,7 @@ function Mafia(mafiachan) {
                                             mafia.kill(player);
                                             nightkill = true;
                                             mafia.removeTargets(target);
-                                            stalkTargets[target.name] = {};
+                                            updateStalkTargets();
                                             continue outer;
                                         }
                                         if ("identify" in targetMode.mode && targetMode.mode.identify.indexOf(player.role.role) != -1) {
@@ -2447,7 +2452,7 @@ function Mafia(mafiachan) {
                                     mafia.sendPlayer(target.name, "±Game: The " + player.role.translation + " came to you last night! You were too busy being distracted!");
                                 }
                                 mafia.removeTargets(target);
-                                stalkTargets[target.name] = {};
+                                updateStalkTargets();
     
                                 /* warn role / teammates */
                                 var teamMsg = Action.teammsg;
@@ -3823,7 +3828,7 @@ function Mafia(mafiachan) {
                     }
                     sendChanAll(border, mafiachan);
                     if (!revenge) {
-                        sendChanAll(needsBot(commandObject.killmsg).replace(/~Self~/g, name).replace(/~Target~/g, commandData), mafiachan);
+                        sendChanAll(needsBot(commandObject.killmsg).replace(/~Self~/g, name).replace(/~Target~/g, commandData).replace(/~Role~/g, mafia.players[name].role.translation).replace(/~TargetRole~/g, mafia.players[commandData].role.translation), mafiachan);
                         if ("revealChance" in commandObject && commandObject.revealChance > sys.rand(0, 100) / 100) {
                             if (commandObject.revealmsg !== undefined && typeof commandObject.revealmsg == "string") {
                                 sendChanAll("±Game: " + commandObject.revealmsg.replace(/~Self~/g, name).replace(/~Role~/g, mafia.players[name].role.translation), mafiachan);
