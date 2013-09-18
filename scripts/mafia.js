@@ -30,7 +30,6 @@ function Mafia(mafiachan) {
         currentStalk = [],
         phaseStalk = {},
         featuredTheme,
-        featuredTheme2,
         votingthread;
 
     var DEFAULT_BORDER = "***************************************************************************************";
@@ -455,12 +454,13 @@ function Mafia(mafiachan) {
                 }
             }
             sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
+            var broadcastname = mafia.themeManager.themes[name].name;
             if (silent) {
-                sys.sendMessage(src, "±Murkrow: You removed the theme " + name + ".", mafiachan);
+                sys.sendMessage(src, "±Murkrow: You removed the theme " + broadcastname + ".", mafiachan);
             } else {
-                mafiabot.sendAll(nonFlashing(sys.name(src)) + " removed the theme " + name + ".", mafiachan);
+                mafiabot.sendAll(nonFlashing(sys.name(src)) + " removed the theme " + broadcastname + ".", mafiachan);
             }
-            mafiabot.sendAll(nonFlashing(sys.name(src)) + " removed the theme " + name + ".", sachannel);
+            mafiabot.sendAll(nonFlashing(sys.name(src)) + " removed the theme " + broadcastname + ".", sachannel);
         }
     };
 
@@ -475,9 +475,10 @@ function Mafia(mafiachan) {
                 }
             }
             sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
+            var broadcastname = mafia.themeManager.themes[name].name;
             if (!silent) {
-                mafiabot.sendAll(nonFlashing(sys.name(src)) + " enabled theme " + name + ".", sachannel);
-                mafiabot.sendAll(nonFlashing(sys.name(src)) + " enabled theme " + name + ".", mafiachan);
+                mafiabot.sendAll(nonFlashing(sys.name(src)) + " enabled theme " + broadcastname + ".", sachannel);
+                mafiabot.sendAll(nonFlashing(sys.name(src)) + " enabled theme " + broadcastname + ".", mafiachan);
             }
         }
     };
@@ -493,13 +494,14 @@ function Mafia(mafiachan) {
                 }
             }
             sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
+            var broadcastname = mafia.themeManager.themes[name].name;
             if (!silent) {
                 if (src !== Config.Mafia.bot) {
-                    mafiabot.sendAll(nonFlashing(sys.name(src)) + " disabled theme " + name + ".", sachannel);
-                    mafiabot.sendAll(nonFlashing(sys.name(src)) + " disabled theme " + name + ".", mafiachan);
+                    mafiabot.sendAll(nonFlashing(sys.name(src)) + " disabled theme " + broadcastname + ".", sachannel);
+                    mafiabot.sendAll(nonFlashing(sys.name(src)) + " disabled theme " + broadcastname + ".", mafiachan);
                 } else {
-                    mafiabot.sendAll(Config.Mafia.bot + " disabled theme " + name + ".", sachannel);
-                    mafiabot.sendAll(Config.Mafia.bot + " disabled theme " + name + ".", mafiachan);
+                    mafiabot.sendAll(Config.Mafia.bot + " disabled theme " + broadcastname + ".", sachannel);
+                    mafiabot.sendAll(Config.Mafia.bot + " disabled theme " + broadcastname + ".", mafiachan);
                 }
             }
         }
@@ -1033,8 +1035,9 @@ function Mafia(mafiachan) {
         var ftime = parseInt(sys.time(), 10);
         if (ftime > this.lastFeaturedAd + 60 * 120) {
             this.lastFeaturedAd = ftime;
-            var ftheme = mafia.themeManager.themes[featuredTheme].threadlink;
-            var featured = (ftheme ? '<a href="' + ftheme + '">' + featuredTheme2 + '</a>' : featuredTheme2 );
+            var flink = mafia.themeManager.themes[featuredTheme].threadlink;
+            var ftheme = mafia.themeManager.themes[featuredTheme].name;
+            var featured = (flink ? '<a href="' + flink + '">' + ftheme + '</a>' : ftheme );
             
             sendChanAll(DEFAULT_BORDER, mafiachan);
             sys.sendHtmlAll("<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> Looking for a theme to play? Try out the Featured Theme: <b>" + featured + "</b>", mafiachan);
@@ -4994,11 +4997,10 @@ function Mafia(mafiachan) {
         }
         if (command === "featuretheme") {
             featuredTheme = commandData.toLowerCase();
-            featuredTheme2 = commandData;
             if (!mafia.themeManager.themes.hasOwnProperty(featuredTheme)) {
                 msg(src, "You cleared the currently featured theme.");
             } else {
-                msg(src, featuredTheme2 + " is now being featured. [Note: This is how it will display in the broadcasted message]");
+                msg(src, featuredTheme + " is now being featured.");
             }
             return;
         }
