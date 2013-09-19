@@ -4731,7 +4731,7 @@ function Mafia(mafiachan) {
             return;
         }
         if (command == "featured") {
-            if (featuredTheme) {    
+            if (featuredTheme) {
                 msg(src, mafia.themeManager.themes[featuredTheme].name + " is currently being featured!");
             } else {
                 msg(src, "No theme is currently being featured!");

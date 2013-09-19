@@ -773,8 +773,6 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "hban": "ban from hangman"}[type];
         var sendAll =  {
             "smute": function(line) {
-                banbot.sendAll(line, staffchannel);
-                line = line.replace(" by " +sys.name(src), "");
                 sys.dbAuths().map(sys.id).filter(function(uid) { return uid !== undefined; }).forEach(function(uid) {
                         banbot.sendMessage(uid, line);
                 });
