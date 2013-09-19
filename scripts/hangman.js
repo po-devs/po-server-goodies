@@ -505,6 +505,7 @@ module.exports = function () {
         winner = name;
         nextGame = (new Date()).getTime() + winnerDelay * 1000;
         this.resetTimers();
+        this.autoGames();
     };
     this.passWinner = function (src, commandData) {
         if (commandData === undefined) {
