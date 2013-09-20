@@ -29,6 +29,9 @@ try {
 } catch (e) {
     Trivia = new TriviaGame();
 }
+if (!Trivia || !Trivia.started) {
+    Trivia = new TriviaGame();
+}
 
 var triviaq = new QuestionHolder("triviaq.txt");
 var trivreview = new QuestionHolder("trivreview.txt");
