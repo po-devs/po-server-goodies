@@ -4850,7 +4850,6 @@ function Mafia(mafiachan) {
                 }
                 if (index !== -1) {
                     if (stalkLog.length === 1) {
-                        stalkLog = stalkLog.splice(0, 1);
                         stalkLog.push("Not enough players.");
                     } else {
                         stalkLog = stalkLog.splice(0, index + 1);
