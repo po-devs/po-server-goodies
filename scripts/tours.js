@@ -1467,7 +1467,7 @@ function tourCommand(src, command, commandData, channel) {
                     sendBotAll(sys.name(src) + changeword + commandData.toCorrectCase() + " to " + readauth + ".", "~tr", false);
                 }
                 else {
-                    sendBotAll(sys.name(src) + changeword + commandData.toCorrectCase() + " to " + readauth + ".", tachan, false);
+                    sendBotAll(sys.name(src) + changeword + commandData.toCorrectCase() + " to " + readauth + ".", sys.channelId("Victory Road"), false);
                 }
                 return true;
             }
@@ -1495,7 +1495,7 @@ function tourCommand(src, command, commandData, channel) {
                     sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldauth + ".", "~tr", false);
                 }
                 else {
-                    sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldauth + ".", tachan, false);
+                    sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldauth + ".", sys.channelId("Victory Road"), false);
                 }
                 return true;
             }
@@ -2236,7 +2236,7 @@ function tourCommand(src, command, commandData, channel) {
                 tadmins[newname] = desc;
                 tours.touradmins = tadmins;
                 saveTourKeys();
-                sendBotAll(sys.name(src)+" passed their tour auth to "+toCorrectCase(newname)+"!",tachan,false);
+                sendBotAll(sys.name(src)+" passed their tour auth to "+toCorrectCase(newname)+"!",sys.channelId("Victory Road"),false);
                 return true;
             }
             if (command == "dq") {
