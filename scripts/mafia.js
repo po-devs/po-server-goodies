@@ -4841,7 +4841,6 @@ function Mafia(mafiachan) {
                 num = stalkLogs.length;
             }
             var result = [], stalkLog, index;
-            sys.sendMessage(src, "", channel);
             for (var c = 0; c < num; ++c) {
                 stalkLog = stalkLogs[c].split("::**::");
                 
@@ -4850,10 +4849,17 @@ function Mafia(mafiachan) {
                     index = stalkLog.length - 1;
                 }
                 if (index !== -1) {
-                    result = result.concat(stalkLog.splice(0, index));
-                    result.push("");
+                    if (stalkLog.length === 1) {
+                        stalkLog = stalkLog.splice(0, 1);
+                        stalkLog.push("Not enough players.");
+                    } else {
+                        stalkLog = stalkLog.splice(0, index + 1);
+                    }
+                    stalkLog.push("");
+                    result = stalkLog.concat(result);
                 }
             }
+            sys.sendMessage(src, "", channel);
             for (c = 0; c < result.length; ++c) {
                 sys.sendMessage(src, result[c], channel);
             }
