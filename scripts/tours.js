@@ -77,7 +77,7 @@ var tourmodcommands = ["Parameters: They can be used by putting 'gen=x'; 'mode=s
                     "/tourmute: Tourmutes a problematic player. Format is /tourmute player:reason:time.",
                     "/tourunmute: Untourmutes a player.",
                     "/tourmutes: Lists tour mutes.",
-                    "/endtour: Ands the tour of the specified tier.",
+                    "/endtour: Ends the tour of the specified tier.",
                     "/sub: Subs in a player for another in a tournament. Format is /sub newname:oldname.",
                     "/dq: disqualifies a player.",
                     "/remove [tour/number]: Removes a tournament from the queue. If a number is put in, it will remove the tour in the queue with the corresponding number. If a tier is put in, it will remove the tournament of that tier (starting from the back).",
@@ -2823,6 +2823,7 @@ function tourCommand(src, command, commandData, channel) {
                     sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
                 }
             }
+            sys.sendMessage(src, "", channel);
             return true;
         }
         if (command == "tourinfo") {
