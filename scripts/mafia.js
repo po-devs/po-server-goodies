@@ -5030,6 +5030,32 @@ function Mafia(mafiachan) {
             }
             return;
         }
+        if (command === "push") {
+            var name = commandData;
+            if (!mafia.isMafiaSuperAdmin(src)) {
+                msg(src, "Super Mafia Admin Command.");
+                return;
+            }
+            if (this.state != "entry") {
+                msg(src, "Pushing makes no sense outside entry...");
+                return;
+            }
+            if (this.signups.length >= this.theme["roles" + this.theme.roleLists].length) {
+                sys.sendMessage(src, "±Game: This theme only supports a maximum of " + this.theme["roles" + this.theme.roleLists].length + " players!", mafiachan);
+                return;
+            }
+            var id = sys.id(name);
+            if (id) {
+                name = sys.name(id);
+                this.signups.push(name);
+                this.ips.push(sys.ip(id));
+            } else {
+                this.signups.push(name);
+            }
+            sendChanAll("±Game: " + name + " joined the game! (pushed by " + nonFlashing(sys.name(src)) + ")", mafiachan);
+            sendChanAll("±Game: " + name + " joined the game! (pushed by " + nonFlashing(sys.name(src)) + ")", sachannel);
+            return;
+        } 
         if (command === "updatestats") {
             mafia.mafiaStats.compileData();
             mafiabot.sendMessage(src, "Mafia stats page was updated!");
