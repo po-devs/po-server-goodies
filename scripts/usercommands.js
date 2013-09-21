@@ -746,6 +746,59 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendHtmlMessage(src, "", channel, true);
         return;
     }
+    if (command === "ability") {
+        sys.stopEvent();
+        if (commandData === "") {
+            normalbot.sendMessage("Please specify an ability!", channel);
+            return;
+        }
+        var abilityId = sys.abilityNum(commandData);
+        if (!abilityId) {
+            normalbot.sendMessage(commandData + " is not a valid ability!", channel);
+            return;
+        }
+        sys.sendHtmlMessage(src, "", channel, true);
+        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.ability(abilityId) + "</font></b>", channel, true);
+        sys.sendHtmlMessage(src, "<b>Effect:</b> " + getAbility(abilityId), channel, true);
+        sys.sendHtmlMessage(src, "", channel, true);
+        return;
+    }
+    if (command === "item") {
+        sys.stopEvent();
+        if (commandData === "") {
+            normalbot.sendMessage("Please specify an item!", channel);
+            return;
+        }
+        var itemId = sys.itemNum(commandData);
+        var berryId = itemId - 8000;
+        if (!itemId) {
+            normalbot.sendMessage(commandData + " is not a valid item!", channel);
+            return;
+        }
+        var isBerry = (commandData.toLowerCase().substr(commandData.length - 5) === "berry");
+        var flingPower = isBerry ? "10" : getFlingPower(itemId);
+        var isGSC = false;
+        if (itemId >= 9000 || itemId === 1000 || itemId === 1001 || itemId === 304) {
+            isGSC = true;
+        }
+        sys.sendHtmlMessage(src, "", channel, true);
+        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.item(itemId) + "</font></b>", channel, true);
+        if (!isGSC) {
+            sys.sendHtmlMessage(src, "<img src=item:" + itemId + ">", channel, true);
+        }
+        sys.sendHtmlMessage(src, "<b>Effect:</b> " + (isBerry ? getBerry(berryId) : getItem(itemId)), channel, true);
+        if (!isGSC) {
+            if (flingPower != undefined) {
+                sys.sendHtmlMessage(src, "<b>Fling base power:</b> " + flingPower, channel, true);
+            }
+            if (isBerry) {
+                sys.sendHtmlMessage(src, "<b>Natural Gift type:</b> " + getBerryType(berryId), channel, true);
+                sys.sendHtmlMessage(src, "<b>Natural Gift base power:</b> " + getBerryPower(berryId), channel, true);
+            }
+        }
+    sys.sendHtmlMessage(src, "", channel, true);
+    return;
+    }
     if (command == "wiki"){
         var poke = sys.pokeNum(commandData);
         if (!poke) {
@@ -831,6 +884,8 @@ exports.help =
         "/wiki [Pokémon]: Shows that Pokémon's wiki page",
         "/pokemon [Pokémon]: Displays basic information for that Pokémon",
         "/move [move]: Displays basic information for that move",
+        "/ability [ability]: Displays basic information for that ability",
+        "/item [item]: Displays basic information for that item",
         "/register: Registers a channel with you as owner.",
         "/resetpass: Clears your password (unregisters you, remember to reregister).",
         "/auth [owners/admins/mods]: Lists auth of given level, shows all auth if left blank.",
