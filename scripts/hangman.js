@@ -793,6 +793,7 @@ module.exports = function () {
                 sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
             }
         }
+        sys.sendMessage(src, "", channel);
         return;
     };
     this.promoteAdmin = function (src, commandData, channel, silent) {
