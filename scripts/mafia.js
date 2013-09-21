@@ -1065,7 +1065,7 @@ function Mafia(mafiachan) {
             return;
         }
         if (this.invalidName(src))
-                return;
+            return;
 
         var themeName = commandData.toLowerCase();
 
@@ -1074,7 +1074,7 @@ function Mafia(mafiachan) {
             this.ticks = 20;
             this.votes = {};
             this.possibleThemes = {};
-            var total = 5;
+            var total = 6;
             if (PreviousGames.length === 0 || PreviousGames.slice(-1)[0].what != "default") {
                 this.possibleThemes["default"] = 0;
                 --total;
@@ -3203,7 +3203,7 @@ function Mafia(mafiachan) {
             }
             if (winner.theme !== null) {
                 sendChanAll("", mafiachan);
-                sendChanAll("±Game: Theme " + winner.theme + " won with " + winner.votes + " votes!", mafiachan);
+                sendChanAll("±Game: Theme " + this.themeManager.themes[winner.theme].name + " won with " + winner.votes + " votes!", mafiachan);
                 sendChanAll("±Game: Type /Join to enter the game!", mafiachan);
                 sendChanAll("", mafiachan);
                 this.startGame(null, winner.theme);
@@ -4791,6 +4791,7 @@ function Mafia(mafiachan) {
                     sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
                 }
             }
+            sys.sendMessage(src, "", channel);
             return;
         }
 
