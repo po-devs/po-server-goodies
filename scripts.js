@@ -118,10 +118,12 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, contributors, mutes, mbans, smutes, detained, hbans, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList, powerList, accList, ppList, categoryList, moveEffList, moveFlagList, namesToWatch;
+var channel, contributors, mutes, mbans, smutes, detained, hbans, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList, powerList, accList, ppList, categoryList, moveEffList, moveFlagList, abilityList, itemList, berryList, flingPowerList, berryPowerList, berryTypeList, namesToWatch;
 
 var pokeDir = "db/pokes/";
 var moveDir = "db/moves/5G/";
+var abilityDir = "db/abilities/";
+var itemDir = "db/items/";
 sys.makeDir("scripts");
 /* we need to make sure the scripts exist */
 var commandfiles = ['commands.js', 'channelcommands.js','ownercommands.js', 'modcommands.js', 'usercommands.js', "admincommands.js"];
@@ -404,6 +406,90 @@ function getMoveContact (moveId) {
         }
     }
     return moveFlagList[moveId] % 2 === 1;
+}
+
+function getAbility (abilityId) {
+    if (abilityList === undefined) {
+        abilityList = {};
+        var data = sys.getFileContent(abilityDir + 'ability_battledesc.txt').split('\n');
+        for (var i = 0; i < data.length; i++) {
+            var index = data[i].indexOf(" ");
+            var key = data[i].substr(0, index);
+            var ability = data[i].substr(index + 1);
+            abilityList[key] = ability;
+        }
+    }
+    return abilityList[abilityId];
+}
+
+function getItem (itemId) {
+    if (itemList === undefined) {
+        itemList = {};
+        var data = sys.getFileContent(itemDir + 'items_description.txt').split('\n');
+        for (var i = 0; i < data.length; i++) {
+            var index = data[i].indexOf(" ");
+            var key = data[i].substr(0, index);
+            var item = data[i].substr(index + 1);
+            itemList[key] = item;
+        }
+    }
+    return itemList[itemId];
+}
+
+function getBerry (berryId) {
+    if (berryList === undefined) {
+        berryList = {};
+        var data = sys.getFileContent(itemDir + 'berries_description.txt').split('\n');
+        for (var i = 0; i < data.length; i++) {
+            var index = data[i].indexOf(" ");
+            var key = data[i].substr(0, index);
+            var berry = data[i].substr(index + 1);
+            berryList[key] = berry;
+        }
+    }
+    return berryList[berryId];
+}
+
+function getFlingPower (itemId) {
+    if (flingPowerList === undefined) {
+        flingPowerList = {};
+        var data = sys.getFileContent(itemDir + 'items_pow.txt').split('\n');
+        for (var i = 0; i < data.length; i++) {
+            var index = data[i].indexOf(" ");
+            var key = data[i].substr(0, index);
+            var power = data[i].substr(index + 1);
+            flingPowerList[key] = power;
+        }
+    }
+    return flingPowerList[itemId];
+}
+
+function getBerryPower (berryId) {
+    if (berryPowerList === undefined) {
+        berryPowerList = {};
+        var data = sys.getFileContent(itemDir + 'berry_pow.txt').split('\n');
+        for (var i = 0; i < data.length; i++) {
+            var index = data[i].indexOf(" ");
+            var key = data[i].substr(0, index);
+            var power = data[i].substr(index + 1);
+            berryPowerList[key] = power;
+        }
+    }
+    return berryPowerList[berryId];
+}
+
+function getBerryType (berryId) {
+    if (berryTypeList === undefined) {
+        berryTypeList = {};
+        var data = sys.getFileContent(itemDir + 'berry_type.txt').split('\n');
+        for (var i = 0; i < data.length; i++) {
+            var index = data[i].indexOf(" ");
+            var key = data[i].substr(0, index);
+            var type = data[i].substr(index + 1);
+            berryTypeList[key] = sys.type(type);
+        }
+    }
+    return berryTypeList[berryId];
 }
 
 function updateNotice() {
