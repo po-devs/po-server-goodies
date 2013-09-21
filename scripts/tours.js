@@ -2573,6 +2573,11 @@ function tourCommand(src, command, commandData, channel) {
                 else {
                     tours.tour[key].numjoins[sys.ip(src)] = 1;
                 }
+                if (SESSION.users(src).smute.active) {
+                    var index = tours.tour[key].players.indexOf(src);
+                    tours.tour[key].players.splice(index, 1);
+                    tours.tour[key].cpt -= 1;
+                }
                 return true;
             }
             /* subbing */
