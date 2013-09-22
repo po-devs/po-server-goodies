@@ -12,6 +12,7 @@ var MAFIA_CHANNEL = "Mafia";
 
 var is_command = require("utilities.js").is_command;
 var nonFlashing = require("utilities.js").non_flashing;
+var html_escape = require("utilities.js").html_escape;
 
 function Mafia(mafiachan) {
     // Remember to update this if you are updating mafia
@@ -1055,12 +1056,14 @@ function Mafia(mafiachan) {
             this.lastFeaturedAd = ftime;
             var flink = mafia.themeManager.themes[featuredTheme].threadlink;
             var ftheme = casedtheme(featuredTheme);
-            var featured = (flink ? '<a href="' + flink + '">' + ftheme + '</a>' : ftheme );
+            var faltname = mafia.themeManager.themes[featuredTheme].altname;
+            var featured = (flink ? '<a href="' + flink + '">' + html_escape(ftheme + (faltname ? " (" + faltname + ")" : "")) + '</a>' : html_escape(ftheme));
             
             sendChanAll(DEFAULT_BORDER, mafiachan);
-            sys.sendHtmlAll("<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> Looking for a theme to play? Try out the Featured Theme: <b>" + featured + "</b>", mafiachan);
+            sys.sendHtmlAll("<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> Looking for a theme to play? Try out the Featured Theme: <b>" + featured + "</b>!", mafiachan);
+            
             if (votingthread) {
-                sys.sendHtmlAll("<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> Click " + '<a href="' + votingthread + '">' + "here" + '</a>' + " to vote for the next Featured Theme!", mafiachan);
+                sys.sendHtmlAll("<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> Click " + '<a href="' + html_escape(votingthread) + '">' + "here" + '</a>' + " to vote for the next Featured Theme!", mafiachan);
             }
             sendChanAll(DEFAULT_BORDER, mafiachan);
         }
@@ -1261,16 +1264,16 @@ function Mafia(mafiachan) {
             var user = SESSION.users(id);
             if (sys.loggedIn(id) && user && user.mafiaalertson && (user.mafiaalertsany || user.mafiathemes.indexOf(this.theme.name.toLowerCase()) != -1)) {
                 if (sys.isInChannel(id, mafiachan)) {
-                    sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : this.theme.name + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", mafiachan);
+                    sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : html_escape(this.theme.name) + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", mafiachan);
                     continue;
                 } else if (sys.isInChannel(id, 0)) {
-                    sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : this.theme.name + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", 0);
+                    sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : html_escape(this.theme.name) + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", 0);
                     continue;
-                } else if (sys.existChannel("Project Mafia") && sys.isInChannel(id, sys.channelId("Project Mafia"))) {
-                    sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : this.theme.name + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", sys.channelId("Project Mafia"));
+                } else if (sys.existChannel("Mafia Social") && sys.isInChannel(id, sys.channelId("Mafia Social"))) {
+                    sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : html_escape(this.theme.name) + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", sys.channelId("Mafia Social"));
                     continue;
                 }
-                sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : this.theme.name + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!");
+                sys.sendHtmlMessage(id, "A " + (this.theme.name == "default" ? "" : html_escape(this.theme.name) + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!");
             }
         }
 
@@ -4543,12 +4546,12 @@ function Mafia(mafiachan) {
                 }
             }
             var theme = mafia.themeManager.themes[themeName];
-            sys.sendHtmlMessage(src, "", channel);
-            sys.sendHtmlMessage(src, "Priority List for theme <b>" + theme.name + ":</b>", channel);
+            sys.sendMessage(src, "", channel);
+            sys.sendHtmlMessage(src, "Priority List for theme <b>" + html_escape(theme.name) + ":</b>", channel);
             for (var p = 0; p < theme.priorityInfo.length; ++p) {
-                sys.sendHtmlMessage(src, theme.priorityInfo[p], channel);
+                sys.sendHtmlMessage(src, html_escape(theme.priorityInfo[p]), channel);
             }
-            sys.sendHtmlMessage(src, "", channel);
+            sys.sendMessage(src, "", channel);
             return;
         }
         
@@ -4765,14 +4768,13 @@ function Mafia(mafiachan) {
             smas = smas.sort();
             sys.sendMessage(src, "", channel);
             sys.sendMessage(src, "*** MAFIA SUPER ADMINS ***", channel);
-            sys.sendMessage(src, "", channel);
             for (var i = 0; i < smas.length; i++) {
                 var id = sys.id(smas[i]);
                 if (!id) {
                     sys.sendMessage(src, smas[i], channel);
                 }
                 else {
-                    sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+                    sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + html_escape(sys.name(id)) + "</b></font>", channel);
                 }
             }
             var mas = [];
@@ -4783,7 +4785,6 @@ function Mafia(mafiachan) {
             if (script.hasAuthElements(mas)) {
                 sys.sendMessage(src, "", channel);
                 sys.sendMessage(src, "*** AUTH MAFIA ADMINS ***", channel);
-                sys.sendMessage(src, "", channel);
                 for (var i = 0; i < mas.length; i++) {
                     if (sys.dbAuths().indexOf(mas[i]) != -1) {
                         var id = sys.id(mas[i]);
@@ -4791,7 +4792,7 @@ function Mafia(mafiachan) {
                             sys.sendMessage(src, mas[i], channel);
                         }
                         else {
-                            sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+                            sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + html_escape(sys.name(id)) + "</b></font>", channel);
                         }
                         mas.splice(i, 1);
                         i--;
@@ -4800,14 +4801,13 @@ function Mafia(mafiachan) {
             }
             sys.sendMessage(src, "", channel);
             sys.sendMessage(src, "*** MAFIA ADMINS ***", channel);
-            sys.sendMessage(src, "", channel);
             for (var i = 0; i < mas.length; i++) {
                 var id = sys.id(mas[i]);
                 if (!id) {
                     sys.sendMessage(src, mas[i], channel);
                 }
                 else {
-                    sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+                    sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + html_escape(sys.name(id)) + "</b></font>", channel);
                 }
             }
             sys.sendMessage(src, "", channel);

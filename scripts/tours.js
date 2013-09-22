@@ -43,6 +43,7 @@ if (typeof tours !== "object") {
 var configDir = "tourconfig/";
 var dataDir = "tourdata/";
 var utilities = require('utilities.js');
+var html_escpae = require('utilities.js').html_escape;
 var tstats = require("newtourstats.js");
 var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
 var htmlborder = "<font color=#3DAA68><b>"+border+"</b></font>";
@@ -2788,20 +2789,18 @@ function tourCommand(src, command, commandData, channel) {
             mus.sort();
             sys.sendMessage(src, "", channel);
             sys.sendMessage(src, "*** TOURNAMENT OWNERS ***", channel);
-            sys.sendMessage(src, "", channel);
             for (var o in tos) {
                 var id = sys.id(tos[o]);
                 if (!id) {
                     sys.sendMessage(src, tos[o], channel);
                 }
                 else {
-                    sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+                    sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + html_escape(sys.name(id)) + "</b></font>", channel);
                 }
             }
             if (script.hasAuthElements(mus)) {
                 sys.sendMessage(src, "", channel);
                 sys.sendMessage(src, "*** AUTH MEGAUSERS ***", channel);
-                sys.sendMessage(src, "", channel);
                 for (var m in mus) {
                     if (sys.dbAuths().indexOf(mus[m]) != -1) {
                         var id = sys.id(mus[m]);
@@ -2809,7 +2808,7 @@ function tourCommand(src, command, commandData, channel) {
                             sys.sendMessage(src, mus[m], channel);
                         }
                         else {
-                            sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+                            sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + html_escape(sys.name(id)) + "</b></font>", channel);
                         }
                         mus.splice(m, 1);
                         m--;
@@ -2818,14 +2817,13 @@ function tourCommand(src, command, commandData, channel) {
             }
             sys.sendMessage(src, "", channel);
             sys.sendMessage(src, "*** MEGAUSERS ***", channel);
-            sys.sendMessage(src, "", channel);
             for (var m in mus) {
                 var id = sys.id(mus[m]);
                 if (!id) {
                     sys.sendMessage(src, mus[m], channel);
                 }
                 else {
-                    sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+                    sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + html_escape(sys.name(id)) + "</b></font>", channel);
                 }
             }
             sys.sendMessage(src, "", channel);

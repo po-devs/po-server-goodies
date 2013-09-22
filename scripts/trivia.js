@@ -13,6 +13,7 @@
 /*global updateModule, script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, module, sachannel, staffchannel*/
 var Bot = require("bot.js").Bot;
 var utilities = require("utilities.js");
+var html_escape = require("utilities.js").html_escape;
 var MemoryHash = require('memoryhash.js').MemoryHash;
 
 var triviachan, revchan;
@@ -878,14 +879,13 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
         if (script.hasAuthElements(tadmins)) {
             sys.sendMessage(src, "", id);
             sys.sendMessage(src, "*** AUTH TRIVIA ADMINS ***", id);
-            sys.sendMessage(src, "", id);
             for (var b in tadmins) {
                 if (sys.dbAuths().indexOf(tadmins[b]) != -1) {
                     if (sys.id(tadmins[b]) === undefined) {
                         sys.sendMessage(src, tadmins[b], id);
                     }
                     else {
-                        sys.sendHtmlMessage(src, "<timestamp/><font color = " + script.getColor(sys.id(tadmins[b])) + "><b>" + tadmins[b].toCorrectCase() + "</b></font color>", id);
+                        sys.sendHtmlMessage(src, "<timestamp/><font color = " + script.getColor(sys.id(tadmins[b])) + "><b>" + html_escape(tadmins[b].toCorrectCase()) + "</b></font color>", id);
                     }
                     tadmins.splice(b, 1);
                     b--;
@@ -895,13 +895,12 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
     }
     sys.sendMessage(src, "", id);
     sys.sendMessage(src, "*** " + type.toUpperCase() + " ***", id);
-    sys.sendMessage(src, "", id);
     for (var b in tadmins) {
         if (sys.id(tadmins[b]) === undefined) {
             sys.sendMessage(src, tadmins[b], id);
         }
         else {
-            sys.sendHtmlMessage(src, "<timestamp/><font color = " + script.getColor(sys.id(tadmins[b])) + "><b>" + tadmins[b].toCorrectCase() + "</b></font color>", id);
+            sys.sendHtmlMessage(src, "<timestamp/><font color = " + script.getColor(sys.id(tadmins[b])) + "><b>" + html_escape(tadmins[b].toCorrectCase()) + "</b></font color>", id);
         }
     }
     sys.sendMessage(src, "", id);

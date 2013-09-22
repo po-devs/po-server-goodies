@@ -2,6 +2,7 @@
 /*global sys:true, sendChanHtmlAll:true, module:true, SESSION:true, hangmanchan, hangbot, require, script, hasAuthElements */
 
 var nonFlashing = require("utilities.js").non_flashing;
+var html_escape = require("utilities.js").html_escape;
 
 module.exports = function () {
     var hangman = this;
@@ -405,14 +406,14 @@ module.exports = function () {
             hangbot.sendMessage(src, "No game is running!", hangchan);
             return;
         }
-        sys.sendHtmlMessage(src, " ", hangchan);
+        sys.sendMessage(src, " ", hangchan);
         sys.sendHtmlMessage(src, "<font color='red'><b>Current Word</b>: " + currentWord.join(" ") + "</font>", hangchan);
         sys.sendHtmlMessage(src, "<font color='red'>[Hint: " + hint + "]  [Letters used: " + usedLetters.map(function (x) {
             return x.toUpperCase();
         }).join(", ") + "]  [Chances left: " + parts + "] </font>", hangchan);
         sys.sendHtmlMessage(src, "<font color='red'>Current game started by " + hostName + "</font>", hangchan);
         hangbot.sendMessage(src, "Type /g [letter] to guess a letter, and /a [answer] to guess the answer!", hangchan);
-        sys.sendHtmlMessage(src, " ", hangchan);
+        sys.sendMessage(src, " ", hangchan);
     };
     this.showRules = function (src) {
         var rules = [
@@ -484,13 +485,13 @@ module.exports = function () {
         var param = commandData.split(":")[0];
         var val = commandData.split(":")[1];
         if (!param || !val) {
-            sys.sendHtmlMessage(src, " ", hangchan);
+            sys.sendMessage(src, " ", hangchan);
             hangbot.sendMessage(src, "How to use /config: Use /config [parameter]:[value]. Possible parameters are:", hangchan);
             hangbot.sendMessage(src, "chances: Set minimum number of chances for any game (currently set to " + minBodyParts + " chances). ", hangchan);
             hangbot.sendMessage(src, "delay: Set delay (in seconds) between each guess. Full answers take double the time (currently set to " + answerDelay + " seconds). ", hangchan);
             hangbot.sendMessage(src, "winner: Set how many seconds the winner of a game have to start a new one before anyone can start (currently set to " + winnerDelay + " seconds). ", hangchan);
             hangbot.sendMessage(src, "answers: Set how many times each player can use /a (currently set to " + maxAnswers + " seconds). ", hangchan);
-            sys.sendHtmlMessage(src, " ", hangchan);
+            sys.sendMessage(src, " ", hangchan);
             return;
         }
         if (parseInt(val, 10) <= 0) {
@@ -748,14 +749,13 @@ module.exports = function () {
         shas = shas.sort();
         sys.sendMessage(src, "", channel);
         sys.sendMessage(src, "*** SUPER HANGMAN ADMINS ***", channel);
-        sys.sendMessage(src, "", channel);
         for (var i = 0; i < shas.length; i++) {
             var id = sys.id(shas[i]);
             if(!id) {
                 sys.sendMessage(src, shas[i], channel);
             }
             else {
-                sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+                sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + html_escape(sys.name(id)) + "</b></font>", channel);
             }
         }
         var has = [];
@@ -766,7 +766,6 @@ module.exports = function () {
         if (script.hasAuthElements(has)) {
             sys.sendMessage(src, "", channel);
             sys.sendMessage(src, "*** AUTH HANGMAN ADMINS ***", channel);
-            sys.sendMessage(src, "", channel);
             for (var i = 0; i < has.length; i++) {
                 if (sys.dbAuths().indexOf(has[i]) != -1) {
                     var id = sys.id(has[i]);
@@ -774,7 +773,7 @@ module.exports = function () {
                         sys.sendMessage(src, has[i], channel);
                     }
                     else {
-                        sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+                        sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + html_escape(sys.name(id)) + "</b></font>", channel);
                     }
                     has.splice(i, 1);
                     i--;
@@ -783,14 +782,13 @@ module.exports = function () {
         }
         sys.sendMessage(src, "", channel);
         sys.sendMessage(src, "*** HANGMAN ADMINS ***", channel);
-        sys.sendMessage(src, "", channel);
         for (var i = 0; i < has.length; i++) {
             var id = sys.id(has[i]);
             if(!id) {
                 sys.sendMessage(src, has[i], channel);
             }
             else {
-                sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+                sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + html_escape(sys.name(id)) + "</b></font>", channel);
             }
         }
         sys.sendMessage(src, "", channel);
