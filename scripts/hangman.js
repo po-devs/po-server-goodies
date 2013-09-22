@@ -748,7 +748,6 @@ module.exports = function () {
         shas = shas.sort();
         sys.sendMessage(src, "", channel);
         sys.sendMessage(src, "*** SUPER HANGMAN ADMINS ***", channel);
-        sys.sendMessage(src, "", channel);
         for (var i = 0; i < shas.length; i++) {
             var id = sys.id(shas[i]);
             if(!id) {
@@ -766,7 +765,6 @@ module.exports = function () {
         if (script.hasAuthElements(has)) {
             sys.sendMessage(src, "", channel);
             sys.sendMessage(src, "*** AUTH HANGMAN ADMINS ***", channel);
-            sys.sendMessage(src, "", channel);
             for (var i = 0; i < has.length; i++) {
                 if (sys.dbAuths().indexOf(has[i]) != -1) {
                     var id = sys.id(has[i]);
@@ -783,7 +781,6 @@ module.exports = function () {
         }
         sys.sendMessage(src, "", channel);
         sys.sendMessage(src, "*** HANGMAN ADMINS ***", channel);
-        sys.sendMessage(src, "", channel);
         for (var i = 0; i < has.length; i++) {
             var id = sys.id(has[i]);
             if(!id) {
