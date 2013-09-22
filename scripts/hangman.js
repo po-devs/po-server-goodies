@@ -1,5 +1,5 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global sys:true, sendChanHtmlAll:true, module:true, SESSION:true, hangmanchan, hangbot, require, script, hasAuthElements */
+/*global sys:true, sendChanHtmlAll:true, module:true, SESSION:true, hangmanchan, hangbot, require, script, sachannel */
 
 var nonFlashing = require("utilities.js").non_flashing;
 var html_escape = require("utilities.js").html_escape;
@@ -585,7 +585,7 @@ module.exports = function () {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel !== hangchan && ["hangmanban", "hangmanunban", "hangmanbans", "hangmanadmins", "hadmins", "has", "passha", "hangmanadminoff", "hangmanadmin", "hangmansadmin", "hangmansuperadmin", "shangmanadmin", "shangmansuperadmin", "shangmanadminoff", ].indexOf(command) === -1) {
+        if (channel !== hangchan && ["hangmanban", "hangmanunban", "hangmanbans", "hangmanadmins", "hadmins", "has", "passha", "hangmanadminoff", "hangmanadmin", "hangmansadmin", "hangmansuperadmin", "shangmanadmin", "shangmansuperadmin", "shangmanadminoff"].indexOf(command) === -1) {
             return;
         }
         if (command === "help") {
@@ -698,7 +698,7 @@ module.exports = function () {
             return true;
         }
 
-        if (command === "hangmanadminoff" || command === "hangmanadminoffs") {
+        if (command === "hangmanadminoff" || command === "shangmanadminoff") {
             hangman.demoteAdmin(src, commandData, channel, (command === "shangmanadminoff"));
             return true;
         }
@@ -706,12 +706,12 @@ module.exports = function () {
         if (hangman.authLevel(src) < 3) {
             return false;
         }
-        if (command === "hangmansuperadmin" || command === "hangmansuperadmins") {
+        if (command === "hangmansuperadmin" || command === "shangmansuperadmin") {
             hangman.promoteSuperAdmin(src, commandData, channel, (command === "shangmansuperadmin"));
             return true;
         }
 
-        if (command === "hangmansuperadminoff" || command === "hangmansuperadminoffs") {
+        if (command === "hangmansuperadminoff" || command === "shangmansuperadminoff") {
             hangman.demoteSuperAdmin(src, commandData, channel, (command === "shangmansuperadminoff"));
             return true;
         }

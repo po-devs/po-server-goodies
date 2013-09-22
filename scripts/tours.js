@@ -223,9 +223,6 @@ function addTourActivity(src) {
     }
 }
 
-// Will escape "&", ">", and "<" symbols for HTML output.
-var html_escape = utilities.html_escape;
-
 function cmp(x1, x2) {
     if (typeof x1 !== typeof x2) {
         return false;
