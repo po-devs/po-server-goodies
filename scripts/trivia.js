@@ -13,6 +13,7 @@
 /*global updateModule, script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, module, sachannel, staffchannel*/
 var Bot = require("bot.js").Bot;
 var utilities = require("utilities.js");
+var html_escape = require("utilities.js").html_escape;
 var MemoryHash = require('memoryhash.js').MemoryHash;
 
 var triviachan, revchan;
@@ -884,7 +885,7 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
                         sys.sendMessage(src, tadmins[b], id);
                     }
                     else {
-                        sys.sendHtmlMessage(src, "<timestamp/><font color = " + script.getColor(sys.id(tadmins[b])) + "><b>" + tadmins[b].toCorrectCase() + "</b></font color>", id);
+                        sys.sendHtmlMessage(src, "<timestamp/><font color = " + script.getColor(sys.id(tadmins[b])) + "><b>" + html_escape(tadmins[b].toCorrectCase()) + "</b></font color>", id);
                     }
                     tadmins.splice(b, 1);
                     b--;
@@ -899,7 +900,7 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
             sys.sendMessage(src, tadmins[b], id);
         }
         else {
-            sys.sendHtmlMessage(src, "<timestamp/><font color = " + script.getColor(sys.id(tadmins[b])) + "><b>" + tadmins[b].toCorrectCase() + "</b></font color>", id);
+            sys.sendHtmlMessage(src, "<timestamp/><font color = " + script.getColor(sys.id(tadmins[b])) + "><b>" + html_escape(tadmins[b].toCorrectCase()) + "</b></font color>", id);
         }
     }
     sys.sendMessage(src, "", id);
