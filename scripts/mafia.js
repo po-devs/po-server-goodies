@@ -4681,7 +4681,7 @@ function Mafia(mafiachan) {
             var t = parseInt(sys.time(), 10);
             for (var i = 0; i < recentGames.length; ++i) {
                 var game = recentGames[i];
-                mess.push('<tr><td>' + casedtheme(game.what) + '</td><td>' + game.who + '</td><td>' + getTimeString(t - game.win) + '</td><td>' + game.playerCount + '</td></tr>');
+                mess.push('<tr><td>' + casedtheme(game.what) + '</td><td>' + game.who + '</td><td>' + getTimeString(t - game.when) + ' ago </td><td>' + game.playerCount + '</td></tr>');
             }
             mess.push("</table>");
             sys.sendHtmlMessage(src, mess.join(""), mafiachan);
