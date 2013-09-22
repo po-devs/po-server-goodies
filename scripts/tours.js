@@ -10,7 +10,7 @@ touradmins.json, tastats.json, tourseeds.json, tourhistory.json, tours_cache.jso
 
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, Config, module*/
-var tourschan, tourserrchan, tours, tourwinmessages, tourstats, tourwarnings;
+var tourschan, tourserrchan, tours, tourwinmessages, tourstats, tourwarnings, tourconfig;
 
 if (typeof tourschan !== "string") {
     tourschan = sys.channelId("Tournaments");
@@ -4590,11 +4590,13 @@ module.exports = {
         }
     },
     onBan : function (src, dest) {
-        if (isInTour(dest)) {
+        var key = isInTour(sys.name(dest));
+        if (key) {
             disqualify(dest, key, false, true);
             return;
         }
         if (tours.tour[key].state == "signups") {
+            var index = tours.tour[key].players.indexOf(sys.name(dest).toLowerCase());
             tours.tour[key].players.splice(index, 1);
             tours.tour[key].cpt -= 1;
             return;

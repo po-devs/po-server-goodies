@@ -3461,8 +3461,7 @@ function Mafia(mafiachan) {
             "/updatestats: To update the mafia stats webpage (Use after mafiastat script changes)",
             "/featuretheme: To change the currently featured theme (Leave blank to disable Feature Themes)",
             "/votingthread: To update the link to the current Featured Theme Voting thread (Leave blank to remove URL and the line in the broadcast).",
-            "/forcefeature: To force the \"Featured Theme\" message to display.",
-            "/aboos: To send a bolded message to the channel for important announcements and warnings."]
+            "/forcefeature: To force the \"Featured Theme\" message to display."]
     };
 
     this.handleCommand = function (src, message, channel) {
@@ -5052,10 +5051,6 @@ function Mafia(mafiachan) {
         }
         if (command === "push") {
             var name = commandData;
-            if (!mafia.isMafiaSuperAdmin(src)) {
-                msg(src, "Super Mafia Admin Command.");
-                return;
-            }
             if (this.state != "entry") {
                 msg(src, "Pushing makes no sense outside entry...");
                 return;
@@ -5075,7 +5070,7 @@ function Mafia(mafiachan) {
             sendChanAll("±Game: " + name + " joined the game! (pushed by " + nonFlashing(sys.name(src)) + ")", mafiachan);
             sendChanAll("±Game: " + name + " joined the game! (pushed by " + nonFlashing(sys.name(src)) + ")", sachannel);
             return;
-        } 
+        }
         if (command === "updatestats") {
             mafia.mafiaStats.compileData();
             mafiabot.sendMessage(src, "Mafia stats page was updated!");
@@ -5113,14 +5108,6 @@ function Mafia(mafiachan) {
                 this.lastFeaturedAd = 0;
                 this.advertiseFeaturedTheme();
                 msg(src, "You forced the Featured Theme message to display!");
-            }
-            return;
-        }
-        if (command === "aboos") {
-            if (sys.auth(src) > 0 && sys.auth(src) < 4) {
-                sys.sendHtmlAll("<font color=" + sys.getColor(src) + "><timestamp/> <b><i>" + "+" + sys.name(src) + ":</i></b></font> <b>" + commandData + "</b>", mafiachan);
-            } else {
-                sys.sendHtmlAll("<font color=" + sys.getColor(src) + "><timestamp/> <b>" + sys.name(src) + ":</b></font> <b>" + commandData + "</b>", mafiachan);
             }
             return;
         }
