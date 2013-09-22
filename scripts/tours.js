@@ -2788,7 +2788,6 @@ function tourCommand(src, command, commandData, channel) {
             mus.sort();
             sys.sendMessage(src, "", channel);
             sys.sendMessage(src, "*** TOURNAMENT OWNERS ***", channel);
-            sys.sendMessage(src, "", channel);
             for (var o in tos) {
                 var id = sys.id(tos[o]);
                 if (!id) {
@@ -2801,7 +2800,6 @@ function tourCommand(src, command, commandData, channel) {
             if (script.hasAuthElements(mus)) {
                 sys.sendMessage(src, "", channel);
                 sys.sendMessage(src, "*** AUTH MEGAUSERS ***", channel);
-                sys.sendMessage(src, "", channel);
                 for (var m in mus) {
                     if (sys.dbAuths().indexOf(mus[m]) != -1) {
                         var id = sys.id(mus[m]);
@@ -2818,7 +2816,6 @@ function tourCommand(src, command, commandData, channel) {
             }
             sys.sendMessage(src, "", channel);
             sys.sendMessage(src, "*** MEGAUSERS ***", channel);
-            sys.sendMessage(src, "", channel);
             for (var m in mus) {
                 var id = sys.id(mus[m]);
                 if (!id) {
