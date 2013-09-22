@@ -98,6 +98,12 @@ function Mafia(mafiachan) {
         }
         return msg;
     }
+    function casedtheme(themename) {
+        if (mafia.themeManager.themes.hasOwnProperty(themename)) {
+            return mafia.themeManager.themes[themename].name;
+        }
+        return themename;
+    }
     
     var defaultTheme = {
         name: "Default",
@@ -453,6 +459,7 @@ function Mafia(mafiachan) {
 
     ThemeManager.prototype.remove = function (src, name, silent) {
         name = name.toLowerCase();
+        var broadcastname = casedtheme(name);
         if (name in this.themes) {
             delete this.themes[name];
             for (var i = 0; i < this.themeInfo.length; ++i) {
@@ -462,7 +469,6 @@ function Mafia(mafiachan) {
                 }
             }
             sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
-            var broadcastname = mafia.themeManager.themes[name].name;
             if (silent) {
                 sys.sendMessage(src, "±Murkrow: You removed the theme " + broadcastname + ".", mafiachan);
             } else {
@@ -483,7 +489,7 @@ function Mafia(mafiachan) {
                 }
             }
             sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
-            var broadcastname = mafia.themeManager.themes[name].name;
+            var broadcastname = casedtheme(name);
             if (!silent) {
                 mafiabot.sendAll(nonFlashing(sys.name(src)) + " enabled theme " + broadcastname + ".", sachannel);
                 mafiabot.sendAll(nonFlashing(sys.name(src)) + " enabled theme " + broadcastname + ".", mafiachan);
@@ -502,7 +508,7 @@ function Mafia(mafiachan) {
                 }
             }
             sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
-            var broadcastname = mafia.themeManager.themes[name].name;
+            var broadcastname = casedtheme(name);
             if (!silent) {
                 if (src !== Config.Mafia.bot) {
                     mafiabot.sendAll(nonFlashing(sys.name(src)) + " disabled theme " + broadcastname + ".", sachannel);
@@ -1048,7 +1054,7 @@ function Mafia(mafiachan) {
         if (ftime > this.lastFeaturedAd + 60 * 60) {
             this.lastFeaturedAd = ftime;
             var flink = mafia.themeManager.themes[featuredTheme].threadlink;
-            var ftheme = mafia.themeManager.themes[featuredTheme].name;
+            var ftheme = casedtheme(featuredTheme);
             var featured = (flink ? '<a href="' + flink + '">' + ftheme + '</a>' : ftheme );
             
             sendChanAll(DEFAULT_BORDER, mafiachan);
@@ -1065,21 +1071,22 @@ function Mafia(mafiachan) {
             return;
         }
         if (this.invalidName(src))
-                return;
+            return;
 
         var themeName = commandData.toLowerCase();
-
+        var reason;
         if (this.state == "blank") {
             this.state = "voting";
             this.ticks = 20;
             this.votes = {};
             this.possibleThemes = {};
             var total = 5;
-            if (PreviousGames.length === 0 || PreviousGames.slice(-1)[0].what != "default") {
+            /*if (PreviousGames.length === 0 || PreviousGames.slice(-1)[0].what != "default") {
                 this.possibleThemes["default"] = 0;
                 --total;
-            }
-            if (featuredTheme) {
+            }*/
+            this.possibleThemes["default"] = 0;
+            if (featuredTheme && featuredTheme !== "default") {
                 if (PreviousGames.length === 0 || PreviousGames.slice(-1)[0].what != featuredTheme) {
                     this.possibleThemes[featuredTheme] = 0;
                     --total;
@@ -1090,12 +1097,22 @@ function Mafia(mafiachan) {
                         .reverse()
                         .map(function (g) { return g.what; });
 
-            if (themeName in this.themeManager.themes && this.themeManager.themes[themeName].enabled) {
-                if (Check.indexOf(themeName) == -1 && themeName != "default") {
-                    if (!(themeName in this.possibleThemes)) {
-                        this.possibleThemes[themeName] = 0;
-                        --total;
+            if (themeName in this.themeManager.themes) {
+                if (this.themeManager.themes[themeName].enabled) {
+                    if (Check.indexOf(themeName) == -1) {
+                        if (!(themeName in this.possibleThemes)) {
+                            this.possibleThemes[themeName] = 0;
+                            --total;
+                        }
+                    } else {
+                        reason = " it was recently started";
                     }
+                } else {
+                    reason = " it is disabled";
+                }
+            } else {
+                if (themeName !== '*') {
+                    reason = " it is not a valid theme";
                 }
             }
 
@@ -1104,7 +1121,7 @@ function Mafia(mafiachan) {
                 var name = allThemes[indx];
                 allThemes.splice(indx, 1);
                 // exclude themes played recently
-                if (name != "default" && Check.indexOf(name) != -1) {
+                if (name != "default" && Check.indexOf(name) !== -1) {
                     continue;
                 }
                 // exclude disabled themes
@@ -1133,7 +1150,10 @@ function Mafia(mafiachan) {
             return;
         }
         if (!this.possibleThemes.hasOwnProperty(themeName)) {
-            sys.sendMessage(src, "±Game: You can not vote this theme!", mafiachan);
+            if (themeName !== '*') {
+                sys.sendMessage(src, "±Game: You can not vote this theme" + (reason ? " because " + reason : "") + "!", mafiachan);
+                reason = undefined;
+            }
             return;
         }
         var ip = sys.ip(src);
@@ -3203,7 +3223,7 @@ function Mafia(mafiachan) {
             }
             if (winner.theme !== null) {
                 sendChanAll("", mafiachan);
-                sendChanAll("±Game: Theme " + winner.theme + " won with " + winner.votes + " votes!", mafiachan);
+                sendChanAll("±Game: Theme " + this.themeManager.themes[winner.theme].name + " won with " + winner.votes + " votes!", mafiachan);
                 sendChanAll("±Game: Type /Join to enter the game!", mafiachan);
                 sendChanAll("", mafiachan);
                 this.startGame(null, winner.theme);
@@ -3432,6 +3452,7 @@ function Mafia(mafiachan) {
             "/disablenonpeak: To disable all non-peak Mafia Themes.",
             "/importold: To import old themes."],
         sma: ["/aliases: To check a user's known alts.",
+            "/push: To force a user into the current theme during sign ups.",
             "/remove: To remove a Mafia Theme!",
             "/mafiaadmin: To promote a user to Mafia Admin. Use /smafiaadmin for a silent promotion.",
             "/mafiasuperadmin: To promote a user to Super Mafia Admin. Use /smafiasuperadmin for a silent promotion.",
@@ -3440,7 +3461,8 @@ function Mafia(mafiachan) {
             "/updatestats: To update the mafia stats webpage (Use after mafiastat script changes)",
             "/featuretheme: To change the currently featured theme (Leave blank to disable Feature Themes)",
             "/votingthread: To update the link to the current Featured Theme Voting thread (Leave blank to remove URL and the line in the broadcast).",
-            "/forcefeature: To force the \"Featured Theme\" message to display."]
+            "/forcefeature: To force the \"Featured Theme\" message to display.",
+            "/aboos: To send a bolded message to the channel for important announcements and warnings."]
     };
 
     this.handleCommand = function (src, message, channel) {
@@ -4379,7 +4401,7 @@ function Mafia(mafiachan) {
         if (command === "themes") {
             var l = [];
             for (var t in mafia.themeManager.themes) {
-                l.push(mafia.themeManager.themes[t].name);
+                l.push(casedtheme(t));
             }
             msg(src, "Installed themes are: " + l.join(", "));
             return;
@@ -4395,7 +4417,7 @@ function Mafia(mafiachan) {
                 var theme = mafia.themeManager.themes[info[0].toLowerCase()];
                 if (!theme) continue;
                 if (data == noPlayer || data.indexOf(theme.name.toLowerCase()) != -1) {
-                    mess.push('<tr><td>' + theme.name + '</td><td><a href="' + info[1] + '">' + info[1] + '</a></td><td>' + (theme.author ? readable(theme.author, "and") : "unknown") + '</td><td>' + (theme.enabled ? "yes" : "no") + '</td></tr>');
+                    mess.push('<tr><td>' + theme.name + '</td><td><a href="' + info[1] + '">' + info[1] + '</a></td><td>' + (theme.author ? readable(theme.author, "and") : "Unknown") + '</td><td>' + (theme.enabled ? "Yes" : "No") + '</td></tr>');
                 }
             }
             mess.push("</table>");
@@ -4416,16 +4438,14 @@ function Mafia(mafiachan) {
                 }
             }
 
-            var theme = mafia.themeManager.themes[themeName],
-                name = theme.name;
-
+            var theme = mafia.themeManager.themes[themeName];
             if (!theme.changelog) {
-                sys.sendMessage(src, "±Game: " + name + " doesn't have a changelog!", mafiachan);
+                sys.sendMessage(src, "±Game: " + theme.name + " doesn't have a changelog!", mafiachan);
                 return;
             }
 
             sys.sendMessage(src, "", mafiachan);
-            sys.sendMessage(src, "±Game: " + name + "'s changelog: ", mafiachan);
+            sys.sendMessage(src, "±Game: " + theme.name + "'s changelog: ", mafiachan);
 
             if (Array.isArray(theme.changelog)) {
                 theme.changelog.forEach(function (line) {
@@ -4662,7 +4682,7 @@ function Mafia(mafiachan) {
             var t = parseInt(sys.time(), 10);
             for (var i = 0; i < recentGames.length; ++i) {
                 var game = recentGames[i];
-                mess.push('<tr><td>' + game.what + '</td><td>' + game.who + '</td><td>' + getTimeString(game.when - t) + '</td><td>' + game.playerCount + '</td></tr>');
+                mess.push('<tr><td>' + casedtheme(game.what) + '</td><td>' + game.who + '</td><td>' + getTimeString(game.when - t) + '</td><td>' + game.playerCount + '</td></tr>');
             }
             mess.push("</table>");
             sys.sendHtmlMessage(src, mess.join(""), mafiachan);
@@ -4685,7 +4705,7 @@ function Mafia(mafiachan) {
                 themeName = commandData.toLowerCase();
             }
             if (mafia.themeManager.themes[themeName]) {
-                mafia.mafiaStats.getWinData(src, channel, mafia.themeManager.themes[themeName].name);
+                mafia.mafiaStats.getWinData(src, channel, casedtheme(themeName));
                 return;
             } else {
                 mafiabot.sendMessage(src, commandData + " is not a theme", channel);
@@ -4732,7 +4752,7 @@ function Mafia(mafiachan) {
         }
         if (command == "featured") {
             if (featuredTheme) {
-                msg(src, mafia.themeManager.themes[featuredTheme].name + " is currently being featured!");
+                msg(src, casedtheme(featuredTheme) + " is currently being featured!");
             } else {
                 msg(src, "No theme is currently being featured!");
             }
@@ -4791,6 +4811,7 @@ function Mafia(mafiachan) {
                     sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
                 }
             }
+            sys.sendMessage(src, "", channel);
             return;
         }
 
@@ -4843,7 +4864,6 @@ function Mafia(mafiachan) {
             var result = [], stalkLog, index;
             for (var c = 0; c < num; ++c) {
                 stalkLog = stalkLogs[c].split("::**::");
-                
                 index = stalkLog.indexOf("*** NIGHT PHASE 2 ***");
                 if (index === -1) {
                     index = stalkLog.length - 1;
@@ -5046,7 +5066,7 @@ function Mafia(mafiachan) {
                 featuredTheme = undefined;
                 msg(src, "You cleared the currently featured theme.");
             } else {
-                msg(src, mafia.themeManager.themes[featuredTheme].name + " is now being featured.");
+                msg(src, casedtheme(featuredTheme) + " is now being featured.");
             }
             return;
         }
@@ -5067,6 +5087,14 @@ function Mafia(mafiachan) {
                 this.lastFeaturedAd = 0;
                 this.advertiseFeaturedTheme();
                 msg(src, "You forced the Featured Theme message to display!");
+            }
+            return;
+        }
+        if (command === "aboos") {
+            if (sys.auth(src) > 0 && sys.auth(src) < 4) {
+                sys.sendHtmlAll("<font color=" + sys.getColor(src) + "><timestamp/> <b><i>" + "+" + sys.name(src) + ":</i></b></font> <b>" + commandData + "</b>", mafiachan);
+            } else {
+                sys.sendHtmlAll("<font color=" + sys.getColor(src) + "><timestamp/> <b>" + sys.name(src) + ":</b></font> <b>" + commandData + "</b>", mafiachan);
             }
             return;
         }
