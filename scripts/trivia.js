@@ -878,7 +878,6 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
         if (script.hasAuthElements(tadmins)) {
             sys.sendMessage(src, "", id);
             sys.sendMessage(src, "*** AUTH TRIVIA ADMINS ***", id);
-            sys.sendMessage(src, "", id);
             for (var b in tadmins) {
                 if (sys.dbAuths().indexOf(tadmins[b]) != -1) {
                     if (sys.id(tadmins[b]) === undefined) {
@@ -895,7 +894,6 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
     }
     sys.sendMessage(src, "", id);
     sys.sendMessage(src, "*** " + type.toUpperCase() + " ***", id);
-    sys.sendMessage(src, "", id);
     for (var b in tadmins) {
         if (sys.id(tadmins[b]) === undefined) {
             sys.sendMessage(src, tadmins[b], id);
