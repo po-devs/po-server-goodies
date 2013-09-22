@@ -4589,6 +4589,17 @@ module.exports = {
             sendChanAll("Error in event 'tourBattleEnd': "+err, tourserrchan);
         }
     },
+    onBan : function (src, dest) {
+        if (isInTour(dest)) {
+            disqualify(dest, key, false, true);
+            return;
+        }
+        if (tours.tour[key].state == "signups") {
+            tours.tour[key].players.splice(index, 1);
+            tours.tour[key].cpt -= 1;
+            return;
+        }
+    },
     stepEvent : function() {
         tourStep();
     },
