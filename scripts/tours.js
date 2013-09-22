@@ -43,6 +43,7 @@ if (typeof tours !== "object") {
 var configDir = "tourconfig/";
 var dataDir = "tourdata/";
 var utilities = require('utilities.js');
+var html_escpae = require('utilities.js').html_escape;
 var tstats = require("newtourstats.js");
 var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
 var htmlborder = "<font color=#3DAA68><b>"+border+"</b></font>";
@@ -2794,7 +2795,7 @@ function tourCommand(src, command, commandData, channel) {
                     sys.sendMessage(src, tos[o], channel);
                 }
                 else {
-                    sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+                    sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + html_escape(sys.name(id)) + "</b></font>", channel);
                 }
             }
             if (script.hasAuthElements(mus)) {
@@ -2807,7 +2808,7 @@ function tourCommand(src, command, commandData, channel) {
                             sys.sendMessage(src, mus[m], channel);
                         }
                         else {
-                            sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+                            sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + html_escape(sys.name(id)) + "</b></font>", channel);
                         }
                         mus.splice(m, 1);
                         m--;
@@ -2822,7 +2823,7 @@ function tourCommand(src, command, commandData, channel) {
                     sys.sendMessage(src, mus[m], channel);
                 }
                 else {
-                    sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + sys.name(id) + "</b></font>", channel);
+                    sys.sendHtmlMessage(src, "<font color=" + sys.getColor(id) + "><timestamp/> <b>" + html_escape(sys.name(id)) + "</b></font>", channel);
                 }
             }
             sys.sendMessage(src, "", channel);
