@@ -4768,7 +4768,6 @@ function Mafia(mafiachan) {
             smas = smas.sort();
             sys.sendMessage(src, "", channel);
             sys.sendMessage(src, "*** MAFIA SUPER ADMINS ***", channel);
-            sys.sendMessage(src, "", channel);
             for (var i = 0; i < smas.length; i++) {
                 var id = sys.id(smas[i]);
                 if (!id) {
@@ -4786,7 +4785,6 @@ function Mafia(mafiachan) {
             if (script.hasAuthElements(mas)) {
                 sys.sendMessage(src, "", channel);
                 sys.sendMessage(src, "*** AUTH MAFIA ADMINS ***", channel);
-                sys.sendMessage(src, "", channel);
                 for (var i = 0; i < mas.length; i++) {
                     if (sys.dbAuths().indexOf(mas[i]) != -1) {
                         var id = sys.id(mas[i]);
@@ -4803,7 +4801,6 @@ function Mafia(mafiachan) {
             }
             sys.sendMessage(src, "", channel);
             sys.sendMessage(src, "*** MAFIA ADMINS ***", channel);
-            sys.sendMessage(src, "", channel);
             for (var i = 0; i < mas.length; i++) {
                 var id = sys.id(mas[i]);
                 if (!id) {
