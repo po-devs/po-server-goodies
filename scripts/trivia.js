@@ -401,7 +401,7 @@ TriviaGame.prototype.startTriviaRound = function () {
     /* Make a random number to get the ID of the (going to be) asked question, or use the suggestion */
     var questionNumber;
     if (Trivia.suggestion.id !== undefined) {
-        Trivia.questionNumber = suggestion.id;
+        Trivia.questionNumber = Trivia.suggestion.id;
         Trivia.suggestion.asked = true;
     }
     else {
