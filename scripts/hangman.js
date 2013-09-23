@@ -30,7 +30,9 @@ module.exports = function () {
     var points;
     var misses;
     var answers;
-
+    this.autoGame = false;
+    var quests = [];
+    quests = sys.getFileContent("hangmanq.txt");
 
     this.lastAdvertise = 0;
     this.guessCharacter = function (src, commandData) {
@@ -353,6 +355,7 @@ module.exports = function () {
         winner = name;
         nextGame = (new Date()).getTime() + winnerDelay * 1000;
         this.resetTimers();
+        this.autoGames(src);
     };
     this.passWinner = function (src, commandData) {
         if (commandData === undefined) {
@@ -519,6 +522,36 @@ module.exports = function () {
             break;
         }
     };
+    this.turnOnGames = function() {
+	    if (this.autoGame === true) {
+		    autoGame = false;
+		    return;
+	    }
+	    else if {this.autoGame === false) {
+		    autoGame = true;
+		    return;
+	    }
+    };
+    this.autoGames = function (src) {
+	    if (this.autoGame === true) {
+		    sys.delayedCall(function () {
+                hangman.startGame(src, quests[sys.rand(0, quests.length)]);
+            }, 120);
+		    return;
+		}
+	    else {
+		    return;
+		}
+	};
+    this.addQuest = function(commandData) {
+	    if (commandData === undefined) {
+            return;
+        }
+	    var newQ = commandData.toLowerCase();
+    	    sys.append("hangmanq.txt", commandData);
+	    hangbot.sendMessage("You have successfully added a new question!");
+	    return;
+    };
     this.onHelp = function (src, topic, channel) {
         if (topic === "hangman") {
             hangman.showCommands(src, channel);
@@ -683,7 +716,17 @@ module.exports = function () {
             hangman.hangmanBanList(src, commandData);
             return true;
         }
+       
+        if (command === "newq") {
+	        this.addQuest(commandData);
+	        return true;
+        }
 
+        if (command === "autogames") {
+	        this.turnOnGames();
+	        return true;
+        }
+        
         if (hangman.authLevel(src) < 2) {
             return false;
         }
