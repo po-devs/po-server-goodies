@@ -1979,7 +1979,7 @@ module.exports = {
         triviachan = sys.channelId('Trivia');
         revchan = sys.channelId('TrivReview');
         Trivia = SESSION.global().Trivia;
-        if (typeof Trivia === "undefined" || typeof Trivia != "object") {
+        if (!Trivia || !Trivia.started) {
             Trivia = new TriviaGame();
             triviaq = new QuestionHolder("triviaq.txt");
             trivreview = new QuestionHolder("trivreview.txt");
