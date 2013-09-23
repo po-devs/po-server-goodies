@@ -1567,7 +1567,7 @@ addAdminCommand("editq", function (src, commandData, channel) {
             return a - b;
         })[0] - 1;
     }
-    if (Trivia.roundQuestion === q) {
+    if (Trivia.roundQuestion === commandData) {
         triviabot.sendMessage(src, "This question is currently being asked. Please wait before editing");
         return;
     }
