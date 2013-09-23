@@ -43,7 +43,7 @@ if (typeof tours !== "object") {
 var configDir = "tourconfig/";
 var dataDir = "tourdata/";
 var utilities = require('utilities.js');
-var html_escpae = require('utilities.js').html_escape;
+var html_escape = require('utilities.js').html_escape;
 var tstats = require("newtourstats.js");
 var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
 var htmlborder = "<font color=#3DAA68><b>"+border+"</b></font>";
