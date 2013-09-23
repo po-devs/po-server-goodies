@@ -22,7 +22,6 @@ var triviabot = new Bot("Psyduck");
 var triviaCategories = ['Anime/Manga', 'Animals', 'Art', 'Comics', 'Food/Drink', 'Games', 'Geography', 'History', 'Internet', 'Language', 'Literature', 'Math', 'Misc', 'Movies', 'Music', 'Mythology', 'Pokemon', 'Pokemon Online', 'Politics', 'Religion', 'Science', 'Social Science', 'Society', 'Space', 'Sports', 'Technology', 'TV', 'Video Games'];
 var lastCatGame = 0;
 var lastUsedCats = [];
-var suggestion = {};
 
 var Trivia;
 try {
@@ -238,6 +237,7 @@ function TriviaGame() {
     this.startoff = false;
     this.autostart = false;
     this.ticks = -1;
+    this.suggestion = {};
     if (this.lastStopped === undefined)
         this.lastStopped = time();
 }
@@ -261,7 +261,7 @@ TriviaGame.prototype.startGame = function (data, name) {
     var x = time() - this.lastStopped;
     if (x < 16) return;
     if (name === "" && this.autostart === false) return;
-    suggestion = {};
+    Trivia.suggestion = {};
     data = data.split("*");
     this.maxPoints = data[0];
     if (data.length > 1) {
@@ -400,9 +400,9 @@ TriviaGame.prototype.startTriviaRound = function () {
     this.round++;
     /* Make a random number to get the ID of the (going to be) asked question, or use the suggestion */
     var questionNumber;
-    if (suggestion.id !== undefined) {
-        questionNumber = suggestion.id;
-        suggestion.asked = true;
+    if (Trivia.suggestion.id !== undefined) {
+        Trivia.questionNumber = suggestion.id;
+        Trivia.suggestion.asked = true;
     }
     else {
         questionNumber = Trivia.randomId();
@@ -434,8 +434,8 @@ TriviaGame.prototype.startTriviaRound = function () {
 TriviaGame.prototype.finalizeAnswers = function () {
     if (this.started === false)
         return;
-    if (suggestion.asked === true) {
-        suggestion = {};
+    if (Trivia.suggestion.asked === true) {
+        Trivia.suggestion = {};
     }
     var answer, id, answers = [].concat(triviaq.get(this.roundQuestion).answer.split(","));
     this.phase = "standby";
@@ -519,8 +519,8 @@ TriviaGame.prototype.finalizeAnswers = function () {
         winners.sort(function (a, b) {
             return b[1] - a[1];
         });
-        if (Object.keys(suggestion).length !== 0) {
-            this.sendAll(sys.name(suggestion.suggester) + "'s suggestion was cancelled because the game ended before it could be asked.", revchan);
+        if (Object.keys(Trivia.suggestion).length !== 0) {
+            this.sendAll(sys.name(Trivia.suggestion.suggester) + "'s suggestion was cancelled because the game ended before it could be asked.", revchan);
         }
         this.htmlAll("<h2>Congratulations to " + w + "</h2>" + winners.join(", ") + "");
         sendChanHtmlAll("<font size=5><font color='#3DAA68'><timestamp/> <b>±Psyduck: </b><font color='red'>While you're waiting for another game, why not submit a question? <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>Help and Guidelines are here!</a></font></font></font>", triviachan);
@@ -569,6 +569,7 @@ TriviaGame.prototype.resetTrivia = function () {
     this.phase = "";
     this.lastStopped = time();
     this.ticks = -1;
+    this.suggestion = {};
 };
 
 TriviaGame.prototype.key = function (src) {
@@ -1056,7 +1057,7 @@ addUserCommand("join", function (src, commandData, channel) {
         Trivia.sendPM(src, "You've already joined the game!", channel);
         return;
     }
-    if (suggestion.suggester === src) {
+    if (Trivia.suggestion.suggester === src) {
         Trivia.sendPM(src, "You can't join the game right after suggesting a question, you cheater!", channel);
         return;
     }
@@ -1172,9 +1173,9 @@ addAdminCommand("suggest", function (src, commandData, channel) {
         Trivia.sendPM(src, "The ID you specified is invalid for this Trivia game.", channel);
         return;
     }
-    suggestion.id = commandData;
-    suggestion.suggester = src;
-    suggestion.asked = false;
+    Trivia.suggestion.id = commandData;
+    Trivia.suggestion.suggester = src;
+    Trivia.suggestion.asked = false;
     Trivia.sendAll(sys.name(src) + " made a suggestion for the next question to be asked in Trivia.", revchan);
 }, "Allows you to suggest a question to be asked next in Trivia. Format /suggest ID.");
 
