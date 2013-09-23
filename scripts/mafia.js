@@ -3637,11 +3637,14 @@ function Mafia(mafiachan) {
             name = sys.name(src);
             if (this.isInGame(name) && this.hasCommand(name, command, "night")) {
                 commandData = this.correctCase(commandData);
-                if (!this.isInGame(commandData)) {
+                player = mafia.players[name];
+                if (commandData == '*' && ["OnlySelf"].indexOf(player.role.actions.night[command].target) !== -1) {
+                    commandData = name;
+                }
+                else if (!this.isInGame(commandData)) {
                     sys.sendMessage(src, "±Hint: That person is not playing!", mafiachan);
                     return;
                 }
-                player = mafia.players[name];
                 target = mafia.players[commandData];
 
                 this.addPhaseStalkAction(name, command, target.name);
