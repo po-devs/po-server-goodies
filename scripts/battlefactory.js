@@ -11,15 +11,15 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Coding style: semicolon are not required here but great caution is required
-/*jshint asi:true*/
-/*global sendChanAll, bfbot, staffchannel, tier_checker, sendChanHtmlAll*/
+/*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
+/*global sendChanAll, bfbot, staffchannel, tier_checker, sendChanHtmlAll, sys, Config, SESSION, require, module*/
 
 // Globals
 var bfversion = "1.100";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
-var messDir = dataDir+"messages/";
-var bfsets, working, defaultsets, userqueue, messagebox, teamrevchan, submitbans, bfhash, reviewers;
+//var messDir = dataDir+"messages/";
+var bfsets, working, defaultsets, userqueue, /*messagebox,*/ teamrevchan, submitbans, bfhash, reviewers;
 var utilities = require('utilities.js');
 var saveInterval = 86400; // autosave every day
 
@@ -176,7 +176,7 @@ function createEntry(name, data, srcurl) {
     return false;
 }
 
-function importOld(name) {
+/*function importOld(name) {
     var basepathname = "bfteams_" + (name.replace(/ /g, "")).toLowerCase() + ".json";
     if (sys.getFileContent(dataDir + basepathname) !== undefined) {
         var data;
@@ -197,7 +197,7 @@ function importOld(name) {
         return true;
     }
     return false;
-}
+}*/
 
 // Save user generated info periodically as a backup
 function autoSave(type, params) {
@@ -253,9 +253,9 @@ function isReadable(key) {
 }
 
 function shuffle(array) {
-    var sfunction = function(a,b) {
+    var sfunction = function() {
         return Math.random()-0.5;
-    }
+    };
     return array.sort(sfunction);
 }
 
@@ -359,9 +359,7 @@ function refresh(key) {
             var setlength = 0;
             if (isReadable(key)) {
                 var lteams = teamfile[a];
-                for (var k in lteams) {
-                    setlength += 1;
-                }
+                setlength = Object.keys(lteams).length;
             }
             else {
                 setlength = teamfile[a].length;
@@ -739,9 +737,7 @@ function factoryCommand(src, command, commandData, channel) {
             var setlength = 0;
             if (isReadable(tfile)) {
                 var lteams = tfile[t];
-                for (var k in lteams) {
-                    setlength += 1;
-                }
+                setlength = Object.keys(lteams).length;
             }
             else {
                 setlength = tfile[t].length;
@@ -909,9 +905,7 @@ function factoryCommand(src, command, commandData, channel) {
             var setlength = 0;
             if (isReadable(tfile[t])) {
                 var lteams = tfile[t];
-                for (var k in lteams) {
-                    setlength += 1;
-                }
+                setlength = Object.keys(lteams).length;
             }
             else {
                 setlength = tfile[t].length;
@@ -930,7 +924,7 @@ function factoryCommand(src, command, commandData, channel) {
         for (var h in bfhash) {
             table += "<tr><td>"+html_escape(h)+"</td><td>"+(bfhash[h].active ? "Yes" : "No")+"</td><td>"+(bfhash[h].enabled ? "Yes" : "No")+"</td><td>"+(bfhash[h].hasOwnProperty('url') ? "<a href="+bfhash[h].url+">"+html_escape(bfhash[h].url)+"</a></td></tr>" : "Not Specified");
         }
-        table += "</table>"
+        table += "</table>";
         sys.sendHtmlMessage(src,table,channel);
         return;
     }
@@ -1432,7 +1426,7 @@ function factoryCommand(src, command, commandData, channel) {
 }
 
 // Set file checking
-function setlint(checkfile, strict) {
+function setlint(checkfile) {
     var errors = [];
     var warnings = [];
     var suggestions = [];
@@ -1827,7 +1821,7 @@ function getStats(src, team, poke) {
     };
     var stats = ["HP", "Attack", "Defense", "Sp.Atk", "Sp.Def", "Speed"];
     var statlist = [];
-    var pokeinfo = sys.pokeBaseStats(sys.teamPoke(src,team,poke))
+    var pokeinfo = sys.pokeBaseStats(sys.teamPoke(src,team,poke));
     for (var s=0; s<6; s++) {
         var natureboost = getNature(info.nature);
         if (s === 0) { // HP Stat
@@ -1855,7 +1849,7 @@ function getStats(src, team, poke) {
         }
     }
     var msg = [];
-    msg.push(info.poke+" @ "+info.item+"; Ability: "+info.ability+"; "+info.nature+" Nature; Level "+info.level)
+    msg.push(info.poke+" @ "+info.item+"; Ability: "+info.ability+"; "+info.nature+" Nature; Level "+info.level);
     msg.push(info.moves.join(" / "),"Stats: "+statlist.join(" / "));
     return msg;
 }
@@ -1889,7 +1883,7 @@ function generateTeam(src, team, mode) {
                 for (var t in sets) {
                     available.push(sets[t]);
                 }
-                var prop = available[sys.rand(0, available.length)]
+                var prop = available[sys.rand(0, available.length)];
                 teaminfo[p] = {
                     'poke': sys.pokeNum(prop.poke),
                     'nature': sys.natureNum(prop.nature),
@@ -1902,7 +1896,7 @@ function generateTeam(src, team, mode) {
                 };
             }
             else {
-                var set = sets[sys.rand(0, sets.length)]
+                var set = sets[sys.rand(0, sets.length)];
                 var actualset = "";
                 if (typeof set == "object") {
                     actualset = set.set;
@@ -1933,11 +1927,11 @@ function generateTeam(src, team, mode) {
                 else {
                     return ivprioritise.indexOf(a.stat) - ivprioritise.indexOf(b.stat);
                 }
-            }
+            };
         for (var s=0;s<6;s++) {
             var pdata = teaminfo[s];
             sys.changePokeNum(src,team,s,pdata.poke);
-            sys.changePokeName(src,team,s,sys.pokemon(pdata.poke))
+            sys.changePokeName(src,team,s,sys.pokemon(pdata.poke));
             sys.changePokeNature(src,team,s,pdata.nature);
             sys.changePokeAbility(src,team,s,pdata.ability);
             sys.changePokeItem(src,team,s,pdata.item);
@@ -1981,7 +1975,6 @@ function generateTeam(src, team, mode) {
             sys.changePokeHappiness(src,team,s,happiness);
             var shinechance = 8192;
             if (sys.ladderRating(src, "Battle Factory") !== undefined) {
-                var rating = sys.ladderRating(src, "Battle Factory") > 0 ? sys.ladderRating(src, "Battle Factory") : 1;
                 shinechance = Math.ceil(8192 * 1000000 / Math.pow(sys.ladderRating(src, "Battle Factory"), 2));
             }
             sys.changePokeShine(src, team, s, sys.rand(0,shinechance) === 0 ? true : false);
@@ -2124,13 +2117,6 @@ module.exports = {
             sendChanAll("Error in starting battle factory: "+err, staffchannel);
             working = false;
         }
-    },
-    beforeChannelJoin : function (src, chan) {
-        // Review is public now as of 17 Jan, channel bans still override if necessary
-        // if ((!isReviewer(src)) && chan == teamrevchan) {
-        //     capsbot.sendMessage(src, "You cannot access this channel!");
-        //     sys.stopEvent();
-        // }
     },
     afterChannelJoin : function(player, chan) {
         if (chan === sys.channelId('BF Review') && isReviewer(player)) {
@@ -2298,4 +2284,4 @@ module.exports = {
         return true;
     },
     "help-string": ["battlefactory: To know the battlefactory commands"]
-}
+};
