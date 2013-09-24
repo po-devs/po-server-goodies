@@ -789,7 +789,8 @@ function factoryCommand(src, command, commandData, channel) {
         var id = sys.pokeNum(tmp[0])%65536;
         var revsets = {};
         if (tmp.length == 2) {
-            revsets = bfsets.hasOwnProperty(tmp[1]) ? bfsets[tmp[1]] : bfsets.preset;
+            var pack = utilities.getCorrectPropName(tmp[1], bfsets);
+            revsets = bfsets.hasOwnProperty(pack) ? bfsets[pack] : bfsets.preset;
         }
         else {
             revsets = bfsets.preset;
