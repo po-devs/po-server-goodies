@@ -95,9 +95,8 @@ var tourownercommands = ["/megauser: Makes someone a megauser. Use /smegauser fo
                     "/tourstart: Starts a tour of that tournament immediately, provided one is not in signups. Format is /tourstart tier:parameters.",
                     "/clearrankings [all/month]: Clears the tour rankings, 'all' clears all history, [month] will only clear a particular month (eg /clearrankings January).",
                     "/cleareventrankings [all/month]: Clears the event rankings, 'all' clears all history, [month] will only clear a particular month (eg /clearrankings January).",
-                    "/clearmetric: Clears all tournaments stats (?).",
-                    "/rundecay: Forces a calculation of decay (?).",
-                    "/purgekeys: Purges non-usable keys (??).",
+                    "/clearmetric: Clears staff stats and tour history.",
+                    "/rundecay: Forces a calculation of seed rankings.",
                     "/addrangewarning: Adds a warning for an IP range.",
                     "/removerangewarning: Removes a warning for an IP range.",
                     "/rangewarns: Checks the current IP range warnings.",
@@ -1320,11 +1319,6 @@ function tourCommand(src, command, commandData, channel) {
                 tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1, "working": false};
                 refreshTicks(true);
                 sendBotAll(sys.name(src)+" reset the tour system!",tourschan,false);
-                return true;
-            }
-            if (command == "purgekeys") {
-                purgeKeys();
-                sendBotMessage(src,"Purged non-usable keys!",tourschan,false);
                 return true;
             }
             if (command == "addrangewarning") {
