@@ -23,7 +23,7 @@ var Config = {
     Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js", "blackjack.js", "mafiastats.js"],
     Mafia: {
         bot: "Murkrow",
-        norepeat: 11,
+        norepeat: 5,
         stats_file: "mafia_stats.json",
         max_name_length: 16,
         notPlayingMsg: "±Game: The game is in progress. Please type /join to join the next mafia game."
