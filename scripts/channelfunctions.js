@@ -32,7 +32,7 @@ POChannel.prototype.setTopic = function(src, topicInfo)
     if (topicInfo === undefined) {
         if (typeof this.topic != 'undefined') {
             channelbot.sendMessage(src, "Topic for this channel is: " + this.topic, this.id);
-            if (SESSION.channels(channel).topicSetter) {
+            if (SESSION.channels(this.id).topicSetter) {
                 channelbot.sendMessage(src, "Topic was set by " + nonFlashing(this.topicSetter), this.id);
             }
         } else {
