@@ -878,7 +878,7 @@ function Mafia(mafiachan) {
         // writes the list of roles for each side
         for (var s = 0; s < side_order.length; ++s) {
             try {
-                side = side_order[s];                
+                side = side_order[s];
                 if (side_list[side] !== undefined)
                     sides.push("±Side: The " + this.trside(side) + (side == "village" ? " (Village)" : "") + " consists of: " + side_list[side].join(", ") + ".");
             } catch (err) {
@@ -2543,6 +2543,7 @@ function Mafia(mafiachan) {
                             else if (command == "inspect") {
                                 var Sight = Action.Sight;
                                 targetMode = targetMode || {};
+                                var inspectMode = target.role.actions.inspect || {};
                                 if (targetMode.revealSide !== undefined || Sight === "Team") {
                                     var revealedSide = mafia.theme.trside(target.role.side);
                                     if (typeof inspectMode.seenSide == "string" && inspectMode.seenSide in mafia.theme.sideTranslations) {
