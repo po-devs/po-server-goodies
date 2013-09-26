@@ -3272,7 +3272,7 @@ function Mafia(mafiachan) {
                 var role = player.role;
 
                 if (typeof role.actions.startup == "object" && typeof role.actions.startup.revealAs == "string") {
-                    mafia.sendPlayer(player.name, "±Game: You are a " + mafia.theme.trrole(role.startup.revealAs) + "!");
+                    mafia.sendPlayer(player.name, "±Game: You are a " + mafia.theme.trrole(role.actions.startup.revealAs) + "!");
                 } else {
                     if (typeof role.startupmsg == "string") {
                         mafia.sendPlayer(player.name, needsBot(role.startupmsg, "Game").replace(/~Role~/gi, role.translation).replace(/~Side~/gi, mafia.theme.trside(player.role.side)));
