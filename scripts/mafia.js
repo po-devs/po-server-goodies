@@ -2144,7 +2144,7 @@ function Mafia(mafiachan) {
                     mafia.sendPlayer(player.name, "±Game: You are a " + mafia.theme.trrole(role.actions.startup.revealAs) + "!");
                 } else {
                     if (typeof role.startupmsg == "string") {
-                        mafia.sendPlayer(player.name, needsBot(role.actions.startupmsg, "Game").replace(/~Role~/gi, role.translation).replace(/~Side~/gi, mafia.theme.trside(player.role.side)));
+                        mafia.sendPlayer(player.name, needsBot(role.startupmsg, "Game").replace(/~Role~/gi, role.translation).replace(/~Side~/gi, mafia.theme.trside(player.role.side)));
                     } else {
                         mafia.sendPlayer(player.name, "±Game: You are a " + role.translation + "!");
                     }
@@ -3272,10 +3272,10 @@ function Mafia(mafiachan) {
                 var role = player.role;
 
                 if (typeof role.actions.startup == "object" && typeof role.actions.startup.revealAs == "string") {
-                    mafia.sendPlayer(player.name, "±Game: You are a " + mafia.theme.trrole(role.actions.startup.revealAs) + "!");
+                    mafia.sendPlayer(player.name, "±Game: You are a " + mafia.theme.trrole(role.startup.revealAs) + "!");
                 } else {
                     if (typeof role.startupmsg == "string") {
-                        mafia.sendPlayer(player.name, needsBot(role.actions.startupmsg, "Game").replace(/~Role~/gi, role.translation).replace(/~Side~/gi, mafia.theme.trside(player.role.side)));
+                        mafia.sendPlayer(player.name, needsBot(role.startupmsg, "Game").replace(/~Role~/gi, role.translation).replace(/~Side~/gi, mafia.theme.trside(player.role.side)));
                     } else {
                         mafia.sendPlayer(player.name, "±Game: You are a " + role.translation + "!");
                     }
