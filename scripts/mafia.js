@@ -21,6 +21,7 @@ function Mafia(mafiachan) {
     var mafia = this;
     
     this.mafiaStats = require("mafiastats.js");
+    this.mafiaChecker = require("mafiachecker.js");
     
     var noPlayer = '*',
         CurrentGame,
@@ -433,6 +434,34 @@ function Mafia(mafiachan) {
         sys.webCall(url, function (resp) {
             try {
                 var plain_theme = JSON.parse(resp);
+                
+                var errors = mafia.mafiaChecker.checkTheme(plain_theme);
+                if (errors.fatal.length > 0) {
+                    sys.sendMessage(src, "", mafiachan);
+                    msg(src, "Fatal Errors found in the theme: ");
+                    for (var e = 0; e < 5 && e < errors.fatal.length; e++) {
+                        sys.sendHtmlMessage(src, "-" + errors.fatal[e], mafiachan);
+                    }
+                    if (errors.fatal.length > 5) {
+                        msg(src, "And " + (errors.fatal.length - 5) + " other errors.");
+                    }
+                }
+                if (errors.minor.length > 0) {
+                    sys.sendMessage(src, "", mafiachan);
+                    msg(src, "Minor Errors found in the theme: ");
+                    for (var e = 0; e < 5 && e < errors.minor.length; e++) {
+                        sys.sendHtmlMessage(src, "-" + errors.minor[e], mafiachan);
+                    }
+                    if (errors.minor.length > 5) {
+                        msg(src, "And " + (errors.minor.length - 5) + " other errors.");
+                    }
+                }
+                if (errors.fatal.length > 0) {
+                    sys.sendMessage(src, "", mafiachan);
+                    msg(src, "Theme contains fatal errors, unable to load it.");
+                    return;
+                }
+                
                 var theme = manager.loadTheme(plain_theme);
                 var lower = theme.name.toLowerCase();
                 var needsDisable = false;
