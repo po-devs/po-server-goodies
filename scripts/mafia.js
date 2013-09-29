@@ -2342,11 +2342,11 @@ function Mafia(mafiachan) {
                     outer:
                     for (t in targets) {
                         var evadeChance = Math.random();
-                        target = targets[t];
+                        var targetName = targets[t];
                         
-                        if (mafia.isInGame(target) && mafia.players[target].redirectTo !== undefined && (mafia.players[target].redirectActions === "*" || mafia.players[target].redirectActions.indexOf(o.action) !== -1)) {
-                            target = mafia.players[target].redirectTo;
-                            mafia.sendPlayer(player.name, "±Game: Your " + o.action + " was shielded by " + target + "!");
+                        if (mafia.isInGame(targetName) && mafia.players[targetName].redirectTo !== undefined && (mafia.players[targetName].redirectActions === "*" || mafia.players[targetName].redirectActions.indexOf(o.action) !== -1)) {
+                            targetName = mafia.players[targetName].redirectTo;
+                            mafia.sendPlayer(player.name, "±Game: Your " + o.action + " was shielded by " + targetName + "!");
                         }
                         
                         for (var c in commandList) {
@@ -2358,7 +2358,7 @@ function Mafia(mafiachan) {
                             var finalPoisonCount = Action.count || 2;
                             var finalCurseCount = Action.curseCount || 2;
                             command = commandList[c];
-                            target = targets[t];
+                            target = targetName;
                             if (["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "convert", "copy", "curse", "detox", "dispel", "shield", "dummy", "dummy2", "dummy3"].indexOf(command) == -1) {
                                 continue;
                             }
