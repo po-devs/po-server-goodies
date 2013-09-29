@@ -782,7 +782,7 @@ init : function() {
         if (sys.auth(id) != 2) return false;
         var name = sys.name(id);
         for (var i = 0; i < Config.superAdmins.length; ++i) {
-            if (cmp(name, Config.superAdmins[i]))
+            if (script.cmp(name, Config.superAdmins[i]))
                 return true;
         }
         return false;
