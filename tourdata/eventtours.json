@@ -1,129 +1,129 @@
 {
-    "1-9-2013": {
-        "tier": "Wifi UU",
+    "1-10-2013": {
+        "tier": "Wifi LU",
         "settings": {}
     },
-    "2-9-2013": {
-        "tier": "Wifi Triples",
+    "2-10-2013": {
+        "tier": "HGSS OU",
         "settings": {}
     },
-    "3-9-2013": {
-        "tier": "ADV OU",
-        "settings": {}
-    },
-    "4-9-2013": {
-        "tier": "Wifi NU",
-        "settings": {}
-    },
-    "5-9-2013": {
-        "tier": "Wifi OU",
-        "settings": {}
-    },
-    "6-9-2013": {
-        "tier": "Wifi LC",
-        "settings": {}
-    },
-    "7-9-2013": {
+    "3-10-2013": {
         "tier": "Monotype",
         "settings": {}
     },
-    "8-9-2013": {
+    "4-10-2013": {
+        "tier": "Wifi LC",
+        "settings": {}
+    },
+    "5-10-2013": {
+        "tier": "Wifi OU",
+        "settings": {}
+    },
+    "6-10-2013": {
         "tier": "Random Battle",
         "settings": {}
     },
-    "9-9-2013": {
-        "tier": "Wifi OU Doubles",
-        "settings": {}
-    },
-    "10-9-2013": {
+    "7-10-2013": {
         "tier": "Challenge Cup",
         "settings": {}
     },
-    "11-9-2013": {
-        "tier": "HGSS OU",
-        "settings": {}
-    },
-    "12-9-2013": {
-        "tier": "Wifi LU",
-        "settings": {}
-    },
-    "13-9-2013": {
-        "tier": "Wifi Triples",
-        "settings": {}
-    },
-    "14-9-2013": {
-        "tier": "Wifi OU",
-        "settings": {}
-    },
-    "15-9-2013": {
-        "tier": "Battle Factory 6v6",
-        "settings": {}
-    },
-    "16-9-2013": {
+    "8-10-2013": {
         "tier": "Wifi Ubers",
         "settings": {}
     },
-    "17-9-2013": {
-        "tier": "Monotype",
-        "settings": {}
-    },
-    "18-9-2013": {
-        "tier": "Wifi UU",
-        "settings": {}
-    },
-    "19-9-2013": {
-        "tier": "HGSS OU",
-        "settings": {}
-    },
-    "20-9-2013": {
-        "tier": "Wifi NU",
-        "settings": {}
-    },
-    "21-9-2013": {
-        "tier": "Random Battle",
-        "settings": {}
-    },
-    "22-9-2013": {
+    "9-10-2013": {
         "tier": "Wifi OU Doubles",
         "settings": {}
     },
-    "23-9-2013": {
+    "10-10-2013": {
+        "tier": "Wifi NU",
+        "settings": {}
+    },
+    "11-10-2013": {
         "tier": "ADV OU",
         "settings": {}
     },
-    "24-9-2013": {
-        "tier": "Wifi LU",
+    "12-10-2013": {
+        "tier": "Wifi UU",
         "settings": {}
     },
-    "25-9-2013": {
-        "tier": "HGSS UU",
-        "settings": {}
-    },
-    "26-9-2013": {
-        "tier": "Monotype",
-        "settings": {}
-    },
-    "27-9-2013": {
-        "tier": "Wifi LC",
-        "settings": {}
-    },
-    "28-9-2013": {
-        "tier": "Wifi Ubers",
-        "settings": {}
-    },
-    "29-9-2013": {
+    "13-10-2013": {
         "tier": "Battle Factory 6v6",
         "settings": {}
     },
+    "14-10-2013": {
+        "tier": "Wifi LU",
+        "settings": {}
+    },
+    "15-10-2013": {
+        "tier": "HGSS OU",
+        "settings": {}
+    },
+    "16-10-2013": {
+        "tier": "Wifi Triples",
+        "settings": {}
+    },
+    "17-10-2013": {
+        "tier": "Wifi Ubers",
+        "settings": {}
+    },
+    "18-10-2013": {
+        "tier": "VGC 2013",
+        "settings": {}
+    },
+    "19-10-2013": {
+        "tier": "Wifi OU",
+        "settings": {}
+    },
+    "20-10-2013": {
+        "tier": "Monotype",
+        "settings": {}
+    },
+    "21-10-2013": {
+        "tier": "Challenge Cup",
+        "settings": {}
+    },
+    "22-10-2013": {
+        "tier": "ADV OU",
+        "settings": {}
+    },
+    "23-10-2013": {
+        "tier": "Wifi LC",
+        "settings": {}
+    },
+    "24-10-2013": {
+        "tier": "Wifi OU Doubles",
+        "settings": {}
+    },
+    "25-10-2013": {
+        "tier": "Wifi UU",
+        "settings": {}
+    },
+    "26-10-2013": {
+        "tier": "Battle Factory 6v6",
+        "settings": {}
+    },
+    "27-10-2013": {
+        "tier": "Random Battle",
+        "settings": {}
+    },
+    "28-10-2013": {
+        "tier": "HGSS OU",
+        "settings": {}
+    },
+    "29-10-2013": {
+        "tier": "Wifi Triples",
+        "settings": {}
+    },
+    "30-10-2013": {
+        "tier": "Wifi NU",
+        "settings": {}
+    },
+    "31-10-2013": {
+        "tier": "Wifi OU",
+        "settings": {}
+    },
     "30-9-2013": {
-        "tier": "Wifi OU",
-        "settings": {}
-    },
-    "31-9-2013": {
-        "tier": "Wifi OU",
-        "settings": {}
-    },
-    "31-8-2013": {
         "tier": "Wifi OU",
         "settings": {}
     }
