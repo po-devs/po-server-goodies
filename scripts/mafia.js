@@ -95,6 +95,13 @@ function Mafia(mafiachan) {
             return "";
         }
     }
+    function removeDuplicates(arr) {
+        var result = {};
+        for (var x in arr) {
+            result[arr[x]] = 1;
+        }
+        return Object.keys(result);
+    }
     function needsBot(msg, botName) {
         if (msg.indexOf(":") === -1 && msg.indexOf("***") === -1) {
             return "±" + (botName ? botName : "Game") + ": " + msg;
@@ -3011,7 +3018,7 @@ function Mafia(mafiachan) {
             
             this.compilePhaseStalk("VOTING PHASE " + mafia.time.days);
 
-            var voted = {}, player, vote;
+            var voted = {}, voters = {}, player, vote;
             for (var pname in mafia.votes) {
                 player = mafia.players[pname];
                 var target = mafia.votes[pname];
@@ -3019,6 +3026,7 @@ function Mafia(mafiachan) {
                 if (!mafia.isInGame(target)) continue;
                 if (!(target in voted)) {
                     voted[target] = 0;
+                    voters[target] = [];
                 }
                 vote = player.role.actions.vote;
                 if (vote !== undefined) {
@@ -3030,6 +3038,7 @@ function Mafia(mafiachan) {
                 } else {
                     voted[target] += 1;
                 }
+                voters[target].push(pname);
             }
             var tie = true, maxi = 0, downed = noPlayer, voteshield;
             for (var x in voted) {
@@ -3082,6 +3091,25 @@ function Mafia(mafiachan) {
                         }
                         if (singleAffected.length > 0) {
                             sendChanAll(needsBot(lyn.singlekillmsg, "Kill").replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")), mafiachan);
+                        }
+                    }
+                    if ("killVoters" in lyn) {
+                        var first = lyn.killVoters.first || 1,
+                            last =  lyn.killVoters.last || 0,
+                            votersList = voters[downed].concat();
+                            
+                        if (votersList.indexOf(downed) !== -1) {
+                            votersList.splice(votersList.indexOf(downed), 1);
+                        }
+                        votersList = removeDuplicates(votersList.slice(0, first).concat(votersList.slice(-last)));
+                        
+                        actionMessage = lyn.killVoters.message ? lyn.killVoters.message : "~Target~ died for having voted for ~Self~!";
+                        sendChanAll(needsBot(actionMessage).replace(/~Self~/g, lynched.name).replace(/~Target~/g, readable(votersList, "and")), mafiachan);
+                        for (r in votersList) {
+                            target = votersList[r];
+                            if (this.isInGame(target)) {
+                                mafia.kill(this.players[target]);
+                            }
                         }
                     }
                     if ("poisonRoles" in lyn) {
@@ -4172,6 +4200,28 @@ function Mafia(mafiachan) {
                     this.addPhaseStalkHax(name, command, commandData, haxers);
                 }
                 return;
+            }
+        }
+        if (command === "tt" || command === "teamtalk") {
+            if (mafia.isInGame(sys.name(src)) && ["night", "day", "standby"].indexOf(mafia.state) !== -1)  {
+                name = sys.name(src);
+                player = mafia.players[name];
+                if (player.role.actions && "teamTalk" in player.role.actions) {
+                    var partners = [];
+                    if (Array.isArray(player.role.actions.teamTalk)) {
+                        for (x in player.role.actions.teamTalk) {
+                            partners = partners.concat(mafia.getPlayersForRole(player.role.actions.teamTalk[x]));
+                        }
+                        partners.push(name);
+                        partners = removeDuplicates(partners);
+                    } else {
+                        partners = mafia.getPlayersForTeam(player.role.side);
+                    } 
+                    for (x in partners) {
+                        mafia.sendPlayer(partners[x], name + ": [Team] " + commandData);
+                    }
+                    return;
+                }
             }
         }
         if (command === "start" || command === "votetheme") {
