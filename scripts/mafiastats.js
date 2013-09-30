@@ -265,6 +265,8 @@ function mafiaStats() {
         for (var x = 0; x < totalTeam.length; x++) {
             sys.sendMessage(src, ++count + ": " + totalTeam[x][0] + ". Times Won: " + totalTeam[x][1] + ". Average Players per win: " + totalTeam[x][2], channel);
         }
+        sys.sendMessage(src, "", channel);
+        sys.sendMessage(src, "±Stats: For more details, check http://server.pokemon-online.eu/mafiathemes/" + theme + "_stats.html", channel);
     };
     this.createTable = function (theme) {
         var themeData = require("mafia.js").themeManager.themes[theme.toLowerCase()];
