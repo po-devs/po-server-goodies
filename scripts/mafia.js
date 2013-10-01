@@ -1918,7 +1918,7 @@ function Mafia(mafiachan) {
             
             mafia.compilePhaseStalk("GAME END");
             currentStalk.push("Winners: None (game ended in a draw).");
-            mafia.mafiaStats.result(mafia.theme.name);
+            mafia.mafiaStats.result("Tie");
             if (sys.id('PolkaBot') !== undefined) {
                 sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
             }
