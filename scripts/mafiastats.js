@@ -208,9 +208,9 @@ function mafiaStats() {
         var hData = this.data.hoursData;
         for (var x = 0; x < 24; x++) {
             if (!hData[x]) {
-                data.hData[x] = {};
-                data.hData[x].players = 0;
-                data.hData[x].gamesPlayed = 0;
+                hData[x] = {};
+                hData[x].players = 0;
+                hData[x].gamesPlayed = 0;
             }
         }
         var output = [html.title.format("Games Played Per Hour (UTC)")];
