@@ -753,12 +753,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command === "ability") {
         sys.stopEvent();
         if (commandData === "") {
-            normalbot.sendMessage("Please specify an ability!", channel);
+            normalbot.sendMessage(src, "Please specify an ability!", channel);
             return;
         }
         var abilityId = sys.abilityNum(commandData);
         if (!abilityId) {
-            normalbot.sendMessage(commandData + " is not a valid ability!", channel);
+            normalbot.sendMessage(src, commandData + " is not a valid ability!", channel);
             return;
         }
         sys.sendHtmlMessage(src, "", channel, true);
@@ -770,13 +770,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command === "item") {
         sys.stopEvent();
         if (commandData === "") {
-            normalbot.sendMessage("Please specify an item!", channel);
+            normalbot.sendMessage(src, "Please specify an item!", channel);
             return;
         }
         var itemId = sys.itemNum(commandData);
         var berryId = itemId - 8000;
         if (!itemId) {
-            normalbot.sendMessage(commandData + " is not a valid item!", channel);
+            normalbot.sendMessage(src, commandData + " is not a valid item!", channel);
             return;
         }
         var isBerry = (commandData.toLowerCase().substr(commandData.length - 5) === "berry");
