@@ -29,7 +29,7 @@ function mafiaChecker() {
                 lists.push("roles"+i);
                 ++i;
             }
-            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "drawmsg", "minplayers", "nolynch", "votesniping", "ticks", "silentVote", "nonPeak", "changelog", "threadlink", "altname", "tips"].concat(lists), "Your theme");
+            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "drawmsg", "minplayers", "nolynch", "votesniping", "ticks", "silentVote", "nonPeak", "changelog", "threadlink", "altname", "tips", "closedSetup"].concat(lists), "Your theme");
 
             if (checkType(raw.name, ["string"], "'theme.name'")) {
                 if (raw.name[raw.name.length - 1] == " ") {
@@ -67,6 +67,7 @@ function mafiaChecker() {
             checkValidValue(raw.votesniping, [true, false], "theme.votesniping");
             checkValidValue(raw.silentVote, [true, false], "theme.silentVote");
             checkValidValue(raw.nonPeak, [true, false], "theme.nonPeak");
+            checkValidValue(raw.closedSetup, [true, false], "theme.closedSetup");
             
             if (checkType(raw.changelog, ["object", "array"], "'theme.changelog'")) {
                 for (i in raw.changelog) {
@@ -213,7 +214,7 @@ function mafiaChecker() {
             
             if (checkType(role.actions, ["object"], "'" + yourRole + ".actions")) {
                 act = "Role " + yourRole + ".actions";
-                checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "onDeath", "onDeadRoles", "initialCondition", "avoidHax", "avoidStandbyHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "vote", "voteshield", "startup", "onlist", "onteam", "lynch"].concat(possibleNightActions), act);
+                checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "onDeath", "onDeadRoles", "initialCondition", "avoidHax", "avoidStandbyHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "vote", "voteshield", "startup", "onlist", "onteam", "lynch", "teamTalk"].concat(possibleNightActions), act);
 
                 if (checkType(role.actions.night, ["object"], act + ".night")) {
                     for (e in role.actions.night) {
@@ -807,7 +808,7 @@ function mafiaChecker() {
                 if (checkType(role.actions.lynch, ["object"], act + ".lynch")) {
                     action = role.actions.lynch;
                     comm = act + ".lynch";
-                    var lynchActions = ["revealAs", "convertTo", "convertmsg", "lynchmsg"];
+                    var lynchActions = ["revealAs", "convertTo", "convertmsg", "lynchmsg", "killVoters"];
                     this.checkOnDeath(action, comm, lynchActions, true);
                     
                     if (checkType(action.revealAs, ["string"], comm + ".revealAs")) {
@@ -824,6 +825,21 @@ function mafiaChecker() {
                     if (checkType(action.lynchmsg, ["string"], comm + ".lynchmsg")) {
                         if (!("convertTo" in action)) {
                             addMinorError("'lynchmsg' found at " + act + ", but there's no '" + act + ".convertTo'");
+                        }
+                    }
+                    if (checkType(action.killVoters, ["object"], comm + ".killVoters")) {
+                        checkAttributes(action.killVoters, [], ["first", "last", "message"], comm + ".killVoters");
+                        
+                        checkType(action.killVoters.first, ["number"], comm + ".killVoters.first");
+                        checkType(action.killVoters.last, ["number"], comm + ".killVoters.last");
+                        checkType(action.killVoters.message, ["string"], comm + ".killVoters.string");
+                    }
+                }
+                if (checkType(role.actions.teamTalk, ["boolean", "array"], act + ".teamTalk")) {
+                    if (Array.isArray(role.actions.teamTalk)) {
+                        action = role.actions.teamTalk;
+                        for (e in action) {
+                            checkValidRole(action[e], act + ".teamTalk");
                         }
                     }
                 }
