@@ -3356,7 +3356,7 @@ function Mafia(mafiachan) {
                         mafia.sendPlayer(player.name, "±Game: You are a " + role.translation + "!");
                     }
                 }
-                mafia.sendPlayer(player.name, "±Game: " + role.help);
+                mafia.sendPlayer(player.name, "±Game: " + role.help.replace(/~Side~/gi, mafia.theme.trside(player.role.side))););
 
                 if (role.actions.startup == "team-reveal") {
                     mafia.sendPlayer(player.name, "±Game: Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
