@@ -2223,7 +2223,7 @@ function Mafia(mafiachan) {
                             list = mafia.getPlayersForRole(role.actions.startup.revealPlayers).sort().join(", ");
                         } else if (Array.isArray(role.actions.startup.revealPlayers)) {
                             for (var r in role.actions.startup.revealPlayers) {
-                                list = list.concat(mafia.getPlayersForRole(role.actions.startup.revealPlayers[r]))
+                                list = list.concat(mafia.getPlayersForRole(role.actions.startup.revealPlayers[r]));
                             }
                             list = list.sort().join(", ");
                         }
@@ -3399,7 +3399,7 @@ function Mafia(mafiachan) {
                             list = mafia.getPlayersForRole(role.actions.startup.revealPlayers);
                         } else if (Array.isArray(role.actions.startup.revealPlayers)) {
                             for (var r in role.actions.startup.revealPlayers) {
-                                list = list.concat(mafia.getPlayersForRole(role.actions.startup.revealPlayers[r]))
+                                list = list.concat(mafia.getPlayersForRole(role.actions.startup.revealPlayers[r]));
                             }
                             list = list.sort().join(", ");
                         }
@@ -4257,7 +4257,7 @@ function Mafia(mafiachan) {
                         partners = removeDuplicates(partners);
                     } else {
                         partners = mafia.getPlayersForTeam(player.role.side);
-                    } 
+                    }
                     for (x in partners) {
                         mafia.sendPlayer(partners[x], name + ": [Team] " + commandData);
                     }
