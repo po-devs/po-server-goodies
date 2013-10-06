@@ -32,8 +32,4 @@ module.exports.afterLogIn = function afterLogIn(src) {
         SESSION.users(src).activate("smute", "Script", 0, "Evader", true);
         normalbot.sendAll("Smute based on name: " + name + ", IP: " + sys.ip(src), staffchannel);
     }
-    if (/^conflict/i.test(name)) {
-        script.issueBan("smute", "Scripts!", undefined, "" + name + ":conflict:2h");
-        sendChanAll("±Funkie: conflict auto muted under name " + name, staffchannel);
-    }
 };

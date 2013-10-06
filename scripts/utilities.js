@@ -33,8 +33,8 @@ exports = {
     },
     
     isLetter : function(f) {
-    	var x = f.toLowerCase();
-    	return x >= 'a' && x <= 'z';
+        var x = f.toLowerCase();
+        return x >= 'a' && x <= 'z';
     },
     
     is_command: function is_command(string)
@@ -185,5 +185,18 @@ exports = {
             }
         }
         return s.join(", ");
+    },
+    //make sure the name isn't repeated with another case when using this
+    getCorrectPropName : function (prop, obj) {
+        if (typeof obj !== "object" || typeof prop !== "string") {
+            return prop;
+        }
+        var props = Object.getOwnPropertyNames(obj);
+        for (var x = 0; x < props.length; x++) {
+            if (prop.toLowerCase() === props[x].toLowerCase()) {
+                return props[x];
+            }
+        }
+        return prop;
     }
 };

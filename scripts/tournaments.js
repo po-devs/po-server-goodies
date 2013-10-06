@@ -8,7 +8,7 @@
 /*global sendChanAll*/
 if (typeof Config == "undefined")
 	Config = {};
-if (!Config.tourneybot) Config.tourneybot = '±TourneyBot';
+if (!Config.tourneybot) Config.tourneybot = 'TourneyBot';
 
 var tournamentData, permaTours;
 
@@ -115,7 +115,7 @@ function Tournament(channel)
 		bot = arguments.length == 1 ? false : bot;
 
 		if (bot) {
-			message = Config.tourneybot + ": " + message;
+			message = "±" + Config.tourneybot + ": " + message;
 		}
 		sys.sendMessage(id, message, self.channel);
 	}
@@ -124,7 +124,7 @@ function Tournament(channel)
 		bot = arguments.length == 1 ? false : bot;
 
 		if (bot) {
-			message = Config.tourneybot + ": " + message;
+			message = "±" + Config.tourneybot + ": " + message;
 		}
 		sendChanAll(message, self.channel);
 	}
@@ -1155,7 +1155,7 @@ module.exports = {
 				return false;*/
 			if (command == "disabletours" && (sys.auth(source) >= 2 || SESSION.channels(channel).isChannelAdmin(source))) {
 				delete module.tournaments[channel];
-				sys.sendAll(Config.tourneybot + ': Tournaments have been disabled',channel);
+				tourneybot.sendAll("Tournaments have been disabled", channel);
 				var ind = SESSION.global().permaTours.indexOf(channel);
 				if (ind >= 0) {
 					SESSION.global().permaTours.splice(ind, 1);
@@ -1206,42 +1206,5 @@ module.exports = {
 			ret |= module.tournaments[channel].events.beforeBattleMatchup(source, dest, clauses, rated);
 		}
 		return ret;
-	},
-
-	"help-string": ["tournaments: To know the tournament commands", "megauser: To know the tournament admin commands."],
-
-	onHelp: function(src, topic, channel) {
-		var help = [];
-		if (topic == "tournaments") {
-			help = [
-				"/join: Enters you to in a tournament.",
-				"/unjoin: Withdraws you from a tournament.",
-				"/viewround: Shows the current pairings for the round.",
-				"/viewqueue: Shows the current queue",
-				"/touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)",
-				"/addtouralert [tier] : Adds a tour alert for the specified tier",
-				"/removetouralert [tier] : Removes a tour alert for the specified tier"
-			];
-		} else if (topic == "megauser" && (sys.auth(src) > 0 || SESSION.users(src).megauser)) {
-			help = [
-				"/tour [tier]:[number]:[type]: Starts a tournament in set tier for the selected number of players. Type is optional and can be set to Singles, Doubles or Triples.",
-				"/queue [tier]:[number]:[type]: Schedules a tournament to automatically start after the current one.",
-				"/endtour: Ends the current tournament.",
-				"/dq name: Disqualifies someone in the tournament.",
-				"/push name: Adds a user to the tournament.",
-				"/changecount [entrants]: Changes the number of self.entrants during the signup phase.",
-				"/sub name1:name2: Replaces name1 with name2 in the tournament.",
-				"/cancelBattle name1: Allows the user or their opponent to forfeit without leaving the tournament their current battle so they can battle again with correct clauses.",
-				"/rmqueue [tier]: Removes a specified tier from the tournament queue."
-			];
-		}
-		if (help.length > 0) {
-			for (var i = 0; i < help.length; ++i) {
-				sys.sendMessage(src, help[i], channel);
-			}
-			return true;
-		}
-	return false;
 	}
 };
-

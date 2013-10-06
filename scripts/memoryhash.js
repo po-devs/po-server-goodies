@@ -23,7 +23,7 @@ function MemoryHash(filename)
             var line = lines[i];
             var key_value = line.split("*");
             var key = key_value[0];
-            var value = key_value[1];
+            var value = key_value.slice(1).join("*");
             if (key.length > 0) {
                 if (value === undefined)
                     value = '';

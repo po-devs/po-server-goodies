@@ -11,15 +11,15 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 */
 
 // Coding style: semicolon are not required here but great caution is required
-/*jshint asi:true*/
-/*global sendChanAll, bfbot, staffchannel, tier_checker, sendChanHtmlAll*/
+/*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
+/*global sendChanAll, bfbot, staffchannel, tier_checker, sendChanHtmlAll, sys, Config, SESSION, require, module*/
 
 // Globals
 var bfversion = "1.100";
 var dataDir = "bfdata/";
 var submitDir = dataDir+"submit/";
-var messDir = dataDir+"messages/";
-var bfsets, working, defaultsets, userqueue, messagebox, teamrevchan, submitbans, bfhash, reviewers;
+//var messDir = dataDir+"messages/";
+var bfsets, working, defaultsets, userqueue, /*messagebox,*/ teamrevchan, submitbans, bfhash, reviewers;
 var utilities = require('utilities.js');
 var saveInterval = 86400; // autosave every day
 
@@ -27,10 +27,17 @@ var saveInterval = 86400; // autosave every day
 var html_escape = utilities.html_escape;
 var find_tier = utilities.find_tier;
 
+startBF();
+
 function initFactory() {
+    teamrevchan = utilities.get_or_create_channel("BF Review");
+    sendChanAll("Version "+bfversion+" of the Battle Factory loaded successfully!", teamrevchan);
+    working = true;
+}
+
+function startBF() {
     sys.makeDir("bfdata");
     sys.makeDir("bfdata/submit");
-    teamrevchan = utilities.get_or_create_channel("BF Review");
     try {
         var file = sys.getFileContent(dataDir+"bfteams.json");
         if (file === undefined) {
@@ -130,9 +137,6 @@ function initFactory() {
         sendChanAll("No valid Battle Factory sets detected!", teamrevchan);
         throw "No valid set packs available";
     }
-
-    sendChanAll("Version "+bfversion+" of the Battle Factory loaded successfully!", teamrevchan);
-    working = true;
 }
 
 function isinBFTier(src, team) {
@@ -172,7 +176,7 @@ function createEntry(name, data, srcurl) {
     return false;
 }
 
-function importOld(name) {
+/*function importOld(name) {
     var basepathname = "bfteams_" + (name.replace(/ /g, "")).toLowerCase() + ".json";
     if (sys.getFileContent(dataDir + basepathname) !== undefined) {
         var data;
@@ -193,7 +197,7 @@ function importOld(name) {
         return true;
     }
     return false;
-}
+}*/
 
 // Save user generated info periodically as a backup
 function autoSave(type, params) {
@@ -249,9 +253,9 @@ function isReadable(key) {
 }
 
 function shuffle(array) {
-    var sfunction = function(a,b) {
+    var sfunction = function() {
         return Math.random()-0.5;
-    }
+    };
     return array.sort(sfunction);
 }
 
@@ -355,9 +359,7 @@ function refresh(key) {
             var setlength = 0;
             if (isReadable(key)) {
                 var lteams = teamfile[a];
-                for (var k in lteams) {
-                    setlength += 1;
-                }
+                setlength = Object.keys(lteams).length;
             }
             else {
                 setlength = teamfile[a].length;
@@ -722,15 +724,6 @@ function factoryCommand(src, command, commandData, channel) {
         autoSave("teams", "");
         return;
     }
-    else if (command == "resetladder") {
-        if (sys.auth(src) < 3 && sys.name(src) != "Biospark27") {
-            bfbot.sendMessage(src, "Can't use this command!", channel);
-            return;
-        }
-        sys.resetLadder("Battle Factory");
-        bfbot.sendAll("Battle Factory ladder was reset by "+sys.name(src)+"!", staffchannel);
-        return;
-    }
     else if (command == "pokeslist") {
         var tfile = bfsets.hasOwnProperty(commandData) ? bfsets[commandData] : bfsets.preset;
         var tteams = 0;
@@ -744,9 +737,7 @@ function factoryCommand(src, command, commandData, channel) {
             var setlength = 0;
             if (isReadable(tfile)) {
                 var lteams = tfile[t];
-                for (var k in lteams) {
-                    setlength += 1;
-                }
+                setlength = Object.keys(lteams).length;
             }
             else {
                 setlength = tfile[t].length;
@@ -794,7 +785,8 @@ function factoryCommand(src, command, commandData, channel) {
         var id = sys.pokeNum(tmp[0])%65536;
         var revsets = {};
         if (tmp.length == 2) {
-            revsets = bfsets.hasOwnProperty(tmp[1]) ? bfsets[tmp[1]] : bfsets.preset;
+            var pack = utilities.getCorrectPropName(tmp[1], bfsets);
+            revsets = bfsets.hasOwnProperty(pack) ? bfsets[pack] : bfsets.preset;
         }
         else {
             revsets = bfsets.preset;
@@ -913,9 +905,7 @@ function factoryCommand(src, command, commandData, channel) {
             var setlength = 0;
             if (isReadable(tfile[t])) {
                 var lteams = tfile[t];
-                for (var k in lteams) {
-                    setlength += 1;
-                }
+                setlength = Object.keys(lteams).length;
             }
             else {
                 setlength = tfile[t].length;
@@ -934,7 +924,7 @@ function factoryCommand(src, command, commandData, channel) {
         for (var h in bfhash) {
             table += "<tr><td>"+html_escape(h)+"</td><td>"+(bfhash[h].active ? "Yes" : "No")+"</td><td>"+(bfhash[h].enabled ? "Yes" : "No")+"</td><td>"+(bfhash[h].hasOwnProperty('url') ? "<a href="+bfhash[h].url+">"+html_escape(bfhash[h].url)+"</a></td></tr>" : "Not Specified");
         }
-        table += "</table>"
+        table += "</table>";
         sys.sendHtmlMessage(src,table,channel);
         return;
     }
@@ -1426,12 +1416,17 @@ function factoryCommand(src, command, commandData, channel) {
             }
         }
         return;
+    } else if (command == 'forcestart') {
+        working = true;
+        bfbot.sendMessage(src, "Battle Factory is working again", channel);
+        return;
     }
+
     else return 'no command';
 }
 
 // Set file checking
-function setlint(checkfile, strict) {
+function setlint(checkfile) {
     var errors = [];
     var warnings = [];
     var suggestions = [];
@@ -1826,7 +1821,7 @@ function getStats(src, team, poke) {
     };
     var stats = ["HP", "Attack", "Defense", "Sp.Atk", "Sp.Def", "Speed"];
     var statlist = [];
-    var pokeinfo = sys.pokeBaseStats(sys.teamPoke(src,team,poke))
+    var pokeinfo = sys.pokeBaseStats(sys.teamPoke(src,team,poke));
     for (var s=0; s<6; s++) {
         var natureboost = getNature(info.nature);
         if (s === 0) { // HP Stat
@@ -1854,7 +1849,7 @@ function getStats(src, team, poke) {
         }
     }
     var msg = [];
-    msg.push(info.poke+" @ "+info.item+"; Ability: "+info.ability+"; "+info.nature+" Nature; Level "+info.level)
+    msg.push(info.poke+" @ "+info.item+"; Ability: "+info.ability+"; "+info.nature+" Nature; Level "+info.level);
     msg.push(info.moves.join(" / "),"Stats: "+statlist.join(" / "));
     return msg;
 }
@@ -1888,7 +1883,7 @@ function generateTeam(src, team, mode) {
                 for (var t in sets) {
                     available.push(sets[t]);
                 }
-                var prop = available[sys.rand(0, available.length)]
+                var prop = available[sys.rand(0, available.length)];
                 teaminfo[p] = {
                     'poke': sys.pokeNum(prop.poke),
                     'nature': sys.natureNum(prop.nature),
@@ -1901,7 +1896,7 @@ function generateTeam(src, team, mode) {
                 };
             }
             else {
-                var set = sets[sys.rand(0, sets.length)]
+                var set = sets[sys.rand(0, sets.length)];
                 var actualset = "";
                 if (typeof set == "object") {
                     actualset = set.set;
@@ -1932,11 +1927,11 @@ function generateTeam(src, team, mode) {
                 else {
                     return ivprioritise.indexOf(a.stat) - ivprioritise.indexOf(b.stat);
                 }
-            }
+            };
         for (var s=0;s<6;s++) {
             var pdata = teaminfo[s];
             sys.changePokeNum(src,team,s,pdata.poke);
-            sys.changePokeName(src,team,s,sys.pokemon(pdata.poke))
+            sys.changePokeName(src,team,s,sys.pokemon(pdata.poke));
             sys.changePokeNature(src,team,s,pdata.nature);
             sys.changePokeAbility(src,team,s,pdata.ability);
             sys.changePokeItem(src,team,s,pdata.item);
@@ -1980,7 +1975,6 @@ function generateTeam(src, team, mode) {
             sys.changePokeHappiness(src,team,s,happiness);
             var shinechance = 8192;
             if (sys.ladderRating(src, "Battle Factory") !== undefined) {
-                var rating = sys.ladderRating(src, "Battle Factory") > 0 ? sys.ladderRating(src, "Battle Factory") : 1;
                 shinechance = Math.ceil(8192 * 1000000 / Math.pow(sys.ladderRating(src, "Battle Factory"), 2));
             }
             sys.changePokeShine(src, team, s, sys.rand(0,shinechance) === 0 ? true : false);
@@ -2099,7 +2093,7 @@ module.exports = {
                 bfbot.sendMessage(source, "You can't use this command!", channel);
                 return true;
             }
-            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier', 'resetladder', 'destroyreview', 'importold'].indexOf(command) > -1 && !isReviewAdmin(source)) {
+            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier', 'resetladder', 'destroyreview', 'importold', 'forcestart'].indexOf(command) > -1 && !isReviewAdmin(source)) {
                 bfbot.sendMessage(source, "You can't use this command!", channel);
                 return true;
             }
@@ -2123,13 +2117,6 @@ module.exports = {
             sendChanAll("Error in starting battle factory: "+err, staffchannel);
             working = false;
         }
-    },
-    beforeChannelJoin : function (src, chan) {
-        // Review is public now as of 17 Jan, channel bans still override if necessary
-        // if ((!isReviewer(src)) && chan == teamrevchan) {
-        //     capsbot.sendMessage(src, "You cannot access this channel!");
-        //     sys.stopEvent();
-        // }
     },
     afterChannelJoin : function(player, chan) {
         if (chan === sys.channelId('BF Review') && isReviewer(player)) {
@@ -2206,10 +2193,13 @@ module.exports = {
                 generateTeam(dest, destteam, type);
                 if (find_tier(type)) {
                     var k = 0;
+                    var errsrc, errdest;
                     while (!tier_checker.has_legal_team_for_tier(src, srcteam, type, true) || !tier_checker.has_legal_team_for_tier(dest, destteam, type, true)) { //for complex bans like SS+Drizzle
                         generateTeam(src, srcteam, type);
                         generateTeam(dest, destteam, type);
-                        if(++k>100) throw "Cannot generate legal teams after 100 attemps in type: " + type + "!";
+                        errsrc = tier_checker.has_legal_team_for_tier(src, srcteam, type, true, true);
+                        errdest = tier_checker.has_legal_team_for_tier(dest, destteam, type, true, true);
+                        if(++k>100) throw "Cannot generate legal teams after 100 attempts in type: " + type + (errsrc ? "(Last error: " + errsrc + ")" : errdest ? "(Last error: " + errdest + ")" : "!");
                         
                     }
                 }
@@ -2217,7 +2207,6 @@ module.exports = {
                 dumpData(dest, destteam);
             }
             catch (err) {
-                working = false;
                 sendChanAll("Error in generating teams: "+err, staffchannel);
             }
         }
@@ -2234,7 +2223,8 @@ module.exports = {
                 "/addreviewer [name]:[tier]: Allows a user to review for that tier",
                 "/removereviewer [name]:[tier]: Removes review powers for that user in that tier",
                 "/addtier [tier]:[mode]: Adds a tier to review, mode is optional (Singles/Doubles/Triples)",
-                "/updateteams: Update default teams from the web"
+                "/updateteams: Update default teams from the web",
+                "/forcestart: Allows to get battle factory working again, even after an error"
             ];
             var reviewHelp = [
                 "/pokeslist [pack]: Views the list of installed Pokemon for that pack.",
@@ -2292,5 +2282,6 @@ module.exports = {
     generateTeam : function(src, team) {
         generateTeam(src, team, 'preset'); // generates a team for players with no pokes
         return true;
-    }
-}
+    },
+    "help-string": ["battlefactory: To know the battlefactory commands"]
+};
