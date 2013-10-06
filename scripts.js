@@ -1748,10 +1748,6 @@ beforeChatMessage: function(src, message, chan) {
         return;
     }
 
-    if (callplugins("beforeChatMessage", src, message, channel)) {
-        sys.stopEvent();
-        return;
-    }
 
     if (message == ".") {
         sys.sendMessage(src, sys.name(src)+": .", channel);
@@ -1839,7 +1835,10 @@ beforeChatMessage: function(src, message, chan) {
         sys.stopEvent();
         return;
     }
-
+    if (callplugins("beforeChatMessage", src, message, channel)) {
+        sys.stopEvent();
+        return;
+    }
     // text reversing symbols
     // \u0458 = "j"
     if (/[\u0458\u0489\u202a-\u202e\u0300-\u036F\u1dc8\u1dc9\ufffc\u1dc4-\u1dc7\u20d0\u20d1\u0415\u0421]/.test(message) && message[0] != '/' && message[0] != "!") {
