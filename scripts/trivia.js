@@ -911,9 +911,11 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
 var userCommands = {};
 var adminCommands = {};
 var ownerCommands = {};
+var serverOwnerCommands = {};
 var userCommandHelp = [];
 var adminCommandHelp = [];
 var ownerCommandHelp = [];
+var serverOnwerCommandHelp = [];
 
 function addUserCommand(commands, callback, help) {
     commands = [].concat(commands);
@@ -937,6 +939,14 @@ function addOwnerCommand(commands, callback, help) {
         ownerCommands[commands[i]] = callback;
     }
     ownerCommandHelp.push("/" + commands[0] + ": " + (help === undefined ? "no help" : help));
+}
+
+function addServerOwnerCommand(commands, callback, help) {
+    commands = [].concat(commands);
+        for (var i = 0; i < commands.length; ++i) {
+        serverOwnerCommands[commands[i]] = callback;
+    }
+    serverOwnerCommandHelp.push("/" + commands[0] + ": " + (help === undefined ? "no help" : help));
 }
 
 addUserCommand("triviarules", function (src, commandData, channel) {
@@ -1106,19 +1116,26 @@ addOwnerCommand(["triviaadmin", "striviaadmin"], function (src, commandData, cha
 }, "Allows you to promote a new trivia admin, use /striviaadmin for a silent promotion.");
 
 addOwnerCommand(["triviaadminoff", "striviaadminoff"], function (src, commandData, channel, command) {
-    if (!tadmin.isTAdmin(commandData)) {
-        Trivia.sendPM(src, "That person isn't a Trivia Admin.", channel);
+    if (!tadmin.isTAdmin(commandData) && !tsadmin.isTAdmin(commandData)) {
+        Trivia.sendPM(src, "That person isn't a Trivia auth.", channel);
         return;
     }
-    tadmin.removeTAdmin(commandData);
-    if (command === "triviaadminoff") {
-        Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Trivia Admin.", triviachan);
+    var isTA = tadmin.isTAdmin(commandData);
+    var oldAuth = (isTA ? "Trivia Admin" : "Super Trivia Admin");
+    if (isTA) {
+        tadmin.removeTAdmin(commandData);
     }
-    Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Trivia Admin.", revchan);
-    Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Trivia Admin.", sachannel);
-}, "Allows you to demote a current trivia admin, use /strivaadminoff for a silent demotion.");
+    else {
+        tsadmin.removeTAdmin(commandData);
+    }
+    if (command === "triviaadminoff") {
+        Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldAuth + ".", triviachan);
+    }
+    Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldAuth + ".", revchan);
+    Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldAuth + ".", sachannel);
+}, "Allows you to demote a current trivia admin or super trivia admin, use /striviaadminoff for a silent demotion.");
 
-addOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, commandData, channel, command) {
+addServerOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, commandData, channel, command) {
     if (tsadmin.isTAdmin(commandData)) {
         Trivia.sendPM(src, "That person is already a Trivia Super Admin.", channel);
         return;
@@ -1131,7 +1148,7 @@ addOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, comman
     Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Trivia Admin.", sachannel);
 }, "Allows you to promote a new trivia super admin, use /striviasuperadmin for a silent promotion.");
 
-addOwnerCommand(["triviasuperadminoff", "striviasuperadminoff"], function (src, commandData, channel, command) {
+addServerOwnerCommand(["triviasuperadminoff", "striviasuperadminoff"], function (src, commandData, channel, command) {
     if (!tsadmin.isTAdmin(commandData)) {
         Trivia.sendPM(src, "That person isn't a Trivia Super Admin.", channel);
         return;
@@ -1602,23 +1619,6 @@ addAdminCommand("decline", function (src, commandData, channel) {
     triviabot.sendMessage(src, "No more questions!", channel);
 }, "Allows you to decline the current question in review");
 
-addAdminCommand("shove", function (src, commandData) {
-    var tar = sys.id(commandData);
-    if (tar === undefined) {
-        return;
-    }
-    if (Trivia.started === false) {
-        Trivia.sendPM(src, "A game hasn't started!");
-        return;
-    }
-    if (Trivia.playerPlaying(tar)) {
-        Trivia.removePlayer(tar);
-        Trivia.sendAll(sys.name(tar) + " was removed from the game by " + sys.name(src) + "!", triviachan);
-        return;
-    }
-    Trivia.sendPM(src, "That person isn't playing!");
-}, "Allows you to remove a player from the game");
-
 addAdminCommand("submitban", function (src, commandData, channel) {
     if (commandData === undefined || commandData.indexOf(":") == -1) {
         triviabot.sendMessage(src, "Usage: name:reason:time", channel);
@@ -1884,6 +1884,13 @@ module.exports = {
                     return true;
                 }
             }
+            // Server owner trivia commands
+            if (sys.auth(src) >= 3) {
+                if (serverOwnerCommands.hasOwnProperty(command)) {
+                    serverOwnerCommands[command].call(null, src, commandData, channel, command);
+                    return true;
+                }
+            }
         }
         catch (e) {
             sys.sendMessage(src, "Error in your trivia command: " + e + " on line " + e.lineNumber, channel);
@@ -1906,6 +1913,12 @@ module.exports = {
             if (isTriviaOwner(src)) {
                 sys.sendMessage(src, "*** Trivia Owner commands ***", channel);
                 ownerCommandHelp.forEach(function (h) {
+                    sys.sendMessage(src, h, channel);
+                });
+            }
+            if (sys.auth(src) >= 3) {
+                sys.sendMessage(src, "*** Server owner Trivia commands ***", channel);
+                serverOwnerCommandHelp.forEach(function (h) {
                     sys.sendMessage(src, h, channel);
                 });
             }

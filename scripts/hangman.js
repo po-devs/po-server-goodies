@@ -550,8 +550,8 @@ module.exports = function () {
         var superAdminHelp = [
             "*** Hangman Super Admin Commands ***",
             "/config: To change the answer delay time and other settings. Format /config parameter:value. Type /config by itself to see more help.",
-            "/hangmanadmin: To promote a new Hangman admin. Use /shangmanadmin for a silent promotion.",
-            "/hangmanadminoff: To demote a Hangman admin. Use /shangmanadminoff for a silent demotion."
+            "/hangmanadmin: To promote a new Hangman Admin. Use /shangmanadmin for a silent promotion.",
+            "/hangmanadminoff: To demote a Hangman Admin or a Hangman Super Admin. Use /shangmanadminoff for a silent demotion."
         ];
         var ownerHelp = [
             "*** Hangman Owner Commands ***",
@@ -828,16 +828,25 @@ module.exports = function () {
         if (commandData === undefined) {
             return;
         }
-        if (!script.hangmanAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
-            sys.sendMessage(src, "±Unown: " + commandData + " is not a Hangman Admin!", channel);
+        var isHA = script.hangmanAdmins.hash.hasOwnProperty(commandData.toLowerCase());
+        var isSHA = script.hangmanSuperAdmins.hash.hasOwnProperty(commandData.toLowerCase());
+        if (!isHA && !isSHA) {
+            sys.sendMessage(src, "±Unown: " + commandData + " is not a Hangman auth!", channel);
             return;
         }
+        if (isSHA && sys.auth(src) < 3) {
+            sys.sendMessage(src, "±Unown: You don't have enough auth!", channel);
+            return;
+        }
+        var oldAuth = (isHA ? "Hangman Admin" : "Super Hangman Admin");
         script.hangmanAdmins.remove(commandData);
         script.hangmanAdmins.remove(commandData.toLowerCase());
+        script.hangmanSuperAdmins.remove(commandData);
+        script.hangmanSuperAdmins.remove(commandData.toLowerCase());
         if (!silent) {
-            sys.sendAll("±Unown: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase() + " from Hangman Admin.", hangchan);
+            sys.sendAll("±Unown: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase() + " from " + oldAuth + ".", hangchan);
         }
-        sys.sendAll("±Unown: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase() + " from Hangman Admin.", sys.channelId('Victory Road'));
+        sys.sendAll("±Unown: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase() + " from " + oldAuth + ".", sys.channelId('Victory Road'));
         return;
     };
     this.demoteSuperAdmin = function (src, commandData, channel, silent) {

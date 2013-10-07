@@ -109,6 +109,8 @@ var tourownercommands = ["/megauser: Makes someone a megauser. Use /smegauser fo
                     "/fullleaderboard: Gives the full leaderboard for a specified tier.",
                     "/fullmonthlyleaderboard: Gives the full monthly leaderboard for a specified month.",
                     "/loadevents: Load event tours."];
+var serverownercommands = ["/tourowner: Makes someone a Tournament Owner. Use /stowner for a silent promotion.",
+                    "/
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "Breaking the following rules may result in punishment:",
                 "#1: Team revealing or scouting in tiers other than CC, Battle Factory or Metronome will result in disqualification.",
@@ -1467,12 +1469,12 @@ function tourCommand(src, command, commandData, channel) {
                 var tadmins = tours.touradmins;
                 var silent = (command === "smegauseroff");
                 if (sys.dbIp(commandData) === undefined) {
-                    sendBotMessage(src, "This user doesn't exist!", tourschan, false);
+                    sendBotMessage(src, "That user doesn't exist!", tourschan, false);
                     return true;
                 }
                 var lname = commandData.toLowerCase();
                 if (!tadmins.hasOwnProperty(lname)) {
-                    sendBotMessage(src, "They don't have tour authority!", tourschan, false);
+                    sendBotMessage(src, "That user doesn't have tour authority!", tourschan, false);
                     return true;
                 }
                 if ((tadmins[lname] == "to")  && sys.auth(src) < 3) {
@@ -1488,6 +1490,33 @@ function tourCommand(src, command, commandData, channel) {
                 }
                 else {
                     sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldauth + ".", sys.channelId("Victory Road"), false);
+                }
+                return true;
+            }
+            if ((command === "tourowneroff" || command === "towneroff" || command === "stourowneroff" || command === "stowneroff") && sys.auth(src) >= 3) {
+                var tadmins = tours.touradmins;
+                var silent = (command === "stourowneroff" || command === "stowneroff");
+                if (sys.dbIp(commandData) === undefined) {
+                    sendBotMessage(src, "That user doesn't exist!", tourschan, false);
+                    return true;
+                }
+                var lname = commandData.toLowerCase();
+                if (!tadmins.hasOwnProperty(lname)) {
+                    sendBotMessage(src, "That user doesn't have tour authority!", tourschan, false);
+                    return true;
+                }
+                if (tadmins[lname] != "to") {
+                    sendBotMessage(src, "That user isn't a Tour Owner!", tourschan, false);
+                    return true;
+                }
+                delete tadmins[lname];
+                tours.touradmins = tadmins;
+                saveTourKeys();
+                if (!silent) {
+                    sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Tournament Owner.", "~tr", false);
+                }
+                else {
+                    sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Tournament Owner.", sys.channelId("Victory Road"), false);
                 }
                 return true;
             }
@@ -2241,6 +2270,7 @@ function tourCommand(src, command, commandData, channel) {
                     var index = tours.tour[key].players.indexOf(commandData.toLowerCase());
                     tours.tour[key].players.splice(index, 1);
                     tours.tour[key].cpt -= 1;
+                    tours.tour[key].dqs.push(sys.ip(commandData));
                     sendBotAll(toCorrectCase(commandData)+" was taken out of the tournament signups by "+sys.name(src)+" from the "+getFullTourName(key)+" tournament!", tourschan);
                 }
                 else {
@@ -2452,7 +2482,11 @@ function tourCommand(src, command, commandData, channel) {
                 }
             }
             if (key === null) {
-                sendBotMessage(src, "No tournament has signups available at the moment!",tourschan,false);
+                sendBotMessage(src, "No tournament has signups available at the moment!", tourschan, false);
+                return true;
+            }
+            if (tours.tour[key].dqs.indexOf(sys.ip(src)) != -1) {
+                sendBotMessage(src, "You were removed from signups, so you can't join again!", tourschan, false);
                 return true;
             }
             if (!sys.hasTier(src, tours.tour[key].tourtype)) {
@@ -3510,6 +3544,7 @@ function tourstart(tier, starter, key, parameters) {
         tours.tour[key].date = datestring; // used to identify event tours
         tours.tour[key].draws = [];
         tours.tour[key].numjoins = {};
+        tours.tour[key].dqs = [];
         tours.globaltime = 0;
         if (typeof parameters.maxplayers === "number" && parameters.event) {
             tours.tour[key].maxplayers = parameters.maxplayers;
@@ -4541,7 +4576,7 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        var globalcommands = ["towner", "megauser", "megauseroff", "megausers", "mus"];
+        var globalcommands = ["towner", "tourowner", "stowner", "stourowner", "tourowneroff", "towneroff", "stourowneroff", "stowneroff",  "megauser",  "megauseroff", "smegauser", "smegauseroff" "megausers", "mus"];
         if ((channel === tourschan && !SESSION.channels(tourschan).isBanned(source)) || globalcommands.indexOf(command) > -1) {
             return tourCommand(source, command, commandData, channel);
         }
@@ -4694,6 +4729,12 @@ module.exports = {
                 sys.sendMessage(src, "*** Tournaments Owner commands ***", channel);
                 for (var o in tourownercommands) {
                     sys.sendMessage(src, tourownercommands[o], channel);
+                }
+            }
+            if (sys.auth(src) >= 3) {
+                sys.sendMessage(src, "*** Server owner Tournament commands ***", channel);
+                for (var x in serverownercommands) {
+                    sys.sendMessage(src, serverownercommands[x], channel);
                 }
             }
         }
