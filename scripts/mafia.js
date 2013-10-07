@@ -2222,7 +2222,7 @@ function Mafia(mafiachan) {
                             list = mafia.getPlayersForRole(role.actions.startup.revealPlayers);
                         } else if (Array.isArray(role.actions.startup.revealPlayers)) {
                             for (var r in role.actions.startup.revealPlayers) {
-                                list = list.concat(mafia.getPlayersForRole(role.actions.startup.revealPlayers[r]))
+                                list = list.concat(mafia.getPlayersForRole(role.actions.startup.revealPlayers[r]));
                             }
                             list = list.sort().join(", ");
                         }
@@ -3396,7 +3396,7 @@ function Mafia(mafiachan) {
                             list = mafia.getPlayersForRole(role.actions.startup.revealPlayers);
                         } else if (Array.isArray(role.actions.startup.revealPlayers)) {
                             for (var r in role.actions.startup.revealPlayers) {
-                                list = list.concat(mafia.getPlayersForRole(role.actions.startup.revealPlayers[r]))
+                                list = list.concat(mafia.getPlayersForRole(role.actions.startup.revealPlayers[r]));
                             }
                             list = list.sort().join(", ");
                         }
@@ -3495,7 +3495,7 @@ function Mafia(mafiachan) {
         var POglobal = SESSION.global();
         var index, source;
         mafia.mafiaStats.update();
-        mafia.mafiaChecker.update(); 
+        mafia.mafiaChecker.update();
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if ("mafia.js" == POglobal.plugins[i].source) {
                 source = POglobal.plugins[i].source;

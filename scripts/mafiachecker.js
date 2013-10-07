@@ -1,5 +1,5 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global module*/
+/*global module, SESSION, updateModule*/
 function mafiaChecker() {
     this.init = function() {}; //just so it can be updated without sending an error (see auto_smute.js)
     var theme,
