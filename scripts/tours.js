@@ -109,8 +109,7 @@ var tourownercommands = ["/megauser: Makes someone a megauser. Use /smegauser fo
                     "/fullleaderboard: Gives the full leaderboard for a specified tier.",
                     "/fullmonthlyleaderboard: Gives the full monthly leaderboard for a specified month.",
                     "/loadevents: Load event tours."];
-var serverownercommands = ["/tourowner: Makes someone a Tournament Owner. Use /stowner for a silent promotion.",
-                    "/
+var serverownercommands = ["/tourowner: Makes someone a Tournament Owner. Use /stowner for a silent promotion."];
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "Breaking the following rules may result in punishment:",
                 "#1: Team revealing or scouting in tiers other than CC, Battle Factory or Metronome will result in disqualification.",
@@ -4576,7 +4575,7 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        var globalcommands = ["towner", "tourowner", "stowner", "stourowner", "tourowneroff", "towneroff", "stourowneroff", "stowneroff",  "megauser",  "megauseroff", "smegauser", "smegauseroff" "megausers", "mus"];
+        var globalcommands = ["towner", "tourowner", "stowner", "stourowner", "tourowneroff", "towneroff", "stourowneroff", "stowneroff",  "megauser",  "megauseroff", "smegauser", "smegauseroff", "megausers", "mus"];
         if ((channel === tourschan && !SESSION.channels(tourschan).isBanned(source)) || globalcommands.indexOf(command) > -1) {
             return tourCommand(source, command, commandData, channel);
         }

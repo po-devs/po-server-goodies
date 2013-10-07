@@ -915,7 +915,7 @@ var serverOwnerCommands = {};
 var userCommandHelp = [];
 var adminCommandHelp = [];
 var ownerCommandHelp = [];
-var serverOnwerCommandHelp = [];
+var serverOwnerCommandHelp = [];
 
 function addUserCommand(commands, callback, help) {
     commands = [].concat(commands);

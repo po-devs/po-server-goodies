@@ -3532,7 +3532,7 @@ function Mafia(mafiachan) {
             "/featuretheme: To change the currently featured theme (Leave blank to disable Feature Themes)",
             "/featuretext: To set a customizable message that follows the Featured theme (Leave blank to clear).",
             "/featurelink: To change the link used for Featured Theme Text. (Leave blank to clear)",
-            "/forcefeature: To force the \"Featured Theme\" message to display."]
+            "/forcefeature: To force the \"Featured Theme\" message to display."],
         owner: ["/mafiasuperadmin: To promote a user to Super Mafia Admin. Use /smafiasuperadmin for a silent promotion.",
             "/mafiasuperadminoff: To demote a user from Super Mafia Admin. Use /smafiasuperadminoff for a silent demotion."]
     };
@@ -4217,7 +4217,7 @@ function Mafia(mafiachan) {
                         partners = removeDuplicates(partners);
                     } else {
                         partners = mafia.getPlayersForTeam(player.role.side);
-                    } 
+                    }
                     for (x in partners) {
                         mafia.sendPlayer(partners[x], name + ": [Team] " + commandData);
                     }
