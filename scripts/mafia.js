@@ -1084,13 +1084,13 @@ function Mafia(mafiachan) {
     };
     this.advertiseFeaturedTheme = function () {
         var ftime = parseInt(sys.time(), 10),
-            adOkay = false;
-        
+            adOkay = false,
+            featured;
         if (featuredTheme !== undefined && mafia.themeManager.themes.hasOwnProperty(featuredTheme)) {
             var ftheme = casedtheme(featuredTheme),
                 flink = mafia.themeManager.themes[featuredTheme].threadlink,
-                faltname = mafia.themeManager.themes[featuredTheme].altname,
-                featured = (flink ? '<a href="' + flink + '">' + html_escape(ftheme + (faltname ? " (" + faltname + ")" : "")) + '</a>' : html_escape(ftheme));
+                faltname = mafia.themeManager.themes[featuredTheme].altname;
+            featured = (flink ? '<a href="' + flink + '">' + html_escape(ftheme + (faltname ? " (" + faltname + ")" : "")) + '</a>' : html_escape(ftheme));
             adOkay = true;
             
         }
@@ -1105,7 +1105,7 @@ function Mafia(mafiachan) {
                     sys.sendHtmlAll("<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> " + (featuredLink ? '<a href="' + html_escape(featuredLink) + '">' + featuredText + '</a>' : featuredText), mafiachan);
                 }
                 sendChanAll(DEFAULT_BORDER, mafiachan);
-            }            
+            }
         }
     };
     this.userVote = function (src, commandData) {
@@ -1127,7 +1127,7 @@ function Mafia(mafiachan) {
             
             this.possibleThemes["default"] = 0;
             
-            var lastGames = PreviousGames.slice(-3), 
+            var lastGames = PreviousGames.slice(-3),
                 noFeatured = false;
             for (var z in lastGames) {
                 if (lastGames[z].what === featuredTheme) {
@@ -3470,7 +3470,7 @@ function Mafia(mafiachan) {
     this.runusersToSlay = function () {
         for (var x in mafia.usersToSlay) {
             var name = x,
-                slayer = mafia.usersToSlay[name][0];               
+                slayer = mafia.usersToSlay[name][0];
             this.slayUser(slayer, name, true);
         }
     };
@@ -3478,7 +3478,7 @@ function Mafia(mafiachan) {
     this.runusersToSlayMsg = function () {
         for (var x in mafia.usersToSlay) {
             var name = x;
-            var slayer = mafia.usersToSlay[name][0];
+            var slayer = mafia.usersToSlay[name][0],
                 role = mafia.usersToSlay[name][1];
             mafia.slayUserMsg(slayer, name, role);
         }
