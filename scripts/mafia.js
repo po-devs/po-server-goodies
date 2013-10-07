@@ -3526,7 +3526,6 @@ function Mafia(mafiachan) {
             "/push: To force a user into the current theme during sign ups.",
             "/remove: To remove a Mafia Theme!",
             "/mafiaadmin: To promote a user to Mafia Admin. Use /smafiaadmin for a silent promotion.",
-            "/mafiasuperadmin: To promote a user to Super Mafia Admin. Use /smafiasuperadmin for a silent promotion.",
             "/mafiaadminoff: To strip a user of all Mafia authority. Use /smafiaadminoff for a silent demotion.",
             "/updateafter: To update mafia after current game!",
             "/updatestats: To update the mafia stats webpage (Use after mafiastat script changes)",
@@ -3534,6 +3533,8 @@ function Mafia(mafiachan) {
             "/featuretext: To set a customizable message that follows the Featured theme (Leave blank to clear).",
             "/featurelink: To change the link used for Featured Theme Text. (Leave blank to clear)",
             "/forcefeature: To force the \"Featured Theme\" message to display."]
+        owner: ["/mafiasuperadmin: To promote a user to Super Mafia Admin. Use /smafiasuperadmin for a silent promotion.",
+            "/mafiasuperadminoff: To demote a user from Super Mafia Admin. Use /smafiasuperadminoff for a silent demotion."]
     };
 
     this.handleCommand = function (src, message, channel) {
@@ -3546,7 +3547,7 @@ function Mafia(mafiachan) {
         } else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel != mafiachan && ["mafiaban", "mafiaunban", "mafiabans", "mafiaadmins", "madmins", "mas", "roles", "priority", "sides", "themeinfo", "readlog", "targetlog", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiarules", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "smafiaadmin", "smafiasuperadmin", "smafiaadminoff", "passma", "windata", "topthemes", "updatestats"].indexOf(command) === -1)
+        if (channel != mafiachan && ["mafiaban", "mafiaunban", "mafiabans", "mafiaadmins", "madmins", "mas", "roles", "priority", "sides", "themeinfo", "readlog", "targetlog", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiarules", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "mafiasuperadminoff", "smafiaadmin", "smafiasuperadmin", "smafiaadminoff", "smafiasuperadminoff", "passma", "windata", "topthemes", "updatestats"].indexOf(command) === -1)
             return;
         try {
             mafia.handleCommandOld(src, command, commandData, channel);
@@ -5141,6 +5142,18 @@ function Mafia(mafiachan) {
             sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase()  + " from " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
             return;
         }
+        if (command === "mafiasadminoff" || command === "mafiasuperadminoff" || command === "smafiasadminoff" || command === "smafiasuperadminoff") {
+            var silent = (command === "smafiasuperadminoff" || command === "smafiasadminoff");
+            script.mafiaSuperAdmins.remove(commandData.toLowerCase());
+            if (id !== undefined) {
+                SESSION.users(id).mafiaAdmin = false;
+            }
+            if (!silent) {
+                sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase()  + " from Super Mafia Admin.", mafiachan);
+            }
+            sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase()  + " from Super Mafia Admin.", sachannel);
+            return;
+        }
         if (command === "remove" || command === "sremove"){
             var silent = (command === "sremove");
             mafia.themeManager.remove(src, commandData, silent);
@@ -5323,6 +5336,12 @@ function Mafia(mafiachan) {
             if (this.isMafiaSuperAdmin(src)) {
                 sys.sendMessage(src, "*** Super Mafia Admin commands ***", channel);
                 this.commands.sma.forEach(function (x) {
+                    sys.sendMessage(src, x, channel);
+                });
+            }
+            if (sys.auth(src) >= 3) {
+                sys.sendMessage(src, "*** Super Mafia Admin commands ***", channel);
+                this.commands.owner.forEach(function (x) {
                     sys.sendMessage(src, x, channel);
                 });
             }
