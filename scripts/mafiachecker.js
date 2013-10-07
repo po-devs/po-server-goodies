@@ -133,6 +133,23 @@ function mafiaChecker() {
         return {fatal: fatalErrors, minor: minorErrors};
 
     };
+    this.update = function () {
+        var POglobal = SESSION.global();
+        var index, source;
+        for (var i = 0; i < POglobal.plugins.length; ++i) {
+            if ("mafiachecker.js" == POglobal.plugins[i].source) {
+                source = POglobal.plugins[i].source;
+                index = i;
+            }
+        }
+        if (index !== undefined) {
+            updateModule(source, function (module) {
+                POglobal.plugins[index] = module;
+                module.source = source;
+                module.init();
+            });
+        }
+    };
     
     function Theme(){}
     Theme.prototype.addSide = function(obj) {
@@ -214,7 +231,7 @@ function mafiaChecker() {
             
             if (checkType(role.actions, ["object"], "'" + yourRole + ".actions")) {
                 act = "Role " + yourRole + ".actions";
-                checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "onDeath", "onDeadRoles", "initialCondition", "avoidHax", "avoidStandbyHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "vote", "voteshield", "startup", "onlist", "onteam", "lynch", "teamTalk"].concat(possibleNightActions), act);
+                checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "onDeath", "onDeadRoles", "initialCondition", "avoidHax", "avoidStandbyHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "vote", "voteshield", "startup", "onlist", "onteam", "lynch", "teamTalk", "noVote", "noVoteMsg"].concat(possibleNightActions), act);
 
                 if (checkType(role.actions.night, ["object"], act + ".night")) {
                     for (e in role.actions.night) {
@@ -537,6 +554,8 @@ function mafiaChecker() {
                         }
                     }
                 }
+                checkType(role.actions.noVote, ["boolean"], act + ".noVote");
+                checkType(role.actions.noVoteMsg, ["string"], act + ".noVoteMsg");
                 
                 //Defensive Modes
                 for (e in possibleNightActions) {
@@ -770,7 +789,7 @@ function mafiaChecker() {
                     if (typeof action == "string") {
                         checkValidValue(action, ["team-reveal", "role-reveal", "team-reveal-with-roles"], act + ".startup");
                     } else if (typeof action == "object") {
-                        checkAttributes(action, [], ["revealRole", "team-revealif", "team-revealif-with-roles", "revealAs"], act + ".startup");
+                        checkAttributes(action, [], ["revealRole", "team-revealif", "team-revealif-with-roles", "revealAs", "revealPlayers", "revealPlayersMsg"], act + ".startup");
                         
                         if (checkType(action.revealAs, ["string"], comm + ".revealAs")){
                             checkValidRole(action.revealAs, comm + ".revealAs");
@@ -785,6 +804,17 @@ function mafiaChecker() {
                                 }
                             }
                         }
+                        
+                        if (checkType(action.revealPlayers, ["string", "array"], comm + ".revealPlayers")) {
+                            if (typeof action.revealPlayers == "string") {
+                                checkValidRole(action.revealPlayers, comm + ".revealPlayers");
+                            } else if (Array.isArray(action.revealPlayers)) {
+                                for (e in action.revealPlayers) {
+                                    checkValidRole(action.revealPlayers[e], comm + ".revealPlayers");
+                                }
+                            }
+                        }
+                        checkType(action.revealPlayersMsg, ["string"], comm + ".revealPlayersMsg");
                     
                         if (checkType(action["team-revealif"], ["array"], comm + ".team-revealif")) {
                             for (e in action["team-revealif"]) {
