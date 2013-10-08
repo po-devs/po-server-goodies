@@ -542,9 +542,9 @@ module.exports = function () {
         ];
         var adminHelp = [
             "*** Hangman Admin Commands ***",
-            "/hangmanban: To ban a user from hangman. Format /hangmanban name:reason:time",
-            "/hangmanunban: To unban a user from hangman.",
-            "/hangmanbans: Searches the hangman banlist, show full list if no search term is entered.",
+            "/hangmanmute: To mute a user in hangman. Format /hangmanmute name:reason:time",
+            "/hangmanunmute: To hangman unmute a user.",
+            "/hangmanmutes: Searches the hangman mutelist, show full list if no search term is entered.",
             "/passha: To give your Hangman Admin powers to an alt of yours."
         ];
         var superAdminHelp = [
@@ -554,7 +554,7 @@ module.exports = function () {
             "/hangmanadminoff: To demote a Hangman Admin or a Hangman Super Admin. Use /shangmanadminoff for a silent demotion."
         ];
         var ownerHelp = [
-            "*** Hangman Owner Commands ***",
+            "*** Server owner Hangman Commands ***",
             "/hangmansuperadmin: To promote a new Hangman Super Admin. Use /shangmansuperadmin for a silent promotion.",
             "/hangmansuperadminoff: To demote a Hangman Super Admin. Use /shangmansuperadminoff for a silent demotion."
         ];
@@ -585,7 +585,7 @@ module.exports = function () {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel !== hangchan && ["hangmanban", "hangmanunban", "hangmanbans", "hangmanadmins", "hadmins", "has", "passha", "hangmanadminoff", "hangmanadmin", "hangmansadmin", "hangmansuperadmin", "shangmanadmin", "shangmansuperadmin", "shangmanadminoff"].indexOf(command) === -1) {
+        if (channel !== hangchan && ["hangmanmute", "hangmanunmute", "hangmanmutes", "hangmanadmins", "hadmins", "has", "passha", "hangmanadminoff", "hangmanadmin", "hangmansadmin", "hangmansuperadmin", "shangmanadmin", "shangmansuperadmin", "shangmanadminoff"].indexOf(command) === -1) {
             return;
         }
         if (command === "help") {
@@ -669,18 +669,18 @@ module.exports = function () {
             return true;
         }
 
-        if (command === "hangmanban") {
-            hangman.hangmanBan(src, commandData);
+        if (command === "hangmanmute") {
+            hangman.hangmanMute(src, commandData);
             return true;
         }
 
-        if (command === "hangmanunban") {
-            script.unban("hban", src, sys.id(commandData), commandData);
+        if (command === "hangmanunmute") {
+            script.unban("hmute", src, sys.id(commandData), commandData);
             return true;
         }
 
-        if (command === "hangmanbans") {
-            hangman.hangmanBanList(src, commandData);
+        if (command === "hangmanmutes") {
+            hangman.hangmanMuteList(src, commandData);
             return true;
         }
 
@@ -717,28 +717,23 @@ module.exports = function () {
         }
         return false;
     };
-    this.onHban = function (src) {
-        if (sys.isInChannel(src, hangmanchan)) {
-            sys.kick(src, hangmanchan);
-        }
-    };
-    this.hangmanBan = function (src, commandData) {
+    this.hangmanMute = function (src, commandData) {
         if (commandData === undefined) {
             return;
         }
         var tar = sys.id(commandData);
-        var bantime;
+        var mutetime;
         if (this.authLevel(src) > 1 || sys.auth(src) > 0) {
-            bantime = undefined;
+            mutetime = undefined;
         }
         else {
-            bantime = 86400;
+            mutetime = 86400;
         }
-        script.issueBan("hban", src, tar, commandData, bantime);
+        script.issueBan("hmute", src, tar, commandData, mutetime);
         return;
     };
-    this.hangmanBanList = function (src, commandData) {
-        require("modcommands.js").handleCommand(src, "hangmanbans", commandData, -1);
+    this.hangmanMuteList = function (src, commandData) {
+        require("modcommands.js").handleCommand(src, "hangmanmutes", commandData, -1);
         return;
     };
     this.hangmanAuth = function (src, commandData, channel) {
@@ -914,12 +909,25 @@ module.exports = function () {
         }
         return false;
     };
+    this.beforeChatMessage = function (src, message, channel) {
+        if (channel == hangchan && poUser["hmute"].active) {
+            if (poUser.expired("hmute")) {
+                poUser.un("hmute");
+                mafiabot.sendMessage(src, "Your Hangman mute expired.");
+            } else {
+                var info = poUser["hmute"];
+                sys.sendMessage(src, "±Unown: You are Hangman muted " + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Mute expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''));
+                sys.stopEvent();
+                return;
+            }
+        }
+    }
     return {
         init: hangman.init,
         handleCommand: hangman.handleCommand,
         beforeChannelJoin: hangman.beforeChannelJoin,
         afterChannelJoin: hangman.afterChannelJoin,
-        onHban: hangman.onHban,
+        beforeChatMessage: hangman.beforeChatMessage,
         onHelp: hangman.onHelp
     };
 }();

@@ -118,7 +118,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, contributors, mutes, mbans, smutes, detained, hbans, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList, powerList, accList, ppList, categoryList, moveEffList, moveFlagList, abilityList, itemList, berryList, flingPowerList, berryPowerList, berryTypeList, namesToWatch;
+var channel, contributors, mutes, mbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList, powerList, accList, ppList, categoryList, moveEffList, moveFlagList, abilityList, itemList, berryList, flingPowerList, berryPowerList, berryTypeList, namesToWatch;
 
 var pokeDir = "db/pokes/";
 var moveDir = "db/moves/5G/";
@@ -145,7 +145,7 @@ var cleanFile = function(filename) {
     if (typeof sys != 'undefined')
         sys.appendToFile(filename, "");
 };
-["mafia_stats.json", "suspectvoting.json", "mafiathemes/metadata.json", "channelData.json", "mutes.txt", "mbans.txt", "hbans.txt", "smutes.txt", "rangebans.txt", "contributors.txt", "ipbans.txt", Config.dataDir+"namesToWatch.txt", "hangmanadmins.txt", "hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", "secretsmute.txt", "ipApi.txt", Config.dataDir + "notice.html"].forEach(cleanFile);
+["mafia_stats.json", "suspectvoting.json", "mafiathemes/metadata.json", "channelData.json", "mutes.txt", "mbans.txt", "hmutes.txt", "smutes.txt", "rangebans.txt", "contributors.txt", "ipbans.txt", Config.dataDir+"namesToWatch.txt", "hangmanadmins.txt", "hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", "secretsmute.txt", "ipApi.txt", Config.dataDir + "notice.html"].forEach(cleanFile);
 
 var autosmute = sys.getFileContent("secretsmute.txt").split(':::');
 var crc32 = require('crc32.js').crc32;
@@ -708,7 +708,7 @@ init : function() {
     script.hangmanSuperAdmins = new MemoryHash("hangmansuperadmins.txt");
     script.ipbans = new MemoryHash("ipbans.txt");
     script.detained = new MemoryHash("detained.txt");
-    script.hbans = new MemoryHash("hbans.txt");
+    script.hmutes = new MemoryHash("hmutes.txt");
     script.namesToWatch = new MemoryHash(Config.dataDir+"namesToWatch.txt");
     proxy_ips = {};
     function addProxybans(content) {
@@ -853,10 +853,19 @@ init : function() {
 
 
 issueBan : function(type, src, tar, commandData, maxTime) {
-        var memoryhash = {"mute": script.mutes, "mban": script.mbans, "smute": script.smutes, "hban": script.hbans}[type];
-        var banbot = type == "mban" ? mafiabot : normalbot;
-        var verb = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted", "hban": "banned from hangman"}[type];
-        var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "hban": "ban from hangman"}[type];
+        var memoryhash = {"mute": script.mutes, "mban": script.mbans, "smute": script.smutes, "hmute": script.hmutes}[type];
+        var banbot;
+        if (type == "mban") {
+            banbot = mafiabot;
+        }
+        else if (type == "hmute") {
+            banbot = hangbot;
+        }
+        else {
+            banbot = normalbot;
+        }
+        var verb = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted", "hmute": "hangman muted"}[type];
+        var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "hmute": "hangman mute"}[type];
         var sendAll =  {
             "smute": function(line) {
                 sys.dbAuths().map(sys.id).filter(function(uid) { return uid !== undefined; }).forEach(function(uid) {
@@ -871,7 +880,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             "mute": function(line) {
                 banbot.sendAll(line);
             },
-            "hban" : function(line) {
+            "hmute" : function(line) {
                 banbot.sendAll(line, staffchannel);
                 banbot.sendAll(line, hangmanchan);
                 banbot.sendAll(line, sachannel);
@@ -879,7 +888,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         }[type];
 
         var expires = 0;
-        var defaultTime = {"mute": "24h", "mban": "1d", "smute": "0", "hban": "1d"}[type];
+        var defaultTime = {"mute": "24h", "mban": "1d", "smute": "0", "hmute": "1d"}[type];
         var reason = "";
         var timeString = "";
         var tindex = 10;
@@ -954,11 +963,20 @@ issueBan : function(type, src, tar, commandData, maxTime) {
 },
 
 unban: function(type, src, tar, commandData) {
-    var memoryhash = {"mute": script.mutes, "mban": script.mbans, "smute": script.smutes, "hban": script.hbans}[type];
-    var banbot = type == "mban" ? mafiabot : normalbot;
-    var verb = {"mute": "unmuted", "mban": "unbanned from mafia", "smute": "secretly unmuted", "hban": "unbanned from hangman"}[type];
-    var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "hban": "ban from hangman"}[type];
-    var past = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted", "hban": "banned from hangman"}[type];
+    var memoryhash = {"mute": script.mutes, "mban": script.mbans, "smute": script.smutes, "hmute": script.hmutes}[type];
+    var banbot;
+        if (type == "mban") {
+            banbot = mafiabot;
+        }
+        else if (type == "hmute") {
+            banbot = hangbot;
+        }
+        else {
+            banbot = normalbot;
+        }
+    var verb = {"mute": "unmuted", "mban": "unbanned from mafia", "smute": "secretly unmuted", "hmute": "hangman unmuted"}[type];
+    var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "hmute": "hangman mute"}[type];
+    var past = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted", "hmute": "hangman muted"}[type];
     var sendAll =  {
         "smute": function(line) {
             banbot.sendAll(line, staffchannel);
@@ -980,7 +998,7 @@ unban: function(type, src, tar, commandData) {
                 banbot.sendAll(line);
             }
         },
-        "hban" : function(line, ip) {
+        "hmute" : function(line, ip) {
             if (ip) {
                 banbot.sendAll(line, staffchannel);
                 banbot.sendAll(line, sachannel);
@@ -1030,9 +1048,9 @@ banList: function (src, command, commandData) {
     } else if (command == "mafiabans") {
         mh = script.mbans;
         name = "Mafiabans";
-    } else if (command == "hangmanbans") {
-        mh = script.hbans;
-        name = "Hangman Bans";
+    } else if (command == "hangmanmutes") {
+        mh = script.hmutes;
+        name = "Hangman Mutes";
     }
 
     var width=5;
@@ -1249,20 +1267,15 @@ beforeChannelJoin : function(src, channel) {
         sys.stopEvent();
         return;
     }
-    var channels = [mafiachan, hangmanchan];
-    var bans = ["mban", "hban"];
-    var type = ["Mafia", "Hangman"];
-    for(var x = 0; x < channels.length; x++) {
-        if (channel == channels[x] && poUser[bans[x]].active) {
-            if (poUser.expired(bans[x])) {
-                poUser.un(bans[x]);
-                normalbot.sendMessage(src, "Your ban from " + type[x] + " expired.");
-            } else {
-                var info = poUser[bans[x]];
-                sys.sendMessage(src, "+Guard: You are banned from " + type[x] + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Ban expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''));
-                sys.stopEvent();
-                return;
-            }
+    if (channel == mafiachan && poUser["mban"].active) {
+        if (poUser.expired("mban")) {
+            poUser.un("mban");
+            mafiabot.sendMessage(src, "Your ban from Mafia expired.");
+        } else {
+            var info = poUser["mban"];
+            sys.sendMessage(src, "+Guard: You are banned from Mafia " + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Ban expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''));
+            sys.stopEvent();
+            return;
         }
     }
     if (channel == watchchannel && sys.auth(src) < 1) {

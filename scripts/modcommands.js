@@ -167,7 +167,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
 
     }
-    if (command == "mutelist" || command == "smutelist" || command == "mafiabans" || command == "hangmanbans") {
+    if (command == "mutelist" || command == "smutelist" || command == "mafiabans" || command == "hangmanmutes") {
         script.banList(src, command, commandData);
         return;
     }
