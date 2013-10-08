@@ -286,3 +286,4 @@ Epic-Rewards.com
 goo.gl/q3phv
 meatspin.cc
 piratamundo.com
+RiotPointsGenerator.co
