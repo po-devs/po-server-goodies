@@ -246,6 +246,9 @@ exports.help = function(src, channel) {
     if (poChannel.isChannelOperator(src) || poChannel.isChannelAdmin(src) || poChannel.isChannelOwner(src)) {
         sys.sendMessage(src, "*** Channel Mod commands ***", channel);
         sys.sendMessage(src, "/topic [topic]: Sets the topic of a channel. Only works if you're the first to log on a channel or have auth there. Displays current topic instead if no new one is given.", channel);
+        sys.sendMessage(src, "/topicadd [message]: Uses the topic message separator and adds your message to the end of the current channel topic.", channel);
+        sys.sendMessage(src, "/removepart [number]: Removes the part in the channel topic that is identified by the number.", channel);
+        sys.sendMessage(src, "/updatepart [number] [message]: Changes the part in the channel topic that is identified by the number to your message.", channel);
         sys.sendMessage(src, "/ck: Kicks someone from current channel.", channel);
         sys.sendMessage(src, "/member: Makes the user a member.", channel);
         sys.sendMessage(src, "/demember: Removes membership from a user.", channel);
