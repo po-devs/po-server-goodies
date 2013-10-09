@@ -265,9 +265,11 @@ module.exports = function () {
         var time = parseInt(sys.time(), 10);
         if (time > this.lastAdvertise + 60 * 20) {
             this.lastAdvertise = time;
+            sys.sendAll(" ", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
             hangbot.sendAll("A new game of Hangman started in #Hangman!", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
+            sys.sendAll(" ", 0);
         }
     };
     this.applyPoints = function (src, p) {
