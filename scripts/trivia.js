@@ -162,6 +162,31 @@ function saveData() {
     sys.writeToFile("trivData.json", JSON.stringify(trivData));
 }
 
+function orderedCategories() {
+    var categories = [];
+    var matchFunc = function (object) {
+        if (object.category.toLowerCase() === cat.toLowerCase()) {
+            object.count++;
+            match = true;
+        }
+    };
+    for (var i in triviaq.all()) {
+        var cat = triviaq.get(i).category,
+            match = false;
+        categories.forEach(matchFunc);
+        if (!match) {
+            categories.push({
+                category: cat,
+                count: 1
+            });
+        }
+    }
+    categories.sort(function (a, b) {
+        return b.count - a.count;
+    });
+    return categories;
+}
+
 function isTriviaOwner(src) {
     if (sys.auth(src) >= 3) return true;
     if (tsadmin.isTAdmin(sys.name(src))) return true;
@@ -172,7 +197,7 @@ function hasReviewAccess(name) {
     var id = sys.id(name);
     var contribs = id !== undefined ? SESSION.users(id).contributions !== undefined : false;
     var cauth = false;
-    if (id !== undefined) cauth = SESSION.channels(revchan).canJoin(id) == "allowed";
+    if (id !== undefined) cauth = (SESSION.channels(revchan).canJoin(id) == "allowed" || SESSION.channels(staffchannel).canJoin(id) == "allowed");
     return cauth === true || contribs === true;
 }
 
@@ -522,8 +547,10 @@ TriviaGame.prototype.finalizeAnswers = function () {
         if (Object.keys(Trivia.suggestion).length !== 0) {
             this.sendAll(sys.name(Trivia.suggestion.suggester) + "'s suggestion was cancelled because the game ended before it could be asked.", revchan);
         }
+        var allCats = orderedCategories();
         this.htmlAll("<h2>Congratulations to " + w + "</h2>" + winners.join(", ") + "");
         sendChanHtmlAll("<font size=5><font color='#3DAA68'><timestamp/> <b>±Psyduck: </b><font color='red'>While you're waiting for another game, why not submit a question? <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>Help and Guidelines are here!</a></font></font></font>", triviachan);
+        sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±Psyduck:</b></font> We could really use more <b>" + allCats[allCats.length - sys.rand(1, 6)].category + "</b> themed questions!", triviachan);
         sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±Psyduck:</b></font> Never want to miss a Trivia game? Try the <b>/flashme</b> command!", triviachan);
         //updateLeaderboard(obj);
         if (this.catGame) {
@@ -1381,27 +1408,7 @@ addAdminCommand("category", function (src, commandData, channel) {
 }, "Shows how many questions are in a specified category");
 
 addAdminCommand("listc", function (src, commandData, channel) {
-    var categories = [];
-    var matchFunc = function (object) {
-        if (object.category.toLowerCase() === cat.toLowerCase()) {
-            object.count++;
-            match = true;
-        }
-    };
-    for (var i in triviaq.all()) {
-        var cat = triviaq.get(i).category,
-            match = false;
-        categories.forEach(matchFunc);
-        if (!match) {
-            categories.push({
-                category: cat,
-                count: 1
-            });
-        }
-    }
-    categories.sort(function (a, b) {
-        return b.count - a.count;
-    });
+    var categories = orderedCategories();
     Trivia.sendPM(src, "All currently used categories:", channel);
     for (var x = 0; x < categories.length; x++) {
         var object = categories[x];
