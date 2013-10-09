@@ -880,9 +880,7 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
         if (script.hasAuthElements(tadmins)) {
             sys.sendMessage(src, "", id);
             sys.sendMessage(src, "*** AUTH TRIVIA ADMINS ***", id);
-            for (var b in tadmins) {
-                print(tadmins[b]);
-                print(sys.dbAuths().indexOf(tadmins[b]));
+            for (var b = 0; b < tadmins.length; b++) {
                 if (sys.dbAuths().indexOf(tadmins[b]) != -1) {
                     if (sys.id(tadmins[b]) === undefined) {
                         sys.sendMessage(src, tadmins[b], id);
