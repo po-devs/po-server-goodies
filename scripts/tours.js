@@ -2825,7 +2825,7 @@ function tourCommand(src, command, commandData, channel) {
             if (script.hasAuthElements(mus)) {
                 sys.sendMessage(src, "", channel);
                 sys.sendMessage(src, "*** AUTH MEGAUSERS ***", channel);
-                for (var m in mus) {
+                for (var m = 0; x < mus.length; m++) {
                     if (sys.dbAuths().indexOf(mus[m]) != -1) {
                         var id = sys.id(mus[m]);
                         if (!id) {
