@@ -913,7 +913,7 @@ module.exports = function () {
     };
     this.beforeChatMessage = function (src, message, channel) {
         var poUser = SESSION.users(src);
-        if (!poUser["hmute"]) { //THIS IS WHY YOU DON'T RENAME SESSION VARIABLES
+        if (poUser["hmute"]) { //THIS IS WHY YOU DON'T RENAME SESSION VARIABLES
             if (channel == hangchan && poUser["hmute"].active) {
                 if (poUser.expired("hmute")) {
                     poUser.un("hmute");
