@@ -913,15 +913,17 @@ module.exports = function () {
     };
     this.beforeChatMessage = function (src, message, channel) {
         var poUser = SESSION.users(src);
-        if (channel == hangchan && poUser["hmute"].active) {
-            if (poUser.expired("hmute")) {
-                poUser.un("hmute");
-                sys.sendMessage(src, "±Unown: Your Hangman mute expired.", channel);
-            } else {
-                var info = poUser["hmute"];
-                sys.sendMessage(src, "±Unown: You are Hangman muted " + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Mute expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''), channel);
-                sys.stopEvent();
-                return;
+        if (poUser["hmute"]) { //THIS IS WHY YOU DON'T RENAME SESSION VARIABLES
+            if (channel == hangchan && poUser["hmute"].active) {
+                if (poUser.expired("hmute")) {
+                    poUser.un("hmute");
+                    sys.sendMessage(src, "±Unown: Your Hangman mute expired.", channel);
+                } else {
+                    var info = poUser["hmute"];
+                    sys.sendMessage(src, "±Unown: You are Hangman muted " + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Mute expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''), channel);
+                    sys.stopEvent();
+                    return;
+                }
             }
         }
     };
