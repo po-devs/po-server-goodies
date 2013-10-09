@@ -1,5 +1,5 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global sys:true, sendChanHtmlAll:true, module:true, SESSION:true, hangmanchan, hangbot, require, script, sachannel */
+/*global sys:true, sendChanHtmlAll:true, module:true, SESSION:true, hangmanchan, hangbot, require, script, sachannel, getTimeString */
 
 var nonFlashing = require("utilities.js").non_flashing;
 var html_escape = require("utilities.js").html_escape;
@@ -910,18 +910,19 @@ module.exports = function () {
         return false;
     };
     this.beforeChatMessage = function (src, message, channel) {
+        var poUser = SESSION.users(src);
         if (channel == hangchan && poUser["hmute"].active) {
             if (poUser.expired("hmute")) {
                 poUser.un("hmute");
-                mafiabot.sendMessage(src, "Your Hangman mute expired.");
+                sys.sendMessage(src, "±Unown: Your Hangman mute expired.", channel);
             } else {
                 var info = poUser["hmute"];
-                sys.sendMessage(src, "±Unown: You are Hangman muted " + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Mute expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''));
+                sys.sendMessage(src, "±Unown: You are Hangman muted " + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Mute expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''), channel);
                 sys.stopEvent();
                 return;
             }
         }
-    }
+    };
     return {
         init: hangman.init,
         handleCommand: hangman.handleCommand,
