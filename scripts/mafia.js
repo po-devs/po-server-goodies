@@ -3435,16 +3435,18 @@ function Mafia(mafiachan) {
         name = this.correctCase(name);
         var player = this.players[name];
         if (delayed) {
-            role = mafia.usersToSlay[name][1];
-            if (role.actions.hasOwnProperty("onDeath")) {
-                if (role.actions.onDeath.onslay !== false) {
-                    this.actionBeforeDeath(player);
+            if (this.isInGame(name)) {
+                role = mafia.usersToSlay[name][1];
+                if (role.actions.hasOwnProperty("onDeath")) {
+                    if (role.actions.onDeath.onslay !== false) {
+                        this.actionBeforeDeath(player);
+                    }
                 }
-            }
-            this.removePlayer(player);
-            this.onDeadRoles();
-            if (this.testWin(true)) {
-                return;
+                this.removePlayer(player);
+                this.onDeadRoles();
+                if (this.testWin(true)) {
+                    return;
+                }
             }
             return;
         }
