@@ -5268,7 +5268,7 @@ function Mafia(mafiachan) {
     this.onMute = function (src) {
         if (this.state == "entry" || this.state == "voting") {
             this.shoveUser(Config.capsbot, sys.name(src), false);
-        } else if (this.isInGame(sys.name(src))) {
+        } else if (this.isInGame(src)) {
             this.slayUser(Config.capsbot, src, false);
         }
     };
@@ -5276,7 +5276,7 @@ function Mafia(mafiachan) {
     this.onBan = function (src, dest) {
         if (this.state == "entry" || this.state == "voting") {
             this.shoveUser(Config.capsbot, sys.name(dest), false);
-        } else if (this.isInGame(sys.name(dest))) {
+        } else if (this.isInGame(dest)) {
             this.slayUser(Config.capsbot, dest, false);
         }
     };
@@ -5284,7 +5284,7 @@ function Mafia(mafiachan) {
     this.onMban = function (src) {
         if (this.state == "entry" || this.state == "voting") {
             this.shoveUser(Config.capsbot, sys.name(src), false);
-        } else if (this.isInGame(sys.name(src))) {
+        } else if (this.isInGame(src)) {
             this.slayUser(Config.capsbot, src, false);
         }
         if (sys.isInChannel(src, mafiachan)) {
@@ -5295,7 +5295,7 @@ function Mafia(mafiachan) {
     this.onKick = function (src) {
         if (this.state == "entry" || this.state == "voting") {
             this.shoveUser(Config.capsbot, sys.name(src), false);
-        } else if (this.isInGame(sys.name(src))) {
+        } else if (this.isInGame(src)) {
             this.slayUser(Config.capsbot, src, false);
         }
     };
