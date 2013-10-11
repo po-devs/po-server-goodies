@@ -1181,7 +1181,7 @@ function Mafia(mafiachan) {
             border = DEFAULT_BORDER;
             sendChanAll("", mafiachan);
             sendChanAll(border, mafiachan);
-            sendChanAll("±Game: " + sys.name(src) + " started a voting for next game's theme!. You have " + this.ticks + " seconds to vote with /votetheme!", mafiachan);
+            sendChanAll("±Game: " + sys.name(src) + " started a voting for next game's theme!. You have " + this.ticks + " seconds to vote with /vote or /votetheme!", mafiachan);
             var casedThemes = [];
             for (var x in this.possibleThemes) {
                 casedThemes.push(this.themeManager.themes[x].name);
@@ -3550,9 +3550,8 @@ function Mafia(mafiachan) {
 
     this.commands = {
         user: ["/mafiaadmins: To get a list of current Mafia Admins.",
-            "/start: Start voting for a new game theme / or vote!",
-            "/votetheme: Start voting for a new game theme / or vote!",
-            "/starttheme: Starts a Game of Mafia with specified theme.",
+            "/start: Starts a Game of Mafia with specified theme. Can also use /starttheme.",
+            "/vote: Start voting for a new game theme or vote! Can also use /votetheme.",
             "/join: To join a Mafia game.",
             "/unjoin: To unjoin a Mafia game during signups.",
             "/help: For info on how to win in a game.",
@@ -4298,12 +4297,12 @@ function Mafia(mafiachan) {
                 }
             }
         }
-        if (command === "start" || command === "votetheme") {
+        if (command === "vote" || command === "votetheme") {
             mafia.userVote(src, commandData);
             return;
         }
         
-        if (command === "starttheme") {
+        if (command === "start" || command === "starttheme") {
             mafia.startGame(src, commandData);
             return;
         }
