@@ -33,7 +33,7 @@ function Mafia(mafiachan) {
         phaseStalk = {},
         featuredTheme,
         featuredLink,
-        featuredText;
+        featuredText = "Please read and follow the /mafiarules! Also, be mindful of your caps, flooding, and insulting other users.";
 
     var DEFAULT_BORDER = "***************************************************************************************";
     var border;
@@ -1181,7 +1181,7 @@ function Mafia(mafiachan) {
             border = DEFAULT_BORDER;
             sendChanAll("", mafiachan);
             sendChanAll(border, mafiachan);
-            sendChanAll("±Game: " + sys.name(src) + " started a voting for next game's theme!. You have " + this.ticks + " seconds to vote with /votetheme!", mafiachan);
+            sendChanAll("±Game: " + sys.name(src) + " started a voting for next game's theme!. You have " + this.ticks + " seconds to vote with /vote or /votetheme!", mafiachan);
             var casedThemes = [];
             for (var x in this.possibleThemes) {
                 casedThemes.push(this.themeManager.themes[x].name);
@@ -3550,9 +3550,8 @@ function Mafia(mafiachan) {
 
     this.commands = {
         user: ["/mafiaadmins: To get a list of current Mafia Admins.",
-            "/start: Start voting for a new game theme / or vote!",
-            "/votetheme: Start voting for a new game theme / or vote!",
-            "/starttheme: Starts a Game of Mafia with specified theme.",
+            "/start: Starts a Game of Mafia with specified theme. Can also use /starttheme.",
+            "/vote: Start voting for a new game theme or vote! Can also use /votetheme.",
             "/join: To join a Mafia game.",
             "/unjoin: To unjoin a Mafia game during signups.",
             "/help: For info on how to win in a game.",
@@ -3697,7 +3696,7 @@ function Mafia(mafiachan) {
             "±Rules: All server rules apply in this channel. Type /rules to view them.",
             "±Rules: After you have died, don't discuss the game with anyone else in the game. This is also known as 'deadtalking'.",
             "±Rules: Do not quote any of the game bots. This includes in private messages.",
-            "±Rules: Do not copy other peoples' names or make your name similar to someone elses.",
+            "±Rules: Do not copy other peoples' names or make your name similar to someone else's.",
             "±Rules: Make sure you can stay active for the entire game if you join. If you must leave, ask a Mafia Admin for a ''slay'' in the game chat. Leaving without asking for a slay will result in punishment.",
             "±Rules: If you ask to be removed from a game (slain), do not join the next game. Do not attempt to get yourself killed or go inactive because you don't like your role.",
             "±Rules: A valid reason must be given for a slay. Being in a tour, not paying attention, not liking your role, and not liking your teammates are not valid reasons.",
@@ -4298,12 +4297,12 @@ function Mafia(mafiachan) {
                 }
             }
         }
-        if (command === "start" || command === "votetheme") {
+        if (command === "vote" || command === "votetheme") {
             mafia.userVote(src, commandData);
             return;
         }
         
-        if (command === "starttheme") {
+        if (command === "start" || command === "starttheme") {
             mafia.startGame(src, commandData);
             return;
         }

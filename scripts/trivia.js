@@ -309,10 +309,10 @@ TriviaGame.prototype.startNormalGame = function (points, name) {
     this.started = true;
     sendChanAll("", 0);
     sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
-    this.sendAll("A #Trivia game was started! First to " + points + " points wins!", 0);
+    this.sendAll("A #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", 0);
     sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
     sendChanAll("", 0);
-    this.sendAll((name !== "" ? name + " started a Trivia game! " : "A trivia game was started! ") + " First to " + points + " points wins!", triviachan);
+    this.sendAll((name !== "" ? name + " started a Trivia game! " : "A trivia game was started! ") + " First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
     sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±Psyduck:</b></font> Type <b>/join</b> to join!", triviachan);
     var players = sys.playersOfChannel(triviachan);
     // Flash players who have it enabled
@@ -343,10 +343,10 @@ TriviaGame.prototype.startCatGame = function (points, cats, name) {
     }
     sendChanAll("", 0);
     sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
-    this.sendAll("A Category game has started in #Trivia! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " points wins!", 0);
+    this.sendAll("A Category game has started in #Trivia! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", 0);
     sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
     sendChanAll("", 0);
-    this.sendAll(name + " has started a Category Game! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " points wins!", triviachan);
+    this.sendAll(name + " has started a Category Game! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
     sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±Psyduck:</b></font> Type <b>/join</b> to join!", triviachan);
     var players = sys.playersOfChannel(triviachan);
     // Flash players who have it enabled
