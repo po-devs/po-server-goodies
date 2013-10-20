@@ -695,7 +695,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var stats = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"];
         var levels = [5, 50, 100];
         sys.sendHtmlMessage(src, "", channel);
-        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.pokemon(pokeId) + "</font></b>", channel);
+        sys.sendHtmlMessage(src, "<b><font size = 4># " + pokeId % 65536 + " " + sys.pokemon(pokeId) + "</font></b>", channel);
         sys.sendHtmlMessage(src, "<img src='pokemon:num=" + pokeId + "&gen=5'><img src='pokemon:num=" + pokeId + "&shiny=true&gen=5'>", channel);
         sys.sendHtmlMessage(src, "<b>Type:</b> " + type1 + (type2 === "???" ? "" : "/" + type2), channel);
         sys.sendHtmlMessage(src, "<b>Abilities:</b> " + ability1 + (ability2 === "(No Ability)" ? "" : ", " + ability2) + (ability3 === "(No Ability)" ? "" : ", " + ability3 + " (Dream World)"), channel);
