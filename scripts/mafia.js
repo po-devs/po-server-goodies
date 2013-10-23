@@ -1491,12 +1491,12 @@ function Mafia(mafiachan) {
     this.removePlayer = function (player) {
         //sys.sendAll("removing player " + player.name, mafiachan);
         for (var action in player.role.actions.night) {
-            var targetMode = player.role.actions.night[action].target;
+            var targetMode = player.role.actions.night[action].common;
             var team = this.getPlayersForTeam(player.role.side);
             var role = this.getPlayersForRole(player.role.role);
-            if ((targetMode == 'AnyButSelf' || targetMode == 'Any')
-             || (targetMode == 'AnyButTeam' && team.length == 1)
-             || (targetMode == 'AnyButRole' && role.length == 1)) {
+            if ((targetMode == 'Self')
+             || (targetMode == 'Team' && team.length == 1)
+             || (targetMode == 'Role' && role.length == 1)) {
                 this.removeTarget(player, action);
             }
         }
