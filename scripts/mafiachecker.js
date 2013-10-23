@@ -23,6 +23,19 @@ function mafiaChecker() {
         theme.correctSides = [];
         theme.lowerCaseSides = [];
 
+        // Parse variables first - so we can extract the actual value later.
+        theme.variables = raw.variables;
+        
+        var it, prop;
+        // This is only done when variables are available.
+        if (Object.prototype.toString.call(theme.variables) === '[object Object]') {
+            // Iterate over the entire theme, parsing variable:(name) strings.
+            for (it in raw) {
+                prop = raw[it];
+                assignVariable(raw, it, prop, theme.variables);
+            }
+        }
+        
         try {
             var i=2, lists = [];
             while ("roles"+i in raw) {
@@ -1192,6 +1205,23 @@ function mafiaChecker() {
             return arr[0];
         } else {
             return "";
+        }
+    }
+    function assignVariable(master, index, prop, variables) {
+        var variable, len, j, val;
+        
+        if (typeof prop === 'string' && prop.slice(0, 9) === 'variable:') {
+            variable = prop.slice(9);
+            master[index] = variables[variable];
+        } else if (Array.isArray(prop)) {
+            for (j = 0, len = prop.length; j < len; j += 1) {
+                val = prop[j];
+                assignVariable(prop, j, val, variables);
+            }
+        } else if (Object.prototype.toString.call(prop) === '[object Object]') {
+            for (j in prop) {
+                assignVariable(prop, j, prop[j], variables);
+            }
         }
     }
 }

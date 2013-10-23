@@ -320,12 +320,31 @@ function Mafia(mafiachan) {
         villageCantLoseRoles: ["mayor", "vigilante", "samurai"]
     };
 
+    function assignVariable(master, index, prop, variables) {
+        var variable, len, j, val;
+        
+        if (typeof prop === 'string' && prop.slice(0, 9) === 'variable:') {
+            variable = prop.slice(9);
+            master[index] = variables[variable];
+        } else if (Array.isArray(prop)) {
+            for (j = 0, len = prop.length; j < len; j += 1) {
+                val = prop[j];
+                assignVariable(prop, j, val, variables);
+            }
+        } else if (Object.prototype.toString.call(prop) === '[object Object]') {
+            for (j in prop) {
+                assignVariable(prop, j, prop[j], variables);
+            }
+        }
+    }
+    
     /* ThemeManager is a object taking care of saving and loading themes
-* in mafia game */
+     * in mafia game */
     function ThemeManager() {
         this.themeInfo = [];
         this.themes = {};
     }
+    
     ThemeManager.prototype.toString = function () { return "[object ThemeManager]"; };
 
     ThemeManager.prototype.save = function (name, url, resp) {
@@ -345,9 +364,13 @@ function Mafia(mafiachan) {
         sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
     };
 
-    ThemeManager.prototype.loadTheme = function (plain_theme) {
+    ThemeManager.prototype.loadTheme = function (raw_theme) {
         var theme = new Theme();
         try {
+            // Slow and lazy way to copy a theme                    
+            // if anyone wants to improve this, go ahead.
+            var plain_theme = JSON.parse(JSON.stringify(raw_theme)); 
+            
             theme.sideTranslations = {};
             theme.sideWinMsg = {};
             theme.roles = {};
@@ -357,8 +380,20 @@ function Mafia(mafiachan) {
             theme.standbyHaxRoles = {};
             theme.randomSideRoles = {};
 
-            // Init from the theme
+            // Parse variables first - so we can extract the actual value later.
+            theme.variables = plain_theme.variables;
+            
             var i;
+            // This is only done when variables are available.
+            if (Object.prototype.toString.call(theme.variables) === '[object Object]') {
+                // Iterate over the entire theme, parsing variable:(name) strings.
+                for (i in plain_theme) {
+                    prop = plain_theme[i];
+                    assignVariable(plain_theme, i, prop, theme.variables);
+                }
+            }
+            
+            // Init from the theme
             for (i in plain_theme.sides) {
                 theme.addSide(plain_theme.sides[i]);
             }
