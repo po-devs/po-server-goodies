@@ -364,13 +364,9 @@ function Mafia(mafiachan) {
         sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
     };
 
-    ThemeManager.prototype.loadTheme = function (raw_theme) {
+    ThemeManager.prototype.loadTheme = function (plain_theme) {
         var theme = new Theme();
         try {
-            // Slow and lazy way to copy a theme                    
-            // if anyone wants to improve this, go ahead.
-            var plain_theme = JSON.parse(JSON.stringify(raw_theme)); 
-            
             theme.sideTranslations = {};
             theme.sideWinMsg = {};
             theme.roles = {};
@@ -477,7 +473,8 @@ function Mafia(mafiachan) {
             try {
                 var plain_theme = JSON.parse(resp);
                 
-                var errors = mafia.mafiaChecker.checkTheme(plain_theme);
+                // Create a copy to prevent the checker from changing the theme.
+                var errors = mafia.mafiaChecker.checkTheme(JSON.parse(resp));
                 if (errors.fatal.length > 0) {
                     sys.sendMessage(src, "", mafiachan);
                     msg(src, "Fatal Errors found in the theme: ");
@@ -504,6 +501,7 @@ function Mafia(mafiachan) {
                     return;
                 }
                 
+                // Don't care about loadTheme changing plain_theme as it's not being reused.
                 var theme = manager.loadTheme(plain_theme);
                 var lower = theme.name.toLowerCase();
                 var needsDisable = false;

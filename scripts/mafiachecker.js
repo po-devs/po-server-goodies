@@ -1212,6 +1212,7 @@ function mafiaChecker() {
         
         if (typeof prop === 'string' && prop.slice(0, 9) === 'variable:') {
             variable = prop.slice(9);
+            // Check for undefined variable here.
             master[index] = variables[variable];
         } else if (Array.isArray(prop)) {
             for (j = 0, len = prop.length; j < len; j += 1) {
