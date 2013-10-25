@@ -86,7 +86,7 @@ var tourmodcommands = ["Parameters: They can be used by putting 'gen=x'; 'mode=s
                     "/start: Starts next tournament in the queue immediately (use sparingly).",
                     "/viewstaffstats: Views tournament staff stats for a user.",
                     "/shift: Places a tournament in the front of the queue. Format is /shift tier:parameters.",
-                    "/passmu: Passes your megauser to a new name."];
+                    "/passmu: To give your Mega User powers to an alt."];
 var tourownercommands = ["/megauser: Makes someone a megauser. Use /smegauser for a silent promotion.",
                     "/megauseroff: Fires someone from being tournament authority. Use /smegauseroff for a silent demotion.",
                     "/forcestart: Ends signups immediately and starts the first round.",
@@ -2257,6 +2257,7 @@ function tourCommand(src, command, commandData, channel) {
                 tours.touradmins = tadmins;
                 saveTourKeys();
                 sendBotAll(sys.name(src)+" passed their tour auth to "+toCorrectCase(newname)+"!",sys.channelId("Victory Road"),false);
+                sendBotMessage(src, "You passed your Tour auth to " + commandData.toCorrectCase() + "!",tourschan, false);
                 return true;
             }
             if (command == "dq") {
