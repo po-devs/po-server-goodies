@@ -547,7 +547,7 @@ module.exports = function () {
             "/hangmanmute: To mute a user in hangman. Format /hangmanmute name:reason:time",
             "/hangmanunmute: To hangman unmute a user.",
             "/hangmanmutes: Searches the hangman mutelist, show full list if no search term is entered.",
-            "/passha: To give your Hangman Admin powers to an alt of yours."
+            "/passha: To give your Hangman Admin powers to an alt."
         ];
         var superAdminHelp = [
             "*** Hangman Super Admin Commands ***",
@@ -647,11 +647,11 @@ module.exports = function () {
                 sys.sendMessage(src, "±Unown: Both accounts must be on the same IP to switch!");
                 return true;
             }
-            if (this.isHangmanAdmin(sys.id(newname)) || this.isHangmanSuperAdmin(sys.id(newname))) {
+            if (hangman.isHangmanAdmin(sys.id(newname)) || hangman.isHangmanSuperAdmin(sys.id(newname))) {
                 sys.sendMessage(src, "±Unown: Your target is already a Hangman Admin!");
                 return true;
             }
-            if (this.isHangmanSuperAdmin(src)) {
+            if (hangman.isHangmanSuperAdmin(src)) {
                 script.hangmanSuperAdmins.remove(oldname);
                 script.hangmanSuperAdmins.add(newname, "");
                 sHA = true,
@@ -660,10 +660,12 @@ module.exports = function () {
                 script.hangmanAdmins.add(newname, "");
             }
             id = sys.id(commandData);
-            if (id !== undefined)
+            if (id !== undefined) {
                 SESSION.users(id).hangmanAdmin = true;
-            sys.sendAll("±Unown: " + sys.name(src) + " passed their " + (sHA ? "Super Hangman Admin powers" : "Hangman auth") + " to " + commandData, sachannel);
-            return;
+            }
+            sys.sendAll("±Unown: " + sys.name(src) + " passed their " + (sHA ? "Super Hangman Admin powers" : "Hangman auth") + " to " + commandData.toCorrectCase(), sachannel);
+            sys.sendMessage(src, "±Unown: You passed your Hangman auth to " + commandData.toCorrectCase() + "!");
+            return true;
         }
 
         if (command === "end") {
@@ -927,6 +929,15 @@ module.exports = function () {
             }
         }
     };
+    
+    function toCorrectCase(name) {
+        if (isNaN(name) && sys.id(name) !== undefined) {
+            return sys.name(sys.id(name));
+        }
+        else {
+            return name;
+        }
+    }
     return {
         init: hangman.init,
         handleCommand: hangman.handleCommand,
