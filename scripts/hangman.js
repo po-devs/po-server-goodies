@@ -647,7 +647,7 @@ module.exports = function () {
                 sys.sendMessage(src, "±Unown: Both accounts must be on the same IP to switch!");
                 return true;
             }
-            if (this.isHangmanAdmin(sys.id(newname)) || this.isHangmanSuperAdmin(sys.id(newname))) {
+            if (script.isHangmanAdmin(sys.id(newname)) || script.isHangmanSuperAdmin(sys.id(newname))) {
                 sys.sendMessage(src, "±Unown: Your target is already a Hangman Admin!");
                 return true;
             }
