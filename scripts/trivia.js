@@ -1854,6 +1854,45 @@ addAdminCommand("autostart", function (src, commandData, channel) {
     triviabot.sendAll(nonFlashing(sys.name(src)) + " changed the autostart range to " + data[0] + "-" + data[1] + ".", revchan);
 }, "Checks whether autostart is turned on or off, the range of it, and lets you change both. Use /autostart on/off and /autostart min-max.");
 
+addAdminCommand("passta", function (src, commandData, channel) {
+    var oldname = sys.name(src).toLowerCase();
+    var newname = commandData.toLowerCase();
+    var sTA = false;
+    if (sys.dbIp(newname) === undefined) {
+        triviabot.sendMessage(src, "This user doesn't exist!", channel);
+        return;
+    }
+    if (!sys.dbRegistered(newname)) {
+        triviabot.sendMessage(src, "That account isn't registered so you can't give it authority!", channel);
+        return;
+    }
+    if (sys.id(newname) === undefined) {
+        triviabot.sendMessage(src, "Your target is offline!", channel);
+        return;
+    }
+    if (sys.ip(sys.id(newname)) !== sys.ip(src)) {
+        triviabot.sendMessage(src, "Both accounts must be on the same IP to switch!", channel);
+        return;
+    }
+    /* Can't figure out syntax to allow it to check properly, but it really doesn't matter at this point in the code.
+    if (tadmin.isTAdmin(newname) || isTriviaOwner(newname)) {
+        triviabot.sendMessage(src, "Your target is already a Trivia Admin!", channel);
+        return;
+    }*/
+    if (isTriviaOwner(src)) {
+        tsadmin.removeTAdmin(oldname);
+        tsadmin.addTAdmin(newname);
+        sTA = true,
+    } else {
+        tadmin.removeTAdmin(oldname);
+        tadmin.addTAdmin(newname);
+    }
+    Trivia.sendAll(sys.name(src) + " passed their " + (sTA ? "Trivia Owner powers" : "Trivia auth") + " to " + commandData, sachannel);
+    Trivia.sendAll(sys.name(src) + " passed their " + (sTA ? "Trivia Owner powers" : "Trivia auth") + " to " + commandData, revchan);
+    triviabot.sendMessage(src, "You passed your Trivia auth to " + commandData.toCorrectCase() + "!", channel);
+    return;
+}, "To give your Trivia Admin powers to an alt.");
+
 
 module.exports = {
     // Normal command handling.
