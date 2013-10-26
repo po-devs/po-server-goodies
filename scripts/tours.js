@@ -6,6 +6,8 @@ Maintenance by PO Scripters 2013
 Files used: tourscores.txt, eventscores.txt, tourscores_tier.txt, tourwinverbs.txt, tourconfig.txt, eventtours.json,
 tourdetails.txt, eventwinners.txt, eventplayers.txt, tourmonthscore_month.txt, tourmutes.txt,
 touradmins.json, tastats.json, tourseeds.json, tourhistory.json, tours_cache.json, tourwarns.json
+
+This code will only work on servers updated to 6th Gen!
 */
 
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
@@ -309,11 +311,13 @@ function getSubgen(name, getLongName) {
         "BW": "5-0",
         "Black/White 2": "5-1",
         "BW2": "5-1",
+        "XY": "6-0",
         "1": "1-3",
         "2": "2-2",
         "3": "3-4",
         "4": "4-2",
-        "5": "5-1"
+        "5": "5-1",
+        "6": "6-0"
     };
     if (getLongName) {
         for (var x in subgens) {
@@ -908,8 +912,8 @@ function getEventTour(datestring) {
                             parameters.gen = newgen;
                         }
                         else {
-                            parameters.gen = "5-1"; // BW2
-                            sendBotAll("Warning! The subgen '"+parametervalue+"' does not exist! Used BW2 instead!", tourserrchan, false);
+                            parameters.gen = "6-0"; // XY
+                            sendBotAll("Warning! The subgen '"+parametervalue+"' does not exist! Used XY instead!", tourserrchan, false);
                         }
                     }
                     else if (cmp(parameterset, "maxplayers")) {
@@ -946,7 +950,7 @@ function getEventTour(datestring) {
                 }
             }
             if (allgentiers.indexOf(thetier) != -1 && parameters.gen === "default") {
-                parameters.gen = "5-1";
+                parameters.gen = "6-0";
             }
             return [thetier, parameters];
         }
@@ -1075,7 +1079,7 @@ function tourStep() {
             var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1"];
             var tourtostart = tourarray[tours.key%tourarray.length];
             var tourtype = doubleelimtiers.indexOf(tourtostart) != -1 ? "double" : "single";
-            tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? "5-1" : "default"), "type": tourtype, "maxplayers": false, "event": false,  "wifi": sys.getClauses(tourtostart)%256 >= 128 ? true : false});
+            tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? "6-0" : "default"), "type": tourtype, "maxplayers": false, "event": false,  "wifi": sys.getClauses(tourtostart)%256 >= 128 ? true : false});
         }
     }
 }
@@ -2059,8 +2063,8 @@ function tourCommand(src, command, commandData, channel) {
                                 parameters.gen = newgen;
                             }
                             else {
-                                parameters.gen = "5-1"; // BW2
-                                sendBotMessage(src, "Warning! The subgen '"+parametervalue+"' does not exist! Used BW2 instead!", tourschan, false);
+                                parameters.gen = "6-0"; // XY
+                                sendBotMessage(src, "Warning! The subgen '"+parametervalue+"' does not exist! Used XY instead!", tourschan, false);
                             }
                         }
                         else if (cmp(parameterset, "type")) {
@@ -2106,7 +2110,7 @@ function tourCommand(src, command, commandData, channel) {
                     }
                 }
                 if (allgentiers.indexOf(tourtier) != -1 && parameters.gen === "default") {
-                    parameters.gen = "5-1";
+                    parameters.gen = "6-0";
                 }
                 if (tours.queue.length >= tourconfig.maxqueue && !isTourOwner(src) && command == "tour") {
                     sendBotMessage(src, "There are already "+tourconfig.maxqueue+" or more tournaments in the queue, so you can't add another one!", tourschan, false);
