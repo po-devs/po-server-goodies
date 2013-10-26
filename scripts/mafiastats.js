@@ -206,6 +206,13 @@ function mafiaStats() {
     };
     this.compileHourData = function () {
         var hData = this.data.hoursData;
+        for (var x = 0; x < 24; x++) {
+            if (!hData[x]) {
+                hData[x] = {};
+                hData[x].players = 0;
+                hData[x].gamesPlayed = 0;
+            }
+        }
         var output = [html.title.format("Games Played Per Hour (UTC)")];
         output.push("");
         for (var x = 0; x < 24; x++) {
@@ -265,6 +272,8 @@ function mafiaStats() {
         for (var x = 0; x < totalTeam.length; x++) {
             sys.sendMessage(src, ++count + ": " + totalTeam[x][0] + ". Times Won: " + totalTeam[x][1] + ". Average Players per win: " + totalTeam[x][2], channel);
         }
+        sys.sendMessage(src, "", channel);
+        sys.sendMessage(src, "±Stats: For more details, check http://server.pokemon-online.eu/mafiathemes/" + theme + "_stats.html", channel);
     };
     this.createTable = function (theme) {
         var themeData = require("mafia.js").themeManager.themes[theme.toLowerCase()];

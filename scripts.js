@@ -20,10 +20,10 @@ var Config = {
     hangbot: "Unown",
     bfbot: "Deoxys",
     // suspectvoting.js available, but not in use
-    Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js", "blackjack.js", "mafiastats.js"],
+    Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js", "blackjack.js", "mafiastats.js", "mafiachecker.js"],
     Mafia: {
         bot: "Murkrow",
-        norepeat: 11,
+        norepeat: 5,
         stats_file: "mafia_stats.json",
         max_name_length: 16,
         notPlayingMsg: "±Game: The game is in progress. Please type /join to join the next mafia game."
@@ -118,7 +118,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, contributors, mutes, mbans, smutes, detained, hbans, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList, powerList, accList, ppList, categoryList, moveEffList, moveFlagList, abilityList, itemList, berryList, flingPowerList, berryPowerList, berryTypeList, namesToWatch;
+var channel, contributors, mutes, mbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList, powerList, accList, ppList, categoryList, moveEffList, moveFlagList, abilityList, itemList, berryList, flingPowerList, berryPowerList, berryTypeList, namesToWatch;
 
 var pokeDir = "db/pokes/";
 var moveDir = "db/moves/5G/";
@@ -145,7 +145,7 @@ var cleanFile = function(filename) {
     if (typeof sys != 'undefined')
         sys.appendToFile(filename, "");
 };
-["mafia_stats.json", "suspectvoting.json", "mafiathemes/metadata.json", "channelData.json", "mutes.txt", "mbans.txt", "hbans.txt", "smutes.txt", "rangebans.txt", "contributors.txt", "ipbans.txt", Config.dataDir+"namesToWatch.txt", "hangmanadmins.txt", "hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", "secretsmute.txt", "ipApi.txt", Config.dataDir + "notice.html"].forEach(cleanFile);
+["mafia_stats.json", "suspectvoting.json", "mafiathemes/metadata.json", "channelData.json", "mutes.txt", "mbans.txt", "hmutes.txt", "smutes.txt", "rangebans.txt", "contributors.txt", "ipbans.txt", Config.dataDir+"namesToWatch.txt", "hangmanadmins.txt", "hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", "secretsmute.txt", "ipApi.txt", Config.dataDir + "notice.html"].forEach(cleanFile);
 
 var autosmute = sys.getFileContent("secretsmute.txt").split(':::');
 var crc32 = require('crc32.js').crc32;
@@ -610,10 +610,10 @@ step: function() {
     if (date.getUTCMinutes() === 10 && date.getUTCSeconds() === 0) {
         sys.get_output("nc -z server.pokemon-online.eu 10508", function callback(exit_code) {
             if (exit_code !== 0) {
-                sys.sendAll("±NetCat: Cannot reach Webclient Proxy - it may be down.");
+                sys.sendAll("±NetCat: Cannot reach Webclient Proxy - it may be down.", sys.channelId("Indigo Plateau"));
             }
         }, function errback(error) {
-                sys.sendAll("±NetCat: Cannot reach Webclient Proxy - it may be down: " + error);
+                sys.sendAll("±NetCat: Cannot reach Webclient Proxy - it may be down: " + error, sys.channelId("Indigo Plateau"));
         });
         clearTeamFiles();
     }
@@ -708,7 +708,7 @@ init : function() {
     script.hangmanSuperAdmins = new MemoryHash("hangmansuperadmins.txt");
     script.ipbans = new MemoryHash("ipbans.txt");
     script.detained = new MemoryHash("detained.txt");
-    script.hbans = new MemoryHash("hbans.txt");
+    script.hmutes = new MemoryHash("hmutes.txt");
     script.namesToWatch = new MemoryHash(Config.dataDir+"namesToWatch.txt");
     proxy_ips = {};
     function addProxybans(content) {
@@ -782,7 +782,7 @@ init : function() {
         if (sys.auth(id) != 2) return false;
         var name = sys.name(id);
         for (var i = 0; i < Config.superAdmins.length; ++i) {
-            if (cmp(name, Config.superAdmins[i]))
+            if (script.cmp(name, Config.superAdmins[i]))
                 return true;
         }
         return false;
@@ -853,10 +853,19 @@ init : function() {
 
 
 issueBan : function(type, src, tar, commandData, maxTime) {
-        var memoryhash = {"mute": script.mutes, "mban": script.mbans, "smute": script.smutes, "hban": script.hbans}[type];
-        var banbot = type == "mban" ? mafiabot : normalbot;
-        var verb = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted", "hban": "banned from hangman"}[type];
-        var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "hban": "ban from hangman"}[type];
+        var memoryhash = {"mute": script.mutes, "mban": script.mbans, "smute": script.smutes, "hmute": script.hmutes}[type];
+        var banbot;
+        if (type == "mban") {
+            banbot = mafiabot;
+        }
+        else if (type == "hmute") {
+            banbot = hangbot;
+        }
+        else {
+            banbot = normalbot;
+        }
+        var verb = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted", "hmute": "hangman muted"}[type];
+        var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "hmute": "hangman mute"}[type];
         var sendAll =  {
             "smute": function(line) {
                 sys.dbAuths().map(sys.id).filter(function(uid) { return uid !== undefined; }).forEach(function(uid) {
@@ -871,7 +880,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             "mute": function(line) {
                 banbot.sendAll(line);
             },
-            "hban" : function(line) {
+            "hmute" : function(line) {
                 banbot.sendAll(line, staffchannel);
                 banbot.sendAll(line, hangmanchan);
                 banbot.sendAll(line, sachannel);
@@ -879,7 +888,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         }[type];
 
         var expires = 0;
-        var defaultTime = {"mute": "24h", "mban": "1d", "smute": "0", "hban": "1d"}[type];
+        var defaultTime = {"mute": "24h", "mban": "1d", "smute": "0", "hmute": "1d"}[type];
         var reason = "";
         var timeString = "";
         var tindex = 10;
@@ -954,11 +963,20 @@ issueBan : function(type, src, tar, commandData, maxTime) {
 },
 
 unban: function(type, src, tar, commandData) {
-    var memoryhash = {"mute": script.mutes, "mban": script.mbans, "smute": script.smutes, "hban": script.hbans}[type];
-    var banbot = type == "mban" ? mafiabot : normalbot;
-    var verb = {"mute": "unmuted", "mban": "unbanned from mafia", "smute": "secretly unmuted", "hban": "unbanned from hangman"}[type];
-    var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "hban": "ban from hangman"}[type];
-    var past = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted", "hban": "banned from hangman"}[type];
+    var memoryhash = {"mute": script.mutes, "mban": script.mbans, "smute": script.smutes, "hmute": script.hmutes}[type];
+    var banbot;
+        if (type == "mban") {
+            banbot = mafiabot;
+        }
+        else if (type == "hmute") {
+            banbot = hangbot;
+        }
+        else {
+            banbot = normalbot;
+        }
+    var verb = {"mute": "unmuted", "mban": "unbanned from mafia", "smute": "secretly unmuted", "hmute": "hangman unmuted"}[type];
+    var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "hmute": "hangman mute"}[type];
+    var past = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted", "hmute": "hangman muted"}[type];
     var sendAll =  {
         "smute": function(line) {
             banbot.sendAll(line, staffchannel);
@@ -980,7 +998,7 @@ unban: function(type, src, tar, commandData) {
                 banbot.sendAll(line);
             }
         },
-        "hban" : function(line, ip) {
+        "hmute" : function(line, ip) {
             if (ip) {
                 banbot.sendAll(line, staffchannel);
                 banbot.sendAll(line, sachannel);
@@ -1030,9 +1048,9 @@ banList: function (src, command, commandData) {
     } else if (command == "mafiabans") {
         mh = script.mbans;
         name = "Mafiabans";
-    } else if (command == "hangmanbans") {
-        mh = script.hbans;
-        name = "Hangman Bans";
+    } else if (command == "hangmanmutes") {
+        mh = script.hmutes;
+        name = "Hangman Mutes";
     }
 
     var width=5;
@@ -1249,20 +1267,15 @@ beforeChannelJoin : function(src, channel) {
         sys.stopEvent();
         return;
     }
-    var channels = [mafiachan, hangmanchan];
-    var bans = ["mban", "hban"];
-    var type = ["Mafia", "Hangman"];
-    for(var x = 0; x < channels.length; x++) {
-        if (channel == channels[x] && poUser[bans[x]].active) {
-            if (poUser.expired(bans[x])) {
-                poUser.un(bans[x]);
-                normalbot.sendMessage(src, "Your ban from " + type[x] + " expired.");
-            } else {
-                var info = poUser[bans[x]];
-                sys.sendMessage(src, "+Guard: You are banned from " + type[x] + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Ban expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''));
-                sys.stopEvent();
-                return;
-            }
+    if (channel == mafiachan && poUser["mban"].active) {
+        if (poUser.expired("mban")) {
+            poUser.un("mban");
+            mafiabot.sendMessage(src, "Your ban from Mafia expired.");
+        } else {
+            var info = poUser["mban"];
+            sys.sendMessage(src, "+Guard: You are banned from Mafia " + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Ban expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''));
+            sys.stopEvent();
+            return;
         }
     }
     if (channel == watchchannel && sys.auth(src) < 1) {
@@ -1427,7 +1440,7 @@ nameIsInappropriate: function(src)
     }
 
     // \u0020 = space
-    var space = /[\u0009-\u000D]|\u0085|\u00A0|\u1680|\u180E|\u2000-\u200A|\u2028|\u2029|\u2029|\u202F|\u205F|\u3000|\u3164|\uFEFF|\uFFA0|\u2009/;
+    var space = /[\u0009-\u000D]|\u0085|\u00A0|\u1680|\u180E|[\u2000-\u200A]|\u2028|\u2029|\u2029|\u202F|\u205F|\u3000|\u3164|\uFEFF|\uFFA0|\u2009|\u2008/;
     if (space.test(name)) {
         reply('You are using whitespace letters in your name.');
         return true;
@@ -1748,10 +1761,6 @@ beforeChatMessage: function(src, message, chan) {
         return;
     }
 
-    if (callplugins("beforeChatMessage", src, message, channel)) {
-        sys.stopEvent();
-        return;
-    }
 
     if (message == ".") {
         sys.sendMessage(src, sys.name(src)+": .", channel);
@@ -1839,7 +1848,10 @@ beforeChatMessage: function(src, message, chan) {
         sys.stopEvent();
         return;
     }
-
+    if (callplugins("beforeChatMessage", src, message, channel)) {
+        sys.stopEvent();
+        return;
+    }
     // text reversing symbols
     // \u0458 = "j"
     if (/[\u0458\u0489\u202a-\u202e\u0300-\u036F\u1dc8\u1dc9\ufffc\u1dc4-\u1dc7\u20d0\u20d1\u0415\u0421]/.test(message) && message[0] != '/' && message[0] != "!") {

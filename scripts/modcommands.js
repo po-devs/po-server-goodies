@@ -167,7 +167,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
 
     }
-    if (command == "mutelist" || command == "smutelist" || command == "mafiabans" || command == "hangmanbans") {
+    if (command == "mutelist" || command == "smutelist" || command == "mafiabans" || command == "hangmanmutes") {
         script.banList(src, command, commandData);
         return;
     }
@@ -403,7 +403,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             };
             if (command === "whereis") {
                 var ipApi = sys.getFileContent(Config.dataDir+'ipApi.txt');
-                sys.webCall('http://api.ipinfodb.com/v3/ip-city/?key=' + ipApi + '&ip='+ ip + '&format=JSON', whois);
+                sys.webCall('http://api.ipinfodb.com/v3/ip-city/?key=' + ipApi + '&ip='+ ip + '&format=json', whois);
             } else {
                 whois();
             }

@@ -695,8 +695,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var stats = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"];
         var levels = [5, 50, 100];
         sys.sendHtmlMessage(src, "", channel);
-        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.pokemon(pokeId) + "</font></b>", channel);
-        sys.sendHtmlMessage(src, "<img src='pokemon:num=" + pokeId + "'><img src='pokemon:num=" + pokeId + "&shiny=true'>", channel);
+        sys.sendHtmlMessage(src, "<b><font size = 4># " + pokeId % 65536 + " " + sys.pokemon(pokeId) + "</font></b>", channel);
+        sys.sendHtmlMessage(src, "<img src='pokemon:num=" + pokeId + "&gen=5'><img src='pokemon:num=" + pokeId + "&shiny=true&gen=5'>", channel);
         sys.sendHtmlMessage(src, "<b>Type:</b> " + type1 + (type2 === "???" ? "" : "/" + type2), channel);
         sys.sendHtmlMessage(src, "<b>Abilities:</b> " + ability1 + (ability2 === "(No Ability)" ? "" : ", " + ability2) + (ability3 === "(No Ability)" ? "" : ", " + ability3 + " (Dream World)"), channel);
         sys.sendHtmlMessage(src, "<b>Height:</b> " + getHeight(pokeId) + " m", channel);
@@ -753,12 +753,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command === "ability") {
         sys.stopEvent();
         if (commandData === "") {
-            normalbot.sendMessage("Please specify an ability!", channel);
+            normalbot.sendMessage(src, "Please specify an ability!", channel);
             return;
         }
         var abilityId = sys.abilityNum(commandData);
         if (!abilityId) {
-            normalbot.sendMessage(commandData + " is not a valid ability!", channel);
+            normalbot.sendMessage(src, commandData + " is not a valid ability!", channel);
             return;
         }
         sys.sendHtmlMessage(src, "", channel, true);
@@ -770,13 +770,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command === "item") {
         sys.stopEvent();
         if (commandData === "") {
-            normalbot.sendMessage("Please specify an item!", channel);
+            normalbot.sendMessage(src, "Please specify an item!", channel);
             return;
         }
         var itemId = sys.itemNum(commandData);
         var berryId = itemId - 8000;
         if (!itemId) {
-            normalbot.sendMessage(commandData + " is not a valid item!", channel);
+            normalbot.sendMessage(src, commandData + " is not a valid item!", channel);
             return;
         }
         var isBerry = (commandData.toLowerCase().substr(commandData.length - 5) === "berry");
@@ -878,29 +878,30 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 
 exports.help =
     [
-        "/rules [x]: Shows the rules (x is optionally parameter to show a specific rule)",
-        "/ranking: Shows your ranking in your current tier.",
+        "/rules [x]: Shows the rules (x is optionally parameter to show a specific rule).",
+        "/ranking: Shows your ranking in your current tier, or a specified tier.",
         "/myalts: Lists your alts.",
         "/me [message]: Sends a message with *** before your name.",
-        "/selfkick: Kicks all other accounts with IP.",
-        "/importable: Posts an importable of your team to pastebin.",
-        "/dwreleased [Pokémon]: Shows the released status of a Pokémon's Dream World Ability",
-        "/wiki [Pokémon]: Shows that Pokémon's wiki page",
-        "/pokemon [Pokémon]: Displays basic information for that Pokémon",
-        "/move [move]: Displays basic information for that move",
-        "/ability [ability]: Displays basic information for that ability",
-        "/item [item]: Displays basic information for that item",
-        "/register: Registers a channel with you as owner.",
+        "/rainbow [message]: Sends a message with your name rainbow-coloured.",
+        "/selfkick: Kicks all other accounts with your same IP.",
+        "/importable: Posts an importable of your team to the Pokemon Online website. Can be used with a number to specify the team to use.",
+        "/dwreleased [Pokémon]: Shows the released status of a Pokémon's Dream World Ability.",
+        "/wiki [Pokémon]: Shows that Pokémon's wiki page.",
+        "/pokemon [Pokémon]: Displays basic information for that Pokémon.",
+        "/move [move]: Displays basic information for that move.",
+        "/ability [ability]: Displays basic information for that ability.",
+        "/item [item]: Displays basic information for that item.",
         "/resetpass: Clears your password (unregisters you, remember to reregister).",
         "/auth [owners/admins/mods]: Lists auth of given level, shows all auth if left blank.",
-        "/cauth: Lists all users with channel auth in the current channel.",
-        "/contributors: Lists contributors.",
+        "/contributors: Lists contributors to Pokémon Online.",
         "/league: Lists gym leaders and elite four of the PO league.",
         "/uptime: Shows time since the server was last offline.",
-        "/players: Shows the number of players online.",
-        "/topchannels: To view the top channels.",
+        "/players: Shows the number of players online. Can accept an operating system as argument to see how many users are using it.",
+        "/topchannels: To view the most populated channels.",
+        "/idle [on/off]: Makes you idle, which automatically reject all challenges, or not.",
         "/sameTier [on/off]: Turn on/off auto-rejection of challenges from players in a different tier from you.",
+        "/cjoin [channel]: Makes you join an existing channel, or create a new one if it doesn't exist.",
         "/seen [name]: Allows you to see the last login of a user.",
-        "/changetier [tier]:[team]: Allows you to switch tier. Team is a number between 0-5 indicating loaded teams. Default is 0",
+        "/changetier: Allows you to switch tier. Format is /changetier [tier]:[team]. Team is a number between 0-5 indicating loaded teams. Default is 0.",
         "/invitespec [name]: Allows you to invite someone to watch your battle."
     ];

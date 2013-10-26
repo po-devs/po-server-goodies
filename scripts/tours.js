@@ -86,7 +86,7 @@ var tourmodcommands = ["Parameters: They can be used by putting 'gen=x'; 'mode=s
                     "/start: Starts next tournament in the queue immediately (use sparingly).",
                     "/viewstaffstats: Views tournament staff stats for a user.",
                     "/shift: Places a tournament in the front of the queue. Format is /shift tier:parameters.",
-                    "/passmu: Passes your megauser to a new name."];
+                    "/passmu: To give your Mega User powers to an alt."];
 var tourownercommands = ["/megauser: Makes someone a megauser. Use /smegauser for a silent promotion.",
                     "/megauseroff: Fires someone from being tournament authority. Use /smegauseroff for a silent demotion.",
                     "/forcestart: Ends signups immediately and starts the first round.",
@@ -95,9 +95,8 @@ var tourownercommands = ["/megauser: Makes someone a megauser. Use /smegauser fo
                     "/tourstart: Starts a tour of that tournament immediately, provided one is not in signups. Format is /tourstart tier:parameters.",
                     "/clearrankings [all/month]: Clears the tour rankings, 'all' clears all history, [month] will only clear a particular month (eg /clearrankings January).",
                     "/cleareventrankings [all/month]: Clears the event rankings, 'all' clears all history, [month] will only clear a particular month (eg /clearrankings January).",
-                    "/clearmetric: Clears all tournaments stats (?).",
-                    "/rundecay: Forces a calculation of decay (?).",
-                    "/purgekeys: Purges non-usable keys (??).",
+                    "/clearmetric: Clears staff stats and tour history.",
+                    "/rundecay: Forces a calculation of seed rankings.",
                     "/addrangewarning: Adds a warning for an IP range.",
                     "/removerangewarning: Removes a warning for an IP range.",
                     "/rangewarns: Checks the current IP range warnings.",
@@ -110,6 +109,7 @@ var tourownercommands = ["/megauser: Makes someone a megauser. Use /smegauser fo
                     "/fullleaderboard: Gives the full leaderboard for a specified tier.",
                     "/fullmonthlyleaderboard: Gives the full monthly leaderboard for a specified month.",
                     "/loadevents: Load event tours."];
+var serverownercommands = ["/tourowner: Makes someone a Tournament Owner. Use /stowner for a silent promotion."];
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "Breaking the following rules may result in punishment:",
                 "#1: Team revealing or scouting in tiers other than CC, Battle Factory or Metronome will result in disqualification.",
@@ -1322,11 +1322,6 @@ function tourCommand(src, command, commandData, channel) {
                 sendBotAll(sys.name(src)+" reset the tour system!",tourschan,false);
                 return true;
             }
-            if (command == "purgekeys") {
-                purgeKeys();
-                sendBotMessage(src,"Purged non-usable keys!",tourschan,false);
-                return true;
-            }
             if (command == "addrangewarning") {
                 var tmp = commandData.split(".",4);
                 var ret = [];
@@ -1473,12 +1468,12 @@ function tourCommand(src, command, commandData, channel) {
                 var tadmins = tours.touradmins;
                 var silent = (command === "smegauseroff");
                 if (sys.dbIp(commandData) === undefined) {
-                    sendBotMessage(src, "This user doesn't exist!", tourschan, false);
+                    sendBotMessage(src, "That user doesn't exist!", tourschan, false);
                     return true;
                 }
                 var lname = commandData.toLowerCase();
                 if (!tadmins.hasOwnProperty(lname)) {
-                    sendBotMessage(src, "They don't have tour authority!", tourschan, false);
+                    sendBotMessage(src, "That user doesn't have tour authority!", tourschan, false);
                     return true;
                 }
                 if ((tadmins[lname] == "to")  && sys.auth(src) < 3) {
@@ -1494,6 +1489,33 @@ function tourCommand(src, command, commandData, channel) {
                 }
                 else {
                     sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldauth + ".", sys.channelId("Victory Road"), false);
+                }
+                return true;
+            }
+            if ((command === "tourowneroff" || command === "towneroff" || command === "stourowneroff" || command === "stowneroff") && sys.auth(src) >= 3) {
+                var tadmins = tours.touradmins;
+                var silent = (command === "stourowneroff" || command === "stowneroff");
+                if (sys.dbIp(commandData) === undefined) {
+                    sendBotMessage(src, "That user doesn't exist!", tourschan, false);
+                    return true;
+                }
+                var lname = commandData.toLowerCase();
+                if (!tadmins.hasOwnProperty(lname)) {
+                    sendBotMessage(src, "That user doesn't have tour authority!", tourschan, false);
+                    return true;
+                }
+                if (tadmins[lname] != "to") {
+                    sendBotMessage(src, "That user isn't a Tour Owner!", tourschan, false);
+                    return true;
+                }
+                delete tadmins[lname];
+                tours.touradmins = tadmins;
+                saveTourKeys();
+                if (!silent) {
+                    sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Tournament Owner.", "~tr", false);
+                }
+                else {
+                    sendBotAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Tournament Owner.", sys.channelId("Victory Road"), false);
                 }
                 return true;
             }
@@ -2235,6 +2257,7 @@ function tourCommand(src, command, commandData, channel) {
                 tours.touradmins = tadmins;
                 saveTourKeys();
                 sendBotAll(sys.name(src)+" passed their tour auth to "+toCorrectCase(newname)+"!",sys.channelId("Victory Road"),false);
+                sendBotMessage(src, "You passed your Tour auth to " + commandData.toCorrectCase() + "!",tourschan, false);
                 return true;
             }
             if (command == "dq") {
@@ -2247,6 +2270,7 @@ function tourCommand(src, command, commandData, channel) {
                     var index = tours.tour[key].players.indexOf(commandData.toLowerCase());
                     tours.tour[key].players.splice(index, 1);
                     tours.tour[key].cpt -= 1;
+                    tours.tour[key].dqs.push(sys.ip(commandData));
                     sendBotAll(toCorrectCase(commandData)+" was taken out of the tournament signups by "+sys.name(src)+" from the "+getFullTourName(key)+" tournament!", tourschan);
                 }
                 else {
@@ -2458,7 +2482,11 @@ function tourCommand(src, command, commandData, channel) {
                 }
             }
             if (key === null) {
-                sendBotMessage(src, "No tournament has signups available at the moment!",tourschan,false);
+                sendBotMessage(src, "No tournament has signups available at the moment!", tourschan, false);
+                return true;
+            }
+            if (tours.tour[key].dqs.indexOf(sys.ip(src)) != -1) {
+                sendBotMessage(src, "You were removed from signups, so you can't join again!", tourschan, false);
                 return true;
             }
             if (!sys.hasTier(src, tours.tour[key].tourtype)) {
@@ -2798,7 +2826,7 @@ function tourCommand(src, command, commandData, channel) {
             if (script.hasAuthElements(mus)) {
                 sys.sendMessage(src, "", channel);
                 sys.sendMessage(src, "*** AUTH MEGAUSERS ***", channel);
-                for (var m in mus) {
+                for (var m = 0; x < mus.length; m++) {
                     if (sys.dbAuths().indexOf(mus[m]) != -1) {
                         var id = sys.id(mus[m]);
                         if (!id) {
@@ -3516,6 +3544,7 @@ function tourstart(tier, starter, key, parameters) {
         tours.tour[key].date = datestring; // used to identify event tours
         tours.tour[key].draws = [];
         tours.tour[key].numjoins = {};
+        tours.tour[key].dqs = [];
         tours.globaltime = 0;
         if (typeof parameters.maxplayers === "number" && parameters.event) {
             tours.tour[key].maxplayers = parameters.maxplayers;
@@ -4547,7 +4576,7 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        var globalcommands = ["towner", "megauser", "megauseroff", "megausers", "mus"];
+        var globalcommands = ["towner", "tourowner", "stowner", "stourowner", "tourowneroff", "towneroff", "stourowneroff", "stowneroff",  "megauser",  "megauseroff", "smegauser", "smegauseroff", "megausers", "mus"];
         if ((channel === tourschan && !SESSION.channels(tourschan).isBanned(source)) || globalcommands.indexOf(command) > -1) {
             return tourCommand(source, command, commandData, channel);
         }
@@ -4700,6 +4729,12 @@ module.exports = {
                 sys.sendMessage(src, "*** Tournaments Owner commands ***", channel);
                 for (var o in tourownercommands) {
                     sys.sendMessage(src, tourownercommands[o], channel);
+                }
+            }
+            if (sys.auth(src) >= 3) {
+                sys.sendMessage(src, "*** Server owner Tournament commands ***", channel);
+                for (var x in serverownercommands) {
+                    sys.sendMessage(src, serverownercommands[x], channel);
                 }
             }
         }

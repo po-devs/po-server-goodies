@@ -1,5 +1,5 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global sys:true, sendChanHtmlAll:true, module:true, SESSION:true, hangmanchan, hangbot, require, script, sachannel */
+/*global sys:true, sendChanHtmlAll:true, module:true, SESSION:true, hangmanchan, hangbot, require, script, sachannel, getTimeString */
 
 var nonFlashing = require("utilities.js").non_flashing;
 var html_escape = require("utilities.js").html_escape;
@@ -265,9 +265,11 @@ module.exports = function () {
         var time = parseInt(sys.time(), 10);
         if (time > this.lastAdvertise + 60 * 20) {
             this.lastAdvertise = time;
+            sys.sendAll("", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
             hangbot.sendAll("A new game of Hangman started in #Hangman!", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
+            sys.sendAll("", 0);
         }
     };
     this.applyPoints = function (src, p) {
@@ -542,19 +544,19 @@ module.exports = function () {
         ];
         var adminHelp = [
             "*** Hangman Admin Commands ***",
-            "/hangmanban: To ban a user from hangman. Format /hangmanban name:reason:time",
-            "/hangmanunban: To unban a user from hangman.",
-            "/hangmanbans: Searches the hangman banlist, show full list if no search term is entered.",
-            "/passha: To give your Hangman Admin powers to an alt of yours."
+            "/hangmanmute: To mute a user in hangman. Format /hangmanmute name:reason:time",
+            "/hangmanunmute: To hangman unmute a user.",
+            "/hangmanmutes: Searches the hangman mutelist, show full list if no search term is entered.",
+            "/passha: To give your Hangman Admin powers to an alt."
         ];
         var superAdminHelp = [
             "*** Hangman Super Admin Commands ***",
             "/config: To change the answer delay time and other settings. Format /config parameter:value. Type /config by itself to see more help.",
-            "/hangmanadmin: To promote a new Hangman admin. Use /shangmanadmin for a silent promotion.",
-            "/hangmanadminoff: To demote a Hangman admin. Use /shangmanadminoff for a silent demotion."
+            "/hangmanadmin: To promote a new Hangman Admin. Use /shangmanadmin for a silent promotion.",
+            "/hangmanadminoff: To demote a Hangman Admin or a Hangman Super Admin. Use /shangmanadminoff for a silent demotion."
         ];
         var ownerHelp = [
-            "*** Hangman Owner Commands ***",
+            "*** Server owner Hangman Commands ***",
             "/hangmansuperadmin: To promote a new Hangman Super Admin. Use /shangmansuperadmin for a silent promotion.",
             "/hangmansuperadminoff: To demote a Hangman Super Admin. Use /shangmansuperadminoff for a silent demotion."
         ];
@@ -585,7 +587,7 @@ module.exports = function () {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel !== hangchan && ["hangmanban", "hangmanunban", "hangmanbans", "hangmanadmins", "hadmins", "has", "passha", "hangmanadminoff", "hangmanadmin", "hangmansadmin", "hangmansuperadmin", "shangmanadmin", "shangmansuperadmin", "shangmanadminoff"].indexOf(command) === -1) {
+        if (channel !== hangchan && ["hangmanmute", "hangmanunmute", "hangmanmutes", "hangmanadmins", "hadmins", "has", "passha", "hangmanadminoff", "hangmanadmin", "hangmansadmin", "hangmansuperadmin", "shangmanadmin", "shangmansuperadmin", "shangmanadminoff"].indexOf(command) === -1) {
             return;
         }
         if (command === "help") {
@@ -645,11 +647,11 @@ module.exports = function () {
                 sys.sendMessage(src, "±Unown: Both accounts must be on the same IP to switch!");
                 return true;
             }
-            if (this.isHangmanAdmin(sys.id(newname)) || this.isHangmanSuperAdmin(sys.id(newname))) {
+            if (hangman.isHangmanAdmin(sys.id(newname)) || hangman.isHangmanSuperAdmin(sys.id(newname))) {
                 sys.sendMessage(src, "±Unown: Your target is already a Hangman Admin!");
                 return true;
             }
-            if (this.isHangmanSuperAdmin(src)) {
+            if (hangman.isHangmanSuperAdmin(src)) {
                 script.hangmanSuperAdmins.remove(oldname);
                 script.hangmanSuperAdmins.add(newname, "");
                 sHA = true,
@@ -658,10 +660,12 @@ module.exports = function () {
                 script.hangmanAdmins.add(newname, "");
             }
             id = sys.id(commandData);
-            if (id !== undefined)
+            if (id !== undefined) {
                 SESSION.users(id).hangmanAdmin = true;
-            sys.sendAll("±Unown: " + sys.name(src) + " passed their " + (sHA ? "Super Hangman Admin powers" : "Hangman auth") + " to " + commandData, sachannel);
-            return;
+            }
+            sys.sendAll("±Unown: " + sys.name(src) + " passed their " + (sHA ? "Super Hangman Admin powers" : "Hangman auth") + " to " + commandData.toCorrectCase(), sachannel);
+            sys.sendMessage(src, "±Unown: You passed your Hangman auth to " + commandData.toCorrectCase() + "!");
+            return true;
         }
 
         if (command === "end") {
@@ -669,18 +673,18 @@ module.exports = function () {
             return true;
         }
 
-        if (command === "hangmanban") {
-            hangman.hangmanBan(src, commandData);
+        if (command === "hangmanmute") {
+            hangman.hangmanMute(src, commandData);
             return true;
         }
 
-        if (command === "hangmanunban") {
-            script.unban("hban", src, sys.id(commandData), commandData);
+        if (command === "hangmanunmute") {
+            script.unban("hmute", src, sys.id(commandData), commandData);
             return true;
         }
 
-        if (command === "hangmanbans") {
-            hangman.hangmanBanList(src, commandData);
+        if (command === "hangmanmutes") {
+            hangman.hangmanMuteList(src, commandData);
             return true;
         }
 
@@ -717,28 +721,23 @@ module.exports = function () {
         }
         return false;
     };
-    this.onHban = function (src) {
-        if (sys.isInChannel(src, hangmanchan)) {
-            sys.kick(src, hangmanchan);
-        }
-    };
-    this.hangmanBan = function (src, commandData) {
+    this.hangmanMute = function (src, commandData) {
         if (commandData === undefined) {
             return;
         }
         var tar = sys.id(commandData);
-        var bantime;
+        var mutetime;
         if (this.authLevel(src) > 1 || sys.auth(src) > 0) {
-            bantime = undefined;
+            mutetime = undefined;
         }
         else {
-            bantime = 86400;
+            mutetime = 86400;
         }
-        script.issueBan("hban", src, tar, commandData, bantime);
+        script.issueBan("hmute", src, tar, commandData, mutetime);
         return;
     };
-    this.hangmanBanList = function (src, commandData) {
-        require("modcommands.js").handleCommand(src, "hangmanbans", commandData, -1);
+    this.hangmanMuteList = function (src, commandData) {
+        require("modcommands.js").handleCommand(src, "hangmanmutes", commandData, -1);
         return;
     };
     this.hangmanAuth = function (src, commandData, channel) {
@@ -828,16 +827,25 @@ module.exports = function () {
         if (commandData === undefined) {
             return;
         }
-        if (!script.hangmanAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
-            sys.sendMessage(src, "±Unown: " + commandData + " is not a Hangman Admin!", channel);
+        var isHA = script.hangmanAdmins.hash.hasOwnProperty(commandData.toLowerCase());
+        var isSHA = script.hangmanSuperAdmins.hash.hasOwnProperty(commandData.toLowerCase());
+        if (!isHA && !isSHA) {
+            sys.sendMessage(src, "±Unown: " + commandData + " is not a Hangman auth!", channel);
             return;
         }
+        if (isSHA && sys.auth(src) < 3) {
+            sys.sendMessage(src, "±Unown: You don't have enough auth!", channel);
+            return;
+        }
+        var oldAuth = (isHA ? "Hangman Admin" : "Super Hangman Admin");
         script.hangmanAdmins.remove(commandData);
         script.hangmanAdmins.remove(commandData.toLowerCase());
+        script.hangmanSuperAdmins.remove(commandData);
+        script.hangmanSuperAdmins.remove(commandData.toLowerCase());
         if (!silent) {
-            sys.sendAll("±Unown: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase() + " from Hangman Admin.", hangchan);
+            sys.sendAll("±Unown: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase() + " from " + oldAuth + ".", hangchan);
         }
-        sys.sendAll("±Unown: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase() + " from Hangman Admin.", sys.channelId('Victory Road'));
+        sys.sendAll("±Unown: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase() + " from " + oldAuth + ".", sys.channelId('Victory Road'));
         return;
     };
     this.demoteSuperAdmin = function (src, commandData, channel, silent) {
@@ -905,12 +913,37 @@ module.exports = function () {
         }
         return false;
     };
+    this.beforeChatMessage = function (src, message, channel) {
+        var poUser = SESSION.users(src);
+        if (poUser["hmute"]) { //THIS IS WHY YOU DON'T RENAME SESSION VARIABLES
+            if (channel == hangchan && poUser["hmute"].active) {
+                if (poUser.expired("hmute")) {
+                    poUser.un("hmute");
+                    sys.sendMessage(src, "±Unown: Your Hangman mute expired.", channel);
+                } else {
+                    var info = poUser["hmute"];
+                    sys.sendMessage(src, "±Unown: You are Hangman muted " + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Mute expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''), channel);
+                    sys.stopEvent();
+                    return;
+                }
+            }
+        }
+    };
+    
+    function toCorrectCase(name) {
+        if (isNaN(name) && sys.id(name) !== undefined) {
+            return sys.name(sys.id(name));
+        }
+        else {
+            return name;
+        }
+    }
     return {
         init: hangman.init,
         handleCommand: hangman.handleCommand,
         beforeChannelJoin: hangman.beforeChannelJoin,
         afterChannelJoin: hangman.afterChannelJoin,
-        onHban: hangman.onHban,
+        beforeChatMessage: hangman.beforeChatMessage,
         onHelp: hangman.onHelp
     };
 }();

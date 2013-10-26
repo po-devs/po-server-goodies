@@ -109,7 +109,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi NU"], function evioliteCheck(src, t
 if (typeof Config == "undefined") { Config = { DreamWorldTiers: ["No Preview OU",  "No Preview Ubers"] }; }
 tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbilityCheck(src, team, tier) {
     // Of course, DW ability only affects 5th gen
-    if (sys.gen(src, team) < 5)
+    if (sys.gen(src, team) !== 5)
         return;
     var ret = [];
     for (var i = 0; i < 6; i++) {
@@ -125,7 +125,7 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["No Preview OU", "Wifi OU", "Wifi UU", "Wifi LU", "Wifi LC", "DW LC", "Wifi Ubers", "No Preview Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "Wifi NU", "Metronome", "Wifi NEU"],
+tier_checker.add_new_check(INCLUDING, ["X/Y Cup", "Gen 6 OU", "Gen 6 LC", "No Preview OU", "Wifi OU", "Wifi UU", "Wifi LU", "Wifi LC", "DW LC", "Wifi Ubers", "No Preview Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "Wifi NU", "Metronome", "Wifi NEU"],
                            function inconsistentCheck(src, team, tier) {
     var moody = sys.abilityNum("Moody");
     var ret = [];
@@ -287,9 +287,9 @@ tier_checker.add_new_check(INCLUDING, ["Wifi LC"], function regeneratorCheck(src
 });
 
 //remove these after tiers are updated on server
-tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function bannedPokesOU(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["Gen 6 OU"], function bannedPokesOU(src, team, tier) {
     for (var i = 0; i < 6; ++i) {
-        var bans = ["Thundurus"];
+        var bans = ["Shaymin-S", "Ho-oh", "Deoxys-A", "Deoxys-S", "Kyurem-W"];
         for (var j = 0; j < bans.length; j++) {
             if (sys.teamPoke(src, team, i) === sys.pokeNum(bans[j])){
                 return [bans[j] + " is banned in " + tier + "."];
@@ -298,7 +298,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi OU"], function bannedPokesOU(src, t
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi LU", "Wifi NU", "Wifi NU"], function smashPassCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["Wifi NU", "Wifi NEU"], function smashPassCheck(src, team, tier) {
     var ret = [];
     for (var i = 0; i < 6; i++) {
         if (sys.hasTeamPokeMove(src, team, i, sys.moveNum("Shell Smash")) && sys.hasTeamPokeMove(src, team, i, sys.moveNum("Baton Pass"))) {
