@@ -2084,8 +2084,8 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (isReviewer(source) || ["bfversion", "submitsets", "viewpacks", "userpokesets", "reviewers", "backlog", "pokecode", "pokesets", "pokeslist"].indexOf(command) > -1) {
-            if (['acceptset', 'rejectset', 'deleteset','checkqueue', 'nextset', 'userpokesets'].indexOf(command) > -1 && channel != sys.channelId('BF Review')) {
+        if (isReviewer(source) || ["bfversion", "submitsets", "viewpacks", "reviewers", "backlog", "pokecode", "pokesets", "pokeslist"].indexOf(command) > -1) {
+            if (['acceptset', 'rejectset', 'deleteset','checkqueue', 'nextset'].indexOf(command) > -1 && channel != sys.channelId('BF Review')) {
                 bfbot.sendMessage(source, "These commands will only work in the #BF Review Channel!", channel);
                 return true;
             }
@@ -2227,9 +2227,6 @@ module.exports = {
                 "/forcestart: Allows to get battle factory working again, even after an error"
             ];
             var reviewHelp = [
-                "/pokeslist [pack]: Views the list of installed Pokemon for that pack.",
-                "/pokecode [alpha code]: Converts a code to readable format.",
-                "/pokesets [poke]:[pack]: Gets the sets for that pokemon in a Battle Factory Pack in readable format",
                 "/scansets [url/location]: Scan a set file for any critical errors (scans current if no file specified, /scanusersets scans the user sets)",
                 "/checkqueue [tier]: Checks the current set in the queue for that tier",
                 "/acceptset [tier]: Accepts the current set in the queue for that tier",
@@ -2246,6 +2243,9 @@ module.exports = {
                 "/bfversion: Gives information about the battle factory",
                 "/viewpacks: Views installed Battle Factory Packs",
                 "/reviewers: Views the list of authorised reviewers",
+                "/pokeslist [pack]: Views the list of installed Pokemon for that pack.",
+                "/pokecode [alpha code]: Converts a code to readable format.",
+                "/pokesets [poke]:[pack]: Gets the sets for that pokemon in a Battle Factory Pack in readable format",
                 "/backlog: Views the queue length",
                 "/submitsets [comment]: Submits your first team in teambuilder for the battle factory, in the tier that team is currently in. Comments are optional."
             ];
