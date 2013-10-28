@@ -164,7 +164,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 
         /* add rangeban */
         script.rangebans.add(subip, script.rangebans.escapeValue(comment));
-        normalbot.sendMessage(src, "Rangeban added successfully for IP subrange: " + subip, channel);
+        normalbot.sendAll("Rangeban added successfully for IP subrange: " + subip, staffchannel);
         /* kick them */
         var players = sys.playerIds();
         var players_length = players.length;
@@ -188,7 +188,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var subip = commandData;
         if (script.rangebans.get(subip) !== undefined) {
             script.rangebans.remove(subip);
-            normalbot.sendMessage(src, "Rangeban removed successfully for IP subrange: " + subip, channel);
+            normalbot.sendAll("Rangeban removed successfully for IP subrange: " + subip, staffchannel);
         } else {
             normalbot.sendMessage(src, "No such rangeban.", channel);
         }
