@@ -373,11 +373,11 @@ TriviaGame.prototype.startTrivia = function (src, data) {
         this.sendPM(src, "There are no questions.", triviachan);
         return;
     }
-    var x = time() - this.lastStopped;
+    /*var x = time() - this.lastStopped;
     if (x < 16) {
         this.sendPM(src, "Sorry, a game was just stopped " + parseInt(x, 10) + " seconds ago.", triviachan);
         return;
-    }
+    }*/
     data = data.split("*");
     var rand = parseInt(data[0], 10);
     if (rand > 102 || rand < 1) {
