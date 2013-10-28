@@ -17,7 +17,7 @@ var html_escape = require("utilities.js").html_escape;
 var MemoryHash = require('memoryhash.js').MemoryHash;
 
 var triviachan, revchan;
-var triviabot = new Bot("Psyduck");
+var triviabot = new Bot("Metagross");
 
 var triviaCategories = ['Anime/Manga', 'Animals', 'Art', 'Comics', 'Food/Drink', 'Games', 'Geography', 'History', 'Internet', 'Language', 'Literature', 'Math', 'Misc', 'Movies', 'Music', 'Mythology', 'Pokemon', 'Pokemon Online', 'Politics', 'Religion', 'Science', 'Social Science', 'Society', 'Space', 'Sports', 'Technology', 'TV', 'Video Games'];
 var lastCatGame = 0;
