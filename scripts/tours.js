@@ -54,6 +54,7 @@ var flashtag = "<!--f-->"; // This is used to check for flashes in the html code
 // Event tournaments highlighted in red
 var redborder = "<font color=#FF0000><b>"+border+"</b></font>";
 var redhtmlborder = "<font color=#FF0000><timestamp/> <b>"+border+"</b></font>";
+var defaultgen = parseInt(sys.serverVersion().replace(/\./g, ""), 10) >= 229 ? "6-0" : "5-1";
 var tourcommands = ["/join: Joins a tournament.",
                     "/unjoin: Unjoins a tournament during signups only.",
                     "/queue: Lists upcoming tournaments.",
@@ -912,7 +913,7 @@ function getEventTour(datestring) {
                             parameters.gen = newgen;
                         }
                         else {
-                            parameters.gen = "6-0"; // XY
+                            parameters.gen = defaultgen;
                             sendBotAll("Warning! The subgen '"+parametervalue+"' does not exist! Used XY instead!", tourserrchan, false);
                         }
                     }
@@ -950,7 +951,7 @@ function getEventTour(datestring) {
                 }
             }
             if (allgentiers.indexOf(thetier) != -1 && parameters.gen === "default") {
-                parameters.gen = "6-0";
+                parameters.gen = defaultgen;
             }
             return [thetier, parameters];
         }
@@ -1079,7 +1080,7 @@ function tourStep() {
             var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1"];
             var tourtostart = tourarray[tours.key%tourarray.length];
             var tourtype = doubleelimtiers.indexOf(tourtostart) != -1 ? "double" : "single";
-            tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? "6-0" : "default"), "type": tourtype, "maxplayers": false, "event": false,  "wifi": sys.getClauses(tourtostart)%256 >= 128 ? true : false});
+            tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? defaultgen : "default"), "type": tourtype, "maxplayers": false, "event": false,  "wifi": sys.getClauses(tourtostart)%256 >= 128 ? true : false});
         }
     }
 }
@@ -2063,7 +2064,7 @@ function tourCommand(src, command, commandData, channel) {
                                 parameters.gen = newgen;
                             }
                             else {
-                                parameters.gen = "6-0"; // XY
+                                parameters.gen = defaultgen; // XY
                                 sendBotMessage(src, "Warning! The subgen '"+parametervalue+"' does not exist! Used XY instead!", tourschan, false);
                             }
                         }
@@ -2110,7 +2111,7 @@ function tourCommand(src, command, commandData, channel) {
                     }
                 }
                 if (allgentiers.indexOf(tourtier) != -1 && parameters.gen === "default") {
-                    parameters.gen = "6-0";
+                    parameters.gen = defaultgen;
                 }
                 if (tours.queue.length >= tourconfig.maxqueue && !isTourOwner(src) && command == "tour") {
                     sendBotMessage(src, "There are already "+tourconfig.maxqueue+" or more tournaments in the queue, so you can't add another one!", tourschan, false);
