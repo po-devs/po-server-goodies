@@ -544,9 +544,9 @@ module.exports = function () {
         ];
         var adminHelp = [
             "*** Hangman Admin Commands ***",
-            "/hangmanmute: To mute a user in hangman. Format /hangmanmute name:reason:time",
-            "/hangmanunmute: To hangman unmute a user.",
-            "/hangmanmutes: Searches the hangman mutelist, show full list if no search term is entered.",
+            "/hangmanban: To ban a user in hangman. Format /hangmanmute name:reason:time",
+            "/hangmanunban: To hangman unban a user.",
+            "/hangmanbans: Searches the hangman banlist, show full list if no search term is entered.",
             "/passha: To give your Hangman Admin powers to an alt."
         ];
         var superAdminHelp = [
@@ -587,7 +587,7 @@ module.exports = function () {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel !== hangchan && ["hangmanmute", "hangmanunmute", "hangmanmutes", "hangmanadmins", "hadmins", "has", "passha", "hangmanadminoff", "hangmanadmin", "hangmansadmin", "hangmansuperadmin", "shangmanadmin", "shangmansuperadmin", "shangmanadminoff"].indexOf(command) === -1) {
+        if (channel !== hangchan && ["hangmanban", "hangmanunban", "hangmanbans", "hangmanmute", "hangmanunmute", "hangmanmutes", "hangmanadmins", "hadmins", "has", "passha", "hangmanadminoff", "hangmanadmin", "hangmansadmin", "hangmansuperadmin", "shangmanadmin", "shangmansuperadmin", "shangmanadminoff"].indexOf(command) === -1) {
             return;
         }
         if (command === "help") {
@@ -673,17 +673,17 @@ module.exports = function () {
             return true;
         }
 
-        if (command === "hangmanmute") {
+        if (command === "hangmanmute" || command === "hangmanban") {
             hangman.hangmanMute(src, commandData);
             return true;
         }
 
-        if (command === "hangmanunmute") {
+        if (command === "hangmanunmute" || command === "hangmanunban") {
             script.unban("hmute", src, sys.id(commandData), commandData);
             return true;
         }
 
-        if (command === "hangmanmutes") {
+        if (command === "hangmanmutes" || command === "hangmanbans") {
             hangman.hangmanMuteList(src, commandData);
             return true;
         }

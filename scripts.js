@@ -974,9 +974,9 @@ unban: function(type, src, tar, commandData) {
         else {
             banbot = normalbot;
         }
-    var verb = {"mute": "unmuted", "mban": "unbanned from mafia", "smute": "secretly unmuted", "hmute": "hangman unmuted"}[type];
-    var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "hmute": "hangman mute"}[type];
-    var past = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted", "hmute": "hangman muted"}[type];
+    var verb = {"mute": "unmuted", "mban": "unbanned from mafia", "smute": "secretly unmuted", "hmute": "unbanned from hangman"}[type];
+    var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "hmute": "ban from hangman"}[type];
+    var past = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted", "hmute": "banned from hangman"}[type];
     var sendAll =  {
         "smute": function(line) {
             banbot.sendAll(line, staffchannel);
@@ -1048,9 +1048,9 @@ banList: function (src, command, commandData) {
     } else if (command == "mafiabans") {
         mh = script.mbans;
         name = "Mafiabans";
-    } else if (command == "hangmanmutes") {
+    } else if (command == "hangmanmutes" || command == "hangmanbans") {
         mh = script.hmutes;
-        name = "Hangman Mutes";
+        name = "Hangman Bans";
     }
 
     var width=5;
@@ -1267,16 +1267,21 @@ beforeChannelJoin : function(src, channel) {
         sys.stopEvent();
         return;
     }
-    if (channel == mafiachan && poUser["mban"].active) {
-        if (poUser.expired("mban")) {
-            poUser.un("mban");
-            mafiabot.sendMessage(src, "Your ban from Mafia expired.");
+    var channels = [mafiachan, hangmanchan];
+    var bans = ["mban", "hmute"];
+    var type = ["Mafia", "Hangman"];
+    for (var x = 0; x < bans.length; x++) {
+    if (channel == channels[x] && poUser[bans[x]].active) {
+        if (poUser.expired(bans[x])) {
+            poUser.un(bans[x]);
+            normalbot.sendMessage(src, "Your ban from " + type[x] + " expired.");
         } else {
-            var info = poUser["mban"];
-            sys.sendMessage(src, "+Guard: You are banned from Mafia " + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Ban expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''));
+            var info = poUser[bans[x]];
+            sys.sendMessage(src, "+Guard: You are banned from " + type[x] + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Ban expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''));
             sys.stopEvent();
             return;
         }
+    }
     }
     if (channel == watchchannel && sys.auth(src) < 1) {
         sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
