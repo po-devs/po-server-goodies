@@ -1271,17 +1271,17 @@ beforeChannelJoin : function(src, channel) {
     var bans = ["mban", "hmute"];
     var type = ["Mafia", "Hangman"];
     for (var x = 0; x < bans.length; x++) {
-    if (channel == channels[x] && poUser[bans[x]].active) {
-        if (poUser.expired(bans[x])) {
-            poUser.un(bans[x]);
-            normalbot.sendMessage(src, "Your ban from " + type[x] + " expired.");
-        } else {
-            var info = poUser[bans[x]];
-            sys.sendMessage(src, "+Guard: You are banned from " + type[x] + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Ban expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''));
-            sys.stopEvent();
-            return;
+        if (channel == channels[x] && poUser[bans[x]].active) {
+            if (poUser.expired(bans[x])) {
+                poUser.un(bans[x]);
+                normalbot.sendMessage(src, "Your ban from " + type[x] + " expired.");
+            } else {
+                var info = poUser[bans[x]];
+                sys.sendMessage(src, "+Guard: You are banned from " + type[x] + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Ban expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''));
+                sys.stopEvent();
+                return;
+            }
         }
-    }
     }
     if (channel == watchchannel && sys.auth(src) < 1) {
         sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
