@@ -46,6 +46,7 @@ function mafiaStats() {
         sys.writeToFile(mafiaDataDir + this.fileName, JSON.stringify(this.data));
         var month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][date.getMonth()];
         if (month !== this.fileName.split("_")[0]) {
+            this.fileName = month + "_mafiaStats.json";
             if (!sys.fexists(mafiaDataDir + this.filename)) {
                 sys.writeToFile(mafiaDataDir + this.fileName, "{}");
             }
