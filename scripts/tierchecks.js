@@ -10,7 +10,7 @@ TierChecker.prototype.add_new_check = function(exclusive, tiers, checker) {
 };
 
 TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent, returncomp) {
-    if (tier == "Challenge Cup" || tier == "CC 1v1" || tier == "Wifi CC 1v1" || (tier == "Battle Factory" || tier == "Battle Factory 6v6") && sys.gen(src, team) === 5) return true;
+    if (tier == "Challenge Cup" || tier == "CC 1v1" || tier == "BW2 CC 1v1" || (tier == "Battle Factory" || tier == "Battle Factory 6v6") && sys.gen(src, team) === 5) return true;
     if (!sys.hasLegalTeamForTier(src, team, tier)) return false;
 
     var complaints = [];
@@ -40,7 +40,7 @@ TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent
 
 TierChecker.prototype.find_good_tier = function(src, team) {
     // TODO: write up
-    var testPath = ["Wifi LC", "DW LC", "Wifi LC Ubers", "Wifi NU", "Wifi LU", "Wifi UU", "Wifi OU", "No Preview OU", "Wifi Ubers", "No Preview Ubers", "Battle Factory 6v6", "Challenge Cup"];
+    var testPath = ["BW2 LC", "DW LC", "BW2 LC Ubers", "BW2 NU", "BW2 LU", "BW2 UU", "BW2 OU", "No Preview OU", "BW2 Ubers", "No Preview Ubers", "Battle Factory 6v6", "Challenge Cup"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
         if (sys.hasLegalTeamForTier(src, team, testtier) && this.has_legal_team_for_tier(src, team, testtier, true)) {
@@ -74,7 +74,7 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(s
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi LC", "Wifi LC Ubers", "Wifi UU LC"], function littleCupCheck(src, team) {
+tier_checker.add_new_check(INCLUDING, ["BW2 LC", "BW2 LC Ubers", "BW2 UU LC"], function littleCupCheck(src, team) {
     var ret = [];
     for (var i = 0; i < 6; i++) {
         var x = sys.teamPoke(src, team, i);
@@ -93,7 +93,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi LC", "Wifi LC Ubers", "Wifi UU LC"]
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi NU"], function evioliteCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["BW2 NU"], function evioliteCheck(src, team, tier) {
     var evioliteLimit = 6;
     var eviolites = 0;
     for (var i = 0; i < 6; i++) {
@@ -125,7 +125,7 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["Gen 6 Ubers", "X/Y Cup", "Gen 6 OU", "Gen 6 LC", "No Preview OU", "Wifi OU", "Wifi UU", "Wifi LU", "Wifi LC", "DW LC", "Wifi Ubers", "No Preview Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "Wifi NU", "Metronome", "Wifi NEU"],
+tier_checker.add_new_check(INCLUDING, ["Inverted Battle", "XY 1v1","XY Ubers", "X/Y Cup", "XY OU", "Gen 6 LC", "No Preview OU", "BW2 OU", "BW2 UU", "BW2 LU", "BW2 LC", "DW LC", "BW2 Ubers", "No Preview Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "BW2 NU", "Metronome", "BW2 NEU"],
                            function inconsistentCheck(src, team, tier) {
     var moody = sys.abilityNum("Moody");
     var ret = [];
@@ -151,15 +151,14 @@ tier_checker.add_new_check(INCLUDING, ["Clear Skies"], function weatherlesstierc
 });
     
 tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, team) {
-    // TODO: this is too complicated.
     var type1, type2, typea = 0, typeb = 0,teamLength = 0;
     for (var i = 0; i < 6; i++) {
         var poke = sys.teamPoke(src, team, i);
         if (poke === 0) {
             continue;
         }
-        type1 = sys.pokeType1(poke, 5);
-        type2 = sys.pokeType2(poke, 5);
+        type1 = sys.pokeType1(poke, 6);
+        type2 = sys.pokeType2(poke, 6);
         teamLength++;
     }
     for (var i = 0; i < 6; i++) {
@@ -167,10 +166,10 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
         if (poke === 0) {
             continue;
         }
-        if ((type1 === sys.pokeType1(poke, 5) || type1 === sys.pokeType2(poke, 5)) && type1 !== 17) {
+        if ((type1 === sys.pokeType1(poke, 6) || type1 === sys.pokeType2(poke, 6)) && type1 !== 18) {
             typea++;
         }
-        if ((type2 === sys.pokeType1(poke, 5) || type2 === sys.pokeType2(poke, 5)) && type2 !== 17) {
+        if ((type2 === sys.pokeType1(poke, 6) || type2 === sys.pokeType2(poke, 6)) && type2 !== 18) {
             typeb++;
         }
     }
@@ -180,7 +179,7 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
 });
 
 tier_checker.add_new_check(INCLUDING, ["Monogen"], function monoGenCheck(src, team) {
-    var GEN_MAX = [0, 151, 252, 386, 493, 649];
+    var GEN_MAX = [0, 151, 252, 386, 493, 649, 718];
     var gen = 0;
     for (var i = 0; i < 6; ++i) {
         var pokenum = sys.teamPoke(src, team, i);
@@ -202,7 +201,7 @@ tier_checker.add_new_check(INCLUDING, ["Monocolour"], function monoColourCheck(s
         'Green': ['Bulbasaur', 'Ivysaur', 'Venusaur', 'Caterpie', 'Metapod', 'Bellsprout', 'Weepinbell', 'Victreebel', 'Scyther', 'Chikorita', 'Bayleef', 'Meganium', 'Spinarak', 'Natu', 'Xatu', 'Bellossom', 'Politoed', 'Skiploom', 'Larvitar', 'Tyranitar', 'Celebi', 'Treecko', 'Grovyle', 'Sceptile', 'Dustox', 'Lotad', 'Lombre', 'Ludicolo', 'Breloom', 'Electrike', 'Roselia', 'Gulpin', 'Vibrava', 'Flygon', 'Cacnea', 'Cacturne', 'Cradily', 'Kecleon', 'Tropius', 'Rayquaza', 'Turtwig', 'Grotle', 'Torterra', 'Budew', 'Roserade', 'Bronzor', 'Bronzong', 'Carnivine', 'Yanmega', 'Leafeon', 'Shaymin', 'Shaymin-S', 'Snivy', 'Servine', 'Serperior', 'Pansage', 'Simisage', 'Swadloon', 'Cottonee', 'Whimsicott', 'Petilil', 'Lilligant', 'Basculin', 'Maractus', 'Trubbish', 'Garbodor', 'Solosis', 'Duosion', 'Reuniclus', 'Axew', 'Fraxure', 'Golett', 'Golurk', 'Virizion', 'Tornadus','Tornadus-T'],
         'Yellow': ['Kakuna', 'Beedrill', 'Pikachu', 'Raichu', 'Sandshrew', 'Sandslash', 'Ninetales', 'Meowth', 'Persian', 'Psyduck', 'Ponyta', 'Rapidash', 'Drowzee', 'Hypno', 'Exeggutor', 'Electabuzz', 'Jolteon', 'Zapdos', 'Moltres', 'Cyndaquil', 'Quilava', 'Typhlosion', 'Pichu', 'Ampharos', 'Sunkern', 'Sunflora', 'Girafarig', 'Dunsparce', 'Shuckle', 'Elekid', 'Raikou', 'Beautifly', 'Pelipper', 'Ninjask', 'Makuhita', 'Manectric', 'Plusle', 'Minun', 'Numel', 'Lunatone', 'Jirachi', 'Mothim', 'Combee', 'Vespiquen', 'Chingling', 'Electivire', 'Uxie', 'Cresselia', 'Victini', 'Sewaddle', 'Leavanny', 'Scraggy', 'Cofagrigus', 'Archen', 'Archeops', 'Deerling', 'Joltik', 'Galvantula', 'Haxorus', 'Mienfoo', 'Keldeo', 'Keldeo-R'],
         'Purple': ['Rattata', 'Ekans', 'Arbok', 'Nidoran?', 'Nidorino', 'Nidoking', 'Zubat', 'Golbat', 'Venonat', 'Venomoth', 'Grimer', 'Muk', 'Shellder', 'Cloyster', 'Gastly', 'Haunter', 'Gengar', 'Koffing', 'Weezing', 'Starmie', 'Ditto', 'Aerodactyl', 'Mewtwo', 'Crobat', 'Aipom', 'Espeon', 'Forretress', 'Gligar', 'Granbull', 'Mantine', 'Tyrogue', 'Cascoon', 'Delcatty', 'Sableye', 'Illumise', 'Swalot', 'Grumpig', 'Lileep', 'Shellos', 'Gastrodon', 'Ambipom', 'Drifloon', 'Drifblim', 'Mismagius', 'Stunky', 'Skuntank', 'Spiritomb', 'Skorupi', 'Drapion', 'Gliscor', 'Palkia', 'Purrloin', 'Liepard', 'Gothita', 'Gothorita', 'Gothitelle', 'Mienshao', 'Genesect'],
-'Pink': ['Clefairy', 'Clefable', 'Jigglypuff', 'Wigglytuff', 'Slowpoke', 'Slowbro', 'Exeggcute', 'Lickitung', 'Chansey', 'Mr. Mime', 'Porygon', 'Mew', 'Cleffa', 'Igglybuff', 'Flaaffy', 'Hoppip', 'Slowking', 'Snubbull', 'Corsola', 'Smoochum', 'Miltank', 'Blissey', 'Whismur', 'Skitty', 'Milotic', 'Gorebyss', 'Luvdisc', 'Cherubi', 'Cherrim', 'Mime Jr.', 'Happiny', 'Lickilicky', 'Mesprit', 'Munna', 'Musharna', 'Audino', 'Alomomola'],
+        'Pink': ['Clefairy', 'Clefable', 'Jigglypuff', 'Wigglytuff', 'Slowpoke', 'Slowbro', 'Exeggcute', 'Lickitung', 'Chansey', 'Mr. Mime', 'Porygon', 'Mew', 'Cleffa', 'Igglybuff', 'Flaaffy', 'Hoppip', 'Slowking', 'Snubbull', 'Corsola', 'Smoochum', 'Miltank', 'Blissey', 'Whismur', 'Skitty', 'Milotic', 'Gorebyss', 'Luvdisc', 'Cherubi', 'Cherrim', 'Mime Jr.', 'Happiny', 'Lickilicky', 'Mesprit', 'Munna', 'Musharna', 'Audino', 'Alomomola'],
         'Brown': ['Weedle', 'Pidgey', 'Pidgeotto', 'Pidgeot', 'Raticate', 'Spearow', 'Fearow', 'Vulpix', 'Diglett', 'Dugtrio', 'Mankey', 'Primeape', 'Growlithe', 'Arcanine', 'Abra', 'Kadabra', 'Alakazam', 'Geodude', 'Graveler', 'Golem', 'Farfetch\'d', 'Doduo', 'Dodrio', 'Cubone', 'Marowak', 'Hitmonlee', 'Hitmonchan', 'Kangaskhan', 'Staryu', 'Pinsir', 'Tauros', 'Eevee', 'Kabuto', 'Kabutops', 'Dragonite', 'Sentret', 'Furret', 'Hoothoot', 'Noctowl', 'Sudowoodo', 'Teddiursa', 'Ursaring', 'Swinub', 'Piloswine', 'Stantler', 'Hitmontop', 'Entei', 'Zigzagoon', 'Seedot', 'Nuzleaf', 'Shiftry', 'Shroomish', 'Slakoth', 'Slaking', 'Shedinja', 'Hariyama', 'Torkoal', 'Spinda', 'Trapinch', 'Baltoy', 'Feebas', 'Regirock', 'Chimchar', 'Monferno', 'Infernape', 'Starly', 'Staravia', 'Staraptor', 'Bidoof', 'Bibarel', 'Buizel', 'Floatzel', 'Buneary', 'Lopunny', 'Bonsly', 'Hippopotas', 'Hippowdon', 'Mamoswine', 'Heatran', 'Patrat', 'Watchog', 'Lillipup', 'Conkeldurr', 'Sandile', 'Krokorok', 'Sawsbuck', 'Beheeyem', 'Stunfisk', 'Bouffalant', 'Vullaby', 'Mandibuzz', 'Landorus', 'Landorus-T'],
          'Black': ['Snorlax', 'Umbreon', 'Murkrow', 'Unown', 'Sneasel', 'Houndour', 'Houndoom', 'Mawile', 'Spoink', 'Seviper', 'Claydol', 'Shuppet', 'Banette', 'Duskull', 'Dusclops', 'Honchkrow', 'Chatot', 'Munchlax', 'Weavile', 'Dusknoir', 'Giratina', 'Darkrai', 'Blitzle', 'Zebstrika', 'Sigilyph', 'Yamask', 'Chandelure', 'Zekrom'],
         'Gray': ['Machop', 'Machoke', 'Machamp', 'Magnemite', 'Magneton', 'Onix', 'Rhyhorn', 'Rhydon', 'Misdreavus', 'Pineco', 'Steelix', 'Qwilfish', 'Remoraid', 'Skarmory', 'Donphan', 'Pupitar', 'Poochyena', 'Mightyena', 'Nincada', 'Nosepass', 'Aron', 'Lairon', 'Aggron', 'Volbeat', 'Barboach', 'Anorith', 'Armaldo', 'Snorunt', 'Glalie', 'Relicanth', 'Registeel', 'Shieldon', 'Bastiodon', 'Burmy', 'Wormadam', 'Wormadam-G', 'Wormadam-S', 'Glameow', 'Purugly', 'Magnezone', 'Rhyperior', 'Probopass', 'Arceus', 'Herdier', 'Stoutland', 'Pidove', 'Tranquill', 'Unfezant', 'Drilbur', 'Excadrill', 'Timburr', 'Gurdurr', 'Whirlipede', 'Zorua', 'Zoroark', 'Minccino', 'Cinccino', 'Escavalier', 'Ferroseed', 'Ferrothorn', 'Klink', 'Klang', 'Klinklang', 'Durant', 'Terrakion', 'Kyurem', 'Kyurem-B', 'Kyurem-W'],
@@ -226,7 +225,7 @@ tier_checker.add_new_check(INCLUDING, ["Monocolour"], function monoColourCheck(s
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Smogon OU", "Wifi OU", "No Preview OU"], function swiftSwimCheck(src, team) {
+tier_checker.add_new_check(INCLUDING, ["Smogon OU", "BW2 OU", "No Preview OU"], function swiftSwimCheck(src, team) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Drizzle"){
             for(var j = 0; j <6; ++j){
@@ -246,7 +245,7 @@ tier_checker.add_new_check(INCLUDING, ["Smogon UU"], function droughtCheck(src, 
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU", "Wifi NEU", "Wifi LC"], function sandStreamCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["BW2 UU", "BW2 LU", "BW2 NU", "BW2 NEU", "BW2 LC"], function sandStreamCheck(src, team, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Sand Stream"){
             return ["Sand Stream is not allowed in " + tier + "."];
@@ -254,7 +253,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU", "Wifi NE
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU", "Wifi NEU"], function snowWarningCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["BW2 UU", "BW2 LU", "BW2 NU", "BW2 NEU"], function snowWarningCheck(src, team, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Snow Warning"){
             return ["Snow Warning is not allowed in " + tier + "."];
@@ -262,7 +261,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi UU", "Wifi LU", "Wifi NU", "Wifi NE
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi OU", "No Preview OU", "Monotype"], function sandVeilCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["BW2 OU", "No Preview OU", "Monotype"], function sandVeilCheck(src, team, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Sand Veil"){
             return ["Sand Veil is not allowed in " + tier + "."];
@@ -270,7 +269,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi OU", "No Preview OU", "Monotype"], 
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi OU", "No Preview OU", "Monotype"], function snowCloakCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["BW2 OU", "No Preview OU", "Monotype"], function snowCloakCheck(src, team, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Snow Cloak"){
             return ["Snow Cloak is not allowed in " + tier + "."];
@@ -278,7 +277,7 @@ tier_checker.add_new_check(INCLUDING, ["Wifi OU", "No Preview OU", "Monotype"], 
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi LC"], function regeneratorCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["BW2 LC"], function regeneratorCheck(src, team, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Speed Boost"){
             return ["Speed Boost is not allowed in " + tier + "."];
@@ -298,7 +297,7 @@ tier_checker.add_new_check(INCLUDING, ["Gen 6 OU"], function bannedPokesOU(src, 
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Wifi NU", "Wifi NEU"], function smashPassCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["BW2 NU", "BW2 NEU"], function smashPassCheck(src, team, tier) {
     var ret = [];
     for (var i = 0; i < 6; i++) {
         if (sys.hasTeamPokeMove(src, team, i, sys.moveNum("Shell Smash")) && sys.hasTeamPokeMove(src, team, i, sys.moveNum("Baton Pass"))) {
