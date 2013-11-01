@@ -681,7 +681,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "Please specify a Pokémon!", channel);
             return;
         }
-        var pokeId = sys.pokeNum(commandData);
+        var pokeId;
+        if (isNaN(commandData)) {
+            pokeId = sys.pokeNum(commandData);
+        }
+        else {
+            pokeId = commandData;
+        }
         if (!pokeId) {
             normalbot.sendMessage(src, commandData + " is not a valid Pokémon!", channel);
             return;

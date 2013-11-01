@@ -263,8 +263,6 @@ function TriviaGame() {
     this.autostart = false;
     this.ticks = -1;
     this.suggestion = {};
-    if (this.lastStopped === undefined)
-        this.lastStopped = time();
 }
 
 TriviaGame.prototype.htmlAll = function (html) {
@@ -283,8 +281,6 @@ TriviaGame.prototype.startGame = function (data, name) {
     if (this.started === true) return;
     if (this.startoff === true) return;
     if (triviaq.questionAmount() < 1) return;
-    var x = time() - this.lastStopped;
-    if (x < 16) return;
     if (name === "" && this.autostart === false) return;
     Trivia.suggestion = {};
     data = data.split("*");
@@ -594,7 +590,6 @@ TriviaGame.prototype.resetTrivia = function () {
     this.submittedAnswers = {};
     this.roundQuestion = 0;
     this.phase = "";
-    this.lastStopped = time();
     this.ticks = -1;
     this.suggestion = {};
 };
