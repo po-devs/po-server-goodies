@@ -10,7 +10,7 @@ TierChecker.prototype.add_new_check = function(exclusive, tiers, checker) {
 };
 
 TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent, returncomp) {
-    if (tier == "Challenge Cup" || tier == "CC 1v1" || tier == "BW2 CC 1v1" || (tier == "Battle Factory" || tier == "Battle Factory 6v6") && sys.gen(src, team) === 5) return true;
+    if (tier == "Challenge Cup" || tier == "CC 1v1" || tier == "Wifi CC 1v1" || (tier == "Battle Factory" || tier == "Battle Factory 6v6") && sys.gen(src, team) === 5) return true;
     if (!sys.hasLegalTeamForTier(src, team, tier)) return false;
 
     var complaints = [];
