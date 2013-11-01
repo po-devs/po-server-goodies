@@ -1,10 +1,10 @@
 {
     "1-11-2013": {
-        "tier": "Wifi LU",
+        "tier": "BW2 LU",
         "settings": {}
     },
     "2-11-2013": {
-        "tier": "Wifi Ubers",
+        "tier": "BW2 Ubers",
         "settings": {}
     },
     "3-11-2013": {
@@ -16,7 +16,7 @@
         "settings": {}
     },
     "5-11-2013": {
-        "tier": "Wifi NU",
+        "tier": "BW2 NU",
         "settings": {}
     },
     "6-11-2013": {
@@ -24,7 +24,7 @@
         "settings": {}
     },
     "7-11-2013": {
-        "tier": "Wifi OU",
+        "tier": "BW2 OU",
         "settings": {}
     },
     "8-11-2013": {
@@ -36,11 +36,11 @@
         "settings": {}
     },
     "10-11-2013": {
-        "tier": "Wifi OU Doubles",
+        "tier": "BW2 OU Doubles",
         "settings": {}
     },
     "11-11-2013": {
-        "tier": "Wifi UU",
+        "tier": "BW2 UU",
         "settings": {}
     },
     "12-11-2013": {
@@ -48,19 +48,19 @@
         "settings": {}
     },
     "13-11-2013": {
-        "tier": "Wifi Triples",
+        "tier": "BW2 Triples",
         "settings": {}
     },
     "14-11-2013": {
-        "tier": "Wifi NU",
+        "tier": "BW2 NU",
         "settings": {}
     },
     "15-11-2013": {
-        "tier": "Wifi LC",
+        "tier": "BW2 LC",
         "settings": {}
     },
     "16-11-2013": {
-        "tier": "Wifi OU",
+        "tier": "BW2 OU",
         "settings": {}
     },
     "17-11-2013": {
@@ -76,15 +76,15 @@
         "settings": {}
     },
     "20-11-2013": {
-        "tier": "Wifi Ubers",
+        "tier": "BW2 Ubers",
         "settings": {}
     },
     "21-11-2013": {
-        "tier": "Wifi Triples",
+        "tier": "BW2 Triples",
         "settings": {}
     },
     "22-11-2013": {
-        "tier": "Wifi LU",
+        "tier": "BW2 LU",
         "settings": {}
     },
     "23-11-2013": {
@@ -92,7 +92,7 @@
         "settings": {}
     },
     "24-11-2013": {
-        "tier": "Wifi NU",
+        "tier": "BW2 NU",
         "settings": {}
     },
     "25-11-2013": {
@@ -100,11 +100,11 @@
         "settings": {}
     },
     "26-11-2013": {
-        "tier": "Wifi OU Doubles",
+        "tier": "BW2 OU Doubles",
         "settings": {}
     },
     "27-11-2013": {
-        "tier": "Wifi LC",
+        "tier": "BW2 LC",
         "settings": {}
     },
     "28-11-2013": {
@@ -112,19 +112,19 @@
         "settings": {}
     },
     "29-11-2013": {
-        "tier": "Wifi UU",
+        "tier": "BW2 UU",
         "settings": {}
     },
     "30-11-2013": {
-        "tier": "Wifi OU",
+        "tier": "BW2 OU",
         "settings": {}
     },
     "31-11-2013": {
-        "tier": "Wifi OU",
+        "tier": "BW2 OU",
         "settings": {}
     },
     "31-10-2013": {
-        "tier": "Wifi OU",
+        "tier": "BW2 OU",
         "settings": {}
     }
 }
