@@ -503,7 +503,7 @@ function getTourClauses(key) {
     else if (!tours.tour[key].parameters.wifi && tierclauses%256 >= 128) {
         tierclauses -= 128;
     }
-    var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Wifi Battle", "Self-KO Clause"];
+    var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Wifi Battle", "Self-KO Clause", "Inverted Battle"];
     var neededclauses = [];
     for (var c=0;c<9;c++) {
         var denom = Math.pow(2,c+1);
@@ -525,7 +525,7 @@ function clauseCheck(key, issuedClauses) {
     else if (tours.tour[key].parameters.wifi === false && requiredClauses%256 >= 128) {
         requiredClauses -= 128;
     }
-    var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Wifi Battle", "Self-KO Clause"];
+    var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Wifi Battle", "Self-KO Clause", "Inverted Battle"];
     var clause1 = false;
     var clause2 = false;
     var missing = [];
