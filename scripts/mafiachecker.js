@@ -42,7 +42,7 @@ function mafiaChecker() {
                 lists.push("roles"+i);
                 ++i;
             }
-            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "drawmsg", "minplayers", "nolynch", "votesniping", "ticks", "silentVote", "nonPeak", "changelog", "threadlink", "altname", "tips", "closedSetup"].concat(lists), "Your theme");
+            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "drawmsg", "minplayers", "nolynch", "votesniping", "ticks", "silentVote", "nonPeak", "changelog", "threadlink", "altname", "tips", "closedSetup", "variables"].concat(lists), "Your theme");
 
             if (checkType(raw.name, ["string"], "'theme.name'")) {
                 if (raw.name[raw.name.length - 1] == " ") {
@@ -76,6 +76,7 @@ function mafiaChecker() {
             checkType(raw.minplayers, ["number"], "'theme.minplayers'");
             checkType(raw.threadlink, ["string"], "'theme.threadlink'");
             checkType(raw.altname, ["string"], "'theme.altname'");
+            checkType(raw.variables, ["string"], "'theme.variables'");
             checkValidValue(raw.nolynch, [true, false], "theme.nolynch");
             checkValidValue(raw.votesniping, [true, false], "theme.votesniping");
             checkValidValue(raw.silentVote, [true, false], "theme.silentVote");
@@ -860,14 +861,9 @@ function mafiaChecker() {
                     if (checkType(action.convertTo, ["string"], comm + ".convertTo")) {
                         checkValidRole(role.actions.lynch.convertTo, comm + ".convertTo");
                     }
-                    if (checkType(action.convertmsg, ["string"], comm + ".convertmsg")) {
-                        if (!("convertTo" in action)) {
-                            addMinorError("'convertmsg' found at " + act + ", but there's no '" + act + ".convertTo'");
-                        }
-                    }
                     if (checkType(action.lynchmsg, ["string"], comm + ".lynchmsg")) {
                         if (!("convertTo" in action)) {
-                            addMinorError("'lynchmsg' found at " + act + ", but there's no '" + act + ".convertTo'");
+                            addMinorError("'lynchmsg' found at " + comm + ", but there's no '" + comm + ".convertTo'");
                         }
                     }
                     if (checkType(action.killVoters, ["object"], comm + ".killVoters")) {
