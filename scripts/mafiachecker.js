@@ -76,7 +76,7 @@ function mafiaChecker() {
             checkType(raw.minplayers, ["number"], "'theme.minplayers'");
             checkType(raw.threadlink, ["string"], "'theme.threadlink'");
             checkType(raw.altname, ["string"], "'theme.altname'");
-            checkType(raw.variables, ["string"], "'theme.variables'");
+            checkType(raw.variables, ["object"], "'theme.variables'");
             checkValidValue(raw.nolynch, [true, false], "theme.nolynch");
             checkValidValue(raw.votesniping, [true, false], "theme.votesniping");
             checkValidValue(raw.silentVote, [true, false], "theme.silentVote");
