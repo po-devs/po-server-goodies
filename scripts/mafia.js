@@ -101,7 +101,7 @@ function Mafia(mafiachan) {
             result[arr[x]] = 1;
         }
         return Object.keys(result);
-    }    
+    }
     function needsBot(msg, botName) {
         if (msg.indexOf(":") === -1 && msg.indexOf("***") === -1) {
             return "±" + (botName ? botName : "Game") + ": " + msg;
