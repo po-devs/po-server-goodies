@@ -4691,7 +4691,7 @@ module.exports = {
         }
         /* check for potential scouters */
         var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome", "Battle Factory", "Battle Factory 6v6"];
-        var isOkToSpectate = (tours.tour[p1tour].state == "final" || cctiers.indexOf(tours.tour[p1tour].tourtype) != -1 || tours.tour[p1tour].tourtype & 16); //check for CC clause so the tier list doesn't need constantly updating
+        var isOkToSpectate = (tours.tour[p1tour].state == "final" || cctiers.indexOf(tours.tour[p1tour].tourtype) != -1 || sys.getClauses(tours.tour[p1tour].tourtype) & 16); //check for CC clause so the tier list doesn't need constantly updating
         if (srctour === p1tour && !isOkToSpectate) {
             sendBotMessage(src, "You can't watch this match because you are in the same tournament!","all", false);
             return true;
