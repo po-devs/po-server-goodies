@@ -534,7 +534,7 @@ function clauseCheck(key, issuedClauses) {
         var denom = Math.pow(2,c+1);
         var num = Math.pow(2,c);
         // don't check for disallow spects in non CC tiers , it's checked manually
-        if (c == 2 && ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Battle Factory", "Battle Factory 6v6"].indexOf(tier) == -1) {
+        if (c == 2 && (["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Battle Factory", "Battle Factory 6v6"].indexOf(tier) == -1 || sys.getClauses(tier) & 16)) { //check for CC clause so the tier list doesn't need constantly updating
             continue;
         }
         if (requiredClauses%denom >= num) {
@@ -2831,7 +2831,7 @@ function tourCommand(src, command, commandData, channel) {
             if (script.hasAuthElements(mus)) {
                 sys.sendMessage(src, "", channel);
                 sys.sendMessage(src, "*** AUTH MEGAUSERS ***", channel);
-                for (var m = 0; x < mus.length; m++) {
+                for (var m = 0; m < mus.length; m++) {
                     if (sys.dbAuths().indexOf(mus[m]) != -1) {
                         var id = sys.id(mus[m]);
                         if (!id) {
@@ -4691,7 +4691,7 @@ module.exports = {
         }
         /* check for potential scouters */
         var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome", "Battle Factory", "Battle Factory 6v6"];
-        var isOkToSpectate = (tours.tour[p1tour].state == "final" || cctiers.indexOf(tours.tour[p1tour].tourtype) != -1);
+        var isOkToSpectate = (tours.tour[p1tour].state == "final" || cctiers.indexOf(tours.tour[p1tour].tourtype) != -1 || tours.tour[p1tour].tourtype & 16); //check for CC clause so the tier list doesn't need constantly updating
         if (srctour === p1tour && !isOkToSpectate) {
             sendBotMessage(src, "You can't watch this match because you are in the same tournament!","all", false);
             return true;
