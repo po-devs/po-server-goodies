@@ -4509,7 +4509,9 @@ function Mafia(mafiachan) {
                     if (roles[i].search(/±role:/i) > -1 && roles[i].toLowerCase().search(roleTranslation) > -1) {
                         filterRoles.push(roles[i]);
                         filterRoles.push(roles[i + 1]);
-                        filterRoles.push(roles[i + 2]);
+                        if (roles[i + 2].substr(0, 9) === "±Players:") {
+                            filterRoles.push(roles[i + 2]);
+                        }
                         filterRoles.push(sep);
                     }
                 }
