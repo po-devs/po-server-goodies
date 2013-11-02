@@ -505,7 +505,7 @@ function getTourClauses(key) {
     }
     var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Wifi Battle", "Self-KO Clause", "Inverted Battle"];
     var neededclauses = [];
-    for (var c=0;c<9;c++) {
+    for (var c=0;c<clauselist.length;c++) {
         var denom = Math.pow(2,c+1);
         var num = Math.pow(2,c);
         if (tierclauses%denom >= num) {
@@ -530,7 +530,7 @@ function clauseCheck(key, issuedClauses) {
     var clause2 = false;
     var missing = [];
     var extra = [];
-    for (var c=0;c<9;c++) {
+    for (var c=0;c<clauselist.length;c++) {
         var denom = Math.pow(2,c+1);
         var num = Math.pow(2,c);
         // don't check for disallow spects in non CC tiers , it's checked manually
