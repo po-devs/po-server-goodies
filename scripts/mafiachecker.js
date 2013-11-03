@@ -32,7 +32,7 @@ function mafiaChecker() {
             // Iterate over the entire theme, parsing variable:(name) strings.
             for (it in raw) {
                 prop = raw[it];
-                assignVariable(raw, it, prop, theme.variables);
+                assignVariable(raw, it, prop, theme.variables, "Global");
             }
         }
         
@@ -42,7 +42,7 @@ function mafiaChecker() {
                 lists.push("roles"+i);
                 ++i;
             }
-            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "drawmsg", "minplayers", "nolynch", "votesniping", "ticks", "silentVote", "nonPeak", "changelog", "threadlink", "altname", "tips", "closedSetup"].concat(lists), "Your theme");
+            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "drawmsg", "minplayers", "nolynch", "votesniping", "ticks", "silentVote", "nonPeak", "changelog", "threadlink", "altname", "tips", "closedSetup", "variables"].concat(lists), "Your theme");
 
             if (checkType(raw.name, ["string"], "'theme.name'")) {
                 if (raw.name[raw.name.length - 1] == " ") {
@@ -76,6 +76,7 @@ function mafiaChecker() {
             checkType(raw.minplayers, ["number"], "'theme.minplayers'");
             checkType(raw.threadlink, ["string"], "'theme.threadlink'");
             checkType(raw.altname, ["string"], "'theme.altname'");
+            checkType(raw.variables, ["object"], "'theme.variables'");
             checkValidValue(raw.nolynch, [true, false], "theme.nolynch");
             checkValidValue(raw.votesniping, [true, false], "theme.votesniping");
             checkValidValue(raw.silentVote, [true, false], "theme.silentVote");
@@ -860,14 +861,9 @@ function mafiaChecker() {
                     if (checkType(action.convertTo, ["string"], comm + ".convertTo")) {
                         checkValidRole(role.actions.lynch.convertTo, comm + ".convertTo");
                     }
-                    if (checkType(action.convertmsg, ["string"], comm + ".convertmsg")) {
-                        if (!("convertTo" in action)) {
-                            addMinorError("'convertmsg' found at " + act + ", but there's no '" + act + ".convertTo'");
-                        }
-                    }
                     if (checkType(action.lynchmsg, ["string"], comm + ".lynchmsg")) {
                         if (!("convertTo" in action)) {
-                            addMinorError("'lynchmsg' found at " + act + ", but there's no '" + act + ".convertTo'");
+                            addMinorError("'lynchmsg' found at " + comm + ", but there's no '" + comm + ".convertTo'");
                         }
                     }
                     if (checkType(action.killVoters, ["object"], comm + ".killVoters")) {
@@ -1207,21 +1203,25 @@ function mafiaChecker() {
             return "";
         }
     }
-    function assignVariable(master, index, prop, variables) {
+    function assignVariable(master, index, prop, variables, path) {
         var variable, len, j, val;
         
         if (typeof prop === 'string' && prop.slice(0, 9) === 'variable:') {
             variable = prop.slice(9);
             // Check for undefined variable here.
-            master[index] = variables[variable];
+            if (!(variable in variables)) {
+                addFatalError("Invalid variable " + variable + " found at " + path + "." + index + ".");
+            } else {
+                master[index] = variables[variable];
+            }
         } else if (Array.isArray(prop)) {
             for (j = 0, len = prop.length; j < len; j += 1) {
                 val = prop[j];
-                assignVariable(prop, j, val, variables);
+                assignVariable(prop, j, val, variables, path + "." + index);
             }
         } else if (Object.prototype.toString.call(prop) === '[object Object]') {
             for (j in prop) {
-                assignVariable(prop, j, prop[j], variables);
+                assignVariable(prop, j, prop[j], variables, path + "." + index);
             }
         }
     }
