@@ -18,7 +18,7 @@ var Config = {
     commandbot: "CommandBot",
     querybot: "QueryBot",
     hangbot: "Unown",
-    bfbot: "Deoxys",
+    bfbot: "Goomy",
     // suspectvoting.js available, but not in use
     Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js", "blackjack.js", "mafiastats.js", "mafiachecker.js"],
     Mafia: {

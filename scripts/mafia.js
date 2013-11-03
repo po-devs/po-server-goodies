@@ -7,7 +7,7 @@
 
 // Global variables inherited from scripts.js
 /*global mafiabot, getTimeString, updateModule, script, sys, SESSION, sendChanAll, require, Config, module, sachannel*/
-/*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
+/*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true,eqnull:true*/
 var MAFIA_CHANNEL = "Mafia";
 
 var is_command = require("utilities.js").is_command;
@@ -843,37 +843,52 @@ function Mafia(mafiachan) {
                 roles.push("±Ability: " + abilities);
 
                 // check on which player counts the role appears
-                var parts = [];
-                var end = 0;
-                for (var i = 1; i <= this.roleLists; ++i) {
-                    role_i = "roles" + i;
-                    var start = -1, v;
-                    for (var e = 0; e < this[role_i].length; e++) {
-                        v = this[role_i][e];
-                        if ((typeof v == "string" && v == role.role) || (typeof v == "object" && role.role in v)) {
-                            start = e;
-                            break;
-                        }
-                    }
-                    var last = end;
-                    end = this[role_i].length;
-                    if (start >= 0) {
-                        ++start;
-                        start = start > last ? start : 1 + last;
-                        if (parts.length > 0 && parts[parts.length - 1][1] == start - 1) {
-                            parts[parts.length - 1][1] = end;
-                        } else {
-                            parts.push([start, end]);
-                            if (parts.length > 1) {
-                                parts[parts.length - 2] = parts[parts.length - 2][0] < parts[parts.length - 2][1] ? parts[parts.length - 2].join("-") : parts[parts.length - 2][1];
+                var playerCount = '';
+                var roleplayers = role.players;
+                
+                if (roleplayers !== false) { // players: false
+                    var parts = [];
+                    var end = 0;
+                    if (typeof roleplayers === "string") { // players: "Convert" -> Convert
+                        playerCount = roleplayers;
+                    } else if (typeof roleplayers === "number") { // players: 30 -> 30 Players
+                        playerCount = roleplayers + " Players";
+                    } else if (typeof roleplayers === "array") { // players: [20, 30] -> 20-30 Players
+                        playerCount = rolePlayers.join("-") + " Players";
+                    } else {
+                        for (var i = 1; i <= this.roleLists; ++i) {
+                            role_i = "roles" + i;
+                            var start = -1, v;
+                            for (var e = 0; e < this[role_i].length; e++) {
+                                v = this[role_i][e];
+                                if ((typeof v == "string" && v == role.role) || (typeof v == "object" && role.role in v)) {
+                                    start = e;
+                                    break;
+                                }
+                            }
+                            var last = end;
+                            end = this[role_i].length;
+                            if (start >= 0) {
+                                ++start;
+                                start = start > last ? start : 1 + last;
+                                if (parts.length > 0 && parts[parts.length - 1][1] == start - 1) {
+                                    parts[parts.length - 1][1] = end;
+                                } else {
+                                    parts.push([start, end]);
+                                    if (parts.length > 1) {
+                                        parts[parts.length - 2] = parts[parts.length - 2][0] < parts[parts.length - 2][1] ? parts[parts.length - 2].join("-") : parts[parts.length - 2][1];
+                                    }
+                                }
                             }
                         }
+                        if (parts.length > 0) {
+                            parts[parts.length - 1] = parts[parts.length - 1][0] < parts[parts.length - 1][1] ? parts[parts.length - 1].join("-") : parts[parts.length - 1][1];
+                        }
+                        playerCount = parts.join(", ") + " Players";
                     }
+
+                    roles.push("±Players: " + playerCount);
                 }
-                if (parts.length > 0) {
-                    parts[parts.length - 1] = parts[parts.length - 1][0] < parts[parts.length - 1][1] ? parts[parts.length - 1].join("-") : parts[parts.length - 1][1];
-                }
-                roles.push("±Players: " + parts.join(", ") + " Players");
 
                 roles.push(sep);
             } catch (err) {
@@ -3023,19 +3038,37 @@ function Mafia(mafiachan) {
             this.runusersToSlay();
             sendChanAll("±Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
             sendChanAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
+            
+            
             // Send players all roles sided with them
-            for (var p in mafia.players) {
-                var player = mafia.players[p];
-                var side = player.role.side;
-                if (mafia.theme.closedSetup !== true) {
+            var p, r, role, side, check,
+                themecs = mafia.theme.closedSetup != null;
+            for (p in mafia.players) {
+                player = mafia.players[p];
+                role = player.role;
+                side = role.side;
+                check = false;
+                
+                // != null checks for undefined and null
+                if (role.closedSetup != null) {
+                    check = role.closedSetup;
+                } else if (side.closedSetup != null) {
+                    check = side.closedSetup;
+                } else if (themecs) {
+                    check = mafia.theme.closedSetup;
+                }
+                
+                if (!check) {
                     mafia.sendPlayer(player.name, "±Current Team: " + mafia.getRolesForTeamS(side));
                 }
+
                 if (p in mafia.dayRecharges) {
-                    for (var r in mafia.dayRecharges[p]) {
+                    for (r in mafia.dayRecharges[p]) {
                         mafia.setRechargeFor(player, "standby", r, mafia.dayRecharges[p][r]);
                     }
                 }
             }
+            
             var nolyn = false;
             if (mafia.theme.nolynch !== undefined && mafia.theme.nolynch !== false) {
                 nolyn = true;
@@ -3298,14 +3331,30 @@ function Mafia(mafiachan) {
             this.runusersToSlay();
             sendChanAll("±Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
             sendChanAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
-            if (mafia.theme.closedSetup !== true) {
-                // Send players all roles sided with them
-                for (var p in mafia.players) {
-                    player = mafia.players[p];
-                    var side = player.role.side;
+
+            // Send players all roles sided with them
+            var p, role, side, check,
+                themecs = mafia.theme.closedSetup != null;
+            for (p in mafia.players) {
+                player = mafia.players[p];
+                role = player.role;
+                side = role.side;
+                check = false;
+                
+                // != null checks for undefined and null
+                if (role.closedSetup != null) {
+                    check = role.closedSetup;
+                } else if (side.closedSetup != null) {
+                    check = side.closedSetup;
+                } else if (themecs) {
+                    check = mafia.theme.closedSetup;
+                }
+                
+                if (!check) {
                     mafia.sendPlayer(player.name, "±Current Team: " + mafia.getRolesForTeamS(side));
                 }
             }
+
             if (mafia.theme.ticks === undefined || isNaN(mafia.theme.ticks.night) || mafia.theme.ticks.night < 1 || mafia.theme.ticks.night > 60) {
                 mafia.ticks = 30;
             } else {
@@ -4494,7 +4543,9 @@ function Mafia(mafiachan) {
                     if (roles[i].search(/±role:/i) > -1 && roles[i].toLowerCase().search(roleTranslation) > -1) {
                         filterRoles.push(roles[i]);
                         filterRoles.push(roles[i + 1]);
-                        filterRoles.push(roles[i + 2]);
+                        if (roles[i + 2].substr(0, 9) === "±Players:") {
+                            filterRoles.push(roles[i + 2]);
+                        }
                         filterRoles.push(sep);
                     }
                 }

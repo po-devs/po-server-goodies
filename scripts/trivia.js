@@ -2019,7 +2019,7 @@ module.exports = {
             // Remove commas so the listing looks better
             // This is fine as no answers should include comma.
             Trivia.addAnswer(src, message.replace(/,/gi, ""));
-            Trivia.sendPM(src, "Your answer was submitted.", triviachan);
+            Trivia.sendPM(src, "Your answer was submitted: " + message, triviachan);
             return true;
         }
         if (isTrivia("muted", sys.ip(src))) {
