@@ -674,7 +674,7 @@ init : function() {
     var announceChan = (typeof staffchannel == "number") ? staffchannel : 0;
     var dwpok;
     for (dwpok = 0; dwpok < halist.length; dwpok++) {
-        var num = sys.pokeNum(dwlist[dwpok]);
+        var num = sys.pokeNum(halist[dwpok]);
         if (num === undefined)
             sys.sendAll("Script Check: Unknown poke in hapokemons: '" +halist[dwpok]+"'.", announceChan);
         else if (hapokemons[num] === true)
