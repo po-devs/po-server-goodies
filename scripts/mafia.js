@@ -7,7 +7,7 @@
 
 // Global variables inherited from scripts.js
 /*global mafiabot, getTimeString, updateModule, script, sys, SESSION, sendChanAll, require, Config, module, sachannel*/
-/*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
+/*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true,eqnull:true*/
 var MAFIA_CHANNEL = "Mafia";
 
 var is_command = require("utilities.js").is_command;
@@ -3023,19 +3023,37 @@ function Mafia(mafiachan) {
             this.runusersToSlay();
             sendChanAll("±Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
             sendChanAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
+            
+            
             // Send players all roles sided with them
-            for (var p in mafia.players) {
-                var player = mafia.players[p];
-                var side = player.role.side;
-                if (mafia.theme.closedSetup !== true) {
+            var p, r, role, side, check,
+                themecs = mafia.theme.closedSetup != null;
+            for (p in mafia.players) {
+                player = mafia.players[p];
+                role = player.role;
+                side = role.side;
+                check = false;
+                
+                // != null checks for undefined and null
+                if (role.closedSetup != null) {
+                    check = role.closedSetup;
+                } else if (side.closedSetup != null) {
+                    check = side.closedSetup;
+                } else if (themecs) {
+                    check = mafia.theme.closedSetup;
+                }
+                
+                if (!check) {
                     mafia.sendPlayer(player.name, "±Current Team: " + mafia.getRolesForTeamS(side));
                 }
+
                 if (p in mafia.dayRecharges) {
-                    for (var r in mafia.dayRecharges[p]) {
+                    for (r in mafia.dayRecharges[p]) {
                         mafia.setRechargeFor(player, "standby", r, mafia.dayRecharges[p][r]);
                     }
                 }
             }
+            
             var nolyn = false;
             if (mafia.theme.nolynch !== undefined && mafia.theme.nolynch !== false) {
                 nolyn = true;
@@ -3298,14 +3316,30 @@ function Mafia(mafiachan) {
             this.runusersToSlay();
             sendChanAll("±Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
             sendChanAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
-            if (mafia.theme.closedSetup !== true) {
-                // Send players all roles sided with them
-                for (var p in mafia.players) {
-                    player = mafia.players[p];
-                    var side = player.role.side;
+
+            // Send players all roles sided with them
+            var p, role, side, check,
+                themecs = mafia.theme.closedSetup != null;
+            for (p in mafia.players) {
+                player = mafia.players[p];
+                role = player.role;
+                side = role.side;
+                check = false;
+                
+                // != null checks for undefined and null
+                if (role.closedSetup != null) {
+                    check = role.closedSetup;
+                } else if (side.closedSetup != null) {
+                    check = side.closedSetup;
+                } else if (themecs) {
+                    check = mafia.theme.closedSetup;
+                }
+                
+                if (!check) {
                     mafia.sendPlayer(player.name, "±Current Team: " + mafia.getRolesForTeamS(side));
                 }
             }
+
             if (mafia.theme.ticks === undefined || isNaN(mafia.theme.ticks.night) || mafia.theme.ticks.night < 1 || mafia.theme.ticks.night > 60) {
                 mafia.ticks = 30;
             } else {
