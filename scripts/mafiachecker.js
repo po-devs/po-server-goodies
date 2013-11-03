@@ -32,7 +32,7 @@ function mafiaChecker() {
             // Iterate over the entire theme, parsing variable:(name) strings.
             for (it in raw) {
                 prop = raw[it];
-                assignVariable(raw, it, prop, theme.variables);
+                assignVariable(raw, it, prop, theme.variables, "Global");
             }
         }
         
@@ -1203,21 +1203,25 @@ function mafiaChecker() {
             return "";
         }
     }
-    function assignVariable(master, index, prop, variables) {
+    function assignVariable(master, index, prop, variables, path) {
         var variable, len, j, val;
         
         if (typeof prop === 'string' && prop.slice(0, 9) === 'variable:') {
             variable = prop.slice(9);
             // Check for undefined variable here.
-            master[index] = variables[variable];
+            if (!(variable in variables)) {
+                addFatalError("Invalid variable " + variable + " found at " + path + "." + index + ".");
+            } else {
+                master[index] = variables[variable];
+            }
         } else if (Array.isArray(prop)) {
             for (j = 0, len = prop.length; j < len; j += 1) {
                 val = prop[j];
-                assignVariable(prop, j, val, variables);
+                assignVariable(prop, j, val, variables, path + "." + index);
             }
         } else if (Object.prototype.toString.call(prop) === '[object Object]') {
             for (j in prop) {
-                assignVariable(prop, j, prop[j], variables);
+                assignVariable(prop, j, prop[j], variables, path + "." + index);
             }
         }
     }
