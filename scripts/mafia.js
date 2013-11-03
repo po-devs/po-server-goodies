@@ -843,37 +843,52 @@ function Mafia(mafiachan) {
                 roles.push("±Ability: " + abilities);
 
                 // check on which player counts the role appears
-                var parts = [];
-                var end = 0;
-                for (var i = 1; i <= this.roleLists; ++i) {
-                    role_i = "roles" + i;
-                    var start = -1, v;
-                    for (var e = 0; e < this[role_i].length; e++) {
-                        v = this[role_i][e];
-                        if ((typeof v == "string" && v == role.role) || (typeof v == "object" && role.role in v)) {
-                            start = e;
-                            break;
-                        }
-                    }
-                    var last = end;
-                    end = this[role_i].length;
-                    if (start >= 0) {
-                        ++start;
-                        start = start > last ? start : 1 + last;
-                        if (parts.length > 0 && parts[parts.length - 1][1] == start - 1) {
-                            parts[parts.length - 1][1] = end;
-                        } else {
-                            parts.push([start, end]);
-                            if (parts.length > 1) {
-                                parts[parts.length - 2] = parts[parts.length - 2][0] < parts[parts.length - 2][1] ? parts[parts.length - 2].join("-") : parts[parts.length - 2][1];
+                var playerCount = '';
+                var roleplayers = role.players;
+                
+                if (roleplayers !== false) { // players: false
+                    var parts = [];
+                    var end = 0;
+                    if (typeof roleplayers === "string") { // players: "Convert" -> Convert
+                        playerCount = roleplayers;
+                    } else if (typeof roleplayers === "number") { // players: 30 -> 30 Players
+                        playerCount = roleplayers + " Players";
+                    } else if (typeof roleplayers === "array") { // players: [20, 30] -> 20-30 Players
+                        playerCount = rolePlayers.join("-") + " Players";
+                    } else {
+                        for (var i = 1; i <= this.roleLists; ++i) {
+                            role_i = "roles" + i;
+                            var start = -1, v;
+                            for (var e = 0; e < this[role_i].length; e++) {
+                                v = this[role_i][e];
+                                if ((typeof v == "string" && v == role.role) || (typeof v == "object" && role.role in v)) {
+                                    start = e;
+                                    break;
+                                }
+                            }
+                            var last = end;
+                            end = this[role_i].length;
+                            if (start >= 0) {
+                                ++start;
+                                start = start > last ? start : 1 + last;
+                                if (parts.length > 0 && parts[parts.length - 1][1] == start - 1) {
+                                    parts[parts.length - 1][1] = end;
+                                } else {
+                                    parts.push([start, end]);
+                                    if (parts.length > 1) {
+                                        parts[parts.length - 2] = parts[parts.length - 2][0] < parts[parts.length - 2][1] ? parts[parts.length - 2].join("-") : parts[parts.length - 2][1];
+                                    }
+                                }
                             }
                         }
+                        if (parts.length > 0) {
+                            parts[parts.length - 1] = parts[parts.length - 1][0] < parts[parts.length - 1][1] ? parts[parts.length - 1].join("-") : parts[parts.length - 1][1];
+                        }
+                        playerCount = parts.join(", ") + " Players";
                     }
+
+                    roles.push("±Players: " + playerCount);
                 }
-                if (parts.length > 0) {
-                    parts[parts.length - 1] = parts[parts.length - 1][0] < parts[parts.length - 1][1] ? parts[parts.length - 1].join("-") : parts[parts.length - 1][1];
-                }
-                roles.push("±Players: " + parts.join(", ") + " Players");
 
                 roles.push(sep);
             } catch (err) {
@@ -4528,7 +4543,9 @@ function Mafia(mafiachan) {
                     if (roles[i].search(/±role:/i) > -1 && roles[i].toLowerCase().search(roleTranslation) > -1) {
                         filterRoles.push(roles[i]);
                         filterRoles.push(roles[i + 1]);
-                        filterRoles.push(roles[i + 2]);
+                        if (roles[i + 2].substr(0, 9) === "±Players:") {
+                            filterRoles.push(roles[i + 2]);
+                        }
                         filterRoles.push(sep);
                     }
                 }
