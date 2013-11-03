@@ -126,9 +126,9 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
     if (sys.gen(src, team) === 6) {
         for (var i = 0; i < 6; i++) {
             var x = sys.teamPoke(src, team, i);
-            if (x !== 0 && sys.hasDreamWorldAbility(src, team, i)) {
+            if (x !== 0 && sys.hasDreamWorldAbility(src, team, i, 6)) {
                 if (!(x in dwpokemons)) {
-                    ret.push("" + sys.pokemon(x) + " is not allowed with Hidden Ability " + sys.teamPokeAbility(src, team, i) + " in " + tier + " tier. Change it in the teambuilder.");
+                    ret.push("" + sys.pokemon(x) + " is not allowed with Hidden Ability " + sys.ability(sys.teamPokeAbility(src, team, i)) + " in " + tier + " tier. Change it in the teambuilder.");
                 }
             }
         }
