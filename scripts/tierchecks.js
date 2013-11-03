@@ -109,16 +109,27 @@ tier_checker.add_new_check(INCLUDING, ["BW2 NU"], function evioliteCheck(src, te
 if (typeof Config == "undefined") { Config = { DreamWorldTiers: ["No Preview OU",  "No Preview Ubers"] }; }
 tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbilityCheck(src, team, tier) {
     // Of course, DW ability only affects 5th gen
-    if (sys.gen(src, team) !== 5)
-        return;
     var ret = [];
-    for (var i = 0; i < 6; i++) {
-        var x = sys.teamPoke(src, team, i);
-        if (x !== 0 && sys.hasDreamWorldAbility(src, team, i) && (!(x in dwpokemons) || (breedingpokemons.indexOf(x) != -1 && sys.compatibleAsDreamWorldEvent(src, team, i) !== true))) {
-            if (!(x in dwpokemons)) {
-                ret.push("" + sys.pokemon(x) + " is not allowed with a Dream World ability in " + tier + " tier. Change it in the teambuilder.");
-            } else {
-                ret.push("" + sys.pokemon(x) + " has to be Male and have no egg moves with its Dream World ability in  " + tier + " tier. Change it in the teambuilder.");
+    if (sys.gen(src, team) === 5) {
+        for (var i = 0; i < 6; i++) {
+            var x = sys.teamPoke(src, team, i);
+            if (x !== 0 && sys.hasDreamWorldAbility(src, team, i) && (!(x in dwpokemons) || (breedingpokemons.indexOf(x) != -1 && sys.compatibleAsDreamWorldEvent(src, team, i) !== true))) {
+                if (!(x in dwpokemons)) {
+                    ret.push("" + sys.pokemon(x) + " is not allowed with a Dream World ability in " + tier + " tier. Change it in the teambuilder.");
+                } else {
+                    ret.push("" + sys.pokemon(x) + " has to be Male and have no egg moves with its Dream World ability in  " + tier + " tier. Change it in the teambuilder.");
+                }
+            }
+        }
+    }
+    // few unreleased abilities left in gen 6
+    if (sys.gen(src, team) === 6) {
+        for (var i = 0; i < 6; i++) {
+            var x = sys.teamPoke(src, team, i);
+            if (x !== 0 && sys.hasDreamWorldAbility(src, team, i)) {
+                if (!(x in dwpokemons)) {
+                    ret.push("" + sys.pokemon(x) + " is not allowed with Hidden Ability " + sys.teamPokeAbility(src, team, i) + " in " + tier + " tier. Change it in the teambuilder.");
+                }
             }
         }
     }
