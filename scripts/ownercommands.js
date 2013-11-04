@@ -643,7 +643,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "loadstats") {
-        if (sys.loadServerPlugin("serverplugins/libusagestats.so")) {
+        if (sys.loadServerPlugin("serverplugins/libusagestats_debug.so")) {
             normalbot.sendMessage(src, "Usage Stats plugin loaded", channel);
             return;
         }
