@@ -2210,9 +2210,7 @@ function Mafia(mafiachan) {
                         initPlayer.cursed = 1;
                         initPlayer.curseCount = condition.curse.curseCount || 2;
                         initPlayer.cursedRole = condition.curse.cursedRole;
-                        if (!condition.curse.silent) {
-                            initPlayer.curseConvertMessage = condition.curse.curseConvertMessage || "An ~Old~ has been converted into a ~New~!";
-                        }
+                        initPlayer.curseConvertMessage = condition.curse.curseConvertMessage;
                         initPlayer.silentCurse = condition.curse.silentCurse || false;
                     }
                 }
