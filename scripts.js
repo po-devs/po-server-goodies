@@ -670,17 +670,17 @@ init : function() {
     //two lists for gen 5 and gen 6
     /* use hash for faster lookup */
     dwpokemons = {};
-    hapokemons = {};
+    script.hapokemons = {};
     var announceChan = (typeof staffchannel == "number") ? staffchannel : 0;
     var dwpok;
     for (dwpok = 0; dwpok < halist.length; dwpok++) {
         var num = sys.pokeNum(halist[dwpok]);
         if (num === undefined)
             sys.sendAll("Script Check: Unknown poke in hapokemons: '" +halist[dwpok]+"'.", announceChan);
-        else if (hapokemons[num] === true)
+        else if (script.hapokemons[num] === true)
             sys.sendAll("Script Check:  hapokemons contains '" +halist[dwpok]+"' multiple times.", announceChan);
         else {
-            hapokemons[sys.pokeNum(halist[dwpok])] = true;
+            script.hapokemons[sys.pokeNum(halist[dwpok])] = true;
             if (dwlist.indexOf(halist[dwpok]) > -1) {
                 dwpokemons[sys.pokeNum(halist[dwpok])] = true;
             }

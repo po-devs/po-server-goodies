@@ -127,7 +127,7 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
         for (var i = 0; i < 6; i++) {
             var x = sys.teamPoke(src, team, i);
             if (x !== 0 && script.hasDreamWorldAbility(x, sys.teamPokeAbility(src, team, i))) {
-                if (!(x in hapokemons)) {
+                if (!(x in script.hapokemons)) {
                     ret.push("" + sys.pokemon(x) + " is not allowed with Hidden Ability " + sys.ability(sys.teamPokeAbility(src, team, i)) + " in " + tier + " tier. Change it in the teambuilder.");
                 }
             }
