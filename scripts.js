@@ -2392,6 +2392,6 @@ hasAuthElements: function (array) {
 },
 
 hasDreamWorldAbility: function (pokemon, ability) {
-    return sys.pokeAbility(pokemon, 2) === ability && sys.pokeAbility(pokemon, 0) !== sys.pokeAbility(pokemon, 2) && sys.pokeAbility(pokemon, 1) !== sys.pokeAbility(pokemon. 2);    
+    return sys.pokeAbility(pokemon, 2) === ability && sys.pokeAbility(pokemon, 0) !== sys.pokeAbility(pokemon, 2) && sys.pokeAbility(pokemon, 1) !== sys.pokeAbility(pokemon, 2);    
 }
 });
