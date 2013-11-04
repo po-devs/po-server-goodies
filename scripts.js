@@ -2389,6 +2389,9 @@ hasAuthElements: function (array) {
         }
     }
     return false;
-}
+},
 
+hasDreamWorldAbility: function (pokemon, ability) {
+    return sys.pokeAbility(pokemon, 2) === ability;    
+}
 });
