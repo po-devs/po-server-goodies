@@ -260,9 +260,10 @@ function TriviaGame() {
     this.phase = "";
     this.triviaPoints = "";
     this.startoff = false;
-    this.autostart = false;
+//    this.autostart = false; Commented out because you never know
     this.ticks = -1;
     this.suggestion = {};
+    this.inactivity = 0;
 }
 
 TriviaGame.prototype.htmlAll = function (html) {
@@ -281,7 +282,7 @@ TriviaGame.prototype.startGame = function (data, name) {
     if (this.started === true) return;
     if (this.startoff === true) return;
     if (triviaq.questionAmount() < 1) return;
-    if (name === "" && this.autostart === false) return;
+//    if (name === "" && this.autostart === false) return;
     Trivia.suggestion = {};
     data = data.split("*");
     this.maxPoints = data[0];
@@ -375,9 +376,12 @@ TriviaGame.prototype.startTrivia = function (src, data) {
         return;
     }*/
     data = data.split("*");
+    if (!(tadmin.isTAdmin(src) || tsadmin.isTAdmin(src) || sys.auth(src) > 0)) {
+        data = [data[0]];
+    }
     var rand = parseInt(data[0], 10);
     if (rand > 102 || rand < 1) {
-        this.sendPM(src, "Please do not start a game with more than 102 points, or lower than 1 points.", triviachan);
+        this.sendPM(src, "Please do not start a game with more than 102 points, or less than 1 point.", triviachan);
         return;
     }
     for (var i = 1; i < data.length; i++) {
@@ -407,7 +411,7 @@ TriviaGame.prototype.startTrivia = function (src, data) {
             i--;
         }
     }
-    data[0] = (isNaN(rand)) ? sys.rand(9, 30) : +rand;
+    data[0] = (isNaN(rand)) ? sys.rand(trivData.autostartRange.min, trivData.autostartRange.max) : +rand;
     data = data.join("*");
     this.startGame(data, sys.name(src));
 };
@@ -443,7 +447,7 @@ TriviaGame.prototype.startTriviaRound = function () {
     var q = triviaq.get(questionNumber);
     var category = q.category,
         question = q.question;
-        
+    
     this.phase = "answer";
     this.roundQuestion = questionNumber;
     this.htmlAll("<b>Category:</b> " + category.toUpperCase() + "<br>" + question);
@@ -498,13 +502,13 @@ TriviaGame.prototype.finalizeAnswers = function () {
     this.sendAll("Answered correctly: " + answeredCorrectly.join(", "), triviachan);
     var x = answers.length != 1 ? "answers were" : "answer was";
     sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±" + triviabot.name + ":</b></font> The correct " + x + ": <b>" + utilities.html_escape(answers.join(", ")) + "</b>", triviachan);
-    if (answeredCorrectly.length !== 0) {
-        var totalPlayers = 0;
-        for (var id in this.triviaPlayers) {
-            if (this.triviaPlayers[id].playing === true) {
-                totalPlayers++;
-            }
+    var totalPlayers = 0;
+    for (var id in this.triviaPlayers) {
+        if (this.triviaPlayers[id].playing === true) {
+            totalPlayers++;
         }
+    }
+    if (answeredCorrectly.length !== 0) {
         var pointAdd = +(1.65 * Math.log(totalPlayers / answeredCorrectly.length) + 1).toFixed(0);
         this.sendAll("Points awarded for this question: " + pointAdd);
         for (var i = 0; i < answeredCorrectly.length; i++) {
@@ -534,6 +538,18 @@ TriviaGame.prototype.finalizeAnswers = function () {
         displayboard.push(leaderboard[x][0] + " (" + leaderboard[x][1] + ")");
     }
     this.sendAll("Leaderboard: " + displayboard.join(", "), triviachan);
+    if (totalPlayers < 2) {
+        this.inactivity++;
+    }
+    else {
+        this.inactivity = 0;
+    }
+    if (this.inactivity === 4) {
+        this.htmlAll("The game automatically ended due to a lack of players.");
+        this.resetTrivia();
+        runUpdate();
+        return;
+    }
 
     if (winners.length > 0) {
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
@@ -560,12 +576,12 @@ TriviaGame.prototype.finalizeAnswers = function () {
         }
         this.resetTrivia();
         runUpdate();
-        if (this.autostart === true) {
+/*        if (this.autostart === true) {
             this.phase = "autostart";
             this.ticks = sys.rand(30, 44);
             Trivia.sendAll("A new trivia game will be started in " + this.ticks + " seconds!", triviachan);
             return;
-        }
+        }*/
         return;
     }
     if (this.qSource.length === 0) {
@@ -592,6 +608,7 @@ TriviaGame.prototype.resetTrivia = function () {
     this.phase = "";
     this.ticks = -1;
     this.suggestion = {};
+    this.inactivity = {};
 };
 
 TriviaGame.prototype.key = function (src) {
@@ -718,11 +735,11 @@ TriviaGame.prototype.phaseHandler = function () {
         this.finalizeAnswers();
     } else if (this.phase === "standby") {
         this.startTriviaRound();
-    } else if (this.phase === "autostart") {
+    }/* else if (this.phase === "autostart") {
         var startRange = trivData.autostartRange;
         var pointsForGame = sys.rand(startRange.min, parseInt(startRange.max, 10) + 1);
         this.startGame(pointsForGame.toString(), "");
-    } else { //game probably stopped or error, so stopping repeated attempts
+    }*/ else { //game probably stopped or error, so stopping repeated attempts
         this.ticks = -1;
     }
 };
@@ -977,7 +994,7 @@ addUserCommand("triviarules", function (src, commandData, channel) {
     sys.sendMessage(src, "1. #Trivia is an official channel, and as such, server rules apply in it:", channel);
     sys.sendMessage(src, "- This means that every offense, whether in chat or in answers, will be handled by a moderator.", channel);
     sys.sendMessage(src, "2. Do not abuse Trivia commands or hamper game progression:", channel);
-    sys.sendMessage(src, "- This includes, but is not limited to, joining and unjoining a game repeatedly, joining a game just to answer a single question then immediately leaving multiple times, purposefully getting answers wrong in order to prolong a game from ending.", channel);
+    sys.sendMessage(src, "- This includes, but is not limited to, joining and unjoining a game repeatedly, joining a game just to answer a single question then immediately leaving multiple times, purposefully getting answers wrong in order to prolong a game from ending, starting games with unreasonable goals or starting them many tims in a row when they're stopped due to a lack of players.", channel);
     sys.sendMessage(src, "3. Have good sportsmanship:", channel);
     sys.sendMessage(src, "- Trivia is a game for all to enjoy, and bad sportsmanship can turn that into a less pleasant experience for everyone involved. Do not brag when you get a question right, and do not be a sore loser when you get it wrong. Any form of cheating isn't allowed, whether by gaining an unfair advantage for yourself, or hampering someone else's ability to answer.", channel);
     sys.sendMessage(src, "4. Do not abuse question submission:", channel);
@@ -1183,9 +1200,9 @@ addServerOwnerCommand(["triviasuperadminoff", "striviasuperadminoff"], function 
     Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Super Trivia Admin.", sachannel);
 }, "Allows you to demote a current trivia super admin, use /striviasuperadminoff for a silent demotion.");
 
-addAdminCommand("start", function (src, commandData) {
+addUserCommand("start", function (src, commandData) {
     Trivia.startTrivia(src, commandData);
-}, "Allows you to start a trivia game, format /start [number][*category1][*category2][...] leave number blank for random.");
+}, "Allows you to start a trivia game, format /start [number][*category1][*category2][...] leave number blank for random. Only Trivia Admins may start Category Games");
 
 addUserCommand("lastcat", function (src, commandData, channel) {
     if (lastCatGame === 0) {
@@ -1241,7 +1258,7 @@ addAdminCommand("say", function (src, commandData, channel) {
 
 addOwnerCommand("updateafter", function (src, commandData, channel) {
     triviabot.sendMessage(src, "Trivia will update after the game", channel);
-    Trivia.autostart = false;
+//    Trivia.autostart = false;
     Trivia.needsUpdating = true;
     if (Trivia.started === false) {
         runUpdate();
@@ -1820,23 +1837,14 @@ addAdminCommand("triviamutes", function (src, commandData, channel) {
     showTrivia(src, channel, "mutes");
 }, "View trivia mutes.");
 
-addAdminCommand("autostart", function (src, commandData, channel) {
+addAdminCommand("startrange", function (src, commandData, channel) {
     if (commandData === "") {
-        triviabot.sendMessage(src, "Autostart is currently " + (Trivia.autostart ? "on" : "off") + " with range " + trivData.autostartRange.min + "-" + trivData.autostartRange.max + ".", channel);
-        return;
-    }
-    if (commandData.toLowerCase() === "on" || commandData.toLowerCase() === "off") {
-        if (Trivia.autostart === (commandData.toLowerCase() === "on")) {
-            triviabot.sendMessage(src, "Autostart is already " + (Trivia.autostart ? "on" : "off") + "!", channel);
-            return;
-        }
-        Trivia.autostart = !Trivia.autostart;
-        triviabot.sendAll(nonFlashing(sys.name(src)) + " turned autostart " + (Trivia.autostart ? "on" : "off") + ".", revchan);
+        triviabot.sendMessage(src, "The current start range is " + trivData.autostartRange.min + "-" + trivData.autostartRange.max + ".", channel);
         return;
     }
     var data = commandData.split("-");
     if (data.length != 2) {
-        triviabot.sendMessage(src, "That's not how this command works. To change autostart range, use /autostart min-max. To turn autostart on or off, use /autostart on/off.", channel);
+        triviabot.sendMessage(src, "That's not how this command works. To change the start range, use /startrange min-max.", channel);
         return;
     }
     if (isNaN(data[0]) || isNaN(data[1])) {
@@ -1846,8 +1854,8 @@ addAdminCommand("autostart", function (src, commandData, channel) {
     trivData.autostartRange.min = data[0];
     trivData.autostartRange.max = data[1];
     saveData();
-    triviabot.sendAll(nonFlashing(sys.name(src)) + " changed the autostart range to " + data[0] + "-" + data[1] + ".", revchan);
-}, "Checks whether autostart is turned on or off, the range of it, and lets you change both. Use /autostart on/off and /autostart min-max.");
+    triviabot.sendAll(nonFlashing(sys.name(src)) + " changed the start range to " + data[0] + "-" + data[1] + ".", revchan);
+}, "Checks the start range, and lets you modify it. Use /startrange min-max to change it.");
 
 addAdminCommand("passta", function (src, commandData, channel) {
     var oldname = sys.name(src).toLowerCase();
