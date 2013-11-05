@@ -3507,10 +3507,10 @@ function Mafia(mafiachan) {
     };
     // Auth commands
     this.isMafiaAdmin = function (src) {
-        return sys.auth(src) >= 1 || mafia.isMafiaSuperAdmin(src) || script.mafiaAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
+        return sys.auth(src) >= 1 || mafia.isMafiaSuperAdmin(src) || script.mafiaAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase());
     };
     this.isMafiaSuperAdmin = function (src) {
-        return (sys.auth(src) >= 3 || script.mafiaSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
+        return (sys.auth(src) >= 3 || script.mafiaSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase()));
     };
     
     this.slayUser = function (src, name, delayed) {
