@@ -870,8 +870,8 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         else {
             banbot = normalbot;
         }
-        var verb = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted", "hmute": "hangman muted"}[type];
-        var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "hmute": "hangman mute"}[type];
+        var verb = {"mute": "muted", "mban": "banned from mafia", "smute": "secretly muted", "hmute": "banned from hangman"}[type];
+        var nomi = {"mute": "mute", "mban": "ban from mafia", "smute": "secret mute", "hmute": "ban from hangman"}[type];
         var sendAll =  {
             "smute": function(line) {
                 sys.dbAuths().map(sys.id).filter(function(uid) { return uid !== undefined; }).forEach(function(uid) {
@@ -2392,6 +2392,6 @@ hasAuthElements: function (array) {
 },
 
 hasDreamWorldAbility: function (pokemon, ability) {
-    return sys.pokeAbility(pokemon, 2) === ability && sys.pokeAbility(pokemon, 0) !== sys.pokeAbility(pokemon, 2) && sys.pokeAbility(pokemon, 1) !== sys.pokeAbility(pokemon, 2);    
+    return sys.pokeAbility(pokemon, 2) === ability && sys.pokeAbility(pokemon, 0) !== sys.pokeAbility(pokemon, 2) && sys.pokeAbility(pokemon, 1) !== sys.pokeAbility(pokemon, 2);
 }
 });

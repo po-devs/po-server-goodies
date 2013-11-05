@@ -929,6 +929,11 @@ module.exports = function () {
             }
         }
     };
+    this.onHban = function (src) {
+        if (sys.isInChannel(src, hangchan)) {
+            sys.kick(src, hangchan);
+        }
+    };
     
     function toCorrectCase(name) {
         if (isNaN(name) && sys.id(name) !== undefined) {
@@ -944,6 +949,7 @@ module.exports = function () {
         beforeChannelJoin: hangman.beforeChannelJoin,
         afterChannelJoin: hangman.afterChannelJoin,
         beforeChatMessage: hangman.beforeChatMessage,
+        onHban: hangman.onHban,
         onHelp: hangman.onHelp
     };
 }();
