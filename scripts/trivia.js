@@ -376,7 +376,7 @@ TriviaGame.prototype.startTrivia = function (src, data) {
         return;
     }*/
     data = data.split("*");
-    if (!(tadmin.isTAdmin(src) || tsadmin.isTAdmin(src) || sys.auth(src) > 0)) {
+    if (!(tadmin.isTAdmin(sys.name(src)) || tsadmin.isTAdmin(sys.name(src)) || sys.auth(src) > 0)) {
         data = [data[0]];
     }
     var rand = parseInt(data[0], 10);
