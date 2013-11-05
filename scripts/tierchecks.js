@@ -272,7 +272,7 @@ tier_checker.add_new_check(INCLUDING, ["BW2 UU", "BW2 LU", "BW2 NU", "BW2 NEU"],
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["BW2 OU", "No Preview OU", "Monotype"], function sandVeilCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["BW2 OU", "No Preview OU"], function sandVeilCheck(src, team, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Sand Veil"){
             return ["Sand Veil is not allowed in " + tier + "."];
@@ -280,7 +280,7 @@ tier_checker.add_new_check(INCLUDING, ["BW2 OU", "No Preview OU", "Monotype"], f
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["BW2 OU", "No Preview OU", "Monotype"], function snowCloakCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["BW2 OU", "No Preview OU"], function snowCloakCheck(src, team, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Snow Cloak"){
             return ["Snow Cloak is not allowed in " + tier + "."];
