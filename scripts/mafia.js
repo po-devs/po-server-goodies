@@ -384,7 +384,7 @@ function Mafia(mafiachan) {
             if (Object.prototype.toString.call(theme.variables) === '[object Object]') {
                 // Iterate over the entire theme, parsing variable:(name) strings.
                 for (i in plain_theme) {
-                    prop = plain_theme[i];
+                    var prop = plain_theme[i];
                     assignVariable(plain_theme, i, prop, theme.variables);
                 }
             }
@@ -528,7 +528,6 @@ function Mafia(mafiachan) {
             } catch (err) {
                 msgAll("Couldn't download theme from " + url);
                 msgAll("" + err);
-                return;
             }
         });
     };
@@ -854,7 +853,7 @@ function Mafia(mafiachan) {
                     } else if (typeof roleplayers === "number") { // players: 30 -> 30 Players
                         playerCount = roleplayers + " Players";
                     } else if (typeof roleplayers === "array") { // players: [20, 30] -> 20-30 Players
-                        playerCount = rolePlayers.join("-") + " Players";
+                        playerCount = roleplayers.join("-") + " Players";
                     } else {
                         for (var i = 1; i <= this.roleLists; ++i) {
                             role_i = "roles" + i;
@@ -2974,11 +2973,11 @@ function Mafia(mafiachan) {
             if (!nightkill) {
                 sendChanAll("No one died! :", mafiachan);
             }
-            this.runusersToSlay();
-            this.runusersToSlayMsg();
+            mafia.runusersToSlay();
+            mafia.runusersToSlayMsg();
             mafia.usersToSlay = {};
-            this.reduceRecharges();
-            this.onDeadRoles();
+            mafia.reduceRecharges();
+            mafia.onDeadRoles();
             if (mafia.testWin()) {
                 return;
             }
@@ -3032,8 +3031,8 @@ function Mafia(mafiachan) {
             if (Object.keys(mafia.usersToSlay).length !== 0) {
                 sendChanAll(border, mafiachan);
             }
-            this.runusersToSlay();
-            this.runusersToSlayMsg();
+            mafia.runusersToSlay();
+            mafia.runusersToSlayMsg();
             mafia.usersToSlay = {};
             if (mafia.testWin()) {
                 return;
@@ -3047,7 +3046,7 @@ function Mafia(mafiachan) {
             var p, r, role, side, check,
                 themecs = mafia.theme.closedSetup != null;
             for (p in mafia.players) {
-                player = mafia.players[p];
+                var player = mafia.players[p];
                 role = player.role;
                 side = role.side;
                 check = false;
@@ -3150,8 +3149,8 @@ function Mafia(mafiachan) {
 
             if (tie) {
                 sendChanAll("No one was voted off! :", mafiachan);
-                this.runusersToSlay();
-                this.runusersToSlayMsg();
+                mafia.runusersToSlay();
+                mafia.runusersToSlayMsg();
                 mafia.usersToSlay = {};
                 if (mafia.testWin()) {
                     return;
@@ -3330,10 +3329,10 @@ function Mafia(mafiachan) {
                     mafia.removePlayer(mafia.players[downed]);
                 }
                 
-                this.runusersToSlay();
-                this.runusersToSlayMsg();
+                mafia.runusersToSlay();
+                mafia.runusersToSlayMsg();
                 mafia.usersToSlay = {};
-                this.onDeadRoles();
+                mafia.onDeadRoles();
                 if (mafia.testWin()) {
                     return;
                 }
@@ -3378,7 +3377,7 @@ function Mafia(mafiachan) {
             sendChanAll("±Time: Night " + mafia.time.nights, mafiachan);
             sendChanAll("Make your moves, you only have " + mafia.ticks + " seconds! :", mafiachan);
             sendChanAll(border, mafiachan);
-            this.runusersToSlayMsg();
+            mafia.runusersToSlayMsg();
             mafia.usersToSlay = {};
             mafia.resetTargets();
         },
@@ -3508,16 +3507,10 @@ function Mafia(mafiachan) {
     };
     // Auth commands
     this.isMafiaAdmin = function (src) {
-        if (sys.auth(src) >= 1 || mafia.isMafiaSuperAdmin(src) || script.mafiaAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
-            return true;
-        }
-        return false;
+        return sys.auth(src) >= 1 || mafia.isMafiaSuperAdmin(src) || script.mafiaAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
     };
     this.isMafiaSuperAdmin = function (src) {
-        if (sys.auth(src) >= 3 || script.mafiaSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
-            return true;
-        }
-        return false;
+        return (sys.auth(src) >= 3 || script.mafiaSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase())) {
     };
     
     this.slayUser = function (src, name, delayed) {
@@ -3566,7 +3559,6 @@ function Mafia(mafiachan) {
                 slayer = mafia.usersToSlay[name][0];
             this.slayUser(slayer, name, true);
         }
-        return;
     };
     
     this.runusersToSlayMsg = function () {
@@ -3576,7 +3568,6 @@ function Mafia(mafiachan) {
                 role = mafia.usersToSlay[name][1];
             mafia.slayUserMsg(slayer, name, role);
         }
-        return;
     };
 
     this.shoveUser = function (src, name, silent) {
@@ -3598,12 +3589,9 @@ function Mafia(mafiachan) {
             }
             this.usersToShove[name] = shover;
             msg(src, "Your target " + name + " will be shoved if they attempt to join!");
-            return;
         } else {
             msg(src, "A game is currently in progress. Use /slay to remove the player.");
-            return;
         }
-        msg(src, "No such target.");
     };
     
     this.checkLink = function (url) {
@@ -3637,7 +3625,6 @@ function Mafia(mafiachan) {
             sendChanAll("Updating Mafia Script...", mafiachan);
             mafia.needsUpdating = false;
         }
-        return;
     }
 
     this.commands = {
@@ -4829,10 +4816,8 @@ function Mafia(mafiachan) {
                     if (user.mafiathemes.indexOf(themeName) != -1) {
                         user.mafiathemes.splice(user.mafiathemes.indexOf(themeName), 1);
                         themesRemoved.push(themeName);
-                        continue;
                     } else {
                         themesNotRemoved.push(themeName);
-                        continue;
                     }
                 }
                 if (themesRemoved.length > 0) {
@@ -5135,7 +5120,7 @@ function Mafia(mafiachan) {
             if (this.isMafiaSuperAdmin(src)) {
                 script.mafiaSuperAdmins.remove(oldname);
                 script.mafiaSuperAdmins.add(newname, "");
-                sMA = true,
+                sMA = true;
             } else {
                 script.mafiaAdmins.remove(oldname);
                 script.mafiaAdmins.add(newname, "");
