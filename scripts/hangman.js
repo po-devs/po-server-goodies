@@ -929,7 +929,7 @@ module.exports = function () {
             }
         }
     };
-    this.onHban = function (src) {
+    this.onHmute = function (src) {
         if (sys.isInChannel(src, hangchan)) {
             sys.kick(src, hangchan);
         }
@@ -949,7 +949,7 @@ module.exports = function () {
         beforeChannelJoin: hangman.beforeChannelJoin,
         afterChannelJoin: hangman.afterChannelJoin,
         beforeChatMessage: hangman.beforeChatMessage,
-        onHban: hangman.onHban,
+        onHmute: hangman.onHmute,
         onHelp: hangman.onHelp
     };
 }();
