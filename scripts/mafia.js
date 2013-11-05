@@ -3029,7 +3029,7 @@ function Mafia(mafiachan) {
             
             this.compilePhaseStalk("STANDBY PHASE " + mafia.time.days);
             
-            if (mafia.usersToSlay !== {}) {
+            if (Object.keys(mafia.usersToSlay).length !== 0) {
                 sendChanAll(border, mafiachan);
             }
             this.runusersToSlay();
