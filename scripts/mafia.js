@@ -519,7 +519,7 @@ function Mafia(mafiachan) {
                 manager.themes[lower] = theme;
                 manager.save(theme.name, url, resp, update);
                 if (announce) {
-                    msgAll(sys.name(src) + (isNew ? " added " : " updated ") + "theme " + theme.name + ".");
+                    msgAll(sys.name(src) + (isNew ? " added " : " updated ") + "the theme " + theme.name + ".");
                 }
                 if (needsDisable) {
                     msg(src, "This theme was previously disabled. Speak to a Mafia Admin to request enabling.");
@@ -1974,9 +1974,6 @@ function Mafia(mafiachan) {
     };
     this.testWin = function (slay) {
         if (Object.keys(mafia.players).length === 0) {
-            if (slay) {
-                sendChanAll(border, mafiachan);
-            }
             sendChanAll("±Game: " + (mafia.theme.drawmsg ? mafia.theme.drawmsg : "Everybody died! This is why we can't have nice things :("), mafiachan);
             sendChanAll(border, mafiachan);
             
@@ -2974,13 +2971,14 @@ function Mafia(mafiachan) {
                     }
                 }
             }
-            this.reduceRecharges();
-            this.onDeadRoles();
-
             if (!nightkill) {
                 sendChanAll("No one died! :", mafiachan);
             }
-
+            this.runusersToSlay();
+            this.runusersToSlayMsg();
+            mafia.usersToSlay = {};
+            this.reduceRecharges();
+            this.onDeadRoles();
             if (mafia.testWin()) {
                 return;
             }
@@ -2998,9 +2996,7 @@ function Mafia(mafiachan) {
                     mafia.ticks = 1;
                 }
             }
-
             sendChanAll(border, mafiachan);
-            this.runusersToSlay();
             sendChanAll("±Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
             sendChanAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
             if (mafia.theme.closedSetup !== true) {
@@ -3027,15 +3023,22 @@ function Mafia(mafiachan) {
                 }
             }
             sendChanAll(border, mafiachan);
-            this.runusersToSlayMsg();
         },
         standby: function () {
             mafia.ticks = 30;
             
             this.compilePhaseStalk("STANDBY PHASE " + mafia.time.days);
-
-            sendChanAll(border, mafiachan);
+            
+            if (Object.keys(mafia.usersToSlay).length !== 0) {
+                sendChanAll(border, mafiachan);
+            }
             this.runusersToSlay();
+            this.runusersToSlayMsg();
+            mafia.usersToSlay = {};
+            if (mafia.testWin()) {
+                return;
+            }
+            sendChanAll(border, mafiachan);
             sendChanAll("±Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
             sendChanAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
             
@@ -3077,7 +3080,6 @@ function Mafia(mafiachan) {
                 sendChanAll("±Time: Day " + mafia.time.days, mafiachan);
                 sendChanAll("It's time to vote someone off, type /Vote [name], you only have " + mafia.ticks + " seconds! :", mafiachan);
                 sendChanAll(border, mafiachan);
-                this.runusersToSlayMsg();
                 
                 mafia.state = "day";
                 mafia.votes = {};
@@ -3095,7 +3097,6 @@ function Mafia(mafiachan) {
                 sendChanAll("±Time: Night " + mafia.time.nights, mafiachan);
                 sendChanAll("Make your moves, you only have " + mafia.ticks + " seconds! :", mafiachan);
                 sendChanAll(border, mafiachan);
-                this.runusersToSlayMsg();
                 mafia.resetTargets();
             }
         },
@@ -3149,6 +3150,12 @@ function Mafia(mafiachan) {
 
             if (tie) {
                 sendChanAll("No one was voted off! :", mafiachan);
+                this.runusersToSlay();
+                this.runusersToSlayMsg();
+                mafia.usersToSlay = {};
+                if (mafia.testWin()) {
+                    return;
+                }
                 sendChanAll(border, mafiachan);
             } else {
                 var lynched = mafia.players[downed];
@@ -3323,12 +3330,16 @@ function Mafia(mafiachan) {
                     mafia.removePlayer(mafia.players[downed]);
                 }
                 
+                this.runusersToSlay();
+                this.runusersToSlayMsg();
+                mafia.usersToSlay = {};
                 this.onDeadRoles();
-                
-                if (mafia.testWin())
+                if (mafia.testWin()) {
                     return;
+                }
+                sendChanAll(border, mafiachan);
             }
-            this.runusersToSlay();
+            
             sendChanAll("±Current Roles: " + mafia.getCurrentRoles() + ".", mafiachan);
             sendChanAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
 
@@ -3368,6 +3379,7 @@ function Mafia(mafiachan) {
             sendChanAll("Make your moves, you only have " + mafia.ticks + " seconds! :", mafiachan);
             sendChanAll(border, mafiachan);
             this.runusersToSlayMsg();
+            mafia.usersToSlay = {};
             mafia.resetTargets();
         },
         voting: function () {
@@ -3526,9 +3538,6 @@ function Mafia(mafiachan) {
                 }
                 this.removePlayer(player);
                 this.onDeadRoles();
-                if (this.testWin(true)) {
-                    return;
-                }
             }
             return;
         }
@@ -3557,6 +3566,7 @@ function Mafia(mafiachan) {
                 slayer = mafia.usersToSlay[name][0];
             this.slayUser(slayer, name, true);
         }
+        return;
     };
     
     this.runusersToSlayMsg = function () {
@@ -3566,7 +3576,7 @@ function Mafia(mafiachan) {
                 role = mafia.usersToSlay[name][1];
             mafia.slayUserMsg(slayer, name, role);
         }
-        mafia.usersToSlay = {};
+        return;
     };
 
     this.shoveUser = function (src, name, silent) {
@@ -5349,39 +5359,44 @@ function Mafia(mafiachan) {
 
     // we can always slay them :3
     this.onMute = function (src) {
+        var id = sys.name(src);
         if (this.state == "entry" || this.state == "voting") {
-            this.shoveUser(Config.capsbot, sys.name(src), false);
-        } else if (this.isInGame(src)) {
-            this.slayUser(Config.capsbot, src, false);
-        }
-    };
-    
-    this.onBan = function (src, dest) {
-        if (this.state == "entry" || this.state == "voting") {
-            this.shoveUser(Config.capsbot, sys.name(dest), false);
-        } else if (this.isInGame(dest)) {
-            this.slayUser(Config.capsbot, dest, false);
+            this.shoveUser("Murkrow", id, false);
+        } else if (this.isInGame(id)) {
+            this.slayUser("Murkrow", id, false);
         }
     };
     
     this.onMban = function (src) {
+        var id = sys.name(src);
         if (this.state == "entry" || this.state == "voting") {
-            this.shoveUser(Config.capsbot, sys.name(src), false);
-        } else if (this.isInGame(src)) {
-            this.slayUser(Config.capsbot, src, false);
+            this.shoveUser("Murkrow", id, false);
+        } else if (this.isInGame(id)) {
+            this.slayUser("Murkrow", id, false);
         }
         if (sys.isInChannel(src, mafiachan)) {
             sys.kick(src, mafiachan);
         }
     };
-
-    this.onKick = function (src) {
+    
+    //Only for Control panel bans
+    this.onBan = function (src, dest) {
+        var dest = sys.name(dest);
         if (this.state == "entry" || this.state == "voting") {
-            this.shoveUser(Config.capsbot, sys.name(src), false);
-        } else if (this.isInGame(src)) {
-            this.slayUser(Config.capsbot, src, false);
+            this.shoveUser("Murkrow", dest, false);
+        } else if (this.isInGame(dest)) {
+            this.slayUser("Murkrow", dest, false);
         }
     };
+    
+    /*Not sure what this is for, onMute is called for Blaziken.. Whatever it is, I can't test if it works or not.
+    this.onKick = function (src) {
+        if (this.state == "entry" || this.state == "voting") {
+            this.shoveUser("Blaziken", src, false);
+        } else if (this.isInGame(src)) {
+            this.slayUser("Blaziken", src, false);
+        }
+    };*/
 
     this.stepEvent = function () {
         try {
@@ -5430,7 +5445,7 @@ function Mafia(mafiachan) {
 /* Functions defined by mafia which should be called from main script:
 * - init
 * - stepEvent
-* - onKick, onMute, onMban
+* - onKick, onMute, onMban, onBan
 * - beforeChatMessage
 * - handleCommand
 * - onHelp
