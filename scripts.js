@@ -497,32 +497,6 @@ function getBerryType (berryId) {
     return berryTypeList[berryId];
 }
 
-function getAllMoves (pokeId) {
-    if (allMovesList === undefined) {
-        allMovesList = {};
-        var data = sys.getFileContent('db/pokes/6G/all_moves.txt').split('\n');
-        for (var i = 0; i < data.length; i++) {
-            var index = data[i].indexOf(" ");
-            var key = data[i].substr(0, index);
-            var allMoves = data[i].substr(index + 1).split(" ");
-            allMovesList[key] = allMoves;
-        }
-    }
-    return allMovesList[getDBIndex(pokeId)];
-}
-
-function getNatureEffect (nature) {
-    nature = nature.toLowerCase();
-    for (var x = 0; x < 5; x++) {
-        for (var y = 0; y < 5; y++) {
-            if (natures[x][y].toLowerCase() === nature) {
-                return [x, y];
-            }
-        }
-    }
-    return;
-}
-
 function updateNotice() {
     var url = Config.base_url + "notice.html";
     sys.webCall(url, function (resp){
@@ -2424,5 +2398,31 @@ hasAuthElements: function (array) {
 
 hasDreamWorldAbility: function (pokemon, ability) {
     return sys.pokeAbility(pokemon, 2) === ability && sys.pokeAbility(pokemon, 0) !== sys.pokeAbility(pokemon, 2) && sys.pokeAbility(pokemon, 1) !== sys.pokeAbility(pokemon, 2);
+},
+
+getAllMoves: function (pokeId) {
+    if (allMovesList === undefined) {
+        allMovesList = {};
+        var data = sys.getFileContent('db/pokes/6G/all_moves.txt').split('\n');
+        for (var i = 0; i < data.length; i++) {
+            var index = data[i].indexOf(" ");
+            var key = data[i].substr(0, index);
+            var allMoves = data[i].substr(index + 1).split(" ");
+            allMovesList[key] = allMoves;
+        }
+    }
+    return allMovesList[getDBIndex(pokeId)];
+},
+
+getNatureEffect: function (nature) {
+    nature = nature.toLowerCase();
+    for (var x = 0; x < 5; x++) {
+        for (var y = 0; y < 5; y++) {
+            if (natures[x][y].toLowerCase() === nature) {
+                return [x, y];
+            }
+        }
+    }
+    return;
 }
 });
