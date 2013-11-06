@@ -683,9 +683,9 @@ init : function() {
         else if (script.hapokemons[num] === true)
             sys.sendAll("Script Check:  hapokemons contains '" +halist[dwpok]+"' multiple times.", announceChan);
         else {
-            script.hapokemons[sys.pokeNum(halist[dwpok])] = true;
+            script.hapokemons[num] = true;
             if (dwlist.indexOf(halist[dwpok]) > -1) {
-                dwpokemons[sys.pokeNum(halist[dwpok])] = true;
+                dwpokemons[num] = true;
             }
         }
     }
