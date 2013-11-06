@@ -813,7 +813,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.stopEvent();
         if (commandData) {
             var stats = ["Attack", "Defense", "Special Attack", "Special Defense", "Speed"];
-            var effect = getNatureEffect(commandData);
+            var effect = script.getNatureEffect(commandData);
             var nature = natures[effect[0]][effect[1]];
             if (!nature) {
                 normalbot.sendMessage(src, commandData + " is not a valid nature!", channel);
@@ -862,7 +862,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, commandData[1] + " is not a valid move!", channel);
             return;
         }
-        var allMoves = getAllMoves(pokeId);
+        var allMoves = script.getAllMoves(pokeId);
         var canLearn = (allMoves.indexOf(moveId) != -1);
         normalbot.sendMessage(src, sys.pokemon(pokeId) + " " + (canLearn ? "can" : "can't") + " learn " + sys.move(moveId) + ".", channel);
         return;
