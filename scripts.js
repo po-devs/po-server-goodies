@@ -118,7 +118,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, contributors, mutes, mbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, hapokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList, powerList, accList, ppList, categoryList, moveEffList, moveFlagList, abilityList, itemList, berryList, flingPowerList, berryPowerList, berryTypeList, namesToWatch;
+var channel, contributors, mutes, mbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, hapokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList, powerList, accList, ppList, categoryList, moveEffList, moveFlagList, abilityList, itemList, berryList, flingPowerList, berryPowerList, berryTypeList, allMovesList, namesToWatch;
 
 var pokeDir = "db/pokes/";
 var moveDir = "db/moves/6G/";
@@ -2396,5 +2396,37 @@ hasAuthElements: function (array) {
 
 hasDreamWorldAbility: function (pokemon, ability) {
     return sys.pokeAbility(pokemon, 2) === ability && sys.pokeAbility(pokemon, 0) !== sys.pokeAbility(pokemon, 2) && sys.pokeAbility(pokemon, 1) !== sys.pokeAbility(pokemon, 2);
+},
+
+getAllMoves: function (pokeId) {
+    if (allMovesList === undefined) {
+        allMovesList = {};
+        var data = sys.getFileContent('db/pokes/6G/all_moves.txt').split('\n');
+        for (var i = 0; i < data.length; i++) {
+            var index = data[i].indexOf(" ");
+            var key = data[i].substr(0, index);
+            var allMoves = data[i].substr(index + 1).split(" ");
+            allMovesList[key] = allMoves;
+        }
+    }
+    return allMovesList[getDBIndex(pokeId)];
+},
+
+natures: [["Hardy", "Lonely", "Adamant", "Naughty", "Brave"],
+	["Bold", "Docile", "Impish", "Lax", "Relaxed"],
+	["Modest", "Mild", "Bashful", "Rash", "Quiet"],
+	["Calm", "Gentle", "Careful", "Quirky", "Sassy"],
+	["Timid", "Hasty", "Jolly", "Naive", "Serious"]],
+
+getNatureEffect: function (nature) {
+    nature = nature.toLowerCase();
+    for (var x = 0; x < 5; x++) {
+        for (var y = 0; y < 5; y++) {
+            if (this.natures[x][y].toLowerCase() === nature) {
+                return [x, y];
+            }
+        }
+    }
+    return;
 }
 });

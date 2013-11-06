@@ -744,16 +744,16 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var accuracy = getMoveAccuracy(moveId);
         var PP = getMovePP(moveId);
         var contact = (getMoveContact(moveId) ? "Yes" : "No");
-        sys.sendHtmlMessage(src, "", channel, true);
-        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.move(moveId) + "</font></b>", channel, true);
+        sys.sendHtmlMessage(src, "", channel);
+        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.move(moveId) + "</font></b>", channel);
         var table = "<table border = 1 cellpadding = 2>";
         table += "<tr><th>Type</th><th>Category</th><th>Power</th><th>Accuracy</th><th>PP (Max)</th><th>Contact</th></tr>";
         table += "<tr><td><center>" + type + "</center></td><td><center>" + category + "</center></td><td><center>" + BP + "</center></td><td><center>" + accuracy + "</center></td><td><center>" + PP + " (" + PP * 8/5 + ")</center></td><td><center>" + contact + "</center></td></tr>";
         table += "</table>";
-        sys.sendHtmlMessage(src, table, channel, true);
-        sys.sendHtmlMessage(src, "", channel, true);
-        sys.sendHtmlMessage(src, "<b>Effect:</b> " + getMoveEffect(moveId), channel, true);
-        sys.sendHtmlMessage(src, "", channel, true);
+        sys.sendHtmlMessage(src, table, channel);
+        sys.sendHtmlMessage(src, "", channel);
+        sys.sendHtmlMessage(src, "<b>Effect:</b> " + getMoveEffect(moveId), channel);
+        sys.sendHtmlMessage(src, "", channel);
         return;
     }
     if (command === "ability") {
@@ -767,10 +767,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, commandData + " is not a valid ability!", channel);
             return;
         }
-        sys.sendHtmlMessage(src, "", channel, true);
-        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.ability(abilityId) + "</font></b>", channel, true);
-        sys.sendHtmlMessage(src, "<b>Effect:</b> " + getAbility(abilityId), channel, true);
-        sys.sendHtmlMessage(src, "", channel, true);
+        sys.sendHtmlMessage(src, "", channel);
+        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.ability(abilityId) + "</font></b>", channel);
+        sys.sendHtmlMessage(src, "<b>Effect:</b> " + getAbility(abilityId), channel);
+        sys.sendHtmlMessage(src, "", channel);
         return;
     }
     if (command === "item") {
@@ -791,23 +791,81 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (itemId >= 9000 || itemId === 1000 || itemId === 1001 || itemId === 304) {
             isGSC = true;
         }
-        sys.sendHtmlMessage(src, "", channel, true);
-        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.item(itemId) + "</font></b>", channel, true);
+        sys.sendHtmlMessage(src, "", channel);
+        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.item(itemId) + "</font></b>", channel);
         if (!isGSC) {
-            sys.sendHtmlMessage(src, "<img src=item:" + itemId + ">", channel, true);
+            sys.sendHtmlMessage(src, "<img src=item:" + itemId + ">", channel);
         }
-        sys.sendHtmlMessage(src, "<b>Effect:</b> " + (isBerry ? getBerry(berryId) : getItem(itemId)), channel, true);
+        sys.sendHtmlMessage(src, "<b>Effect:</b> " + (isBerry ? getBerry(berryId) : getItem(itemId)), channel);
         if (!isGSC) {
             if (flingPower != undefined) {
-                sys.sendHtmlMessage(src, "<b>Fling base power:</b> " + flingPower, channel, true);
+                sys.sendHtmlMessage(src, "<b>Fling base power:</b> " + flingPower, channel);
             }
             if (isBerry) {
-                sys.sendHtmlMessage(src, "<b>Natural Gift type:</b> " + getBerryType(berryId), channel, true);
-                sys.sendHtmlMessage(src, "<b>Natural Gift base power:</b> " + getBerryPower(berryId), channel, true);
+                sys.sendHtmlMessage(src, "<b>Natural Gift type:</b> " + getBerryType(berryId), channel);
+                sys.sendHtmlMessage(src, "<b>Natural Gift base power:</b> " + getBerryPower(berryId), channel);
             }
         }
-    sys.sendHtmlMessage(src, "", channel, true);
+    sys.sendHtmlMessage(src, "", channel);
     return;
+    }
+    if (command === "nature" || command === "natures") {
+        sys.stopEvent();
+        if (commandData) {
+            var stats = ["Attack", "Defense", "Special Attack", "Special Defense", "Speed"];
+            var effect = script.getNatureEffect(commandData);
+            var nature = script.natures[effect[0]][effect[1]];
+            if (!nature) {
+                normalbot.sendMessage(src, commandData + " is not a valid nature!", channel);
+                return;
+            }
+            var raised = stats[effect[0]];
+            var lowered = stats[effect[1]];
+            normalbot.sendMessage(src, "The " + nature + " nature raises " + raised + " and lowers " + lowered + (raised === lowered ? ", it's a neutral nature" : "") + ".", channel);
+            return;
+        }
+        var stats = ["Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"];
+        var table = "<table border = 1 cellpadding = 3>";
+        table += "<tr><th rowspan = 2 colspan = 2 valign = middle><font size = 5>Natures</font></th><th colspan = 5 valign = middle><font size = 4>Raises</font></th></tr>";
+        table += "<tr>";
+        for (var i = 0; i < 5; i++) {
+            table += "<th valign = middle>" + stats[i] + "</th>";
+        }
+        table += "</tr>";
+        for (var x = 0; x < 5; x++) {
+            table += "<tr>" + (x === 0 ? "<th valign = middle rowspan = 5><font size = 4>Lowers</font></th>" : "") + "<th>" + stats[x] + "</th>";
+            for (var y = 0; y < 5; y++) {
+                table += "<td><center>" + script.natures[y][x] + "</center></td>";
+            }
+            table += "</tr>";
+        }
+        table += "</table>";
+        sys.sendHtmlMessage(src, table, channel);
+    }
+    if (command === "canlearn") {
+        commandData = commandData.split(":");
+        if (commandData.length != 2) {
+            normalbot.sendMessage(src, "Incorrect syntax! Format for this command is /canlearn Pokemon:move", channel);
+            return;
+        }
+        var pokeId = sys.pokeNum(commandData[0]);
+        var moveId = sys.moveNum(commandData[1]).toString();
+        if (!pokeId) {
+            if (!moveId) {
+                normalbot.sendMessage(src, "Neither the Pokémon nor the move actually exist!", channel);
+                return;
+            }
+            normalbot.sendMessage(src, commandData[0] + " is not a valid Pokémon!", channel);
+            return;
+        }
+        if (!moveId) {
+            normalbot.sendMessage(src, commandData[1] + " is not a valid move!", channel);
+            return;
+        }
+        var allMoves = script.getAllMoves(pokeId);
+        var canLearn = (allMoves.indexOf(moveId) != -1);
+        normalbot.sendMessage(src, sys.pokemon(pokeId) + " " + (canLearn ? "can" : "can't") + " learn " + sys.move(moveId) + ".", channel);
+        return;
     }
     if (command == "wiki"){
         var poke = sys.pokeNum(commandData);
@@ -897,6 +955,8 @@ exports.help =
         "/move [move]: Displays basic information for that move.",
         "/ability [ability]: Displays basic information for that ability.",
         "/item [item]: Displays basic information for that item.",
+        "/nature [nature]: Shows the effects of a nature. Leave blank to show all natures.",
+        "/canlearn: Shows if a Pokémon can learn a certain move. Format is /canlearn [Pokémon]:[move].",
         "/resetpass: Clears your password (unregisters you, remember to reregister).",
         "/auth [owners/admins/mods]: Lists auth of given level, shows all auth if left blank.",
         "/contributors: Lists contributors to Pokémon Online.",
