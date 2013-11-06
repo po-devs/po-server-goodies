@@ -675,6 +675,9 @@ init : function() {
     var dwpok;
     for (dwpok = 0; dwpok < halist.length; dwpok++) {
         var num = sys.pokeNum(halist[dwpok]);
+        if (halist[dwpok] === "Gourgeist-XL" || halist[dwpok] === "Pumpkaboo-XL") { //temporary until pokeNum is fixed
+            num = (halist[dwpok] === "Gourgeist-XL" ? (65536*3)+711 : (65536*3)+710);
+        }
         if (num === undefined)
             sys.sendAll("Script Check: Unknown poke in hapokemons: '" +halist[dwpok]+"'.", announceChan);
         else if (script.hapokemons[num] === true)
