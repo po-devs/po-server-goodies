@@ -841,6 +841,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         table += "</table>";
         sys.sendHtmlMessage(src, table, channel);
+        return;
     }
     if (command === "canlearn") {
         commandData = commandData.split(":");
