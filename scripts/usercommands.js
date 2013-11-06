@@ -814,7 +814,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (commandData) {
             var stats = ["Attack", "Defense", "Special Attack", "Special Defense", "Speed"];
             var effect = script.getNatureEffect(commandData);
-            var nature = natures[effect[0]][effect[1]];
+            var nature = script.natures[effect[0]][effect[1]];
             if (!nature) {
                 normalbot.sendMessage(src, commandData + " is not a valid nature!", channel);
                 return;
@@ -835,7 +835,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         for (var x = 0; x < 5; x++) {
             table += "<tr>" + (x === 0 ? "<th valign = middle rowspan = 5><font size = 4>Lowers</font></th>" : "") + "<th>" + stats[x] + "</th>";
             for (var y = 0; y < 5; y++) {
-                table += "<td><center>" + natures[y][x] + "</center></td>";
+                table += "<td><center>" + script.natures[y][x] + "</center></td>";
             }
             table += "</tr>";
         }
