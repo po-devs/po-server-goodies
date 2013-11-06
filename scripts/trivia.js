@@ -608,7 +608,7 @@ TriviaGame.prototype.resetTrivia = function () {
     this.phase = "";
     this.ticks = -1;
     this.suggestion = {};
-    this.inactivity = {};
+    this.inactivity = 0;
 };
 
 TriviaGame.prototype.key = function (src) {
