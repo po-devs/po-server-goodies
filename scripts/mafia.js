@@ -33,10 +33,12 @@ function Mafia(mafiachan) {
         phaseStalk = {},
         featuredTheme,
         featuredLink,
+        featuredInterval = 60,
         featuredText = "Please read and follow the /mafiarules! Also, be mindful of your caps, flooding, and insulting other users.";
 
-    var DEFAULT_BORDER = "***************************************************************************************";
-    var border;
+    var DEFAULT_BORDER = "***************************************************************************************",
+        GREEN_BORDER = " " + DEFAULT_BORDER + ":",
+        border;
 
     var savePlayedGames = function () {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
@@ -1141,17 +1143,17 @@ function Mafia(mafiachan) {
             adOkay = true;
             
         }
-        if (ftime > this.lastFeaturedAd + 60 * 60) {
+        if (ftime > this.lastFeaturedAd + featuredInterval * 60) {
             this.lastFeaturedAd = ftime;
             if (adOkay || featuredText) {
-                sendChanAll(DEFAULT_BORDER, mafiachan);
+                sendChanAll(GREEN_BORDER, mafiachan);
                 if (adOkay) {
                     sys.sendHtmlAll("<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> Looking for a theme to play? Try out the Featured Theme: <b>" + featured + "</b>!", mafiachan);
                 }
                 if (featuredText) {
                     sys.sendHtmlAll("<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> " + (featuredLink ? '<a href="' + html_escape(featuredLink) + '">' + featuredText + '</a>' : featuredText), mafiachan);
                 }
-                sendChanAll(DEFAULT_BORDER, mafiachan);
+                sendChanAll(GREEN_BORDER, mafiachan);
             }
         }
     };
@@ -3648,7 +3650,7 @@ function Mafia(mafiachan) {
             "/topthemes: To view top themes. Default amount is 10, however other numbers can be used (higher numbers may cause lag)",
             "/windata: To view the win data of a theme",
             "/update: To update a Mafia Theme!",
-            "/featured: To view the currently featured Mafia Theme"],
+            "/featured: To view the currently featured Mafia Theme and Text."],
         ma: ["/slay: To slay users in a Mafia game.",
             "/shove: To remove users before a game starts.",
             "/mafiaban: To ban a user from the Mafia channel, format /mafiaban user:reason:time",
@@ -3672,6 +3674,7 @@ function Mafia(mafiachan) {
             "/featuretheme: To change the currently featured theme (Leave blank to disable Feature Themes)",
             "/featuretext: To set a customizable message that follows the Featured theme (Leave blank to clear).",
             "/featurelink: To change the link used for Featured Theme Text. (Leave blank to clear)",
+            "/featureint: To change how often the \"Featured Theme\" message displays. Time is in minutes between 30 and 240. Leave blank to reset to 60 minutes.",
             "/forcefeature: To force the \"Featured Theme\" message to display."],
         owner: ["/mafiasuperadmin: To promote a user to Super Mafia Admin. Use /smafiasuperadmin for a silent promotion.",
             "/mafiasuperadminoff: To demote a user from Super Mafia Admin. Use /smafiasuperadminoff for a silent demotion."]
@@ -3771,29 +3774,22 @@ function Mafia(mafiachan) {
     this.showRules = function(src, channel) {
         var mrules = [
             "",
-            " Game Rules: ",
-            "±Rules: All server rules apply in this channel. Type /rules to view them.",
-            "±Rules: After you have died, don't discuss the game with anyone else in the game. This is also known as 'deadtalking'.",
-            "±Rules: Do not quote any of the game bots. This includes in private messages.",
-            "±Rules: Do not copy other peoples' names or make your name similar to someone else's.",
-            "±Rules: Make sure you can stay active for the entire game if you join. If you must leave, ask a Mafia Admin for a ''slay'' in the game chat. Leaving without asking for a slay will result in punishment.",
-            "±Rules: If you ask to be removed from a game (slain), do not join the next game. Do not attempt to get yourself killed or go inactive because you don't like your role.",
-            "±Rules: A valid reason must be given for a slay. Being in a tour, not paying attention, not liking your role, and not liking your teammates are not valid reasons.",
-            "±Rules: Do not attempt to get your teammate removed from the game without their consent.",
-            "±Rules: Do not reveal any members of your team for any reason. This includes publicly stating that someone teamvoted or teamkilled.",
-            "±Rules: Do not target a certain user or group of users repeatedly.",
-            "±Rules: Do not stall the game for any reason.",
-            "±Rules: Only team up with players from another team if it is the only way to achieve your team's win condition.",
-            "±Rules: Do not flash multiple people needlessly, including trying to get them to play. If they wish to play, they will join of their own will.",
-            "±Rules: Do not insult themes. If you have a legitimate complaint about a certain theme, post it in that theme's forum thread.",
-            "±Rules: Do not insult players if they make a mistake. Helping them to learn the game instead of insulting them will make the game a lot more enjoyable for all.",
-            "±Rules: If you choose to play on Android, you are not able to use it to justify rule breaking.",
-            "±Rules: Mafia is a game that involves heavy communication. Do not disable private messages (PMs) if you wish to play Mafia, else you may ruin the game for others.",
-            "±Rules: Do not attempt to ruin the game by any other means.",
-            "±Rules: Mafia Admins, or MAs are here for the benefit of the channel. If you are asked to do something by an MA, it is advised you do so.",
-            "±Rules: PM an MA to report an instance of rulebreaking. Shouting out \"BAN\" and \"teamvote!\" and such in the chat is pointless and disrupts the game. You can use /mafiaadmins or /madmins to get a listing of who is an MA.",
-            "±Rules: Just because someone else breaks a rule, it does not justify you breaking the same rule.",
-            "±Rules: Ignorance of the rules does not justify breaking them.",
+            "*** Mafia Game Rules ***",
+            "",
+            "±Rule 1- All server rules apply in this channel. Type /rules to view them:",
+            "Ignorance of the rules does not justify breaking them. Someone else breaking a rule does not justify you breaking the same rule. If you choose to play on Android, you are not able to use it to justify rule breaking.", 
+            "",
+            "±Rule 2- Mafia Admins, or MAs are here for the benefit of the channel. You can use /mas to get a listing of them:",
+            "If you are told something by an MA, it is advised you listen. PM an MA to report an instance of rulebreaking. Shouting out \"BAN\" and \"teamvote!\" and such in the chat is pointless and disrupts the game. If any MA is breaking a rule, contact a Mafia Super Admin or any Server Auth immediately.",
+            "",
+            "±Rule 3- Be respectful to your fellow players:",
+            "Do not insult players if they make a mistake. Helping them to learn the game instead of insulting them will make the game a lot more enjoyable for all. Do not flash multiple people needlessly, including trying to get them to play. Do not insult themes. If you have a legitimate complaint about a certain theme, post it in that theme's forum thread.",
+            "",
+            "±Rule 4- Make sure you can stay active for the entire game if you join, otherwise, /unjoin before the game starts:",
+            "If you must leave, you can ask a Mafia Admin in the chat for a \"slay\" in order to be removed from the game. A valid reason must be supplied with your request. Not liking any part of the game or participating in other channels are not valid reasons. Asking for a slay within the first few phases of the game, or leaving without asking for a slay, will result in punishment.",
+            "",
+            "±Rule 5- Do not attempt to ruin the game in any way, shape, or form:",
+            "Do not reveal, vote, or kill your teammates without their explicit consent. Do not quote any of the game bots, including in private messages. Do not target a certain user or group of users repeatedly. If you are not currently alive in the game, do not discuss the game with anyone still playing. Do not copy other peoples' names or make your name similar to someone else's. Do not disable private messages (PMs) or ignore other players as Mafia is a game of heavy communication. Do not stall the game for any reason. ",
             ""
         ];
         dump(src, mrules, channel);
@@ -4935,11 +4931,14 @@ function Mafia(mafiachan) {
             return;
         }
         if (command == "featured") {
+            sys.sendMessage(src, GREEN_BORDER, mafiachan);
             if (featuredTheme) {
-                msg(src, casedtheme(featuredTheme) + " is currently being featured!");
+                sys.sendHtmlMessage(src, "<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> Looking for a theme to play? Try out the Featured Theme: <b>" + casedtheme(featuredTheme) + "</b>!", mafiachan);
             } else {
                 msg(src, "No theme is currently being featured!");
             }
+            sys.sendHtmlMessage(src, "<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> " + (featuredLink ? '<a href="' + html_escape(featuredLink) + '">' + featuredText + '</a>' : featuredText), mafiachan);
+            sys.sendMessage(src, GREEN_BORDER, mafiachan);
             return;
         }
         if (command == "mafiaadmins" || command == "madmins" || command ===  "mas") {
@@ -5299,6 +5298,23 @@ function Mafia(mafiachan) {
             }
             featuredLink = commandData;
             msg(src, "You updated the Featured Theme text link to: " + featuredLink + ".");
+            return;
+        }
+        if (command === "featureint") {
+            var num = parseInt(commandData, 10);
+            if (!num) {
+                num = 60;
+                sys.sendMessage(src, "±Info: Interval reset to 60 minutes.", channel);
+                return;
+            }
+            if (num < 30) {
+                num = 30;
+                sys.sendMessage(src, "±Info: You cannot set the interval to less than 30 minutes!", channel);
+            } else if (num > 240) {
+                num = 240;
+                sys.sendMessage(src, "±Info: You cannot set the interval to more than 240 minutes!", channel);
+            }
+            sys.sendMessage(src, "±Info: Interval changed to " + num + " minutes.", channel);
             return;
         }
         if (command === "forcefeature") {
