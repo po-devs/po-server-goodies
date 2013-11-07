@@ -128,7 +128,7 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
         for (var i = 0; i < 6; i++) {
             var x = sys.teamPoke(src, team, i);
             if (x !== 0 && script.hasDreamWorldAbility(x, sys.teamPokeAbility(src, team, i))) {
-                if (!(x in script.hapokemons) || (tier == "Pre-PokeBank OU" && pokebank.indexOf(sys.pokemon(x)) !== -1)) {
+                if (!(x in script.hapokemons) || ((tier === "Pre-PokeBank OU" || tier === "Random Battle") && pokebank.indexOf(sys.pokemon(x)) !== -1)) {
                     ret.push("" + sys.pokemon(x) + " is not allowed with Hidden Ability " + sys.ability(sys.teamPokeAbility(src, team, i)) + " in " + tier + " tier. Change it in the teambuilder.");
                 }
             }
@@ -376,7 +376,7 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function hasOneUsablePokem
     return ["You do not have any valid pokemon."];
 });
 
-tier_checker.add_new_check(INCLUDING, ["Pre-PokeBank OU"], function pokeBankCheck(src, team) {
+tier_checker.add_new_check(INCLUDING, ["Pre-PokeBank OU", "Random Battle"], function pokeBankCheck(src, team) {
     var ret = [];
     for (var slot = 0; slot < 6; slot++) {
         var poke = sys.teamPoke(src, team, slot);
