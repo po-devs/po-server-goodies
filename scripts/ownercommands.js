@@ -592,6 +592,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.webCall(updateURL, updateTiers);
         return;
     }
+    if (command == "updategenmoves") {
+        sys.webCall(Config.base_url + Config.dataDir + 'all_gen_moves.txt', function (resp) {
+            sys.writeToFile(Config.dataDir + "all_gen_moves.txt", resp);
+            allGenMovesList = false;
+            normalbot.sendAll("Updated pokebank moves!", staffchannel);
+        });
+        return;
+    }
     if (command == "addplugin") {
         var POglobal = SESSION.global();
         var bind_chan = channel;

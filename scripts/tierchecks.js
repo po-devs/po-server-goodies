@@ -40,7 +40,7 @@ TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent
 
 TierChecker.prototype.find_good_tier = function(src, team) {
     // TODO: write up
-    var testPath = ["BW2 LC", "DW LC", "BW2 LC Ubers", "BW2 NU", "BW2 LU", "BW2 UU", "BW2 OU", "No Preview OU", "BW2 Ubers", "No Preview Ubers", "Battle Factory 6v6", "Challenge Cup"];
+    var testPath = ["XY LC", "XY OU", "XY Ubers", "Pre-PokeBank OU","BW2 LC", "DW LC", "BW2 LC Ubers", "BW2 NU", "BW2 LU", "BW2 UU", "BW2 OU", "No Preview OU", "BW2 Ubers", "No Preview Ubers", "Battle Factory 6v6", "Challenge Cup"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
         if (sys.hasLegalTeamForTier(src, team, testtier) && this.has_legal_team_for_tier(src, team, testtier, true)) {
@@ -373,6 +373,22 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function hasOneUsablePokem
                 if (sys.teamPokeMove(player, team , slot, move) !== 0)
                     return;
     return ["You do not have any valid pokemon."];
+});
+
+tier_checker.add_new_check(INCLUDING, ["Pre-PokeBank OU"], function pokeBankCheck(src, team) {
+    var ret = [];
+    for (var slot = 0; slot < 6; slot++) {
+        var poke = sys.teamPoke(src, team, slot);
+        if (poke) { 
+            var moves = script.getAllGenMoves(poke);
+            for (var move = 0; move < 4; move++) {
+                if (moves.indexOf(sys.teamPokeMove(src, team, slot, move).toString()) === -1) {
+                    ret.push(sys.pokemon(poke) + " cannot have move " + sys.move(sys.teamPokeMove(src, team, slot, move)) + " in this tier");
+                }
+            }
+        }
+    }
+    return ret;
 });
 
 module.exports = tier_checker;
