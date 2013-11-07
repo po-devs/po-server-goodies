@@ -128,7 +128,7 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
         for (var i = 0; i < 6; i++) {
             var x = sys.teamPoke(src, team, i);
             if (x !== 0 && script.hasDreamWorldAbility(x, sys.teamPokeAbility(src, team, i))) {
-                if (!(x in script.hapokemons) || (tier === "Pre-PokeBank OU" && sys.pokemon(x) in pokebank)) {
+                if (!(x in script.hapokemons) && (tier !== "Pre-PokeBank OU" || sys.pokemon(x) in pokebank)) {
                     ret.push("" + sys.pokemon(x) + " is not allowed with Hidden Ability " + sys.ability(sys.teamPokeAbility(src, team, i)) + " in " + tier + " tier. Change it in the teambuilder.");
                 }
             }
@@ -383,8 +383,10 @@ tier_checker.add_new_check(INCLUDING, ["Pre-PokeBank OU"], function pokeBankChec
         if (poke) { 
             var moves = script.getAllGenMoves(poke);
             for (var move = 0; move < 4; move++) {
-                if (moves.indexOf(sys.teamPokeMove(src, team, slot, move).toString()) === -1) {
-                    ret.push(sys.pokemon(poke) + " cannot have move " + sys.move(sys.teamPokeMove(src, team, slot, move)) + " in this tier");
+                if (move) {
+                    if (moves.indexOf(sys.teamPokeMove(src, team, slot, move).toString()) === -1) {
+                        ret.push(sys.pokemon(poke) + " cannot have move " + sys.move(sys.teamPokeMove(src, team, slot, move)) + " in this tier");
+                    }
                 }
             }
         }
