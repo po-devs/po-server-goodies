@@ -123,11 +123,12 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
         }
     }
     // few unreleased abilities left in gen 6
+    var pokebank = ["Tentacool", "Tentacruel", "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking Staryu", "Starmie", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Aerodactyl", "Snorlax", "Articuno", "Zapdos", "Moltres", "Mewtwo", "Sentret", "Furret", "Chinchou", "Lanturn", "Qwilfish", "Mantine", "Zigzagoon", "Linoone", "Skitty", "Delcatty", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Torkoal", "Lunatone", "Solrock", "Barboach", "Whiscash", "Lileep", "Cradily", "Anorith", "Armaldo", "Clamperl", "Huntail", "Gorebyss", "Relicanth", "Luvdisc", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Burmy", "Wormadam", "Mothim", "Chatot", "Munchlax", "Hippopotas", "Hippowdon", "Mantyke", "Patrat", "Watchog", "Basculin", "Tirtouga", "Carracosta", "Karrablast", "Escavalier", "Alomomola", "Shelmet", "Accelgor"];
     if (sys.gen(src, team) === 6) {
         for (var i = 0; i < 6; i++) {
             var x = sys.teamPoke(src, team, i);
             if (x !== 0 && script.hasDreamWorldAbility(x, sys.teamPokeAbility(src, team, i))) {
-                if (!(x in script.hapokemons)) {
+                if (!(x in script.hapokemons) || (tier === "Pre-PokeBank OU" && sys.pokemon(x) in pokebank)) {
                     ret.push("" + sys.pokemon(x) + " is not allowed with Hidden Ability " + sys.ability(sys.teamPokeAbility(src, team, i)) + " in " + tier + " tier. Change it in the teambuilder.");
                 }
             }
