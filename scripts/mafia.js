@@ -37,6 +37,7 @@ function Mafia(mafiachan) {
 
     var DEFAULT_BORDER = "***************************************************************************************";
     var border;
+    var isDummyCommand = /^dummy(?:\d+)?$/;
 
     var savePlayedGames = function () {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
@@ -2424,7 +2425,11 @@ function Mafia(mafiachan) {
                             mafia.sendPlayer(player.name, "±Game: Your " + o.action + " was shielded by " + targetName + "!");
                         }
                         
-                        for (var c in commandList) {
+                        var c;
+                        for (c in commandList) {
+                            command = commandList[c];
+                            target = targetName;
+                            
                             var targetMode = null;
                             var revenge = false, revengetext;
                             var revengetext = "±Game: You were killed during the night!";
@@ -2432,9 +2437,9 @@ function Mafia(mafiachan) {
                             var poisonrevengetext = "±Game: Your target poisoned you!";
                             var finalPoisonCount = Action.count || 2;
                             var finalCurseCount = Action.curseCount || 2;
-                            command = commandList[c];
-                            target = targetName;
-                            if (["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "convert", "copy", "curse", "detox", "dispel", "shield", "dummy", "dummy2", "dummy3"].indexOf(command) == -1) {
+                            var commandIsDummy = isDummyCommand.test(command);
+
+                            if (["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "convert", "copy", "curse", "detox", "dispel", "shield"].indexOf(command) === -1 && !commandIsDummy) {
                                 continue;
                             }
                             if (!mafia.isInGame(target)) {
@@ -2448,7 +2453,7 @@ function Mafia(mafiachan) {
                                 if (("pierceChance" in Action && Action.pierceChance > Math.random()) || Action.pierce === true) {
                                     piercing = true;
                                 }
-                                if (piercing !== true && ((target.guarded && command == "kill") || (target.safeguarded && ["distract", "inspect", "stalk", "poison", "convert", "copy", "curse", "detox", "dispel", "dummy", "dummy2", "dummy3"].indexOf(command) !== -1))) {
+                                if (piercing !== true && ((target.guarded && command == "kill") || (target.safeguarded && (["distract", "inspect", "stalk", "poison", "convert", "copy", "curse", "detox", "dispel"].indexOf(command) !== -1 || commandIsDummy)))) {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was " + (command == "kill" ? "protected" : "guarded") + "!");
                                     // Action can be countered even if target is protected/guarded
                                     if (command in target.role.actions) {
@@ -2892,7 +2897,7 @@ function Mafia(mafiachan) {
                             } else if (command == "shield") {
                                 target.redirectTo = player.name;
                                 target.redirectActions = Action.shieldActions || "*";
-                            } else if (command == "dummy" || command == "dummy2" || command == "dummy3") {
+                            } else if (commandIsDummy) {
                                 //Dummy actions to trigger modes without replacing useful commands. Great for large themes that want more freedom.
                                 if (Action[command + "usermsg"]) {
                                     mafia.sendPlayer(player.name, needsBot(Action[command + "usermsg"]).replace(/~Self~/gi, player.name).replace(/~Target~/gi, target.name).replace(/~Role~/gi, player.role.translation).replace(/~TargetRole~/gi, target.role.translation).replace(/~Side~/gi, mafia.theme.trside(player.role.side)).replace(/~TargetSide~/gi, mafia.theme.trside(target.role.side)));
