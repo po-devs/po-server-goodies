@@ -383,7 +383,7 @@ tier_checker.add_new_check(INCLUDING, ["Pre-PokeBank OU"], function pokeBankChec
         if (poke) { 
             var moves = script.getAllGenMoves(poke);
             for (var move = 0; move < 4; move++) {
-                if (move) {
+                if (sys.teamPokeMove(src, team, slot, move)) {
                     if (moves.indexOf(sys.teamPokeMove(src, team, slot, move).toString()) === -1) {
                         ret.push(sys.pokemon(poke) + " cannot have move " + sys.move(sys.teamPokeMove(src, team, slot, move)) + " in this tier");
                     }
