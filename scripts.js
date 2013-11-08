@@ -2238,7 +2238,7 @@ beforeBattleEnded : function(src, dest, desc, bid) {
         delete SESSION.users(src).battles[bid];
     }
     if (dest) {
-        if (sys.name(dest) !== srcname) {
+        if (sys.name(dest) !== destname) {
             destname = sys.name(dest);
         }
         if (!SESSION.users(dest).battlehistory) SESSION.users(dest).battlehistory=[];
