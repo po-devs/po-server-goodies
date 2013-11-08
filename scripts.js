@@ -2197,7 +2197,7 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2)
         tier = sys.tier(src, team1);
     }
     var time = parseInt(sys.time(), 10);
-    var battle_data = {players: [src, dest], clauses: clauses, rated: rated, mode: mode, tier: tier, time: time};
+    var battle_data = {players: [sys.name(src), sys.name(dest)], clauses: clauses, rated: rated, mode: mode, tier: tier, time: time};
     SESSION.global().battleinfo[bid] = battle_data;
     SESSION.users(src).battles[bid] = battle_data;
     SESSION.users(dest).battles[bid] = battle_data;
@@ -2221,22 +2221,28 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2)
 
 
 beforeBattleEnded : function(src, dest, desc, bid) {
-    var rated = SESSION.users(src).battles[bid].rated;
-    var tier = SESSION.users(src).battles[bid].tier;
-    var time = SESSION.users(src).battles[bid].time;
+    var rated = SESSION.global().battleinfo[bid].rated;
+    var tier = SESSION.global().battleinfo[bid].tier;
+    var time = SESSION.global().battleinfo[bid].time;
+    var srcname = SESSION.global().battleinfo[bid].players[0];
+    var destname = SESSION.global().battleinfo[bid].players[1];
     var tie = desc === "tie";
     delete SESSION.global().battleinfo[bid];
-    delete SESSION.users(src).battles[bid];
-    delete SESSION.users(dest).battles[bid];
 
-    if (!SESSION.users(src).battlehistory) SESSION.users(src).battlehistory=[];
-    if (!SESSION.users(dest).battlehistory) SESSION.users(dest).battlehistory=[];
-    SESSION.users(src).battlehistory.push([sys.name(dest), tie ? "tie":"win", desc, rated, tier]);
-    SESSION.users(dest).battlehistory.push([sys.name(src), tie ? "tie":"lose", desc, rated, tier]);
-    if (rated && (script.namesToWatch.get(sys.name(src).toLowerCase()) || script.namesToWatch.get(sys.name(dest).toLowerCase()))) {
+    if (src) {
+        if (!SESSION.users(src).battlehistory) SESSION.users(src).battlehistory=[];
+        SESSION.users(src).battlehistory.push([destname, tie ? "tie" + (dest ? "" : " by d/c") : "win", desc, rated, tier]);
+        delete SESSION.users(src).battles[bid];
+    }
+    if (dest) {
+        if (!SESSION.users(dest).battlehistory) SESSION.users(dest).battlehistory=[];
+        SESSION.users(dest).battlehistory.push([srcname, tie ? "tie" + (src ? "" : " by d/c") : "lose", desc, rated, tier]);
+        delete SESSION.users(dest).battles[bid];
+    }
+    if (rated && (script.namesToWatch.get(srcname.toLowerCase()) || script.namesToWatch.get(destname.toLowerCase()))) {
         if (sys.channelId("Channel")) {
-            sys.sendHtmlAll("<b><font color = blue>" + sys.name(src) + " and " + sys.name(dest) + " finished a battle with result " + (tie ? "tie" : sys.name(src) + " winning") + (desc === "forfeit" ? " (forfeit)" : "") + (tier ? " in tier " + tier: "") + (time ? " after " + getTimeString(sys.time() - time) + "." : "." ) + "</font></b>", sys.channelId("Channel"));
-            sys.sendAll(sys.name(src) + "'s IP: " + sys.ip(src) + " " + sys.name(dest) + "'s IP: " + sys.ip(dest), sys.channelId("Channel"));
+            sys.sendHtmlAll("<b><font color = blue>" + srcname + " and " + destname + " finished a battle with result " + (tie ? "tie" : srcname + " winning") + (desc === "forfeit" ? " (forfeit)" : "") + (tier ? " in tier " + tier: "") + (time ? " after " + getTimeString(sys.time() - time) + "." : "." ) + "</font></b>", sys.channelId("Channel"));
+            sys.sendAll(srcname + "'s IP: " + sys.dbIp(srcname) + " " + destname + "'s IP: " + sys.dbIp(destname), sys.channelId("Channel"));
         }
     }
 },
