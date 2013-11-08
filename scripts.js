@@ -2230,11 +2230,17 @@ beforeBattleEnded : function(src, dest, desc, bid) {
     delete SESSION.global().battleinfo[bid];
 
     if (src) {
+        if (sys.name(src) !== srcname) {
+            srcname = sys.name(src);
+        }
         if (!SESSION.users(src).battlehistory) SESSION.users(src).battlehistory=[];
         SESSION.users(src).battlehistory.push([destname, tie ? "tie" + (dest ? "" : " by d/c") : "win", desc, rated, tier]);
         delete SESSION.users(src).battles[bid];
     }
     if (dest) {
+        if (sys.name(dest) !== srcname) {
+            destname = sys.name(dest);
+        }
         if (!SESSION.users(dest).battlehistory) SESSION.users(dest).battlehistory=[];
         SESSION.users(dest).battlehistory.push([srcname, tie ? "tie" + (src ? "" : " by d/c") : "lose", desc, rated, tier]);
         delete SESSION.users(dest).battles[bid];
