@@ -2229,20 +2229,20 @@ beforeBattleEnded : function(src, dest, desc, bid) {
     var tie = desc === "tie";
     delete SESSION.global().battleinfo[bid];
 
-    if (src) {
+    if (sys.loggedIn(src)) {
         if (sys.name(src) !== srcname) {
             srcname = sys.name(src);
         }
         if (!SESSION.users(src).battlehistory) SESSION.users(src).battlehistory=[];
-        SESSION.users(src).battlehistory.push([destname, tie ? "tie" + (dest ? "" : " by d/c") : "win", desc, rated, tier]);
+        SESSION.users(src).battlehistory.push([destname, tie ? "tie" + (sys.loggedIn(dest) ? "" : " by d/c") : "win", desc, rated, tier]);
         delete SESSION.users(src).battles[bid];
     }
-    if (dest) {
+    if (sys.loggedIn(dest)) {
         if (sys.name(dest) !== destname) {
             destname = sys.name(dest);
         }
         if (!SESSION.users(dest).battlehistory) SESSION.users(dest).battlehistory=[];
-        SESSION.users(dest).battlehistory.push([srcname, tie ? "tie" + (src ? "" : " by d/c") : "lose", desc, rated, tier]);
+        SESSION.users(dest).battlehistory.push([srcname, tie ? "tie" + (sys.loggedIn(src) ? "" : " by d/c") : "lose", desc, rated, tier]);
         delete SESSION.users(dest).battles[bid];
     }
     if (rated && (script.namesToWatch.get(srcname.toLowerCase()) || script.namesToWatch.get(destname.toLowerCase()))) {
