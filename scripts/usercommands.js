@@ -956,7 +956,7 @@ exports.help =
         "/importable: Posts an importable of your team to the Pokemon Online website. Can be used with a number to specify the team to use.",
         "/dwreleased [Pokémon]: Shows the released status of a Pokémon's Dream World Ability.",
         "/wiki [Pokémon]: Shows that Pokémon's wiki page.",
-        "/pokemon [Pokémon]: Displays basic information for that Pokémon. Pokèdex number can also be used.",
+        "/pokemon [Pokémon]: Displays basic information for that Pokémon. Pokédex number can also be used.",
         "/move [move]: Displays basic information for that move.",
         "/ability [ability]: Displays basic information for that ability.",
         "/item [item]: Displays basic information for that item.",
