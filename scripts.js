@@ -1315,11 +1315,14 @@ beforeChannelLeave: function(src, channel) {
 
 beforeChannelCreated : function(chan, name, src) {
     if (name == "x") { sys.stopEvent(); }
-    for (var i = 0; i < chanNameBans.length; ++i) {
-        var regexp = chanNameBans[i];
-        if (regexp.test(name)) {
-            sys.sendMessage(src, 'This kind of channel name is banned from the server. (Matching regexp: ' + regexp + ')');
-            sys.stopEvent();
+    if (src) {
+        name = name.toLowerCase();
+        for (var i = 0; i < chanNameBans.length; ++i) {
+            var regexp = chanNameBans[i];
+            if (regexp.test(name)) {
+                sys.sendMessage(src, 'This kind of channel name is banned from the server. (Matching regexp: ' + regexp + ')');
+                sys.stopEvent();
+            }
         }
     }
 },
