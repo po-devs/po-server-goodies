@@ -253,7 +253,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Name banned</strong></center></td></tr>';
         for (var i = 0; i < script.chanNameBans.length; i+=5) {
             table += '<tr>';
-            for (var j = 0; j < 5 && i+j < chanNameBan.length; ++j) {
+            for (var j = 0; j < 5 && i+j < script.chanNameBans.length; ++j) {
                 table += '<td>'+script.chanNameBans[i+j].toString()+'</td>';
             }
             table += '</tr>';
