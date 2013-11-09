@@ -38,7 +38,8 @@ function Mafia(mafiachan) {
 
     var DEFAULT_BORDER = "***************************************************************************************",
         GREEN_BORDER = " " + DEFAULT_BORDER + ":",
-        border;
+        border,
+        isDummyCommand = /^dummy(?:\d+)?$/;
 
     var savePlayedGames = function () {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
@@ -2426,7 +2427,11 @@ function Mafia(mafiachan) {
                             mafia.sendPlayer(player.name, "±Game: Your " + o.action + " was shielded by " + targetName + "!");
                         }
                         
-                        for (var c in commandList) {
+                        var c;
+                        for (c in commandList) {
+                            command = commandList[c];
+                            target = targetName;
+                            
                             var targetMode = null;
                             var revenge = false, revengetext;
                             var revengetext = "±Game: You were killed during the night!";
@@ -2434,9 +2439,9 @@ function Mafia(mafiachan) {
                             var poisonrevengetext = "±Game: Your target poisoned you!";
                             var finalPoisonCount = Action.count || 2;
                             var finalCurseCount = Action.curseCount || 2;
-                            command = commandList[c];
-                            target = targetName;
-                            if (["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "convert", "copy", "curse", "detox", "dispel", "shield", "dummy", "dummy2", "dummy3"].indexOf(command) == -1) {
+                            var commandIsDummy = isDummyCommand.test(command);
+
+                            if (["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "convert", "copy", "curse", "detox", "dispel", "shield"].indexOf(command) === -1 && !commandIsDummy) {
                                 continue;
                             }
                             if (!mafia.isInGame(target)) {
@@ -2450,7 +2455,7 @@ function Mafia(mafiachan) {
                                 if (("pierceChance" in Action && Action.pierceChance > Math.random()) || Action.pierce === true) {
                                     piercing = true;
                                 }
-                                if (piercing !== true && ((target.guarded && command == "kill") || (target.safeguarded && ["distract", "inspect", "stalk", "poison", "convert", "copy", "curse", "detox", "dispel", "dummy", "dummy2", "dummy3"].indexOf(command) !== -1))) {
+                                if (piercing !== true && ((target.guarded && command == "kill") || (target.safeguarded && (["distract", "inspect", "stalk", "poison", "convert", "copy", "curse", "detox", "dispel"].indexOf(command) !== -1 || commandIsDummy)))) {
                                     mafia.sendPlayer(player.name, "±Game: Your target (" + target.name + ") was " + (command == "kill" ? "protected" : "guarded") + "!");
                                     // Action can be countered even if target is protected/guarded
                                     if (command in target.role.actions) {
@@ -2894,7 +2899,7 @@ function Mafia(mafiachan) {
                             } else if (command == "shield") {
                                 target.redirectTo = player.name;
                                 target.redirectActions = Action.shieldActions || "*";
-                            } else if (command == "dummy" || command == "dummy2" || command == "dummy3") {
+                            } else if (commandIsDummy) {
                                 //Dummy actions to trigger modes without replacing useful commands. Great for large themes that want more freedom.
                                 if (Action[command + "usermsg"]) {
                                     mafia.sendPlayer(player.name, needsBot(Action[command + "usermsg"]).replace(/~Self~/gi, player.name).replace(/~Target~/gi, target.name).replace(/~Role~/gi, player.role.translation).replace(/~TargetRole~/gi, target.role.translation).replace(/~Side~/gi, mafia.theme.trside(player.role.side)).replace(/~TargetSide~/gi, mafia.theme.trside(target.role.side)));
@@ -3777,7 +3782,7 @@ function Mafia(mafiachan) {
             "*** Mafia Game Rules ***",
             "",
             "±Rule 1- All server rules apply in this channel. Type /rules to view them:",
-            "Ignorance of the rules does not justify breaking them. Someone else breaking a rule does not justify you breaking the same rule. If you choose to play on Android, you are not able to use it to justify rule breaking.", 
+            "Ignorance of the rules does not justify breaking them. Someone else breaking a rule does not justify you breaking the same rule. If you choose to play on Android, you are not able to use it to justify rule breaking.",
             "",
             "±Rule 2- Mafia Admins, or MAs are here for the benefit of the channel. You can use /mas to get a listing of them:",
             "If you are told something by an MA, it is advised you listen. PM an MA to report an instance of rulebreaking. Shouting out \"BAN\" and \"teamvote!\" and such in the chat is pointless and disrupts the game. If any MA is breaking a rule, contact a Mafia Super Admin or any Server Auth immediately.",
