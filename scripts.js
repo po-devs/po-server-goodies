@@ -2224,23 +2224,17 @@ beforeBattleEnded : function(src, dest, desc, bid) {
     var rated = SESSION.global().battleinfo[bid].rated;
     var tier = SESSION.global().battleinfo[bid].tier;
     var time = SESSION.global().battleinfo[bid].time;
-    var srcname = SESSION.global().battleinfo[bid].players[0];
-    var destname = SESSION.global().battleinfo[bid].players[1];
+    var srcname = sys.loggedIn(src) ? sys.name(src) : SESSION.global().battleinfo[bid].players[0];
+    var destname = sys.loggedIn(dest) ? sys.name(dest) : SESSION.global().battleinfo[bid].players[1];
     var tie = desc === "tie";
     delete SESSION.global().battleinfo[bid];
 
     if (sys.loggedIn(src)) {
-        if (sys.name(src) !== srcname) {
-            srcname = sys.name(src);
-        }
         if (!SESSION.users(src).battlehistory) SESSION.users(src).battlehistory=[];
         SESSION.users(src).battlehistory.push([destname, tie ? "tie" + (sys.loggedIn(dest) ? "" : " by d/c") : "win", desc, rated, tier]);
         delete SESSION.users(src).battles[bid];
     }
     if (sys.loggedIn(dest)) {
-        if (sys.name(dest) !== destname) {
-            destname = sys.name(dest);
-        }
         if (!SESSION.users(dest).battlehistory) SESSION.users(dest).battlehistory=[];
         SESSION.users(dest).battlehistory.push([srcname, tie ? "tie" + (sys.loggedIn(src) ? "" : " by d/c") : "lose", desc, rated, tier]);
         delete SESSION.users(dest).battles[bid];
