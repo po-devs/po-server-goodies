@@ -1316,8 +1316,8 @@ beforeChannelCreated : function(chan, name, src) {
     if (name == "x") { sys.stopEvent(); }
     if (src) {
         name = name.toLowerCase();
-        for (var i = 0; i < chanNameBans.length; ++i) {
-            var regexp = chanNameBans[i];
+        for (var i = 0; i < script.chanNameBans.length; ++i) {
+            var regexp = script.chanNameBans[i];
             if (regexp.test(name)) {
                 sys.sendMessage(src, 'This kind of channel name is banned from the server. (Matching regexp: ' + regexp + ')');
                 sys.stopEvent();
