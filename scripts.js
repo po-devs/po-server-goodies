@@ -774,17 +774,6 @@ init : function() {
             // ignore
         }
     }
-    if (typeof chanNameBans == 'undefined') {
-        chanNameBans = [];
-        try {
-            var serialized = JSON.parse(sys.getFileContent(Config.dataDir+"chanNameBans.json"));
-            for (var i = 0; i < serialized.chanNameBans.length; ++i) {
-                chanNameBans.push(new RegExp(serialized.chanNameBans[i], "i"));
-            }
-        } catch (e) {
-            // ignore
-        }
-    }
     if (SESSION.global().battleinfo === undefined) {
         SESSION.global().battleinfo = {};
     }
@@ -852,7 +841,17 @@ init : function() {
             pokeNatures[poke][sys.moveNum(movenat[0])] = sys.natureNum(movenat[1]);
         }
     }
-
+    if (typeof script.chanNameBans == 'undefined') {
+        script.chanNameBans = [];
+        try {
+            var serialized = JSON.parse(sys.getFileContent(Config.dataDir+"chanNameBans.json"));
+            for (var i = 0; i < serialized.chanNameBans.length; ++i) {
+                script.chanNameBans.push(new RegExp(serialized.chanNameBans[i], "i"));
+            }
+        } catch (e) {
+            // ignore
+        }
+    }
     try {
         pastebin_api_key = sys.getFileContent(Config.dataDir+"pastebin_api_key").replace("\n", "");
         pastebin_user_key = sys.getFileContent(Config.dataDir+"pastebin_user_key").replace("\n", "");

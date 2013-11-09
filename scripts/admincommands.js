@@ -181,10 +181,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         } catch (e) {
             normalbot.sendMessage(src, "Sorry, your regular expression '" +commandData + "' fails. (" + e + ")", channel);
         }
-        chanNameBans.push(regex);
-        var serialized = {chanNameBans: []};
-        for (var i = 0; i < chanNameBans.length; ++i) {
-            serialized.chanNameBans.push(chanNameBans[i].source);
+        script.chanNameBans.push(regex);
+        var serialized = {script.chanNameBans: []};
+        for (var i = 0; i < script.chanNameBans.length; ++i) {
+            serialized.chanNameBans.push(script.chanNameBans[i].source);
         }
         sys.writeToFile(Config.dataDir+"chanNameBans.json", JSON.stringify(serialized));
         normalbot.sendMessage(src, "You banned: " + regex.toString(), channel);
@@ -192,7 +192,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "channameunban" || command == "channelnameunban") {
         var unban = false;
-        chanNameBans = chanNameBans.filter(function(name) {
+        script.chanNameBans = script.chanNameBans.filter(function(name) {
             if (name.toString() == commandData) {
                 var toDelete = chanNameBans.indexOf(name.toString());
                 normalbot.sendMessage(src, "You unbanned: " + name.toString(), channel);
@@ -204,7 +204,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (!unban) {
             normalbot.sendMessage(src, "No match.", channel);
         } else {
-            var serialized = {chanNameBans: []};
+            var serialized = {script.chanNameBans: []};
             for (var i = 0; i < chanNameBans.length; ++i) {
                 serialized.chanNameBans.push(chanNameBans[i].source);
             }

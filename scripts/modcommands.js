@@ -251,10 +251,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "channamebans" || command == "channelnamebans") {
         var table = '';
         table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Name banned</strong></center></td></tr>';
-        for (var i = 0; i < chanNameBans.length; i+=5) {
+        for (var i = 0; i < script.chanNameBans.length; i+=5) {
             table += '<tr>';
             for (var j = 0; j < 5 && i+j < chanNameBan.length; ++j) {
-                table += '<td>'+chanNameBans[i+j].toString()+'</td>';
+                table += '<td>'+script.chanNameBans[i+j].toString()+'</td>';
             }
             table += '</tr>';
         }
