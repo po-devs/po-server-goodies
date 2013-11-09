@@ -170,6 +170,48 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         return;
     }
+    if (command == "channameban" || command == "channelnameban") {
+        if (commandData === undefined) {
+            normalbot.sendMessage(src, "Sorry, can't name ban empty names.", channel);
+            return;
+        }
+        var regex;
+        try {
+            regex = new RegExp(commandData.toLowerCase()); // incase sensitive
+        } catch (e) {
+            normalbot.sendMessage(src, "Sorry, your regular expression '" +commandData + "' fails. (" + e + ")", channel);
+        }
+        chanNameBans.push(regex);
+        var serialized = {chanNameBans: []};
+        for (var i = 0; i < chanNameBans.length; ++i) {
+            serialized.chanNameBans.push(chanNameBans[i].source);
+        }
+        sys.writeToFile(Config.dataDir+"chanNameBans.json", JSON.stringify(serialized));
+        normalbot.sendMessage(src, "You banned: " + regex.toString(), channel);
+        return;
+    }
+    if (command == "channameunban" || command == "channelnameunban") {
+        var unban = false;
+        chanNameBans = chanNameBans.filter(function(name) {
+            if (name.toString() == commandData) {
+                var toDelete = chanNameBans.indexOf(name.toString());
+                normalbot.sendMessage(src, "You unbanned: " + name.toString(), channel);
+                unban = true;
+                return false;
+            }
+            return true;
+        });
+        if (!unban) {
+            normalbot.sendMessage(src, "No match.", channel);
+        } else {
+            var serialized = {chanNameBans: []};
+            for (var i = 0; i < chanNameBans.length; ++i) {
+                serialized.chanNameBans.push(chanNameBans[i].source);
+            }
+            sys.writeToFile(Config.dataDir+"chanNameBans.json", JSON.stringify(serialized));
+        }
+        return;
+    }
     if (command == "namewarn") {
         if (commandData === undefined) {
             normalbot.sendMessage(src, "Sorry, can't set warning for empty names.", channel);
@@ -228,6 +270,8 @@ exports.help =
         "/memorydump: Shows the state of the memory.",
         "/nameban: Adds a regexp ban on usernames.",
         "/nameunban: Removes a regexp ban on usernames.",
+        "/channelnameban: Adds a regexp ban on channel names.",
+        "/channelnameunban: Removes a regexp ban on channel names.",
         "/namewarn: Adds a regexp namewarning",
         "/nameunwarn: Removes a regexp namewarning",
         "/destroychan: Destroy a channel (official channels are protected).",

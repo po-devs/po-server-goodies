@@ -248,6 +248,20 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendHtmlMessage(src, table, channel);
         return;
     }
+    if (command == "channamebans" || command == "channelnamebans") {
+        var table = '';
+        table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Name banned</strong></center></td></tr>';
+        for (var i = 0; i < chanNameBans.length; i+=5) {
+            table += '<tr>';
+            for (var j = 0; j < 5 && i+j < chanNameBan.length; ++j) {
+                table += '<td>'+chanNameBans[i+j].toString()+'</td>';
+            }
+            table += '</tr>';
+        }
+        table += '</table>';
+        sys.sendHtmlMessage(src, table, channel);
+        return;
+    }
     if (command == "namewarns") {
         var table = '';
         table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Namewarnings</strong></center></td></tr>';
@@ -591,9 +605,10 @@ exports.help =
         "/autosmutelist: Lists the names in the auto-smute list.",
         "/namebans: Lists name bans.",
         "/namewarns: Lists name warnings.",
+        "/channelnamebans: Lists banned channel names.",
         "/onrange: To view who is on an IP range.",
         "/onos: Lists players on a certain operating system (May lag a little with certain OS)",
         "/tier: To view the tier(s) of a user.",
         "/battlehistory: To view a user's battle history.",
         "/channelusers: Lists users on a channel."
-    ]
+    ];
