@@ -182,7 +182,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "Sorry, your regular expression '" +commandData + "' fails. (" + e + ")", channel);
         }
         script.chanNameBans.push(regex);
-        var serialized = {script.chanNameBans: []};
+        var serialized = {chanNameBans: []};
         for (var i = 0; i < script.chanNameBans.length; ++i) {
             serialized.chanNameBans.push(script.chanNameBans[i].source);
         }
@@ -204,7 +204,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (!unban) {
             normalbot.sendMessage(src, "No match.", channel);
         } else {
-            var serialized = {script.chanNameBans: []};
+            var serialized = {chanNameBans: []};
             for (var i = 0; i < chanNameBans.length; ++i) {
                 serialized.chanNameBans.push(chanNameBans[i].source);
             }
