@@ -194,7 +194,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var unban = false;
         script.chanNameBans = script.chanNameBans.filter(function(name) {
             if (name.toString() == commandData) {
-                var toDelete = chanNameBans.indexOf(name.toString());
+                var toDelete = script.chanNameBans.indexOf(name.toString());
                 normalbot.sendMessage(src, "You unbanned: " + name.toString(), channel);
                 unban = true;
                 return false;
