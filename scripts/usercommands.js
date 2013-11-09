@@ -942,6 +942,15 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         SESSION.users(src).inviteDelay = (new Date()).getTime() + 15000;
         return;
     }
+    if (command == "notice") {
+        var notice = sys.getFileContent(Config.dataDir + "notice.html");
+        if (notice) {
+            sys.sendHtmlMessage(src, notice, channel);
+        } else {
+            sys.sendMessage(src, "There's no notice to show");
+        }
+        return;
+    }
     return "no command";
 };
 
@@ -974,5 +983,6 @@ exports.help =
         "/cjoin [channel]: Makes you join an existing channel, or create a new one if it doesn't exist.",
         "/seen [name]: Allows you to see the last login of a user.",
         "/changetier: Allows you to switch tier. Format is /changetier [tier]:[team]. Team is a number between 0-5 indicating loaded teams. Default is 0.",
-        "/invitespec [name]: Allows you to invite someone to watch your battle."
+        "/invitespec [name]: Allows you to invite someone to watch your battle.",
+        "/notice: Allows you to view current events"
     ];
