@@ -205,8 +205,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "No match.", channel);
         } else {
             var serialized = {chanNameBans: []};
-            for (var i = 0; i < chanNameBans.length; ++i) {
-                serialized.chanNameBans.push(chanNameBans[i].source);
+            for (var i = 0; i < script.chanNameBans.length; ++i) {
+                serialized.chanNameBans.push(script.chanNameBans[i].source);
             }
             sys.writeToFile(Config.dataDir+"chanNameBans.json", JSON.stringify(serialized));
         }
