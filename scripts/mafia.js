@@ -1118,6 +1118,7 @@ function Mafia(mafiachan) {
             this.players[p].restrictions = [];
             this.players[p].redirectTo = undefined;
             this.players[p].redirectActions = undefined;
+            this.players[p].shieldmsg = undefined;
         }
     };
     this.clearVariables();
@@ -2424,7 +2425,7 @@ function Mafia(mafiachan) {
                         
                         if (mafia.isInGame(targetName) && mafia.players[targetName].redirectTo !== undefined && (mafia.players[targetName].redirectActions === "*" || mafia.players[targetName].redirectActions.indexOf(o.action) !== -1)) {
                             targetName = mafia.players[targetName].redirectTo;
-                            mafia.sendPlayer(player.name, "±Game: Your " + o.action + " was shielded by " + targetName + "!");
+                            mafia.sendPlayer(player.name, needsBot(target.shieldmsg).replace(/~Action~/g, o.action).replace(/~Self~/g, targetName);
                         }
                         
                         var c;
@@ -2899,6 +2900,7 @@ function Mafia(mafiachan) {
                             } else if (command == "shield") {
                                 target.redirectTo = player.name;
                                 target.redirectActions = Action.shieldActions || "*";
+                                target.shieldmsg = Action.shieldmsg || "Your ~Action~ was shielded by ~Self~!";
                             } else if (commandIsDummy) {
                                 //Dummy actions to trigger modes without replacing useful commands. Great for large themes that want more freedom.
                                 if (Action[command + "usermsg"]) {
