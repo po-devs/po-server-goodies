@@ -300,7 +300,7 @@ function mafiaChecker() {
                                 commonOptional = commonOptional.concat(["msg", "targetmsg", "dispelmsg", "failmsg", "silent"]);
                             }
                             if (commandList.indexOf("shield") !== -1) {
-                                commonOptional = commonOptional.concat(["shieldActions"]);
+                                commonOptional = commonOptional.concat(["shieldActions", "shieldmsg"]);
                             }
                             if (commandList.indexOf("dummy") !== -1) {
                                 commonOptional = commonOptional.concat(["dummyusermsg", "dummytargetmsg", "dummybroadcastmsg"]);
@@ -442,6 +442,7 @@ function mafiaChecker() {
                                             checkValidValue(action.shieldActions, ["*"], comm + ".shieldActions");
                                         }
                                     }
+                                    checkType(action.shieldmsg, ["string"], comm + ".shieldmsg");
                                 } else if (command == "dummy" || command == "dummy2" || command == "dummy3") {
                                     checkType(action[command + "usermsg"], ["string"], comm + "." + command + "usermsg");
                                     checkType(action[command + "targetmsg"], ["string"], comm + "." + command + "targetmsg");
