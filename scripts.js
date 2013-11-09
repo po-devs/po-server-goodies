@@ -2225,7 +2225,7 @@ beforeBattleEnded : function(src, dest, desc, bid) {
     var tier = SESSION.global().battleinfo[bid].tier;
     var time = SESSION.global().battleinfo[bid].time;
     var srcname = sys.loggedIn(src) ? sys.name(src) : SESSION.global().battleinfo[bid].players[0];
-    var destname = sys.loggedIn(dest) ? sys.name(dest) : SESSION.global().battleinfo[bid].players[1];
+    var destname = sys.loggedIn(dest) ? sys.name(dest) : (SESSION.global().battleinfo[bid].players[1] === srcname ? SESSION.global().battleinfo[bid].players[0] : SESSION.global().battleinfo[bid].players[1]); //will still break occasionally on ties, but meh
     var tie = desc === "tie";
     delete SESSION.global().battleinfo[bid];
 
