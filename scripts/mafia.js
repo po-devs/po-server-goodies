@@ -2425,7 +2425,7 @@ function Mafia(mafiachan) {
                         
                         if (mafia.isInGame(targetName) && mafia.players[targetName].redirectTo !== undefined && (mafia.players[targetName].redirectActions === "*" || mafia.players[targetName].redirectActions.indexOf(o.action) !== -1)) {
                             targetName = mafia.players[targetName].redirectTo;
-                            mafia.sendPlayer(player.name, needsBot(target.shieldmsg).replace(/~Action~/g, o.action).replace(/~Self~/g, targetName);
+                            mafia.sendPlayer(player.name, needsBot(target.shieldmsg).replace(/~Action~/g, o.action).replace(/~Self~/g, targetName));
                         }
                         
                         var c;
