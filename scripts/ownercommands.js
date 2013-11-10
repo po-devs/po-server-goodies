@@ -675,6 +675,16 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         });
         return;
     }
+    if (command == "advertise") {
+        if (!commandData) {
+            return;
+        }
+        ["Tohjo Falls", "Trivia", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview", "Mafia", "Hangman"].forEach(function(c) {
+            sys.sendHtmlAll("<font size = 4><b>"+commandData+"</b></font>", sys.channelId(c));
+        });
+        return;
+    }
+        
     return "no command";
 };
 exports.help = 
@@ -718,5 +728,6 @@ exports.help =
         "/loadstats: Loads the usage stats plugin.",
         "/unloadstats: Unloads the usage stats plugin.",
         "/warnwebclients: Sends a big alert with your message to webclient users.",
-        "/clearladder: Clears rankings from a tier."
+        "/clearladder: Clears rankings from a tier.",
+        "/advertise: Sends a html message to the main channels"
     ];
