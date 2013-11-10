@@ -199,7 +199,7 @@ function mafiaChecker() {
         checkType(obj.help, ["string"], yourRole + "'s 'help' attribute");
         checkType(obj.info, ["string"], yourRole + "'s 'info' attribute");
         checkType(obj.startupmsg, ["string"], yourRole + "'s 'startupmsg' attribute");
-        checkType(obj.players, ["string", "number", "array"], yourRole + "'s 'players' attribute");
+        checkType(obj.players, ["string", "number", "array", "boolean"], yourRole + "'s 'players' attribute");
         checkValidValue(obj.hide, [true, false, "role", "side", "both"], yourRole + "'s 'hide' attribute");
         
         if (checkType(obj.side, ["string", "object"], yourRole + "'s 'side' attribute")) {
