@@ -854,7 +854,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var pokeId = sys.pokeNum(commandData[0]);
-        var moveId = sys.moveNum(commandData[1]).toString();
+        var moveId = sys.moveNum(commandData[1]);
         if (!pokeId) {
             if (!moveId) {
                 normalbot.sendMessage(src, "Neither the Pokémon nor the move actually exist!", channel);
@@ -867,6 +867,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, commandData[1] + " is not a valid move!", channel);
             return;
         }
+        moveId = moveId.toString();
         var allMoves = script.getAllMoves(pokeId);
         var canLearn = (allMoves.indexOf(moveId) != -1);
         normalbot.sendMessage(src, sys.pokemon(pokeId) + " " + (canLearn ? "can" : "can't") + " learn " + sys.move(moveId) + ".", channel);
