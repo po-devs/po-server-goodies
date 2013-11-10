@@ -5338,11 +5338,17 @@ function Mafia(mafiachan) {
     };
 
     this.beforeChatMessage = function (src, message, channel) {
-        if (channel !== 0 && channel == mafiachan && mafia.ticks > 0 && ["blank", "voting", "entry"].indexOf(mafia.state) == -1 && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0 && !mafia.isMafiaAdmin(src)) {
-            if (!(is_command(message) && message.substr(1, 2).toLowerCase() != "me")) {
-                sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
+        if (channel !== 0 && channel == mafiachan && mafia.ticks > 0 && ["blank", "voting", "entry"].indexOf(mafia.state) == -1) {
+            if (!mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0 && !mafia.isMafiaAdmin(src)) {
+                if (!(is_command(message) && message.substr(1, 2).toLowerCase() != "me")) {
+                    sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
+                    return true;
+                }
+            } 
+            if (message.indexOf("[Team]") === 0) {
+                mafiabot.sendMessage(src, "Please don't fake a Team Talk message!", mafiachan);
                 return true;
-            }
+            } 
         }
     };
     
