@@ -3863,18 +3863,23 @@ function Mafia(mafiachan) {
                     return;
                 }
                 target = mafia.players[commandData];
+                var canTarget = player.role.actions.night[command].target;
 
                 this.addPhaseStalkAction(name, command, target.name);
 
-                if (["Any", "Self", "OnlySelf"].indexOf(player.role.actions.night[command].target) == -1 && commandData == name) {
+                if (["Any", "Self", "OnlySelf", "OnlyTeam"].indexOf(canTarget) == -1 && commandData == name) {
                     sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target yourself!", mafiachan);
                     return;
-                } else if (player.role.actions.night[command].target == "OnlySelf" && commandData != name) {
+                } else if (canTarget == "OnlySelf" && commandData != name) {
                     sys.sendMessage(src, "±Hint: You can only use this action on yourself!", mafiachan);
                     return;
-                } else if (player.role.actions.night[command].target == 'AnyButTeam' && player.role.side == target.role.side
-                 || player.role.actions.night[command].target == 'AnyButRole' && player.role.role == target.role.role) {
+                } else if (canTarget == 'AnyButTeam' && player.role.side == target.role.side
+                 || canTarget == 'AnyButRole' && player.role.role == target.role.role) {
                     sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target your partners!", mafiachan);
+                    return;
+                } else if ((canTarget == "OnlyTeammates" && player == target)
+                 || (["OnlyTeam", "OnlyTeammates"].indexOf(canTarget) !== -1 && player.role.side != target.role.side)) {
+                    sys.sendMessage(src, "±Hint: You can only use this action on your teammates!", mafiachan);
                     return;
                 }
 
