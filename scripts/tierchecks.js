@@ -137,7 +137,7 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["Inverted Battle", "XY 1v1","XY Ubers", "X/Y Cup", "XY OU", "Gen 6 LC", "No Preview OU", "BW2 OU", "BW2 UU", "BW2 LU", "BW2 LC", "DW LC", "BW2 Ubers", "No Preview Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "BW2 NU", "Metronome", "BW2 NEU"],
+tier_checker.add_new_check(INCLUDING, ["Inverted Battle", "XY 1v1","XY Ubers", "X/Y Cup", "XY OU", "Gen 6 LC", "No Preview OU", "BW2 OU", "BW2 UU", "BW2 LU", "BW2 LC", "DW LC", "BW2 Ubers", "No Preview Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Hexagen", "Smogon OU", "Smogon UU", "Smogon RU", "BW2 NU", "Metronome", "BW2 NEU"],
                            function inconsistentCheck(src, team, tier) {
     var moody = sys.abilityNum("Moody");
     var ret = [];
@@ -392,6 +392,21 @@ tier_checker.add_new_check(INCLUDING, ["Pre-PokeBank OU", "Random Battle"], func
         }
     }
     return ret;
+});
+
+tier_checker.add_new_check(INCLUDING, ["Hexagen"], function hexaGenCheck(src, team) {
+    var GEN_MAX = [0, 151, 252, 386, 493, 649, 722];
+    var gen = 0;
+    for (var i = 0; i < 6; ++i) {
+        var pokenum = sys.teamPoke(src, team, i);
+        var species = pokenum % 65536; // remove alt formes
+        if (species === 0) continue;
+        if (gen === 0) {
+            while (species > GEN_MAX[gen]) ++gen; // Search for correct gen for first poke
+        } else if (GEN_MAX[gen-1] < species && species <= GEN_MAX[gen]) {
+            return ["You can only have one pokemon per Generation."];
+        }
+    }
 });
 
 module.exports = tier_checker;
