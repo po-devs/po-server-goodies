@@ -1148,7 +1148,7 @@ function mafiaChecker() {
     function commonNightActions(yourRole, action, command) {
         var act = yourRole + ".night." + command, c;
         
-        checkValidValue(action.target, ["Any", "Self", "AnyButTeam", "AnyButRole", "AnyButSelf", "OnlySelf"], act + ".target");
+        checkValidValue(action.target, ["Any", "Self", "AnyButTeam", "AnyButRole", "AnyButSelf", "OnlySelf", "OnlyTeam", "OnlyTeammates"], act + ".target");
         checkValidValue(action.common, ["Self", "Team", "Role"], act + ".common");
         checkType(action.priority, ["number"], act + ".priority");
 
