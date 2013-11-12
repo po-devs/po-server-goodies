@@ -394,4 +394,15 @@ tier_checker.add_new_check(INCLUDING, ["Pre-PokeBank OU", "Random Battle"], func
     return ret;
 });
 
+tier_checker.add_new_check(INCLUDING, ["Sky Battle"], function levitatecheck(src, team, tier) {
+    var ret = [];
+    for (var i = 0; i < 6; i++){
+        var ability = sys.ability(sys.teamPokeAbility(src, team, i));
+        if(ability.toLowerCase() == "heatproof" || ability.toLowerCase() == "heavy metal" || ability.toLowerCase() == "frisk") {
+            ret.push("Your team has a pokemon with the ability: " + ability + ", please change it to Levitate before entering " +tier+" tier.");
+        }
+    }
+    return ret;
+});
+
 module.exports = tier_checker;
