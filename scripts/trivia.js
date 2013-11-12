@@ -411,7 +411,7 @@ TriviaGame.prototype.startTrivia = function (src, data) {
             i--;
         }
     }
-    data[0] = (isNaN(rand)) ? sys.rand(trivData.autostartRange.min, trivData.autostartRange.max) : +rand;
+    data[0] = (isNaN(rand)) ? sys.rand(trivData.autostartRange.min, parseInt(trivData.autostartRange.max, 10) + 1) : +rand;
     data = data.join("*");
     this.startGame(data, sys.name(src));
 };
