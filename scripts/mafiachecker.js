@@ -7,7 +7,7 @@ function mafiaChecker() {
         fatalErrors,
         noMinor,
         noFatal,
-        possibleNightActions = ["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "convert", "curse", "copy", "detox", "dispel", "shield", "dummy", "dummy2", "dummy3"],
+        possibleNightActions = ["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "convert", "curse", "copy", "detox", "dispel", "shield", "dummy", "dummy2", "dummy3", "dummy4", "dummy5", "dummy6", "dummy7", "dummy8", "dummy9", "dummy10" ],
         badCommands = ["me", "commands", "start", "votetheme", "starttheme", "help", "roles", "sides", "myrole", "mafiarules", "themes", "themeinfo", "changelog", "details", "priority", "flashme", "playedgames", "update", "join", "unjoin", "mafiaadmins", "mafiaban", "mafiaunban", "passma", "mafiaadmin", "mafiaadminoff", "mafiasadmin", "mafiasuperadmin", "mafiasadminoff", "mafiasuperadminoff", "push", "slay", "shove", "end", "readlog", "add", "remove", "disable", "enable", "updateafter", "importold", "mafiaban", "mafiaunban", "mafiabans", "detained", "detainlist", "ban", "mute", "kick", "k", "mas", "ck", "cmute", "admin", "op", "owner", "invite", "member", "deadmin", "deregister", "deop", "demember", "deadmin", "lt", "featured", "featuretheme", "featurelink", "featuretext", "forcefeature", "ctogglecaps", "ctoggleflood", "topic", "cauth", "register", "deinvite", "cmeon", "cmeoff", "csilence", "csilenceoff", "cunmute", "cmutes", "cbans", "inviteonly", "ctoggleswear", "enabletours", "disabletours", "tempban"];
     
     this.checkTheme = function(raw) {
@@ -185,7 +185,7 @@ function mafiaChecker() {
     };
     Theme.prototype.addRole = function(obj) {
         var yourRole = (obj.role) ? 'your role "' + obj.role + '"' : 'one of your roles';
-        checkAttributes(obj, ["role", "translation", "side", "help"], ["actions", "info", "winningSides", "winIfDeadRoles", "hide", "startupmsg"], cap(yourRole));
+        checkAttributes(obj, ["role", "translation", "side", "help"], ["actions", "info", "winningSides", "winIfDeadRoles", "hide", "startupmsg", "players"], cap(yourRole));
         if (!obj.actions) {
             obj.actions = {};
         }
@@ -199,7 +199,8 @@ function mafiaChecker() {
         checkType(obj.help, ["string"], yourRole + "'s 'help' attribute");
         checkType(obj.info, ["string"], yourRole + "'s 'info' attribute");
         checkType(obj.startupmsg, ["string"], yourRole + "'s 'startupmsg' attribute");
-        checkValidValue(obj.hide, ["role", "side", "both", true, false], yourRole + "'s 'hide' attribute");
+        checkType(obj.players, ["string", "number", "array", "boolean"], yourRole + "'s 'players' attribute");
+        checkValidValue(obj.hide, [true, false, "role", "side", "both"], yourRole + "'s 'hide' attribute");
         
         if (checkType(obj.side, ["string", "object"], yourRole + "'s 'side' attribute")) {
             if (typeof obj.side == "string") {
@@ -299,7 +300,7 @@ function mafiaChecker() {
                                 commonOptional = commonOptional.concat(["msg", "targetmsg", "dispelmsg", "failmsg", "silent"]);
                             }
                             if (commandList.indexOf("shield") !== -1) {
-                                commonOptional = commonOptional.concat(["shieldActions"]);
+                                commonOptional = commonOptional.concat(["shieldActions", "shieldmsg"]);
                             }
                             if (commandList.indexOf("dummy") !== -1) {
                                 commonOptional = commonOptional.concat(["dummyusermsg", "dummytargetmsg", "dummybroadcastmsg"]);
@@ -441,6 +442,7 @@ function mafiaChecker() {
                                             checkValidValue(action.shieldActions, ["*"], comm + ".shieldActions");
                                         }
                                     }
+                                    checkType(action.shieldmsg, ["string"], comm + ".shieldmsg");
                                 } else if (command == "dummy" || command == "dummy2" || command == "dummy3") {
                                     checkType(action[command + "usermsg"], ["string"], comm + "." + command + "usermsg");
                                     checkType(action[command + "targetmsg"], ["string"], comm + "." + command + "targetmsg");
@@ -1093,7 +1095,14 @@ function mafiaChecker() {
         if (attr === undefined) {
             return false;
         }
-        if (valid.indexOf(attr) === -1) {
+        var fullValid = valid.concat();
+        if (valid.indexOf(true) !== -1) {
+            fullValid.push("true");
+        }
+        if (valid.indexOf(false) !== -1) {
+            fullValid.push("false");
+        }
+        if (fullValid.indexOf(attr) === -1) {
             addMinorError("Invalid value '" + attr + "' found at " + msg + " (Valid values are " + valid.join(", ") + ")");
             return false;
         }
@@ -1139,7 +1148,7 @@ function mafiaChecker() {
     function commonNightActions(yourRole, action, command) {
         var act = yourRole + ".night." + command, c;
         
-        checkValidValue(action.target, ["Any", "Self", "AnyButTeam", "AnyButRole", "AnyButSelf", "OnlySelf"], act + ".target");
+        checkValidValue(action.target, ["Any", "Self", "AnyButTeam", "AnyButRole", "AnyButSelf", "OnlySelf", "OnlyTeam", "OnlyTeammates"], act + ".target");
         checkValidValue(action.common, ["Self", "Team", "Role"], act + ".common");
         checkType(action.priority, ["number"], act + ".priority");
 
@@ -1149,7 +1158,7 @@ function mafiaChecker() {
                     checkValidRole(action.broadcast[e], act + ".broadcast");
                 }
             } else {
-                checkValidValue(action.broadcast.toLowerCase(), ["none", "team", "role", "all", "*"], act + ".broadcast");
+                checkValidValue(action.broadcast, ["none", "team", "role", "all", "*"], act + ".broadcast");
             }
         }
         

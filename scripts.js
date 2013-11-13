@@ -2400,7 +2400,7 @@ beforeBattleMatchup : function(src,dest,clauses,rated)
         }
         for (var x=0;x<sys.teamCount(id);x++) {
             var tier = sys.tier(id,x);
-            if (sys.ladderRating(id,tier) >= 1200 || sys.ranking(id,tier)/sys.totalPlayersByTier(tier) <= 0.05) {
+            if (sys.ladderRating(id,tier) >= 1200) {
                 sys.sendHtmlMessage(id,"<font color=red size=3><b>You currently have a high rating in "+tier+", but your account is not registered! Please register to protect your account from being stolen (click the register button below and follow the instructions)!</b></font><ping/>");
             }
         }

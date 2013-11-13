@@ -1118,6 +1118,7 @@ function Mafia(mafiachan) {
             this.players[p].restrictions = [];
             this.players[p].redirectTo = undefined;
             this.players[p].redirectActions = undefined;
+            this.players[p].shieldmsg = undefined;
         }
     };
     this.clearVariables();
@@ -2424,7 +2425,7 @@ function Mafia(mafiachan) {
                         
                         if (mafia.isInGame(targetName) && mafia.players[targetName].redirectTo !== undefined && (mafia.players[targetName].redirectActions === "*" || mafia.players[targetName].redirectActions.indexOf(o.action) !== -1)) {
                             targetName = mafia.players[targetName].redirectTo;
-                            mafia.sendPlayer(player.name, "±Game: Your " + o.action + " was shielded by " + targetName + "!");
+                            mafia.sendPlayer(player.name, needsBot(target.shieldmsg).replace(/~Action~/g, o.action).replace(/~Self~/g, targetName));
                         }
                         
                         var c;
@@ -2899,6 +2900,7 @@ function Mafia(mafiachan) {
                             } else if (command == "shield") {
                                 target.redirectTo = player.name;
                                 target.redirectActions = Action.shieldActions || "*";
+                                target.shieldmsg = Action.shieldmsg || "Your ~Action~ was shielded by ~Self~!";
                             } else if (commandIsDummy) {
                                 //Dummy actions to trigger modes without replacing useful commands. Great for large themes that want more freedom.
                                 if (Action[command + "usermsg"]) {
@@ -3861,18 +3863,23 @@ function Mafia(mafiachan) {
                     return;
                 }
                 target = mafia.players[commandData];
+                var canTarget = player.role.actions.night[command].target;
 
                 this.addPhaseStalkAction(name, command, target.name);
 
-                if (["Any", "Self", "OnlySelf"].indexOf(player.role.actions.night[command].target) == -1 && commandData == name) {
+                if (["Any", "Self", "OnlySelf", "OnlyTeam"].indexOf(canTarget) == -1 && commandData == name) {
                     sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target yourself!", mafiachan);
                     return;
-                } else if (player.role.actions.night[command].target == "OnlySelf" && commandData != name) {
+                } else if (canTarget == "OnlySelf" && commandData != name) {
                     sys.sendMessage(src, "±Hint: You can only use this action on yourself!", mafiachan);
                     return;
-                } else if (player.role.actions.night[command].target == 'AnyButTeam' && player.role.side == target.role.side
-                 || player.role.actions.night[command].target == 'AnyButRole' && player.role.role == target.role.role) {
+                } else if (canTarget == 'AnyButTeam' && player.role.side == target.role.side
+                 || canTarget == 'AnyButRole' && player.role.role == target.role.role) {
                     sys.sendMessage(src, "±Hint: Nope, this wont work... You can't target your partners!", mafiachan);
+                    return;
+                } else if ((canTarget == "OnlyTeammates" && player == target)
+                 || (["OnlyTeam", "OnlyTeammates"].indexOf(canTarget) !== -1 && player.role.side != target.role.side)) {
+                    sys.sendMessage(src, "±Hint: You can only use this action on your teammates!", mafiachan);
                     return;
                 }
 
@@ -5336,11 +5343,17 @@ function Mafia(mafiachan) {
     };
 
     this.beforeChatMessage = function (src, message, channel) {
-        if (channel !== 0 && channel == mafiachan && mafia.ticks > 0 && ["blank", "voting", "entry"].indexOf(mafia.state) == -1 && !mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0 && !mafia.isMafiaAdmin(src)) {
-            if (!(is_command(message) && message.substr(1, 2).toLowerCase() != "me")) {
-                sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
+        if (channel !== 0 && channel == mafiachan && mafia.ticks > 0 && ["blank", "voting", "entry"].indexOf(mafia.state) == -1) {
+            if (!mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0 && !mafia.isMafiaAdmin(src)) {
+                if (!(is_command(message) && message.substr(1, 2).toLowerCase() != "me")) {
+                    sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
+                    return true;
+                }
+            } 
+            if (message.indexOf("[Team]") === 0) {
+                mafiabot.sendMessage(src, "Please don't fake a Team Talk message!", mafiachan);
                 return true;
-            }
+            } 
         }
     };
     
