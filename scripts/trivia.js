@@ -380,8 +380,8 @@ TriviaGame.prototype.startTrivia = function (src, data) {
         data = [data[0]];
     }
     var rand = parseInt(data[0], 10);
-    if (rand > 102 || rand < 1) {
-        this.sendPM(src, "Please do not start a game with more than 102 points, or less than 1 point.", triviachan);
+    if (rand > 60 || rand < 1) {
+        this.sendPM(src, "Please do not start a game with more than 60 points, or less than 1 point.", triviachan);
         return;
     }
     for (var i = 1; i < data.length; i++) {
@@ -1038,8 +1038,8 @@ addAdminCommand("changegoal", function (src, commandData, channel) {
         Trivia.sendPM(src, "The goal must be a valid number.", channel);
         return;
     }
-    if (commandData < 1 || commandData > 102) {
-        Trivia.sendPM(src, "The goal must not be lower than 1 or higher than 102.", channel);
+    if (commandData < 1 || commandData > 60) {
+        Trivia.sendPM(src, "The goal must not be lower than 1 or higher than 60.", channel);
         return;
     }
     triviabot.sendAll(sys.name(src) + " changed the goal of the current game to " + commandData + ".", triviachan);
