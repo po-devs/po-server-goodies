@@ -483,7 +483,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
             }
             else {
                 var tanswer = this.submittedAnswers[id].answer;
-                wrongAnswers.push("<span title=" + utilities.html_escape(name) + ">" + utilities.html_escape(tanswer) + "</span>");
+                wrongAnswers.push("<span title='" + utilities.html_escape(name).replace(/'/g, "&apos;") + "'>" + utilities.html_escape(tanswer) + "</span>");
                 for (var i = 0; i < trivData.triviaWarnings.length; ++i) {
                     var regexp = new RegExp(trivData.triviaWarnings[i]);
                     if (regexp.test(tanswer.toLowerCase())) {
