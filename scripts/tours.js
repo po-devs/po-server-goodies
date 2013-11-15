@@ -1419,7 +1419,7 @@ function tourCommand(src, command, commandData, channel) {
                 var tadmins = tours.touradmins;
                 var silent = false;
                 if (command === "smegauser" || command === "stowner" || command === "stourowner") {
-                    command.splice(command.length - 1, 1);
+                    command = command.substring(1);
                     silent = true;
                 }
                 if ((command === "towner" || command === "tourowner") && sys.auth(src) < 3) {
