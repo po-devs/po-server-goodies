@@ -3796,7 +3796,7 @@ function Mafia(mafiachan) {
             "If you must leave, you can ask a Mafia Admin in the chat for a \"slay\" in order to be removed from the game. A valid reason must be supplied with your request. Not liking any part of the game or participating in other channels are not valid reasons. Asking for a slay within the first few phases of the game, or leaving without asking for a slay, will result in punishment.",
             "",
             "±Rule 5- Do not attempt to ruin the game in any way, shape, or form:",
-            "Do not reveal, vote, or kill your teammates without their explicit consent. Do not quote any of the game bots, including in private messages. Do not target a certain user or group of users repeatedly. If you are not currently alive in the game, do not discuss the game with anyone still playing. Do not copy other peoples' names or make your name similar to someone else's. Do not disable private messages (PMs) or ignore other players as Mafia is a game of heavy communication. Do not stall the game for any reason. ",
+            "Do not intentionally reveal, vote, or kill your teammates without their consent. Do not quote any of the game bots, including in private messages. Do not target a certain user or group of users repeatedly. If you are not currently alive in the game, do not discuss the game with anyone still playing. Do not copy other peoples' names or make your name similar to someone else's. Do not disable private messages (PMs) or ignore other players as Mafia is a game of heavy communication. Do not stall the game for any reason. Do not attempt to fake \"Team Talk\".",
             ""
         ];
         dump(src, mrules, channel);
