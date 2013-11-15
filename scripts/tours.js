@@ -266,7 +266,7 @@ function getFullTourName(key) {
 var find_tier = utilities.find_tier;
 
 function modeOfTier(tier) {
-    if (tier.indexOf("Doubles") != -1 || ["JAA", "VGC 2009", "VGC 2010", "VGC 2011", "VGC 2012", "VGC 2013"].indexOf(tier) != -1) {
+    if (tier.indexOf("Doubles") != -1 || ["JAA", "VGC 2009", "VGC 2010", "VGC 2011", "VGC 2012", "VGC 2013", "VGC 2014"].indexOf(tier) != -1) {
         return "Doubles";
     }
     else if (tier.indexOf("Triples") != -1) {
