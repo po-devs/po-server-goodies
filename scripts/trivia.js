@@ -380,8 +380,8 @@ TriviaGame.prototype.startTrivia = function (src, data) {
         data = [data[0]];
     }
     var rand = parseInt(data[0], 10);
-    if (rand > 102 || rand < 1) {
-        this.sendPM(src, "Please do not start a game with more than 102 points, or less than 1 point.", triviachan);
+    if (rand > 60 || rand < 1) {
+        this.sendPM(src, "Please do not start a game with more than 60 points, or less than 1 point.", triviachan);
         return;
     }
     for (var i = 1; i < data.length; i++) {
@@ -411,7 +411,7 @@ TriviaGame.prototype.startTrivia = function (src, data) {
             i--;
         }
     }
-    data[0] = (isNaN(rand)) ? sys.rand(trivData.autostartRange.min, trivData.autostartRange.max) : +rand;
+    data[0] = (isNaN(rand)) ? sys.rand(trivData.autostartRange.min, parseInt(trivData.autostartRange.max, 10) + 1) : +rand;
     data = data.join("*");
     this.startGame(data, sys.name(src));
 };
@@ -483,7 +483,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
             }
             else {
                 var tanswer = this.submittedAnswers[id].answer;
-                wrongAnswers.push("<span title='" + utilities.html_escape(name) + "'>" + utilities.html_escape(tanswer) + "</span>");
+                wrongAnswers.push("<span title='" + utilities.html_escape(name).replace(/'/g, "&apos;") + "'>" + utilities.html_escape(tanswer) + "</span>");
                 for (var i = 0; i < trivData.triviaWarnings.length; ++i) {
                     var regexp = new RegExp(trivData.triviaWarnings[i]);
                     if (regexp.test(tanswer.toLowerCase())) {
@@ -1038,8 +1038,8 @@ addAdminCommand("changegoal", function (src, commandData, channel) {
         Trivia.sendPM(src, "The goal must be a valid number.", channel);
         return;
     }
-    if (commandData < 1 || commandData > 102) {
-        Trivia.sendPM(src, "The goal must not be lower than 1 or higher than 102.", channel);
+    if (commandData < 1 || commandData > 60) {
+        Trivia.sendPM(src, "The goal must not be lower than 1 or higher than 60.", channel);
         return;
     }
     triviabot.sendAll(sys.name(src) + " changed the goal of the current game to " + commandData + ".", triviachan);
