@@ -3800,6 +3800,14 @@ function Mafia(mafiachan) {
             ""
         ];
         dump(src, mrules, channel);
+        if (this.isMafiaAdmin(src)) {
+            var marules = [
+                "±Rule 6- You are an MA and are expected to set an example:",
+                "You are expected to follow all of the aforementioned rules. You are subject to the same, if not harsher punishments for breaking them, including the possibility of termination. All ban discussion is expected to go on in #Victory Road. Do not discuss private or sensitive information in with anyone whom it does not concern. You should always make reasonable effort to PM users you are about to ban to let them know why. Don't be afraid to shove players if they broke a rule-- it is much easier to sort out a problem if you have their full attention.",
+                ""
+            ];
+            dump(src, marules, channel);
+        };
     };
     this.handleCommandOld = function (src, command, commandData, channel) {
         var name, x, player, target;
