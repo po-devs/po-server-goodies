@@ -238,6 +238,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         return;
     }
+    if (command == "clearprofiling") {
+        sys.resetProfiling();
+        normalbot.sendMessage(src, "Profiling information successfully cleared.", channel);
+        return;
+    }
     if (command == "sendall") {
         sys.sendAll(commandData, channel);
         return;
@@ -713,6 +718,7 @@ exports.help =
         "/rangeunban: Removes a rangeban.",
         "/purgemutes: Purges mutes older than the given time in seconds. Default is 4 weeks.",
         "/purgembans: Purges mafiabans older than the given time in seconds. Default is 1 week.",
+        "/clearprofiling: Clears all profiling info.",
         "/addplugin: Add a plugin from the web.",
         "/removeplugin: Removes a plugin.",
         "/updateplugin: Updates plugin from the web.",
