@@ -200,7 +200,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "profiling") {
-        sys.profileDump().split("\n").forEach(function(string) {normalbot.sendMessage(src, string, channel);});
+        sys.profileDump().split("\n").forEach(function(string) {sys.sendMessage(src, string, channel);});
         return;
     }
     if (command == "ipbans") {
