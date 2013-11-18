@@ -199,6 +199,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         } catch (e) { sys.sendMessage(src, e, channel); }
         return;
     }
+    if (command == "profiling") {
+        sys.profileDump().split("\n").forEach(function(string) {normalbot.sendMessage(src, string, channel);});
+        return;
+    }
     if (command == "ipbans") {
         var TABLE_HEADER, TABLE_LINE, TABLE_END;
         if (!commandData || commandData.indexOf('-text') == -1) {
@@ -602,6 +606,7 @@ exports.help =
         "/mafiabans: Searches the mafiabanlist for a string, shows full list if no search term is entered.",
         "/rangebans: Lists range bans.",
         "/ipbans: Lists ip bans.",
+        "/profiling: Shows the profiling dump.",
         "/autosmutelist: Lists the names in the auto-smute list.",
         "/namebans: Lists name bans.",
         "/namewarns: Lists name warnings.",
