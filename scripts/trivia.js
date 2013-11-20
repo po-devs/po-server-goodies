@@ -45,7 +45,7 @@ catch (e) {
     trivData = {};
 }
 
-var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard", "triviaWarnings", "autostartRange"];
+var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard", "triviaWarnings", "autostartRange", "equivalentCats"];
 for (var i = 0; i < neededData.length; ++i) {
     var data = neededData[i];
     if (trivData[data] === undefined) {
@@ -399,6 +399,11 @@ TriviaGame.prototype.startTrivia = function (src, data) {
         }
     }
     for (var i = 1; i < data.length; i++) {
+       if (TrivData.equivalentCats.hasOwnProperty(data[i].toLowerCase()) {
+          data[i] = TrivData.equivalentCats[data[i].toLowerCase()];
+       }
+    }
+    for (var i = 1; i < data.length; i++) {
         var match = false;
         for (var q in triviaq.all()) {
             if (data[i].toLowerCase() === triviaq.get(q).category.toLowerCase()) {
@@ -432,7 +437,7 @@ TriviaGame.prototype.startTriviaRound = function () {
     else {
         questionNumber = Trivia.randomId();
         var i = 0;
-        while (triviaq.get(questionNumber) === null && i !== 200) {
+        while ((triviaq.get(questionNumber) === null || (triviaq.get(questionNumber).category.toLowerCase() === "pokemon : who's that pokemon?" && this.androidPlayers())) && i !== 200) {
             questionNumber = Trivia.randomId();
             i++;
         }
@@ -680,6 +685,15 @@ TriviaGame.prototype.playerPlaying = function (src) {
     var key = this.key(src);
     return (this.triviaPlayers.hasOwnProperty(key) && this.triviaPlayers[key].playing);
 };
+
+TriviaGame.prototype.androidPlayers = function () {
+   for (var i in this.triviaPlayers) {
+      if (this.triviaPlayers[i].playing && sys.os(i) === "android") {
+         return true;
+      }
+   }
+   return false;
+}
 
 TriviaGame.prototype.addPlayer = function (src) {
     var key = this.key(src);
@@ -1072,6 +1086,9 @@ addUserCommand("submitq", function (src, commandData, channel) {
         return;
     }
     var category = utilities.html_escape(commandData[0]).trim();
+    if (trivData.equivalentCats.hasOwnProperty(category.toLowerCase)) {
+       category = trivData.equivalentCats[category.toLowerCase];
+    }
     var question = utilities.html_escape(commandData[1]).trim();
     var fixAnswer = commandData[2].replace(/ *, */gi, ",").replace(/^ +/, "");
     var answer = fixAnswer.split(",");
@@ -1202,7 +1219,7 @@ addServerOwnerCommand(["triviasuperadminoff", "striviasuperadminoff"], function 
 
 addUserCommand("start", function (src, commandData) {
     Trivia.startTrivia(src, commandData);
-}, "Allows you to start a trivia game, format /start [number][*category1][*category2][...] leave number blank for random. Only Trivia Admins may start Category Games");
+}, "Allows you to start a trivia game, format /start [number][*category1][*category2][...] leave number blank for random. Only Trivia Admins may start Category Games.");
 
 addUserCommand("lastcat", function (src, commandData, channel) {
     if (lastCatGame === 0) {
@@ -1210,11 +1227,11 @@ addUserCommand("lastcat", function (src, commandData, channel) {
         return;
     }
     Trivia.sendPM(src, "The last Category Game occurred " + lastCatGame + " games ago, with categories: " + lastUsedCats.join(", "), channel);
-}, "Allows you to check when the last Category Game occurred");
+}, "Allows you to check when the last Category Game occurred.");
 
 addAdminCommand("end", function (src) {
     Trivia.endTrivia(src);
-}, "Allows you to end a current trivia game");
+}, "Allows you to end a current trivia game.");
 
 addAdminCommand("suggest", function (src, commandData, channel) {
     if (Trivia.started === false) {
@@ -1239,7 +1256,7 @@ addAdminCommand("say", function (src, commandData, channel) {
     if (commandData === "")
         return;
     Trivia.sendAll("(" + sys.name(src) + "): " + commandData, channel);
-}, "Allows you to talk during the answer period");
+}, "Allows you to talk during the answer period.");
 
 /*addOwnerCommand("makebackup", function(src, commandData, channel) {
     commandData = commandData.split(":");
@@ -1264,7 +1281,7 @@ addOwnerCommand("updateafter", function (src, commandData, channel) {
         runUpdate();
     }
     return;
-}, "Updates trivia after the current game is over");
+}, "Updates trivia after the current game is over.");
 
 /*addOwnerCommand("basestatquestions", function (src, commandData, channel) { //this should maybe be removed later!
     var pokemon = ["Terrakion", "Politoed", "Ferrothorn", "Tentacruel", "Espeon", "Mamoswine", "Gyarados", "Heatran", "Ninetales", "Tyranitar", "Darmanitan", "Snorlax", "Mienshao", "Chandelure", "Raikou", "Nidoking", "Kingdra", "Arcanine", "Crobat", "Gligar", "Slowking", "Sceptile", "Steelix", "Tangrowth", "Gallade", "Clefable", "Tornadus", "Sandslash", "Miltank", "Qwilfish", "Crustle", "Sawk", "Exeggutor", "Bisharp", "Torkoal", "Emboar", "Klinklang", "Regirock", "Tauros", "Pinsir", "Mienfoo", "Porygon", "Abra", "Houndour", "Snover"];
@@ -1295,7 +1312,7 @@ addOwnerCommand("addwordwarn", function (src, commandData) {
     saveData();
     triviabot.sendChanMessage(src, "You added a warning for: " + regex.source);
     return;
-}, "Adds an answer warning to trivia");
+}, "Adds an answer warning to trivia.");
 
 addOwnerCommand("removewordwarn", function (src, commandData) {
     if (commandData === undefined) {
@@ -1310,7 +1327,42 @@ addOwnerCommand("removewordwarn", function (src, commandData) {
     else {
         triviabot.sendChanMessage(src, commandData + " is not on the warning list");
     }
-}, "Removes a warning from trivia");
+}, "Removes a warning from trivia.");
+
+addOwnerCommand("addequivalentcat", function (src, commandData, channel) {
+   var data = commandData.split("*");
+   if (data.length != 2) {
+      triviabot.sendMessage(src, "Incorrect syntax! Format for this command is /addequivalentcat [category]*[category to change to].", channel);
+      return;
+   }
+   if (data[0] === "" || data[1] === "") {
+      triviabot.sendMessage(src, "Blank categories make little sense!", channel);
+      return;
+   }
+   var toChange = data[0].toLowerCase();
+   var changeTo = data[1];
+   if (trivData.equivalentCats.hasOwnProperty(toChange) {
+      triviabot.sendMessage(src, data[0) + " is already a synonim for a category!", channel);
+      return;
+   }
+   trivData.equivalentCats[toChange] = changeTo;
+   saveData();
+   triviabot.sendMessage(src, "Added " + toChange + " as a synonim for " + changeTo + ".", channel);
+}, "Adds a pair of equivalent categories. Format is /addequivalentcat [category]*[category to change to].");
+
+addOwnerCommand("removeequivalentcat", function (src, commandData, channel) {
+   if (commandData === "") {
+      triviabot.sendMessage(src, "Please specify a synonim to remove!", channel);
+   }
+   commandData = commandData.toLowerCase();
+   if (!trivData.equivalentCats.hasOwnProperty(commandData)) {
+      triviabot.sendMessage(src, commandData + " is not acting as a synonim for a category!", channel);
+      return;
+   }
+   delete trivData.equivalentCats[commandData];
+   saveData();
+   triviabot.sendMessage(src, "You removed " + commandData + " from the list of synonims.", channel);
+}), "Removes a synonim for a category.");
 
 addAdminCommand("flashtas", function (src, commandData, channel) {
     if ([revchan, sachannel].indexOf(channel) === -1) {
@@ -1327,7 +1379,7 @@ addAdminCommand("flashtas", function (src, commandData, channel) {
             }
         }
     }
-}, "Pings all online Trivia Admins. Use with /flashtas [phrase]. Abuse will be punished");
+}, "Pings all online Trivia Admins. Use with /flashtas [phrase]. Abuse will be punished.");
 
 /*addOwnerCommand("revertfrom", function(src, commandData, channel) {
     commandData = commandData.split(":");
@@ -1605,7 +1657,7 @@ addAdminCommand("editq", function (src, commandData, channel) {
         })[0] - 1;
     }
     if (Trivia.roundQuestion === commandData) {
-        triviabot.sendMessage(src, "This question is currently being asked. Please wait before editing");
+        triviabot.sendMessage(src, "This question is currently being asked. Please wait before editing.", channel);
         return;
     }
     if (q !== null) {
@@ -1741,6 +1793,16 @@ addAdminCommand("wordwarns", function (src, commandData, channel) {
     sys.sendHtmlMessage(src, table, channel);
     return;
 }, "View word warnings.");
+
+addAdminCommand("equivalentcats", function (src, commandData, channel) {
+   var table = "<table border = 1 cellpadding = 5 cellspacing = 0><tr><th>Category</th><th>Acts like</th></tr>";
+   for (var i in trivData.equivalentCats) {
+      table += "<tr><td>" + i + "</td><td>" + trivData.equivalentCats[i] + "</td></tr>";
+   }
+   table += "</table>";
+   sys.sendHtmlMessage(src, table, channel);
+   return;
+}, "View what categories act as synonims for category games and submissions.");
 
 addAdminCommand("triviamute", function (src, commandData, channel) {
     if (commandData === undefined || commandData.indexOf(":") == -1) {
