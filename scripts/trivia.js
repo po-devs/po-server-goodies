@@ -399,8 +399,8 @@ TriviaGame.prototype.startTrivia = function (src, data) {
         }
     }
     for (var i = 1; i < data.length; i++) {
-       if (TrivData.equivalentCats.hasOwnProperty(data[i].toLowerCase()) {
-          data[i] = TrivData.equivalentCats[data[i].toLowerCase()];
+       if (trivData.equivalentCats.hasOwnProperty(data[i].toLowerCase())) {
+          data[i] = trivData.equivalentCats[data[i].toLowerCase()];
        }
     }
     for (var i = 1; i < data.length; i++) {
@@ -693,7 +693,7 @@ TriviaGame.prototype.androidPlayers = function () {
       }
    }
    return false;
-}
+};
 
 TriviaGame.prototype.addPlayer = function (src) {
     var key = this.key(src);
@@ -1341,28 +1341,28 @@ addOwnerCommand("addequivalentcat", function (src, commandData, channel) {
    }
    var toChange = data[0].toLowerCase();
    var changeTo = data[1];
-   if (trivData.equivalentCats.hasOwnProperty(toChange) {
-      triviabot.sendMessage(src, data[0) + " is already a synonim for a category!", channel);
+   if (trivData.equivalentCats.hasOwnProperty(toChange)) {
+      triviabot.sendMessage(src, data[0] + " is already a synonym for a category!", channel);
       return;
    }
    trivData.equivalentCats[toChange] = changeTo;
    saveData();
-   triviabot.sendMessage(src, "Added " + toChange + " as a synonim for " + changeTo + ".", channel);
+   triviabot.sendMessage(src, "Added " + toChange + " as a synonym for " + changeTo + ".", channel);
 }, "Adds a pair of equivalent categories. Format is /addequivalentcat [category]*[category to change to].");
 
 addOwnerCommand("removeequivalentcat", function (src, commandData, channel) {
    if (commandData === "") {
-      triviabot.sendMessage(src, "Please specify a synonim to remove!", channel);
+      triviabot.sendMessage(src, "Please specify a synonym to remove!", channel);
    }
    commandData = commandData.toLowerCase();
    if (!trivData.equivalentCats.hasOwnProperty(commandData)) {
-      triviabot.sendMessage(src, commandData + " is not acting as a synonim for a category!", channel);
+      triviabot.sendMessage(src, commandData + " is not acting as a synonym for a category!", channel);
       return;
    }
    delete trivData.equivalentCats[commandData];
    saveData();
-   triviabot.sendMessage(src, "You removed " + commandData + " from the list of synonims.", channel);
-}), "Removes a synonim for a category.");
+   triviabot.sendMessage(src, "You removed " + commandData + " from the list of synonyms.", channel);
+}, "Removes a synonym for a category.");
 
 addAdminCommand("flashtas", function (src, commandData, channel) {
     if ([revchan, sachannel].indexOf(channel) === -1) {
@@ -1802,7 +1802,7 @@ addAdminCommand("equivalentcats", function (src, commandData, channel) {
    table += "</table>";
    sys.sendHtmlMessage(src, table, channel);
    return;
-}, "View what categories act as synonims for category games and submissions.");
+}, "View what categories act as synonyms for category games and submissions.");
 
 addAdminCommand("triviamute", function (src, commandData, channel) {
     if (commandData === undefined || commandData.indexOf(":") == -1) {
