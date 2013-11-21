@@ -823,7 +823,7 @@ init : function() {
 
     lineCount = 0;
 
-    pokeNatures = [];
+    script.pokeNatures = [];
 
     var list = "Heatran-Eruption/Quiet=Suicune-ExtremeSpeed/Relaxed|Sheer Cold/Relaxed|Aqua Ring/Relaxed|Air Slash/Relaxed=Raikou-ExtremeSpeed/Rash|Weather Ball/Rash|Zap Cannon/Rash|Aura Sphere/Rash=Entei-ExtremeSpeed/Adamant|Flare Blitz/Adamant|Howl/Adamant|Crush Claw/Adamant=Snivy-Aromatherapy/Hardy|Synthesis/Hardy=Genesect-Extreme Speed/Hasty|Blaze Kick/Hasty|Shift Gear/Hasty";
     //this is really awful btw :(
@@ -834,11 +834,11 @@ init : function() {
         sepMoves = sepMovesPoke[1].split('|');
 
         var poke = sys.pokeNum(sepMovesPoke[0]);
-        pokeNatures[poke] = [];
+        script.pokeNatures[poke] = [];
 
         for (var y = 0; y < sepMoves.length; ++y) {
             movenat = sepMoves[y].split('/');
-            pokeNatures[poke][sys.moveNum(movenat[0])] = sys.natureNum(movenat[1]);
+            script.pokeNatures[poke][sys.moveNum(movenat[0])] = sys.natureNum(movenat[1]);
         }
     }
     if (typeof script.chanNameBans == 'undefined') {

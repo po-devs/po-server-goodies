@@ -1,5 +1,5 @@
 // Global variables inherited from scripts.js
-/*global breedingpokemons, dwpokemons, checkbot, normalbot, lcpokemons, staffchannel, pokeNatures, lcmoves */
+/*global breedingpokemons, dwpokemons, checkbot, normalbot, lcpokemons, staffchannel, script, lcmoves */
 
 function TierChecker() {
     this.checkers = [];
@@ -62,9 +62,9 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(s
     var ret = [];
     for (var i = 0; i < 6; i++) {
         var poke = sys.teamPoke(src, team, i);
-        if (poke in pokeNatures) {
-            for (var x in pokeNatures[poke]) {
-                if (sys.hasTeamPokeMove(src, team, i, x) && sys.teamPokeNature(src, team, i) != pokeNatures[poke][x])
+        if (poke in script.pokeNatures) {
+            for (var x in script.pokeNatures[poke]) {
+                if (sys.hasTeamPokeMove(src, team, i, x) && sys.teamPokeNature(src, team, i) != script.pokeNatures[poke][x])
                 {
                     ret.push("" + sys.pokemon(poke) + " with " + sys.move(x) + " must be a " + sys.nature(pokeNatures[poke][x]) + " nature. Change it in the teambuilder.");
                 }
