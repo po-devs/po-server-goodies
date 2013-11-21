@@ -354,10 +354,10 @@ tier_checker.add_new_check(INCLUDING, ["Shanai Cup"], function shanaiAbilityChec
 
 tier_checker.add_new_check(EXCLUDING, [], function eventShinies(player, team) {
     var beasts = {};
-    beasts[sys.pokeNum('Raikou')]  = ['Extremespeed', 'Aura Sphere', 'Weather Ball', 'Zap Cannon'] .map(sys.moveNum);
-    beasts[sys.pokeNum('Suicune')] = ['Extremespeed', 'Aqua Ring',   'Sheer Cold',   'Air Slash']  .map(sys.moveNum);
-    beasts[sys.pokeNum('Entei')]   = ['Extremespeed', 'Howl',        'Crush Claw',   'Flare Blitz'].map(sys.moveNum);
-    beasts[sys.pokeNum('Genesect')] = ['Extremespeed', 'Blaze Kick', 'Shift Gear'].map(sys.moveNum);
+    beasts[sys.pokeNum('Raikou')]  = ['Extreme Speed', 'Aura Sphere', 'Weather Ball', 'Zap Cannon'] .map(sys.moveNum);
+    beasts[sys.pokeNum('Suicune')] = ['Extreme Speed', 'Aqua Ring',   'Sheer Cold',   'Air Slash']  .map(sys.moveNum);
+    beasts[sys.pokeNum('Entei')]   = ['Extreme Speed', 'Howl',        'Crush Claw',   'Flare Blitz'].map(sys.moveNum);
+    beasts[sys.pokeNum('Genesect')] = ['Extreme Speed', 'Blaze Kick', 'Shift Gear'].map(sys.moveNum);
  
     for (var beast in beasts)
         for (var slot=0; slot<6; slot++)
