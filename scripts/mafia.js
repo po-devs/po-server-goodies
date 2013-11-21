@@ -2424,8 +2424,9 @@ function Mafia(mafiachan) {
                         var targetName = targets[t];
                         
                         if (mafia.isInGame(targetName) && mafia.players[targetName].redirectTo !== undefined && (mafia.players[targetName].redirectActions === "*" || mafia.players[targetName].redirectActions.indexOf(o.action) !== -1)) {
+                            var shieldmsg = mafia.players[targetName].shieldmsg;
                             targetName = mafia.players[targetName].redirectTo;
-                            mafia.sendPlayer(player.name, needsBot(mafia.players[targetName].shieldmsg.replace(/~Action~/g, o.action).replace(/~Self~/g, targetName)), "Game");
+                            mafia.sendPlayer(player.name, needsBot(shieldmsg).replace(/~Action~/g, o.action).replace(/~Self~/g, targetName).replace(/~Target~/g, targets[t]));
                         }
                         
                         var c;
