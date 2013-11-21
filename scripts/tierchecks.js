@@ -66,7 +66,7 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(s
             for (var x in script.pokeNatures[poke]) {
                 if (sys.hasTeamPokeMove(src, team, i, x) && sys.teamPokeNature(src, team, i) != script.pokeNatures[poke][x])
                 {
-                    ret.push("" + sys.pokemon(poke) + " with " + sys.move(x) + " must be a " + sys.nature(pokeNatures[poke][x]) + " nature. Change it in the teambuilder.");
+                    ret.push("" + sys.pokemon(poke) + " with " + sys.move(x) + " must be a " + sys.nature(script.pokeNatures[poke][x]) + " nature. Change it in the teambuilder.");
                 }
             }
         }
