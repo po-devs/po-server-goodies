@@ -74,7 +74,7 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(s
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["BW2 LC", "BW2 LC Ubers", "BW2 UU LC"], function littleCupCheck(src, team) {
+tier_checker.add_new_check(INCLUDING, ["BW2 LC", "BW2 LC Ubers", "BW2 UU LC", "XY LC"], function littleCupCheck(src, team) {
     var ret = [];
     for (var i = 0; i < 6; i++) {
         var x = sys.teamPoke(src, team, i);
