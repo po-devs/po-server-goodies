@@ -1972,7 +1972,7 @@ module.exports = {
             commandData = ""; // sane default to avoid undefined errors
         }
         // Only care about trivia channels
-        if (channel != triviachan && channel != revchan && ["triviamute", "triviaunmute", "flashtas", "triviaadmins", "tadmins", "tas"].indexOf(command) == -1)
+        if (channel != triviachan && channel != revchan && ["triviamute", "triviaunmute", "flashtas", "triviaadmins", "tadmins", "tas", "triviarules", "triviamutes"].indexOf(command) == -1)
             return;
 
         try {
