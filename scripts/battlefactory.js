@@ -16,7 +16,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 
 // Globals
 var bfversion = "1.100";
-var dataDir = "bfdata/";
+var dataDir = "scriptdata/bfdata/";
 var submitDir = dataDir+"submit/";
 //var messDir = dataDir+"messages/";
 var bfsets, working, defaultsets, userqueue, /*messagebox,*/ teamrevchan, submitbans, bfhash, reviewers;

@@ -42,8 +42,8 @@ if (typeof tours !== "object") {
     }
 }
 
-var configDir = "tourconfig/";
-var dataDir = "tourdata/";
+var configDir = "scriptdata/tourconfig/";
+var dataDir = "scriptdata/tourdata/";
 var utilities = require('utilities.js');
 var html_escape = require('utilities.js').html_escape;
 var tstats = require("newtourstats.js");

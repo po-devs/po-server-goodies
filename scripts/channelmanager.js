@@ -10,7 +10,7 @@ function POChannelManager(fname)
         print('Error: ' + err);
         this.channelMap = {};
     }
-    sys.makeDir("channeldata");
+    sys.makeDir("scriptdata/channeldata");
 }
 
 POChannelManager.prototype.toString = function()
@@ -59,7 +59,7 @@ POChannelManager.prototype.dataFileFor = function(channel)
 {
     var chanName = sys.channel(channel);
     if (!this.channelMap.hasOwnProperty(chanName)) {
-       var genName = "channeldata/" + Date.now() + Math.random().toString().substr(2) + ".json";
+       var genName = "scriptdata/channeldata/" + Date.now() + Math.random().toString().substr(2) + ".json";
        this.channelMap[chanName] = genName;
        this.save();
     }
