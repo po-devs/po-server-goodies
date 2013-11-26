@@ -541,7 +541,7 @@ SESSION.registerUserFactory(POUser);
 SESSION.registerChannelFactory(POChannel);
 
 if (typeof SESSION.global() != 'undefined') {
-    SESSION.global().channelManager = new POChannelManager('channelHash.json');
+    SESSION.global().channelManager = new POChannelManager('scriptdata/channelHash.json');
 
     SESSION.global().__proto__ = POGlobal.prototype;
     var plugin_files = Config.Plugins;
@@ -755,7 +755,7 @@ init : function() {
     if (typeof nameBans == 'undefined') {
         nameBans = [];
         try {
-            var serialized = JSON.parse(sys.getFileContent("nameBans.json"));
+            var serialized = JSON.parse(sys.getFileContent("scriptdata/nameBans.json"));
             for (var i = 0; i < serialized.nameBans.length; ++i) {
                 nameBans.push(new RegExp(serialized.nameBans[i], "i"));
             }
@@ -766,7 +766,7 @@ init : function() {
     if (typeof nameWarns == 'undefined') {
         nameWarns = [];
         try {
-            var serialized = JSON.parse(sys.getFileContent("nameWarns.json"));
+            var serialized = JSON.parse(sys.getFileContent("scriptdata/nameWarns.json"));
             for (var i = 0; i < serialized.nameWarns.length; ++i) {
                 nameWarns.push(new RegExp(serialized.nameWarns[i], "i"));
             }
