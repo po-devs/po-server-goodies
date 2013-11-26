@@ -7,7 +7,7 @@
 */
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global updateModule, sys, SESSION, module, require*/
-var mafiaDataDir = "scriptData/mafiastats/";
+var mafiaDataDir = "scriptdata/mafiastats/";
 var saveDir = "usage_stats/formatted/mafiathemes/";
 
 /*  Essentially a more lazy way to implement something CSS-like. I could use actual CSS, but I prefer this all being in one file and is easier for others to edit
