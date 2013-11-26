@@ -364,7 +364,7 @@ function Mafia(mafiachan) {
         if (!done) {
             this.themeInfo.push([name, url, fname, true]);
         }
-        sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
+        sys.writeToFile("scriptdata/mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
     };
 
     ThemeManager.prototype.loadTheme = function (plain_theme) {
@@ -444,7 +444,7 @@ function Mafia(mafiachan) {
         if (typeof sys !== "object") return;
         this.themes = {};
         this.themes["default"] = this.loadTheme(defaultTheme);
-        var content = sys.getFileContent("mafiathemes/metadata.json");
+        var content = sys.getFileContent("scriptdata/mafiathemes/metadata.json");
         if (!content) return;
         var parsed = JSON.parse(content);
         if (parsed.hasOwnProperty("meta")) {
@@ -462,10 +462,10 @@ function Mafia(mafiachan) {
     };
     ThemeManager.prototype.saveToFile = function (plain_theme) {
         if (typeof sys != "object") return;
-        var fname = "mafiathemes/theme_" + plain_theme.name.toLowerCase();
+        var fname = "scriptdata/mafiathemes/theme_" + plain_theme.name.toLowerCase();
         sys.writeToFile(fname, JSON.stringify(plain_theme));
         this.themeInfo.push([plain_theme.name, "", fname, true]);
-        sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
+        sys.writeToFile("scriptdata/mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
     };
 
     ThemeManager.prototype.loadWebTheme = function (url, announce, update, updatename, src, isNew) {
@@ -546,7 +546,7 @@ function Mafia(mafiachan) {
                     break;
                 }
             }
-            sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
+            sys.writeToFile("scriptdata/mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
             if (silent) {
                 sys.sendMessage(src, "±Murkrow: You removed the theme " + broadcastname + ".", mafiachan);
             } else {
@@ -566,7 +566,7 @@ function Mafia(mafiachan) {
                     break;
                 }
             }
-            sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
+            sys.writeToFile("scriptdata/mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
             var broadcastname = casedtheme(name);
             if (!silent) {
                 dualBroadcast("±Murkrow: " + nonFlashing(sys.name(src)) + " enabled theme " + broadcastname + ".");
@@ -584,7 +584,7 @@ function Mafia(mafiachan) {
                     break;
                 }
             }
-            sys.writeToFile("mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
+            sys.writeToFile("scripdata/mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
             var broadcastname = casedtheme(name);
             if (!silent) {
                 if (src !== Config.Mafia.bot) {
