@@ -394,4 +394,23 @@ tier_checker.add_new_check(INCLUDING, ["Pre-PokeBank OU", "Random Battle"], func
     return ret;
 });
 
+tier_checker.add_new_check(INCLUDING, ["Sky Battle"], function levitateCheck(src, team) {
+    var bannedAbilities = {
+        'duskull': ['frisk'],
+        'bronzor': ['heatproof', 'heavy metal'],
+        'bronzong': ['heatproof', 'heavy metal']
+    };
+    var ret = [];
+    for (var i = 0; i < 6; ++i) {
+        var ability = sys.ability(sys.teamPokeAbility(src, team, i));
+        var lability = ability.toLowerCase();
+        var poke = sys.pokemon(sys.teamPoke(src, team, i));
+        var lpoke = poke.toLowerCase();
+        if (lpoke in bannedAbilities && bannedAbilities[lpoke].indexOf(lability) != -1) {
+            ret.push("" + poke + " is not allowed to have ability " + ability + " in this tier. Please change it to Levitate in Teambuilder.");
+        }
+    }
+    return ret;
+});
+
 module.exports = tier_checker;
