@@ -1,129 +1,129 @@
 {
-    "1-11-2013": {
-        "tier": "BW2 LU",
-        "settings": {}
-    },
-    "2-11-2013": {
-        "tier": "BW2 Ubers",
-        "settings": {}
-    },
-    "3-11-2013": {
-        "tier": "HGSS OU",
-        "settings": {}
-    },
-    "4-11-2013": {
-        "tier": "Challenge Cup",
-        "settings": {}
-    },
-    "5-11-2013": {
+    "1-12-2013": {
         "tier": "BW2 NU",
         "settings": {}
     },
-    "6-11-2013": {
+    "2-12-2013": {
+        "tier": "Inverted Battle",
+        "settings": {}
+    },
+    "3-12-2013": {
+        "tier": "XY Ubers",
+        "settings": {}
+    },
+    "4-12-2013": {
+        "tier": "VGC 2014",
+        "settings": {}
+    },
+    "5-12-2013": {
+        "tier": "Sky Battle",
+        "settings": {}
+    },
+    "6-12-2013": {
         "tier": "Monotype",
         "settings": {}
     },
-    "7-11-2013": {
-        "tier": "BW2 OU",
+    "7-12-2013": {
+        "tier": "XY OU",
         "settings": {}
     },
-    "8-11-2013": {
-        "tier": "Random Battle",
-        "settings": {}
-    },
-    "9-11-2013": {
-        "tier": "Battle Factory 6v6",
-        "settings": {}
-    },
-    "10-11-2013": {
-        "tier": "BW2 OU Doubles",
-        "settings": {}
-    },
-    "11-11-2013": {
-        "tier": "BW2 UU",
-        "settings": {}
-    },
-    "12-11-2013": {
-        "tier": "Adv OU",
-        "settings": {}
-    },
-    "13-11-2013": {
-        "tier": "BW2 Triples",
-        "settings": {}
-    },
-    "14-11-2013": {
-        "tier": "BW2 NU",
-        "settings": {}
-    },
-    "15-11-2013": {
-        "tier": "BW2 LC",
-        "settings": {}
-    },
-    "16-11-2013": {
-        "tier": "BW2 OU",
-        "settings": {}
-    },
-    "17-11-2013": {
-        "tier": "Monotype",
-        "settings": {}
-    },
-    "18-11-2013": {
-        "tier": "Challenge Cup",
-        "settings": {}
-    },
-    "19-11-2013": {
-        "tier": "Random Battle",
-        "settings": {}
-    },
-    "20-11-2013": {
+    "8-12-2013": {
         "tier": "BW2 Ubers",
         "settings": {}
     },
-    "21-11-2013": {
-        "tier": "BW2 Triples",
+    "9-12-2013": {
+        "tier": "Inverted Challenge Cup",
         "settings": {}
     },
-    "22-11-2013": {
-        "tier": "BW2 LU",
+    "10-12-2013": {
+        "tier": "XY LC",
         "settings": {}
     },
-    "23-11-2013": {
+    "11-12-2013": {
         "tier": "Battle Factory 6v6",
         "settings": {}
     },
-    "24-11-2013": {
-        "tier": "BW2 NU",
+    "12-12-2013": {
+        "tier": "XY Ubers",
         "settings": {}
     },
-    "25-11-2013": {
-        "tier": "ADV OU",
+    "13-12-2013": {
+        "tier": "Random Battle",
         "settings": {}
     },
-    "26-11-2013": {
-        "tier": "BW2 OU Doubles",
+    "14-12-2013": {
+        "tier": "XY OU",
         "settings": {}
     },
-    "27-11-2013": {
-        "tier": "BW2 LC",
+    "15-12-2013": {
+        "tier": "BW2 UU",
         "settings": {}
     },
-    "28-11-2013": {
+    "16-12-2013": {
         "tier": "HGSS OU",
         "settings": {}
     },
-    "29-11-2013": {
-        "tier": "BW2 UU",
+    "17-12-2013": {
+        "tier": "XY LC",
+        "settings": {}
+    },
+    "18-12-2013": {
+        "tier": "BW2 OU",
+        "settings": {}
+    },
+    "19-12-2013": {
+        "tier": "Sky Battle",
+        "settings": {}
+    },
+    "20-12-2013": {
+        "tier": "BW2 Triples",
+        "settings": {}
+    },
+    "21-12-2013": {
+        "tier": "XY OU",
+        "settings": {}
+    },
+    "22-12-2013": {
+        "tier": "BW2 LU",
+        "settings": {}
+    },
+    "23-12-2013": {
+        "tier": "Challenge Cup",
+        "settings": {}
+    },
+    "24-12-2013": {
+        "tier": "XY Ubers",
+        "settings": {}
+    },
+    "25-12-2013": {
+        "tier": "Battle Factory 6v6",
+        "settings": {}
+    },
+    "26-12-2013": {
+        "tier": "BW2 OU Doubles",
+        "settings": {}
+    },
+    "27-12-2013": {
+        "tier": "Random Battle",
+        "settings": {}
+    },
+    "28-12-2013": {
+        "tier": "XY OU",
+        "settings": {}
+    },
+    "29-12-2013": {
+        "tier": "Monotype",
+        "settings": {}
+    },
+    "30-12-2013": {
+        "tier": "BW2 LC",
+        "settings": {}
+    },
+    "31-12-2013": {
+        "tier": "Inverted Battle",
         "settings": {}
     },
     "30-11-2013": {
-        "tier": "BW2 OU",
-        "settings": {}
-    },
-    "31-11-2013": {
-        "tier": "BW2 OU",
-        "settings": {}
-    },
-    "31-10-2013": {
         "tier": "BW2 OU",
         "settings": {}
     }
