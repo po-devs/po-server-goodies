@@ -523,6 +523,8 @@ function Mafia(mafiachan) {
                 manager.save(theme.name, url, resp, update);
                 if (announce) {
                     msgAll(sys.name(src) + (isNew ? " added " : " updated ") + "the theme " + theme.name + ".");
+                } else {
+                    msg(src, "You silently added/updated the theme " + theme.name);
                 }
                 if (needsDisable) {
                     msg(src, "This theme was previously disabled. Speak to a Mafia Admin to request enabling.");
@@ -4914,7 +4916,14 @@ function Mafia(mafiachan) {
             return;
         }
         
-        if (command === "update") {
+        if (command === "update" || command === "supdate") {
+            /*Silent Update to be used for mass adding themes after crash
+             *Restricted to sMA because the command allows for silently adding themes as well*/
+            var sup = command === "supdate";
+            if (sup && !this.isMafiaSuperAdmin(src)) {
+                msg(src, "You must be Super Mafia Admin to silently add or update themes.");
+                return;
+            }                
             var url = commandData, name = commandData;
             if (commandData.indexOf("::") >= 0) {
                 var parts = url.split("::");
@@ -4942,7 +4951,7 @@ function Mafia(mafiachan) {
             }
             msg(src, "Download url: " + dlurl);
             if (dlurl) {
-                mafia.themeManager.loadWebTheme(dlurl, true, true, authorMatch ? theme.name.toLowerCase() : null, src, false);
+                mafia.themeManager.loadWebTheme(dlurl, (sup ? false : true), true, authorMatch ? theme.name.toLowerCase() : null, src, false);
             }
             return;
         }
