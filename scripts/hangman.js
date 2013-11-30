@@ -13,7 +13,7 @@ module.exports = function () {
     var defaultParts = 7;
     var minBodyParts = 5;
     var winnerDelay = 60;
-    var answerDelay = 10;
+    var answerDelay = 7;
     var maxAnswers = 3;
 
     var host;
