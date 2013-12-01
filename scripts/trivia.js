@@ -251,6 +251,7 @@ function TriviaGame() {
     this.round = 0;
     this.started = false;
     this.maxPoints = 0;
+    this.scoreType = "";
     this.qSource = [];
     this.catGame = false;
     this.usingCats = [];
@@ -304,12 +305,22 @@ TriviaGame.prototype.startGame = function (data, name) {
 
 TriviaGame.prototype.startNormalGame = function (points, name) {
     this.started = true;
-    sendChanAll("", 0);
-    sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
-    this.sendAll("A #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", 0);
-    sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
-    sendChanAll("", 0);
-    this.sendAll((name !== "" ? name + " started a Trivia game! " : "A trivia game was started! ") + " First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
+    if (this.scoreType === "elimination") {
+        sendChanAll("", 0);
+        sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
+        this.sendAll("An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!", 0);
+        sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
+        sendChanAll("", 0);
+        this.sendAll(name + " opened signups for an elimination game! You only have " + points + " " + (points == 1 ? "life" : "lives") + "!", triviachan);
+    }
+    else {
+        sendChanAll("", 0);
+        sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
+        this.sendAll("A #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", 0);
+        sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
+        sendChanAll("", 0);
+        this.sendAll((name !== "" ? name + " started a Trivia game! " : "A trivia game was started! ") + " First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
+    }
     sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
     var players = sys.playersOfChannel(triviachan);
     // Flash players who have it enabled
@@ -322,8 +333,14 @@ TriviaGame.prototype.startNormalGame = function (points, name) {
     for (var q in triviaq.all()) {
         this.qSource.push(q);
     }
-    this.phase = "standby";
-    this.ticks = 15;
+    if (this.scoreType === "elimination") {
+        this.phase = "signups";
+        this.ticks = 60;
+    }
+    else {
+        this.phase = "standby";
+        this.ticks = 15;
+    }
 };
 
 TriviaGame.prototype.startCatGame = function (points, cats, name) {
@@ -376,7 +393,7 @@ TriviaGame.prototype.startTrivia = function (src, data) {
         return;
     }*/
     data = data.split("*");
-    if (!(tadmin.isTAdmin(sys.name(src)) || tsadmin.isTAdmin(sys.name(src)) || sys.auth(src) > 0)) {
+    if (!(tadmin.isTAdmin(sys.name(src)) || tsadmin.isTAdmin(sys.name(src)) || sys.auth(src) > 0) || this.scoreType === "elimination") {
         data = [data[0]];
     }
     var rand = parseInt(data[0], 10);
@@ -513,7 +530,18 @@ TriviaGame.prototype.finalizeAnswers = function () {
             totalPlayers++;
         }
     }
-    if (answeredCorrectly.length !== 0) {
+    if (this.scoreType === "elimination") {
+        for (var id in this.triviaPlayers) {
+            var name = this.triviaPlayers[id].name;
+            if (this.triviaPlayers[id].playing && answeredCorrectly.indexOf(name) != -1) {
+                this.player(name).points--;
+                if (this.player(name).points === 0) {
+                    this.unjoin(id);
+                }
+            }
+        }
+    }
+    else if (answeredCorrectly.length !== 0) {
         var pointAdd = +(1.65 * Math.log(totalPlayers / answeredCorrectly.length) + 1).toFixed(0);
         this.sendAll("Points awarded for this question: " + pointAdd);
         for (var i = 0; i < answeredCorrectly.length; i++) {
@@ -531,7 +559,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
             var numPoints = this.triviaPlayers[id].points;
             var nohtmlname = utilities.html_escape(regname);
             leaderboard.push([regname, numPoints]);
-            if (this.triviaPlayers[id].points >= this.maxPoints) {
+            if (this.triviaPlayers[id].points >= this.maxPoints && this.scoreType != "elimination") {
                 winners.push(nohtmlname + " (" + this.triviaPlayers[id].points + ")");
             }
         }
@@ -555,8 +583,10 @@ TriviaGame.prototype.finalizeAnswers = function () {
         runUpdate();
         return;
     }
-
-    if (winners.length > 0) {
+    if (leaderboard.length === 1 && this.scoreType === "elimination") {
+        winners.push(utilities.html_escape(leaderboard[0][0]) + " (" + leaderboard[0][1] + ")")
+    }
+    if (winners.length > 0 || (this.scoreType === "elimination" && leaderboard.length === 0)) {
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
         winners.sort(function (a, b) {
             return b[1] - a[1];
@@ -565,7 +595,12 @@ TriviaGame.prototype.finalizeAnswers = function () {
             this.sendAll(sys.name(Trivia.suggestion.suggester) + "'s suggestion was cancelled because the game ended before it could be asked.", revchan);
         }
         var allCats = orderedCategories();
-        this.htmlAll("<h2>Congratulations to " + w + "</h2>" + winners.join(", ") + "");
+        if (leaderboard.length === 0) {
+            this.htmlAll("<h2>Everyone lost! This is why we can't have nice things.</h2>");
+        }
+        else {
+            this.htmlAll("<h2>Congratulations to " + w + "</h2>" + winners.join(", ") + "");
+        }
         sendChanHtmlAll("<font size=5><font color='#3DAA68'><timestamp/> <b>±" + triviabot.name + ":</b> <font color='red'>While you're waiting for another game, why not submit a question? <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>Help and Guidelines are here!</a></font></font></font>", triviachan);
         sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±" + triviabot.name + ":</b></font> We could really use more <b>" + allCats[allCats.length - sys.rand(1, 6)].category + "</b> themed questions!", triviachan);
         sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Never want to miss a Trivia game? Try the <b>/flashme</b> command!", triviachan);
@@ -604,6 +639,7 @@ TriviaGame.prototype.resetTrivia = function () {
     this.started = false;
     this.round = 0;
     this.maxPoints = 0;
+    this.scoreType = "";
     this.qSource = [];
     this.catGame = false;
     this.usingCats = [];
@@ -638,17 +674,25 @@ TriviaGame.prototype.unjoin = function (src) {
         this.sendPM(src, "A game hasn't started!", triviachan);
         return;
     }
-    if (this.playerPlaying(src)) {
+    if (this.scoreType === "elimination") {
+        if (this.triviaPlayers[src].points === 0) {
+            this.sendAll(sys.name(src) + " has no more lives and is out of the game!", triviachan);
+        }
+        else {
+            this.sendAll(sys.name(src) + " left the game!", triviachan);
+        }
+    }
+    else if (this.playerPlaying(src)) {
         this.removePlayer(src);
-        switch (Trivia.triviaPlayers[src].points) {
+        switch (this.triviaPlayers[src].points) {
         case 0:
-            Trivia.sendAll(sys.name(src) + " left the game!", triviachan);
+            this.sendAll(sys.name(src) + " left the game!", triviachan);
             break;
         case 1:
-            Trivia.sendAll(sys.name(src) + " left the game with 1 point!", triviachan);
+            this.sendAll(sys.name(src) + " left the game with 1 point!", triviachan);
             break;
         default:
-            Trivia.sendAll(sys.name(src) + " left the game with " + Trivia.triviaPlayers[src].points + " points!", triviachan);
+            this.sendAll(sys.name(src) + " left the game with " + this.triviaPlayers[src].points + " points!", triviachan);
         }
     }
     else {
@@ -712,7 +756,7 @@ TriviaGame.prototype.addPlayer = function (src) {
     if (!this.triviaPlayers.hasOwnProperty(key)) {
         this.triviaPlayers[key] = {
             name: sys.name(src),
-            points: 0,
+            points: (this.scoreType === "elimination" ? this.maxPoints : 0),
             playing: true
         };
     }
@@ -747,7 +791,7 @@ TriviaGame.prototype.stepHandler = function () {
 TriviaGame.prototype.phaseHandler = function () {
     if (this.phase === "answer") {
         this.finalizeAnswers();
-    } else if (this.phase === "standby") {
+    } else if (this.phase === "standby" || this.phase === "signups") {
         this.startTriviaRound();
     }/* else if (this.phase === "autostart") {
         var startRange = trivData.autostartRange;
@@ -1039,12 +1083,17 @@ addUserCommand("goal", function (src, commandData, channel) {
         Trivia.sendPM(src, "A trivia game isn't currently running.", channel);
         return;
     }
-    Trivia.sendPM(src, "The goal for the current game is: " + Trivia.maxPoints, channel);
+    var points = Trivia.maxPoints;
+    Trivia.sendPM(src, (Trivia.scoreType === "elimination" ? "Everyone started with " + points + (points == 1 ? "life." : "lives.") : "The goal for the current game is: " + points), channel);
 }, "Allows you to see the current target for the trivia game");
 
 addAdminCommand("changegoal", function (src, commandData, channel) {
     if (Trivia.started === false) {
         Trivia.sendPM(src, "A trivia game isn't currently running.", channel);
+        return;
+    }
+    if (Trivia.scoreType === "elimination") {
+        Trivia.sendPM(src, "This doesn't make much sense in an elimination game.", channel);
         return;
     }
     commandData = parseInt(commandData, 10);
@@ -1123,6 +1172,10 @@ addUserCommand("join", function (src, commandData, channel) {
         Trivia.sendPM(src, "You've already joined the game!", channel);
         return;
     }
+    if (Trivia.scoreType === "elimination" && Trivia.phase != "signups") {
+        Trivia.sendPM(src, "You can't join an elimination game other than during signups!", channel);
+        return;
+    }
     if (Trivia.suggestion.suggester === src) {
         Trivia.sendPM(src, "You can't join the game right after suggesting a question, you cheater!", channel);
         return;
@@ -1193,7 +1246,7 @@ addOwnerCommand(["triviaadminoff", "striviaadminoff"], function (src, commandDat
 
 addServerOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, commandData, channel, command) {
     if (tsadmin.isTAdmin(commandData)) {
-        Trivia.sendPM(src, "That person is already a Trivia Super Admin.", channel);
+        Trivia.sendPM(src, "That person is already a Super Trivia Admin.", channel);
         return;
     }
     tsadmin.addTAdmin(commandData);
@@ -1206,7 +1259,7 @@ addServerOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, 
 
 addServerOwnerCommand(["triviasuperadminoff", "striviasuperadminoff"], function (src, commandData, channel, command) {
     if (!tsadmin.isTAdmin(commandData)) {
-        Trivia.sendPM(src, "That person isn't a Trivia Super Admin.", channel);
+        Trivia.sendPM(src, "That person isn't a Super Trivia Admin.", channel);
         return;
     }
     tsadmin.removeTAdmin(commandData);
@@ -1219,7 +1272,13 @@ addServerOwnerCommand(["triviasuperadminoff", "striviasuperadminoff"], function 
 
 addUserCommand("start", function (src, commandData) {
     Trivia.startTrivia(src, commandData);
-}, "Allows you to start a trivia game, format /start [number][*category1][*category2][...] leave number blank for random. Only Trivia Admins may start Category Games.");
+    Trivia.scoreType = "knowledge";
+}, "Allows you to start a trivia game, format /start [number][*category1][*category2][...]. Leave number blank for random. Only Trivia Admins may start Category Games.");
+
+addAdminCommand("elimination", function (src, commandData) {
+    Trivia.startTrivia(src, commandData);
+    Trivia.scoreType = "elimination";
+}, "Allows you to start an elimination game, format /elimination [number]. Leave number blank for random.");
 
 addUserCommand("lastcat", function (src, commandData, channel) {
     if (lastCatGame === 0) {
