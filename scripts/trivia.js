@@ -374,7 +374,7 @@ TriviaGame.prototype.startCatGame = function (points, cats, name) {
     this.ticks = 15;
 };
 
-TriviaGame.prototype.startTrivia = function (src, data) {
+TriviaGame.prototype.startTrivia = function (src, data, scoring) {
     if (this.started === true) {
         this.sendPM(src, "A trivia game has already started!", triviachan);
         return;
@@ -392,6 +392,7 @@ TriviaGame.prototype.startTrivia = function (src, data) {
         this.sendPM(src, "Sorry, a game was just stopped " + parseInt(x, 10) + " seconds ago.", triviachan);
         return;
     }*/
+    this.scoreType = scoring;
     data = data.split("*");
     if (!(tadmin.isTAdmin(sys.name(src)) || tsadmin.isTAdmin(sys.name(src)) || sys.auth(src) > 0) || this.scoreType === "elimination") {
         data = [data[0]];
@@ -1271,13 +1272,11 @@ addServerOwnerCommand(["triviasuperadminoff", "striviasuperadminoff"], function 
 }, "Allows you to demote a current trivia super admin, use /striviasuperadminoff for a silent demotion.");
 
 addUserCommand("start", function (src, commandData) {
-    Trivia.startTrivia(src, commandData);
-    Trivia.scoreType = "knowledge";
+    Trivia.startTrivia(src, commandData, "knowledge");
 }, "Allows you to start a trivia game, format /start [number][*category1][*category2][...]. Leave number blank for random. Only Trivia Admins may start Category Games.");
 
 addAdminCommand("elimination", function (src, commandData) {
-    Trivia.startTrivia(src, commandData);
-    Trivia.scoreType = "elimination";
+    Trivia.startTrivia(src, commandData, "elimination");
 }, "Allows you to start an elimination game, format /elimination [number]. Leave number blank for random.");
 
 addUserCommand("lastcat", function (src, commandData, channel) {
