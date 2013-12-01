@@ -896,7 +896,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
                 banbot.sendAll(line, sachannel);
             },
             "mute": function(line) {
-                banbot.sendAll(line);
+                banbot.sendOfficialAll(line);
             },
             "hmute" : function(line) {
                 banbot.sendAll(line, staffchannel);
@@ -1221,10 +1221,11 @@ canJoinStaffChannel : function(src) {
 
 isOfficialChan : function (chanid) {
     var officialchans = [0, tourchannel, mafiachan, triviachan, hangmanchan];
-    if (officialchans.indexOf(chanid) > -1)
-        return true;
-    else
-        return false;
+    return officialchans.indexOf(chanid) > -1;
+},
+    
+officialChannels : function () {
+    return [0, tourchannel, mafiachan, triviachan, hangmanchan];
 },
 
 kickAll : function(ip) {

@@ -28,6 +28,26 @@ Bot.prototype.sendMainTour = function(message)
     // Relies on Tournaments channel
     this.sendAll(message, sys.channelId("Tournaments"));
 }
+
+Bot.prototype.sendOfficialAll = function(message)
+{
+    var formatted = this.formatMsg(message);
+    var chans = script.officialChannels(), len, i;
+    for (i = 0, len = chans.length; i < len; i += 1) {
+        this.sendAll(message, chans[i]);
+    }
+}
+
+Bot.prototype.sendOfficialMessage = function(tar, message)
+{
+    var chans = script.officialChannels(), len, i;
+    for (i = 0, len = chans.length; i < len; i += 1) {
+        if (sys.isInChannel(tar, chans[i])) {
+            this.sendMessage(tar, message, chans[i]);
+        }
+    }
+}
+
 /* Following two rely on global channel parameter */
 Bot.prototype.sendChanMessage = function(tar, message)
 {
