@@ -2409,6 +2409,10 @@ beforeBattleMatchup : function(src,dest,clauses,rated)
     }
 },
 
+battleConnectionLost : function() {
+    battlebot.sendMessage("Connection to Battle Server lost!", staffchannel);
+},
+
 hasAuthElements: function (array) {
     if (!Array.isArray(array)) {
         return;

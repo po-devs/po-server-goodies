@@ -656,19 +656,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "loadstats") {
-        if (sys.loadServerPlugin("serverplugins/libusagestats_debug.so")) {
-            normalbot.sendMessage(src, "Usage Stats plugin loaded", channel);
-            return;
-        }
-        normalbot.sendMessage(src, "Usage Stats failed to load", channel);
+        sys.loadBattlePlugin("serverplugins/libusagestats_debug.so");
+        normalbot.sendMessage(src, "Usage Stats plugin loaded", channel);
         return;
     }
     if (command == "unloadstats") {
-        if (sys.unloadServerPlugin("Usage Statistics")){
-            normalbot.sendMessage(src, "Usage Stats plugin unloaded", channel);
-            return;
-        }
-        normalbot.sendMessage(src, "Usage stats failed to unload", channel);
+        sys.unloadBattlePlugin("Usage Statistics");
+        normalbot.sendMessage(src, "Usage Stats plugin unloaded", channel);
         return;
     }
     if (command == "warnwebclients") {
