@@ -675,26 +675,29 @@ TriviaGame.prototype.unjoin = function (src) {
         this.sendPM(src, "A game hasn't started!", triviachan);
         return;
     }
-    if (this.scoreType === "elimination") {
-        if (this.triviaPlayers[src].points === 0) {
-            this.sendAll(sys.name(src) + " has no more lives and is out of the game!", triviachan);
-        }
-        else {
-            this.sendAll(sys.name(src) + " left the game!", triviachan);
-        }
-    }
-    else if (this.playerPlaying(src)) {
-        this.removePlayer(src);
-        switch (this.triviaPlayers[src].points) {
-        case 0:
-            this.sendAll(sys.name(src) + " left the game!", triviachan);
-            break;
-        case 1:
-            this.sendAll(sys.name(src) + " left the game with 1 point!", triviachan);
-            break;
-        default:
-            this.sendAll(sys.name(src) + " left the game with " + this.triviaPlayers[src].points + " points!", triviachan);
-        }
+    if (this.playerPlaying(src)) {
+       if (this.scoreType === "elimination") {
+           this.removePlayer(src);
+           if (this.triviaPlayers[src].points === 0) {
+               this.sendAll(sys.name(src) + " has no more lives and is out of the game!", triviachan);
+           }
+           else {
+               this.sendAll(sys.name(src) + " left the game!", triviachan);
+           }
+       }
+       else {
+           this.removePlayer(src);
+           switch (this.triviaPlayers[src].points) {
+           case 0:
+               this.sendAll(sys.name(src) + " left the game!", triviachan);
+               break;
+           case 1:
+               this.sendAll(sys.name(src) + " left the game with 1 point!", triviachan);
+               break;
+           default:
+               this.sendAll(sys.name(src) + " left the game with " + this.triviaPlayers[src].points + " points!", triviachan);
+           }
+       }
     }
     else {
         this.sendPM(src, "You haven't joined the game!", triviachan);
@@ -1085,7 +1088,7 @@ addUserCommand("goal", function (src, commandData, channel) {
         return;
     }
     var points = Trivia.maxPoints;
-    Trivia.sendPM(src, (Trivia.scoreType === "elimination" ? "Everyone started with " + points + (points == 1 ? "life." : "lives.") : "The goal for the current game is: " + points), channel);
+    Trivia.sendPM(src, (Trivia.scoreType === "elimination" ? "Everyone started with " + points + (points == 1 ? " life." : " lives.") : "The goal for the current game is: " + points), channel);
 }, "Allows you to see the current target for the trivia game");
 
 addAdminCommand("changegoal", function (src, commandData, channel) {
@@ -1182,7 +1185,7 @@ addUserCommand("join", function (src, commandData, channel) {
         return;
     }
     Trivia.addPlayer(src);
-    if (this.scoreType === "elimination") {
+    if (Trivia.scoreType === "elimination") {
        Trivia.sendAll(sys.name(src) + " joined the game!", triviachan);
     }
     else switch (Trivia.triviaPlayers[src].points) {
