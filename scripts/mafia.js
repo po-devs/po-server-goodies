@@ -351,7 +351,7 @@ function Mafia(mafiachan) {
     ThemeManager.prototype.toString = function () { return "[object ThemeManager]"; };
 
     ThemeManager.prototype.save = function (name, url, resp) {
-        var fname = "mafiathemes/theme_" + name.replace("/", "").toLowerCase();
+        var fname = "scriptdata/mafiathemes/theme_" + name.replace("/", "").toLowerCase();
         sys.writeToFile(fname, resp);
         var done = false;
         for (var i = 0; i < this.themeInfo.length; ++i) {
@@ -586,7 +586,7 @@ function Mafia(mafiachan) {
                     break;
                 }
             }
-            sys.writeToFile("scripdata/mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
+            sys.writeToFile("scriptdata/mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
             var broadcastname = casedtheme(name);
             if (!silent) {
                 if (src !== Config.Mafia.bot) {
