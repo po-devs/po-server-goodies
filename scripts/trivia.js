@@ -311,7 +311,7 @@ TriviaGame.prototype.startNormalGame = function (points, name) {
         this.sendAll("An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!", 0);
         sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
         sendChanAll("", 0);
-        this.sendAll(name + " opened signups for an elimination game! You only have " + points + " " + (points == 1 ? "life" : "lives") + "!", triviachan);
+        this.sendAll(name + " opened signups for an elimination game! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 60 seconds.", triviachan);
     }
     else {
         sendChanAll("", 0);
@@ -534,7 +534,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
     if (this.scoreType === "elimination") {
         for (var id in this.triviaPlayers) {
             var name = this.triviaPlayers[id].name;
-            if (this.triviaPlayers[id].playing && answeredCorrectly.indexOf(name) != -1) {
+            if (this.triviaPlayers[id].playing && answeredCorrectly.indexOf(name) === -1) {
                 this.player(name).points--;
                 if (this.player(name).points === 0) {
                     this.unjoin(id);
@@ -1182,7 +1182,10 @@ addUserCommand("join", function (src, commandData, channel) {
         return;
     }
     Trivia.addPlayer(src);
-    switch (Trivia.triviaPlayers[src].points) {
+    if (this.scoreType === "elimination") {
+       Trivia.sendAll(sys.name(src) + " joined the game!", triviachan);
+    }
+    else switch (Trivia.triviaPlayers[src].points) {
     case 0:
         Trivia.sendAll(sys.name(src) + " joined the game!", triviachan);
         break;
