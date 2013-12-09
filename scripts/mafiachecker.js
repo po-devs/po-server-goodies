@@ -7,7 +7,7 @@ function mafiaChecker() {
         fatalErrors,
         noMinor,
         noFatal,
-        possibleNightActions = ["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "convert", "curse", "copy", "detox", "dispel", "shield", "dummy", "dummy2", "dummy3", "dummy4", "dummy5", "dummy6", "dummy7", "dummy8", "dummy9", "dummy10" ],
+        possibleNightActions = ["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "convert", "curse", "copy", "detox", "dispel", "shield", "massconvert", "dummy", "dummy2", "dummy3", "dummy4", "dummy5", "dummy6", "dummy7", "dummy8", "dummy9", "dummy10" ],
         badCommands = ["me", "commands", "start", "votetheme", "starttheme", "help", "roles", "sides", "myrole", "mafiarules", "themes", "themeinfo", "changelog", "details", "priority", "flashme", "playedgames", "update", "join", "unjoin", "mafiaadmins", "mafiaban", "mafiaunban", "passma", "mafiaadmin", "mafiaadminoff", "mafiasadmin", "mafiasuperadmin", "mafiasadminoff", "mafiasuperadminoff", "push", "slay", "shove", "end", "readlog", "add", "remove", "disable", "enable", "updateafter", "importold", "mafiaban", "mafiaunban", "mafiabans", "detained", "detainlist", "ban", "mute", "kick", "k", "mas", "ck", "cmute", "admin", "op", "owner", "invite", "member", "deadmin", "deregister", "deop", "demember", "deadmin", "lt", "featured", "featuretheme", "featurelink", "featuretext", "forcefeature", "ctogglecaps", "ctoggleflood", "topic", "cauth", "register", "deinvite", "cmeon", "cmeoff", "csilence", "csilenceoff", "cunmute", "cmutes", "cbans", "inviteonly", "ctoggleswear", "enabletours", "disabletours", "tempban"];
     
     this.checkTheme = function(raw) {
@@ -285,6 +285,10 @@ function mafiaChecker() {
                                 commonMandatory = commonMandatory.concat(["newRole"]);
                                 commonOptional = commonOptional.concat(["canConvert", "convertmsg", "usermsg", "silent", "silentConvert"]);
                             }
+                            if (commandList.indexOf("massconvert") !== -1) {
+                                commonMandatory = commonMandatory.concat(["convertRoles"]);
+                                commonOptional = commonOptional.concat(["silentMassConvert", "massconvertmsg", "singlemassconvertmsg", "silent"]);
+                            }
                             if (commandList.indexOf("copy") !== -1) {
                                 commonMandatory = commonMandatory.concat(["copyAs"]);
                                 commonOptional = commonOptional.concat(["canCopy", "copymsg", "silent", "silentCopy"]);
@@ -377,6 +381,18 @@ function mafiaChecker() {
                                     }
                                     checkType(action.convertmsg, ["string"], comm + ".convertmsg");
                                     checkType(action.usermsg, ["string"], comm + ".usermsg");
+                                } else if (command == "massconvert") {
+                                    if (checkType(action.convertRoles, ["object"], comm + ".convertRoles")) {
+                                        for (i in action.convertRoles) {
+                                            checkValidRole(i, comm + ".convertRoles");
+                                            checkValidRole(action.convertRoles[i], comm + ".convertRoles." + i);
+                                        }
+                                    }
+                                    
+                                    checkType(action.massconvertmsg, ["string"], comm + ".massconvertmsg");
+                                    checkType(action.singlemassconvertmsg, ["string"], comm + ".singlemassconvertmsg");
+                                    checkType(action.silentMassConvert, ["boolean"], comm + ".silentMassConvert");
+                                    checkType(action.silent, ["boolean"], comm + ".silent");
                                 } else if (command == "copy") {
                                     checkValidValue(action.silent, [true, false], comm + ".silent");
                                     checkValidValue(action.silentCopy, [true, false], comm + ".silentCopy");
@@ -580,7 +596,7 @@ function mafiaChecker() {
                         action = role.actions[command];
                         comm = act + "." + command;
                         if (command == "inspect") {
-                            checkAttributes(action, [], ["mode", "seenSide", "revealSide", "revealAs", "msg", "targetmsg", "hookermsg", "count", "poisonDeadMessage", "silent"], comm);
+                            checkAttributes(action, [], ["mode", "seenSide", "revealSide", "revealAs", "msg", "targetmsg", "hookermsg", "evadechargemsg", "count", "poisonDeadMessage", "silent"], comm);
                             
                             checkValidValue(action.revealSide, [true, false], comm + ".revealSide");
                             
@@ -604,7 +620,7 @@ function mafiaChecker() {
                             if ("mode" in action && typeof action.mode == "object" && "killif" in action.mode) {
                                 requiredAtt = ["msg"];
                             }
-                            checkAttributes(action, [].concat(requiredAtt), ["mode", "msg", "targetmsg", "hookermsg", "count", "poisonDeadMessage", "rate", "constant", "silent", "identifymsg"], comm);
+                            checkAttributes(action, [].concat(requiredAtt), ["mode", "msg", "targetmsg", "hookermsg", "evadechargemsg", "count", "poisonDeadMessage", "rate", "constant", "silent", "identifymsg"], comm);
                         }
                         if (checkType(action.mode, ["string", "object"], comm + ".mode")) {
                             mode = action.mode;
@@ -620,8 +636,9 @@ function mafiaChecker() {
                                 
                                 checkValidValue(mode, ["ignore", "ChangeTarget", "killattacker", "killattackerevenifprotected", "poisonattacker", "poisonattackerevenifprotected", "identify", "die"].concat(extraModes), comm + ".mode");
                             } else if  (typeof mode == "object") {
-                                checkAttributes(action.mode, [], ["evadeChance", "ignore", "killif", "identify"], comm + ".mode");
+                                checkAttributes(action.mode, [], ["evadeCharges", "evadeChance", "ignore", "killif", "identify"], comm + ".mode");
                                 
+                                checkType(mode.evadeCharges, ["number"], comm + ".mode.evadeCharges");
                                 checkType(mode.evadeChance, ["number"], comm + ".mode.evadeChance");
                                 
                                 if (checkType(mode.ignore, ["array"], comm + ".mode.ignore")) {
@@ -645,6 +662,7 @@ function mafiaChecker() {
                         checkType(action.msg, ["string"], comm + ".msg");
                         checkType(action.hookermsg, ["string"], comm + ".hookermsg");
                         checkType(action.targetmsg, ["string"], comm + ".targetmsg");
+                        checkType(action.evadechargemsg, ["string"], comm + ".evadechargemsg");
                         checkType(action.poisonDeadMessage, ["string"], comm + ".poisonDeadMessage");
                         checkType(action.count, ["number"], comm + ".count");
                         checkType(action.rate, ["number"], comm + ".rate");
