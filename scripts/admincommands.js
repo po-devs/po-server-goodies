@@ -228,7 +228,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         for (var i = 0; i < nameWarns.length; ++i) {
             serialized.nameWarns.push(nameWarns[i].source);
         }
-        sys.writeToFile("nameWarns.json", JSON.stringify(serialized));
+        sys.writeToFile(Config.dataDir+"nameWarns.json", JSON.stringify(serialized));
         normalbot.sendMessage(src, "You set a warning for: " + regex.toString(), channel);
         return;
     }
@@ -246,7 +246,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (!unwarn)
             normalbot.sendMessage(src, "No match.", channel);
         else
-            sys.writeToFile("nameWarns.json", JSON.stringify(nameWarns));
+            sys.writeToFile(Config.dataDir+"nameWarns.json", JSON.stringify(nameWarns));
         return;
     }
     // hack, for allowing some subset of the owner commands for super admins
