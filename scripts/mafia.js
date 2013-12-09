@@ -2577,7 +2577,7 @@ function Mafia(mafiachan) {
                                                 evadeCharges[target.name] = [];
                                             }
                                             for (ec in evadeCharges[target.name]) {
-                                                targetEvd = evadeCharges[target.name][ec]; 
+                                                targetEvd = evadeCharges[target.name][ec];
                                                 if (targetEvd.command === command && ((Action.common === "Role" && targetEvd.role === player.role.role) || (Action.common === "Team" && targetEvd.side === player.role.side))) {
                                                     evaded = true;
                                                     break;
@@ -2977,7 +2977,7 @@ function Mafia(mafiachan) {
                                 for (nr in convertRoles) {
                                     targetPlayers = this.getPlayersForRole(nr);
                                     newRole = convertRoles[nr];
-                                    affected = []
+                                    affected = [];
                                     for (k in targetPlayers) {
                                         affected.push(targetPlayers[k]);
                                         convertedPlayer = this.players[targetPlayers[k]];
@@ -2990,7 +2990,7 @@ function Mafia(mafiachan) {
                                         if ("singlemassconvertmsg" in Action) {
                                             singleAffected = singleAffected.concat(affected);
                                         } else {
-                                            actionMessage = Action.massconvertmsg ? Action.massconvertmsg : "±Game: The ~Old~ became a ~New~!";
+                                            var actionMessage = Action.massconvertmsg ? Action.massconvertmsg : "±Game: The ~Old~ became a ~New~!";
                                             sendChanAll(needsBot(actionMessage).replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(nr)).replace(/~New~/, mafia.theme.trrole(newRole)), mafiachan);
                                         }
                                     }
@@ -5006,7 +5006,7 @@ function Mafia(mafiachan) {
             if (sup && !this.isMafiaSuperAdmin(src)) {
                 msg(src, "You must be Super Mafia Admin to silently add or update themes.");
                 return;
-            }                
+            }
             var url = commandData, name = commandData;
             if (commandData.indexOf("::") >= 0) {
                 var parts = url.split("::");
