@@ -24,7 +24,7 @@ var Config = {
     Mafia: {
         bot: "Murkrow",
         norepeat: 5,
-        stats_file: "mafia_stats.json",
+        stats_file: Config.dataDir+"mafia_stats.json",
         max_name_length: 16,
         notPlayingMsg: "±Game: The game is in progress. Please type /join to join the next mafia game."
     },
@@ -145,9 +145,9 @@ var cleanFile = function(filename) {
     if (typeof sys != 'undefined')
         sys.appendToFile(filename, "");
 };
-["mafia_stats.json", "suspectvoting.json", "mafiathemes/metadata.json", "channelData.json", "mutes.txt", "mbans.txt", "hmutes.txt", "smutes.txt", "rangebans.txt", "contributors.txt", "ipbans.txt", Config.dataDir+"namesToWatch.txt", "hangmanadmins.txt", "hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", "secretsmute.txt", "ipApi.txt", Config.dataDir + "notice.html"].forEach(cleanFile);
+[Config.dataDir+"mafia_stats.json", Config.dataDir"suspectvoting.json", "mafiathemes/metadata.json", Config.dataDir+"channelData.json", Config.dataDir+"mutes.txt", Config.dataDir+"mbans.txt", Config.dataDir+"hmutes.txt", Config.dataDir+"smutes.txt", Config.dataDir+"rangebans.txt", Config.dataDir+"contributors.txt", Config.dataDir+"ipbans.txt", Config.dataDir+"namesToWatch.txt", Config.dataDir+"hangmanadmins.txt", Config.dataDir+"hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", Config.dataDir+"secretsmute.txt", Config.dataDir+"ipApi.txt", Config.dataDir + "notice.html"].forEach(cleanFile);
 
-var autosmute = sys.getFileContent("secretsmute.txt").split(':::');
+var autosmute = sys.getFileContent(Config.dataDir+"secretsmute.txt").split(':::');
 var crc32 = require('crc32.js').crc32;
 var MemoryHash = require('memoryhash.js').MemoryHash;
 var POChannelManager = require('channelmanager.js').POChannelManager;
@@ -706,18 +706,18 @@ init : function() {
     breedingpokemons = breedingList.map(sys.pokeNum);
 
     /* restore mutes, smutes, mafiabans, rangebans, megausers */
-    script.mutes = new MemoryHash("mutes.txt");
-    script.mbans = new MemoryHash("mbans.txt");
-    script.smutes = new MemoryHash("smutes.txt");
-    script.rangebans = new MemoryHash("rangebans.txt");
-    script.contributors = new MemoryHash("contributors.txt");
-    script.mafiaAdmins = new MemoryHash("mafiaadmins.txt");
-    script.mafiaSuperAdmins = new MemoryHash("mafiasuperadmins.txt");
-    script.hangmanAdmins = new MemoryHash("hangmanadmins.txt");
-    script.hangmanSuperAdmins = new MemoryHash("hangmansuperadmins.txt");
-    script.ipbans = new MemoryHash("ipbans.txt");
-    script.detained = new MemoryHash("detained.txt");
-    script.hmutes = new MemoryHash("hmutes.txt");
+    script.mutes = new MemoryHash(Config.dataDir+"mutes.txt");
+    script.mbans = new MemoryHash(Config.dataDir+"mbans.txt");
+    script.smutes = new MemoryHash(Config.dataDir+"smutes.txt");
+    script.rangebans = new MemoryHash(Config.dataDir+"rangebans.txt");
+    script.contributors = new MemoryHash(Config.dataDir+"contributors.txt");
+    script.mafiaAdmins = new MemoryHash(Config.dataDir+"mafiaadmins.txt");
+    script.mafiaSuperAdmins = new MemoryHash(Config.dataDir+"mafiasuperadmins.txt");
+    script.hangmanAdmins = new MemoryHash(Config.dataDir+"hangmanadmins.txt");
+    script.hangmanSuperAdmins = new MemoryHash(Config.dataDir+"hangmansuperadmins.txt");
+    script.ipbans = new MemoryHash(Config.dataDir+"ipbans.txt");
+    script.detained = new MemoryHash(Config.dataDir+"detained.txt");
+    script.hmutes = new MemoryHash(Config.dataDir+"hmutes.txt");
     script.namesToWatch = new MemoryHash(Config.dataDir+"namesToWatch.txt");
     proxy_ips = {};
     function addProxybans(content) {
