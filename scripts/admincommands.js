@@ -144,7 +144,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         for (var i = 0; i < nameBans.length; ++i) {
             serialized.nameBans.push(nameBans[i].source);
         }
-        sys.writeToFile("nameBans.json", JSON.stringify(serialized));
+        sys.writeToFile(Config.dataDir+"nameBans.json", JSON.stringify(serialized));
         normalbot.sendMessage(src, "You banned: " + regex.toString(), channel);
         return;
     }
@@ -166,7 +166,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             for (var i = 0; i < nameBans.length; ++i) {
                 serialized.nameBans.push(nameBans[i].source);
             }
-            sys.writeToFile("nameBans.json", JSON.stringify(serialized));
+            sys.writeToFile(Config.dataDir+"nameBans.json", JSON.stringify(serialized));
         }
         return;
     }
