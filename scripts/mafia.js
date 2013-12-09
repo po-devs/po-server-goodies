@@ -1557,7 +1557,7 @@ function Mafia(mafiachan) {
             delete mafia.votes[player.name];
         delete this.players[player.name];
     };
-    this.actionBeforeDeath = function (player) {
+    this.actionBeforeDeath = function (player, showborder) {
         if (player.role.actions.hasOwnProperty("onDeath")) {
             var onDeath = player.role.actions.onDeath;
             var targetRoles, targetPlayers, r, k, target, affected, singleAffected, actionMessage, needSeparator = false;
@@ -1692,7 +1692,7 @@ function Mafia(mafiachan) {
                     }
                 }
             }
-            if (this.state == "day" && needSeparator) {
+            if (this.state == "day" && needSeparator && showborder) {
                 sendChanAll(border, mafiachan);
             }
         }
@@ -3419,7 +3419,7 @@ function Mafia(mafiachan) {
                     var lynchmsg = mafia.theme.lynchmsg ? mafia.theme.lynchmsg : "±Game: ~Player~ (~Role~) was removed from the game!";
                     sendChanAll(needsBot(lynchmsg).replace(/~Player~/g, downed).replace(/~Role~/g, roleName).replace(/~Side~/g, mafia.theme.trside(mafia.players[downed].role.side)).replace(/~Count~/g, Math.round(maxi * 100) / 100), mafiachan);
                     if (!("lynch" in lynched.role.actions)){
-                        mafia.actionBeforeDeath(lynched);
+                        mafia.actionBeforeDeath(lynched, false);
                     }
                     mafia.removePlayer(mafia.players[downed]);
                 }
