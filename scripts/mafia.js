@@ -3526,7 +3526,7 @@ function Mafia(mafiachan) {
                         var shover = this.usersToShove[name];
                         mafia.shoveUser(shover, name, false);
                         x--;
-                    } 
+                    }
                 }
             } else {
                 sendChanAll("±Game: Really? No votes, so no game.", mafiachan);

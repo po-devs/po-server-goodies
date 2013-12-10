@@ -589,7 +589,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         return;
     }
     if (leaderboard.length === 1 && this.scoreType === "elimination") {
-        winners.push(utilities.html_escape(leaderboard[0][0]) + " (" + leaderboard[0][1] + ")")
+        winners.push(utilities.html_escape(leaderboard[0][0]) + " (" + leaderboard[0][1] + ")");
     }
     if (winners.length > 0 || (this.scoreType === "elimination" && leaderboard.length === 0)) {
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
