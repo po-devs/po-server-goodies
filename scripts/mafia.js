@@ -1075,7 +1075,7 @@ function Mafia(mafiachan) {
         this.teamRestrictions = {};
         this.roleRestrictions = {};
         this.usersToSlay = {};
-        this.usersToShove = {};
+        // usersToShove shouldn't be cleared when the Entry phase starts
         this.time = {
             "nights": 0,
             "days": 0
@@ -1124,6 +1124,7 @@ function Mafia(mafiachan) {
         }
     };
     this.clearVariables();
+    this.usersToShove = {};
     this.advertiseToChannel = function(channel) {
         sendChanAll("", channel);
         sendChanAll(border, channel);
@@ -1395,6 +1396,7 @@ function Mafia(mafiachan) {
             }
         }
         this.clearVariables();
+        //We don't clear usersToShove here cause we call it a little later
         mafia.state = "entry";
 
         mafia.ticks = 60;
@@ -1419,6 +1421,11 @@ function Mafia(mafiachan) {
             } else {
                 sendChanAll("±Game: " + name + " joined the game!", mafiachan);
             }
+            if (name in this.usersToShove) {
+                var name = name;
+                var shover = this.usersToShove[name];
+                this.shoveUser(shover, name, false);
+            }
         }
     };
     this.endGame = function (src) {
@@ -1438,6 +1445,7 @@ function Mafia(mafiachan) {
         //mafiabot.sendAll("GAME ENDED", mafiachan);
         mafia.mafiaStats.result("dead");
         mafia.clearVariables();
+        this.usersToShove = {};
         runUpdate();
         this.advertiseFeaturedTheme();
     };
@@ -1996,6 +2004,7 @@ function Mafia(mafiachan) {
             }
             //mafiabot.sendAll("GAME ENDED", mafiachan);
             mafia.clearVariables();
+            this.usersToShove = {};
             runUpdate();
             this.advertiseFeaturedTheme();
             return true;
@@ -2044,6 +2053,7 @@ function Mafia(mafiachan) {
             sendChanAll(border, mafiachan);
             
             mafia.clearVariables();
+            this.usersToShove = {};
             if (sys.id('PolkaBot') !== undefined) {
                 sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
             }
@@ -2168,6 +2178,7 @@ function Mafia(mafiachan) {
                 sendChanAll("You need at least "+minp+" players to join (Current; " + mafia.signups.length + ").", mafiachan);
                 sendChanAll(border, mafiachan);
                 mafia.clearVariables();
+                this.usersToShove = {};
                 mafia.mafiaStats.result("dead");
                 return;
             }
@@ -3510,6 +3521,12 @@ function Mafia(mafiachan) {
                             mafia.shoveUser("Murkrow", this.signups[x], true);
                         }
                     }
+                    if (this.signups[x] in this.usersToShove) {
+                        var name = this.signups[x];
+                        var shover = this.usersToShove[name];
+                        mafia.shoveUser(shover, name, false);
+                        x--;
+                    } 
                 }
             } else {
                 sendChanAll("±Game: Really? No votes, so no game.", mafiachan);
@@ -3610,7 +3627,7 @@ function Mafia(mafiachan) {
     
     this.slayUser = function (src, name, delayed) {
         var slayer = typeof src == "string" ? src : sys.name(src);
-        if (this.state == "entry" || this.state == "voting") {
+        if (this.state == "entry" || this.state == "voting" || this.state == "blank") {
             msg(src, "The game has not yet started. Use /shove to prevent the player from playing.");
             return;
         }
@@ -3667,7 +3684,7 @@ function Mafia(mafiachan) {
 
     this.shoveUser = function (src, name, silent) {
         var shover = typeof src == "string" ? src : sys.name(src);
-        if (this.state == "entry" || this.state == "voting") {
+        if (this.state == "entry" || this.state == "voting" || this.state == "blank") {
             for (var i = 0; i < this.signups.length; ++i) {
                 if (name.toLowerCase() == this.signups[i].toLowerCase()) {
                     if (!silent) {
@@ -3765,7 +3782,7 @@ function Mafia(mafiachan) {
             "/updateafter: To update mafia after current game!",
             "/updatestats: To update the mafia stats webpage (Use after mafiastat script changes)",
             "/featuretheme: To change the currently featured theme (Leave blank to disable Feature Themes)",
-            "/featuretext: To set a customizable message that follows the Featured theme (Leave blank to clear).",
+            "/featuretext: To set a customizable message that follows the Featured theme (Leave blank to reset to default).",
             "/featurelink: To change the link used for Featured Theme Text. (Leave blank to clear)",
             "/featureint: To change how often the \"Featured Theme\" message displays. Time is in minutes between 30 and 240. Leave blank to reset to 60 minutes.",
             "/forcefeature: To force the \"Featured Theme\" message to display."],
@@ -3812,6 +3829,26 @@ function Mafia(mafiachan) {
             sys.sendMessage(src, "±Rule: You must change it if you want to join!", mafiachan);
             return true;
         }
+        
+        //Prevents names with too many capital letters (7 in total, 5 consecutive)
+        if (name.length >= 5) {
+            var caps = 0;
+            var ccaps = 0;
+            for (var i = name.length-1; i >= 0; --i) {
+                if ('A' <= name[i] && name[i] <= 'Z') {
+                    ++caps;
+                    ++ccaps;
+                    if (ccaps == 5 || caps == 7) {
+                        sys.sendMessage(src, "±Name: You're not allowed to have more than 5 consecutive or 7 total capital letters in your name!", mafiachan);
+                        sys.sendMessage(src, "±Rule: You must change it if you want to join!", mafiachan);
+                        return true;
+                    }
+                } else {
+                    ccaps = 0;
+                }
+            }
+        }
+        return false;
     };
     this.canJoin = function (src) {
         if (this.isInGame(sys.name(src))) {
@@ -5047,8 +5084,6 @@ function Mafia(mafiachan) {
             sys.sendMessage(src, GREEN_BORDER, mafiachan);
             if (featuredTheme) {
                 sys.sendHtmlMessage(src, "<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> Looking for a theme to play? Try out the Featured Theme: <b>" + casedtheme(featuredTheme) + "</b>!", mafiachan);
-            } else {
-                msg(src, "No theme is currently being featured!");
             }
             sys.sendHtmlMessage(src, "<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> " + (featuredLink ? '<a href="' + html_escape(featuredLink) + '">' + featuredText + '</a>' : featuredText), mafiachan);
             sys.sendMessage(src, GREEN_BORDER, mafiachan);
@@ -5395,8 +5430,8 @@ function Mafia(mafiachan) {
         }
         if (command === "featuretext") {
             if (commandData == '*') {
-                featuredText = undefined;
-                msg(src, "You cleared the current Featured Theme Text.");
+                featuredText = "Please read and follow the /mafiarules! Also, be mindful of your caps, flooding, and insulting other users.";
+                msg(src, "You reset the current Featured Theme Text.");
                 return;
             }
             featuredText = commandData;
@@ -5462,10 +5497,10 @@ function Mafia(mafiachan) {
         if (channel == mafiachan) {
             switch (mafia.state) {
                 case "blank":
-                    sys.sendMessage(src, "±Info: No game is running! You can start a game by typing /start or /starttheme.", mafiachan);
+                    sys.sendMessage(src, "±Info: No game is running! You can start a game by typing /start [theme name].", mafiachan);
                     break;
                 case "voting":
-                    sys.sendMessage(src, "±Info: A voting for the next game is running now! Type /start [theme name] to vote for " + readable(Object.keys(this.possibleThemes), "or") + "!", mafiachan);
+                    sys.sendMessage(src, "±Info: A voting for the next game is running now! Type /vote [theme name] to vote for " + readable(Object.keys(this.possibleThemes), "or") + "!", mafiachan);
                     break;
                 case "entry":
                     sys.sendMessage(src, "±Info: You can join a " + (mafia.theme.name == "default" ? "" : mafia.theme.name + "-themed ") + "mafia game now by typing /join! ", mafiachan);
