@@ -3725,10 +3725,8 @@ function Mafia(mafiachan) {
     this.checkDead = function (players) {
         if (players < 8 && deadTime < timesBeforeNonPeak) {
             deadTime += 1;
-        } else if (players >= 8 && deadTime > -1) {
-            if (deadTime) {
-                deadTime -= 1;
-            }
+        } else if (players >= 8 && deadTime > 0) {
+            deadTime -= 1;
         }
         if (deadTime >= timesBeforeNonPeak) {
             mafia.nonPeak(false, true);
