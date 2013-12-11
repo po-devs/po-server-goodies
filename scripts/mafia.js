@@ -22,6 +22,7 @@ function Mafia(mafiachan) {
     
     this.mafiaStats = require("mafiastats.js");
     this.mafiaChecker = require("mafiachecker.js");
+    sys.makeDir(Config.dataDir + "mafiathemes/");
     
     var noPlayer = '*',
         CurrentGame,
@@ -34,12 +35,15 @@ function Mafia(mafiachan) {
         featuredTheme,
         featuredLink,
         featuredInterval = 60,
-        featuredText = "Please read and follow the /mafiarules! Also, be mindful of your caps, flooding, and insulting other users.";
+        featuredText = "Please read and follow the /mafiarules! Also, be mindful of your caps, flooding, and insulting other users.",
+        deadTime = 0,
+        peak;
 
     var DEFAULT_BORDER = "***************************************************************************************",
         GREEN_BORDER = " " + DEFAULT_BORDER + ":",
         border,
-        isDummyCommand = /^dummy(?:\d+)?$/;
+        isDummyCommand = /^dummy(?:\d+)?$/,
+        timesBeforeNonPeak = 3; //number of dead games before enabling non-peak
 
     var savePlayedGames = function () {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
@@ -550,7 +554,7 @@ function Mafia(mafiachan) {
             }
             sys.writeToFile("scriptdata/mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
             if (silent) {
-                sys.sendMessage(src, "±Murkrow: You removed the theme " + broadcastname + ".", mafiachan);
+                mafiabot.sendMessage(src, "You removed the theme " + broadcastname + ".", mafiachan);
             } else {
                 mafiabot.sendAll(nonFlashing(sys.name(src)) + " removed the theme " + broadcastname + ".", mafiachan);
             }
@@ -571,7 +575,7 @@ function Mafia(mafiachan) {
             sys.writeToFile("scriptdata/mafiathemes/metadata.json", JSON.stringify({ 'meta': this.themeInfo }));
             var broadcastname = casedtheme(name);
             if (!silent) {
-                dualBroadcast("±Murkrow: " + nonFlashing(sys.name(src)) + " enabled theme " + broadcastname + ".");
+                dualBroadcast("±" + mafiabot.name + ": " + nonFlashing(sys.name(src)) + " enabled theme " + broadcastname + ".");
             }
         }
     };
@@ -590,9 +594,9 @@ function Mafia(mafiachan) {
             var broadcastname = casedtheme(name);
             if (!silent) {
                 if (src !== Config.Mafia.bot) {
-                    dualBroadcast("±Murkrow: " + nonFlashing(sys.name(src)) + " disabled theme " + broadcastname + ".");
+                    dualBroadcast("±" + mafiabot.name + ": " + nonFlashing(sys.name(src)) + " disabled theme " + broadcastname + ".");
                 } else {
-                    dualBroadcast("±Murkrow: " + Config.Mafia.bot + " disabled theme " + broadcastname + ".");
+                    dualBroadcast("±" + mafiabot.name + ": " + Config.Mafia.bot + " disabled theme " + broadcastname + ".");
                 }
             }
             if (featuredTheme && name === featuredTheme.toLowerCase()){
@@ -1153,10 +1157,10 @@ function Mafia(mafiachan) {
             if (adOkay || featuredText) {
                 sendChanAll(GREEN_BORDER, mafiachan);
                 if (adOkay) {
-                    sys.sendHtmlAll("<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> Looking for a theme to play? Try out the Featured Theme: <b>" + featured + "</b>!", mafiachan);
+                    sys.sendHtmlAll("<font color=#3daa68><timestamp/> <b>±" + mafiabot.name + ": </b></font> Looking for a theme to play? Try out the Featured Theme: <b>" + featured + "</b>!", mafiachan);
                 }
                 if (featuredText) {
-                    sys.sendHtmlAll("<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> " + (featuredLink ? '<a href="' + html_escape(featuredLink) + '">' + featuredText + '</a>' : featuredText), mafiachan);
+                    sys.sendHtmlAll("<font color=#3daa68><timestamp/> <b>±" + mafiabot.name + ": </b></font> " + (featuredLink ? '<a href="' + html_escape(featuredLink) + '">' + featuredText + '</a>' : featuredText), mafiachan);
                 }
                 sendChanAll(GREEN_BORDER, mafiachan);
             }
@@ -1417,7 +1421,7 @@ function Mafia(mafiachan) {
             }
             if (SESSION.users(src).smute.active) {
                 sys.sendMessage(src, "±Game: " + name + " joined the game!", mafiachan);
-                mafia.shoveUser("Murkrow", sys.name(src), true);
+                mafia.shoveUser(mafiabot.name, sys.name(src), true);
             } else {
                 sendChanAll("±Game: " + name + " joined the game!", mafiachan);
             }
@@ -1444,6 +1448,7 @@ function Mafia(mafiachan) {
         }
         //mafiabot.sendAll("GAME ENDED", mafiachan);
         mafia.mafiaStats.result("dead");
+        mafia.checkDead(CurrentGame.playerCount);
         mafia.clearVariables();
         this.usersToShove = {};
         runUpdate();
@@ -1999,6 +2004,7 @@ function Mafia(mafiachan) {
             mafia.compilePhaseStalk("GAME END");
             currentStalk.push("Winners: None (game ended in a draw).");
             mafia.mafiaStats.result("Tie");
+            mafia.checkDead(CurrentGame.playerCount);
             if (sys.id('PolkaBot') !== undefined) {
                 sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
             }
@@ -2030,6 +2036,7 @@ function Mafia(mafiachan) {
                 sendChanAll("±Game: The " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ") wins!", mafiachan);
             }
             mafia.mafiaStats.result(mafia.theme.trside(winSide));
+            mafia.checkDead(CurrentGame.playerCount);
             currentStalk.push("Winners: " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ")");
             if (winByDeadRoles) {
                 var losingSides = [];
@@ -2180,6 +2187,7 @@ function Mafia(mafiachan) {
                 mafia.clearVariables();
                 this.usersToShove = {};
                 mafia.mafiaStats.result("dead");
+                mafia.checkDeadGames(CurrentGame.playerCount);
                 return;
             }
 
@@ -3518,7 +3526,7 @@ function Mafia(mafiachan) {
                 for (var x = 0; x < this.signups.length; x++) {
                     if (SESSION.users(sys.id(this.signups[x]))) {
                         if (SESSION.users(sys.id(this.signups[x])).smute.active) {
-                            mafia.shoveUser("Murkrow", this.signups[x], true);
+                            mafia.shoveUser(mafiabot.name, this.signups[x], true);
                         }
                     }
                     if (this.signups[x] in this.usersToShove) {
@@ -3712,6 +3720,52 @@ function Mafia(mafiachan) {
             dlurl = url.replace(/http:\/\/pastebin.com\/(.*)/i, "http://pastebin.com/raw.php?i=$1");
         }
         return dlurl;
+    };
+    
+    this.checkDead = function (players) {
+        if (players < 8 && deadTime < timesBeforeNonPeak) {
+            deadTime += 1;
+        } else if (players >= 8 && deadTime > -1) {
+            if (deadTime) {
+                deadTime -= 1;
+            }
+        }
+        if (deadTime >= timesBeforeNonPeak) {
+            mafia.nonPeak(false, true);
+        } else if (deadTime === 0) {
+            mafia.nonPeak(false, false);
+        }
+    };
+    
+    this.nonPeak = function (src, enable) {
+        if (peak !== undefined && enable !== peak) {
+            if (src) {
+                mafiabot.sendMessage(src, "Non-peaks themes are already " + (peak ? " disabled!" : " enabled!"));
+            }
+            return;
+        }
+        var name = src ? sys.name(src) : mafiabot.name;
+        var themes = mafia.themeManager.themes;
+        var npThemes = [];
+        for (var x in themes) {
+            if (themes[x].nonPeak) {
+                if (enable) {
+                    mafia.themeManager.enable(src, x, true);
+                } else {
+                    mafia.themeManager.disable(src, x, true);
+                }
+                npThemes.push(themes[x].name);
+            }
+        }
+        if (npThemes.length) {
+            dualBroadcast("±" + mafiabot.name + ": " + nonFlashing(name) + (enable ? " enabled " : " disabled ") + "non-peak themes (" + npThemes.join(", ") + ").");
+            peak = enable === false;
+        } else {
+            if (src) {
+                mafiabot.sendMessage(src, "No non-peak themes found", mafiachan);
+            }
+        }
+        return;
     };
     
     function runUpdate() {
@@ -3955,7 +4009,7 @@ function Mafia(mafiachan) {
                 }
                 if (SESSION.users(src).smute.active) {
                     sys.sendMessage(src, "±Game: " + name + " joined the game!", mafiachan);
-                    mafia.shoveUser("Murkrow", sys.name(src), true);
+                    mafia.shoveUser(mafiabot.name, sys.name(src), true);
                 } else {
                     sendChanAll("±Game: " + name + " joined the game!", mafiachan);
                 }
@@ -5083,9 +5137,9 @@ function Mafia(mafiachan) {
         if (command == "featured") {
             sys.sendMessage(src, GREEN_BORDER, mafiachan);
             if (featuredTheme) {
-                sys.sendHtmlMessage(src, "<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> Looking for a theme to play? Try out the Featured Theme: <b>" + casedtheme(featuredTheme) + "</b>!", mafiachan);
+                sys.sendHtmlMessage(src, "<font color=#3daa68><timestamp/> <b>±" + mafiabot.name + ": </b></font> Looking for a theme to play? Try out the Featured Theme: <b>" + casedtheme(featuredTheme) + "</b>!", mafiachan);
             }
-            sys.sendHtmlMessage(src, "<font color=#3daa68><timestamp/> <b>±Murkrow: </b></font> " + (featuredLink ? '<a href="' + html_escape(featuredLink) + '">' + featuredText + '</a>' : featuredText), mafiachan);
+            sys.sendHtmlMessage(src, "<font color=#3daa68><timestamp/> <b>±" + mafiabot.name + ": </b></font> " + (featuredLink ? '<a href="' + html_escape(featuredLink) + '">' + featuredText + '</a>' : featuredText), mafiachan);
             sys.sendMessage(src, GREEN_BORDER, mafiachan);
             return;
         }
@@ -5245,23 +5299,23 @@ function Mafia(mafiachan) {
             var newname = commandData.toLowerCase();
             var sMA = false;
             if (sys.dbIp(newname) === undefined) {
-                sys.sendMessage(src, "±Murkrow: This user doesn't exist!");
+                mafiabot.sendMessage(src, "This user doesn't exist!");
                 return true;
             }
             if (!sys.dbRegistered(newname)) {
-                sys.sendMessage(src, "±Murkrow: That account isn't registered so you can't give it authority!");
+                mafiabot.sendMessage(src, "That account isn't registered so you can't give it authority!");
                 return true;
             }
             if (sys.id(newname) === undefined) {
-                sys.sendMessage(src, "±Murkrow: Your target is offline!");
+                mafiabot.sendMessage(src, "Your target is offline!");
                 return true;
             }
             if (sys.ip(sys.id(newname)) !== sys.ip(src)) {
-                sys.sendMessage(src, "±Murkrow: Both accounts must be on the same IP to switch!");
+                mafiabot.sendMessage(src, "Both accounts must be on the same IP to switch!");
                 return true;
             }
             if (script.mafiaAdmins.hash.hasOwnProperty(newname)|| script.mafiaSuperAdmins.hash.hasOwnProperty(newname)) {
-                sys.sendMessage(src, "±Murkrow: Your target is already a Mafia Admin!");
+                mafiabot.sendMessage(src, "Your target is already a Mafia Admin!");
                 return true;
             }
             if (this.isMafiaSuperAdmin(src)) {
@@ -5275,29 +5329,12 @@ function Mafia(mafiachan) {
             id = sys.id(commandData);
             if (id !== undefined)
                 SESSION.users(id).mafiaAdmin = true;
-            sys.sendAll("±Murkrow: " + sys.name(src) + " passed their " + (sMA ? "Super Mafia Admin powers" : "Mafia auth") + " to " + commandData, sachannel);
+            mafiabot.sendAll(sys.name(src) + " passed their " + (sMA ? "Super Mafia Admin powers" : "Mafia auth") + " to " + commandData, sachannel);
             return;
         }
         
         if (command === "enablenonpeak" || command === "disablenonpeak") {
-            var themes = mafia.themeManager.themes;
-            var npThemes = [];
-            var enable = command === "enablenonpeak";
-            for (var x in themes) {
-                if (themes[x].nonPeak) {
-                    if (enable) {
-                        mafia.themeManager.enable(src, x, true);
-                    } else {
-                        mafia.themeManager.disable(src, x, true);
-                    }
-                    npThemes.push(themes[x].name);
-                }
-            }
-            if (npThemes.length) {
-                dualBroadcast("±Murkrow: " + nonFlashing(sys.name(src)) + (enable ? " enabled " : " disabled ") + "non-peak themes (" + npThemes.join(", ") + ").");
-            } else {
-                sys.sendMessage(src, "±Murkrow: No non-peak themes found", mafiachan);
-            }
+            mafia.nonPeak(src, command === "enablenonpeak");
             return;
         }
         /*if (command == "mafiabans") {
@@ -5334,9 +5371,9 @@ function Mafia(mafiachan) {
                 SESSION.users(id).mafiaAdmin = true;
             }
             if (!silent) {
-                sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " promoted " + commandData.toCorrectCase() + " to " + (sMA ? "Super " : "") + "Mafia Admin.", mafiachan);
+                mafiabot.sendAll(nonFlashing(sys.name(src)) + " promoted " + commandData.toCorrectCase() + " to " + (sMA ? "Super " : "") + "Mafia Admin.", mafiachan);
             }
-            sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " promoted " + commandData.toCorrectCase() + " to " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
+            mafiabot.sendAll(nonFlashing(sys.name(src)) + " promoted " + commandData.toCorrectCase() + " to " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
             return;
         }
         if (command == "mafiaadminoff" || command == "smafiaadminoff") {
@@ -5353,9 +5390,9 @@ function Mafia(mafiachan) {
                 SESSION.users(id).mafiaAdmin = false;
             }
             if (!silent) {
-                sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase()  + " from " + (sMA ? "Super " : "") + "Mafia Admin.", mafiachan);
+                mafiabot.sendAll(nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase()  + " from " + (sMA ? "Super " : "") + "Mafia Admin.", mafiachan);
             }
-            sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase()  + " from " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
+            mafiabot.sendAll(nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase()  + " from " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
             return;
         }
         if (command === "mafiasadminoff" || command === "mafiasuperadminoff" || command === "smafiasadminoff" || command === "smafiasuperadminoff") {
@@ -5365,9 +5402,9 @@ function Mafia(mafiachan) {
                 SESSION.users(id).mafiaAdmin = false;
             }
             if (!silent) {
-                sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase()  + " from Super Mafia Admin.", mafiachan);
+                mafiabot.sendAll(nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase()  + " from Super Mafia Admin.", mafiachan);
             }
-            sys.sendAll("±Murkrow: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase()  + " from Super Mafia Admin.", sachannel);
+            mafiabot.sendAll(nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase()  + " from Super Mafia Admin.", sachannel);
             return;
         }
         if (command === "remove" || command === "sremove"){
@@ -5516,18 +5553,18 @@ function Mafia(mafiachan) {
     this.onMute = function (src) {
         var id = sys.name(src);
         if (this.state == "entry" || this.state == "voting") {
-            this.shoveUser("Murkrow", id, false);
+            this.shoveUser(mafiabot.name, id, false);
         } else if (this.isInGame(id)) {
-            this.slayUser("Murkrow", id, false);
+            this.slayUser(mafiabot.name, id, false);
         }
     };
     
     this.onMban = function (src) {
         var id = sys.name(src);
         if (this.state == "entry" || this.state == "voting") {
-            this.shoveUser("Murkrow", id, false);
+            this.shoveUser(mafiabot.name, id, false);
         } else if (this.isInGame(id)) {
-            this.slayUser("Murkrow", id, false);
+            this.slayUser(mafiabot.name, id, false);
         }
         if (sys.isInChannel(src, mafiachan)) {
             sys.kick(src, mafiachan);
@@ -5538,9 +5575,9 @@ function Mafia(mafiachan) {
     this.onBan = function (src, dest) {
         var dest = sys.name(dest);
         if (this.state == "entry" || this.state == "voting") {
-            this.shoveUser("Murkrow", dest, false);
+            this.shoveUser(mafiabot.name, dest, false);
         } else if (this.isInGame(dest)) {
-            this.slayUser("Murkrow", dest, false);
+            this.slayUser(mafiabot.name, dest, false);
         }
     };
     

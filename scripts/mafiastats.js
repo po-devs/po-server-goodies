@@ -207,6 +207,9 @@ function mafiaStats() {
     };
     this.compileHourData = function () {
         var hData = this.data.hoursData;
+        if (!hData) {
+            hData = {};
+        }
         for (var x = 0; x < 24; x++) {
             if (!hData[x]) {
                 hData[x] = {};
