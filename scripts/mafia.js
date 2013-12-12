@@ -1079,7 +1079,6 @@ function Mafia(mafiachan) {
         this.teamRestrictions = {};
         this.roleRestrictions = {};
         this.usersToSlay = {};
-        // usersToShove shouldn't be cleared when the Entry phase starts
         this.time = {
             "nights": 0,
             "days": 0
@@ -1400,7 +1399,6 @@ function Mafia(mafiachan) {
             }
         }
         this.clearVariables();
-        //We don't clear usersToShove here cause we call it a little later
         mafia.state = "entry";
 
         mafia.ticks = 60;
@@ -1450,7 +1448,6 @@ function Mafia(mafiachan) {
         mafia.mafiaStats.result("dead");
         mafia.checkDead(CurrentGame.playerCount);
         mafia.clearVariables();
-        this.usersToShove = {};
         runUpdate();
         this.advertiseFeaturedTheme();
     };
@@ -2010,7 +2007,6 @@ function Mafia(mafiachan) {
             }
             //mafiabot.sendAll("GAME ENDED", mafiachan);
             mafia.clearVariables();
-            this.usersToShove = {};
             runUpdate();
             this.advertiseFeaturedTheme();
             return true;
@@ -2060,7 +2056,6 @@ function Mafia(mafiachan) {
             sendChanAll(border, mafiachan);
             
             mafia.clearVariables();
-            this.usersToShove = {};
             if (sys.id('PolkaBot') !== undefined) {
                 sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
             }
@@ -2185,7 +2180,7 @@ function Mafia(mafiachan) {
                 sendChanAll("You need at least "+minp+" players to join (Current; " + mafia.signups.length + ").", mafiachan);
                 sendChanAll(border, mafiachan);
                 mafia.clearVariables();
-                this.usersToShove = {};
+                mafia.usersToShove = {};
                 mafia.mafiaStats.result("dead");
                 mafia.checkDead(CurrentGame.playerCount);
                 return;
@@ -2261,6 +2256,7 @@ function Mafia(mafiachan) {
             currentStalk.push("Players: " + Object.keys(mafia.players).map(name_trrole, mafia.theme).join(", "));
 
             sendChanAll("The Roles have been Decided! :", mafiachan);
+            mafia.usersToShove = {};
             var p, player;
             for (p in mafia.players) {
                 player = mafia.players[p];
@@ -3087,10 +3083,8 @@ function Mafia(mafiachan) {
             if (!nightkill) {
                 sendChanAll("No one died! :", mafiachan);
             }
-            mafia.runusersToSlay();
-            mafia.runusersToSlayMsg();
-            mafia.usersToSlay = {};
             mafia.reduceRecharges();
+            mafia.collectedSlay();
             mafia.onDeadRoles();
             if (mafia.testWin()) {
                 return;
@@ -3145,9 +3139,7 @@ function Mafia(mafiachan) {
             if (Object.keys(mafia.usersToSlay).length !== 0) {
                 sendChanAll(border, mafiachan);
             }
-            mafia.runusersToSlay();
-            mafia.runusersToSlayMsg();
-            mafia.usersToSlay = {};
+            mafia.collectedSlay();
             if (mafia.testWin()) {
                 return;
             }
@@ -3263,9 +3255,7 @@ function Mafia(mafiachan) {
 
             if (tie) {
                 sendChanAll("No one was voted off! :", mafiachan);
-                mafia.runusersToSlay();
-                mafia.runusersToSlayMsg();
-                mafia.usersToSlay = {};
+                mafia.collectedSlay();
                 if (mafia.testWin()) {
                     return;
                 }
@@ -3443,9 +3433,7 @@ function Mafia(mafiachan) {
                     mafia.removePlayer(mafia.players[downed]);
                 }
                 
-                mafia.runusersToSlay();
-                mafia.runusersToSlayMsg();
-                mafia.usersToSlay = {};
+                mafia.collectedSlay();
                 mafia.onDeadRoles();
                 if (mafia.testWin()) {
                     return;
@@ -3656,10 +3644,10 @@ function Mafia(mafiachan) {
         }
         if (this.isInGame(name)) {
             if (name in mafia.usersToSlay) {
-                sys.sendMessage(src, "±Slay: " + player.name + " is already going to be slain after the phase ends!", mafiachan);
+                sys.sendMessage(src, "±Slay: " + player.name + " is already going to be sla" + "\u200b" + "in after the phase ends!", mafiachan);
                 return;
             }
-            sendChanAll("±Slay: " + player.name + " will be slain by " + slayer + " after the phase ends!", mafiachan);
+            sendChanAll("±Slay: " + player.name + " will be sla" + "\u200b" + "in by " + slayer + " after the phase ends!", mafiachan);
             var player = this.players[name],
                 role = player.role;
             mafia.usersToSlay[name] = [slayer, role];
@@ -3670,7 +3658,7 @@ function Mafia(mafiachan) {
     
     this.slayUserMsg = function (src, name, role) {
         var slayer = typeof src == "string" ? src : sys.name(src);
-        dualBroadcast("±Slay: " + name + " (" + role.translation + ") was slain by " + nonFlashing(slayer) + "!");
+        dualBroadcast("±Slay: " + name + " (" + role.translation + ") was sla" + "\u200b" + "in by " + nonFlashing(slayer) + "!");
     };
     
     this.runusersToSlay = function () {
@@ -3688,6 +3676,12 @@ function Mafia(mafiachan) {
                 role = mafia.usersToSlay[name][1];
             mafia.slayUserMsg(slayer, name, role);
         }
+    };
+    
+    this.collectedSlay = function () {
+        mafia.runusersToSlay();
+        mafia.runusersToSlayMsg();
+        mafia.usersToSlay = {};
     };
 
     this.shoveUser = function (src, name, silent) {
@@ -3814,7 +3808,9 @@ function Mafia(mafiachan) {
             "/update: To update a Mafia Theme!",
             "/featured: To view the currently featured Mafia Theme and Text."],
         ma: ["/slay: To slay users in a Mafia game.",
+            "/unslay: To cancel a slay on a user.",
             "/shove: To remove users before a game starts.",
+            "/unshove: To cancel a shove on a user.",
             "/mafiaban: To ban a user from the Mafia channel, format /mafiaban user:reason:time",
             "/mafiaunban: To unban a user from the Mafia channel.",
             "/end: To cancel a Mafia game!",
@@ -5330,9 +5326,25 @@ function Mafia(mafiachan) {
             mafiabot.sendAll(sys.name(src) + " passed their " + (sMA ? "Super Mafia Admin powers" : "Mafia auth") + " to " + commandData, sachannel);
             return;
         }
-        
         if (command === "enablenonpeak" || command === "disablenonpeak") {
             mafia.nonPeak(src, command === "enablenonpeak");
+            return;
+        }
+        if (command == "unshove") {
+            var name = commandData.toCorrectCase();
+            if (name in mafia.usersToShove) {
+                mafiabot.sendAll(nonFlashing(sys.name(src)) + " cancelled the shove on " + name + ".", sachannel);
+                mafiabot.sendMessage(src, "You cancelled the shove on " + name + ".", channel);
+                delete mafia.usersToShove[name];
+            }
+            return;
+        }
+        if (command == "unslay") {
+            var name = commandData.toCorrectCase();
+            if (name in mafia.usersToSlay) {
+                dualBroadcast("±Slay: " + nonFlashing(sys.name(src)) + " cancelled the sl" + "\u200b" + "ay on " + name + ".");
+                delete mafia.usersToSlay[name];
+            }
             return;
         }
         /*if (command == "mafiabans") {
@@ -5544,6 +5556,21 @@ function Mafia(mafiachan) {
                     sys.sendMessage(src, "±Info: A " + (mafia.theme.name == "default" ? "" : mafia.theme.name + "-themed ") + "mafia game is in progress! You can join the next game by typing /join! ", mafiachan);
             }
             return false;
+        }
+    };
+    
+    this.beforeChannelLeave = function(src, channel) {
+        if (channel == mafiachan) {
+            var name = sys.name(src);
+            if (name in this.usersToShove) {
+                delete this.usersToShove[name];
+            }
+            mafiabot.sendAll(name + " left the channel and was removed from the shove list!", sachannel);
+            
+            if ((this.isInGame(name) && sys.id('PolkaBot') === undefined) ||name in this.signups ) {
+                sendChanAll("PolkaBot: Mafia: Player " + name + " left whilst in a game!", sachannel);
+            }
+            return true;
         }
     };
 
