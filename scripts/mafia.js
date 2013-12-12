@@ -2187,7 +2187,7 @@ function Mafia(mafiachan) {
                 mafia.clearVariables();
                 this.usersToShove = {};
                 mafia.mafiaStats.result("dead");
-                mafia.checkDeadGames(CurrentGame.playerCount);
+                mafia.checkDead(CurrentGame.playerCount);
                 return;
             }
 
