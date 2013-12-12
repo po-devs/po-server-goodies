@@ -241,6 +241,11 @@ function cmp(x1, x2) {
     else return false;
 }
 
+function startsWithVowel(tier){
+    tier = tier.toLowerCase();
+    return (tier[0] === "a" || tier[0] === "e" || tier[0] === "i" || tier[0] === "o" || tier[0] === "u" || tier[0] === "x")
+}
+
 function getFullTourName(key) {
     var mode = tours.tour[key].parameters.mode;
     var type = tours.tour[key].tourtype;
@@ -1051,8 +1056,8 @@ function tourStep() {
         var details = getEventTour(datestring);
         if (typeof details === "object") {
             var tourtier = details[0];
-            sendBotAll("A <b>"+html_escape(details[0])+"</b> event is starting soon.",tourschan,true);
-            sendBotAll("A <b>"+html_escape(details[0])+"</b> event is starting soon.",0,true);
+            sendBotAll((startsWithVowel(html_escape(details[0])) ? "An " : "A ") + "<b>"+html_escape(details[0])+"</b> event is starting soon.",tourschan,true);
+            sendBotAll((startsWithVowel(html_escape(details[0])) ? "An " : "A ") + "<b>"+html_escape(details[0])+"</b> event is starting soon.",0,true);
             tours.queue.unshift({'tier': tourtier, 'starter': "~Pokemon Online~", 'parameters': details[1]});
             tours.globaltime = parseInt(sys.time(), 10)+300;
             tours.eventticks = -1;
@@ -3587,7 +3592,7 @@ function tourstart(tier, starter, key, parameters) {
             else {
                 sendChanHtmlAll(redhtmlborder, channels[x]);
             }
-            sendChanHtmlAll("<timestamp/> A <b><a href='http://wiki.pokemon-online.eu/wiki/"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x]);
+            sendChanHtmlAll("<timestamp/> " + (startsWithVowel(tier) ? "An " : "A ") + "<b><a href='http://wiki.pokemon-online.eu/wiki/"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x]);
             sendChanAll("CLAUSES: "+getTourClauses(key),channels[x]);
             sendChanAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : "")+(parameters.event ? "; Event Tournament" : "")+(wifiuse != "default" ? "; "+wifiuse : ""), channels[x]);
             if (channels[x] == tourschan) {
@@ -3618,7 +3623,7 @@ function tourstart(tier, starter, key, parameters) {
             var poUser = SESSION.users(id);
             if (sys.loggedIn(id) && poUser && poUser.tiers && poUser.tiers.indexOf(tier) != -1 && isInTour(sys.name(id)) === false) {
                 if (sys.isInChannel(id, tourschan)) {
-                    sys.sendHtmlMessage(playerson[x], "<font color=red>You are currently alerted when a "+tier+" tournament is started!</font><ping/>",tourschan);
+                    sys.sendHtmlMessage(playerson[x], "<font color=red>You are currently alerted when " + (startsWithVowel(tier) ? "an " : "a ") +tier+" tournament is started!</font><ping/>",tourschan);
                     continue;
                 }
             }
