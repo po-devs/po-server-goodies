@@ -2032,7 +2032,6 @@ function Mafia(mafiachan) {
                 sendChanAll("±Game: The " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ") wins!", mafiachan);
             }
             mafia.mafiaStats.result(mafia.theme.trside(winSide));
-            mafia.checkDead(CurrentGame.playerCount);
             currentStalk.push("Winners: " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ")");
             if (winByDeadRoles) {
                 var losingSides = [];
@@ -2054,7 +2053,7 @@ function Mafia(mafiachan) {
                 currentStalk.push("Losers: " + readable(goodPeople, "and"));
             }
             sendChanAll(border, mafiachan);
-            
+            mafia.checkDead(CurrentGame.playerCount);
             mafia.clearVariables();
             if (sys.id('PolkaBot') !== undefined) {
                 sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
