@@ -5562,11 +5562,11 @@ function Mafia(mafiachan) {
         if (channel == mafiachan) {
             var name = sys.name(src);
             if (name in this.usersToShove) {
+                mafiabot.sendAll(name + " left the channel and was removed from the shove list!", sachannel);
                 delete this.usersToShove[name];
             }
-            mafiabot.sendAll(name + " left the channel and was removed from the shove list!", sachannel);
             
-            if ((this.isInGame(name) && sys.id('PolkaBot') === undefined) ||name in this.signups ) {
+            if ((this.isInGame(name) && sys.id('PolkaBot') === undefined) || name in this.signups) {
                 sendChanAll("PolkaBot: Mafia: Player " + name + " left whilst in a game!", sachannel);
             }
             return true;
