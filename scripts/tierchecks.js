@@ -76,9 +76,11 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(s
 
 tier_checker.add_new_check(INCLUDING, ["BW2 LC", "BW2 LC Ubers", "BW2 UU LC", "XY LC"], function littleCupCheck(src, team) {
     var ret = [];
+    var gen = sys.gen(src, team);
+    var check = (gen > 5 ? ["Treecko", "Mudkip", "Turtwig", "Chimchar", "Piplup"].map(sys.pokeNum) : lcpokemons);
     for (var i = 0; i < 6; i++) {
         var x = sys.teamPoke(src, team, i);
-        if (x !== 0 && sys.hasDreamWorldAbility(src, team, i) && lcpokemons.indexOf(x) != -1 ) {
+        if (x !== 0 && sys.hasDreamWorldAbility(src, team, i) && check.indexOf(x) != -1 ) {
             ret.push("" + sys.pokemon(x) + " is not allowed with a Dream World ability in this tier. Change it in the teambuilder.");
 
         }
