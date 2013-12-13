@@ -3751,6 +3751,7 @@ function Mafia(mafiachan) {
         if (npThemes.length) {
             dualBroadcast("±" + mafiabot.name + ": " + nonFlashing(name) + (enable ? " enabled " : " disabled ") + "non-peak themes (" + npThemes.join(", ") + ").");
             peak = enable === false;
+            deadTime = (peak ? 0 : timesBeforeNonPeak);
         } else {
             if (src) {
                 mafiabot.sendMessage(src, "No non-peak themes found", mafiachan);
