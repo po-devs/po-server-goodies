@@ -1427,6 +1427,7 @@ function Mafia(mafiachan) {
                 var name = name;
                 var shover = this.usersToShove[name];
                 this.shoveUser(shover, name, false);
+                delete this.usersToShove[name];
             }
         }
     };
@@ -3520,6 +3521,7 @@ function Mafia(mafiachan) {
                         var name = this.signups[x];
                         var shover = this.usersToShove[name];
                         mafia.shoveUser(shover, name, false);
+                        delete this.usersToShove[name];
                         x--;
                     }
                 }
@@ -4011,6 +4013,7 @@ function Mafia(mafiachan) {
                     var name = name;
                     var shover = this.usersToShove[name];
                     this.shoveUser(shover, name, false);
+                    delete this.usersToShove[name];
                 }
                 if (this.signups.length == this.theme["roles" + this.theme.roleLists].length) {
                     this.ticks = 1;
