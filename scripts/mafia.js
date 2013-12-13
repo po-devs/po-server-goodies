@@ -43,8 +43,9 @@ function Mafia(mafiachan) {
         GREEN_BORDER = " " + DEFAULT_BORDER + ":",
         border,
         isDummyCommand = /^dummy(?:\d+)?$/,
-        timesBeforeNonPeak = 3; //number of dead games before enabling non-peak
-
+        timesBeforeNonPeak = 3, //number of dead games before enabling non-peak
+        numPlayersBeforeDead = 8; //number of players before game is counted as not dead
+        
     var savePlayedGames = function () {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
         sys.saveVal("Stats/MafiaGamesPlayed", 1 + (+sys.getVal("Stats/MafiaGamesPlayed")));
@@ -3718,9 +3719,9 @@ function Mafia(mafiachan) {
     };
     
     this.checkDead = function (players) {
-        if (players < 8 && deadTime < timesBeforeNonPeak) {
+        if (players < numPlayersBeforeDead && deadTime < timesBeforeNonPeak) {
             deadTime += 1;
-        } else if (players >= 8 && deadTime > 0) {
+        } else if (players >= numPlayersBeforeDead && deadTime > 0) {
             deadTime -= 1;
         }
         if (deadTime >= timesBeforeNonPeak) {
