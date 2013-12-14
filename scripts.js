@@ -1641,7 +1641,7 @@ afterChangeTeam : function(src)
         }
     }
 
-    POuser.contributions = script.contributors.hash.hasOwnProperty(sys.name(src)) ? script.contributors.get(sys.name(src)) : undefined;
+    POuser.contributions = script.contributors.hash.hasOwnProperty(sys.name(src)) && sys.dbRegistered(sys.name(src)) ? script.contributors.get(sys.name(src)) : undefined;
     POuser.mafiaAdmin = script.mafiaAdmins.hash.hasOwnProperty(sys.name(src));
     if (authChangingTeam === false) {
         if (sys.auth(src) > 0 && sys.auth(src) <= 3)
