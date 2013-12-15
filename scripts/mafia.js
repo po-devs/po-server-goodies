@@ -1239,7 +1239,7 @@ function Mafia(mafiachan) {
             border = DEFAULT_BORDER;
             sendChanAll("", mafiachan);
             sendChanAll(border, mafiachan);
-            sendChanAll("±Game: " + sys.name(src) + " started a voting for next game's theme!. You have " + this.ticks + " seconds to vote with /vote or /votetheme!", mafiachan);
+            sendChanAll("±Game: " + sys.name(src) + " started a voting for next game's theme! You have " + this.ticks + " seconds to vote with /vote or /votetheme!", mafiachan);
             var casedThemes = [];
             for (var x in this.possibleThemes) {
                 casedThemes.push(this.themeManager.themes[x].name);
@@ -5595,6 +5595,7 @@ function Mafia(mafiachan) {
         } else if (this.isInGame(id)) {
             this.slayUser(mafiabot.name, id, false);
         }
+        delete mafia.usersToShove[id];
         if (sys.isInChannel(src, mafiachan)) {
             sys.kick(src, mafiachan);
         }
@@ -5608,6 +5609,7 @@ function Mafia(mafiachan) {
         } else if (this.isInGame(dest)) {
             this.slayUser(mafiabot.name, dest, false);
         }
+        delete mafia.usersToShove[dest];
     };
     
     /*Not sure what this is for, onMute is called for Blaziken.. Whatever it is, I can't test if it works or not.
