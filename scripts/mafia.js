@@ -3294,12 +3294,17 @@ function Mafia(mafiachan) {
                     if ("killVoters" in lyn) {
                         var first = lyn.killVoters.first || 1,
                             last =  lyn.killVoters.last || 0,
-                            votersList = voters[downed].concat();
+                            votersList = voters[downed].concat(),
+                            firstList,
+                            lastList;
                             
                         if (votersList.indexOf(downed) !== -1) {
                             votersList.splice(votersList.indexOf(downed), 1);
                         }
-                        votersList = removeDuplicates(votersList.slice(0, first).concat(votersList.slice(-last)));
+                        firstList = votersList.slice(0, first);
+                        lastList = last > 0 ? votersList.slice(-last) : [];
+                            
+                        votersList = removeDuplicates(firstList.concat(lastList));
                         
                         actionMessage = lyn.killVoters.message ? lyn.killVoters.message : "~Target~ died for having voted for ~Self~!";
                         sendChanAll(needsBot(actionMessage).replace(/~Self~/g, lynched.name).replace(/~Target~/g, readable(votersList, "and")), mafiachan);
