@@ -2168,9 +2168,12 @@ afterChatMessage : function(src, message, chan)
         if (user.floodcount > linecount) {
             var message = "" + sys.name(src) + " was kicked " + (sys.auth(src) === 0 && officialChan ? "and muted " : "") + "for flood.";
             if (officialChan) {
-                if (user.smuted) {
+                if (user.smute.active) {
                     sys.sendMessage(src, message);
                     kickbot.sendAll("" + sys.name(src) + " was kicked for flood while smuted.", staffchannel);
+                }
+                if (user.mute.active) {
+                    kickbot.sendAll(message + " [Channel: "+sys.channel(channel)+"] whilst muted", staffchannel);
                 } else {
                     kickbot.sendAll(message, channel);
                     if (channel != staffchannel)
