@@ -1249,6 +1249,10 @@ function Mafia(mafiachan) {
             sendChanAll("", mafiachan);
         }
         if (this.state != "voting") {
+            if (this.state == "night" || this.state == "standby") {
+                sys.sendMessage(src, "±Game: You can only vote during the voting phase!", mafiachan);
+                return;
+            }
             sys.sendMessage(src, "±Game: This command makes no sense during a game, right?!", mafiachan);
             return;
         }
