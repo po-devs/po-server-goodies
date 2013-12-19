@@ -1752,7 +1752,7 @@ beforeNewMessage : function(msg) {
 
 beforeNewPM: function(src){
     var user = SESSION.users(src);
-    if (user.smute.active){
+    if (sys.auth(src) === 0 && user.smute.active){
         sys.stopEvent();
         return;
     }
