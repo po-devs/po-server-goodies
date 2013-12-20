@@ -433,6 +433,8 @@ function Mafia(mafiachan) {
             theme.drawmsg = plain_theme.drawmsg;
             theme.lynchmsg = plain_theme.lynchmsg;
             theme.border = plain_theme.border;
+            //Sets Poisons to resolve after Curses
+            theme.delayPoisonDeath = plain_theme.delayPoisonDeath;
             theme.generateRoleInfo();
             theme.generateSideInfo();
             theme.generatePriorityInfo();
@@ -3063,19 +3065,22 @@ function Mafia(mafiachan) {
             // decrease counters
             for (var p in mafia.players) {
                 player = mafia.players[p];
-                var poisonCount = player.poisonCount;
+                var poisonCount = player.poisonCount,
+                    delay = (typeof mafia.theme.delayPoisonDeath == "boolean" ? mafia.theme.delayPoisonDeath : false);
                 if (poisonCount !== undefined) {
                     if (player.poisoned < poisonCount) {
                         mafia.sendPlayer(player.name, "±Game: You have " + (player.poisonCount - player.poisoned) + " days to live.");
                         player.poisoned++;
                     } else if (player.poisoned >= poisonCount) {
-                        mafia.sendPlayer(player.name, "±Game: " + (player.poisonDeadMessage ? player.poisonDeadMessage : "You died because of Poison!"));
-                        mafia.kill(player);
-                        nightkill = true; // kinda night kill
+                        if (!delay){
+                            mafia.sendPlayer(player.name, "±Game: " + (player.poisonDeadMessage ? player.poisonDeadMessage : "You died because of Poison!"));
+                            mafia.kill(player);
+                            nightkill = true; // kinda night kill
+                        }
                     }
                 }
                 var curseCount = player.curseCount;
-                if (curseCount !== undefined) {
+                if (curseCount !== undefined && mafia.isInGame(p)) {
                     if (player.cursed < curseCount) {
                         if (!player.silentCurse) {
                             mafia.sendPlayer(player.name, "±Game: You will convert in " + (player.curseCount - player.cursed) + " days.");
@@ -3093,6 +3098,11 @@ function Mafia(mafiachan) {
                             mafia.showOwnRole(sys.id(player.name));
                         }
                     }
+                }
+                if (delay && player.poisoned >= poisonCount && poisonCount !== undefined) {
+                    mafia.sendPlayer(player.name, "±Game: " + (player.poisonDeadMessage ? player.poisonDeadMessage : "You died because of Poison!"));
+                    mafia.kill(player);
+                    nightkill = true; // kinda night kill
                 }
             }
             if (!nightkill) {
