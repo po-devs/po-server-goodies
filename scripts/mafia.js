@@ -2418,7 +2418,7 @@ function Mafia(mafiachan) {
                 var rolecheck;
                 var teamcheck;
                 for (j = 0; j < names.length; ++j) {
-                    if (!mafia.isInGame(names[j])) continue;
+                    if (!mafia.isInGame(names[j]) || this.hasCommand(names[j], o.action, "night") === false) continue;
                     player = mafia.players[names[j]];
                     var targets = mafia.getTargetsFor(player, o.action);
                     var target, t; // current target
