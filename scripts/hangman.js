@@ -141,6 +141,10 @@ module.exports = function () {
             hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanTime - now) / 1000) + 1) + " seconds before submitting another guess!", hangchan);
             return;
         }
+        if (SESSION.users(src).smute.active) {
+            hangbot.sendMessage(src, "You need to wait for another 9 seconds before submitting another guess!", hangchan);
+            return;
+        }
         if (sys.name(src) in answers && answers[sys.name(src)] >= maxAnswers) {
             hangbot.sendMessage(src, "You can only use /a " + maxAnswers + " times!", hangchan);
             return;
