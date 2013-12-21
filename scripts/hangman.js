@@ -50,6 +50,10 @@ module.exports = function () {
             hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanTime - now) / 1000) + 1) + " seconds before submitting another guess!", hangchan);
             return;
         }
+        if (SESSION.users(src).smute.active) {
+            hangbot.sendMessage(src, "You need to wait for another 9 seconds before submitting another guess!", hangchan);
+            return;
+        }
         var letter = commandData.toLowerCase();
         if (letter.length > 1) {
             hangbot.sendMessage(src, "This is not a valid answer!", hangchan);
@@ -185,7 +189,7 @@ module.exports = function () {
             hangbot.sendMessage(src, "A game is already running! You can start a new one once this game is over!", hangchan);
             return;
         }
-        if (winner && (new Date()).getTime() < nextGame && sys.name(src).toLowerCase() !== winner.toLowerCase()) {
+        if (SESSION.users(src).smute.active || winner && (new Date()).getTime() < nextGame && sys.name(src).toLowerCase() !== winner.toLowerCase()) {
             hangbot.sendMessage(src, "Only the last winner can start a game! If the winner takes more than " + winnerDelay + " seconds, anyone can start a new game!", hangchan);
             return;
         }
