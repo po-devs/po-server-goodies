@@ -201,7 +201,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         var limit = parseInt(sys.time(), 10) - time;
         var removed = [];
-        mutes.removeIf(function(memoryhash, item) {
+        script.mutes.removeIf(function(memoryhash, item) {
             var data = memoryhash.get(item).split(":");
             if (parseInt(data[0], 10) < limit || (data.length > 3 && parseInt(data[2], 10) < limit)) {
                 removed.push(item);
@@ -223,7 +223,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         var limit = parseInt(sys.time(), 10) - time;
         var removed = [];
-        mbans.removeIf(function(memoryhash, item) {
+        script.mbans.removeIf(function(memoryhash, item) {
             var data = memoryhash.get(item).split(":");
             if (parseInt(data[0], 10) < limit || (data.length > 3 && parseInt(data[2], 1) < limit)) {
                 removed.push(item);
