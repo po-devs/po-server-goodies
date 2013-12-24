@@ -1144,8 +1144,8 @@ addUserCommand("submitq", function (src, commandData, channel) {
         return;
     }
     var category = utilities.html_escape(commandData[0]).trim();
-    if (trivData.equivalentCats.hasOwnProperty(category.toLowerCase)) {
-       category = trivData.equivalentCats[category.toLowerCase];
+    if (trivData.equivalentCats.hasOwnProperty(category.toLowerCase())) {
+       category = trivData.equivalentCats[category.toLowerCase()];
     }
     var question = utilities.html_escape(commandData[1]).trim();
     var fixAnswer = commandData[2].replace(/ *, */gi, ",").replace(/^ +/, "");
