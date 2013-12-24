@@ -305,10 +305,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "topicadd") {
-        if (SESSION.channels(channel).topic.length > 0)
-            SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandData);
-        else
-            SESSION.channels(channel).setTopic(src, commandData);
+        if (commandData) { 
+            if (SESSION.channels(channel).topic.length > 0)
+                SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandData);
+            else
+                SESSION.channels(channel).setTopic(src, commandData);
+        }
         return;
     }
     if (command == "removepart") {
