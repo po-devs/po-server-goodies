@@ -145,7 +145,7 @@ var cleanFile = function(filename) {
     if (typeof sys != 'undefined')
         sys.appendToFile(filename, "");
 };
-[Config.dataDir+"mafia_stats.json", Config.dataDir+"suspectvoting.json", "mafiathemes/metadata.json", Config.dataDir+"channelData.json", Config.dataDir+"mutes.txt", Config.dataDir+"mbans.txt", Config.dataDir+"hmutes.txt", Config.dataDir+"smutes.txt", Config.dataDir+"rangebans.txt", Config.dataDir+"contributors.txt", Config.dataDir+"ipbans.txt", Config.dataDir+"namesToWatch.txt", Config.dataDir+"hangmanadmins.txt", Config.dataDir+"hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", Config.dataDir+"secretsmute.txt", Config.dataDir+"ipApi.txt", Config.dataDir + "notice.html"].forEach(cleanFile);
+[Config.dataDir+"mafia_stats.json", Config.dataDir+"suspectvoting.json", Config.dataDir+"mafiathemes/metadata.json", Config.dataDir+"channelData.json", Config.dataDir+"mutes.txt", Config.dataDir+"mbans.txt", Config.dataDir+"hmutes.txt", Config.dataDir+"smutes.txt", Config.dataDir+"rangebans.txt", Config.dataDir+"contributors.txt", Config.dataDir+"ipbans.txt", Config.dataDir+"namesToWatch.txt", Config.dataDir+"hangmanadmins.txt", Config.dataDir+"hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", Config.dataDir+"secretsmute.txt", Config.dataDir+"ipApi.txt", Config.dataDir + "notice.html"].forEach(cleanFile);
 
 var autosmute = sys.getFileContent(Config.dataDir+"secretsmute.txt").split(':::');
 var crc32 = require('crc32.js').crc32;
