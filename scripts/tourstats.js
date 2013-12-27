@@ -4,7 +4,7 @@
 // require("tourstats.js").updateTourStats
 
 var tourwinners, tourstats, tourrankingsbytier;
-var dataDir="tourdata/";
+var dataDir="scriptdata/tourdata/";
 
 function updateTourStats(tier, time, winner, num, noPoints, purgeTime) {
     //loadStats();
