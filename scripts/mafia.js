@@ -4726,7 +4726,7 @@ function Mafia(mafiachan) {
         if (command === "roles") {
             var themeName = "default";
             var data = commandData.split(":");
-            if (mafia.state != "blank") {
+            if (mafia.state != "blank" && mafia.state != "voting") {
                 themeName = mafia.theme.name.toLowerCase();
             }
             if (data[0] != noPlayer && data[0] !== "") {
@@ -4764,7 +4764,7 @@ function Mafia(mafiachan) {
         
         if (command === "sides") {
             var themeName = "default";
-            if (mafia.state != "blank") {
+            if (mafia.state != "blank" && mafia.state != "voting") {
                 themeName = mafia.theme.name.toLowerCase();
             }
             if (commandData != noPlayer) {
@@ -4818,7 +4818,7 @@ function Mafia(mafiachan) {
         
         if (command === "changelog") {
             var themeName = "default";
-            if (mafia.state != "blank") {
+            if (mafia.state != "blank" && mafia.state != "voting") {
                 themeName = mafia.theme.name.toLowerCase();
             }
             if (commandData != noPlayer) {
@@ -4854,7 +4854,7 @@ function Mafia(mafiachan) {
         
         if (command === "details") {
             var themeName = "default";
-            if (mafia.theme && mafia.state != "blank") {
+            if (mafia.state != "blank" && mafia.state != "voting") {
                 themeName = mafia.theme.name.toLowerCase();
             }
             if (commandData != noPlayer) {
@@ -4924,7 +4924,7 @@ function Mafia(mafiachan) {
         
         if (command === "priority") {
             var themeName = "default";
-            if (mafia.state != "blank") {
+            if (mafia.state != "blank" && mafia.state != "voting") {
                 themeName = mafia.theme.name.toLowerCase();
             }
             if (commandData != noPlayer) {
@@ -5087,7 +5087,7 @@ function Mafia(mafiachan) {
             var themeName;
             if (commandData === noPlayer) {
                 themeName = "default";
-                if (mafia.theme && mafia.state != "blank") {
+                if (mafia.state != "blank" && mafia.state != "voting") {
                     themeName = mafia.theme.name.toLowerCase();
                 }
             } else {
