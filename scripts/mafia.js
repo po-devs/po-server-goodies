@@ -44,7 +44,7 @@ function Mafia(mafiachan) {
         border,
         isDummyCommand = /^dummy(?:\d+)?$/,
         timesBeforeNonPeak = 3, //number of dead games before enabling non-peak
-        numPlayersBeforeDead = 8; //number of players before game is counted as not dead
+        numPlayersBeforeDead = 10; //number of players before game is counted as not dead
         
     var savePlayedGames = function () {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
