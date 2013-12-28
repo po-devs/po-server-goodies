@@ -14,9 +14,10 @@ PARAMS={'stats1': None, 'stats2': None, 'w1': 1, 'w2': 2}
 MONTHLY_STATS="http://stats.pokemon-online.eu/Past Stats/{month}-{year}/{tier}/ranked_stats.txt"
 
 TIER_TREES = [
-    ["Wifi OU", "Wifi UU", "Wifi LU", "Wifi NU", "Wifi NEU"],
+    #["Wifi OU", "Wifi UU", "Wifi LU", "Wifi NU", "Wifi NEU"],
     #["No Preview OU"],
-    ["Wifi LC", "Wifi LC UU"]
+    #["Wifi LC", "Wifi LC UU"]
+    ["XY OU", "XY UU"]
 ]
 
 # Cutoff percentages:
@@ -33,6 +34,8 @@ BANLIST = {
     "Wifi LC": ["Scyther", "Sneasel", "Tangela", "Vulpix", "Gligar", "Meditite", "Scraggy", "Murkrow", "Mienfoo"], # LC Ubers (in addition to all other pokemon...)
     "Wifi LC UU": ["Poliwag", "Axew", "Shellder"], # Wifi LC BL
     # Scraggy, Meditite, Murkrow, Misdreavus, Gligar, and Drilbur to LC
+    "XY OU": ["Mewtwo", "Ho-Oh", "Lugia", "Kyogre", "Groudon", "Rayquaza", "Dialga", "Palkia", "Giratina", "Giratina-O", "Arceus", "Darkrai", "Shaymin-S", "Reshiram", "Zekrom", "Deoxys", "Deoxys-A", "Deoxys-S", "Blaziken", "Xerneas", "Yveltal", "Kyurem-W"],
+    "XY UU" : [],
 }
 ADDITIONAL_BANS = {
     "Wifi UU": ["Vulpix"], # Due to Drought being banned                
