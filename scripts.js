@@ -1257,7 +1257,7 @@ beforeChannelJoin : function(src, channel) {
         sys.putInChannel(src, hangmanchan);
     }
     /* Tours redirect */
-    if (channel == sys.channelId("Tours")) {
+    if (channel == sys.channelId("Tours") || channel == sys.channelId("Tournament")) {
         sys.stopEvent();
         sys.putInChannel(src, tourchannel);
         return;

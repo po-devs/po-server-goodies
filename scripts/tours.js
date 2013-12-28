@@ -2894,7 +2894,7 @@ function tourCommand(src, command, commandData, channel) {
             return true;
         }
 
-        if (command == "rules" || command == "tourrules") {
+        if (command == "tourrules") {
             sys.sendMessage(src, border,tourschan);
             for (var t in tourrules) {
                 sys.sendMessage(src, tourrules[t],tourschan);
