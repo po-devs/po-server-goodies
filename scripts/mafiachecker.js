@@ -255,7 +255,7 @@ function mafiaChecker() {
                         if (checkType(action, ["object"], comm)) {
                             command = e;
                             commonMandatory = ["target", "common", "priority"];
-                            commonOptional = ["broadcast", "command", "limit", "msg", "failChance", "charges", "recharge", "initialrecharge", "broadcastmsg", "chargesmsg", "suicideChance", "suicidemsg", "restrict", "pierce", "pierceChance", "hide"];
+                            commonOptional = ["broadcast", "command", "limit", "msg", "failChance", "charges", "recharge", "initialrecharge", "broadcastmsg", "chargesmsg", "suicideChance", "suicidemsg", "restrict", "pierce", "pierceChance", "bypass", "hide"];
                             commandList = [];
                             if ("command" in action) {
                                 if (Array.isArray(action.command)) {
@@ -1207,6 +1207,11 @@ function mafiaChecker() {
         checkType(action.restrict, ["array"], act + ".restrict");
         checkType(action.pierce, ["boolean"], act + ".pierce");
         checkType(action.pierceChance, ["number"], act + ".pierceChance");
+        if (checkType(action.bypass, ["array"], act + ".bypass")) {
+            for (c in action.bypass) {
+                checkValidValue(action.bypass[c], ["ignore", "ChangeTarget", "killattacker", "poisonattacker", "identify", "die", "evadeChance", "evadeCharges", "killif", "resistance"], act + ".bypass");
+            }
+        }
     }
     function addMinorError(msg) {
         minorErrors.push(msg);

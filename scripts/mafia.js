@@ -2418,7 +2418,7 @@ function Mafia(mafiachan) {
                 var rolecheck;
                 var teamcheck;
                 for (j = 0; j < names.length; ++j) {
-                    if (!mafia.isInGame(names[j])) continue;
+                    if (!mafia.isInGame(names[j]) || this.hasCommand(names[j], o.action, "night") === false) continue;
                     player = mafia.players[names[j]];
                     var targets = mafia.getTargetsFor(player, o.action);
                     var target, t; // current target
@@ -3058,17 +3058,6 @@ function Mafia(mafiachan) {
             // decrease counters
             for (var p in mafia.players) {
                 player = mafia.players[p];
-                var poisonCount = player.poisonCount;
-                if (poisonCount !== undefined) {
-                    if (player.poisoned < poisonCount) {
-                        mafia.sendPlayer(player.name, "±Game: You have " + (player.poisonCount - player.poisoned) + " days to live.");
-                        player.poisoned++;
-                    } else if (player.poisoned >= poisonCount) {
-                        mafia.sendPlayer(player.name, "±Game: " + (player.poisonDeadMessage ? player.poisonDeadMessage : "You died because of Poison!"));
-                        mafia.kill(player);
-                        nightkill = true; // kinda night kill
-                    }
-                }
                 var curseCount = player.curseCount;
                 if (curseCount !== undefined && mafia.isInGame(p)) {
                     if (player.cursed < curseCount) {
@@ -3087,6 +3076,17 @@ function Mafia(mafiachan) {
                             mafia.sendPlayer(player.name, "±Game: Your curse took effect and you changed roles!");
                             mafia.showOwnRole(sys.id(player.name));
                         }
+                    }
+                }
+                var poisonCount = player.poisonCount;
+                if (poisonCount !== undefined) {
+                    if (player.poisoned < poisonCount) {
+                        mafia.sendPlayer(player.name, "±Game: You have " + (player.poisonCount - player.poisoned) + " days to live.");
+                        player.poisoned++;
+                    } else if (player.poisoned >= poisonCount) {
+                        mafia.sendPlayer(player.name, "±Game: " + (player.poisonDeadMessage ? player.poisonDeadMessage : "You died because of Poison!"));
+                        mafia.kill(player);
+                        nightkill = true; // kinda night kill
                     }
                 }
             }
