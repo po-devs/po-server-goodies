@@ -1,3 +1,8 @@
+/* hangman.js
+    TODO:
+    Check if Auto-Game answers have no invalid character
+    Option to set time before an Auto-Game is started with /config
+*/
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global sys:true, sendChanHtmlAll:true, module:true, SESSION:true, hangmanchan, hangbot, require, script, sachannel, getTimeString */
 
@@ -8,13 +13,17 @@ module.exports = function () {
     var hangman = this;
     var hangchan;
 
-    var defaultMaster = "RiceKirby";
     var defaultChannel = "Hangman";
     var defaultParts = 7;
     var minBodyParts = 5;
     var winnerDelay = 60;
     var answerDelay = 7;
     var maxAnswers = 3;
+    
+    var autoGamesFile = "https://dl.dropboxusercontent.com/u/10065307/hangmanautogames.txt"; 
+    var idleCount = 0;
+    var idleLimit = 240;
+    var autoGames;
 
     var host;
     var hostName;
@@ -197,9 +206,10 @@ module.exports = function () {
             hangbot.sendMessage(src, "Only the last winner can start a game! If the winner takes more than " + winnerDelay + " seconds, anyone can start a new game!", hangchan);
             return;
         }
-        var a = commandData.split(":")[0];
-        var h = commandData.split(":")[1];
-        var p = commandData.split(":")[2];
+        var data = commandData.split(":");
+        var a = data[0];
+        var h = data[1];
+        var p = data.length < 3 ? defaultParts : data[2];
 
         if (!a) {
             hangbot.sendMessage(src, "You need to choose a word!", hangchan);
@@ -235,6 +245,14 @@ module.exports = function () {
             hangbot.sendMessage(src, "Your answer cannot be longer than 60 characters or shorter than 4 characters!", hangchan);
             return;
         }
+        
+        
+        this.createGame(sys.name(src), a, h, p, src);
+    };
+    
+    this.createGame = function (name, a, h, p, src) {
+        var validCharacters = "abcdefghijklmnopqrstuvwxyz";
+        
         hint = h;
         word = a;
         parts = (p && parseInt(p, 10) > 0) ? parseInt(p, 10) : defaultParts;
@@ -258,16 +276,19 @@ module.exports = function () {
             }
         }
 
-        host = sys.ip(src);
-        hostName = sys.name(src);
+        host = src ? sys.ip(src) : null;
+        hostName = name;
 
         sendChanHtmlAll(" ", hangchan);
         sys.sendAll("*** ************************************************************ ***", hangchan);
-        hangbot.sendAll(sys.name(src) + " started a new game of Hangman!", hangchan);
+        hangbot.sendAll(hostName + " started a new game of Hangman!", hangchan);
         hangbot.sendAll(currentWord.join(" "), hangchan);
         hangbot.sendAll(hint, hangchan);
         sys.sendAll("*** ************************************************************ ***", hangchan);
         sendChanHtmlAll(" ", hangchan);
+        if (src) {
+            hangbot.sendMessage(src, "You started a Hangman game with the answer '" + word.toUpperCase() + "'. If you mispelled the answer or made some mistake, use /end to stop the game and fix it.", hangchan);
+        }
         hangbot.sendAll("Type /g [letter] to guess a letter, and /a [answer] to guess the answer!", hangchan);
         sendChanHtmlAll(" ", hangchan);
         var time = parseInt(sys.time(), 10);
@@ -279,6 +300,13 @@ module.exports = function () {
             sys.sendAll("*** ************************************************************ ***", 0);
             sys.sendAll("", 0);
         }
+    };
+    this.startAutoGame = function() {
+        var randomGame = autoGames[sys.rand(0, autoGames.length)].split(":");
+        var a = randomGame[0].toLowerCase(),
+            h = randomGame[1],
+            p = randomGame.length < 3 ? defaultParts : randomGame[2];
+        this.createGame(hangbot.name, a, h, p, null);
     };
     this.applyPoints = function (src, p) {
         if (!points[sys.name(src)]) {
@@ -360,8 +388,10 @@ module.exports = function () {
     };
     this.setWinner = function (name) {
         word = undefined;
-        winner = name;
-        nextGame = (new Date()).getTime() + winnerDelay * 1000;
+        if (host !== null && name !== hangbot.name) {
+            winner = name;
+            nextGame = (new Date()).getTime() + winnerDelay * 1000;
+        }
         this.resetTimers();
     };
     this.passWinner = function (src, commandData) {
@@ -410,6 +440,7 @@ module.exports = function () {
         for (p in players) {
             SESSION.users(players[p]).hangmanTime = now;
         }
+        idleCount = 0;
     };
     this.viewGame = function (src) {
         if (!word) {
@@ -904,7 +935,16 @@ module.exports = function () {
         }
         SESSION.global().channelManager.restoreSettings(hangchan);
         SESSION.channels(hangchan).perm = true;
-        SESSION.channels(hangchan).master = defaultMaster;
+        hangman.loadAutoGames(autoGamesFile);
+    };
+    this.loadAutoGames = function (url) {
+        sys.webCall(url, function (resp) {
+            try {
+                autoGames = JSON.parse(resp);
+            } catch (err) {
+                hangbot.sendAll("Unable to load Auto Games", hangchan);
+            }
+        });
     };
     this.beforeChannelJoin = function (src, channel) {
         if (channel !== hangchan) {
@@ -937,6 +977,15 @@ module.exports = function () {
             }
         }
     };
+    this.stepEvent = function () {
+        if (!word) {
+            idleCount++;
+            
+            if (idleCount >= idleLimit && autoGames) {
+                hangman.startAutoGame();
+            }
+        }
+    };
     this.onHmute = function (src) {
         if (sys.isInChannel(src, hangchan)) {
             sys.kick(src, hangchan);
@@ -957,6 +1006,7 @@ module.exports = function () {
         beforeChannelJoin: hangman.beforeChannelJoin,
         afterChannelJoin: hangman.afterChannelJoin,
         beforeChatMessage: hangman.beforeChatMessage,
+        stepEvent: hangman.stepEvent,
         onHmute: hangman.onHmute,
         onHelp: hangman.onHelp
     };
