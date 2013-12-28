@@ -64,7 +64,7 @@ var require_cache = typeof require != 'undefined' ? require.cache : {};
 require = function require(module_name, retry) {
     if (require.cache[module_name])
         return require.cache[module_name];
-    
+
     var module = {};
     module.module = module;
     module.exports = {};
@@ -145,7 +145,7 @@ var cleanFile = function(filename) {
     if (typeof sys != 'undefined')
         sys.appendToFile(filename, "");
 };
-[Config.dataDir+"mafia_stats.json", Config.dataDir+"suspectvoting.json", "mafiathemes/metadata.json", Config.dataDir+"channelData.json", Config.dataDir+"mutes.txt", Config.dataDir+"mbans.txt", Config.dataDir+"hmutes.txt", Config.dataDir+"smutes.txt", Config.dataDir+"rangebans.txt", Config.dataDir+"contributors.txt", Config.dataDir+"ipbans.txt", Config.dataDir+"namesToWatch.txt", Config.dataDir+"hangmanadmins.txt", Config.dataDir+"hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", Config.dataDir+"secretsmute.txt", Config.dataDir+"ipApi.txt", Config.dataDir + "notice.html"].forEach(cleanFile);
+[Config.dataDir+"mafia_stats.json", Config.dataDir+"suspectvoting.json", Config.dataDir+"mafiathemes/metadata.json", Config.dataDir+"channelData.json", Config.dataDir+"mutes.txt", Config.dataDir+"mbans.txt", Config.dataDir+"hmutes.txt", Config.dataDir+"smutes.txt", Config.dataDir+"rangebans.txt", Config.dataDir+"contributors.txt", Config.dataDir+"ipbans.txt", Config.dataDir+"namesToWatch.txt", Config.dataDir+"hangmanadmins.txt", Config.dataDir+"hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", Config.dataDir+"secretsmute.txt", Config.dataDir+"ipApi.txt", Config.dataDir + "notice.html"].forEach(cleanFile);
 
 var autosmute = sys.getFileContent(Config.dataDir+"secretsmute.txt").split(':::');
 var crc32 = require('crc32.js').crc32;
@@ -536,9 +536,9 @@ function getplugins() {
 }
 
 SESSION.identifyScriptAs("PO Scripts v0.991");
-SESSION.registerGlobalFactory(POGlobal);
-SESSION.registerUserFactory(POUser);
 SESSION.registerChannelFactory(POChannel);
+SESSION.registerUserFactory(POUser);
+SESSION.registerGlobalFactory(POGlobal);
 
 if (typeof SESSION.global() != 'undefined') {
     SESSION.global().channelManager = new POChannelManager('scriptdata/channelHash.json');
@@ -605,7 +605,7 @@ poScript=({
 /* Executed every second */
 step: function() {
     if (typeof callplugins == "function") callplugins("stepEvent");
-    
+
     var date = new Date();
     if (date.getUTCMinutes() === 10 && date.getUTCSeconds() === 0) {
         sys.get_output("nc -z server.pokemon-online.eu 10508", function callback(exit_code) {
@@ -973,7 +973,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         if (!sys.loggedIn(tar)) {
             memoryhash.add(tarip, sys.time() + ":" + sys.name(src) + ":" + expires + ":" + commandData + ":" + reason);
         }
-        
+
         sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for ") + timeString + "!") + (reason.length > 0 ? " [Reason: " + reason + "]" : "") + " [Channel: "+sys.channel(channel) + "]");
         var authority= sys.name(src).toLowerCase();
         authStats[authority] =  authStats[authority] || {};
@@ -1247,7 +1247,7 @@ beforeChannelJoin : function(src, channel) {
 
     // Can't ban from main
     if (channel === 0) return;
-    
+
     if (channel == sys.channelId("Mafia Channel")) {
         sys.stopEvent();
         sys.putInChannel(src, sys.channelId("Mafia"));
@@ -1572,7 +1572,7 @@ afterLogIn : function(src) {
     if (SESSION.users(src).hostname.toLowerCase().indexOf('tor') !== -1) {
         sys.sendAll('Possible TOR user: ' + sys.name(src), staffchannel);
     }
-    
+
     if (SESSION.users(src).megauser)
         sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Connected as MU" + "\n");
     if (sys.auth(src) > 0 && sys.auth(src) <= 3)
@@ -1582,7 +1582,7 @@ afterLogIn : function(src) {
 
     if (sys.auth(src) <= 3 && this.canJoinStaffChannel(src))
         sys.putInChannel(src, staffchannel);
-    
+
     if (isAndroid(src)) {
         normalbot.sendMessage(src, "New android version with included teambuilder! See: http://pokemon-online.eu/forums/showthread.php?22137-Android-App-with-Teambuilder");
     }
@@ -1942,7 +1942,7 @@ beforeChatMessage: function(src, message, chan) {
         }
         return (caps > 7 && 2*name.length < 3*caps);
     });
-    
+
     // Commenting out since no Shanai
 
     /*var shanaiForward = function(msg) {
@@ -1960,7 +1960,7 @@ beforeChatMessage: function(src, message, chan) {
         shanaiForward(message);
         return;
     }*/
-    
+
     var command;
     if ((message[0] == '/' || message[0] == "!") && message.length > 1 && utilities.isLetter(message[1])) {
         if (parseInt(sys.time(), 10) - lastMemUpdate > 500) {
@@ -2162,7 +2162,7 @@ afterChatMessage : function(src, message, chan)
             }
             user.timecount += dec*7;
         }
-        
+
         linecount = sys.channelId("Mafia") == channel ? linecount + 3 : linecount;
 
         if (user.floodcount > linecount) {
