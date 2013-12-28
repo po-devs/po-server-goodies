@@ -447,6 +447,13 @@ TriviaGame.prototype.startTrivia = function (src, data, scoring) {
 TriviaGame.prototype.startTriviaRound = function () {
     if (this.started === false)
         return;
+    var totalPlayers = 0;
+    for (var id in this.triviaPlayers){
+       if(this.triviaPlayers[id].playing===true)
+       totalPlayers++;
+    }
+    if(this.scoreType === "elimination" && this.round === 0 && totalPlayers < 2 )
+      return;
     /* Reset submittedAnswers */
     this.submittedAnswers = {};
     /* Advance round */
