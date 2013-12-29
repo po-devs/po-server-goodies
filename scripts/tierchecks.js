@@ -155,12 +155,13 @@ tier_checker.add_new_check(INCLUDING, ["Inverted Battle", "XY 1v1","XY Ubers", "
 
 tier_checker.add_new_check(INCLUDING, ["Inverted Battle", "XY 1v1","XY Ubers", "X/Y Cup", "XY OU", "XY LC", "No Preview OU", "BW2 OU", "BW2 UU", "BW2 LU", "BW2 LC", "DW LC", "BW2 Ubers", "No Preview Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "BW2 NU", "Metronome", "BW2 NEU"],
                            function endlessCheck(src, team, tier) {
+    var ret = [];
     for (var i = 0; i < 6; i++) {
         if (sys.teamPokeItem(src, team, i) === sys.itemNum("Leppa Berry") && sys.hasTeamPokeMove(src, team, i, sys.moveNum("Recycle")) && (sys.hasTeamPokeMove(src, team, i, sys.moveNum("Fling")) || sys.hasTeamPokeMove(src, team, i, sys.moveNum("Pain Split")) || sys.hasTeamPokeMove(src, team, i, sys.moveNum("Heal Pulse")))) {
             ret.push(sys.pokemon(sys.teamPoke(src, team, i)) + " has the combination of Leppa Berry, Recycle and any of Fling/Heal Pulse/Pain Split which is banned in " + tier + " under the endless battle clause. Please remove before entering the tier");
         }
     }
-    
+    return ret;
 });
 
 tier_checker.add_new_check(INCLUDING, ["Clear Skies"], function weatherlesstiercheck(src, team, tier) {
