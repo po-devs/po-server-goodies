@@ -71,7 +71,7 @@ var tourcommands = ["/join: Joins a tournament.",
                     "/viewstats: Views tournament stats.",
                     "/viewseeds [tier]: Views seed rankings for that tier.",
                     "/activemu: Lists active megausers.",
-                    "/rules: Lists the tournament rules.",
+                    "/tourrules: Lists the tournament rules.",
                     "/touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified).",
                     "/addtouralert: Adds a tour alert for the specified tier.",
                     "/removetouralert: Removes a tour alert for the specified tier."];
