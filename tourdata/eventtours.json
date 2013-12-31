@@ -1,129 +1,129 @@
 {
-    "1-12-2013": {
-        "tier": "BW2 NU",
-        "settings": {}
-    },
-    "2-12-2013": {
-        "tier": "Inverted Battle",
-        "settings": {}
-    },
-    "3-12-2013": {
+    "1-1-2014": {
         "tier": "XY Ubers",
         "settings": {}
     },
-    "4-12-2013": {
-        "tier": "VGC 2014",
-        "settings": {}
-    },
-    "5-12-2013": {
-        "tier": "Sky Battle",
-        "settings": {}
-    },
-    "6-12-2013": {
-        "tier": "Monotype",
-        "settings": {}
-    },
-    "7-12-2013": {
-        "tier": "XY OU",
-        "settings": {}
-    },
-    "8-12-2013": {
-        "tier": "BW2 Ubers",
-        "settings": {}
-    },
-    "9-12-2013": {
-        "tier": "Inverted Challenge Cup",
-        "settings": {}
-    },
-    "10-12-2013": {
-        "tier": "XY LC",
-        "settings": {}
-    },
-    "11-12-2013": {
-        "tier": "Battle Factory 6v6",
-        "settings": {}
-    },
-    "12-12-2013": {
-        "tier": "XY Ubers",
-        "settings": {}
-    },
-    "13-12-2013": {
-        "tier": "Random Battle",
-        "settings": {}
-    },
-    "14-12-2013": {
-        "tier": "XY OU",
-        "settings": {}
-    },
-    "15-12-2013": {
+    "2-1-2014": {
         "tier": "BW2 UU",
         "settings": {}
     },
-    "16-12-2013": {
-        "tier": "HGSS OU",
-        "settings": {}
-    },
-    "17-12-2013": {
-        "tier": "XY LC",
-        "settings": {}
-    },
-    "18-12-2013": {
-        "tier": "BW2 OU",
-        "settings": {}
-    },
-    "19-12-2013": {
+    "3-1-2014": {
         "tier": "Sky Battle",
         "settings": {}
     },
-    "20-12-2013": {
-        "tier": "BW2 Triples",
-        "settings": {}
-    },
-    "21-12-2013": {
+    "4-1-2014": {
         "tier": "XY OU",
         "settings": {}
     },
-    "22-12-2013": {
-        "tier": "BW2 LU",
-        "settings": {}
-    },
-    "23-12-2013": {
-        "tier": "Challenge Cup",
-        "settings": {}
-    },
-    "24-12-2013": {
-        "tier": "XY Ubers",
-        "settings": {}
-    },
-    "25-12-2013": {
-        "tier": "Battle Factory 6v6",
-        "settings": {}
-    },
-    "26-12-2013": {
+    "5-1-2014": {
         "tier": "BW2 OU Doubles",
         "settings": {}
     },
-    "27-12-2013": {
+    "6-1-2014": {
+        "tier": "Inverted Challenge Cup",
+        "settings": {}
+    },
+    "7-1-2014": {
         "tier": "Random Battle",
         "settings": {}
     },
-    "28-12-2013": {
-        "tier": "XY OU",
-        "settings": {}
-    },
-    "29-12-2013": {
+    "8-1-2014": {
         "tier": "Monotype",
         "settings": {}
     },
-    "30-12-2013": {
-        "tier": "BW2 LC",
+    "9-1-2014": {
+        "tier": "XY LC",
         "settings": {}
     },
-    "31-12-2013": {
+    "10-1-2014": {
+        "tier": "BW2 Ubers",
+        "settings": {}
+    },
+    "11-1-2014": {
+        "tier": "XY OU",
+        "settings": {}
+    },
+    "12-1-2014": {
+        "tier": "Battle Factory 6v6",
+        "settings": {}
+    },
+    "13-1-2014": {
         "tier": "Inverted Battle",
         "settings": {}
     },
-    "30-11-2013": {
+    "14-1-2014": {
+        "tier": "XY Ubers",
+        "settings": {}
+    },
+    "15-1-2014": {
+        "tier": "BW2 LC",
+        "settings": {}
+    },
+    "16-1-2014": {
+        "tier": "VGC 2014",
+        "settings": {}
+    },
+    "17-1-2014": {
+        "tier": "BW2 NU",
+        "settings": {}
+    },
+    "18-1-2014": {
+        "tier": "XY OU",
+        "settings": {}
+    },
+    "19-1-2014": {
+        "tier": "Random Battle",
+        "settings": {}
+    },
+    "20-1-2014": {
+        "tier": "Challenge Cup",
+        "settings": {}
+    },
+    "21-1-2014": {
+        "tier": "XY LC",
+        "settings": {}
+    },
+    "22-1-2014": {
+        "tier": "BW2 Triples",
+        "settings": {}
+    },
+    "23-1-2014": {
+        "tier": "HGSS OU",
+        "settings": {}
+    },
+    "24-1-2014": {
+        "tier": "Inverted Battle",
+        "settings": {}
+    },
+    "25-1-2014": {
+        "tier": "XY OU",
+        "settings": {}
+    },
+    "26-1-2014": {
+        "tier": "Battle Factory 6v6",
+        "settings": {}
+    },
+    "27-1-2014": {
+        "tier": "BW2 LU",
+        "settings": {}
+    },
+    "28-1-2014": {
+        "tier": "Monotype",
+        "settings": {}
+    },
+    "29-1-2014": {
+        "tier": "Sky Battle",
+        "settings": {}
+    },
+    "30-1-2014": {
+        "tier": "BW2 OU",
+        "settings": {}
+    },
+    "31-1-2014": {
+        "tier": "XY Ubers",
+        "settings": {}
+    },
+    "31-12-2013": {
         "tier": "BW2 OU",
         "settings": {}
     }
