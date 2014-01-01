@@ -145,7 +145,7 @@ var cleanFile = function(filename) {
     if (typeof sys != 'undefined')
         sys.appendToFile(filename, "");
 };
-[Config.dataDir+"mafia_stats.json", Config.dataDir+"suspectvoting.json", Config.dataDir+"mafiathemes/metadata.json", Config.dataDir+"channelData.json", Config.dataDir+"mutes.txt", Config.dataDir+"mbans.txt", Config.dataDir+"hmutes.txt", Config.dataDir+"smutes.txt", Config.dataDir+"rangebans.txt", Config.dataDir+"contributors.txt", Config.dataDir+"ipbans.txt", Config.dataDir+"namesToWatch.txt", Config.dataDir+"hangmanadmins.txt", Config.dataDir+"hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", Config.dataDir+"secretsmute.txt", Config.dataDir+"ipApi.txt", Config.dataDir + "notice.html"].forEach(cleanFile);
+[Config.dataDir+"mafia_stats.json", Config.dataDir+"suspectvoting.json", Config.dataDir+"mafiathemes/metadata.json", Config.dataDir+"channelData.json", Config.dataDir+"mutes.txt", Config.dataDir+"mbans.txt", Config.dataDir+"hmutes.txt", Config.dataDir+"smutes.txt", Config.dataDir+"rangebans.txt", Config.dataDir+"contributors.txt", Config.dataDir+"ipbans.txt", Config.dataDir+"namesToWatch.txt", Config.dataDir+"hangmanadmins.txt", Config.dataDir+"hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", Config.dataDir+"secretsmute.txt", Config.dataDir+"ipApi.txt", Config.dataDir + "notice.html", Config.dataDir + "rangewhitelist.txt"].forEach(cleanFile);
 
 var autosmute = sys.getFileContent(Config.dataDir+"secretsmute.txt").split(':::');
 var crc32 = require('crc32.js').crc32;
@@ -1422,9 +1422,9 @@ beforeLogIn : function(src) {
     if (sys.auth(src) > 0) {
         return;
     }
-    //var allowedNames = ["sasukeanditachi", "sasukatandkitachi", "ata", "downpour", "broon89", "ifmltrailers", "probrem?", "salamander94", "realmanofgenius", "Derinsford"];
+    var allowedNames = sys.getFileContent(Config.dataDir + "rangewhitelist.txt").split("\n");
     var allowedIps = ["74.115.245.16"];
-    if (this.isRangeBanned(ip) && allowedIps.indexOf(ip) == -1) {
+    if (this.isRangeBanned(ip) && allowedIps.indexOf(ip) == -1 && allowedNames.indexOf(sys.name(src).toLowerCase) == -1) {
         normalbot.sendMessage(src, 'You are banned!');
         sys.stopEvent();
         return;
