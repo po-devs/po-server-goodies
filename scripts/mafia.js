@@ -111,7 +111,7 @@ function Mafia(mafiachan) {
         if (channel === undefined) {
             channel = mafiachan;
         }
-        sendChanAll(mess, channel);        
+        sendChanAll(mess, channel);
         return true;
     }
     /*Sends a message to Mafia and Victory Road*/
@@ -1779,7 +1779,7 @@ function Mafia(mafiachan) {
         }
     };
     this.kill = function (player) {
-        killmsg = (this.theme.killmsg || "~Player~ (~Role~) died!").replace(/~Player~/g, player.name).replace(/~Role~/g, player.role.translation);
+        var killmsg = (this.theme.killmsg || "~Player~ (~Role~) died!").replace(/~Player~/g, player.name).replace(/~Role~/g, player.role.translation);
         gamemsgAll(killmsg, "Kill");
         this.actionBeforeDeath(player);
         this.removePlayer(player);
@@ -2555,7 +2555,7 @@ function Mafia(mafiachan) {
                                             gamemsg(target.name, distractMsg);
                                         } else {
                                             if (targetMode.silent !== true) {
-                                                targetMsg = (targetMode.msg || "Your target (~Self~) evaded your ~Action~!").replace(/~Self~/g, target.name).replace(/~Action~/g, o.action)
+                                                var targetMsg = (targetMode.msg || "Your target (~Self~) evaded your ~Action~!").replace(/~Self~/g, target.name).replace(/~Action~/g, o.action);
                                                 gamemsg(player.name, targetMsg);
                                             }
                                         }
@@ -3379,7 +3379,7 @@ function Mafia(mafiachan) {
                     } else if (!("convertRoles" in lynched.role.actions.lynch)) {
                         var lmsg = (lynched.role.actions.lynch.convertmsg ||"~Self, the ~Old~ survived the lynch and became a ~New~!").replace(/~Self~/g, downed).replace(/~Old~/g, lynched.role.translation).replace(/~New~/g, mafia.theme.trrole(newRole)).replace(/~Count~/g, Math.round(maxi * 100) / 100);
                         gamemsgAll(lmsg);
-                    }    
+                    }
                     mafia.setPlayerRole(lynched, newRole);
                     mafia.showOwnRole(sys.id(downed));
                 } else {
@@ -3867,7 +3867,7 @@ function Mafia(mafiachan) {
         return false;
     };
     this.canJoin = function (src) {
-        user = sys.name(src);
+        var user = sys.name(src);
         if (this.isInGame(sys.name(src))) {
             gamemsg(user, "You already joined!");
             return;
@@ -4266,7 +4266,7 @@ function Mafia(mafiachan) {
                         }
                         if ("daykill" in target.role.actions && target.role.actions.daykill === "revealkiller") {
                             var dkr = (target.role.actions.daykillrevengemsg || "Before dying, ~Self~ revealed that ~Target~ is the ~Role~!").replace(/~Self~/g, target.name).replace(/~Target~/g, name).replace(/~Role~/g, mafia.players[name].role.translation).replace(/~Side~/g, mafia.theme.trside(name.role.side));
-                            gamemsgAll(dkr);                            
+                            gamemsgAll(dkr);
                         }
                         player.dayKill = player.dayKill + 1 || 1;
                         if (sys.id('PolkaBot') !== undefined) {
@@ -4276,7 +4276,7 @@ function Mafia(mafiachan) {
                     } else {
                         var rmsg = (target.role.actions.daykillrevengemsg ||
                         "~Target~ tries to attack ~Self~, but ~Self~ fights back and kills ~Target~!").replace(/~Self~/g, commandData).replace(/~Target~/g, name);
-                        gamemsgAll(rmsg);                        
+                        gamemsgAll(rmsg);
                         
                         if (sys.id('PolkaBot') !== undefined) {
                             sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+name+" DIED", mafiachan);
