@@ -1205,8 +1205,9 @@ function Mafia(mafiachan) {
         }
     };
     this.userVote = function (src, commandData) {
+        var cuser = sys.name(src);
         if (SESSION.channels(mafiachan).muteall && !SESSION.channels(mafiachan).isChannelOperator(src) && sys.auth(src) === 0) {
-            gamemsg(src, "You can't start a voting when the channel is silenced.");
+            gamemsg(cuser, "You can't start a voting when the channel is silenced.");
             return;
         }
         if (this.invalidName(src))
@@ -1288,10 +1289,10 @@ function Mafia(mafiachan) {
         }
         if (this.state != "voting") {
             if (this.state == "night" || this.state == "standby") {
-                gamemsg(src, "You can only vote during the voting phase!");
+                gamemsg(cuser, "You can only vote during the voting phase!");
                 return;
             }
-            gamemsg(src, "This command makes no sense during a game, right?!");
+            gamemsg(cuser, "This command makes no sense during a game, right?!");
             return;
         }
         if (this.canJoin(src) !== true) {
@@ -1299,7 +1300,7 @@ function Mafia(mafiachan) {
         }
         if (!this.possibleThemes.hasOwnProperty(themeName)) {
             if (themeName !== '*') {
-                gamemsg(src, "You can not vote this theme" + (reason ? " because " + reason : "") + "!");
+                gamemsg(cuser, "You can not vote this theme" + (reason ? " because " + reason : "") + "!");
                 reason = undefined;
             }
             return;
@@ -1307,7 +1308,7 @@ function Mafia(mafiachan) {
         var ip = sys.ip(src);
         if (this.votes.hasOwnProperty(ip)) {
             if (this.numvotes[sys.ip(src)] >= 3) {
-                gamemsg(src, "You can't change your vote more than 3 times!");
+                gamemsg(cuser, "You can't change your vote more than 3 times!");
                 return;
             } else if (this.votes[ip] != themeName) {
                 gamemsgAll(sys.name(src) + " changed their vote to " + this.themeManager.themes[themeName].name + "!");
