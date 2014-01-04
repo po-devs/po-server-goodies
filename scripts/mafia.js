@@ -94,7 +94,7 @@ function Mafia(mafiachan) {
         if (id === undefined) {
             return;
         }
-        if (mess.indexOf("***") === -1 && mess.indexOf("±") === -1 && !(mess.lastIndexOf(":") === (parseInt(mess.length) - 1)) && mess.substring(0, 12).IndexOf(":") === -1) {
+        if (mess.indexOf("***") === -1 && mess.indexOf("±") === -1 && !(mess.lastIndexOf(":") === (parseInt(mess.length) - 1)) && mess.substring(0, 12).indexOf(":") === -1) {
             mess = "±" + (botName ? botName : "Game") + ": " + mess;
         }
         if (channel === undefined) {
@@ -104,7 +104,7 @@ function Mafia(mafiachan) {
         return true;
     }
     function gamemsgAll(mess, botName, channel) {
-        if (mess.indexOf("***") === -1 && mess.indexOf("±") === -1 && !(mess.lastIndexOf(":") === (parseInt(mess.length) - 1)) && mess.substring(0, 12).IndexOf(":") === -1) {
+        if (mess.indexOf("***") === -1 && mess.indexOf("±") === -1 && !(mess.lastIndexOf(":") === (parseInt(mess.length) - 1)) && mess.substring(0, 12).indexOf(":") === -1) {
             mess = "±" + (botName ? botName : "Game") + ": " + mess;
         }
         if (channel === undefined) {
