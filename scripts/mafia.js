@@ -104,7 +104,7 @@ function Mafia(mafiachan) {
         return true;
     }
     function gamemsgAll(mess, botName, channel) {
-        if (mess.indexOf(":") === -1 && mess.indexOf("***") === -1) {
+        if (mess.indexOf("***") === -1 && mess.indexOf("±") === -1 && mess.lastIndexOf(":", 12) === -1) {
             mess = "±" + (botName ? botName : "Game") + ": " + mess;
         }
         if (channel === undefined) {
