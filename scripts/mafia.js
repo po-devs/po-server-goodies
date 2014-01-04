@@ -158,44 +158,6 @@ function Mafia(mafiachan) {
         return themename;
     }
     
-    /* stolen from here: http://snippets.dzone.com/posts/show/849 */
-    function shuffle(o) {
-        for (var j, x, i = o.length; i; j = parseInt(Math.random() * i, 10), x = o[--i], o[i] = o[j], o[j] = x);
-        return o;
-    }
-
-    /* stolen from here: http://stackoverflow.com/questions/1026069/capitalize-first-letter-of-string-in-javascript */
-    function cap(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    }
-
-    /* format arrays so that it looks fine to humans
-    * also accepts a string, in which case just returns it */
-    function readable(arr, last_delim) {
-        if (!Array.isArray(arr))
-            return arr;
-        if (arr.length > 1) {
-            return arr.slice(0, arr.length - 1).join(", ") + " " + last_delim + " " + arr.slice(-1)[0];
-        } else if (arr.length == 1) {
-            return arr[0];
-        } else {
-            return "";
-        }
-    }
-    function removeDuplicates(arr) {
-        var result = {};
-        for (var x in arr) {
-            result[arr[x]] = 1;
-        }
-        return Object.keys(result);
-    }
-    function casedtheme(themename) {
-        if (mafia.themeManager.themes.hasOwnProperty(themename)) {
-            return mafia.themeManager.themes[themename].name;
-        }
-        return themename;
-    }
-    
     var defaultTheme = { name: "Default",
         sides: [
           {"side": "mafia", "translation": "Mafia"},
