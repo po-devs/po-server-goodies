@@ -94,7 +94,7 @@ function Mafia(mafiachan) {
         if (id === undefined) {
             return;
         }
-        if (mess.indexOf("***") === -1 && mess.indexOf("±") === -1 && !(mess.lastIndexOf(":") === (parseInt(mess.length) - 1)) && mess.substring(0, 12).indexOf(":") === -1) {
+        if (mess.indexOf("***") === -1 && mess.indexOf("±") === -1 && !(mess.lastIndexOf(":") === (parseInt(mess.length) - 1)) && mess.substring(0, Config.Mafia.max_name_length + 1).indexOf(":") === -1) {
             mess = "±" + (botName ? botName : "Game") + ": " + mess;
         }
         if (channel === undefined) {
@@ -104,7 +104,7 @@ function Mafia(mafiachan) {
         return true;
     }
     function gamemsgAll(mess, botName, channel) {
-        if (mess.indexOf("***") === -1 && mess.indexOf("±") === -1 && !(mess.lastIndexOf(":") === (parseInt(mess.length) - 1)) && mess.substring(0, 12).indexOf(":") === -1) {
+        if (mess.indexOf("***") === -1 && mess.indexOf("±") === -1 && !(mess.lastIndexOf(":") === (parseInt(mess.length) - 1)) && mess.substring(0, Config.Mafia.max_name_length + 1).indexOf(":") === -1) {
             mess = "±" + (botName ? botName : "Game") + ": " + mess;
         }
         if (channel === undefined) {
@@ -118,44 +118,6 @@ function Mafia(mafiachan) {
         sendChanAll(mess, mafiachan);
         sendChanAll(mess, sachannel);
         return true;
-    }
-    
-    /* stolen from here: http://snippets.dzone.com/posts/show/849 */
-    function shuffle(o) {
-        for (var j, x, i = o.length; i; j = parseInt(Math.random() * i, 10), x = o[--i], o[i] = o[j], o[j] = x);
-        return o;
-    }
-
-    /* stolen from here: http://stackoverflow.com/questions/1026069/capitalize-first-letter-of-string-in-javascript */
-    function cap(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    }
-
-    /* format arrays so that it looks fine to humans
-    * also accepts a string, in which case just returns it */
-    function readable(arr, last_delim) {
-        if (!Array.isArray(arr))
-            return arr;
-        if (arr.length > 1) {
-            return arr.slice(0, arr.length - 1).join(", ") + " " + last_delim + " " + arr.slice(-1)[0];
-        } else if (arr.length == 1) {
-            return arr[0];
-        } else {
-            return "";
-        }
-    }
-    function removeDuplicates(arr) {
-        var result = {};
-        for (var x in arr) {
-            result[arr[x]] = 1;
-        }
-        return Object.keys(result);
-    }
-    function casedtheme(themename) {
-        if (mafia.themeManager.themes.hasOwnProperty(themename)) {
-            return mafia.themeManager.themes[themename].name;
-        }
-        return themename;
     }
     
     /* stolen from here: http://snippets.dzone.com/posts/show/849 */
@@ -2710,14 +2672,14 @@ function Mafia(mafiachan) {
                                 updateStalkTargets();
     
                                 /* warn role / teammates */
-                                var teamMsg = (Action.teammsg || "Your teammate was too busy with the ~Distracter~ during the night, you decided not to ~Action~ anyone during the night!").replace(/~Distracter~/g, player.role.translation).replace(/~Action~/g, action);
+                                var teamMsg = (Action.teammsg || "Your teammate was too busy with the ~Distracter~ during the night, you decided not to ~Action~ anyone during the night!").replace(/~Distracter~/g, player.role.translation);
                                 // above defined "distract": { "teammsg": <string> }
                                 if ("night" in target.role.actions) {
                                     for (var action in target.role.actions.night) {
                                         var team = getTeam(target.role, target.role.actions.night[action].common);
                                         for (var x in team) {
                                             if (team[x] != target.name) {
-                                                gamemsg(team[x], teamMsg);
+                                                gamemsg(team[x], teamMsg.replace(/~Action~/g, action));
                                             }
                                         }
                                     }
