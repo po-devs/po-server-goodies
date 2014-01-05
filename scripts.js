@@ -864,7 +864,7 @@ init : function() {
         sys.sendAll(message, tourchannel);
     };
     
-    allowedRangeNames = sys.getFileContent(Config.dataDir + "rangewhitelist.txt").split("\n");
+    script.allowedRangeNames = sys.getFileContent(Config.dataDir + "rangewhitelist.txt").split("\n");
     callplugins("init");
 
     VarsCreated = true;
@@ -1424,7 +1424,7 @@ beforeLogIn : function(src) {
         return;
     }
     var allowedIps = ["74.115.245.16"];
-    if (this.isRangeBanned(ip) && allowedIps.indexOf(ip) == -1 && allowedRangeNames.indexOf(sys.name(src).toLowerCase) == -1) {
+    if (this.isRangeBanned(ip) && allowedIps.indexOf(ip) == -1 && script.allowedRangeNames.indexOf(sys.name(src).toLowerCase) == -1) {
         normalbot.sendMessage(src, 'You are banned!');
         sys.stopEvent();
         return;
