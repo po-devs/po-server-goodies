@@ -2672,14 +2672,14 @@ function Mafia(mafiachan) {
                                 updateStalkTargets();
     
                                 /* warn role / teammates */
-                                var teamMsg = (Action.teammsg || "Your teammate was too busy with the ~Distracter~ during the night, you decided not to ~Action~ anyone during the night!").replace(/~Distracter~/g, player.role.translation).replace(/~Action~/g, action);
+                                var teamMsg = (Action.teammsg || "Your teammate was too busy with the ~Distracter~ during the night, you decided not to ~Action~ anyone during the night!").replace(/~Distracter~/g, player.role.translation);
                                 // above defined "distract": { "teammsg": <string> }
                                 if ("night" in target.role.actions) {
                                     for (var action in target.role.actions.night) {
                                         var team = getTeam(target.role, target.role.actions.night[action].common);
                                         for (var x in team) {
                                             if (team[x] != target.name) {
-                                                gamemsg(team[x], teamMsg);
+                                                gamemsg(team[x], teamMsg.replace(/~Action~/g, action));
                                             }
                                         }
                                     }
