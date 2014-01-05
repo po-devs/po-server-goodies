@@ -52,7 +52,7 @@ POChannelManager.prototype.restoreSettings = function(channel)
 POChannelManager.prototype.dataFileFor = function(channel)
 {
     var chanName = sys.channel(channel).toLowerCase();
-    if (!this.channelMap.hasOwnProperty(chanName)) {
+    if (!this.channelMap.get(chanName)) {
        var genName = "scriptdata/channeldata/" + Date.now() + Math.random().toString().substr(2) + ".json";
        this.channelMap.add(chanName,genName)
     }
