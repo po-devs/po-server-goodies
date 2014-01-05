@@ -22,7 +22,7 @@ module.exports = function () {
     
     var autoGamesFile = "https://dl.dropboxusercontent.com/u/10065307/hangmanautogames.txt"; 
     var idleCount = 0;
-    var idleLimit = 240;
+    var idleLimit = 1800;
     var autoGames;
 
     var host;
