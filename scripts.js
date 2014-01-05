@@ -541,7 +541,7 @@ SESSION.registerUserFactory(POUser);
 SESSION.registerGlobalFactory(POGlobal);
 
 if (typeof SESSION.global() != 'undefined') {
-    SESSION.global().channelManager = new POChannelManager('scriptdata/channelHash.json');
+    SESSION.global().channelManager = new POChannelManager('scriptdata/channelHash.txt');
 
     SESSION.global().__proto__ = POGlobal.prototype;
     var plugin_files = Config.Plugins;
