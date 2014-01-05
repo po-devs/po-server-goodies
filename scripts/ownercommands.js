@@ -523,10 +523,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             module.source = file;
             delete require.cache[file];
             if (file === "channelfunctions.js") { 
-                POChannel = require(file);
+                POChannel = require(file).POChannel;
             }
             if (file === "channelmanager.js") { 
-                POChannelManager = require(file);
+                POChannelManager = require(file).POChannelManager;
             }
         });
         normalbot.sendAll("Updated channel functions!", staffchannel);
@@ -537,7 +537,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var module = updateModule(file);
         module.source = file;
         delete require.cache[file];
-        POUser = require(file);
+        POUser = require(file).POUser;
         normalbot.sendAll("Updated user functions!", staffchannel);
         return;
     }
@@ -546,7 +546,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var module = updateModule(file);
         module.source = file;
         delete require.cache[file];
-        POGlobal = require(file);
+        POGlobal = require(file).POGlobal;
         normalbot.sendAll("Updated global functions!", staffchannel);
         return;
     }
