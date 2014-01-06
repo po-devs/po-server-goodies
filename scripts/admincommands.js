@@ -63,7 +63,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.writeToFile(channelDataFile, "");
         sys.playersOfChannel(chid).forEach(function(player) {
             sys.kick(player, chid);
-            if (sys.isInChannel(player, 0) !== true) {
+            if (sys.channelsOfPlayer(player).length < 1 && !sys.isInChannel(player, 0)) {
                 sys.putInChannel(player, 0);
             }
         });
