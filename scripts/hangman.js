@@ -519,7 +519,7 @@ module.exports = function () {
             sys.sendMessage(src, help[x], hangchan);
         }
     };
-    this.configGame = function (src, commandData) {
+      this.configGame = function (src, commandData) {
         if (commandData === undefined) {
             commandData = "*";
         }
@@ -532,6 +532,7 @@ module.exports = function () {
             hangbot.sendMessage(src, "delay: Set delay (in seconds) between each guess. Full answers take double the time (currently set to " + answerDelay + " seconds). ", hangchan);
             hangbot.sendMessage(src, "winner: Set how many seconds the winner of a game have to start a new one before anyone can start (currently set to " + winnerDelay + " seconds). ", hangchan);
             hangbot.sendMessage(src, "answers: Set how many times each player can use /a (currently set to " + maxAnswers + " seconds). ", hangchan);
+			hangbot.sendMessage(src, "idle: Set how many minutes the channel must be idle for game to automatically start. (currently set to " + idleLimit/60 + " minutes).", hangchan);
             sys.sendMessage(src, " ", hangchan);
             return;
         }
@@ -558,6 +559,10 @@ module.exports = function () {
             maxAnswers = val;
             hangbot.sendMessage(src, "Players can use /a " + val + " time per game.", hangchan);
             break;
+		case "idle":
+			idleLimit = val*60;
+			hangbot.sendMessage(src, "Game with auto start after " + val + " minutes.", hangchan);
+			break;
         }
     };
     this.onHelp = function (src, topic, channel) {
