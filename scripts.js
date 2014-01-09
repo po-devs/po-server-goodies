@@ -475,7 +475,7 @@ function getBerryPower (berryId) {
             berryPowerList[key] = power;
         }
     }
-    return berryPowerList[berryId];
+    return berryPowerList[berryId] + 20;
 }
 
 function getBerryType (berryId) {
