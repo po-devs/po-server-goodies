@@ -2358,7 +2358,8 @@ function Mafia(mafiachan) {
                 '~Role~': player.role.translation,
                 '~Distracter~': player.role.translation,
                 '~TargetRole~': target.role.translation,
-                '~Side~': mafia.theme.trside(player.role.side),'~TargetSide~': mafia.theme.trside(target.role.side),
+                '~Side~': mafia.theme.trside(player.role.side),
+                '~TargetSide~': mafia.theme.trside(target.role.side),
                 '~Action~': o.action,
                 '~Old~': oldRole.translation,
                 '~New~': target.role.translation
@@ -2783,7 +2784,7 @@ function Mafia(mafiachan) {
                                 }
                             }
                             else if (command == "copy") {
-                                failedmsg = Action.convertfailmsg || "Your target (~Target~) can't be copied!";
+                                failedmsg = Action.copyfailmsg || "Your target (~Target~) can't be copied!";
                                 if (typeof Action.copyAs == "string" && "canCopy" in Action && Action.canCopy != "*" && Action.canCopy.indexOf(target.role.role) == -1) {
                                     gamemsg(player.name, formatArgs(failedmsg, nightargs));
                                 } else {
