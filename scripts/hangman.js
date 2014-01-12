@@ -519,6 +519,41 @@ module.exports = function () {
             sys.sendMessage(src, help[x], hangchan);
         }
     };
+    
+    this.autoGame = function (commandData) {
+    	if(commandData == undefined) {
+	    	if(autoGames === true) {
+		    	hangman.sendMessage("Games are set to automatically start.");
+			    return;
+		    }
+		    else {
+			    hangman.sendMessage("Games are set to not automatically start.");
+			    return;
+		    }
+	    }
+	    var turning = commandData.toLowerCase();
+	    if(turning == "off") {
+		    if(autoGames === false) {
+			    hangman.sendMessage("Automatic games are already turned off.");
+			    return;
+		    }
+		    else {
+			    autoGames = false;
+			    return;
+		    }
+	    }
+	    if(turning == "on") {
+		    if (autoGames === true) {
+			    hangman.sendMessage("Automatic games are already turned on.");
+			    return;
+		    }
+		    else {
+			    autoGames = true;
+			    return;
+		    }
+	    }
+    };
+    
       this.configGame = function (src, commandData) {
         if (commandData === undefined) {
             commandData = "*";
@@ -591,7 +626,8 @@ module.exports = function () {
             "/hangmanban: To ban a user in hangman. Format /hangmanmute name:reason:time",
             "/hangmanunban: To hangman unban a user.",
             "/hangmanbans: Searches the hangman banlist, show full list if no search term is entered.",
-            "/passha: To give your Hangman Admin powers to an alt."
+            "/passha: To give your Hangman Admin powers to an alt.",
+            "/autogame: To turn autogames on/off. Format /autogame on or /autogame off."
         ];
         var superAdminHelp = [
             "*** Hangman Super Admin Commands ***",
@@ -725,6 +761,11 @@ module.exports = function () {
         if (command === "hangmanunmute" || command === "hangmanunban") {
             script.unban("hmute", src, sys.id(commandData), commandData);
             return true;
+        }
+        
+        if(command === "autogame") {
+        	hangman.autoGame(commandData);
+        	return true;
         }
 
         if (command === "hangmanmutes" || command === "hangmanbans") {
