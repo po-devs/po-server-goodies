@@ -3651,7 +3651,7 @@ function Mafia(mafiachan) {
             "/playedgames: To view recently played games",
             "/topthemes: To view top themes. Default amount is 10, however other numbers can be used (higher numbers may cause lag)",
             "/windata: To view the win data of a theme",
-            "/update: To update a Mafia Theme!",
+            "/update: To update a Mafia Theme. /update themename::newurl if changing the url. Contact an sMA if the theme name is changed to prevent conflicts.",
             "/featured: To view the currently featured Mafia Theme and Text."],
         ma: ["/slay: To slay users in a Mafia game.",
             "/unslay: To cancel a slay on a user.",
