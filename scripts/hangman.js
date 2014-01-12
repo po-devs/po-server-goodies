@@ -1,7 +1,6 @@
 /* hangman.js
     TODO:
     Check if Auto-Game answers have no invalid character
-    Option to set time before an Auto-Game is started with /config
 */
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global sys:true, sendChanHtmlAll:true, module:true, SESSION:true, hangmanchan, hangbot, require, script, sachannel, getTimeString */
@@ -20,7 +19,7 @@ module.exports = function () {
     var answerDelay = 7;
     var maxAnswers = 3;
     
-    var autoGamesFile = "https://dl.dropboxusercontent.com/u/10065307/hangmanautogames.txt"; 
+    var autoGamesFile = "https://dl.dropboxusercontent.com/u/10065307/hangmanautogames.txt";
     var idleCount = 0;
     var idleLimit = 1800;
     var autoGames;
@@ -521,37 +520,37 @@ module.exports = function () {
     };
     
     this.autoGame = function (commandData) {
-    	if(commandData == undefined) {
-	    	if(autoGames === true) {
-		    	hangman.sendMessage("Games are set to automatically start.");
-			    return;
-		    }
-		    else {
-			    hangman.sendMessage("Games are set to not automatically start.");
-			    return;
-		    }
-	    }
-	    var turning = commandData.toLowerCase();
-	    if(turning == "off") {
-		    if(autoGames === false) {
-			    hangman.sendMessage("Automatic games are already turned off.");
-			    return;
-		    }
-		    else {
-			    autoGames = false;
-			    return;
-		    }
-	    }
-	    if(turning == "on") {
-		    if (autoGames === true) {
-			    hangman.sendMessage("Automatic games are already turned on.");
-			    return;
-		    }
-		    else {
-			    autoGames = true;
-			    return;
-		    }
-	    }
+        if(commandData === undefined) {
+            if(autoGames === true) {
+                hangman.sendMessage("Games are set to automatically start.");
+                return;
+            }
+            else {
+                hangman.sendMessage("Games are set to not automatically start.");
+                return;
+            }
+        }
+        var turning = commandData.toLowerCase();
+        if(turning == "off") {
+            if(autoGames === false) {
+                hangman.sendMessage("Automatic games are already turned off.");
+                return;
+            }
+            else {
+                autoGames = false;
+                return;
+            }
+        }
+        if(turning == "on") {
+            if (autoGames === true) {
+                hangman.sendMessage("Automatic games are already turned on.");
+                return;
+            }
+            else {
+                autoGames = true;
+                return;
+            }
+        }
     };
     
       this.configGame = function (src, commandData) {
@@ -567,7 +566,7 @@ module.exports = function () {
             hangbot.sendMessage(src, "delay: Set delay (in seconds) between each guess. Full answers take double the time (currently set to " + answerDelay + " seconds). ", hangchan);
             hangbot.sendMessage(src, "winner: Set how many seconds the winner of a game have to start a new one before anyone can start (currently set to " + winnerDelay + " seconds). ", hangchan);
             hangbot.sendMessage(src, "answers: Set how many times each player can use /a (currently set to " + maxAnswers + " seconds). ", hangchan);
-			hangbot.sendMessage(src, "idle: Set how many minutes the channel must be idle for game to automatically start. (currently set to " + idleLimit/60 + " minutes).", hangchan);
+            hangbot.sendMessage(src, "idle: Set how many minutes the channel must be idle for game to automatically start. (currently set to " + idleLimit/60 + " minutes).", hangchan);
             sys.sendMessage(src, " ", hangchan);
             return;
         }
@@ -594,10 +593,10 @@ module.exports = function () {
             maxAnswers = val;
             hangbot.sendMessage(src, "Players can use /a " + val + " time per game.", hangchan);
             break;
-		case "idle":
-			idleLimit = val*60;
-			hangbot.sendMessage(src, "Game with auto start after " + val + " minutes.", hangchan);
-			break;
+        case "idle":
+            idleLimit = val*60;
+            hangbot.sendMessage(src, "Game with auto start after " + val + " minutes.", hangchan);
+            break;
         }
     };
     this.onHelp = function (src, topic, channel) {
@@ -764,8 +763,8 @@ module.exports = function () {
         }
         
         if(command === "autogame") {
-        	hangman.autoGame(commandData);
-        	return true;
+            hangman.autoGame(commandData);
+            return true;
         }
 
         if (command === "hangmanmutes" || command === "hangmanbans") {
