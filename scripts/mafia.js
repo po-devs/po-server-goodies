@@ -2544,7 +2544,7 @@ function Mafia(mafiachan) {
                                     }
                                     else if (targetMode.mode == "die" && bp.indexOf("die") === -1) {
                                         tarmsg = targetMode.msg || "~Target~ tried to ~Action~ you, but you got scared and died!";
-                                        tarmsg2 = targetMode.targetmsg || "±Game: You tried to ~Action~ ~Self~, but they got scared and died!";
+                                        tarmsg2 = targetMode.targetmsg || "You tried to ~Action~ ~Self~, but they got scared and died!";
                                         gamemsg(target.name, formatArgs(tarmsg, modeargs));
                                         gamemsg(player.name, formatArgs(tarmsg2, modeargs));
                                         mafia.kill(target);
@@ -4041,7 +4041,7 @@ function Mafia(mafiachan) {
                             }
                             if (targetMode.silent !== true) {
                                 var pmsg = (targetMode.msg || "Your target (~Target~) evaded your ~Action~!").replace(/~Target~/g, target.name).replace(/~Role~/g, target.role.translation).replace(/~Action~/g, commandName);
-                                var tmsg = (targetMode.targetmsg || "±Game: You evaded a ~Action~!").replace(/~Self~/g, player.name).replace(/~Role~/g, player.role.translation).replace(/~Action~/g, commandName);
+                                var tmsg = (targetMode.targetmsg || "You evaded a ~Action~!").replace(/~Self~/g, player.name).replace(/~Role~/g, player.role.translation).replace(/~Action~/g, commandName);
                                 gamemsg(player.name, pmsg);
                                 gamemsg(target.name, tmsg);
                                 return;
@@ -4115,7 +4115,7 @@ function Mafia(mafiachan) {
                         } else if (target.role.actions.expose == "revenge" || (typeof target.role.actions.expose.mode == "object" && "revenge" in target.role.actions.expose.mode && target.role.actions.expose.mode.revenge.indexOf(player.role.role) != -1)) {
                             revenge = true;
                         } else if (typeof target.role.actions.expose.mode == "object" && target.role.actions.expose.mode.evadeChance > sys.rand(0, 100) / 100) {
-                            var emmsg = (player.role.actions.exposemissmsg || "±Game: Your ~Action~ was evaded!").replace(/~Self~/g, name).replace(/~Target~/g, commandData).replace(/~Action~/g, commandName);
+                            var emmsg = (player.role.actions.exposemissmsg || "Your ~Action~ was evaded!").replace(/~Self~/g, name).replace(/~Target~/g, commandData).replace(/~Action~/g, commandName);
                             var emsg = (target.role.actions.expose.mode.evasionmsg || "You evaded an expose!").replace(/~Target~/g, name).replace(/~Self~/g, commandData);
                             gamemsg(srcname, emmsg);
                             gamemsg(sys.id(target.name), emsg);
