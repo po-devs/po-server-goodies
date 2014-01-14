@@ -124,7 +124,7 @@ module.exports = function () {
                 hangbot.sendAll("HANGED! No one guessed the word '" + word.toUpperCase() + "' correctly, so the host (" + hostName + ") has won this game!", hangchan);
                 sys.sendAll("*** ************************************************************ ***", hangchan);
                 sendChanHtmlAll(" ", hangchan);
-                this.setWinner(hostName);
+                this.setWinner(hostName, (host === null && hostName == hangbot.name));
             }
         }
     };
@@ -385,10 +385,10 @@ module.exports = function () {
         sys.sendAll("±Results: " + ranking.join(", "), hangchan);
         this.setWinner(w);
     };
-    this.setWinner = function (name) {
+    this.setWinner = function (name, immediate) {
         word = undefined;
-        if (host !== null && name !== hangbot.name) {
-            winner = name;
+        winner = name;
+        if (immediate !== true) {
             nextGame = (new Date()).getTime() + winnerDelay * 1000;
         }
         this.resetTimers();
