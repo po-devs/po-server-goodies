@@ -2765,7 +2765,7 @@ function Mafia(mafiachan) {
                                     } else {
                                         mafia.setPlayerRole(target, newRole);
                                         if (!Action.silent) {
-                                            allmsg = Action.convertmsg ||"A ~Old~ has been converted into a ~New~!";
+                                            allmsg = (Action.convertmsg ||"A ~Old~ has been converted into a ~New~!").replace(/~Old~/g, oldRole.translation).replace(/~New~/g, target.role.translation);
                                             gamemsgAll(formatArgs(allmsg, nightargs));
                                         }
                                         if (target !== player) {
@@ -2806,7 +2806,7 @@ function Mafia(mafiachan) {
                                     } else {
                                         mafia.setPlayerRole(player, newRole);
                                         if (!Action.silent) {
-                                            allmsg = (Action.copymsg || "A ~Old~ has been converted into a ~New~!").replace(/~New~/g, player.role.translation); //Can't replace ~New~ due to player.role instead of target.role
+                                            allmsg = (Action.copymsg || "A ~Old~ has been converted into a ~New~!").replace(/~Old~/g, oldRole.translation).replace(/~New~/g, player.role.translation);
                                             gamemsgAll(formatArgs(allmsg, nightargs));
                                         }
                                         if (!Action.silentCopy) {
