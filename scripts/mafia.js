@@ -2644,9 +2644,7 @@ function Mafia(mafiachan) {
                                 '~TargetRole~': target.role.translation,
                                 '~Side~': mafia.theme.trside(player.role.side),
                                 '~TargetSide~': mafia.theme.trside(target.role.side),
-                                '~Action~': o.action,
-                                '~Old~': oldRole.translation,
-                                '~New~': target.role.translation
+                                '~Action~': o.action
                             };
                             if (command == "distract") {
                                 tarmsg = Action.distractmsg || "The ~Distracter~ came to you last night! You were too busy being distracted!";
