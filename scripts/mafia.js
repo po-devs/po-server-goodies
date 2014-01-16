@@ -2892,9 +2892,9 @@ function Mafia(mafiachan) {
                             }
                             else if (commandIsDummy) {
                                 //Dummy actions to trigger modes without replacing useful commands. Great for large themes that want more freedom.
-                                pmsg = Action[command + "usermsg"];
-                                tarmsg = Action[command + "targetmsg"];
-                                allmsg = Action[command + "broadcastmsg"];
+                                pmsg = Action[command + "usermsg"] || false;
+                                tarmsg = Action[command + "targetmsg"] || false;
+                                allmsg = Action[command + "broadcastmsg"] || false;
                                 gamemsg(player.name, formatArgs(pmsg, nightargs));
                                 gamemsg(target.name, formatArgs(tarmsg, nightargs));
                                 gamemsgAll(formatArgs(allmsg, nightargs));
