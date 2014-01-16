@@ -2644,7 +2644,6 @@ function Mafia(mafiachan) {
                                 '~Role~': player.role.translation,
                                 '~Distracter~': player.role.translation,
                                 '~TargetRole~': (typeof target == "string" ? target :target.role.translation),
-                                '~New~': (typeof target == "string" ? target : target.role.translation),
                                 '~Side~': mafia.theme.trside(player.role.side),
                                 '~TargetSide~': (typeof target == "string" ? target : mafia.theme.trside(target.role.side)),
                                 '~Action~': o.action
@@ -2766,11 +2765,11 @@ function Mafia(mafiachan) {
                                     } else {
                                         mafia.setPlayerRole(target, newRole);
                                         if (!Action.silent) {
-                                            allmsg = (Action.convertmsg ||"A ~Old~ has been converted into a ~New~!").replace(/~Old~/g, oldRole.translation);
+                                            allmsg = (Action.convertmsg ||"A ~Old~ has been converted into a ~New~!").replace(/~Old~/g, oldRole.translation).replace(/~New~/g, target.role.translation);
                                             gamemsgAll(formatArgs(allmsg, nightargs));
                                         }
                                         if (target !== player) {
-                                            pmsg = Action.usermsg || "Your target (~Target~) has been converted and is now a ~New~!";
+                                            pmsg = (Action.usermsg || "Your target (~Target~) has been converted and is now a ~New~!").replace(/~New~/g, target.role.translation);
                                             gamemsg(player.name, formatArgs(pmsg, nightargs));
                                         }
                                         if (!Action.silentConvert) {
@@ -2967,7 +2966,7 @@ function Mafia(mafiachan) {
                         player.cursed++;
                     } else if (player.cursed >= curseCount) {
                         if (player.curseConvertMessage) {
-                            gamemsgAll(player.curseConvertMessage.replace(/~Old~/g, player.role.translation).replace(/~New~/g, mafia.theme.roles[player.cursedRole].translation).replace(/~Self~/g, player.name).replace(/~Side~/g, mafia.theme.trside(player.role.side)));
+                            gamemsgAll(player.curseConvertMessage.replace(/~Old~/g, player.role.translation).replace(/~New~/g, mafia.theme.roles[player.cursedRole].translation).replace(/~Self~/g, player.name).replace(/~Player~/g, player.name).replace(/~Side~/g, mafia.theme.trside(player.role.side)));
                             player.curseConvertMessage = undefined;
                         }
                         player.curseCount = undefined;
