@@ -2638,12 +2638,13 @@ function Mafia(mafiachan) {
                             
                             var nightargs = { //Common Args used in commands and counters
                                 '~Self~': player.name,
-                                '~Target~': target.name,
+                                '~Target~': (typeof target == "string" ? target : target.name),
                                 '~Role~': player.role.translation,
                                 '~Distracter~': player.role.translation,
-                                '~TargetRole~': target.role.translation,
+                                '~TargetRole~': (typeof target == "string" ? target :target.role.translation),
+                                '~New~': (typeof target == "string" ? target : target.role.translation),
                                 '~Side~': mafia.theme.trside(player.role.side),
-                                '~TargetSide~': mafia.theme.trside(target.role.side),
+                                '~TargetSide~': (typeof target == "string" ? target : mafia.theme.trside(target.role.side)),
                                 '~Action~': o.action
                             };
                             if (command == "distract") {
@@ -2709,11 +2710,9 @@ function Mafia(mafiachan) {
                             else if (command == "poison") {
                                 if (target.poisoned === undefined || target.poisonCount - target.poisoned >= finalPoisonCount) {
                                     var poisonmsg = Action.poisonmsg || "Your target (~Target~) was poisoned!";
-                                    var poisontarmsg = (Action.poisontarmsg || false);
+                                    var poisontarmsg = Action.poisontarmsg || "";
                                     gamemsg(player.name, formatArgs(poisonmsg, nightargs));
-                                    if (poisontarmsg) {
-                                        gamemsg(target.name, formatArgs(poisontarmsg, nightargs));
-                                    }
+                                    gamemsg(target.name, formatArgs(poisontarmsg, nightargs));
                                     var team = getTeam(player.role, Action.common);
                                     for (var x in team) {
                                         if (team[x] != player.name) {
@@ -2731,7 +2730,7 @@ function Mafia(mafiachan) {
                                     targetMode = targetMode || {};
                                     var visited = Object.keys(stalkTargets[target]).sort();
                                     if (visited.length > 0 && targetMode.mode !== "noVisit") {
-                                        tarmsg = (Action.stalkmsg || "Your target (" + target + ") visited " + readable(visited, "and") + " this night!").replace(/~Target~/gi, target).replace(/~Visit~/gi, readable(visited, "and"));
+                                        tarmsg = (Action.stalkmsg || "Your target (~Target~) visited " + readable(visited, "and") + " this night!").replace(/~Target~/gi, target).replace(/~Visit~/gi, readable(visited, "and"));
                                         gamemsg(player.name, tarmsg);
                                     } else {
                                         tarmsg = (Action.novisitmsg || "Your target (~Target~) didn't visit anyone this night!").replace(/~Target~/gi, target);
@@ -2765,7 +2764,7 @@ function Mafia(mafiachan) {
                                     } else {
                                         mafia.setPlayerRole(target, newRole);
                                         if (!Action.silent) {
-                                            allmsg = (Action.convertmsg ||"A ~Old~ has been converted into a ~New~!").replace(/~Old~/g, oldRole.translation).replace(/~New~/g, target.role.translation);
+                                            allmsg = (Action.convertmsg ||"A ~Old~ has been converted into a ~New~!").replace(/~Old~/g, oldRole.translation);
                                             gamemsgAll(formatArgs(allmsg, nightargs));
                                         }
                                         if (target !== player) {
@@ -2806,7 +2805,7 @@ function Mafia(mafiachan) {
                                     } else {
                                         mafia.setPlayerRole(player, newRole);
                                         if (!Action.silent) {
-                                            allmsg = (Action.copymsg || "A ~Old~ has been converted into a ~New~!").replace(/~Old~/g, oldRole.translation).replace(/~New~/g, player.role.translation);
+                                            allmsg = (Action.copymsg || "A ~Old~ has been converted into a ~New~!").replace(/~Old~/g, oldRole.translation).replace(/~New~/g, player.role.translation); //Can't replace ~New~ with nightargs due to different target
                                             gamemsgAll(formatArgs(allmsg, nightargs));
                                         }
                                         if (!Action.silentCopy) {
