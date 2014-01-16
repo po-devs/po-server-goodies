@@ -2892,9 +2892,12 @@ function Mafia(mafiachan) {
                             }
                             else if (commandIsDummy) {
                                 //Dummy actions to trigger modes without replacing useful commands. Great for large themes that want more freedom.
-                                gamemsg(player.name, formatArgs(Action[command + "usermsg"]));
-                                gamemsg(target.name, formatArgs(Action[command + "targetmsg"]));
-                                gamemsgAll(formatArgs(Action[command + "broadcastmsg"]));
+                                pmsg = Action[command + "usermsg"];
+                                tarmsg = Action[command + "targetmsg"];
+                                allmsg = Action[command + "broadcastmsg"];
+                                gamemsg(player.name, formatArgs(pmsg, nightargs));
+                                gamemsg(target.name, formatArgs(tarmsg, nightargs));
+                                gamemsgAll(formatArgs(allmsg, nightargs));
                             }
                             else if (command == "massconvert") {
                                 var convertRoles = Action.convertRoles, nr, k, singleAffected = [], affected, newRole, targetPlayers, convertedPlayer, newRole;
