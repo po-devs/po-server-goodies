@@ -88,7 +88,7 @@ function Mafia(mafiachan) {
     /*Sends a Game bot message, if no bot name is defined, it adds "±Game"
     * Note: use "srcname" instead of "src" as src holds the player's ID*/
     function gamemsg(src, mess, botName, channel) {
-        if (mess.length === 0) {
+        if (mess.length === 0 || mess === undefined) {
             return;
         }
         var id = sys.id(src);
@@ -105,7 +105,7 @@ function Mafia(mafiachan) {
         return true;
     }
     function gamemsgAll(mess, botName, channel) {
-        if (mess.length === 0) {
+        if (mess.length === 0 || mess === undefined) {
             return;
         }
         if (mess.indexOf("***") === -1 && mess.indexOf("±") === -1 && mess.lastIndexOf(":") !== (parseInt(mess.length, 10) - 1) && mess.substring(0, Config.Mafia.max_name_length + 1).indexOf(":") === -1) {
@@ -119,7 +119,7 @@ function Mafia(mafiachan) {
     }
     /* Replaces keywords in messages */
     function formatArgs(mess, args) {
-        if (mess.length === 0) {
+        if (mess.length === 0 || mess === undefined) {
             return;
         }
         for (var i in args) {
