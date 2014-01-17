@@ -2966,7 +2966,7 @@ function Mafia(mafiachan) {
                         player.cursed++;
                     } else if (player.cursed >= curseCount) {
                         if (player.curseConvertMessage) {
-                            gamemsgAll(player.curseConvertMessage.replace(/~Old~/g, player.role.translation).replace(/~New~/g, mafia.theme.roles[player.cursedRole].translation).replace(/~Self~/g, player.name).replace(/~Player~/g, player.name).replace(/~Side~/g, mafia.theme.trside(player.role.side)));
+                            gamemsgAll(player.curseConvertMessage.replace(/~Old~/g, player.role.translation).replace(/~New~/g, mafia.theme.roles[player.cursedRole].translation).replace(/~Target~/g, player.name).replace(/~Player~/g, player.name).replace(/~Side~/g, mafia.theme.trside(player.role.side)));
                             player.curseConvertMessage = undefined;
                         }
                         player.curseCount = undefined;
