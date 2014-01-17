@@ -2717,7 +2717,7 @@ function Mafia(mafiachan) {
                                     var team = getTeam(player.role, Action.common);
                                     for (var x in team) {
                                         if (team[x] != player.name) {
-                                            gamemsg(team[x], poisonmsg);
+                                            gamemsg(team[x], formatArgs(poisonmsg, nightargs));
                                         }
                                     }
                                     target.poisoned = 1;
