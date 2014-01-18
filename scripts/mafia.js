@@ -2345,6 +2345,7 @@ function Mafia(mafiachan) {
             updateStalkTargets();
 
             var player, names, j, evadeCharges = {};
+            var selfConverted = [];
             var getPlayerRoleId = function(x) { return this.players[x].role.role; };
             for (var i in mafia.theme.nightPriority) {
                 var failedmsg, pmsg, tarmsg, tarmsg2, allmsg;
@@ -2740,6 +2741,14 @@ function Mafia(mafiachan) {
                                 }
                             }
                             else if (command == "convert") {
+                                if(target.name == player.name) {
+                                    for(var p in selfConverted) {
+                                        if(selfConverted[p] == player.name) {
+                                            continue outer;
+                                        }
+                                    }
+                                    selfConverted.push(player.name);
+                                }
                                 failedmsg = Action.convertfailmsg || "Your target (~Target~) couldn't be converted!";
                                 if ("canConvert" in Action && Action.canConvert != "*" && Action.canConvert.indexOf(target.role.role) == -1) {
                                     gamemsg(player.name, formatArgs(failedmsg, nightargs));
