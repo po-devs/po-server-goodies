@@ -2742,10 +2742,8 @@ function Mafia(mafiachan) {
                             }
                             else if (command == "convert") {
                                 if(target.name == player.name) {
-                                    for(var p in selfConverted) {
-                                        if(selfConverted[p] == player.name) {
-                                            continue outer;
-                                        }
+                                    if(selfConverted.indexOf(player.name) != -1) {
+                                        continue outer;
                                     }
                                     selfConverted.push(player.name);
                                 }
