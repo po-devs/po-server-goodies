@@ -90,7 +90,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             var colour = script.getColor(src);
             sendChanHtmlAll("<font color='" + colour + "'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + messagetosend + "</font>", channel);
         }
-        else if (command == "rainbow" && SESSION.global().allowRainbow && channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel != sys.channelId("Trivia")) {
+        else if (command == "rainbow" && SESSION.global().allowRainbow && !script.isOfficialChan(channel)) {
             var auth = 1 <= sys.auth(src) && sys.auth(src) <= 3;
             var colours = ["#F85888", "#F08030", "#F8D030", "#78C850", "#98D8D8", "#A890F0", "#C183C1"];
             var colour = sys.rand(0, colours.length);
