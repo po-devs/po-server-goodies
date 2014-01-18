@@ -1053,6 +1053,7 @@ function Mafia(mafiachan) {
                 priority.push("[" + prio.priority + "] " + this.roles[prio.role].translation + " (" + cap(prio.action) + ")");
             }
         }
+        priority = removeDuplicates(priority);
         this.priorityInfo = priority;
     };
 
@@ -2298,10 +2299,10 @@ function Mafia(mafiachan) {
             }
             
             /*Added 10 seconds to the first night to give users a chance to read their role and connect with team mates */
-            if (mafia.theme.ticks === undefined || isNaN(mafia.theme.ticks.night1) || mafia.theme.ticks.night1 < 1 || mafia.theme.ticks.night1 > 60) {
+            if (mafia.theme.ticks === undefined || (isNaN(mafia.theme.ticks.night1) && isNaN(mafia.theme.ticks.night)) || mafia.theme.ticks.night1 < 1 || mafia.theme.ticks.night1 > 60) {
                 mafia.ticks = 40;
             } else {
-                mafia.ticks = mafia.theme.ticks.night1 || mafia.theme.ticks.night;
+                mafia.ticks = mafia.theme.ticks.night1 || mafia.theme.ticks.night + 10;
             }
             mafia.time.nights++;
             mafia.state = "night";
@@ -3183,7 +3184,7 @@ function Mafia(mafiachan) {
                 var lynched = mafia.players[downed];
                 if ("lynch" in lynched.role.actions) {
                     //Handled the same, no reason to duplicate code
-                    mafia.actionBeforeDeath(lynched, true, true);
+                    mafia.actionBeforeDeath(lynched, true);
                     //Then we run only lynch things
                     var lyn = lynched.role.actions.lynch;
                     if ("killVoters" in lyn) {
@@ -3226,7 +3227,7 @@ function Mafia(mafiachan) {
                     gamemsgAll(lynchmsg);
                     if (!("lynch" in lynched.role.actions)){
                         //Now we run it so it checks for onDeath if there was no onLynch
-                        mafia.actionBeforeDeath(lynched, false, true);
+                        mafia.actionBeforeDeath(lynched, false);
                     }
                     mafia.removePlayer(mafia.players[downed]);
                 }
@@ -3352,6 +3353,8 @@ function Mafia(mafiachan) {
                     gamemsg(player.name, startmsg);
                 }
                 gamemsg(player.name, role.help.replace(/~Side~/gi, mafia.theme.trside(player.role.side)));
+                var help2msg = (role.help2 || "");
+                gamemsg(player.name, help2msg);
 
                 if (role.actions.startup == "team-reveal") {
                     gamemsg(player.name, "Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
