@@ -1985,6 +1985,12 @@ function Mafia(mafiachan) {
                 this.roleRestrictions[player.role.role] = this.roleRestrictions[player.role.role].concat(player.role.actions.night[action].restrict);
             }
         }
+        if ("cancel" in player.role.actions.night[action]) {
+            cancelList = player.role.actions.night[action].cancel;
+            for (c in cancelList) {
+                this.removeTarget(player, cancelList[c]);
+            }
+        }
         if (list.indexOf(target.name) == -1) {
             list.push(target.name);
             if (list.length > limit) {
@@ -2770,7 +2776,7 @@ function Mafia(mafiachan) {
                                             gamemsgAll(formatArgs(allmsg, nightargs));
                                         }
                                         if (target !== player) {
-                                            pmsg = (Action.usermsg || "Your target (~Target~) has been converted and is now a ~New~!").replace(/~New~/g, target.role.translation);
+                                            pmsg = (Action.usermsg || "Your target (~Target~) has been converted and is now a ~New~!").replace(/~Old~/g, oldRole.translation).replace(/~New~/g, target.role.translation);
                                             gamemsg(player.name, formatArgs(pmsg, nightargs));
                                         }
                                         if (!Action.silentConvert) {
