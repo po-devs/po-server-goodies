@@ -1985,6 +1985,12 @@ function Mafia(mafiachan) {
                 this.roleRestrictions[player.role.role] = this.roleRestrictions[player.role.role].concat(player.role.actions.night[action].restrict);
             }
         }
+        if ("cancel" in player.role.actions.night[action]) {
+            cancelList = player.role.actions.night[action].cancel;
+            for (c in cancelList) {
+                this.removeTarget(player, cancelList[c]);
+            }
+        }
         if (list.indexOf(target.name) == -1) {
             list.push(target.name);
             if (list.length > limit) {
@@ -2346,6 +2352,7 @@ function Mafia(mafiachan) {
             updateStalkTargets();
 
             var player, names, j, evadeCharges = {};
+            var selfConverted = [];
             var getPlayerRoleId = function(x) { return this.players[x].role.role; };
             for (var i in mafia.theme.nightPriority) {
                 var failedmsg, pmsg, tarmsg, tarmsg2, allmsg;
@@ -2741,6 +2748,12 @@ function Mafia(mafiachan) {
                                 }
                             }
                             else if (command == "convert") {
+                                if(target.name == player.name) {
+                                    if(selfConverted.indexOf(player.name) != -1) {
+                                        continue outer;
+                                    }
+                                    selfConverted.push(player.name);
+                                }
                                 failedmsg = Action.convertfailmsg || "Your target (~Target~) couldn't be converted!";
                                 if ("canConvert" in Action && Action.canConvert != "*" && Action.canConvert.indexOf(target.role.role) == -1) {
                                     gamemsg(player.name, formatArgs(failedmsg, nightargs));
@@ -2770,7 +2783,7 @@ function Mafia(mafiachan) {
                                             gamemsgAll(formatArgs(allmsg, nightargs));
                                         }
                                         if (target !== player) {
-                                            pmsg = (Action.usermsg || "Your target (~Target~) has been converted and is now a ~New~!").replace(/~New~/g, target.role.translation);
+                                            pmsg = (Action.usermsg || "Your target (~Target~) has been converted and is now a ~New~!").replace(/~Old~/g, oldRole.translation).replace(/~New~/g, target.role.translation);
                                             gamemsg(player.name, formatArgs(pmsg, nightargs));
                                         }
                                         if (!Action.silentConvert) {
@@ -3751,6 +3764,7 @@ function Mafia(mafiachan) {
                     delete this.usersToShove[name];
                 }
                 if (this.signups.length == this.theme["roles" + this.theme.roleLists].length) {
+                    dualBroadcast("±" + mafiabot.name + ": This theme started early due to reaching capacity!");
                     this.ticks = 1;
                 }
                 return;
