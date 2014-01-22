@@ -1883,7 +1883,7 @@ addAdminCommand("equivalentcats", function (src, commandData, channel) {
     sortingArray.sort(function(a, b) {return (a[1] > b[1] || (a[1] === b[1] && a[0] > b[0]) ? 1 : -1)});
     var table = "<table border = 1 cellpadding = 5 cellspacing = 0><tr><th>Category</th><th>Acts like</th></tr>";
     for (var i = 0; i < sortingArray.length; i++) {
-       table += "<tr><td>" + i[0] + "</td><td>" + i[1] + "</td></tr>";
+       table += "<tr><td>" + sortingArray[i][0] + "</td><td>" + sortingArray[i][1] + "</td></tr>";
     }
     table += "</table>";
     sys.sendHtmlMessage(src, table, channel);
