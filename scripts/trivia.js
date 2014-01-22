@@ -1876,13 +1876,18 @@ addAdminCommand("wordwarns", function (src, commandData, channel) {
 }, "View word warnings.");
 
 addAdminCommand("equivalentcats", function (src, commandData, channel) {
-   var table = "<table border = 1 cellpadding = 5 cellspacing = 0><tr><th>Category</th><th>Acts like</th></tr>";
-   for (var i in trivData.equivalentCats) {
-      table += "<tr><td>" + i + "</td><td>" + trivData.equivalentCats[i] + "</td></tr>";
-   }
-   table += "</table>";
-   sys.sendHtmlMessage(src, table, channel);
-   return;
+    var sortingArray = [];
+    for (var i in trivData.equivalentCats) {
+    	sortingArray.push([i, trivData.equivalentCats[i]]);
+    }
+    sortingArray.sort(function(a, b) {return (a[1] > b[1] || (a[1] === b[1] && a[0] > b[0]) ? 1 : -1)});
+    var table = "<table border = 1 cellpadding = 5 cellspacing = 0><tr><th>Category</th><th>Acts like</th></tr>";
+    for (var i = 0; i < sortingArray.length; i++) {
+       table += "<tr><td>" + i[0] + "</td><td>" + i[1] + "</td></tr>";
+    }
+    table += "</table>";
+    sys.sendHtmlMessage(src, table, channel);
+    return;
 }, "View what categories act as synonyms for category games and submissions.");
 
 addAdminCommand("triviamute", function (src, commandData, channel) {
