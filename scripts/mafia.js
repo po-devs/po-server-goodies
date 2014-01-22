@@ -1988,7 +1988,9 @@ function Mafia(mafiachan) {
         if ("cancel" in player.role.actions.night[action]) {
             cancelList = player.role.actions.night[action].cancel;
             for (c in cancelList) {
-                this.removeTarget(player, cancelList[c]);
+                if (this.hasCommand(player.name, cancelList[c], "night")) {
+                    this.removeTarget(player, cancelList[c]);
+                }
             }
         }
         if (list.indexOf(target.name) == -1) {
