@@ -115,11 +115,11 @@ var tourownercommands = ["/megauser: Makes someone a megauser. Use /smegauser fo
 var serverownercommands = ["/tourowner: Makes someone a Tournament Owner. Use /stowner for a silent promotion."];
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "Breaking the following rules may result in punishment:",
-                "#1: Team revealing or scouting in tiers other than CC, Battle Factory or Metronome will result in disqualification.",
+                "#1: Team revealing or scouting in tiers other than Challenge Cup, Battle Factory, or Metronome will result in disqualification.",
                 "- Scouting is watching the battle of someone else in the tournament to gain information.",
                 "- Team revealing is revealing any information about other entrants' teams.",
                 "- Players are always permitted to watch the final match of any tournament.",
-                "#2: Have a team and be ready when you join, otherwise you can be disqualified",
+                "#2: Have a team and be ready when you join, otherwise you can be disqualified.",
                 "#3: Tierspamming, repeatedly asking for tournaments in the chat, is not allowed.",
                 "#4: Do not abuse the tournament commands.",
                 "#5: Do not leave or forfeit in a tournament you are in just so you can join another or to give your opponent a 'free' win.",
@@ -129,15 +129,15 @@ var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "#8: If there is a problem with your match, contact a megauser as soon as possible.",
                 "- Deliberately drawing your matches using the Suggest Draw button is not permitted unless you have permission from a megauser to restart.",
                 "- Your team is expected to be ready before the match starts - loading the wrong team is not a valid reason to restart.",
-                "#9: Ask someone on the /activeta list if you need help or have problems.",
+                "#9: Ask someone on the /activemu list if you need help or have problems.",
                 "#10: Event tournaments (marked by red borders)",
                 "- Be aware that these are all double elimination. Breaking or attempting to break the above rules will result in immediate disqualification.",
-                "#11: Respecting other players, sportsmanship and integrity:",
+                "#11: Respect other players, sportsmanship, and integrity:",
                 "- Avoid complaining about hax, luck or other such things as much as possible.",
                 "- Avoid making inflammatory remarks/taunts towards other users - treat other users the way you would like to be treated.",
                 "- Any deliberate attempt to undermine the integrity of tournaments will result in a permanent ban from tournaments.",
                 "#12: Do not join multiple tours even if you are using a different alt.",
-                "#13: Do not attempt to circumvent the rules",
+                "#13: Do not attempt to circumvent the rules.",
                 "- Attempting to circumvent the rules through trickery, proxy or other such methods will be punished."];
 
 function sendBotMessage(user, message, chan, html) {
@@ -3808,7 +3808,7 @@ function toursortbracket(size, key) {
             }
             var pr1 = getExtraTierPoints(pl, ttype);
             var pr2 = getExtraPoints(pl, ttype);
-            var pr3 = sys.ranking(pl, ttype) !== undefined ? sys.ranking(pl, ttype) : sys.totalPlayersByTier(ttype)+1;
+            var pr3 = sys.ranking(pl, ttype) !== undefined ? sys.ranking(pl, ttype) : 1000;
             templist.push([pl, pr1, pr2, pr3]);
         }
         var sortalgorithim = function(a,b) {
