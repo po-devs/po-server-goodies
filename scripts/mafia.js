@@ -3764,7 +3764,7 @@ function Mafia(mafiachan) {
                     delete this.usersToShove[name];
                 }
                 if (this.signups.length == this.theme["roles" + this.theme.roleLists].length) {
-                    dualBroadcast("±" + mafiabot.name + ": This theme started early due to reaching capacity!");
+                    gamemsgAll("±" + mafiabot.name + ": This theme started early due to reaching capacity!");
                     this.ticks = 1;
                 }
                 return;
