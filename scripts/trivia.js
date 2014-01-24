@@ -1881,9 +1881,13 @@ addAdminCommand("equivalentcats", function (src, commandData, channel) {
     	sortingArray.push([i, trivData.equivalentCats[i]]);
     }
     sortingArray.sort(function(a, b) {return (a[1] > b[1] || (a[1] === b[1] && a[0] > b[0]) ? 1 : -1)});
-    var table = "<table border = 1 cellpadding = 5 cellspacing = 0><tr><th>Category</th><th>Acts like</th></tr>";
-    for (var i = 0; i < sortingArray.length; i++) {
-       table += "<tr><td>" + sortingArray[i][0] + "</td><td>" + sortingArray[i][1] + "</td></tr>";
+    var table = "<table border = 1 cellpadding = 5 cellspacing = 0><tr><th>Category</th><th>Acts like</th><th>Category</th><th>Acts like</th><th>Category</th><th>Acts like</th></tr>";
+    for (var x = 0; x < parseInt(sortingArray.length / 3, 10) + 1; x++) {
+    	table += "<tr>";
+        for (var y = 0; y < 3; y++) {
+            table += "<td>" + sortingArray[x+y][0] + "</td><td>" + sortingArray[x+y][1] + "</td>";
+        }
+        table += "</tr>";
     }
     table += "</table>";
     sys.sendHtmlMessage(src, table, channel);
