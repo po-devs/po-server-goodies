@@ -1882,10 +1882,12 @@ addAdminCommand("equivalentcats", function (src, commandData, channel) {
     }
     sortingArray.sort(function(a, b) {return (a[1] > b[1] || (a[1] === b[1] && a[0] > b[0]) ? 1 : -1)});
     var table = "<table border = 1 cellpadding = 5 cellspacing = 0><tr><th>Category</th><th>Acts like</th><th>Category</th><th>Acts like</th><th>Category</th><th>Acts like</th></tr>";
-    for (var x = 0; x < parseInt(sortingArray.length / 3, 10) + 1; x++) {
+    for (var x = 0; x < Math.ceil(sortingArray.length / 3); x++) {
     	table += "<tr>";
         for (var y = 0; y < 3; y++) {
-            table += "<td>" + sortingArray[x+y][0] + "</td><td>" + sortingArray[x+y][1] + "</td>";
+            if (sortingArray[x+y]) {
+                table += "<td>" + sortingArray[x+y][0] + "</td><td>" + sortingArray[x+y][1] + "</td>";
+            }
         }
         table += "</tr>";
     }
