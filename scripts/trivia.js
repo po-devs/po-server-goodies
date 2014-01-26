@@ -1885,8 +1885,8 @@ addAdminCommand("equivalentcats", function (src, commandData, channel) {
     for (var x = 0; x < Math.ceil(sortingArray.length / 3); x++) {
     	table += "<tr>";
         for (var y = 0; y < 3; y++) {
-            if (sortingArray[x+y]) {
-                table += "<td>" + sortingArray[x+y][0] + "</td><td>" + sortingArray[x+y][1] + "</td>";
+            if (sortingArray[3*x+y]) {
+                table += "<td>" + sortingArray[3*x+y][0] + "</td><td>" + sortingArray[3*x+y][1] + "</td>";
             }
         }
         table += "</tr>";
