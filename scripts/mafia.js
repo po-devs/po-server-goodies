@@ -1988,7 +1988,9 @@ function Mafia(mafiachan) {
         if ("cancel" in player.role.actions.night[action]) {
             cancelList = player.role.actions.night[action].cancel;
             for (c in cancelList) {
-                this.removeTarget(player, cancelList[c]);
+                if (this.hasCommand(player.name, cancelList[c], "night")) {
+                    this.removeTarget(player, cancelList[c]);
+                }
             }
         }
         if (list.indexOf(target.name) == -1) {
@@ -3673,7 +3675,7 @@ function Mafia(mafiachan) {
             "/details: To view info about a specific theme.",
             "/priority: To view the priority list of a theme. ",
             "/flashme: To get a alert when a new mafia game starts. Type /flashme help for more info.",
-            "/playedgames: To view recently played games",
+            "/playedgames: To view recently played games. Can also use /pg.",
             "/topthemes: To view top themes. Default amount is 10, however other numbers can be used (higher numbers may cause lag)",
             "/windata: To view the win data of a theme",
             "/update: To update a Mafia Theme. /update themename::newurl if changing the url. Contact an sMA if the theme name is changed to prevent conflicts.",
@@ -3717,7 +3719,7 @@ function Mafia(mafiachan) {
         } else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel != mafiachan && ["mafiaban", "mafiaunban", "mafiabans", "mafiaadmins", "madmins", "mas", "roles", "priority", "sides", "themeinfo", "readlog", "targetlog", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiarules", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "mafiasuperadminoff", "smafiaadmin", "smafiasuperadmin", "smafiaadminoff", "smafiasuperadminoff", "passma", "windata", "topthemes", "updatestats", "playedgames"].indexOf(command) === -1)
+        if (channel != mafiachan && ["mafiaban", "mafiaunban", "mafiabans", "mafiaadmins", "madmins", "mas", "roles", "priority", "sides", "themeinfo", "readlog", "targetlog", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiarules", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "mafiasuperadminoff", "smafiaadmin", "smafiasuperadmin", "smafiaadminoff", "smafiasuperadminoff", "passma", "windata", "topthemes", "updatestats", "playedgames", "pg"].indexOf(command) === -1)
             return;
         try {
             mafia.handleCommandOld(src, command, commandData, channel);
@@ -4786,7 +4788,7 @@ function Mafia(mafiachan) {
             }
             return;
         }
-        if (command === "playedgames") {
+        if (command === "playedgames" || command === "pg") {
             var mess = [];
             mess.push("<table><tr><th>Theme</th><th>Who started</th><th>When</th><th>Players</th></tr>");
             var recentGames = PreviousGames.slice(-10);
