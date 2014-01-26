@@ -2130,7 +2130,7 @@ afterChatMessage : function(src, message, chan)
                 } else {
                     capsbot.sendAll(message, channel);
                     if (channel != staffchannel)
-                        capsbot.sendAll(message + "[Channel: "+sys.channel(channel) + "]", staffchannel);
+                        capsbot.sendAll(message + " [Channel: "+sys.channel(channel) + "]", staffchannel);
                 }
             }
             var endtime = user.mute.active ? user.mute.expires + time : parseInt(sys.time(), 10) + time;
