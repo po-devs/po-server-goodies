@@ -19,7 +19,7 @@ var MemoryHash = require('memoryhash.js').MemoryHash;
 var triviachan, revchan;
 var triviabot = new Bot("Metagross");
 
-var triviaCategories = ['Anime/Manga', 'Animals', 'Art', 'Comics', 'Food/Drink', 'Games', 'Geography', 'History', 'Internet', 'Language', 'Literature', 'Math', 'Misc', 'Movies', 'Music', 'Mythology', 'Pokemon', 'Pokemon Online', 'Politics', 'Religion', 'Science', 'Social Science', 'Society', 'Space', 'Sports', 'Technology', 'TV', 'Video Games'];
+var triviaCategories = ['Anime/Manga', 'Animals', 'Art', 'Comics', 'Food/Drink', 'Games', 'Geography', 'History', 'Internet', 'Language', 'Literature', 'Math', 'Miscellaneous', 'Movies', 'Music', 'Mythology', 'Pokémon', 'Pokémon Online', 'Politics', 'Religion', 'Science', 'Social Science', 'Society', 'Space', 'Sports', 'Technology', 'Television', 'Video Games'];
 var lastCatGame = 0;
 var lastUsedCats = [];
 
@@ -472,7 +472,7 @@ TriviaGame.prototype.startTriviaRound = function () {
     else {
         questionNumber = Trivia.randomId();
         var i = 0;
-        while ((triviaq.get(questionNumber) === null || (triviaq.get(questionNumber).category.toLowerCase() === "pokemon : who's that pokemon?" && this.androidPlayers())) && i !== 200) {
+        while ((triviaq.get(questionNumber) === null || (triviaq.get(questionNumber).category.toLowerCase() === "who's that pokémon?" && this.androidPlayers())) && i !== 200) {
             questionNumber = Trivia.randomId();
             i++;
         }
