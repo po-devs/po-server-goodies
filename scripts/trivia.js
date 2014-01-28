@@ -19,7 +19,7 @@ var MemoryHash = require('memoryhash.js').MemoryHash;
 var triviachan, revchan;
 var triviabot = new Bot("Metagross");
 
-var triviaCategories = ['Anime/Manga', 'Animals', 'Art', 'Comics', 'Food/Drink', 'Games', 'Geography', 'History', 'Internet', 'Language', 'Literature', 'Math', 'Misc', 'Movies', 'Music', 'Mythology', 'Pokemon', 'Pokemon Online', 'Politics', 'Religion', 'Science', 'Social Science', 'Society', 'Space', 'Sports', 'Technology', 'TV', 'Video Games'];
+var triviaCategories = ['Anime/Manga', 'Animals', 'Art', 'Comics', 'Food/Drink', 'Games', 'Geography', 'History', 'Internet', 'Language', 'Literature', 'Math', 'Miscellaneous', 'Movies', 'Music', 'Mythology', 'Pokémon', 'Pokémon Online', 'Politics', 'Religion', 'Science', 'Social Science', 'Society', 'Space', 'Sports', 'Technology', 'Television', 'Video Games'];
 var lastCatGame = 0;
 var lastUsedCats = [];
 
@@ -472,7 +472,7 @@ TriviaGame.prototype.startTriviaRound = function () {
     else {
         questionNumber = Trivia.randomId();
         var i = 0;
-        while ((triviaq.get(questionNumber) === null || (triviaq.get(questionNumber).category.toLowerCase() === "pokemon : who's that pokemon?" && this.androidPlayers())) && i !== 200) {
+        while ((triviaq.get(questionNumber) === null || (triviaq.get(questionNumber).category.toLowerCase() === "who's that pokémon?" && this.androidPlayers())) && i !== 200) {
             questionNumber = Trivia.randomId();
             i++;
         }
@@ -1881,9 +1881,15 @@ addAdminCommand("equivalentcats", function (src, commandData, channel) {
     	sortingArray.push([i, trivData.equivalentCats[i]]);
     }
     sortingArray.sort(function(a, b) {return (a[1] > b[1] || (a[1] === b[1] && a[0] > b[0]) ? 1 : -1)});
-    var table = "<table border = 1 cellpadding = 5 cellspacing = 0><tr><th>Category</th><th>Acts like</th></tr>";
-    for (var i = 0; i < sortingArray.length; i++) {
-       table += "<tr><td>" + sortingArray[i][0] + "</td><td>" + sortingArray[i][1] + "</td></tr>";
+    var table = "<table border = 1 cellpadding = 5 cellspacing = 0><tr><th>Category</th><th>Acts like</th><th>Category</th><th>Acts like</th><th>Category</th><th>Acts like</th></tr>";
+    for (var x = 0; x < Math.ceil(sortingArray.length / 3); x++) {
+    	table += "<tr>";
+        for (var y = 0; y < 3; y++) {
+            if (sortingArray[3*x+y]) {
+                table += "<td>" + sortingArray[3*x+y][0] + "</td><td>" + sortingArray[3*x+y][1] + "</td>";
+            }
+        }
+        table += "</tr>";
     }
     table += "</table>";
     sys.sendHtmlMessage(src, table, channel);
