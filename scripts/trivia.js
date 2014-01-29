@@ -2061,6 +2061,7 @@ module.exports = {
             command = command.substr(0, indx).toLowerCase();
         }
         else {
+            command = command.toLowerCase();
             commandData = ""; // sane default to avoid undefined errors
         }
         // Only care about trivia channels
