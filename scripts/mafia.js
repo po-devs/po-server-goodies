@@ -40,6 +40,7 @@ function Mafia(mafiachan) {
         featuredText = "Please read and follow the /mafiarules! Also, be mindful of your caps, flooding, and insulting other users.",
         deadTime = 0,
         peak,
+        npcutoff = 13,
         timesBeforeNonPeak = 3, //number of dead games before enabling non-peak
         numPlayersBeforeDead = 10; //number of players before game is counted as not dead
 
@@ -1986,8 +1987,8 @@ function Mafia(mafiachan) {
             }
         }
         if ("cancel" in player.role.actions.night[action]) {
-            cancelList = player.role.actions.night[action].cancel;
-            for (c in cancelList) {
+            var cancelList = player.role.actions.night[action].cancel;
+            for (var c in cancelList) {
                 if (this.hasCommand(player.name, cancelList[c], "night")) {
                     this.removeTarget(player, cancelList[c]);
                 }
@@ -3549,6 +3550,10 @@ function Mafia(mafiachan) {
         var themes = mafia.themeManager.themes;
         var npThemes = [];
         for (var x in themes) {
+            var each = themes[x];
+            if (each["roles" + each.roleLists].length > npcutoff) {
+                continue;
+            }
             if (themes[x].nonPeak) {
                 if (enable) {
                     mafia.themeManager.enable(src, x, true);
@@ -3766,7 +3771,7 @@ function Mafia(mafiachan) {
                     delete this.usersToShove[name];
                 }
                 if (this.signups.length == this.theme["roles" + this.theme.roleLists].length) {
-                    gamemsgAll("±" + mafiabot.name + ": This theme started early due to reaching capacity!");
+                    dualBroadcast("±" + mafiabot.name + ": This theme started early due to reaching capacity!");
                     this.ticks = 1;
                 }
                 return;
