@@ -128,7 +128,6 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var subip;
         var comment;
         var space = commandData.indexOf(' ');
-        var name = sys.name(src);
         if (space != -1) {
             subip = commandData.substring(0,space);
             comment = commandData.substring(space+1);
