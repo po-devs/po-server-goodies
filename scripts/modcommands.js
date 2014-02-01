@@ -174,8 +174,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "rangebans") {
         var TABLE_HEADER, TABLE_LINE, TABLE_END;
         if (!commandData || commandData.indexOf('-text') == -1) {
-           TABLE_HEADER = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Range banned</strong></center></td></tr><tr><th>IP subaddress</th><th>Comment on rangeban</th></tr>';
-           TABLE_LINE = '<tr><td>{0}</td><td>{1}</td></tr>';
+           TABLE_HEADER = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Range banned</strong></center></td></tr><tr><th>IP subaddress</th><th>Comment on rangeban</th><th>By</th></tr>';
+           TABLE_LINE = '<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>';
            TABLE_END = '</table>';
         } else {
            TABLE_HEADER = 'Range banned: IP subaddress, Command on rangeban';
@@ -187,12 +187,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var tmp = [];
         for (var key in script.rangebans.hash) {
             if (script.rangebans.hash.hasOwnProperty(key)) {
-                tmp.push([key, script.rangebans.get(key)]);
+                var comment = script.rangebans.get(key).split(" --- ");
+                tmp.push([key, comment[0], comment[1]]);
             }
         }
         tmp.sort(function(a,b) { return a[0] < b[0] ? -1 : 1; });
         for (var row = 0; row < tmp.length; ++row) {
-            table += TABLE_LINE.format(tmp[row][0], tmp[row][1]);
+            table += TABLE_LINE.format(tmp[row][0], tmp[row][1], tmp[row][2] ? tmp[row][2] : "");
         }
         table += TABLE_END;
         sys.sendHtmlMessage(src, table, channel);
