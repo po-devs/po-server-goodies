@@ -1491,7 +1491,7 @@ addAdminCommand("flashtas", function (src, commandData, channel) {
     return;
 },"Revert questions.");*/
 
-addAdminCommand("apropos", function (src, commandData, channel) {
+addAdminCommand("search", function (src, commandData, channel) {
     if (commandData === undefined)
         return;
     Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
@@ -1521,9 +1521,9 @@ addAdminCommand("apropos", function (src, commandData, channel) {
         Trivia.sendPM(src, "Too many results were found for this query", channel); //possibly add a way to show more results
     }
 
-}, "Allows you to search through the questions, format /apropos [query]");
+}, "Allows you to search through the questions, format /search [query]");
 
-addAdminCommand("apnumber", function (src, commandData, channel) {
+addAdminCommand("searchcount", function (src, commandData, channel) {
     if (commandData === undefined) {
         return;
     }
@@ -1536,9 +1536,9 @@ addAdminCommand("apnumber", function (src, commandData, channel) {
         }
     }
     Trivia.sendPM(src, "There are " + count + " questions matching with '" + commandData + "'.", channel);
-}, "Counts how many questions fit an /apropos search");
+}, "Counts how many questions fit a usage /search");
 
-addAdminCommand("category", function (src, commandData, channel) {
+addAdminCommand("categorycount", function (src, commandData, channel) {
     if (commandData === undefined)
         return;
     var all = triviaq.all(),
@@ -1561,7 +1561,7 @@ addAdminCommand("listc", function (src, commandData, channel) {
     }
 }, "Lists every category currently used and the amount of questions in each.");
 
-addAdminCommand("showqinc", function (src, commandData, channel) {
+addAdminCommand("searchcategory", function (src, commandData, channel) {
     if (commandData === undefined)
         return;
     Trivia.sendPM(src, "Questions in " + commandData + " category are:", channel);
