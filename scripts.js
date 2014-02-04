@@ -1423,7 +1423,7 @@ beforeLogIn : function(src) {
     if (sys.auth(src) > 0) {
         return;
     }
-    var allowedIps = ["74.115.245.16"];
+    var allowedIps = ["74.115.245.16","74.115.245.26"];
     if (this.isRangeBanned(ip) && allowedIps.indexOf(ip) == -1 && script.allowedRangeNames.indexOf(sys.name(src).toLowerCase()) == -1) {
         normalbot.sendMessage(src, 'You are banned!');
         sys.stopEvent();
