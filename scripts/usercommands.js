@@ -408,6 +408,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (sys.existChannel(commandData)) {
             chan = sys.channelId(commandData);
         } else {
+            var name = commandData.toLowerCase();
+            for (var i = 0; i < script.chanNameBans.length; ++i) {
+                var regexp = script.chanNameBans[i];
+                if (regexp.test(name)) {
+                    sys.sendMessage(src, 'This kind of channel name is banned from the server. (Matching regexp: ' + regexp + ')');
+                    return;
+                }
+            }
             chan = sys.createChannel(commandData);
         }
         if (sys.isInChannel(src, chan)) {
