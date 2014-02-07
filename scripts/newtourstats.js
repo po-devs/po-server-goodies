@@ -535,8 +535,8 @@ function awardTourPoints(player, size, tier, delim, place) {
     var tiers_a = [];
     var tiers_b = []; // default
     var tiers_c = ["Monotype", "Battle Factory"];
-    var tiers_d = ["Challenge Cup"];
-    var tiers_e = ["Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers"];
+    var tiers_d = ["Challenge Cup", "Inverted Challenge Cup"];
+    var tiers_e = ["Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers", "XY 1v1"];
     var tiers_f = ["CC 1v1"];
     var tiers_z = ["Metronome"];
     if (tiers_a.indexOf(tier) != -1) {
@@ -638,10 +638,10 @@ function detEventPoints(size, ranking, tier) {
     else if (["Battle Factory", "Monotype"].indexOf(tier) > -1) {
         mag -= 1;
     }
-    else if (["Challenge Cup"].indexOf(tier) > -1) {
+    else if (["Challenge Cup", "Inverted Challenge Cup"].indexOf(tier) > -1) {
         mag -= 2;
     }
-    else if (["Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers"].indexOf(tier) > -1) {
+    else if (["Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers", "XY 1v1"].indexOf(tier) > -1) {
         mag -= 3;
     }
     else if (["CC 1v1"].indexOf(tier) > -1) {

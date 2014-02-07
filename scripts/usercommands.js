@@ -305,7 +305,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "topicadd") {
-        if (commandData) { 
+        if (commandData) {
             if (SESSION.channels(channel).topic.length > 0)
                 SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandData);
             else
@@ -699,7 +699,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             if (commandData < 1 || commandData > 718) {
                 normalbot.sendMessage(src, commandData + " is not a valid Pokédex number!", channel);
                 return;
-            } 
+            }
             pokeId = commandData;
         }
         if (!pokeId) {
@@ -812,7 +812,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         sys.sendHtmlMessage(src, "<b>Effect:</b> " + (isBerry ? getBerry(berryId) : getItem(itemId)), channel);
         if (!isGSC) {
-            if (flingPower != undefined) {
+            if (flingPower !== undefined) {
                 sys.sendHtmlMessage(src, "<b>Fling base power:</b> " + flingPower, channel);
             }
             if (isBerry) {
