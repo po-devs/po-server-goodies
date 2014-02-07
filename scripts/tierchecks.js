@@ -74,6 +74,22 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(s
     return ret;
 });
 
+tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(src, team) {
+    var ret = [];
+    for (var i = 0; i < 6; i++) {
+        var poke = sys.teamPoke(src, team, i);
+        if (poke in script.pokeAbilities) {
+            for (var x in script.pokeAbilities[poke]) {
+                if (sys.hasTeamPokeMove(src, team, i, x) && sys.teamPokeAbility(src, team, i) != script.pokeAbilities[poke][x])
+                {
+                    ret.push("" + sys.pokemon(poke) + " with " + sys.move(x) + " must have the ability " + sys.ability(script.pokeAbilities[poke][x]) + ". Change it in the teambuilder.");
+                }
+            }
+        }
+    }
+    return ret;
+});
+
 tier_checker.add_new_check(INCLUDING, ["BW2 LC", "BW2 LC Ubers", "BW2 UU LC", "XY LC"], function littleCupCheck(src, team) {
     var ret = [];
     var gen = sys.gen(src, team);
