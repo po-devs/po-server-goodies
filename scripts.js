@@ -3,7 +3,7 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 // You may change these variables as long as you keep the same type
 var Config = {
-    base_url: "https://raw.github.com/po-devs/po-server-goodies/master/",
+    base_url: "https://raw.github.com/Fuzzysqurl/po-server-goodies/Mafia-Testing/",
     dataDir: "scriptdata/",
     bot: "Dratini",
     kickbot: "Blaziken",
@@ -49,7 +49,7 @@ var Config = {
         ["Blimlax", "2nd Generation OverUsed - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?23141-GSC-OU-Gym-Blimlax'>Gym Thread!</a>"],
         ["Isa-", "1st Generation OverUsed - View {0}'s <a href='http://pokemon-online.eu/forums/showthread.php?23110-RBY-OU-Gym-Isa'>Gym Thread!</a>"]
     ],
-    DreamWorldTiers: ["No Preview OU", "No Preview Ubers", "DW LC", "Monotype", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
+    DreamWorldTiers: ["No Preview OU", "No Preview Ubers", "DW LC", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
     superAdmins: ["[LD]Jirachier", "Ethan"],
     canJoinStaffChannel: ["Lamperi-"],
     disallowStaffChannel: [],
@@ -61,7 +61,7 @@ var Config = {
 /*global print, script, sys, SESSION*/
 
 var require_cache = typeof require != 'undefined' ? require.cache : {};
-require = function require(module_name, retry) {
+var require = function require(module_name, retry) {
     if (require.cache[module_name])
         return require.cache[module_name];
 
@@ -118,7 +118,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, contributors, mutes, mbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, hapokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList, powerList, accList, ppList, categoryList, moveEffList, moveFlagList, abilityList, itemList, berryList, flingPowerList, berryPowerList, berryTypeList, allMovesList, allGenMovesList, namesToWatch, allowedRangeNames;
+var channel, contributors, mutes, mbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, hapokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, pokeAbilities, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList, powerList, accList, ppList, categoryList, moveEffList, moveFlagList, abilityList, itemList, berryList, flingPowerList, berryPowerList, berryTypeList, allMovesList, allGenMovesList, namesToWatch, allowedRangeNames;
 
 var pokeDir = "db/pokes/";
 var moveDir = "db/moves/6G/";
@@ -475,7 +475,7 @@ function getBerryPower (berryId) {
             berryPowerList[key] = power;
         }
     }
-    return berryPowerList[berryId];
+    return berryPowerList[berryId] + 20;
 }
 
 function getBerryType (berryId) {
@@ -841,6 +841,29 @@ init : function() {
             script.pokeNatures[poke][sys.moveNum(movenat[0])] = sys.natureNum(movenat[1]);
         }
     }
+    
+    script.pokeAbilities = [];
+    
+    var Ablist = "Bulbasaur-False Swipe/Overgrow|Block/Overgrow|Frenzy Plant/Overgrow|Weather Ball/Overgrow=Ivysaur-False Swipe/Overgrow|Block/Overgrow|Frenzy Plant/Overgrow|Weather Ball/Overgrow=Venusaur-False Swipe/Overgrow|Block/Overgrow|Weather Ball/Overgrow=Charmander-False Swipe/Blaze|Block/Blaze|Blast Burn/Blaze|Acrobatics/Blaze=Charmeleon-False Swipe/Blaze|Block/Blaze|Blast Burn/Blaze|Acrobatics/Blaze=Charizard-False Swipe/Blaze|Block/Blaze|Acrobatics/Blaze=Squirtle-False Swipe/Torrent|Block/Torrent|Hydro Cannon/Torrent|Follow Me/Torrent=Wartortle-False Swipe/Torrent|Block/Torrent|Hydro Cannon/Torrent|Follow Me/Torrent=Blastoise-False Swipe/Torrent|Block/Torrent|Follow Me/Torrent";
+    //Terrible, but it works!
+    //Bulba line: Weather Ball, Frenzy Plant, False Swipe, Block
+    //Charm line: Acrobatics, Blast Burn, False Swipe, Block
+    //Squirt line: Follow Me, Hydro Cannon, False Swipe, Block
+    var sepAbPokes = Ablist.split('='),
+        sepAbMovesPoke, sepAb, moveab;
+    for (var x = 0; x < sepAbPokes.length; x++) {
+        sepAbMovesPoke = sepAbPokes[x].split('-');
+        sepAb = sepAbPokes[x].split('|');
+        
+        var poke = sys.pokeNum(sepAbMovesPoke[0]);
+        script.pokeAbilities[poke] = [];
+        
+        for (var y = 0; y < sepAb.length; ++y) {
+            moveab = sepAb[y].split('/');
+            script.pokeAbilities[poke][sys.moveNum(moveab[0])] = sys.abilityNum(moveab[1]);
+        }
+    }
+    
     if (typeof script.chanNameBans == 'undefined') {
         script.chanNameBans = [];
         try {
@@ -1423,7 +1446,7 @@ beforeLogIn : function(src) {
     if (sys.auth(src) > 0) {
         return;
     }
-    var allowedIps = ["74.115.245.16"];
+    var allowedIps = ["74.115.245.16","74.115.245.26"];
     if (this.isRangeBanned(ip) && allowedIps.indexOf(ip) == -1 && script.allowedRangeNames.indexOf(sys.name(src).toLowerCase()) == -1) {
         normalbot.sendMessage(src, 'You are banned!');
         sys.stopEvent();
@@ -2130,7 +2153,7 @@ afterChatMessage : function(src, message, chan)
                 } else {
                     capsbot.sendAll(message, channel);
                     if (channel != staffchannel)
-                        capsbot.sendAll(message + "[Channel: "+sys.channel(channel) + "]", staffchannel);
+                        capsbot.sendAll(message + " [Channel: "+sys.channel(channel) + "]", staffchannel);
                 }
             }
             var endtime = user.mute.active ? user.mute.expires + time : parseInt(sys.time(), 10) + time;
