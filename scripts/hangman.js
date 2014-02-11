@@ -689,7 +689,8 @@ module.exports = function () {
             "*** Hangman Super Admin Commands ***",
             "/config: To change the answer delay time and other settings. Format /config parameter:value. Type /config by itself to see more help.",
             "/hangmanadmin: To promote a new Hangman Admin. Use /shangmanadmin for a silent promotion.",
-            "/hangmanadminoff: To demote a Hangman Admin or a Hangman Super Admin. Use /shangmanadminoff for a silent demotion."
+            "/hangmanadminoff: To demote a Hangman Admin or a Hangman Super Admin. Use /shangmanadminoff for a silent demotion.",
+            "/eventgame: To turn eventgames on/off. Format /eventgame on or /eventgame off."
         ];
         var ownerHelp = [
             "*** Server owner Hangman Commands ***",
@@ -1096,6 +1097,10 @@ module.exports = function () {
             if (idleCount >= idleLimit && autoGames) {
                 hangman.startAutoGame();
             }
+        }
+        if(eventCount === eventLimit-60 && eventGames) {
+            hangman.sendMessage(src, "An Event Hangman Game is starting in about a minute!", hangchan);
+            return;
         }
         if(eventCount >= eventLimit && eventGames) {
             hangman.startAutoGame();
