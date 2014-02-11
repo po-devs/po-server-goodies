@@ -1100,7 +1100,11 @@ module.exports = function () {
             }
         }
         if(eventCount === eventLimit-60 && eventGames) {
-            hangman.sendMessage(src, "An Event Hangman Game is starting in about a minute!", hangchan);
+            sys.sendAll("", 0);
+            sys.sendAll("*** ************************************************************ ***", 0);
+            hangbot.sendAll("A new event game of Hangman will start in about a minute in #Hangman!", 0);
+            sys.sendAll("*** ************************************************************ ***", 0);
+            sys.sendAll("", 0);
             return;
         }
         if(eventCount >= eventLimit && eventGames) {
