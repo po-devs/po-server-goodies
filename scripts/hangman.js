@@ -1,6 +1,7 @@
 /* hangman.js
     TODO:
     Check if Auto-Game answers have no invalid character
+    Make sure submitted games are valid
 */
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global sys:true, sendChanHtmlAll:true, module:true, SESSION:true, hangmanchan, hangbot, require, script, sachannel, getTimeString */
