@@ -1,6 +1,7 @@
 /* hangman.js
     TODO:
     Check if Auto-Game answers have no invalid character
+    Make sure submitted games are valid
 */
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global sys:true, sendChanHtmlAll:true, module:true, SESSION:true, hangmanchan, hangbot, require, script, sachannel, getTimeString */
@@ -19,10 +20,13 @@ module.exports = function () {
     var answerDelay = 7;
     var maxAnswers = 3;
     
-    var autoGamesFile = "https://dl.dropboxusercontent.com/u/10065307/hangmanautogames.txt";
+    var autoGamesFile = "hangmanq.txt";
     var idleCount = 0;
     var idleLimit = 1800;
+    var eventCount = 0;
+    var eventLimit = 1800;
     var autoGames;
+    var eventGames = false;
 
     var host;
     var hostName;
@@ -538,6 +542,7 @@ module.exports = function () {
             }
             else {
                 autoGames = false;
+                hangman.sendMessage("You turned off Automatic games.");
                 return;
             }
         }
@@ -548,8 +553,57 @@ module.exports = function () {
             }
             else {
                 autoGames = true;
+                hangman.sendMessage("You turned on Automatic games.");
                 return;
             }
+        }
+    };
+    
+    this.eventGame = function(commandData) {
+        if(commandData === undefined) {
+            if(eventGame === true) {
+                hangman.sendMessage("Event Games are set to start.");
+                return;
+            }
+            else {
+                hangman.sendMessage("Event Games are not set to start.");
+                return;
+            }
+        }
+        var some = commandData.toLowerCase();
+        if(some == "off") {
+            if(eventGames === false) {
+                hangman.sendMessage("Event Games are already turned off.");
+                return;
+            }
+            else {
+                eventGames = false;
+                hangman.sendMessage("Event Games have been turned off.");
+                return;
+            }
+        }
+        if(some == "on") {
+            if(eventGames === true) {
+                hangman.sendMessage("Event Games are already turned on.");
+                return;
+            }
+            else {
+                eventGames = false;
+                hangman.sendMessage("Event games have been turned on.");
+                return;
+            }
+        }
+    };
+    
+    this.addQuest = function(src, commandData) {
+        if(commandData === undefined) {
+            return;
+        }
+        var newQ = commandData.toLowerCase();
+        autoGames.push(newQ);
+        sys.write("hangmanq.txt", JSON.stringify(quests));
+        hangabot.sendMessage(src, "You have successfully added a new question!");
+        return;
         }
     };
     
@@ -567,6 +621,7 @@ module.exports = function () {
             hangbot.sendMessage(src, "winner: Set how many seconds the winner of a game have to start a new one before anyone can start (currently set to " + winnerDelay + " seconds). ", hangchan);
             hangbot.sendMessage(src, "answers: Set how many times each player can use /a (currently set to " + maxAnswers + " seconds). ", hangchan);
             hangbot.sendMessage(src, "idle: Set how many minutes the channel must be idle for game to automatically start. (currently set to " + idleLimit/60 + " minutes).", hangchan);
+            hangbot.sendMessage(src, "event: Set how often Event Games happen.(currently set to" + eventLimit/60 + " minutes).", hangchan);
             sys.sendMessage(src, " ", hangchan);
             return;
         }
@@ -595,8 +650,11 @@ module.exports = function () {
             break;
         case "idle":
             idleLimit = val*60;
-            hangbot.sendMessage(src, "Game with auto start after " + val + " minutes.", hangchan);
+            hangbot.sendMessage(src, "Game will auto start after " + val + " minutes.", hangchan);
             break;
+        case "event":
+            eventLimit = val*60;
+            hangbot.sendMessage(src, "Event games with happen ever " + val + " minutes.", hangchan);
         }
     };
     this.onHelp = function (src, topic, channel) {
@@ -632,7 +690,8 @@ module.exports = function () {
             "*** Hangman Super Admin Commands ***",
             "/config: To change the answer delay time and other settings. Format /config parameter:value. Type /config by itself to see more help.",
             "/hangmanadmin: To promote a new Hangman Admin. Use /shangmanadmin for a silent promotion.",
-            "/hangmanadminoff: To demote a Hangman Admin or a Hangman Super Admin. Use /shangmanadminoff for a silent demotion."
+            "/hangmanadminoff: To demote a Hangman Admin or a Hangman Super Admin. Use /shangmanadminoff for a silent demotion.",
+            "/eventgame: To turn eventgames on/off. Format /eventgame on or /eventgame off."
         ];
         var ownerHelp = [
             "*** Server owner Hangman Commands ***",
@@ -764,6 +823,16 @@ module.exports = function () {
         
         if(command === "autogame") {
             hangman.autoGame(commandData);
+            return true;
+        }
+        
+        if(command === "eventgame") {
+            hangman.eventGame(commandData);
+            return;
+        }
+        
+        if(command === "addQuest") {
+            hangman.addQuest(commandData);
             return true;
         }
 
@@ -983,13 +1052,12 @@ module.exports = function () {
         hangman.loadAutoGames(autoGamesFile);
     };
     this.loadAutoGames = function (url) {
-        sys.webCall(url, function (resp) {
             try {
-                autoGames = JSON.parse(resp);
+                autoGames = JSON.parse(sys.read(url));
             } catch (err) {
                 hangbot.sendAll("Unable to load Auto Games", hangchan);
+                autoGames = [];
             }
-        });
     };
     this.beforeChannelJoin = function (src, channel) {
         if (channel !== hangchan) {
@@ -1023,12 +1091,24 @@ module.exports = function () {
         }
     };
     this.stepEvent = function () {
+        eventCount++;
         if (!word) {
             idleCount++;
             
             if (idleCount >= idleLimit && autoGames) {
                 hangman.startAutoGame();
             }
+        }
+        if(eventCount === eventLimit-60 && eventGames) {
+            sys.sendAll("", 0);
+            sys.sendAll("*** ************************************************************ ***", 0);
+            hangbot.sendAll("A new event game of Hangman will start in about a minute in #Hangman!", 0);
+            sys.sendAll("*** ************************************************************ ***", 0);
+            sys.sendAll("", 0);
+            return;
+        }
+        if(eventCount >= eventLimit && eventGames) {
+            hangman.startAutoGame();
         }
     };
     this.onHmute = function (src) {
