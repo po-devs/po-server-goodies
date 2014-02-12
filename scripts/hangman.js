@@ -1,7 +1,6 @@
 /* hangman.js
     TODO:
     Automatically replace letters like É and Ê into E for answers
-    Prevent the Event Counter from resetting when the script is updated
 */
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global sys:true, sendChanHtmlAll:true, module:true, SESSION:true, hangmanchan, hangbot, require, script, sachannel, getTimeString */
@@ -27,7 +26,7 @@ module.exports = function () {
     var autoGames;
     
     var eventLimit = 1800;
-    var eventCount = eventLimit;
+    var eventCount = SESSION.global().hangmanEventCount || eventLimit;
     var eventGames = true;
     var isEventGame;
     var pendingEvent = false;
@@ -1253,6 +1252,7 @@ module.exports = function () {
     };
     this.stepEvent = function () {
         eventCount--;
+        SESSION.global().hangmanEventCount = eventCount;
         if (!word) {
             idleCount++;
             
