@@ -306,7 +306,7 @@ function Tournament(channel)
 	}
 
 	function isInTour(name) {
-		return name.toLowerCase() in self.entrants;
+		return (name || "").toLowerCase() in self.entrants;
 	}
 
 	function remainingEntrants() {
