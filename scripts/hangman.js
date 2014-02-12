@@ -811,7 +811,8 @@ module.exports = function () {
             "/start: To start a new game of hangman. Format /start answer:hint:number",
             "/pass: To pass starting rights to someone else.",
             "/hangmanadmins: To see a list of hangman auth.",
-            "/end: To end a game you started."
+            "/end: To end a game you started.",
+            "/leaderboard: To see the event leaderboard. You can type /leaderboard last to see last months leaderboard."
         ];
         var adminHelp = [
             "*** Hangman Admin Commands ***",
@@ -819,7 +820,8 @@ module.exports = function () {
             "/hangmanunban: To hangman unban a user.",
             "/hangmanbans: Searches the hangman banlist, show full list if no search term is entered.",
             "/passha: To give your Hangman Admin powers to an alt.",
-            "/autogame: To turn autogames on/off. Format /autogame on or /autogame off."
+            "/autogame: To turn autogames on/off. Format /autogame on or /autogame off.",
+            "/addquest: To add a question to the autogame/eventgame data base. Format /addquest Answer:Hint:Guess number."
         ];
         var superAdminHelp = [
             "*** Hangman Super Admin Commands ***",
