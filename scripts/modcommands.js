@@ -341,7 +341,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             ip = sys.dbIp(name);
             online = false;
         }
-        var isBanned = sys.banList().filter(function(name) { return ip == sys.dbIp(name); }).length > 0;
+        var isBanned = sys.banned(ip);
         var nameBanned = script.nameIsInappropriate(name);
         var rangeBanned = script.isRangeBanned(ip);
         var tempBanned = script.isTempBanned(ip);
@@ -502,12 +502,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
            normalbot.sendMessage(src, "Can't do that to higher auth!", channel);
            return;
         }
-        var banlist=sys.banList();
-        for (var a in banlist) {
-            if (ip == sys.dbIp(banlist[a])) {
-                normalbot.sendMessage(src, "He/she's already banned!", channel);
-                return;
-            }
+        if (sys.banned(ip)) {
+            normalbot.sendMessage(src, "He/she's already banned!", channel);
+            return;
         }
         normalbot.sendAll("Target: " + target_name + ", IP: " + ip, staffchannel);
         sys.sendHtmlAll('<b><font color=red>' + target_name + ' was banned by ' + nonFlashing(sys.name(src)) + ' for ' + getTimeString(minutes) + '!</font></b>');

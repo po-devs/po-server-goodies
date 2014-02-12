@@ -84,12 +84,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
            normalbot.sendMessage(src, "Can't do that to higher auth!", channel);
            return;
         }
-        var banlist=sys.banList();
-        for(var a in banlist) {
-            if(ip == sys.dbIp(banlist[a]) && !script.isTempBanned(ip)) {
-                normalbot.sendMessage(src, "He/she's already banned!", channel);
-                return;
-            }
+        if(sys.banned(ip) && !script.isTempBanned(ip)) {
+            normalbot.sendMessage(src, "He/she's already banned!", channel);
+            return;
         }
 
         normalbot.sendAll("Target: " + commandData + ", IP: " + ip, staffchannel);
