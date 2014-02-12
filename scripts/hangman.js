@@ -20,8 +20,8 @@ module.exports = function () {
     var answerDelay = 7;
     var maxAnswers = 3;
     
-    var autoGamesFile = "hangmanq.txt";
-    var leaderboardsFile = "hangmanLeaderboards.txt";
+    var autoGamesFile = "scriptdata/hangmanq.txt";
+    var leaderboardsFile = "scriptdata/hangmanLeaderboards.txt";
     var idleCount = 0;
     var idleLimit = 1800;
     var autoGames;
@@ -472,7 +472,7 @@ module.exports = function () {
         var list = Object.keys(lb).sort(function(a, b) {
            return lb[b] - lb[a];
         });
-        var top = list.slice(0, 10);
+        var top = list.slice(0, cut);
         
         var name;
         sys.sendMessage(src, "", hangchan);
