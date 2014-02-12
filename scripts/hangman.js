@@ -49,7 +49,8 @@ module.exports = function () {
     
     var leaderboards = {
         current:{},
-        last:{}
+        last:{},
+        currentMonth: -1
     };
 
 
@@ -1214,7 +1215,8 @@ module.exports = function () {
             hangbot.sendAll("Unable to load Hangman Leaderboards.", hangchan);
             leaderboards = {
                 current: {},
-                last: {}
+                last: {},
+                currentMonth: -1
             };
         }
     };
