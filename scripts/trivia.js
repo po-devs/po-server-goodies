@@ -1491,7 +1491,7 @@ addAdminCommand("flashtas", function (src, commandData, channel) {
     return;
 },"Revert questions.");*/
 
-addAdminCommand("search", function (src, commandData, channel) {
+addAdminCommand(["search", "apropos"], function (src, commandData, channel) {
     if (commandData === undefined)
         return;
     Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
