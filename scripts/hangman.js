@@ -481,7 +481,7 @@ module.exports = function () {
             hangbot.sendMessage(src, (e + 1) + ". " + name + ": " + lb[name] + " point(s)", hangchan);
         }
         name = sys.name(src).toLowerCase();
-        if (fromLastMonth === false && top.indexOf(name) == -1) {
+        if (fromLastMonth !== false && top.indexOf(name) == -1) {
             if (name in lb) {
                 hangbot.sendMessage(src, (list.indexOf(name) + 1) + ". " + name + ": " + lb[name] + " point(s)", hangchan);
             } else {
