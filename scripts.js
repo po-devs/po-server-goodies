@@ -853,7 +853,7 @@ init : function() {
         sepAbMovesPoke, sepAb, moveab;
     for (var x = 0; x < sepAbPokes.length; x++) {
         sepAbMovesPoke = sepAbPokes[x].split('-');
-        sepAb = sepAbMovesPokes[1].split('|');
+        sepAb = sepAbMovesPoke[1].split('|');
         
         var poke = sys.pokeNum(sepAbMovesPoke[0]);
         script.pokeAbilities[poke] = [];
