@@ -960,6 +960,9 @@ function Tournament(channel)
 	function beforeChallenge(source, dest, clauses, rated, mode, team, destTier) {
 		if (!playingPhase())
 			return;
+        if (!sys.isInChannel(source, self.channel) || !sys.isInChannel(dest, self.channel)) {
+            return;
+        }
 		var name1 = sys.name(source),
 			name2 = sys.name(dest);
 		if (isInTour(name1)) {
@@ -1002,6 +1005,9 @@ function Tournament(channel)
 
 	// event battleMatchup
 	function battleMatchup(source, dest, clauses, rated) {
+        if (!sys.isInChannel(source, self.channel) || !sys.isInChannel(dest, self.channel)) {
+            return;
+        }
 		// return true if one of the players is in tournament
 		// will stop the FindBattle match
 		return playingPhase() && (isInTour(sys.name(source)) || isInTour(sys.name(dest)));
