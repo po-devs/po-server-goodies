@@ -55,15 +55,16 @@ module.exports = function () {
 
     this.lastAdvertise = 0;
     this.guessCharacter = function (src, commandData) {
-        if (commandData === undefined) {
-            return;
-        }
         if (sys.ip(src) === host) {
             hangbot.sendMessage(src, "You started the game, so you can't answer!", hangchan);
             return;
         }
         if (!word) {
             hangbot.sendMessage(src, "No game is running!", hangchan);
+            return;
+        }
+        if (commandData === undefined) {
+            hangbot.sendMessage(src, "This is not a valid answer!", hangchan);
             return;
         }
         if (isEventGame && (this.isHangmanAdmin(src) || this.isHangmanSuperAdmin(src))) {
@@ -80,7 +81,7 @@ module.exports = function () {
             return;
         }
         var letter = commandData.toLowerCase();
-        if (letter.length > 1) {
+        if (letter.length !== 1) {
             hangbot.sendMessage(src, "This is not a valid answer!", hangchan);
             return;
         }
@@ -146,6 +147,9 @@ module.exports = function () {
                 sys.sendAll("*** ************************************************************ ***", hangchan);
                 sendChanHtmlAll(" ", hangchan);
                 this.setWinner(hostName, (host === null && hostName == hangbot.name));
+                if (isEventGame) {
+                    eventCount = eventLimit;
+                }
                 if (pendingEvent) {
                     this.startEventGame();
                 }
@@ -275,7 +279,7 @@ module.exports = function () {
     };
     this.validateAnswer = function(a) {
         var validCharacters = "abcdefghijklmnopqrstuvwxyz",
-            validAnswer = false,
+            validLetters = 0,
             l,
             result = {
                 errors: [],
@@ -285,12 +289,11 @@ module.exports = function () {
             
         for (l = 0; l < a.length; l++) {
             if (validCharacters.indexOf(a[l].toLowerCase()) !== -1) {
-                validAnswer = true;
-                break;
+                validLetters++;
             }
         }
-        if (!validAnswer) {
-            result.errors.push("Answer must containt at least one valid letter (A-Z characters)!");
+        if (validLetters < 4) {
+            result.errors.push("Answer must contain at least 4 valid letters (A-Z characters)!");
         }
         
         a = a.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g, '').toLowerCase();
@@ -452,6 +455,7 @@ module.exports = function () {
             }
             leaderboards.current[win] += 1;
             sys.write(leaderboardsFile, JSON.stringify(leaderboards));
+            eventCount = eventLimit;
         }
     };
     this.setWinner = function (name, immediate) {
@@ -514,8 +518,12 @@ module.exports = function () {
         this.setWinner(sys.name(sys.id(commandData)));
         hangbot.sendAll("" + sys.name(src) + " has passed starting rights to " + commandData + "!", hangchan);
     };
-    this.endGame = function (src) {
+    this.endGame = function (src, endEvent) {
         if (word) {
+            if (isEventGame === true && endEvent !== true) {
+                hangbot.sendMessage(src, "Cannot stop an Event Game with /end. Use /endevent instead.", hangchan);
+                return;
+            }
             sendChanHtmlAll(" ", hangchan);
             sys.sendAll("*** ************************************************************ ***", hangchan);
             hangbot.sendAll("" + sys.name(src) + " stopped the game!", hangchan);
@@ -544,7 +552,6 @@ module.exports = function () {
     };
     this.startEventGame = function() {
         hangman.startAutoGame(true);
-        eventCount = eventLimit;
         pendingEvent = false;
     };
     this.viewGame = function (src) {
@@ -948,6 +955,10 @@ module.exports = function () {
 
         if (command === "end") {
             hangman.endGame(src);
+            return true;
+        }
+        if (command === "endevent") {
+            hangman.endGame(src, true);
             return true;
         }
 
