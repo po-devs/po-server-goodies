@@ -2195,7 +2195,7 @@ afterChatMessage : function(src, message, chan)
                     sys.sendMessage(src, message);
                     kickbot.sendAll("" + sys.name(src) + " was kicked for flood while smuted.", staffchannel);
                 }
-                if (user.mute.active) {
+                else if (user.mute.active) {
                     kickbot.sendAll(message + " [Channel: "+sys.channel(channel)+"] whilst muted", staffchannel);
                 } else {
                     kickbot.sendAll(message, channel);
