@@ -346,7 +346,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var rangeBanned = script.isRangeBanned(ip);
         var tempBanned = script.isTempBanned(ip);
         var ipBanned = script.isIpBanned(ip);
-        var isSmuted = smutes.get(ip);
+        var isSmuted = script.smutes.get(ip);
         var bans = [];
         if (isBanned && !tempBanned) bans.push("normal ban");
         if (nameBanned) bans.push("nameban");
