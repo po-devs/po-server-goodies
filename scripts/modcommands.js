@@ -346,12 +346,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var rangeBanned = script.isRangeBanned(ip);
         var tempBanned = script.isTempBanned(ip);
         var ipBanned = script.isIpBanned(ip);
+        var isSmuted = smutes.get(ip);
         var bans = [];
         if (isBanned && !tempBanned) bans.push("normal ban");
         if (nameBanned) bans.push("nameban");
         if (rangeBanned) bans.push("rangeban");
         if (tempBanned) bans.push("tempban");
-        if(ipBanned) bans.push("ip ban");
+        if (ipBanned) bans.push("ip ban");
+        if (isSmuted) bans.push("smuted");
 
         if (isbot) {
             var userJson = {'type': 'UserInfo', 'id': tar ? tar : -1, 'username': name, 'auth': authLevel, 'contributor': contribution, 'ip': ip, 'online': online, 'registered': registered, 'lastlogin': lastLogin };
