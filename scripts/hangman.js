@@ -356,7 +356,7 @@ module.exports = function () {
             this.lastAdvertise = time;
             sys.sendAll("", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
-            hangbot.sendAll("A new game of Hangman started in #Hangman!", 0);
+            hangbot.sendAll("A new game of Hangman with the hint '" + hint + "' started in #Hangman!", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
             sys.sendAll("", 0);
         }
