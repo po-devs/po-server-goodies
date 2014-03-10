@@ -1569,7 +1569,7 @@ cookieBanned: function(src) { //todo add a way to undo later
         kickbot.sendAll(sys.name(src) + " was banned by cookie", sys.channelId("Watch"));
         sys.kick(src);
         return true;
-    } 
+    }
     if (sys.cookie(src) === "muted") {
         SESSION.users(src).activate("smute", Config.kickbot, 0, "Cookie", true);
         kickbot.sendAll(sys.name(src) + " was smuted by cookie", staffchannel);

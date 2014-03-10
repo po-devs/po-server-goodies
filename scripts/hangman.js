@@ -1265,7 +1265,9 @@ module.exports = function () {
         }
     };
     this.stepEvent = function () {
-        eventCount--;
+        if (eventCount > 0) {
+            eventCount--;
+        }
         SESSION.global().hangmanEventCount = eventCount;
         if (!word) {
             idleCount++;
@@ -1274,8 +1276,9 @@ module.exports = function () {
                 hangman.startAutoGame(false);
             }
         }
-        if(eventCount <= 0 && eventGames) {
+        if(eventCount === 0 && eventGames) {
             hangman.checkNewMonth();
+            eventCount = -1;
             if (word) {
                 pendingEvent = true;
             } else {

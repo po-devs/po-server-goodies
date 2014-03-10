@@ -692,7 +692,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "Target not logged in", channel);
             return;
         }
-        var type = (command === "cookieban" ? "banned" : "muted")
+        var type = (command === "cookieban" ? "banned" : "muted");
         sys.setCookie(sys.id(commandData), type);
         normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type, staffchannel);
         return;
