@@ -1561,7 +1561,26 @@ startUpTime: function() {
     }
 },
 
+cookieBanned: function(src) { //todo add a way to undo later
+    if (sys.auth(src) > 0) {
+        return;
+    }
+    if (sys.cookie(src) === "banned") {
+        kickbot.sendAll(sys.name(src) + " was banned by cookie", sys.channelId("Watch"));
+        sys.kick(src);
+        return true;
+    } 
+    if (sys.cookie(src) === "muted") {
+        SESSION.users(src).activate("smute", Config.kickbot, 0, "Cookie", true);
+        kickbot.sendAll(sys.name(src) + " was smuted by cookie", staffchannel);
+    }
+    return;
+},
+
 afterLogIn : function(src) {
+    if (script.cookieBanned(src)) { //prevents errors from "no id" from the rest of the function
+        return;
+    }
     sys.sendMessage(src, "*** Type in /Rules to see the rules. ***");
     commandbot.sendMessage(src, "Use !commands to see the commands!");
 

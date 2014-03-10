@@ -683,6 +683,20 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         });
         return;
     }
+    
+    if (command == "cookieban" || command == "cookiemute") {
+        if (!commandData) {
+            return;
+        }
+        if (!sys.loggedIn(sys.id(commandData))) {
+            normalbot.sendMessage(src, "Target not logged in", channel);
+            return;
+        }
+        var type = (command === "cookieban" ? "banned" : "muted")
+        sys.setCookie(sys.id(commandData), type);
+        normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type, staffchannel);
+        return;
+    }
         
     return "no command";
 };
@@ -729,5 +743,7 @@ exports.help =
         "/unloadstats: Unloads the usage stats plugin.",
         "/warnwebclients: Sends a big alert with your message to webclient users.",
         "/clearladder: Clears rankings from a tier.",
-        "/advertise: Sends a html message to the main channels"
+        "/advertise: Sends a html message to the main channels",
+        "/cookieban: Bans an online target by cookie. Use on Android users",
+        "/cookiemute: Puts an online android target on an autosmute list by cookie. Use on Android users"
     ];
