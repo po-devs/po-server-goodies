@@ -223,6 +223,7 @@ module.exports = function () {
         }
         else {
             this.addMiss(src);
+            this.applyPoints(src, 0);
             this.addAnswerUse(src);
             hangbot.sendAll("" + sys.name(src) + "'s answer was wrong! The game continues!", hangchan);
             sendChanHtmlAll(" ", hangchan);
@@ -356,7 +357,7 @@ module.exports = function () {
             this.lastAdvertise = time;
             sys.sendAll("", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
-            hangbot.sendAll("A new game of Hangman started in #Hangman!", 0);
+            hangbot.sendAll("A new game of Hangman with the hint '" + hint + "' started in #Hangman!", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
             sys.sendAll("", 0);
         }
