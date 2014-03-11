@@ -223,6 +223,7 @@ module.exports = function () {
         }
         else {
             this.addMiss(src);
+            this.applyPoints(src, 0);
             this.addAnswerUse(src);
             hangbot.sendAll("" + sys.name(src) + "'s answer was wrong! The game continues!", hangchan);
             sendChanHtmlAll(" ", hangchan);
