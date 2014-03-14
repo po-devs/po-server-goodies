@@ -243,7 +243,7 @@ function cmp(x1, x2) {
 
 function startsWithVowel(tier){
     tier = tier.toLowerCase();
-    return (tier[0] === "a" || tier[0] === "e" || tier[0] === "i" || tier[0] === "o" || tier[0] === "u" || tier[0] === "x")
+    return (tier[0] === "a" || tier[0] === "e" || tier[0] === "i" || tier[0] === "o" || tier[0] === "u" || tier[0] === "x");
 }
 
 function getFullTourName(key) {
@@ -2590,14 +2590,22 @@ function tourCommand(src, command, commandData, channel) {
                     }
                 }
                 if (tours.tour[key].maxplayers === "default") {
-                    sendBotAll("<b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(getFullTourName(key))+" tournament! "+(tours.tour[key].time - parseInt(sys.time(), 10))+" second"+(tours.tour[key].time - parseInt(sys.time(), 10) == 1 ? "" : "s")+" remaining!", tourschan, true);
+                    if (SESSION.users(src).smute.active) {
+                        sendBotMessage(src, "<b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(getFullTourName(key))+" tournament! "+(tours.tour[key].time - parseInt(sys.time(), 10))+" second"+(tours.tour[key].time - parseInt(sys.time(), 10) == 1 ? "" : "s")+" remaining!", tourschan, true);
+                    } else {
+                        sendBotAll("<b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(getFullTourName(key))+" tournament! "+(tours.tour[key].time - parseInt(sys.time(), 10))+" second"+(tours.tour[key].time - parseInt(sys.time(), 10) == 1 ? "" : "s")+" remaining!", tourschan, true);
+                    }
                     // 1024 players max
                     if (tours.tour[key].players.length >= 1024) {
                         tours.tour[key].time = parseInt(sys.time(), 10);
                     }
                 }
                 else {
-                    sendBotAll("<b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(getFullTourName(key))+" tournament! "+(tours.tour[key].maxplayers - tours.tour[key].cpt)+" place"+(tours.tour[key].maxplayers - tours.tour[key].cpt == 1 ? "" : "s")+" remaining!", tourschan, true);
+                    if (SESSION.users(src).smute.active) {
+                        sendBotMessage(src, "<b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(getFullTourName(key))+" tournament! "+(tours.tour[key].maxplayers - tours.tour[key].cpt)+" place"+(tours.tour[key].maxplayers - tours.tour[key].cpt == 1 ? "" : "s")+" remaining!", tourschan, true);
+                    } else {
+                        sendBotAll("<b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(getFullTourName(key))+" tournament! "+(tours.tour[key].maxplayers - tours.tour[key].cpt)+" place"+(tours.tour[key].maxplayers - tours.tour[key].cpt == 1 ? "" : "s")+" remaining!", tourschan, true);
+                    }
                     // end signups if maxplayers have been reached
                     if (tours.tour[key].players.length >= tours.tour[key].maxplayers) {
                         tours.tour[key].time = parseInt(sys.time(), 10);
