@@ -588,6 +588,8 @@ exports.help =
         "/k: Kicks someone.",
         "/mute: Mutes someone. Format is /mute name:reason:time. Time is optional and defaults to 1 day.",
         "/unmute: Unmutes someone.",
+        "/smute: Secretly mutes a user. Can't smute auth.",
+        "/sunmute: Removes secret mute from a user.",
         "/silence: Prevents authless users from talking in a channel for specified time. Format is /silence minutes:channel. Affects all official channels if no channel is given.",
         "/silenceoff: Removes silence from a channel. Affects all official channels if none is specified.",
         "/perm [on/off]: Make the current permanent channel or not (permanent channels remain listed when they have no users).",

@@ -253,8 +253,6 @@ exports.help =
     [
         "/ban: Bans a user.",
         "/unban: Unbans a user.",
-        "/smute: Secretly mutes a user. Can't smute auth.",
-        "/sunmute: Removes secret mute from a user.",
         "/togglerainbow [on/off]: Turns /rainbow or on off in the server",
         "/memorydump: Shows the state of the memory.",
         "/nameban: Adds a regexp ban on usernames.",
