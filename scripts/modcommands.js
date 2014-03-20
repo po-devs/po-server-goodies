@@ -573,13 +573,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendAll(sys.name(src) + " passed their auth to " + sys.name(tar) + "!", staffchannel);
         return;
     }
-    if (command == "skmute" && (sys.auth(src) >= 1 || [/* insert mod list here when this goes to admin+ */].indexOf(sys.name(src).toLowerCase()) >= 0)) {
-        if (tar === undefined)
-            normalbot.sendMessage(src, "use only for online target ", channel);
-        else {
-            normalbot.sendAll("Target: " + sys.name(tar) + ", IP: " + sys.ip(tar) + ", Auth: "+ sys.name(src), staffchannel);
-            script.issueBan("smute", src, undefined, "" + sys.name(tar) + ":skarmpiss:2h");
-        }
+    if (command == "smute") {
+        script.issueBan("smute", src, tar, commandData);
+        return;
+    }
+    if (command == "sunmute") {
+        script.unban("smute", src, tar, commandData);
         return;
     }
     return "no command";

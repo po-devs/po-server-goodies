@@ -117,14 +117,6 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
 
-    if (command == "smute") {
-        script.issueBan("smute", src, tar, commandData);
-        return;
-    }
-    if (command == "sunmute") {
-        script.unban("smute", src, tar, commandData);
-        return;
-    }
     if (command == "nameban") {
         if (commandData === undefined) {
             normalbot.sendMessage(src, "Sorry, can't name ban empty names.", channel);
