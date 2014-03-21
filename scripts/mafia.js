@@ -3667,7 +3667,7 @@ function Mafia(mafiachan) {
         user: ["/mafiaadmins: To get a list of current Mafia Admins.",
             "/start: Starts a Game of Mafia with specified theme. Can also use /starttheme.",
             "/vote: Start voting for a new game theme or vote! Can also use /votetheme.",
-            "/join: To join a Mafia game.",
+            "/join: To join a Mafia game. Can also use /in",
             "/unjoin: To unjoin a Mafia game during signups.",
             "/help: For info on how to win in a game.",
             "/roles: For info on all the Roles in the game.",
@@ -3740,7 +3740,7 @@ function Mafia(mafiachan) {
         var name, x, player, target;
         var srcname = sys.name(src);
         if (this.state == "entry") {
-            if (command == "join") {
+            if (command == "join" || command == "in" || command == "joni" || command == "joim" || command == "joib") {
                 if (this.canJoin(src) !== true) {
                     return;
                 }
