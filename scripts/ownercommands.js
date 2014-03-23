@@ -297,7 +297,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (sys.id(name) !== undefined) {
             SESSION.users(sys.id(name)).activate("smute", "Script", 0, "Evader", true);
         }
-        sys.writeToFile('secretsmute.txt', autosmute.join(":::"));
+        sys.writeToFile(Config.dataDir + 'secretsmute.txt', autosmute.join(":::"));
         normalbot.sendAll(commandData + " was added to the autosmute list", staffchannel);
         return;
     }
@@ -309,7 +309,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 return true;
             }
         });
-        sys.writeToFile('secretsmute.txt', autosmute.join(":::"));
+        sys.writeToFile(Config.dataDir + 'secretsmute.txt', autosmute.join(":::"));
         return;
     }
     if (command == "periodicsay" || command == "periodichtml") {
