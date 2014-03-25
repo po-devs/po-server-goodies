@@ -149,8 +149,12 @@ function mafiaChecker() {
                     if (checkType(pack.roles, ["array"], "'theme.spawnPacks." + e + ".roles'")) {
                         for (i in pack.roles) {
                             if (checkType(pack.roles[i], ["array"], "All values for 'theme.spawnPacks." + e + ".roles'")) {
-                                for (p in pack.roles[i]) {
-                                    checkValidRole(pack.roles[i][p], "theme.spawnPacks." + e + ".roles." + p);
+                                if (pack.roles[i].length === 0) {
+                                    addFatalError("spawnPack '" + e + ".roles." + i + "' must have at least 1 role.");
+                                } else {
+                                    for (p in pack.roles[i]) {
+                                        checkValidRole(pack.roles[i][p], "theme.spawnPacks." + e + ".roles." + p);
+                                    }
                                 }
                             }
                         }
@@ -161,6 +165,10 @@ function mafiaChecker() {
                                 break;
                             }
                         }
+                    }
+                    
+                    if (pack.roles && pack.chance && pack.roles.length !== pack.chance.length) {
+                        addFatalError("spawnPack '" + e + "' must have the same number of lists and values under 'roles' and 'chance'.");
                     }
                 }
             }
