@@ -326,7 +326,7 @@ function mafiaChecker() {
                             if (commandList.indexOf("stalk") !== -1) {
                                 commonOptional = commonOptional.concat(["stalkmsg", "novisitmsg"]);
                             }
-                            if (commandList.indexOf("watchmsg") !== -1) {
+                            if (commandList.indexOf("watch") !== -1) {
                                 commonOptional = commonOptional.concat(["watchmsg"]);
                             }
                             if (commandList.indexOf("convert") !== -1) {
@@ -681,7 +681,7 @@ function mafiaChecker() {
                 
                 //Defensive Modes
                 for (e in possibleNightActions) {
-                    if (possibleNightActions[e] in role.actions) {
+                    if (possibleNightActions[e] in role.actions && typeof role.actions[possibleNightActions[e]] !== "function") {
                         command = possibleNightActions[e];
                         action = role.actions[command];
                         comm = act + "." + command;
