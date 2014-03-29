@@ -1332,6 +1332,9 @@ function Mafia(mafiachan) {
             } else if (this.votes[ip] != themeName) {
                 gamemsgAll(sys.name(src) + " changed their vote to " + this.themeManager.themes[themeName].name + "!");
                 this.numvotes[sys.ip(src)] += 1;
+            } else {
+                gamemsg(srcname, "You already voted for this theme!");
+                return;
             }
         } else {
             gamemsgAll(sys.name(src) + " voted for " + this.themeManager.themes[themeName].name + "!");
