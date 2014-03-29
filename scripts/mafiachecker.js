@@ -7,7 +7,7 @@ function mafiaChecker() {
         fatalErrors,
         noMinor,
         noFatal,
-        possibleNightActions = ["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "convert", "curse", "copy", "detox", "dispel", "shield", "massconvert", "dummy", "dummy2", "dummy3", "dummy4", "dummy5", "dummy6", "dummy7", "dummy8", "dummy9", "dummy10" ],
+        possibleNightActions = ["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "watch", "convert", "curse", "copy", "detox", "dispel", "shield", "massconvert", "dummy", "dummy2", "dummy3", "dummy4", "dummy5", "dummy6", "dummy7", "dummy8", "dummy9", "dummy10" ],
         badCommands = ["me", "commands", "start", "votetheme", "starttheme", "help", "roles", "sides", "myrole", "mafiarules", "themes", "themeinfo", "changelog", "details", "priority", "flashme", "playedgames", "update", "join", "unjoin", "mafiaadmins", "mafiaban", "mafiaunban", "passma", "mafiaadmin", "mafiaadminoff", "mafiasadmin", "mafiasuperadmin", "mafiasadminoff", "mafiasuperadminoff", "push", "slay", "shove", "end", "readlog", "add", "remove", "disable", "enable", "updateafter", "importold", "mafiaban", "mafiaunban", "mafiabans", "detained", "detainlist", "ban", "mute", "kick", "k", "mas", "ck", "cmute", "admin", "op", "owner", "invite", "member", "deadmin", "deregister", "deop", "demember", "deadmin", "lt", "featured", "featuretheme", "featurelink", "featuretext", "forcefeature", "ctogglecaps", "ctoggleflood", "topic", "cauth", "register", "deinvite", "cmeon", "cmeoff", "csilence", "csilenceoff", "cunmute", "cmutes", "cbans", "inviteonly", "ctoggleswear", "enabletours", "disabletours", "tempban"];
     
     this.checkTheme = function(raw) {
@@ -42,7 +42,7 @@ function mafiaChecker() {
                 lists.push("roles"+i);
                 ++i;
             }
-            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "drawmsg", "minplayers", "noplur", "nolynch", "votesniping", "ticks", "silentVote", "nonPeak", "changelog", "threadlink", "altname", "tips", "closedSetup", "variables"].concat(lists), "Your theme");
+            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "drawmsg", "minplayers", "noplur", "nolynch", "votesniping", "ticks", "silentVote", "nonPeak", "changelog", "threadlink", "altname", "tips", "closedSetup", "variables", "spawnPacks"].concat(lists), "Your theme");
 
             if (checkType(raw.name, ["string"], "'theme.name'")) {
                 if (raw.name[raw.name.length - 1] == " ") {
@@ -121,7 +121,15 @@ function mafiaChecker() {
                                 checkValidRole(c, "theme.roles" + i);
                             }
                         } else {
-                            checkValidRole(roleList[e], "theme.roles" + i);
+                            if (roleList[e].indexOf("pack:") === 0) {
+                                if (!("spawnPacks" in raw)) {
+                                    addFatalError("Your theme use spawnPacks. but no 'spawnPack' object was found in your theme.");
+                                } else if (!(roleList[e].substr(5) in raw.spawnPacks)) {
+                                    addFatalError("Invalid spawnPack '" + roleList[e].substr(5) + "' found on theme.roles" + i + ".");
+                                }
+                            } else {
+                                checkValidRole(roleList[e], "theme.roles" + i);
+                            }
                         }
                     }
                 }
@@ -131,6 +139,40 @@ function mafiaChecker() {
             if (!raw.roles1) {
                 addFatalError("This theme has no roles1, it can not be played.");
             }
+            
+            if (checkType(raw.spawnPacks, ["object"], "'theme.spawnPacks'")) {
+                var pack, p;
+                for (e in raw.spawnPacks) {
+                    pack = raw.spawnPacks[e];
+                    checkAttributes(pack, ["roles", "chance"], [], "theme.spawnPacks." + e);
+                    
+                    if (checkType(pack.roles, ["array"], "'theme.spawnPacks." + e + ".roles'")) {
+                        for (i in pack.roles) {
+                            if (checkType(pack.roles[i], ["array"], "All values for 'theme.spawnPacks." + e + ".roles'")) {
+                                if (pack.roles[i].length === 0) {
+                                    addFatalError("spawnPack '" + e + ".roles." + i + "' must have at least 1 role.");
+                                } else {
+                                    for (p in pack.roles[i]) {
+                                        checkValidRole(pack.roles[i][p], "theme.spawnPacks." + e + ".roles." + p);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (checkType(pack.chance, ["array"], "'theme.spawnPacks." + e + ".chance'")) {
+                        for (i in pack.chance) {
+                            if (!checkType(pack.chance[i], ["number"], "All values for 'theme.spawnPacks." + e + ".chance'")) {
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (pack.roles && pack.chance && pack.roles.length !== pack.chance.length) {
+                        addFatalError("spawnPack '" + e + "' must have the same number of lists and values under 'roles' and 'chance'.");
+                    }
+                }
+            }
+            
             if ("villageCantLoseRoles" in raw) {
                 var cantLose = raw.villageCantLoseRoles;
                 if (checkType(cantLose, ["array"], "'theme.villageCantLoseRoles'")) {
@@ -258,7 +300,7 @@ function mafiaChecker() {
                         if (checkType(action, ["object"], comm)) {
                             command = e;
                             commonMandatory = ["target", "common", "priority"];
-                            commonOptional = ["broadcast", "command", "limit", "msg", "failChance", "charges", "recharge", "initialrecharge", "broadcastmsg", "chargesmsg", "suicideChance", "suicidemsg", "restrict", "cancel", "pierce", "pierceChance", "bypass", "hide"];
+                            commonOptional = ["broadcast", "command", "limit", "msg", "failChance", "charges", "recharge", "initialrecharge", "broadcastmsg", "chargesmsg", "suicideChance", "suicidemsg", "restrict", "cancel", "pierce", "pierceChance", "noFollow", "userMustBeVisited", "targetMustBeVisited", "userMustVisit", "targetMustVisit", "bypass", "hide"];
                             commandList = [];
                             if ("command" in action) {
                                 if (Array.isArray(action.command)) {
@@ -283,6 +325,9 @@ function mafiaChecker() {
                                 commonOptional = commonOptional.concat(["count", "poisonDeadMessage", "poisonmsg", "poisontarmsg"]);
                             if (commandList.indexOf("stalk") !== -1) {
                                 commonOptional = commonOptional.concat(["stalkmsg", "novisitmsg"]);
+                            }
+                            if (commandList.indexOf("watch") !== -1) {
+                                commonOptional = commonOptional.concat(["watchmsg"]);
                             }
                             if (commandList.indexOf("convert") !== -1) {
                                 commonMandatory = commonMandatory.concat(["newRole"]);
@@ -371,6 +416,8 @@ function mafiaChecker() {
                                 } else if (command == "stalk") {
                                     checkType(action.stalkmsg, ["string"], comm + ".stalkmsg");
                                     checkType(action.novisitmsg, ["string"], comm + ".novisitmsg");
+                                } else if (command == "watch") {
+                                    checkType(action.watchmsg, ["string"], comm + ".watchmsg");
                                 } else if (command == "convert") {
                                     checkValidValue(action.silent, [true, false], comm + ".silent");
                                     checkValidValue(action.silentConvert, [true, false], comm + ".silentConvert");
@@ -634,7 +681,7 @@ function mafiaChecker() {
                 
                 //Defensive Modes
                 for (e in possibleNightActions) {
-                    if (possibleNightActions[e] in role.actions) {
+                    if (possibleNightActions[e] in role.actions && typeof role.actions[possibleNightActions[e]] !== "function") {
                         command = possibleNightActions[e];
                         action = role.actions[command];
                         comm = act + "." + command;
@@ -681,7 +728,11 @@ function mafiaChecker() {
                             } else if  (typeof mode == "object") {
                                 checkAttributes(action.mode, [], ["evadeCharges", "evadeChance", "ignore", "killif", "identify"], comm + ".mode");
                                 
-                                checkType(mode.evadeCharges, ["number"], comm + ".mode.evadeCharges");
+                                if (checkType(mode.evadeCharges, ["number", "string"], comm + ".mode.evadeCharges")) {
+                                    if (typeof mode.evadeCharges == "string") {
+                                        checkValidValue(mode.evadeCharges, ["*"], comm + ".mode.evadeCharges");
+                                    }
+                                }
                                 checkType(mode.evadeChance, ["number"], comm + ".mode.evadeChance");
                                 
                                 if (checkType(mode.ignore, ["array"], comm + ".mode.ignore")) {
@@ -723,10 +774,15 @@ function mafiaChecker() {
                         } else {
                             checkAttributes(action, ["mode"], ["msg", "targetmsg", "expend"], comm);
                             if (checkType(action.mode, ["object"], comm + ".mode")) {
-                                checkAttributes(action.mode, [], ["evadeChance", "ignore", "revenge", "evasionmsg"], comm + ".mode");
+                                checkAttributes(action.mode, [], ["evadeCharges", "evadeChance", "ignore", "revenge", "evasionmsg"], comm + ".mode");
                                 
                                 checkType(action.mode.evadeChance, ["number"], comm + ".mode.evadeChance");
                                 
+                                if (checkType(action.mode.evadeCharges, ["number", "string"], comm + ".mode.evadeCharges")) {
+                                    if (typeof action.mode.evadeCharges == "string") {
+                                        checkValidValue(action.mode.evadeCharges, ["*"], comm + ".mode.evadeCharges");
+                                    }
+                                }
                                 if (checkType(action.mode.ignore, ["array"], comm + ".mode.ignore")) {
                                     for (i in action.mode.ignore) {
                                         checkValidRole(action.mode.ignore[i], comm + ".mode.ignore");
@@ -770,10 +826,15 @@ function mafiaChecker() {
                     } else if (typeof action == "object") {
                         checkAttributes(action, ["mode"], ["msg", "targetmsg", "expend"], comm);
                         if (checkType(action.mode, ["object"], comm + ".mode")) {
-                            checkAttributes(action.mode, [], ["evadeChance", "ignore", "revenge", "evasionmsg"], comm + ".mode");
+                            checkAttributes(action.mode, [], ["evadeCharges", "evadeChance", "ignore", "revenge", "evasionmsg"], comm + ".mode");
                             
                             checkType(action.mode.evadeChance, ["number"], comm + ".mode.evadeChance");
                             
+                            if (checkType(action.mode.evadeCharges, ["number", "string"], comm + ".mode.evadeCharges")) {
+                                    if (typeof action.mode.evadeCharges == "string") {
+                                        checkValidValue(action.mode.evadeCharges, ["*"], comm + ".mode.evadeCharges");
+                                    }
+                                }
                             if (checkType(action.mode.ignore, ["array"], comm + ".mode.ignore")) {
                                 for (i in action.mode.ignore) {
                                     checkValidRole(action.mode.ignore[i], comm + ".mode.ignore");
@@ -920,7 +981,7 @@ function mafiaChecker() {
                 if (checkType(role.actions.lynch, ["object"], act + ".lynch")) {
                     action = role.actions.lynch;
                     comm = act + ".lynch";
-                    var lynchActions = ["revealAs", "convertTo", "convertmsg", "lynchmsg", "killVoters"];
+                    var lynchActions = ["revealAs", "convertTo", "convertmsg", "lynchmsg", "killVoters", "convertVoters"];
                     this.checkOnDeath(action, comm, lynchActions, true);
                     
                     if (checkType(action.revealAs, ["string"], comm + ".revealAs")) {
@@ -939,7 +1000,24 @@ function mafiaChecker() {
                         
                         checkType(action.killVoters.first, ["number"], comm + ".killVoters.first");
                         checkType(action.killVoters.last, ["number"], comm + ".killVoters.last");
-                        checkType(action.killVoters.message, ["string"], comm + ".killVoters.string");
+                        checkType(action.killVoters.message, ["string"], comm + ".killVoters.message");
+                    }
+                    if (checkType(action.convertVoters, ["object"], comm + ".convertVoters")) {
+                        checkAttributes(action.convertVoters, ["newRole"], ["first", "last", "message"], comm + ".convertVoters");
+                        
+                        if (checkType(action.convertVoters.newRole, ["object"], comm + ".convertVoters.newRole")) {
+                            for (e in action.convertVoters.newRole) {
+                                checkValidRole(e, comm + ".convertVoters.newRole");
+                                if (checkType(action.convertVoters.newRole[e], ["array"], comm + ".convertVoters.newRole." + e)) {
+                                    for (i in action.convertVoters.newRole[e]) {
+                                        checkValidRole(action.convertVoters.newRole[e][i], comm + ".convertVoters.newRole." + e);
+                                    }
+                                }
+                            }
+                        }
+                        checkType(action.convertVoters.first, ["number"], comm + ".convertVoters.first");
+                        checkType(action.convertVoters.last, ["number"], comm + ".convertVoters.last");
+                        checkType(action.convertVoters.message, ["string"], comm + ".convertVoters.message");
                     }
                 }
                 if (checkType(role.actions.teamTalk, ["boolean", "array"], act + ".teamTalk")) {
@@ -1276,6 +1354,11 @@ function mafiaChecker() {
         checkType(action.cancel, ["array"], act + ".cancel");
         checkType(action.pierce, ["boolean"], act + ".pierce");
         checkType(action.pierceChance, ["number"], act + ".pierceChance");
+        checkType(action.noFollow, ["boolean"], act + ".noFollow");
+        checkType(action.userMustBeVisited, ["boolean"], act + ".userMustBeVisited");
+        checkType(action.targetMustBeVisited, ["boolean"], act + ".targetMustBeVisited");
+        checkType(action.targetMustVisit, ["boolean"], act + ".targetMustVisit");
+        checkType(action.userMustVisit, ["boolean"], act + ".userMustVisit");
         if (checkType(action.bypass, ["array"], act + ".bypass")) {
             for (c in action.bypass) {
                 checkValidValue(action.bypass[c], ["ignore", "ChangeTarget", "killattacker", "poisonattacker", "identify", "die", "evadeChance", "evadeCharges", "killif", "resistance"], act + ".bypass");
