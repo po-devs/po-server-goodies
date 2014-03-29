@@ -173,6 +173,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             countbot.sendMessage(src, "There are  " + android + " " + commandData + " players online", channel);
             return;
         }
+        if (commandData == "top" || commandData == "max") {
+            countbot.sendMessage(src, "Max number of players online was " + sys.getVal("MaxPlayersOnline") + ".", channel);
+            return;
+        }
         countbot.sendMessage(src, "There are " + sys.numPlayers() + " players online.", channel);
         return;
     }
