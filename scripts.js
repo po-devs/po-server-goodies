@@ -2092,7 +2092,9 @@ beforeChatMessage: function(src, message, chan) {
         } else {
             sys.playerIds().forEach(function(id) {
                 if (sys.loggedIn(id) && SESSION.users(id).smute.active) {
-                    sys.sendMessage(id,  sys.name(src)+": "+message, channel);
+                    //sys.sendMessage(id,  sys.name(src)+": "+message, channel);
+                    var color = getColor(id);
+                    sys.sendHtmlMessage(id, "<font color="+color+"><timestamp/><b>"+sys.name(src)+"</b></font>: "+ utilities.html_escape(message), channel);
                 }
             });
             sys.stopEvent();
