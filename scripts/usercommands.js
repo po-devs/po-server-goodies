@@ -86,6 +86,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 messagetosend = messagetosend.toUpperCase();
             }
         }
+        if (channel === sys.channelId("Tohjo Falls") && script.reverseTohjo === true) {
+            messagetosend = messagetosend.split("").reverse().join("");
+        }
         if (command == "me") {
             var colour = script.getColor(src);
             sendChanHtmlAll("<font color='" + colour + "'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + messagetosend + "</font>", channel);
