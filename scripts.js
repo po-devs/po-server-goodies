@@ -1567,7 +1567,7 @@ cookieBanned: function(src) { //todo add a way to undo later
     }
     if (sys.cookie(src) === "banned") {
         kickbot.sendAll(sys.name(src) + " was banned by cookie", sys.channelId("Watch"));
-        normalbot.sendMessage(src, "You are currently banned from the server. If you believe this to be an error, post here: http://pokemon-online.eu/forums/forumdisplay.php?43-Disciplinary-Committee");
+        normalbot.sendMessage(src, "You are currently banned from the server. If you believe this to be an error, post here: http://pokemon-online.eu/forums/disciplinary-committee.43/");
         sys.kick(src);
         return true;
     }
