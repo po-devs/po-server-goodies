@@ -405,7 +405,7 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function hasOneUsablePokem
     return ["You do not have any valid pokemon."];
 });
 
-tier_checker.add_new_check(INCLUDING, ["Pre-PokeBank OU", "VGC 2014"], function pokeBankCheck(src, team) {
+tier_checker.add_new_check(INCLUDING, ["Pre-PokeBank OU"], function pokeBankCheck(src, team) {
     var ret = [];
     for (var slot = 0; slot < 6; slot++) {
         var poke = sys.teamPoke(src, team, slot);
