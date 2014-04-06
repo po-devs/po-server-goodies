@@ -1181,7 +1181,7 @@ module.exports = {
     },
 
     afterChannelJoin : function(source, channel) {
-        for (var channel in module.tournaments) {
+        if (module.tournaments[channel] !== undefined) {
             module.tournaments[channel].events.afterChannelJoin(source, channel);
         }
     },
