@@ -303,6 +303,23 @@ TriviaGame.prototype.startGame = function (data, name) {
 TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     this.started = true;
     sendChanAll("", 0);
+    if (this.catGame){
+        for (var q in triviaq.all()) {
+            if (cats.join("*").toLowerCase().split("*").indexOf(triviaq.get(q).category.toLowerCase()) != -1) {
+                this.qSource.push(q);
+            }
+        }
+        var lastCat;
+        var catsLength = cats.length;
+        if (cats.length > 1) {
+            lastCat = cats.splice(-1, 1);
+        }
+    }
+    else {
+        for (var q in triviaq.all()) {
+            this.qSource.push(q);
+        }
+    }
     if (this.scoreType === "elimination" && this.catGame){
         sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
         this.sendAll("An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ".", 0);
@@ -346,23 +363,6 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
         player_id = players[p], player_ip = sys.ip(player_id);
         if (trivData.toFlash[player_ip])
             sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
-    }
-    if (this.catGame){
-        for (var q in triviaq.all()) {
-            if (cats.join("*").toLowerCase().split("*").indexOf(triviaq.get(q).category.toLowerCase()) != -1) {
-                this.qSource.push(q);
-            }
-        }
-        var lastCat;
-        var catsLength = cats.length;
-        if (cats.length > 1) {
-            lastCat = cats.splice(-1, 1);
-        }
-    }
-    else {
-        for (var q in triviaq.all()) {
-            this.qSource.push(q);
-        }
     }
     if (this.scoreType === "elimination") {
         this.phase = "signups";
