@@ -303,14 +303,15 @@ TriviaGame.prototype.startGame = function (data, name) {
 TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     this.started = true;
     sendChanAll("", 0);
+    var lastCat;
+    var catsLength;
     if (this.catGame){
         for (var q in triviaq.all()) {
             if (cats.join("*").toLowerCase().split("*").indexOf(triviaq.get(q).category.toLowerCase()) != -1) {
                 this.qSource.push(q);
             }
         }
-        var lastCat;
-        var catsLength = cats.length;
+        catsLength = cats.length;
         if (cats.length > 1) {
             lastCat = cats.splice(-1, 1);
         }
@@ -1874,12 +1875,12 @@ addAdminCommand("wordwarns", function (src, commandData, channel) {
 addAdminCommand("equivalentcats", function (src, commandData, channel) {
     var sortingArray = [];
     for (var i in trivData.equivalentCats) {
-    	sortingArray.push([i, trivData.equivalentCats[i]]);
+        sortingArray.push([i, trivData.equivalentCats[i]]);
     }
-    sortingArray.sort(function(a, b) {return (a[1] > b[1] || (a[1] === b[1] && a[0] > b[0]) ? 1 : -1)});
+    sortingArray.sort(function(a, b) {return (a[1] > b[1] || (a[1] === b[1] && a[0] > b[0]) ? 1 : -1);});
     var table = "<table border = 1 cellpadding = 5 cellspacing = 0><tr><th>Category</th><th>Acts like</th><th>Category</th><th>Acts like</th><th>Category</th><th>Acts like</th></tr>";
     for (var x = 0; x < Math.ceil(sortingArray.length / 3); x++) {
-    	table += "<tr>";
+        table += "<tr>";
         for (var y = 0; y < 3; y++) {
             if (sortingArray[3*x+y]) {
                 table += "<td>" + sortingArray[3*x+y][0] + "</td><td>" + sortingArray[3*x+y][1] + "</td>";
