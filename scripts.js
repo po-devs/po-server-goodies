@@ -2175,10 +2175,13 @@ afterChatMessage : function(src, message, chan)
                 if (user.smute.active) {
                     sys.sendMessage(src, message);
                     capsbot.sendAll("" + sys.name(src) + " was muted for caps while smuted.", staffchannel);
+                    capsbot.sendAll("" + sys.name(src) + " was muted for caps while smuted.", watchchannel);
                 } else {
                     capsbot.sendAll(message, channel);
                     if (channel != staffchannel)
                         capsbot.sendAll(message + " [Channel: "+sys.channel(channel) + "]", staffchannel);
+                    if (channel != watchchannel)
+                        capsbot.sendAll(message + " [Channel: "+sys.channel(channel) + "]", watchchannel);
                 }
             }
             var endtime = user.mute.active ? user.mute.expires + time : parseInt(sys.time(), 10) + time;
@@ -2219,13 +2222,17 @@ afterChatMessage : function(src, message, chan)
                 if (user.smute.active) {
                     sys.sendMessage(src, message);
                     kickbot.sendAll("" + sys.name(src) + " was kicked for flood while smuted.", staffchannel);
+                    kickbot.sendAll("" + sys.name(src) + " was kicked for flood while smuted.", watchchannel);
                 }
                 else if (user.mute.active) {
                     kickbot.sendAll(message + " [Channel: "+sys.channel(channel)+"] whilst muted", staffchannel);
+                    kickbot.sendAll(message + " [Channel: "+sys.channel(channel)+"] whilst muted", watchchannel);
                 } else {
                     kickbot.sendAll(message, channel);
                     if (channel != staffchannel)
                         kickbot.sendAll(message + " [Channel: "+sys.channel(channel)+"]", staffchannel);
+                    if (channel != watchchannel)
+                        kickbot.sendAll(message + " [Channel: "+sys.channel(channel)+"]", watchchannel);
                 }
             }
             if (officialChan) {
