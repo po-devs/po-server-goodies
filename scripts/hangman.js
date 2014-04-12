@@ -26,7 +26,7 @@ module.exports = function () {
     var autoGames;
     
     var eventLimit = 1800;
-    var eventCount = SESSION.global().hangmanEventCount || eventLimit;
+    var eventCount = (SESSION.global() && SESSION.global().hangmanEventCount ? SESSION.global().hangmanEventCount : eventLimit);
     var eventGames = true;
     var isEventGame;
     var pendingEvent = false;
