@@ -706,7 +706,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             sys.removeCookie(sys.id(commandData));
             return;
         }
-        var type = (command === "cookieban" ? "unbanned" : "unmuted");
+        var type = (command === "cookieunban" ? "unbanned" : "unmuted");
         script.namesToUnban.add(commandData.toLowerCase(), true);
         normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type, staffchannel);
         return;

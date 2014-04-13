@@ -1566,7 +1566,7 @@ cookieBanned: function(src) { //todo add a way to undo later
     if (sys.auth(src) > 0) {
         return;
     }
-    if (script.namesToUnban.get(sys.name(src))) {
+    if (script.namesToUnban.get(sys.name(src).toLowerCase())) {
         kickbot.sendAll(sys.name(src) + "was unbanned by cookie", staffchannel);
         sys.removeCookie(src);
         script.namesToUnban.remove(sys.name(src));
