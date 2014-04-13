@@ -1569,7 +1569,7 @@ cookieBanned: function(src) { //todo add a way to undo later
     if (script.namesToUnban.get(sys.name(src).toLowerCase())) {
         kickbot.sendAll(sys.name(src) + " was unbanned by cookie", staffchannel);
         sys.removeCookie(src);
-        script.namesToUnban.remove(sys.name(src));
+        script.namesToUnban.remove(sys.name(src).toLowerCase());
     } else if (sys.cookie(src) === "banned") {
         kickbot.sendAll(sys.name(src) + " was banned by cookie", sys.channelId("Watch"));
         normalbot.sendMessage(src, "You are currently banned from the server. If you believe this to be an error, post here: http://pokemon-online.eu/forums/disciplinary-committee.43/");
