@@ -363,7 +363,7 @@ module.exports = function () {
         }
     };
     this.startAutoGame = function(isEvent) {
-        if (autoGames.lengh === 0) {
+        if (autoGames.length === 0) {
             return;
         }
         var randomGame = autoGames[sys.rand(0, autoGames.length)].split(":");
