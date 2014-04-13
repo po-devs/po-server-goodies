@@ -70,10 +70,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "cmeoff") {
-        if (channel === 0 || channel == tourchannel) {
+        /*if (channel === 0 || channel == tourchannel) {
             normalbot.sendMessage(src, "/me can't be turned off here.", channel);
             return;
-        }
+        }*/
         script.meoff(src, sys.channel(channel));
         return;
     }
