@@ -758,5 +758,6 @@ exports.help =
         "/clearladder: Clears rankings from a tier.",
         "/advertise: Sends a html message to the main channels",
         "/cookieban: Bans an online target by cookie. Use on Android users",
-        "/cookiemute: Puts an online android target on an autosmute list by cookie. Use on Android users"
+        "/cookiemute: Puts an online android target on an autosmute list by cookie. Use on Android users",
+        "/cookieunban/mute: Undos a cookieban/mute. Will take effect when they next log in"
     ];
