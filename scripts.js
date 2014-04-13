@@ -719,6 +719,7 @@ init : function() {
     script.detained = new MemoryHash(Config.dataDir+"detained.txt");
     script.hmutes = new MemoryHash(Config.dataDir+"hmutes.txt");
     script.namesToWatch = new MemoryHash(Config.dataDir+"namesToWatch.txt");
+    script.namesToUnban = new MemoryHash(Config.dataDir+"namesToCookieUnban.txt");
     proxy_ips = {};
     function addProxybans(content) {
         var lines = content.split(/\n/);
@@ -1564,6 +1565,11 @@ startUpTime: function() {
 cookieBanned: function(src) { //todo add a way to undo later
     if (sys.auth(src) > 0) {
         return;
+    }
+    if (script.namesToUnban.get(sys.name(src))) {
+        kickbot.sendAll(sys.name(src) + "was unbanned by cookie", staffchannel);
+        sys.removeCookie(src);
+        script.namesToUnban.remove(sys.name(src));
     }
     if (sys.cookie(src) === "banned") {
         kickbot.sendAll(sys.name(src) + " was banned by cookie", sys.channelId("Watch"));

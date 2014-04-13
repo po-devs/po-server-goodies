@@ -697,7 +697,20 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type, staffchannel);
         return;
     }
-        
+    if (command == "cookieunban" || command ==  "cookieunmute") {
+        if (!commandData) {
+            return;
+        }
+        if (commandData == "cookieunmute" && sys.loggedIn(sys.id(commandData))) {
+            script.unban("smute", Config.kickbot, tar, commandData);
+            sys.removeCookie(sys.id(commandData));
+            return;
+        }
+        var type = (command === "cookieban" ? "unbanned" : "unmuted");
+        script.namesToUnban.add(commandData.toLowerCase(), true);
+        normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type, staffchannel);
+        return;
+    }
     return "no command";
 };
 exports.help = 
