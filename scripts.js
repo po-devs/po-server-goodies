@@ -628,6 +628,8 @@ step: function() {
         sys.saveVal("Stats/BattlesFought", 0);
         sys.saveVal("Stats/LastCleared", lastCleared);
         sys.saveVal("Stats/MafiaGamesPlayed", 0);
+        sys.saveVal("Stats/TriviaGamesPlayed", 0);
+        sys.saveVal("Stats/HangmanGamesPlayed", 0);
     }
     if (date - lastStatUpdate > 60) {
         lastStatUpdate = date;
@@ -636,7 +638,9 @@ step: function() {
             lastUpdate: date,
             usercount: sys.playerIds().filter(sys.loggedIn).length,
             battlesFought: battlesFought,
-            mafiaPlayed: +sys.getVal("Stats/MafiaGamesPlayed")
+            mafiaPlayed: +sys.getVal("Stats/MafiaGamesPlayed"),
+            triviaPlayed: +sys.getVal("Stats/TriviaGamesPlayed"),
+            hangmanPlayed: + sys.getVal("Stats/HangmanGamesPlayed")
         };
         sys.writeToFile(JSONP_FILE, "setServerStats(" + JSON.stringify(stats) + ");");
     }

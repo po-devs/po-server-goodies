@@ -309,7 +309,7 @@ module.exports = function () {
     
     this.createGame = function (name, a, h, p, src) {
         var validCharacters = "abcdefghijklmnopqrstuvwxyz";
-        
+        sys.saveVal("Stats/HangmanGamesPlayed", 1 + (+sys.getVal("Stats/HangmanGamesPlayed")));
         hint = h;
         word = a;
         parts = (p && parseInt(p, 10) > 0) ? parseInt(p, 10) : defaultParts;

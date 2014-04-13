@@ -302,6 +302,7 @@ TriviaGame.prototype.startGame = function (data, name) {
 
 TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     this.started = true;
+    sys.saveVal("Stats/TriviaGamesPlayed", 1 + (+sys.getVal("Stats/TriviaGamesPlayed")));
     sendChanAll("", 0);
     var lastCat;
     var catsLength;
