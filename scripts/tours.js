@@ -3607,7 +3607,7 @@ function tourstart(tier, starter, key, parameters) {
                 sendChanHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, "+(tours.tour[key].maxplayers === "default" ? "you have "+time_handle(parameters.event ? tourconfig.toursignup*2 : tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!"), channels[x]);
             }
             else {
-                sendChanAll(tourconfig.tourbot+"Go to the #"+sys.channel(tourschan)+" channel and type /join to enter the tournament!", channels[x]);
+                sendChanAll(tourconfig.tourbot+"Go to the #"+sys.channel(tourschan)+" channel (Use /cjoin Tournaments) and type /join to enter the tournament!", channels[x]);
                 sendChanAll("*** "+(tours.tour[key].maxplayers === "default" ? "You have "+time_handle(parameters.event ? tourconfig.toursignup*2 : tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!")+" ***", channels[x]);
             }
             if (!parameters.event) {
