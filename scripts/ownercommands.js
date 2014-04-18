@@ -216,6 +216,28 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         return;
     }
+    if (command == "purgesmutes") {
+        var time = parseInt(commandData, 10);
+        if (isNaN(time)) {
+            time = 60*60*24*7*4;
+        }
+        var limit = parseInt(sys.time(), 10) - time;
+        var removed = [];
+        script.smutes.removeIf(function(memoryhash, item) {
+            var data = memoryhash.get(item).split(":");
+            if (parseInt(data[0], 10) < limit || (data.length > 3 && parseInt(data[2], 10) < limit)) {
+                removed.push(item);
+                return true;
+            }
+            return false;
+        });
+        if (removed.length > 0) {
+            normalbot.sendMessage(src, "" + removed.length + " smutes purged successfully.", channel);
+        } else {
+            normalbot.sendMessage(src, "No smutes were purged.", channel);
+        }
+        return;
+    }
     if (command == "purgembans") {
         var time = parseInt(commandData, 10);
         if (isNaN(time)) {
@@ -225,7 +247,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var removed = [];
         script.mbans.removeIf(function(memoryhash, item) {
             var data = memoryhash.get(item).split(":");
-            if (parseInt(data[0], 10) < limit || (data.length > 3 && parseInt(data[2], 1) < limit)) {
+            if (parseInt(data[0], 10) < limit || (data.length > 3 && parseInt(data[2], 10) < limit)) {
                 removed.push(item);
                 return true;
             }
