@@ -691,7 +691,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (!sys.loggedIn(sys.id(commandData))) {
             normalbot.sendMessage(src, "Target not logged in", channel);
             return;
-        } else if (commandData == "cookiemute") {
+        } else if (command == "cookiemute") {
             SESSION.users(sys.id(commandData)).activate("smute", Config.kickbot, 0, "Cookie", true);
             kickbot.sendAll(sys.id(commandData) + " was smuted by cookie", staffchannel);
         }
