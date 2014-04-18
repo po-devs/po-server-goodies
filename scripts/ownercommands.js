@@ -715,7 +715,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         } else if (command == "cookiemute") {
             SESSION.users(sys.id(commandData)).activate("smute", Config.kickbot, 0, "Cookie", true);
-            kickbot.sendAll(sys.id(commandData) + " was smuted by cookie", staffchannel);
+            kickbot.sendAll(commandData + " was smuted by cookie", staffchannel);
         }
         var type = (command === "cookieban" ? "banned" : "muted");
         sys.setCookie(sys.id(commandData), type);
@@ -763,6 +763,7 @@ exports.help =
         "/rangeban: Makes a range ban. Format is /rangeban ip comment.",
         "/rangeunban: Removes a rangeban.",
         "/purgemutes: Purges mutes older than the given time in seconds. Default is 4 weeks.",
+        "/purgesmutes: Purges smutes older than the given time in seconds. Default is 4 weeks.",
         "/purgembans: Purges mafiabans older than the given time in seconds. Default is 1 week.",
         "/clearprofiling: Clears all profiling info.",
         "/addplugin: Add a plugin from the web.",
