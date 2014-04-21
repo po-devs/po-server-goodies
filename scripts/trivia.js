@@ -32,7 +32,7 @@ try {
 if (!Trivia || !Trivia.started) {
     Trivia = new TriviaGame();
 }
-
+var extLB = new pointsLB("trivialeaderboard.txt");
 var triviaq = new QuestionHolder("triviaq.txt");
 var trivreview = new QuestionHolder("trivreview.txt");
 var tadmin = new TriviaAdmin("tadmins.txt");
@@ -582,6 +582,16 @@ TriviaGame.prototype.finalizeAnswers = function () {
     leaderboard.sort(function (a, b) {
         return b[1] - a[1];
     });
+    var i = 0;
+    var lastPoints; //points = leaderboard points
+    while (this.scoreType !== "elimination" && leaderboard[i] && leaderboard[i][1] >= this.maxPoints){
+        var points = totalPlayers - i;
+        if (this.catGame) {points = points / 2;}
+        if (i > 0 && leaderboard[i][1] === leaderboard[i-1][1]){points = lastPoints;}
+        extLB.updateLeaderboard(utilities.html_escape(leaderboard[i][0]), ((points) > 0 ? points : 1));
+        lastPoints = points;
+        i++;
+    }
     for (var x in leaderboard) {
         displayboard.push(leaderboard[x][0] + " (" + leaderboard[x][1] + ")");
     }
@@ -600,8 +610,10 @@ TriviaGame.prototype.finalizeAnswers = function () {
     }
     if (leaderboard.length === 1 && this.scoreType === "elimination") {
         winners.push(utilities.html_escape(leaderboard[0][0]) + " (" + leaderboard[0][1] + ")");
+        extLB.updateLeaderboard(utilities.html_escape(leaderboard[0][0]).toLowerCase(), parseInt(leaderboard[0][1]));
     }
     if (winners.length > 0 || (this.scoreType === "elimination" && leaderboard.length === 0)) {
+        sys.writeToFile(extLB.file, JSON.stringify(extLB.leaderboard));
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
         winners.sort(function (a, b) {
             return b[1] - a[1];
@@ -619,7 +631,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         sendChanHtmlAll("<font size=5><font color='#3DAA68'><timestamp/> <b>±" + triviabot.name + ":</b> <font color='red'>While you're waiting for another game, why not submit a question? <a href='http://wiki.pokemon-online.eu/wiki/Community:Trivia#Submitting_Questions'>Help and Guidelines are here!</a></font></font></font>", triviachan);
         sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±" + triviabot.name + ":</b></font> We could really use more <b>" + allCats[allCats.length - sys.rand(1, 6)].category + "</b> themed questions!", triviachan);
         sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Never want to miss a Trivia game? Try the <b>/flashme</b> command!", triviachan);
-        //updateLeaderboard(obj);
+        
         if (this.catGame) {
             lastCatGame = 1;
             lastUsedCats = this.usingCats;
@@ -629,7 +641,6 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 lastCatGame++;
             }
         }
-        this.started = false;
         this.resetTrivia();
         runUpdate();
 /*        if (this.autostart === true) {
@@ -1023,6 +1034,114 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
     sys.sendMessage(src, "", id);
 };
 
+function pointsLB(file) {
+    this.file = file;
+    this.leaderboard = [];
+    var fileContent = sys.getFileContent(this.file);
+    if (fileContent === undefined || fileContent === "") {
+        sys.writeToFile(file, "[]");
+    }
+    try {
+        this.leaderboard = JSON.parse(fileContent);
+    }
+    catch (e) {
+        sys.sendAll("Error loading leaderboard: " + e, revchan);
+    }
+}
+
+pointsLB.prototype.updateLeaderboard = function (name, points){
+    var player;
+    if (Trivia.scoreType === "elimination"){
+        player = {'name' : name.toLowerCase(), 'livesLeft' : points, 'elimWins' : 1, 'points' : 0, 'regWins' : 0};
+    } else if (Trivia.scoreType === "knowledge"){
+        player = {'name' : name.toLowerCase(), 'livesLeft' : 0, 'elimWins' : 0, 'points' : points, 'regWins' : 1};
+    }
+    var playerIndex = -1;
+    var i;
+    for (i = 0; i < this.leaderboard.length; i++){
+        if (this.leaderboard[i].name === player.name){
+            playerIndex = i;
+            break;
+        }
+    }
+    if (playerIndex === -1){
+        this.leaderboard.push(player);
+    } else {
+        if (Trivia.scoreType === "elimination"){
+            this.leaderboard[playerIndex].livesLeft = this.leaderboard[playerIndex].livesLeft + player.livesLeft;
+            this.leaderboard[playerIndex].elimWins = this.leaderboard[playerIndex].elimWins + 1;
+        } else if (Trivia.scoreType === "knowledge"){
+            this.leaderboard[playerIndex].points = this.leaderboard[playerIndex].points + player.points;
+            this.leaderboard[playerIndex].regWins = this.leaderboard[playerIndex].regWins + 1;
+        }
+    }
+};
+
+pointsLB.prototype.showLeaders = function (src, commandData, id) {
+    var scoreTypes = ["elimination", "knowledge"];
+    var lb = [];
+    var i, maxPlace;
+    var input = commandData.split('*');
+    var scoreType = input[0].toLowerCase();
+    if (scoreType === "know"){
+        scoreType = "knowledge";
+    } else if (scoreType === "elim"){
+        scoreType = "elimination";
+    };
+    if (scoreTypes.indexOf(scoreType) !== -1){
+        if (input.length === 1 || isNaN(input[1]) || input[1] <= 0){
+            maxPlace = 10;
+        } else {maxPlace = input[1]};
+        for (i = 0; i < this.leaderboard.length; i++) {
+            var player = {'name' : this.leaderboard[i].name, 'points' : this.leaderboard[i].points, 'regWins' : this.leaderboard[i].regWins, 'livesLeft' : this.leaderboard[i].livesLeft,'elimWins' : this.leaderboard[i].elimWins};
+            lb.push(player);
+        };
+        if (scoreType === "elimination"){
+            lb.sort(function (a, b){
+                if (b.elimWins === a.elimWins){
+                    if (b.livesLeft === a.livesLeft) {
+                        if (b.regWins === a.regWins){
+                            return b.points - a.points;
+                        } else return b.regWins - a.regWins;
+                    } else return b.livesLeft - a.livesLeft;
+                } else return b.elimWins - a.elimWins;
+            });
+        } else if (scoreType === "knowledge"){
+            lb.sort(function (a, b){
+                if (b.points === a.points){
+                    if (b.regWins === a.regWins){
+                        if (b.livesLeft === a.livesLeft){
+                            return b.elimWins - a.elimWins;
+                        } else return b.livesLeft - a.livesLeft;
+                    } else return b.regWins - a.regWins;
+                } else return b.points - a.points;
+            });
+        }
+        sys.sendMessage(src, "", id);
+        sys.sendMessage(src, "*** Trivia Leaderboard (" + scoreType + ") ***", id);
+        for (i = 0; i < lb.length; i++) {
+            if (i < maxPlace || this.leaderboard[i].name === sys.name(src).toLowerCase()){
+                var x = i + 1;
+                if (scoreType === "knowledge"){
+                    Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].points + " point(s) and " + lb[i].regWins + " wins!", id);
+                } else if (scoreType === "elimination"){
+                    Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].livesLeft + " total lives left and " + lb[i].elimWins + " wins!", id);
+                }
+            }
+        };
+        sys.sendMessage(src, "", id);
+    } else {
+        Trivia.sendPM(src, "Valid scoring systems are knowledge [know] and elimination [elim].", id);
+    }
+};
+
+pointsLB.prototype.reset = function(src){
+    this.leaderboard = [];
+    sys.writeToFile(this.file, JSON.stringify(this.leaderboard));
+    Trivia.sendAll(sys.name(src) + " reset the Leaderboard!", revchan);
+    Trivia.sendAll(sys.name(src) + " reset the Leaderboard!", triviachan);
+};
+
 // Commands
 var userCommands = {};
 var adminCommands = {};
@@ -1233,6 +1352,14 @@ addUserCommand(["triviaadmins","tadmins","tas"], function (src, commandData, cha
     tadmin.tAdminList(src, channel, "Trivia Admins");
 }, "Gives a list of current trivia admins");
 
+addUserCommand(["leaderboard", "lb"], function (src, commandData, channel){
+    extLB.showLeaders(src, commandData, channel);
+}, "Shows the current leaderboard and your standing, format: /leaderboard [type]*[#]. Type is the scoring used (knowledge [know] or elimination [elim]); required. # is the number of places to show; if left blank, shows top 10 and your placement.");
+
+addOwnerCommand("resetlb", function(src){
+    extLB.reset(src);
+}, "Removes all data from the leaderboard.");
+
 addOwnerCommand(["triviaadmin", "striviaadmin"], function (src, commandData, channel, command) {
     if (tadmin.isTAdmin(commandData)) {
         Trivia.sendPM(src, "That person is already a Trivia Admin.", channel);
@@ -1298,7 +1425,7 @@ addUserCommand("start", function (src, commandData) {
 
 addAdminCommand("elimination", function (src, commandData) {
     Trivia.startTrivia(src, commandData, "elimination");
-}, "Allows you to start an elimination game, format /elimination [number]. Leave number blank for random.");
+}, "Allows you to start an elimination game, format /elimination [number][*category1][*category2][...]. Leave number blank for random.");
 
 addUserCommand("lastcat", function (src, commandData, channel) {
     if (lastCatGame === 0) {
@@ -2037,7 +2164,7 @@ addAdminCommand("passta", function (src, commandData, channel) {
     if (isTriviaOwner(src)) {
         tsadmin.removeTAdmin(oldname);
         tsadmin.addTAdmin(newname);
-        sTA = true,
+        sTA = true;
     } else {
         tadmin.removeTAdmin(oldname);
         tadmin.addTAdmin(newname);
@@ -2199,6 +2326,7 @@ module.exports = {
             triviaq = new QuestionHolder("triviaq.txt");
             trivreview = new QuestionHolder("trivreview.txt");
             tadmin = new TriviaAdmin("tadmins.txt");
+            extLB = new pointsLB("trivialeaderboard.txt");
         }
         //Trivia.sendAll("Trivia is now running!");
     },
