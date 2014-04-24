@@ -1840,7 +1840,7 @@ beforeChatMessage: function(src, message, chan) {
          return;
     }
     channel = chan;
-    if ((chan === 0 && message.length > 250 && sys.auth(src) < 1)
+    if ((script.isOfficialChan(chan) && message.length > 250 && sys.auth(src) < 1)
        || (message.length > 5000 && sys.auth(src) < 2)) {
         normalbot.sendMessage(src, "Hi! Your message is too long, please make it shorter :3", channel);
         sys.stopEvent();
