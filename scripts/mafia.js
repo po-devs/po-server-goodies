@@ -1125,6 +1125,7 @@ function Mafia(mafiachan) {
         this.saveStalkLog();
         this.players = {};
         this.signups = [];
+        this.dead = [];
         this.state = "blank";
         this.ticks = 0;
         this.votes = {};
@@ -1621,6 +1622,7 @@ function Mafia(mafiachan) {
                 this.removeTarget(player, action);
             }
         }
+        this.dead.push(player.name.toLowerCase());
         if (mafia.votes.hasOwnProperty(player.name))
             delete mafia.votes[player.name];
         delete this.players[player.name];
@@ -3867,6 +3869,7 @@ function Mafia(mafiachan) {
             "/mafiaban: To ban a user from the Mafia channel, format /mafiaban user:reason:time",
             "/mafiaunban: To unban a user from the Mafia channel.",
             "/end: To cancel a Mafia game!",
+            "/say: To bypass Dead Chat and talk normally to the channel.",
             "/readlog: To read the log of actions from a previous game",
             "/targetlog: To read the log of Turn 1 actions from a set of previous games.",
             "/passma: To give your Mafia Admin powers to an alt of yours.",
@@ -5156,6 +5159,10 @@ function Mafia(mafiachan) {
             mafia.endGame(src);
             return;
         }
+        if (command === "say") {
+            sys.sendAll(sys.name(src) + ": " + commandData, mafiachan);
+            return;
+        }
         if (command === "readlog") {
             var num = parseInt(commandData, 10);
             if (!num) {
@@ -5480,7 +5487,7 @@ function Mafia(mafiachan) {
             "If you must leave, you can ask a Mafia Admin in the chat for a \"slay\" in order to be removed from the game. A valid reason must be supplied with your request. Not liking any part of the game or participating in other channels are not valid reasons. Asking for a slay within the first few phases of the game, or leaving without asking for a slay, will result in punishment.",
             "",
             "±Rule 5- Do not attempt to ruin the game in any way, shape, or form:",
-            "Do not intentionally reveal, vote, or kill your teammates without their consent. Do not quote any of the game bots, including in private messages. Do not target a certain user or group of users repeatedly. If you are not currently alive in the game, do not discuss the game with anyone still playing. Do not copy other peoples' names or make your name similar to someone else's. Do not disable private messages (PMs) or ignore other players as Mafia is a game of heavy communication. Do not stall the game for any reason. Do not attempt to fake \"Team Talk\".",
+            "Do not intentionally reveal, vote, or kill your teammates without their consent. Do not quote any of the game bots, including in private messages. Do not target a certain user or group of users repeatedly. If you are not currently alive in the game, do not discuss the game with anyone still playing. Do not copy other peoples' names or make your name similar to someone else's. Do not disable private messages (PMs) or ignore other players as Mafia is a game of heavy communication. Do not stall the game for any reason. Do not attempt to fake \"Team Talk\" or \"Dead Chat\".",
             ""
         ];
         dump(src, mrules, channel);
@@ -5496,6 +5503,14 @@ function Mafia(mafiachan) {
 
     this.beforeChatMessage = function (src, message, channel) {
         if (channel !== 0 && channel == mafiachan && mafia.ticks > 0 && ["blank", "voting", "entry"].indexOf(mafia.state) == -1) {
+            if (mafia.dead.indexOf(sys.name(src).toLowerCase()) !== -1) {
+                if (!(is_command(message) && message.substr(1, 2).toLowerCase() != "me")) {
+                    for (var x in mafia.dead) {
+                        gamemsg(mafia.dead[x], sys.name(src) + ": [Dead] " + message);
+                    }
+                    return true;
+                }
+            } 
             if (!mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0 && !mafia.isMafiaAdmin(src)) {
                 if (!(is_command(message) && message.substr(1, 2).toLowerCase() != "me")) {
                     sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
@@ -5504,6 +5519,10 @@ function Mafia(mafiachan) {
             }
             if (message.indexOf("[Team]") === 0) {
                 msg(src, "Please don't fake a Team Talk message!", mafiachan);
+                return true;
+            }
+            if (message.indexOf("[Dead]") === 0) {
+                msg(src, "Please don't fake a Dead Chat message!", mafiachan);
                 return true;
             }
         }
