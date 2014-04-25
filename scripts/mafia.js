@@ -1532,6 +1532,9 @@ function Mafia(mafiachan) {
             }
         }
     };
+    this.playerCount = function () {
+        return Object.keys(mafia.players).length;
+    };
     
     /*Grab a list of all roles belonging to a given team.*/
     this.getRolesForTeam = function (side) {
@@ -2092,7 +2095,7 @@ function Mafia(mafiachan) {
         }
     };
     this.testWin = function (slay) {
-        if (Object.keys(mafia.players).length === 0) {
+        if (mafia.playerCount() === 0) {
             gamemsgAll(mafia.theme.drawmsg || "Everybody died! This is why we can't have nice things :(");
             sendChanAll(border, mafiachan);
             
@@ -3243,6 +3246,9 @@ function Mafia(mafiachan) {
             if (nolyn === false) {
                 gamemsgAll("±Time: Day " + mafia.time.days);
                 gamemsgAll("It's time to vote someone off, type /Vote [name], you only have " + mafia.ticks + " seconds! :");
+                if (mafia.theme.noplur === true) {
+                    gamemsgAll("A majority vote must be reached otherwise no lynch occurs. With " + mafia.playerCount() + " alive, it's " + Math.round(mafia.playerCount()/2) + " to lynch!:");
+                }
                 sendChanAll(border, mafiachan);
                 
                 mafia.state = "day";
@@ -3312,7 +3318,7 @@ function Mafia(mafiachan) {
                 }
             }
             
-            if (mafia.theme.noplur === true && Object.keys(mafia.players).length/2 >= maxi) { //Checks if someone actually gets lynched
+            if (mafia.theme.noplur === true && mafia.playerCount()/2 >= maxi) { //Checks if someone actually gets lynched
                 tie = true;
                 downed = noPlayer;
             }
@@ -4123,7 +4129,7 @@ function Mafia(mafiachan) {
                 this.votes[sys.name(src)] = commandData;
                 this.voteCount += 1;
                 
-                var noplur = false, totalPlayers = Object.keys(mafia.players).length;
+                var noplur = false, totalPlayers = mafia.playerCount();
                 if (this.voteCount * 2 > totalPlayers && mafia.theme.noplur === true) {
                     var npvoted = {}, npvoters = {};
                     for (var pname in mafia.votes) {
