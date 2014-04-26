@@ -71,6 +71,12 @@ module.exports = function () {
             hangbot.sendMessage(src, "You are HA or sHA, so you can't participate on Event Games!", hangchan);
             return;
         }
+        for (var x in points) {
+            if (sys.ip(src) === sys.dbIp(x) && sys.name(src)!== x) {
+                hangbot.sendMessage(src, "You are already playing under another alt!", hangchan);
+                return;
+            }
+        }
         var now = (new Date()).getTime();
         if (now < SESSION.users(src).hangmanTime) {
             hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanTime - now) / 1000) + 1) + " seconds before submitting another guess!", hangchan);
@@ -175,6 +181,12 @@ module.exports = function () {
         if (commandData.length < 4) {
             hangbot.sendMessage(src, "The answer must have at least four letters!", hangchan);
             return;
+        }
+        for (var x in points) {
+            if (sys.ip(src) === sys.dbIp(x) && sys.name(src)!== x) {
+                hangbot.sendMessage(src, "You are already playing under another alt!", hangchan);
+                return;
+            }
         }
         var now = (new Date()).getTime();
         if (now < SESSION.users(src).hangmanTime) {
