@@ -36,6 +36,8 @@ module.exports = function () {
     var winner;
     var nextGame;
 
+    var checked = [];
+    
     var word;
     var currentWord = [];
     var usedLetters = [];
@@ -330,6 +332,7 @@ module.exports = function () {
         misses = {};
         answers = {};
 
+        checked = [];
         usedLetters = [];
         currentWord = [];
         var e;
@@ -748,6 +751,24 @@ module.exports = function () {
         return;
         
     };
+    
+    this.checkGame = function (src) {
+        if (!word){
+                sys.sendMessage(src, "There's currently no game on!", hangchan);
+        }
+        else {
+                if (checked.indexOf(syc.ip(src)) >= 0){
+                        hangbot.sendMessage(src, "You already used the command to learn the answer!", hangchan);
+                }
+                else{
+                        sys.sendMessage(src, word, hangchan);
+                        checked.push(sys.ip(src));
+                        if (sys.existChannel("Victory Road"))
+                        hangbot.sendAll("Warning: Player " +sys.name(src) + " checked the current answer in #Hangman", sys.channelId("Victory Road"));
+                }                      
+        }
+}
+    
     this.checkNewMonth = function() {
         var date = new Date();
         if (date.getUTCMonth() !== leaderboards.currentMonth) {
@@ -838,7 +859,8 @@ module.exports = function () {
             "/hangmanbans: Searches the hangman banlist, show full list if no search term is entered.",
             "/passha: To give your Hangman Admin powers to an alt.",
             "/autogame: To turn autogames on/off. Format /autogame on or /autogame off.",
-            "/addquest: To add a question to the autogame/eventgame data base. Format /addquest Answer:Hint:Guess number."
+            "/addquest: To add a question to the autogame/eventgame data base. Format /addquest Answer:Hint:Guess number.",
+            "/checkgame: To see the answer of a game (only once per game). Prevents playing if used";
         ];
         var superAdminHelp = [
             "*** Hangman Super Admin Commands ***",
@@ -1015,6 +1037,11 @@ module.exports = function () {
 
         if (command === "hangmanmutes" || command === "hangmanbans") {
             hangman.hangmanMuteList(src, commandData);
+            return true;
+        }
+        
+        if (command === "checkgame") {
+            hangman.checkGame(src);
             return true;
         }
 
