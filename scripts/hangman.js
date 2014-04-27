@@ -536,7 +536,7 @@ module.exports = function () {
     };
     this.myAnswer = function (src){
         if (word){
-            if (sys.ip(src) === host)
+            if (sys.ip(src) === host){
                 hangbot.sendMessage(src, "The answer for your game is " + word.toUpperCase() + "!", hangchan);
             }
             else{
