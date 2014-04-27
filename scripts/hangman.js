@@ -534,6 +534,19 @@ module.exports = function () {
         this.setWinner(sys.name(sys.id(commandData)));
         hangbot.sendAll("" + sys.name(src) + " has passed starting rights to " + commandData + "!", hangchan);
     };
+    this.myAnswer = function (src){
+        if (word){
+            if (sys.ip(src) === host){
+                hangbot.sendMessage(src, "The answer for your game is " + word.toUpperCase() + "!", hangchan);
+            }
+            else{
+                hangbot.sendMessage(src, "You are not the host, so you can't use this command!", hangchan);
+            }  
+        }
+        else{
+            hangbot.sendMessage(src, "No game is running!", hangchan);
+        }
+    };
     this.endGame = function (src, endEvent) {
         if (word) {
             if (isEventGame === true && endEvent !== true) {
@@ -815,7 +828,8 @@ module.exports = function () {
             "/pass: To pass starting rights to someone else.",
             "/hangmanadmins: To see a list of hangman auth.",
             "/end: To end a game you started.",
-            "/leaderboard: To see the event leaderboard. You can type /leaderboard last to see last months leaderboard."
+            "/leaderboard: To see the event leaderboard. You can type /leaderboard last to see last months leaderboard.",
+            "/myanswer: To see the answer you submitted (host only)"
         ];
         var adminHelp = [
             "*** Hangman Admin Commands ***",
@@ -901,6 +915,10 @@ module.exports = function () {
         }
         if (command === "hangmanadmins" || command === "hadmins" || command === "has") {
             hangman.hangmanAuth(src, commandData, channel);
+            return true;
+        }
+        if (command === "myanswer" ){
+            hangman.myAnswer(src);
             return true;
         }
 
