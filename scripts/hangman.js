@@ -73,6 +73,10 @@ module.exports = function () {
             hangbot.sendMessage(src, "You are HA or sHA, so you can't participate on Event Games!", hangchan);
             return;
         }
+        if (checked.indexOf(syc.ip(src)) >= 0) {
+            hangbot.sendMessage(src, "You checked the answer, so you can't play!", hangchan);
+            return;
+        }
         for (var x in points) {
             if (sys.ip(src) === sys.dbIp(x) && sys.name(src)!== x) {
                 hangbot.sendMessage(src, "You are already playing under another alt!", hangchan);
@@ -178,6 +182,10 @@ module.exports = function () {
         }
         if (isEventGame && (this.isHangmanAdmin(src) || this.isHangmanSuperAdmin(src))) {
             hangbot.sendMessage(src, "You are HA or sHA, so you can't participate on Event Games!", hangchan);
+            return;
+        }
+        if (checked.indexOf(syc.ip(src)) >= 0) {
+            hangbot.sendMessage(src, "You checked the answer, so you can't play!", hangchan);
             return;
         }
         if (commandData.length < 4) {
