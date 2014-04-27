@@ -769,7 +769,7 @@ module.exports = function () {
                     hangbot.sendMessage(src, "You already used the command to learn the answer!", hangchan);
             }
             else{
-                    hangbot.sendMessage(src, "The answer for the current game is" + word.toUpperCase() +"!", hangchan);
+                    hangbot.sendMessage(src, "The answer for the current game is " + word.toUpperCase() +"!", hangchan);
                     checked.push(sys.ip(src));
                     if (sys.existChannel("Victory Road"))
                     hangbot.sendAll("Warning: Player " +sys.name(src) + " checked the current answer in #Hangman", sys.channelId("Victory Road"));
@@ -853,7 +853,7 @@ module.exports = function () {
             "/answer: To answer the question.",
             "/hangmanrules: To see the hangman rules.",
             "/view: To view the current game's state.",
-            "/start: To start a new game of hangman. Format /start answer:hint:number",
+            "/start: To start a new game of hangman. Format /start answer:hint:number (number is 7 by default). Example: /start Pikachu:Pokémon:8.",
             "/pass: To pass starting rights to someone else.",
             "/hangmanadmins: To see a list of hangman auth.",
             "/end: To end a game you started.",
