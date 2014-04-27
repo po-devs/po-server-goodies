@@ -73,7 +73,7 @@ module.exports = function () {
             hangbot.sendMessage(src, "You are HA or sHA, so you can't participate on Event Games!", hangchan);
             return;
         }
-        if (checked.indexOf(syc.ip(src)) >= 0) {
+        if (checked.indexOf(sys.ip(src)) >= 0) {
             hangbot.sendMessage(src, "You checked the answer, so you can't play!", hangchan);
             return;
         }
@@ -184,7 +184,7 @@ module.exports = function () {
             hangbot.sendMessage(src, "You are HA or sHA, so you can't participate on Event Games!", hangchan);
             return;
         }
-        if (checked.indexOf(syc.ip(src)) >= 0) {
+        if (checked.indexOf(sys.ip(src)) >= 0) {
             hangbot.sendMessage(src, "You checked the answer, so you can't play!", hangchan);
             return;
         }
@@ -552,7 +552,7 @@ module.exports = function () {
             }
             else{
                 hangbot.sendMessage(src, "You are not the host, so you can't use this command!", hangchan);
-            }  
+            }
         }
         else{
             hangbot.sendMessage(src, "No game is running!", hangchan);
@@ -765,7 +765,7 @@ module.exports = function () {
                 sys.sendMessage(src, "There's currently no game on!", hangchan);
         }
         else {
-                if (checked.indexOf(syc.ip(src)) >= 0){
+                if (checked.indexOf(sys.ip(src)) >= 0){
                         hangbot.sendMessage(src, "You already used the command to learn the answer!", hangchan);
                 }
                 else{
@@ -773,9 +773,9 @@ module.exports = function () {
                         checked.push(sys.ip(src));
                         if (sys.existChannel("Victory Road"))
                         hangbot.sendAll("Warning: Player " +sys.name(src) + " checked the current answer in #Hangman", sys.channelId("Victory Road"));
-                }                      
+                }
         }
-}
+};
     
     this.checkNewMonth = function() {
         var date = new Date();
