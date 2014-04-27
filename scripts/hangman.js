@@ -537,10 +537,10 @@ module.exports = function () {
     this.myAnswer = function (src){
         if (word){
             if (sys.ip(src) === host)
-                sys.sendMessage(src, "The answer for your game is " + word.toUpperCase() + "!", hangchan);
+                hangbot.sendMessage(src, "The answer for your game is " + word.toUpperCase() + "!", hangchan);
             }
             else{
-                sys.sendMessage(src, "You are not the host, so you can't use this command!", hangchan);
+                hangbot.sendMessage(src, "You are not the host, so you can't use this command!", hangchan);
             }  
         }
         else{
@@ -919,6 +919,7 @@ module.exports = function () {
         }
         if (command === "myanswer" ){
             hangman.myAnswer(src);
+            return true;
         }
 
         if (hangman.authLevel(src) < 1 && !(command === "end" && sys.ip(src) === host)) {
