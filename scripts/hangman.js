@@ -8,7 +8,7 @@
 var nonFlashing = require("utilities.js").non_flashing;
 var html_escape = require("utilities.js").html_escape;
 
-module.exports = function () {
+module.exports = function () {https://github.com/DraculeMihawk/po-server-goodies/tree/patch-1 
     var hangman = this;
     var hangchan;
 
@@ -868,7 +868,7 @@ module.exports = function () {
             "/passha: To give your Hangman Admin powers to an alt.",
             "/autogame: To turn autogames on/off. Format /autogame on or /autogame off.",
             "/addquest: To add a question to the autogame/eventgame data base. Format /addquest Answer:Hint:Guess number.",
-            "/checkgame: To see the answer of a game (only once per game). Prevents playing if used";
+            "/checkgame: To see the answer of a game (only once per game). Prevents playing if used".
         ];
         var superAdminHelp = [
             "*** Hangman Super Admin Commands ***",
