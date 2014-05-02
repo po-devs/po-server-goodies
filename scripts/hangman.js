@@ -265,7 +265,7 @@ module.exports = function () {
             return;
         }
         var data = commandData.split(":");
-        var a = data[0];
+        var a = this.removeNonEnglish(data[0]);
         var h = data[1];
         var p = data.length < 3 ? defaultParts : data[2];
 
@@ -300,6 +300,20 @@ module.exports = function () {
         isEventGame = false;
         this.createGame(sys.name(src), a, h, p, src);
     };
+    
+    //adapted from string_to_slug http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
+    this.removeNonEnglish = function(str) {
+        str = str.toLowerCase();
+ 
+        // remove accents, swap ñ for n, etc
+        var from = "àáäâèéëêìíïîòóöôùúüûñç";
+        var to = "aaaaeeeeiiiioooouuuunc";
+        for (var i = 0; i < from.length; i++) {
+            str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
+        }
+        return str;
+    }
+    
     this.validateAnswer = function(a) {
         var validCharacters = "abcdefghijklmnopqrstuvwxyz",
             validLetters = 0,
