@@ -1,14 +1,10 @@
-/* hangman.js
-    TODO:
-    Automatically replace letters like É and Ê into E for answers
-*/
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global sys:true, sendChanHtmlAll:true, module:true, SESSION:true, hangmanchan, hangbot, require, script, sachannel, getTimeString */
+/*global sys, sendChanHtmlAll, module, SESSION, hangbot, require, script, sachannel, getTimeString */
 
 var nonFlashing = require("utilities.js").non_flashing;
 var html_escape = require("utilities.js").html_escape;
 
-module.exports = function () {
+function Hangman() {
     var hangman = this;
     var hangchan;
 
@@ -18,13 +14,13 @@ module.exports = function () {
     var winnerDelay = 60;
     var answerDelay = 7;
     var maxAnswers = 3;
-    
+
     var autoGamesFile = "scriptdata/hangmanq.txt";
     var leaderboardsFile = "scriptdata/hangmanLeaderboards.txt";
     var idleCount = 0;
     var idleLimit = 1800;
     var autoGames;
-    
+
     var eventLimit = 1800;
     var eventCount = (SESSION.global() && SESSION.global().hangmanEventCount ? SESSION.global().hangmanEventCount : eventLimit);
     var eventGames = true;
@@ -37,7 +33,7 @@ module.exports = function () {
     var nextGame;
 
     var checked = [];
-    
+
     var word;
     var currentWord = [];
     var usedLetters = [];
@@ -47,7 +43,7 @@ module.exports = function () {
     var points;
     var misses;
     var answers;
-    
+
     var leaderboards = {
         current:{},
         last:{},
@@ -254,6 +250,7 @@ module.exports = function () {
     };
     this.startGame = function (src, commandData) {
         if (commandData === undefined) {
+            hangbot.sendMessage(src, "Use /start Answer:Hint");
             return;
         }
         if (word) {
@@ -273,7 +270,7 @@ module.exports = function () {
             hangbot.sendMessage(src, "You need to choose a word!", hangchan);
             return;
         }
-        
+
         var result = this.validateAnswer(a);
         if (result.errors.length > 0) {
             for (var e in result.errors) {
@@ -281,9 +278,9 @@ module.exports = function () {
             }
             return;
         }
-        
+
         a = result.answer;
-        
+
         if (!h) {
             hangbot.sendMessage(src, "You need to write a hint!", hangchan);
             return;
@@ -296,15 +293,15 @@ module.exports = function () {
             if (sys.existChannel("Victory Road"))
                 hangbot.sendAll("Warning: Player " + sys.name(src) + " made the answer '" + a + "' in #Hangman", sys.channelId("Victory Road"));
         }
-        
+
         isEventGame = false;
         this.createGame(sys.name(src), a, h, p, src);
     };
-    
+
     //adapted from string_to_slug http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
     this.removeNonEnglish = function(str) {
         str = str.toLowerCase();
- 
+
         // remove accents, swap ñ for n, etc
         var from = "àáäâèéëêìíïîòóöôùúüûñç";
         var to = "aaaaeeeeiiiioooouuuunc";
@@ -312,8 +309,8 @@ module.exports = function () {
             str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
         }
         return str;
-    }
-    
+    };
+
     this.validateAnswer = function(a) {
         var validCharacters = "abcdefghijklmnopqrstuvwxyz",
             validLetters = 0,
@@ -322,8 +319,8 @@ module.exports = function () {
                 errors: [],
                 answer: a
             };
-            
-            
+
+
         for (l = 0; l < a.length; l++) {
             if (validCharacters.indexOf(a[l].toLowerCase()) !== -1) {
                 validLetters++;
@@ -332,17 +329,17 @@ module.exports = function () {
         if (validLetters < 4) {
             result.errors.push("Answer must contain at least 4 valid letters (A-Z characters)!");
         }
-        
+
         a = a.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g, '').toLowerCase();
         if (a.length > 60 || a.length < 4) {
             result.errors.push("Your answer cannot be longer than 60 characters or shorter than 4 characters!");
         }
-        
+
         result.answer = a;
-        
+
         return result;
     };
-    
+
     this.createGame = function (name, a, h, p, src) {
         var validCharacters = "abcdefghijklmnopqrstuvwxyz";
         sys.saveVal("Stats/HangmanGamesPlayed", 1 + (+sys.getVal("Stats/HangmanGamesPlayed")));
@@ -487,7 +484,7 @@ module.exports = function () {
         }
         sys.sendAll("±Results: " + ranking.join(", "), hangchan);
         this.setWinner(w);
-        
+
         if (isEventGame) {
             hangbot.sendAll(w + " won an Event Game and received 1 Leaderboard point!", hangchan);
             var win = w.toLowerCase();
@@ -509,15 +506,15 @@ module.exports = function () {
     };
     this.viewLeaderboards = function(src, commandData) {
         var cut = 10;
-        
+
         var fromLastMonth = commandData && commandData.toLowerCase() == "last";
         var lb = fromLastMonth ? leaderboards.last : leaderboards.current;
-        
+
         var list = Object.keys(lb).sort(function(a, b) {
-           return lb[b] - lb[a];
+            return lb[b] - lb[a];
         });
         var top = list.slice(0, cut);
-        
+
         var name;
         sys.sendMessage(src, "", hangchan);
         sys.sendMessage(src, "*** " + (fromLastMonth ? "LAST MONTH'S " : "") + "HANGMAN LEADERBOARDS ***", hangchan);
@@ -534,7 +531,7 @@ module.exports = function () {
             }
         }
         sys.sendMessage(src, "", hangchan);
-        
+
     };
     this.passWinner = function (src, commandData) {
         if (commandData === undefined) {
@@ -664,12 +661,12 @@ module.exports = function () {
             "±Rules: Pay attention to channel and server authority (under /has and /auth respectively). Server /rules apply here too. If you have any doubt or see someone breaking the rules, contact the appropiate person (HA for hangman, auth for server).",
             "*** *********************************************************************** ***",
             ""
-            ];
+        ];
         for (x in help) {
             sys.sendMessage(src, help[x], hangchan);
         }
     };
-    
+
     this.autoGame = function (src, commandData) {
         if(commandData === undefined) {
             if(autoGames === true) {
@@ -696,16 +693,14 @@ module.exports = function () {
         if(turning == "on") {
             if (autoGames === true) {
                 hangbot.sendMessage(src, "Automatic games are already turned on.", hangchan);
-                return;
             }
             else {
                 autoGames = true;
                 hangbot.sendMessage(src, "You turned on Automatic games.", hangchan);
-                return;
             }
         }
     };
-    
+
     this.eventGame = function(src, commandData) {
         if(commandData === undefined) {
             if(eventGames === true) {
@@ -732,16 +727,14 @@ module.exports = function () {
         if(some == "on") {
             if(eventGames === true) {
                 hangbot.sendMessage(src, "Event Games are already turned on.", hangchan);
-                return;
             }
             else {
                 eventGames = false;
                 hangbot.sendMessage(src, "Event games have been turned on.", hangchan);
-                return;
             }
         }
     };
-    
+
     this.addQuest = function(src, commandData) {
         if (commandData == "*" || commandData.indexOf(":") === -1) {
             hangbot.sendMessage(src, "Invalid format for Hangman game! Proper format is 'answer:hint'.", hangchan);
@@ -751,9 +744,9 @@ module.exports = function () {
         var newQ = info[0].toLowerCase();
         var newH = info[1];
         var newC = info.length > 2 ? parseInt(info[2], 10) : 7;
-        
+
         var result = this.validateAnswer(newQ);
-        
+
         if (result.errors.length > 0) {
             for (var e in result.errors) {
                 hangbot.sendMessage(src, result.errors[e], hangchan);
@@ -761,36 +754,35 @@ module.exports = function () {
             return;
         }
         newQ = result.answer;
-        
+
         if (isNaN(newC)) {
             hangbot.sendMessage(src, "Number of chances must be a valid number higher or equal to " + minBodyParts + "!", hangchan);
             return;
         }
-        
+
         autoGames.push(newQ + ":" + newH + ":" + newC);
         sys.write(autoGamesFile, JSON.stringify(autoGames));
         hangbot.sendMessage(src, "You have successfully added a new question!", hangchan);
-        return;
-        
+
     };
-    
+
     this.checkGame = function (src) {
         if (!word){
             hangbot.sendMessage(src, "No game is running!", hangchan);
         }
         else {
             if (checked.indexOf(sys.ip(src)) >= 0){
-                    hangbot.sendMessage(src, "You already used the command to learn the answer!", hangchan);
+                hangbot.sendMessage(src, "You already used the command to learn the answer!", hangchan);
             }
             else{
-                    hangbot.sendMessage(src, "The answer for the current game is " + word.toUpperCase() +"!", hangchan);
-                    checked.push(sys.ip(src));
-                    if (sys.existChannel("Victory Road"))
+                hangbot.sendMessage(src, "The answer for the current game is " + word.toUpperCase() +"!", hangchan);
+                checked.push(sys.ip(src));
+                if (sys.existChannel("Victory Road"))
                     hangbot.sendAll("Warning: Player " +sys.name(src) + " checked the current answer in #Hangman", sys.channelId("Victory Road"));
             }
         }
     };
-    
+
     this.checkNewMonth = function() {
         var date = new Date();
         if (date.getUTCMonth() !== leaderboards.currentMonth) {
@@ -826,29 +818,29 @@ module.exports = function () {
         val = parseInt(val, 10);
 
         switch (param.toLowerCase()) {
-        case "chances":
-            minBodyParts = val;
-            hangbot.sendMessage(src, "Minimum chances set to " + val + ".", hangchan);
-            break;
-        case "delay":
-            answerDelay = val;
-            hangbot.sendMessage(src, "Delay between guesses set to " + val + " second(s).", hangchan);
-            break;
-        case "winner":
-            winnerDelay = val;
-            hangbot.sendMessage(src, "Winner will have " + val + " second(s) to start a new game.", hangchan);
-            break;
-        case "answers":
-            maxAnswers = val;
-            hangbot.sendMessage(src, "Players can use /a " + val + " time per game.", hangchan);
-            break;
-        case "idle":
-            idleLimit = val*60;
-            hangbot.sendMessage(src, "Game will auto start after " + val + " minutes.", hangchan);
-            break;
-        case "event":
-            eventLimit = val*60;
-            hangbot.sendMessage(src, "Event games with happen ever " + val + " minutes.", hangchan);
+            case "chances":
+                minBodyParts = val;
+                hangbot.sendMessage(src, "Minimum chances set to " + val + ".", hangchan);
+                break;
+            case "delay":
+                answerDelay = val;
+                hangbot.sendMessage(src, "Delay between guesses set to " + val + " second(s).", hangchan);
+                break;
+            case "winner":
+                winnerDelay = val;
+                hangbot.sendMessage(src, "Winner will have " + val + " second(s) to start a new game.", hangchan);
+                break;
+            case "answers":
+                maxAnswers = val;
+                hangbot.sendMessage(src, "Players can use /a " + val + " time per game.", hangchan);
+                break;
+            case "idle":
+                idleLimit = val*60;
+                hangbot.sendMessage(src, "Game will auto start after " + val + " minutes.", hangchan);
+                break;
+            case "event":
+                eventLimit = val*60;
+                hangbot.sendMessage(src, "Event games with happen ever " + val + " minutes.", hangchan);
         }
     };
     this.onHelp = function (src, topic, channel) {
@@ -911,7 +903,7 @@ module.exports = function () {
         }
     };
     this["help-string"] = ["hangman: To know the hangman commands"];
-    
+
     this.handleCommand = function (src, message, channel) {
         var command;
         var commandData;
@@ -924,7 +916,7 @@ module.exports = function () {
             command = message.substr(0).toLowerCase();
         }
         if (channel !== hangchan && ["hangmanban", "hangmanunban", "hangmanbans", "hangmanmute", "hangmanunmute", "hangmanmutes", "hangmanadmins", "hadmins", "has", "passha", "hangmanadminoff", "hangmanadmin", "hangmansadmin", "hangmansuperadmin", "shangmanadmin", "shangmansuperadmin", "shangmanadminoff"].indexOf(command) === -1) {
-            return;
+            return false;
         }
         if (command === "help") {
             hangman.showHelp(src);
@@ -961,7 +953,7 @@ module.exports = function () {
             hangman.hangmanAuth(src, commandData, channel);
             return true;
         }
-        if (command === "myanswer" ){
+        if (command === "myanswer") {
             hangman.myAnswer(src);
             return true;
         }
@@ -997,7 +989,7 @@ module.exports = function () {
             if (hangman.isHangmanSuperAdmin(src)) {
                 script.hangmanSuperAdmins.remove(oldname);
                 script.hangmanSuperAdmins.add(newname, "");
-                sHA = true,
+                sHA = true;
             } else {
                 script.hangmanAdmins.remove(oldname);
                 script.hangmanAdmins.add(newname, "");
@@ -1029,29 +1021,29 @@ module.exports = function () {
             script.unban("hmute", src, sys.id(commandData), commandData);
             return true;
         }
-        
+
         if(command === "autogame") {
             hangman.autoGame(src, commandData);
             return true;
         }
-        
+
         if(command === "eventgame") {
             hangman.eventGame(src, commandData);
             return true;
         }
-        
+
         /* Test Commands
-        if (command == "settime") {
-            eventCount = parseInt(commandData, 10);
-            hangbot.sendAll("Setting event timer to " + eventCount + "!", hangchan);
-            return true;
-        }
-        if (command == "newmonth") {
-            hangman.checkNewMonth();
-            return true;
-        }
-        */
-        
+         if (command == "settime") {
+         eventCount = parseInt(commandData, 10);
+         hangbot.sendAll("Setting event timer to " + eventCount + "!", hangchan);
+         return true;
+         }
+         if (command == "newmonth") {
+         hangman.checkNewMonth();
+         return true;
+         }
+         */
+
         if(command === "addquest") {
             hangman.addQuest(src, commandData);
             return true;
@@ -1061,7 +1053,7 @@ module.exports = function () {
             hangman.hangmanMuteList(src, commandData);
             return true;
         }
-        
+
         if (command === "checkgame") {
             hangman.checkGame(src);
             return true;
@@ -1113,11 +1105,9 @@ module.exports = function () {
             mutetime = 86400;
         }
         script.issueBan("hmute", src, tar, commandData, mutetime);
-        return;
     };
     this.hangmanMuteList = function (src, commandData) {
         require("modcommands.js").handleCommand(src, "hangmanmutes", commandData, -1);
-        return;
     };
     this.hangmanAuth = function (src, commandData, channel) {
         var shas = [];
@@ -1170,7 +1160,6 @@ module.exports = function () {
             }
         }
         sys.sendMessage(src, "", channel);
-        return;
     };
     this.promoteAdmin = function (src, commandData, channel, silent) {
         if (commandData === undefined) {
@@ -1185,7 +1174,6 @@ module.exports = function () {
             sys.sendAll("±Unown: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Hangman Admin.", hangchan);
         }
         sys.sendAll("±Unown: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Hangman Admin.", sys.channelId('Victory Road'));
-        return;
     };
     this.promoteSuperAdmin = function (src, commandData, channel, silent) {
         if (commandData === undefined) {
@@ -1200,7 +1188,6 @@ module.exports = function () {
             sys.sendAll("±Unown: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Hangman Admin.", hangchan);
         }
         sys.sendAll("±Unown: " + sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Hangman Admin.", sys.channelId('Victory Road'));
-        return;
     };
     this.demoteAdmin = function (src, commandData, channel, silent) {
         if (commandData === undefined) {
@@ -1225,7 +1212,6 @@ module.exports = function () {
             sys.sendAll("±Unown: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase() + " from " + oldAuth + ".", hangchan);
         }
         sys.sendAll("±Unown: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase() + " from " + oldAuth + ".", sys.channelId('Victory Road'));
-        return;
     };
     this.demoteSuperAdmin = function (src, commandData, channel, silent) {
         if (commandData === undefined) {
@@ -1241,17 +1227,12 @@ module.exports = function () {
             sys.sendAll("±Unown: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase() + " from Super Hangman Admin.", hangchan);
         }
         sys.sendAll("±Unown: " + nonFlashing(sys.name(src)) + " demoted " + commandData.toCorrectCase() + " from Super Hangman Admin.", sys.channelId('Victory Road'));
-        return;
     };
     this.isHangmanAdmin = function (src) {
-        if (sys.auth(src) >= 1 || script.hangmanAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase()))
-            return true;
-        return false;
+        return sys.auth(src) >= 1 || script.hangmanAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase());
     };
     this.isHangmanSuperAdmin = function (src) {
-        if (sys.auth(src) >= 3 || script.hangmanSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase()))
-            return true;
-        return false;
+        return sys.auth(src) >= 3 || script.hangmanSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase());
     };
     this.authLevel = function (src) {
         if (sys.auth(src) > 2) {
@@ -1313,17 +1294,14 @@ module.exports = function () {
     };
     this.beforeChatMessage = function (src, message, channel) {
         var poUser = SESSION.users(src);
-        if (poUser["hmute"]) { //THIS IS WHY YOU DON'T RENAME SESSION VARIABLES
-            if (channel == hangchan && poUser["hmute"].active) {
-                if (poUser.expired("hmute")) {
-                    poUser.un("hmute");
-                    sys.sendMessage(src, "±Unown: Your Hangman mute expired.", channel);
-                } else {
-                    var info = poUser["hmute"];
-                    sys.sendMessage(src, "±Unown: You are Hangman muted " + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Mute expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''), channel);
-                    sys.stopEvent();
-                    return;
-                }
+        if (channel == hangchan && poUser.hmute.active) {
+            if (poUser.expired("hmute")) {
+                poUser.un("hmute");
+                sys.sendMessage(src, "±Unown: Your Hangman mute expired.", channel);
+            } else {
+                var info = poUser.hmute;
+                sys.sendMessage(src, "±Unown: You are Hangman muted " + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Mute expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''), channel);
+                sys.stopEvent();
             }
         }
     };
@@ -1334,7 +1312,7 @@ module.exports = function () {
         SESSION.global().hangmanEventCount = eventCount;
         if (!word) {
             idleCount++;
-            
+
             if (idleCount >= idleLimit && autoGames) {
                 hangman.startAutoGame(false);
             }
@@ -1354,14 +1332,12 @@ module.exports = function () {
             hangbot.sendAll("A new event game of #Hangman will start in about a minute!", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
             sys.sendAll("", 0);
-            
+
             sys.sendAll("", hangchan);
             sys.sendAll("*** ************************************************************ ***", hangchan);
             hangbot.sendAll("A new event game of Hangman will start in about a minute!", hangchan);
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sys.sendAll("", hangchan);
-            
-            return;
         }
     };
     this.onHmute = function (src) {
@@ -1369,23 +1345,5 @@ module.exports = function () {
             sys.kick(src, hangchan);
         }
     };
-    
-    function toCorrectCase(name) {
-        if (isNaN(name) && sys.id(name) !== undefined) {
-            return sys.name(sys.id(name));
-        }
-        else {
-            return name;
-        }
-    }
-    return {
-        init: hangman.init,
-        handleCommand: hangman.handleCommand,
-        beforeChannelJoin: hangman.beforeChannelJoin,
-        afterChannelJoin: hangman.afterChannelJoin,
-        beforeChatMessage: hangman.beforeChatMessage,
-        stepEvent: hangman.stepEvent,
-        onHmute: hangman.onHmute,
-        onHelp: hangman.onHelp
-    };
-}();
+}
+module.exports = new Hangman();
