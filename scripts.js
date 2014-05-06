@@ -607,7 +607,7 @@ step: function() {
     if (typeof callplugins == "function") callplugins("stepEvent");
 
     var date = new Date();
-    if (date.getUTCMinutes() === 10 && date.getUTCSeconds() === 0) {
+    if (date.getUTCMinutes() === 10 && date.getUTCSeconds() === 0 && sys.os() !== "windows") {
         sys.get_output("nc -z server.pokemon-online.eu 10508", function callback(exit_code) {
             if (exit_code !== 0) {
                 sys.sendAll("±NetCat: Cannot reach Webclient Proxy - it may be down.", sys.channelId("Indigo Plateau"));
