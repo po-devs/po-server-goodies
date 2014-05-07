@@ -736,6 +736,42 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type, staffchannel);
         return;
     }
+    
+    if (command == "tempmod" || command == "tempadmin") {
+        if (!commandData || !sys.isLoggedIn(sys.id(commandData))) {
+            normalbot.sendMessage(src, "Target must be logged in", channel);
+            return;
+        }
+        var tar = sys.id(commandData);
+        var type = (command === "tempmod" ? "mod" : "admin");
+        if (sys.auth(tar) > 0 && type === "mod" || sys.auth(tar) > 1 && type === "admin") {
+            normalbot.sendMessage(src, "They are already " + type, channel);
+            return;
+        }
+        if (sys.auth(tar) < 1 && type === "admin") { 
+            normalbot.sendMessage(src, "Can only use on current mods", channel);
+            return;
+        }
+        if (type === "mod") {
+            SESSION.users(tar).tempMod = true;
+        } else {
+            SESSION.users(tar).tempAdmin = true;
+        }
+        normalbot.sendAll(commandData.toCorrectCase() + " was made temp " + type, staffchannel);
+        return;
+    }
+    
+    if (command == "detempmod" || command == "detempadmin" || command == "detempauth") {
+        if (!commandData || !sys.isLoggedIn(sys.id(commandData))) {
+            normalbot.sendMessage(src, "Target must be logged in", channel);
+            return;
+        }
+        var tar = sys.id(commandData);
+        delete SESSION.users(tar).tempMod;
+        delete SESSION.users(tar).tempAdmin;
+        normalbot.sendAll(commandData.toCorrectCase() + "'s temp auth was removed", staffchannel);
+        return;
+    }
     return "no command";
 };
 exports.help = 
@@ -785,5 +821,7 @@ exports.help =
         "/advertise: Sends a html message to the main channels",
         "/cookieban: Bans an online target by cookie. Use on Android users",
         "/cookiemute: Puts an online android target on an autosmute list by cookie. Use on Android users",
-        "/cookieunban/mute: Undos a cookieban/mute. Will take effect when they next log in"
+        "/cookieunban/mute: Undos a cookieban/mute. Will take effect when they next log in",
+        "/tempmod/admin: Gives temporary auth to a user. Lasts until they log out",
+        "/detempauth: Removes temporary auth given to a user"
     ];

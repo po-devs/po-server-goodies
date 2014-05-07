@@ -11,10 +11,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             }
             sys.sendMessage(src, "*** Other Commands ***", channel);
             sys.sendMessage(src, "/commands channel: To know of channel commands", channel);
-            if (sys.auth(src) > 0) {
+            if (sys.auth(src) > 0 || SESSION.users(src).tempMod) {
                 sys.sendMessage(src, "/commands mod: To know of moderator commands", channel);
             }
-            if (sys.auth(src) > 1) {
+            if (sys.auth(src) > 1 || SESSION.users(src).tempAdmin) {
                 sys.sendMessage(src, "/commands admin: To know of admin commands", channel);
             }
             if (sys.auth(src) > 2 || isSuperAdmin(src)) {
@@ -32,8 +32,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
 
         commandData = commandData.toLowerCase();
-        if ( (commandData == "mod" && sys.auth(src) > 0)
-            || (commandData == "admin" && sys.auth(src) > 1)
+        if ( (commandData == "mod" && sys.auth(src) > 0 || SESSION.users(src).tempMod)
+            || (commandData == "admin" && sys.auth(src) > 1 || SESSION.users(src).tempAdmin)
             || (commandData == "owner" && (sys.auth(src) > 2  || isSuperAdmin(src)))
             || (commandData == "channel") ) {
             sys.sendMessage(src, "", channel);
