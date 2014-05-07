@@ -118,7 +118,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, contributors, mutes, mbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, hapokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, pokeAbilities, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList, powerList, accList, ppList, categoryList, moveEffList, moveFlagList, abilityList, itemList, berryList, flingPowerList, berryPowerList, berryTypeList, allMovesList, allGenMovesList, namesToWatch, allowedRangeNames, reverseTohjo;
+var channel, contributors, mutes, mbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, hapokemons, lcpokemons, bannedGSCSleep, bannedGSCTrap, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, script.authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, pokeAbilities, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, heightList, weightList, powerList, accList, ppList, categoryList, moveEffList, moveFlagList, abilityList, itemList, berryList, flingPowerList, berryPowerList, berryTypeList, allMovesList, allGenMovesList, namesToWatch, allowedRangeNames, reverseTohjo;
 
 var pokeDir = "db/pokes/";
 var moveDir = "db/moves/6G/";
@@ -754,8 +754,8 @@ init : function() {
     "- Ignorance of the rules is not a valid reason for breaking them. Do not attempt to find or create any loopholes in these rules, or try to adapt them in order to have a punishment overturned or to justify your actions. Doing so may incur a further punishment. Make valid appeals directly to the authority of the server."
     ];
 
-    if (typeof authStats == 'undefined')
-        authStats = {};
+    if (typeof script.authStats == 'undefined')
+        script.authStats = {};
 
     if (typeof nameBans == 'undefined') {
         nameBans = [];
@@ -1005,8 +1005,8 @@ issueBan : function(type, src, tar, commandData, maxTime) {
 
         sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for ") + timeString + "!") + (reason.length > 0 ? " [Reason: " + reason + "]" : "") + " [Channel: "+sys.channel(channel) + "]");
         var authority= sys.name(src).toLowerCase();
-        authStats[authority] =  authStats[authority] || {};
-        authStats[authority]["latest" + type] = [commandData, parseInt(sys.time(), 10)];
+        script.authStats[authority] =  script.authStats[authority] || {};
+        script.authStats[authority]["latest" + type] = [commandData, parseInt(sys.time(), 10)];
 },
 
 unban: function(type, src, tar, commandData) {
@@ -1385,15 +1385,15 @@ beforeChannelDestroyed : function(channel) {
 beforePlayerBan : function(src, dest, dur) {
     normalbot.sendAll("Target: " + sys.name(dest) + ", IP: " + sys.ip(dest), staffchannel);
     var authname = sys.name(src).toLowerCase();
-    authStats[authname] =  authStats[authname] || {};
-    authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
+    script.authStats[authname] =  script.authStats[authname] || {};
+    script.authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
     callplugins("onBan", src, dest);
 },
 
 beforePlayerKick:function(src, dest){
     var authname = sys.name(src).toLowerCase();
-    authStats[authname] =  authStats[authname] || {};
-    authStats[authname].latestKick = [sys.name(dest), parseInt(sys.time(), 10)];
+    script.authStats[authname] =  script.authStats[authname] || {};
+    script.authStats[authname].latestKick = [sys.name(dest), parseInt(sys.time(), 10)];
 },
 
 afterNewMessage : function (message) {

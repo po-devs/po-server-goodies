@@ -98,8 +98,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         script.kickAll(ip);
         sys.appendToFile('bans.txt', sys.name(src) + ' banned ' + commandData + "\n");
         var authname = sys.name(src).toLowerCase();
-        authStats[authname] =  authStats[authname] || {};
-        authStats[authname].latestBan = [commandData, parseInt(sys.time(), 10)];
+        script.authStats[authname] =  script.authStats[authname] || {};
+        script.authStats[authname].latestBan = [commandData, parseInt(sys.time(), 10)];
         return;
     }
     if (command == "unban") {

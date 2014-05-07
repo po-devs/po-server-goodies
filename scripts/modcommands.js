@@ -127,8 +127,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendAll("" + commandData + " was mysteriously kicked by " + nonFlashing(sys.name(src)) + "!");
         sys.kick(tar);
         var authname = sys.name(src).toLowerCase();
-        authStats[authname] =  authStats[authname] || {};
-        authStats[authname].latestKick = [commandData, parseInt(sys.time(), 10)];
+        script.authStats[authname] =  script.authStats[authname] || {};
+        script.authStats[authname].latestKick = [commandData, parseInt(sys.time(), 10)];
         return;
     }
 
@@ -409,7 +409,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                     data.push("Client Type: " + utilities.capitalize(sys.os(tar)));
                 }
                 if (authLevel > 0) {
-                    var stats = authStats[name.toLowerCase()] || {};
+                    var stats = script.authStats[name.toLowerCase()] || {};
                     for (var key in stats) {
                         if (stats.hasOwnProperty(key)) {
                             data.push("Latest " + key.substr(6).toLowerCase() + ": " + stats[key][0] + " on " + new Date(stats[key][1]*1000).toUTCString());
@@ -513,8 +513,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.tempBan(target_name, parseInt(minutes/60, 10));
         script.kickAll(ip);
         var authname = sys.name(src);
-        authStats[authname] = authStats[authname] || {};
-        authStats[authname].latestTempBan = [target_name, parseInt(sys.time(), 10)];
+        script.authStats[authname] = script.authStats[authname] || {};
+        script.authStats[authname].latestTempBan = [target_name, parseInt(sys.time(), 10)];
         return;
     }
     if (command == "tempunban") {
