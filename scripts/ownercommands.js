@@ -738,7 +738,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     
     if (command == "tempmod" || command == "tempadmin") {
-        if (!commandData || !sys.isLoggedIn(sys.id(commandData))) {
+        if (!commandData || !sys.loggedIn(sys.id(commandData))) {
             normalbot.sendMessage(src, "Target must be logged in", channel);
             return;
         }
@@ -762,7 +762,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     
     if (command == "detempmod" || command == "detempadmin" || command == "detempauth") {
-        if (!commandData || !sys.isLoggedIn(sys.id(commandData))) {
+        if (!commandData || !sys.loggedIn(sys.id(commandData))) {
             normalbot.sendMessage(src, "Target must be logged in", channel);
             return;
         }
