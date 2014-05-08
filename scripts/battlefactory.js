@@ -1095,6 +1095,7 @@ function factoryCommand(src, command, commandData, channel) {
         return;
     }
     else if (command == 'acceptset') {
+        commandData = find_tier(commandData);
         if (!userqueue.hasOwnProperty(commandData)) {
             bfbot.sendMessage(src, "Usage: /acceptset [tier] (tier is case sensitive)", channel);
             return;
@@ -1138,6 +1139,7 @@ function factoryCommand(src, command, commandData, channel) {
         return;
     }
     else if (command == 'rejectset') {
+        commandData = find_tier(commandData);
         if (!userqueue.hasOwnProperty(commandData)) {
             bfbot.sendMessage(src, "Usage: /rejectset [tier] (tier is case sensitive)", channel);
             return;
@@ -1159,6 +1161,7 @@ function factoryCommand(src, command, commandData, channel) {
         return;
     }
     else if (command == 'nextset') {
+        commandData = find_tier(commandData);
         if (!userqueue.hasOwnProperty(commandData)) {
             bfbot.sendMessage(src, "Usage: /nextset [tier] (tier is case sensitive)", channel);
             return;
