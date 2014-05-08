@@ -584,13 +584,15 @@ TriviaGame.prototype.finalizeAnswers = function () {
     });
     var i = 0;
     var lastPoints; //points = leaderboard points
-    while (this.scoreType !== "elimination" && leaderboard[i] && leaderboard[i][1] >= this.maxPoints){
-        var points = totalPlayers - i;
-        if (this.catGame) {points = points / 2;}
-        if (i > 0 && leaderboard[i][1] === leaderboard[i-1][1]){points = lastPoints;}
-        extLB.updateLeaderboard(utilities.html_escape(leaderboard[i][0]), ((points) > 0 ? points : 1));
-        lastPoints = points;
-        i++;
+    if (this.maxPoints >= extLB.minLB){
+        while (this.scoreType !== "elimination" && leaderboard[i] && leaderboard[i][1] >= this.maxPoints){
+            var points = totalPlayers - i;
+            if (this.catGame) {points = points / 2;}
+            if (i > 0 && leaderboard[i][1] === leaderboard[i-1][1]){points = lastPoints;}
+            extLB.updateLeaderboard(utilities.html_escape(leaderboard[i][0]), ((points) > 0 ? points : 1));
+            lastPoints = points;
+            i++;
+        }
     }
     for (var x in leaderboard) {
         displayboard.push(leaderboard[x][0] + " (" + leaderboard[x][1] + ")");
@@ -1036,6 +1038,7 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
 
 function pointsLB(file) {
     this.file = file;
+    this.minLB = 7;
     this.leaderboard = [];
     var fileContent = sys.getFileContent(this.file);
     if (fileContent === undefined || fileContent === "") {
@@ -1091,7 +1094,7 @@ pointsLB.prototype.showLeaders = function (src, commandData, id) {
     if (scoreTypes.indexOf(scoreType) !== -1){
         if (input.length === 1 || isNaN(input[1]) || input[1] <= 0){
             maxPlace = 10;
-        } else {maxPlace = input[1]};
+        } else {maxPlace = input[1];};
         for (i = 0; i < this.leaderboard.length; i++) {
             var player = {'name' : this.leaderboard[i].name, 'points' : this.leaderboard[i].points, 'regWins' : this.leaderboard[i].regWins, 'livesLeft' : this.leaderboard[i].livesLeft,'elimWins' : this.leaderboard[i].elimWins};
             lb.push(player);
@@ -1359,6 +1362,15 @@ addUserCommand(["leaderboard", "lb"], function (src, commandData, channel){
 addOwnerCommand("resetlb", function(src){
     extLB.reset(src);
 }, "Removes all data from the leaderboard.");
+
+addOwnerCommand("lbmin", function(src, commandData, channel){
+    if (commandData.length == 0 || isNaN(commandData)){
+        triviabot.sendMessage(src, extLB.minLB + " points are currently required for a game to count towards the leaderboard.", channel);
+    } else {
+        extLB.minLB = commandData;
+        Trivia.sendAll("A minimum of " + commandData + " point(s) is now required for a knowledge game to count towards the leaderboard.",revchan);
+    }
+}, "Changes the minimum points needed for a knowledge-based game to count for the leaderboard. Format /lbmin #");
 
 addOwnerCommand(["triviaadmin", "striviaadmin"], function (src, commandData, channel, command) {
     if (tadmin.isTAdmin(commandData)) {
