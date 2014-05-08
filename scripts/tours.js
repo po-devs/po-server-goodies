@@ -2549,7 +2549,7 @@ function tourCommand(src, command, commandData, channel) {
             }
             var joinlist = tours.tour[key].numjoins;
             if (joinlist.hasOwnProperty(sys.ip(src))) {
-                if (joinlist[sys.ip(src)] > 2) {
+                if (joinlist[sys.ip(src)] > 2 && sys.auth(src) < 3) {
                     sendBotMessage(src, "You can't join/unjoin more than 3 times!",tourschan,false);
                     return true;
                 }
@@ -3200,10 +3200,11 @@ function removesubs(key) {
     try {
         var advanced = [];
         var opponent = null;
+        var toDq = [];
         for (var x in tours.tour[key].players) {
             if (isSub(tours.tour[key].players[x])) {
                 opponent = null;
-                disqualify(tours.tour[key].players[x],key,true,false);
+                toDq.push(tours.tour[key].players[x]);
                 if (x%2 === 0) {
                     opponent = tours.tour[key].players[x+1];
                 }
@@ -3218,6 +3219,7 @@ function removesubs(key) {
                 }
             }
         }
+        toDq.forEach(function(player){disqualify(player,key,true,false);});
         tours.tour[key].state = "round";
         if (advanced.length > 0) {
             sendBotAll(advanced.join(", ")+(advanced.length == 1 ? " advances" : " advance")+" to the next round! Subs are now gone.", tourschan, false);
