@@ -1123,7 +1123,7 @@ pointsLB.prototype.showLeaders = function (src, commandData, id) {
         sys.sendMessage(src, "", id);
         sys.sendMessage(src, "*** Trivia Leaderboard (" + scoreType + ") ***", id);
         for (i = 0; i < lb.length; i++) {
-            if (i < maxPlace || this.leaderboard[i].name === sys.name(src).toLowerCase()){
+            if (i < maxPlace || lb[i].name === sys.name(src).toLowerCase()){
                 var x = i + 1;
                 if (scoreType === "knowledge"){
                     Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].points + " point(s) and " + lb[i].regWins + " wins!", id);
