@@ -5523,11 +5523,11 @@ function Mafia(mafiachan) {
                     return true;
                 }
             }
-            if (message.indexOf("[Team]") === 0) {
+            if (message.indexOf("[Team]") != -1) {
                 msg(src, "Please don't fake a Team Talk message!", mafiachan);
                 return true;
             }
-            if (message.indexOf("[Dead]") === 0) {
+            if (message.indexOf("[Dead]") != -1) {
                 msg(src, "Please don't fake a Dead Chat message!", mafiachan);
                 return true;
             }
