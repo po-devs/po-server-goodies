@@ -3874,6 +3874,7 @@ function Mafia(mafiachan) {
             "/unshove: To cancel a shove on a user.",
             "/mafiaban: To ban a user from the Mafia channel, format /mafiaban user:reason:time",
             "/mafiaunban: To unban a user from the Mafia channel.",
+            "/mafiabans: To search the mafiabanlist for a string, shows full list if no search term is entered.",
             "/end: To cancel a Mafia game!",
             "/say: To bypass Dead Chat and talk normally to the channel.",
             "/readlog: To read the log of actions from a previous game",
