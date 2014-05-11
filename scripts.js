@@ -1451,7 +1451,7 @@ afterChangeTeam : function(src)
         sys.changeAway(src, true);
     }
     
-    sys.changeInfo(src, sys.info(src).replace(/(stop:.?\d+ [^\s]+)/g, "$1,").replace(/stop:.?\d+(?! [^\s])/g, ""));
+    sys.changeInfo(src, sys.info(src).replace(/stop:.?\d+(?! [^\s])/g, ""));
 
     for (var team = 0; team < sys.teamCount(src); team++) {
         try {
