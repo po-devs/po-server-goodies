@@ -1707,6 +1707,8 @@ afterChangeTeam : function(src)
     if (script.getKey("autoIdle", src) == "1") {
         sys.changeAway(src, true);
     }
+    
+    sys.changeInfo(src, sys.info(src).replace(/(stop:.?\d+ [^\s]+)/g, "$1,").replace(/stop:.?\d+(?! [^\s])/g, ""));
 
     for (var team = 0; team < sys.teamCount(src); team++) {
         try {
