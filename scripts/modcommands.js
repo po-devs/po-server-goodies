@@ -604,7 +604,6 @@ exports.help =
         "/banlist: Searches the banlist for a string, shows full list if no search term is entered.",
         "/mutelist: Searches the mutelist for a string, shows full list if no search term is entered.",
         "/smutelist: Searches the smutelist for a string, shows full list if no search term is entered.",
-        "/mafiabans: Searches the mafiabanlist for a string, shows full list if no search term is entered.",
         "/rangebans: Lists range bans.",
         "/ipbans: Lists ip bans.",
         "/profiling: Shows the profiling dump.",
