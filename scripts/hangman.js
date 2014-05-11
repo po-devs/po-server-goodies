@@ -766,6 +766,78 @@ function Hangman() {
 
     };
 
+    this.indexOfQuest = function(commandData) {
+		var indexes = [];
+		var game = [];
+		var a;
+		for (var e = 0; e < autoGames.length; e++) {
+			game = autoGames[e].split(":");
+			a = game[0].toLowerCase();
+			if (a === commandData.toLowerCase()) {
+				indexes.push[e];
+			}
+		}
+		return indexes;
+	};
+
+	this.searchQuest = function(src, commandData) {
+		if (autoGames.length === 0) {
+			hangbot.sendMessage(src, "There are no games in the database.", hangchan);
+			return;
+		}
+		else{
+			var indexes = hangman.indexOfQuest(commandData);
+			if (!indexes) {
+				hangbot.sendMessage(src, "The database doesn't contain that answer.", hangchan);
+				return;
+			}
+			else{
+				for (var e = 0; e < indexes.length; e++){
+					var info = autoGames[indexes[e]].split(":");
+					var a = info[0].toUpperCase(),
+						h = info[1],
+						p = info.length < 3 ? defaultParts : info[2];
+					hangbot.sendMessage(src, "Word: " + a + " - Hint: " + h + " - Chances: " + p, hangchan);
+				}
+			}
+		}
+	};
+
+	this.deleteQuest = function(src, commandData) {
+		if (commandData == "*" || commandData.indexOf(":") === -1) {
+            	hangbot.sendMessage(src, "Invalid format for deletion! Proper format is 'answer:line'.", hangchan);
+        	    return;
+        	}
+		if (autoGames.length === 0) {
+			hangbot.sendMessage(src, "There are no games in the database, you can't delete anything.", hangchan);
+			return;
+		}
+		else{
+			var a = commandData.split(":")[0];
+			var indexes = hangman.indexOfQuest(a);
+			if (!indexes) {
+				hangbot.sendMessage(src, "The database doesn't contain that answer.", hangchan);
+				return;
+			}
+			else{
+				var line = commandData.split(":")[1];
+				if (parseInt(line, 10) <= 1) {
+                    hangbot.sendMessage(src, "You must use a valid number!", hangchan);
+                    return;
+                }
+				line = parseInt(line, 10);
+				line = line -1;
+				if (indexes.length <= line){
+				    hangbot.sendMessage(src, "There are only " + indexes.length + "games with answer " + a + ". Use /searchquest to know the line of the one you want to delete.", hangchan);
+				    return;
+				}
+				autogames.splice(indexes[line], 1);
+				sys.write(autoGamesFile, JSON.stringify(autoGames));
+				hangbot.sendMessage(src, "You have successfully deleted the question!", hangchan);
+			}
+		}
+    };
+
     this.checkGame = function (src) {
         if (!word){
             hangbot.sendMessage(src, "No game is running!", hangchan);
@@ -874,6 +946,8 @@ function Hangman() {
             "/passha: To give your Hangman Admin powers to an alt.",
             "/autogame: To turn autogames on/off. Format /autogame on or /autogame off.",
             "/addquest: To add a question to the autogame/eventgame data base. Format /addquest Answer:Hint:Guess number.",
+            "/searchquest: To search a question in the autogame/eventgame data base. Format /searchquest Answer.",
+            "/deletequest: To delete a question in the autogame/eventgame data base. Format /deletequest Answer:Line (number of line in /searchquest).",
             "/checkgame: To see the answer of a game (only once per game). Prevents playing if used."
         ];
         var superAdminHelp = [
@@ -1046,6 +1120,16 @@ function Hangman() {
 
         if(command === "addquest") {
             hangman.addQuest(src, commandData);
+            return true;
+        }
+        
+        if(command === "searchquest") {
+            hangman.searchQuest(src, commandData);
+            return true;
+        }
+        
+        if(command === "deletequest") {
+            hangman.deleteQuest(src, commandData);
             return true;
         }
 
