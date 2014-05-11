@@ -240,29 +240,29 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var authlist = sys.dbAuths().sort();
         sys.sendMessage(src, "", channel);
         switch (commandData) {
-        case "owners":
-            sys.sendMessage(src, "*** Owners ***", channel);
-            authlist.filter(filterByAuth(3)).forEach(printOnlineOffline);
-            break;
-        case "admins":
-        case "administrators":
-            sys.sendMessage(src, "*** Administrators ***", channel);
-            authlist.filter(filterByAuth(2)).forEach(printOnlineOffline);
-            break;
-        case "mods":
-        case "moderators":
-            sys.sendMessage(src, "*** Moderators ***", channel);
-            authlist.filter(filterByAuth(1)).forEach(printOnlineOffline);
-            break;
-        default:
-            sys.sendMessage(src, "*** Owners ***", channel);
-            authlist.filter(filterByAuth(3)).forEach(printOnlineOffline);
-            sys.sendMessage(src, '', channel);
-            sys.sendMessage(src, "*** Administrators ***", channel);
-            authlist.filter(filterByAuth(2)).forEach(printOnlineOffline);
-            sys.sendMessage(src, '', channel);
-            sys.sendMessage(src, "*** Moderators ***", channel);
-            authlist.filter(filterByAuth(1)).forEach(printOnlineOffline);
+            case "owners":
+                sys.sendMessage(src, "*** Owners ***", channel);
+                authlist.filter(filterByAuth(3)).forEach(printOnlineOffline);
+                break;
+            case "admins":
+            case "administrators":
+                sys.sendMessage(src, "*** Administrators ***", channel);
+                authlist.filter(filterByAuth(2)).forEach(printOnlineOffline);
+                break;
+            case "mods":
+            case "moderators":
+                sys.sendMessage(src, "*** Moderators ***", channel);
+                authlist.filter(filterByAuth(1)).forEach(printOnlineOffline);
+                break;
+            default:
+                sys.sendMessage(src, "*** Owners ***", channel);
+                authlist.filter(filterByAuth(3)).forEach(printOnlineOffline);
+                sys.sendMessage(src, '', channel);
+                sys.sendMessage(src, "*** Administrators ***", channel);
+                authlist.filter(filterByAuth(2)).forEach(printOnlineOffline);
+                sys.sendMessage(src, '', channel);
+                sys.sendMessage(src, "*** Moderators ***", channel);
+                authlist.filter(filterByAuth(1)).forEach(printOnlineOffline);
         }
         sys.sendMessage(src, '', channel);
         return;
@@ -387,24 +387,6 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             teamNumber = commandData;
         }
         var team = script.importable(src, teamNumber, true).join("\n");
-        /* commenting out instead so I don't have to write it again later if needed :(
-        var name = sys.name(src) + '\'s ' + sys.tier(src, teamNumber) + ' team';
-        var post = {};
-        post['api_option'] = 'paste'; // paste, duh
-        post['api_dev_key'] = pastebin_api_key; // Developer's personal key, set in the beginning
-        //post['api_user_key'] = pastebin_user_key; // Pastes are marked to our account
-        post['api_paste_private'] = 1; // private
-        post['api_paste_name'] = name; // name
-        post['api_paste_code'] = team; // text itself
-        post['api_paste_expire_date'] = '1M'; // expires in 1 month
-        sys.webCall('https://api.github.com/gists?client_id=10d28edcfdd2ccaf111d&client_secret=baf5fa2720d8d55d47ad9f280d8f4733024635e5', function (resp) {
-            if (/^http:\/\//.test(resp))
-                normalbot.sendMessage(src, "Your team is available at: " + resp, bind_channel); // success
-            else {
-                normalbot.sendMessage(src, "Sorry, unexpected error: " + resp, bind_channel); // an error occured
-                normalbot.sendAll("" + sys.name(src) + "'s /importable failed: " + resp, staffchannel); // message to indigo
-            }
-        }, post);*/
         var filename = sys.time() + "-" + sys.rand(1000, 10000) + ".txt";
         sys.writeToFile("usage_stats/formatted/team/"+filename, team);
         normalbot.sendMessage(src, "You team can be found here: http://server.pokemon-online.eu/team/" + filename + " Remember this will be deleted in 24 hours", channel);
@@ -678,7 +660,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "No such pokemon!", channel); return;
         }
         var pokename = sys.pokemon(poke);
-        if (dwCheck(poke) === false){
+        if (pokedex.dwCheck(poke) === false){
             normalbot.sendMessage(src, pokename + ": has no DW ability!", channel);
             return;
         }
@@ -726,9 +708,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendHtmlMessage(src, "<img src='pokemon:num=" + pokeId + "&gen=6'><img src='pokemon:num=" + pokeId + "&shiny=true&gen=6'>", channel);
         sys.sendHtmlMessage(src, "<b>Type:</b> " + type1 + (type2 === "???" ? "" : "/" + type2), channel);
         sys.sendHtmlMessage(src, "<b>Abilities:</b> " + ability1 + (sys.pokemon(pokeId).substr(0, 5) === "Mega " ? "" : (ability2 === "(No Ability)" ? "" : ", " + ability2) + (ability3 === "(No Ability)" ? "" : ", " + ability3 + " (Hidden Ability)")), channel);
-        sys.sendHtmlMessage(src, "<b>Height:</b> " + getHeight(pokeId) + " m", channel);
-        sys.sendHtmlMessage(src, "<b>Weight:</b> " + getWeight(pokeId) + " kg", channel);
-        sys.sendHtmlMessage(src, "<b>Base Power of Low Kick/Grass Knot:</b> " + weightPower(getWeight(pokeId)), channel);
+        sys.sendHtmlMessage(src, "<b>Height:</b> " + pokedex.getHeight(pokeId) + " m", channel);
+        sys.sendHtmlMessage(src, "<b>Weight:</b> " + pokedex.getWeight(pokeId) + " kg", channel);
+        sys.sendHtmlMessage(src, "<b>Base Power of Low Kick/Grass Knot:</b> " + pokedex.weightPower(pokedex.getWeight(pokeId)), channel);
         var table = "<table border = 1 cellpadding = 3>";
         table += "<tr><th rowspan = 2 valign = middle><font size = 5>Stats</font></th><th rowspan = 2 valign = middle>Base</th><th colspan = 3>Level 5</th><th colspan = 3>Level 50</th><th colspan = 3>Level 100</th></tr>";
         table += "<tr><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th>";
@@ -737,10 +719,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             table += "<tr><td valign = middle><b>" + stats[x] + "</b></td><td><center><font size = 4>" + baseStat + "</font></center></td>";
             for (var i = 0; i < levels.length; i++) {
                 if (x === 0) {
-                    table += "<td valign = middle><center>" + calcHP(baseStat, 31, 0, levels[i]) + "</center></td><td valign = middle><center>" + calcHP(baseStat, 31, 252, levels[i]) + "</center></td><td valign = middle><center>-</center></td>";
+                    table += "<td valign = middle><center>" + pokedex.calcHP(baseStat, 31, 0, levels[i]) + "</center></td><td valign = middle><center>" + pokedex.calcHP(baseStat, 31, 252, levels[i]) + "</center></td><td valign = middle><center>-</center></td>";
                 }
                 else {
-                    table += "<td valign = middle><center>" + calcStat(baseStat, 31, 0, levels[i], 1) + "</center></td><td valign = middle><center>" + calcStat(baseStat, 31, 252, levels[i], 1) + "</center></td><td valign = middle><center>" + calcStat(baseStat, 31, 252, levels[i], 1.1) + "</center></td>";
+                    table += "<td valign = middle><center>" + pokedex.calcStat(baseStat, 31, 0, levels[i], 1) + "</center></td><td valign = middle><center>" + pokedex.calcStat(baseStat, 31, 252, levels[i], 1) + "</center></td><td valign = middle><center>" + pokedex.calcStat(baseStat, 31, 252, levels[i], 1.1) + "</center></td>";
                 }
             }
             table += "</tr>";
@@ -760,11 +742,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var type = sys.type(sys.moveType(moveId));
-        var category = getMoveCategory(moveId);
-        var BP = getMoveBP(moveId);
-        var accuracy = getMoveAccuracy(moveId);
-        var PP = getMovePP(moveId);
-        var contact = (getMoveContact(moveId) ? "Yes" : "No");
+        var category = pokedex.getMoveCategory(moveId);
+        var BP = pokedex.getMoveBP(moveId);
+        var accuracy = pokedex.getMoveAccuracy(moveId);
+        var PP = pokedex.getMovePP(moveId);
+        var contact = (pokedex.getMoveContact(moveId) ? "Yes" : "No");
         sys.sendHtmlMessage(src, "", channel);
         sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.move(moveId) + "</font></b>", channel);
         var table = "<table border = 1 cellpadding = 2>";
@@ -773,7 +755,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         table += "</table>";
         sys.sendHtmlMessage(src, table, channel);
         sys.sendHtmlMessage(src, "", channel);
-        sys.sendHtmlMessage(src, "<b>Effect:</b> " + getMoveEffect(moveId), channel);
+        sys.sendHtmlMessage(src, "<b>Effect:</b> " + pokedex.getMoveEffect(moveId), channel);
         sys.sendHtmlMessage(src, "", channel);
         return;
     }
@@ -790,7 +772,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         sys.sendHtmlMessage(src, "", channel);
         sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.ability(abilityId) + "</font></b>", channel);
-        sys.sendHtmlMessage(src, "<b>Effect:</b> " + getAbility(abilityId), channel);
+        sys.sendHtmlMessage(src, "<b>Effect:</b> " + pokedex.getAbility(abilityId), channel);
         sys.sendHtmlMessage(src, "", channel);
         return;
     }
@@ -807,7 +789,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var isBerry = (commandData.toLowerCase().substr(commandData.length - 5) === "berry");
-        var flingPower = isBerry ? "10" : getFlingPower(itemId);
+        var flingPower = isBerry ? "10" : pokedex.getFlingPower(itemId);
         var isGSC = false;
         if (itemId >= 9000 || itemId === 1000 || itemId === 1001 || itemId === 304) {
             isGSC = true;
@@ -817,25 +799,25 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (!isGSC) {
             sys.sendHtmlMessage(src, "<img src=item:" + itemId + ">", channel);
         }
-        sys.sendHtmlMessage(src, "<b>Effect:</b> " + (isBerry ? getBerry(berryId) : getItem(itemId)), channel);
+        sys.sendHtmlMessage(src, "<b>Effect:</b> " + (isBerry ? pokedex.getBerry(berryId) : pokedex.getItem(itemId)), channel);
         if (!isGSC) {
             if (flingPower !== undefined) {
                 sys.sendHtmlMessage(src, "<b>Fling base power:</b> " + flingPower, channel);
             }
             if (isBerry) {
-                sys.sendHtmlMessage(src, "<b>Natural Gift type:</b> " + getBerryType(berryId), channel);
-                sys.sendHtmlMessage(src, "<b>Natural Gift base power:</b> " + getBerryPower(berryId), channel);
+                sys.sendHtmlMessage(src, "<b>Natural Gift type:</b> " + pokedex.getBerryType(berryId), channel);
+                sys.sendHtmlMessage(src, "<b>Natural Gift base power:</b> " + pokedex.getBerryPower(berryId), channel);
             }
         }
-    sys.sendHtmlMessage(src, "", channel);
-    return;
+        sys.sendHtmlMessage(src, "", channel);
+        return;
     }
     if (command === "nature" || command === "natures") {
         sys.stopEvent();
         if (commandData) {
             var stats = ["Attack", "Defense", "Special Attack", "Special Defense", "Speed"];
-            var effect = script.getNatureEffect(commandData);
-            var nature = script.natures[effect[0]][effect[1]];
+            var effect = pokedex.getNatureEffect(commandData);
+            var nature = pokedex.natures[effect[0]][effect[1]];
             if (!nature) {
                 normalbot.sendMessage(src, commandData + " is not a valid nature!", channel);
                 return;
@@ -885,7 +867,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         moveId = moveId.toString();
-        var allMoves = script.getAllMoves(pokeId);
+        var allMoves = pokedex.getAllMoves(pokeId);
         var canLearn = (allMoves.indexOf(moveId) != -1);
         normalbot.sendMessage(src, sys.pokemon(pokeId) + " " + (canLearn ? "can" : "can't") + " learn " + sys.move(moveId) + ".", channel);
         return;
@@ -934,7 +916,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, "You cannot switch to " + commandData[0], channel);
         return;
     }
-    
+
     if (command == "invitespec") {
         if (tar === undefined) {
             normalbot.sendMessage(src, "Choose a valid target to watch your battle!");
@@ -944,12 +926,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "You are not currently battling!");
             return;
         }
-        
+
         if (sys.away(tar)) {
             normalbot.sendMessage(src, "You cannot ask idle players to watch your battle.");
             return;
         }
-        
+
         /*Delay code ripped from Hangman */
         var now = (new Date()).getTime();
         if (now < SESSION.users(src).inviteDelay) {
