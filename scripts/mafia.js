@@ -3875,7 +3875,7 @@ function Mafia(mafiachan) {
             "/mafiaban: To ban a user from the Mafia channel, format /mafiaban user:reason:time",
             "/mafiaunban: To unban a user from the Mafia channel.",
             "/end: To cancel a Mafia game!",
-            "/say: To bypass Dead Chat and talk normally to the channel.",
+            "/say: To bypass Dead Chat and/or talk normally to the channel.",
             "/readlog: To read the log of actions from a previous game",
             "/targetlog: To read the log of Turn 1 actions from a set of previous games.",
             "/passma: To give your Mafia Admin powers to an alt of yours.",
@@ -5517,7 +5517,7 @@ function Mafia(mafiachan) {
                     return true;
                 }
             } 
-            if (!mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0 && !mafia.isMafiaAdmin(src)) {
+            if (!mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0 && !mafia.isMafiaSuperAdmin(src)) {
                 if (!(is_command(message) && message.substr(1, 2).toLowerCase() != "me")) {
                     sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
                     return true;
