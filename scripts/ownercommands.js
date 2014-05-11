@@ -706,37 +706,6 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     
-    if (command == "cookieban" || command == "cookiemute") {
-        if (!commandData) {
-            return;
-        }
-        if (!sys.loggedIn(sys.id(commandData))) {
-            normalbot.sendMessage(src, "Target not logged in", channel);
-            return;
-        } else if (command == "cookiemute") {
-            SESSION.users(sys.id(commandData)).activate("smute", Config.kickbot, 0, "Cookie", true);
-            kickbot.sendAll(commandData + " was smuted by cookie", staffchannel);
-        }
-        var type = (command === "cookieban" ? "banned" : "muted");
-        sys.setCookie(sys.id(commandData), type);
-        normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type, staffchannel);
-        return;
-    }
-    if (command == "cookieunban" || command ==  "cookieunmute") {
-        if (!commandData) {
-            return;
-        }
-        if (commandData == "cookieunmute" && sys.loggedIn(sys.id(commandData))) {
-            script.unban("smute", Config.kickbot, tar, commandData);
-            sys.removeCookie(sys.id(commandData));
-            return;
-        }
-        var type = (command === "cookieunban" ? "unbanned" : "unmuted");
-        script.namesToUnban.add(commandData.toLowerCase(), true);
-        normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type, staffchannel);
-        return;
-    }
-    
     if (command == "tempmod" || command == "tempadmin") {
         if (!commandData || !sys.loggedIn(sys.id(commandData))) {
             normalbot.sendMessage(src, "Target must be logged in", channel);
@@ -819,9 +788,6 @@ exports.help =
         "/warnwebclients: Sends a big alert with your message to webclient users.",
         "/clearladder: Clears rankings from a tier.",
         "/advertise: Sends a html message to the main channels",
-        "/cookieban: Bans an online target by cookie. Use on Android users",
-        "/cookiemute: Puts an online android target on an autosmute list by cookie. Use on Android users",
-        "/cookieunban/mute: Undos a cookieban/mute. Will take effect when they next log in",
         "/tempmod/admin: Gives temporary auth to a user. Lasts until they log out",
         "/detempauth: Removes temporary auth given to a user"
     ];
