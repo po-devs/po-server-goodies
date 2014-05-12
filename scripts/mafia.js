@@ -3249,7 +3249,7 @@ function Mafia(mafiachan) {
                 gamemsgAll("±Time: Day " + mafia.time.days);
                 gamemsgAll("It's time to vote someone off, type /Vote [name], you only have " + mafia.ticks + " seconds! :");
                 if (mafia.theme.noplur === true) {
-                    gamemsgAll("A majority vote must be reached otherwise no lynch occurs. With " + mafia.playerCount() + " alive, it's " + Math.round(mafia.playerCount()/2) + " to lynch!:");
+                    gamemsgAll("A majority vote must be reached otherwise no lynch occurs. With " + mafia.playerCount() + " alive, it's " + (Math.floor(mafia.playerCount()/2)+1) + " to lynch!:");
                 }
                 sendChanAll(border, mafiachan);
                 
