@@ -774,7 +774,7 @@ function Hangman() {
 			game = autoGames[e].split(":");
 			a = game[0].toLowerCase();
 			if (a === commandData.toLowerCase()) {
-				indexes.push[e];
+				indexes.push(e);
 			}
 		}
 		return indexes;
@@ -831,7 +831,7 @@ function Hangman() {
 				    hangbot.sendMessage(src, "There are only " + indexes.length + "games with answer " + a + ". Use /searchquest to know the line of the one you want to delete.", hangchan);
 				    return;
 				}
-				autogames.splice(indexes[line], 1);
+				autoGames.splice(indexes[line], 1);
 				sys.write(autoGamesFile, JSON.stringify(autoGames));
 				hangbot.sendMessage(src, "You have successfully deleted the question!", hangchan);
 			}
