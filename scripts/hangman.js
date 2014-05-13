@@ -821,10 +821,10 @@ function Hangman() {
 			}
 			else{
 				var line = commandData.split(":")[1];
-				if (parseInt(line, 10) <= 1) {
-                    hangbot.sendMessage(src, "You must use a valid number!", hangchan);
-                    return;
-                }
+				if (parseInt(line, 10) < 1) {
+                    			hangbot.sendMessage(src, "You must use a valid number!", hangchan);
+                    			return;
+                		}
 				line = parseInt(line, 10);
 				line = line -1;
 				if (indexes.length <= line){
