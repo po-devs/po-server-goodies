@@ -42,7 +42,7 @@ function mafiaChecker() {
                 lists.push("roles"+i);
                 ++i;
             }
-            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "drawmsg", "minplayers", "noplur", "nolynch", "votesniping", "ticks", "silentVote", "nonPeak", "changelog", "threadlink", "altname", "tips", "closedSetup", "variables", "spawnPacks"].concat(lists), "Your theme");
+            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "drawmsg", "minplayers", "noplur", "nolynch", "votesniping", "ticks", "silentVote", "delayedConversionMsg", "nonPeak", "changelog", "threadlink", "altname", "tips", "closedSetup", "variables", "spawnPacks"].concat(lists), "Your theme");
 
             if (checkType(raw.name, ["string"], "'theme.name'")) {
                 if (raw.name[raw.name.length - 1] == " ") {
@@ -81,6 +81,7 @@ function mafiaChecker() {
             checkValidValue(raw.noplur, [true, false], "theme.noplur");
             checkValidValue(raw.votesniping, [true, false], "theme.votesniping");
             checkValidValue(raw.silentVote, [true, false], "theme.silentVote");
+            checkValidValue(raw.delayedConversionMsg, [true, false], "theme.delayedConversionMsg");
             checkValidValue(raw.nonPeak, [true, false], "theme.nonPeak");
             checkValidValue(raw.closedSetup, [true, false], "theme.closedSetup");
             
@@ -229,7 +230,7 @@ function mafiaChecker() {
     };
     Theme.prototype.addRole = function(obj) {
         var yourRole = (obj.role) ? 'your role "' + obj.role + '"' : 'one of your roles';
-        checkAttributes(obj, ["role", "translation", "side", "help"], ["actions", "help2", "info", "winningSides", "winIfDeadRoles", "hide", "startupmsg", "players"], cap(yourRole));
+        checkAttributes(obj, ["role", "translation", "side", "help"], ["actions", "help2", "info", "infoName", "winningSides", "winIfDeadRoles", "hide", "startupmsg", "players"], cap(yourRole));
         if (!obj.actions) {
             obj.actions = {};
         }
@@ -243,6 +244,7 @@ function mafiaChecker() {
         checkType(obj.help, ["string"], yourRole + "'s 'help' attribute");
         checkType(obj.help2, ["string"], yourRole + "'s 'help2' attribute");
         checkType(obj.info, ["string"], yourRole + "'s 'info' attribute");
+        checkType(obj.infoName, ["string"], yourRole + "'s 'infoName' attribute");
         checkType(obj.startupmsg, ["string"], yourRole + "'s 'startupmsg' attribute");
         checkType(obj.players, ["string", "number", "array", "boolean"], yourRole + "'s 'players' attribute");
         checkValidValue(obj.hide, [true, false, "role", "side", "both"], yourRole + "'s 'hide' attribute");
