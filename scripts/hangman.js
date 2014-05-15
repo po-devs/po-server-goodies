@@ -780,28 +780,28 @@ function Hangman() {
 		return indexes;
 	};
 
-	this.searchQuest = function(src, commandData) {
-		if (autoGames.length === 0) {
-			hangbot.sendMessage(src, "There are no games in the database.", hangchan);
-			return;
+    this.searchQuest = function(src, commandData) {
+	if (autoGames.length === 0) {
+	    hangbot.sendMessage(src, "There are no games in the database.", hangchan);
+	    return;
+	}
+	else{
+	    var indexes = hangman.indexOfQuest(commandData);
+	    if (indexes.length === 0) {
+	        hangbot.sendMessage(src, "The database doesn't contain that answer.", hangchan);
+		return;
+	    }
+	    else{
+	        for (var e = 0; e < indexes.length; e++){
+		    var info = autoGames[indexes[e]].split(":");
+		    var a = info[0].toUpperCase(),
+		    h = info[1],
+		    p = info.length < 3 ? defaultParts : info[2];
+	 	    hangbot.sendMessage(src, "Word: " + a + " - Hint: " + h + " - Chances: " + p, hangchan);
 		}
-		else{
-			var indexes = hangman.indexOfQuest(commandData);
-			if (!indexes) {
-				hangbot.sendMessage(src, "The database doesn't contain that answer.", hangchan);
-				return;
-			}
-			else{
-				for (var e = 0; e < indexes.length; e++){
-					var info = autoGames[indexes[e]].split(":");
-					var a = info[0].toUpperCase(),
-						h = info[1],
-						p = info.length < 3 ? defaultParts : info[2];
-					hangbot.sendMessage(src, "Word: " + a + " - Hint: " + h + " - Chances: " + p, hangchan);
-				}
-			}
-		}
-	};
+    	    }
+	}
+    };
 
 	this.deleteQuest = function(src, commandData) {
 		if (commandData == "*" || commandData.indexOf(":") === -1) {
@@ -815,7 +815,7 @@ function Hangman() {
 		else{
 			var a = commandData.split(":")[0];
 			var indexes = hangman.indexOfQuest(a);
-			if (!indexes) {
+			if (indexes.length===0) {
 				hangbot.sendMessage(src, "The database doesn't contain that answer.", hangchan);
 				return;
 			}
