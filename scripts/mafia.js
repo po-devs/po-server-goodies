@@ -5577,7 +5577,7 @@ function Mafia(mafiachan) {
                     }
                     return true;
                 }
-            } 
+            }
             if (!mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0 && !mafia.isMafiaSuperAdmin(src)) {
                 if (!(is_command(message) && message.substr(1, 2).toLowerCase() != "me")) {
                     sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);

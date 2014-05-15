@@ -452,8 +452,8 @@ TriviaGame.prototype.startTriviaRound = function () {
     }
     if (this.scoreType === "elimination" && this.round === 0 && totalPlayers < 2 ) {
         this.htmlAll("The elimination game was cancelled due to a lack of players!");
-		this.resetTrivia();
-		runUpdate();
+        this.resetTrivia();
+        runUpdate();
         return;
     }
     /* Reset submittedAnswers */
