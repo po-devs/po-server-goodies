@@ -1041,7 +1041,7 @@ function Mafia(mafiachan) {
             try {
                 side = side_order[s];
                 if (side_list[side] !== undefined)
-                    sides.push("±Side: The " + this.trside(side) + (side == "village" ? " (Village)" : "") + " consists of: " + side_list[side].join(", ") + ".");
+                    sides.push("±Side: The " + this.trside(side) + (side == "village" ? " (Village)" : "") + " consists of: " + removeDuplicates(side_list[side]).join(", ") + ".");
             } catch (err) {
                 dualBroadcast("Error adding side " + this.trside(side) + "(" + side + ") to /sides");
                 throw err;
