@@ -927,10 +927,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
 
-        if (sys.away(tar)) {
+        /*if (sys.away(tar)) {
             normalbot.sendMessage(src, "You cannot ask idle players to watch your battle.");
             return;
-        }
+        }*/
 
         /*Delay code ripped from Hangman */
         var now = (new Date()).getTime();
@@ -939,7 +939,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         sys.sendHtmlMessage(tar, "<font color='brown'><timestamp/><b>±Sentret:  </b></font><a href='po:watchplayer/"+ sys.name(src) +"'><b>"+utilities.html_escape(sys.name(src))+"</b> would like you to watch their battle!</a>");
-        SESSION.users(src).inviteDelay = (new Date()).getTime() + 15000;
+        SESSION.users(src).inviteDelay = (new Date()).getTime() + 10000;
         return;
     }
     if (command == "notice") {
