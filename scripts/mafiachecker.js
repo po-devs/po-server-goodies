@@ -42,7 +42,7 @@ function mafiaChecker() {
                 lists.push("roles"+i);
                 ++i;
             }
-            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "drawmsg", "minplayers", "noplur", "nolynch", "votesniping", "ticks", "silentVote", "delayedConversionMsg", "nonPeak", "changelog", "threadlink", "altname", "tips", "closedSetup", "variables", "spawnPacks"].concat(lists), "Your theme");
+            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "drawmsg", "minplayers", "noplur", "nolynch", "votesniping", "checkNoVoters", "ticks", "silentVote", "delayedConversionMsg", "nonPeak", "changelog", "threadlink", "altname", "tips", "closedSetup", "variables", "spawnPacks"].concat(lists), "Your theme");
 
             if (checkType(raw.name, ["string"], "'theme.name'")) {
                 if (raw.name[raw.name.length - 1] == " ") {
@@ -81,6 +81,7 @@ function mafiaChecker() {
             checkValidValue(raw.noplur, [true, false], "theme.noplur");
             checkValidValue(raw.votesniping, [true, false], "theme.votesniping");
             checkValidValue(raw.silentVote, [true, false], "theme.silentVote");
+            checkValidValue(raw.checkNoVoters, [true, false], "theme.checkNoVoters");
             checkValidValue(raw.delayedConversionMsg, [true, false], "theme.delayedConversionMsg");
             checkValidValue(raw.nonPeak, [true, false], "theme.nonPeak");
             checkValidValue(raw.closedSetup, [true, false], "theme.closedSetup");
@@ -88,6 +89,13 @@ function mafiaChecker() {
             if (checkType(raw.changelog, ["object", "array"], "'theme.changelog'")) {
                 for (i in raw.changelog) {
                     if (!checkType(raw.changelog[i], ["string"], "All values for 'theme.changelog'")) {
+                        break;
+                    }
+                }
+            }
+            if (checkType(raw.tips, ["object", "array"], "'theme.tips'")) {
+                for (i in raw.tips) {
+                    if (!checkType(raw.tips[i], ["string"], "All values for 'theme.tips'")) {
                         break;
                     }
                 }
@@ -323,6 +331,10 @@ function mafiaChecker() {
                                 commonOptional = commonOptional.concat(["Sight"]);
                             if (commandList.indexOf("distract") !== -1)
                                 commonOptional = commonOptional.concat(["distractmsg", "teammsg"]);
+                            if (commandList.indexOf("protect") !== -1)
+                                commonOptional = commonOptional.concat(["protectmsg"]);
+                            if (commandList.indexOf("safeguard") !== -1)
+                                commonOptional = commonOptional.concat(["safeguardmsg"]);
                             if (commandList.indexOf("poison") !== -1)
                                 commonOptional = commonOptional.concat(["count", "poisonDeadMessage", "poisonmsg", "poisontarmsg"]);
                             if (commandList.indexOf("stalk") !== -1) {
@@ -410,6 +422,10 @@ function mafiaChecker() {
                                 } else if (command == "distract") {
                                     checkType(action.distractmsg, ["string"], comm + ".distractmsg");
                                     checkType(action.teammsg, ["string"], comm + ".teammsg");
+                                } else if (command == "protect") {
+                                    checkType(action.protectmsg, ["string"], comm + ".protectmsg");
+                                } else if (command == "safeguard") {
+                                    checkType(action.safeguardmsg, ["string"], comm + ".safeguardmsg");
                                 } else if (command == "poison") {
                                     checkType(action.count, ["number"], comm + ".count");
                                     checkType(action.poisonDeadMessage, ["string"], comm + ".poisonDeadMessage");
