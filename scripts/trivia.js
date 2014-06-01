@@ -585,12 +585,14 @@ TriviaGame.prototype.finalizeAnswers = function () {
         return b[1] - a[1];
     });
     var i = 0;
-    if (month !== new Date().getMonth()){
+    var newMonth = new Date().getMonth();
+    if (month !== newMonth){
         extLB.reset();
+        month = newMonth;
     }
     var lastPoints; //points = leaderboard points
-    if (this.maxPoints >= extLB.minLB){
-        while (this.scoreType !== "elimination" && leaderboard[i] && leaderboard[i][1] >= this.maxPoints){
+    if (this.maxPoints >= extLB.minLB && this.scoreType !== "elimination"){
+        while (leaderboard[i] && leaderboard[i][1] >= this.maxPoints){
             var points = totalPlayers - i;
             if (this.catGame) {points = points / 2;}
             if (i > 0 && leaderboard[i][1] === leaderboard[i-1][1]){points = lastPoints;}
