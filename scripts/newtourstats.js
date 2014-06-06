@@ -541,7 +541,8 @@ function awardTourPoints(player, size, tier, delim, place) {
     var tiers_z = ["Metronome", "Red/Blue", "Yellow", "Stadium", "Stadium w/ Tradebacks",
                    "Gold/Silver", "Crystal", "Stadium 2", "Ruby/Sapphire", "Colosseum",
                    "Fire Red/Leaf Green", "Emerald", "XD", "Diamond/Pearl", "Platinum",
-                   "Heart Gold/Soul Silver", "Black/White", "Black/White 2", "X/Y"];
+                   "Heart Gold/Soul Silver", "Black/White", "Black/White 2", "X/Y",
+                   "GBU Singles", "GBU Doubles", "GBU Triples"];
     if (tiers_a.indexOf(tier) != -1) {
         points = tierscore.a[scale];
     }
