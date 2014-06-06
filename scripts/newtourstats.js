@@ -534,11 +534,14 @@ function awardTourPoints(player, size, tier, delim, place) {
     }
     var tiers_a = [];
     var tiers_b = []; // default
-    var tiers_c = ["Monotype", "Battle Factory"];
+    var tiers_c = ["Monotype", "Sky Battle", "Battle Factory", "Battle Factory 6v6"];
     var tiers_d = ["Challenge Cup", "Inverted Challenge Cup"];
-    var tiers_e = ["Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers", "XY 1v1"];
+    var tiers_e = ["Wifi CC 1v1", "XY 1v1", "Random Battle"];
     var tiers_f = ["CC 1v1"];
-    var tiers_z = ["Metronome"];
+    var tiers_z = ["Metronome", "Red/Blue", "Yellow", "Stadium", "Stadium w/ Tradebacks",
+                   "Gold/Silver", "Crystal", "Stadium 2", "Ruby/Sapphire", "Colosseum",
+                   "Fire Red/Leaf Green", "Emerald", "XD", "Diamond/Pearl", "Platinum",
+                   "Heart Gold/Soul Silver", "Black/White", "Black/White 2", "X/Y"];
     if (tiers_a.indexOf(tier) != -1) {
         points = tierscore.a[scale];
     }
