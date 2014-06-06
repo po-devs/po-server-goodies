@@ -8,6 +8,7 @@
         - trivreview.txt
         - tadmins.txt
         - tsadmins.txt
+        - trivialeaderboard.txt
 */
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global updateModule, script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, module, sachannel, staffchannel*/
@@ -38,6 +39,7 @@ var trivreview = new QuestionHolder("trivreview.txt");
 var tadmin = new TriviaAdmin("tadmins.txt");
 var tsadmin = new TriviaAdmin("tsadmins.txt");
 var trivData;
+var month = new Date().getMonth();
 try {
     trivData = JSON.parse(sys.getFileContent("trivData.json"));
 }
@@ -583,9 +585,14 @@ TriviaGame.prototype.finalizeAnswers = function () {
         return b[1] - a[1];
     });
     var i = 0;
+    var newMonth = new Date().getMonth();
+    if (month !== newMonth){
+        extLB.reset();
+        month = newMonth;
+    }
     var lastPoints; //points = leaderboard points
-    if (this.maxPoints >= extLB.minLB){
-        while (this.scoreType !== "elimination" && leaderboard[i] && leaderboard[i][1] >= this.maxPoints){
+    if (this.maxPoints >= extLB.minLB && this.scoreType !== "elimination"){
+        while (leaderboard[i] && leaderboard[i][1] >= this.maxPoints){
             var points = totalPlayers - i;
             if (this.catGame) {points = points / 2;}
             if (i > 0 && leaderboard[i][1] === leaderboard[i-1][1]){points = lastPoints;}
@@ -1138,11 +1145,9 @@ pointsLB.prototype.showLeaders = function (src, commandData, id) {
     }
 };
 
-pointsLB.prototype.reset = function(src){
+pointsLB.prototype.reset = function(){
     this.leaderboard = [];
     sys.writeToFile(this.file, JSON.stringify(this.leaderboard));
-    Trivia.sendAll(sys.name(src) + " reset the Leaderboard!", revchan);
-    Trivia.sendAll(sys.name(src) + " reset the Leaderboard!", triviachan);
 };
 
 // Commands
@@ -1360,7 +1365,7 @@ addUserCommand(["leaderboard", "lb"], function (src, commandData, channel){
 }, "Shows the current leaderboard and your standing, format: /leaderboard [type]*[#]. Type is the scoring used (knowledge [know] or elimination [elim]); required. # is the number of places to show; if left blank, shows top 10 and your placement.");
 
 addOwnerCommand("resetlb", function(src){
-    extLB.reset(src);
+    extLB.reset();
 }, "Removes all data from the leaderboard.");
 
 addOwnerCommand("lbmin", function(src, commandData, channel){
