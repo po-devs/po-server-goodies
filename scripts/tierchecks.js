@@ -155,7 +155,7 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["Inverted Battle", "XY 1v1","XY Ubers", "X/Y Cup", "XY OU", "XY UU", "XY LU", "XY NU", "XY LC", "XY OU Doubles", "XY OU Triples", "No Preview OU", "BW2 OU", "BW2 UU", "BW2 LU", "BW2 LC", "DW LC", "BW2 Ubers", "No Preview Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "BW2 NU", "Metronome", "BW2 NEU"],
+tier_checker.add_new_check(INCLUDING, ["Inverted Battle", "XY 1v1","XY Ubers", "X/Y Cup", "XY OU", "XY UU", "XY LU", "XY NU", "XY LC", "XY Doubles", "XY Triples", "No Preview OU", "BW2 OU", "BW2 UU", "BW2 LU", "BW2 LC", "DW LC", "BW2 Ubers", "No Preview Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "BW2 NU", "Metronome", "BW2 NEU"],
                            function inconsistentCheck(src, team, tier) {
     var moody = sys.abilityNum("Moody");
     var ret = [];
