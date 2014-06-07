@@ -636,16 +636,20 @@ function detEventPoints(size, ranking, tier) {
     if (scale == -1) {
         return 0;
     }
-    else if (["Metronome"].indexOf(tier) > -1) {
+    else if (["Metronome", "Red/Blue", "Yellow", "Stadium", "Stadium w/ Tradebacks",
+              "Gold/Silver", "Crystal", "Stadium 2", "Ruby/Sapphire", "Colosseum",
+              "Fire Red/Leaf Green", "Emerald", "XD", "Diamond/Pearl", "Platinum",
+              "Heart Gold/Soul Silver", "Black/White", "Black/White 2", "X/Y",
+              "GBU Singles", "GBU Doubles", "GBU Triples"].indexOf(tier) > -1) {
         return 0;
     }
-    else if (["Battle Factory", "Monotype"].indexOf(tier) > -1) {
+    else if (["Monotype", "Sky Battle", "XY Cup"].indexOf(tier) > -1) {
         mag -= 1;
     }
-    else if (["Challenge Cup", "Inverted Challenge Cup"].indexOf(tier) > -1) {
+    else if (["Challenge Cup", "Inverted Challenge Cup", "Battle Factory", "Battle Factory 6v6"].indexOf(tier) > -1) {
         mag -= 2;
     }
-    else if (["Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers", "XY 1v1"].indexOf(tier) > -1) {
+    else if (["Wifi CC 1v1", "XY 1v1", "Random Battle"].indexOf(tier) > -1) {
         mag -= 3;
     }
     else if (["CC 1v1"].indexOf(tier) > -1) {
