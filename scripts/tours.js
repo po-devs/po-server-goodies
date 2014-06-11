@@ -2504,6 +2504,10 @@ function tourCommand(src, command, commandData, channel) {
                 sendBotMessage(src, "You need to "+(needsteam ? "have a team for" : "change your tier to")+" the "+tours.tour[key].tourtype+" tier to join!",tourschan,false);
                 return true;
             }
+            if ((tours.tour[key].parameters.mode === "Doubles" || tours.tour[key].parameters.mode === "Triples") && sys.users(src).android) {
+                sendBotMessage(src, "Android devices are incapable of joining "+tours.tour[key].parameters.mode+" tours!",tourschan,false);
+                return true;
+            }
             var isInCorrectGen = false;
             for (var x=0; x<sys.teamCount(src); x++) {
                 if (sys.tier(src, x) === tours.tour[key].tourtype) {
@@ -2644,7 +2648,7 @@ function tourCommand(src, command, commandData, channel) {
                 }
             }
 
-            if (oldname === null) {
+            if (oldname === null || SESSION.users(src).smute.active) { // prevent users from joining tours whilst smuted
                 sendBotMessage(src, "There are no subs remaining in the "+getFullTourName(key)+" tournament!",tourschan, false);
                 return true;
             }
