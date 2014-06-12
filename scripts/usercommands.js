@@ -655,7 +655,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "dwreleased") {
-        var poke = sys.pokeNum(commandData);
+        var poke = sys.pokeNum(commandData.trim());
         if (!poke) {
             normalbot.sendMessage(src, "No such pokemon!", channel); return;
         }
@@ -681,7 +681,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var pokeId;
-        if (isNaN(commandData)) {
+        if (isNaN(commandData.trim())) {
             pokeId = sys.pokeNum(commandData);
         }
         else {
@@ -736,7 +736,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "Please specify a move!", channel);
             return;
         }
-        var moveId = sys.moveNum(commandData);
+        var moveId = sys.moveNum(commandData.trim());
         if (!moveId) {
             normalbot.sendMessage(src, commandData + " is not a valid move!", channel);
             return;
@@ -765,7 +765,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "Please specify an ability!", channel);
             return;
         }
-        var abilityId = sys.abilityNum(commandData);
+        var abilityId = sys.abilityNum(commandData.trim());
         if (!abilityId) {
             normalbot.sendMessage(src, commandData + " is not a valid ability!", channel);
             return;
@@ -782,7 +782,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "Please specify an item!", channel);
             return;
         }
-        var itemId = sys.itemNum(commandData);
+        var itemId = sys.itemNum(commandData.trim());
         var berryId = itemId - 8000;
         if (!itemId) {
             normalbot.sendMessage(src, commandData + " is not a valid item!", channel);
@@ -816,7 +816,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.stopEvent();
         if (commandData) {
             var stats = ["Attack", "Defense", "Special Attack", "Special Defense", "Speed"];
-            var effect = pokedex.getNatureEffect(commandData);
+            var effect = pokedex.getNatureEffect(commandData.trim());
             var nature = pokedex.natures[effect[0]][effect[1]];
             if (!nature) {
                 normalbot.sendMessage(src, commandData + " is not a valid nature!", channel);
@@ -852,8 +852,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "Incorrect syntax! Format for this command is /canlearn Pokemon:move", channel);
             return;
         }
-        var pokeId = sys.pokeNum(commandData[0]);
-        var moveId = sys.moveNum(commandData[1]);
+        var pokeId = sys.pokeNum(commandData[0].trim());
+        var moveId = sys.moveNum(commandData[1].trim());
         if (!pokeId) {
             if (!moveId) {
                 normalbot.sendMessage(src, "Neither the Pokémon nor the move actually exist!", channel);
