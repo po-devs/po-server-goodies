@@ -1573,6 +1573,7 @@ beforeNewPM: function(src){
 },
 
 beforeChatMessage: function(src, message, chan) {
+    message = message.trim().replace(/\s{2,}/g, " ");
     if(message.substr(0, 1) == '%')
     {
          if(sys.id('JiraBot') !== undefined)
