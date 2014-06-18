@@ -3160,13 +3160,13 @@ function Mafia(mafiachan) {
                                         if ("singlemassconvertmsg" in Action) {
                                             singleAffected = singleAffected.concat(affected);
                                         } else {
-                                            var actionMessage = ("massconvertmsg" in Action ? Action.massconvertmsg : "The ~Old~ became a ~New~!").replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(nr)).replace(/~New~/, mafia.theme.trrole(newRole));
+                                            var actionMessage = ("massconvertmsg" in Action ? Action.massconvertmsg : "The ~Old~ became a ~New~!").replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(nr)).replace(/~New~/g, mafia.theme.trrole(newRole)).replace(/~Number~/g, affected.length);
                                             gamemsgAll(formatArgs(actionMessage, nightargs));
                                         }
                                     }
                                 }
                                 if (singleAffected.length > 0) {
-                                    gamemsgAll(Action.singlemassconvertmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and"))); //No args here to prevent conflicting replacements
+                                    gamemsgAll(Action.singlemassconvertmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")).replace(/~Number~/g, singleAffected.length)); //No args here to prevent conflicting replacements
                                 }
                             }
     
