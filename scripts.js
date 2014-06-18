@@ -1846,8 +1846,8 @@ beforeChatMessage: function(src, message, chan) {
             sys.playerIds().forEach(function(id) {
                 if (sys.loggedIn(id) && SESSION.users(id).smute.active) {
                     if(isAndroid(id)) {
-                        var color = script.getColor(id);
-                        sys.sendHtmlMessage(id, "<font color="+color+"><timestamp/><b>"+sys.name(src)+"</b></font>: "+ utilities.html_escape(message), channel);
+                        var color = sys.getColor(id);
+                        sys.sendHtmlMessage(id, "<font color="+color+"><timestamp/><b>"+sys.name(src)+":</b></font> "+ utilities.html_escape(message), channel);
                     } else {
                         sys.sendMessage(id,  sys.name(src)+": "+message, channel);
                     }
