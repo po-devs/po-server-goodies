@@ -750,6 +750,27 @@ function Mafia(mafiachan) {
 
         function trrole(s) { return this.trrole(s); }
         function trside(s) { return this.trside(s); }
+        function sideName(r, obj) {
+            var out = "";
+            if (typeof r.side == "string") {
+                out += "Sided with " + obj.trside(r.side) + ". ";
+            } else if (typeof r.side == "object") {
+                var plop = Object.keys(r.side.random);
+                var tran = [];
+                for (var p = 0; p < plop.length; ++p) {
+                    tran.push(obj.trside(plop[p]));
+                }
+                out += "Sided with " + readable(tran, "or") + ". ";
+            }
+            if (r.hasOwnProperty("winningSides")) {
+                if (r.winningSides == "*") {
+                    out += "Wins the game in any case. ";
+                } else if (Array.isArray(r.winningSides)) {
+                    out += "Wins the game with " + readable(r.winningSides.map(trside, obj), "or");
+                }
+            }
+            return out;
+        }
         for (var r = 0; r < role_order.length; ++r) {
             try {
                 role = this.roles[role_order[r]];
@@ -766,7 +787,7 @@ function Mafia(mafiachan) {
                 // check which abilities the role has
                 var abilities = "", a, ability;
                 if ("info" in role) {
-                    abilities += role.info;
+                    abilities += role.info.replace(/~Sided~/g, sideName(role, this));
                 } else {
                     if (role.actions.night) {
                         for (a in role.actions.night) {
@@ -907,24 +928,7 @@ function Mafia(mafiachan) {
                             abilities += "Dies at the end of night " + (role.actions.initialCondition.poison.count || 2) + ". ";
                         }
                     }
-                    if (typeof role.side == "string") {
-                        abilities += "Sided with " + this.trside(role.side) + ". ";
-                    } else if (typeof role.side == "object") {
-                        var plop = Object.keys(role.side.random);
-                        var tran = [];
-                        for (var p = 0; p < plop.length; ++p) {
-                            tran.push(this.trside(plop[p]));
-                        }
-                        abilities += "Sided with " + readable(tran, "or") + ". ";
-                    }
-                    if (role.hasOwnProperty("winningSides")) {
-                        if (role.winningSides == "*") {
-                            abilities += "Wins the game in any case. ";
-                        } else if (Array.isArray(role.winningSides)) {
-                                // Argh give me Function.bind already ;~;
-                            abilities += "Wins the game with " + readable(role.winningSides.map(trside, this), "or");
-                        }
-                    }
+                    abilities += sideName(role, this);
                 }
                 roles.push("±Ability: " + abilities);
 
@@ -2142,6 +2146,77 @@ function Mafia(mafiachan) {
             }
         }
     };
+    this.voteForPlayer = function(src, commandData, canVoteTeam) {
+        var silentVote = mafia.theme.silentVote;
+        var name = sys.name(src);
+        if (!this.isInGame(commandData)) {
+            gamemsg(name, "That person is not playing!");
+            return;
+        }
+        if (name in this.votes) {
+            gamemsg(name, "You already voted!");
+            return;
+        }
+        var player = mafia.players[name];
+        if (player.role.actions && player.role.actions.noVote === true) {
+            gamemsg(name, (player.role.actions.noVoteMsg ? player.role.actions.noVoteMsg.replace(/~Self~/g, name).replace(/~Target~/g, commandData) : "You cannot vote!"));
+            this.votes[name] = null;
+            this.voteCount += 1;
+            return;
+        }
+        if (!canVoteTeam && player.role.actions && player.role.actions.preventTeamvote == true && player.role.side == mafia.players[commandData].role.side) {
+            gamemsg(name, "This person is your teammate! To vote them, use /teamvote [name].");
+            return;
+        }
+        if (silentVote !== undefined && silentVote !== false) {
+            gamemsg(name, "You voted for " + commandData + "!");
+            gamemsgAll(name + " voted!");
+        } else {
+            var votemsg = mafia.theme.votemsg ? mafia.theme.votemsg : "~Player~ voted for ~Target~!";
+            if ((votemsg.indexOf("~Target~") === -1) || (votemsg.indexOf("~Player~") === -1) )
+                gamemsg(name, "You voted for " + commandData + "!");
+            gamemsgAll(votemsg.replace(/~Player~/g, name).replace(/~Target~/g, commandData));
+        }
+        this.addPhaseStalkAction(name, "vote", commandData);
+        this.votes[sys.name(src)] = commandData;
+        this.voteCount += 1;
+        
+        var noplur = false, totalPlayers = mafia.playerCount();
+        if (this.voteCount * 2 > totalPlayers && mafia.theme.noplur === true) {
+            var npvoted = {}, npvoters = {};
+            for (var pname in mafia.votes) {
+                var target = mafia.votes[pname];
+                if (!(target in npvoted)) {
+                    npvoted[target] = 0;
+                    npvoters[target] = [];
+                }
+                npvoted[target] += 1;
+                npvoters[target].push(pname);
+            }
+            var half = totalPlayers/2;
+            for (var x in npvoted) {
+                if ((npvoted[x] > half) || (half - npvoted[x] > totalPlayers - Object.keys(npvoters).length)) { //Checks if there is a majority or if one is no longer possible
+                    noplur = true;
+                    break;
+                }
+            }
+        }
+        
+        var votersLeft = false;
+        for (var p in mafia.players) {
+            var pVoter = mafia.players[p];
+            if (!(pVoter.name in mafia.votes) && pVoter.role.actions && pVoter.role.actions.noVote !== true) {
+                votersLeft = true;
+                break;
+            }
+        }
+
+        if (this.voteCount == totalPlayers || noplur === true || (mafia.theme.checkNoVoters && votersLeft === false)) {
+            mafia.ticks = 1;
+        } else if (mafia.ticks < 8 && (mafia.theme.votesniping === undefined || mafia.theme.votesniping === false)) {
+            mafia.ticks = 8;
+        }
+    };
     this.testWin = function (slay) {
         if (mafia.playerCount() === 0) {
             gamemsgAll(mafia.theme.drawmsg || "Everybody died! This is why we can't have nice things :(");
@@ -2504,6 +2579,11 @@ function Mafia(mafiachan) {
                 }
                 watchTargets[target][user] = 1;
             };
+            
+            var teammates = {};
+            for (var t in mafia.players) {
+                teammates[t] = this.getPlayersForTeam(mafia.players[t].role.side);
+            }
 
             var player, names, j, evadeCharges = {};
             var selfConverted = [];
@@ -3253,7 +3333,22 @@ function Mafia(mafiachan) {
                     }
                 }
             }
-            
+            for (t in mafia.players) {
+                var tplayer = mafia.players[t];
+                if (mafia.theme.delayedConversionMsg === true && mafia.needsConvertMsg.indexOf(t) !== -1) {
+                    continue;
+                }
+                if (tplayer.role.actions && tplayer.role.actions.updateTeam == true) {
+                    var oldTeam = teammates[t],
+                        newTeam = this.getPlayersForTeam(tplayer.role.side);
+                    
+                    for (var tm in newTeam) {
+                        if (oldTeam.indexOf(newTeam[tm]) == -1) {
+                            mafia.showTeammates(tplayer);
+                        }
+                    }
+                }
+            }
             if (mafia.testWin()) {
                 return;
             }
@@ -3662,61 +3757,65 @@ function Mafia(mafiachan) {
                 var help2msg = (role.help2 || "");
                 gamemsg(player.name, help2msg);
 
-                if (role.actions.startup == "team-reveal") {
-                    gamemsg(player.name, "Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
-                }
-                if (role.actions.startup == "team-reveal-with-roles") {
-                    var playersRole = mafia.getPlayersForTeam(role.side).map(name_trrole, mafia.theme);
-                    gamemsg(player.name, "Your team is " + readable(playersRole, "and") + ".");
-                }
-                if (typeof role.actions.startup == "object" && Array.isArray(role.actions.startup["team-revealif"])) {
-                    if (role.actions.startup["team-revealif"].indexOf(role.side) != -1) {
-                        gamemsg(player.name, "Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
-                    }
-                }
-                if (typeof role.actions.startup == "object" && Array.isArray(role.actions.startup["team-revealif-with-roles"])) {
-                    if (role.actions.startup["team-revealif-with-roles"].indexOf(role.side) != -1) {
-                        var playersRole = mafia.getPlayersForTeam(role.side).map(name_trrole, mafia.theme);
-                        gamemsg(player.name, "Your team is " + readable(playersRole, "and") + ".");
-                    }
-                }
-                if (role.actions.startup == "role-reveal") {
-                    gamemsg(player.name, "People with your role are " + mafia.getPlayersForRoleS(role.role) + ".");
-                }
-
-                if (typeof role.actions.startup == "object") {
-                    if (role.actions.startup.revealRole) {
-                        if (typeof role.actions.startup.revealRole == "string") {
-                            if (mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) !== "")
-                                gamemsg(player.name, "The " + mafia.theme.roles[role.actions.startup.revealRole].translation + " is " + mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) + "!");
-                        } else if (Array.isArray(role.actions.startup.revealRole)) {
-                            for (var s = 0, l = role.actions.startup.revealRole.length; s < l; ++s) {
-                                var revealrole = role.actions.startup.revealRole[s];
-                                if (mafia.getPlayersForRoleS(revealrole) !== "") {
-                                    gamemsg(player.name, "The " + mafia.theme.roles[revealrole].translation + " is " + mafia.getPlayersForRoleS(revealrole) + "!");
-                                }
-                            }
-                        }
-                    }
-                    if (role.actions.startup.revealPlayers) {
-                        var list = [], msg = "Your team is: ~Players~";
-                        if (typeof role.actions.startup.revealPlayers == "string") {
-                            list = mafia.getPlayersForRole(role.actions.startup.revealPlayers);
-                        } else if (Array.isArray(role.actions.startup.revealPlayers)) {
-                            for (var r in role.actions.startup.revealPlayers) {
-                                list = list.concat(mafia.getPlayersForRole(role.actions.startup.revealPlayers[r]));
-                            }
-                            list = list.sort().join(", ");
-                        }
-                        msg = ("revealPlayersMsg" in role.actions.startup ? role.actions.startup.revealPlayersMsg : msg).replace(/~Players~/g, list);
-                        gamemsg(player.name, msg);
-                    }
-                }
+                mafia.showTeammates(player);
             } else {
                 gamemsg(name, "You are not in the game!");
             }
         } else {
             gamemsg(name, "No game running!");
+        }
+    };
+    this.showTeammates = function(player) {
+        var role = player.role;
+        if (role.actions.startup == "team-reveal") {
+            gamemsg(player.name, "Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
+        }
+        if (role.actions.startup == "team-reveal-with-roles") {
+            var playersRole = mafia.getPlayersForTeam(role.side).map(name_trrole, mafia.theme);
+            gamemsg(player.name, "Your team is " + readable(playersRole, "and") + ".");
+        }
+        if (typeof role.actions.startup == "object" && Array.isArray(role.actions.startup["team-revealif"])) {
+            if (role.actions.startup["team-revealif"].indexOf(role.side) != -1) {
+                gamemsg(player.name, "Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
+            }
+        }
+        if (typeof role.actions.startup == "object" && Array.isArray(role.actions.startup["team-revealif-with-roles"])) {
+            if (role.actions.startup["team-revealif-with-roles"].indexOf(role.side) != -1) {
+                var playersRole = mafia.getPlayersForTeam(role.side).map(name_trrole, mafia.theme);
+                gamemsg(player.name, "Your team is " + readable(playersRole, "and") + ".");
+            }
+        }
+        if (role.actions.startup == "role-reveal") {
+            gamemsg(player.name, "People with your role are " + mafia.getPlayersForRoleS(role.role) + ".");
+        }
+
+        if (typeof role.actions.startup == "object") {
+            if (role.actions.startup.revealRole) {
+                if (typeof role.actions.startup.revealRole == "string") {
+                    if (mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) !== "")
+                        gamemsg(player.name, "The " + mafia.theme.roles[role.actions.startup.revealRole].translation + " is " + mafia.getPlayersForRoleS(player.role.actions.startup.revealRole) + "!");
+                } else if (Array.isArray(role.actions.startup.revealRole)) {
+                    for (var s = 0, l = role.actions.startup.revealRole.length; s < l; ++s) {
+                        var revealrole = role.actions.startup.revealRole[s];
+                        if (mafia.getPlayersForRoleS(revealrole) !== "") {
+                            gamemsg(player.name, "The " + mafia.theme.roles[revealrole].translation + " is " + mafia.getPlayersForRoleS(revealrole) + "!");
+                        }
+                    }
+                }
+            }
+            if (role.actions.startup.revealPlayers) {
+                var list = [], msg = "Your team is: ~Players~";
+                if (typeof role.actions.startup.revealPlayers == "string") {
+                    list = mafia.getPlayersForRole(role.actions.startup.revealPlayers);
+                } else if (Array.isArray(role.actions.startup.revealPlayers)) {
+                    for (var r in role.actions.startup.revealPlayers) {
+                        list = list.concat(mafia.getPlayersForRole(role.actions.startup.revealPlayers[r]));
+                    }
+                    list = list.sort().join(", ");
+                }
+                msg = ("revealPlayersMsg" in role.actions.startup ? role.actions.startup.revealPlayersMsg : msg).replace(/~Players~/g, list);
+                gamemsg(player.name, msg);
+            }
         }
     };
     
@@ -4212,70 +4311,12 @@ function Mafia(mafiachan) {
         else if (this.state == "day") {
             if (this.isInGame(sys.name(src)) && command == "vote") {
                 commandData = this.correctCase(commandData);
-                var silentVote = mafia.theme.silentVote;
-                name = sys.name(src);
-                if (!this.isInGame(commandData)) {
-                    gamemsg(srcname, "That person is not playing!");
-                    return;
-                }
-                if (name in this.votes) {
-                    gamemsg(srcname, "You already voted!");
-                    return;
-                }
-                if (mafia.players[name].role.actions && mafia.players[name].role.actions.noVote === true) {
-                    gamemsg(srcname, (mafia.players[name].role.actions.noVoteMsg ? mafia.players[name].role.actions.noVoteMsg.replace(/~Self~/g, name).replace(/~Target~/g, commandData) : "You cannot vote!"));
-                    this.votes[name] = null;
-                    this.voteCount += 1;
-                    return;
-                }
-                if (silentVote !== undefined && silentVote !== false) {
-                    gamemsg(srcname, "You voted for " + commandData + "!");
-                    gamemsgAll(name + " voted!");
-                } else {
-                    var votemsg = mafia.theme.votemsg ? mafia.theme.votemsg : "~Player~ voted for ~Target~!";
-                    if ((votemsg.indexOf("~Target~") === -1) || (votemsg.indexOf("~Player~") === -1) )
-                        gamemsg(srcname, "You voted for " + commandData + "!");
-                    gamemsgAll(votemsg.replace(/~Player~/g, name).replace(/~Target~/g, commandData));
-                }
-                this.addPhaseStalkAction(name, "vote", commandData);
-                this.votes[sys.name(src)] = commandData;
-                this.voteCount += 1;
-                
-                var noplur = false, totalPlayers = mafia.playerCount();
-                if (this.voteCount * 2 > totalPlayers && mafia.theme.noplur === true) {
-                    var npvoted = {}, npvoters = {};
-                    for (var pname in mafia.votes) {
-                        var target = mafia.votes[pname];
-                        if (!(target in npvoted)) {
-                            npvoted[target] = 0;
-                            npvoters[target] = [];
-                        }
-                        npvoted[target] += 1;
-                        npvoters[target].push(pname);
-                    }
-                    var half = totalPlayers/2;
-                    for (var x in npvoted) {
-                        if ((npvoted[x] > half) || (half - npvoted[x] > totalPlayers - Object.keys(npvoters).length)) { //Checks if there is a majority or if one is no longer possible
-                            noplur = true;
-                            break;
-                        }
-                    }
-                }
-                
-                var votersLeft = false;
-                for (var p in mafia.players) {
-                    var pVoter = mafia.players[p];
-                    if (!(pVoter.name in mafia.votes) && pVoter.role.actions && pVoter.role.actions.noVote !== true) {
-                        votersLeft = true;
-                        break;
-                    }
-                }
-
-                if (this.voteCount == totalPlayers || noplur === true || (mafia.theme.checkNoVoters && votersLeft === false)) {
-                    mafia.ticks = 1;
-                } else if (mafia.ticks < 8 && (mafia.theme.votesniping === undefined || mafia.theme.votesniping === false)) {
-                    mafia.ticks = 8;
-                }
+                mafia.voteForPlayer(src, commandData, false);
+                return;
+            }
+            if (this.isInGame(sys.name(src)) && command == "teamvote") {
+                commandData = this.correctCase(commandData);
+                mafia.voteForPlayer(src, commandData, true);
                 return;
             }
         }
