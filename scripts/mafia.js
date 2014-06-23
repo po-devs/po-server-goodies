@@ -771,6 +771,33 @@ function Mafia(mafiachan) {
             }
             return out;
         }
+        function spawnAt(role, list, index, theme) {
+            var slot = list[index];
+            if (typeof slot == "object" && role in slot) {
+                return true;
+            }
+            if (typeof slot == "string") {
+                if (slot.indexOf("pack:") == 0) {
+                    var count = 0;
+                    for (var s = 0; s <= index; s++) {
+                        if (list[index] == slot) {
+                            count++;
+                        }
+                    }
+                    var pack = theme.spawnPacks[slot.substr(5)],
+                        list;
+                    for (s in pack.roles) {
+                        list = pack.roles[s];
+                        if (list[count % list.length] == role) {
+                            return true;
+                        }
+                    }
+                } else if (slot == role) {
+                    return true;
+                }
+            }
+            return false;
+        }
         for (var r = 0; r < role_order.length; ++r) {
             try {
                 role = this.roles[role_order[r]];
@@ -951,7 +978,7 @@ function Mafia(mafiachan) {
                             var start = -1, v;
                             for (var e = 0; e < this[role_i].length; e++) {
                                 v = this[role_i][e];
-                                if ((typeof v == "string" && v == role.role) || (typeof v == "object" && role.role in v)) {
+                                if (spawnAt(role.role, this[role_i], e, this)) {
                                     start = e;
                                     break;
                                 }
