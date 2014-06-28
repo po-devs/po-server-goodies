@@ -1415,7 +1415,7 @@ function Mafia(mafiachan) {
         if (mafia.state != "blank" && mafia.state != "voting") {
             themeName = mafia.theme.name.toLowerCase();
         }
-        if (data != noPlayer) {
+        if (data != noPlayer && data != "") {
             themeName = this.getThemeName(data.toLowerCase());
             if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
                 return null;
