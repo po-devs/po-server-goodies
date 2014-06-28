@@ -1134,12 +1134,18 @@ function Mafia(mafiachan) {
         phaseStalk = {};
         currentStalk = [];
     };
+    this.unloadAWOL = function () {
+        if (Object.keys(mafia.AWOLusers).length !== 0) {
+            msgAll("The following users left the Mafia game and did not return: " + Object.keys(mafia.AWOLusers).join(", "), sachannel);
+        }
+    };
     this.clearVariables = function () {
         /* hash : playername => playerstruct */
         this.saveStalkLog();
         this.players = {};
         this.signups = [];
         this.dead = [];
+        this.nodead = [];
         this.state = "blank";
         this.ticks = 0;
         this.votes = {};
@@ -1157,6 +1163,7 @@ function Mafia(mafiachan) {
         this.teamRestrictions = {};
         this.roleRestrictions = {};
         this.usersToSlay = {};
+        this.AWOLusers = {};
         this.time = {
             "nights": 0,
             "days": 0
@@ -1547,6 +1554,7 @@ function Mafia(mafiachan) {
         //mafiabot.sendAll("GAME ENDED", mafiachan);
         mafia.mafiaStats.result("dead");
         mafia.checkDead(CurrentGame.playerCount);
+        mafia.unloadAWOL();
         mafia.clearVariables();
         runUpdate();
         this.advertiseFeaturedTheme();
@@ -1639,7 +1647,25 @@ function Mafia(mafiachan) {
         }
         return team;
     };
+
+    this.gameInProgress = function () {
+        if (["blank", "voting", "entry"].indexOf(mafia.state) == -1) {
+            return true;
+        }
+        return false;
+    };
     
+    this.authorMatch = function (src, name) {
+        if (mafia.isMafiaAdmin(src)) {
+            return true;
+        }
+        var theme = mafia.themeManager.themes[name.toLowerCase()];
+        if (theme !== undefined && (typeof theme.author == "string" && theme.author.toLowerCase() == sys.name(src).toLowerCase() || Array.isArray(theme.author) && theme.author.map(function (s) { return s.toLowerCase(); }).indexOf(sys.name(src).toLowerCase()) >= 0)) {
+            return true;
+        }
+        return false;
+    };
+
     this.player = function (role) {
         for (var p in this.players) {
             if (mafia.players[p].role.role == role) //Checks sequentially all roles to see if this is the good one
@@ -2155,6 +2181,7 @@ function Mafia(mafiachan) {
                 sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
             }
             //mafiabot.sendAll("GAME ENDED", mafiachan);
+            mafia.unloadAWOL();
             mafia.clearVariables();
             runUpdate();
             this.advertiseFeaturedTheme();
@@ -2203,6 +2230,7 @@ function Mafia(mafiachan) {
             }
             sendChanAll(border, mafiachan);
             mafia.checkDead(CurrentGame.playerCount);
+            mafia.unloadAWOL();
             mafia.clearVariables();
             if (sys.id('PolkaBot') !== undefined) {
                 sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
@@ -3730,7 +3758,7 @@ function Mafia(mafiachan) {
     
     this.slayUser = function (src, name, delayed) {
         var slayer = typeof src == "string" ? src : sys.name(src);
-        if (this.state == "entry" || this.state == "voting" || this.state == "blank") {
+        if (!mafia.gameInProgress()) {
             msg(src, "The game has not yet started. Use /shove to prevent the player from playing.");
             return;
         }
@@ -3746,6 +3774,7 @@ function Mafia(mafiachan) {
                 }
                 this.removePlayer(player);
                 this.onDeadRoles();
+                delete this.AWOLusers[player.name];
             }
             return;
         }
@@ -3788,7 +3817,7 @@ function Mafia(mafiachan) {
     };
     this.shoveUser = function (src, name, silent) {
         var shover = typeof src == "string" ? src : sys.name(src);
-        if (this.state == "entry" || this.state == "voting" || this.state == "blank") {
+        if (!mafia.gameInProgress()) {
             for (var i = 0; i < this.signups.length; ++i) {
                 if (name.toLowerCase() == this.signups[i].toLowerCase()) {
                     if (!silent) {
@@ -3975,26 +4004,25 @@ function Mafia(mafiachan) {
             "/topthemes: To view top themes. Default amount is 10, however other numbers can be used (higher numbers may cause lag)",
             "/windata: To view the win data of a theme",
             "/update: To update a Mafia Theme. /update themename::newurl if changing the url. Contact an sMA if the theme name is changed to prevent conflicts.",
-            "/featured: To view the currently featured Mafia Theme and Text."],
-        ma: ["/slay: To slay users in a Mafia game.",
-            "/unslay: To cancel a slay on a user.",
-            "/shove: To remove users before a game starts.",
-            "/unshove: To cancel a shove on a user.",
+            "/featured: To view the currently featured Mafia Theme and Text.",
+            "/disable: To disable a Mafia Theme. Only the Theme Author or an MA can disable a theme.",
+            "/disabledc: To opt out of dead chat for the current game. Use /enabledc to reenable."],
+        ma: ["/slay: To slay users in a Mafia game. Use /unslay to cancel.",
+            "/shove: To remove users before a game starts. Use /unshove to cancel.",
             "/mafiaban: To ban a user from the Mafia channel, format /mafiaban user:reason:time",
             "/mafiaunban: To unban a user from the Mafia channel.",
             "/mafiabans: To search the mafiabanlist for a string, shows full list if no search term is entered.",
-            "/end: To cancel a Mafia game!",
+            "/end: To end a Mafia game.",
             "/say: To bypass Dead Chat and/or talk normally to the channel.",
-            "/readlog: To read the log of actions from a previous game",
-            "/targetlog: To read the log of Turn 1 actions from a set of previous games.",
+            "/readlog X: To read the log of actions from game X games ago.",
+            "/targetlog X: To read the log of Turn 1 actions from the previous X games.",
             "/passma: To give your Mafia Admin powers to an alt of yours.",
-            "/add: To add a Mafia Theme!",
-            "/enable: To enable a disabled Mafia Theme!",
-            "/disable: To disable a Mafia Theme!",
-            "/enablenonpeak: To enable all non-peak Mafia Themes.",
-            "/disablenonpeak: To disable all non-peak Mafia Themes."],
+            "/add: To add a Mafia Theme.",
+            "/enable: To enable a previously disabled Mafia Theme.",
+            "/enablenonpeak: To enable all non-peak Mafia Themes. Disable with /disablenonpeak."],
         sma: ["/push: To force a user into the current theme during sign ups.",
-            "/remove: To remove a Mafia Theme!",
+            "/supdate: To silently add or update a theme.",
+            "/remove: To remove a Mafia Theme! Use /sremove for a silent removal.",
             "/mafiaadmin: To promote a user to Mafia Admin. Use /smafiaadmin for a silent promotion.",
             "/mafiaadminoff: To strip a user of all Mafia authority. Use /smafiaadminoff for a silent demotion.",
             "/updateafter: To update mafia after current game!",
@@ -5175,12 +5203,8 @@ function Mafia(mafiachan) {
                 name = parts[0];
                 url = parts[1];
             }
-            var theme = mafia.themeManager.themes[name.toLowerCase()];
-            // theme.author can be either string or Array of strings
-            var authorMatch = theme !== undefined && (typeof theme.author == "string" && theme.author.toLowerCase() == sys.name(src).toLowerCase() || Array.isArray(theme.author) && theme.author.map(function (s) { return s.toLowerCase(); }).indexOf(sys.name(src).toLowerCase()) >= 0);
-
-            if (!mafia.isMafiaAdmin(src) && !authorMatch) {
-                msg(src, "You need to be admin or the author of this theme.");
+            if (!mafia.authorMatch(src, name)) {
+                msg(src, "You need to be a Mafia Admin or the author of this theme in order to update it.");
                 return;
             }
             var dlurl;
@@ -5196,7 +5220,8 @@ function Mafia(mafiachan) {
             }
             msg(src, "Download url: " + dlurl);
             if (dlurl) {
-                mafia.themeManager.loadWebTheme(dlurl, (sup ? false : true), true, authorMatch ? theme.name.toLowerCase() : null, src, false);
+                var theme = mafia.themeManager.themes[name.toLowerCase()];
+                mafia.themeManager.loadWebTheme(dlurl, (sup ? false : true), true, mafia.authorMatch(src, name) ? theme.name.toLowerCase() : null, src, false);
             }
             return;
         }
@@ -5264,6 +5289,52 @@ function Mafia(mafiachan) {
                 }
             }
             sys.sendMessage(src, "", channel);
+            return;
+        }
+        if (command === "disabledc") {
+            srcname = srcname.toLowerCase();
+            if (mafia.isInGame(sys.name(src))) {
+                msg(src, "You can't disable dead chat while in game!");
+                return;
+            }
+            if (mafia.nodead.indexOf(srcname) !== -1) {
+                msg(src, "Dead chat is already disabled!");
+                return;
+            }
+            if (mafia.dead.indexOf(srcname) === -1 ) {
+                msg(src, "You can't disable dead chat unless you played in the game!");
+                return;
+            }
+            mafia.nodead.push(srcname);
+            mafia.dead.splice(mafia.dead.indexOf(srcname), 1);
+            msg(src, "You disabled dead chat.");
+            return;
+        }
+        if (command === "enabledc") {
+            srcname = srcname.toLowerCase();
+            if (mafia.isInGame(sys.name(src))) {
+                msg(src, "You can't enable dead chat while in game!");
+                return;
+            }
+            if (mafia.dead.indexOf(srcname) !== -1 ) {
+                msg(src, "Dead chat is already enabled");
+                return;
+            }
+            if (mafia.nodead.indexOf(srcname) === -1 ) {
+                msg(src, "You can't enable dead chat unless you played in the game!");
+                return;
+            }
+            mafia.nodead.splice(mafia.nodead.indexOf(srcname), 1);
+            mafia.dead.push(srcname);
+            msg(src, "You enabled dead chat.");
+            return;
+        }
+        
+        if (command === "disable") {
+            if (!mafia.authorMatch(src, commandData)) {
+                return;
+            }
+            mafia.themeManager.disable(src, commandData);
             return;
         }
 
@@ -5342,10 +5413,6 @@ function Mafia(mafiachan) {
         }
         if (command === "add") {
             mafia.themeManager.loadWebTheme(commandData, true, false, null, src, true);
-            return;
-        }
-        if (command === "disable") {
-            mafia.themeManager.disable(src, commandData);
             return;
         }
         if (command === "enable") {
@@ -5487,6 +5554,10 @@ function Mafia(mafiachan) {
             return;
         }
         if (command === "remove" || command === "sremove"){
+            if (mafia.gameInProgress() && commandData.toLowerCase() == this.getCurrentTheme(noPlayer)) {
+                msg(src, "You cannot remove a theme currently in progress!");
+                return;
+            }
             var silent = (command === "sremove");
             mafia.themeManager.remove(src, commandData, silent);
             return;
@@ -5626,7 +5697,7 @@ function Mafia(mafiachan) {
     };
 
     this.beforeChatMessage = function (src, message, channel) {
-        if (channel !== 0 && channel == mafiachan && mafia.ticks > 0 && ["blank", "voting", "entry"].indexOf(mafia.state) == -1) {
+        if (channel !== 0 && channel == mafiachan && mafia.ticks > 0 && mafia.gameInProgress()) {
             if (mafia.dead.indexOf(sys.name(src).toLowerCase()) !== -1) {
                 if (!(is_command(message) && message.substr(1, 2).toLowerCase() != "me")) {
                     for (var x in mafia.dead) {
@@ -5635,7 +5706,7 @@ function Mafia(mafiachan) {
                     return true;
                 }
             }
-            if (!mafia.isInGame(sys.name(src)) && sys.auth(src) <= 0 && !mafia.isMafiaSuperAdmin(src)) {
+            if (!mafia.isInGame(sys.name(src))) {
                 if (!(is_command(message) && message.substr(1, 2).toLowerCase() != "me")) {
                     sys.sendMessage(src, Config.Mafia.notPlayingMsg, mafiachan);
                     return true;
@@ -5654,6 +5725,7 @@ function Mafia(mafiachan) {
     this.afterChannelJoin = function(src, channel) {
         if (channel == mafiachan) {
             var srcname = sys.name(src);
+            delete mafia.AWOLusers[srcname];
             switch (mafia.state) {
                 case "blank":
                     gamemsg(srcname, "No game is running! You can start a game by typing /start [theme name].", "Info");
@@ -5665,7 +5737,7 @@ function Mafia(mafiachan) {
                     gamemsg(srcname, "You can join a " + (mafia.theme.name == "default" ? "" : mafia.theme.name + "-themed ") + "mafia game now by typing /join! ", "Info");
                     break;
                 default:
-                    gamemsg(srcname, "A " + (mafia.theme.name == "default" ? "" : mafia.theme.name + "-themed ") + "mafia game is in progress! You can join the next game by typing /join! ", "Info");
+                    gamemsg(srcname, "A " + (mafia.theme.name == "default" ? "" : mafia.theme.name + "-themed ") + "mafia game is in progress! You can join the next game by typing /join during signups after the game finishes!", "Info");
             }
             return false;
         }
@@ -5678,8 +5750,8 @@ function Mafia(mafiachan) {
                 delete this.usersToShove[name];
             }
             
-            if ((this.isInGame(name) && sys.id('PolkaBot') === undefined) || name in this.signups) {
-                gamemsgAll("PolkaBot: Mafia: Player " + name + " left whilst in a game!", false, sachannel);
+            if ((this.isInGame(name) || name in this.signups)) {
+                this.AWOLusers[name] = 1;
             }
             return true;
         }
