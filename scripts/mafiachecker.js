@@ -302,7 +302,7 @@ function mafiaChecker() {
             
             if (checkType(role.actions, ["object"], "'" + yourRole + ".actions")) {
                 act = "Role " + yourRole + ".actions";
-                checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "onDeath", "onDeadRoles", "initialCondition", "avoidHax", "avoidStandbyHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "vote", "voteshield", "voteMultiplier", "startup", "onlist", "onteam", "lynch", "teamTalk", "noVote", "noVoteMsg"].concat(possibleNightActions), act);
+                checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "onDeath", "onDeadRoles", "initialCondition", "avoidHax", "avoidStandbyHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "vote", "voteshield", "voteMultiplier", "startup", "onlist", "onteam", "lynch", "teamTalk", "noVote", "noVoteMsg", "preventTeamvote", "updateTeam"].concat(possibleNightActions), act);
 
                 if (checkType(role.actions.night, ["object"], act + ".night")) {
                     for (e in role.actions.night) {
@@ -714,6 +714,7 @@ function mafiaChecker() {
                         }
                     }
                 }
+                checkType(role.actions.preventTeamvote, ["boolean"], act + ".preventTeamvote");
                 checkType(role.actions.noVote, ["boolean"], act + ".noVote");
                 checkType(role.actions.noVoteMsg, ["string"], act + ".noVoteMsg");
                 
@@ -1010,6 +1011,9 @@ function mafiaChecker() {
                         }
                     }
                 }
+                
+                checkType(role.actions.updateTeam, ["boolean"], act + ".updateTeam");
+                
                 if (checkType(role.actions.onlist, ["string"], act + ".onlist")) {
                     checkValidRole(role.actions.onlist, act + ".onlist");
                 }
