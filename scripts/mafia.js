@@ -3406,6 +3406,7 @@ function Mafia(mafiachan) {
                     for (var tm in newTeam) {
                         if (oldTeam.indexOf(newTeam[tm]) == -1) {
                             mafia.showTeammates(tplayer);
+                            break;
                         }
                     }
                 }
