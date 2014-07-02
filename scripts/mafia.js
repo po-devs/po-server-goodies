@@ -2212,7 +2212,7 @@ function Mafia(mafiachan) {
             var teamvote;
             if ("preventTeamvote" in player.role.actions) {
                 teamvote = player.role.actions.preventTeamvote;
-            } else if ("teamUtilites" in player.role.actions && player.role.actions.teamUtilites == true) {
+            } else if ("teamUtilities" in player.role.actions && player.role.actions.teamUtilities == true) {
                 teamvote = true;
             }
             
@@ -3399,7 +3399,7 @@ function Mafia(mafiachan) {
                 if (mafia.theme.delayedConversionMsg === true && mafia.needsConvertMsg.indexOf(t) !== -1) {
                     continue;
                 }
-                if (tplayer.role.actions && (tplayer.role.actions.updateTeam === true || tplayer.role.actions.teamUtilites === true)) {
+                if (tplayer.role.actions && (tplayer.role.actions.updateTeam === true || tplayer.role.actions.teamUtilities === true)) {
                     var oldTeam = teammates[t],
                         newTeam = mafia.getPlayersForTeam(tplayer.role.side);
                     
@@ -3832,7 +3832,7 @@ function Mafia(mafiachan) {
         if (role.actions.startup == "team-reveal") {
             gamemsg(player.name, "Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
         }
-        if (role.actions.startup == "team-reveal-with-roles" || role.actions.teamUtilites === true) {
+        if (role.actions.startup == "team-reveal-with-roles" || role.actions.teamUtilities === true) {
             var playersRole = mafia.getPlayersForTeam(role.side).map(name_trrole, mafia.theme);
             gamemsg(player.name, "Your team is " + readable(playersRole, "and") + ".");
         }
@@ -4741,7 +4741,7 @@ function Mafia(mafiachan) {
             if (mafia.isInGame(sys.name(src)) && ["night", "day", "standby"].indexOf(mafia.state) !== -1)  {
                 name = sys.name(src);
                 player = mafia.players[name];
-                if (player.role.actions && ("teamTalk" in player.role.actions || "teamUtilites" in player.role.actions)) {
+                if (player.role.actions && ("teamTalk" in player.role.actions || "teamUtilities" in player.role.actions)) {
                     var partners = [];
                     if (Array.isArray(player.role.actions.teamTalk)) {
                         for (x in player.role.actions.teamTalk) {
