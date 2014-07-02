@@ -2208,9 +2208,24 @@ function Mafia(mafiachan) {
             this.voteCount += 1;
             return;
         }
-        if (!canVoteTeam && player.role.actions && (player.role.actions.preventTeamvote === true || player.role.actions.teamUtilites === true) && player.role.side == mafia.players[commandData].role.side) {
-            gamemsg(name, "This person is your teammate! To vote them, use /teamvote [name].");
-            return;
+        if (!canVoteTeam && player.role.actions) {
+            var teamvote;
+            if ("preventTeamvote" in player.role.actions) {
+                teamvote = player.role.actions.preventTeamvote;
+            } else if ("teamUtilites" in player.role.actions && player.role.actions.teamUtilites == true) {
+                teamvote = true;
+            }
+            
+            if (teamvote) {
+                var target = mafia.players[commandData];
+                if (teamvote === true && player.role.side == target.role.side) {
+                    gamemsg(name, "This person is your teammate! To vote them, use /teamvote [name].");
+                    return;
+                } else if (Array.isArray(teamvote) && teamvote.indexOf(target.role.role) !== -1) {
+                    gamemsg(name, "This person is your teammate! To vote them, use /teamvote [name].");
+                    return;
+                }
+            }
         }
         if (silentVote !== undefined && silentVote !== false) {
             gamemsg(name, "You voted for " + commandData + "!");
