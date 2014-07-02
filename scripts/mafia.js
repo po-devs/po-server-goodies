@@ -6,7 +6,7 @@
 */
 
 // Global variables inherited from scripts.js
-/*global mafiabot, getTimeString, updateModule, script, sys, SESSION, sendChanAll, require, Config, module, sachannel, sendChanHtmlAll*/
+/*global mafiabot, getTimeString, updateModule, script, sys, SESSION, sendChanAll, require, Config, module, sachannel, staffchannel, sendChanHtmlAll*/
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true,eqnull:true*/
 var MAFIA_CHANNEL = "Mafia";
 
@@ -590,11 +590,11 @@ function Mafia(mafiachan) {
                     needsDisable = true;
                 }
                 if (manager.themes.hasOwnProperty(lower) && !update) {
-                    msgAll("Won't update " + theme.name + " with /add, use /update to force an update");
+                    msg(src, "Won't update " + theme.name + " with /add, use /update to force an update");
                     return;
                 }
                 if (manager.themes.hasOwnProperty(lower) && update && updatename && updatename != lower) {
-                    msgAll("Won't update '" + updatename + "' to '" + theme.name + "', use the old name.");
+                    msg(src, "Won't update '" + updatename + "' to '" + theme.name + "', use the old name.");
                     return;
                 }
                 manager.themes[lower] = theme;
@@ -2208,7 +2208,7 @@ function Mafia(mafiachan) {
             this.voteCount += 1;
             return;
         }
-        if (!canVoteTeam && player.role.actions && player.role.actions.preventTeamvote === true && player.role.side == mafia.players[commandData].role.side) {
+        if (!canVoteTeam && player.role.actions && (player.role.actions.preventTeamvote === true || player.role.actions.teamUtilites === true) && player.role.side == mafia.players[commandData].role.side) {
             gamemsg(name, "This person is your teammate! To vote them, use /teamvote [name].");
             return;
         }
@@ -3384,7 +3384,7 @@ function Mafia(mafiachan) {
                 if (mafia.theme.delayedConversionMsg === true && mafia.needsConvertMsg.indexOf(t) !== -1) {
                     continue;
                 }
-                if (tplayer.role.actions && tplayer.role.actions.updateTeam === true) {
+                if (tplayer.role.actions && (tplayer.role.actions.updateTeam === true || tplayer.role.actions.teamUtilites === true)) {
                     var oldTeam = teammates[t],
                         newTeam = mafia.getPlayersForTeam(tplayer.role.side);
                     
@@ -3816,7 +3816,7 @@ function Mafia(mafiachan) {
         if (role.actions.startup == "team-reveal") {
             gamemsg(player.name, "Your team is " + mafia.getPlayersForTeamS(role.side) + ".");
         }
-        if (role.actions.startup == "team-reveal-with-roles") {
+        if (role.actions.startup == "team-reveal-with-roles" || role.actions.teamUtilites === true) {
             var playersRole = mafia.getPlayersForTeam(role.side).map(name_trrole, mafia.theme);
             gamemsg(player.name, "Your team is " + readable(playersRole, "and") + ".");
         }
@@ -4135,7 +4135,8 @@ function Mafia(mafiachan) {
             "/passma: To give your Mafia Admin powers to an alt of yours.",
             "/add: To add a Mafia Theme.",
             "/enable: To enable a previously disabled Mafia Theme.",
-            "/enablenonpeak: To enable all non-peak Mafia Themes. Disable with /disablenonpeak."],
+            "/enablenonpeak: To enable all non-peak Mafia Themes. Disable with /disablenonpeak.",
+            "/disableunder X: Disables all themes that support less than X players. (X must be over 30). You will need to manually re-enable."],
         sma: ["/push: To force a user into the current theme during sign ups.",
             "/supdate: To silently add or update a theme.",
             "/remove: To remove a Mafia Theme! Use /sremove for a silent removal.",
@@ -4147,7 +4148,8 @@ function Mafia(mafiachan) {
             "/featuretext: To set a customizable message that follows the Featured theme (Leave blank to reset to default).",
             "/featurelink: To change the link used for Featured Theme Text. (Leave blank to clear)",
             "/featureint: To change how often the \"Featured Theme\" message displays. Time is in minutes between 30 and 240. Leave blank to reset to 60 minutes.",
-            "/forcefeature: To force the \"Featured Theme\" message to display."],
+            "/forcefeature: To force the \"Featured Theme\" message to display.",
+            "/enableall: Enables all disabled themes, excluding non-peak"],
         owner: ["/mafiasuperadmin: To promote a user to Super Mafia Admin. Use /smafiasuperadmin for a silent promotion.",
             "/mafiasuperadminoff: To demote a user from Super Mafia Admin. Use /smafiasuperadminoff for a silent demotion."]
     };
@@ -4161,7 +4163,7 @@ function Mafia(mafiachan) {
         } else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel != mafiachan && ["mafiaban", "mafiaunban", "mafiabans", "mafiaadmins", "madmins", "mas", "roles", "priority", "sides", "themeinfo", "readlog", "targetlog", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiarules", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "mafiasuperadminoff", "smafiaadmin", "smafiasuperadmin", "smafiaadminoff", "smafiasuperadminoff", "passma", "windata", "topthemes", "updatestats", "playedgames", "pg"].indexOf(command) === -1)
+        if (channel != mafiachan && channel != sachannel && channel != staffchannel && channel != "Mafia Social" && ["mafiabans", "mafiaadmins", "madmins", "mas", "roles", "priority", "sides", "themeinfo", "readlog", "targetlog", "mafiarules", "passma", "windata", "topthemes", "playedgames", "pg"].indexOf(command) === -1)
             return;
         try {
             mafia.handleCommandOld(src, command, commandData, channel);
@@ -4723,7 +4725,7 @@ function Mafia(mafiachan) {
             if (mafia.isInGame(sys.name(src)) && ["night", "day", "standby"].indexOf(mafia.state) !== -1)  {
                 name = sys.name(src);
                 player = mafia.players[name];
-                if (player.role.actions && "teamTalk" in player.role.actions) {
+                if (player.role.actions && ("teamTalk" in player.role.actions || "teamUtilites" in player.role.actions)) {
                     var partners = [];
                     if (Array.isArray(player.role.actions.teamTalk)) {
                         for (x in player.role.actions.teamTalk) {
@@ -5551,6 +5553,28 @@ function Mafia(mafiachan) {
             msg(src, name + " isn't set to be slain!");
             return;
         }
+        if (command === "disableunder") {
+            if (commandData > 45 || commandData < 30) {
+                msg(src, "You must specify a number over 30 and under 45 for mass disabling.");
+                return;
+            }
+            var themes = mafia.themeManager.themes;
+            var disableThemes = [];
+            for (var x in themes) {
+                var each = themes[x];
+                if (each["roles" + each.roleLists].length >+ commandData) {
+                    continue;
+                }
+                mafia.themeManager.disable(src, x, true);
+                disableThemes.push(themes[x].name);
+            }
+            if (disableThemes.length) {
+                dualBroadcast("±" + mafiabot.name + ": " + nonFlashing(sys.name(src)) + " disabled all themes under " + commandData + " players (" + disableThemes.join(", ") + ").");
+            } else {
+                msg(src, "No themes matching that criteria found.");
+            }
+            return;
+        }
         
         if (!this.isMafiaSuperAdmin(src))
             throw ("no valid command");
@@ -5720,38 +5744,45 @@ function Mafia(mafiachan) {
             }
             return;
         }
+        if (command === "enableall") {
+            var themes = mafia.themeManager.themes;
+            var enableThemes = [];
+            for (var x in themes) {
+                var each = themes[x];
+                if (themes[x].nonPeak || mafia.themeManager.themes[x].enabled) {
+                    continue;
+                }
+                mafia.themeManager.enable(src, x, true);
+                enableThemes.push(themes[x].name);
+            }
+            if (enableThemes.length) {
+                dualBroadcast("±" + mafiabot.name + ": " + nonFlashing(sys.name(src)) + " enabled all themes (" + enableThemes.join(", ") + ").");
+            } else {
+                msg(src, "No themes matching that criteria found.");
+            }
+            return;
+        }
         throw ("no valid command");
     };
     this.showRules = function(src, channel) {
         var mrules = [
             "",
-            "*** Mafia Game Rules ***",
+            "*** Mafia Game Rules (Last updated: July 2014) ***",
             "",
-            "±Rule 1- All server rules apply in this channel. Type /rules to view them:",
-            "Ignorance of the rules does not justify breaking them. Someone else breaking a rule does not justify you breaking the same rule. If you choose to play on Android, you are not able to use it to justify rule breaking.",
+            "±Rule 1- All server rules and social etiquette apply in this channel. Type /rules to view them:",
+            "Ignorance of any rules and playing on Android are not a justification for rule breaking. Someone else breaking a rule does not grant you permission to break them yourself either. Help each other out instead of resorting to insults. If you have a problem with a theme, let the author know in a civilized manner by posting in that theme's forum thread.",
             "",
             "±Rule 2- Mafia Admins, or MAs are here for the benefit of the channel. You can use /mas to get a listing of them:",
-            "If you are told something by an MA, it is advised you listen. PM an MA to report an instance of rulebreaking. Shouting out \"BAN\" and \"teamvote!\" and such in the chat is pointless and disrupts the game. If any MA is breaking a rule, contact a Mafia Super Admin or any Server Auth immediately.",
+            "Listen to any MA that gives direction about behavior in the channel. If a player is breaking a rule, please PM an MA instead of disrupting the game trying to bring attention to the situation. If an MA is breaking a rule, contact a Mafia Super Admin or Server Auth immediately.",
             "",
-            "±Rule 3- Be respectful to your fellow players:",
-            "Do not insult players if they make a mistake. Helping them to learn the game instead of insulting them will make the game a lot more enjoyable for all. Do not flash multiple people needlessly, including trying to get them to play. Do not insult themes. If you have a legitimate complaint about a certain theme, post it in that theme's forum thread.",
+            "±Rule 3- Make all reasonable attempts to stay active for the entire game if you decide to join, otherwise, /unjoin before the game starts:",
+            "If you must leave, ask for a \"slay\" in the main chat to be removed from the game. Please supply a valid reason for needing to leave. For example: not liking any part of the game is not a valid reason for a slay, nor is participating in battles or other channels. Asking for a slay in the first few phases of the game, or leaving without asking for a slay, will result in punishment.",
             "",
-            "±Rule 4- Make sure you can stay active for the entire game if you join, otherwise, /unjoin before the game starts:",
-            "If you must leave, you can ask a Mafia Admin in the chat for a \"slay\" in order to be removed from the game. A valid reason must be supplied with your request. Not liking any part of the game or participating in other channels are not valid reasons. Asking for a slay within the first few phases of the game, or leaving without asking for a slay, will result in punishment.",
-            "",
-            "±Rule 5- Do not attempt to ruin the game in any way, shape, or form:",
-            "Do not intentionally reveal, vote, or kill your teammates without their consent. Do not quote any of the game bots, including in private messages. Do not target a certain user or group of users repeatedly. If you are not currently alive in the game, do not discuss the game with anyone still playing. Do not copy other peoples' names or make your name similar to someone else's. Do not disable private messages (PMs) or ignore other players as Mafia is a game of heavy communication. Do not stall the game for any reason. Do not attempt to fake \"Team Talk\" or \"Dead Chat\".",
+            "±Rule 4- Do not attempt to ruin the game in any way, shape, or form. Always make every reasonable attempt to win.:",
+            "Do not reveal, vote, or kill your known teammates without their consent. If you are not currently playing, do not discuss the game with those that are. Do not quote any of the game bots, including in PMs. Do not repeatedly target a certain player or group of players. Forming external alliances is strictly prohibited. Communication is key in Mafia so do not ignore other players or disable PMs. Do not fake \"Team Talk,\" \"Dead Chat,\" or bot quotes. Do not delay the progression of the game for any reason. Do not select a name too similar to another player's name.",
             ""
         ];
         dump(src, mrules, channel);
-        if (this.isMafiaAdmin(src)) {
-            var marules = [
-                "±Rule 6- You are an MA and are expected to set an example:",
-                "You are expected to follow all of the aforementioned rules and are subject to the same, if not harsher punishments for breaking them, including the possibility of termination. All ban discussion is expected to go on in #Victory Road. Do not discuss private or sensitive information with anyone whom it does not concern. You should always make reasonable effort to PM users you are about to ban to let them know why they are being banned. Don't be afraid to shove players if they broke a rule-- it is much easier to sort out a problem if you have their full attention.",
-                ""
-            ];
-            dump(src, marules, channel);
-        }
     };
 
     this.beforeChatMessage = function (src, message, channel) {
