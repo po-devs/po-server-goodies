@@ -1931,6 +1931,7 @@ function generateTeam(src, team, mode) {
                     return ivprioritise.indexOf(a.stat) - ivprioritise.indexOf(b.stat);
                 }
             };
+        var curMega, maxMega = 2;
         for (var s=0;s<6;s++) {
             var pdata = teaminfo[s];
             sys.changePokeNum(src,team,s,pdata.poke);
@@ -1938,6 +1939,13 @@ function generateTeam(src, team, mode) {
             sys.changePokeNature(src,team,s,pdata.nature);
             sys.changePokeAbility(src,team,s,pdata.ability);
             sys.changePokeItem(src,team,s,pdata.item);
+            if (pdata.item >=2000 || pdata.item < 3000) {
+                curMega++;
+                if (curMega >= maxMega) {
+                    s--;
+                    continue;
+                }
+            }
             var newmoves = shuffle(pdata.moves);
             for (var m=0;m<4;m++) {
                 sys.changePokeMove(src,team,s,m,newmoves[m]);
