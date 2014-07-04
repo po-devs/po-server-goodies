@@ -1415,7 +1415,7 @@ function Mafia(mafiachan) {
         if (mafia.state != "blank" && mafia.state != "voting") {
             themeName = mafia.theme.name.toLowerCase();
         }
-        if (data != noPlayer && data != "") {
+        if (data != noPlayer && data !== "") {
             themeName = this.getThemeName(data.toLowerCase());
             if (!mafia.themeManager.themes.hasOwnProperty(themeName)) {
                 return null;
@@ -2212,7 +2212,7 @@ function Mafia(mafiachan) {
             var teamvote;
             if ("preventTeamvote" in player.role.actions) {
                 teamvote = player.role.actions.preventTeamvote;
-            } else if ("teamUtilities" in player.role.actions && player.role.actions.teamUtilities == true) {
+            } else if ("teamUtilities" in player.role.actions && player.role.actions.teamUtilities === true) {
                 teamvote = true;
             }
             
