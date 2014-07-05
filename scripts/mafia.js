@@ -5783,7 +5783,7 @@ function Mafia(mafiachan) {
     this.showRules = function(src, channel) {
         var mrules = [
             "",
-            "*** Mafia Game Rules (Last updated: July 2014) ***",
+            "*** Mafia Game Rules (Last updated July 2014) ***",
             "",
             "±Rule 1- All server rules and social etiquette apply in this channel. Type /rules to view them:",
             "Ignorance of any rules and playing on Android are not a justification for rule breaking. Someone else breaking a rule does not grant you permission to break them yourself either. Help each other out instead of resorting to insults. If you have a problem with a theme, let the author know in a civilized manner by posting in that theme's forum thread.",
@@ -5792,7 +5792,7 @@ function Mafia(mafiachan) {
             "Listen to any MA that gives direction about behavior in the channel. If a player is breaking a rule, please PM an MA instead of disrupting the game trying to bring attention to the situation. If an MA is breaking a rule, contact a Mafia Super Admin or Server Auth immediately.",
             "",
             "±Rule 3- Make all reasonable attempts to stay active for the entire game if you decide to join, otherwise, /unjoin before the game starts:",
-            "If you must leave, ask for a \"slay\" in the main chat to be removed from the game. Please supply a valid reason for needing to leave. For example: not liking any part of the game is not a valid reason for a slay, nor is participating in battles or other channels. Asking for a slay in the first few phases of the game, or leaving without asking for a slay, will result in punishment.",
+            "If you must leave, ask for a \"slay\" in the main chat to be removed from the game. Please supply a valid reason for needing to leave. For example, not liking any part of the game is not a valid reason for a slay, nor is participating in battles or other channels. Asking for a slay in the first few phases of the game, or leaving without asking for a slay, will result in punishment.",
             "",
             "±Rule 4- Do not attempt to ruin the game in any way, shape, or form. Always make every reasonable attempt to win.:",
             "Do not reveal, vote, or kill your known teammates without their consent. If you are not currently playing, do not discuss the game with those that are. Do not quote any of the game bots, including in PMs. Do not repeatedly target a certain player or group of players. Forming external alliances is strictly prohibited. Communication is key in Mafia so do not ignore other players or disable PMs. Do not fake \"Team Talk,\" \"Dead Chat,\" or bot quotes. Do not delay the progression of the game for any reason. Do not select a name too similar to another player's name.",
