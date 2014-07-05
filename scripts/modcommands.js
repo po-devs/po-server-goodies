@@ -104,7 +104,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         var minutes;
         var chanName;
-        var space = commandData.indexOf(':');
+        var space = commandData.indexOf(' ');
         if (space != -1) {
             minutes = commandData.substring(0,space);
             chanName = commandData.substring(space+1);
@@ -596,7 +596,7 @@ exports.help =
         "/unmute: Unmutes someone.",
         "/smute: Secretly mutes a user. Can't smute auth. Format is same as mute. Default time is permanent.",
         "/sunmute: Removes secret mute from a user.",
-        "/silence: Prevents authless users from talking in a channel for specified time. Format is /silence minutes:channel. Affects current channel if no channel is given.",
+        "/silence: Prevents authless users from talking in a channel for specified time. Format is /silence minutes channel. Affects current channel if no channel is given.",
         "/silenceoff: Removes silence from a channel. Affects current channel if none is specified.",
         "/perm [on/off]: Make the current permanent channel or not (permanent channels remain listed when they have no users).",
         "/userinfo: Displays basic information about a user on a single line.",
