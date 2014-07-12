@@ -311,7 +311,7 @@ function mafiaChecker() {
                         if (checkType(action, ["object"], comm)) {
                             command = e;
                             commonMandatory = ["target", "common", "priority"];
-                            commonOptional = ["broadcast", "command", "limit", "msg", "failChance", "charges", "recharge", "initialrecharge", "broadcastmsg", "chargesmsg", "suicideChance", "suicidemsg", "restrict", "cancel", "pierce", "pierceChance", "noFollow", "userMustBeVisited", "targetMustBeVisited", "userMustVisit", "targetMustVisit", "bypass", "hide"];
+                            commonOptional = ["broadcast", "command", "limit", "msg", "failChance", "charges", "recharge", "initialrecharge", "broadcastmsg", "chargesmsg", "suicideChance", "suicidemsg", "restrict", "cancel", "pierce", "pierceChance", "noFollow", "haxMultiplier", "userMustBeVisited", "targetMustBeVisited", "userMustVisit", "targetMustVisit", "bypass", "hide"];
                             commandList = [];
                             if ("command" in action) {
                                 if (Array.isArray(action.command)) {
@@ -327,7 +327,7 @@ function mafiaChecker() {
                                 commandList.push(command);
                             }
                             if (commandList.indexOf("kill") !== -1)
-                                commonOptional = commonOptional.concat(["msg"]);
+                                commonOptional = commonOptional.concat(["msg", "killmsg"]);
                             if (commandList.indexOf("inspect") !== -1)
                                 commonOptional = commonOptional.concat(["Sight"]);
                             if (commandList.indexOf("distract") !== -1)
@@ -411,6 +411,7 @@ function mafiaChecker() {
                                 command = commandList[c];
                                 if (command == "kill") {
                                     checkType(action.msg, ["string"], comm + ".msg");
+                                    checkType(action.killmsg, ["string"], comm + ".killmsg");
                                 } else if (command == "inspect") {
                                     if (checkType(action.Sight, ["string", "object"], comm + ".Sight")) {
                                         if (typeof action.Sight == "string") {
@@ -1403,6 +1404,7 @@ function mafiaChecker() {
         checkType(action.cancel, ["array"], act + ".cancel");
         checkType(action.pierce, ["boolean"], act + ".pierce");
         checkType(action.pierceChance, ["number"], act + ".pierceChance");
+        checkType(action.haxMultiplier, ["number"], act + ".haxMultiplier");
         checkType(action.noFollow, ["boolean"], act + ".noFollow");
         checkType(action.userMustBeVisited, ["boolean"], act + ".userMustBeVisited");
         checkType(action.targetMustBeVisited, ["boolean"], act + ".targetMustBeVisited");
