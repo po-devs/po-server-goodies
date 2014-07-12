@@ -818,7 +818,7 @@ function Hangman() {
 	if (!found){
 	    hangbot.sendMessage(src, "There are no games with that answer.", hangchan);
 	}
-    }
+    };
 
     this.searchByHint = function(src, commandData){
 	    var found = false;
@@ -838,7 +838,7 @@ function Hangman() {
 	    if (!found){
 		    hangbot.sendMessage(src, "There are no games with that hint.", hangchan);
 	    }
-    }
+    };
 
     this.searchByIndex = function(src, commandData){
 	    if (commandData <= 0){
@@ -858,7 +858,7 @@ function Hangman() {
 		    c = game.length < 5 ? defaultParts : game[4];
 	
         hangbot.sendMessage(src, "Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c + " - User: " + u, hangchan);
-    }
+    };
 
     this.deleteQuest = function(src, commandData) {
        
