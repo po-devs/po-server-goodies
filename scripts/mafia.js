@@ -1905,8 +1905,8 @@ function Mafia(mafiachan) {
             }
         }
     };
-    this.kill = function (player) {
-        var killmsg = (this.theme.killmsg || "~Player~ (~Role~) died!").replace(/~Player~/g, player.name).replace(/~Role~/g, player.role.translation);
+    this.kill = function (player, msg) {
+        var killmsg = (msg || this.theme.killmsg || "~Player~ (~Role~) died!").replace(/~Player~/g, player.name).replace(/~Role~/g, player.role.translation);
         gamemsgAll(killmsg, "Kill");
         this.actionBeforeDeath(player);
         this.removePlayer(player);
@@ -3041,8 +3041,9 @@ function Mafia(mafiachan) {
                             }
                             else if (command == "kill") {
                                 var killMessage = "msg" in Action ? Action.msg : (mafia.theme.killusermsg || "You were killed during the night!"); //Custom message || Theme's message || Default message
+                                var deathmsg = "killmsg" in Action ? formatArgs(Action.killmsg, nightargs) : null;
                                 gamemsg(target.name, killMessage);
-                                mafia.kill(target);
+                                mafia.kill(target, deathmsg);
                                 nightkill = true;
                             }
                             else if (command == "poison") {
@@ -3087,7 +3088,7 @@ function Mafia(mafiachan) {
                                     if (visited.indexOf(player.name) !== -1) {
                                         visited.splice(visited.indexOf(player.name), 1);
                                     }
-                                    visited = getFirstLast(visited, Action.watchFirst || 1, Action.watchLast  || 0);
+                                    visited = getFirstLast(visited, ("watchFirst" in Action ? Action.watchFirst : 1), Action.watchLast  || 0);
                                     
                                     if (visited.length > 0) {
                                         tarmsg = ("watchmsg" in Action ? Action.watchmsg : "Your target (~Target~) was visited by ~Visit~ this night!").replace(/~Target~/gi, target).replace(/~Visit~/gi, readable(visited, "and"));
@@ -3629,7 +3630,7 @@ function Mafia(mafiachan) {
                             votersList.splice(votersList.indexOf(downed), 1);
                         }
                         
-                        votersList = getFirstLast(votersList, lyn.killVoters.first || 1, lyn.killVoters.last  || 0);
+                        votersList = getFirstLast(votersList, ("first" in lyn.killVoters ? lyn.killVoters.first : 1), lyn.killVoters.last  || 0);
                         
                         var actionMessage = (lyn.killVoters.message || "~Target~ died for having voted for ~Self~!").replace(/~Self~/g, lynched.name).replace(/~Target~/g, readable(votersList, "and"));
                         gamemsgAll(actionMessage, "Kill");
@@ -3649,7 +3650,7 @@ function Mafia(mafiachan) {
                         if (votersList.indexOf(downed) !== -1) {
                             votersList.splice(votersList.indexOf(downed), 1);
                         }
-                        votersList = getFirstLast(votersList, lyn.convertVoters.first || 1, lyn.convertVoters.last  || 0);
+                        votersList = getFirstLast(votersList, ("first" in lyn.convertVoters ? lyn.convertVoters.first : 1), lyn.convertVoters.last  || 0);
                         
                         for (r in votersList) {
                             target = votersList[r];
@@ -3875,8 +3876,10 @@ function Mafia(mafiachan) {
                     }
                     list = list.sort().join(", ");
                 }
-                msg = ("revealPlayersMsg" in role.actions.startup ? role.actions.startup.revealPlayersMsg : msg).replace(/~Players~/g, list);
-                gamemsg(player.name, msg);
+                if (list.length > 0) {
+                    msg = ("revealPlayersMsg" in role.actions.startup ? role.actions.startup.revealPlayersMsg : msg).replace(/~Players~/g, list);
+                    gamemsg(player.name, msg);
+                }
             }
         }
     };
@@ -4325,6 +4328,7 @@ function Mafia(mafiachan) {
                 if ("avoidHax" in player.role.actions && player.role.actions.avoidHax.indexOf(command) != -1) {
                     return;
                 }
+                var haxMultiplier = player.role.actions.night[command].haxMultiplier || 1;
                 var haxRoles = mafia.theme.getHaxRolesFor(command);
                 var haxers = [], haxTypes;
                 for (var i in haxRoles) {
@@ -4337,7 +4341,7 @@ function Mafia(mafiachan) {
                         var roleName = this.theme.trside(player.role.side);
                         team = this.getPlayersForRole(player.role.side);
                         var playerRole = this.theme.trrole(player.role.role);
-                        if (r < mafia.theme.roles[role].actions.hax[command].revealTeam) {
+                        if (r < mafia.theme.roles[role].actions.hax[command].revealTeam * haxMultiplier) {
                             if (team.length > 1) {
                                 gamemsg(haxPlayer, "The " + roleName + " are going to " + command + " " + commandData + "!");
                             } else {
@@ -4345,7 +4349,7 @@ function Mafia(mafiachan) {
                             }
                             haxTypes.push("revealTeam");
                         }
-                        if (r < mafia.theme.roles[role].actions.hax[command].revealPlayer) {
+                        if (r < mafia.theme.roles[role].actions.hax[command].revealPlayer * haxMultiplier) {
                             if (team.length > 1) {
                                 gamemsg(haxPlayer, name + " is one of The " + roleName + "!");
                             } else {
@@ -4353,11 +4357,11 @@ function Mafia(mafiachan) {
                             }
                             haxTypes.push("revealPlayer");
                         }
-                        if (r < mafia.theme.roles[role].actions.hax[command].revealRole) {
+                        if (r < mafia.theme.roles[role].actions.hax[command].revealRole * haxMultiplier) {
                             gamemsg(haxPlayer, name + " is " + playerRole + "!");
                             haxTypes.push("revealRole");
                         }
-                        if (r < mafia.theme.roles[role].actions.hax[command].revealTarget) {
+                        if (r < mafia.theme.roles[role].actions.hax[command].revealTarget * haxMultiplier) {
                             gamemsg(haxPlayer, commandData + " is being targeted by " + an(command) + "!");
                         }
                         if (haxTypes.length > 0) {
