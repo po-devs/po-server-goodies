@@ -401,9 +401,9 @@ function Hangman() {
             return;
         }
         var randomGame = autoGames[sys.rand(0, autoGames.length)].split(":");
-        var a = randomGame[1].toLowerCase(),
-            h = randomGame[2],
-            p = randomGame.length < 3 ? defaultParts : randomGame[3];
+        var a = randomGame[2].toLowerCase(),
+            h = randomGame[3],
+            p = randomGame.length < 5 ? defaultParts : randomGame[4];
         isEventGame = isEvent;
         this.createGame(hangbot.name, a, h, p, null);
     };
@@ -764,7 +764,7 @@ function Hangman() {
         
         var index = autoGames.length + 1;
         var author = sys.name(src);
-        autoGames.push(index + ":" newQ + ":" + newH + ":" + newC + ":" + author);
+        autoGames.push(index + ":" author + ":" + newQ + ":" + newH + ":" + newC);
         sys.write(autoGamesFile, JSON.stringify(autoGames));
         hangbot.sendMessage(src, "You have successfully added a new question!", hangchan);
 
@@ -793,8 +793,8 @@ function Hangman() {
 				    	hangman.searchByHint(src, search);
 				    	break;
 				    default:
-					    hangbot.sendMessage(src, "Select a proper method of searching.", hangchan);
-					    return;
+					hangbot.sendMessage(src, "Select a proper method of searching.", hangchan);
+					return;
 			    }
 		    }
         }
@@ -803,21 +803,21 @@ function Hangman() {
     this.searchByWord = function(src, commandData){
 	    var found = false;
         for (var e = 0; e < autoGames.length; e++) {
-		    var game = autoGames[e].split(":");
-		    var i = game[0],
-			    a = game[1].toUpperCase(),
-			    h = game[2],
-			    c = game[3],
-			    u = game[4];
+		var game = autoGames[e].split(":");
+		var i = game[0],
+		    u = game[1],
+		    a = game[2].toUpperCase(),
+		    h = game[3],
+		    c = game.length < 5 ? defaultParts : game[4];
 		
-            if (a === commandData.toUpperCase()) {
-                hangbot.sendMessage(src, "Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c + " - User: " + u, hangchan);
-			    found = true;
-            }
-	    }
-	    if (!found){
-		    hangbot.sendMessage(src, "There are no games with that answer.", hangchan);
-	    }
+                if (a === commandData.toUpperCase()) {
+                    hangbot.sendMessage(src, "Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c + " - User: " + u, hangchan);
+		    found = true;
+                }
+	}
+	if (!found){
+	    hangbot.sendMessage(src, "There are no games with that answer.", hangchan);
+	}
     }
 
     this.searchByHint = function(src, commandData){
@@ -825,10 +825,10 @@ function Hangman() {
         for (var e = 0; e < autoGames.length; e++) {
 	    	var game = autoGames[e].split(":");
 		    var i = game[0],
-		    	a = game[1].toUpperCase(),
-		    	h = game[2],
-		    	c = game[3],
-		    	u = game[4];
+		    	u = game[1],
+		    	a = game[2].toUpperCase(),
+		    	h = game[3],
+		    	c = game.length < 5 ? defaultParts : game[4];
 		
             if (h.toUpperCase() === commandData.toUpperCase()) {
                 hangbot.sendMessage(src, "Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c + " - User: " + u, hangchan);
@@ -852,10 +852,10 @@ function Hangman() {
 	
 	    var game = autoGames[commandData-1].split(":");
 	    var i = game[0],
-		    a = game[1].toUpperCase(),
-		    h = game[2],
-		    c = game[3],
-		    u = game[4];
+		    u = game[1],
+		    a = game[2].toUpperCase(),
+		    h = game[3],
+		    c = game.length < 5 ? defaultParts : game[4];
 	
         hangbot.sendMessage(src, "Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c + " - User: " + u, hangchan);
     }
@@ -876,17 +876,19 @@ function Hangman() {
 	    }
 	
 	    var del = autoGames[commandData-1].split(":");
-	    var a = del[1].toUpperCase(),
-		    h = del[2];
+	    var a = del[2].toUpperCase(),
+		    h = del[3];
 	
         hangbot.sendMessage(src, "The game " + a + " with hint " + h + " will be deleted.", hangchan);
 	
 	    autoGames.splice(commandData - 1, 1);
 	    var game,
-		    sub;
+		sub,
+		c;
 	    for (var e = commandData - 1, e < autoGames.length, e++){
 		    game = autoGames[e].split(":");
-		    sub = e + ":" + game[1] + ":" + game[2] + ":" game[3] + ":" + game[4];
+		    c = game.length < 5 ? defaultParts : game[4];
+		    sub = e + ":" + game[1] + ":" + game[2] + ":" game[3] + ":" + c;
 		    autoGames.splice(e, 1, sub);
 	    }
 	    sys.write(autoGamesFile, JSON.stringify(autoGames));
@@ -918,9 +920,9 @@ function Hangman() {
 	    }
 	
 	    var edit = autoGames[i-1].split(":");
-	    var a = edit[1].toUpperCase(),
-	    	h = edit[2],
-		    c = edit[3];
+	    var a = edit[2].toUpperCase(),
+	    	h = edit[3],
+		c = edit.length < 5 ? defaultParts : edit[4];
 	
         hangbot.sendMessage(src, "(Before) Index: " + i " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
 	
@@ -958,9 +960,9 @@ function Hangman() {
 	    }
 	
 	    var edit = autoGames[i-1].split(":");
-	    var a = edit[1].toUpperCase(),
-	    	h = edit[2],
-		    c = edit[3];
+	    var a = edit[2].toUpperCase(),
+	    	h = edit[3],
+		c = edit.length < 5 ? defaultParts : edit[4];
 	
         hangbot.sendMessage(src, "(Before) Index: " + i " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
 	
@@ -998,9 +1000,9 @@ function Hangman() {
 	    }
 	
 	    var edit = autoGames[i-1].split(":");
-	    var a = edit[1].toUpperCase(),
-		    h = edit[2],
-		    c = edit[3];
+	    var a = edit[2].toUpperCase(),
+		    h = edit[3],
+		    c = edit.length < 5 ? defaultParts : edit[4];
 	
         hangbot.sendMessage(src, "(Before) Index: " + i " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
 	
