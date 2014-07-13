@@ -927,7 +927,7 @@ function Hangman() {
         hangbot.sendMessage(src, "(Before) Index: " + i + " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
     
         a = info[1].toLowerCase();
-        var sub = i + ":" + a + ":" + h + ":" + c + ":" + sys.name(src);
+        var sub = i + ":" + sys.name(src) + ":" + a + ":" + h + ":" + c;
     
         hangbot.sendMessage(src, "(After) Index: " + i + " - Word " + a.toUpperCase() + " - Hint " + h + " - Chances: " + c, hangchan);
     
@@ -967,7 +967,7 @@ function Hangman() {
         hangbot.sendMessage(src, "(Before) Index: " + i + " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
     
         h = info[1].toLowerCase();
-        var sub = i + ":" + a + ":" + h + ":" + c + ":" + sys.name(src);
+        var sub = i + ":" + sys.name(src) + ":" + a + ":" + h + ":" + c;
     
         hangbot.sendMessage(src, "(After) Index: " + i + " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
     
@@ -1007,7 +1007,7 @@ function Hangman() {
         hangbot.sendMessage(src, "(Before) Index: " + i + " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
     
         c = info[1];
-        var sub = i + ":" + a + ":" + h + ":" + c + ":" + sys.name(src);
+        var sub = i + ":" + sys.name(src) + ":" + a + ":" + h + ":" + c;
     
         hangbot.sendMessage(src, "(After) Index: " + i +" - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
     
