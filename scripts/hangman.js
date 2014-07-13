@@ -401,9 +401,9 @@ function Hangman() {
             return;
         }
         var randomGame = autoGames[sys.rand(0, autoGames.length)].split(":");
-        var a = randomGame[0].toLowerCase(),
-            h = randomGame[1],
-            p = randomGame.length < 3 ? defaultParts : randomGame[2];
+        var a = randomGame[2].toLowerCase(),
+            h = randomGame[3],
+            p = randomGame.length < 5 ? defaultParts : randomGame[4];
         isEventGame = isEvent;
         this.createGame(hangbot.name, a, h, p, null);
     };
@@ -761,83 +761,258 @@ function Hangman() {
             hangbot.sendMessage(src, "Number of chances must be a valid number higher or equal to " + minBodyParts + "!", hangchan);
             return;
         }
-
-        autoGames.push(newQ + ":" + newH + ":" + newC);
+        
+        var index = autoGames.length + 1;
+        var author = sys.name(src);
+        autoGames.push(index + ":" author + ":" + newQ + ":" + newH + ":" + newC);
         sys.write(autoGamesFile, JSON.stringify(autoGames));
         hangbot.sendMessage(src, "You have successfully added a new question!", hangchan);
 
     };
 
-    this.indexOfQuest = function(commandData) {
-        var indexes = [];
-        var game = [];
-        var a;
-        for (var e = 0; e < autoGames.length; e++) {
-            game = autoGames[e].split(":");
-            a = game[0].toLowerCase();
-            if (a === commandData.toLowerCase()) {
-                indexes.push(e);
-            }
-        }
-        return indexes;
-    };
-
     this.searchQuest = function(src, commandData) {
-    if (autoGames.length === 0) {
-        hangbot.sendMessage(src, "There are no games in the database.", hangchan);
-        return;
-    }
-    else{
-        var indexes = hangman.indexOfQuest(commandData);
-        if (indexes.length === 0) {
-            hangbot.sendMessage(src, "The database doesn't contain that answer.", hangchan);
-        return;
+        if (autoGames.length === 0) {
+            hangbot.sendMessage(src, "There are no games in the database.", hangchan);
+            return;
         }
         else{
-            for (var e = 0; e < indexes.length; e++){
-            var info = autoGames[indexes[e]].split(":");
-            var a = info[0].toUpperCase(),
-            h = info[1],
-            p = info.length < 3 ? defaultParts : info[2];
-             hangbot.sendMessage(src, "Word: " + a + " - Hint: " + h + " - Chances: " + p, hangchan);
+            if (commandData.indexOf(":") === -1) {
+		    	hangman.searchByWord(src, commandData);
+		    }
+		    else{
+			    var search = commandData.split(":")[0],
+			    method = commandData.split(":")[1];
+			    switch (method){
+				    case "i":
+				    	hangman.searchByIndex(src, search);
+				    	break;
+				    case "w":
+				    	hangman.searchByWord(src, search);
+				    	break;
+				    case "h":
+				    	hangman.searchByHint(src, search);
+				    	break;
+				    default:
+					hangbot.sendMessage(src, "Select a proper method of searching.", hangchan);
+					return;
+			    }
+		    }
         }
+    };
+
+    this.searchByWord = function(src, commandData){
+	    var found = false;
+        for (var e = 0; e < autoGames.length; e++) {
+		var game = autoGames[e].split(":");
+		var i = game[0],
+		    u = game[1],
+		    a = game[2].toUpperCase(),
+		    h = game[3],
+		    c = game.length < 5 ? defaultParts : game[4];
+		
+                if (a === commandData.toUpperCase()) {
+                    hangbot.sendMessage(src, "Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c + " - User: " + u, hangchan);
+		    found = true;
+                }
+	}
+	if (!found){
+	    hangbot.sendMessage(src, "There are no games with that answer.", hangchan);
+	}
+    };
+
+    this.searchByHint = function(src, commandData){
+	    var found = false;
+        for (var e = 0; e < autoGames.length; e++) {
+	    	var game = autoGames[e].split(":");
+		    var i = game[0],
+		    	u = game[1],
+		    	a = game[2].toUpperCase(),
+		    	h = game[3],
+		    	c = game.length < 5 ? defaultParts : game[4];
+		
+            if (h.toUpperCase() === commandData.toUpperCase()) {
+                hangbot.sendMessage(src, "Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c + " - User: " + u, hangchan);
+	    		found = true;
             }
-    }
+	    }
+	    if (!found){
+		    hangbot.sendMessage(src, "There are no games with that hint.", hangchan);
+	    }
+    };
+
+    this.searchByIndex = function(src, commandData){
+	    if (commandData <= 0){
+		    hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
+		    return;
+	    }
+	    if (commandData > autoGames.length){
+		    hangbot.sendMessage(src, "There are " + autoGames.length + " games in the database, use a lower number.", hangchan);
+		    return;
+	    }
+	
+	    var game = autoGames[commandData-1].split(":");
+	    var i = game[0],
+		    u = game[1],
+		    a = game[2].toUpperCase(),
+		    h = game[3],
+		    c = game.length < 5 ? defaultParts : game[4];
+	
+        hangbot.sendMessage(src, "Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c + " - User: " + u, hangchan);
     };
 
     this.deleteQuest = function(src, commandData) {
-        if (commandData == "*" || commandData.indexOf(":") === -1) {
-                hangbot.sendMessage(src, "Invalid format for deletion! Proper format is 'answer:line'.", hangchan);
-                return;
-            }
+       
         if (autoGames.length === 0) {
             hangbot.sendMessage(src, "There are no games in the database, you can't delete anything.", hangchan);
             return;
         }
-        else{
-            var a = commandData.split(":")[0];
-            var indexes = hangman.indexOfQuest(a);
-            if (indexes.length===0) {
-                hangbot.sendMessage(src, "The database doesn't contain that answer.", hangchan);
-                return;
-            }
-            else{
-                var line = commandData.split(":")[1];
-                if (parseInt(line, 10) < 1) {
-                                hangbot.sendMessage(src, "You must use a valid number!", hangchan);
-                                return;
-                        }
-                line = parseInt(line, 10);
-                line = line -1;
-                if (indexes.length <= line){
-                    hangbot.sendMessage(src, "There are only " + indexes.length + "games with answer " + a + ". Use /searchquest to know the line of the one you want to delete.", hangchan);
-                    return;
-                }
-                autoGames.splice(indexes[line], 1);
-                sys.write(autoGamesFile, JSON.stringify(autoGames));
-                hangbot.sendMessage(src, "You have successfully deleted the question!", hangchan);
-            }
+	    if (commandData <= 0){
+		    hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
+		    return;
+	    }
+	    if (commandData > autoGames.length){
+	    	hangbot.sendMessage(src, "There are " + autoGames.length + " games in the database, use a lower number.", hangchan);
+		    return;
+	    }
+	
+	    var del = autoGames[commandData-1].split(":");
+	    var a = del[2].toUpperCase(),
+		    h = del[3];
+	
+        hangbot.sendMessage(src, "The game " + a + " with hint " + h + " will be deleted.", hangchan);
+	
+	    autoGames.splice(commandData - 1, 1);
+	    var game,
+		sub,
+		c;
+	    for (var e = commandData - 1, e < autoGames.length, e++){
+		    game = autoGames[e].split(":");
+		    c = game.length < 5 ? defaultParts : game[4];
+		    sub = e + ":" + game[1] + ":" + game[2] + ":" game[3] + ":" + c;
+		    autoGames.splice(e, 1, sub);
+	    }
+	    sys.write(autoGamesFile, JSON.stringify(autoGames));
+        hangbot.sendMessage(src, "You have successfully deleted the question!", hangchan);
+    };
+
+    this.changeWord = function(src, commandData) {
+    
+        if (autoGames.length === 0) {
+            hangbot.sendMessage(src, "There are no games in the database, you can't edit anything.", hangchan);
+            return;
         }
+	
+	    if (commandData.indexOf(":") === -1) {
+            hangbot.sendMessage(src, "Invalid format. Proper format is /changeword index:word.", hangchan);
+            return;
+        }
+	
+	    var info = commandData.split(":");
+	    var i = info[0];
+	
+	    if (i <= 0){
+		    hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
+		    return;
+	    }
+	    if (i > autoGames.length){
+		    hangbot.sendMessage(src, "There are " + autoGames.length + " games in the database, use a lower number.", hangchan);
+		    return;
+	    }
+	
+	    var edit = autoGames[i-1].split(":");
+	    var a = edit[2].toUpperCase(),
+	    	h = edit[3],
+		c = edit.length < 5 ? defaultParts : edit[4];
+	
+        hangbot.sendMessage(src, "(Before) Index: " + i " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
+	
+	    a = info[1].toLowerCase();	
+	    var sub = i + ":" + a + ":" + h + ":" + c + ":" + sys.name(src);
+	
+	    hangbot.sendMessage(src, "(After) Index: " + i " - Word " + a.toUpperCase() + " - Hint " + h + " - Chances: " + c, hangchan);
+	
+	    autoGames.splice(i-1, 1, sub);
+	    sys.write(autoGamesFile, JSON.stringify(autoGames));
+    };
+
+    this.changeHint = function(src, commandData) {
+    
+        if (autoGames.length === 0) {
+            hangbot.sendMessage(src, "There are no games in the database, you can't edit anything.", hangchan);
+            return;
+        }
+	
+	    if (commandData.indexOf(":") === -1) {
+            hangbot.sendMessage(src, "Invalid format. Proper format is /changeword index:hint.", hangchan);
+            return;
+        }
+	
+	    var info = commandData.split(":");
+	    var i = info[0];
+	
+	    if (i <= 0){
+		    hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
+		    return;
+	    }
+	    if (i > autoGames.length){
+		    hangbot.sendMessage(src, "There are " + autoGames.length + " games in the database, use a lower number.", hangchan);
+		    return;
+	    }
+	
+	    var edit = autoGames[i-1].split(":");
+	    var a = edit[2].toUpperCase(),
+	    	h = edit[3],
+		c = edit.length < 5 ? defaultParts : edit[4];
+	
+        hangbot.sendMessage(src, "(Before) Index: " + i " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
+	
+	    h = info[1].toLowerCase();	
+	    var sub = i + ":" + a + ":" + h + ":" c + ":" + sys.name(src);
+	
+	    hangbot.sendMessage(src, "(After) Index: " + i " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
+	
+	    autoGames.splice(i-1, 1, sub);
+	    sys.write(autoGamesFile, JSON.stringify(autoGames));
+    };
+
+    this.changeChances = function(src, commandData) {
+    
+        if (autoGames.length === 0) {
+            hangbot.sendMessage(src, "There are no games in the database, you can't edit anything.", hangchan);
+            return;
+        }
+	
+	    var info = commandData.split(":");
+	    var i = info[0];
+	
+	    if (commandData.indexOf(":") === -1) {
+            hangbot.sendMessage(src, "Invalid format. Proper format is /changeword index:chances.", hangchan);
+            return;
+        }
+	
+	    if (i <= 0){
+		    hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
+		    return;
+	    }
+	    if (i > autoGames.length){
+		    hangbot.sendMessage(src, "There are " + autoGames.length + " games in the database, use a lower number.", hangchan);
+		    return;
+	    }
+	
+	    var edit = autoGames[i-1].split(":");
+	    var a = edit[2].toUpperCase(),
+		    h = edit[3],
+		    c = edit.length < 5 ? defaultParts : edit[4];
+	
+        hangbot.sendMessage(src, "(Before) Index: " + i " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
+	
+	    c = info[1];	
+	    var sub = i + ":" + a + ":" + h + ":" c + ":" + sys.name(src);
+	
+	    hangbot.sendMessage(src, "(After) Index: " + i " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
+	
+	    autoGames.splice(i-1, 1, sub);
+	    sys.write(autoGamesFile, JSON.stringify(autoGames));
     };
 
     this.checkGame = function (src) {
@@ -938,7 +1113,7 @@ function Hangman() {
             "/hangmanadmins: To see a list of hangman auth.",
             "/end: To end a game you started.",
             "/leaderboard: To see the event leaderboard. You can type /leaderboard last to see last months leaderboard.",
-            "/myanswer: To see the answer you submitted (host only)"
+            "/myanswer: To see the answer you submitted (host only)."
         ];
         var adminHelp = [
             "*** Hangman Admin Commands ***",
@@ -948,8 +1123,11 @@ function Hangman() {
             "/passha: To give your Hangman Admin powers to an alt.",
             "/autogame: To turn autogames on/off. Format /autogame on or /autogame off.",
             "/addquest: To add a question to the autogame/eventgame data base. Format /addquest Answer:Hint:Guess number.",
-            "/searchquest: To search a question in the autogame/eventgame data base. Format /searchquest Answer.",
-            "/deletequest: To delete a question in the autogame/eventgame data base. Format /deletequest Answer:Line (number of line in /searchquest).",
+            "/searchquest: To search a question in the autogame/eventgame data base. Format /searchquest query:criteria where criteria is (w)ord (default), (h)int or (i)ndex.",
+            "/deletequest: To delete a question in the autogame/eventgame data base. Format /deletequest index.",
+            "/changeword: To change the word in a question in the autogame/eventgame data base. Format /changeword index:word.",
+            "/changehint: To change the hint in a question in the autogame/eventgame data base. Format /changeword index:hint.",
+            "/changechances: To change the chances in a question in the autogame/eventgame data base. Format /changeword index:word.",
             "/checkgame: To see the answer of a game (only once per game). Prevents playing if used."
         ];
         var superAdminHelp = [
@@ -1132,6 +1310,21 @@ function Hangman() {
         
         if(command === "deletequest") {
             hangman.deleteQuest(src, commandData);
+            return true;
+        }
+
+        if(command === "changeword") {
+            hangman.changeWord(src, commandData);
+            return true;
+        }
+        
+        if(command === "changehint") {
+            hangman.changeHint(src, commandData);
+            return true;
+        }
+        
+        if(command === "changechances") {
+            hangman.changeChances(src, commandData);
             return true;
         }
 
