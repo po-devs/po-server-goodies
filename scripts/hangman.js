@@ -764,7 +764,7 @@ function Hangman() {
         
         var index = autoGames.length + 1;
         var author = sys.name(src);
-        autoGames.push(index + ":" author + ":" + newQ + ":" + newH + ":" + newC);
+        autoGames.push(index + ":" + author + ":" + newQ + ":" + newH + ":" + newC);
         sys.write(autoGamesFile, JSON.stringify(autoGames));
         hangbot.sendMessage(src, "You have successfully added a new question!", hangchan);
 
@@ -777,86 +777,86 @@ function Hangman() {
         }
         else{
             if (commandData.indexOf(":") === -1) {
-		    	hangman.searchByWord(src, commandData);
-		    }
-		    else{
-			    var search = commandData.split(":")[0],
-			    method = commandData.split(":")[1];
-			    switch (method){
-				    case "i":
-				    	hangman.searchByIndex(src, search);
-				    	break;
-				    case "w":
-				    	hangman.searchByWord(src, search);
-				    	break;
-				    case "h":
-				    	hangman.searchByHint(src, search);
-				    	break;
-				    default:
-					hangbot.sendMessage(src, "Select a proper method of searching.", hangchan);
-					return;
-			    }
-		    }
+                hangman.searchByWord(src, commandData);
+            }
+            else{
+                var search = commandData.split(":")[0],
+                method = commandData.split(":")[1];
+                switch (method){
+                    case "i":
+                        hangman.searchByIndex(src, search);
+                        break;
+                    case "w":
+                        hangman.searchByWord(src, search);
+                        break;
+                    case "h":
+                        hangman.searchByHint(src, search);
+                        break;
+                    default:
+                    hangbot.sendMessage(src, "Select a proper method of searching.", hangchan);
+                    return;
+                }
+            }
         }
     };
 
     this.searchByWord = function(src, commandData){
-	    var found = false;
+        var found = false;
         for (var e = 0; e < autoGames.length; e++) {
-		var game = autoGames[e].split(":");
-		var i = game[0],
-		    u = game[1],
-		    a = game[2].toUpperCase(),
-		    h = game[3],
-		    c = game.length < 5 ? defaultParts : game[4];
-		
+        var game = autoGames[e].split(":");
+        var i = game[0],
+            u = game[1],
+            a = game[2].toUpperCase(),
+            h = game[3],
+            c = game.length < 5 ? defaultParts : game[4];
+        
                 if (a === commandData.toUpperCase()) {
                     hangbot.sendMessage(src, "Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c + " - User: " + u, hangchan);
-		    found = true;
+            found = true;
                 }
-	}
-	if (!found){
-	    hangbot.sendMessage(src, "There are no games with that answer.", hangchan);
-	}
+    }
+    if (!found){
+        hangbot.sendMessage(src, "There are no games with that answer.", hangchan);
+    }
     };
 
     this.searchByHint = function(src, commandData){
-	    var found = false;
+        var found = false;
         for (var e = 0; e < autoGames.length; e++) {
-	    	var game = autoGames[e].split(":");
-		    var i = game[0],
-		    	u = game[1],
-		    	a = game[2].toUpperCase(),
-		    	h = game[3],
-		    	c = game.length < 5 ? defaultParts : game[4];
-		
+            var game = autoGames[e].split(":");
+            var i = game[0],
+                u = game[1],
+                a = game[2].toUpperCase(),
+                h = game[3],
+                c = game.length < 5 ? defaultParts : game[4];
+        
             if (h.toUpperCase() === commandData.toUpperCase()) {
                 hangbot.sendMessage(src, "Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c + " - User: " + u, hangchan);
-	    		found = true;
+                found = true;
             }
-	    }
-	    if (!found){
-		    hangbot.sendMessage(src, "There are no games with that hint.", hangchan);
-	    }
+        }
+        if (!found){
+            hangbot.sendMessage(src, "There are no games with that hint.", hangchan);
+        }
     };
 
     this.searchByIndex = function(src, commandData){
-	    if (commandData <= 0){
-		    hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
-		    return;
-	    }
-	    if (commandData > autoGames.length){
-		    hangbot.sendMessage(src, "There are " + autoGames.length + " games in the database, use a lower number.", hangchan);
-		    return;
-	    }
-	
-	    var game = autoGames[commandData-1].split(":");
-	    var i = game[0],
-		    u = game[1],
-		    a = game[2].toUpperCase(),
-		    h = game[3],
-		    c = game.length < 5 ? defaultParts : game[4];
-	
+        if (commandData <= 0){
+            hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
+            return;
+        }
+        if (commandData > autoGames.length){
+            hangbot.sendMessage(src, "There are " + autoGames.length + " games in the database, use a lower number.", hangchan);
+            return;
+        }
+    
+        var game = autoGames[commandData-1].split(":");
+        var i = game[0],
+            u = game[1],
+            a = game[2].toUpperCase(),
+            h = game[3],
+            c = game.length < 5 ? defaultParts : game[4];
+    
         hangbot.sendMessage(src, "Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c + " - User: " + u, hangchan);
     };
 
@@ -866,32 +866,32 @@ function Hangman() {
             hangbot.sendMessage(src, "There are no games in the database, you can't delete anything.", hangchan);
             return;
         }
-	    if (commandData <= 0){
-		    hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
-		    return;
-	    }
-	    if (commandData > autoGames.length){
-	    	hangbot.sendMessage(src, "There are " + autoGames.length + " games in the database, use a lower number.", hangchan);
-		    return;
-	    }
-	
-	    var del = autoGames[commandData-1].split(":");
-	    var a = del[2].toUpperCase(),
-		    h = del[3];
-	
+        if (commandData <= 0){
+            hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
+            return;
+        }
+        if (commandData > autoGames.length){
+            hangbot.sendMessage(src, "There are " + autoGames.length + " games in the database, use a lower number.", hangchan);
+            return;
+        }
+    
+        var del = autoGames[commandData-1].split(":");
+        var a = del[2].toUpperCase(),
+            h = del[3];
+    
         hangbot.sendMessage(src, "The game " + a + " with hint " + h + " will be deleted.", hangchan);
-	
-	    autoGames.splice(commandData - 1, 1);
-	    var game,
-		sub,
-		c;
-	    for (var e = commandData - 1, e < autoGames.length, e++){
-		    game = autoGames[e].split(":");
-		    c = game.length < 5 ? defaultParts : game[4];
-		    sub = e + ":" + game[1] + ":" + game[2] + ":" game[3] + ":" + c;
-		    autoGames.splice(e, 1, sub);
-	    }
-	    sys.write(autoGamesFile, JSON.stringify(autoGames));
+    
+        autoGames.splice(commandData - 1, 1);
+        var game,
+        sub,
+        c;
+        for (var e = commandData - 1; e < autoGames.length; e++){
+            game = autoGames[e].split(":");
+            c = game.length < 5 ? defaultParts : game[4];
+            sub = e + ":" + game[1] + ":" + game[2] + ":" + game[3] + ":" + c;
+            autoGames.splice(e, 1, sub);
+        }
+        sys.write(autoGamesFile, JSON.stringify(autoGames));
         hangbot.sendMessage(src, "You have successfully deleted the question!", hangchan);
     };
 
@@ -901,38 +901,38 @@ function Hangman() {
             hangbot.sendMessage(src, "There are no games in the database, you can't edit anything.", hangchan);
             return;
         }
-	
-	    if (commandData.indexOf(":") === -1) {
+    
+        if (commandData.indexOf(":") === -1) {
             hangbot.sendMessage(src, "Invalid format. Proper format is /changeword index:word.", hangchan);
             return;
         }
-	
-	    var info = commandData.split(":");
-	    var i = info[0];
-	
-	    if (i <= 0){
-		    hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
-		    return;
-	    }
-	    if (i > autoGames.length){
-		    hangbot.sendMessage(src, "There are " + autoGames.length + " games in the database, use a lower number.", hangchan);
-		    return;
-	    }
-	
-	    var edit = autoGames[i-1].split(":");
-	    var a = edit[2].toUpperCase(),
-	    	h = edit[3],
-		c = edit.length < 5 ? defaultParts : edit[4];
-	
-        hangbot.sendMessage(src, "(Before) Index: " + i " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
-	
-	    a = info[1].toLowerCase();	
-	    var sub = i + ":" + a + ":" + h + ":" + c + ":" + sys.name(src);
-	
-	    hangbot.sendMessage(src, "(After) Index: " + i " - Word " + a.toUpperCase() + " - Hint " + h + " - Chances: " + c, hangchan);
-	
-	    autoGames.splice(i-1, 1, sub);
-	    sys.write(autoGamesFile, JSON.stringify(autoGames));
+    
+        var info = commandData.split(":");
+        var i = info[0];
+    
+        if (i <= 0){
+            hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
+            return;
+        }
+        if (i > autoGames.length){
+            hangbot.sendMessage(src, "There are " + autoGames.length + " games in the database, use a lower number.", hangchan);
+            return;
+        }
+    
+        var edit = autoGames[i-1].split(":");
+        var a = edit[2].toUpperCase(),
+            h = edit[3],
+        c = edit.length < 5 ? defaultParts : edit[4];
+    
+        hangbot.sendMessage(src, "(Before) Index: " + i + " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
+    
+        a = info[1].toLowerCase();
+        var sub = i + ":" + a + ":" + h + ":" + c + ":" + sys.name(src);
+    
+        hangbot.sendMessage(src, "(After) Index: " + i + " - Word " + a.toUpperCase() + " - Hint " + h + " - Chances: " + c, hangchan);
+    
+        autoGames.splice(i-1, 1, sub);
+        sys.write(autoGamesFile, JSON.stringify(autoGames));
     };
 
     this.changeHint = function(src, commandData) {
@@ -941,38 +941,38 @@ function Hangman() {
             hangbot.sendMessage(src, "There are no games in the database, you can't edit anything.", hangchan);
             return;
         }
-	
-	    if (commandData.indexOf(":") === -1) {
+    
+        if (commandData.indexOf(":") === -1) {
             hangbot.sendMessage(src, "Invalid format. Proper format is /changeword index:hint.", hangchan);
             return;
         }
-	
-	    var info = commandData.split(":");
-	    var i = info[0];
-	
-	    if (i <= 0){
-		    hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
-		    return;
-	    }
-	    if (i > autoGames.length){
-		    hangbot.sendMessage(src, "There are " + autoGames.length + " games in the database, use a lower number.", hangchan);
-		    return;
-	    }
-	
-	    var edit = autoGames[i-1].split(":");
-	    var a = edit[2].toUpperCase(),
-	    	h = edit[3],
-		c = edit.length < 5 ? defaultParts : edit[4];
-	
-        hangbot.sendMessage(src, "(Before) Index: " + i " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
-	
-	    h = info[1].toLowerCase();	
-	    var sub = i + ":" + a + ":" + h + ":" c + ":" + sys.name(src);
-	
-	    hangbot.sendMessage(src, "(After) Index: " + i " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
-	
-	    autoGames.splice(i-1, 1, sub);
-	    sys.write(autoGamesFile, JSON.stringify(autoGames));
+    
+        var info = commandData.split(":");
+        var i = info[0];
+    
+        if (i <= 0){
+            hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
+            return;
+        }
+        if (i > autoGames.length){
+            hangbot.sendMessage(src, "There are " + autoGames.length + " games in the database, use a lower number.", hangchan);
+            return;
+        }
+    
+        var edit = autoGames[i-1].split(":");
+        var a = edit[2].toUpperCase(),
+            h = edit[3],
+        c = edit.length < 5 ? defaultParts : edit[4];
+    
+        hangbot.sendMessage(src, "(Before) Index: " + i + " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
+    
+        h = info[1].toLowerCase();
+        var sub = i + ":" + a + ":" + h + ":" + c + ":" + sys.name(src);
+    
+        hangbot.sendMessage(src, "(After) Index: " + i + " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
+    
+        autoGames.splice(i-1, 1, sub);
+        sys.write(autoGamesFile, JSON.stringify(autoGames));
     };
 
     this.changeChances = function(src, commandData) {
@@ -981,38 +981,38 @@ function Hangman() {
             hangbot.sendMessage(src, "There are no games in the database, you can't edit anything.", hangchan);
             return;
         }
-	
-	    var info = commandData.split(":");
-	    var i = info[0];
-	
-	    if (commandData.indexOf(":") === -1) {
+    
+        var info = commandData.split(":");
+        var i = info[0];
+    
+        if (commandData.indexOf(":") === -1) {
             hangbot.sendMessage(src, "Invalid format. Proper format is /changeword index:chances.", hangchan);
             return;
         }
-	
-	    if (i <= 0){
-		    hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
-		    return;
-	    }
-	    if (i > autoGames.length){
-		    hangbot.sendMessage(src, "There are " + autoGames.length + " games in the database, use a lower number.", hangchan);
-		    return;
-	    }
-	
-	    var edit = autoGames[i-1].split(":");
-	    var a = edit[2].toUpperCase(),
-		    h = edit[3],
-		    c = edit.length < 5 ? defaultParts : edit[4];
-	
-        hangbot.sendMessage(src, "(Before) Index: " + i " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
-	
-	    c = info[1];	
-	    var sub = i + ":" + a + ":" + h + ":" c + ":" + sys.name(src);
-	
-	    hangbot.sendMessage(src, "(After) Index: " + i " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
-	
-	    autoGames.splice(i-1, 1, sub);
-	    sys.write(autoGamesFile, JSON.stringify(autoGames));
+    
+        if (i <= 0){
+            hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
+            return;
+        }
+        if (i > autoGames.length){
+            hangbot.sendMessage(src, "There are " + autoGames.length + " games in the database, use a lower number.", hangchan);
+            return;
+        }
+    
+        var edit = autoGames[i-1].split(":");
+        var a = edit[2].toUpperCase(),
+            h = edit[3],
+            c = edit.length < 5 ? defaultParts : edit[4];
+    
+        hangbot.sendMessage(src, "(Before) Index: " + i + " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
+    
+        c = info[1];
+        var sub = i + ":" + a + ":" + h + ":" + c + ":" + sys.name(src);
+    
+        hangbot.sendMessage(src, "(After) Index: " + i +" - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
+    
+        autoGames.splice(i-1, 1, sub);
+        sys.write(autoGamesFile, JSON.stringify(autoGames));
     };
 
     this.checkGame = function (src) {
