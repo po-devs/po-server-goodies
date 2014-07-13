@@ -731,7 +731,7 @@ function Hangman() {
                 hangbot.sendMessage(src, "Event Games are already turned on.", hangchan);
             }
             else {
-                eventGames = false;
+                eventGames = true;
                 hangbot.sendMessage(src, "Event games have been turned on.", hangchan);
             }
         }
