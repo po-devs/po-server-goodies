@@ -1149,7 +1149,7 @@ function Hangman() {
             "/config: To change the answer delay time and other settings. Format /config parameter:value. Type /config by itself to see more help.",
             "/hangmanadmin: To promote a new Hangman Admin. Use /shangmanadmin for a silent promotion.",
             "/hangmanadminoff: To demote a Hangman Admin or a Hangman Super Admin. Use /shangmanadminoff for a silent demotion.",
-            "/eventgame: To turn eventgames on/off. Format /eventgame on or /eventgame off."
+            "/eventgame: To turn eventgames on/off. Format /eventgame on or /eventgame off.",
             "/forceevent: Forces an Event game to start."
         ];
         var ownerHelp = [
