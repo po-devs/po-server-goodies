@@ -771,6 +771,10 @@ function Hangman() {
     };
 
     this.searchQuest = function(src, commandData) {
+        if (commandData === undefined) {
+            hangbot.sendMessage(src, "Invalid format. Proper format is /searchquest query:criteria where criteria is (w)ord (default), (h)int or (i)ndex.", hangchan);
+            return;
+        }
         if (autoGames.length === 0) {
             hangbot.sendMessage(src, "There are no games in the database.", hangchan);
             return;
@@ -841,6 +845,10 @@ function Hangman() {
     };
 
     this.searchByIndex = function(src, commandData){
+        if (typeof commandData==='number' && (commandData%1)===0) {
+            hangbot.sendMessage(src, "You need to write an integer number, the index of the question you want to search.", hangchan);
+            return;
+        }
         if (commandData <= 0){
             hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
             return;
@@ -864,6 +872,10 @@ function Hangman() {
        
         if (autoGames.length === 0) {
             hangbot.sendMessage(src, "There are no games in the database, you can't delete anything.", hangchan);
+            return;
+        }
+        if (typeof commandData==='number' && (commandData%1)===0) {
+            hangbot.sendMessage(src, "You need to write an integer number, the index of the question you want to delete.", hangchan);
             return;
         }
         if (commandData <= 0){
@@ -1033,7 +1045,7 @@ function Hangman() {
             }
         }
     };
-
+    
     this.checkNewMonth = function() {
         var date = new Date();
         if (date.getUTCMonth() !== leaderboards.currentMonth) {
@@ -1137,7 +1149,8 @@ function Hangman() {
             "/config: To change the answer delay time and other settings. Format /config parameter:value. Type /config by itself to see more help.",
             "/hangmanadmin: To promote a new Hangman Admin. Use /shangmanadmin for a silent promotion.",
             "/hangmanadminoff: To demote a Hangman Admin or a Hangman Super Admin. Use /shangmanadminoff for a silent demotion.",
-            "/eventgame: To turn eventgames on/off. Format /eventgame on or /eventgame off."
+            "/eventgame: To turn eventgames on/off. Format /eventgame on or /eventgame off.",
+            "/forceevent: Forces an Event game to start."
         ];
         var ownerHelp = [
             "*** Server owner Hangman Commands ***",
@@ -1358,6 +1371,10 @@ function Hangman() {
         if(command === "eventgame") {
             hangman.eventGame(src, commandData);
             return true;
+        }
+        
+        if(command === "forceevent"){
+            hangman.startEventGame();
         }
 
         if (hangman.authLevel(src) < 3) {
