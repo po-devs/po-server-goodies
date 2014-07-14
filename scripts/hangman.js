@@ -883,12 +883,14 @@ function Hangman() {
     
         autoGames.splice(commandData - 1, 1);
         var game,
-        sub,
-        c;
+            sub,
+            c,
+            i;
         for (var e = commandData - 1; e < autoGames.length; e++){
             game = autoGames[e].split(":");
             c = game.length < 5 ? defaultParts : game[4];
-            sub = e + ":" + game[1] + ":" + game[2] + ":" + game[3] + ":" + c;
+            i = e+1;
+            sub = i + ":" + game[1] + ":" + game[2] + ":" + game[3] + ":" + c;
             autoGames.splice(e, 1, sub);
         }
         sys.write(autoGamesFile, JSON.stringify(autoGames));
@@ -1055,8 +1057,8 @@ function Hangman() {
             hangbot.sendMessage(src, "delay: Set delay (in seconds) between each guess. Full answers take double the time (currently set to " + answerDelay + " seconds). ", hangchan);
             hangbot.sendMessage(src, "winner: Set how many seconds the winner of a game have to start a new one before anyone can start (currently set to " + winnerDelay + " seconds). ", hangchan);
             hangbot.sendMessage(src, "answers: Set how many times each player can use /a (currently set to " + maxAnswers + " seconds). ", hangchan);
-            hangbot.sendMessage(src, "idle: Set how many minutes the channel must be idle for game to automatically start. (currently set to " + idleLimit/60 + " minutes).", hangchan);
-            hangbot.sendMessage(src, "event: Set how often Event Games happen.(currently set to" + eventLimit/60 + " minutes).", hangchan);
+            hangbot.sendMessage(src, "idle: Set how many minutes the channel must be idle for game to automatically start (currently set to " + idleLimit/60 + " minutes).", hangchan);
+            hangbot.sendMessage(src, "event: Set how often Event Games happen (currently set to " + eventLimit/60 + " minutes).", hangchan);
             sys.sendMessage(src, " ", hangchan);
             return;
         }
@@ -1089,7 +1091,7 @@ function Hangman() {
                 break;
             case "event":
                 eventLimit = val*60;
-                hangbot.sendMessage(src, "Event games with happen ever " + val + " minutes.", hangchan);
+                hangbot.sendMessage(src, "Event games with happen every " + val + " minutes.", hangchan);
         }
     };
     this.onHelp = function (src, topic, channel) {
@@ -1281,10 +1283,6 @@ function Hangman() {
             return true;
         }
 
-        if(command === "eventgame") {
-            hangman.eventGame(src, commandData);
-            return true;
-        }
 
         /* Test Commands
          if (command == "settime") {
@@ -1354,6 +1352,11 @@ function Hangman() {
 
         if (command === "hangmanadminoff" || command === "shangmanadminoff") {
             hangman.demoteAdmin(src, commandData, channel, (command === "shangmanadminoff"));
+            return true;
+        }
+
+        if(command === "eventgame") {
+            hangman.eventGame(src, commandData);
             return true;
         }
 
