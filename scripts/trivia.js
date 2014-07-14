@@ -973,7 +973,7 @@ QuestionHolder.prototype.all = function () {
 };
 
 questionData.log = function (id, players, answered) {
-    if questionData.hash.hasOwnProperty(id) {
+    if (questionData.hash.hasOwnProperty(id)) {
         var data = questionData.get(id).split(" ");
         var totalAsked = parseInt(data[0]) + 1;
         var totalPlayers = parseInt(data[1]) + players;
