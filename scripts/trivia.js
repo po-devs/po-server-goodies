@@ -567,7 +567,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
             this.player(name).points += pointAdd;
         }
     }
-    if totalPlayers != 0 {
+    if (totalPlayers != 0) {
         questionData.log(this.roundQuestion, totalPlayers, answeredCorrectly.length);
     }
 
@@ -1550,48 +1550,40 @@ addAdminCommand("listc", function (src, commandData, channel) {
 addAdminCommand("mostasked", function (src, commandData, channel) {
     var sortedQs = questionData.sortBy("asked");
     var count = commandData | 30;
-    var i = 0;
     triviabot.sendMessage(src, "Most asked questions:", channel);
-    while (i < count && i < sortedQs.length) {
+    for (var i = 0; i < count && i < sortedQs.length; i++) {
         var q = sortedQs[i];
         triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
-        i++;
     }
 }, "Lists the N most asked questions, format /mostasked N, default is 30.");
 
 addAdminCommand("leastasked", function (src, commandData, channel) {
     var sortedQs = questionData.sortBy("asked");
     var count = commandData | 30;
-    var i = 0;
     triviabot.sendMessage(src, "Least asked questions:", channel);
-    while (i < count && i < sortedQs.length) {
+    for (var i = 0; i < count && i < sortedQs.length; i++) {
         var q = sortedQs[sortedQs.length - i];
         triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
-        i++;
     }
 }, "Lists the N least asked questions, format /leastasked N, default is 30.");
 
 addAdminCommand("mostanswered", function (src, commandData, channel) {
     var sortedQs = questionData.sortBy("answered");
     var count = commandData | 30;
-    var i = 0;
     triviabot.sendMessage(src, "Questions answered correctly the most:", channel);
-    while (i < count && i < sortedQs.length) {
+    for (var i = 0; i < count && i < sortedQs.length; i++) {
         var q = sortedQs[i];
         triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
-        i++;
     }
 }, "Lists the N questions answered correctly the most, format /mostanswered N, default is 30.");
 
 addAdminCommand("leastanswered", function (src, commandData, channel) {
     var sortedQs = questionData.sortBy("answered");
     var count = commandData | 30;
-    var i = 0;
     triviabot.sendMessage(src, "Questions answered correctly the least:", channel);
-    while (i < count && i < sortedQs.length) {
+    for (var i = 0; i < count && i < sortedQs.length; i++) {
         var q = sortedQs[sortedQs.length - i];
         triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
-        i++;
     }
 }, "Lists the N questions answered correctly the least, format /leastanswered N, default is 30.");
 
