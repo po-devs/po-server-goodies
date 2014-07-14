@@ -38,6 +38,7 @@ var triviaq = new QuestionHolder("triviaq.txt");
 var trivreview = new QuestionHolder("trivreview.txt");
 var tadmin = new TriviaAdmin("tadmins.txt");
 var tsadmin = new TriviaAdmin("tsadmins.txt");
+var questionData = new MemoryHash("questiondata.txt");
 var trivData;
 var month = new Date().getMonth();
 try {
@@ -566,6 +567,9 @@ TriviaGame.prototype.finalizeAnswers = function () {
             this.player(name).points += pointAdd;
         }
     }
+    if (totalPlayers != 0) {
+        questionData.log(this.roundQuestion, totalPlayers, answeredCorrectly.length);
+    }
 
     var leaderboard = [];
     var displayboard = [];
@@ -968,6 +972,34 @@ QuestionHolder.prototype.all = function () {
     return this.state.questions.hash;
 };
 
+questionData.log = function (id, players, answered) {
+    if questionData.hash.hasOwnProperty(id) {
+        var data = questionData.get(id).split(" ");
+        var totalAsked = parseInt(data[0]) + 1;
+        var totalPlayers = parseInt(data[1]) + players;
+        var totalAnswered = parseInt(data[2]) + answered;
+        questionData.hash[id] = totalAsked + " " + totalPlayers + " " + totalAnswered;
+        questionData.save();
+    } else {
+        questionData.add(id, "1 " + players + " " + answered);
+    }
+}
+
+questionData.sortBy = function (what) {
+    var sortingArray = [];
+    for (var i in questionData.hash) {
+        var q = questionData.get(i).split(" ");
+        sortingArray.push([i, q[0], q[1], q[2]]);
+    }
+    if (what === "asked") {
+        sortingArray.sort(function (a, b) {return b[1] - a[1]});
+    }
+    if (what === "answered") {
+        sortingArray.sort(function (a, b) {return b[3]/b[2] - a[3]/a[2]});
+    }
+    return sortingArray;
+}
+
 function TriviaAdmin(file) {
     this.file = file;
     this.admins = [];
@@ -1233,39 +1265,6 @@ addUserCommand("goal", function (src, commandData, channel) {
     Trivia.sendPM(src, (Trivia.scoreType === "elimination" ? "Everyone started with " + points + (points == 1 ? " life." : " lives.") : "The goal for the current game is: " + points), channel);
 }, "Allows you to see the current target for the trivia game");
 
-addAdminCommand("changegoal", function (src, commandData, channel) {
-    if (Trivia.started === false) {
-        Trivia.sendPM(src, "A trivia game isn't currently running.", channel);
-        return;
-    }
-    if (Trivia.scoreType === "elimination") {
-        Trivia.sendPM(src, "This doesn't make much sense in an elimination game.", channel);
-        return;
-    }
-    commandData = parseInt(commandData, 10);
-    if (isNaN(commandData)) {
-        Trivia.sendPM(src, "The goal must be a valid number.", channel);
-        return;
-    }
-    if (commandData < 1 || commandData > 60) {
-        Trivia.sendPM(src, "The goal must not be lower than 1 or higher than 60.", channel);
-        return;
-    }
-    triviabot.sendAll(sys.name(src) + " changed the goal of the current game to " + commandData + ".", triviachan);
-    Trivia.maxPoints = commandData;
-    return;
-}, "Allows you to change the goal for the current game");
-
-addAdminCommand("removeq", function (src, commandData, channel) {
-    var q = triviaq.get(commandData);
-    if (q !== null) {
-        triviabot.sendAll(sys.name(src) + " removed question: id, " + commandData + " category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, revchan);
-        triviaq.remove(commandData);
-        return;
-    }
-    Trivia.sendPM(src, "Oops! Question doesn't exist", channel);
-}, "Allows you to remove a question that has already been submitted, format /removeq [ID]");
-
 addUserCommand("submitq", function (src, commandData, channel) {
     var user_ip = sys.ip(src),
         isAdmin = tadmin.isTAdmin(sys.name(src));
@@ -1364,85 +1363,9 @@ addUserCommand(["leaderboard", "lb"], function (src, commandData, channel){
     extLB.showLeaders(src, commandData, channel);
 }, "Shows the current leaderboard and your standing, format: /leaderboard [type]*[#]. Type is the scoring used (knowledge [know] or elimination [elim]); required. # is the number of places to show; if left blank, shows top 10 and your placement.");
 
-addOwnerCommand("resetlb", function(src){
-    extLB.reset();
-}, "Removes all data from the leaderboard.");
-
-addOwnerCommand("lbmin", function(src, commandData, channel){
-    if (commandData.length == 0 || isNaN(commandData)){
-        triviabot.sendMessage(src, extLB.minLB + " points are currently required for a game to count towards the leaderboard.", channel);
-    } else {
-        extLB.minLB = commandData;
-        Trivia.sendAll("A minimum of " + commandData + " point(s) is now required for a knowledge game to count towards the leaderboard.",revchan);
-    }
-}, "Changes the minimum points needed for a knowledge-based game to count for the leaderboard. Format /lbmin #");
-
-addOwnerCommand(["triviaadmin", "striviaadmin"], function (src, commandData, channel, command) {
-    if (tadmin.isTAdmin(commandData)) {
-        Trivia.sendPM(src, "That person is already a Trivia Admin.", channel);
-        return;
-    }
-    tadmin.addTAdmin(commandData);
-    if (command === "triviaadmin") {
-        Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Trivia Admin.", triviachan);
-    }
-    Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Trivia Admin.", revchan);
-    Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Trivia Admin.", sachannel);
-}, "Allows you to promote a new trivia admin, use /striviaadmin for a silent promotion.");
-
-addOwnerCommand(["triviaadminoff", "striviaadminoff"], function (src, commandData, channel, command) {
-    if (!tadmin.isTAdmin(commandData) && !tsadmin.isTAdmin(commandData)) {
-        Trivia.sendPM(src, "That person isn't a Trivia auth.", channel);
-        return;
-    }
-    var isTA = tadmin.isTAdmin(commandData);
-    var oldAuth = (isTA ? "Trivia Admin" : "Super Trivia Admin");
-    if (isTA) {
-        tadmin.removeTAdmin(commandData);
-    }
-    else {
-        tsadmin.removeTAdmin(commandData);
-    }
-    if (command === "triviaadminoff") {
-        Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldAuth + ".", triviachan);
-    }
-    Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldAuth + ".", revchan);
-    Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldAuth + ".", sachannel);
-}, "Allows you to demote a current trivia admin or super trivia admin, use /striviaadminoff for a silent demotion.");
-
-addServerOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, commandData, channel, command) {
-    if (tsadmin.isTAdmin(commandData)) {
-        Trivia.sendPM(src, "That person is already a Super Trivia Admin.", channel);
-        return;
-    }
-    tsadmin.addTAdmin(commandData);
-    if (command === "triviasuperadmin") {
-        Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Trivia Admin.", triviachan);
-    }
-    Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Trivia Admin.", revchan);
-    Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Trivia Admin.", sachannel);
-}, "Allows you to promote a new trivia super admin, use /striviasuperadmin for a silent promotion.");
-
-addServerOwnerCommand(["triviasuperadminoff", "striviasuperadminoff"], function (src, commandData, channel, command) {
-    if (!tsadmin.isTAdmin(commandData)) {
-        Trivia.sendPM(src, "That person isn't a Super Trivia Admin.", channel);
-        return;
-    }
-    tsadmin.removeTAdmin(commandData);
-    if (command === "triviasuperadminoff") {
-        Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Super Trivia Admin.", triviachan);
-    }
-    Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Super Trivia Admin.", revchan);
-    Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Super Trivia Admin.", sachannel);
-}, "Allows you to demote a current trivia super admin, use /striviasuperadminoff for a silent demotion.");
-
 addUserCommand("start", function (src, commandData) {
     Trivia.startTrivia(src, commandData, "knowledge");
 }, "Allows you to start a trivia game, format /start [number][*category1][*category2][...]. Leave number blank for random. Only Trivia Admins may start Category Games.");
-
-addAdminCommand("elimination", function (src, commandData) {
-    Trivia.startTrivia(src, commandData, "elimination");
-}, "Allows you to start an elimination game, format /elimination [number][*category1][*category2][...]. Leave number blank for random.");
 
 addUserCommand("lastcat", function (src, commandData, channel) {
     if (lastCatGame === 0) {
@@ -1451,6 +1374,44 @@ addUserCommand("lastcat", function (src, commandData, channel) {
     }
     Trivia.sendPM(src, "The last Category Game occurred " + lastCatGame + " games ago, with categories: " + lastUsedCats.join(", "), channel);
 }, "Allows you to check when the last Category Game occurred.");
+
+addAdminCommand("changegoal", function (src, commandData, channel) {
+    if (Trivia.started === false) {
+        Trivia.sendPM(src, "A trivia game isn't currently running.", channel);
+        return;
+    }
+    if (Trivia.scoreType === "elimination") {
+        Trivia.sendPM(src, "This doesn't make much sense in an elimination game.", channel);
+        return;
+    }
+    commandData = parseInt(commandData, 10);
+    if (isNaN(commandData)) {
+        Trivia.sendPM(src, "The goal must be a valid number.", channel);
+        return;
+    }
+    if (commandData < 1 || commandData > 60) {
+        Trivia.sendPM(src, "The goal must not be lower than 1 or higher than 60.", channel);
+        return;
+    }
+    triviabot.sendAll(sys.name(src) + " changed the goal of the current game to " + commandData + ".", triviachan);
+    Trivia.maxPoints = commandData;
+    return;
+}, "Allows you to change the goal for the current game");
+
+addAdminCommand("removeq", function (src, commandData, channel) {
+    var q = triviaq.get(commandData);
+    if (q !== null) {
+        triviabot.sendAll(sys.name(src) + " removed question: id, " + commandData + " category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, revchan);
+        triviaq.remove(commandData);
+        questionData.remove(commandData);
+        return;
+    }
+    Trivia.sendPM(src, "Oops! Question doesn't exist", channel);
+}, "Allows you to remove a question that has already been submitted, format /removeq [ID]");
+
+addAdminCommand("elimination", function (src, commandData) {
+    Trivia.startTrivia(src, commandData, "elimination");
+}, "Allows you to start an elimination game, format /elimination [number][*category1][*category2][...]. Leave number blank for random.");
 
 addAdminCommand("end", function (src) {
     Trivia.endTrivia(src);
@@ -1473,119 +1434,13 @@ addAdminCommand("suggest", function (src, commandData, channel) {
     Trivia.suggestion.suggester = src;
     Trivia.suggestion.asked = false;
     Trivia.sendAll(sys.name(src) + " made a suggestion for the next question to be asked in Trivia.", revchan);
-}, "Allows you to suggest a question to be asked next in Trivia. Format /suggest ID.");
+}, "Allows you to suggest a question to be asked next in Trivia. Format /suggest [ID].");
 
 addAdminCommand("say", function (src, commandData, channel) {
     if (commandData === "")
         return;
     Trivia.sendAll("(" + sys.name(src) + "): " + commandData, channel);
 }, "Allows you to talk during the answer period.");
-
-/*addOwnerCommand("makebackup", function(src, commandData, channel) {
-    commandData = commandData.split(":");
-    var fileTrivia = commandData[0], fileTrivReview = commandData[1];
-    if (fileTrivia == undefined || fileTrivReview == undefined) {
-        fileTrivia = "backupQuestions.json", fileTrivReview = "backupReview.json";
-    }
-    if (fileTrivia.indexOf(".json") == -1 || fileTrivReview.indexOf(".json") == -1) {
-        triviabot.sendMessage(src, 'Please add .json to make sure you are specifying a valid file.', channel);
-        return;
-    }
-    sys.writeToFile(fileTrivia, JSON.stringify(triviaq.state));
-    sys.writeToFile(fileTrivReview, JSON.stringify(trivreview.state));
-    triviabot.sendMessage(src, "Backup made!", channel);
-},"Makes a backup of current questions.");*/
-
-addOwnerCommand("updateafter", function (src, commandData, channel) {
-    triviabot.sendMessage(src, "Trivia will update after the game", channel);
-//    Trivia.autostart = false;
-    Trivia.needsUpdating = true;
-    if (Trivia.started === false) {
-        runUpdate();
-    }
-    return;
-}, "Updates trivia after the current game is over.");
-
-/*addOwnerCommand("basestatquestions", function (src, commandData, channel) { //this should maybe be removed later!
-    var pokemon = ["Terrakion", "Politoed", "Ferrothorn", "Tentacruel", "Espeon", "Mamoswine", "Gyarados", "Heatran", "Ninetales", "Tyranitar", "Darmanitan", "Snorlax", "Mienshao", "Chandelure", "Raikou", "Nidoking", "Kingdra", "Arcanine", "Crobat", "Gligar", "Slowking", "Sceptile", "Steelix", "Tangrowth", "Gallade", "Clefable", "Tornadus", "Sandslash", "Miltank", "Qwilfish", "Crustle", "Sawk", "Exeggutor", "Bisharp", "Torkoal", "Emboar", "Klinklang", "Regirock", "Tauros", "Pinsir", "Mienfoo", "Porygon", "Abra", "Houndour", "Snover"];
-    var baseStats = ["HP", "Attack", "Defense", "Special Attack", "Special Defense", "Speed"];
-    var pokenum = pokemon.map(sys.pokeNum);
-    pokenum.forEach(function (num) {
-        for (var x = 0; x < 6; x++) {
-            triviaq.add("Pokemon", "What is " + sys.pokemon(num) + "'s base " + baseStats[x] + " stat?", sys.pokeBaseStats(num)[x]);
-        }
-    });
-    triviabot.sendMessage(src, "Base stat questions added! Remember to /savedb");
-    return;
-}, "Adds the base stat questions to trivia"); */
-
-addOwnerCommand("addwordwarn", function (src, commandData) {
-    if (commandData === undefined) {
-        triviabot.sendChanMessage(src, "Can't add warnings for blank words");
-        return;
-    }
-    var regex;
-    try {
-        regex = new RegExp(commandData.toLowerCase()); // incase sensitive
-    }
-    catch (e) {
-        triviabot.sendChanMessage(src, "Sorry, your regular expression '" + commandData + "' fails. (" + e + ")");
-    }
-    trivData.triviaWarnings.push(regex.source);
-    saveData();
-    triviabot.sendChanMessage(src, "You added a warning for: " + regex.source);
-    return;
-}, "Adds an answer warning to trivia.");
-
-addOwnerCommand("removewordwarn", function (src, commandData) {
-    if (commandData === undefined) {
-        triviabot.sendChanMessage(src, "Can't remove warnings for blank words");
-        return;
-    }
-    if (trivData.triviaWarnings.indexOf(commandData) !== -1) {
-        trivData.triviaWarnings.splice(trivData.triviaWarnings.indexOf(commandData), 1);
-        saveData();
-        triviabot.sendChanMessage(src, "You removed a warning for: " + commandData);
-    }
-    else {
-        triviabot.sendChanMessage(src, commandData + " is not on the warning list");
-    }
-}, "Removes a warning from trivia.");
-
-addOwnerCommand("addequivalentcat", function (src, commandData, channel) {
-   var data = commandData.split("*");
-   if (data.length != 2) {
-      triviabot.sendMessage(src, "Incorrect syntax! Format for this command is /addequivalentcat [category]*[category to change to].", channel);
-      return;
-   }
-   if (data[0] === "" || data[1] === "") {
-      triviabot.sendMessage(src, "Blank categories make little sense!", channel);
-      return;
-   }
-   var toChange = data[0].toLowerCase();
-   var changeTo = data[1];
-   if (trivData.equivalentCats.hasOwnProperty(toChange)) {
-      triviabot.sendMessage(src, data[0] + " is already a synonym for a category!", channel);
-      return;
-   }
-   trivData.equivalentCats[toChange] = changeTo;
-   saveData();
-   triviabot.sendMessage(src, "Added " + toChange + " as a synonym for " + changeTo + ".", channel);
-}, "Adds a pair of equivalent categories. Format is /addequivalentcat [category]*[category to change to].");
-
-addOwnerCommand("removeequivalentcat", function (src, commandData, channel) {
-   if (commandData === "") {
-      triviabot.sendMessage(src, "Please specify a synonym to remove!", channel);
-   }
-   commandData = commandData.toLowerCase();
-   if (!trivData.equivalentCats.hasOwnProperty(commandData)) {
-      triviabot.sendMessage(src, commandData + " is not acting as a synonym for a category!", channel);
-      return;
-   }
-   delete trivData.equivalentCats[commandData];
-   saveData();
-   triviabot.sendMessage(src, "You removed " + commandData + " from the list of synonyms.", channel);
-}, "Removes a synonym for a category.");
 
 addAdminCommand("flashtas", function (src, commandData, channel) {
     if ([revchan, sachannel].indexOf(channel) === -1) {
@@ -1603,35 +1458,6 @@ addAdminCommand("flashtas", function (src, commandData, channel) {
         }
     }
 }, "Pings all online Trivia Admins. Use with /flashtas [phrase]. Abuse will be punished.");
-
-/*addOwnerCommand("revertfrom", function(src, commandData, channel) {
-    commandData = commandData.split(":");
-    var fileTrivia = commandData[0], fileTrivReview = commandData[1];
-    if (fileTrivia == undefined || fileTrivReview == undefined) {
-        fileTrivia = "backupQuestions.json", fileTrivReview = "backupReview.json";
-    }
-    var content1 = sys.getFileContent(fileTrivia), content2 = sys.getFileContent(fileTrivReview);
-    if (content1 == undefined || content1 == '' || content2 == undefined || content2 == '') {
-        triviabot.sendMessage(src, 'The content of either file is undefined or blank.', channel);
-        return;
-    }
-    if (fileTrivia.indexOf(".json") == -1 || fileTrivReview.indexOf(".json") == -1) {
-        triviabot.sendMessage(src, 'Please add .json to make sure you are specifying a valid file.', channel);
-        return;
-    }
-    try {
-        var parsed = JSON.parse(content1), parsed2 = JSON.parse(content2);
-    } catch (e) {
-        triviabot.sendMessage(src, "Couldn't revert: "+e, channel);
-        return;
-    }
-    sys.writeToFile("triviaq.json", content1);
-    triviaq.state = parsed;
-    sys.writeToFile("trivreview.json", content2);
-    trivreview.state = parsed2;
-    triviabot.sendMessage(src, "Successfully reverted questions!", channel);
-    return;
-},"Revert questions.");*/
 
 addAdminCommand(["search", "apropos"], function (src, commandData, channel) {
     if (commandData === undefined)
@@ -1651,7 +1477,7 @@ addAdminCommand(["search", "apropos"], function (src, commandData, channel) {
         q = trivreview.get(b);
         var answer = String(q.answer);
         if (q.question.toLowerCase().indexOf(commandData.toLowerCase()) > -1 || answer.toLowerCase().indexOf(commandData.toLowerCase()) > -1) {
-            output.push("Question under review: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "' (id='" + b + "')");
+            output.push("Question under review: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer);
         }
     }
     var x = 0;
@@ -1678,7 +1504,25 @@ addAdminCommand("searchcount", function (src, commandData, channel) {
         }
     }
     Trivia.sendPM(src, "There are " + count + " questions matching with '" + commandData + "'.", channel);
-}, "Counts how many questions fit a usage /search");
+}, "Counts how many questions fit a /search query");
+
+addAdminCommand("searchcategory", function (src, commandData, channel) {
+    if (commandData === undefined)
+        return;
+    Trivia.sendPM(src, "Questions in " + commandData + " category are:", channel);
+    var count = 0;
+    for (var i in triviaq.all()) {
+        var q = triviaq.get(i);
+        if (commandData.toLowerCase() === q.category.toLowerCase()) {
+            Trivia.sendPM(src, "Question: '" + q.question + "' Answer: '" + q.answer + "' (id='" + i + "')", channel);
+            count++;
+            if (count === 50) {
+                Trivia.sendPM(src, "Too many results were found for this query.", channel);
+                return;
+            }
+        }
+    }
+}, "Lists every question in the specified category.");
 
 addAdminCommand("categorycount", function (src, commandData, channel) {
     if (commandData === undefined)
@@ -1703,47 +1547,45 @@ addAdminCommand("listc", function (src, commandData, channel) {
     }
 }, "Lists every category currently used and the amount of questions in each.");
 
-addAdminCommand("searchcategory", function (src, commandData, channel) {
-    if (commandData === undefined)
-        return;
-    Trivia.sendPM(src, "Questions in " + commandData + " category are:", channel);
-    var count = 0;
-    for (var i in triviaq.all()) {
-        var q = triviaq.get(i);
-        if (commandData.toLowerCase() === q.category.toLowerCase()) {
-            Trivia.sendPM(src, "Question: '" + q.question + "' Answer: '" + q.answer + "' (id='" + i + "')", channel);
-            count++;
-            if (count === 50) {
-                Trivia.sendPM(src, "Too many results were found for this query.", channel);
-                return;
-            }
-        }
+addAdminCommand("mostasked", function (src, commandData, channel) {
+    var sortedQs = questionData.sortBy("asked");
+    var count = commandData | 30;
+    triviabot.sendMessage(src, "Most asked questions:", channel);
+    for (var i = 0; i < count && i < sortedQs.length; i++) {
+        var q = sortedQs[i];
+        triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
     }
-}, "Lists every question in the specified category.");
+}, "Lists the N most asked questions, format /mostasked N, default is 30.");
 
-addOwnerCommand("changeallc", function (src, commandData, channel) {
-    commandData = commandData.split("*");
-    if (commandData.length != 2) {
-        Trivia.sendPM(src, "Syntax error! This command's format is /changeallc oldcat*newcat", channel);
-        return;
+addAdminCommand("leastasked", function (src, commandData, channel) {
+    var sortedQs = questionData.sortBy("asked");
+    var count = commandData | 30;
+    triviabot.sendMessage(src, "Least asked questions:", channel);
+    for (var i = 0; i < count && i < sortedQs.length; i++) {
+        var q = sortedQs[sortedQs.length - i];
+        triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
     }
-    var changed = false;
-    var oldCat = commandData[0].toLowerCase();
-    var newCat = commandData[1];
-    for (var i in triviaq.all()) {
-        var c = triviaq.get(i).category.toLowerCase();
-        if (c === oldCat) {
-            changed = true;
-            triviaq.changeCategory(i, newCat);
-        }
+}, "Lists the N least asked questions, format /leastasked N, default is 30.");
+
+addAdminCommand("mostanswered", function (src, commandData, channel) {
+    var sortedQs = questionData.sortBy("answered");
+    var count = commandData | 30;
+    triviabot.sendMessage(src, "Questions answered correctly the most:", channel);
+    for (var i = 0; i < count && i < sortedQs.length; i++) {
+        var q = sortedQs[i];
+        triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
     }
-    if (!changed) {
-        Trivia.sendPM(src, "No questions with that category were found! Try using /category first.", channel);
+}, "Lists the N questions answered correctly the most, format /mostanswered N, default is 30.");
+
+addAdminCommand("leastanswered", function (src, commandData, channel) {
+    var sortedQs = questionData.sortBy("answered");
+    var count = commandData | 30;
+    triviabot.sendMessage(src, "Questions answered correctly the least:", channel);
+    for (var i = 0; i < count && i < sortedQs.length; i++) {
+        var q = sortedQs[sortedQs.length - i];
+        triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
     }
-    else {
-        Trivia.sendAll("All questions under category " + oldCat + " were changed to the category " + newCat + "!", revchan);
-    }
-}, "Changes all questions from one category to another. Format: /changeallc oldcat*newcat.");
+}, "Lists the N questions answered correctly the least, format /leastanswered N, default is 30.");
 
 addAdminCommand("checkq", function (src, commandData, channel) {
     PMcheckq(src, channel);
@@ -1865,7 +1707,17 @@ addAdminCommand("accept", function (src, commandData, channel) {
 addAdminCommand("showq", function (src, commandData, channel) {
     var q = triviaq.get(commandData);
     if (q !== null) {
-        triviabot.sendMessage(src, "Question ID: " + commandData + ", Question: " + q.question + ", Category: " + q.category + ", Answer(s): " + q.answer, channel);
+        var asked = questionData.hash.hasOwnProperty(commandData);
+        var data;
+        if (asked) {
+            data = questionData.get(commandData).split(" ");
+        }
+        sys.sendMessage(src, "", channel);
+        triviabot.sendMessage(src, "Category: " + q.category, channel);
+        triviabot.sendMessage(src, "Question: " + q.question, channel);
+        triviabot.sendMessage(src, "Answer: " + q.answer, channel);
+        triviabot.sendMessage(src, "Times asked: " + (asked ? data[0] + ". Answered: " + data[1] + ". Answered correctly: " + data[2] : "0") + ".", channel);
+        sys.sendMessage(src, "", channel);
         return;
     }
     triviabot.sendMessage(src, "This question does not exist", channel);
@@ -1885,6 +1737,7 @@ addAdminCommand("editq", function (src, commandData, channel) {
     }
     if (q !== null) {
         triviaq.remove(commandData);
+        questionData.remove(commandData);
         trivreview.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + sys.name(src));
         triviabot.sendAll(sys.name(src) + " placed a question at the top of the review queue.", revchan);
         trivreview.checkq();
@@ -2191,6 +2044,230 @@ addAdminCommand("passta", function (src, commandData, channel) {
     triviabot.sendMessage(src, "You passed your Trivia auth to " + commandData.toCorrectCase() + "!", channel);
     return;
 }, "To give your Trivia Admin powers to an alt.");
+
+addOwnerCommand(["triviaadmin", "striviaadmin"], function (src, commandData, channel, command) {
+    if (tadmin.isTAdmin(commandData)) {
+        Trivia.sendPM(src, "That person is already a Trivia Admin.", channel);
+        return;
+    }
+    tadmin.addTAdmin(commandData);
+    if (command === "triviaadmin") {
+        Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Trivia Admin.", triviachan);
+    }
+    Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Trivia Admin.", revchan);
+    Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Trivia Admin.", sachannel);
+}, "Allows you to promote a new trivia admin, use /striviaadmin for a silent promotion.");
+
+addOwnerCommand(["triviaadminoff", "striviaadminoff"], function (src, commandData, channel, command) {
+    if (!tadmin.isTAdmin(commandData) && !tsadmin.isTAdmin(commandData)) {
+        Trivia.sendPM(src, "That person isn't a Trivia auth.", channel);
+        return;
+    }
+    var isTA = tadmin.isTAdmin(commandData);
+    var oldAuth = (isTA ? "Trivia Admin" : "Super Trivia Admin");
+    if (isTA) {
+        tadmin.removeTAdmin(commandData);
+    }
+    else {
+        tsadmin.removeTAdmin(commandData);
+    }
+    if (command === "triviaadminoff") {
+        Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldAuth + ".", triviachan);
+    }
+    Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldAuth + ".", revchan);
+    Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldAuth + ".", sachannel);
+}, "Allows you to demote a current trivia admin or super trivia admin, use /striviaadminoff for a silent demotion.");
+
+/*addOwnerCommand("makebackup", function(src, commandData, channel) {
+    commandData = commandData.split(":");
+    var fileTrivia = commandData[0], fileTrivReview = commandData[1];
+    if (fileTrivia == undefined || fileTrivReview == undefined) {
+        fileTrivia = "backupQuestions.json", fileTrivReview = "backupReview.json";
+    }
+    if (fileTrivia.indexOf(".json") == -1 || fileTrivReview.indexOf(".json") == -1) {
+        triviabot.sendMessage(src, 'Please add .json to make sure you are specifying a valid file.', channel);
+        return;
+    }
+    sys.writeToFile(fileTrivia, JSON.stringify(triviaq.state));
+    sys.writeToFile(fileTrivReview, JSON.stringify(trivreview.state));
+    triviabot.sendMessage(src, "Backup made!", channel);
+},"Makes a backup of current questions.");*/
+
+addOwnerCommand("updateafter", function (src, commandData, channel) {
+    triviabot.sendMessage(src, "Trivia will update after the game", channel);
+//    Trivia.autostart = false;
+    Trivia.needsUpdating = true;
+    if (Trivia.started === false) {
+        runUpdate();
+    }
+    return;
+}, "Updates trivia after the current game is over.");
+
+addOwnerCommand("clearlb", function (src, commandData, channel) {
+    extLB.reset();
+    triviabot.sendMessage(src, "The Trivia leaderboard was cleared.", channel);
+}, "Clears all data from the leaderboard.");
+
+addOwnerCommand("lbmin", function (src, commandData, channel) {
+    if (commandData.length == 0 || isNaN(commandData)){
+        triviabot.sendMessage(src, extLB.minLB + " points are currently required for a game to count towards the leaderboard.", channel);
+    } else {
+        extLB.minLB = commandData;
+        Trivia.sendAll("A minimum of " + commandData + " point(s) is now required for a knowledge game to count towards the leaderboard.",revchan);
+    }
+}, "Changes the minimum points needed for a knowledge-based game to count for the leaderboard. Format /lbmin #");
+
+addOwnerCommand("cleardata", function (src, commandData, channel) {
+    questionData.clear();
+    triviabot.sendMessage(src, "Stored question data was cleared.", channel);
+}, "Clears all stored question data");
+
+addOwnerCommand("addwordwarn", function (src, commandData) {
+    if (commandData === undefined) {
+        triviabot.sendChanMessage(src, "Can't add warnings for blank words");
+        return;
+    }
+    var regex;
+    try {
+        regex = new RegExp(commandData.toLowerCase()); // incase sensitive
+    }
+    catch (e) {
+        triviabot.sendChanMessage(src, "Sorry, your regular expression '" + commandData + "' fails. (" + e + ")");
+    }
+    trivData.triviaWarnings.push(regex.source);
+    saveData();
+    triviabot.sendChanMessage(src, "You added a warning for: " + regex.source);
+    return;
+}, "Adds an answer warning to trivia.");
+
+addOwnerCommand("removewordwarn", function (src, commandData) {
+    if (commandData === undefined) {
+        triviabot.sendChanMessage(src, "Can't remove warnings for blank words");
+        return;
+    }
+    if (trivData.triviaWarnings.indexOf(commandData) !== -1) {
+        trivData.triviaWarnings.splice(trivData.triviaWarnings.indexOf(commandData), 1);
+        saveData();
+        triviabot.sendChanMessage(src, "You removed a warning for: " + commandData);
+    }
+    else {
+        triviabot.sendChanMessage(src, commandData + " is not on the warning list");
+    }
+}, "Removes a warning from trivia.");
+
+addOwnerCommand("addequivalentcat", function (src, commandData, channel) {
+   var data = commandData.split("*");
+   if (data.length != 2) {
+      triviabot.sendMessage(src, "Incorrect syntax! Format for this command is /addequivalentcat [category]*[category to change to].", channel);
+      return;
+   }
+   if (data[0] === "" || data[1] === "") {
+      triviabot.sendMessage(src, "Blank categories make little sense!", channel);
+      return;
+   }
+   var toChange = data[0].toLowerCase();
+   var changeTo = data[1];
+   if (trivData.equivalentCats.hasOwnProperty(toChange)) {
+      triviabot.sendMessage(src, data[0] + " is already a synonym for a category!", channel);
+      return;
+   }
+   trivData.equivalentCats[toChange] = changeTo;
+   saveData();
+   triviabot.sendMessage(src, "Added " + toChange + " as a synonym for " + changeTo + ".", channel);
+}, "Adds a pair of equivalent categories. Format is /addequivalentcat [category]*[category to change to].");
+
+addOwnerCommand("removeequivalentcat", function (src, commandData, channel) {
+   if (commandData === "") {
+      triviabot.sendMessage(src, "Please specify a synonym to remove!", channel);
+   }
+   commandData = commandData.toLowerCase();
+   if (!trivData.equivalentCats.hasOwnProperty(commandData)) {
+      triviabot.sendMessage(src, commandData + " is not acting as a synonym for a category!", channel);
+      return;
+   }
+   delete trivData.equivalentCats[commandData];
+   saveData();
+   triviabot.sendMessage(src, "You removed " + commandData + " from the list of synonyms.", channel);
+}, "Removes a synonym for a category.");
+
+/*addOwnerCommand("revertfrom", function(src, commandData, channel) {
+    commandData = commandData.split(":");
+    var fileTrivia = commandData[0], fileTrivReview = commandData[1];
+    if (fileTrivia == undefined || fileTrivReview == undefined) {
+        fileTrivia = "backupQuestions.json", fileTrivReview = "backupReview.json";
+    }
+    var content1 = sys.getFileContent(fileTrivia), content2 = sys.getFileContent(fileTrivReview);
+    if (content1 == undefined || content1 == '' || content2 == undefined || content2 == '') {
+        triviabot.sendMessage(src, 'The content of either file is undefined or blank.', channel);
+        return;
+    }
+    if (fileTrivia.indexOf(".json") == -1 || fileTrivReview.indexOf(".json") == -1) {
+        triviabot.sendMessage(src, 'Please add .json to make sure you are specifying a valid file.', channel);
+        return;
+    }
+    try {
+        var parsed = JSON.parse(content1), parsed2 = JSON.parse(content2);
+    } catch (e) {
+        triviabot.sendMessage(src, "Couldn't revert: "+e, channel);
+        return;
+    }
+    sys.writeToFile("triviaq.json", content1);
+    triviaq.state = parsed;
+    sys.writeToFile("trivreview.json", content2);
+    trivreview.state = parsed2;
+    triviabot.sendMessage(src, "Successfully reverted questions!", channel);
+    return;
+},"Revert questions.");*/
+
+addOwnerCommand("changeallc", function (src, commandData, channel) {
+    commandData = commandData.split("*");
+    if (commandData.length != 2) {
+        Trivia.sendPM(src, "Syntax error! This command's format is /changeallc oldcat*newcat", channel);
+        return;
+    }
+    var changed = false;
+    var oldCat = commandData[0].toLowerCase();
+    var newCat = commandData[1];
+    for (var i in triviaq.all()) {
+        var c = triviaq.get(i).category.toLowerCase();
+        if (c === oldCat) {
+            changed = true;
+            triviaq.changeCategory(i, newCat);
+        }
+    }
+    if (!changed) {
+        Trivia.sendPM(src, "No questions with that category were found! Try using /category first.", channel);
+    }
+    else {
+        Trivia.sendAll("All questions under category " + oldCat + " were changed to the category " + newCat + "!", revchan);
+    }
+}, "Changes all questions from one category to another. Format: /changeallc oldcat*newcat.");
+
+addServerOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, commandData, channel, command) {
+    if (tsadmin.isTAdmin(commandData)) {
+        Trivia.sendPM(src, "That person is already a Super Trivia Admin.", channel);
+        return;
+    }
+    tsadmin.addTAdmin(commandData);
+    if (command === "triviasuperadmin") {
+        Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Trivia Admin.", triviachan);
+    }
+    Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Trivia Admin.", revchan);
+    Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Trivia Admin.", sachannel);
+}, "Allows you to promote a new trivia super admin, use /striviasuperadmin for a silent promotion.");
+
+addServerOwnerCommand(["triviasuperadminoff", "striviasuperadminoff"], function (src, commandData, channel, command) {
+    if (!tsadmin.isTAdmin(commandData)) {
+        Trivia.sendPM(src, "That person isn't a Super Trivia Admin.", channel);
+        return;
+    }
+    tsadmin.removeTAdmin(commandData);
+    if (command === "triviasuperadminoff") {
+        Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Super Trivia Admin.", triviachan);
+    }
+    Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Super Trivia Admin.", revchan);
+    Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Super Trivia Admin.", sachannel);
+}, "Allows you to demote a current trivia super admin, use /striviasuperadminoff for a silent demotion.");
 
 
 module.exports = {
