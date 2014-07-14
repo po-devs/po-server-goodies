@@ -1562,7 +1562,7 @@ addAdminCommand("leastasked", function (src, commandData, channel) {
     var count = commandData | 30;
     triviabot.sendMessage(src, "Least asked questions:", channel);
     for (var i = 0; i < count && i < sortedQs.length; i++) {
-        var q = sortedQs[sortedQs.length - i];
+        var q = sortedQs[sortedQs.length - 1 - i];
         triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
     }
 }, "Lists the N least asked questions, format /leastasked N, default is 30.");
@@ -1582,7 +1582,7 @@ addAdminCommand("leastanswered", function (src, commandData, channel) {
     var count = commandData | 30;
     triviabot.sendMessage(src, "Questions answered correctly the least:", channel);
     for (var i = 0; i < count && i < sortedQs.length; i++) {
-        var q = sortedQs[sortedQs.length - i];
+        var q = sortedQs[sortedQs.length - 1 - i];
         triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
     }
 }, "Lists the N questions answered correctly the least, format /leastanswered N, default is 30.");
