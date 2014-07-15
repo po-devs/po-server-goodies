@@ -527,7 +527,7 @@ function Hangman() {
             if (name in lb) {
                 hangbot.sendMessage(src, (list.indexOf(name) + 1) + ". " + name + ": " + lb[name] + " point(s)", hangchan);
             } else {
-                hangbot.sendMessage(src, "You still didn't win any Event Game!", hangchan);
+                hangbot.sendMessage(src, "You still have not won any Event Games!", hangchan);
             }
         }
         sys.sendMessage(src, "", hangchan);
@@ -874,7 +874,7 @@ function Hangman() {
             hangbot.sendMessage(src, "There are no games in the database, you can't delete anything.", hangchan);
             return;
         }
-        if (typeof commandData==='number' && (commandData%1)===0) {
+        if (isNaN(commandData) || (commandData%1)!==0) {
             hangbot.sendMessage(src, "You need to write an integer number, the index of the question you want to delete.", hangchan);
             return;
         }
@@ -1374,7 +1374,13 @@ function Hangman() {
         }
         
         if(command === "forceevent"){
+            if (word) {
+                hangbot.sendMessage(src, "There is currently a game running!", hangchan)
+                return;
+            }
+            
             hangman.startEventGame();
+        }
         }
 
         if (hangman.authLevel(src) < 3) {
