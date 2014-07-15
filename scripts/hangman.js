@@ -1375,12 +1375,10 @@ function Hangman() {
         
         if(command === "forceevent"){
             if (word) {
-                hangbot.sendMessage(src, "There is currently a game running!", hangchan)
+                hangbot.sendMessage(src, "There is currently a game running!", hangchan);
                 return;
             }
-            
             hangman.startEventGame();
-        }
         }
 
         if (hangman.authLevel(src) < 3) {
