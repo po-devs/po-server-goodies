@@ -845,7 +845,7 @@ function Hangman() {
     };
 
     this.searchByIndex = function(src, commandData){
-        if (typeof commandData==='number' && (commandData%1)===0) {
+        if (isNaN(commandData) || (commandData%1)!==0) {
             hangbot.sendMessage(src, "You need to write an integer number, the index of the question you want to search.", hangchan);
             return;
         }
