@@ -1564,7 +1564,7 @@ addAdminCommand("listc", function (src, commandData, channel) {
 }, "Lists every category currently used and the amount of questions in each.");
 
 addAdminCommand("askedqamount", function (src, commandData, channel) {
-    triviabot.sendMessage(src, "There are " + questionData.hash.length + " questions with logged answer data.", channel);
+    triviabot.sendMessage(src, "There are " + Object.keys(questionData.hash).length + " questions with logged answer data.", channel);
 }, "Shows how many questions have their answer data logged.");
 
 addAdminCommand("mostasked", function (src, commandData, channel) {
