@@ -992,10 +992,26 @@ questionData.sortBy = function (what) {
         sortingArray.push([i, q[0], q[1], q[2]]);
     }
     if (what === "asked") {
-        sortingArray.sort(function (a, b) {return b[1] - a[1]});
+        sortingArray.sort(function (a, b) {
+            if (a[1] === b[1]) {
+                if (a[3]/a[2] === b[3]/b[2]) {
+                    return b[2] - a[2];
+                }
+                return b[3]/b[2] - a[3]/a[2];
+            }
+            return b[1] - a[1];
+        });
     }
     if (what === "answered") {
-        sortingArray.sort(function (a, b) {return b[3]/b[2] - a[3]/a[2]});
+        sortingArray.sort(function (a, b) {
+            if (a[3]/a[2] === b[3]/b[2]) {
+                if (a[1] === b[1]) {
+                    return b[2] - a[2];
+                }
+                return b[1] - a[1];
+            }
+            return b[3]/b[2] - a[3]/a[2];
+        });
     }
     return sortingArray;
 }
@@ -1352,7 +1368,7 @@ addUserCommand("qamount", function (src, commandData, channel) {
         triviabot.sendMessage(src, "The amount of questions is: " + qamount, channel);
         return;
     }
-}, "Shows you the current amount of questions");
+}, "Shows the current amount of questions");
 
 addUserCommand(["triviaadmins","tadmins","tas"], function (src, commandData, channel) {
     tsadmin.tAdminList(src, channel, "Trivia Super Admins");
@@ -1546,6 +1562,10 @@ addAdminCommand("listc", function (src, commandData, channel) {
         Trivia.sendPM(src, object.category + " - " + object.count + " questions.", channel);
     }
 }, "Lists every category currently used and the amount of questions in each.");
+
+addAdminCommand("askedqamount", function (src, commandData, channel) {
+    triviabot.sendMessage(src, "There are " + questionData.hash.length + " questions with logged answer data.", channel);
+}, "Shows how many questions have their answer data logged.");
 
 addAdminCommand("mostasked", function (src, commandData, channel) {
     var sortedQs = questionData.sortBy("asked");
