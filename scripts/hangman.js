@@ -923,7 +923,12 @@ function Hangman() {
     
         var info = commandData.split(":");
         var i = info[0];
-    
+        
+        if (isNaN(i) || (i%1)!==0) {
+            hangbot.sendMessage(src, "You need to write an integer number, the index of the question you want to change.", hangchan);
+            return;
+        }
+        
         if (i <= 0){
             hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
             return;
@@ -938,12 +943,12 @@ function Hangman() {
             h = edit[3],
         c = edit.length < 5 ? defaultParts : edit[4];
     
-        hangbot.sendMessage(src, "(Before) Index: " + i + " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
+        hangbot.sendMessage(src, "(Before) Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c, hangchan);
     
         a = info[1].toLowerCase();
         var sub = i + ":" + sys.name(src) + ":" + a + ":" + h + ":" + c;
     
-        hangbot.sendMessage(src, "(After) Index: " + i + " - Word " + a.toUpperCase() + " - Hint " + h + " - Chances: " + c, hangchan);
+        hangbot.sendMessage(src, "(After) Index: " + i + " - Word: " + a.toUpperCase() + " - Hint: " + h + " - Chances: " + c, hangchan);
     
         autoGames.splice(i-1, 1, sub);
         sys.write(autoGamesFile, JSON.stringify(autoGames));
@@ -963,7 +968,12 @@ function Hangman() {
     
         var info = commandData.split(":");
         var i = info[0];
-    
+        
+        if (isNaN(i) || (i%1)!==0) {
+            hangbot.sendMessage(src, "You need to write an integer number, the index of the question you want to change.", hangchan);
+            return;
+        }
+        
         if (i <= 0){
             hangbot.sendMessage(src, "You can't use 0 or negative numbers.", hangchan);
             return;
@@ -978,12 +988,12 @@ function Hangman() {
             h = edit[3],
         c = edit.length < 5 ? defaultParts : edit[4];
     
-        hangbot.sendMessage(src, "(Before) Index: " + i + " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
+        hangbot.sendMessage(src, "(Before) Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c, hangchan);
     
         h = info[1].toLowerCase();
         var sub = i + ":" + sys.name(src) + ":" + a + ":" + h + ":" + c;
     
-        hangbot.sendMessage(src, "(After) Index: " + i + " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
+        hangbot.sendMessage(src, "(After) Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c, hangchan);
     
         autoGames.splice(i-1, 1, sub);
         sys.write(autoGamesFile, JSON.stringify(autoGames));
@@ -996,11 +1006,22 @@ function Hangman() {
             return;
         }
     
-        var info = commandData.split(":");
-        var i = info[0];
-    
         if (commandData.indexOf(":") === -1) {
             hangbot.sendMessage(src, "Invalid format. Proper format is /changeword index:chances.", hangchan);
+            return;
+        }
+    
+        var info = commandData.split(":");
+        var i = info[0];
+        var newc = info[1];
+        
+        if (isNaN(i) || (i%1)!==0) {
+            hangbot.sendMessage(src, "You need to write an integer number, the index of the question you want to change.", hangchan);
+            return;
+        }
+        
+        if (isNaN(newc) || (newc%1)!==0) {
+            hangbot.sendMessage(src, "Number of chances must be a valid number higher or equal to " + minBodyParts + "!", hangchan);
             return;
         }
     
@@ -1018,12 +1039,12 @@ function Hangman() {
             h = edit[3],
             c = edit.length < 5 ? defaultParts : edit[4];
     
-        hangbot.sendMessage(src, "(Before) Index: " + i + " - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
+        hangbot.sendMessage(src, "(Before) Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c, hangchan);
     
-        c = info[1];
+        c = newc;
         var sub = i + ":" + sys.name(src) + ":" + a + ":" + h + ":" + c;
     
-        hangbot.sendMessage(src, "(After) Index: " + i +" - Word " + a + " - Hint " + h + " - Chances: " + c, hangchan);
+        hangbot.sendMessage(src, "(After) Index: " + i +" - Word: " + a + " - Hint: " + h + " - Chances: " + c, hangchan);
     
         autoGames.splice(i-1, 1, sub);
         sys.write(autoGamesFile, JSON.stringify(autoGames));
@@ -1376,9 +1397,11 @@ function Hangman() {
         if(command === "forceevent"){
             if (word) {
                 hangbot.sendMessage(src, "There is currently a game running!", hangchan);
-                return;
             }
-            hangman.startEventGame();
+            else{
+                hangman.startEventGame();
+            }
+            return true;
         }
 
         if (hangman.authLevel(src) < 3) {
