@@ -1376,7 +1376,7 @@ function Hangman() {
         if(command === "forceevent"){
             if (word) {
                 hangbot.sendMessage(src, "There is currently a game running!", hangchan);
-                return;
+                return true;
             }
             hangman.startEventGame();
         }
