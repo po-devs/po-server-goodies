@@ -257,7 +257,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (!sys.loggedIn(sys.id(commandData))) {
             normalbot.sendMessage(src, "Target not logged in", channel);
             return;
-        } else if (command == "cookiemute") {
+        }
+        var tar = sys.id(commandData);
+        if (sys.os(tar) !== "android" && sys.version(tar) < 2402) {
+            //probably won't work well on windows/linux/etc anyways...
+            normalbot.sendMessage(src, "Cookies won't work on this target", channel);
+            return;
+        }
+        if (command == "cookiemute") {
             SESSION.users(sys.id(commandData)).activate("smute", Config.kickbot, 0, "Cookie", true);
             kickbot.sendAll(commandData + " was smuted by cookie", staffchannel);
         }
@@ -298,7 +305,7 @@ exports.help =
         "/destroychan: Destroy a channel (official channels are protected).",
         "/indigoinvite: To invite somebody to staff channels.",
         "/indigodeinvite: To deinvite unwanted visitors from staff channel.",
-        "/cookieban: Bans an online target by cookie. Use on Android users",
-        "/cookiemute: Puts an online android target on an autosmute list by cookie. Use on Android users",
+        "/cookieban: Bans an online target by cookie.",
+        "/cookiemute: Puts an online android target on an autosmute list by cookie.",
         "/cookieunban/mute: Undos a cookieban/mute. Will take effect when they next log in"
     ];
