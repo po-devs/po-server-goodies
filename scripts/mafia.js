@@ -1587,6 +1587,7 @@ function Mafia(mafiachan) {
         mafia.checkDead(CurrentGame.playerCount);
         mafia.unloadAWOL();
         mafia.clearVariables();
+        mafia.usersToShove = [];
         runUpdate();
         this.advertiseFeaturedTheme();
     };
@@ -5565,6 +5566,13 @@ function Mafia(mafiachan) {
                 msgAll(nonFlashing(sys.name(src)) + " cancelled the shove on " + name + ".", sachannel);
                 msg(src, "You cancelled the shove on " + name + ".", channel);
                 delete mafia.usersToShove[name];
+                return;
+            }
+            if (this.ips.indexOf(sys.dbIp(name)) != -1) {
+                delete this.ips[this.ips.indexOf(sys.dbIp(name))];
+                msgAll(nonFlashing(sys.name(src)) + " lifted the join restrictions on " + name + ".", sachannel);
+                msg(src, "You allowed " + name + " to rejoin the game.", channel);
+                msg(sys.id(name), "You can rejoin the game if you would like to!", mafiachan);
                 return;
             }
             msg(src, name + " isn't set to be shoved!");
