@@ -130,7 +130,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "No such user", channel);
             return;
         }
-        normalbot.sendAll("" + commandData + " was mysteriously kicked by " + nonFlashing(sys.name(src)) + "!");
+        normalbot.sendAll("" + commandData + " was mysteriously kicked by " + nonFlashing(sys.name(src)) + "!" + (channel === 0 ? "" : "[Channel: " + sys.channel(channel) + "]"));
         sys.kick(tar);
         var authname = sys.name(src).toLowerCase();
         script.authStats[authname] =  script.authStats[authname] || {};
