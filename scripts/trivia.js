@@ -1493,7 +1493,7 @@ addAdminCommand(["search", "apropos"], function (src, commandData, channel) {
         q = trivreview.get(b);
         var answer = String(q.answer);
         if (q.question.toLowerCase().indexOf(commandData.toLowerCase()) > -1 || answer.toLowerCase().indexOf(commandData.toLowerCase()) > -1) {
-            output.push("Question under review: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer);
+            output.push("Question under review: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "'");
         }
     }
     var x = 0;
