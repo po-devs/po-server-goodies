@@ -154,7 +154,7 @@ function mafiaChecker() {
                 var pack, p;
                 for (e in raw.spawnPacks) {
                     pack = raw.spawnPacks[e];
-                    checkAttributes(pack, ["roles", "chance"], [], "theme.spawnPacks." + e);
+                    checkAttributes(pack, ["roles"], ["chance"], "theme.spawnPacks." + e);
                     
                     if (checkType(pack.roles, ["array"], "'theme.spawnPacks." + e + ".roles'")) {
                         for (i in pack.roles) {
