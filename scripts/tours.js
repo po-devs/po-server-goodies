@@ -2221,6 +2221,10 @@ function tourCommand(src, command, commandData, channel) {
                 if (tours.tour[key].event) {
                     refreshTicks(true);
                 }
+                tours.history.unshift(getFullTourName(key)+": cancelled, with "+tours.tour[key].cpt+" players");
+                if (tours.history.length > 25) {
+                    tours.history.pop();
+                }
                 delete tours.tour[key];
                 purgeKeys();
                 if (tours.globaltime !== -1) {

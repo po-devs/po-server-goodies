@@ -970,7 +970,7 @@ function Mafia(mafiachan) {
                         playerCount = roleplayers;
                     } else if (typeof roleplayers === "number") { // players: 30 -> 30 Players
                         playerCount = roleplayers + " Players";
-                    } else if (typeof roleplayers === "array") { // players: [20, 30] -> 20-30 Players
+                    } else if (Array.isArray(roleplayers)) { // players: [20, 30] -> 20-30 Players
                         playerCount = roleplayers.join("-") + " Players";
                     } else {
                         for (var i = 1; i <= this.roleLists; ++i) {
@@ -1587,6 +1587,7 @@ function Mafia(mafiachan) {
         mafia.checkDead(CurrentGame.playerCount);
         mafia.unloadAWOL();
         mafia.clearVariables();
+        mafia.usersToShove = [];
         runUpdate();
         this.advertiseFeaturedTheme();
     };
@@ -2454,6 +2455,7 @@ function Mafia(mafiachan) {
             }
             var srcArray = mafia.theme["roles" + i].slice(0, mafia.signups.length);
             srcArray = shuffle(srcArray);
+            mafia.signups = shuffle(mafia.signups);
             
             var spawnPacks = mafia.theme.spawnPacks,
                 packs = {},
@@ -2468,7 +2470,11 @@ function Mafia(mafiachan) {
                         packName = sp.substr(5);
                         
                         if (!(packName in packs)) {
-                            pIndex = randomSample(spawnPacks[packName].chance);
+                            if ("chance" in spawnPacks[packName]) {
+                                pIndex = randomSample(spawnPacks[packName].chance);
+                            } else {
+                                pIndex = sys.rand(0, spawnPacks[packName].roles.length);
+                            }
                             packs[packName] = [pIndex, 0];
                         }
                         pIndex = packs[packName][0];
@@ -3226,6 +3232,8 @@ function Mafia(mafiachan) {
                                         target.silentCurse = Action.silentCurse || false;
                                         if (!Action.silent) {
                                             target.curseConvertMessage = "curseConvertMessage" in Action ? Action.curseConvertMessage : "~Target~ has been converted into a ~New~!";
+                                        } else {
+                                            target.curseConvertMessage = "";
                                         }
                                     }
                                 }
@@ -4183,12 +4191,14 @@ function Mafia(mafiachan) {
             command = message.substr(0).toLowerCase();
         }
         if (channel != mafiachan) {
-            if (channel != staffchannel && channel != sachannel) {
-                if (["mafiabans", "mafiaadmins", "madmins", "mas", "roles", "priority", "sides", "themeinfo", "readlog", "targetlog", "mafiarules", "passma", "windata", "topthemes", "playedgames", "pg"].indexOf(command) === -1) {
+            if (["mafiabans", "mafiaadmins", "madmins", "mas", "roles", "priority", "sides", "themeinfo", "readlog", "targetlog", "mafiarules", "passma", "windata", "topthemes", "playedgames", "pg"].indexOf(command) === -1) {
+                if (channel == staffchannel || channel == sachannel) {
+                    if (["mafiaban", "mafiaunban", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "mafiasuperadminoff", "smafiaadmin", "smafiasuperadmin", "smafiaadminoff", "smafiasuperadminoff", "updatestats", "themes"].indexOf(command) === -1) {
+                        return;
+                    }
+                } else {
                     return;
                 }
-            } else if (["mafiaban", "mafiaunban", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "mafiasuperadminoff", "smafiaadmin", "smafiasuperadmin", "smafiaadminoff", "smafiasuperadminoff", "updatestats", "themes"].indexOf(command) === -1) {
-                return;
             }
         }
         try {
@@ -4634,12 +4644,8 @@ function Mafia(mafiachan) {
                     if (inspectMode.revealAs !== undefined) {
                         if (typeof inspectMode.revealAs == "string") {
                             if (inspectMode.revealAs == "*") {
-                                var rr = 1;
-                                while (mafia.signups.length > mafia.theme["roles" + rr].length) {
-                                    ++rr;
-                                }
-                                var rrole = mafia.theme["roles" + rr].slice(0, mafia.signups.length);
-                                revealedRole = mafia.theme.trrole(rrole[Math.floor(Math.random() * rrole.length)]);
+                                var rrole = Object.keys(mafia.players).map(function(x) { return mafia.players[x].role.role; }, mafia);
+                                revealedRole = mafia.theme.trrole(rrole[sys.rand(0, rrole.length)]);
                             } else {
                                 revealedRole = mafia.theme.trrole(inspectMode.revealAs);
                             }
@@ -5565,6 +5571,13 @@ function Mafia(mafiachan) {
                 msgAll(nonFlashing(sys.name(src)) + " cancelled the shove on " + name + ".", sachannel);
                 msg(src, "You cancelled the shove on " + name + ".", channel);
                 delete mafia.usersToShove[name];
+                return;
+            }
+            if (this.ips.indexOf(sys.dbIp(name)) != -1) {
+                delete this.ips[this.ips.indexOf(sys.dbIp(name))];
+                msgAll(nonFlashing(sys.name(src)) + " lifted the join restrictions on " + name + ".", sachannel);
+                msg(src, "You allowed " + name + " to rejoin the game.", channel);
+                msg(sys.id(name), "You can rejoin the game if you would like to!", mafiachan);
                 return;
             }
             msg(src, name + " isn't set to be shoved!");
