@@ -2504,7 +2504,7 @@ function tourCommand(src, command, commandData, channel) {
                 sendBotMessage(src, "You need to "+(needsteam ? "have a team for" : "change your tier to")+" the "+tours.tour[key].tourtype+" tier to join!",tourschan,false);
                 return true;
             }
-            if ((tours.tour[key].parameters.mode === "Doubles" || tours.tour[key].parameters.mode === "Triples") && sys.users(src).android) {
+            if ((tours.tour[key].parameters.mode === "Doubles" || tours.tour[key].parameters.mode === "Triples") && sys.os(src) === "android") {
                 sendBotMessage(src, "Android devices are incapable of joining "+tours.tour[key].parameters.mode+" tours!",tourschan,false);
                 return true;
             }
