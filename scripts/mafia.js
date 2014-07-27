@@ -1583,6 +1583,7 @@ function Mafia(mafiachan) {
             sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
         }
         //mafiabot.sendAll("GAME ENDED", mafiachan);
+        mafia.saveCurrentGame("None");
         mafia.mafiaStats.result("dead");
         mafia.checkDead(CurrentGame.playerCount);
         mafia.unloadAWOL();
@@ -1608,6 +1609,11 @@ function Mafia(mafiachan) {
     };
     this.playerCount = function () {
         return Object.keys(mafia.players).length;
+    };
+    this.saveCurrentGame = function(winner) {
+        CurrentGame.winner = winner;
+        CurrentGame.duration = mafia.time.nights > mafia.time.days ? "Night " + mafia.time.nights : "Day " + mafia.time.days;
+        savePlayedGames();
     };
     
     /*Grab a list of all roles belonging to a given team.*/
@@ -2121,6 +2127,14 @@ function Mafia(mafiachan) {
                 if ("charges" in player.role.actions.night[act]) {
                     mafia.setChargesFor(player, "night", act, player.role.actions.night[act].charges);
                 }
+                else if ("addCharges" in player.role.actions.night[act]) {
+                    if (mafia.getCharges(player, "night", act) !== undefined) {
+                        mafia.setChargesFor(player, "night", act, mafia.getCharges(player, "night", act) + player.role.actions.night[act].addCharges);
+                    }
+                }
+                else if (player.role.actions.night[act].clearCharges === true) {
+                    mafia.setChargesFor(player, "night", act, undefined);
+                }
             }
         }
         if ("standby" in player.role.actions) {
@@ -2130,6 +2144,14 @@ function Mafia(mafiachan) {
                 }
                 if ("charges" in player.role.actions.standby[act]) {
                     mafia.setChargesFor(player, "standby", act, player.role.actions.standby[act].charges);
+                }
+                else if ("addCharges" in player.role.actions.standby[act]) {
+                    if (mafia.getCharges(player, "standby", act) !== undefined) {
+                        mafia.setChargesFor(player, "standby", act, mafia.getCharges(player, "standby", act) + player.role.actions.standby[act].addCharges);
+                    }
+                }
+                else if (player.role.actions.standby[act].clearCharges === true) {
+                    mafia.setChargesFor(player, "standby", act, undefined);
                 }
             }
         }
@@ -2285,6 +2307,7 @@ function Mafia(mafiachan) {
             mafia.compilePhaseStalk("GAME END");
             currentStalk.push("Winners: None (game ended in a draw).");
             mafia.mafiaStats.result("Tie");
+            mafia.saveCurrentGame("Tie");
             mafia.checkDead(CurrentGame.playerCount);
             if (sys.id('PolkaBot') !== undefined) {
                 sys.sendMessage(sys.id('PolkaBot'), "±Luxray: GAME ENDED", mafiachan);
@@ -2316,6 +2339,7 @@ function Mafia(mafiachan) {
             } else {
                 gamemsgAll("The " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ") wins!");
             }
+            mafia.saveCurrentGame(mafia.theme.trside(winSide));
             mafia.mafiaStats.result(mafia.theme.trside(winSide));
             currentStalk.push("Winners: " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ")");
             if (winByDeadRoles) {
@@ -5828,8 +5852,12 @@ function Mafia(mafiachan) {
         if (channel !== 0 && channel == mafiachan && mafia.ticks > 0 && mafia.gameInProgress()) {
             if (mafia.dead.indexOf(sys.name(src).toLowerCase()) !== -1) {
                 if (!(is_command(message) && message.substr(1, 2).toLowerCase() != "me")) {
-                    for (var x in mafia.dead) {
-                        gamemsg(mafia.dead[x], sys.name(src) + ": [Dead] " + message);
+                    if (SESSION.users(src).smute.active) {
+                        gamemsg(sys.name(src), sys.name(src) + ": [Dead] " + message);
+                    } else {
+                        for (var x in mafia.dead) {
+                            gamemsg(mafia.dead[x], sys.name(src) + ": [Dead] " + message);
+                        }
                     }
                     return true;
                 }
