@@ -5306,9 +5306,11 @@ function Mafia(mafiachan) {
                 dlurl = url;
             }
             msg(src, "Download url: " + dlurl);
-            if (dlurl) {
-                var theme = mafia.themeManager.themes[name.toLowerCase()];
+            var theme = mafia.themeManager.themes[name.toLowerCase()];
+            if (dlurl && theme) {                
                 mafia.themeManager.loadWebTheme(dlurl, (!sup), true, mafia.authorMatch(src, name) ? theme.name.toLowerCase() : null, src, false);
+            } else {
+                msg(src, "URL or Theme name is not defined. Use /add [url].");
             }
             return;
         }
