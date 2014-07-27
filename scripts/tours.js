@@ -2221,10 +2221,6 @@ function tourCommand(src, command, commandData, channel) {
                 if (tours.tour[key].event) {
                     refreshTicks(true);
                 }
-                tours.history.unshift(getFullTourName(key)+": cancelled, with "+tours.tour[key].cpt+" players");
-                if (tours.history.length > 25) {
-                    tours.history.pop();
-                }
                 delete tours.tour[key];
                 purgeKeys();
                 if (tours.globaltime !== -1) {
@@ -3675,6 +3671,10 @@ function tourinitiate(key) {
                 tours.globaltime = parseInt(sys.time(), 10)+tourconfig.tourbreak; // for next tournament
             }
             sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least "+tourconfig.minplayers+" players!"+(tours.globaltime > 0 ? " (A new tournament will start in "+time_handle(tourconfig.tourbreak)+")." : ""), tourschan, false);
+            tours.history.unshift(getFullTourName(key)+": Cancelled with "+tours.tour[key].cpt+(tours.tour[key].cpt == 1 ? " player" : " players"));
+            if (tours.history.length > 25) {
+                tours.history.pop();
+            }
             if (tours.tour[key].event) {
                 refreshTicks(true);
             }
