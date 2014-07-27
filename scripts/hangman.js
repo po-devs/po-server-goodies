@@ -1276,13 +1276,16 @@ function Hangman() {
                 sys.sendMessage(src, "±Unown: Your target is already a Hangman Admin!");
                 return true;
             }
-            if (hangman.isHangmanSuperAdmin(src)) {
+            if (script.hangmanSuperAdmins.hash.hasOwnProperty(oldname)) {
                 script.hangmanSuperAdmins.remove(oldname);
                 script.hangmanSuperAdmins.add(newname, "");
                 sHA = true;
-            } else {
+            } else if (script.hangmanAdmins.hash.hasOwnProperty(oldname)) {
                 script.hangmanAdmins.remove(oldname);
                 script.hangmanAdmins.add(newname, "");
+            } else {
+                sys.sendMessage(src, "±Unown: You are not Hangman Auth", channel);
+                return;
             }
             id = sys.id(commandData);
             if (id !== undefined) {

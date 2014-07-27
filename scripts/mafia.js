@@ -5532,28 +5532,31 @@ function Mafia(mafiachan) {
             var newname = commandData.toLowerCase();
             var sMA = false;
             if (sys.id(newname) === undefined) {
-                msg(src, "Your target is offline!");
+                msg(src, "Your target is offline!", channel);
                 return true;
             }
             if (!sys.dbRegistered(newname)) {
-                msg(src, "That account isn't registered so you can't give it authority!");
+                msg(src, "That account isn't registered so you can't give it authority!", channel);
                 return true;
             }
             if (sys.ip(sys.id(newname)) !== sys.ip(src)) {
-                msg(src, "Both accounts must be on the same IP to switch!");
+                msg(src, "Both accounts must be on the same IP to switch!", channel);
                 return true;
             }
             if (script.mafiaAdmins.hash.hasOwnProperty(newname)|| script.mafiaSuperAdmins.hash.hasOwnProperty(newname)) {
-                msg(src, "Your target is already a Mafia Admin!");
+                msg(src, "Your target is already a Mafia Admin!", channel);
                 return true;
             }
-            if (this.isMafiaSuperAdmin(src)) {
+            if (script.mafiaSuperAdmins.hash.hasOwnProperty(oldname)) {
                 script.mafiaSuperAdmins.remove(oldname);
                 script.mafiaSuperAdmins.add(newname, "");
                 sMA = true;
-            } else {
+            } else if (script.mafiaAdmins.hash.hasOwnProperty(oldname)) {
                 script.mafiaAdmins.remove(oldname);
                 script.mafiaAdmins.add(newname, "");
+            } else {
+                msg(src, "You are not a Mafia Admin", channel);
+                return
             }
             id = sys.id(commandData);
             if (id !== undefined)

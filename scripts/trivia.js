@@ -567,7 +567,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
             this.player(name).points += pointAdd;
         }
     }
-    if (totalPlayers != 0) {
+    if (totalPlayers !== 0) {
         questionData.log(this.roundQuestion, totalPlayers, answeredCorrectly.length);
     }
 
@@ -623,7 +623,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
     }
     if (leaderboard.length === 1 && this.scoreType === "elimination") {
         winners.push(utilities.html_escape(leaderboard[0][0]) + " (" + leaderboard[0][1] + ")");
-        extLB.updateLeaderboard(utilities.html_escape(leaderboard[0][0]).toLowerCase(), parseInt(leaderboard[0][1]));
+        extLB.updateLeaderboard(utilities.html_escape(leaderboard[0][0]).toLowerCase(), parseInt(leaderboard[0][1], 10));
     }
     if (winners.length > 0 || (this.scoreType === "elimination" && leaderboard.length === 0)) {
         sys.writeToFile(extLB.file, JSON.stringify(extLB.leaderboard));
@@ -975,15 +975,15 @@ QuestionHolder.prototype.all = function () {
 questionData.log = function (id, players, answered) {
     if (questionData.hash.hasOwnProperty(id)) {
         var data = questionData.get(id).split(" ");
-        var totalAsked = parseInt(data[0]) + 1;
-        var totalPlayers = parseInt(data[1]) + players;
-        var totalAnswered = parseInt(data[2]) + answered;
+        var totalAsked = parseInt(data[0], 10) + 1;
+        var totalPlayers = parseInt(data[1], 10) + players;
+        var totalAnswered = parseInt(data[2], 10) + answered;
         questionData.hash[id] = totalAsked + " " + totalPlayers + " " + totalAnswered;
         questionData.save();
     } else {
         questionData.add(id, "1 " + players + " " + answered);
     }
-}
+};
 
 questionData.sortBy = function (what) {
     var sortingArray = [];
@@ -1014,7 +1014,7 @@ questionData.sortBy = function (what) {
         });
     }
     return sortingArray;
-}
+};
 
 function TriviaAdmin(file) {
     this.file = file;
@@ -1145,15 +1145,15 @@ pointsLB.prototype.showLeaders = function (src, commandData, id) {
         scoreType = "knowledge";
     } else if (scoreType === "elim"){
         scoreType = "elimination";
-    };
+    }
     if (scoreTypes.indexOf(scoreType) !== -1){
         if (input.length === 1 || isNaN(input[1]) || input[1] <= 0){
             maxPlace = 10;
-        } else {maxPlace = input[1];};
+        } else {maxPlace = input[1];}
         for (i = 0; i < this.leaderboard.length; i++) {
             var player = {'name' : this.leaderboard[i].name, 'points' : this.leaderboard[i].points, 'regWins' : this.leaderboard[i].regWins, 'livesLeft' : this.leaderboard[i].livesLeft,'elimWins' : this.leaderboard[i].elimWins};
             lb.push(player);
-        };
+        }
         if (scoreType === "elimination"){
             lb.sort(function (a, b){
                 if (b.elimWins === a.elimWins){
@@ -1186,7 +1186,7 @@ pointsLB.prototype.showLeaders = function (src, commandData, id) {
                     Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].livesLeft + " total lives left and " + lb[i].elimWins + " wins!", id);
                 }
             }
-        };
+        }
         sys.sendMessage(src, "", id);
     } else {
         Trivia.sendPM(src, "Valid scoring systems are knowledge [know] and elimination [elim].", id);
@@ -2051,13 +2051,16 @@ addAdminCommand("passta", function (src, commandData, channel) {
         triviabot.sendMessage(src, "Your target is already a Trivia Admin!", channel);
         return;
     }*/
-    if (isTriviaOwner(src)) {
+    if (tsadmin.isTAdmin(oldname)) {
         tsadmin.removeTAdmin(oldname);
         tsadmin.addTAdmin(newname);
         sTA = true;
-    } else {
+    } else if (tadmin.isTAdmin(oldname)){
         tadmin.removeTAdmin(oldname);
         tadmin.addTAdmin(newname);
+    } else {
+        triviabot.sendMessage(src, "You are not Trivia Auth", channel);
+        return;
     }
     Trivia.sendAll(sys.name(src) + " passed their " + (sTA ? "Trivia Owner powers" : "Trivia auth") + " to " + commandData, sachannel);
     Trivia.sendAll(sys.name(src) + " passed their " + (sTA ? "Trivia Owner powers" : "Trivia auth") + " to " + commandData, revchan);
@@ -2129,7 +2132,7 @@ addOwnerCommand("clearlb", function (src, commandData, channel) {
 }, "Clears all data from the leaderboard.");
 
 addOwnerCommand("lbmin", function (src, commandData, channel) {
-    if (commandData.length == 0 || isNaN(commandData)){
+    if (commandData.length === 0 || isNaN(commandData)){
         triviabot.sendMessage(src, extLB.minLB + " points are currently required for a game to count towards the leaderboard.", channel);
     } else {
         extLB.minLB = commandData;
