@@ -5337,7 +5337,7 @@ function Mafia(mafiachan) {
             }
             msg(src, "Download url: " + dlurl);
             var theme = mafia.themeManager.themes[name.toLowerCase()];
-            if (dlurl && theme) {                
+            if (dlurl && theme) {
                 mafia.themeManager.loadWebTheme(dlurl, (!sup), true, mafia.authorMatch(src, name) ? theme.name.toLowerCase() : null, src, false);
             } else {
                 msg(src, "URL or Theme name is not defined. Use /add [url].");
@@ -5582,7 +5582,7 @@ function Mafia(mafiachan) {
                 script.mafiaAdmins.add(newname, "");
             } else {
                 msg(src, "You are not a Mafia Admin", channel);
-                return
+                return;
             }
             id = sys.id(commandData);
             if (id !== undefined)
