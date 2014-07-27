@@ -311,7 +311,7 @@ function mafiaChecker() {
                         if (checkType(action, ["object"], comm)) {
                             command = e;
                             commonMandatory = ["target", "common", "priority"];
-                            commonOptional = ["broadcast", "command", "limit", "msg", "failChance", "charges", "recharge", "initialrecharge", "broadcastmsg", "chargesmsg", "suicideChance", "suicidemsg", "restrict", "cancel", "pierce", "pierceChance", "noFollow", "haxMultiplier", "userMustBeVisited", "targetMustBeVisited", "userMustVisit", "targetMustVisit", "bypass", "hide"];
+                            commonOptional = ["broadcast", "command", "limit", "msg", "failChance", "charges", "recharge", "initialrecharge", "broadcastmsg", "chargesmsg", "clearCharges", "addCharges", "suicideChance", "suicidemsg", "restrict", "cancel", "pierce", "pierceChance", "noFollow", "haxMultiplier", "userMustBeVisited", "targetMustBeVisited", "userMustVisit", "targetMustVisit", "bypass", "hide"];
                             commandList = [];
                             if ("command" in action) {
                                 if (Array.isArray(action.command)) {
@@ -597,7 +597,7 @@ function mafiaChecker() {
                                 command = action.command;
                             }
                             if (command == "kill") {
-                                checkAttributes(action, ["target", "killmsg"], ["command", "limit", "msg", "revealChance", "revealmsg", "recharge", "initialrecharge", "charges", "chargesmsg"], comm);
+                                checkAttributes(action, ["target", "killmsg"], ["command", "limit", "msg", "revealChance", "revealmsg", "recharge", "initialrecharge", "charges", "chargesmsg", "clearCharges", "addCharges"], comm);
                                 
                                 checkValidValue(action.target, ["Any", "Self", "AnyButTeam", "AnyButRole", "AnyButSelf"], comm + ".target");
                                 checkType(action.limit, ["number"], comm + ".limit");
@@ -609,8 +609,10 @@ function mafiaChecker() {
                                 checkType(action.initialrecharge, ["number"], comm + ".initialrecharge");
                                 checkType(action.charges, ["number"], comm + ".charges");
                                 checkType(action.chargesmsg, ["string"], comm + ".chargesmsg");
+                                checkType(action.clearCharges, ["boolean"], comm + ".clearCharges");
+                                checkType(action.addCharges, ["number"], comm + ".addCharges");
                             } else if (command == "expose") {
-                                checkAttributes(action, ["target"], ["command", "limit", "msg", "exposemsg", "revealChance", "revealmsg", "recharge", "initialrecharge", "exposedtargetmsg", "charges", "chargesmsg"], comm);
+                                checkAttributes(action, ["target"], ["command", "limit", "msg", "exposemsg", "revealChance", "revealmsg", "recharge", "initialrecharge", "exposedtargetmsg", "charges", "chargesmsg", "clearCharges", "addCharges"], comm);
                                 
                                 checkValidValue(action.target, ["Any", "Self", "AnyButTeam", "AnyButRole", "AnyButSelf"], comm + ".target");
                                 checkType(action.limit, ["number"], comm + ".limit");
@@ -623,8 +625,10 @@ function mafiaChecker() {
                                 checkType(action.initialrecharge, ["number"], comm + ".initialrecharge");
                                 checkType(action.charges, ["number"], comm + ".charges");
                                 checkType(action.chargesmsg, ["string"], comm + ".chargesmsg");
+                                checkType(action.clearCharges, ["boolean"], comm + ".clearCharges");
+                                checkType(action.addCharges, ["number"], comm + ".addCharges");
                             } else if (command == "reveal") {
-                                checkAttributes(action, [], ["command", "limit", "msg", "revealmsg", "recharge", "initialrecharge", "charges", "chargesmsg"], comm);
+                                checkAttributes(action, [], ["command", "limit", "msg", "revealmsg", "recharge", "initialrecharge", "charges", "chargesmsg", "clearCharges", "addCharges"], comm);
                                 
                                 checkType(action.limit, ["number"], comm + ".limit");
                                 checkType(action.msg, ["string"], comm + ".msg");
@@ -633,6 +637,8 @@ function mafiaChecker() {
                                 checkType(action.initialrecharge, ["number"], comm + ".initialrecharge");
                                 checkType(action.charges, ["number"], comm + ".charges");
                                 checkType(action.chargesmsg, ["string"], comm + ".chargesmsg");
+                                checkType(action.clearCharges, ["boolean"], comm + ".clearCharges");
+                                checkType(action.addCharges, ["number"], comm + ".addCharges");
                             } else {
                                 addMinorError("Role " + yourRole + "'s standby action \"" + e + "\" is not a valid action (Valid standby actions are " + possibleStandbyActions.join(", ") + ")");
                             }
@@ -1398,6 +1404,8 @@ function mafiaChecker() {
         checkType(action.broadcastmsg, ["string"], act + ".broadcastmsg");
         checkType(action.charges, ["number"], act + ".charges");
         checkType(action.chargesmsg, ["string"], act + ".chargesmsg");
+        checkType(action.clearCharges, ["boolean"], act + ".clearCharges");
+        checkType(action.addCharges, ["number"], act + ".addCharges");
         checkType(action.suicideChance, ["number"], act + ".suicideChance");
         checkType(action.suicidemsg, ["string"], act + ".suicidemsg");
         checkType(action.restrict, ["array"], act + ".restrict");
