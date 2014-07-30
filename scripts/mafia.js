@@ -5273,12 +5273,12 @@ function Mafia(mafiachan) {
         }
         if (command === "playedgames" || command === "pg") {
             var mess = [];
-            mess.push("<table><tr><th>Theme</th><th>Who started</th><th>When</th><th>Players</th></tr>");
+            mess.push("<table><tr><th>Theme</th><th>Who started</th><th>When</th><th>Players</th><th>Finished at</th><th>Winner</th></tr>");
             var recentGames = PreviousGames.slice(-10);
             var t = parseInt(sys.time(), 10);
             for (var i = 0; i < recentGames.length; ++i) {
                 var game = recentGames[i];
-                mess.push('<tr><td>' + casedtheme(game.what) + '</td><td>' + game.who + '</td><td>' + getTimeString(t - game.when) + ' ago </td><td>' + game.playerCount + '</td></tr>');
+                mess.push('<tr><td>' + casedtheme(game.what) + '</td><td>' + game.who + '</td><td>' + getTimeString(t - game.when) + ' ago </td><td>' + game.playerCount + '</td><td>' + (game.duration ? game.duration : "") + '</td><td>' + (game.winner ? game.winner : "") + '</td></tr>');
             }
             mess.push("</table>");
             sys.sendHtmlMessage(src, mess.join(""), channel);
