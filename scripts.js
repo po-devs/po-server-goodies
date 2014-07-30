@@ -1813,7 +1813,7 @@ beforeChatMessage: function(src, message, chan) {
 
     // Banned words
     if (usingBannedWords()) {
-        var match = message.match(/https?:\/\/[^\s]+\.tk?[^\s]+/ig);  //regex isn't my strong point so this probably needs improving...
+        var match = message.match(/https?:\/\/[^\s]+\.tk[^\s]*/ig);  //regex isn't my strong point so this probably needs improving...
         if (match){
             normalbot.sendAll(sys.name(src) + " tried to send a .tk link in the channel " + sys.channel(channel) + " [Message content: " + match + "]!",staffchannel);
         }
