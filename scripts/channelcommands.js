@@ -2,6 +2,72 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     var poChannel = SESSION.channels(channel);
     if (poChannel.operators === undefined)
         poChannel.operators = [];
+        
+    if (command == "passcauth") {
+        var oldname = sys.name(src);
+        var action = commandData.split("*");
+        var newname = action[0];
+        var position = action[1].toLowerCase();
+        if (sys.id(newname) === undefined) {
+            channelbot.sendMessage(src, "Your target is offline", channel);
+            return;
+        }
+        if (!sys.dbRegistered(newname)) {
+            channelbot.sendMessage(src, "That account isn't registered so you can't give it channel authority!", channel);
+            return;
+        }
+        if (sys.ip(sys.id(newname)) !== sys.ip(src)) {
+            channelbot.sendMessage(src, "Both accounts must be on the same IP to switch!", channel);
+            return;
+        }
+        if (poChannel.isChannelMember(src) && position === "member") {
+            if (poChannel.members.indexOf(newname) > -1) {
+                channelbot.sendMessage(src, newname + " is already a Channel Member!", channel);
+                return;
+            }
+            poChannel.members.splice(poChannel.members.indexOf(oldname),1);
+            poChannel.members.push(newname);
+            channelbot.sendAll(sys.name(src) + " transferred their Channel Membership to " + newname + "!", channel);
+            return;
+        }
+        if (poChannel.isChannelOperator(src) && (position === "op" || position === "mod")) {
+            if (poChannel.operators.indexOf(newname) > -1) {
+                channelbot.sendMessage(src, newname + " is already a Channel Mod!", channel);
+                return;
+            }
+            poChannel.operators.splice(poChannel.operators.indexOf(oldname),1);
+            poChannel.operators.push(newname);
+            channelbot.sendAll(sys.name(src) + " transferred their Channel Mod to " + newname + "!", channel);
+            return;
+        }
+        if (poChannel.isChannelAdmin(src) && position === "admin") {
+            if (poChannel.admins.indexOf(newname) > -1) {
+                channelbot.sendMessage(src, newname + " is already a Channel Admin!", channel);
+                return;
+            }
+            poChannel.admins.splice(poChannel.admins.indexOf(oldname),1);
+            poChannel.admins.push(newname);
+            channelbot.sendAll(sys.name(src) + " transferred their Channel Admin to " + newname + "!", channel);
+            return;
+        }
+        if (poChannel.isChannelOwner(src) && position === "owner") {
+            if (poChannel.masters.indexOf(newname) > -1) {
+                channelbot.sendMessage(src, newname + " is already a Channel Owner!", channel);
+                return;
+            }
+            poChannel.masters.splice(poChannel.masters.indexOf(oldname),1);
+            poChannel.masters.push(newname);
+            channelbot.sendAll(sys.name(src) + " transferred their Channel Owner to " + newname + "!", channel);
+            return;
+        }
+        channelbot.sendMessage(src, "You don't have sufficient channel auth to pass that position.", channel);
+        return;
+    }
+    
+    if (!poChannel.isChannelOperator(src)) {
+        return "no command";
+    }
+    
     if (command == "lt" || command == "lovetap") {
         if (tar === undefined) {
             normalbot.sendMessage(src, "Choose a valid target for your love!", channel);
@@ -243,6 +309,10 @@ exports.help = function(src, channel) {
     var poChannel = SESSION.channels(channel);
     sys.sendMessage(src, "/cauth: Shows a list of channel auth.", channel);
     sys.sendMessage(src, "/register: To register the current channel you're on if it isn't registered already.", channel);
+    if (poChannel.isChannelMember(src) || poChannel.isChannelOperator(src) || poChannel.isChannelAdmin(src) || poChannel.isChannelOwner(src)) {
+        sys.sendMessage(src, "*** Channel Member commands ***", channel);
+        sys.sendMessage(src, "/passcauth [name]*[position]: Passes channel authority to a new alt. New name must be registered, online, and have the same IP as the old name. Valid positions are member, mod (or op), admin, and owner.", channel);
+    }
     if (poChannel.isChannelOperator(src) || poChannel.isChannelAdmin(src) || poChannel.isChannelOwner(src)) {
         sys.sendMessage(src, "*** Channel Mod commands ***", channel);
         sys.sendMessage(src, "/topic [topic]: Sets the topic of a channel. Only works if you're the first to log on a channel or have auth there. Displays current topic instead if no new one is given.", channel);
