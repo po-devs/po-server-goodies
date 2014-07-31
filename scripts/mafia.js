@@ -2259,7 +2259,11 @@ function Mafia(mafiachan) {
                 gamemsg(name, "You voted for " + commandData + "!");
             gamemsgAll(votemsg.replace(/~Player~/g, name).replace(/~Target~/g, commandData));
         }
-        this.addPhaseStalkAction(name, "vote", commandData);
+        if (canVoteTeam) {
+            this.addPhaseStalkAction(name, "teamvote", commandData);
+        } else {
+            this.addPhaseStalkAction(name, "vote", commandData);
+        }
         this.votes[sys.name(src)] = commandData;
         this.voteCount += 1;
         
@@ -3636,6 +3640,7 @@ function Mafia(mafiachan) {
             }
 
             if (tie) {
+                currentStalk.push("Lynched: No one");
                 if (mafia.theme.noplur === true) {
                     gamemsgAll("A majority vote was not reached so no one was voted off!:");
                 } else {
@@ -3648,6 +3653,7 @@ function Mafia(mafiachan) {
                 sendChanAll(border, mafiachan);
             } else {
                 var lynched = mafia.players[downed];
+                currentStalk.push("Lynched: " + lynched.name + " (" + lynched.role.translation + ")");
                 if ("lynch" in lynched.role.actions) {
                     //Handled the same, no reason to duplicate code
                     mafia.actionBeforeDeath(lynched, true);
