@@ -100,6 +100,22 @@ POChannel.prototype.isChannelOperator = function(id)
     }
     return false;
 };
+POChannel.prototype.isChannelMember = function(id)
+{
+    if (!sys.dbRegistered(sys.name(id))) {
+        return false;
+    }
+    if ((sys.auth(id) >= 1 && this.id === 0) || this.isChannelOperator(id) || this.isChannelAdmin(id) || this.isChannelOwner(id)) {
+        return true;
+    }
+    if (typeof this.members != "object") {
+        this.members = [];
+    }
+    if (this.members.indexOf(sys.name(id).toLowerCase()) > -1) {
+        return true;
+    }
+    return false;
+};
 
 POChannel.prototype.addRole = function(src, tar, group, data)
 {
