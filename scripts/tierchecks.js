@@ -190,7 +190,15 @@ tier_checker.add_new_check(INCLUDING, ["Clear Skies"], function weatherlesstierc
     }
     return ret;
 });
-    
+
+tier_checker.add_new_check(INCLUDING, ["Monotype"], function drizzleBan(src, team) {
+    for (var i = 0; i < 6; i++) {
+        if (sys.ability(sys.teamPokeAbility(src, team, i)).toLowerCase() == "drizzle") {
+            return ["Drizzle is banned in this tier"];
+        }
+    }
+});
+
 tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, team) {
     var type1, type2, typea = 0, typeb = 0,teamLength = 0;
     for (var i = 0; i < 6; i++) {
