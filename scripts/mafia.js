@@ -473,6 +473,7 @@ function Mafia(mafiachan) {
             for (i in plain_theme.roles) {
                 theme.addRole(plain_theme.roles[i]);
             }
+            theme.nightPriority.sort(function (a, b) { return a.priority - b.priority; });
             theme.roles1 = plain_theme.roles1;
             i = 2;
             while ("roles" + i in plain_theme) {
@@ -722,7 +723,6 @@ function Mafia(mafiachan) {
                 var hide = obj.actions.night[action].hide || false;
                 this.nightPriority.push({ 'priority': priority, 'action': action, 'role': role, 'hide': hide });
             }
-            this.nightPriority.sort(function (a, b) { return a.priority - b.priority; });
         }
         if ("standby" in obj.actions) {
             this.standbyRoles.push(obj.role);
