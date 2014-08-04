@@ -473,6 +473,7 @@ function Mafia(mafiachan) {
             for (i in plain_theme.roles) {
                 theme.addRole(plain_theme.roles[i]);
             }
+            theme.nightPriority.sort(function (a, b) { return a.priority - b.priority; });
             theme.roles1 = plain_theme.roles1;
             i = 2;
             while ("roles" + i in plain_theme) {
@@ -722,7 +723,6 @@ function Mafia(mafiachan) {
                 var hide = obj.actions.night[action].hide || false;
                 this.nightPriority.push({ 'priority': priority, 'action': action, 'role': role, 'hide': hide });
             }
-            this.nightPriority.sort(function (a, b) { return a.priority - b.priority; });
         }
         if ("standby" in obj.actions) {
             this.standbyRoles.push(obj.role);
@@ -3137,7 +3137,7 @@ function Mafia(mafiachan) {
                                 }
                             }
                             else if (command == "convert") {
-                                if(target.name == player.name) {
+                                if(target.name == player.name && Action.unlimitedSelfConvert !== true) {
                                     if(selfConverted.indexOf(player.name) != -1) {
                                         continue outer;
                                     }
@@ -3857,6 +3857,29 @@ function Mafia(mafiachan) {
                 gamemsg(player.name, role.help.replace(/~Side~/gi, mafia.theme.trside(player.role.side)));
                 var help2msg = (role.help2 || "");
                 gamemsg(player.name, help2msg);
+                
+                if (role.actions.updateCharges == true) {
+                    var charges = [], e, c;
+                    if ("night" in role.actions) {
+                        for (e in role.actions.night) {
+                            c = mafia.getCharges(player, "night", e);
+                            if (c !== undefined && c > 0) {
+                                charges.push(c + "x " + cap(e));
+                            }
+                        }
+                    }
+                    if ("standby" in role.actions) {
+                        for (e in role.actions.standby) {
+                            c = mafia.getCharges(player, "standby", e);
+                            if (c !== undefined && c > 0) {
+                                charges.push(c + "x " + cap(e) + " (Standby)");
+                            }
+                        }
+                    }
+                    if (charges.length > 0) {
+                        gamemsg(player.name, "±Charges left: " + charges.join(", "));
+                    }
+                }
 
                 mafia.showTeammates(player);
             } else {
