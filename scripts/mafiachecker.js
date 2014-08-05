@@ -302,7 +302,7 @@ function mafiaChecker() {
             
             if (checkType(role.actions, ["object"], "'" + yourRole + ".actions")) {
                 act = "Role " + yourRole + ".actions";
-                checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "onDeath", "onDeadRoles", "initialCondition", "avoidHax", "avoidStandbyHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "vote", "voteshield", "voteMultiplier", "startup", "onlist", "onteam", "lynch", "teamTalk", "noVote", "noVoteMsg", "preventTeamvote", "updateTeam", "teamUtilities"].concat(possibleNightActions), act);
+                checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "onDeath", "onDeadRoles", "initialCondition", "avoidHax", "avoidStandbyHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "vote", "voteshield", "voteMultiplier", "startup", "onlist", "onteam", "lynch", "teamTalk", "noVote", "noVoteMsg", "preventTeamvote", "updateTeam", "teamUtilities", "updateCharges"].concat(possibleNightActions), act);
 
                 if (checkType(role.actions.night, ["object"], act + ".night")) {
                     for (e in role.actions.night) {
@@ -346,7 +346,7 @@ function mafiaChecker() {
                             }
                             if (commandList.indexOf("convert") !== -1) {
                                 commonMandatory = commonMandatory.concat(["newRole"]);
-                                commonOptional = commonOptional.concat(["canConvert", "convertmsg", "usermsg", "tarmsg", "convertfailmsg", "silent", "silentConvert"]);
+                                commonOptional = commonOptional.concat(["canConvert", "convertmsg", "usermsg", "tarmsg", "convertfailmsg", "silent", "silentConvert", "unlimitedSelfConvert"]);
                             }
                             if (commandList.indexOf("massconvert") !== -1) {
                                 commonMandatory = commonMandatory.concat(["convertRoles"]);
@@ -447,6 +447,7 @@ function mafiaChecker() {
                                 } else if (command == "convert") {
                                     checkValidValue(action.silent, [true, false], comm + ".silent");
                                     checkValidValue(action.silentConvert, [true, false], comm + ".silentConvert");
+                                    checkValidValue(action.unlimitedSelfConvert, [true, false], comm + ".unlimitedSelfConvert");
                                     
                                     if (checkType(action.newRole, ["string", "object"], comm + ".newRole")) {
                                         if (typeof action.newRole == "string") {
@@ -1025,6 +1026,7 @@ function mafiaChecker() {
                     }
                 }
                 
+                checkType(role.actions.updateCharges, ["boolean"], act + ".updateCharges");
                 checkType(role.actions.updateTeam, ["boolean"], act + ".updateTeam");
                 checkType(role.actions.teamUtilities, ["boolean"], act + ".teamUtilities");
                 
