@@ -243,7 +243,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     // hack, for allowing some subset of the owner commands for super admins
     if (isSuperAdmin(src)) {
-       if (["eval", "evalp"].indexOf(command) != -1 && ["[ld]jirachier","ethan"].indexOf(sys.name(src).toLowerCase()) == -1) {
+       if (["changeauth"].indexOf(command) != -1) {
            normalbot.sendMessage(src, "Can't aboos some commands", channel);
            return;
        }
