@@ -259,7 +259,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var tar = sys.id(commandData);
-        if (sys.os(tar) !== "android" && sys.version(tar) < 2402) {
+        if (sys.os(tar) !== "android" && sys.version(tar) < 2402 || sys.os(tar) === "android" && sys.version(tar) < 37) {
             //probably won't work well on windows/linux/etc anyways...
             normalbot.sendMessage(src, "Cookies won't work on this target", channel);
             return;
