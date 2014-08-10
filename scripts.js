@@ -1337,7 +1337,7 @@ cookieBanned: function(src) { //todo add a way to undo later
             name = cookie.substr(cookie.indexOf(" ")+1);
         }
         SESSION.users(src).activate("smute", Config.kickbot, 0, "Cookie", true);
-        kickbot.sendAll(sys.name(src) + " was smuted by cookie" + (name ? "[Original Name: " + name + "]." : "."), staffchannel);
+        kickbot.sendAll(sys.name(src) + " was smuted by cookie " + (name ? "[Original Name: " + name + "]." : "."), staffchannel);
     }
     return;
 },
