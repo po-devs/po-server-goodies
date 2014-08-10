@@ -358,12 +358,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "topchannels") {
         var cids = sys.channelIds();
+        var limit = (commandData && !isNaN(commandData) ? parseInt(commandData, 10) : 10);
         var l = [];
         for (var i = 0; i < cids.length; ++i) {
             l.push([cids[i], sys.playersOfChannel(cids[i]).length]);
         }
         l.sort(function(a,b) { return b[1]-a[1]; });
-        var topchans = l.slice(0,10);
+        var topchans = l.slice(0, limit);
         channelbot.sendMessage(src, "Most used channels:", channel);
         for (var i = 0; i < topchans.length; ++i) {
             sys.sendMessage(src, "" + sys.channel(topchans[i][0]) + " with " + topchans[i][1] + " players.", channel);
