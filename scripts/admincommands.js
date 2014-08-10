@@ -269,7 +269,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             kickbot.sendAll(commandData + " was smuted by cookie", staffchannel);
         }
         var type = (command === "cookieban" ? "banned" : "muted");
-        sys.setCookie(sys.id(commandData), type);
+        sys.setCookie(sys.id(commandData), type + commandData.toCorrectCase());
         normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type, staffchannel);
         return;
     }
