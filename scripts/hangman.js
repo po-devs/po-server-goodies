@@ -65,10 +65,10 @@ function Hangman() {
             hangbot.sendMessage(src, "This is not a valid answer!", hangchan);
             return;
         }
-        if (isEventGame && (this.isHangmanAdmin(src) || this.isHangmanSuperAdmin(src))) {
+    /*    if (isEventGame && (this.isHangmanAdmin(src) || this.isHangmanSuperAdmin(src))) {
             hangbot.sendMessage(src, "You are HA or sHA, so you can't participate on Event Games!", hangchan);
             return;
-        }
+        } */ 
         if (checked.indexOf(sys.ip(src)) >= 0) {
             hangbot.sendMessage(src, "You checked the answer, so you can't play!", hangchan);
             return;
@@ -176,10 +176,10 @@ function Hangman() {
             hangbot.sendMessage(src, "No game is running!", hangchan);
             return;
         }
-        if (isEventGame && (this.isHangmanAdmin(src) || this.isHangmanSuperAdmin(src))) {
+    /*    if (isEventGame && (this.isHangmanAdmin(src) || this.isHangmanSuperAdmin(src))) {
             hangbot.sendMessage(src, "You are HA or sHA, so you can't participate on Event Games!", hangchan);
             return;
-        }
+        } */
         if (checked.indexOf(sys.ip(src)) >= 0) {
             hangbot.sendMessage(src, "You checked the answer, so you can't play!", hangchan);
             return;
@@ -771,6 +771,11 @@ function Hangman() {
     };
 
     this.searchQuest = function(src, commandData) {
+        if (word && isEventGame){
+            hangbot.sendMessage(src, "You can't use this command when an Event Game is running!", hangchan);
+            return;
+    }
+    else{
         if (commandData === undefined) {
             hangbot.sendMessage(src, "Invalid format. Proper format is /searchquest query:criteria where criteria is (w)ord (default), (h)int or (i)ndex.", hangchan);
             return;
@@ -778,7 +783,7 @@ function Hangman() {
         if (autoGames.length === 0) {
             hangbot.sendMessage(src, "There are no games in the database.", hangchan);
             return;
-        }
+        } 
         else{
             if (commandData.indexOf(":") === -1) {
                 hangman.searchByWord(src, commandData);
@@ -802,6 +807,9 @@ function Hangman() {
                 }
             }
         }
+    }
+        
+
     };
 
     this.searchByWord = function(src, commandData){
@@ -813,7 +821,8 @@ function Hangman() {
             a = game[2].toUpperCase(),
             h = game[3],
             c = game.length < 5 ? defaultParts : game[4];
-        
+            
+          
                 if (a === commandData.toUpperCase()) {
                     hangbot.sendMessage(src, "Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c + " - User: " + u, hangchan);
             found = true;
@@ -822,6 +831,7 @@ function Hangman() {
     if (!found){
         hangbot.sendMessage(src, "There are no games with that answer.", hangchan);
     }
+
     };
 
     this.searchByHint = function(src, commandData){
@@ -1051,8 +1061,8 @@ function Hangman() {
     };
 
     this.checkGame = function (src) {
-        if (!word){
-            hangbot.sendMessage(src, "No game is running!", hangchan);
+        if (!word || isEventGame){
+            hangbot.sendMessage(src, "There is either no game running, or this is an Event Game!", hangchan);
         }
         else {
             if (checked.indexOf(sys.ip(src)) >= 0){
