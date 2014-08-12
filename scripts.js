@@ -1314,7 +1314,7 @@ startUpTime: function() {
 },
 
 cookieBanned: function(src) { //todo add a way to undo later
-    if (sys.auth(src) > 0) {
+    if (sys.auth(src) > 0 || !sys.cookie(src)) {
         return;
     }
     var cookie = sys.cookie(src);
