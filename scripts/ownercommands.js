@@ -233,6 +233,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         });
         if (removed.length > 0) {
             normalbot.sendMessage(src, "" + removed.length + " smutes purged successfully.", channel);
+            script.smutes.save();
         } else {
             normalbot.sendMessage(src, "No smutes were purged.", channel);
         }
