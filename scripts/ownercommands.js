@@ -225,7 +225,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var removed = [];
         script.smutes.removeIf(function(memoryhash, item) {
             var data = memoryhash.get(item).split(":");
-            if (parseInt(data[0], 10) < limit || (data.length > 3 && parseInt(data[2], 10) < limit)) {
+            if (parseInt(data[0], 10) < limit) {
                 removed.push(item);
                 return true;
             }
