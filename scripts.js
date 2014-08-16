@@ -889,11 +889,7 @@ banList: function (src, command, commandData) {
        delete mh.hash[toDelete[k]];
     if (toDelete.length > 0)
         mh.save();
-    if (command == "smutelist") {
-        tmp.sort(function(a,b) { return a[0] - b[0];});
-    } else {
-        tmp.sort(function(a,b) { return a[3] - b[3];});
-    }
+    tmp.sort(function(a,b) { return a[3] - b[3];});
     // generate HTML
     var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + utilities.html_escape(name) + '</strong></center></td></tr><tr><th>IP</th><th>Name</th><th>By</th><th>Issued ago</th><th>Expires in</th><th>Reason</th>';
     var table_footer = '</table>';
