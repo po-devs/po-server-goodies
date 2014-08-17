@@ -241,15 +241,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             sys.writeToFile(Config.dataDir+"nameWarns.json", JSON.stringify(nameWarns));
         return;
     }
-    // hack, for allowing some subset of the owner commands for super admins
-    if (isSuperAdmin(src)) {
-       if (["changeauth"].indexOf(command) != -1) {
-           normalbot.sendMessage(src, "Can't aboos some commands", channel);
-           return;
-       }
-       return require("ownercommands.js").handleCommand(src, command, commandData, tar, channel);
-    }
-   
+    
+       
     if (command == "cookieban" || command == "cookiemute") {
         if (!commandData) {
             return;
@@ -286,6 +279,16 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         script.namesToUnban.add(commandData.toLowerCase(), true);
         normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type, staffchannel);
         return;
+    }
+    
+    
+    // hack, for allowing some subset of the owner commands for super admins
+    if (isSuperAdmin(src)) {
+       if (["changeauth"].indexOf(command) != -1) {
+           normalbot.sendMessage(src, "Can't aboos some commands", channel);
+           return;
+       }
+       return require("ownercommands.js").handleCommand(src, command, commandData, tar, channel);
     }
 
     return "no command";

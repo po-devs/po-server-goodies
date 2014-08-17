@@ -1543,7 +1543,7 @@ meon: function(src, commandData) {
     if (cid !== undefined) {
         SESSION.channels(cid).meoff = false;
         normalbot.sendAll("" + sys.name(src) + " turned on /me in "+commandData+".", cid);
-        SESSION.global().channelManager.update(cid)
+        SESSION.global().channelManager.update(cid);
     } else {
         normalbot.sendMessage(src, "Sorry, that channel is unknown to me.", channel);
     }
