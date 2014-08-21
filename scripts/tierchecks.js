@@ -223,7 +223,7 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
         }
     }
     if (typea < teamLength && typeb < teamLength) {
-        return ["Team is not monotype as not every team member is " + (typea >= typeb ? sys.type(type1) : sys.type(type2))];
+        return ["Your team is not a valid Monotype team as not every team member is " + (typea >= typeb ? sys.type(type1) : sys.type(type2))];
     }
 });
 
@@ -279,7 +279,7 @@ tier_checker.add_new_check(INCLUDING, ["Smogon OU", "BW2 OU", "No Preview OU"], 
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Drizzle"){
             for(var j = 0; j <6; ++j){
                 if(sys.ability(sys.teamPokeAbility(src, team, j)) == "Swift Swim"){
-                    return ["You cannot have the combination of Swift Swim and Drizzle in OU"];
+                    return ["You cannot have the combination of Swift Swim and Drizzle in BW2 OU"];
                 }
             }
         }
@@ -330,6 +330,15 @@ tier_checker.add_new_check(INCLUDING, ["BW2 LC"], function regeneratorCheck(src,
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Speed Boost"){
             return ["Speed Boost is not allowed in " + tier + "."];
+        }
+    }
+});
+
+tier_checker.add_new_check(INCLUDING, ["XY OU", "XY UU", "XY LU", "XY NU"], function batonPassLimitXY(src, team, tier) {
+    var batonPassLimit = 2;
+    for (var i = 0, j = 0; i < 6; ++i) {
+        if (sys.hasTeamPokeMove(src, team, i, sys.moveNum("Baton Pass")) && (++j >= batonPassLimit)) {
+            return ["Baton Pass is limited to two Pokémon per team in " + tier + "."];
         }
     }
 });
@@ -410,7 +419,7 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function hasOneUsablePokem
             for (var move=0; move<4; move++)
                 if (sys.teamPokeMove(player, team , slot, move) !== 0)
                     return;
-    return ["You do not have any valid pokemon."];
+    return ["You do not have any valid Pokémon."];
 });
 
 tier_checker.add_new_check(INCLUDING, ["Pre-PokeBank OU"], function pokeBankCheck(src, team) {
