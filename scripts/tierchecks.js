@@ -334,7 +334,7 @@ tier_checker.add_new_check(INCLUDING, ["BW2 LC"], function regeneratorCheck(src,
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["XY OU", "XY UU", "XY LU", "XY NU"], function batonPassLimitXY(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["XY OU"], function batonPassLimitXY(src, team, tier) {
     var batonPassLimit = 2;
     for (var i = 0, j = 0; i < 6; ++i) {
         if (sys.hasTeamPokeMove(src, team, i, sys.moveNum("Baton Pass")) && (++j >= batonPassLimit)) {
