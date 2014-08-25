@@ -1327,7 +1327,7 @@ cookieBanned: function(src) { //todo add a way to undo later
         sys.kick(src);
         return true;
     } else if (sys.cookie(src) === "muted") {
-        SESSION.users(src).activate("smute", Config.kickbot, 0, "Cookie", true);
+        SESSION.users(src).activate("smute", Config.kickbot, 86400, "Cookie", true);
         kickbot.sendAll(sys.name(src) + " was smuted by cookie", staffchannel);
     }
     return;
