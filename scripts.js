@@ -889,9 +889,7 @@ banList: function (src, command, commandData) {
        delete mh.hash[toDelete[k]];
     if (toDelete.length > 0)
         mh.save();
-
     tmp.sort(function(a,b) { return a[3] - b[3];});
-
     // generate HTML
     var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + utilities.html_escape(name) + '</strong></center></td></tr><tr><th>IP</th><th>Name</th><th>By</th><th>Issued ago</th><th>Expires in</th><th>Reason</th>';
     var table_footer = '</table>';
@@ -1314,21 +1312,36 @@ startUpTime: function() {
 },
 
 cookieBanned: function(src) { //todo add a way to undo later
-    if (sys.auth(src) > 0) {
+    if (sys.auth(src) > 0 || !sys.cookie(src)) {
         return;
     }
+    var cookie = sys.cookie(src);
     if (script.namesToUnban.get(sys.name(src).toLowerCase())) {
         kickbot.sendAll(sys.name(src) + " was unbanned by cookie", staffchannel);
         sys.removeCookie(src);
         script.namesToUnban.remove(sys.name(src).toLowerCase());
-    } else if (sys.cookie(src) === "banned") {
-        kickbot.sendAll(sys.name(src) + " was banned by cookie", sys.channelId("Watch"));
+    } else if (cookie === "banned" || cookie.substr(0, 6) === "banned") { //backwards compatability
+        var name;
+        if (cookie.indexOf(" ") > 1) {
+            name = cookie.substr(cookie.indexOf(" ")+1);
+        }
+        kickbot.sendAll(sys.name(src) + " was banned by cookie " + (name ? "[Original Name: " + name + "]." : "."), sys.channelId("Watch"));
         normalbot.sendMessage(src, "You are currently banned from the server. If you believe this to be an error, post here: http://pokemon-online.eu/forums/disciplinary-committee.43/");
         sys.kick(src);
         return true;
+<<<<<<< HEAD
     } else if (sys.cookie(src) === "muted") {
         SESSION.users(src).activate("smute", Config.kickbot, 86400, "Cookie", true);
         kickbot.sendAll(sys.name(src) + " was smuted by cookie", staffchannel);
+=======
+    } else if (cookie === "muted" || cookie.substr(0, 5) === "muted") {
+        var name;
+        if (cookie.indexOf(" ") > 1) {
+            name = cookie.substr(cookie.indexOf(" ")+1);
+        }
+        SESSION.users(src).activate("smute", Config.kickbot, 0, "Cookie", true);
+        kickbot.sendAll(sys.name(src) + " was smuted by cookie " + (name ? "[Original Name: " + name + "]." : "."), staffchannel);
+>>>>>>> 1a57ce47421e6fbdf4bd13b57fab675d05f3c307
     }
     return;
 },
@@ -1536,6 +1549,7 @@ meon: function(src, commandData) {
     if (cid !== undefined) {
         SESSION.channels(cid).meoff = false;
         normalbot.sendAll("" + sys.name(src) + " turned on /me in "+commandData+".", cid);
+        SESSION.global().channelManager.update(cid);
     } else {
         normalbot.sendMessage(src, "Sorry, that channel is unknown to me.", channel);
     }

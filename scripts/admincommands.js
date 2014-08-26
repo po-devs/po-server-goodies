@@ -241,15 +241,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             sys.writeToFile(Config.dataDir+"nameWarns.json", JSON.stringify(nameWarns));
         return;
     }
-    // hack, for allowing some subset of the owner commands for super admins
-    if (isSuperAdmin(src)) {
-       if (["changeauth"].indexOf(command) != -1) {
-           normalbot.sendMessage(src, "Can't aboos some commands", channel);
-           return;
-       }
-       return require("ownercommands.js").handleCommand(src, command, commandData, tar, channel);
-    }
-   
+    
+       
     if (command == "cookieban" || command == "cookiemute") {
         if (!commandData) {
             return;
@@ -259,7 +252,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var tar = sys.id(commandData);
-        if (sys.os(tar) !== "android" && sys.version(tar) < 2402) {
+        if (sys.os(tar) !== "android" && sys.version(tar) < 2402 || sys.os(tar) === "android" && sys.version(tar) < 37) {
             //probably won't work well on windows/linux/etc anyways...
             normalbot.sendMessage(src, "Cookies won't work on this target", channel);
             return;
@@ -269,7 +262,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             kickbot.sendAll(commandData + " was smuted by cookie", staffchannel);
         }
         var type = (command === "cookieban" ? "banned" : "muted");
-        sys.setCookie(sys.id(commandData), type);
+        sys.setCookie(sys.id(commandData), type + " " + commandData.toCorrectCase());
         normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type, staffchannel);
         return;
     }
@@ -286,6 +279,16 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         script.namesToUnban.add(commandData.toLowerCase(), true);
         normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type, staffchannel);
         return;
+    }
+    
+    
+    // hack, for allowing some subset of the owner commands for super admins
+    if (isSuperAdmin(src)) {
+       if (["changeauth"].indexOf(command) != -1) {
+           normalbot.sendMessage(src, "Can't aboos some commands", channel);
+           return;
+       }
+       return require("ownercommands.js").handleCommand(src, command, commandData, tar, channel);
     }
 
     return "no command";

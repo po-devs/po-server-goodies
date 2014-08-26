@@ -4,9 +4,17 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         poChannel.operators = [];
         
     if (command == "passcauth") {
-        var oldname = sys.name(src);
+        if (!commandData) {
+            channelbot.sendMessage(src, "Use /passcauth [name]*[position]", channel);
+            return;
+        }
+        var oldname = sys.name(src).toLowerCase();
         var action = commandData.split("*");
-        var newname = action[0];
+        if (action.length !== 2) {
+            channelbot.sendMessage(src, "Use /passcauth [name]*[position]", channel);
+            return;
+        }
+        var newname = action[0].toLowerCase();
         var position = action[1].toLowerCase();
         if (sys.id(newname) === undefined) {
             channelbot.sendMessage(src, "Your target is offline", channel);

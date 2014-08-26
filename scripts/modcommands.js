@@ -362,8 +362,21 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (isSmuted) bans.push("smuted");
 
         if (isbot) {
-            var userJson = {'type': 'UserInfo', 'id': tar ? tar : -1, 'username': name, 'auth': authLevel, 'contributor': contribution, 'ip': ip, 'online': online, 'registered': registered, 'lastlogin': lastLogin };
-            sys.sendMessage(src, ":"+JSON.stringify(userJson), channel);
+            var userJson = {
+                'type': 'UserInfo',
+                'id': tar ? tar : -1,
+                'username': name,
+                'auth': authLevel,
+                'contributor': contribution,
+                'ip': ip + (tar ? " (" + SESSION.users(tar).hostname + ")" : ""),
+                'online': online,
+                'registered': registered,
+                'lastlogin': lastLogin,
+                'channels' : channels,
+                'bans' : bans, 
+                'client' : tar ? sys.os(tar) : "Unknown"
+            };
+            sys.sendMessage(src, "UserInfo: "+JSON.stringify(userJson), channel);
         } else if (command == "userinfo") {
             querybot.sendMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ contributor: " + contribution + " ~ ip: " + ip + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"), channel);
         } else if (command == "whois" || command == "whereis") {
