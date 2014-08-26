@@ -1329,6 +1329,11 @@ cookieBanned: function(src) { //todo add a way to undo later
         normalbot.sendMessage(src, "You are currently banned from the server. If you believe this to be an error, post here: http://pokemon-online.eu/forums/disciplinary-committee.43/");
         sys.kick(src);
         return true;
+<<<<<<< HEAD
+    } else if (sys.cookie(src) === "muted") {
+        SESSION.users(src).activate("smute", Config.kickbot, 86400, "Cookie", true);
+        kickbot.sendAll(sys.name(src) + " was smuted by cookie", staffchannel);
+=======
     } else if (cookie === "muted" || cookie.substr(0, 5) === "muted") {
         var name;
         if (cookie.indexOf(" ") > 1) {
@@ -1336,6 +1341,7 @@ cookieBanned: function(src) { //todo add a way to undo later
         }
         SESSION.users(src).activate("smute", Config.kickbot, 0, "Cookie", true);
         kickbot.sendAll(sys.name(src) + " was smuted by cookie " + (name ? "[Original Name: " + name + "]." : "."), staffchannel);
+>>>>>>> 1a57ce47421e6fbdf4bd13b57fab675d05f3c307
     }
     return;
 },
