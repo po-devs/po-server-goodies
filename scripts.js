@@ -1325,7 +1325,7 @@ cookieBanned: function(src) { //todo add a way to undo later
         if (cookie.indexOf(" ") > 1) {
             name = cookie.substr(cookie.indexOf(" ")+1);
         }
-        kickbot.sendAll(sys.name(src) + " was banned by cookie " + (name ? "[Original Name: " + name + "]." : "."), sys.channelId("Watch"));
+        kickbot.sendAll(sys.name(src) + " was banned by cookie" + (name ? " [Original Name: " + name + "]." : "."), sys.channelId("Watch"));
         normalbot.sendMessage(src, "You are currently banned from the server. If you believe this to be an error, post here: http://pokemon-online.eu/forums/disciplinary-committee.43/");
         sys.kick(src);
         return true;
@@ -1334,8 +1334,8 @@ cookieBanned: function(src) { //todo add a way to undo later
         if (cookie.indexOf(" ") > 1) {
             name = cookie.substr(cookie.indexOf(" ")+1);
         }
-        SESSION.users(src).activate("smute", Config.kickbot, 0, "Cookie", true);
-        kickbot.sendAll(sys.name(src) + " was smuted by cookie " + (name ? "[Original Name: " + name + "]." : "."), staffchannel);
+        SESSION.users(src).activate("smute", Config.kickbot, 86400, "Cookie", true);
+        kickbot.sendAll(sys.name(src) + " was smuted by cookie" + (name ? " [Original Name: " + name + "]." : "."), staffchannel);
     }
     return;
 },
@@ -1923,8 +1923,7 @@ afterChatMessage : function(src, message, chan)
 
     // hardcoded
     var ignoreChans = [staffchannel, sachannel, sys.channelId("trivreview"), sys.channelId("Watch"), mafiarev];
-    var ignoreUsers = ["nixeagle"];
-    var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1 && !poChannel.isChannelOperator(src);
+    var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && !poChannel.isChannelOperator(src);
     var officialChan = this.isOfficialChan(chan);
     var capsday = false;
     if (typeof CAPSLOCKDAYALLOW != 'undefined') {
@@ -1972,7 +1971,7 @@ afterChatMessage : function(src, message, chan)
         user.timecount = parseInt(sys.time(), 10);
     }
     var linecount = sys.auth(src) === 0 ? 9 : 21;
-    if (!poChannel.ignoreflood && userMayGetPunished) {
+    if (!poChannel.ignoreflood && userMayGetPunished && message !== ".") {
         user.floodcount += 1;
         var time = parseInt(sys.time(), 10);
         if (time > user.timecount + 7) {
@@ -1987,22 +1986,22 @@ afterChatMessage : function(src, message, chan)
         linecount = sys.channelId("Mafia") == channel ? linecount + 3 : linecount;
 
         if (user.floodcount > linecount) {
-            var message = "" + sys.name(src) + " was kicked " + (sys.auth(src) === 0 && officialChan ? "and muted " : "") + "for flood.";
+            var message = "" + sys.name(src) + " was kicked " + (sys.auth(src) === 0 && officialChan ? "and muted " : "") + "for flood";
             if (officialChan) {
                 if (user.smute.active) {
                     sys.sendMessage(src, message);
-                    kickbot.sendAll("" + sys.name(src) + " was kicked for flood while smuted.", staffchannel);
-                    kickbot.sendAll("" + sys.name(src) + " was kicked for flood while smuted.", watchchannel);
+                    kickbot.sendAll("" + sys.name(src) + " was kicked for flood whilst smuted.", staffchannel);
+                    kickbot.sendAll("" + sys.name(src) + " was kicked for flood whilst smuted.", watchchannel);
                 }
                 else if (user.mute.active) {
-                    kickbot.sendAll(message + " [Channel: "+sys.channel(channel)+"] whilst muted", staffchannel);
-                    kickbot.sendAll(message + " [Channel: "+sys.channel(channel)+"] whilst muted", watchchannel);
+                    kickbot.sendAll(message + " whilst muted. [Channel: "+sys.channel(channel)+"]", staffchannel);
+                    kickbot.sendAll(message + " whilst muted.  [Channel: "+sys.channel(channel)+"]", watchchannel);
                 } else {
                     kickbot.sendAll(message, channel);
                     if (channel != staffchannel)
-                        kickbot.sendAll(message + " [Channel: "+sys.channel(channel)+"]", staffchannel);
+                        kickbot.sendAll(message + ". [Channel: "+sys.channel(channel)+"]", staffchannel);
                     if (channel != watchchannel)
-                        kickbot.sendAll(message + " [Channel: "+sys.channel(channel)+"]", watchchannel);
+                        kickbot.sendAll(message + ". [Channel: "+sys.channel(channel)+"]", watchchannel);
                 }
             }
             if (officialChan) {
