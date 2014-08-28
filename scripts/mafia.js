@@ -222,11 +222,26 @@ function Mafia(mafiachan) {
             }
         }
     }
-    function getFirstLast(arr, first, last) {
+    function getFirstLast(arr, first, last, random) {
         var firstList = arr.slice(0, first),
             lastList = last > 0 ? arr.slice(-last) : [];
         
-        return removeDuplicates(firstList.concat(lastList));
+        var picked = removeDuplicates(firstList.concat(lastList));
+        if (random > 0) {
+            var p, i, list = arr.concat();
+            for (p = list.length -1; p >= 0; p--) {
+                if (picked.indexOf(list[p]) !== -1) {
+                    list.splice(p, 1);
+                }
+            }
+            for (p = random; p > 0 && list.length > 0; p--) {
+                i = sys.rand(0, list.length);
+                picked.push(list[i]);
+                list.splice(i, 1);
+            }
+        }
+        
+        return picked;
     }
     
     function runUpdate() {
@@ -1918,25 +1933,35 @@ function Mafia(mafiachan) {
         this.actionBeforeDeath(player);
         this.removePlayer(player);
     };
-    this.removeTargets = function (player) {
+    this.removeTargets = function (player, checkIgnore) {
+        var removed = false;
         for (var action in player.role.actions.night) {
-            this.removeTarget(player, action);
+            if (this.removeTarget(player, action, checkIgnore)) {
+                removed = true;
+            }
         }
+        return removed;
     };
-    this.removeTarget = function (player, action) {
+    this.removeTarget = function (player, action, checkIgnore) {
         var targetMode = player.role.actions.night[action].common;
+        if (checkIgnore === true && player.role.actions.night[action].ignoreDistract === true) {
+            return false;
+        }
         if (targetMode == 'Self') {
             player.targets[action] = [];
+            return true;
         } else if (targetMode == 'Team') {
             if (!(player.role.side in this.teamTargets)) {
                 this.teamTargets[player.role.side] = {};
             }
             this.teamTargets[player.role.side][action] = [];
+            return true;
         } else if (targetMode == 'Role') {
             if (!(player.role.role in this.roleTargets)) {
                 this.roleTargets[player.role.role] = {};
             }
             this.roleTargets[player.role.role][action] = [];
+            return true;
         }
     };
     this.setRechargeFor = function (player, phase, action, count) {
@@ -3020,17 +3045,20 @@ function Mafia(mafiachan) {
                             };
                             if (command == "distract") {
                                 tarmsg = "distractmsg" in Action ? Action.distractmsg : "The ~Distracter~ came to you last night! You were too busy being distracted!";
-                                gamemsg(target.name, formatArgs(tarmsg, nightargs));
-                                mafia.removeTargets(target);
+                                if (mafia.removeTargets(target, true)) {
+                                    gamemsg(target.name, formatArgs(tarmsg, nightargs));
     
-                                /* warn role / teammates... No args because messes up very easily */
-                                var teamMsg = "teammsg" in Action ? Action.teammsg : "Your teammate was too busy with the ~Distracter~ during the night, you decided not to ~Action~ anyone during the night!";
-                                if ("night" in target.role.actions) {
-                                    for (var action in target.role.actions.night) {
-                                        var team = getTeam(target.role, target.role.actions.night[action].common);
-                                        for (var x in team) {
-                                            if (team[x] != target.name) {
-                                                gamemsg(team[x], formatArgs(teamMsg.replace(/~Action~/g, action), nightargs));
+                                    /* warn role / teammates... No args because messes up very easily */
+                                    var teamMsg = "teammsg" in Action ? Action.teammsg : "Your teammate was too busy with the ~Distracter~ during the night, you decided not to ~Action~ anyone during the night!";
+                                    if ("night" in target.role.actions) {
+                                        for (var action in target.role.actions.night) {
+                                            if (target.role.actions.night[action].ignoreDistract !== true) {
+                                                var team = getTeam(target.role, target.role.actions.night[action].common);
+                                                for (var x in team) {
+                                                    if (team[x] != target.name) {
+                                                        gamemsg(team[x], formatArgs(teamMsg.replace(/~Action~/g, action), nightargs));
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -3122,7 +3150,7 @@ function Mafia(mafiachan) {
                                     if (visited.indexOf(player.name) !== -1) {
                                         visited.splice(visited.indexOf(player.name), 1);
                                     }
-                                    visited = getFirstLast(visited, ("watchFirst" in Action ? Action.watchFirst : 1), Action.watchLast  || 0);
+                                    visited = getFirstLast(visited, ("watchFirst" in Action ? Action.watchFirst : 1), Action.watchLast || 0, Action.watchRandom || 0);
                                     
                                     if (visited.length > 0) {
                                         tarmsg = ("watchmsg" in Action ? Action.watchmsg : "Your target (~Target~) was visited by ~Visit~ this night!").replace(/~Target~/gi, target).replace(/~Visit~/gi, readable(visited, "and"));
@@ -3482,12 +3510,16 @@ function Mafia(mafiachan) {
             gamemsgAll("±Time: Day " + mafia.time.days + " (Standby)");
             gamemsgAll("You have " + mafia.ticks + " seconds to debate who are the bad guys! :");
             //Sends a help message to anyone with a standby action
-            for (var role in mafia.theme.standbyRoles) {
+            var act, role, player, charges;
+            for (role in mafia.theme.standbyRoles) {
                 names = mafia.getPlayersForRole(mafia.theme.standbyRoles[role]);
                 for (j = 0; j < names.length; ++j) {
-                    for (var k in mafia.players[names[j]].role.actions.standby) {
-                        if (mafia.players[names[j]].role.actions.standby[k].msg) {
-                            gamemsg(names[j], mafia.players[names[j]].role.actions.standby[k].msg);
+                    player = mafia.players[names[j]];
+                    for (var k in player.role.actions.standby) {
+                        act = player.role.actions.standby[k];
+                        charges = mafia.getCharges(player, "standby", k);
+                        if (act.msg && (charges == undefined || charges > 0)) {
+                            gamemsg(names[j], act.msg);
                         }
                     }
                 }
@@ -3668,7 +3700,7 @@ function Mafia(mafiachan) {
                             votersList.splice(votersList.indexOf(downed), 1);
                         }
                         
-                        votersList = getFirstLast(votersList, ("first" in lyn.killVoters ? lyn.killVoters.first : 1), lyn.killVoters.last  || 0);
+                        votersList = getFirstLast(votersList, ("first" in lyn.killVoters ? lyn.killVoters.first : 1), lyn.killVoters.last  || 0, lyn.killVoters.random  || 0);
                         
                         var actionMessage = (lyn.killVoters.message || "~Target~ died for having voted for ~Self~!").replace(/~Self~/g, lynched.name).replace(/~Target~/g, readable(votersList, "and"));
                         gamemsgAll(actionMessage, "Kill");
@@ -3688,7 +3720,7 @@ function Mafia(mafiachan) {
                         if (votersList.indexOf(downed) !== -1) {
                             votersList.splice(votersList.indexOf(downed), 1);
                         }
-                        votersList = getFirstLast(votersList, ("first" in lyn.convertVoters ? lyn.convertVoters.first : 1), lyn.convertVoters.last  || 0);
+                        votersList = getFirstLast(votersList, ("first" in lyn.convertVoters ? lyn.convertVoters.first : 1), lyn.convertVoters.last  || 0, lyn.convertVoters.random  || 0);
                         
                         for (r in votersList) {
                             target = votersList[r];
