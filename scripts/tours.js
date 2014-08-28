@@ -139,6 +139,43 @@ var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "#12: Do not join multiple tours even if you are using a different alt.",
                 "#13: Do not attempt to circumvent the rules.",
                 "- Attempting to circumvent the rules through trickery, proxy or other such methods will be punished."];
+var tierToRmtId = {
+    "XY OU": 42,
+    "XY Ubers": 43,
+    "XY UU": 44,
+    "XY LU": 45,
+    "XY NU": 119,
+    "XY LC": 46,
+    "Inverted Battle": 47,
+    "Monotype": 48,
+    "BW2 OU": 49,
+    "BW2 Ubers": 51,
+    "BW2 UU": 52,
+    "BW2 LU": 53,
+    "BW2 NU": 54,
+    "BW2 LC": 56,
+    "HGSS OU": 60,
+    "HGSS Ubers": 61,
+    "HGSS UU": 62,
+    "HGSS NU": 63,
+    "HGSS LC": 64,
+    "ADV OU": 66,
+    "ADV Ubers": 67,
+    "ADV UU": 68,
+    "ADV NU": 69,
+    "ADV LC": 70,
+    "GSC OU": 72,
+    "GSC Ubers": 73,
+    "GSC UU": 74,
+    "RBY OU": 76,
+    "RBY UU": 77,
+    "VGC 2013": 79,
+    "VGC 2012": 80,
+    "VGC 2011": 81,
+    "VGC 2010": 82,
+    "VGC 2009": 83,
+    "JAA": 84
+};
 
 function sendBotMessage(user, message, chan, html) {
     if (user === undefined) {
@@ -3609,6 +3646,9 @@ function tourstart(tier, starter, key, parameters) {
             sendChanHtmlAll("<timestamp/> " + (startsWithVowel(tier) ? "An " : "A ") + "<b><a href='http://wiki.pokemon-online.eu/wiki/"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x]);
             sendChanAll("CLAUSES: "+getTourClauses(key),channels[x]);
             sendChanAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : "")+(parameters.event ? "; Event Tournament" : "")+(wifiuse != "default" ? "; "+wifiuse : ""), channels[x]);
+            if (tier in tierToRmtId) {
+                sendChanAll("TEAMS: <a href='http://pokemon-online.eu/forums/teams.23/?prefix_id=" + tierToRmtId[tier] + "'>" + tier + "</a>", channels[x]);
+            }
             if (channels[x] == tourschan) {
                 sendChanHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, "+(tours.tour[key].maxplayers === "default" ? "you have "+time_handle(parameters.event ? tourconfig.toursignup*2 : tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!"), channels[x]);
             }
