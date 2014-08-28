@@ -1334,7 +1334,7 @@ cookieBanned: function(src) { //todo add a way to undo later
         if (cookie.indexOf(" ") > 1) {
             name = cookie.substr(cookie.indexOf(" ")+1);
         }
-        SESSION.users(src).activate("smute", Config.kickbot, 86400, "Cookie", true);
+        SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "Cookie", true);
         kickbot.sendAll(sys.name(src) + " was smuted by cookie" + (name ? " [Original Name: " + name + "]." : "."), staffchannel);
     }
     return;
@@ -1986,7 +1986,7 @@ afterChatMessage : function(src, message, chan)
         linecount = sys.channelId("Mafia") == channel ? linecount + 3 : linecount;
 
         if (user.floodcount > linecount) {
-            var message = "" + sys.name(src) + " was kicked " + (sys.auth(src) === 0 && officialChan ? "and muted " : "") + "for flood";
+            var message = "" + sys.name(src) + " was kicked " + (sys.auth(src) === 0 && officialChan ? "and muted for 1 hour " : "") + "for flood";
             if (officialChan) {
                 if (user.smute.active) {
                     sys.sendMessage(src, message);
