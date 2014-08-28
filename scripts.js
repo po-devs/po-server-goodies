@@ -1608,6 +1608,7 @@ beforeChatMessage: function(src, message, chan) {
         sys.sendMessage(src, sys.name(src)+": .", channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, chan);
+		lineCount-=1;
         return;
     }
 
@@ -1923,7 +1924,7 @@ afterChatMessage : function(src, message, chan)
 
     // hardcoded
     var ignoreChans = [staffchannel, sachannel, sys.channelId("trivreview"), sys.channelId("Watch"), mafiarev];
-    var ignoreUsers = ["nixeagle"];
+    var ignoreUsers = [];
     var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && ignoreUsers.indexOf(sys.name(src)) == -1 && !poChannel.isChannelOperator(src);
     var officialChan = this.isOfficialChan(chan);
     var capsday = false;
