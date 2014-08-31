@@ -3647,7 +3647,7 @@ function tourstart(tier, starter, key, parameters) {
             sendChanAll("CLAUSES: "+getTourClauses(key),channels[x]);
             sendChanAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : "")+(parameters.event ? "; Event Tournament" : "")+(wifiuse != "default" ? "; "+wifiuse : ""), channels[x]);
             if (tier in tierToRmtId) {
-                sendChanHtmlAll("<timestamp/> Teams can be found here: <a href='http://pokemon-online.eu/forums/teams.23/?prefix_id=" + tierToRmtId[tier] + "'>" + tier + "</a>", channels[x]);
+                sendChanHtmlAll("<timestamp/> Teams can be found here: <a href='http://pokemon-online.eu/forums/teams.23/?prefix_id=" + tierToRmtId[tier] + "'>Rate My Teams</a>, <a href='http://pokemon-online.eu/forums/team-showcase.65/?prefix_id=" + tierToRmtId[tier] + "'>Team Showcase</a>", channels[x]);
             }
             if (channels[x] == tourschan) {
                 sendChanHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, "+(tours.tour[key].maxplayers === "default" ? "you have "+time_handle(parameters.event ? tourconfig.toursignup*2 : tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!"), channels[x]);
