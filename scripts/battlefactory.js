@@ -1897,7 +1897,7 @@ function generateTeam(src, team, mode) {
                 while (available.length > 0) {
                     var prop = available.splice(sys.rand(0, available.length));
                     
-                    if (totalMegas < maxMegas || !isMegaStone(sys.itemNum(prop.item)))) {
+                    if (totalMegas < maxMegas || !isMegaStone(sys.itemNum(prop.item))) {
                         teaminfo.push({
                             'poke': sys.pokeNum(prop.poke),
                             'nature': sys.natureNum(prop.nature),
