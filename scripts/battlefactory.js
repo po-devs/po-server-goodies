@@ -1886,7 +1886,7 @@ function generateTeam(src, team, mode) {
                 bfbot.sendAll("Team file was empty or corrupt, could not import.", staffchannel);
                 return;
             }
-            var pokes = pokearray.splice(sys.rand(0, pokearray.length),1);
+            var pokes = pokearray.splice(sys.rand(0, pokearray.length-1),1);
             var sets = pokedata[pokes];
             if (readable) {
                 var available = [];
@@ -1895,7 +1895,7 @@ function generateTeam(src, team, mode) {
                 }
                 
                 while (available.length > 0) {
-                    var prop = available.splice(sys.rand(0, available.length));
+                    var prop = available.splice(sys.rand(0, available.length-1),1);
                     
                     if (totalMegas < maxMegas || !isMegaStone(sys.itemNum(prop.item))) {
                         teaminfo.push({
@@ -1922,7 +1922,7 @@ function generateTeam(src, team, mode) {
                 }
                 
                 while (available.length > 0) {
-                    var set = available.splice(sys.rand(0, available.length), 1);
+                    var set = available.splice(sys.rand(0, available.length-1), 1);
                     var actualset = "";
                     if (typeof set == "object") {
                         actualset = set.set;
