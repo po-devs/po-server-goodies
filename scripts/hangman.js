@@ -20,10 +20,11 @@ function Hangman() {
     var idleCount = 0;
     var idleLimit = 1800;
     var autoGames;
+    var autoGamesEnabled = false;
 
     var eventLimit = 1800;
     var eventCount = (SESSION.global() && SESSION.global().hangmanEventCount ? SESSION.global().hangmanEventCount : eventLimit);
-    var eventGames = true;
+    var eventGamesEnabled = true;
     var isEventGame;
     var pendingEvent = false;
 
@@ -671,7 +672,7 @@ function Hangman() {
 
     this.autoGame = function (src, commandData) {
         if(commandData === undefined) {
-            if(autoGames === true) {
+            if(autoGamesEnabled === true) {
                 hangbot.sendMessage(src, "Games are set to automatically start.", hangchan);
                 return;
             }
@@ -682,22 +683,22 @@ function Hangman() {
         }
         var turning = commandData.toLowerCase();
         if(turning == "off") {
-            if(autoGames === false) {
+            if(autoGamesEnabled === false) {
                 hangbot.sendMessage(src, "Automatic games are already turned off.", hangchan);
                 return;
             }
             else {
-                autoGames = false;
+                autoGamesEnabled = false;
                 hangbot.sendMessage(src, "You turned off Automatic games.", hangchan);
                 return;
             }
         }
         if(turning == "on") {
-            if (autoGames === true) {
+            if (autoGamesEnabled === true) {
                 hangbot.sendMessage(src, "Automatic games are already turned on.", hangchan);
             }
             else {
-                autoGames = true;
+                autoGamesEnabled = true;
                 hangbot.sendMessage(src, "You turned on Automatic games.", hangchan);
             }
         }
@@ -705,7 +706,7 @@ function Hangman() {
 
     this.eventGame = function(src, commandData) {
         if(commandData === undefined) {
-            if(eventGames === true) {
+            if(eventGamesEnabled === true) {
                 hangbot.sendMessage(src, "Event Games are set to start.", hangchan);
                 return;
             }
@@ -716,23 +717,44 @@ function Hangman() {
         }
         var some = commandData.toLowerCase();
         if(some == "off") {
-            if(eventGames === false) {
+            if(eventGamesEnabled === false) {
                 hangbot.sendMessage(src, "Event Games are already turned off.", hangchan);
                 return;
             }
             else {
-                eventGames = false;
+                eventGamesEnabled = false;
                 hangbot.sendMessage(src, "Event Games have been turned off.", hangchan);
                 return;
             }
         }
         if(some == "on") {
-            if(eventGames === true) {
+            if(eventGamesEnabled === true) {
                 hangbot.sendMessage(src, "Event Games are already turned on.", hangchan);
             }
             else {
-                eventGames = true;
+                eventGamesEnabled = true;
                 hangbot.sendMessage(src, "Event games have been turned on.", hangchan);
+            }
+        }
+    };
+    
+    this.flashAdmins = function(src, commandData) {
+        if (channel !== sys.channelId("Victory Road")) {
+            hangbot.sendMessage(src, "You can only use this command in Victory Road!", channel);
+            return;
+        }
+        var message = (!commandData ? "Flashing all Hangman Admins!" : commandData); 
+        sys.sendAll(sys.name(src).toCorrectCase() + ": " + message, channel); 
+        for (var x in script.hangmanAdmins.hash) {
+            id = sys.id(x);
+            if (id) {
+                sys.sendHtmlMessage(id, "<font color=#3DAA68><timestamp/> <b>±" + hangbot.name + ":</b></font> <b> You have been flashed!</b><ping/>", channel);
+            }
+        }
+        for (var x in script.hangmanSuperAdmins.hash) {
+            id = sys.id(x);
+            if (id) {
+                sys.sendHtmlMessage(id, "<font color=#3DAA68><timestamp/> <b>±" + hangbot.name + ":</b></font> <b> You have been flashed!</b><ping/>", channel);
             }
         }
     };
@@ -1165,8 +1187,8 @@ function Hangman() {
             "/hangmanban: To ban a user in hangman. Format /hangmanmute name:reason:time",
             "/hangmanunban: To hangman unban a user.",
             "/hangmanbans: Searches the hangman banlist, show full list if no search term is entered.",
+            "/flashhas: Flashes all Hangman Admins. Use /flashhas [phrase] to use a different message (abuse will be punished).",
             "/passha: To give your Hangman Admin powers to an alt.",
-            "/autogame: To turn autogames on/off. Format /autogame on or /autogame off.",
             "/addquest: To add a question to the autogame/eventgame data base. Format /addquest Answer:Hint:Guess number.",
             "/searchquest: To search a question in the autogame/eventgame data base. Format /searchquest query:criteria where criteria is (w)ord (default), (h)int or (i)ndex.",
             "/deletequest: To delete a question in the autogame/eventgame data base. Format /deletequest index.",
@@ -1215,7 +1237,7 @@ function Hangman() {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel !== hangchan && ["hangmanban", "hangmanunban", "hangmanbans", "hangmanmute", "hangmanunmute", "hangmanmutes", "hangmanadmins", "hadmins", "has", "passha", "hangmanadminoff", "hangmanadmin", "hangmansadmin", "hangmansuperadmin", "shangmanadmin", "shangmansuperadmin", "shangmanadminoff"].indexOf(command) === -1) {
+        if (channel !== hangchan && ["hangmanban", "hangmanunban", "hangmanbans", "hangmanmute", "hangmanunmute", "hangmanmutes", "hangmanadmins", "hadmins", "has", "flashhas", "passha", "hangmanadminoff", "hangmanadmin", "hangmansadmin", "hangmansuperadmin", "shangmanadmin", "shangmansuperadmin", "shangmanadminoff"].indexOf(command) === -1) {
             return false;
         }
         if (command === "help") {
@@ -1325,11 +1347,15 @@ function Hangman() {
             return true;
         }
 
-        if(command === "autogame") {
+        /*if(command === "autogame") {
             hangman.autoGame(src, commandData);
             return true;
-        }
+        }*/
 
+        if (command === "flashhas") {
+            hangman.flashAdmins(src, commandData);
+            return true;
+        }
 
         /* Test Commands
          if (command == "settime") {
@@ -1652,11 +1678,11 @@ function Hangman() {
         if (!word) {
             idleCount++;
 
-            if (idleCount >= idleLimit && autoGames) {
+            if (idleCount >= idleLimit && autoGamesEnabled) {
                 hangman.startAutoGame(false);
             }
         }
-        if(eventCount === 0 && eventGames) {
+        if(eventCount === 0 && eventGamesEnabled) {
             hangman.checkNewMonth();
             eventCount = -1;
             if (word) {
@@ -1665,7 +1691,7 @@ function Hangman() {
                 hangman.startEventGame();
             }
         }
-        if(eventCount === 60 && eventGames) {
+        if(eventCount === 60 && eventGamesEnabled) {
             sys.sendAll("", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
             hangbot.sendAll("A new event game of #Hangman will start in about a minute!", 0);
