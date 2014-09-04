@@ -2037,7 +2037,7 @@ function generateTeam(src, team, mode) {
     }
     catch (err) {
         bfbot.sendMessage(src, "Team file was empty or corrupt, could not generate a team. Please report this issue on forums. [Error: "+err+"]");
-        throw "Corrupt Team File: "+err;
+        throw "Corrupt Team File: "+err+", line " + err.lineNumber;
     }
 }
 
