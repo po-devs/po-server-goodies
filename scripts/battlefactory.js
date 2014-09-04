@@ -1863,7 +1863,8 @@ function getStats(src, team, poke) {
 
 function generateTeam(src, team, mode) {
     try {
-        var hasMega = false;
+        var maxMegas = 1;
+        var totalMegas = 0;
         var pokedata = bfsets.hasOwnProperty(mode) ? bfsets[mode] : bfsets.preset;
         var teaminfo = [];
         var pokearray = [];
@@ -1879,7 +1880,8 @@ function generateTeam(src, team, mode) {
                 maxPerfectIVs = pokedata.perfectivs;
             }
         }
-        for (var p=0;p<6;p++) {
+        var p = 0;
+        while (p < 6 && pokes.length > 0) {
             if (pokearray.length === 0) {
                 bfbot.sendAll("Team file was empty or corrupt, could not import.", staffchannel);
                 return;
@@ -1891,78 +1893,60 @@ function generateTeam(src, team, mode) {
                 for (var t in sets) {
                     available.push(sets[t]);
                 }
-                while (true) {
-                    if (available.length === 0) { // exhausted all possible sets, try for a new poke
-                        p--;
-                        break;
-                    }
+                
+                while (available.length > 0) {
                     var prop = available.splice(sys.rand(0, available.length));
                     
-                    if (isMegaStone(sys.itemNum(prop.item))) {
-                        if (hasMega) { // already have a mega, get another set
-                            continue;
+                    if (totalMegas < maxMegas || !isMegaStone(sys.itemNum(prop.item)))) {
+                        teaminfo.push({
+                            'poke': sys.pokeNum(prop.poke),
+                            'nature': sys.natureNum(prop.nature),
+                            'ability': sys.abilityNum(prop.ability),
+                            'item': sys.itemNum(prop.item),
+                            'level': prop.level,
+                            'moves': [sys.moveNum(prop.moves[0]),sys.moveNum(prop.moves[1]),sys.moveNum(prop.moves[2]),sys.moveNum(prop.moves[3])],
+                            'evs': prop.evs,
+                            'dvs': prop.dvs
+                        });
+                        p++;
+                        if (isMegaStone(sys.itemNum(prop.item))) {
+                            totalMegas++;
                         }
-                        else {
-                            hasMega = true;
-                        }
+                        break;
                     }
-                    
-                    teaminfo[p] = {
-                        'poke': sys.pokeNum(prop.poke),
-                        'nature': sys.natureNum(prop.nature),
-                        'ability': sys.abilityNum(prop.ability),
-                        'item': sys.itemNum(prop.item),
-                        'level': prop.level,
-                        'moves': [sys.moveNum(prop.moves[0]),sys.moveNum(prop.moves[1]),sys.moveNum(prop.moves[2]),sys.moveNum(prop.moves[3])],
-                        'evs': prop.evs,
-                        'dvs': prop.dvs
-                    };
-                    
-                    break;
                 }
-            }
-            else {
+            } else {
                 var available = [];
                 for (var t in sets) {
                     available.push(sets[t]);
                 }
                 
-                while (true) {
-                    if (available.length === 0) {
-                        p--;
-                        break;
-                    }
-                    
-                    var set = available.splice(sys.rand(0, available.length));
+                while (available.length > 0) {
+                    var set = available.splice(sys.rand(0, available.length), 1);
                     var actualset = "";
                     if (typeof set == "object") {
                         actualset = set.set;
-                    }
-                    else {
+                    } else {
                         actualset = set;
                     }
                     
-                    if (isMegaStone(toNumber(actualset.substr(6, 3)))) {
-                        if (hasMega) {
-                            continue;
+                    if (totalMegas < maxMegas || !isMegaStone(toNumber(actualset.substr(6, 3)))) {
+                        teaminfo.push({
+                            'poke': toNumber(actualset.substr(0,2))+65536*toNumber(actualset.substr(2,1)),
+                            'nature': toNumber(actualset.substr(3,1)),
+                            'ability': toNumber(actualset.substr(4,2)),
+                            'item': toNumber(actualset.substr(6,3)),
+                            'level': toNumber(actualset.substr(9,2)),
+                            'moves': [toNumber(actualset.substr(11,2)),toNumber(actualset.substr(13,2)),toNumber(actualset.substr(15,2)),toNumber(actualset.substr(17,2))],
+                            'evs': [toNumber(actualset.substr(19,2)),toNumber(actualset.substr(21,2)),toNumber(actualset.substr(23,2)),toNumber(actualset.substr(25,2)),toNumber(actualset.substr(27,2)),toNumber(actualset.substr(29,2))],
+                            'dvs': [toNumber(actualset.substr(31,1)),toNumber(actualset.substr(32,1)),toNumber(actualset.substr(33,1)),toNumber(actualset.substr(34,1)),toNumber(actualset.substr(35,1)),toNumber(actualset.substr(36,1))]
+                        });
+                        p++;
+                        if (isMegaStone(toNumber(actualset.substr(6, 3)))) {
+                            totalMegas++;
                         }
-                        else {
-                            hasMega = true;
-                        }
+                        break;
                     }
-                    
-                    teaminfo[p] = {
-                        'poke': toNumber(actualset.substr(0,2))+65536*toNumber(actualset.substr(2,1)),
-                        'nature': toNumber(actualset.substr(3,1)),
-                        'ability': toNumber(actualset.substr(4,2)),
-                        'item': toNumber(actualset.substr(6,3)),
-                        'level': toNumber(actualset.substr(9,2)),
-                        'moves': [toNumber(actualset.substr(11,2)),toNumber(actualset.substr(13,2)),toNumber(actualset.substr(15,2)),toNumber(actualset.substr(17,2))],
-                        'evs': [toNumber(actualset.substr(19,2)),toNumber(actualset.substr(21,2)),toNumber(actualset.substr(23,2)),toNumber(actualset.substr(25,2)),toNumber(actualset.substr(27,2)),toNumber(actualset.substr(29,2))],
-                        'dvs': [toNumber(actualset.substr(31,1)),toNumber(actualset.substr(32,1)),toNumber(actualset.substr(33,1)),toNumber(actualset.substr(34,1)),toNumber(actualset.substr(35,1)),toNumber(actualset.substr(36,1))]
-                    };
-                    
-                    break;
                 }
             }
         }
