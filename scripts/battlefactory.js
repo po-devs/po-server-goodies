@@ -1875,10 +1875,6 @@ function generateTeam(src, team, mode) {
                 pokearray.push(x);
             }
         }
-        if (pokearray.length === 0) {
-            bfbot.sendAll("Team file was empty or corrupt, could not import.", staffchannel);
-            return;
-        }
         if (pokedata.hasOwnProperty("perfectivs")) {
             if (typeof pokedata.perfectivs == "number" && pokedata.perfectivs >= 0 && pokedata.perfectivs <= 6) {
                 maxPerfectIVs = pokedata.perfectivs;
@@ -1886,6 +1882,10 @@ function generateTeam(src, team, mode) {
         }
         var p = 0;
         while (p < 6 && pokes.length > 0) {
+            if (pokearray.length === 0) {
+                bfbot.sendAll("Team file was empty or corrupt, could not import.", staffchannel);
+                return;
+            }
             var pokes = pokearray.splice(sys.rand(0, pokearray.length),1);
             var sets = pokedata[pokes];
             if (readable) {
