@@ -153,6 +153,10 @@ function isBFTier(tier) {
     else return false;
 }
 
+function isMegaStone(item) {
+    return item >= 2000 && item < 3000;
+}
+
 function createDefaultEntry(path, desc) {
     var pathname = dataDir + path;
     if (sys.getFileContent(pathname) === undefined) {
@@ -1859,6 +1863,8 @@ function getStats(src, team, poke) {
 
 function generateTeam(src, team, mode) {
     try {
+        var maxMegas = 1;
+        var totalMegas = 0;
         var pokedata = bfsets.hasOwnProperty(mode) ? bfsets[mode] : bfsets.preset;
         var teaminfo = [];
         var pokearray = [];
@@ -1874,7 +1880,8 @@ function generateTeam(src, team, mode) {
                 maxPerfectIVs = pokedata.perfectivs;
             }
         }
-        for (var p=0;p<6;p++) {
+        var p = 0;
+        while (p < 6) {
             if (pokearray.length === 0) {
                 bfbot.sendAll("Team file was empty or corrupt, could not import.", staffchannel);
                 return;
@@ -1886,37 +1893,61 @@ function generateTeam(src, team, mode) {
                 for (var t in sets) {
                     available.push(sets[t]);
                 }
-                var prop = available[sys.rand(0, available.length)];
-                teaminfo[p] = {
-                    'poke': sys.pokeNum(prop.poke),
-                    'nature': sys.natureNum(prop.nature),
-                    'ability': sys.abilityNum(prop.ability),
-                    'item': sys.itemNum(prop.item),
-                    'level': prop.level,
-                    'moves': [sys.moveNum(prop.moves[0]),sys.moveNum(prop.moves[1]),sys.moveNum(prop.moves[2]),sys.moveNum(prop.moves[3])],
-                    'evs': prop.evs,
-                    'dvs': prop.dvs
-                };
-            }
-            else {
-                var set = sets[sys.rand(0, sets.length)];
-                var actualset = "";
-                if (typeof set == "object") {
-                    actualset = set.set;
+                
+                while (available.length > 0) {
+                    var prop = available.splice(sys.rand(0, available.length));
+                    
+                    if (totalMegas < maxMegas || !isMegaStone(sys.itemNum(prop.item))) {
+                        teaminfo.push({
+                            'poke': sys.pokeNum(prop.poke),
+                            'nature': sys.natureNum(prop.nature),
+                            'ability': sys.abilityNum(prop.ability),
+                            'item': sys.itemNum(prop.item),
+                            'level': prop.level,
+                            'moves': [sys.moveNum(prop.moves[0]),sys.moveNum(prop.moves[1]),sys.moveNum(prop.moves[2]),sys.moveNum(prop.moves[3])],
+                            'evs': prop.evs,
+                            'dvs': prop.dvs
+                        });
+                        p++;
+                        if (isMegaStone(sys.itemNum(prop.item))) {
+                            totalMegas++;
+                        }
+                        break;
+                    }
                 }
-                else {
-                    actualset = set;
+            } else {
+                var available = [];
+                for (var t in sets) {
+                    available.push(sets[t]);
                 }
-                teaminfo[p] = {
-                    'poke': toNumber(actualset.substr(0,2))+65536*toNumber(actualset.substr(2,1)),
-                    'nature': toNumber(actualset.substr(3,1)),
-                    'ability': toNumber(actualset.substr(4,2)),
-                    'item': toNumber(actualset.substr(6,3)),
-                    'level': toNumber(actualset.substr(9,2)),
-                    'moves': [toNumber(actualset.substr(11,2)),toNumber(actualset.substr(13,2)),toNumber(actualset.substr(15,2)),toNumber(actualset.substr(17,2))],
-                    'evs': [toNumber(actualset.substr(19,2)),toNumber(actualset.substr(21,2)),toNumber(actualset.substr(23,2)),toNumber(actualset.substr(25,2)),toNumber(actualset.substr(27,2)),toNumber(actualset.substr(29,2))],
-                    'dvs': [toNumber(actualset.substr(31,1)),toNumber(actualset.substr(32,1)),toNumber(actualset.substr(33,1)),toNumber(actualset.substr(34,1)),toNumber(actualset.substr(35,1)),toNumber(actualset.substr(36,1))]
-                };
+                
+                while (available.length > 0) {
+                    var set = available.splice(sys.rand(0, available.length), 1);
+                    var actualset = "";
+                    if (typeof set == "object") {
+                        actualset = set.set;
+                    } else {
+                        actualset = set;
+                    }
+                    
+                    if (totalMegas < maxMegas || !isMegaStone(toNumber(actualset.substr(6, 3)))) {
+                        teaminfo.push({
+                            'poke': toNumber(actualset.substr(0,2))+65536*toNumber(actualset.substr(2,1)),
+                            'nature': toNumber(actualset.substr(3,1)),
+                            'ability': toNumber(actualset.substr(4,2)),
+                            'item': toNumber(actualset.substr(6,3)),
+                            'level': toNumber(actualset.substr(9,2)),
+                            'moves': [toNumber(actualset.substr(11,2)),toNumber(actualset.substr(13,2)),toNumber(actualset.substr(15,2)),toNumber(actualset.substr(17,2))],
+                            'evs': [toNumber(actualset.substr(19,2)),toNumber(actualset.substr(21,2)),toNumber(actualset.substr(23,2)),toNumber(actualset.substr(25,2)),toNumber(actualset.substr(27,2)),toNumber(actualset.substr(29,2))],
+                            'dvs': [toNumber(actualset.substr(31,1)),toNumber(actualset.substr(32,1)),toNumber(actualset.substr(33,1)),toNumber(actualset.substr(34,1)),toNumber(actualset.substr(35,1)),toNumber(actualset.substr(36,1))]
+                        });
+                        p++;
+                        if (isMegaStone(toNumber(actualset.substr(6, 3)))) {
+                            totalMegas++;
+                        }
+                        break;
+                    }
+                }
             }
         }
         var ivprioritise = [5,1,3,2,4,0];
