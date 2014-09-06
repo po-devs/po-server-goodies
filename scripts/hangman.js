@@ -738,7 +738,7 @@ function Hangman() {
         }
     };
     
-    this.flashAdmins = function(src, commandData) {
+    this.flashAdmins = function(src, commandData, channel) {
         if (channel !== sys.channelId("Victory Road")) {
             hangbot.sendMessage(src, "You can only use this command in Victory Road!", channel);
             return;
@@ -1187,7 +1187,7 @@ function Hangman() {
             "/hangmanban: To ban a user in hangman. Format /hangmanmute name:reason:time",
             "/hangmanunban: To hangman unban a user.",
             "/hangmanbans: Searches the hangman banlist, show full list if no search term is entered.",
-            "/flashhas: Flashes all Hangman Admins. Use /flashhas [phrase] to use a different message (abuse will be punished).",
+            "/flashhas: Flashes all Hangman Admins. Use /flashhas [phrase] to use a different message (abuse will be punished for).",
             "/passha: To give your Hangman Admin powers to an alt.",
             "/addquest: To add a question to the autogame/eventgame data base. Format /addquest Answer:Hint:Guess number.",
             "/searchquest: To search a question in the autogame/eventgame data base. Format /searchquest query:criteria where criteria is (w)ord (default), (h)int or (i)ndex.",
@@ -1353,7 +1353,7 @@ function Hangman() {
         }*/
 
         if (command === "flashhas") {
-            hangman.flashAdmins(src, commandData);
+            hangman.flashAdmins(src, commandData, channel);
             return true;
         }
 
