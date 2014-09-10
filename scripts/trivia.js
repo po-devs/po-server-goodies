@@ -493,7 +493,7 @@ TriviaGame.prototype.startTriviaRound = function () {
     this.htmlAll("<b>Category:</b> " + category.toUpperCase() + "<br>" + question);
     var index = this.qSource.indexOf(questionNumber);
     this.qSource.splice(index, 1);
-    Trivia.ticks = 10;
+    Trivia.ticks = 12;
 };
 
 TriviaGame.prototype.finalizeAnswers = function () {
@@ -670,7 +670,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         runUpdate();
         return;
     }
-    var rand = sys.rand(17, 30);
+    var rand = sys.rand(15, 21);
     this.sendAll("Please wait " + rand + " seconds until the next question!", triviachan);
     Trivia.ticks = rand;
 };
