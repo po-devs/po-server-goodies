@@ -1245,6 +1245,7 @@ function Mafia(mafiachan) {
         this.teamRestrictions = {};
         this.roleRestrictions = {};
         this.needsConvertMsg = [];
+        this.teamVoters = {};
         for (var p in this.players) {
             this.players[p].targets = {};
             this.players[p].dayKill = undefined;
@@ -2264,13 +2265,19 @@ function Mafia(mafiachan) {
                 teamvote = true;
             }
             
+            if (name in mafia.teamVoters && mafia.teamVoters[name] == commandData) {
+                teamvote = false;
+            }
+            
             if (teamvote) {
                 var target = mafia.players[commandData];
                 if (teamvote === true && player.role.side == target.role.side) {
-                    gamemsg(name, "This person is your teammate! To vote them, use /teamvote [name].");
+                    gamemsg(name, "This person is your teammate! To vote them, use /teamvote [name] or simply /vote [name] again.");
+                    mafia.teamVoters[name] = commandData;
                     return;
                 } else if (Array.isArray(teamvote) && teamvote.indexOf(target.role.role) !== -1) {
-                    gamemsg(name, "This person is your teammate! To vote them, use /teamvote [name].");
+                    gamemsg(name, "This person is your teammate! To vote them, use /teamvote [name] or simply /vote [name] again.");
+                    mafia.teamVoters[name] = commandData;
                     return;
                 }
             }
