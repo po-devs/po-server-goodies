@@ -1013,6 +1013,17 @@ questionData.sortBy = function (what) {
             return b[3]/b[2] - a[3]/a[2];
         });
     }
+    if (what === "leastanswered") {
+        sortingArray.sort(function (a, b) {
+            if (a[3]/a[2] === b[3]/b[2]) {
+                if (a[1] === b[1]) {
+                    return a[2] - b[2];
+                }
+                return a[1] - b[1];
+            }
+            return b[3]/b[2] - a[3]/a[2];
+        });
+    }
     return sortingArray;
 };
 
@@ -1598,7 +1609,7 @@ addAdminCommand("mostanswered", function (src, commandData, channel) {
 }, "Lists the N questions answered correctly the most, format /mostanswered N, default is 30.");
 
 addAdminCommand("leastanswered", function (src, commandData, channel) {
-    var sortedQs = questionData.sortBy("answered");
+    var sortedQs = questionData.sortBy("leastanswered");
     var count = commandData | 30;
     triviabot.sendMessage(src, "Questions answered correctly the least:", channel);
     for (var i = 0; i < count && i < sortedQs.length; i++) {
