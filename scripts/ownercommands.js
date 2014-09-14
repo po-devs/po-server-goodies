@@ -430,7 +430,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
     }
-    if (command == "clearladder") {
+    if (command == "clearladder" || command == "resetladder") {
         var tier = utilities.find_tier(commandData);
         if(tier) {
             sys.resetLadder(tier);
