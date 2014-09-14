@@ -1755,21 +1755,23 @@ addAdminCommand("showq", function (src, commandData, channel) {
 }, "Allows you to see an already submitted question");
 
 addAdminCommand("editq", function (src, commandData, channel) {
-    var q = triviaq.get(commandData);
+    commandData = commandData.split("*");
+    commandData[0] = commandData[0].trim();
+    var q = triviaq.get(commandData[0]);
     var id = -1;
     if (trivreview.get(id)) {
         id = Object.keys(trivreview.all()).sort(function (a, b) {
             return a - b;
         })[0] - 1;
     }
-    if (Trivia.roundQuestion === commandData) {
+    if (Trivia.roundQuestion === commandData[0]) {
         triviabot.sendMessage(src, "This question is currently being asked. Please wait before editing.", channel);
         return;
     }
     if (q !== null) {
-        triviaq.remove(commandData);
-        questionData.remove(commandData);
-        trivreview.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + sys.name(src));
+        triviaq.remove(commandData[0]);
+        questionData.remove(commandData[0]);
+        trivreview.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + (commandData[1] ? sys.name(src) + ", notes: " + commandData[1] : sys.name(src)));
         triviabot.sendAll(sys.name(src) + " placed a question at the top of the review queue.", revchan);
         trivreview.checkq();
         return;
