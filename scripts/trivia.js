@@ -1777,7 +1777,7 @@ addAdminCommand("editq", function (src, commandData, channel) {
         return;
     }
     triviabot.sendMessage(src, "This question does not exist", channel);
-}, "Allows you to edit an already submitted question");
+}, "Allows you to edit an already submitted question and add notes, format /editq ID*notes.");
 
 addAdminCommand("decline", function (src, commandData, channel) {
     var tr = trivreview.all();
