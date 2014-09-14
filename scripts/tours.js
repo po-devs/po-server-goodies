@@ -2759,11 +2759,15 @@ function tourCommand(src, command, commandData, channel) {
                 if ((sys.getClauses(queuedata.tier)%256 >= 128 && !params.wifi) || (sys.getClauses(queuedata.tier)%256 < 128 && params.wifi)) {
                     wifiuse = params.wifi ? "Preview Mode" : "No Preview Mode";
                 }
+                var forumTeams = "";
+                if (queuedata.tier in tierToRmtId) {
+                    forumTeams = "; <a href='http://pokemon-online.eu/forums/teams.23/?prefix_id=" + tierToRmtId[tier] + "'>Rate My Teams</a>, <a href='http://pokemon-online.eu/forums/team-showcase.65/?prefix_id=" + tierToRmtId[tier] + "'>Team Showcase</a>";
+                }
                 if (firsttour && nextstart != "Pending" && !(params.event && tours.keys.length > 0) && tours.working) {
-                    sys.sendMessage(src,"1) "+queuedata.tier+": Set by "+queuedata.starter+"; Parameters: "+params.mode+" Mode"+(params.gen != "default" ? "; Gen: "+getSubgen(params.gen,true) : "")+(params.type == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(params.maxplayers, 10)) ? "; For "+ params.maxplayers +" players": "")+(wifiuse != "default" ? "; "+wifiuse : "")+(params.event ? "; Event Mode": "")+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time(), 10)),tourschan);
+                    sys.sendMessage(src,"1) "+queuedata.tier+": Set by "+queuedata.starter+"; Parameters: "+params.mode+" Mode"+(params.gen != "default" ? "; Gen: "+getSubgen(params.gen,true) : "")+(params.type == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(params.maxplayers, 10)) ? "; For "+ params.maxplayers +" players": "")+(wifiuse != "default" ? "; "+wifiuse : "")+(params.event ? "; Event Mode": "")+forumTeams+"; Starts in "+time_handle(tours.globaltime-parseInt(sys.time(), 10)),tourschan);
                 }
                 else {
-                    sys.sendMessage(src,(parseInt(e, 10)+1)+") "+queuedata.tier+": Set by "+queuedata.starter+"; Parameters: "+params.mode+" Mode"+(params.gen != "default" ? "; Gen: "+getSubgen(params.gen,true) : "")+(params.type == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(params.maxplayers, 10)) ? "; For "+ params.maxplayers +" players": "")+(wifiuse != "default" ? "; "+wifiuse : "")+(params.event ? "; Event Mode": ""), tourschan);
+                    sys.sendMessage(src,(parseInt(e, 10)+1)+") "+queuedata.tier+": Set by "+queuedata.starter+"; Parameters: "+params.mode+" Mode"+(params.gen != "default" ? "; Gen: "+getSubgen(params.gen,true) : "")+(params.type == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(params.maxplayers, 10)) ? "; For "+ params.maxplayers +" players": "")+(wifiuse != "default" ? "; "+wifiuse : "")+(params.event ? "; Event Mode": "")+forumTeams, tourschan);
                 }
                 firsttour = false;
             }
