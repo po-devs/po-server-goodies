@@ -908,6 +908,11 @@ QuestionHolder.prototype.checkq = function () {
             triviabot.sendAll("Submitted By: " + questionInfo.name, revchan);
         }
     }
+    if (questionInfo.notes !== undefined) {
+        triviabot.sendAll("Notes: " + questionInfo.notes, revchan);
+    } else {
+        triviabot.sendAll("Notes: none", revchan);
+    }
     sendChanAll("", revchan);
 };
 
@@ -922,6 +927,9 @@ QuestionHolder.prototype.get = function (id) {
         q.answer = data[2];
         if (data[3]) {
             q.name = data[3];
+        }
+        if (data[4]) {
+            q.notes = data[4];
         }
     }
     return q === undefined ? null : q;
