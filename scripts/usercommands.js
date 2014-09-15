@@ -880,7 +880,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var pokename = sys.pokemon(poke);
-        normalbot.sendMessage(src, pokename+"'s wikipage is here: http://wiki.pokemon-online.eu/wiki/"+pokename, channel);
+        normalbot.sendMessage(src, pokename+"'s wikipage is here: http://wiki.pokemon-online.eu/page/"+pokename, channel);
         return;
     }
     if (-crc32(command, crc32(sys.name(src))) == 22 || command == "wall") {
