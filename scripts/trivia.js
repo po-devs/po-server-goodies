@@ -230,6 +230,7 @@ function PMcheckq(src, channel) {
         } else {
             Trivia.sendPM(src, "Submitted By: " + questionInfo.name, channel);
         }
+    Trivia.sendPM(src, "Notes: " + questionInfo.notes, channel);
     }
     sys.sendMessage(src, "", channel);
 }
@@ -859,13 +860,13 @@ function QuestionHolder(f) {
     }
 }
 
-QuestionHolder.prototype.add = function (category, question, answer, name) {
+QuestionHolder.prototype.add = function (category, question, answer, name, notes) {
     var id = this.freeId();
     if (name === undefined) {
         this.state.questions.add(id, category + ":::" + question + ":::" + answer);
     }
     else {
-        this.state.questions.add(id, category + ":::" + question + ":::" + answer + ":::" + name);
+        this.state.questions.add(id, category + ":::" + question + ":::" + answer + ":::" + name + ":::" + notes);
     }
     return id;
 };
@@ -938,8 +939,11 @@ QuestionHolder.prototype.changeCategory = function (id, category) {
     if (data[3]) {
         q.name = data[3];
     }
+    if (data[4]) {
+        q.notes = data[4];
+    }
     this.state.questions.remove(id);
-    this.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + q.name);
+    this.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + q.name + ":::" + q.notes);
 };
 
 QuestionHolder.prototype.changeQuestion = function (id, question) {
@@ -951,8 +955,11 @@ QuestionHolder.prototype.changeQuestion = function (id, question) {
     if (data[3]) {
         q.name = data[3];
     }
+    if (data[4]) {
+        q.notes = data[4];
+    }
     this.state.questions.remove(id);
-    this.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + q.name);
+    this.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + q.name + ":::" + q.notes);
 };
 
 QuestionHolder.prototype.changeAnswer = function (id, answer) {
@@ -964,8 +971,30 @@ QuestionHolder.prototype.changeAnswer = function (id, answer) {
     if (data[3]) {
         q.name = data[3];
     }
+    if (data[4]) {
+        q.notes = data[4];
+    }
     this.state.questions.remove(id);
-    this.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + q.name);
+    this.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + q.name + ":::" + q.notes);
+};
+
+QuestionHolder.prototype.changeNotes = function (id, notes, what) {
+    var data = this.state.questions.get(id).split(":::");
+    var q = {};
+    q.category = data[0];
+    q.question = data[1];
+    q.answer = answer;
+    if (data[3]) {
+        q.name = data[3];
+    }
+    if (what == "add") {
+        q.notes = (!data[4] ? notes : data[4] + " | " + notes);
+    }
+    if (what == "change"){
+        q.notes = notes;
+    }
+    this.state.questions.remove(id);
+    this.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + q.name + ":::" + q.notes);
 };
 
 QuestionHolder.prototype.all = function () {
@@ -1319,7 +1348,8 @@ addUserCommand("submitq", function (src, commandData, channel) {
     }
 
     var name = sys.name(src);
-    var id = trivreview.add(category, question, answer, name);
+    var notes = "None."
+    var id = trivreview.add(category, question, answer, name, notes);
 
     Trivia.sendPM(src, "Your question was submitted.", channel);
     if (needsreview) {
@@ -1685,6 +1715,48 @@ addAdminCommand("changec", function (src, commandData) {
     triviabot.sendMessage(src, "No question");
 }, "Allows you to change the category to a question in review, format /changec newcategory");
 
+addAdminCommand("changenotes", function (src, commandData) {
+    if (trivreview.editingMode === true) {
+        trivreview.editingNotes = commandData;
+        triviabot.sendAll("The notes for the question in edit were changed to " + trivreview.editingNotes + " by " + sys.name(src), revchan);
+        trivreview.checkq();
+        return;
+    }
+    var tr = trivreview.all();
+    if (trivreview.questionAmount() !== 0) {
+        var id = Object.keys(tr).sort(function (a, b) {
+            return a - b;
+        })[0];
+        var notes = commandData;
+        trivreview.changeNotes(id, notes, "change");
+        triviabot.sendAll("The notes for the current question were changed to " + notes + " by " + sys.name(src), revchan);
+        trivreview.checkq(id);
+        return;
+    }
+    triviabot.sendMessage(src, "No question");
+}, "Allows you to change the notes to a question in review, format /changenotes notes");
+
+addAdminCommand("addnotes", function (src, commandData) {
+    if (trivreview.editingMode === true) {
+        trivreview.editingNotes = commandData;
+        triviabot.sendAll("The following notes for the question in edit were added: " + trivreview.editingNotes + " by " + sys.name(src), revchan);
+        trivreview.checkq();
+        return;
+    }
+    var tr = trivreview.all();
+    if (trivreview.questionAmount() !== 0) {
+        var id = Object.keys(tr).sort(function (a, b) {
+            return a - b;
+        })[0];
+        var notes = commandData;
+        trivreview.changeNotes(id, notes, "add");
+        triviabot.sendAll("The follwoing notes for the current question were added: " + notes + " by " + sys.name(src), revchan);
+        trivreview.checkq(id);
+        return;
+    }
+    triviabot.sendMessage(src, "No question");
+}, "Allows you to add notes to a question in review, format /addnotes notes");
+
 addAdminCommand("pushback", function (src, commandData, channel) {
     var tr = trivreview.all();
     if (trivreview.questionAmount() !== 0) {
@@ -1698,7 +1770,7 @@ addAdminCommand("pushback", function (src, commandData, channel) {
         var q = trivreview.get(id);
         triviabot.sendAll(sys.name(src) + " pushed back the current question to the end of review", revchan);
         trivreview.declineTime = time();
-        trivreview.add(q.category, q.question, q.answer, q.name);
+        trivreview.add(q.category, q.question, q.answer, q.name, q.notes);
         trivreview.remove(id);
         trivreview.checkq(id + 1);
         return;
@@ -1755,21 +1827,23 @@ addAdminCommand("showq", function (src, commandData, channel) {
 }, "Allows you to see an already submitted question");
 
 addAdminCommand("editq", function (src, commandData, channel) {
-    var q = triviaq.get(commandData);
+    commandData = commandData.split("*");
+    commandData[0] = commandData[0].trim();
+    var q = triviaq.get(commandData[0]);
     var id = -1;
     if (trivreview.get(id)) {
         id = Object.keys(trivreview.all()).sort(function (a, b) {
             return a - b;
         })[0] - 1;
     }
-    if (Trivia.roundQuestion === commandData) {
+    if (Trivia.roundQuestion === commandData[0]) {
         triviabot.sendMessage(src, "This question is currently being asked. Please wait before editing.", channel);
         return;
     }
     if (q !== null) {
-        triviaq.remove(commandData);
-        questionData.remove(commandData);
-        trivreview.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + sys.name(src));
+        triviaq.remove(commandData[0]);
+        questionData.remove(commandData[0]);
+        trivreview.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + sys.name(src) + ":::" + (commandData[1] ? commandData[1] : "None."));
         triviabot.sendAll(sys.name(src) + " placed a question at the top of the review queue.", revchan);
         trivreview.checkq();
         return;
