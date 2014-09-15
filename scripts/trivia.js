@@ -230,8 +230,14 @@ function PMcheckq(src, channel) {
         } else {
             Trivia.sendPM(src, "Submitted By: " + questionInfo.name, channel);
         }
-    Trivia.sendPM(src, "Notes: " + questionInfo.notes, channel);
     }
+    
+    if (questionInfo.notes !== undefined){
+        Trivia.sendPM(src, "Notes: " + questionInfo.notes, channel); 
+    } else {
+        Trivia.sendPM(src, "Notes: None.", channel)
+    }
+
     sys.sendMessage(src, "", channel);
 }
 
@@ -983,7 +989,7 @@ QuestionHolder.prototype.changeNotes = function (id, notes, what) {
     var q = {};
     q.category = data[0];
     q.question = data[1];
-    q.answer = answer;
+    q.answer = data[2];
     if (data[3]) {
         q.name = data[3];
     }
