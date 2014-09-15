@@ -1,4 +1,4 @@
-/*
+﻿/*
 Code for tours.js
 Original coding by Shadowfist 2012
 Maintenance by PO Scripters 2013
@@ -159,11 +159,11 @@ var tierToRmtId = {
     "HGSS UU": 62,
     "HGSS NU": 63,
     "HGSS LC": 64,
-    "ADV OU": 66,
-    "ADV Ubers": 67,
-    "ADV UU": 68,
-    "ADV NU": 69,
-    "ADV LC": 70,
+    "Adv OU": 66,
+    "Adv Ubers": 67,
+    "Adv UU": 68,
+    "Adv NU": 69,
+    "Adv LC": 70,
     "GSC OU": 72,
     "GSC Ubers": 73,
     "GSC UU": 74,
