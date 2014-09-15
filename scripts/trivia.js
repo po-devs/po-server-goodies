@@ -1753,7 +1753,7 @@ addAdminCommand("changenotes", function (src, commandData) {
 addAdminCommand("addnotes", function (src, commandData) {
     if (trivreview.editingMode === true) {
         trivreview.editingNotes = commandData;
-        triviabot.sendAll("The following notes for the question in edit were added: " + trivreview.editingNotes + " by " + sys.name(src), revchan);
+        triviabot.sendAll("The following notes regarding the question in edit were added: " + trivreview.editingNotes + " by " + sys.name(src), revchan);
         trivreview.checkq();
         return;
     }
@@ -1764,7 +1764,7 @@ addAdminCommand("addnotes", function (src, commandData) {
         })[0];
         var notes = commandData;
         trivreview.changeNotes(id, notes, "add");
-        triviabot.sendAll("The follwoing notes for the current question were added: " + notes + " by " + sys.name(src), revchan);
+        triviabot.sendAll("The following notes regarding the current question were added: " + notes + " by " + sys.name(src), revchan);
         trivreview.checkq(id);
         return;
     }
