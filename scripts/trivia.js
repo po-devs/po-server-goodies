@@ -231,7 +231,13 @@ function PMcheckq(src, channel) {
             Trivia.sendPM(src, "Submitted By: " + questionInfo.name, channel);
         }
     }
-    Trivia.sendPM(src, "Notes: " + questionInfo.notes, channel);
+    
+    if (questionInfo.notes !== undefined){
+        Trivia.sendPM(src, "Notes: " + questionInfo.notes, channel); 
+    } else {
+        Trivia.sendPM(src, "Notes: None.", channel)
+    }
+
     sys.sendMessage(src, "", channel);
 }
 
