@@ -286,7 +286,7 @@ tier_checker.add_new_check(INCLUDING, ["Smogon OU", "BW2 OU", "No Preview OU"], 
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Smogon UU"], function droughtCheck(src, team) {
+tier_checker.add_new_check(INCLUDING, ["Smogon UU", "Monotype"], function droughtCheck(src, team) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Drought"){
             return ["Drought is not allowed in Smogon UU"];
