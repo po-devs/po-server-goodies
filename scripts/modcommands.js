@@ -79,7 +79,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var output = sys.playerIds().filter(function (id) {
-            return sys.version(id) === commandData;
+            return sys.version(id) === commandData && sys.loggedIn(id);
         }).map(sys.name);
         querybot.sendMessage(src, "Players on version " + commandData + " are: " + output.join(", "), channel);
         return;
