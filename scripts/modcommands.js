@@ -73,6 +73,17 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, commandData + " is not a valid OS", channel);
         return;
     }
+    if (command == "onversion") {
+        commandData = parseInt(commandData);
+        if (isNaN(commandData)) {
+            return;
+        }
+        var output = sys.playerIds().filter(function (id) {
+            return sys.version(id) === commandData;
+        }).map(sys.name);
+        querybot.sendMessage(src, "Players on version " + commandData + " are: " + output.join(", "), channel);
+        return;
+    }
     if (command == "tier") {
         if (tar === undefined){
             querybot.sendChanMessage(src,"No such user online.");
@@ -374,7 +385,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 'lastlogin': lastLogin,
                 'channels' : channels,
                 'bans' : bans, 
-                'client' : tar ? sys.os(tar) : "Unknown"
+                'client' : tar ? sys.os(tar) : "Unknown",
+                'version' : tar? sys.version(tar) : "Unknown"
             };
             sys.sendMessage(src, "UserInfo: "+JSON.stringify(userJson), channel);
         } else if (command == "userinfo") {
