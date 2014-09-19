@@ -180,7 +180,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
         }
-        poChannel.mute(src, tarname, {'time': time, 'reason': reason});
+        poChannel.mute(src, tarname, {'time': time, 'reason': reason}, SESSION.users(src).smute.active);
         return;
     }
     if (command == "cunmute") {

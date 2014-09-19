@@ -379,7 +379,7 @@ POChannel.prototype.unban = function(src, tar)
     }
 };
 
-POChannel.prototype.mute = function(src, tar, data)
+POChannel.prototype.mute = function(src, tar, data, smuted)
 {
     var ret = this.addRole(src, tar, "muted", data);
     if (ret[0] == "self") {
@@ -387,7 +387,11 @@ POChannel.prototype.mute = function(src, tar, data)
             channelbot.sendMessage(src, ret[1], this.id);
     }
     else {
-        channelbot.sendAll(ret[1], this.id);
+        if (smuted) {
+            channelbot.sendMessage(src, ret[1], this.id);
+        } else {
+            channelbot.sendAll(ret[1], this.id);
+        }
         SESSION.global().channelManager.update(this.id);
     }
 };
