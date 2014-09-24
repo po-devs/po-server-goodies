@@ -1002,9 +1002,9 @@ QuestionHolder.prototype.changeNotes = function (id, notes, what) {
         q.name = data[3];
     }
     if (what == "add") {
-        q.notes = (!data[4] ? notes : data[4] + " | " + notes);
+        q.notes = (!data[4] || data[4] == "None." ? notes : data[4] + " | " + notes);
     }
-    if (what == "change" || data[4] == "None."){
+    if (what == "change"){
         q.notes = notes;
     }
     this.state.questions.remove(id);
