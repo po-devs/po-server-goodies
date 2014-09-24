@@ -1,7 +1,7 @@
 /*
     * trivia.js
         - Plugin on Pokémon Online servers for Trivia Games
-        - Script done with the help of Ethan, Lamperi, Crystal Moogle, and Wriggle Nightbug
+        - Script done with the help of Ethan, Lamperi, Crystal Moogle, Wriggle Nightbug, and Cirno
     * Files used:
         - trivData.json
         - triviaq.txt
@@ -9,6 +9,7 @@
         - tadmins.txt
         - tsadmins.txt
         - trivialeaderboard.txt
+        - questiondata.txt
 */
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global updateModule, script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, module, sachannel, staffchannel*/
