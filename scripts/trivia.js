@@ -911,7 +911,7 @@ QuestionHolder.prototype.checkq = function () {
     if (questionInfo.notes !== undefined) {
         triviabot.sendAll("Notes: " + questionInfo.notes, revchan);
     } else {
-        triviabot.sendAll("Notes: none", revchan);
+        triviabot.sendAll("Notes: None.", revchan);
     }
     sendChanAll("", revchan);
 };
@@ -1004,7 +1004,7 @@ QuestionHolder.prototype.changeNotes = function (id, notes, what) {
     if (what == "add") {
         q.notes = (!data[4] ? notes : data[4] + " | " + notes);
     }
-    if (what == "change"){
+    if (what == "change" || data[4] == "None."){
         q.notes = notes;
     }
     this.state.questions.remove(id);
@@ -1750,7 +1750,7 @@ addAdminCommand("changenotes", function (src, commandData) {
     triviabot.sendMessage(src, "No question");
 }, "Allows you to change the notes to a question in review, format /changenotes notes");
 
-addAdminCommand("addnotes", function (src, commandData) {
+addAdminCommand(["addnotes", "addnote"], function (src, commandData) {
     if (trivreview.editingMode === true) {
         trivreview.editingNotes = commandData;
         triviabot.sendAll("The following notes regarding the question in edit were added: " + trivreview.editingNotes + " by " + sys.name(src), revchan);
