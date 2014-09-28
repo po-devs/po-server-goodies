@@ -565,7 +565,7 @@ function factoryCommand(src, command, commandData, channel) {
         var url;
         var tmp = commandData.split(" ~ ",2);
         if (tmp.length != 2) {
-            bfbot.sendMessage(src, "Usage: /addteampack [name] ~ [url]", channel);
+            bfbot.sendMessage(src, "Usage: /addpack [name] ~ [url]", channel);
             return;
         }
         if (tmp[0] === "") {
