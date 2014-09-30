@@ -41,7 +41,7 @@ function startBF() {
     try {
         var file = sys.getFileContent(dataDir+"bfteams.json");
         if (file === undefined) {
-            var url = Config.base_url+dataDir+"bfteams.json";
+            var url = Config.base_url+"bfdata/bfteams.json";
             bfbot.sendAll("Teams file not found, fetching teams from "+url, teamrevchan);
             sys.webCall(url, function(resp) {
                 if (resp !== "") {
@@ -100,7 +100,7 @@ function startBF() {
         sendChanAll("Making default bfhash", teamrevchan);
         // name, filepath, whether it is being actively used (human choice), whether it is enabled (automated)
         bfhash = {
-            'preset': {'path': 'bfteams.json', 'active': true, 'enabled': false, 'url': Config.base_url+dataDir+"bfteams.json"}
+            'preset': {'path': 'bfteams.json', 'active': true, 'enabled': false, 'url': Config.base_url+"bfdata/bfteams.json"}
         };
         sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfhash));
     }
