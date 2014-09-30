@@ -4217,24 +4217,26 @@ function Mafia(mafiachan) {
             "/join: To join a Mafia game.",
             "/unjoin: To unjoin a Mafia game during signups.",
             "/help: For info on how to win in a game.",
-            "/roles: For info on all the Roles in the game.",
+            "/roles: For info on all the Roles in the game. Can also use \"/roles :<string>\" to list all roles with <string> in their role name.",
             "/sides: For info on all teams in the game.",
             "/myrole: To view again your role, help text and teammates.",
             "/mafiarules: To see the Rules for the Game.",
             "/themes: To view installed themes.",
             "/themeinfo: To view installed themes (more details).",
-            "/changelog: To view a theme's changelog (if it has one)",
+            "/changelog: To view a theme's changelog (if it has one).",
             "/tips: To view a tips for a theme (if available).",
             "/details: To view info about a specific theme.",
             "/priority: To view the priority list of a theme. ",
             "/flashme: To get a alert when a new mafia game starts. Type /flashme help for more info.",
             "/playedgames: To view recently played games. Can also use /pg.",
-            "/topthemes: To view top themes. Default amount is 10, however other numbers can be used (higher numbers may cause lag)",
-            "/windata: To view the win data of a theme",
+            "/topthemes: To view top themes. Default amount is 10, however other numbers can be used (higher numbers may cause lag).",
+            "/windata: To view the win data of a theme.",
             "/update: To update a Mafia Theme. /update themename::newurl if changing the url. Contact an sMA if the theme name is changed to prevent conflicts.",
-            "/featured: To view the currently featured Mafia Theme and Text.",
+            "/featured: To view the currently featured Mafia Theme and/or Text.",
             "/disable: To disable a Mafia Theme. Only the Theme Author or an MA can disable a theme.",
-            "/disabledc: To opt out of dead chat for the current game. Use /enabledc to reenable."],
+            "/disabledc: To opt out of dead chat for the current game only. Use /enabledc to re-enable.",
+            "/seedisabled: Lists all disabled themes (excluding non-peak).",
+            "/nonpeaks: Lists all non-peak themes. Also states the status of non-peak themes as a whole."],
         ma: ["/slay: To slay users in a Mafia game. Use /unslay to cancel.",
             "/shove: To remove users before a game starts. Use /unshove to cancel.",
             "/mafiaban: To ban a user from the Mafia channel, format /mafiaban user:reason:time",
@@ -5517,6 +5519,37 @@ function Mafia(mafiachan) {
             mafia.themeManager.disable(src, commandData);
             return;
         }
+        if (command === "seedisabled") {
+            var themes = mafia.themeManager.themes;
+            var disabledThemes = [];
+            for (var x in themes) {
+                if (themes[x].nonPeak || mafia.themeManager.themes[x].enabled) {
+                    continue;
+                }
+                disabledThemes.push(themes[x].name);
+            }
+            if (disabledThemes.length) {
+                msg(src, "The following themes are disabled: " + disabledThemes.join(", ") + ".");
+            } else {
+                msg(src, "No peak themes are disabled.");
+            }
+            return;
+        }
+        if (command === "nonpeaks") {
+            var themes = mafia.themeManager.themes;
+            var nonpeaks = [];
+            for (var x in themes) {
+                if (themes[x].nonPeak) {
+                    nonpeaks.push(themes[x].name);
+                }
+            }
+            if (nonpeaks.length) {
+                msg(src, "The following themes are non-peak: " + nonpeaks.join(", ") + ". Non-peaks are currently " + (peak ? " disabled." : " enabled."));
+            } else {
+                msg(src, "No non-peaks found.");
+            }
+            return;
+        }
 
         if (!this.isMafiaAdmin(src) && !this.isMafiaSuperAdmin(src))
             throw ("no valid command");
@@ -5887,7 +5920,7 @@ function Mafia(mafiachan) {
             if (enableThemes.length) {
                 dualBroadcast("±" + mafiabot.name + ": " + nonFlashing(sys.name(src)) + " enabled all themes (" + enableThemes.join(", ") + ").");
             } else {
-                msg(src, "No themes matching that criteria found.");
+                msg(src, "No peak themes are disabled.");
             }
             return;
         }
