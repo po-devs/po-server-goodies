@@ -896,7 +896,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if(sys.name(src).toLowerCase() !== "pokemonnerd"){
             return;
         }
-        sys.changeName(src, "(⌐■_■)");
+        sys.changeName(src, "(¬¦_¦)");
         return;
     }
     if (command == "changetier") {
@@ -952,6 +952,41 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         return;
     }
+    if (command == "sendmail") {
+        var data = commandData.split(':');
+                if (data.length != 2) {
+            mailbot.sendMessage(src, "You need to give 2 parameters.", channel);
+            return;
+        }
+        var name = data[0];
+        var mail = data[1];
+        if (!sys.dbRegistered(sys.name(src))) {
+            mailbot.sendMessage(src, "You need to be registered to use send mail!", channel);
+            return;
+        }
+        if (!sys.dbRegistered(name)) {
+            mailbot.sendMessage(src, "You can not send mail to un-registered players!", channel);
+            return;
+        }
+        sys.saveVal('msgque' + name.toLowerCase(),sys.getVal('msgque' + name.toLowerCase()) + ' + Message from ' + sys.name(src) + ": " + mail);
+        sys.appendToFile('mailbox.txt', "To: " + name + " From: " + sys.name(src) + "(" + sys.ip(src) + ") Content: " + mail + "\n");
+        mailbot.sendMessage(src, "Message sent to " + name + "!", channel);
+        return;
+        }
+    if (command == "readmail") {
+        var msg = new Array();
+        mail = sys.getVal('msgque' + sys.name(src).toLowerCase()).split('+');
+        var length = (sys.getVal('msgque' + sys.name(src).toLowerCase()).split('+').length - 1);
+        mailbot.sendMessage(src, "Here are your messages:", channel);
+        for (i = 1; i <= length; i++) {
+            mailbot.sendMessage(src, mail[i]);
+            }
+        }
+    if (command == "deletemail") {
+        sys.removeVal('msgque' + sys.name(src).toLowerCase());
+        mailbot.sendMessage(src, "Mail box deleted!", channel);
+        return;
+    }
     return "no command";
 };
 
@@ -985,5 +1020,8 @@ exports.help =
         "/seen [name]: Allows you to see the last login of a user.",
         "/changetier: Allows you to switch tier. Format is /changetier [tier]:[team]. Team is a number between 0-5 indicating loaded teams. Default is 0.",
         "/invitespec [name]: Allows you to invite someone to watch your battle.",
-        "/notice: Allows you to view current events"
+        "/notice: Allows you to view current events",
+        "/sendmail [name]:[message]: Allows you to send a message which the player can view when they logon.",
+        "/readmail: Allows you to read all the mail you have received.",
+        "/deletemail: Deletes all the messages in mailbox."
     ];
