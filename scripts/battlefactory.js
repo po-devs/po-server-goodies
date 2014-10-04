@@ -41,7 +41,7 @@ function startBF() {
     try {
         var file = sys.getFileContent(dataDir+"bfteams.json");
         if (file === undefined) {
-            var url = Config.base_url+"bfdata/bfteams.json";
+            var url = Config.base_url+dataDir+"bfteams.json";
             bfbot.sendAll("Teams file not found, fetching teams from "+url, teamrevchan);
             sys.webCall(url, function(resp) {
                 if (resp !== "") {
@@ -100,7 +100,7 @@ function startBF() {
         sendChanAll("Making default bfhash", teamrevchan);
         // name, filepath, whether it is being actively used (human choice), whether it is enabled (automated)
         bfhash = {
-            'preset': {'path': 'bfteams.json', 'active': true, 'enabled': false, 'url': Config.base_url+"bfdata/bfteams.json"}
+            'preset': {'path': 'bfteams.json', 'active': true, 'enabled': false, 'url': Config.base_url+dataDir+"bfteams.json"}
         };
         sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfhash));
     }
@@ -565,7 +565,7 @@ function factoryCommand(src, command, commandData, channel) {
         var url;
         var tmp = commandData.split(" ~ ",2);
         if (tmp.length != 2) {
-            bfbot.sendMessage(src, "Usage: /addteampack [name] ~ [url]", channel);
+            bfbot.sendMessage(src, "Usage: /addpack [name] ~ [url]", channel);
             return;
         }
         if (tmp[0] === "") {
