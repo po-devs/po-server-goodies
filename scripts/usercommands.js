@@ -91,7 +91,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         if (command == "me") {
             var colour = script.getColor(src);
-            sendChanHtmlAll("<font color='" + colour + "'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + messagetosend + "</font>", channel);
+            sendChanHtmlAll("<timestamp/> *** <i><b><font color='" + colour + "'>" + utilities.html_escape(sys.name(src)) + "</font></b> " + messagetosend + "</i>", channel);
         }
         else if (command == "rainbow" && !script.isOfficialChan(channel)) {
             var auth = 1 <= sys.auth(src) && sys.auth(src) <= 3;
