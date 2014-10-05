@@ -70,7 +70,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             sys.playerIds().forEach(function(id) {
                 if (sys.loggedIn(id) && SESSION.users(id).smute.active && sys.isInChannel(src, channel)) {
                     var colour = script.getColor(src);
-                    sys.sendHtmlMessage(id, "<font color='" + colour + "'><timestamp/> *** <i><b>" + utilities.html_escape(sys.name(src)) + "</b></i></font><i> " + messagetosend + "</i>", channel);
+                    sys.sendHtmlMessage(id, "<font color='" + colour + "'><timestamp/> *** <i><b>" + utilities.html_escape(sys.name(src)) + "</b></i></font><i> " + commandData + "</i>", channel);
                 }
             });
             sys.stopEvent();
