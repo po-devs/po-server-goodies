@@ -152,7 +152,7 @@ function Hangman() {
             }
             else {
                 sys.sendAll("*** ************************************************************ ***", hangchan);
-                hangbot.sendAll("HANGED! No one guessed the word '" + word.toUpperCase() + "' correctly, so " + (isEventGame ? "anyone may start a game now!" : "the host (" + hostName + ") has won this game!") +, hangchan);
+                hangbot.sendAll("HANGED! No one guessed the word '" + word.toUpperCase() + "' correctly, so " + (isEventGame ? "anyone may start a game now!" : "the host (" + hostName + ") has won this game!"), hangchan);
                 sys.sendAll("*** ************************************************************ ***", hangchan);
                 sendChanHtmlAll(" ", hangchan);
                 this.setWinner(hostName, (host === null && hostName == hangbot.name));
