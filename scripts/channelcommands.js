@@ -334,6 +334,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             channelbot.sendMessage(src, returnVal);
         } else {
             channelbot.sendMessage(src, "You added a rule", channel);
+         }
         return;
     }
     if (command == "removerule") {
@@ -342,6 +343,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             channelbot.sendMessage(src, returnVal, channel);
         } else {
             channelbot.sendMessage(src, "You removed a rule", channel);
+        }
         return;
     }
      
