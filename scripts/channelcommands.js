@@ -2,7 +2,20 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     var poChannel = SESSION.channels(channel);
     if (poChannel.operators === undefined)
         poChannel.operators = [];
-        
+    if (command == "crules" || command == "channelrules") { 
+        var rules = poChannel.getRules();
+        if (rules.length === 0) {
+            channelbot.sendMessage(src, "No rules defined for this channel, server rules may apply", channel);
+            return;
+        }
+        sys.sendMessage(src, "*** " + sys.channel(channel) + " channel rules ***", channel);
+        for (var x in rules) {
+            rule = rules[x].split("\n");
+            sys.sendMessage(src, rule[0], channel);
+            sys.sendMessage(src, rule[1], channel);
+         }
+         return;
+    }
     if (command == "passcauth") {
         if (!commandData) {
             channelbot.sendMessage(src, "Use /passcauth [name]*[position]", channel);
@@ -311,6 +324,27 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         poChannel.takeAuth(src, commandData, "owner");
         return;
     }
+    if (command == "addrule") {
+        commandData = commandData.split(":");
+        if (commandData.length !== 2) {
+            channelbot.sendMessage(src, "Use /addrule name:description", channel);
+        }
+        var returnVal = poChannel.addRule(commandData[0], commandData[1]);
+        if (returnVal) {    
+            channelbot.sendMessage(src, returnVal);
+        } else {
+            channelbot.sendMessage(src, "You added a rule", channel);
+        return;
+    }
+    if (command == "removerule") {
+        var returnVal = poChannel.removeRule(commandData);
+        if (returnVal) {    
+            channelbot.sendMessage(src, returnVal, channel);
+        } else {
+            channelbot.sendMessage(src, "You removed a rule", channel);
+        return;
+    }
+     
     return "no command";
 };
 exports.help = function(src, channel) {

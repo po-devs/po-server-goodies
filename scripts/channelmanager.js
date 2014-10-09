@@ -26,7 +26,8 @@ POChannelManager.prototype.copyAttrs = [
     "muted",
     "banned",
     "ignorecaps",
-    "ignoreflood"
+    "ignoreflood",
+    "rules"
 ];
 
 POChannelManager.prototype.update = function(channel)

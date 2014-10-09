@@ -17,6 +17,7 @@ function POChannel(id)
     this.ignorecaps = false;
     this.ignoreflood = false;
     this.allowSwear = true;
+    this.rules = [];
 }
 
 POChannel.prototype.beforeMessage = function(src, msg) {
@@ -666,6 +667,42 @@ POChannel.prototype.getReadableList = function(type)
     catch (e) {
         return "";
     }
+};
+
+POChannel.prototype.addRule = function(name, description) {
+    var index = this.rules.length + 1;
+    if (this.rules.length >= 10) {
+        return "Too many rules already, currently limited to 10";
+    }
+    if (name.length > 200 || description.length > 600) {
+        return "Name/Description too long. Limit is 200 characters for name and 600 for description";
+    }
+    this.rules.push(index + ":::::" + name.replace(/:::::/g, ":") + ":::::" + description.replace(/:::::/g, ":")); //preventing silly things happening
+    SESSION.global().channelManager.update(this.id);
+};
+
+POChannel.prototype.removeRule = function(index) {
+    if (!(index-1 in this.rules)) {
+        return "Not a rule";
+    }
+    this.rules.splice(index - 1, 1);
+    for (var x in this.rules) {
+        var rules = this.rules[x].split(":::::");
+        if (parseInt(rules[0], 10) > parseInt(index)) {
+            rules[0] -= 1;
+            this.rules[x] = rules.join(":::::");
+        }
+    }
+    SESSION.global().channelManager.update(this.id);
+};
+
+POChannel.prototype.getRules = function() {
+    var output = [];
+    for (var x in this.rules) {
+        var rule = this.rules[x].split(":::::");
+        output.push(rule[0] + ". " + rule[1] + ": \n"+ rule[2]);
+    }
+    return output;
 };
 
 exports.POChannel = POChannel;
