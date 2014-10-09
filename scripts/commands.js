@@ -34,10 +34,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (channelCommands === undefined) {
         channelCommands = require("channelcommands.js");
     }
-    if (sys.auth(src) > 1 || SESSION.channels(channel).isChannelOperator(src)) {
-        if (channelCommands.handleCommand(src, command, commandData, tar, channel) != "no command") {
-            return;
-        }
+    if (channelCommands.handleCommand(src, command, commandData, tar, channel) != "no command") {
+        return;
     }
     commandbot.sendMessage(src, "The command " + command + " doesn't exist", channel);
 };
