@@ -351,6 +351,7 @@ exports.help = function(src, channel) {
     var poChannel = SESSION.channels(channel);
     sys.sendMessage(src, "/cauth: Shows a list of channel auth.", channel);
     sys.sendMessage(src, "/register: To register the current channel you're on if it isn't registered already.", channel);
+    sys.sendMessage(src, "/crules: To see a list of the current channels rules", channel);
     if (poChannel.isChannelMember(src) || poChannel.isChannelOperator(src) || poChannel.isChannelAdmin(src) || poChannel.isChannelOwner(src)) {
         sys.sendMessage(src, "*** Channel Member commands ***", channel);
         sys.sendMessage(src, "/passcauth [name]*[position]: Passes channel authority to a new alt. New name must be registered, online, and have the same IP as the old name. Valid positions are member, mod (or op), admin, and owner.", channel);
@@ -397,6 +398,8 @@ exports.help = function(src, channel) {
         sys.sendMessage(src, "/deadmin: Removes channel admin status from a user.", channel);
         sys.sendMessage(src, "/owner: Gives a user channel owner status.", channel);
         sys.sendMessage(src, "/deowner: Removes channel owner status from a user.", channel);
+        sys.sendMessage(src, "/addrule [name]:[description]: Adds a rule to the current channel. Numbers are added automatically and there is a limit of 10 rules", channel);
+        sys.sendMessage(src, "/removerule [number]: Remove a rule [number]", channel);
     }
     if (SESSION.global().permaTours.indexOf(channel) > -1) {
         sys.sendMessage(src, "*** Channel Tournaments commands ***", channel);
