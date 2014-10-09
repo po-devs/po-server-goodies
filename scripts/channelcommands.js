@@ -9,7 +9,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         sys.sendMessage(src, "*** " + sys.channel(channel) + " channel rules ***", channel);
-        for (var x in rules) {
+        for (var x = 0; x < rules.length; x++) {
             rule = rules[x].split("\n");
             sys.sendMessage(src, rule[0], channel);
             sys.sendMessage(src, rule[1], channel);

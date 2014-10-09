@@ -686,7 +686,7 @@ POChannel.prototype.removeRule = function(index) {
         return "Not a rule";
     }
     this.rules.splice(index - 1, 1);
-    for (var x in this.rules) {
+    for (var x = 0; x < this.rules.length; x++) {
         var rules = this.rules[x].split(":::::");
         if (parseInt(rules[0], 10) > parseInt(index)) {
             rules[0] -= 1;
@@ -698,7 +698,7 @@ POChannel.prototype.removeRule = function(index) {
 
 POChannel.prototype.getRules = function() {
     var output = [];
-    for (var x in this.rules) {
+    for (var x = 0; x < this.rules.length; x++) {
         var rule = this.rules[x].split(":::::");
         output.push(rule[0] + ". " + rule[1] + ": \n"+ rule[2]);
     }
