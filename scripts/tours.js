@@ -1,3 +1,4 @@
+
 /*
 Code for tours.js
 Original coding by Shadowfist 2012
@@ -2979,6 +2980,10 @@ function tourCommand(src, command, commandData, channel) {
             }
             return true;
         }
+        if (command == "showevents" || command == "showevent") {
+            showEvents(src, channel);
+            return;
+        }
     }
     catch (err) {
         sendChanAll("Error in Tournament Command '"+command+"': "+err, tourserrchan);
@@ -4491,10 +4496,8 @@ function calcPercentage() { // calc percentage of players in tournaments playing
     return variance;
 }
 
-function sendWelcomeMessage(src, chan) {
-    sys.sendMessage(src,border,chan);
-    sys.sendMessage(src,"*** Welcome to #"+tourconfig.channel+"; Version "+tourconfig.version+"! ***",chan);
-    var now = new Date();
+//extracted from sendWelcomeMessage
+function showEvents(src, chan) {
     var datestring = now.getUTCDate()+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
     var tomorrow = new Date();
     tomorrow.setTime(Date.parse(now) + 86400*1000);
@@ -4507,6 +4510,13 @@ function sendWelcomeMessage(src, chan) {
     if (typeof details2 === "object") {
         sys.sendMessage(src,"Tomorrow's Event Tournament: "+details2[0],chan);
     }
+}
+
+function sendWelcomeMessage(src, chan) {
+    sys.sendMessage(src,border,chan);
+    sys.sendMessage(src,"*** Welcome to #"+tourconfig.channel+"; Version "+tourconfig.version+"! ***",chan);
+    var now = new Date();
+    showEvents(src, chan);
     sys.sendMessage(src,"",chan);
     sys.sendMessage(src,"*** Current Tournaments ***",chan);
     for (var x in tours.tour) {
