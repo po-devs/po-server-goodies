@@ -4498,6 +4498,7 @@ function calcPercentage() { // calc percentage of players in tournaments playing
 
 //extracted from sendWelcomeMessage
 function showEvents(src, chan) {
+    var now = new Date();
     var datestring = now.getUTCDate()+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
     var tomorrow = new Date();
     tomorrow.setTime(Date.parse(now) + 86400*1000);
@@ -4515,7 +4516,6 @@ function showEvents(src, chan) {
 function sendWelcomeMessage(src, chan) {
     sys.sendMessage(src,border,chan);
     sys.sendMessage(src,"*** Welcome to #"+tourconfig.channel+"; Version "+tourconfig.version+"! ***",chan);
-    var now = new Date();
     showEvents(src, chan);
     sys.sendMessage(src,"",chan);
     sys.sendMessage(src,"*** Current Tournaments ***",chan);
