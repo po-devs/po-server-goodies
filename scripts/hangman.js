@@ -27,6 +27,9 @@ function Hangman() {
     var eventGamesEnabled = true;
     var isEventGame;
     var pendingEvent = false;
+    var eventDelay = false;
+    var delayCount = 0;
+    var delayLimit = 1;
 
     var host;
     var hostName;
@@ -132,7 +135,7 @@ function Hangman() {
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
             if (pendingEvent) {
-                this.startEventGame();
+                eventDelay = true;
             } else {
                 hangbot.sendAll("Type /start [answer]:[hint] to start a new game. If you didn't win then wait " + winnerDelay + " seconds.", hangchan);
             }
@@ -160,7 +163,7 @@ function Hangman() {
                     eventCount = eventLimit;
                 }
                 if (pendingEvent) {
-                    this.startEventGame();
+                    eventDelay = true;
                 }
             }
         }
@@ -235,7 +238,7 @@ function Hangman() {
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
             if (pendingEvent) {
-                this.startEventGame();
+                eventDelay = true;
             } else {
                 hangbot.sendAll("Type /start [answer]:[hint] to start a new game. If you didn't win then wait " + winnerDelay + " seconds.", hangchan);
             }
@@ -256,6 +259,10 @@ function Hangman() {
         }
         if (word) {
             hangbot.sendMessage(src, "A game is already running! You can start a new one once this game is over!", hangchan);
+            return;
+        }
+        if (eventDelay) {
+            hangbot.sendMessage(src, "An event game is about to start!", hangchan);
             return;
         }
         if (SESSION.users(src).smute.active || winner && (new Date()).getTime() < nextGame && sys.name(src).toLowerCase() !== winner.toLowerCase()) {
@@ -546,6 +553,10 @@ function Hangman() {
             hangbot.sendMessage(src, "You are not the last winner or auth!", hangchan);
             return;
         }
+        if (eventDelay) {
+            hangbot.sendMessage(src, "An event game is about to start!", hangchan);
+            return;
+        }
         if (hangman.authLevel(src) < 1 && (new Date()).getTime() > nextGame) {
             hangbot.sendMessage(src, winnerDelay + " seconds already passed! Anyone can start a game now!", hangchan);
             return;
@@ -587,7 +598,7 @@ function Hangman() {
             winner = undefined;
             this.resetTimers();
             if (pendingEvent) {
-                this.startEventGame();
+                eventDelay = true;
             }
         }
         else {
@@ -1688,6 +1699,16 @@ function Hangman() {
             if (word) {
                 pendingEvent = true;
             } else {
+                hangman.startEventGame();
+            }
+        }
+        if(eventDelay) {
+            if (eventDelay < delayLimit) {
+                delayCount++;
+            }
+            else {
+                delayCount = 0;
+                eventDelay = false;
                 hangman.startEventGame();
             }
         }
