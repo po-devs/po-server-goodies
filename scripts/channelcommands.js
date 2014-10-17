@@ -328,6 +328,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         commandData = commandData.split(":");
         if (commandData.length !== 2) {
             channelbot.sendMessage(src, "Use /addrule name:description", channel);
+            return;
         }
         var returnVal = poChannel.addRule(commandData[0], commandData[1]);
         if (returnVal) {    
