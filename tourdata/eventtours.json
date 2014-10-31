@@ -1,130 +1,126 @@
 {
-    "1-10-2014": {
-        "tier": "XY Ubers",
-        "settings": {}
-    },
-    "2-10-2014": {
-        "tier": "BW2 UU",
-        "settings": {}
-    },
-    "3-10-2014": {
-        "tier": "Monotype",
-        "settings": {}
-    },
-    "4-10-2014": {
+    "1-11-2014": {
         "tier": "XY OU",
         "settings": {}
     },
-    "5-10-2014": {
-        "tier": "XY NU",
+    "2-11-2014": {
+        "tier": "XY LC",
         "settings": {}
     },
-    "6-10-2014": {
+    "3-11-2014": {
         "tier": "Inverted Challenge Cup",
         "settings": {}
     },
-    "7-10-2014": {
-        "tier": "HGSS OU",
-        "settings": {}
-    },
-    "8-10-2014": {
-        "tier": "XY LC",
-        "settings": {}
-    },
-    "9-10-2014": {
+    "4-11-2014": {
         "tier": "XY UU",
         "settings": {}
     },
-    "10-10-2014": {
-        "tier": "Inverted Battle",
-        "settings": {}
-    },
-    "11-10-2014": {
-        "tier": "XY OU",
-        "settings": {}
-    },
-    "12-10-2014": {
-        "tier": "Battle Factory 6v6",
-        "settings": {}
-    },
-    "13-10-2014": {
-        "tier": "BW2 Ubers",
-        "settings": {}
-    },
-    "14-10-2014": {
-        "tier": "XY LU",
-        "settings": {}
-    },
-    "15-10-2014": {
-        "tier": "XY Doubles",
-        "settings": {}
-    },
-    "16-10-2014": {
-        "tier": "Random Battle",
-        "settings": {}
-    },
-    "17-10-2014": {
-        "tier": "XY NU",
-        "settings": {}
-    },
-    "18-10-2014": {
-        "tier": "XY OU",
-        "settings": {}
-    },
-    "19-10-2014": {
-        "tier": "Monotype",
-        "settings": {}
-    },
-    "20-10-2014": {
-        "tier": "Challenge Cup",
-        "settings": {}
-    },
-    "21-10-2014": {
-        "tier": "BW2 NU",
-        "settings": {}
-    },
-    "22-10-2014": {
-        "tier": "XY Ubers",
-        "settings": {}
-    },
-    "23-10-2014": {
-        "tier": "ADV OU",
-        "settings": {}
-    },
-    "24-10-2014": {
-        "tier": "XY UU",
-        "settings": {}
-    },
-    "25-10-2014": {
-        "tier": "XY OU",
-        "settings": {}
-    },
-    "26-10-2014": {
-        "tier": "Inverted Battle",
-        "settings": {}
-    },
-    "27-10-2014": {
-        "tier": "XY LC",
-        "settings": {}
-    },
-    "28-10-2014": {
-        "tier": "XY LU",
-        "settings": {}
-    },
-    "29-10-2014": {
+    "5-11-2014": {
         "tier": "BW2 OU",
         "settings": {}
     },
-    "30-10-2014": {
+    "6-11-2014": {
+        "tier": "XY Ubers",
+        "settings": {}
+    },
+    "7-11-2014": {
+        "tier": "Monotype",
+        "settings": {}
+    },
+    "8-11-2014": {
+        "tier": "XY OU",
+        "settings": {}
+    },
+    "9-11-2014": {
+        "tier": "BW2 UU",
+        "settings": {}
+    },
+    "10-11-2014": {
+        "tier": "XY NU",
+        "settings": {}
+    },
+    "11-11-2014": {
+        "tier": "ADV OU",
+        "settings": {}
+    },
+    "12-11-2014": {
+        "tier": "XY LU",
+        "settings": {}
+    },
+    "13-11-2014": {
+        "tier": "HGSS OU",
+        "settings": {}
+    },
+    "14-11-2014": {
+        "tier": "Battle Factory 6v6",
+        "settings": {}
+    },
+    "15-11-2014": {
+        "tier": "XY UU",
+        "settings": {}
+    },
+    "16-11-2014": {
+        "tier": "Inverted Battle",
+        "settings": {}
+    },
+    "17-11-2014": {
+        "tier": "XY Doubles",
+        "settings": {}
+    },
+    "18-11-2014": {
+        "tier": "BW2 Ubers",
+        "settings": {}
+    },
+    "19-11-2014": {
+        "tier": "Monotype",
+        "settings": {}
+    },
+    "20-11-2014": {
+        "tier": "XY LC",
+        "settings": {}
+    },
+    "21-11-2014": {
         "tier": "Sky Battle",
+        "settings": {}
+    },
+    "22-11-2014": {
+        "tier": "XY OU",
+        "settings": {}
+    },
+    "23-11-2014": {
+        "tier": "XY NU",
+        "settings": {}
+    },
+    "24-11-2014": {
+        "tier": "Challenge Cup",
+        "settings": {}
+    },
+    "25-11-2014": {
+        "tier": "BW2 NU",
+        "settings": {}
+    },
+    "26-11-2014": {
+        "tier": "XY Ubers",
+        "settings": {}
+    },
+    "27-11-2014": {
+        "tier": "XY LU",
+        "settings": {}
+    },
+    "28-11-2014": {
+        "tier": "Inverted Battle",
+        "settings": {}
+    },
+    "29-11-2014": {
+        "tier": "XY OU",
+        "settings": {}
+    },
+    "30-11-2014": {
+        "tier": "Battle Factory 6v6",
         "settings": {}
     },
     "31-10-2014": {
         "tier": "Battle Factory 6v6",
-        "settings": {}
-    },
-    "30-9-2014": {
-        "tier": "XY LU",
         "settings": {}
     }
 }
