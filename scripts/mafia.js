@@ -44,9 +44,11 @@ function Mafia(mafiachan) {
         timesBeforeNonPeak = 3, //number of dead games before enabling non-peak
         numPlayersBeforeDead = 10; //number of players before game is counted as not dead
 
-    var savePlayedGames = function () {
+    var savePlayedGames = function (entry) {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
-        sys.saveVal("Stats/MafiaGamesPlayed", 1 + (+sys.getVal("Stats/MafiaGamesPlayed")));
+        if (entry) {
+            sys.saveVal("Stats/MafiaGamesPlayed", 1 + (+sys.getVal("Stats/MafiaGamesPlayed")));
+        }
     };
     var loadPlayedGames = function () {
         try {
@@ -2481,7 +2483,7 @@ function Mafia(mafiachan) {
             // Save stats if the game was played
             CurrentGame.playerCount = mafia.signups.length;
             PreviousGames.push(CurrentGame);
-            savePlayedGames();
+            savePlayedGames(true);
             mafia.mafiaStats.players = mafia.signups.length;
             mafia.mafiaStats.theme = mafia.theme.name;
             
