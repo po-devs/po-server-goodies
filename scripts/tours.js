@@ -1119,8 +1119,8 @@ function tourStep() {
         }
         else if (tours.keys.length === 0) {
             // start a cycle from tourarray
-            var tourarray = ["Challenge Cup", "BW2 NU", "CC 1v1", "XY 1v1", "Random Battle", "XY OU", "XY LC", "BW2 OU", "BW2 UU", "Monotype", "Challenge Cup", "Wifi CC 1v1", "BW2 LC", "BW2 OU", "BW2 LU", "BW2 Ubers", "XY OU", "XY LC"];
-            var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "XY 1v1"];
+            var tourarray = ["Challenge Cup", "BW2 NU", "CC 1v1", "ORAS 1v1", "Random Battle", "XY OU", "XY LC", "BW2 OU", "BW2 UU", "Monotype", "Challenge Cup", "Wifi CC 1v1", "BW2 LC", "BW2 OU", "BW2 LU", "BW2 Ubers", "XY OU", "XY LC"];
+            var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "ORAS 1v1"];
             var tourtostart = tourarray[tours.key%tourarray.length];
             var tourtype = doubleelimtiers.indexOf(tourtostart) != -1 ? "double" : "single";
             tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? defaultgen : "default"), "type": tourtype, "maxplayers": false, "event": false,  "wifi": sys.getClauses(tourtostart)%256 >= 128 ? true : false});
@@ -2076,7 +2076,7 @@ function tourCommand(src, command, commandData, channel) {
                         isSignups = true;
                     }
                 }
-                var detiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers", "XY 1v1"];
+                var detiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers", "ORAS 1v1"];
                 var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1", "Inverted Challenge Cup"];
                 var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": detiers.indexOf(tourtier) == -1 ? "single" : "double", "maxplayers": false, "event": false, "wifi": (sys.getClauses(tourtier)%256 >= 128 ? true : false)};
                 if (data[1] !== false) {
