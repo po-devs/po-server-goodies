@@ -55,7 +55,7 @@ var flashtag = "<!--f-->"; // This is used to check for flashes in the html code
 // Event tournaments highlighted in red
 var redborder = "<font color=#FF0000><b>"+border+"</b></font>";
 var redhtmlborder = "<font color=#FF0000><timestamp/> <b>"+border+"</b></font>";
-var defaultgen = parseInt(sys.serverVersion().replace(/\./g, ""), 10) >= 229 ? "6-0" : "5-1";
+var defaultgen = parseInt(sys.serverVersion().replace(/\./g, ""), 10) >= 250 ? "6-1" : "6-0";
 var tourcommands = ["/join: Joins a tournament.",
                     "/unjoin: Unjoins a tournament during signups only.",
                     "/queue: Lists upcoming tournaments.",
@@ -356,12 +356,13 @@ function getSubgen(name, getLongName) {
         "Black/White 2": "5-1",
         "BW2": "5-1",
         "XY": "6-0",
+        "Omega Ruby/Alpha Sapphire": "6-1",
         "1": "1-3",
         "2": "2-2",
         "3": "3-4",
         "4": "4-2",
         "5": "5-1",
-        "6": "6-0"
+        "6": "6-1"
     };
     if (getLongName) {
         for (var x in subgens) {
