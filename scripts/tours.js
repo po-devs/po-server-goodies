@@ -3712,7 +3712,7 @@ function tourinitiate(key) {
     try {
         var size = tourmakebracket(key);
         if (tours.tour[key].cpt < tourconfig.minplayers) {
-            if (tours.globaltime !== -1 && tours.metrics.failedstarts < 3) {
+            if (tours.globaltime !== -1) {
                 tours.globaltime = parseInt(sys.time(), 10)+tourconfig.tourbreak; // for next tournament
             }
             sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least "+tourconfig.minplayers+" players!"+(tours.globaltime > 0 ? " (A new tournament will start in "+time_handle(tourconfig.tourbreak)+")." : ""), tourschan, false);
