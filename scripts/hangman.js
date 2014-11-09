@@ -271,7 +271,7 @@ function Hangman() {
         }
         var data = commandData.split(":");
         var a = this.removeNonEnglish(data[0]);
-        var h = data[1];
+        var h = data[1].trim();
         var p = data.length < 3 ? defaultParts : data[2];
 
         if (!a) {
