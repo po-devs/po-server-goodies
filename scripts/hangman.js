@@ -271,7 +271,7 @@ function Hangman() {
         }
         var data = commandData.split(":");
         var a = this.removeNonEnglish(data[0]);
-        var h = data[1].trim();
+        var h = data[1];
         var p = data.length < 3 ? defaultParts : data[2];
 
         if (!a) {
@@ -289,7 +289,7 @@ function Hangman() {
 
         a = result.answer;
 
-        if (!h) {
+        if (!h.trim()) {
             hangbot.sendMessage(src, "You need to write a hint!", hangchan);
             return;
         }
