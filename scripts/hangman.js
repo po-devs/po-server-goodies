@@ -72,7 +72,7 @@ function Hangman() {
     /*    if (isEventGame && (this.isHangmanAdmin(src) || this.isHangmanSuperAdmin(src))) {
             hangbot.sendMessage(src, "You are HA or sHA, so you can't participate on Event Games!", hangchan);
             return;
-        } */ 
+        } */
         if (checked.indexOf(sys.ip(src)) >= 0) {
             hangbot.sendMessage(src, "You checked the answer, so you can't play!", hangchan);
             return;
@@ -289,7 +289,7 @@ function Hangman() {
 
         a = result.answer;
 
-        if (!h.trim()) {
+        if (!h || !h.trim()) {
             hangbot.sendMessage(src, "You need to write a hint!", hangchan);
             return;
         }
@@ -754,16 +754,16 @@ function Hangman() {
             hangbot.sendMessage(src, "You can only use this command in Victory Road!", channel);
             return;
         }
-        var message = (!commandData ? "Flashing all Hangman Admins!" : commandData); 
-        sys.sendAll(sys.name(src).toCorrectCase() + ": " + message, channel); 
+        var message = (!commandData ? "Flashing all Hangman Admins!" : commandData);
+        sys.sendAll(sys.name(src).toCorrectCase() + ": " + message, channel);
         for (var x in script.hangmanAdmins.hash) {
-            id = sys.id(x);
+            var id = sys.id(x);
             if (id) {
                 sys.sendHtmlMessage(id, "<font color=#3DAA68><timestamp/> <b>±" + hangbot.name + ":</b></font> <b> You have been flashed!</b><ping/>", channel);
             }
         }
         for (var x in script.hangmanSuperAdmins.hash) {
-            id = sys.id(x);
+            var id = sys.id(x);
             if (id) {
                 sys.sendHtmlMessage(id, "<font color=#3DAA68><timestamp/> <b>±" + hangbot.name + ":</b></font> <b> You have been flashed!</b><ping/>", channel);
             }
@@ -816,7 +816,7 @@ function Hangman() {
         if (autoGames.length === 0) {
             hangbot.sendMessage(src, "There are no games in the database.", hangchan);
             return;
-        } 
+        }
         else{
             if (commandData.indexOf(":") === -1) {
                 hangman.searchByWord(src, commandData);
