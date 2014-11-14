@@ -66,7 +66,7 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(s
             for (var x in script.pokeNatures[poke]) {
                 if (sys.hasTeamPokeMove(src, team, i, x) && sys.teamPokeNature(src, team, i) != script.pokeNatures[poke][x])
                 {
-                    ret.push("" + sys.pokemon(poke) + " with " + sys.move(x) + " must be a " + sys.nature(script.pokeNatures[poke][x]) + " nature. Change it in the teambuilder.");
+                    ret.push("" + sys.pokemon(poke) + " with " + sys.move(x) + " must have a " + sys.nature(script.pokeNatures[poke][x]) + " nature.");
                 }
             }
         }
@@ -82,7 +82,7 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(s
             for (var x in script.pokeAbilities[poke]) {
                 if (sys.hasTeamPokeMove(src, team, i, x) && sys.teamPokeAbility(src, team, i) != script.pokeAbilities[poke][x])
                 {
-                    ret.push("" + sys.pokemon(poke) + " with " + sys.move(x) + " must have the ability " + sys.ability(script.pokeAbilities[poke][x]) + ". Change it in the teambuilder.");
+                    ret.push("" + sys.pokemon(poke) + " with " + sys.move(x) + " must have the ability " + sys.ability(script.pokeAbilities[poke][x]) + ".");
                 }
             }
         }
@@ -90,20 +90,19 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(s
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["BW2 LC", "BW2 LC Ubers", "BW2 UU LC", "XY LC", "ORAS LC"], function littleCupCheck(src, team) {
+tier_checker.add_new_check(INCLUDING, ["BW2 LC", "BW2 LC Ubers", "BW2 UU LC", "XY LC", "ORAS LC"], function littleCupCheck(src, team, tier) {
     var ret = [];
     var gen = sys.gen(src, team);
     var check = (gen > 5 ? ["Treecko", "Mudkip", "Turtwig", "Chimchar", "Piplup"].map(sys.pokeNum) : lcpokemons);
     for (var i = 0; i < 6; i++) {
         var x = sys.teamPoke(src, team, i);
         if (x !== 0 && sys.hasDreamWorldAbility(src, team, i) && check.indexOf(x) != -1 ) {
-            ret.push("" + sys.pokemon(x) + " is not allowed with a Dream World ability in this tier. Change it in the teambuilder.");
-
+            ret.push("" + sys.pokemon(x) + " is not allowed with a " + (gen > 5 ? "Hidden":"Dream World") + " Ability in " + tier + ".");
         }
         if (x !== 0 && lcmoves.hasOwnProperty(sys.pokemon(x))) {
             for (var j = 0; j < 4; j++) {
                 if (lcmoves[sys.pokemon(x)].indexOf(sys.move(sys.teamPokeMove(src, team, i, j))) !== -1) {
-                    ret.push("" + sys.pokemon(x) + " is not allowed in this in tier with the move " + sys.move(sys.teamPokeMove(src, team, i, j)) + ". Change it in the teambuilder.");
+                    ret.push("" + sys.pokemon(x) + " is not allowed in " + tier + " with the move " + sys.move(sys.teamPokeMove(src, team, i, j)) + ".");
                 }
             }
         }
@@ -115,11 +114,10 @@ tier_checker.add_new_check(INCLUDING, ["BW2 NU"], function evioliteCheck(src, te
     var evioliteLimit = 6;
     var eviolites = 0;
     for (var i = 0; i < 6; i++) {
-        var x = sys.teamPoke(src, team, i);
         var item = sys.teamPokeItem(src, team, i);
         item = item !== undefined ? sys.item(item) : "(no item)";
         if (item == "Eviolite" && ++eviolites > evioliteLimit) {
-            return ["Only 1 pokemon is allowed with eviolite in " + tier + " tier. Please remove extra evioites in teambuilder."];
+            return ["Only 1 Pokémon is allowed with Eviolite in " + tier + "."];
         }
     }
 });
@@ -133,9 +131,9 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
             var x = sys.teamPoke(src, team, i);
             if (x !== 0 && sys.hasDreamWorldAbility(src, team, i) && (!(x in dwpokemons) || (breedingpokemons.indexOf(x) != -1 && sys.compatibleAsDreamWorldEvent(src, team, i) !== true))) {
                 if (!(x in dwpokemons)) {
-                    ret.push("" + sys.pokemon(x) + " is not allowed with a Dream World ability in " + tier + " tier. Change it in the teambuilder.");
+                    ret.push("" + sys.pokemon(x) + " is not allowed with a Dream World ability in " + tier + " tier.");
                 } else {
-                    ret.push("" + sys.pokemon(x) + " has to be Male and have no egg moves with its Dream World ability in  " + tier + " tier. Change it in the teambuilder.");
+                    ret.push("" + sys.pokemon(x) + " has to be Male and have no egg moves with its Dream World ability in  " + tier + " tier.");
                 }
             }
         }
@@ -163,7 +161,7 @@ tier_checker.add_new_check(INCLUDING, ["ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS
         var x = sys.teamPoke(src, team, i);
 
         if (x !== 0 && sys.teamPokeAbility(src, team, i) == moody) {
-            ret = ["" + sys.pokemon(x) + " is not allowed with Moody in " + tier + ". Change it in the teambuilder."];
+            ret = ["" + sys.pokemon(x) + " is not allowed with Moody in " + tier + "."];
         }
     }
     return ret;
@@ -174,58 +172,12 @@ tier_checker.add_new_check(INCLUDING, ["ORAS Doubles", "ORAS Triples", "ORAS Ube
     var ret = [];
     for (var i = 0; i < 6; i++) {
         if (sys.teamPokeItem(src, team, i) === sys.itemNum("Leppa Berry") && sys.hasTeamPokeMove(src, team, i, sys.moveNum("Recycle")) && (sys.hasTeamPokeMove(src, team, i, sys.moveNum("Fling")) || sys.hasTeamPokeMove(src, team, i, sys.moveNum("Pain Split")) || sys.hasTeamPokeMove(src, team, i, sys.moveNum("Heal Pulse")))) {
-            ret.push(sys.pokemon(sys.teamPoke(src, team, i)) + " has the combination of Leppa Berry, Recycle and any of Fling/Heal Pulse/Pain Split which is banned in " + tier + " under the endless battle clause. Please remove before entering the tier");
+            ret.push(sys.pokemon(sys.teamPoke(src, team, i)) + " has the combination of Leppa Berry, Recycle and any of Fling/Heal Pulse/Pain Split which is banned in " + tier + " under the Endless Battle Clause.");
         }
     }
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["Clear Skies"], function weatherlesstiercheck(src, team, tier) {
-    var ret = [];
-    for (var i = 0; i < 6; i++){
-        var ability = sys.ability(sys.teamPokeAbility(src, team, i));
-        if(ability.toLowerCase() == "drizzle" || ability.toLowerCase() == "drought" || ability.toLowerCase() == "snow warning" || ability.toLowerCase() == "sand stream") {
-            ret.push("Your team has a pokemon with the ability: " + ability + ", please remove before entering " +tier+" tier.");
-        }
-    }
-    return ret;
-});
-
-tier_checker.add_new_check(INCLUDING, ["Monotype"], function drizzleBan(src, team) {
-    for (var i = 0; i < 6; i++) {
-        if (sys.ability(sys.teamPokeAbility(src, team, i)).toLowerCase() == "drizzle") {
-            return ["Drizzle is banned in this tier"];
-        }
-    }
-});
-
-tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, team) {
-    var type1, type2, typea = 0, typeb = 0,teamLength = 0;
-    for (var i = 0; i < 6; i++) {
-        var poke = sys.teamPoke(src, team, i);
-        if (poke === 0) {
-            continue;
-        }
-        type1 = sys.pokeType1(poke, 6);
-        type2 = sys.pokeType2(poke, 6);
-        teamLength++;
-    }
-    for (var i = 0; i < 6; i++) {
-        var poke = sys.teamPoke(src, team, i);
-        if (poke === 0) {
-            continue;
-        }
-        if ((type1 === sys.pokeType1(poke, 6) || type1 === sys.pokeType2(poke, 6)) && type1 !== 18) {
-            typea++;
-        }
-        if ((type2 === sys.pokeType1(poke, 6) || type2 === sys.pokeType2(poke, 6)) && type2 !== 18) {
-            typeb++;
-        }
-    }
-    if (typea < teamLength && typeb < teamLength) {
-        return ["Your team is not a valid Monotype team as not every team member is " + (typea >= typeb ? sys.type(type1) : sys.type(type2))];
-    }
-});
 
 tier_checker.add_new_check(INCLUDING, ["Monogen"], function monoGenCheck(src, team) {
     var GEN_MAX = [0, 151, 252, 386, 493, 649, 718];
@@ -237,11 +189,10 @@ tier_checker.add_new_check(INCLUDING, ["Monogen"], function monoGenCheck(src, te
         if (gen === 0) {
             while (species > GEN_MAX[gen]) ++gen; // Search for correct gen for first poke
         } else if (!(GEN_MAX[gen-1] < species && species <= GEN_MAX[gen])) {
-            return [sys.pokemon(pokenum) + " is not from gen " + gen];
+            return [sys.pokemon(pokenum) + " is not from Generation " + gen];
         }
     }
 });
-
 
 tier_checker.add_new_check(INCLUDING, ["Monocolour"], function monoColourCheck(src, team) {
     var colours = {
@@ -274,22 +225,41 @@ tier_checker.add_new_check(INCLUDING, ["Monocolour"], function monoColourCheck(s
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Smogon OU", "BW2 OU", "No Preview OU"], function swiftSwimCheck(src, team) {
+tier_checker.add_new_check(INCLUDING, ["Smogon OU", "BW2 OU", "No Preview OU"], function swiftSwimCheck(src, team, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Drizzle"){
             for(var j = 0; j <6; ++j){
                 if(sys.ability(sys.teamPokeAbility(src, team, j)) == "Swift Swim"){
-                    return ["You cannot have the combination of Swift Swim and Drizzle in BW2 OU"];
+                    return ["You cannot have the combination of Swift Swim and Drizzle in " + tier + "."];
                 }
             }
         }
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["Smogon UU", "Monotype"], function droughtCheck(src, team) {
+tier_checker.add_new_check(INCLUDING, ["Clear Skies"], function weatherlesstiercheck(src, team, tier) {
+    var ret = [];
+    for (var i = 0; i < 6; i++){
+        var ability = sys.ability(sys.teamPokeAbility(src, team, i));
+        if(ability.toLowerCase() == "drizzle" || ability.toLowerCase() == "drought" || ability.toLowerCase() == "snow warning" || ability.toLowerCase() == "sand stream") {
+            ret.push("" + ability + " is not allowed in " + tier + ".");
+        }
+    }
+    return ret;
+});
+
+tier_checker.add_new_check(INCLUDING, ["Monotype"], function drizzleBan(src, team, tier) {
+    for (var i = 0; i < 6; i++) {
+        if (sys.ability(sys.teamPokeAbility(src, team, i)).toLowerCase() == "drizzle") {
+            return ["Drizzle is not allowed in " + tier + "."];
+        }
+    }
+});
+
+tier_checker.add_new_check(INCLUDING, ["Smogon UU", "Monotype"], function droughtCheck(src, team, tier) {
     for(var i = 0; i <6; ++i){
         if(sys.ability(sys.teamPokeAbility(src, team, i)) == "Drought"){
-            return ["Drought is not allowed in Smogon UU"];
+            return ["Drought is not allowed in " + tier + "."];
         }
     }
 });
@@ -334,6 +304,42 @@ tier_checker.add_new_check(INCLUDING, ["BW2 LC"], function regeneratorCheck(src,
     }
 });
 
+tier_checker.add_new_check(INCLUDING, ["XY NU", "ORAS NU"], function sandRushCheck(src, team, tier) {
+    for (var i = 0; i < 6; i++) {
+        if (sys.ability(sys.teamPokeAbility(src, team, i)).toLowerCase() == "sand rush") {
+            return ["Sand Rush is not allowed in " + tier + "."];
+        }
+    }
+});
+
+tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, team) {
+    var type1, type2, typea = 0, typeb = 0,teamLength = 0;
+    for (var i = 0; i < 6; i++) {
+        var poke = sys.teamPoke(src, team, i);
+        if (poke === 0) {
+            continue;
+        }
+        type1 = sys.pokeType1(poke, 6);
+        type2 = sys.pokeType2(poke, 6);
+        teamLength++;
+    }
+    for (var i = 0; i < 6; i++) {
+        var poke = sys.teamPoke(src, team, i);
+        if (poke === 0) {
+            continue;
+        }
+        if ((type1 === sys.pokeType1(poke, 6) || type1 === sys.pokeType2(poke, 6)) && type1 !== 18) {
+            typea++;
+        }
+        if ((type2 === sys.pokeType1(poke, 6) || type2 === sys.pokeType2(poke, 6)) && type2 !== 18) {
+            typeb++;
+        }
+    }
+    if (typea < teamLength && typeb < teamLength) {
+        return ["Your team is not a valid Monotype team as not every team member is " + (typea >= typeb ? sys.type(type1) : sys.type(type2))];
+    }
+});
+
 tier_checker.add_new_check(INCLUDING, ["ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "XY OU", "XY UU", "XY LU", "XY NU"], function batonPassLimitXY(src, team, tier) {
     var batonPassLimit = 2;
     for (var i = 0, j = 0; i < 6; ++i) {
@@ -347,7 +353,7 @@ tier_checker.add_new_check(INCLUDING, ["BW2 NU", "BW2 NEU"], function smashPassC
     var ret = [];
     for (var i = 0; i < 6; i++) {
         if (sys.hasTeamPokeMove(src, team, i, sys.moveNum("Shell Smash")) && sys.hasTeamPokeMove(src, team, i, sys.moveNum("Baton Pass"))) {
-            ret.push(sys.pokemon(sys.teamPoke(src, team, i)) + " has the combination of Shell Smash and Baton Pass which is banned in " + tier + " please remove before entering the tier");
+            ret.push(sys.pokemon(sys.teamPoke(src, team, i)) + " has the combination of Shell Smash and Baton Pass, which is banned in " + tier + ".");
         }
     }
     return ret;
@@ -380,7 +386,7 @@ tier_checker.add_new_check(INCLUDING, ["Shanai Cup"], function shanaiAbilityChec
         var poke = sys.pokemon(sys.teamPoke(src, team, i));
         var lpoke = poke.toLowerCase();
         if (lpoke in bannedAbilities && bannedAbilities[lpoke].indexOf(lability) != -1) {
-            ret.push("" + poke + " is not allowed to have ability " + ability + " in this tier. Please change it in Teambuilder (You are now in Challenge Cup).");
+            ret.push("" + poke + " is not allowed to have ability " + ability + " in this tier.");
         }
     }
     return ret;
@@ -420,7 +426,7 @@ tier_checker.add_new_check(INCLUDING, ["Pre-PokeBank OU"], function pokeBankChec
                 for (var move = 0; move < 4; move++) {
                     if (sys.teamPokeMove(src, team, slot, move)) {
                         if (moves.indexOf(sys.teamPokeMove(src, team, slot, move).toString()) === -1) {
-                            ret.push(sys.pokemon(poke) + " cannot have move " + sys.move(sys.teamPokeMove(src, team, slot, move)) + " in this tier");
+                            ret.push(sys.pokemon(poke) + " cannot have the move " + sys.move(sys.teamPokeMove(src, team, slot, move)) + " in Pre-PokeBank OU.");
                         }
                     }
                 }
@@ -443,7 +449,7 @@ tier_checker.add_new_check(INCLUDING, ["Sky Battle"], function levitateCheck(src
         var poke = sys.pokemon(sys.teamPoke(src, team, i));
         var lpoke = poke.toLowerCase();
         if (lpoke in bannedAbilities && bannedAbilities[lpoke].indexOf(lability) != -1) {
-            ret.push("" + poke + " is not allowed to have ability " + ability + " in this tier. Please change it to Levitate in Teambuilder.");
+            ret.push("" + poke + " is not allowed to have ability " + ability + " in Sky Battle. Please change it to Levitate in Teambuilder.");
         }
     }
     return ret;
