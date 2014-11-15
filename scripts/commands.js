@@ -1,6 +1,6 @@
 var userCommands, modCommands, adminCommands, ownerCommands, channelCommands;
 
-exports.handleCommand = function(src, command, commandData, tar, channel) {
+exports.handleCommand = function (src, command, commandData, tar, channel) {
     if (userCommands === undefined) {
         userCommands = require("usercommands.js");
     }
