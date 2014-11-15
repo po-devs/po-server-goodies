@@ -2,20 +2,20 @@ var strTable = "00000000 77073096 EE0E612C 990951BA 076DC419 706AF48F E963A535 9
 
 var table = new Array();
 for (var i = 0; i < strTable.length; ++i) {
-  table[i] = parseInt("0x" + strTable[i]);
+    table[i] = parseInt("0x" + strTable[i]);
 }
 
 
-        /* Number */
-exports.crc32 = function(str, crc ) {
-    if( crc === undefined ) crc = 0;
+/* Number */
+exports.crc32 = function (str, crc) {
+    if (crc === undefined) crc = 0;
     var n = 0; //a number between 0 and 255
     var x = 0; //an hex number
     crc = crc ^ (-1);
-    for( var i = 0, iTop = str.length; i < iTop; i++ ) {
-        n = ( crc ^ str.charCodeAt( i ) ) & 0xFF;
+    for (var i = 0, iTop = str.length; i < iTop; i++) {
+        n = (crc ^ str.charCodeAt(i)) & 0xFF;
         x = "0x" + table[n];
-        crc = ( crc >>> 8 ) ^ x;
+        crc = (crc >>> 8) ^ x;
     }
     return crc ^ (-1);
 }
