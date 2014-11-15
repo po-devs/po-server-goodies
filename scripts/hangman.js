@@ -254,7 +254,7 @@ function Hangman() {
     };
     this.startGame = function (src, commandData) {
         if (commandData === undefined) {
-            hangbot.sendMessage(src, "Use /start Answer:Hint");
+            hangbot.sendMessage(src, "Use /start Answer:Hint", hangchan);
             return;
         }
         if (word) {
@@ -1167,7 +1167,7 @@ function Hangman() {
                 break;
             case "event":
                 eventLimit = val*60;
-                hangbot.sendMessage(src, "Event games with happen every " + val + " minutes.", hangchan);
+                hangbot.sendMessage(src, "Event games will happen every " + val + " minutes.", hangchan);
         }
     };
     this.onHelp = function (src, topic, channel) {
@@ -1195,7 +1195,7 @@ function Hangman() {
         ];
         var adminHelp = [
             "*** Hangman Admin Commands ***",
-            "/hangmanban: To ban a user in hangman. Format /hangmanmute name:reason:time",
+            "/hangmanban: To ban a user in hangman. Format /hangmanban name:reason:time",
             "/hangmanunban: To hangman unban a user.",
             "/hangmanbans: Searches the hangman banlist, show full list if no search term is entered.",
             "/flashhas: Flashes all Hangman Admins. Use /flashhas [phrase] to use a different message (abuse will be punished for).",
