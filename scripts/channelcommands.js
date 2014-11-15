@@ -1,8 +1,7 @@
-exports.handleCommand = function(src, command, commandData, tar, channel) {
+exports.handleCommand = function (src, command, commandData, tar, channel) {
     var poChannel = SESSION.channels(channel);
-    if (poChannel.operators === undefined)
-        poChannel.operators = [];
-    if (command == "crules" || command == "channelrules") { 
+    if (poChannel.operators === undefined) poChannel.operators = [];
+    if (command == "crules" || command == "channelrules") {
         var rules = poChannel.getRules();
         if (rules.length === 0) {
             channelbot.sendMessage(src, "No rules defined for this channel, server rules may apply", channel);
@@ -13,8 +12,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             rule = rules[x].split("\n");
             sys.sendMessage(src, rule[0], channel);
             sys.sendMessage(src, rule[1], channel);
-         }
-         return;
+        }
+        return;
     }
     if (command == "passcauth") {
         if (!commandData) {
@@ -46,7 +45,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 channelbot.sendMessage(src, newname + " is already a Channel Member!", channel);
                 return;
             }
-            poChannel.members.splice(poChannel.members.indexOf(oldname),1);
+            poChannel.members.splice(poChannel.members.indexOf(oldname), 1);
             poChannel.members.push(newname);
             channelbot.sendAll(sys.name(src) + " transferred their Channel Membership to " + newname + "!", channel);
             return;
@@ -56,7 +55,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 channelbot.sendMessage(src, newname + " is already a Channel Mod!", channel);
                 return;
             }
-            poChannel.operators.splice(poChannel.operators.indexOf(oldname),1);
+            poChannel.operators.splice(poChannel.operators.indexOf(oldname), 1);
             poChannel.operators.push(newname);
             channelbot.sendAll(sys.name(src) + " transferred their Channel Mod to " + newname + "!", channel);
             return;
@@ -66,7 +65,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 channelbot.sendMessage(src, newname + " is already a Channel Admin!", channel);
                 return;
             }
-            poChannel.admins.splice(poChannel.admins.indexOf(oldname),1);
+            poChannel.admins.splice(poChannel.admins.indexOf(oldname), 1);
             poChannel.admins.push(newname);
             channelbot.sendAll(sys.name(src) + " transferred their Channel Admin to " + newname + "!", channel);
             return;
@@ -76,7 +75,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 channelbot.sendMessage(src, newname + " is already a Channel Owner!", channel);
                 return;
             }
-            poChannel.masters.splice(poChannel.masters.indexOf(oldname),1);
+            poChannel.masters.splice(poChannel.masters.indexOf(oldname), 1);
             poChannel.masters.push(newname);
             channelbot.sendAll(sys.name(src) + " transferred their Channel Owner to " + newname + "!", channel);
             return;
@@ -84,18 +83,18 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         channelbot.sendMessage(src, "You don't have sufficient channel auth to pass that position.", channel);
         return;
     }
-    
+
     if (!poChannel.isChannelOperator(src)) {
         return "no command";
     }
-    
+
     if (command == "lt" || command == "lovetap") {
         if (tar === undefined) {
             normalbot.sendMessage(src, "Choose a valid target for your love!", channel);
             return;
         }
         var colour = script.getColor(src);
-        sendChanHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
+        sendChanHtmlAll("<font color='" + colour + "'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
         sys.kick(tar, channel);
         return;
     }
@@ -104,7 +103,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "Choose a valid target to kick", channel);
             return;
         }
-        normalbot.sendAll(sys.name(src) + " kicked "+commandData+" from the channel!", channel);
+        normalbot.sendAll(sys.name(src) + " kicked " + commandData + " from the channel!", channel);
         sys.kick(tar, channel);
         return;
     }
@@ -147,7 +146,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (tar !== undefined) {
             if (sys.isInChannel(tar, channel) && command == "deinvite") {
                 sys.kick(tar, channel);
-                channelbot.sendAll("And "+commandData+" was gone!", channel);
+                channelbot.sendAll("And " + commandData + " was gone!", channel);
             }
         }
         return;
@@ -157,7 +156,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "cmeoff") {
-        /*if (channel === 0 || channel == tourchannel) {
+/*if (channel === 0 || channel == tourchannel) {
             normalbot.sendMessage(src, "/me can't be turned off here.", channel);
             return;
         }*/
@@ -176,7 +175,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "cmute") {
-        var tmp = commandData.split(":",3);
+        var tmp = commandData.split(":", 3);
         var tarname = tmp[0];
         var time = 0;
         var reason = "";
@@ -193,7 +192,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
         }
-        poChannel.mute(src, tarname, {'time': time, 'reason': reason}, SESSION.users(src).smute.active);
+        poChannel.mute(src, tarname, {
+            'time': time,
+            'reason': reason
+        }, SESSION.users(src).smute.active);
         return;
     }
     if (command == "cunmute") {
@@ -235,7 +237,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "inviteonly") {
         if (commandData === undefined) {
-            channelbot.sendMessage(src,poChannel.inviteonly === 0 ? "This channel is public!" : "This channel is invite only for users below auth level "+poChannel.inviteonly, channel);
+            channelbot.sendMessage(src, poChannel.inviteonly === 0 ? "This channel is public!" : "This channel is invite only for users below auth level " + poChannel.inviteonly, channel);
             return;
         }
         var value = -1;
@@ -246,7 +248,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             value = 3;
         }
         else {
-            value = parseInt(commandData,10);
+            value = parseInt(commandData, 10);
         }
         var message = poChannel.changeParameter(src, "invitelevel", value);
         normalbot.sendAll(message, channel);
@@ -268,7 +270,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "cban") {
-        var tmp = commandData.split(":",3);
+        var tmp = commandData.split(":", 3);
         var tarname = tmp[0];
         var time = 0;
         var reason = "";
@@ -285,7 +287,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
         }
-        poChannel.ban(src, tarname, {'time': time, 'reason': reason});
+        poChannel.ban(src, tarname, {
+            'time': time,
+            'reason': reason
+        });
         return;
     }
     if (command == "cunban") {
@@ -331,26 +336,26 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var returnVal = poChannel.addRule(commandData[0], commandData[1]);
-        if (returnVal) {    
+        if (returnVal) {
             channelbot.sendMessage(src, returnVal);
         } else {
             channelbot.sendMessage(src, "You added a rule", channel);
-         }
+        }
         return;
     }
     if (command == "removerule") {
         var returnVal = poChannel.removeRule(commandData);
-        if (returnVal) {    
+        if (returnVal) {
             channelbot.sendMessage(src, returnVal, channel);
         } else {
             channelbot.sendMessage(src, "You removed a rule", channel);
         }
         return;
     }
-     
+
     return "no command";
 };
-exports.help = function(src, channel) {
+exports.help = function (src, channel) {
     var poChannel = SESSION.channels(channel);
     sys.sendMessage(src, "/cauth: Shows a list of channel auth.", channel);
     sys.sendMessage(src, "/register: To register the current channel you're on if it isn't registered already.", channel);

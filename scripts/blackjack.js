@@ -21,7 +21,7 @@ var config = {
     bot: "Scrafty", //name of channel bot
     channel: "Blackjack", //channel Blackjack to be played in
     hitlimit: 16, //Upper limit dealer can hit on
-    owner: "Crystal Moogle", //default channel owner
+    owner: "Crystal Moogle",//default channel owner
     deckNumber: 2 //amount of decks to use
 };
 

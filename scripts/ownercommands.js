@@ -1,16 +1,15 @@
-exports.handleCommand = function(src, command, commandData, tar, channel) {
+exports.handleCommand = function (src, command, commandData, tar, channel) {
     if (command == "ipban") {
         var subip;
         var comment;
         var space = commandData.indexOf(' ');
         if (space != -1) {
-            subip = commandData.substring(0,space);
-            comment = commandData.substring(space+1);
+            subip = commandData.substring(0, space);
+            comment = commandData.substring(space + 1);
         } else {
             subip = commandData;
             comment = '';
-        }
-        /* check ip */
+        } /* check ip */
         var i = 0;
         var nums = 0;
         var dots = 0;
@@ -36,8 +35,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "The IP address looks strange, you might want to correct it: " + subip, channel);
             return;
         }
-        script.ipbans.add(subip, "Name: " +sys.name(src) + " Comment: " + script.rangebans.escapeValue(comment));
-        normalbot.sendAll("IP ban added successfully for IP subrange: " + subip + " by "+ sys.name(src),staffchannel);
+        script.ipbans.add(subip, "Name: " + sys.name(src) + " Comment: " + script.rangebans.escapeValue(comment));
+        normalbot.sendAll("IP ban added successfully for IP subrange: " + subip + " by " + sys.name(src), staffchannel);
         return;
     }
     if (command == "ipunban") {
@@ -51,7 +50,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "changerating") {
-        var data =  commandData.split(' -- ');
+        var data = commandData.split(' -- ');
         if (data.length != 3) {
             normalbot.sendMessage(src, "You need to give 3 parameters.", channel);
             return;
@@ -66,10 +65,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "hiddenauth") {
         sys.sendMessage(src, "*** Hidden Auth ***", channel);
-        sys.dbAuths().sort().filter(function(name) { return sys.dbAuth(name) > 3; }).forEach(function(name) {
+        sys.dbAuths().sort().filter(function (name) {
+            return sys.dbAuth(name) > 3;
+        }).forEach(function (name) {
             sys.sendMessage(src, name + " " + sys.dbAuth(name), channel);
         });
-        sys.sendMessage(src, "",channel);
+        sys.sendMessage(src, "", channel);
         return;
     }
     if (command == "capslockday") {
@@ -85,7 +86,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "contributor") {
         var s = commandData.split(":");
-        var name = s[0], reason = s[1];
+        var name = s[0],
+            reason = s[1];
         if (sys.dbIp(name) === undefined) {
             normalbot.sendMessage(src, name + " couldn't be found.", channel);
             return;
@@ -97,8 +99,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "contributoroff") {
         var contrib = "";
         for (var x in script.contributors.hash) {
-            if (x.toLowerCase() == commandData.toLowerCase())
-            contrib = x;
+            if (x.toLowerCase() == commandData.toLowerCase()) contrib = x;
         }
         if (contrib === "") {
             normalbot.sendMessage(src, commandData + " isn't a contributor.", channel);
@@ -109,15 +110,15 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "showteam") {
-        var teams = [0,1,2,3,4,5].map(function(index) {
+        var teams = [0, 1, 2, 3, 4, 5].map(function (index) {
             return script.importable(tar, index);
-        }, this).filter(function(data) {
+        }, this).filter(function (data) {
             return data.length > 0;
-        }).map(function(team) {
+        }).map(function (team) {
             return "<tr><td><pre>" + team.join("<br>") + "</pre></td></tr>";
         }).join("");
         if (teams) {
-            sys.sendHtmlMessage(src, "<table border='2'>" + teams + "</table>",channel);
+            sys.sendHtmlMessage(src, "<table border='2'>" + teams + "</table>", channel);
             normalbot.sendAll(sys.name(src) + " just viewed " + sys.name(tar) + "'s team.", staffchannel);
         } else {
             normalbot.sendMessage(src, "That player has no teams with valid pokemon.", channel);
@@ -129,13 +130,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var comment;
         var space = commandData.indexOf(' ');
         if (space != -1) {
-            subip = commandData.substring(0,space);
-            comment = commandData.substring(space+1);
+            subip = commandData.substring(0, space);
+            comment = commandData.substring(space + 1);
         } else {
             subip = commandData;
             comment = '';
-        }
-        /* check ip */
+        } /* check ip */
         var i = 0;
         var nums = 0;
         var dots = 0;
@@ -164,8 +164,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 
         /* add rangeban */
         script.rangebans.add(subip, script.rangebans.escapeValue(comment) + " --- " + sys.name(src));
-        normalbot.sendAll("Rangeban added successfully for IP subrange: " + subip, staffchannel);
-        /* kick them */
+        normalbot.sendAll("Rangeban added successfully for IP subrange: " + subip, staffchannel); /* kick them */
         var players = sys.playerIds();
         var players_length = players.length;
         var names = [];
@@ -180,7 +179,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             }
         }
         if (names.length > 0) {
-            sys.sendAll("±Jirachi: "+names.join(", ") + " got range banned by " + sys.name(src), staffchannel);
+            sys.sendAll("±Jirachi: " + names.join(", ") + " got range banned by " + sys.name(src), staffchannel);
         }
         return;
     }
@@ -197,11 +196,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "purgemutes") {
         var time = parseInt(commandData, 10);
         if (isNaN(time)) {
-            time = 60*60*24*7*4;
+            time = 60 * 60 * 24 * 7 * 4;
         }
         var limit = parseInt(sys.time(), 10) - time;
         var removed = [];
-        script.mutes.removeIf(function(memoryhash, item) {
+        script.mutes.removeIf(function (memoryhash, item) {
             var data = memoryhash.get(item).split(":");
             if (parseInt(data[0], 10) < limit || (data.length > 3 && parseInt(data[2], 10) < limit)) {
                 removed.push(item);
@@ -219,11 +218,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "purgesmutes") {
         var time = parseInt(commandData, 10);
         if (isNaN(time)) {
-            time = 60*60*24*7*4;
+            time = 60 * 60 * 24 * 7 * 4;
         }
         var limit = parseInt(sys.time(), 10) - time;
         var removed = [];
-        script.smutes.removeIf(function(memoryhash, item) {
+        script.smutes.removeIf(function (memoryhash, item) {
             var data = memoryhash.get(item).split(":");
             if (parseInt(data[0], 10) < limit) {
                 removed.push(item);
@@ -242,11 +241,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "purgembans") {
         var time = parseInt(commandData, 10);
         if (isNaN(time)) {
-            time = 60*60*24*7;
+            time = 60 * 60 * 24 * 7;
         }
         var limit = parseInt(sys.time(), 10) - time;
         var removed = [];
-        script.mbans.removeIf(function(memoryhash, item) {
+        script.mbans.removeIf(function (memoryhash, item) {
             var data = memoryhash.get(item).split(":");
             if (parseInt(data[0], 10) < limit || (data.length > 3 && parseInt(data[2], 10) < limit)) {
                 removed.push(item);
@@ -270,24 +269,24 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendAll(commandData, channel);
         return;
     }
-    if(command == "sendmessage"){
+    if (command == "sendmessage") {
         var para = commandData.split(':::');
-        if(para.length < 3){
+        if (para.length < 3) {
             return;
         }
         var tar = sys.id(para[0]);
-        var mess =  para[1];
+        var mess = para[1];
         var chan = sys.channelId(para[2]);
         sys.sendMessage(tar, mess, chan);
         return;
     }
-    if(command == "sendhtmlmessage"){
+    if (command == "sendhtmlmessage") {
         var para = commandData.split(':::');
-        if(para.length < 3){
+        if (para.length < 3) {
             return;
         }
         var tar = sys.id(para[0]);
-        var mess =  para[1];
+        var mess = para[1];
         var chan = sys.channelId(para[2]);
         sys.sendHtmlMessage(tar, mess, chan);
         return;
@@ -303,13 +302,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "autosmute") {
-        if(sys.dbIp(commandData) === undefined) {
+        if (sys.dbIp(commandData) === undefined) {
             normalbot.sendMessage(src, "No player exists by this name!", channel);
             return;
         }
-        if (sys.maxAuth(sys.dbIp(commandData))>=sys.auth(src)) {
-           normalbot.sendMessage(src, "Can't do that to higher auth!", channel);
-           return;
+        if (sys.maxAuth(sys.dbIp(commandData)) >= sys.auth(src)) {
+            normalbot.sendMessage(src, "Can't do that to higher auth!", channel);
+            return;
         }
         var name = commandData.toLowerCase();
         if (autosmute.indexOf(name) !== -1) {
@@ -326,7 +325,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "removeautosmute") {
         var name = commandData.toLowerCase();
-        autosmute = autosmute.filter(function(list_name) {
+        autosmute = autosmute.filter(function (list_name) {
             if (list_name == name) {
                 normalbot.sendAll(commandData + " was removed from the autosmute list", staffchannel);
                 return true;
@@ -343,34 +342,37 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var channels = args[1].split(",");
-        var cids = channels.map(function(text) {
+        var cids = channels.map(function (text) {
             return sys.channelId(text.replace(/(^\s*)|(\s*$)/g, ""));
-        }).filter(function(cid) { return cid !== undefined; });
+        }).filter(function (cid) {
+            return cid !== undefined;
+        });
         if (cids.length === 0) return;
         var what = args.slice(2).join(":");
         var count = 1;
         var html = command == "periodichtml";
-        var callback = function(sayer, minutes, cids, what, count) {
+        var callback = function (sayer, minutes, cids, what, count) {
             var name = sys.name(sayer);
             if (name === undefined) return;
             SESSION.users(sayer).callcount--;
             if (SESSION.users(sayer).endcalls) {
-                normalbot.sendMessage(src, "Periodic say of '"+what+"' has ended.");
+                normalbot.sendMessage(src, "Periodic say of '" + what + "' has ended.");
                 SESSION.users(sayer).endcalls = false;
                 return;
             }
-            cids.forEach(function(cid) {
-                if (sys.isInChannel(sayer, cid))
-                    if (html) {
-                        var colour = script.getColor(sayer);
-                        sys.sendHtmlAll("<font color='"+colour+"'><timestamp/> <b>" + utilities.html_escape(sys.name(sayer)) + ":</font></b> " + what, cid);
-                    } else {
-                        sys.sendAll(sys.name(sayer) + ": " + what, cid);
-                    }
+            cids.forEach(function (cid) {
+                if (sys.isInChannel(sayer, cid)) if (html) {
+                    var colour = script.getColor(sayer);
+                    sys.sendHtmlAll("<font color='" + colour + "'><timestamp/> <b>" + utilities.html_escape(sys.name(sayer)) + ":</font></b> " + what, cid);
+                } else {
+                    sys.sendAll(sys.name(sayer) + ": " + what, cid);
+                }
             });
             if (++count > 100) return; // max repeat is 100
             SESSION.users(sayer).callcount++;
-            sys.delayedCall(function() { callback(sayer, minutes, cids, what, count) ;}, 60*minutes);
+            sys.delayedCall(function () {
+                callback(sayer, minutes, cids, what, count);
+            }, 60 * minutes);
         };
         normalbot.sendMessage(src, "Starting a new periodicsay");
         SESSION.users(sayer).callcount = SESSION.users(sayer).callcount || 0;
@@ -396,7 +398,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "changeauth" || command == "changeauths") {
         var pos = commandData.indexOf(' ');
         if (pos == -1) return;
-        var newauth = commandData.substring(0, pos), name = commandData.substr(pos+1), tar = sys.id(name), silent = command == "changeauths";
+        var newauth = commandData.substring(0, pos),
+            name = commandData.substr(pos + 1),
+            tar = sys.id(name),
+            silent = command == "changeauths";
         if (newauth > 0 && !sys.dbRegistered(name)) {
             normalbot.sendMessage(src, "This person is not registered");
             normalbot.sendMessage(tar, "Please register, before getting auth");
@@ -432,7 +437,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "clearladder" || command == "resetladder") {
         var tier = utilities.find_tier(commandData);
-        if(tier) {
+        if (tier) {
             sys.resetLadder(tier);
             normalbot.sendAll(tier + " ladder has been reset!");
             return;
@@ -451,7 +456,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             SESSION.channels(staffchannel).perm = true;
             normalbot.sendMessage(src, "Staff channel was remade!");
             return;
-            }
+        }
         if (commandData == "off") {
             SESSION.channels(staffchannel).perm = false;
             var players = sys.playersOfChannel(staffchannel);
@@ -467,7 +472,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "stopbattles") {
         battlesStopped = !battlesStopped;
-        if (battlesStopped)  {
+        if (battlesStopped) {
             sys.sendAll("");
             sys.sendAll("*** ********************************************************************** ***");
             battlebot.sendAll("The battles are now stopped. The server will restart soon.");
@@ -499,7 +504,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "updatebansites") {
         normalbot.sendMessage(src, "Fetching ban sites...", channel);
-        sys.webCall(Config.base_url + "bansites.txt", function(resp) {
+        sys.webCall(Config.base_url + "bansites.txt", function (resp) {
             if (resp !== "") {
                 sys.writeToFile('bansites.txt', resp);
                 SESSION.global().BannedUrls = resp.toLowerCase().split(/\n/);
@@ -516,7 +521,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         delete require.cache['tierchecks.js'];
         tier_checker = require('tierchecks.js');
         normalbot.sendAll('Updated tier checks!', staffchannel);
-        sys.playerIds().forEach(function(id) {
+        sys.playerIds().forEach(function (id) {
             for (var team = 0; team < sys.teamCount(id); team++) {
                 if (!tier_checker.has_legal_team_for_tier(id, team, sys.tier(id, team))) {
                     tier_checker.find_good_tier(id, team);
@@ -528,7 +533,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "updatecommands") {
         var commandFiles = ["usercommands.js", "modcommands.js", "admincommands.js", "ownercommands.js", "channelcommands.js", "commands.js"];
-        commandFiles.forEach(function(file) {
+        commandFiles.forEach(function (file) {
             var module = updateModule(file);
             module.source = file;
             delete require.cache[file];
@@ -541,14 +546,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "updatechannels") {
         var commandFiles = ["channelfunctions.js", "channelmanager.js"];
-        commandFiles.forEach(function(file) {
+        commandFiles.forEach(function (file) {
             var module = updateModule(file);
             module.source = file;
             delete require.cache[file];
-            if (file === "channelfunctions.js") { 
+            if (file === "channelfunctions.js") {
                 POChannel = require(file).POChannel;
             }
-            if (file === "channelmanager.js") { 
+            if (file === "channelmanager.js") {
                 POChannelManager = require(file).POChannelManager;
             }
         });
@@ -576,11 +581,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "updatescripts") {
         normalbot.sendMessage(src, "Fetching scripts...", channel);
         var updateURL = Config.base_url + "scripts.js";
-        if (commandData !== undefined && (commandData.substring(0,7) == 'http://' || commandData.substring(0,8) == 'https://')) {
+        if (commandData !== undefined && (commandData.substring(0, 7) == 'http://' || commandData.substring(0, 8) == 'https://')) {
             updateURL = commandData;
         }
         var channel_local = channel;
-        var changeScript = function(resp) {
+        var changeScript = function (resp) {
             if (resp === "") return;
             try {
                 sys.changeScript(resp);
@@ -599,11 +604,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "updatetiers" || command == "updatetierssoft") {
         normalbot.sendMessage(src, "Fetching tiers...", channel);
         var updateURL = Config.base_url + "tiers.xml";
-        if (commandData !== undefined && (commandData.substring(0,7) == 'http://' || commandData.substring(0,8) == 'https://')) {
+        if (commandData !== undefined && (commandData.substring(0, 7) == 'http://' || commandData.substring(0, 8) == 'https://')) {
             updateURL = commandData;
         }
         normalbot.sendMessage(src, "Fetching tiers from " + updateURL, channel);
-        var updateTiers = function(resp) {
+        var updateTiers = function (resp) {
             if (resp === "") return;
             try {
                 sys.writeToFile("tiers.xml", resp);
@@ -613,7 +618,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                     normalbot.sendMessage(src, "Tiers.xml updated!", channel);
                 }
             } catch (e) {
-                normalbot.sendMessage(src, "ERROR: "+e, channel);
+                normalbot.sendMessage(src, "ERROR: " + e, channel);
                 return;
             }
         };
@@ -631,13 +636,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "addplugin") {
         var POglobal = SESSION.global();
         var bind_chan = channel;
-        updateModule(commandData, function(module) {
+        updateModule(commandData, function (module) {
             POglobal.plugins.push(module);
             module.source = commandData;
             try {
                 module.init();
                 sys.sendMessage(src, "±Plugins: Module " + commandData + " updated!", bind_chan);
-            } catch(e) {
+            } catch (e) {
                 sys.sendMessage(src, "±Plugins: Module " + commandData + "'s init function failed: " + e, bind_chan);
             }
         });
@@ -649,7 +654,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if (commandData == POglobal.plugins[i].source) {
                 normalbot.sendMessage(src, "Module " + POglobal.plugins[i].source + " removed!", channel);
-                POglobal.plugins.splice(i,1);
+                POglobal.plugins.splice(i, 1);
                 return;
             }
         }
@@ -659,8 +664,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "updateplugin") {
         var bind_channel = channel;
         var POglobal = SESSION.global();
-        var MakeUpdateFunc = function(i, source) {
-            return function(module) {
+        var MakeUpdateFunc = function (i, source) {
+            return function (module) {
                 POglobal.plugins[i] = module;
                 module.source = source;
                 module.init();
@@ -690,7 +695,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "warnwebclients") {
         var data = utilities.html_escape(commandData);
-        sys.playerIds().forEach(function(id) {
+        sys.playerIds().forEach(function (id) {
             if (sys.loggedIn(id) && sys.proxyIp(id) === "127.0.0.1") {
                 sys.sendHtmlMessage(id, "<font color=red size=7><b>" + data + "</b></font>");
             }
@@ -700,13 +705,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "advertise") {
         if (!commandData) {
             return;
-        }
-        ["Tohjo Falls", "Trivia", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview", "Mafia", "Hangman"].forEach(function(c) {
-            sys.sendHtmlAll("<font size = 4><b>"+commandData+"</b></font>", sys.channelId(c));
+        }["Tohjo Falls", "Trivia", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview", "Mafia", "Hangman"].forEach(function (c) {
+            sys.sendHtmlAll("<font size = 4><b>" + commandData + "</b></font>", sys.channelId(c));
         });
         return;
     }
-    
+
     if (command == "tempmod" || command == "tempadmin") {
         if (!commandData || !sys.loggedIn(sys.id(commandData))) {
             normalbot.sendMessage(src, "Target must be logged in", channel);
@@ -718,7 +722,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "They are already " + type, channel);
             return;
         }
-        if (sys.auth(tar) < 1 && type === "admin") { 
+        if (sys.auth(tar) < 1 && type === "admin") {
             normalbot.sendMessage(src, "Can only use on current mods", channel);
             return;
         }
@@ -730,7 +734,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendAll(commandData.toCorrectCase() + " was made temp " + type, staffchannel);
         return;
     }
-    
+
     if (command == "detempmod" || command == "detempadmin" || command == "detempauth") {
         if (!commandData || !sys.loggedIn(sys.id(commandData))) {
             normalbot.sendMessage(src, "Target must be logged in", channel);

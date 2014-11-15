@@ -1,12 +1,9 @@
 /*global normalbot, script, sys, SESSION, module, staffchannel, autosmute, sendChanAll */
 //inherited from main script
+module.exports.init = function () {}; //this is just so it says when updated thought /updateplugin :x
+module.exports.beforeChatMessage = function beforeChatMessage(src, message, channel) {};
 
-module.exports.init = function() {}; //this is just so it says when updated thought /updateplugin :x
-
-module.exports.beforeChatMessage = function beforeChatMessage(src, message, channel) {
-};
-
-module.exports.afterChangeTeam = function afterChangeTeam(src){
+module.exports.afterChangeTeam = function afterChangeTeam(src) {
     this.afterLogIn(src);
 };
 

@@ -1,5 +1,4 @@
-function POGlobal(id)
-{
+function POGlobal(id) {
     var plugin_files = Config.Plugins;
     var plugins = [];
     for (var i = 0; i < plugin_files.length; ++i) {
@@ -11,13 +10,12 @@ function POGlobal(id)
     this.coins = 0;
     this.channelManager = new POChannelManager('scriptdata/channelHash.txt');
     var manager = this.channelManager;
-    sys.channelIds().forEach(function(id) {
+    sys.channelIds().forEach(function (id) {
         manager.restoreSettings(id);
     });
 }
 
-POGlobal.prototype.callplugins = function callplugins(event) {
-    /* if a plugin wishes to stop event, it should return true */
+POGlobal.prototype.callplugins = function callplugins(event) { /* if a plugin wishes to stop event, it should return true */
     var plugins = this.plugins;
     var ret = false;
     var args = Array.prototype.slice.call(arguments, 1);

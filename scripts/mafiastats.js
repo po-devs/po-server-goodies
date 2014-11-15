@@ -317,7 +317,7 @@ function mafiaStats() {
             output.push("<td><b>" + overall[x] + "</b></td>");
         }
         output.push("</table>");
-        
+
         output.push("<br><table>");
         output.push("<tr><th>Sides/Players</th>");
         for (var x = +start; x < +end + 1; x++) {
@@ -338,7 +338,7 @@ function mafiaStats() {
             }
         }
         output.push("</table>");
-        
+
         return output.join("");
     };
 }
