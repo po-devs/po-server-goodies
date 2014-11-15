@@ -213,9 +213,7 @@ function Hangman() {
         }
         var ans = commandData.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g, '');
         if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|\banus|boner|\btits\b|condom|\brape\b/gi.test(ans)) {
-            if (sys.existChannel("Victory Road")) { 
-            hangbot.sendAll("Warning: Player " + sys.name(src) + " answered '" + ans + "' in #Hangman", sys.channelId("Victory Road"));
-            }
+            if (sys.existChannel("Victory Road")) hangbot.sendAll("Warning: Player " + sys.name(src) + " answered '" + ans + "' in #Hangman", sys.channelId("Victory Road"));
         }
         sendChanHtmlAll(" ", hangchan);
 
@@ -295,14 +293,10 @@ function Hangman() {
             return;
         }
         if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|\banus|boner|\btits\b|condom|\brape\b/gi.test(h)) {
-            if (sys.existChannel("Victory Road")) { 
-            hangbot.sendAll("Warning: Player " + sys.name(src) + " made the hint '" + h + "' in #Hangman", sys.channelId("Victory Road"));
-            }
+            if (sys.existChannel("Victory Road")) hangbot.sendAll("Warning: Player " + sys.name(src) + " made the hint '" + h + "' in #Hangman", sys.channelId("Victory Road"));
         }
         if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|\banus|boner|\btits\b|condom|\brape\b/gi.test(a)) {
-            if (sys.existChannel("Victory Road")) {
-                hangbot.sendAll("Warning: Player " + sys.name(src) + " made the answer '" + a + "' in #Hangman", sys.channelId("Victory Road"));
-            }
+            if (sys.existChannel("Victory Road")) hangbot.sendAll("Warning: Player " + sys.name(src) + " made the answer '" + a + "' in #Hangman", sys.channelId("Victory Road"));
         }
 
         isEventGame = false;
@@ -594,9 +588,7 @@ function Hangman() {
             hangbot.sendAll("" + sys.name(src) + " stopped the game!", hangchan);
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
-            if (sys.existChannel("Victory Road")) {
-                hangbot.sendAll("Warning: Player " + sys.name(src) + " stopped " + (sys.name(src) == hostName ? "their" : hostName + "'s") + " game in #Hangman", sys.channelId("Victory Road"));
-            }
+            if (sys.existChannel("Victory Road")) hangbot.sendAll("Warning: Player " + sys.name(src) + " stopped " + (sys.name(src) == hostName ? "their" : hostName + "'s") + " game in #Hangman", sys.channelId("Victory Road"));
             word = undefined;
             winner = undefined;
             this.resetTimers();
@@ -644,32 +636,8 @@ function Hangman() {
             sys.sendMessage(src, rules[x], hangchan);
         }
     };
-        this.showHelp = function (src) {
-        var x, help = [
-            "",
-            "*** *********************************************************************** ***",
-            "±Goal: Your goal is to guess a word on a letter by letter basis. A hint and the number of characters will be provided as a help.",
-            "±Goal: Whenever someone guess a letter correctly, that letter will be filled in the word.",
-            "±Goal: Guessing a correct letter gives a point for each time it appears. If you guess the last letter you get 2 additional points.",
-            "±Goal: If you guess the whole word correctly you get an additional point for every 3 letters you fill.",
-            "*** *********************************************************************** ***",
-            "±Actions: To see the current puzzle, type /view.",
-            "±Actions: To guess a character, type /g or /guess [character]. For example, to guess F, type /g F.",
-            "±Actions: If you think you already know the answer, you can use /a or /answer [answer] to submit a full answer.",
-            "±Actions: If you guess wrong too many times, the host wins!",
-            "*** *********************************************************************** ***",
-            "±Hosting: To host a game, type /start Answer:Hint. The host can't guess or answer during their own game.",
-            "±Hosting: You can also type /start Answer:Hint:Number to set how many wrong guesses must be made before you win (minimum of " + minBodyParts + ").",
-            "±Hosting: The winner of the previous game has priority for hosting the next game, and may use /pass User to give that priority to another user.",
-            "±Hosting: If the user with hosting priority doesn't start a new game within " + winnerDelay + " seconds, anyone can host.",
-            "*** *********************************************************************** ***",
-            "±Rules: Do not create inappropriate answers, hints or guesses, or attempt to troll the game in any way. This includes but is not limited to offences such as guessing uncommon letters or deliberately spoiling the answer.",
-            "±Rules: Make sure all games are accessible, playable and spelled correctly. This includes but is not limited to relevant, non-vague, specific and non-opinionated subjects, games in other languages, suitable hints and guess counts.",
-            "±Rules: Remember to act in a cordial manner, both when interacting with channel users and authority, and playing the game.",
-            "±Rules: Pay attention to channel and server authority (under /has and /auth respectively). Server /rules apply here too. If you have any doubt or see someone breaking the rules, contact the appropiate person (HA for hangman, auth for server).",
-            "*** *********************************************************************** ***",
-            ""
-        ];
+    this.showHelp = function (src) {
+        var x, help = ["", "*** *********************************************************************** ***", "±Goal: Your goal is to guess a word on a letter by letter basis. A hint and the number of characters will be provided as a help.", "±Goal: Whenever someone guess a letter correctly, that letter will be filled in the word.", "±Goal: Guessing a correct letter gives a point for each time it appears. If you guess the last letter you get 2 additional points.", "±Goal: If you guess the whole word correctly you get an additional point for every 3 letters you fill.", "*** *********************************************************************** ***", "±Actions: To see the current puzzle, type /view.", "±Actions: To guess a character, type /g or /guess [character]. For example, to guess F, type /g F.", "±Actions: If you think you already know the answer, you can use /a or /answer [answer] to submit a full answer.", "±Actions: If you guess wrong too many times, the host wins!", "*** *********************************************************************** ***", "±Hosting: To host a game, type /start Answer:Hint. The host can't guess or answer during their own game.", "±Hosting: You can also type /start Answer:Hint:Number to set how many wrong guesses must be made before you win (minimum of " + minBodyParts + ").", "±Hosting: The winner of the previous game has priority for hosting the next game, and may use /pass User to give that priority to another user.", "±Hosting: If the user with hosting priority doesn't start a new game within " + winnerDelay + " seconds, anyone can host.", "*** *********************************************************************** ***", "±Rules: Do not create inappropriate answers, hints or guesses, or attempt to troll the game in any way. This includes but is not limited to offences such as guessing uncommon letters or deliberately spoiling the answer.", "±Rules: Make sure all games are accessible, playable and spelled correctly. This includes but is not limited to relevant, non-vague, specific and non-opinionated subjects, games in other languages, suitable hints and guess counts.", "±Rules: Remember to act in a cordial manner, both when interacting with channel users and authority, and playing the game.", "±Rules: Pay attention to channel and server authority (under /has and /auth respectively). Server /rules apply here too. If you have any doubt or see someone breaking the rules, contact the appropiate person (HA for hangman, auth for server).", "*** *********************************************************************** ***", ""];
         for (x in help) {
             sys.sendMessage(src, help[x], hangchan);
         }
@@ -1095,9 +1063,7 @@ function Hangman() {
             else {
                 hangbot.sendMessage(src, "The answer for the current game is " + word.toUpperCase() + "!", hangchan);
                 checked.push(sys.ip(src));
-                if (sys.existChannel("Victory Road")) {
-                    hangbot.sendAll("Warning: Player " + sys.name(src) + " checked the current answer in #Hangman", sys.channelId("Victory Road"));
-                }
+                if (sys.existChannel("Victory Road")) hangbot.sendAll("Warning: Player " + sys.name(src) + " checked the current answer in #Hangman", sys.channelId("Victory Road"));
             }
         }
     };
