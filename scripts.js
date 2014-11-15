@@ -1378,7 +1378,7 @@ Jolly Nature (+Spd, -SAtk)
             return;
         }
         sys.sendMessage(src, "*** Type in /Rules to see the rules. ***");
-        commandbot.sendMessage(src, "Use !commands to see the commands!");
+        commandbot.sendMessage(src, "Use /commands to see the commands!");
 
         if (sys.numPlayers() > maxPlayersOnline) {
             maxPlayersOnline = sys.numPlayers();
