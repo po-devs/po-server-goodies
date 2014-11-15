@@ -213,7 +213,9 @@ function Hangman() {
         }
         var ans = commandData.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g, '');
         if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|\banus|boner|\btits\b|condom|\brape\b/gi.test(ans)) {
-            if (sys.existChannel("Victory Road")) hangbot.sendAll("Warning: Player " + sys.name(src) + " answered '" + ans + "' in #Hangman", sys.channelId("Victory Road"));
+            if (sys.existChannel("Victory Road")) { 
+            hangbot.sendAll("Warning: Player " + sys.name(src) + " answered '" + ans + "' in #Hangman", sys.channelId("Victory Road"));
+            }
         }
         sendChanHtmlAll(" ", hangchan);
 
@@ -293,10 +295,14 @@ function Hangman() {
             return;
         }
         if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|\banus|boner|\btits\b|condom|\brape\b/gi.test(h)) {
-            if (sys.existChannel("Victory Road")) hangbot.sendAll("Warning: Player " + sys.name(src) + " made the hint '" + h + "' in #Hangman", sys.channelId("Victory Road"));
+            if (sys.existChannel("Victory Road")) { 
+            hangbot.sendAll("Warning: Player " + sys.name(src) + " made the hint '" + h + "' in #Hangman", sys.channelId("Victory Road"));
+            }
         }
         if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|\banus|boner|\btits\b|condom|\brape\b/gi.test(a)) {
-            if (sys.existChannel("Victory Road")) hangbot.sendAll("Warning: Player " + sys.name(src) + " made the answer '" + a + "' in #Hangman", sys.channelId("Victory Road"));
+            if (sys.existChannel("Victory Road")) {
+                hangbot.sendAll("Warning: Player " + sys.name(src) + " made the answer '" + a + "' in #Hangman", sys.channelId("Victory Road"));
+            }
         }
 
         isEventGame = false;
@@ -588,7 +594,9 @@ function Hangman() {
             hangbot.sendAll("" + sys.name(src) + " stopped the game!", hangchan);
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
-            if (sys.existChannel("Victory Road")) hangbot.sendAll("Warning: Player " + sys.name(src) + " stopped " + (sys.name(src) == hostName ? "their" : hostName + "'s") + " game in #Hangman", sys.channelId("Victory Road"));
+            if (sys.existChannel("Victory Road")) {
+                hangbot.sendAll("Warning: Player " + sys.name(src) + " stopped " + (sys.name(src) == hostName ? "their" : hostName + "'s") + " game in #Hangman", sys.channelId("Victory Road"));
+            }
             word = undefined;
             winner = undefined;
             this.resetTimers();
@@ -1087,7 +1095,9 @@ function Hangman() {
             else {
                 hangbot.sendMessage(src, "The answer for the current game is " + word.toUpperCase() + "!", hangchan);
                 checked.push(sys.ip(src));
-                if (sys.existChannel("Victory Road")) hangbot.sendAll("Warning: Player " + sys.name(src) + " checked the current answer in #Hangman", sys.channelId("Victory Road"));
+                if (sys.existChannel("Victory Road")) {
+                    hangbot.sendAll("Warning: Player " + sys.name(src) + " checked the current answer in #Hangman", sys.channelId("Victory Road"));
+                }
             }
         }
     };
