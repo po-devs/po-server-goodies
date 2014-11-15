@@ -33,11 +33,13 @@ pokedex.getAllGenMoves = function (pokeId) {
     return allGenMovesList[pokedex.getDBIndex(pokeId)];
 };
 
-pokedex.natures = [["Hardy", "Lonely", "Adamant", "Naughty", "Brave"],
+pokedex.natures = [
+    ["Hardy", "Lonely", "Adamant", "Naughty", "Brave"],
     ["Bold", "Docile", "Impish", "Lax", "Relaxed"],
     ["Modest", "Mild", "Bashful", "Rash", "Quiet"],
     ["Calm", "Gentle", "Careful", "Quirky", "Sassy"],
-    ["Timid", "Hasty", "Jolly", "Naive", "Serious"]];
+    ["Timid", "Hasty", "Jolly", "Naive", "Serious"]
+];
 
 pokedex.getNatureEffect = function (nature) {
     nature = nature.toLowerCase();
@@ -307,6 +309,5 @@ pokedex.getBerryType = function (berryId) {
     }
     return berryTypeList[berryId];
 };
-
 
 module.exports = pokedex;
