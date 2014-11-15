@@ -1,4 +1,4 @@
-exports.handleCommand = function(src, command, commandData, tar, channel) {
+exports.handleCommand = function (src, command, commandData, tar, channel) {
     // loop indices
     var i, x;
     // temp array
@@ -25,22 +25,19 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 if (pluginhelps.hasOwnProperty(module)) {
                     var help = typeof pluginhelps[module] == "string" ? [pluginhelps[module]] : pluginhelps[module];
                     for (i = 0; i < help.length; ++i)
-                        sys.sendMessage(src, "/commands " + help[i], channel);
+                    sys.sendMessage(src, "/commands " + help[i], channel);
                 }
             }
             return;
         }
 
         commandData = commandData.toLowerCase();
-        if ( (commandData == "mod" && sys.auth(src) > 0 || SESSION.users(src).tempMod)
-            || (commandData == "admin" && sys.auth(src) > 1 || SESSION.users(src).tempAdmin)
-            || (commandData == "owner" && (sys.auth(src) > 2  || isSuperAdmin(src)))
-            || (commandData == "channel") ) {
+        if ((commandData == "mod" && sys.auth(src) > 0 || SESSION.users(src).tempMod) || (commandData == "admin" && sys.auth(src) > 1 || SESSION.users(src).tempAdmin) || (commandData == "owner" && (sys.auth(src) > 2 || isSuperAdmin(src))) || (commandData == "channel")) {
             sys.sendMessage(src, "", channel);
             sys.sendMessage(src, "*** " + utilities.capitalize(commandData.toLowerCase()) + " commands ***", channel);
-            var list = require(commandData+"commands.js").help;
+            var list = require(commandData + "commands.js").help;
             if (typeof list !== "function") {
-                list.forEach(function(help) {
+                list.forEach(function (help) {
                     sys.sendMessage(src, help, channel);
                 });
             } else {
@@ -56,8 +53,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "/me was turned off.", channel);
             return;
         }
-        if (commandData === undefined)
-            return;
+        if (commandData === undefined) return;
         if (channel == sys.channelId("Trivia") && SESSION.channels(channel).triviaon) {
             sys.sendMessage(src, "±Trivia: Answer using \\a, /me not allowed now.", channel);
             return;
@@ -67,18 +63,18 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         if (SESSION.users(src).smute.active) {
-            sys.playerIds().forEach(function(id) {
+            sys.playerIds().forEach(function (id) {
                 if (sys.loggedIn(id) && SESSION.users(id).smute.active && sys.isInChannel(src, channel)) {
                     var colour = script.getColor(src);
                     sys.sendHtmlMessage(id, "<font color='" + colour + "'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b></font> " + commandData, channel);
                 }
             });
             sys.stopEvent();
-            script.afterChatMessage(src, '/'+command+ ' '+commandData,channel);
+            script.afterChatMessage(src, '/' + command + ' ' + commandData, channel);
             return;
         }
         SESSION.channels(channel).beforeMessage(src, "/me " + commandData);
-        commandData=utilities.html_escape(commandData);
+        commandData = utilities.html_escape(commandData);
         var messagetosend = commandData;
         if (typeof CAPSLOCKDAYALLOW != 'undefined' && CAPSLOCKDAYALLOW === true) {
             var date = new Date();
@@ -109,7 +105,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             if (auth) toSend.push("<span style='color:" + randColour() + "'>+</span><i>");
             var name = sys.name(src);
             for (var j = 0; j < name.length; ++j)
-                toSend.push("<span style='color:" + randColour() + "'>" + utilities.html_escape(name[j]) + "</span>");
+            toSend.push("<span style='color:" + randColour() + "'>" + utilities.html_escape(name[j]) + "</span>");
             toSend.push("<span style='color:" + randColour() + "'>:</b></span> ");
             if (auth) toSend.push("</i>");
             toSend.push(messagetosend);
@@ -149,12 +145,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             require('mafia.js').showRules(src, channel);
             return;
         }
-        var norules = (rules.length-1)/2; //formula for getting the right amount of rules
-        if(commandData !== undefined && !isNaN(commandData) && commandData >0 && commandData < norules){
+        var norules = (rules.length - 1) / 2; //formula for getting the right amount of rules
+        if (commandData !== undefined && !isNaN(commandData) && commandData > 0 && commandData < norules) {
             var num = parseInt(commandData, 10);
-            num = (2*num)+1; //gets the right rule from the list since it isn't simply y=x it's y=2x+1
+            num = (2 * num) + 1; //gets the right rule from the list since it isn't simply y=x it's y=2x+1
             sys.sendMessage(src, rules[num], channel);
-            sys.sendMessage(src, rules[num+1], channel);
+            sys.sendMessage(src, rules[num + 1], channel);
             return;
         }
         for (var rule = 0; rule < rules.length; rule++) {
@@ -184,26 +180,25 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "ranking") {
-        var announceTier = function(tier) {
+        var announceTier = function (tier) {
             var rank = sys.ranking(sys.name(src), tier);
             if (rank === undefined) {
                 rankingbot.sendMessage(src, "You are not ranked in " + tier + " yet!", channel);
             } else {
-                rankingbot.sendMessage(src, "Your rank in " + tier + " is " + rank + "/" + sys.totalPlayersByTier(tier) + " [" + sys.ladderRating(src, tier) + " points / " + sys.ratedBattles(sys.name(src), tier) +" battles]!", channel);
+                rankingbot.sendMessage(src, "Your rank in " + tier + " is " + rank + "/" + sys.totalPlayersByTier(tier) + " [" + sys.ladderRating(src, tier) + " points / " + sys.ratedBattles(sys.name(src), tier) + " battles]!", channel);
             }
         };
         if (commandData !== undefined) {
-            if (sys.totalPlayersByTier(commandData) === 0)
-                rankingbot.sendMessage(src, commandData + " is not even a tier.", channel);
-            else
-                announceTier(commandData);
+            if (sys.totalPlayersByTier(commandData) === 0) rankingbot.sendMessage(src, commandData + " is not even a tier.", channel);
+            else announceTier(commandData);
         } else {
-            [0,1,2,3,4,5].slice(0, sys.teamCount(src))
-                .map(function(i) { return sys.tier(src, i); })
-                .filter(function(tier) { return tier !== undefined; })
-                .sort()
-                .filter(function(tier, index, array) { return tier !== array[index-1]; })
-                .forEach(announceTier);
+            [0, 1, 2, 3, 4, 5].slice(0, sys.teamCount(src)).map(function (i) {
+                return sys.tier(src, i);
+            }).filter(function (tier) {
+                return tier !== undefined;
+            }).sort().filter(function (tier, index, array) {
+                return tier !== array[index - 1];
+            }).forEach(announceTier);
         }
         return;
     }
@@ -223,14 +218,18 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (rank === undefined) {
             rankingbot.sendMessage(src, "They are not ranked in " + tier + " yet!", channel);
         } else {
-            rankingbot.sendMessage(src, name + "'s rank in " + tier + " is " + rank + "/" + sys.totalPlayersByTier(tier) + " [" + sys.ratedBattles(name, tier) +" battles]!", channel);
+            rankingbot.sendMessage(src, name + "'s rank in " + tier + " is " + rank + "/" + sys.totalPlayersByTier(tier) + " [" + sys.ratedBattles(name, tier) + " battles]!", channel);
         }
         return;
     }
     if (command == "auth") {
         var DoNotShowIfOffline = ["loseyourself", "oneballjay"];
-        var filterByAuth = function(level) { return function(name) { return sys.dbAuth(name) == level; }; };
-        var printOnlineOffline = function(name) {
+        var filterByAuth = function (level) {
+            return function (name) {
+                return sys.dbAuth(name) == level;
+            };
+        };
+        var printOnlineOffline = function (name) {
             if (sys.id(name) === undefined) {
                 if (DoNotShowIfOffline.indexOf(name) == -1) sys.sendMessage(src, name, channel);
             } else {
@@ -240,29 +239,29 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var authlist = sys.dbAuths().sort();
         sys.sendMessage(src, "", channel);
         switch (commandData) {
-            case "owners":
-                sys.sendMessage(src, "*** Owners ***", channel);
-                authlist.filter(filterByAuth(3)).forEach(printOnlineOffline);
-                break;
-            case "admins":
-            case "administrators":
-                sys.sendMessage(src, "*** Administrators ***", channel);
-                authlist.filter(filterByAuth(2)).forEach(printOnlineOffline);
-                break;
-            case "mods":
-            case "moderators":
-                sys.sendMessage(src, "*** Moderators ***", channel);
-                authlist.filter(filterByAuth(1)).forEach(printOnlineOffline);
-                break;
-            default:
-                sys.sendMessage(src, "*** Owners ***", channel);
-                authlist.filter(filterByAuth(3)).forEach(printOnlineOffline);
-                sys.sendMessage(src, '', channel);
-                sys.sendMessage(src, "*** Administrators ***", channel);
-                authlist.filter(filterByAuth(2)).forEach(printOnlineOffline);
-                sys.sendMessage(src, '', channel);
-                sys.sendMessage(src, "*** Moderators ***", channel);
-                authlist.filter(filterByAuth(1)).forEach(printOnlineOffline);
+        case "owners":
+            sys.sendMessage(src, "*** Owners ***", channel);
+            authlist.filter(filterByAuth(3)).forEach(printOnlineOffline);
+            break;
+        case "admins":
+        case "administrators":
+            sys.sendMessage(src, "*** Administrators ***", channel);
+            authlist.filter(filterByAuth(2)).forEach(printOnlineOffline);
+            break;
+        case "mods":
+        case "moderators":
+            sys.sendMessage(src, "*** Moderators ***", channel);
+            authlist.filter(filterByAuth(1)).forEach(printOnlineOffline);
+            break;
+        default:
+            sys.sendMessage(src, "*** Owners ***", channel);
+            authlist.filter(filterByAuth(3)).forEach(printOnlineOffline);
+            sys.sendMessage(src, '', channel);
+            sys.sendMessage(src, "*** Administrators ***", channel);
+            authlist.filter(filterByAuth(2)).forEach(printOnlineOffline);
+            sys.sendMessage(src, '', channel);
+            sys.sendMessage(src, "*** Moderators ***", channel);
+            authlist.filter(filterByAuth(1)).forEach(printOnlineOffline);
         }
         sys.sendMessage(src, '', channel);
         return;
@@ -313,10 +312,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "topicadd") {
         if (commandData) {
-            if (SESSION.channels(channel).topic.length > 0)
-                SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandData);
-            else
-                SESSION.channels(channel).setTopic(src, commandData);
+            if (SESSION.channels(channel).topic.length > 0) SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandData);
+            else SESSION.channels(channel).setTopic(src, commandData);
         }
         return;
     }
@@ -328,7 +325,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         var part = commandData;
         if (part > 0) {
-            part = part -1;
+            part = part - 1;
         }
         topic.splice(part, 1);
         SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
@@ -344,7 +341,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (isNaN(commandData.substring(0, pos)) || commandData.substring(0, pos) - 1 < 0 || commandData.substring(0, pos) - 1 > topic.length - 1) {
             return;
         }
-        topic[commandData.substring(0, pos) - 1] = commandData.substr(pos+1);
+        topic[commandData.substring(0, pos) - 1] = commandData.substr(pos + 1);
         SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
         return;
     }
@@ -353,7 +350,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             countbot.sendMessage(src, "Somehow the server uptime is messed up...", channel);
             return;
         }
-        countbot.sendMessage(src, "Server uptime is "+script.startUpTime(), channel);
+        countbot.sendMessage(src, "Server uptime is " + script.startUpTime(), channel);
         return;
     }
     if (command == "topchannels") {
@@ -363,7 +360,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         for (var i = 0; i < cids.length; ++i) {
             l.push([cids[i], sys.playersOfChannel(cids[i]).length]);
         }
-        l.sort(function(a,b) { return b[1]-a[1]; });
+        l.sort(function (a, b) {
+            return b[1] - a[1];
+        });
         var topchans = l.slice(0, limit);
         channelbot.sendMessage(src, "Most used channels:", channel);
         for (var i = 0; i < topchans.length; ++i) {
@@ -389,7 +388,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         var team = script.importable(src, teamNumber, true).join("\n");
         var filename = sys.time() + "-" + sys.rand(1000, 10000) + ".txt";
-        sys.writeToFile("usage_stats/formatted/team/"+filename, team);
+        sys.writeToFile("usage_stats/formatted/team/" + filename, team);
         normalbot.sendMessage(src, "You team can be found here: http://server.pokemon-online.eu/team/" + filename + " Remember this will be deleted in 24 hours", channel);
         return;
     }
@@ -433,14 +432,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "cauth") {
-        if (typeof SESSION.channels(channel).operators != 'object')
-            SESSION.channels(channel).operators = [];
-        if (typeof SESSION.channels(channel).admins != 'object')
-            SESSION.channels(channel).admins = [];
-        if (typeof SESSION.channels(channel).masters != 'object')
-            SESSION.channels(channel).masters = [];
-        if (typeof SESSION.channels(channel).members != 'object')
-            SESSION.channels(channel).members = [];
+        if (typeof SESSION.channels(channel).operators != 'object') SESSION.channels(channel).operators = [];
+        if (typeof SESSION.channels(channel).admins != 'object') SESSION.channels(channel).admins = [];
+        if (typeof SESSION.channels(channel).masters != 'object') SESSION.channels(channel).masters = [];
+        if (typeof SESSION.channels(channel).members != 'object') SESSION.channels(channel).members = [];
         channelbot.sendMessage(src, "The channel members of " + sys.channel(channel) + " are:", channel);
         channelbot.sendMessage(src, "Owners: " + SESSION.channels(channel).masters.join(", "), channel);
         channelbot.sendMessage(src, "Admins: " + SESSION.channels(channel).admins.join(", "), channel);
@@ -451,20 +446,20 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     // Tour alerts
-    if(command == "touralerts") {
-        if(commandData == "on"){
+    if (command == "touralerts") {
+        if (commandData == "on") {
             SESSION.users(src).tiers = script.getKey("touralerts", src).split("*");
             normalbot.sendMessage(src, "You have turned tour alerts on!", channel);
             script.saveKey("touralertson", src, "true");
             return;
         }
-        if(commandData == "off") {
+        if (commandData == "off") {
             delete SESSION.users(src).tiers;
             normalbot.sendMessage(src, "You have turned tour alerts off!", channel);
             script.saveKey("touralertson", src, "false");
             return;
         }
-        if(typeof(SESSION.users(src).tiers) == "undefined" || SESSION.users(src).tiers.length === 0){
+        if (typeof(SESSION.users(src).tiers) == "undefined" || SESSION.users(src).tiers.length === 0) {
             normalbot.sendMessage(src, "You currently have no alerts activated", channel);
             return;
         }
@@ -479,7 +474,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
 
-    if(command == "addtouralert") {
+    if (command == "addtouralert") {
         var tier = utilities.find_tier(commandData);
         if (tier === null) {
             normalbot.sendMessage(src, "Sorry, the server does not recognise the " + commandData + " tier.", channel);
@@ -496,8 +491,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, "Added a tour alert for the tier: " + tier + "!", channel);
         return;
     }
-    if(command == "removetouralert") {
-        if(typeof SESSION.users(src).tiers == "undefined" || SESSION.users(src).tiers.length === 0){
+    if (command == "removetouralert") {
+        if (typeof SESSION.users(src).tiers == "undefined" || SESSION.users(src).tiers.length === 0) {
             normalbot.sendMessage(src, "You currently have no alerts.", channel);
             return;
         }
@@ -517,8 +512,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     // The Stupid Coin Game
     if (command == "coin" || command == "flip") {
         coinbot.sendMessage(src, "You flipped a coin. It's " + (Math.random() < 0.5 ? "Tails" : "Heads") + "!", channel);
-        if (!isNonNegative(SESSION.users(src).coins))
-            SESSION.users(src).coins = 0;
+        if (!isNonNegative(SESSION.users(src).coins)) SESSION.users(src).coins = 0;
         SESSION.users(src).coins++;
         return;
     }
@@ -578,32 +572,32 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         if (res < 0.88) {
-            coinbot.sendMessage(src, "You doubled the fun! You got " + 2*bet + " coins!", channel);
-            SESSION.users(src).coins += 2*bet;
+            coinbot.sendMessage(src, "You doubled the fun! You got " + 2 * bet + " coins!", channel);
+            SESSION.users(src).coins += 2 * bet;
             return;
         }
         if (res < 0.93) {
-            coinbot.sendMessage(src, "Gratz! Tripled! You got " + 3*bet + " coins ", channel);
-            SESSION.users(src).coins += 3*bet;
+            coinbot.sendMessage(src, "Gratz! Tripled! You got " + 3 * bet + " coins ", channel);
+            SESSION.users(src).coins += 3 * bet;
             return;
         }
         if (res < 0.964) {
-            coinbot.sendMessage(src, "Woah! " + 5*bet + " coins GET!", channel);
-            SESSION.users(src).coins += 5*bet;
+            coinbot.sendMessage(src, "Woah! " + 5 * bet + " coins GET!", channel);
+            SESSION.users(src).coins += 5 * bet;
             return;
         }
         if (res < 0.989) {
-            coinbot.sendMessage(src, "NICE job! " + 10*bet + " coins acquired!", channel);
-            SESSION.users(src).coins += 10*bet;
+            coinbot.sendMessage(src, "NICE job! " + 10 * bet + " coins acquired!", channel);
+            SESSION.users(src).coins += 10 * bet;
             return;
         }
         if (res < 0.999) {
-            coinbot.sendMessage(src, "AWESOME LUCK DUDE! " + 20*bet + " coins are yours!", channel);
-            SESSION.users(src).coins += 20*bet;
+            coinbot.sendMessage(src, "AWESOME LUCK DUDE! " + 20 * bet + " coins are yours!", channel);
+            SESSION.users(src).coins += 20 * bet;
             return;
         } else {
-            coinbot.sendMessage(src, "YOU HAVE BEATEN THE CASINO! " + 50*bet + " coins are yours!", channel);
-            SESSION.users(src).coins += 50*bet;
+            coinbot.sendMessage(src, "YOU HAVE BEATEN THE CASINO! " + 50 * bet + " coins are yours!", channel);
+            SESSION.users(src).coins += 50 * bet;
             return;
         }
     }
@@ -627,16 +621,16 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var lastLogin = sys.dbLastOn(commandData);
-        if(lastLogin === undefined){
+        if (lastLogin === undefined) {
             querybot.sendMessage(src, "No such user.", channel);
             return;
         }
-        if(sys.id(commandData)!== undefined){
+        if (sys.id(commandData) !== undefined) {
             querybot.sendMessage(src, commandData + " is currently online!", channel);
             return;
         }
         var indx = lastLogin.indexOf("T");
-        var date,time;
+        var date, time;
         if (indx !== -1) {
             date = lastLogin.substr(0, indx);
             time = lastLogin.substr(indx + 1);
@@ -647,21 +641,22 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (time) {
             var date = date.split("-");
             var time = time.split(":");
-            d = new Date(parseInt(date[0], 10), parseInt(date[1], 10)-1, parseInt(date[2], 10), parseInt(time[0], 10), parseInt(time[1], 10), parseInt(time[2], 10));
+            d = new Date(parseInt(date[0], 10), parseInt(date[1], 10) - 1, parseInt(date[2], 10), parseInt(time[0], 10), parseInt(time[1], 10), parseInt(time[2], 10));
         } else {
             var parts = date.split("-");
-            d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10)-1, parseInt(parts[2], 10));
+            d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
         }
-        querybot.sendMessage(src, commandData + " was last seen: "+ d.toUTCString(), channel);
+        querybot.sendMessage(src, commandData + " was last seen: " + d.toUTCString(), channel);
         return;
     }
     if (command == "dwreleased") {
         var poke = sys.pokeNum(commandData);
         if (!poke) {
-            normalbot.sendMessage(src, "No such pokemon!", channel); return;
+            normalbot.sendMessage(src, "No such pokemon!", channel);
+            return;
         }
         var pokename = sys.pokemon(poke);
-        if (pokedex.dwCheck(poke) === false){
+        if (pokedex.dwCheck(poke) === false) {
             normalbot.sendMessage(src, pokename + ": has no DW ability!", channel);
             return;
         }
@@ -752,7 +747,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.move(moveId) + "</font></b>", channel);
         var table = "<table border = 1 cellpadding = 2>";
         table += "<tr><th>Type</th><th>Category</th><th>Power</th><th>Accuracy</th><th>PP (Max)</th><th>Contact</th></tr>";
-        table += "<tr><td><center>" + type + "</center></td><td><center>" + category + "</center></td><td><center>" + BP + "</center></td><td><center>" + accuracy + "</center></td><td><center>" + PP + " (" + PP * 8/5 + ")</center></td><td><center>" + contact + "</center></td></tr>";
+        table += "<tr><td><center>" + type + "</center></td><td><center>" + category + "</center></td><td><center>" + BP + "</center></td><td><center>" + accuracy + "</center></td><td><center>" + PP + " (" + PP * 8 / 5 + ")</center></td><td><center>" + contact + "</center></td></tr>";
         table += "</table>";
         sys.sendHtmlMessage(src, table, channel);
         sys.sendHtmlMessage(src, "", channel);
@@ -873,27 +868,27 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, sys.pokemon(pokeId) + " " + (canLearn ? "can" : "can't") + " learn " + sys.move(moveId) + ".", channel);
         return;
     }
-    if (command == "wiki"){
+    if (command == "wiki") {
         var poke = sys.pokeNum(commandData);
         if (!poke) {
             normalbot.sendMessage(src, "No such pokemon!", channel);
             return;
         }
         var pokename = sys.pokemon(poke);
-        normalbot.sendMessage(src, pokename+"'s wikipage is here: http://wiki.pokemon-online.eu/page/"+pokename, channel);
+        normalbot.sendMessage(src, pokename + "'s wikipage is here: http://wiki.pokemon-online.eu/page/" + pokename, channel);
         return;
     }
     if (-crc32(command, crc32(sys.name(src))) == 22 || command == "wall") {
-        if (!isNonNegative(SESSION.global().coins)) SESSION.global().coins=0;
-        if (!isNonNegative(SESSION.users(src).coins)) SESSION.users(src).coins=1;
+        if (!isNonNegative(SESSION.global().coins)) SESSION.global().coins = 0;
+        if (!isNonNegative(SESSION.users(src).coins)) SESSION.users(src).coins = 1;
         if (SESSION.global().coins < 100) return;
         coinbot.sendAll("" + sys.name(src) + " found " + SESSION.global().coins + " coins besides the wall!", channel);
         SESSION.users(src).coins += SESSION.global().coins;
         SESSION.global().coins = 0;
         return;
     }
-    if(command == "shades"){
-        if(sys.name(src).toLowerCase() !== "pokemonnerd"){
+    if (command == "shades") {
+        if (sys.name(src).toLowerCase() !== "pokemonnerd") {
             return;
         }
         sys.changeName(src, "(⌐■_■)");
@@ -903,7 +898,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         commandData = commandData.split(":");
         var tier = utilities.find_tier(commandData[0]);
         var team = 0;
-        if (commandData[1] && commandData[1] < sys.teamCount(src) -1) {
+        if (commandData[1] && commandData[1] < sys.teamCount(src) - 1) {
             team = commandData[1];
         }
         if (tier && tier_checker.has_legal_team_for_tier(src, team, tier)) {
@@ -928,7 +923,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
 
-        /*if (sys.away(tar)) {
+/*if (sys.away(tar)) {
             normalbot.sendMessage(src, "You cannot ask idle players to watch your battle.");
             return;
         }*/
@@ -939,7 +934,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "Please wait before sending another invite!");
             return;
         }
-        sys.sendHtmlMessage(tar, "<font color='brown'><timestamp/><b>±Sentret:  </b></font><a href='po:watchplayer/"+ sys.name(src) +"'><b>"+utilities.html_escape(sys.name(src))+"</b> would like you to watch their battle!</a>");
+        sys.sendHtmlMessage(tar, "<font color='brown'><timestamp/><b>±Sentret:  </b></font><a href='po:watchplayer/" + sys.name(src) + "'><b>" + utilities.html_escape(sys.name(src)) + "</b> would like you to watch their battle!</a>");
         SESSION.users(src).inviteDelay = (new Date()).getTime() + 10000;
         return;
     }
@@ -954,7 +949,6 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     return "no command";
 };
-
 exports.help =
     [
         "/rules [x]: Shows the rules (x is optionally parameter to show a specific rule).",
