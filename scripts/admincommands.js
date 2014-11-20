@@ -281,6 +281,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     
+    if (command == "whobanned") {
+        if (!commandData) {
+            return;
+        }
+        sys.getFileContent("bans.txt").split("\n").filter(function(s) {
+            return s.toLowerCase().indexOf(commandData.toLowerCase() != -1;
+        })
+    }
     
     // hack, for allowing some subset of the owner commands for super admins
     if (isSuperAdmin(src)) {
