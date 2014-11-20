@@ -283,11 +283,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     
     if (command == "whobanned") {
         if (!commandData) {
+            normalbot.sendMessage(src, "No name entered", channel);
             return;
         }
-        sys.getFileContent("bans.txt").split("\n").filter(function(s) {
+        var banned = sys.getFileContent("bans.txt").split("\n").filter(function(s) {
             return s.toLowerCase().indexOf(commandData.toLowerCase()) != -1;
         });
+        normalbot.sendMessage(src, banned, channel);
+        return;
     }
     
     // hack, for allowing some subset of the owner commands for super admins
