@@ -679,7 +679,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command === "pokemon") {
         commandData = commandData.split(":");
         var forme = !isNaN(commandData[1]) ? commandData[1] : 0;
-        commandData = parseInt(commandData[0], 10);
+        commandData = commandData[0];
         if (!commandData) {
             normalbot.sendMessage(src, "Please specify a Pokémon!", channel);
             return;
@@ -706,7 +706,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 normalbot.sendMessage(src, commandData + " is not a valid Pokédex number!", channel);
                 return;
             }
-            pokeId = commandData + (forme << 16);
+            pokeId = parseInt(commandData, 10) + (forme << 16);
         }
         if (!pokeId) {
             normalbot.sendMessage(src, commandData + " is not a valid Pokémon!", channel);
