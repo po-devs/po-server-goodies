@@ -683,6 +683,19 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         var pokeId;
         if (isNaN(commandData)) {
+            switch (commandData.toLowerCase()) {
+                case ("darmanitan-z") : 
+                    commandData = "Darmanitan-D";
+                    break;
+                case ("meloetta-p") :
+                    commandData = "Meloetta-S";
+                    break;
+                case ("hoopa-u") :
+                    commandData = "Hoopa-B";
+                    break;
+                default:
+                    commandData=commandData;
+            }
             pokeId = sys.pokeNum(commandData);
         }
         else {
