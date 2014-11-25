@@ -401,7 +401,7 @@ tier_checker.add_new_check(EXCLUDING, [], function eventShinies(player, team) {
  
     for (var beast in beasts)
         for (var slot=0; slot<6; slot++)
-            if (sys.teamPoke(player, team, slot) == beast)
+            if ((sys.teamPoke(player, team, slot) % 65536) == beast)
                 for (var i=0; i<4; i++)
                     if (-1 != beasts[beast].indexOf(sys.teamPokeMove(player, team, slot, i)))
                         sys.changePokeShine(player, team, slot, true);
