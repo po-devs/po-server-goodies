@@ -677,11 +677,16 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command === "pokemon") {
+        commandData = commandData.split(":");
+        var forme = ((commandData[1] || !isNaN(commandData[1]) ? commandData[1] : 0 );
+        commandData = commandData[0];
         if (!commandData) {
             normalbot.sendMessage(src, "Please specify a Pokémon!", channel);
             return;
         }
         var pokeId;
+        var formeId;
+        var dbId;
         if (isNaN(commandData)) {
             switch (commandData.toLowerCase()) {
                 case ("darmanitan-z") : 
@@ -703,7 +708,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 normalbot.sendMessage(src, commandData + " is not a valid Pokédex number!", channel);
                 return;
             }
-            pokeId = commandData;
+            pokeId = commandData + (forme << 16);
         }
         if (!pokeId) {
             normalbot.sendMessage(src, commandData + " is not a valid Pokémon!", channel);
@@ -719,7 +724,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var levels = [5, 50, 100];
         sys.sendHtmlMessage(src, "", channel);
         sys.sendHtmlMessage(src, "<b><font size = 4># " + pokeId % 65536 + " " + sys.pokemon(pokeId) + "</font></b>", channel);
-        sys.sendHtmlMessage(src, "<img src='pokemon:num=" + pokeId + "&gen=6'><img src='pokemon:num=" + pokeId + "&shiny=true&gen=6'>", channel);
+        sys.sendHtmlMessage(src, "<img src='pokemon:num=" + pokeId % 65536 + "-" + forme + "&gen=6'><img src='pokemon:num=" + pokeId + "&shiny=true&gen=6'>", channel);
         sys.sendHtmlMessage(src, "<b>Type:</b> " + type1 + (type2 === "???" ? "" : "/" + type2), channel);
         sys.sendHtmlMessage(src, "<b>Abilities:</b> " + ability1 + (sys.pokemon(pokeId).substr(0, 5) === "Mega " ? "" : (ability2 === "(No Ability)" ? "" : ", " + ability2) + (ability3 === "(No Ability)" ? "" : ", " + ability3 + " (Hidden Ability)")), channel);
         sys.sendHtmlMessage(src, "<b>Height:</b> " + pokedex.getHeight(pokeId) + " m", channel);
