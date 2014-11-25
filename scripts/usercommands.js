@@ -678,7 +678,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command === "pokemon") {
         commandData = commandData.split(":");
-        var forme = isNaN(commandData[1]) ? commandData[1] : 0;
+        var forme = !isNaN(commandData[1]) ? commandData[1] : 0;
         commandData = parseInt(commandData[0], 10);
         if (!commandData) {
             normalbot.sendMessage(src, "Please specify a Pokémon!", channel);
