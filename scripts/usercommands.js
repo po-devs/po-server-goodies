@@ -678,15 +678,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command === "pokemon") {
         commandData = commandData.split(":");
-        var forme = ((commandData[1] || !isNaN(commandData[1]) ? commandData[1] : 0 );
+        var forme = isNaN(commandData[1]) ? commandData[1] : 0;
         commandData = commandData[0];
         if (!commandData) {
             normalbot.sendMessage(src, "Please specify a Pokémon!", channel);
             return;
         }
         var pokeId;
-        var formeId;
-        var dbId;
         if (isNaN(commandData)) {
             switch (commandData.toLowerCase()) {
                 case ("darmanitan-z") : 
