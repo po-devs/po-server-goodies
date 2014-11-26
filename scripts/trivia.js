@@ -944,7 +944,7 @@ QuestionHolder.prototype.freeId = function () {
     var id = Object.keys(this.all()).sort(function (a, b) {
         return b-a;
     })[0];
-    return id+1;
+    return parseInt(id,10)+1;
 };
 
 QuestionHolder.prototype.changeCategory = function (id, category) {
