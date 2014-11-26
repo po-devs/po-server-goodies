@@ -234,9 +234,9 @@ function PMcheckq(src, channel) {
     }
     
     if (questionInfo.notes !== undefined){
-        Trivia.sendPM(src, "Notes: " + questionInfo.notes, channel); 
+        Trivia.sendPM(src, "Notes: " + questionInfo.notes, channel);
     } else {
-        Trivia.sendPM(src, "Notes: None.", channel)
+        Trivia.sendPM(src, "Notes: None.", channel);
     }
 
     sys.sendMessage(src, "", channel);
@@ -941,7 +941,10 @@ QuestionHolder.prototype.questionAmount = function () {
 };
 
 QuestionHolder.prototype.freeId = function () {
-    return this.state.freeId++;
+    var id = Object.keys(this.all()).sort(function (a, b) {
+        return b-a;
+    })[0];
+    return id+1;
 };
 
 QuestionHolder.prototype.changeCategory = function (id, category) {
@@ -1363,7 +1366,7 @@ addUserCommand("submitq", function (src, commandData, channel) {
     }
 
     var name = sys.name(src);
-    var notes = "None."
+    var notes = "None.";
     var id = trivreview.add(category, question, answer, name, notes);
 
     Trivia.sendPM(src, "Your question was submitted.", channel);
@@ -1732,7 +1735,7 @@ addAdminCommand("changec", function (src, commandData) {
 
 addAdminCommand("changenotes", function (src, commandData) {
     if (trivreview.editingMode === true) {
-        trivreview.editingNotes = commandData + " - " + sys.name(src);
+        trivreview.editingNotes = commandData;
         triviabot.sendAll("The notes for the question in edit were changed to " + trivreview.editingNotes + " by " + sys.name(src), revchan);
         trivreview.checkq();
         return;
@@ -1742,7 +1745,7 @@ addAdminCommand("changenotes", function (src, commandData) {
         var id = Object.keys(tr).sort(function (a, b) {
             return a - b;
         })[0];
-        var notes = commandData + " - " + sys.name(src);
+        var notes = commandData;
         trivreview.changeNotes(id, notes, "change");
         triviabot.sendAll("The notes for the current question were changed to " + notes + " by " + sys.name(src), revchan);
         trivreview.checkq(id);
@@ -1753,7 +1756,7 @@ addAdminCommand("changenotes", function (src, commandData) {
 
 addAdminCommand(["addnotes", "addnote"], function (src, commandData) {
     if (trivreview.editingMode === true) {
-        trivreview.editingNotes = commandData + " - " + sys.name(src);
+        trivreview.editingNotes = commandData;
         triviabot.sendAll("The following notes regarding the question in edit were added: " + trivreview.editingNotes + " by " + sys.name(src), revchan);
         trivreview.checkq();
         return;
@@ -1763,7 +1766,7 @@ addAdminCommand(["addnotes", "addnote"], function (src, commandData) {
         var id = Object.keys(tr).sort(function (a, b) {
             return a - b;
         })[0];
-        var notes = commandData + " - " + sys.name(src);
+        var notes = commandData;
         trivreview.changeNotes(id, notes, "add");
         triviabot.sendAll("The following notes regarding the current question were added: " + notes + " by " + sys.name(src), revchan);
         trivreview.checkq(id);
@@ -1858,7 +1861,7 @@ addAdminCommand("editq", function (src, commandData, channel) {
     if (q !== null) {
         triviaq.remove(commandData[0]);
         questionData.remove(commandData[0]);
-        trivreview.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + sys.name(src) + ":::" + (commandData[1] ? commandData[1] + " - " + sys.name(src) : "None."));
+        trivreview.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + sys.name(src) + ":::" + (commandData[1] ? commandData[1] : "None."));
         triviabot.sendAll(sys.name(src) + " placed a question at the top of the review queue.", revchan);
         trivreview.checkq();
         return;
