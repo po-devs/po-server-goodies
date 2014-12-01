@@ -362,7 +362,7 @@ step: function() {
         });
         clearTeamFiles();
     }
-    if ([0, 6, 12, 18].indexOf(date.getUTCHours()) != -1 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
+    if (date.getUTCHours() % 3 == 0 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
         sendNotice();
     }
     // Reset stats monthly
