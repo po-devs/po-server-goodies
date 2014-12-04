@@ -1387,7 +1387,7 @@ afterLogIn : function(src) {
         sys.putInChannel(src, staffchannel);
 
     if (isAndroid(src)) {
-        normalbot.sendMessage(src, "New android version with included teambuilder! See: http://pokemon-online.eu/forums/showthread.php?22137-Android-App-with-Teambuilder");
+        normalbot.sendMessage(src, "New android version back on Play Store! See: http://pokemon-online.eu/threads/po-android-play-store-revival.29571/");
     }
 }, /* end of afterLogin */
 
