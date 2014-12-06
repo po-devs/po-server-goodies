@@ -362,7 +362,7 @@ step: function() {
         });
         clearTeamFiles();
     }
-    if (date.getUTCHours() % 3 == 0 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
+    if (date.getUTCHours() % 3 === 0 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
         sendNotice();
     }
     // Reset stats monthly
@@ -424,8 +424,8 @@ init : function() {
     var dwpok;
     for (dwpok = 0; dwpok < halist.length; dwpok++) {
         var num = sys.pokeNum(halist[dwpok]);
-        if (halist[dwpok] === "Gourgeist-XL" || halist[dwpok] === "Pumpkaboo-XL") { //temporary until pokeNum is fixed
-            num = (halist[dwpok] === "Gourgeist-XL" ? (65536*3)+711 : (65536*3)+710);
+        if (num % 65536 == sys.pokeNum("Pikachu")) { //probably add a function to tell the difference between aesthetic and normal formes in the future
+            num = sys.pokeNum("Pikachu");
         }
         if (num === undefined)
             sys.sendAll("Script Check: Unknown poke in hapokemons: '" +halist[dwpok]+"'.", announceChan);
