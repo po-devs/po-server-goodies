@@ -447,7 +447,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             ret.operators = SESSION.channels(channel).operators;
             ret.admins = SESSION.channels(channel).admins;
             ret.owners = SESSION.channels(channel).masters;
-            sys.sendMessage(src, "cauth: " + JSON.stringify(ret), channel);
+            sys.sendMessage(src, "+cauth: " + JSON.stringify(ret), channel);
             return;
         }
         channelbot.sendMessage(src, "The channel members of " + sys.channel(channel) + " are:", channel);
