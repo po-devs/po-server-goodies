@@ -254,6 +254,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 sys.sendMessage(src, "*** Moderators ***", channel);
                 authlist.filter(filterByAuth(1)).forEach(printOnlineOffline);
                 break;
+            case "~":
+                var ret = {};
+                ret.owners = authlist.filter(filterByAuth(3));
+                ret.administrators = authlist.filter(filterByAuth(2));
+                ret.moderators = authlist.filter(filterByAuth(1));
+                sys.sendMessage(src, "+auth: " + JSON.stringify(ret));
+                return;
             default:
                 sys.sendMessage(src, "*** Owners ***", channel);
                 authlist.filter(filterByAuth(3)).forEach(printOnlineOffline);
