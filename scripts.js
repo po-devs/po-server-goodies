@@ -496,7 +496,7 @@ init : function() {
     "5. No trolling, flaming, or harassing other players. Do not complain about hax in the chat, beyond a one line comment:",
     "- Inciting responses with inflammatory comments, using verbal abuse against other players, or spamming them via chat/PM/challenges will not be tolerated. Harassing other players by constantly aggravating them or revealing personal information will be severely punished. A one line comment regarding hax after a loss to vent is fine, but excessive bemoaning is not acceptable. Excessive vulgarity will not be tolerated. Wasting the time of the authority will also result in punishment.",
     "6. Do not misuse the server nor its guidelines:",
-    "- Stealing accounts or channels is prohibited. Any attempt to undermine the legitimacy of ladder rankings and of tournaments (server or forum) counts as misuse. DDoS and other \"cyber attacks\" will not be tolerated. Evading and trying to find loop-holes for malicious intent are both abuses of the guidelines. All ban appeals should be made directly in the Disciplinary Committee on the forums. Use of the server as a dating service or other various web services that it is not may also count as abuse."
+    "- Stealing accounts or channels is prohibited. Any attempt to undermine the legitimacy of ladder rankings and of tournaments (server or forum) counts as misuse. DDoS and other \"cyber attacks\" will not be tolerated. Evading and trying to find loop-holes for malicious intent both violate the guidelines. All ban appeals should be made directly in the Disciplinary Committee on the forums. Use of the server as a dating service or other various web services that it is not may also count as abuse."
     ];
 
     if (typeof script.authStats == 'undefined')
