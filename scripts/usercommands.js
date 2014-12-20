@@ -441,6 +441,15 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             SESSION.channels(channel).masters = [];
         if (typeof SESSION.channels(channel).members != 'object')
             SESSION.channels(channel).members = [];
+        if (commandData === "~") {
+            var ret = {};
+            ret.members = SESSION.channels(channel).members;
+            ret.operators = SESSION.channels(channel).operators;
+            ret.admins = SESSION.channels(channel).admins;
+            ret.owners = SESSION.channels(channel).masters;
+            sys.sendMessage(src, "cauth: " + JSON.stringify(ret), channel);
+            return;
+        }
         channelbot.sendMessage(src, "The channel members of " + sys.channel(channel) + " are:", channel);
         channelbot.sendMessage(src, "Owners: " + SESSION.channels(channel).masters.join(", "), channel);
         channelbot.sendMessage(src, "Admins: " + SESSION.channels(channel).admins.join(", "), channel);
