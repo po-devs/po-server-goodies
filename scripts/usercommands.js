@@ -238,7 +238,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             }
         };
         var authlist = sys.dbAuths().sort();
-        sys.sendMessage(src, "", channel);
+        if (commandData !== "~") {
+            sys.sendMessage(src, "", channel);
+        }
         switch (commandData) {
             case "owners":
                 sys.sendMessage(src, "*** Owners ***", channel);
@@ -259,7 +261,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 ret.owners = authlist.filter(filterByAuth(3));
                 ret.administrators = authlist.filter(filterByAuth(2));
                 ret.moderators = authlist.filter(filterByAuth(1));
-                sys.sendMessage(src, "+auth: " + JSON.stringify(ret));
+                sys.sendMessage(src, "+auth: " + JSON.stringify(ret), channel);
                 return;
             default:
                 sys.sendMessage(src, "*** Owners ***", channel);
