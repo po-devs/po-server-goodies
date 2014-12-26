@@ -193,6 +193,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             }
         };
         if (commandData !== undefined) {
+            commandData = utilities.find_tier(commandData);
             if (sys.totalPlayersByTier(commandData) === 0)
                 rankingbot.sendMessage(src, commandData + " is not even a tier.", channel);
             else
