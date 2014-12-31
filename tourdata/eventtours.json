@@ -1,130 +1,130 @@
 {
-    "1-12-2014": {
-        "tier": "ORAS Ubers",
+    "1-01-2015": {
+        "tier": "Battle Factory 6v6",
         "settings": {}
     },
-    "2-12-2014": {
-        "tier": "BW2 OU",
-        "settings": {}
-    },
-    "3-12-2014": {
-        "tier": "ORAS UU",
-        "settings": {}
-    },
-    "4-12-2014": {
-        "tier": "Inverted Battle",
-        "settings": {}
-    },
-    "5-12-2014": {
+    "2-01-2015": {
         "tier": "ORAS LC",
         "settings": {}
     },
-    "6-12-2014": {
+    "3-01-2015": {
         "tier": "ORAS OU",
         "settings": {}
     },
-    "7-12-2014": {
+    "4-01-2015": {
         "tier": "Monotype",
         "settings": {}
     },
-    "8-12-2014": {
+    "5-01-2015": {
         "tier": "Inverted Challenge Cup",
         "settings": {}
     },
-    "9-12-2014": {
-        "tier": "XY OU",
-        "settings": {}
-    },
-    "10-12-2014": {
-        "tier": "ORAS NU",
-        "settings": {}
-    },
-    "11-12-2014": {
-        "tier": "Battle Factory 6v6",
-        "settings": {}
-    },
-    "12-12-2014": {
-        "tier": "XY Ubers",
-        "settings": {}
-    },
-    "13-12-2014": {
-        "tier": "ORAS OU",
-        "settings": {}
-    },
-    "14-12-2014": {
-        "tier": "ORAS LU",
-        "settings": {}
-    },
-    "15-12-2014": {
-        "tier": "HGSS OU",
-        "settings": {}
-    },
-    "16-12-2014": {
-        "tier": "Random Battle",
-        "settings": {}
-    },
-    "17-12-2014": {
-        "tier": "XY NU",
-        "settings": {}
-    },
-    "18-12-2014": {
+    "6-01-2015": {
         "tier": "ORAS UU",
         "settings": {}
     },
-    "19-12-2014": {
-        "tier": "Monotype",
+    "7-01-2015": {
+        "tier": "ORAS Ubers",
         "settings": {}
     },
-    "20-12-2014": {
+    "8-01-2015": {
+        "tier": "HGSS OU",
+        "settings": {}
+    },
+    "9-01-2015": {
+        "tier": "ORAS NU",
+        "settings": {}
+    },
+    "10-01-2015": {
         "tier": "ORAS OU",
         "settings": {}
     },
-    "21-12-2014": {
+    "11-01-2015": {
         "tier": "Inverted Battle",
         "settings": {}
     },
-    "22-12-2014": {
-        "tier": "Challenge Cup",
-        "settings": {}
-    },
-    "23-12-2014": {
-        "tier": "ORAS Doubles",
-        "settings": {}
-    },
-    "24-12-2014": {
-        "tier": "ORAS LC",
-        "settings": {}
-    },
-    "25-12-2014": {
-        "tier": "XY UU",
-        "settings": {}
-    },
-    "26-12-2014": {
-        "tier": "ORAS LU",
-        "settings": {}
-    },
-    "27-12-2014": {
-        "tier": "ORAS OU",
-        "settings": {}
-    },
-    "28-12-2014": {
-        "tier": "Battle Factory 6v6",
-        "settings": {}
-    },
-    "29-12-2014": {
+    "12-01-2015": {
         "tier": "ADV OU",
         "settings": {}
     },
-    "30-12-2014": {
+    "13-01-2015": {
+        "tier": "ORAS LU",
+        "settings": {}
+    },
+    "14-01-2015": {
+        "tier": "BW2 OU",
+        "settings": {}
+    },
+    "15-01-2015": {
+        "tier": "ORAS Doubles ",
+        "settings": {}
+    },
+    "16-01-2015": {
+        "tier": "XY UU",
+        "settings": {}
+    },
+    "17-01-2015": {
+        "tier": "Battle Factory 6v6",
+        "settings": {}
+    },
+    "18-01-2015": {
+        "tier": "ORAS Ubers",
+        "settings": {}
+    },
+    "19-01-2015": {
+        "tier": "XY OU",
+        "settings": {}
+    },
+    "20-01-2015": {
+        "tier": "ORAS LC",
+        "settings": {}
+    },
+    "21-01-2015": {
         "tier": "ORAS NU",
+        "settings": {}
+    },
+    "22-01-2015": {
+        "tier": "Random Battle",
+        "settings": {}
+    },
+    "23-01-2015": {
+        "tier": "VGC 2015",
+        "settings": {}
+    },
+    "24-01-2015": {
+        "tier": "ORAS OU",
+        "settings": {}
+    },
+    "25-01-2015": {
+        "tier": "ORAS UU",
+        "settings": {}
+    },
+    "26-01-2015": {
+        "tier": "Challenge Cup",
+        "settings": {}
+    },
+    "27-01-2015": {
+        "tier": "ORAS Ubers",
+        "settings": {}
+    },
+    "28-01-2015": {
+        "tier": "Monotype",
+        "settings": {}
+    },
+    "29-01-2015": {
+        "tier": "ORAS LU",
+        "settings": {}
+    },
+    "30-01-2015": {
+        "tier": "Inverted Battle",
+        "settings": {}
+    },
+    "31-01-2015": {
+        "tier": "ORAS OU",
         "settings": {}
     },
     "31-12-2014": {
         "tier": "ORAS Ubers",
-        "settings": {}
-    },
-    "30-11-2014": {
-        "tier": "Battle Factory 6v6",
         "settings": {}
     }
 }
