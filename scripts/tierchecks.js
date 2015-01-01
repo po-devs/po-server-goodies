@@ -40,7 +40,7 @@ TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent
 
 TierChecker.prototype.find_good_tier = function(src, team) {
     // TODO: write up
-    var testPath = ["ORAS LC", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS Ubers", "XY LC", "XY OU", "XY UU", "XY Ubers", "Pre-PokeBank OU","BW2 LC", "DW LC", "BW2 LC Ubers", "BW2 NU", "BW2 LU", "BW2 UU", "BW2 OU", "No Preview OU", "BW2 Ubers", "No Preview Ubers", "Battle Factory 6v6", "Challenge Cup"];
+    var testPath = ["ORAS LC", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS Ubers", "Pre-PokeBank OU","BW2 LC", "DW LC", "BW2 LC Ubers", "BW2 NU", "BW2 LU", "BW2 UU", "BW2 OU", "No Preview OU", "BW2 Ubers", "No Preview Ubers", "Battle Factory 6v6", "Challenge Cup"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
         if (sys.hasLegalTeamForTier(src, team, testtier) && this.has_legal_team_for_tier(src, team, testtier, true)) {
@@ -90,7 +90,7 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(s
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["BW2 LC", "BW2 LC Ubers", "BW2 UU LC", "XY LC", "ORAS LC"], function littleCupCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["BW2 LC", "BW2 LC Ubers", "BW2 UU LC", "ORAS LC"], function littleCupCheck(src, team, tier) {
     var ret = [];
     var gen = sys.gen(src, team);
     var check = (gen > 5 ? ["Treecko", "Mudkip", "Turtwig", "Chimchar", "Piplup"].map(sys.pokeNum) : lcpokemons);
@@ -153,7 +153,7 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC", "Inverted Battle", "ORAS 1v1","XY Ubers", "ORAS Cup", "XY OU", "XY UU", "XY LU", "XY NU", "XY LC", "ORAS Doubles", "ORAS Triples", "No Preview OU", "BW2 OU", "BW2 UU", "BW2 LU", "BW2 LC", "DW LC", "BW2 Ubers", "No Preview Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "BW2 NU", "Metronome", "BW2 NEU"],
+tier_checker.add_new_check(INCLUDING, ["ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC", "Inverted Battle", "ORAS 1v1", "ORAS Cup", "ORAS Doubles", "ORAS Triples", "No Preview OU", "BW2 OU", "BW2 UU", "BW2 LU", "BW2 LC", "DW LC", "BW2 Ubers", "No Preview Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "BW2 NU", "Metronome", "BW2 NEU"],
                            function inconsistentCheck(src, team, tier) {
     var moody = sys.abilityNum("Moody");
     var ret = [];
@@ -167,7 +167,7 @@ tier_checker.add_new_check(INCLUDING, ["ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["ORAS Doubles", "ORAS Triples", "ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC", "Inverted Battle", "ORAS 1v1","XY Ubers", "ORAS Cup", "XY OU", "XY UU", "XY LC", "No Preview OU", "BW2 OU", "BW2 UU", "BW2 LU", "BW2 LC", "DW LC", "BW2 Ubers", "No Preview Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "BW2 NU", "Metronome", "BW2 NEU"],
+tier_checker.add_new_check(INCLUDING, ["ORAS Doubles", "ORAS Triples", "ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC", "Inverted Battle", "ORAS 1v1", "ORAS Cup", "No Preview OU", "BW2 OU", "BW2 UU", "BW2 LU", "BW2 LC", "DW LC", "BW2 Ubers", "No Preview Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "BW2 NU", "Metronome", "BW2 NEU"],
                            function endlessCheck(src, team, tier) {
     var ret = [];
     for (var i = 0; i < 6; i++) {
@@ -304,7 +304,7 @@ tier_checker.add_new_check(INCLUDING, ["BW2 LC"], function regeneratorCheck(src,
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["XY NU", "ORAS NU"], function sandRushCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["ORAS NU"], function sandRushCheck(src, team, tier) {
     for (var i = 0; i < 6; i++) {
         if (sys.ability(sys.teamPokeAbility(src, team, i)).toLowerCase() == "sand rush") {
             return ["Sand Rush is not allowed in " + tier + "."];
@@ -340,7 +340,7 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "XY OU", "XY UU", "XY LU", "XY NU"], function batonPassLimitXY(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU"], function batonPassLimitXY(src, team, tier) {
     var batonPassLimit = 2;
     for (var i = 0, j = 0; i < 6; ++i) {
         if (sys.hasTeamPokeMove(src, team, i, sys.moveNum("Baton Pass")) && (++j > batonPassLimit)) {
