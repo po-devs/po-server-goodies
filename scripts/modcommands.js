@@ -74,7 +74,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "onversion") {
-        commandData = parseInt(commandData);
+        commandData = parseInt(commandData, 10);
         if (isNaN(commandData)) {
             return;
         }
@@ -459,6 +459,33 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             } else {
                 whois();
             }
+        }
+        return;
+    }
+    if (command === "isbanned") {
+        if (!commandData) {
+            querybot.sendMessage(src, "Please use a valid name/ip", channel);
+            return;
+        }
+        // steal from aliases
+        var uid = sys.id(commandData);
+        var ip = commandData;
+        if (uid !== undefined) {
+            ip = sys.ip(uid);
+        } else if (sys.dbIp(commandData) !== undefined) {
+            ip = sys.dbIp(commandData);
+        }
+        // from whois
+        var bans = [];
+        if (sys.banned(ip) && !script.isTempBanned(ip)) { bans.push("Normal Ban"); }
+        if (script.isRangeBanned(ip)) { bans.push("Range Ban"); }
+        if (script.isTempBanned(ip)) { bans.push("Temporary Ban"); }
+        if (script.isIpBanned(ip)) { bans.push("IP Ban"); }
+        if (script.smutes.get(ip)) { bans.push("Smuted"); }
+        if (bans.length > 0) {
+            querybot.sendMessage(src, bans.join(", "), channel);
+        } else {
+            querybot.sendMessage(src, "No bans found", channel);
         }
         return;
     }
