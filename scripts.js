@@ -2021,9 +2021,9 @@ afterChatMessage : function(src, message, chan)
     callplugins("afterChatMessage", src, message, channel);
 }, /* end of afterChatMessage */
 
-beforeBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2) {
-    if ((sys.tier(src, team1) == "Battle Factory" || sys.tier(src, team1) == "Battle Factory 6v6") && (sys.tier(dest, team2) == "Battle Factory" || sys.tier(dest, team2) == "Battle Factory 6v6")) {
-       callplugins("beforeBattleStarted", src, dest, rated, mode, team1, team2);
+beforeBattleStarted: function(src, dest, clauses, rated, mode, bid, team1Lo, team1Hi, team2Lo, team2Hi) {
+    if ((sys.tier(src, team1Lo, team1Hi) == "Battle Factory" || sys.tier(src, team1Lo, team1Hi) == "Battle Factory 6v6") && (sys.tier(dest, team2Lo, team2Hi) == "Battle Factory" || sys.tier(dest, team2Lo, team2Hi) == "Battle Factory 6v6")) {
+       callplugins("beforeBattleStarted", src, dest, rated, mode, team1Lo, team1Hi, team2Lo, team2Hi);
     }
 },
 
@@ -2130,7 +2130,7 @@ isMCaps : function(message) {
 },
 
 beforeChangeTier : function(src, team, oldtier, newtier) {
-    if (newtier == "Battle Factory" || newtier == "Battle Factory 6v6" || oldtier == "Battle Factory" || oldtier == "Battle Factory 6v6") {
+    if (newtier == "Battle Factory" || newtier == "Battle Factory 6v6") {
         if (callplugins("beforeChangeTier", src, team, oldtier, newtier)) {
             sys.stopEvent();
             return;
