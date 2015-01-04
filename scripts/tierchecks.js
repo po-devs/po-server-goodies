@@ -124,7 +124,7 @@ tier_checker.add_new_check(INCLUDING, ["BW2 NU"], function evioliteCheck(src, te
 
 tier_checker.add_new_check(INCLUDING, ["Red/Blue", "Yellow", "Stadium", "RBY Ubers", "RBY OU", "RBY BL", "RBY UU", "RBY NU", "RBY LC"], function noTradebacksCheck(src, team, tier) {
     var ret = [];
-    var illegal_combinations = {"Kakuna": {"Harden": ["Poison Sting", "String Shot"]}, "Beedrill": {"Harden": ["Poison Sting", "String Shot"]},  "Fearow": {"Payday": ["Peck", "Mirror Move", "Drill Peck"]}, "Nidoking": {"Thrash": ["Fury Attack"]}, "Rapidash": {"Payday": ["Tail Whip", "Growl"]}, "Exeggutor": {"Stomp": ["Sleep Powder", "Stun Spore", "Poison Powder"]}, "Jolteon": {"Focus Energy": ["Thundershock"]}, "Flareon": {"Focus Energy": ["Ember"]}};
+    var illegal_combinations = {"Kakuna": {"Harden": ["Poison Sting", "String Shot"]}, "Beedrill": {"Harden": ["Poison Sting", "String Shot"]},  "Fearow": {"Payday": ["Peck"]}, "Nidoking": {"Thrash": ["Fury Attack"]}, "Rapidash": {"Payday": ["Tail Whip", "Growl"]}, "Exeggutor": {"Stomp": ["Sleep Powder", "Stun Spore", "Poison Powder"]}, "Jolteon": {"Focus Energy": ["Thundershock"]}, "Flareon": {"Focus Energy": ["Ember"]}};
     for (var i = 0; i < 6; i++) {
         //Mewtwo
         if (sys.teamPoke(src, team, i) === 150) {
