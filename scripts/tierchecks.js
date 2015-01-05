@@ -122,6 +122,33 @@ tier_checker.add_new_check(INCLUDING, ["BW2 NU"], function evioliteCheck(src, te
     }
 });
 
+tier_checker.add_new_check(INCLUDING, ["Red/Blue", "Yellow", "Stadium", "RBY Ubers", "RBY OU", "RBY BL", "RBY UU", "RBY NU", "RBY LC"], function noTradebacksCheck(src, team, tier) {
+    var ret = [];
+    var illegal_combinations = {"Kakuna": {"Harden": ["Poison Sting", "String Shot"]}, "Beedrill": {"Harden": ["Poison Sting", "String Shot"]},  "Fearow": {"Pay Day": ["Peck"]}, "Nidoking": {"Thrash": ["Fury Attack"]}, "Rapidash": {"Pay Day": ["Tail Whip", "Growl"]}, "Exeggutor": {"Stomp": ["Sleep Powder", "Stun Spore", "Poison Powder"]}, "Jolteon": {"Focus Energy": ["Thunder Shock"]}, "Flareon": {"Focus Energy": ["Ember"]}};
+    for (var i = 0; i < 6; i++) {
+        //Mewtwo
+        if (sys.teamPoke(src, team, i) === 150) {
+            if (sys.hasTeamPokeMove(src, team, i, sys.moveNum("Confusion"))) {
+                ret.push("Mewtwo cannot have Confusion in " + tier + " tier.");
+            }
+            if (sys.hasTeamPokeMove(src, team, i, sys.moveNum("Disable"))) {
+                ret.push("Mewtwo cannot have Disable in " + tier + " tier.");
+            }
+        } else if (illegal_combinations.hasOwnProperty(sys.pokemon(sys.teamPoke(src, team, i)))) {
+            for (var a in illegal_combinations[sys.pokemon(sys.teamPoke(src, team, i))]) {
+                if (sys.hasTeamPokeMove(src, team, i, sys.moveNum(a))) {
+                    for (var b in illegal_combinations[sys.pokemon(sys.teamPoke(src, team, i))][a]) {
+                        if (sys.hasTeamPokeMove(src, team, i, sys.moveNum(illegal_combinations[sys.pokemon(sys.teamPoke(src, team, i))][a][b]))) {
+                            ret.push("" + sys.pokemon(sys.teamPoke(src, team, i)) + " cannot have moves " + a + " and " + illegal_combinations[sys.pokemon(sys.teamPoke(src, team, i))][a][b] + " in " + tier + " tier.");
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return ret;
+});
+
 if (typeof Config == "undefined") { Config = { DreamWorldTiers: ["No Preview OU",  "No Preview Ubers", "X/Y", "Black/White", "Black/White 2"] }; }
 tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbilityCheck(src, team, tier) {
     // Of course, DW ability only affects 5th gen
