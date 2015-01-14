@@ -2182,7 +2182,7 @@ module.exports = {
                 }*/
                 generateTeam(src, srcteamLo, srcteamHi, type);
                 generateTeam(dest, destteamLo, destteamHi, type);
-                if (find_tier(type)) {
+                /*if (find_tier(type)) {
                     var k = 0;
                     var errsrc, errdest;
                     var srcteam = (srcteamHi << 32) + srcteamLo;
@@ -2195,7 +2195,7 @@ module.exports = {
                         if(++k>100) throw "Cannot generate legal teams after 100 attempts in tier: " + type + (errsrc ? "(Last error: " + errsrc + ")" : errdest ? "(Last error: " + errdest + ")" : "!");
                         
                     }
-                }
+                }*/
                 dumpData(src, srcteamLo, srcteamHi);
                 dumpData(dest, destteamLo, destteamHi);
             }
