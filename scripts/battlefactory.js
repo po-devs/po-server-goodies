@@ -2190,9 +2190,9 @@ module.exports = {
                     while (!tier_checker.has_legal_team_for_tier(src, srcteam, type, true) || !tier_checker.has_legal_team_for_tier(dest, destteam, type, true)) { //for complex bans like SS+Drizzle
                         generateTeam(src, srcteamLo, srcteamHi, type);
                         generateTeam(dest, destteamLo, destteamHi, type);
-                        errsrc = tier_checker.has_legal_team_for_tier(src, srcteamLo, srcteamHi, type, true, true);
-                        errdest = tier_checker.has_legal_team_for_tier(dest, destteamLo, destteamHi, type, true, true);
-                        if(++k>100) throw "Cannot generate legal teams after 100 attempts in type: " + type + (errsrc ? "(Last error: " + errsrc + ")" : errdest ? "(Last error: " + errdest + ")" : "!");
+                        errsrc = tier_checker.has_legal_team_for_tier(src, srcteam, type, true, true);
+                        errdest = tier_checker.has_legal_team_for_tier(dest, destteam, type, true, true);
+                        if(++k>100) throw "Cannot generate legal teams after 100 attempts in tier: " + type + (errsrc ? "(Last error: " + errsrc + ")" : errdest ? "(Last error: " + errdest + ")" : "!");
                         
                     }
                 }
