@@ -2182,10 +2182,12 @@ module.exports = {
                 }*/
                 generateTeam(src, srcteamLo, srcteamHi, type);
                 generateTeam(dest, destteamLo, destteamHi, type);
-                /*if (find_tier(type)) {
+                if (find_tier(type)) {
                     var k = 0;
                     var errsrc, errdest;
-                    while (!tier_checker.has_legal_team_for_tier(src, srcteamLo, srcteamHi, type, true) || !tier_checker.has_legal_team_for_tier(dest, destteamLo, destteamHi, type, true)) { //for complex bans like SS+Drizzle
+                    var srcteam = (srcteamHi << 32) + srcteamLo;
+                    var destteam = (destteamHi << 32) + destteamLo;
+                    while (!tier_checker.has_legal_team_for_tier(src, srcteam, type, true) || !tier_checker.has_legal_team_for_tier(dest, destteam, type, true)) { //for complex bans like SS+Drizzle
                         generateTeam(src, srcteamLo, srcteamHi, type);
                         generateTeam(dest, destteamLo, destteamHi, type);
                         errsrc = tier_checker.has_legal_team_for_tier(src, srcteamLo, srcteamHi, type, true, true);
@@ -2193,7 +2195,7 @@ module.exports = {
                         if(++k>100) throw "Cannot generate legal teams after 100 attempts in type: " + type + (errsrc ? "(Last error: " + errsrc + ")" : errdest ? "(Last error: " + errdest + ")" : "!");
                         
                     }
-                }*/
+                }
                 dumpData(src, srcteamLo, srcteamHi);
                 dumpData(dest, destteamLo, destteamHi);
             }
