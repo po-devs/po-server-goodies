@@ -1386,9 +1386,9 @@ afterLogIn : function(src) {
     if (sys.auth(src) <= 3 && this.canJoinStaffChannel(src))
         sys.putInChannel(src, staffchannel);
 
-    if (isAndroid(src)) {
+    /*if (isAndroid(src)) {
         normalbot.sendMessage(src, "New android version back on Play Store! See: http://pokemon-online.eu/threads/po-android-play-store-revival.29571/");
-    }
+    }*/
 }, /* end of afterLogin */
 
 beforePlayerRegister : function(src) {
