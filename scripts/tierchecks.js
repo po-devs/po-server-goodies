@@ -248,7 +248,7 @@ tier_checker.add_new_check(INCLUDING, ["Clear Skies"], function weatherlesstierc
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["Monotype", "ORAS UU", "ORAS NU", "ORAS, LU"], function drizzleBan(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["Monotype", "ORAS UU", "ORAS NU", "ORAS LU"], function drizzleBan(src, team, tier) {
     for (var i = 0; i < 6; i++) {
         if (sys.ability(sys.teamPokeAbility(src, team, i)).toLowerCase() == "drizzle") {
             return ["Drizzle is not allowed in " + tier + "."];
