@@ -575,7 +575,7 @@ init : function() {
 
     script.pokeNatures = [];
 
-    var list = "Heatran-Eruption/Quiet=Suicune-Extreme Speed/Relaxed|Sheer Cold/Relaxed|Aqua Ring/Relaxed|Air Slash/Relaxed=Raikou-Extreme Speed/Rash|Weather Ball/Rash|Zap Cannon/Rash|Aura Sphere/Rash=Entei-Extreme Speed/Adamant|Flare Blitz/Adamant|Howl/Adamant|Crush Claw/Adamant=Snivy-Aromatherapy/Hardy|Synthesis/Hardy=Genesect-Extreme Speed/Hasty|Blaze Kick/Hasty|Shift Gear/Hasty";
+    var list = "Heatran-Eruption/Quiet=Suicune-Extreme Speed/Relaxed|Sheer Cold/Relaxed|Aqua Ring/Relaxed|Air Slash/Relaxed=Raikou-Extreme Speed/Rash|Weather Ball/Rash|Zap Cannon/Rash|Aura Sphere/Rash=Entei-Extreme Speed/Adamant|Flare Blitz/Adamant|Howl/Adamant|Crush Claw/Adamant=Snivy-Aromatherapy/Hardy=Genesect-Extreme Speed/Hasty|Blaze Kick/Hasty|Shift Gear/Hasty";
     //this is really awful btw :(
     var sepPokes = list.split('='),
         sepMovesPoke, sepMoves, movenat;
