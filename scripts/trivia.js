@@ -493,9 +493,18 @@ TriviaGame.prototype.startTriviaRound = function () {
     }
     /* Get the category, question, and answer */
     var q = triviaq.get(questionNumber);
-    var category = q.category,
+    var category = q.category;
+    var question;
+    if (category.indexOf("Anagram") === -1){
         question = q.question;
-    
+    } else {
+        var name = q.question.split("");
+        question = [];
+        while (name.length > 0){
+            question.push(name.splice(sys.rand(0,name.length),1));
+        }
+        question = question.join("").toLowerCase();
+    }
     this.phase = "answer";
     this.roundQuestion = questionNumber;
     this.htmlAll("<b>Category:</b> " + category.toUpperCase() + "<br>" + question);
