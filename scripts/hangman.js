@@ -834,6 +834,9 @@ function Hangman() {
                     case "h":
                         hangman.searchByHint(src, search);
                         break;
+                    case "e":
+                        hangman.searchByEditor(src, search);
+                        break;
                     default:
                     hangbot.sendMessage(src, "Select a proper method of searching.", hangchan);
                     return;
@@ -910,7 +913,27 @@ function Hangman() {
     
         hangbot.sendMessage(src, "Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c + " - User: " + u, hangchan);
     };
-
+    
+    this.searchByEditor = function(src, commandData){
+        var found = false;
+        for (var e = 0; e < autoGames.length; e++) {
+            var game = autoGames[e].split(":");
+            var i = game[0],
+                u = game[1],
+                a = game[2].toUpperCase(),
+                h = game[3],
+                c = game.length < 5 ? defaultParts : game[4];
+        
+            if (u.toUpperCase() === commandData.toUpperCase()) {
+                hangbot.sendMessage(src, "Index: " + i + " - Word: " + a + " - Hint: " + h + " - Chances: " + c + " - User: " + u, hangchan);
+                found = true;
+            }
+        }
+        if (!found){
+            hangbot.sendMessage(src, "There are no games with that hint.", hangchan);
+        }
+    };
+    
     this.deleteQuest = function(src, commandData) {
        
         if (autoGames.length === 0) {
@@ -1200,9 +1223,7 @@ function Hangman() {
             "/hangmanbans: Searches the hangman banlist, show full list if no search term is entered.",
             "/flashhas: Flashes all Hangman Admins. Use /flashhas [phrase] to use a different message (abuse will be punished for).",
             "/passha: To give your Hangman Admin powers to an alt.",
-            "/addquest: To add a question to the autogame/eventgame data base. Format /addquest Answer:Hint:Guess number.",
-            "/searchquest: To search a question in the autogame/eventgame data base. Format /searchquest query:criteria where criteria is (w)ord (default), (h)int or (i)ndex.",
-            "/deletequest: To delete a question in the autogame/eventgame data base. Format /deletequest index.",
+            "/searchquest: To search a question in the autogame/eventgame data base. Format /searchquest query:criteria where criteria is (w)ord (default), (h)int, (i)ndex or (e)ditor.",
             "/changeword: To change the word in a question in the autogame/eventgame data base. Format /changeword index:word.",
             "/changehint: To change the hint in a question in the autogame/eventgame data base. Format /changeword index:hint.",
             "/changechances: To change the chances in a question in the autogame/eventgame data base. Format /changeword index:word.",
@@ -1213,6 +1234,8 @@ function Hangman() {
             "/config: To change the answer delay time and other settings. Format /config parameter:value. Type /config by itself to see more help.",
             "/hangmanadmin: To promote a new Hangman Admin. Use /shangmanadmin for a silent promotion.",
             "/hangmanadminoff: To demote a Hangman Admin or a Hangman Super Admin. Use /shangmanadminoff for a silent demotion.",
+            "/addquest: To add a question to the autogame/eventgame data base. Format /addquest Answer:Hint:Guess number.",
+            "/deletequest: To delete a question in the autogame/eventgame data base. Format /deletequest index.",
             "/eventgame: To turn eventgames on/off. Format /eventgame on or /eventgame off.",
             "/forceevent: Forces an Event game to start."
         ];
@@ -1379,19 +1402,9 @@ function Hangman() {
          return true;
          }
          */
-
-        if(command === "addquest") {
-            hangman.addQuest(src, commandData);
-            return true;
-        }
         
         if(command === "searchquest") {
             hangman.searchQuest(src, commandData);
-            return true;
-        }
-        
-        if(command === "deletequest") {
-            hangman.deleteQuest(src, commandData);
             return true;
         }
 
@@ -1422,6 +1435,16 @@ function Hangman() {
 
         if (hangman.authLevel(src) < 2) {
             return false;
+        }
+
+        if(command === "addquest") {
+            hangman.addQuest(src, commandData);
+            return true;
+        }
+        
+        if(command === "deletequest") {
+            hangman.deleteQuest(src, commandData);
+            return true;
         }
 
         if (command === "config") {
