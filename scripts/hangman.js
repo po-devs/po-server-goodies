@@ -930,7 +930,7 @@ function Hangman() {
             }
         }
         if (!found){
-            hangbot.sendMessage(src, "There are no games with that hint.", hangchan);
+            hangbot.sendMessage(src, "There are no games last edited by that person.", hangchan);
         }
     };
     
