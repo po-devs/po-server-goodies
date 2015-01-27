@@ -1123,7 +1123,7 @@ module.exports = {
         for (var i = 0; i < permaTours.length; ++i) {
             if (sys.channel(permaTours[i]) !== undefined) {
                 var tournament = new Tournament(permaTours[i]);
-                tournament.announceInit();
+                //tournament.announceInit();
                 module.tournaments[permaTours[i]] = tournament;
             }
         }
