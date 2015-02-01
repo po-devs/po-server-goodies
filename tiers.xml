@@ -52,7 +52,7 @@
    <tier maxLevel="100" banParent="" displayOrder="0" mode="0" gen="5" items="" tableName="tier_blackwhite2" pokemons="" subgen="1" name="Black/White 2" restrictedPokemons="" numberOfRestricted="1" moves="" numberOfPokemons="6" banMode="ban"/>
   </category>
   <category displayOrder="6" name="Gen 6">
-   <tier maxLevel="100" banParent="" displayOrder="0" mode="0" gen="6" items="Altarianite, Audinite, Beedrillite, Blue Orb, Cameruptite, Diancite, Galladite, Glalitite, Latiasite, Latiosite, Lopunnite, Metagrossite, Pidgeotite, Red Orb, Sablenite, Salamencite, Sceptilite, Sharpedonite, Slowbronite, Steelixite, Swampertite" tableName="tier_xy" pokemons="" subgen="0" name="X/Y" restrictedPokemons="" numberOfRestricted="1" moves="" numberOfPokemons="6" banMode="ban"/>
+   <tier maxLevel="100" banParent="" displayOrder="0" mode="0" gen="6" items="Altarianite, Audinite, Beedrillite, Blue Orb, Cameruptite, Diancite, Galladite, Glalitite, Latiasite, Latiosite, Lopunnite, Metagrossite, Pidgeotite, Red Orb, Sablenite, Salamencite, Sceptilite, Sharpedonite, Slowbronite, Steelixite, Swampertite" tableName="tier_xy" pokemons="" subgen="0" name="XY" restrictedPokemons="" numberOfRestricted="1" moves="" numberOfPokemons="6" banMode="ban"/>
    <tier maxLevel="100" banParent="" displayOrder="0" mode="0" gen="6" items="" tableName="tier_omegarubyalphasapphire" pokemons="" subgen="1" name="Omega Ruby/Alpha Sapphire" restrictedPokemons="" numberOfRestricted="1" moves="" numberOfPokemons="6" banMode="ban"/>
   </category>
  </category>
