@@ -307,7 +307,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 TABLE_LINE = '<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td></tr>';
             } else {
                 TABLE_HEADER = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="4"><center><strong>ID Bans</strong></center></td></tr><tr><th>Type</th><th>Name</th><th>IP</th><th>By</th></tr>';
-                TABLE_LINE = '<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{3}</td></tr>';    
+                TABLE_LINE = '<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td></tr>';    
             }
            TABLE_END = '</table>';
         } else {
