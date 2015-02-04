@@ -1314,7 +1314,6 @@ cookieBanned: function(src) {
     if (sys.auth(src) > 0 || !sys.cookie(src) && !sys.uniqueId(src)) {
         return;
     }
-    print("true");
     var id = sys.uniqueId(src).id;
     var cookie = sys.cookie(src) ? sys.cookie(src) : "none";
     var idInfo = JSON.parse(script.idBans.get(id));
