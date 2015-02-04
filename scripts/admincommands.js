@@ -301,11 +301,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var tar = sys.id(commandData);
-        var id = sys.uniqueId(tar).id;
-        if (!id) {
+        if (!sys.uniqueId(tar)) {
             normalbot.sendMessage(src, "Target doesn't have a unique ID (update needed)", channel);
             return;
         }
+        var id = sys.uniqueId(tar).id;
         var type = (command === "idban" ? "banned" : "muted");
         var banInfo = {};
         banInfo.name = sys.name(tar);
