@@ -263,7 +263,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         var type = (command === "cookieban" ? "banned" : "muted");
         sys.setCookie(sys.id(commandData), type + " " + commandData.toCorrectCase());
-        normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type, staffchannel);
+        normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type + " by " + sys.name(src), staffchannel);
         return;
     }
     if (command == "cookieunban" || command ==  "cookieunmute") {
@@ -292,7 +292,53 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, banned, channel);
         return;
     }
-    
+    if (command == "idban" || command == "idmute") {
+        if (!commandData) {
+            return;
+        }
+        if (!sys.loggedIn(sys.id(commandData))) {
+            normalbot.sendMessage(src, "Target not logged in", channel);
+            return;
+        }
+        var tar = sys.id(commandData);
+        var id = sys.uniqueId(tar).id;
+        if (!id) {
+            normalbot.sendMessage(src, "Target doesn't have a unique ID (update needed)", channel);
+            return;
+        }
+        var type = (command === "idban" ? "banned" : "muted");
+        var banInfo = {};
+        banInfo.name = sys.name(tar);
+        banInfo.ip = sys.ip(tar);
+        banInfo.banner = sys.name(src);
+        banInfo.type = type;
+        script.idBans.add(id, JSON.stringify(banInfo));
+        normalbot.sendAll(commandData.toCorrectCase() + " was ID " + type + " by " + sys.name(src), staffchannel);
+        if (type == "muted") {
+            SESSION.users(tar).activate("smute", Config.kickbot, 0, "ID", true);
+        } else {
+            sys.kick(tar);
+        }
+        return;
+    }
+    if (command == "idunban" || command == "idunmute") {
+        if (!commandData) {
+            return;
+        }
+        var type = (command === "idunban" ? "unbanned" : "unmuted");
+        var banInfo = script.idBans.get(commandData);
+        if (banInfo) {
+            var tar = banInfo.name;
+            script.idBans.remove(commandData);
+            if (banInfo.type == "muted") {
+                script.unban("smute", Config.kickbot, tar, commandData);
+            }
+            normalbot.sendAll(commandData.toCorrectCase() + " was ID " + type, staffchannel);
+            return;
+        }
+        normalbot.sendMessage(src, "ID not found", channel);
+        return;
+    }
     // hack, for allowing some subset of the owner commands for super admins
     if (isSuperAdmin(src)) {
        if (["changeauth"].indexOf(command) != -1) {

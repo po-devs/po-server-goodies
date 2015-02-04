@@ -147,7 +147,7 @@ var cleanFile = function(filename) {
     if (typeof sys != 'undefined')
         sys.appendToFile(filename, "");
 };
-[Config.dataDir+"mafia_stats.json", Config.dataDir+"suspectvoting.json", Config.dataDir+"mafiathemes/metadata.json", Config.dataDir+"channelData.json", Config.dataDir+"mutes.txt", Config.dataDir+"mbans.txt", Config.dataDir+"hmutes.txt", Config.dataDir+"smutes.txt", Config.dataDir+"rangebans.txt", Config.dataDir+"contributors.txt", Config.dataDir+"ipbans.txt", Config.dataDir+"namesToWatch.txt", Config.dataDir+"hangmanadmins.txt", Config.dataDir+"hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", Config.dataDir+"secretsmute.txt", Config.dataDir+"ipApi.txt", Config.dataDir + "notice.html", Config.dataDir + "rangewhitelist.txt"].forEach(cleanFile);
+[Config.dataDir+"mafia_stats.json", Config.dataDir+"suspectvoting.json", Config.dataDir+"mafiathemes/metadata.json", Config.dataDir+"channelData.json", Config.dataDir+"mutes.txt", Config.dataDir+"mbans.txt", Config.dataDir+"hmutes.txt", Config.dataDir+"smutes.txt", Config.dataDir+"rangebans.txt", Config.dataDir+"contributors.txt", Config.dataDir+"ipbans.txt", Config.dataDir+"namesToWatch.txt", Config.dataDir+"hangmanadmins.txt", Config.dataDir+"hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", Config.dataDir+"secretsmute.txt", Config.dataDir+"ipApi.txt", Config.dataDir + "notice.html", Config.dataDir + "rangewhitelist.txt", Config.dataDir + "idbans.txt"].forEach(cleanFile);
 
 var autosmute = sys.getFileContent(Config.dataDir+"secretsmute.txt").split(':::');
 var crc32 = require('crc32.js').crc32;
@@ -469,6 +469,7 @@ init : function() {
     script.hmutes = new MemoryHash(Config.dataDir+"hmutes.txt");
     script.namesToWatch = new MemoryHash(Config.dataDir+"namesToWatch.txt");
     script.namesToUnban = new MemoryHash(Config.dataDir+"namesToCookieUnban.txt");
+    script.idBans = new MemoryHash(Config.dataDir+"idbans.txt");
     proxy_ips = {};
     function addProxybans(content) {
         var lines = content.split(/\n/);
@@ -1309,15 +1310,17 @@ startUpTime: function() {
     }
 },
 
-cookieBanned: function(src) { //todo add a way to undo later
-    if (sys.auth(src) > 0 || !sys.cookie(src)) {
+cookieBanned: function(src) {
+    if (sys.auth(src) > 0 || !sys.cookie(src) && !sys.uniqueId(src)) {
         return;
     }
-    var cookie = sys.cookie(src);
+    print("true");
+    var id = sys.uniqueId(src).id;
+    var cookie = sys.cookie(src) ? sys.cookie(src) : "none";
+    var idInfo = JSON.parse(script.idBans.get(id));
     if (script.namesToUnban.get(sys.name(src).toLowerCase())) {
         kickbot.sendAll(sys.name(src) + " was unbanned by cookie", staffchannel);
         sys.removeCookie(src);
-        script.namesToUnban.remove(sys.name(src).toLowerCase());
     } else if (cookie === "banned" || cookie.substr(0, 6) === "banned") { //backwards compatability
         var name;
         if (cookie.indexOf(" ") > 1) {
@@ -1334,6 +1337,18 @@ cookieBanned: function(src) { //todo add a way to undo later
         }
         SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "Cookie", true);
         kickbot.sendAll(sys.name(src) + " was smuted by cookie" + (name ? " [Original Name: " + name + "]." : "."), staffchannel);
+    } else if (idInfo) {
+        var name = idInfo.name;
+        var type = idInfo.type;
+        kickbot.sendAll(sys.name(src) + " was " + (type == "banned" ? "banned" : "muted") + " by ID" + (name ? " [Original Name: " + name + "]." : "."), staffchannel);
+        if (type == "muted") {
+            SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "ID", true);
+            return;
+        } else {
+            normalbot.sendMessage(src, "You are currently banned from the server. If you believe this to be an error, post here: http://pokemon-online.eu/forums/disciplinary-committee.43/");
+            sys.kick(src);
+            return true;
+        }
     }
     return;
 },

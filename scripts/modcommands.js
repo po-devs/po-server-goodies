@@ -298,6 +298,36 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendHtmlMessage(src, table, channel);
         return;
     }
+    if (command == "idbans") {
+        //steal from rangebans
+        var TABLE_HEADER, TABLE_LINE, TABLE_END;
+        if (!commandData || commandData.indexOf('-text') == -1) {
+           TABLE_HEADER = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="5"><center><strong>ID Bans</strong></center></td></tr><tr><th>ID</th><th>Type</th><th>Name</th><th>IP</th><th>By</th></tr>';
+           TABLE_LINE = '<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td></tr>';
+           TABLE_END = '</table>';
+        } else {
+           TABLE_HEADER = 'Range banned: IP subaddress, Command on rangeban';
+           TABLE_LINE = ' || {0} / {1}';
+           TABLE_END = '';
+        }
+        try {
+        var table = TABLE_HEADER;
+        var tmp = [];
+        for (var key in script.idBans.hash) {
+            if (script.idBans.hash.hasOwnProperty(key)) {
+                var comment = JSON.parse(script.idBans.get(key));
+                tmp.push([key, comment.type, comment.name, comment.ip, comment.banner]);
+            }
+        }
+        tmp.sort(function(a,b) { return a[0] < b[0] ? -1 : 1; });
+        for (var row = 0; row < tmp.length; ++row) {
+            table += TABLE_LINE.format(tmp[row][0], tmp[row][1], tmp[row][2], tmp[row][3], tmp[row][4]);
+        }
+        table += TABLE_END;
+        sys.sendHtmlMessage(src, table, channel);
+        } catch (e) { sys.sendMessage(src, e, channel); }
+        return;
+    }
     if (command == "unmute") {
         script.unban("mute", src, tar, commandData);
         return;
