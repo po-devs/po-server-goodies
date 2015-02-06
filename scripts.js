@@ -1310,6 +1310,24 @@ startUpTime: function() {
     }
 },
 
+versionCheck : function(src) {
+    if (sys.os(src) == "windows") {
+        if (parseInt(sys.version(src)) < 2520) {
+            normalbot.sendMessage(src, "Update your client: https://github.com/po-devs/pokemon-online/releases/tag/2.5.2");
+            sys.kick(src);
+        return true;
+        }
+    }
+    if (sys.os(src) == "android") {
+        if (parseInt(sys.version(src)) < 41) {
+            normalbot.sendMessage(src, "Update your client: https://github.com/po-devs/android-client/releases/tag/2.5.3");
+            sys.kick(src);
+            return true;
+        }		
+    }
+    return;
+},
+
 cookieBanned: function(src) {
     if (sys.auth(src) > 0 || !sys.cookie(src) && !sys.uniqueId(src)) {
         return;
@@ -1353,6 +1371,10 @@ cookieBanned: function(src) {
 },
 
 afterLogIn : function(src) {
+    if (script.versionCheck(src)) {
+        return;
+    }
+	
     if (script.cookieBanned(src)) { //prevents errors from "no id" from the rest of the function
         return;
     }
