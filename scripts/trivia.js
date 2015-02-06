@@ -1769,7 +1769,7 @@ addAdminCommand("changenotes", function (src, commandData) {
 
 addAdminCommand(["addnotes", "addnote"], function (src, commandData) {
     if (trivreview.editingMode === true) {
-        trivreview.editingNotes = commandData + " - " + sys.name(src);
+        trivreview.editingNotes = commandData + " - " + nonFlashing(sys.name(src));
         triviabot.sendAll("The following notes regarding the question in edit were added: " + trivreview.editingNotes + " by " + sys.name(src), revchan);
         trivreview.checkq();
         return;
