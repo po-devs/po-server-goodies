@@ -919,7 +919,7 @@ QuestionHolder.prototype.checkq = function () {
         }
     }
     if (questionInfo.notes !== undefined) {
-        triviabot.sendAll("Notes: " + questionInfo.notes, revchan);
+        sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Notes:" + questionInfo.notes, revchan);
     } else {
         triviabot.sendAll("Notes: None.", revchan);
     }
