@@ -1339,8 +1339,9 @@ cookieBanned: function(src) {
         return;
     }
     var id = sys.uniqueId(src).id;
-    var idInfo = JSON.parse(script.idBans.get(id));
+    var idInfo = script.idBans.get(id);
     if (idInfo) {
+        idInfo = JSON.parse(idInfo);
         var name = idInfo.name;
         var type = idInfo.type;
         kickbot.sendAll(sys.name(src) + " was " + (type == "banned" ? "banned" : "muted") + " by ID" + (name ? " [Original Name: " + name + "]." : "."), staffchannel);
