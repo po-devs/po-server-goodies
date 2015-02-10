@@ -1318,7 +1318,7 @@ cookieBanned: function(src) {
     if (script.namesToUnban.get(sys.name(src).toLowerCase())) {
         kickbot.sendAll(sys.name(src) + " was unbanned by cookie", staffchannel);
         sys.removeCookie(src);
-        script.namesToUnban.remove(sys.name(src).toLowerCase);
+        script.namesToUnban.remove(sys.name(src).toLowerCase());
     } else if (cookie === "banned" || cookie.substr(0, 6) === "banned") { //backwards compatability
         var name;
         if (cookie.indexOf(" ") > 1) {
