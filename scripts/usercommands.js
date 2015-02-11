@@ -819,7 +819,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var itemId = sys.itemNum(commandData);
-        var berryId = itemId - 8001;
+        var berryId = itemId - 8000;
         if (!itemId) {
             normalbot.sendMessage(src, commandData + " is not a valid item!", channel);
             return;
