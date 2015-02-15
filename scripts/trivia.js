@@ -585,13 +585,13 @@ TriviaGame.prototype.finalizeAnswers = function () {
         if (this.scoreType === "elimination") {
             for (var id in this.triviaPlayers) {
                 var name = this.triviaPlayers[id].name;
-                var found = false
+                var found = false;
                 for (var i = 0; i < answeredCorrectly.length; i++) {
                     if (this.triviaPlayers[id].name === answeredCorrectly[i].name) {
                         found = true;
                     }
                 }
-                if (found === true) {
+                if (found === true || !this.triviaPlayers[id].playing) {
                     continue;
                 }
                 this.player(name).points--;
