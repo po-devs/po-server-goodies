@@ -575,12 +575,13 @@ TriviaGame.prototype.finalizeAnswers = function () {
 
     var correctNames = [];
     var totalPlayers = 0;
-    if (this.scoreType !== "speed") {
-        for (var id in this.triviaPlayers) {
-            if (this.triviaPlayers[id].playing === true) {
-                totalPlayers++;
-            }
+    
+    for (var id in this.triviaPlayers) {
+        if (this.triviaPlayers[id].playing === true) {
+            totalPlayers++;
         }
+    }
+    if (this.scoreType !== "speed") {
         if (this.scoreType === "elimination") {
             for (var id in this.triviaPlayers) {
                 var name = this.triviaPlayers[id].name;
@@ -604,6 +605,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
             correctNames[i] = answeredCorrectly[i].name;
         }
         this.sendAll("Answered correctly: " + correctNames.join(", "), triviachan);
+        questionData.log(this.roundQuestion, totalPlayers, answeredCorrectly.length);
     }
     else {
         answeredCorrectly = answeredCorrectly.sort(function (a, b) { return a.time - b.time; });
@@ -624,10 +626,6 @@ TriviaGame.prototype.finalizeAnswers = function () {
 
     var x = answers.length != 1 ? "answers were" : "answer was";
     sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±" + triviabot.name + ":</b></font> The correct " + x + ": <b>" + utilities.html_escape(answers.join(", ")) + "</b>", triviachan);
-
-    if (totalPlayers !== 0) {
-        questionData.log(this.roundQuestion, totalPlayers, answeredCorrectly.length);
-    }
 
     var leaderboard = [];
     var displayboard = [];
