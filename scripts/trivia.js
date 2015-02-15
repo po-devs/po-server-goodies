@@ -574,8 +574,8 @@ TriviaGame.prototype.finalizeAnswers = function () {
     sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Time's up!" + incorrectAnswers, triviachan);
 
     var correctNames = [];
-    var totalPlayers = 0;
     if (this.scoreType !== "speed") {
+        var totalPlayers = 0;
         for (var id in this.triviaPlayers) {
             if (this.triviaPlayers[id].playing === true) {
                 totalPlayers++;
@@ -590,7 +590,6 @@ TriviaGame.prototype.finalizeAnswers = function () {
                         this.unjoin(id);
                     }
                 }
-                correctNames[id] = name;
             }
         }
         else if (answeredCorrectly.length !== 0) {
@@ -598,11 +597,13 @@ TriviaGame.prototype.finalizeAnswers = function () {
             this.sendAll("Points awarded for this question: " + pointAdd);
             for (var i = 0; i < answeredCorrectly.length; i++) {
                 var name = answeredCorrectly[i].name;
-                correctNames[i] = name;
                 this.player(name).points += pointAdd;
             }
         }
-        this.sendAll("Answered correctly: " + correctNames.join(", "), triviachan);
+        for (var i = 0; i < answeredCorrectly.length; i++) {
+            correctNames[i] = answeredCorrectly[i].name;
+        }
+    	this.sendAll("Answered correctly: " + correctNames.join(", "), triviachan);
     }
     else {
         answeredCorrectly = answeredCorrectly.sort(function (a, b) { return a.time - b.time; });
@@ -617,7 +618,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
             }
         }
 
-        this.sendAll("In order from fastest to slowest, answered correctly: ");
+        this.sendAll("In order from fastest to slowest, answered correctly: ")
         this.sendAll(correctNames.join(", "), triviachan);
     }
 
@@ -701,7 +702,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         sendChanHtmlAll("<font size=5><font color='#3DAA68'><timestamp/> <b>±" + triviabot.name + ":</b> <font color='red'>While you're waiting for another game, why not submit a question? <a href='http://pokemon-online.eu/threads/trivia-help-and-guidelines.30233'>Help and Guidelines are here!</a></font></font></font>", triviachan);
         sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±" + triviabot.name + ":</b></font> We could really use more <b>" + allCats[allCats.length - sys.rand(1, 6)].category + "</b> themed questions!", triviachan);
         sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Never want to miss a Trivia game? Try the <b>/flashme</b> command!", triviachan);
-        sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type /start [goal] to start a new game!", triviachan);
+        sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type /start [goal] to start a new game!", triviachan);        
         if (this.catGame) {
             lastCatGame = 1;
             lastUsedCats = this.usingCats;
