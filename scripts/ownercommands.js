@@ -466,8 +466,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
     }
     if (command == "stopbattles") {
-        battlesStopped = !battlesStopped;
-        if (battlesStopped)  {
+        script.battlesStopped = !script.battlesStopped;
+        if (script.battlesStopped)  {
             sys.sendAll("");
             sys.sendAll("*** ********************************************************************** ***");
             battlebot.sendAll("The battles are now stopped. The server will restart soon.");

@@ -568,7 +568,7 @@ init : function() {
     script.isMafiaAdmin = require('mafia.js').isMafiaAdmin;
     script.isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
 
-    battlesStopped = false;
+    script.battlesStopped = false;
 
     maxPlayersOnline = 0;
 
@@ -2170,7 +2170,7 @@ afterPlayerAway : function(src, away) {
 },
 
 beforeChallengeIssued : function (src, dest, clauses, rated, mode, team, destTier) {
-    if (battlesStopped) {
+    if (script.battlesStopped) {
         battlebot.sendMessage(src, "Battles are now stopped as the server will restart soon.");
         sys.stopEvent();
         return;
@@ -2232,7 +2232,7 @@ beforeSpectateBattle : function(src, p1, p2) {
 
 beforeBattleMatchup : function(src,dest,clauses,rated)
 {
-    if (battlesStopped) {
+    if (script.battlesStopped) {
         sys.stopEvent();
         return;
     }
