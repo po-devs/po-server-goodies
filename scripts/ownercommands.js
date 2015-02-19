@@ -701,9 +701,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (!commandData) {
             return;
         }
-        ["Tohjo Falls", "Trivia", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview", "Mafia", "Hangman"].forEach(function(c) {
+        /*["Tohjo Falls", "Trivia", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview", "Mafia", "Hangman"].forEach(function(c) {
             sys.sendHtmlAll("<font size = 4><b>"+commandData+"</b></font>", sys.channelId(c));
-        });
+        });*/
+        sys.sendHtmlAll("<font size = 4><b>"+commandData+"</b></font>");
         return;
     }
     
