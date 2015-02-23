@@ -49,7 +49,7 @@ catch (e) {
     trivData = {};
 }
 
-var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard", "triviaWarnings", "autostartRange", "equivalentCats"];
+var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard", "triviaWarnings", "autostartRange", "equivalentCats","equivalentAns"];
 for (var i = 0; i < neededData.length; ++i) {
     var data = neededData[i];
     if (trivData[data] === undefined) {
@@ -536,6 +536,11 @@ TriviaGame.prototype.finalizeAnswers = function () {
         Trivia.suggestion = {};
     }
     var answer, id, answers = [].concat(triviaq.get(this.roundQuestion).answer.split(","));
+    for (i = answers.length - 1; i >= 0; i--){
+        if (trivData.equivalentAns.hasOwnProperty(answers[i].toLowerCase())){
+            answers = answers.concat(trivData.equivalentAns[answers[i].toLowerCase()].split(","));
+        }
+    }
     this.phase = "standby";
     var wrongAnswers = [],
         answeredCorrectly = [];
@@ -2395,6 +2400,53 @@ addOwnerCommand("removeequivalentcat", function (src, commandData, channel) {
    saveData();
    triviabot.sendMessage(src, "You removed " + commandData + " from the list of synonyms.", channel);
 }, "Removes a synonym for a category.");
+
+addOwnerCommand(["addequivalentans","aea"], function (src, commandData, channel) {
+   var data = commandData.split("*");
+   if (data.length != 2) {
+      triviabot.sendMessage(src, "Incorrect syntax! Format for this command is /addequivalentans [answer]*[answers to change to].", channel);
+      return;
+   }
+   if (data[0] === "" || data[1] === "") {
+      triviabot.sendMessage(src, "Blank answers make little sense!", channel);
+      return;
+   }
+   var toChange = data[0].toLowerCase();
+   var changeTo = data[1];
+   trivData.equivalentAns[toChange] = changeTo;
+   saveData();
+   triviabot.sendMessage(src, "Added synonyms for " + toChange + ".", channel);
+}, "Adds synonyms for an answer. Format is /addequivalentans answer*newanswer1,newanswer2,etc");
+
+addOwnerCommand(["removeequivalentans","rea"], function (src, commandData, channel) {
+   if (commandData === "") {
+      triviabot.sendMessage(src, "Please specify an answer's synonyms to remove!", channel);
+   }
+   commandData = commandData.toLowerCase();
+   if (!trivData.equivalentAns.hasOwnProperty(commandData)) {
+      triviabot.sendMessage(src, commandData + " has no synonyms.", channel);
+      return;
+   }
+   delete trivData.equivalentAns[commandData];
+   saveData();
+   triviabot.sendMessage(src, "You deleted " + commandData + "'s synonyms.", channel);
+}, "Removes synonyms for an answer.");
+
+addAdminCommand(["equivalentans","ea"], function (src, commandData, channel) {
+    if (commandData == ""){
+        for (var i in trivData.equivalentAns) {
+           Trivia.sendPM(src, i + ": " + trivData.equivalentAns[i], channel);
+        }
+    } else {
+        commandData = commandData.toLowerCase();
+        if (trivData.equivalentAns.hasOwnProperty(commandData)){
+            Trivia.sendPM(src, commandData + ": " + trivData.equivalentAns[commandData], channel);
+        } else {
+            Trivia.sendPM(src, commandData + " has no synonyms.");
+        }
+    }
+    return;
+}, "View synonyms of answers.");
 
 /*addOwnerCommand("revertfrom", function(src, commandData, channel) {
     commandData = commandData.split(":");
