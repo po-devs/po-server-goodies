@@ -583,6 +583,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
     }
     if (this.scoreType !== "speed") {
         if (this.scoreType === "elimination") {
+            var allCorrect = true;
             for (var id in this.triviaPlayers) {
                 var name = this.triviaPlayers[id].name;
                 var found = false;
@@ -594,8 +595,21 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 if (found === true || !this.triviaPlayers[id].playing) {
                     continue;
                 }
+                allCorrect = false;
                 this.player(name).points--;
                 if (this.player(name).points === 0) {
+                    this.unjoin(id);
+                }
+            }
+            if (allCorrect && this.suddenDeath && answeredCorrectly.length) {
+                answeredCorrectly = answeredCorrectly.sort(function (a, b) { return a.time - b.time; });
+                var name = answeredCorrectly[answeredCorrectly.length - 1].name;
+                this.player(name).points--;
+                this.sendAll(name + " was the last player to answer the question, so they lose a life!")
+                if (this.player(name).points === 0) {
+                    for (var id in this.triviaPlayers) {
+                        if (this.triviaPlayers[id].name === name) break;
+                    }
                     this.unjoin(id);
                 }
             }
@@ -658,7 +672,8 @@ TriviaGame.prototype.finalizeAnswers = function () {
         month = newMonth;
     }
     var lastPoints; //points = leaderboard points
-    if (this.maxPoints >= extLB.minLB && this.scoreType !== "elimination"){
+    var minPoints = (this.scoreType === "knowledge" ? extLB.minLB : extLB.minSpeedLB);
+    if (this.maxPoints >= minPoints && this.scoreType !== "elimination"){
         while (leaderboard[i] && leaderboard[i][1] >= this.maxPoints){
             var points = totalPlayers - i;
             if (this.catGame) {points = points / 2;}
@@ -672,6 +687,12 @@ TriviaGame.prototype.finalizeAnswers = function () {
         displayboard.push(leaderboard[x][0] + " (" + leaderboard[x][1] + ")");
     }
     this.sendAll("Leaderboard: " + displayboard.join(", "), triviachan);
+
+    if (this.scoreType === "elimination" && this.round >= Math.min(5 + (this.maxPoints - 1) * 3, 10) && !this.suddenDeath) {
+        this.suddenDeath = true;
+        this.sendAll(this.round + " rounds have passed, so sudden death has started! If all players answer correctly, the last player to answer will lose a life.");
+    }
+
     if (totalPlayers < 2) {
         this.inactivity++;
     }
@@ -1211,6 +1232,7 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
 function pointsLB(file) {
     this.file = file;
     this.minLB = 7;
+    this.minSpeedLB = 25;
     this.leaderboard = [];
     var fileContent = sys.getFileContent(this.file);
     if (fileContent === undefined || fileContent === "") {
@@ -2322,6 +2344,15 @@ addOwnerCommand("lbmin", function (src, commandData, channel) {
         Trivia.sendAll("A minimum of " + commandData + " point(s) is now required for a knowledge game to count towards the leaderboard.",revchan);
     }
 }, "Changes the minimum points needed for a knowledge-based game to count for the leaderboard. Format /lbmin #");
+
+addOwnerCommand("lbspeedmin", function (src, commandData, channel) {
+    if (commandData.length === 0 || isNaN(commandData)){
+        triviabot.sendMessage(src, extLB.minSpeedLB + " points are currently required for a speed trivia game to count towards the leaderboard.", channel);
+    } else {
+        extLB.minSpeedLB = commandData;
+        Trivia.sendAll("A minimum of " + commandData + " point(s) is now required for a speed trivia game to count towards the leaderboard.",revchan);
+    }
+}, "Changes the minimum points needed for a speed-based game to count for the leaderboard. Format /lbspeedmin #");
 
 addOwnerCommand("cleardata", function (src, commandData, channel) {
     questionData.clear();
