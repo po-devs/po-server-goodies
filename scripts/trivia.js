@@ -774,6 +774,7 @@ TriviaGame.prototype.resetTrivia = function () {
     this.ticks = -1;
     this.suggestion = {};
     this.inactivity = 0;
+    this.suddenDeath = false;
 };
 
 TriviaGame.prototype.key = function (src) {
