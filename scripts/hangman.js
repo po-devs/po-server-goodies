@@ -593,7 +593,7 @@ function Hangman() {
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
             if (sys.existChannel("Victory Road"))
-                hangbot.sendAll("Warning: Player " + sys.name(src) + " stopped " + (sys.name(src) == hostName ? "their" : hostName + "'s") + " game in #Hangman", sys.channelId("Victory Road"));
+                hangbot.sendAll("Warning: Player " + sys.name(src) + " stopped " + (sys.name(src) == hostName ? "their" : hostName + "'s") + " game in #Hangman. (Hint: +" + hint + ", Answer: " + word + ")", sys.channelId("Victory Road"));
             word = undefined;
             winner = undefined;
             this.resetTimers();
@@ -1128,7 +1128,7 @@ function Hangman() {
                 hangbot.sendMessage(src, "The answer for the current game is " + word.toUpperCase() +"!", hangchan);
                 checked.push(sys.ip(src));
                 if (sys.existChannel("Victory Road"))
-                    hangbot.sendAll("Warning: Player " +sys.name(src) + " checked the current answer in #Hangman", sys.channelId("Victory Road"));
+                    hangbot.sendAll("Warning: Player " +sys.name(src) + " checked the answer of " + hostName + "'s game in #Hangman", sys.channelId("Victory Road"));
             }
         }
     };
