@@ -593,7 +593,7 @@ function Hangman() {
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
             if (sys.existChannel("Victory Road"))
-                hangbot.sendAll("Warning: Player " + sys.name(src) + " stopped " + (sys.name(src) == hostName ? "their" : hostName + "'s") + " game in #Hangman. (Hint: +" + hint + ", Answer: " + word + ")", sys.channelId("Victory Road"));
+                hangbot.sendAll("Warning: Player " + sys.name(src) + " stopped " + (sys.name(src) == hostName ? "their" : hostName + "'s") + " game in #Hangman. (Hint: " + hint + ", Answer: " + word + ")", sys.channelId("Victory Road"));
             word = undefined;
             winner = undefined;
             this.resetTimers();
