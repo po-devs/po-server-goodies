@@ -805,5 +805,7 @@ exports.help =
         "/clearladder: Clears rankings from a tier.",
         "/advertise: Sends a html message to the main channels",
         "/tempmod/admin: Gives temporary auth to a user. Lasts until they log out",
-        "/detempauth: Removes temporary auth given to a user"
+        "/detempauth: Removes temporary auth given to a user",
+        "/testannouncement: Test the current announcement on Github (only shows for the command user)",
+        "/setannouncement: Sets the announcement to the one on Github"
     ];
