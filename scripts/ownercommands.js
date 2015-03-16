@@ -743,6 +743,20 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendAll(commandData.toCorrectCase() + "'s temp auth was removed", staffchannel);
         return;
     }
+    if (command == "setwebannouncement" || command == "setannouncement") {
+        var updateURL = Config.base_url + "announcement.html";
+        sys.webCall(updateURL, function(resp) {
+            sys.changeAnnouncement(resp);
+        });
+        return;
+    }
+    if (command == "testwebannouncement" || command == "testannouncement") {
+        var updateURL = Config.base_url + "announcement.html";
+        sys.webCall(updateURL, function(resp) {
+            sys.setAnnouncement(resp, src);
+        });
+        return;
+    }
     return "no command";
 };
 exports.help = 
