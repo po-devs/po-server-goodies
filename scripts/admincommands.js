@@ -306,12 +306,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var id = sys.uniqueId(tar).id;
+        var psuedo = !sys.uniqueId(tar).isUnique;
         var type = (command === "idban" ? "banned" : "muted");
         var banInfo = {};
         banInfo.name = sys.name(tar);
         banInfo.ip = sys.ip(tar);
         banInfo.banner = sys.name(src);
         banInfo.type = type;
+        banInfo.psuedo = psuedo;
         script.idBans.add(id, JSON.stringify(banInfo));
         normalbot.sendAll(commandData.toCorrectCase() + " was ID " + type + " by " + sys.name(src), staffchannel);
         if (type == "muted") {
