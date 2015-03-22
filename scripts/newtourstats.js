@@ -3,7 +3,7 @@
 // To use this:
 // require("newtourstats.js")
 
-var dataDir = "tourdata/";
+var dataDir = "scriptdata/tourdata/";
 var utilities = require('utilities.js');
 var find_tier = utilities.find_tier;
 

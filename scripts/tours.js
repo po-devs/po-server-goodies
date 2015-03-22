@@ -788,8 +788,8 @@ function getConfigValue(file, key) {
 
 function initTours() {
     // config object
-    sys.makeDir("tourconfig");
-    sys.makeDir("tourdata");
+    sys.makeDir(configDir);
+    sys.makeDir(dataDir);
     tourconfig = {
         maxqueue: parseInt(getConfigValue("tourconfig.txt", "maxqueue"), 10),
         maxarray: 1023,
