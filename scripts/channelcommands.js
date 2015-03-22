@@ -18,17 +18,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "passcauth") {
         if (!commandData) {
-            channelbot.sendMessage(src, "Use /passcauth [name]*[position]", channel);
+            channelbot.sendMessage(src, "Use /passcauth [name]", channel);
             return;
         }
         var oldname = sys.name(src).toLowerCase();
-        var action = commandData.split("*");
-        if (action.length !== 2) {
-            channelbot.sendMessage(src, "Use /passcauth [name]*[position]", channel);
-            return;
-        }
+        var action = commandData.split("*"); //useless, but doesn't break comptability, can still use /passcauth name*position but position just won't do anything
         var newname = action[0].toLowerCase();
-        var position = action[1].toLowerCase();
         if (sys.id(newname) === undefined) {
             channelbot.sendMessage(src, "Your target is offline", channel);
             return;
@@ -41,27 +36,17 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             channelbot.sendMessage(src, "Both accounts must be on the same IP to switch!", channel);
             return;
         }
-        if (poChannel.isChannelMember(src) && position === "member") {
-            if (poChannel.members.indexOf(newname) > -1) {
-                channelbot.sendMessage(src, newname + " is already a Channel Member!", channel);
+        if (poChannel.isChannelOwner(src)) {
+            if (poChannel.masters.indexOf(newname) > -1) {
+                channelbot.sendMessage(src, newname + " is already a Channel Owner!", channel);
                 return;
             }
-            poChannel.members.splice(poChannel.members.indexOf(oldname),1);
-            poChannel.members.push(newname);
-            channelbot.sendAll(sys.name(src) + " transferred their Channel Membership to " + newname + "!", channel);
+            poChannel.masters.splice(poChannel.masters.indexOf(oldname),1);
+            poChannel.masters.push(newname);
+            channelbot.sendAll(sys.name(src) + " transferred their Channel Owner to " + newname + "!", channel);
             return;
         }
-        if (poChannel.isChannelOperator(src) && (position === "op" || position === "mod")) {
-            if (poChannel.operators.indexOf(newname) > -1) {
-                channelbot.sendMessage(src, newname + " is already a Channel Mod!", channel);
-                return;
-            }
-            poChannel.operators.splice(poChannel.operators.indexOf(oldname),1);
-            poChannel.operators.push(newname);
-            channelbot.sendAll(sys.name(src) + " transferred their Channel Mod to " + newname + "!", channel);
-            return;
-        }
-        if (poChannel.isChannelAdmin(src) && position === "admin") {
+        if (poChannel.isChannelAdmin(src)) {
             if (poChannel.admins.indexOf(newname) > -1) {
                 channelbot.sendMessage(src, newname + " is already a Channel Admin!", channel);
                 return;
@@ -71,14 +56,24 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             channelbot.sendAll(sys.name(src) + " transferred their Channel Admin to " + newname + "!", channel);
             return;
         }
-        if (poChannel.isChannelOwner(src) && position === "owner") {
-            if (poChannel.masters.indexOf(newname) > -1) {
-                channelbot.sendMessage(src, newname + " is already a Channel Owner!", channel);
+        if (poChannel.isChannelOperator(src)) {
+            if (poChannel.operators.indexOf(newname) > -1) {
+                channelbot.sendMessage(src, newname + " is already a Channel Mod!", channel);
                 return;
             }
-            poChannel.masters.splice(poChannel.masters.indexOf(oldname),1);
-            poChannel.masters.push(newname);
-            channelbot.sendAll(sys.name(src) + " transferred their Channel Owner to " + newname + "!", channel);
+            poChannel.operators.splice(poChannel.operators.indexOf(oldname),1);
+            poChannel.operators.push(newname);
+            channelbot.sendAll(sys.name(src) + " transferred their Channel Mod to " + newname + "!", channel);
+            return;
+        }
+        if (poChannel.isChannelMember(src)) {
+            if (poChannel.members.indexOf(newname) > -1) {
+                channelbot.sendMessage(src, newname + " is already a Channel Member!", channel);
+                return;
+            }
+            poChannel.members.splice(poChannel.members.indexOf(oldname),1);
+            poChannel.members.push(newname);
+            channelbot.sendAll(sys.name(src) + " transferred their Channel Membership to " + newname + "!", channel);
             return;
         }
         channelbot.sendMessage(src, "You don't have sufficient channel auth to pass that position.", channel);
@@ -357,7 +352,7 @@ exports.help = function(src, channel) {
     sys.sendMessage(src, "/crules: To see a list of the current channels rules", channel);
     if (poChannel.isChannelMember(src) || poChannel.isChannelOperator(src) || poChannel.isChannelAdmin(src) || poChannel.isChannelOwner(src)) {
         sys.sendMessage(src, "*** Channel Member commands ***", channel);
-        sys.sendMessage(src, "/passcauth [name]*[position]: Passes channel authority to a new alt. New name must be registered, online, and have the same IP as the old name. Valid positions are member, mod (or op), admin, and owner.", channel);
+        sys.sendMessage(src, "/passcauth [name]: Passes channel authority to a new alt. New name must be registered, online, and have the same IP as the old name. Valid positions are member, mod (or op), admin, and owner.", channel);
     }
     if (poChannel.isChannelOperator(src) || poChannel.isChannelAdmin(src) || poChannel.isChannelOwner(src)) {
         sys.sendMessage(src, "*** Channel Mod commands ***", channel);
