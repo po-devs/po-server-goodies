@@ -353,13 +353,13 @@ step: function() {
 
     var date = new Date();
     if (date.getUTCMinutes() === 10 && date.getUTCSeconds() === 0 && sys.os() !== "windows") {
-        sys.get_output("nc -z server.pokemon-online.eu 10508", function callback(exit_code) {
+        /*sys.get_output("nc -z server.pokemon-online.eu 10508", function callback(exit_code) {
             if (exit_code !== 0) {
                 sys.sendAll("±NetCat: Cannot reach Webclient Proxy - it may be down.", sys.channelId("Indigo Plateau"));
             }
         }, function errback(error) {
                 sys.sendAll("±NetCat: Cannot reach Webclient Proxy - it may be down: " + error, sys.channelId("Indigo Plateau"));
-        });
+        });*/
         clearTeamFiles();
     }
     if (date.getUTCHours() % 3 === 0 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
