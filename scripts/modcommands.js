@@ -464,7 +464,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                     }
                     SESSION.users(tar).ipinfo = ipInfo;
                 } else {
-                    ipInfo = SESSION.users(tar).ipInfo || "";
+                    ipInfo = SESSION.users(tar).ipinfo || "";
                 }
                 var logintime = false;
                 if (online) logintime = SESSION.users(tar).logintime;
