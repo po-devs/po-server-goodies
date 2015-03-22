@@ -36,8 +36,8 @@ function initFactory() {
 }
 
 function startBF() {
-    sys.makeDir("bfdata");
-    sys.makeDir("bfdata/submit");
+    sys.makeDir(dataDir);
+    sys.makeDir(sumbitDir);
     try {
         var file = sys.getFileContent(dataDir+"bfteams.json");
         if (file === undefined) {
