@@ -462,6 +462,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                     if(cityName !== "" && cityName !== "-"){
                         ipInfo += "City: " + cityName;
                     }
+                    SESSION.users(tar).ipinfo = ipInfo;
+                } else {
+                    ipInfo = SESSION.users(tar).ipInfo || "";
                 }
                 var logintime = false;
                 if (online) logintime = SESSION.users(tar).logintime;
@@ -496,7 +499,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                     }
                 }
             };
-            if (command === "whereis") {
+            if (command === "whereis" && SESSION.users(tar).ipinfo === undefined) {
                 var ipApi = sys.getFileContent(Config.dataDir+'ipApi.txt');
                 sys.webCall('http://api.ipinfodb.com/v3/ip-city/?key=' + ipApi + '&ip='+ ip + '&format=json', whois);
             } else {
