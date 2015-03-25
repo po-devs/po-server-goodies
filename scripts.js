@@ -1324,7 +1324,7 @@ cookieBanned: function(src) {
         if (cookie.indexOf(" ") > 1) {
             name = cookie.substr(cookie.indexOf(" ")+1);
         }
-        kickbot.sendAll(sys.name(src) + " was banned by cookie" + (name ? " [Original Name: " + name + "]." : "."), sys.channelId("Watch"));
+        kickbot.sendAll(sys.name(src) + " was banned by cookie" + (name ? " [Original Name: " + name + "]." : "."), staffchannel);
         normalbot.sendMessage(src, "You are currently banned from the server. If you believe this to be an error, post here: http://pokemon-online.eu/forums/disciplinary-committee.43/");
         sys.kick(src);
         return true;
