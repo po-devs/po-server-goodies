@@ -747,24 +747,40 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendHtmlMessage(src, "<b>Height:</b> " + pokedex.getHeight(pokeId) + " m", channel);
         sys.sendHtmlMessage(src, "<b>Weight:</b> " + pokedex.getWeight(pokeId) + " kg", channel);
         sys.sendHtmlMessage(src, "<b>Base Power of Low Kick/Grass Knot:</b> " + pokedex.weightPower(pokedex.getWeight(pokeId)), channel);
-        var table = "<table border = 1 cellpadding = 3>";
-        table += "<tr><th rowspan = 2 valign = middle><font size = 5>Stats</font></th><th rowspan = 2 valign = middle>Base</th><th colspan = 3>Level 5</th><th colspan = 3>Level 50</th><th colspan = 3>Level 100</th></tr>";
-        table += "<tr><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th>";
-        for (var x = 0; x < stats.length; x++) {
-            var baseStat = baseStats[x];
-            table += "<tr><td valign = middle><b>" + stats[x] + "</b></td><td><center><font size = 4>" + baseStat + "</font></center></td>";
-            for (var i = 0; i < levels.length; i++) {
-                if (x === 0) {
-                    table += "<td valign = middle><center>" + pokedex.calcHP(baseStat, 31, 0, levels[i]) + "</center></td><td valign = middle><center>" + pokedex.calcHP(baseStat, 31, 252, levels[i]) + "</center></td><td valign = middle><center>-</center></td>";
+        if (sys.os(src) !== "android") {
+            var table = "<table border = 1 cellpadding = 3>";
+            table += "<tr><th rowspan = 2 valign = middle><font size = 5>Stats</font></th><th rowspan = 2 valign = middle>Base</th><th colspan = 3>Level 5</th><th colspan = 3>Level 50</th><th colspan = 3>Level 100</th></tr>";
+            table += "<tr><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th>";
+            for (var x = 0; x < stats.length; x++) {
+                var baseStat = baseStats[x];
+                table += "<tr><td valign = middle><b>" + stats[x] + "</b></td><td><center><font size = 4>" + baseStat + "</font></center></td>";
+                for (var i = 0; i < levels.length; i++) {
+                    if (x === 0) {
+                        table += "<td valign = middle><center>" + pokedex.calcHP(baseStat, 31, 0, levels[i]) + "</center></td><td valign = middle><center>" + pokedex.calcHP(baseStat, 31, 252, levels[i]) + "</center></td><td valign = middle><center>-</center></td>";
+                    }
+                    else {
+                        table += "<td valign = middle><center>" + pokedex.calcStat(baseStat, 31, 0, levels[i], 1) + "</center></td><td valign = middle><center>" + pokedex.calcStat(baseStat, 31, 252, levels[i], 1) + "</center></td><td valign = middle><center>" + pokedex.calcStat(baseStat, 31, 252, levels[i], 1.1) + "</center></td>";
+                    }
                 }
-                else {
-                    table += "<td valign = middle><center>" + pokedex.calcStat(baseStat, 31, 0, levels[i], 1) + "</center></td><td valign = middle><center>" + pokedex.calcStat(baseStat, 31, 252, levels[i], 1) + "</center></td><td valign = middle><center>" + pokedex.calcStat(baseStat, 31, 252, levels[i], 1.1) + "</center></td>";
+                table += "</tr>";
+            }
+            table += "</table>";
+            sys.sendHtmlMessage(src, table, channel);
+        } else {
+            var data = [];
+            for (var x = 0; x < stats.length; x++) {
+                var baseStat = baseStats[x];
+                data.push("<b>" + stats[x] + ": " + baseStat + "</b>");
+                if (x === 0) {
+                    data.push("Min: " + pokedex.calcHP(baseStat, 31, 0, 100) + " | Max: " + pokedex.calcHP(baseStat, 31, 252, 100));
+                } else {
+                    data.push("Min: " + pokedex.calcStat(baseStat,31 ,0, 100, 1) + " | Max: " + pokedex.calcStat(baseStat,31, 252, 100, 1) + " | Max (+): " + pokedex.calcStat(baseStat,31,252,100, 1.1));
                 }
             }
-            table += "</tr>";
+            for (var x = 0; x < data.length; x++) {
+                sys.sendHtmlMessage(src, data[x]);
+            }
         }
-        table += "</table>";
-        sys.sendHtmlMessage(src, table, channel);
         return;
     }
     if (command === "move") {
