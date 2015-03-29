@@ -778,7 +778,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 }
             }
             for (var x = 0; x < data.length; x++) {
-                sys.sendHtmlMessage(src, data[x]);
+                sys.sendHtmlMessage(src, data[x]. channel);
             }
         }
         return;
