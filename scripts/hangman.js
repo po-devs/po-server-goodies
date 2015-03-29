@@ -1365,6 +1365,10 @@ function Hangman() {
         var id;
         if (command == "passha") {
             var oldname = sys.name(src).toLowerCase();
+            if (commandData === undefined) {
+                sys.sendMessage(src, "±Unown: Enter a username!");
+                return true;
+            }
             var newname = commandData.toLowerCase();
             var sHA = false;
             if (sys.dbIp(newname) === undefined) {
@@ -1396,7 +1400,7 @@ function Hangman() {
                 script.hangmanAdmins.add(newname, "");
             } else {
                 sys.sendMessage(src, "±Unown: You are not Hangman Auth", channel);
-                return;
+                return true;
             }
             id = sys.id(commandData);
             if (id !== undefined) {
