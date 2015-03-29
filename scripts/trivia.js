@@ -865,7 +865,7 @@ TriviaGame.prototype.playerPlaying = function (src) {
 
 TriviaGame.prototype.androidPlayers = function () {
    for (var i in this.triviaPlayers) {
-      if (this.triviaPlayers[i].playing && sys.os(i) === "android" && sys.version(tar) < 48) {
+      if (this.triviaPlayers[i].playing && sys.os(i) === "android" && sys.version(i) < 48) {
          return true;
       }
    }
