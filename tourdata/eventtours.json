@@ -1,130 +1,122 @@
 {
-    "1-3-2015": {
-        "tier": "ORAS LC",
-        "settings": {}
-    },
-    "2-3-2015": {
-        "tier": "Inverted Challenge Cup",
-        "settings": {}
-    },
-    "3-3-2015": {
-        "tier": "ORAS NU",
-        "settings": {}
-    },
-    "4-3-2015": {
-        "tier": "HGSS OU",
-        "settings": {}
-    },
-    "5-3-2015": {
-        "tier": "ORAS Ubers",
-        "settings": {}
-    },
-    "6-3-2015": {
-        "tier": "Monotype",
-        "settings": {}
-    },
-    "7-3-2015": {
-        "tier": "ORAS OU",
-        "settings": {}
-    },
-    "8-3-2015": {
-        "tier": "Inverted Battle",
-        "settings": {}
-    },
-    "9-3-2015": {
-        "tier": "ORAS UU",
-        "settings": {}
-    },
-    "10-3-2015": {
+    "1-4-2015": {
         "tier": "Battle Factory 6v6",
         "settings": {}
     },
-    "11-3-2015": {
-        "tier": "ADV OU",
+    "2-4-2015": {
+        "tier": "ORAS NU",
         "settings": {}
     },
-    "12-3-2015": {
-        "tier": "ORAS LU",
-        "settings": {}
-    },
-    "13-3-2015": {
-        "tier": "Random Battle",
-        "settings": {}
-    },
-    "14-3-2015": {
-        "tier": "ORAS OU",
-        "settings": {}
-    },
-    "15-3-2015": {
-        "tier": "Monotype",
-        "settings": {}
-    },
-    "16-3-2015": {
-        "tier": "Challenge Cup",
-        "settings": {}
-    },
-    "17-3-2015": {
-        "tier": "ORAS Ubers",
-        "settings": {}
-    },
-    "18-3-2015": {
-        "tier": "Sky Battle",
-        "settings": {}
-    },
-    "19-3-2015": {
+    "3-4-2015": {
         "tier": "BW2 OU",
         "settings": {}
     },
-    "20-3-2015": {
-        "tier": "ORAS LC",
-        "settings": {}
-    },
-    "21-3-2015": {
+    "4-4-2015": {
         "tier": "ORAS OU",
         "settings": {}
     },
-    "22-3-2015": {
-        "tier": "ORAS NU",
-        "settings": {}
-    },
-    "23-3-2015": {
-        "tier": "RBY OU",
-        "settings": {}
-    },
-    "24-3-2015": {
-        "tier": "ORAS Doubles",
-        "settings": {}
-    },
-    "25-3-2015": {
-        "tier": "Inverted Battle",
-        "settings": {}
-    },
-    "26-3-2015": {
-        "tier": "Monotype",
-        "settings": {}
-    },
-    "27-3-2015": {
-        "tier": "ORAS LU",
-        "settings": {}
-    },
-    "28-3-2015": {
-        "tier": "ORAS OU",
-        "settings": {}
-    },
-    "29-3-2015": {
-        "tier": "Battle Factory 6v6",
-        "settings": {}
-    },
-    "30-3-2015": {
+    "5-4-2015": {
         "tier": "ORAS UU",
         "settings": {}
     },
-    "31-3-2015": {
+    "6-4-2015": {
+        "tier": "Inverted Challenge cup",
+        "settings": {}
+    },
+    "7-4-2015": {
         "tier": "ORAS Ubers",
         "settings": {}
     },
-    "28-2-2015": {
+    "8-4-2015": {
+        "tier": "Monotype",
+        "settings": {}
+    },
+    "9-4-2015": {
+        "tier": "ORAS LU",
+        "settings": {}
+    },
+    "10-4-2015": {
+        "tier": "Inverted Battle",
+        "settings": {}
+    },
+    "11-4-2015": {
         "tier": "ORAS OU",
+        "settings": {}
+    },
+    "12-4-2015": {
+        "tier": "ORAS LC",
+        "settings": {}
+    },
+    "13-4-2015": {
+        "tier": "HGSS OU",
+        "settings": {}
+    },
+    "14-4-2015": {
+        "tier": "Battle Factory 6v6",
+        "settings": {}
+    },
+    "15-4-2015": {
+        "tier": "Random Battle",
+        "settings": {}
+    },
+    "16-4-2015": {
+        "tier": "ORAS NU",
+        "settings": {}
+    },
+    "17-4-2015": {
+        "tier": "RBY OU",
+        "settings": {}
+    },
+    "18-4-2015": {
+        "tier": "ORAS OU",
+        "settings": {}
+    },
+    "19-4-2015": {
+        "tier": "ORAS UU",
+        "settings": {}
+    },
+    "20-4-2015": {
+        "tier": "Challenge Cup",
+        "settings": {}
+    },
+    "21-4-2015": {
+        "tier": "ORAS Ubers",
+        "settings": {}
+    },
+    "22-4-2015": {
+        "tier": "Sky Battle",
+        "settings": {}
+    },
+    "23-4-2015": {
+        "tier": "ORAS Doubles",
+        "settings": {}
+    },
+    "24-4-2015": {
+        "tier": "ORAS LU",
+        "settings": {}
+    },
+    "25-4-2015": {
+        "tier": "ORAS OU",
+        "settings": {}
+    },
+    "26-4-2015": {
+        "tier": "Inverted Battle",
+        "settings": {}
+    },
+    "27-4-2015": {
+        "tier": "ADV OU",
+        "settings": {}
+    },
+    "28-4-2015": {
+        "tier": "ORAS LC",
+        "settings": {}
+    },
+    "29-4-2015": {
+        "tier": "Monotype",
+        "settings": {}
+    },
+    "30-4-2015": {
+        "tier": "Battle Factory 6v6",
         "settings": {}
     }
 }
