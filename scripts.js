@@ -1653,7 +1653,7 @@ beforeChatMessage: function(src, message, chan) {
     var name = sys.name(src).toLowerCase();
     // spamming bots, linking virus sites
     // using lazy points system for minimizing false positives
-    if (channel === 0 && sys.auth(src) === 0) {
+    /*if (channel === 0 && sys.auth(src) === 0) {
         //if (/http:\/\/(.*)\.tk(\b|\/)/.test(message)) {
             //bot.sendAll('.tk link pasted at #Tohjo Falls: "' + sys.name(src) + '", ip: ' + sys.ip(src) + ', message: "' + message + '".', staffchannel);
         //}
@@ -1690,7 +1690,7 @@ beforeChatMessage: function(src, message, chan) {
             sys.stopEvent();
             return;
         }
-    }
+    }*/
 
     if (SESSION.users(src).expired("mute")) {
         SESSION.users(src).un("mute");
