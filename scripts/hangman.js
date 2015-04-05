@@ -88,8 +88,8 @@ function Hangman() {
         }
         for (var x in points) {
             if (sys.ip(src) === sys.dbIp(x) && sys.name(src)!== x) {
-                hangbot.sendAll(sys.name(src) + " changed their name to " + x + "!", hangchan);
-                x = sys.name(src);
+                hangbot.sendAll(x + " changed their name to " + sys.name(src) + "!", hangchan);
+                this.switchPlayer(x, sys.name(src));
                 return;
             }
         }
@@ -219,8 +219,8 @@ function Hangman() {
         }
         for (var x in points) {
             if (sys.ip(src) === sys.dbIp(x) && sys.name(src)!== x) {
-                hangbot.sendMessage(src, "You are already playing under another alt!", hangchan);
-                return;
+                hangbot.sendAll(x + " changed their name to " + sys.name(src) + "!", hangchan);
+                this.switchPlayer(x, sys.name(src));
             }
         }
         var now = (new Date()).getTime();
@@ -451,6 +451,26 @@ function Hangman() {
             p = randomGame.length < 5 ? defaultParts : randomGame[4];
         isEventGame = isEvent;
         this.createGame(hangbot.name, a, h, null, mode);
+    };
+    this.switchPlayer = function (oldName, newName) {
+        if (points[oldName] !== undefined) {
+            points[newName] = points[oldName];
+            delete points[oldName];
+        }
+        if (misses[oldName] !== undefined) {
+            misses[newName] = misses[oldName];
+            delete misses[oldName];
+        }
+        if (gameMode === suddenDeath) {
+            if (guesses[oldName] !== undefined) {
+                guesses[newName] = guesses[oldName];
+                delete guesses[oldName];
+            }
+            if (answers[oldName] !== undefined) {
+                answers[newName] = answers[oldName];
+                delete answers[oldName];
+            }
+        }
     };
     this.applyPoints = function (src, p) {
         if (!points[sys.name(src)]) {
