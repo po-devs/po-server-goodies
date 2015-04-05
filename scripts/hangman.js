@@ -31,6 +31,7 @@ function Hangman() {
     var eventDelay = false;
     var delayCount = 0;
     var delayLimit = 1;
+    var suddenDeathLimit = 300;
 
     var host;
     var hostName;
@@ -87,7 +88,8 @@ function Hangman() {
         }
         for (var x in points) {
             if (sys.ip(src) === sys.dbIp(x) && sys.name(src)!== x) {
-                hangbot.sendMessage(src, "You are already playing under another alt!", hangchan);
+                hangbot.sendAll(sys.name(src) + " changed their name to " + x + "!", hangchan);
+                x = sys.name(src);
                 return;
             }
         }
@@ -1282,7 +1284,7 @@ function Hangman() {
             "/deletequest: To delete a question in the autogame/eventgame data base. Format /deletequest index.",
             "/eventgame: To turn eventgames on/off. Format /eventgame on or /eventgame off.",
             "/forceevent: Forces a regular event game to start.",
-            "/forcesuddendeath: Forces a Sudden Death even game to start."
+            "/forcesuddendeath: Forces a Sudden Death event game to start."
         ];
         var ownerHelp = [
             "*** Server owner Hangman Commands ***",
@@ -1773,6 +1775,21 @@ function Hangman() {
             if (idleCount >= idleLimit && autoGamesEnabled) {
                 hangman.startAutoGame(false);
             }
+        }
+        if ((word) && (gameMode === suddenDeath)) {
+            if (suddenDeathLimit > 0) {
+                suddenDeathLimit--;
+            }
+            
+            else {
+                sys.sendAll("*** ************************************************************ ***", hangchan);
+                hangbot.sendAll("HANGED! No one guessed the word '" + word.toUpperCase() + "' in time, so anyone may start a game now!", hangchan);
+                sys.sendAll("*** ************************************************************ ***", hangchan);
+                sendChanHtmlAll(" ", hangchan);
+                this.setWinner(hostName, (host === null && hostName == hangbot.name));
+                eventCount = eventLimit;
+ 	        suddenDeathLimit = 300;
+            } 
         }
         if (eventCount === 0 && eventGamesEnabled) {
             hangman.checkNewMonth();
