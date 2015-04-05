@@ -418,6 +418,7 @@ function Hangman() {
         sys.sendAll("*** ************************************************************ ***", hangchan);
         if (isEventGame) {
             hangbot.sendAll("A " + (gameMode == suddenDeath ? "Sudden Death":"regular") + " Event Game has started! The winner of this game will receive 1 Leaderboard point!", hangchan);
+            suddenDeathLimit = 300;
         } else {
             hangbot.sendAll(hostName + " started a new game of Hangman!", hangchan);
         }
