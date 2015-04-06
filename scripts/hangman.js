@@ -90,7 +90,7 @@ function Hangman() {
             if (sys.ip(src) === sys.dbIp(x) && sys.name(src)!== x) {
                 hangbot.sendAll(x + " changed their name to " + sys.name(src) + "!", hangchan);
                 this.switchPlayer(x, sys.name(src));
-                return;
+                break;
             }
         }
         var now = (new Date()).getTime();
@@ -221,6 +221,7 @@ function Hangman() {
             if (sys.ip(src) === sys.dbIp(x) && sys.name(src)!== x) {
                 hangbot.sendAll(x + " changed their name to " + sys.name(src) + "!", hangchan);
                 this.switchPlayer(x, sys.name(src));
+                break;
             }
         }
         var now = (new Date()).getTime();
