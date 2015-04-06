@@ -264,6 +264,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var type = (command === "cookieban" ? "banned" : "muted");
         sys.setCookie(sys.id(commandData), type + " " + commandData.toCorrectCase());
         normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type + " by " + sys.name(src), staffchannel);
+        if (type == "banned") {
+            sys.kick(tar);
+        }
         return;
     }
     if (command == "cookieunban" || command ==  "cookieunmute") {
