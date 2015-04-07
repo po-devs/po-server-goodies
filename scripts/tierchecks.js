@@ -40,7 +40,7 @@ TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent
 
 TierChecker.prototype.find_good_tier = function(src, team) {
     // TODO: write up
-    var testPath = ["ORAS LC", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS Ubers", "Pre-PokeBank OU","BW2 LC", "DW LC", "BW2 LC Ubers", "BW2 NU", "BW2 LU", "BW2 UU", "BW2 OU", "No Preview OU", "BW2 Ubers", "No Preview Ubers", "Battle Factory 6v6", "Challenge Cup"];
+    var testPath = ["ORAS LC", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS Ubers", "ORAS Balanced Hackmons", "ORAS Hackmons", "Pre-PokeBank OU","BW2 LC", "DW LC", "BW2 LC Ubers", "BW2 NU", "BW2 LU", "BW2 UU", "BW2 OU", "No Preview OU", "BW2 Ubers", "No Preview Ubers", "Battle Factory 6v6", "Challenge Cup"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
         if (sys.hasLegalTeamForTier(src, team, testtier) && this.has_legal_team_for_tier(src, team, testtier, true)) {
@@ -167,8 +167,7 @@ tier_checker.add_new_check(INCLUDING, ["ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["ORAS Doubles", "ORAS Triples", "ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC", "Inverted Battle", "ORAS 1v1", "ORAS Cup", "No Preview OU", "BW2 OU", "BW2 UU", "BW2 LU", "BW2 LC", "DW LC", "BW2 Ubers", "No Preview Ubers", "Clear Skies", "Clear Skies DW", "Monotype", "Monocolour", "Monogen", "Smogon OU", "Smogon UU", "Smogon RU", "BW2 NU", "Metronome", "BW2 NEU"],
-                           function endlessCheck(src, team, tier) {
+tier_checker.add_new_check(EXCLUDING, challenge_cups, function endlessCheck(src, team, tier) {
     var ret = [];
     for (var i = 0; i < 6; i++) {
         if (sys.teamPokeItem(src, team, i) === sys.itemNum("Leppa Berry") && sys.hasTeamPokeMove(src, team, i, sys.moveNum("Recycle")) && (sys.hasTeamPokeMove(src, team, i, sys.moveNum("Fling")) || sys.hasTeamPokeMove(src, team, i, sys.moveNum("Pain Split")) || sys.hasTeamPokeMove(src, team, i, sys.moveNum("Heal Pulse")))) {
@@ -178,6 +177,17 @@ tier_checker.add_new_check(INCLUDING, ["ORAS Doubles", "ORAS Triples", "ORAS Ube
     return ret;
 });
 
+tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons", "Inverted Balanced Hackmons"], function ateAbilityCheck(src, team, tier) {
+    var num = 0;
+    for (var i = 0; i < 6; i++) {
+        if (sys.teamPokeAbility(src, team, i) === sys.ability("Aerilate") || sys.teamPokeAbility(src, team, i) === sys.ability("Pixilate") || sys.teamPokeAbility(src, team, i) === sys.ability("Refrigerate")) {
+            num++
+        }
+    }
+    if (num > 1) {
+        return ["You are not allowed more than one -ate ability in " + tier +"."];
+    }
+});
 
 tier_checker.add_new_check(INCLUDING, ["Monogen"], function monoGenCheck(src, team) {
     var GEN_MAX = [0, 151, 252, 386, 493, 649, 718];
