@@ -180,8 +180,8 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function endlessCheck(src,
 tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons", "Inverted Balanced Hackmons"], function ateAbilityCheck(src, team, tier) {
     var num = 0;
     for (var i = 0; i < 6; i++) {
-        if (sys.teamPokeAbility(src, team, i) === sys.ability("Aerilate") || sys.teamPokeAbility(src, team, i) === sys.ability("Pixilate") || sys.teamPokeAbility(src, team, i) === sys.ability("Refrigerate")) {
-            num++
+        if (sys.teamPokeAbility(src, team, i) === sys.abilityNum("Aerilate") || sys.teamPokeAbility(src, team, i) === sys.abilityNum("Pixilate") || sys.teamPokeAbility(src, team, i) === sys.abilityNum("Refrigerate")) {
+            num++;
         }
     }
     if (num > 1) {
