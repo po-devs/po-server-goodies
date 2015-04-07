@@ -122,7 +122,7 @@ tier_checker.add_new_check(INCLUDING, ["BW2 NU"], function evioliteCheck(src, te
     }
 });
 
-if (typeof Config == "undefined") { Config = { DreamWorldTiers: ["No Preview OU",  "No Preview Ubers", "X/Y", "Black/White", "Black/White 2"] }; }
+if (typeof Config == "undefined") { Config = { DreamWorldTiers: ["ORAS Hackmons", "ORAS Balanced Hackmons", "Inverted Balanced Hackmons", "All Gen Hackmons", "No Preview OU",  "No Preview Ubers", "X/Y", "Black/White", "Black/White 2"] }; }
 tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbilityCheck(src, team, tier) {
     // Of course, DW ability only affects 5th gen
     var ret = [];
