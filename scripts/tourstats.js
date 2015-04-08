@@ -20,6 +20,8 @@ function updateTourStats(tier, time, winner, num, noPoints, purgeTime) {
             "Wifi CC 1v1": [0, 0, 0, 0, 1],
             "Challenge Cup": [0, 0, 0, 1, 2],
             "Inverted Challenge Cup": [0, 0, 0, 1, 2],
+            "ORAS Balanced Hackmons" : [0, 0 ,0 ,1 ,2],
+            "ORAS Hackmons" : [0, 0, 0, 1, 2],
             "ORAS 1v1": [0, 0, 0, 0, 1],
             "Metronome": [0, 0, 0, 0, 0],
             "Monotype": [0, 0, 1, 2, 3],
