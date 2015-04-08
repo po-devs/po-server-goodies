@@ -535,7 +535,7 @@ function awardTourPoints(player, size, tier, delim, place) {
     var tiers_a = [];
     var tiers_b = []; // default
     var tiers_c = ["Monotype", "Sky Battle", "ORAS Cup"];
-    var tiers_d = ["Challenge Cup", "Inverted Challenge Cup", "Battle Factory", "Battle Factory 6v6"];
+    var tiers_d = ["Challenge Cup", "Inverted Challenge Cup", "Battle Factory", "Battle Factory 6v6", "ORAS Balanced Hackmons", "ORAS Hackmons"];
     var tiers_e = ["Wifi CC 1v1", "ORAS 1v1", "Random Battle"];
     var tiers_f = ["CC 1v1"];
     var tiers_z = ["Metronome", "Red/Blue", "Yellow", "Stadium", "Stadium w/ Tradebacks",
