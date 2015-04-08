@@ -19,7 +19,7 @@ var SLEEP_CLAUSE="Sleep Clause",
     CHALLENGE_CUP="Challenge Cup",
     NO_TIMEOUT="No Timeout",
     SPECIES_CLAUSE="Species Clause",
-    WIFI_CLAUSE="Wifi Clause",
+    WIFI_CLAUSE="Team Preview",
     SELF_KO_CLAUSE="Self KO Clause";
 
 var clauseMap = {
