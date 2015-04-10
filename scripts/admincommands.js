@@ -279,7 +279,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var type = (command === "cookieunban" ? "unbanned" : "unmuted");
-        script.namesToUnban.add(commandData.toLowerCase(), true);
+        script.namesToUnban.add(commandData.toLowerCase(), "true");
         normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type, staffchannel);
         return;
     }
