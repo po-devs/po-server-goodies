@@ -465,7 +465,7 @@ tier_checker.add_new_check(INCLUDING, ["Sky Battle"], function levitateCheck(src
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["Balanced Hackmons", "Inverted Balanced Hackmons"], function abilityClause(src, team) {
+tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons", "Inverted Balanced Hackmons"], function abilityClause(src, team) {
     var abilities = {};
     for (var i = 0; i < 6; i++) {
         var ability = sys.ability(sys.teamPokeAbility(src, team, i));
