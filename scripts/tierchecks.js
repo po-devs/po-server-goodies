@@ -474,7 +474,7 @@ tier_checker.add_new_check(INCLUDING, ["Balanced Hackmons", "Inverted Balanced H
                 return ["You are not allowed more than 2 of any ability in this tier"];
             }
         } else {
-            abilities[ability] = 0;
+            abilities[ability] = 1;
         }
     }
     return;
