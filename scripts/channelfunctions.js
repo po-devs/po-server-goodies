@@ -34,7 +34,7 @@ POChannel.prototype.setTopic = function(src, topicInfo)
         if (typeof this.topic != 'undefined') {
             channelbot.sendMessage(src, "Topic for this channel is: " + this.topic, this.id);
             if (SESSION.channels(this.id).topicSetter) {
-                channelbot.sendMessage(src, "Topic was set by " + nonFlashing(this.topicSetter), this.id);
+                channelbot.sendMessage(src, "Topic was set by " + nonFlashing(this.topicSetter) + (SESSION.channels(this.id).topicDate ? " ("+SESSION.channels(this.id).topicDate+")" : ""), this.id);
             }
         } else {
             channelbot.sendMessage(src, "No topic set for this channel.", this.id);
@@ -544,6 +544,7 @@ POChannel.prototype.changeParameter = function(src, parameter, value) {
     if (parameter == "topic") {
         this.topic = value;
         this.topicSetter = sys.name(src);
+        this.topicDate = new Date().toUTCString();
         return;
     }
     if (parameter == "allowcaps") {
