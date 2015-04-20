@@ -338,7 +338,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             if (banInfo.type == "muted") {
                 script.unban("smute", Config.kickbot, tar, commandData);
             }
-            normalbot.sendAll(commandData.toCorrectCase() + " was ID " + type, staffchannel);
+            normalbot.sendAll(tar.toCorrectCase() + " was ID " + type, staffchannel);
             return;
         }
         normalbot.sendMessage(src, "ID not found", channel);
