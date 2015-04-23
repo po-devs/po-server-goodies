@@ -451,11 +451,12 @@ POChannel.prototype.isMuted = function(id)
         if (mutelist.hasOwnProperty(x)) {
             if (!mutelist[x].hasOwnProperty("expiry")) {
                 delete this.muted[x];
-                continue;
+                continue;   
             }
             if (mutelist[x].expiry <= parseInt(sys.time(),10)) {
                 delete this.muted[x];
                 channelbot.sendAll(x+"'s channel mute expired.", this.id);
+                SESSION.global().channelManager.update(this.id);
                 continue;
             }
             if (script.cmp(x, name)) {
