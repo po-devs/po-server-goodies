@@ -535,16 +535,16 @@ TriviaGame.prototype.finalizeAnswers = function () {
     if (Trivia.suggestion.asked === true) {
         Trivia.suggestion = {};
     }
-    var answer, id, answers = [].concat(triviaq.get(this.roundQuestion).answer.split(","));
+    var answer, id, equivalentAns = [], answers = [].concat(triviaq.get(this.roundQuestion).answer.split(","));
     for (i = answers.length - 1; i >= 0; i--){
         if (trivData.equivalentAns.hasOwnProperty(answers[i].toLowerCase())){
-            answers = answers.concat(trivData.equivalentAns[answers[i].toLowerCase()].split(","));
+            equivalentAns = equivalentAns.concat(trivData.equivalentAns[answers[i].toLowerCase()].split(","));
         }
     }
     this.phase = "standby";
     var wrongAnswers = [],
         answeredCorrectly = [];
-    var ignoreCaseAnswers = answers.map(function (s) {
+    var ignoreCaseAnswers = equivalentAns.concat(answers).map(function (s) {
         return String(s).toLowerCase();
     });
     for (id in this.triviaPlayers) {
