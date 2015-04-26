@@ -157,7 +157,7 @@ function Hangman() {
             if (pendingEvent) {
                 eventDelay = true;
             } else {
-                hangbot.sendAll("Type /start [answer]:[hint] to start a new game. If you didn't win then wait " + winnerDelay + " seconds.", hangchan);
+                hangbot.sendAll("Type /start answer:hint to start a new game. If you didn't win then wait " + winnerDelay + " seconds.", hangchan);
             }
         }
         else {
@@ -735,13 +735,13 @@ function Hangman() {
             "±Actions: If you think you already know the answer, you can use /a or /answer [answer] to submit a full answer.",
             "±Actions: If you guess wrong too many times, the host wins!",
             "*** *********************************************************************** ***",
-            "±Hosting: To host a game, type /start Answer:Hint. The host can't guess or answer during their own game.",
-            //"±Hosting: You can also type /start Answer:Hint:Number to set how many wrong guesses must be made before you win (minimum of " + minBodyParts + ").",
+            "±Hosting: To host a game, type /start Answer:Hint. For example, to create a game where the answer is Pikachu and the hint is Pokemon, use /start Pikachu:Pokemon. The host can't guess or answer during their own game.",
+            // "±Hosting: You can also type /start Answer:Hint:Number to set how many wrong guesses must be made before you win (minimum of " + minBodyParts + ").",
             "±Hosting: The winner of the previous game has priority for hosting the next game, and may use /pass User to give that priority to another user.",
             "±Hosting: If the user with hosting priority doesn't start a new game within " + winnerDelay + " seconds, anyone can host.",
             "*** *********************************************************************** ***",
             "±Rules: Do not create inappropriate answers, hints or guesses, or attempt to troll the game in any way. This includes but is not limited to offences such as guessing uncommon letters or deliberately spoiling the answer.",
-            "±Rules: Make sure all games are accessible, playable and spelled correctly. This includes but is not limited to relevant, non-vague, specific and non-opinionated subjects, games in other languages, suitable hints and guess counts.",
+            "±Rules: Make sure all games are accessible, playable and spelled correctly. This includes but is not limited to relevant, non-vague, specific and non-opinionated subjects, games in other languages, suitable hints. Games that are lists e.g \"/start Shellos and Gastrodon:Pokemon\" are not allowed.",
             "±Rules: Remember to act in a cordial manner, both when interacting with channel users and authority, and playing the game.",
             "±Rules: Pay attention to channel and server authority (under /has and /auth respectively). Server /rules apply here too. If you have any doubt or see someone breaking the rules, contact the appropiate person (HA for hangman, auth for server).",
             "*** *********************************************************************** ***",
