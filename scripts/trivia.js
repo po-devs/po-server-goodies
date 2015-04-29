@@ -535,16 +535,16 @@ TriviaGame.prototype.finalizeAnswers = function () {
     if (Trivia.suggestion.asked === true) {
         Trivia.suggestion = {};
     }
-    var answer, id, answers = [].concat(triviaq.get(this.roundQuestion).answer.split(","));
+    var answer, id, equivalentAns = [], answers = [].concat(triviaq.get(this.roundQuestion).answer.split(","));
     for (i = answers.length - 1; i >= 0; i--){
         if (trivData.equivalentAns.hasOwnProperty(answers[i].toLowerCase())){
-            answers = answers.concat(trivData.equivalentAns[answers[i].toLowerCase()].split(","));
+            equivalentAns = equivalentAns.concat(trivData.equivalentAns[answers[i].toLowerCase()].split(","));
         }
     }
     this.phase = "standby";
     var wrongAnswers = [],
         answeredCorrectly = [];
-    var ignoreCaseAnswers = answers.map(function (s) {
+    var ignoreCaseAnswers = equivalentAns.concat(answers).map(function (s) {
         return String(s).toLowerCase();
     });
     for (id in this.triviaPlayers) {
@@ -1255,11 +1255,11 @@ function pointsLB(file) {
 pointsLB.prototype.updateLeaderboard = function (name, points){
     var player;
     if (Trivia.scoreType === "elimination"){
-        player = {'name' : name.toLowerCase(), 'livesLeft' : points, 'elimWins' : 1, 'points' : 0, 'regWins' : 0, 'speedWins' : 0};
+        player = {'name' : name.toLowerCase(), 'livesLeft' : points, 'elimWins' : 1, 'regPoints': 0, 'speedPoints' : 0, 'regWins' : 0, 'speedWins' : 0};
     } else if (Trivia.scoreType === "knowledge"){
-        player = {'name' : name.toLowerCase(), 'livesLeft' : 0, 'elimWins' : 0, 'points' : points, 'regWins' : 1, 'speedWins' : 0};
+        player = {'name' : name.toLowerCase(), 'livesLeft' : 0, 'elimWins' : 0, 'regPoints' : points, 'speedPoints': 0, 'regWins' : 1, 'speedWins' : 0};
     } else if (Trivia.scoreType === "speed"){
-        player = {'name' : name.toLowerCase(), 'livesLeft' : 0, 'elimWins' : 0, 'points' : points, 'regWins' : 0, 'speedWins' : 1};
+        player = {'name' : name.toLowerCase(), 'livesLeft' : 0, 'elimWins' : 0, 'regPoints': 0, 'speedPoints' : points, 'regWins' : 0, 'speedWins' : 1};
     }
     var playerIndex = -1;
     var i;
@@ -1276,10 +1276,10 @@ pointsLB.prototype.updateLeaderboard = function (name, points){
             this.leaderboard[playerIndex].livesLeft = this.leaderboard[playerIndex].livesLeft + player.livesLeft;
             this.leaderboard[playerIndex].elimWins = this.leaderboard[playerIndex].elimWins + 1;
         } else if (Trivia.scoreType === "knowledge"){
-            this.leaderboard[playerIndex].points = this.leaderboard[playerIndex].points + player.points;
+            this.leaderboard[playerIndex].regPoints = this.leaderboard[playerIndex].regPoints + player.regPoints;
             this.leaderboard[playerIndex].regWins = this.leaderboard[playerIndex].regWins + 1;
         } else if (Trivia.scoreType === "speed"){
-            this.leaderboard[playerIndex].points = this.leaderboard[playerIndex].points + player.points;
+            this.leaderboard[playerIndex].speedPoints = this.leaderboard[playerIndex].speedPoints + player.speedPoints;
             this.leaderboard[playerIndex].speedWins = this.leaderboard[playerIndex].speedWins + 1;
         }
     }
@@ -1301,7 +1301,7 @@ pointsLB.prototype.showLeaders = function (src, commandData, id) {
             maxPlace = 10;
         } else {maxPlace = input[1];}
         for (i = 0; i < this.leaderboard.length; i++) {
-            var player = {'name' : this.leaderboard[i].name, 'points' : this.leaderboard[i].points, 'regWins' : this.leaderboard[i].regWins, 'livesLeft' : this.leaderboard[i].livesLeft,'elimWins' : this.leaderboard[i].elimWins, 'speedWins' : this.leaderboard[i].speedWins};
+            var player = {'name' : this.leaderboard[i].name, 'regPoints' : this.leaderboard[i].regPoints, 'speedPoints': this.leaderboard[i].speedPoints, 'regWins' : this.leaderboard[i].regWins, 'livesLeft' : this.leaderboard[i].livesLeft,'elimWins' : this.leaderboard[i].elimWins, 'speedWins' : this.leaderboard[i].speedWins};
             lb.push(player);
         }
         if (scoreType === "elimination"){
@@ -1309,30 +1309,42 @@ pointsLB.prototype.showLeaders = function (src, commandData, id) {
                 if (b.elimWins === a.elimWins){
                     if (b.livesLeft === a.livesLeft) {
                         if (b.regWins === a.regWins){
-                            return b.points - a.points;
+                            if (b.speedWins === a.speedWins) {
+                                if (b.regPoints === a.regPoints) {
+                                    return b.speedPoints - a.speedPoints;
+                                } else return b.regPoints - a.regPoints;
+                            } else return b.speedWins - a.speedWins;
                         } else return b.regWins - a.regWins;
                     } else return b.livesLeft - a.livesLeft;
                 } else return b.elimWins - a.elimWins;
             });
         } else if (scoreType === "knowledge"){
             lb.sort(function (a, b){
-                if (b.points === a.points){
+                if (b.regPoints === a.regPoints){
                     if (b.regWins === a.regWins){
-                        if (b.livesLeft === a.livesLeft){
-                            return b.elimWins - a.elimWins;
-                        } else return b.livesLeft - a.livesLeft;
+                        if (b.speedPoints === a.speedPoints) {
+                            if (b.speedWins === a.speedWins) {
+                                if (b.livesLeft === a.livesLeft){
+                                    return b.elimWins - a.elimWins;
+                                } else return b.livesLeft - a.livesLeft;
+                            } else return b.speedWins - a.speedWins;
+                        } else return b.speedPoints - a.speedPoints;
                     } else return b.regWins - a.regWins;
-                } else return b.points - a.points;
+                } else return b.regPoints - a.regPoints;
             });
         } else if (scoreType === "speed"){
             lb.sort(function (a, b){
-                if (b.points === a.points){
+                if (b.speedPoints === a.speedPoints){
                     if (b.speedWins === a.speedWins){
-                        if (b.livesLeft === a.livesLeft){
-                            return b.elimWins - a.elimWins;
-                        } else return b.livesLeft - a.livesLeft;
+                        if (b.regPoints === a.regPoints) {
+                            if (b.regWins === a.regWins) {
+                                if (b.livesLeft === a.livesLeft){
+                                    return b.elimWins - a.elimWins;
+                                } else return b.livesLeft - a.livesLeft;
+                            } else return b.regWins - a.regWins;
+                        } else return b.regPoints - a.regPoints;
                     } else return b.speedWins - a.speedWins;
-                } else return b.points - a.points;
+                } else return b.speedPoints - a.speedPoints;
             });
         }
         sys.sendMessage(src, "", id);
@@ -1341,9 +1353,9 @@ pointsLB.prototype.showLeaders = function (src, commandData, id) {
             if (i < maxPlace || lb[i].name === sys.name(src).toLowerCase()){
                 var x = i + 1;
                 if (scoreType === "knowledge"){
-                    Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].points + " point(s) and " + lb[i].regWins + " wins!", id);
+                    Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].regPoints + " point(s) and " + lb[i].regWins + " wins!", id);
                 } else if (scoreType === "speed"){
-                    Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].points + " point(s) and " + lb[i].speedWins + " wins!", id);
+                    Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].speedPoints + " point(s) and " + lb[i].speedWins + " wins!", id);
                 } else if (scoreType === "elimination"){
                     Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].livesLeft + " total lives left and " + lb[i].elimWins + " wins!", id);
                 }
