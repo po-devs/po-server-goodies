@@ -3054,9 +3054,8 @@ function Mafia(mafiachan) {
                             };
                             if (command == "distract") {
                                 tarmsg = "distractmsg" in Action ? Action.distractmsg : "The ~Distracter~ came to you last night! You were too busy being distracted!";
+                                gamemsg(target.name, formatArgs(tarmsg, nightargs));
                                 if (mafia.removeTargets(target, true)) {
-                                    gamemsg(target.name, formatArgs(tarmsg, nightargs));
-    
                                     /* warn role / teammates... No args because messes up very easily */
                                     var teamMsg = "teammsg" in Action ? Action.teammsg : "Your teammate was too busy with the ~Distracter~ during the night, you decided not to ~Action~ anyone during the night!";
                                     if ("night" in target.role.actions) {
@@ -4535,7 +4534,7 @@ function Mafia(mafiachan) {
                 }
                 var dayChargesMessage = function(player, commandName, action) {
                     if (mafia.getCharges(player, "standby", commandName) !== undefined) {
-                        if (!mafia.isInGame(player)){
+                        if (!mafia.isInGame(player.name)){
                             return;
                         }
                         var charge = mafia.getCharges(player, "standby", commandName);
