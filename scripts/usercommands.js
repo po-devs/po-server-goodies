@@ -291,11 +291,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "idle") {
-        if (commandData == "on") {
+        if (commandData.toLowerCase() == "on") {
             battlebot.sendMessage(src, "You are now idling.", channel);
             script.saveKey("autoIdle", src, 1);
             sys.changeAway(src, true);
-        } else if (commandData == "off") {
+        } else if (commandData.toLowerCase() == "off") {
             battlebot.sendMessage(src, "You are back and ready for battles!", channel);
             script.saveKey("autoIdle", src, 0);
             sys.changeAway(src, false);
