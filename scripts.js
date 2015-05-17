@@ -1622,8 +1622,8 @@ beforeChatMessage: function(src, message, chan) {
     }
 
 
-    if (message == ".") {
-        sys.sendMessage(src, sys.name(src)+": .", channel);
+    if (message == "." || message == "t") {
+        sys.sendMessage(src, sys.name(src)+": "+message, channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, chan);
         return;
