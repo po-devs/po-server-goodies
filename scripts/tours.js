@@ -930,7 +930,7 @@ function getEventTour(datestring) {
             if (thetier === null) {
                 continue;
             }
-            var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1", "Inverted Challenge Cup"];
+            var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1", "Inverted Challenge Cup", "Hackmons Challenge Cup"];
             var parameters = {"gen": "default", "mode": modeOfTier(thetier), "type": "double", "maxplayers": false, "event": true, "wifi": sys.getClauses(thetier)%256 >= 128 ? true : false};
             if (eventdata.hasOwnProperty('settings')) {
                 var parameterdata = eventdata.settings;
@@ -1091,7 +1091,7 @@ function tourStep() {
     }
     var datestring = now.getUTCDate()+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
     var hour = now.getUTCHours();
-    var allgentiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome"];
+    var allgentiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome", "Hackmons Challenge Cup"];
     if (tours.eventticks === 0) {
         var details = getEventTour(datestring);
         if (typeof details === "object") {
