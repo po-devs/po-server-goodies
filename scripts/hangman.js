@@ -1769,7 +1769,7 @@ function Hangman() {
     this.afterChannelJoin = function (src, channel) {
         if (channel == hangchan) {
             hangman.viewGame(src);
-            sys.sendHtmlMessage(src, "<strong style=\"color:#3caa67;font-size:13px;\"><timestamp/> ±Unown:</strong> <span style=\"font-size:13px;\">Hello, "+html_escape(sys.name(src))+", welcome to Hangman. Use the commands /g [letter] to guess a letter, and /a [answer] to guess the whole thing! For more information, use the /help command. Have fun!</span>", channel);
+            sys.sendMessage(src, "±Unown: Hello, "+html_escape(sys.name(src))+", welcome to Hangman. Use the commands /g [letter] to guess a letter, and /a [answer] to guess the whole thing! For more information, use the /help command. Have fun!", channel);
         }
         return false;
     };
