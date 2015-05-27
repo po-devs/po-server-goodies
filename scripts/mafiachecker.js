@@ -1,26 +1,14 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global module, SESSION, updateModule*/
 function mafiaChecker() {
-<<<<<<< HEAD
-=======
     this.init = function() {}; //just so it can be updated without sending an error (see auto_smute.js)
->>>>>>> origin/patch-43
     var theme,
         minorErrors,
         fatalErrors,
         noMinor,
         noFatal,
-<<<<<<< HEAD
-        possibleNightActions = ["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "convert", "curse", "copy", "detox", "dispel", "shield", "dummy", "dummy2", "dummy3"],
-<<<<<<< HEAD
-        badCommands = ["me", "commands", "start", "votetheme", "starttheme", "help", "roles", "sides", "myrole", "mafiarules", "themes", "themeinfo", "changelog", "details", "priority", "flashme", "playedgames", "update", "join", "unjoin", "mafiaadmins", "mafiaban", "mafiaunban", "passma", "mafiaadmin", "mafiaadminoff", "mafiasadmin", "mafiasuperadmin", "mafiasadminoff", "mafiasuperadminoff", "push", "slay", "shove", "end", "readlog", "add", "remove", "disable", "enable", "updateafter", "importold", "mafiaban", "mafiaunban", "mafiabans", "detained", "detainlist", "ban", "mute", "kick" ];
-=======
-        badCommands = ["me", "commands", "start", "votetheme", "starttheme", "help", "roles", "sides", "myrole", "mafiarules", "themes", "themeinfo", "changelog", "details", "priority", "flashme", "playedgames", "update", "join", "unjoin", "mafiaadmins", "mafiaban", "mafiaunban", "passma", "mafiaadmin", "mafiaadminoff", "mafiasadmin", "mafiasuperadmin", "mafiasadminoff", "mafiasuperadminoff", "push", "slay", "shove", "end", "readlog", "add", "remove", "disable", "enable", "updateafter", "importold", "mafiaban", "mafiaunban", "mafiabans", "detained", "detainlist", "ban", "mute", "kick", "k", "mas", "ck", "cmute", "admin", "op", "owner", "invite", "member", "deadmin", "deregister", "deop", "demember", "deadmin", "lt", "featured", "featuretheme", "featurelink", "featuretext", "forcefeature", "ctogglecaps", "ctoggleflood", "topic", "cauth", "register", "deinvite", "cmeon", "cmeoff", "csilence", "csilenceoff", "cunmute", "cmutes", "cbans", "inviteonly", "ctoggleswear", "enabletours", "disabletours", "tempban"];
->>>>>>> origin/patch-43
-=======
         possibleNightActions = ["kill", "protect", "inspect", "distract", "poison", "safeguard", "stalk", "watch", "convert", "curse", "copy", "detox", "dispel", "shield", "guard", "massconvert", "dummy", "dummy2", "dummy3", "dummy4", "dummy5", "dummy6", "dummy7", "dummy8", "dummy9", "dummy10" ],
         badCommands = ["me", "commands", "start", "votetheme", "starttheme", "help", "roles", "sides", "myrole", "mafiarules", "themes", "themeinfo", "changelog", "details", "priority", "flashme", "playedgames", "update", "join", "unjoin", "mafiaadmins", "mafiaban", "mafiaunban", "passma", "mafiaadmin", "mafiaadminoff", "mafiasadmin", "mafiasuperadmin", "mafiasadminoff", "mafiasuperadminoff", "push", "slay", "shove", "end", "readlog", "add", "remove", "disable", "enable", "updateafter", "importold", "mafiaban", "mafiaunban", "mafiabans", "detained", "detainlist", "ban", "mute", "kick", "k", "mas", "ck", "cmute", "admin", "op", "owner", "invite", "member", "deadmin", "deregister", "deop", "demember", "deadmin", "lt", "featured", "featuretheme", "featurelink", "featuretext", "forcefeature", "ctogglecaps", "ctoggleflood", "topic", "cauth", "register", "deinvite", "cmeon", "cmeoff", "csilence", "csilenceoff", "cunmute", "cmutes", "cbans", "inviteonly", "ctoggleswear", "enabletours", "disabletours", "tempban", "say", "pokemon", "nature", "natures", "item", "ability", "notice", "featuredtheme"];
->>>>>>> 3a48bcfafeeeb1db4a6730447befade0f3be0e17
     
     this.checkTheme = function(raw) {
         minorErrors = [];
@@ -54,15 +42,7 @@ function mafiaChecker() {
                 lists.push("roles"+i);
                 ++i;
             }
-<<<<<<< HEAD
-<<<<<<< HEAD
-            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "drawmsg", "minplayers", "nolynch", "votesniping", "ticks", "silentVote", "nonPeak", "changelog", "threadlink", "altname", "tips"].concat(lists), "Your theme");
-=======
-            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "drawmsg", "minplayers", "nolynch", "votesniping", "ticks", "silentVote", "nonPeak", "changelog", "threadlink", "altname", "tips", "closedSetup"].concat(lists), "Your theme");
->>>>>>> origin/patch-43
-=======
             checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "drawmsg", "minplayers", "noplur", "nolynch", "votesniping", "checkNoVoters", "quickOnDeadRoles", "ticks", "silentVote", "delayedConversionMsg", "nonPeak", "changelog", "changelog2", "threadlink", "altname", "tips", "closedSetup", "variables", "spawnPacks"].concat(lists), "Your theme");
->>>>>>> 3a48bcfafeeeb1db4a6730447befade0f3be0e17
 
             if (checkType(raw.name, ["string"], "'theme.name'")) {
                 if (raw.name[raw.name.length - 1] == " ") {
@@ -105,10 +85,7 @@ function mafiaChecker() {
             checkValidValue(raw.quickOnDeadRoles, [true, false], "theme.quickOnDeadRoles");
             checkValidValue(raw.delayedConversionMsg, [true, false], "theme.delayedConversionMsg");
             checkValidValue(raw.nonPeak, [true, false], "theme.nonPeak");
-<<<<<<< HEAD
-=======
             checkValidValue(raw.closedSetup, [true, false], "theme.closedSetup");
->>>>>>> origin/patch-43
             
             if (checkType(raw.changelog, ["object", "array"], "'theme.changelog'")) {
                 for (i in raw.changelog) {
@@ -224,11 +201,6 @@ function mafiaChecker() {
         return {fatal: fatalErrors, minor: minorErrors};
 
     };
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 3a48bcfafeeeb1db4a6730447befade0f3be0e17
     this.update = function () {
         var POglobal = SESSION.global();
         var index, source;
@@ -246,10 +218,6 @@ function mafiaChecker() {
             });
         }
     };
-<<<<<<< HEAD
->>>>>>> origin/patch-43
-=======
->>>>>>> 3a48bcfafeeeb1db4a6730447befade0f3be0e17
     
     function Theme(){}
     Theme.prototype.addSide = function(obj) {
@@ -334,15 +302,7 @@ function mafiaChecker() {
             
             if (checkType(role.actions, ["object"], "'" + yourRole + ".actions")) {
                 act = "Role " + yourRole + ".actions";
-<<<<<<< HEAD
-<<<<<<< HEAD
-                checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "onDeath", "onDeadRoles", "initialCondition", "avoidHax", "avoidStandbyHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "vote", "voteshield", "startup", "onlist", "onteam", "lynch"].concat(possibleNightActions), act);
-=======
-                checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "onDeath", "onDeadRoles", "initialCondition", "avoidHax", "avoidStandbyHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "vote", "voteshield", "startup", "onlist", "onteam", "lynch", "teamTalk", "noVote", "noVoteMsg"].concat(possibleNightActions), act);
->>>>>>> origin/patch-43
-=======
                 checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "onDeath", "onDeadRoles", "initialCondition", "avoidHax", "avoidStandbyHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "vote", "voteshield", "voteMultiplier", "startup", "onlist", "onteam", "lynch", "teamTalk", "noVote", "noVoteMsg", "preventTeamvote", "updateTeam", "teamUtilities", "updateCharges"].concat(possibleNightActions), act);
->>>>>>> 3a48bcfafeeeb1db4a6730447befade0f3be0e17
 
                 if (checkType(role.actions.night, ["object"], act + ".night")) {
                     for (e in role.actions.night) {
@@ -754,13 +714,6 @@ function mafiaChecker() {
                         }
                     }
                 }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-                checkType(role.actions.noVote, ["boolean"], act + ".noVote");
-                checkType(role.actions.noVoteMsg, ["string"], act + ".noVoteMsg");
->>>>>>> origin/patch-43
-=======
                 if (checkType(role.actions.voteMultiplier, ["number", "array"], act + ".voteMultiplier")) {
                     if (Array.isArray(role.actions.voteMultiplier)) {
                         for (e in role.actions.voteMultiplier) {
@@ -779,7 +732,6 @@ function mafiaChecker() {
                 }
                 checkType(role.actions.noVote, ["boolean"], act + ".noVote");
                 checkType(role.actions.noVoteMsg, ["string"], act + ".noVoteMsg");
->>>>>>> 3a48bcfafeeeb1db4a6730447befade0f3be0e17
                 
                 //Defensive Modes
                 for (e in possibleNightActions) {
@@ -1034,15 +986,7 @@ function mafiaChecker() {
                     if (typeof action == "string") {
                         checkValidValue(action, ["team-reveal", "role-reveal", "team-reveal-with-roles"], act + ".startup");
                     } else if (typeof action == "object") {
-<<<<<<< HEAD
-<<<<<<< HEAD
-                        checkAttributes(action, [], ["revealRole", "team-revealif", "team-revealif-with-roles", "revealAs"], act + ".startup");
-=======
                         checkAttributes(action, [], ["revealRole", "team-revealif", "team-revealif-with-roles", "revealAs", "revealPlayers", "revealPlayersMsg"], act + ".startup");
->>>>>>> origin/patch-43
-=======
-                        checkAttributes(action, [], ["revealRole", "team-revealif", "team-revealif-with-roles", "revealAs", "revealPlayers", "revealPlayersMsg"], act + ".startup");
->>>>>>> 3a48bcfafeeeb1db4a6730447befade0f3be0e17
                         
                         if (checkType(action.revealAs, ["string"], comm + ".revealAs")){
                             checkValidRole(action.revealAs, comm + ".revealAs");
@@ -1057,11 +1001,6 @@ function mafiaChecker() {
                                 }
                             }
                         }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 3a48bcfafeeeb1db4a6730447befade0f3be0e17
                         
                         if (checkType(action.revealPlayers, ["string", "array"], comm + ".revealPlayers")) {
                             if (typeof action.revealPlayers == "string") {
@@ -1073,10 +1012,6 @@ function mafiaChecker() {
                             }
                         }
                         checkType(action.revealPlayersMsg, ["string"], comm + ".revealPlayersMsg");
-<<<<<<< HEAD
->>>>>>> origin/patch-43
-=======
->>>>>>> 3a48bcfafeeeb1db4a6730447befade0f3be0e17
                     
                         if (checkType(action["team-revealif"], ["array"], comm + ".team-revealif")) {
                             for (e in action["team-revealif"]) {
@@ -1105,15 +1040,7 @@ function mafiaChecker() {
                 if (checkType(role.actions.lynch, ["object"], act + ".lynch")) {
                     action = role.actions.lynch;
                     comm = act + ".lynch";
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    var lynchActions = ["revealAs", "convertTo", "convertmsg", "lynchmsg"];
-=======
-                    var lynchActions = ["revealAs", "convertTo", "convertmsg", "lynchmsg", "killVoters"];
->>>>>>> origin/patch-43
-=======
                     var lynchActions = ["revealAs", "convertTo", "convertmsg", "lynchmsg", "killVoters", "convertVoters"];
->>>>>>> 3a48bcfafeeeb1db4a6730447befade0f3be0e17
                     this.checkOnDeath(action, comm, lynchActions, true);
                     
                     if (checkType(action.revealAs, ["string"], comm + ".revealAs")) {
@@ -1127,8 +1054,6 @@ function mafiaChecker() {
                             addMinorError("'lynchmsg' found at " + comm + ", but there's no '" + comm + ".convertTo'");
                         }
                     }
-<<<<<<< HEAD
-=======
                     if (checkType(action.killVoters, ["object"], comm + ".killVoters")) {
                         checkAttributes(action.killVoters, [], ["first", "last", "random", "message"], comm + ".killVoters");
                         
@@ -1163,7 +1088,6 @@ function mafiaChecker() {
                             checkValidRole(action[e], act + ".teamTalk");
                         }
                     }
->>>>>>> origin/patch-43
                 }
             }
         }
