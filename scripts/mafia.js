@@ -5540,7 +5540,7 @@ function Mafia(mafiachan) {
 
             var theme = mafia.themeManager.themes[themeName];
             var min = theme.minplayers === undefined ? 5 : theme.minplayers;
-            var count = mafia.gameInProgress() ? mafia.signups.length : min;
+            var count = mafia.gameInProgress() && mafia.theme == theme ? mafia.signups.length : min;
             var c;
             
             if (data[1]) {
