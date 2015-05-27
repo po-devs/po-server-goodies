@@ -163,8 +163,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
 
         /* add rangeban */
-        script.rangebans.add(subip, script.rangebans.escapeValue(comment));
-        normalbot.sendMessage(src, "Rangeban added successfully for IP subrange: " + subip, channel);
+        script.rangebans.add(subip, script.rangebans.escapeValue(comment) + " --- " + sys.name(src));
+        normalbot.sendAll("Rangeban added successfully for IP subrange: " + subip, staffchannel);
         /* kick them */
         var players = sys.playerIds();
         var players_length = players.length;
@@ -188,7 +188,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var subip = commandData;
         if (script.rangebans.get(subip) !== undefined) {
             script.rangebans.remove(subip);
-            normalbot.sendMessage(src, "Rangeban removed successfully for IP subrange: " + subip, channel);
+            normalbot.sendAll("Rangeban removed successfully for IP subrange: " + subip, staffchannel);
         } else {
             normalbot.sendMessage(src, "No such rangeban.", channel);
         }
@@ -201,7 +201,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         var limit = parseInt(sys.time(), 10) - time;
         var removed = [];
-        mutes.removeIf(function(memoryhash, item) {
+        script.mutes.removeIf(function(memoryhash, item) {
             var data = memoryhash.get(item).split(":");
             if (parseInt(data[0], 10) < limit || (data.length > 3 && parseInt(data[2], 10) < limit)) {
                 removed.push(item);
@@ -216,6 +216,29 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         return;
     }
+    if (command == "purgesmutes") {
+        var time = parseInt(commandData, 10);
+        if (isNaN(time)) {
+            time = 60*60*24*7*4;
+        }
+        var limit = parseInt(sys.time(), 10) - time;
+        var removed = [];
+        script.smutes.removeIf(function(memoryhash, item) {
+            var data = memoryhash.get(item).split(":");
+            if (parseInt(data[0], 10) < limit) {
+                removed.push(item);
+                return true;
+            }
+            return false;
+        });
+        if (removed.length > 0) {
+            normalbot.sendMessage(src, "" + removed.length + " smutes purged successfully.", channel);
+            script.smutes.save();
+        } else {
+            normalbot.sendMessage(src, "No smutes were purged.", channel);
+        }
+        return;
+    }
     if (command == "purgembans") {
         var time = parseInt(commandData, 10);
         if (isNaN(time)) {
@@ -223,9 +246,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         var limit = parseInt(sys.time(), 10) - time;
         var removed = [];
-        mbans.removeIf(function(memoryhash, item) {
+        script.mbans.removeIf(function(memoryhash, item) {
             var data = memoryhash.get(item).split(":");
-            if (parseInt(data[0], 10) < limit || (data.length > 3 && parseInt(data[2], 1) < limit)) {
+            if (parseInt(data[0], 10) < limit || (data.length > 3 && parseInt(data[2], 10) < limit)) {
                 removed.push(item);
                 return true;
             }
@@ -236,6 +259,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         } else {
             normalbot.sendMessage(src, "No mafiabans were purged.", channel);
         }
+        return;
+    }
+    if (command == "clearprofiling") {
+        sys.resetProfiling();
+        normalbot.sendMessage(src, "Profiling information successfully cleared.", channel);
         return;
     }
     if (command == "sendall") {
@@ -292,7 +320,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (sys.id(name) !== undefined) {
             SESSION.users(sys.id(name)).activate("smute", "Script", 0, "Evader", true);
         }
-        sys.writeToFile('secretsmute.txt', autosmute.join(":::"));
+        sys.writeToFile(Config.dataDir + 'secretsmute.txt', autosmute.join(":::"));
         normalbot.sendAll(commandData + " was added to the autosmute list", staffchannel);
         return;
     }
@@ -304,7 +332,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 return true;
             }
         });
-        sys.writeToFile('secretsmute.txt', autosmute.join(":::"));
+        sys.writeToFile(Config.dataDir + 'secretsmute.txt', autosmute.join(":::"));
         return;
     }
     if (command == "periodicsay" || command == "periodichtml") {
@@ -402,7 +430,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
     }
-    if (command == "clearladder") {
+    if (command == "clearladder" || command == "resetladder") {
         var tier = utilities.find_tier(commandData);
         if(tier) {
             sys.resetLadder(tier);
@@ -438,8 +466,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
     }
     if (command == "stopbattles") {
-        battlesStopped = !battlesStopped;
-        if (battlesStopped)  {
+        script.battlesStopped = !script.battlesStopped;
+        if (script.battlesStopped)  {
             sys.sendAll("");
             sys.sendAll("*** ********************************************************************** ***");
             battlebot.sendAll("The battles are now stopped. The server will restart soon.");
@@ -518,10 +546,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             module.source = file;
             delete require.cache[file];
             if (file === "channelfunctions.js") { 
-                POChannel = require(file);
+                POChannel = require(file).POChannel;
             }
             if (file === "channelmanager.js") { 
-                POChannelManager = require(file);
+                POChannelManager = require(file).POChannelManager;
             }
         });
         normalbot.sendAll("Updated channel functions!", staffchannel);
@@ -532,7 +560,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var module = updateModule(file);
         module.source = file;
         delete require.cache[file];
-        POUser = require(file);
+        POUser = require(file).POUser;
         normalbot.sendAll("Updated user functions!", staffchannel);
         return;
     }
@@ -541,7 +569,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var module = updateModule(file);
         module.source = file;
         delete require.cache[file];
-        POGlobal = require(file);
+        POGlobal = require(file).POGlobal;
         normalbot.sendAll("Updated global functions!", staffchannel);
         return;
     }
@@ -590,6 +618,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             }
         };
         sys.webCall(updateURL, updateTiers);
+        return;
+    }
+    if (command == "updategenmoves") {
+        sys.webCall(Config.base_url + Config.dataDir + 'all_gen_moves.txt', function (resp) {
+            sys.writeToFile(Config.dataDir + "all_gen_moves.txt", resp);
+            allGenMovesList = false;
+            normalbot.sendAll("Updated pokebank moves!", staffchannel);
+        });
         return;
     }
     if (command == "addplugin") {
@@ -643,19 +679,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "loadstats") {
-        if (sys.loadServerPlugin("serverplugins/libusagestats.so")) {
-            normalbot.sendMessage(src, "Usage Stats plugin loaded", channel);
-            return;
-        }
-        normalbot.sendMessage(src, "Usage Stats failed to load", channel);
+        sys.loadBattlePlugin("serverplugins/libusagestats_debug.so");
+        normalbot.sendMessage(src, "Usage Stats plugin loaded", channel);
         return;
     }
     if (command == "unloadstats") {
-        if (sys.unloadServerPlugin("Usage Statistics")){
-            normalbot.sendMessage(src, "Usage Stats plugin unloaded", channel);
-            return;
-        }
-        normalbot.sendMessage(src, "Usage stats failed to unload", channel);
+        sys.unloadBattlePlugin("Usage Statistics");
+        normalbot.sendMessage(src, "Usage Stats plugin unloaded", channel);
         return;
     }
     if (command == "warnwebclients") {
@@ -664,6 +694,66 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             if (sys.loggedIn(id) && sys.proxyIp(id) === "127.0.0.1") {
                 sys.sendHtmlMessage(id, "<font color=red size=7><b>" + data + "</b></font>");
             }
+        });
+        return;
+    }
+    if (command == "advertise") {
+        if (!commandData) {
+            return;
+        }
+        /*["Tohjo Falls", "Trivia", "Tournaments", "Indigo Plateau", "Victory Road", "TrivReview", "Mafia", "Hangman"].forEach(function(c) {
+            sys.sendHtmlAll("<font size = 4><b>"+commandData+"</b></font>", sys.channelId(c));
+        });*/
+        sys.sendHtmlAll("<font size = 4><b>"+commandData+"</b></font>");
+        return;
+    }
+    
+    if (command == "tempmod" || command == "tempadmin") {
+        if (!commandData || !sys.loggedIn(sys.id(commandData))) {
+            normalbot.sendMessage(src, "Target must be logged in", channel);
+            return;
+        }
+        var tar = sys.id(commandData);
+        var type = (command === "tempmod" ? "mod" : "admin");
+        if (sys.auth(tar) > 0 && type === "mod" || sys.auth(tar) > 1 && type === "admin") {
+            normalbot.sendMessage(src, "They are already " + type, channel);
+            return;
+        }
+        if (sys.auth(tar) < 1 && type === "admin") { 
+            normalbot.sendMessage(src, "Can only use on current mods", channel);
+            return;
+        }
+        if (type === "mod") {
+            SESSION.users(tar).tempMod = true;
+        } else {
+            SESSION.users(tar).tempAdmin = true;
+        }
+        normalbot.sendAll(commandData.toCorrectCase() + " was made temp " + type, staffchannel);
+        return;
+    }
+    
+    if (command == "detempmod" || command == "detempadmin" || command == "detempauth") {
+        if (!commandData || !sys.loggedIn(sys.id(commandData))) {
+            normalbot.sendMessage(src, "Target must be logged in", channel);
+            return;
+        }
+        var tar = sys.id(commandData);
+        delete SESSION.users(tar).tempMod;
+        delete SESSION.users(tar).tempAdmin;
+        normalbot.sendAll(commandData.toCorrectCase() + "'s temp auth was removed", staffchannel);
+        return;
+    }
+    if (command == "setwebannouncement" || command == "setannouncement") {
+        var updateURL = Config.base_url + "announcement.html";
+        sys.webCall(updateURL, function(resp) {
+            sys.changeAnnouncement(resp);
+        });
+        return;
+    }
+    if (command == "testwebannouncement" || command == "testannouncement") {
+        var updateURL = Config.base_url + "announcement.html";
+        sys.webCall(updateURL, function(resp) {
+            sys.setAnnouncement(resp, src);
         });
         return;
     }
@@ -694,7 +784,9 @@ exports.help =
         "/rangeban: Makes a range ban. Format is /rangeban ip comment.",
         "/rangeunban: Removes a rangeban.",
         "/purgemutes: Purges mutes older than the given time in seconds. Default is 4 weeks.",
+        "/purgesmutes: Purges smutes older than the given time in seconds. Default is 4 weeks.",
         "/purgembans: Purges mafiabans older than the given time in seconds. Default is 1 week.",
+        "/clearprofiling: Clears all profiling info.",
         "/addplugin: Add a plugin from the web.",
         "/removeplugin: Removes a plugin.",
         "/updateplugin: Updates plugin from the web.",
@@ -707,9 +799,13 @@ exports.help =
         "/updatetierchecks: To update tier checks.",
         "/updatecommands: To update command files.",
         "/updatetiers[soft]: To update tiers. Soft saves to file only without reloading.",
-        "/tourowner: Makes a user a Tournament Owner. Use /stowner for a silent promotion.",
         "/loadstats: Loads the usage stats plugin.",
         "/unloadstats: Unloads the usage stats plugin.",
         "/warnwebclients: Sends a big alert with your message to webclient users.",
-        "/clearladder: Clears rankings from a tier."
+        "/clearladder: Clears rankings from a tier.",
+        "/advertise: Sends a html message to the main channels",
+        "/tempmod/admin: Gives temporary auth to a user. Lasts until they log out",
+        "/detempauth: Removes temporary auth given to a user",
+        "/testannouncement: Test the current announcement on Github (only shows for the command user)",
+        "/setannouncement: Sets the announcement to the one on Github"
     ];

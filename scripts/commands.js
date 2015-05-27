@@ -10,7 +10,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (modCommands === undefined) {
         modCommands = require("modcommands.js");
     }
-    if (sys.auth(src) > 0 || (script.isMafiaAdmin(src) || script.isMafiaSuperAdmin(src)) && command == "mafiabans" || script.isMafiaSuperAdmin(src) && command == "aliases") {
+    if (sys.auth(src) > 0 || SESSION.users(src).tempMod || (script.isMafiaAdmin(src) || script.isMafiaSuperAdmin(src)) && command == "mafiabans" || script.isMafiaSuperAdmin(src) && command == "aliases") {
         if (modCommands.handleCommand(src, command, commandData, tar, channel) != "no command") {
             return;
         }
@@ -18,7 +18,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (adminCommands === undefined) {
         adminCommands = require("admincommands.js");
     }
-    if (sys.auth(src) > 1) {
+    if (sys.auth(src) > 1 || SESSION.users(src).tempAdmin) {
         if (adminCommands.handleCommand(src, command, commandData, tar, channel) != "no command") {
             return;
         }
@@ -34,10 +34,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (channelCommands === undefined) {
         channelCommands = require("channelcommands.js");
     }
-    if (sys.auth(src) > 1 || SESSION.channels(channel).isChannelOperator(src)) {
-        if (channelCommands.handleCommand(src, command, commandData, tar, channel) != "no command") {
-            return;
-        }
+    if (channelCommands.handleCommand(src, command, commandData, tar, channel) != "no command") {
+        return;
     }
     commandbot.sendMessage(src, "The command " + command + " doesn't exist", channel);
 };

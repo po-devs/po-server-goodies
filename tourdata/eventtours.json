@@ -1,130 +1,130 @@
 {
-    "1-10-2013": {
-        "tier": "Wifi LU",
+    "1-5-2015": {
+        "tier": "ORAS Balanced Hackmons",
         "settings": {}
     },
-    "2-10-2013": {
-        "tier": "HGSS OU",
+    "2-5-2015": {
+        "tier": "ORAS OU",
         "settings": {}
     },
-    "3-10-2013": {
-        "tier": "Monotype",
+    "3-5-2015": {
+        "tier": "ORAS NU",
         "settings": {}
     },
-    "4-10-2013": {
-        "tier": "Wifi LC",
-        "settings": {}
-    },
-    "5-10-2013": {
-        "tier": "Wifi OU",
-        "settings": {}
-    },
-    "6-10-2013": {
-        "tier": "Random Battle",
-        "settings": {}
-    },
-    "7-10-2013": {
+    "4-5-2015": {
         "tier": "Challenge Cup",
         "settings": {}
     },
-    "8-10-2013": {
-        "tier": "Wifi Ubers",
+    "5-5-2015": {
+        "tier": "ORAS LU",
         "settings": {}
     },
-    "9-10-2013": {
-        "tier": "Wifi OU Doubles",
-        "settings": {}
-    },
-    "10-10-2013": {
-        "tier": "Wifi NU",
-        "settings": {}
-    },
-    "11-10-2013": {
-        "tier": "ADV OU",
-        "settings": {}
-    },
-    "12-10-2013": {
-        "tier": "Wifi UU",
-        "settings": {}
-    },
-    "13-10-2013": {
-        "tier": "Battle Factory 6v6",
-        "settings": {}
-    },
-    "14-10-2013": {
-        "tier": "Wifi LU",
-        "settings": {}
-    },
-    "15-10-2013": {
+    "6-5-2015": {
         "tier": "HGSS OU",
         "settings": {}
     },
-    "16-10-2013": {
-        "tier": "Wifi Triples",
-        "settings": {}
-    },
-    "17-10-2013": {
-        "tier": "Wifi Ubers",
-        "settings": {}
-    },
-    "18-10-2013": {
-        "tier": "VGC 2013",
-        "settings": {}
-    },
-    "19-10-2013": {
-        "tier": "Wifi OU",
-        "settings": {}
-    },
-    "20-10-2013": {
-        "tier": "Monotype",
-        "settings": {}
-    },
-    "21-10-2013": {
-        "tier": "Challenge Cup",
-        "settings": {}
-    },
-    "22-10-2013": {
-        "tier": "ADV OU",
-        "settings": {}
-    },
-    "23-10-2013": {
-        "tier": "Wifi LC",
-        "settings": {}
-    },
-    "24-10-2013": {
-        "tier": "Wifi OU Doubles",
-        "settings": {}
-    },
-    "25-10-2013": {
-        "tier": "Wifi UU",
-        "settings": {}
-    },
-    "26-10-2013": {
-        "tier": "Battle Factory 6v6",
-        "settings": {}
-    },
-    "27-10-2013": {
+    "7-5-2015": {
         "tier": "Random Battle",
         "settings": {}
     },
-    "28-10-2013": {
-        "tier": "HGSS OU",
+    "8-5-2015": {
+        "tier": "ORAS LC",
         "settings": {}
     },
-    "29-10-2013": {
-        "tier": "Wifi Triples",
+    "9-5-2015": {
+        "tier": "ORAS OU",
         "settings": {}
     },
-    "30-10-2013": {
-        "tier": "Wifi NU",
+    "10-5-2015": {
+        "tier": "Monotype",
         "settings": {}
     },
-    "31-10-2013": {
-        "tier": "Wifi OU",
+    "11-5-2015": {
+        "tier": "Inverted Battle",
         "settings": {}
     },
-    "30-9-2013": {
-        "tier": "Wifi OU",
+    "12-5-2015": {
+        "tier": "ORAS Ubers",
+        "settings": {}
+    },
+    "13-5-2015": {
+        "tier": "ORAS UU",
+        "settings": {}
+    },
+    "14-5-2015": {
+        "tier": "ADV OU",
+        "settings": {}
+    },
+    "15-5-2015": {
+        "tier": "Sky Battle",
+        "settings": {}
+    },
+    "16-5-2015": {
+        "tier": "Battle Factory 6v6",
+        "settings": {}
+    },
+    "17-5-2015": {
+        "tier": "ORAS Balanced Hackmons",
+        "settings": {}
+    },
+    "18-5-2015": {
+        "tier": "Inverted Challenge Cup",
+        "settings": {}
+    },
+    "19-5-2015": {
+        "tier": "ORAS Doubles",
+        "settings": {}
+    },
+    "20-5-2015": {
+        "tier": "RBY OU",
+        "settings": {}
+    },
+    "21-5-2015": {
+        "tier": "ORAS LC",
+        "settings": {}
+    },
+    "22-5-2015": {
+        "tier": "Monotype",
+        "settings": {}
+    },
+    "23-5-2015": {
+        "tier": "ORAS OU",
+        "settings": {}
+    },
+    "24-5-2015": {
+        "tier": "ORAS NU",
+        "settings": {}
+    },
+    "25-5-2015": {
+        "tier": "ORAS Ubers",
+        "settings": {}
+    },
+    "26-5-2015": {
+        "tier": "ORAS Balanced Hackmons",
+        "settings": {}
+    },
+    "27-5-2015": {
+        "tier": "Inverted Battle",
+        "settings": {}
+    },
+    "28-5-2015": {
+        "tier": "BW2 OU",
+        "settings": {}
+    },
+    "29-5-2015": {
+        "tier": "ORAS LU",
+        "settings": {}
+    },
+    "30-5-2015": {
+        "tier": "ORAS OU",
+        "settings": {}
+    },
+    "31-5-2015": {
+        "tier": "Battle Factory 6v6",
+        "settings": {}
+    },
+    "30-4-2015": {
+        "tier": "Battle Factory 6v6",
         "settings": {}
     }
 }

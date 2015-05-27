@@ -17,6 +17,7 @@ function POChannel(id)
     this.ignorecaps = false;
     this.ignoreflood = false;
     this.allowSwear = true;
+    this.rules = [];
 }
 
 POChannel.prototype.beforeMessage = function(src, msg) {
@@ -33,7 +34,7 @@ POChannel.prototype.setTopic = function(src, topicInfo)
         if (typeof this.topic != 'undefined') {
             channelbot.sendMessage(src, "Topic for this channel is: " + this.topic, this.id);
             if (SESSION.channels(this.id).topicSetter) {
-                channelbot.sendMessage(src, "Topic was set by " + nonFlashing(this.topicSetter), this.id);
+                channelbot.sendMessage(src, "Topic was set by " + nonFlashing(this.topicSetter) + (SESSION.channels(this.id).topicDate ? " ("+SESSION.channels(this.id).topicDate+")" : ""), this.id);
             }
         } else {
             channelbot.sendMessage(src, "No topic set for this channel.", this.id);
@@ -96,6 +97,22 @@ POChannel.prototype.isChannelOperator = function(id)
         this.operators = [];
     }
     if (this.operators.indexOf(sys.name(id).toLowerCase()) > -1) {
+        return true;
+    }
+    return false;
+};
+POChannel.prototype.isChannelMember = function(id)
+{
+    if (!sys.dbRegistered(sys.name(id))) {
+        return false;
+    }
+    if ((sys.auth(id) >= 1 && this.id === 0) || this.isChannelOperator(id) || this.isChannelAdmin(id) || this.isChannelOwner(id)) {
+        return true;
+    }
+    if (typeof this.members != "object") {
+        this.members = [];
+    }
+    if (this.members.indexOf(sys.name(id).toLowerCase()) > -1) {
         return true;
     }
     return false;
@@ -363,7 +380,7 @@ POChannel.prototype.unban = function(src, tar)
     }
 };
 
-POChannel.prototype.mute = function(src, tar, data)
+POChannel.prototype.mute = function(src, tar, data, smuted)
 {
     var ret = this.addRole(src, tar, "muted", data);
     if (ret[0] == "self") {
@@ -371,7 +388,11 @@ POChannel.prototype.mute = function(src, tar, data)
             channelbot.sendMessage(src, ret[1], this.id);
     }
     else {
-        channelbot.sendAll(ret[1], this.id);
+        if (smuted) {
+            channelbot.sendMessage(src, ret[1], this.id);
+        } else {
+            channelbot.sendAll(ret[1], this.id);
+        }
         SESSION.global().channelManager.update(this.id);
     }
 };
@@ -430,11 +451,12 @@ POChannel.prototype.isMuted = function(id)
         if (mutelist.hasOwnProperty(x)) {
             if (!mutelist[x].hasOwnProperty("expiry")) {
                 delete this.muted[x];
-                continue;
+                continue;   
             }
             if (mutelist[x].expiry <= parseInt(sys.time(),10)) {
                 delete this.muted[x];
                 channelbot.sendAll(x+"'s channel mute expired.", this.id);
+                SESSION.global().channelManager.update(this.id);
                 continue;
             }
             if (script.cmp(x, name)) {
@@ -523,6 +545,7 @@ POChannel.prototype.changeParameter = function(src, parameter, value) {
     if (parameter == "topic") {
         this.topic = value;
         this.topicSetter = sys.name(src);
+        this.topicDate = new Date().toUTCString();
         return;
     }
     if (parameter == "allowcaps") {
@@ -646,6 +669,42 @@ POChannel.prototype.getReadableList = function(type)
     catch (e) {
         return "";
     }
+};
+
+POChannel.prototype.addRule = function(name, description) {
+    var index = this.rules.length + 1;
+    if (this.rules.length >= 10) {
+        return "Too many rules already, currently limited to 10";
+    }
+    if (name.length > 200 || description.length > 600) {
+        return "Name/Description too long. Limit is 200 characters for name and 600 for description";
+    }
+    this.rules.push(index + ":::::" + name.replace(/:::::/g, ":") + ":::::" + description.replace(/:::::/g, ":")); //preventing silly things happening
+    SESSION.global().channelManager.update(this.id);
+};
+
+POChannel.prototype.removeRule = function(index) {
+    if (!(index-1 in this.rules)) {
+        return "Not a rule";
+    }
+    this.rules.splice(index - 1, 1);
+    for (var x = 0; x < this.rules.length; x++) {
+        var rules = this.rules[x].split(":::::");
+        if (parseInt(rules[0], 10) > parseInt(index)) {
+            rules[0] -= 1;
+            this.rules[x] = rules.join(":::::");
+        }
+    }
+    SESSION.global().channelManager.update(this.id);
+};
+
+POChannel.prototype.getRules = function() {
+    var output = [];
+    for (var x = 0; x < this.rules.length; x++) {
+        var rule = this.rules[x].split(":::::");
+        output.push(rule[0] + ". " + rule[1] + ": \n"+ rule[2]);
+    }
+    return output;
 };
 
 exports.POChannel = POChannel;

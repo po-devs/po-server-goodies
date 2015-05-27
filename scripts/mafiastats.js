@@ -7,7 +7,7 @@
 */
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global updateModule, sys, SESSION, module, require*/
-var mafiaDataDir = "scriptData/mafiastats/";
+var mafiaDataDir = "scriptdata/mafiastats/";
 var saveDir = "usage_stats/formatted/mafiathemes/";
 
 /*  Essentially a more lazy way to implement something CSS-like. I could use actual CSS, but I prefer this all being in one file and is easier for others to edit
@@ -46,6 +46,7 @@ function mafiaStats() {
         sys.writeToFile(mafiaDataDir + this.fileName, JSON.stringify(this.data));
         var month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][date.getMonth()];
         if (month !== this.fileName.split("_")[0]) {
+            this.fileName = month + "_mafiaStats.json";
             if (!sys.fexists(mafiaDataDir + this.filename)) {
                 sys.writeToFile(mafiaDataDir + this.fileName, "{}");
             }
@@ -206,6 +207,9 @@ function mafiaStats() {
     };
     this.compileHourData = function () {
         var hData = this.data.hoursData;
+        if (!hData) {
+            hData = {};
+        }
         for (var x = 0; x < 24; x++) {
             if (!hData[x]) {
                 hData[x] = {};

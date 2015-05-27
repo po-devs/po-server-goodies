@@ -12,7 +12,7 @@ function POUser(id)
     /* whether user is secrectly muted */
     this.smute = {active: false, by: null, expires: 0, time: null, reason: null};
     /* whether user is hangmanbanned or not */
-    this.hban = {active: false, by: null, expires: 0, time: null, reason: null};
+    this.hmute = {active: false, by: null, expires: 0, time: null, reason: null};
     /* caps counter for user */
     this.caps = 0;
     /* whether user is impersonating someone */
@@ -71,7 +71,7 @@ function POUser(id)
 
     /* check if user is banned or mafiabanned */
     var data;
-    var loopArgs = [["mute", script.mutes], ["mban", script.mbans], ["smute", script.smutes], ["hban", script.hbans]];
+    var loopArgs = [["mute", script.mutes], ["mban", script.mbans], ["smute", script.smutes], ["hmute", script.hmutes]];
     for (i = 0; i < 4; ++i) {
         var action = loopArgs[i][0];
         if ((data = loopArgs[i][1].get(sys.ip(id))) !== undefined) {
@@ -109,7 +109,7 @@ POUser.prototype.activate = function(thingy, by, expires, reason, persistent) {
     this[thingy].time = parseInt(sys.time(), 10);
     this[thingy].reason = reason;
     if (persistent) {
-        var table = {"mute": script.mutes, "smute": script.smutes, "mban": script.mbans, "hban":script.hbans};
+        var table = {"mute": script.mutes, "smute": script.smutes, "mban": script.mbans, "hmute":script.hmutes};
         table[thingy].add(sys.ip(this.id), sys.time() + ":" + by + ":" + expires + ":" + sys.name(this.id) + ":" + reason);
     }
 
@@ -119,7 +119,7 @@ POUser.prototype.activate = function(thingy, by, expires, reason, persistent) {
 POUser.prototype.un = function(thingy) {
     this[thingy].active = false;
     this[thingy].expires = 0;
-    var table = {"mute": script.mutes, "smute": script.smutes, "mban": script.mbans, "hban": script.hbans};
+    var table = {"mute": script.mutes, "smute": script.smutes, "mban": script.mbans, "hmute":script.hmutes};
     table[thingy].remove(sys.ip(this.id));
 
     callplugins("onUn"+ utilities.capitalize(thingy), this.id);

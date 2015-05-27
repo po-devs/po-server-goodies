@@ -4,7 +4,7 @@
 // require("tourstats.js").updateTourStats
 
 var tourwinners, tourstats, tourrankingsbytier;
-var dataDir="tourdata/";
+var dataDir="scriptdata/tourdata/";
 
 function updateTourStats(tier, time, winner, num, noPoints, purgeTime) {
     //loadStats();
@@ -19,8 +19,10 @@ function updateTourStats(tier, time, winner, num, noPoints, purgeTime) {
             "CC 1v1": [0, 0, 0, 0, 1],
             "Wifi CC 1v1": [0, 0, 0, 0, 1],
             "Challenge Cup": [0, 0, 0, 1, 2],
-            "DW 1v1": [0, 0, 0, 0, 1],
-            "DW 1v1 Ubers": [0, 0, 0, 0, 1],
+            "Inverted Challenge Cup": [0, 0, 0, 1, 2],
+            "ORAS Balanced Hackmons" : [0, 0 ,0 ,1 ,2],
+            "ORAS Hackmons" : [0, 0, 0, 1, 2],
+            "ORAS 1v1": [0, 0, 0, 0, 1],
             "Metronome": [0, 0, 0, 0, 0],
             "Monotype": [0, 0, 1, 2, 3],
             "default": [0, 1, 2, 4, 6],

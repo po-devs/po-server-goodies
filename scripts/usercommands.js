@@ -11,10 +11,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             }
             sys.sendMessage(src, "*** Other Commands ***", channel);
             sys.sendMessage(src, "/commands channel: To know of channel commands", channel);
-            if (sys.auth(src) > 0) {
+            if (sys.auth(src) > 0 || SESSION.users(src).tempMod) {
                 sys.sendMessage(src, "/commands mod: To know of moderator commands", channel);
             }
-            if (sys.auth(src) > 1) {
+            if (sys.auth(src) > 1 || SESSION.users(src).tempAdmin) {
                 sys.sendMessage(src, "/commands admin: To know of admin commands", channel);
             }
             if (sys.auth(src) > 2 || isSuperAdmin(src)) {
@@ -32,8 +32,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
 
         commandData = commandData.toLowerCase();
-        if ( (commandData == "mod" && sys.auth(src) > 0)
-            || (commandData == "admin" && sys.auth(src) > 1)
+        if ( (commandData == "mod" && sys.auth(src) > 0 || SESSION.users(src).tempMod)
+            || (commandData == "admin" && sys.auth(src) > 1 || SESSION.users(src).tempAdmin)
             || (commandData == "owner" && (sys.auth(src) > 2  || isSuperAdmin(src)))
             || (commandData == "channel") ) {
             sys.sendMessage(src, "", channel);
@@ -70,7 +70,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             sys.playerIds().forEach(function(id) {
                 if (sys.loggedIn(id) && SESSION.users(id).smute.active && sys.isInChannel(src, channel)) {
                     var colour = script.getColor(src);
-                    sys.sendHtmlMessage(id, "<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + commandData + "</font>", channel);
+                    sys.sendHtmlMessage(id, "<font color='" + colour + "'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + commandData + "</font>", channel);
                 }
             });
             sys.stopEvent();
@@ -86,11 +86,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 messagetosend = messagetosend.toUpperCase();
             }
         }
+        if (channel === sys.channelId("Tohjo Falls") && script.reverseTohjo === true) {
+            messagetosend = messagetosend.split("").reverse().join("");
+        }
         if (command == "me") {
             var colour = script.getColor(src);
             sendChanHtmlAll("<font color='" + colour + "'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + messagetosend + "</font>", channel);
         }
-        else if (command == "rainbow" && SESSION.global().allowRainbow && channel !== 0 && channel !== tourchannel && channel !== mafiachan && channel != sys.channelId("Trivia")) {
+        else if (command == "rainbow" && !script.isOfficialChan(channel)) {
             var auth = 1 <= sys.auth(src) && sys.auth(src) <= 3;
             var colours = ["#F85888", "#F08030", "#F8D030", "#78C850", "#98D8D8", "#A890F0", "#C183C1"];
             var colour = sys.rand(0, colours.length);
@@ -135,7 +138,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         ar = Config.League;
         for (x = 0; x < ar.length; ++x) {
             if (ar[x].length > 0) {
-                sys.sendHtmlMessage(src, "<span style='font-weight: bold'>" + utilities.html_escape(ar[x][0]) + "</span> - " + ar[x][1].format(utilities.html_escape(ar[x][0])) + " " + (sys.id(ar[x][0]) !== undefined ? "<span style='color: green'>(online)</span>" : "<span style='color: red'>(offline)</span>"), channel);
+                sys.sendHtmlMessage(src, "<span style='font-weight: bold'>" + utilities.html_escape(ar[x][0].toCorrectCase()) + "</span> - " + ar[x][1].format(utilities.html_escape(ar[x][0])) + " " + (sys.id(ar[x][0]) !== undefined ? "<span style='color: green'>(online)</span>" : "<span style='color: red'>(offline)</span>"), channel);
             }
         }
         sys.sendMessage(src, "", channel);
@@ -173,6 +176,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             countbot.sendMessage(src, "There are  " + android + " " + commandData + " players online", channel);
             return;
         }
+        if (commandData == "top" || commandData == "max") {
+            countbot.sendMessage(src, "Max number of players online was " + sys.getVal("MaxPlayersOnline") + ".", channel);
+            return;
+        }
         countbot.sendMessage(src, "There are " + sys.numPlayers() + " players online.", channel);
         return;
     }
@@ -186,6 +193,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             }
         };
         if (commandData !== undefined) {
+            commandData = utilities.find_tier(commandData);
             if (sys.totalPlayersByTier(commandData) === 0)
                 rankingbot.sendMessage(src, commandData + " is not even a tier.", channel);
             else
@@ -231,31 +239,40 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             }
         };
         var authlist = sys.dbAuths().sort();
-        sys.sendMessage(src, "", channel);
+        if (commandData !== "~") {
+            sys.sendMessage(src, "", channel);
+        }
         switch (commandData) {
-        case "owners":
-            sys.sendMessage(src, "*** Owners ***", channel);
-            authlist.filter(filterByAuth(3)).forEach(printOnlineOffline);
-            break;
-        case "admins":
-        case "administrators":
-            sys.sendMessage(src, "*** Administrators ***", channel);
-            authlist.filter(filterByAuth(2)).forEach(printOnlineOffline);
-            break;
-        case "mods":
-        case "moderators":
-            sys.sendMessage(src, "*** Moderators ***", channel);
-            authlist.filter(filterByAuth(1)).forEach(printOnlineOffline);
-            break;
-        default:
-            sys.sendMessage(src, "*** Owners ***", channel);
-            authlist.filter(filterByAuth(3)).forEach(printOnlineOffline);
-            sys.sendMessage(src, '', channel);
-            sys.sendMessage(src, "*** Administrators ***", channel);
-            authlist.filter(filterByAuth(2)).forEach(printOnlineOffline);
-            sys.sendMessage(src, '', channel);
-            sys.sendMessage(src, "*** Moderators ***", channel);
-            authlist.filter(filterByAuth(1)).forEach(printOnlineOffline);
+            case "owners":
+                sys.sendMessage(src, "*** Owners ***", channel);
+                authlist.filter(filterByAuth(3)).forEach(printOnlineOffline);
+                break;
+            case "admins":
+            case "administrators":
+                sys.sendMessage(src, "*** Administrators ***", channel);
+                authlist.filter(filterByAuth(2)).forEach(printOnlineOffline);
+                break;
+            case "mods":
+            case "moderators":
+                sys.sendMessage(src, "*** Moderators ***", channel);
+                authlist.filter(filterByAuth(1)).forEach(printOnlineOffline);
+                break;
+            case "~":
+                var ret = {};
+                ret.owners = authlist.filter(filterByAuth(3));
+                ret.administrators = authlist.filter(filterByAuth(2));
+                ret.moderators = authlist.filter(filterByAuth(1));
+                sys.sendMessage(src, "+auth: " + JSON.stringify(ret), channel);
+                return;
+            default:
+                sys.sendMessage(src, "*** Owners ***", channel);
+                authlist.filter(filterByAuth(3)).forEach(printOnlineOffline);
+                sys.sendMessage(src, '', channel);
+                sys.sendMessage(src, "*** Administrators ***", channel);
+                authlist.filter(filterByAuth(2)).forEach(printOnlineOffline);
+                sys.sendMessage(src, '', channel);
+                sys.sendMessage(src, "*** Moderators ***", channel);
+                authlist.filter(filterByAuth(1)).forEach(printOnlineOffline);
         }
         sys.sendMessage(src, '', channel);
         return;
@@ -274,11 +291,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "idle") {
-        if (commandData == "on") {
+        if (commandData.toLowerCase() == "on") {
             battlebot.sendMessage(src, "You are now idling.", channel);
             script.saveKey("autoIdle", src, 1);
             sys.changeAway(src, true);
-        } else if (commandData == "off") {
+        } else if (commandData.toLowerCase() == "off") {
             battlebot.sendMessage(src, "You are back and ready for battles!", channel);
             script.saveKey("autoIdle", src, 0);
             sys.changeAway(src, false);
@@ -305,10 +322,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "topicadd") {
-        if (SESSION.channels(channel).topic.length > 0)
-            SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandData);
-        else
-            SESSION.channels(channel).setTopic(src, commandData);
+        if (commandData) {
+            if (SESSION.channels(channel).topic.length > 0)
+                SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandData);
+            else
+                SESSION.channels(channel).setTopic(src, commandData);
+        }
         return;
     }
     if (command == "removepart") {
@@ -349,12 +368,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "topchannels") {
         var cids = sys.channelIds();
+        var limit = (commandData && !isNaN(commandData) ? parseInt(commandData, 10) : 10);
         var l = [];
         for (var i = 0; i < cids.length; ++i) {
             l.push([cids[i], sys.playersOfChannel(cids[i]).length]);
         }
         l.sort(function(a,b) { return b[1]-a[1]; });
-        var topchans = l.slice(0,10);
+        var topchans = l.slice(0, limit);
         channelbot.sendMessage(src, "Most used channels:", channel);
         for (var i = 0; i < topchans.length; ++i) {
             sys.sendMessage(src, "" + sys.channel(topchans[i][0]) + " with " + topchans[i][1] + " players.", channel);
@@ -378,24 +398,6 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             teamNumber = commandData;
         }
         var team = script.importable(src, teamNumber, true).join("\n");
-        /* commenting out instead so I don't have to write it again later if needed :(
-        var name = sys.name(src) + '\'s ' + sys.tier(src, teamNumber) + ' team';
-        var post = {};
-        post['api_option'] = 'paste'; // paste, duh
-        post['api_dev_key'] = pastebin_api_key; // Developer's personal key, set in the beginning
-        //post['api_user_key'] = pastebin_user_key; // Pastes are marked to our account
-        post['api_paste_private'] = 1; // private
-        post['api_paste_name'] = name; // name
-        post['api_paste_code'] = team; // text itself
-        post['api_paste_expire_date'] = '1M'; // expires in 1 month
-        sys.webCall('https://api.github.com/gists?client_id=10d28edcfdd2ccaf111d&client_secret=baf5fa2720d8d55d47ad9f280d8f4733024635e5', function (resp) {
-            if (/^http:\/\//.test(resp))
-                normalbot.sendMessage(src, "Your team is available at: " + resp, bind_channel); // success
-            else {
-                normalbot.sendMessage(src, "Sorry, unexpected error: " + resp, bind_channel); // an error occured
-                normalbot.sendAll("" + sys.name(src) + "'s /importable failed: " + resp, staffchannel); // message to indigo
-            }
-        }, post);*/
         var filename = sys.time() + "-" + sys.rand(1000, 10000) + ".txt";
         sys.writeToFile("usage_stats/formatted/team/"+filename, team);
         normalbot.sendMessage(src, "You team can be found here: http://server.pokemon-online.eu/team/" + filename + " Remember this will be deleted in 24 hours", channel);
@@ -406,6 +408,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (sys.existChannel(commandData)) {
             chan = sys.channelId(commandData);
         } else {
+            var name = commandData.toLowerCase();
+            for (var i = 0; i < script.chanNameBans.length; ++i) {
+                var regexp = script.chanNameBans[i];
+                if (regexp.test(name)) {
+                    sys.sendMessage(src, 'This kind of channel name is banned from the server. (Matching regexp: ' + regexp + ')');
+                    return;
+                }
+            }
             chan = sys.createChannel(commandData);
         }
         if (sys.isInChannel(src, chan)) {
@@ -441,6 +451,15 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             SESSION.channels(channel).masters = [];
         if (typeof SESSION.channels(channel).members != 'object')
             SESSION.channels(channel).members = [];
+        if (commandData === "~") {
+            var ret = {};
+            ret.members = SESSION.channels(channel).members;
+            ret.operators = SESSION.channels(channel).operators;
+            ret.admins = SESSION.channels(channel).admins;
+            ret.owners = SESSION.channels(channel).masters;
+            sys.sendMessage(src, "+cauth: " + JSON.stringify(ret), channel);
+            return;
+        }
         channelbot.sendMessage(src, "The channel members of " + sys.channel(channel) + " are:", channel);
         channelbot.sendMessage(src, "Owners: " + SESSION.channels(channel).masters.join(", "), channel);
         channelbot.sendMessage(src, "Admins: " + SESSION.channels(channel).admins.join(", "), channel);
@@ -661,7 +680,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "No such pokemon!", channel); return;
         }
         var pokename = sys.pokemon(poke);
-        if (dwCheck(poke) === false){
+        if (pokedex.dwCheck(poke) === false){
             normalbot.sendMessage(src, pokename + ": has no DW ability!", channel);
             return;
         }
@@ -677,11 +696,37 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command === "pokemon") {
+        commandData = commandData.split(":");
+        var forme = !isNaN(commandData[1]) ? commandData[1] : 0;
+        commandData = commandData[0];
         if (!commandData) {
             normalbot.sendMessage(src, "Please specify a Pokémon!", channel);
             return;
         }
-        var pokeId = sys.pokeNum(commandData);
+        var pokeId;
+        if (isNaN(commandData)) {
+            switch (commandData.toLowerCase()) {
+                case ("darmanitan-z") : 
+                    commandData = "Darmanitan-D";
+                    break;
+                case ("meloetta-p") :
+                    commandData = "Meloetta-S";
+                    break;
+                case ("hoopa-u") :
+                    commandData = "Hoopa-B";
+                    break;
+                default:
+                    commandData=commandData;
+            }
+            pokeId = sys.pokeNum(commandData);
+        }
+        else {
+            if (commandData < 1 || commandData > 721) {
+                normalbot.sendMessage(src, commandData + " is not a valid Pokédex number!", channel);
+                return;
+            }
+            pokeId = parseInt(commandData, 10) + (forme << 16);
+        }
         if (!pokeId) {
             normalbot.sendMessage(src, commandData + " is not a valid Pokémon!", channel);
             return;
@@ -695,31 +740,47 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var stats = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"];
         var levels = [5, 50, 100];
         sys.sendHtmlMessage(src, "", channel);
-        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.pokemon(pokeId) + "</font></b>", channel);
-        sys.sendHtmlMessage(src, "<img src='pokemon:num=" + pokeId + "&gen=5'><img src='pokemon:num=" + pokeId + "&shiny=true&gen=5'>", channel);
+        sys.sendHtmlMessage(src, "<b><font size = 4># " + pokeId % 65536 + " " + sys.pokemon(pokeId) + "</font></b>", channel);
+        sys.sendHtmlMessage(src, "<img src='pokemon:num=" + pokeId + "&gen=6'><img src='pokemon:num=" + pokeId + "&shiny=true&gen=6'>", channel);
         sys.sendHtmlMessage(src, "<b>Type:</b> " + type1 + (type2 === "???" ? "" : "/" + type2), channel);
-        sys.sendHtmlMessage(src, "<b>Abilities:</b> " + ability1 + (ability2 === "(No Ability)" ? "" : ", " + ability2) + (ability3 === "(No Ability)" ? "" : ", " + ability3 + " (Dream World)"), channel);
-        sys.sendHtmlMessage(src, "<b>Height:</b> " + getHeight(pokeId) + " m", channel);
-        sys.sendHtmlMessage(src, "<b>Weight:</b> " + getWeight(pokeId) + " kg", channel);
-        sys.sendHtmlMessage(src, "<b>Base Power of Low Kick/Grass Knot:</b> " + weightPower(getWeight(pokeId)), channel);
-        var table = "<table border = 1 cellpadding = 3>";
-        table += "<tr><th rowspan = 2 valign = middle><font size = 5>Stats</font></th><th rowspan = 2 valign = middle>Base</th><th colspan = 3>Level 5</th><th colspan = 3>Level 50</th><th colspan = 3>Level 100</th></tr>";
-        table += "<tr><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th>";
-        for (var x = 0; x < stats.length; x++) {
-            var baseStat = baseStats[x];
-            table += "<tr><td valign = middle><b>" + stats[x] + "</b></td><td><center><font size = 4>" + baseStat + "</font></center></td>";
-            for (var i = 0; i < levels.length; i++) {
-                if (x === 0) {
-                    table += "<td valign = middle><center>" + calcHP(baseStat, 31, 0, levels[i]) + "</center></td><td valign = middle><center>" + calcHP(baseStat, 31, 252, levels[i]) + "</center></td><td valign = middle><center>-</center></td>";
+        sys.sendHtmlMessage(src, "<b>Abilities:</b> " + ability1 + (sys.pokemon(pokeId).substr(0, 5) === "Mega " ? "" : (ability2 === "(No Ability)" ? "" : ", " + ability2) + (ability3 === "(No Ability)" ? "" : ", " + ability3 + " (Hidden Ability)")), channel);
+        sys.sendHtmlMessage(src, "<b>Height:</b> " + pokedex.getHeight(pokeId) + " m", channel);
+        sys.sendHtmlMessage(src, "<b>Weight:</b> " + pokedex.getWeight(pokeId) + " kg", channel);
+        sys.sendHtmlMessage(src, "<b>Base Power of Low Kick/Grass Knot:</b> " + pokedex.weightPower(pokedex.getWeight(pokeId)), channel);
+        if (sys.os(src) !== "android") {
+            var table = "<table border = 1 cellpadding = 3>";
+            table += "<tr><th rowspan = 2 valign = middle><font size = 5>Stats</font></th><th rowspan = 2 valign = middle>Base</th><th colspan = 3>Level 5</th><th colspan = 3>Level 50</th><th colspan = 3>Level 100</th></tr>";
+            table += "<tr><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th>";
+            for (var x = 0; x < stats.length; x++) {
+                var baseStat = baseStats[x];
+                table += "<tr><td valign = middle><b>" + stats[x] + "</b></td><td><center><font size = 4>" + baseStat + "</font></center></td>";
+                for (var i = 0; i < levels.length; i++) {
+                    if (x === 0) {
+                        table += "<td valign = middle><center>" + pokedex.calcHP(baseStat, 31, 0, levels[i]) + "</center></td><td valign = middle><center>" + pokedex.calcHP(baseStat, 31, 252, levels[i]) + "</center></td><td valign = middle><center>-</center></td>";
+                    }
+                    else {
+                        table += "<td valign = middle><center>" + pokedex.calcStat(baseStat, 31, 0, levels[i], 1) + "</center></td><td valign = middle><center>" + pokedex.calcStat(baseStat, 31, 252, levels[i], 1) + "</center></td><td valign = middle><center>" + pokedex.calcStat(baseStat, 31, 252, levels[i], 1.1) + "</center></td>";
+                    }
                 }
-                else {
-                    table += "<td valign = middle><center>" + calcStat(baseStat, 31, 0, levels[i], 1) + "</center></td><td valign = middle><center>" + calcStat(baseStat, 31, 252, levels[i], 1) + "</center></td><td valign = middle><center>" + calcStat(baseStat, 31, 252, levels[i], 1.1) + "</center></td>";
+                table += "</tr>";
+            }
+            table += "</table>";
+            sys.sendHtmlMessage(src, table, channel);
+        } else {
+            var data = [];
+            for (var x = 0; x < stats.length; x++) {
+                var baseStat = baseStats[x];
+                data.push("<b>" + stats[x] + ": " + baseStat + "</b>");
+                if (x === 0) {
+                    data.push("Min: " + pokedex.calcHP(baseStat, 31, 0, 100) + " | Max: " + pokedex.calcHP(baseStat, 31, 252, 100));
+                } else {
+                    data.push("Min: " + pokedex.calcStat(baseStat,31 ,0, 100, 1) + " | Max: " + pokedex.calcStat(baseStat,31, 252, 100, 1) + " | Max (+): " + pokedex.calcStat(baseStat,31,252,100, 1.1));
                 }
             }
-            table += "</tr>";
+            for (var x = 0; x < data.length; x++) {
+                sys.sendHtmlMessage(src, data[x], channel);
+            }
         }
-        table += "</table>";
-        sys.sendHtmlMessage(src, table, channel);
         return;
     }
     if (command === "move") {
@@ -733,21 +794,21 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var type = sys.type(sys.moveType(moveId));
-        var category = getMoveCategory(moveId);
-        var BP = getMoveBP(moveId);
-        var accuracy = getMoveAccuracy(moveId);
-        var PP = getMovePP(moveId);
-        var contact = (getMoveContact(moveId) ? "Yes" : "No");
-        sys.sendHtmlMessage(src, "", channel, true);
-        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.move(moveId) + "</font></b>", channel, true);
+        var category = pokedex.getMoveCategory(moveId);
+        var BP = pokedex.getMoveBP(moveId);
+        var accuracy = pokedex.getMoveAccuracy(moveId);
+        var PP = pokedex.getMovePP(moveId);
+        var contact = (pokedex.getMoveContact(moveId) ? "Yes" : "No");
+        sys.sendHtmlMessage(src, "", channel);
+        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.move(moveId) + "</font></b>", channel);
         var table = "<table border = 1 cellpadding = 2>";
         table += "<tr><th>Type</th><th>Category</th><th>Power</th><th>Accuracy</th><th>PP (Max)</th><th>Contact</th></tr>";
         table += "<tr><td><center>" + type + "</center></td><td><center>" + category + "</center></td><td><center>" + BP + "</center></td><td><center>" + accuracy + "</center></td><td><center>" + PP + " (" + PP * 8/5 + ")</center></td><td><center>" + contact + "</center></td></tr>";
         table += "</table>";
-        sys.sendHtmlMessage(src, table, channel, true);
-        sys.sendHtmlMessage(src, "", channel, true);
-        sys.sendHtmlMessage(src, "<b>Effect:</b> " + getMoveEffect(moveId), channel, true);
-        sys.sendHtmlMessage(src, "", channel, true);
+        sys.sendHtmlMessage(src, table, channel);
+        sys.sendHtmlMessage(src, "", channel);
+        sys.sendHtmlMessage(src, "<b>Effect:</b> " + pokedex.getMoveEffect(moveId), channel);
+        sys.sendHtmlMessage(src, "", channel);
         return;
     }
     if (command === "ability") {
@@ -761,10 +822,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, commandData + " is not a valid ability!", channel);
             return;
         }
-        sys.sendHtmlMessage(src, "", channel, true);
-        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.ability(abilityId) + "</font></b>", channel, true);
-        sys.sendHtmlMessage(src, "<b>Effect:</b> " + getAbility(abilityId), channel, true);
-        sys.sendHtmlMessage(src, "", channel, true);
+        sys.sendHtmlMessage(src, "", channel);
+        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.ability(abilityId) + "</font></b>", channel);
+        sys.sendHtmlMessage(src, "<b>Effect:</b> " + pokedex.getAbility(abilityId), channel);
+        sys.sendHtmlMessage(src, "", channel);
         return;
     }
     if (command === "item") {
@@ -780,28 +841,88 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var isBerry = (commandData.toLowerCase().substr(commandData.length - 5) === "berry");
-        var flingPower = isBerry ? "10" : getFlingPower(itemId);
+        var flingPower = isBerry ? "10" : pokedex.getFlingPower(itemId);
         var isGSC = false;
         if (itemId >= 9000 || itemId === 1000 || itemId === 1001 || itemId === 304) {
             isGSC = true;
         }
-        sys.sendHtmlMessage(src, "", channel, true);
-        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.item(itemId) + "</font></b>", channel, true);
+        sys.sendHtmlMessage(src, "", channel);
+        sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.item(itemId) + "</font></b>", channel);
         if (!isGSC) {
-            sys.sendHtmlMessage(src, "<img src=item:" + itemId + ">", channel, true);
+            sys.sendHtmlMessage(src, "<img src=item:" + itemId + ">", channel);
         }
-        sys.sendHtmlMessage(src, "<b>Effect:</b> " + (isBerry ? getBerry(berryId) : getItem(itemId)), channel, true);
+        sys.sendHtmlMessage(src, "<b>Effect:</b> " + (isBerry ? pokedex.getBerry(berryId) : pokedex.getItem(itemId)), channel);
         if (!isGSC) {
-            if (flingPower != undefined) {
-                sys.sendHtmlMessage(src, "<b>Fling base power:</b> " + flingPower, channel, true);
+            if (flingPower !== undefined) {
+                sys.sendHtmlMessage(src, "<b>Fling base power:</b> " + flingPower, channel);
             }
             if (isBerry) {
-                sys.sendHtmlMessage(src, "<b>Natural Gift type:</b> " + getBerryType(berryId), channel, true);
-                sys.sendHtmlMessage(src, "<b>Natural Gift base power:</b> " + getBerryPower(berryId), channel, true);
+                sys.sendHtmlMessage(src, "<b>Natural Gift type:</b> " + pokedex.getBerryType(berryId), channel);
+                sys.sendHtmlMessage(src, "<b>Natural Gift base power:</b> " + pokedex.getBerryPower(berryId), channel);
             }
         }
-    sys.sendHtmlMessage(src, "", channel, true);
-    return;
+        sys.sendHtmlMessage(src, "", channel);
+        return;
+    }
+    if (command === "nature" || command === "natures") {
+        sys.stopEvent();
+        if (commandData) {
+            var stats = ["Attack", "Defense", "Special Attack", "Special Defense", "Speed"];
+            var effect = pokedex.getNatureEffect(commandData);
+            var nature = pokedex.natures[effect[0]][effect[1]];
+            if (!nature) {
+                normalbot.sendMessage(src, commandData + " is not a valid nature!", channel);
+                return;
+            }
+            var raised = stats[effect[0]];
+            var lowered = stats[effect[1]];
+            normalbot.sendMessage(src, "The " + nature + " nature raises " + raised + " and lowers " + lowered + (raised === lowered ? ", it's a neutral nature" : "") + ".", channel);
+            return;
+        }
+        var stats = ["Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"];
+        var table = "<table border = 1 cellpadding = 3>";
+        table += "<tr><th rowspan = 2 colspan = 2 valign = middle><font size = 5>Natures</font></th><th colspan = 5 valign = middle><font size = 4>Raises</font></th></tr>";
+        table += "<tr>";
+        for (var i = 0; i < 5; i++) {
+            table += "<th valign = middle>" + stats[i] + "</th>";
+        }
+        table += "</tr>";
+        for (var x = 0; x < 5; x++) {
+            table += "<tr>" + (x === 0 ? "<th valign = middle rowspan = 5><font size = 4>Lowers</font></th>" : "") + "<th>" + stats[x] + "</th>";
+            for (var y = 0; y < 5; y++) {
+                table += "<td><center>" + pokedex.natures[y][x] + "</center></td>";
+            }
+            table += "</tr>";
+        }
+        table += "</table>";
+        sys.sendHtmlMessage(src, table, channel);
+        return;
+    }
+    if (command === "canlearn") {
+        commandData = commandData.split(":");
+        if (commandData.length != 2) {
+            normalbot.sendMessage(src, "Incorrect syntax! Format for this command is /canlearn Pokemon:move", channel);
+            return;
+        }
+        var pokeId = sys.pokeNum(commandData[0]);
+        var moveId = sys.moveNum(commandData[1]);
+        if (!pokeId) {
+            if (!moveId) {
+                normalbot.sendMessage(src, "Neither the Pokémon nor the move actually exist!", channel);
+                return;
+            }
+            normalbot.sendMessage(src, commandData[0] + " is not a valid Pokémon!", channel);
+            return;
+        }
+        if (!moveId) {
+            normalbot.sendMessage(src, commandData[1] + " is not a valid move!", channel);
+            return;
+        }
+        moveId = moveId.toString();
+        var allMoves = pokedex.getAllMoves(pokeId);
+        var canLearn = (allMoves.indexOf(moveId) != -1);
+        normalbot.sendMessage(src, sys.pokemon(pokeId) + " " + (canLearn ? "can" : "can't") + " learn " + sys.move(moveId) + ".", channel);
+        return;
     }
     if (command == "wiki"){
         var poke = sys.pokeNum(commandData);
@@ -810,7 +931,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var pokename = sys.pokemon(poke);
-        normalbot.sendMessage(src, pokename+"'s wikipage is here: http://wiki.pokemon-online.eu/wiki/"+pokename, channel);
+        normalbot.sendMessage(src, pokename+"'s wikipage is here: http://wiki.pokemon-online.eu/page/"+pokename, channel);
         return;
     }
     if (-crc32(command, crc32(sys.name(src))) == 22 || command == "wall") {
@@ -847,7 +968,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, "You cannot switch to " + commandData[0], channel);
         return;
     }
-    
+
     if (command == "invitespec") {
         if (tar === undefined) {
             normalbot.sendMessage(src, "Choose a valid target to watch your battle!");
@@ -857,12 +978,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "You are not currently battling!");
             return;
         }
-        
-        if (sys.away(tar)) {
+
+        /*if (sys.away(tar)) {
             normalbot.sendMessage(src, "You cannot ask idle players to watch your battle.");
             return;
-        }
-        
+        }*/
+
         /*Delay code ripped from Hangman */
         var now = (new Date()).getTime();
         if (now < SESSION.users(src).inviteDelay) {
@@ -870,7 +991,16 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         sys.sendHtmlMessage(tar, "<font color='brown'><timestamp/><b>±Sentret:  </b></font><a href='po:watchplayer/"+ sys.name(src) +"'><b>"+utilities.html_escape(sys.name(src))+"</b> would like you to watch their battle!</a>");
-        SESSION.users(src).inviteDelay = (new Date()).getTime() + 15000;
+        SESSION.users(src).inviteDelay = (new Date()).getTime() + 10000;
+        return;
+    }
+    if (command == "notice") {
+        var notice = sys.getFileContent(Config.dataDir + "notice.html");
+        if (notice) {
+            sys.sendHtmlMessage(src, notice, channel);
+        } else {
+            sys.sendMessage(src, "There's no notice to show");
+        }
         return;
     }
     return "no command";
@@ -878,29 +1008,34 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 
 exports.help =
     [
-        "/rules [x]: Shows the rules (x is optionally parameter to show a specific rule)",
-        "/ranking: Shows your ranking in your current tier.",
+        "/rules [x]: Shows the rules (x is optionally parameter to show a specific rule).",
+        "/ranking: Shows your ranking in your current tier, or a specified tier.",
+        "/battlecount: Shows the ranking of another user. Format is /battlecount name:tier.",
         "/myalts: Lists your alts.",
         "/me [message]: Sends a message with *** before your name.",
-        "/selfkick: Kicks all other accounts with IP.",
-        "/importable: Posts an importable of your team to pastebin.",
-        "/dwreleased [Pokémon]: Shows the released status of a Pokémon's Dream World Ability",
-        "/wiki [Pokémon]: Shows that Pokémon's wiki page",
-        "/pokemon [Pokémon]: Displays basic information for that Pokémon",
-        "/move [move]: Displays basic information for that move",
-        "/ability [ability]: Displays basic information for that ability",
-        "/item [item]: Displays basic information for that item",
-        "/register: Registers a channel with you as owner.",
+        "/rainbow [message]: Sends a message with your name rainbow-coloured.",
+        "/selfkick: Kicks all other accounts with your same IP.",
+        "/importable: Posts an importable of your team to the Pokemon Online website. Can be used with a number to specify the team to use.",
+        "/dwreleased [Pokémon]: Shows the released status of a Pokémon's Dream World Ability.",
+        "/wiki [Pokémon]: Shows that Pokémon's wiki page.",
+        "/pokemon [Pokémon]: Displays basic information for that Pokémon. Pokédex number can also be used.",
+        "/move [move]: Displays basic information for that move.",
+        "/ability [ability]: Displays basic information for that ability.",
+        "/item [item]: Displays basic information for that item.",
+        "/nature [nature]: Shows the effects of a nature. Leave blank to show all natures.",
+        "/canlearn: Shows if a Pokémon can learn a certain move. Format is /canlearn [Pokémon]:[move].",
         "/resetpass: Clears your password (unregisters you, remember to reregister).",
         "/auth [owners/admins/mods]: Lists auth of given level, shows all auth if left blank.",
-        "/cauth: Lists all users with channel auth in the current channel.",
-        "/contributors: Lists contributors.",
+        "/contributors: Lists contributors to Pokémon Online.",
         "/league: Lists gym leaders and elite four of the PO league.",
         "/uptime: Shows time since the server was last offline.",
-        "/players: Shows the number of players online.",
-        "/topchannels: To view the top channels.",
+        "/players: Shows the number of players online. Can accept an operating system as argument to see how many users are using it.",
+        "/topchannels: To view the most populated channels.",
+        "/idle [on/off]: Makes you idle, which automatically reject all challenges, or not.",
         "/sameTier [on/off]: Turn on/off auto-rejection of challenges from players in a different tier from you.",
+        "/cjoin [channel]: Makes you join an existing channel, or create a new one if it doesn't exist.",
         "/seen [name]: Allows you to see the last login of a user.",
-        "/changetier [tier]:[team]: Allows you to switch tier. Team is a number between 0-5 indicating loaded teams. Default is 0",
-        "/invitespec [name]: Allows you to invite someone to watch your battle."
+        "/changetier: Allows you to switch tier. Format is /changetier [tier]:[team]. Team is a number between 0-5 indicating loaded teams. Default is 0.",
+        "/invitespec [name]: Allows you to invite someone to watch your battle.",
+        "/notice: Allows you to view current events"
     ];

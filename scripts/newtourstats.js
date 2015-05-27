@@ -3,7 +3,7 @@
 // To use this:
 // require("newtourstats.js")
 
-var dataDir = "tourdata/";
+var dataDir = "scriptdata/tourdata/";
 var utilities = require('utilities.js');
 var find_tier = utilities.find_tier;
 
@@ -534,11 +534,15 @@ function awardTourPoints(player, size, tier, delim, place) {
     }
     var tiers_a = [];
     var tiers_b = []; // default
-    var tiers_c = ["Monotype", "Battle Factory"];
-    var tiers_d = ["Challenge Cup"];
-    var tiers_e = ["Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers"];
+    var tiers_c = ["Monotype", "Sky Battle", "ORAS Cup"];
+    var tiers_d = ["Challenge Cup", "Inverted Challenge Cup", "Battle Factory", "Battle Factory 6v6", "ORAS Balanced Hackmons", "ORAS Hackmons", "Hackmons Challenge Cup"];
+    var tiers_e = ["Wifi CC 1v1", "ORAS 1v1", "Random Battle"];
     var tiers_f = ["CC 1v1"];
-    var tiers_z = ["Metronome"];
+    var tiers_z = ["Metronome", "Red/Blue", "Yellow", "Stadium", "Stadium w/ Tradebacks",
+                   "Gold/Silver", "Crystal", "Stadium 2", "Ruby/Sapphire", "Colosseum",
+                   "Fire Red/Leaf Green", "Emerald", "XD", "Diamond/Pearl", "Platinum",
+                   "Heart Gold/Soul Silver", "Black/White", "Black/White 2", "X/Y",
+                   "GBU Singles", "GBU Doubles", "GBU Triples"];
     if (tiers_a.indexOf(tier) != -1) {
         points = tierscore.a[scale];
     }
@@ -632,16 +636,20 @@ function detEventPoints(size, ranking, tier) {
     if (scale == -1) {
         return 0;
     }
-    else if (["Metronome"].indexOf(tier) > -1) {
+    else if (["Metronome", "Red/Blue", "Yellow", "Stadium", "Stadium w/ Tradebacks",
+              "Gold/Silver", "Crystal", "Stadium 2", "Ruby/Sapphire", "Colosseum",
+              "Fire Red/Leaf Green", "Emerald", "XD", "Diamond/Pearl", "Platinum",
+              "Heart Gold/Soul Silver", "Black/White", "Black/White 2", "X/Y",
+              "GBU Singles", "GBU Doubles", "GBU Triples"].indexOf(tier) > -1) {
         return 0;
     }
-    else if (["Battle Factory", "Monotype"].indexOf(tier) > -1) {
+    else if (["Monotype", "Sky Battle", "ORAS Cup"].indexOf(tier) > -1) {
         mag -= 1;
     }
-    else if (["Challenge Cup"].indexOf(tier) > -1) {
+    else if (["Challenge Cup", "Inverted Challenge Cup", "Battle Factory", "Battle Factory 6v6"].indexOf(tier) > -1) {
         mag -= 2;
     }
-    else if (["Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers"].indexOf(tier) > -1) {
+    else if (["Wifi CC 1v1", "ORAS 1v1", "Random Battle"].indexOf(tier) > -1) {
         mag -= 3;
     }
     else if (["CC 1v1"].indexOf(tier) > -1) {

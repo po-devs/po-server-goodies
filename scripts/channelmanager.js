@@ -3,14 +3,8 @@ function POChannelManager(fname)
 {
     /* Permanent channels */
     this.channelDataFile = fname;
-    try {
-        this.channelMap = JSON.parse(sys.getFileContent(this.channelDataFile));
-    } catch (err) {
-        print('Could not read channelData.');
-        print('Error: ' + err);
-        this.channelMap = {};
-    }
-    sys.makeDir("channeldata");
+    this.channelMap = new MemoryHash(this.channelDataFile);
+    sys.makeDir("scriptdata/channeldata");
 }
 
 POChannelManager.prototype.toString = function()
@@ -32,7 +26,8 @@ POChannelManager.prototype.copyAttrs = [
     "muted",
     "banned",
     "ignorecaps",
-    "ignoreflood"
+    "ignoreflood",
+    "rules"
 ];
 
 POChannelManager.prototype.update = function(channel)
@@ -57,18 +52,12 @@ POChannelManager.prototype.restoreSettings = function(channel)
 
 POChannelManager.prototype.dataFileFor = function(channel)
 {
-    var chanName = sys.channel(channel);
-    if (!this.channelMap.hasOwnProperty(chanName)) {
-       var genName = "channeldata/" + Date.now() + Math.random().toString().substr(2) + ".json";
-       this.channelMap[chanName] = genName;
-       this.save();
+    var chanName = sys.channel(channel).toLowerCase();
+    if (!this.channelMap.get(chanName)) {
+       var genName = "scriptdata/channeldata/" + Date.now() + Math.random().toString().substr(2) + ".json";
+       this.channelMap.add(chanName,genName)
     }
-    return this.channelMap[chanName];
-};
-
-POChannelManager.prototype.save = function()
-{
-    sys.writeToFile(this.channelDataFile, JSON.stringify(this.channelMap));
+    return this.channelMap.get(chanName);
 };
 
 POChannelManager.prototype.saveChan = function(channel, channelData)

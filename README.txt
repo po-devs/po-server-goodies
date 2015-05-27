@@ -2,7 +2,7 @@ This repository contains scripts.js and tiers.xml used in Pokemon Online Server.
 
 *** Installation instructions ***
 
-Download as .zip (https://github.com/po-scripters/po-server-goodies/zipball/master) or tarball,
+Download as .zip (https://github.com/po-devs/po-server-goodies/zipball/master) or tarball,
 extract into the same folder with Pokemon-Online server executable.
 Note: some builds on Windows systems (2.0.0x) are missing the SSL libraries making
 the scripts impossible to reload from Github. (/updatescripts, /updatetiers etc.)
@@ -24,7 +24,4 @@ In particular, following practices are frowned upon:
 - trailing whitespace
 - undefined variables (always use var in the outermost scope for that variable)
 
-*** tours.js version notes ***
-- All versions before 1.622p have hardcoded parameters - update or change them.
-- Updating while tournaments are in progress on major updates may break the system - all future commits will note this
-- Versions marked with a 'p' should be bugfree, 'a' means it is in alpha testing and could be unstable, 'b' means it's in beta testing.
+Full list of contributors here: https://github.com/po-devs/po-server-goodies/graphs/contributors
