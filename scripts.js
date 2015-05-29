@@ -477,7 +477,7 @@ init : function() {
             var proxy_ip = lines[k].split(":")[0];
             if (proxy_ip !== 0) proxy_ips[proxy_ip] = true;
         }
-    } // enf of addProxybans
+    } // end of addProxybans
     var PROXY_FILE = "proxy_list.txt";
     var content = sys.getFileContent(PROXY_FILE);
     if (content) {
