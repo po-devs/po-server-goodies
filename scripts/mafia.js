@@ -2926,7 +2926,7 @@ function Mafia(mafiachan) {
                 teammates[t] = mafia.getPlayersForTeam(mafia.players[t].role.side);
             }
 
-            var player, names, j, evadeCharges = {}, evadeChances = {};
+            var player, names, j, evadeCharges = {}, evadeChances = {}, noRepeat = {};
             var selfConverted = [];
             var getPlayerRoleId = function(x) { return mafia.players[x].role.role; };
             for (var i in mafia.theme.nightPriority) {
@@ -3000,6 +3000,17 @@ function Mafia(mafiachan) {
                         var chargetxt = ( Action.chargesmsg || "You have ~Charges~ charges remaining").replace(/~Charges~/g, charge);
                         gamemsg(player.name, chargetxt);
                     }
+                    
+                    if (player.name in noRepeat && noRepeat[player.name].indexOf(o.action) !== -1) {
+                        continue;
+                    }
+                    if (Action.noRepeat === true) {
+                        if (!(player.name in noRepeat)) {
+                            noRepeat[player.name] = [];
+                        }
+                        noRepeat[player.name].push(o.action);
+                    }
+                    
                     outer:
                     for (t in targets) {
                         var evadeChance = Math.random();

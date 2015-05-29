@@ -311,7 +311,7 @@ function mafiaChecker() {
                         if (checkType(action, ["object"], comm)) {
                             command = e;
                             commonMandatory = ["target", "common", "priority"];
-                            commonOptional = ["broadcast", "command", "limit", "msg", "failChance", "charges", "recharge", "initialrecharge", "broadcastmsg", "inputmsg", "chargesmsg", "clearCharges", "addCharges", "suicideChance", "suicidemsg", "restrict", "cancel", "ignoreDistract", "compulsory", "pierce", "pierceChance", "noFollow", "haxMultiplier", "userMustBeVisited", "targetMustBeVisited", "userMustVisit", "targetMustVisit", "bypass", "hide"];
+                            commonOptional = ["broadcast", "command", "limit", "msg", "failChance", "charges", "recharge", "initialrecharge", "broadcastmsg", "inputmsg", "chargesmsg", "clearCharges", "addCharges", "suicideChance", "suicidemsg", "restrict", "cancel", "ignoreDistract", "compulsory", "noRepeat", "pierce", "pierceChance", "noFollow", "haxMultiplier", "userMustBeVisited", "targetMustBeVisited", "userMustVisit", "targetMustVisit", "bypass", "hide"];
                             commandList = [];
                             if ("command" in action) {
                                 if (Array.isArray(action.command)) {
@@ -1492,6 +1492,7 @@ function mafiaChecker() {
         checkType(action.restrict, ["array"], act + ".restrict");
         checkType(action.cancel, ["array"], act + ".cancel");
         checkType(action.ignoreDistract, ["boolean"], act + ".ignoreDistract");
+        checkType(action.noRepeat, ["boolean"], act + ".noRepeat");
         checkType(action.pierce, ["boolean"], act + ".pierce");
         checkType(action.pierceChance, ["number"], act + ".pierceChance");
         checkType(action.haxMultiplier, ["number"], act + ".haxMultiplier");
