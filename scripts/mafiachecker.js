@@ -302,7 +302,7 @@ function mafiaChecker() {
             
             if (checkType(role.actions, ["object"], "'" + yourRole + ".actions")) {
                 act = "Role " + yourRole + ".actions";
-                checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "onDeath", "onDeadRoles", "initialCondition", "avoidHax", "avoidStandbyHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "vote", "voteshield", "voteMultiplier", "startup", "onlist", "onteam", "lynch", "teamTalk", "noVote", "noVoteMsg", "preventTeamvote", "updateTeam", "teamUtilities", "updateCharges"].concat(possibleNightActions), act);
+                checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "onDeath", "onDeadRoles", "initialCondition", "avoidHax", "avoidStandbyHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "vote", "voteshield", "voteMultiplier", "addVote", "setVote", "addVoteshield", "setVoteshield", "startup", "onlist", "onteam", "lynch", "teamTalk", "noVote", "noVoteMsg", "preventTeamvote", "updateTeam", "teamUtilities", "updateCharges", "updateVote"].concat(possibleNightActions), act);
 
                 if (checkType(role.actions.night, ["object"], act + ".night")) {
                     for (e in role.actions.night) {
@@ -311,7 +311,7 @@ function mafiaChecker() {
                         if (checkType(action, ["object"], comm)) {
                             command = e;
                             commonMandatory = ["target", "common", "priority"];
-                            commonOptional = ["broadcast", "command", "limit", "msg", "failChance", "charges", "recharge", "initialrecharge", "broadcastmsg", "chargesmsg", "clearCharges", "addCharges", "suicideChance", "suicidemsg", "restrict", "cancel", "ignoreDistract", "pierce", "pierceChance", "noFollow", "haxMultiplier", "userMustBeVisited", "targetMustBeVisited", "userMustVisit", "targetMustVisit", "bypass", "hide"];
+                            commonOptional = ["broadcast", "command", "limit", "msg", "failChance", "charges", "recharge", "initialrecharge", "broadcastmsg", "inputmsg", "chargesmsg", "clearCharges", "addCharges", "suicideChance", "suicidemsg", "restrict", "cancel", "ignoreDistract", "compulsory", "noRepeat", "pierce", "pierceChance", "noFollow", "haxMultiplier", "userMustBeVisited", "targetMustBeVisited", "userMustVisit", "targetMustVisit", "bypass", "hide"];
                             commandList = [];
                             if ("command" in action) {
                                 if (Array.isArray(action.command)) {
@@ -589,6 +589,7 @@ function mafiaChecker() {
                     }
                 }
                 if (checkType(role.actions.standby, ["object"], act + ".standby")) {
+                    var appendActions = ["newRole", "canConvert", "silent", "convertmsg", "convertusermsg", "tarmsg", "copyAs", "canCopy", "copymsg", "copyusermsg"];
                     for (e in role.actions.standby) {
                         action = role.actions.standby[e];
                         comm = act + ".standby." + e;
@@ -599,7 +600,7 @@ function mafiaChecker() {
                                 command = action.command;
                             }
                             if (command == "kill") {
-                                checkAttributes(action, ["target", "killmsg"], ["command", "limit", "msg", "revealChance", "revealmsg", "recharge", "initialrecharge", "charges", "chargesmsg", "clearCharges", "addCharges"], comm);
+                                checkAttributes(action, ["target", "killmsg"], ["command", "limit", "msg", "revealChance", "revealmsg", "recharge", "initialrecharge", "charges", "chargesmsg", "clearCharges", "addCharges"].concat(appendActions), comm);
                                 
                                 checkValidValue(action.target, ["Any", "Self", "AnyButTeam", "AnyButRole", "AnyButSelf"], comm + ".target");
                                 checkType(action.limit, ["number"], comm + ".limit");
@@ -614,7 +615,7 @@ function mafiaChecker() {
                                 checkType(action.clearCharges, ["boolean"], comm + ".clearCharges");
                                 checkType(action.addCharges, ["number"], comm + ".addCharges");
                             } else if (command == "expose") {
-                                checkAttributes(action, ["target"], ["command", "limit", "msg", "exposemsg", "revealChance", "revealmsg", "recharge", "initialrecharge", "exposedtargetmsg", "charges", "chargesmsg", "clearCharges", "addCharges"], comm);
+                                checkAttributes(action, ["target"], ["command", "limit", "msg", "exposemsg", "revealChance", "revealmsg", "recharge", "initialrecharge", "exposedtargetmsg", "charges", "chargesmsg", "clearCharges", "addCharges"].concat(appendActions), comm);
                                 
                                 checkValidValue(action.target, ["Any", "Self", "AnyButTeam", "AnyButRole", "AnyButSelf"], comm + ".target");
                                 checkType(action.limit, ["number"], comm + ".limit");
@@ -630,7 +631,7 @@ function mafiaChecker() {
                                 checkType(action.clearCharges, ["boolean"], comm + ".clearCharges");
                                 checkType(action.addCharges, ["number"], comm + ".addCharges");
                             } else if (command == "reveal") {
-                                checkAttributes(action, [], ["command", "limit", "msg", "revealmsg", "recharge", "initialrecharge", "charges", "chargesmsg", "clearCharges", "addCharges"], comm);
+                                checkAttributes(action, [], ["command", "limit", "msg", "revealmsg", "recharge", "initialrecharge", "charges", "chargesmsg", "clearCharges", "addCharges"].concat(appendActions), comm);
                                 
                                 checkType(action.limit, ["number"], comm + ".limit");
                                 checkType(action.msg, ["string"], comm + ".msg");
@@ -644,29 +645,92 @@ function mafiaChecker() {
                             } else {
                                 addMinorError("Role " + yourRole + "'s standby action \"" + e + "\" is not a valid action (Valid standby actions are " + possibleStandbyActions.join(", ") + ")");
                             }
+                            
+                            
+                            if ("newRole" in action) {
+                                if (checkType(action.newRole, ["string", "object"], comm + ".newRole")) {
+                                    if (typeof action.newRole == "string") {
+                                        checkValidRole(action.newRole, comm + ".newRole");
+                                    } else if (typeof action.newRole == "object") {
+                                        if ("random" in action.newRole && typeof action.newRole.random == "object") {
+                                            for (i in action.newRole.random) {
+                                                checkValidRole(i, comm + ".newRole.random");
+                                                checkType(action.newRole.random[i], ["number"], comm + ".newRole.random." + i);
+                                            }
+                                        } else {
+                                            for (i in action.newRole) {
+                                                checkValidRole(i, comm + ".newRole");
+                                                if (checkType(action.newRole[i], ["array"], comm + ".newRole." + i)) {
+                                                    for (o in action.newRole[i]) {
+                                                        checkValidRole(action.newRole[i][o], comm + ".newRole." + i);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if (checkType(action.canConvert, ["string", "array"], comm + ".canConvert")) {
+                                    if (typeof action.canConvert == "string") {
+                                        checkValidValue(action.canConvert, ["*"], comm + ".canConvert");
+                                    } else {
+                                        for (i in action.canConvert) {
+                                            checkValidRole(action.canConvert[i], comm + ".canConvert");
+                                        }
+                                    }
+                                }
+                                checkValidValue(action.silent, [true, false], comm + ".silent");
+                                checkValidValue(action.silentConvert, [true, false], comm + ".silentConvert");
+                                checkType(action.convertmsg, ["string"], comm + ".convertmsg");
+                                checkType(action.convertusermsg, ["string"], comm + ".convertusermsg");
+                                checkType(action.tarmsg, ["string"], comm + ".tarmsg");
+                            }
+                            if ("canCopy" in action) {
+                                if (checkType(action.copyAs, ["string", "object"], comm + ".copyAs")) {
+                                    if (typeof action.copyAs == "string") {
+                                        if (!isRole(action.copyAs) && action.copyAs !== "*") {
+                                            addFatalError(comm + ".copyAs must be a role or \"*\"." );
+                                        }
+                                    } else if (typeof action.copyAs == "object") {
+                                        for (i in action.copyAs) {
+                                            checkValidRole(i, comm + ".copyAs." + i);
+                                            if (checkType(action.copyAs[i], ["array"], comm + ".copyAs." + i)) {
+                                                for (o in action.copyAs[i]) {
+                                                    checkValidRole(action.copyAs[i][o], comm + ".copyAs." + i);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                if (checkType(action.canCopy, ["string", "array"], comm + ".canCopy")) {
+                                    if (typeof action.canCopy == "string") {
+                                        checkValidValue(action.canCopy, ["*"], comm + ".canCopy");
+                                    } else {
+                                        for (i in action.canCopy) {
+                                            checkValidRole(action.canCopy[i], comm + ".canCopy");
+                                        }
+                                    }
+                                }
+                                checkValidValue(action.silent, [true, false], comm + ".silent");
+                                checkValidValue(action.silentCopy, [true, false], comm + ".silentCopy");
+                                checkType(action.copymsg, ["string"], comm + ".copymsg");
+                                checkType(action.copyusermsg, ["string"], comm + ".copyusermsg");
+                            }
                         }
                     }
                 }
                 if (checkType(role.actions.hax, ["object"], act + ".hax")) {
                     for (e in role.actions.hax) {
                         comm = act + ".hax." + e;
-                        checkAttributes(role.actions.hax[e], [], ["revealTeam", "revealPlayer", "revealRole", "revealTarget"], comm);
-                        if (checkType(role.actions.hax[e], ["object"], comm)) {
-                            checkType(role.actions.hax[e].revealTeam, ["number"], comm + ".revealTeam");
-                            checkType(role.actions.hax[e].revealPlayer, ["number"], comm + ".revealPlayer");
-                            checkType(role.actions.hax[e].revealRole, ["number"], comm + ".revealRole");
-                            checkType(role.actions.hax[e].revealTarget, ["number"], comm + ".revealTarget");
+                        for (i in role.actions.hax[e]) {
+                            checkType(role.actions.hax[e][i], ["number"], comm + (["revealTeam", "revealPlayer", "revealRole", "revealTarget"].indexOf(i) == -1 ? "['" + i + "']" : "." + i));
                         }
                     }
                 }
                 if (checkType(role.actions.standbyHax, ["object"], act + ".standbyHax")) {
                     for (e in role.actions.standbyHax) {
                         comm = act + ".standbyHax." + e;
-                        checkAttributes(role.actions.standbyHax[e], [], ["revealTeam", "revealPlayer", "revealRole"], comm);
-                        if (checkType(role.actions.standbyHax[e], ["object"], comm)) {
-                            checkType(role.actions.standbyHax[e].revealTeam, ["number"], comm + ".revealTeam");
-                            checkType(role.actions.standbyHax[e].revealPlayer, ["number"], comm + ".revealPlayer");
-                            checkType(role.actions.standbyHax[e].revealRole, ["number"], comm + ".revealRole");
+                        for (i in role.actions.standbyHax[e]) {
+                            checkType(role.actions.standbyHax[e][i], ["number"], comm + (["revealTeam", "revealPlayer", "revealRole"].indexOf(i) == -1 ? "['" + i + "']" : "." + i));
                         }
                     }
                 }
@@ -723,6 +787,11 @@ function mafiaChecker() {
                         }
                     }
                 }
+                checkType(role.actions.addVote, ["number"], act + ".addVote");
+                checkType(role.actions.addVoteshield, ["number"], act + ".addVoteshield");
+                checkType(role.actions.setVote, ["number"], act + ".setVote");
+                checkType(role.actions.setVoteshield, ["number"], act + ".setVoteshield");
+
                 if (checkType(role.actions.preventTeamvote, ["boolean", "array"], act + ".preventTeamvote")) {
                     if (Array.isArray(role.actions.preventTeamvote)) {
                         for (e in role.actions.preventTeamvote) {
@@ -764,7 +833,7 @@ function mafiaChecker() {
                             if ("mode" in action && typeof action.mode == "object" && "killif" in action.mode) {
                                 requiredAtt = ["msg"];
                             }
-                            checkAttributes(action, [].concat(requiredAtt), ["mode", "msg", "targetmsg", "hookermsg", "evadechargemsg", "count", "poisonDeadMessage", "rate", "constant", "silent", "identifymsg"], comm);
+                            checkAttributes(action, [].concat(requiredAtt), ["mode", "msg", "targetmsg", "hookermsg", "evadechargemsg", "count", "poisonDeadMessage", "rate", "constant", "silent", "identifymsg", "diemsg", "targetdiemsg"], comm);
                         }
                         if (checkType(action.mode, ["string", "object"], comm + ".mode")) {
                             mode = action.mode;
@@ -780,7 +849,7 @@ function mafiaChecker() {
                                 
                                 checkValidValue(mode, ["ignore", "ChangeTarget", "killattacker", "killattackerevenifprotected", "poisonattacker", "poisonattackerevenifprotected", "identify", "die"].concat(extraModes), comm + ".mode");
                             } else if  (typeof mode == "object") {
-                                checkAttributes(action.mode, [], ["evadeCharges", "evadeChance", "ignore", "killif", "identify"], comm + ".mode");
+                                checkAttributes(action.mode, [], ["evadeCharges", "evadeChance", "ignore", "killif", "identify", "die"], comm + ".mode");
                                 
                                 if (checkType(mode.evadeCharges, ["number", "string"], comm + ".mode.evadeCharges")) {
                                     if (typeof mode.evadeCharges == "string") {
@@ -802,6 +871,11 @@ function mafiaChecker() {
                                 if (checkType(mode.identify, ["array"], comm + ".mode.identify")) {
                                     for (e in mode.identify) {
                                         checkValidRole(mode.identify[e], comm + ".mode.identify");
+                                    }
+                                }
+                                if (checkType(mode.die, ["array"], comm + ".mode.die")) {
+                                    for (e in mode.die) {
+                                        checkValidRole(mode.die[e], comm + ".mode.die");
                                     }
                                 }
                             }
@@ -1028,6 +1102,7 @@ function mafiaChecker() {
                 }
                 
                 checkType(role.actions.updateCharges, ["boolean"], act + ".updateCharges");
+                checkType(role.actions.updateVote, ["boolean"], act + ".updateVote");
                 checkType(role.actions.updateTeam, ["boolean"], act + ".updateTeam");
                 checkType(role.actions.teamUtilities, ["boolean"], act + ".teamUtilities");
                 
@@ -1407,6 +1482,7 @@ function mafiaChecker() {
         checkType(action.recharge, ["number"], act + ".recharge");
         checkType(action.initialrecharge, ["number"], act + ".initialrecharge");
         checkType(action.broadcastmsg, ["string"], act + ".broadcastmsg");
+        checkType(action.inputmsg, ["string"], act + ".inputmsg");
         checkType(action.charges, ["number"], act + ".charges");
         checkType(action.chargesmsg, ["string"], act + ".chargesmsg");
         checkType(action.clearCharges, ["boolean"], act + ".clearCharges");
@@ -1416,9 +1492,11 @@ function mafiaChecker() {
         checkType(action.restrict, ["array"], act + ".restrict");
         checkType(action.cancel, ["array"], act + ".cancel");
         checkType(action.ignoreDistract, ["boolean"], act + ".ignoreDistract");
+        checkType(action.noRepeat, ["boolean"], act + ".noRepeat");
         checkType(action.pierce, ["boolean"], act + ".pierce");
         checkType(action.pierceChance, ["number"], act + ".pierceChance");
         checkType(action.haxMultiplier, ["number"], act + ".haxMultiplier");
+        checkType(action.compulsory, ["boolean"], act + ".compulsory");
         checkType(action.noFollow, ["boolean"], act + ".noFollow");
         checkType(action.userMustBeVisited, ["boolean"], act + ".userMustBeVisited");
         checkType(action.targetMustBeVisited, ["boolean"], act + ".targetMustBeVisited");
