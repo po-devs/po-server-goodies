@@ -5055,7 +5055,7 @@ function Mafia(mafiachan) {
                         return;
                     }
                     tRole = player.role.translation;
-                    tSide = mafia.theme.trside(target.role.side);
+                    tSide = mafia.theme.trside(player.role.side);
                     var revealMessage = (commandObject.revealmsg || "~Self~ is revealed to be a ~Role~!").replace(/~Self~/g, name).replace(/~Role~/g, player.role.translation);
                     sendChanAll(border, mafiachan);
                     gamemsgAll(revealMessage);
