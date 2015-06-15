@@ -598,6 +598,9 @@ function mafiaChecker() {
                                                     checkType(action.disguiseRole.random[i], ["number"], comm + ".disguiseRole.random." + i);
                                                 }
                                             } else {
+                                                if (!("auto" in action.disguiseRole)) {
+                                                    addFatalError(comm + ".disguiseRole must have a property named 'auto'.");
+                                                }
                                                 for (i in action.disguiseRole) {
                                                     if (i == "auto") {
                                                         checkValidRole(action.disguiseRole.auto, comm + ".disguiseRole.auto");
