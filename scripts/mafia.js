@@ -5303,7 +5303,9 @@ function Mafia(mafiachan) {
                     var inspectMode = target.role.actions.inspect || {};
                     var revealedRole;
                     var revealedSide;
-                    if (inspectMode.revealAs !== undefined) {
+                    if (target.disguiseRole !== undefined) {
+                        revealedRole = mafia.theme.trrole(target.disguiseRole);
+                    } else if (inspectMode.revealAs !== undefined) {
                         if (typeof inspectMode.revealAs == "string") {
                             if (inspectMode.revealAs == "*") {
                                 var rrole = Object.keys(mafia.players).map(function(x) { return mafia.players[x].role.role; }, mafia);
