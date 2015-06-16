@@ -22,6 +22,8 @@ var triviachan, revchan;
 var triviabot = new Bot("Metagross");
 
 var triviaCategories = ['Anime/Manga', 'Animals', 'Art', 'Comics', 'Food/Drink', 'Games', 'Geography', 'History', 'Internet', 'Language', 'Literature', 'Math', 'Miscellaneous', 'Movies', 'Music', 'Mythology', 'Pokémon', 'Pokémon Online', 'Politics', 'Religion', 'Science', 'Social Science', 'Society', 'Space', 'Sports', 'Technology', 'Television', 'Video Games'];
+//var specialCategories = ['Who\'s That Pokémon?', 'Pokémon Without Vowels', 'Anagram: Pokémon', 'Mental Math'];
+var specialCategories = ['Mental Math'];
 var lastCatGame = 0;
 var lastUsedCats = [];
 
@@ -205,6 +207,34 @@ function hasReviewAccess(name) {
     return cauth === true || contribs === true;
 }
 
+function getSpecialQuestion(category) {
+    var q = {};
+    
+    category = category.toLowerCase();
+    if (category === "who's that pokémon?") {
+
+    } else if (category === "pokémon without vowels") {
+
+    } else if (category === "anagram: pokémon") {
+
+    } else if (category === "mental math") {
+        var num1 = Math.floor(Math.random() * (13 - 1)) + 1;
+        var op1 = Math.random() < .5;
+        if (op1) var num2 = Math.floor(Math.random() * (26 - 1)) + 1;
+        else var num2 = Math.floor(Math.random() * (11 - 1)) + 1;
+        var op2 = Math.random() < .5;
+        if (op2) var num3 = Math.floor(Math.random() * (21 - 1)) + 1;
+        else var num3 = Math.floor(Math.random() * 
+            ((op1 ? num1 + num2 : num1 * num2) - 1)) + 1;
+
+        q.question = String(num1) + (op1 ? '+' : '*') + String(num2)
+            + (op2 ? '+' : '-') + String(num3);
+        q.answer = String(eval(q.question));
+    }
+
+    return q;
+}
+
 function PMcheckq(src, channel) {
     if (trivreview.questionAmount() === 0) {
         Trivia.sendPM(src, "There are no questions to be reviewed.", channel);
@@ -265,10 +295,13 @@ function TriviaGame() {
     this.scoreType = "";
     this.qSource = [];
     this.catGame = false;
+    this.specialCatGame = false;
     this.usingCats = [];
     this.triviaPlayers = {};
     this.submittedAnswers = {};
     this.roundQuestion = 0;
+    this.specialQuestion = false;
+    this.specialCatGame = false;
     this.phase = "";
     this.triviaPoints = "";
     this.startoff = false;
@@ -452,6 +485,11 @@ TriviaGame.prototype.startTrivia = function (src, data, scoring) { //Data = poin
     }
     for (var i = 1; i < data.length; i++) {
         var match = false;
+
+        for (var c in specialCategories) {
+            if (data[i].toLowerCase() === specialCategories[c].toLowerCase()) match = true;
+        }
+
         for (var q in triviaq.all()) {
             if (data[i].toLowerCase() === triviaq.get(q).category.toLowerCase()) {
                 match = true;
@@ -487,45 +525,62 @@ TriviaGame.prototype.startTriviaRound = function () {
     this.submittedAnswers = {};
     /* Advance round */
     this.round++;
-    /* Make a random number to get the ID of the (going to be) asked question, or use the suggestion */
-    var questionNumber;
-    if (Trivia.suggestion.id !== undefined) {
-        questionNumber = Trivia.suggestion.id;
-        Trivia.suggestion.asked = true;
+
+    if (this.catGame) {
+        var category = Math.floor(Math.random() * this.usingCats.length);
+        var usingSpecialCats = this.usingCats.filter(function(n) { return specialCategories.indexOf(n) > -1; });
+        if (usingSpecialCats.length) this.specialCatGame = true;
     }
     else {
-        questionNumber = Trivia.randomId();
-        var i = 0;
-        while ((triviaq.get(questionNumber) === null || (triviaq.get(questionNumber).category.toLowerCase() === "who's that pokémon?" && this.androidPlayers())) && i !== 200) {
-            questionNumber = Trivia.randomId();
-            i++;
-        }
-        if (i === 200) {
-            this.htmlAll("There are no more questions to show! This is the perfect chance to submit more!<br/>The game automatically ended.");
-            this.resetTrivia();
-            runUpdate();
-            return;
-        }
+        var category = Math.floor(Math.random() * (orderedCategories().length + specialCategories.length + trivData.specialChance));
+        var usingSpecialCats = specialCategories;
     }
-    /* Get the category, question, and answer */
-    var q = triviaq.get(questionNumber);
-    var category = q.category;
-    var question;
-    if (category.indexOf("Anagram") === -1){
-        question = q.question;
+    if (Trivia.suggestion.id === undefined && category < usingSpecialCats.length) {
+        category = usingSpecialCats[category];
+        this.specialQuestion = getSpecialQuestion(category);
+        var question = this.specialQuestion.question;
     } else {
-        var name = q.question.split("");
-        question = [];
-        while (name.length > 0){
-            question.push(name.splice(sys.rand(0,name.length),1));
+        /* Make a random number to get the ID of the (going to be) asked question, or use the suggestion */
+        var questionNumber;
+        if (Trivia.suggestion.id !== undefined) {
+            questionNumber = Trivia.suggestion.id;
+            Trivia.suggestion.asked = true;
         }
-        question = question.join("").toLowerCase();
+        else {
+            questionNumber = Trivia.randomId();
+            var i = 0;
+            while ((triviaq.get(questionNumber) === null || (triviaq.get(questionNumber).category.toLowerCase() === "who's that pokémon?" && this.androidPlayers())) && i !== 200) {
+                questionNumber = Trivia.randomId();
+                i++;
+            }
+            if (i === 200) {
+                this.catGame = true;
+                this.usingCats = specialCategories;
+                this.startTriviaRound();
+                return;
+            }
+        }
+        /* Get the category, question, and answer */
+        var q = triviaq.get(questionNumber);
+        category = q.category;
+        var question;
+        if (category.indexOf("Anagram") === -1){
+            question = q.question;
+        } else {
+            var name = q.question.split("");
+            question = [];
+            while (name.length > 0){
+                question.push(name.splice(sys.rand(0,name.length),1));
+            }
+            question = question.join("").toLowerCase();
+        }
+        this.roundQuestion = questionNumber;
+        var index = this.qSource.indexOf(questionNumber);
+        this.qSource.splice(index, 1);
     }
+
     this.phase = "answer";
-    this.roundQuestion = questionNumber;
     this.htmlAll("<b>Category:</b> " + category.toUpperCase() + "<br>" + question);
-    var index = this.qSource.indexOf(questionNumber);
-    this.qSource.splice(index, 1);
     Trivia.ticks = 12;
 };
 
@@ -535,7 +590,14 @@ TriviaGame.prototype.finalizeAnswers = function () {
     if (Trivia.suggestion.asked === true) {
         Trivia.suggestion = {};
     }
-    var answer, id, equivalentAns = [], answers = [].concat(triviaq.get(this.roundQuestion).answer.split(","));
+    var answer, id, equivalentAns = [], answers = [];
+
+    if (this.specialQuestion) {
+        answers = [].concat(this.specialQuestion.answer.split(','));
+        this.specialQuestion = false;
+    }
+    else answers = [].concat(triviaq.get(this.roundQuestion).answer.split(","));
+
     for (i = answers.length - 1; i >= 0; i--){
         if (trivData.equivalentAns.hasOwnProperty(answers[i].toLowerCase())){
             equivalentAns = equivalentAns.concat(trivData.equivalentAns[answers[i].toLowerCase()].split(","));
@@ -753,11 +815,9 @@ TriviaGame.prototype.finalizeAnswers = function () {
         }*/
         return;
     }
-    if (this.qSource.length === 0) {
-        this.htmlAll("There are no more questions to show! This is the perfect chance to submit more!<br/>The game automatically ended.");
-        this.resetTrivia();
-        runUpdate();
-        return;
+    if (this.qSource.length === 0 && !(this.catGame && this.specialCatGame)) {
+        this.catGame = true;
+        this.usingCats = specialCategories;
     }
     var rand = sys.rand(15, 21);
     this.sendAll("Please wait " + rand + " seconds until the next question!", triviachan);
@@ -771,9 +831,11 @@ TriviaGame.prototype.resetTrivia = function () {
     this.scoreType = "";
     this.qSource = [];
     this.catGame = false;
+    this.specialCatGame = false;
     this.usingCats = [];
     this.triviaPlayers = {};
     this.submittedAnswers = {};
+    this.specialQuestion = false;
     this.roundQuestion = 0;
     this.phase = "";
     this.ticks = -1;
@@ -2491,6 +2553,14 @@ addAdminCommand(["equivalentans","ea"], function (src, commandData, channel) {
     }
     return;
 }, "View synonyms of answers.");
+
+addAdminCommand(["setspecialchance"], function (src, commandData, channel) {
+    if (!isNaN(commandData)) {
+        trivData.specialChance = parseInt(commandData);
+        saveData();
+        triviabot.sendMessage(src, "Special chance set to " + commandData, channel);
+    }
+}, "Modify chance of special categories appearing.");
 
 /*addOwnerCommand("revertfrom", function(src, commandData, channel) {
     commandData = commandData.split(":");
