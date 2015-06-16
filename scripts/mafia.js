@@ -4065,9 +4065,9 @@ function Mafia(mafiachan) {
                 }
                 
                 if (mafia.theme.noplur === true) {
-                    votetiemsg = votetiemsg.replace(/~Players~/g, readable(tiedPlayers, "and")).replace(/~Count~/g, maxi) || "A majority vote was not reached so no one was voted off!:";
+                    votetiemsg = (votetiemsg || "A majority vote was not reached so no one was voted off!:").replace(/~Players~/g, readable(tiedPlayers, "and")).replace(/~Count~/g, maxi);
                 } else {
-                    votetiemsg = votetiemsg.replace(/~Players~/g, readable(tiedPlayers, "and")).replace(/~Count~/g, maxi) || "No one was voted off!:";
+                    votetiemsg = (votetiemsg || "No one was voted off!:").replace(/~Players~/g, readable(tiedPlayers, "and")).replace(/~Count~/g, maxi) ;
                 }
                 gamemsgAll(votetiemsg);
                 
