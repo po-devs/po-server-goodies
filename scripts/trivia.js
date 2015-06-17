@@ -50,18 +50,21 @@ catch (e) {
     trivData = {};
 }
 
-var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard", "triviaWarnings", "autostartRange", "equivalentCats","equivalentAns"];
+var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard", "triviaWarnings", "autostartRange", "equivalentCats","equivalentAns","specialChance","hiddenCategories"];
 for (var i = 0; i < neededData.length; ++i) {
     var data = neededData[i];
     if (trivData[data] === undefined) {
-        if (data === 'leaderBoard' || data === 'triviaWarnings') {
+        if (data === 'leaderBoard' || data === 'triviaWarnings' || data === 'hiddenCategories') {
             trivData[data] = [];
         }
-        if (data === "autostartRange") {
+        else if (data === "autostartRange") {
             trivData[data] = {
                 min: 9,
                 max: 24
             };
+        }
+        else if (data === "specialChance") {
+            trivData[data] = 0;
         }
         else {
             trivData[data] = {};
@@ -362,7 +365,9 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     }
     else {
         for (var q in triviaq.all()) {
-            this.qSource.push(q);
+            if (trivData.hiddenCategories.join("*").toLowerCase().split("*").indexOf(triviaq.get(q).category.toLowerCase()) == -1) {
+                this.qSource.push(q);
+            }
         }
     }
     if (this.scoreType === "elimination" && this.catGame){
@@ -2552,6 +2557,33 @@ addAdminCommand(["equivalentans","ea"], function (src, commandData, channel) {
     }
     return;
 }, "View synonyms of answers.");
+
+addAdminCommand(["hiddencats"], function (src, commandData, channel) {
+    triviabot.sendMessage(src, "Hidden categories are: " + trivData.hiddenCategories.join(", "), channel);
+}, "View hidden categories.");
+
+addOwnerCommand(["addhiddencat"], function (src, commandData, channel) {
+    var i = triviaCategories.join("*").toLowerCase().split("*").indexOf(commandData.toLowerCase());
+    if (i === -1) {
+        triviabot.sendMessage(src, "Specify a valid category to hide.", channel);
+    }
+    else {
+        trivData.hiddenCategories.push(triviaCategories[i]);
+        saveData();
+        triviabot.sendMessage(src, triviaCategories[i] + " was hidden.", channel);
+    }
+}, "Hide a category from showing (except in category games).");
+
+addOwnerCommand(["removehiddencat"], function (src, commandData, channel) {
+    var i = trivData.hiddenCategories.join("*").toLowerCase().split("*").indexOf(commandData.toLowerCase());
+    if (i === -1) {
+        triviabot.sendMessage(src, "Specify a valid category to unhide.", channel);
+    }
+    else {
+        triviabot.sendMessage(src, trivData.hiddenCategories.splice(i, 1)[0] + " was unhidden.", channel);
+        saveData();
+    }
+}, "Unhide a category.");
 
 addAdminCommand(["setspecialchance"], function (src, commandData, channel) {
     if (!isNaN(commandData)) {
