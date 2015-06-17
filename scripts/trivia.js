@@ -22,7 +22,6 @@ var triviachan, revchan;
 var triviabot = new Bot("Metagross");
 
 var triviaCategories = ['Anime/Manga', 'Animals', 'Art', 'Comics', 'Food/Drink', 'Games', 'Geography', 'History', 'Internet', 'Language', 'Literature', 'Math', 'Miscellaneous', 'Movies', 'Music', 'Mythology', 'Pokémon', 'Pokémon Online', 'Politics', 'Religion', 'Science', 'Social Science', 'Society', 'Space', 'Sports', 'Technology', 'Television', 'Video Games'];
-//var specialCategories = ['Who\'s That Pokémon?', 'Pokémon Without Vowels', 'Anagram: Pokémon', 'Mental Math'];
 var specialCategories = ['Mental Math'];
 var lastCatGame = 0;
 var lastUsedCats = [];
@@ -460,7 +459,7 @@ TriviaGame.prototype.startTrivia = function (src, data, scoring) { //Data = poin
         data = [data[0]];
     }
     var rand = parseInt(data[0], 10);
-    if (rand > 60 || rand < 1) {
+    if ((rand > 60 || rand < 1) && (scoring !== "speed")) {
         this.sendPM(src, "Please do not start a game with more than 60 points, or less than 1 point.", triviachan);
         return;
     }
