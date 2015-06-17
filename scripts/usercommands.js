@@ -510,11 +510,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (typeof SESSION.users(src).tiers == "string") {
             SESSION.users(src).tiers = SESSION.users(src).tiers.split("*");
         }
-        for (var x = 0; x < SESSION.users(src).tiers.length; x++) { // PREVENT DUPLICATE TOUR ALERTS
-            if (tier === SESSION.users(src).tiers[x]) {
-                normalbot.sendMessage(src, "The " + tier + " tier has already been added to your list of tour alerts!", channel);
-                return;
-            }
+        if (SESSION.users(src).tiers.indexOf(tier) !== -1) { // PREVENT DUPLICATE TOUR ALERTS
+            normalbot.sendMessage(src, "The " + tier + " tier has already been added to your list of tour alerts!", channel);
+            return;
         }
         SESSION.users(src).tiers.push(tier);
         script.saveKey("touralerts", src, SESSION.users(src).tiers.join("*"));
