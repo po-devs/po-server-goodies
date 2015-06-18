@@ -510,6 +510,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (typeof SESSION.users(src).tiers == "string") {
             SESSION.users(src).tiers = SESSION.users(src).tiers.split("*");
         }
+        if (SESSION.users(src).tiers.indexOf(tier) !== -1) { // PREVENT DUPLICATE TOUR ALERTS
+            normalbot.sendMessage(src, "The " + tier + " tier has already been added to your list of tour alerts!", channel);
+            return;
+        }
         SESSION.users(src).tiers.push(tier);
         script.saveKey("touralerts", src, SESSION.users(src).tiers.join("*"));
         normalbot.sendMessage(src, "Added a tour alert for the tier: " + tier + "!", channel);
