@@ -792,7 +792,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 allowed.push(tiers[x]);
             }
         }
-        sys.sendHtmlMessage(src, "<b>Allowed in tiers: </b>" + allowed.join(", "));
+        sys.sendHtmlMessage(src, "<b>Allowed in tiers: </b>" + allowed.join(", "), channel);
         return;
     }
     if (command === "move") {
