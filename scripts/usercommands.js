@@ -795,6 +795,21 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendHtmlMessage(src, "<b>Allowed in tiers: </b>" + allowed.join(", "), channel);
         return;
     }
+    if (command === "tier") {
+        var pokeId = sys.pokeNum(commandData);
+        if (!pokeId) {
+            normalbot.sendMessage(src, "No such pokemon!", channel); return;
+        }
+        var tiers = ["ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC"];
+        var allowed = [];
+        for (var x = 0; x < tiers.length; x++) {
+            if (!sys.isPokeBannedFromTier(pokeId, tiers[x])) {
+                allowed.push(tiers[x]);
+            }
+        }
+        sys.sendHtmlMessage(src, "<b>" + sys.pokemon(pokeId) + " is allowed in tiers: </b>" + allowed.join(", "), channel);
+        return;
+    }
     if (command === "move") {
         if (!commandData) {
             normalbot.sendMessage(src, "Please specify a move!", channel);
@@ -1031,6 +1046,7 @@ exports.help =
         "/dwreleased [Pokémon]: Shows the released status of a Pokémon's Dream World Ability.",
         "/wiki [Pokémon]: Shows that Pokémon's wiki page.",
         "/pokemon [Pokémon]: Displays basic information for that Pokémon. Pokédex number can also be used.",
+        "/tier [Pokémon]: Displays the tiers a pokémon is allowed in.",
         "/move [move]: Displays basic information for that move.",
         "/ability [ability]: Displays basic information for that ability.",
         "/item [item]: Displays basic information for that item.",
