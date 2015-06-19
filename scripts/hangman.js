@@ -703,8 +703,6 @@ function Hangman() {
         } else {
             sys.sendHtmlMessage(src, "<font color='red'>Current game started by " + hostName + "</font>", hangchan);
         }
-        hangbot.sendMessage(src, "Type /g [letter] to guess a letter, and /a [answer] to guess the answer!", hangchan);
-        sys.sendMessage(src, " ", hangchan);
     };
     this.showRules = function (src) {
         var rules = [
@@ -1769,7 +1767,7 @@ function Hangman() {
     this.afterChannelJoin = function (src, channel) {
         if (channel == hangchan) {
             hangman.viewGame(src);
-            sys.sendMessage(src, "±Unown: Hello, "+html_escape(sys.name(src))+", welcome to Hangman. Use the commands /g [letter] to guess a letter, and /a [answer] to guess the whole thing! For more information, use the /help command. Have fun!", channel);
+            sys.sendMessage(src, "±Unown: Hello, welcome to Hangman. Use the commands /g [letter] to guess a letter, and /a [answer] to guess the whole thing! For more information, use the /help command. Have fun!", channel);
         }
         return false;
     };
