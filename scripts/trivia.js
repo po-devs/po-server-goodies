@@ -464,7 +464,7 @@ TriviaGame.prototype.startTrivia = function (src, data, scoring) { //Data = poin
         data = [data[0]];
     }
     var rand = parseInt(data[0], 10);
-    if ((rand > 60 || rand < 1) && (scoring !== "speed")) {
+    if (rand < 1 || (rand > 60 && scoring !== "speed")) {
         this.sendPM(src, "Please do not start a game with more than 60 points, or less than 1 point.", triviachan);
         return;
     }
