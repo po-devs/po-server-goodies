@@ -764,7 +764,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         this.sendAll(this.round + " rounds have passed, so sudden death has started! If all players answer correctly, the last player to answer will lose a life.");
     }
 
-    if (totalPlayers < 2) {
+    if (totalPlayers < 1) {
         this.inactivity++;
     }
     else {
