@@ -464,7 +464,7 @@ TriviaGame.prototype.startTrivia = function (src, data, scoring) { //Data = poin
         data = [data[0]];
     }
     var rand = parseInt(data[0], 10);
-    if ((rand > 60 || rand < 1) && (scoring !== "speed")) {
+    if (rand < 1 || (rand > 60 && scoring !== "speed")) {
         this.sendPM(src, "Please do not start a game with more than 60 points, or less than 1 point.", triviachan);
         return;
     }
@@ -697,7 +697,6 @@ TriviaGame.prototype.finalizeAnswers = function () {
             correctNames[i] = answeredCorrectly[i].name;
         }
         this.sendAll("Answered correctly: " + correctNames.join(", "), triviachan);
-        questionData.log(this.roundQuestion, totalPlayers, answeredCorrectly.length);
     }
     else {
         answeredCorrectly = answeredCorrectly.sort(function (a, b) { return a.time - b.time; });
@@ -715,6 +714,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         this.sendAll("In order from fastest to slowest, answered correctly: ");
         this.sendAll(correctNames.join(", "), triviachan);
     }
+    questionData.log(this.roundQuestion, totalPlayers, answeredCorrectly.length);
 
     var x = answers.length != 1 ? "answers were" : "answer was";
     sendChanHtmlAll("<font color='#3DAA68'><timestamp/> <b>±" + triviabot.name + ":</b></font> The correct " + x + ": <b>" + utilities.html_escape(answers.join(", ")) + "</b>", triviachan);
