@@ -3589,6 +3589,12 @@ function advanceround(key) {
 
 // starts a tournament
 function tourstart(tier, starter, key, parameters) {
+    if (tours.queue.length === 1) { // NOTIFY VICTORY ROAD THAT /QUEUE IS LOW
+        sys.sendAll(tourconfig.tourbot + "Queue in Tournaments is low.", sys.channelId("Victory Road"));
+    }
+    else if (tours.queue.length === 0) { // NOTIFY VICTORY ROAD THAT /QUEUE IS EMPTY
+        sys.sendAll(tourconfig.tourbot + "Queue in Tournaments is empty.", sys.channelId("Victory Road"));
+    }
     try {
         var channels = tourschan === 0 ? [0] : [0, tourschan];
         var now = new Date();
