@@ -310,7 +310,7 @@ function TriviaGame() {
 //    this.autostart = false; Commented out because you never know
     this.ticks = -1;
     this.suggestion = {};
-    this.inactivity = 0;
+    this.lbDisabled = false;
 }
 
 TriviaGame.prototype.htmlAll = function (html) {
@@ -742,18 +742,22 @@ TriviaGame.prototype.finalizeAnswers = function () {
         extLB.reset();
         month = newMonth;
     }
-    var lastPoints; //points = leaderboard points
-    var minPoints = (this.scoreType === "knowledge" ? extLB.minLB : extLB.minSpeedLB);
-    if (this.maxPoints >= minPoints && this.scoreType !== "elimination"){
-        while (leaderboard[i] && leaderboard[i][1] >= this.maxPoints){
-            var points = totalPlayers - i;
-            if (this.catGame) {points = points / 2;}
-            if (i > 0 && leaderboard[i][1] === leaderboard[i-1][1]){points = lastPoints;}
-            extLB.updateLeaderboard(utilities.html_escape(leaderboard[i][0]), ((points) > 0 ? points : 1));
-            lastPoints = points;
-            i++;
+
+    if (!this.lbDisabled) {
+        var lastPoints; //points = leaderboard points
+        var minPoints = (this.scoreType === "knowledge" ? extLB.minLB : extLB.minSpeedLB);
+        if (this.maxPoints >= minPoints && this.scoreType !== "elimination"){
+            while (leaderboard[i] && leaderboard[i][1] >= this.maxPoints){
+                var points = totalPlayers - i;
+                if (this.catGame) {points = points / 2;}
+                if (i > 0 && leaderboard[i][1] === leaderboard[i-1][1]){points = lastPoints;}
+                extLB.updateLeaderboard(utilities.html_escape(leaderboard[i][0]), ((points) > 0 ? points : 1));
+                lastPoints = points;
+                i++;
+            }
         }
     }
+
     for (var x in leaderboard) {
         displayboard.push(leaderboard[x][0] + " (" + leaderboard[x][1] + ")");
     }
@@ -764,24 +768,15 @@ TriviaGame.prototype.finalizeAnswers = function () {
         this.sendAll(this.round + " rounds have passed, so sudden death has started! If all players answer correctly, the last player to answer will lose a life.");
     }
 
-    if (totalPlayers < 2) {
-        this.inactivity++;
-    }
-    else {
-        this.inactivity = 0;
-    }
-    if (this.inactivity === 4) {
-        this.htmlAll("The game automatically ended due to a lack of players.");
-        this.resetTrivia();
-        runUpdate();
-        return;
+    if ((totalPlayers < 2) && (parseInt(leaderboard[0][1]) >= (this.maxPoints / 2))) {
+        this.lbDisabled = true;
     }
     if (leaderboard.length === 1 && this.scoreType === "elimination") {
         winners.push(utilities.html_escape(leaderboard[0][0]) + " (" + leaderboard[0][1] + ")");
-        extLB.updateLeaderboard(utilities.html_escape(leaderboard[0][0]).toLowerCase(), parseInt(leaderboard[0][1], 10));
+        if (!this.lbDisabled) extLB.updateLeaderboard(utilities.html_escape(leaderboard[0][0]).toLowerCase(), parseInt(leaderboard[0][1], 10));
     }
     if (winners.length > 0 || (this.scoreType === "elimination" && leaderboard.length === 0)) {
-        sys.writeToFile(extLB.file, JSON.stringify(extLB.leaderboard));
+        if (!this.lbDisabled) sys.writeToFile(extLB.file, JSON.stringify(extLB.leaderboard));
         var w = (winners.length == 1) ? "the winner!" : "our winners!";
         winners.sort(function (a, b) {
             return b[1] - a[1];
@@ -844,7 +839,7 @@ TriviaGame.prototype.resetTrivia = function () {
     this.phase = "";
     this.ticks = -1;
     this.suggestion = {};
-    this.inactivity = 0;
+    this.lbDisabled = false;
     this.suddenDeath = false;
 };
 
