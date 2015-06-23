@@ -1619,6 +1619,10 @@ addUserCommand("start", function (src, commandData) {
     Trivia.startTrivia(src, commandData, "knowledge");
 }, "Allows you to start a trivia game, format /start [number][*category1][*category2][...]. Leave number blank for random. Only Trivia Admins may start Category Games.");
 
+addUserCommand("speed", function (src, commandData) {
+    Trivia.startTrivia(src, commandData, "speed");
+}, "Allows you to start a speed trivia game, format /speed [number][*category1][*category2][...]. Leave number blank for random. Only Trivia Admins may start Category Games.");
+
 addUserCommand("lastcat", function (src, commandData, channel) {
     if (lastCatGame === 0) {
         Trivia.sendPM(src, "There hasn't been a Category Game since Trivia was last updated.", channel);
@@ -1664,10 +1668,6 @@ addAdminCommand("removeq", function (src, commandData, channel) {
 addAdminCommand("elimination", function (src, commandData) {
     Trivia.startTrivia(src, commandData, "elimination");
 }, "Allows you to start an elimination game, format /elimination [number][*category1][*category2][...]. Leave number blank for random.");
-
-addAdminCommand("speed", function (src, commandData) {
-    Trivia.startTrivia(src, commandData, "speed");
-}, "Allows you to start a speed trivia game, format /speed [number][*category1][*category2][...]. Leave number blank for random.");
 
 addAdminCommand("end", function (src) {
     Trivia.endTrivia(src);
