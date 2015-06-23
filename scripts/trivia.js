@@ -1715,7 +1715,40 @@ addAdminCommand("flashtas", function (src, commandData, channel) {
     }
 }, "Pings all online Trivia Admins. Use with /flashtas [phrase]. Abuse will be punished.");
 
-addAdminCommand(["search", "apropos"], function (src, commandData, channel) {
+addAdminCommand(["search"], function (src, commandData, channel) {
+    if (commandData === undefined)
+        return;
+    Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
+    var all = triviaq.all(),
+        b, q, output = [];
+    var re = new RegExp("\\b" + commandData + "\\b", "i");
+    for (b in all) {
+        q = triviaq.get(b);
+        var answer = String(q.answer);
+        if (re.test(q.question) || re.test(answer)) {
+            output.push("Question: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "' (id='" + b + "')");
+        }
+    }
+    all = trivreview.all();
+    for (b in all) {
+        q = trivreview.get(b);
+        var answer = String(q.answer);
+        if (re.test(q.question) || re.test(answer)) {
+            output.push("Question under review: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "'");
+        }
+    }
+    var x = 0;
+    while (x < output.length && x !== 50) {
+        Trivia.sendPM(src, output[x], channel);
+        x += 1;
+    }
+    if (x === 50) { //maybe add a configurable value in the future
+        Trivia.sendPM(src, "Too many results were found for this query", channel); //possibly add a way to show more results
+    }
+
+}, "Allows you to search through the questions, format /search [query]. Only matches whole words.");
+
+addAdminCommand(["apropos"], function (src, commandData, channel) {
     if (commandData === undefined)
         return;
     Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
@@ -1745,7 +1778,7 @@ addAdminCommand(["search", "apropos"], function (src, commandData, channel) {
         Trivia.sendPM(src, "Too many results were found for this query", channel); //possibly add a way to show more results
     }
 
-}, "Allows you to search through the questions, format /search [query]");
+}, "Allows you to search through the questions, format /apropos [query]. Matches incomplete parts of words.");
 
 addAdminCommand("searchcount", function (src, commandData, channel) {
     if (commandData === undefined) {
