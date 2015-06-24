@@ -145,7 +145,8 @@ function Hangman() {
 
         usedLetters.push(commandData.toLowerCase());
         sendChanHtmlAll(" ", hangchan);
-        hangbot.sendAll("" + sys.name(src) + " guessed " + letter.toUpperCase() + " and got it " + (correct ? "right (" + p + (p == 1 ? " point)" : " points)") : "wrong") + "! Current Word: " + currentWord.join(" ") + "", hangchan);
+        hangbot.sendAll("" + sys.name(src) + " guessed " + letter.toUpperCase() + " and got it " + (correct ? "right (" + p + (p == 1 ? " point)" : " points)") : "wrong") + "!", hangchan);
+        hangbot.sendAll("Current Word: " + currentWord.join(" ") + "", hangchan);
 
         if (currentWord.indexOf("_") === -1) {
             this.applyPoints(src, p + 2);
