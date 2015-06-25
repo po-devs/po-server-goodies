@@ -310,6 +310,7 @@ function TriviaGame() {
 //    this.autostart = false; Commented out because you never know
     this.ticks = -1;
     this.suggestion = {};
+    this.inactivity = 0;
     this.lbDisabled = false;
 }
 
@@ -768,7 +769,16 @@ TriviaGame.prototype.finalizeAnswers = function () {
         this.sendAll(this.round + " rounds have passed, so sudden death has started! If all players answer correctly, the last player to answer will lose a life.");
     }
 
-    if ((totalPlayers < 2) && (parseInt(leaderboard[0][1]) >= (this.maxPoints / 2))) {
+    if (totalPlayers < 1) this.inactivity++;
+    else this.inactivity = 0;
+    if (this.inactivity === 4) {       
+        this.htmlAll("The game automatically ended due to a lack of players.");        
+        this.resetTrivia();        
+        runUpdate();       
+        return;        
+    }
+
+    if ((totalPlayers === 1) && (leaderboard[0]) && (parseInt(leaderboard[0][1]) >= (this.maxPoints / 2))) {
         this.lbDisabled = true;
     }
     if (leaderboard.length === 1 && this.scoreType === "elimination") {
@@ -839,6 +849,7 @@ TriviaGame.prototype.resetTrivia = function () {
     this.phase = "";
     this.ticks = -1;
     this.suggestion = {};
+    this.inactivity = 0;
     this.lbDisabled = false;
     this.suddenDeath = false;
 };
