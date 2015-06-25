@@ -330,17 +330,27 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         return;
     }
-    if (command == "removepart") {
-        var topic = SESSION.channels(channel).topic;
-        topic = topic.split(Config.topic_delimiter);
-        if (isNaN(commandData) || commandData > topic.length) {
+    if (command == "removepart" || command == "removeparts") {
+        if (!commandData) 
             return;
+        var parts = commandData.indexOf(":") !== -1 ? commandData.split(":") : commandData.split(" ");
+        var topic = SESSION.channels(channel).topic, duplicates = [];
+        topic = topic.split(Config.topic_delimiter);
+        for (var i = 0; i < parts.length; i++) {
+            if (isNaN(parts[i]) || parts[i] < 1 || parts[i] > topic.length) {
+                channelbot.sendMessage(src, "Parts must be a number from 1 to " + topic.length + "!", channel);
+                return;
+            }
+            if (duplicates.indexOf(parts[i]) !== -1) {
+                channelbot.sendMessage(src, "You can't remove part " + parts[i] + " twice!", channel);
+                return;
+            };
+            duplicates.push(parts[i]);
         }
-        var part = commandData;
-        if (part > 0) {
-            part = part -1;
-        }
-        topic.splice(part, 1);
+        // Sort by largest numbers first to avoid interfering with earlier parts after removal
+        parts.sort(function(a, b) { return b - a; }).forEach(function(part) {
+            topic.splice(part - 1, 1);
+        });
         SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
         return;
     }
@@ -358,6 +368,21 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
         return;
     }
+	if (command == "topicparts") {
+		var topic = SESSION.channels(channel).topic;
+		if (typeof topic == "string" && topic !== "") {
+			var i = 0;
+			topic = topic.split(" | ").map(function(part) { 
+				return "<font color='blue'><b>[" + ++i + "]</b></font> " + part 
+			}).join(" | ");
+			// HTML isn't necessary, but it makes the number more obvious
+			sys.sendHtmlMessage(src, "<font color='#3DAA68'><timestamp/> <b>±" + Config.channelbot + ":</b></font> Topic for this channel is: " + topic, channel);
+			return;
+		} else {
+			channelbot.sendMessage(src, "No topic set for this channel.", channel);
+			return;
+		};
+	}
     if (command == "uptime") {
         if (typeof(script.startUpTime()) != "string") {
             countbot.sendMessage(src, "Somehow the server uptime is messed up...", channel);
