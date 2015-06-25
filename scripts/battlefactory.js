@@ -977,7 +977,7 @@ function factoryCommand(src, command, commandData, channel) {
                 bfbot.sendMessage(src, sys.pokemon(poke) + " must not be above Level 50 for Middle Cup.", channel);
                 continue;
             }
-            if (['Wifi LC'].indexOf(submittier) > -1 && level > 5) {
+            if (['LC'].indexOf(submittier) > -1 && level > 5) {
                 bfbot.sendMessage(src, sys.pokemon(poke) + " must not be above Level 5 for Little Cup.", channel);
                 continue;
             }
