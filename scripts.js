@@ -55,7 +55,7 @@ var Config = {
         ["marcoasd", "RBY OverUsed - View {0}'s <a href='http://pokemon-online.eu/threads/31213/'>Gym Thread!</a>"]
     ],
     DreamWorldTiers: ["ORAS Hackmons", "ORAS Balanced Hackmons", "No Preview OU", "No Preview Ubers", "DW LC", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
-    superAdmins: ["[LD]Jirachier", "Mahnmut"],
+    superAdmins: ["[LD]Jirachier", "Mahnmut", "Strudels"],
     canJoinStaffChannel: ["Lamperi-"],
     disallowStaffChannel: [],
     topic_delimiter: " | ",
