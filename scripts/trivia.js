@@ -433,7 +433,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     }
     if (this.scoreType === "elimination") {
         this.phase = "signups";
-        this.ticks = 60;
+        this.ticks = 45;
     }
     else {
         this.phase = "standby";
@@ -1712,8 +1712,8 @@ addAdminCommand("say", function (src, commandData, channel) {
 }, "Allows you to talk during the answer period.");
 
 addAdminCommand("flashtas", function (src, commandData, channel) {
-    if ([revchan, sachannel].indexOf(channel) === -1) {
-        Trivia.sendPM(src, "Please only use /flashtas in TrivReview or Victory Road!", channel);
+    if ([triviachan, revchan, sachannel].indexOf(channel) === -1) {
+        Trivia.sendPM(src, "Please only use /flashtas in Trivia, TrivReview, or Victory Road!", channel);
         return;
     }
     var message = (commandData === "" ? "Flashing all Trivia Admins!" : commandData);
