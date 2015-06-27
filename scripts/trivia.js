@@ -461,11 +461,13 @@ TriviaGame.prototype.startTrivia = function (src, data, scoring) { //Data = poin
     }*/
     this.scoreType = scoring;
     data = data.split("*");
-    if (!(tadmin.isTAdmin(sys.name(src)) || tsadmin.isTAdmin(sys.name(src)) || sys.auth(src) > 0) /*|| this.scoreType === "elimination"*/) { //remove cats from user and [elim] games
+
+    var isTA = (tadmin.isTAdmin(sys.name(src)) || tsadmin.isTAdmin(sys.name(src)) || sys.auth(src) > 0);
+    if (!isTA /*|| this.scoreType === "elimination"*/) { //remove cats from user and [elim] games
         data = [data[0]];
     }
     var rand = parseInt(data[0], 10);
-    if (rand < 1 || (rand > 60 && scoring !== "speed")) {
+    if (rand < 1 || (rand > 60 && !isTA)) {
         this.sendPM(src, "Please do not start a game with more than 60 points, or less than 1 point.", triviachan);
         return;
     }
