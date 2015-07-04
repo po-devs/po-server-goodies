@@ -498,7 +498,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
 
-    if(command == "addtouralert") {
+    if (command == "addtouralert") {
+        if (commandData === undefined) {
+            normalbot.sendMessage(src, "Please enter a tier after the command to add to your tier alerts.", channel);
+            return;
+        }
         var tier = utilities.find_tier(commandData);
         if (tier === null) {
             normalbot.sendMessage(src, "Sorry, the server does not recognise the " + commandData + " tier.", channel);
@@ -519,7 +523,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, "Added a tour alert for the tier: " + tier + "!", channel);
         return;
     }
-    if(command == "removetouralert") {
+    if (command == "removetouralert") {
+        if (commandData === undefined) {
+            normalbot.sendMessage(src, "Please enter a tier after the command to remove from your tier alerts.", channel);
+            return;
+        }
         if(typeof SESSION.users(src).tiers == "undefined" || SESSION.users(src).tiers.length === 0){
             normalbot.sendMessage(src, "You currently have no alerts.", channel);
             return;
