@@ -145,7 +145,8 @@ function Hangman() {
 
         usedLetters.push(commandData.toLowerCase());
         sendChanHtmlAll(" ", hangchan);
-        hangbot.sendAll("" + sys.name(src) + " guessed " + letter.toUpperCase() + " and got it " + (correct ? "right (" + p + (p == 1 ? " point)" : " points)") : "wrong") + "! Current Word: " + currentWord.join(" ") + "", hangchan);
+        hangbot.sendAll("" + sys.name(src) + " guessed " + letter.toUpperCase() + " and got it " + (correct ? "right (" + p + (p == 1 ? " point)" : " points)") : "wrong") + "!", hangchan);
+        hangbot.sendAll("Current Word: " + currentWord.join(" ") + "", hangchan);
 
         if (currentWord.indexOf("_") === -1) {
             this.applyPoints(src, p + 2);
@@ -154,6 +155,9 @@ function Hangman() {
             this.countPoints();
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
+            if (isEventGame) {
+                    hangbot.sendAll("Suggest more event game categories here http://pokemon-online.eu/threads/31530", hangchan);
+                }
             if (pendingEvent) {
                 eventDelay = true;
             } else {
@@ -182,8 +186,16 @@ function Hangman() {
                 sys.sendAll("*** ************************************************************ ***", hangchan);
                 hangbot.sendAll("HANGED! No one guessed the word '" + word.toUpperCase() + "' correctly, so " + (isEventGame ? "anyone may start a game now!" : "the host (" + hostName + ") has won this game!"), hangchan);
                 sys.sendAll("*** ************************************************************ ***", hangchan);
+                if (isEventGame) {
+                    hangbot.sendAll("Suggest more event game categories here http://pokemon-online.eu/threads/31530", hangchan);
+                }
                 sendChanHtmlAll(" ", hangchan);
-                this.setWinner(hostName, (host === null && hostName == hangbot.name));
+                if (sys.isInChannel(sys.id(hostName), hangchan) === true) { // IF HOST WINS AND STILL IN CHANNEL
+                    this.setWinner(hostName, (host === null && hostName == hangbot.name));
+                }
+                else { // IF HOST WINS AND NOT IN CHANNEL
+                    this.setWinner(hostName, true); // TRUE SO PLAYER CAN INSTANT START
+                }
                 if (isEventGame) {
                     eventCount = eventLimit;
                 }
@@ -562,7 +574,12 @@ function Hangman() {
             ranking.push(p + " (" + points[p] + " points" + (p in misses ? ", " + misses[p] + " miss(es)" : "") + ")");
         }
         sys.sendAll("±Results: " + ranking.join(", "), hangchan);
-        this.setWinner(w);
+        if (sys.isInChannel(sys.id(w), hangchan) === true) { // IF THE WINNER IS STILL IN CHANNEL
+            this.setWinner(w);
+        } else { // IF THE WINNER IS NOT IN CHANNEL
+            hangbot.sendAll("The winner isn't currently in the channel, so anyone can start!", hangchan);
+            this.setWinner(w, true);
+        }
 
         if (isEventGame) {
             hangbot.sendAll(w + " won an Event Game and received 1 Leaderboard point!", hangchan);
@@ -1808,8 +1825,8 @@ function Hangman() {
                 sendChanHtmlAll(" ", hangchan);
                 this.setWinner(hostName, (host === null && hostName == hangbot.name));
                 eventCount = eventLimit;
- 	        suddenDeathLimit = 300;
-            } 
+                suddenDeathLimit = 300;
+            }
         }
         if (eventCount === 0 && eventGamesEnabled) {
             hangman.checkNewMonth();
