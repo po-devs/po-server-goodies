@@ -2835,15 +2835,15 @@ function tourCommand(src, command, commandData, channel) {
             var thetier = find_tier(commandData);
             if (commandData === "") {
                 sendBotMessage(src, "Please specify a tier", tourschan, false);
-                return;
+                return true;
             }
             if (thetier === null) {
-                sendBotMessage(src,"No such tier exists.",tourschan,false);
+                sendBotMessage(src,"No such tier exists.",tourschan, false);
                 return true;
             }
             var seeddata = tstats.getseeds();
             if (!seeddata.hasOwnProperty(thetier)) {
-                sendBotMessage(src,"No data exists.",tourschan,false);
+                sendBotMessage(src,"No data exists.",tourschan, false);
                 return true;
             }
             var htmltosend = "<table><tr><th colspan=3>Tour seeds for "+html_escape(thetier)+"</th></tr><tr><th>Name</th><th>Seed Points</th><th>Decays in</th></tr>";
@@ -2853,9 +2853,9 @@ function tourCommand(src, command, commandData, channel) {
                 endarray.push([x, seedstats[x].points, time_handle(tourconfig.decaytime*24*60*60-(parseInt(sys.time(), 10)-seedstats[x].lastwin))]);
             }
             endarray.sort(function(a,b) {return b[1]-a[1];});
-            for (var z=0; z<32; z++) {
-                if (endarray.length <= z) break;
-                htmltosend = htmltosend+"<tr><td>"+html_escape(endarray[z][0])+"</td><td>"+(Math.round(endarray[z][1]*10)/10)+"</td><td>"+endarray[z][2]+"</td></tr>";
+            for (var x = 0; x < 32; x++) {
+                if (endarray.length <= x) break;
+                htmltosend = htmltosend+"<tr><td>"+html_escape(endarray[x][0])+"</td><td>"+(Math.round(endarray[x][1]*10)/10)+"</td><td>"+endarray[x][2]+"</td></tr>";
             }
             sys.sendHtmlMessage(src, htmltosend+"</table>", tourschan);
             return true;
