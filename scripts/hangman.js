@@ -13,7 +13,7 @@ function Hangman() {
     var minBodyParts = 5;
     var winnerDelay = 60;
     var answerDelay = 7;
-    var maxAnswers = [3, 2];
+    var maxAnswers = [3, 3];
     var maxGuesses = 2;
 
     var autoGamesFile = "scriptdata/hangmanq.txt";
