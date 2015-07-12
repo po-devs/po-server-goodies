@@ -402,6 +402,10 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
         sendChanAll("", 0);
         this.sendAll((name !== "" ? name + " started a Speed Trivia game! " : "A speed trivia game was started! ") + " First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
         sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+        if (!tadmin.isTAdmin(name) && !tsadmin.isTAdmin(name) && sys.auth(sys.id(name)) <= 0) {
+           this.addPlayer(sys.id(name));
+           Trivia.sendAll(name + " joined the game!", triviachan);
+        }
     }
     else if (this.scoreType === "elimination") {
         sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
