@@ -2637,14 +2637,15 @@ addAdminCommand(["hiddencats"], function (src, commandData, channel) {
 }, "View hidden categories.");
 
 addOwnerCommand(["addhiddencat"], function (src, commandData, channel) {
-    var i = triviaCategories.join("*").toLowerCase().split("*").indexOf(commandData.toLowerCase());
+    var cats = orderedCategories().map(function (x) { return x.category; });
+    var i = cats.join("*").toLowerCase().split("*").indexOf(commandData.toLowerCase());
     if (i === -1) {
         triviabot.sendMessage(src, "Specify a valid category to hide.", channel);
     }
     else {
-        trivData.hiddenCategories.push(triviaCategories[i]);
+        trivData.hiddenCategories.push(cats[i]);
         saveData();
-        triviabot.sendMessage(src, triviaCategories[i] + " was hidden.", channel);
+        triviabot.sendMessage(src, cats[i] + " was hidden.", channel);
     }
 }, "Hide a category from showing (except in category games).");
 
