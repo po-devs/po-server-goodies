@@ -1679,7 +1679,7 @@ addAdminCommand("removeq", function (src, commandData, channel) {
     Trivia.sendPM(src, "Oops! Question doesn't exist", channel);
 }, "Allows you to remove a question that has already been submitted, format /removeq [ID]");
 
-addAdminCommand("elimination", function (src, commandData) {
+addAdminCommand(["elimination", "elim"], function (src, commandData) {
     Trivia.startTrivia(src, commandData, "elimination");
 }, "Allows you to start an elimination game, format /elimination [number][*category1][*category2][...]. Leave number blank for random.");
 
@@ -1729,12 +1729,8 @@ addAdminCommand("flashtas", function (src, commandData, channel) {
     }
 }, "Pings all online Trivia Admins. Use with /flashtas [phrase]. Abuse will be punished.");
 
-addAdminCommand(["search"], function (src, commandData, channel) {
+addAdminCommand("search", function (src, commandData, channel) {
     if (commandData === undefined) return;
-    if (Trivia.playerPlaying(src)) {
-        Trivia.sendPM(src, "Don't cheat, you cheater!", channel);
-        return;
-    }
     Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
     var all = triviaq.all(),
         b, q, output = [];
@@ -1765,12 +1761,8 @@ addAdminCommand(["search"], function (src, commandData, channel) {
 
 }, "Allows you to search through the questions, format /search [query]. Only matches whole words.");
 
-addAdminCommand(["apropos"], function (src, commandData, channel) {
+addAdminCommand("apropos", function (src, commandData, channel) {
     if (commandData === undefined) return;
-    if (Trivia.playerPlaying(src)) {
-        Trivia.sendPM(src, "Don't cheat, you cheater!", channel);
-        return;
-    }
     Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
     var all = triviaq.all(),
         b, q, output = [];
