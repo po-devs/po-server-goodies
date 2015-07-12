@@ -546,6 +546,7 @@ TriviaGame.prototype.startTriviaRound = function () {
         category = usingSpecialCats[category];
         this.specialQuestion = getSpecialQuestion(category);
         var question = this.specialQuestion.question;
+        this.roundQuestion = 0;
     } else {
         /* Make a random number to get the ID of the (going to be) asked question, or use the suggestion */
         var questionNumber;
@@ -2101,6 +2102,36 @@ addAdminCommand("editq", function (src, commandData, channel) {
     }
     triviabot.sendMessage(src, "This question does not exist", channel);
 }, "Allows you to edit an already submitted question");
+
+addAdminCommand(["markq"], function (src, commandData, channel) {
+    if (Trivia.started === false) {
+        Trivia.sendPM(src, "A game hasn't started!", channel);
+        return;
+    }
+    if (Trivia.roundQuestion === 0) {
+        Trivia.sendPM(src, "Either a question has not been asked yet, or the last question is a special question!", channel);
+        return;
+    }
+    if (Trivia.phase === "answer") {
+        Trivia.sendPM(src, "Wait for the question to finish being asked!", channel);
+        return;
+    }
+    var q = triviaq.get(Trivia.roundQuestion);
+    var id = -1;
+    if (trivreview.get(id)) {
+        id = Object.keys(trivreview.all()).sort(function (a, b) {
+            return a - b;
+        })[0] - 1;
+    }
+    if (q !== null) {
+        triviaq.remove(Trivia.roundQuestion);
+        questionData.remove(Trivia.roundQuestion);
+        trivreview.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + sys.name(src) + ":::" + (commandData[0] ? commandData[0] + " - " + sys.name(src) : "None."));
+        triviabot.sendAll(sys.name(src) + " placed a question at the top of the review queue.", revchan);
+        trivreview.checkq();
+        return;
+    }
+}, "Puts the most recently asked question in review.");
 
 addAdminCommand("decline", function (src, commandData, channel) {
     var tr = trivreview.all();
