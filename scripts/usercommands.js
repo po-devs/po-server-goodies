@@ -650,11 +650,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var lastLogin = sys.dbLastOn(commandData);
-        if (lastLogin === undefined){
+        if (lastLogin === undefined) {
             querybot.sendMessage(src, "No such user.", channel);
             return;
         }
-        if (sys.id(commandData)!== undefined){
+        if (sys.id(commandData)!== undefined) {
             querybot.sendMessage(src, commandData + " is currently online!", channel);
             return;
         }
