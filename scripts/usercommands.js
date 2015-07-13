@@ -144,13 +144,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendMessage(src, "", channel);
         return;
     }
-    if (command == "rules") {
+    if (command == "rules" || command == "rule") {
         if (commandData === "mafia") {
             require('mafia.js').showRules(src, channel);
             return;
         }
         var norules = (rules.length-1)/2; //formula for getting the right amount of rules
-        if(commandData !== undefined && !isNaN(commandData) && commandData >0 && commandData < norules){
+        if (commandData !== undefined && !isNaN(commandData) && commandData >0 && commandData < norules) {
             var num = parseInt(commandData, 10);
             num = (2*num)+1; //gets the right rule from the list since it isn't simply y=x it's y=2x+1
             sys.sendMessage(src, rules[num], channel);
