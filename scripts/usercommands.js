@@ -99,7 +99,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             var colour = sys.rand(0, colours.length);
             var randColour = function () {
                 var returnVal = colours[colour];
-                colour = colour + 1;
+                colour += 1;
                 if (colour === colours.length) {
                     colour = 0;
                 }
@@ -338,7 +338,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         var part = commandData;
         if (part > 0) {
-            part = part -1;
+            part -= 1;
         }
         topic.splice(part, 1);
         SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
@@ -470,20 +470,20 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     // Tour alerts
-    if(command == "touralerts") {
-        if(commandData == "on"){
+    if (command == "touralerts") {
+        if (commandData == "on") {
             SESSION.users(src).tiers = script.getKey("touralerts", src).split("*");
             normalbot.sendMessage(src, "You have turned tour alerts on!", channel);
             script.saveKey("touralertson", src, "true");
             return;
         }
-        if(commandData == "off") {
+        if (commandData == "off") {
             delete SESSION.users(src).tiers;
             normalbot.sendMessage(src, "You have turned tour alerts off!", channel);
             script.saveKey("touralertson", src, "false");
             return;
         }
-        if(typeof(SESSION.users(src).tiers) == "undefined" || SESSION.users(src).tiers.length === 0){
+        if (typeof(SESSION.users(src).tiers) == "undefined" || SESSION.users(src).tiers.length === 0) {
             normalbot.sendMessage(src, "You currently have no alerts activated", channel);
             return;
         }
@@ -498,7 +498,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
 
-    if(command == "addtouralert") {
+    if (command == "addtouralert") {
         var tier = utilities.find_tier(commandData);
         if (tier === null) {
             normalbot.sendMessage(src, "Sorry, the server does not recognise the " + commandData + " tier.", channel);
@@ -519,8 +519,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, "Added a tour alert for the tier: " + tier + "!", channel);
         return;
     }
-    if(command == "removetouralert") {
-        if(typeof SESSION.users(src).tiers == "undefined" || SESSION.users(src).tiers.length === 0){
+    if (command == "removetouralert") {
+        if (typeof SESSION.users(src).tiers == "undefined" || SESSION.users(src).tiers.length === 0) {
             normalbot.sendMessage(src, "You currently have no alerts.", channel);
             return;
         }
@@ -650,11 +650,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         var lastLogin = sys.dbLastOn(commandData);
-        if(lastLogin === undefined){
+        if (lastLogin === undefined){
             querybot.sendMessage(src, "No such user.", channel);
             return;
         }
-        if(sys.id(commandData)!== undefined){
+        if (sys.id(commandData)!== undefined){
             querybot.sendMessage(src, commandData + " is currently online!", channel);
             return;
         }
@@ -910,13 +910,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var table = "<table border = 1 cellpadding = 3>";
         table += "<tr><th rowspan = 2 colspan = 2 valign = middle><font size = 5>Natures</font></th><th colspan = 5 valign = middle><font size = 4>Raises</font></th></tr>";
         table += "<tr>";
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < stats.length; i++) {
             table += "<th valign = middle>" + stats[i] + "</th>";
         }
         table += "</tr>";
-        for (var x = 0; x < 5; x++) {
+        for (var x = 0; x < stats.length; x++) {
             table += "<tr>" + (x === 0 ? "<th valign = middle rowspan = 5><font size = 4>Lowers</font></th>" : "") + "<th>" + stats[x] + "</th>";
-            for (var y = 0; y < 5; y++) {
+            for (var y = 0; y < stats.length; y++) {
                 table += "<td><center>" + pokedex.natures[y][x] + "</center></td>";
             }
             table += "</tr>";
@@ -970,7 +970,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         SESSION.global().coins = 0;
         return;
     }
-    if(command == "shades"){
+    if (command == "shades") {
         if(sys.name(src).toLowerCase() !== "pokemonnerd"){
             return;
         }
