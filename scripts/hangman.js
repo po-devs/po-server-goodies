@@ -13,7 +13,7 @@ function Hangman() {
     var minBodyParts = 5;
     var winnerDelay = 60;
     var answerDelay = 7;
-    var maxAnswers = [3, 2];
+    var maxAnswers = [3, 3];
     var maxGuesses = 2;
 
     var autoGamesFile = "scriptdata/hangmanq.txt";
@@ -156,7 +156,7 @@ function Hangman() {
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
             if (isEventGame) {
-                    hangbot.sendAll("Suggest more event game categories here http://pokemon-online.eu/threads/31530", hangchan);
+                    sys.sendHtmlAll("<font color=#3DAA68><timestamp/> <b>±" + hangbot.name + ":</b></font> Suggest more event game categories <a href='http://pokemon-online.eu/threads/31530'>here</a>!", hangchan);
                 }
             if (pendingEvent) {
                 eventDelay = true;
@@ -184,12 +184,12 @@ function Hangman() {
             }
             else {
                 sys.sendAll("*** ************************************************************ ***", hangchan);
-                hangbot.sendAll("HANGED! No one guessed the word '" + word.toUpperCase() + "' correctly, so " + (isEventGame ? "anyone may start a game now!" : "the host (" + hostName + ") has won this game!"), hangchan);
+                hangbot.sendAll("HANGED! No one guessed the word '" + word.toUpperCase() + "' correctly, so " + (!isEventGame && sys.isInChannel(sys.id(hostName), hangchan) ? "the host (" + hostName + ") has won this game!" : "anyone may start a game now!"), hangchan);
                 sys.sendAll("*** ************************************************************ ***", hangchan);
-                if (isEventGame) {
-                    hangbot.sendAll("Suggest more event game categories here http://pokemon-online.eu/threads/31530", hangchan);
-                }
                 sendChanHtmlAll(" ", hangchan);
+                if (isEventGame) {
+                    sys.sendHtmlAll("<font color=#3DAA68><timestamp/> <b>±" + hangbot.name + ":</b></font> Suggest more event game categories <a href='http://pokemon-online.eu/threads/31530'>here</a>!", hangchan);
+                }
                 if (sys.isInChannel(sys.id(hostName), hangchan) === true) { // IF HOST WINS AND STILL IN CHANNEL
                     this.setWinner(hostName, (host === null && hostName == hangbot.name));
                 }
@@ -274,6 +274,9 @@ function Hangman() {
             this.countPoints();
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
+            if (isEventGame) {
+                sys.sendHtmlAll("<font color=#3DAA68><timestamp/> <b>±" + hangbot.name + ":</b></font> Suggest more event game categories <a href='http://pokemon-online.eu/threads/31530'>here</a>!", hangchan);
+            }
             if (pendingEvent) {
                 eventDelay = true;
             } else {
