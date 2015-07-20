@@ -327,7 +327,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         var returnVal = poChannel.addRule(commandData[0], commandData[1]);
         if (returnVal) {    
-            channelbot.sendMessage(src, returnVal);
+            channelbot.sendMessage(src, returnVal, channel);
         } else {
             channelbot.sendMessage(src, "You added a rule", channel);
          }
