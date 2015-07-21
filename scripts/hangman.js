@@ -14,7 +14,7 @@ function Hangman() {
     var winnerDelay = 60;
     var answerDelay = 7;
     var maxAnswers = [3, 3];
-    var maxGuesses = 2;
+    var maxGuesses = 3;
 
     var autoGamesFile = "scriptdata/hangmanq.txt";
     var leaderboardsFile = "scriptdata/hangmanLeaderboards.txt";
