@@ -632,6 +632,47 @@ function Hangman() {
         sys.sendMessage(src, "", hangchan);
 
     };
+    
+    this.passLeaderboard = function (src, commandData) {
+        if (commandData === undefined) {
+            hangbot.sendMessage(src, "Please choose a target user that is logged on the same IP.", hangchan);
+            return;
+        }
+        var currentName = sys.name(src).toLowerCase();
+        var targetName = commandData.toLowerCase();
+        if (currentName === targetName) { // CHECK IF TARGET ALT IS SAME AS CURRENT ALT
+            hangbot.sendMessage(src, "The target user is the same as your current. Please choose a new target that is on the same IP and logged on.", hangchan);
+            return;
+        }
+        if (leaderboards.current.hasOwnProperty(currentName) === false) { // CURRENT NAME NOT ON THE LEADERBOARD
+            hangbot.sendMessage(src, "Your currently not rated on the leaderboard.", hangchan);
+            return;
+        }
+        if (sys.id(targetName) === undefined) { // CHECK IF TARGET NAME IS ONLINE
+            hangbot.sendMessage(src, "Your target is offline.", hangchan);
+            return;
+        }
+        if (!sys.dbRegistered(targetName)) { // CHECK IF TARGET NAME IS REGISTERED
+            hangbot.sendMessage(src, "That user isn't registered. You need to register it first.", hangchan);
+            return;
+        }
+        if (sys.ip(sys.id(targetName)) !== sys.ip(src)) { // CHECK IF TARGET NAME IS ON THE SAME IP
+            hangbot.sendMessage(src, "Both accounts must be on the same IP to pass your leaderboard points.", hangchan);
+            return;
+        }
+        if (leaderboards.current.hasOwnProperty(targetName) === false) { // CREATE NEW TARGET NAME IF IT DOESN'T EXIST ON THE LEADERBOARD
+            leaderboards.current[targetName] = 0;
+        }
+        // GET DEEP COPY OF OBJECT VALUES TO AVIOD PROBLEMS
+        var currentValue = JSON.parse(JSON.stringify(leaderboards.current[currentName]));
+        var targetValue = JSON.parse(JSON.stringify(leaderboards.current[targetName]));
+        leaderboards.current[targetName] = currentValue + targetValue;
+        delete leaderboards.current[currentName];
+        sys.write(leaderboardsFile, JSON.stringify(leaderboards));
+        hangbot.sendMessage(src, "You passed your hangman leaderboard points from " + sys.name(sys.id(currentName)) + " to " + sys.name(sys.id(targetName)) + ".", hangchan);
+        return;
+    };
+    
     this.passWinner = function (src, commandData) {
         if (commandData === undefined) {
             return;
@@ -1301,6 +1342,7 @@ function Hangman() {
             "/hangmanadmins: To see a list of hangman auth.",
             "/end: To end a game you started.",
             "/leaderboard: To see the event leaderboard. You can type /leaderboard last to see last months leaderboard.",
+            "/passleaderboard [user]: Passes all your leaderboard points to another alt on the same IP. Both alts must also be logged on.",
             "/myanswer: To see the answer you submitted (host only)."
         ];
         var adminHelp = [
@@ -1388,8 +1430,13 @@ function Hangman() {
         if (command === "pass") {
             hangman.passWinner(src, commandData);
             return true;
-        }if (command === "leaderboard" || command === "leaderboards") {
+        }
+        if (command === "leaderboard" || command === "leaderboards") {
             hangman.viewLeaderboards(src, commandData);
+            return true;
+        }
+        if (command === "passleaderboard" || command === "passlb" || command === "passscore") {
+            hangman.passLeaderboard(src, commandData);
             return true;
         }
         if (command === "hangmanadmins" || command === "hadmins" || command === "has") {
@@ -1472,7 +1519,7 @@ function Hangman() {
             return true;
         }
 
-        /*if(command === "autogame") {
+        /*if (command === "autogame") {
             hangman.autoGame(src, commandData);
             return true;
         }*/
@@ -1494,17 +1541,17 @@ function Hangman() {
          }
          */
 
-        if(command === "searchquest") {
+        if (command === "searchquest") {
             hangman.searchQuest(src, commandData);
             return true;
         }
 
-        if(command === "changeword") {
+        if (command === "changeword") {
             hangman.changeWord(src, commandData);
             return true;
         }
         
-        if(command === "changehint") {
+        if (command === "changehint") {
             hangman.changeHint(src, commandData);
             return true;
         }
@@ -1528,12 +1575,12 @@ function Hangman() {
             return false;
         }
 
-        if(command === "addquest") {
+        if (command === "addquest") {
             hangman.addQuest(src, commandData);
             return true;
         }
 
-        if(command === "deletequest") {
+        if (command === "deletequest") {
             hangman.deleteQuest(src, commandData);
             return true;
         }
@@ -1553,12 +1600,12 @@ function Hangman() {
             return true;
         }
 
-        if(command === "eventgame") {
+        if (command === "eventgame") {
             hangman.eventGame(src, commandData);
             return true;
         }
         
-        if(command === "forceevent"){
+        if (command === "forceevent") {
             if (word) {
                 hangbot.sendMessage(src, "There is currently a game running!", hangchan);
             }
@@ -1567,7 +1614,7 @@ function Hangman() {
             }
             return true;
         }
-		if(command === "forcesuddendeath"){
+		if (command === "forcesuddendeath") {
             if (word) {
                 hangbot.sendMessage(src, "There is currently a game running!", hangchan);
             }
