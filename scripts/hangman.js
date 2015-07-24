@@ -663,10 +663,7 @@ function Hangman() {
         if (leaderboards.current.hasOwnProperty(targetName) === false) { // CREATE NEW TARGET NAME IF IT DOESN'T EXIST ON THE LEADERBOARD
             leaderboards.current[targetName] = 0;
         }
-        // GET DEEP COPY OF OBJECT VALUES TO AVIOD PROBLEMS
-        var currentValue = JSON.parse(JSON.stringify(leaderboards.current[currentName]));
-        var targetValue = JSON.parse(JSON.stringify(leaderboards.current[targetName]));
-        leaderboards.current[targetName] = currentValue + targetValue;
+        leaderboards.current[targetName] = leaderboards.current[currentName] + leaderboards.current[targetName];
         delete leaderboards.current[currentName];
         sys.write(leaderboardsFile, JSON.stringify(leaderboards));
         hangbot.sendMessage(src, "You passed your hangman leaderboard points from " + sys.name(sys.id(currentName)) + " to " + sys.name(sys.id(targetName)) + ".", hangchan);
