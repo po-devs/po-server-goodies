@@ -376,7 +376,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
         this.sendAll("An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ".", 0);
         sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
         sendChanAll("", 0);
-        this.sendAll(name + " opened signups for an elimination game featuring " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 60 seconds.", triviachan);
+        this.sendAll(name + " opened signups for an elimination game featuring " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds.", triviachan);
         sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
     }
     else if (this.scoreType === "speed" && this.catGame){
@@ -412,7 +412,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
         this.sendAll("An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!", 0);
         sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
         sendChanAll("", 0);
-        this.sendAll(name + " opened signups for an elimination game! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 60 seconds.", triviachan);
+        this.sendAll(name + " opened signups for an elimination game! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds.", triviachan);
         sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
     }
     else {
@@ -619,7 +619,11 @@ TriviaGame.prototype.finalizeAnswers = function () {
     var wrongAnswers = [],
         answeredCorrectly = [];
     var ignoreCaseAnswers = equivalentAns.concat(answers).map(function (s) {
-        return String(s).toLowerCase();
+        var answer = String(s).toLowerCase();
+        if (['a','an','the'].indexOf(answer) === -1) {
+            answer = answer.replace(/\ba|an|the\b ?/g,'').trim();
+        }
+        return answer;
     });
     for (id in this.triviaPlayers) {
         if (this.triviaPlayers[id].name != sys.name(id) && sys.name(id) !== undefined) {
@@ -630,6 +634,9 @@ TriviaGame.prototype.finalizeAnswers = function () {
         var name = this.submittedAnswers[id].name;
         if (sys.id(name) !== undefined && this.player(name) !== null) {
             answer = this.submittedAnswers[id].answer.toLowerCase().replace(/ {2,}/g, " ");
+            if (['a','an','the'].indexOf(answer) === -1) {
+                answer = answer.replace(/\ba|an|the\b ?/g,'').trim();
+            }
             if (ignoreCaseAnswers.indexOf(answer) != -1) {
                 answeredCorrectly.push(this.submittedAnswers[id]);
             }
