@@ -33,7 +33,7 @@ function Hangman() {
     var delayLimit = 1;
     var suddenDeathLimit = 300;
 
-    var host;
+    var hostIpArray = [];
     var hostName;
     var winner;
     var nextGame;
@@ -66,7 +66,12 @@ function Hangman() {
 
     this.lastAdvertise = 0;
     this.guessCharacter = function (src, commandData) {
-        if (sys.ip(src) === host) {
+        if (sys.name(src).toLowerCase() === hostName.toLowerCase()) { // CHECK IF HOST CHANGED IP
+            if (hostIpArray.indexOf(sys.ip(src)) === -1) {
+                hostIpArray.push(sys.ip(src));
+            }
+        }
+        if (hostIpArray.indexOf(sys.ip(src)) !== -1) {
             hangbot.sendMessage(src, "You started the game, so you can't answer!", hangchan);
             return;
         }
@@ -191,7 +196,7 @@ function Hangman() {
                     sys.sendHtmlAll("<font color=#3DAA68><timestamp/> <b>±" + hangbot.name + ":</b></font> Suggest more event game categories <a href='http://pokemon-online.eu/threads/31530'>here</a>!", hangchan);
                 }
                 if (sys.isInChannel(sys.id(hostName), hangchan) === true) { // IF HOST WINS AND STILL IN CHANNEL
-                    this.setWinner(hostName, (host === null && hostName == hangbot.name));
+                    this.setWinner(hostName, (hostIpArray.indexOf(null) !== -1 && hostName == hangbot.name));
                 }
                 else { // IF HOST WINS AND NOT IN CHANNEL
                     this.setWinner(hostName, true); // TRUE SO PLAYER CAN INSTANT START
@@ -209,7 +214,12 @@ function Hangman() {
         if (commandData === undefined) {
             return;
         }
-        if (sys.ip(src) === host) {
+        if (sys.name(src).toLowerCase() === hostName.toLowerCase()) { // CHECK IF HOST CHANGED IP
+            if (hostIpArray.indexOf(sys.ip(src)) === -1) {
+                hostIpArray.push(sys.ip(src));
+            }
+        }
+        if (hostIpArray.indexOf(sys.ip(src)) !== -1) {
             hangbot.sendMessage(src, "You started the game, so you can't answer!", hangchan);
             return;
         }
@@ -427,7 +437,8 @@ function Hangman() {
             }
         }
 
-        host = src ? sys.ip(src) : null;
+        hostIpArray = [];
+        hostIpArray[0] = src ? sys.ip(src) : null;
         hostName = name;
 
         sendChanHtmlAll(" ", hangchan);
@@ -698,15 +709,15 @@ function Hangman() {
         hangbot.sendAll("" + sys.name(src) + " has passed starting rights to " + commandData + "!", hangchan);
     };
     this.myAnswer = function (src){
-        if (word){
-            if (sys.ip(src) === host){
+        if (word) {
+            if (hostIpArray.indexOf(sys.ip(src)) !== -1) {
                 hangbot.sendMessage(src, "The answer for your game is " + word.toUpperCase() + "!", hangchan);
             }
             else{
                 hangbot.sendMessage(src, "You are not the host, so you can't use this command!", hangchan);
             }
         }
-        else{
+        else {
             hangbot.sendMessage(src, "No game is running!", hangchan);
         }
     };
@@ -1445,7 +1456,7 @@ function Hangman() {
             return true;
         }
 
-        if (hangman.authLevel(src) < 1 && !(command === "end" && sys.ip(src) === host)) {
+        if (hangman.authLevel(src) < 1 && !(command === "end" && hostIpArray.indexOf(sys.ip(src)) !== -1)) {
             return false;
         }
         var id;
@@ -1870,7 +1881,7 @@ function Hangman() {
                 hangbot.sendAll("HANGED! No one guessed the word '" + word.toUpperCase() + "' in time, so anyone may start a game now!", hangchan);
                 sys.sendAll("*** ************************************************************ ***", hangchan);
                 sendChanHtmlAll(" ", hangchan);
-                this.setWinner(hostName, (host === null && hostName == hangbot.name));
+                this.setWinner(hostName, (hostIpArray.indexOf(null) !== -1 && hostName == hangbot.name));
                 eventCount = eventLimit;
                 suddenDeathLimit = 300;
             }
