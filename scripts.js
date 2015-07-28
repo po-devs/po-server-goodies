@@ -1625,7 +1625,7 @@ beforeChatMessage: function(src, message, chan) {
     }
 
 
-    if (message == "." || message == "t") {
+    if ((message == "." || message == "t") && !callplugins("beforeChatMessage", src, message, channel)) {
         sys.sendMessage(src, sys.name(src)+": "+message, channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, chan);
@@ -1711,6 +1711,7 @@ beforeChatMessage: function(src, message, chan) {
         sys.stopEvent();
         return;
     }
+    
     if (callplugins("beforeChatMessage", src, message, channel)) {
         sys.stopEvent();
         return;
