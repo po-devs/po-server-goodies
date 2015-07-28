@@ -84,7 +84,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         querybot.sendMessage(src, "Players on version " + commandData + " are: " + output.join(", "), channel);
         return;
     }
-    if (command == "tier") {
+    if (command == "intier") {
         if (tar === undefined){
             querybot.sendChanMessage(src,"No such user online.");
             return;
@@ -719,7 +719,7 @@ exports.help =
         "/channelnamebans: Lists banned channel names.",
         "/onrange: To view who is on an IP range.",
         "/onos: Lists players on a certain operating system (May lag a little with certain OS)",
-        "/tier: To view the tier(s) of a user.",
+        "/intier: To view the tier(s) of a user.",
         "/battlehistory: To view a user's battle history.",
         "/channelusers: Lists users on a channel."
     ];
