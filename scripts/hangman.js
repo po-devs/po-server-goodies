@@ -99,8 +99,8 @@ function Hangman() {
             }
         }
         var now = (new Date()).getTime();
-        if (now < SESSION.users(src).hangmanTime) {
-            hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanTime - now) / 1000) + 1) + " seconds before submitting another guess!", hangchan);
+        if (now < SESSION.users(src).hangmanGuessTime) {
+            hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanGuessTime - now) / 1000) + 1) + " seconds before using /g again!", hangchan);
             return;
         }
         if (SESSION.users(src).smute.active) {
@@ -185,7 +185,7 @@ function Hangman() {
                 }).join(", ") + "] " + (gameMode === regular ? "[Chances left: " + parts + "] " : ""), hangchan);
                 sendChanHtmlAll(" ", hangchan);
                 this.applyPoints(src, p);
-                SESSION.users(src).hangmanTime = (new Date()).getTime() + answerDelay * 1000;
+                SESSION.users(src).hangmanGuessTime = (new Date()).getTime() + answerDelay * 1000;
             }
             else {
                 sys.sendAll("*** ************************************************************ ***", hangchan);
@@ -247,8 +247,8 @@ function Hangman() {
             }
         }
         var now = (new Date()).getTime();
-        if (now < SESSION.users(src).hangmanTime) {
-            hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanTime - now) / 1000) + 1) + " seconds before submitting another guess!", hangchan);
+        if (now < SESSION.users(src).hangmanAnswerTime) {
+            hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanAnswerTime - now) / 1000) + 1) + " seconds before using /a again!", hangchan);
             return;
         }
         if (SESSION.users(src).smute.active) {
@@ -299,7 +299,7 @@ function Hangman() {
             this.addAnswerUse(src);
             hangbot.sendAll("" + sys.name(src) + "'s answer was wrong! The game continues!", hangchan);
             sendChanHtmlAll(" ", hangchan);
-            SESSION.users(src).hangmanTime = (new Date()).getTime() + answerDelay * 2000;
+            SESSION.users(src).hangmanAnswerTime = (new Date()).getTime() + answerDelay * 2000;
         }
     };
     this.startGame = function (src, commandData) {
@@ -1834,8 +1834,11 @@ function Hangman() {
         if (channel !== hangchan) {
             return false;
         }
-        if (SESSION.users(src).hangmanTime === undefined) {
-            SESSION.users(src).hangmanTime = (new Date()).getTime();
+        if (SESSION.users(src).hangmanGuessTime === undefined) {
+            SESSION.users(src).hangmanGuessTime = (new Date()).getTime();
+        }
+        if (SESSION.users(src).hangmanAnswerTime === undefined) {
+            SESSION.users(src).hangmanAnswerTime = (new Date()).getTime();
         }
         return false;
     };
