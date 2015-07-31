@@ -59,6 +59,7 @@ var defaultgen = parseInt(sys.serverVersion().replace(/\./g, ""), 10) >= 250 ? "
 var tourcommands = ["/join: Joins a tournament.",
                     "/unjoin: Unjoins a tournament during signups only.",
                     "/queue: Lists upcoming tournaments.",
+                    "/showevent: Views the upcoming event and time till it starts.",
                     "/viewround: Views current round.",
                     "/iom: Views list of ongoing matches.",
                     "/ipm: Views list of matches yet to start.",
@@ -810,7 +811,7 @@ function initTours() {
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         norepeat: parseInt(getConfigValue("tourconfig.txt", "norepeat"), 10),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.107",
+        version: "2.108",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -2982,9 +2983,13 @@ function tourCommand(src, command, commandData, channel) {
             }
             return true;
         }
-        if (command == "showevents" || command == "showevent") {
-            showEvents(src, channel);
-            return;
+        if (command === "showevents" || command === "showevent") {
+            if (sys.filesForDirectory(dataDir).indexOf("eventtours.json") === -1) {
+                sendBotMessage(src, "No data on events found!", tourschan);
+                return true;
+            }
+            showEvents(src, tourschan);
+            return true;
         }
     }
     catch (err) {
