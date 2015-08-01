@@ -4523,7 +4523,7 @@ function showEvents(src, chan) {
 
 function sendWelcomeMessage(src, chan) {
     sys.sendMessage(src,border,chan);
-    sys.sendMessage(src,"*** Welcome to #"+tourconfig.channel",chan);
+    sys.sendMessage(src,"*** Welcome to #"+tourconfig.channel,chan);
     showEvents(src, chan);
     sys.sendMessage(src,"",chan);
     sys.sendMessage(src,"*** Current Tournaments ***",chan);
