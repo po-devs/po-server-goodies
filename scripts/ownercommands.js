@@ -763,9 +763,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             try { 
                 script.league = JSON.parse(resp).league;
                 sys.write(Config.dataDir+"league.json", resp);
+                normalbot.sendMessage(src, "League file updated!", channel);
             }
             catch (e) {
-                sys.sendMessage(src, "There was an error with the league file", channel);
+                normalbot.sendMessage(src, "There was an error with the league file", channel);
             }
         });
         return;
