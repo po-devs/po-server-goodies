@@ -13,8 +13,8 @@ function Hangman() {
     var minBodyParts = 5;
     var winnerDelay = 60;
     var answerDelay = 7;
-    var maxAnswers = [3, 3];
-    var maxGuesses = 2;
+    var maxAnswers = [3, 2];
+    var maxGuesses = 3;
 
     var autoGamesFile = "scriptdata/hangmanq.txt";
     var leaderboardsFile = "scriptdata/hangmanLeaderboards.txt";
@@ -33,7 +33,7 @@ function Hangman() {
     var delayLimit = 1;
     var suddenDeathLimit = 300;
 
-    var host;
+    var hostIpArray = [];
     var hostName;
     var winner;
     var nextGame;
@@ -66,7 +66,12 @@ function Hangman() {
 
     this.lastAdvertise = 0;
     this.guessCharacter = function (src, commandData) {
-        if (sys.ip(src) === host) {
+        if (sys.name(src).toLowerCase() === hostName.toLowerCase()) { // CHECK IF HOST CHANGED IP
+            if (hostIpArray.indexOf(sys.ip(src)) === -1) {
+                hostIpArray.push(sys.ip(src));
+            }
+        }
+        if (hostIpArray.indexOf(sys.ip(src)) !== -1) {
             hangbot.sendMessage(src, "You started the game, so you can't answer!", hangchan);
             return;
         }
@@ -94,8 +99,8 @@ function Hangman() {
             }
         }
         var now = (new Date()).getTime();
-        if (now < SESSION.users(src).hangmanTime) {
-            hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanTime - now) / 1000) + 1) + " seconds before submitting another guess!", hangchan);
+        if (now < SESSION.users(src).hangmanGuessTime) {
+            hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanGuessTime - now) / 1000) + 1) + " seconds before using /g again!", hangchan);
             return;
         }
         if (SESSION.users(src).smute.active) {
@@ -180,7 +185,7 @@ function Hangman() {
                 }).join(", ") + "] " + (gameMode === regular ? "[Chances left: " + parts + "] " : ""), hangchan);
                 sendChanHtmlAll(" ", hangchan);
                 this.applyPoints(src, p);
-                SESSION.users(src).hangmanTime = (new Date()).getTime() + answerDelay * 1000;
+                SESSION.users(src).hangmanGuessTime = (new Date()).getTime() + answerDelay * 1000;
             }
             else {
                 sys.sendAll("*** ************************************************************ ***", hangchan);
@@ -191,7 +196,7 @@ function Hangman() {
                     sys.sendHtmlAll("<font color=#3DAA68><timestamp/> <b>±" + hangbot.name + ":</b></font> Suggest more event game categories <a href='http://pokemon-online.eu/threads/31530'>here</a>!", hangchan);
                 }
                 if (sys.isInChannel(sys.id(hostName), hangchan) === true) { // IF HOST WINS AND STILL IN CHANNEL
-                    this.setWinner(hostName, (host === null && hostName == hangbot.name));
+                    this.setWinner(hostName, (hostIpArray.indexOf(null) !== -1 && hostName == hangbot.name));
                 }
                 else { // IF HOST WINS AND NOT IN CHANNEL
                     this.setWinner(hostName, true); // TRUE SO PLAYER CAN INSTANT START
@@ -209,7 +214,12 @@ function Hangman() {
         if (commandData === undefined) {
             return;
         }
-        if (sys.ip(src) === host) {
+        if (sys.name(src).toLowerCase() === hostName.toLowerCase()) { // CHECK IF HOST CHANGED IP
+            if (hostIpArray.indexOf(sys.ip(src)) === -1) {
+                hostIpArray.push(sys.ip(src));
+            }
+        }
+        if (hostIpArray.indexOf(sys.ip(src)) !== -1) {
             hangbot.sendMessage(src, "You started the game, so you can't answer!", hangchan);
             return;
         }
@@ -237,8 +247,8 @@ function Hangman() {
             }
         }
         var now = (new Date()).getTime();
-        if (now < SESSION.users(src).hangmanTime) {
-            hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanTime - now) / 1000) + 1) + " seconds before submitting another guess!", hangchan);
+        if (now < SESSION.users(src).hangmanAnswerTime) {
+            hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanAnswerTime - now) / 1000) + 1) + " seconds before using /a again!", hangchan);
             return;
         }
         if (SESSION.users(src).smute.active) {
@@ -289,7 +299,7 @@ function Hangman() {
             this.addAnswerUse(src);
             hangbot.sendAll("" + sys.name(src) + "'s answer was wrong! The game continues!", hangchan);
             sendChanHtmlAll(" ", hangchan);
-            SESSION.users(src).hangmanTime = (new Date()).getTime() + answerDelay * 2000;
+            SESSION.users(src).hangmanAnswerTime = (new Date()).getTime() + answerDelay * 2000;
         }
     };
     this.startGame = function (src, commandData) {
@@ -427,7 +437,8 @@ function Hangman() {
             }
         }
 
-        host = src ? sys.ip(src) : null;
+        hostIpArray = [];
+        hostIpArray[0] = src ? sys.ip(src) : null;
         hostName = name;
 
         sendChanHtmlAll(" ", hangchan);
@@ -632,6 +643,44 @@ function Hangman() {
         sys.sendMessage(src, "", hangchan);
 
     };
+    
+    this.passLeaderboard = function (src, commandData) {
+        if (commandData === undefined) {
+            hangbot.sendMessage(src, "Please choose a target user that is logged on the same IP.", hangchan);
+            return;
+        }
+        var currentName = sys.name(src).toLowerCase();
+        var targetName = commandData.toLowerCase();
+        if (currentName === targetName) { // CHECK IF TARGET ALT IS SAME AS CURRENT ALT
+            hangbot.sendMessage(src, "The target user is the same as your current. Please choose a new target that is on the same IP and logged on.", hangchan);
+            return;
+        }
+        if (leaderboards.current.hasOwnProperty(currentName) === false) { // CURRENT NAME NOT ON THE LEADERBOARD
+            hangbot.sendMessage(src, "Your currently not rated on the leaderboard.", hangchan);
+            return;
+        }
+        if (sys.id(targetName) === undefined) { // CHECK IF TARGET NAME IS ONLINE
+            hangbot.sendMessage(src, "Your target is offline.", hangchan);
+            return;
+        }
+        if (!sys.dbRegistered(targetName)) { // CHECK IF TARGET NAME IS REGISTERED
+            hangbot.sendMessage(src, "That user isn't registered. You need to register it first.", hangchan);
+            return;
+        }
+        if (sys.ip(sys.id(targetName)) !== sys.ip(src)) { // CHECK IF TARGET NAME IS ON THE SAME IP
+            hangbot.sendMessage(src, "Both accounts must be on the same IP to pass your leaderboard points.", hangchan);
+            return;
+        }
+        if (leaderboards.current.hasOwnProperty(targetName) === false) { // CREATE NEW TARGET NAME IF IT DOESN'T EXIST ON THE LEADERBOARD
+            leaderboards.current[targetName] = 0;
+        }
+        leaderboards.current[targetName] = leaderboards.current[currentName] + leaderboards.current[targetName];
+        delete leaderboards.current[currentName];
+        sys.write(leaderboardsFile, JSON.stringify(leaderboards));
+        hangbot.sendMessage(src, "You passed your hangman leaderboard points from " + sys.name(sys.id(currentName)) + " to " + sys.name(sys.id(targetName)) + ".", hangchan);
+        return;
+    };
+    
     this.passWinner = function (src, commandData) {
         if (commandData === undefined) {
             return;
@@ -660,15 +709,15 @@ function Hangman() {
         hangbot.sendAll("" + sys.name(src) + " has passed starting rights to " + commandData + "!", hangchan);
     };
     this.myAnswer = function (src){
-        if (word){
-            if (sys.ip(src) === host){
+        if (word) {
+            if (hostIpArray.indexOf(sys.ip(src)) !== -1) {
                 hangbot.sendMessage(src, "The answer for your game is " + word.toUpperCase() + "!", hangchan);
             }
             else{
                 hangbot.sendMessage(src, "You are not the host, so you can't use this command!", hangchan);
             }
         }
-        else{
+        else {
             hangbot.sendMessage(src, "No game is running!", hangchan);
         }
     };
@@ -1301,6 +1350,7 @@ function Hangman() {
             "/hangmanadmins: To see a list of hangman auth.",
             "/end: To end a game you started.",
             "/leaderboard: To see the event leaderboard. You can type /leaderboard last to see last months leaderboard.",
+            "/passleaderboard [user]: Passes all your leaderboard points to another alt on the same IP. Both alts must also be logged on.",
             "/myanswer: To see the answer you submitted (host only)."
         ];
         var adminHelp = [
@@ -1388,8 +1438,13 @@ function Hangman() {
         if (command === "pass") {
             hangman.passWinner(src, commandData);
             return true;
-        }if (command === "leaderboard" || command === "leaderboards") {
+        }
+        if (command === "leaderboard" || command === "leaderboards") {
             hangman.viewLeaderboards(src, commandData);
+            return true;
+        }
+        if (command === "passleaderboard" || command === "passlb" || command === "passscore") {
+            hangman.passLeaderboard(src, commandData);
             return true;
         }
         if (command === "hangmanadmins" || command === "hadmins" || command === "has") {
@@ -1401,7 +1456,7 @@ function Hangman() {
             return true;
         }
 
-        if (hangman.authLevel(src) < 1 && !(command === "end" && sys.ip(src) === host)) {
+        if (hangman.authLevel(src) < 1 && !(command === "end" && hostIpArray.indexOf(sys.ip(src)) !== -1)) {
             return false;
         }
         var id;
@@ -1472,7 +1527,7 @@ function Hangman() {
             return true;
         }
 
-        /*if(command === "autogame") {
+        /*if (command === "autogame") {
             hangman.autoGame(src, commandData);
             return true;
         }*/
@@ -1494,17 +1549,17 @@ function Hangman() {
          }
          */
 
-        if(command === "searchquest") {
+        if (command === "searchquest") {
             hangman.searchQuest(src, commandData);
             return true;
         }
 
-        if(command === "changeword") {
+        if (command === "changeword") {
             hangman.changeWord(src, commandData);
             return true;
         }
         
-        if(command === "changehint") {
+        if (command === "changehint") {
             hangman.changeHint(src, commandData);
             return true;
         }
@@ -1528,12 +1583,12 @@ function Hangman() {
             return false;
         }
 
-        if(command === "addquest") {
+        if (command === "addquest") {
             hangman.addQuest(src, commandData);
             return true;
         }
 
-        if(command === "deletequest") {
+        if (command === "deletequest") {
             hangman.deleteQuest(src, commandData);
             return true;
         }
@@ -1553,12 +1608,12 @@ function Hangman() {
             return true;
         }
 
-        if(command === "eventgame") {
+        if (command === "eventgame") {
             hangman.eventGame(src, commandData);
             return true;
         }
         
-        if(command === "forceevent"){
+        if (command === "forceevent") {
             if (word) {
                 hangbot.sendMessage(src, "There is currently a game running!", hangchan);
             }
@@ -1567,7 +1622,7 @@ function Hangman() {
             }
             return true;
         }
-		if(command === "forcesuddendeath"){
+		if (command === "forcesuddendeath") {
             if (word) {
                 hangbot.sendMessage(src, "There is currently a game running!", hangchan);
             }
@@ -1779,8 +1834,11 @@ function Hangman() {
         if (channel !== hangchan) {
             return false;
         }
-        if (SESSION.users(src).hangmanTime === undefined) {
-            SESSION.users(src).hangmanTime = (new Date()).getTime();
+        if (SESSION.users(src).hangmanGuessTime === undefined) {
+            SESSION.users(src).hangmanGuessTime = (new Date()).getTime();
+        }
+        if (SESSION.users(src).hangmanAnswerTime === undefined) {
+            SESSION.users(src).hangmanAnswerTime = (new Date()).getTime();
         }
         return false;
     };
@@ -1826,7 +1884,7 @@ function Hangman() {
                 hangbot.sendAll("HANGED! No one guessed the word '" + word.toUpperCase() + "' in time, so anyone may start a game now!", hangchan);
                 sys.sendAll("*** ************************************************************ ***", hangchan);
                 sendChanHtmlAll(" ", hangchan);
-                this.setWinner(hostName, (host === null && hostName == hangbot.name));
+                this.setWinner(hostName, (hostIpArray.indexOf(null) !== -1 && hostName == hangbot.name));
                 eventCount = eventLimit;
                 suddenDeathLimit = 300;
             }
