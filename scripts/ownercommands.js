@@ -757,6 +757,19 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         });
         return;
     }
+    if (command == "updateleague") {
+        var updateURL = Config.base_url + "league.json";
+        sys.webCall(updateURL, function(resp) {
+            try { 
+                JSON.parse(resp);
+                sys.write(Config.dataDir+"league.json", resp);
+            }
+            catch (e) {
+                sys.sendMessage(src, "There was an error with the league file", channel);
+            }
+        });
+        return;
+    }
     return "no command";
 };
 exports.help = 
@@ -807,5 +820,6 @@ exports.help =
         "/tempmod/admin: Gives temporary auth to a user. Lasts until they log out",
         "/detempauth: Removes temporary auth given to a user",
         "/testannouncement: Test the current announcement on Github (only shows for the command user)",
-        "/setannouncement: Sets the announcement to the one on Github"
+        "/setannouncement: Sets the announcement to the one on Github",
+        "/updateleague: Updates the league data from Github"
     ];

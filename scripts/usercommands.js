@@ -131,11 +131,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "league") {
-        if (!Config.League) return;
+        if (!Object.keys(script.league).length) {
+            return;
+        }
         sys.sendMessage(src, "", channel);
         sys.sendMessage(src, "*** Pokemon Online League ***", channel);
         sys.sendMessage(src, "", channel);
-        ar = Config.League;
+        ar = script.league;
         for (x = 0; x < ar.length; ++x) {
             if (ar[x].length > 0) {
                 sys.sendHtmlMessage(src, "<span style='font-weight: bold'>" + utilities.html_escape(ar[x][0].toCorrectCase()) + "</span> - " + ar[x][1].format(utilities.html_escape(ar[x][0])) + " " + (sys.id(ar[x][0]) !== undefined ? "<span style='color: green'>(online)</span>" : "<span style='color: red'>(offline)</span>"), channel);

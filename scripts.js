@@ -28,32 +28,6 @@ var Config = {
         max_name_length: 16,
         notPlayingMsg: "±Game: The game is in progress. Please type /join to join the next mafia game."
     },
-    League: [
-        ["ZoroDark", "Elite Four - View {0}'s <a href='http://pokemon-online.eu/threads/31231/'>E4 Thread!</a>"],
-        ["Isa", "Elite Four - View {0}'s <a href='http://pokemon-online.eu/threads/31204/'>E4 Thread!</a>"],
-        ["Karppi", "Elite Four - View {0}'s <a href='http://pokemon-online.eu/threads/31193/'>E4 Thread!</a>"],
-        ["Tomahawk9", "Elite Four - View {0}'s <a href='http://pokemon-online.eu/threads/31219/'>E4 Thread!</a>"],
-        ["Troller", "ORAS Ubers - View {0}'s <a href='http://pokemon-online.eu/threads/31356/'>Gym Thread!</a>"],
-        ["Raducan", "ORAS OverUsed - View {0}'s <a href='http://pokemon-online.eu/threads/31205/'>Gym Thread!</a>"],
-        ["Zamrock", "ORAS OverUsed - View {0}'s <a href='http://pokemon-online.eu/threads/31205/'>Gym Thread!</a>"],
-        ["snaga", "ORAS UnderUsed - View {0}'s <a href='http://pokemon-online.eu/threads/31416/'>Gym Thread!</a> "],
-        ["Celestial Phantom", "ORAS LesserUsed - View {0}'s <a href='http://pokemon-online.eu/threads/31218/'>Gym Thread!</a>"],
-        ["da raikage", "ORAS NeverUsed - View {0}'s <a href='http://pokemon-online.eu/threads/31196/'>Gym Thread!</a>"],
-        ["Tricking", "ORAS Little Cup - View {0}'s <a href='http://pokemon-online.eu/threads/31214/'>Gym Thread!</a>"],
-        ["Withoutatrace", "Challenge Cup - View {0}'s <a href='http://pokemon-online.eu/threads/31209/'>Gym Thread!</a>"],
-        ["Atli", "Challenge Cup - View {0}'s <a href='http://pokemon-online.eu/threads/31209/'>Gym Thread!</a>"],
-        ["Diamondslight", "Challenge Cup - View {0}'s <a href='http://pokemon-online.eu/threads/31209/'>Gym Thread!</a>"],
-        ["TraceofLife", "Balanced Hackmons - View {0}'s <a href='http://pokemon-online.eu/threads/31211/'>Gym Thread!</a>"],
-        ["fitzyhbbe", "Battle Factory 6v6 - View {0}'s <a href='http://pokemon-online.eu/threads/31197/'>Gym Thread!</a>"],
-        ["Carl Murray", "Monotype - View {0}'s <a href='http://pokemon-online.eu/threads/31200/'>Gym Thread!</a>"],
-        ["E.T.", "Inverted Battle - View {0}'s <a href='http://pokemon-online.eu/threads/31206/'>Gym Thread!</a>"],
-        ["H-C", "BW2 OverUsed - View {0}'s <a href='http://pokemon-online.eu/threads/31203/'>Gym Thread!</a>"],
-        ["The Dude", "HGSS OverUsed - View {0}'s <a href='http://pokemon-online.eu/threads/31485/'>Gym Thread!</a>"],
-        ["bugzinator", "ADV OverUsed - View {0}'s <a href='http://pokemon-online.eu/threads/31217'>Gym Thread!</a>"],
-        ["sulcata", "GSC OverUsed - View {0}'s <a href='http://pokemon-online.eu/threads/31202/'>Gym Thread!</a>"],
-        ["During Summer", "RBY OverUsed - View {0}'s <a href='http://pokemon-online.eu/threads/31213/'>Gym Thread!</a>"],
-        ["marcoasd", "RBY OverUsed - View {0}'s <a href='http://pokemon-online.eu/threads/31213/'>Gym Thread!</a>"]
-    ],
     DreamWorldTiers: ["ORAS Hackmons", "ORAS Balanced Hackmons", "No Preview OU", "No Preview Ubers", "DW LC", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
     superAdmins: ["[LD]Jirachier", "Mahnmut", "Strudels"],
     canJoinStaffChannel: ["Lamperi-"],
@@ -150,7 +124,7 @@ var cleanFile = function(filename) {
     if (typeof sys != 'undefined')
         sys.appendToFile(filename, "");
 };
-[Config.dataDir+"mafia_stats.json", Config.dataDir+"suspectvoting.json", Config.dataDir+"mafiathemes/metadata.json", Config.dataDir+"channelData.json", Config.dataDir+"mutes.txt", Config.dataDir+"mbans.txt", Config.dataDir+"hmutes.txt", Config.dataDir+"smutes.txt", Config.dataDir+"rangebans.txt", Config.dataDir+"contributors.txt", Config.dataDir+"ipbans.txt", Config.dataDir+"namesToWatch.txt", Config.dataDir+"hangmanadmins.txt", Config.dataDir+"hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", Config.dataDir+"secretsmute.txt", Config.dataDir+"ipApi.txt", Config.dataDir + "notice.html", Config.dataDir + "rangewhitelist.txt", Config.dataDir + "idbans.txt"].forEach(cleanFile);
+[Config.dataDir+"mafia_stats.json", Config.dataDir+"suspectvoting.json", Config.dataDir+"mafiathemes/metadata.json", Config.dataDir+"channelData.json", Config.dataDir+"mutes.txt", Config.dataDir+"mbans.txt", Config.dataDir+"hmutes.txt", Config.dataDir+"smutes.txt", Config.dataDir+"rangebans.txt", Config.dataDir+"contributors.txt", Config.dataDir+"ipbans.txt", Config.dataDir+"namesToWatch.txt", Config.dataDir+"hangmanadmins.txt", Config.dataDir+"hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", Config.dataDir+"secretsmute.txt", Config.dataDir+"ipApi.txt", Config.dataDir + "notice.html", Config.dataDir + "rangewhitelist.txt", Config.dataDir + "idbans.txt", Config.dataDir+"league.json"].forEach(cleanFile);
 
 var autosmute = sys.getFileContent(Config.dataDir+"secretsmute.txt").split(':::');
 var crc32 = require('crc32.js').crc32;
@@ -473,6 +447,11 @@ init : function() {
     script.namesToWatch = new MemoryHash(Config.dataDir+"namesToWatch.txt");
     script.namesToUnban = new MemoryHash(Config.dataDir+"namesToCookieUnban.txt");
     script.idBans = new MemoryHash(Config.dataDir+"idbans.txt");
+    try {
+        script.league = JSON.parse(Config.dataDir+"league.json").league;
+    } catch (e) {
+        script.league = {};
+    }
     proxy_ips = {};
     function addProxybans(content) {
         var lines = content.split(/\n/);
