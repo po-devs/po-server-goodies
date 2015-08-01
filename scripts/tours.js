@@ -75,7 +75,8 @@ var tourcommands = ["/join: Joins a tournament.",
                     "/tourrules: Lists the tournament rules.",
                     "/touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified).",
                     "/addtouralert: Adds a tour alert for the specified tier.",
-                    "/removetouralert: Removes a tour alert for the specified tier."];
+                    "/removetouralert: Removes a tour alert for the specified tier.",
+                    "/showevents: Shows a list of the upcoming event tournaments"];
 var tourmodcommands = ["Parameters: They can be used by putting 'gen=x'; 'mode=singles/doubles/triples'; 'type=single/double'; 'wifi=on/off'.",
                     "For example: '/tour Challenge Cup:gen=RBY:mode=triples:type=double:wifi=on' starts a RBY Challenge Cup double elimination tournament (in Triples mode) with Team Preview.",
                     "/tour: Puts a tour in the queue. Format is /tour tier:parameters.",
@@ -762,7 +763,6 @@ function getConfigValue(file, key) {
             decaytime: 2,
             norepeat: 7,
             decayglobalrate: 2,
-            version: "2.107",
             tourbot: "\u00B1"+Config.tourneybot+": ",
             debug: false,
             points: true,
@@ -810,7 +810,6 @@ function initTours() {
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         norepeat: parseInt(getConfigValue("tourconfig.txt", "norepeat"), 10),
         decayglobalrate: parseFloat(getConfigValue("tourconfig.txt", "decayglobalrate")),
-        version: "2.107",
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
@@ -907,7 +906,6 @@ function initTours() {
         tourwarnings = {'ranges': []};
     }
     loadTourMutes();
-    sendChanAll("Version "+tourconfig.version+" of the tournaments system was loaded successfully in this channel!", tourschan);
 }
 
 function getEventTour(datestring) {
@@ -1917,7 +1915,6 @@ function tourCommand(src, command, commandData, channel) {
                     tourconfig.channel = value;
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the tournament channel to "+tourconfig.channel,tourschan,false);
                     tourschan = sys.channelId(tourconfig.channel);
-                    sendChanAll("Version "+tourconfig.version+" of tournaments has been loaded successfully in this channel!", tourschan);
                     return true;
                 }
                 else if (option == 'scoring') {
@@ -2984,7 +2981,7 @@ function tourCommand(src, command, commandData, channel) {
         }
         if (command == "showevents" || command == "showevent") {
             showEvents(src, channel);
-            return;
+            return true;
         }
     }
     catch (err) {
@@ -4519,11 +4516,14 @@ function showEvents(src, chan) {
     if (typeof details2 === "object") {
         sys.sendMessage(src,"Tomorrow's Event Tournament: "+details2[0],chan);
     }
+    if (!details && !details2) {
+        sendBotMessage(src, "No events found", chan);
+    }
 }
 
 function sendWelcomeMessage(src, chan) {
     sys.sendMessage(src,border,chan);
-    sys.sendMessage(src,"*** Welcome to #"+tourconfig.channel+"; Version "+tourconfig.version+"! ***",chan);
+    sys.sendMessage(src,"*** Welcome to #"+tourconfig.channel",chan);
     showEvents(src, chan);
     sys.sendMessage(src,"",chan);
     sys.sendMessage(src,"*** Current Tournaments ***",chan);
