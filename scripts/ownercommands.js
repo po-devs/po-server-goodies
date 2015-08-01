@@ -761,7 +761,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var updateURL = Config.base_url + "league.json";
         sys.webCall(updateURL, function(resp) {
             try { 
-                JSON.parse(resp);
+                script.league = JSON.parse(resp).league;
                 sys.write(Config.dataDir+"league.json", resp);
             }
             catch (e) {

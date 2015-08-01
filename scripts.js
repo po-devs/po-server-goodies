@@ -448,7 +448,7 @@ init : function() {
     script.namesToUnban = new MemoryHash(Config.dataDir+"namesToCookieUnban.txt");
     script.idBans = new MemoryHash(Config.dataDir+"idbans.txt");
     try {
-        script.league = JSON.parse(Config.dataDir+"league.json").league;
+        script.league = JSON.parse(sys.read(Config.dataDir+"league.json")).league;
     } catch (e) {
         script.league = {};
     }
