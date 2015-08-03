@@ -749,7 +749,8 @@ function Hangman() {
         var p, players = sys.playersOfChannel(hangchan),
             now = (new Date()).getTime();
         for (p in players) {
-            SESSION.users(players[p]).hangmanTime = now;
+            SESSION.users(players[p]).hangmanAnswerTime = now;
+            SESSION.users(players[p]).hangmanGuessTime = now;
         }
         idleCount = 0;
     };
