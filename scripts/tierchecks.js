@@ -263,10 +263,10 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
 });
 
 tier_checker.add_new_check(INCLUDING, ["ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU"], function batonPassLimitXY(src, team, tier) {
-    var batonPassLimit = 2;
+    var batonPassLimit = 1;
     for (var i = 0, j = 0; i < 6; ++i) {
         if (sys.hasTeamPokeMove(src, team, i, sys.moveNum("Baton Pass")) && (++j > batonPassLimit)) {
-            return ["Baton Pass is limited to two Pokémon per team in " + tier + "."];
+            return ["Baton Pass is limited to "+batonPassLimit+" Pokémon per team in " + tier + "."];
         }
     }
 });
