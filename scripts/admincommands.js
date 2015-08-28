@@ -266,6 +266,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type + " by " + sys.name(src), staffchannel);
         if (type == "banned") {
             sys.kick(tar);
+            sys.clearPass(tar);
         }
         return;
     }
