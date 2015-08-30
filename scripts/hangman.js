@@ -457,6 +457,12 @@ function Hangman() {
             hangbot.sendMessage(src, "You started a Hangman game with the answer '" + word.toUpperCase() + "'. If you misspelled the answer or made some mistake, use /end to stop the game and fix it.", hangchan);
         }
         hangbot.sendAll("Type /g [letter] to guess a letter, and /a [answer] to guess the answer!", hangchan);
+        // checks if the new game is a valid pokemon in the database
+        if (hint.toLowerCase() === "pokemon" || hint.toLowerCase() === "pokémon") {
+            if ((sys.pokeNum(word) === undefined && ["deoxys a", "deoxys d", "deoxys s", "deoxys attack", "deoxys defense", "deoxys speed", "rotom c", "rotom h", "rotom f", "rotom w", "rotom s", "mow rotom", "frost rotom", "heat rotom", "fan rotom", "wash rotom", "giratina o", "giratina origin", "arceus fighting", "arceus flying", "arceus poison", "arceus ground", "arceus rock", "arceus bug", "arceus ghost", "arceus steel", "arceus fire", "arceus water", "arceus grass", "arceus electric", "arceus psychic", "arceus ice", "arceus dragon", "arceus dark", "arceus fairy", "shaymen sky", "tornadus therian", "thundurus therian", "landorus therian", "kyurem b", "kyurem w", "kyurem black", "kyurem white", "keldeo resolute", "meloetta purouette"].indexOf(word.toLowerCase()) === -1)) {
+                hangbot.sendMessage(src, "You started a game with the hint 'Pokemon' but '" + word.toUpperCase() + "' is not a Pokemon! Please check for typos.", hangchan);
+            }
+        }
         sendChanHtmlAll(" ", hangchan);
         var time = parseInt(sys.time(), 10);
         if (time > this.lastAdvertise + 60 * 20) {
