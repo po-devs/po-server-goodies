@@ -32,6 +32,7 @@ function Hangman() {
     var delayCount = 0;
     var delayLimit = 1;
     var suddenDeathLimit = 300;
+    var suddenDeathLowTime = 120;
 
     var hostIpArray = [];
     var hostName;
@@ -128,6 +129,9 @@ function Hangman() {
             if (sys.name(src) in guesses && guesses[sys.name(src)] >= maxGuesses) {
                 hangbot.sendMessage(src, "You can only use /g " + maxGuesses + " times!", hangchan);
                 return;
+            }
+            if (suddenDeathLimit < suddenDeathLowTime) {
+                suddenDeathLimit = suddenDeathLowTime;
             }
         }
 
@@ -263,6 +267,11 @@ function Hangman() {
         if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|\banus|boner|\btits\b|condom|\brape\b/gi.test(ans)) {
             if (sys.existChannel("Victory Road"))
                 hangbot.sendAll("Warning: Player " + sys.name(src) + " answered '" + ans + "' in #Hangman", sys.channelId("Victory Road"));
+        }
+        if (gameMode === suddenDeath) {
+            if (suddenDeathLimit < suddenDeathLowTime) {
+                suddenDeathLimit = suddenDeathLowTime;
+            }
         }
         sendChanHtmlAll(" ", hangchan);
 
@@ -1878,9 +1887,7 @@ function Hangman() {
         if ((word) && (gameMode === suddenDeath)) {
             if (suddenDeathLimit > 0) {
                 suddenDeathLimit--;
-            }
-            
-            else {
+            } else {
                 sys.sendAll("*** ************************************************************ ***", hangchan);
                 hangbot.sendAll("HANGED! No one guessed the word '" + word.toUpperCase() + "' in time, so anyone may start a game now!", hangchan);
                 sys.sendAll("*** ************************************************************ ***", hangchan);
