@@ -349,7 +349,7 @@ exports.help = function(src, channel) {
     var poChannel = SESSION.channels(channel);
     sys.sendMessage(src, "/cauth: Shows a list of channel auth.", channel);
     sys.sendMessage(src, "/register: To register the current channel you're on if it isn't registered already.", channel);
-    sys.sendMessage(src, "/crules: To see a list of the current channels rules", channel);
+    sys.sendMessage(src, "/crules: To see a list of the current channels rules.", channel);
     if (poChannel.isChannelMember(src) || poChannel.isChannelOperator(src) || poChannel.isChannelAdmin(src) || poChannel.isChannelOwner(src)) {
         sys.sendMessage(src, "*** Channel Member commands ***", channel);
         sys.sendMessage(src, "/passcauth [name]: Passes channel authority to a new alt. New name must be registered, online, and have the same IP as the old name. Valid positions are member, mod (or op), admin, and owner.", channel);
@@ -361,6 +361,7 @@ exports.help = function(src, channel) {
         sys.sendMessage(src, "/removepart [number]: Removes the part in the channel topic that is identified by the number.", channel);
         sys.sendMessage(src, "/updatepart [number] [message]: Changes the part in the channel topic that is identified by the number to your message.", channel);
         sys.sendMessage(src, "/ck: Kicks someone from current channel.", channel);
+        sys.sendMessage(src, "/lt: Love taps and removes someone from current channel.", channel);
         sys.sendMessage(src, "/member: Makes the user a member.", channel);
         sys.sendMessage(src, "/demember: Removes membership from a user.", channel);
         sys.sendMessage(src, "/invite: Makes the user a member and sends them a link to the channel.", channel);
@@ -396,18 +397,18 @@ exports.help = function(src, channel) {
         sys.sendMessage(src, "/deadmin: Removes channel admin status from a user.", channel);
         sys.sendMessage(src, "/owner: Gives a user channel owner status.", channel);
         sys.sendMessage(src, "/deowner: Removes channel owner status from a user.", channel);
-        sys.sendMessage(src, "/addrule [name]:[description]: Adds a rule to the current channel. Numbers are added automatically and there is a limit of 10 rules", channel);
-        sys.sendMessage(src, "/removerule [number]: Remove a rule [number]", channel);
+        sys.sendMessage(src, "/addrule [name]:[description]: Adds a rule to the current channel. Numbers are added automatically and there is a limit of 10 rules.", channel);
+        sys.sendMessage(src, "/removerule [number]: Remove a rule [number].", channel);
     }
     if (SESSION.global().permaTours.indexOf(channel) > -1) {
         sys.sendMessage(src, "*** Channel Tournaments commands ***", channel);
         sys.sendMessage(src, "/join: Enters you to in a tournament.", channel);
         sys.sendMessage(src, "/unjoin: Withdraws you from a tournament.", channel);
         sys.sendMessage(src, "/viewround: Shows the current pairings for the round.", channel);
-        sys.sendMessage(src, "/viewqueue: Shows the current queue", channel);
+        sys.sendMessage(src, "/viewqueue: Shows the current queue.", channel);
         sys.sendMessage(src, "/touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)", channel);
-        sys.sendMessage(src, "/addtouralert: Adds a tour alert for the specified tier", channel);
-        sys.sendMessage(src, "/removetouralert: Removes a tour alert for the specified tier", channel);
+        sys.sendMessage(src, "/addtouralert: Adds a tour alert for the specified tier. Can add multiple by seperating tiers with *.", channel);
+        sys.sendMessage(src, "/removetouralert: Removes a tour alert for the specified tier. Can remove multiple by seperating tiers with *.", channel);
         if (poChannel.isChannelOperator(src) || poChannel.isChannelAdmin(src) || poChannel.isChannelOwner(src)) {
             sys.sendMessage(src, "*** Channel Tournaments Admin commands ***", channel);
             sys.sendMessage(src, "/tour: Starts a tournament in set tier for the selected number of players. Format is /tour tier:number:type. Type is optional and can be set to Singles, Doubles or Triples.", channel);
