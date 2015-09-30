@@ -99,11 +99,6 @@ function Hangman() {
                 break;
             }
         }
-        var now = (new Date()).getTime();
-        if (now < SESSION.users(src).hangmanGuessTime) {
-            hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanGuessTime - now) / 1000) + 1) + " seconds before using /g again!", hangchan);
-            return;
-        }
         if (SESSION.users(src).smute.active) {
             hangbot.sendMessage(src, "You need to wait for another 9 seconds before submitting another guess!", hangchan);
             return;
@@ -133,6 +128,11 @@ function Hangman() {
             if (suddenDeathLimit < suddenDeathLowTime) {
                 suddenDeathLimit = suddenDeathLowTime;
             }
+        }
+        var now = (new Date()).getTime();
+        if (now < SESSION.users(src).hangmanGuessTime) {
+            hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanGuessTime - now) / 1000) + 1) + " seconds before using /g again!", hangchan);
+            return;
         }
 
         if (!points[sys.name(src)]) {
@@ -250,17 +250,17 @@ function Hangman() {
                 break;
             }
         }
-        var now = (new Date()).getTime();
-        if (now < SESSION.users(src).hangmanAnswerTime) {
-            hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanAnswerTime - now) / 1000) + 1) + " seconds before using /a again!", hangchan);
-            return;
-        }
         if (SESSION.users(src).smute.active) {
             hangbot.sendMessage(src, "You need to wait for another 9 seconds before submitting another guess!", hangchan);
             return;
         }
         if (sys.name(src) in answers && answers[sys.name(src)] >= maxAnswers[gameMode]) {
             hangbot.sendMessage(src, "You can only use /a " + maxAnswers[gameMode] + " times!", hangchan);
+            return;
+        }
+        var now = (new Date()).getTime();
+        if (now < SESSION.users(src).hangmanAnswerTime) {
+            hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanAnswerTime - now) / 1000) + 1) + " seconds before using /a again!", hangchan);
             return;
         }
         var ans = commandData.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g, '').replace(/ {2,}/g," ");
@@ -768,6 +768,11 @@ function Hangman() {
         pendingEvent = false;
     };
     this.viewGame = function (src) {
+        if (gameMode === 1) {
+            if (!guesses[sys.name(src)]) { // guesses for sudden death
+                guesses[sys.name(src)] = 0;
+            }
+        }
         if (!word) {
             hangbot.sendMessage(src, "No game is running!", hangchan);
             return;
@@ -776,9 +781,14 @@ function Hangman() {
         sys.sendHtmlMessage(src, "<font color='red'><b>Current Word</b>: " + currentWord.join(" ") + "</font>", hangchan);
         sys.sendHtmlMessage(src, "<font color='red'>[Hint: " + hint + "]  [Letters used: " + usedLetters.map(function (x) {
             return x.toUpperCase();
-        }).join(", ") + "]  [Chances left: " + parts + "] </font>", hangchan);
+        }).join(", ") + "]  [Chances left: " + (gameMode !== 1 ? parts : (maxGuesses - guesses[sys.name(src)])) + "] </font>", hangchan);
         if (isEventGame) {
-            sys.sendHtmlMessage(src, "<font color='red'>This is an Event Game!</font>", hangchan);
+            if (gameMode === 0) { // regular event
+                sys.sendHtmlMessage(src, "<b><font color='purple'>*** Regular Event Game ***</font></b>", hangchan);
+            }
+            if (gameMode === 1) { // sudden death event
+                sys.sendHtmlMessage(src, "<b><font color='purple'>*** Sudden Death Event Game ***</font></b>", hangchan);
+            }
         } else {
             sys.sendHtmlMessage(src, "<font color='red'>Current game started by " + hostName + "</font>", hangchan);
         }
