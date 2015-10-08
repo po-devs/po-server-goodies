@@ -5590,13 +5590,11 @@ function Mafia(mafiachan) {
             else if (commandData == "hints") {
                 var helphints = [
                 "*** *********************************************************************** ***",
-                "±Hint: When you are mafia if your teammate is guaranteed to be voted out you are allowed to vote them so you don't look suspicious.",
-                "±Hint: In general if you are the inspector it is a good idea to claim so that you can be protected.",
-                "±Hint: When you find your teammates it is a good idea to PM them so you remember who they are and so you can talk strategy.",
-                "±Hint: Don't claim as a villager because it exposes the Power Roles.",
-                "±Hint: Don't stay to quiet because the people who are silent tend to be voted out a lot.",
-                "±Hint: A rand is when someone choses who to vote/kill randomly with no real logic behind it.",
-                "±Hint: Communication with your team is the key to victory.",
+                "±Hint: Learn who the safe claimers are for a theme. If you are the role that the theme is centered on, like Inspector in Default, claim and ask for protection!",
+			   "±Hint: When you are mafia if your teammate is going to be lynched, you are allowed to vote them, using /teamvote or /vote twice, to avoid suspicion. This is called bussing, and a valid tactic to keep yourself hidden.",
+			   "±Hint: When you find your teammates, it is a good idea to PM them, or use /tt if you're Mafia, so you remember who they are and so you can coordinate your actions.",
+			   "±Hint: Don't claim as a villager because it exposes the Power Roles. Sometimes meatshielding is a better strategy.",
+			   "±Hint: Communication with your team is the key to victory.",
                 "*** *********************************************************************** ***",
                 ""
                 ];
