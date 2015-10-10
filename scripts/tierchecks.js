@@ -339,4 +339,27 @@ tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons", "Inverted Balan
     return;
 });
 
+tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function GSCSleepTrap(src, team) {
+	var ret = [];
+	var gen = sys.gen(src, team);
+	if (gen == 2) {
+		var sleep = [sys.moveNum("Spore"), sys.moveNum("Hypnosis"), sys.moveNum("Lovely Kiss"), sys.moveNum("Sing"), sys.moveNum("Sleep Powder")].sort();
+		var trap = [sys.moveNum("Mean Look"), sys.moveNum("Spider Web")].sort();
+		
+		pokes:
+		for (var i = 0; i < 6; i++) {
+			for (var j = 0; j < sleep.length; ++j) {
+				if (sys.hasTeamPokeMove(src, team, i, sleep[j])) {
+					for (var k = 0; k < trap.length; ++k) {
+						if (sys.hasTeamPokeMove(src, team, i, trap[k])) {
+							ret.push("Pokemon " + sys.pokemon(sys.teamPoke(src,team,i)) + "  has both a Sleep Inducing and a Trapping move, which is banned in GSC.");
+						}
+					}
+				}
+			}
+		}
+	}	
+    return ret;
+});
+
 module.exports = tier_checker;
