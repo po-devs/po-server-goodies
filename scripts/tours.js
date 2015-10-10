@@ -3586,11 +3586,18 @@ function advanceround(key) {
 
 // starts a tournament
 function tourstart(tier, starter, key, parameters) {
+    var staffchan = sys.channelId("Victory Road"), tourAdminsObj = tours.touradmins, activeAuthCount = 0;
     if (tours.queue.length === 1) { // NOTIFY VICTORY ROAD THAT /QUEUE IS LOW
-        sys.sendAll(tourconfig.tourbot + "Queue in Tournaments is low.", sys.channelId("Victory Road"));
+        sendBotAll("Queue in Tournaments is low.", staffchan, true);
     }
     else if (tours.queue.length === 0) { // NOTIFY VICTORY ROAD THAT /QUEUE IS EMPTY
-        sys.sendAll(tourconfig.tourbot + "Queue in Tournaments is empty.", sys.channelId("Victory Road"));
+        for (var x in tourAdminsObj) {
+            if (sys.loggedIn(sys.id(x)) === true) {
+                activeAuthCount++;
+                sys.sendHtmlMessage(sys.id(x), "<font color=" + tourconfig.tourbotcolour + "><timestamp/><b>"+tourconfig.tourbot+"</b></font><b> You have been flashed!</b><ping/>", staffchan);
+            }
+        }
+        sendBotAll("Queue in Tournaments is empty" + (activeAuthCount === 0 ? " and there are no megausers logged on." : "."), staffchan, true);
     }
     try {
         var channels = tourschan === 0 ? [0] : [0, tourschan];
