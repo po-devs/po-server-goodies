@@ -1057,11 +1057,6 @@ function Tournament(channel)
         self.queue = self.queue || [];
         self.mode = "";
     }
-
-    this.announceInit = function announceInit() {
-        broadcast("Tournaments are now running on #" + sys.channel(self.channel) + "!");
-    };
-
     this.commands = {
         join: join,
         unjoin: unjoin,
@@ -1080,7 +1075,6 @@ function Tournament(channel)
         changecount: changeCount,
         endtour: endTour
     };
-
     this.events = {
         afterBattleStarted: battleStart,
         afterBattleEnded: battleEnd,
@@ -1146,6 +1140,10 @@ module.exports = {
             command = message.substr(0).toLowerCase();
         }
 
+        function sendTourBotMsg(playerId, message, channelId) {
+            sys.sendMessage(playerId, "±" + Config.tourneybot + ": " + message, channelId);
+        }
+        
         if (module.tournaments[channel] !== undefined) {
             if (command in module.tournaments[channel].commands) {
                 module.tournaments[channel].commands[command](source, commandData);
@@ -1159,23 +1157,32 @@ module.exports = {
                 module.tournaments[channel].authCommands[command](source, commandData);
                 return true;
             }
-            /*if (channel == module.tourchannel)
-                return false;*/
-            if (command == "disabletours" && (sys.auth(source) >= 2 || SESSION.channels(channel).isChannelAdmin(source))) {
+        }
+        if (command == "disabletours" && (sys.auth(source) >= 2 || SESSION.channels(channel).isChannelAdmin(source))) {
+            if (module.tournaments[channel] !== undefined) {
                 delete module.tournaments[channel];
-                tourneybot.sendAll("Tournaments have been disabled", channel);
+                tourneybot.sendAll(sys.name(source) + " disabled Tournaments in this channel!", channel);
                 var ind = SESSION.global().permaTours.indexOf(channel);
                 if (ind >= 0) {
                     SESSION.global().permaTours.splice(ind, 1);
                 }
                 return true;
+            } else {
+                sendTourBotMsg(source, "Tournaments are already disabled in " + sys.channel(channel), channel);
+                return true;
             }
-        } else if (command == "enabletours" && (sys.auth(source) >= 2 || SESSION.channels(channel).isChannelAdmin(source))) {
-            module.tournaments[channel] = new Tournament(channel);
-            module.tournaments[channel].announceInit();
-            SESSION.global().permaTours.push(channel);
-            sys.saveVal("tournaments*permaTours", JSON.stringify(SESSION.global().permaTours));
-            return true;
+        }
+        if (command == "enabletours" && (sys.auth(source) >= 2 || SESSION.channels(channel).isChannelAdmin(source))) {
+            if (module.tournaments[channel] === undefined) {
+                module.tournaments[channel] = new Tournament(channel);
+                tourneybot.sendAll(sys.name(source) + " enabled Tournaments in this channel!", channel);
+                SESSION.global().permaTours.push(channel);
+                sys.saveVal("tournaments*permaTours", JSON.stringify(SESSION.global().permaTours));
+                return true;
+            } else {
+                sendTourBotMsg(source, "Tournaments are already enabled in " + sys.channel(channel), channel);
+                return true;
+            }
         }
         return false;
     },
