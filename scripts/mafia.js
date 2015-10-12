@@ -6603,7 +6603,9 @@ function Mafia(mafiachan) {
                         gamemsg(sys.name(src), sys.name(src) + ": [Dead] " + message);
                     } else {
                         for (var x in mafia.dead) {
-                            gamemsg(mafia.dead[x], sys.name(src) + ": [Dead] " + message);
+                            if (sys.isInChannel(sys.id(mafia.dead[x]), mafiachan)) {
+                                gamemsg(mafia.dead[x], sys.name(src) + ": [Dead] " + message);
+                            }
                         }
                     }
                     return true;
