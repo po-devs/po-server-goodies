@@ -619,7 +619,9 @@ function Hangman() {
     };
     this.setWinner = function (name, immediate) {
         word = undefined;
-        winner = name;
+        winner = name;        
+        hostName = "";
+        hostIpArray = [];
         if (immediate !== true) {
             nextGame = (new Date()).getTime() + winnerDelay * 1000;
         }
