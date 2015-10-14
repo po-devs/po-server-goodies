@@ -74,8 +74,8 @@ var tourcommands = ["/join: Joins a tournament.",
                     "/activemu: Lists active megausers.",
                     "/tourrules: Lists the tournament rules.",
                     "/touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified).",
-                    "/addtouralert: Adds a tour alert for the specified tier. Can add multiple ones by seperating tiers with *.",
-                    "/removetouralert: Removes a tour alert for the specified tier. Can remove multiple ones by seperating tiers with *.",
+                    "/addtouralert: Adds a tour alert for the specified tier.",
+                    "/removetouralert: Removes a tour alert for the specified tier.",
                     "/showevents: Shows a list of the upcoming event tournaments"];
 var tourmodcommands = ["Parameters: They can be used by putting 'gen=x'; 'mode=singles/doubles/triples'; 'type=single/double'; 'wifi=on/off'.",
                     "For example: '/tour Challenge Cup:gen=RBY:mode=triples:type=double:wifi=on' starts a RBY Challenge Cup double elimination tournament (in Triples mode) with Team Preview.",
@@ -114,7 +114,8 @@ var tourownercommands = ["/megauser: Makes someone a megauser. Use /smegauser fo
                     "/fullleaderboard: Gives the full leaderboard for a specified tier.",
                     "/fullmonthlyleaderboard: Gives the full monthly leaderboard for a specified month.",
                     "/loadevents: Load event tours."];
-var serverownercommands = ["/tourowner: Makes someone a Tournament Owner. Use /stowner for a silent promotion."];
+var serverownercommands = ["/tourowner: Makes someone a Tournament Owner. Use /stowner for a silent promotion.",
+                    "/tourowneroff: Removes someone from Tournament Owner. Use /stowneroff for a silent demotion."];
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "Breaking the following rules may result in punishment:",
                 "#1: Team revealing or scouting in tiers other than Challenge Cup, Battle Factory, or Metronome will result in disqualification.",
