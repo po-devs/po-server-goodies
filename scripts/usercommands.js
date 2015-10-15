@@ -407,6 +407,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "cjoin") {
         var chan;
+        if (commandData === undefined) {
+            normalbot.sendMessage(src, "Please enter a channel name after the command.", channel);
+            return;
+        }
+        if (commandData.length > 20) {
+            normalbot.sendMessage(src, "The channel name you entered is too long. Please make it 20 characters or shorter. Currently using: " + commandData.length, channel);
+            return;
+        }
         if (sys.existChannel(commandData)) {
             chan = sys.channelId(commandData);
         } else {
@@ -414,20 +422,20 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             for (var i = 0; i < script.chanNameBans.length; ++i) {
                 var regexp = script.chanNameBans[i];
                 if (regexp.test(name)) {
-                    sys.sendMessage(src, 'This kind of channel name is banned from the server. (Matching regexp: ' + regexp + ')');
+                    normalbot.sendMessage(src, "This kind of channel name is banned from the server. (Matching regexp: " + regexp + ")", channel);
                     return;
                 }
             }
             chan = sys.createChannel(commandData);
+            normalbot.sendMessage(src, "#" + commandData + " created. Click the link to enter.", channel);
         }
         if (sys.isInChannel(src, chan)) {
-            normalbot.sendMessage(src, "You are already on #" + commandData, channel);
+            normalbot.sendMessage(src, "You are already in #" + commandData, channel);
         } else {
             sys.putInChannel(src, chan);
         }
         return;
     }
-
     if (command == "register") {
         if (!sys.dbRegistered(sys.name(src))) {
             channelbot.sendMessage(src, "You need to register on the server before registering a channel to yourself for security reasons!", channel);
