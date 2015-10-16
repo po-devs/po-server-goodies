@@ -1659,7 +1659,6 @@ function Hangman() {
             hangman.promoteSuperAdmin(src, commandData, channel, (command === "shangmansuperadmin"));
             return true;
         }
-
         if (command === "hangmansuperadminoff" || command === "shangmansuperadminoff") {
             hangman.demoteSuperAdmin(src, commandData, channel, (command === "shangmansuperadminoff"));
             return true;
@@ -1737,6 +1736,18 @@ function Hangman() {
     };
     this.promoteAdmin = function (src, commandData, channel, silent) {
         if (commandData === undefined) {
+            hangbot.sendMessage(src, "Please enter a valid user to promote.", hangchan);
+            return;
+        }
+        if (sys.dbIp(commandData) === undefined) {
+            hangbot.sendMessage(src, "This user doesn't exist.", hangchan);
+            return;
+        }
+        if (!sys.dbRegistered(commandData)) {
+            hangbot.sendMessage(src, "They aren't registered so you can't give them authority.", hangchan);
+            if (sys.id(commandData) !== undefined) {
+                hangbot.sendMessage(sys.id(commandData), "Please register ASAP, before getting hangman authority.");
+            }
             return;
         }
         if (script.hangmanAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
@@ -1751,7 +1762,19 @@ function Hangman() {
     };
     this.promoteSuperAdmin = function (src, commandData, channel, silent) {
         if (commandData === undefined) {
+            hangbot.sendMessage(src, "Please enter a valid user to promote.", hangchan);
             return;
+        }
+        if (sys.dbIp(commandData) === undefined) {
+            hangbot.sendMessage(src, "This user doesn't exist.", hangchan);
+            return true;
+        }
+        if (!sys.dbRegistered(commandData)) {
+            hangbot.sendMessage(src, "They aren't registered so you can't give them authority.", hangchan);
+            if (sys.id(commandData) !== undefined) {
+                hangbot.sendMessage(sys.id(commandData), "Please register ASAP, before getting hangman authority.");
+            }
+            return true;
         }
         if (script.hangmanSuperAdmins.hash.hasOwnProperty(commandData.toLowerCase())) {
             sys.sendMessage(src, "±Unown: " + commandData + " is already a Super Hangman Admin!", channel);
