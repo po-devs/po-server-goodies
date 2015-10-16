@@ -499,10 +499,18 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendMessage(src, "", channel);
         return;
     }
-    if (command === "addtouralert") {
+    if (command === "addtouralert" || command === "addtouralerts" || command === "removetouralert" || command === "removetouralerts") {
         var x, inputArray = [], foundArray = [], invalidArray = [], existArray = [];
+        var verb = "add", verbtensed = "added", adverb = "already", remove = false;
+        if (command === "removetouralert" || command === "removetouralerts") {
+            verb = "remove";
+            verbtensed = "removed";
+            adverb = "don't";
+            remove = true;
+        }
         if (commandData === undefined) {
-            normalbot.sendMessage(src, "Please enter a tier to add to your tour alerts. Can add multiple at the same time by seperating each one with *.", channel);
+            normalbot.sendMessage(src, "Please enter a tier to " + verb + " to your tour alerts. Can " + verb + " multiple at the same time by separating each one with *.", channel);
+            return;
         }
         if (commandData.indexOf("*") === -1) {
             inputArray[0] = commandData;
@@ -518,45 +526,20 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         for (x = 0; x < inputArray.length; x++) {
             if (utilities.find_tier(inputArray[x]) === null) {
                 invalidArray.push(inputArray[x]);
-            } else if (SESSION.users(src).tiers.indexOf(utilities.find_tier(inputArray[x])) !== -1) {
+            } else if ((!remove && SESSION.users(src).tiers.indexOf(utilities.find_tier(inputArray[x])) !== -1) ||
+                       (remove && SESSION.users(src).tiers.indexOf(utilities.find_tier(inputArray[x])) === -1)) {
                 existArray.push(inputArray[x]);
             } else {
                 foundArray.push(inputArray[x]);
-                SESSION.users(src).tiers.push(utilities.find_tier(inputArray[x]));
+                if (!remove) {                    
+                    SESSION.users(src).tiers.push(utilities.find_tier(inputArray[x]));
+                } else {
+                    SESSION.users(src).tiers.splice(SESSION.users(src).tiers.indexOf(utilities.find_tier(inputArray[x])), 1);
+                }
             }
         }
         script.saveKey("touralerts", src, SESSION.users(src).tiers.join("*"));
-        normalbot.sendMessage(src, (foundArray.length > 0 ? "Added: " + foundArray.join(", ") + ". " : "") + (existArray.length > 0 ? "Tiers that are already added: " + existArray.join(", ") + ". " : "") + (invalidArray.length > 0 ? "Invalid tiers: " + invalidArray.join(", ") + "." : ""), channel);
-        return;
-    }
-    if (command === "removetouralert") {
-        var x, inputArray = [], foundArray = [], invalidArray = [], doesNotExistArray = [];
-        if (commandData === undefined) {
-            normalbot.sendMessage(src, "Please enter a tier to remove from your tour alerts. Can remove multiple at the same time by seperating each one with *.", channel);
-        }
-        if (commandData.indexOf("*") === -1) {
-            inputArray[0] = commandData;
-        } else {
-            inputArray = commandData.split("*");
-        }
-        if (typeof SESSION.users(src).tiers === "undefined") {
-            SESSION.users(src).tiers = [];
-        }
-        if (typeof SESSION.users(src).tiers === "string") {
-            SESSION.users(src).tiers = SESSION.users(src).tiers.split("*");
-        }
-        for (x = 0; x < inputArray.length; x++) {
-            if (utilities.find_tier(inputArray[x]) === null) {
-                invalidArray.push(inputArray[x]);
-            } else if (SESSION.users(src).tiers.indexOf(utilities.find_tier(inputArray[x])) === -1) {
-                doesNotExistArray.push(inputArray[x]);
-            } else {
-                foundArray.push(inputArray[x]);
-                SESSION.users(src).tiers.splice(SESSION.users(src).tiers.indexOf(utilities.find_tier(inputArray[x])), 1);
-            }
-        }
-        script.saveKey("touralerts", src, SESSION.users(src).tiers.join("*"));
-        normalbot.sendMessage(src, (foundArray.length > 0 ? "Removed: " + foundArray.join(", ") + ". " : "") + (doesNotExistArray.length > 0 ? "Tiers that aren't added: " + doesNotExistArray.join(", ") + ". " : "") + (invalidArray.length > 0 ? "Invalid tiers: " + invalidArray.join(", ") + "." : ""), channel);
+        normalbot.sendMessage(src, (foundArray.length > 0 ? "You " + verbtensed + ": " + foundArray.join(", ") + ". " : "") + (existArray.length > 0 ? "Tiers that " + adverb + " have alerts: " + existArray.join(", ") + ". " : "") + (invalidArray.length > 0 ? "Invalid tiers: " + invalidArray.join(", ") + "." : ""), channel);
         return;
     }
     // The Stupid Coin Game
