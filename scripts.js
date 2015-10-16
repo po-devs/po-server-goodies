@@ -1889,7 +1889,7 @@ beforeChatMessage: function(src, message, chan) {
     }
     //Special donator
     if (name == "fear") {
-        sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><b>Fear: </b></span>" + msg.replace("<", "&lt;"),  channel);
+        sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><b>±Fear: </b></span>" + msg.replace("<", "&lt;"),  channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, channel);
         return;
