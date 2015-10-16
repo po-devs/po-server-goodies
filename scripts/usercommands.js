@@ -539,7 +539,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             }
         }
         script.saveKey("touralerts", src, SESSION.users(src).tiers.join("*"));
-        normalbot.sendMessage(src, (foundArray.length > 0 ? "You " + verbtensed + ": " + foundArray.join(", ") + ". " : "") + (existArray.length > 0 ? "Tiers that " + adverb + " have alerts: " + existArray.join(", ") + ". " : "") + (invalidArray.length > 0 ? "Invalid tiers: " + invalidArray.join(", ") + "." : ""), channel);
+        normalbot.sendMessage(src, (foundArray.length > 0 ? "You " + verbtensed + " the following tour alerts: " + foundArray.join(", ") + ". " : "") + (existArray.length > 0 ? "Tiers that " + adverb + " have alerts: " + existArray.join(", ") + ". " : "") + (invalidArray.length > 0 ? "Invalid tiers: " + invalidArray.join(", ") + "." : ""), channel);
         return;
     }
     // The Stupid Coin Game
