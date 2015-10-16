@@ -1736,17 +1736,17 @@ function Hangman() {
     };
     this.promoteAdmin = function (src, commandData, channel, silent) {
         if (commandData === undefined) {
-            hangbot.sendMessage(src, "Please enter a valid user to promote.", hangchan);
+            hangbot.sendMessage(src, "Please enter a valid user to promote.", channel);
             return;
         }
         if (sys.dbIp(commandData) === undefined) {
-            hangbot.sendMessage(src, "This user doesn't exist.", hangchan);
+            hangbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
         }
         if (!sys.dbRegistered(commandData)) {
             hangbot.sendMessage(src, "They aren't registered so you can't give them authority.", hangchan);
             if (sys.id(commandData) !== undefined) {
-                hangbot.sendMessage(sys.id(commandData), "Please register ASAP, before getting hangman authority.");
+                hangbot.sendMessage(sys.id(commandData), "Please register ASAP, before getting hangman authority.", channel);
             }
             return;
         }
@@ -1762,17 +1762,17 @@ function Hangman() {
     };
     this.promoteSuperAdmin = function (src, commandData, channel, silent) {
         if (commandData === undefined) {
-            hangbot.sendMessage(src, "Please enter a valid user to promote.", hangchan);
+            hangbot.sendMessage(src, "Please enter a valid user to promote.", channel);
             return;
         }
         if (sys.dbIp(commandData) === undefined) {
-            hangbot.sendMessage(src, "This user doesn't exist.", hangchan);
+            hangbot.sendMessage(src, "This user doesn't exist.", channel);
             return true;
         }
         if (!sys.dbRegistered(commandData)) {
-            hangbot.sendMessage(src, "They aren't registered so you can't give them authority.", hangchan);
+            hangbot.sendMessage(src, "They aren't registered so you can't give them authority.", channel);
             if (sys.id(commandData) !== undefined) {
-                hangbot.sendMessage(sys.id(commandData), "Please register ASAP, before getting hangman authority.");
+                hangbot.sendMessage(sys.id(commandData), "Please register ASAP, before getting hangman authority.", channel);
             }
             return true;
         }
