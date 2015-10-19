@@ -811,7 +811,7 @@ exports.help =
         "/indigo [on/off]: To create or destroy staff channel.",
         "/updatebansites: To update ban sites.",
         "/updatetierchecks: To update tier checks.",
-        "/updatecommands: To update command files.",
+        "/updatecommands: To update command files. Update scripts afterwards for full effect.",
         "/updatetiers[soft]: To update tiers. Soft saves to file only without reloading.",
         "/loadstats: Loads the usage stats plugin.",
         "/unloadstats: Unloads the usage stats plugin.",
