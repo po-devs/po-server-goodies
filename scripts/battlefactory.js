@@ -144,21 +144,26 @@ function isBFTier(tier) {
 
 function createDefaultEntry(path, desc) {
     var pathname = dataDir + path;
-    if (sys.getFileContent(pathname) === undefined) {
+    if (typeof sys.getFileContent(pathname) === "undefined") {
         sys.writeToFile(pathname, JSON.stringify({'desc': desc}));
         return true;
     }
     return false;
 }
 
-function createEntry(name, data, srcurl) {
+function createEntry(name, data, srcUrl) {
     var basepathname = "bfteams_" + (name.replace(/ /g, "")).toLowerCase() + ".json";
-    if (!data.hasOwnProperty('desc')) {
+    if (!data.hasOwnProperty("desc")) {
         data.desc = name;
     }
-    if (sys.getFileContent(dataDir + basepathname) === undefined) {
+    if (typeof sys.getFileContent(dataDir + basepathname) === "undefined") {
         sys.writeToFile(dataDir + basepathname, JSON.stringify(data));
-        bfHash[name] = {'path': basepathname, 'active': true, 'enabled': true, 'url': srcurl};
+        bfHash[name] = {
+            "path": basepathname,
+            "active": true,
+            "enabled": true,
+            "url": srcUrl
+        };
         bfSets[name] = data;
         return true;
     }
@@ -167,24 +172,22 @@ function createEntry(name, data, srcurl) {
 
 // Save user generated info periodically as a backup
 function autoSave(type, params) {
-    if (type == "all") {
+    if (type === "all") {
         cleanEntries();
-        sys.writeToFile(submitDir+"index.json", JSON.stringify(userQueue));
-        sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfHash));
+        sys.writeToFile(submitDir + "index.json", JSON.stringify(userQueue));
+        sys.writeToFile(dataDir + "bfhash.json", JSON.stringify(bfHash));
         for (var x in bfHash) {
             if (bfSets.hasOwnProperty(x)) {
                 sys.writeToFile(dataDir + bfHash[x].path, JSON.stringify(bfSets[x]));
             }
         }
-    }
-    if (type == "queue") {
+    } else if (type === "queue") {
         cleanEntries();
-        sys.writeToFile(submitDir+"index.json", JSON.stringify(userQueue));
-    }
-    if (type == "teams") {
-        sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfHash));
+        sys.writeToFile(submitDir + "index.json", JSON.stringify(userQueue));
+    } else if (type === "teams") {
+        sys.writeToFile(dataDir + "bfhash.json", JSON.stringify(bfHash));
         for (var b in bfHash) {
-            if (bfSets.hasOwnProperty(b) && (params == "all" || params == b)) {
+            if (bfSets.hasOwnProperty(b) && (params === "all" || params === b)) {
                 sys.writeToFile(dataDir + bfHash[b].path, JSON.stringify(bfSets[b]));
             }
         }
@@ -193,15 +196,14 @@ function autoSave(type, params) {
 
 function dumpData(tar, teamLo, teamHi) {
     var sets = [];
-    for (var b=0;b<6;b++) {
+    for (var b = 0; b < 6; b++) {
         sets.push(getStats(tar, teamLo, teamHi, b).join("<br/>"));
     }
-    var chans = sys.channelsOfPlayer(tar);
-    if (sets.length > 0 && chans.length > 0) {
-        var sendchannel = sys.isInChannel(tar, 0) ? 0 : chans[0];
-        sys.sendHtmlMessage(tar, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>",sendchannel);
+    var channels = sys.channelsOfPlayer(tar);
+    if (sets.length > 0 && channels.length > 0) {
+        var sendChannel = sys.isInChannel(tar, 0) ? 0 : channels[0];
+        sys.sendHtmlMessage(tar, "<table border='2'><tr><td><pre>" + sets.join("<br/><br/>") + "</pre></td></tr></table>", sendChannel);
     }
-    return;
 }
 
 // Whether the data is readable or not
