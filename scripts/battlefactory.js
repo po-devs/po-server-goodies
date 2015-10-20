@@ -398,26 +398,20 @@ function cleanEntries() {
     if (deleted > 0) sendChanAll("Invalid Entries Removed: "+deleted, staffchannel);
 }
 
-function toChars(number, maxchars) {
-    var digits = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
-    var result = '';
-    for (var h=(maxchars-1); h>=0; h--) {
-        result = result + digits[Math.floor(number/Math.pow(digits.length,h))%digits.length];
+function toChars(number, maxLength) {
+    var base36Digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    var result = "";
+    for (var h = (maxLength - 1); h >= 0; h--) {
+        result += base36Digits.charAt(Math.floor(number / Math.pow(base36Digits.length, h)) % base36Digits.length);
     }
     return result;
 }
 
-function toNumber(charstring) {
-    var digits = ['0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+function toNumber(numberString) {
+    var base36Digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     var result = 0;
-    if (charstring.length == 3) {
-        result = Math.pow(digits.length,2)*digits.indexOf(charstring.charAt(0)) + digits.length*digits.indexOf(charstring.charAt(1)) + digits.indexOf(charstring.charAt(2));
-    }
-    if (charstring.length == 2) {
-        result = digits.length*digits.indexOf(charstring.charAt(0)) + digits.indexOf(charstring.charAt(1));
-    }
-    if (charstring.length == 1) {
-        result = digits.indexOf(charstring.charAt(0));
+    for (var i = 0; i < numberString.length; i++) {
+        result += base36Digits.indexOf(numberString.charAt(numberString.length - 1 - i)) * Math.pow(base36Digits.length, i);
     }
     return result;
 }
