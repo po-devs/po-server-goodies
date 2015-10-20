@@ -31,7 +31,7 @@ startBF();
 
 function initFactory() {
     reviewChannel = utilities.get_or_create_channel("BF Review");
-    sendChanAll("Version "+bfVersion+" of the Battle Factory loaded successfully!", reviewChannel);
+    sendChanAll("Version " + bfVersion + " of the Battle Factory loaded successfully!", reviewChannel);
     working = true;
 }
 
@@ -39,96 +39,90 @@ function startBF() {
     sys.makeDir(dataDir);
     sys.makeDir(submitDir);
     try {
-        var file = sys.getFileContent(dataDir+"bfteams.json");
-        if (file === undefined) {
-            var url = Config.base_url+"bfdata/bfteams.json";
-            bfbot.sendAll("Teams file not found, fetching teams from "+url, reviewChannel);
-            sys.webCall(url, function(resp) {
-                if (resp !== "") {
+        var file = sys.getFileContent(dataDir + "bfteams.json");
+        if (typeof file === "undefined") {
+            var url = Config.base_url + "bfdata/bfteams.json";
+            bfbot.sendAll("Teams file not found, fetching teams from " + url, reviewChannel);
+            sys.webCall(url, function(responseText) {
+                if (responseText !== "") {
                     try {
-                        var test = JSON.parse(resp);
-                        var res = setlint(test, false);
-                        if (res.errors.length >= 1) {
+                        var parsedSets = JSON.parse(responseText);
+                        var lintResults = setlint(parsedSets, false);
+                        if (lintResults.errors.length > 0) {
                             throw "Bad File";
                         }
-                        sys.writeToFile(dataDir+'bfteams.json', resp);
-                        defaultSets = test;
-                        sendChanAll('Updated Battle Factory Teams!', reviewChannel);
-                    }
-                    catch (err) {
-                        sendChanAll("FATAL ERROR: "+err, reviewChannel);
+                        sys.writeToFile(dataDir + "bfteams.json", responseText);
+                        defaultSets = parsedSets;
+                        sendChanAll("Updated Battle Factory Teams!", reviewChannel);
+                    } catch (err) {
+                        sendChanAll("FATAL ERROR: " + err, reviewChannel);
                         throw "Battle Factory web file is corrupt!";
                     }
-                }
-                else {
+                } else {
                     sendChanAll("Failed to load teams!", reviewChannel);
                     throw "Couldn't load the Battle Factory file!";
                 }
             });
-        }
-        else {
+        } else {
             defaultSets = JSON.parse(file);
         }
-    }
-    catch (e) {
+    } catch (e) {
         throw e;
     }
     try {
-        userQueue = JSON.parse(sys.getFileContent(submitDir+"index.json"));
-    }
-    catch (e) {
+        userQueue = JSON.parse(sys.getFileContent(submitDir + "index.json"));
+    } catch (e) {
         sendChanAll("No Battle Factory queue detected!", reviewChannel);
         userQueue = {};
     }
     try {
-        submitBans = JSON.parse(sys.getFileContent(submitDir+"bans.json"));
-    }
-    catch (e) {
+        submitBans = JSON.parse(sys.getFileContent(submitDir + "bans.json"));
+    } catch (e) {
         submitBans = {};
     }
     try {
-        reviewers = JSON.parse(sys.getFileContent(submitDir+"reviewers.json"));
-    }
-    catch (e) {
+        reviewers = JSON.parse(sys.getFileContent(submitDir + "reviewers.json"));
+    } catch (e) {
         reviewers = {};
-        sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
+        sys.writeToFile(submitDir + "reviewers.json", JSON.stringify(reviewers));
     }
     try {
-        bfHash = JSON.parse(sys.getFileContent(dataDir+"bfhash.json"));
-    }
-    catch (e) {
-        sendChanAll("Making default bfhash", reviewChannel);
+        bfHash = JSON.parse(sys.getFileContent(dataDir + "bfhash.json"));
+    } catch (e) {
+        sendChanAll("Making default bfHash", reviewChannel);
         // name, filepath, whether it is being actively used (human choice), whether it is enabled (automated)
         bfHash = {
-            'preset': {'path': 'bfteams.json', 'active': true, 'enabled': false, 'url': Config.base_url+"bfdata/bfteams.json"}
+            "preset": {
+                "path": 'bfteams.json',
+                "active": true,
+                "enabled": false,
+                "url": Config.base_url + "bfdata/bfteams.json"
+            }
         };
-        sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfHash));
+        sys.writeToFile(dataDir + "bfhash.json", JSON.stringify(bfHash));
     }
     var validsetpacks = 0;
     bfSets = {};
     for (var x in bfHash) {
-        var teampack = sys.getFileContent(dataDir + bfHash[x].path);
-        if (teampack === undefined) {
+        var teamPack = sys.getFileContent(dataDir + bfHash[x].path);
+        if (typeof teamPack === "undefined") {
             createDefaultEntry(bfHash[x].path, x);
             bfSets[x] = {};
-            continue;
-        }
-        else {
+        } else {
             try {
-                var teamfile = JSON.parse(teampack);
-                var res = setlint(teamfile, false);
-                if (res.errors.length >= 1) {
+                var teamFile = JSON.parse(teamPack);
+                var lintResults = setlint(teamFile, false);
+                if (lintResults.errors.length > 0) {
                     throw "Bad File";
                 }
-                bfSets[x] = teamfile;
-                if (numPokes(teamfile) < 12) {
+                bfSets[x] = teamFile;
+                if (numPokes(teamFile) < 12) {
                     throw "Not enough Pokemon";
                 }
                 bfHash[x].enabled = true;
                 validsetpacks += 1;
-            }
-            catch (e) {
-                sendChanAll("Set pack "+x+" is invalid: "+e, reviewChannel);
+            } catch (e) {
+                sendChanAll("Set pack " + x + " is invalid: " + e, reviewChannel);
                 bfHash[x].enabled = false;
             }
         }
