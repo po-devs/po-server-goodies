@@ -15,11 +15,11 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 /*global sendChanAll, bfbot, staffchannel, tier_checker, sendChanHtmlAll, sys, Config, SESSION, require, module*/
 
 // Globals
-var bfversion = "1.100";
+var bfVersion = "1.100";
 var dataDir = "scriptdata/bfdata/";
 var submitDir = dataDir+"submit/";
 //var messDir = dataDir+"messages/";
-var bfsets, working, defaultsets, userqueue, /*messagebox,*/ teamrevchan, submitbans, bfhash, reviewers;
+var bfSets, working, defaultSets, userQueue, /*messagebox,*/ reviewChannel, submitBans, bfHash, reviewers;
 var utilities = require('utilities.js');
 var saveInterval = 86400; // autosave every day
 
@@ -30,8 +30,8 @@ var find_tier = utilities.find_tier;
 startBF();
 
 function initFactory() {
-    teamrevchan = utilities.get_or_create_channel("BF Review");
-    sendChanAll("Version "+bfversion+" of the Battle Factory loaded successfully!", teamrevchan);
+    reviewChannel = utilities.get_or_create_channel("BF Review");
+    sendChanAll("Version "+bfVersion+" of the Battle Factory loaded successfully!", reviewChannel);
     working = true;
 }
 
@@ -42,7 +42,7 @@ function startBF() {
         var file = sys.getFileContent(dataDir+"bfteams.json");
         if (file === undefined) {
             var url = Config.base_url+"bfdata/bfteams.json";
-            bfbot.sendAll("Teams file not found, fetching teams from "+url, teamrevchan);
+            bfbot.sendAll("Teams file not found, fetching teams from "+url, reviewChannel);
             sys.webCall(url, function(resp) {
                 if (resp !== "") {
                     try {
@@ -52,39 +52,39 @@ function startBF() {
                             throw "Bad File";
                         }
                         sys.writeToFile(dataDir+'bfteams.json', resp);
-                        defaultsets = test;
-                        sendChanAll('Updated Battle Factory Teams!', teamrevchan);
+                        defaultSets = test;
+                        sendChanAll('Updated Battle Factory Teams!', reviewChannel);
                     }
                     catch (err) {
-                        sendChanAll("FATAL ERROR: "+err, teamrevchan);
+                        sendChanAll("FATAL ERROR: "+err, reviewChannel);
                         throw "Battle Factory web file is corrupt!";
                     }
                 }
                 else {
-                    sendChanAll("Failed to load teams!", teamrevchan);
+                    sendChanAll("Failed to load teams!", reviewChannel);
                     throw "Couldn't load the Battle Factory file!";
                 }
             });
         }
         else {
-            defaultsets = JSON.parse(file);
+            defaultSets = JSON.parse(file);
         }
     }
     catch (e) {
         throw e;
     }
     try {
-        userqueue = JSON.parse(sys.getFileContent(submitDir+"index.json"));
+        userQueue = JSON.parse(sys.getFileContent(submitDir+"index.json"));
     }
     catch (e) {
-        sendChanAll("No Battle Factory queue detected!", teamrevchan);
-        userqueue = {};
+        sendChanAll("No Battle Factory queue detected!", reviewChannel);
+        userQueue = {};
     }
     try {
-        submitbans = JSON.parse(sys.getFileContent(submitDir+"bans.json"));
+        submitBans = JSON.parse(sys.getFileContent(submitDir+"bans.json"));
     }
     catch (e) {
-        submitbans = {};
+        submitBans = {};
     }
     try {
         reviewers = JSON.parse(sys.getFileContent(submitDir+"reviewers.json"));
@@ -94,23 +94,23 @@ function startBF() {
         sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
     }
     try {
-        bfhash = JSON.parse(sys.getFileContent(dataDir+"bfhash.json"));
+        bfHash = JSON.parse(sys.getFileContent(dataDir+"bfhash.json"));
     }
     catch (e) {
-        sendChanAll("Making default bfhash", teamrevchan);
+        sendChanAll("Making default bfhash", reviewChannel);
         // name, filepath, whether it is being actively used (human choice), whether it is enabled (automated)
-        bfhash = {
+        bfHash = {
             'preset': {'path': 'bfteams.json', 'active': true, 'enabled': false, 'url': Config.base_url+"bfdata/bfteams.json"}
         };
-        sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfhash));
+        sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfHash));
     }
     var validsetpacks = 0;
-    bfsets = {};
-    for (var x in bfhash) {
-        var teampack = sys.getFileContent(dataDir + bfhash[x].path);
+    bfSets = {};
+    for (var x in bfHash) {
+        var teampack = sys.getFileContent(dataDir + bfHash[x].path);
         if (teampack === undefined) {
-            createDefaultEntry(bfhash[x].path, x);
-            bfsets[x] = {};
+            createDefaultEntry(bfHash[x].path, x);
+            bfSets[x] = {};
             continue;
         }
         else {
@@ -120,21 +120,21 @@ function startBF() {
                 if (res.errors.length >= 1) {
                     throw "Bad File";
                 }
-                bfsets[x] = teamfile;
+                bfSets[x] = teamfile;
                 if (numPokes(teamfile) < 12) {
                     throw "Not enough Pokemon";
                 }
-                bfhash[x].enabled = true;
+                bfHash[x].enabled = true;
                 validsetpacks += 1;
             }
             catch (e) {
-                sendChanAll("Set pack "+x+" is invalid: "+e, teamrevchan);
-                bfhash[x].enabled = false;
+                sendChanAll("Set pack "+x+" is invalid: "+e, reviewChannel);
+                bfHash[x].enabled = false;
             }
         }
     }
     if (validsetpacks === 0) {
-        sendChanAll("No valid Battle Factory sets detected!", teamrevchan);
+        sendChanAll("No valid Battle Factory sets detected!", reviewChannel);
         throw "No valid set packs available";
     }
 }
@@ -169,57 +169,34 @@ function createEntry(name, data, srcurl) {
     }
     if (sys.getFileContent(dataDir + basepathname) === undefined) {
         sys.writeToFile(dataDir + basepathname, JSON.stringify(data));
-        bfhash[name] = {'path': basepathname, 'active': true, 'enabled': true, 'url': srcurl};
-        bfsets[name] = data;
+        bfHash[name] = {'path': basepathname, 'active': true, 'enabled': true, 'url': srcurl};
+        bfSets[name] = data;
         return true;
     }
     return false;
 }
 
-/*function importOld(name) {
-    var basepathname = "bfteams_" + (name.replace(/ /g, "")).toLowerCase() + ".json";
-    if (sys.getFileContent(dataDir + basepathname) !== undefined) {
-        var data;
-        try {
-            data = JSON.parse(sys.getFileContent(dataDir + basepathname));
-        }
-        catch (err) {
-            return false;
-        }
-        if (!data.hasOwnProperty('desc')) {
-            data.desc = name;
-        }
-        if (!data.hasOwnProperty('maxpokes')) {
-            data.maxpokes = 6;
-        }
-        bfhash[name] = {'path': basepathname, 'active': true, 'enabled': true, 'url': "Unknown"};
-        bfsets[name] = data;
-        return true;
-    }
-    return false;
-}*/
-
 // Save user generated info periodically as a backup
 function autoSave(type, params) {
     if (type == "all") {
         cleanEntries();
-        sys.writeToFile(submitDir+"index.json", JSON.stringify(userqueue));
-        sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfhash));
-        for (var x in bfhash) {
-            if (bfsets.hasOwnProperty(x)) {
-                sys.writeToFile(dataDir + bfhash[x].path, JSON.stringify(bfsets[x]));
+        sys.writeToFile(submitDir+"index.json", JSON.stringify(userQueue));
+        sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfHash));
+        for (var x in bfHash) {
+            if (bfSets.hasOwnProperty(x)) {
+                sys.writeToFile(dataDir + bfHash[x].path, JSON.stringify(bfSets[x]));
             }
         }
     }
     if (type == "queue") {
         cleanEntries();
-        sys.writeToFile(submitDir+"index.json", JSON.stringify(userqueue));
+        sys.writeToFile(submitDir+"index.json", JSON.stringify(userQueue));
     }
     if (type == "teams") {
-        sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfhash));
-        for (var b in bfhash) {
-            if (bfsets.hasOwnProperty(b) && (params == "all" || params == b)) {
-                sys.writeToFile(dataDir + bfhash[b].path, JSON.stringify(bfsets[b]));
+        sys.writeToFile(dataDir+"bfhash.json", JSON.stringify(bfHash));
+        for (var b in bfHash) {
+            if (bfSets.hasOwnProperty(b) && (params == "all" || params == b)) {
+                sys.writeToFile(dataDir + bfHash[b].path, JSON.stringify(bfSets[b]));
             }
         }
     }
@@ -240,10 +217,10 @@ function dumpData(tar, teamLo, teamHi) {
 
 // Whether the data is readable or not
 function isReadable(key) {
-    if (!bfsets.hasOwnProperty(key)) {
+    if (!bfSets.hasOwnProperty(key)) {
         return false;
     }
-    var file = bfsets[key];
+    var file = bfSets[key];
     if (file.hasOwnProperty("readable")) {
         if (file.readable === true) {
             return true;
@@ -318,21 +295,21 @@ function isEquivalent(code1, code2) {
 
 function refresh(key) {
     try {
-        if (!bfhash.hasOwnProperty(key)) {
+        if (!bfHash.hasOwnProperty(key)) {
             return;
         }
-        var file = sys.getFileContent(dataDir + bfhash[key].path);
+        var file = sys.getFileContent(dataDir + bfHash[key].path);
         if (file === undefined) {
-            sendChanAll("Team Pack "+key+" is missing!", teamrevchan);
+            sendChanAll("Team Pack "+key+" is missing!", reviewChannel);
             throw "File not found";
         }
-        bfsets[key] = JSON.parse(file);
+        bfSets[key] = JSON.parse(file);
         var message = [];
-        var teamfile = bfsets[key];
+        var teamfile = bfSets[key];
         if (teamfile.hasOwnProperty('desc')) {
             if (typeof teamfile.desc == "string") {
                 message.push("Successfully loaded the team pack '"+teamfile.desc+"'");
-                bfhash[key].enabled = true;
+                bfHash[key].enabled = true;
             }
             else {
                 message.push("Warning: Team set description was faulty");
@@ -344,10 +321,10 @@ function refresh(key) {
 
         if (numPokes(teamfile) < 12) {
             message.push("Not enough Pokemon for the pack: "+key);
-            bfhash[key].enabled = false;
+            bfHash[key].enabled = false;
         }
         else {
-            bfhash[key].enabled = true;
+            bfHash[key].enabled = true;
         }
         var tteams = 0;
         var tsets = 0;
@@ -368,27 +345,27 @@ function refresh(key) {
         }
         message.push("Total: "+tteams+" pokes and "+tsets+" sets.");
         if (message.length > 0) {
-            sendChanAll(message.join("; "), teamrevchan);
+            sendChanAll(message.join("; "), reviewChannel);
         }
     }
     catch (err) {
-        sendChanAll("Couldn't refresh teams: "+err, teamrevchan);
+        sendChanAll("Couldn't refresh teams: "+err, reviewChannel);
     }
 }
 
 function cleanEntries() {
     var deleted = 0;
-    for (var x in userqueue) {
-        var obj = userqueue[x];
+    for (var x in userQueue) {
+        var obj = userQueue[x];
         for (var o in obj) {
             if (typeof obj[o] != 'object' || obj[o] === null) {
-                userqueue[x].splice(o,1);
+                userQueue[x].splice(o,1);
                 o -= 1;
                 deleted += 1;
                 continue;
             }
             if (!obj[o].hasOwnProperty('ip') || !obj[o].hasOwnProperty('name') || !obj[o].hasOwnProperty('sets') || !obj[o].hasOwnProperty('tier') || !obj[o].hasOwnProperty('comment') || !obj[o].hasOwnProperty('rating')) {
-                userqueue[x].splice(o,1);
+                userQueue[x].splice(o,1);
                 o -= 1;
                 deleted += 1;
                 continue;
@@ -420,25 +397,25 @@ function sendReviewers(message, tier, html) {
     if (!sys.existChannel('BF Review')) {
         return;
     }
-    var arr = sys.playersOfChannel(teamrevchan);
+    var arr = sys.playersOfChannel(reviewChannel);
     for (var x in arr) {
         if (isTierReviewer(arr[x],tier)) {
             if (html) {
-                sys.sendHtmlMessage(arr[x], message, teamrevchan);
+                sys.sendHtmlMessage(arr[x], message, reviewChannel);
             }
             else {
-                bfbot.sendMessage(arr[x], message, teamrevchan);
+                bfbot.sendMessage(arr[x], message, reviewChannel);
             }
         }
     }
 }
 
 function seeQueueItem(index, tier) {
-    if (!userqueue.hasOwnProperty(tier)) {
+    if (!userQueue.hasOwnProperty(tier)) {
         sendReviewers("Nothing in the "+tier+" queue.", tier, false);
         return;
     }
-    var tierqueue = userqueue[tier];
+    var tierqueue = userQueue[tier];
     if (index > tierqueue.length || index < 0 || tierqueue.length === 0 || tierqueue[0] === undefined) {
         sendReviewers("Nothing in the "+tier+" queue"+(index === 0 ? "." : " at index "+index), tier, false);
         return;
@@ -447,15 +424,15 @@ function seeQueueItem(index, tier) {
     var submitinfo = tierqueue[0];
     var sets = [];
     sendReviewers(tier + " queue length is currently "+tierqueue.length+". The set for review is shown below.", tier, false);
-    sys.sendAll("", teamrevchan);
+    sys.sendAll("", reviewChannel);
     sendReviewers("User: "+submitinfo.name, tier, false);
-    bfbot.sendAll("Tier: "+submitinfo.tier, teamrevchan);
+    bfbot.sendAll("Tier: "+submitinfo.tier, reviewChannel);
     var pokesets = submitinfo.sets;
     for (var b in pokesets) {
         sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
     }
-    sys.sendHtmlAll("<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", teamrevchan);
-    sys.sendAll("", teamrevchan);
+    sys.sendHtmlAll("<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", reviewChannel);
+    sys.sendAll("", reviewChannel);
     if (submitinfo.comment !== "") {
         sendReviewers("Comment: "+submitinfo.comment, tier, false);
     }
@@ -463,31 +440,31 @@ function seeQueueItem(index, tier) {
 }
 
 function sendQueueItem(src, index, tier) {
-    if (!userqueue.hasOwnProperty(tier)) {
-        bfbot.sendMessage(src, "Nothing in the queue.", teamrevchan);
+    if (!userQueue.hasOwnProperty(tier)) {
+        bfbot.sendMessage(src, "Nothing in the queue.", reviewChannel);
         return;
     }
-    var tierqueue = userqueue[tier];
+    var tierqueue = userQueue[tier];
     if (index > tierqueue.length || index < 0 || tierqueue.length === 0 || tierqueue[0] === undefined) {
-        bfbot.sendMessage(src, "Nothing in the queue"+(index === 0 ? "." : " at index "+index), teamrevchan);
+        bfbot.sendMessage(src, "Nothing in the queue"+(index === 0 ? "." : " at index "+index), reviewChannel);
         return;
     }
     var submitinfo = tierqueue[0];
     var sets = [];
-    bfbot.sendMessage(src, tier+" queue length is currently "+tierqueue.length+". The set for review is shown below.", teamrevchan);
-    sys.sendMessage(src, "", teamrevchan);
-    bfbot.sendMessage(src, "User: "+submitinfo.name, teamrevchan);
-    bfbot.sendMessage(src, "Tier: "+submitinfo.tier, teamrevchan);
+    bfbot.sendMessage(src, tier+" queue length is currently "+tierqueue.length+". The set for review is shown below.", reviewChannel);
+    sys.sendMessage(src, "", reviewChannel);
+    bfbot.sendMessage(src, "User: "+submitinfo.name, reviewChannel);
+    bfbot.sendMessage(src, "Tier: "+submitinfo.tier, reviewChannel);
     var pokesets = submitinfo.sets;
     for (var b in pokesets) {
         sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
     }
-    sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", teamrevchan);
-    sys.sendMessage(src, "", teamrevchan);
+    sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", reviewChannel);
+    sys.sendMessage(src, "", reviewChannel);
     if (submitinfo.comment !== "") {
-        bfbot.sendMessage(src, "Comment: "+submitinfo.comment, teamrevchan);
+        bfbot.sendMessage(src, "Comment: "+submitinfo.comment, reviewChannel);
     }
-    bfbot.sendMessage(src, "Use /acceptset "+tier+" to accept this submission, /rejectset "+tier+" to reject it, or /nextset "+tier+" to view the next and come back to this later.", teamrevchan);
+    bfbot.sendMessage(src, "Use /acceptset "+tier+" to accept this submission, /rejectset "+tier+" to reject it, or /nextset "+tier+" to view the next and come back to this later.", reviewChannel);
 }
 
 function factoryCommand(src, command, commandData, channel) {
@@ -535,7 +512,7 @@ function factoryCommand(src, command, commandData, channel) {
             bfbot.sendMessage(src, "No such tier", channel);
             return;
         }
-        if (bfhash.hasOwnProperty(ltier)) {
+        if (bfHash.hasOwnProperty(ltier)) {
             bfbot.sendMessage(src, "This tier already exists!", channel);
             return;
         }
@@ -546,13 +523,13 @@ function factoryCommand(src, command, commandData, channel) {
         }
         if (createEntry(ltier,template,"No URL for addtier")) {
             autoSave("teams", ltier);
-            sendChanAll('Added the tier '+ltier+'!', teamrevchan);
+            sendChanAll('Added the tier '+ltier+'!', reviewChannel);
             refresh(ltier);
             reviewers[ltier] = [];
             sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
         }
         else {
-            sendChanAll('A pack with that name already exists!', teamrevchan);
+            sendChanAll('A pack with that name already exists!', reviewChannel);
         }
     }
     else if (command == "addpack") {
@@ -591,11 +568,11 @@ function factoryCommand(src, command, commandData, channel) {
                     }
                     if (createEntry(tmp[0],test,url)) {
                         autoSave("teams", tmp[0]);
-                        sendChanAll('Added the team pack '+tmp[0]+'!', teamrevchan);
+                        sendChanAll('Added the team pack '+tmp[0]+'!', reviewChannel);
                         refresh(tmp[0]);
                     }
                     else {
-                        sendChanAll('A pack with that name already exists!', teamrevchan);
+                        sendChanAll('A pack with that name already exists!', reviewChannel);
                     }
                 }
                 catch (err) {
@@ -611,7 +588,7 @@ function factoryCommand(src, command, commandData, channel) {
     else if (command == "updatepack") {
         var url;
         var tmp = commandData.split(" ~ ",2);
-        if (tmp[0] === "" || !bfhash.hasOwnProperty(tmp[0])) {
+        if (tmp[0] === "" || !bfHash.hasOwnProperty(tmp[0])) {
             bfbot.sendMessage(src, "Please specify a valid pack to update!", channel);
             return;
         }
@@ -624,15 +601,15 @@ function factoryCommand(src, command, commandData, channel) {
                 return;
             }
         }
-        else if (bfhash[tmp[0]].hasOwnProperty('url')) {
-            url = bfhash[tmp[0]].url;
+        else if (bfHash[tmp[0]].hasOwnProperty('url')) {
+            url = bfHash[tmp[0]].url;
         }
         else {
             bfbot.sendMessage(src, "Please specify a valid URL to update from!", channel);
             return;
         }
         bfbot.sendMessage(src, "Updating "+tmp[0]+" teams from "+url, channel);
-        var hash = bfhash[tmp[0]];
+        var hash = bfHash[tmp[0]];
         sys.webCall(url, function(resp) {
             if (resp !== "") {
                 try {
@@ -648,9 +625,9 @@ function factoryCommand(src, command, commandData, channel) {
                     if (res.suggestions.length > 0) {
                         sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>", channel);
                     }
-                    bfhash[tmp[0]].url = url;
+                    bfHash[tmp[0]].url = url;
                     sys.writeToFile(dataDir+hash.path, resp);
-                    sendChanAll('Updated '+tmp[0]+' Battle Factory Teams!', teamrevchan);
+                    sendChanAll('Updated '+tmp[0]+' Battle Factory Teams!', reviewChannel);
                     refresh(tmp[0]);
                     autoSave("teams", tmp[0]);
                 }
@@ -674,15 +651,15 @@ function factoryCommand(src, command, commandData, channel) {
             return;
         }
         var delkey = commandData;
-        if (bfhash.hasOwnProperty(delkey)) {
-            sys.deleteFile(dataDir + bfhash[delkey].path);
-            delete bfhash[delkey];
-            delete bfsets[delkey];
+        if (bfHash.hasOwnProperty(delkey)) {
+            sys.deleteFile(dataDir + bfHash[delkey].path);
+            delete bfHash[delkey];
+            delete bfSets[delkey];
             if (reviewers.hasOwnProperty(delkey)) {
                 delete reviewers[delkey];
                 sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
             }
-            bfbot.sendAll("Removed the team pack "+delkey+"!", teamrevchan);
+            bfbot.sendAll("Removed the team pack "+delkey+"!", reviewChannel);
             autoSave("teams", "");
         }
         else {
@@ -691,35 +668,35 @@ function factoryCommand(src, command, commandData, channel) {
         return;
     }
     else if (command == "disablepack") {
-        if (!bfhash.hasOwnProperty(commandData)) {
+        if (!bfHash.hasOwnProperty(commandData)) {
             bfbot.sendMessage(src, "Please specify a valid team pack to disable!", channel);
             return;
         }
-        if (bfhash[commandData].active === false) {
+        if (bfHash[commandData].active === false) {
             bfbot.sendMessage(src, "This pack is already disabled!", channel);
             return;
         }
-        bfhash[commandData].active = false;
-        bfbot.sendAll("Disabled the pack: "+commandData, teamrevchan);
+        bfHash[commandData].active = false;
+        bfbot.sendAll("Disabled the pack: "+commandData, reviewChannel);
         autoSave("teams", "");
         return;
     }
     else if (command == "enablepack") {
-        if (!bfhash.hasOwnProperty(commandData)) {
+        if (!bfHash.hasOwnProperty(commandData)) {
             bfbot.sendMessage(src, "Please specify a valid team pack to enable!", channel);
             return;
         }
-        if (bfhash[commandData].active === true) {
+        if (bfHash[commandData].active === true) {
             bfbot.sendMessage(src, "This pack is already enabled!", channel);
             return;
         }
-        bfhash[commandData].active = true;
-        bfbot.sendAll("Enabled the pack: "+commandData, teamrevchan);
+        bfHash[commandData].active = true;
+        bfbot.sendAll("Enabled the pack: "+commandData, reviewChannel);
         autoSave("teams", "");
         return;
     }
     else if (command == "pokeslist") {
-        var tfile = bfsets.hasOwnProperty(commandData) ? bfsets[commandData] : bfsets.preset;
+        var tfile = bfSets.hasOwnProperty(commandData) ? bfSets[commandData] : bfSets.preset;
         var tteams = 0;
         var tsets = 0;
         for (var t in tfile) {
@@ -755,7 +732,7 @@ function factoryCommand(src, command, commandData, channel) {
         }
     }
     else if (command == "refresh") {
-        if (!bfsets.hasOwnProperty(commandData)) {
+        if (!bfSets.hasOwnProperty(commandData)) {
             bfbot.sendMessage(src, "No such pack exists!", channel);
             return;
         }
@@ -765,7 +742,7 @@ function factoryCommand(src, command, commandData, channel) {
         return;
     }
     else if (command == "loadfromfile") {
-        if (!bfsets.hasOwnProperty(commandData)) {
+        if (!bfSets.hasOwnProperty(commandData)) {
             bfbot.sendMessage(src, "No such pack exists!", channel);
             return;
         }
@@ -779,11 +756,11 @@ function factoryCommand(src, command, commandData, channel) {
         var id = sys.pokeNum(tmp[0])%65536;
         var revsets = {};
         if (tmp.length == 2) {
-            var pack = utilities.getCorrectPropName(tmp[1], bfsets);
-            revsets = bfsets.hasOwnProperty(pack) ? bfsets[pack] : bfsets.preset;
+            var pack = utilities.getCorrectPropName(tmp[1], bfSets);
+            revsets = bfSets.hasOwnProperty(pack) ? bfSets[pack] : bfSets.preset;
         }
         else {
-            revsets = bfsets.preset;
+            revsets = bfSets.preset;
         }
         if (!revsets.hasOwnProperty(id)) {
             bfbot.sendMessage(src, "No sets exist for that pokemon.", channel);
@@ -880,7 +857,7 @@ function factoryCommand(src, command, commandData, channel) {
         return;
     }
     else if (command == "bfversion") {
-        var tfile = bfsets.hasOwnProperty(commandData) ? bfsets[commandData] : bfsets.preset;
+        var tfile = bfSets.hasOwnProperty(commandData) ? bfSets[commandData] : bfSets.preset;
         var tteams = 0;
         var tsets = 0;
         var pokes = [];
@@ -915,8 +892,8 @@ function factoryCommand(src, command, commandData, channel) {
     }
     else if (command == "viewpacks") {
         var table = "<table><tr><th colspan=4>Battle Factory Packs</th></tr><tr><th>Name</th><th>Enabled</th><th>Working</th><th>URL</th></tr>";
-        for (var h in bfhash) {
-            table += "<tr><td>"+html_escape(h)+"</td><td>"+(bfhash[h].active ? "Yes" : "No")+"</td><td>"+(bfhash[h].enabled ? "Yes" : "No")+"</td><td>"+(bfhash[h].hasOwnProperty('url') ? "<a href="+bfhash[h].url+">"+html_escape(bfhash[h].url)+"</a></td></tr>" : "Not Specified");
+        for (var h in bfHash) {
+            table += "<tr><td>"+html_escape(h)+"</td><td>"+(bfHash[h].active ? "Yes" : "No")+"</td><td>"+(bfHash[h].enabled ? "Yes" : "No")+"</td><td>"+(bfHash[h].hasOwnProperty('url') ? "<a href="+bfHash[h].url+">"+html_escape(bfHash[h].url)+"</a></td></tr>" : "Not Specified");
         }
         table += "</table>";
         sys.sendHtmlMessage(src,table,channel);
@@ -930,18 +907,18 @@ function factoryCommand(src, command, commandData, channel) {
             bfbot.sendMessage(src, "You need to register to submit sets.", channel);
             return;
         }
-        if (submitbans.hasOwnProperty(sys.ip(src))) {
+        if (submitBans.hasOwnProperty(sys.ip(src))) {
             bfbot.sendMessage(src, "You are banned from submitting sets!", channel);
             return;
         }
         var submittier = sys.tier(src, 0);
-        if (!bfsets.hasOwnProperty(submittier)) {
+        if (!bfSets.hasOwnProperty(submittier)) {
             bfbot.sendMessage(src, "No submissions are available for your tier!", channel);
             return;
         }
         var submissions = 0;
-        for (var q in userqueue) {
-            var tqueue = userqueue[q];
+        for (var q in userQueue) {
+            var tqueue = userQueue[q];
             for (var j in tqueue) {
                 if (tqueue[j].ip == sys.ip(src) || tqueue[j].name == sys.name(src)) {
                     submissions += 1;
@@ -1005,7 +982,7 @@ function factoryCommand(src, command, commandData, channel) {
             }
             pokecode = pokecode + toChars(sys.gen(src,0), 1) + toChars(sys.subgen(src,0), 1);
             // Getting rid of duplicate entries here
-            var pastdb = bfsets[submittier];
+            var pastdb = bfSets[submittier];
             if (pastdb.hasOwnProperty(pokenum)) {
                 var arr = pastdb[pokenum];
                 var equal = false;
@@ -1060,15 +1037,15 @@ function factoryCommand(src, command, commandData, channel) {
             };
             submitlist.push(submission);
         }
-        if (userqueue.hasOwnProperty(submittier)) {
-            var oldarr = userqueue[submittier];
-            userqueue[submittier] = oldarr.concat(submitlist);
+        if (userQueue.hasOwnProperty(submittier)) {
+            var oldarr = userQueue[submittier];
+            userQueue[submittier] = oldarr.concat(submitlist);
         }
         else {
-            userqueue[submittier] = submitlist;
+            userQueue[submittier] = submitlist;
         }
         bfbot.sendMessage(src, "Submitted your sets. See your submission below.", channel);
-        bfbot.sendAll(sys.name(src)+" submitted some "+submittier+" sets for Battle Factory.", teamrevchan);
+        bfbot.sendAll(sys.name(src)+" submitted some "+submittier+" sets for Battle Factory.", reviewChannel);
         var sets = [];
         for (var b in team) {
             sets.push(getReadablePoke(team[b]).join("<br/>"));
@@ -1077,11 +1054,11 @@ function factoryCommand(src, command, commandData, channel) {
         return;
     }
     else if (command == 'checkqueue') {
-        if (!userqueue.hasOwnProperty(commandData)) {
+        if (!userQueue.hasOwnProperty(commandData)) {
             bfbot.sendMessage(src, "Usage: /checkqueue [tier] (tier is case sensitive)", channel);
             return;
         }
-        if (userqueue[commandData].length === 0) {
+        if (userQueue[commandData].length === 0) {
             bfbot.sendMessage(src, "Nothing in the "+commandData+" queue.", channel);
             return;
         }
@@ -1090,15 +1067,15 @@ function factoryCommand(src, command, commandData, channel) {
     }
     else if (command == 'acceptset') {
         commandData = find_tier(commandData);
-        if (!userqueue.hasOwnProperty(commandData)) {
+        if (!userQueue.hasOwnProperty(commandData)) {
             bfbot.sendMessage(src, "Usage: /acceptset [tier] (tier is case sensitive)", channel);
             return;
         }
-        if (userqueue[commandData].length === 0) {
+        if (userQueue[commandData].length === 0) {
             bfbot.sendMessage(src, "Nothing in the "+commandData+" queue.", channel);
             return;
         }
-        var accept = userqueue[commandData][0];
+        var accept = userQueue[commandData][0];
         if (accept.ip == sys.ip(src) && !isReviewAdmin(src)) {
             bfbot.sendMessage(src, "Can't accept your own sets.", channel);
             return;
@@ -1108,12 +1085,12 @@ function factoryCommand(src, command, commandData, channel) {
             return;
         }
         var srctier = accept.tier;
-        if (!bfsets.hasOwnProperty(srctier)) {
+        if (!bfSets.hasOwnProperty(srctier)) {
             bfbot.sendMessage(src, "No sets can be accepted for that tier.", channel);
             return;
         }
-        bfbot.sendAll(accept.name+"'s submission was accepted by "+sys.name(src),teamrevchan);
-        var teamsave = bfsets[srctier];
+        bfbot.sendAll(accept.name+"'s submission was accepted by "+sys.name(src),reviewChannel);
+        var teamsave = bfSets[srctier];
         var team = accept.sets;
         // Write the short code
         for (var g in team) {
@@ -1127,45 +1104,45 @@ function factoryCommand(src, command, commandData, channel) {
                 teamsave[species] = [set];
             }
         }
-        bfsets[srctier] = teamsave;
-        userqueue[commandData].splice(0,1);
+        bfSets[srctier] = teamsave;
+        userQueue[commandData].splice(0,1);
         seeQueueItem(0, commandData);
         return;
     }
     else if (command == 'rejectset') {
         commandData = find_tier(commandData);
-        if (!userqueue.hasOwnProperty(commandData)) {
+        if (!userQueue.hasOwnProperty(commandData)) {
             bfbot.sendMessage(src, "Usage: /rejectset [tier] (tier is case sensitive)", channel);
             return;
         }
-        if (userqueue[commandData].length === 0) {
+        if (userQueue[commandData].length === 0) {
             bfbot.sendMessage(src, "Nothing in the "+commandData+" queue.", channel);
             return;
         }
-        var reject = userqueue[commandData][0];
+        var reject = userQueue[commandData][0];
         // Maybe change the reject mechanics?
         if (!isTierReviewer(src, reject.tier) && reject.name != sys.name(src)) {
             bfbot.sendMessage(src, "You are not authorised to review "+reject.tier+" sets.", channel);
             return;
         }
         bfbot.sendMessage(src, "You rejected the current set.", channel);
-        bfbot.sendAll(reject.name+"'s submission was rejected by "+sys.name(src),teamrevchan);
-        userqueue[commandData].splice(0,1);
+        bfbot.sendAll(reject.name+"'s submission was rejected by "+sys.name(src),reviewChannel);
+        userQueue[commandData].splice(0,1);
         seeQueueItem(0, commandData);
         return;
     }
     else if (command == 'nextset') {
         commandData = find_tier(commandData);
-        if (!userqueue.hasOwnProperty(commandData)) {
+        if (!userQueue.hasOwnProperty(commandData)) {
             bfbot.sendMessage(src, "Usage: /nextset [tier] (tier is case sensitive)", channel);
             return;
         }
-        if (userqueue[commandData].length === 0) {
+        if (userQueue[commandData].length === 0) {
             bfbot.sendMessage(src, "Nothing in the "+commandData+" queue.", channel);
             return;
         }
-        var shift = (userqueue[commandData].splice(0,1))[0];
-        userqueue[commandData].push(shift);
+        var shift = (userQueue[commandData].splice(0,1))[0];
+        userQueue[commandData].push(shift);
         seeQueueItem(0, commandData);
         return;
     }
@@ -1181,7 +1158,7 @@ function factoryCommand(src, command, commandData, channel) {
             bfbot.sendMessage(src, "Usage: /deleteset [tier]:[code]", channel);
             return;
         }
-        if (!bfsets.hasOwnProperty(tmp[0])) {
+        if (!bfSets.hasOwnProperty(tmp[0])) {
             bfbot.sendMessage(src, "No such tier exists!", channel);
             return;
         }
@@ -1189,7 +1166,7 @@ function factoryCommand(src, command, commandData, channel) {
             bfbot.sendMessage(src, "You are not authorised to review "+tmp[0]+" sets.", channel);
             return;
         }
-        var deletesets = bfsets[tmp[0]];
+        var deletesets = bfSets[tmp[0]];
         for (var u in deletesets) {
             var setlist = deletesets[u];
             if (typeof setlist !== "object") {
@@ -1227,9 +1204,9 @@ function factoryCommand(src, command, commandData, channel) {
             return;
         }
         var deletemsg = getReadablePoke(tmp[1]);
-        bfsets[tmp[0]] = deletesets;
-        sendChanHtmlAll("<table border='2'><tr><td style='background-color:#ff7777;'><pre>"+deletemsg.join("<br/>")+"</pre></td></tr></table>",teamrevchan);
-        bfbot.sendAll(sys.name(src)+" deleted set id "+tmp[1]+" from "+tmp[0]+"!", teamrevchan);
+        bfSets[tmp[0]] = deletesets;
+        sendChanHtmlAll("<table border='2'><tr><td style='background-color:#ff7777;'><pre>"+deletemsg.join("<br/>")+"</pre></td></tr></table>",reviewChannel);
+        bfbot.sendAll(sys.name(src)+" deleted set id "+tmp[1]+" from "+tmp[0]+"!", reviewChannel);
         return;
     }
     else if (command == 'deletepoke') {
@@ -1239,7 +1216,7 @@ function factoryCommand(src, command, commandData, channel) {
             bfbot.sendMessage(src, "Usage: /deletepoke [poke]:[tier]", channel);
             return;
         }
-        if (!bfsets.hasOwnProperty(tmp[1])) {
+        if (!bfSets.hasOwnProperty(tmp[1])) {
             bfbot.sendMessage(src, "No such tier exists!", channel);
             return;
         }
@@ -1247,7 +1224,7 @@ function factoryCommand(src, command, commandData, channel) {
             bfbot.sendMessage(src, "You are not authorised to review "+tmp[1]+" sets.", channel);
             return;
         }
-        var deletesets = bfsets[tmp[1]];
+        var deletesets = bfSets[tmp[1]];
         for (var u in deletesets) {
             if (parseInt(u,10) == sys.pokeNum(tmp[0])) {
                 delete deletesets[u];
@@ -1259,14 +1236,14 @@ function factoryCommand(src, command, commandData, channel) {
             bfbot.sendMessage(src, "No such Pokemon exists!", channel);
             return;
         }
-        bfsets[tmp[0]] = deletesets;
-        bfbot.sendAll(sys.name(src)+" deleted all of "+tmp[0]+"'s sets from "+tmp[1]+"!", teamrevchan);
+        bfSets[tmp[0]] = deletesets;
+        bfbot.sendAll(sys.name(src)+" deleted all of "+tmp[0]+"'s sets from "+tmp[1]+"!", reviewChannel);
         return;
     }
     else if (command == 'submitbans') {
         sys.sendMessage(src, "*** SUBMIT BANS ***", channel);
-        for (var j in submitbans) {
-            sys.sendMessage(src, submitbans[j].user+": Banned by "+submitbans[j].auth, channel);
+        for (var j in submitBans) {
+            sys.sendMessage(src, submitBans[j].user+": Banned by "+submitBans[j].auth, channel);
         }
         sys.sendMessage(src, "*** END OF SUBMIT BANS ***", channel);
     }
@@ -1286,13 +1263,13 @@ function factoryCommand(src, command, commandData, channel) {
             bfbot.sendMessage(src, "Can't submit ban auth.", channel);
             return;
         }
-        if (submitbans.hasOwnProperty(tarip)) {
+        if (submitBans.hasOwnProperty(tarip)) {
             bfbot.sendMessage(src, commandData+" is already banned from submitting!", channel);
             return;
         }
-        submitbans[tarip] = {'user': commandData.toLowerCase(), 'auth': sys.name(src)};
-        bfbot.sendAll(commandData+" was banned from submitting sets by "+sys.name(src)+"!",teamrevchan);
-        sys.writeToFile(submitDir+"bans.json", JSON.stringify(submitbans));
+        submitBans[tarip] = {'user': commandData.toLowerCase(), 'auth': sys.name(src)};
+        bfbot.sendAll(commandData+" was banned from submitting sets by "+sys.name(src)+"!",reviewChannel);
+        sys.writeToFile(submitDir+"bans.json", JSON.stringify(submitBans));
         return;
     }
     else if (command == 'submitunban') {
@@ -1306,21 +1283,21 @@ function factoryCommand(src, command, commandData, channel) {
             bfbot.sendMessage(src, "No such user.", channel);
             return;
         }
-        if (!submitbans.hasOwnProperty(tarip)) {
+        if (!submitBans.hasOwnProperty(tarip)) {
             bfbot.sendMessage(src, commandData+" is not banned from submitting!", channel);
             return;
         }
-        delete submitbans[tarip];
-        bfbot.sendAll(commandData+" was unbanned from submitting sets by "+sys.name(src)+"!",teamrevchan);
-        sys.writeToFile(submitDir+"bans.json", JSON.stringify(submitbans));
+        delete submitBans[tarip];
+        bfbot.sendAll(commandData+" was unbanned from submitting sets by "+sys.name(src)+"!",reviewChannel);
+        sys.writeToFile(submitDir+"bans.json", JSON.stringify(submitBans));
         return;
     }
     else if (command == "export") {
-        if (!bfsets.hasOwnProperty(commandData)) {
+        if (!bfSets.hasOwnProperty(commandData)) {
             bfbot.sendMessage(src, "No such pack exists!", channel);
             return;
         }
-        var content = bfsets[commandData];
+        var content = bfSets[commandData];
         var ret = "<table><tr><td><pre>"+JSON.stringify(content, null, 4)+"</pre></td></tr></table>";
         sys.sendHtmlMessage(src, ret, channel);
         return;
@@ -1351,7 +1328,7 @@ function factoryCommand(src, command, commandData, channel) {
             }
         }
         reviewers[tmp[1]].push(tmp[0]);
-        bfbot.sendAll(sys.name(src)+" made "+tmp[0]+" an approved reviewer of "+tmp[1]+"!",teamrevchan);
+        bfbot.sendAll(sys.name(src)+" made "+tmp[0]+" an approved reviewer of "+tmp[1]+"!",reviewChannel);
         sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
     }
     else if (command == 'removereviewer') {
@@ -1374,7 +1351,7 @@ function factoryCommand(src, command, commandData, channel) {
             }
         }
         if (removed) {
-            bfbot.sendAll(sys.name(src)+" fired "+tmp[0]+" from reviewing "+tmp[1]+"!",teamrevchan);
+            bfbot.sendAll(sys.name(src)+" fired "+tmp[0]+" from reviewing "+tmp[1]+"!",reviewChannel);
             sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
         }
         else {
@@ -1390,10 +1367,10 @@ function factoryCommand(src, command, commandData, channel) {
         return;
     }
     else if (command == "destroyreview") {
-        var parr = sys.playersOfChannel(teamrevchan);
+        var parr = sys.playersOfChannel(reviewChannel);
         for (var x in parr) {
             if (!isReviewAdmin(parr[x])) {
-                sys.kick(parr[x], teamrevchan);
+                sys.kick(parr[x], reviewChannel);
             }
         }
         bfbot.sendMessage(src, "Destroyed Review Channel", channel);
@@ -1401,15 +1378,15 @@ function factoryCommand(src, command, commandData, channel) {
     }
     else if (command == 'backlog') {
         sys.sendMessage(src, "*** Current Queue Lengths ***", channel);
-        for (var a in bfhash) {
+        for (var a in bfHash) {
             if (a == "preset") {
                 continue;
             }
-            if (!userqueue.hasOwnProperty(a)) {
+            if (!userQueue.hasOwnProperty(a)) {
                 sys.sendMessage(src, a+": 0", channel);
             }
             else {
-                sys.sendMessage(src, a+": "+userqueue[a].length, channel);
+                sys.sendMessage(src, a+": "+userQueue[a].length, channel);
             }
         }
         return;
@@ -1853,7 +1830,7 @@ function getStats(src, teamLo, teamHi, poke) {
 
 function generateTeam(src, teamLo, teamHi, mode) {
     try {
-        var pokedata = bfsets.hasOwnProperty(mode) ? bfsets[mode] : bfsets.preset;
+        var pokedata = bfSets.hasOwnProperty(mode) ? bfSets[mode] : bfSets.preset;
         var teaminfo = [];
         var pokearray = [];
         var readable = isReadable(pokedata);
@@ -2020,8 +1997,8 @@ function numPokes(tfile) {
 // Valid Packs
 function validPacks() {
     var packs = 0;
-    for (var x in bfhash) {
-        if (bfhash[x].enabled && bfhash[x].active) {
+    for (var x in bfHash) {
+        if (bfHash[x].enabled && bfHash[x].active) {
             packs += 1;
         }
     }
@@ -2029,11 +2006,11 @@ function validPacks() {
 }
 
 function isReviewAdmin(src) {
-    return sys.auth(src) >= 3 || SESSION.channels(teamrevchan).isChannelAdmin(src);
+    return sys.auth(src) >= 3 || SESSION.channels(reviewChannel).isChannelAdmin(src);
 }
 
 function isGlobalReviewer(src) {
-    return SESSION.channels(teamrevchan).isChannelOperator(src);
+    return SESSION.channels(reviewChannel).isChannelOperator(src);
 }
 
 function isReviewer(src) {
@@ -2103,7 +2080,7 @@ module.exports = {
     stepEvent : function() {
         if ((+sys.time())%saveInterval === 0) {
             autoSave("all", "");
-            bfbot.sendAll("Autosaved user generated sets.", teamrevchan);
+            bfbot.sendAll("Autosaved user generated sets.", reviewChannel);
         }
     },
     init: function() {
@@ -2117,14 +2094,14 @@ module.exports = {
     },
     afterChannelJoin : function(player, chan) {
         if (chan === sys.channelId('BF Review') && isReviewer(player)) {
-            for (var x in userqueue) {
-                if (isTierReviewer(player, x) && userqueue[x].length > 0) {
+            for (var x in userQueue) {
+                if (isTierReviewer(player, x) && userQueue[x].length > 0) {
                     sendQueueItem(player, 0, x);
                 }
             }
         }
-        if (teamrevchan != sys.channelId("BF Review")) {
-            teamrevchan = sys.channelId("BF Review");
+        if (reviewChannel != sys.channelId("BF Review")) {
+            reviewChannel = sys.channelId("BF Review");
         }
     },
     beforeChallengeIssued : function(source, dest, clauses, rated, mode, team, destTier) {
@@ -2146,18 +2123,18 @@ module.exports = {
             try {
                 var allowedtypes = [];
                 var suggestedtypes = [];
-                for (var x in bfhash) {
-                    if (bfhash[x].enabled && bfhash[x].active) {
+                for (var x in bfHash) {
+                    if (bfHash[x].enabled && bfHash[x].active) {
                         allowedtypes.push(x);
-                        if (bfsets[x].hasOwnProperty('mode')) {
+                        if (bfSets[x].hasOwnProperty('mode')) {
                             var modes = ['Singles', 'Doubles', 'Triples'];
-                            if (bfsets[x].mode == modes[mode]) {
+                            if (bfSets[x].mode == modes[mode]) {
                                 suggestedtypes.push(x);
                                 continue;
                             }
                         }
-                        if (bfsets[x].hasOwnProperty('maxpokes')) {
-                            if (bfsets[x].maxpokes == 6 && sys.tier(src, srcteamLo, srcteamHi) == sys.tier(dest, destteamLo, destteamHi) && sys.tier(src, srcteamLo, srcteamHi) == "Battle Factory 6v6") {
+                        if (bfSets[x].hasOwnProperty('maxpokes')) {
+                            if (bfSets[x].maxpokes == 6 && sys.tier(src, srcteamLo, srcteamHi) == sys.tier(dest, destteamLo, destteamHi) && sys.tier(src, srcteamLo, srcteamHi) == "Battle Factory 6v6") {
                                 suggestedtypes.push(x);
                                 continue;
                             }
@@ -2257,7 +2234,7 @@ module.exports = {
     },
     getVersion: function(type) {
         if (type == "script") {
-            return bfversion;
+            return bfVersion;
         }
         else if (type == "team") {
             return "Default";
