@@ -212,19 +212,21 @@ function isReadable(key) {
         return false;
     }
     var file = bfSets[key];
-    if (file.hasOwnProperty("readable")) {
-        if (file.readable === true) {
-            return true;
-        }
-    }
-    return false;
+    return file.hasOwnProperty("readable") && file.readable;
 }
 
+// An in-place shuffle of the array
+// https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm
+// Mutates and returns array
+// Originally there was a very biased/non-random sort here using Array.sort
 function shuffle(array) {
-    var sfunction = function() {
-        return Math.random()-0.5;
-    };
-    return array.sort(sfunction);
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * i);
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
 }
 
 // Tests for exact same sets, if exact is selected arr elements must be in correct order and match
