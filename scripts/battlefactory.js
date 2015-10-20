@@ -22,6 +22,7 @@ var submitDir = dataDir+"submit/";
 var bfSets, working, defaultSets, userQueue, /*messagebox,*/ reviewChannel, submitBans, bfHash, reviewers;
 var utilities = require('utilities.js');
 var saveInterval = 86400; // autosave every day
+var battleFactoryTiers = ["Battle Factory", "Battle Factory 6v6"];
 
 // Will escape "&", ">", and "<" symbols for HTML output.
 var html_escape = utilities.html_escape;
@@ -133,18 +134,12 @@ function startBF() {
     }
 }
 
-function isinBFTier(src, teamLo, teamHi) {
-    if (['Battle Factory', 'Battle Factory 6v6'].indexOf(sys.tier(src, teamLo, teamHi)) > -1) {
-        return true;
-    }
-    else return false;
+function isInBFTier(src, teamLo, teamHi) {
+    return battleFactoryTiers.indexOf(sys.tier(src, teamLo, teamHi)) > -1;
 }
 
 function isBFTier(tier) {
-    if (['Battle Factory', 'Battle Factory 6v6'].indexOf(tier) > -1) {
-        return true;
-    }
-    else return false;
+    return battleFactoryTiers.indexOf(tier) > -1;
 }
 
 function createDefaultEntry(path, desc) {
