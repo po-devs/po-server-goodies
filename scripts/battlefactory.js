@@ -500,32 +500,34 @@ function factoryCommand(src, command, commandData, channel) {
         });
         return;
     }
-    else if (command == "addtier") {
-        var tmp = commandData.split(":",2);
-        var ltier = find_tier(tmp[0]);
-        if (ltier === null) {
-            bfbot.sendMessage(src, "No such tier", channel);
+    else if (command === "addtier") {
+        if (commandData === "") {
+            bfbot.sendMessage(src, "Usage: /addtier [tier]:[mode]", channel);
             return;
         }
-        if (bfHash.hasOwnProperty(ltier)) {
-            bfbot.sendMessage(src, "This tier already exists!", channel);
+        var dataArray = commandData.split(":", 2), tier = find_tier(dataArray[0]);
+        if (tier === null) {
+            bfbot.sendMessage(src, dataArray[0] + " tier doesn't exist on the server.", channel);
             return;
         }
-
-        var template = {'desc': ltier};
-        if (tmp.length == 2) {
-            template.mode = tmp[1];
+        if (bfHash.hasOwnProperty(tier)) {
+            bfbot.sendMessage(src, tier + " tier already exists.", channel);
+            return;
         }
-        if (createEntry(ltier,template,"No URL for addtier")) {
-            autoSave("teams", ltier);
-            sendChanAll('Added the tier '+ltier+'!', reviewChannel);
-            refresh(ltier);
-            reviewers[ltier] = [];
-            sys.writeToFile(submitDir+"reviewers.json", JSON.stringify(reviewers));
+        var template = {"desc": tier};
+        if (dataArray.length === 2) {
+            template.mode = dataArray[1];
         }
-        else {
-            sendChanAll('A pack with that name already exists!', reviewChannel);
+        if (createEntry(tier, template, "No URL for addtier")) {
+            autoSave("teams", tier);
+            sendChanAll("Added the tier " + tier + "!", reviewChannel);
+            refresh(tier);
+            reviewers[tier] = [];
+            sys.writeToFile(submitDir + "reviewers.json", JSON.stringify(reviewers));
+        } else {
+            sendChanAll("A pack with that name already exists!", reviewChannel);
         }
+        return;
     }
     else if (command == "addpack") {
         var url;
