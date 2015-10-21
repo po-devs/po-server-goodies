@@ -690,12 +690,23 @@ function factoryCommand(src, command, commandData, channel) {
         autoSave("teams", "");
         return;
     }
-    else if (command == "pokeslist") {
-        var tfile = bfSets.hasOwnProperty(commandData) ? bfSets[commandData] : bfSets.preset;
-        var tteams = 0;
-        var tsets = 0;
+    else if (command === "pokeslist") {
+        var tfile, tier = find_tier(commandData), tteams = 0, tsets = 0;
+        if (commandData === "") {
+            tfile = bfSets.preset;
+        } else {
+            if (tier === null) {
+                bfbot.sendMessage(src, "The " + commandData + " tier doesn't exist on this server.", channel);
+                return;
+            }
+            if (!bfSets.hasOwnProperty(tier)) {
+                bfbot.sendMessage(src, "Battle Factory doesn't have any " + tier + " sets installed.", channel);
+                return;
+            }
+            tfile = bfSets[tier];
+        }
         for (var t in tfile) {
-            if (typeof tfile[t] != "object") {
+            if (typeof tfile[t] !== "object") {
                 continue;
             }
             var poke = sys.pokemon(parseInt(t, 10));
@@ -709,10 +720,10 @@ function factoryCommand(src, command, commandData, channel) {
                 setlength = tfile[t].length;
             }
             tsets += setlength;
-            bfbot.sendMessage(src, poke+": Has "+setlength+" sets.", channel);
+            bfbot.sendMessage(src, poke + ": Has " + setlength + " sets.", channel);
         }
         bfbot.sendMessage(src, "", channel);
-        bfbot.sendMessage(src, "Total: "+tteams+" pokes and "+tsets+" sets.", channel);
+        bfbot.sendMessage(src, (tier === null ? "Preset" : tier) + " totals: " + tteams + " pokes and " + tsets + " sets.", channel);
         return;
     }
     else if (command == "pokecode") {
