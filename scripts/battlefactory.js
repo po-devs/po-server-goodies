@@ -237,6 +237,7 @@ function pokeCodeToPokemon(pokeCode) {
         "species": sys.pokemon(toNumber(pokeCode.substr(0, 2))),
         "nature": sys.nature(toNumber(pokeCode.substr(3, 1))),
         "natureId": toNumber(pokeCode.substr(3, 1)),
+        "natureInfo": getNature(sys.nature(toNumber(pokeCode.substr(3, 1)))),
         "ability": sys.ability(toNumber(pokeCode.substr(4, 2))),
         "abilityId": toNumber(pokeCode.substr(4, 2)),
         "item": sys.item(toNumber(pokeCode.substr(6, 3))),
@@ -423,7 +424,7 @@ function seeQueueItem(index, tier) {
             sendReviewers("User: " + submitInfo.name, tier, false);
             bfbot.sendAll("Tier: " + submitInfo.tier, reviewChannel);
             submitInfo.sets.forEach(function(setCode, index, array) {
-                sets.push(getReadablePoke(setCode).join("<br/>"));
+                sets.push(getReadablePoke(setCode));
             });
             sys.sendHtmlAll("<table border='2'><tr><td><pre>" + sets.join("<br/><br/>") + "</pre></td></tr></table>", reviewChannel);
             sys.sendAll("", reviewChannel);
@@ -450,7 +451,7 @@ function sendQueueItem(src, index, tier) {
             bfbot.sendMessage(src, "User: "+submitInfo.name, reviewChannel);
             bfbot.sendMessage(src, "Tier: "+submitInfo.tier, reviewChannel);
             submitInfo.sets.forEach(function(setCode, index, array) {
-                sets.push(getReadablePoke(setCode).join("<br/>"));
+                sets.push(getReadablePoke(setCode));
             });
             sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>" + sets.join("<br/><br/>") + "</pre></td></tr></table>", reviewChannel);
             sys.sendMessage(src, "", reviewChannel);
@@ -731,7 +732,7 @@ function factoryCommand(src, command, commandData, channel) {
     else if (command == "pokecode") {
         try {
             var msg = getReadablePoke(commandData);
-            sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>"+msg.join("<br/>")+"</pre></td></tr></table>", channel);
+            sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>" + msg + "</pre></td></tr></table>", channel);
             return;
         }
         catch (err) {
@@ -778,15 +779,15 @@ function factoryCommand(src, command, commandData, channel) {
         for (var b in pokesets) {
             try {
                 if (isReadable(pokesets)) {
-                    sets.push(getReadablePoke(b).join("<br/>"));
+                    sets.push(getReadablePoke(b));
                 }
                 else {
                     if (typeof pokesets[b] == "object") {
-                        var newarr = getReadablePoke(pokesets[b].set);
-                        newarr.push("Submitted By: "+html_escape(pokesets[b].submitter), "Accepted By: "+html_escape(pokesets[b].auth));
-                        sets.push(newarr.join("<br/>"));
+                        sets.push(getReadablePoke(pokesets[b].set)
+                            + "<br />Submitted By: " + html_escape(pokesets[b].submitter)
+                            + "<br />Accepted By: " + html_escape(pokesets[b].auth));
                     } else {
-                        sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
+                        sets.push(getReadablePoke(pokesets[b]));
                     }
                 }
             }
@@ -1056,7 +1057,7 @@ function factoryCommand(src, command, commandData, channel) {
         bfbot.sendAll(sys.name(src)+" submitted some "+submittier+" sets for Battle Factory.", reviewChannel);
         var sets = [];
         for (var b in team) {
-            sets.push(getReadablePoke(team[b]).join("<br/>"));
+            sets.push(getReadablePoke(team[b]));
         }
         sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", channel);
         return;
@@ -1213,7 +1214,7 @@ function factoryCommand(src, command, commandData, channel) {
         }
         var deletemsg = getReadablePoke(tmp[1]);
         bfSets[tmp[0]] = deletesets;
-        sendChanHtmlAll("<table border='2'><tr><td style='background-color:#ff7777;'><pre>"+deletemsg.join("<br/>")+"</pre></td></tr></table>",reviewChannel);
+        sendChanHtmlAll("<table border='2'><tr><td style='background-color:#ff7777;'><pre>"+deletemsg+"</pre></td></tr></table>",reviewChannel);
         bfbot.sendAll(sys.name(src)+" deleted set id "+tmp[1]+" from "+tmp[0]+"!", reviewChannel);
         return;
     }
@@ -1667,108 +1668,83 @@ function setlint(checkfile) {
     return {'errors': errors, 'warnings': warnings, 'suggestions': suggestions};
 }
 
-function getReadablePoke(set) {
-    if (set.length != 39) {
+// converts a set code to a readable format, or importable. The lineBreak parameter defaults to "<br />"
+function getReadablePoke(setCode, lineBreak) {
+    if (setCode.length !== 39) {
         throw "Invalid Set, each set should be 39 alphanumeric characters long.";
     }
-    var info = {
-        'poke': sys.pokemon(toNumber(set.substr(0,2))+65536*toNumber(set.substr(2,1))),
-        'species': sys.pokemon(toNumber(set.substr(0,2))),
-        'nature': sys.nature(toNumber(set.substr(3,1))),
-        'ability': sys.ability(toNumber(set.substr(4,2))),
-        'item': sys.item(toNumber(set.substr(6,3))),
-        'level': toNumber(set.substr(9,2)),
-        'moves': [sys.move(toNumber(set.substr(11,2))),sys.move(toNumber(set.substr(13,2))),sys.move(toNumber(set.substr(15,2))),sys.move(toNumber(set.substr(17,2)))],
-        'evs': [toNumber(set.substr(19,2)),toNumber(set.substr(21,2)),toNumber(set.substr(23,2)),toNumber(set.substr(25,2)),toNumber(set.substr(27,2)),toNumber(set.substr(29,2))],
-        'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))],
-        'gen': sys.generation(toNumber(set.substr(37,1)),toNumber(set.substr(38,1)))
-    };
-    var stats = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
-    var msg = [set, info.poke+" @ "+info.item];
-    msg.push("Ability: "+info.ability, info.nature+" Nature, Level "+info.level);
-    var evlist = [];
-    var dvlist = [];
-    for (var j in info.evs) {
-        if (info.evs[j] > 0) {
-            evlist.push(info.evs[j]+" "+stats[j]);
+    lineBreak = lineBreak || "<br />";
+    var stats = ["HP", "Atk", "Def", "SAtk", "SDef", "Spd"];
+    var info = pokeCodeToPokemon(setCode);
+    var readablePoke = setCode + lineBreak;
+    readablePoke += info.poke + " @ " + info.item + lineBreak;
+    if (info.level < 100) {
+        readablePoke += "Level: " + info.level + lineBreak;
+    }
+    readablePoke += "Trait: " + info.ability + lineBreak;
+    var evList = [];
+    var dvList = [];
+    info.evs.forEach(function(ev, index, array) {
+        if (ev > 0) {
+            evList.push(ev + " " + stats[index]);
         }
-    }
-    for (var k in info.dvs) {
-        if (info.dvs[k] < 31) {
-            dvlist.push(info.dvs[k]+" "+stats[k]);
+    });
+    info.dvs.forEach(function(dv, index, array) {
+        if (dv < 31) {
+            dvList.push(dv + " " + stats[index]);
         }
+    });
+    readablePoke += "EVs: " + evList.join(" / ") + lineBreak;
+    if (dvList.length > 0) {
+        readablePoke += "IVs: " + dvList.join(" / ") + lineBreak;
     }
-    if (dvlist.length === 0) {
-        dvlist = ["All 31"];
+    readablePoke += info.nature + " Nature";
+    if (info.natureInfo[0] !== 0) {
+        readablePoke += " (+" + stats[info.natureInfo[0]] + ", -" + stats[info.natureInfo[1]] + ")";
     }
-    msg.push(info.moves.join(" / "),"EVs: "+evlist.join(" / "),"IVs: "+dvlist.join(" / "));
-    if (info.moves.indexOf("Hidden Power") != -1) {
-        var hptype = sys.hiddenPowerType(5,info.dvs[0],info.dvs[1],info.dvs[2],info.dvs[3],info.dvs[4],info.dvs[5]);
-        msg.push("Hidden Power "+sys.type(hptype));
-    }
-    var statlist = [];
-    var pokeinfo = sys.pokeBaseStats(sys.pokeNum(info.poke));
-    for (var s=0; s<6; s++) {
-        var natureboost = getNature(info.nature);
-        if (s === 0) { // HP Stat
-            if (pokeinfo[s] == 1) { // Shedinja
-                statlist.push("1 HP");
-            }
-            else {
-                var hstat = 10 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4+100)*info.level/100);
-                statlist.push(hstat+" HP");
-            }
+    readablePoke += lineBreak;
+    info.moves.forEach(function(move, index, array) {
+        if (move === "Hidden Power") {
+            var hpType = sys.hiddenPowerType(5, info.dvs[0], info.dvs[1], info.dvs[2],
+                                                info.dvs[3], info.dvs[4], info.dvs[5]);
+            readablePoke += "- Hidden Power [" + sys.type(hpType) + "]" + lineBreak;
+        } else if (move !== "(No Move)") {
+            readablePoke += "- " + move + lineBreak;
         }
-        else {
-            var bstat = 5 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4)*info.level/100);
-            var newstat = 0;
-            if (natureboost[0] === s) {
-                newstat = Math.floor(bstat*1.1);
-            }
-            else if (natureboost[1] === s) {
-                newstat = Math.floor(bstat*0.9);
-            }
-            else {
-                newstat = bstat;
-            }
-            statlist.push(newstat+" "+stats[s]);
-        }
-    }
-    msg.push("Stats: "+statlist.join(" / "), "Generation: "+info.gen);
-    return msg;
+    });
+    return readablePoke + "Generation: " + info.gen;
 }
 
-
-// Gets stat boost/drop of natures
-// 1=Atk, 2=Def, 3=SpA, 4=SpD, 5=Spe
-// reutnrs [up, down] or "";
+// Gets stat boosted and lowered by a nature
+// 1=Atk, 2=Def, 3=SAtk, 4=SDef, 5=Spd
+// returns [stat boosted, stat lowered];
 function getNature(nature) {
     var naturetable = {
-        'Hardy': [0,0],
-        'Lonely': [1,2],
-        'Brave': [1,5],
-        'Adamant': [1,3],
-        'Naughty': [1,4],
-        'Bold': [2,1],
-        'Docile': [0,0],
-        'Relaxed': [2,5],
-        'Impish': [2,3],
-        'Lax': [2,4],
-        'Timid': [5,1],
-        'Hasty': [5,2],
-        'Serious': [0,0],
-        'Jolly': [5,3],
-        'Naive': [5,4],
-        'Modest': [3,1],
-        'Mild': [3,2],
-        'Quiet': [3,5],
-        'Bashful': [0,0],
-        'Rash': [3,4],
-        'Calm': [4,1],
-        'Gentle': [4,2],
-        'Sassy': [4,5],
-        'Careful': [4,3],
-        'Quirky': [0,0]
+        "Hardy": [0, 0],
+        "Lonely": [1, 2],
+        "Brave": [1, 5],
+        "Adamant": [1, 3],
+        "Naughty": [1, 4],
+        "Bold": [2, 1],
+        "Docile": [0, 0],
+        "Relaxed": [2, 5],
+        "Impish": [2, 3],
+        "Lax": [2, 4],
+        "Timid": [5, 1],
+        "Hasty": [5, 2],
+        "Serious": [0, 0],
+        "Jolly": [5, 3],
+        "Naive": [5, 4],
+        "Modest": [3, 1],
+        "Mild": [3, 2],
+        "Quiet": [3, 5],
+        "Bashful": [0, 0],
+        "Rash": [3, 4],
+        "Calm": [4, 1],
+        "Gentle": [4, 2],
+        "Sassy": [4, 5],
+        "Careful": [4, 3],
+        "Quirky": [0, 0]
     };
     return naturetable[nature];
 }
