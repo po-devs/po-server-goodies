@@ -336,7 +336,7 @@ function refresh(key) {
             var totalPokes = 0;
             var totalSets = 0;
             for (var a in teamFile) {
-                if (typeof teamFile[a] !== "object") {
+                if (typeof teamFile[a] === "object") {
                     totalPokes += 1;
                     if (isReadable(key)) {
                         totalSets += Object.keys(teamFile[a]).length;
@@ -1975,28 +1975,26 @@ function generateTeam(src, teamLo, teamHi, mode) {
     }
 }
 
-// tfile is a json object
-
-function numPokes(tfile) {
-    var tteams = 0;
-    for (var t in tfile) {
-        if (typeof tfile[t] != "object") {
-            continue;
+// sets is a JSON object representing the sets of a Pokemon
+function numPokes(sets) {
+    var pokeCount = 0;
+    for (var set in sets) {
+        if (typeof sets[set] === "object") {
+            pokeCount += 1;
         }
-        tteams += 1;
     }
-    return tteams;
+    return pokeCount;
 }
 
-// Valid Packs
+// returns the number of valid packs
 function validPacks() {
-    var packs = 0;
-    for (var x in bfHash) {
-        if (bfHash[x].enabled && bfHash[x].active) {
-            packs += 1;
+    var packCount = 0;
+    for (var packName in bfHash) {
+        if (bfHash[packName].enabled && bfHash[packName].active) {
+            packCount += 1;
         }
     }
-    return packs;
+    return packCount;
 }
 
 function isReviewAdmin(src) {
@@ -2008,13 +2006,13 @@ function isGlobalReviewer(src) {
 }
 
 function isReviewer(src) {
-    if (sys.auth(src) >= 3 || isReviewAdmin(src) || isGlobalReviewer(src)) {
+    if (isReviewAdmin(src) || isGlobalReviewer(src)) {
         return true;
     }
-    for (var r in reviewers) {
-        var tierrev = reviewers[r];
-        for (var x in tierrev) {
-            if (sys.name(src).toLowerCase() === tierrev[x].toLowerCase()) {
+    for (var tier in reviewers) {
+        var tierReviewers = reviewers[tier];
+        for (var i = 0; i < tierReviewers.length; i++) {
+            if (sys.name(src).toLowerCase() === tierReviewers[i].toLowerCase()) {
                 return true;
             }
         }
@@ -2029,12 +2027,10 @@ function isTierReviewer(src, tier) {
     if (isGlobalReviewer(src)) {
         return true;
     }
-    var tierrev = reviewers[tier];
-    if (isReviewer(src)) {
-        for (var x in tierrev) {
-            if (sys.name(src).toLowerCase() === tierrev[x].toLowerCase()) {
-                return true;
-            }
+    var tierReviewers = reviewers[tier];
+    for (var i = 0; i < tierReviewers.length; i++) {
+        if (sys.name(src).toLowerCase() === tierReviewers[i].toLowerCase()) {
+            return true;
         }
     }
     return false;
