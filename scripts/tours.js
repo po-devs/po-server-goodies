@@ -48,7 +48,7 @@ var dataDir = "scriptdata/tourdata/";
 var utilities = require('utilities.js');
 var html_escape = require('utilities.js').html_escape;
 var tstats = require("newtourstats.js");
-var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
+var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
 var htmlborder = "<font color=#3DAA68><b>"+border+"</b></font>";
 var blueborder = "<font color=#0044BB><b>"+border+"</b></font>";
 var flashtag = "<!--f-->"; // This is used to check for flashes in the html code
@@ -640,7 +640,12 @@ function sendAuthPlayers(message,key) {
             var newmessage = message;
             var htmlname = html_escape(sys.name(arr[x]));
             var regex = flashtag+htmlname+flashtag;
-            var newregex1 = "<font style='BACKGROUND-COLOR: #FFBB00'>"+htmlname+"</font><ping/>";
+            var newregex1 = "";
+            if (sys.os(arr[x]) !== "android") {
+                newregex1 = "<font style='BACKGROUND-COLOR: #FFAAFF'>" + htmlname + "</font><ping/>";
+            } else {
+                newregex1 = "<background color='#FFAAFF'>" + htmlname + "</background><ping/>"
+            }
             var flashregex = new RegExp(flashtag,"g");
             newmessage = message.replace(regex,newregex1).replace(flashregex,"");
             sendBotMessage(arr[x], newmessage, tourschan, true);
@@ -656,7 +661,12 @@ function sendHtmlAuthPlayers(message,key) {
             // send highlighted name in bracket
             var htmlname = html_escape(sys.name(arr[x]));
             var regex = flashtag+htmlname+flashtag;
-            var newregex1 = "<font style='BACKGROUND-COLOR: #FFAAFF'>"+htmlname+"</font><ping/>";
+            var newregex1 = "";
+            if (sys.os(arr[x]) !== "android") {
+                newregex1 = "<font style='BACKGROUND-COLOR: #FFAAFF'>" + htmlname + "</font><ping/>";
+            } else {
+                newregex1 = "<background color='#FFAAFF'>" + htmlname + "</background><ping/>"
+            }
             var flashregex = new RegExp(flashtag,"g");
             var borderregex = new RegExp(htmlborder, "g");
             var newmessage = message.replace(regex,newregex1).replace(flashregex,"");
@@ -681,7 +691,12 @@ function sendFlashingBracket(message,key) {
             // send highlighted name in bracket
             var htmlname = html_escape(sys.name(arr[x]));
             var regex = flashtag+htmlname+flashtag;
-            var newregex1 = "<font style='BACKGROUND-COLOR: #FFAAFF'>"+htmlname+"</font><ping/>";
+            var newregex1 = "";
+            if (sys.os(arr[x]) !== "android") {
+                newregex1 = "<font style='BACKGROUND-COLOR: #FFAAFF'>" + htmlname + "</font><ping/>";
+            } else {
+                newregex1 = "<background color='#FFAAFF'>" + htmlname + "</background><ping/>"
+            }
             var flashregex = new RegExp(flashtag,"g");
             newmessage = message.replace(regex,newregex1).replace(flashregex,"");
         }
@@ -2777,41 +2792,78 @@ function tourCommand(src, command, commandData, channel) {
             }
             var postedrounds = false;
             var rounddata = [];
+            var data = [];
+            var notAndroid = sys.os(src) !== "android"
             for (var y in tours.tour) {
                 var battlers = tours.tour[y].battlers;
                 var winners = tours.tour[y].winners;
                 if (tours.tour[y].round === 0) continue;
                 postedrounds = true;
-                var roundtable = "<div style='margin-left: 50px'><b>Round "+tours.tour[y].round+" of the "+tours.tour[y].tourtype+" Tournament</b><table><br/>";
+                var roundtable = "";
+                if (notAndroid) {
+                    roundtable = "<div style='margin-left: 50px'><b>Round " + tours.tour[y].round + " of the " + tours.tour[y].tourtype + " Tournament</b><table><br/>";
+                }
+                else {
+                    data.push("<b>Round " + tours.tour[y].round + " if the " + tours.tour[y].tourtype + " Tournaments</b>");
+                }
                 for (var x=0; x<tours.tour[y].players.length; x+=2) {
                     if (winners.indexOf(tours.tour[y].players[x]) != -1 && tours.tour[y].players[x] != "~Bye~" && tours.tour[y].players[x] != "~DQ~") {
-                        if (command == "viewround")
-                            roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(tours.tour[y].players[x]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td></tr>";
+                        if (command == "viewround") {
+                            if (notAndroid) {
+                                roundtable = roundtable + "<tr><td align='right'><font color=green><b>" + toTourName(tours.tour[y].players[x]) + "</b></font></td><td align='center'> won against </td><td>" + toTourName(tours.tour[y].players[x+1]) + "</td></tr>";
+                            }
+                            else {
+                                data.push("<font color=green><b>" + toTourName(tours.tour[y].players[x]) + "</b></font> won against " + toTourName(tours.tour[y].players[x+1]));
+                            }
+                        }
                     }
                     else if (winners.indexOf(tours.tour[y].players[x+1]) != -1 && tours.tour[y].players[x+1] != "~Bye~" && tours.tour[y].players[x+1] != "~DQ~") {
-                        if (command == "viewround")
-                            roundtable = roundtable + "<tr><td align='right'><font color=green><b>"+toTourName(tours.tour[y].players[x+1]) +"</b></font></td><td align='center'> won against </td><td>"+ toTourName(tours.tour[y].players[x])+"</td></tr>";
+                        if (command == "viewround") {
+                            if (notAndroid) {
+                                roundtable = roundtable + "<tr><td align='right'><font color=green><b>" + toTourName(tours.tour[y].players[x+1]) + "</b></font></td><td align='center'> won against </td><td>" + toTourName(tours.tour[y].players[x]) +"</td></tr>";
+                            }
+                            else {
+                                data.push("<font color=green><b>"+  toTourName(tours.tour[y].players[x+1]) + "</b></font> won against " + toTourName(tours.tour[y].players[x]));
+                            }
+                        }
                     }
                     else if (battlers.hasOwnProperty(tours.tour[y].players[x])) {
                         if (command != "ipm") {
                             var elapsedtime = parseTimer(parseInt(sys.time(), 10)-battlers[tours.tour[y].players[x]].time);
-                            roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> "+(isInSpecificTour(sys.name(src), y) || (battlers[tours.tour[y].players[x]].noSpecs && !isMegaUser(src)) ? "is battling" : "<a href='po:watch/"+battlers[tours.tour[y].players[x]].battleId+"'>is battling</a>")+" </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td><td> ["+elapsedtime+"]</td></tr>";
+                            if (notAndroid) {
+                                roundtable = roundtable + "<tr><td align='right'>" + toTourName(tours.tour[y].players[x]) + "</td><td align='center'> " + (isInSpecificTour(sys.name(src), y) || (battlers[tours.tour[y].players[x]].noSpecs && !isMegaUser(src)) ? "is battling" : "<a href='po:watch/" + battlers[tours.tour[y].players[x]].battleId + "'>is battling</a>") + " </td><td>" + toTourName(tours.tour[y].players[x+1]) + "</td><td> [" + elapsedtime + "]</td></tr>";
+                            }
+                            else {
+                                data.push(toTourName(tours.tour[y].players[x]) + (isInSpecificTour(sys.name(src), y) || (battlers[tours.tour[y].players[x]].noSpecs && !isMegaUser(src)) ? "is battling" : "<watch id='" + battlers[tours.tour[y].players[x]].battleId + "'>is battling</watch>") + toTourName(tours.tour[y].players[x+1]) + " [" + elapsedtime + "]");
+                            }
                         }
                     }
                     else {
-                        if (command != "iom")
-                            roundtable = roundtable + "<tr><td align='right'>"+toTourName(tours.tour[y].players[x]) +"</td><td align='center'> VS </td><td>"+ toTourName(tours.tour[y].players[x+1])+"</td></tr>";
+                        if (command != "iom") {
+                            if (notAndroid) {
+                                roundtable = roundtable + "<tr><td align='right'>" + toTourName(tours.tour[y].players[x]) + "</td><td align='center'> VS </td><td>" + toTourName(tours.tour[y].players[x+1]) + "</td></tr>";
+                            }
+                            else {
+                                data.push(toTourName(tours.tour[y].players[x]) + " VS " + toTourName(tours.tour[y].players[x+1]));
+                            }
+                        }
                     }
                 }
-                rounddata.push(roundtable+"</table></div>");
+                rounddata.push(roundtable + "</table></div>");
             }
             if (!postedrounds) {
                 sendBotMessage(src, "No tournament is running at the moment!",tourschan,false);
                 return true;
             }
             else {
-                var roundstosend = htmlborder+rounddata.join(htmlborder)+htmlborder;
-                sys.sendHtmlMessage(src, roundstosend, tourschan);
+                if (notAndroid) {
+                    var roundstosend = htmlborder + rounddata.join(htmlborder) + htmlborder;
+                    sys.sendHtmlMessage(src, roundstosend, tourschan);
+                } else {
+                    for (var x = 0; x < data.length; x++) {
+                        sys.sendHtmlMessage(src, data[x], tourschan);
+                    }
+                }
             }
             return true;
         }
