@@ -229,150 +229,157 @@ function shuffle(array) {
     return array;
 }
 
+// converts an alphanumeric set code to an object with the Pokemon's data
+function pokeCodeToPokemon(pokeCode) {
+    return {
+        "poke": sys.pokemon(toNumber(pokeCode.substr(0, 2)) + 65536 * toNumber(pokeCode.substr(2, 1))),
+        "pokeId": toNumber(pokeCode.substr(0, 2)) + 65536 * toNumber(pokeCode.substr(2, 1)),
+        "species": sys.pokemon(toNumber(pokeCode.substr(0, 2))),
+        "nature": sys.nature(toNumber(pokeCode.substr(3, 1))),
+        "natureId": toNumber(pokeCode.substr(3, 1)),
+        "ability": sys.ability(toNumber(pokeCode.substr(4, 2))),
+        "abilityId": toNumber(pokeCode.substr(4, 2)),
+        "item": sys.item(toNumber(pokeCode.substr(6, 3))),
+        "itemId": toNumber(pokeCode.substr(6, 3)),
+        "level": toNumber(pokeCode.substr(9, 2)),
+        "moves": [
+            sys.move(toNumber(pokeCode.substr(11, 2))),
+            sys.move(toNumber(pokeCode.substr(13, 2))),
+            sys.move(toNumber(pokeCode.substr(15, 2))),
+            sys.move(toNumber(pokeCode.substr(17, 2)))
+        ],
+        "moveIds": [
+            toNumber(pokeCode.substr(11, 2)),
+            toNumber(pokeCode.substr(13, 2)),
+            toNumber(pokeCode.substr(15, 2)),
+            toNumber(pokeCode.substr(17, 2))
+        ],
+        "evs": [
+            toNumber(pokeCode.substr(19, 2)),
+            toNumber(pokeCode.substr(21, 2)),
+            toNumber(pokeCode.substr(23, 2)),
+            toNumber(pokeCode.substr(25, 2)),
+            toNumber(pokeCode.substr(27, 2)),
+            toNumber(pokeCode.substr(29, 2))
+        ],
+        "dvs": [
+            toNumber(pokeCode.substr(31, 1)),
+            toNumber(pokeCode.substr(32, 1)),
+            toNumber(pokeCode.substr(33, 1)),
+            toNumber(pokeCode.substr(34, 1)),
+            toNumber(pokeCode.substr(35, 1)),
+            toNumber(pokeCode.substr(36, 1))
+        ],
+        "gen": sys.generation(toNumber(pokeCode.substr(37, 1)),
+                              toNumber(pokeCode.substr(38, 1)))
+    };
+}
+
 // Tests for exact same sets, if exact is selected arr elements must be in correct order and match
 function hasSameElements(arr1, arr2, exact) {
-    var test1 = exact ? arr1.sort() : arr1;
-    var test2 = exact ? arr2.sort() : arr2;
     if (test1.length !== test2.length) {
         return false;
     }
-    for (var x=0; x<arr1.length; x++) {
-        if (test1[x] !== test2[x]) {
+    var test1 = exact ? arr1 : arr1.slice().sort();
+    var test2 = exact ? arr2 : arr2.slice().sort();
+    for (var i = 0; i < test1.length; i++) {
+        if (test1[i] !== test2[i]) {
             return false;
         }
     }
     return true;
 }
 
-// Checks for equivlance
+// Checks for equivalence
 function isEquivalent(code1, code2) {
-    var ctestprop1 = {
-        'poke': sys.pokemon(toNumber(code1.substr(0,2))+65536*toNumber(code1.substr(2,1))),
-        'nature': sys.nature(toNumber(code1.substr(3,1))),
-        'ability': sys.ability(toNumber(code1.substr(4,2))),
-        'item': sys.item(toNumber(code1.substr(6,3))),
-        'level': toNumber(code1.substr(9,2)),
-        'moves': [sys.move(toNumber(code1.substr(11,2))),sys.move(toNumber(code1.substr(13,2))),sys.move(toNumber(code1.substr(15,2))),sys.move(toNumber(code1.substr(17,2)))],
-        'evs': [toNumber(code1.substr(19,2)),toNumber(code1.substr(21,2)),toNumber(code1.substr(23,2)),toNumber(code1.substr(25,2)),toNumber(code1.substr(27,2)),toNumber(code1.substr(29,2))],
-        'dvs': [toNumber(code1.substr(31,1)),toNumber(code1.substr(32,1)),toNumber(code1.substr(33,1)),toNumber(code1.substr(34,1)),toNumber(code1.substr(35,1)),toNumber(code1.substr(36,1))]
-    };
-    var ctestprop2 = {
-        'poke': sys.pokemon(toNumber(code2.substr(0,2))+65536*toNumber(code2.substr(2,1))),
-        'nature': sys.nature(toNumber(code2.substr(3,1))),
-        'ability': sys.ability(toNumber(code2.substr(4,2))),
-        'item': sys.item(toNumber(code2.substr(6,3))),
-        'level': toNumber(code2.substr(9,2)),
-        'moves': [sys.move(toNumber(code2.substr(11,2))),sys.move(toNumber(code2.substr(13,2))),sys.move(toNumber(code2.substr(15,2))),sys.move(toNumber(code2.substr(17,2)))],
-        'evs': [toNumber(code2.substr(19,2)),toNumber(code2.substr(21,2)),toNumber(code2.substr(23,2)),toNumber(code2.substr(25,2)),toNumber(code2.substr(27,2)),toNumber(code2.substr(29,2))],
-        'dvs': [toNumber(code2.substr(31,1)),toNumber(code2.substr(32,1)),toNumber(code2.substr(33,1)),toNumber(code2.substr(34,1)),toNumber(code2.substr(35,1)),toNumber(code2.substr(36,1))]
-    };
-    for (var x in ctestprop1) {
-        if (x == "moves") {
-            if (!hasSameElements(ctestprop1.moves, ctestprop2.moves, false)) {
-                return false;
-            }
-        }
-        else if (['evs', 'dvs'].indexOf(x) > -1) {
-            if (!hasSameElements(ctestprop1[x], ctestprop2[x], true)) {
-                return false;
-            }
-        }
-        else {
-            if (ctestprop1[x] !== ctestprop2[x]) {
-                return false;
-            }
-        }
-    }
-    return true;
+    var poke1 = pokeCodeToPokemon(code1);
+    var poke2 = pokeCodeToPokemon(code2);
+    return (poke1.pokeId === poke2.pokeId
+        && poke1.natureId === poke2.natureId
+        && poke1.abilityId === poke2.abilityId
+        && poke1.itemId === poke2.itemId
+        && poke1.level === poke2.level
+        && hasSameElements(poke1.moveIds, poke2.moveIds, false)
+        && hasSameElements(poke1.evs, poke2.evs, true)
+        && hasSameElements(poke1.dvs, poke2.dvs, true)
+    );
 }
 
 function refresh(key) {
     try {
-        if (!bfHash.hasOwnProperty(key)) {
-            return;
-        }
-        var file = sys.getFileContent(dataDir + bfHash[key].path);
-        if (file === undefined) {
-            sendChanAll("Team Pack "+key+" is missing!", reviewChannel);
-            throw "File not found";
-        }
-        bfSets[key] = JSON.parse(file);
-        var message = [];
-        var teamfile = bfSets[key];
-        if (teamfile.hasOwnProperty('desc')) {
-            if (typeof teamfile.desc == "string") {
-                message.push("Successfully loaded the team pack '"+teamfile.desc+"'");
+        if (bfHash.hasOwnProperty(key)) {
+            var file = sys.getFileContent(dataDir + bfHash[key].path);
+            if (typeof file === "undefined") {
+                sendChanAll("The " + key + " pack is missing!", reviewChannel);
+                throw "File not found";
+            }
+            bfSets[key] = JSON.parse(file);
+            var message = [];
+            var teamFile = bfSets[key];
+            if (teamFile.hasOwnProperty("desc")) {
+                if (typeof teamFile.desc === "string") {
+                    message.push("Successfully loaded the " + teamFile.desc + " pack!");
+                    bfHash[key].enabled = true;
+                } else {
+                    message.push("Warning: Team set description was faulty");
+                }
+            } else {
+                message.push("Successfully loaded the " + key + " pack!");
+            }
+            if (numPokes(teamFile) < 12) {
+                message.push("Not enough Pokemon in the " + key + " pack!");
+                bfHash[key].enabled = false;
+            } else {
                 bfHash[key].enabled = true;
             }
-            else {
-                message.push("Warning: Team set description was faulty");
+            var totalPokes = 0;
+            var totalSets = 0;
+            for (var a in teamFile) {
+                if (typeof teamFile[a] !== "object") {
+                    totalPokes += 1;
+                    if (isReadable(key)) {
+                        totalSets += Object.keys(teamFile[a]).length;
+                    } else {
+                        totalSets += teamFile[a].length;
+                    }
+                }
+            }
+            message.push("Total: " + totalPokes + " Pokemon and " + totalSets + " sets.");
+            if (message.length > 0) {
+                sendChanAll(message.join("; "), reviewChannel);
             }
         }
-        else {
-            message.push("Successfully loaded the team pack: "+key);
-        }
-
-        if (numPokes(teamfile) < 12) {
-            message.push("Not enough Pokemon for the pack: "+key);
-            bfHash[key].enabled = false;
-        }
-        else {
-            bfHash[key].enabled = true;
-        }
-        var tteams = 0;
-        var tsets = 0;
-        for (var a in teamfile) {
-            if (typeof teamfile[a] != "object") {
-                continue;
-            }
-            tteams += 1;
-            var setlength = 0;
-            if (isReadable(key)) {
-                var lteams = teamfile[a];
-                setlength = Object.keys(lteams).length;
-            }
-            else {
-                setlength = teamfile[a].length;
-            }
-            tsets += setlength;
-        }
-        message.push("Total: "+tteams+" pokes and "+tsets+" sets.");
-        if (message.length > 0) {
-            sendChanAll(message.join("; "), reviewChannel);
-        }
-    }
-    catch (err) {
-        sendChanAll("Couldn't refresh teams: "+err, reviewChannel);
+    } catch (err) {
+        sendChanAll("Couldn't refresh teams: " + err, reviewChannel);
     }
 }
 
 function cleanEntries() {
     var deleted = 0;
-    for (var x in userQueue) {
-        var obj = userQueue[x];
-        for (var o in obj) {
-            if (typeof obj[o] != 'object' || obj[o] === null) {
-                userQueue[x].splice(o,1);
-                o -= 1;
-                deleted += 1;
-                continue;
-            }
-            if (!obj[o].hasOwnProperty('ip') || !obj[o].hasOwnProperty('name') || !obj[o].hasOwnProperty('sets') || !obj[o].hasOwnProperty('tier') || !obj[o].hasOwnProperty('comment') || !obj[o].hasOwnProperty('rating')) {
-                userQueue[x].splice(o,1);
-                o -= 1;
-                deleted += 1;
-                continue;
-            }
-        }
+    var initialLength = 0;
+    for (var tier in userQueue) {
+        var initialLength = userQueue[tier].length;
+        userQueue[tier] = userQueue[tier].filter(function(set, index, array) {
+            return (typeof set === "object" && set !== null
+                    && set.hasOwnProperty("ip")
+                    && set.hasOwnProperty("name")
+                    && set.hasOwnProperty("sets")
+                    && set.hasOwnProperty("tier")
+                    && set.hasOwnProperty("comment")
+                    && set.hasOwnProperty("rating"));
+        });
+        deleted += initialLength - userQueue[tier].length;
     }
-    if (deleted > 0) sendChanAll("Invalid Entries Removed: "+deleted, staffchannel);
+    if (deleted > 0) {
+        sendChanAll("Invalid Entries Removed: " + deleted, staffchannel);
+    }
 }
 
 function toChars(number, maxLength) {
     var base36Digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     var result = "";
-    for (var h = (maxLength - 1); h >= 0; h--) {
-        result += base36Digits.charAt(Math.floor(number / Math.pow(base36Digits.length, h)) % base36Digits.length);
+    for (var i = (maxLength - 1); i >= 0; i--) {
+        result += base36Digits.charAt(Math.floor(number / Math.pow(base36Digits.length, i)) % base36Digits.length);
     }
     return result;
 }
@@ -387,77 +394,72 @@ function toNumber(numberString) {
 }
 
 function sendReviewers(message, tier, html) {
-    if (!sys.existChannel('BF Review')) {
-        return;
-    }
-    var arr = sys.playersOfChannel(reviewChannel);
-    for (var x in arr) {
-        if (isTierReviewer(arr[x],tier)) {
-            if (html) {
-                sys.sendHtmlMessage(arr[x], message, reviewChannel);
+    if (sys.existChannel("BF Review")) {
+        sys.playersOfChannel(reviewChannel).forEach(function(player, index, array) {
+            if (isTierReviewer(player, tier)) {
+                if (html) {
+                    sys.sendHtmlMessage(player, message, reviewChannel);
+                } else {
+                    bfbot.sendMessage(player, message, reviewChannel);
+                }
             }
-            else {
-                bfbot.sendMessage(arr[x], message, reviewChannel);
-            }
-        }
+        });
     }
 }
 
 function seeQueueItem(index, tier) {
     if (!userQueue.hasOwnProperty(tier)) {
-        sendReviewers("Nothing in the "+tier+" queue.", tier, false);
-        return;
+        sendReviewers("Nothing in the " + tier + " queue.", tier, false);
+    } else {
+        var tierQueue = userQueue[tier];
+        if (index >= tierQueue.length || index < 0 || typeof tierQueue[0] === "undefined") {
+            sendReviewers("Nothing in the " + tier + " queue" + (index === 0 ? "." : " at index " + index), tier, false);
+        } else {
+            cleanEntries();
+            var submitInfo = tierQueue[0];
+            var sets = [];
+            sendReviewers("The " + tier + " queue length is currently " + tierQueue.length + ". The set for review is shown below.", tier, false);
+            sys.sendAll("", reviewChannel);
+            sendReviewers("User: " + submitInfo.name, tier, false);
+            bfbot.sendAll("Tier: " + submitInfo.tier, reviewChannel);
+            submitInfo.sets.forEach(function(setCode, index, array) {
+                sets.push(getReadablePoke(setCode).join("<br/>"));
+            });
+            sys.sendHtmlAll("<table border='2'><tr><td><pre>" + sets.join("<br/><br/>") + "</pre></td></tr></table>", reviewChannel);
+            sys.sendAll("", reviewChannel);
+            if (submitInfo.comment !== "") {
+                sendReviewers("Comment: " + submitInfo.comment, tier, false);
+            }
+            sendReviewers("Use /acceptset " + tier + " to accept this submission, /rejectset " + tier + " to reject it, or /nextset " + tier + " to view the next and come back to this later.", tier, false);
+        }
     }
-    var tierqueue = userQueue[tier];
-    if (index > tierqueue.length || index < 0 || tierqueue.length === 0 || tierqueue[0] === undefined) {
-        sendReviewers("Nothing in the "+tier+" queue"+(index === 0 ? "." : " at index "+index), tier, false);
-        return;
-    }
-    cleanEntries();
-    var submitinfo = tierqueue[0];
-    var sets = [];
-    sendReviewers(tier + " queue length is currently "+tierqueue.length+". The set for review is shown below.", tier, false);
-    sys.sendAll("", reviewChannel);
-    sendReviewers("User: "+submitinfo.name, tier, false);
-    bfbot.sendAll("Tier: "+submitinfo.tier, reviewChannel);
-    var pokesets = submitinfo.sets;
-    for (var b in pokesets) {
-        sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
-    }
-    sys.sendHtmlAll("<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", reviewChannel);
-    sys.sendAll("", reviewChannel);
-    if (submitinfo.comment !== "") {
-        sendReviewers("Comment: "+submitinfo.comment, tier, false);
-    }
-    sendReviewers("Use /acceptset "+tier+" to accept this submission, /rejectset "+tier+" to reject it, or /nextset "+tier+" to view the next and come back to this later.", tier, false);
 }
 
 function sendQueueItem(src, index, tier) {
     if (!userQueue.hasOwnProperty(tier)) {
-        bfbot.sendMessage(src, "Nothing in the queue.", reviewChannel);
-        return;
+        bfbot.sendMessage(src, "Nothing in the " + tier + " queue.", reviewChannel);
+    } else {
+        var tierQueue = userQueue[tier];
+        if (index >= tierQueue.length || index < 0 || typeof tierQueue[0] === "undefined") {
+            bfbot.sendMessage(src, "Nothing in the " + tier + " queue " + (index === 0 ? "." : " at index " + index), reviewChannel);
+        } else {
+            var submitInfo = tierQueue[0];
+            var sets = [];
+            bfbot.sendMessage(src, "The " + tier + " queue length is currently " + tierQueue.length + ". The set for review is shown below.", reviewChannel);
+            sys.sendMessage(src, "", reviewChannel);
+            bfbot.sendMessage(src, "User: "+submitInfo.name, reviewChannel);
+            bfbot.sendMessage(src, "Tier: "+submitInfo.tier, reviewChannel);
+            submitInfo.sets.forEach(function(setCode, index, array) {
+                sets.push(getReadablePoke(setCode).join("<br/>"));
+            });
+            sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>" + sets.join("<br/><br/>") + "</pre></td></tr></table>", reviewChannel);
+            sys.sendMessage(src, "", reviewChannel);
+            if (submitInfo.comment !== "") {
+                bfbot.sendMessage(src, "Comment: " + submitInfo.comment, reviewChannel);
+            }
+            bfbot.sendMessage(src, "Use /acceptset " + tier + " to accept this submission, /rejectset " + tier + " to reject it, or /nextset " + tier + " to view the next and come back to this later.", reviewChannel);
+        }
     }
-    var tierqueue = userQueue[tier];
-    if (index > tierqueue.length || index < 0 || tierqueue.length === 0 || tierqueue[0] === undefined) {
-        bfbot.sendMessage(src, "Nothing in the queue"+(index === 0 ? "." : " at index "+index), reviewChannel);
-        return;
-    }
-    var submitinfo = tierqueue[0];
-    var sets = [];
-    bfbot.sendMessage(src, tier+" queue length is currently "+tierqueue.length+". The set for review is shown below.", reviewChannel);
-    sys.sendMessage(src, "", reviewChannel);
-    bfbot.sendMessage(src, "User: "+submitinfo.name, reviewChannel);
-    bfbot.sendMessage(src, "Tier: "+submitinfo.tier, reviewChannel);
-    var pokesets = submitinfo.sets;
-    for (var b in pokesets) {
-        sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
-    }
-    sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", reviewChannel);
-    sys.sendMessage(src, "", reviewChannel);
-    if (submitinfo.comment !== "") {
-        bfbot.sendMessage(src, "Comment: "+submitinfo.comment, reviewChannel);
-    }
-    bfbot.sendMessage(src, "Use /acceptset "+tier+" to accept this submission, /rejectset "+tier+" to reject it, or /nextset "+tier+" to view the next and come back to this later.", reviewChannel);
 }
 
 function factoryCommand(src, command, commandData, channel) {
