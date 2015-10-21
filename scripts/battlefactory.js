@@ -197,7 +197,7 @@ function autoSave(type, params) {
 function dumpData(tar, teamLo, teamHi) {
     var sets = [];
     for (var b = 0; b < 6; b++) {
-        sets.push(getStats(tar, teamLo, teamHi, b).join("<br/>"));
+        sets.push(getPokePreview(tar, teamLo, teamHi, b));
     }
     var channels = sys.channelsOfPlayer(tar);
     if (sets.length > 0 && channels.length > 0) {
@@ -1719,7 +1719,7 @@ function getReadablePoke(setCode, lineBreak) {
 // 1=Atk, 2=Def, 3=SAtk, 4=SDef, 5=Spd
 // returns [stat boosted, stat lowered];
 function getNature(nature) {
-    var naturetable = {
+    var natureTable = {
         "Hardy": [0, 0],
         "Lonely": [1, 2],
         "Brave": [1, 5],
@@ -1746,70 +1746,80 @@ function getNature(nature) {
         "Careful": [4, 3],
         "Quirky": [0, 0]
     };
-    return naturetable[nature];
+    return natureTable[nature];
 }
 
-// This gets the stats for a Pokemon
-function getStats(src, teamLo, teamHi, poke) {
-    var movelist = [];
-    for (var m=0; m<4; m++) {
+// This gets a preview of the Pokemon for the player to view
+// In an ideal world this takes an alphanumeric code
+function getPokePreview(src, teamLo, teamHi, poke) {
+    var moveList = [];
+    for (var m = 0; m < 4; m++) {
         var move = sys.teamPokeMove(src, teamLo, poke, m, teamHi);
-        movelist.push(sys.move(move));
+        moveList.push(sys.move(move));
     }
-    var evlist = [];
-    for (var e=0; e<6; e++) {
-        var ev = sys.teamPokeEV(src, teamLo, poke, e, teamHi);
-        evlist.push(ev);
-    }
-    var dvlist = [];
-    for (var d=0; d<6; d++) {
-        var dv = sys.teamPokeDV(src, teamLo, poke, d, teamHi);
-        dvlist.push(dv);
+    var evList = [];
+    var dvList = [];
+    for (var i = 0; i < 6; i++) {
+        evList.push(sys.teamPokeEV(src, teamLo, poke, i, teamHi));
+        dvList.push(sys.teamPokeDV(src, teamLo, poke, i, teamHi));
     }
     var info = {
-        'poke': sys.pokemon(sys.teamPoke(src,teamLo,poke,teamHi)),
-        'species': sys.pokemon(sys.teamPoke(src,teamLo,poke,teamHi)%65536),
-        'nature': sys.nature(sys.teamPokeNature(src,teamLo,poke,teamHi)),
-        'ability': sys.ability(sys.teamPokeAbility(src,teamLo,poke,teamHi)),
-        'item': sys.item(sys.teamPokeItem(src,teamLo,poke,teamHi)),
-        'level': sys.teamPokeLevel(src,teamLo,poke,teamHi),
-        'moves': movelist,
-        'evs': evlist,
-        'dvs': dvlist
+        "poke": sys.pokemon(sys.teamPoke(src, teamLo, poke, teamHi)),
+        "species": sys.pokemon(sys.teamPoke(src, teamLo, poke, teamHi) % 65536),
+        "nature": sys.nature(sys.teamPokeNature(src, teamLo, poke, teamHi)),
+        "ability": sys.ability(sys.teamPokeAbility(src, teamLo, poke, teamHi)),
+        "item": sys.item(sys.teamPokeItem(src, teamLo, poke, teamHi)),
+        "level": sys.teamPokeLevel(src, teamLo, poke, teamHi),
+        "moves": moveList,
+        "evs": evList,
+        "dvs": dvList
     };
     var stats = ["HP", "Attack", "Defense", "Sp.Atk", "Sp.Def", "Speed"];
-    var statlist = [];
-    var pokeinfo = sys.pokeBaseStats(sys.teamPoke(src,teamLo,poke,teamHi));
-    for (var s=0; s<6; s++) {
-        var natureboost = getNature(info.nature);
+    var statList = [];
+    var baseStats = sys.pokeBaseStats(sys.teamPoke(src, teamLo, poke, teamHi));
+    for (var s = 0; s < 6; s++) {
+        var natureBoost = getNature(info.nature);
+        var ev = info.evs[s];
+        var dv = info.dvs[s];
+        var baseStat = baseStats[s];
         if (s === 0) { // HP Stat
-            if (pokeinfo[s] == 1) { // Shedinja
-                statlist.push("1 HP");
+            if (baseStats[s] === 1) { // Shedinja
+                statList.push("1 HP");
+            } else {
+                // ((iv + 2*base + ev/4 + 100) * this.level / 100) + 10
+                // flooring all divisions
+                var hpStat = Math.floor((dv + 2 * baseStat + Math.floor(ev / 4) + 100) * info.level / 100) + 10;
+                statList.push(hpStat + " HP");
             }
-            else {
-                var hstat = 10 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4+100)*info.level/100);
-                statlist.push(hstat+" HP");
+        } else {
+            // ((iv + 2*base + ev/4) * this.level / 100) + 5
+            // flooring all divisions
+            var stat = Math.floor((dv + 2 * baseStat + Math.floor(ev / 4)) * info.level / 100) + 5;
+            if (s === natureBoost[0]) {
+                stat = Math.floor(stat * 1.1);
+            } else if (s === natureBoost[1]) {
+                stat = Math.floor(stat * 0.9);
             }
-        }
-        else {
-            var bstat = 5 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4)*info.level/100);
-            var newstat = 0;
-            if (natureboost[0] === s) {
-                newstat = Math.floor(bstat*1.1);
-            }
-            else if (natureboost[1] === s) {
-                newstat = Math.floor(bstat*0.9);
-            }
-            else {
-                newstat = bstat;
-            }
-            statlist.push(newstat+" "+stats[s]);
+            statList.push(stat + " " + stats[s]);
         }
     }
-    var msg = [];
-    msg.push(info.poke+" @ "+info.item+"; Ability: "+info.ability+"; "+info.nature+" Nature; Level "+info.level);
-    msg.push(info.moves.join(" / "),"Stats: "+statlist.join(" / "));
-    return msg;
+    var preview = info.poke + " @ " + info.item;
+    preview += "; Ability: " + info.ability;
+    preview += "; " + info.nature + " Nature;"
+    preview += " Level " + info.level;
+    var parsedMoves = [];
+    info.moves.forEach(function(move, index, array) {
+        if (move === "Hidden Power") {
+            var hpType = sys.hiddenPowerType(5, info.dvs[0], info.dvs[1], info.dvs[2],
+                                                info.dvs[3], info.dvs[4], info.dvs[5]);
+            parsedMoves.push("Hidden Power [" + sys.type(hpType) + "]");
+        } else if (move !== "(No Move)") {
+            parsedMoves.push(move);
+        }
+    });
+    preview += "<br />" + parsedMoves.join(" / ");
+    preview += "<br />" + statList.join(" / ");
+    return preview;
 }
 
 function generateTeam(src, teamLo, teamHi, mode) {
