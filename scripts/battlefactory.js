@@ -2055,31 +2055,28 @@ function isTierReviewer(src, tier) {
 }
 
 module.exports = {
-    handleCommand: function(source, message, channel) {
-        var command;
-        var commandData = "";
-        var pos = message.indexOf(' ');
-        if (pos != -1) {
-            command = message.substring(0, pos).toLowerCase();
-            commandData = message.substr(pos+1);
-        }
-        else {
+    handleCommand: function (src, message, channel) {
+        var command, commandData = "", split = message.indexOf(" ");
+        if (split !== -1) {
+            command = message.substring(0, split).toLowerCase();
+            commandData = message.substr(split + 1);
+        } else {
             command = message.substr(0).toLowerCase();
         }
-        if (isReviewer(source) || ["bfversion", "submitsets", "viewpacks", "reviewers", "backlog", "pokecode", "pokesets", "pokeslist"].indexOf(command) > -1) {
-            if (['acceptset', 'rejectset', 'deleteset','checkqueue', 'nextset'].indexOf(command) > -1 && channel != sys.channelId('BF Review')) {
-                bfbot.sendMessage(source, "These commands will only work in the #BF Review Channel!", channel);
+        if (isReviewer(src) || ["bfversion", "submitsets", "viewpacks", "reviewers", "backlog", "pokecode", "pokesets", "pokeslist"].indexOf(command) > -1) {
+            if (["acceptset", "rejectset", "deleteset", "checkqueue", "nextset"].indexOf(command) > -1 && channel !== reviewChannel) {
+                bfbot.sendMessage(src, "These commands will only work in the #BF Review Channel!", channel);
                 return true;
             }
-            if (['submitban', 'submitunban', 'submitbans', 'scansets'].indexOf(command) > -1 && sys.auth(source) < 1) {
-                bfbot.sendMessage(source, "You can't use this command!", channel);
+            if (["submitban", "submitunban", "submitbans", "scansets"].indexOf(command) > -1 && sys.auth(src) < 1) {
+                bfbot.sendMessage(src, "You can't use this command!", channel);
                 return true;
             }
-            if (['updateteams', 'addpack', 'updatepack', 'deletepack', 'enablepack', 'disablepack', 'addreviewer', 'removereviewer', 'addtier', 'resetladder', 'destroyreview', 'importold', 'forcestart'].indexOf(command) > -1 && !isReviewAdmin(source)) {
-                bfbot.sendMessage(source, "You can't use this command!", channel);
+            if (["updateteams", "addpack", "updatepack", "deletepack", "enablepack", "disablepack", "addreviewer", "removereviewer", "addtier", "resetladder", "destroyreview", "importold", "forcestart"].indexOf(command) > -1 && !isReviewAdmin(src)) {
+                bfbot.sendMessage(src, "You can't use this command!", channel);
                 return true;
             }
-            if (factoryCommand(source, command, commandData, channel) != 'no command') {
+            if (factoryCommand(src, command, commandData, channel) !== "no command") {
                 return true;
             }
         }
