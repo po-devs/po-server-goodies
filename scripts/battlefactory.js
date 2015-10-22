@@ -196,7 +196,7 @@ function autoSave(type, params) {
 function dumpData(tar, teamLo, teamHi) {
     var sets = [];
     for (var b = 0; b < 6; b++) {
-        sets.push(getStats(tar, teamLo, teamHi, b).join("<br/>"));
+        sets.push(getPokePreview(tar, teamLo, teamHi, b));
     }
     var channels = sys.channelsOfPlayer(tar);
     if (sets.length > 0 && channels.length > 0) {
@@ -235,6 +235,7 @@ function pokeCodeToPokemon(pokeCode) {
         "species": sys.pokemon(toNumber(pokeCode.substr(0, 2))),
         "nature": sys.nature(toNumber(pokeCode.substr(3, 1))),
         "natureId": toNumber(pokeCode.substr(3, 1)),
+        "natureInfo": getNature(sys.nature(toNumber(pokeCode.substr(3, 1)))),
         "ability": sys.ability(toNumber(pokeCode.substr(4, 2))),
         "abilityId": toNumber(pokeCode.substr(4, 2)),
         "item": sys.item(toNumber(pokeCode.substr(6, 3))),
@@ -333,7 +334,7 @@ function refresh(key) {
             var totalPokes = 0;
             var totalSets = 0;
             for (var a in teamFile) {
-                if (typeof teamFile[a] !== "object") {
+                if (typeof teamFile[a] === "object") {
                     totalPokes += 1;
                     if (isReadable(key)) {
                         totalSets += Object.keys(teamFile[a]).length;
@@ -421,7 +422,7 @@ function seeQueueItem(index, tier) {
             sendReviewers("User: " + submitInfo.name, tier, false);
             bfbot.sendAll("Tier: " + submitInfo.tier, reviewChannel);
             submitInfo.sets.forEach(function(setCode, index, array) {
-                sets.push(getReadablePoke(setCode).join("<br/>"));
+                sets.push(getReadablePoke(setCode));
             });
             sys.sendHtmlAll("<table border='2'><tr><td><pre>" + sets.join("<br/><br/>") + "</pre></td></tr></table>", reviewChannel);
             sys.sendAll("", reviewChannel);
@@ -448,7 +449,7 @@ function sendQueueItem(src, index, tier) {
             bfbot.sendMessage(src, "User: "+submitInfo.name, reviewChannel);
             bfbot.sendMessage(src, "Tier: "+submitInfo.tier, reviewChannel);
             submitInfo.sets.forEach(function(setCode, index, array) {
-                sets.push(getReadablePoke(setCode).join("<br/>"));
+                sets.push(getReadablePoke(setCode));
             });
             sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>" + sets.join("<br/><br/>") + "</pre></td></tr></table>", reviewChannel);
             sys.sendMessage(src, "", reviewChannel);
@@ -723,7 +724,7 @@ function factoryCommand(src, command, commandData, channel) {
     else if (command == "pokecode") {
         try {
             var msg = getReadablePoke(commandData);
-            sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>"+msg.join("<br/>")+"</pre></td></tr></table>", channel);
+            sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>" + msg + "</pre></td></tr></table>", channel);
             return;
         }
         catch (err) {
@@ -770,15 +771,15 @@ function factoryCommand(src, command, commandData, channel) {
         for (var b in pokesets) {
             try {
                 if (isReadable(pokesets)) {
-                    sets.push(getReadablePoke(b).join("<br/>"));
+                    sets.push(getReadablePoke(b));
                 }
                 else {
                     if (typeof pokesets[b] == "object") {
-                        var newarr = getReadablePoke(pokesets[b].set);
-                        newarr.push("Submitted By: "+html_escape(pokesets[b].submitter), "Accepted By: "+html_escape(pokesets[b].auth));
-                        sets.push(newarr.join("<br/>"));
+                        sets.push(getReadablePoke(pokesets[b].set)
+                            + "<br />Submitted By: " + html_escape(pokesets[b].submitter)
+                            + "<br />Accepted By: " + html_escape(pokesets[b].auth));
                     } else {
-                        sets.push(getReadablePoke(pokesets[b]).join("<br/>"));
+                        sets.push(getReadablePoke(pokesets[b]));
                     }
                 }
             }
@@ -1048,7 +1049,7 @@ function factoryCommand(src, command, commandData, channel) {
         bfbot.sendAll(sys.name(src)+" submitted some "+submittier+" sets for Battle Factory.", reviewChannel);
         var sets = [];
         for (var b in team) {
-            sets.push(getReadablePoke(team[b]).join("<br/>"));
+            sets.push(getReadablePoke(team[b]));
         }
         sys.sendHtmlMessage(src, "<table border='2'><tr><td><pre>"+sets.join("<br/><br/>")+"</pre></td></tr></table>", channel);
         return;
@@ -1205,7 +1206,7 @@ function factoryCommand(src, command, commandData, channel) {
         }
         var deletemsg = getReadablePoke(tmp[1]);
         bfSets[tmp[0]] = deletesets;
-        sendChanHtmlAll("<table border='2'><tr><td style='background-color:#ff7777;'><pre>"+deletemsg.join("<br/>")+"</pre></td></tr></table>",reviewChannel);
+        sendChanHtmlAll("<table border='2'><tr><td style='background-color:#ff7777;'><pre>"+deletemsg+"</pre></td></tr></table>",reviewChannel);
         bfbot.sendAll(sys.name(src)+" deleted set id "+tmp[1]+" from "+tmp[0]+"!", reviewChannel);
         return;
     }
@@ -1659,173 +1660,158 @@ function setlint(checkfile) {
     return {'errors': errors, 'warnings': warnings, 'suggestions': suggestions};
 }
 
-function getReadablePoke(set) {
-    if (set.length != 39) {
+// converts a set code to a readable format, or importable. The lineBreak parameter defaults to "<br />"
+function getReadablePoke(setCode, lineBreak) {
+    if (setCode.length !== 39) {
         throw "Invalid Set, each set should be 39 alphanumeric characters long.";
     }
-    var info = {
-        'poke': sys.pokemon(toNumber(set.substr(0,2))+65536*toNumber(set.substr(2,1))),
-        'species': sys.pokemon(toNumber(set.substr(0,2))),
-        'nature': sys.nature(toNumber(set.substr(3,1))),
-        'ability': sys.ability(toNumber(set.substr(4,2))),
-        'item': sys.item(toNumber(set.substr(6,3))),
-        'level': toNumber(set.substr(9,2)),
-        'moves': [sys.move(toNumber(set.substr(11,2))),sys.move(toNumber(set.substr(13,2))),sys.move(toNumber(set.substr(15,2))),sys.move(toNumber(set.substr(17,2)))],
-        'evs': [toNumber(set.substr(19,2)),toNumber(set.substr(21,2)),toNumber(set.substr(23,2)),toNumber(set.substr(25,2)),toNumber(set.substr(27,2)),toNumber(set.substr(29,2))],
-        'dvs': [toNumber(set.substr(31,1)),toNumber(set.substr(32,1)),toNumber(set.substr(33,1)),toNumber(set.substr(34,1)),toNumber(set.substr(35,1)),toNumber(set.substr(36,1))],
-        'gen': sys.generation(toNumber(set.substr(37,1)),toNumber(set.substr(38,1)))
-    };
-    var stats = ["HP", "Atk", "Def", "SpA", "SpD", "Spe"];
-    var msg = [set, info.poke+" @ "+info.item];
-    msg.push("Ability: "+info.ability, info.nature+" Nature, Level "+info.level);
-    var evlist = [];
-    var dvlist = [];
-    for (var j in info.evs) {
-        if (info.evs[j] > 0) {
-            evlist.push(info.evs[j]+" "+stats[j]);
+    lineBreak = lineBreak || "<br />";
+    var stats = ["HP", "Atk", "Def", "SAtk", "SDef", "Spd"];
+    var info = pokeCodeToPokemon(setCode);
+    var readablePoke = setCode + lineBreak;
+    readablePoke += info.poke + " @ " + info.item + lineBreak;
+    if (info.level < 100) {
+        readablePoke += "Level: " + info.level + lineBreak;
+    }
+    readablePoke += "Trait: " + info.ability + lineBreak;
+    var evList = [];
+    var dvList = [];
+    info.evs.forEach(function(ev, index, array) {
+        if (ev > 0) {
+            evList.push(ev + " " + stats[index]);
         }
-    }
-    for (var k in info.dvs) {
-        if (info.dvs[k] < 31) {
-            dvlist.push(info.dvs[k]+" "+stats[k]);
+    });
+    info.dvs.forEach(function(dv, index, array) {
+        if (dv < 31) {
+            dvList.push(dv + " " + stats[index]);
         }
+    });
+    readablePoke += "EVs: " + evList.join(" / ") + lineBreak;
+    if (dvList.length > 0) {
+        readablePoke += "IVs: " + dvList.join(" / ") + lineBreak;
     }
-    if (dvlist.length === 0) {
-        dvlist = ["All 31"];
+    readablePoke += info.nature + " Nature";
+    if (info.natureInfo[0] !== 0) {
+        readablePoke += " (+" + stats[info.natureInfo[0]] + ", -" + stats[info.natureInfo[1]] + ")";
     }
-    msg.push(info.moves.join(" / "),"EVs: "+evlist.join(" / "),"IVs: "+dvlist.join(" / "));
-    if (info.moves.indexOf("Hidden Power") != -1) {
-        var hptype = sys.hiddenPowerType(5,info.dvs[0],info.dvs[1],info.dvs[2],info.dvs[3],info.dvs[4],info.dvs[5]);
-        msg.push("Hidden Power "+sys.type(hptype));
-    }
-    var statlist = [];
-    var pokeinfo = sys.pokeBaseStats(sys.pokeNum(info.poke));
-    for (var s=0; s<6; s++) {
-        var natureboost = getNature(info.nature);
-        if (s === 0) { // HP Stat
-            if (pokeinfo[s] == 1) { // Shedinja
-                statlist.push("1 HP");
-            }
-            else {
-                var hstat = 10 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4+100)*info.level/100);
-                statlist.push(hstat+" HP");
-            }
+    readablePoke += lineBreak;
+    info.moves.forEach(function(move, index, array) {
+        if (move === "Hidden Power") {
+            var hpType = sys.hiddenPowerType(5, info.dvs[0], info.dvs[1], info.dvs[2],
+                                                info.dvs[3], info.dvs[4], info.dvs[5]);
+            readablePoke += "- Hidden Power [" + sys.type(hpType) + "]" + lineBreak;
+        } else if (move !== "(No Move)") {
+            readablePoke += "- " + move + lineBreak;
         }
-        else {
-            var bstat = 5 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4)*info.level/100);
-            var newstat = 0;
-            if (natureboost[0] === s) {
-                newstat = Math.floor(bstat*1.1);
-            }
-            else if (natureboost[1] === s) {
-                newstat = Math.floor(bstat*0.9);
-            }
-            else {
-                newstat = bstat;
-            }
-            statlist.push(newstat+" "+stats[s]);
-        }
-    }
-    msg.push("Stats: "+statlist.join(" / "), "Generation: "+info.gen);
-    return msg;
+    });
+    return readablePoke + "Generation: " + info.gen;
 }
 
-
-// Gets stat boost/drop of natures
-// 1=Atk, 2=Def, 3=SpA, 4=SpD, 5=Spe
-// reutnrs [up, down] or "";
+// Gets stat boosted and lowered by a nature
+// 1=Atk, 2=Def, 3=SAtk, 4=SDef, 5=Spd
+// returns [stat boosted, stat lowered];
 function getNature(nature) {
-    var naturetable = {
-        'Hardy': [0,0],
-        'Lonely': [1,2],
-        'Brave': [1,5],
-        'Adamant': [1,3],
-        'Naughty': [1,4],
-        'Bold': [2,1],
-        'Docile': [0,0],
-        'Relaxed': [2,5],
-        'Impish': [2,3],
-        'Lax': [2,4],
-        'Timid': [5,1],
-        'Hasty': [5,2],
-        'Serious': [0,0],
-        'Jolly': [5,3],
-        'Naive': [5,4],
-        'Modest': [3,1],
-        'Mild': [3,2],
-        'Quiet': [3,5],
-        'Bashful': [0,0],
-        'Rash': [3,4],
-        'Calm': [4,1],
-        'Gentle': [4,2],
-        'Sassy': [4,5],
-        'Careful': [4,3],
-        'Quirky': [0,0]
+    var natureTable = {
+        "Hardy": [0, 0],
+        "Lonely": [1, 2],
+        "Brave": [1, 5],
+        "Adamant": [1, 3],
+        "Naughty": [1, 4],
+        "Bold": [2, 1],
+        "Docile": [0, 0],
+        "Relaxed": [2, 5],
+        "Impish": [2, 3],
+        "Lax": [2, 4],
+        "Timid": [5, 1],
+        "Hasty": [5, 2],
+        "Serious": [0, 0],
+        "Jolly": [5, 3],
+        "Naive": [5, 4],
+        "Modest": [3, 1],
+        "Mild": [3, 2],
+        "Quiet": [3, 5],
+        "Bashful": [0, 0],
+        "Rash": [3, 4],
+        "Calm": [4, 1],
+        "Gentle": [4, 2],
+        "Sassy": [4, 5],
+        "Careful": [4, 3],
+        "Quirky": [0, 0]
     };
-    return naturetable[nature];
+    return natureTable[nature];
 }
 
-// This gets the stats for a Pokemon
-function getStats(src, teamLo, teamHi, poke) {
-    var movelist = [];
-    for (var m=0; m<4; m++) {
+// This gets a preview of the Pokemon for the player to view
+// In an ideal world this takes an alphanumeric code
+function getPokePreview(src, teamLo, teamHi, poke) {
+    var moveList = [];
+    for (var m = 0; m < 4; m++) {
         var move = sys.teamPokeMove(src, teamLo, poke, m, teamHi);
-        movelist.push(sys.move(move));
+        moveList.push(sys.move(move));
     }
-    var evlist = [];
-    for (var e=0; e<6; e++) {
-        var ev = sys.teamPokeEV(src, teamLo, poke, e, teamHi);
-        evlist.push(ev);
-    }
-    var dvlist = [];
-    for (var d=0; d<6; d++) {
-        var dv = sys.teamPokeDV(src, teamLo, poke, d, teamHi);
-        dvlist.push(dv);
+    var evList = [];
+    var dvList = [];
+    for (var i = 0; i < 6; i++) {
+        evList.push(sys.teamPokeEV(src, teamLo, poke, i, teamHi));
+        dvList.push(sys.teamPokeDV(src, teamLo, poke, i, teamHi));
     }
     var info = {
-        'poke': sys.pokemon(sys.teamPoke(src,teamLo,poke,teamHi)),
-        'species': sys.pokemon(sys.teamPoke(src,teamLo,poke,teamHi)%65536),
-        'nature': sys.nature(sys.teamPokeNature(src,teamLo,poke,teamHi)),
-        'ability': sys.ability(sys.teamPokeAbility(src,teamLo,poke,teamHi)),
-        'item': sys.item(sys.teamPokeItem(src,teamLo,poke,teamHi)),
-        'level': sys.teamPokeLevel(src,teamLo,poke,teamHi),
-        'moves': movelist,
-        'evs': evlist,
-        'dvs': dvlist
+        "poke": sys.pokemon(sys.teamPoke(src, teamLo, poke, teamHi)),
+        "species": sys.pokemon(sys.teamPoke(src, teamLo, poke, teamHi) % 65536),
+        "nature": sys.nature(sys.teamPokeNature(src, teamLo, poke, teamHi)),
+        "ability": sys.ability(sys.teamPokeAbility(src, teamLo, poke, teamHi)),
+        "item": sys.item(sys.teamPokeItem(src, teamLo, poke, teamHi)),
+        "level": sys.teamPokeLevel(src, teamLo, poke, teamHi),
+        "moves": moveList,
+        "evs": evList,
+        "dvs": dvList
     };
     var stats = ["HP", "Attack", "Defense", "Sp.Atk", "Sp.Def", "Speed"];
-    var statlist = [];
-    var pokeinfo = sys.pokeBaseStats(sys.teamPoke(src,teamLo,poke,teamHi));
-    for (var s=0; s<6; s++) {
-        var natureboost = getNature(info.nature);
+    var statList = [];
+    var baseStats = sys.pokeBaseStats(sys.teamPoke(src, teamLo, poke, teamHi));
+    for (var s = 0; s < 6; s++) {
+        var natureBoost = getNature(info.nature);
+        var ev = info.evs[s];
+        var dv = info.dvs[s];
+        var baseStat = baseStats[s];
         if (s === 0) { // HP Stat
-            if (pokeinfo[s] == 1) { // Shedinja
-                statlist.push("1 HP");
+            if (baseStats[s] === 1) { // Shedinja
+                statList.push("1 HP");
+            } else {
+                // ((iv + 2*base + ev/4 + 100) * this.level / 100) + 10
+                // flooring all divisions
+                var hpStat = Math.floor((dv + 2 * baseStat + Math.floor(ev / 4) + 100) * info.level / 100) + 10;
+                statList.push(hpStat + " HP");
             }
-            else {
-                var hstat = 10 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4+100)*info.level/100);
-                statlist.push(hstat+" HP");
+        } else {
+            // ((iv + 2*base + ev/4) * this.level / 100) + 5
+            // flooring all divisions
+            var stat = Math.floor((dv + 2 * baseStat + Math.floor(ev / 4)) * info.level / 100) + 5;
+            if (s === natureBoost[0]) {
+                stat = Math.floor(stat * 1.1);
+            } else if (s === natureBoost[1]) {
+                stat = Math.floor(stat * 0.9);
             }
-        }
-        else {
-            var bstat = 5 + Math.floor(Math.floor(info.dvs[s]+2*pokeinfo[s]+info.evs[s]/4)*info.level/100);
-            var newstat = 0;
-            if (natureboost[0] === s) {
-                newstat = Math.floor(bstat*1.1);
-            }
-            else if (natureboost[1] === s) {
-                newstat = Math.floor(bstat*0.9);
-            }
-            else {
-                newstat = bstat;
-            }
-            statlist.push(newstat+" "+stats[s]);
+            statList.push(stat + " " + stats[s]);
         }
     }
-    var msg = [];
-    msg.push(info.poke+" @ "+info.item+"; Ability: "+info.ability+"; "+info.nature+" Nature; Level "+info.level);
-    msg.push(info.moves.join(" / "),"Stats: "+statlist.join(" / "));
-    return msg;
+    var preview = info.poke + " @ " + info.item;
+    preview += "; Ability: " + info.ability;
+    preview += "; " + info.nature + " Nature;"
+    preview += " Level " + info.level;
+    var parsedMoves = [];
+    info.moves.forEach(function(move, index, array) {
+        if (move === "Hidden Power") {
+            var hpType = sys.hiddenPowerType(5, info.dvs[0], info.dvs[1], info.dvs[2],
+                                                info.dvs[3], info.dvs[4], info.dvs[5]);
+            parsedMoves.push("Hidden Power [" + sys.type(hpType) + "]");
+        } else if (move !== "(No Move)") {
+            parsedMoves.push(move);
+        }
+    });
+    preview += "<br />" + parsedMoves.join(" / ");
+    preview += "<br />" + statList.join(" / ");
+    return preview;
 }
 
 function generateTeam(src, teamLo, teamHi, mode) {
@@ -1981,28 +1967,26 @@ function generateTeam(src, teamLo, teamHi, mode) {
     }
 }
 
-// tfile is a json object
-
-function numPokes(tfile) {
-    var tteams = 0;
-    for (var t in tfile) {
-        if (typeof tfile[t] != "object") {
-            continue;
+// sets is a JSON object representing the sets of a Pokemon
+function numPokes(sets) {
+    var pokeCount = 0;
+    for (var set in sets) {
+        if (typeof sets[set] === "object") {
+            pokeCount += 1;
         }
-        tteams += 1;
     }
-    return tteams;
+    return pokeCount;
 }
 
-// Valid Packs
+// returns the number of valid packs
 function validPacks() {
-    var packs = 0;
-    for (var x in bfHash) {
-        if (bfHash[x].enabled && bfHash[x].active) {
-            packs += 1;
+    var packCount = 0;
+    for (var packName in bfHash) {
+        if (bfHash[packName].enabled && bfHash[packName].active) {
+            packCount += 1;
         }
     }
-    return packs;
+    return packCount;
 }
 
 function isReviewAdmin(src) {
@@ -2014,13 +1998,13 @@ function isGlobalReviewer(src) {
 }
 
 function isReviewer(src) {
-    if (sys.auth(src) >= 3 || isReviewAdmin(src) || isGlobalReviewer(src)) {
+    if (isReviewAdmin(src) || isGlobalReviewer(src)) {
         return true;
     }
-    for (var r in reviewers) {
-        var tierrev = reviewers[r];
-        for (var x in tierrev) {
-            if (sys.name(src).toLowerCase() === tierrev[x].toLowerCase()) {
+    for (var tier in reviewers) {
+        var tierReviewers = reviewers[tier];
+        for (var i = 0; i < tierReviewers.length; i++) {
+            if (sys.name(src).toLowerCase() === tierReviewers[i].toLowerCase()) {
                 return true;
             }
         }
@@ -2035,12 +2019,10 @@ function isTierReviewer(src, tier) {
     if (isGlobalReviewer(src)) {
         return true;
     }
-    var tierrev = reviewers[tier];
-    if (isReviewer(src)) {
-        for (var x in tierrev) {
-            if (sys.name(src).toLowerCase() === tierrev[x].toLowerCase()) {
-                return true;
-            }
+    var tierReviewers = reviewers[tier];
+    for (var i = 0; i < tierReviewers.length; i++) {
+        if (sys.name(src).toLowerCase() === tierReviewers[i].toLowerCase()) {
+            return true;
         }
     }
     return false;
