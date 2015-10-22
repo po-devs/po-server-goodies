@@ -406,7 +406,7 @@ exports.help = function(src, channel) {
         sys.sendMessage(src, "/unjoin: Withdraws you from a tournament.", channel);
         sys.sendMessage(src, "/viewround: Shows the current pairings for the round.", channel);
         sys.sendMessage(src, "/viewqueue: Shows the current queue.", channel);
-        sys.sendMessage(src, "/touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)", channel);
+        sys.sendMessage(src, "/touralerts [on/off/clear]: Turn on/off your tour alerts or clear them all (Shows list of Tour Alerts if on/off isn't specified).",, channel);
         sys.sendMessage(src, "/addtouralert: Adds a tour alert for the specified tier. Can add multiple by seperating tiers with *.", channel);
         sys.sendMessage(src, "/removetouralert: Removes a tour alert for the specified tier. Can remove multiple by seperating tiers with *.", channel);
         if (poChannel.isChannelOperator(src) || poChannel.isChannelAdmin(src) || poChannel.isChannelOwner(src)) {

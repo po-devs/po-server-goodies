@@ -485,6 +485,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             script.saveKey("touralertson", src, "false");
             return;
         }
+        if (commandData === "clear") {
+            delete SESSION.users(src).tiers;
+            normalbot.sendMessage(src, "You have cleared all your tour alerts!", channel);            
+            script.saveKey("touralerts", src, SESSION.users(src).tiers.join("*"));
+            return;
+        }
         if (typeof (SESSION.users(src).tiers) === "undefined" || SESSION.users(src).tiers.length === 0) {
             normalbot.sendMessage(src, "You currently have no alerts activated", channel);
             return;
