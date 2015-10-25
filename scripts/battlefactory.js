@@ -1956,7 +1956,6 @@ function generateTeam(src, teamLo, teamHi, mode) {
             sys.changePokeNature(src, teamLo, s, pokeData.natureId, teamHi);
             sys.changePokeAbility(src, teamLo, s, pokeData.abilityId, teamHi);
             sys.changePokeItem(src, teamLo, s, pokeData.itemId, teamHi);
-            sys.changePokeLevel(src, teamLo, s, pokeData.level, teamHi);
             var shuffledMoves = shuffle(pokeData.moveIds);
             for (var m = 0; m < 4; m++) {
                 sys.changePokeMove(src, teamLo, s, m, shuffledMoves[m], teamHi);
@@ -1971,14 +1970,6 @@ function generateTeam(src, teamLo, teamHi, mode) {
             } else {
                 sys.changePokeHappiness(src, teamLo, s, 0, teamHi);
             }
-            var possibleGenders = sys.pokeGenders(pokeData.pokeId);
-            if (possibleGenders.hasOwnProperty("neutral")) {
-                sys.changePokeGender(src, teamLo, s, 0, teamHi);
-            } else if (possibleGenders.hasOwnProperty("male") && sys.rand(0, 100) <= possibleGenders.male) {
-                sys.changePokeGender(src, teamLo, s, 1, teamHi);
-            } else {
-                sys.changePokeGender(src, teamLo, s, 2, teamHi);
-            }
             var ladderRating = 1000;
             if (typeof sys.ladderRating(src, "Battle Factory 6v6") !== "undefined") {
                 ladderRating = sys.ladderRating(src, "Battle Factory 6v6");
@@ -1987,6 +1978,15 @@ function generateTeam(src, teamLo, teamHi, mode) {
             }
             var shineChance = Math.ceil(8192 * 1000000 / Math.pow(ladderRating, 2));
             sys.changePokeShine(src, teamLo, s, sys.rand(0, shineChance) === 0, teamHi);
+            var possibleGenders = sys.pokeGenders(pokeData.pokeId);
+            if (possibleGenders.hasOwnProperty("neutral")) {
+                sys.changePokeGender(src, teamLo, s, 0, teamHi);
+            } else if (possibleGenders.hasOwnProperty("male") && sys.rand(0, 100) <= possibleGenders.male) {
+                sys.changePokeGender(src, teamLo, s, 1, teamHi);
+            } else {
+                sys.changePokeGender(src, teamLo, s, 2, teamHi);
+            }
+            sys.changePokeLevel(src, teamLo, s, pokeData.level, teamHi); // do not move this, it's the only thing updating stats apparently!!
         }
         sys.updatePlayer(src);
     } catch (err) {
