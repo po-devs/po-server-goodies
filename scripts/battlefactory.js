@@ -1814,156 +1814,184 @@ function getPokePreview(src, teamLo, teamHi, poke) {
     return preview;
 }
 
+// Checks if the item is a Mega Stone
+// Accepts both numbers (item ids) and strings (item names)
+function isMegaStone(item) {
+    if (isNaN(item)) {
+        item = sys.itemNum(item);
+    }
+    return item > 2000 && item < 3000;
+}
+
 function generateTeam(src, teamLo, teamHi, mode) {
+    var megaLimit = 1;
     try {
-        var pokedata = bfSets.hasOwnProperty(mode) ? bfSets[mode] : bfSets.preset;
-        var teaminfo = [];
-        var pokearray = [];
-        var readable = isReadable(pokedata);
-        var maxPerfectIVs = 6;
-        for (var x in pokedata) {
-            if (typeof pokedata[x] == "object") {
-                pokearray.push(x);
+        var pack = bfSets.hasOwnProperty(mode) ? bfSets[mode] : bfSets.preset;
+        var teamInfo = [];
+        var pokeArray = [];
+        var badPokeArray = []; // backup if a team cannot be generated
+        var readable = isReadable(pack);
+        for (var x in pack) {
+            if (typeof pack[x] == "object") {
+                pokeArray.push(x);
             }
         }
-        if (pokedata.hasOwnProperty("perfectivs")) {
-            if (typeof pokedata.perfectivs == "number" && pokedata.perfectivs >= 0 && pokedata.perfectivs <= 6) {
-                maxPerfectIVs = pokedata.perfectivs;
+        var megaCount = 0;
+        for (var p = 0; p < 6; p++) {
+            var pokemonAdded = false;
+            while (!pokemonAdded && pokeArray.length > 0) {
+                var poke = pokeArray.splice(sys.rand(0, pokeArray.length), 1);
+                var sets = pack[poke];
+                if (readable) {
+                    var available = [];
+                    for (var t in sets) {
+                        if (megaCount < megaLimit || !isMegaStone(sets[t].item)) {
+                            available.push(sets[t]);
+                        }
+                    }
+                    if (available.length > 0) {
+                        var selectedSet = available[sys.rand(0, available.length)];
+                        teamInfo[p] = {
+                            "poke": selectedSet.poke,
+                            "pokeId": sys.pokeNum(selectedSet.poke),
+                            "nature": selectedSet.nature,
+                            "natureId": sys.natureNum(selectedSet.nature),
+                            "ability": selectedSet.ability,
+                            "abilityId": sys.abilityNum(selectedSet.ability),
+                            "item": selectedSet.item,
+                            "itemId": sys.itemNum(selectedSet.item),
+                            "level": selectedSet.level,
+                            "moves": [
+                                selectedSet.moves[0],
+                                selectedSet.moves[1],
+                                selectedSet.moves[2],
+                                selectedSet.moves[3]
+                            ],
+                            "moveIds": [
+                                sys.moveNum(selectedSet.moves[0]),
+                                sys.moveNum(selectedSet.moves[1]),
+                                sys.moveNum(selectedSet.moves[2]),
+                                sys.moveNum(selectedSet.moves[3])
+                            ],
+                            "evs": selectedSet.evs,
+                            "dvs": selectedSet.dvs
+                        };
+                        pokemonAdded = true;
+                    } else {
+                        badPokeArray.push(sets);
+                    }
+                } else {
+                    var filteredSets = sets.map(function(set, index, array) {
+                        if (typeof set === "object") {
+                            return pokeCodeToPokemon(set.set);
+                        }
+                        return pokeCodeToPokemon(set);
+                    }).filter(function(set, index, array) {
+                        return megaCount < megaLimit || !isMegaStone(set.itemId);
+                    });
+                    if (filteredSets.length > 0) {
+                        teamInfo[p] = filteredSets[sys.rand(0, filteredSets.length)];
+                        pokemonAdded = true;
+                    } else {
+                        badPokeArray.push(sets);
+                    }
+                }
             }
-        }
-        for (var p=0;p<6;p++) {
-            if (pokearray.length === 0) {
+            if (!pokemonAdded && badPokeArray.length > 0) {
+                var badPoke = badPokeArray.splice(sys.rand(0, badPokeArray.length), 1);
+                var badSets = pack[badPoke];
+                if (readable) {
+                    var badAvailable = [];
+                    for (var b in badSets) {
+                        badAvailable.push(sets[b]);
+                    }
+                    var badSelectedSet = badAvailable[sys.rand(0, badAvailable.length)];
+                    teamInfo[p] = {
+                        "poke": badSelectedSet.poke,
+                        "pokeId": sys.pokeNum(badSelectedSet.poke),
+                        "nature": badSelectedSet.nature,
+                        "natureId": sys.natureNum(badSelectedSet.nature),
+                        "ability": badSelectedSet.ability,
+                        "abilityId": sys.abilityNum(badSelectedSet.ability),
+                        "item": badSelectedSet.item,
+                        "itemId": sys.itemNum(badSelectedSet.item),
+                        "level": badSelectedSet.level,
+                        "moves": [
+                            badSelectedSet.moves[0],
+                            badSelectedSet.moves[1],
+                            badSelectedSet.moves[2],
+                            badSelectedSet.moves[3]
+                        ],
+                        "moveIds": [
+                            sys.moveNum(badSelectedSet.moves[0]),
+                            sys.moveNum(badSelectedSet.moves[1]),
+                            sys.moveNum(badSelectedSet.moves[2]),
+                            sys.moveNum(badSelectedSet.moves[3])
+                        ],
+                        "evs": badSelectedSet.evs,
+                        "dvs": badSelectedSet.dvs
+                    };
+                } else {
+                    var badSet = badSets[sys.rand(0, badSets.length)];
+                    if (typeof badSet === "object") {
+                        teamInfo[p] = pokeCodeToPokemon(badSet.set);
+                    } else {
+                        teamInfo[p] = pokeCodeToPokemon(set);
+                    }
+                }
+                pokemonAdded = true;
+            }
+            if (!pokemonAdded) {
                 bfbot.sendAll("Team file was empty or corrupt, could not import.", staffchannel);
                 return;
-            }
-            var pokes = pokearray.splice(sys.rand(0, pokearray.length),1);
-            var sets = pokedata[pokes];
-            if (readable) {
-                var available = [];
-                for (var t in sets) {
-                    available.push(sets[t]);
-                }
-                var prop = available[sys.rand(0, available.length)];
-                teaminfo[p] = {
-                    'poke': sys.pokeNum(prop.poke),
-                    'nature': sys.natureNum(prop.nature),
-                    'ability': sys.abilityNum(prop.ability),
-                    'item': sys.itemNum(prop.item),
-                    'level': prop.level,
-                    'moves': [sys.moveNum(prop.moves[0]),sys.moveNum(prop.moves[1]),sys.moveNum(prop.moves[2]),sys.moveNum(prop.moves[3])],
-                    'evs': prop.evs,
-                    'dvs': prop.dvs
-                };
-            }
-            else {
-                var set = sets[sys.rand(0, sets.length)];
-                var actualset = "";
-                if (typeof set == "object") {
-                    actualset = set.set;
-                }
-                else {
-                    actualset = set;
-                }
-                teaminfo[p] = {
-                    'poke': toNumber(actualset.substr(0,2))+65536*toNumber(actualset.substr(2,1)),
-                    'nature': toNumber(actualset.substr(3,1)),
-                    'ability': toNumber(actualset.substr(4,2)),
-                    'item': toNumber(actualset.substr(6,3)),
-                    'level': toNumber(actualset.substr(9,2)),
-                    'moves': [toNumber(actualset.substr(11,2)),toNumber(actualset.substr(13,2)),toNumber(actualset.substr(15,2)),toNumber(actualset.substr(17,2))],
-                    'evs': [toNumber(actualset.substr(19,2)),toNumber(actualset.substr(21,2)),toNumber(actualset.substr(23,2)),toNumber(actualset.substr(25,2)),toNumber(actualset.substr(27,2)),toNumber(actualset.substr(29,2))],
-                    'dvs': [toNumber(actualset.substr(31,1)),toNumber(actualset.substr(32,1)),toNumber(actualset.substr(33,1)),toNumber(actualset.substr(34,1)),toNumber(actualset.substr(35,1)),toNumber(actualset.substr(36,1))]
-                };
+            } else if (isMegaStone(teamInfo[p].itemId)) {
+                megaCount += 1;
             }
         }
-        var ivprioritise = [5,1,3,2,4,0];
-        var sortalgorithm = function (a,b) {
-                if (pdata.dvs[b.stat] === 0 || pdata.dvs[a.stat] === 0) {
-                    return a.value-b.value;
-                }
-                else if (b.value !== a.value) {
-                    return b.value-a.value;
-                }
-                else {
-                    return ivprioritise.indexOf(a.stat) - ivprioritise.indexOf(b.stat);
-                }
-            };
-        for (var s=0;s<6;s++) {
-            var pdata = teaminfo[s];
-            sys.changePokeNum(src,teamLo,s,pdata.poke,teamHi);
-            sys.changePokeName(src,teamLo,s,sys.pokemon(pdata.poke),teamHi);
-            sys.changePokeNature(src,teamLo,s,pdata.nature,teamHi);
-            sys.changePokeAbility(src,teamLo,s,pdata.ability,teamHi);
-            sys.changePokeItem(src,teamLo,s,pdata.item,teamHi);
-            var newmoves = shuffle(pdata.moves);
-            for (var m=0;m<4;m++) {
-                sys.changePokeMove(src,teamLo,s,m,newmoves[m],teamHi);
+        // Everything below copies the selected Pokemon to the user's team
+        for (var s = 0; s < 6; s++) {
+            var pokeData = teamInfo[s];
+            sys.changePokeNum(src, teamLo, s, pokeData.pokeId, teamHi);
+            sys.changePokeName(src, teamLo, s, pokeData.poke, teamHi);
+            sys.changePokeNature(src, teamLo, s, pokeData.natureId, teamHi);
+            sys.changePokeAbility(src, teamLo, s, pokeData.abilityId, teamHi);
+            sys.changePokeItem(src, teamLo, s, pokeData.itemId, teamHi);
+            sys.changePokeLevel(src, teamLo, s, pokeData.level, teamHi);
+            var shuffledMoves = shuffle(pokeData.moveIds);
+            for (var m = 0; m < 4; m++) {
+                sys.changePokeMove(src, teamLo, s, m, shuffledMoves[m], teamHi);
             }
-            for (var c=0;c<6;c++) {
-                sys.changeTeamPokeEV(src,teamLo,s,c,0,teamHi); // this resets the EV count
+            for (var i = 0; i < 6; i++) {
+                sys.changeTeamPokeEV(src, teamLo, s, i, pokeData.evs[i], teamHi);
+                sys.changeTeamPokeDV(src, teamLo, s, i, pokeData.dvs[i], teamHi);
             }
-            for (var e=0;e<6;e++) {
-                sys.changeTeamPokeEV(src,teamLo,s,e,pdata.evs[e],teamHi);
+            // maximise happiness if the poke has Return, minimise if it has frustration
+            if (pokeData.moves.indexOf("Return") > -1) {
+                sys.changePokeHappiness(src, teamLo, s, 255, teamHi);
+            } else {
+                sys.changePokeHappiness(src, teamLo, s, 0, teamHi);
             }
-            var keptIVs = [];
-            var EVlist = [];
-            for (var l=0; l<6; l++) {
-                EVlist.push({'stat': l, 'value': pdata.evs[l]});
+            var possibleGenders = sys.pokeGenders(pokeData.pokeId);
+            if (possibleGenders.hasOwnProperty("neutral")) {
+                sys.changePokeGender(src, teamLo, s, 0, teamHi);
+            } else if (possibleGenders.hasOwnProperty("male") && sys.rand(0, 100) <= possibleGenders.male) {
+                sys.changePokeGender(src, teamLo, s, 1, teamHi);
+            } else {
+                sys.changePokeGender(src, teamLo, s, 2, teamHi);
             }
-           
-            EVlist.sort(sortalgorithm);
-            keptIVs = [];
-            for (var k=0; k<maxPerfectIVs; k++) {
-                keptIVs.push(EVlist[k].stat);
+            var ladderRating = 1000;
+            if (typeof sys.ladderRating(src, "Battle Factory 6v6") !== "undefined") {
+                ladderRating = sys.ladderRating(src, "Battle Factory 6v6");
+            } else if (typeof sys.ladderRating(src, "Battle Factory") !== "undefined") {
+                ladderRating = sys.ladderRating(src, "Battle Factory");
             }
-            for (var d=0;d<6;d++) {
-                if (keptIVs.indexOf(d) > -1) {
-                    sys.changeTeamPokeDV(src,teamLo,s,d,pdata.dvs[d],teamHi);
-                }
-                else {
-                    sys.changeTeamPokeDV(src,teamLo,s,d,sys.rand(0,32),teamHi);
-                }
-            }
-            var happiness = sys.rand(0,256);
-            // maximise happiness if the poke has Return, minmise if it has frustration
-            if (sys.hasTeamPokeMove(src, teamLo, s, sys.moveNum('Return'), teamHi)) {
-                happiness = 255;
-            }
-            else if (sys.hasTeamPokeMove(src, teamLo, s, sys.moveNum('Frustration'), teamHi)) {
-                happiness = 0;
-            }
-            sys.changePokeHappiness(src,teamLo,s,happiness,teamHi);
-            var shinechance = 8192;
-            if (sys.ladderRating(src, "Battle Factory") !== undefined) {
-                shinechance = Math.ceil(8192 * 1000000 / Math.pow(sys.ladderRating(src, "Battle Factory"), 2));
-            }
-            sys.changePokeShine(src, teamLo, s, sys.rand(0,shinechance) === 0 ? true : false, teamHi);
-            var possiblegenders = sys.pokeGenders(pdata.poke);
-            var newgender = 0;
-            if (possiblegenders.hasOwnProperty("neutral")) {
-                newgender = 0;
-            }
-            else if (possiblegenders.hasOwnProperty("male")) {
-                var rand = Math.random()*100;
-                if (rand > possiblegenders.male) {
-                    newgender = 2;
-                }
-                else {
-                    newgender = 1;
-                }
-            }
-            else {
-                newgender = 2;
-            }
-            sys.changePokeGender(src,teamLo,s,newgender,teamHi);
-            sys.changePokeLevel(src,teamLo,s,pdata.level,teamHi);
+            var shineChance = Math.ceil(8192 * 1000000 / Math.pow(ladderRating, 2));
+            sys.changePokeShine(src, teamLo, s, sys.rand(0, shineChance) === 0, teamHi);
         }
         sys.updatePlayer(src);
-        return;
-    }
-    catch (err) {
-        bfbot.sendMessage(src, "Team file was empty or corrupt, could not generate a team. Please report this issue on forums. [Error: "+err+"]");
-        throw "Corrupt Team File: "+err;
+    } catch (err) {
+        bfbot.sendMessage(src, "Team file was empty or corrupt, could not generate a team. [Error: " + err + "]");
+        throw "Corrupt Team File: " + err;
     }
 }
 
