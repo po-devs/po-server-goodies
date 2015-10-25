@@ -17,7 +17,7 @@ Folders created: submissions, (messagebox may be used in the future, but not now
 // Globals
 var bfVersion = "1.100";
 var dataDir = "scriptdata/bfdata/";
-var submitDir = dataDir+"submit/";
+var submitDir = dataDir + "submit/";
 //var messDir = dataDir+"messages/";
 var bfSets, working, defaultSets, userQueue, /*messagebox,*/ reviewChannel, submitBans, bfHash, reviewers;
 var utilities = require('utilities.js');
@@ -44,7 +44,7 @@ function startBF() {
         if (typeof file === "undefined") {
             var url = Config.base_url + "bfdata/bfteams.json";
             bfbot.sendAll("Teams file not found, fetching teams from " + url, reviewChannel);
-            sys.webCall(url, function(responseText) {
+            sys.webCall(url, function (responseText) {
                 if (responseText !== "") {
                     try {
                         var parsedSets = JSON.parse(responseText);
@@ -94,7 +94,7 @@ function startBF() {
         // name, filepath, whether it is being actively used (human choice), whether it is enabled (automated)
         bfHash = {
             "preset": {
-                "path": 'bfteams.json',
+                "path": "bfteams.json",
                 "active": true,
                 "enabled": false,
                 "url": Config.base_url + "bfdata/bfteams.json"
@@ -143,23 +143,23 @@ function isBFTier(tier) {
 }
 
 function createDefaultEntry(path, desc) {
-    var pathname = dataDir + path;
-    if (typeof sys.getFileContent(pathname) === "undefined") {
-        sys.writeToFile(pathname, JSON.stringify({'desc': desc}));
+    var pathName = dataDir + path;
+    if (typeof sys.getFileContent(pathName) === "undefined") {
+        sys.writeToFile(pathName, JSON.stringify({"desc": desc}));
         return true;
     }
     return false;
 }
 
 function createEntry(name, data, srcUrl) {
-    var basepathname = "bfteams_" + (name.replace(/ /g, "")).toLowerCase() + ".json";
+    var basePathName = "bfteams_" + (name.replace(/ /g, "")).toLowerCase() + ".json";
     if (!data.hasOwnProperty("desc")) {
         data.desc = name;
     }
-    if (typeof sys.getFileContent(dataDir + basepathname) === "undefined") {
-        sys.writeToFile(dataDir + basepathname, JSON.stringify(data));
+    if (typeof sys.getFileContent(dataDir + basePathName) === "undefined") {
+        sys.writeToFile(dataDir + basePathName, JSON.stringify(data));
         bfHash[name] = {
-            "path": basepathname,
+            "path": basePathName,
             "active": true,
             "enabled": true,
             "url": srcUrl
@@ -170,7 +170,6 @@ function createEntry(name, data, srcUrl) {
     return false;
 }
 
-// Save user generated info periodically as a backup
 function autoSave(type, params) {
     if (type === "all") {
         cleanEntries();
@@ -201,12 +200,11 @@ function dumpData(tar, teamLo, teamHi) {
     }
     var channels = sys.channelsOfPlayer(tar);
     if (sets.length > 0 && channels.length > 0) {
-        var sendChannel = sys.isInChannel(tar, 0) ? 0 : channels[0];
+        var sendChannel = (sys.isInChannel(tar, 0) ? 0 : channels[0]);
         sys.sendHtmlMessage(tar, "<table border='2'><tr><td><pre>" + sets.join("<br/><br/>") + "</pre></td></tr></table>", sendChannel);
     }
 }
 
-// Whether the data is readable or not
 function isReadable(key) {
     if (!bfSets.hasOwnProperty(key)) {
         return false;
@@ -464,38 +462,32 @@ function sendQueueItem(src, index, tier) {
 }
 
 function factoryCommand(src, command, commandData, channel) {
-    // default
-    if (command == "updateteams") {
-        var url = Config.base_url+dataDir+"bfteams.json";
-        // if (commandData.indexOf("http://") === 0 || commandData.indexOf("https://") === 0) {
-        //    url = commandData;
-        // }
-        bfbot.sendMessage(src, "Fetching teams from "+url, channel);
+    if (command === "updateteams") {
+        var url = Config.base_url + dataDir + "bfteams.json";
+        bfbot.sendMessage(src, "Fetching teams from " + url, channel);
         sys.webCall(url, function(resp) {
             if (resp !== "") {
                 try {
                     var test = JSON.parse(resp);
                     var res = setlint(test, false);
                     if (res.errors.length > 0) {
-                        sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=red>ERRORS</font></th><th>"+res.errors.length+"</th></tr><tr>"+res.errors.join("</tr><tr>")+"</tr></table>", channel);
+                        sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=red>ERRORS</font></th><th>" + res.errors.length + "</th></tr><tr>" + res.errors.join("</tr><tr>") + "</tr></table>", channel);
                         throw "Bad File";
                     }
                     if (res.warnings.length > 0) {
-                        sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=orange>WARNINGS</font></th><th>"+res.warnings.length+"</th></tr><tr>"+res.warnings.join("</tr><tr>")+"</tr></table>", channel);
+                        sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=orange>WARNINGS</font></th><th>" + res.warnings.length + "</th></tr><tr>" + res.warnings.join("</tr><tr>") + "</tr></table>", channel);
                     }
                     if (res.suggestions.length > 0) {
-                        sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>"+res.suggestions.length+"</th></tr><tr>"+res.suggestions.join("</tr><tr>")+"</tr></table>", channel);
+                        sys.sendHtmlMessage(src, "<table border='2' cellpadding='3'><tr><th><font color=green>Suggestions</font></th><th>" + res.suggestions.length + "</th></tr><tr>" + res.suggestions.join("</tr><tr>") + "</tr></table>", channel);
                     }
-                    sys.writeToFile(dataDir+'bfteams.json', resp);
+                    sys.writeToFile(dataDir + "bfteams.json", resp);
                     autoSave("teams", "preset");
-                    sendChanAll('Updated Battle Factory Teams!', staffchannel);
-                    refresh('preset');
+                    sendChanAll("Updated Battle Factory Teams!", staffchannel);
+                    refresh("preset");
+                } catch (err) {
+                    bfbot.sendMessage(src, "FATAL ERROR: " + err, channel);
                 }
-                catch (err) {
-                    bfbot.sendMessage(src, "FATAL ERROR: "+err, channel);
-                }
-            }
-            else {
+            } else {
                 bfbot.sendMessage(src, "Failed to update!", channel);
             }
         });
