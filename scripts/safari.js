@@ -6,6 +6,8 @@ var MemoryHash = require("memoryhash.js").MemoryHash;
 function Safari() {
     var safari = this;
     var safchan;
+    
+    var safaribot = "Tauros";
 
     var defaultChannel = "Safari Game";
     
@@ -1178,16 +1180,20 @@ function Safari() {
             return true;
         }
         
-        
-        if (sys.auth(src) < 3) {
-            return false;
-        }
         //Test commands to make a wild Pokémon appear or start/end a contest
         if (command === "wild") {
+            if (sys.auth(src) < 3) {
+                commandbot.sendMessage(src, "The command wild doesn't exist", safchan);
+                return true;
+            }
             safari.createWild();
             return true;
         }
         if (command === "contest") {
+            if (sys.auth(src) < 3) {
+                commandbot.sendMessage(src, "The command contest doesn't exist", safchan);
+                return true;
+            }
             if (contestCount > 0) {
                 contestCount = 1;
             } else {
