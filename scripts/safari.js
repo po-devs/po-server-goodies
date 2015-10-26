@@ -1179,8 +1179,9 @@ function Safari() {
         }
         
         
-        if (sys.auth(src) < 3)
-            throw ("no valid command");    
+        if (sys.auth(src) < 3) {
+            return false;
+        }
         //Test commands to make a wild Pokémon appear or start/end a contest
         if (command === "wild") {
             safari.createWild();
