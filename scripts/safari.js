@@ -7,7 +7,7 @@ function Safari() {
     var safari = this;
     var safchan;
     
-    var safaribot = "Tauros";
+    var safaribot = new Bot("Tauros");
 
     var defaultChannel = "Safari Game";
     
