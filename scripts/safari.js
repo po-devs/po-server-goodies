@@ -2,6 +2,7 @@
 /*global sys, module, SESSION, safaribot, require, script, sachannel, getTimeString */
 
 var MemoryHash = require("memoryhash.js").MemoryHash;
+var Bot = require('bot.js').Bot;
 
 function Safari() {
     var safari = this;
