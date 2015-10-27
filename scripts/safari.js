@@ -29,6 +29,7 @@ function Safari() {
     var rawPlayers;
     
     var contestCooldownLength = 1800; //1 contest every 30 minutes
+    var contestBroadcast = true; //Determines whether Tohjo gets notified
     var contestCooldown = (SESSION.global() && SESSION.global().safariContestCooldown ? SESSION.global().safariContestCooldown : contestCooldownLength);
     var contestDuration = 240; //Contest lasts for 4 minutes
     var contestCount = 0;
@@ -266,16 +267,20 @@ function Safari() {
         return "<img src='pokemon:num=" + num + (typeof num == "string" ? "&shiny=true" : "") + "&gen=6'>";
     }
     
-    this.createWild = function() {
+    this.createWild = function(spawn) {
         var num,
             pokeId,
             shiny = sys.rand(0, shinyChance) < 1,
             maxStats = sys.rand(300, 750);
-        
-        do {
-            num = sys.rand(1, 722);
-            pokeId = poke(num + (shiny ? "" : 0));
-        } while (!pokeId || add(sys.pokeBaseStats(num)) > maxStats);
+        if (spawn) {        
+            num = parseInt(spawn, 10);
+            pokeId = poke(num);
+        } else {
+            do {
+                num = sys.rand(1, 722);
+                pokeId = poke(num + (shiny ? "" : 0));
+            } while (!pokeId || add(sys.pokeBaseStats(num)) > maxStats);
+        }
         
         sys.sendHtmlAll("<hr><center>A wild " + pokeId + " appeared!<br/>" + pokeImage(num + (shiny ? "" : 0)) + "</center><hr>", safchan);
         currentPokemon = shiny ? "" + num : num;
@@ -504,6 +509,12 @@ function Safari() {
             case "masterball":
                 ball = "master";
             break;
+        }
+        
+        var validItems = ["safari", "great", "ultra", "master"];
+        if (validItems.indexOf(ball) == -1) {
+            safaribot.sendMessage(src, "This is not a valid item. Valid items are: Safari Ball, Great Ball, Ultra Ball, and Master Ball", safchan);
+            return;
         }
         var cost = amount * ballPrices[ball];
         if (player.money < cost) {
@@ -887,7 +898,7 @@ function Safari() {
             }
         }
     };
-    this.dailyReward = function(src, today) {
+    /*this.dailyReward = function(src, today) {
         var player = getAvatar(src);
         
         if (today > player.lastLogin) {
@@ -940,7 +951,7 @@ function Safari() {
             safaribot.sendMessage(src, "You received the following rewards for joining Safari today: " + gained.join(", "), safchan);
             this.saveGame(player);
         }
-    };
+    };*/
     
     this.startGame = function(src, data) {
         if (getAvatar(src)) {
@@ -985,7 +996,7 @@ function Safari() {
             var player = JSON.parse(data);
             SESSION.users(src).safari = player;
             safaribot.sendMessage(src, "Your Safari data was successfully loaded!", safchan);
-            this.dailyReward(src, getDay(now()));
+            //this.dailyReward(src, getDay(now()));
         }
     };
     this.changeAlt = function(src, data) {
@@ -1099,27 +1110,28 @@ function Safari() {
             "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
         ];
         var help = userHelp;
-        /* var adminHelp = [
+        /*var adminHelp = [
             "*** Hangman Admin Commands ***",
             "/hangmanban: To ban a user in safari. Format /hangmanban name:reason:time"
-        ];
+        ];*/
         var superAdminHelp = [
-            "*** Hangman Super Admin Commands ***",
-            "/config: To change the answer delay time and other settings. Format /config parameter:value. Type /config by itself to see more help."
+            "*** Safari Admin Commands ***",
+            "/contest: Force starts a Safari contest. Use /contestsoft to skip broadcasting to Tohjo Falls.",
+            "/wild: Spawns a random wild Pokemon with no restrictions. Use a valid dex number for a specific spawn."
         ];
         var ownerHelp = [
-            "*** Server owner Hangman Commands ***",
-            "/hangmansuperadmin: To promote a new Hangman Super Admin. Use /shangmansuperadmin for a silent promotion."
+            "*** Safari Owner Commands ***",
+            "/wipesafari: Clears a user's Safari data permanently."
         ];
-        if (this.authLevel(src) > 0) {
+        /*if (sys.auth(src) > 0) {
             help.push.apply(help, adminHelp);
-        }
-        if (this.authLevel(src) > 1) {
+        }*/
+        if (sys.auth(src) > 1) {
             help.push.apply(help, superAdminHelp);
         }
-        if (this.authLevel(src) > 2) {
+        if (sys.auth(src) > 2) {
             help.push.apply(help, ownerHelp);
-        } */
+        }
         for (var x = 0; x < help.length; x++) {
             sys.sendMessage(src, help[x], channel);
         }
@@ -1183,23 +1195,57 @@ function Safari() {
         
         //Test commands to make a wild Pokémon appear or start/end a contest
         if (command === "wild") {
-            if (sys.auth(src) < 3) {
+            if (sys.auth(src) < 2) {
                 commandbot.sendMessage(src, "The command wild doesn't exist", safchan);
                 return true;
             }
-            safari.createWild();
+            var spawn = 0;
+            if (!isNaN(commandData) && commandData > 0 && commandData < 722) {
+                spawn = commandData;
+            }
+            safari.createWild(spawn);
             return true;
         }
-        if (command === "contest") {
-            if (sys.auth(src) < 3) {
-                commandbot.sendMessage(src, "The command contest doesn't exist", safchan);
+        if (command === "contest" || command === "contestsoft") {
+            if (sys.auth(src) < 2) {
+                commandbot.sendMessage(src, "The command " + command + " doesn't exist", safchan);
                 return true;
+            }
+            if (command == "contestsoft") {
+                contestBroadcast = false;
             }
             if (contestCount > 0) {
                 contestCount = 1;
             } else {
                 contestCooldown = 1;
             }
+            return true;
+        }
+        /*if (command === "resetsafari") {
+            if (sys.auth(src) < 3) {
+                commandbot.sendMessage(src, "The command " + command + " doesn't exist", safchan);
+                return true;
+            }
+            safaribot.sendAll("Safari Save Files have been reset!", safchan);
+            return true;
+        }*/
+        if (command === "wipesafari") {
+            if (sys.auth(src) < 3) {
+                commandbot.sendMessage(src, "The command " + command + " doesn't exist", safchan);
+                return true;
+            }
+            
+            var playerId = sys.id(commandData);
+            if (!playerId) {
+                safaribot.sendMessage(src, "No such person!", safchan);
+                return;
+            }
+            var player = getAvatar(playerId);            
+            SESSION.users(playerId).safari = null;            
+            rawPlayers.remove(sys.name(playerId).toLowerCase());            
+            this.saveGame(player);
+            
+            safaribot.sendMessage(src, commandData + "'s safari has been reset!", safchan);
             return true;
         }
         
@@ -1241,9 +1287,13 @@ function Safari() {
             safaribot.sendAll("A new Safari contest is starting now!", safchan);
             sys.sendAll("*** ************************************************************ ***", safchan);
             
-            sys.sendAll("*** ************************************************************ ***", 0);
-            safaribot.sendAll("A new Safari contest is starting now at #" + defaultChannel + "!", 0);
-            sys.sendAll("*** ************************************************************ ***", 0);
+            if (contestBroadcast) {
+                sys.sendAll("*** ************************************************************ ***", 0);
+                safaribot.sendAll("A new Safari contest is starting now at #" + defaultChannel + "!", 0);
+                sys.sendAll("*** ************************************************************ ***", 0);
+            } else {                
+                contestBroadcast = true;
+            }
             
             safari.createWild();
         }
@@ -1260,9 +1310,9 @@ function Safari() {
                 //Check daily rewards after a contest so players won't need to relog to get their reward when date changes
                 var onChannel = sys.playersOfChannel(safchan),
                     today = getDay(now());
-                for (var e in onChannel) {
+                /*for (var e in onChannel) {
                     safari.dailyReward(onChannel[e], today);
-                }
+                }*/
                 rawPlayers.save();
             } else {
                 if (!currentPokemon && Math.random() < 0.05) {
