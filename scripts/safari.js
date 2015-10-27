@@ -368,13 +368,13 @@ function Safari() {
         var rng = Math.random();
         if (rng < finalChance) {
             sys.sendAll("", safchan);
-            safaribot.sendAll(sys.name(src) + " caught the "+pokeName+" with a " + cap(ball) + " Ball" , safchan);
+            safaribot.sendAll(sys.name(src) + " caught the "+pokeName+" with a " + cap(ball) + " Ball!" , safchan);
             safaribot.sendMessage(src, "Gotcha! "+pokeName+" was caught with a " + cap(ball) + " Ball! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             sys.sendAll("", safchan);
             player.pokemon.push(currentPokemon);
             currentPokemon = null;
         } else {
-            safaribot.sendAll(src, "You threw a  " + cap(ball) + " Ball at " + pokeName +"! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
+            safaribot.sendMessage(src, "You threw a  " + cap(ball) + " Ball at " + pokeName +"! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             if (rng < finalChance + 0.1) {
                 safaribot.sendMessage(src, "Gah! It was so close, too! ", safchan);
             } else if (rng < finalChance + 0.2) {
@@ -452,7 +452,7 @@ function Safari() {
             return;
         }
         
-        var price = Math.round(add(sys.pokeBaseStats(pokeId)) * (shiny ? 8 : 1) / 2);
+        var price = Math.round(add(sys.pokeBaseStats(pokeId)) * (shiny ? 10 : 1) / 2);
         
         if (info.length < 2 || info[1].toLowerCase() !== "confirm") {
             safaribot.sendMessage(src, "You can sell your " + poke(pokeNum) + " for $" + price + ". To confirm it, type /sell " + (shiny ? "*":"") + sys.pokemon(pokeId) + ":confirm.", safchan);
@@ -517,7 +517,7 @@ function Safari() {
         
         var validItems = ["safari", "great", "ultra", "master"];
         if (validItems.indexOf(ball) == -1) {
-            safaribot.sendMessage(src, "This is not a valid item. Valid items are: Safari Ball, Great Ball, Ultra Ball, and Master Ball", safchan);
+            safaribot.sendMessage(src, "This is not a valid item. Valid items are: Safari Ball, Great Ball, Ultra Ball, and Master Ball.", safchan);
             return;
         }
         var cost = amount * ballPrices[ball];
