@@ -16,9 +16,9 @@ function Safari() {
     var starters = [1, 4, 7];
     var ballPrices = {
         safari: 30,
-        great: 45,
-        ultra: 60,
-        master: 3000
+        great: 60,
+        ultra: 100,
+        master: 5000
     };
     
     var currentPokemon = null;
@@ -1245,7 +1245,27 @@ function Safari() {
             rawPlayers.remove(sys.name(playerId).toLowerCase());            
             this.saveGame(player);
             
-            safaribot.sendMessage(src, commandData + "'s safari has been reset!", safchan);
+            safaribot.sendAll(commandData + "'s safari has been reset!", safchan);
+            return true;
+        }
+        if (command === "safaripay") {
+            if (sys.auth(src) < 3) {
+                commandbot.sendMessage(src, "The command " + command + " doesn't exist", safchan);
+                return true;
+            }
+            
+            var target = commandData[0];
+            var moneyGained = commandData[1];
+            
+            var playerId = sys.id(target);
+            if (!playerId) {
+                safaribot.sendMessage(src, "No such person!", safchan);
+                return;
+            }
+            var player = getAvatar(playerId); 
+            player.money += moneyGained
+            this.saveGame(player);
+            safaribot.sendAll(target + " has received $" + moneyGained + " from " + src + "!", safchan);
             return true;
         }
         
