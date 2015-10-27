@@ -792,7 +792,7 @@ function Safari() {
         
         
         //Money/Balls table
-        out +=  "<table border = 1 cellpadding = 3><tr><th colspan=5>Inventory</th></tr>";
+        out +=  "<table border = 1 cellpadding = 3><tr><th colspan=6>Inventory</th></tr>";
         out += "<tr><td valign=middle align=center><img src='item:274' title='Money'></td><td><img src='item:309' title='Safari Balls'></td><td><img src='item:306' title='Great Balls'></td><td><img src='item:307' title='Ultra Balls'></td><td><img src='item:308' title='Master Balls'></td><td><img src='item:267' title='Dream Balls'></td></tr>";
         out += "<tr><td align=center>$" + player.money + "</td><td align=center>" + player.balls.safari + "</td><td align=center>" + player.balls.great + "</td><td align=center>" + player.balls.ultra + "</td><td align=center>" + player.balls.master + "</td><td align=center>" + player.balls.dream + "</td></tr></table>";
         sys.sendHtmlMessage(src, out, safchan);
