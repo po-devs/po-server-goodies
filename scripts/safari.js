@@ -28,10 +28,10 @@ function Safari() {
     var saveFiles = "scriptdata/safarisaves.txt";
     var rawPlayers;
     
-    var contestCooldownLength = 1800; //1 contest every 30 minutes
+    var contestCooldownLength = 1200; //1 contest every 20 minutes
     var contestBroadcast = true; //Determines whether Tohjo gets notified
     var contestCooldown = (SESSION.global() && SESSION.global().safariContestCooldown ? SESSION.global().safariContestCooldown : contestCooldownLength);
-    var contestDuration = 240; //Contest lasts for 4 minutes
+    var contestDuration = 300; //Contest lasts for 5 minutes
     var contestCount = 0;
     
     var effectiveness = {
@@ -267,14 +267,17 @@ function Safari() {
         return "<img src='pokemon:num=" + num + (typeof num == "string" ? "&shiny=true" : "") + "&gen=6'>";
     }
     
-    this.createWild = function(spawn) {
+    this.createWild = function(dexNum, makeShiny) {
         var num,
             pokeId,
             shiny = sys.rand(0, shinyChance) < 1,
             maxStats = sys.rand(300, 750);
-        if (spawn) {
-            num = parseInt(spawn, 10);
+        if (dexNum) {
+            num = parseInt(dexNum, 10);
             pokeId = poke(num);
+            if (makeShiny) {
+                shiny = true;
+            }
         } else {
             do {
                 num = sys.rand(1, 722);
@@ -365,13 +368,13 @@ function Safari() {
         var rng = Math.random();
         if (rng < finalChance) {
             sys.sendAll("", safchan);
-            safaribot.sendAll(sys.name(src) + " caught the "+pokeName+" with a " + cap(ball) + " Ball!", safchan);
+            safaribot.sendAll(sys.name(src) + " caught the "+pokeName+" with a " + cap(ball) + " Ball" , safchan);
             safaribot.sendMessage(src, "Gotcha! "+pokeName+" was caught with a " + cap(ball) + " Ball! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             sys.sendAll("", safchan);
             player.pokemon.push(currentPokemon);
             currentPokemon = null;
         } else {
-            safaribot.sendMessage(src, "You threw a  " + cap(ball) + " Ball at " + pokeName +"! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
+            safaribot.sendAll(src, "You threw a  " + cap(ball) + " Ball at " + pokeName +"! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             if (rng < finalChance + 0.1) {
                 safaribot.sendMessage(src, "Gah! It was so close, too! ", safchan);
             } else if (rng < finalChance + 0.2) {
@@ -381,6 +384,7 @@ function Safari() {
             } else {
                 safaribot.sendMessage(src, "Oh no! The " + pokeName + " broke free! ", safchan);
             }
+            safaribot.sendAll(pokeName + " broke out of " + sys.name(src) + "'s " + cap(ball) + " Ball!", safchan);
         }
         player.cooldown = currentTime + cooldown;
         this.saveGame(player);
@@ -448,7 +452,7 @@ function Safari() {
             return;
         }
         
-        var price = Math.round(add(sys.pokeBaseStats(pokeId)) * (shiny ? 2 : 1));
+        var price = Math.round(add(sys.pokeBaseStats(pokeId)) * (shiny ? 8 : 1) / 2);
         
         if (info.length < 2 || info[1].toLowerCase() !== "confirm") {
             safaribot.sendMessage(src, "You can sell your " + poke(pokeNum) + " for $" + price + ". To confirm it, type /sell " + (shiny ? "*":"") + sys.pokemon(pokeId) + ":confirm.", safchan);
@@ -1194,16 +1198,19 @@ function Safari() {
         }
         
         //Test commands to make a wild Pokémon appear or start/end a contest
-        if (command === "wild") {
+        if (command === "wild" || command == "wilds") {
             if (sys.auth(src) < 2) {
                 commandbot.sendMessage(src, "The command wild doesn't exist", safchan);
                 return true;
             }
-            var spawn = 0;
+            var dexNum = 0, makeShiny = false;
             if (!isNaN(commandData) && commandData > 0 && commandData < 722) {
-                spawn = commandData;
+                dexNum = commandData;
             }
-            safari.createWild(spawn);
+            if (command === "wilds") {
+                makeShiny = true;
+            }
+            safari.createWild(dexNum, makeShiny);
             return true;
         }
         if (command === "contest" || command === "contestsoft") {
