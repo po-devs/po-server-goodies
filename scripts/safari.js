@@ -17,8 +17,9 @@ function Safari() {
     var ballPrices = {
         safari: 30,
         great: 60,
-        ultra: 100,
-        master: 5000
+        ultra: 120,
+        master: 9800,
+        dream: 500
     };
     
     var currentPokemon = null;
@@ -329,6 +330,13 @@ function Safari() {
                 ballBonus = 255;
                 cooldown = 180000;
                 break;
+            case "dream":
+            case "dream ball":
+            case "dreamball":
+                ball = "dream";
+                ballBonus = 0.99;
+                cooldown = 11000;
+                break;
             case "*":
             case "safari":
             case "safari ball":
@@ -344,8 +352,12 @@ function Safari() {
         
         player.balls[ball] -= 1;
         var pokeName = poke(currentPokemon);
-        var wild = typeof currentPokemon == "string" ? parseInt(currentPokemon, 10) : currentPokemon;        
+        var wild = typeof currentPokemon == "string" ? parseInt(currentPokemon, 10) : currentPokemon;
         var shinyChance = typeof currentPokemon == "string" ? 0.40 : 1;
+        if (ballBonus == 0.99 && shinyChance == 0.40) {
+            shinyChance = 1;
+            ballBonus = 1;
+        }
         
         var userStats = add(sys.pokeBaseStats(player.party[0]));
         var wildStats = add(sys.pokeBaseStats(wild));
@@ -477,10 +489,11 @@ function Safari() {
         }
         if (data === "*") {
             safaribot.sendMessage(src, "You can buy the following balls:", safchan);
-            safaribot.sendMessage(src, "Safari Ball: $" + ballPrices.safari, safchan);
-            safaribot.sendMessage(src, "Great Ball: $" + ballPrices.great, safchan);
-            safaribot.sendMessage(src, "Ultra Ball: $" + ballPrices.ultra, safchan);
-            safaribot.sendMessage(src, "Master Ball: $" + ballPrices.master, safchan);
+            safaribot.sendMessage(src, "Safari Ball: $" + ballPrices.safari + " (1x Catch Rate)", safchan);
+            safaribot.sendMessage(src, "Great Ball: $" + ballPrices.great + " (1.5x Catch Rate)", safchan);
+            safaribot.sendMessage(src, "Ultra Ball: $" + ballPrices.ultra + " (2x Catch Rate)", safchan);
+            safaribot.sendMessage(src, "Master Ball: $" + ballPrices.master + " (Always Catches)", safchan);
+            safaribot.sendMessage(src, "Dream Ball: $" + ballPrices.dream  + " (1x Catch Rate, Bonus Catch against Shiny Pokemon)", safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "You currently have $" + player.money + ". To buy a ball, use /buy ball:quantity (e.g.: /buy safari:3)", safchan);
             return;
@@ -516,11 +529,15 @@ function Safari() {
             case "masterball":
                 ball = "master";
             break;
+            case "dream ball":
+            case "dreamball":
+                ball = "dream";
+            break;
         }
         
-        var validItems = ["safari", "great", "ultra", "master"];
+        var validItems = ["safari", "great", "ultra", "master", "dream"];
         if (validItems.indexOf(ball) == -1) {
-            safaribot.sendMessage(src, "This is not a valid item. Valid items are: Safari Ball, Great Ball, Ultra Ball, and Master Ball.", safchan);
+            safaribot.sendMessage(src, "This is not a valid item. Valid items are: Safari Ball, Great Ball, Ultra Ball, Master Ball, and Dream Ball.", safchan);
             return;
         }
         var cost = amount * ballPrices[ball];
@@ -776,8 +793,8 @@ function Safari() {
         
         //Money/Balls table
         out +=  "<table border = 1 cellpadding = 3><tr><th colspan=5>Inventory</th></tr>";
-        out += "<tr><td valign=middle align=center><img src='item:274' title='Money'></td><td><img src='item:309' title='Safari Balls'></td><td><img src='item:306' title='Great Balls'></td><td><img src='item:307' title='Ultra Balls'></td><td><img src='item:308' title='Master Balls'></td></tr>";
-        out += "<tr><td align=center>$" + player.money + "</td><td align=center>" + player.balls.safari + "</td><td align=center>" + player.balls.great + "</td><td align=center>" + player.balls.ultra + "</td><td align=center>" + player.balls.master + "</td></tr></table>";
+        out += "<tr><td valign=middle align=center><img src='item:274' title='Money'></td><td><img src='item:309' title='Safari Balls'></td><td><img src='item:306' title='Great Balls'></td><td><img src='item:307' title='Ultra Balls'></td><td><img src='item:308' title='Master Balls'></td><td><img src='item:267' title='Dream Balls'></td></tr>";
+        out += "<tr><td align=center>$" + player.money + "</td><td align=center>" + player.balls.safari + "</td><td align=center>" + player.balls.great + "</td><td align=center>" + player.balls.ultra + "</td><td align=center>" + player.balls.master + "</td><td align=center>" + player.balls.dream + "</td></tr></table>";
         sys.sendHtmlMessage(src, out, safchan);
     };
     this.viewPlayer = function(src, data) {
@@ -983,7 +1000,8 @@ function Safari() {
                 safari: 30,
                 great: 0,
                 ultra: 0,
-                master: 0
+                master: 0,
+                dream: 0
             },
             starter: num,
             lastLogin: getDay(now()),
@@ -1105,7 +1123,7 @@ function Safari() {
             "*** Safari Commands ***",
             "/help: For a how-to-play guide.",
             "/start: To pick a starter Pokémon and join the Safari game.",
-            "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be Safari, Great, Ultra or Master Ball.",
+            "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be Safari, Great, Ultra, Master, or Dream Ball.",
             "/sell: To sell one of your Pokémon*.",
             "/trade: To request a Pokémon trade with another player*.",
             "/buy: To buy more Poké Balls.",
