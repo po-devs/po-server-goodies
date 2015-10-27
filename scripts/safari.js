@@ -1254,8 +1254,9 @@ function Safari() {
                 return true;
             }
             
-            var target = commandData[0];
-            var moneyGained = commandData[1];
+            var cmd = commandData.split(":");
+            var target = cmd[0];
+            var moneyGained = cmd[1];
             
             var playerId = sys.id(target);
             if (!playerId) {
