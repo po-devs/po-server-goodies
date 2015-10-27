@@ -345,7 +345,7 @@ function Safari() {
         player.balls[ball] -= 1;
         var pokeName = poke(currentPokemon);
         var wild = typeof currentPokemon == "string" ? parseInt(currentPokemon, 10) : currentPokemon;        
-        var shinyChance = typeof currentPokemon == "string" ? 5 : 1;
+        var shinyChance = typeof currentPokemon == "string" ? 0.10 : 0.90;
         
         var userStats = add(sys.pokeBaseStats(player.party[0]));
         var wildStats = add(sys.pokeBaseStats(wild));
@@ -362,7 +362,7 @@ function Safari() {
             }
         }
         
-        var finalChance = (tierChance + statsBonus) * typeBonus / shinyChance;
+        var finalChance = (tierChance + statsBonus) * typeBonus * shinyChance;
         if (finalChance <= 0) {
             finalChance = 0.01;
         }
@@ -1274,9 +1274,11 @@ function Safari() {
                 return true;
             }
             var player = getAvatar(playerId);
-            player.money += moneyGained;
-            this.saveGame(player);
-            safaribot.sendAll(target + " has been awarded with $" + moneyGained + " by " + sys.name(src) + "!", safchan);
+            if (player) {
+                player.money += moneyGained;
+                this.saveGame(player);
+                safaribot.sendAll(target + " has been awarded with $" + moneyGained + " by " + sys.name(src) + "!", safchan);
+            }
             return true;
         }
         
