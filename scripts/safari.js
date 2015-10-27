@@ -1019,7 +1019,14 @@ function Safari() {
         var data = rawPlayers.get(sys.name(src).toLowerCase());
         if (data) {
             var player = JSON.parse(data);
+            
+            // clean bad player values here
+            for (ball in player.balls) {
+                if (player.balls[ball] === undefined) player.balls[ball] = 0;
+            }
+            
             SESSION.users(src).safari = player;
+            
             safaribot.sendMessage(src, "Your Safari data was successfully loaded!", safchan);
             //this.dailyReward(src, getDay(now()));
         }
