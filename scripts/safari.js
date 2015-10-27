@@ -344,7 +344,8 @@ function Safari() {
         
         player.balls[ball] -= 1;
         var pokeName = poke(currentPokemon);
-        var wild = typeof currentPokemon == "string" ? parseInt(currentPokemon, 10) : currentPokemon;
+        var wild = typeof currentPokemon == "string" ? parseInt(currentPokemon, 10) : currentPokemon;        
+        var shinyChance = typeof currentPokemon == "string" ? 5 : 1;
         
         var userStats = add(sys.pokeBaseStats(player.party[0]));
         var wildStats = add(sys.pokeBaseStats(wild));
@@ -360,7 +361,8 @@ function Safari() {
                 break;
             }
         }
-        var finalChance = (tierChance + statsBonus) * typeBonus;
+        
+        var finalChance = (tierChance + statsBonus) * typeBonus / shinyChance;
         if (finalChance <= 0) {
             finalChance = 0.01;
         }
