@@ -345,7 +345,7 @@ function Safari() {
         player.balls[ball] -= 1;
         var pokeName = poke(currentPokemon);
         var wild = typeof currentPokemon == "string" ? parseInt(currentPokemon, 10) : currentPokemon;        
-        var shinyChance = typeof currentPokemon == "string" ? 0.10 : 0.90;
+        var shinyChance = typeof currentPokemon == "string" ? 0.40 : 1;
         
         var userStats = add(sys.pokeBaseStats(player.party[0]));
         var wildStats = add(sys.pokeBaseStats(wild));
@@ -369,7 +369,7 @@ function Safari() {
         finalChance *= ballBonus;
         
         var rng = Math.random();
-        if (rng < finalChance) {
+        if (rng < finalChance || ballBonus == 255) {
             sys.sendAll("", safchan);
             safaribot.sendAll(sys.name(src) + " caught the "+pokeName+" with a " + cap(ball) + " Ball!" , safchan);
             safaribot.sendMessage(src, "Gotcha! "+pokeName+" was caught with a " + cap(ball) + " Ball! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
@@ -1259,7 +1259,7 @@ function Safari() {
             return true;
         }
         if (command === "safaripay") {
-            if (sys.auth(src) < 3) {
+            if (sys.auth(src) < 1) {
                 commandbot.sendMessage(src, "The command " + command + " doesn't exist", safchan);
                 return true;
             }
@@ -1278,6 +1278,9 @@ function Safari() {
                 player.money += moneyGained;
                 this.saveGame(player);
                 safaribot.sendAll(target + " has been awarded with $" + moneyGained + " by " + sys.name(src) + "!", safchan);
+            } else {
+                safaribot.sendMessage(src, "No such person!", safchan);
+                return true;
             }
             return true;
         }
