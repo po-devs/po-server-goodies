@@ -16,10 +16,10 @@ function Safari() {
     var starters = [1, 4, 7];
     var ballPrices = {
         safari: 30,
-        great: 60,
-        ultra: 120,
-        master: 9800,
-        dream: 500
+        great: 45,
+        ultra: 60,
+        master: 4900,
+        dream: 250
     };
     
     var currentPokemon = null;
@@ -356,7 +356,7 @@ function Safari() {
         var shinyChance = typeof currentPokemon == "string" ? 0.40 : 1;
         if (ballBonus == 0.99 && shinyChance == 0.40) {
             shinyChance = 1;
-            ballBonus = 1;
+            ballBonus = 3;
         }
         
         var userStats = add(sys.pokeBaseStats(player.party[0]));
@@ -467,7 +467,7 @@ function Safari() {
             return;
         }
         
-        var price = Math.round(add(sys.pokeBaseStats(pokeId)) * (shiny ? 10 : 1) / 2);
+        var price = Math.round(add(sys.pokeBaseStats(pokeId)) * (shiny ? 10 : 1));
         
         if (info.length < 2 || info[1].toLowerCase() !== "confirm") {
             safaribot.sendMessage(src, "You can sell your " + poke(pokeNum) + " for $" + price + ". To confirm it, type /sell " + (shiny ? "*":"") + sys.pokemon(pokeId) + ":confirm.", safchan);
