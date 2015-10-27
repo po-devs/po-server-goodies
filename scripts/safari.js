@@ -1256,17 +1256,17 @@ function Safari() {
             
             var cmd = commandData.split(":");
             var target = cmd[0];
-            var moneyGained = cmd[1];
+            var moneyGained = parseInt(cmd[1], 10);
             
             var playerId = sys.id(target);
             if (!playerId) {
                 safaribot.sendMessage(src, "No such person!", safchan);
-                return;
+                return true;
             }
             var player = getAvatar(playerId);
             player.money += moneyGained;
             this.saveGame(player);
-            safaribot.sendAll(target + " has received $" + moneyGained + " from " + src + "!", safchan);
+            safaribot.sendAll(target + " has been awarded with $" + moneyGained + " by " + sys.name(src) + "!", safchan);
             return true;
         }
         
