@@ -272,7 +272,7 @@ function Safari() {
             pokeId,
             shiny = sys.rand(0, shinyChance) < 1,
             maxStats = sys.rand(300, 750);
-        if (spawn) {        
+        if (spawn) {
             num = parseInt(spawn, 10);
             pokeId = poke(num);
         } else {
@@ -1240,9 +1240,9 @@ function Safari() {
                 safaribot.sendMessage(src, "No such person!", safchan);
                 return;
             }
-            var player = getAvatar(playerId);            
-            SESSION.users(playerId).safari = null;            
-            rawPlayers.remove(sys.name(playerId).toLowerCase());            
+            var player = getAvatar(playerId);
+            SESSION.users(playerId).safari = null;
+            rawPlayers.remove(sys.name(playerId).toLowerCase());
             this.saveGame(player);
             
             safaribot.sendAll(commandData + "'s safari has been reset!", safchan);
@@ -1262,8 +1262,8 @@ function Safari() {
                 safaribot.sendMessage(src, "No such person!", safchan);
                 return;
             }
-            var player = getAvatar(playerId); 
-            player.money += moneyGained
+            var player = getAvatar(playerId);
+            player.money += moneyGained;
             this.saveGame(player);
             safaribot.sendAll(target + " has received $" + moneyGained + " from " + src + "!", safchan);
             return true;
@@ -1311,7 +1311,7 @@ function Safari() {
                 sys.sendAll("*** ************************************************************ ***", 0);
                 safaribot.sendAll("A new Safari contest is starting now at #" + defaultChannel + "!", 0);
                 sys.sendAll("*** ************************************************************ ***", 0);
-            } else {                
+            } else {
                 contestBroadcast = true;
             }
             
