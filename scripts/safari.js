@@ -1022,7 +1022,7 @@ function Safari() {
             
             // clean bad player values here
             for (ball in player.balls) {
-                if (player.balls[ball] === undefined || isNaN(player.balls[ball])) player.balls[ball] = 0;
+                if (!player.balls[ball]) player.balls[ball] = 0;
             }
             
             SESSION.users(src).safari = player;
