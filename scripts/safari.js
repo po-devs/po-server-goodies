@@ -276,7 +276,7 @@ function Safari() {
             num = parseInt(dexNum, 10);
             pokeId = poke(num);
             if (makeShiny) {
-                pokeId = poke(num + 0);
+                pokeId = poke(dexNum + 0);
                 shiny = true;
             }
         } else {
