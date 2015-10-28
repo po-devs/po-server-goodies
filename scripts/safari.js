@@ -842,7 +842,7 @@ function Safari() {
             }
         } else if (rng < 0.50) {
             //Nest Ball
-            item = "dream";
+            item = "nest";
             if (rng2 < 0.10) {
                 safaribot.sendMessage(src, "You received 3 Nest Balls.", safchan);
                 player.balls[item] += 3;
@@ -956,12 +956,13 @@ function Safari() {
         } else {
             out += "<table border = 1 cellpadding = 3><tr><th>Owned Pokémon</th></td></tr>";
         }
-        out += "<tr><td><p>";
+        out += "<tr><td>";
         for (e in normal) {
             count++;
             out += normal[e] + " ";
             if (count == rowSize) {
-                out += "</p><p>";
+                out += "<p>";
+                count = 0;
             }
         }
         out += "</td>";
@@ -972,10 +973,11 @@ function Safari() {
                 count++;
                 out += shiny[e] + " ";
                 if (count == rowSize) {
-                    out += "</p><p>";
+                    out += "<p>";
+                    count = 0;
                 }
             }
-            out += "</p></td>";
+            out += "</td>";
         }
         out += "</tr></table>";
         
