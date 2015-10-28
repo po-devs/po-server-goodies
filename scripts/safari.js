@@ -27,7 +27,7 @@ function Safari() {
     var saveFiles = "scriptdata/safarisaves.txt";
     var rawPlayers;
     
-    var contestCooldownLength = 1200; //1 contest every 20 minutes
+    var contestCooldownLength = 1800; //1 contest every 30 minutes
     var baitCooldownLength = 0;
     var contestBroadcast = true; //Determines whether Tohjo gets notified
     var contestCooldown = (SESSION.global() && SESSION.global().safariContestCooldown ? SESSION.global().safariContestCooldown : contestCooldownLength);
@@ -702,7 +702,7 @@ function Safari() {
                     sys.sendMessage(targetId, "" , safchan);
                 delete tradeRequests[targetName];
             } else {
-                safaribot.sendMessage(src, "Trade cancelleded because you and " + sys.name(targetId) + " didn't come to an agreement!" , safchan);
+                safaribot.sendMessage(src, "Trade cancelled because you and " + sys.name(targetId) + " didn't come to an agreement!" , safchan);
                 safaribot.sendMessage(targetId, "Trade cancelled because you and " + sys.name(src) + " didn't come to an agreement!" , safchan);
                 sys.sendMessage(src, "" , safchan);
                     sys.sendMessage(targetId, "" , safchan);
@@ -728,7 +728,7 @@ function Safari() {
             return "isActive";
         }
     };
-    this.bait = function (src) {
+    this.bait = function (src, commandData) {
         var player = getAvatar(src);
         if (!player) {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
@@ -754,12 +754,15 @@ function Safari() {
             safaribot.sendAll("The bait attracted a wild Pokémon!", safchan);
             baitCooldown = 60;
             safari.createWild();
+            if (commandData !== undefined) {
+                safari.throwBall(src, commandData);
+            }
         } else {
             baitCooldown = 20;
             safaribot.sendAll("... but nothing showed up.", safchan);
         }
     };
-    this.gachapon = function (src) {
+    this.gachapon = function (src, commandData) {
         var player = getAvatar(src);
         if (!player) {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
@@ -795,6 +798,9 @@ function Safari() {
                 jackpot = true;
             }
             safari.createWild(0, jackpot);
+            if (commandData !== undefined) {
+                safari.throwBall(src, commandData);
+            }
         } else if (rng < 0.25) {
             //Safari Ball
             item = "safari";
@@ -1371,7 +1377,8 @@ function Safari() {
             "/mydata: To view your caught Pokémon, money and remaining balls.",
             "/view: To view another player's party. If no player is specified, your data will show up.",
             "/changealt: To pass your Safari data to another alt.",
-            "/bait: To throw bait in the attempt to lure a Wild Pokémon",
+            "/bait: To throw bait in the attempt to lure a Wild Pokémon.",
+            "/gacha: Use a ticket to win a prize!",
             "",
             "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
         ];
@@ -1463,11 +1470,11 @@ function Safari() {
             return true;
         }
         if (command === "bait") {
-            safari.bait(src);
+            safari.bait(src, commandData);
             return true;
         }
         if (command === "gacha") {
-            safari.gachapon(src);
+            safari.gachapon(src, commandData);
             return true;
         }
         
