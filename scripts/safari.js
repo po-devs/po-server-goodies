@@ -729,7 +729,7 @@ function Safari() {
             return "isActive";
         }
     };
-    this.bait = function (src, commandData) {
+    this.throwBait = function (src, commandData) {
         var player = getAvatar(src);
         if (!player) {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
