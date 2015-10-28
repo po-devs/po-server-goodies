@@ -355,12 +355,12 @@ function Safari() {
         switch (ballAlias(data.toLowerCase())) {
             case "great":
                 ball = "great";
-                ballBonus = 1.5;
+                ballBonus = 2;
                 cooldown = 9000;
                 break;
             case "ultra":
                 ball = "ultra";
-                ballBonus = 2;
+                ballBonus = 3;
                 cooldown = 12000;
                 break;
             case "master":
@@ -455,13 +455,14 @@ function Safari() {
             sys.sendAll("", safchan);
             safaribot.sendAll(sys.name(src) + " caught the " + pokeName + " with a " + cap(ball) + " Ball!" , safchan);
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with a " + cap(ball) + " Ball! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
-            sys.sendAll("", safchan);
             player.pokemon.push(currentPokemon);
             
             if (ball == "luxury") {
                 safaribot.sendAll(sys.name(src) + " also found $" + wildStats + " on the ground after catching " + pokeName + "!" , safchan);
                 player.money += wildStats;
             }
+            
+            sys.sendAll("", safchan);
             currentPokemon = null;
             cooldown *= 2;
         } else {
