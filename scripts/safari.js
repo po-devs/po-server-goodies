@@ -846,11 +846,12 @@ function Safari() {
         //Money/Balls table
         out +=  "<table border = 1 cellpadding = 3><tr><th colspan=7>Inventory</th></tr>";
         out += "<tr><td valign=middle align=center><img src='item:274' title='Money'></td><td><img src='item:8017' title='Bait'></td><td><img src='item:267' title='Gachapon Tickets'></td><td><img src='item:309' title='Safari Balls'></td><td><img src='item:306' title='Great Balls'></td><td><img src='item:307' title='Ultra Balls'></td><td><img src='item:308' title='Master Balls'></td></tr>";
-        out += "<tr><td align=center>$" + player.money + "</td><td align=center>" + player.balls.bait + "</td><td align=center>" + player.balls.gacha + "</td><td align=center>" + player.balls.safari + "</td><td align=center>" + player.balls.great + "</td><td align=center>" + player.balls.ultra + "</td><td align=center>" + player.balls.master + "</td></tr></table>";
+        out += "<tr><td align=center>$" + player.money + "</td><td align=center>" + player.balls.bait + "</td><td align=center>" + player.balls.gacha + "</td><td align=center>" + player.balls.safari + "</td><td align=center>" + player.balls.great + "</td><td align=center>" + player.balls.ultra + "</td><td align=center>" + player.balls.master + "</td></tr>";
         
         out += "<tr><td valign=middle align=center><img src='item:267' title='Dream Balls'></td><td><img src='item:324' title='Luxury Balls'></td><td><img src='item:321' title='Nest Balls'></td><td><img src='item:315' title='Heavy Balls'></td><td><img src='item:326' title='Quick Balls'></td><td><img src='item:316' title='Fast Balls'></td><td><img src='item:312' title='Moon Balls'></td></tr>";
-        out += "<tr><td align=center>$" + player.balls.dream + "</td><td align=center>" + player.balls.luxury + "</td><td align=center>" + player.balls.nest + "</td><td align=center>" + player.balls.heavy + "</td><td align=center>" + player.balls.quick + "</td><td align=center>" + player.balls.fast + "</td><td align=center>" + player.balls.moon + "</td></tr></table>";
+        out += "<tr><td align=center>$" + player.balls.dream + "</td><td align=center>" + player.balls.luxury + "</td><td align=center>" + player.balls.nest + "</td><td align=center>" + player.balls.heavy + "</td><td align=center>" + player.balls.quick + "</td><td align=center>" + player.balls.fast + "</td><td align=center>" + player.balls.moon + "</td></tr>";
         
+        out += "</table>";
         sys.sendHtmlMessage(src, out, safchan);
     };
     this.viewPlayer = function(src, data) {
@@ -1063,7 +1064,7 @@ function Safari() {
                 luxury: 0,
                 quick: 0,
                 fast: 0,
-                moon: 0,                
+                moon: 0,
                 bait: 0,
                 gacha: 0
             },
