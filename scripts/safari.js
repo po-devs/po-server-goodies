@@ -1607,7 +1607,7 @@ function Safari() {
             
             var cmd = commandData.split(":");
             var target = cmd[0];
-            var item = cmd[1]
+            var item = cmd[1];
             var itemQty = parseInt(cmd[2], 10);
             var itemArray = ["bait", "rocks", "gacha", "safari", "great", "ultra", "master",
                    "dream", "luxury", "nest", "heavy", "quick", "fast", "moon", "premier"];
