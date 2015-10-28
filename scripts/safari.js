@@ -349,32 +349,32 @@ function Safari() {
         }
         var ball = "safari";
         var ballBonus = 1;
-        var cooldown = 8000;
+        var cooldown = 6000;
         switch (ballAlias(data.toLowerCase())) {
             case "great":
                 ball = "great";
                 ballBonus = 1.5;
-                cooldown = 11000;
+                cooldown = 9000;
                 break;
             case "ultra":
                 ball = "ultra";
                 ballBonus = 2;
-                cooldown = 15000;
+                cooldown = 12000;
                 break;
             case "master":
                 ball = "master";
                 ballBonus = 255;
-                cooldown = 180000;
+                cooldown = 90000;
                 break;
             case "dream":
                 ball = "dream";
                 ballBonus = 0.99;
-                cooldown = 11000;
+                cooldown = 9000;
                 break;
             case "safari":
                 ball = "safari";
                 ballBonus = 1;
-                cooldown = 8000;
+                cooldown = 6000;
         }
         if (isNaN(player.balls[ball])) {
             player.balls[ball] = 0;
@@ -501,7 +501,7 @@ function Safari() {
             return;
         }
         
-        var price = Math.round(add(sys.pokeBaseStats(pokeId))/2 * (shiny ? 5 : 1));
+        var price = Math.round(add(sys.pokeBaseStats(pokeId)) * (shiny ? 5 : 1));
         
         if (info.length < 2 || info[1].toLowerCase() !== "confirm") {
             safaribot.sendMessage(src, "You can sell your " + poke(pokeNum) + " for $" + price + ". To confirm it, type /sell " + (shiny ? "*":"") + sys.pokemon(pokeId) + ":confirm.", safchan);
@@ -524,7 +524,7 @@ function Safari() {
         if (data === "*") {
             safaribot.sendMessage(src, "You can buy the following items:", safchan);
             safaribot.sendMessage(src, "Safari Ball: $" + itemPrices.safari, safchan);
-            //safaribot.sendMessage(src, "Gachapon Ticket: $" + itemPrices.gacha, safchan);
+            safaribot.sendMessage(src, "Gachapon Ticket: $" + itemPrices.gacha, safchan);
             safaribot.sendMessage(src, "Bait: $" + itemPrices.bait, safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "You currently have $" + player.money + ". To buy a ball, use /buy ball:quantity (e.g.: /buy safari:3)", safchan);
@@ -555,9 +555,9 @@ function Safari() {
             break;
         }
         
-        var validItems = ["safari", "bait"];
+        var validItems = ["safari", "bait", "gacha"];
         if (validItems.indexOf(item) == -1) {
-            safaribot.sendMessage(src, "You can only buy Safari Balls and Bait at this shop!", safchan);
+            safaribot.sendMessage(src, "You can only buy Safari Balls, Gachapon Tickets, and Bait at this shop!", safchan);
             return;
         }
         var cost = amount * itemPrices[item];
@@ -759,7 +759,165 @@ function Safari() {
             safaribot.sendAll("... but nothing showed up.", safchan);
         }
     };
-    
+    this.gachapon = function (src) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        
+        var currentTime = now();
+        if (player.gachaCooldown > currentTime) {
+            safaribot.sendMessage(src, "A long line forms in front of the Gachapon Machine. It will probably take " + (Math.floor((player.gachaCooldown - currentTime)/1000) + 1) + " seconds before you can use the Gachapon Machine again!", safchan);
+            return;
+        }
+        if (currentPokemon) {
+            safaribot.sendMessage(src, "It's unwise to ignore a wild Pokémon in order to use a Gachapon Machine...", safchan);
+            return;
+        }
+        var gach = "gacha";
+        if (isNaN(player.balls[gach])) {
+            player.balls[gach] = 0;
+        }
+        if (!(gach in player.balls) || player.balls[gach] <= 0) {
+            safaribot.sendMessage(src, "You have no Gachapon Tickets!", safchan);
+            return;
+        }
+        player.balls[gach] -= 1;
+        var rng = Math.random();
+        var rng2 = Math.random();
+        var item, jackpot = false;
+        safaribot.sendMessage(src, "Gacha-PON! The Gachapon Machine has dispensed an item.", safchan);
+        if (rng < 0.08) {
+            //Wild Pokemon
+            safaribot.sendAll(sys.name(src) + " goes to grab their item from the Gachapon Machine but the noise lured a wild Pokémon!", safchan);
+            if (rng2 < 0.10) {
+                jackpot = true;
+            }
+            safari.createWild(0, jackpot);
+        } else if (rng < 0.25) {
+            //Safari Ball
+            item = "safari";
+            if (rng2 < 0.10) {
+                safaribot.sendMessage(src, "Bummer, only a Safari Ball. And another. And another. And another. Wow! 4 Safari Balls!", safchan);
+                player.balls[item] += 4;
+            } else if (rng2 < 0.30) {
+                safaribot.sendMessage(src, "Bummer, only a Safari Ball. Wait, there's 2 here!", safchan);
+                player.balls[item] += 2;
+            } else {
+                safaribot.sendMessage(src, "Bummer, only a Safari Ball...", safchan);
+                player.balls[item] += 1;
+            }
+        } else if (rng < 0.32) {
+            //Luxury Ball
+            item = "luxury";
+            if (rng2 < 0.03) {
+                safaribot.sendMessage(src, "You received 3 Luxury Balls.", safchan);
+                player.balls[item] += 3;
+            } else if (rng2 < 0.10) {
+                safaribot.sendMessage(src, "You received 2 Luxury Balls.", safchan);
+                player.balls[item] += 2;
+            } else {
+                safaribot.sendMessage(src, "You received 1 Luxury Ball.", safchan);
+                player.balls[item] += 1;
+            }
+        } else if (rng < 0.41) {
+            //Dream Ball
+            item = "dream";
+            if (rng2 < 0.05) {
+                safaribot.sendMessage(src, "You received 4 Dream Balls.", safchan);
+                player.balls[item] += 4;
+            } else if (rng2 < 0.15) {
+                safaribot.sendMessage(src, "You received 2 Dream Balls.", safchan);
+                player.balls[item] += 2;
+            } else {
+                safaribot.sendMessage(src, "You received 1 Dream Ball.", safchan);
+                player.balls[item] += 1;
+            }
+        } else if (rng < 0.50) {
+            //Nest Ball
+            item = "dream";
+            if (rng2 < 0.10) {
+                safaribot.sendMessage(src, "You received 3 Nest Balls.", safchan);
+                player.balls[item] += 3;
+            } else {
+                safaribot.sendMessage(src, "You received 1 Nest Ball.", safchan);
+                player.balls[item] += 1;
+            }
+        } else if (rng < 0.59) {
+            //Heavy Ball
+            item = "heavy";
+            if (rng2 < 0.10) {
+                safaribot.sendMessage(src, "You received 2 Heavy Balls.", safchan);
+                player.balls[item] += 2;
+            } else {
+                safaribot.sendMessage(src, "You received 1 Heavy Ball.", safchan);
+                player.balls[item] += 1;
+            }
+        } else if (rng < 0.68) {
+            //Quick Ball
+            item = "quick";
+            if (rng2 < 0.08) {
+                safaribot.sendMessage(src, "You received 3 Quick Balls.", safchan);
+                player.balls[item] += 3;
+            } else {
+                safaribot.sendMessage(src, "You received 1 Quick Ball.", safchan);
+                player.balls[item] += 1;
+            }
+        } else if (rng < 0.69) {
+            //Master Ball
+            safaribot.sendAll("JACKPOT! " + sys.name(src) + " just got a Master Ball from the Gachapon Machine!", safchan);
+            item = "master";
+            player.balls[item] += 1;
+        } else if (rng < 0.76) {
+            //Fast Ball
+            item = "fast";
+            if (rng2 < 0.06) {
+                safaribot.sendMessage(src, "You received 4 Fast Balls.", safchan);
+                player.balls[item] += 4;
+            } else if (rng2 < 0.20) {
+                safaribot.sendMessage(src, "You received 2 Fast Balls.", safchan);
+                player.balls[item] += 2;
+            } else {
+                safaribot.sendMessage(src, "You received 1 Fast Ball.", safchan);
+                player.balls[item] += 1;
+            }
+        } else if (rng < 0.79) {
+            //Ability Capsule
+            //Bait for now though
+            item = "bait";
+            safaribot.sendAll("A mischievous Pokémon swipes " + sys.name(src) + "'s Gachapon prize as it dispenses. Just then, a Pokémon Trainer approaches " + sys.name(src) + " in a huff. 'Sorry about my Pokémon stealing your reward, take this bag of Bait as an apology.'", safchan);
+            safaribot.sendMessage(src, "You received 10 pieces of Bait", safchan);
+            player.balls[item] += 10;
+        } else if (rng < 0.92) {
+            //Great Ball
+            item = "great";
+            if (rng2 < 0.05) {
+                safaribot.sendMessage(src, "You received 4 Great Balls.", safchan);
+                player.balls[item] += 4;
+            } else if (rng2 < 0.15) {
+                safaribot.sendMessage(src, "You received 2 Great Balls.", safchan);
+                player.balls[item] += 2;
+            } else {
+                safaribot.sendMessage(src, "You received 1 Great Ball.", safchan);
+                player.balls[item] += 1;
+            }
+        } else {
+            //Ultra Ball
+            item = "ultra";
+            if (rng2 < 0.04) {
+                safaribot.sendMessage(src, "You received 4 Ultra Balls.", safchan);
+                player.balls[item] += 4;
+            } else if (rng2 < 0.12) {
+                safaribot.sendMessage(src, "You received 2 Ultra Balls.", safchan);
+                player.balls[item] += 2;
+            } else {
+                safaribot.sendMessage(src, "You received 1 Ultra Ball.", safchan);
+                player.balls[item] += 1;
+            }
+        }
+        player.gachaCooldown = currentTime + 5000;
+    };
     
     this.viewOwnInfo = function(src) {
         var player = getAvatar(src), e;
@@ -1080,7 +1238,8 @@ function Safari() {
             starter: num,
             lastLogin: getDay(now()),
             consecutiveLogins: 1,
-            cooldown: 0
+            cooldown: 0,
+            gachaCooldown: 0
         };
         SESSION.users(src).safari = player;
         this.saveGame(player);
@@ -1280,7 +1439,7 @@ function Safari() {
             return true;
         }
         if (command === "view") {
-            if (!commandData) {
+            if (commandData === undefined) {
                 safari.viewOwnInfo(src, commandData);
             } else {
                 safari.viewPlayer(src, commandData);
@@ -1308,10 +1467,8 @@ function Safari() {
             return true;
         }
         if (command === "gacha") {
-            commandbot.sendMessage(src, "The command gacha is coming soon!", safchan);
+            safari.gachapon(src);
             return true;
-            //safari.gachapon(src);
-            //return true;
         }
         
         //Test commands to make a wild Pokémon appear or start/end a contest
