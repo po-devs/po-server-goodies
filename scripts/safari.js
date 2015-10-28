@@ -494,7 +494,7 @@ function Safari() {
             return;
         }
         
-        var price = Math.round(add(sys.pokeBaseStats(pokeId)) * (shiny ? 10 : 1));
+        var price = Math.round(add(sys.pokeBaseStats(pokeId))/2 * (shiny ? 5 : 1));
         
         if (info.length < 2 || info[1].toLowerCase() !== "confirm") {
             safaribot.sendMessage(src, "You can sell your " + poke(pokeNum) + " for $" + price + ". To confirm it, type /sell " + (shiny ? "*":"") + sys.pokemon(pokeId) + ":confirm.", safchan);
@@ -844,12 +844,12 @@ function Safari() {
         
         
         //Money/Balls table
-        out +=  "<table border = 1 cellpadding = 3><tr><th colspan=7>Inventory</th></tr>";
-        out += "<tr><td valign=middle align=center><img src='item:274' title='Money'></td><td><img src='item:8017' title='Bait'></td><td><img src='item:267' title='Gachapon Tickets'></td><td><img src='item:309' title='Safari Balls'></td><td><img src='item:306' title='Great Balls'></td><td><img src='item:307' title='Ultra Balls'></td><td><img src='item:308' title='Master Balls'></td></tr>";
-        out += "<tr><td align=center>$" + player.money + "</td><td align=center>" + player.balls.bait + "</td><td align=center>" + player.balls.gacha + "</td><td align=center>" + player.balls.safari + "</td><td align=center>" + player.balls.great + "</td><td align=center>" + player.balls.ultra + "</td><td align=center>" + player.balls.master + "</td></tr>";
+        out +=  "<table border = 1 cellpadding = 3><tr><th colspan=8>Inventory</th></tr>";
+        out += "<tr><td valign=middle align=center><img src='item:274' title='Money'></td><td><img src='item:8017' title='Bait'></td><td><img src='item:206' title='Rocks'></td><td><img src='item:132' title='Gachapon Tickets'></td><td><img src='item:309' title='Safari Balls'></td><td><img src='item:306' title='Great Balls'></td><td><img src='item:307' title='Ultra Balls'></td><td><img src='item:308' title='Master Balls'></td></tr>";
+        out += "<tr><td align=center>$" + player.money + "</td><td align=center>" + player.balls.bait + "</td><td align=center>" + player.balls.rocks + "</td><td align=center>" + player.balls.gacha + "</td><td align=center>" + player.balls.safari + "</td><td align=center>" + player.balls.great + "</td><td align=center>" + player.balls.ultra + "</td><td align=center>" + player.balls.master + "</td></tr>";
         
-        out += "<tr><td valign=middle align=center><img src='item:267' title='Dream Balls'></td><td><img src='item:324' title='Luxury Balls'></td><td><img src='item:321' title='Nest Balls'></td><td><img src='item:315' title='Heavy Balls'></td><td><img src='item:326' title='Quick Balls'></td><td><img src='item:316' title='Fast Balls'></td><td><img src='item:312' title='Moon Balls'></td></tr>";
-        out += "<tr><td align=center>$" + player.balls.dream + "</td><td align=center>" + player.balls.luxury + "</td><td align=center>" + player.balls.nest + "</td><td align=center>" + player.balls.heavy + "</td><td align=center>" + player.balls.quick + "</td><td align=center>" + player.balls.fast + "</td><td align=center>" + player.balls.moon + "</td></tr>";
+        out += "<tr><td valign=middle align=center><img src='item:267' title='Dream Balls'></td><td><img src='item:324' title='Luxury Balls'></td><td><img src='item:321' title='Nest Balls'></td><td><img src='item:315' title='Heavy Balls'></td><td><img src='item:326' title='Quick Balls'></td><td><img src='item:316' title='Fast Balls'></td><td><img src='item:312' title='Moon Balls'></td><td><img src='item:318' title='Premier Balls'></td></tr>";
+        out += "<tr><td align=center>$" + player.balls.dream + "</td><td align=center>" + player.balls.luxury + "</td><td align=center>" + player.balls.nest + "</td><td align=center>" + player.balls.heavy + "</td><td align=center>" + player.balls.quick + "</td><td align=center>" + player.balls.fast + "</td><td align=center>" + player.balls.moon + "</td><td align=center>" + player.balls.premier + "</td></tr>";
         
         out += "</table>";
         sys.sendHtmlMessage(src, out, safchan);
@@ -1066,6 +1066,8 @@ function Safari() {
                 fast: 0,
                 moon: 0,
                 bait: 0,
+                rocks: 0,
+                premier: 0,
                 gacha: 0
             },
             starter: num,
@@ -1201,8 +1203,9 @@ function Safari() {
             "/buy: To buy more Poké Balls.",
             "/party: To add or remove a Pokémon from your party, or to set your party's leader*.",
             "/mydata: To view your caught Pokémon, money and remaining balls.",
-            "/view: To view another player's party.",
+            "/view: To view another player's party. If no player is specified, your data will show up.",
             "/changealt: To pass your Safari data to another alt.",
+            "/bait: To throw bait in the attempt to lure a Wild Pokémon",
             "",
             "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
         ];
@@ -1270,7 +1273,11 @@ function Safari() {
             return true;
         }
         if (command === "view") {
-            safari.viewPlayer(src, commandData);
+            if (!commandData) {
+                safari.viewOwnInfo(src, commandData);
+            } else {
+                safari.viewPlayer(src, commandData);
+            }
             return true;
         }
         if (command === "trade") {
@@ -1348,6 +1355,32 @@ function Safari() {
             this.saveGame(player);
             
             safaribot.sendAll(commandData + "'s safari has been reset!", safchan);
+            return true;
+        }
+        if (command === "sanitize") {
+            if (sys.auth(src) < 1) {
+                commandbot.sendMessage(src, "The command " + command + " doesn't exist", safchan);
+                return true;
+            }
+            var playerId = sys.id(commandData);
+            if (!playerId) {
+                safaribot.sendMessage(src, "No such person!", safchan);
+                return true;
+            }
+            var player = getAvatar(playerId);
+            if (player) {
+                for (var item in player.balls) {
+                    if (player.balls[item] === undefined || isNaN(player.balls[item])) {
+                        player.balls[item] = 0;
+                    }
+                }
+                this.saveGame(player);
+                safaribot.sendAll(commandData + "'s Safari has been sanitized of invalid values!", safchan);
+            } else {
+                safaribot.sendMessage(src, "No such person!", safchan);
+                return true;
+            }
+            
             return true;
         }
         if (command === "safaripay") {
