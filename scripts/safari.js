@@ -399,7 +399,13 @@ function Safari() {
                 cooldown = 500;
                 break;
             case "moon":
+                ball = "moon";
+                ballBonus = 1;
+                cooldoown = 8000;
             case "premier":
+                ball = "premier";
+                ballBonus = 1.5;
+                cooldown = 6000;
             case "safari":
                 ball = "safari";
                 ballBonus = 1;
@@ -422,6 +428,8 @@ function Safari() {
         var wildStats = add(sys.pokeBaseStats(wild));
         var statsBonus = (userStats - wildStats) / 6000;
         
+        var legendaries = ["Articuno","Zapdos","Moltres","Mewtwo","Mew","Raikou","Entei","Suicune","Lugia","Ho-Oh","Celebi","Regirock","Regice","Registeel","Latias","Latios","Kyogre","Groudon","Rayquaza","Jirachi","Deoxys","Uxie","Mesprit","Azelf","Dialga","Palkia","Heatran","Regigigas","Giratina","Cresselia","Manaphy","Darkrai","Shaymin","Arceus","Victini","Cobalion","Terrakion","Virizion","Tornadus","Thundurus","Reshiram","Zekrom","Landorus","Kyurem","Keldeo","Meloetta","Genesect","Xerneas","Yveltal","Zygarde","Diancie","Hoopa","Volcanion"];
+        
         if (ball === "dream" && shinyChance == 0.40) {
             shinyChance = 1;
             ballBonus = 3;
@@ -432,7 +440,12 @@ function Safari() {
         if (ball === "nest" && wildStats < 420) {
             ballBonus = 5;
         }
-        
+        if (ball === "moon" && legendaries.indexOf(pokeName) != -1) {
+            ballBonus = 5;
+        }
+        if (ball === "premier" && (sys.type(sys.pokeType1(player.party[0])) === "Normal" || sys.type(sys.pokeType2(player.party[0])) === "Normal")) {
+            ballBonus = 3;
+        }
         var typeBonus = this.checkEffective(sys.type(sys.pokeType1(player.party[0])), sys.type(sys.pokeType2(player.party[0])), sys.type(sys.pokeType1(wild)), sys.type(sys.pokeType2(wild)));
         
         var tiers = ["ORAS LC", "ORAS NU", "ORAS LU", "ORAS UU", "ORAS OU", "ORAS Ubers"];
@@ -619,6 +632,10 @@ function Safari() {
         }
         player.balls[item] += amount;
         safaribot.sendMessage(src, "You bought " + amount + " " + cap(item) + ballStr + " for $" + cost + "! You now have " + player.balls[item] + " " + cap(item) + ballStr + " and $" + player.money + "!", safchan);
+        if (amount > 10) {
+            player.balls["premier"] += Math.floor(amount / 10);
+            safaribot.sendMessage(src, "Here, take these " + Math.floor(amount / 10) + " Premier Balls for your patronage!", safchan);
+        }
         this.saveGame(player);
     };
     this.tradePokemon = function(src, data) {
