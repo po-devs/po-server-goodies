@@ -792,26 +792,26 @@ function Safari() {
         } else {
             out += "<table border = 1 cellpadding = 3><tr><th>Owned Pokémon</th></td></tr>";
         }
-        out += "<tr><td>";
+        out += "<tr><td><p>";
         for (e in normal) {
             count++;
             out += normal[e] + " ";
             if (count == rowSize) {
-                out += "<p>";
+                out += "</p><p>";
             }
         }
         out += "</td>";
         if (shiny.length > 0) {
             count = 0;
-            out += "<td>";
+            out += "<td><p>";
             for (e in shiny) {
                 count++;
                 out += shiny[e] + " ";
                 if (count == rowSize) {
-                    out += "<p>";
+                    out += "</p><p>";
                 }
             }
-            out += "</td>";
+            out += "</p></td>";
         }
         out += "</tr></table>";
         
