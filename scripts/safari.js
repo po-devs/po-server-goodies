@@ -204,7 +204,8 @@ function Safari() {
     var fastAliases = ["fastball", "fast", "fast ball"];
     var luxuryAliases = ["luxuryball", "luxury", "luxury ball"];
     var quickAliases = ["quickball", "quick", "quick ball"];
-    
+    var moonAliases = ["moonball", "moon", "moon ball"];
+    var premierAliases = ["premierball", "premier", "premier ball"];
     
     function getAvatar(src) {
         if (SESSION.users(src)) {
@@ -286,18 +287,22 @@ function Safari() {
             return "ultra";
         } else if (masterAliases.indexOf(name) !== -1) {
             return "master";
-        } else if (ultraAliases.indexOf(name) !== -1) {
+        } else if (dreamAliases.indexOf(name) !== -1) {
             return "dream";
-        } else if (ultraAliases.indexOf(name) !== -1) {
+        } else if (heavyAliases.indexOf(name) !== -1) {
             return "heavy";
-        } else if (ultraAliases.indexOf(name) !== -1) {
+        } else if (nestAliases.indexOf(name) !== -1) {
             return "nest";
-        } else if (ultraAliases.indexOf(name) !== -1) {
+        } else if (fastAliases.indexOf(name) !== -1) {
             return "fast";
-        } else if (ultraAliases.indexOf(name) !== -1) {
+        } else if (luxuryAliases.indexOf(name) !== -1) {
             return "luxury";
-        } else if (ultraAliases.indexOf(name) !== -1) {
+        } else if (quickAliases.indexOf(name) !== -1) {
             return "quick";
+        } else if (moonAliases.indexOf(name) !== -1) {
+            return "moon";
+        } else if (premierAliases.indexOf(name) !== -1) {
+            return "premier";
         } else {
             return "safari";
         }
@@ -1388,8 +1393,9 @@ function Safari() {
                     player.money = 0;
                 }
                 this.saveGame(player);
-                safaribot.sendMessage(src, commandData + "'s Safari has been sanitized of invalid values!", safchan);
-                safaribot.sendMessage(playerId, "Your Safari has been sanitized of invalid values!", safchan);
+                //For now, sendAll
+                safaribot.sendAll(commandData + "'s Safari has been sanitized of invalid values!", safchan);
+                //safaribot.sendMessage(playerId, "Your Safari has been sanitized of invalid values!", safchan);
                 return true;
             } else {
                 safaribot.sendMessage(src, "No such person!", safchan);
