@@ -10,7 +10,7 @@ function Safari() {
     
     var safaribot = new Bot("Tauros");
 
-    var defaultChannel = "Safari Game";
+    var defaultChannel = "Safari";
     
     var shinyChance = 512; //Chance of 1/512 for Shiny Pokémon
     var starters = [1, 4, 7];
