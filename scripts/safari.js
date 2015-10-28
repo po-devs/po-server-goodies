@@ -1623,11 +1623,11 @@ function Safari() {
             }
             var player = getAvatar(playerId);
             if (player) {
-                player.ball[item] += itemQty;
-                if (player.ball[item] < 0) {
-                    player.ball[item] = 0;
-                } else if (player.ball[item] > 9999) {
-                    player.ball[item] = 9999;
+                player.balls[item] += itemQty;
+                if (player.balls[item] < 0) {
+                    player.balls[item] = 0;
+                } else if (player.balls[item] > 9999) {
+                    player.balls[item] = 9999;
                 }
                 this.saveGame(player);
                 safaribot.sendAll(target + " has been awarded with " + itemQty + " " + cap(item) + " by " + sys.name(src) + "!", safchan);
