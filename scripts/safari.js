@@ -369,6 +369,9 @@ function Safari() {
                 ballBonus = 1;
                 cooldown = 8000;
         }
+        if (isNaN(player.balls[ball])) {
+            player.balls[ball] = 0;
+        }
         if (!(ball in player.balls) || player.balls[ball] <= 0) {
             safaribot.sendMessage(src, "You have no " + cap(ball) + " Balls!", safchan);
             return;
@@ -552,6 +555,9 @@ function Safari() {
         }
         var cost = amount * itemPrices[item];
         var ballStr = item === "safari" ? " Ball(s)" : "";
+        if (isNaN(player.money)) {
+            player.money = 0;
+        }
         if (player.money < cost) {
             safaribot.sendMessage(src, "You need $" + cost + " to buy " + amount + " " + cap(item) + ballStr + ", but you only have $" + player.money + "!", safchan);
             return;
@@ -737,12 +743,12 @@ function Safari() {
         player.balls[item] -= 1;
         safaribot.sendAll(sys.name(src) + " left some bait out...", safchan);
         var rng = Math.random();
-        if (rng < 0.25) {
+        if (rng < 0.45) {
             safaribot.sendAll("The bait attracted a wild Pokémon!", safchan);
             baitCooldown = 60;
             safari.createWild();
         } else {
-            baitCooldown = 30;
+            baitCooldown = 20;
             safaribot.sendAll("... but nothing showed up.", safchan);
         }
     };
@@ -839,8 +845,12 @@ function Safari() {
         
         //Money/Balls table
         out +=  "<table border = 1 cellpadding = 3><tr><th colspan=7>Inventory</th></tr>";
-        out += "<tr><td valign=middle align=center><img src='item:274' title='Money'></td><td><img src='item:309' title='Safari Balls'></td><td><img src='item:306' title='Great Balls'></td><td><img src='item:307' title='Ultra Balls'></td><td><img src='item:308' title='Master Balls'></td><td><img src='item:267' title='Dream Balls'></td><td><img src='item:8017' title='Bait'></td></tr>";
-        out += "<tr><td align=center>$" + player.money + "</td><td align=center>" + player.balls.safari + "</td><td align=center>" + player.balls.great + "</td><td align=center>" + player.balls.ultra + "</td><td align=center>" + player.balls.master + "</td><td align=center>" + player.balls.dream + "</td><td align=center>" + player.balls.bait + "</td></tr></table>";
+        out += "<tr><td valign=middle align=center><img src='item:274' title='Money'></td><td><img src='item:8017' title='Bait'></td><td><img src='item:267' title='Gachapon Tickets'></td><td><img src='item:309' title='Safari Balls'></td><td><img src='item:306' title='Great Balls'></td><td><img src='item:307' title='Ultra Balls'></td><td><img src='item:308' title='Master Balls'></td></tr>";
+        out += "<tr><td align=center>$" + player.money + "</td><td align=center>" + player.balls.bait + "</td><td align=center>" + player.balls.gacha + "</td><td align=center>" + player.balls.safari + "</td><td align=center>" + player.balls.great + "</td><td align=center>" + player.balls.ultra + "</td><td align=center>" + player.balls.master + "</td></tr></table>";
+        
+        out += "<tr><td valign=middle align=center><img src='item:267' title='Dream Balls'></td><td><img src='item:324' title='Luxury Balls'></td><td><img src='item:321' title='Nest Balls'></td><td><img src='item:315' title='Heavy Balls'></td><td><img src='item:326' title='Quick Balls'></td><td><img src='item:316' title='Fast Balls'></td><td><img src='item:312' title='Moon Balls'></td></tr>";
+        out += "<tr><td align=center>$" + player.balls.dream + "</td><td align=center>" + player.balls.luxury + "</td><td align=center>" + player.balls.nest + "</td><td align=center>" + player.balls.heavy + "</td><td align=center>" + player.balls.quick + "</td><td align=center>" + player.balls.fast + "</td><td align=center>" + player.balls.moon + "</td></tr></table>";
+        
         sys.sendHtmlMessage(src, out, safchan);
     };
     this.viewPlayer = function(src, data) {
@@ -1048,7 +1058,14 @@ function Safari() {
                 ultra: 0,
                 master: 0,
                 dream: 0,
-                bait: 0
+                heavy: 0,
+                nest: 0,
+                luxury: 0,
+                quick: 0,
+                fast: 0,
+                moon: 0,                
+                bait: 0,
+                gacha: 0
             },
             starter: num,
             lastLogin: getDay(now()),
@@ -1068,7 +1085,7 @@ function Safari() {
             var player = JSON.parse(data);
             
             // clean bad player values here
-            for (ball in player.balls) {
+            for (var ball in player.balls) {
                 if (player.balls[ball] === undefined || isNaN(player.balls[ball])) player.balls[ball] = 0;
             }
             
