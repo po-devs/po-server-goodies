@@ -1599,6 +1599,45 @@ function Safari() {
             }
             return true;
         }
+        if (command === "safarigift") {
+            if (sys.auth(src) < 1) {
+                commandbot.sendMessage(src, "The command " + command + " doesn't exist", safchan);
+                return true;
+            }
+            
+            var cmd = commandData.split(":");
+            var target = cmd[0];
+            var item = cmd[1]
+            var itemQty = parseInt(cmd[2], 10);
+            var itemArray = ["bait", "rocks", "gacha", "safari", "great", "ultra", "master",
+                   "dream", "luxury", "nest", "heavy", "quick", "fast", "moon", "premier"];
+            
+            var playerId = sys.id(target);
+            if (!playerId) {
+                safaribot.sendMessage(src, "No such person!", safchan);
+                return true;
+            }
+            if (itemArray.indexOf(item) === -1) {
+                safaribot.sendMessage(src, "No such item!", safchan);
+                return true;
+            }
+            var player = getAvatar(playerId);
+            if (player) {
+                player.ball[item] += itemQty;
+                if (player.ball[item] < 0) {
+                    player.ball[item] = 0;
+                } else if (player.ball[item] > 9999) {
+                    player.ball[item] = 9999;
+                }
+                this.saveGame(player);
+                safaribot.sendAll(target + " has been awarded with " + itemQty + " " + cap(item) + " by " + sys.name(src) + "!", safchan);
+            } else {
+                safaribot.sendMessage(src, "No such person!", safchan);
+                return true;
+            }
+            return true;
+        }
+        
         
         return false;
     };
