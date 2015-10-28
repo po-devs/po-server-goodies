@@ -14,12 +14,10 @@ function Safari() {
     
     var shinyChance = 512; //Chance of 1/512 for Shiny Pokémon
     var starters = [1, 4, 7];
-    var ballPrices = {
+    var itemPrices = {
         safari: 30,
-        great: 45,
-        ultra: 60,
-        master: 4900,
-        dream: 250
+        gacha: 149,
+        bait: 100
     };
     
     var currentPokemon = null;
@@ -30,8 +28,10 @@ function Safari() {
     var rawPlayers;
     
     var contestCooldownLength = 1200; //1 contest every 20 minutes
+    var baitCooldownLength = 0;
     var contestBroadcast = true; //Determines whether Tohjo gets notified
     var contestCooldown = (SESSION.global() && SESSION.global().safariContestCooldown ? SESSION.global().safariContestCooldown : contestCooldownLength);
+    var baitCooldown = (SESSION.global() && SESSION.global().safariBaitCooldown ? SESSION.global().safariBaitCooldown : baitCooldownLength);
     var contestDuration = 300; //Contest lasts for 5 minutes
     var contestCount = 0;
     
@@ -194,6 +194,18 @@ function Safari() {
         }
     };
     
+    var safariAliases = ["safariball", "safari", "safari ball", "*"];
+    var greatAliases = ["greatball", "great", "great ball"];
+    var ultraAliases = ["ultraball", "ultra", "ultra ball"];
+    var masterAliases = ["masterball", "master", "master ball"];
+    var dreamAliases = ["dreamball", "dream", "dream ball"];
+    var heavyAliases = ["heavyball", "heavy", "heavy ball"];
+    var nestAliases = ["nestball", "nest", "nest ball"];
+    var fastAliases = ["fastball", "fast", "fast ball"];
+    var luxuryAliases = ["luxuryball", "luxury", "luxury ball"];
+    var quickAliases = ["quickball", "quick", "quick ball"];
+    
+    
     function getAvatar(src) {
         if (SESSION.users(src)) {
             return SESSION.users(src).safari;
@@ -267,6 +279,29 @@ function Safari() {
     function pokeImage(num) {
         return "<img src='pokemon:num=" + num + (typeof num == "string" ? "&shiny=true" : "") + "&gen=6'>";
     }
+    function ballAlias(name) {
+        if (greatAliases.indexOf(name) !== -1) {
+            return "great";
+        } else if (ultraAliases.indexOf(name) !== -1) {
+            return "ultra";
+        } else if (masterAliases.indexOf(name) !== -1) {
+            return "master";
+        } else if (ultraAliases.indexOf(name) !== -1) {
+            return "dream";
+        } else if (ultraAliases.indexOf(name) !== -1) {
+            return "heavy";
+        } else if (ultraAliases.indexOf(name) !== -1) {
+            return "nest";
+        } else if (ultraAliases.indexOf(name) !== -1) {
+            return "fast";
+        } else if (ultraAliases.indexOf(name) !== -1) {
+            return "luxury";
+        } else if (ultraAliases.indexOf(name) !== -1) {
+            return "quick";
+        } else {
+            return "safari";
+        }
+    }
     
     this.createWild = function(dexNum, makeShiny) {
         var num,
@@ -287,7 +322,7 @@ function Safari() {
             } while (!pokeId || add(sys.pokeBaseStats(num)) > maxStats);
         }
         
-        sys.sendHtmlAll("<hr><center>A wild " + pokeId + " appeared!<br/>" + pokeImage(num + (shiny ? "" : 0)) + "</center><hr>", safchan);
+        sys.sendHtmlAll("<hr><center>A wild " + pokeId + " appeared! <i>(BST: " + add(sys.pokeBaseStats(num)) + ")</i><br/>" + pokeImage(num + (shiny ? "" : 0)) + "<br/></center><hr>", safchan);
         currentPokemon = shiny ? "" + num : num;
     };
     this.throwBall = function(src, data) {
@@ -308,39 +343,28 @@ function Safari() {
         var ball = "safari";
         var ballBonus = 1;
         var cooldown = 8000;
-        switch (data.toLowerCase()) {
+        switch (ballAlias(data.toLowerCase())) {
             case "great":
-            case "great ball":
-            case "greatball":
                 ball = "great";
                 ballBonus = 1.5;
                 cooldown = 11000;
                 break;
             case "ultra":
-            case "ultra ball":
-            case "ultraball":
                 ball = "ultra";
                 ballBonus = 2;
                 cooldown = 15000;
                 break;
             case "master":
-            case "master ball":
-            case "masterball":
                 ball = "master";
                 ballBonus = 255;
                 cooldown = 180000;
                 break;
             case "dream":
-            case "dream ball":
-            case "dreamball":
                 ball = "dream";
                 ballBonus = 0.99;
                 cooldown = 11000;
                 break;
-            case "*":
             case "safari":
-            case "safari ball":
-            case "safariball":
                 ball = "safari";
                 ballBonus = 1;
                 cooldown = 8000;
@@ -481,7 +505,7 @@ function Safari() {
         
         this.saveGame(player);
     };
-    this.buyBalls = function(src, data) {
+    this.buyItems = function(src, data) {
         var player = getAvatar(src);
         if (!player) {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
@@ -489,21 +513,19 @@ function Safari() {
         }
         if (data === "*") {
             safaribot.sendMessage(src, "You can buy the following balls:", safchan);
-            safaribot.sendMessage(src, "Safari Ball: $" + ballPrices.safari + " (1x Catch Rate)", safchan);
-            safaribot.sendMessage(src, "Great Ball: $" + ballPrices.great + " (1.5x Catch Rate)", safchan);
-            safaribot.sendMessage(src, "Ultra Ball: $" + ballPrices.ultra + " (2x Catch Rate)", safchan);
-            safaribot.sendMessage(src, "Master Ball: $" + ballPrices.master + " (Always Catches)", safchan);
-            safaribot.sendMessage(src, "Dream Ball: $" + ballPrices.dream  + " (1x Catch Rate, Bonus Catch against Shiny Pokemon)", safchan);
+            safaribot.sendMessage(src, "Safari Ball: $" + itemPrices.safari, safchan);
+            //safaribot.sendMessage(src, "Gachapon Ticket: $" + itemPrices.gacha, safchan);
+            safaribot.sendMessage(src, "Bait: $" + itemPrices.bait, safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "You currently have $" + player.money + ". To buy a ball, use /buy ball:quantity (e.g.: /buy safari:3)", safchan);
             return;
         }
         if (contestCount > 0) {
-            safaribot.sendMessage(src, "You can't buy balls during a contest!", safchan);
+            safaribot.sendMessage(src, "[Closed] Out catching Pokémon at the Contest. Come back after the Contest!", safchan);
             return;
         }
         var info = data.split(":");
-        var ball = info[0].toLowerCase();
+        var item = info[0].toLowerCase();
         var amount = 1;
         if (info.length > 1) {
             amount = parseInt(info[1], 10);
@@ -512,43 +534,35 @@ function Safari() {
             }
         }
         
-        switch (ball) {
+        switch (item) {
             case "safari ball":
             case "safariball":
-                ball = "safari";
+                item = "safari";
             break;
-            case "great ball":
-            case "greatball":
-                ball = "great";
-            break;
-            case "ultra ball":
-            case "ultraball":
-                ball = "ultra";
-            break;
-            case "master ball":
-            case "masterball":
-                ball = "master";
-            break;
-            case "dream ball":
-            case "dreamball":
-                ball = "dream";
+            case "gachapon ticket":
+            case "gachaponticket":
+                item = "gacha";
             break;
         }
         
-        var validItems = ["safari", "great", "ultra", "master", "dream"];
-        if (validItems.indexOf(ball) == -1) {
-            safaribot.sendMessage(src, "This is not a valid item. Valid items are: Safari Ball, Great Ball, Ultra Ball, Master Ball, and Dream Ball.", safchan);
+        var validItems = ["safari", "bait"];
+        if (validItems.indexOf(item) == -1) {
+            safaribot.sendMessage(src, "You can only buy Safari Balls and Bait at this shop!", safchan);
             return;
         }
-        var cost = amount * ballPrices[ball];
+        var cost = amount * itemPrices[item];
+        var ballStr = item === "safari" ? " Ball(s)" : "";
         if (player.money < cost) {
-            safaribot.sendMessage(src, "You need $" + cost + " to buy " + amount + " " + cap(ball) + " Ball(s), but you only have $" + player.money + "!", safchan);
+            safaribot.sendMessage(src, "You need $" + cost + " to buy " + amount + " " + cap(item) + ballStr + ", but you only have $" + player.money + "!", safchan);
             return;
         }
         
         player.money -= cost;
-        player.balls[ball] += amount;
-        safaribot.sendMessage(src, "You bought " + amount + " " + cap(ball) + " Ball(s) for $" + cost + "! You now have " + player.balls[ball] + " " + cap(ball) + " Ball(s) and $" + player.money + "!", safchan);
+        if (isNaN(player.balls[item])) {
+            player.balls[item] = 0;
+        }
+        player.balls[item] += amount;
+        safaribot.sendMessage(src, "You bought " + amount + " " + cap(item) + ballStr + " for $" + cost + "! You now have " + player.balls[item] + " " + cap(item) + ballStr + " and $" + player.money + "!", safchan);
         this.saveGame(player);
     };
     this.tradePokemon = function(src, data) {
@@ -701,6 +715,38 @@ function Safari() {
             return "isActive";
         }
     };
+    this.bait = function (src) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        if (currentPokemon) {
+            safaribot.sendMessage(src, "There's already a wild Pokémon around!", safchan);
+            return;
+        }
+        if (baitCooldown > 0) {
+            safaribot.sendMessage(src, "Please wait " + baitCooldown + " seconds before trying to attract another Pokémon with bait!", safchan);
+            return;
+        }
+        var item = "bait";
+        if (!(item in player.balls) || player.balls[item] <= 0) {
+            safaribot.sendMessage(src, "You have no " + cap(item) + "!", safchan);
+            return;
+        }
+        player.balls[item] -= 1;
+        safaribot.sendAll(sys.name(src) + " left some bait out...", safchan);
+        var rng = Math.random();
+        if (rng < 0.25) {
+            safaribot.sendAll("The bait attracted a wild Pokémon!", safchan);
+            baitCooldown = 60;
+            safari.createWild();
+        } else {
+            baitCooldown = 30;
+            safaribot.sendAll("... but nothing showed up.", safchan);
+        }
+    };
+    
     
     this.viewOwnInfo = function(src) {
         var player = getAvatar(src), e;
@@ -792,9 +838,9 @@ function Safari() {
         
         
         //Money/Balls table
-        out +=  "<table border = 1 cellpadding = 3><tr><th colspan=6>Inventory</th></tr>";
-        out += "<tr><td valign=middle align=center><img src='item:274' title='Money'></td><td><img src='item:309' title='Safari Balls'></td><td><img src='item:306' title='Great Balls'></td><td><img src='item:307' title='Ultra Balls'></td><td><img src='item:308' title='Master Balls'></td><td><img src='item:267' title='Dream Balls'></td></tr>";
-        out += "<tr><td align=center>$" + player.money + "</td><td align=center>" + player.balls.safari + "</td><td align=center>" + player.balls.great + "</td><td align=center>" + player.balls.ultra + "</td><td align=center>" + player.balls.master + "</td><td align=center>" + player.balls.dream + "</td></tr></table>";
+        out +=  "<table border = 1 cellpadding = 3><tr><th colspan=7>Inventory</th></tr>";
+        out += "<tr><td valign=middle align=center><img src='item:274' title='Money'></td><td><img src='item:309' title='Safari Balls'></td><td><img src='item:306' title='Great Balls'></td><td><img src='item:307' title='Ultra Balls'></td><td><img src='item:308' title='Master Balls'></td><td><img src='item:267' title='Dream Balls'></td><td><img src='item:8017' title='Bait'></td></tr>";
+        out += "<tr><td align=center>$" + player.money + "</td><td align=center>" + player.balls.safari + "</td><td align=center>" + player.balls.great + "</td><td align=center>" + player.balls.ultra + "</td><td align=center>" + player.balls.master + "</td><td align=center>" + player.balls.dream + "</td><td align=center>" + player.balls.bait + "</td></tr></table>";
         sys.sendHtmlMessage(src, out, safchan);
     };
     this.viewPlayer = function(src, data) {
@@ -1001,7 +1047,8 @@ function Safari() {
                 great: 0,
                 ultra: 0,
                 master: 0,
-                dream: 0
+                dream: 0,
+                bait: 0
             },
             starter: num,
             lastLogin: getDay(now()),
@@ -1201,7 +1248,7 @@ function Safari() {
             return true;
         }
         if (command === "buy") {
-            safari.buyBalls(src, commandData);
+            safari.buyItems(src, commandData);
             return true;
         }
         if (command === "view") {
@@ -1223,6 +1270,16 @@ function Safari() {
         if (command === "changealt") {
             safari.changeAlt(src, commandData);
             return true;
+        }
+        if (command === "bait") {
+            safari.bait(src);
+            return true;
+        }
+        if (command === "gacha") {
+            commandbot.sendMessage(src, "The command gacha is coming soon!", safchan);
+            return true;
+            //safari.gachapon(src);
+            //return true;
         }
         
         //Test commands to make a wild Pokémon appear or start/end a contest
@@ -1256,16 +1313,8 @@ function Safari() {
             }
             return true;
         }
-        /*if (command === "resetsafari") {
-            if (sys.auth(src) < 3) {
-                commandbot.sendMessage(src, "The command " + command + " doesn't exist", safchan);
-                return true;
-            }
-            safaribot.sendAll("Safari Save Files have been reset!", safchan);
-            return true;
-        }*/
         if (command === "wipesafari") {
-            if (sys.auth(src) < 3) {
+            if (sys.auth(src) < 2) {
                 commandbot.sendMessage(src, "The command " + command + " doesn't exist", safchan);
                 return true;
             }
@@ -1301,6 +1350,11 @@ function Safari() {
             var player = getAvatar(playerId);
             if (player) {
                 player.money += moneyGained;
+                if (player.money < 0) {
+                    player.money = 0;
+                } else if (player.money > 9999999) {
+                    player.money = 9999999;
+                }
                 this.saveGame(player);
                 safaribot.sendAll(target + " has been awarded with $" + moneyGained + " by " + sys.name(src) + "!", safchan);
             } else {
@@ -1332,6 +1386,7 @@ function Safari() {
     };
     this.stepEvent = function () {
         contestCooldown--;
+        baitCooldown--;
         if (contestCooldown === 180) {
             sys.sendAll("*** ************************************************************ ***", safchan);
             safaribot.sendAll("A new Safari contest will start in 3 minutes! Prepare your active Pokémon and all Poké Balls you need!", safchan);
@@ -1359,6 +1414,7 @@ function Safari() {
             safari.createWild();
         }
         SESSION.global().safariContestCooldown = contestCooldown;
+        SESSION.global().safariBaitCooldown = baitCooldown;
         
         if (contestCount > 0) {
             contestCount--;
