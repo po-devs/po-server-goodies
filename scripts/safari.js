@@ -1377,16 +1377,20 @@ function Safari() {
             if (player) {
                 var item = ["bait", "rock", "gacha", "safari", "great", "ultra", "master",
                    "dream", "luxury", "nest", "heavy", "quick", "fast", "moon", "premier"];
-                for (var item in player.balls) {
-                    if (player.balls[item] === undefined || isNaN(player.balls[item])) {
-                        player.balls[item] = 0;
+               var clean;
+                for (var i = 0; i < item.length; i++) {
+                    clean = item[i];
+                    if (player.balls[clean] === undefined || isNaN(player.balls[clean])) {
+                        player.balls[clean] = 0;
                     }
                 }
                 if (player.money === undefined || isNaN(player.money)) {
                     player.money = 0;
                 }
                 this.saveGame(player);
-                safaribot.sendAll(commandData + "'s Safari has been sanitized of invalid values!", safchan);
+                safaribot.sendMessage(src, commandData + "'s Safari has been sanitized of invalid values!", safchan);
+                safaribot.sendMessage(playerId, "Your Safari has been sanitized of invalid values!", safchan);
+                return true;
             } else {
                 safaribot.sendMessage(src, "No such person!", safchan);
                 return true;
