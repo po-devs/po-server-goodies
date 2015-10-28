@@ -1446,10 +1446,10 @@ function Safari() {
             return true;
         }
         if (command === "view") {
-            if (commandData === undefined) {
-                safari.viewOwnInfo(src, commandData);
-            } else {
+            if (commandData) {
                 safari.viewPlayer(src, commandData);
+            } else {
+                safari.viewOwnInfo(src, commandData);
             }
             return true;
         }
