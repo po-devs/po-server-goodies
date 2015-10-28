@@ -344,7 +344,7 @@ function Safari() {
         }
         var currentTime = now();
         if (player.cooldown > currentTime) {
-            safaribot.sendMessage(src, "Please wait " + (Math.floor((player.cooldown - currentTime)/1000) + 1) + " seconds before throwing another ball!", safchan);
+            safaribot.sendMessage(src, "Please wait " + (Math.floor((player.cooldown - currentTime)/1000) + 1) + " seconds before throwing a ball!", safchan);
             return;
         }
         var ball = "safari";
@@ -422,6 +422,7 @@ function Safari() {
             sys.sendAll("", safchan);
             player.pokemon.push(currentPokemon);
             currentPokemon = null;
+            cooldown *= 1.5;
         } else {
             safaribot.sendMessage(src, "You threw a  " + cap(ball) + " Ball at " + pokeName +"! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             if (rng < finalChance + 0.1) {
@@ -742,6 +743,10 @@ function Safari() {
             safaribot.sendMessage(src, "Please wait " + baitCooldown + " seconds before trying to attract another Pokémon with bait!", safchan);
             return;
         }
+        if (contestCount > 0) {
+            safaribot.sendMessage(src, "Contest rules forbid the use of Bait. Please wait until the Contest is over.", safchan);
+            return;
+        }
         var item = "bait";
         if (!(item in player.balls) || player.balls[item] <= 0) {
             safaribot.sendMessage(src, "You have no " + cap(item) + "!", safchan);
@@ -762,6 +767,45 @@ function Safari() {
             safaribot.sendAll("... but nothing showed up.", safchan);
         }
     };
+    this.throwRock = function (src, commandData) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        var targetId = sys.id(commandData);
+        if (!targetId) {
+            safaribot.sendMessage(src, "No such person!", safchan);
+            return true;
+        }
+        var target = getAvatar(targetId);
+        if (!target) {
+            safaribot.sendMessage(src, "No such person!", safchan);
+            return true;
+        }
+        var currentTime = now();
+        if (player.rockCooldown > currentTime) {
+            safaribot.sendMessage(src, "Please wait " + (Math.floor((player.rockCooldown - currentTime)/1000) + 1) + " seconds before trying to a throw another rock!", safchan);
+            return;
+        }
+        var item = "rocks";
+        if (!(item in player.balls) || player.balls[item] <= 0) {
+            safaribot.sendMessage(src, "You have no " + cap(item) + "!", safchan);
+            return;
+        }
+        
+        player.balls[item] -= 1;
+        safaribot.sendAll(sys.name(src) + " threw at rock at " + sys.name(targetId) + "!", safchan);
+        var rng = Math.random();
+        if (rng < 0.50) {
+            safaribot.sendAll("*THUD* A direct hit! " + sys.name(targetId) + " was stunned!", safchan);
+            target.cooldown = currentTime + 3000;
+        } else {
+            safaribot.sendAll("... but it missed!", safchan);
+        }
+        player.rockCooldown = currentTime + 10000;
+    };
+    
     this.gachapon = function (src, commandData) {
         var player = getAvatar(src);
         if (!player) {
@@ -778,6 +822,10 @@ function Safari() {
             safaribot.sendMessage(src, "It's unwise to ignore a wild Pokémon in order to use a Gachapon Machine...", safchan);
             return;
         }
+        if (contestCount > 0) {
+            safaribot.sendMessage(src, "[Closed] ", safchan);
+            return;
+        }
         var gach = "gacha";
         if (isNaN(player.balls[gach])) {
             player.balls[gach] = 0;
@@ -791,10 +839,10 @@ function Safari() {
         var rng2 = Math.random();
         var item, jackpot = false;
         safaribot.sendMessage(src, "Gacha-PON! The Gachapon Machine has dispensed an item.", safchan);
-        if (rng < 0.08) {
+        if (rng < 0.05) {
             //Wild Pokemon
             safaribot.sendAll(sys.name(src) + " goes to grab their item from the Gachapon Machine but the noise lured a wild Pokémon!", safchan);
-            if (rng2 < 0.10) {
+            if (rng2 < 0.08) {
                 jackpot = true;
             }
             safari.createWild(0, jackpot);
@@ -893,8 +941,8 @@ function Safari() {
             //Bait for now though
             item = "bait";
             safaribot.sendAll("A mischievous Pokémon swipes " + sys.name(src) + "'s Gachapon prize as it dispenses. Just then, a Pokémon Trainer approaches " + sys.name(src) + " in a huff. 'Sorry about my Pokémon stealing your reward, take this bag of Bait as an apology.'", safchan);
-            safaribot.sendMessage(src, "You received 10 pieces of Bait", safchan);
-            player.balls[item] += 10;
+            safaribot.sendMessage(src, "You received 3 pieces of Bait", safchan);
+            player.balls[item] += 3;
         } else if (rng < 0.92) {
             //Great Ball
             item = "great";
@@ -1247,6 +1295,7 @@ function Safari() {
             lastLogin: getDay(now()),
             consecutiveLogins: 1,
             cooldown: 0,
+            rockCooldown: 0,
             gachaCooldown: 0
         };
         SESSION.users(src).safari = player;
@@ -1472,7 +1521,11 @@ function Safari() {
             return true;
         }
         if (command === "bait") {
-            safari.bait(src, commandData);
+            safari.throwBait(src, commandData);
+            return true;
+        }
+        if (command === "rock") {
+            safari.throwRock(src, commandData);
             return true;
         }
         if (command === "gacha") {
@@ -1535,111 +1588,116 @@ function Safari() {
             return true;
         }
         if (command === "sanitize") {
-            if (sys.auth(src) < 1) {
-                commandbot.sendMessage(src, "The command " + command + " doesn't exist", safchan);
-                return true;
-            }
-            var playerId = sys.id(commandData);
-            if (!playerId) {
-                safaribot.sendMessage(src, "No such person!", safchan);
-                return true;
-            }
-            var player = getAvatar(playerId);
-            if (player) {
-                var item = ["bait", "rocks", "gacha", "safari", "great", "ultra", "master",
-                   "dream", "luxury", "nest", "heavy", "quick", "fast", "moon", "premier"];
-               var clean;
-                for (var i = 0; i < item.length; i++) {
-                    clean = item[i];
-                    if (player.balls[clean] === undefined || isNaN(player.balls[clean])) {
-                        player.balls[clean] = 0;
+            if (sys.auth(src) > 1 || SESSION.channels(safchan).isChannelOperator(src)) {
+                var playerId = sys.id(commandData);
+                if (!playerId) {
+                    safaribot.sendMessage(src, "No such person!", safchan);
+                    return true;
+                }
+                var player = getAvatar(playerId);
+                if (player) {
+                    var item = ["bait", "rocks", "gacha", "safari", "great", "ultra", "master",
+                       "dream", "luxury", "nest", "heavy", "quick", "fast", "moon", "premier"];
+                   var clean;
+                    for (var i = 0; i < item.length; i++) {
+                        clean = item[i];
+                        if (player.balls[clean] === undefined || isNaN(player.balls[clean])) {
+                            player.balls[clean] = 0;
+                        }
                     }
+                    if (player.money === undefined || isNaN(player.money)) {
+                        player.money = 0;
+                    }
+                    player.cooldown = now();
+                    player.gachaCooldown = now();
+                    player.rockCooldown = now();
+                    
+                    this.saveGame(player);
+                    //For now, sendAll
+                    safaribot.sendAll(commandData + "'s Safari has been sanitized of invalid values!", safchan);
+                    //safaribot.sendMessage(playerId, "Your Safari has been sanitized of invalid values!", safchan);
+                    return true;
+                } else {
+                    safaribot.sendMessage(src, "No such person!", safchan);
+                    return true;
                 }
-                if (player.money === undefined || isNaN(player.money)) {
-                    player.money = 0;
-                }
-                this.saveGame(player);
-                //For now, sendAll
-                safaribot.sendAll(commandData + "'s Safari has been sanitized of invalid values!", safchan);
-                //safaribot.sendMessage(playerId, "Your Safari has been sanitized of invalid values!", safchan);
-                return true;
             } else {
-                safaribot.sendMessage(src, "No such person!", safchan);
+                commandbot.sendMessage(src, "The command " + command + " doesn't exist", safchan);
                 return true;
             }
             
             return true;
         }
         if (command === "safaripay") {
-            if (sys.auth(src) < 1) {
-                commandbot.sendMessage(src, "The command " + command + " doesn't exist", safchan);
-                return true;
-            }
-            
-            var cmd = commandData.split(":");
-            var target = cmd[0];
-            var moneyGained = parseInt(cmd[1], 10);
-            
-            var playerId = sys.id(target);
-            if (!playerId) {
-                safaribot.sendMessage(src, "No such person!", safchan);
-                return true;
-            }
-            var player = getAvatar(playerId);
-            if (player) {
-                player.money += moneyGained;
-                if (player.money < 0) {
-                    player.money = 0;
-                } else if (player.money > 9999999) {
-                    player.money = 9999999;
+            if (sys.auth(src) > 2 || SESSION.channels(safchan).isChannelAdmin(src)) {
+                var cmd = commandData.split(":");
+                var target = cmd[0];
+                var moneyGained = parseInt(cmd[1], 10);
+                
+                var playerId = sys.id(target);
+                if (!playerId) {
+                    safaribot.sendMessage(src, "No such person!", safchan);
+                    return true;
                 }
-                this.saveGame(player);
-                safaribot.sendAll(target + " has been awarded with $" + moneyGained + " by " + sys.name(src) + "!", safchan);
+                var player = getAvatar(playerId);
+                if (player) {
+                    player.money += moneyGained;
+                    if (player.money < 0) {
+                        player.money = 0;
+                    } else if (player.money > 9999999) {
+                        player.money = 9999999;
+                    }
+                    this.saveGame(player);
+                    safaribot.sendAll(target + " has been awarded with $" + moneyGained + " by " + sys.name(src) + "!", safchan);
+                } else {
+                    safaribot.sendMessage(src, "No such person!", safchan);
+                    return true;
+                }
             } else {
-                safaribot.sendMessage(src, "No such person!", safchan);
+                commandbot.sendMessage(src, "The command " + command + " doesn't exist", safchan);
                 return true;
             }
             return true;
         }
         if (command === "safarigift") {
-            if (sys.auth(src) < 1) {
+            if (sys.auth(src) > 2 || SESSION.channels(safchan).isChannelAdmin(src)) {
+                var cmd = commandData.split(":");
+                var target = cmd[0];
+                var item = cmd[1];
+                var itemQty = parseInt(cmd[2], 10);
+                var itemArray = ["bait", "rocks", "gacha", "safari", "great", "ultra", "master",
+                       "dream", "luxury", "nest", "heavy", "quick", "fast", "moon", "premier"];
+                
+                var playerId = sys.id(target);
+                if (!playerId) {
+                    safaribot.sendMessage(src, "No such person!", safchan);
+                    return true;
+                }
+                if (itemArray.indexOf(item) === -1) {
+                    safaribot.sendMessage(src, "No such item!", safchan);
+                    return true;
+                }
+                var player = getAvatar(playerId);
+                if (player) {
+                    player.balls[item] += itemQty;
+                    if (player.balls[item] < 0) {
+                        player.balls[item] = 0;
+                    } else if (player.balls[item] > 9999) {
+                        player.balls[item] = 9999;
+                    }
+                    this.saveGame(player);
+                    safaribot.sendAll(target + " has been awarded with " + itemQty + " " + cap(item) + " by " + sys.name(src) + "!", safchan);
+                } else {
+                    safaribot.sendMessage(src, "No such person!", safchan);
+                    return true;
+                }
+            } else {
                 commandbot.sendMessage(src, "The command " + command + " doesn't exist", safchan);
                 return true;
             }
-            
-            var cmd = commandData.split(":");
-            var target = cmd[0];
-            var item = cmd[1];
-            var itemQty = parseInt(cmd[2], 10);
-            var itemArray = ["bait", "rocks", "gacha", "safari", "great", "ultra", "master",
-                   "dream", "luxury", "nest", "heavy", "quick", "fast", "moon", "premier"];
-            
-            var playerId = sys.id(target);
-            if (!playerId) {
-                safaribot.sendMessage(src, "No such person!", safchan);
-                return true;
-            }
-            if (itemArray.indexOf(item) === -1) {
-                safaribot.sendMessage(src, "No such item!", safchan);
-                return true;
-            }
-            var player = getAvatar(playerId);
-            if (player) {
-                player.balls[item] += itemQty;
-                if (player.balls[item] < 0) {
-                    player.balls[item] = 0;
-                } else if (player.balls[item] > 9999) {
-                    player.balls[item] = 9999;
-                }
-                this.saveGame(player);
-                safaribot.sendAll(target + " has been awarded with " + itemQty + " " + cap(item) + " by " + sys.name(src) + "!", safchan);
-            } else {
-                safaribot.sendMessage(src, "No such person!", safchan);
-                return true;
-            }
+                        
             return true;
         }
-        
         
         return false;
     };
