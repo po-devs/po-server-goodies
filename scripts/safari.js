@@ -417,14 +417,21 @@ function Safari() {
         var pokeName = poke(currentPokemon);
         var wild = typeof currentPokemon == "string" ? parseInt(currentPokemon, 10) : currentPokemon;
         var shinyChance = typeof currentPokemon == "string" ? 0.40 : 1;
-        if (ball === "dream" && shinyChance == 0.40) {
-            shinyChance = 1;
-            ballBonus = 3;
-        }
         
         var userStats = add(sys.pokeBaseStats(player.party[0]));
         var wildStats = add(sys.pokeBaseStats(wild));
         var statsBonus = (userStats - wildStats) / 6000;
+        
+        if (ball === "dream" && shinyChance == 0.40) {
+            shinyChance = 1;
+            ballBonus = 3;
+        }
+        if (ball === "heavy" && wildStats > 550) {
+            ballBonus = 5;
+        }
+        if (ball === "nest" && wildStats < 420) {
+            ballBonus = 5;
+        }
         
         var typeBonus = this.checkEffective(sys.type(sys.pokeType1(player.party[0])), sys.type(sys.pokeType2(player.party[0])), sys.type(sys.pokeType1(wild)), sys.type(sys.pokeType2(wild)));
         
@@ -446,12 +453,17 @@ function Safari() {
         var rng = Math.random();
         if (rng < finalChance || ballBonus == 255) {
             sys.sendAll("", safchan);
-            safaribot.sendAll(sys.name(src) + " caught the "+pokeName+" with a " + cap(ball) + " Ball!" , safchan);
-            safaribot.sendMessage(src, "Gotcha! "+pokeName+" was caught with a " + cap(ball) + " Ball! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
+            safaribot.sendAll(sys.name(src) + " caught the " + pokeName + " with a " + cap(ball) + " Ball!" , safchan);
+            safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with a " + cap(ball) + " Ball! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             sys.sendAll("", safchan);
             player.pokemon.push(currentPokemon);
+            
+            if (ball == "luxury") {
+                safaribot.sendAll(sys.name(src) + " also found $" + wildStats + " on the ground after catching " + pokeName + "!" , safchan);
+                player.money += wildStats;
+            }
             currentPokemon = null;
-            cooldown *= 1.5;
+            cooldown *= 2;
         } else {
             safaribot.sendMessage(src, "You threw a  " + cap(ball) + " Ball at " + pokeName +"! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             if (rng < finalChance + 0.1) {
@@ -782,10 +794,9 @@ function Safari() {
             return;
         }
         player.balls[item] -= 1;
-        safaribot.sendAll(sys.name(src) + " left some bait out...", safchan);
         var rng = Math.random();
         if (rng < 0.45) {
-            safaribot.sendAll("The bait attracted a wild Pokémon!", safchan);
+            safaribot.sendAll(sys.name(src) + " left some bait out. The bait attracted a wild Pokémon!", safchan);
             baitCooldown = 60;
             safari.createWild();
             if (commandData !== undefined) {
@@ -793,7 +804,7 @@ function Safari() {
             }
         } else {
             baitCooldown = 20;
-            safaribot.sendAll("... but nothing showed up.", safchan);
+            safaribot.sendAll(sys.name(src) + " left some bait out... but nothing showed up.", safchan);
         }
     };
     this.throwRock = function (src, commandData) {
@@ -872,6 +883,9 @@ function Safari() {
             safaribot.sendAll(sys.name(src) + " goes to grab their item from the Gachapon Machine but the noise lured a wild Pokémon!", safchan);
             if (rng2 < 0.08) {
                 jackpot = true;
+            } else if (rng2 < 0.13) {
+                safaribot.sendAll("But it fled before anyone could try to catch it!", safchan);
+                return;
             }
             safari.createWild(0, jackpot);
             if (commandData !== undefined) {
@@ -968,7 +982,7 @@ function Safari() {
             //Ability Capsule
             //Bait for now though
             item = "bait";
-            imte2 = "rocks";
+            item2 = "rocks";
             //safaribot.sendAll("A mischievous Pokémon swipes " + sys.name(src) + "'s Gachapon prize as it dispenses. Just then, a Pokémon Trainer approaches " + sys.name(src) + " in a huff. 'Sorry about my Pokémon stealing your reward, take this bag of Bait as an apology.'", safchan);
             safaribot.sendMessage(src, "You received 3 pieces of Bait and 3 Rocks!", safchan);
             player.balls[item] += 3;
@@ -1631,7 +1645,7 @@ function Safari() {
                    var clean;
                     for (var i = 0; i < item.length; i++) {
                         clean = item[i];
-                        if (player.balls[clean] === undefined || isNaN(player.balls[clean])) {
+                        if (player.balls[clean] === undefined || isNaN(player.balls[clean]) || player.balls[clean] === null) {
                             player.balls[clean] = 0;
                         }
                     }
@@ -1790,9 +1804,9 @@ function Safari() {
                 currentPokemon = null;
                 
                 //Check daily rewards after a contest so players won't need to relog to get their reward when date changes
-                var onChannel = sys.playersOfChannel(safchan),
+                /*var onChannel = sys.playersOfChannel(safchan),
                     today = getDay(now());
-                /*for (var e in onChannel) {
+                for (var e in onChannel) {
                     safari.dailyReward(onChannel[e], today);
                 }*/
                 rawPlayers.save();
