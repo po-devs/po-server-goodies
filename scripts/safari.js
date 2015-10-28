@@ -3,6 +3,8 @@
 
 var MemoryHash = require("memoryhash.js").MemoryHash;
 var Bot = require('bot.js').Bot;
+var utilities = require('utilities.js');
+var html_escape = utilities.html_escape;
 
 function Safari() {
     var safari = this;
@@ -919,7 +921,7 @@ function Safari() {
             }
         } else if (rng < 0.69) {
             //Master Ball
-            sys.sendHtmlAll("<font color=#3DAA68><timestamp/><b>±Gachapon:</font> JACKPOT! " + sys.name(src) + " just got a Master Ball from the Gachapon Machine!</b>", safchan);
+            sys.sendHtmlAll("<font color=#3DAA68><timestamp/><b>±Gachapon:</b></font> <b>JACKPOT! " + html_escape(sys.name(src)) + " just got a Master Ball from the Gachapon Machine!</b>", safchan);
             item = "master";
             player.balls[item] += 1;
         } else if (rng < 0.76) {
