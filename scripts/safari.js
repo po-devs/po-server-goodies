@@ -370,9 +370,36 @@ function Safari() {
                 break;
             case "dream":
                 ball = "dream";
-                ballBonus = 0.99;
+                ballBonus = 1;
                 cooldown = 9000;
                 break;
+            case "luxury":
+                ball = "luxury";
+                ballBonus = 2;
+                cooldown = 12000;
+                break;
+            case "nest":
+                ball = "nest";
+                ballBonus = 1;
+                cooldown = 4000;
+                break;
+            case "heavy":
+                ball = "heavy";
+                ballBonus = 1;
+                cooldown = 8000;
+                break;
+            case "quick":
+                ball = "quick";
+                ballBonus = 1;
+                cooldown = 6000;
+                break;
+            case "fast":
+                ball = "fast";
+                ballBonus = 1;
+                cooldown = 500;
+                break;
+            case "moon":
+            case "premier":
             case "safari":
                 ball = "safari";
                 ballBonus = 1;
@@ -390,7 +417,7 @@ function Safari() {
         var pokeName = poke(currentPokemon);
         var wild = typeof currentPokemon == "string" ? parseInt(currentPokemon, 10) : currentPokemon;
         var shinyChance = typeof currentPokemon == "string" ? 0.40 : 1;
-        if (ballBonus == 0.99 && shinyChance == 0.40) {
+        if (ball === "dream" && shinyChance == 0.40) {
             shinyChance = 1;
             ballBonus = 3;
         }
@@ -796,7 +823,7 @@ function Safari() {
             return;
         }
         
-        player.balls[item] -= 1;        
+        player.balls[item] -= 1;
         var rng = Math.random();
         if (rng < 0.75) {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + sys.name(targetId) + "! *THUD* A direct hit! " + sys.name(targetId) + " was stunned!", safchan);
@@ -838,7 +865,7 @@ function Safari() {
         player.balls[gach] -= 1;
         var rng = Math.random();
         var rng2 = Math.random();
-        var item, jackpot = false;
+        var item, item2, jackpot = false;
         safaribot.sendMessage(src, "Gacha-PON! The Gachapon Machine has dispensed an item.", safchan);
         if (rng < 0.05) {
             //Wild Pokemon
@@ -937,13 +964,15 @@ function Safari() {
                 safaribot.sendMessage(src, "You received 1 Fast Ball.", safchan);
                 player.balls[item] += 1;
             }
-        } else if (rng < 0.79) {
+        } else if (rng < 0.78) {
             //Ability Capsule
             //Bait for now though
             item = "bait";
-            safaribot.sendAll("A mischievous Pokémon swipes " + sys.name(src) + "'s Gachapon prize as it dispenses. Just then, a Pokémon Trainer approaches " + sys.name(src) + " in a huff. 'Sorry about my Pokémon stealing your reward, take this bag of Bait as an apology.'", safchan);
-            safaribot.sendMessage(src, "You received 3 pieces of Bait", safchan);
+            imte2 = "rocks";
+            //safaribot.sendAll("A mischievous Pokémon swipes " + sys.name(src) + "'s Gachapon prize as it dispenses. Just then, a Pokémon Trainer approaches " + sys.name(src) + " in a huff. 'Sorry about my Pokémon stealing your reward, take this bag of Bait as an apology.'", safchan);
+            safaribot.sendMessage(src, "You received 3 pieces of Bait and 3 Rocks!", safchan);
             player.balls[item] += 3;
+            player.balls[item2] += 3;
         } else if (rng < 0.92) {
             //Great Ball
             item = "great";
