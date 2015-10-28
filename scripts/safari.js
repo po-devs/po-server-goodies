@@ -308,12 +308,14 @@ function Safari() {
             pokeId,
             shiny = sys.rand(0, shinyChance) < 1,
             maxStats = sys.rand(300, 750);
+            if (makeShiny) {
+                shiny = true;
+            }
         if (dexNum) {
             num = parseInt(dexNum, 10);
             pokeId = poke(num);
             if (makeShiny) {
                 pokeId = poke(dexNum);
-                shiny = true;
             }
         } else {
             do {
@@ -515,7 +517,7 @@ function Safari() {
             return;
         }
         if (data === "*") {
-            safaribot.sendMessage(src, "You can buy the following balls:", safchan);
+            safaribot.sendMessage(src, "You can buy the following items:", safchan);
             safaribot.sendMessage(src, "Safari Ball: $" + itemPrices.safari, safchan);
             //safaribot.sendMessage(src, "Gachapon Ticket: $" + itemPrices.gacha, safchan);
             safaribot.sendMessage(src, "Bait: $" + itemPrices.bait, safchan);
@@ -849,7 +851,7 @@ function Safari() {
         out += "<tr><td align=center>$" + player.money + "</td><td align=center>" + player.balls.bait + "</td><td align=center>" + player.balls.rocks + "</td><td align=center>" + player.balls.gacha + "</td><td align=center>" + player.balls.safari + "</td><td align=center>" + player.balls.great + "</td><td align=center>" + player.balls.ultra + "</td><td align=center>" + player.balls.master + "</td></tr>";
         
         out += "<tr><td valign=middle align=center><img src='item:267' title='Dream Balls'></td><td><img src='item:324' title='Luxury Balls'></td><td><img src='item:321' title='Nest Balls'></td><td><img src='item:315' title='Heavy Balls'></td><td><img src='item:326' title='Quick Balls'></td><td><img src='item:316' title='Fast Balls'></td><td><img src='item:312' title='Moon Balls'></td><td><img src='item:318' title='Premier Balls'></td></tr>";
-        out += "<tr><td align=center>$" + player.balls.dream + "</td><td align=center>" + player.balls.luxury + "</td><td align=center>" + player.balls.nest + "</td><td align=center>" + player.balls.heavy + "</td><td align=center>" + player.balls.quick + "</td><td align=center>" + player.balls.fast + "</td><td align=center>" + player.balls.moon + "</td><td align=center>" + player.balls.premier + "</td></tr>";
+        out += "<tr><td align=center>" + player.balls.dream + "</td><td align=center>" + player.balls.luxury + "</td><td align=center>" + player.balls.nest + "</td><td align=center>" + player.balls.heavy + "</td><td align=center>" + player.balls.quick + "</td><td align=center>" + player.balls.fast + "</td><td align=center>" + player.balls.moon + "</td><td align=center>" + player.balls.premier + "</td></tr>";
         
         out += "</table>";
         sys.sendHtmlMessage(src, out, safchan);
@@ -1313,6 +1315,10 @@ function Safari() {
                 commandbot.sendMessage(src, "The command wild doesn't exist", safchan);
                 return true;
             }
+            if (currentPokemon) {
+                safaribot.sendMessage(src, "There's already a Wild Pokemon out there silly!", safchan);
+                return true;
+            }
             var dexNum = 0, makeShiny = false;
             if (!isNaN(commandData) && commandData > 0 && commandData < 722) {
                 dexNum = commandData;
@@ -1369,10 +1375,15 @@ function Safari() {
             }
             var player = getAvatar(playerId);
             if (player) {
+                var item = ["bait", "rock", "gacha", "safari", "great", "ultra", "master",
+                   "dream", "luxury", "nest", "heavy", "quick", "fast", "moon", "premier"];
                 for (var item in player.balls) {
                     if (player.balls[item] === undefined || isNaN(player.balls[item])) {
                         player.balls[item] = 0;
                     }
+                }
+                if (player.money === undefined || isNaN(player.money)) {
+                    player.money = 0;
                 }
                 this.saveGame(player);
                 safaribot.sendAll(commandData + "'s Safari has been sanitized of invalid values!", safchan);
