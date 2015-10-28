@@ -794,14 +794,13 @@ function Safari() {
             return;
         }
         
-        player.balls[item] -= 1;
-        safaribot.sendAll(sys.name(src) + " threw at rock at " + sys.name(targetId) + "!", safchan);
+        player.balls[item] -= 1;        
         var rng = Math.random();
         if (rng < 0.50) {
-            safaribot.sendAll("*THUD* A direct hit! " + sys.name(targetId) + " was stunned!", safchan);
-            target.cooldown = currentTime + 3000;
+            safaribot.sendAll(sys.name(src) + " threw at rock at " + sys.name(targetId) + "! *THUD* A direct hit! " + sys.name(targetId) + " was stunned!", safchan);
+            target.cooldown += 6000;
         } else {
-            safaribot.sendAll("... but it missed!", safchan);
+            safaribot.sendAll(sys.name(src) + " threw at rock at " + sys.name(targetId) + "... but it missed!", safchan);
         }
         player.rockCooldown = currentTime + 10000;
     };
@@ -920,7 +919,7 @@ function Safari() {
             }
         } else if (rng < 0.69) {
             //Master Ball
-            safaribot.sendAll("JACKPOT! " + sys.name(src) + " just got a Master Ball from the Gachapon Machine!", safchan);
+            sys.sendHtmlAll("font color=#3DAA68><timestamp/><b>±Gachapon:</font> JACKPOT! " + sys.name(src) + " just got a Master Ball from the Gachapon Machine!</b>", safchan);
             item = "master";
             player.balls[item] += 1;
         } else if (rng < 0.76) {
