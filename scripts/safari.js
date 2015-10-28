@@ -1446,7 +1446,7 @@ function Safari() {
             return true;
         }
         if (command === "view") {
-            if (commandData) {
+            if (commandData.length > 1) {
                 safari.viewPlayer(src, commandData);
             } else {
                 safari.viewOwnInfo(src, commandData);
