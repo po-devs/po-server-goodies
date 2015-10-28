@@ -1375,7 +1375,7 @@ function Safari() {
             }
             var player = getAvatar(playerId);
             if (player) {
-                var item = ["bait", "rock", "gacha", "safari", "great", "ultra", "master",
+                var item = ["bait", "rocks", "gacha", "safari", "great", "ultra", "master",
                    "dream", "luxury", "nest", "heavy", "quick", "fast", "moon", "premier"];
                var clean;
                 for (var i = 0; i < item.length; i++) {
