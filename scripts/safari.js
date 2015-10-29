@@ -401,11 +401,13 @@ function Safari() {
             case "moon":
                 ball = "moon";
                 ballBonus = 1;
-                cooldoown = 8000;
+                cooldown = 8000;
+                break;
             case "premier":
                 ball = "premier";
                 ballBonus = 1.5;
                 cooldown = 6000;
+                break;
             case "safari":
                 ball = "safari";
                 ballBonus = 1;
@@ -632,9 +634,20 @@ function Safari() {
         }
         player.balls[item] += amount;
         safaribot.sendMessage(src, "You bought " + amount + " " + cap(item) + ballStr + " for $" + cost + "! You now have " + player.balls[item] + " " + cap(item) + ballStr + " and $" + player.money + "!", safchan);
-        if (amount > 10) {
-            player.balls["premier"] += Math.floor(amount / 10);
-            safaribot.sendMessage(src, "Here, take these " + Math.floor(amount / 10) + " Premier Balls for your patronage!", safchan);
+        
+        var bonus;
+        if (amount >= 10) {
+            if (item === "safari") {
+                bonus = "premier";
+                safaribot.sendMessage(src, "Here, take these " + Math.floor(amount / 10) + " Premier Balls for your patronage!", safchan);
+            } else if (item === "gacha") {
+                bonus = "gacha";
+                safaribot.sendMessage(src, "Here, take these " + Math.floor(amount / 10) + " extra Gachapon Tickets for your patronage!", safchan);
+            } else if (item === "bait") {
+                bonus = "rocks";
+                safaribot.sendMessage(src, "You know what's fun? Throwing rocks. Take these " + Math.floor(amount / 10) + " Rocks for your patronage!", safchan);
+            }
+            player.balls[bonus] += Math.floor(amount / 10);
         }
         this.saveGame(player);
     };
@@ -980,9 +993,20 @@ function Safari() {
             }
         } else if (rng < 0.69) {
             //Master Ball
-            sys.sendHtmlAll("<font color=#3DAA68><timestamp/><b>±Gachapon:</b></font> <b>JACKPOT! " + html_escape(sys.name(src)) + " just got a Master Ball from the Gachapon Machine!</b>", safchan);
             item = "master";
-            player.balls[item] += 1;
+            if (player.balls[item] >= 1) {
+                if (rng2 < 0.50) {
+                    sys.sendHtmlAll("<font color=#3DAA68><timestamp/><b>±Gachapon:</b></font> <b>JACKP--</b> Uh oh... " + html_escape(sys.name(src)) + "'s Master Ball broke as it dispensed! What a shame!", safchan);
+                } else {
+                    sys.sendHtmlAll("<font color=#3DAA68><timestamp/><b>±Gachapon:</b></font> <b>JACKP--</b> Wait a second... " + html_escape(sys.name(src)) + "'s Master Ball turned out to be a simple Safari Ball painted to look like a Master Ball! What a shame!", safchan);
+                    item = "safari";
+                    safaribot.sendMessage(src, "You wiped the paint off of the ball and pocketed 1 Safari Ball for your troubles.", safchan);
+                    player.balls[item] += 1;
+                }
+            } else {
+                sys.sendHtmlAll("<font color=#3DAA68><timestamp/><b>±Gachapon:</b></font> <b>JACKPOT! " + html_escape(sys.name(src)) + " just got a Master Ball from the Gachapon Machine!</b>", safchan);
+                player.balls[item] += 1;
+            }
         } else if (rng < 0.76) {
             //Fast Ball
             item = "fast";
@@ -1665,6 +1689,9 @@ function Safari() {
                         clean = item[i];
                         if (player.balls[clean] === undefined || isNaN(player.balls[clean]) || player.balls[clean] === null) {
                             player.balls[clean] = 0;
+                        }
+                        if (clean === "master" && player.balls[clean] > 1) {
+                            player.balls[clean] = 1;
                         }
                     }
                     if (player.money === undefined || isNaN(player.money)) {
