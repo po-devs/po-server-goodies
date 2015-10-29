@@ -1,7 +1,69 @@
-exports.handleCommand = function(src, command, commandData, tar, channel) {
+exports.handleCommand = function (src, command, commandData, tar, channel) {
+    var html_escape = require("utilities.js").html_escape;
     var poChannel = SESSION.channels(channel);
-    if (poChannel.operators === undefined)
+    if (poChannel.operators === undefined) {
         poChannel.operators = [];
+    }
+    if (command === "cauth") {
+        if (typeof SESSION.channels(channel).operators !== "object") {
+            SESSION.channels(channel).operators = [];
+        }
+        if (typeof SESSION.channels(channel).admins !== "object") {
+            SESSION.channels(channel).admins = [];
+        }
+        if (typeof SESSION.channels(channel).masters !== "object") {
+            SESSION.channels(channel).masters = [];
+        }
+        if (typeof SESSION.channels(channel).members !== "object") {
+            SESSION.channels(channel).members = [];
+        }
+        if (commandData === "~") {
+            var ret = {};
+            ret.members = SESSION.channels(channel).members;
+            ret.operators = SESSION.channels(channel).operators;
+            ret.admins = SESSION.channels(channel).admins;
+            ret.owners = SESSION.channels(channel).masters;
+            sys.sendMessage(src, "+cauth: " + JSON.stringify(ret), channel);
+            return;
+        }
+        var x, tempId, ownersArr = [], adminsArr = [], modsArr = [], membersArr = [];
+        for (x = 0; x < SESSION.channels(channel).masters.length; x++) {
+            if (sys.isInChannel(sys.id(SESSION.channels(channel).masters[x]), channel)) {
+                ownersArr.push("<b><font color='" + sys.getColor(sys.id(SESSION.channels(channel).masters[x])) + "'>" + html_escape(sys.name(sys.id(SESSION.channels(channel).masters[x]))) + "</font></b>");
+            } else {
+                ownersArr.push(html_escape(SESSION.channels(channel).masters[x]));
+            }
+        }
+        for (x = 0; x < SESSION.channels(channel).admins.length; x++) {
+            if (sys.isInChannel(sys.id(SESSION.channels(channel).admins[x]), channel)) {
+                adminsArr.push("<b><font color='" + sys.getColor(sys.id(SESSION.channels(channel).admins[x])) + "'>" + html_escape(sys.name(sys.id(SESSION.channels(channel).admins[x]))) + "</font></b>");
+            } else {
+                adminsArr.push(html_escape(SESSION.channels(channel).admins[x]));
+            }
+        }
+        for (x = 0; x < SESSION.channels(channel).operators.length; x++) {
+            if (sys.isInChannel(sys.id(SESSION.channels(channel).operators[x]), channel)) {
+                modsArr.push("<b><font color='" + sys.getColor(sys.id(SESSION.channels(channel).operators[x])) + "'>" + html_escape(sys.name(sys.id(SESSION.channels(channel).operators[x]))) + "</font></b>");
+            } else {
+                modsArr.push(html_escape(SESSION.channels(channel).operators[x]));
+            }
+        }
+        for (x = 0; x < SESSION.channels(channel).members.length; x++) {
+            if (sys.isInChannel(sys.id(SESSION.channels(channel).members[x]), channel)) {
+                membersArr.push("<b><font color='" + sys.getColor(sys.id(SESSION.channels(channel).members[x])) + "'>" + html_escape(sys.name(sys.id(SESSION.channels(channel).members[x]))) + "</font></b>");
+            } else {
+                membersArr.push(html_escape(SESSION.channels(channel).members[x]));
+            }
+        }
+        channelbot.sendMessage(src, "The channel members of " + sys.channel(channel) + " are:", channel);
+        channelbot.sendHtmlMessage(src, "Owners: " + ownersArr.join(", "), channel);
+        channelbot.sendHtmlMessage(src, "Admins: " + adminsArr.join(", "), channel);
+        channelbot.sendHtmlMessage(src, "Mods: " + modsArr.join(", "), channel);
+        if (SESSION.channels(channel).inviteonly >= 1 || SESSION.channels(channel).members.length >= 1) {
+            channelbot.sendHtmlMessage(src, "Members: " + membersArr.join(", "), channel);
+        }
+        return;
+    }
     if (command == "crules" || command == "channelrules") { 
         var rules = poChannel.getRules();
         if (rules.length === 0) {
