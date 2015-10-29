@@ -1537,7 +1537,7 @@ function Safari() {
             "Heavy Ball: An industrial Poké Ball that works better against hardier and stronger Pokémon. Has an 8 second cooldown.",
             "Quick Ball: A tricky Poké Ball that works best when it is the first ball thrown. Has a 6 second cooldown.",
             "Fast Ball: A weak but efficient Poké Ball that can be used in quick succession. Has a 0.5 second cooldown.",
-            "Moon Ball: A stylized Poké Ball that supposedly works better against Pokémoon seen once in a blue moon. Has an 8 second cooldown.",
+            "Moon Ball: A stylized Poké Ball that supposedly works better against Pokémon seen once in a blue moon. Has an 8 second cooldown.",
             "Premier Ball: A plain Poké Ball gifted to you for your patronage. It works better when a Normal-type Pokémon is active. Has a 6 second cooldown.",
             ""
         ];
@@ -1582,7 +1582,7 @@ function Safari() {
             "/contest: Force starts a Safari contest. Use /contestsoft to skip broadcasting to Tohjo Falls.",
             "/wild: Spawns a random wild Pokemon with no restrictions. Use a valid dex number for a specific spawn.",
             "/wilds: Spawns a random wild Pokemon with no restrictions. Use a valid dex number to spawn a shiny Pokemon.",
-            "/safarpay: Awards a player with any amount of money. Use /safaripay [player]:[amount].",
+            "/safaripay: Awards a player with any amount of money. Use /safaripay [player]:[amount].",
             "/safarigift: Gifts a player with any amount of an item or ball. Use /safarigift [player]:[item]:[amount].",
             "/sanitize: Removes invalid values from the target's inventory, such as NaN and undefined."
         ];
