@@ -480,7 +480,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 if (online) {
                     if (SESSION.users(tar).hostname != ip)
                         data[0] += " (" + SESSION.users(tar).hostname + ")";
-                    data.push("Idle for: " + getTimeString(parseInt(sys.time(), 10) - SESSION.users(tar).lastline.time));
+                    var realTime = SESSION.users(tar).lastline.time ? SESSION.users(tar).lastline.time : SESSION.users(tar).logintime;
+                    data.push("Idle for: " + getTimeString(parseInt(sys.time(), 10) - realTime));
                     data.push("Channels: " + channels.join(", "));
                     data.push("Names during current session: " + (online && SESSION.users(tar).namehistory ? SESSION.users(tar).namehistory.map(function(e){return e[0];}).join(", ") : name));
                     data.push("Client Type: " + utilities.capitalize(sys.os(tar)));
