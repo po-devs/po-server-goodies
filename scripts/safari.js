@@ -36,6 +36,7 @@ function Safari() {
     var baitCooldown = (SESSION.global() && SESSION.global().safariBaitCooldown ? SESSION.global().safariBaitCooldown : baitCooldownLength);
     var contestDuration = 300; //Contest lasts for 5 minutes
     var contestCount = 0;
+    var contestCatchers = [];
     
     var effectiveness = {
         "Normal": {
@@ -236,6 +237,25 @@ function Safari() {
             count += x === val ? 1 : 0;
         });
         return count;
+    }
+    function modeArray(arr) {
+        var mode = {};
+        var max = 0, count = 0;
+        
+        arr.forEach(function(e) {
+            if (mode[e]) {
+                mode[e]++;
+            } else {
+                mode[e] = 1;
+            }
+
+            if (count<mode[e]) {
+                max = e;
+                count = mode[e];
+            }
+        });
+       
+        return max;
     }
     function getInputPokemon(info) {
         var shiny = false, id = info;
@@ -480,6 +500,9 @@ function Safari() {
             sys.sendAll("", safchan);
             currentPokemon = null;
             cooldown *= 2;
+            if (contestCount > 0) {
+                contestCatchers.push(sys.name(src));
+            }
         } else {
             safaribot.sendMessage(src, "You threw a  " + cap(ball) + " Ball at " + pokeName +"! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             if (rng < finalChance + 0.1) {
@@ -1286,8 +1309,11 @@ function Safari() {
             }
         }
     };
-    /*this.dailyReward = function(src, today) {
+    this.dailyReward = function(src, today) {
         var player = getAvatar(src);
+        if (!player) {
+            return;
+        }
         
         if (today > player.lastLogin) {
             if (today !== player.lastLogin + 1) {
@@ -1326,8 +1352,8 @@ function Safari() {
             gained.push(safariGained + "x Safari Ball" + (safariGained > 1 ? "s" : ""));
             
             if (logins % 12 === 0) {
-                player.balls.master += 1;
-                gained.push("1x Master Ball");
+                player.balls.dream += 1;
+                gained.push("1x Dream Ball");
             } else if (logins % 6 === 0) {
                 player.balls.ultra += 1;
                 gained.push("1x Ultra Ball");
@@ -1339,7 +1365,7 @@ function Safari() {
             safaribot.sendMessage(src, "You received the following rewards for joining Safari today: " + gained.join(", "), safchan);
             this.saveGame(player);
         }
-    };*/
+    };
     
     this.startGame = function(src, data) {
         if (getAvatar(src)) {
@@ -1404,7 +1430,7 @@ function Safari() {
             SESSION.users(src).safari = player;
             
             safaribot.sendMessage(src, "Your Safari data was successfully loaded!", safchan);
-            //this.dailyReward(src, getDay(now()));
+            this.dailyReward(src, getDay(now()));
         }
     };
     this.changeAlt = function(src, data) {
@@ -1843,17 +1869,30 @@ function Safari() {
         if (contestCount > 0) {
             contestCount--;
             if (contestCount === 0) {
+                var winner = modeArray(contestCatchers);
+                contestCatchers = [];
+                
                 sys.sendAll("*** ************************************************************ ***", safchan);
                 safaribot.sendAll("The Safari contest is now over! Please come back during the next contest!", safchan);
+                if (winner) {
+                    safaribot.sendAll(winner + " caught the most Pokémon during the contest and has won a prize pack!", safchan);
+                }
                 sys.sendAll("*** ************************************************************ ***", safchan);
                 currentPokemon = null;
+                if (winner) {
+                    var playerId = sys.id(winner);
+                    var player = getAvatar(playerId);
+                    var item = "gacha";
+                    player.balls[item] += 10;
+                    safaribot.sendMessage(playerId, "You received 10 Gachapon Tickets for winning the contest!", safchan);
+                }
                 
                 //Check daily rewards after a contest so players won't need to relog to get their reward when date changes
-                /*var onChannel = sys.playersOfChannel(safchan),
+                var onChannel = sys.playersOfChannel(safchan),
                     today = getDay(now());
                 for (var e in onChannel) {
                     safari.dailyReward(onChannel[e], today);
-                }*/
+                }
                 rawPlayers.save();
             } else {
                 if (!currentPokemon && Math.random() < 0.05) {
