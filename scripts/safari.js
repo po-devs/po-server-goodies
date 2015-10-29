@@ -858,7 +858,7 @@ function Safari() {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + sys.name(targetId) + "! *THUD* A direct hit! " + sys.name(targetId) + " was stunned!", safchan);
             target.cooldown += 6000;
         } else {
-            safaribot.sendAll(sys.name(src) + " threw at rock at " + sys.name(targetId) + "... but it missed!", safchan);
+            safaribot.sendAll(sys.name(src) + " threw a rock at " + sys.name(targetId) + "... but it missed!", safchan);
         }
         player.rockCooldown = currentTime + 10000;
     };
