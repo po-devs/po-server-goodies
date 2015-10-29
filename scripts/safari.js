@@ -1519,6 +1519,32 @@ function Safari() {
             sys.sendMessage(src, help[x], safchan);
         }
     };
+    this.showItemHelp = function (src) {
+        var x, help = [
+            "",
+            "*** Items and Pokeballs ***",
+            "Pokédollars: Used to purchase items from the shop.",
+            "Bait: Tasty Bluk Berries used to attract wild Pokémon, set down with /bait. Has a 45% success rate with a 60 second cooldown on success, and a 20 second cooldown on failure.",
+            "Rock: A small rock that can be thrown to stun another player for a short period with /rock. Has a 10 second cooldown.",
+            "Gachapon Ticket: Used to play the Gachapon Machine with /gacha, and win random prizes. Has a 5 second cooldown.",
+            "Safari Ball: Standard issue Poké Ball used to catch Pokémon. Has a 6 second cooldown.",
+            "Great Ball: A Poké Ball that has a slightly increased catch rate. Has a 9 second cooldown.",
+            "Ultra Ball: A high functioning Poké Ball that has a better catch rate than a Great Ball. Has a 12 second cooldown.",
+            "Master Ball: An extremely rare Poké Ball that never fails to catch. Has a 90 second cooldown.",
+            "Dream Ball: An unusual Poké Ball that works better on Pokémon of alternate colorations. Has a 9 second cooldown.",
+            "Luxury Ball: A comfortable Poké Ball with an increased catch rate that is said to make one wealthy. Has a 12 second cooldown.",
+            "Nest Ball: A homely Poké Ball that has an increased catch rate against weaker Pokémon. Has a 4 second cooldown.",
+            "Heavy Ball: An industrial Poké Ball that works better against hardier and stronger Pokémon. Has an 8 second cooldown.",
+            "Quick Ball: A tricky Poké Ball that works best when it is the first ball thrown. Has a 6 second cooldown.",
+            "Fast Ball: A weak but efficient Poké Ball that can be used in quick succession. Has a 0.5 second cooldown.",
+            "Moon Ball: A stylized Poké Ball that supposedly works better against Pokémoon seen once in a blue moon. Has an 8 second cooldown.",
+            "Premier Ball: A plain Poké Ball gifted to you for your patronage. It works better when a Normal-type Pokémon is active. Has a 6 second cooldown.",
+            ""
+        ];
+        for (x in help) {
+            sys.sendMessage(src, help[x], safchan);
+        }
+    };
     this.onHelp = function (src, topic, channel) {
         if (topic === "safari") {
             safari.showCommands(src, channel);
@@ -1531,7 +1557,8 @@ function Safari() {
             "",
             "*** Safari Commands ***",
             "/help: For a how-to-play guide.",
-            "/start: To pick a starter Pokémon and join the Safari game.",
+            "/itemhelp: A comprehensive guide on items and Poké Balls.",
+            "/start: To pick a starter Pokémon and join the Safari game. Valid starters are Bulbasaur, Charmander, and Squirtle.",
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be Safari, Great, Ultra, Master, or Dream Ball.",
             "/sell: To sell one of your Pokémon*.",
             "/trade: To request a Pokémon trade with another player*.",
@@ -1540,7 +1567,7 @@ function Safari() {
             "/mydata: To view your caught Pokémon, money and remaining balls.",
             "/view: To view another player's party. If no player is specified, your data will show up.",
             "/changealt: To pass your Safari data to another alt.",
-            "/bait: To throw bait in the attempt to lure a Wild Pokémon.",
+            "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
             "/gacha: Use a ticket to win a prize!",
             "",
             "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
@@ -1553,7 +1580,11 @@ function Safari() {
         var superAdminHelp = [
             "*** Safari Admin Commands ***",
             "/contest: Force starts a Safari contest. Use /contestsoft to skip broadcasting to Tohjo Falls.",
-            "/wild: Spawns a random wild Pokemon with no restrictions. Use a valid dex number for a specific spawn."
+            "/wild: Spawns a random wild Pokemon with no restrictions. Use a valid dex number for a specific spawn.",
+            "/wilds: Spawns a random wild Pokemon with no restrictions. Use a valid dex number to spawn a shiny Pokemon.",
+            "/safarpay: Awards a player with any amount of money. Use /safaripay [player]:[amount].",
+            "/safarigift: Gifts a player with any amount of an item or ball. Use /safarigift [player]:[item]:[amount].",
+            "/sanitize: Removes invalid values from the target's inventory, such as NaN and undefined."
         ];
         var ownerHelp = [
             "*** Safari Owner Commands ***",
@@ -1590,6 +1621,10 @@ function Safari() {
         }
         if (command === "help") {
             safari.showHelp(src);
+            return true;
+        }
+        if (command === "itemhelp") {
+            safari.showItemHelp(src);
             return true;
         }
         if (command === "start") {
