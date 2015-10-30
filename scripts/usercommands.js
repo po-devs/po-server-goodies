@@ -668,15 +668,20 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         } else {
             date = lastLogin;
         }
-        var d;
+        var d, currentDate = new Date();
         if (time) {
             var date = date.split("-"), time = time.split(":");
             d = new Date(parseInt(date[0], 10), parseInt(date[1], 10) - 1, parseInt(date[2], 10), parseInt(time[0], 10), parseInt(time[1], 10), parseInt(time[2], 10));
         } else {
-            var parts = date.split("-");
-            d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+            var date = date.split("-");
+            d = new Date(parseInt(date[0], 10), parseInt(date[1], 10) - 1, parseInt(date[2], 10));
         }
-        querybot.sendMessage(src, commandData + " was last seen: " + d.toUTCString(), channel);
+        var timeDifference = currentDate - d,
+            secs = Math.floor(timeDifference / 1000 % 60),
+            mins = Math.floor(timeDifference / 1000 / 60 % 60);
+            hours = Math.floor(timeDifference / 1000 / 60 / 60 % 24);
+            days = Math.floor(timeDifference / 1000 / 60 / 60 / 24);
+        querybot.sendMessage(src, commandData + " was last seen: " + d.toUTCString() + " [" + (days > 0 ? days + "d " : "") + (hours > 0 ? hours + "h " : "") + (mins > 0 ? mins + "m " : "") + secs + "s ago.]", channel);
         return;
     }
     if (command === "dwreleased") {
