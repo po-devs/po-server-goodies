@@ -2,7 +2,10 @@
 /*jshint strict: false, shadow: true, evil: true, laxcomma: true*/
 /*jslint sloppy: true, vars: true, evil: true, plusplus: true*/
 exports.handleCommand = function (src, command, commandData, tar, channel) {
+    var arrayShuffle = require("utilities.js").arrayShuffle;
+    var arraySlice = require("utilities.js").arraySlice;
     var getTimeString = require("utilities.js").getTimeString;
+    var find_tier = require("utilities.js").find_tier;
     // loop indices
     var i, x;
     // temp array
@@ -53,6 +56,36 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             }
         }
         callplugins("onHelp", src, commandData, channel);
+        return;
+    }
+    if (command === "intier") {
+        if (commandData === undefined) {
+            battlebot.sendMessage(src, "Please enter a tier.", channel);
+            return;
+        }
+        if (find_tier(commandData) === null) {
+            battlebot.sendMessage(src, commandData + " tier doesn't exist on the server.", channel);
+            return;
+        }
+        var x,
+            tierInput = find_tier(commandData),
+            playerIdArray = sys.playerIds(),
+            usersFoundArray = [];
+        for (x = 0; x < playerIdArray.length; x++) {
+            if (sys.away(playerIdArray[x]) === true) {
+                continue;
+            }
+            if (sys.hasTier(playerIdArray[x], tierInput)) {
+                usersFoundArray.push(sys.name(playerIdArray[x]));
+            }
+        }
+        if (usersFoundArray.length === 0) {
+            battlebot.sendMessage(src, "No unidled players found in that tier.", channel);
+        } else {
+            var sliceAmount = 10;
+            var users = arraySlice(arrayShuffle(usersFoundArray), sliceAmount).join(", ");
+            battlebot.sendMessage(src, "Found " + usersFoundArray.length + "/" + sliceAmount + " unidled random players in " + tierInput + ": " + users, channel);
+        }
         return;
     }
     if ((command === "me" || command === "rainbow") && !SESSION.channels(channel).muteall) {
