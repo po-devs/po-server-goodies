@@ -17,7 +17,17 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (typeof SESSION.channels(channel).members !== "object") {
             SESSION.channels(channel).members = [];
         }
+         if (commandData === "~") {
+            var ret = {};
+            ret.members = SESSION.channels(channel).members;
+            ret.operators = SESSION.channels(channel).operators;
+            ret.admins = SESSION.channels(channel).admins;
+            ret.owners = SESSION.channels(channel).masters;
+            sys.sendMessage(src, "+cauth: " + JSON.stringify(ret), channel);
+            return;
+        }
         var x, tempId, ownersArr = [], adminsArr = [], modsArr = [], membersArr = [];
+        /*
         for (x = 0; x < SESSION.channels(channel).masters.length; x++) {
             if (sys.isInChannel(sys.id(SESSION.channels(channel).masters[x]), channel)) {
                 ownersArr.push("<b><font color='" + sys.getColor(sys.id(SESSION.channels(channel).masters[x])) + "'>" + html_escape(sys.name(sys.id(SESSION.channels(channel).masters[x]))) + "</font></b>");
@@ -46,13 +56,23 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 membersArr.push(html_escape(SESSION.channels(channel).members[x]));
             }
         }
-        channelbot.sendMessage(src, "The channel members of " + sys.channel(channel) + " are:", channel);
-        channelbot.sendMessage(src, "Owners: " + ownersArr.join(", "), channel);
-        channelbot.sendMessage(src, "Admins: " + adminsArr.join(", "), channel);
+        channelbot.sendHtmlMessage(src, "The channel members of " + sys.channel(channel) + " are:", channel);
+        channelbot.sendHtmlMessage(src, "Owners: " + ownersArr.join(", "), channel);
+        channelbot.sendHtmlMessage(src, "Admins: " + adminsArr.join(", "), channel);
         channelbot.sendMessage(src, "Mods: " + modsArr.join(", "), channel);
         if (SESSION.channels(channel).inviteonly >= 1 || SESSION.channels(channel).members.length >= 1) {
-            channelbot.sendMessage(src, "Members: " + membersArr.join(", "), channel);
+            channelbot.sendHtmlMessage(src, "Members: " + membersArr.join(", "), channel);
         }
+        */
+        
+        channelbot.sendMessage(src, "The channel members of " + sys.channel(channel) + " are:", channel);
+        channelbot.sendMessage(src, "Owners: " + SESSION.channels(channel).masters.join(", "), channel);
+        channelbot.sendMessage(src, "Admins: " + SESSION.channels(channel).admins.join(", "), channel);
+        channelbot.sendMessage(src, "Mods: " + SESSION.channels(channel).operators.join(", "), channel);
+        if (SESSION.channels(channel).inviteonly >= 1 || SESSION.channels(channel).members.length >= 1) {
+            channelbot.sendMessage(src, "Members: " + SESSION.channels(channel).members.join(", "), channel);
+        }
+        
         return;
     }
     if (command == "crules" || command == "channelrules") { 
