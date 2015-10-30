@@ -22,6 +22,13 @@ Bot.prototype.sendMessage = function (tar, message, channel) {
         sys.sendMessage(tar, this.formatMsg(message), channel);
     }
 };
+Bot.prototype.sendHtmlAll = function (message, channel) {
+    if (channel === undefined) {
+        sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>" + "±" + this.name + ":</font></b> " + message);
+    } else {
+        sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>" + "±" + this.name + ":</font></b> " + message, channel);
+    }
+};
 Bot.prototype.sendHtmlMessage = function (tar, message, channel) {
     if (channel === undefined) {
         sys.sendHtmlMessage(tar, "<font color='#3daa68'><timestamp/><b>" + "±" + this.name + ":</font></b> " + message);
