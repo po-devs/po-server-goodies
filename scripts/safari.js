@@ -341,7 +341,7 @@ function Safari() {
     function countArray(item) {
         var first = gachaponPrizes.indexOf(item);
         var last = gachaponPrizes.lastIndexOf(item);
-        var count =  last - first + 1;
+        var count =  last - first + (first === -1 ? 0 : 1);
         return count;
     }
     function finishName(item) {
@@ -983,12 +983,12 @@ function Safari() {
         switch (reward) {
             case "master":
                 if (player.balls[reward] >= 1) {
-                    safaribot.sendHtmlAll("<b>JACKP--</b> Wait a second... " + html_escape(sys.name(src)) + "'s Master Ball turned out to be a simple Safari Ball painted to look like a Master Ball! What a shame!", safchan);
+                    sys.sendHtmlAll("<font color=#3DAA68><timestamp/><b>±Gachapon:</b></font> <b>JACKP--</b> Wait a second... " + html_escape(sys.name(src)) + "'s Master Ball turned out to be a simple Safari Ball painted to look like a Master Ball! What a shame!", safchan);
                     safaribot.sendMessage(src, "You wiped the paint off of the ball and pocketed 1 Safari Ball for your troubles.", safchan);
                     reward = "safari";
                     player.balls[reward] += 1;
                 } else {
-                    safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just got a Master Ball from the Gachapon Machine!</b>", safchan);
+                    sys.sendHtmlAll("<font color=#3DAA68><timestamp/><b>±Gachapon:</b></font> <b>JACKPOT! " + html_escape(sys.name(src)) + " just got a Master Ball from the Gachapon Machine!</b>", safchan);
                     player.balls[reward] += 1;
                 }
             break;
