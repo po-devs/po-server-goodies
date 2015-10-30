@@ -681,7 +681,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             var date = date.split("-");
             d = new Date(parseInt(date[0], 10), parseInt(date[1], 10) - 1, parseInt(date[2], 10));
         }
-        querybot.sendMessage(src, commandData + " was last seen: " + d.toUTCString() + " [" + getTimeString((currentDate - d) / 10000) + " ago.]", channel);
+        querybot.sendMessage(src, commandData + " was last seen: " + d.toUTCString() + " [" + getTimeString((currentDate - d) / 1000) + " ago.]", channel);
         return;
     }
     if (command === "dwreleased") {
