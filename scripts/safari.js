@@ -1366,13 +1366,31 @@ function Safari() {
         var data = rawPlayers.get(sys.name(src).toLowerCase());
         if (data) {
             var player = JSON.parse(data);
-            
-            // clean bad player values here
-            for (var ball in player.balls) {
-                if (player.balls[ball] === undefined || isNaN(player.balls[ball])) player.balls[ball] = 0;
-            }
-            
             SESSION.users(src).safari = player;
+            
+            //************Start cleaning bad values************
+            var dirtyPlayer = getAvatar(src);
+            var item = ["bait", "rock", "rocks", "gacha", "safari", "great", "ultra", "master",
+                       "dream", "luxury", "nest", "heavy", "quick", "fast", "moon", "premier"];
+            var clean;
+            for (var i = 0; i < item.length; i++) {
+                clean = item[i];
+                if (dirtyPlayer.balls[clean] === undefined || isNaN(dirtyPlayer.balls[clean]) || dirtyPlayer.balls[clean] === null) {
+                    dirtyPlayer.balls[clean] = 0;
+                }
+                if (clean === "master" && dirtyPlayer.balls[clean] > 1) {
+                    dirtyPlayer.balls[clean] = 1;
+                }
+            }
+            if (dirtyPlayer.money === undefined || isNaN(dirtyPlayer.money)) {
+                dirtyPlayer.money = 0;
+            }
+            dirtyPlayer.cooldown = now();
+            dirtyPlayer.gachaCooldown = now();
+            dirtyPlayer.rockCooldown = now();
+            
+            this.saveGame(dirtyPlayer);
+            //************End cleaning bad values************
             
             safaribot.sendMessage(src, "Your Safari data was successfully loaded!", safchan);
             this.dailyReward(src, getDay(now()));
