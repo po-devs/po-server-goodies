@@ -1891,12 +1891,12 @@ beforeChatMessage: function(src, message, chan) {
         return;
     }
     //Special donator
-    if (name == "fear") {
+    /*if (name == "fear") {
         sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>±Fear: </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"),  channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, channel);
         return;
-    }
+    }*/
 }, /* end of beforeChatMessage */
 
 
