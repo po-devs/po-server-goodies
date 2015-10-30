@@ -2,6 +2,7 @@
 /*jshint strict: false, shadow: true, evil: true, laxcomma: true*/
 /*jslint sloppy: true, vars: true, evil: true, plusplus: true*/
 exports.handleCommand = function (src, command, commandData, tar, channel) {
+    var getTimeString = require("utilities.js").getTimeString;
     // loop indices
     var i, x;
     // temp array
@@ -554,6 +555,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command === "throw") {
+        if (script.isOfficialChan(channel)) {
+            coinbot.sendMessage(src, "Throw isn't allowed in official channels.", channel);
+            return;
+        }
         if (sys.auth(src) === 0 && SESSION.channels(channel).muteall && !SESSION.channels(channel).isChannelOperator(src)) {
             if (SESSION.channels(channel).muteallmessages) {
                 sys.sendMessage(src, SESSION.channels(channel).muteallmessage, channel);
@@ -668,15 +673,15 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         } else {
             date = lastLogin;
         }
-        var d;
+        var d, currentDate = new Date();
         if (time) {
             var date = date.split("-"), time = time.split(":");
             d = new Date(parseInt(date[0], 10), parseInt(date[1], 10) - 1, parseInt(date[2], 10), parseInt(time[0], 10), parseInt(time[1], 10), parseInt(time[2], 10));
         } else {
-            var parts = date.split("-");
-            d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+            var date = date.split("-");
+            d = new Date(parseInt(date[0], 10), parseInt(date[1], 10) - 1, parseInt(date[2], 10));
         }
-        querybot.sendMessage(src, commandData + " was last seen: " + d.toUTCString(), channel);
+        querybot.sendMessage(src, commandData + " was last seen: " + d.toUTCString() + " [" + getTimeString((currentDate - d) / 10000) + " ago.]", channel);
         return;
     }
     if (command === "dwreleased") {
