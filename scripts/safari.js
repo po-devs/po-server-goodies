@@ -556,7 +556,7 @@ function Safari() {
             player.pokemon.push(currentPokemon);
             
             if (ball == "luxury") {
-                safaribot.sendAll(sys.name(src) + " also found $" + wildStats + " on the ground after catching " + pokeName + "!" , safchan);
+                safaribot.sendAll(sys.name(src) + " also found $" + wildStats/2 + " on the ground after catching " + pokeName + "!" , safchan);
                 player.money += wildStats/2;
             }
             
