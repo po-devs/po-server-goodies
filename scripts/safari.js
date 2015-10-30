@@ -21,6 +21,7 @@ function Safari() {
     var tradeRequests = {};
     var gachaponPrizes = []; //Creates Gachapon on update.
     var gachaJackpot = 100; //Jackpot for gacha tickets. Number gets divided by 10 later.
+    var gachaponJackpot = (SESSION.global() && SESSION.global().gachaponJackpot ? SESSION.global().gachaponJackpot : gachaJackpot);
     
     var contestCooldownLength = 1800; //1 contest every 30 minutes
     var baitCooldownLength = 0;
@@ -379,7 +380,7 @@ function Safari() {
         var item =   ["safari", "great", "ultra", "master", "luxury", "dream", "nest", "heavy", "fast", "moon",
                         "bait", "rock",  "wild",  "gacha",  "honey",  "coin"];
         var amount = [      35,      15,      10,        1,       10,      10,     10,      10,     10,     10,
-                            15,      15,      10,        5,        0,       0];
+                            15,      15,      10,        1,        0,       0];
         
         if (amount.length > item.length) {
             var diff = amount.length - item.length;
@@ -993,6 +994,7 @@ function Safari() {
                     player.balls[reward] += 1;
                 } else {
                     sys.sendHtmlAll("<font color=#3DAA68><timestamp/><b>±Gachapon:</b></font> <b>JACKPOT! " + html_escape(sys.name(src)) + " just got a Master Ball from the Gachapon Machine!</b>", safchan);
+                    safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
                     player.balls[reward] += 1;
                 }
             break;
@@ -1027,6 +1029,7 @@ function Safari() {
                 var jackpot = Math.floor(gachaJackpot/10);
                 sys.sendHtmlAll("<font color=#3DAA68><timestamp/><b>±Gachapon:</b></font> <b>JACKPOT! " + html_escape(sys.name(src)) + " just won the Gachapon Ticket Jackpot valued at " + jackpot + " tickets!</b>", safchan);
                 player.balls[reward] += jackpot;
+                safaribot.sendMessage(src, "You received " + jackpot + " Gachapon Tickets.", safchan);
                 gachaJackpot = 100; //Reset jackpot for next player
             break;
             default:
@@ -1036,6 +1039,7 @@ function Safari() {
         }
         player.gachaCooldown = currentTime + 5000;
         gachaJackpot += 1;
+        SESSION.global().gachaponJackpot = gachaJackpot;
     };
     
     this.viewOwnInfo = function(src) {
