@@ -20,6 +20,7 @@ function Safari() {
 
     var tradeRequests = {};
     var gachaponPrizes = []; //Creates Gachapon on update.
+    var gachaJackpot = 100; //Jackpot for gacha tickets. Number gets divided by 10 later.
     
     var contestCooldownLength = 1800; //1 contest every 30 minutes
     var baitCooldownLength = 0;
@@ -207,23 +208,18 @@ function Safari() {
     var ballArray = [ "safari", "great", "ultra", "master", "luxury", "dream", "nest", "heavy", "fast", "moon", "premier", "quick"];
     
     //Data on items
-    //Balls
-    var safariObject = {price: 30, ballBonus: 1, cooldown: 6000,
-                        aliases:["safariball", "safari", "safari ball", "*"]};
-    var greatObject = {price: 60, ballBonus: 1.5, cooldown: 9000,
-                        aliases:["greatball", "great", "great ball"]};
-    var ultraObject = {price: 120, ballBonus: 2, cooldown: 12000,
-                        aliases:["ultraball", "ultra", "ultra ball"]};
-    var masterObject = {price: 0, ballBonus: 255, cooldown: 90000,
-                        aliases:["masterball", "master", "master ball"]};
+    var itemData = {
+        //Balls
+        safari: {name: "safari", type: "ball", price: 30, ballBonus: 1, cooldown: 6000, aliases:["safariball", "safari", "safari ball", "*"]},
+        great: {name: "great", type: "ball", price: 60, ballBonus: 1.5, cooldown: 9000, aliases:["greatball", "great", "great ball"]},
+        ultra: {name: "ultra", type: "ball", price: 120, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"]},
+        master: {name: "master", type: "ball", price: 0, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"]},
     
-    //Other Items
-    var baitObject = {price: 100, successRate: 0.45, aliases:["bait"]};
-    var rockObject = {price: 50, successRate: 0.75, aliases:["rock", "rocks"]};
-    var gachaObject = {price: 149, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"]};
-    
-    //Items being sold in shop. Idk how else to do this right now
-    var itemPrices = {safari: safariObject.price, great: greatObject.price, ultra: ultraObject.price, bait: baitObject.price, rock: rockObject.price, gacha: gachaObject.price};
+        //Other Items
+        bait: {name: "bait", type: "usable", price: 100, successRate: 0.45, aliases:["bait"]},
+        rock: {name: "rock", type: "usable", price: 50, successRate: 0.75, aliases:["rock", "rocks"]},
+        gacha: {name: "gacha", type: "usable", price: 149, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"]}
+    };
         
     function getAvatar(src) {
         if (SESSION.users(src)) {
@@ -318,17 +314,17 @@ function Safari() {
         return "<img src='pokemon:num=" + num + (typeof num == "string" ? "&shiny=true" : "") + "&gen=6'>";
     }
     function itemAlias(name) {
-        if (greatObject.aliases.indexOf(name) !== -1) {
+        if (itemData.great.aliases.indexOf(name) !== -1) {
             return "great";
-        } else if (ultraObject.aliases.indexOf(name) !== -1) {
+        } else if (itemData.ultra.aliases.indexOf(name) !== -1) {
             return "ultra";
-        } else if (masterObject.aliases.indexOf(name) !== -1) {
+        } else if (itemData.master.aliases.indexOf(name) !== -1) {
             return "master";
-        } else if (baitObject.aliases.indexOf(name) !== -1) {
+        } else if (itemData.bait.aliases.indexOf(name) !== -1) {
             return "bait";
-        } else if (rockObject.aliases.indexOf(name) !== -1) {
+        } else if (itemData.rock.aliases.indexOf(name) !== -1) {
             return "rock";
-        } else if (gachaObject.aliases.indexOf(name) !== -1) {
+        } else if (itemData.gacha.aliases.indexOf(name) !== -1) {
             return "gacha";
         //Fix below still
         } else if (dreamAliases.indexOf(name) !== -1) {
@@ -383,7 +379,7 @@ function Safari() {
         var item =   ["safari", "great", "ultra", "master", "luxury", "dream", "nest", "heavy", "fast", "moon",
                         "bait", "rock",  "wild",  "gacha",  "honey",  "coin"];
         var amount = [      35,      15,      10,        1,       10,      10,     10,      10,     10,     10,
-                            15,      15,      10,        0,        0,       0];
+                            15,      15,      10,        5,        0,       0];
         
         if (amount.length > item.length) {
             var diff = amount.length - item.length;
@@ -670,12 +666,12 @@ function Safari() {
         }
         if (data === "*") {
             safaribot.sendMessage(src, "You can buy the following items:", safchan);
-            safaribot.sendMessage(src, "Safari Ball: $" + safariObject.price, safchan);
-            safaribot.sendMessage(src, "Great Ball: $" + greatObject.price, safchan);
-            safaribot.sendMessage(src, "Ultra Ball: $" + ultraObject.price, safchan);
-            safaribot.sendMessage(src, "Gachapon Ticket: $" + gachaObject.price, safchan);
-            safaribot.sendMessage(src, "Bait: $" + baitObject.price, safchan);
-            safaribot.sendMessage(src, "Rock: $" + rockObject.price, safchan);
+            safaribot.sendMessage(src, "Safari Ball: $" + itemData.safari.price, safchan);
+            safaribot.sendMessage(src, "Great Ball: $" + itemData.great.price, safchan);
+            safaribot.sendMessage(src, "Ultra Ball: $" + itemData.ultra.price, safchan);
+            safaribot.sendMessage(src, "Gachapon Ticket: $" + itemData.gacha.price, safchan);
+            safaribot.sendMessage(src, "Bait: $" + itemData.bait.price, safchan);
+            safaribot.sendMessage(src, "Rock: $" + itemData.rock.price, safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "You currently have $" + player.money + ". To buy an item, use /buy item:quantity (e.g.: /buy safari:3)", safchan);
             return;
@@ -699,7 +695,7 @@ function Safari() {
             safaribot.sendMessage(src, "You can not buy this item here!", safchan);
             return;
         }
-        var cost = amount * itemPrices[item];
+        var cost = amount * itemData[item].price;
         if (isNaN(player.money)) {
             player.money = 0;
         }
@@ -903,7 +899,7 @@ function Safari() {
         }
         player.balls[item] -= 1;
         var rng = Math.random();
-        if (rng < baitObject.successRate) {
+        if (rng < itemData.bait.successRate) {
             safaribot.sendAll(sys.name(src) + " left some bait out. The bait attracted a wild Pokémon!", safchan);
             baitCooldown = 50 + sys.rand(0,10);
             safari.createWild();
@@ -944,7 +940,7 @@ function Safari() {
         
         player.balls[item] -= 1;
         var rng = Math.random();
-        if (rng < rockObject.successRate) {
+        if (rng < itemData.rock.successRate) {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + sys.name(targetId) + "! *THUD* A direct hit! " + sys.name(targetId) + " was stunned!", safchan);
             target.cooldown += 6000;
         } else {
@@ -1027,12 +1023,19 @@ function Safari() {
                 player.balls[reward] += 1;
                 safaribot.sendMessage(src, "Bummer, only a Safari Ball... You received 1 " + finishName(reward) + ".", safchan);
             break;
+            case "gacha":
+                var jackpot = Math.floor(gachaJackpot/10);
+                sys.sendHtmlAll("<font color=#3DAA68><timestamp/><b>±Gachapon:</b></font> <b>JACKPOT! " + html_escape(sys.name(src)) + " just won the Gachapon Ticket Jackpot valued at " + jackpot + " tickets!</b>", safchan);
+                player.balls[reward] += jackpot;
+                gachaJackpot = 100; //Reset jackpot for next player
+            break;
             default:
                 player.balls[reward] += amount;
                 safaribot.sendMessage(src, "You received " + amount + " " + finishName(reward) + ".", safchan);
             break;
         }
         player.gachaCooldown = currentTime + 5000;
+        gachaJackpot += 1;
     };
     
     this.viewOwnInfo = function(src) {
@@ -1544,6 +1547,7 @@ function Safari() {
             "/changealt: To pass your Safari data to another alt.",
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
             "/gacha: Use a ticket to win a prize!",
+            "/info: View time until next contest and current Gachapon jackpot prize!",
             "",
             "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
         ];
@@ -1652,6 +1656,19 @@ function Safari() {
         }
         if (command === "gacha") {
             safari.gachapon(src, commandData);
+            return true;
+        }
+        if (command === "info") {
+            if (contestCount > 0) {
+                var min = Math.floor(contestCooldown/60);
+                var sec = contestCooldown%60;
+                safaribot.sendMessage(src, "Time until next Contest: " + min + " minutes, " + sec + " seconds.", safchan);
+            } else {
+                var min = Math.floor(contestCount/60);
+                var sec = contestCount%60;
+                safaribot.sendMessage(src, "Time until the Contest ends: " + min + " minutes, " + sec + " seconds.", safchan);
+            }
+            safaribot.sendMessage(src, "Current Gachapon Jackpot: " + Math.floor(gachaJackpot/10) + ".", safchan);
             return true;
         }
         
