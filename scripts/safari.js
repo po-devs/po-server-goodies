@@ -31,6 +31,9 @@ function Safari() {
     var contestDuration = 300; //Contest lasts for 5 minutes
     var contestCount = 0;
     var contestCatchers = [];
+    var preparationPhase = 0;
+    var preparationThrows = {};
+    var preparationFirst = null;
     
     var effectiveness = {
         "Normal": {
@@ -373,6 +376,10 @@ function Safari() {
     function isBall(item) {
         return ballArray.indexOf(item) !== -1;
     }
+    function shuffle(o) {
+        for (var j, x, i = o.length; i; j = parseInt(Math.random() * i, 10), x = o[--i], o[i] = o[j], o[j] = x);
+        return o;
+    }
     
     this.initGacha = function () {
         var tempArray = [];
@@ -398,9 +405,9 @@ function Safari() {
             pokeId,
             shiny = sys.rand(0, shinyChance) < 1,
             maxStats = sys.rand(300, 750);
-            if (makeShiny) {
-                shiny = true;
-            }
+        if (makeShiny) {
+            shiny = true;
+        }
         if (dexNum) {
             num = parseInt(dexNum, 10);
             pokeId = poke(num);
@@ -416,6 +423,9 @@ function Safari() {
         
         sys.sendHtmlAll("<hr><center>A wild " + pokeId + " appeared! <i>(BST: " + add(sys.pokeBaseStats(num)) + ")</i><br/>" + pokeImage(num + (shiny ? "" : 0)) + "</center><hr>", safchan);
         currentPokemon = shiny ? "" + num : num;
+        preparationPhase = sys.rand(4, 7);
+        preparationThrows = {};
+        preparationFirst = null;
     };
     this.throwBall = function(src, data) {
         var player = getAvatar(src);
@@ -501,6 +511,12 @@ function Safari() {
         }
         if (!(ball in player.balls) || player.balls[ball] <= 0) {
             safaribot.sendMessage(src, "You have no " + cap(ball) + " Balls!", safchan);
+            return;
+        }
+        
+        if (preparationPhase > 0) {
+            safaribot.sendMessage(src, "You are preparing your " + cap(ball) + " Ball!", safchan);
+            preparationThrows[sys.name(src)] = ball;
             return;
         }
         
@@ -906,6 +922,7 @@ function Safari() {
             safari.createWild();
             if (commandData !== undefined) {
                 safari.throwBall(src, commandData);
+                preparationFirst = sys.name(src);
             }
         } else {
             baitCooldown = 15 + sys.rand(0,5);
@@ -1022,6 +1039,7 @@ function Safari() {
                     safari.createWild();
                     if (commandData !== undefined) {
                         safari.throwBall(src, commandData);
+                        preparationFirst = sys.name(src);
                     }
                 }
             break;
@@ -1673,7 +1691,7 @@ function Safari() {
             return true;
         }
         if (command === "info") {
-            if (contestCount > 0) {                
+            if (contestCount > 0) {
                 var min = Math.floor(contestCount/60);
                 var sec = contestCount%60;
                 safaribot.sendMessage(src, "Time until the Contest ends: " + min + " minutes, " + sec + " seconds.", safchan);
@@ -1842,6 +1860,25 @@ function Safari() {
     this.stepEvent = function () {
         contestCooldown--;
         baitCooldown--;
+        if (preparationPhase > 0) {
+            preparationPhase--;
+            if (preparationPhase <= 0) {
+                var throwers = shuffle(Object.keys(preparationThrows));
+                var name, i;
+                if (preparationFirst) {
+                    if (throwers.indexOf(preparationFirst) !== -1) {
+                        throwers.splice(throwers.indexOf(preparationFirst), 1);
+                        throwers.splice(0, 0, preparationFirst);
+                    }
+                }
+                for (i = 0; i < throwers.length; i++) {
+                    name = throwers[i];
+                    if (sys.isInChannel(sys.id(name), safchan)) {
+                        safari.throwBall(sys.id(name), preparationThrows[name]);
+                    }
+                }
+            }
+        }
         if (contestCooldown === 180) {
             sys.sendAll("*** ************************************************************ ***", safchan);
             safaribot.sendAll("A new Safari contest will start in 3 minutes! Prepare your active Pokémon and all Poké Balls you need!", safchan);
