@@ -1232,7 +1232,7 @@ function Safari() {
             list = list.slice(perPage * (page - 1), perPage * (page - 1) + perPage);
         }
         
-        out += this.listPokemon(list, "Owned Pokémon");
+        out += this.listPokemon(list, "Owned Pokémon (" + player.pokemon.length + ")");
         
         if (!isNaN(page)) {
             if (page > 1) {
@@ -1429,7 +1429,7 @@ function Safari() {
             });
             title = "Pokémon with at least " + val + " duplicates";
         }
-        sys.sendHtmlMessage(src, this.listPokemon(list, title), safchan);
+        sys.sendHtmlMessage(src, this.listPokemon(list, title + " (" + list.length + ")"), safchan);
     };
     function rangeFilter(src, player, list, val, mode, paramName, info, type) {
         val = parseInt(val, 10);
