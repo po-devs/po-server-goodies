@@ -1219,7 +1219,7 @@ function Safari() {
     };
     this.showBox = function(player, num) {
         var out = "";
-        var normal = [], shiny = [], member, name, isShiny, index, count = 0, rowSize = 12, e, perPage = 96, maxPages,
+        var perPage = 96, maxPages,
             list = player.pokemon,
             page = parseInt(num, 10);
         
@@ -1231,7 +1231,24 @@ function Safari() {
             }
             list = list.slice(perPage * (page - 1), perPage * (page - 1) + perPage);
         }
-            
+        
+        out += this.listPokemon(list, "Owned Pokémon");
+        
+        if (!isNaN(page)) {
+            if (page > 1) {
+                out += "<a href='po:send//box " + (page - 1) + "'>" + utilities.html_escape("< Box " + (page - 1)) + "</a>";
+            }
+            if (page < maxPages) {
+                if (page > 1) {
+                    out += " | ";
+                }
+                out += "<a href='po:send//box " + (page + 1) + "'>" + utilities.html_escape("Box " + (page + 1) + " >") + "</a>";
+            }
+        }
+        return out;
+    };
+    this.listPokemon = function(list, title) {
+        var out = "", normal = [], shiny = [], member, name, isShiny, index, count = 0, rowSize = 12, e;
         for (e in list) {
             member = getPokemonInfo(list[e]);
             index = member[0];
@@ -1245,9 +1262,9 @@ function Safari() {
             }
         }
         if (shiny.length > 0) {
-            out += "<table border = 1 cellpadding = 3><tr><th colspan=2>Owned Pokémon</th></td>  <tr><th>Normal</th><th>Shiny</th></tr>";
+            out += "<table border = 1 cellpadding = 3><tr><th colspan=2>" + title + "</th></td>  <tr><th>Normal</th><th>Shiny</th></tr>";
         } else {
-            out += "<table border = 1 cellpadding = 3><tr><th>Owned Pokémon</th></td></tr>";
+            out += "<table border = 1 cellpadding = 3><tr><th>" + title + "</th></td></tr>";
         }
         out += "<tr><td>";
         for (e in normal) {
@@ -1273,17 +1290,6 @@ function Safari() {
             out += "</td>";
         }
         out += "</tr></table>";
-        if (!isNaN(page)) {
-            if (page > 1) {
-                out += "<a href='po:send//box " + (page - 1) + "'>" + utilities.html_escape("< Box " + (page - 1)) + "</a>";
-            }
-            if (page < maxPages) {
-                if (page > 1) {
-                    out += " | ";
-                }
-                out += "<a href='po:send//box " + (page + 1) + "'>" + utilities.html_escape("Box " + (page + 1) + " >") + "</a>";
-            }
-        }
         return out;
     };
     this.showBag = function(player) {
@@ -1307,6 +1313,188 @@ function Safari() {
             }
         }
     };
+    this.findPokemon = function(src, commandData) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        if (commandData === "*") {
+            sys.sendMessage(src, "", safchan);
+            sys.sendMessage(src, "How to use /find:", safchan);
+            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type or Duplicate) and a value to find Pokémon in your box. Examples: ", safchan);
+            safaribot.sendMessage(src, "For Name: Type any part of the Pokémon's name. e.g.: /find name LUG (both Lugia and Slugma will be displayed, among others with LUG on the name)", safchan);
+            safaribot.sendMessage(src, "For Type: Type any one or two types. If you type 2, only pokémon with both types will appear. e.g.: /find type water grass", safchan);
+            safaribot.sendMessage(src, "For Duplicate: Type a number greater than 1. e.g.: /find duplicate 3 (will display all Pokémon that you have at least 3 copies)", safchan);
+            safaribot.sendMessage(src, "For Number and BST: There are 4 ways to search with those parameters:", safchan);
+            safaribot.sendMessage(src, "-Exact value. e.g.: /find bst 500 (displays all Pokémon with BST of exactly 500)", safchan);
+            safaribot.sendMessage(src, "-Greater than. e.g.: /find bst 400 > (displays all Pokémon with BST of 400 or more)", safchan);
+            safaribot.sendMessage(src, "-Less than. e.g.: /find bst 350 < (displays all Pokémon with BST of 350 or less)", safchan);
+            safaribot.sendMessage(src, "-Range. e.g.: /find number 1 150 (displays all Pokémon with pokédex number between 1 and 150)", safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        
+        var info = commandData.split(":");
+        var crit = "abc", val = "1";
+        if (info.length < 2) {
+            info = commandData.split(" ");
+        }
+        
+        crit = info[0];
+        val = info.length > 1 ? info[1].toLowerCase() : "asc";
+        
+        if (info.length >= 2) {
+            switch (crit.toLowerCase()) {
+                case "number":
+                case "num":
+                case "index":
+                case "no":
+                case "dex":
+                    crit = "number";
+                    break;
+                case "bst":
+                case "status":
+                case "stats":
+                case "stat":
+                    crit = "bst";
+                    break;
+                case "type":
+                    crit = "type";
+                    break;
+                case "duplicate":
+                case "duplicates":
+                case "repeated":
+                    crit = "duplicate";
+                    break;
+                default:
+                    crit = "abc";
+            }
+        } else {
+            crit = "abc";
+            val = info[0].toLowerCase();
+        }
+        
+        var list = [], title = "Owned Pokémon", mode = "equal";
+        if (crit == "abc") {
+            val = val.toLowerCase();
+            player.pokemon.forEach(function(x){
+                if (sys.pokemon(x).toLowerCase().indexOf(val) !== -1) {
+                    list.push(x);
+                }
+            });
+            title = "Pokémon with " + val + " on their name";
+        }
+        else if (crit == "number") {
+            title = rangeFilter(src, player, list, val, mode, "Pokédex Number", info, crit);
+        }
+        else if (crit == "bst") {
+            title = rangeFilter(src, player, list, val, mode, "BST", info, crit);
+        }
+        else if (crit == "type") {
+            var type1 = cap(val.toLowerCase()),
+                type2 = null;
+            
+            if (info.length > 2) {
+                type2 = cap(info[2].toLowerCase());
+            }
+            
+            if (!(type1 in effectiveness)) {
+                safaribot.sendMessage(src, type1 + " is not a valid type!", safchan);
+                return;
+            }
+            if (type2 && !(type2 in effectiveness)) {
+                safaribot.sendMessage(src, type2 + " is not a valid type!", safchan);
+                return;
+            }
+            
+            player.pokemon.forEach(function(x){
+                if (hasType(x, type1) && (!type2 || hasType(x, type2))) {
+                    list.push(x);
+                }
+            });
+            title = "Pokémon with " + type1 + (type2 ? "/" + type2 : "") + " type";
+        }
+        else if (crit == "duplicate") {
+            var pokeList = player.pokemon.concat().sort();
+            val = parseInt(val, 10);
+            if (isNaN(val) || val < 2) {
+                safaribot.sendMessage(src, "Please specify a valid number higher than 1!", safchan);
+                return;
+            }
+            pokeList.forEach(function(x){
+                if (countArray(pokeList, x) >= val) {
+                    list.push(x);
+                }
+            });
+            title = "Pokémon with at least " + val + " duplicates";
+        }
+        sys.sendHtmlMessage(src, this.listPokemon(list, title), safchan);
+    };
+    function rangeFilter(src, player, list, val, mode, paramName, info, type) {
+        val = parseInt(val, 10);
+        var val2;
+        if (isNaN(val)) {
+            safaribot.sendMessage(src, "Please specify a valid number!", safchan);
+            return;
+        }
+        var title = "Pokémon with " + paramName + " equal to " + val;
+        if (info.length > 2) {
+            val2 = parseInt(info[2], 10);
+            if (isNaN(val2)) {
+                switch (info[2].toLowerCase()) {
+                    case ">":
+                    case "higher":
+                    case "greater":
+                    case "more":
+                    case "+":
+                    case "above":
+                        mode = "greater";
+                        title = "Pokémon with " + paramName + " greater than " + val;
+                        break;
+                    case "<":
+                    case "lower":
+                    case "less":
+                    case "-":
+                    case "below":
+                        mode = "less";
+                        title = "Pokémon with " + paramName + " less than " + val;
+                        break;
+                }
+                if (mode !== "greater" && mode !== "less") {
+                    safaribot.sendMessage(src, "Invalid parameter! Use either >, < or another number.", safchan);
+                    return;
+                }
+            } else {
+                mode = "range";
+                title = "Pokémon with " + paramName + " between " + val + " and " + val2;
+            }
+        }
+        var param;
+        player.pokemon.forEach(function(x){
+            switch (type) {
+                case "bst":
+                    param = getBST(x);
+                    break;
+                case "number":
+                    param = parseInt(x, 10);
+                    break;
+            }
+            if (mode == "equal" && param === val) {
+                list.push(x);
+            }
+            else if (mode == "greater" && param >= val) {
+                list.push(x);
+            }
+            else if (mode == "less" && param <= val) {
+                list.push(x);
+            }
+            else if (mode == "range" && param >= val && param <= val2) {
+                list.push(x);
+            }
+        });
+        return title;
+    }
     this.sortBox = function(src, commandData) {
         var player = getAvatar(src);
         if (!player) {
@@ -1495,6 +1683,11 @@ function Safari() {
         if (!sys.dbRegistered(sys.name(src).toLowerCase())) {
             safaribot.sendMessage(src, "Please register your account before starting the game!");
             return true;
+        }
+        if (rawPlayers.get(sys.name(src).toLowerCase())) {
+            safaribot.sendMessage(src, "You already have a save under that alt! Loading it instead.", safchan);
+            this.loadGame(src);
+            return;
         }
         var num = getInputPokemon(data)[0];
         if (!num || starters.indexOf(num) === -1) {
@@ -1719,6 +1912,7 @@ function Safari() {
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
             "/gacha: Use a ticket to win a prize!",
             "/rock: To throw a rock at another player.",
+            "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details.",
             "/sort [criteria] [ascending|descending]: To sort the order in which the Pokémon are listed on /mydata. Criteria are Alphabetical, Number, BST, Type and Duplicate",
             "/info: View time until next contest and current Gachapon jackpot prize!",
             "",
@@ -1841,6 +2035,10 @@ function Safari() {
         }
         if (command === "sort") {
             safari.sortBox(src, commandData);
+            return true;
+        }
+        if (command === "find") {
+            safari.findPokemon(src, commandData);
             return true;
         }
         if (command === "info") {
