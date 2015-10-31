@@ -999,7 +999,7 @@ function Safari() {
     };
     
     this.viewOwnInfo = function(src) {
-        var player = getAvatar(src), e;
+        var player = getAvatar(src);
         if (!player) {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
             return;
@@ -1011,93 +1011,11 @@ function Safari() {
         out += this.showParty(src, true);
         
         //All owned Pokémon
-        var normal = [], shiny = [], member, name, isShiny, index, count = 0, rowSize = 12;
-        for (e in player.pokemon) {
-            member = getPokemonInfo(player.pokemon[e]);
-            index = member[0];
-            isShiny = member[1];
-            name = sys.pokemon(index);
-            
-            if (isShiny) {
-                shiny.push("<img src='icon:" + index +"' title='#" + index + " " + name + "'>");
-            } else {
-                normal.push("<img src='icon:" + index +"' title='#" + index + " " + name + "'>");
-            }
-        }
-        if (shiny.length > 0) {
-            out += "<table border = 1 cellpadding = 3><tr><th colspan=2>Owned Pokémon</th></td>  <tr><th>Normal</th><th>Shiny</th></tr>";
-        } else {
-            out += "<table border = 1 cellpadding = 3><tr><th>Owned Pokémon</th></td></tr>";
-        }
-        out += "<tr><td>";
-        for (e in normal) {
-            count++;
-            out += normal[e] + " ";
-            if (count == rowSize) {
-                out += "<p>";
-                count = 0;
-            }
-        }
-        out += "</td>";
-        if (shiny.length > 0) {
-            count = 0;
-            out += "<td><p>";
-            for (e in shiny) {
-                count++;
-                out += shiny[e] + " ";
-                if (count == rowSize) {
-                    out += "<p>";
-                    count = 0;
-                }
-            }
-            out += "</td>";
-        }
-        out += "</tr></table>";
-        
-        //All owned Pokémon (Text-only version, lighter but uglier)
-        /* var owned = {}, member, name, list = [], normal, shiny;
-        for (e in player.pokemon) {
-            member = getPokemonInfo(player.pokemon[e]);
-            name = sys.pokemon(member[0]);
-            if (!(name in owned)) {
-                owned[name] = { normal: 0, shiny: 0 };
-            }
-            owned[name][member[1] === true ? "shiny" : "normal"] += 1;
-        }
-        for (e in owned) {
-            member = owned[e];
-            normal = member.normal;
-            shiny = member.shiny;
-            list.push(e + ": " + (normal > 0 ? normal : "") + (shiny > 0 ? (normal > 0 ? " + " : "") + shiny + "*" : ""));
-        }
-        list = list.sort();
-        
-        var rows = Math.ceil(list.length / 12), i, count = 0;
-        out += "<table border = 1 cellpadding = 3><tr><th colspan="+rows+">Owned Pokémon</th></td><tr>";
-        for (e = 0; e < rows; e++) {
-            out += "<td>";
-            for (i = 0; i < 12; i++) {
-                if (count >= list.length) {
-                    break;
-                } else {
-                    out += "<p style='margin: 2px;'>" + list[count] + "</p>";
-                }
-                count++;
-            }
-            out += "</td>";
-        }
-        out += "</tr></table>"; */
-        
+        out += this.showBox(player, "all");
         
         //Money/Balls table
-        out +=  "<table border = 1 cellpadding = 3><tr><th colspan=10>Inventory</th></tr>";
-        out += "<tr><td valign=middle align=center><img src='item:274' title='Money'></td><td><img src='item:8017' title='Bait'></td><td><img src='item:206' title='Rocks'></td><td><img src='item:132' title='Gachapon Tickets'></td><td valign=middle align=center><img src='item:42' title='Amulet Coin'></td><td><img src='item:82' title='Honey'></td><td><img src='item:41' title='Zoom Lens'></td></tr>";
-        out += "<tr><td align=center>$" + player.money + "</td><td align=center>" + player.balls.bait + "</td><td align=center>" + player.balls.rock + "</td><td align=center>" + player.balls.gacha + "</td><td align=center>" + player.balls.amulet + "</td><td align=center>" + player.balls.honey + "</td><td align=center>" + player.balls.zoom + "</td></tr>";
+        out += this.showBag(player);
         
-        out += "<tr><td valign=middle align=center><img src='item:309' title='Safari Balls'></td><td><img src='item:306' title='Great Balls'></td><td><img src='item:307' title='Ultra Balls'></td><td><img src='item:308' title='Master Balls'></td><td><img src='item:267' title='Dream Balls'></td><td><img src='item:324' title='Luxury Balls'></td><td><img src='item:321' title='Nest Balls'></td><td><img src='item:315' title='Heavy Balls'></td><td><img src='item:312' title='Moon Balls'></td><td><img src='item:318' title='Premier Balls'></td></tr>";
-        out += "<tr><td align=center>" + player.balls.safari + "</td><td align=center>" + player.balls.great + "</td><td align=center>" + player.balls.ultra + "</td><td align=center>" + player.balls.master + "</td><td align=center>" + player.balls.dream + "</td><td align=center>" + player.balls.luxury + "</td><td align=center>" + player.balls.nest + "</td><td align=center>" + player.balls.heavy + "</td><td align=center>" + player.balls.moon + "</td><td align=center>" + player.balls.premier + "</td></tr>";
-                
-        out += "</table>";
         sys.sendHtmlMessage(src, out, safchan);
     };
     this.viewPlayer = function(src, data) {
@@ -1113,6 +1031,23 @@ function Safari() {
         }
         
         sys.sendHtmlMessage(src, this.showParty(id), safchan);
+    };
+    this.viewItems = function(src) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        sys.sendHtmlMessage(src, this.showBag(player), safchan);
+    };
+    this.viewBox = function(src, data) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        
+        sys.sendHtmlMessage(src, this.showBox(player, (data === "*" ? 1 : data)), safchan);
     };
     this.manageParty = function(src, data) {
         var player = getAvatar(src);
@@ -1215,6 +1150,86 @@ function Safari() {
         out += "</tr></table>";
         return out;
     };
+    this.showBox = function(player, num) {
+        var out = "";
+        var normal = [], shiny = [], member, name, isShiny, index, count = 0, rowSize = 12, e, perPage = 96, maxPages,
+            list = player.pokemon, 
+            page = parseInt(num, 10);
+        
+        if (!isNaN(page) && num != "all") {
+            maxPages = Math.floor(list.length / (perPage + 1)) + 1;
+            
+            if (page > maxPages) {
+                page = maxPages;
+            }
+            list = list.slice(perPage * (page - 1), perPage * (page - 1) + perPage);
+        }
+            
+        for (e in list) {
+            member = getPokemonInfo(list[e]);
+            index = member[0];
+            isShiny = member[1];
+            name = sys.pokemon(index);
+            
+            if (isShiny) {
+                shiny.push("<img src='icon:" + index +"' title='#" + index + " " + name + "'>");
+            } else {
+                normal.push("<img src='icon:" + index +"' title='#" + index + " " + name + "'>");
+            }
+        }
+        if (shiny.length > 0) {
+            out += "<table border = 1 cellpadding = 3><tr><th colspan=2>Owned Pokémon</th></td>  <tr><th>Normal</th><th>Shiny</th></tr>";
+        } else {
+            out += "<table border = 1 cellpadding = 3><tr><th>Owned Pokémon</th></td></tr>";
+        }
+        out += "<tr><td>";
+        for (e in normal) {
+            count++;
+            out += normal[e] + " ";
+            if (count == rowSize) {
+                out += "<p>";
+                count = 0;
+            }
+        }
+        out += "</td>";
+        if (shiny.length > 0) {
+            count = 0;
+            out += "<td><p>";
+            for (e in shiny) {
+                count++;
+                out += shiny[e] + " ";
+                if (count == rowSize) {
+                    out += "<p>";
+                    count = 0;
+                }
+            }
+            out += "</td>";
+        }
+        out += "</tr></table>";
+        if (!isNaN(page)) {
+            if (page > 1) {
+                out += "<a href='po:send//box " + (page - 1) + "'>" + utilities.html_escape("< Box " + (page - 1)) + "</a>";
+            }
+            if (page < maxPages) {
+                if (page > 1) {
+                    out += " | ";
+                }
+                out += "<a href='po:send//box " + (page + 1) + "'>" + utilities.html_escape("Box " + (page + 1) + " >") + "</a>";
+            }
+        }
+        return out;
+    };
+    this.showBag = function(player) {
+        var out = "<table border = 1 cellpadding = 3><tr><th colspan=10>Inventory</th></tr>";
+        out += "<tr><td valign=middle align=center><img src='item:274' title='Money'></td><td><img src='item:8017' title='Bait'></td><td><img src='item:206' title='Rocks'></td><td><img src='item:132' title='Gachapon Tickets'></td><td valign=middle align=center><img src='item:42' title='Amulet Coin'></td><td><img src='item:82' title='Honey'></td><td><img src='item:41' title='Zoom Lens'></td></tr>";
+        out += "<tr><td align=center>$" + player.money + "</td><td align=center>" + player.balls.bait + "</td><td align=center>" + player.balls.rock + "</td><td align=center>" + player.balls.gacha + "</td><td align=center>" + player.balls.amulet + "</td><td align=center>" + player.balls.honey + "</td><td align=center>" + player.balls.zoom + "</td></tr>";
+        
+        out += "<tr><td valign=middle align=center><img src='item:309' title='Safari Balls'></td><td><img src='item:306' title='Great Balls'></td><td><img src='item:307' title='Ultra Balls'></td><td><img src='item:308' title='Master Balls'></td><td><img src='item:267' title='Dream Balls'></td><td><img src='item:324' title='Luxury Balls'></td><td><img src='item:321' title='Nest Balls'></td><td><img src='item:315' title='Heavy Balls'></td><td><img src='item:312' title='Moon Balls'></td><td><img src='item:318' title='Premier Balls'></td></tr>";
+        out += "<tr><td align=center>" + player.balls.safari + "</td><td align=center>" + player.balls.great + "</td><td align=center>" + player.balls.ultra + "</td><td align=center>" + player.balls.master + "</td><td align=center>" + player.balls.dream + "</td><td align=center>" + player.balls.luxury + "</td><td align=center>" + player.balls.nest + "</td><td align=center>" + player.balls.heavy + "</td><td align=center>" + player.balls.moon + "</td><td align=center>" + player.balls.premier + "</td></tr>";
+                
+        out += "</table>";
+        return out;
+    };
     this.removePokemon = function(src, pokeNum) {
         var player = getAvatar(src);
         player.pokemon.splice(player.pokemon.indexOf(pokeNum), 1);
@@ -1311,7 +1326,7 @@ function Safari() {
                 safaribot.sendMessage(src, "Please specify a valid type!", safchan);
                 return;
             }
-            type2 = info.length > 2 ? cap(info[2].toLowerCase()) : null;
+            var type2 = info.length > 2 ? cap(info[2].toLowerCase()) : null;
             if (type2 && !(type2 in effectiveness)) {
                 safaribot.sendMessage(src, "Please specify a valid secondary type!", safchan);
                 return;
@@ -1629,7 +1644,9 @@ function Safari() {
             "/trade: To request a Pokémon trade with another player*.",
             "/buy: To buy more Poké Balls.",
             "/party: To add or remove a Pokémon from your party, or to set your party's leader*.",
-            "/mydata: To view your caught Pokémon, money and remaining balls.",
+            "/box [number]: To view all your caught Pokémon organized in boxes.",
+            "/bag: To view all money and items.",
+            "/mydata: To view your party, caught Pokémon, money and items.",
             "/view: To view another player's party. If no player is specified, your data will show up.",
             "/changealt: To pass your Safari data to another alt.",
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
@@ -1729,6 +1746,14 @@ function Safari() {
         }
         if (command === "mydata") {
             safari.viewOwnInfo(src, commandData);
+            return true;
+        }
+        if (command === "bag") {
+            safari.viewItems(src, commandData);
+            return true;
+        }
+        if (command === "box") {
+            safari.viewBox(src, commandData);
             return true;
         }
         if (command === "changealt") {
