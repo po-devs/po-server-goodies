@@ -84,18 +84,19 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         querybot.sendMessage(src, "Players on version " + commandData + " are: " + output.join(", "), channel);
         return;
     }
-    if (command == "intier") {
-        if (tar === undefined){
+    if (command === "tiers") {
+        if (tar === undefined) {
             querybot.sendChanMessage(src,"No such user online.");
             return;
         }
-        var count = sys.teamCount(tar), tiers = [];
-        for (var i = 0; i < count; ++i) {
+        var i, count = sys.teamCount(tar), tiers = [];
+        for (i = 0; i < count; ++i) {
             var ctier = sys.tier(tar, i);
-            if (tiers.indexOf(ctier) == -1)
-            tiers.push(ctier);
+            if (tiers.indexOf(ctier) == -1) {
+                tiers.push(ctier);
+            }
         }
-        querybot.sendMessage(src,sys.name(tar)+" is in tier"+(tiers.length <= 1?"":"s")+": "+tiers.join(", "), channel);
+        querybot.sendMessage(src,sys.name(tar) + " is in tier" + (tiers.length <= 1 ? "" : "s") + ": " + tiers.join(", "), channel);
         return;
     }
     if (command == "perm") {
@@ -720,7 +721,7 @@ exports.help =
         "/channelnamebans: Lists banned channel names.",
         "/onrange: To view who is on an IP range.",
         "/onos: Lists players on a certain operating system (May lag a little with certain OS)",
-        "/intier: To view the tier(s) of a user.",
+        "/tiers: To view the tier(s) of a user.",
         "/battlehistory: To view a user's battle history.",
         "/channelusers: Lists users on a channel."
     ];

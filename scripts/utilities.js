@@ -1,7 +1,30 @@
 /* utilities.js */
 exports = {
-    python_split: function python_split(string, delim, limit)
-    {
+    arrayShuffle: function (array) {
+        var x, tempValue, randomIndex;
+        for (x = 0; x < array.length; x++) {
+            randomIndex = Math.floor(Math.random() * array.length);
+            tempValue = array[x];
+            array[x] = array[randomIndex];
+            array[randomIndex] = tempValue;
+        }
+        return array;
+    },
+    
+    arraySlice: function (array, max) {
+        var x, newArray = [], limit;
+        if (max > array.length) {
+            limit = array.length;
+        } else {
+            limit = max;
+        }
+        for (x = 0; x < limit; x++) {
+            newArray.push(array[x]);
+        }
+        return newArray;
+    },
+    
+    python_split: function python_split(string, delim, limit) {
         var arr;
         if ((delim.__proto__ === RegExp || delim.__proto__ == "/(?:)/") && limit !== undefined) {
             // lastIndex doesn't update without global match
@@ -37,19 +60,17 @@ exports = {
         return x >= 'a' && x <= 'z';
     },
     
-    is_command: function is_command(string)
-    {
-        return (string[0] == '/' || string[0] == '!') && string.length > 1 && utilities.isLetter(string[1]);
+    is_command: function is_command(string) {
+        return (string[0] === "/" || string[0] == '!') && string.length > 1 && utilities.isLetter(string[1]);
     },
-
-    as_command: function as_command(string, delim, limit)
-    {
+    
+    as_command: function as_command(string, delim, limit) {
         var Command = {command: "", parameterString: ""};
-        var pos = string.indexOf(' ');
+        var pos = string.indexOf(" ");
         var startIndex = this.is_command(string) ? 1 : 0;
-        if (pos != -1) {
+        if (pos !== -1) {
             Command.command = string.substring(startIndex, pos).toLowerCase();
-            Command.parameterString = string.substr(pos+1);
+            Command.parameterString = string.substr(pos + 1);
         } else {
             Command.command = string.substr(startIndex).toLowerCase();
         }
@@ -59,8 +80,7 @@ exports = {
         return Command;
     },
 
-    find_poke: function find_poke(src, poke_id)
-    {
+    find_poke: function find_poke(src, poke_id) {
         var poke_slot;
         /* first try if poke_id is slot number between 1-6 */
         if (/^[1-6]$/.test(poke_id)) {
@@ -83,9 +103,8 @@ exports = {
         }
         return poke_slot;
     },
-
-    find_move: function find_move(src, poke_slot, move_id)
-    {
+    
+    find_move: function find_move(src, poke_slot, move_id) {
         var move_slot;
         if (/^[1-4]$/.test(move_id)) {
            move_slot = parseInt(move_id, 10) - 1;
@@ -97,7 +116,7 @@ exports = {
         }
         return move_slot;
     },
-
+    
     find_tier: function find_tier(tier_name) {
         tier_name = tier_name.toLowerCase();
         var tiers = sys.getTierList();
@@ -108,32 +127,31 @@ exports = {
         }
         return null;
     },
-
+    
     is_non_negative: function is_non_negative(n) {
         return typeof n == 'number' && !isNaN(n) && n >= 0;
     },
-
-    Lazy: function Lazy(func)
-    {
+    
+    Lazy: function Lazy(func) {
         var done = false;
         return function() {
-            if (done)
+            if (done) {
                 return this._value;
-            else {
+            } else {
                 done = true;
                 return this._value = func.apply(arguments.callee, arguments);
             }
         };
     },
-
+    
     capitalize: function capitalize(string) {
         return string[0].toUpperCase() + string.slice(1);
     },
-
+    
     non_flashing: function nonFlashing(name) {
-        return name[0] + '\u200b' + name.substr(1);
+        return name[0] + "\u200b" + name.substr(1);
     },
-
+    
     get_or_create_channel: function getOrCreateChannel(name) {
         var cid;
         if (sys.existChannel(name)) {
@@ -144,14 +162,14 @@ exports = {
         return cid;
     },
     
-    html_escape : function(text) {
+    html_escape: function(text) {
         var m = String(text);
         if (m.length > 0) {
             var amp = "&am" + "p;";
             var lt = "&l" + "t;";
             var gt = "&g" + "t;";
             return m.replace(/&/g, amp).replace(/</g, lt).replace(/>/g, gt);
-        }else{
+        }else {
             return "";
         }
     },
@@ -186,6 +204,7 @@ exports = {
         }
         return s.join(", ");
     },
+    
     //make sure the name isn't repeated with another case when using this
     getCorrectPropName : function (prop, obj) {
         if (typeof obj !== "object" || typeof prop !== "string") {
