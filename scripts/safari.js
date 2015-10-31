@@ -1667,7 +1667,7 @@ function Safari() {
             var player;
             for (var e in onChannel) {
                 player = getAvatar(onChannel[e]);
-                if (player) {
+                if (!player) {
                     continue;
                 }
                 this.sanitize(player);
