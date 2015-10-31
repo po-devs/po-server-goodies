@@ -930,8 +930,17 @@ function Safari() {
         var reward = gachaponPrizes[rng];
         safaribot.sendMessage(src, "Gacha-PON! The Gachapon Machine has dispensed an item capsule.", safchan);
         
-        //Variable for higher quantity rewards later. Remember to adjust plurality  when this gets added!
+        //Variable for higher quantity rewards later. Make better later maybe?
         var amount = 1;
+        var rng2 = Math.random();
+        if (rng2 < 0.03) {
+            amount = 4;
+        } else if (rng2 < 0.13) {
+            amount = 3;
+        } else if (rng2 < 0.45) {
+            amount = 2;
+        }
+        var plural = amount > 1 ? "s" : "";
         
         switch (reward) {
             case "master":
@@ -952,7 +961,7 @@ function Safari() {
             break;
             case "rock":
                 player.balls[reward] += amount;
-                safaribot.sendMessage(src, "A loud clunk comes from the machine. Some prankster put rocks in the Gachapon Machine! You received  " + amount + " " + finishName(reward) + ".", safchan);
+                safaribot.sendMessage(src, "A loud clunk comes from the machine. Some prankster put rocks in the Gachapon Machine! You received  " + amount + " " + finishName(reward) + plural + ".", safchan);
             break;
             case "wild":
                 var mod = Math.random();
@@ -986,16 +995,65 @@ function Safari() {
             case "zoom":
                 player.balls[reward] += 1;
                 safaribot.sendAll("Sweet! " + sys.name(src) + " just won a " + finishName(reward) + " from Gachapon!", safchan);
-                safaribot.sendMessage(src, "You received " + amount + " " + finishName(reward) + ".", safchan);
+                safaribot.sendMessage(src, "You received " + amount + " " + finishName(reward) + plural + ".", safchan);
             break;
             default:
                 player.balls[reward] += amount;
-                safaribot.sendMessage(src, "You received " + amount + " " + finishName(reward) + ".", safchan);
+                safaribot.sendMessage(src, "You received " + amount + " " + finishName(reward) + plural + ".", safchan);
             break;
         }
         player.gachaCooldown = currentTime + 5000;
         gachaJackpot += 1;
         SESSION.global().safariGachaJackpot = gachaJackpot;
+    };
+    this.releasePokemon = function(src, data) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        //Maybe reduce this into a function? Most is used in sellPokemon and tradePokemon
+        if (contestCount > 0) {
+            safaribot.sendMessage(src, "You can't release during a contest!", safchan);
+            return;
+        }
+        if (data === "*") {
+            safaribot.sendMessage(src, "To release a Pokémon, use /release [name]:confirm!", safchan);
+            return;
+        }
+        if (player.pokemon.length == 1) {
+            safaribot.sendMessage(src, "You cannot release your last Pokémon!", safchan);
+            return;
+        }
+        var info = data.split(":");
+        var pokeId = getInputPokemon(info[0]);
+        var shiny = pokeId[1];
+        pokeId = pokeId[0];
+        if (pokeId === undefined) {
+            safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
+            return;
+        }
+        var pokeNum = shiny ? "" + pokeId : pokeId;
+        if (player.pokemon.indexOf(pokeNum) == -1) {
+            safaribot.sendMessage(src, "You do not have that Pokémon!", safchan);
+            return;
+        }
+        var count = countRepeated(player.pokemon, pokeNum);
+        if (player.party.length == 1 && player.party[0] === pokeNum && count <= 1) {
+            safaribot.sendMessage(src, "You can't release the only Pokémon in your party!", safchan);
+            return;
+        }
+        if (player.starter === pokeNum && count <= 1) {
+            safaribot.sendMessage(src, "You can't release your starter Pokémon!", safchan);
+            return;
+        }
+        if (info.length < 2 || info[1].toLowerCase() !== "confirm") {
+            safaribot.sendMessage(src, "You can release your " + poke(pokeNum) + " by typing /release " + (shiny ? "*":"") + sys.pokemon(pokeId) + ":confirm.", safchan);
+            return;
+        }
+        
+        safaribot.sendAll(sys.name(src) + " released their " + poke(pokeNum) + "!", safchan);
+        safari.createWild(pokeNum, shiny);
     };
     
     this.viewOwnInfo = function(src) {
@@ -1153,7 +1211,7 @@ function Safari() {
     this.showBox = function(player, num) {
         var out = "";
         var normal = [], shiny = [], member, name, isShiny, index, count = 0, rowSize = 12, e, perPage = 96, maxPages,
-            list = player.pokemon, 
+            list = player.pokemon,
             page = parseInt(num, 10);
         
         if (!isNaN(page) && num != "all") {
@@ -1787,6 +1845,10 @@ function Safari() {
                 safaribot.sendMessage(src, "Time until next Contest: " + min + " minutes, " + sec + " seconds.", safchan);
             }
             safaribot.sendMessage(src, "Current Gachapon Jackpot: " + Math.floor(gachaJackpot/10) + ".", safchan);
+            return true;
+        }
+        if (command === "release") {
+            safari.releasePokemon(src, commandData);
             return true;
         }
         
