@@ -1053,6 +1053,8 @@ function Safari() {
         }
         
         safaribot.sendAll(sys.name(src) + " released their " + poke(pokeNum) + "!", safchan);
+        this.removePokemon(src, pokeNum);
+        this.saveGame(player);
         safari.createWild(pokeNum, shiny);
     };
     
