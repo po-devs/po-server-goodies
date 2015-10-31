@@ -210,13 +210,13 @@ function Safari() {
         premier: {name: "premier", fullName: "Premier Ball", type: "ball", price: 0, ballBonus: 1.5, bonusRate: 3, cooldown: 6000, aliases:["premierball", "premier", "premier ball"]},
     
         //Other Items
-        bait: {name: "bait", fullName: "Bait", type: "usable", price: 100, successRate: 0.30, aliases:["bait"]},
+        bait: {name: "bait", fullName: "Bait", type: "usable", price: 100, successRate: 0.35, failCD: 15, successCD: 50, aliases:["bait"]},
         rock: {name: "rock", fullName: "Rock", type: "usable", price: 50, successRate: 0.70, bounceRate: 0.02, aliases:["rock", "rocks"]},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", price: 149, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"]},
         
         //Perks
         amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["amulet", "amuletcoin", "amulet coin", "coin"]},
-        honey: {name: "honey", fullName: "Honey", type: "perk", price: 0, bonusRate: 0.04, maxRate: 0.20, aliases:["honey"]},
+        honey: {name: "honey", fullName: "Honey", type: "perk", price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["honey"]},
         zoom: {name: "zoom", fullName: "Zoom Lens", type: "perk", price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["zoom", "zoomlens", "zoom lens", "lens"]}
     };
     
@@ -353,11 +353,14 @@ function Safari() {
     this.initGacha = function () {
         var tempArray = [];
         var gachaItems =   {
-            safari: 35, great: 15, ultra: 10, master: 1, luxury: 10, dream: 10, nest: 10, heavy: 10,
-            fast: 10, moon: 10, bait: 15, rock: 15,  wild: 10, gacha: 1,  honey: 2,  amulet: 2, zoom: 2
+            safari: 70, great: 30, ultra: 20, master: 2, luxury: 20, dream: 20, nest: 20, heavy: 20,
+            moon: 20, bait: 30, rock: 30,  wild: 30, gacha: 1,  honey: 1,  amulet: 1, zoom: 1
         };
 
         for (var e in gachaItems) {
+            if (currentItems.indexOf(e) === -1) {
+                continue;
+            }
             tempArray = fillArray(e, gachaItems[e]);
             gachaponPrizes = gachaponPrizes.concat(tempArray);
             tempArray = [];
@@ -830,14 +833,14 @@ function Safari() {
         
         if (rng < (itemData.bait.successRate + perkBonus)) {
             safaribot.sendAll(sys.name(src) + " left some bait out. The bait attracted a wild Pokémon!", safchan);
-            baitCooldown = 50 + sys.rand(0,10);
+            baitCooldown = itemData.bait.successCD + sys.rand(0,10);
             safari.createWild();
             if (commandData !== undefined) {
                 safari.throwBall(src, commandData);
                 preparationFirst = sys.name(src);
             }
         } else {
-            baitCooldown = 15 + sys.rand(0,5);
+            baitCooldown = itemData.bait.failCD + sys.rand(0,5);
             safaribot.sendAll(sys.name(src) + " left some bait out... but nothing showed up.", safchan);
         }
     };
@@ -1657,6 +1660,19 @@ function Safari() {
             } else {
                 safaribot.sendMessage(src, "No such person!", safchan);
             }
+            return true;
+        }
+        if (command === "sanitizeall") {
+            var onChannel = sys.playersOfChannel(safchan);
+            var player;
+            for (var e in onChannel) {
+                player = getAvatar(onChannel[e]);
+                if (player) {
+                    continue;
+                }
+                this.sanitize(player);
+            }
+            safaribot.sendAll("All safaris have been sanitized!", safchan);
             return true;
         }
         
