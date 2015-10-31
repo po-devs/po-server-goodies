@@ -1827,6 +1827,10 @@ function Safari() {
             }
             return true;
         }
+        if (command === "findsaves") {
+            safaribot.sendMessage(src, "List of all saves by name: " + Object.keys(rawPlayers.hash).sort().join(", "), safchan);
+            return true;
+        }
                 
         if (!SESSION.channels(safchan).isChannelOwner(src)) {
             return false;
