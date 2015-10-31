@@ -25,9 +25,11 @@ function Safari() {
     
     var contestCooldownLength = 1800; //1 contest every 30 minutes
     var baitCooldownLength = 0;
+    var releaseCooldownLength = 240; //1 release every 4 minutes
     var contestBroadcast = true; //Determines whether Tohjo gets notified
     var contestCooldown = (SESSION.global() && SESSION.global().safariContestCooldown ? SESSION.global().safariContestCooldown : contestCooldownLength);
     var baitCooldown = (SESSION.global() && SESSION.global().safariBaitCooldown ? SESSION.global().safariBaitCooldown : baitCooldownLength);
+    var releaseCooldown = (SESSION.global() && SESSION.global().safariReleaseCooldown ? SESSION.global().safariReleaseCooldown : releaseCooldownLength);
     var contestDuration = 300; //Contest lasts for 5 minutes
     var contestCount = 0;
     var contestCatchers = [];
@@ -1047,6 +1049,10 @@ function Safari() {
             safaribot.sendMessage(src, "You can't release your starter Pokémon!", safchan);
             return;
         }
+        if (releaseCooldown > 0) {
+            safaribot.sendMessage(src, "Please spend the next  " + releaseCooldown + " seconds saying good bye to your Pokémon before releasing it!", safchan);
+            return;
+        }
         if (info.length < 2 || info[1].toLowerCase() !== "confirm") {
             safaribot.sendMessage(src, "You can release your " + poke(pokeNum) + " by typing /release " + (shiny ? "*":"") + sys.pokemon(pokeId) + ":confirm.", safchan);
             return;
@@ -1055,6 +1061,7 @@ function Safari() {
         safaribot.sendAll(sys.name(src) + " released their " + poke(pokeNum) + "!", safchan);
         this.removePokemon(src, pokeNum);
         this.saveGame(player);
+        releaseCooldown = releaseCooldownLength;
         safari.createWild(pokeNum, shiny);
     };
     
@@ -2027,6 +2034,7 @@ function Safari() {
     this.stepEvent = function () {
         contestCooldown--;
         baitCooldown--;
+        releaseCooldown--;
         if (preparationPhase > 0) {
             preparationPhase--;
             if (preparationPhase <= 0) {
@@ -2074,6 +2082,7 @@ function Safari() {
         }
         SESSION.global().safariContestCooldown = contestCooldown;
         SESSION.global().safariBaitCooldown = baitCooldown;
+        SESSION.global().safariReleaseCooldown = releaseCooldown;
         
         if (contestCount > 0) {
             contestCount--;
