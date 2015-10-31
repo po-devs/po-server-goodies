@@ -31,6 +31,9 @@ function Safari() {
     var contestDuration = 300; //Contest lasts for 5 minutes
     var contestCount = 0;
     var contestCatchers = [];
+    var preparationPhase = 0;
+    var preparationThrows = {};
+    var preparationFirst = null;
     
     var effectiveness = {
         "Normal": {
@@ -218,7 +221,7 @@ function Safari() {
     
         //Other Items
         bait: {name: "bait", type: "usable", price: 100, successRate: 0.45, aliases:["bait"]},
-        rock: {name: "rock", type: "usable", price: 50, successRate: 0.75, aliases:["rock", "rocks"]},
+        rock: {name: "rock", type: "usable", price: 50, successRate: 0.75, bounceRate: 0.02, aliases:["rock", "rocks"]},
         gacha: {name: "gacha", type: "usable", price: 149, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"]}
     };
         
@@ -373,6 +376,10 @@ function Safari() {
     function isBall(item) {
         return ballArray.indexOf(item) !== -1;
     }
+    function shuffle(o) {
+        for (var j, x, i = o.length; i; j = parseInt(Math.random() * i, 10), x = o[--i], o[i] = o[j], o[j] = x);
+        return o;
+    }
     
     this.initGacha = function () {
         var tempArray = [];
@@ -398,9 +405,9 @@ function Safari() {
             pokeId,
             shiny = sys.rand(0, shinyChance) < 1,
             maxStats = sys.rand(300, 750);
-            if (makeShiny) {
-                shiny = true;
-            }
+        if (makeShiny) {
+            shiny = true;
+        }
         if (dexNum) {
             num = parseInt(dexNum, 10);
             pokeId = poke(num);
@@ -416,6 +423,9 @@ function Safari() {
         
         sys.sendHtmlAll("<hr><center>A wild " + pokeId + " appeared! <i>(BST: " + add(sys.pokeBaseStats(num)) + ")</i><br/>" + pokeImage(num + (shiny ? "" : 0)) + "</center><hr>", safchan);
         currentPokemon = shiny ? "" + num : num;
+        preparationPhase = sys.rand(4, 7);
+        preparationThrows = {};
+        preparationFirst = null;
     };
     this.throwBall = function(src, data) {
         var player = getAvatar(src);
@@ -504,6 +514,12 @@ function Safari() {
             return;
         }
         
+        if (preparationPhase > 0) {
+            safaribot.sendMessage(src, "You are preparing your " + cap(ball) + " Ball!", safchan);
+            preparationThrows[sys.name(src)] = ball;
+            return;
+        }
+        
         player.balls[ball] -= 1;
         var pokeName = poke(currentPokemon);
         var wild = typeof currentPokemon == "string" ? parseInt(currentPokemon, 10) : currentPokemon;
@@ -556,8 +572,8 @@ function Safari() {
             player.pokemon.push(currentPokemon);
             
             if (ball == "luxury") {
-                safaribot.sendAll(sys.name(src) + " also found $" + wildStats/2 + " on the ground after catching " + pokeName + "!" , safchan);
-                player.money += wildStats/2;
+                safaribot.sendAll(sys.name(src) + " also found $" + Math.floor(wildStats/2) + " on the ground after catching " + pokeName + "!" , safchan);
+                player.money += Math.floor(wildStats/2);
             }
             
             sys.sendAll("", safchan);
@@ -906,6 +922,7 @@ function Safari() {
             safari.createWild();
             if (commandData !== undefined) {
                 safari.throwBall(src, commandData);
+                preparationFirst = sys.name(src);
             }
         } else {
             baitCooldown = 15 + sys.rand(0,5);
@@ -941,11 +958,15 @@ function Safari() {
         
         player.balls[item] -= 1;
         var rng = Math.random();
+        var targetName = utilities.non_flashing(sys.name(targetId));
         if (rng < itemData.rock.successRate) {
-            safaribot.sendAll(sys.name(src) + " threw a rock at " + sys.name(targetId) + "! *THUD* A direct hit! " + sys.name(targetId) + " was stunned!", safchan);
-            target.cooldown += 6000;
+            safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "! *THUD* A direct hit! " + targetName + " was stunned!", safchan);
+            // target.cooldown = currentTime + 6000; //Remove comment to make rocks actually work
+        } else if (rng < itemData.rock.successRate + itemData.rock.bounceRate) {
+            safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but it hit a wall and bounced back at " + sys.name(src) + "! *THUD* That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
+            player.cooldown = currentTime + 8000;
         } else {
-            safaribot.sendAll(sys.name(src) + " threw a rock at " + sys.name(targetId) + "... but it missed!", safchan);
+            safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "... but it missed!", safchan);
         }
         player.rockCooldown = currentTime + 10000;
     };
@@ -1018,6 +1039,7 @@ function Safari() {
                     safari.createWild();
                     if (commandData !== undefined) {
                         safari.throwBall(src, commandData);
+                        preparationFirst = sys.name(src);
                     }
                 }
             break;
@@ -1457,6 +1479,9 @@ function Safari() {
             } else if (player.money > 9999999) {
                 player.money = 9999999;
             }
+            if (player.money % 1 !== 0) {
+                player.money = Math.floor(player.money);
+            }
             
             player.cooldown = now();
             player.gachaCooldown = now();
@@ -1521,7 +1546,10 @@ function Safari() {
             "Fast Ball: A weak but efficient Poké Ball that can be used in quick succession. Has a 0.5 second cooldown.",
             "Moon Ball: A stylized Poké Ball that supposedly works better against Pokémon seen once in a blue moon. Has an 8 second cooldown.",
             "Premier Ball: A plain Poké Ball gifted to you for your patronage. It works better when a Normal-type Pokémon is active. Has a 6 second cooldown.",
+            "",
+            "Note: Cooldown for Balls is doubled when a Pokémon is caught successfully.",
             ""
+            
         ];
         for (x in help) {
             sys.sendMessage(src, help[x], safchan);
@@ -1627,7 +1655,7 @@ function Safari() {
             return true;
         }
         if (command === "view") {
-            if (commandData) {
+            if (commandData !== "*") {
                 safari.viewPlayer(src, commandData);
             } else {
                 safari.viewOwnInfo(src, commandData);
@@ -1663,7 +1691,7 @@ function Safari() {
             return true;
         }
         if (command === "info") {
-            if (contestCount > 0) {                
+            if (contestCount > 0) {
                 var min = Math.floor(contestCount/60);
                 var sec = contestCount%60;
                 safaribot.sendMessage(src, "Time until the Contest ends: " + min + " minutes, " + sec + " seconds.", safchan);
@@ -1832,6 +1860,25 @@ function Safari() {
     this.stepEvent = function () {
         contestCooldown--;
         baitCooldown--;
+        if (preparationPhase > 0) {
+            preparationPhase--;
+            if (preparationPhase <= 0) {
+                var throwers = shuffle(Object.keys(preparationThrows));
+                var name, i;
+                if (preparationFirst) {
+                    if (throwers.indexOf(preparationFirst) !== -1) {
+                        throwers.splice(throwers.indexOf(preparationFirst), 1);
+                        throwers.splice(0, 0, preparationFirst);
+                    }
+                }
+                for (i = 0; i < throwers.length; i++) {
+                    name = throwers[i];
+                    if (sys.isInChannel(sys.id(name), safchan)) {
+                        safari.throwBall(sys.id(name), preparationThrows[name]);
+                    }
+                }
+            }
+        }
         if (contestCooldown === 180) {
             sys.sendAll("*** ************************************************************ ***", safchan);
             safaribot.sendAll("A new Safari contest will start in 3 minutes! Prepare your active Pokémon and all Poké Balls you need!", safchan);
