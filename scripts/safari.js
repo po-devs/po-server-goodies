@@ -314,6 +314,12 @@ function Safari() {
         
         return name ? (shiny ? "Shiny " : "") + name : null;
     }
+    function hasType(pokeNum, type) {
+        return sys.type(sys.pokeType1(pokeNum)) == type || sys.type(sys.pokeType2(pokeNum)) == type;
+    }
+    function getBST(pokeNum) {
+        return add(sys.pokeBaseStats(pokeNum));
+    }
     function pokeImage(num) {
         return "<img src='pokemon:num=" + num + (typeof num == "string" ? "&shiny=true" : "") + "&gen=6'>";
     }
@@ -333,12 +339,13 @@ function Safari() {
         }
         return ret;
     }
-    function countArray(item) {
-        var first = gachaponPrizes.indexOf(item);
-        var last = gachaponPrizes.lastIndexOf(item);
+    function countArray(arr, item) {
+        var first = arr.indexOf(item);
+        var last = arr.lastIndexOf(item);
         var count =  last - first + (first === -1 ? 0 : 1);
         return count;
     }
+    
     function finishName(item) {
         return itemData[item].fullName;
     }
@@ -1218,6 +1225,128 @@ function Safari() {
             }
         }
     };
+    this.sortBox = function(src, commandData) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        var info = commandData.split(":");
+        var crit = "number", order = "asc";
+        if (info.length < 2) {
+            info = commandData.split(" ");
+        }
+        crit = info[0];
+        order = info.length > 1 ? info[1].toLowerCase() : "asc";
+        
+        switch (crit.toLowerCase()) {
+            case "abc":
+            case "alpha":
+            case "alphabet":
+            case "alphabetical":
+            case "name":
+                crit = "abc";
+                break;
+            case "bst":
+            case "status":
+            case "stats":
+            case "stat":
+                crit = "bst";
+                break;
+            case "type":
+                crit = "type";
+                break;
+            case "duplicate":
+            case "duplicates":
+            case "repeated":
+                crit = "duplicate";
+                break;
+            default:
+                crit = "number";
+        }
+        switch (order.toLowerCase()) {
+            case "descending":
+            case "desc":
+            case "cba":
+            case "321":
+                order = "desc";
+                break;
+            case "ascending":
+            case "asc":
+            case "abc":
+            case "123":
+                order = "asc";
+        }
+        
+        if (crit === "number") {
+            player.pokemon.sort(function(a, b){return a-b;});
+            if (order === "desc") {
+                player.pokemon.reverse();
+            }
+            safaribot.sendMessage(src, "Your box was sorted by Pokédex Number (" + (order === "desc" ? "descending" : "ascending") + ").", safchan);
+        }
+        else if (crit === "abc") {
+            player.pokemon.sort(function(a, b){
+                    if(sys.pokemon(a) < sys.pokemon(b)) return -1;
+                    if(sys.pokemon(a) > sys.pokemon(b)) return 1;
+                    return 0;
+                }
+            );
+            
+            if (order === "desc") {
+                player.pokemon.reverse();
+            }
+            safaribot.sendMessage(src, "Your box was sorted " + (order === "desc" ? "inversely " : "") + "alphabetically.", safchan);
+        }
+        else if (crit === "bst") {
+            player.pokemon.sort(function(a, b){return getBST(a)-getBST(b);});
+            if (order === "desc") {
+                player.pokemon.reverse();
+            }
+            safaribot.sendMessage(src, "Your box was sorted by BST (" + (order === "desc" ? "descending" : "ascending") + ").", safchan);
+        }
+        else if (crit === "type") {
+            var type1 = cap(order.toLowerCase());
+            if (!(type1 in effectiveness)) {
+                safaribot.sendMessage(src, "Please specify a valid type!", safchan);
+                return;
+            }
+            type2 = info.length > 2 ? cap(info[2].toLowerCase()) : null;
+            if (type2 && !(type2 in effectiveness)) {
+                safaribot.sendMessage(src, "Please specify a valid secondary type!", safchan);
+                return;
+            }
+            
+            player.pokemon.sort(function(a, b) {
+                if (hasType(a, type1) && !hasType(b, type1)) {
+                    return -1;
+                }
+                if (!hasType(a, type1) && hasType(b, type1)) {
+                    return 1;
+                }
+                if (type2) {
+                    if (hasType(a, type2) && !hasType(b, type2)) {
+                        return -1;
+                    }
+                    if (!hasType(a, type2) && hasType(b, type2)) {
+                        return 1;
+                    }
+                }
+                return 0;
+            });
+            
+            safaribot.sendMessage(src, "Your box was sorted by types (" +(type2 ? type1 + "/" + type2 + " > " : "")+ type1 + (type2 ? " > " + type2 : "" ) + ").", safchan);
+        }
+        else if (crit === "duplicate") {
+            player.pokemon.sort();
+            player.pokemon.sort(function(a, b){return countArray(player.pokemon, a)-countArray(player.pokemon, b);});
+            if (order === "desc") {
+                player.pokemon.reverse();
+            }
+            safaribot.sendMessage(src, "Your box was sorted by duplicates (" + (order === "desc" ? "descending" : "ascending") + ").", safchan);
+        }
+        this.saveGame(player);
+    };
     this.dailyReward = function(src, today) {
         var player = getAvatar(src);
         if (!player) {
@@ -1505,6 +1634,8 @@ function Safari() {
             "/changealt: To pass your Safari data to another alt.",
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
             "/gacha: Use a ticket to win a prize!",
+            "/rock: To throw a rock at another player.",
+            "/sort [criteria] [ascending|descending]: To sort the order in which the Pokémon are listed on /mydata. Criteria are Alphabetical, Number, BST, Type and Duplicate",
             "/info: View time until next contest and current Gachapon jackpot prize!",
             "",
             "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
@@ -1616,6 +1747,10 @@ function Safari() {
             safari.gachapon(src, commandData);
             return true;
         }
+        if (command === "sort") {
+            safari.sortBox(src, commandData);
+            return true;
+        }
         if (command === "info") {
             if (contestCount > 0) {
                 var min = Math.floor(contestCount/60);
@@ -1636,7 +1771,7 @@ function Safari() {
         }
         if (command === "checkrate") {
             if (allItems.indexOf(commandData) !== -1) {
-                var instance = countArray(commandData);
+                var instance = countArray(gachaponPrizes, commandData);
                 var total = gachaponPrizes.length;
                 var percent = instance / total * 100;
                 safaribot.sendMessage(src, "The rate of " + finishName(commandData) + " is " + instance + "/" + total + ", or " + percent.toFixed(2) + "%.", safchan);
