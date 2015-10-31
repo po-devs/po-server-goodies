@@ -1671,7 +1671,15 @@ beforeChatMessage: function(src, message, chan) {
     }
     var poChannel = SESSION.channels(channel);
     if (sys.auth(src) < 1 && !poChannel.canTalk(src)) {
-        channelbot.sendMessage(src, "You are muted on this channel! You can't speak unless channel operators and masters unmute you.", channel);
+        var auth = poChannel.muted[sys.name(src).toLowerCase()].auth,
+            expiry = poChannel.muted[sys.name(src).toLowerCase()].expiry,
+            reason = poChannel.muted[sys.name(src).toLowerCase()].reason;
+        if (isNaN(expiry)) {
+            expiry = "forever";
+        } else {
+            expiry = "for " + getTimeString(expiry - parseInt(sys.time()), 10);
+        }
+        channelbot.sendMessage(src, "You are muted on this channel " + expiry + " by " + auth + " [Reason: " + reason + "]", channel);
         sys.stopEvent();
         return;
     }
