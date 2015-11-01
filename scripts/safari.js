@@ -17,7 +17,7 @@ function Safari() {
     var shinyChance = 1024; //Chance for Shiny Pokémon
     var starters = [1, 4, 7];
     var currentPokemon = null;
-
+    
     var tradeRequests = {};
     var gachaponPrizes = []; //Creates Gachapon on update.
     var gachaJackpotAmount = 100; //Jackpot for gacha tickets. Number gets divided by 10 later.
@@ -338,7 +338,6 @@ function Safari() {
             }
         }
         
-        
         return [id, shiny];
     }
     function poke(num) {
@@ -361,9 +360,9 @@ function Safari() {
     function getBST(pokeNum) {
         return add(sys.pokeBaseStats(pokeNum));
     }
-    function pokeImage(num) {
+    /*function pokeImage(num) {
         return "<img src='pokemon:num=" + num + (typeof num == "string" ? "&shiny=true" : "") + "&gen=6'>";
-    }
+    }*/
     function itemAlias(name) {
         name = name.toLowerCase();
         for (var e in itemData) {
@@ -397,6 +396,41 @@ function Safari() {
         for (var j, x, i = o.length; i; j = parseInt(Math.random() * i, 10), x = o[--i], o[i] = o[j], o[j] = x);
         return o;
     }
+    
+    /* Poke Info Functions */
+    var pokeInfo = {};
+    pokeInfo.species = function(poke) {
+        return poke & ((1 << 16) - 1);
+    };
+    pokeInfo.forme = function(poke) {
+        return poke >> 16;
+    };
+    pokeInfo.shiny = function(poke) {
+        return typeof poke === "string";
+    };
+    pokeInfo.readableNum = function(poke) {
+        var ret = [];
+        ret += pokeInfo.species(poke);
+        if (pokeInfo.forme(poke) > 0) {
+            ret += "-";
+            ret += pokeInfo.forme(poke);
+        }
+        return ret;
+    };
+    pokeInfo.icon = function(p) {
+       return "<img src='icon:" + p + "' title='#" + pokeInfo.readableNum(p) + " " + poke(p) + "'>";
+    };
+    pokeInfo.sprite = function(poke) {
+        var ret = [];
+        ret += "<img src='pokemon:num=";
+        ret += pokeInfo.readableNum(poke);
+        if (pokeInfo.shiny(poke)) {
+            ret += "&shiny=true";
+        }
+        ret += "&gen=6'>";
+        return ret;
+    };
+    /* End Poke Info Functions */
     
     this.initGacha = function () {
         var tempArray = [];
@@ -442,7 +476,7 @@ function Safari() {
                 }
                 num = list[sys.rand(0, list.length)];
                 pokeId = poke(num + (shiny ? "" : 0));
-            } 
+            }
             else {
                 do {
                     num = sys.rand(1, 722);
@@ -451,7 +485,7 @@ function Safari() {
             }
         }
         
-        sys.sendHtmlAll("<hr><center>A wild " + pokeId + " appeared! <i>(BST: " + add(sys.pokeBaseStats(num)) + ")</i><br/>" + pokeImage(num + (shiny ? "" : 0)) + "</center><hr>", safchan);
+        sys.sendHtmlAll("<hr><center>A wild " + pokeId + " appeared! <i>(BST: " + add(sys.pokeBaseStats(num)) + ")</i><br/>" + pokeInfo.sprite(num) + "</center><hr>", safchan);
         currentPokemon = shiny ? "" + num : num;
         preparationPhase = sys.rand(4, 7);
         preparationThrows = {};
@@ -1095,6 +1129,10 @@ function Safari() {
             safaribot.sendMessage(src, "You can't release during a contest!", safchan);
             return;
         }
+        if (currentPokemon) {
+            safaribot.sendMessage(src, "There's already a Pokemon out there!", safchan);
+            return true;
+        }
         if (data === "*") {
             safaribot.sendMessage(src, "To release a Pokémon, use /release [name]:confirm!", safchan);
             return;
@@ -1280,7 +1318,7 @@ function Safari() {
     };
     this.showParty = function(id, ownParty) {
         var player = getAvatar(id),
-            party = player.party.map(pokeImage);
+            party = player.party.map(pokeInfo.sprite);
         var out = "<table border = 1 cellpadding = 3><tr><th colspan=" + party.length + ">" + (ownParty ? "Current" : sys.name(id) + "'s" ) + " Party</th></tr><tr>";
         for (var e in party) {
             out += "<td>" + party[e] + "</td>";
@@ -1288,7 +1326,7 @@ function Safari() {
         out += "</tr><tr>";
         for (var e in player.party) {
             var member = getPokemonInfo(player.party[e]);
-            out += "<td align=center>#" + member[0] + " " + sys.pokemon(member[0]) + (member[1] === true ? "*" : "")  + "</td>";
+            out += "<td align=center>#" + pokeInfo.readableNum(member[0]) + " " + sys.pokemon(member[0]) + (member[1] === true ? "*" : "")  + "</td>";
         }
         out += "</tr></table>";
         return out;
@@ -1329,12 +1367,11 @@ function Safari() {
             member = getPokemonInfo(list[e]);
             index = member[0];
             isShiny = member[1];
-            name = sys.pokemon(index);
             
             if (isShiny) {
-                shiny.push("<img src='icon:" + index +"' title='#" + index + " " + name + "'>");
+                shiny.push(pokeInfo.icon(index));
             } else {
-                normal.push("<img src='icon:" + index +"' title='#" + index + " " + name + "'>");
+                normal.push(pokeInfo.icon(index));
             }
         }
         if (shiny.length > 0) {
@@ -1954,7 +1991,7 @@ function Safari() {
             "Ultra Ball: A high functioning Poké Ball that has a better catch rate than a Great Ball. Has a cooldown of " + itemData.ultra.cooldown / 1000 +" seconds.",
             "Master Ball: An extremely rare Poké Ball that never fails to catch. Has a cooldown of " + itemData.master.cooldown / 1000 +" seconds.",
             "",
-            "*** Special Poké Balls ***",            
+            "*** Special Poké Balls ***",
             "Dream Ball: An unusual Poké Ball that works better on Pokémon of alternate colorations. Has a cooldown of " + itemData.dream.cooldown / 1000 +" seconds.",
             "Luxury Ball: A comfortable Poké Ball with an increased catch rate that is said to make one wealthy. Has a cooldown of " + itemData.luxury.cooldown / 1000 +" seconds.",
             "Nest Ball: A homely Poké Ball that has an increased catch rate against weaker Pokémon. Has a cooldown of " + itemData.nest.cooldown / 1000 +" seconds.",
@@ -2200,7 +2237,7 @@ function Safari() {
                 return true;
             }
             var dexNum = 0, makeShiny = false;
-            if (!isNaN(commandData) && commandData > 0 && commandData < 722) {
+            if (!isNaN(commandData)) {
                 dexNum = commandData;
             }
             if (command === "wilds") {
@@ -2291,6 +2328,26 @@ function Safari() {
         }
         if (command === "testbot") {
             safaribot.sendHtmlAll("<b>Bot works.</b>", sys.id("Indigo Plateau"));
+            return true;
+        }
+        //Needs some validation, but good for testing right now
+        if (command === "bestow") {
+            var cmd = commandData.split(":");
+            var target = cmd[0];
+            var p = parseInt(cmd[1], 10);
+            
+            var playerId = sys.id(target);
+            if (!playerId) {
+                safaribot.sendMessage(src, "No such person!", safchan);
+                return true;
+            }
+            var player = getAvatar(playerId);
+            if (player) {
+                safaribot.sendMessage(src, "You received a " + poke(p) + "!", safchan);
+                player.pokemon.push(p);
+            } else {
+                safaribot.sendMessage(src, "No such person!", safchan);
+            }
             return true;
         }
         
