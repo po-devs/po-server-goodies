@@ -233,7 +233,7 @@ function Safari() {
             name: "Forest",
             types: ["Grass", "Bug"], //Types that will be included. Pokémon only needs to match one of these types
             excludeTypes: [], //Types that will be excluded even if it matches the type above
-            include: [16, 17, 18, 163, 164], //Pokémon that do not match any of the criteria above, but will be included anyway
+            include: [16, 17, 18, 25, 163, 164], //Pokémon that do not match any of the criteria above, but will be included anyway
             exclude: [492] //Pokémon that matches all of the previous criteria, but will be excluded anyway
         },
         river: {
@@ -262,6 +262,48 @@ function Safari() {
             types: ["Flying"],
             excludeTypes: ["Bug"],
             include: [329, 330],
+            exclude: []
+        },
+        urban: {
+            name: "Urban",
+            types: ["Poison","Dark","Steel"],
+            excludeTypes: ["Grass","Water","Fairy"],
+            include: [52, 53, 209, 210, 300, 301, 479, pokeInfo.calcForme(479, 1), pokeInfo.calcForme(479, 2), pokeInfo.calcForme(479, 3), pokeInfo.calcForme(479, 4), pokeInfo.calcForme(479, 5), 506, 507, 508],
+            exclude: []
+        },
+        tundra: {
+            name: "Tundra",
+            types: ["Ice"],
+            excludeTypes: [],
+            include: [86, 90, 216, 217, 223, 244, 234, 245, 393, 394, 395, pokeInfo.calcForme(585, 3), pokeInfo.calcForme(586, 3), pokeInfo.calcForme(666, 1), pokeInfo.calcForme(666, 17)],
+            exclude: []
+        },
+        tundra: {
+            name: "Factory",
+            types: ["Steel","Electric"],
+            excludeTypes: [],
+            include: [137, 233, 474],
+            exclude: []
+        },
+        field: {
+            name: "Field",
+            types: ["Normal","Fairy"],
+            excludeTypes: [],
+            include: [],
+            exclude: [137, 233, 474]
+        },
+        dojo: {
+            name: "Dojo",
+            types: ["Fighting"],
+            excludeTypes: [],
+            include: [291, 597, 656, 657, 658],
+            exclude: []
+        },
+        pyre: {
+            name: "Mt. Pyre",
+            types: ["Ghost","Psychic"],
+            excludeTypes: ["Steel", "Normal"],
+            include: [37, 38, 359, 491],
             exclude: []
         }
     };
@@ -429,6 +471,9 @@ function Safari() {
         }
         ret += "&gen=6'>";
         return ret;
+    };
+    pokeInfo.calcForme = function(base, forme) {
+        return base + (forme << 16);
     };
     /* End Poke Info Functions */
     
@@ -1985,8 +2030,8 @@ function Safari() {
             "",
             "*** Perks ***",
             "Amulet Coin: When holding this charm, a bonus yield of about " + itemData.amulet.bonusRate * 100 + "% can be made when selling Pokémon to the NPC." ,
-            "Honey: Sweet-smelling Combee Honey that, when applied to bait, increases the chance of a Pokémon being attracted by" + itemData.honey.bonusRate * 100 +"%.",
-            "Zoom Lens: A high tech viewing tool that raises the accuracy of rocks thrown by" + itemData.zoom.bonusRate * 100 + "%.",
+            "Honey: Sweet-smelling Combee Honey that, when applied to bait, increases the chance of a Pokémon being attracted by " + itemData.honey.bonusRate * 100 +"%.",
+            "Zoom Lens: A high tech viewing tool that raises the accuracy of rocks thrown by " + itemData.zoom.bonusRate * 100 + "%.",
             "",
             "*** Standard Poké Balls ***",
             "Safari Ball: Standard issue Poké Ball used to catch Pokémon. Has a cooldown of " + itemData.safari.cooldown / 1000 +" seconds.",
