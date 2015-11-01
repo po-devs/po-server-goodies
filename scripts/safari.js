@@ -226,6 +226,45 @@ function Safari() {
     var currentItems = Object.keys(itemData);
     var retiredItems = ["rocks", "fast", "quick"];
     var allItems = currentItems.concat(retiredItems);
+    
+    var currentTheme;
+    var contestThemes = {
+        forest: {
+            name: "Forest",
+            types: ["Grass", "Bug"], //Types that will be included. Pokémon only needs to match one of these types
+            excludeTypes: [], //Types that will be excluded even if it matches the type above
+            include: [16, 17, 18, 163, 164], //Pokémon that do not match any of the criteria above, but will be included anyway
+            exclude: [492] //Pokémon that matches all of the previous criteria, but will be excluded anyway
+        },
+        river: {
+            name: "River",
+            types: ["Water"],
+            excludeTypes: ["Ice"],
+            include: [],
+            exclude: [245]
+        },
+        volcano: {
+            name: "Volcano",
+            types: ["Fire", "Rock"],
+            excludeTypes: [],
+            include: [],
+            exclude: []
+        },
+        cave: {
+            name: "Cave",
+            types: ["Rock", "Ground", "Dark"],
+            excludeTypes: ["Flying"],
+            include: [41, 42, 169, 92, 93, 202, 360],
+            exclude: []
+        },
+        sky: {
+            name: "Sky",
+            types: ["Flying"],
+            excludeTypes: ["Bug"],
+            include: [329, 330],
+            exclude: []
+        }
+    };
         
     function getAvatar(src) {
         if (SESSION.users(src)) {
@@ -391,10 +430,25 @@ function Safari() {
                 pokeId = poke(dexNum);
             }
         } else {
-            do {
-                num = sys.rand(1, 722);
+            if (currentTheme) {
+                var list = [];
+                for (var e = 1; e < 722; e++) {
+                    if (this.validForTheme(e, currentTheme) && add(sys.pokeBaseStats(num)) <= maxStats) {
+                        list.push(e);
+                    }
+                }
+                if (list.length === 0) {
+                    return;
+                }
+                num = list[sys.rand(0, list.length)];
                 pokeId = poke(num + (shiny ? "" : 0));
-            } while (!pokeId || add(sys.pokeBaseStats(num)) > maxStats);
+            } 
+            else {
+                do {
+                    num = sys.rand(1, 722);
+                    pokeId = poke(num + (shiny ? "" : 0));
+                } while (!pokeId || add(sys.pokeBaseStats(num)) > maxStats);
+            }
         }
         
         sys.sendHtmlAll("<hr><center>A wild " + pokeId + " appeared! <i>(BST: " + add(sys.pokeBaseStats(num)) + ")</i><br/>" + pokeImage(num + (shiny ? "" : 0)) + "</center><hr>", safchan);
@@ -402,6 +456,28 @@ function Safari() {
         preparationPhase = sys.rand(4, 7);
         preparationThrows = {};
         preparationFirst = null;
+    };
+    this.validForTheme = function(pokeId, themeName) {
+        var theme = contestThemes[themeName];
+        var pokeNum = parseInt(pokeId, 10);
+        
+        if (theme.exclude.indexOf(pokeNum) !== -1) {
+            return false;
+        }
+        if (theme.include.indexOf(pokeNum) !== -1) {
+            return true;
+        }
+        for (var e in theme.excludeTypes) {
+            if (hasType(pokeNum, theme.excludeTypes[e])) {
+                return false;
+            }
+        }
+        for (e in theme.types) {
+            if (hasType(pokeNum, theme.types[e])) {
+                return true;
+            }
+        }
+        return false;
     };
     this.throwBall = function(src, data) {
         var player = getAvatar(src);
@@ -2274,13 +2350,15 @@ function Safari() {
         if (contestCooldown === 0) {
             contestCooldown = contestCooldownLength;
             contestCount = contestDuration;
+            var themeList = Object.keys(contestThemes);
+            currentTheme = Math.random() < 0.5 ? null : themeList[sys.rand(0, themeList.length)];
             sys.sendAll("*** ************************************************************ ***", safchan);
-            safaribot.sendAll("A new Safari contest is starting now!", safchan);
+            safaribot.sendAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now!", safchan);
             sys.sendAll("*** ************************************************************ ***", safchan);
             
             if (contestBroadcast) {
                 sys.sendAll("*** ************************************************************ ***", 0);
-                safaribot.sendAll("A new Safari contest is starting now at #" + defaultChannel + "!", 0);
+                safaribot.sendAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now at #" + defaultChannel + "!", 0);
                 sys.sendAll("*** ************************************************************ ***", 0);
             } else {
                 contestBroadcast = true;
@@ -2305,6 +2383,7 @@ function Safari() {
                 }
                 sys.sendAll("*** ************************************************************ ***", safchan);
                 currentPokemon = null;
+                currentTheme = null;
                 if (winner) {
                     var playerId = sys.id(winner);
                     var player = getAvatar(playerId);
@@ -2312,7 +2391,6 @@ function Safari() {
                     player.balls[item] += 10;
                     safaribot.sendMessage(playerId, "You received 10 Gachapon Tickets for winning the contest!", safchan);
                 }
-                
                 //Check daily rewards after a contest so players won't need to relog to get their reward when date changes
                 var onChannel = sys.playersOfChannel(safchan),
                     today = getDay(now());
