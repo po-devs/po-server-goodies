@@ -1987,7 +1987,7 @@ function Safari() {
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be Safari, Great, Ultra, Master, or Dream Ball.",
             "/sell: To sell one of your Pokémon*.",
             "/trade: To request a Pokémon trade with another player*.",
-            "/release: Used to release a Pokémon that can be caught by other players. Pokémon can only be released every 4 minutes."
+            "/release: Used to release a Pokémon that can be caught by other players. Pokémon can only be released every 4 minutes.",
             "/buy: To buy more Poké Balls.",
             "/party: To add or remove a Pokémon from your party, or to set your party's leader*.",
             "/box [number]: To view all your caught Pokémon organized in boxes.",
