@@ -241,7 +241,7 @@ function Safari() {
         safari: {name: "safari", fullName: "Safari Ball", type: "ball", price: 30, ballBonus: 1, cooldown: 6000, aliases:["safariball", "safari", "safari ball"], sellable: false, buyable: true},
         great: {name: "great", fullName: "Great Ball", type: "ball", price: 60, ballBonus: 1.5, cooldown: 9000, aliases:["greatball", "great", "great ball"], sellable: false, buyable: true},
         ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", price: 120, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"], sellable: false, buyable: true},
-        master: {name: "master", fullName: "Master Ball", type: "ball", price: 0, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], sellable: false, buyable: true},
+        master: {name: "master", fullName: "Master Ball", type: "ball", price: 0, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], sellable: false, buyable: false},
         
         dream: {name: "dream", fullName: "Dream Ball", type: "ball", price: 0, ballBonus: 1, bonusRate: 3, cooldown: 9000, aliases:["dreamball", "dream", "dream ball"], sellable: false, buyable: false},
         heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", price: 0, ballBonus: 1, bonusRate: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], sellable: false, buyable: false},
@@ -535,9 +535,8 @@ function Safari() {
             }
         }
         
-        num = shiny ? "" + num : num;
-        sys.sendHtmlAll("<hr><center>A wild " + pokeId + " appeared! <i>(BST: " + add(sys.pokeBaseStats(num)) + ")</i><br/>" + pokeInfo.sprite(num) + "</center><hr>", safchan);
-        currentPokemon = num;
+        currentPokemon = shiny ? "" + num : num;
+        sys.sendHtmlAll("<hr><center>A wild " + pokeId + " appeared! <i>(BST: " + add(sys.pokeBaseStats(num)) + ")</i><br/>" + pokeInfo.sprite(currentPokemon) + "</center><hr>", safchan);
         preparationPhase = sys.rand(4, 7);
         preparationThrows = {};
         preparationFirst = null;
@@ -768,7 +767,7 @@ function Safari() {
         
         var validItems = [];
         for (var e in itemData) {
-            if (itemData[e].buyable) {
+            if (itemData[e].buyable && itemData[e].price > 0) {
                 validItems.push(itemData[e].name);
             }
         }
@@ -1386,10 +1385,12 @@ function Safari() {
             var member = getPokemonInfo(player.party[e]);
             var name = sys.pokemon(member[0]) + (member[1] === true ? "*" : "");
             out += "<td align=center>#" + pokeInfo.readableNum(member[0]) + " " + name;
-            out += "<p>"; //puts a little too much space between lines
-            var active = "<a href='po:send//party active:" + name + "'>Active</a>";
-            var remove = "<a href='po:send//party remove:" + name + "'>Remove</a>";
-            out += "(" + active + " / " + remove + ")";
+            if (ownParty) {
+                out += "<p>"; //puts a little too much space between lines
+                var active = "<a href='po:send//party active:" + name + "'>Active</a>";
+                var remove = "<a href='po:send//party remove:" + name + "'>Remove</a>";
+                out += "(" + active + " / " + remove + ")";
+            }
             out += "</td>";
         }
         out += "</tr></table>";
