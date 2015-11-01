@@ -440,7 +440,7 @@ function Safari() {
         };
 
         for (var e in gachaItems) {
-            if (currentItems.indexOf(e) === -1) {
+            if (currentItems.indexOf(e) === -1 && e !== "wild") {
                 continue;
             }
             tempArray = fillArray(e, gachaItems[e]);
@@ -1107,7 +1107,7 @@ function Safari() {
             case "zoom":
                 player.balls[reward] += 1;
                 safaribot.sendAll("Sweet! " + sys.name(src) + " just won a " + finishName(reward) + " from Gachapon!", safchan);
-                safaribot.sendMessage(src, "You received " + amount + " " + finishName(reward) + plural + ".", safchan);
+                safaribot.sendMessage(src, "You received a " + finishName(reward) + plural + ".", safchan);
             break;
             default:
                 player.balls[reward] += amount;
