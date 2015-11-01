@@ -433,7 +433,7 @@ function Safari() {
             if (currentTheme) {
                 var list = [];
                 for (var e = 1; e < 722; e++) {
-                    if (this.validForTheme(e, currentTheme) && add(sys.pokeBaseStats(num)) <= maxStats) {
+                    if (this.validForTheme(e, currentTheme) && add(sys.pokeBaseStats(e)) <= maxStats) {
                         list.push(e);
                     }
                 }
