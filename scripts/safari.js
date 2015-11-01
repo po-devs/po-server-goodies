@@ -25,7 +25,7 @@ function Safari() {
     
     var contestCooldownLength = 1800; //1 contest every 30 minutes
     var baitCooldownLength = 0;
-    var releaseCooldownLength = 240; //1 release every 4 minutes
+    var releaseCooldownLength = 180; //1 release every 3 minutes
     var contestBroadcast = true; //Determines whether Tohjo gets notified
     var contestCooldown = (SESSION.global() && SESSION.global().safariContestCooldown ? SESSION.global().safariContestCooldown : contestCooldownLength);
     var baitCooldown = (SESSION.global() && SESSION.global().safariBaitCooldown ? SESSION.global().safariBaitCooldown : baitCooldownLength);
@@ -199,27 +199,27 @@ function Safari() {
     //Data on items
     var itemData = {
         //Balls
-        safari: {name: "safari", fullName: "Safari Ball", type: "ball", price: 30, ballBonus: 1, cooldown: 6000, aliases:["safariball", "safari", "safari ball", "*"]},
-        great: {name: "great", fullName: "Great Ball", type: "ball", price: 60, ballBonus: 1.5, cooldown: 9000, aliases:["greatball", "great", "great ball"]},
-        ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", price: 120, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"]},
-        master: {name: "master", fullName: "Master Ball", type: "ball", price: 0, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"]},
+        safari: {name: "safari", fullName: "Safari Ball", type: "ball", price: 30, ballBonus: 1, cooldown: 6000, aliases:["safariball", "safari", "safari ball"], sellable: false, buyable: true},
+        great: {name: "great", fullName: "Great Ball", type: "ball", price: 60, ballBonus: 1.5, cooldown: 9000, aliases:["greatball", "great", "great ball"], sellable: false, buyable: true},
+        ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", price: 120, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"], sellable: false, buyable: true},
+        master: {name: "master", fullName: "Master Ball", type: "ball", price: 0, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], sellable: false, buyable: true},
         
-        dream: {name: "dream", fullName: "Dream Ball", type: "ball", price: 0, ballBonus: 1, bonusRate: 3, cooldown: 9000, aliases:["dreamball", "dream", "dream ball"]},
-        heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", price: 0, ballBonus: 1, bonusRate: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"]},
-        nest: {name: "nest", fullName: "Nest Ball", type: "ball", price: 0, ballBonus: 1,  bonusRate: 5, cooldown: 4000, aliases:["nestball", "nest", "nest ball"]},
-        luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", price: 0, ballBonus: 2, cooldown: 8000, aliases:["luxuryball", "luxury", "luxury ball"]},
-        moon: {name: "moon", fullName: "Moon Ball", type: "ball", price: 0, ballBonus: 1, bonusRate: 5, cooldown: 8000, aliases:["moonball", "moon", "moon ball"]},
-        premier: {name: "premier", fullName: "Premier Ball", type: "ball", price: 0, ballBonus: 1.5, bonusRate: 3, cooldown: 6000, aliases:["premierball", "premier", "premier ball"]},
+        dream: {name: "dream", fullName: "Dream Ball", type: "ball", price: 0, ballBonus: 1, bonusRate: 3, cooldown: 9000, aliases:["dreamball", "dream", "dream ball"], sellable: false, buyable: false},
+        heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", price: 0, ballBonus: 1, bonusRate: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], sellable: false, buyable: false},
+        nest: {name: "nest", fullName: "Nest Ball", type: "ball", price: 0, ballBonus: 1,  bonusRate: 5, cooldown: 4000, aliases:["nestball", "nest", "nest ball"], sellable: false, buyable: false},
+        luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", price: 0, ballBonus: 2, cooldown: 8000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false},
+        moon: {name: "moon", fullName: "Moon Ball", type: "ball", price: 0, ballBonus: 1, bonusRate: 5, cooldown: 8000, aliases:["moonball", "moon", "moon ball"], sellable: false, buyable: false},
+        premier: {name: "premier", fullName: "Premier Ball", type: "ball", price: 0, ballBonus: 1.5, bonusRate: 3, cooldown: 6000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false},
     
         //Other Items
-        bait: {name: "bait", fullName: "Bait", type: "usable", price: 100, successRate: 0.35, failCD: 15, successCD: 50, aliases:["bait"]},
-        rock: {name: "rock", fullName: "Rock", type: "usable", price: 50, successRate: 0.70, bounceRate: 0.02, aliases:["rock", "rocks"]},
-        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", price: 149, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"]},
+        bait: {name: "bait", fullName: "Bait", type: "usable", price: 100, successRate: 0.35, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true},
+        rock: {name: "rock", fullName: "Rock", type: "usable", price: 50, successRate: 0.70, bounceRate: 0.02, aliases:["rock", "rocks"], sellable: false, buyable: true},
+        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", price: 149, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true},
         
         //Perks
-        amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["amulet", "amuletcoin", "amulet coin", "coin"]},
-        honey: {name: "honey", fullName: "Honey", type: "perk", price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["honey"]},
-        zoom: {name: "zoom", fullName: "Zoom Lens", type: "perk", price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["zoom", "zoomlens", "zoom lens", "lens"]}
+        amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false},
+        honey: {name: "honey", fullName: "Honey", type: "perk", price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["honey"], sellable: false, buyable: false},
+        zoom: {name: "zoom", fullName: "Zoom Lens", type: "perk", price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["zoom", "zoomlens", "zoom lens", "lens"], sellable: false, buyable: false}
     };
     
     //Master list of items
@@ -405,14 +405,18 @@ function Safari() {
     /*function pokeImage(num) {
         return "<img src='pokemon:num=" + num + (typeof num == "string" ? "&shiny=true" : "") + "&gen=6'>";
     }*/
-    function itemAlias(name) {
+    function itemAlias(name, returnGarbage) {
         name = name.toLowerCase();
         for (var e in itemData) {
             if (itemData[e].aliases.indexOf(name) !== -1) {
                 return itemData[e].name;
             }
         }
-        return "safari";
+        if (returnGarbage) {
+            return name;
+        } else {
+            return "safari";
+        }
     }
     function fillArray(item, amount) {
         var ret = [];
@@ -530,8 +534,9 @@ function Safari() {
             }
         }
         
+        num = shiny ? "" + num : num;
         sys.sendHtmlAll("<hr><center>A wild " + pokeId + " appeared! <i>(BST: " + add(sys.pokeBaseStats(num)) + ")</i><br/>" + pokeInfo.sprite(num) + "</center><hr>", safchan);
-        currentPokemon = shiny ? "" + num : num;
+        currentPokemon = num;
         preparationPhase = sys.rand(4, 7);
         preparationThrows = {};
         preparationFirst = null;
@@ -755,24 +760,29 @@ function Safari() {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
             return;
         }
-        if (data === "*") {
-            safaribot.sendMessage(src, "You can buy the following items:", safchan);
-            safaribot.sendMessage(src, "Safari Ball: $" + itemData.safari.price, safchan);
-            safaribot.sendMessage(src, "Great Ball: $" + itemData.great.price, safchan);
-            safaribot.sendMessage(src, "Ultra Ball: $" + itemData.ultra.price, safchan);
-            safaribot.sendMessage(src, "Gachapon Ticket: $" + itemData.gacha.price, safchan);
-            safaribot.sendMessage(src, "Bait: $" + itemData.bait.price, safchan);
-            safaribot.sendMessage(src, "Rock: $" + itemData.rock.price, safchan);
-            sys.sendMessage(src, "", safchan);
-            safaribot.sendMessage(src, "You currently have $" + player.money + ". To buy an item, use /buy item:quantity (e.g.: /buy safari:3)", safchan);
-            return;
-        }
         if (contestCount > 0) {
             safaribot.sendMessage(src, "[Closed] Out catching Pokémon at the Contest. Come back after the Contest!", safchan);
             return;
         }
+        
+        var validItems = [];
+        for (var e in itemData) {
+            if (itemData[e].buyable) {
+                validItems.push(itemData[e].name);
+            }
+        }
+        
+        if (data === "*") {
+            safaribot.sendMessage(src, "You can buy the following items:", safchan);
+            for (var i = 0; i < validItems.length; i++) {
+                safaribot.sendMessage(src, itemData[validItems[i]].fullName + ": $" + itemData[validItems[i]].price, safchan);
+            }            
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendMessage(src, "You currently have $" + player.money + ". To buy an item, use /buy item:quantity (e.g.: /buy safari:3)", safchan);
+            return;
+        }
         var info = data.split(":");
-        var item = itemAlias(info[0]);
+        var item = itemAlias(info[0], true);
         var amount = 1;
         if (info.length > 1) {
             amount = parseInt(info[1], 10);
@@ -781,9 +791,8 @@ function Safari() {
             }
         }
         
-        var validItems = ["safari", "bait", "gacha", "ultra", "great", "rock"];
         if (validItems.indexOf(item) == -1) {
-            safaribot.sendMessage(src, "You can not buy this item here!", safchan);
+            safaribot.sendMessage(src, "We don't seem to sell \"" + info[0] +  "\" at this location...", safchan);
             return;
         }
         
@@ -948,7 +957,7 @@ function Safari() {
             }
         } else {
             var acceptCommand = "/trade " + sys.name(src) + ":" + sys.pokemon(request[0]) + (request[1] === true ? "*" : "") + ":" + sys.pokemon(offer[0]) + (offer[1] === true ? "*" : "");
-            sys.sendHtmlMessage(targetId, "<font color=#3daa68><timestamp/><b>"+("±" + safaribot.name)+":</b></font> To accept the trade, type <a href='po:setmsg/" + acceptCommand + "'>" + acceptCommand + "</a>.", safchan);
+            sys.sendHtmlMessage(targetId, "<font color=#3daa68><timestamp/><b>"+("±" + safaribot.name)+":</b></font> To accept the trade, type <a href='po:send/" + acceptCommand + "'>" + acceptCommand + "</a>.", safchan);
             sys.sendMessage(src, "" , safchan);
             sys.sendMessage(targetId, "" , safchan);
             tradeRequests[userName] = { target: targetName, offer: offerId, request: requestId };
@@ -1374,7 +1383,13 @@ function Safari() {
         out += "</tr><tr>";
         for (var e in player.party) {
             var member = getPokemonInfo(player.party[e]);
-            out += "<td align=center>#" + pokeInfo.readableNum(member[0]) + " " + sys.pokemon(member[0]) + (member[1] === true ? "*" : "")  + "</td>";
+            var name = sys.pokemon(member[0]) + (member[1] === true ? "*" : "");
+            out += "<td align=center>#" + pokeInfo.readableNum(member[0]) + " " + name;
+            out += "<p>"; //puts a little too much space between lines
+            var active = "<a href='po:send//party active:" + name + "'>Active</a>";
+            var remove = "<a href='po:send//party remove:" + name + "'>Remove</a>";
+            out += "(" + active + " / " + remove + ")";
+            out += "</td>";
         }
         out += "</tr></table>";
         return out;
