@@ -278,7 +278,7 @@ function Safari() {
             include: [86, 90, 216, 217, 223, 244, 234, 245, 393, 394, 395, pokeInfo.calcForme(585, 3), pokeInfo.calcForme(586, 3), pokeInfo.calcForme(666, 1), pokeInfo.calcForme(666, 17)],
             exclude: []
         },
-        tundra: {
+        factory: {
             name: "Factory",
             types: ["Steel","Electric"],
             excludeTypes: [],
@@ -477,7 +477,8 @@ function Safari() {
         return ret;
     };
     pokeInfo.calcForme = function(base, forme) {
-        return base + (forme << 16);
+        var ret =  base & (forme << 16);
+        return ret;
     };
     /* End Poke Info Functions */
     
@@ -776,7 +777,7 @@ function Safari() {
             safaribot.sendMessage(src, "You can buy the following items:", safchan);
             for (var i = 0; i < validItems.length; i++) {
                 safaribot.sendMessage(src, itemData[validItems[i]].fullName + ": $" + itemData[validItems[i]].price, safchan);
-            }            
+            }
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "You currently have $" + player.money + ". To buy an item, use /buy item:quantity (e.g.: /buy safari:3)", safchan);
             return;
