@@ -195,6 +195,45 @@ function Safari() {
             "Dark": 2
         }
     };
+    /* Poke Info Functions */
+    var pokeInfo = {};
+    pokeInfo.species = function(poke) {
+        return poke & ((1 << 16) - 1);
+    };
+    pokeInfo.forme = function(poke) {
+        return poke >> 16;
+    };
+    pokeInfo.shiny = function(poke) {
+        return typeof poke === "string";
+    };
+    pokeInfo.readableNum = function(poke) {
+        var ret = [];
+        ret += pokeInfo.species(poke);
+        if (pokeInfo.forme(poke) > 0) {
+            ret += "-";
+            ret += pokeInfo.forme(poke);
+        }
+        return ret;
+    };
+    pokeInfo.icon = function(p) {
+       return "<img src='icon:" + p + "' title='#" + pokeInfo.readableNum(p) + " " + poke(p) + "'>";
+    };
+    pokeInfo.sprite = function(poke) {
+        var ret = [];
+        ret += "<img src='pokemon:num=";
+        ret += pokeInfo.readableNum(poke);
+        if (pokeInfo.shiny(poke)) {
+            ret += "&shiny=true";
+        }
+        ret += "&gen=6'>";
+        return ret;
+    };
+    pokeInfo.calcForme = function(base, forme) {
+        var ret =  base & (forme << 16);
+        return ret;
+    };
+    /* End Poke Info Functions */
+    
     
     //Data on items
     var itemData = {
@@ -442,45 +481,6 @@ function Safari() {
         for (var j, x, i = o.length; i; j = parseInt(Math.random() * i, 10), x = o[--i], o[i] = o[j], o[j] = x);
         return o;
     }
-    
-    /* Poke Info Functions */
-    var pokeInfo = {};
-    pokeInfo.species = function(poke) {
-        return poke & ((1 << 16) - 1);
-    };
-    pokeInfo.forme = function(poke) {
-        return poke >> 16;
-    };
-    pokeInfo.shiny = function(poke) {
-        return typeof poke === "string";
-    };
-    pokeInfo.readableNum = function(poke) {
-        var ret = [];
-        ret += pokeInfo.species(poke);
-        if (pokeInfo.forme(poke) > 0) {
-            ret += "-";
-            ret += pokeInfo.forme(poke);
-        }
-        return ret;
-    };
-    pokeInfo.icon = function(p) {
-       return "<img src='icon:" + p + "' title='#" + pokeInfo.readableNum(p) + " " + poke(p) + "'>";
-    };
-    pokeInfo.sprite = function(poke) {
-        var ret = [];
-        ret += "<img src='pokemon:num=";
-        ret += pokeInfo.readableNum(poke);
-        if (pokeInfo.shiny(poke)) {
-            ret += "&shiny=true";
-        }
-        ret += "&gen=6'>";
-        return ret;
-    };
-    pokeInfo.calcForme = function(base, forme) {
-        var ret =  base & (forme << 16);
-        return ret;
-    };
-    /* End Poke Info Functions */
     
     this.initGacha = function () {
         var tempArray = [];
