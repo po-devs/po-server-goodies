@@ -962,6 +962,7 @@ function Safari() {
             baitCooldown = itemData.bait.failCD + sys.rand(0,5);
             safaribot.sendAll(sys.name(src) + " left some bait out... but nothing showed up.", safchan);
         }
+        this.saveGame(player);
     };
     this.throwRock = function (src, commandData) {
         var player = getAvatar(src);
@@ -1008,6 +1009,7 @@ function Safari() {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "... but it missed!", safchan);
         }
         player.rockCooldown = currentTime + 10000;
+        this.saveGame(player);
     };
     this.gachapon = function (src, commandData) {
         var player = getAvatar(src);
@@ -1115,6 +1117,7 @@ function Safari() {
             break;
         }
         player.gachaCooldown = currentTime + 5000;
+        this.saveGame(player);
         gachaJackpot += 1;
         SESSION.global().safariGachaJackpot = gachaJackpot;
     };
