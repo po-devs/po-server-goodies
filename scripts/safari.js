@@ -858,6 +858,72 @@ function Safari() {
         }
         this.saveGame(player);
     };
+    this.sellItems = function(src, data) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        if (contestCount > 0) {
+            safaribot.sendMessage(src, "[Closed] Out catching Pokémon at the Contest. Come back after the Contest!", safchan);
+            return;
+        }
+        
+        var validItems = [];
+        for (var e in itemData) {
+            if (itemData[e].sellable && itemData[e].price > 0) {
+                validItems.push(itemData[e].name);
+            }
+        }
+        
+        if (data === "*") {
+            safaribot.sendMessage(src, "You can sell the following items:", safchan);
+            for (var i = 0; i < validItems.length; i++) {
+                safaribot.sendMessage(src, itemData[validItems[i]].fullName + ": $" + itemData[validItems[i]].price, safchan);
+            }
+            sys.sendMessage(src, "", safchan);
+            var sellables = [];
+            for (var i = 0; i < validItems.length; i++) {
+                var misc = validItems[i];
+                var amt = player.balls[misc];
+                if (amt > 0) {
+                    var plural = amt > 1 ? "s" : "";
+                    sellables.push(amt + " " + finishName(misc) + plural);
+                }
+            }
+            if (sellables.length > 0) {
+                safaribot.sendMessage(src, "You currently have " + sellables.join(", ") + ". To sell an item, use /pawn item:quantity (e.g.: /pawn pearl:3)", safchan);
+            } else {
+                safaribot.sendMessage(src, "You don't have anything that can be sold at this time!", safchan);
+            }
+            return;
+        }
+        var info = data.split(":");
+        var item = itemAlias(info[0], true);
+        var amount = 1;
+        if (info.length > 1) {
+            amount = parseInt(info[1], 10);
+            if (isNaN(amount) || amount < 1) {
+                amount = 1;
+            }
+        }
+        
+        if (validItems.indexOf(item) == -1) {
+            safaribot.sendMessage(src, "We do not buy \"" + info[0] +  "\" at this location.", safchan);
+            return;
+        }
+        
+        if (player.balls[item] < amount) {
+            safaribot.sendMessage(src, "You don't have " + amount + " " + finishName(item) + ", you only have " + player.balls[item] + "!", safchan);
+            return;
+        }
+        
+        var cost = amount * itemData[item].price;
+        player.money += cost;
+        player.balls[item] -= amount;
+        safaribot.sendMessage(src, "You sold " + amount + " " + finishName(item) +  " for $" + cost + "! You now have " + player.balls[item] + " " + finishName(item) + " and $" + player.money + "!", safchan);
+        this.saveGame(player);
+    };
     this.tradePokemon = function(src, data) {
         var player = getAvatar(src);
         if (!player) {
@@ -1129,7 +1195,7 @@ function Safari() {
         player.balls[gach] -= 1;
         var rng = sys.rand(0, gachaponPrizes.length);
         var reward = gachaponPrizes[rng];
-        safaribot.sendMessage(src, "Gacha-PON! The Gachapon Machine has dispensed an item capsule.", safchan);
+        safaribot.sendMessage(src, "Gacha-PON! The Gachapon Machine has dispensed an item capsule. [Remaining Tickets: " + player.balls[gach] + "]", safchan);
         
         //Variable for higher quantity rewards later. Make better later maybe?
         var amount = 1;
@@ -1205,7 +1271,7 @@ function Safari() {
             case "starpiece":
             case "bigpearl":
                 player.balls[reward] += 1;
-                safaribot.sendMessage(src, "You received a " + finishName(reward) + plural + ".", safchan);
+                safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
             break;
             default:
                 player.balls[reward] += amount;
@@ -1469,7 +1535,7 @@ function Safari() {
         return out;
     };
     this.listPokemon = function(list, title) {
-        var out = "", normal = [], shiny = [], member, name, isShiny, index, count = 0, rowSize = 12, e;
+        var out = "", normal = [], shiny = [], member, isShiny, index, count = 0, rowSize = 12, e;
         for (e in list) {
             member = getPokemonInfo(list[e]);
             index = member[0];
@@ -1923,15 +1989,15 @@ function Safari() {
             money: 300,
             balls: {
                 safari: 30,
-                great: 0,
-                ultra: 0,
+                great: 5,
+                ultra: 1,
                 master: 0,
                 dream: 0,
                 heavy: 0,
                 nest: 0,
                 luxury: 0,
                 moon: 0,
-                bait: 0,
+                bait: 5,
                 rock: 0,
                 premier: 0,
                 gacha: 0,
@@ -1954,7 +2020,7 @@ function Safari() {
         };
         SESSION.users(src).safari = player;
         this.saveGame(player);
-        safaribot.sendMessage(src, "You received a " + poke(num) + " and 30 Safari Balls!", safchan);
+        safaribot.sendMessage(src, "You received a " + poke(num) + ", 30 Safari Balls, 5 Bait, 5 Great Balls, and 1 Ultra Ball!", safchan);
     };
     this.saveGame = function(player) {
         rawPlayers.add(player.id, JSON.stringify(player));
@@ -2139,8 +2205,9 @@ function Safari() {
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be Safari, Great, Ultra, Master, or Dream Ball.",
             "/sell: To sell one of your Pokémon*.",
             "/trade: To request a Pokémon trade with another player*.",
-            "/release: Used to release a Pokémon that can be caught by other players. Pokémon can only be released every 4 minutes.",
-            "/buy: To buy more Poké Balls.",
+            "/release: Used to release a Pokémon that can be caught by other players. Pokémon can only be released every 3 minutes.",
+            "/buy: To buy items.",
+            "/pawn: To sell items.",
             "/party: To add or remove a Pokémon from your party, or to set your party's leader*.",
             "/box [number]: To view all your caught Pokémon organized in boxes.",
             "/bag: To view all money and items.",
@@ -2225,6 +2292,10 @@ function Safari() {
         }
         if (command === "buy") {
             safari.buyItems(src, commandData);
+            return true;
+        }
+        if (command === "pawn") {
+            safari.sellItems(src, commandData);
             return true;
         }
         if (command === "view") {
