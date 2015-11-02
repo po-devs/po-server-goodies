@@ -252,7 +252,7 @@ function Safari() {
     
         //Other Items
         bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 100, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true},
-        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.70, bounceRate: 0.02, aliases:["rock", "rocks"], sellable: false, buyable: false},
+        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.02, aliases:["rock", "rocks"], sellable: false, buyable: false},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 149, cooldown: 8000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, aliases:["stick","sticks"], sellable: false, buyable: true},
         
@@ -883,7 +883,7 @@ function Safari() {
         if (data === "*") {
             safaribot.sendMessage(src, "You can sell the following items:", safchan);
             for (var i = 0; i < validItems.length; i++) {
-                safaribot.sendMessage(src, itemData[validItems[i]].fullName + ": $" + itemData[validItems[i]].price/2, safchan);
+                safaribot.sendMessage(src, itemData[validItems[i]].fullName + ": $" + Math.floor(itemData[validItems[i]].price/2), safchan);
             }
             sys.sendMessage(src, "", safchan);
             var sellables = [];
@@ -922,7 +922,7 @@ function Safari() {
             return;
         }
         
-        var cost = amount * itemData[item].price/2;
+        var cost = Math.floor(amount * itemData[item].price/2);
         player.money += cost;
         player.balls[item] -= amount;
         safaribot.sendMessage(src, "You sold " + amount + " " + finishName(item) +  " for $" + cost + "! You now have " + player.balls[item] + " " + finishName(item) + " and $" + player.money + "!", safchan);
@@ -2198,9 +2198,9 @@ function Safari() {
             "",
             "*** Items ***",
             "Pokédollars: Used to purchase items from the shop.",
-            "Bait: Tasty Bluk Berries used to attract wild Pokémon, set down with /bait. Has a 45% success rate with a 60 second cooldown on success, and a 20 second cooldown on failure.",
+            "Bait: Tasty Bluk Berries used to attract wild Pokémon, set down with /bait. Has a " + itemData.bait.successRate*100 + "% success rate with an approximate " + itemData.bait.successCD + " second cooldown on success, and an approximate " + itemData.bait.failCD + " second cooldown on failure.",
             "Rock: A small rock that can be thrown to stun another player for a short period with /rock. Has a 10 second cooldown.",
-            "Gachapon Ticket: Used to play the Gachapon Machine with /gacha, and win random prizes. Has a 5 second cooldown.",
+            "Gachapon Ticket: Used to play the Gachapon Machine with /gacha, and win random prizes. Has a " + itemData.gacha.cooldown/1000 + " second cooldown.",
             "Valuables: The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be pawned off with /pawn for money.",
             "",
             "*** Perks ***",
