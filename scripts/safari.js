@@ -481,6 +481,9 @@ function Safari() {
     }
     
     function finishName(item) {
+        if (item === "wild") {
+            return "Wild Pokémon";
+        }
         return itemData[item].fullName;
     }
     function isBall(item) {
