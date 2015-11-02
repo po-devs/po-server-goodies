@@ -1145,7 +1145,7 @@ exports.help = [
     "/contributors: Lists contributors to Pokémon Online.",
     "/intier [tier]: Displays all unidled players in a specific tier.",
     "/league: Lists gym leaders and elite four of the PO league.",
-    "/notice: Allows you to view current events",
+    "/notice: Allows you to view current events.",
     "/players: Shows the number of players online. Can accept an operating system as argument to see how many users are using it.",
     "/topchannels: To view the most populated channels.",
     "/uptime: Shows time since the server was last offline.",
