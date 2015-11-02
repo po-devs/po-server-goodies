@@ -282,7 +282,10 @@ function Safari() {
             types: ["Grass", "Bug"], //Types that will be included. Pokémon only needs to match one of these types
             excludeTypes: [], //Types that will be excluded even if it matches the type above
             include: [16, 17, 18, 25, 163, 164], //Pokémon that do not match any of the criteria above, but will be included anyway
-            exclude: [492] //Pokémon that matches all of the previous criteria, but will be excluded anyway
+            exclude: [492], //Pokémon that matches all of the previous criteria, but will be excluded anyway,
+            customBST: { "289": 600 }, //Makes a pokémon count as a different BST for this theme. In the example, Pokémon #289 (Slaking) will be considered a 600 BST Pokémon for this theme.
+            maxBST: 601, //Choose a different maximum BST for pokémon to spawn. Optional, defaults to 601.
+            minBST: 300 //Choose a different minimum BST for pokémon to spawn. Optional, defaults to 300.
         },
         river: {
             name: "River",
@@ -533,11 +536,36 @@ function Safari() {
         }
     };
     
+    this.startContest = function(commandData) {
+        contestCooldown = contestCooldownLength;
+        contestCount = contestDuration;
+        if (commandData.toLowerCase() === "none") {
+            currentTheme = null;
+        } else if (commandData.toLowerCase() in contestThemes) {
+            currentTheme = commandData.toLowerCase();
+        } else {
+            var themeList = Object.keys(contestThemes);
+            currentTheme = Math.random() < 0.5 ? null : themeList[sys.rand(0, themeList.length)];
+        }
+        sys.sendAll("*** ************************************************************ ***", safchan);
+        safaribot.sendAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now!", safchan);
+        sys.sendAll("*** ************************************************************ ***", safchan);
+        
+        if (contestBroadcast) {
+            sys.sendAll("*** ************************************************************ ***", 0);
+            safaribot.sendAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now at #" + defaultChannel + "!", 0);
+            sys.sendAll("*** ************************************************************ ***", 0);
+        } else {
+            contestBroadcast = true;
+        }
+        
+        safari.createWild();
+    };
     this.createWild = function(dexNum, makeShiny) {
         var num,
             pokeId,
             shiny = sys.rand(0, shinyChance) < 1,
-            maxStats = sys.rand(300, 750);
+            maxStats;
         if (makeShiny) {
             shiny = true;
         }
@@ -549,9 +577,12 @@ function Safari() {
             }
         } else {
             if (currentTheme) {
-                var list = [];
-                for (var e = 1; e < 722; e++) {
-                    if (this.validForTheme(e, currentTheme) && add(sys.pokeBaseStats(e)) <= maxStats) {
+                var theme = contestThemes[currentTheme];
+                maxStats = sys.rand(theme.minBST || 300, theme.maxBST || 601);
+                var list = [], bst, e;
+                for (e = 1; e < 722; e++) {
+                    bst = "customBST" in theme && e in theme.customBST ? theme.customBST[e] : getBST(e);
+                    if (this.validForTheme(e, currentTheme) && bst <= maxStats) {
                         list.push(e);
                     }
                 }
@@ -562,10 +593,11 @@ function Safari() {
                 pokeId = poke(num + (shiny ? "" : 0));
             }
             else {
+                maxStats = sys.rand(300, 721);
                 do {
                     num = sys.rand(1, 722);
                     pokeId = poke(num + (shiny ? "" : 0));
-                } while (!pokeId || add(sys.pokeBaseStats(num)) > maxStats);
+                } while (!pokeId || getBST(num) > maxStats);
             }
         }
         
@@ -1535,7 +1567,7 @@ function Safari() {
                 out += "<p>"; //puts a little too much space between lines
                 var active = "<a href='po:send//party active:" + name + "'>Active</a>";
                 var remove = "<a href='po:send//party remove:" + name + "'>Remove</a>";
-                out += "(" + active + " / " + remove + ")";
+                out += "[" + active + " / " + remove + "]";
             }
             out += "</td>";
         }
@@ -1561,13 +1593,13 @@ function Safari() {
         
         if (!isNaN(page)) {
             if (page > 1) {
-                out += "<a href='po:send//box " + (page - 1) + "'>" + utilities.html_escape("< Box " + (page - 1)) + "</a>";
+                out += "[<a href='po:send//box " + (page - 1) + "'>" + utilities.html_escape("< Box " + (page - 1)) + "</a>]";
             }
             if (page < maxPages) {
                 if (page > 1) {
-                    out += " | ";
+                    out += " ";
                 }
-                out += "<a href='po:send//box " + (page + 1) + "'>" + utilities.html_escape("Box " + (page + 1) + " >") + "</a>";
+                out += "[<a href='po:send//box " + (page + 1) + "'>" + utilities.html_escape("Box " + (page + 1) + " >") + "</a>]";
             }
         }
         return out;
@@ -2486,7 +2518,7 @@ function Safari() {
             if (contestCount > 0) {
                 contestCount = 1;
             } else {
-                contestCooldown = 1;
+                safari.startContest(commandData);
             }
             return true;
         }
@@ -2583,6 +2615,43 @@ function Safari() {
             }
             return true;
         }
+        if (command === "analyze") {
+            var info = commandData.split(":");
+            var target = sys.id(info[0]);
+            if (!target) {
+                safaribot.sendMessage(src, "No such person!", safchan);
+                return true;
+            }
+            var player = getAvatar(target);
+            if (!player) {
+                safaribot.sendMessage(src, "This person doesn't have a Safari save!", safchan);
+                return true;
+            }
+            if (info.length < 2) {
+                safaribot.sendMessage(src, "Please specify a property!", safchan);
+                return true;
+            }
+            var prop = info[1].split(".");
+            var attr = player[prop[0]];
+            var propName = ["safari"];
+            if (prop.length == 1 && prop[0] === "") {
+                attr = player;
+            } else {
+                propName.push(prop[0]);
+                for (var e = 1; e < prop.length; e++) {
+                    propName.push(prop[e]);
+                    if (prop[e] in attr) {
+                        attr = attr[prop[e]];
+                    } else {
+                        safaribot.sendMessage(src, "This player does not have a '" + propName.join(".") + "' property!", safchan);
+                        return true;
+                    }
+                }
+            }
+            
+            safaribot.sendMessage(src, sys.name(target) + "." + propName.join(".") + ": " + JSON.stringify(attr), safchan);
+            return true;
+        }
         
         return false;
     };
@@ -2638,23 +2707,7 @@ function Safari() {
             sys.sendAll("*** ************************************************************ ***", 0);
         }
         if (contestCooldown === 0) {
-            contestCooldown = contestCooldownLength;
-            contestCount = contestDuration;
-            var themeList = Object.keys(contestThemes);
-            currentTheme = Math.random() < 0.5 ? null : themeList[sys.rand(0, themeList.length)];
-            sys.sendAll("*** ************************************************************ ***", safchan);
-            safaribot.sendAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now!", safchan);
-            sys.sendAll("*** ************************************************************ ***", safchan);
-            
-            if (contestBroadcast) {
-                sys.sendAll("*** ************************************************************ ***", 0);
-                safaribot.sendAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now at #" + defaultChannel + "!", 0);
-                sys.sendAll("*** ************************************************************ ***", 0);
-            } else {
-                contestBroadcast = true;
-            }
-            
-            safari.createWild();
+            safari.startContest();
         }
         SESSION.global().safariContestCooldown = contestCooldown;
         SESSION.global().safariBaitCooldown = baitCooldown;
