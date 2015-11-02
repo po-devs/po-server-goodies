@@ -754,17 +754,17 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var pokeId;
         if (isNaN(commandData)) {
             switch (commandData.toLowerCase()) {
-            case ("darmanitan-z"):
-                commandData = "Darmanitan-D";
-                break;
-            case ("meloetta-p"):
-                commandData = "Meloetta-S";
-                break;
-            case ("hoopa-u"):
-                commandData = "Hoopa-B";
-                break;
-            default:
-                commandData = commandData;
+                case ("darmanitan-z") : 
+                    commandData = "Darmanitan-D";
+                    break;
+                case ("meloetta-p") :
+                    commandData = "Meloetta-S";
+                    break;
+                case ("hoopa-u") :
+                    commandData = "Hoopa-B";
+                    break;
+                default:
+                    commandData=commandData;
             }
             pokeId = sys.pokeNum(commandData);
         } else {
@@ -795,13 +795,13 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         sys.sendHtmlMessage(src, "<b>Weight:</b> " + pokedex.getWeight(pokeId) + " kg", channel);
         sys.sendHtmlMessage(src, "<b>Base Power of Low Kick/Grass Knot:</b> " + pokedex.weightPower(pokedex.getWeight(pokeId)), channel);
         if (sys.os(src) !== "android") {
-            var x, table = "<table border = 1 cellpadding = 3>";
+            var table = "<table border = 1 cellpadding = 3>";
             table += "<tr><th rowspan = 2 valign = middle><font size = 5>Stats</font></th><th rowspan = 2 valign = middle>Base</th><th colspan = 3>Level 5</th><th colspan = 3>Level 50</th><th colspan = 3>Level 100</th></tr>";
             table += "<tr><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th><th>Min</th><th>Max</th><th>Max+</th>";
-            for (x = 0; x < stats.length; x++) {
-                var i, baseStat = baseStats[x];
+            for (var x = 0; x < stats.length; x++) {
+                var baseStat = baseStats[x];
                 table += "<tr><td valign = middle><b>" + stats[x] + "</b></td><td><center><font size = 4>" + baseStat + "</font></center></td>";
-                for (i = 0; i < levels.length; i++) {
+                for (var i = 0; i < levels.length; i++) {
                     if (x === 0) {
                         table += "<td valign = middle><center>" + pokedex.calcHP(baseStat, 31, 0, levels[i]) + "</center></td><td valign = middle><center>" + pokedex.calcHP(baseStat, 31, 252, levels[i]) + "</center></td><td valign = middle><center>-</center></td>";
                     } else {
@@ -813,8 +813,8 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             table += "</table>";
             sys.sendHtmlMessage(src, table, channel);
         } else {
-            var x, data = [];
-            for (x = 0; x < stats.length; x++) {
+            var data = [];
+            for (var x = 0; x < stats.length; x++) {
                 var baseStat = baseStats[x];
                 data.push("<b>" + stats[x] + ": " + baseStat + "</b>");
                 if (x === 0) {
@@ -823,15 +823,28 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                     data.push("Min: " + pokedex.calcStat(baseStat, 31, 0, 100, 1) + " | Max: " + pokedex.calcStat(baseStat, 31, 252, 100, 1) + " | Max (+): " + pokedex.calcStat(baseStat, 31, 252, 100, 1.1));
                 }
             }
-            var x;
-            for (x = 0; x < data.length; x++) {
+            for (var x = 0; x < data.length; x++) {
                 sys.sendHtmlMessage(src, data[x], channel);
             }
         }
+                
+        var stone = 0, aforme;
+        if (commandData.indexOf(" ") !== -1) {
+            stone = sys.stoneForForme(pokeId);
+            aforme = commandData.split(" ");
+            pokeId = sys.pokeNum(aforme[1]);
+        } else {
+            aforme = commandData.split("-");
+            if (sys.isAesthetic(pokeId)) {
+                pokeId = sys.pokeNum(aforme[0]);
+            }
+        }       
         var tiers = ["ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC"];
         var allowed = [];
-        var x;
-        for (x = 0; x < tiers.length; x++) {
+        for (var x = 0; x < tiers.length; x++) {
+            if (sys.isItemBannedFromTier(stone, tiers[x])) {
+                break;
+            }
             if (!sys.isPokeBannedFromTier(pokeId, tiers[x])) {
                 allowed.push(tiers[x]);
             }
@@ -845,15 +858,29 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "No such pokemon!", channel);
             return;
         }
+        
+        var stone = 0, aforme;
+        if (commandData.indexOf(" ") !== -1) {
+            stone = sys.stoneForForme(pokeId);
+            aforme = commandData.split(" ");
+            pokeId = sys.pokeNum(aforme[1]);
+        } else {
+            aforme = commandData.split("-");
+            if (sys.isAesthetic(pokeId)) {
+                pokeId = sys.pokeNum(aforme[0]);
+            }
+        }
         var tiers = ["ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC"];
         var allowed = [];
-        var x;
-        for (x = 0; x < tiers.length; x++) {
+        for (var x = 0; x < tiers.length; x++) {
+            if (sys.isItemBannedFromTier(stone, tiers[x])) {
+                break;
+            }
             if (!sys.isPokeBannedFromTier(pokeId, tiers[x])) {
                 allowed.push(tiers[x]);
             }
         }
-        sys.sendHtmlMessage(src, "<b>" + sys.pokemon(pokeId) + " is allowed in tiers: </b>" + allowed.join(", "), channel);
+        sys.sendHtmlMessage(src, "<b>" + sys.pokemon(sys.pokeNum(commandData)) + " is allowed in tiers: </b>" + allowed.join(", "), channel);
         return;
     }
     if (command === "move") {
