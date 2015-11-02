@@ -1165,7 +1165,7 @@ function Safari() {
         player.rockCooldown = currentTime + 10000;
         this.saveGame(player);
     };
-    this.throwRock = function (src, commandData) {
+    this.useStick = function (src, commandData) {
         var player = getAvatar(src);
         if (!player) {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
@@ -2374,6 +2374,10 @@ function Safari() {
         }
         if (command === "rock") {
             safari.throwRock(src, commandData);
+            return true;
+        }
+        if (command === "stick") {
+            safari.useStick(src, commandData);
             return true;
         }
         if (command === "gacha") {
