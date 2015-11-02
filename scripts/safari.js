@@ -1183,7 +1183,7 @@ function Safari() {
         }
         var currentTime = now();
         if (player.stickCooldown > currentTime) {
-            safaribot.sendMessage(src, "Please wait " + (Math.floor((player.rockCooldown - currentTime)/1000) + 1) + " seconds before using your stick!", safchan);
+            safaribot.sendMessage(src, "Please wait " + (Math.floor((player.stickCooldown - currentTime)/1000) + 1) + " seconds before using your stick!", safchan);
             return;
         }
         var item = "stick";
@@ -2198,11 +2198,13 @@ function Safari() {
             "Bait: Tasty Bluk Berries used to attract wild Pokémon, set down with /bait. Has a 45% success rate with a 60 second cooldown on success, and a 20 second cooldown on failure.",
             "Rock: A small rock that can be thrown to stun another player for a short period with /rock. Has a 10 second cooldown.",
             "Gachapon Ticket: Used to play the Gachapon Machine with /gacha, and win random prizes. Has a 5 second cooldown.",
+            "Valuables: The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be pawned off with /pawn for money.",
             "",
             "*** Perks ***",
             "Amulet Coin: When holding this charm, a bonus yield of about " + itemData.amulet.bonusRate * 100 + "% can be made when selling Pokémon to the NPC." ,
             "Honey: Sweet-smelling Combee Honey that, when applied to bait, increases the chance of a Pokémon being attracted by " + itemData.honey.bonusRate * 100 +"%.",
             "Zoom Lens: A high tech viewing tool that raises the accuracy of rocks thrown by " + itemData.zoom.bonusRate * 100 + "%.",
+            "Stick: Legendary Stick of the almighty Farfetch'd that provides a neverending wave of prods and pokes unto your enemies and other nefarious evil-doers, with a simple use of the /stick command.",
             "",
             "*** Standard Poké Balls ***",
             "Safari Ball: Standard issue Poké Ball used to catch Pokémon. Has a cooldown of " + itemData.safari.cooldown / 1000 +" seconds.",
@@ -2255,6 +2257,7 @@ function Safari() {
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
             "/gacha: Use a ticket to win a prize!",
             "/rock: To throw a rock at another player.",
+            "/stick: To poke another player with your stick.",
             "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details.",
             "/sort [criteria] [ascending|descending]: To sort the order in which the Pokémon are listed on /mydata. Criteria are Alphabetical, Number, BST, Type and Duplicate",
             "/info: View time until next contest and current Gachapon jackpot prize!",
