@@ -1617,7 +1617,7 @@ function Safari() {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
         var line1 = ["bait", "rock", "gacha", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
         var line2 = ["safari", "great", "ultra", "master", "dream", "luxury", "nest", "heavy", "moon", "premier"];
-        var line3 = ["amulet", "honey", "zoom"];
+        var line3 = ["amulet", "honey", "zoom","stick"];
     
         var out = "<table border = 1 cellpadding = 3><tr><th colspan=11>Inventory</th></tr>";
         out += bagRow(player, line1, true);
