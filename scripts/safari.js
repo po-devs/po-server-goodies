@@ -1194,8 +1194,17 @@ function Safari() {
             case "honey":
             case "amulet":
             case "zoom":
+            case "bignugget":
+            case "nugget":
                 player.balls[reward] += 1;
                 safaribot.sendAll("Sweet! " + sys.name(src) + " just won a " + finishName(reward) + " from Gachapon!", safchan);
+                safaribot.sendMessage(src, "You received a " + finishName(reward) + plural + ".", safchan);
+            break;
+            case "pearl":
+            case "stardust":
+            case "starpiece":
+            case "bigpearl":
+                player.balls[reward] += 1;
                 safaribot.sendMessage(src, "You received a " + finishName(reward) + plural + ".", safchan);
             break;
             default:
@@ -1504,7 +1513,7 @@ function Safari() {
         return out;
     };
     this.showBag = function(player) {
-        //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot        
+        //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
         var line1 = ["bait", "rock", "gacha", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
         var line2 = ["safari", "great", "ultra", "master", "dream", "luxury", "nest", "heavy", "moon", "premier"];
         var line3 = ["amulet", "honey", "zoom"];
@@ -1928,7 +1937,13 @@ function Safari() {
                 gacha: 0,
                 zoom: 0,
                 amulet: 0,
-                honey: 0
+                honey: 0,
+                pearl: 0,
+                stardust: 0,
+                starpiece: 0,
+                bigpearl: 0,
+                nugget: 0,
+                bignugget: 0
             },
             starter: num,
             lastLogin: getDay(now()),
