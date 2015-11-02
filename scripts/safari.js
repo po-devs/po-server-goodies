@@ -254,6 +254,7 @@ function Safari() {
         bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 100, successRate: 0.35, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true},
         rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.70, bounceRate: 0.02, aliases:["rock", "rocks"], sellable: false, buyable: true},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 149, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true},
+        stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, aliases:["stick","sticks"], sellable: false, buyable: true},
         
         //Perks
         amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false},
@@ -1164,6 +1165,40 @@ function Safari() {
         player.rockCooldown = currentTime + 10000;
         this.saveGame(player);
     };
+    this.throwRock = function (src, commandData) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        var targetId = sys.id(commandData);
+        if (!targetId) {
+            safaribot.sendMessage(src, "No such person!", safchan);
+            return true;
+        }
+        var target = getAvatar(targetId);
+        if (!target) {
+            safaribot.sendMessage(src, "No such person!", safchan);
+            return true;
+        }
+        var currentTime = now();
+        if (player.stickCooldown > currentTime) {
+            safaribot.sendMessage(src, "Please wait " + (Math.floor((player.rockCooldown - currentTime)/1000) + 1) + " seconds before using your stick!", safchan);
+            return;
+        }
+        var item = "stick";
+        if (!(item in player.balls) || player.balls[item] <= 0) {
+            safaribot.sendMessage(src, "You have no " + cap(item) + "s!", safchan);
+            return;
+        }
+        
+        var targetName = utilities.non_flashing(sys.name(targetId));
+        
+        safaribot.sendAll(sys.name(src) + " poked " + targetName + " with their stick.", safchan);
+        
+        player.stickCooldown = currentTime + 10000;
+        this.saveGame(player);
+    };
     this.gachapon = function (src, commandData) {
         var player = getAvatar(src);
         if (!player) {
@@ -1999,6 +2034,7 @@ function Safari() {
                 moon: 0,
                 bait: 5,
                 rock: 0,
+                stick: 0,
                 premier: 0,
                 gacha: 0,
                 zoom: 0,
@@ -2016,7 +2052,8 @@ function Safari() {
             consecutiveLogins: 1,
             cooldown: 0,
             rockCooldown: 0,
-            gachaCooldown: 0
+            gachaCooldown: 0,
+            stickCooldown: 0,
         };
         SESSION.users(src).safari = player;
         this.saveGame(player);
@@ -2096,7 +2133,7 @@ function Safari() {
                 if (player.balls[clean] > 9999) {
                     player.balls[clean] = 9999;
                 }
-                if (clean === "master" && player.balls[clean] > 1) {
+                if ((clean === "master" || clean === "stick") && player.balls[clean] > 1) {
                     player.balls[clean] = 1;
                 }
             }
@@ -2112,6 +2149,7 @@ function Safari() {
             player.cooldown = now();
             player.gachaCooldown = now();
             player.rockCooldown = now();
+            player.stickCooldown = now();
             
             this.saveGame(player);
         }
