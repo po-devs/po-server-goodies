@@ -50,6 +50,17 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         return;
     }
+    if (command == "perm") {
+        if (channel == staffchannel || channel === 0) {
+            channelbot.sendMessage(src, "you can't do that here.", channel);
+            return;
+        }
+
+        SESSION.channels(channel).perm = (commandData.toLowerCase() == 'on');
+        SESSION.global().channelManager.update(channel);
+        channelbot.sendAll("" + sys.name(src) + (SESSION.channels(channel).perm ? " made the channel permanent." : " made the channel a temporary channel again."), channel);
+        return;
+    }
     if (command == "changerating") {
         var data =  commandData.split(' -- ');
         if (data.length != 3) {
@@ -753,6 +764,7 @@ exports.help =
         "/stopbattles: Stops all new battles to allow for server restart with less problems for users.",
         "/hiddenauth: Displays all users with more higher auth than 3.",
         "/imp[off]: Lets you speak as someone",
+        "/perm [on/off]: Make the current permanent channel or not (permanent channels remain listed when they have no users).",
         "/sendmessage: Sends a chat message to a user. Format is /sendmessage user:::message:::channel.",
         "/sendhtmlmessage: Sends an HTML chat message to a user. Format is /sendmessage user:::message:::channel.",
         "/contributor[off]: Adds contributor status (for indigo access) to a user, with reason. Format is /contributor user:reason.",
