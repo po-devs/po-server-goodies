@@ -2053,7 +2053,7 @@ function Safari() {
             cooldown: 0,
             rockCooldown: 0,
             gachaCooldown: 0,
-            stickCooldown: 0,
+            stickCooldown: 0
         };
         SESSION.users(src).safari = player;
         this.saveGame(player);
