@@ -210,7 +210,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         poChannel.issueAuth(src, commandData, "member");
         return;
     }
-    if (command == "deinvite" || command == "demember") {
+    if (command == "deinvite" || command == "demember" || command == "dismember") {
         poChannel.takeAuth(src, commandData, "member");
         if (tar !== undefined) {
             if (sys.isInChannel(tar, channel) && command == "deinvite") {
