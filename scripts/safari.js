@@ -1958,42 +1958,41 @@ function Safari() {
             var logins = player.consecutiveLogins;
             
             var gained = [];
-            
-            var moneyRewards = [50, 50, 50, 50, 75, 75, 75, 75, 100, 100, 100, 150, 150, 150, 200, 200, 250, 250, 300];
-            var moneyGained = 0;
-            
-            if (logins > moneyRewards.length) {
-                moneyGained = moneyRewards[moneyRewards.length-1];
-            } else {
-                moneyGained = moneyRewards[logins-1];
+            var moneyGained = 250 + 25 * logins;
+            if (moneyGained > 1000) {
+                moneyGained = 1000;
             }
             gained.push("$" + moneyGained);
             player.money += moneyGained;
             
-            var safariGained = 0;
-            if (logins <= 2) {
-                safariGained = 1;
-            } else if (logins <= 4) {
-                safariGained = 2;
-            } else if (logins <= 6) {
-                safariGained = 3;
-            } else if (logins <= 8) {
-                safariGained = 4;
-            } else {
-                safariGained = 5;
+            var safariGained = logins;
+            if (safariGained > 30) {
+                safariGained = 30;
             }
             player.balls.safari += safariGained;
             gained.push(safariGained + "x Safari Ball" + (safariGained > 1 ? "s" : ""));
             
-            if (logins % 12 === 0) {
-                player.balls.dream += 1;
-                gained.push("1x Dream Ball");
-            } else if (logins % 6 === 0) {
-                player.balls.ultra += 1;
-                gained.push("1x Ultra Ball");
-            } else if (logins % 3 === 0) {
-                player.balls.great += 1;
-                gained.push("1x Great Ball");
+            var milestone = logins % 30;
+            var milestoneRewards = {
+                "30": { reward: "master", amount: 1 },
+                "27": { reward: "gacha", amount: 20 },
+                "24": { reward: "heavy", amount: 3 },
+                "21": { reward: "dream", amount: 3 },
+                "18": { reward: "luxury", amount: 3 },
+                "15": { reward: "gacha", amount: 10 },
+                "12": { reward: "bait", amount: 10 },
+                "9": { reward: "ultra", amount: 3, repeatAmount: 10},
+                "6": { reward: "great", amount: 4, repeatAmount: 15},
+                "3": { reward: "rock", amount: 5, repeatAmount: 20}
+            };
+            
+            if (milestone in milestoneRewards) {
+                var reward = milestoneRewards[milestone];
+                var item = reward.reward;
+                var amount = logins > 30 && "repeatAmount" in reward? reward.repeatAmount : reward.amount;
+                
+                player.balls[item] += amount;
+                gained.push(amount + "x " + finishName(item) + (amount > 1 ? "s" : ""));
             }
             
             safaribot.sendMessage(src, "You received the following rewards for joining Safari today: " + gained.join(", "), safchan);
@@ -2690,7 +2689,7 @@ function Safari() {
                 }
                 rawPlayers.save();
             } else {
-                if (!currentPokemon && Math.random() < 0.05) {
+                if (!currentPokemon && Math.random() < 0.084793) {
                     safari.createWild();
                 }
             }
