@@ -58,7 +58,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             sys.sendMessage(src,"Players: on range " + subip + " are: " + msgs.join(", "), channel);
         } else {
             sys.sendMessage(src,"Players: Nothing interesting here!",channel);
-        }pe
+        }
         return;
     }
     if (command == "onos") {
