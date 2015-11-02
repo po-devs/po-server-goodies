@@ -251,9 +251,9 @@ function Safari() {
         premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 3, cooldown: 6000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false},
     
         //Other Items
-        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 100, successRate: 0.35, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true},
-        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.70, bounceRate: 0.02, aliases:["rock", "rocks"], sellable: false, buyable: true},
-        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 149, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true},
+        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 100, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true},
+        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.70, bounceRate: 0.02, aliases:["rock", "rocks"], sellable: false, buyable: false},
+        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 149, cooldown: 8000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, aliases:["stick","sticks"], sellable: false, buyable: true},
         
         //Perks
@@ -516,7 +516,7 @@ function Safari() {
         var tempArray = [];
         var gachaItems =   {
             safari: 70, great: 30, ultra: 20, master: 2, luxury: 20, dream: 20, nest: 20, heavy: 20,
-            moon: 20, bait: 30, rock: 30,  wild: 30, gacha: 1,  honey: 1,  amulet: 1, zoom: 1,
+            moon: 20, bait: 30, rock: 30,  wild: 15, gacha: 1,  honey: 1,  amulet: 1, zoom: 1,
             pearl: 12, stardust: 10, bigpearl: 8, starpiece: 5, nugget: 4, bignugget: 1
         };
 
@@ -880,7 +880,7 @@ function Safari() {
         if (data === "*") {
             safaribot.sendMessage(src, "You can sell the following items:", safchan);
             for (var i = 0; i < validItems.length; i++) {
-                safaribot.sendMessage(src, itemData[validItems[i]].fullName + ": $" + itemData[validItems[i]].price, safchan);
+                safaribot.sendMessage(src, itemData[validItems[i]].fullName + ": $" + itemData[validItems[i]].price/2, safchan);
             }
             sys.sendMessage(src, "", safchan);
             var sellables = [];
@@ -919,7 +919,7 @@ function Safari() {
             return;
         }
         
-        var cost = amount * itemData[item].price;
+        var cost = amount * itemData[item].price/2;
         player.money += cost;
         player.balls[item] -= amount;
         safaribot.sendMessage(src, "You sold " + amount + " " + finishName(item) +  " for $" + cost + "! You now have " + player.balls[item] + " " + finishName(item) + " and $" + player.money + "!", safchan);
@@ -1313,7 +1313,7 @@ function Safari() {
                 safaribot.sendMessage(src, "You received " + amount + " " + finishName(reward) + plural + ".", safchan);
             break;
         }
-        player.gachaCooldown = currentTime + 5000;
+        player.gachaCooldown = currentTime + itemData.gacha.cooldown;
         this.saveGame(player);
         gachaJackpot += 1;
         SESSION.global().safariGachaJackpot = gachaJackpot;
@@ -2418,7 +2418,7 @@ function Safari() {
             return false;
         }
         if (command === "checkrate") {
-            if (allItems.indexOf(commandData) !== -1) {
+            if (allItems.indexOf(commandData) !== -1 || commandData === "wild") {
                 var instance = countArray(gachaponPrizes, commandData);
                 var total = gachaponPrizes.length;
                 var percent = instance / total * 100;
@@ -2574,7 +2574,7 @@ function Safari() {
             }
             var player = getAvatar(playerId);
             if (player) {
-                safaribot.sendMessage(src, "You received a " + poke(p) + "!", safchan);
+                safaribot.sendMessage(playerId, "You received a " + poke(p) + "!", safchan);
                 player.pokemon.push(p);
             } else {
                 safaribot.sendMessage(src, "No such person!", safchan);
