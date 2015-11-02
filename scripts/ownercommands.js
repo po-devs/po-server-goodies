@@ -679,13 +679,23 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "loadstats") {
-        sys.loadBattlePlugin("serverplugins/libusagestats_debug.so");
+        sys.loadBattlePlugin("battleserverplugins/libusagestats_debug.so");
         normalbot.sendMessage(src, "Usage Stats plugin loaded", channel);
+        return;
+    }
+    if (command == "loadreplays") {
+        sys.loadBattlePlugin("battleserverplugins/libbattlelogs_debug.so");
+        normalbot.sendMessage(src, "Replay plugin loaded", channel);
         return;
     }
     if (command == "unloadstats") {
         sys.unloadBattlePlugin("Usage Statistics");
         normalbot.sendMessage(src, "Usage Stats plugin unloaded", channel);
+        return;
+    }
+    if (command == "unloadreplays") {
+        sys.unloadBattlePlugin("Battle Logs");
+        normalbot.sendMessage(src, "Replay plugin unloaded", channel);
         return;
     }
     if (command == "warnwebclients") {
@@ -778,12 +788,10 @@ exports.help =
         "/changerating: Changes the rating of a rating abuser. Format is /changerating user -- tier -- rating.",
         "/stopbattles: Stops all new battles to allow for server restart with less problems for users.",
         "/hiddenauth: Displays all users with more higher auth than 3.",
-        "/imp: Lets you speak as someone",
-        "/impoff: Stops your impersonating.",
+        "/imp[off]: Lets you speak as someone",
         "/sendmessage: Sends a chat message to a user. Format is /sendmessage user:::message:::channel.",
         "/sendhtmlmessage: Sends an HTML chat message to a user. Format is /sendmessage user:::message:::channel.",
-        "/contributor: Adds contributor status (for indigo access) to a user, with reason. Format is /contributor user:reason.",
-        "/contributoroff: Removes contributor status from a user.",
+        "/contributor[off]: Adds contributor status (for indigo access) to a user, with reason. Format is /contributor user:reason.",
         "/clearpass: Clears a user's password.",
         "/autosmute: Adds a user to the autosmute list",
         "/removeautosmute: Removes a user from the autosmute list",
@@ -793,10 +801,8 @@ exports.help =
         "/sendall: Sends a message to everyone.",
         "/changeauth[s]: Changes the auth of a user. Format is /changeauth auth user. If using /changeauths, the change will be silent.",
         "/showteam: Displays the team of a user (to help people who have problems with event moves or invalid teams).",
-        "/ipban: Bans an IP. Format is /ipban ip comment.",
-        "/ipunban: Unbans an IP.",
-        "/rangeban: Makes a range ban. Format is /rangeban ip comment.",
-        "/rangeunban: Removes a rangeban.",
+        "/ip[un]ban: Bans an IP. Format is /ipban ip comment.",
+        "/range[un]ban: Makes a range ban. Format is /rangeban ip comment.",
         "/purgemutes: Purges mutes older than the given time in seconds. Default is 4 weeks.",
         "/purgesmutes: Purges smutes older than the given time in seconds. Default is 4 weeks.",
         "/purgembans: Purges mafiabans older than the given time in seconds. Default is 1 week.",
@@ -813,8 +819,8 @@ exports.help =
         "/updatetierchecks: To update tier checks.",
         "/updatecommands: To update command files. Update scripts afterwards for full effect.",
         "/updatetiers[soft]: To update tiers. Soft saves to file only without reloading.",
-        "/loadstats: Loads the usage stats plugin.",
-        "/unloadstats: Unloads the usage stats plugin.",
+        "/[un]loadstats: Loads the usage stats plugin.",
+        "/[un]loadreplay: Loads the replay plugin.",
         "/warnwebclients: Sends a big alert with your message to webclient users.",
         "/clearladder: Clears rankings from a tier.",
         "/advertise: Sends a html message to the main channels",
