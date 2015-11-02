@@ -72,17 +72,6 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendMessage(src, "",channel);
         return;
     }
-    if (command == "capslockday") {
-        if (commandData == "off") {
-            CAPSLOCKDAYALLOW = false;
-            normalbot.sendMessage(src, "You turned caps lock day off!", channel);
-        }
-        else if (commandData == "on") {
-            CAPSLOCKDAYALLOW = true;
-            normalbot.sendMessage(src, "You turned caps lock day on!", channel);
-        }
-        return;
-    }
     if (command == "contributor") {
         var s = commandData.split(":");
         var name = s[0], reason = s[1];
@@ -440,31 +429,6 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, commandData + " is not a tier");
         return;
     }
-    if (command == "indigo") {
-        if (commandData == "on") {
-            if (sys.existChannel("Indigo Plateau")) {
-                staffchannel = sys.channelId("Indigo Plateau");
-            } else {
-                staffchannel = sys.createChannel("Indigo Plateau");
-            }
-            SESSION.channels(staffchannel).topic = "Welcome to the Staff Channel! Discuss of all what users shouldn't hear here! Or more serious stuff...";
-            SESSION.channels(staffchannel).perm = true;
-            normalbot.sendMessage(src, "Staff channel was remade!");
-            return;
-            }
-        if (commandData == "off") {
-            SESSION.channels(staffchannel).perm = false;
-            var players = sys.playersOfChannel(staffchannel);
-            for (var x = 0; x < players.length; x++) {
-                sys.kick(players[x], staffchannel);
-                if (sys.isInChannel(players[x], 0) !== true) {
-                    sys.putInChannel(players[x], 0);
-                }
-            }
-            normalbot.sendMessage(src, "Staff channel was destroyed!");
-            return;
-        }
-    }
     if (command == "stopbattles") {
         script.battlesStopped = !script.battlesStopped;
         if (script.battlesStopped)  {
@@ -813,8 +777,6 @@ exports.help =
         "/updatenotice: Updates notice from the web.",
         "/updatescripts: Updates scripts from the web.",
         "/variablereset: Resets scripts variables.",
-        "/capslockday [on/off]: To turn caps lock day on or off.",
-        "/indigo [on/off]: To create or destroy staff channel.",
         "/updatebansites: To update ban sites.",
         "/updatetierchecks: To update tier checks.",
         "/updatecommands: To update command files. Update scripts afterwards for full effect.",
