@@ -58,7 +58,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             sys.sendMessage(src,"Players: on range " + subip + " are: " + msgs.join(", "), channel);
         } else {
             sys.sendMessage(src,"Players: Nothing interesting here!",channel);
-        }
+        }pe
         return;
     }
     if (command == "onos") {
@@ -97,17 +97,6 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             }
         }
         querybot.sendMessage(src,sys.name(tar) + " is in tier" + (tiers.length <= 1 ? "" : "s") + ": " + tiers.join(", "), channel);
-        return;
-    }
-    if (command == "perm") {
-        if (channel == staffchannel || channel === 0) {
-            channelbot.sendMessage(src, "you can't do that here.", channel);
-            return;
-        }
-
-        SESSION.channels(channel).perm = (commandData.toLowerCase() == 'on');
-        SESSION.global().channelManager.update(channel);
-        channelbot.sendAll("" + sys.name(src) + (SESSION.channels(channel).perm ? " made the channel permanent." : " made the channel a temporary channel again."), channel);
         return;
     }
     if (command == "silence") {
@@ -700,7 +689,6 @@ exports.help =
         "/sunmute: Removes secret mute from a user.",
         "/silence: Prevents authless users from talking in a channel for specified time. Format is /silence minutes channel. Affects current channel if no channel is given.",
         "/silenceoff: Removes silence from a channel. Affects current channel if none is specified.",
-        "/perm [on/off]: Make the current permanent channel or not (permanent channels remain listed when they have no users).",
         "/userinfo: Displays basic information about a user on a single line.",
         "/whois: Displays detailed information about a user.",
         "/aliases: Shows the aliases of an IP or name.",
