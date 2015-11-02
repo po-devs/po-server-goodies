@@ -238,27 +238,35 @@ function Safari() {
     //Data on items
     var itemData = {
         //Balls
-        safari: {name: "safari", fullName: "Safari Ball", type: "ball", price: 30, ballBonus: 1, cooldown: 6000, aliases:["safariball", "safari", "safari ball"], sellable: false, buyable: true},
-        great: {name: "great", fullName: "Great Ball", type: "ball", price: 60, ballBonus: 1.5, cooldown: 9000, aliases:["greatball", "great", "great ball"], sellable: false, buyable: true},
-        ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", price: 120, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"], sellable: false, buyable: true},
-        master: {name: "master", fullName: "Master Ball", type: "ball", price: 0, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], sellable: false, buyable: false},
+        safari: {name: "safari", fullName: "Safari Ball", type: "ball", icon: 309, price: 30, ballBonus: 1, cooldown: 6000, aliases:["safariball", "safari", "safari ball"], sellable: false, buyable: true},
+        great: {name: "great", fullName: "Great Ball", type: "ball", icon: 306, price: 60, ballBonus: 1.5, cooldown: 9000, aliases:["greatball", "great", "great ball"], sellable: false, buyable: true},
+        ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", icon: 307, price: 120, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"], sellable: false, buyable: true},
+        master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 0, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], sellable: false, buyable: false},
         
-        dream: {name: "dream", fullName: "Dream Ball", type: "ball", price: 0, ballBonus: 1, bonusRate: 3, cooldown: 9000, aliases:["dreamball", "dream", "dream ball"], sellable: false, buyable: false},
-        heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", price: 0, ballBonus: 1, bonusRate: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], sellable: false, buyable: false},
-        nest: {name: "nest", fullName: "Nest Ball", type: "ball", price: 0, ballBonus: 1,  bonusRate: 5, cooldown: 4000, aliases:["nestball", "nest", "nest ball"], sellable: false, buyable: false},
-        luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", price: 0, ballBonus: 2, cooldown: 8000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false},
-        moon: {name: "moon", fullName: "Moon Ball", type: "ball", price: 0, ballBonus: 1, bonusRate: 5, cooldown: 8000, aliases:["moonball", "moon", "moon ball"], sellable: false, buyable: false},
-        premier: {name: "premier", fullName: "Premier Ball", type: "ball", price: 0, ballBonus: 1.5, bonusRate: 3, cooldown: 6000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false},
+        dream: {name: "dream", fullName: "Dream Ball", type: "ball", icon: 267, price: 0, ballBonus: 1, bonusRate: 3, cooldown: 9000, aliases:["dreamball", "dream", "dream ball"], sellable: false, buyable: false},
+        heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 0, ballBonus: 1, bonusRate: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], sellable: false, buyable: false},
+        nest: {name: "nest", fullName: "Nest Ball", type: "ball", icon: 321, price: 0, ballBonus: 1,  bonusRate: 5, cooldown: 8000, aliases:["nestball", "nest", "nest ball"], sellable: false, buyable: false},
+        luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 2, cooldown: 8000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false},
+        moon: {name: "moon", fullName: "Moon Ball", type: "ball", icon: 312, price: 0, ballBonus: 1, bonusRate: 5, cooldown: 8000, aliases:["moonball", "moon", "moon ball"], sellable: false, buyable: false},
+        premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 3, cooldown: 6000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false},
     
         //Other Items
-        bait: {name: "bait", fullName: "Bait", type: "usable", price: 100, successRate: 0.35, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true},
-        rock: {name: "rock", fullName: "Rock", type: "usable", price: 50, successRate: 0.70, bounceRate: 0.02, aliases:["rock", "rocks"], sellable: false, buyable: true},
-        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", price: 149, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true},
+        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 100, successRate: 0.35, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true},
+        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.70, bounceRate: 0.02, aliases:["rock", "rocks"], sellable: false, buyable: true},
+        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 149, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true},
         
         //Perks
-        amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false},
-        honey: {name: "honey", fullName: "Honey", type: "perk", price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["honey"], sellable: false, buyable: false},
-        zoom: {name: "zoom", fullName: "Zoom Lens", type: "perk", price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["zoom", "zoomlens", "zoom lens", "lens"], sellable: false, buyable: false}
+        amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false},
+        honey: {name: "honey", fullName: "Honey", type: "perk", icon: 82, price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["honey"], sellable: false, buyable: false},
+        zoom: {name: "zoom", fullName: "Zoom Lens", type: "perk", icon: 41, price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["zoom", "zoomlens", "zoom lens", "lens"], sellable: false, buyable: false},
+        
+        //Sellables
+        pearl: {name: "pearl", fullName: "Pearl", type: "misc", icon: 111, price: 500, aliases:["pearl"], sellable: true, buyable: false},
+        stardust: {name: "stardust", fullName: "Stardust", type: "misc", icon: 135, price: 750, aliases:["stardust"], sellable: true, buyable: false},
+        bigpearl: {name: "bigpearl", fullName: "Big Pearl", type: "misc", icon: 46, price: 1500, aliases:["bigpearl", "big pearl"], sellable: true, buyable: false},
+        starpiece: {name: "starpiece", fullName: "Star Piece", type: "misc", icon: 134, price: 3000, aliases:["starpiece", "star piece"], sellable: true, buyable: false},
+        nugget: {name: "nugget", fullName: "Nugget", type: "misc", icon: 108, price: 4000, aliases:["nugget"], sellable: true, buyable: false},
+        bignugget: {name: "bignugget", fullName: "Big Nugget", type: "misc", icon: 269, price: 10000, aliases:["bignugget", "big nugget"], sellable: true, buyable: false}
     };
     
     //Master list of items
@@ -481,12 +489,34 @@ function Safari() {
         for (var j, x, i = o.length; i; j = parseInt(Math.random() * i, 10), x = o[--i], o[i] = o[j], o[j] = x);
         return o;
     }
+    function bagRow (player, arr, first) {
+        var ret = [], item;
+        ret += "<tr>";
+        if (first) {
+            ret += "<td valign=middle align=center colspan=2><img src='item:274' title='Money'></td>";
+        }
+        for (var i = 0; i < arr.length; i++) {
+            item = itemData[arr[i]];
+            ret += "<td align=center><img src='item:" + item.icon + "' title='" + item.fullName + "'></td>";
+        }
+        ret += "</tr><tr>";
+        if (first) {
+            ret += "<td align=center colspan=2>$" + player.money + "</td>";
+        }
+        for (var i = 0; i < arr.length; i++) {
+            item = arr[i];
+            ret += "<td align=center>" + player.balls[item] + "</td>";
+        }
+        ret += "</tr>";
+        return ret;
+    }
     
     this.initGacha = function () {
         var tempArray = [];
         var gachaItems =   {
             safari: 70, great: 30, ultra: 20, master: 2, luxury: 20, dream: 20, nest: 20, heavy: 20,
-            moon: 20, bait: 30, rock: 30,  wild: 30, gacha: 1,  honey: 1,  amulet: 1, zoom: 1
+            moon: 20, bait: 30, rock: 30,  wild: 30, gacha: 1,  honey: 1,  amulet: 1, zoom: 1,
+            pearl: 12, stardust: 10, bigpearl: 8, starpiece: 5, nugget: 4, bignugget: 1
         };
 
         for (var e in gachaItems) {
@@ -580,6 +610,9 @@ function Safari() {
         }
         
         var ball = itemAlias(data);
+        if (!isBall(ball)) {
+            ball = "safari";
+        }
         var ballBonus = itemData[ball].ballBonus;
         var cooldown = itemData[ball].cooldown;
         
@@ -1471,13 +1504,15 @@ function Safari() {
         return out;
     };
     this.showBag = function(player) {
-        var out = "<table border = 1 cellpadding = 3><tr><th colspan=10>Inventory</th></tr>";
-        out += "<tr><td valign=middle align=center><img src='item:274' title='Money'></td><td><img src='item:8017' title='Bait'></td><td><img src='item:206' title='Rocks'></td><td><img src='item:132' title='Gachapon Tickets'></td><td valign=middle align=center><img src='item:42' title='Amulet Coin'></td><td><img src='item:82' title='Honey'></td><td><img src='item:41' title='Zoom Lens'></td></tr>";
-        out += "<tr><td align=center>$" + player.money + "</td><td align=center>" + player.balls.bait + "</td><td align=center>" + player.balls.rock + "</td><td align=center>" + player.balls.gacha + "</td><td align=center>" + player.balls.amulet + "</td><td align=center>" + player.balls.honey + "</td><td align=center>" + player.balls.zoom + "</td></tr>";
-        
-        out += "<tr><td valign=middle align=center><img src='item:309' title='Safari Balls'></td><td><img src='item:306' title='Great Balls'></td><td><img src='item:307' title='Ultra Balls'></td><td><img src='item:308' title='Master Balls'></td><td><img src='item:267' title='Dream Balls'></td><td><img src='item:324' title='Luxury Balls'></td><td><img src='item:321' title='Nest Balls'></td><td><img src='item:315' title='Heavy Balls'></td><td><img src='item:312' title='Moon Balls'></td><td><img src='item:318' title='Premier Balls'></td></tr>";
-        out += "<tr><td align=center>" + player.balls.safari + "</td><td align=center>" + player.balls.great + "</td><td align=center>" + player.balls.ultra + "</td><td align=center>" + player.balls.master + "</td><td align=center>" + player.balls.dream + "</td><td align=center>" + player.balls.luxury + "</td><td align=center>" + player.balls.nest + "</td><td align=center>" + player.balls.heavy + "</td><td align=center>" + player.balls.moon + "</td><td align=center>" + player.balls.premier + "</td></tr>";
-                
+        //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot        
+        var line1 = ["bait", "rock", "gacha", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
+        var line2 = ["safari", "great", "ultra", "master", "dream", "luxury", "nest", "heavy", "moon", "premier"];
+        var line3 = ["amulet", "honey", "zoom"];
+    
+        var out = "<table border = 1 cellpadding = 3><tr><th colspan=11>Inventory</th></tr>";
+        out += bagRow(player, line1, true);
+        out += bagRow(player, line2);
+        out += bagRow(player, line3);
         out += "</table>";
         return out;
     };
