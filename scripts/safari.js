@@ -244,15 +244,16 @@ function Safari() {
         master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 0, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], sellable: false, buyable: false},
         
         dream: {name: "dream", fullName: "Dream Ball", type: "ball", icon: 267, price: 0, ballBonus: 1, bonusRate: 3, cooldown: 9000, aliases:["dreamball", "dream", "dream ball"], sellable: false, buyable: false},
-        heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 0, ballBonus: 1, bonusRate: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], sellable: false, buyable: false},
+        heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 0, ballBonus: 1, bonusRate: 0.5, maxBonus: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], sellable: false, buyable: false},
         nest: {name: "nest", fullName: "Nest Ball", type: "ball", icon: 321, price: 0, ballBonus: 1,  bonusRate: 5, cooldown: 8000, aliases:["nestball", "nest", "nest ball"], sellable: false, buyable: false},
+        quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 0, ballBonus: 1, cooldown: 7000, aliases:["quickball", "quick", "quick ball"], sellable: false, buyable: false},
         luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 2, cooldown: 8000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false},
         moon: {name: "moon", fullName: "Moon Ball", type: "ball", icon: 312, price: 0, ballBonus: 1, bonusRate: 5, cooldown: 8000, aliases:["moonball", "moon", "moon ball"], sellable: false, buyable: false},
-        premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 3, cooldown: 6000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false},
-    
+        premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false},
+        
         //Other Items
         bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 100, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true},
-        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.02, aliases:["rock", "rocks"], sellable: false, buyable: false},
+        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.02, aliases:["rock", "rocks"], sellable: false, buyable: true},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 149, cooldown: 8000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, aliases:["stick","sticks"], sellable: false, buyable: true},
         
@@ -681,8 +682,11 @@ function Safari() {
             shinyChance = 1;
             ballBonus = itemData[ball].bonusRate;
         }
-        if (ball === "heavy" && wildStats > 550) {
-            ballBonus = itemData[ball].bonusRate;
+        if (ball === "heavy" && wildStats >= 450) {
+            ballBonus = 1 + itemData[ball].bonusRate * (Math.floor((wildStats - 450) / 25) + 1);
+            if (ballBonus > itemData[ball].maxBonus) {
+                ballBonus = itemData[ball].maxBonus;
+            }
         }
         if (ball === "nest" && wildStats < 420) {
             ballBonus = itemData[ball].bonusRate;
@@ -1190,7 +1194,7 @@ function Safari() {
         var targetName = utilities.non_flashing(sys.name(targetId));
         if (rng < success) {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "! *THUD* A direct hit! " + targetName + " was stunned!", safchan);
-            // target.cooldown = currentTime + 6000; //Remove comment to make rocks actually work
+            target.cooldown = target.cooldown > currentTime ? target.cooldown + 6000 : currentTime + 6000; 
         } else if (rng < success + itemData.rock.bounceRate) {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but it hit a wall and bounced back at " + sys.name(src) + "! *THUD* That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
             player.cooldown = currentTime + 8000;
@@ -1651,7 +1655,7 @@ function Safari() {
     this.showBag = function(player) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
         var line1 = ["bait", "rock", "gacha", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
-        var line2 = ["safari", "great", "ultra", "master", "dream", "luxury", "nest", "heavy", "moon", "premier"];
+        var line2 = ["safari", "great", "ultra", "master", "dream", "luxury", "quick", "nest", "heavy", "moon", "premier"];
         var line3 = ["amulet", "honey", "zoom","stick"];
     
         var out = "<table border = 1 cellpadding = 3><tr><th colspan=11>Inventory</th></tr>";
@@ -2674,6 +2678,24 @@ function Safari() {
         }
         return false;
     };
+    this.beforeChannelLeave = function (src, channel) {
+        if (channel == safchan && getAvatar(src)) {
+            this.saveGame(getAvatar(src));
+        }
+        return false;
+    };
+    this.afterChangeTeam = function (src) {
+        if (sys.isInChannel(src, safchan)) {
+            var player = getAvatar(src);
+            if (player && sys.name(src).toLowerCase() !== player.id) {
+                this.saveGame(player);
+                
+                SESSION.users(src).safari = null;
+                this.loadGame(src);
+            }
+        }
+        return false;
+    };
     this.stepEvent = function () {
         contestCooldown--;
         baitCooldown--;
@@ -2681,8 +2703,14 @@ function Safari() {
         if (preparationPhase > 0) {
             preparationPhase--;
             if (preparationPhase <= 0) {
-                var throwers = shuffle(Object.keys(preparationThrows));
                 var name, i;
+                var list = Object.keys(preparationThrows);
+                for (i in preparationThrows) {
+                    if (preparationThrows[i] == "quick") {
+                        list.push(i);
+                    }
+                }
+                var throwers = shuffle(list), alreadyThrow = [];
                 if (preparationFirst) {
                     if (throwers.indexOf(preparationFirst) !== -1) {
                         throwers.splice(throwers.indexOf(preparationFirst), 1);
@@ -2691,7 +2719,8 @@ function Safari() {
                 }
                 for (i = 0; i < throwers.length; i++) {
                     name = throwers[i];
-                    if (sys.isInChannel(sys.id(name), safchan)) {
+                    if (sys.isInChannel(sys.id(name), safchan) && alreadyThrow.indexOf(name) === -1) {
+                        alreadyThrow.push(name);
                         safari.throwBall(sys.id(name), preparationThrows[name]);
                     }
                 }
@@ -2732,6 +2761,7 @@ function Safari() {
                     var player = getAvatar(playerId);
                     var item = "gacha";
                     player.balls[item] += 10;
+                    safari.saveGame(player);
                     safaribot.sendMessage(playerId, "You received 10 Gachapon Tickets for winning the contest!", safchan);
                 }
                 //Check daily rewards after a contest so players won't need to relog to get their reward when date changes
