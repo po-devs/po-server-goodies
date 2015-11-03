@@ -244,16 +244,15 @@ function Safari() {
         master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 0, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], sellable: false, buyable: false},
         
         dream: {name: "dream", fullName: "Dream Ball", type: "ball", icon: 267, price: 0, ballBonus: 1, bonusRate: 3, cooldown: 9000, aliases:["dreamball", "dream", "dream ball"], sellable: false, buyable: false},
-        heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 0, ballBonus: 1, bonusRate: 0.5, maxBonus: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], sellable: false, buyable: false},
+        heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 0, ballBonus: 1, bonusRate: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], sellable: false, buyable: false},
         nest: {name: "nest", fullName: "Nest Ball", type: "ball", icon: 321, price: 0, ballBonus: 1,  bonusRate: 5, cooldown: 8000, aliases:["nestball", "nest", "nest ball"], sellable: false, buyable: false},
-        quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 0, ballBonus: 1, cooldown: 7000, aliases:["quickball", "quick", "quick ball"], sellable: false, buyable: false},
         luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 2, cooldown: 8000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false},
         moon: {name: "moon", fullName: "Moon Ball", type: "ball", icon: 312, price: 0, ballBonus: 1, bonusRate: 5, cooldown: 8000, aliases:["moonball", "moon", "moon ball"], sellable: false, buyable: false},
-        premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false},
-        
+        premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 3, cooldown: 6000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false},
+    
         //Other Items
         bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 100, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true},
-        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.02, aliases:["rock", "rocks"], sellable: false, buyable: true},
+        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.02, aliases:["rock", "rocks"], sellable: false, buyable: false},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 149, cooldown: 8000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, aliases:["stick","sticks"], sellable: false, buyable: true},
         
@@ -289,28 +288,28 @@ function Safari() {
             minBST: 300 //Choose a different minimum BST for pokémon to spawn. Optional, defaults to 300.
         },
         river: {
-            name: "River",
+            name: "Lake of Rage",
             types: ["Water"],
             excludeTypes: ["Ice"],
             include: [],
             exclude: [245]
         },
         volcano: {
-            name: "Volcano",
+            name: "Mt. Ember",
             types: ["Fire", "Rock"],
             excludeTypes: [],
             include: [],
             exclude: []
         },
         cave: {
-            name: "Cave",
+            name: "Dark Cave",
             types: ["Rock", "Ground", "Dark"],
             excludeTypes: ["Flying"],
             include: [41, 42, 169, 92, 93, 202, 360],
             exclude: []
         },
         sky: {
-            name: "Sky",
+            name: "Sky Pillar",
             types: ["Flying"],
             excludeTypes: ["Bug"],
             include: [329, 330],
@@ -331,7 +330,7 @@ function Safari() {
             exclude: []
         },
         factory: {
-            name: "Factory",
+            name: "New Mauville",
             types: ["Steel","Electric"],
             excludeTypes: [],
             include: [137, 233, 474],
@@ -357,6 +356,19 @@ function Safari() {
             excludeTypes: ["Steel", "Normal"],
             include: [37, 38, 359, 491],
             exclude: []
+        },
+        /*dank: {
+            name: "Dank",
+            types: [],
+            excludeTypes: [],
+            include: [43, 69, 148, 184, 257, 264, 262, 351, 372, 375, 420, 505, 518, 634],
+            exclude: []
+        }*/
+        tower: {
+            name: "Dragonspiral Tower",
+            types: ["Dragon"],
+            excludeTypes: [],
+            include: [4, 5, 6, 116, 117, 179, 180, 181, 252, 253, 254, 328, 333, 690]
         }
     };
         
@@ -454,6 +466,9 @@ function Safari() {
     function getBST(pokeNum) {
         return add(sys.pokeBaseStats(pokeNum));
     }
+    /*function pokeImage(num) {
+        return "<img src='pokemon:num=" + num + (typeof num == "string" ? "&shiny=true" : "") + "&gen=6'>";
+    }*/
     function itemAlias(name, returnGarbage) {
         name = name.toLowerCase();
         for (var e in itemData) {
@@ -494,30 +509,25 @@ function Safari() {
         for (var j, x, i = o.length; i; j = parseInt(Math.random() * i, 10), x = o[--i], o[i] = o[j], o[j] = x);
         return o;
     }
-    function bagRow (player, arr, src, first) {
+    function bagRow (player, arr, first) {
         var ret = [], item;
-        var isAndroid = sys.os(src) === "android";
-        ret += isAndroid ? "<br />" : "<tr>";
+        ret += "<tr>";
         if (first) {
             ret += "<td valign=middle align=center colspan=2><img src='item:274' title='Money'></td>";
-            ret += isAndroid ? " | " : "";
         }
         for (var i = 0; i < arr.length; i++) {
             item = itemData[arr[i]];
             ret += "<td align=center><img src='item:" + item.icon + "' title='" + item.fullName + "'></td>";
-            ret += isAndroid ? " | " : "";
         }
-        ret += isAndroid ? "<br />" : "</tr><tr>";
+        ret += "</tr><tr>";
         if (first) {
             ret += "<td align=center colspan=2>$" + player.money + "</td>";
-            ret += isAndroid ? " | " : "";
         }
         for (var i = 0; i < arr.length; i++) {
             item = arr[i];
             ret += "<td align=center>" + player.balls[item] + "</td>";
-            ret += isAndroid ? " | " : "";
         }
-        ret += isAndroid ? "<br />" : "</tr>";
+        ret += "</tr>";
         return ret;
     }
     
@@ -684,11 +694,8 @@ function Safari() {
             shinyChance = 1;
             ballBonus = itemData[ball].bonusRate;
         }
-        if (ball === "heavy" && wildStats >= 450) {
-            ballBonus = 1 + itemData[ball].bonusRate * (Math.floor((wildStats - 450) / 25) + 1);
-            if (ballBonus > itemData[ball].maxBonus) {
-                ballBonus = itemData[ball].maxBonus;
-            }
+        if (ball === "heavy" && wildStats > 550) {
+            ballBonus = itemData[ball].bonusRate;
         }
         if (ball === "nest" && wildStats < 420) {
             ballBonus = itemData[ball].bonusRate;
@@ -1098,7 +1105,7 @@ function Safari() {
             }
         } else {
             var acceptCommand = "/trade " + sys.name(src) + ":" + sys.pokemon(request[0]) + (request[1] === true ? "*" : "") + ":" + sys.pokemon(offer[0]) + (offer[1] === true ? "*" : "");
-            safaribot.sendHtmlMessage(targetId, "To accept the trade, type <a href='po:send/" + acceptCommand + "'>" + acceptCommand + "</a>.", safchan);
+            sys.sendHtmlMessage(targetId, "<font color=#3daa68><timestamp/><b>"+("±" + safaribot.name)+":</b></font> To accept the trade, type <a href='po:send/" + acceptCommand + "'>" + acceptCommand + "</a>.", safchan);
             sys.sendMessage(src, "" , safchan);
             sys.sendMessage(targetId, "" , safchan);
             tradeRequests[userName] = { target: targetName, offer: offerId, request: requestId };
@@ -1196,7 +1203,7 @@ function Safari() {
         var targetName = utilities.non_flashing(sys.name(targetId));
         if (rng < success) {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "! *THUD* A direct hit! " + targetName + " was stunned!", safchan);
-            target.cooldown = target.cooldown > currentTime ? target.cooldown + 6000 : currentTime + 6000; 
+            // target.cooldown = currentTime + 6000; //Remove comment to make rocks actually work
         } else if (rng < success + itemData.rock.bounceRate) {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but it hit a wall and bounced back at " + sys.name(src) + "! *THUD* That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
             player.cooldown = currentTime + 8000;
@@ -1288,12 +1295,12 @@ function Safari() {
         switch (reward) {
             case "master":
                 if (player.balls[reward] >= 1) {
-                    safaribot.sendHtmlAll("<b>JACKP--</b> Wait a second... " + html_escape(sys.name(src)) + "'s Master Ball turned out to be a simple Safari Ball painted to look like a Master Ball! What a shame!", safchan);
+                    sys.sendHtmlAll("<font color=#3DAA68><timestamp/><b>±Gachapon:</b></font> <b>JACKP--</b> Wait a second... " + html_escape(sys.name(src)) + "'s Master Ball turned out to be a simple Safari Ball painted to look like a Master Ball! What a shame!", safchan);
                     safaribot.sendMessage(src, "You wiped the paint off of the ball and pocketed 1 Safari Ball for your troubles.", safchan);
                     reward = "safari";
                     player.balls[reward] += 1;
                 } else {
-                    safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won a Master Ball from the Gachapon Machine!</b>", safchan);
+                    sys.sendHtmlAll("<font color=#3DAA68><timestamp/><b>±Gachapon:</b></font> <b>JACKPOT! " + html_escape(sys.name(src)) + " just won a Master Ball from the Gachapon Machine!</b>", safchan);
                     safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
                     player.balls[reward] += 1;
                 }
@@ -1328,7 +1335,7 @@ function Safari() {
             break;
             case "gacha":
                 var jackpot = Math.floor(gachaJackpot/10);
-                safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won the Gachapon Ticket Jackpot valued at " + jackpot + " tickets!</b>", safchan);
+                sys.sendHtmlAll("<font color=#3DAA68><timestamp/><b>±Gachapon:</b></font> <b>JACKPOT! " + html_escape(sys.name(src)) + " just won the Gachapon Ticket Jackpot valued at " + jackpot + " tickets!</b>", safchan);
                 player.balls[reward] += jackpot;
                 safaribot.sendMessage(src, "You received " + jackpot + " Gachapon Tickets.", safchan);
                 gachaJackpot = 100; //Reset jackpot for next player
@@ -1340,7 +1347,7 @@ function Safari() {
             case "nugget":
                 player.balls[reward] += 1;
                 safaribot.sendAll("Sweet! " + sys.name(src) + " just won a " + finishName(reward) + " from Gachapon!", safchan);
-                safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
+                safaribot.sendMessage(src, "You received a " + finishName(reward) + plural + ".", safchan);
             break;
             case "pearl":
             case "stardust":
@@ -1436,7 +1443,7 @@ function Safari() {
         out += this.showBox(player, "all");
         
         //Money/Balls table
-        out += this.showBag(player, src);
+        out += this.showBag(player);
         
         sys.sendHtmlMessage(src, out, safchan);
     };
@@ -1460,7 +1467,7 @@ function Safari() {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
             return;
         }
-        sys.sendHtmlMessage(src, this.showBag(player, src), safchan);
+        sys.sendHtmlMessage(src, this.showBag(player), safchan);
     };
     this.viewBox = function(src, data) {
         var player = getAvatar(src);
@@ -1654,16 +1661,16 @@ function Safari() {
         out += "</tr></table>";
         return out;
     };
-    this.showBag = function(player, src) {
+    this.showBag = function(player) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
         var line1 = ["bait", "rock", "gacha", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
-        var line2 = ["safari", "great", "ultra", "master", "dream", "luxury", "quick", "nest", "heavy", "moon", "premier"];
+        var line2 = ["safari", "great", "ultra", "master", "dream", "luxury", "nest", "heavy", "moon", "premier"];
         var line3 = ["amulet", "honey", "zoom","stick"];
     
         var out = "<table border = 1 cellpadding = 3><tr><th colspan=11>Inventory</th></tr>";
-        out += bagRow(player, line1, src, true);
-        out += bagRow(player, line2, src);
-        out += bagRow(player, line3, src);
+        out += bagRow(player, line1, true);
+        out += bagRow(player, line2);
+        out += bagRow(player, line3);
         out += "</table>";
         return out;
     };
@@ -2597,15 +2604,15 @@ function Safari() {
         if (!SESSION.channels(safchan).isChannelOwner(src)) {
             return false;
         }
+        if (command === "testbot") {
+            safaribot.sendHtmlAll("<b>Bot works.</b>", sys.id("Indigo Plateau"));
+            return true;
+        }
         //Needs some validation, but good for testing right now
         if (command === "bestow") {
             var cmd = commandData.split(":");
             var target = cmd[0];
             var p = parseInt(cmd[1], 10);
-            var shiny = cmd[2];
-            if (shiny === "*") {
-                p = p + "";
-            }
             
             var playerId = sys.id(target);
             if (!playerId) {
@@ -2616,7 +2623,6 @@ function Safari() {
             if (player) {
                 safaribot.sendMessage(playerId, "You received a " + poke(p) + "!", safchan);
                 player.pokemon.push(p);
-                this.saveGame(player);
             } else {
                 safaribot.sendMessage(src, "No such person!", safchan);
             }
@@ -2681,24 +2687,6 @@ function Safari() {
         }
         return false;
     };
-    this.beforeChannelLeave = function (src, channel) {
-        if (channel == safchan && getAvatar(src)) {
-            this.saveGame(getAvatar(src));
-        }
-        return false;
-    };
-    this.afterChangeTeam = function (src) {
-        if (sys.isInChannel(src, safchan)) {
-            var player = getAvatar(src);
-            if (player && sys.name(src).toLowerCase() !== player.id) {
-                this.saveGame(player);
-                
-                SESSION.users(src).safari = null;
-                this.loadGame(src);
-            }
-        }
-        return false;
-    };
     this.stepEvent = function () {
         contestCooldown--;
         baitCooldown--;
@@ -2706,14 +2694,8 @@ function Safari() {
         if (preparationPhase > 0) {
             preparationPhase--;
             if (preparationPhase <= 0) {
+                var throwers = shuffle(Object.keys(preparationThrows));
                 var name, i;
-                var list = Object.keys(preparationThrows);
-                for (i in preparationThrows) {
-                    if (preparationThrows[i] == "quick") {
-                        list.push(i);
-                    }
-                }
-                var throwers = shuffle(list), alreadyThrow = [];
                 if (preparationFirst) {
                     if (throwers.indexOf(preparationFirst) !== -1) {
                         throwers.splice(throwers.indexOf(preparationFirst), 1);
@@ -2722,8 +2704,7 @@ function Safari() {
                 }
                 for (i = 0; i < throwers.length; i++) {
                     name = throwers[i];
-                    if (sys.isInChannel(sys.id(name), safchan) && alreadyThrow.indexOf(name) === -1) {
-                        alreadyThrow.push(name);
+                    if (sys.isInChannel(sys.id(name), safchan)) {
                         safari.throwBall(sys.id(name), preparationThrows[name]);
                     }
                 }
@@ -2739,7 +2720,7 @@ function Safari() {
             sys.sendAll("*** ************************************************************ ***", 0);
         }
         if (contestCooldown === 0) {
-            safari.startContest("*");
+            safari.startContest();
         }
         SESSION.global().safariContestCooldown = contestCooldown;
         SESSION.global().safariBaitCooldown = baitCooldown;
@@ -2764,7 +2745,6 @@ function Safari() {
                     var player = getAvatar(playerId);
                     var item = "gacha";
                     player.balls[item] += 10;
-                    safari.saveGame(player);
                     safaribot.sendMessage(playerId, "You received 10 Gachapon Tickets for winning the contest!", safchan);
                 }
                 //Check daily rewards after a contest so players won't need to relog to get their reward when date changes
