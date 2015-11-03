@@ -359,10 +359,6 @@ function Safari() {
             exclude: []
         }
     };
-<<<<<<< HEAD
-
-=======
-    
     var wildForms = {
         "201": 27,
         "412": 2,
@@ -380,7 +376,6 @@ function Safari() {
         "711": 3
     };
     
->>>>>>> fded53d52fc9cdceb17f782f0556d209504973ae
     function getAvatar(src) {
         if (SESSION.users(src)) {
             return SESSION.users(src).safari;
