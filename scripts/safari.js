@@ -1017,6 +1017,7 @@ function Safari() {
         var cost = Math.floor(amount * itemData[item].price/2);
         player.money += cost;
         player.balls[item] -= amount;
+        player.records.pawnEarnings += cost;
         safaribot.sendMessage(src, "You sold " + amount + " " + finishName(item) +  " for $" + cost + "! You now have " + player.balls[item] + " " + finishName(item) + " and $" + player.money + "!", safchan);
         this.saveGame(player);
     };
@@ -1256,6 +1257,7 @@ function Safari() {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "! *THUD* A direct hit! " + targetName + " was stunned!", safchan);
             target.cooldown = target.cooldown > currentTime ? target.cooldown + itemData.rock.targetCD : currentTime + itemData.rock.targetCD;
             player.records.rocksHit += 1;
+            target.records.rocksHitBy += 1;
         } else if (rng < success + itemData.rock.bounceRate) {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but it hit a wall and bounced back at " + sys.name(src) + "! *THUD* That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
             player.cooldown = currentTime + itemData.rock.bounceCD;
@@ -1263,6 +1265,7 @@ function Safari() {
         } else {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "... but it missed!", safchan);
             player.records.rocksMissed += 1;
+            target.records.rocksDodged += 1;
         }
         player.rockCooldown = currentTime + itemData.rock.throwCD;
         this.saveGame(player);
@@ -2112,13 +2115,15 @@ function Safari() {
 
         var rec = player.records;
 
+        sys.sendMessage(src, "", safchan);
         sys.sendMessage(src, "*** Player Records ***", safchan);
         safaribot.sendMessage(src, "Pokémon-- Caught: " + rec.pokesCaught + ". Released: " + rec.pokesReleased + ". Cloned: " + rec.pokesCloned + ". Attempted Catches: " + rec.pokesNotCaught + ".", safchan);
-        safaribot.sendMessage(src, "Earnings-- Sold Pokémon: " + rec.pokeSoldEarnings + ". Luxury Balls: " + rec.luxuryEarnings + ".", safchan);
+        safaribot.sendMessage(src, "Earnings-- Sold Pokémon: $" + rec.pokeSoldEarnings + ". Luxury Balls: $" + rec.luxuryEarnings + ". Pawned Items: $" + rec.pawnEarnings + ".", safchan);
         safaribot.sendMessage(src, "Gachapon-- Used: " + rec.gachasUsed + ". Jackpots Won: " + rec.jackpotsWon + ". Master Balls Won: " + rec.masterballsWon + ".", safchan);
-        safaribot.sendMessage(src, "Rocks-- Thrown: " + rec.rocksThrown + ". Hit: " + rec.rocksHit + ". Missed: " + rec.rocksMissed + ". Bounced: " + rec.rocksBounced + ".", safchan);
+        safaribot.sendMessage(src, "Rocks-- Thrown: " + rec.rocksThrown + ". Hit: " + rec.rocksHit + ". Missed: " + rec.rocksMissed + ". Bounced: " + rec.rocksBounced + ". Hit By: " + rec.rocksHitBy + ". Dodged: " + rec.rocksDodged + ".", safchan);
         safaribot.sendMessage(src, "Bait-- Used: " + rec.baitUsed + ". Attracted Pokémon: " + rec.baitAttracted + ". No Interest: " + rec.baitNothing + ".", safchan);
         safaribot.sendMessage(src, "Contests Won: " + rec.contestsWon + ".", safchan);
+        sys.sendMessage(src, "", safchan);
     };
 
     this.startGame = function(src, data) {
@@ -2183,10 +2188,13 @@ function Safari() {
                 pokesCloned: 0,
                 pokeSoldEarnings: 0,
                 luxuryEarnings: 0,
+                pawnEarnings: 0,
                 rocksThrown: 0,
                 rocksHit: 0,
                 rocksMissed: 0,
                 rocksBounced: 0,
+                rocksDodged: 0,
+                rocksHitBy: 0,
                 baitUsed: 0,
                 baitAttracted: 0,
                 baitNothing: 0
@@ -2293,7 +2301,7 @@ function Safari() {
             if (player.records === undefined) {
                 player.records = {};
             }
-            var recstr = ["gachasUsed", "masterballsWon", "jackpotsWon", "contestsWon", "pokesCaught", "pokesNotCaught", "pokesReleased", "pokesCloned", "pokeSoldEarnings", "luxuryEarnings", "rocksThrown", "rocksHit", "rocksMissed", "rocksBounced", "baitUsed", "baitAttracted", "baitNothing"];
+            var recstr = ["gachasUsed", "masterballsWon", "jackpotsWon", "contestsWon", "pokesCaught", "pokesNotCaught", "pokesReleased", "pokesCloned", "pokeSoldEarnings", "luxuryEarnings", "pawnEarnings", "rocksThrown", "rocksHit", "rocksMissed", "rocksBounced", "rocksDodged", "rocksHitBy", "baitUsed", "baitAttracted", "baitNothing"];
             for (var j = 0; j < recstr.length; j++) {
                 if (player.records[recstr[j]] === undefined || isNaN(player.records[recstr[j]]) || player.records[recstr[j]] < 0) {
                     player.records[recstr[j]] = 0;
