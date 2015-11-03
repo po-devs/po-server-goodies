@@ -245,7 +245,7 @@ function Safari() {
 
         dream: {name: "dream", fullName: "Dream Ball", type: "ball", icon: 267, price: 0, ballBonus: 1, bonusRate: 3, cooldown: 9000, aliases:["dreamball", "dream", "dream ball"], sellable: false, buyable: false},
         heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 0, ballBonus: 1, bonusRate: 0.5, maxBonus: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], sellable: false, buyable: false},
-        nest: {name: "nest", fullName: "Nest Ball", type: "ball", icon: 321, price: 0, ballBonus: 1,  bonusRate: 5, cooldown: 8000, aliases:["nestball", "nest", "nest ball"], sellable: false, buyable: false},
+        nest: {name: "nest", fullName: "Nest Ball", type: "ball", icon: 321, price: 0, ballBonus: 1,  bonusRate: 4, cooldown: 8000, aliases:["nestball", "nest", "nest ball"], sellable: false, buyable: false},
         quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 0, ballBonus: 1, cooldown: 7000, aliases:["quickball", "quick", "quick ball"], sellable: false, buyable: false},
         luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 2, cooldown: 8000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false},
         moon: {name: "moon", fullName: "Moon Ball", type: "ball", icon: 312, price: 0, ballBonus: 1, bonusRate: 5, cooldown: 8000, aliases:["moonball", "moon", "moon ball"], sellable: false, buyable: false},
@@ -253,9 +253,9 @@ function Safari() {
 
         //Other Items
         bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 100, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true},
-        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.02, aliases:["rock", "rocks"], sellable: false, buyable: true},
-        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 149, cooldown: 8000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true},
-        stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, aliases:["stick","sticks"], sellable: false, buyable: true},
+        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.02, targetCD: 6000, bounceCD: 8000, throwCD: 10000,  aliases:["rock", "rocks"], sellable: false, buyable: true},
+        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 149, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true},
+        stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true},
 
         //Perks
         amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false},
@@ -367,7 +367,7 @@ function Safari() {
         "423": 1,
         "550": 1,
         "585": 3,
-        "565": 3,
+        "586": 3,
         "666": 17,
         "669": 4,
         "670": 4,
@@ -723,7 +723,7 @@ function Safari() {
                 ballBonus = itemData[ball].maxBonus;
             }
         }
-        if (ball === "nest" && wildStats < 420) {
+        if (ball === "nest" && wildStats < 360) {
             ballBonus = itemData[ball].bonusRate;
         }
         if (ball === "moon" && legendaries.indexOf(pokeName) != -1) {
@@ -754,7 +754,9 @@ function Safari() {
             currentPokemonCount--;
             var amt = currentPokemonCount;
             var remaining = " There " + (amt > 1 ? "are" : "is") + " still " + currentPokemonCount + " " + pokeName + " left to catch!";
-            sys.sendAll("", safchan);
+            if (amt > 0) {
+                sys.sendAll("", safchan);
+            }
             safaribot.sendAll(sys.name(src) + " caught the " + pokeName + " with a " + cap(ball) + " Ball!" + (amt > 0 ? remaining : ""), safchan);
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with a " + cap(ball) + " Ball! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             player.pokemon.push(currentPokemon);
@@ -764,7 +766,9 @@ function Safari() {
                 player.money += Math.floor(wildStats/2);
             }
 
-            sys.sendAll("", safchan);
+            if (amt > 0) {
+                sys.sendAll("", safchan);
+            }
             if (amt < 1) {
                 currentPokemon = null;
             }
@@ -1234,14 +1238,14 @@ function Safari() {
         var targetName = utilities.non_flashing(sys.name(targetId));
         if (rng < success) {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "! *THUD* A direct hit! " + targetName + " was stunned!", safchan);
-            target.cooldown = target.cooldown > currentTime ? target.cooldown + 6000 : currentTime + 6000;
+            target.cooldown = target.cooldown > currentTime ? target.cooldown + itemData.rock.targetCD : currentTime + itemData.rock.targetCD;
         } else if (rng < success + itemData.rock.bounceRate) {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but it hit a wall and bounced back at " + sys.name(src) + "! *THUD* That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
-            player.cooldown = currentTime + 8000;
+            player.cooldown = currentTime + itemData.rock.bounceCD;
         } else {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "... but it missed!", safchan);
         }
-        player.rockCooldown = currentTime + 10000;
+        player.rockCooldown = currentTime + itemData.rock.throwCD;
         this.saveGame(player);
     };
     this.useStick = function (src, commandData) {
@@ -1275,7 +1279,7 @@ function Safari() {
 
         safaribot.sendAll(sys.name(src) + " poked " + targetName + " with their stick.", safchan);
 
-        player.stickCooldown = currentTime + 10000;
+        player.stickCooldown = currentTime + itemData.stick.cooldown;
         this.saveGame(player);
     };
     this.gachapon = function (src, commandData) {
