@@ -251,7 +251,7 @@ function Safari() {
         moon: {name: "moon", fullName: "Moon Ball", type: "ball", icon: 312, price: 0, ballBonus: 1, bonusRate: 5, cooldown: 8000, aliases:["moonball", "moon", "moon ball"], sellable: false, buyable: false},
         premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false},
         clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.02, cooldown: 10000, aliases:["cloneball", "clone", "clone ball"], sellable: false, buyable: false},
-        
+
         //Other Items
         bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 100, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true},
         rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.02, targetCD: 6000, bounceCD: 8000, throwCD: 10000,  aliases:["rock", "rocks"], sellable: false, buyable: true},
@@ -376,7 +376,7 @@ function Safari() {
         "710": 3,
         "711": 3
     };
-    
+
     function getAvatar(src) {
         if (SESSION.users(src)) {
             return SESSION.users(src).safari;
@@ -621,7 +621,7 @@ function Safari() {
                 } while (!pokeId || getBST(num) > maxStats);
             }
         }
-        
+
         if (num in wildForms) {
             var pickedForm = sys.rand(0, wildForms[num] + 1);
             num = pokeInfo.calcForme(num, pickedForm);
@@ -743,7 +743,7 @@ function Safari() {
                 break;
             }
         }
-        
+
         var finalChance = (tierChance + statsBonus) * typeBonus * shinyChance;
         if (finalChance <= 0) {
             finalChance = 0.01;
@@ -764,16 +764,21 @@ function Safari() {
             safaribot.sendAll(sys.name(src) + " caught the " + pokeName + " with a " + cap(ball) + " Ball!" + (amt > 0 ? remaining : ""), safchan);
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with a " + cap(ball) + " Ball! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             player.pokemon.push(currentPokemon);
+            player.records.pokesCaught += 1;
+
             if (ball == "clone") {
                 safaribot.sendAll("But wait! The " + pokeName + " was cloned by the Clone Ball! " + sys.name(src) + " received another " + pokeName + "!", safchan);
                 player.pokemon.push(currentPokemon);
+                player.records.pokesCloned += 1;
             }
 
             if (ball == "luxury") {
-                safaribot.sendAll(sys.name(src) + " also found $" + Math.floor(wildStats/2) + " on the ground after catching " + pokeName + "!" , safchan);
-                player.money += Math.floor(wildStats/2);
+                var earnings = Math.floor(wildStats/2);
+                safaribot.sendAll(sys.name(src) + " also found $" + earnings + " on the ground after catching " + pokeName + "!" , safchan);
+                player.money += earnings;
+                player.records.luxuryEarnings += earnings;
             }
-            
+
             if (amt < 1) {
                 sys.sendAll("", safchan);
                 currentPokemon = null;
@@ -794,6 +799,7 @@ function Safari() {
                 safaribot.sendMessage(src, "Oh no! The " + pokeName + " broke free! ", safchan);
             }
             safaribot.sendAll(pokeName + " broke out of " + sys.name(src) + "'s " + cap(ball) + " Ball!", safchan);
+            player.records.pokesNotCaught += 1;
         }
         player.cooldown = currentTime + cooldown;
         this.saveGame(player);
@@ -871,10 +877,10 @@ function Safari() {
         }
 
         player.money += price;
+        player.records.pokeSoldEarnings += price;
         this.removePokemon(src, pokeNum);
 
         safaribot.sendMessage(src, "You sold your " + poke(pokeNum) + " for $" + price + "!", safchan);
-
         this.saveGame(player);
     };
     this.buyItems = function(src, data) {
@@ -1011,6 +1017,7 @@ function Safari() {
         var cost = Math.floor(amount * itemData[item].price/2);
         player.money += cost;
         player.balls[item] -= amount;
+        player.records.pawnEarnings += cost;
         safaribot.sendMessage(src, "You sold " + amount + " " + finishName(item) +  " for $" + cost + "! You now have " + player.balls[item] + " " + finishName(item) + " and $" + player.money + "!", safchan);
         this.saveGame(player);
     };
@@ -1188,6 +1195,7 @@ function Safari() {
             return;
         }
         player.balls[item] -= 1;
+        player.records.baitUsed += 1;
 
         var rng = Math.random();
         var perk = "honey";
@@ -1196,6 +1204,7 @@ function Safari() {
         if (rng < (itemData.bait.successRate + perkBonus)) {
             safaribot.sendAll(sys.name(src) + " left some bait out. The bait attracted a wild Pokémon!", safchan);
             baitCooldown = itemData.bait.successCD + sys.rand(0,10);
+            player.records.baitAttracted += 1;
             safari.createWild();
             if (commandData !== undefined) {
                 safari.throwBall(src, commandData);
@@ -1204,6 +1213,7 @@ function Safari() {
         } else {
             baitCooldown = itemData.bait.failCD + sys.rand(0,5);
             safaribot.sendAll(sys.name(src) + " left some bait out... but nothing showed up.", safchan);
+            player.records.baitNothing += 1;
         }
         this.saveGame(player);
     };
@@ -1235,6 +1245,7 @@ function Safari() {
         }
 
         player.balls[item] -= 1;
+        player.records.rocksThrown += 1;
 
         var rng = Math.random();
         var perk = "zoom";
@@ -1245,11 +1256,16 @@ function Safari() {
         if (rng < success) {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "! *THUD* A direct hit! " + targetName + " was stunned!", safchan);
             target.cooldown = target.cooldown > currentTime ? target.cooldown + itemData.rock.targetCD : currentTime + itemData.rock.targetCD;
+            player.records.rocksHit += 1;
+            target.records.rocksHitBy += 1;
         } else if (rng < success + itemData.rock.bounceRate) {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but it hit a wall and bounced back at " + sys.name(src) + "! *THUD* That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
             player.cooldown = currentTime + itemData.rock.bounceCD;
+            player.records.rocksBounced += 1;
         } else {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "... but it missed!", safchan);
+            player.records.rocksMissed += 1;
+            target.records.rocksDodged += 1;
         }
         player.rockCooldown = currentTime + itemData.rock.throwCD;
         this.saveGame(player);
@@ -1317,6 +1333,7 @@ function Safari() {
             return;
         }
         player.balls[gach] -= 1;
+        player.records.gachasUsed += 1;
         var rng = sys.rand(0, gachaponPrizes.length);
         var reward = gachaponPrizes[rng];
         safaribot.sendMessage(src, "Gacha-PON! The Gachapon Machine has dispensed an item capsule. [Remaining Tickets: " + player.balls[gach] + "]", safchan);
@@ -1340,10 +1357,12 @@ function Safari() {
                     safaribot.sendMessage(src, "You wiped the paint off of the ball and pocketed 1 Safari Ball for your troubles.", safchan);
                     reward = "safari";
                     player.balls[reward] += 1;
+                    player.records.masterballsWon += 1;
                 } else {
                     safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won a Master Ball from the Gachapon Machine!</b>", safchan);
                     safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
                     player.balls[reward] += 1;
+                    player.records.masterballsWon += 1;
                 }
             break;
             case "bait":
@@ -1378,6 +1397,7 @@ function Safari() {
                 var jackpot = Math.floor(gachaJackpot/10);
                 safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won the Gachapon Ticket Jackpot valued at " + jackpot + " tickets!</b>", safchan);
                 player.balls[reward] += jackpot;
+                player.records.jackpotsWon += 1;
                 safaribot.sendMessage(src, "You received " + jackpot + " Gachapon Tickets.", safchan);
                 gachaJackpot = 100; //Reset jackpot for next player
             break;
@@ -1463,6 +1483,7 @@ function Safari() {
 
         safaribot.sendAll(sys.name(src) + " released their " + poke(pokeNum) + "!", safchan);
         this.removePokemon(src, pokeNum);
+        player.records.pokesReleased += 1;
         this.saveGame(player);
         releaseCooldown = releaseCooldownLength;
         safari.createWild(pokeNum, shiny);
@@ -2085,6 +2106,25 @@ function Safari() {
             this.saveGame(player);
         }
     };
+    this.showRecords = function (src) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+
+        var rec = player.records;
+
+        sys.sendMessage(src, "", safchan);
+        sys.sendMessage(src, "*** Player Records ***", safchan);
+        safaribot.sendMessage(src, "Pokémon-- Caught: " + rec.pokesCaught + ". Released: " + rec.pokesReleased + ". Cloned: " + rec.pokesCloned + ". Attempted Catches: " + rec.pokesNotCaught + ".", safchan);
+        safaribot.sendMessage(src, "Earnings-- Sold Pokémon: $" + rec.pokeSoldEarnings + ". Luxury Balls: $" + rec.luxuryEarnings + ". Pawned Items: $" + rec.pawnEarnings + ".", safchan);
+        safaribot.sendMessage(src, "Gachapon-- Used: " + rec.gachasUsed + ". Jackpots Won: " + rec.jackpotsWon + ". Master Balls Won: " + rec.masterballsWon + ".", safchan);
+        safaribot.sendMessage(src, "Rocks-- Thrown: " + rec.rocksThrown + ". Hit: " + rec.rocksHit + ". Missed: " + rec.rocksMissed + ". Bounced: " + rec.rocksBounced + ". Hit By: " + rec.rocksHitBy + ". Dodged: " + rec.rocksDodged + ".", safchan);
+        safaribot.sendMessage(src, "Bait-- Used: " + rec.baitUsed + ". Attracted Pokémon: " + rec.baitAttracted + ". No Interest: " + rec.baitNothing + ".", safchan);
+        safaribot.sendMessage(src, "Contests Won: " + rec.contestsWon + ".", safchan);
+        sys.sendMessage(src, "", safchan);
+    };
 
     this.startGame = function(src, data) {
         if (getAvatar(src)) {
@@ -2136,6 +2176,28 @@ function Safari() {
                 bigpearl: 0,
                 nugget: 0,
                 bignugget: 0
+            },
+            records: {
+                gachasUsed: 0,
+                masterballsWon: 0,
+                jackpotsWon: 0,
+                contestsWon: 0,
+                pokesCaught: 0,
+                pokesNotCaught: 0,
+                pokesReleased: 0,
+                pokesCloned: 0,
+                pokeSoldEarnings: 0,
+                luxuryEarnings: 0,
+                pawnEarnings: 0,
+                rocksThrown: 0,
+                rocksHit: 0,
+                rocksMissed: 0,
+                rocksBounced: 0,
+                rocksDodged: 0,
+                rocksHitBy: 0,
+                baitUsed: 0,
+                baitAttracted: 0,
+                baitNothing: 0
             },
             starter: num,
             lastLogin: getDay(now()),
@@ -2236,6 +2298,15 @@ function Safari() {
                 player.money = Math.floor(player.money);
             }
 
+            if (player.records === undefined) {
+                player.records = {};
+            }
+            var recstr = ["gachasUsed", "masterballsWon", "jackpotsWon", "contestsWon", "pokesCaught", "pokesNotCaught", "pokesReleased", "pokesCloned", "pokeSoldEarnings", "luxuryEarnings", "pawnEarnings", "rocksThrown", "rocksHit", "rocksMissed", "rocksBounced", "rocksDodged", "rocksHitBy", "baitUsed", "baitAttracted", "baitNothing"];
+            for (var j = 0; j < recstr.length; j++) {
+                if (player.records[recstr[j]] === undefined || isNaN(player.records[recstr[j]]) || player.records[recstr[j]] < 0) {
+                    player.records[recstr[j]] = 0;
+                }
+            }
             player.cooldown = now();
             player.gachaCooldown = now();
             player.rockCooldown = now();
@@ -2502,6 +2573,10 @@ function Safari() {
         }
         if (command === "release") {
             safari.releasePokemon(src, commandData);
+            return true;
+        }
+        if (command === "records") {
+            safari.showRecords(src);
             return true;
         }
 
@@ -2819,6 +2894,7 @@ function Safari() {
                     var player = getAvatar(playerId);
                     var item = "gacha";
                     player.balls[item] += 10;
+                    player.records.contestsWon += 1;
                     safari.saveGame(player);
                     safaribot.sendMessage(playerId, "You received 10 Gachapon Tickets for winning the contest!", safchan);
                 }
