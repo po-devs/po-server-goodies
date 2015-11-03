@@ -250,7 +250,7 @@ function Safari() {
         luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 2, cooldown: 8000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false},
         moon: {name: "moon", fullName: "Moon Ball", type: "ball", icon: 312, price: 0, ballBonus: 1, bonusRate: 5, cooldown: 8000, aliases:["moonball", "moon", "moon ball"], sellable: false, buyable: false},
         premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false},
-        clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.01, cooldown: 12000, aliases:["cloneball", "clone", "clone ball"], sellable: false, buyable: false},
+        clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.02, cooldown: 10000, aliases:["cloneball", "clone", "clone ball"], sellable: false, buyable: false},
         
         //Other Items
         bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 100, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true},
@@ -743,7 +743,7 @@ function Safari() {
                 break;
             }
         }
-
+        
         var finalChance = (tierChance + statsBonus) * typeBonus * shinyChance;
         if (finalChance <= 0) {
             finalChance = 0.01;
@@ -765,7 +765,7 @@ function Safari() {
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with a " + cap(ball) + " Ball! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             player.pokemon.push(currentPokemon);
             if (ball == "clone") {
-                safaribot.sendAll(src, "But wait! The " + pokeName + " was cloned by the Clone Ball! " + sys.name(src) + " received another " + pokeName + "!", safchan);
+                safaribot.sendAll("But wait! The " + pokeName + " was cloned by the Clone Ball! " + sys.name(src) + " received another " + pokeName + "!", safchan);
                 player.pokemon.push(currentPokemon);
             }
 
