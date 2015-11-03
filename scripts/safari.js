@@ -454,9 +454,6 @@ function Safari() {
     function getBST(pokeNum) {
         return add(sys.pokeBaseStats(pokeNum));
     }
-    /*function pokeImage(num) {
-        return "<img src='pokemon:num=" + num + (typeof num == "string" ? "&shiny=true" : "") + "&gen=6'>";
-    }*/
     function itemAlias(name, returnGarbage) {
         name = name.toLowerCase();
         for (var e in itemData) {
@@ -497,25 +494,30 @@ function Safari() {
         for (var j, x, i = o.length; i; j = parseInt(Math.random() * i, 10), x = o[--i], o[i] = o[j], o[j] = x);
         return o;
     }
-    function bagRow (player, arr, first) {
+    function bagRow (player, arr, src, first) {
         var ret = [], item;
-        ret += "<tr>";
+        var isAndroid = sys.os(src) === "android";
+        ret += isAndroid ? "<br />" : "<tr>";
         if (first) {
             ret += "<td valign=middle align=center colspan=2><img src='item:274' title='Money'></td>";
+            ret += isAndroid ? " | " : "";
         }
         for (var i = 0; i < arr.length; i++) {
             item = itemData[arr[i]];
             ret += "<td align=center><img src='item:" + item.icon + "' title='" + item.fullName + "'></td>";
+            ret += isAndroid ? " | " : "";
         }
-        ret += "</tr><tr>";
+        ret += isAndroid ? "<br />" : "</tr><tr>";
         if (first) {
             ret += "<td align=center colspan=2>$" + player.money + "</td>";
+            ret += isAndroid ? " | " : "";
         }
         for (var i = 0; i < arr.length; i++) {
             item = arr[i];
             ret += "<td align=center>" + player.balls[item] + "</td>";
+            ret += isAndroid ? " | " : "";
         }
-        ret += "</tr>";
+        ret += isAndroid ? "<br />" : "</tr>";
         return ret;
     }
     
@@ -1096,7 +1098,7 @@ function Safari() {
             }
         } else {
             var acceptCommand = "/trade " + sys.name(src) + ":" + sys.pokemon(request[0]) + (request[1] === true ? "*" : "") + ":" + sys.pokemon(offer[0]) + (offer[1] === true ? "*" : "");
-            sys.sendHtmlMessage(targetId, "<font color=#3daa68><timestamp/><b>"+("±" + safaribot.name)+":</b></font> To accept the trade, type <a href='po:send/" + acceptCommand + "'>" + acceptCommand + "</a>.", safchan);
+            safaribot.sendHtmlMessage(targetId, "To accept the trade, type <a href='po:send/" + acceptCommand + "'>" + acceptCommand + "</a>.", safchan);
             sys.sendMessage(src, "" , safchan);
             sys.sendMessage(targetId, "" , safchan);
             tradeRequests[userName] = { target: targetName, offer: offerId, request: requestId };
@@ -1286,12 +1288,12 @@ function Safari() {
         switch (reward) {
             case "master":
                 if (player.balls[reward] >= 1) {
-                    sys.sendHtmlAll("<font color=#3DAA68><timestamp/><b>±Gachapon:</b></font> <b>JACKP--</b> Wait a second... " + html_escape(sys.name(src)) + "'s Master Ball turned out to be a simple Safari Ball painted to look like a Master Ball! What a shame!", safchan);
+                    safaribot.sendHtmlAll("<b>JACKP--</b> Wait a second... " + html_escape(sys.name(src)) + "'s Master Ball turned out to be a simple Safari Ball painted to look like a Master Ball! What a shame!", safchan);
                     safaribot.sendMessage(src, "You wiped the paint off of the ball and pocketed 1 Safari Ball for your troubles.", safchan);
                     reward = "safari";
                     player.balls[reward] += 1;
                 } else {
-                    sys.sendHtmlAll("<font color=#3DAA68><timestamp/><b>±Gachapon:</b></font> <b>JACKPOT! " + html_escape(sys.name(src)) + " just won a Master Ball from the Gachapon Machine!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won a Master Ball from the Gachapon Machine!</b>", safchan);
                     safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
                     player.balls[reward] += 1;
                 }
@@ -1326,7 +1328,7 @@ function Safari() {
             break;
             case "gacha":
                 var jackpot = Math.floor(gachaJackpot/10);
-                sys.sendHtmlAll("<font color=#3DAA68><timestamp/><b>±Gachapon:</b></font> <b>JACKPOT! " + html_escape(sys.name(src)) + " just won the Gachapon Ticket Jackpot valued at " + jackpot + " tickets!</b>", safchan);
+                safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won the Gachapon Ticket Jackpot valued at " + jackpot + " tickets!</b>", safchan);
                 player.balls[reward] += jackpot;
                 safaribot.sendMessage(src, "You received " + jackpot + " Gachapon Tickets.", safchan);
                 gachaJackpot = 100; //Reset jackpot for next player
@@ -1338,7 +1340,7 @@ function Safari() {
             case "nugget":
                 player.balls[reward] += 1;
                 safaribot.sendAll("Sweet! " + sys.name(src) + " just won a " + finishName(reward) + " from Gachapon!", safchan);
-                safaribot.sendMessage(src, "You received a " + finishName(reward) + plural + ".", safchan);
+                safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
             break;
             case "pearl":
             case "stardust":
@@ -1434,7 +1436,7 @@ function Safari() {
         out += this.showBox(player, "all");
         
         //Money/Balls table
-        out += this.showBag(player);
+        out += this.showBag(player, src);
         
         sys.sendHtmlMessage(src, out, safchan);
     };
@@ -1458,7 +1460,7 @@ function Safari() {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
             return;
         }
-        sys.sendHtmlMessage(src, this.showBag(player), safchan);
+        sys.sendHtmlMessage(src, this.showBag(player, src), safchan);
     };
     this.viewBox = function(src, data) {
         var player = getAvatar(src);
@@ -1652,16 +1654,16 @@ function Safari() {
         out += "</tr></table>";
         return out;
     };
-    this.showBag = function(player) {
+    this.showBag = function(player, src) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
         var line1 = ["bait", "rock", "gacha", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
         var line2 = ["safari", "great", "ultra", "master", "dream", "luxury", "quick", "nest", "heavy", "moon", "premier"];
         var line3 = ["amulet", "honey", "zoom","stick"];
     
         var out = "<table border = 1 cellpadding = 3><tr><th colspan=11>Inventory</th></tr>";
-        out += bagRow(player, line1, true);
-        out += bagRow(player, line2);
-        out += bagRow(player, line3);
+        out += bagRow(player, line1, src, true);
+        out += bagRow(player, line2, src);
+        out += bagRow(player, line3, src);
         out += "</table>";
         return out;
     };
@@ -2595,15 +2597,15 @@ function Safari() {
         if (!SESSION.channels(safchan).isChannelOwner(src)) {
             return false;
         }
-        if (command === "testbot") {
-            safaribot.sendHtmlAll("<b>Bot works.</b>", sys.id("Indigo Plateau"));
-            return true;
-        }
         //Needs some validation, but good for testing right now
         if (command === "bestow") {
             var cmd = commandData.split(":");
             var target = cmd[0];
             var p = parseInt(cmd[1], 10);
+            var shiny = cmd[2];
+            if (shiny === "*") {
+                p = p + "";
+            }
             
             var playerId = sys.id(target);
             if (!playerId) {
@@ -2614,6 +2616,7 @@ function Safari() {
             if (player) {
                 safaribot.sendMessage(playerId, "You received a " + poke(p) + "!", safchan);
                 player.pokemon.push(p);
+                this.saveGame(player);
             } else {
                 safaribot.sendMessage(src, "No such person!", safchan);
             }
