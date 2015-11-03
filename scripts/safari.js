@@ -229,8 +229,7 @@ function Safari() {
         return ret;
     };
     pokeInfo.calcForme = function(base, forme) {
-        var ret =  base & (forme << 16);
-        return ret;
+        return parseInt(base,10) + parseInt(forme << 16, 10);
     };
     /* End Poke Info Functions */
     
@@ -359,7 +358,24 @@ function Safari() {
             exclude: []
         }
     };
-        
+    
+    var wildForms = {
+        "201": 27,
+        "412": 2,
+        "413": 2,
+        "422": 1,
+        "423": 1,
+        "550": 1,
+        "585": 3,
+        "565": 3,
+        "666": 17,
+        "669": 4,
+        "670": 4,
+        "671": 4,
+        "710": 3,
+        "711": 3
+    };
+    
     function getAvatar(src) {
         if (SESSION.users(src)) {
             return SESSION.users(src).safari;
@@ -602,6 +618,12 @@ function Safari() {
                     pokeId = poke(num + (shiny ? "" : 0));
                 } while (!pokeId || getBST(num) > maxStats);
             }
+        }
+        
+        if (num in wildForms) {
+            var pickedForm = sys.rand(0, wildForms[num] + 1);
+            num = pokeInfo.calcForme(num, pickedForm);
+            pokeId = poke(num + (shiny ? "" : 0));
         }
         
         currentPokemon = shiny ? "" + num : num;
@@ -1196,7 +1218,7 @@ function Safari() {
         var targetName = utilities.non_flashing(sys.name(targetId));
         if (rng < success) {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "! *THUD* A direct hit! " + targetName + " was stunned!", safchan);
-            target.cooldown = target.cooldown > currentTime ? target.cooldown + 6000 : currentTime + 6000; 
+            target.cooldown = target.cooldown > currentTime ? target.cooldown + 6000 : currentTime + 6000;
         } else if (rng < success + itemData.rock.bounceRate) {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but it hit a wall and bounced back at " + sys.name(src) + "! *THUD* That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
             player.cooldown = currentTime + 8000;
