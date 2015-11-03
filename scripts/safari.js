@@ -754,7 +754,7 @@ function Safari() {
             currentPokemonCount--;
             var amt = currentPokemonCount;
             var remaining = " There " + (amt > 1 ? "are" : "is") + " still " + currentPokemonCount + " " + pokeName + " left to catch!";
-            if (amt > 0) {
+            if (amt < 1) {
                 sys.sendAll("", safchan);
             }
             safaribot.sendAll(sys.name(src) + " caught the " + pokeName + " with a " + cap(ball) + " Ball!" + (amt > 0 ? remaining : ""), safchan);
@@ -765,11 +765,9 @@ function Safari() {
                 safaribot.sendAll(sys.name(src) + " also found $" + Math.floor(wildStats/2) + " on the ground after catching " + pokeName + "!" , safchan);
                 player.money += Math.floor(wildStats/2);
             }
-
-            if (amt > 0) {
-                sys.sendAll("", safchan);
-            }
+            
             if (amt < 1) {
+                sys.sendAll("", safchan);
                 currentPokemon = null;
             }
             cooldown *= 2;
