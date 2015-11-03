@@ -765,7 +765,7 @@ function Safari() {
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with a " + cap(ball) + " Ball! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             player.pokemon.push(currentPokemon);
             if (ball == "clone") {
-                safaribot.sendMessage(src, "But wait! The " + pokeName + " was cloned by the Clone Ball! You received another one!", safchan);
+                safaribot.sendAll(src, "But wait! The " + pokeName + " was cloned by the Clone Ball! " + sys.name(src) + " received another " + pokeName + "!", safchan);
                 player.pokemon.push(currentPokemon);
             }
 
