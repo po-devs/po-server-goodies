@@ -238,40 +238,40 @@ function Safari() {
     //Data on items
     var itemData = {
         //Balls
-        safari: {name: "safari", fullName: "Safari Ball", type: "ball", icon: 309, price: 30, ballBonus: 1, cooldown: 6000, aliases:["safariball", "safari", "safari ball"], sellable: false, buyable: true},
-        great: {name: "great", fullName: "Great Ball", type: "ball", icon: 306, price: 60, ballBonus: 1.5, cooldown: 9000, aliases:["greatball", "great", "great ball"], sellable: false, buyable: true},
-        ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", icon: 307, price: 120, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"], sellable: false, buyable: true},
-        master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 0, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], sellable: false, buyable: false},
+        safari: {name: "safari", fullName: "Safari Ball", type: "ball", icon: 309, price: 30, ballBonus: 1, cooldown: 6000, aliases:["safariball", "safari", "safari ball"], sellable: false, buyable: true, tradable: false},
+        great: {name: "great", fullName: "Great Ball", type: "ball", icon: 306, price: 60, ballBonus: 1.5, cooldown: 9000, aliases:["greatball", "great", "great ball"], sellable: false, buyable: true, tradable: false},
+        ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", icon: 307, price: 120, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"], sellable: false, buyable: true, tradable: false},
+        master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 0, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], sellable: false, buyable: false, tradable: true},
 
-        dream: {name: "dream", fullName: "Dream Ball", type: "ball", icon: 267, price: 0, ballBonus: 1, bonusRate: 3, cooldown: 9000, aliases:["dreamball", "dream", "dream ball"], sellable: false, buyable: false},
-        heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 0, ballBonus: 1, bonusRate: 0.5, maxBonus: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], sellable: false, buyable: false},
-        nest: {name: "nest", fullName: "Nest Ball", type: "ball", icon: 321, price: 0, ballBonus: 1,  bonusRate: 4, cooldown: 8000, aliases:["nestball", "nest", "nest ball"], sellable: false, buyable: false},
-        quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 0, ballBonus: 1, cooldown: 7000, aliases:["quickball", "quick", "quick ball"], sellable: false, buyable: false},
-        luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 2, cooldown: 8000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false},
-        moon: {name: "moon", fullName: "Moon Ball", type: "ball", icon: 312, price: 0, ballBonus: 1, bonusRate: 5, cooldown: 8000, aliases:["moonball", "moon", "moon ball"], sellable: false, buyable: false},
-        premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false},
-        clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.02, cooldown: 10000, aliases:["cloneball", "clone", "clone ball"], sellable: false, buyable: false},
-
+        dream: {name: "dream", fullName: "Dream Ball", type: "ball", icon: 267, price: 0, ballBonus: 1, bonusRate: 3, cooldown: 9000, aliases:["dreamball", "dream", "dream ball"], sellable: false, buyable: false, tradable: true},
+        heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 0, ballBonus: 1, bonusRate: 0.5, maxBonus: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], sellable: false, buyable: false, tradable: true},
+        nest: {name: "nest", fullName: "Nest Ball", type: "ball", icon: 321, price: 0, ballBonus: 1,  bonusRate: 4, cooldown: 8000, aliases:["nestball", "nest", "nest ball"], sellable: false, buyable: false, tradable: true},
+        quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 0, ballBonus: 1, cooldown: 7000, aliases:["quickball", "quick", "quick ball"], sellable: false, buyable: false, tradable: true},
+        luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 2, cooldown: 8000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false, tradable: true},
+        moon: {name: "moon", fullName: "Moon Ball", type: "ball", icon: 312, price: 0, ballBonus: 1, bonusRate: 5, cooldown: 8000, aliases:["moonball", "moon", "moon ball"], sellable: false, buyable: false, tradable: true},
+        premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false, tradable: false},
+        clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], sellable: false, buyable: false, tradable: true},
+        
         //Other Items
-        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 100, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true},
-        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.02, targetCD: 6000, bounceCD: 8000, throwCD: 10000,  aliases:["rock", "rocks"], sellable: false, buyable: true},
-        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 149, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true},
-        stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true},
+        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 100, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
+        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.02, targetCD: 6000, bounceCD: 8000, throwCD: 10000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
+        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 149, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
+        stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
 
         //Perks
-        amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false},
-        honey: {name: "honey", fullName: "Honey", type: "perk", icon: 82, price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["honey"], sellable: false, buyable: false},
-        zoom: {name: "zoom", fullName: "Zoom Lens", type: "perk", icon: 41, price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["zoom", "zoomlens", "zoom lens", "lens"], sellable: false, buyable: false},
+        amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false, tradable: true},
+        honey: {name: "honey", fullName: "Honey", type: "perk", icon: 82, price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["honey"], sellable: false, buyable: false, tradable: true},
+        zoom: {name: "zoom", fullName: "Zoom Lens", type: "perk", icon: 41, price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["zoom", "zoomlens", "zoom lens", "lens"], sellable: false, buyable: false, tradable: true},
 
         //Sellables
-        pearl: {name: "pearl", fullName: "Pearl", type: "misc", icon: 111, price: 500, aliases:["pearl"], sellable: true, buyable: false},
-        stardust: {name: "stardust", fullName: "Stardust", type: "misc", icon: 135, price: 750, aliases:["stardust"], sellable: true, buyable: false},
-        bigpearl: {name: "bigpearl", fullName: "Big Pearl", type: "misc", icon: 46, price: 1500, aliases:["bigpearl", "big pearl"], sellable: true, buyable: false},
-        starpiece: {name: "starpiece", fullName: "Star Piece", type: "misc", icon: 134, price: 3000, aliases:["starpiece", "star piece"], sellable: true, buyable: false},
-        nugget: {name: "nugget", fullName: "Nugget", type: "misc", icon: 108, price: 4000, aliases:["nugget"], sellable: true, buyable: false},
-        bignugget: {name: "bignugget", fullName: "Big Nugget", type: "misc", icon: 269, price: 10000, aliases:["bignugget", "big nugget"], sellable: true, buyable: false}
+        pearl: {name: "pearl", fullName: "Pearl", type: "misc", icon: 111, price: 500, aliases:["pearl"], sellable: true, buyable: false, tradable: true},
+        stardust: {name: "stardust", fullName: "Stardust", type: "misc", icon: 135, price: 750, aliases:["stardust"], sellable: true, buyable: false, tradable: true},
+        bigpearl: {name: "bigpearl", fullName: "Big Pearl", type: "misc", icon: 46, price: 1500, aliases:["bigpearl", "big pearl"], sellable: true, buyable: false, tradable: true},
+        starpiece: {name: "starpiece", fullName: "Star Piece", type: "misc", icon: 134, price: 3000, aliases:["starpiece", "star piece"], sellable: true, buyable: false, tradable: true},
+        nugget: {name: "nugget", fullName: "Nugget", type: "misc", icon: 108, price: 4000, aliases:["nugget"], sellable: true, buyable: false, tradable: true},
+        bignugget: {name: "bignugget", fullName: "Big Nugget", type: "misc", icon: 269, price: 10000, aliases:["bignugget", "big nugget"], sellable: true, buyable: false, tradable: true}
     };
-
+    
     //Master list of items
     var currentItems = Object.keys(itemData);
     var retiredItems = ["rocks", "fast"];
@@ -786,6 +786,9 @@ function Safari() {
             cooldown *= 2;
             if (contestCount > 0) {
                 contestCatchers.push(sys.name(src));
+                if (ball == "clone") {
+                    contestCatchers.push(sys.name(src));
+                }
             }
         } else {
             safaribot.sendMessage(src, "You threw a  " + cap(ball) + " Ball at " + pokeName +"! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
@@ -1042,10 +1045,7 @@ function Safari() {
         var info = data.split(":");
         if (info.length < 3) {
             safaribot.sendMessage(src, "To trade Pokémon with another player, use /trade [Player]:[Your Offer]:[What you want].", safchan);
-            return;
-        }
-        if (player.pokemon.length <= 1) {
-            safaribot.sendMessage(src, "You cannot trade until you catch another Pokémon!", safchan);
+            safaribot.sendMessage(src, "You can trade a Pokémon (type the name or number), money (type $150) or item (type @master).", safchan);
             return;
         }
         if (userName in tradeRequests) {
@@ -1067,109 +1067,205 @@ function Safari() {
             safaribot.sendMessage(src, "This person didn't enter the Safari!", safchan);
             return;
         }
-
-        var offer = getInputPokemon(info[1].toLowerCase());
-
-        if (offer[0] === undefined) {
-            safaribot.sendMessage(src, "Please specify a valid Pokémon on your offer!", safchan);
+        
+        var offer = info[1].toLowerCase();
+        var request = info[2].toLowerCase();
+        
+        var offerType = this.isValidTrade(src, offer, "offer", request);
+        if (!offerType) {
+            return;
+        }
+        var requestType = this.isValidTrade(src, request, "request", offer);
+        if (!requestType) {
+            return;
+        }
+        if (offerType == "money" && requestType == "money") {
+            safaribot.sendMessage(src, "You cannot trade money for money!", safchan);
+            return;
+        }
+        if (!this.canTrade(src, offer)) {
             return;
         }
 
-        var offerId = offer[0] + (offer[1] === true ? "" : 0);
-
-        var check = this.canTradePokemon(player, offerId);
-        if (check == "noPokemon") {
-            safaribot.sendMessage(src, "You don't have that Pokémon!", safchan);
-            return;
-        }
-        if (check == "isStarter") {
-            safaribot.sendMessage(src, "You can't trade your starter Pokémon!", safchan);
-            return;
-        }
-        if (check == "isActive") {
-            safaribot.sendMessage(src, "You can't trade the only Pokémon in your party!", safchan);
-            return;
-        }
-
-        var request = getInputPokemon(info[2].toLowerCase());
-        if (request[0] === undefined) {
-            safaribot.sendMessage(src, "Please specify a valid Pokémon on your request!", safchan);
-            return;
-        }
-        var requestId = request[0] + (request[1] === true ? "" : 0);
         var targetName = sys.name(targetId).toLowerCase();
-
+        
+        var offerName = this.translateTradeOffer(offer);
+        var requestName = this.translateTradeOffer(request);
+        
         sys.sendMessage(src, "" , safchan);
         sys.sendMessage(targetId, "" , safchan);
-        safaribot.sendMessage(src, "You are offering a " + poke(offerId) + " to " + sys.name(targetId) + " for their " + poke(requestId) + "!" , safchan);
-        safaribot.sendMessage(targetId, sys.name(src) + " is offering you a " + poke(offerId) + " for your " + poke(requestId) + "!" , safchan);
-
+        safaribot.sendMessage(src, "You are offering a " + offerName + " to " + sys.name(targetId) + " for their " + requestName+ "!" , safchan);
+        safaribot.sendMessage(targetId, sys.name(src) + " is offering you a " + offerName + " for your " + requestName + "!" , safchan);
+        
         if (targetName in tradeRequests && tradeRequests[targetName].target === userName) {
             var req = tradeRequests[targetName];
-            if (offerId === req.request && requestId === req.offer) {
-                check = this.canTradePokemon(target, requestId);
-                if (check == "noPokemon") {
-                    safaribot.sendMessage(src, "Trade cancelled because " + sys.name(targetId) + " doesn't have a " + poke(requestId) + "!", safchan);
-                    safaribot.sendMessage(targetId, "Trade cancelled because you don't have a " + poke(requestId) + "!", safchan);
-                    sys.sendMessage(src, "" , safchan);
-                    sys.sendMessage(targetId, "" , safchan);
-                    return;
+            if (!this.canTrade(targetId, request)) {
+                safaribot.sendMessage(src, "Trade cancelled because " + sys.name(targetId) + " couldn't fulfill their offer." , safchan);
+                safaribot.sendMessage(targetId, "Trade cancelled because you couldn't fulfill your offer." , safchan);
+                delete tradeRequests[targetName];
+                return;
+            }
+            if (offer == req.request && request == req.offer) {
+                var obj, val;
+                switch (offerType) {
+                    case "poke":
+                        obj = getInputPokemon(offer);
+                        val = obj[0] + (obj[1] === true ? "" : 0);
+                        this.removePokemon(src, val);
+                        target.pokemon.push(val);
+                    break;
+                    case "money":
+                        val = parseInt(offer.substr(1), 10);
+                        player.money -= val;
+                        target.money += val;
+                    break;
+                    case "item":
+                        obj = itemAlias(offer.substr(offer.indexOf("@") + 1), true);
+                        val = parseInt(offer.substr(0, offer.indexOf("@")), 10) || 1;
+                        player.balls[obj] -= val;
+                        target.balls[obj] += val;
+                    break;
                 }
-                if (check == "isStarter") {
-                    safaribot.sendMessage(src, "Trade cancelled because " + sys.name(targetId) + " can't trade their starter Pokémon!", safchan);
-                    safaribot.sendMessage(targetId, "Trade cancelled because you can't trade your starter Pokémon!", safchan);
-                    sys.sendMessage(src, "" , safchan);
-                    sys.sendMessage(targetId, "" , safchan);
-                    return;
+                
+                switch (requestType) {
+                    case "poke":
+                        obj = getInputPokemon(request);
+                        val = obj[0] + (obj[1] === true ? "" : 0);
+                        this.removePokemon(targetId, val);
+                        player.pokemon.push(val);
+                    break;
+                    case "money":
+                        val = parseInt(request.substr(1), 10);
+                        player.money += val;
+                        target.money -= val;
+                    break;
+                    case "item":
+                        obj = itemAlias(request.substr(request.indexOf("@") + 1), true);
+                        val = parseInt(request.substr(0, request.indexOf("@")), 10) || 1;
+                        player.balls[obj] += val;
+                        target.balls[obj] -= val;
+                    break;
                 }
-                if (check == "isActive") {
-                    safaribot.sendMessage(src, "Trade cancelled because " + sys.name(targetId) + " can't trade the only Pokémon in their party!", safchan);
-                    safaribot.sendMessage(targetId, "Trade cancelled because you can't trade the only Pokémon in your party!", safchan);
-                    sys.sendMessage(src, "" , safchan);
-                    sys.sendMessage(targetId, "" , safchan);
-                    return;
-                }
-
-                this.removePokemon(src, offerId);
-                this.removePokemon(targetId, requestId);
-
-                player.pokemon.push(requestId);
-                target.pokemon.push(offerId);
-
+                
                 this.saveGame(player);
                 this.saveGame(target);
 
-                safaribot.sendMessage(src, "You traded your " + poke(offerId) + " for " + sys.name(targetId) + "'s " + poke(requestId) + "!", safchan);
-                safaribot.sendMessage(targetId, "You traded your " + poke(requestId) + " for " + sys.name(src) + "'s " + poke(offerId) + "!", safchan);
+                safaribot.sendMessage(src, "You traded your " + offerName + " for " + sys.name(targetId) + "'s " + requestName + "!", safchan);
+                safaribot.sendMessage(targetId, "You traded your " + requestName + " for " + sys.name(src) + "'s " + offerName + "!", safchan);
                 sys.sendMessage(src, "" , safchan);
-                    sys.sendMessage(targetId, "" , safchan);
+                sys.sendMessage(targetId, "" , safchan);
                 delete tradeRequests[targetName];
-            } else {
+            }
+            else {
                 safaribot.sendMessage(src, "Trade cancelled because you and " + sys.name(targetId) + " didn't come to an agreement!" , safchan);
                 safaribot.sendMessage(targetId, "Trade cancelled because you and " + sys.name(src) + " didn't come to an agreement!" , safchan);
                 sys.sendMessage(src, "" , safchan);
-                    sys.sendMessage(targetId, "" , safchan);
+                sys.sendMessage(targetId, "" , safchan);
                 delete tradeRequests[targetName];
             }
         } else {
-            var acceptCommand = "/trade " + sys.name(src) + ":" + sys.pokemon(request[0]) + (request[1] === true ? "*" : "") + ":" + sys.pokemon(offer[0]) + (offer[1] === true ? "*" : "");
+            var acceptCommand = "/trade " + sys.name(src) + ":" + request + ":" + offer;
             safaribot.sendHtmlMessage(targetId, "To accept the trade, type <a href='po:send/" + acceptCommand + "'>" + acceptCommand + "</a>.", safchan);
             sys.sendMessage(src, "" , safchan);
             sys.sendMessage(targetId, "" , safchan);
-            tradeRequests[userName] = { target: targetName, offer: offerId, request: requestId };
+            tradeRequests[userName] = { target: targetName, offer: offer, request: request };
         }
     };
-    this.canTradePokemon  = function(player, pokeNum) {
-        if (player.pokemon.indexOf(pokeNum) === -1) {
-            return "noPokemon";
+    this.translateTradeOffer = function(asset) {
+        if (asset[0] == "$") {
+            return asset;
         }
-        var count = countRepeated(player.pokemon, pokeNum);
-        if (pokeNum === player.starter && count <= 1) {
-            return "isStarter";
+        else if (asset.indexOf("@") !== -1) {
+            var item = itemAlias(asset.substr(asset.indexOf("@") + 1), true);
+            var amount = asset.substr(0, asset.indexOf("@")) || 1;
+            return amount + "x " + finishName(item);
         }
-        if (pokeNum === player.party[0] && player.party.length == 1 && count <= 1) {
-            return "isActive";
+        else {
+            var pokeNum = getInputPokemon(asset);
+            var pokeId = pokeNum[0] + (pokeNum[1] === true ? "" : 0);
+            return poke(pokeId);
         }
+    };
+    this.isValidTrade = function(src, asset, action, traded) {
+        var player = getAvatar(src);
+        if (asset[0] == "$") {
+            var val = parseInt(asset.substr(1), 10);
+            if (isNaN(val) || val <= 0) {
+                safaribot.sendMessage(src, "Please " + action + " a valid amount of money!", safchan);
+                return false;
+            }
+            return "money";
+        }
+        else if (asset.indexOf("@") !== -1) {
+            var item = itemAlias(asset.substr(asset.indexOf("@") + 1), true);
+            if (!(item in itemData)) {
+                safaribot.sendMessage(src,  item + " is not a valid item!", safchan);
+                return false;
+            }
+            if (!itemData[item].tradable) {
+                safaribot.sendMessage(src,  finishName(item) + " cannot be traded!", safchan);
+                return false;
+            }
+            return "item";
+        }
+        else {
+            var pokeNum = getInputPokemon(asset);
+            if (!pokeNum[0]) {
+                safaribot.sendMessage(src, "Please " + action + " a valid pokémon!", safchan);
+                return false;
+            }
+            var pokeId = pokeNum[0] + (pokeNum[1] === true ? "" : 0);
+            if (traded[0] == "$") {
+                var min = getBST(pokeId) * (pokeNum[1] === true ? 5 : 1);
+                var money = parseInt(traded.substr(1), 10);
+                if (isNaN(money) || money <= min) {
+                    safaribot.sendMessage(src, poke(pokeId) + " cannot be traded for less than $" + min + "!", safchan);
+                    return false;
+                }
+            }
+            return "poke";
+        }
+        return true;
+    };
+    this.canTrade = function(src, asset) {
+        var player = getAvatar(src);
+        if (asset[0] == "$") {
+            var val = parseInt(asset.substr(1), 10);
+            if (player.money < val) {
+                safaribot.sendMessage(src, "You don't have enough $" + val + " to trade!", safchan);
+                return false;
+            }
+        }
+        else if (asset.indexOf("@") !== -1) {
+            var item = itemAlias(asset.substr(asset.indexOf("@") + 1), true);
+            var amount = asset.substr(0, asset.indexOf("@")) || 1;
+            if (player.balls[item] < amount) {
+                safaribot.sendMessage(src, "You don't have " + amount + " " + finishName(item) + "(s) to trade!", safchan);
+                return false;
+            }
+        }
+        else {
+            var pokeNum = getInputPokemon(asset);
+            var pokeId = pokeNum[0] + (pokeNum[1] === true ? "" : 0);
+            if (player.pokemon.indexOf(pokeId) === -1) {
+                safaribot.sendMessage(src, "You don't have that Pokémon to trade!", safchan);
+                return false;
+            }
+            var count = countRepeated(player.pokemon, pokeId);
+            if (pokeId === player.starter && count <= 1) {
+                safaribot.sendMessage(src, "You can't trade your starter Pokémon!", safchan);
+                return false;
+            }
+            if (player.pokemon.length == 1) {
+                safaribot.sendMessage(src, "You cannot trade your only Pokémon!", safchan);
+                return false;
+            }
+            if (player.party.length == 1 && pokeId === player.party[0] && count <= 1) {
+                safaribot.sendMessage(src, "You can't trade the only Pokémon in your party!", safchan);
+                return false;
+            }
+        }
+        return true;
     };
     this.throwBait = function (src, commandData) {
         var player = getAvatar(src);
@@ -2381,7 +2477,7 @@ function Safari() {
             "Quick Ball: A somewhat different Poké Ball that tends to get better priority during throws. Has a cooldown of " + itemData.quick.cooldown / 1000 +" seconds.",
             "Moon Ball: A stylized Poké Ball that supposedly works better against Pokémon seen once in a blue moon. Has a cooldown of " + itemData.moon.cooldown / 1000 +" seconds.",
             "Premier Ball: A plain Poké Ball gifted to you for your patronage. It works better when a Normal-type Pokémon is active. Has a cooldown of " + itemData.premier.cooldown / 1000 +" seconds.",
-            "Clone Ball: A unknown Poké Ball with a very low catch rate and mysterious effect. Has a cooldown of " + itemData.clone.cooldown / 1000 +" seconds.",
+            "Clone Ball: A mysterious Poké Ball with a very low catch rate that can duplicate a pokémon's D.N.A.. Has a cooldown of " + itemData.clone.cooldown / 1000 +" seconds.",
             "",
             "Note: Cooldown for Balls is doubled when a Pokémon is caught successfully.",
             ""
@@ -2407,7 +2503,7 @@ function Safari() {
             "/start: To pick a starter Pokémon and join the Safari game. Valid starters are Bulbasaur, Charmander, and Squirtle.",
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be Safari, Great, Ultra, Master, or Dream Ball.",
             "/sell: To sell one of your Pokémon*.",
-            "/trade: To request a Pokémon trade with another player*.",
+            "/trade: To request a Pokémon trade with another player*. Use $200 to trade money and @luxury to trade items.",
             "/release: Used to release a Pokémon that can be caught by other players. Pokémon can only be released every 3 minutes.",
             "/buy: To buy items.",
             "/pawn: To sell items.",
@@ -2840,6 +2936,7 @@ function Safari() {
                 var list = Object.keys(preparationThrows);
                 for (i in preparationThrows) {
                     if (preparationThrows[i] == "quick") {
+                        list.push(i);
                         list.push(i);
                     }
                 }
