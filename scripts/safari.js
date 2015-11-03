@@ -230,8 +230,7 @@ function Safari() {
         return ret;
     };
     pokeInfo.calcForme = function(base, forme) {
-        var ret =  base & (forme << 16);
-        return ret;
+        return parseInt(base,10) + parseInt(forme << 16, 10);
     };
     /* End Poke Info Functions */
 
@@ -274,7 +273,7 @@ function Safari() {
 
     //Master list of items
     var currentItems = Object.keys(itemData);
-    var retiredItems = ["rocks", "fast", "quick"];
+    var retiredItems = ["rocks", "fast"];
     var allItems = currentItems.concat(retiredItems);
 
     var currentTheme;
@@ -360,7 +359,28 @@ function Safari() {
             exclude: []
         }
     };
+<<<<<<< HEAD
 
+=======
+    
+    var wildForms = {
+        "201": 27,
+        "412": 2,
+        "413": 2,
+        "422": 1,
+        "423": 1,
+        "550": 1,
+        "585": 3,
+        "565": 3,
+        "666": 17,
+        "669": 4,
+        "670": 4,
+        "671": 4,
+        "710": 3,
+        "711": 3
+    };
+    
+>>>>>>> fded53d52fc9cdceb17f782f0556d209504973ae
     function getAvatar(src) {
         if (SESSION.users(src)) {
             return SESSION.users(src).safari;
@@ -525,7 +545,7 @@ function Safari() {
     this.initGacha = function () {
         var tempArray = [];
         var gachaItems =   {
-            safari: 70, great: 30, ultra: 20, master: 2, luxury: 20, dream: 20, nest: 20, heavy: 20,
+            safari: 60, great: 30, ultra: 20, master: 2, luxury: 20, dream: 20, nest: 20, quick: 20, heavy: 20,
             moon: 20, bait: 30, rock: 30,  wild: 15, gacha: 1,  honey: 1,  amulet: 1, zoom: 1,
             pearl: 12, stardust: 10, bigpearl: 8, starpiece: 5, nugget: 4, bignugget: 1
         };
@@ -605,7 +625,12 @@ function Safari() {
                 } while (!pokeId || getBST(num) > maxStats);
             }
         }
-
+        
+        if (num in wildForms) {
+            var pickedForm = sys.rand(0, wildForms[num] + 1);
+            num = pokeInfo.calcForme(num, pickedForm);
+            pokeId = poke(num + (shiny ? "" : 0));
+        }
         currentPokemon = shiny ? "" + num : num;
         currentPokemonCount = amount;
         if (amount > 1) {
@@ -2088,6 +2113,7 @@ function Safari() {
                 dream: 0,
                 heavy: 0,
                 nest: 0,
+                quick: 0,
                 luxury: 0,
                 moon: 0,
                 bait: 5,
@@ -2275,6 +2301,7 @@ function Safari() {
             "Luxury Ball: A comfortable Poké Ball with an increased catch rate that is said to make one wealthy. Has a cooldown of " + itemData.luxury.cooldown / 1000 +" seconds.",
             "Nest Ball: A homely Poké Ball that has an increased catch rate against weaker Pokémon. Has a cooldown of " + itemData.nest.cooldown / 1000 +" seconds.",
             "Heavy Ball: An industrial Poké Ball that works better against hardier and stronger Pokémon. Has a cooldown of " + itemData.heavy.cooldown / 1000 +" seconds.",
+            "Quick Ball: A somewhat different Poké Ball that tends to get better priority during throws. Has a cooldown of " + itemData.quick.cooldown / 1000 +" seconds.",
             "Moon Ball: A stylized Poké Ball that supposedly works better against Pokémon seen once in a blue moon. Has a cooldown of " + itemData.moon.cooldown / 1000 +" seconds.",
             "Premier Ball: A plain Poké Ball gifted to you for your patronage. It works better when a Normal-type Pokémon is active. Has a cooldown of " + itemData.premier.cooldown / 1000 +" seconds.",
             "",
