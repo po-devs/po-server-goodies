@@ -2736,7 +2736,7 @@ function Safari() {
             sys.sendAll("*** ************************************************************ ***", 0);
         }
         if (contestCooldown === 0) {
-            safari.startContest();
+            safari.startContest("*");
         }
         SESSION.global().safariContestCooldown = contestCooldown;
         SESSION.global().safariBaitCooldown = baitCooldown;
