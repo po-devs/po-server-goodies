@@ -250,7 +250,8 @@ function Safari() {
         luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 2, cooldown: 8000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false},
         moon: {name: "moon", fullName: "Moon Ball", type: "ball", icon: 312, price: 0, ballBonus: 1, bonusRate: 5, cooldown: 8000, aliases:["moonball", "moon", "moon ball"], sellable: false, buyable: false},
         premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false},
-
+        clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.01, cooldown: 12000, aliases:["cloneball", "clone", "clone ball"], sellable: false, buyable: false},
+        
         //Other Items
         bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 100, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true},
         rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.02, targetCD: 6000, bounceCD: 8000, throwCD: 10000,  aliases:["rock", "rocks"], sellable: false, buyable: true},
@@ -540,7 +541,7 @@ function Safari() {
     this.initGacha = function () {
         var tempArray = [];
         var gachaItems =   {
-            safari: 60, great: 30, ultra: 20, master: 2, luxury: 20, dream: 20, nest: 20, quick: 20, heavy: 20,
+            safari: 60, great: 30, ultra: 20, master: 2, luxury: 20, dream: 20, nest: 20, quick: 20, heavy: 20, clone: 5,
             moon: 20, bait: 30, rock: 30,  wild: 15, gacha: 1,  honey: 1,  amulet: 1, zoom: 1,
             pearl: 12, stardust: 10, bigpearl: 8, starpiece: 5, nugget: 4, bignugget: 1
         };
@@ -748,6 +749,9 @@ function Safari() {
             finalChance = 0.01;
         }
         finalChance *= ballBonus;
+        if (ball == "clone") {
+            finalChance = itemData[ball].bonusRate;
+        }
 
         var rng = Math.random();
         if (rng < finalChance || ballBonus == 255) {
@@ -760,6 +764,10 @@ function Safari() {
             safaribot.sendAll(sys.name(src) + " caught the " + pokeName + " with a " + cap(ball) + " Ball!" + (amt > 0 ? remaining : ""), safchan);
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with a " + cap(ball) + " Ball! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             player.pokemon.push(currentPokemon);
+            if (ball == "clone") {
+                safaribot.sendMessage(src, "But wait! The " + pokeName + " was cloned by the Clone Ball! You received another one!", safchan);
+                player.pokemon.push(currentPokemon);
+            }
 
             if (ball == "luxury") {
                 safaribot.sendAll(sys.name(src) + " also found $" + Math.floor(wildStats/2) + " on the ground after catching " + pokeName + "!" , safchan);
@@ -1698,7 +1706,7 @@ function Safari() {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
         var line1 = ["bait", "rock", "gacha", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
         var line2 = ["safari", "great", "ultra", "master", "dream", "luxury", "quick", "nest", "heavy", "moon", "premier"];
-        var line3 = ["amulet", "honey", "zoom","stick"];
+        var line3 = ["clone", "amulet", "honey", "zoom","stick"];
 
         var out = "<table border = 1 cellpadding = 3><tr><th colspan=11>Inventory</th></tr>";
         out += bagRow(player, line1, src, true);
@@ -2054,7 +2062,7 @@ function Safari() {
             var milestoneRewards = {
                 "30": { reward: "master", amount: 1 },
                 "27": { reward: "gacha", amount: 20 },
-                "24": { reward: "heavy", amount: 3 },
+                "24": { reward: "clone", amount: 3 },
                 "21": { reward: "dream", amount: 3 },
                 "18": { reward: "luxury", amount: 3 },
                 "15": { reward: "gacha", amount: 10 },
@@ -2117,6 +2125,7 @@ function Safari() {
                 rock: 0,
                 stick: 0,
                 premier: 0,
+                clone: 0,
                 gacha: 0,
                 zoom: 0,
                 amulet: 0,
@@ -2301,6 +2310,7 @@ function Safari() {
             "Quick Ball: A somewhat different Poké Ball that tends to get better priority during throws. Has a cooldown of " + itemData.quick.cooldown / 1000 +" seconds.",
             "Moon Ball: A stylized Poké Ball that supposedly works better against Pokémon seen once in a blue moon. Has a cooldown of " + itemData.moon.cooldown / 1000 +" seconds.",
             "Premier Ball: A plain Poké Ball gifted to you for your patronage. It works better when a Normal-type Pokémon is active. Has a cooldown of " + itemData.premier.cooldown / 1000 +" seconds.",
+            "Clone Ball: A unknown Poké Ball with a very low catch rate and mysterious effect. Has a cooldown of " + itemData.clone.cooldown / 1000 +" seconds.",
             "",
             "Note: Cooldown for Balls is doubled when a Pokémon is caught successfully.",
             ""
