@@ -251,7 +251,7 @@ function Safari() {
         moon: {name: "moon", fullName: "Moon Ball", type: "ball", icon: 312, price: 0, ballBonus: 1, bonusRate: 5, cooldown: 8000, aliases:["moonball", "moon", "moon ball"], sellable: false, buyable: false, tradable: true},
         premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false, tradable: false},
         clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], sellable: false, buyable: false, tradable: true},
-        
+
         //Other Items
         bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 100, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
         rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.02, targetCD: 6000, bounceCD: 8000, throwCD: 10000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
@@ -271,7 +271,7 @@ function Safari() {
         nugget: {name: "nugget", fullName: "Nugget", type: "misc", icon: 108, price: 4000, aliases:["nugget"], sellable: true, buyable: false, tradable: true},
         bignugget: {name: "bignugget", fullName: "Big Nugget", type: "misc", icon: 269, price: 10000, aliases:["bignugget", "big nugget"], sellable: true, buyable: false, tradable: true}
     };
-    
+
     //Master list of items
     var currentItems = Object.keys(itemData);
     var retiredItems = ["rocks", "fast"];
@@ -513,28 +513,43 @@ function Safari() {
     }
     function bagRow (player, arr, src, first) {
         var ret = [], item;
-        var isAndroid = sys.os(src) === "android";
-        ret += isAndroid ? "<br />" : "<tr>";
-        if (first) {
-            ret += "<td valign=middle align=center colspan=2><img src='item:274' title='Money'></td>";
-            ret += isAndroid ? " | " : "";
+        if (sys.os(src) === "android") {
+            var linebreak = 6;
+            if (first) {
+                ret += "<br />Inventory<br />";
+                ret += "<img src='item:274'>: $" + player.money + "";
+                linebreak--;
+            }
+            for (var i = 0; i < arr.length; i++) {
+                item = itemData[arr[i]];
+                item2 = arr[i];
+                ret += " | <img src='item:" + item.icon + "'>: " + player.balls[item2];
+                linebreak--;
+                if (linebreak === 0 || (i + 1 == arr.length)) {
+                    ret += "<br />";
+                }
+            }
+        } else {
+            if (first) {
+                ret += "<table border = 1 cellpadding = 3><tr><th colspan=11>Inventory</th></tr><tr>";
+                ret += "<td valign=middle align=center colspan=2><img src='item:274' title='Money'></td>";
+            } else {
+                ret += "<tr>";
+            }
+            for (var i = 0; i < arr.length; i++) {
+                item = itemData[arr[i]];
+                ret += "<td align=center><img src='item:" + item.icon + "' title='" + item.fullName + "'></td>";
+            }
+            ret += "</tr><tr>";
+            if (first) {
+                ret += "<td align=center colspan=2>$" + player.money + "</td>";
+            }
+            for (var i = 0; i < arr.length; i++) {
+                item = arr[i];
+                ret += "<td align=center>" + player.balls[item] + "</td>";
+            }
+            ret += "</tr>";
         }
-        for (var i = 0; i < arr.length; i++) {
-            item = itemData[arr[i]];
-            ret += "<td align=center><img src='item:" + item.icon + "' title='" + item.fullName + "'></td>";
-            ret += isAndroid ? " | " : "";
-        }
-        ret += isAndroid ? "<br />" : "</tr><tr>";
-        if (first) {
-            ret += "<td align=center colspan=2>$" + player.money + "</td>";
-            ret += isAndroid ? " | " : "";
-        }
-        for (var i = 0; i < arr.length; i++) {
-            item = arr[i];
-            ret += "<td align=center>" + player.balls[item] + "</td>";
-            ret += isAndroid ? " | " : "";
-        }
-        ret += isAndroid ? "<br />" : "</tr>";
         return ret;
     }
     function canLosePokemon(src, data, verb) {
@@ -575,7 +590,7 @@ function Safari() {
         }
         return true;
     }
-    
+
     this.initGacha = function () {
         var tempArray = [];
         var gachaItems =   {
@@ -1080,10 +1095,10 @@ function Safari() {
             safaribot.sendMessage(src, "This person didn't enter the Safari!", safchan);
             return;
         }
-        
+
         var offer = info[1].toLowerCase();
         var request = info[2].toLowerCase();
-        
+
         var offerType = this.isValidTrade(src, offer, "offer", request);
         if (!offerType) {
             return;
@@ -1101,15 +1116,15 @@ function Safari() {
         }
 
         var targetName = sys.name(targetId).toLowerCase();
-        
+
         var offerName = this.translateTradeOffer(offer);
         var requestName = this.translateTradeOffer(request);
-        
+
         sys.sendMessage(src, "" , safchan);
         sys.sendMessage(targetId, "" , safchan);
         safaribot.sendMessage(src, "You are offering a " + offerName + " to " + sys.name(targetId) + " for their " + requestName+ "!" , safchan);
         safaribot.sendMessage(targetId, sys.name(src) + " is offering you a " + offerName + " for your " + requestName + "!" , safchan);
-        
+
         if (targetName in tradeRequests && tradeRequests[targetName].target === userName) {
             var req = tradeRequests[targetName];
             if (!this.canTrade(targetId, request)) {
@@ -1139,7 +1154,7 @@ function Safari() {
                         target.balls[obj] += val;
                     break;
                 }
-                
+
                 switch (requestType) {
                     case "poke":
                         obj = getInputPokemon(request);
@@ -1159,7 +1174,7 @@ function Safari() {
                         target.balls[obj] -= val;
                     break;
                 }
-                
+
                 this.saveGame(player);
                 this.saveGame(target);
 
@@ -1554,7 +1569,7 @@ function Safari() {
         var shiny = pokeId[1];
         pokeId = pokeId[0];
         var pokeNum = shiny ? "" + pokeId : pokeId;
-        
+
         if (info.length < 2 || info[1].toLowerCase() !== "confirm") {
             safaribot.sendMessage(src, "You can release your " + poke(pokeNum) + " by typing /release " + (shiny ? "*":"") + sys.pokemon(pokeId) + ":confirm.", safchan);
             return;
@@ -1616,8 +1631,8 @@ function Safari() {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
             return;
         }
-
-        sys.sendHtmlMessage(src, this.showBox(player, (data === "*" ? 1 : data)), safchan);
+        var isAndroid = (sys.os(id) === "android");
+        sys.sendHtmlMessage(src, this.showBox(player, (data === "*" ? 1 : data), isAndroid), safchan);
     };
     this.manageParty = function(src, data) {
         var player = getAvatar(src);
@@ -1706,9 +1721,13 @@ function Safari() {
         }
     };
     this.showParty = function(id, ownParty) {
+        var isAndroid = (sys.os(id) === "android");
         var player = getAvatar(id),
             party = player.party.map(pokeInfo.sprite);
         var out = "<table border = 1 cellpadding = 3><tr><th colspan=" + party.length + ">" + (ownParty ? "Current" : sys.name(id) + "'s" ) + " Party</th></tr><tr>";
+        if (isAndroid) {
+            out += "<br />";
+        }
         for (var e in party) {
             out += "<td>" + party[e] + "</td>";
         }
@@ -1717,7 +1736,7 @@ function Safari() {
             var member = getPokemonInfo(player.party[e]);
             var name = sys.pokemon(member[0]) + (member[1] === true ? "*" : "");
             out += "<td align=center>#" + pokeInfo.readableNum(member[0]) + " " + name;
-            if (ownParty) {
+            if (ownParty && sys.os(id) !== "android") {
                 out += "<p>"; //puts a little too much space between lines
                 var active = "<a href='po:send//party active:" + name + "'>Active</a>";
                 var remove = "<a href='po:send//party remove:" + name + "'>Remove</a>";
@@ -1726,9 +1745,12 @@ function Safari() {
             out += "</td>";
         }
         out += "</tr></table>";
+        if (isAndroid) {
+            out += "<br />";
+        }
         return out;
     };
-    this.showBox = function(player, num) {
+    this.showBox = function(player, num, isAndroid) {
         var out = "";
         var perPage = 96, maxPages,
             list = player.pokemon,
@@ -1744,6 +1766,9 @@ function Safari() {
         }
 
         out += this.listPokemon(list, "Owned Pokémon (" + player.pokemon.length + ")");
+        if (isAndroid) {
+            out += "<br />";
+        }
 
         if (!isNaN(page)) {
             if (page > 1) {
@@ -1808,7 +1833,7 @@ function Safari() {
         var line2 = ["safari", "great", "ultra", "master", "dream", "luxury", "quick", "nest", "heavy", "moon", "premier"];
         var line3 = ["clone", "amulet", "honey", "zoom","stick"];
 
-        var out = "<table border = 1 cellpadding = 3><tr><th colspan=11>Inventory</th></tr>";
+        var out = "";
         out += bagRow(player, line1, src, true);
         out += bagRow(player, line2, src);
         out += bagRow(player, line3, src);
