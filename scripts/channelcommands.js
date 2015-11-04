@@ -58,7 +58,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         channelbot.sendHtmlMessage(src, "The channel members of " + sys.channel(channel) + " are:", channel);
         channelbot.sendHtmlMessage(src, "Owners: " + ownersArr.join(", "), channel);
         channelbot.sendHtmlMessage(src, "Admins: " + adminsArr.join(", "), channel);
-        channelbot.sendMessage(src, "Mods: " + modsArr.join(", "), channel);
+        channelbot.sendHtmlMessage(src, "Mods: " + modsArr.join(", "), channel);
         if (SESSION.channels(channel).inviteonly >= 1 || SESSION.channels(channel).members.length >= 1) {
             channelbot.sendHtmlMessage(src, "Members: " + membersArr.join(", "), channel);
         }
