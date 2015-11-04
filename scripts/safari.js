@@ -1121,6 +1121,8 @@ function Safari() {
 
         var offerName = this.translateTradeOffer(offer);
         var requestName = this.translateTradeOffer(request);
+        var reqInput = this.tradeOfferInput(request);
+        var offerInput = this.tradeOfferInput(offer);
 
         sys.sendMessage(src, "" , safchan);
         sys.sendMessage(targetId, "" , safchan);
@@ -1135,7 +1137,7 @@ function Safari() {
                 delete tradeRequests[targetName];
                 return;
             }
-            if (offer == req.request && request == req.offer) {
+            if (offerInput == req.request && reqInput == req.offer) {
                 var obj, val;
                 switch (offerType) {
                     case "poke":
@@ -1193,27 +1195,42 @@ function Safari() {
                 sys.sendMessage(targetId, "" , safchan);
                 delete tradeRequests[targetName];
             }
-        } else {
-            var acceptCommand = "/trade " + sys.name(src) + ":" + request + ":" + offer;
+        }
+        else {
+            var acceptCommand = "/trade " + sys.name(src) + ":" + reqInput + ":" + offerInput;
             safaribot.sendHtmlMessage(targetId, "To accept the trade, type <a href='po:send/" + acceptCommand + "'>" + acceptCommand + "</a>.", safchan);
             sys.sendMessage(src, "" , safchan);
             sys.sendMessage(targetId, "" , safchan);
-            tradeRequests[userName] = { target: targetName, offer: offer, request: request };
+            tradeRequests[userName] = { target: targetName, offer: offerInput, request: reqInput };
         }
     };
     this.translateTradeOffer = function(asset) {
         if (asset[0] == "$") {
-            return asset;
+            return "$" + parseInt(asset.substr(asset.indexOf("$") + 1), 10);
         }
         else if (asset.indexOf("@") !== -1) {
             var item = itemAlias(asset.substr(asset.indexOf("@") + 1), true);
-            var amount = asset.substr(0, asset.indexOf("@")) || 1;
+            var amount = parseInt(asset.substr(0, asset.indexOf("@")), 10) || 1;
             return amount + "x " + finishName(item);
         }
         else {
             var pokeNum = getInputPokemon(asset);
             var pokeId = pokeNum[0] + (pokeNum[1] === true ? "" : 0);
             return poke(pokeId);
+        }
+    };
+    this.tradeOfferInput = function(asset) {
+        if (asset[0] == "$") {
+            return "$" + parseInt(asset.substr(asset.indexOf("$") + 1), 10);
+        }
+        else if (asset.indexOf("@") !== -1) {
+            var item = itemAlias(asset.substr(asset.indexOf("@") + 1), true);
+            var amount = parseInt(asset.substr(0, asset.indexOf("@")), 10) || 1;
+            return (amount > 1 ? amount : "") + "@" + item;
+        }
+        else {
+            var pokeNum = getInputPokemon(asset);
+            return poke(pokeNum[0]) + (pokeNum[1] === true ? "*" : "");
         }
     };
     this.isValidTrade = function(src, asset, action, traded) {
@@ -1227,12 +1244,17 @@ function Safari() {
         }
         else if (asset.indexOf("@") !== -1) {
             var item = itemAlias(asset.substr(asset.indexOf("@") + 1), true);
+            var amount = parseInt(asset.substr(0, asset.indexOf("@")), 10) || 1;
             if (!(item in itemData)) {
                 safaribot.sendMessage(src,  item + " is not a valid item!", safchan);
                 return false;
             }
             if (!itemData[item].tradable) {
                 safaribot.sendMessage(src,  finishName(item) + " cannot be traded!", safchan);
+                return false;
+            }
+            if (isNaN(amount) || amount <= 0) {
+                safaribot.sendMessage(src,  "Please " + action + " a valid amount of " + finishName(item) + "!", safchan);
                 return false;
             }
             return "item";
@@ -1267,7 +1289,7 @@ function Safari() {
         }
         else if (asset.indexOf("@") !== -1) {
             var item = itemAlias(asset.substr(asset.indexOf("@") + 1), true);
-            var amount = asset.substr(0, asset.indexOf("@")) || 1;
+            var amount = parseInt(asset.substr(0, asset.indexOf("@")), 10) || 1;
             if (player.balls[item] < amount) {
                 safaribot.sendMessage(src, "You don't have " + amount + " " + finishName(item) + "(s) to trade!", safchan);
                 return false;
@@ -2463,6 +2485,9 @@ function Safari() {
             var clean;
             for (var i = 0; i < allItems.length; i++) {
                 clean = allItems[i];
+                if (typeof player.balls[clean] !== "number") {
+                    player.balls[clean] = parseInt(player.balls[clean], 10);
+                }
                 if (player.balls[clean] === undefined || isNaN(player.balls[clean]) || player.balls[clean] === null || player.balls[clean] < 0 || retiredItems.indexOf(player.balls[clean]) !== -1) {
                     player.balls[clean] = 0;
                 }
@@ -2472,6 +2497,9 @@ function Safari() {
                 if ((clean === "master" || clean === "stick") && player.balls[clean] > 1) {
                     player.balls[clean] = 1;
                 }
+            }
+            if (typeof player.money !== "number") {
+                player.money = parseInt(player.money, 10);
             }
             if (player.money === undefined || isNaN(player.money) || player.money < 0) {
                 player.money = 0;
@@ -2485,16 +2513,25 @@ function Safari() {
             if (player.records === undefined) {
                 player.records = {};
             }
-            var recstr = ["gachasUsed", "masterballsWon", "jackpotsWon", "contestsWon", "pokesCaught", "pokesNotCaught", "pokesReleased", "pokesCloned", "pokeSoldEarnings", "luxuryEarnings", "pawnEarnings", "rocksThrown", "rocksHit", "rocksMissed", "rocksBounced", "rocksDodged", "rocksHitBy", "baitUsed", "baitAttracted", "baitNothing"];
+            var recstr = ["gachasUsed", "masterballsWon", "jackpotsWon", "contestsWon", "pokesCaught", "pokesNotCaught", "pokesReleased", "pokesCloned", "pokeSoldEarnings", "luxuryEarnings", "pawnEarnings", "rocksThrown", "rocksHit", "rocksMissed", "rocksBounced", "rocksDodged", "rocksHitBy", "baitUsed", "baitAttracted", "baitNothing"], rec;
             for (var j = 0; j < recstr.length; j++) {
-                if (player.records[recstr[j]] === undefined || isNaN(player.records[recstr[j]]) || player.records[recstr[j]] < 0) {
-                    player.records[recstr[j]] = 0;
+                rec = recstr[j];
+                if (player.records[rec] === undefined || isNaN(player.records[rec]) || player.records[rec] < 0 || player.records[rec] !== "number") {
+                    player.records[rec] = 0;
                 }
             }
-            player.cooldown = now();
-            player.gachaCooldown = now();
-            player.rockCooldown = now();
-            player.stickCooldown = now();
+            if (player.cooldown === undefined || isNaN(player.cooldown) || typeof player.cooldown !== "number") {
+                player.cooldown = now();
+            }
+            if (player.gachaCooldown === undefined || isNaN(player.gachaCooldown) || typeof player.gachaCooldown !== "number") {
+                player.gachaCooldown = now();
+            }
+            if (player.rockCooldown === undefined || isNaN(player.rockCooldown) || typeof player.rockCooldown !== "number") {
+                player.rockCooldown = now();
+            }
+            if (player.stickCooldown === undefined || isNaN(player.stickCooldown) || typeof player.stickCooldown !== "number") {
+                player.stickCooldown = now();
+            }
 
             this.saveGame(player);
         }
