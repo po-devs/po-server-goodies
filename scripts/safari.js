@@ -537,7 +537,45 @@ function Safari() {
         ret += isAndroid ? "<br />" : "</tr>";
         return ret;
     }
-
+    function canLosePokemon(src, data, verb) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return false;
+        }
+        if (contestCount > 0) {
+            safaribot.sendMessage(src, "You can't " + verb + " a Pokémon during a contest!", safchan);
+            return false;
+        }
+        if (player.pokemon.length == 1) {
+            safaribot.sendMessage(src, "You can't " + verb + " your last Pokémon!", safchan);
+            return false;
+        }
+        var info = data.split(":");
+        var pokeId = getInputPokemon(info[0]);
+        var shiny = pokeId[1];
+        pokeId = pokeId[0];
+        if (pokeId === undefined) {
+            safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
+            return false;
+        }
+        var pokeNum = shiny ? "" + pokeId : pokeId;
+        if (player.pokemon.indexOf(pokeNum) == -1) {
+            safaribot.sendMessage(src, "You do not have that Pokémon!", safchan);
+            return false;
+        }
+        var count = countRepeated(player.pokemon, pokeNum);
+        if (player.party.length == 1 && player.party[0] === pokeNum && count <= 1) {
+            safaribot.sendMessage(src, "You can't " + verb + " the only Pokémon in your party!", safchan);
+            return false;
+        }
+        if (player.starter === pokeNum && count <= 1) {
+            safaribot.sendMessage(src, "You can't " + verb + " your starter Pokémon!", safchan);
+            return false;
+        }
+        return true;
+    }
+    
     this.initGacha = function () {
         var tempArray = [];
         var gachaItems =   {
@@ -830,45 +868,20 @@ function Safari() {
         return result;
     };
     this.sellPokemon = function(src, data) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
-            return;
-        }
-        if (contestCount > 0) {
-            safaribot.sendMessage(src, "You can't sell a Pokémon during a contest!", safchan);
+        var verb = "sell";
+        if (!canLosePokemon(src, data, verb)) {
             return;
         }
         if (data === "*") {
             safaribot.sendMessage(src, "To sell a Pokémon, use /sell [name] to check its price, and /sell [name]:confirm to sell it.", safchan);
             return;
         }
-        if (player.pokemon.length == 1) {
-            safaribot.sendMessage(src, "You can't sell your last Pokémon!", safchan);
-            return;
-        }
+        var player = getAvatar(src);
         var info = data.split(":");
         var pokeId = getInputPokemon(info[0]);
         var shiny = pokeId[1];
         pokeId = pokeId[0];
-        if (pokeId === undefined) {
-            safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
-            return;
-        }
         var pokeNum = shiny ? "" + pokeId : pokeId;
-        if (player.pokemon.indexOf(pokeNum) == -1) {
-            safaribot.sendMessage(src, "You do not have that Pokémon!", safchan);
-            return;
-        }
-        var count = countRepeated(player.pokemon, pokeNum);
-        if (player.party.length == 1 && player.party[0] === pokeNum && count <= 1) {
-            safaribot.sendMessage(src, "You can't sell the only Pokémon in your party!", safchan);
-            return;
-        }
-        if (player.starter === pokeNum && count <= 1) {
-            safaribot.sendMessage(src, "You can't sell your starter Pokémon!", safchan);
-            return;
-        }
 
         var perk = "amulet";
         var perkBonus = 1 + Math.min(itemData[perk].bonusRate * player.balls[perk], itemData[perk].maxRate);
@@ -1187,7 +1200,6 @@ function Safari() {
         }
     };
     this.isValidTrade = function(src, asset, action, traded) {
-        var player = getAvatar(src);
         if (asset[0] == "$") {
             var val = parseInt(asset.substr(1), 10);
             if (isNaN(val) || val <= 0) {
@@ -1524,54 +1536,25 @@ function Safari() {
         SESSION.global().safariGachaJackpot = gachaJackpot;
     };
     this.releasePokemon = function(src, data) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        var verb = "release";
+        if (!canLosePokemon(src, data, verb)) {
             return;
-        }
-        //Maybe reduce this into a function? Most is used in sellPokemon and tradePokemon
-        if (contestCount > 0) {
-            safaribot.sendMessage(src, "You can't release during a contest!", safchan);
-            return;
-        }
-        if (currentPokemon) {
-            safaribot.sendMessage(src, "There's already a Pokemon out there!", safchan);
-            return true;
         }
         if (data === "*") {
             safaribot.sendMessage(src, "To release a Pokémon, use /release [name]:confirm!", safchan);
-            return;
-        }
-        if (player.pokemon.length == 1) {
-            safaribot.sendMessage(src, "You cannot release your last Pokémon!", safchan);
-            return;
-        }
-        var info = data.split(":");
-        var pokeId = getInputPokemon(info[0]);
-        var shiny = pokeId[1];
-        pokeId = pokeId[0];
-        if (pokeId === undefined) {
-            safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
-            return;
-        }
-        var pokeNum = shiny ? "" + pokeId : pokeId;
-        if (player.pokemon.indexOf(pokeNum) == -1) {
-            safaribot.sendMessage(src, "You do not have that Pokémon!", safchan);
-            return;
-        }
-        var count = countRepeated(player.pokemon, pokeNum);
-        if (player.party.length == 1 && player.party[0] === pokeNum && count <= 1) {
-            safaribot.sendMessage(src, "You can't release the only Pokémon in your party!", safchan);
-            return;
-        }
-        if (player.starter === pokeNum && count <= 1) {
-            safaribot.sendMessage(src, "You can't release your starter Pokémon!", safchan);
             return;
         }
         if (releaseCooldown > 0) {
             safaribot.sendMessage(src, "Please spend the next  " + releaseCooldown + " seconds saying good bye to your Pokémon before releasing it!", safchan);
             return;
         }
+        var player = getAvatar(src);
+        var info = data.split(":");
+        var pokeId = getInputPokemon(info[0]);
+        var shiny = pokeId[1];
+        pokeId = pokeId[0];
+        var pokeNum = shiny ? "" + pokeId : pokeId;
+        
         if (info.length < 2 || info[1].toLowerCase() !== "confirm") {
             safaribot.sendMessage(src, "You can release your " + poke(pokeNum) + " by typing /release " + (shiny ? "*":"") + sys.pokemon(pokeId) + ":confirm.", safchan);
             return;
