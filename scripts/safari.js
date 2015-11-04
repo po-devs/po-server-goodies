@@ -254,7 +254,7 @@ function Safari() {
 
         //Other Items
         bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 100, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
-        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.02, targetCD: 6000, bounceCD: 8000, throwCD: 10000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
+        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.02, targetCD: 6000, bounceCD: 10000, throwCD: 15000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 149, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
         rare: {name: "rare", fullName: "Rare Candy", type: "usable", icon: 117, price: 0, aliases:["rare", "rarecandy", "rare candy", "candy"], sellable: false, buyable: true, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
@@ -1375,7 +1375,7 @@ function Safari() {
         var rng = Math.random();
         var perk = "zoom";
         var perkBonus = Math.min(itemData[perk].bonusRate * player.balls[perk], itemData[perk].maxRate);
-        var success = itemData.rock.successRate + perkBonus;
+        var success = (preparationPhase > 0 ? 0.15 : itemData.rock.successRate) + perkBonus;
 
         var targetName = utilities.non_flashing(sys.name(targetId));
         if (rng < success) {
@@ -1383,7 +1383,7 @@ function Safari() {
             target.cooldown = target.cooldown > currentTime ? target.cooldown + itemData.rock.targetCD : currentTime + itemData.rock.targetCD;
             player.records.rocksHit += 1;
             target.records.rocksHitBy += 1;
-        } else if (rng < success + itemData.rock.bounceRate) {
+        } else if (rng < success + itemData.rock.bounceRate + (preparationPhase > 0 ? 0.38 : 0)) {
             safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but it hit a wall and bounced back at " + sys.name(src) + "! *THUD* That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
             player.cooldown = currentTime + itemData.rock.bounceCD;
             player.records.rocksBounced += 1;
