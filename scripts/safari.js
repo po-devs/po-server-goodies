@@ -1559,6 +1559,10 @@ function Safari() {
             safaribot.sendMessage(src, "To release a Pokémon, use /release [name]:confirm!", safchan);
             return;
         }
+        if (currentPokemon) {
+            safaribot.sendMessage(src, "There's already a Pokemon out there!", safchan);
+            return true;
+        }
         if (releaseCooldown > 0) {
             safaribot.sendMessage(src, "Please spend the next  " + releaseCooldown + " seconds saying good bye to your Pokémon before releasing it!", safchan);
             return;
