@@ -1631,7 +1631,7 @@ function Safari() {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
             return;
         }
-        var isAndroid = (sys.os(id) === "android");
+        var isAndroid = (sys.os(src) === "android");
         sys.sendHtmlMessage(src, this.showBox(player, (data === "*" ? 1 : data), isAndroid), safchan);
     };
     this.manageParty = function(src, data) {
