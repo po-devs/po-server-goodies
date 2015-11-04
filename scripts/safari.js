@@ -2516,7 +2516,7 @@ function Safari() {
             var recstr = ["gachasUsed", "masterballsWon", "jackpotsWon", "contestsWon", "pokesCaught", "pokesNotCaught", "pokesReleased", "pokesCloned", "pokeSoldEarnings", "luxuryEarnings", "pawnEarnings", "rocksThrown", "rocksHit", "rocksMissed", "rocksBounced", "rocksDodged", "rocksHitBy", "baitUsed", "baitAttracted", "baitNothing"], rec;
             for (var j = 0; j < recstr.length; j++) {
                 rec = recstr[j];
-                if (player.records[rec] === undefined || isNaN(player.records[rec]) || player.records[rec] < 0 || player.records[rec] !== "number") {
+                if (player.records[rec] === undefined || isNaN(player.records[rec]) || player.records[rec] < 0 || typeof player.records[rec] !== "number") {
                     player.records[rec] = 0;
                 }
             }
