@@ -1644,6 +1644,7 @@ function Safari() {
         sys.sendAll("", safchan);
         
         player.balls.rare -= candiesRequired;
+        player.records.pokesEvolved += 1;
         this.saveGame(player);
         
     };
@@ -2322,12 +2323,12 @@ function Safari() {
 
         sys.sendMessage(src, "", safchan);
         sys.sendMessage(src, "*** Player Records ***", safchan);
-        safaribot.sendMessage(src, "Pokémon-- Caught: " + rec.pokesCaught + ". Released: " + rec.pokesReleased + ". Cloned: " + rec.pokesCloned + ". Attempted Catches: " + rec.pokesNotCaught + ".", safchan);
+        safaribot.sendMessage(src, "Pokémon-- Caught: " + rec.pokesCaught + ". Released: " + rec.pokesReleased + ". Evolved: " + rec.pokesEvolved + ". Cloned: " + rec.pokesCloned + ".", safchan);
         safaribot.sendMessage(src, "Earnings-- Sold Pokémon: $" + rec.pokeSoldEarnings + ". Luxury Balls: $" + rec.luxuryEarnings + ". Pawned Items: $" + rec.pawnEarnings + ".", safchan);
         safaribot.sendMessage(src, "Gachapon-- Used: " + rec.gachasUsed + ". Jackpots Won: " + rec.jackpotsWon + ". Master Balls Won: " + rec.masterballsWon + ".", safchan);
         safaribot.sendMessage(src, "Rocks-- Thrown: " + rec.rocksThrown + ". Hit: " + rec.rocksHit + ". Missed: " + rec.rocksMissed + ". Bounced: " + rec.rocksBounced + ". Hit By: " + rec.rocksHitBy + ". Dodged: " + rec.rocksDodged + ".", safchan);
         safaribot.sendMessage(src, "Bait-- Used: " + rec.baitUsed + ". Attracted Pokémon: " + rec.baitAttracted + ". No Interest: " + rec.baitNothing + ".", safchan);
-        safaribot.sendMessage(src, "Contests Won: " + rec.contestsWon + ".", safchan);
+        safaribot.sendMessage(src, "Misc-- Contests Won: " + rec.contestsWon + ". Failed Catches: " + rec.pokesNotCaught + ". Items Found: " + rec.itemsFound + ".", safchan);
         sys.sendMessage(src, "", safchan);
     };
 
@@ -2392,6 +2393,7 @@ function Safari() {
                 pokesNotCaught: 0,
                 pokesReleased: 0,
                 pokesCloned: 0,
+                pokesEvolved: 0,
                 pokeSoldEarnings: 0,
                 luxuryEarnings: 0,
                 pawnEarnings: 0,
@@ -2403,7 +2405,8 @@ function Safari() {
                 rocksHitBy: 0,
                 baitUsed: 0,
                 baitAttracted: 0,
-                baitNothing: 0
+                baitNothing: 0,
+                itemsFound: 0
             },
             starter: num,
             lastLogin: getDay(now()),
@@ -2513,7 +2516,7 @@ function Safari() {
             if (player.records === undefined) {
                 player.records = {};
             }
-            var recstr = ["gachasUsed", "masterballsWon", "jackpotsWon", "contestsWon", "pokesCaught", "pokesNotCaught", "pokesReleased", "pokesCloned", "pokeSoldEarnings", "luxuryEarnings", "pawnEarnings", "rocksThrown", "rocksHit", "rocksMissed", "rocksBounced", "rocksDodged", "rocksHitBy", "baitUsed", "baitAttracted", "baitNothing"], rec;
+            var recstr = ["gachasUsed", "masterballsWon", "jackpotsWon", "contestsWon", "pokesCaught", "pokesNotCaught", "pokesReleased", "pokesEvolved", "pokesCloned", "pokeSoldEarnings", "luxuryEarnings", "pawnEarnings", "rocksThrown", "rocksHit", "rocksMissed", "rocksBounced", "rocksDodged", "rocksHitBy", "baitUsed", "baitAttracted", "baitNothing", "itemsFound"], rec;
             for (var j = 0; j < recstr.length; j++) {
                 rec = recstr[j];
                 if (player.records[rec] === undefined || isNaN(player.records[rec]) || player.records[rec] < 0 || player.records[rec] !== "number") {
