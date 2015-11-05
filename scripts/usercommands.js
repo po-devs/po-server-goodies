@@ -72,6 +72,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             playerIdArray = sys.playerIds(),
             usersFoundArray = [];
         for (x = 0; x < playerIdArray.length; x++) {
+            if (sys.loggedIn(playerIdArray[x]) === false) {
+                continue;
+            }
             if (sys.away(playerIdArray[x]) === true) {
                 continue;
             }
