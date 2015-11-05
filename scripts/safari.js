@@ -1427,7 +1427,7 @@ function Safari() {
         player.balls[item] -= 1;
         player.records.baitUsed += 1;
         if (lastBaiters.length >= lastBaitersAmount) {
-            lastBaiters = lastBaiters.shift();
+            lastBaiters.shift();
         }
         lastBaiters.push(sys.name(src));
 
@@ -2861,7 +2861,7 @@ function Safari() {
             return false;
         }
         if (SESSION.channels(safchan).muteall && !SESSION.channels(safchan).isChannelOperator(src) && sys.auth(src) === 0) {
-            safaribot.sendMessage(src, "You can't play Safari while the channel is silenced.");
+            safaribot.sendMessage(src, "You can't play Safari while the channel is silenced.", safchan);
             return true;
         }
         if (command === "help") {
@@ -3326,7 +3326,7 @@ function Safari() {
             safari.startContest("*");
         }
         if (lastBaitersDecay === 0) {
-            lastBaiters = lastBaiters.shift();
+            lastBaiters.shift();
         }
         SESSION.global().safariContestCooldown = contestCooldown;
         SESSION.global().safariBaitCooldown = baitCooldown;
