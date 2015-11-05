@@ -2825,6 +2825,9 @@ function Safari() {
                 var min = Math.floor(contestCooldown/60);
                 var sec = contestCooldown%60;
                 safaribot.sendMessage(src, "Time until next Contest: " + min + " minutes, " + sec + " seconds.", safchan);
+                if (nextTheme) {
+                    safaribot.sendMessage(src, "Next Contest's theme: " + (nextTheme !== "none" ? contestThemes[nextTheme].name : "Default") + ".", safchan);
+                }
             }
             safaribot.sendMessage(src, "Current Gachapon Jackpot: " + Math.floor(gachaJackpot/10) + ".", safchan);
             return true;
