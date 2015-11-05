@@ -1006,12 +1006,13 @@ function Safari() {
             return;
         }
 
+        var cap = itemCap;
         if (item === "stick") {
-            itemCap = 1;
+            cap = 1;
         }
 
-        if (player.balls[item] + amount > itemCap) {
-            safaribot.sendMessage(src, "You can only carry " + itemCap + " " + finishName(item) + "! You currently have " + player.balls[item] + " which leaves space for " + (itemCap - player.balls[item]) + " more.", safchan);
+        if (player.balls[item] + amount > cap) {
+            safaribot.sendMessage(src, "You can only carry " + cap + " " + finishName(item) + "! You currently have " + player.balls[item] + " which leaves space for " + (cap - player.balls[item]) + " more.", safchan);
             return;
         }
 
@@ -1589,30 +1590,30 @@ function Safari() {
         }
         var plural = amount > 1 ? "s" : "";
 
+        var giveReward = true;
         switch (reward) {
             case "master":
                 if (player.balls[reward] >= 1) {
                     safaribot.sendHtmlAll("<b>JACKP--</b> Wait a second... " + html_escape(sys.name(src)) + "'s Master Ball turned out to be a simple Safari Ball painted to look like a Master Ball! What a shame!", safchan);
                     safaribot.sendMessage(src, "You wiped the paint off of the ball and pocketed 1 Safari Ball for your troubles.", safchan);
                     reward = "safari";
-                    player.balls[reward] += 1;
+                    amount = 1;
                     player.records.masterballsWon += 1;
                 } else {
                     safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won a Master Ball from the Gachapon Machine!</b>", safchan);
                     safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
-                    player.balls[reward] += 1;
+                    amount = 1;
                     player.records.masterballsWon += 1;
                 }
             break;
             case "bait":
-                player.balls[reward] += amount;
                 safaribot.sendMessage(src, "A sweet, fruity aroma wafts through the air as you open your capsule. You received " + amount + " " + finishName(reward) + ".", safchan);
             break;
             case "rock":
-                player.balls[reward] += amount;
                 safaribot.sendMessage(src, "A loud clunk comes from the machine. Some prankster put rocks in the Gachapon Machine! You received  " + amount + " " + finishName(reward) + plural + ".", safchan);
             break;
             case "wild":
+                giveReward = false;
                 if (currentPokemon) {
                     safaribot.sendAll(sys.name(src) + " goes to grab their item from the Gachapon Machine but the capsule was swiped by the wild Pokémon!", safchan);
                     player.records.capsulesLost += 1;
@@ -1637,13 +1638,13 @@ function Safari() {
                 }
             break;
             case "safari":
-                player.balls[reward] += 1;
+                amount = 1;
                 safaribot.sendMessage(src, "Bummer, only a Safari Ball... You received 1 " + finishName(reward) + ".", safchan);
             break;
             case "gacha":
                 var jackpot = Math.floor(gachaJackpot/10);
                 safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won the Gachapon Ticket Jackpot valued at " + jackpot + " tickets!</b>", safchan);
-                player.balls[reward] += jackpot;
+                amount = jackpot;
                 player.records.jackpotsWon += 1;
                 safaribot.sendMessage(src, "You received " + jackpot + " Gachapon Tickets.", safchan);
                 gachaJackpot = 100; //Reset jackpot for next player
@@ -1653,7 +1654,7 @@ function Safari() {
             case "zoom":
             case "bignugget":
             case "nugget":
-                player.balls[reward] += 1;
+                amount = 1;
                 safaribot.sendAll("Sweet! " + sys.name(src) + " just won a " + finishName(reward) + " from Gachapon!", safchan);
                 safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
             break;
@@ -1661,14 +1662,23 @@ function Safari() {
             case "stardust":
             case "starpiece":
             case "bigpearl":
-                player.balls[reward] += 1;
-                safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
+                amount = 1;
             break;
             default:
-                player.balls[reward] += amount;
                 safaribot.sendMessage(src, "You received " + amount + " " + finishName(reward) + plural + ".", safchan);
             break;
         }
+        if (giveReward) {
+            var cap = itemCap;
+            if (player.balls[reward] + amount > cap) {
+                amount = cap - player.balls[reward];
+                safaribot.sendMessage(src, "However, you only had space for " + amount + " and were forced to discard the rest!", safchan);
+                player.records.itemsDiscarded += amount;
+            }
+            player.balls[reward] += amount;
+        }
+        
+        
         player.gachaCooldown = currentTime + itemData.gacha.cooldown;
         this.saveGame(player);
         gachaJackpot += 1;
@@ -2428,7 +2438,7 @@ function Safari() {
         sys.sendMessage(src, "*** Player Records ***", safchan);
         safaribot.sendMessage(src, "Pokémon-- Caught: " + rec.pokesCaught + ". Released: " + rec.pokesReleased + ". Evolved: " + rec.pokesEvolved + ". Cloned: " + rec.pokesCloned + ".", safchan);
         safaribot.sendMessage(src, "Earnings-- Sold Pokémon: $" + rec.pokeSoldEarnings + ". Luxury Balls: $" + rec.luxuryEarnings + ". Pawned Items: $" + rec.pawnEarnings + ".", safchan);
-        safaribot.sendMessage(src, "Gachapon-- Used: " + rec.gachasUsed + ". Jackpots Won: " + rec.jackpotsWon + ". Master Balls Won: " + rec.masterballsWon + ". Items stolen by Pokémon: " + rec.capsulesLost + ".", safchan);
+        safaribot.sendMessage(src, "Gachapon-- Used: " + rec.gachasUsed + ". Jackpots Won: " + rec.jackpotsWon + ". Master Balls Won: " + rec.masterballsWon + ". Items stolen by Pokémon: " + rec.capsulesLost + ". Rewards Discarded: " + rec.itemsDiscarded + ".", safchan);
         safaribot.sendMessage(src, "Rocks-- Thrown: " + rec.rocksThrown + ". Hit: " + rec.rocksHit + ". Missed: " + rec.rocksMissed + ". Bounced: " + rec.rocksBounced + ". Hit By: " + rec.rocksHitBy + ". Dodged: " + rec.rocksDodged + ".", safchan);
         safaribot.sendMessage(src, "Bait-- Used: " + rec.baitUsed + ". Attracted Pokémon: " + rec.baitAttracted + ". No Interest: " + rec.baitNothing + ".", safchan);
         safaribot.sendMessage(src, "Misc-- Contests Won: " + rec.contestsWon + ". Consecutive Logins: " + rec.consecutiveLogins + ". Failed Catches: " + rec.pokesNotCaught + ". Items Found: " + rec.itemsFound + ".", safchan);
@@ -2492,6 +2502,7 @@ function Safari() {
                 masterballsWon: 0,
                 jackpotsWon: 0,
                 capsulesLost: 0,
+                itemsDiscarded: 0,
                 contestsWon: 0,
                 pokesCaught: 0,
                 pokesNotCaught: 0,
@@ -2661,7 +2672,7 @@ function Safari() {
             if (player.records === undefined) {
                 player.records = {};
             }
-            var recstr = ["gachasUsed", "masterballsWon", "jackpotsWon", "contestsWon", "pokesCaught", "pokesNotCaught", "pokesReleased", "pokesEvolved", "pokesCloned", "pokeSoldEarnings", "luxuryEarnings", "pawnEarnings", "rocksThrown", "rocksHit", "rocksMissed", "rocksBounced", "rocksDodged", "rocksHitBy", "baitUsed", "baitAttracted", "baitNothing", "itemsFound", "consecutiveLogins", "capsulesLost"], rec;
+            var recstr = ["gachasUsed", "masterballsWon", "jackpotsWon", "contestsWon", "pokesCaught", "pokesNotCaught", "pokesReleased", "pokesEvolved", "pokesCloned", "pokeSoldEarnings", "luxuryEarnings", "pawnEarnings", "rocksThrown", "rocksHit", "rocksMissed", "rocksBounced", "rocksDodged", "rocksHitBy", "baitUsed", "baitAttracted", "baitNothing", "itemsFound", "consecutiveLogins", "capsulesLost", "itemsDiscarded"], rec;
             for (var j = 0; j < recstr.length; j++) {
                 rec = recstr[j];
                 if (player.records[rec] === undefined || isNaN(player.records[rec]) || player.records[rec] < 0 || typeof player.records[rec] !== "number") {
