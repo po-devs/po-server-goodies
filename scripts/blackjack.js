@@ -140,20 +140,7 @@ function createDeck() {
             tempdeck.push(cards[b] + suits[a]);
         }
     }
-    return shuffle(tempdeck);
-}
-
-function shuffle(tempdeck) {
-    var decklength = tempdeck.length;
-    for (var i = 0; i < 4; i++) {
-        for (var j = 0; j < decklength; j++) {
-            var k = sys.rand(0, decklength);
-            var temp = tempdeck[j];
-            tempdeck[j] = tempdeck[k];
-            tempdeck[k] = temp;
-        }
-    }
-    return tempdeck;
+    return tempdeck.shuffle();
 }
 
 function getConfig() {
@@ -495,7 +482,7 @@ function endGame() {
     blackJack.phase = "";
     blackJack.players = {};
     sendBotAll("Game has ended!");
-    shuffle(deck);
+    deck.shuffle();
     blackJack.time = -1;
 }
 

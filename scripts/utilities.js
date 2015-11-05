@@ -1,16 +1,16 @@
 /* utilities.js */
+
+Array.prototype.shuffle = function () {
+    for (var i = this.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = this[i];
+        this[i] = this[j];
+        this[j] = temp;
+    }
+    return this;
+};
+
 exports = {
-    arrayShuffle: function (array) {
-        var x, tempValue, randomIndex;
-        for (x = 0; x < array.length; x++) {
-            randomIndex = Math.floor(Math.random() * array.length);
-            tempValue = array[x];
-            array[x] = array[randomIndex];
-            array[randomIndex] = tempValue;
-        }
-        return array;
-    },
-    
     arraySlice: function (array, max) {
         var x, newArray = [], limit;
         if (max > array.length) {
