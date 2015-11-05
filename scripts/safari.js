@@ -400,7 +400,8 @@ function Safari() {
         contestsWon: { desc: "by contests won", alts: ["contest", "contests"] },
         luxuryEarnings: { desc: "by money gained with Luxury Balls", alts: ["luxury", "luxuryball", "luxury ball"] },
         consecutiveLogins: { desc: "by longest streak of consecutive days login", alts: ["login", "logins"] },
-        pokesCaught: { desc: "by successful catches", alts: ["caught"] }
+        pokesCaught: { desc: "by successful catches", alts: ["caught"] },
+        gachasUsed: { desc: "by tickets used for Gachapon", alts: ["gacha"] }
     };
 
     function getAvatar(src) {
@@ -1426,7 +1427,7 @@ function Safari() {
         player.balls[item] -= 1;
         player.records.baitUsed += 1;
         if (lastBaiters.length >= lastBaitersAmount) {
-            lastBaiters.shift();
+            lastBaiters = lastBaiters.shift();
         }
         lastBaiters.push(sys.name(src));
 
@@ -1615,11 +1616,14 @@ function Safari() {
                 if (currentPokemon) {
                     safaribot.sendAll(sys.name(src) + " goes to grab their item from the Gachapon Machine but the capsule was swiped by the wild Pokémon!", safchan);
                     player.records.capsulesLost += 1;
+                } else if (contestCount > 0) {
+                    player.balls.safari += 1;
+                    safaribot.sendMessage(src, "Bummer, only a Safari Ball... You received 1 " + finishName(reward) + ".", safchan);
                 } else {
                     var mod = Math.random();
                     var spawn = true;
                     safaribot.sendAll(sys.name(src) + " goes to grab their item from the Gachapon Machine but the noise lured a wild Pokémon!", safchan);
-                    if (mod < 0.1) {
+                    if (mod < 0.1 || player.masterCooldown > currentTime) {
                         safaribot.sendAll("Unfortunately it fled before anyone could try to catch it!", safchan);
                         spawn = false;
                     }
@@ -3363,7 +3367,7 @@ function Safari() {
                 sys.sendAll("*** ************************************************************ ***", safchan);
                 safaribot.sendAll("The Safari contest is now over! Please come back during the next contest!", safchan);
                 if (winners.length > 0) {
-                    safaribot.sendAll(readable(winners, "and") + " caught the most Pokémon (" + maxCaught + (winners.length > 0 ? ", total BST: " + maxBST : "") + ") during the contest and has won a prize pack!", safchan);
+                    safaribot.sendAll(readable(winners, "and") + " caught the most Pokémon (" + maxCaught + (winners.length > 1 ? ", total BST: " + maxBST : "") + ") during the contest and has won a prize pack!", safchan);
                 }
                 contestCatchers = [];
                 sys.sendAll("*** ************************************************************ ***", safchan);
