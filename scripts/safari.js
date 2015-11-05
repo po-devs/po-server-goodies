@@ -1012,7 +1012,11 @@ function Safari() {
         }
 
         if (player.balls[item] + amount > cap) {
-            safaribot.sendMessage(src, "You can only carry " + cap + " " + finishName(item) + "! You currently have " + player.balls[item] + " which leaves space for " + (cap - player.balls[item]) + " more.", safchan);
+            if (amount == cap) {
+                safaribot.sendMessage(src, "You are carrying the maximum amount of " + finishName(item) + " (" + cap + ") and cannot buy any more!", safchan);
+            } else {
+                safaribot.sendMessage(src, "You can only carry " + cap + " " + finishName(item) + "! You currently have " + player.balls[item] + " which leaves space for " + (cap - player.balls[item]) + " more.", safchan);
+            }
             return;
         }
 
@@ -1663,6 +1667,7 @@ function Safari() {
             case "starpiece":
             case "bigpearl":
                 amount = 1;
+                safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
             break;
             default:
                 safaribot.sendMessage(src, "You received " + amount + " " + finishName(reward) + plural + ".", safchan);
@@ -1671,13 +1676,20 @@ function Safari() {
         if (giveReward) {
             var cap = itemCap;
             if (player.balls[reward] + amount > cap) {
-                amount = cap - player.balls[reward];
-                safaribot.sendMessage(src, "However, you only had space for " + amount + " and were forced to discard the rest!", safchan);
-                player.records.itemsDiscarded += amount;
+                var check = cap - player.balls[reward];
+                if (amount === 1) {
+                    safaribot.sendMessage(src, "However, you didn't have any space left and were forced to discard it!", safchan);
+                } else {
+                    safaribot.sendMessage(src, "However, you only had space for " + check + " and were forced to discard the rest!", safchan);
+                }
+                player.records.itemsDiscarded += check;
+                amount -= check;
+                if (amount < 0) {
+                    amount = 0
+                };
             }
             player.balls[reward] += amount;
         }
-        
         
         player.gachaCooldown = currentTime + itemData.gacha.cooldown;
         this.saveGame(player);
