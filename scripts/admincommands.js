@@ -13,9 +13,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, "You turned rainbow on!", channel);
         return;
     }
-    if (command == "indigoinvite") {
-
-        if (channel != staffchannel && channel != sachannel) {
+    if (command === "indigoinvite") {
+        if (channel !== staffchannel && channel !== sachannel) {
             normalbot.sendMessage(src, "Can't use on this channel.", channel);
             return;
         }
@@ -23,12 +22,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "Your target is not online.", channel);
             return;
         }
-        if (SESSION.users(tar).megauser || SESSION.users(tar).contributions || sys.auth(tar) > 0) {
-            normalbot.sendMessage(src, "They have already access.", channel);
-            return;
-        }
         SESSION.channels(channel).issueAuth(src, commandData, "member");
-        normalbot.sendAll("" + sys.name(src) + " summoned " + sys.name(tar) + " to this channel!", channel);
+        normalbot.sendAll(sys.name(src) + " summoned " + sys.name(tar) + " to this channel!", channel);
         sys.putInChannel(tar, channel);
         normalbot.sendMessage(tar, "" + sys.name(src) + " made you join this channel!", channel);
         return;

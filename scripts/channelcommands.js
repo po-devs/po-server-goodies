@@ -29,28 +29,28 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var x, tempId, ownersArr = [], adminsArr = [], modsArr = [], membersArr = [];
         for (x = 0; x < SESSION.channels(channel).masters.length; x++) {
             if (sys.isInChannel(sys.id(SESSION.channels(channel).masters[x]), channel)) {
-                ownersArr.push("<b><font color='" + sys.getColor(sys.id(SESSION.channels(channel).masters[x])) + "'>" + html_escape(sys.name(sys.id(SESSION.channels(channel).masters[x]))) + "</font></b>");
+                ownersArr.push("<b><font color='" + script.getColor(sys.id(SESSION.channels(channel).masters[x])) + "'>" + html_escape(sys.name(sys.id(SESSION.channels(channel).masters[x]))) + "</font></b>");
             } else {
                 ownersArr.push(html_escape(SESSION.channels(channel).masters[x]));
             }
         }
         for (x = 0; x < SESSION.channels(channel).admins.length; x++) {
             if (sys.isInChannel(sys.id(SESSION.channels(channel).admins[x]), channel)) {
-                adminsArr.push("<b><font color='" + sys.getColor(sys.id(SESSION.channels(channel).admins[x])) + "'>" + html_escape(sys.name(sys.id(SESSION.channels(channel).admins[x]))) + "</font></b>");
+                adminsArr.push("<b><font color='" + script.getColor(sys.id(SESSION.channels(channel).admins[x])) + "'>" + html_escape(sys.name(sys.id(SESSION.channels(channel).admins[x]))) + "</font></b>");
             } else {
                 adminsArr.push(html_escape(SESSION.channels(channel).admins[x]));
             }
         }
         for (x = 0; x < SESSION.channels(channel).operators.length; x++) {
             if (sys.isInChannel(sys.id(SESSION.channels(channel).operators[x]), channel)) {
-                modsArr.push("<b><font color='" + sys.getColor(sys.id(SESSION.channels(channel).operators[x])) + "'>" + html_escape(sys.name(sys.id(SESSION.channels(channel).operators[x]))) + "</font></b>");
+                modsArr.push("<b><font color='" + script.getColor(sys.id(SESSION.channels(channel).operators[x])) + "'>" + html_escape(sys.name(sys.id(SESSION.channels(channel).operators[x]))) + "</font></b>");
             } else {
                 modsArr.push(html_escape(SESSION.channels(channel).operators[x]));
             }
         }
         for (x = 0; x < SESSION.channels(channel).members.length; x++) {
             if (sys.isInChannel(sys.id(SESSION.channels(channel).members[x]), channel)) {
-                membersArr.push("<b><font color='" + sys.getColor(sys.id(SESSION.channels(channel).members[x])) + "'>" + html_escape(sys.name(sys.id(SESSION.channels(channel).members[x]))) + "</font></b>");
+                membersArr.push("<b><font color='" + script.getColor(sys.id(SESSION.channels(channel).members[x])) + "'>" + html_escape(sys.name(sys.id(SESSION.channels(channel).members[x]))) + "</font></b>");
             } else {
                 membersArr.push(html_escape(SESSION.channels(channel).members[x]));
             }
