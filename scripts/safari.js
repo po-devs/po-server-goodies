@@ -40,6 +40,7 @@ function Safari() {
     var preparationThrows = {};
     var preparationFirst = null;
     var itemCap = 999;
+    var moneyCap = 9999999;
 
     //Don't really care if this resets after an update.
     var lastBaiters = [];
@@ -905,9 +906,8 @@ function Safari() {
             player.records.pokesNotCaught += 1;
         }
         player.cooldown = currentTime + cooldown;
-        if (ball == "master") {
-            player.masterCooldown = player.cooldown;
-        }
+        player.masterCooldown = player.cooldown;
+        
         this.saveGame(player);
     };
     this.checkEffective = function(atk1, atk2, def1, def2) {
@@ -1202,15 +1202,11 @@ function Safari() {
                     delete tradeRequests[targetName];
                     return;
                 }
-                if (offerType == "item" && itemAlias(offerInput.substr(offerInput.indexOf("@") + 1), true) == "master" && target.balls.master >= 1) {
-                    safaribot.sendMessage(src, "Trade cancelled because " + sys.name(targetId) + " already has a Master Ball." , safchan);
-                    safaribot.sendMessage(targetId, "Trade cancelled because you already have a Master Ball." , safchan);
+                if (!this.canReceiveTrade(src, targetId, offerInput)) {
                     delete tradeRequests[targetName];
                     return;
                 }
-                if (offerType == "item" && itemAlias(reqInput.substr(reqInput.indexOf("@") + 1), true) == "master" && player.balls.master >= 1) {
-                    safaribot.sendMessage(src, "Trade cancelled because you already have a Master Ball." , safchan);
-                    safaribot.sendMessage(targetId, "Trade cancelled because " + sys.name(src) + " already has a Master Ball." , safchan);
+                if (!this.canReceiveTrade(targetId, src, reqInput)) {
                     delete tradeRequests[targetName];
                     return;
                 }
@@ -1398,6 +1394,33 @@ function Safari() {
         }
         return true;
     };
+    this.canReceiveTrade = function(src, receiverId, asset) {
+        var receiver = getAvatar(receiverId);
+        if (asset[0] == "$") {
+            var val = parseInt(asset.substr(1), 10);
+            if (receiver.money + val > moneyCap) {
+                safaribot.sendMessage(receiverId, "Trade cancelled because you can't hold more than $" + moneyCap + " (you currently have $" + receiver.money + ", so you can receive at most $" + (moneyCap - receiver.money) + ")!", safchan);
+                safaribot.sendMessage(src, "Trade cancelled because " + sys.name(receiverId) + " can't hold more than $" + moneyCap + "!", safchan);
+                return false;
+            }
+        }
+        else if (asset.indexOf("@") !== -1) {
+            var item = itemAlias(asset.substr(asset.indexOf("@") + 1), true);
+            var amount = parseInt(asset.substr(0, asset.indexOf("@")), 10) || 1;
+            
+            if (receiver.balls[item] + amount > itemCap) {
+                safaribot.sendMessage(src, "Trade cancelled because " + sys.name(receiverId) + " can't receive " + amount + " " + finishName(item) + "(s)!" , safchan);
+                safaribot.sendMessage(receiverId, "Trade cancelled because you can't hold more than " + itemCap + " " + finishName(item) + "(s) (you currently have " + receiver.balls[item] + ", so you can receive at most " + (itemCap - amount) + ")!", safchan);
+                return false;
+            }
+            if (item == "master" && receiver.balls[item] + amount > 1) {
+                safaribot.sendMessage(src, "Trade cancelled because " + sys.name(receiverId) + " already has a Master Ball!" , safchan);
+                safaribot.sendMessage(receiverId, "Trade cancelled because you already have a Master Ball!", safchan);
+                return false;
+            }
+        }
+        return true;
+    };
     this.throwBait = function (src, commandData) {
         var player = getAvatar(src);
         if (!player) {
@@ -1409,7 +1432,7 @@ function Safari() {
             return;
         }
         if (player.masterCooldown > now()) {
-            safaribot.sendMessage(src, "You used a Master Ball recently, so please wait " + timeLeft(player.masterCooldown) + " seconds before throwing a bait!", safchan);
+            safaribot.sendMessage(src, "You used a ball recently, so please wait " + timeLeft(player.masterCooldown) + " seconds before throwing a bait!", safchan);
             return;
         }
         if (lastBaiters.indexOf(sys.name(src)) !== -1) {
@@ -2674,8 +2697,8 @@ function Safari() {
             }
             if (player.money === undefined || isNaN(player.money) || player.money < 0) {
                 player.money = 0;
-            } else if (player.money > 9999999) {
-                player.money = 9999999;
+            } else if (player.money > moneyCap) {
+                player.money = moneyCap;
             }
             if (player.money % 1 !== 0) {
                 player.money = Math.floor(player.money);
