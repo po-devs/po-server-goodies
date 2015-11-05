@@ -1705,11 +1705,11 @@ function Safari() {
                 } else {
                     safaribot.sendMessage(src, "However, you only had space for " + check + " and were forced to discard the rest!", safchan);
                 }
-                player.records.itemsDiscarded += check;
-                amount -= check;
+                player.records.itemsDiscarded += (amount - check);
+                amount = check;
                 if (amount < 0) {
-                    amount = 0
-                };
+                    amount = 0;
+                }
             }
             player.balls[reward] += amount;
         }
