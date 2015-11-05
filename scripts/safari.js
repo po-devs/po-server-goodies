@@ -23,6 +23,7 @@ function Safari() {
     var gachaponPrizes = []; //Creates Gachapon on update.
     var gachaJackpotAmount = 100; //Jackpot for gacha tickets. Number gets divided by 10 later.
     var gachaJackpot = (SESSION.global() && SESSION.global().safariGachaJackpot ? SESSION.global().safariGachaJackpot : gachaJackpotAmount);
+    var leaderboards = {};
 
     var contestCooldownLength = 1800; //1 contest every 30 minutes
     var baitCooldownLength = 0;
@@ -380,6 +381,18 @@ function Safari() {
     };
     var evolutions = {"1":{"evo":2,"candies":1},"2":{"evo":3},"4":{"evo":5,"candies":1},"5":{"evo":6},"7":{"evo":8,"candies":1},"8":{"evo":9},"10":{"evo":11,"candies":1},"11":{"evo":12},"13":{"evo":14,"candies":1},"14":{"evo":15},"16":{"evo":17,"candies":1},"17":{"evo":18},"19":{"evo":20},"21":{"evo":22},"23":{"evo":24},"25":{"evo":26},"27":{"evo":28},"29":{"evo":30,"candies":1},"30":{"evo":31},"32":{"evo":33,"candies":1},"33":{"evo":34},"35":{"evo":36},"37":{"evo":38},"39":{"evo":40},"41":{"evo":42,"candies":1},"42":{"evo":169},"43":{"evo":44,"candies":1},"44":{"evo":[45,182]},"46":{"evo":47},"48":{"evo":49},"50":{"evo":51},"52":{"evo":53},"54":{"evo":55},"56":{"evo":57},"58":{"evo":59},"60":{"evo":61,"candies":1},"61":{"evo":[62,186]},"63":{"evo":64,"candies":1},"64":{"evo":65},"66":{"evo":67,"candies":1},"67":{"evo":68},"69":{"evo":70,"candies":1},"70":{"evo":71},"72":{"evo":73},"74":{"evo":75,"candies":1},"75":{"evo":76},"77":{"evo":78},"79":{"evo":[80,199]},"81":{"evo":82,"candies":1},"82":{"evo":462},"84":{"evo":85},"86":{"evo":87},"88":{"evo":89},"90":{"evo":91},"92":{"evo":93,"candies":1},"93":{"evo":94},"95":{"evo":208},"96":{"evo":97},"98":{"evo":99},"100":{"evo":101},"102":{"evo":103},"104":{"evo":105},"108":{"evo":463},"109":{"evo":110},"111":{"evo":112,"candies":1},"112":{"evo":464},"113":{"evo":242},"114":{"evo":465},"116":{"evo":117,"candies":1},"117":{"evo":230},"118":{"evo":119},"120":{"evo":121},"123":{"evo":212},"125":{"evo":466},"126":{"evo":467},"129":{"evo":130},"133":{"evo":[470,471,135,134,136,196,197,700]},"137":{"evo":233,"candies":1},"138":{"evo":139},"140":{"evo":141},"147":{"evo":148,"candies":1},"148":{"evo":149},"152":{"evo":153,"candies":1},"153":{"evo":154},"155":{"evo":156,"candies":1},"156":{"evo":157},"158":{"evo":159,"candies":1},"159":{"evo":160},"161":{"evo":162},"163":{"evo":164},"165":{"evo":166},"167":{"evo":168},"170":{"evo":171},"172":{"evo":25,"candies":1},"173":{"evo":35,"candies":1},"174":{"evo":39,"candies":1},"175":{"evo":176,"candies":1},"176":{"evo":468},"177":{"evo":178},"179":{"evo":180,"candies":1},"180":{"evo":181},"183":{"evo":184},"187":{"evo":188,"candies":1},"188":{"evo":189},"190":{"evo":424},"191":{"evo":192},"193":{"evo":469},"194":{"evo":195},"198":{"evo":430},"200":{"evo":429},"204":{"evo":205},"207":{"evo":472},"209":{"evo":210},"215":{"evo":461},"216":{"evo":217},"218":{"evo":219},"220":{"evo":221,"candies":1},"221":{"evo":473},"223":{"evo":224},"228":{"evo":229},"231":{"evo":232},"233":{"evo":474},"236":{"evo":[107,106,237]},"238":{"evo":124},"239":{"evo":125,"candies":1},"240":{"evo":126,"candies":1},"246":{"evo":247,"candies":1},"247":{"evo":248},"252":{"evo":253,"candies":1},"253":{"evo":254},"255":{"evo":256,"candies":1},"256":{"evo":257},"258":{"evo":259,"candies":1},"259":{"evo":260},"261":{"evo":262},"263":{"evo":264},"265":{"evo":[266,268],"candies":1},"266":{"evo":267},"268":{"evo":269},"270":{"evo":271,"candies":1},"271":{"evo":272},"273":{"evo":274,"candies":1},"274":{"evo":275},"276":{"evo":277},"278":{"evo":279},"280":{"evo":281,"candies":1},"281":{"evo":[282,475]},"283":{"evo":284},"285":{"evo":286},"287":{"evo":288,"candies":1},"288":{"evo":289},"290":{"evo":[291,292]},"293":{"evo":294,"candies":1},"294":{"evo":295},"296":{"evo":297},"298":{"evo":183,"candies":1},"299":{"evo":476},"300":{"evo":301},"304":{"evo":305,"candies":1},"305":{"evo":306},"307":{"evo":308},"309":{"evo":310},"315":{"evo":407},"316":{"evo":317},"318":{"evo":319},"320":{"evo":321},"322":{"evo":323},"325":{"evo":326},"328":{"evo":329,"candies":1},"329":{"evo":330},"331":{"evo":332},"333":{"evo":334},"339":{"evo":340},"341":{"evo":342},"343":{"evo":344},"345":{"evo":346},"347":{"evo":348},"349":{"evo":[350,350]},"353":{"evo":354},"355":{"evo":356,"candies":1},"356":{"evo":477},"360":{"evo":202},"361":{"evo":[362,478]},"363":{"evo":364,"candies":1},"364":{"evo":365},"366":{"evo":[367,368]},"371":{"evo":372,"candies":1},"372":{"evo":373},"374":{"evo":375,"candies":1},"375":{"evo":376},"387":{"evo":388,"candies":1},"388":{"evo":389},"390":{"evo":391,"candies":1},"391":{"evo":392},"393":{"evo":394,"candies":1},"394":{"evo":395},"396":{"evo":397,"candies":1},"397":{"evo":398},"399":{"evo":400},"401":{"evo":402},"403":{"evo":404,"candies":1},"404":{"evo":405},"406":{"evo":315,"candies":1},"408":{"evo":409},"410":{"evo":411},"412":{"evo":[413,414]},"415":{"evo":416},"418":{"evo":419},"420":{"evo":421},"422":{"evo":423},"425":{"evo":426},"427":{"evo":428},"431":{"evo":432},"433":{"evo":358},"434":{"evo":435},"436":{"evo":437},"438":{"evo":185},"439":{"evo":122},"440":{"evo":113,"candies":1},"443":{"evo":444,"candies":1},"444":{"evo":445},"446":{"evo":143},"447":{"evo":448},"449":{"evo":450},"451":{"evo":452},"453":{"evo":454},"456":{"evo":457},"458":{"evo":226},"459":{"evo":460},"495":{"evo":496,"candies":1},"496":{"evo":497},"498":{"evo":499,"candies":1},"499":{"evo":500},"501":{"evo":502,"candies":1},"502":{"evo":503},"504":{"evo":505},"506":{"evo":507,"candies":1},"507":{"evo":508},"509":{"evo":510},"511":{"evo":512},"513":{"evo":514},"515":{"evo":516},"517":{"evo":518},"519":{"evo":520,"candies":1},"520":{"evo":521},"522":{"evo":523},"524":{"evo":525,"candies":1},"525":{"evo":526},"527":{"evo":528},"529":{"evo":530},"532":{"evo":533,"candies":1},"533":{"evo":534},"535":{"evo":536,"candies":1},"536":{"evo":537},"540":{"evo":541,"candies":1},"541":{"evo":542},"543":{"evo":544,"candies":1},"544":{"evo":545},"546":{"evo":547},"548":{"evo":549},"551":{"evo":552,"candies":1},"552":{"evo":553},"554":{"evo":555},"557":{"evo":558},"559":{"evo":560},"562":{"evo":563},"564":{"evo":565},"566":{"evo":567},"568":{"evo":569},"570":{"evo":571},"572":{"evo":573},"574":{"evo":575,"candies":1},"575":{"evo":576},"577":{"evo":578,"candies":1},"578":{"evo":579},"580":{"evo":581},"582":{"evo":583,"candies":1},"583":{"evo":584},"585":{"evo":586},"588":{"evo":589},"590":{"evo":591},"592":{"evo":593},"595":{"evo":596},"597":{"evo":598},"599":{"evo":600,"candies":1},"600":{"evo":601},"602":{"evo":603,"candies":1},"603":{"evo":604},"605":{"evo":606},"607":{"evo":608,"candies":1},"608":{"evo":609},"610":{"evo":611,"candies":1},"611":{"evo":612},"613":{"evo":614},"616":{"evo":617},"619":{"evo":620},"622":{"evo":623},"624":{"evo":625},"627":{"evo":628},"629":{"evo":630},"633":{"evo":634,"candies":1},"634":{"evo":635},"636":{"evo":637},"650":{"evo":651,"candies":1},"651":{"evo":652},"653":{"evo":654,"candies":1},"654":{"evo":655},"656":{"evo":657,"candies":1},"657":{"evo":658},"659":{"evo":660},"661":{"evo":662,"candies":1},"662":{"evo":663},"664":{"evo":665,"candies":1},"665":{"evo":666},"667":{"evo":668},"669":{"evo":670,"candies":1},"670":{"evo":671},"672":{"evo":673},"674":{"evo":675},"677":{"evo":678},"679":{"evo":680,"candies":1},"680":{"evo":681},"682":{"evo":683},"684":{"evo":685},"686":{"evo":687},"688":{"evo":689},"690":{"evo":691},"692":{"evo":693},"694":{"evo":695},"696":{"evo":697},"698":{"evo":699},"704":{"evo":705,"candies":1},"705":{"evo":706},"708":{"evo":709},"710":{"evo":711},"712":{"evo":713},"714":{"evo":715}};
 
+    //Adding a variable that already exists on player.records here will automatically make it available as a leaderboard
+    //To add stuff not on player.records, you must add an exception on this.updateLeaderboards()
+    var leaderboardTypes = {
+        totalPokes: { desc: "by Pokémon owned", alts: [] },
+        bst: { desc: "by total BST of Pokémon owned", alts: [] },
+        money: { desc: "by money", alts: ["$"] },
+        contestsWon: { desc: "by contests won", alts: ["contest", "contests"] },
+        luxuryEarnings: { desc: "by money gained with Luxury Balls", alts: ["luxury", "luxuryball", "luxury ball"] },
+        consecutiveLogins: { desc: "by longest streak of consecutive days login", alts: ["login", "logins"] },
+        pokesCaught: { desc: "by successful catches", alts: ["caught"] }
+    };
+    
     function getAvatar(src) {
         if (SESSION.users(src)) {
             return SESSION.users(src).safari;
@@ -1276,6 +1289,10 @@ function Safari() {
                 return false;
             }
             var pokeId = pokeNum[0] + (pokeNum[1] === true ? "" : 0);
+            if (sys.pokemon(pokeId) == "Missingno") {
+                safaribot.sendMessage(src, "Please " + action + " a valid pokémon!", safchan);
+                return false;
+            }
             if (traded[0] == "$") {
                 var min = getBST(pokeId) * (pokeNum[1] === true ? 5 : 1);
                 var money = parseInt(traded.substr(1), 10);
@@ -2457,6 +2474,44 @@ function Safari() {
             this.dailyReward(src, getDay(now()));
         }
     };
+    this.updateLeaderboards = function() {
+        leaderboards = {};
+        
+        var player, data, e, i;
+        for (e in leaderboardTypes) {
+            leaderboards[e] = [];
+        }
+        for (e in rawPlayers.hash) {
+            data = JSON.parse(rawPlayers.hash[e]);
+            for (i in leaderboardTypes) {
+                player = {
+                    name: e,
+                    value: 0
+                };
+                switch (i) {
+                    case "totalPokes":
+                        player.value = data.pokemon.length;
+                    break;
+                    case "bst":
+                        player.value = add(data.pokemon.map(getBST));
+                    break;
+                    case "money":
+                        player.value = data.money;
+                    break;
+                    default:
+                        player.value = "records" in data ? (data.records[i] || 0 ): 0;
+                    break;
+                }
+                leaderboards[i].push(player);
+            }
+        }
+        var byHigherValue = function(a, b) {
+            return b.value - a.value;
+        };
+        for (e in leaderboards) {
+            leaderboards[e].sort(byHigherValue);
+        }
+    };
     this.changeAlt = function(src, data) {
         var player = getAvatar(src);
         if (!player) {
@@ -2815,6 +2870,54 @@ function Safari() {
             safari.findPokemon(src, commandData);
             return true;
         }
+        if (command === "leaderboard" || command == "lb") {
+            var rec = commandData.toLowerCase(), e;
+            
+            var lbKeys = Object.keys(leaderboardTypes);
+            var lowCaseKeys = lbKeys.map(function(x) { return x.toLowerCase(); });
+            if (lowCaseKeys.indexOf(rec) !== -1) {
+                rec = lbKeys[lowCaseKeys.indexOf(rec)];
+            } else {
+                var found = false;
+                for (e in leaderboardTypes) {
+                    if (leaderboardTypes[e].alts.indexOf(rec) !== -1) {
+                        rec = e;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    rec = "totalPokes";
+                }
+            }
+            
+            var cut = 10;
+            var list = leaderboards[rec].slice(0, cut);
+            var out = ["", "<b>Safari Leaderboards " + leaderboardTypes[rec].desc + "</b>"], selfFound = false;
+            for (e = 0; e < list.length; e++) {
+                out.push("<b>" + (e + 1) + ".</b> " + list[e].name + ": " + list[e].value);
+                if (list[e].name == sys.name(src).toLowerCase()) {
+                    selfFound = true;
+                }
+            }
+            if (!selfFound) {
+                list = leaderboards[rec];
+                for (e = 0; e < list.length; e++) {
+                    if (list[e].name == sys.name(src).toLowerCase()) {
+                        out.push("<b>" + (e + 1) + ".</b> " + list[e].name + ": " + list[e].value);
+                        selfFound = true;
+                        break;
+                    }
+                }
+                if (!selfFound) {
+                    out.push("You are not ranked in this leaderboard!");
+                }
+            }
+            out.push("");
+            sys.sendHtmlMessage(src, out.join("<br/>"),safchan);
+            
+            return true;
+        }
         if (command === "info") {
             if (contestCount > 0) {
                 var min = Math.floor(contestCount/60);
@@ -3065,6 +3168,7 @@ function Safari() {
         SESSION.channels(safchan).perm = true;
         rawPlayers = new MemoryHash(saveFiles);
         this.initGacha();
+        this.updateLeaderboards();
     };
     this.afterChannelJoin = function (src, channel) {
         if (channel == safchan) {
@@ -3173,6 +3277,7 @@ function Safari() {
                 for (var e in onChannel) {
                     safari.dailyReward(onChannel[e], today);
                 }
+                safari.updateLeaderboards();
                 rawPlayers.save();
             } else {
                 if (!currentPokemon && Math.random() < 0.084793) {
