@@ -1679,9 +1679,9 @@ beforeChatMessage: function(src, message, chan) {
     }
     var poChannel = SESSION.channels(channel);
     if (sys.auth(src) < 1 && !poChannel.canTalk(src)) {
-        var auth = poChannel.muted[sys.name(src).toLowerCase()].auth,
-            expiry = poChannel.muted[sys.name(src).toLowerCase()].expiry,
-            reason = poChannel.muted[sys.name(src).toLowerCase()].reason;
+        var auth = poChannel.muted[sys.name(src).toLowerCase()].auth || "N/A",
+            expiry = poChannel.muted[sys.name(src).toLowerCase()].expiry || "N/A",
+            reason = poChannel.muted[sys.name(src).toLowerCase()].reason || "N/A";
         if (isNaN(expiry)) {
             expiry = "forever";
         } else {
