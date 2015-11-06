@@ -44,8 +44,8 @@ function Safari() {
 
     //Don't really care if this resets after an update.
     var lastBaiters = [];
-    var lastBaitersAmount = 4; //Amount of people that need to bait before you can
-    var lastBaitersDecay = 420; //Seconds before the first entry in lastBaiters is purged
+    var lastBaitersAmount = 3; //Amount of people that need to bait before you can
+    var lastBaitersDecay = 300; //Seconds before the first entry in lastBaiters is purged
 
     var effectiveness = {
         "Normal": {
@@ -258,7 +258,7 @@ function Safari() {
         dream: {name: "dream", fullName: "Dream Ball", type: "ball", icon: 267, price: 0, ballBonus: 1, bonusRate: 3, cooldown: 9000, aliases:["dreamball", "dream", "dream ball"], sellable: false, buyable: false, tradable: true},
         heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 0, ballBonus: 1, bonusRate: 0.5, maxBonus: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], sellable: false, buyable: false, tradable: true},
         nest: {name: "nest", fullName: "Nest Ball", type: "ball", icon: 321, price: 0, ballBonus: 1,  bonusRate: 4, cooldown: 8000, aliases:["nestball", "nest", "nest ball"], sellable: false, buyable: false, tradable: true},
-        quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 0, ballBonus: 1, cooldown: 7000, aliases:["quickball", "quick", "quick ball"], sellable: false, buyable: false, tradable: true},
+        quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 0, ballBonus: 1, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], sellable: false, buyable: false, tradable: true},
         luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 2, cooldown: 8000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false, tradable: true},
         moon: {name: "moon", fullName: "Moon Ball", type: "ball", icon: 312, price: 0, ballBonus: 1, bonusRate: 5, cooldown: 8000, aliases:["moonball", "moon", "moon ball"], sellable: false, buyable: false, tradable: true},
         premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false, tradable: false},
@@ -543,6 +543,8 @@ function Safari() {
     function finishName(item) {
         if (item === "wild") {
             return "Wild Pokémon";
+        } else if (item === "horde") {
+            return "Horde of Wild Pokémon";
         }
         return itemData[item].fullName;
     }
@@ -636,13 +638,13 @@ function Safari() {
     this.initGacha = function () {
         var tempArray = [];
         var gachaItems =   {
-            safari: 60, great: 30, ultra: 20, master: 2, luxury: 20, dream: 20, nest: 20, quick: 20, heavy: 20, clone: 5,
-            moon: 20, bait: 30, rock: 30,  wild: 15, gacha: 1,  honey: 1,  amulet: 1, zoom: 1,
+            safari: 180, great: 90, ultra: 40, master: 2, luxury: 40, dream: 40, nest: 40, quick: 40, heavy: 40, clone: 10,
+            moon: 40, bait: 60, rock: 60,  wild: 30, horde: 10, gacha: 1,  honey: 1,  amulet: 1, zoom: 1,
             pearl: 12, stardust: 10, bigpearl: 8, starpiece: 5, nugget: 4, bignugget: 1
         };
 
         for (var e in gachaItems) {
-            if (currentItems.indexOf(e) === -1 && e !== "wild") {
+            if (currentItems.indexOf(e) === -1 && e !== "wild" && e !== "horde") {
                 continue;
             }
             tempArray = fillArray(e, gachaItems[e]);
@@ -679,7 +681,7 @@ function Safari() {
 
         safari.createWild();
     };
-    this.createWild = function(dexNum, makeShiny, amt) {
+    this.createWild = function(dexNum, makeShiny, amt, bstLimit) {
         var num,
             pokeId,
             shiny = sys.rand(0, shinyChance) < 1,
@@ -712,7 +714,8 @@ function Safari() {
                 pokeId = poke(num + (shiny ? "" : 0));
             }
             else {
-                maxStats = sys.rand(300, 721);
+                var maxRoll = bstLimit || 721;
+                maxStats = sys.rand(300, maxRoll);
                 do {
                     num = sys.rand(1, 722);
                     pokeId = poke(num + (shiny ? "" : 0));
@@ -1035,6 +1038,7 @@ function Safari() {
 
         var bonus;
         if (amount >= 10) {
+            var bonusAmt = Math.floor(amount / 10);
             if (isBall(item)) {
                 bonus = "premier";
                 safaribot.sendMessage(src, "Here, take these " + Math.floor(amount / 10) + " Premier Balls for your patronage!", safchan);
@@ -1042,7 +1046,20 @@ function Safari() {
                 bonus = "gacha";
                 safaribot.sendMessage(src, "Here, take these " + Math.floor(amount / 10) + " extra Gachapon Tickets for your patronage!", safchan);
             }
-            player.balls[bonus] += Math.floor(amount / 10);
+            
+            if (player.balls[bonus] + bonusAmt > cap) {
+                var check = cap - player.balls[bonus];
+                if (check < 1) {
+                    safaribot.sendMessage(src, "However, you didn't have any space left and were forced to discard " + (amount === 1 ? "it" : "them") + "!", safchan);
+                } else {
+                    safaribot.sendMessage(src, "However, you only had space for " + check + " and were forced to discard the rest!", safchan);
+                }
+                bonusAmt = check;
+                if (bonusAmt < 0) {
+                    bonusAmt = 0;
+                }
+            }
+            player.balls[bonus] += bonusAmt;
         }
         this.saveGame(player);
     };
@@ -1454,10 +1471,6 @@ function Safari() {
         }
         player.balls[item] -= 1;
         player.records.baitUsed += 1;
-        if (lastBaiters.length >= lastBaitersAmount) {
-            lastBaiters.shift();
-        }
-        lastBaiters.push(sys.name(src));
 
         var rng = Math.random();
         var perk = "honey";
@@ -1467,6 +1480,12 @@ function Safari() {
             safaribot.sendAll(sys.name(src) + " left some bait out. The bait attracted a wild Pokémon!", safchan);
             baitCooldown = itemData.bait.successCD + sys.rand(0,10);
             player.records.baitAttracted += 1;
+            
+            if (lastBaiters.length >= lastBaitersAmount) {
+                lastBaiters.shift();
+            }
+            lastBaiters.push(sys.name(src));
+            
             safari.createWild();
             if (commandData !== undefined) {
                 safari.throwBall(src, commandData, true);
@@ -1640,23 +1659,33 @@ function Safari() {
                 safaribot.sendMessage(src, "A loud clunk comes from the machine. Some prankster put rocks in the Gachapon Machine! You received  " + amount + " " + finishName(reward) + plural + ".", safchan);
             break;
             case "wild":
+            case "horde":
                 giveReward = false;
                 if (currentPokemon) {
                     safaribot.sendAll(sys.name(src) + " goes to grab their item from the Gachapon Machine but the capsule was swiped by the wild Pokémon!", safchan);
                     player.records.capsulesLost += 1;
                 } else if (contestCount > 0) {
-                    player.balls.safari += 1;
+                    giveReward = true;
+                    reward = "safari";
+                    amount = 1;
                     safaribot.sendMessage(src, "Bummer, only a Safari Ball... You received 1 " + finishName(reward) + ".", safchan);
                 } else {
                     var mod = Math.random();
                     var spawn = true;
-                    safaribot.sendAll(sys.name(src) + " goes to grab their item from the Gachapon Machine but the noise lured a wild Pokémon!", safchan);
-                    if (mod < 0.1 || player.masterCooldown > currentTime) {
-                        safaribot.sendAll("Unfortunately it fled before anyone could try to catch it!", safchan);
+                    var spawnHorde = (reward === "horde");
+                    safaribot.sendAll(sys.name(src) + " goes to grab their item from the Gachapon Machine but the noise lured a " + finishName(reward) + "!", safchan);
+                    
+                    if (mod < 0.08 || player.masterCooldown > currentTime) {
+                        safaribot.sendAll("Unfortunately " + (spawnHorde ? "they" : "it") + " fled before anyone could try to catch "+ (spawnHorde ? "them" : "it") + "!", safchan);
                         spawn = false;
                     }
+                    
                     if (spawn) {
-                        safari.createWild();
+                        if (spawnHorde) {
+                            safari.createWild(0, false, 3, 580);
+                        } else {
+                            safari.createWild();
+                        }
                         if (commandData !== undefined) {
                             safari.throwBall(src, commandData);
                             preparationFirst = sys.name(src);
@@ -1700,8 +1729,8 @@ function Safari() {
             var cap = itemCap;
             if (player.balls[reward] + amount > cap) {
                 var check = cap - player.balls[reward];
-                if (amount === 1) {
-                    safaribot.sendMessage(src, "However, you didn't have any space left and were forced to discard it!", safchan);
+                if (check < 1) {
+                    safaribot.sendMessage(src, "However, you didn't have any space left and were forced to discard " + (amount === 1 ? "it" : "them") + "!", safchan);
                 } else {
                     safaribot.sendMessage(src, "However, you only had space for " + check + " and were forced to discard the rest!", safchan);
                 }
@@ -3077,7 +3106,7 @@ function Safari() {
             return false;
         }
         if (command === "checkrate") {
-            if (allItems.indexOf(commandData) !== -1 || commandData === "wild") {
+            if (allItems.indexOf(commandData) !== -1 || commandData === "wild" || commandData === "horde") {
                 var instance = countArray(gachaponPrizes, commandData);
                 var total = gachaponPrizes.length;
                 var percent = instance / total * 100;
@@ -3392,8 +3421,8 @@ function Safari() {
                         winners.push(e);
                     }
                 }
-                var tieBreaker = [], bst, name;
-                if (winners.length > 1) {
+                var tieBreaker = [], bst, name, top = winners.length;
+                if (top > 1) {
                     maxBST = 0;
                     for (e in winners) {
                         name = winners[e];
@@ -3413,7 +3442,7 @@ function Safari() {
                 sys.sendAll("*** ************************************************************ ***", safchan);
                 safaribot.sendAll("The Safari contest is now over! Please come back during the next contest!", safchan);
                 if (winners.length > 0) {
-                    safaribot.sendAll(readable(winners, "and") + " caught the most Pokémon (" + maxCaught + (winners.length > 1 ? ", total BST: " + maxBST : "") + ") during the contest and has won a prize pack!", safchan);
+                    safaribot.sendAll(readable(winners, "and") + " caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and has won a prize pack!", safchan);
                 }
                 contestCatchers = [];
                 sys.sendAll("*** ************************************************************ ***", safchan);
