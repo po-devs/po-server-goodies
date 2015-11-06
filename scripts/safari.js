@@ -1645,7 +1645,9 @@ function Safari() {
                     safaribot.sendAll(sys.name(src) + " goes to grab their item from the Gachapon Machine but the capsule was swiped by the wild Pokémon!", safchan);
                     player.records.capsulesLost += 1;
                 } else if (contestCount > 0) {
-                    player.balls.safari += 1;
+                    giveReward = true;
+                    reward = "safari";
+                    amount = 1;
                     safaribot.sendMessage(src, "Bummer, only a Safari Ball... You received 1 " + finishName(reward) + ".", safchan);
                 } else {
                     var mod = Math.random();
