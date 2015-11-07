@@ -3534,6 +3534,7 @@ function Safari() {
         }
         if (lastBaitersDecay === 0) {
             lastBaiters.shift();
+            lastBaitersDecay = lastBaitersDecayTime;
         }
         SESSION.global().safariContestCooldown = contestCooldown;
         SESSION.global().safariBaitCooldown = baitCooldown;
