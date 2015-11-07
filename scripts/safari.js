@@ -3578,13 +3578,15 @@ function Safari() {
 
                 sys.sendAll("*** ************************************************************ ***", safchan);
                 safaribot.sendAll("The Safari contest is now over! Please come back during the next contest!", safchan);
-                if (Object.keys(contestCatchers).length <= 1) {
+                if (Object.keys(contestCatchers).length === 1) {
                     safaribot.sendAll("No prizes have been given because there was only one contestant!", safchan);
                     winners = [];
                 } else if (winners.length > 0) {
                     safaribot.sendAll(readable(winners, "and") + " caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and has won a prize pack!", safchan);
                 }
-                safaribot.sendAll(allContestants.join(", "), safchan);
+                if (allContestants.length > 0) {
+                    safaribot.sendAll(allContestants.join(", "), safchan);
+                }
                 contestCatchers = [];
                 sys.sendAll("*** ************************************************************ ***", safchan);
                 currentPokemon = null;
