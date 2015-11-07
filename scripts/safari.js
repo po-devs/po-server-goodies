@@ -2459,7 +2459,7 @@ function Safari() {
         }
 
         if (crit === "number") {
-            player.pokemon.sort(function(a, b){return a-b;});
+            player.pokemon.sort(function(a, b){return pokeInfo.species(a)-pokeInfo.species(b);});
             if (order === "desc") {
                 player.pokemon.reverse();
             }
@@ -2992,7 +2992,7 @@ function Safari() {
             "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details.",
             "/sort [criteria] [ascending|descending]: To sort the order in which the Pokémon are listed on /mydata. Criteria are Alphabetical, Number, BST, Type and Duplicate.",
             "/info: View time until next contest and current Gachapon jackpot prize!",
-            "/leaderboard [type]: View the Safari Leaderboards. [type] can be pokemon, money, contest, bst, luxury, logins or caught.",
+            "/leaderboard [type]: View the Safari Leaderboards. [type] can be pokemon, money, contest, bst, luxury, gacha, logins or caught.",
             "",
             "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
         ];
