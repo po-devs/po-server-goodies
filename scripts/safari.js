@@ -3276,11 +3276,6 @@ function Safari() {
         if (command === "bestow") {
             var cmd = commandData.split(":");
             var target = cmd[0];
-            /* var p = parseInt(cmd[1], 10);
-            var shiny = cmd[2];
-            if (shiny === "*") {
-                p = p + "";
-            } */
             var playerId = sys.id(target);
             if (!playerId) {
                 safaribot.sendMessage(src, "No such person!", safchan);
