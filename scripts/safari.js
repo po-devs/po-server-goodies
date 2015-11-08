@@ -302,7 +302,7 @@ function Safari() {
             types: ["Grass", "Bug"], //Types that will be included. Pokémon only needs to match one of these types
             excludeTypes: [], //Types that will be excluded even if it matches the type above
             include: [16, 17, 18, 25, 163, 164], //Pokémon that do not match any of the criteria above, but will be included anyway
-            exclude: [492], //Pokémon that matches all of the previous criteria, but will be excluded anyway,
+            exclude: [492, 649], //Pokémon that matches all of the previous criteria, but will be excluded anyway,
             customBST: { "289": 600 }, //Makes a pokémon count as a different BST for this theme. In the example, Pokémon #289 (Slaking) will be considered a 600 BST Pokémon for this theme.
             maxBST: 601, //Choose a different maximum BST for pokémon to spawn. Optional, defaults to 601.
             minBST: 300 //Choose a different minimum BST for pokémon to spawn. Optional, defaults to 300.
@@ -311,14 +311,14 @@ function Safari() {
             name: "River",
             types: ["Water"],
             excludeTypes: ["Ice"],
-            include: [],
+            include: [pokeInfo.calcForme(666, 8), pokeInfo.calcForme(666, 10), pokeInfo.calcForme(666, 11), pokeInfo.calcForme(666, 13)], //Vivillon Monsoon, Ocean, River
             exclude: [245]
         },
         volcano: {
             name: "Volcano",
             types: ["Fire", "Rock"],
-            excludeTypes: [],
-            include: [],
+            excludeTypes: ["Water", "Ice"],
+            include: [pokeInfo.calcForme(666, 16)], //Vivillon Sun
             exclude: []
         },
         cave: {
@@ -337,8 +337,8 @@ function Safari() {
         },
         urban: {
             name: "Urban",
-            types: ["Poison","Dark","Steel"],
-            excludeTypes: ["Grass","Water","Fairy"],
+            types: ["Poison", "Dark", "Steel"],
+            excludeTypes: ["Grass", "Water", "Fairy"],
             include: [52, 53, 209, 210, 300, 301, 479, pokeInfo.calcForme(479, 1), pokeInfo.calcForme(479, 2), pokeInfo.calcForme(479, 3), pokeInfo.calcForme(479, 4), pokeInfo.calcForme(479, 5), 506, 507, 508],
             exclude: []
         },
@@ -346,21 +346,21 @@ function Safari() {
             name: "Tundra",
             types: ["Ice"],
             excludeTypes: [],
-            include: [86, 90, 216, 217, 223, 244, 234, 245, 393, 394, 395, pokeInfo.calcForme(585, 3), pokeInfo.calcForme(586, 3), pokeInfo.calcForme(666, 1), pokeInfo.calcForme(666, 17)],
+            include: [86, 90, 216, 217, 223, 244, 234, 245, 393, 394, 395, pokeInfo.calcForme(585, 3), pokeInfo.calcForme(586, 3), pokeInfo.calcForme(666, 1), pokeInfo.calcForme(666, 12), pokeInfo.calcForme(666, 17)], //Vivillon Icy Snow, Polar, Tundra
             exclude: []
         },
         factory: {
             name: "Factory",
-            types: ["Steel","Electric"],
+            types: ["Steel", "Electric"],
             excludeTypes: [],
             include: [137, 233, 474],
             exclude: []
         },
         field: {
             name: "Field",
-            types: ["Normal","Fairy"],
+            types: ["Normal", "Fairy"],
             excludeTypes: [],
-            include: [],
+            include: [pokeInfo.calcForme(666, 4)], //Vivillon Elegant
             exclude: [137, 233, 474]
         },
         dojo: {
@@ -372,12 +372,44 @@ function Safari() {
         },
         pyre: {
             name: "Mt. Pyre",
-            types: ["Ghost","Psychic"],
+            types: ["Ghost", "Psychic"],
             excludeTypes: ["Steel", "Normal"],
             include: [37, 38, 359, 491],
             exclude: []
+        },
+        playground: {
+            name: "Playground",
+            types: ["Normal", "Fire", "Water", "Grass", "Electric", "Rock", "Ground", "Bug", "Dark", "Psychic", "Steel", "Ghost", "Dragon", "Fighting", "Flying", "Fairy", "Ice", "Poison"],
+            excludeTypes: [],
+            include: [],
+            exclude: [132, 292],
+            maxBST: 300,
+            minBST: 180
+        },
+        tower: {
+            name: "Dragonspiral Tower",
+            types: ["Dragon"],
+            excludeTypes: [],
+            include: [4, 5, 6, 116, 117, 179, 180, 181, 252, 253, 254, 328, 333, 690],
+            exclude: []
+        },
+        desert: {
+            name: "Desert",
+            types: ["Rock", "Ground"],
+            excludeTypes: ["Water", "Ice"],
+            include: [pokeInfo.calcForme(666, 14), 331, 332, 556], //Vivillon Sandstorm
+            exclude: []
         }
     };
+    /*Vivillon Forms not in theme:
+        2- Archipelago
+        3- Continental
+        5- Garden
+        6- High Plains
+        7- Jungle
+        9- Modern
+        15- Savannah
+    */
     var wildForms = {
         "201": 27,
         "412": 2,
