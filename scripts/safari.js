@@ -903,7 +903,7 @@ function Safari() {
             if (ball == "luxury") {
                 var perkBonus = 1 + Math.min(itemData.scarf.bonusRate * player.balls.scarf, itemData.scarf.maxRate);
                 var earnings = Math.floor(wildStats/2) * perkBonus;
-                safaribot.sendAll((player.balls.scarf > 1 ? "The Fashionable " + "") + name + " found $" + earnings + " on the ground after catching " + pokeName + "!" , safchan);
+                safaribot.sendAll((player.balls.scarf > 1 ? "The Fashionable " : "") + name + " found $" + earnings + " on the ground after catching " + pokeName + "!" , safchan);
                 player.money += earnings;
                 player.records.luxuryEarnings += earnings;
             }
