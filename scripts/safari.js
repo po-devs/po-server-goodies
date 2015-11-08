@@ -271,6 +271,7 @@ function Safari() {
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 197, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
         rare: {name: "rare", fullName: "Rare Candy", type: "usable", icon: 117, price: 0, aliases:["rare", "rarecandy", "rare candy", "candy"], sellable: false, buyable: true, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
+        itemfinder: {name: "itemfinder", fullName: "Item Finder", type: "usable", icon: 164, price: 0, cooldown: 8000, charges: 30, aliases:["itemfinder", "finder", "itemfinder"], sellable: false, buyable: false, tradable: false},
 
         //Perks
         amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false, tradable: true},
@@ -279,6 +280,7 @@ function Safari() {
         soothe: {name: "soothe", fullName: "Soothe Bell", type: "perk", icon: 35, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["soothe", "soothebell", "soothe bell", "bell"], sellable: false, buyable: false, tradable: true},
         crown: {name: "crown", fullName: "Relic Crown", type: "perk", icon: 278, price: 0, bonusRate: 0.01, maxRate: 0.1, aliases:["crown", "reliccrown", "relic crown", "relic"], sellable: false, buyable: false, tradable: true},
         scarf: {name: "scarf", fullName: "Silk Scarf", type: "perk", icon: 31, price: 0, bonusRate: 0.015, maxRate: 0.15, aliases:["scarf", "silkscarf", "silk scarf", "silk"], sellable: false, buyable: false, tradable: true},
+        battery: {name: "battery", fullName: "Cell Battery", type: "perk", icon: 241, price: 0, bonusRate: 2, maxRate: 20, aliases:["battery", "cellbattery", "cell battery", "cell"], sellable: false, buyable: false, tradable: true},
 
         //Sellables
         pearl: {name: "pearl", fullName: "Pearl", type: "misc", icon: 111, price: 500, aliases:["pearl"], sellable: true, buyable: false, tradable: true},
@@ -694,7 +696,7 @@ function Safari() {
             bait: 50, rock: 60,
             wild: 32, horde: 8,
             gacha: 1,  master: 2,
-            honey: 1,  amulet: 1, zoom: 1, crown: 1, soothe: 1, scarf: 1,
+            honey: 1,  amulet: 1, zoom: 1, crown: 1, soothe: 1, scarf: 1, battery: 1,
             pearl: 12, stardust: 10, bigpearl: 8, starpiece: 5, nugget: 4, bignugget: 1
         };
 
@@ -2227,7 +2229,7 @@ function Safari() {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
         var line1 = ["bait", "rock", "gacha", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
         var line2 = ["safari", "great", "ultra", "master", "dream", "luxury", "quick", "nest", "heavy", "moon", "premier"];
-        var line3 = ["clone", "amulet", "honey", "zoom", "soothe", "crown", "scarf", "stick", "rare"];
+        var line3 = ["clone", "amulet", "honey", "zoom", "soothe", "crown", "scarf", "battery", "itemfinder", "stick", "rare"];
 
         var out = "";
         out += bagRow(player, line1, src, true);
@@ -2686,6 +2688,7 @@ function Safari() {
                 soothe: 0,
                 crown: 0,
                 scarf: 0,
+                itemfinder: 0,
                 pearl: 0,
                 stardust: 0,
                 starpiece: 0,
@@ -2962,6 +2965,7 @@ function Safari() {
             "Gachapon Ticket: Used to play the Gachapon Machine with /gacha, and win random prizes. Has a " + itemData.gacha.cooldown/1000 + " second cooldown.",
             "Rare Candy: Used to evolve Pokémon. Requires 2 Rare Candies to evolve into a final form Pokémon. ",
             "Valuables: The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be pawned off with /pawn for money.",
+            "Itemfinder: An experimental machine that can help find rare items!",
             "",
             "*** Perks ***",
             "Amulet Coin: When holding this charm, a bonus yield of about " + itemData.amulet.bonusRate * 100 + "% can be made when selling Pokémon to the NPC (Max Rate: " + itemData.amulet.maxRate * 100 + "%).",
@@ -2970,6 +2974,7 @@ function Safari() {
             "Soothe Bell: A bell with a comforting chime that calms the owner and their Pokémon. Reduces delay after a successful catch by " + itemData.soothe.bonusRate * 100 + "% (Max Rate: " + itemData.soothe.maxRate * 100 + "%).",
             "Relic Crown: A rare crown with mysterious properties that brings good fortune to its owner. Increases rate of pawned items by " + itemData.crown.bonusRate * 100 + "% (Max Rate: " + itemData.crown.maxRate * 100 + "%).",
             "Silk Scarf: A fashionable scarf made of the finest silk. Wearing it allows you to lead a more luxurious life and grants you " + itemData.scarf.bonusRate * 100 + "% more money from Luxury Balls (Max Rate: " + itemData.scarf.maxRate * 100 + "%).",
+            "Cell Battery: A high-capacity battery that can increase the uses of Item Finder by " + itemData.battery.bonusRate + ". (Max Rate: " + itemData.battery.maxRate + ").",
             "Stick: Legendary Stick of the almighty Farfetch'd that provides a neverending wave of prods and pokes unto your enemies and other nefarious evil-doers, with a simple use of the /stick command.",
             "",
             "*** Standard Poké Balls ***",
@@ -3390,7 +3395,7 @@ function Safari() {
                 player.balls[item] += itemQty;
                 this.sanitize(player);
                 this.saveGame(player);
-                safaribot.sendAll(target + " has been awarded with " + itemQty + " " + finishName(item) + " by " + sys.name(src) + "!", safchan);
+                safaribot.sendAll(target + " has been awarded with " + itemQty + (item === "itemfinder" ? "charges for their " : " ") + finishName(item) + " by " + sys.name(src) + "!", safchan);
             } else {
                 safaribot.sendMessage(src, "No such person!", safchan);
             }
