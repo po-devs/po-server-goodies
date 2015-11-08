@@ -20,6 +20,7 @@ function Safari() {
     var currentPokemonCount = 1;
 
     var tradeRequests = {};
+    var finderPrizes = []; //Creates Itemfinder on Update
     var gachaponPrizes = []; //Creates Gachapon on update.
     var gachaJackpotAmount = 100; //Jackpot for gacha tickets. Number gets divided by 10 later.
     var gachaJackpot = (SESSION.global() && SESSION.global().safariGachaJackpot ? SESSION.global().safariGachaJackpot : gachaJackpotAmount);
@@ -271,7 +272,7 @@ function Safari() {
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 197, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
         rare: {name: "rare", fullName: "Rare Candy", type: "usable", icon: 117, price: 0, aliases:["rare", "rarecandy", "rare candy", "candy"], sellable: false, buyable: true, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
-        itemfinder: {name: "itemfinder", fullName: "Item Finder", type: "usable", icon: 69, price: 0, cooldown: 8000, charges: 30, aliases:["itemfinder", "finder", "itemfinder"], sellable: false, buyable: false, tradable: false},
+        itemfinder: {name: "itemfinder", fullName: "Itemfinder", type: "usable", icon: 69, price: 0, cooldown: 10000, charges: 30, aliases:["itemfinder", "finder", "item finder"], sellable: false, buyable: false, tradable: false},
 
         //Perks
         amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false, tradable: true},
@@ -289,6 +290,12 @@ function Safari() {
         starpiece: {name: "starpiece", fullName: "Star Piece", type: "misc", icon: 134, price: 3000, aliases:["starpiece", "star piece"], sellable: true, buyable: false, tradable: true},
         nugget: {name: "nugget", fullName: "Nugget", type: "misc", icon: 108, price: 4000, aliases:["nugget"], sellable: true, buyable: false, tradable: true},
         bignugget: {name: "bignugget", fullName: "Big Nugget", type: "misc", icon: 269, price: 10000, aliases:["bignugget", "big nugget"], sellable: true, buyable: false, tradable: true}
+    };
+
+    var base64icons = {
+    itemfinder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAALHRFWHRDcmVhdGlvbiBUaW1lAEZyaSAyMSBOb3YgMjAxNCAyMDozMDo0NCAtMDAwMKEIypIAAAAHdElNRQfeCxUUHwrCV61vAAAACXBIWXMAAAsSAAALEgHS3X78AAAABGdBTUEAALGPC/xhBQAABExJREFUeNqFVutPHFUU/93ZpWyAamOMgIm2Pgrl0ZVHq9t+EAPtZiHWRGOaSFPoF+tnYrJGv+jXEhL/Ah8gaRPb2KSNFqqtSiOQxnYXpFUxatwEAbWBpkuz7GOuc+7OnblzZ0hPcrMze8+5v/M7rzuMr/UDMHCwb5EXiyZIrl9uYUABuWwOkZoIpPjf8+g+mnHsps4/wyLVoUD9sAS5du1jGMw632CIxU7w2YkmFqkho5JQ5Jw7RvRMdgSi2h2w7TjPg1n/qU4ZscQvfGrqI0tvD+5m5sHMEmZmP8UL8QXe2b1gnViBzY2iMJSyubGJA72/BtrtP7zANzcKUIWYGfLlbuZz7HiyFeuZBVgu4YuTjRjuq8e+nnkee3lRAEpRPdXt9H0ZifC2ijBM08TDO9uw/lcaO3Y+h2KphKOf/I5SyUTY2n/skUfR0T3Ppy82ODkIsqN3nYkENaYuPs0O9byFQqGA7U9EUTI5urrexA9fNrDZid1iZe+toa6uDgePEDNDePn9had8dlfffxfcBtNzyqjqCDn+xt88Xygn/rtzu6xCqPB49tLrGV4omLhxZS/LZe85h7x45A9hl88XhTMrKyuYvmBVX802j31YxpSYOeh24rkW88HBQew7NMZ//KbVUjBtZs8y0o8lfuahUEjRNz32YTWmVE2V1ZWe97KRIcDn5uaE1/sP3+JSp2Tlk/Zqa2uRTCYxNDQUYA8vkAriemaIUm5qahUHxuNxdHR0OKxHR0fF79LSEtLptB0Jcsz0VJ+TI/VPl5kLsrq6KkKxtvYfOHedGR4eAYWMAIkd5Wh5eRk3r7aI8PpyFMSMmrmlJSqMJcjMpT1MTotyMbwjioEAx8fHnYIAQpBAdL6hAhATV8p5kQklY6pGFYQ8pSKiFkgm38bAwAAMw0B7e7voO5qF7ml2ddGSTOiZ2DQ373VCVlkZtvbdvtD7RDawdK4866qdfUMy0WeZKsRm5lKjwyZIn5gFsSIutB/2T2WKaZVQ1sX1VNePYCuR5xuqZ/n7NN5D4to4dWpEeFVfX2+DhnxMdWYquFPW9r6vjyg3IyMfIpVKiZKluLe1taGzZ47fuNLsTAT9vpEA6dRNWFmi68kjYVk9upEEEcZ2I6pM/DdvlQBv+udrvPb8Q0QFr6aYiEQue79cDHqM6WA1BHo4dH0CocY+dmwAVX3v4YPr1Th5fh3HB0+IcRWp2e7vIypTOphyQx7Somcq71zWmyNiQkLh7u8/LkYTRYFyKnNDg7iz5yfu6yMq03Nnz4ghSV1OiybC9FeNztWh95EqFHIq8d7eXkxOTjrRCOyjy2ceZ78t3sadO/+K9e3ZXYyG5IOqTTSmxYZYSQBP1QXd8cRMV96qjyjcdIUQSDQaxdjYmBisiURCgFLYWfm7zvVUvSoe/F2X89y0uxuaRSuobE+f/kyEXQCpt+pWot+8QaHreuVP53NAyuxEedr/DwgKwzi3jMhsAAAAAElFTkSuQmCC",
+    gacha: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAkUExURdXeUpR7e1qLe9Xe3sWDamqLc5ykpHNzezExMSlqi////////w/mkLQAAAAMdFJOU///////////////ABLfzs4AAACDSURBVHjarJFJFsQgCETLIYYy979viwZipteLbpf/UwiK7eXgdyHyKERqlbtQ/CBEyOQGM0YsV6GYSDgicExGkGUSHS/cj0WwSWMha6cuyiGU52YiezJVsVZcQw60jPgeLbKGcbvjMdWYCZywi0XLJ2x78Fw9iwu2J7nhv3ztV/ERYAAG0RZIuHExdgAAAABJRU5ErkJggg=="
+
     };
 
     //Master list of items
@@ -601,6 +608,10 @@ function Safari() {
             return "Wild Pokémon";
         } else if (item === "horde") {
             return "Horde of Wild Pokémon";
+        } else if (item === "nothing") {
+            return "No item";
+        } else if (item === "recharge") {
+            return "Recharge";
         }
         return itemData[item].fullName;
     }
@@ -638,7 +649,15 @@ function Safari() {
             }
             for (var i = 0; i < arr.length; i++) {
                 item = itemData[arr[i]];
-                ret += "<td align=center><img src='item:" + item.icon + "' title='" + item.fullName + "'></td>";
+                ret += "<td align=center><img src='";
+                if (item.name === "itemfinder") {
+                    ret += base64icons.itemfinder;
+                } else if (item.name === "gacha") {
+                    ret += base64icons.gacha;
+                } else {
+                    ret += "item:" + item.icon;
+                }
+                ret += "' title='" + item.fullName + "'></td>";
             }
             ret += "</tr><tr>";
             if (first) {
@@ -688,10 +707,28 @@ function Safari() {
         }
         return true;
     }
+    function rewardCapCheck(src, reward, amount) {
+        var cap = itemCap;
+        var player = getAvatar(src);
+        if (player.balls[reward] + amount > cap) {
+            var check = cap - player.balls[reward];
+            if (check < 1) {
+                safaribot.sendMessage(src, "However, you didn't have any space left and were forced to discard " + (amount === 1 ? "it" : "them") + "!", safchan);
+            } else {
+                safaribot.sendMessage(src, "However, you only had space for " + check + " and were forced to discard the rest!", safchan);
+            }
+            player.records.itemsDiscarded += (amount - check);
+            amount = check;
+            if (amount < 0) {
+                amount = 0;
+            }
+        }
+        player.balls[reward] += amount;
+    }
 
     this.initGacha = function () {
         var tempArray = [];
-        var gachaItems =   {
+        var gachaItems = {
             safari: 180, great: 90, ultra: 40, luxury: 60, dream: 40, nest: 40, quick: 40, heavy: 40, clone: 10, moon: 40,
             bait: 50, rock: 60,
             wild: 32, horde: 8,
@@ -706,6 +743,22 @@ function Safari() {
             }
             tempArray = fillArray(e, gachaItems[e]);
             gachaponPrizes = gachaponPrizes.concat(tempArray);
+            tempArray = [];
+        }
+    };
+    this.initFinder = function () {
+        var tempArray = [];
+        var finderItems = {
+            rare: 1, recharge: 3, rock: 5, bait: 5, pearl: 4, stardust: 2, luxury: 5,
+            nothing: 100
+        };
+
+        for (var e in finderItems) {
+            if (currentItems.indexOf(e) === -1 && e !== "recharge" && e !== "nothing") {
+                continue;
+            }
+            tempArray = fillArray(e, finderItems[e]);
+            finderPrizes = finderPrizes.concat(tempArray);
             tempArray = [];
         }
     };
@@ -1875,21 +1928,7 @@ function Safari() {
             break;
         }
         if (giveReward) {
-            var cap = itemCap;
-            if (player.balls[reward] + amount > cap) {
-                var check = cap - player.balls[reward];
-                if (check < 1) {
-                    safaribot.sendMessage(src, "However, you didn't have any space left and were forced to discard " + (amount === 1 ? "it" : "them") + "!", safchan);
-                } else {
-                    safaribot.sendMessage(src, "However, you only had space for " + check + " and were forced to discard the rest!", safchan);
-                }
-                player.records.itemsDiscarded += (amount - check);
-                amount = check;
-                if (amount < 0) {
-                    amount = 0;
-                }
-            }
-            player.balls[reward] += amount;
+            rewardCapCheck(src, reward, amount);
         }
 
         player.cooldowns.gacha = currentTime + itemData.gacha.cooldown;
@@ -2006,6 +2045,70 @@ function Safari() {
         this.saveGame(player);
         releaseCooldown = releaseCooldownLength;
         safari.createWild(num, shiny);
+    };
+    this.findItem = function(src) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        var currentTime = now();
+        if (player.cooldowns.itemfinder > currentTime) {
+            safaribot.sendMessage(src, "Your Itemfinder needs to cool down otherwise it will overheat! Try again in " + timeLeft(player.cooldowns.itemfinder) + " seconds.", safchan);
+            return;
+        }
+        var charges = "itemfinder";
+        if (!(charges in player.balls) || player.balls[charges] <= 0) {
+            safaribot.sendMessage(src, "You have no charges left for your Itemfinder!", safchan);
+            return;
+        }
+
+        player.balls[charges] -= 1;
+        var rng = sys.rand(0, finderPrizes.length);
+        var reward = finderPrizes[rng];
+        var amount = 1;
+
+        var giveReward = true;
+        var showMsg = true;
+        switch (reward) {
+            case "rare":
+                safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found a " + finishName(reward) + " behind a bush!</b>", safchan);
+            break;
+            case "recharge":
+                reward = "itemfinder";
+                amount = 3;
+                showMsg = false;
+                safaribot.sendHtmlAll("<b>Pi-ka-CHUUU!</b> " + sys.name(src) + " was shocked by a Wild Pikachu while looking for items! On the bright side, " + sys.name(src) + "'s Itemfinder recharged slightly.", safchan);
+                safaribot.sendMessage(src, "Your Itemfinder gained " + amount + " charges [Remaining charges: " + player.balls.itemfinder + "].", safchan);
+            break;
+            case "rock":
+                safaribot.sendMessage(src, "... Beep. Your Itemfinder pointed you towards a very conspicuous rock.", safchan);
+            break;
+            case "bait":
+                safaribot.sendMessage(src, "Beep-Beep. Your Itemfinder pointed you towards a berry bush! You decided to pick one and put it in your bag.", safchan);
+            break;
+            case "pearl":
+            case "stardust":
+                safaribot.sendMessage(src, "Beep Beep Beep. You dig around a sandy area and unbury a " + finishName(reward) + "!", safchan);
+            break;
+            case "luxury":
+                safaribot.sendMessage(src, "Be-Beep. You comb a patch of grass that your Itemfinder pointed you towards and found a " + finishName(reward) + "!", safchan);
+            break;
+            default:
+                safaribot.sendMessage(src, "... ... ... Your Itemfinder did not detect anything. [Remaining charges: " + player.balls.itemfinder + "].", safchan);
+                giveReward = false;
+                showMsg = false;
+            break;
+        }
+        if (showMsg) {
+            safaribot.sendMessage(src, "You found a " + finishName(reward) + " with your Itemfinder! [Remaining charges: " + player.balls.itemfinder + "].", safchan);
+        }
+        if (giveReward) {
+            rewardCapCheck(src, reward, amount);
+        }
+
+        player.cooldowns.itemfinder = currentTime + itemData.itemfinder.cooldown;
+        this.saveGame(player);
     };
 
     this.viewOwnInfo = function(src) {
@@ -2616,7 +2719,12 @@ function Safari() {
                 player.records.consecutiveLogins = logins;
             }
 
+            var perkBonus = Math.min(itemData.battery.bonusRate * player.balls.battery, itemData.battery.maxRate);
+            var recharges = 30 + perkBonus;
+            player.balls.itemfinder = recharges;
+
             safaribot.sendMessage(src, "You received the following rewards for joining Safari today: " + gained.join(", "), safchan);
+            safaribot.sendMessage(src, "Your Itemfinder has been recharged to " + recharges + " charges!", safchan);
             this.saveGame(player);
         }
     };
@@ -2732,6 +2840,7 @@ function Safari() {
                 ballUse: 0,
                 rock: 0,
                 gacha: 0,
+                itemfinder: 0,
                 stick: 0
             }
         };
@@ -3252,21 +3361,14 @@ function Safari() {
             safari.showRecords(src);
             return true;
         }
+        if (command === "itemfinder") {
+            safari.findItem(src);
+            return true;
+        }
 
         //Staff Commands
         if (!SESSION.channels(safchan).isChannelOperator(src)) {
             return false;
-        }
-        if (command === "checkrate") {
-            if (allItems.indexOf(commandData) !== -1 || commandData === "wild" || commandData === "horde") {
-                var instance = countArray(gachaponPrizes, commandData);
-                var total = gachaponPrizes.length;
-                var percent = instance / total * 100;
-                safaribot.sendMessage(src, "The rate of " + finishName(commandData) + " is " + instance + "/" + total + ", or " + percent.toFixed(2) + "%.", safchan);
-            } else {
-                safaribot.sendMessage(src, "No such item!", safchan);
-            }
-            return true;
         }
         if (command === "sanitize") {
             var playerId = sys.id(commandData);
@@ -3303,6 +3405,32 @@ function Safari() {
 
         if (!SESSION.channels(safchan).isChannelAdmin(src)) {
             return false;
+        }
+        if (command === "checkrate") {
+            commandData = commandData.toLowerCase();
+            if (allItems.indexOf(commandData) !== -1 || commandData === "wild" || commandData === "horde" || commandData === "nothing" || commandData === "recharge") {
+                var total, percent;
+                var instance = countArray(gachaponPrizes, commandData);
+                if (instance < 1) {
+                    safaribot.sendMessage(src, "Gachpon: This item is not available from Gachapon.", safchan);
+                } else {
+                    total = gachaponPrizes.length;
+                    percent = instance / total * 100;
+                    safaribot.sendMessage(src, "Gachpon: The rate of " + finishName(commandData) + " is " + instance + "/" + total + ", or " + percent.toFixed(2) + "%.", safchan);
+                }
+                
+                instance = countArray(finderPrizes, commandData);
+                if (instance < 1) {
+                    safaribot.sendMessage(src, "Itemfinder: This item is not available from Itemfinder.", safchan);
+                } else {
+                    total = finderPrizes.length;
+                    percent = instance / total * 100;
+                    safaribot.sendMessage(src, "Itemfinder: The rate of " + finishName(commandData) + " is " + instance + "/" + total + ", or " + percent.toFixed(2) + "%.", safchan);
+                }
+            } else {
+                safaribot.sendMessage(src, "No such item!", safchan);
+            }
+            return true;
         }
         if (command === "wild" || command == "wilds" || command === "horde") {
             if (currentPokemon) {
@@ -3514,6 +3642,7 @@ function Safari() {
         SESSION.channels(safchan).perm = true;
         rawPlayers = new MemoryHash(saveFiles);
         this.initGacha();
+        this.initFinder();
         this.updateLeaderboards();
     };
     this.afterChannelJoin = function (src, channel) {
