@@ -607,10 +607,6 @@ function Safari() {
     function isBall(item) {
         return itemData[item].type === "ball";
     }
-    function shuffle(o) {
-        for (var j, x, i = o.length; i; j = parseInt(Math.random() * i, 10), x = o[--i], o[i] = o[j], o[j] = x);
-        return o;
-    }
     function bagRow (player, arr, src, first) {
         var ret = [], item, item2;
         if (sys.os(src) === "android") {
@@ -3556,7 +3552,7 @@ function Safari() {
                         list.push(i);
                     }
                 }
-                var throwers = shuffle(list), alreadyThrow = [];
+                var throwers = list.shuffle(), alreadyThrow = [];
                 if (preparationFirst) {
                     if (throwers.indexOf(preparationFirst) !== -1) {
                         throwers.splice(throwers.indexOf(preparationFirst), 1);

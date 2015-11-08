@@ -2,7 +2,6 @@
 /*jshint strict: false, shadow: true, evil: true, laxcomma: true*/
 /*jslint sloppy: true, vars: true, evil: true, plusplus: true*/
 exports.handleCommand = function (src, command, commandData, tar, channel) {
-    var arrayShuffle = require("utilities.js").arrayShuffle;
     var arraySlice = require("utilities.js").arraySlice;
     var getTimeString = require("utilities.js").getTimeString;
     var find_tier = require("utilities.js").find_tier;
@@ -83,7 +82,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             battlebot.sendMessage(src, "No unidled players found in that tier.", channel);
         } else {
             var sliceAmount = 10;
-            var users = arraySlice(arrayShuffle(usersFoundArray), sliceAmount).join(", ");
+            var users = arraySlice(usersFoundArray.shuffle(), sliceAmount).join(", ");
             battlebot.sendMessage(src, "Found " + usersFoundArray.length + "/" + sliceAmount + " unidled random players in " + tierInput + ": " + users, channel);
         }
         return;
