@@ -227,7 +227,7 @@ function Safari() {
         return ret;
     };
     pokeInfo.icon = function(p, shinyBG) {
-       return "<img src='icon:" + p + "' title='#" + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? "' style='background:#77ffcc00'" : "'") + ">";
+       return "<img src='icon:" + p + "' title='#" + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? "' style='background:yellow'" : "'") + ">";
     };
     pokeInfo.sprite = function(poke) {
         var ret = [];
@@ -260,7 +260,7 @@ function Safari() {
         heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 0, ballBonus: 1, bonusRate: 0.5, maxBonus: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], sellable: false, buyable: false, tradable: true},
         nest: {name: "nest", fullName: "Nest Ball", type: "ball", icon: 321, price: 0, ballBonus: 1,  bonusRate: 4, cooldown: 8000, aliases:["nestball", "nest", "nest ball"], sellable: false, buyable: false, tradable: true},
         quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 0, ballBonus: 1, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], sellable: false, buyable: false, tradable: true},
-        luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 2, cooldown: 8000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false, tradable: true},
+        luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 1.8, cooldown: 8000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false, tradable: true},
         moon: {name: "moon", fullName: "Moon Ball", type: "ball", icon: 312, price: 0, ballBonus: 1, bonusRate: 5, cooldown: 8000, aliases:["moonball", "moon", "moon ball"], sellable: false, buyable: false, tradable: true},
         premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false, tradable: false},
         clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], sellable: false, buyable: false, tradable: true},
@@ -268,7 +268,7 @@ function Safari() {
         //Other Items
         bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 200, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
         rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
-        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 199, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
+        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 197, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
         rare: {name: "rare", fullName: "Rare Candy", type: "usable", icon: 117, price: 0, aliases:["rare", "rarecandy", "rare candy", "candy"], sellable: false, buyable: true, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
 
@@ -658,7 +658,7 @@ function Safari() {
     this.initGacha = function () {
         var tempArray = [];
         var gachaItems =   {
-            safari: 180, great: 90, ultra: 40, luxury: 40, dream: 40, nest: 40, quick: 40, heavy: 40, clone: 10, moon: 40,
+            safari: 180, great: 90, ultra: 40, luxury: 60, dream: 40, nest: 40, quick: 40, heavy: 40, clone: 10, moon: 40,
             bait: 50, rock: 60,
             wild: 32, horde: 8,
             gacha: 1,  master: 2,
@@ -902,7 +902,7 @@ function Safari() {
 
             if (ball == "luxury") {
                 var perkBonus = 1 + Math.min(itemData.scarf.bonusRate * player.balls.scarf, itemData.scarf.maxRate);
-                var earnings = Math.floor(wildStats/2) * perkBonus;
+                var earnings = Math.floor(wildStats/2 * perkBonus);
                 safaribot.sendAll((player.balls.scarf > 1 ? "The Fashionable " : "") + name + " found $" + earnings + " on the ground after catching " + pokeName + "!" , safchan);
                 player.money += earnings;
                 player.records.luxuryEarnings += earnings;
@@ -1067,10 +1067,11 @@ function Safari() {
             var bonusAmt = Math.floor(amount / 10);
             if (isBall(item)) {
                 bonus = "premier";
-                safaribot.sendMessage(src, "Here, take these " + Math.floor(amount / 10) + " Premier Balls for your patronage!", safchan);
+                safaribot.sendMessage(src, "Here, take these " + bonusAmt + " Premier Balls for your patronage!", safchan);
             } else if (item === "gacha") {
                 bonus = "gacha";
-                safaribot.sendMessage(src, "Here, take these " + Math.floor(amount / 10) + " extra Gachapon Tickets for your patronage!", safchan);
+                bonusAmt *= 2;
+                safaribot.sendMessage(src, "Here, take these " + bonusAmt + " extra Gachapon Tickets for your patronage!", safchan);
             }
 
             if (player.balls[bonus] + bonusAmt > cap) {
