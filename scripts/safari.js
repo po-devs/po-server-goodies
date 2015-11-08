@@ -266,16 +266,19 @@ function Safari() {
         clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], sellable: false, buyable: false, tradable: true},
 
         //Other Items
-        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 100, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
+        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 200, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
         rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
-        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 149, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
+        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 199, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
         rare: {name: "rare", fullName: "Rare Candy", type: "usable", icon: 117, price: 0, aliases:["rare", "rarecandy", "rare candy", "candy"], sellable: false, buyable: true, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
 
         //Perks
-        amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false, tradable: true},
-        honey: {name: "honey", fullName: "Honey", type: "perk", icon: 82, price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["honey"], sellable: false, buyable: false, tradable: true},
-        zoom: {name: "zoom", fullName: "Zoom Lens", type: "perk", icon: 41, price: 0, bonusRate: 0.05, maxRate: 0.25, aliases:["zoom", "zoomlens", "zoom lens", "lens"], sellable: false, buyable: false, tradable: true},
+        amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false, tradable: true},
+        honey: {name: "honey", fullName: "Honey", type: "perk", icon: 82, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["honey"], sellable: false, buyable: false, tradable: true},
+        zoom: {name: "zoom", fullName: "Zoom Lens", type: "perk", icon: 41, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["zoom", "zoomlens", "zoom lens", "lens"], sellable: false, buyable: false, tradable: true},
+        soothe: {name: "soothe", fullName: "Soothe Bell", type: "perk", icon: 35, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["soothe", "soothebell", "soothe bell", "bell"], sellable: false, buyable: false, tradable: true},
+        crown: {name: "crown", fullName: "Relic Crown", type: "perk", icon: 278, price: 0, bonusRate: 0.01, maxRate: 0.1, aliases:["crown", "reliccrown", "relic crown", "relic"], sellable: false, buyable: false, tradable: true},
+        scarf: {name: "scarf", fullName: "Silk Scarf", type: "perk", icon: 31, price: 0, bonusRate: 0.015, maxRate: 0.15, aliases:["scarf", "silkscarf", "silk scarf", "silk"], sellable: false, buyable: false, tradable: true},
 
         //Sellables
         pearl: {name: "pearl", fullName: "Pearl", type: "misc", icon: 111, price: 500, aliases:["pearl"], sellable: true, buyable: false, tradable: true},
@@ -491,7 +494,7 @@ function Safari() {
             num = sys.pokeNum(info);
         }
         id = shiny ? num + "" : num;
-        
+
         name = sys.pokemon(num);
         if (name == "Missingno") {
             num = null;
@@ -655,8 +658,11 @@ function Safari() {
     this.initGacha = function () {
         var tempArray = [];
         var gachaItems =   {
-            safari: 180, great: 90, ultra: 40, master: 2, luxury: 40, dream: 40, nest: 40, quick: 40, heavy: 40, clone: 10,
-            moon: 40, bait: 60, rock: 60,  wild: 30, horde: 10, gacha: 1,  honey: 1,  amulet: 1, zoom: 1,
+            safari: 180, great: 90, ultra: 40, luxury: 40, dream: 40, nest: 40, quick: 40, heavy: 40, clone: 10, moon: 40,
+            bait: 50, rock: 60,
+            wild: 32, horde: 8,
+            gacha: 1,  master: 2,
+            honey: 1,  amulet: 1, zoom: 1, crown: 1, soothe: 1,
             pearl: 12, stardust: 10, bigpearl: 8, starpiece: 5, nugget: 4, bignugget: 1
         };
 
@@ -704,7 +710,7 @@ function Safari() {
             shiny = sys.rand(0, shinyChance) < 1,
             maxStats,
             amount = amt || 1;
-        
+
         if (amount > 1) {
             shiny = false;
         }
@@ -861,7 +867,7 @@ function Safari() {
         var tierChance = 0.02;
         for (var x = 0; x < tiers.length; x++) {
             if (sys.isPokeBannedFromTier && !sys.isPokeBannedFromTier(wild, tiers[x])) {
-                tierChance = [0.26, 0.22, 0.18, 0.14, 0.10, 0.06][x];
+                tierChance = [0.20, 0.18, 0.14, 0.11, 0.07, 0.03][x];
                 break;
             }
         }
@@ -895,13 +901,15 @@ function Safari() {
             }
 
             if (ball == "luxury") {
-                var earnings = Math.floor(wildStats/2);
+                var perkBonus = 1 + Math.min(itemData.scarf.bonusRate * player.balls.scarf, itemData.scarf.maxRate);
+                var earnings = Math.floor(wildStats/2) * perkBonus;
                 safaribot.sendAll(name + " also found $" + earnings + " on the ground after catching " + pokeName + "!" , safchan);
                 player.money += earnings;
                 player.records.luxuryEarnings += earnings;
             }
 
-            cooldown *= 2;
+            var penalty = 2 - Math.min(itemData.soothe.bonusRate * player.balls.soothe, itemData.soothe.maxRate);
+            cooldown *= penalty;
             if (contestCount > 0) {
                 if (!(name in contestCatchers)) {
                     contestCatchers[name] = [];
@@ -931,7 +939,7 @@ function Safari() {
         }
         player.cooldowns.ball = currentTime + cooldown;
         player.cooldowns.ballUse = player.cooldowns.ball;
-        
+
         this.saveGame(player);
     };
     this.checkEffective = function(atk1, atk2, def1, def2) {
@@ -971,8 +979,7 @@ function Safari() {
         var shiny = info.shiny;
         var id = info.id;
 
-        var perk = "amulet";
-        var perkBonus = 1 + Math.min(itemData[perk].bonusRate * player.balls[perk], itemData[perk].maxRate);
+        var perkBonus = 1 + Math.min(itemData.amulet.bonusRate * player.balls.amulet, itemData.amulet.maxRate);
         var price = Math.round(add(sys.pokeBaseStats(id)) * (shiny ? 5 : 1) * perkBonus);
 
         if (input.length < 2 || input[1].toLowerCase() !== "confirm") {
@@ -1065,7 +1072,7 @@ function Safari() {
                 bonus = "gacha";
                 safaribot.sendMessage(src, "Here, take these " + Math.floor(amount / 10) + " extra Gachapon Tickets for your patronage!", safchan);
             }
-            
+
             if (player.balls[bonus] + bonusAmt > cap) {
                 var check = cap - player.balls[bonus];
                 if (check < 1) {
@@ -1140,8 +1147,9 @@ function Safari() {
             safaribot.sendMessage(src, "You don't have " + amount + " " + finishName(item) + ", you only have " + player.balls[item] + "!", safchan);
             return;
         }
+        var perkBonus = 1 + Math.min(itemData.crown.bonusRate * player.balls.crown, itemData.crown.maxRate);
 
-        var cost = Math.floor(amount * itemData[item].price/2);
+        var cost = Math.floor(amount * itemData[item].price/2 * perkBonus);
         player.money += cost;
         player.balls[item] -= amount;
         player.records.pawnEarnings += cost;
@@ -1436,7 +1444,7 @@ function Safari() {
         else if (asset.indexOf("@") !== -1) {
             var item = itemAlias(asset.substr(asset.indexOf("@") + 1), true);
             var amount = parseInt(asset.substr(0, asset.indexOf("@")), 10) || 1;
-            
+
             if (receiver.balls[item] + amount > itemCap) {
                 safaribot.sendMessage(src, "Trade cancelled because " + sys.name(receiverId) + " can't receive " + amount + " " + finishName(item) + "(s)!" , safchan);
                 safaribot.sendMessage(receiverId, "Trade cancelled because you can't hold more than " + itemCap + " " + finishName(item) + "(s) (you currently have " + receiver.balls[item] + ", so you can receive at most " + (itemCap - amount) + ")!", safchan);
@@ -1485,19 +1493,18 @@ function Safari() {
         player.records.baitUsed += 1;
 
         var rng = Math.random();
-        var perk = "honey";
-        var perkBonus = Math.min(itemData[perk].bonusRate * player.balls[perk], itemData[perk].maxRate);
+        var perkBonus = Math.min(itemData.honey.bonusRate * player.balls.honey, itemData.honey.maxRate);
 
         if (rng < (itemData.bait.successRate + perkBonus)) {
             safaribot.sendAll(sys.name(src) + " left some bait out. The bait attracted a wild Pokémon!", safchan);
             baitCooldown = itemData.bait.successCD + sys.rand(0,10);
             player.records.baitAttracted += 1;
-            
+
             if (lastBaiters.length >= lastBaitersAmount) {
                 lastBaiters.shift();
             }
             lastBaiters.push(sys.name(src));
-            
+
             safari.createWild();
             if (commandData !== undefined) {
                 safari.throwBall(src, commandData, true);
@@ -1544,8 +1551,7 @@ function Safari() {
 
         var rng = Math.random();
         var rng2 = Math.random();
-        var perk = "zoom";
-        var perkBonus = Math.min(itemData[perk].bonusRate * player.balls[perk], itemData[perk].maxRate);
+        var perkBonus = Math.min(itemData.zoom.bonusRate * player.balls.zoom, itemData.zoom.maxRate);
         var success = (preparationPhase > 0 ? 0.1 : itemData.rock.successRate) + perkBonus;
         var targetName = utilities.non_flashing(sys.name(targetId));
 
@@ -1726,11 +1732,11 @@ function Safari() {
         //Variable for higher quantity rewards later. Make better later maybe?
         var amount = 1;
         var rng2 = Math.random();
-        if (rng2 < 0.03) {
+        if (rng2 < 0.02) {
             amount = 4;
-        } else if (rng2 < 0.13) {
+        } else if (rng2 < 0.12) {
             amount = 3;
-        } else if (rng2 < 0.45) {
+        } else if (rng2 < 0.35) {
             amount = 2;
         }
         var plural = amount > 1 ? "s" : "";
@@ -1773,12 +1779,12 @@ function Safari() {
                     var spawn = true;
                     var spawnHorde = (reward === "horde");
                     safaribot.sendAll(sys.name(src) + " goes to grab their item from the Gachapon Machine but the noise lured a " + finishName(reward) + "!", safchan);
-                    
+
                     if (mod < 0.08 || player.cooldowns.ballUse > currentTime) {
                         safaribot.sendAll("Unfortunately " + (spawnHorde ? "they" : "it") + " fled before anyone could try to catch "+ (spawnHorde ? "them" : "it") + "!", safchan);
                         spawn = false;
                     }
-                    
+
                     if (spawn) {
                         if (spawnHorde) {
                             safari.createWild(0, false, 3, 580);
@@ -1807,10 +1813,17 @@ function Safari() {
             case "honey":
             case "amulet":
             case "zoom":
+            case "crown":
+            case "soothe":
+            case "scarf":
+                amount = 1;
+                safaribot.sendHtmlAll("<b>Sweet! " + sys.name(src) + " just won a " + finishName(reward) + " from Gachapon!</b>", safchan);
+                safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
+            break;
             case "bignugget":
             case "nugget":
                 amount = 1;
-                safaribot.sendAll("Sweet! " + sys.name(src) + " just won a " + finishName(reward) + " from Gachapon!", safchan);
+                safaribot.sendAll("Nice! " + sys.name(src) + " just won a " + finishName(reward) + " from Gachapon!", safchan);
                 safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
             break;
             case "pearl":
@@ -1841,7 +1854,7 @@ function Safari() {
             }
             player.balls[reward] += amount;
         }
-        
+
         player.cooldowns.gacha = currentTime + itemData.gacha.cooldown;
         this.saveGame(player);
         gachaJackpot += 1;
@@ -1862,7 +1875,7 @@ function Safari() {
             safaribot.sendMessage(src, "You have no Rare Candies!", safchan);
             return;
         }
-        
+
         var info = getInputPokemon(commandData);
         var shiny = info.shiny;
         var num = info.num;
@@ -2179,7 +2192,7 @@ function Safari() {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
         var line1 = ["bait", "rock", "gacha", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
         var line2 = ["safari", "great", "ultra", "master", "dream", "luxury", "quick", "nest", "heavy", "moon", "premier"];
-        var line3 = ["clone", "amulet", "honey", "zoom","stick", "rare"];
+        var line3 = ["clone", "amulet", "honey", "zoom", "soothe", "crown", "scarf", "stick", "rare"];
 
         var out = "";
         out += bagRow(player, line1, src, true);
@@ -2626,6 +2639,9 @@ function Safari() {
                 zoom: 0,
                 amulet: 0,
                 honey: 0,
+                soothe: 0,
+                crown: 0,
+                scarf: 0,
                 pearl: 0,
                 stardust: 0,
                 starpiece: 0,
@@ -2904,9 +2920,12 @@ function Safari() {
             "Valuables: The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be pawned off with /pawn for money.",
             "",
             "*** Perks ***",
-            "Amulet Coin: When holding this charm, a bonus yield of about " + itemData.amulet.bonusRate * 100 + "% can be made when selling Pokémon to the NPC." ,
-            "Honey: Sweet-smelling Combee Honey that, when applied to bait, increases the chance of a Pokémon being attracted by " + itemData.honey.bonusRate * 100 +"%.",
-            "Zoom Lens: A high tech viewing tool that raises the accuracy of rocks thrown by " + itemData.zoom.bonusRate * 100 + "%.",
+            "Amulet Coin: When holding this charm, a bonus yield of about " + itemData.amulet.bonusRate * 100 + "% can be made when selling Pokémon to the NPC (Max Rate: " + itemData.amulet.maxRate * 100 + "%).",
+            "Honey: Sweet-smelling Combee Honey that, when applied to bait, increases the chance of a Pokémon being attracted by " + itemData.honey.bonusRate * 100 + "% (Max Rate: " + itemData.honey.maxRate * 100 + "%).",
+            "Zoom Lens: A high tech viewing tool that raises the accuracy of rocks thrown by " + itemData.zoom.bonusRate * 100 + "% (Max Rate: " + itemData.zoom.maxRate * 100 + "%).",
+            "Soothe Bell: A bell with a comforting chime that calms the owner and their Pokémon. Reduces delay after a successful catch by " + itemData.soothe.bonusRate * 100 + "% (Max Rate: " + itemData.soothe.maxRate * 100 + "%).",
+            "Relic Crown: A rare crown with mysterious properties that brings good fortune to its owner. Increases rate of pawned items by " + itemData.crown.bonusRate * 100 + "% (Max Rate: " + itemData.crown.maxRate * 100 + "%).",
+            "Silk Scarf: A fashionable scarf made of the finest silk. Wearing it allows you to lead a more luxurious life and grants you " + itemData.scarf.bonusRate * 100 + "% more money from Luxury Balls (Max Rate: " + itemData.scarf.maxRate * 100 + "%).",
             "Stick: Legendary Stick of the almighty Farfetch'd that provides a neverending wave of prods and pokes unto your enemies and other nefarious evil-doers, with a simple use of the /stick command.",
             "",
             "*** Standard Poké Balls ***",
@@ -3419,7 +3438,7 @@ function Safari() {
                 safaribot.sendMessage(src, "Are you absolutely sure you want to delete all saves? This cannot be undone! To confirm, type /wipesafariall confirm:really.", safchan);
                 return true;
             }
-            
+
             var onChannel = sys.playersOfChannel(safchan);
             for (var e in onChannel) {
                 if (sys.isInChannel(onChannel[e], safchan) && getAvatar(onChannel[e])) {
@@ -3541,7 +3560,7 @@ function Safari() {
                     }
                 }
                 var tieBreaker = [], bst, name, top = winners.length, catchersBST = {}, allContestants = [];
-                
+
                 for (e in contestCatchers) {
                     catchersBST[e] = add(contestCatchers[e].map(getBST));
                     allContestants.push(e + " (Caught " + contestCatchers[e].length + ", BST " + catchersBST[e] + ")");
