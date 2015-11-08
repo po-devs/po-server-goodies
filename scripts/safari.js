@@ -686,7 +686,7 @@ function Safari() {
             return false;
         }
         var input = data.split(":");
-        var info = getInputPokemon(input[0]);
+        var info = getInputPokemon(input[0].replace(/flabebe/gi, "flabébé"));
         var id = info.id;
         if (!info.num) {
             safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
@@ -1062,7 +1062,7 @@ function Safari() {
         }
         var player = getAvatar(src);
         var input = data.split(":");
-        var info = getInputPokemon(input[0]);
+        var info = getInputPokemon(input[0].replace(/flabebe/gi, "flabébé"));
         var shiny = info.shiny;
         var id = info.id;
 
@@ -1290,8 +1290,8 @@ function Safari() {
             return;
         }
 
-        var offer = info[1].toLowerCase();
-        var request = info[2].toLowerCase();
+        var offer = info[1].replace(/flabebe/gi, "flabébé").toLowerCase();
+        var request = info[2].replace(/flabebe/gi, "flabébé").toLowerCase();
 
         var offerType = this.isValidTrade(src, offer, "offer", request);
         if (!offerType) {
@@ -1952,7 +1952,7 @@ function Safari() {
             return;
         }
 
-        var info = getInputPokemon(commandData);
+        var info = getInputPokemon(commandData.replace(/flabebe/gi, "flabébé"));
         var shiny = info.shiny;
         var num = info.num;
         if (!num) {
@@ -2029,7 +2029,7 @@ function Safari() {
         }
         var player = getAvatar(src);
         var input = data.split(":");
-        var info = getInputPokemon(input[0]);
+        var info = getInputPokemon(input[0].replace(/flabebe/gi, "flabébé"));
         var shiny = info.shiny;
         var num = info.num;
         var id = info.id;
@@ -2079,7 +2079,7 @@ function Safari() {
                 amount = 3;
                 showMsg = false;
                 safaribot.sendHtmlAll("<b>Pi-ka-CHUUU!</b> " + sys.name(src) + " was shocked by a Wild Pikachu while looking for items! On the bright side, " + sys.name(src) + "'s Itemfinder recharged slightly.", safchan);
-                safaribot.sendMessage(src, "Your Itemfinder gained " + amount + " charges [Remaining charges: " + player.balls.itemfinder + "].", safchan);
+                safaribot.sendMessage(src, "Your Itemfinder gained " + amount + " charges [Remaining charges: " + Math.min(player.balls.itemfinder + amount, itemCap) + "].", safchan);
             break;
             case "rock":
                 safaribot.sendMessage(src, "... Beep. Your Itemfinder pointed you towards a very conspicuous rock.", safchan);
@@ -2104,6 +2104,7 @@ function Safari() {
             safaribot.sendMessage(src, "You found a " + finishName(reward) + " with your Itemfinder! [Remaining charges: " + player.balls.itemfinder + "].", safchan);
         }
         if (giveReward) {
+            player.records.itemsFound += 1;
             rewardCapCheck(src, reward, amount);
         }
 
@@ -3140,6 +3141,7 @@ function Safari() {
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
             "/rarecandy: Use a Rare Candy to evolve a Pokémon*.",
             "/gacha: Use a ticket to win a prize!",
+            "/finder: Use your item finder to look for items.",
             "/rock: To throw a rock at another player.",
             "/stick: To poke another player with your stick.",
             "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details.",
@@ -3361,7 +3363,7 @@ function Safari() {
             safari.showRecords(src);
             return true;
         }
-        if (command === "itemfinder") {
+        if (command === "itemfinder" || command === "finder") {
             safari.findItem(src);
             return true;
         }
@@ -3418,7 +3420,7 @@ function Safari() {
                     percent = instance / total * 100;
                     safaribot.sendMessage(src, "Gachpon: The rate of " + finishName(commandData) + " is " + instance + "/" + total + ", or " + percent.toFixed(2) + "%.", safchan);
                 }
-                
+
                 instance = countArray(finderPrizes, commandData);
                 if (instance < 1) {
                     safaribot.sendMessage(src, "Itemfinder: This item is not available from Itemfinder.", safchan);
@@ -3783,11 +3785,11 @@ function Safari() {
                         if (playerId) {
                             var player = getAvatar(playerId);
                             if (player) {
-                                var item = "gacha";
-                                player.balls[item] += 10;
+                                player.balls.gacha += 10;
+                                player.balls.itemfinder += 3;
                                 player.records.contestsWon += 1;
                                 safari.saveGame(player);
-                                safaribot.sendMessage(playerId, "You received 10 Gachapon Tickets for winning the contest!", safchan);
+                                safaribot.sendMessage(playerId, "You received 10 Gachapon Tickets for winning the contest! Your itemfinder also gained 3 more charges.", safchan);
                             }
                         }
                     }
