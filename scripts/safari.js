@@ -226,8 +226,8 @@ function Safari() {
         }
         return ret;
     };
-    pokeInfo.icon = function(p) {
-       return "<img src='icon:" + p + "' title='#" + pokeInfo.readableNum(p) + " " + poke(p) + "'>";
+    pokeInfo.icon = function(p, shinyBG) {
+       return "<img src='icon:" + p + "' title='#" + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? "' style='background:#77ffcc00'" : "'") + ">";
     };
     pokeInfo.sprite = function(poke) {
         var ret = [];
@@ -1638,6 +1638,7 @@ function Safari() {
                 var extraThrown = "safari";
                 if (player.balls[extraThrown] > 0) {
                     safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but it missed... WAIT! " + sys.name(src) + " also ended up throwing a " + finishName(extraThrown) + " that was stuck together with the rock!", safchan);
+                    safaribot.sendMessage(src, "You lost 1 " + finishName(extraThrown) + "!", safchan);
                     player.balls[extraThrown] -= 1;
                 } else {
                     safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "... but it missed!", safchan);
@@ -2158,24 +2159,11 @@ function Safari() {
         return out;
     };
     this.listPokemon = function(list, title) {
-        var out = "", normal = [], shiny = [], member, isShiny, index, count = 0, rowSize = 12, e;
+        var out = "", normal = [], count = 0, rowSize = 12, e;
         for (e in list) {
-            member = getPokemonInfo(list[e]);
-            index = member[0];
-            isShiny = member[1];
-
-            if (isShiny) {
-                shiny.push(pokeInfo.icon(index));
-            } else {
-                normal.push(pokeInfo.icon(index));
-            }
+            normal.push(pokeInfo.icon(list[e], true));
         }
-        if (shiny.length > 0) {
-            out += "<table border = 1 cellpadding = 3><tr><th colspan=2>" + title + "</th></td>  <tr><th>Normal</th><th>Shiny</th></tr>";
-        } else {
-            out += "<table border = 1 cellpadding = 3><tr><th>" + title + "</th></td></tr>";
-        }
-        out += "<tr><td>";
+        out += "<table border = 1 cellpadding = 3><tr><th>" + title + "</th></td></tr><tr><td>";
         for (e in normal) {
             count++;
             out += normal[e] + " ";
@@ -2184,21 +2172,7 @@ function Safari() {
                 count = 0;
             }
         }
-        out += "</td>";
-        if (shiny.length > 0) {
-            count = 0;
-            out += "<td><p>";
-            for (e in shiny) {
-                count++;
-                out += shiny[e] + " ";
-                if (count == rowSize) {
-                    out += "<p>";
-                    count = 0;
-                }
-            }
-            out += "</td>";
-        }
-        out += "</tr></table>";
+        out += "</td></tr></table>";
         return out;
     };
     this.showBag = function(player, src) {
