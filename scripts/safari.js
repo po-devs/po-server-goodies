@@ -662,7 +662,7 @@ function Safari() {
             bait: 50, rock: 60,
             wild: 32, horde: 8,
             gacha: 1,  master: 2,
-            honey: 1,  amulet: 1, zoom: 1, crown: 1, soothe: 1,
+            honey: 1,  amulet: 1, zoom: 1, crown: 1, soothe: 1, scarf: 1,
             pearl: 12, stardust: 10, bigpearl: 8, starpiece: 5, nugget: 4, bignugget: 1
         };
 
@@ -903,7 +903,7 @@ function Safari() {
             if (ball == "luxury") {
                 var perkBonus = 1 + Math.min(itemData.scarf.bonusRate * player.balls.scarf, itemData.scarf.maxRate);
                 var earnings = Math.floor(wildStats/2) * perkBonus;
-                safaribot.sendAll(name + " also found $" + earnings + " on the ground after catching " + pokeName + "!" , safchan);
+                safaribot.sendAll((player.balls.scarf > 1 ? "The Fashionable " + "") + name + " found $" + earnings + " on the ground after catching " + pokeName + "!" , safchan);
                 player.money += earnings;
                 player.records.luxuryEarnings += earnings;
             }
