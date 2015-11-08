@@ -45,7 +45,8 @@ function Safari() {
     //Don't really care if this resets after an update.
     var lastBaiters = [];
     var lastBaitersAmount = 3; //Amount of people that need to bait before you can
-    var lastBaitersDecay = 300; //Seconds before the first entry in lastBaiters is purged
+    var lastBaitersDecay = 40; //Seconds before the first entry in lastBaiters is purged
+    var lastBaitersDecayTime = 40;
 
     var effectiveness = {
         "Normal": {
@@ -266,7 +267,7 @@ function Safari() {
 
         //Other Items
         bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 100, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
-        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.02, targetCD: 6000, bounceCD: 10000, throwCD: 15000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
+        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 149, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
         rare: {name: "rare", fullName: "Rare Candy", type: "usable", icon: 117, price: 0, aliases:["rare", "rarecandy", "rare candy", "candy"], sellable: false, buyable: true, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
@@ -390,7 +391,9 @@ function Safari() {
         "710": 3,
         "711": 3
     };
-    var evolutions = {"1":{"evo":2,"candies":1},"2":{"evo":3},"4":{"evo":5,"candies":1},"5":{"evo":6},"7":{"evo":8,"candies":1},"8":{"evo":9},"10":{"evo":11,"candies":1},"11":{"evo":12},"13":{"evo":14,"candies":1},"14":{"evo":15},"16":{"evo":17,"candies":1},"17":{"evo":18},"19":{"evo":20},"21":{"evo":22},"23":{"evo":24},"25":{"evo":26},"27":{"evo":28},"29":{"evo":30,"candies":1},"30":{"evo":31},"32":{"evo":33,"candies":1},"33":{"evo":34},"35":{"evo":36},"37":{"evo":38},"39":{"evo":40},"41":{"evo":42,"candies":1},"42":{"evo":169},"43":{"evo":44,"candies":1},"44":{"evo":[45,182]},"46":{"evo":47},"48":{"evo":49},"50":{"evo":51},"52":{"evo":53},"54":{"evo":55},"56":{"evo":57},"58":{"evo":59},"60":{"evo":61,"candies":1},"61":{"evo":[62,186]},"63":{"evo":64,"candies":1},"64":{"evo":65},"66":{"evo":67,"candies":1},"67":{"evo":68},"69":{"evo":70,"candies":1},"70":{"evo":71},"72":{"evo":73},"74":{"evo":75,"candies":1},"75":{"evo":76},"77":{"evo":78},"79":{"evo":[80,199]},"81":{"evo":82,"candies":1},"82":{"evo":462},"84":{"evo":85},"86":{"evo":87},"88":{"evo":89},"90":{"evo":91},"92":{"evo":93,"candies":1},"93":{"evo":94},"95":{"evo":208},"96":{"evo":97},"98":{"evo":99},"100":{"evo":101},"102":{"evo":103},"104":{"evo":105},"108":{"evo":463},"109":{"evo":110},"111":{"evo":112,"candies":1},"112":{"evo":464},"113":{"evo":242},"114":{"evo":465},"116":{"evo":117,"candies":1},"117":{"evo":230},"118":{"evo":119},"120":{"evo":121},"123":{"evo":212},"125":{"evo":466},"126":{"evo":467},"129":{"evo":130},"133":{"evo":[470,471,135,134,136,196,197,700]},"137":{"evo":233,"candies":1},"138":{"evo":139},"140":{"evo":141},"147":{"evo":148,"candies":1},"148":{"evo":149},"152":{"evo":153,"candies":1},"153":{"evo":154},"155":{"evo":156,"candies":1},"156":{"evo":157},"158":{"evo":159,"candies":1},"159":{"evo":160},"161":{"evo":162},"163":{"evo":164},"165":{"evo":166},"167":{"evo":168},"170":{"evo":171},"172":{"evo":25,"candies":1},"173":{"evo":35,"candies":1},"174":{"evo":39,"candies":1},"175":{"evo":176,"candies":1},"176":{"evo":468},"177":{"evo":178},"179":{"evo":180,"candies":1},"180":{"evo":181},"183":{"evo":184},"187":{"evo":188,"candies":1},"188":{"evo":189},"190":{"evo":424},"191":{"evo":192},"193":{"evo":469},"194":{"evo":195},"198":{"evo":430},"200":{"evo":429},"204":{"evo":205},"207":{"evo":472},"209":{"evo":210},"215":{"evo":461},"216":{"evo":217},"218":{"evo":219},"220":{"evo":221,"candies":1},"221":{"evo":473},"223":{"evo":224},"228":{"evo":229},"231":{"evo":232},"233":{"evo":474},"236":{"evo":[107,106,237]},"238":{"evo":124},"239":{"evo":125,"candies":1},"240":{"evo":126,"candies":1},"246":{"evo":247,"candies":1},"247":{"evo":248},"252":{"evo":253,"candies":1},"253":{"evo":254},"255":{"evo":256,"candies":1},"256":{"evo":257},"258":{"evo":259,"candies":1},"259":{"evo":260},"261":{"evo":262},"263":{"evo":264},"265":{"evo":[266,268],"candies":1},"266":{"evo":267},"268":{"evo":269},"270":{"evo":271,"candies":1},"271":{"evo":272},"273":{"evo":274,"candies":1},"274":{"evo":275},"276":{"evo":277},"278":{"evo":279},"280":{"evo":281,"candies":1},"281":{"evo":[282,475]},"283":{"evo":284},"285":{"evo":286},"287":{"evo":288,"candies":1},"288":{"evo":289},"290":{"evo":[291,292]},"293":{"evo":294,"candies":1},"294":{"evo":295},"296":{"evo":297},"298":{"evo":183,"candies":1},"299":{"evo":476},"300":{"evo":301},"304":{"evo":305,"candies":1},"305":{"evo":306},"307":{"evo":308},"309":{"evo":310},"315":{"evo":407},"316":{"evo":317},"318":{"evo":319},"320":{"evo":321},"322":{"evo":323},"325":{"evo":326},"328":{"evo":329,"candies":1},"329":{"evo":330},"331":{"evo":332},"333":{"evo":334},"339":{"evo":340},"341":{"evo":342},"343":{"evo":344},"345":{"evo":346},"347":{"evo":348},"349":{"evo":[350,350]},"353":{"evo":354},"355":{"evo":356,"candies":1},"356":{"evo":477},"360":{"evo":202},"361":{"evo":[362,478]},"363":{"evo":364,"candies":1},"364":{"evo":365},"366":{"evo":[367,368]},"371":{"evo":372,"candies":1},"372":{"evo":373},"374":{"evo":375,"candies":1},"375":{"evo":376},"387":{"evo":388,"candies":1},"388":{"evo":389},"390":{"evo":391,"candies":1},"391":{"evo":392},"393":{"evo":394,"candies":1},"394":{"evo":395},"396":{"evo":397,"candies":1},"397":{"evo":398},"399":{"evo":400},"401":{"evo":402},"403":{"evo":404,"candies":1},"404":{"evo":405},"406":{"evo":315,"candies":1},"408":{"evo":409},"410":{"evo":411},"412":{"evo":[413,414]},"415":{"evo":416},"418":{"evo":419},"420":{"evo":421},"422":{"evo":423},"425":{"evo":426},"427":{"evo":428},"431":{"evo":432},"433":{"evo":358},"434":{"evo":435},"436":{"evo":437},"438":{"evo":185},"439":{"evo":122},"440":{"evo":113,"candies":1},"443":{"evo":444,"candies":1},"444":{"evo":445},"446":{"evo":143},"447":{"evo":448},"449":{"evo":450},"451":{"evo":452},"453":{"evo":454},"456":{"evo":457},"458":{"evo":226},"459":{"evo":460},"495":{"evo":496,"candies":1},"496":{"evo":497},"498":{"evo":499,"candies":1},"499":{"evo":500},"501":{"evo":502,"candies":1},"502":{"evo":503},"504":{"evo":505},"506":{"evo":507,"candies":1},"507":{"evo":508},"509":{"evo":510},"511":{"evo":512},"513":{"evo":514},"515":{"evo":516},"517":{"evo":518},"519":{"evo":520,"candies":1},"520":{"evo":521},"522":{"evo":523},"524":{"evo":525,"candies":1},"525":{"evo":526},"527":{"evo":528},"529":{"evo":530},"532":{"evo":533,"candies":1},"533":{"evo":534},"535":{"evo":536,"candies":1},"536":{"evo":537},"540":{"evo":541,"candies":1},"541":{"evo":542},"543":{"evo":544,"candies":1},"544":{"evo":545},"546":{"evo":547},"548":{"evo":549},"551":{"evo":552,"candies":1},"552":{"evo":553},"554":{"evo":555},"557":{"evo":558},"559":{"evo":560},"562":{"evo":563},"564":{"evo":565},"566":{"evo":567},"568":{"evo":569},"570":{"evo":571},"572":{"evo":573},"574":{"evo":575,"candies":1},"575":{"evo":576},"577":{"evo":578,"candies":1},"578":{"evo":579},"580":{"evo":581},"582":{"evo":583,"candies":1},"583":{"evo":584},"585":{"evo":586},"588":{"evo":589},"590":{"evo":591},"592":{"evo":593},"595":{"evo":596},"597":{"evo":598},"599":{"evo":600,"candies":1},"600":{"evo":601},"602":{"evo":603,"candies":1},"603":{"evo":604},"605":{"evo":606},"607":{"evo":608,"candies":1},"608":{"evo":609},"610":{"evo":611,"candies":1},"611":{"evo":612},"613":{"evo":614},"616":{"evo":617},"619":{"evo":620},"622":{"evo":623},"624":{"evo":625},"627":{"evo":628},"629":{"evo":630},"633":{"evo":634,"candies":1},"634":{"evo":635},"636":{"evo":637},"650":{"evo":651,"candies":1},"651":{"evo":652},"653":{"evo":654,"candies":1},"654":{"evo":655},"656":{"evo":657,"candies":1},"657":{"evo":658},"659":{"evo":660},"661":{"evo":662,"candies":1},"662":{"evo":663},"664":{"evo":665,"candies":1},"665":{"evo":666},"667":{"evo":668},"669":{"evo":670,"candies":1},"670":{"evo":671},"672":{"evo":673},"674":{"evo":675},"677":{"evo":678},"679":{"evo":680,"candies":1},"680":{"evo":681},"682":{"evo":683},"684":{"evo":685},"686":{"evo":687},"688":{"evo":689},"690":{"evo":691},"692":{"evo":693},"694":{"evo":695},"696":{"evo":697},"698":{"evo":699},"704":{"evo":705,"candies":1},"705":{"evo":706},"708":{"evo":709},"710":{"evo":711},"712":{"evo":713},"714":{"evo":715}};
+    var evolutions = {
+        "1":{"evo":2,"candies":1},"2":{"evo":3},"4":{"evo":5,"candies":1},"5":{"evo":6},"7":{"evo":8,"candies":1},"8":{"evo":9},"10":{"evo":11,"candies":1},"11":{"evo":12},"13":{"evo":14,"candies":1},"14":{"evo":15},"16":{"evo":17,"candies":1},"17":{"evo":18},"19":{"evo":20},"21":{"evo":22},"23":{"evo":24},"25":{"evo":26},"27":{"evo":28},"29":{"evo":30,"candies":1},"30":{"evo":31},"32":{"evo":33,"candies":1},"33":{"evo":34},"35":{"evo":36},"37":{"evo":38},"39":{"evo":40},"41":{"evo":42,"candies":1},"42":{"evo":169},"43":{"evo":44,"candies":1},"44":{"evo":[45,182]},"46":{"evo":47},"48":{"evo":49},"50":{"evo":51},"52":{"evo":53},"54":{"evo":55},"56":{"evo":57},"58":{"evo":59},"60":{"evo":61,"candies":1},"61":{"evo":[62,186]},"63":{"evo":64,"candies":1},"64":{"evo":65},"66":{"evo":67,"candies":1},"67":{"evo":68},"69":{"evo":70,"candies":1},"70":{"evo":71},"72":{"evo":73},"74":{"evo":75,"candies":1},"75":{"evo":76},"77":{"evo":78},"79":{"evo":[80,199]},"81":{"evo":82,"candies":1},"82":{"evo":462},"84":{"evo":85},"86":{"evo":87},"88":{"evo":89},"90":{"evo":91},"92":{"evo":93,"candies":1},"93":{"evo":94},"95":{"evo":208},"96":{"evo":97},"98":{"evo":99},"100":{"evo":101},"102":{"evo":103},"104":{"evo":105},"108":{"evo":463},"109":{"evo":110},"111":{"evo":112,"candies":1},"112":{"evo":464},"113":{"evo":242},"114":{"evo":465},"116":{"evo":117,"candies":1},"117":{"evo":230},"118":{"evo":119},"120":{"evo":121},"123":{"evo":212},"125":{"evo":466},"126":{"evo":467},"129":{"evo":130},"133":{"evo":[470,471,135,134,136,196,197,700]},"137":{"evo":233,"candies":1},"138":{"evo":139},"140":{"evo":141},"147":{"evo":148,"candies":1},"148":{"evo":149},"152":{"evo":153,"candies":1},"153":{"evo":154},"155":{"evo":156,"candies":1},"156":{"evo":157},"158":{"evo":159,"candies":1},"159":{"evo":160},"161":{"evo":162},"163":{"evo":164},"165":{"evo":166},"167":{"evo":168},"170":{"evo":171},"172":{"evo":25,"candies":1},"173":{"evo":35,"candies":1},"174":{"evo":39,"candies":1},"175":{"evo":176,"candies":1},"176":{"evo":468},"177":{"evo":178},"179":{"evo":180,"candies":1},"180":{"evo":181},"183":{"evo":184},"187":{"evo":188,"candies":1},"188":{"evo":189},"190":{"evo":424},"191":{"evo":192},"193":{"evo":469},"194":{"evo":195},"198":{"evo":430},"200":{"evo":429},"204":{"evo":205},"207":{"evo":472},"209":{"evo":210},"215":{"evo":461},"216":{"evo":217},"218":{"evo":219},"220":{"evo":221,"candies":1},"221":{"evo":473},"223":{"evo":224},"228":{"evo":229},"231":{"evo":232},"233":{"evo":474},"236":{"evo":[107,106,237]},"238":{"evo":124},"239":{"evo":125,"candies":1},"240":{"evo":126,"candies":1},"246":{"evo":247,"candies":1},"247":{"evo":248},"252":{"evo":253,"candies":1},"253":{"evo":254},"255":{"evo":256,"candies":1},"256":{"evo":257},"258":{"evo":259,"candies":1},"259":{"evo":260},"261":{"evo":262},"263":{"evo":264},"265":{"evo":[266,268],"candies":1},"266":{"evo":267},"268":{"evo":269},"270":{"evo":271,"candies":1},"271":{"evo":272},"273":{"evo":274,"candies":1},"274":{"evo":275},"276":{"evo":277},"278":{"evo":279},"280":{"evo":281,"candies":1},"281":{"evo":[282,475]},"283":{"evo":284},"285":{"evo":286},"287":{"evo":288,"candies":1},"288":{"evo":289},"290":{"evo":[291,292]},"293":{"evo":294,"candies":1},"294":{"evo":295},"296":{"evo":297},"298":{"evo":183,"candies":1},"299":{"evo":476},"300":{"evo":301},"304":{"evo":305,"candies":1},"305":{"evo":306},"307":{"evo":308},"309":{"evo":310},"315":{"evo":407},"316":{"evo":317},"318":{"evo":319},"320":{"evo":321},"322":{"evo":323},"325":{"evo":326},"328":{"evo":329,"candies":1},"329":{"evo":330},"331":{"evo":332},"333":{"evo":334},"339":{"evo":340},"341":{"evo":342},"343":{"evo":344},"345":{"evo":346},"347":{"evo":348},"349":{"evo":[350,350]},"353":{"evo":354},"355":{"evo":356,"candies":1},"356":{"evo":477},"360":{"evo":202},"361":{"evo":[362,478]},"363":{"evo":364,"candies":1},"364":{"evo":365},"366":{"evo":[367,368]},"371":{"evo":372,"candies":1},"372":{"evo":373},"374":{"evo":375,"candies":1},"375":{"evo":376},"387":{"evo":388,"candies":1},"388":{"evo":389},"390":{"evo":391,"candies":1},"391":{"evo":392},"393":{"evo":394,"candies":1},"394":{"evo":395},"396":{"evo":397,"candies":1},"397":{"evo":398},"399":{"evo":400},"401":{"evo":402},"403":{"evo":404,"candies":1},"404":{"evo":405},"406":{"evo":315,"candies":1},"408":{"evo":409},"410":{"evo":411},"412":{"evo":[413,414]},"415":{"evo":416},"418":{"evo":419},"420":{"evo":421},"422":{"evo":423},"425":{"evo":426},"427":{"evo":428},"431":{"evo":432},"433":{"evo":358},"434":{"evo":435},"436":{"evo":437},"438":{"evo":185},"439":{"evo":122},"440":{"evo":113,"candies":1},"443":{"evo":444,"candies":1},"444":{"evo":445},"446":{"evo":143},"447":{"evo":448},"449":{"evo":450},"451":{"evo":452},"453":{"evo":454},"456":{"evo":457},"458":{"evo":226},"459":{"evo":460},"495":{"evo":496,"candies":1},"496":{"evo":497},"498":{"evo":499,"candies":1},"499":{"evo":500},"501":{"evo":502,"candies":1},"502":{"evo":503},"504":{"evo":505},"506":{"evo":507,"candies":1},"507":{"evo":508},"509":{"evo":510},"511":{"evo":512},"513":{"evo":514},"515":{"evo":516},"517":{"evo":518},"519":{"evo":520,"candies":1},"520":{"evo":521},"522":{"evo":523},"524":{"evo":525,"candies":1},"525":{"evo":526},"527":{"evo":528},"529":{"evo":530},"532":{"evo":533,"candies":1},"533":{"evo":534},"535":{"evo":536,"candies":1},"536":{"evo":537},"540":{"evo":541,"candies":1},"541":{"evo":542},"543":{"evo":544,"candies":1},"544":{"evo":545},"546":{"evo":547},"548":{"evo":549},"551":{"evo":552,"candies":1},"552":{"evo":553},"554":{"evo":555},"557":{"evo":558},"559":{"evo":560},"562":{"evo":563},"564":{"evo":565},"566":{"evo":567},"568":{"evo":569},"570":{"evo":571},"572":{"evo":573},"574":{"evo":575,"candies":1},"575":{"evo":576},"577":{"evo":578,"candies":1},"578":{"evo":579},"580":{"evo":581},"582":{"evo":583,"candies":1},"583":{"evo":584},"585":{"evo":586},"588":{"evo":589},"590":{"evo":591},"592":{"evo":593},"595":{"evo":596},"597":{"evo":598},"599":{"evo":600,"candies":1},"600":{"evo":601},"602":{"evo":603,"candies":1},"603":{"evo":604},"605":{"evo":606},"607":{"evo":608,"candies":1},"608":{"evo":609},"610":{"evo":611,"candies":1},"611":{"evo":612},"613":{"evo":614},"616":{"evo":617},"619":{"evo":620},"622":{"evo":623},"624":{"evo":625},"627":{"evo":628},"629":{"evo":630},"633":{"evo":634,"candies":1},"634":{"evo":635},"636":{"evo":637},"650":{"evo":651,"candies":1},"651":{"evo":652},"653":{"evo":654,"candies":1},"654":{"evo":655},"656":{"evo":657,"candies":1},"657":{"evo":658},"659":{"evo":660},"661":{"evo":662,"candies":1},"662":{"evo":663},"664":{"evo":665,"candies":1},"665":{"evo":666},"667":{"evo":668},"669":{"evo":670,"candies":1},"670":{"evo":671},"672":{"evo":673},"674":{"evo":675},"677":{"evo":678},"679":{"evo":680,"candies":1},"680":{"evo":681},"682":{"evo":683},"684":{"evo":685},"686":{"evo":687},"688":{"evo":689},"690":{"evo":691},"692":{"evo":693},"694":{"evo":695},"696":{"evo":697},"698":{"evo":699},"704":{"evo":705,"candies":1},"705":{"evo":706},"708":{"evo":709},"710":{"evo":711},"712":{"evo":713},"714":{"evo":715}
+    };
 
     //Adding a variable that already exists on player.records here will automatically make it available as a leaderboard
     //To add stuff not on player.records, you must add an exception on this.updateLeaderboards()
@@ -478,7 +481,7 @@ function Safari() {
     function getInputPokemon(info) {
         var shiny = false, id, num, name;
 
-        if (info[0] == "*" || info[info.length-1] == "*") {
+        if (info.length > 1 && (info[0] == "*" || info[info.length-1] == "*")) {
             shiny = true;
             info = info.replace("*", "");
         }
@@ -731,7 +734,7 @@ function Safari() {
                 pokeId = poke(num + (shiny ? "" : 0));
             }
             else {
-                var maxRoll = bstLimit || 721;
+                var maxRoll = bstLimit || 601;
                 maxStats = sys.rand(300, maxRoll);
                 do {
                     num = sys.rand(1, 722);
@@ -854,7 +857,7 @@ function Safari() {
         var typeBonus = this.checkEffective(sys.type(sys.pokeType1(player.party[0])), sys.type(sys.pokeType2(player.party[0])), sys.type(sys.pokeType1(wild)), sys.type(sys.pokeType2(wild)));
 
         var tiers = ["ORAS LC", "ORAS NU", "ORAS LU", "ORAS UU", "ORAS OU", "ORAS Ubers"];
-        var tierChance = 0.14;
+        var tierChance = 0.02;
         for (var x = 0; x < tiers.length; x++) {
             if (sys.isPokeBannedFromTier && !sys.isPokeBannedFromTier(wild, tiers[x])) {
                 tierChance = [0.26, 0.22, 0.18, 0.14, 0.10, 0.06][x];
@@ -989,11 +992,6 @@ function Safari() {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
             return;
         }
-        if (contestCount > 0) {
-            safaribot.sendMessage(src, "[Closed] Out catching Pokémon at the Contest. Come back after the Contest!", safchan);
-            return;
-        }
-
         var validItems = [];
         for (var e in itemData) {
             if (itemData[e].buyable && itemData[e].price > 0) {
@@ -1008,6 +1006,10 @@ function Safari() {
             }
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "You currently have $" + player.money + ". To buy an item, use /buy item:quantity (e.g.: /buy safari:3)", safchan);
+            return;
+        }
+        if (contestCount > 0) {
+            safaribot.sendMessage(src, "[Closed] Out catching Pokémon at the Contest. Come back after the Contest!", safchan);
             return;
         }
         var info = data.split(":");
@@ -1085,11 +1087,6 @@ function Safari() {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
             return;
         }
-        if (contestCount > 0) {
-            safaribot.sendMessage(src, "[Closed] Out catching Pokémon at the Contest. Come back after the Contest!", safchan);
-            return;
-        }
-
         var validItems = [];
         for (var e in itemData) {
             if (itemData[e].sellable && itemData[e].price > 0) {
@@ -1117,6 +1114,10 @@ function Safari() {
             } else {
                 safaribot.sendMessage(src, "You don't have anything that can be sold at this time!", safchan);
             }
+            return;
+        }
+        if (contestCount > 0) {
+            safaribot.sendMessage(src, "[Closed] Out catching Pokémon at the Contest. Come back after the Contest!", safchan);
             return;
         }
         var info = data.split(":");
@@ -1506,6 +1507,7 @@ function Safari() {
             safaribot.sendAll(sys.name(src) + " left some bait out... but nothing showed up.", safchan);
             player.records.baitNothing += 1;
         }
+        lastBaitersDecay = lastBaitersDecayTime;
         safaribot.sendMessage(src, "You still have " + player.balls[item] + " Baits remaining.", safchan);
         this.saveGame(player);
     };
@@ -1540,6 +1542,7 @@ function Safari() {
         player.records.rocksThrown += 1;
 
         var rng = Math.random();
+        var rng2 = Math.random();
         var perk = "zoom";
         var perkBonus = Math.min(itemData[perk].bonusRate * player.balls[perk], itemData[perk].maxRate);
         var success = (preparationPhase > 0 ? 0.1 : itemData.rock.successRate) + perkBonus;
@@ -1550,18 +1553,102 @@ function Safari() {
         }
 
         if (rng < success) {
-            safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "! *THUD* A direct hit! " + targetName + " was stunned!", safchan);
-            target.cooldowns.ball = target.cooldowns.ball > currentTime ? target.cooldowns.ball + itemData.rock.targetCD : currentTime + itemData.rock.targetCD;
-            player.records.rocksHit += 1;
-            target.records.rocksHitBy += 1;
-        } else if (rng < success + itemData.rock.bounceRate + (preparationPhase > 0 ? 0.48 : 0)) {
-            safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but it hit a wall and bounced back at " + sys.name(src) + "! *THUD* That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
-            player.cooldowns.ball = currentTime + itemData.rock.bounceCD;
-            player.records.rocksBounced += 1;
+            if (rng2 < 0.4) {
+                safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "! *THUD* A direct hit! " + targetName + " was stunned!", safchan);
+                target.cooldowns.ball = target.cooldowns.ball > currentTime ? target.cooldowns.ball + itemData.rock.targetCD : currentTime + itemData.rock.targetCD;
+                player.records.rocksHit += 1;
+                target.records.rocksHitBy += 1;
+            }
+            else if (rng2 < 0.5) {
+                safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "! " + targetName +" evaded, but their " + poke(target.party[0]) + " got hit and stunned!", safchan);
+                target.cooldowns.ball = target.cooldowns.ball > currentTime ? target.cooldowns.ball + Math.floor(itemData.rock.targetCD/2) : currentTime + Math.floor(itemData.rock.targetCD/2);
+                player.records.rocksHit += 1;
+                target.records.rocksHitBy += 1;
+            }
+            else if (rng2 < 0.55) {
+                var dropped = sys.rand(4, 10);
+                if (target.money < dropped) {
+                    dropped = target.money || 1;
+                }
+                safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but only hit their wallet! " + sys.name(src) + " then picked the $" + dropped + " dropped by " + targetName + "!", safchan);
+                if (player.money + dropped> moneyCap) {
+                    safaribot.sendMessage(src, "But you could only keep $" + (moneyCap - player.money) + "!", safchan);
+                    player.money = moneyCap;
+                } else {
+                    safaribot.sendMessage(src, "But received $" + dropped + "!", safchan);
+                    player.money += dropped;
+                }
+                safaribot.sendMessage(targetId, "You lost $" + dropped + "!", safchan);
+                target.money = target.money - dropped < 0 ? 0 : target.money - dropped;
+            }
+            else {
+                var parts = ["right leg", "left leg", "right arm", "left arm", "back"];
+                safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "! The rock hit " + targetName + "'s " + parts[sys.rand(0, parts.length)] + "!", safchan);
+                player.records.rocksHit += 1;
+                target.records.rocksHitBy += 1;
+            }
         } else {
-            safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "... but it missed!", safchan);
-            player.records.rocksMissed += 1;
-            target.records.rocksDodged += 1;
+            if (rng2 < itemData.rock.bounceRate + (preparationPhase > 0 ? 0.4 : 0)) {
+                safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but it hit a wall and bounced back at " + sys.name(src) + "! *THUD* That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
+                player.cooldowns.ball = currentTime + itemData.rock.bounceCD;
+                player.records.rocksBounced += 1;
+            }
+            else if (rng2 < 0.25) {
+                safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but " + targetName + " saw it coming and caught the rock with their bare hands!", safchan);
+                if (target.balls.rock < itemCap) {
+                    target.balls.rock += 1;
+                    safaribot.sendMessage(src, "You received 1 Rock!", safchan);
+                } else {
+                    safaribot.sendMessage(src, "But you couldn't keep the Rock because you already have " + itemCap + "!", safchan);
+                }
+                player.records.rocksMissed += 1;
+                target.records.rocksDodged += 1;
+            }
+            else if (rng2 < 0.35) {
+                var dropped = sys.rand(10, 17);
+                if (player.money < dropped) {
+                    dropped = player.money || 1;
+                }
+                safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but missed and broke their house's window! " + sys.name(src) + " had to pay $" + dropped + " to " + targetName + "!", safchan);
+                if (target.money + dropped> moneyCap) {
+                    safaribot.sendMessage(targetId, "But you could only keep $" + (moneyCap - target.money) + "!", safchan);
+                    target.money = moneyCap;
+                } else {
+                    safaribot.sendMessage(targetId, "You received $" + dropped + "!", safchan);
+                    target.money += dropped;
+                }
+                safaribot.sendMessage(src, "You lost $" + dropped + "!", safchan);
+                player.money = player.money - dropped < 0 ? 0 : player.money - dropped;
+                player.records.rocksMissed += 1;
+                target.records.rocksDodged += 1;
+            }
+            else if (rng2 < 0.45) {
+                var onChannel = sys.playersOfChannel(safchan);
+                var randomTarget = onChannel[sys.rand(0, onChannel.length)];
+                if (randomTarget != src && randomTarget != targetId && getAvatar(randomTarget)) {
+                    safaribot.sendAll(sys.name(src) + " tried to throw a rock at " + targetName + ", but failed miserably and almost hit " + utilities.non_flashing(sys.name(randomTarget)) + "!", safchan);
+                } else {
+                    safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "... but it missed!", safchan);
+                }
+                player.records.rocksMissed += 1;
+                target.records.rocksDodged += 1;
+            }
+            else if (rng2 < 0.5) {
+                var extraThrown = "safari";
+                if (player.balls[extraThrown] > 0) {
+                    safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but it missed... WAIT! " + sys.name(src) + " also ended up throwing a " + finishName(extraThrown) + " that was stuck together with the rock!", safchan);
+                    player.balls[extraThrown] -= 1;
+                } else {
+                    safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "... but it missed!", safchan);
+                }
+                player.records.rocksMissed += 1;
+                target.records.rocksDodged += 1;
+            }
+            else {
+                safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + "... but it missed!", safchan);
+                player.records.rocksMissed += 1;
+                target.records.rocksDodged += 1;
+            }
         }
         player.cooldowns.rock = currentTime + itemData.rock.throwCD;
         this.saveGame(player);
@@ -2372,7 +2459,7 @@ function Safari() {
         }
 
         if (crit === "number") {
-            player.pokemon.sort(function(a, b){return a-b;});
+            player.pokemon.sort(function(a, b){return pokeInfo.species(a)-pokeInfo.species(b);});
             if (order === "desc") {
                 player.pokemon.reverse();
             }
@@ -2888,7 +2975,7 @@ function Safari() {
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be Safari, Great, Ultra, Master, or Dream Ball.",
             "/sell: To sell one of your Pokémon*.",
             "/trade: To request a Pokémon trade with another player*. Use $200 to trade money and @luxury to trade items (use 3@luxury to trade more than 1 of that item).",
-            "/release: Used to release a Pokémon that can be caught by other players. Pokémon can only be released every 3 minutes.",
+            "/release: Used to release a Pokémon that can be caught by other players*. Pokémon can only be released every 3 minutes.",
             "/buy: To buy items.",
             "/pawn: To sell items.",
             "/party: To add or remove a Pokémon from your party, or to set your party's leader*.",
@@ -2898,14 +2985,14 @@ function Safari() {
             "/view: To view another player's party. If no player is specified, your data will show up.",
             "/changealt: To pass your Safari data to another alt.",
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
-            "/rarecandy: Use a Rare Candy to evolve a Pokémon.",
+            "/rarecandy: Use a Rare Candy to evolve a Pokémon*.",
             "/gacha: Use a ticket to win a prize!",
             "/rock: To throw a rock at another player.",
             "/stick: To poke another player with your stick.",
             "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details.",
-            "/sort [criteria] [ascending|descending]: To sort the order in which the Pokémon are listed on /mydata. Criteria are Alphabetical, Number, BST, Type and Duplicate",
+            "/sort [criteria] [ascending|descending]: To sort the order in which the Pokémon are listed on /mydata. Criteria are Alphabetical, Number, BST, Type and Duplicate.",
             "/info: View time until next contest and current Gachapon jackpot prize!",
-            "/leaderboard [type]: View the Safari Leaderboards. [type] can be pokemon, money, contest, bst, luxury, logins or caught.",
+            "/leaderboard [type]: View the Safari Leaderboards. [type] can be pokemon, money, contest, bst, luxury, gacha, logins or caught.",
             "",
             "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
         ];
@@ -2917,7 +3004,7 @@ function Safari() {
         var superAdminHelp = [
             "*** Safari Admin Commands ***",
             "/contest: Force starts a Safari contest. Use /contestsoft to skip broadcasting to Tohjo Falls.",
-            "/wild: Spawns a random wild Pokemon with no restrictions. Use a valid dex number for a specific spawn.",
+            "/wild: Spawns a random wild Pokemon with no restrictions. Use a valid dex number for a specific spawn*.",
             "/wilds: Spawns a random wild Pokemon with no restrictions. Use a valid dex number to spawn a shiny Pokemon.",
             "/safaripay: Awards a player with any amount of money. Use /safaripay [player]:[amount].",
             "/safarigift: Gifts a player with any amount of an item or ball. Use /safarigift [player]:[item]:[amount].",
@@ -3178,18 +3265,14 @@ function Safari() {
                 safaribot.sendMessage(src, "There's already a Wild Pokemon out there silly!", safchan);
                 return true;
             }
-            var info = getInputPokemon(commandData), makeShiny = info.shiny, amount = 1;
-            if (!info.num) {
-                safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
-                return true;
-            }
+            var info = getInputPokemon(commandData), num = info.num, makeShiny = info.shiny, amount = 1;
             if (command === "wilds") {
                 makeShiny = true;
             }
             if (command === "horde") {
                 amount = 3; //Android might look crowded if more than 3
             }
-            safari.createWild(info.num, makeShiny, amount);
+            safari.createWild(num, makeShiny, amount);
             return true;
         }
         if (command === "contest" || command === "contestsoft") {
@@ -3275,6 +3358,10 @@ function Safari() {
         //Needs some validation, but good for testing right now
         if (command === "bestow") {
             var cmd = commandData.split(":");
+            if (cmd.length < 2) {
+                safaribot.sendMessage(src, "Invalid format! Use /bestow Player:Pokémon.", safchan);
+                return true;
+            }
             var target = cmd[0];
             var playerId = sys.id(target);
             if (!playerId) {
@@ -3318,6 +3405,9 @@ function Safari() {
             if (prop.length == 1 && prop[0] === "") {
                 attr = player;
             } else {
+                if (!attr) {
+                    attr = player;
+                }
                 propName.push(prop[0]);
                 for (var e = 1; e < prop.length; e++) {
                     propName.push(prop[e]);
@@ -3331,6 +3421,27 @@ function Safari() {
             }
 
             safaribot.sendMessage(src, sys.name(target) + "." + propName.join(".") + ": " + JSON.stringify(attr), safchan);
+            return true;
+        }
+        if (command === "wipesafariall") {
+            var info = commandData.toLowerCase().split(":");
+            if (info[0] !== "confirm") {
+                safaribot.sendMessage(src, "This will wipe all Safari's save data. If you wish to proceed, type /wipesafariall confirm.", safchan);
+                return true;
+            }
+            if (info.length < 2 || info[1] !== "really") {
+                safaribot.sendMessage(src, "Are you absolutely sure you want to delete all saves? This cannot be undone! To confirm, type /wipesafariall confirm:really.", safchan);
+                return true;
+            }
+            
+            var onChannel = sys.playersOfChannel(safchan);
+            for (var e in onChannel) {
+                if (sys.isInChannel(onChannel[e], safchan) && getAvatar(onChannel[e])) {
+                    SESSION.users(onChannel[e]).safari = null;
+                }
+            }
+            rawPlayers.clear();
+            safaribot.sendAll("Safari has been completely reset!", safchan);
             return true;
         }
 
@@ -3423,6 +3534,7 @@ function Safari() {
         }
         if (lastBaitersDecay === 0) {
             lastBaiters.shift();
+            lastBaitersDecay = lastBaitersDecayTime;
         }
         SESSION.global().safariContestCooldown = contestCooldown;
         SESSION.global().safariBaitCooldown = baitCooldown;
@@ -3442,12 +3554,17 @@ function Safari() {
                         winners.push(e);
                     }
                 }
-                var tieBreaker = [], bst, name, top = winners.length;
+                var tieBreaker = [], bst, name, top = winners.length, catchersBST = {}, allContestants = [];
+                
+                for (e in contestCatchers) {
+                    catchersBST[e] = add(contestCatchers[e].map(getBST));
+                    allContestants.push(e + " (Caught " + contestCatchers[e].length + ", BST " + catchersBST[e] + ")");
+                }
                 if (top > 1) {
                     maxBST = 0;
                     for (e in winners) {
                         name = winners[e];
-                        bst = add(contestCatchers[name].map(getBST));
+                        bst = catchersBST[name];
 
                         if (bst >= maxBST) {
                             if (bst > maxBST) {
@@ -3462,14 +3579,20 @@ function Safari() {
 
                 sys.sendAll("*** ************************************************************ ***", safchan);
                 safaribot.sendAll("The Safari contest is now over! Please come back during the next contest!", safchan);
-                if (winners.length > 0) {
+                if (Object.keys(contestCatchers).length === 1) {
+                    safaribot.sendAll("No prizes have been given because there was only one contestant!", safchan);
+                    winners = [];
+                } else if (winners.length > 0) {
                     safaribot.sendAll(readable(winners, "and") + " caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and has won a prize pack!", safchan);
+                }
+                if (allContestants.length > 0) {
+                    safaribot.sendAll(allContestants.join(", "), safchan);
                 }
                 contestCatchers = [];
                 sys.sendAll("*** ************************************************************ ***", safchan);
                 currentPokemon = null;
                 currentTheme = null;
-                if (winners.length) {
+                if (winners.length > 0) {
                     for (e in winners) {
                         var winner = winners[e];
                         var playerId = sys.id(winner);
