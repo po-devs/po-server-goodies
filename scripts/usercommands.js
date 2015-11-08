@@ -72,7 +72,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             playerIdArray = sys.playerIds(),
             usersFoundArray = [];
         for (x = 0; x < playerIdArray.length; x++) {
-            if (sys.away(playerIdArray[x]) === true) {
+            if (!sys.loggedIn(playerIdArray[x]) || sys.away(playerIdArray[x])) {
                 continue;
             }
             if (sys.hasTier(playerIdArray[x], tierInput)) {
@@ -82,8 +82,8 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (usersFoundArray.length === 0) {
             battlebot.sendMessage(src, "No unidled players found in that tier.", channel);
         } else {
-            var sliceAmount = 10;
-            var users = arraySlice(arrayShuffle(usersFoundArray), sliceAmount).join(", ");
+            var sliceAmount = 10,
+                users = arraySlice(arrayShuffle(usersFoundArray), sliceAmount).join(", ");
             battlebot.sendMessage(src, "Found " + usersFoundArray.length + "/" + sliceAmount + " unidled random players in " + tierInput + ": " + users, channel);
         }
         return;
