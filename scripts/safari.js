@@ -1163,7 +1163,10 @@ function Safari() {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
             return;
         }
-
+        if (player.pokemon.length < 5) {
+            safaribot.sendMessage(src, "You can only trade after you catch more than 5 Pokémon!", safchan);
+            return;
+        }
         var userName = sys.name(src).toLowerCase();
         if (data.toLowerCase() == "cancel" && userName in tradeRequests) {
             safaribot.sendMessage(src, "You cancelled your trade request with " + tradeRequests[userName].target + "!", safchan);
@@ -1191,7 +1194,7 @@ function Safari() {
             safaribot.sendMessage(src, "No such person!", safchan);
             return;
         }
-        if (src === targetId) {
+        if (src === targetId || sys.ip(targetId) === sys.ip(src)) {
             safaribot.sendMessage(src, "You can't trade with yourself!", safchan);
             return;
         }
@@ -2282,7 +2285,7 @@ function Safari() {
                     list.push(x);
                 }
             });
-            title = "Pokémon with " + val + " on their name";
+            title = "Pokémon with " + val + " in their name";
         }
         else if (crit == "number") {
             title = rangeFilter(src, player, list, val, mode, "Pokédex Number", info, crit);
@@ -2537,12 +2540,18 @@ function Safari() {
             }
             gained.push("$" + moneyGained);
             player.money += moneyGained;
+            if (player.money > moneyCap) {
+                player.money = moneyCap;
+            }
 
             var safariGained = logins;
             if (safariGained > 30) {
                 safariGained = 30;
             }
             player.balls.safari += safariGained;
+            if (player.balls.safari > itemCap) {
+                player.balls.safari = itemCap;
+            }
             gained.push(safariGained + "x Safari Ball" + (safariGained > 1 ? "s" : ""));
 
             var milestone = logins % 30;
@@ -2565,6 +2574,9 @@ function Safari() {
                 var amount = logins > 30 && "repeatAmount" in reward? reward.repeatAmount : reward.amount;
 
                 player.balls[item] += amount;
+                if (player.balls[item] > itemCap) {
+                    player.balls[item] = itemCap;
+                }
                 gained.push(amount + "x " + finishName(item) + (amount > 1 ? "s" : ""));
             }
             if (logins > player.records.consecutiveLogins) {
