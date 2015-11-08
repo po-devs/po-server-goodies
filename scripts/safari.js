@@ -271,7 +271,7 @@ function Safari() {
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 197, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
         rare: {name: "rare", fullName: "Rare Candy", type: "usable", icon: 117, price: 0, aliases:["rare", "rarecandy", "rare candy", "candy"], sellable: false, buyable: true, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
-        itemfinder: {name: "itemfinder", fullName: "Item Finder", type: "usable", icon: 164, price: 0, cooldown: 8000, charges: 30, aliases:["itemfinder", "finder", "itemfinder"], sellable: false, buyable: false, tradable: false},
+        itemfinder: {name: "itemfinder", fullName: "Item Finder", type: "usable", icon: 69, price: 0, cooldown: 8000, charges: 30, aliases:["itemfinder", "finder", "itemfinder"], sellable: false, buyable: false, tradable: false},
 
         //Perks
         amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false, tradable: true},
@@ -2688,6 +2688,7 @@ function Safari() {
                 soothe: 0,
                 crown: 0,
                 scarf: 0,
+                battery: 0,
                 itemfinder: 0,
                 pearl: 0,
                 stardust: 0,
@@ -3395,7 +3396,7 @@ function Safari() {
                 player.balls[item] += itemQty;
                 this.sanitize(player);
                 this.saveGame(player);
-                safaribot.sendAll(target + " has been awarded with " + itemQty + (item === "itemfinder" ? "charges for their " : " ") + finishName(item) + " by " + sys.name(src) + "!", safchan);
+                safaribot.sendAll(target + " has been awarded with " + itemQty + (item === "itemfinder" ? " charges for their " : " ") + finishName(item) + " by " + sys.name(src) + "!", safchan);
             } else {
                 safaribot.sendMessage(src, "No such person!", safchan);
             }
