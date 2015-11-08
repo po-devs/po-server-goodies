@@ -402,6 +402,7 @@ function Safari() {
         bst: { desc: "by total BST of Pokémon owned", alts: [] },
         money: { desc: "by money", alts: ["$"] },
         contestsWon: { desc: "by contests won", alts: ["contest", "contests"] },
+        pokeSoldEarnings: { desc: "by money gained with selling Pokémon", alts: ["sold", "sell"] },
         luxuryEarnings: { desc: "by money gained with Luxury Balls", alts: ["luxury", "luxuryball", "luxury ball"] },
         consecutiveLogins: { desc: "by longest streak of consecutive days login", alts: ["login", "logins"] },
         pokesCaught: { desc: "by successful catches", alts: ["caught"] },
@@ -2992,7 +2993,7 @@ function Safari() {
             "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details.",
             "/sort [criteria] [ascending|descending]: To sort the order in which the Pokémon are listed on /mydata. Criteria are Alphabetical, Number, BST, Type and Duplicate.",
             "/info: View time until next contest and current Gachapon jackpot prize!",
-            "/leaderboard [type]: View the Safari Leaderboards. [type] can be pokemon, money, contest, bst, luxury, gacha, logins or caught.",
+            "/leaderboard [type]: View the Safari Leaderboards. [type] can be pokemon, money, contest, bst, sold, luxury, gacha, logins or caught.",
             "",
             "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
         ];
@@ -3310,6 +3311,10 @@ function Safari() {
                 safaribot.sendMessage(src, "No such person!", safchan);
                 return true;
             }
+            if (isNaN(moneyGained)) {
+                safaribot.sendMessage(src, "Invalid amount!", safchan);
+                return true;
+            }
             var player = getAvatar(playerId);
             if (player) {
                 player.money += moneyGained;
@@ -3323,9 +3328,16 @@ function Safari() {
         }
         if (command === "safarigift") {
             var cmd = commandData.split(":");
+            if (cmd.length < 2) {
+                safaribot.sendMessage(src, "Invalid format! Use /safarigift Player:Item:Amount.", safchan);
+                return true;
+            }
             var target = cmd[0];
-            var item = cmd[1];
-            var itemQty = parseInt(cmd[2], 10);
+            var item = cmd[1].toLowerCase();
+            var itemQty = cmd.length > 2 ? parseInt(cmd[2], 10) : 1;
+            if (isNaN(itemQty)) {
+                itemQty = 1;
+            }
 
             var playerId = sys.id(target);
             if (!playerId) {
