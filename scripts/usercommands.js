@@ -521,6 +521,18 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             script.saveKey("touralertson", src, "false");
             return;
         }
+        if (commandData === "clear") {
+            if (typeof SESSION.users(src).tiers === "undefined") {
+                SESSION.users(src).tiers = [];
+            }
+            if (typeof SESSION.users(src).tiers === "string") {
+                SESSION.users(src).tiers = SESSION.users(src).tiers.split("*");
+            }
+            SESSION.users(src).tiers = [];
+            script.saveKey("touralerts", src, SESSION.users(src).tiers.join("*"));
+            normalbot.sendMessage(src, "All tour alerts cleared.", channel);
+            return;
+        }
         if (typeof (SESSION.users(src).tiers) === "undefined" || SESSION.users(src).tiers.length === 0) {
             normalbot.sendMessage(src, "You currently have no alerts activated", channel);
             return;
