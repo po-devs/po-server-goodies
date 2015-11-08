@@ -903,7 +903,7 @@ function Safari() {
             if (ball == "luxury") {
                 var perkBonus = 1 + Math.min(itemData.scarf.bonusRate * player.balls.scarf, itemData.scarf.maxRate);
                 var earnings = Math.floor(wildStats/2 * perkBonus);
-                safaribot.sendAll((player.balls.scarf > 1 ? "The Fashionable " : "") + name + " found $" + earnings + " on the ground after catching " + pokeName + "!" , safchan);
+                safaribot.sendAll((player.balls.scarf > 0 ? "The Fashionable " : "") + name + " found $" + earnings + " on the ground after catching " + pokeName + "!" , safchan);
                 player.money += earnings;
                 player.records.luxuryEarnings += earnings;
             }
@@ -1103,10 +1103,11 @@ function Safari() {
             }
         }
 
+        var perkBonus = 1 + Math.min(itemData.crown.bonusRate * player.balls.crown, itemData.crown.maxRate);
         if (data === "*") {
             safaribot.sendMessage(src, "You can sell the following items:", safchan);
             for (var i = 0; i < validItems.length; i++) {
-                safaribot.sendMessage(src, itemData[validItems[i]].fullName + ": $" + Math.floor(itemData[validItems[i]].price/2), safchan);
+                safaribot.sendMessage(src, itemData[validItems[i]].fullName + ": $" + Math.floor(itemData[validItems[i]].price/2 * perkBonus), safchan);
             }
             sys.sendMessage(src, "", safchan);
             var sellables = [];
@@ -1148,8 +1149,6 @@ function Safari() {
             safaribot.sendMessage(src, "You don't have " + amount + " " + finishName(item) + ", you only have " + player.balls[item] + "!", safchan);
             return;
         }
-        var perkBonus = 1 + Math.min(itemData.crown.bonusRate * player.balls.crown, itemData.crown.maxRate);
-
         var cost = Math.floor(amount * itemData[item].price/2 * perkBonus);
         player.money += cost;
         player.balls[item] -= amount;
