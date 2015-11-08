@@ -1576,7 +1576,7 @@ function Safari() {
                     safaribot.sendMessage(src, "But you could only keep $" + (moneyCap - player.money) + "!", safchan);
                     player.money = moneyCap;
                 } else {
-                    safaribot.sendMessage(src, "But received $" + dropped + "!", safchan);
+                    safaribot.sendMessage(src, "You received $" + dropped + "!", safchan);
                     player.money += dropped;
                 }
                 safaribot.sendMessage(targetId, "You lost $" + dropped + "!", safchan);
@@ -1598,9 +1598,9 @@ function Safari() {
                 safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but " + targetName + " saw it coming and caught the rock with their bare hands!", safchan);
                 if (target.balls.rock < itemCap) {
                     target.balls.rock += 1;
-                    safaribot.sendMessage(src, "You received 1 Rock!", safchan);
+                    safaribot.sendMessage(targetId, "You received 1 Rock!", safchan);
                 } else {
-                    safaribot.sendMessage(src, "But you couldn't keep the Rock because you already have " + itemCap + "!", safchan);
+                    safaribot.sendMessage(targetId, "But you couldn't keep the Rock because you already have " + itemCap + "!", safchan);
                 }
                 player.records.rocksMissed += 1;
                 target.records.rocksDodged += 1;
