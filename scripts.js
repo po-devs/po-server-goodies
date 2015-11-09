@@ -1684,7 +1684,7 @@ beforeChatMessage: function(src, message, chan) {
         return;
     }
     var poChannel = SESSION.channels(channel);
-    if (sys.auth(src) < 1 && !poChannel.canTalk(src)) {
+    if (sys.auth(src) < 1 && !poChannel.canTalk(src) && channel !== 0) {
         var bandata = poChannel.muted[sys.name(src).toLowerCase()] || null;
         if (!bandata) {
             channelbot.sendMessage(src, "You are muted from this channel! You can't talk unless channel operators and masters unmute you.");
