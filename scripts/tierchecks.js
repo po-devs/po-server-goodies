@@ -235,9 +235,9 @@ tier_checker.add_new_check(INCLUDING, ["BW2 OU"], function swiftSwimCheck(src, t
 });
 
 tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, team) {
-    var type1, type2, typea = 0, typeb = 0,teamLength = 0;
+    var type1, type2, typea = 0, typeb = 0,teamLength = 0, poke;
     for (var i = 0; i < 6; i++) {
-        var poke = sys.teamPoke(src, team, i);
+        poke = sys.teamPoke(src, team, i);
         if (poke === 0) {
             continue;
         }
@@ -246,7 +246,7 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
         teamLength++;
     }
     for (var i = 0; i < 6; i++) {
-        var poke = sys.teamPoke(src, team, i);
+        poke = sys.teamPoke(src, team, i);
         if (poke === 0) {
             continue;
         }
@@ -287,6 +287,11 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function 
     beasts[sys.pokeNum('Suicune')] = ['Extreme Speed', 'Aqua Ring',   'Sheer Cold',   'Air Slash']  .map(sys.moveNum);
     beasts[sys.pokeNum('Entei')]   = ['Extreme Speed', 'Howl',        'Crush Claw',   'Flare Blitz'].map(sys.moveNum);
     beasts[sys.pokeNum('Genesect')] = ['Extreme Speed', 'Blaze Kick', 'Shift Gear'].map(sys.moveNum);
+    beasts[sys.pokeNum('Pikachu')] = ['Teeter Dance'].map(sys.moveNum);
+    beasts[sys.pokeNum('Beldum')] = ['Hold Back'].map(sys.moveNum);
+    beasts[sys.pokeNum('Metang')] = ['Hold Back'].map(sys.moveNum);
+    beasts[sys.pokeNum('Metagross')] = ['Hold Back'].map(sys.moveNum);
+    beasts[sys.pokeNum('Jirachi')] = ['Moonblast'].map(sys.moveNum);
  
     for (var beast in beasts)
         for (var slot=0; slot<6; slot++)
@@ -294,6 +299,18 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function 
                 for (var i=0; i<4; i++)
                     if (-1 != beasts[beast].indexOf(sys.teamPokeMove(player, team, slot, i)))
                         sys.changePokeShine(player, team, slot, true);
+});
+
+tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function eventNonShinies(player, team) {
+    var beasts = {};
+    beasts[sys.pokeNum('Jirachi')] = ['Heart Stamp', 'Play Rough'].map(sys.moveNum);
+ 
+    for (var beast in beasts)
+        for (var slot=0; slot<6; slot++)
+            if ((sys.teamPoke(player, team, slot) % 65536) == beast)
+                for (var i=0; i<4; i++)
+                    if (-1 != beasts[beast].indexOf(sys.teamPokeMove(player, team, slot, i)))
+                        sys.changePokeShine(player, team, slot, false);
 });
 
 tier_checker.add_new_check(EXCLUDING, challenge_cups, function hasOneUsablePokemon(player, team) {
