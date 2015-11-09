@@ -442,6 +442,7 @@ function Safari() {
     var megaEvolutions = {
         "3":[65539],"6":[65542, 131078],"9":[65545],"15":[65551],"18":[65554],"65":[65601],"80":[65616],"94":[65630],"115":[65651],"127":[65663],"130":[65666],"142":[65678],"150":[65686, 131222],"181":[65717],"208":[65744],"212":[65748],"214":[65750],"229":[65765],"248":[65784],"254":[65790],"257":[65793],"260":[65796],"282":[65818],"302":[65838],"303":[65839],"306":[65842],"308":[65844],"310":[65846],"319":[65855],"323":[65859],"334":[65870],"354":[65890],"359":[65895],"362":[65898],"373":[65909],"376":[65912],"380":[65916],"381":[65917],"382":[65918],"383":[65919],"384":[65920],"428":[65964],"445":[65981],"448":[65984],"460":[65996],"475":[66011],"531":[66067],"719":[66255]
     };
+    var megaPokemon = [];
     
     //Adding a variable that already exists on player.records here will automatically make it available as a leaderboard
     //To add stuff not on player.records, you must add an exception on this.updateLeaderboards()
@@ -691,6 +692,9 @@ function Safari() {
         }
         return ret;
     }
+    function isMega(num) {
+        return megaPokemon.indexOf(num) !== -1;
+    }
     function canLosePokemon(src, data, verb) {
         var player = getAvatar(src);
         if (!player) {
@@ -723,6 +727,10 @@ function Safari() {
         }
         if (player.starter === id && count <= 1) {
             safaribot.sendMessage(src, "You can't " + verb + " your starter Pokémon!", safchan);
+            return false;
+        }
+        if (pokeInfo.forme(info.num) > 0 && isMega(info.num)) {
+            safaribot.sendMessage(src, "You can't " + verb + " a Pokémon while they are Mega Evolved!", safchan);
             return false;
         }
         return true;
@@ -782,7 +790,13 @@ function Safari() {
             tempArray = [];
         }
     };
-
+    this.initMega = function() {
+        megaPokemon = [];
+        for (var e in megaEvolutions) {
+            megaPokemon = megaPokemon.concat(megaEvolutions[e]);
+        }
+    };
+    
     this.startContest = function(commandData) {
         contestCooldown = contestCooldownLength;
         contestCount = contestDuration;
@@ -1620,12 +1634,12 @@ function Safari() {
                 safari.throwBall(src, commandData, true);
                 preparationFirst = sys.name(src);
             }
+            lastBaitersDecay = lastBaitersDecayTime;
         } else {
             baitCooldown = itemData.bait.failCD + sys.rand(0,5);
             safaribot.sendAll(sys.name(src) + " left some bait out... but nothing showed up.", safchan);
             player.records.baitNothing += 1;
         }
-        lastBaitersDecay = lastBaitersDecayTime;
         safaribot.sendMessage(src, "You still have " + player.balls[item] + " Baits remaining.", safchan);
         this.saveGame(player);
     };
@@ -2133,7 +2147,9 @@ function Safari() {
         for (var e = player.megaTimers.length - 1; e >= 0; e--) {
             info = player.megaTimers[e];
             if (info.expires <= currentTime) {
-                this.evolvePokemon(src, getInputPokemon(info.id + (typeof info.id == "string" ? "*" : 0)), info.to, "reverted to");
+                if (player.pokemon.indexOf(info.id) !== -1) {
+                    this.evolvePokemon(src, getInputPokemon(info.id + (typeof info.id == "string" ? "*" : 0)), info.to, "reverted to");
+                }
                 player.megaTimers.splice(e, 1);
             }
         }
@@ -3307,7 +3323,7 @@ function Safari() {
             safari.startGame(src, commandData);
             return true;
         }
-        if (command === "catch") {
+        if (command === "catch" || command === "throw") {
             safari.throwBall(src, commandData);
             return true;
         }
@@ -3626,6 +3642,17 @@ function Safari() {
             safaribot.sendMessage(src, "List of all saves by name: " + Object.keys(rawPlayers.hash).sort().join(", "), safchan);
             return true;
         }
+        if (command === "scare" || command === "glare") {
+            if (currentPokemon) {
+                safaribot.sendMessage(src, "You glared at the Wild Pokémon until they ran away!", safchan);
+                if (command === "scare") {
+                    safaribot.sendAll(sys.name(src) + " scared " + (currentPokemonCount > 1 ? "all " : "") + "the " + poke(currentPokemon) + " away!", safchan);
+                }
+                currentPokemon = null;
+                currentPokemonCount = 1;
+            }
+            return true;
+        }
 
         if (!SESSION.channels(safchan).isChannelOwner(src)) {
             return false;
@@ -3730,6 +3757,7 @@ function Safari() {
         rawPlayers = new MemoryHash(saveFiles);
         this.initGacha();
         this.initFinder();
+        this.initMega();
         this.updateLeaderboards();
     };
     this.afterChannelJoin = function (src, channel) {
