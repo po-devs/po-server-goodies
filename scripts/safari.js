@@ -3639,6 +3639,17 @@ function Safari() {
             safaribot.sendMessage(src, "List of all saves by name: " + Object.keys(rawPlayers.hash).sort().join(", "), safchan);
             return true;
         }
+        if (command === "scare" || command === "glare") {
+            if (currentPokemon) {
+                safaribot.sendMessage(src, "You glared at the Wild Pokémon until they ran away!", safchan);
+                if (command === "scare") {
+                    safaribot.sendAll(sys.name(src) + " scared " + (currentPokemonCount > 1 ? "all " : "") + "the " + poke(currentPokemon) + " away!", safchan);
+                }
+                currentPokemon = null;
+                currentPokemonCount = 1;
+            }
+            return true;
+        }
 
         if (!SESSION.channels(safchan).isChannelOwner(src)) {
             return false;
