@@ -72,7 +72,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             playerIdArray = sys.playerIds(),
             usersFoundArray = [];
         for (x = 0; x < playerIdArray.length; x++) {
-            if (sys.away(playerIdArray[x]) === true) {
+            if (!sys.loggedIn(playerIdArray[x]) || sys.away(playerIdArray[x])) {
                 continue;
             }
             if (sys.hasTier(playerIdArray[x], tierInput)) {
@@ -82,8 +82,8 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (usersFoundArray.length === 0) {
             battlebot.sendMessage(src, "No unidled players found in that tier.", channel);
         } else {
-            var sliceAmount = 10;
-            var users = arraySlice(arrayShuffle(usersFoundArray), sliceAmount).join(", ");
+            var sliceAmount = 10,
+                users = arraySlice(arrayShuffle(usersFoundArray), sliceAmount).join(", ");
             battlebot.sendMessage(src, "Found " + usersFoundArray.length + "/" + sliceAmount + " unidled random players in " + tierInput + ": " + users, channel);
         }
         return;
@@ -427,16 +427,16 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command === "topchannels") {
-        var i, chanIdArray = sys.channelIds(), listArray = [],
+        var i, chanIdArr = sys.channelIds(), listArr = [],
             limit = (commandData && !isNaN(commandData) ? parseInt(commandData, 10) : 10);
-        for (i = 0; i < chanIdArray.length; ++i) {
-            listArray.push([chanIdArray[i], sys.playersOfChannel(chanIdArray[i]).length]);
+        for (i = 0; i < chanIdArr.length; ++i) {
+            listArr.push([chanIdArr[i], sys.playersOfChannel(chanIdArr[i]).length]);
         }
-        listArray.sort(function (a, b) { return b[1] - a[1]; });
-        var topchans = listArray.slice(0, limit);
+        listArr.sort(function (a, b) { return b[1] - a[1]; });
+        listArr = listArr.slice(0, limit);
         channelbot.sendMessage(src, "Most used channels:", channel);
-        for (i = 0; i < topchans.length; ++i) {
-            sys.sendMessage(src, "" + sys.channel(topchans[i][0]) + " with " + topchans[i][1] + " players.", channel);
+        for (i = 0; i < listArr.length; ++i) {
+            sys.sendHtmlMessage(src, "<timestamp/>" + (i + 1) + " <a href=po:join/'" + sys.channel(listArr[i][0]) + "'>#" + sys.channel(listArr[i][0]) + "</a> with " + listArr[i][1] + " players.", channel);
         }
         return;
     }
@@ -519,6 +519,18 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             delete SESSION.users(src).tiers;
             normalbot.sendMessage(src, "You have turned tour alerts off!", channel);
             script.saveKey("touralertson", src, "false");
+            return;
+        }
+        if (commandData === "clear") {
+            if (typeof SESSION.users(src).tiers === "undefined") {
+                SESSION.users(src).tiers = [];
+            }
+            if (typeof SESSION.users(src).tiers === "string") {
+                SESSION.users(src).tiers = SESSION.users(src).tiers.split("*");
+            }
+            SESSION.users(src).tiers = [];
+            script.saveKey("touralerts", src, SESSION.users(src).tiers.join("*"));
+            normalbot.sendMessage(src, "All tour alerts cleared.", channel);
             return;
         }
         if (typeof (SESSION.users(src).tiers) === "undefined" || SESSION.users(src).tiers.length === 0) {
