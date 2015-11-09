@@ -3304,7 +3304,7 @@ function Safari() {
             safari.startGame(src, commandData);
             return true;
         }
-        if (command === "catch") {
+        if (command === "catch" || command === "throw") {
             safari.throwBall(src, commandData);
             return true;
         }
