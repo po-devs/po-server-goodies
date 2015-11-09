@@ -1024,9 +1024,9 @@ beforeChannelJoin : function(src, channel) {
         return;
     }
     if (sys.auth(src) < 3 && poChannel.canJoin(src) == "banned") {
-        var auth = poChannel.banned[sys.name(src).toLowerCase()].auth || "N/A",
-            expiry = poChannel.banned[sys.name(src).toLowerCase()].expiry || "N/A",
-            reason = poChannel.banned[sys.name(src).toLowerCase()].reason || "N/A";
+        var auth = poChannel.banned[sys.name(src).toLowerCase()].auth,
+            expiry = poChannel.banned[sys.name(src).toLowerCase()].expiry,
+            reason = poChannel.banned[sys.name(src).toLowerCase()].reason;
         if (isNaN(expiry)) {
             expiry = "forever";
         } else {
