@@ -1620,12 +1620,12 @@ function Safari() {
                 safari.throwBall(src, commandData, true);
                 preparationFirst = sys.name(src);
             }
+            lastBaitersDecay = lastBaitersDecayTime;
         } else {
             baitCooldown = itemData.bait.failCD + sys.rand(0,5);
             safaribot.sendAll(sys.name(src) + " left some bait out... but nothing showed up.", safchan);
             player.records.baitNothing += 1;
         }
-        lastBaitersDecay = lastBaitersDecayTime;
         safaribot.sendMessage(src, "You still have " + player.balls[item] + " Baits remaining.", safchan);
         this.saveGame(player);
     };
