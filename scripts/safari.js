@@ -342,7 +342,7 @@ function Safari() {
             types: ["Flying"],
             excludeTypes: ["Bug"],
             include: [329, 330, 635],
-            exclude: [pokeInfo.calcForm(479, 5)]
+            exclude: [pokeInfo.calcForme(479, 5)]
         },
         urban: {
             name: "Urban",
