@@ -1,5 +1,5 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global sys, module, SESSION, safaribot, require, commandbot */
+/*global sys, module, SESSION, script, safaribot, require, commandbot */
 
 var MemoryHash = require("memoryhash.js").MemoryHash;
 var Bot = require('bot.js').Bot;
@@ -271,6 +271,7 @@ function Safari() {
         rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 197, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
         rare: {name: "rare", fullName: "Rare Candy", type: "usable", icon: 117, price: 0, aliases:["rare", "rarecandy", "rare candy", "candy"], sellable: false, buyable: true, tradable: true},
+        mega: {name: "mega", fullName: "Mega Stone", type: "usable", icon: 2001, price: 0, aliases:["mega", "mega stone"], sellable: false, buyable: true, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
         itemfinder: {name: "itemfinder", fullName: "Itemfinder", type: "usable", icon: 69, price: 0, cooldown: 10000, charges: 30, aliases:["itemfinder", "finder", "item finder"], sellable: false, buyable: false, tradable: false},
 
@@ -294,8 +295,8 @@ function Safari() {
 
     var base64icons = {
     itemfinder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAALHRFWHRDcmVhdGlvbiBUaW1lAEZyaSAyMSBOb3YgMjAxNCAyMDozMDo0NCAtMDAwMKEIypIAAAAHdElNRQfeCxUUHwrCV61vAAAACXBIWXMAAAsSAAALEgHS3X78AAAABGdBTUEAALGPC/xhBQAABExJREFUeNqFVutPHFUU/93ZpWyAamOMgIm2Pgrl0ZVHq9t+EAPtZiHWRGOaSFPoF+tnYrJGv+jXEhL/Ah8gaRPb2KSNFqqtSiOQxnYXpFUxatwEAbWBpkuz7GOuc+7OnblzZ0hPcrMze8+5v/M7rzuMr/UDMHCwb5EXiyZIrl9uYUABuWwOkZoIpPjf8+g+mnHsps4/wyLVoUD9sAS5du1jGMw632CIxU7w2YkmFqkho5JQ5Jw7RvRMdgSi2h2w7TjPg1n/qU4ZscQvfGrqI0tvD+5m5sHMEmZmP8UL8QXe2b1gnViBzY2iMJSyubGJA72/BtrtP7zANzcKUIWYGfLlbuZz7HiyFeuZBVgu4YuTjRjuq8e+nnkee3lRAEpRPdXt9H0ZifC2ijBM08TDO9uw/lcaO3Y+h2KphKOf/I5SyUTY2n/skUfR0T3Ppy82ODkIsqN3nYkENaYuPs0O9byFQqGA7U9EUTI5urrexA9fNrDZid1iZe+toa6uDgePEDNDePn9had8dlfffxfcBtNzyqjqCDn+xt88Xygn/rtzu6xCqPB49tLrGV4omLhxZS/LZe85h7x45A9hl88XhTMrKyuYvmBVX802j31YxpSYOeh24rkW88HBQew7NMZ//KbVUjBtZs8y0o8lfuahUEjRNz32YTWmVE2V1ZWe97KRIcDn5uaE1/sP3+JSp2Tlk/Zqa2uRTCYxNDQUYA8vkAriemaIUm5qahUHxuNxdHR0OKxHR0fF79LSEtLptB0Jcsz0VJ+TI/VPl5kLsrq6KkKxtvYfOHedGR4eAYWMAIkd5Wh5eRk3r7aI8PpyFMSMmrmlJSqMJcjMpT1MTotyMbwjioEAx8fHnYIAQpBAdL6hAhATV8p5kQklY6pGFYQ8pSKiFkgm38bAwAAMw0B7e7voO5qF7ml2ddGSTOiZ2DQ373VCVlkZtvbdvtD7RDawdK4866qdfUMy0WeZKsRm5lKjwyZIn5gFsSIutB/2T2WKaZVQ1sX1VNePYCuR5xuqZ/n7NN5D4to4dWpEeFVfX2+DhnxMdWYquFPW9r6vjyg3IyMfIpVKiZKluLe1taGzZ47fuNLsTAT9vpEA6dRNWFmi68kjYVk9upEEEcZ2I6pM/DdvlQBv+udrvPb8Q0QFr6aYiEQue79cDHqM6WA1BHo4dH0CocY+dmwAVX3v4YPr1Th5fh3HB0+IcRWp2e7vIypTOphyQx7Somcq71zWmyNiQkLh7u8/LkYTRYFyKnNDg7iz5yfu6yMq03Nnz4ghSV1OiybC9FeNztWh95EqFHIq8d7eXkxOTjrRCOyjy2ceZ78t3sadO/+K9e3ZXYyG5IOqTTSmxYZYSQBP1QXd8cRMV96qjyjcdIUQSDQaxdjYmBisiURCgFLYWfm7zvVUvSoe/F2X89y0uxuaRSuobE+f/kyEXQCpt+pWot+8QaHreuVP53NAyuxEedr/DwgKwzi3jMhsAAAAAElFTkSuQmCC",
-    gacha: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAkUExURdXeUpR7e1qLe9Xe3sWDamqLc5ykpHNzezExMSlqi////////w/mkLQAAAAMdFJOU///////////////ABLfzs4AAACDSURBVHjarJFJFsQgCETLIYYy979viwZipteLbpf/UwiK7eXgdyHyKERqlbtQ/CBEyOQGM0YsV6GYSDgicExGkGUSHS/cj0WwSWMha6cuyiGU52YiezJVsVZcQw60jPgeLbKGcbvjMdWYCZywi0XLJ2x78Fw9iwu2J7nhv3ztV/ERYAAG0RZIuHExdgAAAABJRU5ErkJggg=="
-
+    gacha: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAkUExURdXeUpR7e1qLe9Xe3sWDamqLc5ykpHNzezExMSlqi////////w/mkLQAAAAMdFJOU///////////////ABLfzs4AAACDSURBVHjarJFJFsQgCETLIYYy979viwZipteLbpf/UwiK7eXgdyHyKERqlbtQ/CBEyOQGM0YsV6GYSDgicExGkGUSHS/cj0WwSWMha6cuyiGU52YiezJVsVZcQw60jPgeLbKGcbvjMdWYCZywi0XLJ2x78Fw9iwu2J7nhv3ztV/ERYAAG0RZIuHExdgAAAABJRU5ErkJggg==",
+    mega:"data:image/png;base64,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"
     };
 
     //Master list of items
@@ -438,7 +439,10 @@ function Safari() {
     var evolutions = {
         "1":{"evo":2,"candies":1},"2":{"evo":3},"4":{"evo":5,"candies":1},"5":{"evo":6},"7":{"evo":8,"candies":1},"8":{"evo":9},"10":{"evo":11,"candies":1},"11":{"evo":12},"13":{"evo":14,"candies":1},"14":{"evo":15},"16":{"evo":17,"candies":1},"17":{"evo":18},"19":{"evo":20},"21":{"evo":22},"23":{"evo":24},"25":{"evo":26},"27":{"evo":28},"29":{"evo":30,"candies":1},"30":{"evo":31},"32":{"evo":33,"candies":1},"33":{"evo":34},"35":{"evo":36},"37":{"evo":38},"39":{"evo":40},"41":{"evo":42,"candies":1},"42":{"evo":169},"43":{"evo":44,"candies":1},"44":{"evo":[45,182]},"46":{"evo":47},"48":{"evo":49},"50":{"evo":51},"52":{"evo":53},"54":{"evo":55},"56":{"evo":57},"58":{"evo":59},"60":{"evo":61,"candies":1},"61":{"evo":[62,186]},"63":{"evo":64,"candies":1},"64":{"evo":65},"66":{"evo":67,"candies":1},"67":{"evo":68},"69":{"evo":70,"candies":1},"70":{"evo":71},"72":{"evo":73},"74":{"evo":75,"candies":1},"75":{"evo":76},"77":{"evo":78},"79":{"evo":[80,199]},"81":{"evo":82,"candies":1},"82":{"evo":462},"84":{"evo":85},"86":{"evo":87},"88":{"evo":89},"90":{"evo":91},"92":{"evo":93,"candies":1},"93":{"evo":94},"95":{"evo":208},"96":{"evo":97},"98":{"evo":99},"100":{"evo":101},"102":{"evo":103},"104":{"evo":105},"108":{"evo":463},"109":{"evo":110},"111":{"evo":112,"candies":1},"112":{"evo":464},"113":{"evo":242},"114":{"evo":465},"116":{"evo":117,"candies":1},"117":{"evo":230},"118":{"evo":119},"120":{"evo":121},"123":{"evo":212},"125":{"evo":466},"126":{"evo":467},"129":{"evo":130},"133":{"evo":[470,471,135,134,136,196,197,700]},"137":{"evo":233,"candies":1},"138":{"evo":139},"140":{"evo":141},"147":{"evo":148,"candies":1},"148":{"evo":149},"152":{"evo":153,"candies":1},"153":{"evo":154},"155":{"evo":156,"candies":1},"156":{"evo":157},"158":{"evo":159,"candies":1},"159":{"evo":160},"161":{"evo":162},"163":{"evo":164},"165":{"evo":166},"167":{"evo":168},"170":{"evo":171},"172":{"evo":25,"candies":1},"173":{"evo":35,"candies":1},"174":{"evo":39,"candies":1},"175":{"evo":176,"candies":1},"176":{"evo":468},"177":{"evo":178},"179":{"evo":180,"candies":1},"180":{"evo":181},"183":{"evo":184},"187":{"evo":188,"candies":1},"188":{"evo":189},"190":{"evo":424},"191":{"evo":192},"193":{"evo":469},"194":{"evo":195},"198":{"evo":430},"200":{"evo":429},"204":{"evo":205},"207":{"evo":472},"209":{"evo":210},"215":{"evo":461},"216":{"evo":217},"218":{"evo":219},"220":{"evo":221,"candies":1},"221":{"evo":473},"223":{"evo":224},"228":{"evo":229},"231":{"evo":232},"233":{"evo":474},"236":{"evo":[107,106,237]},"238":{"evo":124},"239":{"evo":125,"candies":1},"240":{"evo":126,"candies":1},"246":{"evo":247,"candies":1},"247":{"evo":248},"252":{"evo":253,"candies":1},"253":{"evo":254},"255":{"evo":256,"candies":1},"256":{"evo":257},"258":{"evo":259,"candies":1},"259":{"evo":260},"261":{"evo":262},"263":{"evo":264},"265":{"evo":[266,268],"candies":1},"266":{"evo":267},"268":{"evo":269},"270":{"evo":271,"candies":1},"271":{"evo":272},"273":{"evo":274,"candies":1},"274":{"evo":275},"276":{"evo":277},"278":{"evo":279},"280":{"evo":281,"candies":1},"281":{"evo":[282,475]},"283":{"evo":284},"285":{"evo":286},"287":{"evo":288,"candies":1},"288":{"evo":289},"290":{"evo":[291,292]},"293":{"evo":294,"candies":1},"294":{"evo":295},"296":{"evo":297},"298":{"evo":183,"candies":1},"299":{"evo":476},"300":{"evo":301},"304":{"evo":305,"candies":1},"305":{"evo":306},"307":{"evo":308},"309":{"evo":310},"315":{"evo":407},"316":{"evo":317},"318":{"evo":319},"320":{"evo":321},"322":{"evo":323},"325":{"evo":326},"328":{"evo":329,"candies":1},"329":{"evo":330},"331":{"evo":332},"333":{"evo":334},"339":{"evo":340},"341":{"evo":342},"343":{"evo":344},"345":{"evo":346},"347":{"evo":348},"349":{"evo":[350,350]},"353":{"evo":354},"355":{"evo":356,"candies":1},"356":{"evo":477},"360":{"evo":202},"361":{"evo":[362,478]},"363":{"evo":364,"candies":1},"364":{"evo":365},"366":{"evo":[367,368]},"371":{"evo":372,"candies":1},"372":{"evo":373},"374":{"evo":375,"candies":1},"375":{"evo":376},"387":{"evo":388,"candies":1},"388":{"evo":389},"390":{"evo":391,"candies":1},"391":{"evo":392},"393":{"evo":394,"candies":1},"394":{"evo":395},"396":{"evo":397,"candies":1},"397":{"evo":398},"399":{"evo":400},"401":{"evo":402},"403":{"evo":404,"candies":1},"404":{"evo":405},"406":{"evo":315,"candies":1},"408":{"evo":409},"410":{"evo":411},"412":{"evo":[413,414]},"415":{"evo":416},"418":{"evo":419},"420":{"evo":421},"422":{"evo":423},"425":{"evo":426},"427":{"evo":428},"431":{"evo":432},"433":{"evo":358},"434":{"evo":435},"436":{"evo":437},"438":{"evo":185},"439":{"evo":122},"440":{"evo":113,"candies":1},"443":{"evo":444,"candies":1},"444":{"evo":445},"446":{"evo":143},"447":{"evo":448},"449":{"evo":450},"451":{"evo":452},"453":{"evo":454},"456":{"evo":457},"458":{"evo":226},"459":{"evo":460},"495":{"evo":496,"candies":1},"496":{"evo":497},"498":{"evo":499,"candies":1},"499":{"evo":500},"501":{"evo":502,"candies":1},"502":{"evo":503},"504":{"evo":505},"506":{"evo":507,"candies":1},"507":{"evo":508},"509":{"evo":510},"511":{"evo":512},"513":{"evo":514},"515":{"evo":516},"517":{"evo":518},"519":{"evo":520,"candies":1},"520":{"evo":521},"522":{"evo":523},"524":{"evo":525,"candies":1},"525":{"evo":526},"527":{"evo":528},"529":{"evo":530},"532":{"evo":533,"candies":1},"533":{"evo":534},"535":{"evo":536,"candies":1},"536":{"evo":537},"540":{"evo":541,"candies":1},"541":{"evo":542},"543":{"evo":544,"candies":1},"544":{"evo":545},"546":{"evo":547},"548":{"evo":549},"551":{"evo":552,"candies":1},"552":{"evo":553},"554":{"evo":555},"557":{"evo":558},"559":{"evo":560},"562":{"evo":563},"564":{"evo":565},"566":{"evo":567},"568":{"evo":569},"570":{"evo":571},"572":{"evo":573},"574":{"evo":575,"candies":1},"575":{"evo":576},"577":{"evo":578,"candies":1},"578":{"evo":579},"580":{"evo":581},"582":{"evo":583,"candies":1},"583":{"evo":584},"585":{"evo":586},"588":{"evo":589},"590":{"evo":591},"592":{"evo":593},"595":{"evo":596},"597":{"evo":598},"599":{"evo":600,"candies":1},"600":{"evo":601},"602":{"evo":603,"candies":1},"603":{"evo":604},"605":{"evo":606},"607":{"evo":608,"candies":1},"608":{"evo":609},"610":{"evo":611,"candies":1},"611":{"evo":612},"613":{"evo":614},"616":{"evo":617},"619":{"evo":620},"622":{"evo":623},"624":{"evo":625},"627":{"evo":628},"629":{"evo":630},"633":{"evo":634,"candies":1},"634":{"evo":635},"636":{"evo":637},"650":{"evo":651,"candies":1},"651":{"evo":652},"653":{"evo":654,"candies":1},"654":{"evo":655},"656":{"evo":657,"candies":1},"657":{"evo":658},"659":{"evo":660},"661":{"evo":662,"candies":1},"662":{"evo":663},"664":{"evo":665,"candies":1},"665":{"evo":666},"667":{"evo":668},"669":{"evo":670,"candies":1},"670":{"evo":671},"672":{"evo":673},"674":{"evo":675},"677":{"evo":678},"679":{"evo":680,"candies":1},"680":{"evo":681},"682":{"evo":683},"684":{"evo":685},"686":{"evo":687},"688":{"evo":689},"690":{"evo":691},"692":{"evo":693},"694":{"evo":695},"696":{"evo":697},"698":{"evo":699},"704":{"evo":705,"candies":1},"705":{"evo":706},"708":{"evo":709},"710":{"evo":711},"712":{"evo":713},"714":{"evo":715}
     };
-
+    var megaEvolutions = {
+        "3":[65539],"6":[65542, 131078],"9":[65545],"15":[65551],"18":[65554],"65":[65601],"80":[65616],"94":[65630],"115":[65651],"127":[65663],"130":[65666],"142":[65678],"150":[65686, 131222],"181":[65717],"208":[65744],"212":[65748],"214":[65750],"229":[65765],"248":[65784],"254":[65790],"257":[65793],"260":[65796],"282":[65818],"302":[65838],"303":[65839],"306":[65842],"308":[65844],"310":[65846],"319":[65855],"323":[65859],"334":[65870],"354":[65890],"359":[65895],"362":[65898],"373":[65909],"376":[65912],"380":[65916],"381":[65917],"382":[65918],"383":[65919],"384":[65920],"428":[65964],"445":[65981],"448":[65984],"460":[65996],"475":[66011],"531":[66067],"719":[66255]
+    };
+    
     //Adding a variable that already exists on player.records here will automatically make it available as a leaderboard
     //To add stuff not on player.records, you must add an exception on this.updateLeaderboards()
     var leaderboardTypes = {
@@ -668,6 +672,8 @@ function Safari() {
                     ret += base64icons.itemfinder;
                 } else if (item.name === "gacha") {
                     ret += base64icons.gacha;
+                } else if (item.name === "mega") {
+                    ret += base64icons.mega;
                 } else {
                     ret += "item:" + item.icon;
                 }
@@ -2007,25 +2013,79 @@ function Safari() {
         }
         var evolvedId = shiny ? "" + evolveTo : evolveTo;
 
+        player.balls.rare -= candiesRequired;
+        player.records.pokesEvolved += 1;
+        
+        this.evolvePokemon(src, info, evolvedId, "evolved into");
+        safaribot.sendMessage(src, "Your " + info.name + " ate " + candiesRequired + " Rare Cand" + (candiesRequired > 1 ? "ies" : "y") + " and evolved into " + poke(evolvedId) + "!", safchan);
+    };
+    this.useMegaStone = function(src, commandData) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        if (contestCount > 0) {
+            safaribot.sendMessage(src, "You can't use Mega Stones during a contest!", safchan);
+            return;
+        }
+
+        if (player.balls.mega < 1) {
+            safaribot.sendMessage(src, "You have no Mega Stones!", safchan);
+            return;
+        }
+
+        var info = getInputPokemon(commandData.replace(/flabebe/gi, "flabébé"));
+        var shiny = info.shiny;
+        var num = info.num;
+        if (!num) {
+            safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
+            return;
+        }
+        var id = info.id;
+        if (player.pokemon.indexOf(id) == -1) {
+            safaribot.sendMessage(src, "You do not have that Pokémon!", safchan);
+            return;
+        }
+
+        var species = pokeInfo.species(num);
+        if (!(species in megaEvolutions)) {
+            safaribot.sendMessage(src, "This Pokémon cannot mega evolve!", safchan);
+            return;
+        }
+
+        var possibleEvo = megaEvolutions[species];
+        var evolveTo = possibleEvo[sys.rand(0, possibleEvo.length)];
+        var evolvedId = shiny ? "" + evolveTo : evolveTo;
+
+        player.balls.mega -= 1;
+        
+        this.evolvePokemon(src, info, evolvedId, "mega evolved into");
+        player.megaTimers.push({
+            id: evolvedId,
+            expires: now() + 24 * 60 * 60,
+            to: id
+        });
+        safaribot.sendMessage(src, "You used a Mega Stone on " + info.name + " to evolve them into " + poke(evolvedId) + "! They will revert after 24 hours!", safchan);
+    };
+    this.evolvePokemon = function(src, info, evolution, verb) {
+        var player = getAvatar(src);
+        var id = info.id;
         var count = countRepeated(player.pokemon, id);
         if (id === player.starter && count <= 1) {
-            player.starter = evolvedId;
+            player.starter = evolution;
         }
         var wasOnParty = player.party.indexOf(id) !== -1;
 
-        player.pokemon.splice(player.pokemon.indexOf(id), 1, evolvedId);
+        player.pokemon.splice(player.pokemon.indexOf(id), 1, evolution);
         if (wasOnParty) {
-            player.party.splice(player.party.indexOf(id), 1, evolvedId);
+            player.party.splice(player.party.indexOf(id), 1, evolution);
         }
 
         sys.sendAll("", safchan);
-        safaribot.sendHtmlAll(pokeInfo.icon(num) + " -> " + pokeInfo.icon(evolveTo), safchan);
-        safaribot.sendAll(sys.name(src) + "'s " + info.name + " evolved into " + poke(evolvedId) + "!", safchan);
-        safaribot.sendMessage(src, "Your " + info.name + " ate " + candiesRequired + " Rare Cand" + (candiesRequired > 1 ? "ies" : "y") + " and evolved into " + poke(evolvedId) + "!", safchan);
+        safaribot.sendHtmlAll(pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), safchan);
+        safaribot.sendAll(sys.name(src) + "'s " + info.name + " " + verb + " " + poke(evolution) + "!", safchan);
         sys.sendAll("", safchan);
-
-        player.balls.rare -= candiesRequired;
-        player.records.pokesEvolved += 1;
         this.saveGame(player);
     };
     this.releasePokemon = function(src, data) {
@@ -2063,6 +2123,20 @@ function Safari() {
         this.saveGame(player);
         releaseCooldown = releaseCooldownLength;
         safari.createWild(num, shiny);
+    };
+    this.revertMega = function(src) {
+        var player = getAvatar(src);
+        if (!player) {
+            return;
+        }
+        var currentTime = now(), info;
+        for (var e = player.megaTimers.length - 1; e >= 0; e--) {
+            info = player.megaTimers[e];
+            if (info.expires <= currentTime) {
+                this.evolvePokemon(src, getInputPokemon(info.id + (typeof info.id == "string" ? "*" : 0)), info.to, "reverted to");
+                player.megaTimers.splice(e, 1);
+            }
+        }
     };
     this.findItem = function(src) {
         var player = getAvatar(src);
@@ -2354,8 +2428,8 @@ function Safari() {
     this.showBag = function(player, src) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
         var line1 = ["bait", "rock", "gacha", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
-        var line2 = ["safari", "great", "ultra", "master", "dream", "luxury", "quick", "nest", "heavy", "moon", "premier"];
-        var line3 = ["clone", "amulet", "honey", "zoom", "soothe", "crown", "scarf", "battery", "itemfinder", "stick", "rare"];
+        var line2 = ["safari", "great", "ultra", "master", "dream", "luxury", "quick", "nest", "heavy", "clone", "premier"];
+        var line3 = ["amulet", "honey", "zoom", "soothe", "crown", "scarf", "battery", "itemfinder", "stick", "rare", "mega"];
 
         var out = "";
         out += bagRow(player, line1, src, true);
@@ -2813,6 +2887,7 @@ function Safari() {
                 clone: 0,
                 gacha: 0,
                 rare: 0,
+                mega: 0,
                 zoom: 0,
                 amulet: 0,
                 honey: 0,
@@ -2855,6 +2930,7 @@ function Safari() {
                 itemsFound: 0,
                 consecutiveLogins: 0
             },
+            megaTimers: [],
             starter: num,
             lastLogin: getDay(now()),
             consecutiveLogins: 1,
@@ -2882,6 +2958,7 @@ function Safari() {
             this.sanitize(getAvatar(src));
             safaribot.sendMessage(src, "Your Safari data was successfully loaded!", safchan);
             this.dailyReward(src, getDay(now()));
+            this.revertMega(src);
         }
     };
     this.updateLeaderboards = function() {
@@ -3013,6 +3090,9 @@ function Safari() {
                     player.records[rec] = 0;
                 }
             }
+            if (!("megaTimers" in player)) {
+                player.megaTimers = [];
+            }
             if (!("cooldowns" in player)) {
                 player.cooldowns = {
                     ball: 0,
@@ -3053,18 +3133,6 @@ function Safari() {
         }
     };
 
-    this.showRules = function (src) {
-        var rules = [
-            "",
-            "*** *********************************************************************** ***",
-            "±Rules: Catch them all.",
-            "*** *********************************************************************** ***",
-            ""
-        ];
-        for (var x = 0; x < rules.length; x++) {
-            sys.sendMessage(src, rules[x], safchan);
-        }
-    };
     this.showHelp = function (src) {
         var x, help = [
             "",
@@ -3304,6 +3372,10 @@ function Safari() {
             safari.useRareCandy(src, commandData);
             return true;
         }
+        if (command === "mega" || command === "megastone" ) {
+            safari.useMegaStone(src, commandData);
+            return true;
+        }
         if (command === "sort") {
             safari.sortBox(src, commandData);
             return true;
@@ -3358,6 +3430,10 @@ function Safari() {
             out.push("");
             sys.sendHtmlMessage(src, out.join("<br/>"),safchan);
 
+            return true;
+        }
+        if (command === "safarirules") {
+            script.beforeChatMessage(src, "/crules", safchan);
             return true;
         }
         if (command === "info") {
@@ -3809,6 +3885,7 @@ function Safari() {
                     today = getDay(now());
                 for (e in onChannel) {
                     safari.dailyReward(onChannel[e], today);
+                    safari.revertMega(onChannel[e]);
                 }
                 safari.updateLeaderboards();
                 rawPlayers.save();
