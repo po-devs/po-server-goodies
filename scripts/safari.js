@@ -2063,7 +2063,7 @@ function Safari() {
         this.evolvePokemon(src, info, evolvedId, "mega evolved into");
         player.megaTimers.push({
             id: evolvedId,
-            expires: now() + 24 * 60 * 60,
+            expires: now() + 24 * 60 * 60 * 1000,
             to: id
         });
         safaribot.sendMessage(src, "You used a Mega Stone on " + info.name + " to evolve them into " + poke(evolvedId) + "! They will revert after 24 hours!", safchan);
