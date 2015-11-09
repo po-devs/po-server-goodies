@@ -47,7 +47,7 @@ function Safari() {
     var lastBaiters = [];
     var lastBaitersAmount = 3; //Amount of people that need to bait before you can
     var lastBaitersDecay = 40; //Seconds before the first entry in lastBaiters is purged
-    var lastBaitersDecayTime = 40;
+    var lastBaitersDecayTime = 120;
 
     var effectiveness = {
         "Normal": {
@@ -272,7 +272,7 @@ function Safari() {
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 197, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
         rare: {name: "rare", fullName: "Rare Candy", type: "usable", icon: 117, price: 0, aliases:["rare", "rarecandy", "rare candy", "candy"], sellable: false, buyable: true, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
-        itemfinder: {name: "itemfinder", fullName: "Itemfinder", type: "usable", icon: 69, price: 0, cooldown: 10000, charges: 30, aliases:["itemfinder", "finder", "item finder"], sellable: false, buyable: false, tradable: false},
+        itemfinder: {name: "itemfinder", fullName: "Itemfinder", type: "usable", icon: 69, price: 0, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], sellable: false, buyable: false, tradable: false},
 
         //Perks
         amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false, tradable: true},
@@ -341,8 +341,8 @@ function Safari() {
             name: "Sky",
             types: ["Flying"],
             excludeTypes: ["Bug"],
-            include: [329, 330],
-            exclude: []
+            include: [329, 330, 635],
+            exclude: [pokeInfo.calcForm(479, 5)]
         },
         urban: {
             name: "Urban",
@@ -763,7 +763,7 @@ function Safari() {
     this.initFinder = function () {
         var tempArray = [];
         var finderItems = {
-            rare: 1, recharge: 3, rock: 5, bait: 5, pearl: 4, stardust: 2, luxury: 5,
+            rare: 1, recharge: 3, rock: 4, bait: 4, pearl: 4, stardust: 2,  luxury: 4, gacha: 2,
             nothing: 100
         };
 
@@ -1132,7 +1132,7 @@ function Safari() {
         }
 
         if (validItems.indexOf(item) == -1) {
-            safaribot.sendMessage(src, "We don't seem to sell \"" + info[0] +  "\" at this location...", safchan);
+            safaribot.sendMessage(src, "We don't seem to sell \"" + info[0] +  "\" at this location.", safchan);
             return;
         }
 
@@ -1881,7 +1881,7 @@ function Safari() {
                     giveReward = true;
                     reward = "safari";
                     amount = 1;
-                    safaribot.sendMessage(src, "Bummer, only a Safari Ball... You received 1 " + finishName(reward) + ".", safchan);
+                    safaribot.sendMessage(src, "Bummer, only a Safari Ball. You received 1 " + finishName(reward) + ".", safchan);
                 } else {
                     var mod = Math.random();
                     var spawn = true;
@@ -1908,7 +1908,7 @@ function Safari() {
             break;
             case "safari":
                 amount = 1;
-                safaribot.sendMessage(src, "Bummer, only a Safari Ball... You received 1 " + finishName(reward) + ".", safchan);
+                safaribot.sendMessage(src, "Bummer, only a Safari Ball. You received 1 " + finishName(reward) + ".", safchan);
             break;
             case "gacha":
                 var jackpot = Math.floor(gachaJackpot/10);
@@ -2096,11 +2096,14 @@ function Safari() {
                 reward = "itemfinder";
                 amount = 3;
                 showMsg = false;
-                safaribot.sendHtmlAll("<b>Pi-ka-CHUUU!</b> " + sys.name(src) + " was shocked by a Wild Pikachu while looking for items! On the bright side, " + sys.name(src) + "'s Itemfinder recharged slightly.", safchan);
+                safaribot.sendHtmlAll("<b>Pi-ka-CHUUU!</b> " + sys.name(src) + " was shocked by a Wild Pikachu while looking for items! On the bright side, " + sys.name(src) + "'s Itemfinder temporarily recharged due to the shock.", safchan);
                 safaribot.sendMessage(src, "Your Itemfinder gained " + amount + " charges [Remaining charges: " + Math.min(player.balls.itemfinder + amount, itemCap) + "].", safchan);
             break;
+            case "gacha":
+                safaribot.sendMessage(src, "Beeeep. You're led to a nearby garbage can by your Itemfinder. You decide to dig around anyway and find an unused " + finishName(reward) + "!", safchan);
+            break;
             case "rock":
-                safaribot.sendMessage(src, "... Beep. Your Itemfinder pointed you towards a very conspicuous rock.", safchan);
+                safaribot.sendMessage(src, "Beep. Your Itemfinder pointed you towards a very conspicuous rock.", safchan);
             break;
             case "bait":
                 safaribot.sendMessage(src, "Beep-Beep. Your Itemfinder pointed you towards a berry bush! You decided to pick one and put it in your bag.", safchan);
@@ -2113,7 +2116,7 @@ function Safari() {
                 safaribot.sendMessage(src, "Be-Beep. You comb a patch of grass that your Itemfinder pointed you towards and found a " + finishName(reward) + "!", safchan);
             break;
             default:
-                safaribot.sendMessage(src, "... ... ... Your Itemfinder did not detect anything. [Remaining charges: " + player.balls.itemfinder + "].", safchan);
+                safaribot.sendMessage(src, "You pull out your Itemfinder ... ... ... But it did not detect anything. [Remaining charges: " + player.balls.itemfinder + "].", safchan);
                 giveReward = false;
                 showMsg = false;
             break;
@@ -3098,7 +3101,7 @@ function Safari() {
             "Gachapon Ticket: Used to play the Gachapon Machine with /gacha, and win random prizes. Has a " + itemData.gacha.cooldown/1000 + " second cooldown.",
             "Rare Candy: Used to evolve Pokémon. Requires 2 Rare Candies to evolve into a final form Pokémon. ",
             "Valuables: The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be pawned off with /pawn for money.",
-            "Itemfinder: An experimental machine that can help find rare items!",
+            "Itemfinder: An experimental machine that can help find rare items! By default, it can only hold " + itemData.itemfinder.charges + " charges. These charges are reset every day.",
             "",
             "*** Perks ***",
             "Amulet Coin: When holding this charm, a bonus yield of about " + itemData.amulet.bonusRate * 100 + "% can be made when selling Pokémon to the NPC (Max Rate: " + itemData.amulet.maxRate * 100 + "%).",
@@ -3796,10 +3799,9 @@ function Safari() {
                             var player = getAvatar(playerId);
                             if (player) {
                                 player.balls.gacha += 10;
-                                player.balls.itemfinder += 3;
                                 player.records.contestsWon += 1;
                                 safari.saveGame(player);
-                                safaribot.sendMessage(playerId, "You received 10 Gachapon Tickets for winning the contest! Your itemfinder also gained 3 more charges.", safchan);
+                                safaribot.sendMessage(playerId, "You received 10 Gachapon Tickets for winning the contest!", safchan);
                             }
                         }
                     }
