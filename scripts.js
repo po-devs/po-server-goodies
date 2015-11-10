@@ -1008,25 +1008,6 @@ beforeChannelJoin : function(src, channel) {
     // Can't ban from main
     if (channel === 0) return;
 
-    if (channel == sys.channelId("Mafia Channel")) {
-        sys.stopEvent();
-        sys.putInChannel(src, sys.channelId("Mafia"));
-    }
-    if (channel === sys.channelId('Hangman Game')) {
-        sys.stopEvent();
-        sys.putInChannel(src, hangmanchan);
-    }
-    /* Tours redirect */
-    if (channel == sys.channelId("Tours") || channel == sys.channelId("Tournament")) {
-        sys.stopEvent();
-        sys.putInChannel(src, tourchannel);
-        return;
-    }
-    if (channel == sys.channelId("shanaindigo")) {
-        sys.stopEvent();
-        sys.putInChannel(src, sachannel);
-        return;
-    }
     if (sys.auth(src) < 3 && poChannel.canJoin(src) == "banned") {
         var bandata = poChannel.banned[sys.name(src).toLowerCase()] || null;
         if (!bandata) {
