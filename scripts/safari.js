@@ -4,6 +4,7 @@
 var MemoryHash = require("memoryhash.js").MemoryHash;
 var utilities = require('utilities.js');
 var html_escape = utilities.html_escape;
+var Bot = require('bot.js').Bot;
 
 function Safari() {
     var safari = this;
@@ -11,6 +12,8 @@ function Safari() {
     var defaultChannel = "Safari";
     var saveFiles = "scriptdata/safarisaves.txt";
     var rawPlayers;
+    
+    var safaribot = new Bot("Tauros");
 
     var shinyChance = 1024; //Chance for Shiny Pokémon
     var starters = [1, 4, 7];
