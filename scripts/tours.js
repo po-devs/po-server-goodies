@@ -4896,6 +4896,10 @@ module.exports = {
             }
         }
     },
+
+    isChannelAdmin: function(src) {
+        return isMegaUser(src) ? true : isTourOwner(src);
+    },
     
     "help-string": ["tournaments: To know the tournament commands"]
 };

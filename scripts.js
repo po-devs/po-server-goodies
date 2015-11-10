@@ -975,6 +975,10 @@ canJoinStaffChannel : function(src) {
     return false;
 },
 
+isChannelStaff : function(src) {
+    return callplugins('isChannelAdmin', src);
+},
+
 isOfficialChan : function (chanid) {
     var officialchans = [0, tourchannel, mafiachan, triviachan, hangmanchan];
     if (officialchans.indexOf(chanid) > -1)

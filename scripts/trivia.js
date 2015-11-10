@@ -3069,6 +3069,10 @@ module.exports = {
         SESSION.global().Trivia = Trivia;
         Trivia.stepHandler();
     },
+
+    isChannelAdmin: function(src) {
+        return tadmin.isTAdmin(sys.name(src)) ? true : tsadmin.isTAdmin(sys.name(src));
+    },
     
     "help-string": ["trivia: To know the trivia commands"]
 };

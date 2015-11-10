@@ -6744,6 +6744,10 @@ function Mafia(mafiachan) {
             }
         }
     };
+    this.isChannelAdmin = function (src) {
+        return mafia.isMafiaAdmin(src) ? true : mafia.isMafiaSuperAdmin(src);
+    };
+    
     this["help-string"] = ["mafia: To know the mafia commands"];
 }
 /* Functions defined by mafia which should be called from main script:
