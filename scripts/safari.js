@@ -257,12 +257,10 @@ function Safari() {
         ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", icon: 307, price: 120, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"], sellable: false, buyable: true, tradable: false},
         master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 0, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], sellable: false, buyable: false, tradable: true},
 
-        dream: {name: "dream", fullName: "Dream Ball", type: "ball", icon: 267, price: 0, ballBonus: 1, bonusRate: 3, cooldown: 9000, aliases:["dreamball", "dream", "dream ball"], sellable: false, buyable: false, tradable: true},
+        myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 329, price: 0, ballBonus: 1, bonusRate: 4, cooldown: 9000, aliases:["mythball", "myth", "myth ball"], sellable: false, buyable: false, tradable: true},
         heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 0, ballBonus: 1, bonusRate: 0.5, maxBonus: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], sellable: false, buyable: false, tradable: true},
-        nest: {name: "nest", fullName: "Nest Ball", type: "ball", icon: 321, price: 0, ballBonus: 1,  bonusRate: 4, cooldown: 8000, aliases:["nestball", "nest", "nest ball"], sellable: false, buyable: false, tradable: true},
         quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 0, ballBonus: 1, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], sellable: false, buyable: false, tradable: true},
         luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 1.8, cooldown: 8000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false, tradable: true},
-        moon: {name: "moon", fullName: "Moon Ball", type: "ball", icon: 312, price: 0, ballBonus: 1, bonusRate: 5, cooldown: 8000, aliases:["moonball", "moon", "moon ball"], sellable: false, buyable: false, tradable: true},
         premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false, tradable: false},
         clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], sellable: false, buyable: false, tradable: true},
 
@@ -274,11 +272,11 @@ function Safari() {
         mega: {name: "mega", fullName: "Mega Stone", type: "usable", icon: 2001, price: 0, aliases:["mega", "mega stone"], sellable: false, buyable: true, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
         itemfinder: {name: "itemfinder", fullName: "Itemfinder", type: "usable", icon: 69, price: 0, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], sellable: false, buyable: false, tradable: false},
+        gem: {name: "gem", fullName: "Ampere Gem", type: "usable", icon: 245, price: 0, cooldown: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], sellable: false, buyable: false, tradable: false},
 
         //Perks
         amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false, tradable: true},
         honey: {name: "honey", fullName: "Honey", type: "perk", icon: 82, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["honey"], sellable: false, buyable: false, tradable: true},
-        zoom: {name: "zoom", fullName: "Zoom Lens", type: "perk", icon: 41, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["zoom", "zoomlens", "zoom lens", "lens"], sellable: false, buyable: false, tradable: true},
         soothe: {name: "soothe", fullName: "Soothe Bell", type: "perk", icon: 35, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["soothe", "soothebell", "soothe bell", "bell"], sellable: false, buyable: false, tradable: true},
         crown: {name: "crown", fullName: "Relic Crown", type: "perk", icon: 278, price: 0, bonusRate: 0.01, maxRate: 0.1, aliases:["crown", "reliccrown", "relic crown", "relic"], sellable: false, buyable: false, tradable: true},
         scarf: {name: "scarf", fullName: "Silk Scarf", type: "perk", icon: 31, price: 0, bonusRate: 0.015, maxRate: 0.15, aliases:["scarf", "silkscarf", "silk scarf", "silk"], sellable: false, buyable: false, tradable: true},
@@ -296,12 +294,13 @@ function Safari() {
     var base64icons = {
     itemfinder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAALHRFWHRDcmVhdGlvbiBUaW1lAEZyaSAyMSBOb3YgMjAxNCAyMDozMDo0NCAtMDAwMKEIypIAAAAHdElNRQfeCxUUHwrCV61vAAAACXBIWXMAAAsSAAALEgHS3X78AAAABGdBTUEAALGPC/xhBQAABExJREFUeNqFVutPHFUU/93ZpWyAamOMgIm2Pgrl0ZVHq9t+EAPtZiHWRGOaSFPoF+tnYrJGv+jXEhL/Ah8gaRPb2KSNFqqtSiOQxnYXpFUxatwEAbWBpkuz7GOuc+7OnblzZ0hPcrMze8+5v/M7rzuMr/UDMHCwb5EXiyZIrl9uYUABuWwOkZoIpPjf8+g+mnHsps4/wyLVoUD9sAS5du1jGMw632CIxU7w2YkmFqkho5JQ5Jw7RvRMdgSi2h2w7TjPg1n/qU4ZscQvfGrqI0tvD+5m5sHMEmZmP8UL8QXe2b1gnViBzY2iMJSyubGJA72/BtrtP7zANzcKUIWYGfLlbuZz7HiyFeuZBVgu4YuTjRjuq8e+nnkee3lRAEpRPdXt9H0ZifC2ijBM08TDO9uw/lcaO3Y+h2KphKOf/I5SyUTY2n/skUfR0T3Ppy82ODkIsqN3nYkENaYuPs0O9byFQqGA7U9EUTI5urrexA9fNrDZid1iZe+toa6uDgePEDNDePn9had8dlfffxfcBtNzyqjqCDn+xt88Xygn/rtzu6xCqPB49tLrGV4omLhxZS/LZe85h7x45A9hl88XhTMrKyuYvmBVX802j31YxpSYOeh24rkW88HBQew7NMZ//KbVUjBtZs8y0o8lfuahUEjRNz32YTWmVE2V1ZWe97KRIcDn5uaE1/sP3+JSp2Tlk/Zqa2uRTCYxNDQUYA8vkAriemaIUm5qahUHxuNxdHR0OKxHR0fF79LSEtLptB0Jcsz0VJ+TI/VPl5kLsrq6KkKxtvYfOHedGR4eAYWMAIkd5Wh5eRk3r7aI8PpyFMSMmrmlJSqMJcjMpT1MTotyMbwjioEAx8fHnYIAQpBAdL6hAhATV8p5kQklY6pGFYQ8pSKiFkgm38bAwAAMw0B7e7voO5qF7ml2ddGSTOiZ2DQ373VCVlkZtvbdvtD7RDawdK4866qdfUMy0WeZKsRm5lKjwyZIn5gFsSIutB/2T2WKaZVQ1sX1VNePYCuR5xuqZ/n7NN5D4to4dWpEeFVfX2+DhnxMdWYquFPW9r6vjyg3IyMfIpVKiZKluLe1taGzZ47fuNLsTAT9vpEA6dRNWFmi68kjYVk9upEEEcZ2I6pM/DdvlQBv+udrvPb8Q0QFr6aYiEQue79cDHqM6WA1BHo4dH0CocY+dmwAVX3v4YPr1Th5fh3HB0+IcRWp2e7vIypTOphyQx7Somcq71zWmyNiQkLh7u8/LkYTRYFyKnNDg7iz5yfu6yMq03Nnz4ghSV1OiybC9FeNztWh95EqFHIq8d7eXkxOTjrRCOyjy2ceZ78t3sadO/+K9e3ZXYyG5IOqTTSmxYZYSQBP1QXd8cRMV96qjyjcdIUQSDQaxdjYmBisiURCgFLYWfm7zvVUvSoe/F2X89y0uxuaRSuobE+f/kyEXQCpt+pWot+8QaHreuVP53NAyuxEedr/DwgKwzi3jMhsAAAAAElFTkSuQmCC",
     gacha: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAkUExURdXeUpR7e1qLe9Xe3sWDamqLc5ykpHNzezExMSlqi////////w/mkLQAAAAMdFJOU///////////////ABLfzs4AAACDSURBVHjarJFJFsQgCETLIYYy979viwZipteLbpf/UwiK7eXgdyHyKERqlbtQ/CBEyOQGM0YsV6GYSDgicExGkGUSHS/cj0WwSWMha6cuyiGU52YiezJVsVZcQw60jPgeLbKGcbvjMdWYCZywi0XLJ2x78Fw9iwu2J7nhv3ztV/ERYAAG0RZIuHExdgAAAABJRU5ErkJggg==",
-    mega:"data:image/png;base64,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"
+    mega:"data:image/png;base64,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",
+    myth: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAARhJREFUSEvNlT0OgzAMhTlGj8CYo3TsETp2ZOzI2JGRscfoyNiRsUdgzObqIb0qGOenqkAdLCCJ32eHOK5EpNrSNhVH4P8BcM6JZSVbm8yAotPzKJZxPgWKAuAcEw7Hx66es4tBTADF/asVWA6UgqwAC3HvxcMyEABikH0Bet+/2aJYFosMSn+s/skUt7ZpfwCiyJ0azoeR4/126VZHdpVBfR7mE0ERfNNiwhTHOl0TJiAUvZ8O4lsneBLOyBFxuDYLQDUigqa5fhwhTtNi4Td8rIo262AcprnA4KQz0BCswfq+f5QBmEUIgQiFMK4tJp7sB0gXjpYgxzCfEs82HF7HFNLPn67r8PrdrOGUdKzcmv/oybkoU/NvdoVkS0HgewQAAAAASUVORK5CYII="
     };
 
     //Master list of items
     var currentItems = Object.keys(itemData);
-    var retiredItems = ["rocks", "fast"];
+    var retiredItems = ["rocks", "fast", "zoom", "moon", "dream", "nest"];
     var allItems = currentItems.concat(retiredItems);
 
     var currentTheme;
@@ -387,14 +386,14 @@ function Safari() {
             include: [37, 38, 359, 491],
             exclude: []
         },
-        playground: {
-            name: "Playground",
+        daycare: {
+            name: "Daycare",
             types: ["Normal", "Fire", "Water", "Grass", "Electric", "Rock", "Ground", "Bug", "Dark", "Psychic", "Steel", "Ghost", "Dragon", "Fighting", "Flying", "Fairy", "Ice", "Poison"],
             excludeTypes: [],
             include: [],
             exclude: [132, 292],
-            maxBST: 300,
-            minBST: 180
+            maxBST: 350,
+            minBST: 210
         },
         tower: {
             name: "Dragonspiral Tower",
@@ -661,7 +660,7 @@ function Safari() {
             }
         } else {
             if (first) {
-                ret += "<table border = 1 cellpadding = 3><tr><th colspan=11>Inventory</th></tr><tr>";
+                ret += "<table border = 1 cellpadding = 3><tr><th colspan=12>Inventory</th></tr><tr>";
                 ret += "<td valign=middle align=center colspan=2><img src='item:274' title='Money'></td>";
             } else {
                 ret += "<tr>";
@@ -675,7 +674,9 @@ function Safari() {
                     ret += base64icons.gacha;
                 } else if (item.name === "mega") {
                     ret += base64icons.mega;
-                } else {
+                } else if (item.name === "myth") {
+                    ret += base64icons.myth;
+                }else {
                     ret += "item:" + item.icon;
                 }
                 ret += "' title='" + item.fullName + "'></td>";
@@ -757,11 +758,11 @@ function Safari() {
     this.initGacha = function () {
         var tempArray = [];
         var gachaItems = {
-            safari: 180, great: 90, ultra: 40, luxury: 60, dream: 40, nest: 40, quick: 40, heavy: 40, clone: 10, moon: 40,
-            bait: 50, rock: 60,
+            safari: 180, great: 100, ultra: 50, luxury: 75, myth: 40, quick: 40, heavy: 40, clone: 10,
+            bait: 50, rock: 60, gem: 6,
             wild: 32, horde: 8,
             gacha: 1,  master: 2,
-            honey: 1,  amulet: 1, zoom: 1, crown: 1, soothe: 1, scarf: 1, battery: 1,
+            amulet: 1, soothe: 1, scarf: 1, battery: 1,
             pearl: 12, stardust: 10, bigpearl: 8, starpiece: 5, nugget: 4, bignugget: 1
         };
 
@@ -777,8 +778,9 @@ function Safari() {
     this.initFinder = function () {
         var tempArray = [];
         var finderItems = {
-            rare: 1, recharge: 3, rock: 4, bait: 4, pearl: 4, stardust: 2,  luxury: 4, gacha: 2,
-            nothing: 100
+            crown: 1, honey: 1,
+            rare: 5, recharge: 12, rock: 16, bait: 16, pearl: 16, stardust: 8,  luxury: 16, gacha: 9,
+            nothing: 400
         };
 
         for (var e in finderItems) {
@@ -955,29 +957,26 @@ function Safari() {
         player.balls[ball] -= 1;
         var pokeName = poke(currentPokemon);
         var wild = typeof currentPokemon == "string" ? parseInt(currentPokemon, 10) : currentPokemon;
-        var shinyChance = typeof currentPokemon == "string" ? 0.40 : 1;
+        var shinyChance = typeof currentPokemon == "string" ? 0.30 : 1;
 
         var userStats = add(sys.pokeBaseStats(player.party[0]));
         var wildStats = add(sys.pokeBaseStats(wild));
         var statsBonus = (userStats - wildStats) / 6000;
 
-        var legendaries = ["Articuno","Zapdos","Moltres","Mewtwo","Mew","Raikou","Entei","Suicune","Lugia","Ho-Oh","Celebi","Regirock","Regice","Registeel","Latias","Latios","Kyogre","Groudon","Rayquaza","Jirachi","Deoxys","Uxie","Mesprit","Azelf","Dialga","Palkia","Heatran","Regigigas","Giratina","Cresselia","Manaphy","Darkrai","Shaymin","Arceus","Victini","Cobalion","Terrakion","Virizion","Tornadus","Thundurus","Reshiram","Zekrom","Landorus","Kyurem","Keldeo","Meloetta","Genesect","Xerneas","Yveltal","Zygarde","Diancie","Hoopa","Volcanion"];
+        var legendaries = [144,145,146,150,151,243,244,245,249,250,251,377,378,379,380,381,382,383,384,385,386,480,481,482,483,484,485,486,487,488,490,491,492,493,494,638,639,640,641,642,643,644,645,646,647,648,649,716,717,718,719,720,721];
 
-        if (ball === "dream" && shinyChance == 0.40) {
-            shinyChance = 1;
-            ballBonus = itemData[ball].bonusRate;
+        if (ball === "myth") {
+            if (typeof currentPokemon == "string") {
+                shinyChance = 1;
+            } else if (legendaries.indexOf(pokeInfo.species(currentPokemon)) != -1){
+                ballBonus = itemData[ball].bonusRate;
+            }
         }
         if (ball === "heavy" && wildStats >= 450) {
             ballBonus = 1 + itemData[ball].bonusRate * (Math.floor((wildStats - 450) / 25) + 1);
             if (ballBonus > itemData[ball].maxBonus) {
                 ballBonus = itemData[ball].maxBonus;
             }
-        }
-        if (ball === "nest" && wildStats < 360) {
-            ballBonus = itemData[ball].bonusRate;
-        }
-        if (ball === "moon" && legendaries.indexOf(pokeName) != -1) {
-            ballBonus = itemData[ball].bonusRate;
         }
         if (ball === "premier" && (sys.type(sys.pokeType1(player.party[0])) === "Normal" || sys.type(sys.pokeType2(player.party[0])) === "Normal")) {
             ballBonus = itemData[ball].bonusRate;
@@ -1679,8 +1678,7 @@ function Safari() {
 
         var rng = Math.random();
         var rng2 = Math.random();
-        var perkBonus = Math.min(itemData.zoom.bonusRate * player.balls.zoom, itemData.zoom.maxRate);
-        var success = (preparationPhase > 0 ? 0.1 : itemData.rock.successRate) + perkBonus;
+        var success = (preparationPhase > 0 ? 0.1 : itemData.rock.successRate);
         var targetName = utilities.non_flashing(sys.name(targetId));
 
         if (commandData.toLowerCase() === preparationFirst) {
@@ -1938,10 +1936,7 @@ function Safari() {
                 safaribot.sendMessage(src, "You received " + jackpot + " Gachapon Tickets.", safchan);
                 gachaJackpot = 100; //Reset jackpot for next player
             break;
-            case "honey":
             case "amulet":
-            case "zoom":
-            case "crown":
             case "soothe":
             case "scarf":
                 amount = 1;
@@ -1953,6 +1948,11 @@ function Safari() {
                 amount = 1;
                 safaribot.sendAll("Nice! " + sys.name(src) + " just won a " + finishName(reward) + " from Gachapon!", safchan);
                 safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
+            break;
+            case "gem":
+                amount = 1;
+                safaribot.sendAll("The Gachapon machine emits a bright flash of light as " + sys.name(src) + "  reaches for their prize. Despite being temporarily blinded, " + sys.name(src) + " knows they just won a " + finishName(reward) + " due to a very faint baaing sound!", safchan);
+                safaribot.sendMessage(src, "You received an " + finishName(reward) + ".", safchan);
             break;
             case "pearl":
             case "stardust":
@@ -2188,6 +2188,12 @@ function Safari() {
                 showMsg = false;
                 safaribot.sendHtmlAll("<b>Pi-ka-CHUUU!</b> " + sys.name(src) + " was shocked by a Wild Pikachu while looking for items! On the bright side, " + sys.name(src) + "'s Itemfinder temporarily recharged due to the shock.", safchan);
                 safaribot.sendMessage(src, "Your Itemfinder gained " + amount + " charges [Remaining charges: " + Math.min(player.balls.itemfinder + amount, itemCap) + "].", safchan);
+            break;
+            case "crown":
+                safaribot.sendHtmlAll("<b>BEEP! BEEPBEEP! Boop!?</b> " + sys.name(src) + "'s Itemfinder locates an old treasure chest full of ancient relics. Upon picking them up, they crumble into dust except for a single Relic Crown.", safchan);
+            break;
+            case "honey":
+                safaribot.sendHtmlAll("<b>BEE! BEE! BEE!</b> " + sys.name(src) + " accidentally stumbled upon a beehive while using their Itemfinder! " + sys.name(src) + " managed to steal a glob of Honey before running off to avoid the swarm!", safchan);
             break;
             case "gacha":
                 safaribot.sendMessage(src, "Beeeep. You're led to a nearby garbage can by your Itemfinder. You decide to dig around anyway and find an unused " + finishName(reward) + "!", safchan);
@@ -2446,9 +2452,9 @@ function Safari() {
     };
     this.showBag = function(player, src) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
-        var line1 = ["bait", "rock", "gacha", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
-        var line2 = ["safari", "great", "ultra", "master", "dream", "luxury", "quick", "nest", "heavy", "clone", "premier"];
-        var line3 = ["amulet", "honey", "zoom", "soothe", "crown", "scarf", "battery", "itemfinder", "stick", "rare", "mega"];
+        var line1 = ["bait", "rock", "gacha", "stick", "itemfinder", "gem", "rare", "mega"];
+        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "clone", "premier"];
+        var line3 = ["amulet", "soothe",  "scarf", "battery", "crown", "honey", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
 
         var out = "";
         out += bagRow(player, line1, src, true);
@@ -2893,12 +2899,10 @@ function Safari() {
                 great: 5,
                 ultra: 1,
                 master: 0,
-                dream: 0,
+                myth: 0,
                 heavy: 0,
-                nest: 0,
                 quick: 0,
                 luxury: 0,
-                moon: 0,
                 bait: 5,
                 rock: 0,
                 stick: 0,
@@ -2907,7 +2911,6 @@ function Safari() {
                 gacha: 0,
                 rare: 0,
                 mega: 0,
-                zoom: 0,
                 amulet: 0,
                 honey: 0,
                 soothe: 0,
@@ -2920,7 +2923,8 @@ function Safari() {
                 starpiece: 0,
                 bigpearl: 0,
                 nugget: 0,
-                bignugget: 0
+                bignugget: 0,
+                gem: 0
             },
             records: {
                 gachasUsed: 0,
@@ -3186,11 +3190,11 @@ function Safari() {
             "Rare Candy: Used to evolve Pokémon. Requires 2 Rare Candies to evolve into a final form Pokémon. ",
             "Valuables: The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be pawned off with /pawn for money.",
             "Itemfinder: An experimental machine that can help find rare items! By default, it can only hold " + itemData.itemfinder.charges + " charges. These charges are reset every day.",
+            "Ampere Gem: An electrically charge gem created by a famous Ampharos in Olivine City. It is said to be able to recharge the Itemfinder, giving it " + itemData.gem.charges + " more uses for the day!",
             "",
             "*** Perks ***",
             "Amulet Coin: When holding this charm, a bonus yield of about " + itemData.amulet.bonusRate * 100 + "% can be made when selling Pokémon to the NPC (Max Rate: " + itemData.amulet.maxRate * 100 + "%).",
             "Honey: Sweet-smelling Combee Honey that, when applied to bait, increases the chance of a Pokémon being attracted by " + itemData.honey.bonusRate * 100 + "% (Max Rate: " + itemData.honey.maxRate * 100 + "%).",
-            "Zoom Lens: A high tech viewing tool that raises the accuracy of rocks thrown by " + itemData.zoom.bonusRate * 100 + "% (Max Rate: " + itemData.zoom.maxRate * 100 + "%).",
             "Soothe Bell: A bell with a comforting chime that calms the owner and their Pokémon. Reduces delay after a successful catch by " + itemData.soothe.bonusRate * 100 + "% (Max Rate: " + itemData.soothe.maxRate * 100 + "%).",
             "Relic Crown: A rare crown with mysterious properties that brings good fortune to its owner. Increases rate of pawned items by " + itemData.crown.bonusRate * 100 + "% (Max Rate: " + itemData.crown.maxRate * 100 + "%).",
             "Silk Scarf: A fashionable scarf made of the finest silk. Wearing it allows you to lead a more luxurious life and grants you " + itemData.scarf.bonusRate * 100 + "% more money from Luxury Balls (Max Rate: " + itemData.scarf.maxRate * 100 + "%).",
@@ -3204,12 +3208,10 @@ function Safari() {
             "Master Ball: An extremely rare Poké Ball that never fails to catch. Has a cooldown of " + itemData.master.cooldown / 1000 +" seconds.",
             "",
             "*** Special Poké Balls ***",
-            "Dream Ball: An unusual Poké Ball that works better on Pokémon of alternate colorations. Has a cooldown of " + itemData.dream.cooldown / 1000 +" seconds.",
+            "Myth Ball: An alternate colored Poké Ball that works better on really rare Pokémon. Has a cooldown of " + itemData.myth.cooldown / 1000 +" seconds.",
             "Luxury Ball: A comfortable Poké Ball with an increased catch rate that is said to make one wealthy. Has a cooldown of " + itemData.luxury.cooldown / 1000 +" seconds.",
-            "Nest Ball: A homely Poké Ball that has an increased catch rate against weaker Pokémon. Has a cooldown of " + itemData.nest.cooldown / 1000 +" seconds.",
             "Heavy Ball: An industrial Poké Ball that works better against hardier and stronger Pokémon. Has a cooldown of " + itemData.heavy.cooldown / 1000 +" seconds.",
             "Quick Ball: A somewhat different Poké Ball that tends to get better priority during throws. Has a cooldown of " + itemData.quick.cooldown / 1000 +" seconds.",
-            "Moon Ball: A stylized Poké Ball that supposedly works better against Pokémon seen once in a blue moon. Has a cooldown of " + itemData.moon.cooldown / 1000 +" seconds.",
             "Premier Ball: A plain Poké Ball gifted to you for your patronage. It works better when a Normal-type Pokémon is active. Has a cooldown of " + itemData.premier.cooldown / 1000 +" seconds.",
             "Clone Ball: A mysterious Poké Ball with a very low catch rate that can duplicate a pokémon's D.N.A.. Has a cooldown of " + itemData.clone.cooldown / 1000 +" seconds.",
             "",
@@ -3235,7 +3237,7 @@ function Safari() {
             "/help: For a how-to-play guide.",
             "/itemhelp: A comprehensive guide on items and Poké Balls.",
             "/start: To pick a starter Pokémon and join the Safari game. Valid starters are Bulbasaur, Charmander, and Squirtle.",
-            "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be Safari, Great, Ultra, Master, or Dream Ball.",
+            "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be replaced with the name of any other ball you possess.",
             "/sell: To sell one of your Pokémon*.",
             "/trade: To request a Pokémon trade with another player*. Use $200 to trade money and @luxury to trade items (use 3@luxury to trade more than 1 of that item).",
             "/release: Used to release a Pokémon that can be caught by other players*. Pokémon can only be released every 3 minutes.",
