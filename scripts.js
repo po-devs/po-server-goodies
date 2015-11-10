@@ -19,7 +19,7 @@ var Config = {
     querybot: "QueryBot",
     hangbot: "Unown",
     bfbot: "Goomy",
-    //safaribot: "Tauros",
+    safaribot: "Tauros",
     // suspectvoting.js available, but not in use
     Plugins: ["mafia.js", "amoebagame.js", "tournaments.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js", "blackjack.js", "mafiastats.js", "mafiachecker.js", "safari.js"],
     Mafia: {
@@ -98,7 +98,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, contributors, mutes, mbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, hapokemons, lcpokemons,breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, pokeAbilities, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, namesToWatch, allowedRangeNames, reverseTohjo;
+var channel, contributors, mutes, mbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, hapokemons, lcpokemons,breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, pokeAbilities, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, namesToWatch, allowedRangeNames, reverseTohjo, safaribot;
 
 var pokeDir = "db/pokes/";
 var moveDir = "db/moves/6G/";
@@ -317,7 +317,7 @@ commandbot = new Bot(Config.commandbot);
 querybot = new Bot(Config.querybot);
 hangbot = new Bot(Config.hangbot);
 bfbot = new Bot(Config.bfbot);
-//safaribot = new Bot(Config.safaribot);
+safaribot = new Bot(Config.safaribot);
 
 /* Start script-object
  *
@@ -975,6 +975,10 @@ canJoinStaffChannel : function(src) {
     return false;
 },
 
+isChannelStaff : function(src) {
+    return callplugins('isChannelAdmin', src);
+},
+
 isOfficialChan : function (chanid) {
     var officialchans = [0, tourchannel, mafiachan, triviachan, hangmanchan];
     if (officialchans.indexOf(chanid) > -1)
@@ -1004,25 +1008,6 @@ beforeChannelJoin : function(src, channel) {
     // Can't ban from main
     if (channel === 0) return;
 
-    if (channel == sys.channelId("Mafia Channel")) {
-        sys.stopEvent();
-        sys.putInChannel(src, sys.channelId("Mafia"));
-    }
-    if (channel === sys.channelId('Hangman Game')) {
-        sys.stopEvent();
-        sys.putInChannel(src, hangmanchan);
-    }
-    /* Tours redirect */
-    if (channel == sys.channelId("Tours") || channel == sys.channelId("Tournament")) {
-        sys.stopEvent();
-        sys.putInChannel(src, tourchannel);
-        return;
-    }
-    if (channel == sys.channelId("shanaindigo")) {
-        sys.stopEvent();
-        sys.putInChannel(src, sachannel);
-        return;
-    }
     if (sys.auth(src) < 3 && poChannel.canJoin(src) == "banned") {
         var bandata = poChannel.banned[sys.name(src).toLowerCase()] || null;
         if (!bandata) {
