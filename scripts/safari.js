@@ -1,15 +1,13 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global sys, module, SESSION, script, safaribot, require, commandbot */
+/*global sys, module, SESSION, script, safaribot, require */
 
 var MemoryHash = require("memoryhash.js").MemoryHash;
-var Bot = require('bot.js').Bot;
 var utilities = require('utilities.js');
 var html_escape = utilities.html_escape;
 
 function Safari() {
     var safari = this;
     var safchan;
-    var safaribot = new Bot("Tauros");
     var defaultChannel = "Safari";
     var saveFiles = "scriptdata/safarisaves.txt";
     var rawPlayers;
@@ -20,8 +18,6 @@ function Safari() {
     var currentPokemonCount = 1;
 
     var tradeRequests = {};
-    var finderPrizes = []; //Creates Itemfinder on Update
-    var gachaponPrizes = []; //Creates Gachapon on update.
     var gachaJackpotAmount = 100; //Jackpot for gacha tickets. Number gets divided by 10 later.
     var gachaJackpot = (SESSION.global() && SESSION.global().safariGachaJackpot ? SESSION.global().safariGachaJackpot : gachaJackpotAmount);
     var leaderboards = {};
@@ -298,6 +294,20 @@ function Safari() {
     myth: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAARhJREFUSEvNlT0OgzAMhTlGj8CYo3TsETp2ZOzI2JGRscfoyNiRsUdgzObqIb0qGOenqkAdLCCJ32eHOK5EpNrSNhVH4P8BcM6JZSVbm8yAotPzKJZxPgWKAuAcEw7Hx66es4tBTADF/asVWA6UgqwAC3HvxcMyEABikH0Bet+/2aJYFosMSn+s/skUt7ZpfwCiyJ0azoeR4/126VZHdpVBfR7mE0ERfNNiwhTHOl0TJiAUvZ8O4lsneBLOyBFxuDYLQDUigqa5fhwhTtNi4Td8rIo262AcprnA4KQz0BCswfq+f5QBmEUIgQiFMK4tJp7sB0gXjpYgxzCfEs82HF7HFNLPn67r8PrdrOGUdKzcmv/oybkoU/NvdoVkS0HgewQAAAAASUVORK5CYII="
     };
 
+    var gachaItems = {
+        safari: 180, great: 100, ultra: 50, luxury: 75, myth: 40, quick: 40, heavy: 40, clone: 10,
+        bait: 50, rock: 60, gem: 6,
+        wild: 32, horde: 8,
+        gacha: 1,  master: 2,
+        amulet: 1, soothe: 1, scarf: 1, battery: 1,
+        pearl: 12, stardust: 10, bigpearl: 8, starpiece: 5, nugget: 4, bignugget: 1
+    };
+    var finderItems = {
+        crown: 1, honey: 1,
+        rare: 5, recharge: 8, rock: 16, bait: 16, pearl: 16, stardust: 8, luxury: 16, gacha: 13,
+        nothing: 400
+    };
+
     //Master list of items
     var currentItems = Object.keys(itemData);
     var retiredItems = ["rocks", "fast", "zoom", "moon", "dream", "nest"];
@@ -442,7 +452,7 @@ function Safari() {
         "3":[65539],"6":[65542, 131078],"9":[65545],"15":[65551],"18":[65554],"65":[65601],"80":[65616],"94":[65630],"115":[65651],"127":[65663],"130":[65666],"142":[65678],"150":[65686, 131222],"181":[65717],"208":[65744],"212":[65748],"214":[65750],"229":[65765],"248":[65784],"254":[65790],"257":[65793],"260":[65796],"282":[65818],"302":[65838],"303":[65839],"306":[65842],"308":[65844],"310":[65846],"319":[65855],"323":[65859],"334":[65870],"354":[65890],"359":[65895],"362":[65898],"373":[65909],"376":[65912],"380":[65916],"381":[65917],"382":[65918],"383":[65919],"384":[65920],"428":[65964],"445":[65981],"448":[65984],"460":[65996],"475":[66011],"531":[66067],"719":[66255]
     };
     var megaPokemon = [];
-    
+
     //Adding a variable that already exists on player.records here will automatically make it available as a leaderboard
     //To add stuff not on player.records, you must add an exception on this.updateLeaderboards()
     var leaderboardTypes = {
@@ -513,7 +523,7 @@ function Safari() {
         });
         return count;
     }
-    function modeArray(arr) {
+    /*function modeArray(arr) {
         var mode = {};
         var max = 0, count = 0;
 
@@ -531,7 +541,7 @@ function Safari() {
         });
 
         return max;
-    }
+    }*/
     /*
         Use this function for every time you need information about a Pokémon typed by a player (don't use for pokémon picked from player.pokemon).
         Returns an object with the following properties:
@@ -607,18 +617,45 @@ function Safari() {
             return "safari";
         }
     }
-    function fillArray(item, amount) {
+    /* function fillArray(item, amount) {
         var ret = [];
         for (var i = 0; i < amount; i++) {
             ret.push(item);
         }
         return ret;
-    }
+    }*/
     function countArray(arr, item) {
         var first = arr.indexOf(item);
         var last = arr.lastIndexOf(item);
         var count =  last - first + (first === -1 ? 0 : 1);
         return count;
+    }
+    function randomSample(hash) {
+        var cum = 0;
+        var val = Math.random();
+        var psum = 0.0;
+        var x;
+        var count = 0;
+        for (x in hash) {
+            psum += hash[x];
+            count += 1;
+        }
+        if (psum === 0.0) {
+            var j = 0;
+            for (x in hash) {
+                cum = (++j) / count;
+                if (cum >= val) {
+                    return x;
+                }
+            }
+        } else {
+            for (x in hash) {
+                cum += hash[x] / psum;
+                if (cum >= val) {
+                    return x;
+                }
+            }
+        }
     }
 
     function finishName(item) {
@@ -754,51 +791,13 @@ function Safari() {
         }
         player.balls[reward] += amount;
     }
-
-    this.initGacha = function () {
-        var tempArray = [];
-        var gachaItems = {
-            safari: 180, great: 100, ultra: 50, luxury: 75, myth: 40, quick: 40, heavy: 40, clone: 10,
-            bait: 50, rock: 60, gem: 6,
-            wild: 32, horde: 8,
-            gacha: 1,  master: 2,
-            amulet: 1, soothe: 1, scarf: 1, battery: 1,
-            pearl: 12, stardust: 10, bigpearl: 8, starpiece: 5, nugget: 4, bignugget: 1
-        };
-
-        for (var e in gachaItems) {
-            if (currentItems.indexOf(e) === -1 && e !== "wild" && e !== "horde") {
-                continue;
-            }
-            tempArray = fillArray(e, gachaItems[e]);
-            gachaponPrizes = gachaponPrizes.concat(tempArray);
-            tempArray = [];
-        }
-    };
-    this.initFinder = function () {
-        var tempArray = [];
-        var finderItems = {
-            crown: 1, honey: 1,
-            rare: 5, recharge: 12, rock: 16, bait: 16, pearl: 16, stardust: 8,  luxury: 16, gacha: 9,
-            nothing: 400
-        };
-
-        for (var e in finderItems) {
-            if (currentItems.indexOf(e) === -1 && e !== "recharge" && e !== "nothing") {
-                continue;
-            }
-            tempArray = fillArray(e, finderItems[e]);
-            finderPrizes = finderPrizes.concat(tempArray);
-            tempArray = [];
-        }
-    };
     this.initMega = function() {
         megaPokemon = [];
         for (var e in megaEvolutions) {
             megaPokemon = megaPokemon.concat(megaEvolutions[e]);
         }
     };
-    
+
     this.startContest = function(commandData) {
         contestCooldown = contestCooldownLength;
         contestCount = contestDuration;
@@ -872,7 +871,7 @@ function Safari() {
                     var list = [], loops = 0, found = false,
                         atk1 = sys.type(sys.pokeType1(leader)),
                         atk2 = sys.type(sys.pokeType2(leader));
-                    
+
                     do {
                         num = sys.rand(1, 722);
                         if (getBST(num) <= maxStats) {
@@ -885,7 +884,7 @@ function Safari() {
                         }
                         loops++;
                     } while (list.length < 12 && loops < 50);
-                    
+
                     if (!found) {
                         if (list.length === 0) {
                             do {
@@ -1884,8 +1883,7 @@ function Safari() {
         }
         player.balls[gach] -= 1;
         player.records.gachasUsed += 1;
-        var rng = sys.rand(0, gachaponPrizes.length);
-        var reward = gachaponPrizes[rng];
+        var reward = randomSample(gachaItems);
         safaribot.sendMessage(src, "Gacha-PON! The Gachapon Machine has dispensed an item capsule. [Remaining Tickets: " + player.balls[gach] + "]", safchan);
 
         //Variable for higher quantity rewards later. Make better later maybe?
@@ -2062,7 +2060,7 @@ function Safari() {
 
         player.balls.rare -= candiesRequired;
         player.records.pokesEvolved += 1;
-        
+
         this.evolvePokemon(src, info, evolvedId, "evolved into");
         safaribot.sendMessage(src, "Your " + info.name + " ate " + candiesRequired + " Rare Cand" + (candiesRequired > 1 ? "ies" : "y") + " and evolved into " + poke(evolvedId) + "!", safchan);
     };
@@ -2106,7 +2104,7 @@ function Safari() {
         var evolvedId = shiny ? "" + evolveTo : evolveTo;
 
         player.balls.mega -= 1;
-        
+
         this.evolvePokemon(src, info, evolvedId, "mega evolved into");
         player.megaTimers.push({
             id: evolvedId,
@@ -2205,8 +2203,7 @@ function Safari() {
         }
 
         player.balls[charges] -= 1;
-        var rng = sys.rand(0, finderPrizes.length);
-        var reward = finderPrizes[rng];
+        var reward = randomSample(finderItems);
         var amount = 1;
 
         var giveReward = true;
@@ -3563,21 +3560,26 @@ function Safari() {
         if (command === "checkrate") {
             commandData = commandData.toLowerCase();
             if (allItems.indexOf(commandData) !== -1 || commandData === "wild" || commandData === "horde" || commandData === "nothing" || commandData === "recharge") {
-                var total, percent;
-                var instance = countArray(gachaponPrizes, commandData);
+                var total = 0, percent;
+                var instance = gachaItems[commandData];
                 if (instance < 1) {
                     safaribot.sendMessage(src, "Gachpon: This item is not available from Gachapon.", safchan);
                 } else {
-                    total = gachaponPrizes.length;
+                    for (var e in gachaItems) {
+                        total += gachaItems[e];
+                    }
                     percent = instance / total * 100;
                     safaribot.sendMessage(src, "Gachpon: The rate of " + finishName(commandData) + " is " + instance + "/" + total + ", or " + percent.toFixed(2) + "%.", safchan);
                 }
 
-                instance = countArray(finderPrizes, commandData);
+                total = 0;
+                instance = finderItems[commandData];
                 if (instance < 1) {
                     safaribot.sendMessage(src, "Itemfinder: This item is not available from Itemfinder.", safchan);
                 } else {
-                    total = finderPrizes.length;
+                    for (var e in finderItems) {
+                        total += finderItems[e];
+                    }
                     percent = instance / total * 100;
                     safaribot.sendMessage(src, "Itemfinder: The rate of " + finishName(commandData) + " is " + instance + "/" + total + ", or " + percent.toFixed(2) + "%.", safchan);
                 }
@@ -3790,8 +3792,6 @@ function Safari() {
         SESSION.global().channelManager.restoreSettings(safchan);
         SESSION.channels(safchan).perm = true;
         rawPlayers = new MemoryHash(saveFiles);
-        this.initGacha();
-        this.initFinder();
         this.initMega();
         this.updateLeaderboards();
     };
