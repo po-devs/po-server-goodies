@@ -1415,6 +1415,10 @@ function Hangman() {
             sys.sendMessage(src, help[x], channel);
         }
     };
+    this.isChannelAdmin = function (src) {
+        return hangman.isHangmanAdmin(src) ? true : hangman.isHangmanSuperAdmin(src);
+    };
+
     this["help-string"] = ["hangman: To know the hangman commands"];
 
     this.handleCommand = function (src, message, channel) {
