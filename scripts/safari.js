@@ -261,11 +261,11 @@ function Safari() {
         heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 0, ballBonus: 1, bonusRate: 0.5, maxBonus: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], sellable: false, buyable: false, tradable: true},
         quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 0, ballBonus: 1, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], sellable: false, buyable: false, tradable: true},
         luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 1.8, cooldown: 8000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false, tradable: true},
-        premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false, tradable: false},
+        premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 3.5, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false, tradable: false},
         clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], sellable: false, buyable: false, tradable: true},
 
         //Other Items
-        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 200, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
+        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 149, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
         rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 197, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
         rare: {name: "rare", fullName: "Rare Candy", type: "usable", icon: 117, price: 0, aliases:["rare", "rarecandy", "rare candy", "candy"], sellable: false, buyable: true, tradable: true},
@@ -275,10 +275,10 @@ function Safari() {
         gem: {name: "gem", fullName: "Ampere Gem", type: "usable", icon: 245, price: 0, cooldown: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], sellable: false, buyable: false, tradable: false},
 
         //Perks
-        amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false, tradable: true},
+        amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false, tradable: false},
         honey: {name: "honey", fullName: "Honey", type: "perk", icon: 82, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["honey"], sellable: false, buyable: false, tradable: true},
         soothe: {name: "soothe", fullName: "Soothe Bell", type: "perk", icon: 35, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["soothe", "soothebell", "soothe bell", "bell"], sellable: false, buyable: false, tradable: true},
-        crown: {name: "crown", fullName: "Relic Crown", type: "perk", icon: 278, price: 0, bonusRate: 0.01, maxRate: 0.1, aliases:["crown", "reliccrown", "relic crown", "relic"], sellable: false, buyable: false, tradable: true},
+        crown: {name: "crown", fullName: "Relic Crown", type: "perk", icon: 278, price: 0, bonusRate: 0.01, maxRate: 0.1, aliases:["crown", "reliccrown", "relic crown", "relic"], sellable: false, buyable: false, tradable: false},
         scarf: {name: "scarf", fullName: "Silk Scarf", type: "perk", icon: 31, price: 0, bonusRate: 0.015, maxRate: 0.15, aliases:["scarf", "silkscarf", "silk scarf", "silk"], sellable: false, buyable: false, tradable: true},
         battery: {name: "battery", fullName: "Cell Battery", type: "perk", icon: 241, price: 0, bonusRate: 2, maxRate: 20, aliases:["battery", "cellbattery", "cell battery", "cell"], sellable: false, buyable: false, tradable: true},
 
@@ -827,12 +827,13 @@ function Safari() {
 
         safari.createWild();
     };
-    this.createWild = function(dexNum, makeShiny, amt, bstLimit) {
+    this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader) {
         var num,
             pokeId,
             shiny = sys.rand(0, shinyChance) < 1,
             maxStats,
-            amount = amt || 1;
+            amount = amt || 1,
+            ignoreForms = false;
 
         if (amount > 1) {
             shiny = false;
@@ -862,18 +863,50 @@ function Safari() {
                 }
                 num = list[sys.rand(0, list.length)];
                 pokeId = poke(num + (shiny ? "" : 0));
+                ignoreForms = true;
             }
             else {
                 var maxRoll = bstLimit || 601;
                 maxStats = sys.rand(300, maxRoll);
-                do {
-                    num = sys.rand(1, 722);
+                if (leader) {
+                    var list = [], loops = 0, found = false,
+                        atk1 = sys.type(sys.pokeType1(leader)),
+                        atk2 = sys.type(sys.pokeType2(leader));
+                    
+                    do {
+                        num = sys.rand(1, 722);
+                        if (getBST(num) <= maxStats) {
+                            if (this.checkEffective(atk1, atk2, sys.type(sys.pokeType1(num)), sys.type(sys.pokeType2(num))) > 1) {
+                                found = true;
+                                break;
+                            } else {
+                                list.push(num);
+                            }
+                        }
+                        loops++;
+                    } while (list.length < 12 && loops < 50);
+                    
+                    if (!found) {
+                        if (list.length === 0) {
+                            do {
+                                num = sys.rand(1, 722);
+                                pokeId = poke(num + (shiny ? "" : 0));
+                            } while (!pokeId || getBST(num) > maxStats);
+                        } else {
+                            num = list[sys.rand(0, list.length)];
+                        }
+                    }
                     pokeId = poke(num + (shiny ? "" : 0));
-                } while (!pokeId || getBST(num) > maxStats);
+                } else {
+                    do {
+                        num = sys.rand(1, 722);
+                        pokeId = poke(num + (shiny ? "" : 0));
+                    } while (!pokeId || getBST(num) > maxStats);
+                }
             }
         }
 
-        if (num in wildForms) {
+        if (!ignoreForms && num in wildForms) {
             var pickedForm = sys.rand(0, wildForms[num] + 1);
             num = pokeInfo.calcForme(num, pickedForm);
         }
@@ -997,7 +1030,7 @@ function Safari() {
             finalChance = 0.01;
         }
         finalChance *= ballBonus;
-        if (ball == "clone") {
+        if (ball == "clone" && finalChance > itemData[ball].bonusRate) {
             finalChance = itemData[ball].bonusRate;
         }
 
@@ -1628,7 +1661,7 @@ function Safari() {
             }
             lastBaiters.push(sys.name(src));
 
-            safari.createWild();
+            safari.createWild(null, null, 1, null, player.party[0]);
             if (commandData !== undefined) {
                 safari.throwBall(src, commandData, true);
                 preparationFirst = sys.name(src);
@@ -1769,7 +1802,7 @@ function Safari() {
             else if (rng2 < 0.5) {
                 var extraThrown = "safari";
                 if (player.balls[extraThrown] > 0) {
-                    safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but it missed... WAIT! " + sys.name(src) + " also ended up throwing a " + finishName(extraThrown) + " that was stuck together with the rock!", safchan);
+                    safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but it missed... To make things worse, " + sys.name(src) + " also dropped a " + finishName(extraThrown) + " that was stuck together with the rock!", safchan);
                     safaribot.sendMessage(src, "You lost 1 " + finishName(extraThrown) + "!", safchan);
                     player.balls[extraThrown] -= 1;
                 } else {
@@ -3190,7 +3223,7 @@ function Safari() {
             "Rare Candy: Used to evolve Pokémon. Requires 2 Rare Candies to evolve into a final form Pokémon. ",
             "Valuables: The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be pawned off with /pawn for money.",
             "Itemfinder: An experimental machine that can help find rare items! By default, it can only hold " + itemData.itemfinder.charges + " charges. These charges are reset every day.",
-            "Ampere Gem: An electrically charge gem created by a famous Ampharos in Olivine City. It is said to be able to recharge the Itemfinder, giving it " + itemData.gem.charges + " more uses for the day!",
+            "Ampere Gem: An electrically charged gem created by a famous Ampharos in Olivine City. It is said to be able to recharge the Itemfinder, giving it " + itemData.gem.charges + " more uses for the day!",
             "",
             "*** Perks ***",
             "Amulet Coin: When holding this charm, a bonus yield of about " + itemData.amulet.bonusRate * 100 + "% can be made when selling Pokémon to the NPC (Max Rate: " + itemData.amulet.maxRate * 100 + "%).",
