@@ -434,6 +434,16 @@ function Safari() {
             "excludeTypes" : ["Water", "Ice"],
             "include" : [918170, 331, 332, 556],
             "exclude" : []
+        },
+        "starter": {
+            "name" : "Starter Pokémon",
+            "types" : [],
+            "excludeTypes" : [],
+            "include" : [1,2,3,4,5,6,7,8,9,25,133,152,153,154,155,156,157,158,159,160,252,253,254,255,256,257,258,259,260,387,388,389,390,391,392,393,394,395,495,496,497,498,499,500,501,502,503,650,651,652,653,654,655,656,657,658],
+            "exclude" : [],
+            "customBST" : {"25":420,"133":480,"196":535,"197":535},
+            "minBST" : 320,
+            "maxBST" : 550
         }
     };
     /*Vivillon Forms not in theme:
@@ -3649,7 +3659,7 @@ function Safari() {
             commandData = commandData.toLowerCase();
             if (allItems.indexOf(commandData) !== -1 || commandData === "wild" || commandData === "horde" || commandData === "nothing" || commandData === "recharge") {
                 var total = 0, percent;
-                var instance = gachaItems[commandData];
+                var instance = gachaItems[commandData] || 0;
                 if (instance < 1) {
                     safaribot.sendMessage(src, "Gachpon: This item is not available from Gachapon.", safchan);
                 } else {
@@ -3661,7 +3671,7 @@ function Safari() {
                 }
 
                 total = 0;
-                instance = finderItems[commandData];
+                instance = finderItems[commandData] || 0;
                 if (instance < 1) {
                     safaribot.sendMessage(src, "Itemfinder: This item is not available from Itemfinder.", safchan);
                 } else {
