@@ -13,7 +13,7 @@ This code will only work on servers updated to 6th Gen!
 
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, Config, module*/
-var tourschan, tourserrchan, tours, tourwinmessages, tourstats, tourwarnings;
+var tourschan, tourserrchan, tours, tourwinmessages, tourstats, tourwarnings, tourconfig;
 
 if (typeof tourschan !== "string") {
     tourschan = sys.channelId("Tournaments");
@@ -644,7 +644,7 @@ function sendAuthPlayers(message,key) {
             if (sys.os(arr[x]) !== "android") {
                 newregex1 = "<font style='BACKGROUND-COLOR: #FFAAFF'>" + htmlname + "</font><ping/>";
             } else {
-                newregex1 = "<background color='#FFAAFF'>" + htmlname + "</background><ping/>"
+                newregex1 = "<background color='#FFAAFF'>" + htmlname + "</background><ping/>";
             }
             var flashregex = new RegExp(flashtag,"g");
             newmessage = message.replace(regex,newregex1).replace(flashregex,"");
@@ -665,7 +665,7 @@ function sendHtmlAuthPlayers(message,key) {
             if (sys.os(arr[x]) !== "android") {
                 newregex1 = "<font style='BACKGROUND-COLOR: #FFAAFF'>" + htmlname + "</font><ping/>";
             } else {
-                newregex1 = "<background color='#FFAAFF'>" + htmlname + "</background><ping/>"
+                newregex1 = "<background color='#FFAAFF'>" + htmlname + "</background><ping/>";
             }
             var flashregex = new RegExp(flashtag,"g");
             var borderregex = new RegExp(htmlborder, "g");
@@ -695,7 +695,7 @@ function sendFlashingBracket(message,key) {
             if (sys.os(arr[x]) !== "android") {
                 newregex1 = "<font style='BACKGROUND-COLOR: #FFAAFF'>" + htmlname + "</font><ping/>";
             } else {
-                newregex1 = "<background color='#FFAAFF'>" + htmlname + "</background><ping/>"
+                newregex1 = "<background color='#FFAAFF'>" + htmlname + "</background><ping/>";
             }
             var flashregex = new RegExp(flashtag,"g");
             newmessage = message.replace(regex,newregex1).replace(flashregex,"");
@@ -2793,7 +2793,7 @@ function tourCommand(src, command, commandData, channel) {
             var postedrounds = false;
             var rounddata = [];
             var data = [];
-            var notAndroid = sys.os(src) !== "android"
+            var notAndroid = sys.os(src) !== "android";
             for (var y in tours.tour) {
                 var battlers = tours.tour[y].battlers;
                 var winners = tours.tour[y].winners;
@@ -3717,13 +3717,20 @@ function tourstart(tier, starter, key, parameters) {
                 sendChanHtmlAll("<timestamp/> " + (startsWithVowel(tier) ? "An " : "A ") + "<b><a href='http://wiki.pokemon-online.eu/page/Tiers:"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x]);
                 sendChanAll("CLAUSES: "+getTourClauses(key),channels[x]);
                 sendChanAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : "")+(parameters.event ? "; Event Tournament" : "")+(wifiuse != "default" ? "; "+wifiuse : ""), channels[x]);
-                if (tier in tierToRmtId) {
-                    sendChanHtmlAll("<timestamp/> Teams can be found here: <a href='http://pokemon-online.eu/forums/teams.23/?prefix_id=" + tierToRmtId[tier] + "'>Rate My Teams</a>, <a href='http://pokemon-online.eu/forums/team-showcase.65/?prefix_id=" + tierToRmtId[tier] + "'>Team Showcase</a>", channels[x]);
+                if (channels[x] == tourschan) {
+                    if (tier in tierToRmtId) {
+                        sendChanHtmlAll("<timestamp/> Teams can be found here: <a href='http://pokemon-online.eu/forums/teams.23/?prefix_id=" + tierToRmtId[tier] + "'>Rate My Teams</a>, <a href='http://pokemon-online.eu/forums/team-showcase.65/?prefix_id=" + tierToRmtId[tier] + "'>Team Showcase</a>", channels[x]);
+                    }
+                    sendChanHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, "+(tours.tour[key].maxplayers === "default" ? "you have "+time_handle(parameters.event ? tourconfig.toursignup*2 : tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!"), channels[x]);
                 }
-                sendChanHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, "+(tours.tour[key].maxplayers === "default" ? "you have "+time_handle(parameters.event ? tourconfig.toursignup*2 : tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!"), channels[x]);
+                else {
+                    sendChanAll(tourconfig.tourbot+"Go to the #"+sys.channel(tourschan)+" channel (Use /cjoin Tournaments) and type /join to enter the tournament!", channels[x]);
+                    sendChanAll("*** "+(tours.tour[key].maxplayers === "default" ? "You have "+time_handle(parameters.event ? tourconfig.toursignup*2 : tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!")+" ***", channels[x]);
+                }
             }
             else {
-                sendChanHtmlAll("<timestamp/> " + (startsWithVowel(tier) ? "An " : "A ") + "<b><a href='http://wiki.pokemon-online.eu/page/Tiers:"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups in #"+sys.channel(tourschan)+"! Use /cjoin Tournaments and type /join to enter the tournament!", channels[x]);
+                sendChanHtmlAll("<timestamp/> " + (startsWithVowel(tier) ? "An " : "A ") + "<b><a href='http://wiki.pokemon-online.eu/page/Tiers:"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups!", channels[x]);
+                sendChanHtmlAll("<timestamp/> Go to the <a href='po:join/Tournaments'>#Tournaments</a>  channel (Use /cjoin Tournaments) and type /join to enter the tournament!", channels[x]);
             }
             if (!parameters.event) {
                 sendChanAll(border, channels[x]);
@@ -4888,6 +4895,10 @@ module.exports = {
                 }
             }
         }
+    },
+
+    isChannelAdmin: function(src) {
+        return isMegaUser(src) ? true : isTourOwner(src);
     },
     
     "help-string": ["tournaments: To know the tournament commands"]

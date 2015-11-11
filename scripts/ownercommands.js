@@ -50,6 +50,17 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         return;
     }
+    if (command == "perm") {
+        if (channel == staffchannel || channel === 0) {
+            channelbot.sendMessage(src, "you can't do that here.", channel);
+            return;
+        }
+
+        SESSION.channels(channel).perm = (commandData.toLowerCase() == 'on');
+        SESSION.global().channelManager.update(channel);
+        channelbot.sendAll("" + sys.name(src) + (SESSION.channels(channel).perm ? " made the channel permanent." : " made the channel a temporary channel again."), channel);
+        return;
+    }
     if (command == "changerating") {
         var data =  commandData.split(' -- ');
         if (data.length != 3) {
@@ -70,17 +81,6 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             sys.sendMessage(src, name + " " + sys.dbAuth(name), channel);
         });
         sys.sendMessage(src, "",channel);
-        return;
-    }
-    if (command == "capslockday") {
-        if (commandData == "off") {
-            CAPSLOCKDAYALLOW = false;
-            normalbot.sendMessage(src, "You turned caps lock day off!", channel);
-        }
-        else if (commandData == "on") {
-            CAPSLOCKDAYALLOW = true;
-            normalbot.sendMessage(src, "You turned caps lock day on!", channel);
-        }
         return;
     }
     if (command == "contributor") {
@@ -440,31 +440,6 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, commandData + " is not a tier");
         return;
     }
-    if (command == "indigo") {
-        if (commandData == "on") {
-            if (sys.existChannel("Indigo Plateau")) {
-                staffchannel = sys.channelId("Indigo Plateau");
-            } else {
-                staffchannel = sys.createChannel("Indigo Plateau");
-            }
-            SESSION.channels(staffchannel).topic = "Welcome to the Staff Channel! Discuss of all what users shouldn't hear here! Or more serious stuff...";
-            SESSION.channels(staffchannel).perm = true;
-            normalbot.sendMessage(src, "Staff channel was remade!");
-            return;
-            }
-        if (commandData == "off") {
-            SESSION.channels(staffchannel).perm = false;
-            var players = sys.playersOfChannel(staffchannel);
-            for (var x = 0; x < players.length; x++) {
-                sys.kick(players[x], staffchannel);
-                if (sys.isInChannel(players[x], 0) !== true) {
-                    sys.putInChannel(players[x], 0);
-                }
-            }
-            normalbot.sendMessage(src, "Staff channel was destroyed!");
-            return;
-        }
-    }
     if (command == "stopbattles") {
         script.battlesStopped = !script.battlesStopped;
         if (script.battlesStopped)  {
@@ -679,13 +654,23 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "loadstats") {
-        sys.loadBattlePlugin("serverplugins/libusagestats_debug.so");
+        sys.loadBattlePlugin("battleserverplugins/libusagestats_debug.so");
         normalbot.sendMessage(src, "Usage Stats plugin loaded", channel);
+        return;
+    }
+    if (command == "loadreplays") {
+        sys.loadBattlePlugin("battleserverplugins/libbattlelogs_debug.so");
+        normalbot.sendMessage(src, "Replay plugin loaded", channel);
         return;
     }
     if (command == "unloadstats") {
         sys.unloadBattlePlugin("Usage Statistics");
         normalbot.sendMessage(src, "Usage Stats plugin unloaded", channel);
+        return;
+    }
+    if (command == "unloadreplays") {
+        sys.unloadBattlePlugin("Battle Logs");
+        normalbot.sendMessage(src, "Replay plugin unloaded", channel);
         return;
     }
     if (command == "warnwebclients") {
@@ -778,12 +763,11 @@ exports.help =
         "/changerating: Changes the rating of a rating abuser. Format is /changerating user -- tier -- rating.",
         "/stopbattles: Stops all new battles to allow for server restart with less problems for users.",
         "/hiddenauth: Displays all users with more higher auth than 3.",
-        "/imp: Lets you speak as someone",
-        "/impoff: Stops your impersonating.",
+        "/imp[off]: Lets you speak as someone",
+        "/perm [on/off]: Make the current permanent channel or not (permanent channels remain listed when they have no users).",
         "/sendmessage: Sends a chat message to a user. Format is /sendmessage user:::message:::channel.",
         "/sendhtmlmessage: Sends an HTML chat message to a user. Format is /sendmessage user:::message:::channel.",
-        "/contributor: Adds contributor status (for indigo access) to a user, with reason. Format is /contributor user:reason.",
-        "/contributoroff: Removes contributor status from a user.",
+        "/contributor[off]: Adds contributor status (for indigo access) to a user, with reason. Format is /contributor user:reason.",
         "/clearpass: Clears a user's password.",
         "/autosmute: Adds a user to the autosmute list",
         "/removeautosmute: Removes a user from the autosmute list",
@@ -793,10 +777,8 @@ exports.help =
         "/sendall: Sends a message to everyone.",
         "/changeauth[s]: Changes the auth of a user. Format is /changeauth auth user. If using /changeauths, the change will be silent.",
         "/showteam: Displays the team of a user (to help people who have problems with event moves or invalid teams).",
-        "/ipban: Bans an IP. Format is /ipban ip comment.",
-        "/ipunban: Unbans an IP.",
-        "/rangeban: Makes a range ban. Format is /rangeban ip comment.",
-        "/rangeunban: Removes a rangeban.",
+        "/ip[un]ban: Bans an IP. Format is /ipban ip comment.",
+        "/range[un]ban: Makes a range ban. Format is /rangeban ip comment.",
         "/purgemutes: Purges mutes older than the given time in seconds. Default is 4 weeks.",
         "/purgesmutes: Purges smutes older than the given time in seconds. Default is 4 weeks.",
         "/purgembans: Purges mafiabans older than the given time in seconds. Default is 1 week.",
@@ -807,14 +789,12 @@ exports.help =
         "/updatenotice: Updates notice from the web.",
         "/updatescripts: Updates scripts from the web.",
         "/variablereset: Resets scripts variables.",
-        "/capslockday [on/off]: To turn caps lock day on or off.",
-        "/indigo [on/off]: To create or destroy staff channel.",
         "/updatebansites: To update ban sites.",
         "/updatetierchecks: To update tier checks.",
         "/updatecommands: To update command files. Update scripts afterwards for full effect.",
         "/updatetiers[soft]: To update tiers. Soft saves to file only without reloading.",
-        "/loadstats: Loads the usage stats plugin.",
-        "/unloadstats: Unloads the usage stats plugin.",
+        "/[un]loadstats: Loads the usage stats plugin.",
+        "/[un]loadreplay: Loads the replay plugin.",
         "/warnwebclients: Sends a big alert with your message to webclient users.",
         "/clearladder: Clears rankings from a tier.",
         "/advertise: Sends a html message to the main channels",

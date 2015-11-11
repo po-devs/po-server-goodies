@@ -464,10 +464,6 @@ TriviaGame.prototype.startTrivia = function (src, data, scoring) { //Data = poin
         this.sendPM(src, "There are no questions.", triviachan);
         return;
     }
-    if (this.phase === "countvotes") {
-        this.sendPM(src, "Voting is currently in progress!", triviachan);
-        return;
-    }
     /*var x = time() - this.lastStopped;
     if (x < 16) {
         this.sendPM(src, "Sorry, a game was just stopped " + parseInt(x, 10) + " seconds ago.", triviachan);
@@ -477,6 +473,10 @@ TriviaGame.prototype.startTrivia = function (src, data, scoring) { //Data = poin
     data = data.split("*");
 
     var isTA = (tadmin.isTAdmin(sys.name(src)) || tsadmin.isTAdmin(sys.name(src)) || sys.auth(src) > 0);
+    if (this.phase === "countvotes" && !isTA) {
+        this.sendPM(src, "Voting is currently in progress!", triviachan);
+        return;
+    }
     if (!isTA /*|| this.scoreType === "elimination"*/) { //remove cats from user and [elim] games
         data = [data[0]];
     }
@@ -631,8 +631,12 @@ TriviaGame.prototype.finalizeAnswers = function () {
     var ignoreCaseAnswers = equivalentAns.concat(answers).map(function (s) {
         var answer = String(s).toLowerCase();
         if (['a','an','the'].indexOf(answer) === -1) {
-            answer = answer.replace(/\ba|an|the\b ?/g,'').trim();
+            answer = answer.replace(/\ba|an|the\b ?/g,'');
         }
+        if (!answer.match(/^[\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]$/)) {
+            answer = answer.replace(/[\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g,'');
+        }
+        answer = answer.replace(/\s+/g,'');
         return answer;
     });
     for (id in this.triviaPlayers) {
@@ -645,8 +649,12 @@ TriviaGame.prototype.finalizeAnswers = function () {
         if (sys.id(name) !== undefined && this.player(name) !== null) {
             answer = this.submittedAnswers[id].answer.toLowerCase().replace(/ {2,}/g, " ");
             if (['a','an','the'].indexOf(answer) === -1) {
-                answer = answer.replace(/\ba|an|the\b ?/g,'').trim();
+                answer = answer.replace(/\ba|an|the\b ?/g,'');
             }
+            if (!answer.match(/^[\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]$/)) {
+                answer = answer.replace(/[\\'!"#$%&()*+,\-.\/:;<=>?@\[\]^_`{|}~]/g,'');
+            }
+            answer = answer.replace(/\s+/g,'');
             if (ignoreCaseAnswers.indexOf(answer) != -1) {
                 answeredCorrectly.push(this.submittedAnswers[id]);
             }
@@ -841,7 +849,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         this.resetTrivia();
         runUpdate();
         this.lastvote++;
-        if (this.voting && this.lastvote == trivData.votingCooldown) {
+        if (this.voting && this.lastvote >= trivData.votingCooldown) {
             this.phase = "voting";
             this.ticks = 5;
         }
@@ -916,7 +924,11 @@ TriviaGame.prototype.countVotes = function () {
 
 TriviaGame.prototype.voteCat = function (src, cat) {
     if (this.votes.hasOwnProperty(this.key(src))) {
-        Trivia.sendAll(sys.name(src) + " changed their vote to " + triviaCategories[cat] + "!", triviachan);
+        if (this.votes[this.key(src)] === cat) {
+            Trivia.sendPM(src, "You already voted for " + triviaCategories[cat] + "!", channel);
+        } else {
+            Trivia.sendAll(sys.name(src) + " changed their vote to " + triviaCategories[cat] + "!", triviachan);
+        }
     } else {
         Trivia.sendAll(sys.name(src) + " voted for " + triviaCategories[cat] + "!", triviachan);
     }
@@ -1713,18 +1725,18 @@ addUserCommand(["vote"], function (src, commandData, channel) {
         return;
     }
 
-    commandData = commandData.toLowerCase();
-    if (trivData.equivalentCats.hasOwnProperty(commandData)) {
-        commandData = trivData.equivalentCats[commandData];
+    var category = utilities.html_escape(commandData).toLowerCase().trim();
+    if (trivData.equivalentCats.hasOwnProperty(category)) {
+        category = trivData.equivalentCats[category].toLowerCase();
     }
-    var cat = triviaCategories.join("*").toLowerCase().split("*").indexOf(commandData);
+    var cat = triviaCategories.join("*").toLowerCase().split("*").indexOf(category);
 
     if (cat === -1) {
         Trivia.sendPM(src, "Please enter a valid category to vote for.", channel);
         return;
     }
 
-    if (lastUsedCats.join("*").toLowerCase().split("*").indexOf(commandData) > -1) {
+    if (lastUsedCats.join("*").toLowerCase().split("*").indexOf(category) > -1) {
         Trivia.sendPM(src, "This category was recently started, choose another!", channel);
         return;
     }
@@ -3056,6 +3068,10 @@ module.exports = {
     stepEvent: function trivia_step() {
         SESSION.global().Trivia = Trivia;
         Trivia.stepHandler();
+    },
+
+    isChannelAdmin: function(src) {
+        return tadmin.isTAdmin(sys.name(src)) ? true : tsadmin.isTAdmin(sys.name(src));
     },
     
     "help-string": ["trivia: To know the trivia commands"]
