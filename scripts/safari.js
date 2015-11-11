@@ -2345,7 +2345,7 @@ function Safari() {
                 safaribot.sendHtmlAll("<b>BEE! BEE! BEE!</b> " + sys.name(src) + " stumbled upon a beehive while using their Itemfinder. Before running off to avoid the swarm, " + sys.name(src) + " managed to steal a glob of Honey!", safchan);
             break;
             case "spy":
-                safaribot.sendMessage(src, "Bep. Your Itemfinder is pointing towards a shadowy area. Withing the darkness, you find a suspicious " + finishName(reward) + "!", safchan);
+                safaribot.sendMessage(src, "Bep. Your Itemfinder is pointing towards a shadowy area. Within the darkness, you find a suspicious " + finishName(reward) + "!", safchan);
             break;
             case "gacha":
                 safaribot.sendMessage(src, "Beeeep. You're led to a nearby garbage can by your Itemfinder. You decide to dig around anyway and find an unused " + finishName(reward) + "!", safchan);
