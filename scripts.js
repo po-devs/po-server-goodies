@@ -1009,21 +1009,19 @@ beforeChannelJoin : function(src, channel) {
     if (channel === 0) return;
 
     if (sys.auth(src) < 3 && poChannel.canJoin(src) == "banned") {
-        var bandata = poChannel.banned[sys.name(src).toLowerCase()] || null;
-        if (!bandata) {
-            channelbot.sendMessage(src, "You are banned from this channel! You can't join unless channel operators and masters unban you.");
-            sys.stopEvent();
-            return;
-        }
-        var auth = bandata.auth,
-            expiry = bandata.expiry,
-            reason = bandata.reason;
-        if (isNaN(expiry)) {
-            expiry = "forever";
+        if (poChannel.banned.hasOwnProperty(sys.name(src).toLowerCase())) {
+            var auth = poChannel.banned[sys.name(src).toLowerCase()].auth,
+                expiry = poChannel.banned[sys.name(src).toLowerCase()].expiry,
+                reason = poChannel.banned[sys.name(src).toLowerCase()].reason;
+            if (isNaN(expiry)) {
+                expiry = "forever";
+            } else {
+                expiry = "for " + getTimeString(expiry - parseInt(sys.time(), 10), 10);
+            }
+            channelbot.sendMessage(src, "You are banned from this channel " + expiry + " by " + auth + "." + (reason === "N/A" ? "" : " [Reason: " + reason + "]"));
         } else {
-            expiry = "for " + getTimeString(expiry - parseInt(sys.time(), 10));
+            channelbot.sendMessage(src, "You are banned from this channel.");
         }
-        channelbot.sendMessage(src, "You are banned from this channel " + expiry + " by " + auth + "." + (reason === "N/A" ? "" : " [Reason: " + reason + "]"));
         sys.stopEvent();
         return;
     }
@@ -1669,22 +1667,20 @@ beforeChatMessage: function(src, message, chan) {
         return;
     }
     var poChannel = SESSION.channels(channel);
-    if (sys.auth(src) < 1 && !poChannel.canTalk(src) && channel !== 0) {
-        var bandata = poChannel.muted[sys.name(src).toLowerCase()] || null;
-        if (!bandata) {
-            channelbot.sendMessage(src, "You are muted from this channel! You can't talk unless channel operators and masters unmute you.");
-            sys.stopEvent();
-            return;
-        }
-        var auth = bandata.auth,
-            expiry = bandata.expiry,
-            reason = bandata.reason;
-        if (isNaN(expiry)) {
-            expiry = "forever";
+    if (sys.auth(src) < 1 && !poChannel.canTalk(src)) {
+        if (poChannel.muted.hasOwnProperty(sys.name(src).toLowerCase())) {
+            var auth = poChannel.muted[sys.name(src).toLowerCase()].auth,
+                expiry = poChannel.muted[sys.name(src).toLowerCase()].expiry,
+                reason = poChannel.muted[sys.name(src).toLowerCase()].reason;
+            if (isNaN(expiry)) {
+                expiry = "forever";
+            } else {
+                expiry = "for " + getTimeString(expiry - parseInt(sys.time(), 10), 10);
+            }
+            channelbot.sendMessage(src, "You are muted on this channel " + expiry + " by " + auth + "." + (reason === "N/A" ? "" : " [Reason: " + reason + "]"), channel);
         } else {
-            expiry = "for " + getTimeString(expiry - parseInt(sys.time(), 10));
+            channelbot.sendMessage(src, "You are muted on this channel.", channel);
         }
-        channelbot.sendMessage(src, "You are muted on this channel " + expiry + " by " + auth + "." + (reason === "N/A" ? "" : " [Reason: " + reason + "]"), channel);
         sys.stopEvent();
         return;
     }
