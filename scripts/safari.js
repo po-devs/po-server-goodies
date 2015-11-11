@@ -683,6 +683,10 @@ function Safari() {
             return "No item";
         } else if (item === "recharge") {
             return "Recharge";
+        } else if (item === "permfinder") {
+            return "Itemfinder Bonus charge(s)";
+        } else if (item === "itemfinder") {
+            return "Itemfinder charge(s)";
         }
         return itemData[item].fullName;
     }
