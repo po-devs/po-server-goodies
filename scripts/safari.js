@@ -271,7 +271,9 @@ function Safari() {
         mega: {name: "mega", fullName: "Mega Stone", type: "usable", icon: 2001, price: 0, aliases:["mega", "mega stone"], sellable: false, buyable: true, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
         itemfinder: {name: "itemfinder", fullName: "Itemfinder", type: "usable", icon: 69, price: 0, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], sellable: false, buyable: false, tradable: false},
-        gem: {name: "gem", fullName: "Ampere Gem", type: "usable", icon: 245, price: 0, cooldown: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], sellable: false, buyable: false, tradable: false},
+        
+        //Consumables (for useItem)
+        gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 0, cooldown: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], sellable: false, buyable: false, tradable: false},
 
         //Perks
         amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false, tradable: false},
@@ -314,7 +316,7 @@ function Safari() {
     //Master list of items
     var currentItems = Object.keys(itemData);
     var retiredItems = ["rocks", "fast", "zoom", "moon", "dream", "nest"];
-    var allItems = currentItems.concat(retiredItems);
+    var allItems = currentItems.concat(retiredItems, "permfinder");
 
     var currentTheme;
     var nextTheme;
@@ -432,6 +434,16 @@ function Safari() {
             "excludeTypes" : ["Water", "Ice"],
             "include" : [918170, 331, 332, 556],
             "exclude" : []
+        },
+        "starter": {
+            "name" : "Starter Pokémon",
+            "types" : [],
+            "excludeTypes" : [],
+            "include" : [1,2,3,4,5,6,7,8,9,25,133,152,153,154,155,156,157,158,159,160,252,253,254,255,256,257,258,259,260,387,388,389,390,391,392,393,394,395,495,496,497,498,499,500,501,502,503,650,651,652,653,654,655,656,657,658],
+            "exclude" : [],
+            "customBST" : {"25":420,"133":480,"196":535,"197":535},
+            "minBST" : 320,
+            "maxBST" : 550
         }
     };
     /*Vivillon Forms not in theme:
@@ -681,6 +693,10 @@ function Safari() {
             return "No item";
         } else if (item === "recharge") {
             return "Recharge";
+        } else if (item === "permfinder") {
+            return "Itemfinder Bonus charge(s)";
+        } else if (item === "itemfinder") {
+            return "Itemfinder charge(s)";
         }
         return itemData[item].fullName;
     }
@@ -702,8 +718,12 @@ function Safari() {
             }
             for (var i = 0; i < arr.length; i++) {
                 item = itemData[arr[i]];
-                item2 = arr[i];
-                ret += " | <img src='item:" + item.icon + "'>: " + player.balls[item2];
+                if (item.name === "itemfinder") {
+                    item2 = player.balls.itemfinder + player.balls.permfinder;
+                } else {
+                    item2 = player.balls[arr[i]];
+                }
+                ret += " | <img src='item:" + item.icon + "'>: " + item2;
                 linebreak--;
                 if (linebreak === 0 || (i + 1 == arr.length)) {
                     ret += "<br />";
@@ -737,8 +757,12 @@ function Safari() {
                 ret += "<td align=center colspan=2>$" + player.money + "</td>";
             }
             for (var i = 0; i < arr.length; i++) {
-                item = arr[i];
-                ret += "<td align=center>" + player.balls[item] + "</td>";
+                if (arr[i] === "itemfinder") {
+                    item = player.balls.itemfinder + player.balls.permfinder;
+                } else {
+                    item = player.balls[arr[i]];
+                }
+                ret += "<td align=center>" + item + "</td>";
             }
             ret += "</tr>";
         }
@@ -2189,13 +2213,23 @@ function Safari() {
             safaribot.sendMessage(src, "Your Itemfinder needs to cool down otherwise it will overheat! Try again in " + timeLeft(player.cooldowns.itemfinder) + " seconds.", safchan);
             return;
         }
-        var charges = "itemfinder";
-        if (!(charges in player.balls) || player.balls[charges] <= 0) {
+        var dailyCharges = player.balls.itemfinder,
+            permCharges = player.balls.permfinder,
+            totalCharges = dailyCharges + permCharges;
+        if (totalCharges < 1) {
             safaribot.sendMessage(src, "You have no charges left for your Itemfinder!", safchan);
             return;
         }
 
-        player.balls[charges] -= 1;
+        if (dailyCharges > 0 ) {
+            player.balls.itemfinder -= 1;
+            dailyCharges -= 1;
+        } else {
+            player.balls.permfinder -= 1;
+            permCharges -= 1;
+        }
+        totalCharges -= 1;
+        
         var reward = randomSample(finderItems);
         var amount = 1;
 
@@ -2206,17 +2240,17 @@ function Safari() {
                 safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found a " + finishName(reward) + " behind a bush!</b>", safchan);
             break;
             case "recharge":
-                reward = "itemfinder";
+                reward = "permfinder";
                 amount = 3;
                 showMsg = false;
-                safaribot.sendHtmlAll("<b>Pi-ka-CHUUU!</b> " + sys.name(src) + " was shocked by a Wild Pikachu while looking for items! On the bright side, " + sys.name(src) + "'s Itemfinder temporarily recharged due to the shock.", safchan);
-                safaribot.sendMessage(src, "Your Itemfinder gained " + amount + " charges [Remaining charges: " + Math.min(player.balls.itemfinder + amount, itemCap) + "].", safchan);
+                safaribot.sendHtmlAll("<b>Pi-ka-CHUUU!</b> " + sys.name(src) + " was shocked by a Wild Pikachu while looking for items! On the bright side, " + sys.name(src) + "'s Itemfinder slightly recharged due to the shock.", safchan);
+                safaribot.sendMessage(src, "Your Itemfinder gained " + amount + " charges [Remaining charges: " + (totalCharges + amount) + " (Daily " + dailyCharges + " plus " + Math.min(permCharges + amount, itemCap) + " bonus)].", safchan);
             break;
             case "crown":
                 safaribot.sendHtmlAll("<b>BEEP! BEEPBEEP! Boop!?</b> " + sys.name(src) + "'s Itemfinder locates an old treasure chest full of ancient relics. Upon picking them up, they crumble into dust except for a single Relic Crown.", safchan);
             break;
             case "honey":
-                safaribot.sendHtmlAll("<b>BEE! BEE! BEE!</b> " + sys.name(src) + " accidentally stumbled upon a beehive while using their Itemfinder! " + sys.name(src) + " managed to steal a glob of Honey before running off to avoid the swarm!", safchan);
+                safaribot.sendHtmlAll("<b>BEE! BEE! BEE!</b> " + sys.name(src) + " stumbled upon a beehive while using their Itemfinder. Before running off to avoid the swarm, " + sys.name(src) + " managed to steal a glob of Honey!", safchan);
             break;
             case "gacha":
                 safaribot.sendMessage(src, "Beeeep. You're led to a nearby garbage can by your Itemfinder. You decide to dig around anyway and find an unused " + finishName(reward) + "!", safchan);
@@ -2235,13 +2269,13 @@ function Safari() {
                 safaribot.sendMessage(src, "Be-Beep. You comb a patch of grass that your Itemfinder pointed you towards and found a " + finishName(reward) + "!", safchan);
             break;
             default:
-                safaribot.sendMessage(src, "You pull out your Itemfinder ... ... ... But it did not detect anything. [Remaining charges: " + player.balls.itemfinder + "].", safchan);
+                safaribot.sendMessage(src, "You pull out your Itemfinder ... ... ... But it did not detect anything. [Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
                 giveReward = false;
                 showMsg = false;
             break;
         }
         if (showMsg) {
-            safaribot.sendMessage(src, "You found a " + finishName(reward) + " with your Itemfinder! [Remaining charges: " + player.balls.itemfinder + "].", safchan);
+            safaribot.sendMessage(src, "You found a " + finishName(reward) + " with your Itemfinder! [Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
         }
         if (giveReward) {
             player.records.itemsFound += 1;
@@ -2251,7 +2285,41 @@ function Safari() {
         player.cooldowns.itemfinder = currentTime + itemData.itemfinder.cooldown;
         this.saveGame(player);
     };
+    this.useItem = function(src, data) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        var item = itemAlias(data, true);
+        if (!(item in itemData)) {
+            safaribot.sendMessage(src,  item + " is not a valid item!", safchan);
+            return false;
+        }
+        
+        if (itemData[item].type !== "consumable") {
+            safaribot.sendMessage(src, item + " is not a usable item!", safchan);
+        }
+        
+        if (player.balls[item] < 1) {
+            safaribot.sendMessage(src, "You have no " + finishName(item) + "!", safchan);
+            return;
+        }
+        
+        if (item === "gem") {
+            var chars = player.balls.itemfinder,
+                gemdata = itemData.gem.charges,
+                pchars = player.balls.permfinder + gemdata,
+                tchars = chars + pchars;
 
+            safaribot.sendHtmlMessage(src, "The Ampere Gem begins to emit a soft baaing sound. Your Itemfinder then lights up and responds with a loud <b>BAA~!</b>", safchan);
+            safaribot.sendMessage(src, "Your Itemfinder gained " + gemdata + " charges. [Remaining Charges: " + tchars + " (Daily " + chars + " plus " + pchars + " bonus)].", safchan);
+            rewardCapCheck(src, "permfinder", gemdata);
+            player.balls.gem -= 1;
+            return;
+        }
+    };
+    
     this.viewOwnInfo = function(src) {
         var player = getAvatar(src);
         if (!player) {
@@ -2970,6 +3038,7 @@ function Safari() {
                 scarf: 0,
                 battery: 0,
                 itemfinder: 0,
+                permfinder: 0,
                 pearl: 0,
                 stardust: 0,
                 starpiece: 0,
@@ -3301,8 +3370,7 @@ function Safari() {
             "/party: To add or remove a Pokémon from your party, or to set your party's leader*.",
             "/box [number]: To view all your caught Pokémon organized in boxes.",
             "/bag: To view all money and items.",
-            "/mydata: To view your party, caught Pokémon, money and items.",
-            "/view: To view another player's party. If no player is specified, your data will show up.",
+            "/view: To view another player's party. If no player is specified, all of your data will show up.",
             "/changealt: To pass your Safari data to another alt.",
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
             "/rarecandy: Use a Rare Candy to evolve a Pokémon*.",
@@ -3310,6 +3378,7 @@ function Safari() {
             "/finder: Use your item finder to look for items.",
             "/rock: To throw a rock at another player.",
             "/stick: To poke another player with your stick.",
+            "/use: To use a consumable item.",
             "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details.",
             "/sort [criteria] [ascending|descending]: To sort the order in which the Pokémon are listed on /mydata. Criteria are Alphabetical, Number, BST, Type and Duplicate.",
             "/info: View time until next contest and current Gachapon jackpot prize!",
@@ -3541,6 +3610,10 @@ function Safari() {
             safari.findItem(src);
             return true;
         }
+        if (command === "use") {
+            safari.useItem(src, commandData);
+            return true;
+        }
 
         //Staff Commands
         if (!SESSION.channels(safchan).isChannelOperator(src)) {
@@ -3586,7 +3659,7 @@ function Safari() {
             commandData = commandData.toLowerCase();
             if (allItems.indexOf(commandData) !== -1 || commandData === "wild" || commandData === "horde" || commandData === "nothing" || commandData === "recharge") {
                 var total = 0, percent;
-                var instance = gachaItems[commandData];
+                var instance = gachaItems[commandData] || 0;
                 if (instance < 1) {
                     safaribot.sendMessage(src, "Gachpon: This item is not available from Gachapon.", safchan);
                 } else {
@@ -3598,7 +3671,7 @@ function Safari() {
                 }
 
                 total = 0;
-                instance = finderItems[commandData];
+                instance = finderItems[commandData] || 0;
                 if (instance < 1) {
                     safaribot.sendMessage(src, "Itemfinder: This item is not available from Itemfinder.", safchan);
                 } else {
