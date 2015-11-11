@@ -318,109 +318,120 @@ function Safari() {
 
     var currentTheme;
     var nextTheme;
+    /* Theme Syntax:
+    forest: {
+        types: ["Grass", "Bug"], //Types that will be included. Pokémon only needs to match one of these types
+        excludeTypes: [], //Types that will be excluded even if it matches the type above
+        include: [16, 17, 18, 25, 163, 164], //Pokémon that do not match any of the criteria above, but will be included anyway
+        exclude: [492, 649], //Pokémon that matches all of the previous criteria, but will be excluded anyway,
+        customBST: { "289": 600 }, //Makes a pokémon count as a different BST for this theme. In the example, Pokémon #289 (Slaking) will be considered a 600 BST Pokémon for this theme.
+        maxBST: 600, //Choose a different maximum BST for pokémon to spawn. Optional, defaults to 600.
+        minBST: 300 //Choose a different minimum BST for pokémon to spawn. Optional, defaults to 300.
+    }
+    */
     var contestThemes = {
-        forest: {
-            name: "Forest",
-            types: ["Grass", "Bug"], //Types that will be included. Pokémon only needs to match one of these types
-            excludeTypes: [], //Types that will be excluded even if it matches the type above
-            include: [16, 17, 18, 25, 163, 164], //Pokémon that do not match any of the criteria above, but will be included anyway
-            exclude: [492, 649], //Pokémon that matches all of the previous criteria, but will be excluded anyway,
-            customBST: { "289": 600 }, //Makes a pokémon count as a different BST for this theme. In the example, Pokémon #289 (Slaking) will be considered a 600 BST Pokémon for this theme.
-            maxBST: 600, //Choose a different maximum BST for pokémon to spawn. Optional, defaults to 600.
-            minBST: 300 //Choose a different minimum BST for pokémon to spawn. Optional, defaults to 300.
+        "forest" : {
+            "name" : "Forest",
+            "types" : ["Grass", "Bug"],
+            "excludeTypes" : [],
+            "include" : [16, 17, 18, 25, 163, 164],
+            "exclude" : [492, 649],
+            "customBST" : {"289" : 600},
+            "maxBST" : 600,
+            "minBST" : 300
         },
-        river: {
-            name: "River",
-            types: ["Water"],
-            excludeTypes: ["Ice"],
-            include: [pokeInfo.calcForme(666, 8), pokeInfo.calcForme(666, 10), pokeInfo.calcForme(666, 11), pokeInfo.calcForme(666, 13)], //Vivillon Monsoon, Ocean, River
-            exclude: [245]
+        "river" : {
+            "name" : "River",
+            "types" : ["Water"],
+            "excludeTypes" : ["Ice"],
+            "include" : [524954, 656026, 721562, 852634],
+            "exclude" : [245]
         },
-        volcano: {
-            name: "Volcano",
-            types: ["Fire", "Rock"],
-            excludeTypes: ["Water", "Ice"],
-            include: [pokeInfo.calcForme(666, 16)], //Vivillon Sun
-            exclude: []
+        "volcano" : {
+            "name" : "Volcano",
+            "types" : ["Fire", "Rock"],
+            "excludeTypes" : ["Water", "Ice"],
+            "include" : [1049242],
+            "exclude" : []
         },
-        cave: {
-            name: "Cave",
-            types: ["Rock", "Ground", "Dark"],
-            excludeTypes: ["Flying"],
-            include: [41, 42, 169, 92, 93, 202, 360],
-            exclude: []
+        "cave" : {
+            "name" : "Cave",
+            "types" : ["Rock", "Ground", "Dark"],
+            "excludeTypes" : ["Flying"],
+            "include" : [41, 42, 169, 92, 93, 202, 360],
+            "exclude" : []
         },
-        sky: {
-            name: "Sky",
-            types: ["Flying"],
-            excludeTypes: ["Bug"],
-            include: [329, 330, 635],
-            exclude: [pokeInfo.calcForme(479, 5)]
+        "sky" : {
+            "name" : "Sky",
+            "types" : ["Flying"],
+            "excludeTypes" : ["Bug"],
+            "include" : [329, 330, 635],
+            "exclude" : [328159]
         },
-        urban: {
-            name: "Urban",
-            types: ["Poison", "Dark", "Steel"],
-            excludeTypes: ["Grass", "Water", "Fairy"],
-            include: [52, 53, 209, 210, 300, 301, 479, pokeInfo.calcForme(479, 1), pokeInfo.calcForme(479, 2), pokeInfo.calcForme(479, 3), pokeInfo.calcForme(479, 4), pokeInfo.calcForme(479, 5), 506, 507, 508],
-            exclude: []
+        "urban" : {
+            "name" : "Urban",
+            "types" : ["Poison", "Dark", "Steel"],
+            "excludeTypes" : ["Grass", "Water", "Fairy"],
+            "include" : [52, 53, 209, 210, 300, 301, 479, 66015, 131551, 197087, 262623, 328159, 506, 507, 508],
+            "exclude" : []
         },
-        tundra: {
-            name: "Tundra",
-            types: ["Ice"],
-            excludeTypes: [],
-            include: [86, 90, 216, 217, 223, 244, 234, 245, 393, 394, 395, pokeInfo.calcForme(585, 3), pokeInfo.calcForme(586, 3), pokeInfo.calcForme(666, 1), pokeInfo.calcForme(666, 12), pokeInfo.calcForme(666, 17)], //Vivillon Icy Snow, Polar, Tundra
-            exclude: []
+        "tundra" : {
+            "name" : "Tundra",
+            "types" : ["Ice"],
+            "excludeTypes" : [],
+            "include" : [86, 90, 216, 217, 223, 244, 234, 245, 393, 394, 395, 197193, 197194, 66202, 787098, 1114778],
+            "exclude" : []
         },
-        factory: {
-            name: "Factory",
-            types: ["Steel", "Electric"],
-            excludeTypes: [],
-            include: [137, 233, 474],
-            exclude: []
+        "factory" : {
+            "name" : "Factory",
+            "types" : ["Steel", "Electric"],
+            "excludeTypes" : [],
+            "include" : [137, 233, 474],
+            "exclude" : []
         },
-        field: {
-            name: "Field",
-            types: ["Normal", "Fairy"],
-            excludeTypes: [],
-            include: [pokeInfo.calcForme(666, 4)], //Vivillon Elegant
-            exclude: [137, 233, 474]
+        "field" : {
+            "name" : "Field",
+            "types" : ["Normal", "Fairy"],
+            "excludeTypes" : [],
+            "include" : [262810],
+            "exclude" : [137, 233, 474]
         },
-        dojo: {
-            name: "Dojo",
-            types: ["Fighting"],
-            excludeTypes: [],
-            include: [291, 597, 656, 657, 658],
-            exclude: []
+        "dojo" : {
+            "name" : "Dojo",
+            "types" : ["Fighting"],
+            "excludeTypes" : [],
+            "include" : [291, 597, 656, 657, 658],
+            "exclude" : []
         },
-        pyre: {
-            name: "Mt. Pyre",
-            types: ["Ghost", "Psychic"],
-            excludeTypes: ["Steel", "Normal"],
-            include: [37, 38, 359, 491],
-            exclude: []
+        "pyre" : {
+            "name" : "Mt. Pyre",
+            "types" : ["Ghost", "Psychic"],
+            "excludeTypes" : ["Steel", "Normal"],
+            "include" : [37, 38, 359, 491],
+            "exclude" : []
         },
-        daycare: {
-            name: "Daycare",
-            types: ["Normal", "Fire", "Water", "Grass", "Electric", "Rock", "Ground", "Bug", "Dark", "Psychic", "Steel", "Ghost", "Dragon", "Fighting", "Flying", "Fairy", "Ice", "Poison"],
-            excludeTypes: [],
-            include: [],
-            exclude: [132, 292],
-            maxBST: 350,
-            minBST: 210
+        "daycare" : {
+            "name" : "Daycare",
+            "types" : ["Normal", "Fire", "Water", "Grass", "Electric", "Rock", "Ground", "Bug", "Dark", "Psychic", "Steel", "Ghost", "Dragon", "Fighting", "Flying", "Fairy", "Ice", "Poison"],
+            "excludeTypes" : [],
+            "include" : [],
+            "exclude" : [132, 292],
+            "maxBST" : 350,
+            "minBST" : 210
         },
-        tower: {
-            name: "Dragonspiral Tower",
-            types: ["Dragon"],
-            excludeTypes: [],
-            include: [4, 5, 6, 116, 117, 179, 180, 181, 252, 253, 254, 328, 333, 690],
-            exclude: []
+        "tower" : {
+            "name" : "Dragonspiral Tower",
+            "types" : ["Dragon"],
+            "excludeTypes" : [],
+            "include" : [4, 5, 6, 116, 117, 179, 180, 181, 252, 253, 254, 328, 333, 690],
+            "exclude" : []
         },
-        desert: {
-            name: "Desert",
-            types: ["Rock", "Ground"],
-            excludeTypes: ["Water", "Ice"],
-            include: [pokeInfo.calcForme(666, 14), 331, 332, 556], //Vivillon Sandstorm
-            exclude: []
+        "desert" : {
+            "name" : "Desert",
+            "types" : ["Rock", "Ground"],
+            "excludeTypes" : ["Water", "Ice"],
+            "include" : [918170, 331, 332, 556],
+            "exclude" : []
         }
     };
     /*Vivillon Forms not in theme:
@@ -454,7 +465,7 @@ function Safari() {
     var megaEvolutions = {
         "3":[65539],"6":[65542, 131078],"9":[65545],"15":[65551],"18":[65554],"65":[65601],"80":[65616],"94":[65630],"115":[65651],"127":[65663],"130":[65666],"142":[65678],"150":[65686, 131222],"181":[65717],"208":[65744],"212":[65748],"214":[65750],"229":[65765],"248":[65784],"254":[65790],"257":[65793],"260":[65796],"282":[65818],"302":[65838],"303":[65839],"306":[65842],"308":[65844],"310":[65846],"319":[65855],"323":[65859],"334":[65870],"354":[65890],"359":[65895],"362":[65898],"373":[65909],"376":[65912],"380":[65916],"381":[65917],"382":[65918],"383":[65919],"384":[65920],"428":[65964],"445":[65981],"448":[65984],"460":[65996],"475":[66011],"531":[66067],"719":[66255]
     };
-    var megaPokemon = [];
+    var megaPokemon = [65539,65542,131078,65545,65551,65554,65601,65616,65630,65651,65663,65666,65678,65686,131222,65717,65744,65748,65750,65765,65784,65790,65793,65796,65818,65838,65839,65842,65844,65846,65855,65859,65870,65890,65895,65898,65909,65912,65916,65917,65918,65919,65920,65964,65981,65984,65996,66011,66067,66255];
 
     //Adding a variable that already exists on player.records here will automatically make it available as a leaderboard
     //To add stuff not on player.records, you must add an exception on this.updateLeaderboards()
@@ -794,13 +805,7 @@ function Safari() {
         }
         player.balls[reward] += amount;
     }
-    this.initMega = function() {
-        megaPokemon = [];
-        for (var e in megaEvolutions) {
-            megaPokemon = megaPokemon.concat(megaEvolutions[e]);
-        }
-    };
-
+    
     this.startContest = function(commandData) {
         contestCooldown = contestCooldownLength;
         contestCount = contestDuration;
@@ -3808,7 +3813,6 @@ function Safari() {
         SESSION.global().channelManager.restoreSettings(safchan);
         SESSION.channels(safchan).perm = true;
         rawPlayers = new MemoryHash(saveFiles);
-        this.initMega();
         this.updateLeaderboards();
     };
     this.afterChannelJoin = function (src, channel) {
