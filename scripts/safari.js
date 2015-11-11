@@ -41,6 +41,7 @@ function Safari() {
     var preparationFirst = null;
     var itemCap = 999;
     var moneyCap = 9999999;
+    var wildEvent = false;
 
     //Don't really care if this resets after an update.
     var lastBaiters = [];
@@ -261,12 +262,13 @@ function Safari() {
         quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 0, ballBonus: 1, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], sellable: false, buyable: false, tradable: true},
         luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 1.8, cooldown: 8000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false, tradable: true},
         premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 3.5, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false, tradable: false},
+        spy: {name: "spy", fullName: "Spy Ball", type: "ball", icon: 328, price: 0, ballBonus: 1.25, bonusRate: 1.25, cooldown: 9000, aliases:["spyball", "spy", "spy ball"], sellable: false, buyable: false, tradable: true},
         clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], sellable: false, buyable: false, tradable: true},
 
         //Other Items
-        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 149, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
+        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 149, successRate: 0.40, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
         rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
-        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 197, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
+        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 189, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
         rare: {name: "rare", fullName: "Rare Candy", type: "usable", icon: 117, price: 0, aliases:["rare", "rarecandy", "rare candy", "candy"], sellable: false, buyable: true, tradable: true},
         mega: {name: "mega", fullName: "Mega Stone", type: "usable", icon: 2001, price: 0, aliases:["mega", "mega stone"], sellable: false, buyable: true, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
@@ -309,7 +311,7 @@ function Safari() {
     };
     var finderItems = {
         crown: 1, honey: 1,
-        rare: 5, recharge: 8, rock: 16, bait: 16, pearl: 16, stardust: 8, luxury: 16, gacha: 13,
+        rare: 5, recharge: 8, spy: 32, rock: 16, bait: 16, pearl: 16, stardust: 8, luxury: 16, gacha: 13,
         nothing: 400
     };
 
@@ -336,46 +338,86 @@ function Safari() {
             "name" : "Forest",
             "types" : ["Grass", "Bug"],
             "excludeTypes" : [],
-            "include" : [16, 17, 18, 25, 163, 164],
-            "exclude" : [492, 649],
-            "customBST" : {"289" : 600},
-            "maxBST" : 600,
-            "minBST" : 300
+            "include" : [16, 17, 18, 25, 163, 164, 438, 185, 452, 65948, 131484, 65949, 131485, 649, 172, 287, 288, 289],
+            "exclude" : [649],
+            "customBST" : {
+                "289" : 600
+            },
+            "minBST" : 300,
+            "maxBST" : 601
         },
-        "river" : {
-            "name" : "River",
+        "sea" : {
+            "name" : "Sea",
             "types" : ["Water"],
-            "excludeTypes" : ["Ice"],
-            "include" : [524954, 656026, 721562, 852634],
-            "exclude" : [245]
+            "excludeTypes" : [],
+            "include" : [524954, 656026, 721562, 852634, 399, 489, 65958, 65959, 131423, 298, 712, 713, 686, 687, 691, 249, 382],
+            "exclude" : [721],
+            "customBST" : {
+                "249" : 630,
+                "382" : 630
+            },
+            "minBST" : 300,
+            "maxBST" : 631
         },
         "volcano" : {
             "name" : "Volcano",
             "types" : ["Fire", "Rock"],
             "excludeTypes" : ["Water", "Ice"],
-            "include" : [1049242],
-            "exclude" : []
+            "include" : [1049242, 721, 208],
+            "exclude" : [438, 185, 639, 345, 346],
+            "customBST" : {},
+            "minBST" : 315,
+            "maxBST" : 601
         },
         "cave" : {
             "name" : "Cave",
             "types" : ["Rock", "Ground", "Dark"],
             "excludeTypes" : ["Flying"],
-            "include" : [41, 42, 169, 92, 93, 202, 360],
-            "exclude" : []
+            "include" : [41, 42, 169, 92, 93, 202, 360, 486, 29, 30, 32, 33, 206],
+            "exclude" : [],
+            "customBST" : {
+                "486" : 600
+            },
+            "minBST" : 300,
+            "maxBST" : 601
         },
         "sky" : {
             "name" : "Sky",
             "types" : ["Flying"],
             "excludeTypes" : ["Bug"],
-            "include" : [329, 330, 635],
-            "exclude" : [328159]
+            "include" : [329, 330, 635, 380, 381, 250, 621],
+            "exclude" : [6, 130],
+            "customBST" : {
+                "250" : 620
+            },
+            "minBST" : 300,
+            "maxBST" : 621
         },
         "urban" : {
             "name" : "Urban",
             "types" : ["Poison", "Dark", "Steel"],
             "excludeTypes" : ["Grass", "Water", "Fairy"],
-            "include" : [52, 53, 209, 210, 300, 301, 479, 66015, 131551, 197087, 262623, 328159, 506, 507, 508],
-            "exclude" : []
+            "include" : [52, 53, 209, 210, 300, 301, 479, 66015, 131551, 197087, 262623, 328159, 506, 507, 508, 19, 20, 582, 583, 584, 66217, 676, 66212, 131748, 197284, 262820, 328356, 393892, 459428, 524964, 590500, 358, 707],
+            "exclude" : [],
+            "customBST" : {
+                "66015" : 590,
+                "131551" : 590,
+                "197087" : 590,
+                "262623" : 590,
+                "328159" : 590,
+                "66217" : 600,
+                "590500" : 580,
+                "524964" : 580,
+                "459428" : 580,
+                "393892" : 580,
+                "328356" : 580,
+                "262820" : 580,
+                "197284" : 580,
+                "131748" : 580,
+                "66212" : 580
+            },
+            "minBST" : 300,
+            "maxBST" : 601
         },
         "tundra" : {
             "name" : "Tundra",
@@ -389,59 +431,99 @@ function Safari() {
             "types" : ["Steel", "Electric"],
             "excludeTypes" : [],
             "include" : [137, 233, 474],
-            "exclude" : []
+            "exclude" : [],
+            "customBST" : {
+                "644" : 620
+            },
+            "minBST" : 300,
+            "maxBST" : 621
         },
         "field" : {
             "name" : "Field",
             "types" : ["Normal", "Fairy"],
             "excludeTypes" : [],
-            "include" : [262810],
-            "exclude" : [137, 233, 474]
+            "include" : [262810, 66205, 131741, 197277, 262813, 66206, 131742, 197278, 262814, 328350, 66207, 131743, 197279, 262815, 672, 673, 77, 78, 522, 523],
+            "exclude" : [137, 233, 474],
+            "customBST" : {
+                "289" : 600
+            },
+            "minBST" : 300,
+            "maxBST" : 601
         },
         "dojo" : {
             "name" : "Dojo",
             "types" : ["Fighting"],
             "excludeTypes" : [],
-            "include" : [291, 597, 656, 657, 658],
-            "exclude" : []
+            "include" : [291, 656, 657, 658, 390, 679, 680, 66217, 624, 625],
+            "exclude" : [],
+            "customBST" : {
+                "66217" : 590
+            },
+            "minBST" : 300,
+            "maxBST" : 601
         },
         "pyre" : {
             "name" : "Mt. Pyre",
             "types" : ["Ghost", "Psychic"],
             "excludeTypes" : ["Steel", "Normal"],
-            "include" : [37, 38, 359, 491],
-            "exclude" : []
+            "include" : [37, 38, 359, 491, 104, 105, 654, 228, 229, 198, 430],
+            "exclude" : [201, 479, 386],
+            "customBST" : {
+                "487" : 620
+            },
+            "minBST" : 300,
+            "maxBST" : 621
         },
         "daycare" : {
             "name" : "Daycare",
             "types" : ["Normal", "Fire", "Water", "Grass", "Electric", "Rock", "Ground", "Bug", "Dark", "Psychic", "Steel", "Ghost", "Dragon", "Fighting", "Flying", "Fairy", "Ice", "Poison"],
             "excludeTypes" : [],
-            "include" : [],
-            "exclude" : [132, 292],
-            "maxBST" : 350,
-            "minBST" : 210
+            "include" : [66205, 131741, 197277, 262813],
+            "exclude" : [17, 397, 292, 281, 188],
+            "customBST" : {},
+            "minBST" : 240,
+            "maxBST" : 350
         },
         "tower" : {
             "name" : "Dragonspiral Tower",
             "types" : ["Dragon"],
             "excludeTypes" : [],
-            "include" : [4, 5, 6, 116, 117, 179, 180, 181, 252, 253, 254, 328, 333, 690],
-            "exclude" : []
+            "include" : [4, 5, 6, 116, 117, 179, 180, 181, 252, 253, 254, 328, 333, 690, 643, 644, 622, 623],
+            "exclude" : [],
+            "customBST" : {
+                "380" : 620,
+                "381" : 620,
+                "643" : 620,
+                "644" : 620,
+                "718" : 620
+            },
+            "minBST" : 300,
+            "maxBST" : 621
         },
         "desert" : {
             "name" : "Desert",
             "types" : ["Rock", "Ground"],
             "excludeTypes" : ["Water", "Ice"],
-            "include" : [918170, 331, 332, 556],
-            "exclude" : []
+            "include" : [918170, 331, 332, 556, 383, 262495, 455, 30, 29, 32, 33, 23, 24],
+            "exclude" : [],
+            "customBST" : {
+                "383" : 620
+            },
+            "minBST" : 300,
+            "maxBST" : 621
         },
-        "starter": {
+        "starter" : {
             "name" : "Starter Pokémon",
             "types" : [],
             "excludeTypes" : [],
-            "include" : [1,2,3,4,5,6,7,8,9,25,133,152,153,154,155,156,157,158,159,160,252,253,254,255,256,257,258,259,260,387,388,389,390,391,392,393,394,395,495,496,497,498,499,500,501,502,503,650,651,652,653,654,655,656,657,658],
+            "include" : [1, 2, 3, 4, 5, 6, 7, 8, 9, 25, 133, 152, 153, 154, 155, 156, 157, 158, 159, 160, 252, 253, 254, 255, 256, 257, 258, 259, 260, 387, 388, 389, 390, 391, 392, 393, 394, 395, 495, 496, 497, 498, 499, 500, 501, 502, 503, 650, 651, 652, 653, 654, 655, 656, 657, 658],
             "exclude" : [],
-            "customBST" : {"25":420,"133":480,"196":535,"197":535},
+            "customBST" : {
+                "25" : 420,
+                "133" : 480,
+                "196" : 535,
+                "197" : 535
+            },
             "minBST" : 320,
             "maxBST" : 550
         }
@@ -855,7 +937,7 @@ function Safari() {
         } else {
             contestBroadcast = true;
         }
-
+        wildEvent = false;
         safari.createWild();
     };
     this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader) {
@@ -915,7 +997,7 @@ function Safari() {
                             }
                         }
                         loops++;
-                    } while (list.length < 6 && loops < 50);
+                    } while (list.length < 7 && loops < 50);
                     
                     if (!found) {
                         if (list.length === 0) {
@@ -953,7 +1035,7 @@ function Safari() {
             ret += "</center><hr>";
             sys.sendHtmlAll(ret, safchan);
         } else {
-            sys.sendHtmlAll("<hr><center>A wild " + pokeId + " appeared! <i>(BST: " + add(sys.pokeBaseStats(num)) + ")</i><br/>" + pokeInfo.sprite(currentPokemon) + "</center><hr>", safchan);
+            sys.sendHtmlAll("<hr><center>A wild " + pokeId + " appeared! <i>(BST: " + add(sys.pokeBaseStats(num)) + ")</i><br/>" + (wildEvent ? "<b>This is an Event Pokémon! No Master Balls allowed!</b><br/>" : "") + pokeInfo.sprite(currentPokemon) + "</center><hr>", safchan);
         }
         preparationPhase = sys.rand(5, 8);
         preparationThrows = {};
@@ -1009,6 +1091,11 @@ function Safari() {
         }
         if (!(ball in player.balls) || player.balls[ball] <= 0) {
             safaribot.sendMessage(src, "You have no " + cap(ball) + " Balls!", safchan);
+            return;
+        }
+        
+        if (wildEvent && ball == "master") {
+            safaribot.sendMessage(src, "This is an Event Pokémon, you cannot use Master Ball!", safchan);
             return;
         }
 
@@ -1073,7 +1160,11 @@ function Safari() {
             if (amt < 1) {
                 sys.sendAll("", safchan);
             }
-            safaribot.sendAll(name + " caught the " + pokeName + " with a " + cap(ball) + " Ball and the help of their " + poke(player.party[0]) + "!" + (amt > 0 ? remaining : ""), safchan);
+            if (ball == "spy") {
+                safaribot.sendAll("Some stealthy person caught the " + pokeName + " with a " + cap(ball) + " Ball and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
+            } else {
+                safaribot.sendAll(name + " caught the " + pokeName + " with a " + cap(ball) + " Ball and the help of their " + poke(player.party[0]) + "!" + (amt > 0 ? remaining : ""), safchan);
+            }
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with a " + cap(ball) + " Ball! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             player.pokemon.push(currentPokemon);
             player.records.pokesCaught += 1;
@@ -1106,6 +1197,7 @@ function Safari() {
             if (amt < 1) {
                 sys.sendAll("", safchan);
                 currentPokemon = null;
+                wildEvent = false;
             }
         } else {
             safaribot.sendMessage(src, "You threw a  " + cap(ball) + " Ball at " + pokeName +"! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
@@ -1118,7 +1210,7 @@ function Safari() {
             } else {
                 safaribot.sendMessage(src, "Oh no! The " + pokeName + " broke free! ", safchan);
             }
-            safaribot.sendAll(pokeName + " broke out of " + name + "'s " + cap(ball) + " Ball!", safchan);
+            safaribot.sendAll(pokeName + " broke out of " + (ball == "spy" ? "an anonymous person" : name) + "'s " + cap(ball) + " Ball!", safchan);
             player.records.pokesNotCaught += 1;
         }
         player.cooldowns.ball = currentTime + cooldown;
@@ -2544,7 +2636,7 @@ function Safari() {
     this.showBag = function(player, src) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
         var line1 = ["bait", "rock", "gacha", "stick", "itemfinder", "gem", "rare", "mega"];
-        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "clone", "premier"];
+        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier"];
         var line3 = ["amulet", "soothe",  "scarf", "battery", "crown", "honey", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
 
         var out = "";
@@ -3027,6 +3119,7 @@ function Safari() {
                 rock: 0,
                 stick: 0,
                 premier: 0,
+                spy: 0,
                 clone: 0,
                 gacha: 0,
                 rare: 0,
@@ -3037,7 +3130,7 @@ function Safari() {
                 crown: 0,
                 scarf: 0,
                 battery: 0,
-                itemfinder: 0,
+                itemfinder: 15,
                 permfinder: 0,
                 pearl: 0,
                 stardust: 0,
@@ -3337,6 +3430,7 @@ function Safari() {
             "Heavy Ball: An industrial Poké Ball that works better against hardier and stronger Pokémon. Has a cooldown of " + itemData.heavy.cooldown / 1000 +" seconds.",
             "Quick Ball: A somewhat different Poké Ball that tends to get better priority during throws. Has a cooldown of " + itemData.quick.cooldown / 1000 +" seconds.",
             "Premier Ball: A plain Poké Ball gifted to you for your patronage. It works better when a Normal-type Pokémon is active. Has a cooldown of " + itemData.premier.cooldown / 1000 +" seconds.",
+            "Spy Ball: A stealthy Poké Ball that cannot be tracked. Has a cooldown of " + itemData.spy.cooldown / 1000 +" seconds.",
             "Clone Ball: A mysterious Poké Ball with a very low catch rate that can duplicate a pokémon's D.N.A.. Has a cooldown of " + itemData.clone.cooldown / 1000 +" seconds.",
             "",
             "Note: Cooldown for Balls is doubled when a Pokémon is caught successfully.",
@@ -3686,7 +3780,7 @@ function Safari() {
             }
             return true;
         }
-        if (command === "wild" || command == "wilds" || command === "horde") {
+        if (command === "wild" || command == "wilds" || command === "horde" || command === "wildevent") {
             if (currentPokemon) {
                 safaribot.sendMessage(src, "There's already a Wild Pokemon out there silly!", safchan);
                 return true;
@@ -3697,6 +3791,9 @@ function Safari() {
             }
             if (command === "horde") {
                 amount = 3; //Android might look crowded if more than 3
+            }
+            if (command === "wildevent") {
+                wildEvent = true;
             }
             safari.createWild(num, makeShiny, amount);
             return true;
@@ -3785,6 +3882,7 @@ function Safari() {
                 }
                 currentPokemon = null;
                 currentPokemonCount = 1;
+                wildEvent = false;
             }
             return true;
         }
@@ -4023,6 +4121,7 @@ function Safari() {
                 sys.sendAll("*** ************************************************************ ***", safchan);
                 currentPokemon = null;
                 currentTheme = null;
+                wildEvent = false;
                 if (winners.length > 0) {
                     for (e in winners) {
                         var winner = winners[e];
