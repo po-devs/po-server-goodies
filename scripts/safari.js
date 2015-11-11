@@ -2590,8 +2590,8 @@ function Safari() {
             page = parseInt(num, 10);
 
         if (!isNaN(page) && num != "all") {
-            maxPages = Math.floor(list.length / (perPage + 1)) + 1;
-
+            maxPages = Math.floor(list.length / (perPage)) + (list.length % perPage === 0 ? 0 : 1);
+            
             if (page > maxPages) {
                 page = maxPages;
             }
