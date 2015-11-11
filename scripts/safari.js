@@ -311,7 +311,7 @@ function Safari() {
     };
     var finderItems = {
         crown: 1, honey: 1,
-        rare: 5, recharge: 8, spy: 32, rock: 16, bait: 16, pearl: 16, stardust: 8, luxury: 16, gacha: 13,
+        rare: 5, recharge: 8, spy: 20, rock: 16, bait: 16, pearl: 16, stardust: 8, luxury: 16, gacha: 13,
         nothing: 400
     };
 
