@@ -1025,7 +1025,7 @@ beforeChannelJoin : function(src, channel) {
         sys.stopEvent();
         return;
     }
-    if (this.isChannelStaff(src)) { // Allows game staff to enter VR without member
+    if (this.isChannelStaff(src) && sachannel === channel) { // Allows game staff to enter VR without member
         return;
     }
     if (poChannel.canJoin(src) == "allowed") {
