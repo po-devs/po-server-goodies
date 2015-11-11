@@ -265,7 +265,7 @@ function Safari() {
 
         //Other Items
         bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 149, successRate: 0.30, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
-        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.60, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
+        rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 197, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
         rare: {name: "rare", fullName: "Rare Candy", type: "usable", icon: 117, price: 0, aliases:["rare", "rarecandy", "rare candy", "candy"], sellable: false, buyable: true, tradable: true},
         mega: {name: "mega", fullName: "Mega Stone", type: "usable", icon: 2001, price: 0, aliases:["mega", "mega stone"], sellable: false, buyable: true, tradable: true},
@@ -326,7 +326,7 @@ function Safari() {
             include: [16, 17, 18, 25, 163, 164], //Pokémon that do not match any of the criteria above, but will be included anyway
             exclude: [492, 649], //Pokémon that matches all of the previous criteria, but will be excluded anyway,
             customBST: { "289": 600 }, //Makes a pokémon count as a different BST for this theme. In the example, Pokémon #289 (Slaking) will be considered a 600 BST Pokémon for this theme.
-            maxBST: 601, //Choose a different maximum BST for pokémon to spawn. Optional, defaults to 601.
+            maxBST: 600, //Choose a different maximum BST for pokémon to spawn. Optional, defaults to 600.
             minBST: 300 //Choose a different minimum BST for pokémon to spawn. Optional, defaults to 300.
         },
         river: {
@@ -868,7 +868,7 @@ function Safari() {
                 ignoreForms = true;
             }
             else {
-                var maxRoll = bstLimit || 601;
+                var maxRoll = bstLimit || 600;
                 maxStats = sys.rand(300, maxRoll);
                 if (leader) {
                     var list = [], loops = 0, found = false,
@@ -886,8 +886,8 @@ function Safari() {
                             }
                         }
                         loops++;
-                    } while (list.length < 12 && loops < 50);
-
+                    } while (list.length < 6 && loops < 50);
+                    
                     if (!found) {
                         if (list.length === 0) {
                             do {
@@ -1569,23 +1569,8 @@ function Safari() {
         else {
             var info = getInputPokemon(asset);
             var pokeId = info.id;
-            if (player.pokemon.indexOf(pokeId) === -1) {
-                safaribot.sendMessage(src, "You don't have that Pokémon to trade!", safchan);
-                return false;
-            }
-            var count = countRepeated(player.pokemon, pokeId);
-            if (pokeId === player.starter && count <= 1) {
-                safaribot.sendMessage(src, "You can't trade your starter Pokémon!", safchan);
-                return false;
-            }
-            if (player.pokemon.length == 1) {
-                safaribot.sendMessage(src, "You cannot trade your only Pokémon!", safchan);
-                return false;
-            }
-            if (player.party.length == 1 && pokeId === player.party[0] && count <= 1) {
-                safaribot.sendMessage(src, "You can't trade the only Pokémon in your party!", safchan);
-                return false;
-            }
+            
+            return canLosePokemon(src, pokeId + ":", "trade");
         }
         return true;
     };
@@ -1713,7 +1698,7 @@ function Safari() {
 
         var rng = Math.random();
         var rng2 = Math.random();
-        var success = (preparationPhase > 0 ? 0.1 : itemData.rock.successRate);
+        var success = (preparationPhase > 0 ? 0.15 : itemData.rock.successRate);
         var targetName = utilities.non_flashing(sys.name(targetId));
 
         if (commandData.toLowerCase() === preparationFirst) {
@@ -2515,7 +2500,7 @@ function Safari() {
         if (commandData === "*") {
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "How to use /find:", safchan);
-            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type or Duplicate) and a value to find Pokémon in your box. Examples: ", safchan);
+            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Shiny or Duplicate) and a value to find Pokémon in your box. Examples: ", safchan);
             safaribot.sendMessage(src, "For Name: Type any part of the Pokémon's name. e.g.: /find name LUG (both Lugia and Slugma will be displayed, among others with LUG on the name)", safchan);
             safaribot.sendMessage(src, "For Type: Type any one or two types. If you type 2, only pokémon with both types will appear. e.g.: /find type water grass", safchan);
             safaribot.sendMessage(src, "For Duplicate: Type a number greater than 1. e.g.: /find duplicate 3 (will display all Pokémon that you have at least 3 copies)", safchan);
@@ -2534,11 +2519,11 @@ function Safari() {
             info = commandData.split(" ");
         }
 
-        crit = info[0];
+        crit = info[0].toLowerCase();
         val = info.length > 1 ? info[1].toLowerCase() : "asc";
 
         if (info.length >= 2) {
-            switch (crit.toLowerCase()) {
+            switch (crit) {
                 case "number":
                 case "num":
                 case "index":
@@ -2555,6 +2540,9 @@ function Safari() {
                 case "type":
                     crit = "type";
                     break;
+                case "shiny":
+                    crit = "shiny";
+                break;
                 case "duplicate":
                 case "duplicates":
                 case "repeated":
@@ -2563,7 +2551,7 @@ function Safari() {
                 default:
                     crit = "abc";
             }
-        } else {
+        } else if (crit !== "shiny") {
             crit = "abc";
             val = info[0].toLowerCase();
         }
@@ -2607,6 +2595,14 @@ function Safari() {
                 }
             });
             title = "Pokémon with " + type1 + (type2 ? "/" + type2 : "") + " type";
+        }
+        else if (crit == "shiny") {
+            player.pokemon.forEach(function(x){
+                if (typeof x === "string") {
+                    list.push(x);
+                }
+            });
+            title = "Shiny Pokémon";
         }
         else if (crit == "duplicate") {
             var pokeList = player.pokemon.concat().sort();
@@ -2719,6 +2715,9 @@ function Safari() {
             case "type":
                 crit = "type";
                 break;
+            case "shiny":
+                crit = "shiny";
+            break;
             case "duplicate":
             case "duplicates":
             case "repeated":
@@ -2767,6 +2766,21 @@ function Safari() {
                 player.pokemon.reverse();
             }
             safaribot.sendMessage(src, "Your box was sorted by BST (" + (order === "desc" ? "descending" : "ascending") + ").", safchan);
+        }
+        else if (crit === "shiny") {
+            player.pokemon.sort(function(a, b){
+                if (typeof a === "string" && typeof b !== "string") {
+                    return -1;
+                } else if (typeof a !== "string" && typeof b === "string") {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+            if (order === "desc") {
+                player.pokemon.reverse();
+            }
+            safaribot.sendMessage(src, "Your box was sorted by Shiny Pokémon (" + (order === "desc" ? "descending" : "ascending") + ").", safchan);
         }
         else if (crit === "type") {
             var type1 = cap(order.toLowerCase());
@@ -2936,7 +2950,7 @@ function Safari() {
                 heavy: 0,
                 quick: 0,
                 luxury: 0,
-                bait: 5,
+                bait: 10,
                 rock: 0,
                 stick: 0,
                 premier: 0,
@@ -3001,7 +3015,7 @@ function Safari() {
         };
         SESSION.users(src).safari = player;
         this.saveGame(player);
-        safaribot.sendMessage(src, "You received a " + poke(num) + ", 30 Safari Balls, 5 Bait, 5 Great Balls, and 1 Ultra Ball!", safchan);
+        safaribot.sendMessage(src, "You received a " + poke(num) + ", 30 Safari Balls, 10 Baits, 5 Great Balls, and 1 Ultra Ball!", safchan);
     };
     this.saveGame = function(player) {
         rawPlayers.add(player.id, JSON.stringify(player));
@@ -3114,7 +3128,7 @@ function Safari() {
                 if (typeof player.balls[clean] !== "number") {
                     player.balls[clean] = parseInt(player.balls[clean], 10);
                 }
-                if (player.balls[clean] === undefined || isNaN(player.balls[clean]) || player.balls[clean] === null || player.balls[clean] < 0 || retiredItems.indexOf(player.balls[clean]) !== -1) {
+                if (player.balls[clean] === undefined || isNaN(player.balls[clean]) || player.balls[clean] === null || player.balls[clean] < 0) {
                     player.balls[clean] = 0;
                 }
                 if (player.balls[clean] > 999) {
@@ -3122,6 +3136,9 @@ function Safari() {
                 }
                 if ((clean === "master" || clean === "stick") && player.balls[clean] > 1) {
                     player.balls[clean] = 1;
+                }
+                if (retiredItems.indexOf(clean) !== -1) {
+                    delete player.balls[clean];
                 }
             }
             if (typeof player.money !== "number") {
@@ -3732,11 +3749,7 @@ function Safari() {
                 safaribot.sendMessage(src, "This person doesn't have a Safari save!", safchan);
                 return true;
             }
-            if (info.length < 2) {
-                safaribot.sendMessage(src, "Please specify a property!", safchan);
-                return true;
-            }
-            var prop = info[1].split(".");
+            var prop = (info.length < 2) ? [] : info[1].split(".");
             var attr = player[prop[0]];
             var propName = ["safari"];
             if (prop.length == 1 && prop[0] === "") {
