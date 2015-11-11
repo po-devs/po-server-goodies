@@ -1569,23 +1569,8 @@ function Safari() {
         else {
             var info = getInputPokemon(asset);
             var pokeId = info.id;
-            if (player.pokemon.indexOf(pokeId) === -1) {
-                safaribot.sendMessage(src, "You don't have that Pokémon to trade!", safchan);
-                return false;
-            }
-            var count = countRepeated(player.pokemon, pokeId);
-            if (pokeId === player.starter && count <= 1) {
-                safaribot.sendMessage(src, "You can't trade your starter Pokémon!", safchan);
-                return false;
-            }
-            if (player.pokemon.length == 1) {
-                safaribot.sendMessage(src, "You cannot trade your only Pokémon!", safchan);
-                return false;
-            }
-            if (player.party.length == 1 && pokeId === player.party[0] && count <= 1) {
-                safaribot.sendMessage(src, "You can't trade the only Pokémon in your party!", safchan);
-                return false;
-            }
+            
+            return canLosePokemon(src, pokeId + ":", "trade");
         }
         return true;
     };
