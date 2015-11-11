@@ -1691,7 +1691,7 @@ function Safari() {
             var info = getInputPokemon(asset);
             var pokeId = info.id;
             
-            return canLosePokemon(src, pokeId + ":", "trade");
+            return canLosePokemon(src, info.input, "trade");
         }
         return true;
     };
