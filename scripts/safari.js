@@ -2209,9 +2209,13 @@ function Safari() {
 
         if (dailyCharges > 0 ) {
             player.balls.itemfinder -= 1;
+            dailyCharges -= 1;
         } else {
             player.balls.permfinder -= 1;
+            permCharges -= 1;
         }
+        totalCharges -= 1;
+        
         var reward = randomSample(finderItems);
         var amount = 1;
 
@@ -2251,13 +2255,13 @@ function Safari() {
                 safaribot.sendMessage(src, "Be-Beep. You comb a patch of grass that your Itemfinder pointed you towards and found a " + finishName(reward) + "!", safchan);
             break;
             default:
-                safaribot.sendMessage(src, "You pull out your Itemfinder ... ... ... But it did not detect anything. [Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + Math.min(permCharges + amount, itemCap) + " bonus)" : "") + "].", safchan);
+                safaribot.sendMessage(src, "You pull out your Itemfinder ... ... ... But it did not detect anything. [Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
                 giveReward = false;
                 showMsg = false;
             break;
         }
         if (showMsg) {
-            safaribot.sendMessage(src, "You found a " + finishName(reward) + " with your Itemfinder! [Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + Math.min(permCharges + amount, itemCap) + " bonus)" : "") + "].", safchan);
+            safaribot.sendMessage(src, "You found a " + finishName(reward) + " with your Itemfinder! [Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
         }
         if (giveReward) {
             player.records.itemsFound += 1;
@@ -2297,6 +2301,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "The Ampere Gem begins to emit a soft baaing sound. Your Itemfinder then lights up and responds with a loud <b>BAA~!</b>", safchan);
             safaribot.sendMessage(src, "Your Itemfinder gained " + gemdata + " charges. [Remaining Charges: " + tchars + " (Daily " + chars + " plus " + pchars + " bonus)].", safchan);
             rewardCapCheck(src, "permfinder", gemdata);
+            player.balls.gem -= 1;
             return;
         }
     };
