@@ -3795,6 +3795,9 @@ function Safari() {
         if (!SESSION.channels(safchan).isChannelAdmin(src)) {
             return false;
         }
+        if (!SESSION.channels(safchan).isChannelOwner(src)) {
+            return false;
+        }
         if (command === "checkrate") {
             commandData = commandData.toLowerCase();
             if (allItems.indexOf(commandData) !== -1 || commandData === "wild" || commandData === "horde" || commandData === "nothing" || commandData === "recharge") {
@@ -3933,9 +3936,6 @@ function Safari() {
             return true;
         }
 
-        if (!SESSION.channels(safchan).isChannelOwner(src)) {
-            return false;
-        }
         //Needs some validation, but good for testing right now
         if (command === "bestow") {
             var cmd = commandData.split(":");
