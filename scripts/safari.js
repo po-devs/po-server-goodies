@@ -3426,7 +3426,7 @@ function Safari() {
             "±Goal: To start playing, type /start to choose your starter Pokémon and receive 30 Safari Balls.",
             "*** *********************************************************************** ***",
             //"±Contest: A contest starts every " + contestCooldownLength/60 + " minutes. During that time, wild Pokémon may suddenly appear.",
-            "±Contest: When a wild Pokémon is appears, players can use /catch to throw a ball until someone gets it.",
+            "±Contest: When a wild Pokémon appears, players can use /catch to throw a ball until someone gets it.",
             "±Contest: Different balls can be used to get a better chance, but they also may have higher cooldown between throws or other effects.",
             "*** *********************************************************************** ***",
             "±Actions: Pokémon you caught can be sold to the NPC with /sell or traded with other players with /trade.",
