@@ -3995,6 +3995,11 @@ function Safari() {
             safaribot.sendMessage(src, (target ? sys.name(target) : player.id) + "." + propName.join(".") + ": " + JSON.stringify(attr), safchan);
             return true;
         }
+        if (command === "clearjackpot") {
+            gachaJackpot = 100;
+            safaribot.sendAll("Gachapon Jackpot was reset!", safchan);
+            return true;
+        }
         if (command === "wipesafariall") {
             var info = commandData.toLowerCase().split(":");
             if (info[0] !== "confirm") {
