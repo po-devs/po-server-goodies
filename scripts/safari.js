@@ -3240,6 +3240,8 @@ function Safari() {
             safaribot.sendMessage(src, "Your Safari data was successfully loaded!", safchan);
             this.dailyReward(src, getDay(now()));
             this.revertMega(src);
+        } else if (getAvatar(src)) {
+            SESSION.users(src).safari = null;
         }
     };
     this.updateLeaderboards = function() {
