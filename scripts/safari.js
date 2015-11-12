@@ -3867,8 +3867,6 @@ function Safari() {
             var player = getAvatar(playerId);
             SESSION.users(playerId).safari = null;
             rawPlayers.remove(sys.name(playerId).toLowerCase());
-            this.saveGame(player);
-
             safaribot.sendAll(commandData + "'s safari has been reset!", safchan);
             return true;
         }
@@ -4011,7 +4009,7 @@ function Safari() {
                 return true;
             }
 
-            var onChannel = sys.playersOfChannel(safchan);
+            var onChannel = sys.playerIds(safchan);
             for (var e in onChannel) {
                 if (sys.isInChannel(onChannel[e], safchan) && getAvatar(onChannel[e])) {
                     SESSION.users(onChannel[e]).safari = null;
