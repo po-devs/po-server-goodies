@@ -46,8 +46,9 @@ function Safari() {
     //Don't really care if this resets after an update.
     var lastBaiters = [];
     var lastBaitersAmount = 3; //Amount of people that need to bait before you can
-    var lastBaitersDecay = 40; //Seconds before the first entry in lastBaiters is purged
-    var lastBaitersDecayTime = 120;
+    var lastBaitersDecay = 50; //Seconds before the first entry in lastBaiters is purged
+    var lastBaitersDecayTime = 50;
+    var successfulBaitCount = 50;
 
     var effectiveness = {
         "Normal": {
@@ -278,10 +279,10 @@ function Safari() {
         gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 0, cooldown: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], sellable: false, buyable: false, tradable: false},
 
         //Perks
-        amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false, tradable: false},
+        amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false, tradable: true, tradeReq: 10},
         honey: {name: "honey", fullName: "Honey", type: "perk", icon: 82, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["honey"], sellable: false, buyable: false, tradable: true},
         soothe: {name: "soothe", fullName: "Soothe Bell", type: "perk", icon: 35, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["soothe", "soothebell", "soothe bell", "bell"], sellable: false, buyable: false, tradable: true},
-        crown: {name: "crown", fullName: "Relic Crown", type: "perk", icon: 278, price: 0, bonusRate: 0.01, maxRate: 0.1, aliases:["crown", "reliccrown", "relic crown", "relic"], sellable: false, buyable: false, tradable: false},
+        crown: {name: "crown", fullName: "Relic Crown", type: "perk", icon: 278, price: 0, bonusRate: 0.01, maxRate: 0.1, aliases:["crown", "reliccrown", "relic crown", "relic"], sellable: false, buyable: false, tradable: true, tradeReq: 10},
         scarf: {name: "scarf", fullName: "Silk Scarf", type: "perk", icon: 31, price: 0, bonusRate: 0.015, maxRate: 0.15, aliases:["scarf", "silkscarf", "silk scarf", "silk"], sellable: false, buyable: false, tradable: true},
         battery: {name: "battery", fullName: "Cell Battery", type: "perk", icon: 241, price: 0, bonusRate: 2, maxRate: 20, aliases:["battery", "cellbattery", "cell battery", "cell"], sellable: false, buyable: false, tradable: true},
 
@@ -526,6 +527,26 @@ function Safari() {
             },
             "minBST" : 320,
             "maxBST" : 550
+        },
+        "cerulean": {
+            "name" : "Cerulean Cave",
+            "types" : [],
+            "excludeTypes" : [],
+            "include" : [24, 26, 28, 42, 44, 47, 49, 64, 70, 75, 82, 85, 97, 132, 129, 60, 118, 80, 117, 119, 40, 101, 105, 111, 112, 113, 150, 57, 67, 202, 55, 79, 54, 130, 74, 61, 53, 359, 296, 433, 436],
+            "exclude" : [],
+            "customBST" : {},
+            "minBST" : 300,
+            "maxBST" : 681
+        },
+        "ruins": {
+            "name" : "Ruins",
+            "types" : [],
+            "excludeTypes" : [],
+            "include" : [201, 65737, 131273, 196809, 262345, 327881, 393417, 458953, 524489, 590025, 655561, 721097, 786633, 852169, 917705, 983241, 1048777, 1114313, 1179849, 1245385, 1310921, 1376457, 1441993, 1507529, 1573065, 1638601, 1704137, 1769673, 202, 360, 353, 354, 355, 356, 235, 436, 437, 92, 93, 94, 524, 525, 526, 377, 378, 379, 343, 344, 177, 178, 679, 680, 442, 561, 562, 563, 138, 139, 140, 141, 142, 622, 623, 605, 606, 696, 299, 476, 200, 429, 359, 566, 567, 486, 345, 346],
+            "exclude" : [],
+            "customBST" : {},
+            "minBST" : 300,
+            "maxBST" : 671
         }
     };
     /*Vivillon Forms not in theme:
@@ -1686,11 +1707,14 @@ function Safari() {
                 safaribot.sendMessage(src, "You don't have " + amount + " " + finishName(item) + "(s) to trade!", safchan);
                 return false;
             }
+            var data = itemData[item];
+            if (data.tradeReq && player.balls[item] - amount < data.tradeReq) {
+                safaribot.sendMessage(src, "You can't trade " + finishName(item) + " unless you have at least " + data.tradeReq + " of those!", safchan);
+                return false;
+            }
         }
         else {
             var info = getInputPokemon(asset);
-            var pokeId = info.id;
-            
             return canLosePokemon(src, info.input, "trade");
         }
         return true;
@@ -1761,7 +1785,7 @@ function Safari() {
 
         if (rng < (itemData.bait.successRate + perkBonus)) {
             safaribot.sendAll(sys.name(src) + " left some bait out. The bait attracted a wild Pokémon!", safchan);
-            baitCooldown = itemData.bait.successCD + sys.rand(0,10);
+            baitCooldown = successfulBaitCount = itemData.bait.successCD + sys.rand(0,10);
             player.records.baitAttracted += 1;
 
             if (lastBaiters.length >= lastBaitersAmount) {
@@ -2129,8 +2153,10 @@ function Safari() {
             safaribot.sendMessage(src, "You have no Rare Candies!", safchan);
             return;
         }
+        var input = commandData.split(":");
 
-        var info = getInputPokemon(commandData.replace(/flabebe/gi, "flabébé"));
+        var info = getInputPokemon(input[0].replace(/flabebe/gi, "flabébé"));
+        var starter = input.length > 1 ? input[1].toLowerCase() : "*";
         var shiny = info.shiny;
         var num = info.num;
         if (!num) {
@@ -2155,6 +2181,21 @@ function Safari() {
             safaribot.sendMessage(src, info.name + " requires " + candiesRequired + " Rare Candies to evolve!", safchan);
             return;
         }
+        
+        var evolveStarter = true;
+        if (player.starter == id) {
+            var count = countRepeated(player.pokemon, id);
+            if (count > 1) {
+                if (starter == "starter") {
+                    evolveStarter = true;
+                } else if (starter == "normal") {
+                    evolveStarter = false;
+                } else {
+                    safaribot.sendMessage(src, "This Pokémon is your starter, but you have more than one! To pick which one you want to evolve, type /rare " + info.input +":starter or /rare " + info.input +":normal.", safchan);
+                    return;
+                }
+            }
+        }
 
         var possibleEvo = evoData.evo;
         var evolveTo = Array.isArray(possibleEvo) ? evoData.evo[sys.rand(0, possibleEvo.length)] : possibleEvo;
@@ -2170,7 +2211,7 @@ function Safari() {
         player.balls.rare -= candiesRequired;
         player.records.pokesEvolved += 1;
 
-        this.evolvePokemon(src, info, evolvedId, "evolved into");
+        this.evolvePokemon(src, info, evolvedId, "evolved into", evolveStarter);
         safaribot.sendMessage(src, "Your " + info.name + " ate " + candiesRequired + " Rare Cand" + (candiesRequired > 1 ? "ies" : "y") + " and evolved into " + poke(evolvedId) + "!", safchan);
     };
     this.useMegaStone = function(src, commandData) {
@@ -2214,7 +2255,7 @@ function Safari() {
 
         player.balls.mega -= 1;
 
-        this.evolvePokemon(src, info, evolvedId, "mega evolved into");
+        this.evolvePokemon(src, info, evolvedId, "mega evolved into", true);
         player.megaTimers.push({
             id: evolvedId,
             expires: now() + 24 * 60 * 60 * 1000,
@@ -2222,11 +2263,11 @@ function Safari() {
         });
         safaribot.sendMessage(src, "You used a Mega Stone on " + info.name + " to evolve them into " + poke(evolvedId) + "! They will revert after 24 hours!", safchan);
     };
-    this.evolvePokemon = function(src, info, evolution, verb) {
+    this.evolvePokemon = function(src, info, evolution, verb, evolveStarter) {
         var player = getAvatar(src);
         var id = info.id;
         var count = countRepeated(player.pokemon, id);
-        if (id === player.starter && count <= 1) {
+        if (id === player.starter && (count <= 1 || evolveStarter)) {
             player.starter = evolution;
         }
         var wasOnParty = player.party.indexOf(id) !== -1;
@@ -2288,7 +2329,7 @@ function Safari() {
             info = player.megaTimers[e];
             if (info.expires <= currentTime) {
                 if (player.pokemon.indexOf(info.id) !== -1) {
-                    this.evolvePokemon(src, getInputPokemon(info.id + (typeof info.id == "string" ? "*" : 0)), info.to, "reverted to");
+                    this.evolvePokemon(src, getInputPokemon(info.id + (typeof info.id == "string" ? "*" : 0)), info.to, "reverted to", true);
                 }
                 player.megaTimers.splice(e, 1);
             }
@@ -3381,17 +3422,19 @@ function Safari() {
             "",
             "*** *********************************************************************** ***",
             "±Goal: Use your Poké Balls to catch Wild Pokémon that appear during contest times.",
-            "±Goal: You can trade those Pokémon with other players or simply brag about your collection.",
+            //"±Goal: You can trade those Pokémon with other players or simply brag about your collection.",
             "±Goal: To start playing, type /start to choose your starter Pokémon and receive 30 Safari Balls.",
             "*** *********************************************************************** ***",
-            "±Contest: A contest starts every " + contestCooldownLength/60 + " minutes. During that time, wild Pokémon may suddenly appear.",
-            "±Contest: When a wild Pokémon is around, players can use /catch to throw a ball until someone gets it.",
-            "±Contest: Different balls can be used to get a better chance, but they also have higher cooldown between throws.",
+            //"±Contest: A contest starts every " + contestCooldownLength/60 + " minutes. During that time, wild Pokémon may suddenly appear.",
+            "±Contest: When a wild Pokémon is appears, players can use /catch to throw a ball until someone gets it.",
+            "±Contest: Different balls can be used to get a better chance, but they also may have higher cooldown between throws or other effects.",
             "*** *********************************************************************** ***",
             "±Actions: Pokémon you caught can be sold to the NPC with /sell or traded with other players with /trade.",
             "±Actions: You can use the money gained by selling Pokémon and logging in everyday to /buy more Poké Balls.",
-            "±Actions: You can set up to 6 Pokémon to be visible to anyone. Form your party with /party, and view others' party with /view.",
-            "±Actions: Use /party active:[pokémon] to choose your active Pokémon. This can give you a small bonus when trying to catch Wild Pokémon based on type effectiveness and base stats difference.",
+            //"±Actions: You can set up to 6 Pokémon to be visible to anyone. Form your party with /party, and view others' party with /view.",
+            "±Actions: Use /party to form your party. This can give you a small bonus when trying to catch Pokémon based on type effectiveness and stats.",
+            "*** *********************************************************************** ***",
+            "±More: To learn other commands, use /commands safari.",
             "*** *********************************************************************** ***",
             ""
         ];
@@ -4019,9 +4062,12 @@ function Safari() {
     };
     this.stepEvent = function () {
         contestCooldown--;
-        baitCooldown--;
         releaseCooldown--;
-        lastBaitersDecay--;
+        baitCooldown--;
+        successfulBaitCount--;
+        if (successfulBaitCount <= 0) {
+            lastBaitersDecay--;
+        }
         if (preparationPhase > 0) {
             preparationPhase--;
             if (preparationPhase <= 0) {
@@ -4052,7 +4098,7 @@ function Safari() {
         }
         if (contestCooldown === 180) {
             var themeList = Object.keys(contestThemes);
-            nextTheme = Math.random() < 0.5 ? "none" : themeList[sys.rand(0, themeList.length)];
+            nextTheme = Math.random() < 0.4 ? "none" : themeList[sys.rand(0, themeList.length)];
             sys.sendAll("*** ************************************************************ ***", safchan);
             safaribot.sendAll("A new " + (nextTheme !== "none" ? contestThemes[nextTheme].name + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all Poké Balls you need!", safchan);
             sys.sendAll("*** ************************************************************ ***", safchan);
@@ -4075,7 +4121,6 @@ function Safari() {
         if (contestCount > 0) {
             contestCount--;
             if (contestCount === 0) {
-                // var winner = modeArray(contestCatchers);
                 var winners = [], maxCaught = 0, maxBST = 0;
                 for (var e in contestCatchers) {
                     if (contestCatchers[e].length >= maxCaught) {
@@ -4088,9 +4133,9 @@ function Safari() {
                 }
                 var tieBreaker = [], bst, name, top = winners.length, catchersBST = {}, allContestants = [];
 
+                var allContestants = Object.keys(contestCatchers);
                 for (e in contestCatchers) {
                     catchersBST[e] = add(contestCatchers[e].map(getBST));
-                    allContestants.push(e + " (Caught " + contestCatchers[e].length + ", BST " + catchersBST[e] + ")");
                 }
                 if (top > 1) {
                     maxBST = 0;
@@ -4108,6 +4153,21 @@ function Safari() {
                     }
                     winners = tieBreaker;
                 }
+                allContestants.sort(function(a, b) {
+                    if (contestCatchers[a].length > contestCatchers[b].length) {
+                        return -1;
+                    }
+                    else if (contestCatchers[a].length < contestCatchers[b].length) {
+                        return 1;
+                    }
+                    else if (catchersBST[a] > catchersBST[b]) {
+                        return -1;
+                    }
+                    else if (catchersBST[a] < catchersBST[b]) {
+                        return 1;
+                    }
+                    return 0;
+                });
 
                 sys.sendAll("*** ************************************************************ ***", safchan);
                 safaribot.sendAll("The Safari contest is now over! Please come back during the next contest!", safchan);
@@ -4118,7 +4178,7 @@ function Safari() {
                     safaribot.sendAll(readable(winners, "and") + " caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and has won a prize pack!", safchan);
                 }
                 if (allContestants.length > 0) {
-                    safaribot.sendAll(allContestants.join(", "), safchan);
+                    safaribot.sendAll(allContestants.map(function(x) { return x + " (Caught " + contestCatchers[x].length + ", BST " + catchersBST[x] + ")"; }).join(", "), safchan);
                 }
                 contestCatchers = [];
                 sys.sendAll("*** ************************************************************ ***", safchan);
