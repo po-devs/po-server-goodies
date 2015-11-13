@@ -345,7 +345,8 @@ function Safari() {
                 "289" : 600
             },
             "minBST" : 300,
-            "maxBST" : 601
+            "maxBST" : 601,
+            "icon": 10
         },
         "sea" : {
             "name" : "Sea",
@@ -947,8 +948,9 @@ function Safari() {
             var themeList = Object.keys(contestThemes);
             currentTheme = Math.random() < 0.5 ? null : themeList[sys.rand(0, themeList.length)];
         }
+        var icon = currentTheme && contestThemes[currentTheme].icon ? pokeInfo.icon(contestThemes[currentTheme].icon) + " " : "";
         sys.sendAll("*** ************************************************************ ***", safchan);
-        safaribot.sendAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now!", safchan);
+        safaribot.sendHtmlAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now! " + icon, safchan);
         sys.sendAll("*** ************************************************************ ***", safchan);
 
         if (contestBroadcast) {
@@ -1459,8 +1461,8 @@ function Safari() {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
             return;
         }
-        if (player.pokemon.length < 5) {
-            safaribot.sendMessage(src, "You can only trade after you catch more than 5 Pokémon!", safchan);
+        if (player.records.pokesCaught < 5) {
+            safaribot.sendMessage(src, "You can only trade after you catch " + (5 - player.records.pokesCaught) + " more Pokémon!", safchan);
             return;
         }
         var userName = sys.name(src).toLowerCase();
@@ -1784,7 +1786,7 @@ function Safari() {
         var perkBonus = Math.min(itemData.honey.bonusRate * player.balls.honey, itemData.honey.maxRate);
 
         if (rng < (itemData.bait.successRate + perkBonus)) {
-            safaribot.sendAll(sys.name(src) + " left some bait out. The bait attracted a wild Pokémon!", safchan);
+            safaribot.sendAll((commandData.toLowerCase() == "spy" ? "Some stealthy person" : sys.name(src)) + " left some bait out. The bait attracted a wild Pokémon!", safchan);
             baitCooldown = successfulBaitCount = itemData.bait.successCD + sys.rand(0,10);
             player.records.baitAttracted += 1;
 
@@ -1801,7 +1803,7 @@ function Safari() {
             lastBaitersDecay = lastBaitersDecayTime;
         } else {
             baitCooldown = itemData.bait.failCD + sys.rand(0,5);
-            safaribot.sendAll(sys.name(src) + " left some bait out... but nothing showed up.", safchan);
+            safaribot.sendAll((commandData.toLowerCase() == "spy" ? "Some stealthy person" : sys.name(src)) + " left some bait out... but nothing showed up.", safchan);
             player.records.baitNothing += 1;
         }
         safaribot.sendMessage(src, "You still have " + player.balls[item] + " Baits remaining.", safchan);
@@ -2068,7 +2070,7 @@ function Safari() {
                     var mod = Math.random();
                     var spawn = true;
                     var spawnHorde = (reward === "horde");
-                    safaribot.sendAll(sys.name(src) + " goes to grab their item from the Gachapon Machine but the noise lured a " + finishName(reward) + "!", safchan);
+                    safaribot.sendAll((commandData.toLowerCase() == "spy" ? "Some stealthy person" : sys.name(src)) + " goes to grab their item from the Gachapon Machine but the noise lured a " + finishName(reward) + "!", safchan);
 
                     if (mod < 0.08 || player.cooldowns.ballUse > currentTime) {
                         safaribot.sendAll("Unfortunately " + (spawnHorde ? "they" : "it") + " fled before anyone could try to catch "+ (spawnHorde ? "them" : "it") + "!", safchan);
@@ -3226,7 +3228,7 @@ function Safari() {
         };
         SESSION.users(src).safari = player;
         this.saveGame(player);
-        safaribot.sendMessage(src, "You received a " + poke(num) + ", 30 Safari Balls, 10 Baits, 5 Great Balls, and 1 Ultra Ball!", safchan);
+        safaribot.sendMessage(src, "You received a " + poke(num) + ", 30 Safari Balls, 10 Baits, 5 Great Balls, 1 Ultra Ball and 15 Itemfinder charges!", safchan);
     };
     this.saveGame = function(player) {
         rawPlayers.add(player.id, JSON.stringify(player));
