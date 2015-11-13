@@ -988,6 +988,15 @@ function Safari() {
         } else {
             contestBroadcast = true;
         }
+        
+        var players = sys.playersOfChannel(safchan);
+        for (var pid in players) {
+            var player = getAvatar(players[pid]);
+            if (player && player.flashme) {
+                sys.sendHtmlMessage(players[pid], "<ping/>", safchan);
+            }
+        }
+
         wildEvent = false;
         safari.createWild();
     };
@@ -3574,6 +3583,7 @@ function Safari() {
             "/sort [criteria] [ascending|descending]: To sort the order in which the Pokémon are listed on /mydata. Criteria are Alphabetical, Number, BST, Type and Duplicate.",
             "/info: View time until next contest and current Gachapon jackpot prize!",
             "/leaderboard [type]: View the Safari Leaderboards. [type] can be pokemon, money, contest, bst, sold, luxury, gacha, logins or caught.",
+            "/flashme: Toggle whether or not you get flashed when a contest starts.",
             "",
             "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
         ];
@@ -3786,6 +3796,24 @@ function Safari() {
             out.push("");
             sys.sendHtmlMessage(src, out.join("<br/>"),safchan);
 
+            return true;
+        }
+        if (command === "flashme") {
+            var player = getAvatar(src);
+            if (!player) {
+                safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            }
+            else {
+                if (!player.flashme) {
+                    player.flashme = true;
+                    safaribot.sendMessage(src, "You will now be flashed when a contest starts!", safchan);
+                }
+                else {
+                    delete player.flashme;
+                    safaribot.sendMessage(src, "You will no longer be flashed when a contest starts!", safchan);
+                }
+                safari.saveGame(player);
+            }
             return true;
         }
         if (command === "safarirules") {
