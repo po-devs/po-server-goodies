@@ -974,7 +974,7 @@ function Safari() {
         }
         var icon = currentTheme && contestThemes[currentTheme].icon ? pokeInfo.icon(contestThemes[currentTheme].icon) + " " : "";
         if (icon) {
-            sys.sendHtmlAll("<span class='action'><timestamp/> *** **********************************************************</span> " + icon, safchan);
+            sys.sendHtmlAll("<font color='magenta'><timestamp/> *** **********************************************************</font> " + icon, safchan);
         } else {
             sys.sendAll("*** ************************************************************ ***", safchan);
         }
