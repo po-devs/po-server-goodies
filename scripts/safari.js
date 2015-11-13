@@ -359,7 +359,8 @@ function Safari() {
                 "382" : 630
             },
             "minBST" : 300,
-            "maxBST" : 631
+            "maxBST" : 631,
+            "icon": 129
         },
         "volcano" : {
             "name" : "Volcano",
@@ -369,7 +370,8 @@ function Safari() {
             "exclude" : [438, 185, 639, 345, 346],
             "customBST" : {},
             "minBST" : 315,
-            "maxBST" : 601
+            "maxBST" : 601,
+            "icon": 218
         },
         "cave" : {
             "name" : "Cave",
@@ -381,7 +383,8 @@ function Safari() {
                 "486" : 600
             },
             "minBST" : 300,
-            "maxBST" : 601
+            "maxBST" : 601,
+            "icon": 41
         },
         "sky" : {
             "name" : "Sky",
@@ -393,7 +396,8 @@ function Safari() {
                 "250" : 620
             },
             "minBST" : 300,
-            "maxBST" : 621
+            "maxBST" : 621,
+            "icon": 396
         },
         "urban" : {
             "name" : "Urban",
@@ -419,14 +423,16 @@ function Safari() {
                 "66212" : 580
             },
             "minBST" : 300,
-            "maxBST" : 601
+            "maxBST" : 601,
+            "icon": 66015
         },
         "tundra" : {
             "name" : "Tundra",
             "types" : ["Ice"],
             "excludeTypes" : [],
             "include" : [86, 90, 216, 217, 223, 244, 234, 245, 393, 394, 395, 197193, 197194, 66202, 787098, 1114778],
-            "exclude" : []
+            "exclude" : [],
+            "icon": 220
         },
         "factory" : {
             "name" : "Factory",
@@ -438,7 +444,8 @@ function Safari() {
                 "644" : 620
             },
             "minBST" : 300,
-            "maxBST" : 621
+            "maxBST" : 621,
+            "icon": 82
         },
         "field" : {
             "name" : "Field",
@@ -450,7 +457,8 @@ function Safari() {
                 "289" : 600
             },
             "minBST" : 300,
-            "maxBST" : 601
+            "maxBST" : 601,
+            "icon": 162
         },
         "dojo" : {
             "name" : "Dojo",
@@ -462,7 +470,8 @@ function Safari() {
                 "66217" : 590
             },
             "minBST" : 300,
-            "maxBST" : 601
+            "maxBST" : 601,
+            "icon": 107
         },
         "pyre" : {
             "name" : "Mt. Pyre",
@@ -474,7 +483,8 @@ function Safari() {
                 "487" : 620
             },
             "minBST" : 300,
-            "maxBST" : 621
+            "maxBST" : 621,
+            "icon": 92
         },
         "daycare" : {
             "name" : "Daycare",
@@ -484,7 +494,8 @@ function Safari() {
             "exclude" : [17, 397, 292, 281, 188],
             "customBST" : {},
             "minBST" : 240,
-            "maxBST" : 350
+            "maxBST" : 350,
+            "icon": 175
         },
         "tower" : {
             "name" : "Dragonspiral Tower",
@@ -500,7 +511,8 @@ function Safari() {
                 "718" : 620
             },
             "minBST" : 300,
-            "maxBST" : 621
+            "maxBST" : 621,
+            "icon": 148
         },
         "desert" : {
             "name" : "Desert",
@@ -512,7 +524,8 @@ function Safari() {
                 "383" : 620
             },
             "minBST" : 300,
-            "maxBST" : 621
+            "maxBST" : 621,
+            "icon": 450
         },
         "starter" : {
             "name" : "Starter Pokémon",
@@ -527,7 +540,8 @@ function Safari() {
                 "197" : 535
             },
             "minBST" : 320,
-            "maxBST" : 550
+            "maxBST" : 550,
+            "icon": 1
         },
         "cerulean": {
             "name" : "Cerulean Cave",
@@ -537,7 +551,8 @@ function Safari() {
             "exclude" : [],
             "customBST" : {},
             "minBST" : 300,
-            "maxBST" : 681
+            "maxBST" : 681,
+            "icon": 150
         },
         "ruins": {
             "name" : "Ruins",
@@ -547,7 +562,8 @@ function Safari() {
             "exclude" : [],
             "customBST" : {},
             "minBST" : 300,
-            "maxBST" : 671
+            "maxBST" : 671,
+            "icon": 486
         }
     };
     /*Vivillon Forms not in theme:
@@ -683,10 +699,12 @@ function Safari() {
     */
     function getInputPokemon(info) {
         var shiny = false, id, num, name;
+        info = info.toLowerCase();
 
-        if (info.length > 1 && (info[0] == "*" || info[info.length-1] == "*")) {
+        if ((info.length > 1 && (info[0] == "*" || info[info.length-1] == "*")) || info.indexOf("shiny ") === 0) {
             shiny = true;
             info = info.replace("*", "");
+            info = info.replace("shiny ", "");
         }
         num = parseInt(info, 10);
         if (isNaN(num)) {
@@ -949,8 +967,12 @@ function Safari() {
             currentTheme = Math.random() < 0.5 ? null : themeList[sys.rand(0, themeList.length)];
         }
         var icon = currentTheme && contestThemes[currentTheme].icon ? pokeInfo.icon(contestThemes[currentTheme].icon) + " " : "";
-        sys.sendAll("*** ************************************************************ ***", safchan);
-        safaribot.sendHtmlAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now! " + icon, safchan);
+        if (icon) {
+            sys.sendHtmlAll("<span class='action'><timestamp/> *** **********************************************************</span> " + icon, safchan);
+        } else {
+            sys.sendAll("*** ************************************************************ ***", safchan);
+        }
+        safaribot.sendHtmlAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now!", safchan);
         sys.sendAll("*** ************************************************************ ***", safchan);
 
         if (contestBroadcast) {
@@ -2500,14 +2522,14 @@ function Safari() {
         }
         sys.sendHtmlMessage(src, this.showBag(player, src), safchan);
     };
-    this.viewBox = function(src, data) {
+    this.viewBox = function(src, data, textOnly) {
         var player = getAvatar(src);
         if (!player) {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
             return;
         }
         var isAndroid = (sys.os(src) === "android");
-        sys.sendHtmlMessage(src, this.showBox(player, (data === "*" ? 1 : data), isAndroid), safchan);
+        sys.sendHtmlMessage(src, this.showBox(player, (data === "*" ? 1 : data), isAndroid, textOnly), safchan);
     };
     this.manageParty = function(src, data) {
         var player = getAvatar(src);
@@ -2517,7 +2539,7 @@ function Safari() {
         }
         if (data === "*") {
             sys.sendHtmlMessage(src, this.showParty(src, true), safchan);
-            safaribot.sendMessage(src, "To modify your party, type /party add:[pokémon] or /party remove:[pokémon]. Use /party active:[pokémon] to set your party leader.", safchan);
+            safaribot.sendMessage(src, "To modify your party, type /add [pokémon] or /remove [pokémon]. Use /active [pokémon] to set your party leader.", safchan);
             return;
         }
 
@@ -2629,7 +2651,7 @@ function Safari() {
         }
         return out;
     };
-    this.showBox = function(player, num, isAndroid) {
+    this.showBox = function(player, num, isAndroid, textOnly) {
         var out = "";
         var perPage = 96, maxPages,
             list = player.pokemon,
@@ -2643,21 +2665,25 @@ function Safari() {
             }
             list = list.slice(perPage * (page - 1), perPage * (page - 1) + perPage);
         }
-
-        out += this.listPokemon(list, "Owned Pokémon (" + player.pokemon.length + ")");
-        if (isAndroid) {
-            out += "<br />";
+        
+        if (textOnly) {
+            out += this.listPokemonText(list, "Owned Pokémon (" + player.pokemon.length + ")");
+        } else {
+            out += this.listPokemon(list, "Owned Pokémon (" + player.pokemon.length + ")");
+            if (isAndroid) {
+                out += "<br />";
+            }
         }
 
         if (!isNaN(page)) {
             if (page > 1) {
-                out += "[<a href='po:send//box " + (page - 1) + "'>" + utilities.html_escape("< Box " + (page - 1)) + "</a>]";
+                out += "[<a href='po:send//box" + (textOnly? "t" : "" ) + " " + (page - 1) + "'>" + utilities.html_escape("< Box " + (page - 1)) + "</a>]";
             }
             if (page < maxPages) {
                 if (page > 1) {
                     out += " ";
                 }
-                out += "[<a href='po:send//box " + (page + 1) + "'>" + utilities.html_escape("Box " + (page + 1) + " >") + "</a>]";
+                out += "[<a href='po:send//box" + (textOnly? "t" : "" ) + " " + (page + 1) + "'>" + utilities.html_escape("Box " + (page + 1) + " >") + "</a>]";
             }
         }
         return out;
@@ -2677,6 +2703,16 @@ function Safari() {
             }
         }
         out += "</td></tr></table>";
+        return out;
+    };
+    this.listPokemonText = function(list, title) {
+        var out = "", normal = [], e;
+        for (e in list) {
+            normal.push(poke(list[e]));
+        }
+        out += "<b>" + title + "</b><br/>";
+        out += normal.join(", ");
+        out += "<br/>";
         return out;
     };
     this.showBag = function(player, src) {
@@ -2702,7 +2738,7 @@ function Safari() {
             }
         }
     };
-    this.findPokemon = function(src, commandData) {
+    this.findPokemon = function(src, commandData, textOnly) {
         var player = getAvatar(src);
         if (!player) {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
@@ -2829,7 +2865,11 @@ function Safari() {
             });
             title = "Pokémon with at least " + val + " duplicates";
         }
-        sys.sendHtmlMessage(src, this.listPokemon(list, title + " (" + list.length + ")"), safchan);
+        if (textOnly) {
+            sys.sendHtmlMessage(src, this.listPokemonText(list, title + " (" + list.length + ")"), safchan);
+        } else {
+            sys.sendHtmlMessage(src, this.listPokemon(list, title + " (" + list.length + ")"), safchan);
+        }
     };
     function rangeFilter(src, player, list, val, mode, paramName, info, type) {
         val = parseInt(val, 10);
@@ -3512,18 +3552,19 @@ function Safari() {
             "/buy: To buy items.",
             "/pawn: To sell items.",
             "/party: To add or remove a Pokémon from your party, or to set your party's leader*.",
-            "/box [number]: To view all your caught Pokémon organized in boxes.",
+            "/box [number]: To view all your caught Pokémon organized in boxes. Use /boxt for a text-only version.",
             "/bag: To view all money and items.",
             "/view: To view another player's party. If no player is specified, all of your data will show up.",
             "/changealt: To pass your Safari data to another alt.",
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
             "/rarecandy: Use a Rare Candy to evolve a Pokémon*.",
+            "/megastone: Use a Mega Stone to mega evolve a Pokémon*.",
             "/gacha: Use a ticket to win a prize!",
             "/finder: Use your item finder to look for items.",
             "/rock: To throw a rock at another player.",
             "/stick: To poke another player with your stick.",
             "/use: To use a consumable item.",
-            "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details.",
+            "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details. Use /findt for a text-only version.",
             "/sort [criteria] [ascending|descending]: To sort the order in which the Pokémon are listed on /mydata. Criteria are Alphabetical, Number, BST, Type and Duplicate.",
             "/info: View time until next contest and current Gachapon jackpot prize!",
             "/leaderboard [type]: View the Safari Leaderboards. [type] can be pokemon, money, contest, bst, sold, luxury, gacha, logins or caught.",
@@ -3625,6 +3666,18 @@ function Safari() {
             safari.manageParty(src, commandData);
             return true;
         }
+        if (command === "add") {
+            safari.manageParty(src, "add:" + commandData);
+            return true;
+        }
+        if (command === "remove") {
+            safari.manageParty(src, "remove:" + commandData);
+            return true;
+        }
+        if (command === "active") {
+            safari.manageParty(src, "active:" + commandData);
+            return true;
+        }
         if (command === "mydata") {
             safari.viewOwnInfo(src, commandData);
             return true;
@@ -3635,6 +3688,10 @@ function Safari() {
         }
         if (command === "box") {
             safari.viewBox(src, commandData);
+            return true;
+        }
+        if (command === "boxt") {
+            safari.viewBox(src, commandData, true);
             return true;
         }
         if (command === "changealt") {
@@ -3671,6 +3728,10 @@ function Safari() {
         }
         if (command === "find") {
             safari.findPokemon(src, commandData);
+            return true;
+        }
+        if (command === "findt") {
+            safari.findPokemon(src, commandData, true);
             return true;
         }
         if (command === "leaderboard" || command == "lb") {
