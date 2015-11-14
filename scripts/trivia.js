@@ -2185,6 +2185,42 @@ addAdminCommand(["pushback"], function (src, commandData, channel) {
     triviabot.sendMessage(src, "No more questions!", channel);
 }, "Allows you to push back a question");
 
+addAdminCommand(["showreview"], function (src, commandData, channel) {
+    var tr = trivreview.all();
+    if (trivreview.questionAmount() !== 0) {
+        var ids = Object.keys(tr).sort(function (a, b) {
+            return a - b;
+        });
+        for (id in ids) {
+            var q = trivreview.get(ids[id]);
+            Trivia.sendPM(src, "Question #" + (parseInt(id) + 1) + " under review: '" +
+                q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "'", channel);
+        }
+        return;
+    }
+    triviabot.sendMessage(src, "No more questions!", channel);
+}, "Shows the current questions in review");
+
+addAdminCommand(["review"], function (src, commandData, channel) {
+    var tr = trivreview.all();
+    var ids = Object.keys(tr).sort(function (a, b) {
+        return a - b;
+    });
+    if (commandData.length === 0 || isNaN(commandData) || commandData < 1 || 
+        commandData > ids.length) {
+        triviabot.sendMessage(src, "Specified review id is invalid", channel);
+        return;
+    }
+
+    for (var i = 0; i < commandData - 1; i++) {
+        var q = trivreview.get(ids[i]);
+        trivreview.add(q.category, q.question, q.answer, q.name, q.notes);
+        trivreview.remove(ids[i]);
+    }
+    triviabot.sendAll(sys.name(src) + " jumped to question #" + commandData + " in review", revchan);
+    trivreview.checkq(commandData - 1);
+}, "Jumps to the question with specified id in review")
+
 addAdminCommand(["accept"], function (src, commandData, channel) {
     var tr = trivreview.all();
     if (trivreview.questionAmount() !== 0) {
