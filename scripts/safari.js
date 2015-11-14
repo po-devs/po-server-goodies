@@ -2527,7 +2527,7 @@ function Safari() {
             return;
         }
 
-        sys.sendHtmlMessage(src, this.showParty(id), safchan);
+        sys.sendHtmlMessage(src, this.showParty(id, false, src), safchan);
     };
     this.viewItems = function(src) {
         var player = getAvatar(src);
@@ -2636,11 +2636,14 @@ function Safari() {
             safaribot.sendMessage(src, "To modify your party, type /party add:[pokémon] or /party remove:[pokémon]. Use /party active:[pokémon] to set your party leader.", safchan);
         }
     };
-    this.showParty = function(id, ownParty) {
-        var isAndroid = (sys.os(id) === "android");
+    this.showParty = function(id, ownParty, srcId) {
         var player = getAvatar(id),
             party = player.party.map(pokeInfo.sprite);
         var out = "<table border = 1 cellpadding = 3><tr><th colspan=" + party.length + ">" + (ownParty ? "Current" : sys.name(id) + "'s" ) + " Party</th></tr><tr>";
+        if (!ownParty) {
+            id = srcId || id;
+        }
+        var isAndroid = (sys.os(id) === "android");
         if (isAndroid) {
             out += "<br />";
         }
