@@ -320,6 +320,7 @@ function Safari() {
     var currentItems = Object.keys(itemData);
     var retiredItems = ["rocks", "fast", "zoom", "moon", "dream", "nest"];
     var allItems = currentItems.concat(retiredItems, "permfinder");
+    var allBalls = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier"]; //to-do make dynamic based on current balls. Maybe also reference this for line2 in bag?
 
     var currentTheme;
     var nextTheme;
@@ -957,6 +958,23 @@ function Safari() {
         }
         player.balls[reward] += amount;
     }
+    function ballMacro(src) {
+        var player = getAvatar(src);
+        if (!player || sys.os(src) === "android") {
+            return;
+        }
+        var ret = "", hasBalls = false;
+        for (var i = 0; i < allBalls.length; i++) {
+            var e = allBalls[i];
+            if (player.balls[e] > 0) {
+                ret += "«<a href='po:send//catch " + itemData[e].name +"'>" + cap(itemData[e].name) + "</a>» ";
+                hasBalls = true;
+            }
+        }
+        if (hasBalls) {
+            safaribot.sendHtmlMessage(src, "Throw: " + ret, safchan);
+        }
+    }
     
     this.startContest = function(commandData) {
         contestCooldown = contestCooldownLength;
@@ -1096,6 +1114,10 @@ function Safari() {
             sys.sendHtmlAll(ret, safchan);
         } else {
             sys.sendHtmlAll("<hr><center>A wild " + pokeId + " appeared! <i>(BST: " + add(sys.pokeBaseStats(num)) + ")</i><br/>" + (wildEvent ? "<b>This is an Event Pokémon! No Master Balls allowed!</b><br/>" : "") + pokeInfo.sprite(currentPokemon) + "</center><hr>", safchan);
+        }
+        var onChannel = sys.playersOfChannel(safchan);
+        for (var e in onChannel) {
+            ballMacro(onChannel[e]);
         }
         preparationPhase = sys.rand(5, 8);
         preparationThrows = {};
