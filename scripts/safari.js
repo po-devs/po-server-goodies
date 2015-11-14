@@ -267,7 +267,7 @@ function Safari() {
         clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], sellable: false, buyable: false, tradable: true},
 
         //Other Items
-        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 149, successRate: 0.40, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
+        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 129, successRate: 0.50, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
         rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 189, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
         rare: {name: "rare", fullName: "Rare Candy", type: "usable", icon: 117, price: 0, aliases:["rare", "rarecandy", "rare candy", "candy"], sellable: false, buyable: true, tradable: true},
@@ -280,7 +280,7 @@ function Safari() {
 
         //Perks
         amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false, tradable: true, tradeReq: 10},
-        honey: {name: "honey", fullName: "Honey", type: "perk", icon: 82, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["honey"], sellable: false, buyable: false, tradable: true},
+        honey: {name: "honey", fullName: "Honey", type: "perk", icon: 82, price: 0, bonusRate: 0.025, maxRate: 0.25, aliases:["honey"], sellable: false, buyable: false, tradable: true},
         soothe: {name: "soothe", fullName: "Soothe Bell", type: "perk", icon: 35, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["soothe", "soothebell", "soothe bell", "bell"], sellable: false, buyable: false, tradable: true},
         crown: {name: "crown", fullName: "Relic Crown", type: "perk", icon: 278, price: 0, bonusRate: 0.01, maxRate: 0.1, aliases:["crown", "reliccrown", "relic crown", "relic"], sellable: false, buyable: false, tradable: true, tradeReq: 10},
         scarf: {name: "scarf", fullName: "Silk Scarf", type: "perk", icon: 31, price: 0, bonusRate: 0.015, maxRate: 0.15, aliases:["scarf", "silkscarf", "silk scarf", "silk"], sellable: false, buyable: false, tradable: true},
@@ -2619,16 +2619,19 @@ function Safari() {
             safaribot.sendMessage(src, "You removed " + info.name + " from your party!", safchan);
             this.saveGame(player);
         } else if (action === "active") {
-            if (player.party.indexOf(id) === -1) {
-                safaribot.sendMessage(src, "You need to add that Pokémon to your party first!", safchan);
-                return;
-            }
             if (player.party[0] === id) {
                 safaribot.sendMessage(src, "This is already your active Pokémon!", safchan);
                 return;
             }
-
-            player.party.splice(player.party.indexOf(id), 1);
+            if (player.party.indexOf(id) === -1) {
+                if (player.party.length >= 6) {
+                    var removedId = player.party.splice(5, 1)[0];
+                    safaribot.sendMessage(src, poke(removedId) + " was removed from your party!", safchan);
+                }
+            } else {
+                player.party.splice(player.party.indexOf(id), 1);
+            }
+            
             player.party.splice(0, 0, id);
             safaribot.sendMessage(src, "You are now using " + info.name + " as your active Pokémon!", safchan);
             this.saveGame(player);
@@ -3192,7 +3195,7 @@ function Safari() {
             return;
         }
         if (!sys.dbRegistered(sys.name(src).toLowerCase())) {
-            safaribot.sendMessage(src, "Please register your account before starting the game!");
+            safaribot.sendMessage(src, "Please register your account before starting the game!", safchan);
             return true;
         }
         if (rawPlayers.get(sys.name(src).toLowerCase())) {
@@ -4293,13 +4296,13 @@ function Safari() {
                 if (winners.length > 0) {
                     for (e in winners) {
                         var winner = winners[e];
-                        var playerId = sys.id(winner);
-                        if (playerId) {
-                            var player = getAvatar(playerId);
-                            if (player) {
-                                player.balls.gacha += 10;
-                                player.records.contestsWon += 1;
-                                safari.saveGame(player);
+                        var player = getAvatarOff(winner);
+                        if (player) {
+                            player.balls.gacha += 10;
+                            player.records.contestsWon += 1;
+                            safari.saveGame(player);
+                            var playerId = sys.id(winner);
+                            if (playerId) {
                                 safaribot.sendMessage(playerId, "You received 10 Gachapon Tickets for winning the contest!", safchan);
                             }
                         }
