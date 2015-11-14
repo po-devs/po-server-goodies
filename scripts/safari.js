@@ -3183,7 +3183,7 @@ function Safari() {
             return;
         }
         if (!sys.dbRegistered(sys.name(src).toLowerCase())) {
-            safaribot.sendMessage(src, "Please register your account before starting the game!");
+            safaribot.sendMessage(src, "Please register your account before starting the game!", safchan);
             return true;
         }
         if (rawPlayers.get(sys.name(src).toLowerCase())) {
