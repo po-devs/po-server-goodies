@@ -26,7 +26,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             sys.sendMessage(src, "+cauth: " + JSON.stringify(ret), channel);
             return;
         }
-        var x, tempId, ownersArr = [], adminsArr = [], modsArr = [], membersArr = [];
+        var x, ownersArr = [], adminsArr = [], modsArr = [], membersArr = [];
         for (x = 0; x < SESSION.channels(channel).masters.length; x++) {
             if (sys.isInChannel(sys.id(SESSION.channels(channel).masters[x]), channel)) {
                 ownersArr.push("<b><font color='" + script.getColor(sys.id(SESSION.channels(channel).masters[x])) + "'>" + html_escape(sys.name(sys.id(SESSION.channels(channel).masters[x]))) + "</font></b>");
@@ -62,20 +62,21 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (SESSION.channels(channel).inviteonly >= 1 || SESSION.channels(channel).members.length >= 1) {
             channelbot.sendHtmlMessage(src, "Members: " + membersArr.join(", "), channel);
         }
-        
         return;
     }
-    if (command == "crules" || command == "channelrules") { 
-        var rules = poChannel.getRules();
+    if (command === "crules" || command === "channelrules") { 
+        var x, rules = poChannel.getRules();
         if (rules.length === 0) {
             channelbot.sendMessage(src, "No rules defined for this channel, server rules may apply", channel);
             return;
         }
         sys.sendMessage(src, "*** " + sys.channel(channel) + " channel rules ***", channel);
-        for (var x = 0; x < rules.length; x++) {
+        for (x = 0; x < rules.length; x++) {
             rule = rules[x].split("\n");
             sys.sendMessage(src, rule[0], channel);
-            sys.sendMessage(src, rule[1], channel);
+            if (rule[1].length > 0) {
+                sys.sendMessage(src, rule[1], channel);
+            }
          }
          return;
     }
