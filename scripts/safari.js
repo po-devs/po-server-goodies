@@ -320,6 +320,7 @@ function Safari() {
     var currentItems = Object.keys(itemData);
     var retiredItems = ["rocks", "fast", "zoom", "moon", "dream", "nest"];
     var allItems = currentItems.concat(retiredItems, "permfinder");
+    var allBalls = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier"]; //to-do make dynamic based on current balls. Maybe also reference this for line2 in bag?
 
     var currentTheme;
     var nextTheme;
@@ -957,6 +958,23 @@ function Safari() {
         }
         player.balls[reward] += amount;
     }
+    function ballMacro(src) {
+        var player = getAvatar(src);
+        if (!player || sys.os(src) === "android") {
+            return;
+        }
+        var ret = "", hasBalls = false;
+        for (var i = 0; i < allBalls.length; i++) {
+            var e = allBalls[i];
+            if (player.balls[e] > 0) {
+                ret += "«<a href='po:send//catch " + itemData[e].name +"'>" + cap(itemData[e].name) + "</a>» ";
+                hasBalls = true;
+            }
+        }
+        if (hasBalls) {
+            safaribot.sendHtmlMessage(src, "Throw: " + ret, safchan);
+        }
+    }
     
     this.startContest = function(commandData) {
         contestCooldown = contestCooldownLength;
@@ -988,6 +1006,15 @@ function Safari() {
         } else {
             contestBroadcast = true;
         }
+        
+        var players = sys.playersOfChannel(safchan);
+        for (var pid in players) {
+            var player = getAvatar(players[pid]);
+            if (player && player.flashme) {
+                sys.sendHtmlMessage(players[pid], "<ping/>", safchan);
+            }
+        }
+
         wildEvent = false;
         safari.createWild();
     };
@@ -1087,6 +1114,10 @@ function Safari() {
             sys.sendHtmlAll(ret, safchan);
         } else {
             sys.sendHtmlAll("<hr><center>A wild " + pokeId + " appeared! <i>(BST: " + add(sys.pokeBaseStats(num)) + ")</i><br/>" + (wildEvent ? "<b>This is an Event Pokémon! No Master Balls allowed!</b><br/>" : "") + pokeInfo.sprite(currentPokemon) + "</center><hr>", safchan);
+        }
+        var onChannel = sys.playersOfChannel(safchan);
+        for (var e in onChannel) {
+            ballMacro(onChannel[e]);
         }
         preparationPhase = sys.rand(5, 8);
         preparationThrows = {};
@@ -2518,7 +2549,7 @@ function Safari() {
             return;
         }
 
-        sys.sendHtmlMessage(src, this.showParty(id), safchan);
+        sys.sendHtmlMessage(src, this.showParty(id, false, src), safchan);
     };
     this.viewItems = function(src) {
         var player = getAvatar(src);
@@ -2630,11 +2661,14 @@ function Safari() {
             safaribot.sendMessage(src, "To modify your party, type /party add:[pokémon] or /party remove:[pokémon]. Use /party active:[pokémon] to set your party leader.", safchan);
         }
     };
-    this.showParty = function(id, ownParty) {
-        var isAndroid = (sys.os(id) === "android");
+    this.showParty = function(id, ownParty, srcId) {
         var player = getAvatar(id),
             party = player.party.map(pokeInfo.sprite);
         var out = "<table border = 1 cellpadding = 3><tr><th colspan=" + party.length + ">" + (ownParty ? "Current" : sys.name(id) + "'s" ) + " Party</th></tr><tr>";
+        if (!ownParty) {
+            id = srcId || id;
+        }
+        var isAndroid = (sys.os(id) === "android");
         if (isAndroid) {
             out += "<br />";
         }
@@ -3577,6 +3611,7 @@ function Safari() {
             "/sort [criteria] [ascending|descending]: To sort the order in which the Pokémon are listed on /mydata. Criteria are Alphabetical, Number, BST, Type and Duplicate.",
             "/info: View time until next contest and current Gachapon jackpot prize!",
             "/leaderboard [type]: View the Safari Leaderboards. [type] can be pokemon, money, contest, bst, sold, luxury, gacha, logins or caught.",
+            "/flashme: Toggle whether or not you get flashed when a contest starts.",
             "",
             "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
         ];
@@ -3789,6 +3824,24 @@ function Safari() {
             out.push("");
             sys.sendHtmlMessage(src, out.join("<br/>"),safchan);
 
+            return true;
+        }
+        if (command === "flashme") {
+            var player = getAvatar(src);
+            if (!player) {
+                safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            }
+            else {
+                if (!player.flashme) {
+                    player.flashme = true;
+                    safaribot.sendMessage(src, "You will now be flashed when a contest starts!", safchan);
+                }
+                else {
+                    delete player.flashme;
+                    safaribot.sendMessage(src, "You will no longer be flashed when a contest starts!", safchan);
+                }
+                safari.saveGame(player);
+            }
             return true;
         }
         if (command === "safarirules") {
