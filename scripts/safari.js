@@ -12,7 +12,7 @@ function Safari() {
     var defaultChannel = "Safari";
     var saveFiles = "scriptdata/safarisaves.txt";
     var rawPlayers;
-    
+
     var safaribot = new Bot("Tauros");
 
     var shinyChance = 1024; //Chance for Shiny Pokémon
@@ -251,7 +251,6 @@ function Safari() {
     };
     /* End Poke Info Functions */
 
-
     //Data on items
     var itemData = {
         //Balls
@@ -276,7 +275,7 @@ function Safari() {
         mega: {name: "mega", fullName: "Mega Stone", type: "usable", icon: 2001, price: 0, aliases:["mega", "mega stone"], sellable: false, buyable: true, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
         itemfinder: {name: "itemfinder", fullName: "Itemfinder", type: "usable", icon: 69, price: 0, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], sellable: false, buyable: false, tradable: false},
-        
+
         //Consumables (for useItem)
         gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 0, cooldown: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], sellable: false, buyable: false, tradable: false},
 
@@ -296,11 +295,22 @@ function Safari() {
         nugget: {name: "nugget", fullName: "Nugget", type: "misc", icon: 108, price: 4000, aliases:["nugget"], sellable: true, buyable: false, tradable: true},
         bignugget: {name: "bignugget", fullName: "Big Nugget", type: "misc", icon: 269, price: 10000, aliases:["bignugget", "big nugget"], sellable: true, buyable: false, tradable: true}
     };
-
+    var costumeData = {
+        inver: {icon: 387, name: "inver", fullName: "Inver", aliases: ["inver", "inverse", "psychic"]}, //Inverts type effectiveness
+        ranger: {icon: 348, name: "ranger", fullName: "Poke Ranger", aliases: ["ranger", "pokeranger", "poke ranger", "pokemonranger", "pokemon ranger"]}, // ???
+        breeder: {icon: 379, name: "breeder", fullName: "Poke Breeder", aliases: ["breeder", "pokebreeder", "poke breeder", "pokemonbreeder", "pokemon breeder"], keepRate: 0.04}, //Chance to consume 1 less rare candy on evolution
+        scientist: {icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], bonusRate: 0.03}, //Bonus to clone ball catch rate
+        ace: {icon: 344, name: "ace", fullName: "Ace Trainer", aliases: ["ace", "ace trainer", "acetrainer"], bonusRate: 0.08}, //Bonus to cooldown reduction after a successful catch
+        tech: {icon: 370, name: "tech", fullName: "Technician", aliases: ["technician", "worker", "tech", "mechanic"], retryRate: 0.03}, //Bonus to getting non-Safari from Gacha. 3% = turns ~25% chance into  ~22.75% chance (2.25% boost)
+        aroma: {icon: 397, name: "aroma", fullName: "Aroma Lady", aliases: ["aroma", "aromalady", "aroma lady"], bonusRate: 0.05}, //Bonus to bait success
+        chef: {icon: 423, name: "chef", fullName: "Chef", aliases: ["chef", "cook"], keepRate: 0.25}, //Bonus to not consume bait
+        explorer: {icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], retryRate: 0.1}, //Bonus to finding items with Finder. 10% = turns 80% failure into 78.4% failure (1.6% boost)
+        fisher: {icon: 359, name: "fisher", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], keepRate: 0.2} //Bonus to not lose your ball that you throw on a failed catch
+    };
     var base64icons = {
     itemfinder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAALHRFWHRDcmVhdGlvbiBUaW1lAEZyaSAyMSBOb3YgMjAxNCAyMDozMDo0NCAtMDAwMKEIypIAAAAHdElNRQfeCxUUHwrCV61vAAAACXBIWXMAAAsSAAALEgHS3X78AAAABGdBTUEAALGPC/xhBQAABExJREFUeNqFVutPHFUU/93ZpWyAamOMgIm2Pgrl0ZVHq9t+EAPtZiHWRGOaSFPoF+tnYrJGv+jXEhL/Ah8gaRPb2KSNFqqtSiOQxnYXpFUxatwEAbWBpkuz7GOuc+7OnblzZ0hPcrMze8+5v/M7rzuMr/UDMHCwb5EXiyZIrl9uYUABuWwOkZoIpPjf8+g+mnHsps4/wyLVoUD9sAS5du1jGMw632CIxU7w2YkmFqkho5JQ5Jw7RvRMdgSi2h2w7TjPg1n/qU4ZscQvfGrqI0tvD+5m5sHMEmZmP8UL8QXe2b1gnViBzY2iMJSyubGJA72/BtrtP7zANzcKUIWYGfLlbuZz7HiyFeuZBVgu4YuTjRjuq8e+nnkee3lRAEpRPdXt9H0ZifC2ijBM08TDO9uw/lcaO3Y+h2KphKOf/I5SyUTY2n/skUfR0T3Ppy82ODkIsqN3nYkENaYuPs0O9byFQqGA7U9EUTI5urrexA9fNrDZid1iZe+toa6uDgePEDNDePn9had8dlfffxfcBtNzyqjqCDn+xt88Xygn/rtzu6xCqPB49tLrGV4omLhxZS/LZe85h7x45A9hl88XhTMrKyuYvmBVX802j31YxpSYOeh24rkW88HBQew7NMZ//KbVUjBtZs8y0o8lfuahUEjRNz32YTWmVE2V1ZWe97KRIcDn5uaE1/sP3+JSp2Tlk/Zqa2uRTCYxNDQUYA8vkAriemaIUm5qahUHxuNxdHR0OKxHR0fF79LSEtLptB0Jcsz0VJ+TI/VPl5kLsrq6KkKxtvYfOHedGR4eAYWMAIkd5Wh5eRk3r7aI8PpyFMSMmrmlJSqMJcjMpT1MTotyMbwjioEAx8fHnYIAQpBAdL6hAhATV8p5kQklY6pGFYQ8pSKiFkgm38bAwAAMw0B7e7voO5qF7ml2ddGSTOiZ2DQ373VCVlkZtvbdvtD7RDawdK4866qdfUMy0WeZKsRm5lKjwyZIn5gFsSIutB/2T2WKaZVQ1sX1VNePYCuR5xuqZ/n7NN5D4to4dWpEeFVfX2+DhnxMdWYquFPW9r6vjyg3IyMfIpVKiZKluLe1taGzZ47fuNLsTAT9vpEA6dRNWFmi68kjYVk9upEEEcZ2I6pM/DdvlQBv+udrvPb8Q0QFr6aYiEQue79cDHqM6WA1BHo4dH0CocY+dmwAVX3v4YPr1Th5fh3HB0+IcRWp2e7vIypTOphyQx7Somcq71zWmyNiQkLh7u8/LkYTRYFyKnNDg7iz5yfu6yMq03Nnz4ghSV1OiybC9FeNztWh95EqFHIq8d7eXkxOTjrRCOyjy2ceZ78t3sadO/+K9e3ZXYyG5IOqTTSmxYZYSQBP1QXd8cRMV96qjyjcdIUQSDQaxdjYmBisiURCgFLYWfm7zvVUvSoe/F2X89y0uxuaRSuobE+f/kyEXQCpt+pWot+8QaHreuVP53NAyuxEedr/DwgKwzi3jMhsAAAAAElFTkSuQmCC",
-    gacha: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAkUExURdXeUpR7e1qLe9Xe3sWDamqLc5ykpHNzezExMSlqi////////w/mkLQAAAAMdFJOU///////////////ABLfzs4AAACDSURBVHjarJFJFsQgCETLIYYy979viwZipteLbpf/UwiK7eXgdyHyKERqlbtQ/CBEyOQGM0YsV6GYSDgicExGkGUSHS/cj0WwSWMha6cuyiGU52YiezJVsVZcQw60jPgeLbKGcbvjMdWYCZywi0XLJ2x78Fw9iwu2J7nhv3ztV/ERYAAG0RZIuHExdgAAAABJRU5ErkJggg==",
-    mega:"data:image/png;base64,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",
+    gacha: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAA3NCSVQICAjb4U/gAAAAG1BMVEX////4+Piw2OjgoNh4kKi4cMCISKhwSGAwMDAYBeQdAAAACXRSTlMA//////////83ApvUAAAACXBIWXMAAArwAAAK8AFCrDSYAAAAIHRFWHRTb2Z0d2FyZQBNYWNyb21lZGlhIEZpcmV3b3JrcyBNWLuRKiQAAAB0SURBVHicpYwxCoAwDEUzdhXxApncxRt4AZHGveLHWTyAiyXHtlWLHQX/9B68hOjHNGfeM35FwVwnnmRNopjFPZ3O1mK8RWHLVsBd6AwwFIVg4ySlwNUx8+ijLNe9F9tUcnPowreHyUypiTvkZfIZk8n4007iyyLPYqOktAAAAABJRU5ErkJggg==",
+    mega:"data:image/png;base64,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",
     myth: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAARhJREFUSEvNlT0OgzAMhTlGj8CYo3TsETp2ZOzI2JGRscfoyNiRsUdgzObqIb0qGOenqkAdLCCJ32eHOK5EpNrSNhVH4P8BcM6JZSVbm8yAotPzKJZxPgWKAuAcEw7Hx66es4tBTADF/asVWA6UgqwAC3HvxcMyEABikH0Bet+/2aJYFosMSn+s/skUt7ZpfwCiyJ0azoeR4/126VZHdpVBfR7mE0ERfNNiwhTHOl0TJiAUvZ8O4lsneBLOyBFxuDYLQDUigqa5fhwhTtNi4Td8rIo262AcprnA4KQz0BCswfq+f5QBmEUIgQiFMK4tJp7sB0gXjpYgxzCfEs82HF7HFNLPn67r8PrdrOGUdKzcmv/oybkoU/NvdoVkS0HgewQAAAAASUVORK5CYII="
     };
 
@@ -323,6 +333,7 @@ function Safari() {
     var retiredItems = ["rocks", "fast", "zoom", "moon", "dream", "nest"];
     var allItems = currentItems.concat(retiredItems, "permfinder");
     var allBalls = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier"]; //to-do make dynamic based on current balls. Maybe also reference this for line2 in bag?
+    var allCostumes = Object.keys(costumeData);
 
     var currentTheme;
     var nextTheme;
@@ -697,6 +708,46 @@ function Safari() {
 
         return max;
     }*/
+    /* function fillArray(item, amount) {
+        var ret = [];
+        for (var i = 0; i < amount; i++) {
+            ret.push(item);
+        }
+        return ret;
+    }*/
+    function countArray(arr, item) {
+        var first = arr.indexOf(item);
+        var last = arr.lastIndexOf(item);
+        var count =  last - first + (first === -1 ? 0 : 1);
+        return count;
+    }
+     function randomSample(hash) {
+        var cum = 0;
+        var val = Math.random();
+        var psum = 0.0;
+        var x;
+        var count = 0;
+        for (x in hash) {
+            psum += hash[x];
+            count += 1;
+        }
+        if (psum === 0.0) {
+            var j = 0;
+            for (x in hash) {
+                cum = (++j) / count;
+                if (cum >= val) {
+                    return x;
+                }
+            }
+        } else {
+            for (x in hash) {
+                cum += hash[x] / psum;
+                if (cum >= val) {
+                    return x;
+                }
+            }
+        }
+    }
     /*
         Use this function for every time you need information about a Pokémon typed by a player (don't use for pokémon picked from player.pokemon).
         Returns an object with the following properties:
@@ -774,42 +825,25 @@ function Safari() {
             return "safari";
         }
     }
-    /* function fillArray(item, amount) {
-        var ret = [];
-        for (var i = 0; i < amount; i++) {
-            ret.push(item);
+    function costumeSprite(id) {
+        if (isNaN(id)) {
+            id = costumeIndex(costumeAlias(id));
         }
-        return ret;
-    }*/
-    function countArray(arr, item) {
-        var first = arr.indexOf(item);
-        var last = arr.lastIndexOf(item);
-        var count =  last - first + (first === -1 ? 0 : 1);
-        return count;
+        return "<img src='Themes/Classic/Trainer Sprites/" + id + ".png'>";
     }
-    function randomSample(hash) {
-        var cum = 0;
-        var val = Math.random();
-        var psum = 0.0;
-        var x;
-        var count = 0;
-        for (x in hash) {
-            psum += hash[x];
-            count += 1;
+    function costumeIndex(name) {
+        if (costumeData.hasOwnProperty(name)) {
+            return costumeData[name].icon;
         }
-        if (psum === 0.0) {
-            var j = 0;
-            for (x in hash) {
-                cum = (++j) / count;
-                if (cum >= val) {
-                    return x;
-                }
-            }
-        } else {
-            for (x in hash) {
-                cum += hash[x] / psum;
-                if (cum >= val) {
-                    return x;
+        return 1;
+    }
+    function costumeAlias(name, full) {
+        for (var e in costumeData) {
+            if (costumeData[e].aliases.indexOf(name) !== -1) {
+                if (full) {
+                    return costumeData[e].fullName;
+                } else {
+                    return costumeData[e].name;
                 }
             }
         }
@@ -977,7 +1011,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Throw: " + ret, safchan);
         }
     }
-    
+
     this.startContest = function(commandData) {
         contestCooldown = contestCooldownLength;
         contestCount = contestDuration;
@@ -1015,7 +1049,7 @@ function Safari() {
         wildEvent = false;
         safari.createWild();
     };
-    this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader) {
+    this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader, player) {
         var num,
             pokeId,
             shiny = sys.rand(0, shinyChance) < 1,
@@ -1064,7 +1098,14 @@ function Safari() {
                     do {
                         num = sys.rand(1, 722);
                         if (getBST(num) <= maxStats) {
-                            if (this.checkEffective(atk1, atk2, sys.type(sys.pokeType1(num)), sys.type(sys.pokeType2(num))) > 1) {
+                            var typeBonus = this.checkEffective(atk1, atk2, sys.type(sys.pokeType1(num)), sys.type(sys.pokeType2(num)));
+                            if (player.costume === "inver") {
+                                if (typeBonus === 0) {
+                                    typeBonus = 0.25;
+                                }
+                                typeBonus = 1/typeBonus;
+                            }
+                            if (typeBonus > 1) {
                                 found = true;
                                 break;
                             } else {
@@ -1073,7 +1114,7 @@ function Safari() {
                         }
                         loops++;
                     } while (list.length < 7 && loops < 50);
-                    
+
                     if (!found) {
                         if (list.length === 0) {
                             do {
@@ -1175,12 +1216,12 @@ function Safari() {
             safaribot.sendMessage(src, "You have no " + cap(ball) + " Balls!", safchan);
             return;
         }
-        
+
         if (wildEvent && ball == "master") {
             safaribot.sendMessage(src, "This is an Event Pokémon, you cannot use Master Ball!", safchan);
             return;
         }
-        
+
         var name = sys.name(src);
         if (contestCount > 0 && contestantsWild.indexOf(name) === -1) {
             contestantsWild.push(name);
@@ -1220,6 +1261,12 @@ function Safari() {
             ballBonus = itemData[ball].bonusRate;
         }
         var typeBonus = this.checkEffective(sys.type(sys.pokeType1(player.party[0])), sys.type(sys.pokeType2(player.party[0])), sys.type(sys.pokeType1(wild)), sys.type(sys.pokeType2(wild)));
+        if (player.costume === "inver") {
+            if (typeBonus === 0) {
+                typeBonus = 0.25;
+            }
+            typeBonus = 1/typeBonus;
+        }
 
         var tiers = ["ORAS LC", "ORAS NU", "ORAS LU", "ORAS UU", "ORAS OU", "ORAS Ubers"];
         var tierChance = 0.02;
@@ -1237,6 +1284,9 @@ function Safari() {
         finalChance *= ballBonus;
         if (ball == "clone" && finalChance > itemData[ball].bonusRate) {
             finalChance = itemData[ball].bonusRate;
+            if (player.costume === "scientist") {
+                finalChance += costumeData.scientist.bonusRate;
+            }
         }
 
         var rng = Math.random();
@@ -1270,7 +1320,8 @@ function Safari() {
                 player.records.luxuryEarnings += earnings;
             }
 
-            var penalty = 2 - Math.min(itemData.soothe.bonusRate * player.balls.soothe, itemData.soothe.maxRate);
+            var costumeBonus = (player.costume === "ace" ? costumeData.ace.bonusRate : 0);
+            var penalty = 2 - Math.min(itemData.soothe.bonusRate * player.balls.soothe, itemData.soothe.maxRate) - costumeBonus;
             cooldown *= penalty;
             if (contestCount > 0) {
                 if (!(name in contestCatchers)) {
@@ -1287,7 +1338,15 @@ function Safari() {
                 wildEvent = false;
             }
         } else {
-            safaribot.sendMessage(src, "You threw a  " + cap(ball) + " Ball at " + pokeName +"! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
+            var keep = false;
+            if (player.costume === "fisher") {
+                var rng2 = Math.random();
+                if (rng2 < costumeData.fisher.keepRate) {
+                    keep = true;
+                    player.balls[ball] += 1;
+                }
+            }
+            safaribot.sendMessage(src, "You threw a  " + cap(ball) + " Ball at " + pokeName +"! " + (keep ? "A quick jerk of your fishing rod snags the " + cap(ball) + " you just threw, allowing you to recover it!" : "") + "You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             if (rng < finalChance + 0.1) {
                 safaribot.sendMessage(src, "Gah! It was so close, too! ", safchan);
             } else if (rng < finalChance + 0.2) {
@@ -1848,8 +1907,9 @@ function Safari() {
 
         var rng = Math.random();
         var perkBonus = Math.min(itemData.honey.bonusRate * player.balls.honey, itemData.honey.maxRate);
+        var costumeBonus = (player.costume === "aroma" ? costumeData.aroma.bonusRate : 0);
 
-        if (rng < (itemData.bait.successRate + perkBonus)) {
+        if (rng < (itemData.bait.successRate + perkBonus + costumeBonus)) {
             safaribot.sendAll((commandData.toLowerCase() == "spy" ? "Some stealthy person" : sys.name(src)) + " left some bait out. The bait attracted a wild Pokémon!", safchan);
             baitCooldown = successfulBaitCount = itemData.bait.successCD + sys.rand(0,10);
             player.records.baitAttracted += 1;
@@ -1859,7 +1919,7 @@ function Safari() {
             }
             lastBaiters.push(sys.name(src));
 
-            safari.createWild(null, null, 1, null, player.party[0]);
+            safari.createWild(null, null, 1, null, player.party[0], player);
             if (commandData !== undefined) {
                 safari.throwBall(src, commandData, true);
                 preparationFirst = sys.name(src);
@@ -1869,6 +1929,13 @@ function Safari() {
             baitCooldown = itemData.bait.failCD + sys.rand(0,5);
             safaribot.sendAll((commandData.toLowerCase() == "spy" ? "Some stealthy person" : sys.name(src)) + " left some bait out... but nothing showed up.", safchan);
             player.records.baitNothing += 1;
+            if (player.costume === "chef") {
+                var rng2 = Math.random();
+                if (rng2 < costumeData.chef.keepRate) {
+                    player.balls[item] += 1;
+                    safaribot.sendMessage(src, "If you sauté this bait just right, it will be usable again. Only a Master Chef like you could accomplish this feat!", safchan);
+                }
+            }
         }
         safaribot.sendMessage(src, "You still have " + player.balls[item] + " Baits remaining.", safchan);
         this.saveGame(player);
@@ -2084,15 +2151,21 @@ function Safari() {
         player.records.gachasUsed += 1;
         var reward = randomSample(gachaItems);
         safaribot.sendMessage(src, "Gacha-PON! The Gachapon Machine has dispensed an item capsule. [Remaining Tickets: " + player.balls[gach] + "]", safchan);
+        if (player.costume === "tech" && reward === "safari") {
+            var rng = Math.random();
+            if (rng < costumeData.tech.retryRate) {
+                reward = randomSample(gachaItems);
+            }
+        }
 
         //Variable for higher quantity rewards later. Make better later maybe?
         var amount = 1;
-        var rng2 = Math.random();
-        if (rng2 < 0.02) {
+        var rng = Math.random();
+        if (rng < 0.02) {
             amount = 4;
-        } else if (rng2 < 0.12) {
+        } else if (rng < 0.12) {
             amount = 3;
-        } else if (rng2 < 0.35) {
+        } else if (rng < 0.35) {
             amount = 2;
         }
         var plural = amount > 1 ? "s" : "";
@@ -2247,7 +2320,7 @@ function Safari() {
             safaribot.sendMessage(src, info.name + " requires " + candiesRequired + " Rare Candies to evolve!", safchan);
             return;
         }
-        
+
         var evolveStarter = true;
         if (player.starter == id) {
             var count = countRepeated(player.pokemon, id);
@@ -2274,11 +2347,28 @@ function Safari() {
         }
         var evolvedId = shiny ? "" + evolveTo : evolveTo;
 
+        var keep = false;
+        if (player.costume === "breeder") {
+            var rng = Math.random();
+            if (rng < costumeData.breeder.keepRate) {
+                candiesRequired -= 1;
+                keep = true;
+            }
+        }
         player.balls.rare -= candiesRequired;
         player.records.pokesEvolved += 1;
 
         this.evolvePokemon(src, info, evolvedId, "evolved into", evolveStarter);
-        safaribot.sendMessage(src, "Your " + info.name + " ate " + candiesRequired + " Rare Cand" + (candiesRequired > 1 ? "ies" : "y") + " and evolved into " + poke(evolvedId) + "!", safchan);
+        if (keep) {
+            if (candiesRequired > 0) {
+                candiesRequired += 1;
+                safaribot.sendMessage(src, "Your " + info.name + " started to eat " + candiesRequired + " Rare Cand" + (candiesRequired > 1 ? "ies" : "y") + " but evolved into " + poke(evolvedId) + " before eating the last one!", safchan);
+            } else {
+                safaribot.sendMessage(src, "Due to your expertise in raising Pokémon, your " + info.name + " evolved without needing to eat any Rare Candies!", safchan);
+            }
+        } else {
+            safaribot.sendMessage(src, "Your " + info.name + " ate " + candiesRequired + " Rare Cand" + (candiesRequired > 1 ? "ies" : "y") + " and evolved into " + poke(evolvedId) + "!", safchan);
+        }
     };
     this.useMegaStone = function(src, commandData) {
         var player = getAvatar(src);
@@ -2428,8 +2518,14 @@ function Safari() {
             permCharges -= 1;
         }
         totalCharges -= 1;
-        
+
         var reward = randomSample(finderItems);
+        if (player.costume === "explorer" && reward === "nothing") {
+            var rng = Math.random();
+            if (rng < costumeData.explorer.retryRate) {
+                reward = randomSample(finderItems);
+            }
+        }
         var amount = 1;
 
         var giveReward = true;
@@ -2498,16 +2594,16 @@ function Safari() {
             safaribot.sendMessage(src,  item + " is not a valid item!", safchan);
             return false;
         }
-        
+
         if (itemData[item].type !== "consumable") {
             safaribot.sendMessage(src, item + " is not a usable item!", safchan);
         }
-        
+
         if (player.balls[item] < 1) {
             safaribot.sendMessage(src, "You have no " + finishName(item) + "!", safchan);
             return;
         }
-        
+
         if (item === "gem") {
             var chars = player.balls.itemfinder,
                 gemdata = itemData.gem.charges,
@@ -2521,7 +2617,7 @@ function Safari() {
             return;
         }
     };
-    
+
     this.viewOwnInfo = function(src) {
         var player = getAvatar(src);
         if (!player) {
@@ -2658,7 +2754,7 @@ function Safari() {
             } else {
                 player.party.splice(player.party.indexOf(id), 1);
             }
-            
+
             player.party.splice(0, 0, id);
             safaribot.sendMessage(src, "You are now using " + info.name + " as your active Pokémon!", safchan);
             this.saveGame(player);
@@ -2668,8 +2764,9 @@ function Safari() {
     };
     this.showParty = function(id, ownParty, srcId) {
         var player = getAvatar(id),
-            party = player.party.map(pokeInfo.sprite);
-        var out = "<table border = 1 cellpadding = 3><tr><th colspan=" + party.length + ">" + (ownParty ? "Current" : sys.name(id) + "'s" ) + " Party</th></tr><tr>";
+            party = player.party.map(pokeInfo.sprite),
+            costumed = (player.costume !== "none");
+        var out = "<table border = 1 cellpadding = 3><tr><th colspan=" + (party.length + (costumed ? 1 : 0)) + ">" + (ownParty ? "Current" : sys.name(id) + "'s" ) + " Party</th></tr><tr>";
         if (!ownParty) {
             id = srcId || id;
         }
@@ -2677,10 +2774,16 @@ function Safari() {
         if (isAndroid) {
             out += "<br />";
         }
+        if (costumed) {
+            out += "<td>" + costumeSprite(player.costume) + "</td>";
+        }
         for (var e in party) {
-            out += "<td>" + party[e] + "</td>";
+            out += "<td align=center>" + party[e] + "</td>";
         }
         out += "</tr><tr>";
+        if (costumed) {
+            out += "<td align=center>" + costumeAlias(player.costume, true) + "</td>";
+        }
         for (var e in player.party) {
             var member = getPokemonInfo(player.party[e]);
             var name = sys.pokemon(member[0]) + (member[1] === true ? "*" : "");
@@ -2707,13 +2810,13 @@ function Safari() {
 
         if (!isNaN(page) && num != "all") {
             maxPages = Math.floor(list.length / (perPage)) + (list.length % perPage === 0 ? 0 : 1);
-            
+
             if (page > maxPages) {
                 page = maxPages;
             }
             list = list.slice(perPage * (page - 1), perPage * (page - 1) + perPage);
         }
-        
+
         if (textOnly) {
             out += this.listPokemonText(list, "Owned Pokémon (" + player.pokemon.length + ")");
         } else {
@@ -3226,7 +3329,7 @@ function Safari() {
         }
         contestantsWild = [];
     };
-    
+
     this.startGame = function(src, data) {
         if (getAvatar(src)) {
             safaribot.sendMessage(src, "You already have a starter pokémon!", safchan);
@@ -3251,6 +3354,7 @@ function Safari() {
             pokemon: [num],
             party: [num],
             money: 300,
+            costume: "none",
             balls: {
                 safari: 30,
                 great: 5,
@@ -3311,6 +3415,18 @@ function Safari() {
                 baitNothing: 0,
                 itemsFound: 0,
                 consecutiveLogins: 0
+            },
+            costumes: {
+                inver: 0,
+                ranger: 0,
+                breeder: 0,
+                scientist: 0,
+                ace: 0,
+                tech: 0,
+                aroma: 0,
+                chef: 0,
+                explorer: 0,
+                fisher: 0
             },
             megaTimers: [],
             starter: num,
@@ -3466,6 +3582,24 @@ function Safari() {
             if (player.money % 1 !== 0) {
                 player.money = Math.floor(player.money);
             }
+            if (player.costumes === undefined) {
+                player.costumes = {};
+            }
+            if (player.costume === undefined) {
+                player.costume = "none";
+            }
+            for (var i = 0; i < allCostumes.length; i++) {
+                clean = allCostumes[i];
+                if (typeof player.costumes[clean] !== "number") {
+                    player.costumes[clean] = 0;
+                }
+                if (player.costumes[clean] === undefined || isNaN(player.costumes[clean]) || player.costumes[clean] === null || player.costumes[clean] < 0) {
+                    player.costumes[clean] = 0;
+                }
+                if (player.costumes[clean] > 1) {
+                    player.costumes[clean] = 1;
+                }
+            }
 
             if (player.records === undefined) {
                 player.records = {};
@@ -3528,7 +3662,7 @@ function Safari() {
             }
         }
     };
-    
+
     this.showHelp = function (src) {
         var x, help = [
             "",
@@ -3565,7 +3699,7 @@ function Safari() {
             "Rare Candy: Used to evolve Pokémon. Requires 2 Rare Candies to evolve into a final form Pokémon. ",
             "Valuables: The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be pawned off with /pawn for money.",
             "Itemfinder: An experimental machine that can help find rare items! By default, it can only hold " + itemData.itemfinder.charges + " charges. These charges are reset every day.",
-            "Ampere Gem: An electrically charged gem created by a famous Ampharos in Olivine City. It is said to be able to recharge the Itemfinder, giving it " + itemData.gem.charges + " more uses for the day!",
+            "Ampere Gem: An electrically charged gem created by a famous Ampharos in Olivine City. It is said to be able to recharge the Itemfinder, giving it " + itemData.gem.charges + " more uses for the day! (To use, type \"/use gem\")",
             "",
             "*** Perks ***",
             "Amulet Coin: When holding this charm, a bonus yield of about " + itemData.amulet.bonusRate * 100 + "% can be made when selling Pokémon to the NPC (Max Rate: " + itemData.amulet.maxRate * 100 + "%).",
@@ -3892,12 +4026,12 @@ function Safari() {
         }
         if (command === "bst") {
             var info = getInputPokemon(commandData);
-            
+
             if (!info.num) {
                 safaribot.sendMessage(src, "Invalid Pokémon.", safchan);
                 return true;
             }
-            
+
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, info.name + "'s BST is " + getBST(info.num) + ".", safchan);
             var player = getAvatar(src);
@@ -4345,7 +4479,7 @@ function Safari() {
                     }
                     return 0;
                 });
-                
+
 
                 sys.sendAll("*** ************************************************************ ***", safchan);
                 safaribot.sendAll("The Safari contest is now over! Please come back during the next contest!", safchan);
@@ -4363,7 +4497,7 @@ function Safari() {
                 currentPokemon = null;
                 currentTheme = null;
                 wildEvent = false;
-                
+
                 var player, winner, playerId, amt;
                 for (e in contestantsCount) {
                     player = getAvatarOff(e);
