@@ -4608,7 +4608,7 @@ function Safari() {
                     player = getAvatarOff(e);
                     if (contestantsCount[e] > 0 && player) {
                         playerId = sys.id(e);
-                        amt = Math.max(Math.floor(Math.min(contestantsCount[e] / pokemonSpawned, 1) * 4), 1);
+                        amt = Math.max(Math.floor(Math.min(contestantsCount[e] / pokemonSpawned, 1) * 3), 1);
                         player.balls.bait += amt;
                         safari.saveGame(player);
                         if (playerId) {
