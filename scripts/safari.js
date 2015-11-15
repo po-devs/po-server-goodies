@@ -1953,7 +1953,7 @@ function Safari() {
         else {
             if (offer.indexOf("@") === -1 && offer[0] !== "$" && receiver.pokemon.length >= receiver.balls.box * itemData.box.bonusRate) {
                 safaribot.sendMessage(src, "Trade cancelled because all of " + sys.name(receiverId) + "'s boxes are full!" , safchan);
-                safaribot.sendMessage(receiverId, "Trade cancelled because all of yours boxes are full!", safchan);
+                safaribot.sendMessage(receiverId, "Trade cancelled because all of your boxes are full!", safchan);
                 return;
             }
         }
