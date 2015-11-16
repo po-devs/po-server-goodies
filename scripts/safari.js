@@ -263,12 +263,12 @@ function Safari() {
         heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 0, ballBonus: 1, bonusRate: 0.5, maxBonus: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], sellable: false, buyable: false, tradable: true},
         quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 0, ballBonus: 1, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], sellable: false, buyable: false, tradable: true},
         luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 1.25, cooldown: 10000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false, tradable: true},
-        premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 3.5, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false, tradable: false},
+        premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 3, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], sellable: false, buyable: false, tradable: false},
         spy: {name: "spy", fullName: "Spy Ball", type: "ball", icon: 328, price: 0, ballBonus: 1.25, bonusRate: 1.25, cooldown: 9000, aliases:["spyball", "spy", "spy ball"], sellable: false, buyable: false, tradable: true},
         clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], sellable: false, buyable: false, tradable: true},
 
         //Other Items
-        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 129, successRate: 0.50, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
+        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 129, successRate: 0.45, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
         rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 189, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
         rare: {name: "rare", fullName: "Rare Candy", type: "usable", icon: 117, price: 0, aliases:["rare", "rarecandy", "rare candy", "candy"], sellable: false, buyable: true, tradable: true},
@@ -286,6 +286,7 @@ function Safari() {
         crown: {name: "crown", fullName: "Relic Crown", type: "perk", icon: 278, price: 0, bonusRate: 0.01, maxRate: 0.1, aliases:["crown", "reliccrown", "relic crown", "relic"], sellable: false, buyable: false, tradable: true, tradeReq: 10},
         scarf: {name: "scarf", fullName: "Silk Scarf", type: "perk", icon: 31, price: 0, bonusRate: 0.015, maxRate: 0.15, aliases:["scarf", "silkscarf", "silk scarf", "silk"], sellable: false, buyable: false, tradable: true},
         battery: {name: "battery", fullName: "Cell Battery", type: "perk", icon: 241, price: 0, bonusRate: 2, maxRate: 20, aliases:["battery", "cellbattery", "cell battery", "cell"], sellable: false, buyable: false, tradable: true},
+        box: {name: "box", fullName: "Box", type: "perk", icon: 175, price: [0, 0, 0, 0, 100000, 200000, 400000, 600000, 800000, 1000000], bonusRate: 96, aliases:["box", "boxes"], sellable: false, buyable: true, tradable: false},
 
         //Sellables
         pearl: {name: "pearl", fullName: "Pearl", type: "misc", icon: 111, price: 500, aliases:["pearl"], sellable: true, buyable: false, tradable: true},
@@ -311,7 +312,8 @@ function Safari() {
     itemfinder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAALHRFWHRDcmVhdGlvbiBUaW1lAEZyaSAyMSBOb3YgMjAxNCAyMDozMDo0NCAtMDAwMKEIypIAAAAHdElNRQfeCxUUHwrCV61vAAAACXBIWXMAAAsSAAALEgHS3X78AAAABGdBTUEAALGPC/xhBQAABExJREFUeNqFVutPHFUU/93ZpWyAamOMgIm2Pgrl0ZVHq9t+EAPtZiHWRGOaSFPoF+tnYrJGv+jXEhL/Ah8gaRPb2KSNFqqtSiOQxnYXpFUxatwEAbWBpkuz7GOuc+7OnblzZ0hPcrMze8+5v/M7rzuMr/UDMHCwb5EXiyZIrl9uYUABuWwOkZoIpPjf8+g+mnHsps4/wyLVoUD9sAS5du1jGMw632CIxU7w2YkmFqkho5JQ5Jw7RvRMdgSi2h2w7TjPg1n/qU4ZscQvfGrqI0tvD+5m5sHMEmZmP8UL8QXe2b1gnViBzY2iMJSyubGJA72/BtrtP7zANzcKUIWYGfLlbuZz7HiyFeuZBVgu4YuTjRjuq8e+nnkee3lRAEpRPdXt9H0ZifC2ijBM08TDO9uw/lcaO3Y+h2KphKOf/I5SyUTY2n/skUfR0T3Ppy82ODkIsqN3nYkENaYuPs0O9byFQqGA7U9EUTI5urrexA9fNrDZid1iZe+toa6uDgePEDNDePn9had8dlfffxfcBtNzyqjqCDn+xt88Xygn/rtzu6xCqPB49tLrGV4omLhxZS/LZe85h7x45A9hl88XhTMrKyuYvmBVX802j31YxpSYOeh24rkW88HBQew7NMZ//KbVUjBtZs8y0o8lfuahUEjRNz32YTWmVE2V1ZWe97KRIcDn5uaE1/sP3+JSp2Tlk/Zqa2uRTCYxNDQUYA8vkAriemaIUm5qahUHxuNxdHR0OKxHR0fF79LSEtLptB0Jcsz0VJ+TI/VPl5kLsrq6KkKxtvYfOHedGR4eAYWMAIkd5Wh5eRk3r7aI8PpyFMSMmrmlJSqMJcjMpT1MTotyMbwjioEAx8fHnYIAQpBAdL6hAhATV8p5kQklY6pGFYQ8pSKiFkgm38bAwAAMw0B7e7voO5qF7ml2ddGSTOiZ2DQ373VCVlkZtvbdvtD7RDawdK4866qdfUMy0WeZKsRm5lKjwyZIn5gFsSIutB/2T2WKaZVQ1sX1VNePYCuR5xuqZ/n7NN5D4to4dWpEeFVfX2+DhnxMdWYquFPW9r6vjyg3IyMfIpVKiZKluLe1taGzZ47fuNLsTAT9vpEA6dRNWFmi68kjYVk9upEEEcZ2I6pM/DdvlQBv+udrvPb8Q0QFr6aYiEQue79cDHqM6WA1BHo4dH0CocY+dmwAVX3v4YPr1Th5fh3HB0+IcRWp2e7vIypTOphyQx7Somcq71zWmyNiQkLh7u8/LkYTRYFyKnNDg7iz5yfu6yMq03Nnz4ghSV1OiybC9FeNztWh95EqFHIq8d7eXkxOTjrRCOyjy2ceZ78t3sadO/+K9e3ZXYyG5IOqTTSmxYZYSQBP1QXd8cRMV96qjyjcdIUQSDQaxdjYmBisiURCgFLYWfm7zvVUvSoe/F2X89y0uxuaRSuobE+f/kyEXQCpt+pWot+8QaHreuVP53NAyuxEedr/DwgKwzi3jMhsAAAAAElFTkSuQmCC",
     gacha: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAA3NCSVQICAjb4U/gAAAAG1BMVEX////4+Piw2OjgoNh4kKi4cMCISKhwSGAwMDAYBeQdAAAACXRSTlMA//////////83ApvUAAAACXBIWXMAAArwAAAK8AFCrDSYAAAAIHRFWHRTb2Z0d2FyZQBNYWNyb21lZGlhIEZpcmV3b3JrcyBNWLuRKiQAAAB0SURBVHicpYwxCoAwDEUzdhXxApncxRt4AZHGveLHWTyAiyXHtlWLHQX/9B68hOjHNGfeM35FwVwnnmRNopjFPZ3O1mK8RWHLVsBd6AwwFIVg4ySlwNUx8+ijLNe9F9tUcnPowreHyUypiTvkZfIZk8n4007iyyLPYqOktAAAAABJRU5ErkJggg==",
     mega:"data:image/png;base64,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",
-    myth: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAARhJREFUSEvNlT0OgzAMhTlGj8CYo3TsETp2ZOzI2JGRscfoyNiRsUdgzObqIb0qGOenqkAdLCCJ32eHOK5EpNrSNhVH4P8BcM6JZSVbm8yAotPzKJZxPgWKAuAcEw7Hx66es4tBTADF/asVWA6UgqwAC3HvxcMyEABikH0Bet+/2aJYFosMSn+s/skUt7ZpfwCiyJ0azoeR4/126VZHdpVBfR7mE0ERfNNiwhTHOl0TJiAUvZ8O4lsneBLOyBFxuDYLQDUigqa5fhwhTtNi4Td8rIo262AcprnA4KQz0BCswfq+f5QBmEUIgQiFMK4tJp7sB0gXjpYgxzCfEs82HF7HFNLPn67r8PrdrOGUdKzcmv/oybkoU/NvdoVkS0HgewQAAAAASUVORK5CYII="
+    myth: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAARhJREFUSEvNlT0OgzAMhTlGj8CYo3TsETp2ZOzI2JGRscfoyNiRsUdgzObqIb0qGOenqkAdLCCJ32eHOK5EpNrSNhVH4P8BcM6JZSVbm8yAotPzKJZxPgWKAuAcEw7Hx66es4tBTADF/asVWA6UgqwAC3HvxcMyEABikH0Bet+/2aJYFosMSn+s/skUt7ZpfwCiyJ0azoeR4/126VZHdpVBfR7mE0ERfNNiwhTHOl0TJiAUvZ8O4lsneBLOyBFxuDYLQDUigqa5fhwhTtNi4Td8rIo262AcprnA4KQz0BCswfq+f5QBmEUIgQiFMK4tJp7sB0gXjpYgxzCfEs82HF7HFNLPn67r8PrdrOGUdKzcmv/oybkoU/NvdoVkS0HgewQAAAAASUVORK5CYII=",
+    box: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXZwQWcAAAAgAAAAIACH+pydAAAA5UlEQVRIx92VwQ2DMAxFMwLHHjtCRuHIGDly7AgdgREyAkdGYIxuEGQJV6ljOwZSVerhCxGF//wTYbsYo/um3M8B3vuEag4A09f6eOsMzGxOZYWJ5tPk0zz3rDld12DVyhEET3y3JGMBtWMBEMK4dEsc0nO884CaOVc5gkBorgJwA0g7c65ygFUBsBElwaRjCeF2DIDKP6SwvJDDCVDwIZcsDN0H+FICdp0AmiVY+o4FtEkA5rukBPRvLrqmmCAzlxKYW0UOKxIIdyA1PfMs0C5Z66jmwVEk2wGn2nXLKef+f+hf1QY4PRz+Bnq4AwAAAABJRU5ErkJggg=="
     };
 
     var gachaItems = {
@@ -354,13 +356,14 @@ function Safari() {
             "types" : ["Grass", "Bug"],
             "excludeTypes" : [],
             "include" : [16, 17, 18, 25, 163, 164, 438, 185, 452, 65948, 131484, 65949, 131485, 649, 172, 287, 288, 289],
-            "exclude" : [649],
+            "exclude" : [],
             "customBST" : {
-                "289" : 600
+                "289" : 595,
+                "640" : 595
             },
             "minBST" : 300,
             "maxBST" : 601,
-            "icon": 10
+            "icon" : 10
         },
         "sea" : {
             "name" : "Sea",
@@ -369,23 +372,31 @@ function Safari() {
             "include" : [524954, 656026, 721562, 852634, 399, 489, 65958, 65959, 131423, 298, 712, 713, 686, 687, 691, 249, 382],
             "exclude" : [721],
             "customBST" : {
+                "245" : 625,
                 "249" : 630,
-                "382" : 630
+                "382" : 630,
+                "489" : 590,
+                "490" : 620,
+                "647" : 625
             },
             "minBST" : 300,
             "maxBST" : 631,
-            "icon": 129
+            "icon" : 129
         },
         "volcano" : {
             "name" : "Volcano",
             "types" : ["Fire", "Rock"],
             "excludeTypes" : ["Water", "Ice"],
             "include" : [1049242, 721, 208],
-            "exclude" : [438, 185, 639, 345, 346],
-            "customBST" : {},
+            "exclude" : [],
+            "customBST" : {
+                "146" : 595,
+                "244" : 595,
+                "377" : 595
+            },
             "minBST" : 315,
             "maxBST" : 601,
-            "icon": 218
+            "icon" : 218
         },
         "cave" : {
             "name" : "Cave",
@@ -394,31 +405,41 @@ function Safari() {
             "include" : [41, 42, 169, 92, 93, 202, 360, 486, 29, 30, 32, 33, 206],
             "exclude" : [],
             "customBST" : {
-                "486" : 600
+                "377" : 595,
+                "486" : 600,
+                "639" : 595
             },
             "minBST" : 300,
             "maxBST" : 601,
-            "icon": 41
+            "icon" : 41
         },
         "sky" : {
             "name" : "Sky",
             "types" : ["Flying"],
             "excludeTypes" : ["Bug"],
-            "include" : [329, 330, 635, 380, 381, 250, 621],
-            "exclude" : [6, 130],
+            "include" : [329, 330, 635, 380, 381, 250, 621, 145],
+            "exclude" : [],
             "customBST" : {
-                "250" : 620
+                "144" : 615,
+                "145" : 615,
+                "146" : 615,
+                "250" : 620,
+                "380" : 620,
+                "381" : 620,
+                "641" : 615,
+                "642" : 615,
+                "645" : 615
             },
             "minBST" : 300,
             "maxBST" : 621,
-            "icon": 396
+            "icon" : 396
         },
         "urban" : {
             "name" : "Urban",
             "types" : ["Poison", "Dark", "Steel"],
             "excludeTypes" : ["Grass", "Water", "Fairy"],
             "include" : [52, 53, 209, 210, 300, 301, 479, 66015, 131551, 197087, 262623, 328159, 506, 507, 508, 19, 20, 582, 583, 584, 66217, 676, 66212, 131748, 197284, 262820, 328356, 393892, 459428, 524964, 590500, 358, 707],
-            "exclude" : [],
+            "exclude" : [485],
             "customBST" : {
                 "66015" : 590,
                 "131551" : 590,
@@ -434,11 +455,13 @@ function Safari() {
                 "262820" : 580,
                 "197284" : 580,
                 "131748" : 580,
-                "66212" : 580
+                "66212" : 580,
+                "379" : 595,
+                "638" : 595
             },
             "minBST" : 300,
             "maxBST" : 601,
-            "icon": 66015
+            "icon" : 66015
         },
         "tundra" : {
             "name" : "Tundra",
@@ -447,12 +470,12 @@ function Safari() {
             "include" : [86, 90, 216, 217, 223, 234, 245, 393, 394, 395, 197193, 197194, 66202, 787098, 1114778],
             "exclude" : [],
             "customBST" : {
-                "144" : 590,
-                "378" : 590
+                "144" : 595,
+                "378" : 595
             },
             "minBST" : 300,
             "maxBST" : 601,
-            "icon": 220
+            "icon" : 220
         },
         "factory" : {
             "name" : "Factory",
@@ -461,11 +484,15 @@ function Safari() {
             "include" : [137, 233, 474],
             "exclude" : [],
             "customBST" : {
+                "145" : 615,
+                "243" : 615,
+                "638" : 615,
+                "642" : 615,
                 "644" : 620
             },
             "minBST" : 300,
             "maxBST" : 621,
-            "icon": 82
+            "icon" : 82
         },
         "field" : {
             "name" : "Field",
@@ -478,7 +505,7 @@ function Safari() {
             },
             "minBST" : 300,
             "maxBST" : 601,
-            "icon": 162
+            "icon" : 162
         },
         "dojo" : {
             "name" : "Dojo",
@@ -487,24 +514,37 @@ function Safari() {
             "include" : [291, 656, 657, 658, 390, 679, 680, 66217, 624, 625],
             "exclude" : [],
             "customBST" : {
-                "66217" : 590
+                "66217" : 590,
+                "638" : 595,
+                "639" : 595,
+                "640" : 595,
+                "647" : 595
             },
             "minBST" : 300,
             "maxBST" : 601,
-            "icon": 107
+            "icon" : 107
         },
         "pyre" : {
             "name" : "Mt. Pyre",
             "types" : ["Ghost", "Psychic"],
             "excludeTypes" : ["Steel", "Normal"],
             "include" : [37, 38, 359, 491, 104, 105, 654, 228, 229, 198, 430],
-            "exclude" : [201, 479, 386],
+            "exclude" : [],
             "customBST" : {
-                "487" : 620
+                "151" : 620,
+                "251" : 620,
+                "380" : 620,
+                "381" : 620,
+                "386" : 620,
+                "487" : 620,
+                "488" : 620,
+                "491" : 620,
+                "494" : 620,
+                "720" : 620
             },
             "minBST" : 300,
             "maxBST" : 621,
-            "icon": 92
+            "icon" : 92
         },
         "daycare" : {
             "name" : "Daycare",
@@ -515,7 +555,7 @@ function Safari() {
             "customBST" : {},
             "minBST" : 240,
             "maxBST" : 350,
-            "icon": 175
+            "icon" : 175
         },
         "tower" : {
             "name" : "Dragonspiral Tower",
@@ -532,7 +572,7 @@ function Safari() {
             },
             "minBST" : 300,
             "maxBST" : 621,
-            "icon": 148
+            "icon" : 148
         },
         "desert" : {
             "name" : "Desert",
@@ -541,11 +581,15 @@ function Safari() {
             "include" : [918170, 331, 332, 556, 383, 262495, 455, 30, 29, 32, 33, 23, 24],
             "exclude" : [],
             "customBST" : {
-                "383" : 620
+                "383" : 620,
+                "639" : 615,
+                "645" : 615,
+                "718" : 620,
+                "719" : 620
             },
             "minBST" : 300,
             "maxBST" : 621,
-            "icon": 450
+            "icon" : 450
         },
         "starter" : {
             "name" : "Starter Pokémon",
@@ -561,9 +605,9 @@ function Safari() {
             },
             "minBST" : 320,
             "maxBST" : 550,
-            "icon": 1
+            "icon" : 1
         },
-        "cerulean": {
+        "cerulean" : {
             "name" : "Cerulean Cave",
             "types" : [],
             "excludeTypes" : [],
@@ -572,18 +616,22 @@ function Safari() {
             "customBST" : {},
             "minBST" : 300,
             "maxBST" : 681,
-            "icon": 150
+            "icon" : 150
         },
-        "ruins": {
+        "ruins" : {
             "name" : "Ruins",
             "types" : [],
             "excludeTypes" : [],
             "include" : [201, 65737, 131273, 196809, 262345, 327881, 393417, 458953, 524489, 590025, 655561, 721097, 786633, 852169, 917705, 983241, 1048777, 1114313, 1179849, 1245385, 1310921, 1376457, 1441993, 1507529, 1573065, 1638601, 1704137, 1769673, 202, 360, 353, 354, 355, 356, 235, 436, 437, 92, 93, 94, 524, 525, 526, 377, 378, 379, 343, 344, 177, 178, 679, 680, 442, 561, 562, 563, 138, 139, 140, 141, 142, 622, 623, 605, 606, 696, 299, 476, 200, 429, 359, 566, 567, 486, 345, 346],
             "exclude" : [],
-            "customBST" : {},
+            "customBST" : {
+                "377" : 660,
+                "378" : 660,
+                "379" : 660
+            },
             "minBST" : 300,
             "maxBST" : 671,
-            "icon": 486
+            "icon" : 486
         }
     };
     /*Vivillon Forms not in theme:
@@ -912,7 +960,9 @@ function Safari() {
                     ret += base64icons.mega;
                 } else if (item.name === "myth") {
                     ret += base64icons.myth;
-                }else {
+                } else if (item.name === "box") {
+                    ret += base64icons.box;
+                } else {
                     ret += "item:" + item.icon;
                 }
                 ret += "' title='" + item.fullName + "'></td>";
@@ -935,6 +985,25 @@ function Safari() {
     }
     function isMega(num) {
         return megaPokemon.indexOf(num) !== -1;
+    }
+    function toUsableBall(player, ball) {
+        var picked, ballOrder = ["safari", "great", "ultra", "quick", "spy", "luxury", "heavy", "premier", "clone", "myth", "master"];
+        
+        var startFrom = 0;
+        if (ball == ballOrder[0]) {
+            startFrom = 1;
+        }
+        if (player.balls[ball] <= 0) {
+            for (var e = startFrom; e < ballOrder.length; e++) {
+                picked = ballOrder[e];
+                if (player.balls[picked] > 0) {
+                    return picked;
+                }
+            }
+        } else {
+            return ball;
+        }
+        return null;
     }
     function canLosePokemon(src, data, verb) {
         var player = getAvatar(src);
@@ -1196,6 +1265,10 @@ function Safari() {
             safaribot.sendMessage(src, "No wild pokémon around!", safchan);
             return;
         }
+        if (player.pokemon.length >= player.balls.box * itemData.box.bonusRate) {
+            safaribot.sendMessage(src, "You can't catch any new Pokémon because all your boxes are full! Please buy a new box with /buy.", safchan);
+            return;
+        }
         var currentTime = now();
         if (!bypass && (!preparationFirst || sys.name(src).toLowerCase() !== preparationFirst.toLowerCase()) && player.cooldowns.ball > currentTime) {
             safaribot.sendMessage(src, "Please wait " + (Math.floor((player.cooldowns.ball - currentTime)/1000) + 1) + " seconds before throwing a ball!", safchan);
@@ -1428,11 +1501,14 @@ function Safari() {
                 validItems.push(itemData[e].name);
             }
         }
+        validItems.push("box");
 
         if (data === "*") {
             safaribot.sendMessage(src, "You can buy the following items:", safchan);
+            var itemName, boxPrice = itemData.box.price[Math.min(player.balls.box, itemData.box.price.length - 1)];
             for (var i = 0; i < validItems.length; i++) {
-                safaribot.sendMessage(src, itemData[validItems[i]].fullName + ": $" + itemData[validItems[i]].price, safchan);
+                itemName = validItems[i];
+                safaribot.sendMessage(src, itemData[itemName].fullName + ": $" + (itemName == "box" ? boxPrice : itemData[itemName].price), safchan);
             }
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "You currently have $" + player.money + ". To buy an item, use /buy item:quantity (e.g.: /buy safari:3)", safchan);
@@ -1447,7 +1523,7 @@ function Safari() {
         var amount = 1;
         if (info.length > 1) {
             amount = parseInt(info[1], 10);
-            if (isNaN(amount) || amount < 1) {
+            if (isNaN(amount) || amount < 1 || item == "box") {
                 amount = 1;
             }
         }
@@ -1470,8 +1546,13 @@ function Safari() {
             }
             return;
         }
-
-        var cost = amount * itemData[item].price;
+        
+        var cost;
+        if (item == "box") {
+            cost = itemData.box.price[Math.min(player.balls.box, itemData.box.price.length - 1)];
+        } else {
+            cost = amount * itemData[item].price;
+        }
         if (isNaN(player.money)) {
             player.money = 0;
         }
@@ -1483,7 +1564,7 @@ function Safari() {
         player.money -= cost;
         player.balls[item] += amount;
         safaribot.sendMessage(src, "You bought " + amount + " " + finishName(item) +  " for $" + cost + "! You now have " + player.balls[item] + " " + finishName(item) + " and $" + player.money + "!", safchan);
-
+        
         var bonus;
         if (amount >= 10) {
             var bonusAmt = Math.floor(amount / 10);
@@ -1670,11 +1751,11 @@ function Safari() {
                     delete tradeRequests[targetName];
                     return;
                 }
-                if (!this.canReceiveTrade(src, targetId, offerInput)) {
+                if (!this.canReceiveTrade(src, targetId, offerInput, reqInput)) {
                     delete tradeRequests[targetName];
                     return;
                 }
-                if (!this.canReceiveTrade(targetId, src, reqInput)) {
+                if (!this.canReceiveTrade(targetId, src, reqInput, offerInput)) {
                     delete tradeRequests[targetName];
                     return;
                 }
@@ -1844,7 +1925,7 @@ function Safari() {
         }
         return true;
     };
-    this.canReceiveTrade = function(src, receiverId, asset) {
+    this.canReceiveTrade = function(src, receiverId, asset, offer) {
         var receiver = getAvatar(receiverId);
         if (asset[0] == "$") {
             var val = parseInt(asset.substr(1), 10);
@@ -1867,6 +1948,13 @@ function Safari() {
                 safaribot.sendMessage(src, "Trade cancelled because " + sys.name(receiverId) + " already has a Master Ball!" , safchan);
                 safaribot.sendMessage(receiverId, "Trade cancelled because you already have a Master Ball!", safchan);
                 return false;
+            }
+        }
+        else {
+            if (offer.indexOf("@") === -1 && offer[0] !== "$" && receiver.pokemon.length >= receiver.balls.box * itemData.box.bonusRate) {
+                safaribot.sendMessage(src, "Trade cancelled because all of " + sys.name(receiverId) + "'s boxes are full!" , safchan);
+                safaribot.sendMessage(receiverId, "Trade cancelled because all of your boxes are full!", safchan);
+                return;
             }
         }
         return true;
@@ -1897,9 +1985,19 @@ function Safari() {
             safaribot.sendMessage(src, "Contest rules forbid the use of Bait. Please wait until the Contest is over.", safchan);
             return;
         }
+        if (player.pokemon.length >= player.balls.box * itemData.box.bonusRate) {
+            safaribot.sendMessage(src, "You can't catch any new Pokémon because all your boxes are full! Please buy a new box with /buy.", safchan);
+            return;
+        }
         var item = "bait";
         if (!(item in player.balls) || player.balls[item] <= 0) {
             safaribot.sendMessage(src, "You have no " + cap(item) + "!", safchan);
+            return;
+        }
+        var ballUsed = isBall(commandData.toLowerCase()) ? commandData.toLowerCase() : "safari";
+        ballUsed = toUsableBall(player, ballUsed);
+        if (!ballUsed) {
+            safaribot.sendMessage(src, "If you throw a bait now, you will have no way to catch a Pokémon because you are out of balls!", safchan);
             return;
         }
         player.balls[item] -= 1;
@@ -1908,9 +2006,10 @@ function Safari() {
         var rng = Math.random();
         var perkBonus = Math.min(itemData.honey.bonusRate * player.balls.honey, itemData.honey.maxRate);
         var costumeBonus = (player.costume === "aroma" ? costumeData.aroma.bonusRate : 0);
+        
 
         if (rng < (itemData.bait.successRate + perkBonus + costumeBonus)) {
-            safaribot.sendAll((commandData.toLowerCase() == "spy" ? "Some stealthy person" : sys.name(src)) + " left some bait out. The bait attracted a wild Pokémon!", safchan);
+            safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some bait out. The bait attracted a wild Pokémon!", safchan);
             baitCooldown = successfulBaitCount = itemData.bait.successCD + sys.rand(0,10);
             player.records.baitAttracted += 1;
 
@@ -1920,14 +2019,12 @@ function Safari() {
             lastBaiters.push(sys.name(src));
 
             safari.createWild(null, null, 1, null, player.party[0], player);
-            if (commandData !== undefined) {
-                safari.throwBall(src, commandData, true);
-                preparationFirst = sys.name(src);
-            }
+            safari.throwBall(src, ballUsed, true);
+            preparationFirst = sys.name(src);
             lastBaitersDecay = lastBaitersDecayTime;
         } else {
             baitCooldown = itemData.bait.failCD + sys.rand(0,5);
-            safaribot.sendAll((commandData.toLowerCase() == "spy" ? "Some stealthy person" : sys.name(src)) + " left some bait out... but nothing showed up.", safchan);
+            safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some bait out... but nothing showed up.", safchan);
             player.records.baitNothing += 1;
             if (player.costume === "chef") {
                 var rng2 = Math.random();
@@ -2804,17 +2901,18 @@ function Safari() {
     };
     this.showBox = function(player, num, isAndroid, textOnly) {
         var out = "";
-        var perPage = 96, maxPages,
+        var maxPages,
             list = player.pokemon,
             page = parseInt(num, 10);
 
         if (!isNaN(page) && num != "all") {
-            maxPages = Math.floor(list.length / (perPage)) + (list.length % perPage === 0 ? 0 : 1);
+            var perBox = itemData.box.bonusRate;
+            maxPages = Math.floor(list.length / (perBox)) + (list.length % perBox === 0 ? 0 : 1);
 
             if (page > maxPages) {
                 page = maxPages;
             }
-            list = list.slice(perPage * (page - 1), perPage * (page - 1) + perPage);
+            list = list.slice(perBox * (page - 1), perBox * (page - 1) + perBox);
         }
 
         if (textOnly) {
@@ -2868,7 +2966,7 @@ function Safari() {
     };
     this.showBag = function(player, src) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
-        var line1 = ["bait", "rock", "gacha", "stick", "itemfinder", "gem", "rare", "mega"];
+        var line1 = ["box", "bait", "rock", "gacha", "stick", "itemfinder", "gem", "rare", "mega"];
         var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier"];
         var line3 = ["amulet", "soothe",  "scarf", "battery", "crown", "honey", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
 
@@ -3387,7 +3485,8 @@ function Safari() {
                 bigpearl: 0,
                 nugget: 0,
                 bignugget: 0,
-                gem: 0
+                gem: 0,
+                box: 4
             },
             records: {
                 gachasUsed: 0,
@@ -3559,7 +3658,11 @@ function Safari() {
                     player.balls[clean] = parseInt(player.balls[clean], 10);
                 }
                 if (player.balls[clean] === undefined || isNaN(player.balls[clean]) || player.balls[clean] === null || player.balls[clean] < 0) {
-                    player.balls[clean] = 0;
+                    if (clean == "box") {
+                        player.balls[clean] = 4;
+                    } else {
+                        player.balls[clean] = 0;
+                    }
                 }
                 if (player.balls[clean] > 999) {
                     player.balls[clean] = 999;
@@ -3702,6 +3805,7 @@ function Safari() {
             "Ampere Gem: An electrically charged gem created by a famous Ampharos in Olivine City. It is said to be able to recharge the Itemfinder, giving it " + itemData.gem.charges + " more uses for the day! (To use, type \"/use gem\")",
             "",
             "*** Perks ***",
+            "Box: Increases number of Pokémon that can be owned by " + itemData.box.bonusRate + " each.",
             "Amulet Coin: When holding this charm, a bonus yield of about " + itemData.amulet.bonusRate * 100 + "% can be made when selling Pokémon to the NPC (Max Rate: " + itemData.amulet.maxRate * 100 + "%).",
             "Honey: Sweet-smelling Combee Honey that, when applied to bait, increases the chance of a Pokémon being attracted by " + itemData.honey.bonusRate * 100 + "% (Max Rate: " + itemData.honey.maxRate * 100 + "%).",
             "Soothe Bell: A bell with a comforting chime that calms the owner and their Pokémon. Reduces delay after a successful catch by " + itemData.soothe.bonusRate * 100 + "% (Max Rate: " + itemData.soothe.maxRate * 100 + "%).",
@@ -3768,6 +3872,7 @@ function Safari() {
             "/use: To use a consumable item.",
             "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details. Use /findt for a text-only version.",
             "/sort [criteria] [ascending|descending]: To sort the order in which the Pokémon are listed on /mydata. Criteria are Alphabetical, Number, BST, Type and Duplicate.",
+            "/bst [pokémon]: To view the BST of a Pokémon and price you can sell a Pokémon.",
             "/info: View time until next contest and current Gachapon jackpot prize!",
             "/leaderboard [type]: View the Safari Leaderboards. [type] can be pokemon, money, contest, bst, sold, luxury, gacha, logins or caught.",
             "/flashme: Toggle whether or not you get flashed when a contest starts.",
@@ -4503,7 +4608,7 @@ function Safari() {
                     player = getAvatarOff(e);
                     if (contestantsCount[e] > 0 && player) {
                         playerId = sys.id(e);
-                        amt = Math.max(Math.floor(Math.min(contestantsCount[e] / pokemonSpawned, 1) * 5), 1);
+                        amt = Math.max(Math.floor(Math.min(contestantsCount[e] / pokemonSpawned, 1) * 3), 1);
                         player.balls.bait += amt;
                         safari.saveGame(player);
                         if (playerId) {
@@ -4537,7 +4642,7 @@ function Safari() {
                 rawPlayers.save();
             } else {
                 if (!currentPokemon && Math.random() < 0.084793) {
-                    var amt = Math.random() < 0.08219 ? 3 : 1;
+                    var amt = Math.random() < 0.07219 ? 3 : 1;
                     safari.createWild(null, null, amt);
                 }
             }
