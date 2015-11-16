@@ -914,7 +914,7 @@ function Safari() {
         return itemData[item].fullName;
     }
     function isBall(item) {
-        return itemData[item].type === "ball";
+        return item in itemData && itemData[item].type === "ball";
     }
     function shuffle(o) {
         for (var j, x, i = o.length; i; j = parseInt(Math.random() * i, 10), x = o[--i], o[i] = o[j], o[j] = x);
