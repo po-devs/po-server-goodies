@@ -11,6 +11,7 @@ function Safari() {
     var safchan;
     var defaultChannel = "Safari";
     var saveFiles = "scriptdata/safarisaves.txt";
+    var tradeLog = "scriptdata/safaritrades.txt";
     var rawPlayers;
 
     var safaribot = new Bot("Tauros");
@@ -1478,7 +1479,8 @@ function Safari() {
         var price = Math.round(add(sys.pokeBaseStats(id)) * (shiny ? 5 : 1) * perkBonus);
 
         if (input.length < 2 || input[1].toLowerCase() !== "confirm") {
-            safaribot.sendMessage(src, "You can sell your " + info.name + " for $" + price + ". To confirm it, type /sell " + (shiny ? "*":"") + sys.pokemon(id) + ":confirm.", safchan);
+            var confirmCommand = "/sell " + (shiny ? "*":"") + sys.pokemon(id) + ":confirm";
+            safaribot.sendHtmlMessage(src, "You can sell your " + info.name + " for $" + price + ". To confirm it, type <a href='po:send/" + confirmCommand + "'>" + confirmCommand + "</a>.", safchan);
             return;
         }
 
@@ -1806,6 +1808,7 @@ function Safari() {
                 sys.sendMessage(src, "" , safchan);
                 sys.sendMessage(targetId, "" , safchan);
                 delete tradeRequests[targetName];
+                sys.appendToFile(tradeLog, now() + "|||" + sys.name(src) + "::" + offerName + "|||" + sys.name(targetId) + "::" + requestName + "\n");
             }
             else {
                 safaribot.sendMessage(src, "Trade cancelled because you and " + sys.name(targetId) + " didn't come to an agreement!" , safchan);
@@ -2098,7 +2101,7 @@ function Safari() {
                 if (target.money < dropped) {
                     dropped = target.money || 1;
                 }
-                safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but only hit their wallet! " + sys.name(src) + " then picked the $" + dropped + " dropped by " + targetName + "!", safchan);
+                safaribot.sendAll(sys.name(src) + " threw a rock at " + targetName + ", but only hit their wallet! " + sys.name(src) + " then picked up the $" + dropped + " dropped by " + targetName + "!", safchan);
                 if (player.money + dropped> moneyCap) {
                     safaribot.sendMessage(src, "But you could only keep $" + (moneyCap - player.money) + "!", safchan);
                     player.money = moneyCap;
@@ -4403,6 +4406,56 @@ function Safari() {
             safaribot.sendMessage(src, (target ? sys.name(target) : player.id) + "." + propName.join(".") + ": " + JSON.stringify(attr), safchan);
             return true;
         }
+        if (command === "tradelog") {
+            var log = sys.getFileContent(tradeLog);
+            if (log) {
+                log = log.split("\n");
+                var info = commandData.split(":"),
+                    term = "", e,
+                    lower = 0,
+                    upper = parseInt(info[0], 10);
+                    
+                if (isNaN(upper)) {
+                    upper = 10;
+                }
+                
+                log = log.slice(lower, upper);
+                
+                if (term) {
+                    var exp = new RegExp(term, "gi");
+                    for (e = log.length - 1; e >= 0; e--) {
+                        if (!log[e].test(exp)) {
+                            log.splice(e, 1);
+                        }
+                    }
+                }
+                
+                if (log.length < 0) {
+                    safaribot.sendMessage(src, "No trade log found for this query!", safchan);
+                } else {
+                    var time, p1, p2, p1offer, p2offer;
+                    sys.sendMessage(src, "", safchan);
+                    sys.sendMessage(src, "Trade Log:", safchan);
+                    for (e in log) {
+                        if (!log[e]) {
+                            continue;
+                        }
+                        info = log[e].split("|||");
+                        time = new Date(parseInt(info[0], 10)).toUTCString();
+                        p1 = info[1].split("::")[0];
+                        p1offer = info[1].split("::")[1];
+                        p2 = info[2].split("::")[0];
+                        p2offer = info[2].split("::")[1];
+                        
+                        safaribot.sendMessage(src, p1 + "'s " + p1offer + " <--> " + p2 + "'s " + p2offer + " - (" + time + ")" , safchan);
+                    }
+                    sys.sendMessage(src, "", safchan);
+                }
+            } else {
+                safaribot.sendMessage(src, "Trade Log not found!", safchan);
+            }
+            return true;
+        }
         if (command === "clearjackpot") {
             gachaJackpot = 100;
             safaribot.sendAll("Gachapon Jackpot was reset!", safchan);
@@ -4584,6 +4637,10 @@ function Safari() {
                     }
                     return 0;
                 });
+                
+                var playerScore = function(name) {
+                    return name + " (Caught " + contestCatchers[name].length + ", BST " + catchersBST[name] + ")";
+                };
 
 
                 sys.sendAll("*** ************************************************************ ***", safchan);
@@ -4595,9 +4652,8 @@ function Safari() {
                     safaribot.sendAll(readable(winners, "and") + " caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and has won a prize pack!", safchan);
                 }
                 if (allContestants.length > 0) {
-                    safaribot.sendAll(allContestants.map(function(x) { return x + " (Caught " + contestCatchers[x].length + ", BST " + catchersBST[x] + ")"; }).join(", "), safchan);
+                    safaribot.sendAll(allContestants.map(playerScore).join(", "), safchan);
                 }
-                contestCatchers = [];
                 sys.sendAll("*** ************************************************************ ***", safchan);
                 currentPokemon = null;
                 currentTheme = null;
@@ -4612,10 +4668,14 @@ function Safari() {
                         player.balls.bait += amt;
                         safari.saveGame(player);
                         if (playerId) {
+                            if (e in contestCatchers) {
+                                safaribot.sendMessage(playerId, "Your score: " + playerScore(e), safchan);
+                            }
                             safaribot.sendMessage(playerId, "You received " + amt + " Bait(s) for participating in the contest!", safchan);
                         }
                     }
                 }
+                contestCatchers = {};
                 if (winners.length > 0) {
                     for (e in winners) {
                         winner = winners[e];
