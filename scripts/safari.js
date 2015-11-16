@@ -2339,6 +2339,7 @@ function Safari() {
             case "amulet":
             case "soothe":
             case "scarf":
+            case "cell":
                 amount = 1;
                 safaribot.sendHtmlAll("<b>Sweet! " + sys.name(src) + " just won a " + finishName(reward) + " from Gachapon!</b>", safchan);
                 safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
