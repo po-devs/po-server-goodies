@@ -4342,8 +4342,11 @@ function Safari() {
                     safaribot.sendMessage(src, "Invalid format! Use /shopadd [pokémon]:[price]:[limit (optional)].", safchan);
                     return true;
                 }
+                if (!input.num) {
+                    safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
+                    return true;
+                }
                 var price = parseInt(info[1], 10);
-            
                 if (isNaN(price) || price < 1) {
                     safaribot.sendMessage(src, "Please type a valid price!", safchan);
                     return true;
