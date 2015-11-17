@@ -4442,7 +4442,7 @@ function Safari() {
                     upper = 10;
                 }
                 
-                log = log.slice(-upper);
+                log = log.slice(-(upper+1));
                 
                 if (term) {
                     var exp = new RegExp(term, "gi");
