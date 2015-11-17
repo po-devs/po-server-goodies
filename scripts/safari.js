@@ -4436,14 +4436,13 @@ function Safari() {
                 log = log.split("\n");
                 var info = commandData.split(":"),
                     term = "", e,
-                    lower = 0,
                     upper = parseInt(info[0], 10);
                     
                 if (isNaN(upper)) {
                     upper = 10;
                 }
                 
-                log = log.slice(lower, upper);
+                log = log.slice(-upper);
                 
                 if (term) {
                     var exp = new RegExp(term, "gi");
