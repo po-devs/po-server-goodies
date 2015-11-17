@@ -667,6 +667,7 @@ function Safari() {
         "3":[65539],"6":[65542, 131078],"9":[65545],"15":[65551],"18":[65554],"65":[65601],"80":[65616],"94":[65630],"115":[65651],"127":[65663],"130":[65666],"142":[65678],"150":[65686, 131222],"181":[65717],"208":[65744],"212":[65748],"214":[65750],"229":[65765],"248":[65784],"254":[65790],"257":[65793],"260":[65796],"282":[65818],"302":[65838],"303":[65839],"306":[65842],"308":[65844],"310":[65846],"319":[65855],"323":[65859],"334":[65870],"354":[65890],"359":[65895],"362":[65898],"373":[65909],"376":[65912],"380":[65916],"381":[65917],"382":[65918],"383":[65919],"384":[65920],"428":[65964],"445":[65981],"448":[65984],"460":[65996],"475":[66011],"531":[66067],"719":[66255]
     };
     var megaPokemon = [65539,65542,131078,65545,65551,65554,65601,65616,65630,65651,65663,65666,65678,65686,131222,65717,65744,65748,65750,65765,65784,65790,65793,65796,65818,65838,65839,65842,65844,65846,65855,65859,65870,65890,65895,65898,65909,65912,65916,65917,65918,65919,65920,65964,65981,65984,65996,66011,66067,66255];
+    var legendaries = [144,145,146,150,151,243,244,245,249,250,251,377,378,379,380,381,382,383,384,385,386,480,481,482,483,484,485,486,487,488,490,491,492,493,494,638,639,640,641,642,643,644,645,646,647,648,649,716,717,718,719,720,721];
 
     //Adding a variable that already exists on player.records here will automatically make it available as a leaderboard
     //To add stuff not on player.records, you must add an exception on this.updateLeaderboards()
@@ -679,6 +680,7 @@ function Safari() {
         luxuryEarnings: { desc: "by money gained with Luxury Balls", alts: ["luxury", "luxuryball", "luxury ball"] },
         consecutiveLogins: { desc: "by longest streak of consecutive days login", alts: ["login", "logins"] },
         pokesCaught: { desc: "by successful catches", alts: ["caught"] },
+        pokesCloned: { desc: "by successful clones", alts: ["clone", "clones", "clone ball"] },
         gachasUsed: { desc: "by tickets used for Gachapon", alts: ["gacha"] }
     };
 
@@ -770,7 +772,12 @@ function Safari() {
         var count =  last - first + (first === -1 ? 0 : 1);
         return count;
     }
-     function randomSample(hash) {
+    function getOrdinal(n) {
+        var s=["th","st","nd","rd"],
+        v=n%100;
+        return n+(s[(v-20)%10]||s[v]||s[0]);
+    }
+    function randomSample(hash) {
         var cum = 0;
         var val = Math.random();
         var psum = 0.0;
@@ -986,6 +993,9 @@ function Safari() {
     }
     function isMega(num) {
         return megaPokemon.indexOf(num) !== -1;
+    }
+    function isLegendary(num) {
+        return legendaries.indexOf(pokeInfo.species(num)) !== -1;
     }
     function toUsableBall(player, ball) {
         var picked, ballOrder = ["safari", "great", "ultra", "quick", "spy", "luxury", "heavy", "premier", "clone", "myth", "master"];
@@ -1316,12 +1326,10 @@ function Safari() {
         var wildStats = add(sys.pokeBaseStats(wild));
         var statsBonus = (userStats - wildStats) / 6000;
 
-        var legendaries = [144,145,146,150,151,243,244,245,249,250,251,377,378,379,380,381,382,383,384,385,386,480,481,482,483,484,485,486,487,488,490,491,492,493,494,638,639,640,641,642,643,644,645,646,647,648,649,716,717,718,719,720,721];
-
         if (ball === "myth") {
             if (typeof currentPokemon == "string") {
                 shinyChance = 1;
-            } else if (legendaries.indexOf(pokeInfo.species(currentPokemon)) != -1){
+            } else if (isLegendary(wild)){
                 ballBonus = itemData[ball].bonusRate;
             }
         }
@@ -1476,7 +1484,7 @@ function Safari() {
         var id = info.id;
 
         var perkBonus = 1 + Math.min(itemData.amulet.bonusRate * player.balls.amulet, itemData.amulet.maxRate);
-        var price = Math.round(add(sys.pokeBaseStats(id)) * (shiny ? 5 : 1) * perkBonus);
+        var price = Math.round(add(sys.pokeBaseStats(id)) * (shiny ? 5 : 1) * (isLegendary(info.num) ? 10 : 1) * perkBonus);
 
         if (input.length < 2 || input[1].toLowerCase() !== "confirm") {
             var confirmCommand = "/sell " + (shiny ? "*":"") + sys.pokemon(id) + ":confirm";
@@ -1889,7 +1897,7 @@ function Safari() {
                 return false;
             }
             if (traded[0] == "$") {
-                var min = getBST(info.id) * (info.shiny === true ? 5 : 1);
+                var min = getBST(info.id) * (info.shiny === true ? 5 : 1) * (isLegendary(info.num) ? 10 : 1);
                 var money = parseInt(traded.substr(1), 10);
                 if (isNaN(money) || money <= min) {
                     safaribot.sendMessage(src, info.name + " cannot be traded for less than $" + min + "!", safchan);
@@ -2109,6 +2117,10 @@ function Safari() {
                     safaribot.sendMessage(src, "You received $" + dropped + "!", safchan);
                     player.money += dropped;
                 }
+                player.records.rocksWalletHit += 1;
+                player.records.rocksWalletEarned += dropped;
+                target.records.rocksWalletHitBy += 1;
+                target.records.rocksWalletLost += dropped;
                 safaribot.sendMessage(targetId, "You lost $" + dropped + "!", safchan);
                 target.money = target.money - dropped < 0 ? 0 : target.money - dropped;
             }
@@ -2133,7 +2145,7 @@ function Safari() {
                     safaribot.sendMessage(targetId, "But you couldn't keep the Rock because you already have " + itemCap + "!", safchan);
                 }
                 player.records.rocksMissed += 1;
-                target.records.rocksDodged += 1;
+                target.records.rocksCaught += 1;
             }
             else if (rng2 < 0.35) {
                 var dropped = sys.rand(10, 17);
@@ -2150,8 +2162,10 @@ function Safari() {
                 }
                 safaribot.sendMessage(src, "You lost $" + dropped + "!", safchan);
                 player.money = player.money - dropped < 0 ? 0 : player.money - dropped;
-                player.records.rocksMissed += 1;
-                target.records.rocksDodged += 1;
+                player.records.rocksMissedWindow += 1;
+                player.records.rocksWindowLost += dropped;
+                target.records.rocksDodgedWindow += 1;
+                target.records.rocksWindowEarned += dropped;
             }
             else if (rng2 < 0.45) {
                 var onChannel = sys.playersOfChannel(safchan);
@@ -3413,9 +3427,9 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
         sys.sendMessage(src, "*** Player Records ***", safchan);
         safaribot.sendMessage(src, "Pokémon-- Caught: " + rec.pokesCaught + ". Released: " + rec.pokesReleased + ". Evolved: " + rec.pokesEvolved + ". Cloned: " + rec.pokesCloned + ".", safchan);
-        safaribot.sendMessage(src, "Earnings-- Sold Pokémon: $" + rec.pokeSoldEarnings + ". Luxury Balls: $" + rec.luxuryEarnings + ". Pawned Items: $" + rec.pawnEarnings + ".", safchan);
+        safaribot.sendMessage(src, "Earnings-- Sold Pokémon: $" + rec.pokeSoldEarnings + ". Luxury Balls: $" + rec.luxuryEarnings + ". Pawned Items: $" + rec.pawnEarnings + ". Breaking Windows: -$" + rec.rocksWindowLost + ". Own Window Broken: $" + rec.rocksWindowEarned + ". Rocking Wallets: $" + rec.rocksWalletEarned + ". Own Wallet Rocked: -$" + rec.rocksWalletLost + ". ", safchan);
         safaribot.sendMessage(src, "Gachapon-- Used: " + rec.gachasUsed + ". Jackpots Won: " + rec.jackpotsWon + ". Master Balls Won: " + rec.masterballsWon + ". Items stolen by Pokémon: " + rec.capsulesLost + ". Rewards Discarded: " + rec.itemsDiscarded + ".", safchan);
-        safaribot.sendMessage(src, "Rocks-- Thrown: " + rec.rocksThrown + ". Hit: " + rec.rocksHit + ". Missed: " + rec.rocksMissed + ". Bounced: " + rec.rocksBounced + ". Hit By: " + rec.rocksHitBy + ". Dodged: " + rec.rocksDodged + ".", safchan);
+        safaribot.sendMessage(src, "Rocks-- Thrown: " + rec.rocksThrown + ". Hit: " + rec.rocksHit + ". Missed: " + rec.rocksMissed + ". Bounced: " + rec.rocksBounced + ". Hit By: " + rec.rocksHitBy + ". Dodged: " + rec.rocksDodged + ". Caught: " + rec.rocksCaught + ". Hit a Wallet: " + rec.rocksWalletHit + ". Own Wallet Hit: " + rec.rocksWalletHitBy + ". Windows Broken: " + rec.rocksMissedWindow + ". Own Window Broken: " + rec.rocksDodgedWindow, safchan);
         safaribot.sendMessage(src, "Bait-- Used: " + rec.baitUsed + ". Attracted Pokémon: " + rec.baitAttracted + ". No Interest: " + rec.baitNothing + ".", safchan);
         safaribot.sendMessage(src, "Misc-- Contests Won: " + rec.contestsWon + ". Consecutive Logins: " + rec.consecutiveLogins + ". Failed Catches: " + rec.pokesNotCaught + ". Items Found: " + rec.itemsFound + ".", safchan);
         sys.sendMessage(src, "", safchan);
@@ -3513,6 +3527,15 @@ function Safari() {
                 rocksBounced: 0,
                 rocksDodged: 0,
                 rocksHitBy: 0,
+                rocksWalletHit: 0,
+                rocksWalletHitBy: 0,
+                rocksCaught: 0,
+                rocksDodgedWindow: 0,
+                rocksMissedWindow: 0,
+                rocksWalletEarned: 0,
+                rocksWalletLost: 0,
+                rocksWindowEarned: 0,
+                rocksWindowLost: 0,
                 baitUsed: 0,
                 baitAttracted: 0,
                 baitNothing: 0,
@@ -3711,7 +3734,7 @@ function Safari() {
             if (player.records === undefined) {
                 player.records = {};
             }
-            var recstr = ["gachasUsed", "masterballsWon", "jackpotsWon", "contestsWon", "pokesCaught", "pokesNotCaught", "pokesReleased", "pokesEvolved", "pokesCloned", "pokeSoldEarnings", "luxuryEarnings", "pawnEarnings", "rocksThrown", "rocksHit", "rocksMissed", "rocksBounced", "rocksDodged", "rocksHitBy", "baitUsed", "baitAttracted", "baitNothing", "itemsFound", "consecutiveLogins", "capsulesLost", "itemsDiscarded"], rec;
+            var recstr = ["gachasUsed", "masterballsWon", "jackpotsWon", "contestsWon", "pokesCaught", "pokesNotCaught", "pokesReleased", "pokesEvolved", "pokesCloned", "pokeSoldEarnings", "luxuryEarnings", "pawnEarnings", "rocksThrown", "rocksHit", "rocksMissed", "rocksBounced", "rocksDodged", "rocksHitBy", "rocksWalletHit", "rocksWalletHitBy", "rocksCaught", "rocksDodgedWindow", "rocksMissedWindow", "rocksWalletEarned","rocksWalletLost","rocksWindowEarned","rocksWindowLost","baitUsed", "baitAttracted", "baitNothing", "itemsFound", "consecutiveLogins", "capsulesLost", "itemsDiscarded"], rec;
             for (var j = 0; j < recstr.length; j++) {
                 rec = recstr[j];
                 if (player.records[rec] === undefined || isNaN(player.records[rec]) || player.records[rec] < 0 || typeof player.records[rec] !== "number") {
@@ -4146,7 +4169,7 @@ function Safari() {
             var player = getAvatar(src);
             if (player) {
                 var perkBonus = 1 + Math.min(itemData.amulet.bonusRate * player.balls.amulet, itemData.amulet.maxRate);
-                var price = Math.round(getBST(info.num) * (info.shiny ? 5 : 1) * perkBonus);
+                var price = Math.round(getBST(info.num) * (info.shiny ? 5 : 1) * (isLegendary(info.num) ? 10 : 1) * perkBonus);
                 safaribot.sendMessage(src, "You can sell a " + info.name + " for $" + price + ". " + (!info.shiny ? "If it's Shiny, you can sell it for $" + (price * 5)  + ". " : ""), safchan);
             }
             sys.sendMessage(src, "", safchan);
@@ -4589,14 +4612,16 @@ function Safari() {
         if (contestCount > 0) {
             contestCount--;
             if (contestCount === 0) {
-                var winners = [], maxCaught = 0, maxBST = 0;
+                var winners = [], pokeWinners = [], maxCaught = 0, maxBST = 0;
                 for (var e in contestCatchers) {
                     if (contestCatchers[e].length >= maxCaught) {
                         if (contestCatchers[e].length > maxCaught) {
                             winners = [];
+                            pokeWinners = [];
                             maxCaught = contestCatchers[e].length;
                         }
                         winners.push(e);
+                        pokeWinners.push(poke(getAvatarOff(e).party[0]));
                     }
                 }
                 var tieBreaker = [], bst, name, top = winners.length, catchersBST = {}, allContestants = [];
@@ -4609,6 +4634,7 @@ function Safari() {
                 }
                 if (top > 1) {
                     maxBST = 0;
+                    pokeWinners = [];
                     for (e in winners) {
                         name = winners[e];
                         bst = catchersBST[name];
@@ -4616,9 +4642,11 @@ function Safari() {
                         if (bst >= maxBST) {
                             if (bst > maxBST) {
                                 tieBreaker = [];
+                                pokeWinners = [];
                                 maxBST = bst;
                             }
-                            tieBreaker.push(winners[e]);
+                            tieBreaker.push(name);
+                            pokeWinners.push(poke(getAvatarOff(name).party[0]));
                         }
                     }
                     winners = tieBreaker;
@@ -4640,7 +4668,7 @@ function Safari() {
                 });
                 
                 var playerScore = function(name) {
-                    return name + " (Caught " + contestCatchers[name].length + ", BST " + catchersBST[name] + ")";
+                    return "(Caught " + contestCatchers[name].length + ", BST " + catchersBST[name] + ")";
                 };
 
 
@@ -4650,10 +4678,10 @@ function Safari() {
                     safaribot.sendAll("No prizes have been given because there was only one contestant!", safchan);
                     winners = [];
                 } else if (winners.length > 0) {
-                    safaribot.sendAll(readable(winners, "and") + " caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and has won a prize pack!", safchan);
+                    safaribot.sendAll(readable(winners, "and") + ", with the help of their " + readable(pokeWinners, "and") + ", caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and has won a prize pack!", safchan);
                 }
                 if (allContestants.length > 0) {
-                    safaribot.sendAll(allContestants.map(playerScore).join(", "), safchan);
+                    safaribot.sendAll(allContestants.map(function (x) { return x + " " + playerScore(x); }).join(", "), safchan);
                 }
                 sys.sendAll("*** ************************************************************ ***", safchan);
                 currentPokemon = null;
@@ -4665,12 +4693,12 @@ function Safari() {
                     player = getAvatarOff(e);
                     if (contestantsCount[e] > 0 && player) {
                         playerId = sys.id(e);
-                        amt = Math.max(Math.floor(Math.min(contestantsCount[e] / pokemonSpawned, 1) * 3), 1);
+                        amt = Math.max(Math.floor(Math.min(contestantsCount[e] / pokemonSpawned, 1) * 4), 1);
                         player.balls.bait += amt;
                         safari.saveGame(player);
                         if (playerId) {
                             if (e in contestCatchers) {
-                                safaribot.sendMessage(playerId, "Your score: " + playerScore(e), safchan);
+                                safaribot.sendMessage(playerId, "You finished in " + getOrdinal(allContestants.indexOf(e) + 1) + " place " + playerScore(e), safchan);
                             }
                             safaribot.sendMessage(playerId, "You received " + amt + " Bait(s) for participating in the contest!", safchan);
                         }
