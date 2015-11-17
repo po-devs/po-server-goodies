@@ -234,7 +234,7 @@ function Safari() {
         return ret;
     };
     pokeInfo.icon = function(p, shinyBG) {
-       return "<img src='icon:" + p + "' title='#" + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? "' style='background:yellow'" : "'") + ">";
+       return '<img src="icon:' + p + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
     };
     pokeInfo.sprite = function(poke) {
         var ret = [];
@@ -1502,7 +1502,7 @@ function Safari() {
 
         if (input.length < 2 || input[1].toLowerCase() !== "confirm") {
             var confirmCommand = "/sell " + (shiny ? "*":"") + sys.pokemon(id) + ":confirm";
-            safaribot.sendHtmlMessage(src, "You can sell your " + info.name + " for $" + price + ". To confirm it, type <a href='po:send/" + confirmCommand + "'>" + confirmCommand + "</a>.", safchan);
+            safaribot.sendHtmlMessage(src, "You can sell your " + info.name + " for $" + price + ". To confirm it, type <a href=\"po:send/" + confirmCommand + "\">" + confirmCommand + "</a>.", safchan);
             return;
         }
 
@@ -1560,7 +1560,7 @@ function Safari() {
         
         if (info.length < 2 || info[1].toLowerCase() !== "confirm") {
             var confirmCommand = "/shop " + input.input + ":confirm";
-            safaribot.sendHtmlMessage(src, "I can sell you a " + input.name + " for " + pokeShop[input.input].price + ". To accept, type <a href='po:send/" + confirmCommand + "'>" + confirmCommand + "</a>.", safchan);
+            safaribot.sendHtmlMessage(src, "I can sell you a " + input.name + " for " + pokeShop[input.input].price + ". To accept, type <a href=\"po:send/" + confirmCommand + "\">" + confirmCommand + "</a>.", safchan);
             return;
         }
         if (player.pokemon.length >= player.balls.box * itemData.box.bonusRate) {
@@ -1912,7 +1912,7 @@ function Safari() {
         }
         else {
             var acceptCommand = "/trade " + sys.name(src) + ":" + reqInput + ":" + offerInput;
-            safaribot.sendHtmlMessage(targetId, "To accept the trade, type <a href='po:send/" + acceptCommand + "'>" + acceptCommand + "</a>.", safchan);
+            safaribot.sendHtmlMessage(targetId, "To accept the trade, type <a href=\"po:send/" + acceptCommand + "\">" + acceptCommand + "</a>.", safchan);
             sys.sendMessage(src, "" , safchan);
             sys.sendMessage(targetId, "" , safchan);
             tradeRequests[userName] = { target: targetName, offer: offerInput, request: reqInput };
@@ -2989,8 +2989,8 @@ function Safari() {
             out += "<td align=center>#" + pokeInfo.readableNum(member[0]) + " " + name;
             if (ownParty && sys.os(id) !== "android") {
                 out += "<p>"; //puts a little too much space between lines
-                var active = "<a href='po:send//party active:" + name + "'>Active</a>";
-                var remove = "<a href='po:send//party remove:" + name + "'>Remove</a>";
+                var active = "<a href=\"po:send//party active:" + name + "\">Active</a>";
+                var remove = "<a href=\"po:send//party remove:" + name + "\">Remove</a>";
                 out += "[" + active + " / " + remove + "]";
             }
             out += "</td>";
