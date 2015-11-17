@@ -562,8 +562,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 sys.writeToFile('scripts.js', resp);
             } catch (err) {
                 sys.changeScript(sys.getFileContent('scripts.js'));
-                normalbot.sendAll('Updating failed, loaded old scripts!', staffchannel);
-                sys.sendMessage(src, "ERROR: " + err + (err.lineNumber ? " on line: " + err.lineNumber : ""), channel_local);
+                normalbot.sendAll(err + (err.lineNumber ? " on line: " + err.lineNumber : "") + ". Using old scripts instead!", staffchannel);
                 print(err);
             }
         };
@@ -588,7 +587,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                     normalbot.sendMessage(src, "Tiers.xml updated!", channel);
                 }
             } catch (e) {
-                normalbot.sendMessage(src, "ERROR: "+e, channel);
+                normalbot.sendAll(e + (e.lineNumber ? " on line: " + e.lineNumber : ""), staffchannel);
                 return;
             }
         };
