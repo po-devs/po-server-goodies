@@ -343,6 +343,7 @@ function Safari() {
     var allItems = currentItems.concat(retiredItems, "permfinder");
     var allBalls = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier"]; //to-do make dynamic based on current balls. Maybe also reference this for line2 in bag?
     var allCostumes = Object.keys(costumeData);
+    var allRecords = ["gachasUsed", "masterballsWon", "jackpotsWon", "contestsWon", "pokesCaught", "pokesNotCaught", "pokesReleased", "pokesEvolved", "pokesCloned", "pokeSoldEarnings", "luxuryEarnings", "pawnEarnings", "rocksThrown", "rocksHit", "rocksMissed", "rocksBounced", "rocksDodged", "rocksHitBy", "rocksWalletHit", "rocksWalletHitBy", "rocksCaught", "rocksDodgedWindow", "rocksMissedWindow", "rocksWalletEarned","rocksWalletLost","rocksWindowEarned","rocksWindowLost","baitUsed", "baitAttracted", "baitNothing", "itemsFound", "consecutiveLogins", "capsulesLost", "itemsDiscarded"];
 
     var currentTheme;
     var nextTheme;
@@ -2070,7 +2071,7 @@ function Safari() {
             if (traded[0] == "$") {
                 var min = getBST(info.id) * (info.shiny === true ? 5 : 1) * (isLegendary(info.num) ? 10 : 1);
                 var money = parseInt(traded.substr(1), 10);
-                if (isNaN(money) || money <= min) {
+                if (isNaN(money) || money < min) {
                     safaribot.sendMessage(src, info.name + " cannot be traded for less than $" + min + "!", safchan);
                     return false;
                 }
@@ -4386,9 +4387,9 @@ function Safari() {
             if (player.records === undefined) {
                 player.records = {};
             }
-            var recstr = ["gachasUsed", "masterballsWon", "jackpotsWon", "contestsWon", "pokesCaught", "pokesNotCaught", "pokesReleased", "pokesEvolved", "pokesCloned", "pokeSoldEarnings", "luxuryEarnings", "pawnEarnings", "rocksThrown", "rocksHit", "rocksMissed", "rocksBounced", "rocksDodged", "rocksHitBy", "rocksWalletHit", "rocksWalletHitBy", "rocksCaught", "rocksDodgedWindow", "rocksMissedWindow", "rocksWalletEarned","rocksWalletLost","rocksWindowEarned","rocksWindowLost","baitUsed", "baitAttracted", "baitNothing", "itemsFound", "consecutiveLogins", "capsulesLost", "itemsDiscarded"], rec;
-            for (var j = 0; j < recstr.length; j++) {
-                rec = recstr[j];
+            var rec;
+            for (var j = 0; j < allRecords.length; j++) {
+                rec = allRecords[j];
                 if (player.records[rec] === undefined || isNaN(player.records[rec]) || player.records[rec] < 0 || typeof player.records[rec] !== "number") {
                     player.records[rec] = 0;
                 }
@@ -4588,6 +4589,8 @@ function Safari() {
             "/wilds: Spawns a random wild Pokemon with no restrictions. Use a valid dex number to spawn a shiny Pokemon.",
             "/safaripay: Awards a player with any amount of money. Use /safaripay [player]:[amount].",
             "/safarigift: Gifts a player with any amount of an item or ball. Use /safarigift [player]:[item]:[amount].",
+            "/bestow: Gifts a player a specific Pokemon. Use /bestow [player]:[pokemon].",
+            "/forgerecord: Alters a specific record of a player. Use /forgerecord [player]:[record]:[amount].",
             "/sanitize: Removes invalid values from the target's inventory, such as NaN and undefined."
         ];
         var ownerHelp = [
@@ -5057,6 +5060,30 @@ function Safari() {
             SESSION.users(playerId).safari = null;
             rawPlayers.remove(sys.name(playerId).toLowerCase());
             safaribot.sendAll(commandData + "'s safari has been reset!", safchan);
+            return true;
+        }
+        if (command === "forgerecord") {
+            var cmd = commandData.split(":");
+            var target = cmd[0];
+            var player = getAvatarOff(target);
+            if (!player) {
+                safaribot.sendMessage(src, "No such player!", safchan);
+                return true;
+            }
+            var record = cmd[1];
+            if (allRecords.indexOf(record) === -1) {
+                safaribot.sendMessage(src, "Invalid record!", safchan);
+                return true;
+            }
+            var recValue = parseInt(cmd[2], 10);
+            if (isNaN(recValue)) {
+                safaribot.sendMessage(src, "Invalid amount!", safchan);
+                return true;
+            }
+            player.records[record] = recValue;
+            this.sanitize(player);
+            this.saveGame(player);
+            safaribot.sendAll(target + "'s \"" + record + "\" record has been changed to " + recValue + " by " + sys.name(src) + "!", safchan);
             return true;
         }
         if (command === "safaripay") {
