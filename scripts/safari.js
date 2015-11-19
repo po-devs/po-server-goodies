@@ -307,11 +307,11 @@ function Safari() {
         //ranger: {icon: 348, name: "ranger", fullName: "Poke Ranger", aliases: ["ranger", "pokeranger", "poke ranger", "pokemonranger", "pokemon ranger"], effect: "???"}, // TBD
         breeder: {icon: 379, name: "breeder", fullName: "Poke Breeder", aliases: ["breeder", "pokebreeder", "poke breeder", "pokemonbreeder", "pokemon breeder"], keepRate: 0.04, effect: "Has a small chance to require 1 less Rare Candy to evolve."},
         scientist: {icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], bonusRate: 0.03, effect: "Provides a bonus to Clone Ball catch rate."},
-        ace: {icon: 344, name: "ace", fullName: "Ace Trainer", aliases: ["ace", "ace trainer", "acetrainer"], bonusRate: 0.08, effect: "Slightly reduces cooldown after a successful catch."},
-        tech: {icon: 370, name: "tech", fullName: "Technician", aliases: ["technician", "worker", "tech", "mechanic"], retryRate: 0.03, effect: "Reduces likelihood of acquiring a Safari Ball from Gachapon."}, //3% = turns ~25% chance into  ~22.75% chance (2.25% boost)
-        aroma: {icon: 397, name: "aroma", fullName: "Aroma Lady", aliases: ["aroma", "aromalady", "aroma lady"], bonusRate: 0.05, effect: "Increases the odds that a  Bait will attract a wild Pokémon."},
-        chef: {icon: 423, name: "chef", fullName: "Chef", aliases: ["chef", "cook"], keepRate: 0.25, effect: "Provides a chance to not consume Bait if no Pokémon is attracted."},
-        explorer: {icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], retryRate: 0.1, effect: "Increases the likelihood of finding an item with Itemfinder."}, //10% = turns 80% failure into 78.4% failure (1.6% boost)
+        ace: {icon: 344, name: "ace", fullName: "Ace Trainer", aliases: ["ace", "ace trainer", "acetrainer"], bonusRate: 0.08, effect: "Slightly reduces cooldown after a successful catch.", price: 85000},
+        tech: {icon: 370, name: "tech", fullName: "Technician", aliases: ["technician", "worker", "tech", "mechanic"], retryRate: 0.03, effect: "Reduces likelihood of acquiring a Safari Ball from Gachapon.", price: 95000}, //3% = turns ~25% chance into  ~22.75% chance (2.25% boost)
+        aroma: {icon: 397, name: "aroma", fullName: "Aroma Lady", aliases: ["aroma", "aromalady", "aroma lady"], bonusRate: 0.05, effect: "Increases the odds that a  Bait will attract a wild Pokémon.", price: 65000},
+        chef: {icon: 423, name: "chef", fullName: "Chef", aliases: ["chef", "cook"], keepRate: 0.45, effect: "Provides a chance to not consume Bait if no Pokémon is attracted.", price: 50000},
+        explorer: {icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], retryRate: 0.1, effect: "Increases the likelihood of finding an item with Itemfinder.", price: 95000}, //10% = turns 80% failure into 78.4% failure (1.6% boost)
         fisher: {icon: 359, name: "fisher", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], keepRate: 0.2, effect: "Provides a chance to recover a thrown ball that fails to catch a Pokémon."} //Bonus to not lose your ball that you throw on a failed catch
     };
     var base64icons = {
@@ -1373,7 +1373,7 @@ function Safari() {
                 ballBonus = itemData[ball].maxBonus;
             }
         }
-        if (ball === "premier" && (sys.type(sys.pokeType1(player.party[0])) === "Normal" || sys.type(sys.pokeType2(player.party[0])) === "Normal")) {
+        if (ball === "premier" && (sys.type(sys.pokeType1(player.party[0])) === "Normal" || sys.type(sys.pokeType2(player.party[0])) === "Normal") && player.costume !== "inver") {
             ballBonus = itemData[ball].bonusRate;
         }
         var typeBonus = this.checkEffective(sys.type(sys.pokeType1(player.party[0])), sys.type(sys.pokeType2(player.party[0])), sys.type(sys.pokeType1(wild)), sys.type(sys.pokeType2(wild)));
