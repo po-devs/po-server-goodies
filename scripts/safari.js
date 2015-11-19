@@ -2651,10 +2651,10 @@ function Safari() {
         this.evolvePokemon(src, info, evolvedId, "mega evolved into", true);
         player.megaTimers.push({
             id: evolvedId,
-            expires: now() + 24 * 60 * 60 * 1000,
+            expires: now() + 72 * 60 * 60 * 1000,
             to: id
         });
-        safaribot.sendMessage(src, "You used a Mega Stone on " + info.name + " to evolve them into " + poke(evolvedId) + "! They will revert after 24 hours!", safchan);
+        safaribot.sendMessage(src, "You used a Mega Stone on " + info.name + " to evolve them into " + poke(evolvedId) + "! They will revert after 72 hours!", safchan);
     };
     this.evolvePokemon = function(src, info, evolution, verb, evolveStarter) {
         var player = getAvatar(src);
