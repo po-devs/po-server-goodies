@@ -3122,7 +3122,8 @@ function Safari() {
         }
         if (data === "*") {
             sys.sendHtmlMessage(src, this.showParty(src, true), safchan);
-            safaribot.sendMessage(src, "To modify your party, type /add [pokémon] or /remove [pokémon]. Use /active [pokémon] to set your party leader.", safchan);
+            safaribot.sendMessage(src, "To modify your party, type /add [pokémon] or /remove [pokémon]. Use /active [pokémon] to set your party leader. You can also manage saved parties with /party save:[slot] and /party load:[slot]. ", safchan);
+            sys.sendMessage(src, "", safchan);
             return;
         }
 
@@ -3143,7 +3144,11 @@ function Safari() {
         if (input.length < 2) {
             input = data.split(" ");
             if (input.length < 2) {
+                sys.sendMessage(src, "", safchan);
                 safaribot.sendMessage(src, "To modify your party, type /party add:[pokémon] or /party remove:[pokémon]. Use /party active:[pokémon] to set your party leader.", safchan);
+                safaribot.sendMessage(src, "You can also manage saved parties with /party save:[slot] and /party load:[slot]. " + (player.savedParties.length > 0 ? "You have the following parties saved: " : ""), safchan);
+                this.showSavedParties(src);
+                sys.sendMessage(src, "", safchan);
                 return;
             }
             action = input[0];
@@ -3152,17 +3157,36 @@ function Safari() {
             action = input[0].toLowerCase();
             targetId = input[1].toLowerCase();
         }
+        
+        var info, id;
+        if (action !== "save" && action !== "load") {
+            info = getInputPokemon(targetId);
+            if (!info.num) {
+                safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
+                return;
+            }
+            id = info.id;
 
-        var info = getInputPokemon(targetId);
-        if (!info.num) {
-            safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
-            return;
-        }
-        var id = info.id;
-
-        if (player.pokemon.indexOf(id) === -1) {
-            safaribot.sendMessage(src, "You don't have that Pokémon!", safchan);
-            return;
+            if (player.pokemon.indexOf(id) === -1) {
+                safaribot.sendMessage(src, "You don't have that Pokémon!", safchan);
+                return;
+            }
+        } else {
+            targetId = parseInt(targetId, 10);
+            targetId = isNaN(targetId) ? 0 : targetId;
+            
+            if (targetId === 0) {
+                if (player.savedParties.length > 0) {
+                    sys.sendMessage(src, "", safchan);
+                    safaribot.sendMessage(src, "Your saved parties are:", safchan);
+                    this.showSavedParties(src);
+                    safaribot.sendMessage(src, "Use /party save:1 to save your current party to that slot, or /party load:2 to load that party.", safchan);
+                    sys.sendMessage(src, "", safchan);
+                } else {
+                    safaribot.sendMessage(src, "You have no party saved! Use /party save:1 to save your current party to a slot.", safchan);
+                }
+                return;
+            }
         }
 
         if (action === "add") {
@@ -3207,8 +3231,57 @@ function Safari() {
             player.party.splice(0, 0, id);
             safaribot.sendMessage(src, "You are now using " + info.name + " as your active Pokémon!", safchan);
             this.saveGame(player);
+        } else if (action === "save") {
+            targetId = Math.min(targetId, player.savedParties.length);
+            if (targetId > 3 || targetId < 1) {
+                safaribot.sendMessage(src, "Please choose a valid slot (1, 2 or 3)!", safchan);
+                return;
+            }
+            var toSave = player.party.concat();
+            
+            if (player.savedParties.length < 3) {
+                player.savedParties.push(toSave);
+            } else {
+                player.savedParties[targetId-1] = toSave;
+            }
+            safaribot.sendMessage(src, "Saved your current party to slot " + targetId + "!", safchan);
+            this.saveGame(player);
+        } else if (action === "load") {
+            if (targetId > player.savedParties.length) {
+                targetId = player.savedParties.length;
+            }
+            
+            if (player.savedParties.length < targetId - 1) {
+                safaribot.sendMessage(src, "You have no party saved on that slot!", safchan);
+                return;
+            }
+            
+            var toLoad = player.savedParties[targetId-1];
+            
+            for (var p in toLoad) {
+                id = toLoad[p];
+                if (player.pokemon.indexOf(id) === -1) {
+                    safaribot.sendMessage(src, "Couldn't load from slot " + targetId + " because you don't have a " + poke(id) + "!", safchan);
+                    return;
+                }
+                var c = countRepeated(toLoad, id);
+                if (c > countRepeated(player.pokemon, id)) {
+                    safaribot.sendMessage(src, "Couldn't load from slot " + targetId + " because you don't have " + c + " " + poke(id) + "(s)!", safchan);
+                    return;
+                }
+            }
+            
+            player.party = toLoad.concat();
+            safaribot.sendMessage(src, "Loaded your party from slot " + targetId + " (" + readable(player.party.map(poke), "and") + ")!", safchan);
+            this.saveGame(player);
         } else {
             safaribot.sendMessage(src, "To modify your party, type /party add:[pokémon] or /party remove:[pokémon]. Use /party active:[pokémon] to set your party leader.", safchan);
+        }
+    };
+    this.showSavedParties = function(src) {
+        var player = getAvatar(src);
+        for (var e = 0; e < player.savedParties.length; e++) {
+            safaribot.sendMessage(src, (e + 1) + ". " + readable(player.savedParties[e].map(poke), "and"), safchan);
         }
     };
     this.showParty = function(id, ownParty, srcId) {
@@ -3371,10 +3444,10 @@ function Safari() {
         var player = getAvatar(src);
         player.pokemon.splice(player.pokemon.indexOf(pokeNum), 1);
 
-        if (player.pokemon.indexOf(pokeNum) === -1) {
-            if (player.party.indexOf(pokeNum) !== -1) {
+        if (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum)) {
+            do {
                 player.party.splice(player.party.indexOf(pokeNum), 1);
-            }
+            } while (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum));
         }
     };
     this.findPokemon = function(src, commandData, textOnly) {
@@ -4084,6 +4157,7 @@ function Safari() {
                 explorer: 0,
                 fisher: 0
             },
+            savedParties: [],
             megaTimers: [],
             starter: num,
             lastLogin: getDay(now()),
@@ -4265,6 +4339,9 @@ function Safari() {
             }
             if (player.costumes === undefined) {
                 player.costumes = {};
+            }
+            if (player.savedParties === undefined) {
+                player.savedParties = [];
             }
             if (player.costume === undefined) {
                 player.costume = "none";
@@ -4449,7 +4526,7 @@ function Safari() {
             "/buy: To buy items.",
             "/buycostume: To buy a new costume.",
             "/pawn: To sell items.",
-            "/party: To add or remove a Pokémon from your party, or to set your party's leader*.",
+            "/party: To add or remove a Pokémon from your party, or to set your party's leader*. Type /party for more details.",
             "/box [number]: To view all your caught Pokémon organized in boxes. Use /boxt for a text-only version.",
             "/bag: To view all money and items.",
             "/costumes: To view your current costumes.",
