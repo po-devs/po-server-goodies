@@ -3303,7 +3303,7 @@ function Safari() {
             return;
         }
         var costumeName = costumeAlias(data, true);
-        if (player.costumes[costumeName] < 1) {
+        if (!player.costumes[cos]) {
             safaribot.sendMessage(src, "You do not have " + costumeName + "!", safchan);
             return;
         }
