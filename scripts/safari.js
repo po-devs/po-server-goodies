@@ -3285,7 +3285,7 @@ function Safari() {
         for (var i = 0; i < allCostumes.length; i++) {
             costumeName = allCostumes[i];
             if (player.costumes[costumeName] > 0) {
-                out.push(costumeName);
+                out.push(costumeAlias(costumeName, true));
             }
         }
         return "Owned Costumes: " + (out.length > 0 ? out.join(", ") : "None");
@@ -3303,8 +3303,8 @@ function Safari() {
             return;
         }
         var costumeName = costumeAlias(data, true);
-        if (!player.costumes[cos]) {
-            safaribot.sendMessage(src, "You do not have " + costumeName + "!", safchan);
+        if (player.costumes[cos] < 1) {
+            safaribot.sendMessage(src, "You do not have the " + costumeName + " costume!", safchan);
             return;
         }
         var currentTime = now();
