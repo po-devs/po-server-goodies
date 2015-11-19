@@ -297,17 +297,18 @@ function Safari() {
         nugget: {name: "nugget", fullName: "Nugget", type: "misc", icon: 108, price: 4000, aliases:["nugget"], sellable: true, buyable: false, tradable: true},
         bignugget: {name: "bignugget", fullName: "Big Nugget", type: "misc", icon: 269, price: 10000, aliases:["bignugget", "big nugget"], sellable: true, buyable: false, tradable: true}
     };
+    var defaultCostumePrice = 75000;
     var costumeData = {
-        inver: {icon: 387, name: "inver", fullName: "Inver", aliases: ["inver", "inverse", "psychic"]}, //Inverts type effectiveness
-        ranger: {icon: 348, name: "ranger", fullName: "Poke Ranger", aliases: ["ranger", "pokeranger", "poke ranger", "pokemonranger", "pokemon ranger"]}, // ???
-        breeder: {icon: 379, name: "breeder", fullName: "Poke Breeder", aliases: ["breeder", "pokebreeder", "poke breeder", "pokemonbreeder", "pokemon breeder"], keepRate: 0.04}, //Chance to consume 1 less rare candy on evolution
-        scientist: {icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], bonusRate: 0.03}, //Bonus to clone ball catch rate
-        ace: {icon: 344, name: "ace", fullName: "Ace Trainer", aliases: ["ace", "ace trainer", "acetrainer"], bonusRate: 0.08}, //Bonus to cooldown reduction after a successful catch
-        tech: {icon: 370, name: "tech", fullName: "Technician", aliases: ["technician", "worker", "tech", "mechanic"], retryRate: 0.03}, //Bonus to getting non-Safari from Gacha. 3% = turns ~25% chance into  ~22.75% chance (2.25% boost)
-        aroma: {icon: 397, name: "aroma", fullName: "Aroma Lady", aliases: ["aroma", "aromalady", "aroma lady"], bonusRate: 0.05}, //Bonus to bait success
-        chef: {icon: 423, name: "chef", fullName: "Chef", aliases: ["chef", "cook"], keepRate: 0.25}, //Bonus to not consume bait
-        explorer: {icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], retryRate: 0.1}, //Bonus to finding items with Finder. 10% = turns 80% failure into 78.4% failure (1.6% boost)
-        fisher: {icon: 359, name: "fisher", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], keepRate: 0.2} //Bonus to not lose your ball that you throw on a failed catch
+        inver: {icon: 387, name: "inver", fullName: "Inver", aliases: ["inver", "inverse", "psychic"], effect: "Inverts Type Effectiveness while catching."},
+        //ranger: {icon: 348, name: "ranger", fullName: "Poke Ranger", aliases: ["ranger", "pokeranger", "poke ranger", "pokemonranger", "pokemon ranger"], effect: "???"}, // TBD
+        breeder: {icon: 379, name: "breeder", fullName: "Poke Breeder", aliases: ["breeder", "pokebreeder", "poke breeder", "pokemonbreeder", "pokemon breeder"], keepRate: 0.04, effect: "Has a small chance to require 1 less Rare Candy to evolve."},
+        scientist: {icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], bonusRate: 0.03, effect: "Provides a bonus to Clone Ball catch rate."},
+        ace: {icon: 344, name: "ace", fullName: "Ace Trainer", aliases: ["ace", "ace trainer", "acetrainer"], bonusRate: 0.08, effect: "Slightly reduces cooldown after a successful catch."},
+        tech: {icon: 370, name: "tech", fullName: "Technician", aliases: ["technician", "worker", "tech", "mechanic"], retryRate: 0.03, effect: "Reduces likelihood of acquiring a Safari Ball from Gachapon."}, //3% = turns ~25% chance into  ~22.75% chance (2.25% boost)
+        aroma: {icon: 397, name: "aroma", fullName: "Aroma Lady", aliases: ["aroma", "aromalady", "aroma lady"], bonusRate: 0.05, effect: "Increases the odds that a  Bait will attract a wild Pokémon."},
+        chef: {icon: 423, name: "chef", fullName: "Chef", aliases: ["chef", "cook"], keepRate: 0.25, effect: "Provides a chance to not consume Bait if no Pokémon is attracted."},
+        explorer: {icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], retryRate: 0.1, effect: "Increases the likelihood of finding an item with Itemfinder."}, //10% = turns 80% failure into 78.4% failure (1.6% boost)
+        fisher: {icon: 359, name: "fisher", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], keepRate: 0.2, effect: "Provides a chance to recover a thrown ball that fails to catch a Pokémon."} //Bonus to not lose your ball that you throw on a failed catch
     };
     var base64icons = {
     itemfinder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAALHRFWHRDcmVhdGlvbiBUaW1lAEZyaSAyMSBOb3YgMjAxNCAyMDozMDo0NCAtMDAwMKEIypIAAAAHdElNRQfeCxUUHwrCV61vAAAACXBIWXMAAAsSAAALEgHS3X78AAAABGdBTUEAALGPC/xhBQAABExJREFUeNqFVutPHFUU/93ZpWyAamOMgIm2Pgrl0ZVHq9t+EAPtZiHWRGOaSFPoF+tnYrJGv+jXEhL/Ah8gaRPb2KSNFqqtSiOQxnYXpFUxatwEAbWBpkuz7GOuc+7OnblzZ0hPcrMze8+5v/M7rzuMr/UDMHCwb5EXiyZIrl9uYUABuWwOkZoIpPjf8+g+mnHsps4/wyLVoUD9sAS5du1jGMw632CIxU7w2YkmFqkho5JQ5Jw7RvRMdgSi2h2w7TjPg1n/qU4ZscQvfGrqI0tvD+5m5sHMEmZmP8UL8QXe2b1gnViBzY2iMJSyubGJA72/BtrtP7zANzcKUIWYGfLlbuZz7HiyFeuZBVgu4YuTjRjuq8e+nnkee3lRAEpRPdXt9H0ZifC2ijBM08TDO9uw/lcaO3Y+h2KphKOf/I5SyUTY2n/skUfR0T3Ppy82ODkIsqN3nYkENaYuPs0O9byFQqGA7U9EUTI5urrexA9fNrDZid1iZe+toa6uDgePEDNDePn9had8dlfffxfcBtNzyqjqCDn+xt88Xygn/rtzu6xCqPB49tLrGV4omLhxZS/LZe85h7x45A9hl88XhTMrKyuYvmBVX802j31YxpSYOeh24rkW88HBQew7NMZ//KbVUjBtZs8y0o8lfuahUEjRNz32YTWmVE2V1ZWe97KRIcDn5uaE1/sP3+JSp2Tlk/Zqa2uRTCYxNDQUYA8vkAriemaIUm5qahUHxuNxdHR0OKxHR0fF79LSEtLptB0Jcsz0VJ+TI/VPl5kLsrq6KkKxtvYfOHedGR4eAYWMAIkd5Wh5eRk3r7aI8PpyFMSMmrmlJSqMJcjMpT1MTotyMbwjioEAx8fHnYIAQpBAdL6hAhATV8p5kQklY6pGFYQ8pSKiFkgm38bAwAAMw0B7e7voO5qF7ml2ddGSTOiZ2DQ373VCVlkZtvbdvtD7RDawdK4866qdfUMy0WeZKsRm5lKjwyZIn5gFsSIutB/2T2WKaZVQ1sX1VNePYCuR5xuqZ/n7NN5D4to4dWpEeFVfX2+DhnxMdWYquFPW9r6vjyg3IyMfIpVKiZKluLe1taGzZ47fuNLsTAT9vpEA6dRNWFmi68kjYVk9upEEEcZ2I6pM/DdvlQBv+udrvPb8Q0QFr6aYiEQue79cDHqM6WA1BHo4dH0CocY+dmwAVX3v4YPr1Th5fh3HB0+IcRWp2e7vIypTOphyQx7Somcq71zWmyNiQkLh7u8/LkYTRYFyKnNDg7iz5yfu6yMq03Nnz4ghSV1OiybC9FeNztWh95EqFHIq8d7eXkxOTjrRCOyjy2ceZ78t3sadO/+K9e3ZXYyG5IOqTTSmxYZYSQBP1QXd8cRMV96qjyjcdIUQSDQaxdjYmBisiURCgFLYWfm7zvVUvSoe/F2X89y0uxuaRSuobE+f/kyEXQCpt+pWot+8QaHreuVP53NAyuxEedr/DwgKwzi3jMhsAAAAAElFTkSuQmCC",
@@ -881,11 +882,15 @@ function Safari() {
             return "safari";
         }
     }
-    function costumeSprite(id) {
+    function costumeSprite(id, android) {
         if (isNaN(id)) {
             id = costumeIndex(costumeAlias(id));
         }
-        return "<img src='Themes/Classic/Trainer Sprites/" + id + ".png'>";
+        if (android) {
+            return "<img src='trainer:" + id + "'>";
+        } else {
+            return "<img src='Themes/Classic/Trainer Sprites/" + id + ".png'>";
+        }
     }
     function costumeIndex(name) {
         if (costumeData.hasOwnProperty(name)) {
@@ -893,7 +898,7 @@ function Safari() {
         }
         return 1;
     }
-    function costumeAlias(name, full) {
+    function costumeAlias(name, full, returnGarbage) {
         for (var e in costumeData) {
             if (costumeData[e].aliases.indexOf(name) !== -1) {
                 if (full) {
@@ -902,6 +907,11 @@ function Safari() {
                     return costumeData[e].name;
                 }
             }
+        }
+        if (returnGarbage) {
+            return name;
+        } else {
+            return "error.";
         }
     }
 
@@ -1428,7 +1438,7 @@ function Safari() {
                     player.balls[ball] += 1;
                 }
             }
-            safaribot.sendMessage(src, "You threw a  " + cap(ball) + " Ball at " + pokeName +"! " + (keep ? "A quick jerk of your fishing rod snags the " + cap(ball) + " you just threw, allowing you to recover it!" : "") + "You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
+            safaribot.sendMessage(src, "You threw a  " + cap(ball) + " Ball at " + pokeName +"! " + (keep ? "A quick jerk of your fishing rod snags the " + finishName(ball) + " you just threw, allowing you to recover it!" : "") + " You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             if (rng < finalChance + 0.1) {
                 safaribot.sendMessage(src, "Gah! It was so close, too! ", safchan);
             } else if (rng < finalChance + 0.2) {
@@ -1601,6 +1611,53 @@ function Safari() {
             }
             player.balls[bonus] += bonusAmt;
         }
+        this.saveGame(player);
+    };
+    this.buyCostumes = function (src, data) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        var validItems = allCostumes;
+        
+        if (data === "*") {
+            safaribot.sendMessage(src, "You can buy the following costumes:", safchan);
+            var costumeName;
+            for (var i = 0; i < validItems.length; i++) {
+                costumeName = validItems[i];
+                safaribot.sendHtmlMessage(src, "<a href='po:setmsg//buycostume " + costumeData[costumeName].name +"'>" + costumeData[costumeName].fullName + "</a>: $" + (costumeData[costumeName].price || defaultCostumePrice), safchan);
+            }
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendMessage(src, "You currently have $" + player.money + ". To buy a costume, use /buycostume <costume name> or carefully click the costume name and press enter!", safchan);
+            return;
+        }
+        if (contestCount > 0) {
+            safaribot.sendMessage(src, "[Closed] Out catching Pokémon at the Contest. Come back after the Contest!", safchan);
+            return;
+        }
+        var costume = costumeAlias(data, false, true);
+        if (validItems.indexOf(costume) == -1) {
+            safaribot.sendMessage(src, "We don't seem to sell \"" + costume +  "\" at this location.", safchan);
+            return;
+        }
+        
+        var costumeName = costumeAlias(data, true);
+        if (player.costumes[costume] >= 1) {
+            safaribot.sendMessage(src, "You already own " + costumeName + "!", safchan);
+            return;
+        }
+        var cost = (costumeData[costume].price || defaultCostumePrice);
+        if (isNaN(player.money)) {
+            player.money = 0;
+        }
+        if (player.money < cost) {
+            safaribot.sendMessage(src, "You need $" + cost + " to buy the " + costumeName  + " costume, but you only have $" + player.money + "!", safchan);
+            return;
+        }
+        player.money -= cost;
+        player.costumes[costume] = 1;
+        safaribot.sendMessage(src, "You bought the " + costumeName +  " for $" + cost + "! You have $" + player.money + " left!", safchan);
         this.saveGame(player);
     };
     this.sellItems = function(src, data) {
@@ -2750,6 +2807,9 @@ function Safari() {
 
         //Money/Balls table
         out += this.showBag(player, src);
+        
+        //Costumes
+        out += this.showCostumes(player);
 
         sys.sendHtmlMessage(src, out, safchan);
     };
@@ -2774,6 +2834,14 @@ function Safari() {
             return;
         }
         sys.sendHtmlMessage(src, this.showBag(player, src), safchan);
+    };
+    this.viewCostumes = function(src) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        sys.sendHtmlMessage(src, this.showCostumes(player), safchan);
     };
     this.viewBox = function(src, data, textOnly) {
         var player = getAvatar(src);
@@ -2890,7 +2958,7 @@ function Safari() {
             out += "<br />";
         }
         if (costumed) {
-            out += "<td>" + costumeSprite(player.costume) + "</td>";
+            out += "<td>" + costumeSprite(player.costume, isAndroid) + "</td>";
         }
         for (var e in party) {
             out += "<td align=center>" + party[e] + "</td>";
@@ -2994,6 +3062,44 @@ function Safari() {
         out += bagRow(player, line3, src);
         out += "</table>";
         return out;
+    };
+    this.showCostumes = function (player) {
+        var out = [], costumeName;
+        for (var i = 0; i < allCostumes.length; i++) {
+            costumeName = allCostumes[i];
+            if (player.costumes[costumeName] > 0) {
+                out.push(costumeName);
+            }
+        }
+        return "Owned Costumes: " + (out.length > 0 ? out.join(", ") : "None");
+    };
+    this.changeCostume = function (src, data) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        
+        var cos = costumeAlias(data, false, true);
+        if (allCostumes.indexOf(cos) === -1){
+            safaribot.sendMessage(src, cos + " is not a valid costume!", safchan);
+            return;
+        }
+        var costumeName = costumeAlias(data, true);
+        if (player.costumes[costumeName] < 1) {
+            safaribot.sendMessage(src, "You do not have " + costumeName + "!", safchan);
+            return;
+        }
+        var currentTime = now();
+        if (player.cooldowns.costume > currentTime) {
+            safaribot.sendMessage(src, "You changed your costume recently. Please try again in " + timeLeft(player.cooldowns.costume) + " seconds!", safchan);
+            return;
+        }
+        
+        player.costume = cos;
+        player.cooldowns.costume = currentTime + (6 * 60 * 60 * 1000);
+        safaribot.sendMessage(src, "You changed into your " + costumeName + " costume! [Effect: " + costumeData[cos].effect + "]", safchan);
+        this.saveGame(player);
     };
     this.removePokemon = function(src, pokeNum) {
         var player = getAvatar(src);
@@ -3564,7 +3670,8 @@ function Safari() {
                 rock: 0,
                 gacha: 0,
                 itemfinder: 0,
-                stick: 0
+                stick: 0,
+                costume: 0
             }
         };
         SESSION.users(src).safari = player;
@@ -3750,7 +3857,8 @@ function Safari() {
                     ballUse: 0,
                     rock: 0,
                     gacha: 0,
-                    stick: 0
+                    stick: 0,
+                    costume: 0
                 };
                 if (player.cooldown) {
                     delete player.cooldown;
@@ -3857,8 +3965,18 @@ function Safari() {
             "Clone Ball: A mysterious Poké Ball with a very low catch rate that can duplicate a pokémon's D.N.A.. Has a cooldown of " + itemData.clone.cooldown / 1000 +" seconds.",
             "",
             "Note: Cooldown for Balls is doubled when a Pokémon is caught successfully.",
+            "",
+            "*** Costumes ***",
+            "Inver: " + costumeData.inver.effect,
+            "Pokémon Breeder: " + costumeData.breeder.effect,
+            "Scientist: " + costumeData.scientist.effect,
+            "Ace Trainer: " + costumeData.ace.effect,
+            "Technician: " + costumeData.tech.effect,
+            "Aroma Lady: " + costumeData.aroma.effect,
+            "Chef: " + costumeData.chef.effect,
+            "Explorer: " + costumeData.explorer.effect,
+            "Fisher: " + costumeData.fisher.effect,
             ""
-
         ];
         for (x in help) {
             sys.sendMessage(src, help[x], safchan);
@@ -3883,10 +4001,13 @@ function Safari() {
             "/trade: To request a Pokémon trade with another player*. Use $200 to trade money and @luxury to trade items (use 3@luxury to trade more than 1 of that item).",
             "/release: Used to release a Pokémon that can be caught by other players*. Pokémon can only be released every 3 minutes.",
             "/buy: To buy items.",
+            "/buycostume: To buy a new costume.",
             "/pawn: To sell items.",
             "/party: To add or remove a Pokémon from your party, or to set your party's leader*.",
             "/box [number]: To view all your caught Pokémon organized in boxes. Use /boxt for a text-only version.",
             "/bag: To view all money and items.",
+            "/costumes: To view your current costumes.",
+            "/changecostume [name]: To change your costume to a new one.",
             "/view: To view another player's party. If no player is specified, all of your data will show up.",
             "/changealt: To pass your Safari data to another alt.",
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
@@ -3981,6 +4102,10 @@ function Safari() {
             safari.buyItems(src, commandData);
             return true;
         }
+        if (command === "buycostume") {
+            safari.buyCostumes(src, commandData);
+            return true;
+        }
         if (command === "pawn") {
             safari.sellItems(src, commandData);
             return true;
@@ -4021,6 +4146,10 @@ function Safari() {
             safari.viewItems(src, commandData);
             return true;
         }
+        if (command === "costumes") {
+            safari.viewCostumes(src);
+            return true;
+        }
         if (command === "box") {
             safari.viewBox(src, commandData);
             return true;
@@ -4031,6 +4160,10 @@ function Safari() {
         }
         if (command === "changealt") {
             safari.changeAlt(src, commandData);
+            return true;
+        }
+        if (command === "dressup" || command === "changecostume") {
+            safari.changeCostume(src, commandData);
             return true;
         }
         if (command === "bait") {
