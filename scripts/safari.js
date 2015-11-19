@@ -304,14 +304,14 @@ function Safari() {
     };
     var defaultCostumePrice = 75000;
     var costumeData = {
-        inver: {icon: 387, name: "inver", fullName: "Inver", aliases: ["inver", "inverse", "psychic"], effect: "Inverts Type Effectiveness while catching."},
+        inver: {icon: 387, name: "inver", fullName: "Inver", aliases: ["inver", "inverse", "psychic"], effect: "Inverts Type Effectiveness while catching.", price: 120000},
         //ranger: {icon: 348, name: "ranger", fullName: "Poke Ranger", aliases: ["ranger", "pokeranger", "poke ranger", "pokemonranger", "pokemon ranger"], effect: "???"}, // TBD
         breeder: {icon: 379, name: "breeder", fullName: "Poke Breeder", aliases: ["breeder", "pokebreeder", "poke breeder", "pokemonbreeder", "pokemon breeder"], keepRate: 0.15, effect: "Has a small chance to require 1 less Rare Candy to evolve."},
         scientist: {icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], bonusRate: 0.03, effect: "Provides a bonus to Clone Ball catch rate."},
         ace: {icon: 344, name: "ace", fullName: "Ace Trainer", aliases: ["ace", "ace trainer", "acetrainer"], bonusRate: 0.08, effect: "Slightly reduces cooldown after a successful catch.", price: 85000},
         tech: {icon: 370, name: "tech", fullName: "Technician", aliases: ["technician", "worker", "tech", "mechanic"], retryRate: 0.03, effect: "Reduces likelihood of acquiring a Safari Ball from Gachapon."}, //3% = turns ~25% chance into  ~22.75% chance (2.25% boost)
         aroma: {icon: 397, name: "aroma", fullName: "Aroma Lady", aliases: ["aroma", "aromalady", "aroma lady"], bonusRate: 0.05, effect: "Increases the odds that a  Bait will attract a wild Pokémon.", price: 50000},
-        chef: {icon: 423, name: "chef", fullName: "Chef", aliases: ["chef", "cook"], keepRate: 0.45, effect: "Provides a chance to not consume Bait if no Pokémon is attracted.", price: 40000},
+        chef: {icon: 423, name: "chef", fullName: "Chef", aliases: ["chef", "cook"], keepRate: 0.45, effect: "Provides a chance to not consume Bait if no Pokémon is attracted.", price: 65000},
         explorer: {icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], retryRate: 0.1, effect: "Increases the likelihood of finding an item with Itemfinder."}, //10% = turns 80% failure into 78.4% failure (1.6% boost)
         fisher: {icon: 359, name: "fisher", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], keepRate: 0.2, effect: "Provides a chance to recover a thrown ball that fails to catch a Pokémon.", price: 50000} //Bonus to not lose your ball that you throw on a failed catch
     };
@@ -920,10 +920,10 @@ function Safari() {
                 }
             }
         }
-        if (returnGarbage) {
+        if (returnGarbage || name === "none") {
             return name;
         } else {
-            return "error.";
+            return "error";
         }
     }
 
@@ -1728,7 +1728,11 @@ function Safari() {
         }
         var validItems = allCostumes;
 
-        if (data === "*") {
+        //Temporarily block costume purchasing till we rework based on suggestions
+        safaribot.sendMessage(src, "[Closed] Under renovation.", safchan);
+        return;
+        
+        /*if (data === "*") {
             safaribot.sendMessage(src, "You can buy the following costumes:", safchan);
             var costumeName;
             for (var i = 0; i < validItems.length; i++) {
@@ -1766,6 +1770,7 @@ function Safari() {
         player.costumes[costume] = 1;
         safaribot.sendMessage(src, "You bought the " + costumeName +  " for $" + addComma(cost) + "! You have $" + addComma(player.money) + " left!", safchan);
         this.saveGame(player);
+        */
     };
     this.sellItems = function(src, data) {
         var player = getAvatar(src);
@@ -3440,24 +3445,30 @@ function Safari() {
         }
 
         var cos = costumeAlias(data, false, true);
-        if (allCostumes.indexOf(cos) === -1){
-            safaribot.sendMessage(src, cos + " is not a valid costume!", safchan);
-            return;
-        }
-        var costumeName = costumeAlias(data, true);
-        if (player.costumes[cos] < 1) {
-            safaribot.sendMessage(src, "You do not have the " + costumeName + " costume!", safchan);
-            return;
-        }
         var currentTime = now();
-        if (player.cooldowns.costume > currentTime) {
-            safaribot.sendMessage(src, "You changed your costume recently. Please try again in " + timeLeft(player.cooldowns.costume) + " seconds!", safchan);
-            return;
+        var costumeName = costumeAlias(data, true);
+        if (cos !== "none") {
+            if (allCostumes.indexOf(cos) === -1){
+                safaribot.sendMessage(src, cos + " is not a valid costume!", safchan);
+                return;
+            }
+            if (player.costumes[cos] < 1) {
+                safaribot.sendMessage(src, "You do not have the " + costumeName + " costume!", safchan);
+                return;
+            }
+            if (player.cooldowns.costume > currentTime) {
+                safaribot.sendMessage(src, "You changed your costume recently. Please try again in " + timeLeft(player.cooldowns.costume) + " seconds!", safchan);
+                return;
+            }
         }
 
         player.costume = cos;
         player.cooldowns.costume = currentTime + (6 * 60 * 60 * 1000);
-        safaribot.sendMessage(src, "You changed into your " + costumeName + " costume! [Effect: " + costumeData[cos].effect + "]", safchan);
+        if (cos === "none") {
+            safaribot.sendMessage(src, "You removed your costume!", safchan);
+        } else {
+            safaribot.sendMessage(src, "You changed into your " + costumeName + " costume! [Effect: " + costumeData[cos].effect + "]", safchan);
+        }
         this.saveGame(player);
     };
     this.removePokemon = function(src, pokeNum) {
