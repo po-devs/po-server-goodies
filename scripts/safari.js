@@ -282,7 +282,7 @@ function Safari() {
         itemfinder: {name: "itemfinder", fullName: "Itemfinder", type: "usable", icon: 69, price: 0, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], sellable: false, buyable: false, tradable: false},
 
         //Consumables (for useItem)
-        gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 0, cooldown: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], sellable: false, buyable: false, tradable: false},
+        gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 0, cooldown: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], sellable: false, buyable: false, tradable: true},
 
         //Perks
         amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false, tradable: true, tradeReq: 10},
@@ -323,8 +323,8 @@ function Safari() {
     };
 
     var gachaItems = {
-        safari: 180, great: 100, ultra: 50, luxury: 75, myth: 40, quick: 40, heavy: 40, clone: 10,
-        bait: 50, rock: 60, gem: 6,
+        safari: 165, great: 90, ultra: 45, luxury: 75, myth: 40, quick: 40, heavy: 40, clone: 10,
+        bait: 55, rock: 85, gem: 6,
         wild: 32, horde: 8,
         gacha: 1,  master: 2,
         amulet: 1, soothe: 1, scarf: 1, battery: 1,
@@ -2448,9 +2448,9 @@ function Safari() {
         var rng = Math.random();
         if (rng < 0.02) {
             amount = 4;
-        } else if (rng < 0.12) {
+        } else if (rng < 0.07) {
             amount = 3;
-        } else if (rng < 0.35) {
+        } else if (rng < 0.21) {
             amount = 2;
         }
         var plural = amount > 1 ? "s" : "";
@@ -2954,20 +2954,30 @@ function Safari() {
         var targetId = sys.id(data);
         if (!targetId) {
             safaribot.sendMessage(src, "No such person!", safchan);
-            return true;
+            return;
         }
         var target = getAvatar(targetId);
         if (!target) {
             safaribot.sendMessage(src, "No such person!", safchan);
-            return true;
+            return;
         }
         var tName = sys.name(targetId).toLowerCase();
         if (tName == name) {
             safaribot.sendMessage(src, "You can't battle yourself!", safchan);
-            return true;
+            return;
+        }
+        
+        if (player.party.length < 3) {
+            safaribot.sendMessage(src, "Your party must have at least 3 Pokémon to battle!", safchan);
+            return;
         }
         
         if (tName in challengeRequests && challengeRequests[tName] == name) {
+            if (target.party.length < 3) {
+                safaribot.sendMessage(src, "Battle not started because " + sys.name(targetId) + " has less than 3 Pokémon in their party!", safchan);
+                safaribot.sendMessage(targetId, "Your party must have at least 3 Pokémon to battle!", safchan);
+                return;
+            }
             var battle = new Battle(targetId, src);
             currentBattles.push(battle);
             
@@ -2982,6 +2992,38 @@ function Safari() {
             safaribot.sendHtmlMessage(targetId, sys.name(src) + " is challenging you for a battle! To accept, type <a href=\"po:send/" + commandLink + "\">" + commandLink + "</a>", safchan);
             sys.sendMessage(targetId, "", safchan);
         }
+    };
+    this.watchBattle = function(src, data) {
+        var targetId = sys.id(data);
+        if (!targetId) {
+            safaribot.sendMessage(src, "No such person!", safchan);
+            return;
+        }
+        var target = getAvatar(targetId);
+        if (!target) {
+            safaribot.sendMessage(src, "No such person!", safchan);
+            return;
+        }
+        var name = sys.name(src);
+        var tName = sys.name(targetId).toLowerCase();
+        
+        var battle, b;
+        for (b in currentBattles) {
+            battle = currentBattles[b];
+            if (battle.isInBattle(tName)) {
+                if (battle.viewers.indexOf(name.toLowerCase()) !== -1) {
+                    battle.sendToViewers(name + " stopped watching this battle!");
+                    battle.viewers.splice(battle.viewers.indexOf(name.toLowerCase()), 1);
+                } else {
+                    battle.viewers.push(name.toLowerCase());
+                    battle.sendToViewers(name + " is watching this battle!");
+                }
+                return;
+            }
+        }
+    
+        safaribot.sendMessage(src, "This person is not battling!", safchan);
+        
     };
     
     this.viewOwnInfo = function(src) {
@@ -3786,7 +3828,7 @@ function Safari() {
         this.name1 = sys.name(p1);
         this.name2 = sys.name(p2);
         
-        this.viewers = [this.name1, this.name2];
+        this.viewers = [this.name1.toLowerCase(), this.name2.toLowerCase()];
         
         this.team1 = shuffle(player1.party.concat());
         this.team2 = shuffle(player2.party.concat());
@@ -3795,6 +3837,8 @@ function Safari() {
         
         this.p1Score = 0;
         this.p2Score = 0;
+        this.p1TotalScore = 0;
+        this.p2TotalScore = 0;
         this.scoreOrder = [];
         this.finished = false;
         
@@ -3827,11 +3871,6 @@ function Safari() {
         var name2 = this.name2 + "'s " + poke(p2Poke);
         
         this.sendToViewers("Turn " + (this.turn + 1) + " | " + sName + " | " + name1 + " " + pokeInfo.icon(p1Poke) + " x " + pokeInfo.icon(p2Poke) + " " + name2);
-        
-        // var p1Formula = "(" +  p1Stat + " + " + p1Move + ") x " + p1Bonus;
-        // var p2Formula = "(" +  p2Stat + " + " + p2Move + ") x " + p2Bonus;
-        // this.sendToViewers("Stat: " + name1 + " " + p1Formula + " vs " + p2Formula + " " + name2);
-        // this.sendToViewers("Stat: (" + sName + " + Move Power) x Type Effectiveness");
         this.sendToViewers(name1 + " | " + sName + ": " + p1Stat + " | Move Power: " + p1Move + " | Type Effectiveness: " + p1Bonus + "x");
         this.sendToViewers(name2 + " | " + sName + ": " + p2Stat + " | Move Power: " + p2Move + " | Type Effectiveness: " + p2Bonus + "x");
         
@@ -3849,15 +3888,24 @@ function Safari() {
             this.scoreOrder.push(0);
             this.sendToViewers("Result: " + name1 + " (" + p1Power + ") x (" + p2Power + ") " + name2 + " | <b>Draw</b>");
         }
-        this.sendToViewers("");
+        
+        this.p1TotalScore += p1Power;
+        this.p2TotalScore += p2Power;
         
         this.turn++;
         if (this.turn >= this.duration) {
-            this.finishBattle();
+            if (this.turn == this.duration && this.p1Score == this.p2Score) {
+                this.team1.push(this.team1[sys.rand(0, this.team1.length)]);
+                this.team2.push(this.team2[sys.rand(0, this.team2.length)]);
+                this.sendToViewers("No winner after the regular rounds! An extra tiebreaker round will be held!");
+            } else {
+                this.finishBattle();
+            }
         }
+        this.sendToViewers("");
     };
     Battle.prototype.finishBattle = function() {
-        var winner = 0, loser, score, tiebreaker = false;
+        var winner = 0, loser, score, tiebreaker = false, tiebreakerMsg;
         if (this.p1Score > this.p2Score) {
             winner = 1;
         }
@@ -3866,14 +3914,25 @@ function Safari() {
         }
         else {
             var e;
-            for (e = 0; e < this.scoreOrder.length; e++) {
-                if (this.scoreOrder[e] !== 0) {
-                    winner = this.scoreOrder[e];
-                    tiebreaker = true;
-                    break;
+            if (this.p1TotalScore > this.p2TotalScore) {
+                winner = 1;
+                tiebreakerMsg = "More damage dealt - " + this.p1TotalScore + " x " + this.p2TotalScore;
+                tiebreaker = true;
+            }
+            else if (this.p1TotalScore < this.p2TotalScore) {
+                winner = 2;
+                tiebreakerMsg = "More damage dealt - " + this.p2TotalScore + " x " + this.p1TotalScore;
+                tiebreaker = true;
+            } else {
+                for (e = 0; e < this.scoreOrder.length; e++) {
+                    if (this.scoreOrder[e] !== 0) {
+                        winner = this.scoreOrder[e];
+                        tiebreaker = true;
+                        tiebreakerMsg = "First to score";
+                        break;
+                    }
                 }
             }
-            
         }
         if (winner === 1) {
             winner = this.name1;
@@ -3886,7 +3945,7 @@ function Safari() {
         }
         
         if (winner) {
-            this.sendToViewers("<b>" + winner + " defeated " + loser + " in a battle with a score of " + score + (tiebreaker ? " (Tiebreaker: First to score)" : "") + "!</b>");
+            this.sendToViewers("<b>" + winner + " defeated " + loser + " in a battle with a score of " + score + (tiebreaker ? " (Tiebreaker: " + tiebreakerMsg + ")" : "") + "!</b>");
         } else {
             this.sendToViewers("<b>The battle between " + this.name1 + " and " + this.name2 + " ended in a draw!</b>");
         }
@@ -4126,6 +4185,9 @@ function Safari() {
 
             SESSION.users(src).safari = target;
             SESSION.users(targetId).safari = player;
+            
+            this.clearPlayer(src);
+            this.clearPlayer(targetId);
 
             this.saveGame(player);
             this.saveGame(target);
@@ -4138,10 +4200,23 @@ function Safari() {
 
             SESSION.users(targetId).safari = player;
             player.id = data.toLowerCase();
+            
+            this.clearPlayer(src);
+            this.clearPlayer(targetId);
+            
             this.saveGame(player);
 
             safaribot.sendMessage(src, "You passed your Safari data to " + sys.name(targetId) + "!", safchan);
             safaribot.sendMessage(targetId, sys.name(src) + " passed their Safari data to you!", safchan);
+        }
+    };
+    this.clearPlayer = function(src) {
+        var name = sys.name(src).toLowerCase();
+        if (name in tradeRequests) {
+            delete tradeRequests[name];
+        }
+        if (name in challengeRequests) {
+            delete challengeRequests[name];
         }
     };
     this.sanitize = function(player) {
@@ -4549,16 +4624,20 @@ function Safari() {
             safari.gachapon(src, commandData);
             return true;
         }
-        if (command === "rare" || command === "rarecandy" ) {
+        if (command === "rare" || command === "rarecandy") {
             safari.useRareCandy(src, commandData);
             return true;
         }
-        if (command === "mega" || command === "megastone" ) {
+        if (command === "mega" || command === "megastone") {
             safari.useMegaStone(src, commandData);
             return true;
         }
-        if (command === "challenge" ) {
+        if (command === "challenge") {
             safari.challengePlayer(src, commandData);
+            return true;
+        }
+        if (command === "watch") {
+            safari.watchBattle(src, commandData);
             return true;
         }
         if (command === "sort") {
@@ -5100,6 +5179,7 @@ function Safari() {
     };
     this.beforeChannelLeave = function (src, channel) {
         if (channel == safchan && getAvatar(src)) {
+            this.clearPlayer(src);
             this.saveGame(getAvatar(src));
         }
         return false;
@@ -5109,6 +5189,7 @@ function Safari() {
             var player = getAvatar(src);
             if (player) {
                 if (sys.name(src).toLowerCase() !== player.id) {
+                    this.clearPlayer(src);
                     this.saveGame(player);
 
                     SESSION.users(src).safari = null;
