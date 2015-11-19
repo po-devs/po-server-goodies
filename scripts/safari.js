@@ -2937,7 +2937,7 @@ function Safari() {
             return;
         }
         
-        if (contestCooldown <= 30 || contestCount > 0) {
+        if (contestCooldown <= 35 || contestCount > 0) {
             safaribot.sendMessage(src, "You cannot battle during a contest or when one is about to start!", safchan);
             return;
         }
@@ -2962,6 +2962,10 @@ function Safari() {
             return;
         }
         var tName = sys.name(targetId).toLowerCase();
+        if (this.isBattling(tName)) {
+            safaribot.sendMessage(src, "This person is already battling! Wait for them to finish to challenge again!", safchan);
+            return;
+        }
         if (tName == name) {
             safaribot.sendMessage(src, "You can't battle yourself!", safchan);
             return;
@@ -3912,7 +3916,7 @@ function Safari() {
         
         this.team1 = shuffle(player1.party.concat());
         this.team2 = shuffle(player2.party.concat());
-        this.turn = 0;
+        this.turn = -1;
         this.duration = Math.min(this.team1.length, this.team2.length);
         
         this.p1Score = 0;
@@ -3925,6 +3929,11 @@ function Safari() {
         safaribot.sendHtmlAll("A battle between " + sys.name(p1) + " and " + sys.name(p2) + " has started! [<a href='po:send//watch " + this.name1 + "'>Watch</a>]", safchan);
     }
     Battle.prototype.nextTurn = function() {
+        if (this.turn < 0) {
+            this.turn++;
+            this.sendToViewers("Preparations complete, battle will start soon!");
+            return;
+        }
         var p1Poke = this.team1[this.turn];
         var p2Poke = this.team2[this.turn];
         
@@ -4839,6 +4848,13 @@ function Safari() {
                 var perkBonus = 1 + Math.min(itemData.amulet.bonusRate * player.balls.amulet, itemData.amulet.maxRate);
                 var price = Math.round(getBST(info.num) * (info.shiny ? 5 : 1) * (isLegendary(info.num) ? 10 : 1) * perkBonus);
                 safaribot.sendMessage(src, "You can sell a " + info.name + " for $" + price + ". " + (!info.shiny ? "If it's Shiny, you can sell it for $" + (price * 5)  + ". " : ""), safchan);
+            }
+            var species = pokeInfo.species(info.num);
+            if (species in evolutions) {
+                var evoData = evolutions[species];
+                var candiesRequired = evoData.candies || 2;
+                var evo = evoData.evo;
+                safaribot.sendMessage(src, info.name + " requires " + candiesRequired + " Rare Cand" + (candiesRequired == 1 ? "y" : "ies") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + ". ", safchan);
             }
             sys.sendMessage(src, "", safchan);
             return true;
