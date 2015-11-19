@@ -306,14 +306,14 @@ function Safari() {
     var costumeData = {
         inver: {icon: 387, name: "inver", fullName: "Inver", aliases: ["inver", "inverse", "psychic"], effect: "Inverts Type Effectiveness while catching."},
         //ranger: {icon: 348, name: "ranger", fullName: "Poke Ranger", aliases: ["ranger", "pokeranger", "poke ranger", "pokemonranger", "pokemon ranger"], effect: "???"}, // TBD
-        breeder: {icon: 379, name: "breeder", fullName: "Poke Breeder", aliases: ["breeder", "pokebreeder", "poke breeder", "pokemonbreeder", "pokemon breeder"], keepRate: 0.04, effect: "Has a small chance to require 1 less Rare Candy to evolve."},
+        breeder: {icon: 379, name: "breeder", fullName: "Poke Breeder", aliases: ["breeder", "pokebreeder", "poke breeder", "pokemonbreeder", "pokemon breeder"], keepRate: 0.15, effect: "Has a small chance to require 1 less Rare Candy to evolve."},
         scientist: {icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], bonusRate: 0.03, effect: "Provides a bonus to Clone Ball catch rate."},
         ace: {icon: 344, name: "ace", fullName: "Ace Trainer", aliases: ["ace", "ace trainer", "acetrainer"], bonusRate: 0.08, effect: "Slightly reduces cooldown after a successful catch.", price: 85000},
-        tech: {icon: 370, name: "tech", fullName: "Technician", aliases: ["technician", "worker", "tech", "mechanic"], retryRate: 0.03, effect: "Reduces likelihood of acquiring a Safari Ball from Gachapon.", price: 95000}, //3% = turns ~25% chance into  ~22.75% chance (2.25% boost)
-        aroma: {icon: 397, name: "aroma", fullName: "Aroma Lady", aliases: ["aroma", "aromalady", "aroma lady"], bonusRate: 0.05, effect: "Increases the odds that a  Bait will attract a wild Pokémon.", price: 65000},
-        chef: {icon: 423, name: "chef", fullName: "Chef", aliases: ["chef", "cook"], keepRate: 0.45, effect: "Provides a chance to not consume Bait if no Pokémon is attracted.", price: 50000},
-        explorer: {icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], retryRate: 0.1, effect: "Increases the likelihood of finding an item with Itemfinder.", price: 95000}, //10% = turns 80% failure into 78.4% failure (1.6% boost)
-        fisher: {icon: 359, name: "fisher", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], keepRate: 0.2, effect: "Provides a chance to recover a thrown ball that fails to catch a Pokémon."} //Bonus to not lose your ball that you throw on a failed catch
+        tech: {icon: 370, name: "tech", fullName: "Technician", aliases: ["technician", "worker", "tech", "mechanic"], retryRate: 0.03, effect: "Reduces likelihood of acquiring a Safari Ball from Gachapon."}, //3% = turns ~25% chance into  ~22.75% chance (2.25% boost)
+        aroma: {icon: 397, name: "aroma", fullName: "Aroma Lady", aliases: ["aroma", "aromalady", "aroma lady"], bonusRate: 0.05, effect: "Increases the odds that a  Bait will attract a wild Pokémon.", price: 50000},
+        chef: {icon: 423, name: "chef", fullName: "Chef", aliases: ["chef", "cook"], keepRate: 0.45, effect: "Provides a chance to not consume Bait if no Pokémon is attracted.", price: 40000},
+        explorer: {icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], retryRate: 0.1, effect: "Increases the likelihood of finding an item with Itemfinder."}, //10% = turns 80% failure into 78.4% failure (1.6% boost)
+        fisher: {icon: 359, name: "fisher", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], keepRate: 0.2, effect: "Provides a chance to recover a thrown ball that fails to catch a Pokémon.", price: 50000} //Bonus to not lose your ball that you throw on a failed catch
     };
     var base64icons = {
     itemfinder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAALHRFWHRDcmVhdGlvbiBUaW1lAEZyaSAyMSBOb3YgMjAxNCAyMDozMDo0NCAtMDAwMKEIypIAAAAHdElNRQfeCxUUHwrCV61vAAAACXBIWXMAAAsSAAALEgHS3X78AAAABGdBTUEAALGPC/xhBQAABExJREFUeNqFVutPHFUU/93ZpWyAamOMgIm2Pgrl0ZVHq9t+EAPtZiHWRGOaSFPoF+tnYrJGv+jXEhL/Ah8gaRPb2KSNFqqtSiOQxnYXpFUxatwEAbWBpkuz7GOuc+7OnblzZ0hPcrMze8+5v/M7rzuMr/UDMHCwb5EXiyZIrl9uYUABuWwOkZoIpPjf8+g+mnHsps4/wyLVoUD9sAS5du1jGMw632CIxU7w2YkmFqkho5JQ5Jw7RvRMdgSi2h2w7TjPg1n/qU4ZscQvfGrqI0tvD+5m5sHMEmZmP8UL8QXe2b1gnViBzY2iMJSyubGJA72/BtrtP7zANzcKUIWYGfLlbuZz7HiyFeuZBVgu4YuTjRjuq8e+nnkee3lRAEpRPdXt9H0ZifC2ijBM08TDO9uw/lcaO3Y+h2KphKOf/I5SyUTY2n/skUfR0T3Ppy82ODkIsqN3nYkENaYuPs0O9byFQqGA7U9EUTI5urrexA9fNrDZid1iZe+toa6uDgePEDNDePn9had8dlfffxfcBtNzyqjqCDn+xt88Xygn/rtzu6xCqPB49tLrGV4omLhxZS/LZe85h7x45A9hl88XhTMrKyuYvmBVX802j31YxpSYOeh24rkW88HBQew7NMZ//KbVUjBtZs8y0o8lfuahUEjRNz32YTWmVE2V1ZWe97KRIcDn5uaE1/sP3+JSp2Tlk/Zqa2uRTCYxNDQUYA8vkAriemaIUm5qahUHxuNxdHR0OKxHR0fF79LSEtLptB0Jcsz0VJ+TI/VPl5kLsrq6KkKxtvYfOHedGR4eAYWMAIkd5Wh5eRk3r7aI8PpyFMSMmrmlJSqMJcjMpT1MTotyMbwjioEAx8fHnYIAQpBAdL6hAhATV8p5kQklY6pGFYQ8pSKiFkgm38bAwAAMw0B7e7voO5qF7ml2ddGSTOiZ2DQ373VCVlkZtvbdvtD7RDawdK4866qdfUMy0WeZKsRm5lKjwyZIn5gFsSIutB/2T2WKaZVQ1sX1VNePYCuR5xuqZ/n7NN5D4to4dWpEeFVfX2+DhnxMdWYquFPW9r6vjyg3IyMfIpVKiZKluLe1taGzZ47fuNLsTAT9vpEA6dRNWFmi68kjYVk9upEEEcZ2I6pM/DdvlQBv+udrvPb8Q0QFr6aYiEQue79cDHqM6WA1BHo4dH0CocY+dmwAVX3v4YPr1Th5fh3HB0+IcRWp2e7vIypTOphyQx7Somcq71zWmyNiQkLh7u8/LkYTRYFyKnNDg7iz5yfu6yMq03Nnz4ghSV1OiybC9FeNztWh95EqFHIq8d7eXkxOTjrRCOyjy2ceZ78t3sadO/+K9e3ZXYyG5IOqTTSmxYZYSQBP1QXd8cRMV96qjyjcdIUQSDQaxdjYmBisiURCgFLYWfm7zvVUvSoe/F2X89y0uxuaRSuobE+f/kyEXQCpt+pWot+8QaHreuVP53NAyuxEedr/DwgKwzi3jMhsAAAAAElFTkSuQmCC",
@@ -812,6 +812,10 @@ function Safari() {
             }
         }
     }
+    function addComma(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    
     /*
         Use this function for every time you need information about a Pokémon typed by a player (don't use for pokémon picked from player.pokemon).
         Returns an object with the following properties:
@@ -951,7 +955,7 @@ function Safari() {
             var linebreak = 6;
             if (first) {
                 ret += "<br />Inventory<br />";
-                ret += "<img src='item:274'>: $" + player.money + "";
+                ret += "<img src='item:274'>: $" + addComma(player.money) + "";
                 linebreak--;
             }
             for (var i = 0; i < arr.length; i++) {
@@ -994,7 +998,7 @@ function Safari() {
             }
             ret += "</tr><tr>";
             if (first) {
-                ret += "<td align=center colspan=2>$" + player.money + "</td>";
+                ret += "<td align=center colspan=2>$" + addComma(player.money) + "</td>";
             }
             for (var i = 0; i < arr.length; i++) {
                 if (arr[i] === "itemfinder") {
@@ -1209,7 +1213,7 @@ function Safari() {
                             var typeBonus = this.checkEffective(atk1, atk2, sys.type(sys.pokeType1(num)), sys.type(sys.pokeType2(num)));
                             if (player.costume === "inver") {
                                 if (typeBonus === 0) {
-                                    typeBonus = 0.25;
+                                    typeBonus = 0.5;
                                 }
                                 typeBonus = 1/typeBonus;
                             }
@@ -1297,14 +1301,18 @@ function Safari() {
         }
         return false;
     };
-    this.throwBall = function(src, data, bypass) {
+    this.throwBall = function(src, data, bypass, suppress) {
         var player = getAvatar(src);
         if (!player) {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
             return;
         }
         if (!currentPokemon) {
-            safaribot.sendMessage(src, "No wild pokémon around!", safchan);
+            if (suppress) {
+                safaribot.sendMessage(src, "Someone caught the wild Pokémon before you could throw!", safchan);
+            } else {
+                safaribot.sendMessage(src, "No wild Pokémon around!", safchan);
+            }
             return;
         }
         if (player.pokemon.length >= player.balls.box * itemData.box.bonusRate) {
@@ -1434,7 +1442,7 @@ function Safari() {
 
             if (ball == "luxury") {
                 var perkBonus = 1 + Math.min(itemData.scarf.bonusRate * player.balls.scarf, itemData.scarf.maxRate);
-                var earnings = Math.floor(wildStats/2 * perkBonus);
+                var earnings = addComma(Math.floor(wildStats/2 * perkBonus));
                 safaribot.sendAll((player.balls.scarf > 0 ? "The Fashionable " : "") + name + " found $" + earnings + " on the ground after catching " + pokeName + "!" , safchan);
                 player.money += earnings;
                 player.records.luxuryEarnings += earnings;
@@ -1526,7 +1534,7 @@ function Safari() {
 
         if (input.length < 2 || input[1].toLowerCase() !== "confirm") {
             var confirmCommand = "/sell " + (shiny ? "*":"") + sys.pokemon(id) + ":confirm";
-            safaribot.sendHtmlMessage(src, "You can sell your " + info.name + " for $" + price + ". To confirm it, type <a href=\"po:send/" + confirmCommand + "\">" + confirmCommand + "</a>.", safchan);
+            safaribot.sendHtmlMessage(src, "You can sell your " + info.name + " for $" + addComma(price) + ". To confirm it, type <a href=\"po:send/" + confirmCommand + "\">" + confirmCommand + "</a>.", safchan);
             return;
         }
 
@@ -1534,7 +1542,7 @@ function Safari() {
         player.records.pokeSoldEarnings += price;
         this.removePokemon(src, id);
 
-        safaribot.sendMessage(src, "You sold your " + info.name + " for $" + price + "!", safchan);
+        safaribot.sendMessage(src, "You sold your " + info.name + " for $" + addComma(price) + "! You now have $" + addComma(player.money) + ".", safchan);
         this.saveGame(player);
     };
     this.buyPokemon = function(src, data) {
@@ -1559,10 +1567,10 @@ function Safari() {
             for (i in pokeShop) {
                 input = getInputPokemon(i);
                 info = pokeShop[i];
-                safaribot.sendMessage(src, input.name + ": $" + info.price + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")), safchan);
+                safaribot.sendHtmlMessage(src, "<a href='po:setmsg//shop " + input.name + ":confirm'>" + input.name + "</a>: $" + addComma(info.price) + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")), safchan);
             }
             sys.sendMessage(src, "", safchan);
-            safaribot.sendMessage(src, "You currently have $" + player.money + ". To buy a Pokémon, use /shop Pokémon (e.g.: /shop Pikachu)", safchan);
+            safaribot.sendMessage(src, "You currently have $" + addComma(player.money) + ". To buy a Pokémon, use /shop Pokémon (e.g.: /shop Pikachu)", safchan);
             return;
         }
         
@@ -1584,7 +1592,7 @@ function Safari() {
         
         if (info.length < 2 || info[1].toLowerCase() !== "confirm") {
             var confirmCommand = "/shop " + input.input + ":confirm";
-            safaribot.sendHtmlMessage(src, "I can sell you a " + input.name + " for $" + pokeShop[input.input].price + ". To accept, type <a href=\"po:send/" + confirmCommand + "\">" + confirmCommand + "</a>.", safchan);
+            safaribot.sendHtmlMessage(src, "I can sell you a " + input.name + " for $" + addComma(pokeShop[input.input].price) + ". To accept, type <a href=\"po:send/" + confirmCommand + "\">" + confirmCommand + "</a>.", safchan);
             return;
         }
         if (player.pokemon.length >= player.balls.box * itemData.box.bonusRate) {
@@ -1593,13 +1601,13 @@ function Safari() {
         }
         var cost = pokeShop[input.input].price;
         if (player.money < cost) {
-            safaribot.sendMessage(src, "You need $" + cost + " to buy this " + input.name + ", but you only have $" + player.money + "!", safchan);
+            safaribot.sendMessage(src, "You need $" + addComma(cost) + " to buy this " + input.name + ", but you only have $" + addComma(player.money) + "!", safchan);
             return;
         }
         
         player.money -= cost;
         player.pokemon.push(input.id);
-        safaribot.sendMessage(src, "You bought a " + input.name +  " for $" + cost + "! You now have $" + player.money + "!", safchan);
+        safaribot.sendMessage(src, "You bought a " + input.name +  " for $" + addComma(cost) + "! You now have $" + addComma(player.money) + "!", safchan);
         this.saveGame(player);
         
         if (pokeShop[input.input].limit > 0) {
@@ -1626,7 +1634,7 @@ function Safari() {
             var itemName, boxPrice = itemData.box.price[Math.min(player.balls.box, itemData.box.price.length - 1)];
             for (var i = 0; i < validItems.length; i++) {
                 itemName = validItems[i];
-                safaribot.sendMessage(src, itemData[itemName].fullName + ": $" + (itemName == "box" ? boxPrice : itemData[itemName].price), safchan);
+                safaribot.sendMessage(src, itemData[itemName].fullName + ": $" + addComma(itemName == "box" ? boxPrice : itemData[itemName].price), safchan);
             }
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "You currently have $" + player.money + ". To buy an item, use /buy item:quantity (e.g.: /buy safari:3)", safchan);
@@ -1675,13 +1683,13 @@ function Safari() {
             player.money = 0;
         }
         if (player.money < cost) {
-            safaribot.sendMessage(src, "You need $" + cost + " to buy " + amount + " " + finishName(item) + ", but you only have $" + player.money + "!", safchan);
+            safaribot.sendMessage(src, "You need $" + addComma(cost) + " to buy " + amount + " " + finishName(item) + ", but you only have $" + addComma(player.money) + "!", safchan);
             return;
         }
 
         player.money -= cost;
         player.balls[item] += amount;
-        safaribot.sendMessage(src, "You bought " + amount + " " + finishName(item) +  " for $" + cost + "! You now have " + player.balls[item] + " " + finishName(item) + " and $" + player.money + "!", safchan);
+        safaribot.sendMessage(src, "You bought " + amount + " " + finishName(item) +  " for $" + addComma(cost) + "! You now have " + player.balls[item] + " " + finishName(item) + " and $" + addComma(player.money) + "!", safchan);
         
         var bonus;
         if (amount >= 10) {
@@ -1724,10 +1732,10 @@ function Safari() {
             var costumeName;
             for (var i = 0; i < validItems.length; i++) {
                 costumeName = validItems[i];
-                safaribot.sendHtmlMessage(src, "<a href='po:setmsg//buycostume " + costumeData[costumeName].name +"'>" + costumeData[costumeName].fullName + "</a>: $" + (costumeData[costumeName].price || defaultCostumePrice), safchan);
+                safaribot.sendHtmlMessage(src, "<a href='po:setmsg//buycostume " + costumeData[costumeName].name +"'>" + costumeData[costumeName].fullName + "</a>: $" + addComma(costumeData[costumeName].price || defaultCostumePrice), safchan);
             }
             sys.sendMessage(src, "", safchan);
-            safaribot.sendMessage(src, "You currently have $" + player.money + ". To buy a costume, use /buycostume <costume name> or carefully click the costume name and press enter!", safchan);
+            safaribot.sendMessage(src, "You currently have $" + addComma(player.money) + ". To buy a costume, use /buycostume <costume name> or carefully click the costume name and press enter!", safchan);
             return;
         }
         if (contestCount > 0) {
@@ -1750,12 +1758,12 @@ function Safari() {
             player.money = 0;
         }
         if (player.money < cost) {
-            safaribot.sendMessage(src, "You need $" + cost + " to buy the " + costumeName  + " costume, but you only have $" + player.money + "!", safchan);
+            safaribot.sendMessage(src, "You need $" + addComma(cost) + " to buy the " + costumeName  + " costume, but you only have $" + addComma(player.money) + "!", safchan);
             return;
         }
         player.money -= cost;
         player.costumes[costume] = 1;
-        safaribot.sendMessage(src, "You bought the " + costumeName +  " for $" + cost + "! You have $" + player.money + " left!", safchan);
+        safaribot.sendMessage(src, "You bought the " + costumeName +  " for $" + addComma(cost) + "! You have $" + addComma(player.money) + " left!", safchan);
         this.saveGame(player);
     };
     this.sellItems = function(src, data) {
@@ -1775,7 +1783,7 @@ function Safari() {
         if (data === "*") {
             safaribot.sendMessage(src, "You can sell the following items:", safchan);
             for (var i = 0; i < validItems.length; i++) {
-                safaribot.sendMessage(src, itemData[validItems[i]].fullName + ": $" + Math.floor(itemData[validItems[i]].price/2 * perkBonus), safchan);
+                safaribot.sendMessage(src, itemData[validItems[i]].fullName + ": $" + addComma(Math.floor(itemData[validItems[i]].price/2 * perkBonus)), safchan);
             }
             sys.sendMessage(src, "", safchan);
             var sellables = [];
@@ -1821,7 +1829,7 @@ function Safari() {
         player.money += cost;
         player.balls[item] -= amount;
         player.records.pawnEarnings += cost;
-        safaribot.sendMessage(src, "You sold " + amount + " " + finishName(item) +  " for $" + cost + "! You now have " + player.balls[item] + " " + finishName(item) + " and $" + player.money + "!", safchan);
+        safaribot.sendMessage(src, "You sold " + amount + " " + finishName(item) +  " for $" + addComma(cost) + "! You now have " + player.balls[item] + " " + finishName(item) + " and $" + addComma(player.money) + "!", safchan);
         this.saveGame(player);
     };
     this.tradePokemon = function(src, data) {
@@ -2510,7 +2518,7 @@ function Safari() {
                             safari.createWild();
                         }
                         if (commandData !== undefined) {
-                            safari.throwBall(src, commandData);
+                            safari.throwBall(src, commandData, true);
                             preparationFirst = sys.name(src);
                         }
                     }
@@ -4839,7 +4847,7 @@ function Safari() {
                     safaribot.sendMessage(src, "Next Contest's theme: " + (nextTheme !== "none" ? contestThemes[nextTheme].name : "Default") + ".", safchan);
                 }
             }
-            safaribot.sendMessage(src, "Current Gachapon Jackpot: " + Math.floor(gachaJackpot/10) + ".", safchan);
+            safaribot.sendMessage(src, "Current Gachapon Jackpot: " + Math.floor(gachaJackpot/10) + " Tickets.", safchan);
             return true;
         }
         if (command === "bst") {
@@ -4856,7 +4864,7 @@ function Safari() {
             if (player) {
                 var perkBonus = 1 + Math.min(itemData.amulet.bonusRate * player.balls.amulet, itemData.amulet.maxRate);
                 var price = Math.round(getBST(info.num) * (info.shiny ? 5 : 1) * (isLegendary(info.num) ? 10 : 1) * perkBonus);
-                safaribot.sendMessage(src, "You can sell a " + info.name + " for $" + price + ". " + (!info.shiny ? "If it's Shiny, you can sell it for $" + (price * 5)  + ". " : ""), safchan);
+                safaribot.sendMessage(src, "You can sell a " + info.name + " for $" + addComma(price) + ". " + (!info.shiny ? "If it's Shiny, you can sell it for $" + addComma(price * 5)  + ". " : ""), safchan);
             }
             var species = pokeInfo.species(info.num);
             if (species in evolutions) {
@@ -4960,7 +4968,7 @@ function Safari() {
                 if (input.input in pokeShop) {
                     safaribot.sendMessage(src, input.name + " has been readded to the Shop with the price of $" + price + " (Units Available: " + (limit == -1 ? "Unlimited" : limit) + ")!", safchan);
                 } else {
-                    safaribot.sendMessage(src, input.name + " has been added to the Shop with the price of $" + price + " (Units Available: " + (limit == -1 ? "Unlimited" : limit) + ")!", safchan);
+                    safaribot.sendMessage(src, input.name + " has been added to the Shop with the price of $" + addComma(price) + " (Units Available: " + (limit == -1 ? "Unlimited" : limit) + ")!", safchan);
                 }
                 pokeShop[input.input] = { price: price, limit: limit };
                 sys.writeToFile(shopFile, JSON.stringify(pokeShop));
@@ -5355,7 +5363,7 @@ function Safari() {
                     name = throwers[i];
                     if (sys.isInChannel(sys.id(name), safchan) && alreadyThrow.indexOf(name) === -1) {
                         alreadyThrow.push(name);
-                        safari.throwBall(sys.id(name), preparationThrows[name]);
+                        safari.throwBall(sys.id(name), preparationThrows[name], false, true);
                     }
                 }
                 preparationFirst = null;
