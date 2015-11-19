@@ -291,6 +291,7 @@ function Safari() {
         crown: {name: "crown", fullName: "Relic Crown", type: "perk", icon: 278, price: 0, bonusRate: 0.01, maxRate: 0.1, aliases:["crown", "reliccrown", "relic crown", "relic"], sellable: false, buyable: false, tradable: true, tradeReq: 10},
         scarf: {name: "scarf", fullName: "Silk Scarf", type: "perk", icon: 31, price: 0, bonusRate: 0.015, maxRate: 0.15, aliases:["scarf", "silkscarf", "silk scarf", "silk"], sellable: false, buyable: false, tradable: true},
         battery: {name: "battery", fullName: "Cell Battery", type: "perk", icon: 241, price: 0, bonusRate: 2, maxRate: 20, aliases:["battery", "cellbattery", "cell battery", "cell"], sellable: false, buyable: false, tradable: true},
+        eviolite: {name: "eviolite", fullName: "Eviolite", type: "perk", icon: 233, price: 0, bonusRate: 8, maxRate: 80, threshold: 420, aliases:["eviolite"], sellable: false, buyable: false, tradable: true},
         box: {name: "box", fullName: "Box", type: "perk", icon: 175, price: [0, 0, 0, 0, 100000, 200000, 400000, 600000, 800000, 1000000], bonusRate: 96, aliases:["box", "boxes"], sellable: false, buyable: true, tradable: false},
 
         //Sellables
@@ -331,7 +332,7 @@ function Safari() {
         pearl: 12, stardust: 10, bigpearl: 8, starpiece: 5, nugget: 4, bignugget: 1
     };
     var finderItems = {
-        crown: 1, honey: 1,
+        crown: 1, honey: 1, eviolite: 1,
         rare: 3, recharge: 8, spy: 20, rock: 14, bait: 16, pearl: 8, stardust: 6, luxury: 12, gacha: 11,
         nothing: 400
     };
@@ -1357,6 +1358,9 @@ function Safari() {
         var shinyChance = typeof currentPokemon == "string" ? 0.30 : 1;
 
         var userStats = add(sys.pokeBaseStats(player.party[0]));
+        if (userStats <= itemData.eviolite.threshold) {
+            userStats += Math.min(itemData.eviolite.bonusRate * player.balls.eviolite, itemData.eviolite.maxRate);
+        }
         var wildStats = add(sys.pokeBaseStats(wild));
         var statsBonus = (userStats - wildStats) / 6000;
 
@@ -2842,6 +2846,9 @@ function Safari() {
             case "crown":
                 safaribot.sendHtmlAll("<b>BEEP! BEEPBEEP! Boop!?</b> " + sys.name(src) + "'s Itemfinder locates an old treasure chest full of ancient relics. Upon picking them up, they crumble into dust except for a single Relic Crown.", safchan);
             break;
+            case "eviolite":
+                safaribot.sendHtmlAll("<b>!PEEB !PEEB</b> Another trainer approaches " + sys.name(src) + " as they are looking for items and snickers \"You have it on backwards.\" " + sys.name(src) + " corrects the position, turns around, and finds a sizeable chunk of Eviolite on the ground.", safchan);
+            break;
             case "honey":
                 safaribot.sendHtmlAll("<b>BEE! BEE! BEE!</b> " + sys.name(src) + " stumbled upon a beehive while using their Itemfinder. Before running off to avoid the swarm, " + sys.name(src) + " managed to steal a glob of Honey!", safchan);
             break;
@@ -3311,9 +3318,9 @@ function Safari() {
     };
     this.showBag = function(player, src) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
-        var line1 = ["box", "bait", "rock", "gacha", "stick", "itemfinder", "gem", "rare", "mega"];
+        var line1 = ["box", "bait", "rock", "gacha", "stick", "itemfinder", "gem", "battery", "rare", "mega"];
         var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier"];
-        var line3 = ["amulet", "soothe",  "scarf", "battery", "crown", "honey", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
+        var line3 = ["amulet", "soothe",  "scarf", "eviolite", "crown", "honey", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
 
         var out = "";
         out += bagRow(player, line1, src, true);
@@ -4013,6 +4020,7 @@ function Safari() {
                 mega: 0,
                 amulet: 0,
                 honey: 0,
+                eviolite: 0,
                 soothe: 0,
                 crown: 0,
                 scarf: 0,
@@ -4383,6 +4391,7 @@ function Safari() {
             "Relic Crown: A rare crown with mysterious properties that brings good fortune to its owner. Increases rate of pawned items by " + itemData.crown.bonusRate * 100 + "% (Max Rate: " + itemData.crown.maxRate * 100 + "%).",
             "Silk Scarf: A fashionable scarf made of the finest silk. Wearing it allows you to lead a more luxurious life and grants you " + itemData.scarf.bonusRate * 100 + "% more money from Luxury Balls (Max Rate: " + itemData.scarf.maxRate * 100 + "%).",
             "Cell Battery: A high-capacity battery that can increase the uses of Item Finder by " + itemData.battery.bonusRate + ". (Max Rate: " + itemData.battery.maxRate + ").",
+            "Eviolite: A mysterious gem that powers up Pokémon with 420 BST or less by " + itemData.eviolite.bonusRate + ". (Max Rate: " + itemData.eviolite.maxRate + ").",
             "Stick: Legendary Stick of the almighty Farfetch'd that provides a neverending wave of prods and pokes unto your enemies and other nefarious evil-doers, with a simple use of the /stick command.",
             "",
             "*** Standard Poké Balls ***",
