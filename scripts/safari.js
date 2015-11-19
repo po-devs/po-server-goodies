@@ -3225,31 +3225,38 @@ function Safari() {
             safaribot.sendMessage(src, "You are now using " + info.name + " as your active Pokémon!", safchan);
             this.saveGame(player);
         } else if (action === "save") {
-            targetId = Math.min(targetId, player.savedParties.length);
-            if (targetId > 3 || targetId < 1) {
-                safaribot.sendMessage(src, "Please choose a valid slot (1, 2 or 3)!", safchan);
-                return;
+            var num = targetId - 1;
+            if (num > 2) {
+                num = 2;
+            } else if (num < 0) {
+                num = 0;
             }
-            var toSave = player.party.concat();
             
-            if (player.savedParties.length < 3) {
+            var toSave = player.party.concat();
+            if (num >= player.savedParties.length) {
                 player.savedParties.push(toSave);
+                num = player.savedParties.length - 1;
             } else {
-                player.savedParties[targetId-1] = toSave;
+                player.savedParties[num] = toSave;
             }
-            safaribot.sendMessage(src, "Saved your current party to slot " + targetId + "!", safchan);
+            
+            safaribot.sendMessage(src, "Saved your current party to slot " + (num + 1) + "!", safchan);
             this.saveGame(player);
         } else if (action === "load") {
-            if (targetId > player.savedParties.length) {
-                targetId = player.savedParties.length;
+            var num = targetId - 1;
+            if (num < 0) {
+                num = 0;
+            }
+            if (player.savedParties.length > 0 && num >= player.savedParties.length) {
+                num = player.savedParties.length - 1;
             }
             
-            if (player.savedParties.length < targetId - 1) {
+            if (num >= player.savedParties.length) {
                 safaribot.sendMessage(src, "You have no party saved on that slot!", safchan);
                 return;
             }
             
-            var toLoad = player.savedParties[targetId-1];
+            var toLoad = player.savedParties[num];
             
             for (var p in toLoad) {
                 id = toLoad[p];
@@ -3265,7 +3272,7 @@ function Safari() {
             }
             
             player.party = toLoad.concat();
-            safaribot.sendMessage(src, "Loaded your party from slot " + targetId + " (" + readable(player.party.map(poke), "and") + ")!", safchan);
+            safaribot.sendMessage(src, "Loaded your party from slot " + (num + 1) + " (" + readable(player.party.map(poke), "and") + ")!", safchan);
             this.saveGame(player);
         } else {
             safaribot.sendMessage(src, "To modify your party, type /party add:[pokémon] or /party remove:[pokémon]. Use /party active:[pokémon] to set your party leader.", safchan);
