@@ -4856,6 +4856,9 @@ function Safari() {
                 var evo = evoData.evo;
                 safaribot.sendMessage(src, info.name + " requires " + candiesRequired + " Rare Cand" + (candiesRequired == 1 ? "y" : "ies") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + ". ", safchan);
             }
+            if (species in megaEvolutions) {
+                safaribot.sendMessage(src, info.name + " can mega evolve into " + readable(megaEvolutions[species].map(poke), "or") + ". ", safchan);
+            }
             sys.sendMessage(src, "", safchan);
             return true;
         }
