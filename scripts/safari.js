@@ -4447,6 +4447,7 @@ function Safari() {
             "/changecostume [name]: To change your costume to a new one.",
             "/view: To view another player's party. If no player is specified, all of your data will show up. You can also use /view on or /view off to enable/disable others from viewing your party.",
             "/challenge: To challenge another player to a battle.",
+            "/watch: To watch someone else's battle.",
             "/changealt: To pass your Safari data to another alt.",
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
             "/rarecandy: Use a Rare Candy to evolve a Pokémon*.",
