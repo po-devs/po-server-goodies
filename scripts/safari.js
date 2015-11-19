@@ -3922,7 +3922,7 @@ function Safari() {
         this.scoreOrder = [];
         this.finished = false;
         
-        safaribot.sendAll("A battle between " + sys.name(p1) + " and " + sys.name(p2) + " has started!", safchan);
+        safaribot.sendHtmlAll("A battle between " + sys.name(p1) + " and " + sys.name(p2) + " has started! [<a href='po:send//watch " + this.name1 + "'>Watch</a>]", safchan);
     }
     Battle.prototype.nextTurn = function() {
         var p1Poke = this.team1[this.turn];
