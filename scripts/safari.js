@@ -4198,6 +4198,7 @@ function Safari() {
             starter: num,
             lastLogin: getDay(now()),
             consecutiveLogins: 1,
+            altlog: [sys.name(src).toLowerCase()],
             cooldowns: {
                 ball: 0,
                 ballUse: 0,
@@ -4300,6 +4301,13 @@ function Safari() {
         if (target) {
             target.id = player.id;
             player.id = sys.name(targetId).toLowerCase();
+            
+            if (target.altlog.indexOf(target.id) === -1) {
+                target.altlog.push(target.id);
+            }
+            if (player.altlog.indexOf(player.id) === -1) {
+                player.altlog.push(player.id);
+            }
 
             SESSION.users(src).safari = target;
             SESSION.users(targetId).safari = player;
@@ -4318,6 +4326,9 @@ function Safari() {
 
             SESSION.users(targetId).safari = player;
             player.id = data.toLowerCase();
+            if (player.altlog.indexOf(player.id) === -1) {
+                player.altlog.push(player.id);
+            }
 
             this.clearPlayer(src);
             this.clearPlayer(targetId);
@@ -4378,6 +4389,9 @@ function Safari() {
             }
             if (player.savedParties === undefined) {
                 player.savedParties = [];
+            }
+            if (player.altlog === undefined) {
+                player.altlog = [player.id],
             }
             if (player.costume === undefined) {
                 player.costume = "none";
@@ -4876,9 +4890,13 @@ function Safari() {
             safaribot.sendMessage(src, info.name + "'s BST is " + getBST(info.num) + ".", safchan);
             var player = getAvatar(src);
             if (player) {
-                var perkBonus = 1 + Math.min(itemData.amulet.bonusRate * player.balls.amulet, itemData.amulet.maxRate);
-                var price = Math.round(getBST(info.num) * (info.shiny ? 5 : 1) * (isLegendary(info.num) ? 10 : 1) * perkBonus);
-                safaribot.sendMessage(src, "You can sell a " + info.name + " for $" + addComma(price) + ". " + (!info.shiny ? "If it's Shiny, you can sell it for $" + addComma(price * 5)  + ". " : ""), safchan);
+                if (isMega(info.num)) {
+                    safaribot.sendMessage(src, info.name + " cannot be sold.", safchan);
+                } else {
+                    var perkBonus = 1 + Math.min(itemData.amulet.bonusRate * player.balls.amulet, itemData.amulet.maxRate);
+                    var price = Math.round(getBST(info.num) * (info.shiny ? 5 : 1) * (isLegendary(info.num) ? 10 : 1) * perkBonus);
+                    safaribot.sendMessage(src, "You can sell a " + info.name + " for $" + addComma(price) + ". " + (!info.shiny ? "If it's Shiny, you can sell it for $" + addComma(price * 5)  + ". " : ""), safchan);
+                }
             }
             var species = pokeInfo.species(info.num);
             if (species in evolutions) {
@@ -4887,7 +4905,7 @@ function Safari() {
                 var evo = evoData.evo;
                 safaribot.sendMessage(src, info.name + " requires " + candiesRequired + " Rare Cand" + (candiesRequired == 1 ? "y" : "ies") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + ". ", safchan);
             }
-            if (species in megaEvolutions) {
+            if (!isMega(info.num) && species in megaEvolutions) {
                 safaribot.sendMessage(src, info.name + " can mega evolve into " + readable(megaEvolutions[species].map(poke), "or") + ". ", safchan);
             }
             sys.sendMessage(src, "", safchan);
@@ -5533,7 +5551,7 @@ function Safari() {
                     player = getAvatarOff(e);
                     if (contestantsCount[e] > 0 && player) {
                         playerId = sys.id(e);
-                        amt = Math.max(Math.floor(Math.min(contestantsCount[e] / pokemonSpawned, 1) * 4), 1);
+                        amt = Math.max(Math.floor(Math.min(contestantsCount[e] / pokemonSpawned, 1) * 3.5), 1);
                         player.balls.bait += amt;
                         safari.saveGame(player);
                         if (playerId) {
