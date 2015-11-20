@@ -277,7 +277,7 @@ function Safari() {
         rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 189, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
         rare: {name: "rare", fullName: "Rare Candy", type: "usable", icon: 117, price: 0, aliases:["rare", "rarecandy", "rare candy", "candy"], sellable: false, buyable: true, tradable: true},
-        mega: {name: "mega", fullName: "Mega Stone", type: "usable", icon: 2001, price: 0, aliases:["mega", "mega stone", "megastone"], sellable: false, buyable: true, tradable: true},
+        mega: {name: "mega", fullName: "Mega Stone", type: "usable", icon: 2001, price: 0, aliases:["mega", "mega stone", "megastone"], duration: 3, sellable: false, buyable: true, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
         itemfinder: {name: "itemfinder", fullName: "Itemfinder", type: "usable", icon: 69, price: 0, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], sellable: false, buyable: false, tradable: false},
 
@@ -927,6 +927,7 @@ function Safari() {
         }
     }
 
+    //TO DO: Merge this into itemAlias like costumes maybe?
     function finishName(item) {
         if (item === "wild") {
             return "Wild Pokémon";
@@ -937,9 +938,9 @@ function Safari() {
         } else if (item === "recharge") {
             return "Recharge";
         } else if (item === "permfinder") {
-            return "Itemfinder Bonus charge(s)";
-        } else if (item === "itemfinder") {
-            return "Itemfinder charge(s)";
+            return itemData.itemfinder.fullName + " Bonus";
+        } else if (item === "valuables") {
+            return "Valuables";
         }
         return itemData[item].fullName;
     }
@@ -2726,7 +2727,7 @@ function Safari() {
         this.evolvePokemon(src, info, evolvedId, "mega evolved into", true);
         player.megaTimers.push({
             id: evolvedId,
-            expires: now() + 72 * 60 * 60 * 1000,
+            expires: now() + (itemData.mega.duration * 24 * 60 * 60 * 1000),
             to: id
         });
         safaribot.sendMessage(src, "You used a Mega Stone on " + info.name + " to evolve them into " + poke(evolvedId) + "! They will revert after 72 hours!", safchan);
@@ -4497,61 +4498,133 @@ function Safari() {
             sys.sendMessage(src, help[x], safchan);
         }
     };
-    this.showItemHelp = function (src) {
-        var x, help = [
-            "",
-            "*** Items ***",
-            "Pokédollars: Used to purchase items from the shop.",
-            "Bait: Tasty Bluk Berries used to attract wild Pokémon, set down with /bait. Has a " + itemData.bait.successRate*100 + "% success rate with an approximate " + itemData.bait.successCD + " second cooldown on success, and an approximate " + itemData.bait.failCD + " second cooldown on failure.",
-            "Rock: A small rock that can be thrown to stun another player for a short period with /rock. Has a 10 second cooldown.",
-            "Gachapon Ticket: Used to play the Gachapon Machine with /gacha, and win random prizes. Has a " + itemData.gacha.cooldown/1000 + " second cooldown.",
-            "Rare Candy: Used to evolve Pokémon. Requires 2 Rare Candies to evolve into a final form Pokémon. ",
-            "Valuables: The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be pawned off with /pawn for money.",
-            "Itemfinder: An experimental machine that can help find rare items! By default, it can only hold " + itemData.itemfinder.charges + " charges. These charges are reset every day.",
-            "Ampere Gem: An electrically charged gem created by a famous Ampharos in Olivine City. It is said to be able to recharge the Itemfinder, giving it " + itemData.gem.charges + " more uses for the day! (To use, type \"/use gem\")",
-            "",
-            "*** Perks ***",
-            "Box: Increases number of Pokémon that can be owned by " + itemData.box.bonusRate + " each.",
-            "Amulet Coin: When holding this charm, a bonus yield of about " + itemData.amulet.bonusRate * 100 + "% can be made when selling Pokémon to the NPC (Max Rate: " + itemData.amulet.maxRate * 100 + "%).",
-            "Honey: Sweet-smelling Combee Honey that, when applied to bait, increases the chance of a Pokémon being attracted by " + itemData.honey.bonusRate * 100 + "% (Max Rate: " + itemData.honey.maxRate * 100 + "%).",
-            "Soothe Bell: A bell with a comforting chime that calms the owner and their Pokémon. Reduces delay after a successful catch by " + itemData.soothe.bonusRate * 100 + "% (Max Rate: " + itemData.soothe.maxRate * 100 + "%).",
-            "Relic Crown: A rare crown with mysterious properties that brings good fortune to its owner. Increases rate of pawned items by " + itemData.crown.bonusRate * 100 + "% (Max Rate: " + itemData.crown.maxRate * 100 + "%).",
-            "Silk Scarf: A fashionable scarf made of the finest silk. Wearing it allows you to lead a more luxurious life and grants you " + itemData.scarf.bonusRate * 100 + "% more money from Luxury Balls (Max Rate: " + itemData.scarf.maxRate * 100 + "%).",
-            "Cell Battery: A high-capacity battery that can increase the uses of Item Finder by " + itemData.battery.bonusRate + ". (Max Rate: " + itemData.battery.maxRate + ").",
-            "Eviolite: A mysterious gem that powers up Pokémon with 420 BST or less by " + itemData.eviolite.bonusRate + ". (Max Rate: " + itemData.eviolite.maxRate + ").",
-            "Stick: Legendary Stick of the almighty Farfetch'd that provides a neverending wave of prods and pokes unto your enemies and other nefarious evil-doers, with a simple use of the /stick command.",
-            "",
-            "*** Standard Poké Balls ***",
-            "Safari Ball: Standard issue Poké Ball used to catch Pokémon. Has a cooldown of " + itemData.safari.cooldown / 1000 +" seconds.",
-            "Great Ball: A Poké Ball that has a slightly increased catch rate. Has a cooldown of " + itemData.great.cooldown / 1000 +" seconds.",
-            "Ultra Ball: A high functioning Poké Ball that has a better catch rate than a Great Ball. Has a cooldown of " + itemData.ultra.cooldown / 1000 +" seconds.",
-            "Master Ball: An extremely rare Poké Ball that never fails to catch. Has a cooldown of " + itemData.master.cooldown / 1000 +" seconds.",
-            "",
-            "*** Special Poké Balls ***",
-            "Myth Ball: An alternate colored Poké Ball that works better on really rare Pokémon. Has a cooldown of " + itemData.myth.cooldown / 1000 +" seconds.",
-            "Luxury Ball: A comfortable Poké Ball with an increased catch rate that is said to make one wealthy. Has a cooldown of " + itemData.luxury.cooldown / 1000 +" seconds.",
-            "Heavy Ball: An industrial Poké Ball that works better against hardier and stronger Pokémon. Has a cooldown of " + itemData.heavy.cooldown / 1000 +" seconds.",
-            "Quick Ball: A somewhat different Poké Ball that tends to get better priority during throws. Has a cooldown of " + itemData.quick.cooldown / 1000 +" seconds.",
-            "Premier Ball: A plain Poké Ball gifted to you for your patronage. It works better when a Normal-type Pokémon is active. Has a cooldown of " + itemData.premier.cooldown / 1000 +" seconds.",
-            "Spy Ball: A stealthy Poké Ball that cannot be tracked. Has a cooldown of " + itemData.spy.cooldown / 1000 +" seconds.",
-            "Clone Ball: A mysterious Poké Ball with a very low catch rate that can duplicate a pokémon's D.N.A.. Has a cooldown of " + itemData.clone.cooldown / 1000 +" seconds.",
-            "",
-            "Note: Cooldown for Balls is doubled when a Pokémon is caught successfully.",
-            "",
-            "*** Costumes ***",
-            "Inver: " + costumeData.inver.effect,
-            "Pokémon Breeder: " + costumeData.breeder.effect,
-            "Scientist: " + costumeData.scientist.effect,
-            "Ace Trainer: " + costumeData.ace.effect,
-            "Technician: " + costumeData.tech.effect,
-            "Aroma Lady: " + costumeData.aroma.effect,
-            "Chef: " + costumeData.chef.effect,
-            "Explorer: " + costumeData.explorer.effect,
-            "Fisher: " + costumeData.fisher.effect,
-            ""
-        ];
-        for (x in help) {
-            sys.sendMessage(src, help[x], safchan);
+    this.showItemHelp = function (src, data) {
+        if (data === "*") {
+            safaribot.sendMessage(src, "You can use /itemhelp [item] to return information on a particular item, costume, or category. You can display the help for all items using \"/itemhelp all\" or from the following categories: \"balls\", \"items\", \"perks\", \"costumes\".", safchan);
+            return;
+        }
+        var help;
+        data = data.toLowerCase();
+        var catStrings = ["all", "balls", "items", "perks", "costumes"];
+        var itemHelp = {
+            bait: "Tasty Bluk Berries used to attract wild Pokémon, set down with /bait. Has a " + itemData.bait.successRate*100 + "% success rate with an approximate " + itemData.bait.successCD + " second cooldown on success, and an approximate " + itemData.bait.failCD + " second cooldown on failure.",
+            rock: "A small rock that can be thrown to potentially stun another player for a short period with /rock. Has a " + itemData.rock.throwCD/1000 + " second cooldown.",
+            rare: "Used to evolve Pokémon. Requires 2 Rare Candies to evolve into a final form Pokémon. Found with Itemfinder.",
+            mega: "A mysterious stone that allows certain Pokémon to undergo a powerful transformation. It is said to wear off in approximately " + itemData.mega.duration + " days. Cannot be obtained through normal gameplay.",
+            valuables: "The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be pawned off with /pawn for a varying amount of money. Obtained from Gachapon and found with Itemfinder.",
+            itemfinder: "Itemfinder: An experimental machine that can help find rare items! By default, it can only hold " + itemData.itemfinder.charges + " charges. These charges are reset every day.",
+            gem: "An electrically charged gem created by a famous Ampharos in Olivine City. It is said to be able to recharge the Itemfinder, giving it " + itemData.gem.charges + " more uses for the day! (To use, type \"/use gem\"). Obtained from Gachapon.",
+            box: "Increases number of Pokémon that can be owned by " + itemData.box.bonusRate + " each. Can only acquire by purchasing.",
+            stick: "Legendary Stick of the almighty Farfetch'd that provides a never ending wave of prods and pokes (every " + itemData.stick.cooldown/1000 + " seconds) unto your enemies and other nefarious evil-doers, with a simple use of the /stick command."
+        };
+        var perkHelp = {
+            amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "%). Obtained from Gachapon.",
+            soothe: "A bell with a comforting chime that calms the owner and their Pokémon. Reduces delay after a successful catch by " + itemData.soothe.bonusRate * 100 + "% (Max Rate: " + itemData.soothe.maxRate * 100 + "%). Obtained from Gachapon.",
+            scarf: "A fashionable scarf made of the finest silk. Wearing it allows you to lead a more luxurious life and grants you " + itemData.scarf.bonusRate * 100 + "% more money from Luxury Balls (Max Rate: " + itemData.scarf.maxRate * 100 + "%). Obtained from Gachapon.",
+            battery: " A high-capacity battery that can increase the uses of Item Finder by " + itemData.battery.bonusRate + ". (Max Rate: " + itemData.battery.maxRate + "). Obtained from Gachapon.",
+            honey: "Sweet-smelling Combee Honey that, when applied to bait, increases the chance of a Pokémon being attracted by " + itemData.honey.bonusRate * 100 + "% (Max Rate: " + itemData.honey.maxRate * 100 + "%). Found with Itemfinder.",
+            crown: "A rare crown with mysterious properties that brings good fortune to its owner. Increases rate of pawned items by " + itemData.crown.bonusRate * 100 + "% (Max Rate: " + itemData.crown.maxRate * 100 + "%). Found with Itemfinder.",
+            eviolite: "A mysterious gem that powers up Pokémon with 420 BST or less by " + itemData.eviolite.bonusRate + ". (Max Rate: " + itemData.eviolite.maxRate + "). Found with Itemfinder."
+        };
+        var ballHelp = {
+            safari: "A standard issue Poké Ball used to catch Pokémon. Has a cooldown of " + itemData.safari.cooldown / 1000 +" seconds.",
+            great: "A Poké Ball that has a slightly increased catch rate. Has a cooldown of " + itemData.great.cooldown / 1000 +" seconds.",
+            ultra: "A high functioning Poké Ball that has a better catch rate than a Great Ball. Has a cooldown of " + itemData.ultra.cooldown / 1000 +" seconds.",
+            master: "An extremely rare Poké Ball that never fails to catch. Has a cooldown of " + itemData.master.cooldown / 1000 +" seconds. It is said to be a rare prize in Gachapon.",
+            premier: "A plain Poké Ball gifted to you for your patronage. It works better when a Normal-type Pokémon is active. Has a cooldown of " + itemData.premier.cooldown / 1000 +" seconds. Obtained by purchasing a lot of Poké Balls from the shop.",
+            luxury: "A comfortable Poké Ball with an increased catch rate that is said to make one wealthy. Has a cooldown of " + itemData.luxury.cooldown / 1000 +" seconds. Obtained from Gachapon and found with Itemfinder.",
+            myth: "An alternate colored Poké Ball that works better on really rare Pokémon. Has a cooldown of " + itemData.myth.cooldown / 1000 +" seconds. Obtained from Gachapon.",
+            quick: "A somewhat different Poké Ball that tends to get better priority during throws. Has a cooldown of " + itemData.quick.cooldown / 1000 +" seconds. Obtained from Gachapon.",
+            heavy: "An industrial Poké Ball that works better against hardier and stronger Pokémon. Has a cooldown of " + itemData.heavy.cooldown / 1000 +" seconds. Obtained from Gachapon.",
+            clone: "A mysterious Poké Ball with a very low catch rate that can duplicate a pokémon's D.N.A.. Has a cooldown of " + itemData.clone.cooldown / 1000 +" seconds. Obtained from Gachapon.",
+            spy: "A stealthy Poké Ball that cannot be tracked. Has a cooldown of " + itemData.spy.cooldown / 1000 +" seconds. Found with Itemfinder."
+        };
+        var costumeHelp = {
+            inver: costumeData.inver.effect,
+            breeder: costumeData.breeder.effect,
+            scientist: costumeData.scientist.effect,
+            ace: costumeData.ace.effect,
+            tech: costumeData.tech.effect,
+            aroma: costumeData.aroma.effect,
+            chef: costumeData.chef.effect,
+            explorer: costumeData.explorer.effect,
+            fisher: costumeData.fisher.effect
+        };
+
+        if (catStrings.indexOf(data) === -1) {
+            //Try to decode which item the uder is looking for
+            var lookup = itemAlias(data, true);
+            if (allItems.indexOf(lookup) === -1) {
+                //If it's not an item, it's either a costume or invalid.
+                lookup = costumeAlias(data, false, true);
+                if (allCostumes.indexOf(lookup) !== -1) {
+                    if (costumeHelp.hasOwnProperty(lookup)) {
+                        help = costumeAlias(lookup, true) + " Costume: " + costumeHelp[lookup];
+                    }
+                }
+            } else {
+                //Now grab the help from whichever category it is
+                if (itemHelp.hasOwnProperty(lookup)) {
+                    help = finishName(lookup) + ": " + itemHelp[lookup];
+                } else if (perkHelp.hasOwnProperty(lookup)) {
+                    help = finishName(lookup) + ": " + perkHelp[lookup];
+                } else if (ballHelp.hasOwnProperty(lookup)) {
+                    help = finishName(lookup) + ": " + ballHelp[lookup];
+                }
+            }
+            
+            //Frame out result
+            sys.sendMessage(src, "", safchan);
+            sys.sendMessage(src, "*** Item Help ***", safchan);
+            if (!help) {
+                help = lookup + " is either an invalid item or no help string is defined!";
+            } else {
+                sys.sendMessage(src, help, safchan);
+            }
+            sys.sendMessage(src, "", safchan);
+        } else {
+            var x, dataArray, out = [];
+            out.push("");
+            if (data === "all" || data === "items") {
+                out.push("*** Item Help ***");
+                dataArray = Object.keys(itemHelp);
+                for (var e in dataArray) {
+                    e = dataArray[e];
+                    out.push(finishName(e) + ": " + itemHelp[e]);
+                }
+                out.push("");
+            }
+            if (data === "all" || data === "balls") {
+                out.push("*** Ball Help ***");
+                dataArray = Object.keys(ballHelp);
+                for (var e in dataArray) {
+                    e = dataArray[e];
+                    out.push(finishName(e)  + ": " + ballHelp[e]);
+                }
+                out.push("Note: Cooldown value with double following a successful catch.");
+                out.push("");
+            }
+            if (data === "all" || data === "perks") {
+                out.push("*** Perk Help ***");
+                dataArray = Object.keys(perkHelp);
+                for (var e in dataArray) {
+                    e = dataArray[e];
+                    out.push(finishName(e)  + ": " + perkHelp[e]);
+                }
+                out.push("");
+            }
+            if (data === "all" || data === "costumes") {
+                out.push("*** Costume Help ***");
+                dataArray = Object.keys(costumeHelp);
+                for (var e in dataArray) {
+                    e = dataArray[e];
+                    out.push(costumeAlias(e, true) + " Costume: " + costumeHelp[e]);
+                }
+                out.push("");
+            }
+            for (x in out) {
+                sys.sendMessage(src, out[x], safchan);
+            }
         }
     };
     this.onHelp = function (src, topic, channel) {
@@ -4566,7 +4639,7 @@ function Safari() {
             "",
             "*** Safari Commands ***",
             "/help: For a how-to-play guide.",
-            "/itemhelp: A comprehensive guide on items and Poké Balls.",
+            "/itemhelp [item or category]: Returns information on a particular item, costume, or category. You can display the help for all items using \"/itemhelp all\" or from the following categories: \"balls\", \"items\", \"perks\", \"costumes\".",
             "/start: To pick a starter Pokémon and join the Safari game. Valid starters are Bulbasaur, Charmander, and Squirtle.",
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be replaced with the name of any other ball you possess.",
             "/sell: To sell one of your Pokémon*.",
@@ -4660,7 +4733,7 @@ function Safari() {
             return true;
         }
         if (command === "itemhelp") {
-            safari.showItemHelp(src);
+            safari.showItemHelp(src, commandData);
             return true;
         }
         if (command === "start") {
