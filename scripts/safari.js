@@ -896,17 +896,53 @@ function Safari() {
     function getBST(pokeNum) {
         return add(sys.pokeBaseStats(pokeNum));
     }
-    function itemAlias(name, returnGarbage) {
+    function itemAlias(name, returnGarbage, full) {
         name = name.toLowerCase();
         for (var e in itemData) {
             if (itemData[e].aliases.indexOf(name) !== -1) {
-                return itemData[e].name;
+                if (full) {
+                    return itemData[e].fullName;
+                } else {
+                    return itemData[e].name;
+                }
             }
         }
         if (returnGarbage) {
+            if (name === "wild") {
+                return "Wild Pokémon";
+            } else if (name === "horde") {
+                return "Horde of Wild Pokémon";
+            } else if (name === "nothing") {
+                return "No item";
+            } else if (name === "recharge") {
+                return "Recharge";
+            } else if (name === "permfinder") {
+                return itemData.itemfinder.fullName + " Bonus";
+            } else if (name === "valuables") {
+                return "Valuables";
+            }
             return name;
         } else {
             return "safari";
+        }
+    }
+    function finishName(name) {
+        return itemAlias(name, true, true);
+    }
+    function costumeAlias(name, returnGarbage, full) {
+        for (var e in costumeData) {
+            if (costumeData[e].aliases.indexOf(name) !== -1) {
+                if (full) {
+                    return costumeData[e].fullName;
+                } else {
+                    return costumeData[e].name;
+                }
+            }
+        }
+        if (returnGarbage || name === "none") {
+            return name;
+        } else {
+            return "error";
         }
     }
     function costumeSprite(id, android) {
@@ -925,40 +961,7 @@ function Safari() {
         }
         return 1;
     }
-    function costumeAlias(name, full, returnGarbage) {
-        for (var e in costumeData) {
-            if (costumeData[e].aliases.indexOf(name) !== -1) {
-                if (full) {
-                    return costumeData[e].fullName;
-                } else {
-                    return costumeData[e].name;
-                }
-            }
-        }
-        if (returnGarbage || name === "none") {
-            return name;
-        } else {
-            return "error";
-        }
-    }
 
-    //TO DO: Merge this into itemAlias like costumes maybe?
-    function finishName(item) {
-        if (item === "wild") {
-            return "Wild Pokémon";
-        } else if (item === "horde") {
-            return "Horde of Wild Pokémon";
-        } else if (item === "nothing") {
-            return "No item";
-        } else if (item === "recharge") {
-            return "Recharge";
-        } else if (item === "permfinder") {
-            return itemData.itemfinder.fullName + " Bonus";
-        } else if (item === "valuables") {
-            return "Valuables";
-        }
-        return itemData[item].fullName;
-    }
     function isBall(item) {
         return item in itemData && itemData[item].type === "ball";
     }
@@ -1763,13 +1766,13 @@ function Safari() {
             safaribot.sendMessage(src, "[Closed] Out catching Pokémon at the Contest. Come back after the Contest!", safchan);
             return;
         }
-        var costume = costumeAlias(data, false, true);
+        var costume = costumeAlias(data, true);
         if (validItems.indexOf(costume) == -1) {
             safaribot.sendMessage(src, "We don't seem to sell \"" + costume +  "\" at this location.", safchan);
             return;
         }
 
-        var costumeName = costumeAlias(data, true);
+        var costumeName = costumeAlias(data, false, true);
         if (player.costumes[costume] >= 1) {
             safaribot.sendMessage(src, "You already own " + costumeName + "!", safchan);
             return;
@@ -3345,7 +3348,7 @@ function Safari() {
         }
         out += "</tr><tr>";
         if (costumed) {
-            out += "<td align=center>" + costumeAlias(player.costume, true) + "</td>";
+            out += "<td align=center>" + costumeAlias(player.costume, false, true) + "</td>";
         }
         for (var e in player.party) {
             var member = getPokemonInfo(player.party[e]);
@@ -3448,7 +3451,7 @@ function Safari() {
         for (var i = 0; i < allCostumes.length; i++) {
             costumeName = allCostumes[i];
             if (player.costumes[costumeName] > 0) {
-                out.push(costumeAlias(costumeName, true));
+                out.push(costumeAlias(costumeName, false, true));
             }
         }
         return "Owned Costumes: " + (out.length > 0 ? out.join(", ") : "None");
@@ -3460,9 +3463,9 @@ function Safari() {
             return;
         }
 
-        var cos = costumeAlias(data, false, true);
+        var cos = costumeAlias(data, true);
         var currentTime = now();
-        var costumeName = costumeAlias(data, true);
+        var costumeName = costumeAlias(data, false, true);
         if (cos !== "none") {
             if (allCostumes.indexOf(cos) === -1){
                 safaribot.sendMessage(src, cos + " is not a valid costume!", safchan);
@@ -4567,14 +4570,14 @@ function Safari() {
         };
 
         if (catStrings.indexOf(data) === -1) {
-            //Try to decode which item the uder is looking for
+            //Try to decode which item the user is looking for
             var lookup = itemAlias(data, true);
             if (allItems.indexOf(lookup) === -1) {
                 //If it's not an item, it's either a costume or invalid.
-                lookup = costumeAlias(data, false, true);
+                lookup = costumeAlias(data, true);
                 if (allCostumes.indexOf(lookup) !== -1) {
                     if (costumeHelp.hasOwnProperty(lookup)) {
-                        help = costumeAlias(lookup, true) + " Costume: " + costumeHelp[lookup];
+                        help = costumeAlias(lookup, false, true) + " Costume: " + costumeHelp[lookup];
                     }
                 }
             } else {
@@ -4633,7 +4636,7 @@ function Safari() {
                 dataArray = Object.keys(costumeHelp);
                 for (var e in dataArray) {
                     e = dataArray[e];
-                    out.push(costumeAlias(e, true) + " Costume: " + costumeHelp[e]);
+                    out.push(costumeAlias(e, false, true) + " Costume: " + costumeHelp[e]);
                 }
                 out.push("");
             }
@@ -5644,6 +5647,11 @@ function Safari() {
                 currentPokemon = null;
                 currentTheme = null;
                 wildEvent = false;
+                
+                //Clear throwers if the contest ends with a Wild Pokemon uncaught
+                preparationPhase = 0;
+                preparationThrows = {};
+                preparationFirst = null;
 
                 var player, winner, playerId, amt;
                 for (e in contestantsCount) {
