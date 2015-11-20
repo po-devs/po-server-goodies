@@ -640,6 +640,21 @@ function Safari() {
             "minBST" : 300,
             "maxBST" : 671,
             "icon" : 486
+        },
+        "mega": {
+            "name" : "Mega Pokémon",
+            "types" : [],
+            "excludeTypes" : [],
+            "include" : [1,2,3,4,5,6,7,8,9,13,14,15,16,17,18,63,64,65,79,80,92,93,94,95,115,123,127,129,130,142,150,179,180,181,199,208,212,214,228,229,246,247,248,252,253,254,255,256,257,258,259,260,280,281,282,302,303,304,305,306,307,308,309,310,318,319,322,323,333,334,353,354,359,361,362,371,372,373,374,375,376,380,381,384,427,428,443,444,445,447,448,459,460,475,531,719],
+            "exclude" : [],
+            "customBST" : {
+                "380" : 670,
+                "381" : 670,
+                "719" : 670
+            },
+            "minBST" : 320,
+            "maxBST" : 681,
+            "icon" : 384
         }
     };
     /*Vivillon Forms not in theme:
@@ -4672,6 +4687,7 @@ function Safari() {
             "/info: View time until next contest and current Gachapon jackpot prize!",
             "/leaderboard [type]: View the Safari Leaderboards. [type] can be " + readable(lbAlias, "or") + ".",
             "/flashme: Toggle whether or not you get flashed when a contest starts.",
+            "/themes: View available contest themes.",
             "",
             "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
         ];
@@ -4998,6 +5014,16 @@ function Safari() {
         }
         if (command === "use") {
             safari.useItem(src, commandData);
+            return true;
+        }
+        if (command === "themes") {
+            var contests = Object.keys(contestThemes);
+            var ret = [];
+            for (var e in contests) {
+                ret.push(contestThemes[contests[e]].name);
+            }
+            ret.sort();
+            safaribot.sendMessage(src, "Available Contest Themes: " + ret.join (", ") + ".", safchan);
             return true;
         }
 
