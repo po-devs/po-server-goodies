@@ -4509,7 +4509,7 @@ function Safari() {
         var itemHelp = {
             bait: "Tasty Bluk Berries used to attract wild Pokémon, set down with /bait. Has a " + itemData.bait.successRate*100 + "% success rate with an approximate " + itemData.bait.successCD + " second cooldown on success, and an approximate " + itemData.bait.failCD + " second cooldown on failure.",
             rock: "A small rock that can be thrown to potentially stun another player for a short period with /rock. Has a " + itemData.rock.throwCD/1000 + " second cooldown.",
-            rare: "Used to evolve Pokémon. Requires 2 Rare Candies to evolve into a final form Pokémon. Found with Itemfinder",
+            rare: "Used to evolve Pokémon. Requires 2 Rare Candies to evolve into a final form Pokémon. Found with Itemfinder.",
             mega: "A mysterious stone that allows certain Pokémon to undergo a powerful transformation. It is said to wear off in approximately " + itemData.mega.duration + " days. Cannot be obtained through normal gameplay.",
             valuables: "The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be pawned off with /pawn for a varying amount of money. Obtained from Gachapon and found with Itemfinder.",
             itemfinder: "Itemfinder: An experimental machine that can help find rare items! By default, it can only hold " + itemData.itemfinder.charges + " charges. These charges are reset every day.",
@@ -4601,6 +4601,7 @@ function Safari() {
                     e = dataArray[e];
                     out.push(finishName(e)  + ": " + ballHelp[e]);
                 }
+                out.push("Note: Cooldown value with double following a successful catch.");
                 out.push("");
             }
             if (data === "all" || data === "perks") {
