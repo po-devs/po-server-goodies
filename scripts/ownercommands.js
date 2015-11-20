@@ -337,7 +337,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "periodicsay" || command == "periodichtml") {
         var sayer = src;
-        var args = commandData.split(":");
+        var args = commandData.split(":::");
         var minutes = parseInt(args[0], 10);
         if (minutes < 3) {
             return;
@@ -770,8 +770,8 @@ exports.help =
         "/clearpass: Clears a user's password.",
         "/autosmute: Adds a user to the autosmute list",
         "/removeautosmute: Removes a user from the autosmute list",
-        "/periodicsay: Sends a message to specified channels periodically. Format is /periodicsay minutes:channel1,channel2,...:message",
-        "/periodichtml: Sends a message to specified channels periodically, using HTML formatting. Format is /periodichtml minutes:channel1,channel2,...:message",
+        "/periodicsay: Sends a message to specified channels periodically. Format is /periodicsay minutes:::channel1,channel2,...:::message",
+        "/periodichtml: Sends a message to specified channels periodically, using HTML formatting. Format is /periodichtml minutes:::channel1,channel2,...:::message",
         "/endcalls: Ends the next periodic message.",
         "/sendall: Sends a message to everyone.",
         "/changeauth[s]: Changes the auth of a user. Format is /changeauth auth user. If using /changeauths, the change will be silent.",
