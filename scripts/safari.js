@@ -1482,7 +1482,7 @@ function Safari() {
             if (sellerId) {
                 seller = getAvatar(sellerId);
             } else {
-                safaribot.sendMessage(src, "No such person.", safchan);
+                safaribot.sendMessage(src, "No such person! Use /" + command + " Name to see their shop!", safchan);
                 return;
             }
         }
@@ -1552,7 +1552,7 @@ function Safari() {
         var amount = 1;
         if (input.type == "item" && info.length > 2) {
             amount = parseInt(info[2], 10);
-            if (isNaN(amount) || amount < 1 || product == "box") {
+            if (isNaN(amount) || amount < 1 || input.id == "box") {
                 amount = 1;
             }
         }
@@ -1567,14 +1567,14 @@ function Safari() {
         }
 
         var cap = itemCap;
-        if (product === "stick" || product === "master") {
+        if (input.id === "stick" || input.id === "master") {
             cap = 1;
         }
-        if (!this.isBelowCap(src, product, amount, input.type)) {
+        if (!this.isBelowCap(src, input.id, amount, input.type)) {
             return;
         }
         var boxPrice = itemData.box.price[Math.min(player.balls.box, itemData.box.price.length - 1)];
-        var cost = product == "box" ? boxPrice : shop[input.input].price * amount;
+        var cost = input.id == "box" ? boxPrice : shop[input.input].price * amount;
         if (player.money < cost) {
             if (fromNPC) {
                 safaribot.sendMessage(src, "You need $" + addComma(cost) + " to buy " + amount + " " + input.name + ", but you only have $" + addComma(player.money) + "!", safchan);
@@ -1589,7 +1589,7 @@ function Safari() {
             player.pokemon.push(input.id);
         }
         else if (input.type == "item") {
-            player.balls[product] += amount;
+            player.balls[input.id] += amount;
         }
         if (fromNPC) {
             safaribot.sendMessage(src, "You bought " + amount + " " + input.name + "(s) for $" + addComma(cost) + "! You now have $" + addComma(player.money) + "!", safchan);
@@ -1607,14 +1607,14 @@ function Safari() {
             if (input.type == "poke") {
                 this.removePokemon(sellerId, input.id);
             } else if (input.type == "item") {
-                seller.balls[product] -= amount;
-                this.updateShop(sellerName, product);
+                seller.balls[input.id] -= amount;
+                this.updateShop(sellerName, input.id);
             }
             safaribot.sendMessage(sellerId, "Someone bought " + amount + " of your " + input.name + "! You received $" + addComma(cost) + " and now have $" + addComma(seller.money) + "!", safchan);
             this.saveGame(seller);
             sys.appendToFile(shopLog, now() + "|||" + sys.name(sellerId) + "::" + amount + "::" + input.name + "::" + shop[input.input].price + "::" + cost + "|||" + sys.name(src) + "\n");
         } else {
-            this.buyBonus(src, product, amount, cap);
+            this.buyBonus(src, input.id, amount, cap);
             if (limitChanged) {
                 sys.writeToFile(shopFile, JSON.stringify(shop));
             }
@@ -1649,7 +1649,7 @@ function Safari() {
                 product = itemAlias(product.substr(1));
             }
             if (currentItems.indexOf(product) === -1) {
-                safaribot.sendMessage(src, "Invalid Pokémon/Item!", safchan);
+                safaribot.sendMessage(src, "Invalid Pokémon/Item! Use /shopadd [pokémon/item]:[price]:[amount] or /shopremove [pokémon/item]", safchan);
                 return true;
             }
             productType = "item";
@@ -1705,8 +1705,9 @@ function Safari() {
                 return true;
             }
             if (!editNPCShop && productType == "poke") {
-                if (price < getBST(input.id)) {
-                    safaribot.sendMessage(src, "You cannot sell " + input.name + " for less than $" + addComma(getBST(input.id)) + "!", safchan);
+                var minPrice = Math.round(getBST(input.id) * (input.shiny ? 5 : 1) * (isLegendary(input.num) ? 10 : 1));
+                if (price < minPrice) {
+                    safaribot.sendMessage(src, "You cannot sell " + input.name + " for less than $" + addComma(minPrice) + "!", safchan);
                     return true;
                 }
             }
@@ -4827,8 +4828,8 @@ function Safari() {
             safari.buyFromShop(src, commandData, command);
             return true;
         }
-        if (command === "shopadd" || command === "shopremove") {
-            safari.editShop(src, (command === "shopadd" ? "add" : "remove") + ":" + commandData);
+        if (command === "shopadd" || command === "shopremove" || command === "addshop" || command === "removeshop") {
+            safari.editShop(src, (command === "shopadd" || command === "addshop" ? "add" : "remove") + ":" + commandData);
             return true;
         }
         if (command === "pawn") {
@@ -5125,8 +5126,8 @@ function Safari() {
         if (!SESSION.channels(safchan).isChannelOwner(src)) {
             return false;
         }
-        if (command === "addshop" || command === "removeshop") {
-            safari.editShop(src, (command === "addshop" ? "add" : "remove") + ":" + commandData, true);
+        if (command === "npcadd" || command === "npcremove" || command === "addnpc" || command === "removenpc") {
+            safari.editShop(src, (command === "addnpc" || command === "npcadd" ? "add" : "remove") + ":" + commandData, true);
             return true;
         }
         if (command === "checkrate") {
