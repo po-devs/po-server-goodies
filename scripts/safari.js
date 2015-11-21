@@ -237,7 +237,7 @@ function Safari() {
         return ret;
     };
     pokeInfo.icon = function(p, shinyBG) {
-        //Unown Icon hack. Remove after client update        
+        //Unown Icon hack. Remove after client update
         var p2 = p;
         var pcheck = p2%65536;
         if (pcheck == 201) {
@@ -1464,7 +1464,7 @@ function Safari() {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
             return;
         }
-        if (player.records.pokesCaught < 4) {
+        if (!fromNPC && player.records.pokesCaught < 4) {
             safaribot.sendMessage(src, "You can only enter this shop after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
             return;
         }
@@ -1610,7 +1610,9 @@ function Safari() {
                 seller.balls[input.id] -= amount;
                 this.updateShop(sellerName, input.id);
             }
+            sys.sendMessage(sellerId, "", safchan);
             safaribot.sendMessage(sellerId, "Someone bought " + amount + " of your " + input.name + "! You received $" + addComma(cost) + " and now have $" + addComma(seller.money) + "!", safchan);
+            sys.sendMessage(sellerId, "", safchan);
             this.saveGame(seller);
             sys.appendToFile(shopLog, now() + "|||" + sys.name(sellerId) + "::" + amount + "::" + input.name + "::" + shop[input.input].price + "::" + cost + "|||" + sys.name(src) + "\n");
         } else {
@@ -1633,10 +1635,11 @@ function Safari() {
                 return;
             }
         }
+        var comm = editNPCShop ? "npc" : "shop";
         
         var info = data.split(":");
         if (info.length < 2) {
-            safaribot.sendMessage(src, "Invalid format! Use /shopadd [pokémon/item]:[price]:[amount] or /shopremove [pokémon/item].", safchan);
+            safaribot.sendMessage(src, "Invalid format! Use /"+comm+"add [pokémon/item]:[price]:[amount] or /"+comm+"remove [pokémon/item].", safchan);
             return true;
         }
         var action = info[0];
@@ -1644,12 +1647,12 @@ function Safari() {
         var product = info[1];
         var input = getInputPokemon(product);
         
-        if (!input.num) {
+        if (action !== "clear" && !input.num) {
             if (product[0] == "@") {
                 product = itemAlias(product.substr(1));
             }
             if (currentItems.indexOf(product) === -1) {
-                safaribot.sendMessage(src, "Invalid Pokémon/Item! Use /shopadd [pokémon/item]:[price]:[amount] or /shopremove [pokémon/item]", safchan);
+                safaribot.sendMessage(src, "Invalid format! Use /"+comm+"add [pokémon/item]:[price]:[limit] or /"+comm+"remove [pokémon/item]. You can clear your shop with /"+comm+"clear.", safchan);
                 return true;
             }
             productType = "item";
@@ -1661,7 +1664,7 @@ function Safari() {
 
         if (action == "add") {
             if (info.length < 2) {
-                safaribot.sendMessage(src, "Invalid format! Use /shopadd [pokémon/item]:[price]:[amount].", safchan);
+                safaribot.sendMessage(src, "Invalid format! Use /"+comm+"add [pokémon/item]:[price]:[limit] or /"+comm+"remove [pokémon/item]. You can clear your shop with /"+comm+"clear.", safchan);
                 return true;
             }
             var limit = info.length > 3 ? parseInt(info[3], 10) : -1;
@@ -1740,8 +1743,23 @@ function Safari() {
                 }
             }
         }
+        else if (action == "clear") {
+            if (editNPCShop) {
+                for (var e in npcShop) {
+                    delete npcShop[e];
+                }
+                safaribot.sendMessage(src, "The NPC Shop has been cleared!", safchan);
+                sys.writeToFile(shopFile, JSON.stringify(npcShop));
+            } else {
+                for (var e in player.shop) {
+                    delete player.shop[e];
+                }
+                safaribot.sendMessage(src, "Removed all Pokémon/Items from your shop!", safchan);
+                this.saveGame(player);
+            }
+        }
         else {
-            safaribot.sendMessage(src, "Invalid format! Use /shopadd [pokémon/item]:[price]:[limit] or /shopremove [pokémon/item].", safchan);
+            safaribot.sendMessage(src, "Invalid format! Use /"+comm+"add [pokémon/item]:[price]:[limit] or /"+comm+"remove [pokémon/item]. You can clear your shop with /"+comm+"clear.", safchan);
         }
         return true;
     };
@@ -2784,9 +2802,10 @@ function Safari() {
         if (wasOnParty) {
             player.party.splice(player.party.indexOf(id), 1, evolution);
         }
-        if (evolution in player.shop) {
-            delete player.shop[evolution];
-            safaribot.sendMessage(src, info.name + " was removed from your shop!", safchan);
+        var evoInput = getInputPokemon(evolution + (typeof evolution == "string" ? "*" : ""));
+        if (evolution === player.starter && evoInput.input in player.shop) {
+            delete player.shop[evoInput.input];
+            safaribot.sendMessage(src, evoInput.name + " was removed from your shop!", safchan);
         }
 
         sys.sendAll("", safchan);
@@ -2845,7 +2864,7 @@ function Safari() {
             info = player.megaTimers[e];
             if (info.expires <= currentTime) {
                 if (player.pokemon.indexOf(info.id) !== -1) {
-                    this.evolvePokemon(src, getInputPokemon(info.id + (typeof info.id == "string" ? "*" : 0)), info.to, "reverted to", true);
+                    this.evolvePokemon(src, getInputPokemon(info.id + (typeof info.id == "string" ? "*" : "")), info.to, "reverted to", true);
                 }
                 player.megaTimers.splice(e, 1);
             }
@@ -3518,11 +3537,11 @@ function Safari() {
     };
     this.removePokemon = function(src, pokeNum) {
         var player = getAvatar(src);
-        player.pokemon.splice(player.pokemon.indexOf(pokeNum), 1);
+        player.pokemon.splice(player.pokemon.lastIndexOf(pokeNum), 1);
 
         if (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum)) {
             do {
-                player.party.splice(player.party.indexOf(pokeNum), 1);
+                player.party.splice(player.party.lastIndexOf(pokeNum), 1);
             } while (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum));
         }
     };
@@ -4713,7 +4732,7 @@ function Safari() {
             "/buy: To buy items or Pokémon.",
             "/shop: To buy items or Pokémon from a another player.",
             "/shopadd: To add items or Pokémon to your personal shop.",
-            "/shopremove: To remove items or Pokémon from your personal shop.",
+            "/shopremove: To remove items or Pokémon from your personal shop. Use /shopclear to remove all items at once.",
             // "/buycostume: To buy a new costume.",
             "/pawn: To sell items.",
             "/party: To add or remove a Pokémon from your party, or to set your party's leader*. Type /party for more details.",
@@ -4828,8 +4847,23 @@ function Safari() {
             safari.buyFromShop(src, commandData, command);
             return true;
         }
-        if (command === "shopadd" || command === "shopremove" || command === "addshop" || command === "removeshop") {
-            safari.editShop(src, (command === "shopadd" || command === "addshop" ? "add" : "remove") + ":" + commandData);
+        if (command === "shopadd" || command === "shopremove" || command === "addshop" || command === "removeshop"  || command === "clearshop"  || command === "shopclear") {
+            var action = "remove";
+            switch (command) {
+                case "shopadd":
+                case "addshop":
+                    action = "add";
+                    break;
+                case "shopclear":
+                case "clearshop":
+                    action = "clear";
+                    break;
+                case "shopremove":
+                case "removeshop":
+                    action = "remove";
+                    break;
+            }
+            safari.editShop(src, action + ":" + commandData);
             return true;
         }
         if (command === "pawn") {
@@ -5126,8 +5160,23 @@ function Safari() {
         if (!SESSION.channels(safchan).isChannelOwner(src)) {
             return false;
         }
-        if (command === "npcadd" || command === "npcremove" || command === "addnpc" || command === "removenpc") {
-            safari.editShop(src, (command === "addnpc" || command === "npcadd" ? "add" : "remove") + ":" + commandData, true);
+        if (command === "npcadd" || command === "npcremove" || command === "addnpc" || command === "removenpc" || command === "clearnpc" || command === "npclear") {
+            var action = "remove";
+            switch (command) {
+                case "npcadd":
+                case "addnpc":
+                    action = "add";
+                    break;
+                case "clearnpc":
+                case "npclear":
+                    action = "clear";
+                    break;
+                case "npcremove":
+                case "removenpc":
+                    action = "remove";
+                    break;
+            }
+            safari.editShop(src, action + ":" + commandData, true);
             return true;
         }
         if (command === "checkrate") {
@@ -5485,13 +5534,13 @@ function Safari() {
                         time = new Date(parseInt(info[0], 10)).toUTCString();
                         p1Info = info[1].split("::");
                         p1 = p1Info[0];
-                        amount = p1Info[1];
+                        amount = parseInt(p1Info[1], 10);
                         item = p1Info[2];
                         price = parseInt(p1Info[3], 10);
                         cost = parseInt(p1Info[4], 10);
                         p2 = info[2].split("::")[0];
 
-                        safaribot.sendMessage(src, p2 + " bought " + amount + "x " + item + " from " + p1 + " for $" + addComma(cost) + " ($" + addComma(price) + " each) - (" + time + ")" , safchan);
+                        safaribot.sendMessage(src, p2 + " bought " + amount + "x " + item + " from " + p1 + " for $" + addComma(cost) + (amount > 1 ? " ($" + addComma(price) + " each)" : "") + " --- (" + time + ")" , safchan);
                     }
                     sys.sendMessage(src, "", safchan);
                 }
