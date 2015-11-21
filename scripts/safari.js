@@ -1721,18 +1721,22 @@ function Safari() {
             }
         }
         else if (action == "remove") {
-            if (input.input in player.shop) {
-                if (editNPCShop) {
+            if (editNPCShop) {
+                if (input.input in npcShop) {
                     delete npcShop[input.input];
                     safaribot.sendMessage(src, input.name + " has been removed from the NPC shop!", safchan);
                     sys.writeToFile(shopFile, JSON.stringify(npcShop));
                 } else {
+                    safaribot.sendMessage(src, "You can't remove a Pokémon/Item from the shop if they are not there!", safchan);
+                }
+            } else {
+                if (input.input in player.shop) {
                     delete player.shop[input.input];
                     safaribot.sendMessage(src, input.name + " has been removed from your shop!", safchan);
                     this.saveGame(player);
+                } else {
+                    safaribot.sendMessage(src, "You can't remove a Pokémon/Item from the shop if they are not there!", safchan);
                 }
-            } else {
-                safaribot.sendMessage(src, "You can't remove a Pokémon from the shop if they are not there!", safchan);
             }
         }
         else {
