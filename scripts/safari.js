@@ -1699,7 +1699,7 @@ function Safari() {
             seller,
             sellerId,
             shop = npcShop,
-            product = info.length > 1 && info[1] !== "" ? info[1] : "*";
+            product = info.length > 1 && info[1] !== "" ? info[1].toLowerCase() : "*";
             
         if (!fromNPC) {
             sellerId = sys.id(sellerName);
