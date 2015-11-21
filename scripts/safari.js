@@ -236,6 +236,22 @@ function Safari() {
         return ret;
     };
     pokeInfo.icon = function(p, shinyBG) {
+        //Unown Icon hack. Remove after client update
+        var pcheck = p%65536;
+        if (pcheck == 201) {
+            var pshift = Math.floor((p-201)/65536);
+            if (pshift == 5) {
+                //Exclamation override
+                p = 1704137;
+            } else if (pshift > 5 && pshift < 17) {
+                p += 65536;
+            } else if (pshift == 17) {
+                p = 1769673;
+            } else if (pshift > 17) {
+                p += (65536*2);
+            }
+        }
+        //End of unown hack
        return '<img src="icon:' + p + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
     };
     pokeInfo.sprite = function(poke) {
