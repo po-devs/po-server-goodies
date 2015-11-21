@@ -237,7 +237,24 @@ function Safari() {
         return ret;
     };
     pokeInfo.icon = function(p, shinyBG) {
-       return '<img src="icon:' + p + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
+        //Unown Icon hack. Remove after client update        
+        var p2 = p;
+        var pcheck = p2%65536;
+        if (pcheck == 201) {
+            var pshift = Math.floor((p-201)/65536);
+            if (pshift == 5) {
+                //Exclamation override
+                p2 = 1704137;
+            } else if (pshift > 5 && pshift < 17) {
+                p2 += 65536;
+            } else if (pshift == 17) {
+                p2 = 1769673;
+            } else if (pshift > 17) {
+                p2 += (65536*2);
+            }
+        }
+        //End of unown hack
+       return '<img src="icon:' + p + '" title="#' + pokeInfo.readableNum(p2) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
     };
     pokeInfo.sprite = function(poke) {
         var ret = [];
@@ -361,312 +378,67 @@ function Safari() {
     */
     var contestThemes = {
         "forest" : {
-            "name" : "Forest",
-            "types" : ["Grass", "Bug"],
-            "excludeTypes" : [],
-            "include" : [16, 17, 18, 25, 163, 164, 438, 185, 452, 65948, 131484, 65949, 131485, 649, 172, 287, 288, 289],
-            "exclude" : [],
-            "customBST" : {
-                "289" : 595,
-                "640" : 595
-            },
-            "minBST" : 300,
-            "maxBST" : 601,
-            "icon" : 10
+            "name":"Forest","types":["Grass","Bug"],"excludeTypes":[],"include":[16,17,18,25,163,164,438,185,452,65948,131484,65949,131485,172,287,288,289,26,251,65957,66122,66121,716],"exclude":[649,640,452,451,455,459,460,331,332,345,346,347,348,65948,131484,65949,131485,492,66028,556,557,558],"customBST":{"251":625,"289":600,"716":630},"minBST":300,"maxBST":631,"icon":716
         },
         "sea" : {
-            "name" : "Sea",
-            "types" : ["Water"],
-            "excludeTypes" : [],
-            "include" : [524954, 656026, 721562, 852634, 399, 489, 65958, 65959, 131423, 298, 712, 713, 686, 687, 691, 249, 382],
-            "exclude" : [721],
-            "customBST" : {
-                "245" : 625,
-                "249" : 630,
-                "382" : 630,
-                "489" : 590,
-                "490" : 620,
-                "647" : 625
-            },
-            "minBST" : 300,
-            "maxBST" : 631,
-            "icon" : 129
+            "name":"Sea","types":["Water"],"excludeTypes":[],"include":[524954,721562,65958,65959,298,712,713,686,687,691,249,131738,618,604,603,602,147,148,347,345,346,348],"exclude":[60,61,62,194,195,186,535,536,537,656,657,658,647,503,502,501,270,271,272,283,245,418,419,258,259,260,400,489,515,516,79,80,199],"customBST":{"249":640,"382":640,"490":630},"minBST":300,"maxBST":641,"icon":249
+        },
+        "lake" : {
+            "name":"Lake","types":["Water"],"excludeTypes":[],"include":[852634,656026,284,399,65958,65959,131423,480,481,482,298,161,162,193,469,16,17,18,396,397,398,267,269,12,15,666],"exclude":[7,8,9,91,138,139,140,141,72,73,86,87,120,121,158,159,160,320,321,318,319,224,222,223,226,339,340,341,342,363,364,365,366,368,367,369,370,458,456,457,489,490,564,565,592,593,594,550,721,688,689,690,692,693,647,170,171,230,117,116,98,99],"customBST":{"245":625,"480":620,"481":620,"482":620,"706":610},"minBST":300,"maxBST":621,"icon":245
         },
         "volcano" : {
-            "name" : "Volcano",
-            "types" : ["Fire", "Rock"],
-            "excludeTypes" : ["Water", "Ice"],
-            "include" : [1049242, 721, 208],
-            "exclude" : [],
-            "customBST" : {
-                "146" : 595,
-                "244" : 595,
-                "377" : 595
-            },
-            "minBST" : 315,
-            "maxBST" : 601,
-            "icon" : 218
+            "name":"Volcano","types":["Fire","Rock"],"excludeTypes":["Water","Ice"],"include":[1049242,721,208,661,383],"exclude":[377,639,719,703,494],"customBST":{"146":630,"244":630,"383":640,"485":635,"721":635},"minBST":315,"maxBST":641,"icon":383
         },
         "cave" : {
-            "name" : "Cave",
-            "types" : ["Rock", "Ground", "Dark"],
-            "excludeTypes" : ["Flying"],
-            "include" : [41, 42, 169, 92, 93, 202, 360, 486, 29, 30, 32, 33, 206],
-            "exclude" : [],
-            "customBST" : {
-                "377" : 595,
-                "486" : 600,
-                "639" : 595
-            },
-            "minBST" : 300,
-            "maxBST" : 601,
-            "icon" : 41
+            "name":"Cave","types":["Rock","Ground","Dark"],"excludeTypes":["Flying"],"include":[41,42,169,92,93,202,360,486,29,30,32,33,206,535,719,147,148,35,36,236,296,297,307,308,66,67],"exclude":[185,197,219,220,221,222,318,319,332,342,359,369,389,423,473,434,435,438,449,450,452,461,509,510,551,552,553,559,560,564,565,570,571,624,625,658,660,675,686,687,215,486,622,623],"customBST":{"248":610,"442":550,"445":610,"718":640,"719":620},"minBST":300,"maxBST":601,"icon":718
         },
         "sky" : {
-            "name" : "Sky",
-            "types" : ["Flying"],
-            "excludeTypes" : ["Bug"],
-            "include" : [329, 330, 635, 380, 381, 250, 621, 145],
-            "exclude" : [],
-            "customBST" : {
-                "144" : 615,
-                "145" : 615,
-                "146" : 615,
-                "250" : 620,
-                "380" : 620,
-                "381" : 620,
-                "641" : 615,
-                "642" : 615,
-                "645" : 615
-            },
-            "minBST" : 300,
-            "maxBST" : 621,
-            "icon" : 396
+            "name":"Sky","types":["Flying"],"excludeTypes":["Bug"],"include":[329,330,635],"exclude":[146,145,144,380,381],"customBST":{"250":630,"641":620,"642":620,"645":620,"717":630},"minBST":300,"maxBST":631,"icon":250
         },
         "urban" : {
-            "name" : "Urban",
-            "types" : ["Poison", "Dark", "Steel"],
-            "excludeTypes" : ["Grass", "Water", "Fairy"],
-            "include" : [52, 53, 209, 210, 300, 301, 479, 66015, 131551, 197087, 262623, 328159, 506, 507, 508, 19, 20, 582, 583, 584, 66217, 676, 66212, 131748, 197284, 262820, 328356, 393892, 459428, 524964, 590500, 358, 707],
-            "exclude" : [485],
-            "customBST" : {
-                "66015" : 590,
-                "131551" : 590,
-                "197087" : 590,
-                "262623" : 590,
-                "328159" : 590,
-                "66217" : 600,
-                "590500" : 580,
-                "524964" : 580,
-                "459428" : 580,
-                "393892" : 580,
-                "328356" : 580,
-                "262820" : 580,
-                "197284" : 580,
-                "131748" : 580,
-                "66212" : 580,
-                "379" : 595,
-                "638" : 595
-            },
-            "minBST" : 300,
-            "maxBST" : 601,
-            "icon" : 66015
+            "name":"Urban","types":["Poison","Dark","Steel"],"excludeTypes":["Grass","Water","Fairy"],"include":[52,53,209,210,300,301,479,66015,131551,197087,262623,328159,506,507,508,19,20,582,583,584,676,66212,131748,197284,262820,328356,393892,459428,524964,590500,358,707,25,66,67,68,64,63,65,56,57,648,494,720,143,204,425,426,446,447,616,532,534,533,131484,131485],"exclude":[],"customBST":{"66015":590,"131551":590,"197087":590,"262623":590,"328159":590,"590500":580,"524964":580,"459428":580,"393892":580,"328356":580,"262820":580,"197284":580,"131748":580,"66212":580,"648":625,"494":625,"720":625,"376":610},"minBST":300,"maxBST":626,"icon":66015
         },
         "tundra" : {
-            "name" : "Tundra",
-            "types" : ["Ice"],
-            "excludeTypes" : [],
-            "include" : [86, 90, 216, 217, 223, 234, 245, 393, 394, 395, 197193, 197194, 66202, 787098, 1114778],
-            "exclude" : [],
-            "customBST" : {
-                "144" : 595,
-                "378" : 595
-            },
-            "minBST" : 300,
-            "maxBST" : 601,
-            "icon" : 220
+            "name":"Tundra","types":["Ice"],"excludeTypes":[],"include":[86,90,216,217,234,393,394,395,197193,197194,66202,787098,1114778,65887],"exclude":[],"customBST":{"144":620,"378":620,"646":635},"minBST":300,"maxBST":636,"icon":646
         },
         "factory" : {
-            "name" : "Factory",
-            "types" : ["Steel", "Electric"],
-            "excludeTypes" : [],
-            "include" : [137, 233, 474],
-            "exclude" : [],
-            "customBST" : {
-                "145" : 615,
-                "243" : 615,
-                "638" : 615,
-                "642" : 615,
-                "644" : 620
-            },
-            "minBST" : 300,
-            "maxBST" : 621,
-            "icon" : 82
+            "name":"Factory","types":["Steel","Electric"],"excludeTypes":[],"include":[137,233,474],"exclude":[385,379,642,638,476,485,530,624,625,589,212],"customBST":{"145":620,"243":620,"376":610,"649":630},"minBST":300,"maxBST":631,"icon":145
         },
         "field" : {
-            "name" : "Field",
-            "types" : ["Normal", "Fairy"],
-            "excludeTypes" : [],
-            "include" : [262810, 66205, 131741, 197277, 262813, 66206, 131742, 197278, 262814, 328350, 66207, 131743, 197279, 262815, 672, 673, 77, 78, 522, 523],
-            "exclude" : [137, 233, 474],
-            "customBST" : {
-                "289" : 600
-            },
-            "minBST" : 300,
-            "maxBST" : 601,
-            "icon" : 162
+            "name":"Field","types":["Normal","Fairy"],"excludeTypes":[],"include":[262810,66205,131741,197277,262813,66206,131742,197278,262814,328350,66207,131743,197279,262815,672,673,77,78,522,523,492,152,153,154,328346,590490,182,189,188,187],"exclude":[],"customBST":{"289":600,"492":615,"648":615},"minBST":300,"maxBST":621,"icon":492
         },
         "dojo" : {
-            "name" : "Dojo",
-            "types" : ["Fighting"],
-            "excludeTypes" : [],
-            "include" : [291, 656, 657, 658, 390, 679, 680, 66217, 624, 625],
-            "exclude" : [],
-            "customBST" : {
-                "66217" : 590,
-                "638" : 595,
-                "639" : 595,
-                "640" : 595,
-                "647" : 595
-            },
-            "minBST" : 300,
-            "maxBST" : 601,
-            "icon" : 107
+            "name":"Dojo","types":["Fighting"],"excludeTypes":[],"include":[291,656,657,658,390,679,680,66217,624,625,681,143],"exclude":[],"customBST":{"66217":600,"647":600,"640":600,"639":600,"638":600},"minBST":300,"maxBST":606,"icon":107
         },
         "pyre" : {
-            "name" : "Mt. Pyre",
-            "types" : ["Ghost", "Psychic"],
-            "excludeTypes" : ["Steel", "Normal"],
-            "include" : [37, 38, 359, 491, 104, 105, 654, 228, 229, 198, 430],
-            "exclude" : [],
-            "customBST" : {
-                "151" : 620,
-                "251" : 620,
-                "380" : 620,
-                "381" : 620,
-                "386" : 620,
-                "487" : 620,
-                "488" : 620,
-                "491" : 620,
-                "494" : 620,
-                "720" : 620
-            },
-            "minBST" : 300,
-            "maxBST" : 621,
-            "icon" : 92
+            "name":"Mt. Pyre","types":["Ghost","Psychic"],"excludeTypes":["Normal","Steel","Fairy"],"include":[37,38,359,491,104,105,654,228,229,198,430,197,679,680],"exclude":[720,488,482,481,480,380,381,386,151,494,251,121],"customBST":{"487":640,"491":630},"minBST":300,"maxBST":641,"icon":487
         },
         "daycare" : {
-            "name" : "Daycare",
-            "types" : ["Normal", "Fire", "Water", "Grass", "Electric", "Rock", "Ground", "Bug", "Dark", "Psychic", "Steel", "Ghost", "Dragon", "Fighting", "Flying", "Fairy", "Ice", "Poison"],
-            "excludeTypes" : [],
-            "include" : [66205, 131741, 197277, 262813],
-            "exclude" : [17, 397, 292, 281, 188],
-            "customBST" : {},
-            "minBST" : 240,
-            "maxBST" : 350,
-            "icon" : 175
+            "name":"Daycare","types":["Normal","Fire","Water","Grass","Electric","Rock","Ground","Bug","Dark","Psychic","Steel","Ghost","Dragon","Fighting","Flying","Fairy","Ice","Poison"],"excludeTypes":[],"include":[66205,131741,197277,262813,65958,65948,131484],"exclude":[201,188,271,266,268,274,281,292,329],"customBST":{"58":320,"77":320,"111":320,"132":300,"138":320,"140":340,"215":340,"239":305,"240":305,"320":320,"345":340,"347":340,"366":320,"408":340,"410":340,"425":320,"427":320,"446":320,"489":340,"559":320,"564":340,"566":340,"619":320,"627":320,"629":320,"636":340,"682":320,"684":320,"696":340,"698":340},"minBST":240,"maxBST":341,"icon":132
         },
         "tower" : {
-            "name" : "Dragonspiral Tower",
-            "types" : ["Dragon"],
-            "excludeTypes" : [],
-            "include" : [4, 5, 6, 116, 117, 179, 180, 181, 252, 253, 254, 328, 333, 690, 643, 644, 622, 623],
-            "exclude" : [],
-            "customBST" : {
-                "380" : 620,
-                "381" : 620,
-                "643" : 620,
-                "644" : 620,
-                "718" : 620
-            },
-            "minBST" : 300,
-            "maxBST" : 621,
-            "icon" : 148
+            "name":"Dragonspiral Tower","types":["Dragon"],"excludeTypes":[],"include":[4,5,6,116,117,181,252,253,254,328,333,690,622,623],"exclude":[718,381,380],"customBST":{"643":630,"644":630},"minBST":300,"maxBST":631,"icon":644
         },
         "desert" : {
-            "name" : "Desert",
-            "types" : ["Rock", "Ground"],
-            "excludeTypes" : ["Water", "Ice"],
-            "include" : [918170, 331, 332, 556, 383, 262495, 455, 23, 24],
-            "exclude" : [],
-            "customBST" : {
-                "383" : 620,
-                "639" : 615,
-                "645" : 615,
-                "718" : 620,
-                "719" : 620
-            },
-            "minBST" : 300,
-            "maxBST" : 621,
-            "icon" : 450
+            "name":"Desert","types":["Rock","Ground"],"excludeTypes":["Water","Ice"],"include":[918170,331,332,556,262495,455,23,24,379,508,227,65949,65948,694,695],"exclude":[],"customBST":{"248":610,"377":620,"379":620},"minBST":300,"maxBST":621,"icon":332
         },
         "starter" : {
-            "name" : "Starter Pokémon",
-            "types" : [],
-            "excludeTypes" : [],
-            "include" : [1, 2, 3, 4, 5, 6, 7, 8, 9, 25, 133, 152, 153, 154, 155, 156, 157, 158, 159, 160, 252, 253, 254, 255, 256, 257, 258, 259, 260, 387, 388, 389, 390, 391, 392, 393, 394, 395, 495, 496, 497, 498, 499, 500, 501, 502, 503, 650, 651, 652, 653, 654, 655, 656, 657, 658],
-            "exclude" : [],
-            "customBST" : {
-                "25" : 420,
-                "133" : 480,
-                "196" : 535,
-                "197" : 535
-            },
-            "minBST" : 320,
-            "maxBST" : 550,
-            "icon" : 1
+            "name":"Starter Pokémon","types":[],"excludeTypes":[],"include":[1,2,3,4,5,6,7,8,9,25,133,152,153,154,155,156,157,158,159,160,252,253,254,255,256,257,258,259,260,387,388,389,390,391,392,393,394,395,495,496,497,498,499,500,501,502,503,650,651,652,653,654,655,656,657,658],"exclude":[],"customBST":{"25":420,"133":480,"196":535,"197":535},"minBST":320,"maxBST":550,"icon":25
         },
         "cerulean" : {
-            "name" : "Cerulean Cave",
-            "types" : [],
-            "excludeTypes" : [],
-            "include" : [24, 26, 28, 42, 44, 47, 49, 64, 70, 75, 82, 85, 97, 132, 129, 60, 118, 80, 117, 119, 40, 101, 105, 111, 112, 113, 150, 57, 67, 202, 55, 79, 54, 130, 74, 61, 53, 359, 296, 433, 436],
-            "exclude" : [],
-            "customBST" : {},
-            "minBST" : 300,
-            "maxBST" : 681,
-            "icon" : 150
+            "name":"Cerulean Cave","types":[],"excludeTypes":[],"include":[24,26,28,42,44,47,49,64,70,75,82,85,97,132,129,60,118,80,117,119,40,101,105,111,112,113,150,57,67,202,55,79,54,130,74,61,53,359,296,433,436,151],"exclude":[],"customBST":{"151":660},"minBST":300,"maxBST":681,"icon":150
         },
         "ruins" : {
-            "name" : "Ruins",
-            "types" : [],
-            "excludeTypes" : [],
-            "include" : [201, 65737, 131273, 196809, 262345, 327881, 393417, 458953, 524489, 590025, 655561, 721097, 786633, 852169, 917705, 983241, 1048777, 1114313, 1179849, 1245385, 1310921, 1376457, 1441993, 1507529, 1573065, 1638601, 1704137, 1769673, 202, 360, 353, 354, 355, 356, 235, 436, 437, 92, 93, 94, 524, 525, 526, 377, 378, 379, 343, 344, 177, 178, 679, 680, 442, 561, 562, 563, 138, 139, 140, 141, 142, 622, 623, 605, 606, 696, 299, 476, 200, 429, 359, 566, 567, 486, 345, 346],
-            "exclude" : [],
-            "customBST" : {
-                "377" : 660,
-                "378" : 660,
-                "379" : 660
-            },
-            "minBST" : 300,
-            "maxBST" : 671,
-            "icon" : 486
+            "name":"Ruins","types":[],"excludeTypes":[],"include":[201,65737,131273,196809,262345,327881,393417,458953,524489,590025,655561,721097,786633,852169,917705,983241,1048777,1114313,1179849,1245385,1310921,1376457,1441993,1507529,1573065,1638601,1704137,1769673,202,360,353,354,355,356,235,436,437,92,93,94,524,525,526,343,344,177,178,679,680,442,561,562,563,138,139,140,141,142,622,623,605,606,696,299,476,200,429,359,566,567,486,345,346,483,484,697,698,699,410,408,409,411,564,565],"exclude":[],"customBST":{"442":550,"483":670,"484":670,"486":670},"minBST":300,"maxBST":671,"icon":486
+        },
+        "space" : {
+            "name":"Space","types":[],"excludeTypes":[],"include":[386,385,374,375,376,345,346,35,36,120,121,173,577,578,579,202,605,606,436,437,337,338,343,344,360,622,623,132,359,351,131423,65887,262495,517,518,488,177,178,442,599,600,601,524,525,526,561,197,43,44,45,371,372,373,81,82,462,299,476,621,704,705,706,703],"exclude":[],"customBST":{"132":350,"373":610,"376":610,"385":640,"386":640,"488":640},"minBST":300,"maxBST":641,"icon":385
         },
         "mega": {
-            "name" : "Mega Pokémon",
-            "types" : [],
-            "excludeTypes" : [],
-            "include" : [1,2,3,4,5,6,7,8,9,13,14,15,16,17,18,63,64,65,79,80,92,93,94,95,115,123,127,129,130,142,150,179,180,181,199,208,212,214,228,229,246,247,248,252,253,254,255,256,257,258,259,260,280,281,282,302,303,304,305,306,307,308,309,310,318,319,322,323,333,334,353,354,359,361,362,371,372,373,374,375,376,380,381,384,427,428,443,444,445,447,448,459,460,475,531,719],
-            "exclude" : [],
-            "customBST" : {
-                "380" : 670,
-                "381" : 670,
-                "719" : 670
-            },
-            "minBST" : 320,
-            "maxBST" : 681,
-            "icon" : 384
+            "name":"Mega Pokémon","types":[],"excludeTypes":[],"include":[1,2,3,4,5,6,7,8,9,13,14,15,16,17,18,63,64,65,79,80,92,93,94,95,115,123,127,129,130,142,150,179,180,181,199,208,212,214,228,229,246,247,248,252,253,254,255,256,257,258,259,260,280,281,282,302,303,304,305,306,307,308,309,310,318,319,322,323,333,334,353,354,359,361,362,371,372,373,374,375,376,380,381,384,427,428,443,444,445,447,448,459,460,475,531],"exclude":[],"customBST":{"380":670,"381":670},"minBST":320,"maxBST":681,"icon":384
         }
     };
-    /*Vivillon Forms not in theme:
-        2- Archipelago
-        3- Continental
-        5- Garden
-        6- High Plains
-        7- Jungle
-        9- Modern
-        15- Savannah
-    */
+    
     var wildForms = {
         "201": 27,
         "412": 2,
@@ -897,17 +669,53 @@ function Safari() {
     function getBST(pokeNum) {
         return add(sys.pokeBaseStats(pokeNum));
     }
-    function itemAlias(name, returnGarbage) {
+    function itemAlias(name, returnGarbage, full) {
         name = name.toLowerCase();
         for (var e in itemData) {
             if (itemData[e].aliases.indexOf(name) !== -1) {
-                return itemData[e].name;
+                if (full) {
+                    return itemData[e].fullName;
+                } else {
+                    return itemData[e].name;
+                }
             }
         }
         if (returnGarbage) {
+            if (name === "wild") {
+                return "Wild Pokémon";
+            } else if (name === "horde") {
+                return "Horde of Wild Pokémon";
+            } else if (name === "nothing") {
+                return "No item";
+            } else if (name === "recharge") {
+                return "Recharge";
+            } else if (name === "permfinder") {
+                return itemData.itemfinder.fullName + " Bonus";
+            } else if (name === "valuables") {
+                return "Valuables";
+            }
             return name;
         } else {
             return "safari";
+        }
+    }
+    function finishName(name) {
+        return itemAlias(name, true, true);
+    }
+    function costumeAlias(name, returnGarbage, full) {
+        for (var e in costumeData) {
+            if (costumeData[e].aliases.indexOf(name) !== -1) {
+                if (full) {
+                    return costumeData[e].fullName;
+                } else {
+                    return costumeData[e].name;
+                }
+            }
+        }
+        if (returnGarbage || name === "none") {
+            return name;
+        } else {
+            return "error";
         }
     }
     function costumeSprite(id, android) {
@@ -926,40 +734,7 @@ function Safari() {
         }
         return 1;
     }
-    function costumeAlias(name, full, returnGarbage) {
-        for (var e in costumeData) {
-            if (costumeData[e].aliases.indexOf(name) !== -1) {
-                if (full) {
-                    return costumeData[e].fullName;
-                } else {
-                    return costumeData[e].name;
-                }
-            }
-        }
-        if (returnGarbage || name === "none") {
-            return name;
-        } else {
-            return "error";
-        }
-    }
 
-    //TO DO: Merge this into itemAlias like costumes maybe?
-    function finishName(item) {
-        if (item === "wild") {
-            return "Wild Pokémon";
-        } else if (item === "horde") {
-            return "Horde of Wild Pokémon";
-        } else if (item === "nothing") {
-            return "No item";
-        } else if (item === "recharge") {
-            return "Recharge";
-        } else if (item === "permfinder") {
-            return itemData.itemfinder.fullName + " Bonus";
-        } else if (item === "valuables") {
-            return "Valuables";
-        }
-        return itemData[item].fullName;
-    }
     function isBall(item) {
         return item in itemData && itemData[item].type === "ball";
     }
@@ -1317,7 +1092,8 @@ function Safari() {
             }
         }
         for (e in theme.types) {
-            if (hasType(pokeNum, theme.types[e])) {
+            //Legendary can only be manually added.
+            if (hasType(pokeNum, theme.types[e]) && legendaries.indexOf(pokeNum) === -1) {
                 return true;
             }
         }
@@ -1996,13 +1772,13 @@ function Safari() {
             safaribot.sendMessage(src, "[Closed] Out catching Pokémon at the Contest. Come back after the Contest!", safchan);
             return;
         }
-        var costume = costumeAlias(data, false, true);
+        var costume = costumeAlias(data, true);
         if (validItems.indexOf(costume) == -1) {
             safaribot.sendMessage(src, "We don't seem to sell \"" + costume +  "\" at this location.", safchan);
             return;
         }
 
-        var costumeName = costumeAlias(data, true);
+        var costumeName = costumeAlias(data, false, true);
         if (player.costumes[costume] >= 1) {
             safaribot.sendMessage(src, "You already own " + costumeName + "!", safchan);
             return;
@@ -3598,7 +3374,7 @@ function Safari() {
         }
         out += "</tr><tr>";
         if (costumed) {
-            out += "<td align=center>" + costumeAlias(player.costume, true) + "</td>";
+            out += "<td align=center>" + costumeAlias(player.costume, false, true) + "</td>";
         }
         for (var e in player.party) {
             var member = getPokemonInfo(player.party[e]);
@@ -3701,7 +3477,7 @@ function Safari() {
         for (var i = 0; i < allCostumes.length; i++) {
             costumeName = allCostumes[i];
             if (player.costumes[costumeName] > 0) {
-                out.push(costumeAlias(costumeName, true));
+                out.push(costumeAlias(costumeName, false, true));
             }
         }
         return "Owned Costumes: " + (out.length > 0 ? out.join(", ") : "None");
@@ -3713,9 +3489,9 @@ function Safari() {
             return;
         }
 
-        var cos = costumeAlias(data, false, true);
+        var cos = costumeAlias(data, true);
         var currentTime = now();
-        var costumeName = costumeAlias(data, true);
+        var costumeName = costumeAlias(data, false, true);
         if (cos !== "none") {
             if (allCostumes.indexOf(cos) === -1){
                 safaribot.sendMessage(src, cos + " is not a valid costume!", safchan);
@@ -4841,14 +4617,14 @@ function Safari() {
         };
 
         if (catStrings.indexOf(data) === -1) {
-            //Try to decode which item the uder is looking for
+            //Try to decode which item the user is looking for
             var lookup = itemAlias(data, true);
             if (allItems.indexOf(lookup) === -1) {
                 //If it's not an item, it's either a costume or invalid.
-                lookup = costumeAlias(data, false, true);
+                lookup = costumeAlias(data, true);
                 if (allCostumes.indexOf(lookup) !== -1) {
                     if (costumeHelp.hasOwnProperty(lookup)) {
-                        help = costumeAlias(lookup, true) + " Costume: " + costumeHelp[lookup];
+                        help = costumeAlias(lookup, false, true) + " Costume: " + costumeHelp[lookup];
                     }
                 }
             } else {
@@ -4907,7 +4683,7 @@ function Safari() {
                 dataArray = Object.keys(costumeHelp);
                 for (var e in dataArray) {
                     e = dataArray[e];
-                    out.push(costumeAlias(e, true) + " Costume: " + costumeHelp[e]);
+                    out.push(costumeAlias(e, false, true) + " Costume: " + costumeHelp[e]);
                 }
                 out.push("");
             }
@@ -5948,6 +5724,11 @@ function Safari() {
                 currentPokemon = null;
                 currentTheme = null;
                 wildEvent = false;
+                
+                //Clear throwers if the contest ends with a Wild Pokemon uncaught
+                preparationPhase = 0;
+                preparationThrows = {};
+                preparationFirst = null;
 
                 var player, winner, playerId, amt;
                 for (e in contestantsCount) {
