@@ -291,7 +291,7 @@ function Safari() {
         clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], sellable: false, buyable: false, tradable: true},
 
         //Other Items
-        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 129, successRate: 0.45, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
+        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 129, successRate: 0.4, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
         rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 189, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
         rare: {name: "rare", fullName: "Rare Candy", type: "usable", icon: 117, price: 0, aliases:["rare", "rarecandy", "rare candy", "candy"], sellable: false, buyable: true, tradable: true},
@@ -602,6 +602,9 @@ function Safari() {
         }
     }
     function addComma(num) {
+        if (typeof num !== "number") {
+            return num;
+        }
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
 
@@ -1481,6 +1484,10 @@ function Safari() {
             sellerId = sys.id(sellerName);
             if (sellerId) {
                 seller = getAvatar(sellerId);
+                if (!seller) {
+                    safaribot.sendMessage(src, "No such person! Use /" + command + " Name to see their shop!", safchan);
+                    return;
+                }
             } else {
                 safaribot.sendMessage(src, "No such person! Use /" + command + " Name to see their shop!", safchan);
                 return;
@@ -1703,7 +1710,7 @@ function Safari() {
                 }
             }
             var price = parseInt(info[2], 10);
-            if (isNaN(price) || price < 1) {
+            if (isNaN(price) || price < 1 || price > moneyCap) {
                 safaribot.sendMessage(src, "Please type a valid price!", safchan);
                 return true;
             }
@@ -1715,7 +1722,7 @@ function Safari() {
                 }
             }
 
-            safaribot.sendMessage(src, input.name + " has been " + (input.input in player.shop ? "re" : "") + "added to " + (editNPCShop ? "the NPC Shop" : "your") + " shop with the price of $" + price + " (Units Available: " + (limit == -1 ? "Unlimited" : limit) + ")!", safchan);
+            safaribot.sendMessage(src, input.name + " has been " + (input.input in player.shop ? "re" : "") + "added to " + (editNPCShop ? "the NPC Shop" : "your") + " shop with the price of $" + addComma(price) + " (Units Available: " + (limit == -1 ? "Unlimited" : limit) + ")!", safchan);
             if (editNPCShop) {
                 npcShop[input.input] = { price: price, limit: limit };
                 sys.writeToFile(shopFile, JSON.stringify(npcShop));
@@ -4432,8 +4439,8 @@ function Safari() {
     };
     this.sanitize = function(player) {
         if (player) {
-            var clean;
-            for (var i = 0; i < allItems.length; i++) {
+            var clean, i;
+            for (i = 0; i < allItems.length; i++) {
                 clean = allItems[i];
                 if (typeof player.balls[clean] !== "number") {
                     player.balls[clean] = parseInt(player.balls[clean], 10);
@@ -4481,7 +4488,7 @@ function Safari() {
             if (player.shop === undefined) {
                 player.shop = {};
             }
-            for (var i = 0; i < allCostumes.length; i++) {
+            for (i = 0; i < allCostumes.length; i++) {
                 clean = allCostumes[i];
                 if (typeof player.costumes[clean] !== "number") {
                     player.costumes[clean] = 0;
@@ -4498,10 +4505,15 @@ function Safari() {
                 player.records = {};
             }
             var rec;
-            for (var j = 0; j < allRecords.length; j++) {
-                rec = allRecords[j];
+            for (i = 0; i < allRecords.length; i++) {
+                rec = allRecords[i];
                 if (player.records[rec] === undefined || isNaN(player.records[rec]) || player.records[rec] < 0 || typeof player.records[rec] !== "number") {
                     player.records[rec] = 0;
+                }
+            }
+            for (i in player.shop) {
+                if (!player.shop[i].price) {
+                    delete player.shop[i];
                 }
             }
             if (!("megaTimers" in player)) {
@@ -5786,7 +5798,7 @@ function Safari() {
                     player = getAvatarOff(e);
                     if (contestantsCount[e] > 0 && player) {
                         playerId = sys.id(e);
-                        amt = Math.max(Math.floor(Math.min(contestantsCount[e] / pokemonSpawned, 1) * 3.5), 1);
+                        amt = Math.max(Math.floor(Math.min(contestantsCount[e] / pokemonSpawned, 1) * 3.25), 1);
                         player.balls.bait += amt;
                         safari.saveGame(player);
                         if (playerId) {
@@ -5824,7 +5836,7 @@ function Safari() {
                 rawPlayers.save();
             } else {
                 if (!currentPokemon && Math.random() < 0.084793) {
-                    var amt = Math.random() < 0.06219 ? 3 : 1;
+                    var amt = Math.random() < 0.05919 ? 3 : 1;
                     safari.createWild(null, null, amt);
                 }
             }
