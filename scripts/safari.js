@@ -216,6 +216,7 @@ function Safari() {
             "Dark": 2
         }
     };
+    var immuneMultiplier = 0.15;
     /* Poke Info Functions */
     var pokeInfo = {};
     pokeInfo.species = function(poke) {
@@ -1297,22 +1298,37 @@ function Safari() {
     };
     this.checkEffective = function(atk1, atk2, def1, def2) {
         var result = 1;
+        var immuneCount = 0;
+        var typeCount = 1;
+        
+        var countImmune = function(value) {
+            if (value === 0) {
+                immuneCount++;
+                return immuneMultiplier;
+            }
+            return value;
+        };
+        
         var attacker = effectiveness[atk1];
         if (def1 in attacker) {
-            result *= attacker[def1];
+            result *= countImmune(attacker[def1]);
         }
         if (def2 in attacker) {
-            result *= attacker[def2];
+            result *= countImmune(attacker[def2]);
         }
 
         if (atk2 !== "???") {
+            typeCount++;
             attacker = effectiveness[atk2];
             if (def1 in attacker) {
-                result *= attacker[def1];
+                result *= countImmune(attacker[def1]);
             }
             if (def2 in attacker) {
-                result *= attacker[def2];
+                result *= countImmune(attacker[def2]);
             }
+        }
+        if (immuneCount >= typeCount) {
+            return 0;
         }
 
         return result;
