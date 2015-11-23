@@ -738,6 +738,18 @@ function Safari() {
         }
         return 1;
     }
+    function themeName(obj) {
+        if (Array.isArray(obj)) {
+            return readable(obj.map(function(x){
+                if (x === "none") {
+                    return "Default";
+                } else {
+                    return contestThemes[x].name;
+                }
+            }), "or");
+        }
+        return contestThemes[obj].name;
+    }
 
     function isBall(item) {
         return item in itemData && itemData[item].type === "ball";
@@ -926,6 +938,9 @@ function Safari() {
         } else if (commandData.toLowerCase() in contestThemes) {
             currentTheme = commandData.toLowerCase();
         } else if (nextTheme) {
+            if (Array.isArray(nextTheme)) {
+                nextTheme = nextTheme[sys.rand(0, nextTheme.length)];
+            }
             currentTheme = nextTheme == "none" ? null : nextTheme;
             nextTheme = null;
         } else {
@@ -5082,7 +5097,7 @@ function Safari() {
                 var sec = contestCooldown%60;
                 safaribot.sendMessage(src, "Time until next Contest: " + min + " minutes, " + sec + " seconds.", safchan);
                 if (nextTheme) {
-                    safaribot.sendMessage(src, "Next Contest's theme: " + (nextTheme !== "none" ? contestThemes[nextTheme].name : "Default") + ".", safchan);
+                    safaribot.sendMessage(src, "Next Contest's theme: " + (nextTheme !== "none" ? themeName(nextTheme) : "Default") + ".", safchan);
                 }
             }
             safaribot.sendMessage(src, "Current Gachapon Jackpot: " + Math.floor(gachaJackpot/10) + " Tickets.", safchan);
@@ -5704,14 +5719,27 @@ function Safari() {
             }
         }
         if (contestCooldown === 180) {
-            var themeList = Object.keys(contestThemes);
-            nextTheme = Math.random() < 0.4 ? "none" : themeList[sys.rand(0, themeList.length)];
+            var themeList = {}, themeCount = 0;
+            for (var i in contestThemes) {
+                themeList[i] = 1;
+                themeCount++;
+            }
+            themeList.none = Math.round(themeCount * 0.66667);
+            nextTheme = [];
+            while (nextTheme.length < 3) {
+                var draw = randomSample(themeList);
+                if (nextTheme.indexOf(draw) === -1) {
+                    nextTheme.push(draw);
+                }
+            }
+            
+            // nextTheme = Math.random() < 0.4 ? "none" : themeList[sys.rand(0, themeList.length)];
             sys.sendAll("*** ************************************************************ ***", safchan);
-            safaribot.sendAll("A new " + (nextTheme !== "none" ? contestThemes[nextTheme].name + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all Poké Balls you need!", safchan);
+            safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all Poké Balls you need!", safchan);
             sys.sendAll("*** ************************************************************ ***", safchan);
 
             sys.sendAll("*** ************************************************************ ***", 0);
-            safaribot.sendAll("A new " + (nextTheme !== "none" ? contestThemes[nextTheme].name + "-themed" : "") + " Safari contest will start in 3 minutes at #" + defaultChannel + "! Prepare your active Pokémon and all Poké Balls you need!", 0);
+            safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes at #" + defaultChannel + "! Prepare your active Pokémon and all Poké Balls you need!", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
             safari.flashPlayers();
         }
