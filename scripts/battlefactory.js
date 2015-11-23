@@ -206,20 +206,6 @@ function dumpData(tar, teamLo, teamHi) {
     }
 }
 
-// An in-place shuffle of the array
-// https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm
-// Mutates and returns array
-// Originally there was a very biased/non-random sort here using Array.sort
-function shuffle(array) {
-    for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * i);
-        var temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
-    return array;
-}
-
 // converts an alphanumeric set code to an object with the Pokemon's data
 function pokeCodeToPokemon(pokeCode) {
     return {
@@ -1477,7 +1463,7 @@ function generateTeam(src, teamLo, teamHi, tier) {
             sys.changePokeNature(src, teamLo, s, pokeData.natureId, teamHi);
             sys.changePokeAbility(src, teamLo, s, pokeData.abilityId, teamHi);
             sys.changePokeItem(src, teamLo, s, pokeData.itemId, teamHi);
-            var shuffledMoves = shuffle(pokeData.moveIds);
+            var shuffledMoves = pokeData.moveIds.shuffle();
             for (var m = 0; m < 4; m++) {
                 sys.changePokeMove(src, teamLo, s, m, shuffledMoves[m], teamHi);
             }
