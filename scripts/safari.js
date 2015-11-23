@@ -299,6 +299,7 @@ function Safari() {
         mega: {name: "mega", fullName: "Mega Stone", type: "usable", icon: 2001, price: 0, aliases:["mega", "mega stone", "megastone"], duration: 3, sellable: false, buyable: true, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
         itemfinder: {name: "itemfinder", fullName: "Itemfinder", type: "usable", icon: 69, price: 0, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], sellable: false, buyable: false, tradable: false},
+        salt: {name: "salt", fullName: "Salt", type: "usable", icon: 127, price: 0, aliases: ["salt"], sellable: false, buyable: false, tradable: false},
 
         //Consumables (for useItem)
         gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 0, cooldown: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], sellable: false, buyable: false, tradable: true},
@@ -478,7 +479,8 @@ function Safari() {
         consecutiveLogins: { desc: "by longest streak of consecutive days login", alts: ["login", "logins"], alias: "login" },
         pokesCloned: { desc: "by successful clones", alts: ["clone", "clones", "cloned", "clone ball"], alias: "cloned" },
         gachasUsed: { desc: "by tickets used for Gachapon", alts: ["gacha"], alias: "gacha" },
-        itemsFound: { desc: "by items found with Itemfinder", alts: ["found", "itemsfound", "items found"], alias: "found" }
+        itemsFound: { desc: "by items found with Itemfinder", alts: ["found", "itemsfound", "items found"], alias: "found" },
+        salt: { desc: "by saltiest players", alts: ["salt", "salty"], alias: "salt" }
     };
     var lbAlias = [];
 
@@ -1200,7 +1202,7 @@ function Safari() {
             }
         }
         if (ball === "heavy" && wildStats >= 450) {
-            ballBonus = 1 + itemData[ball].bonusRate * (Math.floor((wildStats - 450) / 25) + 1);
+            ballBonus = 1 + itemData[ball].bonusRate * (Math.floor((wildStats - 450) / 50) + 1);
             if (ballBonus > itemData[ball].maxBonus) {
                 ballBonus = itemData[ball].maxBonus;
             }
@@ -3520,8 +3522,8 @@ function Safari() {
     };
     this.showBag = function(player, src) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
-        var line1 = ["box", "bait", "rock", "gacha", "stick", "itemfinder", "gem", "battery", "rare", "mega"];
-        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier"];
+        var line1 = ["box", "bait", "rock", "gacha", "itemfinder", "gem", "battery", "rare", "mega", "salt"];
+        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "stick"];
         var line3 = ["amulet", "soothe",  "scarf", "eviolite", "crown", "honey", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
 
         var out = "";
@@ -4264,7 +4266,8 @@ function Safari() {
                 nugget: 0,
                 bignugget: 0,
                 gem: 0,
-                box: 4
+                box: 4,
+                salt: 0
             },
             records: {
                 gachasUsed: 0,
@@ -4374,6 +4377,9 @@ function Safari() {
                     break;
                     case "money":
                         player.value = data.money;
+                    break;
+                    case "salt":
+                        player.value = data.balls.salt;
                     break;
                     default:
                         player.value = "records" in data ? (data.records[i] || 0 ): 0;
@@ -4644,7 +4650,8 @@ function Safari() {
             itemfinder: "Itemfinder: An experimental machine that can help find rare items! By default, it can only hold " + itemData.itemfinder.charges + " charges. These charges are reset every day.",
             gem: "An electrically charged gem created by a famous Ampharos in Olivine City. It is said to be able to recharge the Itemfinder, giving it " + itemData.gem.charges + " more uses for the day! (To use, type \"/use gem\"). Obtained from Gachapon.",
             box: "Increases number of Pokémon that can be owned by " + itemData.box.bonusRate + " each. Can only acquire by purchasing.",
-            stick: "Legendary Stick of the almighty Farfetch'd that provides a never ending wave of prods and pokes (every " + itemData.stick.cooldown/1000 + " seconds) unto your enemies and other nefarious evil-doers, with a simple use of the /stick command."
+            stick: "Legendary Stick of the almighty Farfetch'd that provides a never ending wave of prods and pokes (every " + itemData.stick.cooldown/1000 + " seconds) unto your enemies and other nefarious evil-doers, with a simple use of the /stick command.",
+            salt: "A pile of salt that makes the holder increasingly unlucky the more they have."
         };
         var perkHelp = {
             amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "%). Obtained from Gachapon.",
