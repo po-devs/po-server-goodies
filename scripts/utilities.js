@@ -1,16 +1,5 @@
 /* utilities.js */
 exports = {
-    arrayShuffle: function (array) {
-        var x, tempValue, randomIndex;
-        for (x = 0; x < array.length; x++) {
-            randomIndex = Math.floor(Math.random() * array.length);
-            tempValue = array[x];
-            array[x] = array[randomIndex];
-            array[randomIndex] = tempValue;
-        }
-        return array;
-    },
-    
     arraySlice: function (array, max) {
         var x, newArray = [], limit;
         if (max > array.length) {
