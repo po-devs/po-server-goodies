@@ -84,29 +84,19 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         querybot.sendMessage(src, "Players on version " + commandData + " are: " + output.join(", "), channel);
         return;
     }
-    if (command == "tier") {
-        if (tar === undefined){
+    if (command === "tiers") {
+        if (tar === undefined) {
             querybot.sendChanMessage(src,"No such user online.");
             return;
         }
-        var count = sys.teamCount(tar), tiers = [];
-        for (var i = 0; i < count; ++i) {
+        var i, count = sys.teamCount(tar), tiers = [];
+        for (i = 0; i < count; ++i) {
             var ctier = sys.tier(tar, i);
-            if (tiers.indexOf(ctier) == -1)
-            tiers.push(ctier);
+            if (tiers.indexOf(ctier) == -1) {
+                tiers.push(ctier);
+            }
         }
-        querybot.sendMessage(src,sys.name(tar)+" is in tier"+(tiers.length <= 1?"":"s")+": "+tiers.join(", "), channel);
-        return;
-    }
-    if (command == "perm") {
-        if (channel == staffchannel || channel === 0) {
-            channelbot.sendMessage(src, "you can't do that here.", channel);
-            return;
-        }
-
-        SESSION.channels(channel).perm = (commandData.toLowerCase() == 'on');
-        SESSION.global().channelManager.update(channel);
-        channelbot.sendAll("" + sys.name(src) + (SESSION.channels(channel).perm ? " made the channel permanent." : " made the channel a temporary channel again."), channel);
+        querybot.sendMessage(src,sys.name(tar) + " is in tier" + (tiers.length <= 1 ? "" : "s") + ": " + tiers.join(", "), channel);
         return;
     }
     if (command == "silence") {
@@ -480,7 +470,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 if (online) {
                     if (SESSION.users(tar).hostname != ip)
                         data[0] += " (" + SESSION.users(tar).hostname + ")";
-                    data.push("Idle for: " + getTimeString(parseInt(sys.time(), 10) - SESSION.users(tar).lastline.time));
+                    var realTime = SESSION.users(tar).lastline.time ? SESSION.users(tar).lastline.time : SESSION.users(tar).logintime;
+                    data.push("Idle for: " + getTimeString(parseInt(sys.time(), 10) - realTime));
                     data.push("Channels: " + channels.join(", "));
                     data.push("Names during current session: " + (online && SESSION.users(tar).namehistory ? SESSION.users(tar).namehistory.map(function(e){return e[0];}).join(", ") : name));
                     data.push("Client Type: " + utilities.capitalize(sys.os(tar)));
@@ -698,7 +689,6 @@ exports.help =
         "/sunmute: Removes secret mute from a user.",
         "/silence: Prevents authless users from talking in a channel for specified time. Format is /silence minutes channel. Affects current channel if no channel is given.",
         "/silenceoff: Removes silence from a channel. Affects current channel if none is specified.",
-        "/perm [on/off]: Make the current permanent channel or not (permanent channels remain listed when they have no users).",
         "/userinfo: Displays basic information about a user on a single line.",
         "/whois: Displays detailed information about a user.",
         "/aliases: Shows the aliases of an IP or name.",
@@ -719,7 +709,7 @@ exports.help =
         "/channelnamebans: Lists banned channel names.",
         "/onrange: To view who is on an IP range.",
         "/onos: Lists players on a certain operating system (May lag a little with certain OS)",
-        "/tier: To view the tier(s) of a user.",
+        "/tiers: To view the tier(s) of a user.",
         "/battlehistory: To view a user's battle history.",
         "/channelusers: Lists users on a channel."
     ];

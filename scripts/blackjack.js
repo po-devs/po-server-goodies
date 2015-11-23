@@ -94,11 +94,11 @@ function testCommand(src, commandLine, channel) {
         joinGame(src);
         return;
     }
-    if (command === "hit") {
+    if (command === "hit" || command === "h") {
         hit(src);
         return;
     }
-    if (command === "stand" || command === "stay") {
+    if (command === "stand" || command === "stay" || command === "s") {
         stand(src);
         return;
     }
@@ -117,8 +117,8 @@ function onHelp(src, commandData, channel) {
     if (commandData === "blackjack") {
         sys.sendMessage(src, "/start: Starts a blackjack game.", channel);
         sys.sendMessage(src, "/join: Join a game of blackjack.", channel);
-        sys.sendMessage(src, "/hit: Draw a card.", channel);
-        sys.sendMessage(src, "/stand: Stand at current total.", channel);
+        sys.sendMessage(src, "/hit: Draw a card. Can use /h for short.", channel);
+        sys.sendMessage(src, "/stand: Stand at current total. Can use /s for short.", channel);
         sys.sendMessage(src, "/check: Check what cards you have", channel);
         sys.sendMessage(src, "/end: Ends the current game.", channel);
     }

@@ -1,130 +1,126 @@
 {
-    "1-5-2015": {
-        "tier": "ORAS Balanced Hackmons",
-        "settings": {}
-    },
-    "2-5-2015": {
+    "31-10-2015": {
         "tier": "ORAS OU",
         "settings": {}
     },
-    "3-5-2015": {
-        "tier": "ORAS NU",
+    "1-11-2015": {
+        "tier": "Monotype",
         "settings": {}
     },
-    "4-5-2015": {
+    "2-11-2015": {
         "tier": "Challenge Cup",
         "settings": {}
     },
-    "5-5-2015": {
-        "tier": "ORAS LU",
-        "settings": {}
-    },
-    "6-5-2015": {
-        "tier": "HGSS OU",
-        "settings": {}
-    },
-    "7-5-2015": {
-        "tier": "Random Battle",
-        "settings": {}
-    },
-    "8-5-2015": {
+    "3-11-2015": {
         "tier": "ORAS LC",
         "settings": {}
     },
-    "9-5-2015": {
-        "tier": "ORAS OU",
-        "settings": {}
-    },
-    "10-5-2015": {
-        "tier": "Monotype",
-        "settings": {}
-    },
-    "11-5-2015": {
-        "tier": "Inverted Battle",
-        "settings": {}
-    },
-    "12-5-2015": {
-        "tier": "ORAS Ubers",
-        "settings": {}
-    },
-    "13-5-2015": {
-        "tier": "ORAS UU",
-        "settings": {}
-    },
-    "14-5-2015": {
-        "tier": "ADV OU",
-        "settings": {}
-    },
-    "15-5-2015": {
-        "tier": "Sky Battle",
-        "settings": {}
-    },
-    "16-5-2015": {
-        "tier": "Battle Factory 6v6",
-        "settings": {}
-    },
-    "17-5-2015": {
-        "tier": "ORAS Balanced Hackmons",
-        "settings": {}
-    },
-    "18-5-2015": {
-        "tier": "Inverted Challenge Cup",
-        "settings": {}
-    },
-    "19-5-2015": {
-        "tier": "ORAS Doubles",
-        "settings": {}
-    },
-    "20-5-2015": {
-        "tier": "RBY OU",
-        "settings": {}
-    },
-    "21-5-2015": {
-        "tier": "ORAS LC",
-        "settings": {}
-    },
-    "22-5-2015": {
-        "tier": "Monotype",
-        "settings": {}
-    },
-    "23-5-2015": {
-        "tier": "ORAS OU",
-        "settings": {}
-    },
-    "24-5-2015": {
+    "4-11-2015": {
         "tier": "ORAS NU",
         "settings": {}
     },
-    "25-5-2015": {
+    "5-11-2015": {
         "tier": "ORAS Ubers",
         "settings": {}
     },
-    "26-5-2015": {
-        "tier": "ORAS Balanced Hackmons",
+    "6-11-2015": {
+        "tier": "3v3 Singles",
         "settings": {}
     },
-    "27-5-2015": {
-        "tier": "Inverted Battle",
-        "settings": {}
-    },
-    "28-5-2015": {
-        "tier": "BW2 OU",
-        "settings": {}
-    },
-    "29-5-2015": {
-        "tier": "ORAS LU",
-        "settings": {}
-    },
-    "30-5-2015": {
+    "7-11-2015": {
         "tier": "ORAS OU",
         "settings": {}
     },
-    "31-5-2015": {
+    "8-11-2015": {
+        "tier": "ORAS LU",
+        "settings": {}
+    },
+    "9-11-2015": {
+        "tier": "Inverted Battle",
+        "settings": {}
+    },
+    "10-11-2015": {
+        "tier": "ORAS UU",
+        "settings": {}
+    },
+    "11-11-2015": {
+        "tier": "BW2 OU",
+        "settings": {}
+    },
+    "12-11-2015": {
         "tier": "Battle Factory 6v6",
         "settings": {}
     },
-    "30-4-2015": {
+    "13-11-2015": {
+        "tier": "ORAS Balanced Hackmons",
+        "settings": {}
+    },
+    "14-11-2015": {
+        "tier": "ORAS OU",
+        "settings": {}
+    },
+    "15-11-2015": {
+        "tier": "Monotype",
+        "settings": {}
+    },
+    "16-11-2015": {
+        "tier": "Inverted Challenge Cup",
+        "settings": {}
+    },
+    "17-11-2015": {
+        "tier": "HGSS OU",
+        "settings": {}
+    },
+    "18-11-2015": {
+        "tier": "ORAS NU",
+        "settings": {}
+    },
+    "19-11-2015": {
+        "tier": "ORAS Ubers",
+        "settings": {}
+    },
+    "20-11-2015": {
+        "tier": "ADV OU",
+        "settings": {}
+    },
+    "21-11-2015": {
+        "tier": "ORAS OU",
+        "settings": {}
+    },
+    "22-11-2015": {
+        "tier": "Inverted Battle",
+        "settings": {}
+    },
+    "23-11-2015": {
+        "tier": "ORAS LU",
+        "settings": {}
+    },
+    "24-11-2015": {
+        "tier": "RBY OU",
+        "settings": {}
+    },
+    "25-11-2015": {
+        "tier": "ORAS UU",
+        "settings": {}
+    },
+    "26-11-2015": {
         "tier": "Battle Factory 6v6",
+        "settings": {}
+    },
+    "27-11-2015": {
+        "tier": "ORAS LC",
+        "settings": {}
+    },
+    "28-11-2015": {
+        "tier": "ORAS OU",
+        "settings": {}
+    },
+    "29-11-2015": {
+        "tier": "Monotype",
+        "settings": {}
+    },
+    "30-11-2015": {
+        "tier": "Hackmons Challenge Cup",
         "settings": {}
     }
 }
