@@ -143,11 +143,7 @@ var pokedex = require('pokedex.js');
 Object.defineProperty(Array.prototype, "contains", {
     enumerable: false,
     value: function (value) {
-        if (this.indexOf(value) > -1) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.indexOf(value) > -1;
     }
 });
 Object.defineProperty(Array.prototype, "random", {
