@@ -294,7 +294,7 @@ function Safari() {
         //Other Items
         bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 129, successRate: 0.4, failCD: 15, successCD: 50, aliases:["bait"], sellable: false, buyable: true, tradable: false},
         rock: {name: "rock", fullName: "Rock", type: "usable", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks"], sellable: false, buyable: true, tradable: false},
-        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 189, cooldown: 6000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
+        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 189, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], sellable: false, buyable: true, tradable: false},
         rare: {name: "rare", fullName: "Rare Candy", type: "usable", icon: 117, price: 0, aliases:["rare", "rarecandy", "rare candy", "candy"], sellable: false, buyable: true, tradable: true},
         mega: {name: "mega", fullName: "Mega Stone", type: "usable", icon: 2001, price: 0, aliases:["mega", "mega stone", "megastone"], duration: 3, sellable: false, buyable: true, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
@@ -1501,6 +1501,10 @@ function Safari() {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
             return;
         }
+        if (!fromNPC && player.tradeban > now()) {
+            safaribot.sendMessage(src, "You are banned from buying from other players for " + utilities.getTimeString((player.tradeban - now())/1000) + "!", safchan);
+            return;
+        }
         if (!fromNPC && player.records.pokesCaught < 4) {
             safaribot.sendMessage(src, "You can only enter this shop after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
             return;
@@ -1669,6 +1673,10 @@ function Safari() {
         if (!editNPCShop) {
             if (!player) {
                 safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+                return;
+            }
+            if (player.tradeban > now()) {
+                safaribot.sendMessage(src, "You are banned from creating your own shop for " + utilities.getTimeString((player.tradeban - now())/1000) + "!", safchan);
                 return;
             }
             if (player.records.pokesCaught < 4) {
@@ -1928,6 +1936,10 @@ function Safari() {
         var player = getAvatar(src);
         if (!player) {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        if (player.tradeban > now()) {
+            safaribot.sendMessage(src, "You are banned from trading for " + utilities.getTimeString((player.tradeban - now())/1000) + "!", safchan);
             return;
         }
         if (player.records.pokesCaught < 4) {
@@ -4323,6 +4335,7 @@ function Safari() {
             lastLogin: getDay(now()),
             consecutiveLogins: 1,
             altlog: [sys.name(src).toLowerCase()],
+            tradeban: 0,
             cooldowns: {
                 ball: 0,
                 ballUse: 0,
@@ -4379,7 +4392,7 @@ function Safari() {
                         player.value = data.money;
                     break;
                     case "salt":
-                        player.value = data.balls.salt;
+                        player.value = data.balls.salt || 0;
                     break;
                     default:
                         player.value = "records" in data ? (data.records[i] || 0 ): 0;
@@ -4526,6 +4539,9 @@ function Safari() {
             }
             if (player.shop === undefined) {
                 player.shop = {};
+            }
+            if (player.tradeban === undefined) {
+                player.tradeban = 0;
             }
             for (i = 0; i < allCostumes.length; i++) {
                 clean = allCostumes[i];
@@ -5308,15 +5324,58 @@ function Safari() {
             return true;
         }
         if (command === "wipesafari") {
-            var playerId = sys.id(commandData);
-            if (!playerId) {
+            var name = commandData.toLowerCase();
+            var playerId = sys.id(name);
+            
+            var player = getAvatarOff(name);
+            if (player) {
+                if (playerId) {
+                    SESSION.users(playerId).safari = null;
+                }
+                rawPlayers.remove(name);
+                safaribot.sendAll(commandData + "'s safari has been reset!", safchan);
+            } else {
                 safaribot.sendMessage(src, "No such person!", safchan);
+            }
+            return true;
+        }
+        if (command === "loadsafari") {
+            var info;
+            try {
+                info = JSON.parse(commandData);
+            } catch (err) {
+                safaribot.sendMessage(src, "Invalid JSON!", safchan);
                 return;
             }
-            var player = getAvatar(playerId);
-            SESSION.users(playerId).safari = null;
-            rawPlayers.remove(sys.name(playerId).toLowerCase());
-            safaribot.sendAll(commandData + "'s safari has been reset!", safchan);
+            var name = info.id;
+            
+            safari.saveGame(info);
+            safaribot.sendMessage(src, "Created save with the name " + name + "!", safchan);
+            return true;
+        }
+        if (command === "tradeban") {
+            var info = commandData.split(":");
+            var name = info[0];
+            if (info.length < 2) {
+                safaribot.sendMessage(src, "Please set a duration!", safchan);
+                return true;
+            }
+            
+            var duration = utilities.getSeconds(info[1]);
+            var player = getAvatarOff(name);
+            if (!player) {
+                safaribot.sendMessage(src, "No such player!", safchan);
+                return true;
+            }
+            if (duration === 0) {
+                player.tradeban = 0;
+                safaribot.sendAll(name + " has been unbanned from trading and shopping!", safchan);
+            } else {
+                player.tradeban = now() + duration * 1000;
+                player.shop = {};
+                safari.saveGame(player);
+                safaribot.sendAll(name + " has been banned from trading and shopping for " + utilities.getTimeString(duration) + "!", safchan);
+            }
             return true;
         }
         if (command === "forgerecord") {
@@ -5741,21 +5800,9 @@ function Safari() {
             }
         }
         if (contestCooldown === 180) {
-            var themeList = {}, themeCount = 0;
-            for (var i in contestThemes) {
-                themeList[i] = 1;
-                themeCount++;
-            }
-            themeList.none = Math.round(themeCount * 0.66667);
-            nextTheme = [];
-            while (nextTheme.length < 3) {
-                var draw = randomSample(themeList);
-                if (nextTheme.indexOf(draw) === -1) {
-                    nextTheme.push(draw);
-                }
-            }
+            nextTheme = ["none"];
+            nextTheme = nextTheme.concat(shuffle(Object.keys(contestThemes)).slice(0, 3));
             
-            // nextTheme = Math.random() < 0.4 ? "none" : themeList[sys.rand(0, themeList.length)];
             sys.sendAll("*** ************************************************************ ***", safchan);
             safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all Poké Balls you need!", safchan);
             sys.sendAll("*** ************************************************************ ***", safchan);
