@@ -141,18 +141,21 @@ var pokedex = require('pokedex.js');
 
 // declare prototypes
 Object.defineProperty(Array.prototype, "contains", {
+    configurable: true,
     enumerable: false,
     value: function (value) {
         return this.indexOf(value) > -1;
     }
 });
 Object.defineProperty(Array.prototype, "random", {
+    configurable: true,
     enumerable: false,
     value: function () {
         return this[0, sys.rand(0, this.length)];
     }
 });
 Object.defineProperty(Array.prototype, "shuffle", {
+    configurable: true,
     enumerable: false,
     value: function () {
         for (var i = this.length - 1; i > 0; i--) {
