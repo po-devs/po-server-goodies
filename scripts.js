@@ -139,8 +139,36 @@ var tier_checker = require('tierchecks.js');
 delete require.cache['pokedex.js'];
 var pokedex = require('pokedex.js');
 
-/* stolen from here: http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format */
-String.prototype.format = function() {
+// declare prototypes
+Object.defineProperty(Array.prototype, "contains", {
+    enumerable: false,
+    value: function (value) {
+        if (this.indexOf(value) > -1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+});
+Object.defineProperty(Array.prototype, "random", {
+    enumerable: false,
+    value: function () {
+        return this[0, sys.rand(0, this.length)];
+    }
+});
+Object.defineProperty(Array.prototype, "shuffle", {
+    enumerable: false,
+    value: function () {
+        for (var i = this.length - 1; i > 0; i--) {
+            var j = Math.floor(Math.random() * (i + 1));
+            var temp = this[i];
+            this[i] = this[j];
+            this[j] = temp;
+        }
+        return this;
+    }
+});
+String.prototype.format = function () {
     var formatted = this;
     for (var i = 0; i < arguments.length; i++) {
         var regexp = new RegExp('\\{'+i+'\\}', 'gi');
@@ -148,12 +176,10 @@ String.prototype.format = function() {
     }
     return formatted;
 };
-
-String.prototype.toCorrectCase = function() {
+String.prototype.toCorrectCase = function () {
     if (isNaN(this) && sys.id(this) !== undefined) {
         return sys.name(sys.id(this));
-    }
-    else {
+    } else {
         return this;
     }
 };
