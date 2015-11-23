@@ -1708,7 +1708,7 @@ function Safari() {
             }
             var limit = info.length > 3 ? parseInt(info[3], 10) : -1;
             limit = isNaN(limit) ? -1 : limit;
-            if (limit === -1 && !editNPCShop) {
+            if (limit < 1 && !editNPCShop) {
                 limit = 1;
             }
             
