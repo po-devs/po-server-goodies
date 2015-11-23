@@ -2,16 +2,15 @@
 Battle Factory Program Script for Pokemon Online
 
 Original coding by Shadowfist 2012
-Maintenance by PO Scripters 2013
+Maintenance by PO Scripters 2015
 
 Requires bfteams.json to work.
 
 Files: bfteams.json
-Folders created: submissions, (messagebox may be used in the future, but not now)
 */
 
 // Coding style: semicolons mandatory
-/* jshint laxbreak: true */
+/* jshint laxbreak: true, sub: true */
 /* globals sendChanAll, bfbot, staffchannel, tier_checker, sendChanHtmlAll, sys, Config, SESSION, require, module */
 
 // Globals
@@ -51,7 +50,7 @@ function startBF() {
             if (response !== "") {
                 try {
                     var parsedSets = JSON.parse(response);
-                    var lintResults = setLint(parsedSets, false);
+                    var lintResults = setLint(parsedSets);
                     if (lintResults.errors.length > 0) {
                         throw "Bad File";
                     }
@@ -59,7 +58,7 @@ function startBF() {
                     defaultSets = parsedSets;
                     sendReviewersAll("Updated Battle Factory Teams!");
                 } catch (err) {
-                    sendStaff("FATAL ERROR: " + err);
+                    sendStaff(err);
                     throw "Battle Factory web file is corrupt!";
                 }
             } else {
@@ -109,7 +108,7 @@ function startBF() {
         } else {
             try {
                 var teamFile = JSON.parse(teamPack);
-                var lintResults = setLint(teamFile, false);
+                var lintResults = setLint(teamFile);
                 if (lintResults.errors.length > 0) {
                     throw "Bad File";
                 }
@@ -453,7 +452,7 @@ function seeQueueItem(index, tier) {
         sendReviewers("Nothing in the " + tier + " queue.", tier, false);
     } else {
         var tierQueue = userQueue[tier];
-        if (index >= tierQueue.length || index < 0 || typeof tierQueue[0] === "undefined") {
+        if (typeof tierQueue === "undefined" || index >= tierQueue.length || index < 0) {
             sendReviewers("Nothing in the " + tier + " queue" + (index === 0 ? "." : " at index " + index), tier, false);
         } else {
             cleanEntries();
@@ -478,7 +477,7 @@ function sendQueueItem(src, index, tier) {
         bfbot.sendMessage(src, "Nothing in the " + tier + " queue.", reviewChannel);
     } else {
         var tierQueue = userQueue[tier];
-        if (index >= tierQueue.length || index < 0) {
+        if (typeof tierQueue === "undefined" || index >= tierQueue.length || index < 0) {
             bfbot.sendMessage(src, "Nothing in the " + tier + " queue " + (index === 0 ? "." : " at index " + index), reviewChannel);
         } else {
             var submitInfo = tierQueue[0];
@@ -515,7 +514,7 @@ function factoryCommand(src, command, commandData, channel) {
             if (response !== "") {
                 try {
                     var parsedSets = JSON.parse(response);
-                    var lintResults = setLint(parsedSets, false);
+                    var lintResults = setLint(parsedSets);
                     printLintResults(src, lintResults, channel);
                     if (lintResults.errors.length > 0) {
                         throw "Bad File";
@@ -551,6 +550,7 @@ function factoryCommand(src, command, commandData, channel) {
             autoSave("teams", tier);
             refresh(tier);
             reviewers[tier] = [];
+            userQueue[tier] = [];
             sys.writeToFile(submitDir + "reviewers.json", JSON.stringify(reviewers));
             bfbot.sendMessage(src, "Added the tier " + tier + "!", channel);
         }
@@ -568,7 +568,7 @@ function factoryCommand(src, command, commandData, channel) {
                 if (response !== "") {
                     try {
                         var parsedSets = JSON.parse(response);
-                        var lintResults = setLint(parsedSets, false);
+                        var lintResults = setLint(parsedSets);
                         printLintResults(src, lintResults, channel);
                         if (lintResults.errors.length > 0) {
                             throw "Bad File";
@@ -608,7 +608,7 @@ function factoryCommand(src, command, commandData, channel) {
                 if (response !== "") {
                     try {
                         var parsedSets = JSON.parse(response);
-                        var lintResults = setLint(parsedSets, false);
+                        var lintResults = setLint(parsedSets);
                         printLintResults(src, lintResults, channel);
                         if (lintResults.errors.length > 0) {
                             throw "Bad File";
@@ -756,7 +756,7 @@ function factoryCommand(src, command, commandData, channel) {
                         throw "Web file not found: Invalid URL or web functions are not working.";
                     }
                     checkFile = JSON.parse(response);
-                    lintResults = setLint(checkFile, true);
+                    lintResults = setLint(checkFile);
                 } catch (error) {
                     lintResults = {
                         "errors": ["<td>Error: " + html_escape(error + "") + "</td>"],
@@ -777,7 +777,7 @@ function factoryCommand(src, command, commandData, channel) {
                     throw "Invalid File Path: The file '" + fileName + "' does not exist or could not be accessed";
                 }
                 checkFile = JSON.parse(content);
-                lintResults = setLint(checkFile, true);
+                lintResults = setLint(checkFile);
             } catch (error) {
                 lintResults = {
                     "errors": ["<td>Error: " + html_escape(error + "") + "</td>"],
@@ -1165,7 +1165,7 @@ function setLint(checkFile) {
                         throw "bad set";
                     }
                     parsedSet = pokeCodeToPokemon(set);
-                    if (parsedSet.poke === sys.pokemon(0)) {
+                    if (parsedSet.pokeId === 0) {
                         errors.push("<td>Missing Pokemon</td><td>Property '" + html_escape(property)
                             + "'; set " + set + ": Pokemon detected was Missingno.</td>");
                     }
@@ -1173,7 +1173,7 @@ function setLint(checkFile) {
                         errors.push("<td>Level Out of Range</td><td>Property '" + html_escape(property)
                             + "'; set " + set + ": level must be an integer between 1 and 100 inclusive.</td>");
                     }
-                    if (parsedSet.item === sys.item(0) && parsedSet.moves.indexOf("Acrobatics") < 0) {
+                    if (parsedSet.itemId === 0 && parsedSet.moves.indexOf("Acrobatics") < 0) {
                         warnings.push("<td>Missing Item</td><td>Property '" + html_escape(property)
                             + "'; set " + set + ": Set does not have an item.</td>");
                     }
@@ -1187,7 +1187,7 @@ function setLint(checkFile) {
                     }
                     var validMoves = 0;
                     for (var m = 0; m < 4; m++) {
-                        if (parsedSet.moves[m] === sys.move(0)) {
+                        if (parsedSet.moveIds[m] === 0) {
                             warnings.push("<td>Missing Move</td><td>Property '" + html_escape(property) + "'; set "
                                 + set + ": Moveslot " + (m + 1) + " is empty.</td>");
                         } else if (parsedSet.moveIds.lastIndexOf(parsedSet.moveIds[m]) !== m) {
@@ -1411,15 +1411,6 @@ function getPokePreview(src, teamLo, teamHi, poke) {
     return preview;
 }
 
-// Checks if the item is a Mega Stone
-// Accepts both numbers (item ids) and strings (item names)
-function isMegaStone(item) {
-    if (isNaN(item)) {
-        item = sys.itemNum(item);
-    }
-    return item > 2000 && item < 3000;
-}
-
 function setToPokemon(set) {
     if (typeof set === "object") {
         return pokeCodeToPokemon(set.set);
@@ -1427,12 +1418,73 @@ function setToPokemon(set) {
     return pokeCodeToPokemon(set);
 }
 
-function generateTeam(src, teamLo, teamHi, tier) {
-    var megaLimit = 1;
-    var megaCount = 0;
-    function megaFilter(set) {
-        return megaCount < megaLimit || !isMegaStone(set.itemId);
+function megaFilter(set) {
+    return this.megaCount < this.megaLimit || !isMegaStone(set.itemId);
+}
+
+// Checks if the item is a Mega Stone
+// Accepts both numbers (item ids) and strings (item names)
+function isMegaStone(item) {
+    if (isNaN(item)) {
+        item = sys.itemNum(item);
     }
+    return item > 2000 && item < 3000 && sys.item(item);
+}
+
+function isHazard(move) {
+    return ["Spikes", "Stealth Rock", "Sticky Web", "Toxic Spikes"].indexOf(move) > -1;
+}
+
+function isHazardRemoval(move) {
+    return move === "Defog" || move === "Rapid Spin";
+}
+
+function totalHazards(moveCounts) {
+    return ((moveCounts["Spikes"] || 0)
+        + (moveCounts["Stealth Rock"] || 0)
+        + (moveCounts["Sticky Web"] || 0)
+        + (moveCounts["Toxic Spikes"] || 0)
+    );
+}
+
+function hazardLimitFilter(set) {
+    var hazardsInSet = 0;
+    // check if any moves are duplicate hazards
+    for (var m = 0; m < 4; m++) {
+        if (isHazard(set.moves[m])) {
+            if (this.moveCounts[set.moves[m]] > 0) {
+                return false;
+            }
+            hazardsInSet += 1;
+        }
+    }
+    // check if adding this pokemon's moveset will surpass the hazardsLimit
+    if (hazardsInSet > this.maxHazards) {
+        return false;
+    }
+    return true;
+}
+
+function hazardControlOnlyFilter(set) {
+    return set.moves.some(isHazard) || set.moves.some(isHazardRemoval);
+}
+
+function noMoveLast(m1, m2) {
+    if (m1 === 0) return 1;
+    if (m2 === 0) return -1;
+    return 0;
+}
+
+function missingNoLast(p1, p2) {
+    if (p1.pokeId === 0) return 1;
+    if (p2.pokeId === 0) return -1;
+    return 0;
+}
+
+function generateTeam(src, teamLo, teamHi, tier) {
+    var megaLimit = 1, megaCount = 0;
+    var hazardsLimit = 2;
+    var moveCounts = {};
     try {
         var pack = bfSets.hasOwnProperty(tier) ? bfSets[tier] : bfSets.preset;
         var teamInfo = [];
@@ -1446,9 +1498,20 @@ function generateTeam(src, teamLo, teamHi, tier) {
         for (var p = 0; p < 6; p++) {
             var pokemonAdded = false;
             while (!pokemonAdded && pokeArray.length > 0) {
-                var poke = pokeArray.splice(sys.rand(0, pokeArray.length), 1);
+                var poke = pokeArray.splice(sys.rand(0, pokeArray.length), 1)[0];
                 var filteredSets = pack[poke].map(setToPokemon);
-                filteredSets = filteredSets.filter(megaFilter);
+                filteredSets = filteredSets.filter(megaFilter, {
+                    "megaCount": megaCount,
+                    "megaLimit": megaLimit
+                });
+                filteredSets = filteredSets.filter(hazardLimitFilter, {
+                    "maxHazards": hazardsLimit - totalHazards(moveCounts),
+                    "moveCounts": moveCounts
+                });
+                // make sure to add some sort of hazard control if none exists
+                if (p === 5 && totalHazards(moveCounts) === 0) {
+                    filteredSets = filteredSets.filter(hazardControlOnlyFilter);
+                }
                 if (filteredSets.length > 0) {
                     teamInfo[p] = filteredSets[sys.rand(0, filteredSets.length)];
                     pokemonAdded = true;
@@ -1457,18 +1520,23 @@ function generateTeam(src, teamLo, teamHi, tier) {
                 }
             }
             if (!pokemonAdded && badPokeArray.length > 0) {
-                var badPoke = badPokeArray.splice(sys.rand(0, badPokeArray.length), 1);
+                var badPoke = badPokeArray.splice(sys.rand(0, badPokeArray.length), 1)[0];
                 var badSet = pack[badPoke][sys.rand(0, pack[badPoke].length)];
                 teamInfo[p] = setToPokemon(badSet);
                 pokemonAdded = true;
             }
             if (!pokemonAdded) {
-                sendStaff("Team file was empty or corrupt, could not import.");
-                return;
-            } else if (isMegaStone(teamInfo[p].itemId)) {
+                throw "Team file was empty or corrupt";
+            }
+            if (isMegaStone(teamInfo[p].itemId)) {
                 megaCount += 1;
             }
+            for (var c = 0; c < 4; c++) {
+                moveCounts[teamInfo[p].moves[c]] = (moveCounts[teamInfo[p].moves[c]] || 0) + 1;
+            }
         }
+        // shuffle to avoid giving information via position dependent choices
+        shuffle(teamInfo).sort(missingNoLast);
         // Everything below copies the selected Pokemon to the user's team
         for (var s = 0; s < 6; s++) {
             var pokeData = teamInfo[s];
@@ -1477,7 +1545,7 @@ function generateTeam(src, teamLo, teamHi, tier) {
             sys.changePokeNature(src, teamLo, s, pokeData.natureId, teamHi);
             sys.changePokeAbility(src, teamLo, s, pokeData.abilityId, teamHi);
             sys.changePokeItem(src, teamLo, s, pokeData.itemId, teamHi);
-            var shuffledMoves = shuffle(pokeData.moveIds);
+            var shuffledMoves = shuffle(pokeData.moveIds.slice()).sort(noMoveLast);
             for (var m = 0; m < 4; m++) {
                 sys.changePokeMove(src, teamLo, s, m, shuffledMoves[m], teamHi);
             }
@@ -1493,9 +1561,10 @@ function generateTeam(src, teamLo, teamHi, tier) {
             }
             var ladderRating = 1000;
             if (typeof sys.ladderRating(src, "Battle Factory 6v6") !== "undefined") {
-                ladderRating = sys.ladderRating(src, "Battle Factory 6v6");
-            } else if (typeof sys.ladderRating(src, "Battle Factory") !== "undefined") {
-                ladderRating = sys.ladderRating(src, "Battle Factory");
+                ladderRating += Math.max(0, sys.ladderRating(src, "Battle Factory 6v6") - 1000);
+            }
+            if (typeof sys.ladderRating(src, "Battle Factory") !== "undefined") {
+                ladderRating += Math.max(0, sys.ladderRating(src, "Battle Factory") - 1000);
             }
             var shineChance = Math.ceil(8192 * 1000000 / Math.pow(ladderRating, 2));
             sys.changePokeShine(src, teamLo, s, sys.rand(0, shineChance) === 0, teamHi);
@@ -1515,9 +1584,9 @@ function generateTeam(src, teamLo, teamHi, tier) {
             }
         }
         sys.updatePlayer(src);
-    } catch (err) {
-        bfbot.sendMessage(src, "Could not generate a team. Please report this to the Battle Factory staff. [Error: " + err + "]");
-        throw "Corrupt Team File: " + err;
+    } catch (error) {
+        bfbot.sendMessage(src, "Could not generate a team. Please report this to the Battle Factory staff. [Error: " + error + "]");
+        throw "Corrupt Team File: " + error;
     }
 }
 
