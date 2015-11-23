@@ -136,11 +136,6 @@ function Mafia(mafiachan) {
         sendChanAll(mess, sachannel);
         return true;
     }
-    /* stolen from here: http://snippets.dzone.com/posts/show/849 */
-    function shuffle(o) {
-        for (var j, x, i = o.length; i; j = parseInt(Math.random() * i, 10), x = o[--i], o[i] = o[j], o[j] = x);
-        return o;
-    }
     /* stolen from here: http://stackoverflow.com/questions/1026069/capitalize-first-letter-of-string-in-javascript */
     function cap(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
@@ -2778,8 +2773,8 @@ function Mafia(mafiachan) {
                 ++i;
             }
             var srcArray = mafia.theme["roles" + i].slice(0, mafia.signups.length);
-            srcArray = shuffle(srcArray);
-            mafia.signups = shuffle(mafia.signups);
+            srcArray = srcArray.shuffle();
+            mafia.signups = mafia.signups.shuffle();
             
             var spawnPacks = mafia.theme.spawnPacks,
                 packs = {},
@@ -3523,7 +3518,7 @@ function Mafia(mafiachan) {
                                         if ("random" in Action.newRole && !Array.isArray(Action.newRole.random) && typeof Action.newRole.random === "object" && Action.newRole.random !== null) {
                                             newRole = randomSample(Action.newRole.random);
                                         } else {
-                                            var possibleRoles = shuffle(Object.keys(Action.newRole));
+                                            var possibleRoles = Object.keys(Action.newRole).shuffle();
                                             for (var nr in possibleRoles) {
                                                 if (Action.newRole[possibleRoles[nr]].indexOf(oldRole.role) != -1) {
                                                     newRole = possibleRoles[nr];
@@ -3565,7 +3560,7 @@ function Mafia(mafiachan) {
                                 } else {
                                     var oldRole = player.role, newRole = null;
                                     if (typeof Action.copyAs == "object") {
-                                        var possibleRoles = shuffle(Object.keys(Action.copyAs));
+                                        var possibleRoles = Object.keys(Action.copyAs).shuffle();
                                         for (var nr in possibleRoles) {
                                             if (Action.copyAs[possibleRoles[nr]].indexOf(target.role.role) != -1) {
                                                 newRole = possibleRoles[nr];
@@ -3609,7 +3604,7 @@ function Mafia(mafiachan) {
                                         if ("random" in Action.cursedRole && !Array.isArray(Action.cursedRole.random) && typeof Action.cursedRole.random === "object" && Action.cursedRole.random !== null) {
                                             cursedRole = randomSample(Action.cursedRole.random);
                                         } else {
-                                            var possibleRoles = shuffle(Object.keys(Action.cursedRole));
+                                            var possibleRoles = Object.keys(Action.cursedRole).shuffle();
                                             for (var nr in possibleRoles) {
                                                 if (Action.cursedRole[possibleRoles[nr]].indexOf(oldRole.role) != -1) {
                                                     cursedRole = possibleRoles[nr];
@@ -3726,7 +3721,7 @@ function Mafia(mafiachan) {
                                         target.disguiseRole = randomSample(Action.disguiseRole.random);
                                     } else {
                                         var foundDisguise = false;
-                                        var possibleRoles = shuffle(Object.keys(Action.disguiseRole));
+                                        var possibleRoles = Object.keys(Action.disguiseRole).shuffle();
                                         for (var nr in possibleRoles) {
                                             if (possibleRoles[nr] != "auto" && Action.disguiseRole[possibleRoles[nr]].indexOf(target.role.role) != -1) {
                                                 target.disguiseRole = possibleRoles[nr];
@@ -4120,7 +4115,7 @@ function Mafia(mafiachan) {
                             if (mafia.isInGame(target)) {
                                 target = mafia.players[target];
                                 
-                                var possibleRoles = shuffle(Object.keys(convertList));
+                                var possibleRoles = Object.keys(convertList).shuffle();
                                 for (var nr in possibleRoles) {
                                     if (convertList[possibleRoles[nr]].indexOf(target.role.role) != -1) {
                                         mafia.setPlayerRole(target, possibleRoles[nr]);
@@ -4983,7 +4978,7 @@ function Mafia(mafiachan) {
                         if ("random" in Action.newRole && !Array.isArray(Action.newRole.random) && typeof Action.newRole.random === "object" && Action.newRole.random !== null) {
                             newRole = randomSample(Action.newRole.random);
                         } else {
-                            var possibleRoles = shuffle(Object.keys(Action.newRole));
+                            var possibleRoles = Object.keys(Action.newRole).shuffle();
                             for (var nr in possibleRoles) {
                                 if (Action.newRole[possibleRoles[nr]].indexOf(oldRole.role) != -1) {
                                     newRole = possibleRoles[nr];
@@ -5021,7 +5016,7 @@ function Mafia(mafiachan) {
                     } else {
                         var oldRole = player.role, newRole = null;
                         if (typeof Action.copyAs == "object") {
-                            var possibleRoles = shuffle(Object.keys(Action.copyAs));
+                            var possibleRoles = Object.keys(Action.copyAs).shuffle();
                             for (var nr in possibleRoles) {
                                 if (Action.copyAs[possibleRoles[nr]].indexOf(target.role.role) != -1) {
                                     newRole = possibleRoles[nr];
