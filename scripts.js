@@ -151,7 +151,7 @@ Object.defineProperty(Array.prototype, "random", {
     configurable: true,
     enumerable: false,
     value: function () {
-        return this[0, sys.rand(0, this.length)];
+        return this[sys.rand(0, this.length)];
     }
 });
 Object.defineProperty(Array.prototype, "shuffle", {
