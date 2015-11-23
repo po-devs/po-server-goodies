@@ -1502,7 +1502,7 @@ function Safari() {
             return;
         }
         if (!fromNPC && player.tradeban > now()) {
-            safaribot.sendMessage(src, "You have been banned from buying from other players!", safchan);
+            safaribot.sendMessage(src, "You are banned from buying from other players for " + utilities.getTimeString((player.tradeban - now())/1000) + "!", safchan);
             return;
         }
         if (!fromNPC && player.records.pokesCaught < 4) {
@@ -1676,7 +1676,7 @@ function Safari() {
                 return;
             }
             if (player.tradeban > now()) {
-                safaribot.sendMessage(src, "You have been banned from creating your own shop!", safchan);
+                safaribot.sendMessage(src, "You are banned from creating your own shop for " + utilities.getTimeString((player.tradeban - now())/1000) + "!", safchan);
                 return;
             }
             if (player.records.pokesCaught < 4) {
@@ -1939,7 +1939,7 @@ function Safari() {
             return;
         }
         if (player.tradeban > now()) {
-            safaribot.sendMessage(src, "You have been banned from trading!", safchan);
+            safaribot.sendMessage(src, "You are banned from trading for " + utilities.getTimeString((player.tradeban - now())/1000) + "!", safchan);
             return;
         }
         if (player.records.pokesCaught < 4) {
@@ -5353,10 +5353,31 @@ function Safari() {
             safaribot.sendMessage(src, "Created save with the name " + name + "!", safchan);
             return true;
         }
-        /* if (command === "tradeban") {
-            safaribot.sendMessage(src, "This is not working yet!", safchan); //TODO
+        if (command === "tradeban") {
+            var info = commandData.split(":");
+            var name = info[0];
+            if (info.length < 2) {
+                safaribot.sendMessage(src, "Please set a duration!", safchan);
+                return true;
+            }
+            
+            var duration = utilities.getSeconds(info[1]);
+            var player = getAvatarOff(name);
+            if (!player) {
+                safaribot.sendMessage(src, "No such player!", safchan);
+                return true;
+            }
+            if (duration === 0) {
+                player.tradeban = 0;
+                safaribot.sendAll(name + " has been unbanned from trading and shopping!", safchan);
+            } else {
+                player.tradeban = now() + duration * 1000;
+                player.shop = {};
+                safari.saveGame(player);
+                safaribot.sendAll(name + " has been banned from trading and shopping for " + utilities.getTimeString(duration) + "!", safchan);
+            }
             return true;
-        } */
+        }
         if (command === "forgerecord") {
             var cmd = commandData.split(":");
             var target = cmd[0];
