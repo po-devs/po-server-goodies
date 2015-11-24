@@ -760,10 +760,6 @@ function Safari() {
     function isBall(item) {
         return item in itemData && itemData[item].type === "ball";
     }
-    function shuffle(o) {
-        for (var j, x, i = o.length; i; j = parseInt(Math.random() * i, 10), x = o[--i], o[i] = o[j], o[j] = x);
-        return o;
-    }
     function bagRow (player, arr, src, first) {
         var ret = [], item, item2;
         if (sys.os(src) === "android") {
@@ -4073,8 +4069,8 @@ function Safari() {
 
         this.viewers = [this.name1.toLowerCase(), this.name2.toLowerCase()];
 
-        this.team1 = shuffle(player1.party.concat());
-        this.team2 = shuffle(player2.party.concat());
+        this.team1 = player1.party.concat().shuffle();
+        this.team2 = player2.party.concat().shuffle();
         this.turn = -1;
         this.duration = Math.min(this.team1.length, this.team2.length);
 
@@ -5795,7 +5791,7 @@ function Safari() {
                         list.push(i);
                     }
                 }
-                var throwers = shuffle(list), alreadyThrow = [];
+                var throwers = list.shuffle(), alreadyThrow = [];
                 if (preparationFirst) {
                     if (throwers.indexOf(preparationFirst) !== -1) {
                         throwers.splice(throwers.indexOf(preparationFirst), 1);
@@ -5814,7 +5810,7 @@ function Safari() {
         }
         if (contestCooldown === 180) {
             nextTheme = ["none"];
-            nextTheme = nextTheme.concat(shuffle(Object.keys(contestThemes)).slice(0, 3));
+            nextTheme = nextTheme.concat(Object.keys(contestThemes).shuffle()).slice(0, 3);
             
             sys.sendAll("*** ************************************************************ ***", safchan);
             safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all Poké Balls you need!", safchan);
