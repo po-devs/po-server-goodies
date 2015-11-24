@@ -2,10 +2,10 @@
 /*jshint strict: false, shadow: true, evil: true, laxcomma: true*/
 /*jslint sloppy: true, vars: true, evil: true, plusplus: true*/
 exports.handleCommand = function (src, command, commandData, tar, channel) {
-    var arrayShuffle = require("utilities.js").arrayShuffle;
-    var arraySlice = require("utilities.js").arraySlice;
-    var getTimeString = require("utilities.js").getTimeString;
-    var find_tier = require("utilities.js").find_tier;
+    var arrayShuffle = require("utilities.js").arrayShuffle,
+        arraySlice = require("utilities.js").arraySlice,
+        getTimeString = require("utilities.js").getTimeString,
+        find_tier = require("utilities.js").find_tier;
     // loop indices
     var i, x;
     // temp array
@@ -1121,43 +1121,72 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (notice) {
             sys.sendHtmlMessage(src, notice, channel);
         } else {
-            sys.sendMessage(src, "There's no notice to show");
+            sys.sendMessage(src, "There's no notice to show.");
         }
+        return;
+    }
+    if (command === "smogon") {
+        if (commandData === undefined) {
+            normalbot.sendMessage(src, "Please enter a Pokémon.", channel);
+            return;
+        }
+        var x,
+            pokeName = commandData.toLowerCase(),
+            genNameArr = ["rb", "gs", "rs", "dp", "bw", "xy"],
+            genLimitArr = [151, 251, 386, 493, 649, 721],
+            linksArr = [];
+        if (sys.pokeNum(pokeName) === undefined) {
+            normalbot.sendMessage(src, "Unknown Pokémon.", channel);
+            return;
+        }
+        for (x = 0; x < genNameArr.length; x++) {
+            if (sys.pokeNum(pokeName) <= genLimitArr[x]) {
+                linksArr.push("<a href='http://www.smogon.com/dex/" + genNameArr[x] + "/pokemon/" + pokeName + "/'>" + genNameArr[x] + "</a>");
+            }
+        }
+        sys.sendHtmlMessage(src, "<font color='#318739'><timestamp/><b>±Dratini: </b></font>" + sys.pokemon(sys.pokeNum(pokeName)) + "'s Smogon pages: " + linksArr.join(" | "));
         return;
     }
     return "no command";
 };
 
 exports.help = [
+    "*** Server ***",
     "/rules [x]: Shows the rules (x is optionally parameter to show a specific rule).",
-    "/ranking: Shows your ranking in your current tier, or a specified tier.",
-    "/battlecount: Shows the ranking of another user. Format is /battlecount name:tier.",
-    "/myalts: Lists your alts.",
-    "/me [message]: Sends a message with *** before your name.",
-    "/rainbow [message]: Sends a message with your name rainbow-coloured.",
-    "/selfkick: Kicks all other accounts with your same IP.",
-    "/importable: Posts an importable of your team to the Pokemon Online website. Can be used with a number to specify the team to use.",
-    "/dwreleased [Pokémon]: Shows the released status of a Pokémon's Dream World Ability.",
-    "/wiki [Pokémon]: Shows that Pokémon's wiki page.",
-    "/pokemon [Pokémon]: Displays basic information for that Pokémon. Pokédex number can also be used.",
-    "/tier [Pokémon]: Displays the tiers a pokémon is allowed in.",
-    "/move [move]: Displays basic information for that move.",
-    "/ability [ability]: Displays basic information for that ability.",
-    "/item [item]: Displays basic information for that item.",
-    "/nature [nature]: Shows the effects of a nature. Leave blank to show all natures.",
-    "/canlearn: Shows if a Pokémon can learn a certain move. Format is /canlearn [Pokémon]:[move].",
-    "/resetpass: Clears your password (unregisters you, remember to reregister).",
     "/auth [owners/admins/mods]: Lists auth of given level, shows all auth if left blank.",
     "/contributors: Lists contributors to Pokémon Online.",
+    "/intier [tier]: Displays all unidled players in a specific tier.",
     "/league: Lists gym leaders and elite four of the PO league.",
-    "/uptime: Shows time since the server was last offline.",
+    "/notice: Allows you to view current events.",
     "/players: Shows the number of players online. Can accept an operating system as argument to see how many users are using it.",
     "/topchannels: To view the most populated channels.",
-    "/idle [on/off]: Makes you idle, which automatically reject all challenges, or not.",
-    "/sameTier [on/off]: Turn on/off auto-rejection of challenges from players in a different tier from you.",
-    "/cjoin [channel]: Makes you join an existing channel, or create a new one if it doesn't exist.",
-    "/seen [name]: Allows you to see the last login of a user.",
+    "/uptime: Shows time since the server was last offline.",
+    "*** Pokémon Info ***",
+    "/ability [ability]: Displays basic information for that ability.",
+    "/canlearn: Shows if a Pokémon can learn a certain move. Format is /canlearn [Pokémon]:[move].",
+    "/dwreleased [Pokémon]: Shows the released status of a Pokémon's Dream World Ability.",
+    "/item [item]: Displays basic information for that item.",
+    "/move [move]: Displays basic information for that move.",
+    "/nature [nature]: Shows the effects of a nature. Leave blank to show all natures.",
+    "/pokemon [Pokémon]: Displays basic information for that Pokémon. Pokédex number can also be used.",
+    "/smogon [Pokémon]: Shows gen links to the Pokémon's Smogon page.",
+    "/tier [Pokémon]: Displays the tiers a pokémon is allowed in.",
+    "/wiki [Pokémon]: Shows that Pokémon's wiki page.",
+    "*** User Info ***",
+    "/battlecount: Shows the ranking of another user. Format is /battlecount name:tier.",
+    "/myalts: Lists your alts.",
+    "/ranking: Shows your ranking in your current tier, or a specified tier.",
+    "*** Message ***",
+    "/me [message]: Sends a message with *** before your name.",
+    "/rainbow [message]: Sends a message with your name rainbow-coloured.",
+    "*** Options ***",
     "/changetier: Allows you to switch tier. Format is /changetier [tier]:[team]. Team is a number between 0-5 indicating loaded teams. Default is 0.",
+    "/cjoin [channel]: Makes you join an existing channel, or create a new one if it doesn't exist.",
+    "/idle [on/off]: Makes you idle, which automatically reject all challenges, or not.",
+    "/importable: Posts an importable of your team to the Pokemon Online website. Can be used with a number to specify the team to use.",
     "/invitespec [name]: Allows you to invite someone to watch your battle.",
-    "/notice: Allows you to view current events"
+    "/resetpass: Clears your password (unregisters you, remember to reregister).",
+    "/sameTier [on/off]: Turn on/off auto-rejection of challenges from players in a different tier from you.",
+    "/seen [name]: Allows you to see the last login of a user.",
+    "/selfkick: Kicks all other accounts with your same IP."
 ];
