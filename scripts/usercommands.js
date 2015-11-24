@@ -599,42 +599,6 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         SESSION.users(src).coins++;
         return;
     }
-    if (command === "throw") {
-        if (script.isOfficialChan(channel)) {
-            coinbot.sendMessage(src, "Throw isn't allowed in official channels.", channel);
-            return;
-        }
-        if (sys.auth(src) === 0 && SESSION.channels(channel).muteall && !SESSION.channels(channel).isChannelOperator(src)) {
-            if (SESSION.channels(channel).muteallmessages) {
-                sys.sendMessage(src, SESSION.channels(channel).muteallmessage, channel);
-            } else {
-                coinbot.sendMessage(src, "Respect the minutes of silence!", channel);
-            }
-            return;
-        }
-        if (!isNonNegative(SESSION.users(src).coins) || SESSION.users(src).coins < 1) {
-            coinbot.sendMessage(src, "Need more coins? Use /flip!", channel);
-            return;
-        }
-        if (tar === undefined) {
-            if (!isNonNegative(SESSION.global().coins)) {
-                SESSION.global().coins = 0;
-            }
-            coinbot.sendAll(sys.name(src) + " threw " + SESSION.users(src).coins + " coin(s) at the wall!", channel);
-            SESSION.global().coins += SESSION.users(src).coins;
-        } else if (tar === src) {
-            coinbot.sendMessage(src, "No way...", channel);
-            return;
-        } else {
-            coinbot.sendAll(sys.name(src) + " threw " + SESSION.users(src).coins + " coin(s) at " + sys.name(tar) + "!", channel);
-            if (!isNonNegative(SESSION.users(tar).coins)) {
-                SESSION.users(tar).coins = 0;
-            }
-            SESSION.users(tar).coins += SESSION.users(src).coins;
-        }
-        SESSION.users(src).coins = 0;
-        return;
-    }
     if (command === "casino") {
         var bet = parseInt(commandData, 10), res = Math.random();
         if (isNaN(bet)) {
