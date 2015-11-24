@@ -1769,7 +1769,7 @@ beforeChatMessage: function(src, message, chan) {
         var tar = sys.id(commandData);
 
         // Module commands at the last point.
-        if (callplugins("handleCommand", src, message.substr(1), tar, channel)) {
+        if (callplugins("handleCommand", src, message.substr(1), channel)) {
             return;
         }
         commands.handleCommand(src, command, commandData, tar, chan);
