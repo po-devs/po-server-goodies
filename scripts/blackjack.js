@@ -1,5 +1,5 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global print, sys, Config, cleanFile, require, module, coinbot, SESSION, isNonNegative, script*/
+/*global print, sys, Config, cleanFile, require, module, coinbot, SESSION, isNonNegative*/
 /*TODO: Add split (Top priority)
         Limit /end
         Add currency maybe?
@@ -55,13 +55,13 @@ function init() {
     }
 }
 
-function handleCommand(src, commandLine, tar, channel) {
+function handleCommand(src, commandLine, channel) {
     if (channel !== blackjackchan) {
         return false;
     }
     var returnVal = false;
     try {
-        testCommand(src, commandLine, tar, channel);
+        testCommand(src, commandLine, channel);
         returnVal = true;
     }
     catch (e) {
@@ -76,7 +76,7 @@ function handleCommand(src, commandLine, tar, channel) {
     return returnVal;
 }
 
-function testCommand(src, commandLine, tar, channel) {
+function testCommand(src, commandLine, channel) {
     var index = commandLine.indexOf(' ');
     var command, commandData;
     if (index !== -1) {
@@ -119,10 +119,6 @@ function testCommand(src, commandLine, tar, channel) {
         return;
     }
     if (command === "throw") {
-        if (script.isOfficialChan(channel)) {
-            coinbot.sendMessage(src, "Throw isn't allowed in official channels.", channel);
-            return;
-        }
         if (sys.auth(src) === 0 && SESSION.channels(channel).muteall && !SESSION.channels(channel).isChannelOperator(src)) {
             if (SESSION.channels(channel).muteallmessages) {
                 sys.sendMessage(src, SESSION.channels(channel).muteallmessage, channel);
@@ -135,6 +131,7 @@ function testCommand(src, commandLine, tar, channel) {
             coinbot.sendMessage(src, "Need more coins? Use /flip!", channel);
             return;
         }
+        var tar = sys.id(commandData) || undefined;
         if (tar === undefined) {
             if (!isNonNegative(SESSION.global().coins)) {
                 SESSION.global().coins = 0;
