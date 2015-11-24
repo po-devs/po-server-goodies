@@ -4884,7 +4884,7 @@ function Safari() {
         if (channel !== safchan && [].indexOf(command) === -1) {
             return false;
         }
-        if (SESSION.channels(safchan).muteall && !SESSION.channels(safchan).isChannelOperator(src) && sys.auth(src) === 0) {
+        if (SESSION.channels(safchan).muteall && !SESSION.channels(safchan).isChannelOwner(src) && sys.auth(src) === 0) {
             safaribot.sendMessage(src, "You can't play Safari while the channel is silenced.", safchan);
             return true;
         }
