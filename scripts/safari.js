@@ -4844,7 +4844,8 @@ function Safari() {
             "/safarigift: Gifts a player with any amount of an item or ball. Use /safarigift [player/player names]:[item]:[amount]. You can send to multiple players at once if you separate each name with a comma and a space.",
             "/bestow: Gifts a player a specific Pokemon. Use /bestow [player]:[pokemon].",
             "/forgerecord: Alters a specific record of a player. Use /forgerecord [player]:[record]:[amount].",
-            "/sanitize: Removes invalid values from the target's inventory, such as NaN and undefined."
+            "/sanitize: Removes invalid values from the target's inventory, such as NaN and undefined. Use /sanitize [player]",
+            "/tradeban: Bans a player from trading or using their shop. Use /tradeban [player]:[length]."
         ];
         var ownerHelp = [
             "*** Safari Owner Commands ***",
