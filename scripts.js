@@ -1032,12 +1032,12 @@ beforeChannelJoin : function(src, channel) {
         return;
     }
     if (poChannel.inviteonly > sys.auth(src)) {
-        sys.sendMessage(src, "+Guard: Sorry, but this channel is for higher authority!");
+        sys.sendMessage(src, "±Guard: Sorry, but this channel is for higher authority!");
         sys.stopEvent();
         return;
     }
     if ((channel == staffchannel || channel == sachannel) && !this.canJoinStaffChannel(src)) {
-        sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
+        sys.sendMessage(src, "±Guard: Sorry, the access to that place is restricted!");
         sys.stopEvent();
         return;
     }
@@ -1051,14 +1051,14 @@ beforeChannelJoin : function(src, channel) {
                 normalbot.sendMessage(src, "Your ban from " + type[x] + " expired.");
             } else {
                 var info = poUser[bans[x]];
-                sys.sendMessage(src, "+Guard: You are banned from " + type[x] + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Ban expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''));
+                sys.sendMessage(src, "±Guard: You are banned from " + type[x] + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Ban expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''));
                 sys.stopEvent();
                 return;
             }
         }
     }
     if (channel == watchchannel && sys.auth(src) < 1) {
-        sys.sendMessage(src, "+Guard: Sorry, the access to that place is restricted!");
+        sys.sendMessage(src, "±Guard: Sorry, the access to that place is restricted!");
         sys.stopEvent();
         return;
     }
@@ -1307,7 +1307,7 @@ cookieBanned: function(src) {
         if (cookie.indexOf(" ") > 1) {
             name = cookie.substr(cookie.indexOf(" ")+1);
         }
-        kickbot.sendAll(sys.name(src) + " was banned by cookie" + (name ? " [Original Name: " + name + "]." : "."), staffchannel);
+        kickbot.sendAll(sys.name(src) + " was banned by cookie" + (name ? " [Original Name: " + name + "]." : "."), watchchannel);
         normalbot.sendMessage(src, "You are currently banned from the server. If you believe this to be an error, post here: http://pokemon-online.eu/forums/disciplinary-committee.43/");
         sys.kick(src);
         return true;
@@ -1317,7 +1317,7 @@ cookieBanned: function(src) {
             name = cookie.substr(cookie.indexOf(" ")+1);
         }
         SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "Cookie", true);
-        kickbot.sendAll(sys.name(src) + " was smuted by cookie" + (name ? " [Original Name: " + name + "]." : "."), staffchannel);
+        kickbot.sendAll(sys.name(src) + " was smuted by cookie" + (name ? " [Original Name: " + name + "]." : "."), watchchannel);
     }
     if (!sys.uniqueId(src)) {
         return;
@@ -1328,7 +1328,7 @@ cookieBanned: function(src) {
         idInfo = JSON.parse(idInfo);
         var name = idInfo.name;
         var type = idInfo.type;
-        kickbot.sendAll(sys.name(src) + " was " + (type == "banned" ? "banned" : "muted") + " by ID" + (name ? " [Original Name: " + name + "]." : "."), staffchannel);
+        kickbot.sendAll(sys.name(src) + " was " + (type == "banned" ? "banned" : "muted") + " by ID" + (name ? " [Original Name: " + name + "]." : "."), watchchannel);
         if (type == "muted") {
             SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "ID", true);
             return;
@@ -1747,24 +1747,6 @@ beforeChatMessage: function(src, message, chan) {
         return (caps > 7 && 2*name.length < 3*caps);
     });
 
-    // Commenting out since no Shanai
-
-    /*var shanaiForward = function(msg) {
-        var shanai = sys.id("Shanai");
-        if (shanai !== undefined) {
-            sys.sendMessage(shanai,"CHANMSG " + chan + " " + src + " :" + msg);
-        } else {
-            sys.sendMessage(src, "+ShanaiGhost: Shanai is offline, your command will not work. Ping nixeagle if he's online.", chan);
-        }
-        sys.stopEvent();
-    };
-
-    // Forward some commands to Shanai
-    if (['|', '\\'].indexOf(message[0]) > -1 && !usingBannedWords() && name != 'coyotte508') {
-        shanaiForward(message);
-        return;
-    }*/
-
     var command;
     if ((message[0] == '/' || message[0] == "!") && message.length > 1 && utilities.isLetter(message[1])) {
         if (parseInt(sys.time(), 10) - lastMemUpdate > 500) {
@@ -1787,7 +1769,7 @@ beforeChatMessage: function(src, message, chan) {
         var tar = sys.id(commandData);
 
         // Module commands at the last point.
-        if (callplugins("handleCommand", src, message.substr(1), channel)) {
+        if (callplugins("handleCommand", src, message.substr(1), tar, channel)) {
             return;
         }
         commands.handleCommand(src, command, commandData, tar, chan);

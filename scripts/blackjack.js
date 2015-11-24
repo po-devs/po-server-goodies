@@ -1,5 +1,5 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global print, sys, Config, cleanFile, require, module*/
+/*global print, sys, Config, cleanFile, require, module, coinbot, SESSION, isNonNegative, script*/
 /*TODO: Add split (Top priority)
         Limit /end
         Add currency maybe?
@@ -55,13 +55,13 @@ function init() {
     }
 }
 
-function handleCommand(src, commandLine, channel) {
+function handleCommand(src, commandLine, tar, channel) {
     if (channel !== blackjackchan) {
         return false;
     }
     var returnVal = false;
     try {
-        testCommand(src, commandLine, channel);
+        testCommand(src, commandLine, tar, channel);
         returnVal = true;
     }
     catch (e) {
@@ -76,7 +76,7 @@ function handleCommand(src, commandLine, channel) {
     return returnVal;
 }
 
-function testCommand(src, commandLine, channel) {
+function testCommand(src, commandLine, tar, channel) {
     var index = commandLine.indexOf(' ');
     var command, commandData;
     if (index !== -1) {
@@ -109,6 +109,100 @@ function testCommand(src, commandLine, channel) {
     if (command === "check") {
         checkCards(src);
         return;
+    }
+    if (command === "coin" || command === "flip") {
+        coinbot.sendMessage(src, "You flipped a coin. It's " + (Math.random() < 0.5 ? "Tails" : "Heads") + "!", channel);
+        if (!isNonNegative(SESSION.users(src).coins)) {
+            SESSION.users(src).coins = 0;
+        }
+        SESSION.users(src).coins++;
+        return;
+    }
+    if (command === "throw") {
+        if (script.isOfficialChan(channel)) {
+            coinbot.sendMessage(src, "Throw isn't allowed in official channels.", channel);
+            return;
+        }
+        if (sys.auth(src) === 0 && SESSION.channels(channel).muteall && !SESSION.channels(channel).isChannelOperator(src)) {
+            if (SESSION.channels(channel).muteallmessages) {
+                sys.sendMessage(src, SESSION.channels(channel).muteallmessage, channel);
+            } else {
+                coinbot.sendMessage(src, "Respect the minutes of silence!", channel);
+            }
+            return;
+        }
+        if (!isNonNegative(SESSION.users(src).coins) || SESSION.users(src).coins < 1) {
+            coinbot.sendMessage(src, "Need more coins? Use /flip!", channel);
+            return;
+        }
+        if (tar === undefined) {
+            if (!isNonNegative(SESSION.global().coins)) {
+                SESSION.global().coins = 0;
+            }
+            coinbot.sendAll(sys.name(src) + " threw " + SESSION.users(src).coins + " coin(s) at the wall!", channel);
+            SESSION.global().coins += SESSION.users(src).coins;
+        } else if (tar === src) {
+            coinbot.sendMessage(src, "No way...", channel);
+            return;
+        } else {
+            coinbot.sendAll(sys.name(src) + " threw " + SESSION.users(src).coins + " coin(s) at " + sys.name(tar) + "!", channel);
+            if (!isNonNegative(SESSION.users(tar).coins)) {
+                SESSION.users(tar).coins = 0;
+            }
+            SESSION.users(tar).coins += SESSION.users(src).coins;
+        }
+        SESSION.users(src).coins = 0;
+        return;
+    }
+    if (command === "casino") {
+        var bet = parseInt(commandData, 10), res = Math.random();
+        if (isNaN(bet)) {
+            coinbot.sendMessage(src, "Use it like /casino [coinamount]!", channel);
+            return;
+        }
+        if (bet < 5) {
+            coinbot.sendMessage(src, "Mininum bet 5 coins!", channel);
+            return;
+        }
+        if (bet > SESSION.users(src).coins) {
+            coinbot.sendMessage(src, "You don't have enough coins!", channel);
+            return;
+        }
+        coinbot.sendMessage(src, "You inserted the coins into the Fruit game!", channel);
+        SESSION.users(src).coins -= bet;
+        if (res < 0.8) {
+            coinbot.sendMessage(src, "Sucks! You lost " + bet + " coins!", channel);
+            return;
+        }
+        if (res < 0.88) {
+            coinbot.sendMessage(src, "You doubled the fun! You got " + 2 * bet + " coins!", channel);
+            SESSION.users(src).coins += 2 * bet;
+            return;
+        }
+        if (res < 0.93) {
+            coinbot.sendMessage(src, "Gratz! Tripled! You got " + 3 * bet + " coins ", channel);
+            SESSION.users(src).coins += 3 * bet;
+            return;
+        }
+        if (res < 0.964) {
+            coinbot.sendMessage(src, "Woah! " + 5 * bet + " coins GET!", channel);
+            SESSION.users(src).coins += 5 * bet;
+            return;
+        }
+        if (res < 0.989) {
+            coinbot.sendMessage(src, "NICE job! " + 10 * bet + " coins acquired!", channel);
+            SESSION.users(src).coins += 10 * bet;
+            return;
+        }
+        if (res < 0.999) {
+            coinbot.sendMessage(src, "AWESOME LUCK DUDE! " + 20 * bet + " coins are yours!", channel);
+            SESSION.users(src).coins += 20 * bet;
+            return;
+        } else {
+            coinbot.sendMessage(src, "YOU HAVE BEATEN THE CASINO! " + 50 * bet + " coins are yours!", channel);
+            SESSION.users(src).coins += 50 * bet;
+            return;
+        }
     }
     throw "Command doesn't exist";
 }
