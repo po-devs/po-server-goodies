@@ -299,7 +299,7 @@ function Safari() {
         mega: {name: "mega", fullName: "Mega Stone", type: "usable", icon: 2001, price: 0, aliases:["mega", "mega stone", "megastone"], duration: 3, sellable: false, buyable: true, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
         itemfinder: {name: "itemfinder", fullName: "Itemfinder", type: "usable", icon: 69, price: 0, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], sellable: false, buyable: false, tradable: false},
-        salt: {name: "salt", fullName: "Salt", type: "usable", icon: 127, price: 0, aliases: ["salt"], sellable: false, buyable: false, tradable: false},
+        salt: {name: "salt", fullName: "Salt", type: "usable", icon: 127, price: 0, aliases: ["salt", "nacl"], sellable: false, buyable: false, tradable: false},
 
         //Consumables (for useItem)
         gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 0, cooldown: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], sellable: false, buyable: false, tradable: true},
@@ -514,6 +514,9 @@ function Safari() {
     }
     function cap(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    function fixName(name) {
+        return sys.id(name) ? sys.name(sys.id(name)) : name;
     }
     function readable(arr, last_delim) {
         if (!Array.isArray(arr))
@@ -1170,8 +1173,8 @@ function Safari() {
         }
 
         var name = sys.name(src);
-        if (contestCount > 0 && contestantsWild.indexOf(name) === -1) {
-            contestantsWild.push(name);
+        if (contestCount > 0 && contestantsWild.indexOf(name.toLowerCase()) === -1) {
+            contestantsWild.push(name.toLowerCase());
         }
 
         if (preparationPhase > 0) {
@@ -1274,12 +1277,13 @@ function Safari() {
             var penalty = 2 - Math.min(itemData.soothe.bonusRate * player.balls.soothe, itemData.soothe.maxRate) - costumeBonus;
             cooldown *= penalty;
             if (contestCount > 0) {
-                if (!(name in contestCatchers)) {
-                    contestCatchers[name] = [];
+                var nameLower = name.toLowerCase();
+                if (!(nameLower in contestCatchers)) {
+                    contestCatchers[nameLower] = [];
                 }
-                contestCatchers[name].push(currentPokemon);
+                contestCatchers[nameLower].push(currentPokemon);
                 if (ball == "clone") {
-                    contestCatchers[name].push(currentPokemon);
+                    contestCatchers[nameLower].push(currentPokemon);
                 }
             }
             if (amt < 1) {
@@ -1988,6 +1992,10 @@ function Safari() {
         var target = getAvatar(targetId);
         if (!target) {
             safaribot.sendMessage(src, "This person didn't enter the Safari!", safchan);
+            return;
+        }
+        if (target.tradeban > now()) {
+            safaribot.sendMessage(src, "This person cannot receive trade requests right now!", safchan);
             return;
         }
 
@@ -5348,6 +5356,10 @@ function Safari() {
                 return;
             }
             var name = info.id;
+            var id = sys.id(name);
+            if (id) {
+                SESSION.users(id).safari = info;
+            }
             
             safari.saveGame(info);
             safaribot.sendMessage(src, "Created save with the name " + name + "!", safchan);
@@ -5884,17 +5896,17 @@ function Safari() {
                 var playerScore = function(name) {
                     return "(Caught " + contestCatchers[name].length + ", BST " + catchersBST[name] + ")";
                 };
-
+                
                 sys.sendAll("*** ************************************************************ ***", safchan);
                 safaribot.sendAll("The Safari contest is now over! Please come back during the next contest!", safchan);
                 if (Object.keys(contestCatchers).length === 1) {
                     safaribot.sendAll("No prizes have been given because there was only one contestant!", safchan);
                     winners = [];
                 } else if (winners.length > 0) {
-                    safaribot.sendAll(readable(winners, "and") + ", with the help of their " + readable(pokeWinners, "and") + ", caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and has won a prize pack!", safchan);
+                    safaribot.sendAll(readable(winners.map(fixName), "and") + ", with the help of their " + readable(pokeWinners, "and") + ", caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and has won a prize pack!", safchan);
                 }
                 if (allContestants.length > 0) {
-                    safaribot.sendAll(allContestants.map(function (x) { return x + " " + playerScore(x); }).join(", "), safchan);
+                    safaribot.sendAll(allContestants.map(function (x) { return fixName(x) + " " + playerScore(x); }).join(", "), safchan);
                 }
                 sys.sendAll("*** ************************************************************ ***", safchan);
                 currentPokemon = null;
