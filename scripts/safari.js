@@ -366,7 +366,7 @@ function Safari() {
     var allItems = currentItems.concat(retiredItems, "permfinder");
     var allBalls = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier"]; //to-do make dynamic based on current balls. Maybe also reference this for line2 in bag?
     var allCostumes = Object.keys(costumeData);
-    var allRecords = ["gachasUsed", "masterballsWon", "jackpotsWon", "contestsWon", "pokesCaught", "pokesNotCaught", "pokesReleased", "pokesEvolved", "pokesCloned", "pokeSoldEarnings", "luxuryEarnings", "pawnEarnings", "rocksThrown", "rocksHit", "rocksMissed", "rocksBounced", "rocksDodged", "rocksHitBy", "rocksWalletHit", "rocksWalletHitBy", "rocksCaught", "rocksDodgedWindow", "rocksMissedWindow", "rocksWalletEarned","rocksWalletLost","rocksWindowEarned","rocksWindowLost","baitUsed", "baitAttracted", "baitNothing", "itemsFound", "consecutiveLogins", "capsulesLost", "itemsDiscarded"];
+    var allRecords = ["gachasUsed", "masterballsWon", "jackpotsWon", "contestsWon", "pokesCaught", "pokesNotCaught", "pokesReleased", "pokesEvolved", "pokesCloned", "pokeSoldEarnings", "luxuryEarnings", "pawnEarnings", "rocksThrown", "rocksHit", "rocksMissed", "rocksBounced", "rocksDodged", "rocksHitBy", "rocksWalletHit", "rocksWalletHitBy", "rocksCaught", "rocksDodgedWindow", "rocksMissedWindow", "rocksWalletEarned","rocksWalletLost","rocksWindowEarned","rocksWindowLost","baitUsed", "baitAttracted", "baitNothing", "itemsFound", "consecutiveLogins", "capsulesLost", "itemsDiscarded", "collectorEarnings", "collectorGiven"];
 
     var currentTheme;
     var nextTheme;
@@ -3347,8 +3347,16 @@ function Safari() {
             break;
             case "finish":
             case "complete":
-            if (!ongoing) {
+                if (!ongoing) {
                     safaribot.sendMessage(src, "Collector: I don't recall requesting anything from you. Type /quest collector:help if you wish to help me.", safchan);
+                    return;
+                }
+                if (contestCount > 0) {
+                    safaribot.sendMessage(src, "You can't finish this quest during a contest.", safchan);
+                    return;
+                }
+                if (currentPokemon) {
+                    safaribot.sendMessage(src, "You can't finish this quest while there's a wild Pokémon around.", safchan);
                     return;
                 }
                 var e, hasPokemon = true, id;
@@ -3385,9 +3393,13 @@ function Safari() {
                 for (e = 0; e < quest.requests.length; e++) {
                     this.removePokemon(src, quest.requests[e]);
                 }
+                sys.sendMessage(src, "", safchan);
                 safaribot.sendMessage(src, "Collector: Superb! You brought everything! Here's your payment!", safchan);
                 safaribot.sendMessage(src, "You gave your " + readable(quest.requests.map(poke), "and") + " to the Collector and received $" + addComma(quest.reward) + "!", safchan);
+                sys.sendMessage(src, "", safchan);
                 
+                player.records.collectorEarnings += quest.reward;
+                player.records.collectorGiven += quest.requests.length;
                 quest.reward = 0;
                 quest.requests = [];
                 quest.cooldown = now() + 2 * 60 * 60 * 1000;
@@ -4280,6 +4292,7 @@ function Safari() {
         safaribot.sendMessage(src, "Rocks-- Thrown: " + rec.rocksThrown + ". Hit: " + rec.rocksHit + ". Missed: " + rec.rocksMissed + ". Bounced: " + rec.rocksBounced + ". Hit By: " + rec.rocksHitBy + ". Dodged: " + rec.rocksDodged + ". Caught: " + rec.rocksCaught + ". Hit a Wallet: " + rec.rocksWalletHit + ". Own Wallet Hit: " + rec.rocksWalletHitBy + ". Windows Broken: " + rec.rocksMissedWindow + ". Own Window Broken: " + rec.rocksDodgedWindow, safchan);
         safaribot.sendMessage(src, "Bait-- Used: " + rec.baitUsed + ". Attracted Pokémon: " + rec.baitAttracted + ". No Interest: " + rec.baitNothing + ".", safchan);
         safaribot.sendMessage(src, "Misc-- Contests Won: " + rec.contestsWon + ". Consecutive Logins: " + rec.consecutiveLogins + ". Items Found: " + rec.itemsFound + ". Items Discarded: " + rec.itemsDiscarded + ".", safchan);
+        safaribot.sendMessage(src, "Quests-- Pokémon given to Collector: " + rec.collectorGiven + ". Money from Collector: $" + rec.collectorEarnings + ". ", safchan);
         sys.sendMessage(src, "", safchan);
     };
     this.compileThrowers = function() {
@@ -4564,6 +4577,8 @@ function Safari() {
                 baitAttracted: 0,
                 baitNothing: 0,
                 itemsFound: 0,
+                collectorEarnings: 0,
+                collectorGiven: 0,
                 consecutiveLogins: 0
             },
             costumes: {
