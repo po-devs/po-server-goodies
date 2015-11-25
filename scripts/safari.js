@@ -1422,12 +1422,12 @@ function Safari() {
             info = shop[i];
             input = getInputPokemon(i);
             if (input.num) {
-                pokemon.push("<a href='po:setmsg/" + fullCommand + input.name + ":1'>" + input.name + "</a>: $" + addComma(info.price) + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")));
+                pokemon.push("<a href=\"po:setmsg/" + fullCommand + input.name + ":1\">" + input.name + "</a>: $" + addComma(info.price) + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")));
             }
             else if (i[0] == "@") {
                 input = i.substr(1);
                 price = input == "box" ? itemData.box.price[Math.min(player.balls.box, itemData.box.price.length - 1)] : info.price;
-                items.push("<a href='po:setmsg/" + fullCommand + input + ":1'>" + finishName(input) + "</a>: $" + addComma(price) + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")));
+                items.push("<a href=\"po:setmsg/" + fullCommand + input + ":1\">" + finishName(input) + "</a>: $" + addComma(price) + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")));
             }
         }
         sys.sendMessage(src, "", safchan);
@@ -4795,7 +4795,7 @@ function Safari() {
                     e = dataArray[e];
                     out.push(finishName(e)  + ": " + ballHelp[e]);
                 }
-                out.push("Note: Cooldown value with double following a successful catch.");
+                out.push("Note: Cooldown value doubles following a successful catch.");
                 out.push("");
             }
             if (data === "all" || data === "perks") {
