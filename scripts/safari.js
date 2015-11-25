@@ -300,6 +300,9 @@ function Safari() {
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 10000, aliases:["stick","sticks"], sellable: false, buyable: true, tradable: false},
         itemfinder: {name: "itemfinder", fullName: "Itemfinder", type: "usable", icon: 69, price: 0, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], sellable: false, buyable: false, tradable: false},
         salt: {name: "salt", fullName: "Salt", type: "usable", icon: 127, price: 0, aliases: ["salt", "nacl"], sellable: false, buyable: false, tradable: false},
+        
+        entry: {name: "entry", fullName: "Raffle Entry", type: "usable", icon: 333, price: 0, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], sellable: false, buyable: false, tradable: false},
+        
 
         //Consumables (for useItem)
         gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 0, cooldown: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], sellable: false, buyable: false, tradable: true},
@@ -322,7 +325,7 @@ function Safari() {
         nugget: {name: "nugget", fullName: "Nugget", type: "misc", icon: 108, price: 4000, aliases:["nugget"], sellable: true, buyable: false, tradable: true},
         bignugget: {name: "bignugget", fullName: "Big Nugget", type: "misc", icon: 269, price: 10000, aliases:["bignugget", "big nugget"], sellable: true, buyable: false, tradable: true}
     };
-    var defaultCostumePrice = 75000;
+    //var defaultCostumePrice = 75000;
     var costumeData = {
         inver: {icon: 387, name: "inver", fullName: "Inver", aliases: ["inver", "inverse", "psychic"], effect: "Inverts Type Effectiveness while catching.", price: 120000},
         //ranger: {icon: 348, name: "ranger", fullName: "Poke Ranger", aliases: ["ranger", "pokeranger", "poke ranger", "pokemonranger", "pokemon ranger"], effect: "???"}, // TBD
@@ -338,9 +341,9 @@ function Safari() {
     var base64icons = {
     itemfinder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAALHRFWHRDcmVhdGlvbiBUaW1lAEZyaSAyMSBOb3YgMjAxNCAyMDozMDo0NCAtMDAwMKEIypIAAAAHdElNRQfeCxUUHwrCV61vAAAACXBIWXMAAAsSAAALEgHS3X78AAAABGdBTUEAALGPC/xhBQAABExJREFUeNqFVutPHFUU/93ZpWyAamOMgIm2Pgrl0ZVHq9t+EAPtZiHWRGOaSFPoF+tnYrJGv+jXEhL/Ah8gaRPb2KSNFqqtSiOQxnYXpFUxatwEAbWBpkuz7GOuc+7OnblzZ0hPcrMze8+5v/M7rzuMr/UDMHCwb5EXiyZIrl9uYUABuWwOkZoIpPjf8+g+mnHsps4/wyLVoUD9sAS5du1jGMw632CIxU7w2YkmFqkho5JQ5Jw7RvRMdgSi2h2w7TjPg1n/qU4ZscQvfGrqI0tvD+5m5sHMEmZmP8UL8QXe2b1gnViBzY2iMJSyubGJA72/BtrtP7zANzcKUIWYGfLlbuZz7HiyFeuZBVgu4YuTjRjuq8e+nnkee3lRAEpRPdXt9H0ZifC2ijBM08TDO9uw/lcaO3Y+h2KphKOf/I5SyUTY2n/skUfR0T3Ppy82ODkIsqN3nYkENaYuPs0O9byFQqGA7U9EUTI5urrexA9fNrDZid1iZe+toa6uDgePEDNDePn9had8dlfffxfcBtNzyqjqCDn+xt88Xygn/rtzu6xCqPB49tLrGV4omLhxZS/LZe85h7x45A9hl88XhTMrKyuYvmBVX802j31YxpSYOeh24rkW88HBQew7NMZ//KbVUjBtZs8y0o8lfuahUEjRNz32YTWmVE2V1ZWe97KRIcDn5uaE1/sP3+JSp2Tlk/Zqa2uRTCYxNDQUYA8vkAriemaIUm5qahUHxuNxdHR0OKxHR0fF79LSEtLptB0Jcsz0VJ+TI/VPl5kLsrq6KkKxtvYfOHedGR4eAYWMAIkd5Wh5eRk3r7aI8PpyFMSMmrmlJSqMJcjMpT1MTotyMbwjioEAx8fHnYIAQpBAdL6hAhATV8p5kQklY6pGFYQ8pSKiFkgm38bAwAAMw0B7e7voO5qF7ml2ddGSTOiZ2DQ373VCVlkZtvbdvtD7RDawdK4866qdfUMy0WeZKsRm5lKjwyZIn5gFsSIutB/2T2WKaZVQ1sX1VNePYCuR5xuqZ/n7NN5D4to4dWpEeFVfX2+DhnxMdWYquFPW9r6vjyg3IyMfIpVKiZKluLe1taGzZ47fuNLsTAT9vpEA6dRNWFmi68kjYVk9upEEEcZ2I6pM/DdvlQBv+udrvPb8Q0QFr6aYiEQue79cDHqM6WA1BHo4dH0CocY+dmwAVX3v4YPr1Th5fh3HB0+IcRWp2e7vIypTOphyQx7Somcq71zWmyNiQkLh7u8/LkYTRYFyKnNDg7iz5yfu6yMq03Nnz4ghSV1OiybC9FeNztWh95EqFHIq8d7eXkxOTjrRCOyjy2ceZ78t3sadO/+K9e3ZXYyG5IOqTTSmxYZYSQBP1QXd8cRMV96qjyjcdIUQSDQaxdjYmBisiURCgFLYWfm7zvVUvSoe/F2X89y0uxuaRSuobE+f/kyEXQCpt+pWot+8QaHreuVP53NAyuxEedr/DwgKwzi3jMhsAAAAAElFTkSuQmCC",
     gacha: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAA3NCSVQICAjb4U/gAAAAG1BMVEX////4+Piw2OjgoNh4kKi4cMCISKhwSGAwMDAYBeQdAAAACXRSTlMA//////////83ApvUAAAACXBIWXMAAArwAAAK8AFCrDSYAAAAIHRFWHRTb2Z0d2FyZQBNYWNyb21lZGlhIEZpcmV3b3JrcyBNWLuRKiQAAAB0SURBVHicpYwxCoAwDEUzdhXxApncxRt4AZHGveLHWTyAiyXHtlWLHQX/9B68hOjHNGfeM35FwVwnnmRNopjFPZ3O1mK8RWHLVsBd6AwwFIVg4ySlwNUx8+ijLNe9F9tUcnPowreHyUypiTvkZfIZk8n4007iyyLPYqOktAAAAABJRU5ErkJggg==",
-    mega:"data:image/png;base64,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",
     myth: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAARhJREFUSEvNlT0OgzAMhTlGj8CYo3TsETp2ZOzI2JGRscfoyNiRsUdgzObqIb0qGOenqkAdLCCJ32eHOK5EpNrSNhVH4P8BcM6JZSVbm8yAotPzKJZxPgWKAuAcEw7Hx66es4tBTADF/asVWA6UgqwAC3HvxcMyEABikH0Bet+/2aJYFosMSn+s/skUt7ZpfwCiyJ0azoeR4/126VZHdpVBfR7mE0ERfNNiwhTHOl0TJiAUvZ8O4lsneBLOyBFxuDYLQDUigqa5fhwhTtNi4Td8rIo262AcprnA4KQz0BCswfq+f5QBmEUIgQiFMK4tJp7sB0gXjpYgxzCfEs82HF7HFNLPn67r8PrdrOGUdKzcmv/oybkoU/NvdoVkS0HgewQAAAAASUVORK5CYII=",
-    box: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXZwQWcAAAAgAAAAIACH+pydAAAA5UlEQVRIx92VwQ2DMAxFMwLHHjtCRuHIGDly7AgdgREyAkdGYIxuEGQJV6ljOwZSVerhCxGF//wTYbsYo/um3M8B3vuEag4A09f6eOsMzGxOZYWJ5tPk0zz3rDld12DVyhEET3y3JGMBtWMBEMK4dEsc0nO884CaOVc5gkBorgJwA0g7c65ygFUBsBElwaRjCeF2DIDKP6SwvJDDCVDwIZcsDN0H+FICdp0AmiVY+o4FtEkA5rukBPRvLrqmmCAzlxKYW0UOKxIIdyA1PfMs0C5Z66jmwVEk2wGn2nXLKef+f+hf1QY4PRz+Bnq4AwAAAABJRU5ErkJggg=="
+    box: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXZwQWcAAAAgAAAAIACH+pydAAAA5UlEQVRIx92VwQ2DMAxFMwLHHjtCRuHIGDly7AgdgREyAkdGYIxuEGQJV6ljOwZSVerhCxGF//wTYbsYo/um3M8B3vuEag4A09f6eOsMzGxOZYWJ5tPk0zz3rDld12DVyhEET3y3JGMBtWMBEMK4dEsc0nO884CaOVc5gkBorgJwA0g7c65ygFUBsBElwaRjCeF2DIDKP6SwvJDDCVDwIZcsDN0H+FICdp0AmiVY+o4FtEkA5rukBPRvLrqmmCAzlxKYW0UOKxIIdyA1PfMs0C5Z66jmwVEk2wGn2nXLKef+f+hf1QY4PRz+Bnq4AwAAAABJRU5ErkJggg==",
+    entry: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAAJcEhZcwAAD2AAAA9gAXp4RY0AAAJ4SURBVEhL7ZNdSFNhGMe96y7qou6jXSXM7Xy8mzbmsmIO23Duq02jSIlJC0zMjwKR1ILIzYQRCRUGEnoq6CJtQiCCYZQFod2sKKplQREFQRc7+/ec7c0RzsrwKvaD5+KMvf/zPM/7OyVF/h9MkjgmScIAf1w/zBQqCcJCst2D2Yjru1kwrM9LGBN9TBKRCO9Dpr8eOHMA6A3iXrMTJtHYw/+2NioEYTszGHYEqsoxENiDTF8IGIoAH1PI0t8A0G9KowMui6lVp9Nt4Ed/jyzLpUwUfW1O6+tOVyXUc43AzQvApQ5gYRZIPgGezQHnm4Cr3dkXjx6qhtvCjvOIwlgshi2yKPZQ6PRwgx2fuvdnO8TDBJBRgZlbwI1BINYMTCtANAxVieFRixvD9XvhqWRxHrUSzQqPzTQ5RTt+0eEFpq7luuyjfX/+QBMM0QTtQGKE1nQMaSWKpVN+dLmsCNt3KrJQ5meMbeRxeczmvBVvuvy0VwqcuAJ8+5rrWrvMeEtuEip18CjUswcRtJnhs5mey3JZablev5XH5clawciKMbLiIh3upVLT1PWD3PjazrXueXCGjElTnaQ7YaIRPGYljJEVHrLi9G5k3tHhRTcw76Qug8D7V8DcxLIdPyt5og7KYccX0nFRNuqreVRhmGQcn7nthKqFP6bgtm1A3SbgLV3oCO+W1/2IE9qdUPC4LBpbecSfcTnk+OT1GqiXGeDbDHipUjTBS9rxaIisqF22goLX/hFptx30mqJ3Y+T4nV10qVVI0wRLT33obLLiiL1idSv+Fu1wbY0c19aVToUQcJvhcbGsFfpCVvwrmv9Mlla3okiRXykp+QE8HqM/vT34MQAAAABJRU5ErkJggg=="
     };
 
     var gachaItems = {
@@ -760,14 +763,14 @@ function Safari() {
     function isBall(item) {
         return item in itemData && itemData[item].type === "ball";
     }
-    function bagRow (player, arr, src, first) {
+    function bagRow (player, arr, isAndroid, textOnly, first) {
         var ret = [], item, item2;
-        if (sys.os(src) === "android") {
-            var linebreak = 6;
+        if (textOnly) {
             if (first) {
-                ret += "<br />Inventory<br />";
-                ret += "<img src='item:274'>: $" + addComma(player.money) + "";
-                linebreak--;
+                ret += "<br /><b>Inventory</b><br />";
+                ret += "Money: $" + addComma(player.money) + " | ";
+            } else {
+                ret += "<br />";
             }
             for (var i = 0; i < arr.length; i++) {
                 item = itemData[arr[i]];
@@ -776,50 +779,80 @@ function Safari() {
                 } else {
                     item2 = player.balls[arr[i]];
                 }
-                ret += " | <img src='item:" + item.icon + "'>: " + item2;
-                linebreak--;
-                if (linebreak === 0 || (i + 1 == arr.length)) {
-                    ret += "<br />";
+                ret += item.fullName + ": " + item2;
+                if (i + 1 < arr.length) {
+                    ret += " | ";
                 }
             }
         } else {
-            if (first) {
-                ret += "<table border = 1 cellpadding = 3><tr><th colspan=12>Inventory</th></tr><tr>";
-                ret += "<td valign=middle align=center colspan=2><img src='item:274' title='Money'></td>";
+            if (isAndroid) {
+                var linebreak = 6;
+                if (first) {
+                    ret += "<br /><b>Inventory</b><br />";
+                    ret += "<img src='item:274'>: $" + addComma(player.money);
+                    linebreak--;
+                }
+                for (var i = 0; i < arr.length; i++) {
+                    item = itemData[arr[i]];
+                    if (item.name === "itemfinder") {
+                        item2 = player.balls.itemfinder + player.balls.permfinder;
+                    } else {
+                        item2 = player.balls[arr[i]];
+                    }
+                    ret += " | <img src='";
+                    var foundIcon = false;
+                    for (var e in base64icons) {
+                        if (e === item.name) {
+                            ret += base64icons[e];
+                            foundIcon = true;
+                        }
+                    }
+                    if (!foundIcon) {
+                        ret += "item:" + item.icon;
+                    }
+                    ret += "'>: " + item2;
+                    linebreak--;
+                    if (linebreak === 0 || (i + 1 == arr.length)) {
+                        ret += "<br />";
+                    }
+                }
             } else {
-                ret += "<tr>";
-            }
-            for (var i = 0; i < arr.length; i++) {
-                item = itemData[arr[i]];
-                ret += "<td align=center><img src='";
-                if (item.name === "itemfinder") {
-                    ret += base64icons.itemfinder;
-                } else if (item.name === "gacha") {
-                    ret += base64icons.gacha;
-                } else if (item.name === "mega") {
-                    ret += base64icons.mega;
-                } else if (item.name === "myth") {
-                    ret += base64icons.myth;
-                } else if (item.name === "box") {
-                    ret += base64icons.box;
+                if (first) {
+                    ret += "<table border = 1 cellpadding = 3><tr><th colspan=12>Inventory</th></tr><tr>";
+                    ret += "<td valign=middle align=center colspan=2><img src='item:274' title='Money'></td>";
                 } else {
-                    ret += "item:" + item.icon;
+                    ret += "<tr>";
                 }
-                ret += "' title='" + item.fullName + "'></td>";
-            }
-            ret += "</tr><tr>";
-            if (first) {
-                ret += "<td align=center colspan=2>$" + addComma(player.money) + "</td>";
-            }
-            for (var i = 0; i < arr.length; i++) {
-                if (arr[i] === "itemfinder") {
-                    item = player.balls.itemfinder + player.balls.permfinder;
-                } else {
-                    item = player.balls[arr[i]];
+                for (var i = 0; i < arr.length; i++) {
+                    item = itemData[arr[i]];
+                    ret += "<td align=center><img src='";
+                    var foundIcon = false;
+                    for (var e in base64icons) {
+                        if (e === item.name) {
+                            ret += base64icons[e];
+                            foundIcon = true;
+                        }
+                    }
+                    if (!foundIcon) {
+                        ret += "item:" + item.icon;
+                    }
+                    
+                    ret += "' title='" + item.fullName + "'></td>";
                 }
-                ret += "<td align=center>" + item + "</td>";
+                ret += "</tr><tr>";
+                if (first) {
+                    ret += "<td align=center colspan=2>$" + addComma(player.money) + "</td>";
+                }
+                for (var i = 0; i < arr.length; i++) {
+                    if (arr[i] === "itemfinder") {
+                        item = player.balls.itemfinder + player.balls.permfinder;
+                    } else {
+                        item = player.balls[arr[i]];
+                    }
+                    ret += "<td align=center>" + item + "</td>";
+                }
+                ret += "</tr>";
             }
-            ret += "</tr>";
         }
         return ret;
     }
@@ -1201,7 +1234,7 @@ function Safari() {
             }
         }
         if (ball === "heavy" && wildStats >= 450) {
-            ballBonus = 1 + itemData[ball].bonusRate * (Math.floor((wildStats - 450) / 50) + 1);
+            ballBonus = 1 + itemData[ball].bonusRate * (Math.floor((wildStats - 450) / (isLegendary(wild) ? 50 : 30)) + 1);
             if (ballBonus > itemData[ball].maxBonus) {
                 ballBonus = itemData[ball].maxBonus;
             }
@@ -1813,13 +1846,13 @@ function Safari() {
         }
         return true;
     };
-    this.buyCostumes = function (src, data) {
+    this.buyCostumes = function (src/*, data*/) {
         var player = getAvatar(src);
         if (!player) {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
             return;
         }
-        var validItems = allCostumes;
+        //var validItems = allCostumes;
 
         //Temporarily block costume purchasing till we rework based on suggestions
         safaribot.sendMessage(src, "[Closed] Under renovation.", safchan);
@@ -1895,7 +1928,7 @@ function Safari() {
                 }
             }
             if (sellables.length > 0) {
-                safaribot.sendMessage(src, "You currently have " + sellables.join(", ") + ". To sell an item, use /pawn item:quantity (e.g.: /pawn pearl:3)", safchan);
+                safaribot.sendMessage(src, "You currently have " + readable(sellables, "and") + ". To sell an item, use /pawn item:quantity (e.g.: /pawn pearl:3)", safchan);
             } else {
                 safaribot.sendMessage(src, "You don't have anything that can be sold at this time!", safchan);
             }
@@ -3173,26 +3206,27 @@ function Safari() {
 
     };
 
-    this.viewOwnInfo = function(src) {
+    this.viewOwnInfo = function(src, textOnly) {
         var player = getAvatar(src);
         if (!player) {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
             return;
         }
-
+        var isAndroid = (sys.os(src) === "android");
+        
         var out = "";
 
         //Current Party table
         out += this.showParty(src, true);
 
         //All owned Pokémon
-        out += this.showBox(player, "all");
+        out += this.showBox(player, "all", isAndroid, textOnly);
 
         //Money/Balls table
-        out += this.showBag(player, src);
+        out += this.showBag(player, isAndroid, textOnly);
 
         //Costumes
-        out += this.showCostumes(player);
+        //out += this.showCostumes(player);
 
         sys.sendHtmlMessage(src, out, safchan);
     };
@@ -3229,13 +3263,14 @@ function Safari() {
 
         sys.sendHtmlMessage(src, this.showParty(id, false, src), safchan);
     };
-    this.viewItems = function(src) {
+    this.viewItems = function(src, textOnly) {
         var player = getAvatar(src);
         if (!player) {
             safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
             return;
         }
-        sys.sendHtmlMessage(src, this.showBag(player, src), safchan);
+        var isAndroid = (sys.os(src) === "android");
+        sys.sendHtmlMessage(src, this.showBag(player, isAndroid, textOnly), safchan);
     };
     this.viewCostumes = function(src) {
         var player = getAvatar(src);
@@ -3536,17 +3571,17 @@ function Safari() {
         out += "<br/>";
         return out;
     };
-    this.showBag = function(player, src) {
+    this.showBag = function(player, isAndroid, textOnly) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
-        var line1 = ["box", "bait", "rock", "gacha", "itemfinder", "gem", "battery", "rare", "mega", "salt"];
+        var line1 = ["box", "bait", "rock", "gacha", "itemfinder", "gem", "battery", "rare", "mega", "entry"];
         var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "stick"];
         var line3 = ["amulet", "soothe",  "scarf", "eviolite", "crown", "honey", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
 
         var out = "";
-        out += bagRow(player, line1, src, true);
-        out += bagRow(player, line2, src);
-        out += bagRow(player, line3, src);
-        out += "</table>";
+        out += bagRow(player, line1, isAndroid, textOnly, true);
+        out += bagRow(player, line2, isAndroid, textOnly);
+        out += bagRow(player, line3, isAndroid, textOnly);
+        out += (textOnly ? "" : "</table>");
         return out;
     };
     this.showCostumes = function (player) {
@@ -4030,12 +4065,13 @@ function Safari() {
 
         sys.sendMessage(src, "", safchan);
         sys.sendMessage(src, "*** Player Records ***", safchan);
-        safaribot.sendMessage(src, "Pokémon-- Caught: " + rec.pokesCaught + ". Released: " + rec.pokesReleased + ". Evolved: " + rec.pokesEvolved + ". Cloned: " + rec.pokesCloned + ".", safchan);
-        safaribot.sendMessage(src, "Earnings-- Sold Pokémon: $" + rec.pokeSoldEarnings + ". Luxury Balls: $" + rec.luxuryEarnings + ". Pawned Items: $" + rec.pawnEarnings + ". Breaking Windows: -$" + rec.rocksWindowLost + ". Own Window Broken: $" + rec.rocksWindowEarned + ". Rocking Wallets: $" + rec.rocksWalletEarned + ". Own Wallet Rocked: -$" + rec.rocksWalletLost + ". ", safchan);
-        safaribot.sendMessage(src, "Gachapon-- Used: " + rec.gachasUsed + ". Jackpots Won: " + rec.jackpotsWon + ". Master Balls Won: " + rec.masterballsWon + ". Items stolen by Pokémon: " + rec.capsulesLost + ". Rewards Discarded: " + rec.itemsDiscarded + ".", safchan);
+        safaribot.sendMessage(src, "Pokémon-- Caught: " + rec.pokesCaught + ". Released: " + rec.pokesReleased + ". Evolved: " + rec.pokesEvolved + ". Cloned: " + rec.pokesCloned + ". Failed Catches: " + rec.pokesNotCaught + ".", safchan);
+        safaribot.sendMessage(src, "Earnings-- Sold Pokémon: $" + rec.pokeSoldEarnings + ". Luxury Balls: $" + rec.luxuryEarnings + ". Pawned Items: $" + rec.pawnEarnings + ". Own Window Broken: $" + rec.rocksWindowEarned + ". Rocking Wallets: $" + rec.rocksWalletEarned + ".", safchan);
+        safaribot.sendMessage(src, "Losses-- Breaking Windows: -$" + rec.rocksWindowLost + " Own Wallet Rocked: -$" + rec.rocksWalletLost + ".", safchan);
+        safaribot.sendMessage(src, "Gachapon-- Used: " + rec.gachasUsed + ". Jackpots Won: " + rec.jackpotsWon + ". Master Balls Won: " + rec.masterballsWon + ". Items stolen by Pokémon: " + rec.capsulesLost + ".", safchan);
         safaribot.sendMessage(src, "Rocks-- Thrown: " + rec.rocksThrown + ". Hit: " + rec.rocksHit + ". Missed: " + rec.rocksMissed + ". Bounced: " + rec.rocksBounced + ". Hit By: " + rec.rocksHitBy + ". Dodged: " + rec.rocksDodged + ". Caught: " + rec.rocksCaught + ". Hit a Wallet: " + rec.rocksWalletHit + ". Own Wallet Hit: " + rec.rocksWalletHitBy + ". Windows Broken: " + rec.rocksMissedWindow + ". Own Window Broken: " + rec.rocksDodgedWindow, safchan);
         safaribot.sendMessage(src, "Bait-- Used: " + rec.baitUsed + ". Attracted Pokémon: " + rec.baitAttracted + ". No Interest: " + rec.baitNothing + ".", safchan);
-        safaribot.sendMessage(src, "Misc-- Contests Won: " + rec.contestsWon + ". Consecutive Logins: " + rec.consecutiveLogins + ". Failed Catches: " + rec.pokesNotCaught + ". Items Found: " + rec.itemsFound + ".", safchan);
+        safaribot.sendMessage(src, "Misc-- Contests Won: " + rec.contestsWon + ". Consecutive Logins: " + rec.consecutiveLogins + ". Items Found: " + rec.itemsFound + ". Items Discarded: " + rec.itemsDiscarded + ".", safchan);
         sys.sendMessage(src, "", safchan);
     };
     this.compileThrowers = function() {
@@ -4206,7 +4242,7 @@ function Safari() {
         }
     };
     Battle.prototype.sendToViewers = function(msg, bypassPlayerUnwatch) {
-        var id, e;
+        var e;
         for (e in this.viewers) {
             this.sendMessage(this.viewers[e], msg);
         }
@@ -4283,7 +4319,8 @@ function Safari() {
                 bignugget: 0,
                 gem: 0,
                 box: 4,
-                salt: 0
+                salt: 0,
+                ticket: 0
             },
             records: {
                 gachasUsed: 0,
@@ -4799,6 +4836,7 @@ function Safari() {
             "/start: To pick a starter Pokémon and join the Safari game. Valid starters are Bulbasaur, Charmander, and Squirtle.",
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be replaced with the name of any other ball you possess.",
             "/sell: To sell one of your Pokémon*.",
+            "/pawn: To sell specific items.",
             "/trade: To request a Pokémon trade with another player*. Use $200 to trade money and @luxury to trade items (use 3@luxury to trade more than 1 of that item).",
             "/release: Used to release a Pokémon that can be caught by other players*. Pokémon can only be released every 3 minutes.",
             "/buy: To buy items or Pokémon.",
@@ -4806,13 +4844,12 @@ function Safari() {
             "/shopadd: To add items or Pokémon to your personal shop.",
             "/shopremove: To remove items or Pokémon from your personal shop. Use /shopclear to remove all items at once.",
             // "/buycostume: To buy a new costume.",
-            "/pawn: To sell items.",
             "/party: To add or remove a Pokémon from your party, or to set your party's leader*. Type /party for more details.",
             "/box [number]: To view all your caught Pokémon organized in boxes. Use /boxt for a text-only version.",
-            "/bag: To view all money and items.",
-            "/costumes: To view your current costumes.",
-            "/changecostume [name]: To change your costume to a new one.",
-            "/view: To view another player's party. If no player is specified, all of your data will show up. You can also use /view on or /view off to enable/disable others from viewing your party.",
+            "/bag: To view all money and items. Use /bagt for a text-only version.",
+            //"/costumes: To view your current costumes.",
+            //"/changecostume [name]: To change your costume to a new one.",
+            "/view: To view another player's party. If no player is specified, all of your data will show up. You can also use /view on or /view off to enable/disable others from viewing your party. Use /viewt for a text-only version of your data (excluding party).",
             "/challenge: To challenge another player to a battle.",
             "/watch: To watch someone else's battle.",
             "/changealt: To pass your Safari data to another alt.",
@@ -4835,21 +4872,26 @@ function Safari() {
             "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
         ];
         var help = userHelp;
-        /*var adminHelp = [
-            "*** Hangman Admin Commands ***",
-            "/hangmanban: To ban a user in safari. Format /hangmanban name:reason:time"
-        ];*/
         var superAdminHelp = [
             "*** Safari Admin Commands ***",
-            "/contest: Force starts a Safari contest. Use /contestsoft to skip broadcasting to Tohjo Falls.",
-            "/wild: Spawns a random wild Pokemon with no restrictions. Use a valid dex number for a specific spawn*.",
-            "/wilds: Spawns a random wild Pokemon with no restrictions. Use a valid dex number to spawn a shiny Pokemon.",
-            "/safaripay: Awards a player with any amount of money. Use /safaripay [player]:[amount].",
-            "/safarigift: Gifts a player with any amount of an item or ball. Use /safarigift [player/player names]:[item]:[amount]. You can send to multiple players at once if you separate each name with a comma and a space.",
+            "/contest[soft]: Force starts a Safari contest. Use /contestsoft to skip broadcasting to Tohjo Falls.",
+            "/wild[s/event]: Spawns a random wild Pokemon with no restrictions. Use a valid dex number for a specific spawn. Use /wilds for a shiny, use /wildevent for a spawn that cannot be caught with Master Balls.",
+            "/horde: Spawns a group of random wild Pokemon with no restrictions. Use a valid dex number to spawn a specific Pokemon.",
+            "/checkrate [item]: Displays the rate of obtaining that item from Gachapon and Itemfinder.",
+            "/safaripay [player]:[amount]: Awards a player with the specified amount of money.",
+            "/safarigift [player/player names]:[item]:[amount]: Gifts a player with any amount of an item or ball. You can send to multiple players at once if you separate each name with a comma.",
             "/bestow: Gifts a player a specific Pokemon. Use /bestow [player]:[pokemon].",
             "/forgerecord: Alters a specific record of a player. Use /forgerecord [player]:[record]:[amount].",
-            "/sanitize: Removes invalid values from the target's inventory, such as NaN and undefined. Use /sanitize [player]",
-            "/tradeban: Bans a player from trading or using their shop. Use /tradeban [player]:[length]."
+            "/sanitize [player]: Removes invalid values from the target's inventory, such as NaN and undefined. Use /sanitizeall to sanitize everyone in the channel at once.",
+            "/wipesafari [player]: Wipes the targeted player's safari. Irreversable-ish.",
+            "/analyze [player]:[lookup]: Returns the value of a specified property relating to a person's save. Lookup follows object notation, leave blank to return the entire save's data.",
+            "/loadsafari [JSON]: Creates a safari save with the specified JSON code. Target user getting a save must not be in channel.",
+            "/findsaves: Lists all saves the Safari Game currently has data on.",
+            "/scare: Scares the wild Pokemon away. Use /glare for a silent action.",
+            "/tradelog [amount]:[lookup]: Returns a list of recent trades. Defaults to 10. Amount can be changed to return that number of logs. Lookup will only return logs with the specified value in the past amount of logs.",
+            "/shoplog [amount]:[lookup]: /tradelog but with shops.",
+            "/tradeban: Bans a player from trading or using their shop. Use /tradeban [player]:[length].",
+            "/npc[add/remove] [item/pokemon]:[price]:[limit]: Adds or removes an item to the NPC shop with the provided arguments. Use /npcclear to clear the NPC shop."
         ];
         var ownerHelp = [
             "*** Safari Owner Commands ***",
@@ -4943,14 +4985,6 @@ function Safari() {
             safari.sellItems(src, commandData);
             return true;
         }
-        if (command === "view") {
-            if (commandData !== "*") {
-                safari.viewPlayer(src, commandData);
-            } else {
-                safari.viewOwnInfo(src, commandData);
-            }
-            return true;
-        }
         if (command === "trade") {
             safari.tradePokemon(src, commandData);
             return true;
@@ -4971,32 +5005,32 @@ function Safari() {
             safari.manageParty(src, "active:" + commandData);
             return true;
         }
-        if (command === "mydata") {
-            safari.viewOwnInfo(src, commandData);
+        if (command === "view" || command === "mydata" || command === "viewt" || command === "mydatat") {
+            if (command !== "view" || commandData === "*") {
+                safari.viewOwnInfo(src, (command === "viewt" || command === "mydatat"));
+            } else {
+                safari.viewPlayer(src, commandData);
+            }
             return true;
         }
-        if (command === "bag") {
-            safari.viewItems(src, commandData);
+        if (command === "bag" || command === "bagt") {
+            safari.viewItems(src, command === "bagt");
             return true;
         }
-        if (command === "costumes") {
+        if (command === "box" || command === "boxt") {
+            safari.viewBox(src, commandData, command === "boxt");
+            return true;
+        }
+        /*if (command === "costumes") {
             safari.viewCostumes(src);
-            return true;
-        }
-        if (command === "box") {
-            safari.viewBox(src, commandData);
-            return true;
-        }
-        if (command === "boxt") {
-            safari.viewBox(src, commandData, true);
-            return true;
-        }
-        if (command === "changealt") {
-            safari.changeAlt(src, commandData);
             return true;
         }
         if (command === "dressup" || command === "changecostume") {
             safari.changeCostume(src, commandData);
+            return true;
+        }*/
+        if (command === "changealt") {
+            safari.changeAlt(src, commandData);
             return true;
         }
         if (command === "bait") {
@@ -5171,7 +5205,7 @@ function Safari() {
                     }
                 }
                 if (themes.length > 0) {
-                    safaribot.sendMessage(src, info.name + " can be found in the following theme: " + themes.join(", ") + ".", safchan);
+                    safaribot.sendMessage(src, info.name + " can be found in the following theme: " + readable(themes, "and") + ".", safchan);
                 } else {
                     safaribot.sendMessage(src, info.name + " cannot be found in any theme currently.", safchan);
                 }
@@ -5196,13 +5230,13 @@ function Safari() {
             return true;
         }
         if (command === "themes") {
-            var contests = Object.keys(contestThemes);
             var ret = [];
+            var contests = Object.keys(contestThemes);
             for (var e in contests) {
                 ret.push(contestThemes[contests[e]].name);
             }
             ret.sort();
-            safaribot.sendMessage(src, "Available Contest Themes: " + ret.join (", ") + ".", safchan);
+            safaribot.sendMessage(src, "Available Contest Themes: " + readable(ret, "and") + ".", safchan);
             return true;
         }
 
@@ -5473,9 +5507,9 @@ function Safari() {
                 this.sanitize(player);
                 this.saveGame(player);
             }
-            safaribot.sendAll(playerArray.join(", ") + " has been awarded with " + itemQty + " " + finishName(item) + " by " + sys.name(src) + "!", safchan);
+            safaribot.sendAll(readable(playerArray, "and") + " has been awarded with " + itemQty + " " + finishName(item) + " by " + sys.name(src) + "!", safchan);
             if (invalidPlayers.length > 0) {
-                safaribot.sendMessage(src, invalidPlayers.join(", ") + (invalidPlayers.length > 1 ? " were" : " was") + "  not given anything because their name did not match any current save file.", safchan);
+                safaribot.sendMessage(src, readable(invalidPlayers, "and") + (invalidPlayers.length > 1 ? " were" : " was") + "  not given anything because their name did not match any current save file.", safchan);
             }
             return true;
         }
