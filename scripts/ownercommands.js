@@ -62,7 +62,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "changerating") {
-        var data =  commandData.split(' -- ');
+        var data =  commandData.split(':::');
         if (data.length != 3) {
             normalbot.sendMessage(src, "You need to give 3 parameters.", channel);
             return;
@@ -268,6 +268,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "sendall") {
         sys.sendAll(commandData, channel);
+        return;
+    }
+    if (command == "sendhtmlall") {
+        sys.sendHtmlAll(commandData, channel);
         return;
     }
     if(command == "sendmessage"){
@@ -759,21 +763,19 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 };
 exports.help = 
     [
-        "/changerating: Changes the rating of a rating abuser. Format is /changerating user -- tier -- rating.",
+        "/changerating: Changes the rating of a rating abuser. Format is /changerating user:::tier::rating.",
         "/stopbattles: Stops all new battles to allow for server restart with less problems for users.",
         "/hiddenauth: Displays all users with more higher auth than 3.",
         "/imp[off]: Lets you speak as someone",
         "/perm [on/off]: Make the current permanent channel or not (permanent channels remain listed when they have no users).",
-        "/sendmessage: Sends a chat message to a user. Format is /sendmessage user:::message:::channel.",
-        "/sendhtmlmessage: Sends an HTML chat message to a user. Format is /sendmessage user:::message:::channel.",
+        "/sendmessage: Sends a chat message to a user. Format is /sendmessage user:::message:::channel. Use /sendhtmlmessage for a message with HTML Format.",
         "/contributor[off]: Adds contributor status (for indigo access) to a user, with reason. Format is /contributor user:reason.",
         "/clearpass: Clears a user's password.",
         "/autosmute: Adds a user to the autosmute list",
         "/removeautosmute: Removes a user from the autosmute list",
-        "/periodicsay: Sends a message to specified channels periodically. Format is /periodicsay minutes:::channel1,channel2,...:::message",
-        "/periodichtml: Sends a message to specified channels periodically, using HTML formatting. Format is /periodichtml minutes:::channel1,channel2,...:::message",
+        "/periodicsay: Sends a message to specified channels periodically. Format is /periodicsay minutes:::channel1,channel2,...:::message. Use /periodichtml for a message with HTML formatting.",
         "/endcalls: Ends the next periodic message.",
-        "/sendall: Sends a message to everyone.",
+        "/sendall: Sends a message to everyone. Use /sendhtmlall for a message with HTML formatting.",
         "/changeauth[s]: Changes the auth of a user. Format is /changeauth auth user. If using /changeauths, the change will be silent.",
         "/showteam: Displays the team of a user (to help people who have problems with event moves or invalid teams).",
         "/ip[un]ban: Bans an IP. Format is /ipban ip comment.",
