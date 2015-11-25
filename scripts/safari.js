@@ -682,6 +682,9 @@ function Safari() {
     function getBST(pokeNum) {
         return add(sys.pokeBaseStats(pokeNum));
     }
+    function getPrice(pokeNum, shiny, perkBonus) {
+        return Math.round(getBST(pokeNum) * (shiny ? 5 : 1) * (isLegendary(pokeNum) ? 10 : 1) * (perkBonus ? perkBonus : 1));
+    }
     function itemAlias(name, returnGarbage, full) {
         name = name.toLowerCase();
         for (var e in itemData) {
@@ -3205,6 +3208,211 @@ function Safari() {
         safaribot.sendMessage(src, "This person is not battling!", safchan);
 
     };
+    this.questNPC = function(src, data) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            return;
+        }
+        if (data == "*") {
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendMessage(src, "Quests available:", safchan);
+            safaribot.sendMessage(src, "-Collector", safchan);
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        
+        var info = data.split(":");
+        var quest = info[0].toLowerCase();
+        var args = info.slice(1);
+        
+        if (quest == "collector") {
+            this.collectorQuest(src, args);
+        } else {
+            safaribot.sendMessage(src, "This is not a valid quest!", safchan);
+        }
+    };
+    this.collectorQuest = function(src, data) {
+        var player = getAvatar(src);
+        var quest = player.quests.collector;
+        var ongoing = quest.reward > 0;
+        
+        if (ongoing && now() > quest.deadline) {
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendMessage(src, "Collector: I'm sorry, but since you took too long to fulfill my request I decided to buy from someone else!", safchan);
+            safaribot.sendMessage(src, "Collector: If you still wish to help me, type /quest collector:start for a new request!", safchan);
+            sys.sendMessage(src, "", safchan);
+            
+            quest.reward = 0;
+            quest.requests = [];
+            quest.cooldown = 0;
+            quest.deadline = null;
+            this.saveGame(player);
+            return;
+        }
+        
+        if (data.length < 1) {
+            if (ongoing) {
+                    sys.sendMessage(src, "", safchan);
+                safaribot.sendMessage(src, "Collector: Hello, did you bring the " + readable(quest.requests.map(poke), "and") + " that I asked?", safchan);
+                safaribot.sendMessage(src, "Collector: If you did, type /quest collector:finish and I will pay you $" + addComma(quest.reward) + " for those Pokémon. You can also type /quest collector:abort if you no longer wish to help me.", safchan);
+                    sys.sendMessage(src, "", safchan);
+            } else {
+                safaribot.sendMessage(src, "Collector: Hello, I'm The Collector! I am always willing to pay well for some interesting Pokémon. If you wish to help me, type /quest collector:help.", safchan);
+            }
+            return;
+        }
+        
+        var action = data[0].toLowerCase();
+        
+        switch (action) {
+            case "information":
+            case "info":
+            case "help":
+                    sys.sendMessage(src, "", safchan);
+                    safaribot.sendMessage(src, "Collector: I love to collect Pokémon, but I'm not good at catching them. Therefore, I buy them!", safchan);
+                    safaribot.sendMessage(src, "Collector: If you want to help me, type /quest collector:start:difficulty, and I will request some Pokémon for you to bring me.", safchan);
+                    safaribot.sendMessage(src, "Collector: Once you have them, type /quest collector:finish, and I will pay about from 2x to 3x their normal value. After that, I will need some time to organize my collection, so I won't make any new request until I finish.", safchan);
+                    safaribot.sendMessage(src, "Collector: If you wish to give up on my request, type /quest collector:abort.", safchan);
+                    sys.sendMessage(src, "", safchan);
+            break;
+            case "start":
+            case "begin":
+                if (ongoing) {
+                    safaribot.sendMessage(src, "Collector: Please fulfill my previous request before getting a new one! If you wish to give up this request, type /quest collector:abort.", safchan);
+                    return;
+                }
+                if (quest.cooldown >= now()) {
+                    safaribot.sendMessage(src, "Collector: I'm sorry, I'm currently organizing my collection. Please come back in " + utilities.getTimeString((quest.cooldown - now())/1000) + "!", safchan);
+                    return;
+                }
+                if (data.length < 2) {
+                    safaribot.sendMessage(src, "Collector: Please choose a difficulty (Easy, Normal or Hard)! Type /quest collector:start:[difficulty] for that!", safchan);
+                    return;
+                }
+                var diff = data[1].toLowerCase();
+                
+                var level = 1;
+                switch (diff) {
+                    case "easy":
+                    case "[easy]":
+                        level = 0;
+                    break;
+                    case "normal":
+                    case "[normal]":
+                    case "medium":
+                        level = 1;
+                    break;
+                    case "hard":
+                    case "[hard]":
+                        level = 2;
+                    break;
+                    default:
+                        safaribot.sendMessage(src, "Collector: Please choose a difficulty (Easy, Normal or Hard)! Type /quest collector:start:[difficulty] for that!", safchan);
+                        return;
+                }
+                
+                
+                var request = [];
+                var difficultBonus = [2, 2.5, 3][level];
+                var minBST = [180, 320, 460][level];
+                var maxBST = [320, 460, 600][level];
+                var amount = [3, 4, 5][level];
+                var deadlineDays = 2;
+                
+                while (request.length < amount) {
+                    var randomNum = sys.rand(1, 722);
+                    var bst = getBST(randomNum);
+                    if (!request.contains(randomNum) && bst >= minBST && bst <= maxBST && !isLegendary(randomNum)) {
+                        request.push(randomNum);
+                    }
+                }
+                
+                var reward = 0;
+                for (e = 0; e < request.length; e++) {
+                    reward += getPrice(request[e]);
+                }
+                
+                var perkBonus = Math.min(itemData.amulet.bonusRate * player.balls.amulet, itemData.amulet.maxRate);
+                quest.requests = request;
+                quest.reward = Math.round(reward * (difficultBonus + perkBonus));
+                quest.deadline = now() + deadlineDays * 24 * 60 * 60 * 1000;
+                this.saveGame(player);
+                sys.sendMessage(src, "", safchan);
+                safaribot.sendMessage(src, "Collector: So you will help me? Great! Then bring me " + readable(request.map(poke), "and") + ", and I will pay you $" + addComma(quest.reward) + " for them!", safchan);
+                safaribot.sendMessage(src, "Collector: But please don't take too long! I you take more than " + (deadlineDays * 24) + " hours, I may buy them from someone else!", safchan);
+                sys.sendMessage(src, "", safchan);
+            break;
+            case "finish":
+            case "complete":
+            if (!ongoing) {
+                    safaribot.sendMessage(src, "Collector: I don't recall requesting anything from you. Type /quest collector:help if you wish to help me.", safchan);
+                    return;
+                }
+                var e, hasPokemon = true, id;
+                for (e = 0; e < quest.requests.length; e++) {
+                    id = quest.requests[e];
+                    if (!player.pokemon.contains(id)) {
+                        safaribot.sendMessage(src, "Collector: You don't have a " + sys.pokemon(id) + "!", safchan);
+                        hasPokemon = false;
+                    }
+                }
+                if (!hasPokemon) {
+                    return;
+                }
+                for (e = 0; e < quest.requests.length; e++) {
+                    id = quest.requests[e];
+                    if (!canLosePokemon(src, id + "", "give")) {
+                        return;
+                    }
+                }
+                if (player.party.length <= quest.requests.length) {
+                    var allInParty = true;
+                    for (e = 0; e < player.party.length; e++) {
+                        if (!quest.requests.contains(player.party[e])) {
+                            allInParty = false;
+                            break;
+                        }
+                    }
+                    if (allInParty) {
+                        safaribot.sendMessage(src, "Collector: I can't possibly take these Pokémon while they are in your party!", safchan);
+                        return;
+                    }
+                }
+                player.money = Math.min(player.money + quest.reward, moneyCap);
+                for (e = 0; e < quest.requests.length; e++) {
+                    this.removePokemon(src, quest.requests[e]);
+                }
+                safaribot.sendMessage(src, "Collector: Superb! You brought everything! Here's your payment!", safchan);
+                safaribot.sendMessage(src, "You gave your " + readable(quest.requests.map(poke), "and") + " to the Collector and received $" + addComma(quest.reward) + "!", safchan);
+                
+                quest.reward = 0;
+                quest.requests = [];
+                quest.cooldown = now() + 2 * 60 * 60 * 1000;
+                quest.deadline = 0;
+                this.saveGame(player);
+            break;
+            case "abort":
+            case "cancel":
+            case "giveup":
+            case "give up":
+                if (!ongoing) {
+                    safaribot.sendMessage(src, "Collector: You can't abort a quest even before you start it! Type /quest collector:help if you wish to help me.", safchan);
+                    return;
+                }
+                safaribot.sendMessage(src, "Collector: Oh, you don't want to help me anymore? It's a shame, but I understand. Come back later if you change your mind!", safchan);
+                quest.reward = 0;
+                quest.requests = [];
+                quest.cooldown = now() + 1 * 60 * 60 * 1000;
+                quest.deadline = null;
+                this.saveGame(player);
+            break;
+            default:
+                safaribot.sendMessage(src, "Collector: I don't think I can help you with that. But if you wish to help me, type /quest collector:help!", safchan);
+        }
+    };
 
     this.viewOwnInfo = function(src, textOnly) {
         var player = getAvatar(src);
@@ -4386,7 +4594,15 @@ function Safari() {
                 stick: 0,
                 costume: 0
             },
-            shop: {}
+            shop: {},
+            quests: {
+                collector: {
+                    requests: [],
+                    reward: 0,
+                    cooldown: 0,
+                    deadline: null
+                }
+            }
         };
         SESSION.users(src).safari = player;
         this.saveGame(player);
@@ -4580,6 +4796,14 @@ function Safari() {
             }
             if (player.shop === undefined) {
                 player.shop = {};
+            }
+            if (player.quests.collector === undefined) {
+                player.quests.collector = {
+                    requests: [],
+                    reward: 0,
+                    cooldown: 0,
+                    deadline: null
+                };
             }
             if (player.tradeban === undefined) {
                 player.tradeban = 0;
@@ -4846,6 +5070,7 @@ function Safari() {
             "/shopremove: To remove items or Pokémon from your personal shop. Use /shopclear to remove all items at once.",
             // "/buycostume: To buy a new costume.",
             "/party: To add or remove a Pokémon from your party, or to set your party's leader*. Type /party for more details.",
+            "/quest: To view available quests.",
             "/box [number]: To view all your caught Pokémon organized in boxes. Use /boxt for a text-only version.",
             "/bag: To view all money and items. Use /bagt for a text-only version.",
             //"/costumes: To view your current costumes.",
@@ -5054,6 +5279,10 @@ function Safari() {
         }
         if (command === "watch") {
             safari.watchBattle(src, commandData);
+            return true;
+        }
+        if (command === "quest") {
+            safari.questNPC(src, commandData);
             return true;
         }
         if (command === "sort") {
@@ -5835,7 +6064,7 @@ function Safari() {
         }
         if (contestCooldown === 180) {
             nextTheme = ["none"];
-            nextTheme = nextTheme.concat(Object.keys(contestThemes).shuffle()).slice(0, 3);
+            nextTheme = nextTheme.concat(Object.keys(contestThemes).shuffle().slice(0, 3));
             
             sys.sendAll("*** ************************************************************ ***", safchan);
             safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all Poké Balls you need!", safchan);
