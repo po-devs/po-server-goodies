@@ -4797,8 +4797,8 @@ function Safari() {
             if (player.shop === undefined) {
                 player.shop = {};
             }
-            if (player.quest === undefined) {
-                player.quest = {};
+            if (player.quests === undefined) {
+                player.quests = {};
             }
             if (player.quests.collector === undefined) {
                 player.quests.collector = {
