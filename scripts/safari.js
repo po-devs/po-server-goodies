@@ -4692,7 +4692,7 @@ function Safari() {
     };
     this.showItemHelp = function (src, data) {
         if (data === "*") {
-            safaribot.sendMessage(src, "You can use /itemhelp [item] to return information on a particular item, costume, or category. You can display the help for all items using \"/itemhelp all\" or from the following categories: \"balls\", \"items\", \"perks\", \"costumes\".", safchan);
+            safaribot.sendMessage(src, "You can use /itemhelp [item] to return information on a particular item, costume, or category. You can display the help for all items using \"/itemhelp all\" or from the following categories: \"balls\", \"items\", \"perks\".", safchan);
             return;
         }
         var help;
@@ -4708,7 +4708,8 @@ function Safari() {
             gem: "An electrically charged gem created by a famous Ampharos in Olivine City. It is said to be able to recharge the Itemfinder, giving it " + itemData.gem.charges + " more uses for the day! (To use, type \"/use gem\"). Obtained from Gachapon.",
             box: "Increases number of Pokémon that can be owned by " + itemData.box.bonusRate + " each. Can only acquire by purchasing.",
             stick: "Legendary Stick of the almighty Farfetch'd that provides a never ending wave of prods and pokes (every " + itemData.stick.cooldown/1000 + " seconds) unto your enemies and other nefarious evil-doers, with a simple use of the /stick command.",
-            salt: "A pile of salt that makes the holder increasingly unlucky the more they have."
+            salt: "A pile of salt that makes the holder increasingly unlucky the more they have.",
+            entry: "A Raffle Entry that can win a wonderful prize if you own the correct one at the time of drawing."
         };
         var perkHelp = {
             amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "%). Obtained from Gachapon.",
@@ -4732,7 +4733,7 @@ function Safari() {
             clone: "A mysterious Poké Ball with a very low catch rate that can duplicate a pokémon's D.N.A.. Has a cooldown of " + itemData.clone.cooldown / 1000 +" seconds. Obtained from Gachapon.",
             spy: "A stealthy Poké Ball that cannot be tracked. Has a cooldown of " + itemData.spy.cooldown / 1000 +" seconds. Found with Itemfinder."
         };
-        var costumeHelp = {
+        /*var costumeHelp = {
             inver: costumeData.inver.effect,
             breeder: costumeData.breeder.effect,
             scientist: costumeData.scientist.effect,
@@ -4742,19 +4743,19 @@ function Safari() {
             chef: costumeData.chef.effect,
             explorer: costumeData.explorer.effect,
             fisher: costumeData.fisher.effect
-        };
+        };*/
 
         if (catStrings.indexOf(data) === -1) {
             //Try to decode which item the user is looking for
             var lookup = itemAlias(data, true);
             if (allItems.indexOf(lookup) === -1) {
-                //If it's not an item, it's either a costume or invalid.
+                /*//If it's not an item, it's either a costume or invalid.
                 lookup = costumeAlias(data, true);
                 if (allCostumes.indexOf(lookup) !== -1) {
                     if (costumeHelp.hasOwnProperty(lookup)) {
                         help = costumeAlias(lookup, false, true) + " Costume: " + costumeHelp[lookup];
                     }
-                }
+                }*/
             } else {
                 //Now grab the help from whichever category it is
                 if (itemHelp.hasOwnProperty(lookup)) {
@@ -4806,7 +4807,7 @@ function Safari() {
                 }
                 out.push("");
             }
-            if (data === "all" || data === "costumes") {
+            /*if (data === "all" || data === "costumes") {
                 out.push("*** Costume Help ***");
                 dataArray = Object.keys(costumeHelp);
                 for (var e in dataArray) {
@@ -4814,7 +4815,7 @@ function Safari() {
                     out.push(costumeAlias(e, false, true) + " Costume: " + costumeHelp[e]);
                 }
                 out.push("");
-            }
+            }*/
             for (x in out) {
                 sys.sendMessage(src, out[x], safchan);
             }
@@ -4832,7 +4833,7 @@ function Safari() {
             "",
             "*** Safari Commands ***",
             "/help: For a how-to-play guide.",
-            "/itemhelp [item or category]: Returns information on a particular item, costume, or category. You can display the help for all items using \"/itemhelp all\" or from the following categories: \"balls\", \"items\", \"perks\", \"costumes\".",
+            "/itemhelp [item or category]: Returns information on a particular item, costume, or category. You can display the help for all items using \"/itemhelp all\" or from the following categories: \"balls\", \"items\", \"perks\".",
             "/start: To pick a starter Pokémon and join the Safari game. Valid starters are Bulbasaur, Charmander, and Squirtle.",
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be replaced with the name of any other ball you possess.",
             "/sell: To sell one of your Pokémon*.",
@@ -4872,8 +4873,8 @@ function Safari() {
             "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
         ];
         var help = userHelp;
-        var superAdminHelp = [
-            "*** Safari Admin Commands ***",
+        var ownerHelp = [
+            "*** Safari Owner Commands ***",
             "/contest[soft]: Force starts a Safari contest. Use /contestsoft to skip broadcasting to Tohjo Falls.",
             "/wild[s/event]: Spawns a random wild Pokemon with no restrictions. Use a valid dex number for a specific spawn. Use /wilds for a shiny, use /wildevent for a spawn that cannot be caught with Master Balls.",
             "/horde: Spawns a group of random wild Pokemon with no restrictions. Use a valid dex number to spawn a specific Pokemon.",
@@ -4893,16 +4894,6 @@ function Safari() {
             "/tradeban: Bans a player from trading or using their shop. Use /tradeban [player]:[length].",
             "/npc[add/remove] [item/pokemon]:[price]:[limit]: Adds or removes an item to the NPC shop with the provided arguments. Use /npcclear to clear the NPC shop."
         ];
-        var ownerHelp = [
-            "*** Safari Owner Commands ***",
-            "/wipesafari: Clears a user's Safari data permanently."
-        ];
-        /*if (sys.auth(src) > 0) {
-            help.push.apply(help, adminHelp);
-        }*/
-        if (sys.auth(src) > 1) {
-            help.push.apply(help, superAdminHelp);
-        }
         if (sys.auth(src) > 2) {
             help.push.apply(help, ownerHelp);
         }
