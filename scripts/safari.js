@@ -2761,7 +2761,6 @@ function Safari() {
             safaribot.sendMessage(src, "This Pokémon cannot evolve!", safchan);
             return;
         }
-        var count = countRepeated(player.pokemon, id);
         if (info.input in player.shop) {
             safaribot.sendMessage(src, "You need to remove this Pokémon from your shop before evolving them!", safchan);
             return;
@@ -2862,8 +2861,7 @@ function Safari() {
             safaribot.sendMessage(src, "This Pokémon cannot mega evolve!", safchan);
             return;
         }
-        var count = countRepeated(player.pokemon, id);
-        if (id in player.shop && (player.shop[id].limit >= count || id == player.starter)) {
+        if (info.input in player.shop) {
             safaribot.sendMessage(src, "You need to remove this Pokémon from your shop before mega evolving them!", safchan);
             return;
         }
@@ -3274,7 +3272,7 @@ function Safari() {
                     sys.sendMessage(src, "", safchan);
                     safaribot.sendMessage(src, "Collector: I love to collect Pokémon, but I'm not good at catching them. Therefore, I buy them!", safchan);
                     safaribot.sendMessage(src, "Collector: If you want to help me, type /quest collector:start:difficulty, and I will request some Pokémon for you to bring me.", safchan);
-                    safaribot.sendMessage(src, "Collector: Once you have them, type /quest collector:finish, and I will pay about from 2x to 3x their normal value. After that, I will need some time to organize my collection, so I won't make any new request until I finish.", safchan);
+                    safaribot.sendMessage(src, "Collector: Once you have them, type /quest collector:finish, and I will pay about from 2.4x to 4.2x their normal value. After that, I will need some time to organize my collection, so I won't make any new request until I finish.", safchan);
                     safaribot.sendMessage(src, "Collector: If you wish to give up on my request, type /quest collector:abort.", safchan);
                     sys.sendMessage(src, "", safchan);
             break;
