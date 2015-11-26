@@ -13,7 +13,8 @@ function Safari() {
     var saveFiles = "scriptdata/safarisaves.txt";
     var tradeLog = "scriptdata/safaritrades.txt";
     var shopLog = "scriptdata/safarishoplog.txt";
-    var shopFile = "scriptdata/safarishop.txt";
+    var permFile = "scriptdata/safariobjects.txt";
+    var permObj;
     var rawPlayers;
     var npcShop;
 
@@ -1699,7 +1700,7 @@ function Safari() {
         } else {
             this.buyBonus(src, input.id, amount, cap);
             if (limitChanged) {
-                sys.writeToFile(shopFile, JSON.stringify(shop));
+                this.saveShop();
             }
         }
         this.saveGame(player);
@@ -1804,7 +1805,7 @@ function Safari() {
             safaribot.sendMessage(src, input.name + " has been " + (input.input in player.shop ? "re" : "") + "added to " + (editNPCShop ? "the NPC Shop" : "your") + " shop with the price of $" + addComma(price) + " (Units Available: " + (limit == -1 ? "Unlimited" : limit) + ")!", safchan);
             if (editNPCShop) {
                 npcShop[input.input] = { price: price, limit: limit };
-                sys.writeToFile(shopFile, JSON.stringify(npcShop));
+                this.saveShop();
             } else {
                 player.shop[input.input] = { price: price, limit: limit };
                 this.saveGame(player);
@@ -1815,7 +1816,7 @@ function Safari() {
                 if (input.input in npcShop) {
                     delete npcShop[input.input];
                     safaribot.sendMessage(src, input.name + " has been removed from the NPC shop!", safchan);
-                    sys.writeToFile(shopFile, JSON.stringify(npcShop));
+                    this.saveShop();
                 } else {
                     safaribot.sendMessage(src, "You can't remove a Pokémon/Item from the shop if they are not there!", safchan);
                 }
@@ -1835,7 +1836,7 @@ function Safari() {
                     delete npcShop[e];
                 }
                 safaribot.sendMessage(src, "The NPC Shop has been cleared!", safchan);
-                sys.writeToFile(shopFile, JSON.stringify(npcShop));
+                this.saveShop();
             } else {
                 for (var e in player.shop) {
                     delete player.shop[e];
@@ -2762,7 +2763,7 @@ function Safari() {
             return;
         }
         var count = countRepeated(player.pokemon, id);
-        if (id in player.shop && (player.shop[id].limit >= count || id == player.starter)) {
+        if (info.input in player.shop) {
             safaribot.sendMessage(src, "You need to remove this Pokémon from your shop before evolving them!", safchan);
             return;
         }
@@ -3316,7 +3317,7 @@ function Safari() {
                 
                 
                 var request = [];
-                var difficultBonus = [2, 2.5, 3][level];
+                var difficultBonus = [2.4, 3.3, 4.2][level];
                 var minBST = [180, 320, 460][level];
                 var maxBST = [320, 460, 600][level];
                 var amount = [3, 4, 5][level];
@@ -3342,7 +3343,7 @@ function Safari() {
                 this.saveGame(player);
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendMessage(src, "Collector: So you will help me? Great! Then bring me " + readable(request.map(poke), "and") + ", and I will pay you $" + addComma(quest.reward) + " for them!", safchan);
-                safaribot.sendMessage(src, "Collector: But please don't take too long! I you take more than " + (deadlineDays * 24) + " hours, I may buy them from someone else!", safchan);
+                safaribot.sendMessage(src, "Collector: But please don't take too long! If you take more than " + (deadlineDays * 24) + " hours, I may buy them from someone else!", safchan);
                 sys.sendMessage(src, "", safchan);
             break;
             case "finish":
@@ -3402,7 +3403,7 @@ function Safari() {
                 player.records.collectorGiven += quest.requests.length;
                 quest.reward = 0;
                 quest.requests = [];
-                quest.cooldown = now() + 2 * 60 * 60 * 1000;
+                quest.cooldown = now() + 3 * 60 * 60 * 1000;
                 quest.deadline = 0;
                 this.saveGame(player);
             break;
@@ -3660,17 +3661,23 @@ function Safari() {
 
             var toLoad = player.savedParties[num];
 
-            for (var p in toLoad) {
+            for (var p = toLoad.length - 1; p >= 0; p--) {
                 id = toLoad[p];
                 if (player.pokemon.indexOf(id) === -1) {
-                    safaribot.sendMessage(src, "Couldn't load from slot " + targetId + " because you don't have a " + poke(id) + "!", safchan);
-                    return;
+                    safaribot.sendMessage(src, "You no longer have a " + poke(id) + "!", safchan);
+                    toLoad.splice(p, 1);
+                    continue;
                 }
                 var c = countRepeated(toLoad, id);
                 if (c > countRepeated(player.pokemon, id)) {
-                    safaribot.sendMessage(src, "Couldn't load from slot " + targetId + " because you don't have " + c + " " + poke(id) + "(s)!", safchan);
-                    return;
+                    safaribot.sendMessage(src, "You no longer have " + c + " " + poke(id) + "(s)!", safchan);
+                    toLoad.splice(p, 1);
                 }
+            }
+            
+            if (toLoad.length === 0) {
+                safaribot.sendMessage(src, "Couldn't load from slot " + targetId + " because you no longer have any of those Pokémon!", safchan);
+                return;
             }
 
             player.party = toLoad.concat();
@@ -4760,6 +4767,9 @@ function Safari() {
         if (name in challengeRequests) {
             delete challengeRequests[name];
         }
+    };
+    this.saveShop = function() {
+        permObj.add("npcShop", JSON.stringify(npcShop));
     };
     this.sanitize = function(player) {
         if (player) {
@@ -5996,8 +6006,9 @@ function Safari() {
         SESSION.global().channelManager.restoreSettings(safchan);
         SESSION.channels(safchan).perm = true;
         rawPlayers = new MemoryHash(saveFiles);
+        permObj = new MemoryHash(permFile);
         try {
-            npcShop = JSON.parse(sys.getFileContent(shopFile));
+            npcShop = JSON.parse(permObj.get("npcShop"));
         } catch (err) {
             npcShop = {};
         }
