@@ -143,7 +143,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         script.issueBan("mute", src, tar, commandData);
         return;
     }
-    if (command == "banlist") {
+    if (command == "bans" || command == "banlist") {
         var list=sys.banList();
         list.sort();
         var nbr_banned=5;
@@ -174,7 +174,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
 
     }
-    if (command == "mutelist" || command == "smutelist" || command == "mafiabans" || command == "hangmanmutes" || command == "hangmanbans") {
+    if (command == "mutes" || command == "mutelist" || command == "smutelist" || command == "mafiabans" || command == "hangmanmutes" || command == "hangmanbans") {
         script.banList(src, command, commandData);
         return;
     }
@@ -697,8 +697,8 @@ exports.help =
         "/checkbantime: Checks how long a user is banned for.",
         "/passauth: Passes your mods to an online alt of yours.",
         "/passauths: Passes your mods silently.",
-        "/banlist: Searches the banlist for a string, shows full list if no search term is entered.",
-        "/mutelist: Searches the mutelist for a string, shows full list if no search term is entered.",
+        "/bans: Searches the banlist for a string, shows full list if no search term is entered.",
+        "/mutes: Searches the mutelist for a string, shows full list if no search term is entered.",
         "/smutelist: Searches the smutelist for a string, shows full list if no search term is entered.",
         "/rangebans: Lists range bans.",
         "/ipbans: Lists ip bans.",
