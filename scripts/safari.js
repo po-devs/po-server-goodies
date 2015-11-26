@@ -3273,7 +3273,7 @@ function Safari() {
                     sys.sendMessage(src, "", safchan);
                     safaribot.sendMessage(src, "Collector: I love to collect Pokémon, but I'm not good at catching them. Therefore, I buy them!", safchan);
                     safaribot.sendMessage(src, "Collector: If you want to help me, type /quest collector:start:difficulty, and I will request some Pokémon for you to bring me.", safchan);
-                    safaribot.sendMessage(src, "Collector: Once you have them, type /quest collector:finish, and I will pay about from 2x to 3x their normal value. After that, I will need some time to organize my collection, so I won't make any new request until I finish.", safchan);
+                    safaribot.sendMessage(src, "Collector: Once you have them, type /quest collector:finish, and I will pay about from 2.4x to 4.2x their normal value. After that, I will need some time to organize my collection, so I won't make any new request until I finish.", safchan);
                     safaribot.sendMessage(src, "Collector: If you wish to give up on my request, type /quest collector:abort.", safchan);
                     sys.sendMessage(src, "", safchan);
             break;
