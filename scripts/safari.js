@@ -2762,7 +2762,6 @@ function Safari() {
             safaribot.sendMessage(src, "This Pokémon cannot evolve!", safchan);
             return;
         }
-        var count = countRepeated(player.pokemon, id);
         if (info.input in player.shop) {
             safaribot.sendMessage(src, "You need to remove this Pokémon from your shop before evolving them!", safchan);
             return;
@@ -2863,8 +2862,7 @@ function Safari() {
             safaribot.sendMessage(src, "This Pokémon cannot mega evolve!", safchan);
             return;
         }
-        var count = countRepeated(player.pokemon, id);
-        if (id in player.shop && (player.shop[id].limit >= count || id == player.starter)) {
+        if (info.input in player.shop) {
             safaribot.sendMessage(src, "You need to remove this Pokémon from your shop before mega evolving them!", safchan);
             return;
         }
