@@ -842,7 +842,7 @@ unban: function(type, src, tar, commandData) {
 banList: function (src, command, commandData) {
     var mh;
     var name;
-    if (command == "mutelist") {
+    if (command == "mutes" || command == "mutelist") {
         mh = script.mutes;
         name = "Muted list";
     } else if (command == "smutelist") {
