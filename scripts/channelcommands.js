@@ -235,23 +235,31 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command == "cmute") {
-        var tmp = commandData.split(":",3);
-        var tarname = tmp[0];
-        var time = 0;
-        var reason = "";
-        if (tmp.length >= 2) {
-            reason = tmp[1];
-            if (tmp.length >= 3) {
-                time = getSeconds(tmp[2]);
-                if (isNaN(time)) {
-                    time = 0;
-                }
-            }
-        }
+        var i = commandData.indexOf(":"),
+            j = commandData.lastIndexOf(":"),
+            time = 0,
+            reason = "",
+            tarname = "";
+        if (i !== -1) {
+            tarname = commandData.substring(0, i);
+            var timeString = commandData.substring(j + 1, commandData.length);
+            if (!isNaN(timeString) || (!isNaN(timeString.substring(0, timeString.length - 1)) && ["s", "m", "h", "d", "w"].indexOf(timeString[timeString.length - 1].toLowerCase()) !== -1)) {
+                time = getSeconds(timeString);
+            } else {
+                time = 0;
+                reason = commandData.slice(i + 1);
+                j = i;
+            } 
+            if (i !== j) {
+                reason = commandData.substring(i + 1, j);
+            };
+        } else {
+            tarname = commandData;
+        };
         if (sys.dbIp(tarname) === undefined) {
             normalbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
-        }
+        };
         poChannel.mute(src, tarname, {'time': time, 'reason': reason}, SESSION.users(src).smute.active);
         return;
     }
@@ -327,23 +335,31 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command == "cban") {
-        var tmp = commandData.split(":",3);
-        var tarname = tmp[0];
-        var time = 0;
-        var reason = "";
-        if (tmp.length >= 2) {
-            reason = tmp[1];
-            if (tmp.length >= 3) {
-                time = getSeconds(tmp[2]);
-                if (isNaN(time)) {
-                    time = 0;
-                }
-            }
-        }
+        var i = commandData.indexOf(":"),
+            j = commandData.lastIndexOf(":"),
+            time = 0,
+            reason = "",
+            tarname = "";
+        if (i !== -1) {
+            tarname = commandData.substring(0, i);
+            var timeString = commandData.substring(j + 1, commandData.length);
+            if (!isNaN(timeString) || (!isNaN(timeString.substring(0, timeString.length - 1)) && ["s", "m", "h", "d", "w"].indexOf(timeString[timeString.length - 1].toLowerCase()) !== -1)) {
+                time = getSeconds(timeString);
+            } else {
+                time = 0;
+                reason = commandData.slice(i + 1);
+                j = i;
+            } 
+            if (i !== j) {
+                reason = commandData.substring(i + 1, j);
+            };
+        } else {
+            tarname = commandData;
+        };
         if (sys.dbIp(tarname) === undefined) {
             normalbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
-        }
+        };
         poChannel.ban(src, tarname, {'time': time, 'reason': reason});
         return;
     }
@@ -391,7 +407,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         var returnVal = poChannel.addRule(commandData[0], commandData[1]);
         if (returnVal) {    
-            channelbot.sendMessage(src, returnVal);
+            channelbot.sendMessage(src, returnVal, channel);
         } else {
             channelbot.sendMessage(src, "You added a rule", channel);
          }
