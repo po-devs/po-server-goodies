@@ -693,30 +693,24 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         var defaultTime = {"mute": "24h", "mban": "1d", "smute": "0", "hmute": "1d"}[type];
         var reason = "";
         var timeString = "";
-        var tindex = 10;
-        var data = [];
+        var data = commandData;
         var ip;
+        var i = data.indexOf(":"), j = data.lastIndexOf(":");
+        var time = data.substring(j + 1, data.length);
         if (tar === undefined) {
-            data = commandData.split(":");
-            if (data.length > 1) {
-                commandData = data[0];
+            if (i !== -1) {
+                commandData = data.substring(0, i);
                 tar = sys.id(commandData);
-
-                if (data.length > 2 && /http$/.test(data[1])) {
-                    reason = data[1] + ":" + data[2];
-                    tindex = 3;
-                } else {
-                    reason = data[1];
-                    tindex = 2;
-                }
-                if (tindex==data.length && reason.length > 0 && reason.charCodeAt(0) >= 48 && reason.charCodeAt(0) <= 57) {
-                    tindex-=1;
-                    reason="";
-                }
-            }
+                if (time === "" || isNaN(time.replace(/s\s|m\s|h\s|d\s|w\s|s|m|h|d|w/gi, ""))) {
+                    time = defaultTime;
+                    reason = data.slice(i + 1);
+                } else if (i !== j) {
+                    reason = data.substring(i + 1, j);
+                };
+            };
         }
 
-        var secs = getSeconds(data.length > tindex ? data[tindex] : defaultTime);
+        var secs = getSeconds(time);
         // limit it!
         if (typeof maxTime == "number") secs = (secs > maxTime || secs === 0 || isNaN(secs)) ? maxTime : secs;
         if (secs > 0) {
