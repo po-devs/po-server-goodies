@@ -288,6 +288,35 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendHtmlMessage(src, table, channel);
         return;
     }
+    if (command == "watchlist") {
+        var TABLE_HEADER, TABLE_LINE, TABLE_END;
+        if (!commandData || commandData.indexOf('-text') == -1) {
+           TABLE_HEADER = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="3"><center><strong>Watch list</strong></center></td></tr><tr><th>Name</th><th>Comment</th><th>By</th></tr>';
+           TABLE_LINE = '<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>';
+           TABLE_END = '</table>';
+        } else {
+           TABLE_HEADER = 'Watch list: Name, Comment';
+           TABLE_LINE = ' || {0} / {1}';
+           TABLE_END = '';
+        }
+        try {
+        var table = TABLE_HEADER;
+        var tmp = [];
+        for (var key in script.namesToWatch.hash) {
+            if (script.namesToWatch.hash.hasOwnProperty(key)) {
+                var comment = script.namesToWatch.get(key).split(" ~ ");
+                tmp.push([key, comment[0], comment[1]]);
+            }
+        }
+        tmp.sort(function(a,b) { return a[0] < b[0] ? -1 : 1; });
+        for (var row = 0; row < tmp.length; ++row) {
+            table += TABLE_LINE.format(tmp[row][0], tmp[row][1], tmp[row][2] ? tmp[row][2] : "");
+        }
+        table += TABLE_END;
+        sys.sendHtmlMessage(src, table, channel);
+        } catch (e) { sys.sendMessage(src, e, channel); }
+        return;
+    }    
     if (command == "idbans") {
         //steal from rangebans
         var TABLE_HEADER, TABLE_LINE, TABLE_END;
@@ -707,6 +736,7 @@ exports.help =
         "/namebans: Lists name bans.",
         "/namewarns: Lists name warnings.",
         "/channelnamebans: Lists banned channel names.",
+        "/watchlist: Lists users having their battle activity tracked.",
         "/onrange: To view who is on an IP range.",
         "/onos: Lists players on a certain operating system (May lag a little with certain OS)",
         "/tiers: To view the tier(s) of a user.",
