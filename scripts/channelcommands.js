@@ -243,7 +243,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (i !== -1) {
             tarname = commandData.substring(0, i);
             var timeString = commandData.substring(j + 1, commandData.length);
-            if (timeString !== "" && (!isNaN(timeString) || (!isNaN(timeString.replace(/s\s|m\s|h\s|d\s|w\s|s|m|h|d|w/gi, ""))))) {
+            if (timeString !== "" && !isNaN(timeString.replace(/s\s|m\s|h\s|d\s|w\s|s|m|h|d|w/gi, ""))) {
                 time = getSeconds(timeString);
             } else {
                 time = 0;
@@ -343,7 +343,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (i !== -1) {
             tarname = commandData.substring(0, i);
             var timeString = commandData.substring(j + 1, commandData.length);
-            if (timeString !== "" && (!isNaN(timeString) || (!isNaN(timeString.replace(/s\s|m\s|h\s|d\s|w\s|s|m|h|d|w/gi, ""))))) {
+            if (timeString !== "" && !isNaN(timeString.replace(/s\s|m\s|h\s|d\s|w\s|s|m|h|d|w/gi, ""))) {
                 time = getSeconds(timeString);
             } else {
                 time = 0;
