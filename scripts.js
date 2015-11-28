@@ -695,8 +695,12 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         var timeString = "";
         var data = commandData;
         var ip;
-        var i = data.indexOf(":"), j = data.lastIndexOf(":");
-        var time = data.substring(j + 1, data.length);
+        var i = -1, j = -1, time = "";
+        if (data !== undefined) {
+            i = data.indexOf(":");
+            j = data.lastIndexOf(":");
+            time = data.substring(j + 1, data.length);
+        };
         if (tar === undefined) {
             if (i !== -1) {
                 commandData = data.substring(0, i);
@@ -708,9 +712,9 @@ issueBan : function(type, src, tar, commandData, maxTime) {
                     reason = data.substring(i + 1, j);
                 };
             };
-        }
-
-        var secs = getSeconds(time);
+        };
+        
+        var secs = getSeconds(time !== "" ? time : defaultTime);
         // limit it!
         if (typeof maxTime == "number") secs = (secs > maxTime || secs === 0 || isNaN(secs)) ? maxTime : secs;
         if (secs > 0) {
