@@ -2100,10 +2100,10 @@ beforeBattleEnded : function(src, dest, desc, bid) {
         SESSION.users(dest).battlehistory.push([srcname, tie ? "tie" + (sys.loggedIn(src) ? "" : " by d/c") : "lose", desc, rated, tier]);
         delete SESSION.users(dest).battles[bid];
     }
-    if (rated && (script.namesToWatch.get(srcname.toLowerCase()) === "true" || script.namesToWatch.get(destname.toLowerCase()) === "true")) {
-        if (sys.channelId("Channel")) {
-            sys.sendHtmlAll("<b><font color = blue>" + srcname + " and " + destname + " finished a battle with result " + (tie ? "tie" : srcname + " winning") + (desc === "forfeit" ? " (forfeit)" : "") + (tier ? " in tier " + tier: "") + (time ? " after " + getTimeString(sys.time() - time) + "." : "." ) + "</font></b>", sys.channelId("Channel"));
-            sys.sendAll(srcname + "'s IP: " + sys.dbIp(srcname) + " " + destname + "'s IP: " + sys.dbIp(destname), sys.channelId("Channel"));
+    if (rated && (script.namesToWatch.get(srcname.toLowerCase()) || script.namesToWatch.get(destname.toLowerCase()))) {
+        if (sys.channelId("Watch")) {
+            sys.sendHtmlAll("<b><font color = blue>" + srcname + " and " + destname + " finished a battle with result " + (tie ? "tie" : srcname + " winning") + (desc === "forfeit" ? " (forfeit)" : "") + (tier ? " in tier " + tier: "") + (time ? " after " + getTimeString(sys.time() - time) + "." : "." ) + "</font></b>", sys.channelId("Watch"));
+            sys.sendAll(srcname + "'s IP: " + sys.dbIp(srcname) + " " + destname + "'s IP: " + sys.dbIp(destname), sys.channelId("Watch"));
         }
     }
 },
