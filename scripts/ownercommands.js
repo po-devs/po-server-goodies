@@ -1,4 +1,33 @@
 exports.handleCommand = function(src, command, commandData, tar, channel) {
+    if (command == "addwatch") {
+        var i = commandData.split(":");
+        var name = i[0];
+        var comment = i[1] || '-';
+        if (i.length != 2) {
+            normalbot.sendMessage(src, "The format is (user):(comment)", channel);
+            return;
+        }
+        if (sys.dbIp(name) === undefined) {
+            normalbot.sendMessage(src, name + " is not a valid user.", channel);
+            return;
+        }
+        script.namesToWatch.add(name.toLowerCase(), comment + " ~ " + sys.name(src));
+        normalbot.sendAll(name + " was added to the watch list.", staffchannel);
+        return;
+    }
+    if (command == "removewatch") {
+        var name = commandData;
+        if (script.namesToWatch.get(name.toLowerCase()) !== undefined) {
+            script.namesToWatch.remove(name.toLowerCase());
+            normalbot.sendAll(name + " was removed from the watch list.", staffchannel);
+            return;
+        }
+        else {
+            normalbot.sendMessage(src, name + " is not in the watch list.", channel);
+            return;
+        }
+        return;
+    }    
     if (command == "ipban") {
         var subip;
         var comment;
