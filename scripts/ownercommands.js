@@ -417,22 +417,53 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         script.init();
         return;
     }
-    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "steve") {
-        if (command == "eval") {
-            eval(commandData);
-            return;
-        }
-        else if (command == "evalp") {
-            var bindChannel = channel;
+    if (["coyotte508", "crystal moogle", "fuzzysqurl", "lamperi", "nightmare moon", "steve"].contains(sys.name(src).toLowerCase())) {
+        if (command === "eval") {
+            if (commandData === undefined) {
+                normalbot.sendMessage(src, "Enter a script line. Proceed with caution using this.", channel);
+                return;
+            }
             try {
-                var res = eval(commandData);
-                sys.sendMessage(src, "Got from eval: " + res, bindChannel);
-            }
-            catch (err) {
-                sys.sendMessage(src, "Error in eval: " + err, bindChannel);
+                normalbot.sendMessage(src, "Performing eval: " + commandData, channel);
+                eval(commandData);
+            } catch (error) {
+                normalbot.sendMessage(src, error, channel);
             }
             return;
         }
+        if (command === "evalp") {
+            if (commandData === undefined) {
+                normalbot.sendMessage(src, "Enter a script line. Proceed with caution using this.", channel);
+                return;
+            }
+            try {
+                normalbot.sendMessage(src, "Printing eval: " + commandData, channel);
+                var result = eval(commandData);
+				normalbot.sendMessage(src, "Type: '" + (typeof result) + "'", channel);
+                normalbot.sendMessage(src, "Value: '" + result + "'", channel);
+            } catch (error) {
+                normalbot.sendMessage(src, "Error in eval: " + error, channel);
+            }
+            return;
+        }
+        if (command === "obj" || command === "objp") {
+			if (commandData === undefined) {
+				normalbot.sendMessage(src, "Enter an object to print. Example: global or sys.", channel);
+				return;
+			}
+			try {
+                var x, objKeys = Object.keys(eval(commandData)), listArray = [];
+				normalbot.sendMessage(src, "Printing " + commandData + ".keys", channel);
+				for (x = 0; x < objKeys.length; x++) {
+					listArray.push("<b><font color='#3daa68'>." + objKeys[x] + "</font></b>" + (command === "objp" ? ": " + eval(commandData)[objKeys[x]] : ""));
+				}
+                sys.sendHtmlMessage(src, listArray.join("<br />"), channel);
+				normalbot.sendMessage(src, "Done.", channel);
+			} catch (error) {
+				normalbot.sendMessage(src, error, channel);
+			}
+			return;
+		}
     }
     if (command == "clearladder" || command == "resetladder") {
         var tier = utilities.find_tier(commandData);
