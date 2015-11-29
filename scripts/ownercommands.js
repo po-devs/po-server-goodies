@@ -439,7 +439,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             try {
                 normalbot.sendMessage(src, "Printing eval: " + commandData, channel);
                 var result = eval(commandData);
-				normalbot.sendMessage(src, "Type: '" + (typeof result) + "'", channel);
+                normalbot.sendMessage(src, "Type: '" + (typeof result) + "'", channel);
                 normalbot.sendMessage(src, "Value: '" + result + "'", channel);
             } catch (error) {
                 normalbot.sendMessage(src, "Error in eval: " + error, channel);
@@ -447,23 +447,23 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         if (command === "obj" || command === "objp") {
-			if (commandData === undefined) {
-				normalbot.sendMessage(src, "Enter an object to print. Example: global or sys.", channel);
-				return;
-			}
-			try {
+            if (commandData === undefined) {
+                normalbot.sendMessage(src, "Enter an object to print. Example: global or sys.", channel);
+                return;
+            }
+            try {
                 var x, objKeys = Object.keys(eval(commandData)), listArray = [];
-				normalbot.sendMessage(src, "Printing " + commandData + ".keys", channel);
-				for (x = 0; x < objKeys.length; x++) {
-					listArray.push("<b><font color='#3daa68'>." + objKeys[x] + "</font></b>" + (command === "objp" ? ": " + eval(commandData)[objKeys[x]] : ""));
-				}
+                normalbot.sendMessage(src, "Printing " + commandData + ".keys", channel);
+                for (x = 0; x < objKeys.length; x++) {
+                    listArray.push("<b><font color='#3daa68'>." + objKeys[x] + "</font></b>" + (command === "objp" ? ": " + eval(commandData)[objKeys[x]] : ""));
+                }
                 sys.sendHtmlMessage(src, listArray.join("<br />"), channel);
-				normalbot.sendMessage(src, "Done.", channel);
-			} catch (error) {
-				normalbot.sendMessage(src, error, channel);
-			}
-			return;
-		}
+                normalbot.sendMessage(src, "Done.", channel);
+            } catch (error) {
+                normalbot.sendMessage(src, error, channel);
+            }
+            return;
+        }
     }
     if (command == "clearladder" || command == "resetladder") {
         var tier = utilities.find_tier(commandData);
