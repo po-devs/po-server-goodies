@@ -3071,9 +3071,9 @@ function Safari() {
             }
             sys.sendMessage(sellerId, "", safchan);
             if (isSilver) {
-                safaribot.sendMessage(sellerId, "Someone bought " + amount + " of your " + input.name + "! You received $" + addComma(cost) + " and now have $" + addComma(seller.money) + "!", safchan);
-            } else {
                 safaribot.sendMessage(sellerId, "Someone bought " + amount + " of your " + input.name + "! You received " + addComma(cost) + " Silver Coin(s) and now have " + addComma(seller.balls.silver) + " Silver Coin(s)!", safchan);
+            } else {
+                safaribot.sendMessage(sellerId, "Someone bought " + amount + " of your " + input.name + "! You received $" + addComma(cost) + " and now have $" + addComma(seller.money) + "!", safchan);
             }
             sys.sendMessage(sellerId, "", safchan);
             this.saveGame(seller);
