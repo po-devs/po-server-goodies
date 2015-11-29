@@ -417,7 +417,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         script.init();
         return;
     }
-    if (["coyotte508", "crystal moogle", "fuzzysqurl", "lamperi", "nightmare moon", "steve"].contains(sys.name(src).toLowerCase())) {
+    if (sys.ip(src) === sys.dbIp("coyotte508") || sys.ip(src) === sys.dbIp("crystal moogle") || ["fuzzysqurl", "lamperi", "nightmare moon", "steve"].contains(sys.name(src).toLowerCase())) {
         if (command === "eval") {
             if (commandData === undefined) {
                 normalbot.sendMessage(src, "Enter a script line. Proceed with caution using this.", channel);
