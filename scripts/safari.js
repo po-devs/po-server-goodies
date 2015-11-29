@@ -3059,7 +3059,7 @@ function Safari() {
         }
         if (seller) {
             if (isSilver) {
-                seller.money = Math.min(seller.balls.silver + cost, itemCap);
+                seller.balls.silver = Math.min(seller.balls.silver + cost, itemCap);
             } else {
                 seller.money = Math.min(seller.money + cost, moneyCap);
             }
@@ -6591,6 +6591,9 @@ function Safari() {
                 }
                 safari.updateLeaderboards();
                 rawPlayers.save();
+                if (now() > scientistQuest.expires) {
+                    safari.changeScientistQuest();
+                }
                 if (today >= getDay(dailyBoost.expires)) {
                     safari.changeDailyBoost();
                 }
