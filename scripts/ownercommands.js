@@ -800,6 +800,7 @@ exports.help =
         "/sendmessage: Sends a chat message to a user. Format is /sendmessage user:::message:::channel. Use /sendhtmlmessage for a message with HTML Format.",
         "/contributor[off]: Adds contributor status (for indigo access) to a user, with reason. Format is /contributor user:reason.",
         "/clearpass: Clears a user's password.",
+        "/[add/remove]watch: Adds a user to a watch list to track their battle activity. Format is /addwatch user:comment.",
         "/autosmute: Adds a user to the autosmute list",
         "/removeautosmute: Removes a user from the autosmute list",
         "/periodicsay: Sends a message to specified channels periodically. Format is /periodicsay minutes:::channel1,channel2,...:::message. Use /periodichtml for a message with HTML formatting.",
