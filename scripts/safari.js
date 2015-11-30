@@ -5306,7 +5306,7 @@ function Safari() {
             lastIdAssigned = loadLastId();
         }
         if (player) {
-            if (!("idnum" in player)) {
+            if (!("idnum" in player) || player.idnum === undefined || player.idnum === null || isNaN(player.idnum) || player.idnum < 0 || typeof player.idnum !== "number") {
                 player.idnum = 0;
             }
             if (player.idnum === 0 || force) {
@@ -5402,15 +5402,15 @@ function Safari() {
         if (catStrings.indexOf(data) === -1) {
             //Try to decode which item the user is looking for
             var lookup = itemAlias(data, true);
-            /*if (allItems.indexOf(lookup) === -1) {
-                //If it's not an item, it's either a costume or invalid.
+            if (allItems.indexOf(lookup) === -1) {
+                /*//If it's not an item, it's either a costume or invalid.
                 lookup = costumeAlias(data, true);
                 if (allCostumes.indexOf(lookup) !== -1) {
                     if (costumeHelp.hasOwnProperty(lookup)) {
                         help = costumeAlias(lookup, false, true) + " Costume: " + costumeHelp[lookup];
                     }
-                }
-            } else {*/
+                }*/
+            } else {
                 //Now grab the help from whichever category it is
                 if (itemHelp.hasOwnProperty(lookup)) {
                     help = finishName(lookup) + ": " + itemHelp[lookup];
@@ -5419,7 +5419,7 @@ function Safari() {
                 } else if (ballHelp.hasOwnProperty(lookup)) {
                     help = finishName(lookup) + ": " + ballHelp[lookup];
                 }
-            //}
+            }
             
             //Frame out result
             sys.sendMessage(src, "", safchan);
@@ -6136,7 +6136,7 @@ function Safari() {
             }
             this.assignIdNumber(player, true);
             this.saveGame(player);
-            safaribot.sendAll(target.toCorrectCase() + "'s ID has been reset and is now " + player.idnum + ".", safchan);
+            safaribot.sendMessage(src, target.toCorrectCase() + "'s ID has been reset and is now " + player.idnum + ".", safchan);
             return true;
         }
         if (command === "safaripay") {
