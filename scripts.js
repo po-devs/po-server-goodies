@@ -693,30 +693,28 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         var defaultTime = {"mute": "24h", "mban": "1d", "smute": "0", "hmute": "1d"}[type];
         var reason = "";
         var timeString = "";
-        var tindex = 10;
-        var data = [];
+        var data = commandData;
         var ip;
+        var i = -1, j = -1, time = "";
+        if (data !== undefined) {
+            i = data.indexOf(":");
+            j = data.lastIndexOf(":");
+            time = data.substring(j + 1, data.length);
+        };
         if (tar === undefined) {
-            data = commandData.split(":");
-            if (data.length > 1) {
-                commandData = data[0];
+            if (i !== -1) {
+                commandData = data.substring(0, i);
                 tar = sys.id(commandData);
-
-                if (data.length > 2 && /http$/.test(data[1])) {
-                    reason = data[1] + ":" + data[2];
-                    tindex = 3;
-                } else {
-                    reason = data[1];
-                    tindex = 2;
-                }
-                if (tindex==data.length && reason.length > 0 && reason.charCodeAt(0) >= 48 && reason.charCodeAt(0) <= 57) {
-                    tindex-=1;
-                    reason="";
-                }
-            }
-        }
-
-        var secs = getSeconds(data.length > tindex ? data[tindex] : defaultTime);
+                if (time === "" || isNaN(time.replace(/s\s|m\s|h\s|d\s|w\s|s|m|h|d|w/gi, ""))) {
+                    time = defaultTime;
+                    reason = data.slice(i + 1);
+                } else if (i !== j) {
+                    reason = data.substring(i + 1, j);
+                };
+            };
+        };
+        
+        var secs = getSeconds(time !== "" ? time : defaultTime);
         // limit it!
         if (typeof maxTime == "number") secs = (secs > maxTime || secs === 0 || isNaN(secs)) ? maxTime : secs;
         if (secs > 0) {
@@ -1121,10 +1119,10 @@ afterChannelJoin : function(player, chan) {
             sys.sendMessage(player, "Set by: " + SESSION.channels(chan).topicSetter, chan);*/
     }
     if (SESSION.channels(chan).isChannelOperator(player)) {
-        sys.sendMessage(player, Config.channelbot + ": use /topic <topic> to change the welcome message of this channel", chan);
+        sys.sendMessage(player, "±" + Config.channelbot + ": use /topic <topic> to change the welcome message of this channel", chan);
     }
     if (SESSION.channels(chan).masters.length <= 0 && !this.isOfficialChan(chan)) {
-        sys.sendMessage(player, Config.channelbot + ": This channel is unregistered. If you're looking to own this channel, type /register in order to prevent your channel from being stolen.", chan);
+        sys.sendMessage(player, "±" + Config.channelbot + ": This channel is unregistered. If you're looking to own this channel, type /register in order to prevent your channel from being stolen.", chan);
     }
     callplugins("afterChannelJoin", player, chan);
 }, /* end of afterChannelJoin */
@@ -2102,10 +2100,10 @@ beforeBattleEnded : function(src, dest, desc, bid) {
         SESSION.users(dest).battlehistory.push([srcname, tie ? "tie" + (sys.loggedIn(src) ? "" : " by d/c") : "lose", desc, rated, tier]);
         delete SESSION.users(dest).battles[bid];
     }
-    if (rated && (script.namesToWatch.get(srcname.toLowerCase()) === "true" || script.namesToWatch.get(destname.toLowerCase()) === "true")) {
-        if (sys.channelId("Channel")) {
-            sys.sendHtmlAll("<b><font color = blue>" + srcname + " and " + destname + " finished a battle with result " + (tie ? "tie" : srcname + " winning") + (desc === "forfeit" ? " (forfeit)" : "") + (tier ? " in tier " + tier: "") + (time ? " after " + getTimeString(sys.time() - time) + "." : "." ) + "</font></b>", sys.channelId("Channel"));
-            sys.sendAll(srcname + "'s IP: " + sys.dbIp(srcname) + " " + destname + "'s IP: " + sys.dbIp(destname), sys.channelId("Channel"));
+    if (rated && (script.namesToWatch.get(srcname.toLowerCase()) || script.namesToWatch.get(destname.toLowerCase()))) {
+        if (sys.channelId("Watch")) {
+            sys.sendHtmlAll("<b><font color = blue>" + srcname + " and " + destname + " finished a battle with result " + (tie ? "tie" : srcname + " winning") + (desc === "forfeit" ? " (forfeit)" : "") + (tier ? " in tier " + tier: "") + (time ? " after " + getTimeString(sys.time() - time) + "." : "." ) + "</font></b>", sys.channelId("Watch"));
+            sys.sendAll(srcname + "'s IP: " + sys.dbIp(srcname) + " " + destname + "'s IP: " + sys.dbIp(destname), sys.channelId("Watch"));
         }
     }
 },
