@@ -5273,7 +5273,7 @@ function Safari() {
                     delete player.masterCooldown;
                 }
             }
-            if (!("idnum" in player)) {
+            if (!("idnum" in player) || player.idnum === undefined || player.idnum === null || isNaN(player.idnum) || player.idnum < 0 || typeof player.idnum !== "number") {
                 player.idnum = 0;
                 this.assignIdNumber(player);
             }
@@ -5814,7 +5814,7 @@ function Safari() {
         }
         if (command === "info") {
             var time = new Date(now()).toUTCString();
-            sys.sendMessage(src, "*** Safari Information ***", safchan);
+            sys.sendMessage(src, "*** *********************************************************************** ***", safchan);
             safaribot.sendMessage(src, "Current Time: " + time, safchan);
             if (contestCount > 0) {
                 var min = Math.floor(contestCount/60);
@@ -5831,7 +5831,7 @@ function Safari() {
             }
             safaribot.sendMessage(src, "Boost-of-the-Day: " + sys.pokemon(dailyBoost.pokemon) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active).", safchan);
             safaribot.sendMessage(src, "Current Gachapon Jackpot: " + Math.floor(gachaJackpot/10) + " Tickets.", safchan);
-            sys.sendMessage(src, "*** ****************** ***", safchan);
+            sys.sendMessage(src, "*** *********************************************************************** ***", safchan);
             return true;
         }
         if (command === "bst") {
