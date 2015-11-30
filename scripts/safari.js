@@ -767,13 +767,6 @@ function Safari() {
         }
         return contestThemes[obj].name;
     }
-    function loadLastId () {
-        try {
-            return parseInt(permObj.get("lastIdAssigned"), 10);
-        } catch (err) {
-            return 0;
-        }
-    }
     
     function isBall(item) {
         return item in itemData && itemData[item].type === "ball";
@@ -5303,7 +5296,11 @@ function Safari() {
     };
     this.assignIdNumber = function(player, force) {
         if (!lastIdAssigned) {
-            lastIdAssigned = loadLastId();
+            try {
+                lastIdAssigned = parseInt(permObj.get("lastIdAssigned"), 10);
+            } catch (err) {
+                lastIdAssigned = 0;
+            }
         }
         if (player) {
             if (!("idnum" in player) || player.idnum === undefined || player.idnum === null || isNaN(player.idnum) || player.idnum < 0 || typeof player.idnum !== "number") {
@@ -5311,7 +5308,7 @@ function Safari() {
             }
             if (player.idnum === 0 || force) {
                 lastIdAssigned++;
-                permObj.add("lastIdAssigned", JSON.stringify(lastIdAssigned));
+                permObj.add("lastIdAssigned", lastIdAssigned);
                 permObj.save();
                 player.idnum = lastIdAssigned;
             }
@@ -6487,7 +6484,11 @@ function Safari() {
         } catch (err) {
             this.changeScientistQuest();
         }
-        lastIdAssigned = loadLastId();
+        try {
+            lastIdAssigned = parseInt(permObj.get("lastIdAssigned"), 10);
+        } catch (err) {
+            lastIdAssigned = 0;
+        }
         this.updateLeaderboards();
     };
     this.afterChannelJoin = function (src, channel) {
