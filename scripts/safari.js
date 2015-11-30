@@ -5746,7 +5746,8 @@ function Safari() {
         }
         if (command === "info") {
             var time = new Date(now()).toUTCString();
-            safaribot.sendMessage(src, "Safari Time: " + time, safchan);
+            sys.sendMessage(src, "*** Safari Information ***", safchan);
+            safaribot.sendMessage(src, "Current Time: " + time, safchan);
             if (contestCount > 0) {
                 var min = Math.floor(contestCount/60);
                 var sec = contestCount%60;
@@ -5762,6 +5763,7 @@ function Safari() {
             }
             safaribot.sendMessage(src, "Boost-of-the-Day: " + sys.pokemon(dailyBoost.pokemon) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active).", safchan);
             safaribot.sendMessage(src, "Current Gachapon Jackpot: " + Math.floor(gachaJackpot/10) + " Tickets.", safchan);
+            sys.sendMessage(src, "*** ****************** ***", safchan);
             return true;
         }
         if (command === "bst") {
