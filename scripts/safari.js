@@ -767,6 +767,13 @@ function Safari() {
         }
         return contestThemes[obj].name;
     }
+    function loadLastId () {
+        try {
+            return parseInt(permObj.get("lastIdAssigned"), 10);
+        } catch (err) {
+            return 0;
+        }
+    }
     
     function isBall(item) {
         return item in itemData && itemData[item].type === "ball";
@@ -5296,11 +5303,7 @@ function Safari() {
     };
     this.assignIdNumber = function(player, force) {
         if (!lastIdAssigned) {
-            try {
-                lastIdAssigned = parseInt(permObj.get("lastIdAssigned"), 10);
-            } catch (err) {
-                lastIdAssigned = 0;
-            }
+            lastIdAssigned = loadLastId();
         }
         if (player) {
             if (!("idnum" in player) || player.idnum === undefined || player.idnum === null || isNaN(player.idnum) || player.idnum < 0 || typeof player.idnum !== "number") {
@@ -6434,6 +6437,17 @@ function Safari() {
             safaribot.sendAll("Gachapon Jackpot was reset!", safchan);
             return true;
         }
+        if (command === "changelastid") {
+            var value = parseInt(commandData, 10);
+            if (isNaN(value)) {
+                safaribot.sendMessage(src, "Invalid number!", safchan);
+                return true;
+            }
+            permObj.add("lastIdAssigned", value);
+            permObj.save();
+            safaribot.sendMessage(src, "Last ID number reset to " + value + ".", safchan);
+            return true;
+        }
         if (command === "wipesafariall") {
             var info = commandData.toLowerCase().split(":");
             if (info[0] !== "confirm") {
@@ -6484,11 +6498,7 @@ function Safari() {
         } catch (err) {
             this.changeScientistQuest();
         }
-        try {
-            lastIdAssigned = parseInt(permObj.get("lastIdAssigned"), 10);
-        } catch (err) {
-            lastIdAssigned = 0;
-        }
+        lastIdAssigned = loadLastId();
         this.updateLeaderboards();
     };
     this.afterChannelJoin = function (src, channel) {
