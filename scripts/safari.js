@@ -287,7 +287,7 @@ function Safari() {
         ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", icon: 307, price: 120, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"], sellable: false, buyable: true, tradable: false},
         master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 0, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], sellable: false, buyable: false, tradable: true},
 
-        myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 329, price: 0, ballBonus: 1, bonusRate: 2, cooldown: 9000, aliases:["mythball", "myth", "myth ball"], sellable: false, buyable: false, tradable: true},
+        myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 329, price: 0, ballBonus: 1, bonusRate: 3, cooldown: 9000, aliases:["mythball", "myth", "myth ball"], sellable: false, buyable: false, tradable: true},
         heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 0, ballBonus: 1, bonusRate: 0.5, maxBonus: 5, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], sellable: false, buyable: false, tradable: true},
         quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 0, ballBonus: 1, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], sellable: false, buyable: false, tradable: true},
         luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 1.25, cooldown: 10000, aliases:["luxuryball", "luxury", "luxury ball"], sellable: false, buyable: false, tradable: true},
@@ -313,7 +313,7 @@ function Safari() {
 
         //Perks
         amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], sellable: false, buyable: false, tradable: true, tradeReq: 10},
-        honey: {name: "honey", fullName: "Honey", type: "perk", icon: 82, price: 0, bonusRate: 0.025, maxRate: 0.25, aliases:["honey"], sellable: false, buyable: false, tradable: true},
+        honey: {name: "honey", fullName: "Honey", type: "perk", icon: 82, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["honey"], sellable: false, buyable: false, tradable: true},
         soothe: {name: "soothe", fullName: "Soothe Bell", type: "perk", icon: 35, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["soothe", "soothebell", "soothe bell", "bell"], sellable: false, buyable: false, tradable: true},
         crown: {name: "crown", fullName: "Relic Crown", type: "perk", icon: 278, price: 0, bonusRate: 0.01, maxRate: 0.1, aliases:["crown", "reliccrown", "relic crown", "relic"], sellable: false, buyable: false, tradable: true, tradeReq: 10},
         scarf: {name: "scarf", fullName: "Silk Scarf", type: "perk", icon: 31, price: 0, bonusRate: 0.015, maxRate: 0.15, aliases:["scarf", "silkscarf", "silk scarf", "silk"], sellable: false, buyable: false, tradable: true},
@@ -1249,7 +1249,7 @@ function Safari() {
             }
         }
         if (ball === "heavy" && wildStats >= 450) {
-            ballBonus = 1 + itemData[ball].bonusRate * (Math.floor((wildStats - 450) / (isLegendary(wild) ? 50 : 30)) + 1);
+            ballBonus = 1 + itemData[ball].bonusRate * (Math.floor((wildStats - 450) / 30) + 1);
             if (ballBonus > itemData[ball].maxBonus) {
                 ballBonus = itemData[ball].maxBonus;
             }
@@ -2573,6 +2573,10 @@ function Safari() {
         var player = getAvatar(src);
         var quest = scientistQuest;
         var id = quest.pokemon;
+        if (now() > quest.expires) {
+            safaribot.sendMessage(src, "Scientist: I'm going to present my research results in a convention. Please come back later!", safchan);
+            return;
+        }
         if (player.quests.scientist.cooldown >= now() && player.quests.scientist.pokemon == id) {
             safaribot.sendMessage(src, "Scientist: That " + poke(id) + " that you brought earlier is really helping me! Come back in " + timeLeftString(quest.expires) + " to check my next research!", safchan);
             return;
@@ -2690,14 +2694,67 @@ function Safari() {
             } while (bst > 600 || isLegendary(randomNum));
         }
         
-        var reward = Math.floor((bst - 180)/60) + 1;
+        var reward = Math.floor((bst - 180)/50) + 1;
         scientistQuest = {
             pokemon: randomNum,
             reward: reward,
             expires: now() + 3 * 60 * 60 * 1000 - 3 * 60 * 1000
         };
         permObj.add("scientistQuest", JSON.stringify(scientistQuest));
-        permObj.save();
+    };
+    this.fightNPC = function(src, data) {
+        var player = getAvatar(src);
+        
+        if (this.isBattling(sys.name(src))) {
+            safaribot.sendMessage(src, "You are already in a battle!", safchan);
+            return;
+        }
+        if (contestCooldown <= 35 || contestCount > 0) {
+            safaribot.sendMessage(src, "You cannot battle during a contest or when one is about to start!", safchan);
+            return;
+        }
+        if (currentPokemon) {
+            safaribot.sendMessage(src, "You cannot start a battle while a wild Pokémon is around!", safchan);
+            return;
+        }
+        var opt = data[0].toLowerCase();
+        if (!opt) {
+            safaribot.sendMessage(src, "You want a battle? Then type /quest brawler:name to pick who you want to fight!", safchan);
+            return;
+        }
+        
+        var partySize = 6;
+        var npc;
+        
+        switch (opt) {
+            case "red":
+                npc = {
+                    name: "Trainer Red",
+                    party: [3, 6, 9, 25, 143, 196],
+                    handicap: [110, 250]
+                };
+                partySize = 6;
+            break;
+            case "blue":
+                npc = {
+                    name: "Trainer Blue",
+                    party: [18, 65, 112, 130, 103, 59],
+                    handicap: [110, 250]
+                };
+                partySize = 6;
+            break;
+            default:
+                safaribot.sendMessage(src, "Invalid opponent!", safchan);
+                return;
+        }
+        
+        if (player.party < partySize) {
+            safaribot.sendMessage(src, "Your party must have at least " + partySize + " Pokémon for this challenge!", safchan);
+            return;
+        }
+        
+        var battle = new Battle(src, npc);
+        currentBattles.push(battle);
     };
     
     this.sellPokemon = function(src, data) {
@@ -4598,17 +4655,28 @@ function Safari() {
 
     function Battle(p1, p2) {
         var player1 = getAvatar(p1);
-        var player2 = getAvatar(p2);
-
+        
         this.src1 = p1;
-        this.src2 = p2;
         this.name1 = sys.name(p1);
-        this.name2 = sys.name(p2);
-
-        this.viewers = [this.name1.toLowerCase(), this.name2.toLowerCase()];
-
+        this.viewers = [this.name1.toLowerCase()];
         this.team1 = player1.party.concat().shuffle();
-        this.team2 = player2.party.concat().shuffle();
+        
+        
+        var isNPC = this.npcBattle = typeof p2 == "object";
+        var player2 = isNPC ? p2 : getAvatar(p2);
+        if (isNPC) {
+            this.src2 = null;
+            this.name2 = player2.name;
+            this.team2 = player2.party.concat().shuffle();
+            this.handicapMin = player2.handicap[0];
+            this.handicapMax = player2.handicap[1];
+        } else {
+            this.src2 = p2;
+            this.name2 = sys.name(p2);
+            this.viewers.push(this.name2.toLowerCase());
+            this.team2 = player2.party.concat().shuffle();
+        }
+        
         this.turn = -1;
         this.duration = Math.min(this.team1.length, this.team2.length);
 
@@ -4619,7 +4687,7 @@ function Safari() {
         this.scoreOrder = [];
         this.finished = false;
 
-        safaribot.sendHtmlAll("A battle between " + sys.name(p1) + " and " + sys.name(p2) + " has started! [<a href='po:send//watch " + this.name1 + "'>Watch</a>]", safchan);
+        safaribot.sendHtmlAll("A battle between " + this.name1 + " and " + (isNPC ? "<i>[NPC]</i> " : "") + this.name2 + " has started! [<a href='po:send//watch " + this.name1 + "'>Watch</a>]", safchan);
     }
     Battle.prototype.nextTurn = function() {
         if (this.turn < 0) {
@@ -4637,7 +4705,7 @@ function Safari() {
         var p2Bonus = safari.checkEffective(p2Type1, p2Type2, p1Type1, p1Type2);
 
         var p1Move = sys.rand(10, 100);
-        var p2Move = sys.rand(10, 100);
+        var p2Move = sys.rand(10 + (this.npcBattle ? this.handicapMin : 0), 100 + (this.npcBattle ? this.handicapMax : 0));
 
         var statName = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"];
         var stat = sys.rand(0, 6);
@@ -4677,8 +4745,8 @@ function Safari() {
         this.turn++;
         if (this.turn >= this.duration) {
             if (this.turn == this.duration && this.p1Score == this.p2Score) {
-                this.team1.push(this.team1[sys.rand(0, this.team1.length)]);
-                this.team2.push(this.team2[sys.rand(0, this.team2.length)]);
+                this.team1.push(this.team1.random());
+                this.team2.push(this.team2.random());
                 this.sendToViewers("No winner after the regular rounds! An extra tiebreaker round will be held!", true);
             } else {
                 this.finishBattle();
@@ -4743,22 +4811,22 @@ function Safari() {
             }
         }
     };
-    Battle.prototype.sendToViewers = function(msg, bypassPlayerUnwatch) {
+    Battle.prototype.sendToViewers = function(msg, bypassUnwatch) {
         var e;
         for (e in this.viewers) {
             this.sendMessage(this.viewers[e], msg);
         }
-        if (bypassPlayerUnwatch) {
-            if (this.viewers.indexOf(this.name1.toLowerCase()) === -1) {
+        if (bypassUnwatch) {
+            if (!this.viewers.contains(this.name1.toLowerCase())) {
                 this.sendMessage(this.name1, msg);
             }
-            if (this.viewers.indexOf(this.name2.toLowerCase()) === -1) {
+            if (!this.npcBattle && !this.viewers.contains(this.name2.toLowerCase())) {
                 this.sendMessage(this.name2, msg);
             }
         }
     };
     Battle.prototype.isInBattle = function(name) {
-        return this.name1.toLowerCase() == name.toLowerCase() || this.name2.toLowerCase() == name.toLowerCase();
+        return this.name1.toLowerCase() == name.toLowerCase() || (!this.npcBattle && this.name2.toLowerCase() == name.toLowerCase());
     };
 
     this.startGame = function(src, data) {
