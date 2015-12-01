@@ -98,7 +98,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, contributors, mutes, mbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, hapokemons, lcpokemons,breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, pokeAbilities, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, namesToWatch, allowedRangeNames, reverseTohjo, safaribot;
+var channel, contributors, mutes, mbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, hapokemons, lcpokemons,breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, pokeAbilities, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, namesToWatch, allowedRangeNames, reverseTohjo, safaribot, safarichan;
 
 var pokeDir = "db/pokes/";
 var moveDir = "db/moves/6G/";
@@ -700,7 +700,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             i = data.indexOf(":");
             j = data.lastIndexOf(":");
             time = data.substring(j + 1, data.length);
-        };
+        }
         if (tar === undefined) {
             if (i !== -1) {
                 commandData = data.substring(0, i);
@@ -710,10 +710,10 @@ issueBan : function(type, src, tar, commandData, maxTime) {
                     reason = data.slice(i + 1);
                 } else if (i !== j) {
                     reason = data.substring(i + 1, j);
-                };
-            };
-        };
-        
+                }
+            }
+        }
+
         var secs = getSeconds(time !== "" ? time : defaultTime);
         // limit it!
         if (typeof maxTime == "number") secs = (secs > maxTime || secs === 0 || isNaN(secs)) ? maxTime : secs;
@@ -1606,8 +1606,17 @@ beforeChatMessage: function(src, message, chan) {
          return;
     }
     channel = chan;
-    if ((script.isOfficialChan(chan) && message.length > 250 && sys.auth(src) < 1)
-       || (message.length > 5000 && sys.auth(src) < 2)) {
+    
+    var throttleMsg = false;
+    if (script.isOfficialChan(chan)) {
+        if ((!SESSION.channels(channel).isChannelOperator(src) && message.length > 250)
+         || (!SESSION.channels(channel).isChannelAdmin(src) && message.length > 3000)) {
+            throttleMsg = true;
+        }
+    } else if (message.length > 3000 && sys.auth(src) < 2) {
+        throttleMsg = true;
+    }
+    if (throttleMsg) {
         normalbot.sendMessage(src, "Hi! Your message is too long, please make it shorter :3", channel);
         sys.stopEvent();
         return;
