@@ -1005,7 +1005,7 @@ isChannelStaff : function(src) {
 },
 
 isOfficialChan : function (chanid) {
-    var officialchans = [0, tourchannel, mafiachan, triviachan, hangmanchan];
+    var officialchans = [0, tourchannel, mafiachan, triviachan, hangmanchan, safarichan];
     if (officialchans.indexOf(chanid) > -1)
         return true;
     else
