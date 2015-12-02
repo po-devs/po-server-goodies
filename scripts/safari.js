@@ -2736,6 +2736,9 @@ function Safari() {
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Arena Clerk: You want a battle? Then type /quest arena:name to pick who you want to fight!", safchan);
             safaribot.sendMessage(src, "Arena Clerk: You need to pay an entry fee and get some Silver Coins if you win! Type /quest arena:help for more details!", safchan);
+            if (player.quests.arena.cooldown >= now()) {
+                safaribot.sendMessage(src, "Arena Clerk: There's currently a long queue of people fighting in the Arena, so it may need to wait " + timeLeftString(player.quests.arena.cooldown) + " to try a challenge!", safchan);
+            }
             sys.sendMessage(src, "", safchan);
             return;
         }
@@ -2760,7 +2763,7 @@ function Safari() {
         var opponents = {
             pink: {
                 name: "Trainer Pink",
-                party: [36,80,196,222,518,700,594,706,463,591,65838,452,472,205,719],
+                party: [36,80,196,222,518,700,594,706,463,591,65838,452,472,205,719,423,308],
                 power: [60, 130],
                 postBattle: postBattle,
                 postArgs: {
@@ -2770,7 +2773,7 @@ function Safari() {
             },
             teal: {
                 name: "Trainer Teal",
-                party: [65539,282,330,272,579,248,547,460,178,393892,475,569,186,384,598],
+                party: [65539,282,330,272,579,248,547,460,178,393892,475,569,186,598,384,652],
                 power: [90, 170],
                 postBattle: postBattle,
                 postArgs: {
@@ -2790,7 +2793,7 @@ function Safari() {
             },
             cyan: {
                 name: "Trainer Cyan",
-                party: [65545,409,448,202,130,465,539,476,635,144,593,623,604,230,376],
+                party: [65545,409,448,202,130,465,539,476,635,144,593,623,604,230,376,260,171],
                 power: [150, 300],
                 postBattle: postBattle,
                 postArgs: {
@@ -2800,7 +2803,7 @@ function Safari() {
             },
             crimson: {
                 name: "Trainer Crimson",
-                party: [131078,101,625,663,697,212,131658,342,213,47,224,553,392,538,380],
+                party: [131078,101,625,663,697,212,131658,342,213,47,224,553,392,538,380,257,99],
                 power: [200, 380],
                 postBattle: postBattle,
                 postArgs: {
@@ -3727,7 +3730,7 @@ function Safari() {
     };
     this.translateTradeOffer = function(asset) {
         if (asset[0] == "$") {
-            return "$" + parseInt(asset.substr(asset.indexOf("$") + 1), 10);
+            return "$" + addComma(parseInt(asset.substr(asset.indexOf("$") + 1), 10));
         }
         else if (asset.indexOf("@") !== -1) {
             var item = itemAlias(asset.substr(asset.indexOf("@") + 1), true);
