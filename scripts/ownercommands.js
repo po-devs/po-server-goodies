@@ -455,9 +455,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 var x, objKeys = Object.keys(eval(commandData)), listArray = [];
                 normalbot.sendMessage(src, "Printing " + commandData + ".keys", channel);
                 for (x = 0; x < objKeys.length; x++) {
-                    listArray.push("<b><font color='#3daa68'>." + objKeys[x] + "</font></b>" + (command === "objp" ? ": " + eval(commandData)[objKeys[x]] : ""));
+                    sys.sendMessage(src, "." + objKeys[x] + (command === "objp" ? ": " + eval(commandData)[objKeys[x]] : ""), channel);
                 }
-                sys.sendHtmlMessage(src, listArray.join("<br />"), channel);
                 normalbot.sendMessage(src, "Done.", channel);
             } catch (error) {
                 normalbot.sendMessage(src, error, channel);
