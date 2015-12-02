@@ -5103,7 +5103,7 @@ function Safari() {
         player.party.push(num);
         player.starter = num;
         
-        player.money = 0;
+        player.money = 300;
         player.balls.safari = 30;
         player.balls.great = 5;
         player.balls.ultra = 1;
