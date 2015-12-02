@@ -2849,7 +2849,7 @@ function Safari() {
             return;
         }
         
-        if (player.party < 6) {
+        if (player.party.length < 6) {
             safaribot.sendMessage(src, "Your party must have 6 Pokémon for this challenge!", safchan);
             return;
         }
