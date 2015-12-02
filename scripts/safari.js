@@ -3719,7 +3719,7 @@ function Safari() {
             return;
         }
         if (userName in tradeRequests) {
-            safaribot.sendMessage(src, "You already have a pending trade! To cancel it, type '/trade cancel'.", safchan);
+            safaribot.sendHtmlMessage(src, "You already have a pending trade! To cancel it, type '<a href='po:send//trade cancel'>/trade cancel</a>'.", safchan);
             return;
         }
 
