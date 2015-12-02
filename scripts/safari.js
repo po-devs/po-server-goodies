@@ -6866,7 +6866,7 @@ function Safari() {
                         safari.saveGame(player);
                         if (playerId) {
                             if (e in contestCatchers) {
-                                safaribot.sendMessage(playerId, "You finished in " + getOrdinal(winners.contain(e) ? 1 : allContestants.indexOf(e) + 1) + " place " + playerScore(e), safchan);
+                                safaribot.sendMessage(playerId, "You finished in " + getOrdinal(winners.contains(e) ? 1 : allContestants.indexOf(e) + 1) + " place " + playerScore(e), safchan);
                             }
                             safaribot.sendMessage(playerId, "You received " + amt + " Bait(s) for participating in the contest!", safchan);
                         }
