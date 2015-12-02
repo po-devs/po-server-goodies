@@ -6642,6 +6642,15 @@ function Safari() {
             safaribot.sendAll("Safari has been completely reset!", safchan);
             return true;
         }
+        if (command === "csilence") {
+            if (commandData === "*") {
+                sys.sendAll("±PA: Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!", safchan);
+                SESSION.channels(safchan).muteall = true;
+            } else {
+               script.silence(src, commandData, sys.channel(safchan));
+            }
+            return true;
+        }
         return false;
     };
     this.init = function () {
