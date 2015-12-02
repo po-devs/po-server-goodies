@@ -2732,10 +2732,6 @@ function Safari() {
             safaribot.sendMessage(src, "You cannot start a battle while a wild Pokémon is around!", safchan);
             return;
         }
-        if (player.quests.arena.cooldown >= now()) {
-            safaribot.sendMessage(src, "Arena Clerk: There's a long queue of people fighting in the Arena! Please come after " + timeLeftString(player.quests.arena.cooldown) + " try another challenge!", safchan);
-            return;
-        }
         if (data.length === 0) {
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Arena Clerk: You want a battle? Then type /quest arena:name to pick who you want to fight!", safchan);
@@ -2835,6 +2831,12 @@ function Safari() {
             return;
         }
         
+        
+        if (player.quests.arena.cooldown >= now()) {
+            safaribot.sendMessage(src, "Arena Clerk: There's a long queue of people fighting in the Arena! Please come after " + timeLeftString(player.quests.arena.cooldown) + " to try another challenge!", safchan);
+            return;
+        }
+        
         var npc = opponents[opt];
         if (!npc) {
             safaribot.sendMessage(src, "There's no one with that name around here!", safchan);
@@ -2847,7 +2849,7 @@ function Safari() {
             return;
         }
         
-        if (player.party < 6) {
+        if (player.party.length < 6) {
             safaribot.sendMessage(src, "Your party must have 6 Pokémon for this challenge!", safchan);
             return;
         }
@@ -5479,7 +5481,7 @@ function Safari() {
         data = data.toLowerCase();
         var catStrings = ["all", "balls", "items", "perks", "costumes"];
         var itemHelp = {
-            silver: "Rare coins that can be used to purchase valuable items. Obtained from Scientist quests.",
+            silver: "Rare coins that can be used to purchase valuable items. Obtained from quests.",
             bait: "Tasty Bluk Berries used to attract wild Pokémon, set down with /bait. Has a " + itemData.bait.successRate*100 + "% success rate with an approximate " + itemData.bait.successCD + " second cooldown on success, and an approximate " + itemData.bait.failCD + " second cooldown on failure.",
             rock: "A small rock that can be thrown to potentially stun another player for a short period with /rock. Has a " + itemData.rock.throwCD/1000 + " second cooldown.",
             rare: "Used to evolve Pokémon. Requires 2 Rare Candies to evolve into a final form Pokémon. Found with Itemfinder.",
@@ -6239,7 +6241,7 @@ function Safari() {
             sys.sendHtmlMessage(targetId, "<hr><center>" + (input.shiny ? "<font color='DarkOrchid'>" : "") + "A wild " + input.name + " appeared! <i>(BST: " + getBST(input.num) + ")</i>" + (input.shiny ? "</font>" : "") + "<br/>" + pokeInfo.sprite(input.id) + "</center><hr>", safchan);
             ballMacro(targetId);
             if (info.length > 2) {
-                sys.sendMessage(src, info.slice(2).join(":"), safchan);
+                sys.sendMessage(targetId, info.slice(2).join(":"), safchan);
             }
             lastWild = now();
             
