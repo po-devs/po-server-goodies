@@ -2395,7 +2395,7 @@ function Safari() {
             return;
         }
 
-        if (!validPlayers("target", src, name, "You can't battle yourself!")) {
+        if (!validPlayers("target", src, data, "You can't battle yourself!")) {
             return;
         }
         var targetId = sys.id(data);
