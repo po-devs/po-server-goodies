@@ -912,6 +912,35 @@ function Safari() {
             return 0;
         }
     }
+    function validPlayers (scope, src, tar, selfmsg) {
+        var self = (scope === "self" || scope === "both");
+        if (self) {
+            var player = getAvatar(src);
+            if (!player) {
+                safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+                return false;
+            }
+        }
+        
+        var other = (scope === "target" || scope === "both");
+        if (other) {
+            var targetId = sys.id(tar);
+            if (!targetId || !sys.isInChannel(targetId, safchan)) {
+                safaribot.sendMessage(src, "No such person!", safchan);
+                return false;
+            }
+            if ((targetId == src || sys.ip(targetId) === sys.ip(src)) && selfmsg) {
+                safaribot.sendMessage(src, selfmsg, safchan);
+                return false;
+            }
+            var target = getAvatar(targetId);
+            if (!target) {
+                safaribot.sendMessage(src, "This person doesn't have a Safari Save!", safchan);
+                return false;
+            }
+        }
+        return true;
+    }
     
     function isBall(item) {
         return item in itemData && itemData[item].type === "ball";
@@ -1035,11 +1064,10 @@ function Safari() {
         return null;
     }
     function canLosePokemon(src, data, verb) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
-            return false;
+        if (!validPlayers("self", src)) {
+            return;
         }
+        var player = getAvatar(src);
         if (contestCount > 0) {
             safaribot.sendMessage(src, "You can't " + verb + " a Pokémon during a contest!", safchan);
             return false;
@@ -1308,11 +1336,10 @@ function Safari() {
         return false;
     };
     this.throwBall = function(src, data, bypass, suppress) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
         if (!suppress && !bypass) {
             for (var t = 0; t < player.trackers.length; t++) {
                 safaribot.sendMessage(sys.id(player.trackers[t]), "[Track] " + sys.name(src) + " is using /catch " + data + " (Time since last wild/trick: " + ((now() - lastWild)/1000) + " seconds)", safchan);
@@ -1547,11 +1574,10 @@ function Safari() {
         return result;
     };
     this.throwBait = function (src, commandData) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
         for (var t = 0; t < player.trackers.length; t++) {
             safaribot.sendMessage(sys.id(player.trackers[t]), "[Track] " + sys.name(src) + " is using /bait " + commandData, safchan);
         }
@@ -1636,25 +1662,10 @@ function Safari() {
         this.saveGame(player);
     };
     this.throwRock = function (src, commandData) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("both", src, commandData, "You cannot throw a rock at yourself!")) {
             return;
         }
-        var targetId = sys.id(commandData);
-        if (!targetId) {
-            safaribot.sendMessage(src, "No such person!", safchan);
-            return true;
-        }
-        if (targetId == src) {
-            safaribot.sendMessage(src, "You can't throw a rock on yourself!", safchan);
-            return true;
-        }
-        var target = getAvatar(targetId);
-        if (!target) {
-            safaribot.sendMessage(src, "No such person!", safchan);
-            return true;
-        }
+        var player = getAvatar(src);
         var currentTime = now();
         if (player.cooldowns.rock > currentTime) {
             safaribot.sendMessage(src, "Please wait " + (Math.floor((player.cooldowns.rock - currentTime)/1000) + 1) + " seconds before trying to a throw another rock!", safchan);
@@ -1672,7 +1683,9 @@ function Safari() {
         var rng = Math.random();
         var rng2 = Math.random();
         var success = (preparationPhase > 0 ? 0.15 : itemData.rock.successRate);
-        var targetName = utilities.non_flashing(sys.name(targetId));
+        var targetName = utilities.non_flashing(commandData.toCorrectCase());
+        var targetId = sys.id(commandData);
+        var target = getAvatar(targetId);
 
         if (commandData.toLowerCase() === preparationFirst) {
             success = 0;
@@ -1787,21 +1800,10 @@ function Safari() {
         this.saveGame(player);
     };
     this.useStick = function (src, commandData) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("both", src, commandData, "You cannot poke yourself with a stick!")) {
             return;
         }
-        var targetId = sys.id(commandData);
-        if (!targetId) {
-            safaribot.sendMessage(src, "No such person!", safchan);
-            return true;
-        }
-        var target = getAvatar(targetId);
-        if (!target) {
-            safaribot.sendMessage(src, "No such person!", safchan);
-            return true;
-        }
+        var player = getAvatar(src);
         var currentTime = now();
         if (player.cooldowns.stick > currentTime) {
             safaribot.sendMessage(src, "Please wait " + (Math.floor((player.cooldowns.stick - currentTime)/1000) + 1) + " seconds before using your stick!", safchan);
@@ -1813,7 +1815,7 @@ function Safari() {
             return;
         }
 
-        var targetName = utilities.non_flashing(sys.name(targetId));
+        var targetName = utilities.non_flashing(commandData.toCorrectCase());
 
         safaribot.sendAll(sys.name(src) + " poked " + targetName + " with their stick.", safchan);
 
@@ -1821,11 +1823,10 @@ function Safari() {
         this.saveGame(player);
     };
     this.gachapon = function (src, commandData) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
         if (this.isBattling(sys.name(src))) {
             safaribot.sendMessage(src, "You can't use the Gachapon Machine during a battle!", safchan);
             return;
@@ -1984,11 +1985,10 @@ function Safari() {
         SESSION.global().safariGachaJackpot = gachaJackpot;
     };
     this.useRareCandy = function(src, commandData) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
         if (contestCount > 0) {
             safaribot.sendMessage(src, "You can't use Rare Candies during a contest!", safchan);
             return;
@@ -2086,11 +2086,10 @@ function Safari() {
         }
     };
     this.useMegaStone = function(src, commandData) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
         if (contestCount > 0) {
             safaribot.sendMessage(src, "You can't use Mega Stones during a contest!", safchan);
             return;
@@ -2230,11 +2229,10 @@ function Safari() {
         }
     };
     this.findItem = function(src) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
         var currentTime = now();
         if (player.cooldowns.itemfinder > currentTime) {
             safaribot.sendMessage(src, "Your Itemfinder needs to cool down otherwise it will overheat! Try again in " + timeLeft(player.cooldowns.itemfinder) + " seconds.", safchan);
@@ -2325,11 +2323,10 @@ function Safari() {
         this.saveGame(player);
     };
     this.useItem = function(src, data) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
         var item = itemAlias(data, true);
         if (!(item in itemData)) {
             safaribot.sendMessage(src,  item + " is not a valid item!", safchan);
@@ -2360,12 +2357,10 @@ function Safari() {
         }
     };
     this.challengePlayer = function(src, data) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
-
+        var player = getAvatar(src);
         var name = sys.name(src).toLowerCase();
         if (data.toLowerCase() == "cancel") {
             if (name in challengeRequests) {
@@ -2395,23 +2390,14 @@ function Safari() {
             return;
         }
 
+        if (!validPlayers("target", src, name, "You can't battle yourself!")) {
+            return;
+        }
         var targetId = sys.id(data);
-        if (!targetId) {
-            safaribot.sendMessage(src, "No such person!", safchan);
-            return;
-        }
         var target = getAvatar(targetId);
-        if (!target) {
-            safaribot.sendMessage(src, "No such person!", safchan);
-            return;
-        }
         var tName = sys.name(targetId).toLowerCase();
         if (this.isBattling(tName)) {
             safaribot.sendMessage(src, "This person is already battling! Wait for them to finish to challenge again!", safchan);
-            return;
-        }
-        if (tName == name) {
-            safaribot.sendMessage(src, "You can't battle yourself!", safchan);
             return;
         }
 
@@ -2442,18 +2428,11 @@ function Safari() {
         }
     };
     this.watchBattle = function(src, data) {
-        var targetId = sys.id(data);
-        if (!targetId) {
-            safaribot.sendMessage(src, "No such person!", safchan);
-            return;
-        }
-        var target = getAvatar(targetId);
-        if (!target) {
-            safaribot.sendMessage(src, "No such person!", safchan);
+        if (!validPlayers("target", src, data)) {
             return;
         }
         var name = sys.name(src);
-        var tName = sys.name(targetId).toLowerCase();
+        var tName = sys.name(sys.id(data)).toLowerCase();
 
         var battle, b;
         for (b in currentBattles) {
@@ -2474,9 +2453,7 @@ function Safari() {
 
     };
     this.questNPC = function(src, data) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
         if (data == "*") {
@@ -3186,11 +3163,10 @@ function Safari() {
         }
     };
     this.buyFromShop = function(src, data, command, fromNPC) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
         if (!fromNPC && player.tradeban > now()) {
             safaribot.sendMessage(src, "You are banned from buying from other players for " + utilities.getTimeString((player.tradeban - now())/1000) + "!", safchan);
             return;
@@ -3395,8 +3371,7 @@ function Safari() {
     this.editShop = function(src, data, editNPCShop, isSilver) {
         var player = getAvatar(src);
         if (!editNPCShop) {
-            if (!player) {
-                safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            if (!validPlayers("self", src)) {
                 return;
             }
             if (player.tradeban > now()) {
@@ -3561,11 +3536,10 @@ function Safari() {
         return true;
     };
     this.buyCostumes = function (src/*, data*/) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        //var player = getAvatar(src);
         //var validItems = allCostumes;
 
         //Temporarily block costume purchasing till we rework based on suggestions
@@ -3613,11 +3587,10 @@ function Safari() {
         */
     };
     this.sellItems = function(src, data) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
         var validItems = [];
         for (var e in itemData) {
             if (itemData[e].sellable && itemData[e].price > 0) {
@@ -3680,11 +3653,10 @@ function Safari() {
         this.saveGame(player);
     };
     this.tradePokemon = function(src, data) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
         if (player.tradeban > now()) {
             safaribot.sendMessage(src, "You are banned from trading for " + utilities.getTimeString((player.tradeban - now())/1000) + "!", safchan);
             return;
@@ -3723,20 +3695,11 @@ function Safari() {
             return;
         }
 
+        if (!validPlayers("target", src, info[0].toLowerCase())) {
+            return;
+        }
         var targetId = sys.id(info[0].toLowerCase());
-        if (!targetId) {
-            safaribot.sendMessage(src, "No such person!", safchan);
-            return;
-        }
-        if (src === targetId || sys.ip(targetId) === sys.ip(src)) {
-            safaribot.sendMessage(src, "You can't trade with yourself!", safchan);
-            return;
-        }
         var target = getAvatar(targetId);
-        if (!target) {
-            safaribot.sendMessage(src, "This person didn't enter the Safari!", safchan);
-            return;
-        }
         if (target.tradeban > now()) {
             safaribot.sendMessage(src, "This person cannot receive trade requests right now!", safchan);
             return;
@@ -4000,11 +3963,10 @@ function Safari() {
     };
     
     this.viewOwnInfo = function(src, textOnly) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
         var isAndroid = (sys.os(src) === "android");
         
         var out = "";
@@ -4057,37 +4019,33 @@ function Safari() {
         sys.sendHtmlMessage(src, this.showParty(id, false, src), safchan);
     };
     this.viewItems = function(src, textOnly) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
         var isAndroid = (sys.os(src) === "android");
         sys.sendHtmlMessage(src, this.showBag(player, isAndroid, textOnly), safchan);
     };
     this.viewCostumes = function(src) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
         sys.sendHtmlMessage(src, this.showCostumes(player), safchan);
     };
     this.viewBox = function(src, data, textOnly) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
         var isAndroid = (sys.os(src) === "android");
         sys.sendHtmlMessage(src, this.showBox(player, (data === "*" ? 1 : data), isAndroid, textOnly), safchan);
     };
     this.manageParty = function(src, data) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
         if (data === "*") {
             sys.sendHtmlMessage(src, this.showParty(src, true), safchan);
             safaribot.sendMessage(src, "To modify your party, type /add [pokémon] or /remove [pokémon]. Use /active [pokémon] to set your party leader. You can also manage saved parties with /party save:[slot] and /party load:[slot]. ", safchan);
@@ -4394,11 +4352,10 @@ function Safari() {
         return "Owned Costumes: " + (out.length > 0 ? out.join(", ") : "None");
     };
     this.changeCostume = function (src, data) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
 
         var cos = costumeAlias(data, true);
         var currentTime = now();
@@ -4440,11 +4397,10 @@ function Safari() {
         }
     };
     this.findPokemon = function(src, commandData, textOnly) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
         if (commandData === "*") {
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "How to use /find:", safchan);
@@ -4637,11 +4593,10 @@ function Safari() {
         return title;
     }
     this.sortBox = function(src, commandData) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
         var info = commandData.split(":");
         var crit = "number", order = "asc";
         if (info.length < 2) {
@@ -4856,11 +4811,10 @@ function Safari() {
         }
     };
     this.showRecords = function (src) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+        var player = getAvatar(src);
 
         var rec = player.records;
 
@@ -5205,11 +5159,11 @@ function Safari() {
         sys.sendAll("*** ************************************************************ ***", safchan);
     };
     this.changeAlt = function(src, data) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+        if (!validPlayers("self", src)) {
             return;
         }
+    
+        var player = getAvatar(src);
         var targetId = sys.id(data);
         if (!targetId) {
             safaribot.sendMessage(src, "No such person!", safchan);
@@ -5902,21 +5856,19 @@ function Safari() {
             return true;
         }
         if (command === "flashme") {
+            if (!validPlayers("self", src)) {
+                return;
+            }
             var player = getAvatar(src);
-            if (!player) {
-                safaribot.sendMessage(src, "You need to enter the game first! Type /start for that.", safchan);
+            if (!player.flashme) {
+                player.flashme = true;
+                safaribot.sendMessage(src, "You will now be flashed when a contest starts!", safchan);
             }
             else {
-                if (!player.flashme) {
-                    player.flashme = true;
-                    safaribot.sendMessage(src, "You will now be flashed when a contest starts!", safchan);
-                }
-                else {
-                    delete player.flashme;
-                    safaribot.sendMessage(src, "You will no longer be flashed when a contest starts!", safchan);
-                }
-                safari.saveGame(player);
+                delete player.flashme;
+                safaribot.sendMessage(src, "You will no longer be flashed when a contest starts!", safchan);
             }
+            safari.saveGame(player);
             return true;
         }
         if (command === "safarirules") {
