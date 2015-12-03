@@ -371,8 +371,145 @@ function Safari() {
     var allItems = currentItems.concat(retiredItems, "permfinder");
     var allBalls = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier"]; //to-do make dynamic based on current balls. Maybe also reference this for line2 in bag?
     var allCostumes = Object.keys(costumeData);
-    var allRecords = ["gachasUsed", "masterballsWon", "jackpotsWon", "contestsWon", "pokesCaught", "pokesNotCaught", "pokesReleased", "pokesEvolved", "pokesCloned", "pokeSoldEarnings", "luxuryEarnings", "pawnEarnings", "rocksThrown", "rocksHit", "rocksMissed", "rocksBounced", "rocksDodged", "rocksHitBy", "rocksWalletHit", "rocksWalletHitBy", "rocksCaught", "rocksDodgedWindow", "rocksMissedWindow", "rocksWalletEarned","rocksWalletLost","rocksWindowEarned","rocksWindowLost","baitUsed", "baitAttracted", "baitNothing", "itemsFound", "consecutiveLogins", "capsulesLost", "itemsDiscarded", "collectorEarnings", "collectorGiven", "scientistEarnings", "scientistGiven", "arenaWon", "arenaLost", "arenaPoints"];
 
+    var playerTemplate = {
+        id: "",
+        idnum: 0,
+        pokemon: [],
+        party: [],
+        money: 0,
+        costume: "none",
+        balls: {
+            safari: 0,
+            great: 0,
+            ultra: 0,
+            master: 0,
+            myth: 0,
+            heavy: 0,
+            quick: 0,
+            luxury: 0,
+            bait: 0,
+            rock: 0,
+            stick: 0,
+            premier: 0,
+            spy: 0,
+            clone: 0,
+            gacha: 0,
+            rare: 0,
+            mega: 0,
+            amulet: 0,
+            honey: 0,
+            eviolite: 0,
+            soothe: 0,
+            crown: 0,
+            scarf: 0,
+            battery: 0,
+            itemfinder: 0,
+            permfinder: 0,
+            pearl: 0,
+            stardust: 0,
+            starpiece: 0,
+            bigpearl: 0,
+            nugget: 0,
+            bignugget: 0,
+            gem: 0,
+            box: 4,
+            salt: 0,
+            entry: 0,
+            silver: 0
+        },
+        records: {
+            gachasUsed: 0,
+            masterballsWon: 0,
+            jackpotsWon: 0,
+            capsulesLost: 0,
+            itemsDiscarded: 0,
+            contestsWon: 0,
+            pokesCaught: 0,
+            pokesNotCaught: 0,
+            pokesReleased: 0,
+            pokesCloned: 0,
+            pokesEvolved: 0,
+            pokeSoldEarnings: 0,
+            luxuryEarnings: 0,
+            pawnEarnings: 0,
+            rocksThrown: 0,
+            rocksHit: 0,
+            rocksMissed: 0,
+            rocksBounced: 0,
+            rocksDodged: 0,
+            rocksHitBy: 0,
+            rocksWalletHit: 0,
+            rocksWalletHitBy: 0,
+            rocksCaught: 0,
+            rocksDodgedWindow: 0,
+            rocksMissedWindow: 0,
+            rocksWalletEarned: 0,
+            rocksWalletLost: 0,
+            rocksWindowEarned: 0,
+            rocksWindowLost: 0,
+            baitUsed: 0,
+            baitAttracted: 0,
+            baitNothing: 0,
+            itemsFound: 0,
+            collectorEarnings: 0,
+            collectorGiven: 0,
+            scientistEarnings: 0,
+            scientistGiven: 0,
+            arenaWon: 0,
+            arenaLost: 0,
+            arenaPoints:0,
+            consecutiveLogins: 0
+        },
+        costumes: {
+            inver: 0,
+            ranger: 0,
+            breeder: 0,
+            scientist: 0,
+            ace: 0,
+            tech: 0,
+            aroma: 0,
+            chef: 0,
+            explorer: 0,
+            fisher: 0
+        },
+        savedParties: [],
+        megaTimers: [],
+        starter: null,
+        lastLogin: null,
+        consecutiveLogins: 1,
+        visible: false,
+        flashme: false,
+        altlog: [],
+        tradeban: 0,
+        trackers: [],
+        cooldowns: {
+            ball: 0,
+            ballUse: 0,
+            rock: 0,
+            gacha: 0,
+            itemfinder: 0,
+            stick: 0,
+            costume: 0
+        },
+        shop: {},
+        quests: {
+            collector: {
+                requests: [],
+                reward: 0,
+                cooldown: 0,
+                deadline: null
+            },
+            scientist: {
+                cooldown: 0,
+                pokemon: 0
+            },
+            arena: {
+                cooldown: 0
+            }
+        }
+    };
+    
     var currentTheme;
     var nextTheme;
     /* Theme Syntax:
@@ -2639,7 +2776,7 @@ function Safari() {
                 "Water": "how deep they can dive into the sea",
                 "Grass": "in which season they grow faster",
                 "Electric": "if there's any side effect to storing electricity in their body",
-                "Psychic": "how far they can exert they psychic powers",
+                "Psychic": "how far they can exert their psychic powers",
                 "Ice": "how able they are to adapt to warmer environments",
                 "Dragon": "their expected lifespan",
                 "Dark": "how smart they are",
@@ -2720,18 +2857,6 @@ function Safari() {
     this.fightNPC = function(src, data) {
         var player = getAvatar(src);
         
-        if (this.isBattling(sys.name(src))) {
-            safaribot.sendMessage(src, "You are already in a battle!", safchan);
-            return;
-        }
-        if (contestCooldown <= 35 || contestCount > 0) {
-            safaribot.sendMessage(src, "You cannot battle during a contest or when one is about to start!", safchan);
-            return;
-        }
-        if (currentPokemon) {
-            safaribot.sendMessage(src, "You cannot start a battle while a wild Pokémon is around!", safchan);
-            return;
-        }
         if (data.length === 0) {
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Arena Clerk: You want a battle? Then type /quest arena:name to pick who you want to fight!", safchan);
@@ -2742,7 +2867,6 @@ function Safari() {
             sys.sendMessage(src, "", safchan);
             return;
         }
-        
         var postBattle = function(name, isWinner, playerScore, npcScore, args) {
             var player = getAvatarOff(name);
             var id = sys.id(name);
@@ -2833,8 +2957,18 @@ function Safari() {
             sys.sendMessage(src, "", safchan);
             return;
         }
-        
-        
+        if (this.isBattling(sys.name(src))) {
+            safaribot.sendMessage(src, "You are already in a battle!", safchan);
+            return;
+        }
+        if (contestCooldown <= 35 || contestCount > 0) {
+            safaribot.sendMessage(src, "You cannot battle during a contest or when one is about to start!", safchan);
+            return;
+        }
+        if (currentPokemon) {
+            safaribot.sendMessage(src, "You cannot start a battle while a wild Pokémon is around!", safchan);
+            return;
+        }
         if (player.quests.arena.cooldown >= now()) {
             safaribot.sendMessage(src, "Arena Clerk: There's a long queue of people fighting in the Arena! Please come after " + timeLeftString(player.quests.arena.cooldown) + " to try another challenge!", safchan);
             return;
@@ -3585,7 +3719,7 @@ function Safari() {
             return;
         }
         if (userName in tradeRequests) {
-            safaribot.sendMessage(src, "You already have a pending trade! To cancel it, type '/trade cancel'.", safchan);
+            safaribot.sendHtmlMessage(src, "You already have a pending trade! To cancel it, type '<a href='po:send//trade cancel'>/trade cancel</a>'.", safchan);
             return;
         }
 
@@ -4067,8 +4201,8 @@ function Safari() {
             this.saveGame(player);
         } else if (action === "save") {
             var num = targetId - 1;
-            if (num > 2) {
-                num = 2;
+            if (num > 4) {
+                num = 4;
             } else if (num < 0) {
                 num = 0;
             }
@@ -4739,7 +4873,7 @@ function Safari() {
         safaribot.sendMessage(src, "Rocks-- Thrown: " + rec.rocksThrown + ". Hit: " + rec.rocksHit + ". Missed: " + rec.rocksMissed + ". Bounced: " + rec.rocksBounced + ". Hit By: " + rec.rocksHitBy + ". Dodged: " + rec.rocksDodged + ". Caught: " + rec.rocksCaught + ". Hit a Wallet: " + rec.rocksWalletHit + ". Own Wallet Hit: " + rec.rocksWalletHitBy + ". Windows Broken: " + rec.rocksMissedWindow + ". Own Window Broken: " + rec.rocksDodgedWindow, safchan);
         safaribot.sendMessage(src, "Bait-- Used: " + rec.baitUsed + ". Attracted Pokémon: " + rec.baitAttracted + ". No Interest: " + rec.baitNothing + ".", safchan);
         safaribot.sendMessage(src, "Misc-- Contests Won: " + rec.contestsWon + ". Consecutive Logins: " + rec.consecutiveLogins + ". Items Found: " + rec.itemsFound + ". Items Discarded: " + rec.itemsDiscarded + ".", safchan);
-        safaribot.sendMessage(src, "Quests-- Pokémon given to Collector: " + rec.collectorGiven + ". Money from Collector: $" + rec.collectorEarnings + ". Pokémon given to Scientist: " + rec.scientistGiven + ". Silver Coins received from Scientist: " + rec.scientistEarnings + ". ", safchan);
+        safaribot.sendMessage(src, "Quests-- Pokémon given to Collector: " + rec.collectorGiven + ". Money from Collector: $" + rec.collectorEarnings + ". Pokémon given to Scientist: " + rec.scientistGiven + ". Silver Coins received from Scientist: " + rec.scientistEarnings + ". Arena Battles: " + rec.arenaWon + " won, " + rec.arenaLost + " lost (" + rec.arenaPoints + " points). " , safchan);
         sys.sendMessage(src, "", safchan);
     };
     this.compileThrowers = function() {
@@ -4961,141 +5095,24 @@ function Safari() {
             safaribot.sendMessage(src, "Invalid Pokémon! Possible choices: " + starters.map(sys.pokemon).join(", "), safchan);
             return;
         }
-        var player = {
-            id: sys.name(src).toLowerCase(),
-            idnum: 0,
-            pokemon: [num],
-            party: [num],
-            money: 300,
-            costume: "none",
-            balls: {
-                safari: 30,
-                great: 5,
-                ultra: 1,
-                master: 0,
-                myth: 0,
-                heavy: 0,
-                quick: 0,
-                luxury: 0,
-                bait: 10,
-                rock: 0,
-                stick: 0,
-                premier: 0,
-                spy: 0,
-                clone: 0,
-                gacha: 0,
-                rare: 0,
-                mega: 0,
-                amulet: 0,
-                honey: 0,
-                eviolite: 0,
-                soothe: 0,
-                crown: 0,
-                scarf: 0,
-                battery: 0,
-                itemfinder: 15,
-                permfinder: 0,
-                pearl: 0,
-                stardust: 0,
-                starpiece: 0,
-                bigpearl: 0,
-                nugget: 0,
-                bignugget: 0,
-                gem: 0,
-                box: 4,
-                salt: 0,
-                ticket: 0,
-                silver: 0
-            },
-            records: {
-                gachasUsed: 0,
-                masterballsWon: 0,
-                jackpotsWon: 0,
-                capsulesLost: 0,
-                itemsDiscarded: 0,
-                contestsWon: 0,
-                pokesCaught: 0,
-                pokesNotCaught: 0,
-                pokesReleased: 0,
-                pokesCloned: 0,
-                pokesEvolved: 0,
-                pokeSoldEarnings: 0,
-                luxuryEarnings: 0,
-                pawnEarnings: 0,
-                rocksThrown: 0,
-                rocksHit: 0,
-                rocksMissed: 0,
-                rocksBounced: 0,
-                rocksDodged: 0,
-                rocksHitBy: 0,
-                rocksWalletHit: 0,
-                rocksWalletHitBy: 0,
-                rocksCaught: 0,
-                rocksDodgedWindow: 0,
-                rocksMissedWindow: 0,
-                rocksWalletEarned: 0,
-                rocksWalletLost: 0,
-                rocksWindowEarned: 0,
-                rocksWindowLost: 0,
-                baitUsed: 0,
-                baitAttracted: 0,
-                baitNothing: 0,
-                itemsFound: 0,
-                collectorEarnings: 0,
-                collectorGiven: 0,
-                scientistEarnings: 0,
-                scientistGiven: 0,
-                arenaWon: 0,
-                arenaLost: 0,
-                arenaPoints:0,
-                consecutiveLogins: 0
-            },
-            costumes: {
-                inver: 0,
-                ranger: 0,
-                breeder: 0,
-                scientist: 0,
-                ace: 0,
-                tech: 0,
-                aroma: 0,
-                chef: 0,
-                explorer: 0,
-                fisher: 0
-            },
-            savedParties: [],
-            megaTimers: [],
-            starter: num,
-            lastLogin: getDay(now()),
-            consecutiveLogins: 1,
-            altlog: [sys.name(src).toLowerCase()],
-            tradeban: 0,
-            trackers: [],
-            cooldowns: {
-                ball: 0,
-                ballUse: 0,
-                rock: 0,
-                gacha: 0,
-                itemfinder: 0,
-                stick: 0,
-                costume: 0
-            },
-            shop: {},
-            quests: {
-                collector: {
-                    requests: [],
-                    reward: 0,
-                    cooldown: 0,
-                    deadline: null
-                },
-                scientist: {
-                    cooldown: 0,
-                    pokemon: 0
-                },
-                arena: {
-                    cooldown: 0
-                }
-            }
-        };
+        
+        var player = JSON.parse(JSON.stringify(playerTemplate));
+        
+        player.id = sys.name(src).toLowerCase();
+        player.pokemon.push(num);
+        player.party.push(num);
+        player.starter = num;
+        
+        player.money = 300;
+        player.balls.safari = 30;
+        player.balls.great = 5;
+        player.balls.ultra = 1;
+        player.balls.bait = 10;
+        player.balls.itemfinder = 15;
+        
+        player.lastLogin = getDay(now());
+        player.altlog.push(sys.name(src).toLowerCase());
+        
         SESSION.users(src).safari = player;
         this.assignIdNumber(player);
         this.saveGame(player);
@@ -5273,32 +5290,72 @@ function Safari() {
     this.sanitize = function(player) {
         if (player) {
             var clean, i;
+            var toTemplate = function(obj, prop, template) {
+                var p;
+                if (obj[prop] === undefined) {
+                    if (Array.isArray(template[prop])) {
+                        obj[prop] = [];
+                    } else if (typeof template[prop] == "object") {
+                        obj[prop] = {};
+                        for (p in template[prop]) {
+                            toTemplate(obj[prop], p, template[prop]);
+                        }
+                    } else {
+                        obj[prop] = template[prop];
+                    }
+                } else {
+                    if (!Array.isArray(obj[prop]) && typeof obj[prop] == "object" && typeof template[prop] == "object") {
+                        for (p in template[prop]) {
+                            if (p !== "shop") {
+                                toTemplate(obj[prop], p, template[prop]);
+                            }
+                        }
+                    }
+                }
+            };
+            var removeInvalid = function(obj, prop, template) {
+                var p;
+                if (!(prop in template)) {
+                    delete obj[prop];
+                } else if (!Array.isArray(obj[prop]) && typeof obj[prop] == "object" && typeof template[prop] == "object") {
+                    if (prop !== "shop") {
+                        for (p in obj[prop]) {
+                            removeInvalid(obj[prop], p, template[prop]);
+                        }
+                    }
+                }
+            };
+            for (i in playerTemplate) {
+                toTemplate(player, i, playerTemplate);
+            }
+            for (i in player) {
+                removeInvalid(player, i, playerTemplate);
+            }
+            
             for (i = 0; i < allItems.length; i++) {
                 clean = allItems[i];
                 if (typeof player.balls[clean] !== "number") {
                     player.balls[clean] = parseInt(player.balls[clean], 10);
                 }
-                if (player.balls[clean] === undefined || isNaN(player.balls[clean]) || player.balls[clean] === null || player.balls[clean] < 0) {
+                if (isNaN(player.balls[clean]) || player.balls[clean] === null || player.balls[clean] < 0) {
                     if (clean == "box") {
                         player.balls[clean] = 4;
                     } else {
                         player.balls[clean] = 0;
                     }
                 }
-                if (player.balls[clean] > 999) {
-                    player.balls[clean] = 999;
+                if (player.balls[clean] > itemCap) {
+                    player.balls[clean] = itemCap;
                 }
                 if ((clean === "master" || clean === "stick") && player.balls[clean] > 1) {
                     player.balls[clean] = 1;
                 }
-                if (retiredItems.indexOf(clean) !== -1) {
-                    delete player.balls[clean];
-                }
             }
+            
             if (typeof player.money !== "number") {
                 player.money = parseInt(player.money, 10);
             }
-            if (player.money === undefined || isNaN(player.money) || player.money < 0) {
+            if (isNaN(player.money) || player.money < 0) {
                 player.money = 0;
             } else if (player.money > moneyCap) {
                 player.money = moneyCap;
@@ -5306,49 +5363,10 @@ function Safari() {
             if (player.money % 1 !== 0) {
                 player.money = Math.floor(player.money);
             }
-            if (player.costumes === undefined) {
-                player.costumes = {};
+            if (player.altlog.length === 0) {
+                player.altlog.push(player.id);
             }
-            if (player.savedParties === undefined) {
-                player.savedParties = [];
-            }
-            if (player.altlog === undefined) {
-                player.altlog = [player.id];
-            }
-            if (player.costume === undefined) {
-                player.costume = "none";
-            }
-            if (player.shop === undefined) {
-                player.shop = {};
-            }
-            if (player.quests === undefined) {
-                player.quests = {};
-            }
-            if (player.quests.collector === undefined) {
-                player.quests.collector = {
-                    requests: [],
-                    reward: 0,
-                    cooldown: 0,
-                    deadline: null
-                };
-            }
-            if (player.quests.scientist === undefined) {
-                player.quests.scientist = {
-                    cooldown: 0,
-                    pokemon: 0
-                };
-            }
-            if (player.quests.arena === undefined) {
-                player.quests.arena = {
-                    cooldown: 0
-                };
-            }
-            if (player.tradeban === undefined) {
-                player.tradeban = 0;
-            }
-            if (player.trackers === undefined) {
-                player.trackers = [];
-            }
+            
             for (i = 0; i < allCostumes.length; i++) {
                 clean = allCostumes[i];
                 if (typeof player.costumes[clean] !== "number") {
@@ -5361,48 +5379,9 @@ function Safari() {
                     player.costumes[clean] = 1;
                 }
             }
-
-            if (player.records === undefined) {
-                player.records = {};
-            }
-            var rec;
-            for (i = 0; i < allRecords.length; i++) {
-                rec = allRecords[i];
-                if (player.records[rec] === undefined || isNaN(player.records[rec]) || player.records[rec] < 0 || typeof player.records[rec] !== "number") {
-                    player.records[rec] = 0;
-                }
-            }
             for (i in player.shop) {
                 if (!player.shop[i].price) {
                     delete player.shop[i];
-                }
-            }
-            if (!("megaTimers" in player)) {
-                player.megaTimers = [];
-            }
-            if (!("cooldowns" in player)) {
-                player.cooldowns = {
-                    ball: 0,
-                    ballUse: 0,
-                    rock: 0,
-                    gacha: 0,
-                    stick: 0,
-                    costume: 0
-                };
-                if (player.cooldown) {
-                    delete player.cooldown;
-                }
-                if (player.gachaCooldown) {
-                    delete player.gachaCooldown;
-                }
-                if (player.rockCooldown) {
-                    delete player.rockCooldown;
-                }
-                if (player.stickCooldown) {
-                    delete player.stickCooldown;
-                }
-                if (player.masterCooldown) {
-                    delete player.masterCooldown;
                 }
             }
             if (!("idnum" in player) || player.idnum === undefined || player.idnum === null || isNaN(player.idnum) || player.idnum < 0 || typeof player.idnum !== "number") {
@@ -6284,7 +6263,7 @@ function Safari() {
                 return true;
             }
             var record = cmd[1];
-            if (allRecords.indexOf(record) === -1) {
+            if (!(record in playerTemplate.records)) {
                 safaribot.sendMessage(src, "Invalid record!", safchan);
                 return true;
             }
