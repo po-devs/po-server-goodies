@@ -1692,15 +1692,16 @@ function Safari() {
             success = 0;
         }
 
+        var verb = "froze"; //change to stunned, seasonal change
         if (rng < success) {
             if (rng2 < 0.4) {
-                safaribot.sendAll(sys.name(src) + " threw a " + itemData.rock.fullName + " at " + targetName + "! *THUD* A direct hit! " + targetName + " was stunned!", safchan);
+                safaribot.sendAll(sys.name(src) + " threw a " + itemData.rock.fullName + " at " + targetName + "! *THUD* A direct hit! " + targetName + " was " + verb + "!", safchan);
                 target.cooldowns.ball = target.cooldowns.ball > currentTime ? target.cooldowns.ball + itemData.rock.targetCD : currentTime + itemData.rock.targetCD;
                 player.records.rocksHit += 1;
                 target.records.rocksHitBy += 1;
             }
             else if (rng2 < 0.5) {
-                safaribot.sendAll(sys.name(src) + " threw a " + itemData.rock.fullName + " at " + targetName + "! " + targetName +" evaded, but their " + poke(target.party[0]) + " got hit and stunned!", safchan);
+                safaribot.sendAll(sys.name(src) + " threw a " + itemData.rock.fullName + " at " + targetName + "! " + targetName +" evaded, but their " + poke(target.party[0]) + " got hit and " + verb + "!", safchan);
                 target.cooldowns.ball = target.cooldowns.ball > currentTime ? target.cooldowns.ball + Math.floor(itemData.rock.targetCD/2) : currentTime + Math.floor(itemData.rock.targetCD/2);
                 player.records.rocksHit += 1;
                 target.records.rocksHitBy += 1;
@@ -1741,7 +1742,7 @@ function Safari() {
                 player.records.rocksBounced += 1;
             }
             else if (rng2 < 0.25) {
-                safaribot.sendAll(sys.name(src) + " threw a " + itemData.rock.fullName + " at " + targetName + ", but " + targetName + " saw it coming and caught the " + itemData.rock.fullName + " with their bare hands!", safchan);
+                safaribot.sendAll(sys.name(src) + " threw a " + itemData.rock.fullName + " at " + targetName + ", but " + targetName + " saw it coming and caught the " + itemData.rock.fullName + " with their mitten-covered hands!", safchan); //seasonal change
                 if (target.balls.rock < itemCap) {
                     target.balls.rock += 1;
                     safaribot.sendMessage(targetId, "You received 1 " + itemData.rock.fullName + "!", safchan);
@@ -1900,7 +1901,7 @@ function Safari() {
                 safaribot.sendMessage(src, "A sweet, fruity aroma wafts through the air as you open your capsule. You received " + amount + " " + finishName(reward) + ".", safchan);
             break;
             case "rock":
-                safaribot.sendMessage(src, "A " + (itemData.rock.fullName === "Snowball" ? "wet splashing sound" : "loud clunk" ) + " comes from the machine. Some prankster put " + itemData.rocks.fullName + " in the Gachapon Machine! You received  " + amount + " " + finishName(reward) + plural + ".", safchan);
+                safaribot.sendMessage(src, "A " + (itemData.rock.fullName === "Snowball" ? "wet splashing sound" : "loud clunk" ) + " comes from the machine. Some prankster put " + itemData.rock.fullName + " in the Gachapon Machine! You received  " + amount + " " + finishName(reward) + plural + ".", safchan);
             break;
             case "wild":
             case "horde":
@@ -5424,7 +5425,8 @@ function Safari() {
         var itemHelp = {
             silver: "Rare coins that can be used to purchase valuable items. Obtained from quests.",
             bait: "Tasty Bluk Berries used to attract wild Pokémon, set down with /bait. Has a " + itemData.bait.successRate*100 + "% success rate with an approximate " + itemData.bait.successCD + " second cooldown on success, and an approximate " + itemData.bait.failCD + " second cooldown on failure.",
-            rock: "A small rock that can be thrown to potentially stun another player for a short period with /rock. Has a " + itemData.rock.throwCD/1000 + " second cooldown.",
+            //Seasonal change
+            rock: "A small snowball that can be thrown to potentially freeze another player for a short period with /snowball. Has a " + itemData.rock.throwCD/1000 + " second cooldown.",
             rare: "Used to evolve Pokémon. Requires 2 Rare Candies to evolve into a final form Pokémon. Found with Itemfinder.",
             mega: "A mysterious stone that allows certain Pokémon to undergo a powerful transformation. It is said to wear off in approximately " + itemData.mega.duration + " days. Cannot be obtained through normal gameplay.",
             valuables: "The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be pawned off with /pawn for a varying amount of money. Obtained from Gachapon and found with Itemfinder.",
@@ -5583,7 +5585,8 @@ function Safari() {
             "/megastone: Use a Mega Stone to mega evolve a Pokémon*.",
             "/gacha: Use a ticket to win a prize!",
             "/finder: Use your item finder to look for items.",
-            "/rock: To throw a rock at another player.",
+            //seasonal change
+            "/snowball: To throw a snowball at another player.",
             "/stick: To poke another player with your stick.",
             "/use: To use a consumable item.",
             "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details. Use /findt for a text-only version.",
