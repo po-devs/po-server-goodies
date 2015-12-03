@@ -353,9 +353,9 @@ function Safari() {
     };
 
     var gachaItems = {
-        safari: 80, great: 50, ultra: 30, luxury: 35, myth: 20, quick: 10, heavy: 20, clone: 20,
+        safari: 80, great: 50, ultra: 30, luxury: 35, myth: 20, quick: 7, heavy: 20, clone: 20,
         bait: 95, rock: 200, gem: 9,
-        wild: 40, horde: 8,
+        wild: 60, horde: 8,
         gacha: 1,  master: 2,
         amulet: 1, soothe: 1, scarf: 1, battery: 1,
         pearl: 15, stardust: 12, bigpearl: 9, starpiece: 5, nugget: 4, bignugget: 1
@@ -1920,7 +1920,7 @@ function Safari() {
                     var spawnHorde = (reward === "horde");
                     safaribot.sendAll((commandData.toLowerCase() == "spy" ? "Some stealthy person" : sys.name(src)) + " goes to grab their item from the Gachapon Machine but the noise lured a " + finishName(reward) + "!", safchan);
 
-                    if (mod < 0.08 || player.cooldowns.ballUse > currentTime) {
+                    if (mod < 0.13 || player.cooldowns.ballUse > currentTime) {
                         safaribot.sendAll("Unfortunately " + (spawnHorde ? "they" : "it") + " fled before anyone could try to catch "+ (spawnHorde ? "them" : "it") + "!", safchan);
                         spawn = false;
                     }
@@ -2298,7 +2298,7 @@ function Safari() {
                 safaribot.sendMessage(src, "Beeeep. You're led to a nearby garbage can by your Itemfinder. You decide to dig around anyway and find an unused " + finishName(reward) + "!", safchan);
             break;
             case "rock":
-                safaribot.sendMessage(src, "Beep. Your Itemfinder pointed you towards a very conspicuous rock.", safchan);
+                safaribot.sendMessage(src, "Beep. Your Itemfinder pointed you towards a very conspicuous " + itemData.rock.fullName + ".", safchan);
             break;
             case "bait":
                 safaribot.sendMessage(src, "Beep-Beep. Your Itemfinder pointed you towards a berry bush! You decided to pick one and put it in your bag.", safchan);
@@ -2869,7 +2869,7 @@ function Safari() {
         var opponents = {
             pink: {
                 name: "Trainer Pink",
-                party: [36,80,196,222,518,700,594,706,463,591,65838,452,472,205,719,423,308],
+                party: ["36",80,196,222,518,700,594,706,463,591,65838,452,472,205,719,423,308],
                 power: [60, 130],
                 postBattle: postBattle,
                 postArgs: {
@@ -2879,7 +2879,7 @@ function Safari() {
             },
             teal: {
                 name: "Trainer Teal",
-                party: [65539,282,330,272,579,248,547,460,178,393892,475,569,186,598,384,652],
+                party: [282,330,272,579,248,"178",569,186,598,384,652,286,389,437,66011,623],
                 power: [90, 170],
                 postBattle: postBattle,
                 postArgs: {
@@ -2889,7 +2889,7 @@ function Safari() {
             },
             mustard: {
                 name: "Trainer Mustard",
-                party: [65,131743,38,203,26,560,297,563,145,192,71,479,65964,15,28],
+                party: [65,131743,38,203,"26",560,297,563,145,192,71,479,65964,15,28],
                 power: [110, 200],
                 postBattle: postBattle,
                 postArgs: {
@@ -2899,7 +2899,7 @@ function Safari() {
             },
             cyan: {
                 name: "Trainer Cyan",
-                party: [65545,409,448,202,130,465,539,476,635,144,593,623,604,230,376,260,171],
+                party: [409,448,202,465,539,476,635,144,593,604,230,376,260,"171",9,65666,65959],
                 power: [150, 300],
                 postBattle: postBattle,
                 postArgs: {
@@ -2909,7 +2909,7 @@ function Safari() {
             },
             crimson: {
                 name: "Trainer Crimson",
-                party: [131078,101,625,663,697,212,131658,342,213,47,224,553,392,538,380,257,99],
+                party: [131078,101,625,"663",697,212,131658,342,213,47,224,553,392,538,380,257,99],
                 power: [200, 380],
                 postBattle: postBattle,
                 postArgs: {
@@ -6857,7 +6857,7 @@ function Safari() {
                     safari.changeDailyBoost();
                 }
             } else {
-                if (!currentPokemon && Math.random() < 0.084793) {
+                if (!currentPokemon && Math.random() < 0.089743) {
                     var amt = Math.random() < 0.05919 ? 3 : 1;
                     safari.createWild(null, null, amt);
                 }
