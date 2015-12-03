@@ -1692,7 +1692,7 @@ function Safari() {
             success = 0;
         }
 
-        var verb = "froze"; //change to stunned, seasonal change
+        var verb = "frozen"; //change to stunned, seasonal change
         if (rng < success) {
             if (rng2 < 0.4) {
                 safaribot.sendAll(sys.name(src) + " threw a " + itemData.rock.fullName + " at " + targetName + "! *THUD* A direct hit! " + targetName + " was " + verb + "!", safchan);
