@@ -479,7 +479,7 @@ function Safari() {
         starter: null,
         lastLogin: null,
         consecutiveLogins: 1,
-        visible: false,
+        visible: true,
         flashme: false,
         altlog: [],
         tradeban: 0,
@@ -506,6 +506,9 @@ function Safari() {
                 pokemon: 0
             },
             arena: {
+                cooldown: 0
+            },
+            wonder: {
                 cooldown: 0
             }
         }
@@ -2467,6 +2470,7 @@ function Safari() {
             safaribot.sendMessage(src, "-Collector", safchan);
             safaribot.sendMessage(src, "-Scientist", safchan);
             safaribot.sendMessage(src, "-Arena", safchan);
+            safaribot.sendMessage(src, "-Wonder", safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
             sys.sendMessage(src, "", safchan);
@@ -2487,6 +2491,11 @@ function Safari() {
             break;
             case "arena":
                 this.fightNPC(src, args);
+            break;
+            case "wonder":
+            case "wondertrade":
+            case "wonder trade":
+                this.wonderTrade(src, args);
             break;
             default:
                 safaribot.sendMessage(src, "This is not a valid quest!", safchan);
@@ -2715,7 +2724,6 @@ function Safari() {
             safaribot.sendMessage(src, "Scientist: That " + poke(id) + " that you brought earlier is really helping me! Come back in " + timeLeftString(quest.expires) + " to check my next research!", safchan);
             return;
         }
-        
         
         if (!data[0]) {
             //Feel free to change these messages and the ones below if you get a better idea
@@ -2980,6 +2988,108 @@ function Safari() {
         safaribot.sendMessage(src, "Arena Clerk: I see you paid the $" + addComma(cost) + " Entry Fee, so you can now proceed to your challenge against " + npc.name + "!", safchan);
         var battle = new Battle(src, npc);
         currentBattles.push(battle);
+    };
+    this.wonderTrade = function(src, data) {
+        var player = getAvatar(src);
+        var quest = player.quests.wonder;
+        
+        if (!data[0]) {
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendMessage(src, "Wonder Trade Operator: Welcome to Wonder Trade, a place where you can trade a Pokémon you own for a random one!", safchan);
+            safaribot.sendMessage(src, "Wonder Trade Operator: Use /quest wonder:[Pokémon] to choose a Pokémon to trade. If you wish to know how our system works, type /quest wonder:help!", safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        
+        var opt = data[0].toLowerCase();
+        if (opt == "help") {
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendMessage(src, "Wonder Trade Operator: To get a trade here you simply choose one of your Pokémon, pay a small fee and then you will receive a random Pokémon immediately!", safchan);
+            safaribot.sendMessage(src, "Wonder Trade Operator: The fee is based on your Pokémon's BST, and you will receive a Pokémon within the same BST range.", safchan);
+            safaribot.sendMessage(src, "Wonder Trade Operator: The available BST ranges are 180~249 ($50 fee), 250~319 ($100), 320~389 ($150), 390~459 ($200), 460~529 ($250) and 530~599 ($300).", safchan);
+            safaribot.sendMessage(src, "Wonder Trade Operator: Also be aware that you CANNOT receive legendaries from Wonder Trade!", safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        
+        if (quest.cooldown > now()) {
+            safaribot.sendMessage(src, "Wonder Trade Operator: Due to the rules imposed by the Pokémon Association, we can only allow one trade every 2 hours per person! Please come back in " + timeLeftString(quest.cooldown) + "!", safchan);
+            return;
+        }
+        
+        if (data.length < 1) {
+            safaribot.sendMessage(src, "Wonder Trade Operator: Please use /quest wonder:[Pokémon] to choose the Pokémon you wish to trade. You can also type /quest wonder:help for more information.", safchan);
+            return;
+        }
+        
+        var input = getInputPokemon(data[0]);
+        if (!input.num) {
+            safaribot.sendMessage(src, "Wonder Trade Operator: That's not a valid Pokémon!", safchan);
+            return;
+        }
+        
+        var id = input.id;
+        var bst = getBST(id);
+        
+        if (bst >= 600) {
+            safaribot.sendMessage(src, "Wonder Trade Operator: I'm terribly sorry, but we don't accept Pokémon with a BST of 600 or more in the Wonder Trade!", safchan);
+            return;
+        }
+        if (isMega(id)) {
+            safaribot.sendMessage(src, "Wonder Trade Operator: I'm terribly sorry, but we don't accept Mega Pokémon in the Wonder Trade!", safchan);
+            return;
+        }
+        if (!player.pokemon.contains(id)) {
+            safaribot.sendMessage(src, "Wonder Trade Operator: You don't have a " + sys.pokemon(id) + "!", safchan);
+            return;
+        }
+        
+        var rangeIndex = Math.floor((bst - 180)/70);
+        var bstRange = [[180,249], [250,319], [320,389], [390,459], [460,529], [530,599]][rangeIndex];
+        var fee = (rangeIndex + 1) * 50;
+        
+        if (data.length < 2 || data[1].toLowerCase() !== "confirm") {
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendMessage(src, "Wonder Trade Operator: " + input.name + "'s BST is in the " + bstRange.join("~") + " range, so your fee will be $" + addComma(fee) + "!", safchan);
+            safaribot.sendMessage(src, "Wonder Trade Operator: If you are sure you want to proceed, type /quest wonder:" + input.input + ":confirm and you will receive a Pokémon in the same range!", safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        
+        if (contestCount > 0) {
+            safaribot.sendMessage(src, "You can't finish this quest during a contest.", safchan);
+            return;
+        }
+        if (currentPokemon) {
+            safaribot.sendMessage(src, "You can't finish this quest while there's a wild Pokémon around.", safchan);
+            return;
+        }
+        if (player.money < fee) {
+            safaribot.sendMessage(src, "Wonder Trade Operator: You don't have $" + addComma(fee) + "!", safchan);
+            return;
+        }
+        if (!canLosePokemon(src, input.input + "", "trade")) {
+            return;
+        }
+        sys.sendMessage(src, "", safchan);
+        safaribot.sendMessage(src, "Wonder Trade Operator: So you want to try the Wonder Trade? Please give me the $" + addComma(fee) + " and your " + input.name + "!", safchan);
+        
+        var receivedId, receivedBST, isShiny = sys.rand(0, shinyChance) < (input.shiny ? 16 : 1);
+        do {
+            receivedId = sys.rand(1, 722);
+            receivedBST = getBST(receivedId);
+        } while (receivedBST < bstRange[0] || receivedBST > bstRange[1] || isLegendary(receivedId) || receivedId == input.num);
+        receivedId = isShiny ? receivedId + "" : receivedId;
+        
+        safaribot.sendMessage(src, "Wonder Trade Operator: Please wait a moment while we process the trade...", safchan);
+        this.removePokemon(src, id);
+        player.pokemon.push(receivedId);
+        player.money -= fee;
+        
+        quest.cooldown = now() + 2 * 60 * 60 * 1000;
+        this.saveGame(player);
+        safaribot.sendMessage(src, "Wonder Trade Operator: The trade was finished successfully! You traded your " + input.name + " and received a " + poke(receivedId) + "!", safchan);
+        sys.sendMessage(src, "", safchan);
     };
     
     this.sellPokemon = function(src, data) {
@@ -4891,7 +5001,7 @@ function Safari() {
         this.scoreOrder = [];
         this.finished = false;
 
-        safaribot.sendHtmlAll("A battle between " + this.name1 + " and " + (isNPC ? "[NPC] " : "") + this.name2 + " has started! [<a href='po:send//watch " + this.name1 + "'>Watch</a>]", safchan);
+        safaribot.sendHtmlAll("A battle between " + this.name1 + " and " + this.name2 + (isNPC ? " (NPC)" : "") + " has started! [<a href='po:send//watch " + this.name1 + "'>Watch</a>]", safchan);
     }
     Battle.prototype.nextTurn = function() {
         if (this.turn < 0) {
