@@ -1797,7 +1797,7 @@ beforeChatMessage: function(src, message, chan) {
         var name = sys.name(src);
         var caps = 0;
         for (var i = name.length-1; i >= 0; --i) {
-            if (this.isLCaps(name[i])) {
+            if (script.isLCaps(name[i])) {
                 ++caps;
                 if (caps == 5)
                     return true;
