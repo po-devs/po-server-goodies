@@ -1797,10 +1797,17 @@ beforeChatMessage: function(src, message, chan) {
         var name = sys.name(src);
         var caps = 0;
         for (var i = name.length-1; i >= 0; --i) {
-            if ('A' <= name[i] && name[i] <= 'Z')
+            if (this.isLCaps(name[i])) {
                 ++caps;
+                if (caps == 5)
+                    return true;
+            } else {
+                --caps;
+                if (caps < 0)
+                    caps = 0;
+            }
         }
-        return (caps > 7 && 2*name.length < 3*caps);
+        return false;
     });
 
     if (is_command(message) && message.length > 1 && utilities.isLetter(message[1])) {
@@ -1874,7 +1881,7 @@ beforeChatMessage: function(src, message, chan) {
         capsday = CAPSLOCKDAYALLOW;
     }
     if (capsName() && !capsday) {
-        normalbot.sendMessage(src, "You have too many CAPS letters in your name. Please remove them to speak freely. 7 CAPS letters are allowed. Lowercase name will keep your ladder score.", channel);
+        normalbot.sendMessage(src, "You have too many capital letters in your name. Please reduce the amount of them to speak freely. A lowercase name will keep your ladder score.", channel);
         sys.stopEvent();
         return;
     }
