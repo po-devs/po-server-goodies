@@ -1057,7 +1057,6 @@ exports.help = [
     "/move [move]: Displays basic information for that move.",
     "/nature [nature]: Shows the effects of a nature. Leave blank to show all natures.",
     "/pokemon [Pokémon]: Displays basic information for that Pokémon. Pokédex number can also be used.",
-    "/smogon [Pokémon]: Shows gen links to the Pokémon's Smogon page.",
     "/tier [Pokémon]: Displays the tiers a pokémon is allowed in.",
     "/wiki [Pokémon]: Shows that Pokémon's wiki page.",
     "*** User Info ***",

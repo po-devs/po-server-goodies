@@ -190,6 +190,7 @@ var Lazy = utilities.Lazy;
 var nonFlashing = utilities.non_flashing;
 var getSeconds = utilities.getSeconds;
 var getTimeString = utilities.getTimeString;
+var is_command = utilities.is_command;
 
 var commands = require('commands.js');
 
@@ -1696,14 +1697,35 @@ beforeChatMessage: function(src, message, chan) {
         SESSION.users(src).un("mute");
         normalbot.sendMessage(src, "your mute has expired.", channel);
     }
-    if (sys.auth(src) < 3 && SESSION.users(src).mute.active && message != "!cjoin" && message != "/rules" && message != "/cjoin" && message != "!rules") {
+
+    var isBlocked = true, command, commandData;
+    if (is_command(message)) {
+        //Used further down too
+        var pos = message.indexOf(' ');
+        if (pos != -1) {
+            command = message.substring(1, pos).toLowerCase();
+            commandData = message.substr(pos+1);
+        } else {
+            command = message.substr(1).toLowerCase();
+        }
+        
+        if (command.indexOf("rules") === -1 && command.indexOf("admins") === -1) {
+            if (["commands", "topic", "cjoin", "auth", "contributors", "intier", "league", "players", "topchannels", "uptime", "notice", "changetier", "idle", "importable", "sametier", "resetpass", "seen", "myalts", "ranking", "battlecount", "ability", "canlearn", "dwreleased", "item", "move", "ability", "nature", "pokemon", "tier", "wiki", "mas", "has", "mus", "tas", "cauth", "selfkick"].contains(command)) {
+                isBlocked = false;
+            }
+        } else {
+            isBlocked = false;
+        }
+    }
+    
+    if (sys.auth(src) < 3 && SESSION.users(src).mute.active && isBlocked) {
         var muteinfo = SESSION.users(src).mute;
         normalbot.sendMessage(src, "You are muted" + (muteinfo.by ? " by " + muteinfo.by : '')+". " + (muteinfo.expires > 0 ? "Mute expires in " + getTimeString(muteinfo.expires - parseInt(sys.time(), 10)) + ". " : '') + (muteinfo.reason ? "[Reason: " + muteinfo.reason + "]" : ''), channel);
         sys.stopEvent();
         return;
     }
     var poChannel = SESSION.channels(channel);
-    if (sys.auth(src) < 1 && !poChannel.canTalk(src)) {
+    if (sys.auth(src) < 1 && !poChannel.canTalk(src) && isBlocked) {
         if (poChannel.muted.hasOwnProperty(sys.name(src).toLowerCase())) {
             var auth = poChannel.muted[sys.name(src).toLowerCase()].auth,
                 expiry = poChannel.muted[sys.name(src).toLowerCase()].expiry,
@@ -1727,7 +1749,7 @@ beforeChatMessage: function(src, message, chan) {
     }
     // text reversing symbols
     // \u0458 = "j"
-    if (/[\u0458\u0489\u202a-\u202e\u0300-\u036F\u1dc8\u1dc9\ufffc\u1dc4-\u1dc7\u20d0\u20d1\u0415\u0421]/.test(message) && message[0] != '/' && message[0] != "!") {
+    if (/[\u0458\u0489\u202a-\u202e\u0300-\u036F\u1dc8\u1dc9\ufffc\u1dc4-\u1dc7\u20d0\u20d1\u0415\u0421]/.test(message) && !is_command(message)) {
         sys.stopEvent();
         return;
     }
@@ -1781,8 +1803,7 @@ beforeChatMessage: function(src, message, chan) {
         return (caps > 7 && 2*name.length < 3*caps);
     });
 
-    var command;
-    if ((message[0] == '/' || message[0] == "!") && message.length > 1 && utilities.isLetter(message[1])) {
+    if (is_command(message) && message.length > 1 && utilities.isLetter(message[1])) {
         if (parseInt(sys.time(), 10) - lastMemUpdate > 500) {
             sys.clearChat();
             lastMemUpdate = parseInt(sys.time(), 10);
@@ -1791,20 +1812,15 @@ beforeChatMessage: function(src, message, chan) {
         sys.stopEvent();
         print("-- Command: " + sys.name(src) + ": " + message);
 
-        var commandData;
-        var pos = message.indexOf(' ');
-
-        if (pos != -1) {
-            command = message.substring(1, pos).toLowerCase();
-            commandData = message.substr(pos+1);
-        } else {
-            command = message.substr(1).toLowerCase();
-        }
         var tar = sys.id(commandData);
 
         // Module commands at the last point.
         if (callplugins("handleCommand", src, message.substr(1), channel)) {
             return;
+        }
+        //Topic can be way to communicate while muted
+        if (command === "topic" && (!poChannel.canTalk(src) || SESSION.users(src).smute.active || SESSION.users(src).mute.active)) {
+            commandData = undefined;
         }
         commands.handleCommand(src, command, commandData, tar, chan);
         return;
