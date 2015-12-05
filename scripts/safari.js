@@ -1860,7 +1860,7 @@ function Safari() {
             return;
         }
         if (this.isInAuction(sys.name(src))) {
-            safaribot.sendMessage(src, "You use the Gachapon Machine while participating in an auction!", safchan);
+            safaribot.sendMessage(src, "You can't use the Gachapon Machine while participating in an auction!", safchan);
             return;
         }
         /*if (contestCount > 0) {
