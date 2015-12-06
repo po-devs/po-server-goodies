@@ -5867,6 +5867,61 @@ function Safari() {
     this.saveShop = function() {
         permObj.add("npcShop", JSON.stringify(npcShop));
     };
+    this.showLog = function(src, commandData, file, name, parser) {
+        var log = sys.getFileContent(file);
+            
+        if (log) {
+            log = log.split("\n");
+            var info = commandData.split(":"),
+                term = info.length > 1 ? info[1] : "",
+                e, lower = 0, upper = 10;
+
+            var range = info[0].split("-");
+            if (range.length > 1) {
+                lower = parseInt(range[0], 10);
+                upper = parseInt(range[1], 10);
+            } else {
+                lower = 0;
+                upper = parseInt(range[0], 10);
+            }
+            lower = isNaN(lower) ? 0 : lower;
+            upper = isNaN(upper) ? 10 : upper;
+
+            if (lower <= 0) {
+                log = log.slice(-(upper+1));
+            } else {
+                var len = log.length;
+                log = log.slice(Math.max(len - upper - 1, 0), len - lower);
+            }
+
+            if (term) {
+                var exp = new RegExp(term, "gi");
+                for (e = log.length - 1; e >= 0; e--) {
+                    if (!exp.test(log[e])) {
+                        log.splice(e, 1);
+                    }
+                }
+            }
+            if (log.indexOf("") !== -1) {
+                log.splice(log.indexOf(""), 1);
+            }
+            if (log.length <= 0) {
+                safaribot.sendMessage(src, "No " + name + " log found for this query!", safchan);
+            } else {
+                sys.sendMessage(src, "", safchan);
+                sys.sendMessage(src, cap(name) + " Log (last " + (lower > 0 ? lower + "~" : "") + upper + " entries" + (term ? ", only including entries with the term " + term : "") + "):", safchan);
+                for (e in log) {
+                    if (!log[e]) {
+                        continue;
+                    }
+                    safaribot.sendMessage(src, parser(log[e]), safchan);
+                }
+                sys.sendMessage(src, "", safchan);
+            }
+        } else {
+            safaribot.sendMessage(src, cap(name) + " Log not found!", safchan);
+        }
+    };
     this.sanitize = function(player) {
         if (player) {
             var clean, i;
@@ -7055,199 +7110,47 @@ function Safari() {
             return true;
         }
         if (command === "tradelog") {
-            var log = sys.getFileContent(tradeLog);
-            if (log) {
-                log = log.split("\n");
-                var info = commandData.split(":"),
-                    term = info.length > 1 ? info[1] : "",
-                    e, lower = 0, upper = 10;
+            safari.showLog(src, commandData, tradeLog, "trade", function(x) {
+                var info = x.split("|||");
+                var time = new Date(parseInt(info[0], 10)).toUTCString();
+                var p1 = info[1].split("::")[0];
+                var p1offer = info[1].split("::")[1];
+                var p2 = info[2].split("::")[0];
+                var p2offer = info[2].split("::")[1];
 
-                var range = info[0].split("-");
-                if (range.length > 1) {
-                    lower = parseInt(range[0], 10);
-                    upper = parseInt(range[1], 10);
-                } else {
-                    lower = 0;
-                    upper = parseInt(range[0], 10);
-                }
-                lower = isNaN(lower) ? 0 : lower;
-                upper = isNaN(upper) ? 10 : upper;
-
-                if (lower <= 0) {
-                    log = log.slice(-(upper+1));
-                } else {
-                    var len = log.length;
-                    log = log.slice(Math.max(len - upper - 1, 0), len - lower);
-                }
-
-                if (term) {
-                    var exp = new RegExp(term, "gi");
-                    for (e = log.length - 1; e >= 0; e--) {
-                        if (!exp.test(log[e])) {
-                            log.splice(e, 1);
-                        }
-                    }
-                }
-                if (log.indexOf("") !== -1) {
-                    log.splice(log.indexOf(""), 1);
-                }
-                if (log.length <= 0) {
-                    safaribot.sendMessage(src, "No trade log found for this query!", safchan);
-                } else {
-                    var time, p1, p2, p1offer, p2offer;
-                    sys.sendMessage(src, "", safchan);
-                    sys.sendMessage(src, "Trade Log (last " + (lower > 0 ? lower + "~" : "") + upper + " trades" + (term ? ", only including trades with the term " + term : "") + "):", safchan);
-                    for (e in log) {
-                        if (!log[e]) {
-                            continue;
-                        }
-                        info = log[e].split("|||");
-                        time = new Date(parseInt(info[0], 10)).toUTCString();
-                        p1 = info[1].split("::")[0];
-                        p1offer = info[1].split("::")[1];
-                        p2 = info[2].split("::")[0];
-                        p2offer = info[2].split("::")[1];
-
-                        safaribot.sendMessage(src, p1 + "'s " + p1offer + " <--> " + p2 + "'s " + p2offer + " - (" + time + ")" , safchan);
-                    }
-                    sys.sendMessage(src, "", safchan);
-                }
-            } else {
-                safaribot.sendMessage(src, "Trade Log not found!", safchan);
-            }
+                return p1 + "'s " + p1offer + " <--> " + p2 + "'s " + p2offer + " - (" + time + ")";
+            });
             return true;
         }
         if (command === "shoplog") {
-            var log = sys.getFileContent(shopLog);
-            
-            if (log) {
-                log = log.split("\n");
-                var info = commandData.split(":"),
-                    term = info.length > 1 ? info[1] : "",
-                    e, lower = 0, upper = 10;
+            safari.showLog(src, commandData, shopLog, "shop", function(x) {
+                var info = x.split("|||");
+                var time = new Date(parseInt(info[0], 10)).toUTCString();
+                var p1Info = info[1].split("::");
+                var p1 = p1Info[0];
+                var amount = parseInt(p1Info[1], 10);
+                var item = p1Info[2];
+                var price = parseInt(p1Info[3], 10);
+                var cost = parseInt(p1Info[4], 10);
+                var p2 = info[2].split("::")[0];
 
-                var range = info[0].split("-");
-                if (range.length > 1) {
-                    lower = parseInt(range[0], 10);
-                    upper = parseInt(range[1], 10);
-                } else {
-                    lower = 0;
-                    upper = parseInt(range[0], 10);
-                }
-                lower = isNaN(lower) ? 0 : lower;
-                upper = isNaN(upper) ? 10 : upper;
-
-                if (lower <= 0) {
-                    log = log.slice(-(upper+1));
-                } else {
-                    var len = log.length;
-                    log = log.slice(Math.max(len - upper - 1, 0), len - lower);
-                }
-
-                if (term) {
-                    var exp = new RegExp(term, "gi");
-                    for (e = log.length - 1; e >= 0; e--) {
-                        if (!exp.test(log[e])) {
-                            log.splice(e, 1);
-                        }
-                    }
-                }
-                if (log.indexOf("") !== -1) {
-                    log.splice(log.indexOf(""), 1);
-                }
-                if (log.length <= 0) {
-                    safaribot.sendMessage(src, "No shop log found for this query!", safchan);
-                } else {
-                    var time, p1, p2, p1Info, amount, item, price, cost;
-                    sys.sendMessage(src, "", safchan);
-                    sys.sendMessage(src, "Shop Log (last " + (lower > 0 ? lower + "~" : "") + upper + " sales" + (term ? ", only including sales with the term " + term : "") + "):", safchan);
-                    for (e in log) {
-                        if (!log[e]) {
-                            continue;
-                        }
-                        info = log[e].split("|||");
-                        time = new Date(parseInt(info[0], 10)).toUTCString();
-                        p1Info = info[1].split("::");
-                        p1 = p1Info[0];
-                        amount = parseInt(p1Info[1], 10);
-                        item = p1Info[2];
-                        price = parseInt(p1Info[3], 10);
-                        cost = parseInt(p1Info[4], 10);
-                        p2 = info[2].split("::")[0];
-
-                        safaribot.sendMessage(src, p2 + " bought " + amount + "x " + item + " from " + p1 + " for $" + addComma(cost) + (amount > 1 ? " ($" + addComma(price) + " each)" : "") + " --- (" + time + ")" , safchan);
-                    }
-                    sys.sendMessage(src, "", safchan);
-                }
-            } else {
-                safaribot.sendMessage(src, "Shop Log not found!", safchan);
-            }
+                return p2 + " bought " + amount + "x " + item + " from " + p1 + " for $" + addComma(cost) + (amount > 1 ? " ($" + addComma(price) + " each)" : "") + " --- (" + time + ")";
+            });
             return true;
         }
-        if (command === "auctionlog") { //TODO: Change trade/shop/auction log into a single function
-            var log = sys.getFileContent(auctionLog);
-            
-            if (log) {
-                log = log.split("\n");
-                var info = commandData.split(":"),
-                    term = info.length > 1 ? info[1] : "",
-                    e, lower = 0, upper = 10;
-
-                var range = info[0].split("-");
-                if (range.length > 1) {
-                    lower = parseInt(range[0], 10);
-                    upper = parseInt(range[1], 10);
-                } else {
-                    lower = 0;
-                    upper = parseInt(range[0], 10);
-                }
-                lower = isNaN(lower) ? 0 : lower;
-                upper = isNaN(upper) ? 10 : upper;
-
-                if (lower <= 0) {
-                    log = log.slice(-(upper+1));
-                } else {
-                    var len = log.length;
-                    log = log.slice(Math.max(len - upper - 1, 0), len - lower);
-                }
-
-                if (term) {
-                    var exp = new RegExp(term, "gi");
-                    for (e = log.length - 1; e >= 0; e--) {
-                        if (!exp.test(log[e])) {
-                            log.splice(e, 1);
-                        }
-                    }
-                }
-                if (log.indexOf("") !== -1) {
-                    log.splice(log.indexOf(""), 1);
-                }
-                if (log.length <= 0) {
-                    safaribot.sendMessage(src, "No auction log found for this query!", safchan);
-                } else {
-                    var time, p1, p2, p1Info, amount, item, price;
-                    sys.sendMessage(src, "", safchan);
-                    sys.sendMessage(src, "Auction Log (last " + (lower > 0 ? lower + "~" : "") + upper + " sales" + (term ? ", only including auctions with the term " + term : "") + "):", safchan);
-                    for (e in log) {
-                        if (!log[e]) {
-                            continue;
-                        }
-                        info = log[e].split("|||");
-                        time = new Date(parseInt(info[0], 10)).toUTCString();
-                        p1Info = info[1].split("::");
-                        p1 = p1Info[0];
-                        amount = parseInt(p1Info[1], 10);
-                        item = p1Info[2];
-                        price = parseInt(p1Info[3], 10);
-                        p2 = info[2].split("::")[0];
-                        
-                        safaribot.sendMessage(src, p2 + " won " + p1 + "'s auction for " + amount + "x " + item + " by paying $" + addComma(price) + " --- (" + time + ")" , safchan);
-                    }
-                    sys.sendMessage(src, "", safchan);
-                }
-            } else {
-                safaribot.sendMessage(src, "Auction Log not found!", safchan);
-            }
+        if (command === "auctionlog") {
+            safari.showLog(src, commandData, auctionLog, "auction", function(x) {
+                var info = x.split("|||");
+                var time = new Date(parseInt(info[0], 10)).toUTCString();
+                var p1Info = info[1].split("::");
+                var p1 = p1Info[0];
+                var amount = parseInt(p1Info[1], 10);
+                var item = p1Info[2];
+                var price = parseInt(p1Info[3], 10);
+                var p2 = info[2].split("::")[0];
+                
+                return p2 + " won " + p1 + "'s auction for " + amount + "x " + item + " by paying $" + addComma(price) + " --- (" + time + ")";
+            });
             return true;
         }
         if (command === "clearjackpot") {
