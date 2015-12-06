@@ -5423,6 +5423,7 @@ function Safari() {
         var joinCommand = "/join " + this.hostName;
         sys.sendAll("", safchan);
         safaribot.sendHtmlAll(this.hostName + " is starting an auction! The product is a " + this.productName + ", with bids starting at $" + addComma(starting) + " (Minimum bid raise: $" + addComma(minBid) + ")! Type <a href='po:send/" + joinCommand + "'>" + joinCommand + "</a> to join the auction!", safchan);
+        safaribot.sendMessage(src, "You started an auction! The auction ends when the current bid is not matched after 3 turns or if no one makes a bid for the first 40 seconds!", safchan);
         sys.sendAll("", safchan);
     }
     Auction.prototype.nextTurn = function() {
@@ -5542,10 +5543,12 @@ function Safari() {
             return;
         }
         
-        this.members.push(sys.name(src).toLowerCase());
         this.sendToViewers(sys.name(src) + " has joined the auction!");
-        safaribot.sendMessage(src, "You joined " + this.hostName + "'s auction for a " + this.productName + ". Type /bid [value] to make your offer, or /leave to quit the auction.", safchan);
+        this.members.push(sys.name(src).toLowerCase());
+        sys.sendMessage(src, "", safchan);
+        safaribot.sendHtmlMessage(src, "You joined " + this.hostName + "'s auction for a " + this.productName + ". Type <a href='po:setmsg//bid " + (this.currentOffer + this.minBid) + "'>/bid [value]</a> to make your offer, or <a href='po:send//leave'>/leave</a> to quit the auction.", safchan);
         safaribot.sendMessage(src, "The current offer is $" + addComma(this.currentOffer) + ". You can only make offers at least $" + addComma(this.minBid) + " higher than the current offer.", safchan);
+        sys.sendMessage(src, "", safchan);
     };
     Auction.prototype.leave = function(src) {
         var name = sys.name(src).toLowerCase();
@@ -5594,7 +5597,7 @@ function Safari() {
         }
         
         if (this.suddenDeath) {
-            safaribot.sendMessage(src, "[Auction] You are offering $" + addComma(offer) + " for the " + this.productName + "!");
+            safaribot.sendMessage(src, "[Auction] You are offering $" + addComma(offer) + " for the " + this.productName + "!", safchan);
             this.suddenDeathOffers[id] = offer;
         } else {
             this.sendToViewers("");
