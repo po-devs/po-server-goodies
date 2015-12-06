@@ -13,6 +13,7 @@ function Safari() {
     var saveFiles = "scriptdata/safarisaves.txt";
     var tradeLog = "scriptdata/safaritrades.txt";
     var shopLog = "scriptdata/safarishoplog.txt";
+    var auctionLog = "scriptdata/safariauctions.txt";
     var permFile = "scriptdata/safariobjects.txt";
     var permObj;
     var rawPlayers;
@@ -4228,6 +4229,10 @@ function Safari() {
                 return true;
             }
         }
+        if (minBid >= startingOffer / 2) {
+            safaribot.sendMessage(src, "Minimum bid raise cannot be higher than " + Math.floor(startingOffer/2) + "!", safchan);
+            return;
+        }
         if (contestCooldown <= 200 || contestCount > 0) {
             safaribot.sendMessage(src, "You cannot create an auction during a contest or 3 minutes before a contest start!", safchan);
             return;
@@ -5409,6 +5414,7 @@ function Safari() {
         this.unbiddedTurns = 0;
         this.suddenDeath = false;
         this.suddenDeathOffers = {};
+        this.confirmBid = {};
         
         this.turn = 0;
         this.finished = false;
@@ -5540,6 +5546,8 @@ function Safari() {
         }
         this.sendToViewers("");
         this.finished = true;
+        
+        sys.appendToFile(auctionLog, now() + "|||" + this.hostName + "::" + 1 + "::" + this.productName + "::" + this.currentOffer + "|||" + this.currentBidder.toCorrectCase() + "\n");
     };
     Auction.prototype.join = function(src) {
         if (!safari.isBelowCap(src, this.product, 1, this.type)) {
@@ -5598,6 +5606,13 @@ function Safari() {
             safaribot.sendMessage(src, "You do not have $" + addComma(offer) + "!", safchan);
             return;
         }
+        
+        if (offer >= this.currentOffer * 10 && (!(id in this.confirmBid) || this.confirmBid[id] != offer)) {
+            safaribot.sendMessage(src, "Do you really want to offer $" + addComma(offer) + " or was that a typo? If you really want to offer that, make that bid again!", safchan);
+            this.confirmBid[id] = offer;
+            return;
+        }
+        delete this.confirmBid[id];
         
         if (this.suddenDeath) {
             safaribot.sendMessage(src, "[Auction] You are offering $" + addComma(offer) + " for the " + this.productName + "!", safchan);
@@ -7163,6 +7178,72 @@ function Safari() {
                 }
             } else {
                 safaribot.sendMessage(src, "Shop Log not found!", safchan);
+            }
+            return true;
+        }
+        if (command === "auctionlog") { //TODO: Change trade/shop/auction log into a single function
+            var log = sys.getFileContent(auctionLog);
+            
+            if (log) {
+                log = log.split("\n");
+                var info = commandData.split(":"),
+                    term = info.length > 1 ? info[1] : "",
+                    e, lower = 0, upper = 10;
+
+                var range = info[0].split("-");
+                if (range.length > 1) {
+                    lower = parseInt(range[0], 10);
+                    upper = parseInt(range[1], 10);
+                } else {
+                    lower = 0;
+                    upper = parseInt(range[0], 10);
+                }
+                lower = isNaN(lower) ? 0 : lower;
+                upper = isNaN(upper) ? 10 : upper;
+
+                if (lower <= 0) {
+                    log = log.slice(-(upper+1));
+                } else {
+                    var len = log.length;
+                    log = log.slice(Math.max(len - upper - 1, 0), len - lower);
+                }
+
+                if (term) {
+                    var exp = new RegExp(term, "gi");
+                    for (e = log.length - 1; e >= 0; e--) {
+                        if (!exp.test(log[e])) {
+                            log.splice(e, 1);
+                        }
+                    }
+                }
+                if (log.indexOf("") !== -1) {
+                    log.splice(log.indexOf(""), 1);
+                }
+                if (log.length <= 0) {
+                    safaribot.sendMessage(src, "No auction log found for this query!", safchan);
+                } else {
+                    var time, p1, p2, p1Info, amount, item, price;
+                    sys.sendMessage(src, "", safchan);
+                    sys.sendMessage(src, "Auction Log (last " + (lower > 0 ? lower + "~" : "") + upper + " sales" + (term ? ", only including auctions with the term " + term : "") + "):", safchan);
+                    for (e in log) {
+                        if (!log[e]) {
+                            continue;
+                        }
+                        info = log[e].split("|||");
+                        time = new Date(parseInt(info[0], 10)).toUTCString();
+                        p1Info = info[1].split("::");
+                        p1 = p1Info[0];
+                        amount = parseInt(p1Info[1], 10);
+                        item = p1Info[2];
+                        price = parseInt(p1Info[3], 10);
+                        p2 = info[2].split("::")[0];
+                        
+                        safaribot.sendMessage(src, p2 + " won " + p1 + "'s auction for " + amount + "x " + item + " by paying $" + addComma(price) + " --- (" + time + ")" , safchan);
+                    }
+                    sys.sendMessage(src, "", safchan);
+                }
+            } else {
+                safaribot.sendMessage(src, "Auction Log not found!", safchan);
             }
             return true;
         }
