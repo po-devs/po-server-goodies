@@ -236,7 +236,68 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             sys.writeToFile(Config.dataDir+"nameWarns.json", JSON.stringify(nameWarns));
         return;
     }
-    
+    if (command == "watchlog") {
+        var log = sys.getFileContent(Config.dataDir+"watchNamesLog.txt");
+        
+        if (log) {
+            log = log.split("\n");
+            if (!commandData) {
+                commandData = "";
+            }
+            var info = commandData.split(":"),
+                term = info.length > 1 ? info[1] : "",
+                e, lower = 0, upper = 10;
+
+            var range = info[0].split("-");
+            if (range.length > 1) {
+                lower = parseInt(range[0], 10);
+                upper = parseInt(range[1], 10);
+            } else {
+                lower = 0;
+                upper = parseInt(range[0], 10);
+            }
+            lower = isNaN(lower) ? 0 : lower;
+            upper = isNaN(upper) ? 10 : upper;
+
+            if (lower <= 0) {
+                log = log.slice(-(upper+1));
+            } else {
+                var len = log.length;
+                log = log.slice(Math.max(len - upper - 1, 0), len - lower);
+            }
+
+            if (term) {
+                var exp = new RegExp(term, "gi");
+                for (e = log.length - 1; e >= 0; e--) {
+                    if (!exp.test(log[e])) {
+                        log.splice(e, 1);
+                    }
+                }
+            }
+            if (log.indexOf("") !== -1) {
+                log.splice(log.indexOf(""), 1);
+            }
+            if (log.length <= 0) {
+                normalbot.sendMessage(src, "Nothing found for this query!", channel);
+            } else {
+                sys.sendMessage(src, "", channel);
+                sys.sendMessage(src, "Watch Log (last " + (lower > 0 ? lower + "~" : "") + upper + " entries" + (term ? ", only including entries with the term " + term : "") + "):", channel);
+                for (e in log) {
+                    if (!log[e]) {
+                        continue;
+                    }
+                    
+                    var params = log[e].split(":::");
+                    var msg = "Players: {0} and {1} -- Winner: {2} -- Forfeit: {3} -- Tier: {4} -- Time: {5} -- {0}'s IP: {6} -- {1}'s IP: {7}";
+                    normalbot.sendMessage(src, msg.format(params[0], params[1], params[2], params[3], params[4], params[5], params[6], params[7]), channel);
+                }
+                sys.sendMessage(src, "", channel);
+            }
+        } else {
+            normalbot.sendMessage(src, "Log file not found!", channel);
+        }
+        return;
+    }
        
     if (command == "cookieban" || command == "cookiemute") {
         if (!commandData) {
@@ -367,5 +428,6 @@ exports.help =
         "/indigodeinvite: To deinvite unwanted visitors from staff channel.",
         "/cookieban: Bans an online target by cookie.",
         "/cookiemute: Puts an online android target on an autosmute list by cookie.",
-        "/cookieunban/mute: Undos a cookieban/mute. Will take effect when they next log in"
+        "/cookieunban/mute: Undos a cookieban/mute. Will take effect when they next log in",
+        "/watchlog: Search the watch log. Accepts /watch 15 (last 15 entries), /watch 10-20 (last 10 to 20) and /watch 10:[Word] (entries that contain that word)."
     ];

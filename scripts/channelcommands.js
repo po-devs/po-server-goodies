@@ -422,6 +422,20 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return;
     }
+    if (command == "editrule") {
+        commandData = commandData.split(":");
+        if (commandData.length !== 3) {
+            channelbot.sendMessage(src, "Use /editrule index:name:description", channel);
+            return;
+        }
+        var returnVal = poChannel.editRule(commandData[0], commandData[1], commandData[2]);
+        if (returnVal) {    
+            channelbot.sendMessage(src, returnVal, channel);
+        } else {
+            channelbot.sendMessage(src, "You edited a rule", channel);
+        }
+        return;
+    }
      
     return "no command";
 };
@@ -479,6 +493,7 @@ exports.help = function(src, channel) {
         sys.sendMessage(src, "/deowner: Removes channel owner status from a user.", channel);
         sys.sendMessage(src, "/addrule [name]:[description]: Adds a rule to the current channel. Numbers are added automatically and there is a limit of 10 rules.", channel);
         sys.sendMessage(src, "/removerule [number]: Remove a rule [number].", channel);
+        sys.sendMessage(src, "/editrule [number]:[name]:[description]: Edit rule [number].", channel);
     }
     if (SESSION.global().permaTours.indexOf(channel) > -1) {
         sys.sendMessage(src, "*** Channel Tournaments commands ***", channel);

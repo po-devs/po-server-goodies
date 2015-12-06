@@ -697,6 +697,16 @@ POChannel.prototype.removeRule = function(index) {
     }
     SESSION.global().channelManager.update(this.id);
 };
+POChannel.prototype.editRule = function(index, name, description) {
+    if (!(index-1 in this.rules)) {
+        return "Not a rule";
+    }
+    if (name.length > 200 || description.length > 600) {
+        return "Name/Description too long. Limit is 200 characters for name and 600 for description";
+    }
+    this.rules[index-1] = index + ":::::" + name.replace(/:::::/g, ":") + ":::::" + description.replace(/:::::/g, ":");
+    SESSION.global().channelManager.update(this.id);
+};
 
 POChannel.prototype.getRules = function() {
     var output = [];
