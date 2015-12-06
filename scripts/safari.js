@@ -4151,6 +4151,9 @@ function Safari() {
         if (info.length < 3) {
             safaribot.sendMessage(src, "To create an auction, type /auction product:startingOffer:minimumBid.", safchan);
             safaribot.sendMessage(src, "Example: /auction Bulbasaur:550:10 to auction a Bulbasaur, with offers starting at $550 and bids at least $10 higher than current offer.", safchan);
+            if (player.cooldowns.auction > now()) {
+                safaribot.sendMessage(src, "Please wait " + timeLeftString(player.cooldowns.auction) + " before starting a new auction!", safchan);
+            }
             return;
         }
         if (player.tradeban > now()) {
