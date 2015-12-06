@@ -29,6 +29,7 @@ function Safari() {
     var tradeRequests = {};
     var challengeRequests = {};
     var currentBattles = [];
+    var currentAuctions = [];
     var gachaJackpotAmount = 100; //Jackpot for gacha tickets. Number gets divided by 10 later.
     var gachaJackpot = (SESSION.global() && SESSION.global().safariGachaJackpot ? SESSION.global().safariGachaJackpot : gachaJackpotAmount);
     var leaderboards = {};
@@ -491,7 +492,8 @@ function Safari() {
             gacha: 0,
             itemfinder: 0,
             stick: 0,
-            costume: 0
+            costume: 0,
+            auction: 0
         },
         shop: {},
         quests: {
@@ -1365,6 +1367,10 @@ function Safari() {
             safaribot.sendMessage(src, "You can't catch a Pokémon and battle at the same time!", safchan);
             return;
         }
+        if (this.isInAuction(sys.name(src))) {
+            safaribot.sendMessage(src, "You can't catch a Pokémon while participating in an auction!", safchan);
+            return;
+        }
         var currentTime = now();
         if (!bypass && (!preparationFirst || sys.name(src).toLowerCase() !== preparationFirst.toLowerCase()) && player.cooldowns.ball > currentTime) {
             safaribot.sendMessage(src, "Please wait " + (Math.floor((player.cooldowns.ball - currentTime)/1000) + 1) + " seconds before throwing a ball!", safchan);
@@ -1595,6 +1601,10 @@ function Safari() {
         }
         if (this.isBattling(sys.name(src))) {
             safaribot.sendMessage(src, "You can't throw a bait during a battle!", safchan);
+            return;
+        }
+        if (this.isInAuction(sys.name(src))) {
+            safaribot.sendMessage(src, "You can't catch throw a bait while participating in an auction!", safchan);
             return;
         }
         if (player.cooldowns.ballUse > now()) {
@@ -1849,6 +1859,10 @@ function Safari() {
             safaribot.sendMessage(src, "A long line forms in front of the Gachapon Machine. It will probably take " + timeLeft(player.cooldowns.gacha) + " seconds before you can use the Gachapon Machine again!", safchan);
             return;
         }
+        if (this.isInAuction(sys.name(src))) {
+            safaribot.sendMessage(src, "You can't use the Gachapon Machine while participating in an auction!", safchan);
+            return;
+        }
         /*if (contestCount > 0) {
             safaribot.sendMessage(src, "[Closed] For maintenance. Will be fixed by time the contest is over!", safchan);
             return;
@@ -2005,6 +2019,10 @@ function Safari() {
             safaribot.sendMessage(src, "You can't use a Rare Candy during a battle!", safchan);
             return;
         }
+        if (this.isInAuction(sys.name(src))) {
+            safaribot.sendMessage(src, "You can't use a Rare Candy while participating in an auction!", safchan);
+            return;
+        }
 
         if (player.balls.rare < 1) {
             safaribot.sendMessage(src, "You have no Rare Candies!", safchan);
@@ -2106,6 +2124,10 @@ function Safari() {
             safaribot.sendMessage(src, "You can't use Mega Stones during a battle!", safchan);
             return;
         }
+        if (this.isInAuction(sys.name(src))) {
+            safaribot.sendMessage(src, "You can't use a Mega Stone while participating in an auction!", safchan);
+            return;
+        }
 
         if (player.balls.mega < 1) {
             safaribot.sendMessage(src, "You have no Mega Stones!", safchan);
@@ -2182,7 +2204,7 @@ function Safari() {
         }
         var player = getAvatar(src);
         if (player.tradeban > now()) {
-            safaribot.sendMessage(src, "You are banned from releasing for " + utilities.getTimeString((player.tradeban - now())/1000) + "!", safchan);
+            safaribot.sendMessage(src, "You are banned from releasing for " + timeLeftString(player.tradeban) + "!", safchan);
             return;
         }
         if (data === "*") {
@@ -2191,6 +2213,10 @@ function Safari() {
         }
         if (this.isBattling(sys.name(src))) {
             safaribot.sendMessage(src, "You can't release a Pokémon during a battle!", safchan);
+            return;
+        }
+        if (this.isInAuction(sys.name(src))) {
+            safaribot.sendMessage(src, "You can't release a Pokémon while participating in an auction!", safchan);
             return;
         }
         if (currentPokemon) {
@@ -2251,6 +2277,10 @@ function Safari() {
             totalCharges = dailyCharges + permCharges;
         if (totalCharges < 1) {
             safaribot.sendMessage(src, "You have no charges left for your Itemfinder!", safchan);
+            return;
+        }
+        if (this.isInAuction(sys.name(src))) {
+            safaribot.sendMessage(src, "You can't use the Itemfinder while participating in an auction!", safchan);
             return;
         }
 
@@ -2334,6 +2364,10 @@ function Safari() {
         if (!validPlayers("self", src)) {
             return;
         }
+        if (this.isInAuction(sys.name(src))) {
+            safaribot.sendMessage(src, "You can't use an item while participating in an auction!", safchan);
+            return;
+        }
         var player = getAvatar(src);
         var item = itemAlias(data, true);
         if (!(item in itemData)) {
@@ -2392,9 +2426,12 @@ function Safari() {
             safaribot.sendMessage(src, "You cannot start a battle while a wild Pokémon is around!", safchan);
             return;
         }
-
         if (this.isBattling(name)) {
             safaribot.sendMessage(src, "You are already in a battle!", safchan);
+            return;
+        }
+        if (this.isInAuction(sys.name(src))) {
+            safaribot.sendMessage(src, "You can't battle while participating in an auction!", safchan);
             return;
         }
 
@@ -2458,7 +2495,6 @@ function Safari() {
         }
 
         safaribot.sendMessage(src, "This person is not battling!", safchan);
-
     };
     this.questNPC = function(src, data) {
         if (!validPlayers("self", src)) {
@@ -2474,6 +2510,11 @@ function Safari() {
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
             sys.sendMessage(src, "", safchan);
+            return;
+        }
+        
+        if (this.isInAuction(sys.name(src))) {
+            safaribot.sendMessage(src, "You can't do any quest while participating in an auction!", safchan);
             return;
         }
         
@@ -2877,7 +2918,7 @@ function Safari() {
         var opponents = {
             pink: {
                 name: "Trainer Pink",
-                party: ["36",80,196,222,518,700,594,706,463,591,65838,452,472,205,719,423,308],
+                party: ["36",80,196,222,700,594,706,591,65838,472,205,719,423,308,620,368],
                 power: [60, 130],
                 postBattle: postBattle,
                 postArgs: {
@@ -2887,7 +2928,7 @@ function Safari() {
             },
             teal: {
                 name: "Trainer Teal",
-                party: [282,330,272,579,248,"178",569,186,598,384,652,286,389,437,66011,623],
+                party: [282,330,272,579,248,"178",186,598,384,652,286,389,437,66011,623],
                 power: [90, 170],
                 postBattle: postBattle,
                 postArgs: {
@@ -2917,7 +2958,7 @@ function Safari() {
             },
             crimson: {
                 name: "Trainer Crimson",
-                party: [131078,101,625,"663",697,212,131658,342,213,47,224,553,392,538,380,257,99],
+                party: [131078,101,625,"663",697,212,342,213,47,224,553,392,538,257,99,721,380,149],
                 power: [200, 380],
                 postBattle: postBattle,
                 postArgs: {
@@ -3006,17 +3047,20 @@ function Safari() {
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Wonder Trade Operator: To get a trade here you simply choose one of your Pokémon, pay a small fee and then you will receive a random Pokémon immediately!", safchan);
             safaribot.sendMessage(src, "Wonder Trade Operator: The fee is based on your Pokémon's BST, and you will receive a Pokémon within the same BST range.", safchan);
-            safaribot.sendMessage(src, "Wonder Trade Operator: The available BST ranges are 180~249 ($50 fee), 250~319 ($100), 320~389 ($150), 390~459 ($200), 460~529 ($250) and 530~599 ($300).", safchan);
+            safaribot.sendMessage(src, "Wonder Trade Operator: The available BST ranges are 180~249 ($50 fee), 250~319 ($100), 320~389 ($150), 390~459 ($300), 460~529 ($500) and 530~599 ($750).", safchan);
             safaribot.sendMessage(src, "Wonder Trade Operator: Also be aware that you CANNOT receive legendaries from Wonder Trade!", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
         
         if (quest.cooldown > now()) {
-            safaribot.sendMessage(src, "Wonder Trade Operator: Due to the rules imposed by the Pokémon Association, we can only allow one trade every 2 hours per person! Please come back in " + timeLeftString(quest.cooldown) + "!", safchan);
+            safaribot.sendMessage(src, "Wonder Trade Operator: Due to the rules imposed by the Pokémon Association, we cannot allow another trade in less than " + timeLeftString(quest.cooldown) + "!", safchan);
             return;
         }
-        
+        if (player.records.pokesCaught < 4) {
+            safaribot.sendMessage(src, "You can only trade after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
+            return;
+        }
         if (data.length < 1) {
             safaribot.sendMessage(src, "Wonder Trade Operator: Please use /quest wonder:[Pokémon] to choose the Pokémon you wish to trade. You can also type /quest wonder:help for more information.", safchan);
             return;
@@ -3046,7 +3090,8 @@ function Safari() {
         
         var rangeIndex = Math.floor((bst - 180)/70);
         var bstRange = [[180,249], [250,319], [320,389], [390,459], [460,529], [530,599]][rangeIndex];
-        var fee = (rangeIndex + 1) * 50;
+        var fee = [50, 100, 150, 300, 500, 750][rangeIndex];
+        var cooldown = [0.5, 0.75, 1, 1.33, 1.66, 2][rangeIndex];
         
         if (data.length < 2 || data[1].toLowerCase() !== "confirm") {
             sys.sendMessage(src, "", safchan);
@@ -3086,7 +3131,7 @@ function Safari() {
         player.pokemon.push(receivedId);
         player.money -= fee;
         
-        quest.cooldown = now() + 2 * 60 * 60 * 1000;
+        quest.cooldown = now() + cooldown * 60 * 60 * 1000;
         this.saveGame(player);
         safaribot.sendMessage(src, "Wonder Trade Operator: The trade was finished successfully! You traded your " + input.name + " and received a " + poke(receivedId) + "!", safchan);
         sys.sendMessage(src, "", safchan);
@@ -3099,6 +3144,10 @@ function Safari() {
         }
         if (data === "*") {
             safaribot.sendMessage(src, "To sell a Pokémon, use /sell [name] to check its price, and /sell [name]:confirm to sell it.", safchan);
+            return;
+        }
+        if (this.isInAuction(sys.name(src))) {
+            safaribot.sendMessage(src, "You can't sell a Pokémon while participating in an auction!", safchan);
             return;
         }
         var player = getAvatar(src);
@@ -3283,7 +3332,7 @@ function Safari() {
         }
         var player = getAvatar(src);
         if (!fromNPC && player.tradeban > now()) {
-            safaribot.sendMessage(src, "You are banned from buying from other players for " + utilities.getTimeString((player.tradeban - now())/1000) + "!", safchan);
+            safaribot.sendMessage(src, "You are banned from buying from other players for " + timeLeftString(player.tradeban) + "!", safchan);
             return;
         }
         if (!fromNPC && player.records.pokesCaught < 4) {
@@ -3327,6 +3376,10 @@ function Safari() {
 
         if (product === "*") {
             this.showPrices(src, shop, command, (sellerId ? sys.name(sellerId) : null));
+            return;
+        }
+        if (this.isInAuction(sys.name(src))) {
+            safaribot.sendMessage(src, "You can't buy from a shop while participating in an auction!", safchan);
             return;
         }
         if (!fromNPC && (sellerName.toLowerCase() == sys.name(src).toLowerCase() || sys.ip(sellerId) === sys.ip(src))) {
@@ -3490,11 +3543,15 @@ function Safari() {
                 return;
             }
             if (player.tradeban > now()) {
-                safaribot.sendMessage(src, "You are banned from creating your own shop for " + utilities.getTimeString((player.tradeban - now())/1000) + "!", safchan);
+                safaribot.sendMessage(src, "You are banned from creating your own shop for " + timeLeftString(player.tradeban) + "!", safchan);
                 return;
             }
             if (player.records.pokesCaught < 4) {
                 safaribot.sendMessage(src, "You can only set a shop after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
+                return;
+            }
+            if (this.isInAuction(sys.name(src))) {
+                safaribot.sendMessage(src, "You can't modify your shop while participating in an auction!", safchan);
                 return;
             }
         }
@@ -3740,6 +3797,10 @@ function Safari() {
             safaribot.sendMessage(src, "[Closed] Out catching Pokémon at the Contest. Come back after the Contest!", safchan);
             return;
         }
+        if (this.isInAuction(sys.name(src))) {
+            safaribot.sendMessage(src, "You can't sell an item while participating in an auction!", safchan);
+            return;
+        }
         var info = data.split(":");
         var item = itemAlias(info[0], true);
         var amount = 1;
@@ -3773,7 +3834,7 @@ function Safari() {
         }
         var player = getAvatar(src);
         if (player.tradeban > now()) {
-            safaribot.sendMessage(src, "You are banned from trading for " + utilities.getTimeString((player.tradeban - now())/1000) + "!", safchan);
+            safaribot.sendMessage(src, "You are banned from trading for " + timeLeftString(player.tradeban) + "!", safchan);
             return;
         }
         if (player.records.pokesCaught < 4) {
@@ -3796,6 +3857,10 @@ function Safari() {
         }
         if (this.isBattling(sys.name(src))) {
             safaribot.sendMessage(src, "You can't trade during a battle!", safchan);
+            return;
+        }
+        if (this.isInAuction(sys.name(src))) {
+            safaribot.sendMessage(src, "You can't trade while participating in an auction!", safchan);
             return;
         }
 
@@ -4075,6 +4140,167 @@ function Safari() {
             }
         }
         return true;
+    };
+    this.createAuction = function(src, data) {
+        if (!validPlayers("self", src, data)) {
+            return;
+        }
+        var player = getAvatar(src);
+        var info = data.split(":");
+        
+        if (info.length < 3) {
+            safaribot.sendMessage(src, "To create an auction, type /auction product:startingOffer:minimumBid.", safchan);
+            safaribot.sendMessage(src, "Example: /auction Bulbasaur:550:10 to auction a Bulbasaur, with offers starting at $550 and bids at least $10 higher than current offer.", safchan);
+            return;
+        }
+        if (player.tradeban > now()) {
+            safaribot.sendMessage(src, "You are banned from starting auctions for " + timeLeftString(player.tradeban) + "!", safchan);
+            return;
+        }
+        if (player.records.pokesCaught < 4) {
+            safaribot.sendMessage(src, "You can only start an auction after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
+            return;
+        }
+        if (player.cooldowns.auction > now()) {
+            safaribot.sendMessage(src, "Please wait " + timeLeftString(player.cooldowns.auction) + " before starting a new auction!", safchan);
+            return;
+        }
+        if (this.isInAuction(sys.name(src))) {
+            safaribot.sendMessage(src, "You are already participating in an auction!", safchan);
+            return;
+        }
+        var product = info[0];
+        var startingOffer = parseInt(info[1], 10);
+        var minBid = parseInt(info[2], 10);
+        
+        var input = getInputPokemon(product);
+        var type = "poke";
+        if (!input.num) {
+            if (product[0] == "@") {
+                product = product.substr(1);
+            }
+            product = itemAlias(product, true);
+            if (currentItems.indexOf(product) === -1) {
+                safaribot.sendMessage(src, "Invalid format! Use /auction product:startingOffer:minimumBid.", safchan);
+                return;
+            }
+            type = "item";
+            input = {
+                input: "@" + product,
+                name: finishName(product)
+            };
+        }
+        
+        if (isNaN(startingOffer) || startingOffer < 1) {
+            safaribot.sendMessage(src, "Please type a valid number for the starting offer!", safchan);
+            return;
+        }
+        if (isNaN(minBid) || minBid < 1) {
+            safaribot.sendMessage(src, "Please type a valid number for the minimum bid raise!", safchan);
+            return;
+        }
+        if (type == "poke") {
+            if (!player.pokemon.contains(input.id)) {
+                safaribot.sendMessage(src, "You do not have a " + input.name + "!", safchan);
+                return;
+            }
+            if (!canLosePokemon(src, input.input, "auction")) {
+                return;
+            }
+            if (startingOffer < getPrice(input.id, input.shiny)) {
+                safaribot.sendMessage(src, "Starting offer for " + input.name + " must be at least $" + addComma(getPrice(input.id, input.shiny)) + "!", safchan);
+                return;
+            }
+        } else {
+            if (!itemData[product].tradable) {
+                safaribot.sendMessage(src, "You can't auction this item!", safchan);
+                return true;
+            }
+            if (player.balls[product] < 1) {
+                safaribot.sendMessage(src, "You do not have a " + input.name + "!", safchan);
+                return;
+            }
+            if ("tradeReq" in itemData[product] && player.balls[product] - 1 < itemData[product].tradeReq) {
+                safaribot.sendMessage(src, "This item cannot be auctioned unless you have at least " + itemData[product].tradeReq + " of those!", safchan);
+                return true;
+            }
+        }
+        if (contestCooldown <= 200 || contestCount > 0) {
+            safaribot.sendMessage(src, "You cannot create an auction during a contest or 3 minutes before a contest start!", safchan);
+            return;
+        }
+        if (input.input in player.shop) {
+            safaribot.sendMessage(src, "Please remove the " + input.name + " from your shop before auctioning it!", safchan);
+            return;
+        }
+        
+        var auction = new Auction(src, input.input, startingOffer, minBid);
+        currentAuctions.push(auction);
+        
+        player.cooldowns.auction = now() + 15 * 60 * 1000;
+        this.saveGame(player);
+    };
+    this.joinAuction = function(src, data) {
+        if (!validPlayers("both", src, data)) {
+            return;
+        }
+        var player = getAvatar(src);
+        if (player.records.pokesCaught < 4) {
+            safaribot.sendMessage(src, "You can only join an auction after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
+            return;
+        }
+        if (player.tradeban > now()) {
+            safaribot.sendMessage(src, "You are banned from joining auctions for " + timeLeftString(player.tradeban) + "!", safchan);
+            return;
+        }
+        var name = sys.name(src);
+        var tName = sys.name(sys.id(data)).toLowerCase();
+        
+        if (this.isInAuction(name)) {
+            safaribot.sendMessage(src, "You are already participating in an auction!", safchan);
+            return;
+        }
+
+        var auction, b;
+        for (b in currentAuctions) {
+            auction = currentAuctions[b];
+            if (auction.host == tName) {
+                auction.join(src);
+                return;
+            }
+        }
+
+        safaribot.sendMessage(src, "This person is not hosting any auction!", safchan);
+    };
+    this.quitAuction = function(src, data) {
+        if (!validPlayers("self", src, data)) {
+            return;
+        }
+        var name = sys.name(src), auction, b;
+        for (b in currentAuctions) {
+            auction = currentAuctions[b];
+            if (auction.isInAuction(name)) {
+                auction.leave(src);
+                return;
+            }
+        }
+
+        safaribot.sendMessage(src, "You are not participating in any auction!", safchan);
+    };
+    this.bidAuction = function(src, data) {
+        if (!validPlayers("self", src, data)) {
+            return;
+        }
+        var name = sys.name(src), auction, b;
+        for (b in currentAuctions) {
+            auction = currentAuctions[b];
+            if (auction.isInAuction(name)) {
+                auction.makeOffer(src, data);
+                return;
+            }
+        }
+
+        safaribot.sendMessage(src, "You are not participating in any auction!", safchan);
     };
     
     this.viewOwnInfo = function(src, textOnly) {
@@ -4501,6 +4727,18 @@ function Safari() {
     };
     this.removePokemon = function(src, pokeNum) {
         var player = getAvatar(src);
+        if (player.pokemon.contains(pokeNum)) {
+            player.pokemon.splice(player.pokemon.lastIndexOf(pokeNum), 1);
+        }
+
+        if (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum)) {
+            do {
+                player.party.splice(player.party.lastIndexOf(pokeNum), 1);
+            } while (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum));
+        }
+    };
+    this.removePokemon2 = function(name, pokeNum) {
+        var player = getAvatarOff(name);
         if (player.pokemon.contains(pokeNum)) {
             player.pokemon.splice(player.pokemon.lastIndexOf(pokeNum), 1);
         }
@@ -4965,6 +5203,14 @@ function Safari() {
         }
         return false;
     };
+    this.isInAuction = function(name) {
+        for (var b in currentAuctions) {
+            if (currentAuctions[b].isInAuction(name)) {
+                return true;
+            }
+        }
+        return false;
+    };
 
     function Battle(p1, p2) {
         var player1 = getAvatar(p1);
@@ -5146,6 +5392,242 @@ function Safari() {
         return this.name1.toLowerCase() == name.toLowerCase() || (!this.npcBattle && this.name2.toLowerCase() == name.toLowerCase());
     };
     
+    function Auction(src, product, starting, minBid) {
+        this.host = sys.name(src).toLowerCase();
+        this.hostName = sys.name(src);
+        
+        this.members = [];
+        this.product = product;
+        this.startingOffer = starting;
+        this.minBid = minBid;
+        
+        this.currentOffer = starting - minBid;
+        this.currentBidder = null;
+        this.unbiddedTurns = 0;
+        this.suddenDeath = false;
+        this.suddenDeathOffers = {};
+        
+        this.turn = 0;
+        this.finished = false;
+        this.changed = false;
+        
+        if (product[0] == "@") {
+            this.product = product.substr(product.indexOf("@") + 1);
+            this.productName = itemAlias(this.product, false, true);
+            this.type = "item";
+        } else {
+            this.productName = getInputPokemon(product).name;
+            this.type = "poke";
+        }
+        
+        var joinCommand = "/join " + this.hostName;
+        sys.sendAll("", safchan);
+        safaribot.sendHtmlAll(this.hostName + " is starting an auction! The product is a " + this.productName + ", with bids starting at $" + addComma(starting) + " (Minimum bid raise: $" + addComma(minBid) + ")! Type <a href='po:send/" + joinCommand + "'>" + joinCommand + "</a> to join the auction!", safchan);
+        sys.sendAll("", safchan);
+    }
+    Auction.prototype.nextTurn = function() {
+        if (this.turn === 0) {
+            this.turn++;
+            this.sendToViewers("[Auction] Preparations complete, the auction will start soon!");
+            return;
+        }
+        if (this.turn == 5 && !this.currentBidder) {
+            this.sendToViewers("");
+            this.sendToViewers("[Auction] Auction cancelled because no bids have been made!");
+            this.sendToViewers("");
+            this.finished = true;
+            return;
+        }
+        
+        if (this.turn > 20) {
+            if (this.turn === 21) {
+                this.unbiddedTurns++;
+                if (this.checkWinner()) {
+                    return;
+                }
+                this.sendToViewers("");
+                this.sendToViewers("[Auction] No winner after 20 turns! Auction will now proceed to sudden death mode!");
+                this.sendToViewers("[Auction] All participants can make one last secret bid. All offers will be revealed simultaneously. Highest offer wins.");
+                this.sendToViewers("");
+                this.turn++;
+                this.suddenDeath = true;
+                return;
+            }
+            if (this.turn === 22) {
+                this.turn++;
+                this.sendToViewers("");
+                this.sendToViewers("[Auction] Please make your final bid if you haven't made it yet!");
+                this.sendToViewers("");
+                return;
+            }
+            for (var e in this.suddenDeathOffers) {
+                if (this.suddenDeathOffers[e] > this.currentOffer) {
+                    this.currentOffer = this.suddenDeathOffers[e];
+                    this.currentBidder = e;
+                }
+            }
+            
+            this.finishAuction();
+        } else {
+            if (this.changed) {
+                this.unbiddedTurns = 0;
+            }
+            if (this.currentBidder) {
+                this.unbiddedTurns++;
+                if (this.checkWinner()) {
+                    return;
+                }
+                
+                this.sendToViewers("");
+                this.sendToViewers("[Auction] Current highest bid is $" + addComma(this.currentOffer) + " by " + this.currentBidder.toCorrectCase() + "!");
+                if (this.unbiddedTurns > 0) {
+                    this.sendToViewers("[Auction] If no one bids more, " + this.currentBidder.toCorrectCase() + " will win the auction in " + (4 - this.unbiddedTurns) + "  turn(s)!");
+                }
+                this.sendToViewers("");
+            }
+            this.changed = false;
+        }
+        this.turn++;
+    };
+    Auction.prototype.checkWinner = function() {
+        if (this.unbiddedTurns >= 4) {
+            this.finishAuction();
+            return true;
+        }
+        return false;
+    };
+    Auction.prototype.finishAuction = function() {
+        this.sendToViewers("");
+        this.sendToViewers("[Auction] The auction is finished! " + this.currentBidder.toCorrectCase() + " takes the " + this.productName + " for $" + addComma(this.currentOffer) + "!");
+        if (this.suddenDeath && Object.keys(this.suddenDeathOffers).length > 0) {
+            var allOffers = [];
+            for (var e in this.suddenDeathOffers) {
+                allOffers.push(e.toCorrectCase() + " ($" + addComma(this.suddenDeathOffers[e]) + ")");
+            }
+            this.sendToViewers("[Auction] All offers: " + allOffers.join(", "));
+        }
+        
+        var host = getAvatarOff(this.host);
+        var winner = getAvatarOff(this.currentBidder);
+        
+        winner.money -= this.currentOffer;
+        host.money += this.currentOffer;
+        
+        if (this.type == "item") {
+            host.balls[this.product] -= 1;
+            winner.balls[this.product] += 1;
+        } else {
+            var input = getInputPokemon(this.product);
+            
+            safari.removePokemon2(this.host, input.id);
+            winner.pokemon.push(input.id);
+        }
+        
+        safari.saveGame(host);
+        safari.saveGame(winner);
+        
+        var id = sys.id(this.host);
+        if (id) {
+            safaribot.sendMessage(id, "You received $" + addComma(this.currentOffer) + " from " + this.currentBidder.toCorrectCase() + " for your " + this.productName + "!", safchan);
+        }
+        id = sys.id(this.currentBidder);
+        if (id) {
+            safaribot.sendMessage(id, "You bought a " + this.productName + " from " + this.hostName + " for $" + addComma(this.currentOffer) + "!", safchan);
+        }
+        this.sendToViewers("");
+        this.finished = true;
+    };
+    Auction.prototype.join = function(src) {
+        if (!safari.isBelowCap(src, this.product, 1, this.type)) {
+            return;
+        }
+        
+        this.members.push(sys.name(src).toLowerCase());
+        this.sendToViewers(sys.name(src) + " has joined the auction!");
+        safaribot.sendMessage(src, "You joined " + this.hostName + "'s auction for a " + this.productName + ". Type /bid [value] to make your offer, or /leave to quit the auction.", safchan);
+        safaribot.sendMessage(src, "The current offer is $" + addComma(this.currentOffer) + ". You can only make offers at least $" + addComma(this.minBid) + " higher than the current offer.", safchan);
+    };
+    Auction.prototype.leave = function(src) {
+        var name = sys.name(src).toLowerCase();
+        if (this.host == name) {
+            safaribot.sendMessage(src, "You can't leave your own auction!", safchan);
+            return;
+        }
+        if (this.currentBidder == name) {
+            safaribot.sendMessage(src, "You can't leave the auction while your bid is the highest one!", safchan);
+            return;
+        }
+        if (this.suddenDeath) {
+            safaribot.sendMessage(src, "You can't leave the auction while it's in sudden death mode!", safchan);
+            return;
+        }
+        
+        this.members.splice(this.members.indexOf(name), 1);
+        this.sendToViewers(sys.name(src) + " left the auction!");
+        safaribot.sendMessage(src, "You left " + this.hostName + "'s auction!", safchan);
+    };
+    Auction.prototype.makeOffer = function(src, bid) {
+        var player = getAvatar(src);
+        var id = sys.name(src).toLowerCase();
+        
+        if (id == this.host) {
+            safaribot.sendMessage(src, "You can't bid in your own auction!", safchan);
+            return;
+        }
+        if (this.turn === 0) {
+            safaribot.sendMessage(src, "Please wait a moment before making a bid!", safchan);
+            return;
+        }
+        
+        var offer = parseInt(bid, 10);
+        if (isNaN(offer) || offer < 1) {
+            safaribot.sendMessage(src, "Please offer a valid value!", safchan);
+            return;
+        }
+        if (offer < this.currentOffer + this.minBid) {
+            safaribot.sendMessage(src, "You must offer a minimum of $" + addComma(this.currentOffer + this.minBid) + "!", safchan);
+            return;
+        }
+        if (player.money < offer) {
+            safaribot.sendMessage(src, "You do not have $" + addComma(offer) + "!", safchan);
+            return;
+        }
+        
+        if (this.suddenDeath) {
+            safaribot.sendMessage(src, "[Auction] You are offering $" + addComma(offer) + " for the " + this.productName + "!");
+            this.suddenDeathOffers[id] = offer;
+        } else {
+            this.sendToViewers("");
+            this.sendToViewers("[Auction] " + sys.name(src) + " is offering $" + addComma(offer) + " for the " + this.productName + "!");
+            
+            if (id !== this.currentBidder) {
+                this.changed = true;
+            }
+            this.currentBidder = id;
+            this.currentOffer = offer;
+        }
+    };
+    Auction.prototype.sendMessage = function(name, msg) {
+        var id = sys.id(name);
+        if (id) {
+            if (msg === "") {
+                sys.sendHtmlMessage(id, msg, safchan);
+            } else {
+                safaribot.sendHtmlMessage(id, msg, safchan);
+            }
+        }
+    };
+    Auction.prototype.sendToViewers = function(msg) {
+        var e;
+        for (e in this.members) {
+            this.sendMessage(this.members[e], msg);
+        }
+        this.sendMessage(this.host, msg);
+    };
+    Auction.prototype.isInAuction = function(name) {
+        return this.host == name.toLowerCase() || this.members.contains(name.toLowerCase());
+    };
+    
     this.startGame = function(src, data) {
         if (getAvatar(src)) {
             safaribot.sendMessage(src, "You already have a starter pokémon!", safchan);
@@ -5261,7 +5743,7 @@ function Safari() {
             } while (bst > 498 || isLegendary(randomNum));
         }
         
-        var bonus = 1.5 - (300 - (480 - bst)) * 0.25 / 300;
+        var bonus = 1.6 - (318 - (498 - bst)) * 0.4 / 318;
         
         dailyBoost = {
             pokemon: randomNum,
@@ -5300,6 +5782,10 @@ function Safari() {
         if (this.isBattling(sys.name(src)) || this.isBattling(data)) {
             safaribot.sendMessage(src, "You can't pass your save data while one of the players is in a battle!", safchan);
             return true;
+        }
+        if (this.isInAuction(sys.name(src)) || this.isInAuction(data)) {
+            safaribot.sendMessage(src, "You can't pass your save data while one of the players is participating in an auction!", safchan);
+            return;
         }
 
         var target = getAvatar(targetId);
@@ -5679,6 +6165,7 @@ function Safari() {
             "/buy: To buy items or Pokémon.",
             "/shop: To buy items or Pokémon from a another player.",
             "/shopadd: To add items or Pokémon to your personal shop. Use /shopremove to something from your shop, /shopclose to remove all items at once or /shopclean to remove all items out of stock.",
+            "/auction: To start an auction.",
             // "/buycostume: To buy a new costume.",
             "/party: To add or remove a Pokémon from your party, or to set your party's leader*. Type /party for more details.",
             "/quest: To view available quests.",
@@ -5820,6 +6307,22 @@ function Safari() {
         }
         if (command === "trade") {
             safari.tradePokemon(src, commandData);
+            return true;
+        }
+        if (command === "auction") {
+            safari.createAuction(src, commandData);
+            return true;
+        }
+        if (command === "join") {
+            safari.joinAuction(src, commandData);
+            return true;
+        }
+        if (command === "bid") {
+            safari.bidAuction(src, commandData);
+            return true;
+        }
+        if (command === "leave") {
+            safari.quitAuction(src, commandData);
             return true;
         }
         if (command === "party") {
@@ -6777,6 +7280,15 @@ function Safari() {
                 battle.nextTurn();
                 if (battle.finished) {
                     currentBattles.splice(e, 1);
+                }
+            }
+        }
+        if (currentAuctions.length > 0 && contestCooldown % 8 === 0) {
+            for (var e = currentAuctions.length - 1; e >= 0; e--) {
+                var auction = currentAuctions[e];
+                auction.nextTurn();
+                if (auction.finished) {
+                    currentAuctions.splice(e, 1);
                 }
             }
         }
