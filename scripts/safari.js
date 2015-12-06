@@ -5451,6 +5451,9 @@ function Safari() {
         
         if (this.turn > 20) {
             if (this.turn === 21) {
+                if (this.changed) {
+                    this.unbiddedTurns = 0;
+                }
                 this.unbiddedTurns++;
                 if (this.checkWinner()) {
                     return;
