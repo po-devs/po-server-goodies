@@ -1,9 +1,9 @@
 /*
  * amoebagame.js
  */
-module.exports = function() {
+module.exports = function() {                              
     var id;
-    var name = "Evolution Game";
+                       var name = "Evolution Game";            
     var species = ['Solosis', 'Lilligant', 'Krokorok', 'Minccino', 'Mankey', 'Arceus'];
     var messages = ['solosis solosis', 'lilli-lilligant', 'krokokokokorok!', 'minccino?', 'ma-mankey mankey!', '-'];
     var battles = {};
