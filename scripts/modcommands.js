@@ -503,7 +503,25 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                     data.push("Idle for: " + getTimeString(parseInt(sys.time(), 10) - realTime));
                     data.push("Channels: " + channels.join(", "));
                     data.push("Names during current session: " + (online && SESSION.users(tar).namehistory ? SESSION.users(tar).namehistory.map(function(e){return e[0];}).join(", ") : name));
-                    data.push("Client Type: " + utilities.capitalize(sys.os(tar)));
+                    var version = sys.version(tar) + "";
+                    if (sys.os(tar) === "windows" || sys.os(tar) === "mac" || sys.os(tar) === "linux") {
+                        var temp = " (v" + version.charAt(0) + "." + version.charAt(1) + "." + version.charAt(3) + (version.charAt(4) !== 0 ? version.charAt(4) : "") + ")";
+                        version = temp;
+                    } else if (sys.os(tar) === "android") {
+                        //could be redone better probably
+                        var verArr = ["6.2","6.1","6.0","5.2","5.1","5.0","4.4"];
+                        var x = 53 - version;
+                        if (x < 0) {
+                            version = " (later than v2.6.2)";
+                        } else if (x > verArr.length) {
+                            version = " (earlier than v2.4.4)";
+                        } else {
+                            version = " (v2." + verArr[x] + ")";
+                        }
+                    } else {
+                        version = ""; //dead things like webclient
+                    }
+                    data.push("Client Type: " + utilities.capitalize(sys.os(tar)) + version);
                 }
                 if (authLevel > 0) {
                     var stats = script.authStats[name.toLowerCase()] || {};
