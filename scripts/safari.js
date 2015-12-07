@@ -1919,7 +1919,8 @@ function Safari() {
                 safaribot.sendMessage(src, "A sweet, fruity aroma wafts through the air as you open your capsule. You received " + amount + " " + finishName(reward) + ".", safchan);
             break;
             case "rock":
-                safaribot.sendMessage(src, "A " + (itemData.rock.fullName === "Snowball" ? "wet splashing sound" : "loud clunk" ) + " comes from the machine. Some prankster put " + itemData.rock.fullName + " in the Gachapon Machine! You received  " + amount + " " + finishName(reward) + plural + ".", safchan);
+                var snowball = itemData.rock.fullName === "Snowball";
+                safaribot.sendMessage(src, "A " + (snowball ? "wet splashing sound" : "loud clunk" ) + " comes from the machine. Some prankster put " + (snowball ? "snow" : itemData.rock.name + "s") + " in the Gachapon Machine! You received  " + amount + " " + finishName(reward) + plural + ".", safchan);
             break;
             case "wild":
             case "horde":
@@ -5654,7 +5655,7 @@ function Safari() {
     };
     
     this.startGame = function(src, data) {
-        if (getAvatar(src)) {
+        if (getAvatar(src) || SESSION.users(src).smute.active) {
             safaribot.sendMessage(src, "You already have a starter pokémon!", safchan);
             return;
         }
