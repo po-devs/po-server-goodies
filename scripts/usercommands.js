@@ -429,7 +429,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         countbot.sendMessage(src, "Server uptime is " + script.startUpTime(), channel);
         return;
     }
-    if (command === "topchannels") {
+    if (command === "topchannels" || command === "topchannel") {
         var i, chanIdArr = sys.channelIds(), listArr = [],
             limit = (commandData && !isNaN(commandData) ? parseInt(commandData, 10) : 10);
         for (i = 0; i < chanIdArr.length; ++i) {
@@ -439,7 +439,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         listArr = listArr.slice(0, limit);
         channelbot.sendMessage(src, "Most used channels:", channel);
         for (i = 0; i < listArr.length; ++i) {
-            sys.sendHtmlMessage(src, "<timestamp/>" + (i + 1) + " <a href=po:join/'" + sys.channel(listArr[i][0]) + "'>#" + sys.channel(listArr[i][0]) + "</a> with " + listArr[i][1] + " players.", channel);
+            sys.sendHtmlMessage(src, "<timestamp/>" + (i + 1) + " <a href='po:join/" + sys.channel(listArr[i][0]) + "'>#" + sys.channel(listArr[i][0]) + "</a> with " + listArr[i][1] + " players.", channel);
         }
         return;
     }
