@@ -1799,10 +1799,10 @@ beforeChatMessage: function(src, message, chan) {
         for (var i = name.length-1; i >= 0; --i) {
             if (script.isLCaps(name[i])) {
                 ++caps;
-                if (caps == 5)
+                if (caps > 6)
                     return true;
             } else {
-                --caps;
+                caps -= 2;
                 if (caps < 0)
                     caps = 0;
             }
@@ -2164,7 +2164,7 @@ isMCaps : function(message) {
 
         if (this.isLCaps(c)) {
             count += 1;
-            if (count == 5)
+            if (count > 5)
                 return true;
         } else {
             count -= 2;
